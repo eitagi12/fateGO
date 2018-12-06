@@ -1,0 +1,40 @@
+.icon-product-detail {
+    width: 16px;
+}
+
+.icon-dv {
+    width: 40px;
+}
+
+.icon-bullet {
+    width: 10px;
+    height: 12px;
+}
+
+.icon-check {
+    width: 20px;
+}
+
+.dropdown-divider {
+    border-top: 2px solid #BFBFBF;
+}
+
+.btn-view {
+    width: 90px;
+}
+
+.compare {
+    &.selected {
+        .icon-check {
+            display: none;
+        }
+        padding-left: 20px;
+    }
+}
+
+.more-device {
+    position: absolute; 
+    top: 3px; 
+    left: 20px;
+}
+

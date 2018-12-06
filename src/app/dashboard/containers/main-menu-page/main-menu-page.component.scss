@@ -1,0 +1,11 @@
+.menu-flex {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background: #b2d234;
+}
+
+.media {
+    border: solid 1px #fff;
+    flex: 5;
+}

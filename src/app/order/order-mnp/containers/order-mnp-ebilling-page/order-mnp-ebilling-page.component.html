@@ -1,0 +1,53 @@
+<div class="mc-flex">
+  <mc-header title="ย้ายค่ายเบอร์เดิม">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <div class="mb-3 mt-3">
+      <mc-wizard [wizards]="wizards" active="3"></mc-wizard>
+
+      <div class="container-fluid">
+        <form [formGroup]="ebillingForm">
+          <div class="card">
+            <div class="card-header bg-pink text-white">
+              การรวมบิล
+            </div>
+            <div class="card-body pb-0">
+              <p class="mb-3">กรุณาเลือกรอบบิลที่ต้องการ</p>
+              <p>
+                รอบค่าบริการ
+                <span class="pull-right">
+                  วันกำหนดชำระ
+                </span>
+              </p>
+            </div>
+            <ul class="list-group list-group-flush">
+              <ng-container *ngFor="let billCycle of billCycles">
+                <li class="list-group-item">
+                  <div>
+                    <input type="radio" autocomplete="off" id="{{ billCycle?.bill }}" [value]="billCycle" [checked]="checked(billCycle)"
+                      formControlName="billCycle">
+                    <label class="ml-2" for="{{ billCycle?.bill }}">{{ getBillCycleText(billCycle) }}</label>
+                    <span class="pay-date">{{ billCycle?.payDate }}</span>
+                  </div>
+                </li>
+              </ng-container>
+            </ul>
+          </div>
+        </form>
+
+      </div>
+
+
+    </div>
+  </div>
+  <mc-footer>
+    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="ebillingForm.invalid">NEXT</button>
+  </mc-footer>
+</div>

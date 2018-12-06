@@ -1,0 +1,157 @@
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
+import { HomeService, ReadCardProfile, PageLoadingService, AlertService, TokenService, ChannelType } from 'mychannel-shared-libs';
+import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_REPI_PAGE, ROUTE_ORDER_PRE_TO_POST_CUSTOMER_INFO_PAGE, ROUTE_ORDER_PRE_TO_POST_CUSTOMER_PROFILE_PAGE, ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE } from 'src/app/order/order-pre-to-post/constants/route-path.constant';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { HttpClient } from '@angular/common/http';
+
+
+@Component({
+  selector: 'app-order-pre-to-post-validate-customer-id-card-repi-page',
+  templateUrl: './order-pre-to-post-validate-customer-id-card-repi-page.component.html',
+  styleUrls: ['./order-pre-to-post-validate-customer-id-card-repi-page.component.scss']
+})
+export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements OnInit, OnDestroy {
+
+  kioskApi: boolean;
+  transaction: Transaction;
+  profile: ReadCardProfile;
+  zipcode: string;
+  readCardValid: boolean;
+  mobileNo: string;
+
+  constructor(
+    private router: Router,
+    private http: HttpClient,
+    private homeService: HomeService,
+    private alertService: AlertService,
+    private tokenService: TokenService,
+    private transactionService: TransactionService,
+    private pageLoadingService: PageLoadingService,
+  ) {
+    this.transaction = this.transactionService.load();
+    this.homeService.callback = () => {
+      window.location.href = '/smart-shop';
+    };
+    this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
+  }
+
+  ngOnInit() {
+    this.transaction.data.action = TransactionAction.READ_CARD_REPI;
+  }
+
+  onError(valid: boolean) {
+    this.readCardValid = valid;
+  }
+
+  onCompleted(profile: ReadCardProfile) {
+    this.profile = profile;
+
+    this.onNext();
+  }
+
+  onBack() {
+    this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE]);
+  }
+
+  onNext() {
+    const mobileNo = this.transaction.data.simCard.mobileNo;
+
+    this.pageLoadingService.openLoading();
+    this.http.get('/api/customerportal/validate-customer-pre-to-post', {
+      params: {
+        identity: this.profile.idCardNo
+      }
+    }).toPromise()
+      .then((resp: any) => {
+
+        const data = resp.data || {};
+
+        return this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
+          .then((zipCode: string) => {
+            this.transaction.data.customer = Object.assign(this.profile, {
+              caNumber: data.caNumber,
+              isNewCa: false,
+              mainMobile: data.mainMobile,
+              billCycle: data.billCycle,
+              zipCode: zipCode
+            });
+
+          });
+
+      })
+      .then(() => { // load bill cycle
+        return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
+          .then((resp: any) => {
+            const data = resp.data || {};
+            return this.http.post('/api/customerportal/verify/billingNetExtreme', {
+              businessType: '1',
+              listBillingAccount: data.billingAccountList
+            }).toPromise()
+              .then((respBillingNetExtreme: any) => {
+                return {
+                  billCycles: data.billingAccountList,
+                  billCyclesNetExtreme: respBillingNetExtreme.data
+                };
+              })
+              .catch(() => {
+                return {
+                  billCycles: data.billingAccountList
+                };
+              });
+          });
+      })
+      .then((billingInformation: any) => {
+        this.transaction.data.billingInformation = billingInformation;
+      })
+      .then(() => {// verify Prepaid Ident
+        return this.http.get(`/api/customerportal/newRegister/verifyPrepaidIdent?idCard=${this.profile.idCardNo}&mobileNo=${mobileNo}`)
+          .toPromise()
+          .then((respPrepaidIdent: any) => {
+            if (respPrepaidIdent.data && respPrepaidIdent.data.success) {
+              this.transaction.data.action = TransactionAction.READ_CARD;
+              this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CUSTOMER_INFO_PAGE]);
+            } else {
+              this.transaction.data.action = TransactionAction.READ_CARD_REPI;
+              this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CUSTOMER_PROFILE_PAGE]);
+            }
+          });
+      })
+      .catch((resp: any) => {
+        this.alertService.error(resp.error.developerMessage);
+      })
+      .then(() => {
+        this.pageLoadingService.closeLoading();
+      });
+  }
+
+  onHome() {
+    this.homeService.goToHome();
+  }
+
+  getZipCode(province: string, amphur: string, tumbol: string): Promise<string> {
+    province = province.replace(/มหานคร$/, '');
+    return this.http.get('/api/customerportal/newRegister/getAllProvinces').toPromise()
+      .then((resp: any) => {
+        const provinceId = (resp.data.provinces.find((prov: any) => prov.name === province) || {}).id;
+
+        return this.http.get(
+          `/api/customerportal/newRegister/queryZipcode?provinceId=${provinceId}&amphurName=${amphur}&tumbolName=${tumbol}`
+        ).toPromise();
+      })
+      .then((resp: any) => {
+        if (resp.data.zipcodes && resp.data.zipcodes.length > 0) {
+          return resp.data.zipcodes[0];
+        } else {
+          return Promise.reject('ไม่พบรหัสไปรษณีย์');
+        }
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
+  }
+
+
+}

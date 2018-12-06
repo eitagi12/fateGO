@@ -1,0 +1,70 @@
+<div class="mc-flex">
+  <mc-header title="PROMOTION">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap bg-white">
+    <tabset [justified]="true" #promotionTabs>
+
+      <tab (select)="onTabSelected('hit')">
+        <ng-template tabHeading>
+          <span class="promotion hit">โปรโมชั่นเด่น</span>
+        </ng-template>
+        <div class="container-fluid">
+          <div *ngFor="let campaign of campaigns">
+            <div class="row d-flex bg-white pt-3 pb-3 mb-1 campaign" *ngIf="campaign?.hit === 'Y'">
+              <div class="col-4 col-sm-3 col-md-3 col-lg-2">
+                <mc-lazy-load-image [src]="campaign?.images[0]?.imageUrl"></mc-lazy-load-image>
+              </div>
+              <div class="col-8 col-sm-9 col-md-9 col-lg-10 align-self-center">
+                <h6 class="mt-0">{{ campaign?.name }}</h6>
+                <p class="mb-0">
+                  <a href="#" (click)="$event.preventDefault();onOpenModal(template, campaign?.detail)">DETAIL</a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </tab>
+
+      <tab (select)="onTabSelected('recommend')">
+        <ng-template tabHeading>
+          <span class="promotion recommend">โปรโมชั่นแนะนำ</span>
+        </ng-template>
+        <div class="container-fluid">
+          <div *ngFor="let campaign of campaigns">
+            <div class="row d-flex bg-white pt-3 pb-3 mb-1 campaign" *ngIf="campaign?.recommend === 'Y'">
+              <div class="col-4 col-sm-3 col-md-3 col-lg-2">
+                <mc-lazy-load-image [src]="campaign?.images[0]?.imageUrl"></mc-lazy-load-image>
+              </div>
+              <div class="col-8 col-sm-9 col-md-9 col-lg-10 align-self-center">
+                <h6 class="mt-0">{{ campaign?.name }}</h6>
+                <p class="mb-0">
+                  <a href="#" (click)="$event.preventDefault();onOpenModal(template, campaign?.detail)">DETAIL</a>
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </tab>
+    </tabset>
+  </div>
+  <div class="fixed-bottom">
+    <mc-menu [menus]="menus"></mc-menu>
+  </div>
+</div>
+
+
+<ng-template #template>
+  <div class="modal-header bg-primary">
+    <h5 class="modal-title pull-left text-white">Detail</h5>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body">{{ details }}</div>
+</ng-template>

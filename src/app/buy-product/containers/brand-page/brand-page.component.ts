@@ -1,0 +1,139 @@
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router, ActivatedRoute, Params } from '@angular/router';
+import { TabsetComponent } from 'ngx-bootstrap';
+import { Observable } from 'rxjs';
+import { mergeMap } from 'rxjs/operators';
+import { BannerSlider, SalesService, TokenService, AlertService, HomeService } from 'mychannel-shared-libs';
+import { BestSeller } from 'mychannel-shared-libs/lib/service/models/best-seller';
+import { BrandsOfProduct } from 'mychannel-shared-libs/lib/service/models/brands-of-product';
+import { ROUTE_DEASHBOARD_PROMOTION_PAGE } from 'src/app/dashboard/constants/route-path.constant';
+import { ROUTE_BUY_PRODUCT_PRODUCT_PAGE } from 'src/app/buy-product/constants/route-path.constant';
+
+@Component({
+  selector: 'app-brand',
+  templateUrl: './brand-page.component.html',
+  styleUrls: ['./brand-page.component.scss']
+})
+export class BrandPageComponent implements OnInit {
+  bannerSliders: BannerSlider[];
+  brands: BrandsOfProduct[];
+
+  keyword: string;
+  productSearch: any;
+  datasource: Observable<any>;
+
+  @ViewChild('brandTabs')
+  brandTabs: TabsetComponent;
+
+  constructor(
+    private router: Router,
+    private activatedRoute: ActivatedRoute,
+    private salesService: SalesService,
+    private tokenService: TokenService,
+    private alertService: AlertService,
+    private homeService: HomeService
+  ) { }
+
+  ngOnInit() {
+    this.callService();
+    this.defaultTab();
+    this.createDataSource();
+  }
+
+  defaultTab() {
+    this.activatedRoute.queryParams.subscribe((params: Params) => {
+      if (!!params['tab']) {
+        this.brandTabs.tabs[0].active = false;
+        this.brandTabs.tabs[1].active = true;
+      } else {
+        this.brandTabs.tabs[0].active = true;
+        this.brandTabs.tabs[1].active = false;
+      }
+    });
+  }
+
+  onBack() {
+    this.router.navigate([ROUTE_DEASHBOARD_PROMOTION_PAGE]);
+  }
+
+  onHome() {
+    this.homeService.goToHome();
+  }
+
+  onClearSearch() {
+    this.keyword = null;
+  }
+
+  onBannerSliderSelected(bestSeller: BestSeller) {
+    this.router.navigate([ROUTE_BUY_PRODUCT_PRODUCT_PAGE], {
+      queryParams: {
+        brand: bestSeller.brand,
+        model: bestSeller.model
+      }
+    });
+  }
+
+  onProductSearch(product: any) {
+    if (product.item && product.item.brand) {
+      this.productSearch = product.item;
+    }
+  }
+
+  onSearch() {
+    if (!this.productSearch) {
+      this.alertService.warning('ไม่มีข้อมูลที่ต้องการค้นหา');
+      return;
+    }
+
+    this.router.navigate([ROUTE_BUY_PRODUCT_PRODUCT_PAGE], {
+      queryParams: this.productSearch
+    });
+  }
+
+  onTabSelected(tabName: string) {
+    const queryParams: any = {};
+    if ('brand' !== tabName) {
+      queryParams.tab = tabName;
+    }
+    this.router.navigate(['/buy-product/brand'], { queryParams: queryParams });
+  }
+
+  private createDataSource() {
+    this.datasource = Observable.create((observer: any) => {
+      observer.next(this.keyword);
+    }).pipe(
+      mergeMap((keyword: string) => this.queryProducCatalogSearch(keyword))
+    );
+  }
+
+  private queryProducCatalogSearch(keyword: string): Promise<any> {
+    return this.salesService.producCatalogSearch(keyword).then((resp) => {
+      return resp.data;
+    });
+  }
+
+  private callService() {
+    const locationCode = this.tokenService.getUser().locationCode;
+
+    Promise.all([
+      this.salesService.baseSeller(locationCode),
+      this.salesService.brandsOfProduct(locationCode)
+    ]).then((values: any[]) => {
+      this.bannerSliders = this.mapBannerSliders(values[0].data);
+      this.brands = values[1].data;
+    });
+  }
+
+  private mapBannerSliders(bestSellers: BestSeller[]): BannerSlider[] {
+    return bestSellers.map((bestSeller: BestSeller) => {
+      const ribbonType = (bestSeller.itemType || '').toLowerCase();
+      const ribbon = ['hot', 'new'].find((rib: string) => rib === ribbonType);
+      return ({
+        thumbnail: bestSeller.imageUrl,
+        ribbon: ribbon,
+        detail: bestSeller.name,
+        value: bestSeller
+      } as BannerSlider);
+    });
+  }
+}
