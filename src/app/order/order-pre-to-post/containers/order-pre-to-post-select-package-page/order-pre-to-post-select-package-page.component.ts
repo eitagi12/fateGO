@@ -86,76 +86,63 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
   onCompleted(promotion) {
     this.transaction.data.mainPackage = promotion;
   }
-
   callService() {
-
     this.pageLoadingService.openLoading();
-    const billingInformation = this.transaction.data.billingInformation;
+
+    const billingInformation: any = this.transaction.data.billingInformation;
+    const isNetExtreme = billingInformation.billCyclesNetExtreme && billingInformation.billCyclesNetExtreme.length > 0 ? 'true' : 'false';
     const mobileNo = this.transaction.data.simCard.mobileNo;
 
-    this.http.get(`/api/customerportal/greeting/${mobileNo}/profile`).toPromise()
-      .then((greeting: any) => {
-        let serviceYear = '';
-        if (greeting.data.registerDate) {
-          const regisDate: any = greeting.data.registerDate.split(' ');
-          return regisDate[0].split('/').join('');
-        } else if (greeting.data.serviceYear) {
-          const svcService: any = greeting.data.serviceYear;
-          let currentDate: any = moment();
-          currentDate = currentDate.subtract(svcService.year, 'years');
-          currentDate = currentDate.subtract(svcService.month, 'months');
-          currentDate = currentDate.subtract(svcService.day, 'days');
-          serviceYear = moment(currentDate).format('DDMMYYYY').toString();
-        }
-        return serviceYear || '';
-      }).then((regisDate) => {
-
-        const isNetExtreme = billingInformation
-          && billingInformation.billCyclesNetExtreme
-          && billingInformation.billCyclesNetExtreme.length > 0 ? 'true' : 'false';
+    this.http.get(`/api/customerportal/queryCheckMinimumPackage/${mobileNo}`, {
+    }).toPromise()
+      .then((resp: any) => {
+        const data = resp.data || {};
+        return data.MinimumPriceForPackage || 0;
+      }).then((minimumPriceForPackage: string) => {
         return this.http.get('/api/customerportal/newRegister/queryMainPackage', {
           params: {
-            orderType: 'Change Charge Type',
-            registerDate: regisDate,
-            isNetExtreme: isNetExtreme
+            orderType: 'New Registration',
+            isNetExtreme: isNetExtreme,
+            minPromotionPrice: minimumPriceForPackage
           }
-        }).toPromise()
-          .then((resp: any) => {
-            const data = resp.data.packageList || [];
-
-            const promotionShelves: PromotionShelve[] = data.map((promotionShelve: any) => {
-              return {
-                title: promotionShelve.title,
-                // replace to class in css
-                icon: (promotionShelve.icon || '').replace(/\.jpg$/, '').replace(/_/g, '-'),
-                promotions: promotionShelve.subShelves
-                  .map((subShelve: any) => {
-                    return { // group
-                      // เอาไว้เปิด carousel ให้ check ว่ามี id ลูกตรงกัน
-                      id: subShelve.subShelveId,
-                      title: subShelve.title,
-                      sanitizedName: subShelve.sanitizedName,
-                      items: (subShelve.items || []).map((promotion: any) => {
-                        return { // item
-                          id: promotion.itemId,
-                          title: promotion.shortNameThai,
-                          detail: promotion.statementThai,
-                          condition: subShelve.conditionCode,
-                          value: promotion
-                        };
-                      })
+        }).toPromise();
+      })
+      .then((resp: any) => {
+        const data = resp.data.packageList || [];
+        const promotionShelves: PromotionShelve[] = data.map((promotionShelve: any) => {
+          return {
+            title: promotionShelve.title,
+            // replace to class in css
+            icon: (promotionShelve.icon || '').replace(/\.jpg$/, '').replace(/_/g, '-'),
+            promotions: promotionShelve.subShelves
+              .map((subShelve: any) => {
+                return { // group
+                  // เอาไว้เปิด carousel ให้ check ว่ามี id ลูกตรงกัน
+                  id: subShelve.subShelveId,
+                  title: subShelve.title,
+                  sanitizedName: subShelve.sanitizedName,
+                  items: (subShelve.items || []).map((promotion: any) => {
+                    return { // item
+                      id: promotion.itemId,
+                      title: promotion.shortNameThai,
+                      detail: promotion.statementThai,
+                      condition: subShelve.conditionCode,
+                      value: promotion
                     };
                   })
-              };
-            });
-            return Promise.resolve(promotionShelves);
-          }).then((promotionShelves: PromotionShelve[]) => {
-            this.promotionShelves = this.buildPromotionShelveActive(promotionShelves);
-          }).then(() => {
-            this.pageLoadingService.closeLoading();
-          });
+                };
+              })
+          };
+        });
+        return Promise.resolve(promotionShelves);
+      })
+      .then((promotionShelves: PromotionShelve[]) => {
+        this.promotionShelves = this.buildPromotionShelveActive(promotionShelves);
+      })
+      .then(() => {
+        this.pageLoadingService.closeLoading();
       });
-    // });
+
   }
 
   onTermConditions(condition: any) {
