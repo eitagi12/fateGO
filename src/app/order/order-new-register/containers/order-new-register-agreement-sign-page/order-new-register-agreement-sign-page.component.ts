@@ -37,6 +37,7 @@ export class OrderNewRegisterAgreementSignPageComponent implements OnInit, OnDes
   }
 
   ngOnInit() {
+
   }
 
   onBack() {
