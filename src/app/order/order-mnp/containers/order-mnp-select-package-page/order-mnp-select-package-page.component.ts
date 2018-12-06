@@ -90,7 +90,7 @@ export class OrderMnpSelectPackagePageComponent implements OnInit, OnDestroy {
       }).then((minimumPriceForPackage: string) => {
         return this.http.get('/api/customerportal/newRegister/queryMainPackage', {
           params: {
-            orderType: 'New Registration',
+            orderType: 'Port – In',
             isNetExtreme: isNetExtreme,
             minPromotionPrice: minimumPriceForPackage
           }
