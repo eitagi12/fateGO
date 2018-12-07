@@ -37,12 +37,11 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
     private alertService: AlertService,
   ) {
     this.homeService.callback = () => {
-      if(this.validateCustomerIdcard.koiskApiFn){
-        this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
-      }
+        if(this.validateCustomerIdcard.koiskApiFn){
+          this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+        }
       window.location.href = '/smart-shop';
     };
-
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
   }
 

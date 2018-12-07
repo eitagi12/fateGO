@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import {
@@ -6,7 +6,7 @@ import {
   ROUTE_ORDER_MNP_SELECT_REASON_PAGE
 } from 'src/app/order/order-mnp/constants/route-path.constant';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
-import { ReadCardProfile, HomeService, TokenService, PageLoadingService, ChannelType, Utils, AlertService } from 'mychannel-shared-libs';
+import { ReadCardProfile, HomeService, TokenService, PageLoadingService, ChannelType, Utils, AlertService, KioskControls, ValidateCustomerIdCardComponent } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 
 @Component({
@@ -22,6 +22,8 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
   profile: ReadCardProfile;
   zipcode: string;
   readCardValid: boolean;
+  @ViewChild(ValidateCustomerIdCardComponent)
+  validateCustomerIdcard: ValidateCustomerIdCardComponent;
 
   constructor(
     private router: Router,
@@ -34,6 +36,12 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
     private alertService: AlertService,
   ) {
     this.transaction = this.transactionService.load();
+    this.homeService.callback = () => {
+      if(this.validateCustomerIdcard.koiskApiFn){
+        this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+      }
+      window.location.href = '/smart-shop';
+    };
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
   }
 
@@ -60,8 +68,6 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
   }
 
   onNext() {
-    this.pageLoadingService.openLoading();
-
     this.pageLoadingService.openLoading();
 
     this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)

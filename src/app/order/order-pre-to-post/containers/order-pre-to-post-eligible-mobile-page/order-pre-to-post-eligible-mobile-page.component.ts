@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { EligibleMobile, AlertService } from 'mychannel-shared-libs';
+import { EligibleMobile, AlertService, HomeService } from 'mychannel-shared-libs';
 import {
   ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE,
   ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE,
@@ -45,9 +45,13 @@ export class OrderPreToPostEligibleMobilePageComponent implements OnInit, OnDest
   constructor(
     private router: Router,
     private http: HttpClient,
-    private transactionService: TransactionService
+    private transactionService: TransactionService,
+    private homeService: HomeService
   ) {
     this.transaction = this.transactionService.load();
+    this.homeService.callback = () => {
+      window.location.href = '/smart-shop';
+    };
   }
 
   ngOnInit() {

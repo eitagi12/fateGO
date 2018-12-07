@@ -26,8 +26,7 @@ export class OrderMnpNetworkTypePageComponent implements OnInit, OnDestroy {
   transaction: Transaction;
   mnpForm: FormGroup;
   
-  @ViewChild(ValidateCustomerIdCardComponent)
-  validateCustomerIdcard: ValidateCustomerIdCardComponent;
+
 
   constructor(
     private router: Router,
@@ -40,9 +39,6 @@ export class OrderMnpNetworkTypePageComponent implements OnInit, OnDestroy {
     private apiRequestService: ApiRequestService,
   ) {
     this.homeService.callback = () => {
-      if(this.validateCustomerIdcard.koiskApiFn){
-        this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
-      }
       window.location.href = '/smart-shop';
     };
     this.createTransaction();
