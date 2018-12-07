@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
 import { Router } from '@angular/router';
 import { HomeService, Utils, AlertService, TokenService, ChannelType } from 'mychannel-shared-libs';
@@ -130,7 +130,7 @@ export interface OptionPersoSim {
   templateUrl: './order-mnp-perso-sim-page.component.html',
   styleUrls: ['./order-mnp-perso-sim-page.component.scss']
 })
-export class OrderMnpPersoSimPageComponent implements OnInit {
+export class OrderMnpPersoSimPageComponent implements OnInit, OnDestroy {
 
   wizards = WIZARD_ORDER_NEW_REGISTER;
   title: string;
@@ -404,7 +404,7 @@ export class OrderMnpPersoSimPageComponent implements OnInit {
       });
 
       return () => {
-        this.closeWsAll();
+        // this.closeWsAll();
       };
     });
   }
@@ -434,7 +434,7 @@ export class OrderMnpPersoSimPageComponent implements OnInit {
         case ErrorPerSoSim.ERROR_SIM:
           this.controlSim(ControlSimCard.EVENT_KEEP_SIM).then(() => {
             this.controlSim(ControlLED.EVENT_LED_OFF).then(() => {
-              this.closeWsAll();
+              // this.closeWsAll();
               errNext = {
                 progress: 0,
                 eventName: '',
@@ -447,7 +447,7 @@ export class OrderMnpPersoSimPageComponent implements OnInit {
         case ErrorPerSoSim.ERROR_PERSO:
           this.controlSim(ControlSimCard.EVENT_KEEP_SIM).then(() => {
             this.controlSim(ControlLED.EVENT_LED_OFF).then(() => {
-              this.closeWsAll();
+              // this.closeWsAll();
               errNext = {
                 progress: 0,
                 eventName: '',
@@ -458,27 +458,35 @@ export class OrderMnpPersoSimPageComponent implements OnInit {
           });
           break;
         case ErrorPerSoSim.ERROR_WEB_SOCKET:
-          this.closeWsAll();
-          errNext = {
-            progress: 0,
-            eventName: '',
-            error: { errorCase: errrorCase, messages: messages ? messages : ErrorPerSoSimMessage.ERROR_WEB_SOCKET_MESSAGE }
-          };
-          resolve(errNext);
-          break;
-        case ErrorPerSoSim.ERROR_SIM_EMPTY:
-          this.closeWsAll();
-          errNext = {
-            progress: 0,
-            eventName: '',
-            error: { errorCase: errrorCase, messages: messages ? messages : ErrorPerSoSimMessage.ERROR_SIM_EMPTY_MESSAGE }
-          };
-          resolve(errNext);
-          break;
-          default:
           this.controlSim(ControlSimCard.EVENT_KEEP_SIM).then(() => {
             this.controlSim(ControlLED.EVENT_LED_OFF).then(() => {
-              this.closeWsAll();
+              // this.closeWsAll();
+              errNext = {
+                progress: 0,
+                eventName: '',
+                error: { errorCase: errrorCase, messages: messages ? messages : ErrorPerSoSimMessage.ERROR_WEB_SOCKET_MESSAGE }
+              };
+              resolve(errNext);
+            });
+          });
+          break;
+        case ErrorPerSoSim.ERROR_SIM_EMPTY:
+          this.controlSim(ControlSimCard.EVENT_KEEP_SIM).then(() => {
+            this.controlSim(ControlLED.EVENT_LED_OFF).then(() => {
+              // this.closeWsAll();
+              errNext = {
+                progress: 0,
+                eventName: '',
+                error: { errorCase: errrorCase, messages: messages ? messages : ErrorPerSoSimMessage.ERROR_SIM_EMPTY_MESSAGE }
+              };
+              resolve(errNext);
+            });
+          });
+          break;
+        default:
+          this.controlSim(ControlSimCard.EVENT_KEEP_SIM).then(() => {
+            this.controlSim(ControlLED.EVENT_LED_OFF).then(() => {
+              // this.closeWsAll();
               errNext = {
                 progress: 0,
                 eventName: '',
@@ -688,6 +696,15 @@ export class OrderMnpPersoSimPageComponent implements OnInit {
 
   onHome() {
     this.homeService.goToHome();
+  }
+
+  ngOnDestroy(): void {
+    this.controlSim(ControlSimCard.EVENT_KEEP_SIM).then(() => {
+      this.controlSim(ControlLED.EVENT_LED_OFF).then(() => {
+        this.closeWsAll();
+      });
+    });
+    this.transactionService.update(this.transaction);
   }
 
 }

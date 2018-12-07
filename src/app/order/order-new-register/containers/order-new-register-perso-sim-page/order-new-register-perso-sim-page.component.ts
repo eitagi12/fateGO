@@ -222,7 +222,7 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
             });
           } else if (value.error.errorCase === ErrorPerSoSim.ERROR_CMD) {
             this.checkErrCmd++;
-            if (this.errCmd < this.checkErrCmd  ) {
+            if (this.errCmd < this.checkErrCmd) {
               this.startPersoSim(this.transaction);
             } else {
               this.persoSimSubscription.unsubscribe();
@@ -401,7 +401,7 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
       });
 
       return () => {
-        this.closeWsAll();
+        // this.closeWsAll();
       };
 
     });
@@ -432,7 +432,7 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
         case ErrorPerSoSim.ERROR_SIM:
           this.controlSim(ControlSimCard.EVENT_KEEP_SIM).then(() => {
             this.controlSim(ControlLED.EVENT_LED_OFF).then(() => {
-              this.closeWsAll();
+              // this.closeWsAll();
               errNext = {
                 progress: 0,
                 eventName: '',
@@ -445,7 +445,7 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
         case ErrorPerSoSim.ERROR_PERSO:
           this.controlSim(ControlSimCard.EVENT_KEEP_SIM).then(() => {
             this.controlSim(ControlLED.EVENT_LED_OFF).then(() => {
-              this.closeWsAll();
+              // this.closeWsAll();
               errNext = {
                 progress: 0,
                 eventName: '',
@@ -456,27 +456,35 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
           });
           break;
         case ErrorPerSoSim.ERROR_WEB_SOCKET:
-          this.closeWsAll();
-          errNext = {
-            progress: 0,
-            eventName: '',
-            error: { errorCase: errrorCase, messages: messages ? messages : ErrorPerSoSimMessage.ERROR_WEB_SOCKET_MESSAGE }
-          };
-          resolve(errNext);
+          this.controlSim(ControlSimCard.EVENT_KEEP_SIM).then(() => {
+            this.controlSim(ControlLED.EVENT_LED_OFF).then(() => {
+              // this.closeWsAll();
+              errNext = {
+                progress: 0,
+                eventName: '',
+                error: { errorCase: errrorCase, messages: messages ? messages : ErrorPerSoSimMessage.ERROR_WEB_SOCKET_MESSAGE }
+              };
+              resolve(errNext);
+            });
+          });
           break;
         case ErrorPerSoSim.ERROR_SIM_EMPTY:
-          this.closeWsAll();
-          errNext = {
-            progress: 0,
-            eventName: '',
-            error: { errorCase: errrorCase, messages: messages ? messages : ErrorPerSoSimMessage.ERROR_SIM_EMPTY_MESSAGE }
-          };
-          resolve(errNext);
+          this.controlSim(ControlSimCard.EVENT_KEEP_SIM).then(() => {
+            this.controlSim(ControlLED.EVENT_LED_OFF).then(() => {
+              // this.closeWsAll();
+              errNext = {
+                progress: 0,
+                eventName: '',
+                error: { errorCase: errrorCase, messages: messages ? messages : ErrorPerSoSimMessage.ERROR_SIM_EMPTY_MESSAGE }
+              };
+              resolve(errNext);
+            });
+          });
           break;
         default:
           this.controlSim(ControlSimCard.EVENT_KEEP_SIM).then(() => {
             this.controlSim(ControlLED.EVENT_LED_OFF).then(() => {
-              this.closeWsAll();
+              // this.closeWsAll();
               errNext = {
                 progress: 0,
                 eventName: '',
@@ -681,6 +689,11 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
   }
 
   ngOnDestroy(): void {
+    this.controlSim(ControlSimCard.EVENT_KEEP_SIM).then(() => {
+      this.controlSim(ControlLED.EVENT_LED_OFF).then(() => {
+        this.closeWsAll();
+      });
+    });
     this.transactionService.update(this.transaction);
   }
 }
