@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, ReadCardProfile, PageLoadingService, AlertService, TokenService, ChannelType } from 'mychannel-shared-libs';
+import { HomeService, ReadCardProfile, PageLoadingService, AlertService, TokenService, ChannelType, ValidateCustomerIdCardComponent, KioskControls } from 'mychannel-shared-libs';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_REPI_PAGE, ROUTE_ORDER_PRE_TO_POST_CUSTOMER_INFO_PAGE, ROUTE_ORDER_PRE_TO_POST_CUSTOMER_PROFILE_PAGE, ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE } from 'src/app/order/order-pre-to-post/constants/route-path.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -21,6 +21,9 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
   readCardValid: boolean;
   mobileNo: string;
 
+  @ViewChild(ValidateCustomerIdCardComponent)
+  validateCustomerIdcard: ValidateCustomerIdCardComponent;
+
   constructor(
     private router: Router,
     private http: HttpClient,
@@ -32,6 +35,9 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
   ) {
     this.transaction = this.transactionService.load();
     this.homeService.callback = () => {
+      if(this.validateCustomerIdcard.koiskApiFn){
+        this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+      }
       window.location.href = '/smart-shop';
     };
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;

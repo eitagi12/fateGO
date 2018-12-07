@@ -27,6 +27,9 @@ export class OrderPreToPostCustomerProfilePageComponent implements OnInit, OnDes
     private http: HttpClient,
   ) {
     this.transaction = this.transactionService.load();
+    this.homeService.callback = () => {
+      window.location.href = '/smart-shop';
+    };
   }
 
   ngOnInit() {
