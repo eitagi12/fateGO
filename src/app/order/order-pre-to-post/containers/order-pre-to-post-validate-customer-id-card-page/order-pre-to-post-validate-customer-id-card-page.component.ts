@@ -35,7 +35,7 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
     private utils: Utils,
   ) {
     this.homeService.callback = () => {
-      window.location.href = '/smart-shop';
+      this.router.navigate(['/smart-shop']);
     };
 
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
