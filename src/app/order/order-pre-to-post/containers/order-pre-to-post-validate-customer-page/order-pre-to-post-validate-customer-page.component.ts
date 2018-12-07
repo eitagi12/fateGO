@@ -32,7 +32,11 @@ export class OrderPreToPostValidateCustomerPageComponent implements OnInit, OnDe
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private apiRequestService: ApiRequestService,
-  ) { }
+  ) { 
+    this.homeService.callback = () => {
+      window.location.href = '/smart-shop';
+    };
+  }
 
   ngOnInit() {
     this.createTransaction();

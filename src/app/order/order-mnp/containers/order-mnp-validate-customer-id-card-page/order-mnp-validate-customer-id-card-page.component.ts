@@ -64,6 +64,9 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
   }
 
   onBack() {
+    if(this.validateCustomerIdcard.koiskApiFn){
+      this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+    }
     this.router.navigate([ROUTE_ORDER_MNP_SELECT_REASON_PAGE]);
   }
 
