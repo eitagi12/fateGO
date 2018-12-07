@@ -1,5 +1,5 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ReadCardProfile, HomeService, PageLoadingService, ApiRequestService, TokenService, ChannelType, Utils, AlertService, } from 'mychannel-shared-libs';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { ReadCardProfile, HomeService, PageLoadingService, ApiRequestService, TokenService, ChannelType, Utils, AlertService, ValidateCustomerIdCardComponent, KioskControls, } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -22,6 +22,9 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
   zipcode: string;
   readCardValid: boolean;
 
+  @ViewChild(ValidateCustomerIdCardComponent)
+  validateCustomerIdcard: ValidateCustomerIdCardComponent;
+
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -34,7 +37,10 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
     private alertService: AlertService,
   ) {
     this.homeService.callback = () => {
-      this.router.navigate(['/smart-shop']);
+      if(this.validateCustomerIdcard.koiskApiFn){
+        this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+      }
+      window.location.href = '/smart-shop';
     };
 
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
