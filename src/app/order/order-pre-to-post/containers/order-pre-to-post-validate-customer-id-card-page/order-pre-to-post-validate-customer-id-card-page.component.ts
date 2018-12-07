@@ -62,6 +62,9 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
   }
 
   onBack() {
+    if(this.validateCustomerIdcard.koiskApiFn){
+      this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+    }
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE]);
   }
 
