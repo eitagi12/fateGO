@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { MobileNoCondition, HomeService, TokenService, PageLoadingService, User } from 'mychannel-shared-libs';
@@ -7,6 +7,8 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { HttpClient } from '@angular/common/http';
 import { ROUTE_ORDER_NEW_REGISTER_SELECT_NUMBER_PAGE, ROUTE_ORDER_NEW_REGISTER_SELECT_PACKAGE_PAGE } from 'src/app/order/order-new-register/constants/route-path.constant';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+
+declare let window: any;
 
 @Component({
   selector: 'app-order-new-register-by-pattern-page',
@@ -22,7 +24,8 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
 
   isSearchAgain = false;
   mobileNoConditionForm: FormGroup;
-
+  element: any;
+  el = [];
   user: User;
   constructor(
     private router: Router,
@@ -35,6 +38,26 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
   ) {
     this.transaction = this.transactionService.load();
     this.user = this.tokenService.getUser();
+
+    this.findTextChang();
+  }
+
+  findTextChang() {
+
+    window.fireTextChanged = (id: any) => {
+      alert(id);
+      // const e = document.body.getElementsByTagName('input');
+
+      // for (let i = 0; i < e.length; i++) {
+      //   if ( e[i].getAttribute('id') !== 'undefined') {
+      //     this.el.push(e[i].getAttribute('id'));
+      //   }
+      // }
+      // window.document.getElementById('like0').focus();
+      //  window.document.getElementById(id).addEventListener('past', (e) => {
+      //       this.element = JSON.stringify(e);
+      //   });
+    };
   }
 
   ngOnInit() {
@@ -112,10 +135,11 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
 
   }
 
+
   onNextTab(event: any): void {
+    console.log('event', event);
     const keyCode: number = (event.which) ? event.which : event.keyCode;
     const target: any = event.target;
-
     // backspace
     if (target.value === 'undefined' || event.target.value === '') {
       const previousField: any = target.previousElementSibling;
@@ -128,10 +152,12 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
     }
 
     const nextField: any = target.nextElementSibling;
+
     if (!nextField) {
       return;
     }
     nextField.focus();
+
   }
 
   onSearchMobileNoByCondition() {
@@ -166,7 +192,7 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
       persoSim: true
     };
   }
-  
+
   onNext() {
     this.router.navigate([ROUTE_ORDER_NEW_REGISTER_SELECT_PACKAGE_PAGE]);
   }
