@@ -2,10 +2,10 @@
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import {
   HomeService, PageLoadingService, AlertService,
-  ApiRequestService, REGEX_MOBILE
+  ApiRequestService, REGEX_MOBILE, KioskControls, ValidateCustomerIdCardComponent
 } from 'mychannel-shared-libs';
 import {
   ROUTE_ORDER_MNP_SELECT_REASON_PAGE
@@ -25,6 +25,8 @@ export class OrderMnpNetworkTypePageComponent implements OnInit, OnDestroy {
 
   transaction: Transaction;
   mnpForm: FormGroup;
+  
+
 
   constructor(
     private router: Router,

@@ -75,23 +75,29 @@ export class OrderMnpSelectPackagePageComponent implements OnInit, OnDestroy {
     // รอแก้ไขตัวแปรที่จะเก็บลงใน share transaction
     this.transaction.data.mainPackage = promotion;
   }
-
   callService() {
     this.pageLoadingService.openLoading();
 
     const billingInformation: any = this.transaction.data.billingInformation;
-    const isNetExtreme = billingInformation &&
-    billingInformation.billCyclesNetExtreme && billingInformation.billCyclesNetExtreme.length > 0 ? 'true' : 'false';
-    this.http.get('/api/customerportal/newRegister/queryMainPackage', {
-      params: {
-        orderType: 'Port – In',
-        isNetExtreme: isNetExtreme
-      }
+    const isNetExtreme = billingInformation.billCyclesNetExtreme && billingInformation.billCyclesNetExtreme.length > 0 ? 'true' : 'false';
+    const mobileNo = this.transaction.data.simCard.mobileNo;
+
+    this.http.get(`/api/customerportal/queryCheckMinimumPackage/${mobileNo}`, {
     }).toPromise()
       .then((resp: any) => {
-
+        const data = resp.data || {};
+        return data.MinimumPriceForPackage || 0;
+      }).then((minimumPriceForPackage: string) => {
+        return this.http.get('/api/customerportal/newRegister/queryMainPackage', {
+          params: {
+            orderType: 'Port – In',
+            isNetExtreme: isNetExtreme,
+            minPromotionPrice: minimumPriceForPackage
+          }
+        }).toPromise();
+      })
+      .then((resp: any) => {
         const data = resp.data.packageList || [];
-
         const promotionShelves: PromotionShelve[] = data.map((promotionShelve: any) => {
           return {
             title: promotionShelve.title,
@@ -118,7 +124,6 @@ export class OrderMnpSelectPackagePageComponent implements OnInit, OnDestroy {
           };
         });
         return Promise.resolve(promotionShelves);
-
       })
       .then((promotionShelves: PromotionShelve[]) => {
         this.promotionShelves = this.buildPromotionShelveActive(promotionShelves);
@@ -128,7 +133,6 @@ export class OrderMnpSelectPackagePageComponent implements OnInit, OnDestroy {
       });
 
   }
-
 
   onTermConditions(condition: string) {
     if (!condition) {

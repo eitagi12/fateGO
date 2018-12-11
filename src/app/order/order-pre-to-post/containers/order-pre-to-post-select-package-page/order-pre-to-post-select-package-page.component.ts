@@ -86,7 +86,6 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
   onCompleted(promotion) {
     this.transaction.data.mainPackage = promotion;
   }
-
   callService() {
 
     this.pageLoadingService.openLoading();
@@ -113,47 +112,55 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
         const isNetExtreme = billingInformation
           && billingInformation.billCyclesNetExtreme
           && billingInformation.billCyclesNetExtreme.length > 0 ? 'true' : 'false';
-        return this.http.get('/api/customerportal/newRegister/queryMainPackage', {
-          params: {
-            orderType: 'Change Charge Type',
-            registerDate: regisDate,
-            isNetExtreme: isNetExtreme
-          }
-        }).toPromise()
-          .then((resp: any) => {
-            const data = resp.data.packageList || [];
-
-            const promotionShelves: PromotionShelve[] = data.map((promotionShelve: any) => {
-              return {
-                title: promotionShelve.title,
-                // replace to class in css
-                icon: (promotionShelve.icon || '').replace(/\.jpg$/, '').replace(/_/g, '-'),
-                promotions: promotionShelve.subShelves
-                  .map((subShelve: any) => {
-                    return { // group
-                      // เอาไว้เปิด carousel ให้ check ว่ามี id ลูกตรงกัน
-                      id: subShelve.subShelveId,
-                      title: subShelve.title,
-                      sanitizedName: subShelve.sanitizedName,
-                      items: (subShelve.items || []).map((promotion: any) => {
-                        return { // item
-                          id: promotion.itemId,
-                          title: promotion.shortNameThai,
-                          detail: promotion.statementThai,
-                          condition: subShelve.conditionCode,
-                          value: promotion
-                        };
-                      })
-                    };
-                  })
-              };
+          return this.http.get(`/api/customerportal/queryCheckMinimumPackage/${mobileNo}`, {
+          }).toPromise()
+            .then((resp: any) => {
+              const data = resp.data || {};
+              return data.MinimumPriceForPackage || 0;
+            }).then((minimumPriceForPackage: string) => {
+              return this.http.get('/api/customerportal/newRegister/queryMainPackage', {
+                params: {
+                  orderType: 'Change Charge Type',
+                  isNetExtreme: isNetExtreme,
+                  minPromotionPrice: minimumPriceForPackage
+                }
+              }).toPromise();
+            })
+            .then((resp: any) => {
+              const data = resp.data.packageList || [];
+              const promotionShelves: PromotionShelve[] = data.map((promotionShelve: any) => {
+                return {
+                  title: promotionShelve.title,
+                  // replace to class in css
+                  icon: (promotionShelve.icon || '').replace(/\.jpg$/, '').replace(/_/g, '-'),
+                  promotions: promotionShelve.subShelves
+                    .map((subShelve: any) => {
+                      return { // group
+                        // เอาไว้เปิด carousel ให้ check ว่ามี id ลูกตรงกัน
+                        id: subShelve.subShelveId,
+                        title: subShelve.title,
+                        sanitizedName: subShelve.sanitizedName,
+                        items: (subShelve.items || []).map((promotion: any) => {
+                          return { // item
+                            id: promotion.itemId,
+                            title: promotion.shortNameThai,
+                            detail: promotion.statementThai,
+                            condition: subShelve.conditionCode,
+                            value: promotion
+                          };
+                        })
+                      };
+                    })
+                };
+              });
+              return Promise.resolve(promotionShelves);
+            })
+            .then((promotionShelves: PromotionShelve[]) => {
+              this.promotionShelves = this.buildPromotionShelveActive(promotionShelves);
+            })
+            .then(() => {
+              this.pageLoadingService.closeLoading();
             });
-            return Promise.resolve(promotionShelves);
-          }).then((promotionShelves: PromotionShelve[]) => {
-            this.promotionShelves = this.buildPromotionShelveActive(promotionShelves);
-          }).then(() => {
-            this.pageLoadingService.closeLoading();
-          });
       });
     // });
   }

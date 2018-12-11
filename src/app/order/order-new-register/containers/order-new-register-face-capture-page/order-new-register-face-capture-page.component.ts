@@ -31,6 +31,9 @@ export class OrderNewRegisterFaceCapturePageComponent implements OnInit, OnDestr
     private utils: Utils
   ) {
     this.transaction = this.transactionService.load();
+    this.homeService.callback = () => {
+      window.location.href = '/smart-shop';
+    };
   }
 
   ngOnInit() {
