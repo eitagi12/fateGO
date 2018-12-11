@@ -8,7 +8,6 @@ import { HttpClient } from '@angular/common/http';
 import { ROUTE_ORDER_NEW_REGISTER_SELECT_NUMBER_PAGE, ROUTE_ORDER_NEW_REGISTER_SELECT_PACKAGE_PAGE } from 'src/app/order/order-new-register/constants/route-path.constant';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 
-declare let window: any;
 
 @Component({
   selector: 'app-order-new-register-by-pattern-page',
@@ -39,25 +38,6 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
     this.transaction = this.transactionService.load();
     this.user = this.tokenService.getUser();
 
-    this.findTextChang();
-  }
-
-  findTextChang() {
-
-    window.fireTextChanged = (id: any) => {
-      alert(id);
-      // const e = document.body.getElementsByTagName('input');
-
-      // for (let i = 0; i < e.length; i++) {
-      //   if ( e[i].getAttribute('id') !== 'undefined') {
-      //     this.el.push(e[i].getAttribute('id'));
-      //   }
-      // }
-      // window.document.getElementById('like0').focus();
-      //  window.document.getElementById(id).addEventListener('past', (e) => {
-      //       this.element = JSON.stringify(e);
-      //   });
-    };
   }
 
   ngOnInit() {
