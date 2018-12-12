@@ -71,7 +71,7 @@ export class AppComponent {
     this.pageActivityService.setTimeout((counter) => {
       const url = this.router.url;
       if (url.indexOf('perso-sim') !== -1) {
-        return counter === 180;
+        return counter === 300;
       }
       if (url.indexOf('face-confirm') !== -1) {
         return counter === 900;
