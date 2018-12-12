@@ -49,6 +49,16 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
 
   onError(valid: boolean) {
     this.readCardValid = valid;
+    if(!this.profile){
+      this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
+      this.validateCustomerIdcard.koiskApiFn.removedState().subscribe((removed: boolean) => {
+        if (removed) {
+          this.validateCustomerIdcard.ngOnDestroy();
+          this.validateCustomerIdcard.ngOnInit();
+        }
+      });
+    
+    }
   }
 
   onCompleted(profile: ReadCardProfile) {
