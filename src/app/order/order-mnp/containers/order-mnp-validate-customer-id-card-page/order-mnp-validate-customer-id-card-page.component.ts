@@ -88,10 +88,6 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
               billCycle: data.billCycle,
               zipCode: zipCode
             };
-          }).catch(() => {
-            return {
-              zipCode: zipCode
-            };
           });
       }).then((customer: any) => { // load bill cycle
         this.transaction.data.customer = Object.assign(this.transaction.data.customer, this.profile, customer);
@@ -121,6 +117,12 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
         this.transaction.data.billingInformation = billingInformation;
         if (this.checkBusinessLogic()) {
           this.router.navigate([ROUTE_ORDER_MNP_CUSTOMER_INFO_PAGE]);
+        }
+      })
+      .catch((resp: any) => {
+        const error = resp.error || {};
+        if (error.developerMessage) {
+          this.alertService.error(error.developerMessage);
         }
       });
   }

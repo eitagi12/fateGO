@@ -85,10 +85,6 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
               billCycle: data.billCycle,
               zipCode: zipCode
             };
-          }).catch(() => {
-            return {
-              zipCode: zipCode
-            };
           });
       })
       .then((customer: any) => { // load bill cycle
@@ -118,6 +114,12 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
         this.transaction.data.billingInformation = billingInformation;
         if (this.checkBusinessLogic()) {
           this.router.navigate([ROUTE_ORDER_NEW_REGISTER_FACE_CAPTURE_PAGE]);
+        }
+      })
+      .catch((resp: any) => {
+        const error = resp.error || {};
+        if (error.developerMessage) {
+          this.alertService.error(error.developerMessage);
         }
       });
   }
