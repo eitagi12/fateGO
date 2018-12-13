@@ -76,6 +76,9 @@ export class AppComponent {
       if (url.indexOf('face-confirm') !== -1) {
         return counter === 900;
       }
+      if (url.indexOf('validate-customer-id-card') !== -1) {
+        return counter === 120;
+      }
       return counter === 60;
     }).subscribe(() => {
       this.alertService.question(
