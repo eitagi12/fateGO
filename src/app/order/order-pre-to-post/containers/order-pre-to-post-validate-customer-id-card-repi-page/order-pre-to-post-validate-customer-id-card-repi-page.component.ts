@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, ReadCardProfile, PageLoadingService, AlertService, TokenService, ChannelType, ValidateCustomerIdCardComponent, KioskControls } from 'mychannel-shared-libs';
+import { HomeService, ReadCardProfile, PageLoadingService, AlertService, TokenService, ChannelType, Utils, ValidateCustomerIdCardComponent, KioskControls } from 'mychannel-shared-libs';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_REPI_PAGE, ROUTE_ORDER_PRE_TO_POST_CUSTOMER_INFO_PAGE, ROUTE_ORDER_PRE_TO_POST_CUSTOMER_PROFILE_PAGE, ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE } from 'src/app/order/order-pre-to-post/constants/route-path.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -26,6 +26,7 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
 
   constructor(
     private router: Router,
+    private utils: Utils,
     private http: HttpClient,
     private homeService: HomeService,
     private alertService: AlertService,
@@ -35,7 +36,7 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
   ) {
     this.transaction = this.transactionService.load();
     this.homeService.callback = () => {
-      if(this.validateCustomerIdcard.koiskApiFn){
+      if (this.validateCustomerIdcard.koiskApiFn) {
         this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
       }
       window.location.href = '/smart-shop';
@@ -75,29 +76,29 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
     const mobileNo = this.transaction.data.simCard.mobileNo;
 
     this.pageLoadingService.openLoading();
-    this.http.get('/api/customerportal/validate-customer-pre-to-post', {
-      params: {
-        identity: this.profile.idCardNo
-      }
-    }).toPromise()
-      .then((resp: any) => {
 
-        const data = resp.data || {};
 
-        return this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
-          .then((zipCode: string) => {
-            this.transaction.data.customer = Object.assign(this.profile, {
+    this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
+      .then((zipCode: string) => {
+        return this.http.get('/api/customerportal/validate-customer-pre-to-post', {
+          params: {
+            identity: this.profile.idCardNo
+          }
+        }).toPromise()
+          .then((resp: any) => {
+            const data = resp.data || {};
+            return {
               caNumber: data.caNumber,
               isNewCa: false,
               mainMobile: data.mainMobile,
               billCycle: data.billCycle,
               zipCode: zipCode
-            });
-
+            };
           });
-
       })
-      .then(() => { // load bill cycle
+      .then((customer: any) => { // load bill cycle
+        this.transaction.data.customer = Object.assign(this.profile, customer);
+
         return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
           .then((resp: any) => {
             const data = resp.data || {};
@@ -127,19 +128,50 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
           .then((respPrepaidIdent: any) => {
             if (respPrepaidIdent.data && respPrepaidIdent.data.success) {
               this.transaction.data.action = TransactionAction.READ_CARD;
-              this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CUSTOMER_INFO_PAGE]);
+              if (this.checkBusinessLogic()) {
+                this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CUSTOMER_INFO_PAGE]);
+              }
             } else {
               this.transaction.data.action = TransactionAction.READ_CARD_REPI;
-              this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CUSTOMER_PROFILE_PAGE]);
+              if (this.checkBusinessLogic()) {
+                this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CUSTOMER_PROFILE_PAGE]);
+              }
             }
+            this.pageLoadingService.closeLoading();
           });
       })
       .catch((resp: any) => {
-        this.alertService.error(resp.error.developerMessage);
-      })
-      .then(() => {
-        this.pageLoadingService.closeLoading();
+        const error = resp.error || [];
+        console.log(resp);
+
+        if (error && error.errors.length > 0) {
+          this.alertService.notify({
+            type: 'error',
+            html: error.errors.map((err) => {
+              return '<li class="text-left">' + err + '</li>';
+            }).join('')
+          });
+        } else {
+          this.alertService.error(error.resultDescription);
+        }
       });
+  }
+
+
+  checkBusinessLogic(): boolean {
+    const birthdate = this.transaction.data.customer.birthdate;
+    const expireDate = this.transaction.data.customer.expireDate;
+    const idCardType = this.transaction.data.customer.idCardType;
+
+    if (this.utils.isLowerAge17Year(birthdate)) {
+      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
+      return false;
+    }
+    if (this.utils.isIdCardExpiredDate(expireDate)) {
+      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ');
+      return false;
+    }
+    return true;
   }
 
   onHome() {

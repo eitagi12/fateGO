@@ -37,9 +37,9 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
     private alertService: AlertService,
   ) {
     this.homeService.callback = () => {
-        if(this.validateCustomerIdcard.koiskApiFn){
-          this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
-        }
+      if (this.validateCustomerIdcard.koiskApiFn) {
+        this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+      }
       window.location.href = '/smart-shop';
     };
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
@@ -95,10 +95,6 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
               billCycle: data.billCycle,
               zipCode: zipCode
             };
-          }).catch(() => {
-            return {
-              zipCode: zipCode
-            };
           });
       })
       .then((customer: any) => { // load bill cycle
@@ -129,7 +125,31 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
         if (this.checkBusinessLogic()) {
           this.router.navigate([ROUTE_ORDER_NEW_REGISTER_FACE_CAPTURE_PAGE]);
         }
+      })
+      .catch((resp: any) => {
+        const error = resp.error || [];
+        console.log(resp);
+
+        if (error && error.errors.length > 0) {
+          this.alertService.notify({
+            type: 'error',
+            html: error.errors.map((err) => {
+              return '<li class="text-left">' + err + '</li>';
+            }).join('')
+          });
+        } else {
+          this.alertService.error(error.resultDescription);
+        }
       });
+  }
+
+  getErrorMessage(errorList: string[]): string {
+    let errMessageListHtml = '';
+    errorList.forEach(error => {
+      errMessageListHtml += '<li class="text-left">' + error + '</li>';
+    });
+
+    return errMessageListHtml;
   }
 
   checkBusinessLogic(): boolean {

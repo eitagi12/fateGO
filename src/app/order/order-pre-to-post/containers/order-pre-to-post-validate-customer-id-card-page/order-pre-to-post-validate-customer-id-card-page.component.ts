@@ -80,25 +80,26 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
 
   onNext() {
     this.pageLoadingService.openLoading();
-    this.http.get('/api/customerportal/validate-customer-pre-to-post', {
-      params: {
-        identity: this.profile.idCardNo
-      }
-    }).toPromise()
-      .then((resp: any) => {
-        const data = resp.data || [];
-
-        return this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
-          .then((zipCode: string) => {
-            this.transaction.data.customer = Object.assign(this.profile, {
+    this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
+      .then((zipCode: string) => {
+        return this.http.get('/api/customerportal/validate-customer-pre-to-post', {
+          params: {
+            identity: this.profile.idCardNo
+          }
+        }).toPromise()
+          .then((resp: any) => {
+            const data = resp.data || {};
+            return {
               caNumber: data.caNumber,
               mainMobile: data.mainMobile,
               billCycle: data.billCycle,
               zipCode: zipCode
-            });
+            };
           });
       })
-      .then(() => { // load bill cycle
+      .then((customer: any) => { // load bill cycle
+        this.transaction.data.customer = Object.assign(this.profile, customer);
+
         return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
           .then((resp: any) => {
             const data = resp.data || {};
@@ -122,11 +123,23 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
       .then((billingInformation: any) => {
         this.transaction.data.billingInformation = billingInformation;
         if (this.checkBusinessLogic()) {
-         this.router.navigate([ROUTE_ORDER_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE]);
+          this.router.navigate([ROUTE_ORDER_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE]);
         }
       })
       .catch((resp: any) => {
-        this.alertService.error(resp.error.developerMessage);
+        const error = resp.error || [];
+        console.log(resp);
+
+        if (error && error.errors.length > 0) {
+          this.alertService.notify({
+            type: 'error',
+            html: error.errors.map((err) => {
+              return '<li class="text-left">' + err + '</li>';
+            }).join('')
+          });
+        } else {
+          this.alertService.error(error.resultDescription);
+        }
       });
   }
   checkBusinessLogic(): boolean {

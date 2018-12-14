@@ -37,7 +37,7 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
   ) {
     this.transaction = this.transactionService.load();
     this.homeService.callback = () => {
-      if(this.validateCustomerIdcard.koiskApiFn){
+      if (this.validateCustomerIdcard.koiskApiFn) {
         this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
       }
       window.location.href = '/smart-shop';
@@ -74,7 +74,7 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
   }
 
   onBack() {
-    if(this.validateCustomerIdcard.koiskApiFn){
+    if (this.validateCustomerIdcard.koiskApiFn) {
       this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
     }
     this.router.navigate([ROUTE_ORDER_MNP_SELECT_REASON_PAGE]);
@@ -96,10 +96,6 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
               caNumber: data.caNumber,
               mainMobile: data.mainMobile,
               billCycle: data.billCycle,
-              zipCode: zipCode
-            };
-          }).catch(() => {
-            return {
               zipCode: zipCode
             };
           });
@@ -131,6 +127,21 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
         this.transaction.data.billingInformation = billingInformation;
         if (this.checkBusinessLogic()) {
           this.router.navigate([ROUTE_ORDER_MNP_CUSTOMER_INFO_PAGE]);
+        }
+      })
+      .catch((resp: any) => {
+        const error = resp.error || [];
+        console.log(resp);
+
+        if (error && error.errors.length > 0) {
+          this.alertService.notify({
+            type: 'error',
+            html: error.errors.map((err) => {
+              return '<li class="text-left">' + err + '</li>';
+            }).join('')
+          });
+        } else {
+          this.alertService.error(error.resultDescription);
         }
       });
   }
