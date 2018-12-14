@@ -82,16 +82,24 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
 
     const billingInformation: any = this.transaction.data.billingInformation;
     const isNetExtreme = billingInformation.billCyclesNetExtreme && billingInformation.billCyclesNetExtreme.length > 0 ? 'true' : 'false';
-    this.http.get('/api/customerportal/newRegister/queryMainPackage', {
-      params: {
-        orderType: 'New Registration',
-        isNetExtreme: isNetExtreme
-      }
+    const mobileNo = this.transaction.data.simCard.mobileNo;
+
+    this.http.get(`/api/customerportal/queryCheckMinimumPackage/${mobileNo}`, {
     }).toPromise()
       .then((resp: any) => {
-
+        const data = resp.data || {};
+        return data.MinimumPriceForPackage || 0;
+      }).then((minimumPriceForPackage: string) => {
+        return this.http.get('/api/customerportal/newRegister/queryMainPackage', {
+          params: {
+            orderType: 'New Registration',
+            isNetExtreme: isNetExtreme,
+            minPromotionPrice: minimumPriceForPackage
+          }
+        }).toPromise();
+      })
+      .then((resp: any) => {
         const data = resp.data.packageList || [];
-
         const promotionShelves: PromotionShelve[] = data.map((promotionShelve: any) => {
           return {
             title: promotionShelve.title,
@@ -105,7 +113,6 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
                   title: subShelve.title,
                   sanitizedName: subShelve.sanitizedName,
                   items: (subShelve.items || []).map((promotion: any) => {
-
                     return { // item
                       id: promotion.itemId,
                       title: promotion.shortNameThai,
@@ -119,7 +126,6 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
           };
         });
         return Promise.resolve(promotionShelves);
-
       })
       .then((promotionShelves: PromotionShelve[]) => {
         this.promotionShelves = this.buildPromotionShelveActive(promotionShelves);
