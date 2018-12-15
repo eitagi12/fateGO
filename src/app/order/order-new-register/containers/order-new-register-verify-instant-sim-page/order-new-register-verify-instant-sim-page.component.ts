@@ -41,6 +41,7 @@ export class OrderNewRegisterVerifyInstantSimPageComponent implements OnInit, On
     this.pageLoadingService.openLoading();
     this.http.get(`/api/customerportal/validate-verify-instant-sim?serialNo=${serial}`).toPromise()
       .then((resp: any) => {
+        this.pageLoadingService.closeLoading();
         const simSerial = resp.data || [];
         this.simSerialValid = true;
         this.simSerial = {
