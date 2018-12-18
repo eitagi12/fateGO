@@ -15,6 +15,8 @@ export class OrderNewRegisterResultPageComponent implements OnInit {
 
   wizards = WIZARD_ORDER_NEW_REGISTER;
   transaction: Transaction;
+  isSerSuccess: boolean;
+  messageStatus: string;
 
   constructor(
     private homeService: HomeService,
@@ -34,6 +36,13 @@ export class OrderNewRegisterResultPageComponent implements OnInit {
         orderDate: data.orderDate
       };
       this.transactionService.update(this.transaction);
+      if (this.transaction.data.order.orderNo) {
+        this.isSerSuccess = true;
+        this.messageStatus = 'ทำรายการสำเร็จ';
+      } else {
+        this.isSerSuccess = false;
+        this.messageStatus = 'ทำรายการไม่สำเร็จ';
+      }
       this.pageLoadingService.closeLoading();
     }).catch(() => {
       this.pageLoadingService.closeLoading();
