@@ -9,7 +9,7 @@
   </mc-header>
   <div class="mc-flex-wrap bg-white">
     <mc-validate-customer (completed)="onCompleted($event)" (error)="onError($event)" (readCard)="onReadCard()"
-    placeholder="หมายเลขโทรศัพท์" placeholderHeadder=" " [validate]="customerValidate"></mc-validate-customer>
+    placeholder="หมายเลขโทรศัพท์" placeholderHeadder=" " [validate]="customerValidate" [maxlengthInput]="10"></mc-validate-customer>
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
