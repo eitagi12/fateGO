@@ -4,20 +4,22 @@
     <div class="mt-3 mb-3">
       <mc-wizard [wizards]="wizards" active="3"></mc-wizard>
       <div class="container-fluid">
-        <mc-result [mobileNo]="transaction?.data?.simCard?.mobileNo">
-          <div class="text-center pb-4"> TRANSACTION ID : <span class="text-grey"> {{ transaction?.data?.order?.orderNo }}</span></div>
-          <div class="container">
-            <div class="text-grey float-left"><i class="fa fa fa-circle text-light-green"></i>&nbsp;&nbsp;
-              ผลการโอนย้ายบริการเสริม</div>
-            <div class="text-grey float-right">ทั้งหมด {{ serviceChange?.length }} บริการ</div>
-            <div class="row" *ngFor="let service of serviceChange">
-              <ul>
-                <li class="text-grey d-inline"><i class="fa fa-times text-pink mr-3"></i>
-                  {{ service?.serviceName }}
-                </li>
-              </ul>
+        <mc-result [isSuccess]="isSerSuccess" [messageStatus]="messageStatus" [mobileNo]="transaction?.data?.simCard?.mobileNo">
+          <div *ngIf="isSerSuccess">
+              <div class="text-center pb-4"> TRANSACTION ID : <span class="text-grey"> {{ transaction?.data?.order?.orderNo }}</span></div>
+              <div class="container">
+                <div class="text-grey float-left"><i class="fa fa fa-circle text-light-green"></i>&nbsp;&nbsp;
+                  ผลการโอนย้ายบริการเสริม</div>
+                <div class="text-grey float-right">ทั้งหมด {{ serviceChange?.length }} บริการ</div>
+                <div class="row" *ngFor="let service of serviceChange">
+                  <ul>
+                    <li class="text-grey d-inline"><i class="fa fa-times text-pink mr-3"></i>
+                      {{ service?.serviceName }}
+                    </li>
+                  </ul>
+                </div>
+              </div>
             </div>
-          </div>
         </mc-result>
       </div>
     </div>

@@ -17,6 +17,8 @@ export class OrderPreToPostResultPageComponent implements OnInit {
 
   transaction: Transaction;
   serviceChange: any;
+  isSerSuccess: boolean;
+  messageStatus: string;
 
   constructor(
     private homeService: HomeService,
@@ -38,6 +40,13 @@ export class OrderPreToPostResultPageComponent implements OnInit {
           orderNo: data.orderNo,
           orderDate: data.orderDate
         };
+        if (this.transaction.data.order.orderNo) {
+          this.isSerSuccess = true;
+          this.messageStatus = 'ทำรายการสำเร็จ';
+        } else {
+          this.isSerSuccess = false;
+          this.messageStatus = 'ทำรายการไม่สำเร็จ';
+        }
         this.transactionService.update(this.transaction);
 
         return this.http.get(`/api/customerportal/newRegister/${this.transaction.data.simCard.mobileNo}/queryCurrentServices`).toPromise();
