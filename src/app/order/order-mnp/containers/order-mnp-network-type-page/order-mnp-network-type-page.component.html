@@ -19,13 +19,16 @@
               <li class="list-group-item text-center">ระบุเบอร์ที่ท่านต้องการย้ายค่าย</li>
               <li class="list-group-item">
                 <input id="mobileNo" type="tel" class="form-control text-center mt-2" autocomplete="off" maxlength="10"
-                  formControlName="mobileNo" [ngClass]="{'is-invalid': !mnpForm.controls['mobileNo'].valid && mnpForm.controls['mobileNo'].dirty }">
+                  formControlName="mobileNo" [ngClass]="{'is-invalid':mnpForm.controls['mobileNo'].invalid && mnpForm.controls['mobileNo'].touched }">
+                  <small class="invalid-feedback text-center" *ngIf="mnpForm.controls['mobileNo'].touched && mnpForm.controls['mobileNo'].errors">
+                    *กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง
+                  </small>
               </li>
               <li class="list-group-item text-center">ระบุรหัสขอย้ายค่าย</li>
               <li class="list-group-item mb-3">
                 <div class="text-grey text-center">กด *151*เลขบัตรประชาชน 13 หลัก # แล้วโทรออก</div>
                 <input id="pinCode" type="tel" class="form-control text-center " autocomplete="off" maxlength="8"
-                  formControlName="pinCode" [ngClass]="{'is-invalid': !mnpForm.controls['pinCode'].valid && mnpForm.controls['pinCode'].dirty }">
+                  formControlName="pinCode" [ngClass]="{'is-invalid': !mnpForm.controls['pinCode'].valid && mnpForm.controls['pinCode'].touched }">
               </li>
             </ul>
           </div>
