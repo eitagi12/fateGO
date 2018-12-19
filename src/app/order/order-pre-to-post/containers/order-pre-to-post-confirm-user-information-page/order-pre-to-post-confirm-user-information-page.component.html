@@ -17,7 +17,7 @@
       <mc-billing-info [billingInfo]="billingInfo" (editAddress)="onEditAddress()">
       </mc-billing-info>
 
-      <mc-mail-billing-info [eBill]="eBill" [disabled]="isPackageNetExtreme()" [mailBillingInfo]="mailBillingInfo"
+      <mc-mail-billing-info [eBill]="eBill" [disabled]="isMergeBilling()" [mailBillingInfo]="mailBillingInfo"
         (completed)="onMailBillingInfoCompleted($event)" (error)="onMailBillingInfoError($event)">
       </mc-mail-billing-info>
 
