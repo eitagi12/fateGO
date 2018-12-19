@@ -37,6 +37,7 @@ export class OrderNewRegisterAgreementSignPageComponent implements OnInit, OnDes
   }
 
   ngOnInit() {
+    this.onSigned();
   }
 
   onBack() {
@@ -54,7 +55,7 @@ export class OrderNewRegisterAgreementSignPageComponent implements OnInit, OnDes
   onSigned() {
     const user: User = this.tokenService.getUser();
     this.aisNativeService.openSigned(
-      ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'OnscreenSignpad'
+      ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'SignaturePad'
     );
   }
 
