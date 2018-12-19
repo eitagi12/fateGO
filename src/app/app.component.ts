@@ -33,7 +33,7 @@ export class AppComponent {
     this.homeService.callback = () => {
       window.location.href = '/smart-shop';
     };
-
+    this.supportOptionSelect();
   }
 
   initails() {
@@ -100,4 +100,20 @@ export class AppComponent {
   isDeveloperMode(): boolean {
     return 'LOCAL' === environment.name;
   }
+
+  supportOptionSelect() {
+    this.router.events.subscribe(path => {
+      const select_options = window.document.getElementsByTagName('select');
+      for (const key in select_options) {
+        if (select_options.hasOwnProperty(key)) {
+          const option = select_options[key];
+          option.addEventListener('click', function (e) {
+            e.stopPropagation();
+          });
+        }
+      }
+    });
+  }
+
+
 }
