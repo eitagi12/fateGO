@@ -56,6 +56,8 @@ export class OrderNewRegisterVerifyInstantSimPageComponent implements OnInit, On
       })
       .then(() => {
         this.pageLoadingService.closeLoading();
+      }).catch(() => {
+        this.pageLoadingService.closeLoading();
       });
   }
 
