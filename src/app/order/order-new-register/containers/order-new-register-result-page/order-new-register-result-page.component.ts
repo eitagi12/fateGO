@@ -41,7 +41,7 @@ export class OrderNewRegisterResultPageComponent implements OnInit {
         this.messageStatus = 'ทำรายการสำเร็จ';
       } else {
         this.isSerSuccess = false;
-        this.messageStatus = 'ทำรายการไม่สำเร็จ';
+        this.messageStatus = 'ระบบไม่สามารถทำรายการได้';
       }
       this.pageLoadingService.closeLoading();
     }).catch(() => {

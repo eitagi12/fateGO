@@ -45,7 +45,7 @@ export class OrderPreToPostResultPageComponent implements OnInit {
           this.messageStatus = 'ทำรายการสำเร็จ';
         } else {
           this.isSerSuccess = false;
-          this.messageStatus = 'ทำรายการไม่สำเร็จ';
+          this.messageStatus = 'ระบบไม่สามารถทำรายการได้';
         }
         this.transactionService.update(this.transaction);
 
