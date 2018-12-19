@@ -41,7 +41,17 @@ export class OrderNewRegisterEbillingPageComponent implements OnInit, OnDestroy 
     this.http.get('/api/customerportal/newRegister/queryBillCycle').toPromise().then((resp: any) => {
       const data = resp.data || {};
       this.billCycles = data.billCycles || [];
+      this.setBillingDefault(data.billCycles || []);
     });
+  }
+
+  setBillingDefault(ebilling: Ebilling[]) {
+    for (const ebill of ebilling) {
+      if (ebill.bill === this.transaction.data.customer.billCycle ) {
+        this.billCycle = ebill;
+        this.transaction.data.billingInformation.billCycle = this.billCycle;
+      }
+    }
   }
 
   onCompleted(billCycle: any) {
