@@ -27,7 +27,7 @@
             <div class="card-header bg-pink text-white">เหตุผลที่ลูกค้าย้ายค่าย</div>
             <div class="card-body">
               <div class="text-center ">
-                <select class="form-control" formControlName="reasonCode" [ngClass]="{'is-invalid': !reasonForm.controls['reasonCode'].valid && reasonForm.controls['reasonCode'].dirty }">
+                <select class="form-control" formControlName="reasonCode" [ngClass]="{'is-invalid': !reasonForm.controls['reasonCode'].valid && reasonForm.controls['reasonCode'].dirty }" onclick="event.stopPropagation();">
                   <option [value]="reason?.reasonCode" *ngFor="let reason of reasons">
                     {{ reason?.reasonName }}
                   </option>
