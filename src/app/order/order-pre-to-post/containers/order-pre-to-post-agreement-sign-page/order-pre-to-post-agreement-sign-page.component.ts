@@ -34,6 +34,7 @@ export class OrderPreToPostAgreementSignPageComponent implements OnInit, OnDestr
   }
 
   ngOnInit() {
+    this.onSigned();
   }
 
   onBack() {
