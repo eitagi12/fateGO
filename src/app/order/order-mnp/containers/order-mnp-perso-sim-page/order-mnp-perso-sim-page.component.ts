@@ -203,7 +203,7 @@ export class OrderMnpPersoSimPageComponent implements OnInit, OnDestroy {
         this.transaction = transaction;
         this.transactionService.update(transaction);
         this.isNext = true;
-        // this.onNext();
+        this.onNext();
       }
       // on error
       if (value.error) {
