@@ -3,7 +3,7 @@ import { WIZARD_ORDER_MNP } from 'src/app/order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { HomeService } from 'mychannel-shared-libs';
+import { HomeService, Ebilling } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 import {
@@ -21,6 +21,7 @@ export class OrderMnpEbillingPageComponent implements OnInit, OnDestroy {
 
   transaction: Transaction;
   billCycles: any[];
+  billCycle: any;
   ebillingForm: FormGroup;
 
   constructor(
@@ -43,6 +44,7 @@ export class OrderMnpEbillingPageComponent implements OnInit, OnDestroy {
     this.http.get('/api/customerportal/newRegister/queryBillCycle').toPromise().then((resp: any) => {
       const data = resp.data || {};
       this.billCycles = data.billCycles || [];
+      this.setBillingDefault(data.billCycles || []);
     });
   }
 
@@ -51,6 +53,15 @@ export class OrderMnpEbillingPageComponent implements OnInit, OnDestroy {
     this.ebillingForm = this.fb.group({
       billCycle: [billingInformation.billCycle, Validators.required]
     });
+  }
+
+  setBillingDefault(ebilling: Ebilling[]) {
+    for (const ebill of ebilling) {
+      if (ebill.bill === this.transaction.data.customer.billCycle ) {
+        this.billCycle = ebill;
+        this.transaction.data.billingInformation.billCycle = this.billCycle;
+      }
+    }
   }
 
   checked(billCycle: any): boolean {
