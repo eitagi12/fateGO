@@ -57,6 +57,8 @@ export class OrderPreToPostResultPageComponent implements OnInit {
         this.pageLoadingService.closeLoading();
       })
       .catch((error: any) => {
+        this.isSerSuccess = false;
+        this.messageStatus = 'ระบบไม่สามารถทำรายการได้';
         this.alertService.error(error);
         this.pageLoadingService.closeLoading();
       });
