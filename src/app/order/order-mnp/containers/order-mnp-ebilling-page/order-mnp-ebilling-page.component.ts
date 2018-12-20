@@ -44,7 +44,9 @@ export class OrderMnpEbillingPageComponent implements OnInit, OnDestroy {
     this.http.get('/api/customerportal/newRegister/queryBillCycle').toPromise().then((resp: any) => {
       const data = resp.data || {};
       this.billCycles = data.billCycles || [];
-      this.setBillingDefault(data.billCycles || []);
+      if (!this.transaction.data.billingInformation.billCycle) {
+        this.setBillingDefault(data.billCycles || []);
+      }
     });
   }
 
