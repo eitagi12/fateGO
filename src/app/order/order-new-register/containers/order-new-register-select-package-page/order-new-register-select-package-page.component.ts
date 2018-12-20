@@ -1,17 +1,19 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
-import { Transaction } from 'src/app/shared/models/transaction.model';
-import { PromotionShelve, HomeService, PageLoadingService, PromotionShelveGroup, AlertService, PromotionShelveItem } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
-import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+
+import { Transaction } from 'src/app/shared/models/transaction.model';
+import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
+import { PromotionShelve, HomeService, PageLoadingService, AlertService, PromotionShelveItem, TokenService } from 'mychannel-shared-libs';
 import {
   ROUTE_ORDER_NEW_REGISTER_ON_TOP_PAGE,
   ROUTE_ORDER_NEW_REGISTER_VERIFY_INSTANT_SIM_PAGE,
   ROUTE_ORDER_NEW_REGISTER_BY_PATTERN_PAGE,
   ROUTE_ORDER_NEW_REGISTER_ONE_LOVE_PAGE
 } from 'src/app/order/order-new-register/constants/route-path.constant';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { ReserveMobileService, SelectMobileNumberRandom } from 'src/app/order/order-shared/services/reserve-mobile.service';
 
 @Component({
   selector: 'app-order-new-register-select-package-page',
@@ -33,8 +35,10 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
   constructor(
     private router: Router,
     private homeService: HomeService,
+    private tokenService: TokenService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
+    private reserveMobileService: ReserveMobileService,
     private alertService: AlertService,
     private modalService: BsModalService,
     private http: HttpClient
@@ -46,6 +50,7 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
       delete this.transaction.data.billingInformation.billCycle;
       delete this.transaction.data.billingInformation.mergeBilling;
     }
+
   }
 
   ngOnInit() {
@@ -58,11 +63,21 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
   }
 
   onBack() {
+
+    const user = this.tokenService.getUser();
+
     if (this.transaction.data.simCard.simSerial) {
       this.router.navigate([ROUTE_ORDER_NEW_REGISTER_VERIFY_INSTANT_SIM_PAGE]);
     } else {
+      const dataRequest: SelectMobileNumberRandom = {
+        userId: user.username,
+        mobileNo: this.transaction.data.simCard.mobileNo,
+        action: 'Unlock'
+      };
+      this.reserveMobileService.selectMobileNumberRandom(dataRequest);
       this.router.navigate([ROUTE_ORDER_NEW_REGISTER_BY_PATTERN_PAGE]);
     }
+
   }
 
   onNext() {

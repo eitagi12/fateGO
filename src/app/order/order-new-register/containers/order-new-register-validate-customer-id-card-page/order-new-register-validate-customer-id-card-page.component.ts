@@ -7,6 +7,8 @@ import {
   ROUTE_ORDER_NEW_REGISTER_FACE_CAPTURE_PAGE,
 } from 'src/app/order/order-new-register/constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
+import { ReserveMobileService, SelectMobileNumberRandom } from 'src/app/order/order-shared/services/reserve-mobile.service';
+import { request } from 'https';
 
 @Component({
   selector: 'app-order-new-register-validate-customer-id-card-page',
@@ -26,21 +28,43 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
 
   constructor(
+    private utils: Utils,
     private router: Router,
+    private http: HttpClient,
     private homeService: HomeService,
+    private tokenService: TokenService,
+    private alertService: AlertService,
+    private apiRequestService: ApiRequestService,
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
-    private apiRequestService: ApiRequestService,
-    private http: HttpClient,
-    private tokenService: TokenService,
-    private utils: Utils,
-    private alertService: AlertService,
+    private reserveMobileService: ReserveMobileService,
   ) {
+
     this.homeService.callback = () => {
-        if(this.validateCustomerIdcard.koiskApiFn){
-          this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
-        }
-      window.location.href = '/smart-shop';
+
+      if (this.validateCustomerIdcard.koiskApiFn) {
+        this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+      }
+
+      this.transaction = this.transactionService.load();
+      if (this.transaction.data.simCard && this.transaction.data.simCard.mobileNo) {
+        const user = this.tokenService.getUser();
+        const dataRequest: SelectMobileNumberRandom = {
+          userId: user.username,
+          mobileNo: this.transaction.data.simCard.mobileNo,
+          action: 'Unlock'
+        };
+        this.reserveMobileService.selectMobileNumberRandom(dataRequest)
+          .then(() => {
+            window.location.href = '/smart-shop';
+          })
+          .catch(() => {
+            window.location.href = '/smart-shop';
+          });
+      } else {
+        window.location.href = '/smart-shop';
+      }
+
     };
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
   }
@@ -51,7 +75,7 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
 
   onError(valid: boolean) {
     this.readCardValid = valid;
-    if(!this.profile){
+    if (!this.profile) {
       this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
       this.validateCustomerIdcard.koiskApiFn.removedState().subscribe((removed: boolean) => {
         if (removed) {
@@ -59,7 +83,7 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
           this.validateCustomerIdcard.ngOnInit();
         }
       });
-    
+
     }
   }
 

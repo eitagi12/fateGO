@@ -1,12 +1,17 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { MobileNoCondition, HomeService, TokenService, PageLoadingService, User, AlertService } from 'mychannel-shared-libs';
+import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+
+import {
+  ROUTE_ORDER_NEW_REGISTER_SELECT_NUMBER_PAGE,
+  ROUTE_ORDER_NEW_REGISTER_SELECT_PACKAGE_PAGE
+} from 'src/app/order/order-new-register/constants/route-path.constant';
 import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
-import { MobileNoCondition, HomeService, TokenService, PageLoadingService, User } from 'mychannel-shared-libs';
-import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { HttpClient } from '@angular/common/http';
-import { ROUTE_ORDER_NEW_REGISTER_SELECT_NUMBER_PAGE, ROUTE_ORDER_NEW_REGISTER_SELECT_PACKAGE_PAGE } from 'src/app/order/order-new-register/constants/route-path.constant';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { ReserveMobileService, SelectMobileNumberRandom } from 'src/app/order/order-shared/services/reserve-mobile.service';
 
 
 @Component({
@@ -32,6 +37,8 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
     private tokenService: TokenService,
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
+    private reserveMobileService: ReserveMobileService,
+    private alertService: AlertService,
     private http: HttpClient,
     public fb: FormBuilder
   ) {
@@ -174,7 +181,23 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
   }
 
   onNext() {
-    this.router.navigate([ROUTE_ORDER_NEW_REGISTER_SELECT_PACKAGE_PAGE]);
+
+    const dataRequest: SelectMobileNumberRandom = {
+      userId: this.user.username,
+      mobileNo: this.transaction.data.simCard.mobileNo,
+      action: 'Lock'
+    };
+    this.reserveMobileService.selectMobileNumberRandom(dataRequest)
+      .then((resp: any) => {
+        const data = resp.data || [];
+        if (data.returnCode === '008') {
+          this.router.navigate([ROUTE_ORDER_NEW_REGISTER_SELECT_PACKAGE_PAGE]);
+        } else if (data.returnCode === '002') {
+          this.alertService.error('เบอร์ ' + this.transaction.data.simCard.mobileNo + ' มีลูกค้าท่านอื่นจองไว้แล้ว กรุณาเลือกเบอร์ใหม่');
+        } else {
+          this.alertService.error(data.returnCode + ' ' + data.returnMessage);
+        }
+      });
   }
 
   ngOnDestroy(): void {
