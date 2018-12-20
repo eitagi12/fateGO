@@ -19,6 +19,8 @@ export class OrderPreToPostResultPageComponent implements OnInit {
   serviceChange: any;
   isSerSuccess: boolean;
   messageStatus: string;
+  SUCCESS_MSG = 'ทำรายการสำเร็จ';
+  ERROR_MSG = 'ไม่สามารถให้บริการได้<br>กรุณาติดต่อพนักงานเพื่อดำเนินการ<br><br>ขออภัยในความไม่สะดวก';
 
   constructor(
     private homeService: HomeService,
@@ -42,10 +44,10 @@ export class OrderPreToPostResultPageComponent implements OnInit {
         };
         if (this.transaction.data.order.orderNo) {
           this.isSerSuccess = true;
-          this.messageStatus = 'ทำรายการสำเร็จ';
+          this.messageStatus = this.SUCCESS_MSG;
         } else {
           this.isSerSuccess = false;
-          this.messageStatus = 'ระบบไม่สามารถทำรายการได้';
+          this.messageStatus = this.ERROR_MSG;
         }
         this.transactionService.update(this.transaction);
 
@@ -58,7 +60,7 @@ export class OrderPreToPostResultPageComponent implements OnInit {
       })
       .catch((error: any) => {
         this.isSerSuccess = false;
-        this.messageStatus = 'ระบบไม่สามารถทำรายการได้';
+        this.messageStatus = this.ERROR_MSG;
         this.alertService.error(error);
         this.pageLoadingService.closeLoading();
       });
