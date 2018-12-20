@@ -45,6 +45,8 @@ export class OrderMnpResultPageComponent implements OnInit {
       }
       this.pageLoadingService.closeLoading();
     }).catch(() => {
+      this.isSerSuccess = false;
+      this.messageStatus = 'ระบบไม่สามารถทำรายการได้';
       this.pageLoadingService.closeLoading();
     });
   }
