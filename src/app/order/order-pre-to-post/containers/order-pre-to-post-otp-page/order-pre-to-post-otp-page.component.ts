@@ -66,7 +66,7 @@ export class OrderPreToPostOtpPageComponent implements OnInit {
 
   verifyOTP() {
     this.pageLoadingService.openLoading();
-    let mobile = this.registrationData.customer.mainMobile;
+    let mobile = this.registrationData.simCard.mobileNo;
     const otp = this.otpForm.value.otp;
     if (environment.name !== 'prod') {
       mobile = environment.TEST_OTP_MOBILE;
