@@ -48,7 +48,7 @@ export class OrderPreToPostOtpPageComponent implements OnInit {
   }
   sendOTP() {
     this.pageLoadingService.openLoading();
-    let mobile = this.registrationData.customer.mainMobile;
+    let mobile = this.registrationData.simcard.mobileNo;
     if (environment.name !== 'prod') {
       mobile = environment.TEST_OTP_MOBILE;
     }
