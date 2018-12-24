@@ -3,7 +3,7 @@ import {
   ROUTE_ORDER_NEW_REGISTER_SELECT_NUMBER_PAGE,
   ROUTE_ORDER_NEW_REGISTER_SELECT_PACKAGE_PAGE
 } from 'src/app/order/order-new-register/constants/route-path.constant';
-import { SimSerial, HomeService, PageLoadingService } from 'mychannel-shared-libs';
+import { SimSerial, HomeService, PageLoadingService, AlertService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
@@ -28,6 +28,7 @@ export class OrderNewRegisterVerifyInstantSimPageComponent implements OnInit, On
     private homeService: HomeService,
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
+    private alertService: AlertService,
     private http: HttpClient
   ) {
     this.transaction = this.transactionService.load();
@@ -41,7 +42,6 @@ export class OrderNewRegisterVerifyInstantSimPageComponent implements OnInit, On
     this.pageLoadingService.openLoading();
     this.http.get(`/api/customerportal/validate-verify-instant-sim?serialNo=${serial}`).toPromise()
       .then((resp: any) => {
-        this.pageLoadingService.closeLoading();
         const simSerial = resp.data || [];
         this.simSerialValid = true;
         this.simSerial = {
@@ -53,11 +53,11 @@ export class OrderNewRegisterVerifyInstantSimPageComponent implements OnInit, On
           simSerial: this.simSerial.simSerial,
           persoSim: false
         };
-      })
-      .then(() => {
         this.pageLoadingService.closeLoading();
-      }).catch(() => {
+      }).catch((resp: any) => {
+        const error = resp.error || [];
         this.pageLoadingService.closeLoading();
+        this.alertService.error(error.resultDescription);
       });
   }
 
