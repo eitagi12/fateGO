@@ -1,0 +1,71 @@
+<div class="mc-flex">
+  <mc-header title="Trade IN">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  
+  <div class="mc-flex-wrap">
+    <div class="container-fluid mt-3">
+      <div class="card mb-3">
+        <div class="card-header bg-blue text-white shadow-sm">
+            ระบุหมายเลขเครื่อง
+        </div>
+        <div class="card-body">
+          <div class="text-center" *ngIf="imeiForm?.imei">
+            <p class="text-grey">
+                
+            </p>
+          </div>
+          <form [formGroup]="imeiForm" (ngSubmit)="checkImei()">
+            <div class="form-group">
+              <div class="col-9 col-sm-10">
+                <input type="text" formControlName="imei" maxlength="15" placeholder="ใส่เลขที่imei 15 หลัก" class="form-control" [ngClass]="{ 'is-invalid': submitted && imeiForm.controls.imei.errors }">
+    
+              </div>
+              <div class="col-3 col-sm-2">
+                  <button class="btn btn-light-blue text-white btn-block" [disabled]="imeiForm.invalid" type="submit">
+                      ตรวจสอบ</button>
+              </div>
+              <small class="form-text text-danger" *ngIf="imeiForm.controls.imei.touched && imeiForm.controls.imei.errors">
+                  * กรุณาระบุเลขที่imeiให้ถูกต้อง
+              </small>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div  class="container-fluid">
+    <div class="card mb-3">
+        <div class="card-header bg-blue text-white shadow-sm">
+            ยี่ห้อและรุ่นโทรศัพท์
+        </div>
+        <div class="card-body">
+          <div class="col-9 col-sm-10">
+              <p class="text-grey">
+                  <label>หมายเลขโทรศัพท์ : </label>
+                  <img class="col-3 col-sm-2" src="assets/images/icon/img-placeholder.png">
+              </p>
+          </div>
+          <div class="col-9 col-sm-10">
+              <p class="text-grey">
+                  <label>รุ่นโทรศัพท์ : </label>
+                  <select id="select-modelTrade-in"
+                    (change)="selectModelTradeinFn()"
+                    class="mc-input-select">
+                    <option [ngValue]="null">เลือก</option>
+                    <option *ngFor="let modelTradein of listModelTradein"
+                    [ngValue]="modelTradein">
+                    {{modelTradein.brand}} {{modelTradein.model}}
+                    </option>
+                  </select>
+                </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
