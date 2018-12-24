@@ -48,8 +48,9 @@ export class OrderPreToPostOtpPageComponent implements OnInit {
   }
   sendOTP() {
     this.pageLoadingService.openLoading();
-    let mobile = this.registrationData.simcard.mobileNo;
-    if (environment.name !== 'prod') {
+    let mobile = this.registrationData.simCard.mobileNo;
+   
+    if (environment.name !== 'PROD') {
       mobile = environment.TEST_OTP_MOBILE;
     }
     this.http.post(`/api/customerportal/newRegister/${mobile}/sendOTP`, { digits: '5' }).toPromise()
@@ -66,9 +67,10 @@ export class OrderPreToPostOtpPageComponent implements OnInit {
 
   verifyOTP() {
     this.pageLoadingService.openLoading();
-    let mobile = this.registrationData.simcard.mobileNo;
+    let mobile = this.registrationData.simCard.mobileNo;
+        
     const otp = this.otpForm.value.otp;
-    if (environment.name !== 'prod') {
+    if (environment.name !== 'PROD') {
       mobile = environment.TEST_OTP_MOBILE;
     }
     this.http.post(`/api/customerportal/newRegister/${mobile}/verifyOTP`, { pwd: otp, transactionID: this.transactionID }).toPromise()
