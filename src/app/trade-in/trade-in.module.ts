@@ -5,7 +5,7 @@ import { TradeInRoutingModule } from './trade-in-routing.module';
 import { TradeInComponent } from './trade-in.component';
 import { VerifyTradeInComponent } from './containers/verify-trade-in/verify-trade-in.component';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { TradeInService } from './services/trade-in.service';
 
 
@@ -14,7 +14,8 @@ import { TradeInService } from './services/trade-in.service';
     CommonModule,
     TradeInRoutingModule,
     MyChannelSharedLibsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule
   ],
   declarations: [
     TradeInComponent,

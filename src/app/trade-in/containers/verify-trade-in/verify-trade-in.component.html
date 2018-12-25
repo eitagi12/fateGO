@@ -15,16 +15,10 @@
             ระบุหมายเลขเครื่อง
         </div>
         <div class="card-body">
-          <div class="text-center" *ngIf="imeiForm?.imei">
-            <p class="text-grey">
-                
-            </p>
-          </div>
           <form [formGroup]="imeiForm" (ngSubmit)="checkImei()">
-            <div class="form-group">
+            <div class="form-row">
               <div class="col-9 col-sm-10">
                 <input type="text" formControlName="imei" maxlength="15" placeholder="ใส่เลขที่imei 15 หลัก" class="form-control" [ngClass]="{ 'is-invalid': submitted && imeiForm.controls.imei.errors }">
-    
               </div>
               <div class="col-3 col-sm-2">
                   <button class="btn btn-light-blue text-white btn-block" [disabled]="imeiForm.invalid" type="submit">
@@ -39,33 +33,52 @@
       </div>
     </div>
     <div  class="container-fluid">
-    <div class="card mb-3">
+      <div class="card mb-3">
         <div class="card-header bg-blue text-white shadow-sm">
             ยี่ห้อและรุ่นโทรศัพท์
         </div>
         <div class="card-body">
-          <div class="col-9 col-sm-10">
+          <div class="col-3 col-sm-5">
               <p class="text-grey">
-                  <label>หมายเลขโทรศัพท์ : </label>
+                  <label>ยี่ห้อโทรศัพท์ : </label>
                   <img class="col-3 col-sm-2" src="assets/images/icon/img-placeholder.png">
               </p>
           </div>
-          <div class="col-9 col-sm-10">
-              <p class="text-grey">
-                  <label>รุ่นโทรศัพท์ : </label>
-                  <select id="select-modelTrade-in"
-                    (change)="selectModelTradeinFn()"
-                    class="mc-input-select">
+          <div class="form-row">
+              <div class="col-4 col-sm-1">
+                  <p class="text-grey">
+                      <label>รุ่นโทรศัพท์ : </label></p>
+              </div>
+              <div class="col-8 col-sm-5">
+                <select id="select-modelTrade-in"
+                  (change)="selectModelTradeinFn($event)"
+                  class="mc-input-select"
+                  [(ngModel)]='selectOp'
+                  class='form-control'
+                  [disabled]='butDisabled'>
                     <option [ngValue]="null">เลือก</option>
                     <option *ngFor="let modelTradein of listModelTradein"
-                    [ngValue]="modelTradein">
-                    {{modelTradein.brand}} {{modelTradein.model}}
-                    </option>
+                            [ngValue]="modelTradein">
+                            {{modelTradein.brand}} {{modelTradein.model}}
+                            </option>
                   </select>
-                </p>
+              </div>
           </div>
         </div>
       </div>
     </div>
+    <div class="container-fluid mt-3">
+
+        <div class="row align-self-center">
+          <div class="col-3 col-sm-2">
+            <button class="btn btn-light-blue text-white btn-block">CANCEL</button>
+          </div>
+          <div class="col-3 col-sm-2">
+            <button class="btn btn-light-blue text-white btn-block">NEXT</button>
+          </div>
+        </div>
+        
+      </div>
+
   </div>
 </div>
