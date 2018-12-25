@@ -115,16 +115,17 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
             })
           };
         }).filter((condition: any) => condition.mobileNo.length > 0);
-      })
-      .then(() => {
         this.pageLoadingService.closeLoading();
+      })
+      .catch((resp: any) => {
+        const error = resp.error || [];
+        this.alertService.error(error.resultDescription);
       });
 
   }
 
 
   onNextTab(event: any): void {
-    console.log('event', event);
     const keyCode: number = (event.which) ? event.which : event.keyCode;
     const target: any = event.target;
     // backspace
