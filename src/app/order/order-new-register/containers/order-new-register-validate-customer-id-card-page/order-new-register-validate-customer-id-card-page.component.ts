@@ -47,7 +47,11 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
       }
 
       this.transaction = this.transactionService.load();
-      if (this.transaction.data.simCard && this.transaction.data.simCard.mobileNo) {
+
+      if (this.transaction.data &&
+        this.transaction.data.simCard &&
+        this.transaction.data.simCard.mobileNo) {
+
         const user = this.tokenService.getUser();
         const dataRequest: SelectMobileNumberRandom = {
           userId: user.username,
