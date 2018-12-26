@@ -66,6 +66,5 @@ export class OrderMnpAgreementSignPageComponent implements OnInit, OnDestroy {
     this.signedSignatureSubscription.unsubscribe();
     this.signedOpenSubscription.unsubscribe();
     this.transactionService.update(this.transaction);
-    this.aisNativeService.closeSigned();
   }
 }

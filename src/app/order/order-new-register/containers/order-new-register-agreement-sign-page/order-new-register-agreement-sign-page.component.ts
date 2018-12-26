@@ -66,6 +66,5 @@ export class OrderNewRegisterAgreementSignPageComponent implements OnInit, OnDes
     this.signedSignatureSubscription.unsubscribe();
     this.signedOpenSubscription.unsubscribe();
     this.transactionService.update(this.transaction);
-    this.aisNativeService.closeSigned();
   }
 }

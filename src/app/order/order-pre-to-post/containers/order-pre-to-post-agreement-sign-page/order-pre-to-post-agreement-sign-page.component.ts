@@ -63,6 +63,5 @@ export class OrderPreToPostAgreementSignPageComponent implements OnInit, OnDestr
     this.signedSignatureSubscription.unsubscribe();
     this.signedOpenSubscription.unsubscribe();
     this.transactionService.update(this.transaction);
-    this.aisNativeService.closeSigned();
   }
 }
