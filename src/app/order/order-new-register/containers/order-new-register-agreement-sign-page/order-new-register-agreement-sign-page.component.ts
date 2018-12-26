@@ -64,6 +64,5 @@ export class OrderNewRegisterAgreementSignPageComponent implements OnInit, OnDes
   ngOnDestroy(): void {
     this.signedSubscription.unsubscribe();
     this.transactionService.update(this.transaction);
-    this.aisNativeService.closeSigned();
   }
 }
