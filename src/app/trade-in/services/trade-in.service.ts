@@ -35,4 +35,9 @@ export class TradeInService {
     this.selectedTradein.model = model;
     this.selectedTradein.matCode = matCode;
   }
+
+  getEstimateTradein(): Observable<any> {
+    const url = '/api/salesportal/getestimatetradein';
+    return this.http.get(url);
+  }
 }

@@ -7,6 +7,9 @@ import { VerifyTradeInComponent } from './containers/verify-trade-in/verify-trad
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { TradeInService } from './services/trade-in.service';
+import { CriteriaTradeInComponent } from './containers/criteria-trade-in/criteria-trade-in.component';
+import { HeaderTradeInComponent } from './containers/header-trade-in/header-trade-in.component';
+import { ConfirmTradeInComponent } from './containers/confirm-trade-in/confirm-trade-in.component';
 
 
 @NgModule({
@@ -19,7 +22,10 @@ import { TradeInService } from './services/trade-in.service';
   ],
   declarations: [
     TradeInComponent,
-    VerifyTradeInComponent
+    VerifyTradeInComponent,
+    CriteriaTradeInComponent,
+    HeaderTradeInComponent,
+    ConfirmTradeInComponent
   ],
   providers: [
     TradeInService

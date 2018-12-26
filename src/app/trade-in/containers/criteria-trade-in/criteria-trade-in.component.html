@@ -1,0 +1,53 @@
+<div class="mc-flex">
+  <mc-header title="Trade IN">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <div class="container-fluid mt-3">
+      <div class="card mb-3">
+        <div class="mc-card bg-white">
+          <div class="mc-card-content">
+            <app-header-trade-in></app-header-trade-in>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid">
+      <div class="card mb-3">
+        <div class="card-header bg-blue text-white shadow-sm">
+          เงื่อนไขประเมินราคา
+        </div>
+        <div class="card-body">
+          <div class="payment-container">
+            <form>
+              <div class="form-group row">
+                <div class="col-12 col-sm-12">
+                  <input class="form-check-input" type="radio" name="pay-advance" id="pay-advance-credit" value="option2">
+                  <label class="form-check-label" for="pay-advance-credit">
+                    Functionality : ระบบลื่นไม่ได้ / ลำโพงมีปัญหา / ช่อง Charge มีปัญหา
+                  </label>
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-12 col-sm-12">
+                  <input class="form-check-input" type="radio" name="pay-advance" id="pay-advance-debit" value="option2">
+                  <label class="form-check-label" for="pay-advance-debit">
+                    ชำระเงินด้วยบัตรเครดิต
+                  </label>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    <mc-footer>
+      <button class="btn btn-secondary">CANCEL</button>
+      <button class="btn btn-success">CHECK TRADE IN PRICE</button>
+    </mc-footer>
+  </div>
