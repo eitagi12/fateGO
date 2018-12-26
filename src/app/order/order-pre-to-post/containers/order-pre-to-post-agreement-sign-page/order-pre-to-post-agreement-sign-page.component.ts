@@ -34,9 +34,7 @@ export class OrderPreToPostAgreementSignPageComponent implements OnInit, OnDestr
   }
 
   ngOnInit() {
-    if (!this.transaction.data.customer.imageSignature) {
-      this.onSigned();
-    }
+    this.onSigned();
   }
 
   onBack() {
@@ -55,7 +53,7 @@ export class OrderPreToPostAgreementSignPageComponent implements OnInit, OnDestr
     const user: User = this.tokenService.getUser();
     this.aisNativeService.openSigned(
       ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'OnscreenSignpad'
-    );
+    ).subscribe();
   }
 
   ngOnDestroy(): void {

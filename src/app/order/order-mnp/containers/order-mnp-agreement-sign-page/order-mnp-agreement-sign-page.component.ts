@@ -37,9 +37,7 @@ export class OrderMnpAgreementSignPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    if (!this.transaction.data.customer.imageSignature) {
-      this.onSigned();
-    }
+    this.onSigned();
   }
 
   onBack() {
