@@ -99,7 +99,7 @@ export class OrderNewRegisterOneLovePageComponent implements OnInit, OnDestroy {
 
   callService(mobileNo: string): Promise<void> {
 
-    this.pageLoadingService.openLoading();
+    // this.pageLoadingService.openLoading();
     return new Promise((resolve, reject) => {
 
       this.http.get(`/api/customerportal/customerprofile/${mobileNo}`).toPromise()
@@ -111,7 +111,7 @@ export class OrderNewRegisterOneLovePageComponent implements OnInit, OnDestroy {
             this.alertService.error('หมายเลขดังกล่าวไม่สามารถใช้งานได้');
             return reject();
           }
-          this.pageLoadingService.closeLoading();
+          // this.pageLoadingService.closeLoading();
           return resolve();
         })
         .catch(() => {
