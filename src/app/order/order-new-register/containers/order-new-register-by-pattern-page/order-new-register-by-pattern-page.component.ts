@@ -24,7 +24,7 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
   wizards = WIZARD_ORDER_NEW_REGISTER;
 
   transaction: Transaction;
-  mobileNoConditions: MobileNoCondition[];
+  mobileNoConditions: MobileNoCondition[] = [];
 
   isSearchAgain = false;
   mobileNoConditionForm: FormGroup;
@@ -115,11 +115,12 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
             })
           };
         }).filter((condition: any) => condition.mobileNo.length > 0);
-        this.pageLoadingService.closeLoading();
       })
       .catch((resp: any) => {
-        const error = resp.error || [];
-        this.alertService.error(error.resultDescription);
+        this.mobileNoConditions = undefined;
+      })
+      .then(() => {
+        this.pageLoadingService.closeLoading();
       });
 
   }
