@@ -37,7 +37,9 @@ export class OrderNewRegisterAgreementSignPageComponent implements OnInit, OnDes
   }
 
   ngOnInit() {
-    this.onSigned();
+    if (!this.transaction.data.customer.imageSignature) {
+      this.onSigned();
+    }
   }
 
   onBack() {
