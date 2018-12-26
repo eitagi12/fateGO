@@ -110,9 +110,13 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
       billingMethod: {
         text: this.isMergeBilling() ? `${billingInformation.mergeBilling.mobileNo[0]}` : null,
         // net extrem แก้ไขไม่ได้, โปรไฟล์ใหม่แก้ไขไม่ได้
-        isEdit: !!customer.billCycle,
+        // isEdit: !!customer.billCycle,
+        // edit merge bill ไม่ได้เพราะ ยังไม่ disable mailbilling รอแก้ mailbill
+        isEdit: false,
         // net extrem ลบไม่ได้, มีบิลใหม่ลบได้แล้วแสดงบิลเก่า
-        isDelete: !!mergeBilling,
+        // isDelete: !!mergeBilling,
+        // edit merge bill ไม่ได้เพราะ ยังไม่ disable mailbilling รอแก้ mailbill
+        isDelete: false,
         onEdit: () => {
           this.router.navigate([ROUTE_ORDER_NEW_REGISTER_MERGE_BILLING_PAGE]);
         },
@@ -190,7 +194,11 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
   }
 
   onMailBillingInfoError(valid: boolean) {
-    this.isMailBillingInfoValid = valid || this.isPackageNetExtreme();
+    this.isMailBillingInfoValid = valid;
+    if (this.isPackageNetExtreme()) {
+      this.isMailBillingInfoValid = true;
+    }
+    console.log('mail', this.isMailBillingInfoValid);
   }
 
   onTelNoBillingCompleted(telNoBilling: any) {

@@ -102,9 +102,12 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
       billingMethod: {
         text: this.isMergeBilling() ? `${billingInformation.mergeBilling.mobileNo[0]}` : null,
         // net extream แก้ไขไม่ได้, โปรไฟล์ใหม่แก้ไขไม่ได้
-        isEdit: !!customer.billCycle,
+        // flase เพื่อไม่ให้ edit merge ได้ รอแก้ mailbiing
+        // isEdit: !!customer.billCycle,
+        isEdit: false,
         // net extream ลบไม่ได้, มีบิลใหม่ลบได้แล้วแสดงบิลเก่า
-        isDelete: !!mergeBilling,
+        // isDelete: !!mergeBilling,
+        isDelete: false,
         onEdit: () => {
           this.router.navigate([ROUTE_ORDER_PRE_TO_POST_MERGE_BILLING_PAGE]);
         },
@@ -182,7 +185,10 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
   }
 
   onMailBillingInfoError(valid: boolean) {
-    this.isMailBillingInfoValid = valid || this.isPackageNetExtreme();
+    this.isMailBillingInfoValid = valid;
+    if (this.isPackageNetExtreme()) {
+      this.isMailBillingInfoValid = true;
+    }
   }
 
   onTelNoBillingCompleted(telNoBilling: any) {
