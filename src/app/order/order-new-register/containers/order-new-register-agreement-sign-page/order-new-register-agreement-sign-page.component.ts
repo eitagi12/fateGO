@@ -21,7 +21,8 @@ export class OrderNewRegisterAgreementSignPageComponent implements OnInit, OnDes
   wizards = WIZARD_ORDER_NEW_REGISTER;
 
   transaction: Transaction;
-  signedSubscription: Subscription;
+  signedSignatureSubscription: Subscription;
+  signedOpenSubscription: Subscription;
 
   constructor(
     private router: Router,
@@ -31,7 +32,7 @@ export class OrderNewRegisterAgreementSignPageComponent implements OnInit, OnDes
     private tokenService: TokenService
   ) {
     this.transaction = this.transactionService.load();
-    this.signedSubscription = this.aisNativeService.getSigned().subscribe((signature: string) => {
+    this.signedSignatureSubscription = this.aisNativeService.getSigned().subscribe((signature: string) => {
       this.transaction.data.customer.imageSignature = signature;
     });
   }
@@ -56,13 +57,14 @@ export class OrderNewRegisterAgreementSignPageComponent implements OnInit, OnDes
 
   onSigned() {
     const user: User = this.tokenService.getUser();
-    this.aisNativeService.openSigned(
-      ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'OnscreenSignpad'
+    this.signedOpenSubscription = this.aisNativeService.openSigned(
+      ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'SignaturePad'
     ).subscribe();
   }
 
   ngOnDestroy(): void {
-    this.signedSubscription.unsubscribe();
+    this.signedSignatureSubscription.unsubscribe();
+    this.signedOpenSubscription.unsubscribe();
     this.transactionService.update(this.transaction);
   }
 }
