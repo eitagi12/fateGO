@@ -7,9 +7,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HeaderTradeInComponent implements OnInit {
 
+  tradeinNo: string;
+  modelTradein: string;
+  imeiTradein: string;
+  estimatePrice: string;
+
   constructor() { }
 
   ngOnInit() {
+    this.tradeinNo = 'TIxxxxxxxx';
+    this.modelTradein = 'Samsung Galaxy S6';
+    this.imeiTradein = 'xxxxxxxxxx';
+    this.estimatePrice = 'B5,xxx';
   }
 
 }

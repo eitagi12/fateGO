@@ -12,6 +12,12 @@ import { Subscription } from 'rxjs';
 })
 export class ConfirmTradeInComponent implements OnInit {
 
+  tradeinNo: string;
+  modelTradein: string;
+  imeiTradein: string;
+  gradeTradein: string;
+  estimatePrice: string;
+
   constructor(private router: Router,
     private homeService: HomeService,
     private formBuilder: FormBuilder,
@@ -19,6 +25,11 @@ export class ConfirmTradeInComponent implements OnInit {
     private pageLoadingService: PageLoadingService) { }
 
   ngOnInit() {
+    this.tradeinNo = 'TIxxxxxxxx';
+    this.modelTradein = 'Samsung Galaxy S6';
+    this.imeiTradein = 'xxxxxxxxxx';
+    this.gradeTradein = 'A';
+    this.estimatePrice = 'B5,xxx';
   }
   onHome() {
     this.homeService.goToHome();
