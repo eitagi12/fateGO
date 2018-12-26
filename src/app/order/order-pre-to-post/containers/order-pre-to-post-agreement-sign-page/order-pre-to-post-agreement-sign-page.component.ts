@@ -34,7 +34,9 @@ export class OrderPreToPostAgreementSignPageComponent implements OnInit, OnDestr
   }
 
   ngOnInit() {
-    this.onSigned();
+    if (!this.transaction.data.customer.imageSignature) {
+      this.onSigned();
+    }
   }
 
   onBack() {
