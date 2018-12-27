@@ -198,9 +198,6 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
 
   onMailBillingInfoError(valid: boolean) {
     this.isMailBillingInfoValid = valid;
-    if (this.isPackageNetExtreme()) {
-      this.isMailBillingInfoValid = true;
-    }
   }
 
   onTelNoBillingCompleted(telNoBilling: any) {

@@ -195,9 +195,6 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
 
   onMailBillingInfoError(valid: boolean) {
     this.isMailBillingInfoValid = valid;
-    if (this.isPackageNetExtreme()) {
-      this.isMailBillingInfoValid = true;
-    }
     console.log('mail', this.isMailBillingInfoValid);
   }
 
