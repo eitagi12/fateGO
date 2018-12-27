@@ -31,6 +31,6 @@
 
   <mc-footer>
       <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-      <button class="btn btn-success" (click)="onNext()" [disabled]="!(isTelNoBillingValid && isMailBillingInfoValid)">NEXT</button>
+      <button class="btn btn-success" (click)="onNext()" [disabled]="!(isTelNoBillingValid &&(isMailBillingInfoValid || isPackageNetExtreme()))">NEXT</button>
     </mc-footer>
 </div>

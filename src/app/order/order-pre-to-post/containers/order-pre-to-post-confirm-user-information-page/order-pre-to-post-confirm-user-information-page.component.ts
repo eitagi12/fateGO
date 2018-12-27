@@ -186,9 +186,6 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
 
   onMailBillingInfoError(valid: boolean) {
     this.isMailBillingInfoValid = valid;
-    if (this.isPackageNetExtreme()) {
-      this.isMailBillingInfoValid = true;
-    }
   }
 
   onTelNoBillingCompleted(telNoBilling: any) {
