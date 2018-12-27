@@ -61,7 +61,9 @@ export class OrderPreToPostAgreementSignPageComponent implements OnInit, OnDestr
 
   ngOnDestroy(): void {
     this.signedSignatureSubscription.unsubscribe();
-    this.signedOpenSubscription.unsubscribe();
+    if (this.signedOpenSubscription) {
+      this.signedOpenSubscription.unsubscribe();
+    }
     this.transactionService.update(this.transaction);
   }
 }
