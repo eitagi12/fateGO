@@ -12,6 +12,7 @@ import {
 import { Observable, Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Transaction } from 'src/app/shared/models/transaction.model';
+import { environment } from 'src/environments/environment';
 
 export enum PersoSimCommand {
   EVENT_CONNECT_LIB = 9000,
@@ -136,7 +137,6 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
   isManageSim: boolean;
   persoSimSubscription: Subscription;
   typeSim: 'pullsim' | 'insert';
-  environment = { WEB_CONNECT_URL: 'wss://localhost:8088' };
   onStatusSim: any;
   errorMessage: string;
 
@@ -537,7 +537,7 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
         isSuccess: false
       };
       if (!this.wsControlSim && event === 'Connect') {
-        this.wsControlSim = new WebSocket(`${this.environment.WEB_CONNECT_URL}/VendingAPI`);
+        this.wsControlSim = new WebSocket(`${environment.WEB_CONNECT_URL}/VendingAPI`);
         this.wsControlSim.onopen = () => {
           result.isSuccess = true;
           this.isControlSim = true;
@@ -575,7 +575,7 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
         Parameter: Parameter
       };
       if (!this.wsManageSim && Command === 9000) {
-        this.wsManageSim = new WebSocket(`${this.environment.WEB_CONNECT_URL}/SIMManager`);
+        this.wsManageSim = new WebSocket(`${environment.WEB_CONNECT_URL}/SIMManager`);
         this.wsManageSim.onopen = () => {
           result.isSuccess = true;
           this.isManageSim = true;
