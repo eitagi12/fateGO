@@ -101,13 +101,12 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
       // merge bill ไม่เมื่อเลือก package net extream
       billingMethod: {
         text: this.isMergeBilling() ? `${billingInformation.mergeBilling.mobileNo[0]}` : null,
-        // net extream แก้ไขไม่ได้, โปรไฟล์ใหม่แก้ไขไม่ได้
-        // flase เพื่อไม่ให้ edit merge ได้ รอแก้ mailbiing
-        // isEdit: !!customer.billCycle,
-        isEdit: false,
-        // net extream ลบไม่ได้, มีบิลใหม่ลบได้แล้วแสดงบิลเก่า
-        // isDelete: !!mergeBilling,
-        isDelete: false,
+        // net extrem แก้ไขไม่ได้, โปรไฟล์ใหม่แก้ไขไม่ได้
+        isEdit: !!customer.billCycle,
+        // isEdit: false,
+        // net extrem ลบไม่ได้, มีบิลใหม่ลบได้แล้วแสดงบิลเก่า
+        isDelete: !!mergeBilling,
+        // isDelete: false,
         onEdit: () => {
           this.router.navigate([ROUTE_ORDER_PRE_TO_POST_MERGE_BILLING_PAGE]);
         },

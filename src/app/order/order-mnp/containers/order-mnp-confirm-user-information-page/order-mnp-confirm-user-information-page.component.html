@@ -17,7 +17,7 @@
       <mc-billing-info [billingInfo]="billingInfo" (editAddress)="onEditAddress()">
       </mc-billing-info>
 
-      <mc-mail-billing-info [eBill]="eBill" [disabled]="isPackageNetExtreme()" [mailBillingInfo]="mailBillingInfo"
+      <mc-mail-billing-info [eBill]="eBill" [disabled]="isPackageNetExtreme() || isMergeBilling()" [mailBillingInfo]="mailBillingInfo"
         (completed)="onMailBillingInfoCompleted($event)" (error)="onMailBillingInfoError($event)">
       </mc-mail-billing-info>
 
@@ -31,6 +31,6 @@
 
   <mc-footer>
       <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-      <button class="btn btn-success" (click)="onNext()" [disabled]="!(isTelNoBillingValid &&(isMailBillingInfoValid || isPackageNetExtreme()))">NEXT</button>
+      <button class="btn btn-success" (click)="onNext()" [disabled]="!(isTelNoBillingValid &&(isMailBillingInfoValid || isMergeBilling()))">NEXT</button>
     </mc-footer>
 </div>
