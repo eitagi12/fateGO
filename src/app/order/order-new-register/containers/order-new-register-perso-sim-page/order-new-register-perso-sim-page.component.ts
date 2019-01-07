@@ -98,6 +98,7 @@ export interface RequestPersoSim {
   serialNo: string;
   index: string;
   simService: string;
+  sourceSystem: string;
 }
 
 export interface QueryPersoSim {
@@ -284,11 +285,12 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
                       mobileNo: this.mobileNo,
                       serialNo: serialSim[1].slice(6),
                       index: serialSim[3],
-                      simService: 'Normal'
+                      simService: 'Normal',
+                      sourceSystem: 'MC-KIOSK'
                     };
                     this.requestPersoSim = persoSim;
-                    this.getPersoDataCommand(persoSim.mobileNo, persoSim.serialNo, persoSim.index, persoSim.simService)
-                      .then((simCommand) => {
+                    this.getPersoDataCommand(persoSim.mobileNo, persoSim.serialNo, persoSim.index,
+                      persoSim.simService, persoSim.sourceSystem).then((simCommand) => {
                         observer.next({ progress: 60, eventName: 'กรุณารอสักครู่' }); // create perso แล้ว
                         const eCommand = simCommand.data.eCommand;
                         const field: string[] = simCommand.data.eCommand.split('|||');
@@ -655,9 +657,9 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
     return;
   }
 
-  getPersoDataCommand(mobileNo: string, serialNo: string, index: string, simService?: string): Promise<any> {
+  getPersoDataCommand(mobileNo: string, serialNo: string, index: string, simService?: string, sourceSystem?: string): Promise<any> {
     const persoSimAPI = '/api/customerportal/newRegister/queryPersoData?mobileNo='
-      + mobileNo + '&serialNo=' + serialNo + '&indexNo=' + index + '&simService=' + simService;
+      + mobileNo + '&serialNo=' + serialNo + '&indexNo=' + index + '&simService=' + simService + '&sourceSystem=' + sourceSystem;
     return this.http.get(persoSimAPI).toPromise();
   }
 
