@@ -21,6 +21,7 @@ export class VerifyTradeInComponent implements OnInit {
   selectOp = null;
   butDisabled = false;
   activeNext = false;
+  objTradein: Tradein;
   constructor(private router: Router,
               private homeService: HomeService,
               private tradeInService: TradeInService,
@@ -85,7 +86,7 @@ export class VerifyTradeInComponent implements OnInit {
       }
     );
   }
-  OnDestroy() {
+  OnDestroy () {
     this.subscriptionListModelTradeIn.unsubscribe();
     this.subscriptionModel.unsubscribe();
     this.tradeInService.removeTradein();
@@ -95,13 +96,12 @@ export class VerifyTradeInComponent implements OnInit {
       return;
     } else {
       const index = val.target['selectedIndex'] - 1;
-      const objTradein: Tradein = {
+      this.objTradein = {
         brand: this.listModelTradein[index].brand,
         model: this.listModelTradein[index].model,
         matCode: this.listModelTradein[index].matCode ? this.listModelTradein[index].matCode : '',
         serialNo: this.imeiForm.value.imei ? this.imeiForm.value.imei : ''
       };
-      this.tradeInService.setSelectedTradein(objTradein);
     }
 
   }
@@ -126,5 +126,9 @@ export class VerifyTradeInComponent implements OnInit {
     this.imeiForm.reset();
     this.selectOp = null;
     this.tradeInService.removeTradein();
+  }
+  btnNextFn () {
+    this.tradeInService.setSelectedTradein(this.objTradein);
+    this.router.navigate(['trade-in/criteria-trade-in']);
   }
 }
