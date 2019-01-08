@@ -18,14 +18,14 @@
           <form [formGroup]="imeiForm" (ngSubmit)="checkImei()">
             <div class="form-row">
               <div class="col-9 col-sm-10">
-                <input type="text" formControlName="imei" maxlength="15" placeholder="ใส่เลขที่imei 15 หลัก" class="form-control" [ngClass]="{ 'is-invalid': submitted && imeiForm.controls.imei.errors }">
+                <input type="text" formControlName="imei" maxlength="15" placeholder="ใส่เลขimei 15 หลัก" class="form-control">
               </div>
               <div class="col-3 col-sm-2">
                   <button class="btn btn-light-blue text-white btn-block" [disabled]="imeiForm.invalid" type="submit">
                       ตรวจสอบ</button>
               </div>
               <small class="form-text text-danger" *ngIf="imeiForm.controls.imei.touched && imeiForm.controls.imei.errors">
-                  * กรุณาระบุเลขที่imeiให้ถูกต้อง
+                  * กรุณาระบุเลขimeiให้ถูกต้อง
               </small>
             </div>
           </form>
@@ -38,23 +38,26 @@
             ยี่ห้อและรุ่นโทรศัพท์
         </div>
         <div class="card-body">
-          <div class="col-3 col-sm-5">
-              <p class="text-grey">
-                  <label>ยี่ห้อโทรศัพท์ : </label>
-                  <img class="col-3 col-sm-2" src="assets/images/icon/img-placeholder.png">
-              </p>
-          </div>
+            <div class="form-row">
+                <div class="col-3 col-sm-6">
+                    <p class="text-grey text-left">
+                        <label>ยี่ห้อโทรศัพท์ : </label>
+                        <img class="col-3 col-sm-4" src="assets/images/icon/img-placeholder.png">
+                    </p>
+                </div>
+            </div>
           <div class="form-row">
-              <div class="col-4 col-sm-1">
-                  <p class="text-grey">
+              <!-- <div class="col-3 col-sm-2"> -->
+                  <p class="text-grey text-left">
                       <label>รุ่นโทรศัพท์ : </label></p>
-              </div>
-              <div class="col-8 col-sm-5">
+                      
+              <!-- </div> -->
+              <div class="col-3 col-sm-3 mx-4">
                 <select id="select-modelTrade-in"
                   (change)="selectModelTradeinFn($event)"
                   class="mc-input-select"
                   [(ngModel)]='selectOp'
-                  class='form-control'
+                  class='form-control text-left'
                   [disabled]='butDisabled'>
                     <option [ngValue]="null">เลือก</option>
                     <option *ngFor="let modelTradein of listModelTradein"
@@ -63,22 +66,24 @@
                             </option>
                   </select>
               </div>
+              
           </div>
         </div>
       </div>
     </div>
     <div class="container-fluid mt-3">
 
-        <div class="row align-self-center">
-          <div class="col-3 col-sm-2">
-            <button class="btn btn-light-blue text-white btn-block">CANCEL</button>
-          </div>
-          <div class="col-3 col-sm-2">
-            <button class="btn btn-light-blue text-white btn-block">NEXT</button>
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="text-center">
+              <button class="btn btn-light-blue text-white col-2 mx-2" (click)="cancelSelected()">CANCEL</button>
+              <button class="btn btn-light-blue text-white col-2 mx-2">NEXT</button>
+            </div>
           </div>
         </div>
-        
       </div>
-
+       
+  
+  
   </div>
 </div>
