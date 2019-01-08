@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HomeService, PageLoadingService } from 'mychannel-shared-libs';
+import { HomeService, PageLoadingService, AlertService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { TradeInService } from '../../services/trade-in.service';
@@ -21,14 +21,17 @@ export class VerifyTradeInComponent implements OnInit {
   selectOp = null;
   butDisabled = false;
   activeNext = false;
+  objTradein: Tradein;
   constructor(private router: Router,
               private homeService: HomeService,
               private tradeInService: TradeInService,
-              private pageLoadingService: PageLoadingService) { }
+              private pageLoadingService: PageLoadingService,
+              private alertService: AlertService) { }
 
   ngOnInit () {
     this.setFormImei();
     this.setListModelTradein();
+    console.log(this.tradeInService.getTradein());
   }
 
   onHome () {
@@ -49,12 +52,16 @@ export class VerifyTradeInComponent implements OnInit {
     this.submitted = true;
     this.subscriptionModel = this.tradeInService.checkSerialTradein(this.imeiForm.value.imei).subscribe({
       next: (response) => {
-        const brandTradein  = response.data.brand;
-        const modelTradein  = response.data.model;
-        this.setModelImeiToModelList(brandTradein , modelTradein);
+        this.pageLoadingService.closeLoading();
+        if (response.data.status === 'S') {
+          this.setModelImeiToModelList(response.data.brand , response.data.model);
+        } else {
+          this.alertService.warning('ไม่พบหมายเลข imei ในระบบ กรุณา เลือก รุ่นโทรศัพท์');
+          this.butDisabled = false;
+          this.selectOp = null;
+        }
       },
       complete: () => {
-        this.pageLoadingService.closeLoading();
       },
       error: (err) => {
         this.pageLoadingService.closeLoading();
@@ -79,22 +86,22 @@ export class VerifyTradeInComponent implements OnInit {
       }
     );
   }
-  OnDestroy() {
+  OnDestroy () {
     this.subscriptionListModelTradeIn.unsubscribe();
     this.subscriptionModel.unsubscribe();
+    this.tradeInService.removeTradein();
   }
   selectModelTradeinFn (val: any) {
     if (val.target['selectedIndex'] === 0) {
       return;
     } else {
       const index = val.target['selectedIndex'] - 1;
-      const objTradein: Tradein = {
+      this.objTradein = {
         brand: this.listModelTradein[index].brand,
         model: this.listModelTradein[index].model,
         matCode: this.listModelTradein[index].matCode ? this.listModelTradein[index].matCode : '',
         serialNo: this.imeiForm.value.imei ? this.imeiForm.value.imei : ''
       };
-      this.tradeInService.setSelectedTradein(objTradein);
     }
 
   }
@@ -109,6 +116,7 @@ export class VerifyTradeInComponent implements OnInit {
         this.butDisabled = true;
       } else {
         this.butDisabled = false;
+        this.alertService.warning('ไม่พบ model ที่ตรงกับ รายการ Tradein');
       }
     } else {
       this.butDisabled = false;
@@ -117,6 +125,10 @@ export class VerifyTradeInComponent implements OnInit {
   cancelSelected () {
     this.imeiForm.reset();
     this.selectOp = null;
-    this.tradeInService.clearTradein();
+    this.tradeInService.removeTradein();
+  }
+  btnNextFn () {
+    this.tradeInService.setSelectedTradein(this.objTradein);
+    this.router.navigate(['trade-in/criteria-trade-in']);
   }
 }
