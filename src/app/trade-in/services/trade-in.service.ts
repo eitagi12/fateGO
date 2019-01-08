@@ -41,7 +41,11 @@ export class TradeInService {
     this.settingTradein.save(objTradein);
   }
 
-  clearTradein () {
+  removeTradein () {
     this.settingTradein.remove();
+  }
+
+  getTradein () {
+    return this.settingTradein.value;
   }
 }
