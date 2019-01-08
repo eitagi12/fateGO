@@ -15,7 +15,7 @@ export class TradeInService {
               private tokenService: TokenService) { }
 
 
-  private get settingTest(): NgxResource<object> {
+  private get settingTradein(): NgxResource<object> {
     return this.localStorageService
       .load(`Tradein`)
       .setDefaultValue({});
@@ -61,9 +61,9 @@ export class TradeInService {
   }
 
   setSelectedTradein(objTradein: Tradein) {
-    this.settingTest.save(objTradein);
+    this.settingTradein.save(objTradein);
   }
   clearTradein () {
-    this.settingTest.remove();
+    this.settingTradein.remove();
   }
 }
