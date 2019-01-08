@@ -30,14 +30,34 @@ export class TradeInService {
     return this.http.post(url, body);
   }
 
+  getListValuationTradein(brand: string, model: string, queryOption: string): Observable<any> {
+    const url = '/api/salesportal/getlistValuationTradein';
+    const body = {
+      brand: brand,
+      model: model,
+      queryOption: 'N'
+    };
+    return this.http.post(url, body);
+  }
+
+  getEstimateTradein(brand: string, model: string, matCode: string): Observable<any> {
+    const url = '/api/salesportal/getestimateTradein';
+    const body = {
+      brand: brand,
+      model: model,
+      matCode: matCode,
+      serialNo: "000357890623451389",
+      aisFlg: 'Y',
+      listValuation: []
+    };
+    
+    return this.http.post(url, body);
+  }
+
   setSelectedGlobalServiceTradein (brand: string, model: string, matCode: string) {
     this.selectedTradein.brand = brand;
     this.selectedTradein.model = model;
     this.selectedTradein.matCode = matCode;
   }
 
-  getEstimateTradein(): Observable<any> {
-    const url = '/api/salesportal/getestimatetradein';
-    return this.http.get(url);
-  }
 }
