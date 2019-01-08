@@ -37,13 +37,13 @@ export class TradeInService {
     return this.http.post(url, body);
   }
 
-  getListValuationTradein(brand: string, model: string, queryOption: string): Observable<any> {
+  getListValuationTradein(brand: string, model: string): Observable<any> {
     const url = '/api/salesportal/getlistValuationTradein';
     const body = {
       brand: brand,
-      model: model,
-      queryOption: 'N'
+      model: model
     };
+
     return this.http.post(url, body);
   }
 

@@ -36,6 +36,11 @@ export class ConfirmTradeInComponent implements OnInit {
   }
 
   onBack() {
-    this.router.navigate(['dashboard']);
+    this.router.navigate(['trade-in/criteria-trade-in']);
   }
+
+  btnCancelFn() {
+    this.router.navigate(['trade-in/criteria-trade-in']);
+  }
+
 }
