@@ -1,38 +1,47 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { TradeInModule } from '../trade-in.module';
+import { LocalStorageService, NgxResource } from 'ngx-store';
+import { Tradein } from '../models/trade-in.models';
+import { TokenService } from 'mychannel-shared-libs';
+
 
 @Injectable({
   providedIn: 'root'
 })
 export class TradeInService {
-  private selectedTradein = {
-    brand : '',
-    model : '',
-    matCode: '',
-    serialNo: ''
-  };
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient,
+              private localStorageService: LocalStorageService,
+              private tokenService: TokenService) { }
+
+
+  private get settingTest(): NgxResource<object> {
+    return this.localStorageService
+      .load(`Tradein`)
+      .setDefaultValue({});
+  }
 
   getListModelTradeIn(): Observable<any> {
     const url = '/api/salesportal/getlistmodeltradein';
     return this.http.get(url);
   }
 
-  checkSerialTradein(imei): Observable<any> {
+  checkSerialTradein(imei: string): Observable<any> {
+    const token = this.tokenService.getUser();
     const url = '/api/customerportal/newRegister/checkSerial';
     const body = {
       imei: imei,
-      locationCode: '1100',
+      locationCode: token.locationCode,
       checkType: 'TRADEIN'
     };
     return this.http.post(url, body);
   }
 
-  setSelectedGlobalServiceTradein (brand: string, model: string, matCode: string) {
-    this.selectedTradein.brand = brand;
-    this.selectedTradein.model = model;
-    this.selectedTradein.matCode = matCode;
+  setSelectedTradein(objTradein: Tradein) {
+    this.settingTest.save(objTradein);
+  }
+
+  clearTradein () {
+    this.settingTest.remove();
   }
 }
