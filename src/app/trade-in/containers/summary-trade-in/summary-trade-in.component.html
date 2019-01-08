@@ -1,0 +1,83 @@
+<!-- <div class="mc-flex">
+  <mc-header title="Trade IN">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+
+  <div class="mc-flex-wrap">
+    <div class="row bg-blue">
+
+      <div class="container-fluid mt-3">
+        <div>
+          <img src="assets/images/icon/icon-green-check-circle.png  " width="50" />
+        </div>
+        <span class="title">ทำรายการสำเร็จ</span>
+      </div>
+      <hr>
+      <div class="container-fluid mt-3">
+        <span>Trade IN No. :TIxxxxxxxx</span>
+        <br>
+        <span>Samsung Galaxy S6<br>IMEI : xxxxxxxxxx<br>ราคาประเมิน : B5,xxx</span>
+      </div>
+      <hr>
+      <div class="container-fluid mt-3">
+        <span>พิมพ์ใบประเมินราคา</span>
+        <div>
+          <img src="assets/images/icon/icon-green-check-circle.png  " width="50" />
+        </div>
+      </div>
+
+      <div class="row align-self-center">
+        <button class="btn btn-light-green text-white btn-block">MAIN MENU</button>
+      </div>
+    </div>
+
+  </div>
+
+
+</div> -->
+
+
+
+
+<div class="mc-flex">
+  <mc-header title="Trade IN">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png"></mc-header-icon>
+    </div>
+    <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+
+    <div class="container-fluid text-center mt-3 mb-3">
+      <div class="card mb-3">
+        <div class="card-body">
+          <div>
+            <img src="assets/images/icon/icon-green-check-circle.png  " width="50" />
+            <br>
+            <span>ทำรายการสำเร็จ</span>
+          </div>
+          <hr>
+          <div>
+            <span>Trade IN No. : {{tradeinNo}}</span><br><br>
+            
+            <span>{{modelTradein}}<br>IMEI : imeiTradein<br>ราคาประเมิน : {{estimatePrice}}</span>
+          </div><br>
+          <hr>
+          <div>
+            <span>พิมพ์ใบประเมินราคา</span><br><br>
+            <img src="assets/images/icon/icon-green-task.png  " width="50" /><br><br><br>
+            <button class="btn btn-light-green text-white">MAIN MENU</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <mc-footer>
+    </mc-footer>
+  </div>
