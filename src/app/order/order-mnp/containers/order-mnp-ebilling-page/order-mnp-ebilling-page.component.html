@@ -9,45 +9,14 @@
   </mc-header>
   <div class="mc-flex-wrap">
     <div class="mb-3 mt-3">
-      <mc-wizard [wizards]="wizards" active="3"></mc-wizard>
-
-      <div class="container-fluid">
-        <form [formGroup]="ebillingForm">
-          <div class="card">
-            <div class="card-header bg-pink text-white">
-              รอบบิล
-            </div>
-            <div class="card-body pb-0">
-              <p class="mb-3">กรุณาเลือกรอบบิลที่ต้องการ</p>
-              <p>
-                รอบค่าบริการ
-                <span class="pull-right">
-                  วันกำหนดชำระ
-                </span>
-              </p>
-            </div>
-            <ul class="list-group list-group-flush">
-              <ng-container *ngFor="let billCycle of billCycles">
-                <li class="list-group-item">
-                  <div>
-                    <input type="radio" autocomplete="off" id="{{ billCycle?.bill }}" [value]="billCycle" [checked]="checked(billCycle)"
-                      formControlName="billCycle">
-                    <label class="ml-2" for="{{ billCycle?.bill }}">{{ getBillCycleText(billCycle) }}</label>
-                    <span class="pay-date">{{ billCycle?.payDate }}</span>
-                  </div>
-                </li>
-              </ng-container>
-            </ul>
-          </div>
-        </form>
-
-      </div>
-
+      <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
+      
+      <mc-ebilling [billCycle]="transaction?.data?.billingInformation?.billCycle" [billCycles]="billCycles" (completed)="onCompleted($event)" (error)="onError($event)"></mc-ebilling>
 
     </div>
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()" [disabled]="ebillingForm.invalid">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!billCycleValid">NEXT</button>
   </mc-footer>
 </div>

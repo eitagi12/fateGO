@@ -20,16 +20,16 @@ export class OrderMnpEbillingPageComponent implements OnInit, OnDestroy {
   wizards = WIZARD_ORDER_MNP;
 
   transaction: Transaction;
-  billCycles: any[];
+
+  billCycleValid: boolean;
   billCycle: any;
-  ebillingForm: FormGroup;
+  billCycles: Ebilling[];
 
   constructor(
     private router: Router,
     private homeService: HomeService,
-    private transactionService: TransactionService,
     private http: HttpClient,
-    private fb: FormBuilder,
+    private transactionService: TransactionService,
   ) {
     this.transaction = this.transactionService.load();
 
@@ -39,7 +39,6 @@ export class OrderMnpEbillingPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.createForm();
 
     this.http.get('/api/customerportal/newRegister/queryBillCycle').toPromise().then((resp: any) => {
       const data = resp.data || {};
@@ -47,13 +46,6 @@ export class OrderMnpEbillingPageComponent implements OnInit, OnDestroy {
       if (!this.transaction.data.billingInformation.billCycle) {
         this.setBillingDefault(data.billCycles || []);
       }
-    });
-  }
-
-  createForm() {
-    const billingInformation = this.transaction.data.billingInformation;
-    this.ebillingForm = this.fb.group({
-      billCycle: [billingInformation.billCycle, Validators.required]
     });
   }
 
@@ -66,17 +58,20 @@ export class OrderMnpEbillingPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  checked(billCycle: any): boolean {
-    const billingInformation = this.transaction.data.billingInformation;
-    return JSON.stringify(billCycle) === JSON.stringify(billingInformation.billCycle || {});
+  onCompleted(billCycle: any) {
+    this.billCycle = billCycle;
+  }
+
+  onError(valid: boolean) {
+    this.billCycleValid = valid;
   }
 
   onBack() {
-    this.router.navigate([ROUTE_ORDER_MNP_CONFIRM_USER_INFORMATION_PAGE]);
+     this.router.navigate([ROUTE_ORDER_MNP_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
   onNext() {
-    this.transaction.data.billingInformation.billCycle = this.ebillingForm.value.billCycle;
+    this.transaction.data.billingInformation.billCycle = this.billCycle;
     this.router.navigate([ROUTE_ORDER_MNP_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
@@ -84,13 +79,8 @@ export class OrderMnpEbillingPageComponent implements OnInit, OnDestroy {
     this.homeService.goToHome();
   }
 
-  getBillCycleText(billCycle: any): string {
-    const bills = (billCycle.billCycle || '').split(' ');
-    return `วันที่ ${bills[1]} ถึงวันที่ ${bills[3]} ของทุกเดือน`;
-  }
-
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }
-
 }
+
