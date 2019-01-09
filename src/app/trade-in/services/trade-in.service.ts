@@ -38,12 +38,11 @@ export class TradeInService {
   }
 
   getListValuationTradein(brand: string, model: string): Observable<any> {
-    const url = '/api/salesportal/getlistValuationTradein';
+    const url = '/api/salesportal/getListValuationTradein';
     const body = {
       brand: brand,
       model: model
     };
-
     return this.http.post(url, body);
   }
 

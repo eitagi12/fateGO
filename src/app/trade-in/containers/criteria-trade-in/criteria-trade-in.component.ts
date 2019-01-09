@@ -45,13 +45,13 @@ export class CriteriaTradeInComponent implements OnInit {
 
   onNext(brand: string, model: string) {
     this.brand = "APPLE";
-    this.model = "IPHONE7P256";
+    this.model = "I6P 64GB";
 
     this.tradeInService.getListValuationTradein(this.brand , this.model).subscribe(
       (res) => {
-        console.log('fffff', res);
+        console.log('fffff', res.data);
       }
     );
-    console.log("LLLJJH");
+    
   }
 }
