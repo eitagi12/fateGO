@@ -79,7 +79,7 @@ export class OrderMnpOneLovePageComponent implements OnInit, OnDestroy {
 
   callService(mobileNo: string): Promise<void> {
 
-    // this.pageLoadingService.openLoading();
+    this.pageLoadingService.openLoading();
 
     return new Promise((resolve, reject) => {
 
@@ -92,10 +92,11 @@ export class OrderMnpOneLovePageComponent implements OnInit, OnDestroy {
             this.alertService.error('หมายเลขดังกล่าวไม่สามารถใช้งานได้');
             return reject();
           }
-          // this.pageLoadingService.closeLoading();
+          this.pageLoadingService.closeLoading();
           return resolve();
         })
         .catch(() => {
+          this.pageLoadingService.closeLoading();
           this.alertService.error('หมายเลขดังกล่าวไม่ใช่เครือข่าย AIS');
           reject();
         });
