@@ -4,6 +4,8 @@ import { setTheme } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
 import { environment } from '../environments/environment';
 import { debounceTime } from 'rxjs/operators';
+import { ROUTE_DEASHBOARD_MAIN_MENU_PAGE } from './dashboard/constants/route-path.constant';
+
 const { version: version } = require('../../package.json');
 
 
@@ -16,6 +18,7 @@ declare var Hammer: any;
 })
 export class AppComponent {
   version: string;
+
 
   constructor(
     private errorsService: ErrorsService,
@@ -71,9 +74,12 @@ export class AppComponent {
   }
 
   pageActivityHandler() {
-
     this.pageActivityService.setTimeout((counter) => {
       const url = this.router.url;
+      console.log('counter', counter);
+      if (url.indexOf('main-menu') !== -1) {
+        return false;
+      }
       if (url.indexOf('perso-sim') !== -1) {
         return counter === 300;
       }
@@ -83,14 +89,24 @@ export class AppComponent {
       if (url.indexOf('validate-customer-id-card') !== -1) {
         return counter === 120;
       }
-      return counter === 60;
+        return counter === 60;
+
     }).subscribe(() => {
-      this.alertService.question(
-        'คุณไม่ได้ทำรายการภายในเวลาที่กำหนด ต้องการทำรายการต่อหรือไม่?',
-        'ทำรายการต่อ', 'ยกเลิก'
-      ).then((data) => {
+      this.alertService.notify({
+        type: 'question',
+        showConfirmButton: true,
+        confirmButtonText: 'ทำรายการต่อ',
+        cancelButtonText: 'ยกเลิก',
+        showCancelButton: true,
+        reverseButtons: true,
+        allowEscapeKey: false,
+        text: 'คุณไม่ได้ทำรายการภายในเวลาที่กำหนด ต้องการทำรายการต่อหรือไม่?',
+        timer: 300000
+      }).then((data) => {
+        console.log('data', data);
         if (!data.value) {
-          this.homeService.goToHome();
+          // this.homeService.goToHome();
+          this.router.navigate([ROUTE_DEASHBOARD_MAIN_MENU_PAGE]);
         }
         this.pageActivityService.resetTimeout();
       });
