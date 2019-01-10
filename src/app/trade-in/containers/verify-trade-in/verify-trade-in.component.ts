@@ -22,6 +22,10 @@ export class VerifyTradeInComponent implements OnInit {
   butDisabled = false;
   activeNext = false;
   objTradein: Tradein;
+  isNextPage = false;
+  serialMatCode: string;
+  isCheckImei = false;
+  btnNextDisabled = true;
   constructor(private router: Router,
               private homeService: HomeService,
               private tradeInService: TradeInService,
@@ -50,10 +54,12 @@ export class VerifyTradeInComponent implements OnInit {
   checkImei () {
     this.pageLoadingService.openLoading();
     this.submitted = true;
+    this.isCheckImei = true;
     this.subscriptionModel = this.tradeInService.checkSerialTradein(this.imeiForm.value.imei).subscribe({
       next: (response) => {
         this.pageLoadingService.closeLoading();
         if (response.data.status === 'S') {
+          this.serialMatCode = response.data.matcode;
           this.setModelImeiToModelList(response.data.brand , response.data.model);
         } else {
           this.alertService.warning('ไม่พบหมายเลข imei ในระบบ กรุณา เลือก รุ่นโทรศัพท์');
@@ -90,20 +96,42 @@ export class VerifyTradeInComponent implements OnInit {
     this.subscriptionListModelTradeIn.unsubscribe();
     this.subscriptionModel.unsubscribe();
     this.tradeInService.removeTradein();
+    this.isCheckImei = false;
   }
   selectModelTradeinFn (val: any) {
-    if (val.target['selectedIndex'] === 0) {
-      return;
+    if (this.imeiForm.value.imei) {
+      if (val.target['selectedIndex'] === 0) {
+        this.alertService.warning('กรุณาเลือก brand โทรศัพท์');
+        this.btnNextDisabled = true;
+        return;
+      } else {
+        if (this.isCheckImei) {
+          this.btnNextDisabled = false;
+        }
+        const index = val.target['selectedIndex'] - 1;
+        this.objTradein = {
+          brand: this.listModelTradein[index].brand,
+          model: this.listModelTradein[index].model,
+          matCode: this.serialMatCode ? this.serialMatCode : '',
+          serialNo: this.imeiForm.value.imei ? this.imeiForm.value.imei : ''
+        };
+        return this.objTradein;
+      }
     } else {
-      const index = val.target['selectedIndex'] - 1;
-      this.objTradein = {
-        brand: this.listModelTradein[index].brand,
-        model: this.listModelTradein[index].model,
-        matCode: this.listModelTradein[index].matCode ? this.listModelTradein[index].matCode : '',
-        serialNo: this.imeiForm.value.imei ? this.imeiForm.value.imei : ''
-      };
+      if (val.target['selectedIndex'] === 0) {
+        this.alertService.warning('กรุณากรอก เลข imei');
+        return;
+      } else {
+        const index = val.target['selectedIndex'] - 1;
+        this.objTradein = {
+          brand: this.listModelTradein[index].brand,
+          model: this.listModelTradein[index].model,
+          matCode: this.serialMatCode ? this.serialMatCode : '',
+          serialNo: this.imeiForm.value.imei ? this.imeiForm.value.imei : ''
+        };
+        return this.objTradein;
+      }
     }
-
   }
   setModelImeiToModelList (brandImei: string, modelImei: string) {
     if (modelImei && brandImei) {
@@ -114,21 +142,48 @@ export class VerifyTradeInComponent implements OnInit {
       if (indexSelect && indexSelect >= 0) {
         this.selectOp = this.listModelTradein[indexSelect];
         this.butDisabled = true;
+        this.objTradein = {
+          brand: this.listModelTradein[indexSelect].brand,
+          model: this.listModelTradein[indexSelect].model,
+          matCode: this.serialMatCode ? this.serialMatCode : '',
+          serialNo: this.imeiForm.value.imei ? this.imeiForm.value.imei : ''
+        };
+        this.btnNextDisabled = false;
       } else {
+        this.btnNextDisabled = true;
         this.butDisabled = false;
         this.alertService.warning('ไม่พบ model ที่ตรงกับ รายการ Tradein');
       }
     } else {
       this.butDisabled = false;
+      this.btnNextDisabled = true;
     }
   }
   cancelSelected () {
     this.imeiForm.reset();
     this.selectOp = null;
     this.tradeInService.removeTradein();
+    this.isCheckImei = false;
   }
+  checkValueTradein () {
+    if (!this.imeiForm.invalid && this.objTradein.brand && this.objTradein.model && this.isCheckImei) {
+      this.isNextPage = true;
+      this.btnNextDisabled = false;
+      return this.isNextPage;
+    } else {
+      this.isNextPage = false;
+      this.btnNextDisabled = true;
+      return this.isNextPage;
+    }
+  }
+
   btnNextFn () {
-    this.tradeInService.setSelectedTradein(this.objTradein);
-    this.router.navigate(['trade-in/criteria-trade-in']);
+    this.checkValueTradein();
+    if (this.isNextPage) {
+      this.tradeInService.setSelectedTradein(this.objTradein);
+      this.router.navigate(['trade-in/criteria-trade-in']);
+    } else {
+      this.alertService.error('กรุณา กรอกข้อมูล ให้ครบ');
+    }
   }
 }
