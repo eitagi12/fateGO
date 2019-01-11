@@ -11,7 +11,7 @@
     <div class="container-fluid mt-3">
       <div class="card mb-3">
         <div class="mc-card bg-white">
-            <app-header-trade-in></app-header-trade-in>
+          <app-header-trade-in></app-header-trade-in>
         </div>
       </div>
     </div>
@@ -21,22 +21,12 @@
           เงื่อนไขประเมินราคา
         </div>
         <div class="card-body">
-          <div class="payment-container">
+          <div class="valuationlist">
             <form>
               <div class="form-group row">
-                <div class="col-12 col-sm-12">
-                  <input class="form-check-input" type="radio" name="pay-advance" id="pay-advance-credit" value="option2">
-                  <label class="form-check-label" for="pay-advance-credit">
-                    Functionality : ระบบลื่นไม่ได้ / ลำโพงมีปัญหา / ช่อง Charge มีปัญหา
-                  </label>
-                </div>
-              </div>
-              <div class="form-group row">
-                <div class="col-12 col-sm-12">
-                  <input class="form-check-input" type="radio" name="pay-advance" id="pay-advance-debit" value="option2">
-                  <label class="form-check-label" for="pay-advance-debit">
-                    ชำระเงินด้วยบัตรเครดิต
-                  </label>
+                <div class="col-12 col-sm-12" *ngFor="let listValuationTradein of valuationlists">
+                  <input type="checkbox" id="{{listValuationTradein.valCode}}" value="{{listValuationTradein.valCode}}" disabled>
+                  <label for="{{listValuationTradein.valCode}}"> {{listValuationTradein.valDesc}} </label>
                 </div>
               </div>
             </form>
@@ -52,10 +42,10 @@
         <div class="card-body">
           <div class="row">
             <div class="col-md-6">
-              <input type="text" value="Grade : {{gradeTradein}}" class="form-control" disabled>
+              <input type="text" value="Grade : {{tradeinGrade}}" class="form-control" disabled>
             </div>
             <div class="col-md-6">
-              <input type="text" value="Price : {{estimatePrice}}" class="form-control" disabled>
+              <input type="text" value="Price : {{tradeinPrice}}" class="form-control" disabled>
             </div>
           </div>
         </div>
