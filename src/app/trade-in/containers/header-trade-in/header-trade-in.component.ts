@@ -15,10 +15,9 @@ export class HeaderTradeInComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    this.tradeinNo = 'TIxxxxxxxx';
-    this.modelTradein = 'Samsung Galaxy S6';
-    this.imeiTradein = 'xxxxxxxxxx';
-    this.estimatePrice = 'B5,xxx';
+    const criteriaTradein: any = JSON.parse(localStorage.getItem('Criteriatradein'));
+    this.modelTradein = criteriaTradein.brand + ' ' + criteriaTradein.model;
+    this.imeiTradein = criteriaTradein.serialNo;
   }
 
 }

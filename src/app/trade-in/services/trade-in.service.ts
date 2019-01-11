@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { LocalStorageService, NgxResource } from 'ngx-store';
-import { Tradein, Criteriatradein } from '../models/trade-in.models';
+import { Tradein, Criteriatradein, RequestEstimateTradein } from '../models/trade-in.models';
 import { TokenService } from 'mychannel-shared-libs';
 
 
@@ -54,15 +54,18 @@ export class TradeInService {
     return this.http.post(url, body);
   }
 
-  getEstimateTradein(brand: string, model: string, matCode: string): Observable<any> {
+  getEstimateTradein(objEstimate: any, aisFlg: string): Observable<any> {
     const url = '/api/salesportal/getEstimateTradein';
+    const token = this.tokenService.getUser();
     const body = {
-      brand: brand,
-      model: model,
-      matCode: matCode,
-      serialNo: '000357890623451389',
-      aisFlg: 'Y',
-      listValuation: []
+      locationCode: token.locationCode,
+      userId: token.username,
+      brand: objEstimate.brand,
+      model: objEstimate.model,
+      matCode: objEstimate.matCode,
+      serialNo: objEstimate.serialNo,
+      aisFlg: aisFlg,
+      listValuation: objEstimate.listValuationTradein
     };
     return this.http.post(url, body);
   }
@@ -81,5 +84,9 @@ export class TradeInService {
 
   setValuationlistTradein(valuationlists: Criteriatradein) {
     this.settingCriteriatTradein.save(valuationlists);
+  }
+
+  setEstimateTradein(objEstimate: object) {
+    this.settingCriteriatTradein.update(objEstimate);
   }
 }

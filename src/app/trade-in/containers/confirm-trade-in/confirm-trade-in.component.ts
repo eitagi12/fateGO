@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { TradeInService } from '../../services/trade-in.service';
 import { Subscription } from 'rxjs';
+import { Criteriatradein } from '../../models/trade-in.models';
 
 @Component({
   selector: 'app-confirm-trade-in',
@@ -12,11 +13,16 @@ import { Subscription } from 'rxjs';
 })
 export class ConfirmTradeInComponent implements OnInit {
 
-  listValuationTradein: any;
-
+  listValuation: any;
+  valuationlists: any;
+  criteriaObj: Criteriatradein;
+  aisFlg: string;
+  objTest: any;
+  tradeinPrice: string;
+  tradeinGrade: string;
+  tradeinNo: string;
   constructor(private router: Router,
     private homeService: HomeService,
-    private formBuilder: FormBuilder,
     private tradeInService: TradeInService,
     private pageLoadingService: PageLoadingService,
     private tokenService: TokenService) { }
@@ -24,30 +30,50 @@ export class ConfirmTradeInComponent implements OnInit {
 
   ngOnInit() {
     this.getValuationTradein();
-    console.log('getValuationTradein',this.getValuationTradein);
-    
+    this.getEstimateTradein();
   }
 
   getValuationTradein() {
-    this.listValuationTradein = JSON.parse(localStorage.getItem('Criteriatradein'));
-    console.log('listValuationTradein' , this.listValuationTradein);
-    
+    this.listValuation = JSON.parse(localStorage.getItem('Criteriatradein'));
+    console.log('listValuationTradein' , this.listValuation);
+    this.valuationlists = this.listValuation.listValuationTradein;
   }
 
   getEstimateTradein() {
     this.pageLoadingService.openLoading();
-    const tradeIn: any = JSON.parse(localStorage.getItem('Criteriatradein'));
-    const brand: any = tradeIn.brand;
-    const model: any = tradeIn.model;
-    const matCode: any = tradeIn.matCode;
-    const serialNo: any = tradeIn.serialNo;
-    const locationCode = this.tokenService.getUser().locationCode;
-    const userId = this.tokenService.getUser().username;
+    this.criteriaObj = JSON.parse(localStorage.getItem('Criteriatradein'));
+    if (this.criteriaObj && this.criteriaObj.matCode) {
+      this.aisFlg = 'Y';
+    } else {
+      this.aisFlg = 'N';
+    }
+    const objFilterValDesc = this.criteriaObj.listValuationTradein.filter(
+      (obj) => {
+        if (obj && obj.valDesc) {
+          const key = 'valDesc';
+          delete obj[key];
+          return obj;
+        } else {
+          return obj;
+        }
+    });
+    const objRequestEstimate = {
+      brand: this.criteriaObj.brand,
+      model: this.criteriaObj.model,
+      matCode: this.criteriaObj.matCode,
+      serialNo: this.criteriaObj.serialNo,
+      listValuationTradein: objFilterValDesc
+    };
 
-
-    this.tradeInService.getEstimateTradein(brand, model, matCode).subscribe(
+    this.tradeInService.getEstimateTradein(objRequestEstimate , this.aisFlg).subscribe(
       (res: any) => {
-        // console.log('valuationlists', this.valuationlists);
+        if (res && res.data.resultCode === 'S') {
+          this.tradeinGrade = res.data.tradeinGrade;
+          this.tradeinPrice = res.data.tradeinPrice;
+          this.tradeinNo = res.data.tradeinNo;
+        } else {
+
+        }
         this.pageLoadingService.closeLoading();
       },
       (err: any) => {
@@ -61,7 +87,7 @@ export class ConfirmTradeInComponent implements OnInit {
   }
 
   onHome() {
-    this.homeService.goToHome();
+    window.location.href = '/sale-portal/dashboard';
   }
 
   onBack() {
@@ -70,6 +96,16 @@ export class ConfirmTradeInComponent implements OnInit {
 
   btnCancelFn() {
     this.router.navigate(['trade-in/criteria-trade-in']);
+  }
+
+  onNext () {
+    const objEstimate = {
+      tradeinNo: this.tradeinNo,
+      tradeinPrice: this.tradeinPrice,
+      tradeinGrade: this.tradeinGrade
+    };
+    this.tradeInService.setEstimateTradein(objEstimate);
+    this.router.navigate(['trade-in/summary-trade-in']);
   }
 
 }

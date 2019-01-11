@@ -18,7 +18,6 @@ export class CriteriaTradeInComponent implements OnInit {
   objTradein: any;
   constructor(private router: Router,
     private homeService: HomeService,
-    private formBuilder: FormBuilder,
     private tradeInService: TradeInService,
     private pageLoadingService: PageLoadingService) { }
 
@@ -32,7 +31,6 @@ export class CriteriaTradeInComponent implements OnInit {
     const tradeIn: any = JSON.parse(localStorage.getItem('Tradein'));
     const brand: any = tradeIn.brand;
     const model: any = tradeIn.model;
-    const serialNo: any = tradeIn.serialNo;
 
 
     this.tradeInService.getListValuationTradein(brand, model).subscribe(
@@ -41,7 +39,6 @@ export class CriteriaTradeInComponent implements OnInit {
         for (const item of this.valuationlists) {
             item.valChecked = 'N';
         }
-        console.log('valuationlists', this.valuationlists);
         this.pageLoadingService.closeLoading();
       },
       (err: any) => {
@@ -63,7 +60,7 @@ export class CriteriaTradeInComponent implements OnInit {
   }
 
   onHome() {
-    this.homeService.goToHome();
+    window.location.href = '/sale-portal/dashboard';
   }
 
   onBack() {

@@ -13,6 +13,7 @@ import { Tradein } from '../../models/trade-in.models';
   styleUrls: ['./verify-trade-in.component.scss']
 })
 export class VerifyTradeInComponent implements OnInit {
+
   imeiForm: FormGroup;
   submitted = false;
   listModelTradein = [];
@@ -20,7 +21,6 @@ export class VerifyTradeInComponent implements OnInit {
   subscriptionModel: Subscription;
   selectOp = null;
   butDisabled = false;
-  activeNext = false;
   objTradein: Tradein;
   isNextPage = false;
   serialMatCode: string;
@@ -35,15 +35,14 @@ export class VerifyTradeInComponent implements OnInit {
   ngOnInit () {
     this.setFormImei();
     this.setListModelTradein();
-    console.log(this.tradeInService.getTradein());
   }
 
   onHome () {
-    this.homeService.goToHome();
+    window.location.href = '/sale-portal/dashboard';
   }
 
   onBack () {
-    this.router.navigate(['dashboard']);
+    window.location.href = '/sale-portal/dashboard';
   }
   setFormImei () {
     this.imeiForm = new FormGroup({
@@ -112,7 +111,7 @@ export class VerifyTradeInComponent implements OnInit {
         this.objTradein = {
           brand: this.listModelTradein[index].brand,
           model: this.listModelTradein[index].model,
-          matCode: this.serialMatCode ? this.serialMatCode : '',
+          matCode: this.serialMatCode ? this.serialMatCode : ' ',
           serialNo: this.imeiForm.value.imei ? this.imeiForm.value.imei : ''
         };
         return this.objTradein;
@@ -164,6 +163,7 @@ export class VerifyTradeInComponent implements OnInit {
     this.selectOp = null;
     this.tradeInService.removeTradein();
     this.isCheckImei = false;
+    this.butDisabled = false;
   }
   checkValueTradein () {
     if (!this.imeiForm.invalid && this.objTradein.brand && this.objTradein.model && this.isCheckImei) {
