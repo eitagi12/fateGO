@@ -11,7 +11,8 @@ import { CriteriaTradeInComponent } from './containers/criteria-trade-in/criteri
 import { HeaderTradeInComponent } from './containers/header-trade-in/header-trade-in.component';
 import { ConfirmTradeInComponent } from './containers/confirm-trade-in/confirm-trade-in.component';
 import { SummaryTradeInComponent } from './containers/summary-trade-in/summary-trade-in.component';
-
+import { ReceiptTradeInComponent } from './containers/receipt-trade-in/receipt-trade-in.component';
+import { NgxBarcodeModule } from 'ngx-barcode';
 
 @NgModule({
   imports: [
@@ -19,7 +20,8 @@ import { SummaryTradeInComponent } from './containers/summary-trade-in/summary-t
     TradeInRoutingModule,
     MyChannelSharedLibsModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    NgxBarcodeModule
   ],
   declarations: [
     TradeInComponent,
@@ -27,7 +29,8 @@ import { SummaryTradeInComponent } from './containers/summary-trade-in/summary-t
     CriteriaTradeInComponent,
     HeaderTradeInComponent,
     ConfirmTradeInComponent,
-    SummaryTradeInComponent
+    SummaryTradeInComponent,
+    ReceiptTradeInComponent
   ],
   providers: [
     TradeInService
