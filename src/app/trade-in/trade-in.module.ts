@@ -12,7 +12,6 @@ import { HeaderTradeInComponent } from './containers/header-trade-in/header-trad
 import { ConfirmTradeInComponent } from './containers/confirm-trade-in/confirm-trade-in.component';
 import { SummaryTradeInComponent } from './containers/summary-trade-in/summary-trade-in.component';
 import { ReceiptTradeInComponent } from './containers/receipt-trade-in/receipt-trade-in.component';
-import { NgxBarcodeModule } from 'ngx-barcode';
 
 @NgModule({
   imports: [
@@ -20,8 +19,7 @@ import { NgxBarcodeModule } from 'ngx-barcode';
     TradeInRoutingModule,
     MyChannelSharedLibsModule,
     ReactiveFormsModule,
-    FormsModule,
-    NgxBarcodeModule
+    FormsModule
   ],
   declarations: [
     TradeInComponent,

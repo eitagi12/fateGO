@@ -14,6 +14,8 @@ export class ReceiptTradeInComponent implements OnInit {
   model = "I6 Plus";
   grade = "AAAAA";
   price = "5,000";
+  tradeinNo = "1111111111111";
+  serialNo = "222222222222"
 
   constructor() { }
 

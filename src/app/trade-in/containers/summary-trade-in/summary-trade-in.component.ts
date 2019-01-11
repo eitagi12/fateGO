@@ -37,4 +37,8 @@ export class SummaryTradeInComponent implements OnInit {
   gotoMainMenu () {
     window.location.href = '/sale-portal/dashboard';
   }
+
+  gotoPrintSummary() {
+    this.router.navigate(['trade-in/receipt-trade-in']);
+  }
 }
