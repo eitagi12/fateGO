@@ -5,7 +5,7 @@ import {
   ROUTE_ORDER_MNP_CUSTOMER_INFO_PAGE,
   ROUTE_ORDER_MNP_SELECT_REASON_PAGE
 } from 'src/app/order/order-mnp/constants/route-path.constant';
-import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionAction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
 import { ReadCardProfile, HomeService, TokenService, PageLoadingService, ChannelType, Utils, AlertService, KioskControls, ValidateCustomerIdCardComponent } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 
@@ -24,6 +24,7 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
   readCardValid: boolean;
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
+  billDeliveryAddress: BillDeliveryAddress;
 
   constructor(
     private router: Router,
@@ -37,7 +38,7 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
   ) {
     this.transaction = this.transactionService.load();
     this.homeService.callback = () => {
-      if(this.validateCustomerIdcard.koiskApiFn){
+      if (this.validateCustomerIdcard.koiskApiFn) {
         this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
       }
       window.location.href = '/smart-shop';
@@ -51,7 +52,7 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
 
   onError(valid: boolean) {
     this.readCardValid = valid;
-    if(!this.profile){
+    if (!this.profile) {
       this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
       this.validateCustomerIdcard.koiskApiFn.removedState().subscribe((removed: boolean) => {
         if (removed) {
@@ -59,7 +60,6 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
           this.validateCustomerIdcard.ngOnInit();
         }
       });
-    
     }
   }
 
@@ -74,7 +74,7 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
   }
 
   onBack() {
-    if(this.validateCustomerIdcard.koiskApiFn){
+    if (this.validateCustomerIdcard.koiskApiFn) {
       this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
     }
     this.router.navigate([ROUTE_ORDER_MNP_SELECT_REASON_PAGE]);
@@ -92,6 +92,21 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
         }).toPromise()
           .then((resp: any) => {
             const data = resp.data || {};
+            this.billDeliveryAddress = {
+              homeNo: data.homeNo || '',
+              moo: data.moo || '',
+              mooBan: data.mooBan || '',
+              room: data.room || '',
+              floor: data.floor || '',
+              buildingName: data.buildingName || '',
+              soi: data.soi || '',
+              street: data.street || '',
+              province: data.province || '',
+              amphur: data.amphur || '',
+              tumbol: data.tumbol || '',
+              zipCode: data.zipCode || '',
+            };
+
             return {
               caNumber: data.caNumber,
               mainMobile: data.mainMobile,
@@ -129,6 +144,7 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
       })
       .then((billingInformation: any) => {
         this.transaction.data.billingInformation = billingInformation;
+        this.transaction.data.billingInformation.billDeliveryAddress = this.billDeliveryAddress;
         if (this.checkBusinessLogic()) {
           this.router.navigate([ROUTE_ORDER_MNP_CUSTOMER_INFO_PAGE]);
         }

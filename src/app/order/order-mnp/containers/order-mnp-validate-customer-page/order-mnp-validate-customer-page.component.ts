@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionAction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
 import { PageLoadingService, HomeService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -21,6 +21,7 @@ export class OrderMnpValidateCustomerPageComponent implements OnInit, OnDestroy 
   transaction: Transaction;
   identityValid = false;
   identity: string;
+  billDeliveryAddress: BillDeliveryAddress;
 
   constructor(
     private router: Router,
@@ -66,9 +67,46 @@ export class OrderMnpValidateCustomerPageComponent implements OnInit, OnDestroy 
       .toPromise()
       .then((resp: any) => {
         this.transaction.data.customer = Object.assign(this.transaction.data.customer, resp.data);
-        this.router.navigate([ROUTE_ORDER_MNP_CUSTOMER_INFO_PAGE]);
+        this.billDeliveryAddress = {
+          homeNo: resp.data.homeNo || '',
+          moo: resp.data.moo || '',
+          mooBan: resp.data.mooBan || '',
+          room: resp.data.room || '',
+          floor: resp.data.floor || '',
+          buildingName: resp.data.buildingName || '',
+          soi: resp.data.soi || '',
+          street: resp.data.street || '',
+          province: resp.data.province || '',
+          amphur: resp.data.amphur || '',
+          tumbol: resp.data.tumbol || '',
+          zipCode: resp.data.zipCode || '',
+        };
+
+        return this.http.get(`/api/customerportal/newRegister/${this.identity}/queryBillingAccount`).toPromise()
+          .then((res: any) => {
+            const data = res.data || {};
+            return this.http.post('/api/customerportal/verify/billingNetExtreme', {
+              businessType: '1',
+              listBillingAccount: data.billingAccountList
+            }).toPromise()
+              .then((respBillingNetExtreme: any) => {
+                return {
+                  billCycles: data.billingAccountList,
+                  billCyclesNetExtreme: respBillingNetExtreme.data
+                };
+              })
+              .catch(() => {
+                return {
+                  billCycles: data.billingAccountList
+                };
+              });
+          });
       })
-      .catch(() => {
+      .then((billingInformation: any) => {
+        this.transaction.data.billingInformation = billingInformation;
+        this.transaction.data.billingInformation.billDeliveryAddress = this.billDeliveryAddress;
+        this.router.navigate([ROUTE_ORDER_MNP_CUSTOMER_INFO_PAGE]);
+      }).catch(() => {
         this.router.navigate([ROUTE_ORDER_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE], {
           queryParams: {
             idCardNo: this.identity
@@ -78,6 +116,7 @@ export class OrderMnpValidateCustomerPageComponent implements OnInit, OnDestroy 
       .then(() => {
         this.pageLoadingService.closeLoading();
       });
+
   }
 
 

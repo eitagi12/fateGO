@@ -73,7 +73,7 @@ export class OrderNewRegisterValidateCustomerPageComponent implements OnInit, On
       })
       .then((customer) => { // load bill cycle
         this.billDeliveryAddress = {
-          homeNo: customer.amphur || '',
+          homeNo: customer.homeNo || '',
           moo: customer.moo || '',
           mooBan: customer.mooBan || '',
           room: customer.room || '',
