@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { LocalStorageService, NgxResource } from 'ngx-store';
-import { Tradein } from '../models/trade-in.models';
+import { Tradein, Criteriatradein } from '../models/trade-in.models';
 import { TokenService } from 'mychannel-shared-libs';
 
 
@@ -16,8 +16,16 @@ export class TradeInService {
 
 
   private get settingTradein(): NgxResource<object> {
+    console.log('localStorageService', this.localStorageService);
     return this.localStorageService
       .load(`Tradein`)
+      .setDefaultValue({});
+  }
+
+  private get settingCriteriatTradein(): NgxResource<object> {
+    console.log('localStorageService', this.localStorageService);
+    return this.localStorageService
+      .load(`Criteriatradein`)
       .setDefaultValue({});
   }
 
@@ -47,7 +55,7 @@ export class TradeInService {
   }
 
   getEstimateTradein(brand: string, model: string, matCode: string): Observable<any> {
-    const url = '/api/salesportal/getestimateTradein';
+    const url = '/api/salesportal/getEstimateTradein';
     const body = {
       brand: brand,
       model: model,
@@ -69,5 +77,9 @@ export class TradeInService {
 
   getTradein () {
     return this.settingTradein.value;
+  }
+
+  setValuationlistTradein(valuationlists: Criteriatradein) {
+    this.settingCriteriatTradein.save(valuationlists);
   }
 }
