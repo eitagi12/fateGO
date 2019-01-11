@@ -21,15 +21,12 @@
           เงื่อนไขประเมินราคา
         </div>
         <div class="card-body">
-          <div class="valuationlist">
-            <form>
-              <div class="form-group row">
-                <div class="col-12 col-sm-12" *ngFor="let listValuationTradein of valuationlists">
-                  <input [checked]="listValuationTradein.valChecked == 'Y'" type="checkbox" id="{{listValuationTradein.valCode}}" value="{{listValuationTradein.valCode}}" disabled>
-                  <label for="{{listValuationTradein.valCode}}"> {{listValuationTradein.valDesc}} </label>
-                </div>
-              </div>
-            </form>
+          <div class="form-row">
+            <div class="col-12 col-sm-12" *ngFor="let listValuationTradein of valuationlists">
+              <input class="tradein-checkbox" [checked]="listValuationTradein.valChecked == 'Y'" type="checkbox" id="{{listValuationTradein.valCode}}"
+                value="{{listValuationTradein.valCode}}" disabled>
+              <label for="{{listValuationTradein.valCode}}"> {{listValuationTradein.valDesc}} </label>
+            </div>
           </div>
         </div>
       </div>
