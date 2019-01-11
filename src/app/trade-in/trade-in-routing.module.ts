@@ -4,6 +4,7 @@ import { VerifyTradeInComponent } from './containers/verify-trade-in/verify-trad
 import { CriteriaTradeInComponent } from './containers/criteria-trade-in/criteria-trade-in.component';
 import { ConfirmTradeInComponent } from './containers/confirm-trade-in/confirm-trade-in.component';
 import { SummaryTradeInComponent } from './containers/summary-trade-in/summary-trade-in.component';
+import { ReceiptTradeInComponent } from './containers/receipt-trade-in/receipt-trade-in.component';
 
 const routes: Routes = [
   {
@@ -20,6 +21,9 @@ const routes: Routes = [
   },
   {
     path: 'summary-trade-in', component: SummaryTradeInComponent
+  },
+  {
+    path: 'receipt-trade-in', component: ReceiptTradeInComponent
   }
 ];
 

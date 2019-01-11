@@ -1,0 +1,23 @@
+<div style="text-align:center">
+  <h1>
+    {{ title }}
+  </h1>
+</div>
+
+<div style="text-align:center">Trade In
+  <ngx-barcode [bc-format]="'MSI'" [bc-value]="'12345678901231'">
+  </ngx-barcode>
+</div>
+
+<div style="text-align:center">EMEI
+  <ngx-barcode [bc-format]="'MSI'" [bc-value]="'12345678901231'">
+  </ngx-barcode>
+</div>
+
+<div class="container" style="text-align:center">
+  <span>Commpany : {{Commpany}}</span><br>
+  <span>Brand : {{brand}}</span><br>
+  <span>Model : {{model}}</span><br>
+  <span>Grade : {{grade}}</span><br>
+  <span>Price : {{price}}</span>
+</div>
