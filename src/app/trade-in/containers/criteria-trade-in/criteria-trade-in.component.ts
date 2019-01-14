@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { TradeInService } from '../../services/trade-in.service';
 import { Subscription } from 'rxjs';
-import { Criteriatradein, Tradein } from '../../models/trade-in.models';
+import { Criteriatradein } from 'src/app/shared/models/trade-in.model';
 
 @Component({
   selector: 'app-criteria-trade-in',

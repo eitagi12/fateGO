@@ -1,4 +1,3 @@
-
 export interface Tradein {
     brand: string;
     model: string;

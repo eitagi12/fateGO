@@ -2,8 +2,8 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { LocalStorageService, NgxResource } from 'ngx-store';
-import { Tradein, Criteriatradein, RequestEstimateTradein } from '../models/trade-in.models';
 import { TokenService } from 'mychannel-shared-libs';
+import { Tradein, Criteriatradein } from 'src/app/shared/models/trade-in.model';
 
 
 @Injectable({

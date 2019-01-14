@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { TradeInService } from '../../services/trade-in.service';
 import { Subscription } from 'rxjs';
-import { Tradein } from '../../models/trade-in.models';
+import { Tradein } from 'src/app/shared/models/trade-in.model';
 
 
 @Component({

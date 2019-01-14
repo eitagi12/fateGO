@@ -1,5 +1,4 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Tradein } from '../../models/trade-in.models';
 import { TradeInService } from '../../services/trade-in.service';
 
 @Component({
