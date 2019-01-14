@@ -17,8 +17,6 @@ export class VerifyTradeInComponent implements OnInit {
   imeiForm: FormGroup;
   submitted = false;
   listModelTradein = [];
-  subscriptionListModelTradeIn: Subscription;
-  subscriptionModel: Subscription;
   selectOp = null;
   butDisabled = false;
   objTradein: Tradein;
@@ -54,46 +52,28 @@ export class VerifyTradeInComponent implements OnInit {
     this.pageLoadingService.openLoading();
     this.submitted = true;
     this.isCheckImei = true;
-    this.subscriptionModel = this.tradeInService.checkSerialTradein(this.imeiForm.value.imei).subscribe({
-      next: (response) => {
-        this.pageLoadingService.closeLoading();
-        if (response.data.status === 'S') {
-          this.serialMatCode = response.data.matcode;
-          this.setModelImeiToModelList(response.data.brand , response.data.model);
-        } else {
-          this.alertService.warning('ไม่พบหมายเลข imei ในระบบ กรุณา เลือก รุ่นโทรศัพท์');
-          this.butDisabled = false;
-          this.selectOp = null;
+    this.tradeInService.checkSerialTradein(this.imeiForm.value.imei).then(
+        (response) => {
+          this.pageLoadingService.closeLoading();
+          if (response.data.status === 'S') {
+            this.serialMatCode = response.data.matcode;
+            this.setModelImeiToModelList(response.data.brand , response.data.model);
+          } else {
+            this.alertService.warning('ไม่พบหมายเลข imei ในระบบ กรุณา เลือก รุ่นโทรศัพท์');
+            this.butDisabled = false;
+            this.selectOp = null;
         }
-      },
-      complete: () => {
-      },
-      error: (err) => {
-        this.pageLoadingService.closeLoading();
-        console.log('err  ', err);
-      }
-    });
+      });
   }
   setListModelTradein () {
     this.pageLoadingService.openLoading();
-    this.subscriptionListModelTradeIn = this.tradeInService.getListModelTradeIn().subscribe(
-      {
-        next: (res) => {
-          this.listModelTradein = res.data.listResult;
-        },
-        complete: () => {
-          this.pageLoadingService.closeLoading();
-        },
-        error: (err) => {
-          this.pageLoadingService.closeLoading();
-          console.log(err);
-        }
+    this.tradeInService.getListModelTradeIn().then(
+      (response) => {
+        this.listModelTradein = response.data.listResult;
       }
     );
   }
   OnDestroy () {
-    this.subscriptionListModelTradeIn.unsubscribe();
-    this.subscriptionModel.unsubscribe();
     this.tradeInService.removeTradein();
     this.isCheckImei = false;
   }

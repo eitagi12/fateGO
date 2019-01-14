@@ -65,20 +65,14 @@ export class ConfirmTradeInComponent implements OnInit {
       listValuationTradein: objFilterValDesc
     };
 
-    this.tradeInService.getEstimateTradein(objRequestEstimate , this.aisFlg).subscribe(
-      (res: any) => {
-        if (res && res.data.resultCode === 'S') {
-          this.tradeinGrade = res.data.tradeinGrade;
-          this.tradeinPrice = res.data.tradeinPrice;
-          this.tradeinNo = res.data.tradeinNo;
-        } else {
-
+    this.tradeInService.getEstimateTradein(objRequestEstimate , this.aisFlg).then(
+      (response) => {
+        if (response.data.resultCode === 'S') {
+          this.tradeinGrade = response.data.tradeinGrade;
+          this.tradeinPrice = response.data.tradeinPrice;
+          this.tradeinNo = response.data.tradeinNo;
         }
         this.pageLoadingService.closeLoading();
-      },
-      (err: any) => {
-        this.pageLoadingService.closeLoading();
-        console.log(err);
       });
   }
 
