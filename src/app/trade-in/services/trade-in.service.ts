@@ -29,12 +29,13 @@ export class TradeInService {
       .setDefaultValue({});
   }
 
-  getListModelTradeIn(): Observable<any> {
+  getListModelTradeIn(): Promise<any> {
     const url = '/api/salesportal/getlistmodeltradein';
-    return this.http.get(url);
+    return this.http.get(url).toPromise();
   }
+  
 
-  checkSerialTradein(imei: string): Observable<any> {
+  checkSerialTradein(imei: string): Promise<any> {
     const token = this.tokenService.getUser();
     const url = '/api/customerportal/newRegister/checkSerial';
     const body = {
@@ -42,19 +43,19 @@ export class TradeInService {
       locationCode: token.locationCode,
       checkType: 'TRADEIN'
     };
-    return this.http.post(url, body);
+    return this.http.post(url, body).toPromise();
   }
 
-  getListValuationTradein(brand: string, model: string): Observable<any> {
+  getListValuationTradein(brand: string, model: string): Promise<any> {
     const url = '/api/salesportal/getListValuationTradein';
     const body = {
       brand: brand,
       model: model
     };
-    return this.http.post(url, body);
+    return this.http.post(url, body).toPromise();
   }
 
-  getEstimateTradein(objEstimate: any, aisFlg: string): Observable<any> {
+  getEstimateTradein(objEstimate: any, aisFlg: string): Promise<any> {
     const url = '/api/salesportal/getEstimateTradein';
     const token = this.tokenService.getUser();
     const body = {
@@ -67,7 +68,7 @@ export class TradeInService {
       aisFlg: aisFlg,
       listValuation: objEstimate.listValuationTradein
     };
-    return this.http.post(url, body);
+    return this.http.post(url, body).toPromise();
   }
 
   setSelectedTradein(objTradein: Tradein) {
