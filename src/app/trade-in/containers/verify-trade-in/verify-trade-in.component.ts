@@ -69,6 +69,7 @@ export class VerifyTradeInComponent implements OnInit {
     this.pageLoadingService.openLoading();
     this.tradeInService.getListModelTradeIn().then(
       (response) => {
+        this.pageLoadingService.closeLoading();
         this.listModelTradein = response.data.listResult;
       }
     );

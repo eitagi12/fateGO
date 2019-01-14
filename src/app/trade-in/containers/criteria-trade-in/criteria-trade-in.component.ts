@@ -32,12 +32,9 @@ export class CriteriaTradeInComponent implements OnInit {
 
   createForm(valuationlists: any[]) {
     const controls = valuationlists.map(() => new FormControl(false));
-    console.log(controls);
     this.criteriaForm = this.fb.group({
       checkedCri: this.fb.array(controls)
     });
-    console.log('criteriaForm   ');
-    console.log(this.criteriaForm.value);
   }
 
   ListValuationTradein() {
@@ -53,7 +50,6 @@ export class CriteriaTradeInComponent implements OnInit {
         for (const item of this.valuationlists) {
           item.valChecked = 'N';
         }
-        console.log('00000000  ', this.valuationlists);
         this.createForm(this.valuationlists);
         this.pageLoadingService.closeLoading();
       },
