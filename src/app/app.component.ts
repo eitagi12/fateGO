@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { TokenService, ErrorsService, AlertService, PageActivityService, HomeService } from 'mychannel-shared-libs';
+import { TokenService, ErrorsService, AlertService, PageActivityService, HomeService, ChannelType } from 'mychannel-shared-libs';
 import { setTheme } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
 import { environment } from '../environments/environment';
@@ -72,31 +72,33 @@ export class AppComponent {
 
   pageActivityHandler() {
     const token = this.tokenService.getUser();
-    if (token && token.channelType === 'smart-order') {
-      this.pageActivityService.setTimeout((counter) => {
-        const url = this.router.url;
-        if (url.indexOf('perso-sim') !== -1) {
-          return counter === 300;
-        }
-        if (url.indexOf('face-confirm') !== -1) {
-          return counter === 900;
-        }
-        if (url.indexOf('validate-customer-id-card') !== -1) {
-          return counter === 120;
-        }
-        return counter === 60;
-      }).subscribe(() => {
-        this.alertService.question(
-          'คุณไม่ได้ทำรายการภายในเวลาที่กำหนด ต้องการทำรายการต่อหรือไม่?',
-          'ทำรายการต่อ', 'ยกเลิก'
-        ).then((data) => {
-          if (!data.value) {
-            this.homeService.goToHome();
-          }
-          this.pageActivityService.resetTimeout();
-        });
-      });
+    if (token.channelType !== ChannelType.SMART_ORDER) {
+      return;
     }
+
+    this.pageActivityService.setTimeout((counter) => {
+      const url = this.router.url;
+      if (url.indexOf('perso-sim') !== -1) {
+        return counter === 300;
+      }
+      if (url.indexOf('face-confirm') !== -1) {
+        return counter === 900;
+      }
+      if (url.indexOf('validate-customer-id-card') !== -1) {
+        return counter === 120;
+      }
+      return counter === 60;
+    }).subscribe(() => {
+      this.alertService.question(
+        'คุณไม่ได้ทำรายการภายในเวลาที่กำหนด ต้องการทำรายการต่อหรือไม่?',
+        'ทำรายการต่อ', 'ยกเลิก'
+      ).then((data) => {
+        if (!data.value) {
+          this.homeService.goToHome();
+        }
+        this.pageActivityService.resetTimeout();
+      });
+    });
   }
 
   isDeveloperMode(): boolean {
