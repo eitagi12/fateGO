@@ -101,7 +101,7 @@ export class AppComponent {
         reverseButtons: true,
         allowEscapeKey: false,
         text: 'คุณไม่ได้ทำรายการภายในเวลาที่กำหนด ต้องการทำรายการต่อหรือไม่?',
-        timer: 300000
+        timer: 180000
       }).then((data) => {
         if (!data.value) {
           this.homeService.goToHome();
