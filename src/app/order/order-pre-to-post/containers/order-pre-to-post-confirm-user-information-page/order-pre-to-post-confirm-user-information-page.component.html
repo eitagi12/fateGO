@@ -11,7 +11,7 @@
     <div class="mt-3 mb-3">
       <mc-wizard [wizards]="wizards" active="3"></mc-wizard>
 
-      <mc-confirm-customer-info [confirmCustomerInfo]="billDeliveryAddress">
+      <mc-confirm-customer-info [confirmCustomerInfo]="confirmCustomerInfo">
       </mc-confirm-customer-info>
 
       <mc-billing-info [billingInfo]="billingInfo" (editAddress)="onEditAddress()">
