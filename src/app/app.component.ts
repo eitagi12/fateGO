@@ -103,10 +103,9 @@ export class AppComponent {
         text: 'คุณไม่ได้ทำรายการภายในเวลาที่กำหนด ต้องการทำรายการต่อหรือไม่?',
         timer: 300000
       }).then((data) => {
-        console.log('data', data);
         if (!data.value) {
-          // this.homeService.goToHome();
-          this.router.navigate([ROUTE_DEASHBOARD_MAIN_MENU_PAGE]);
+          this.homeService.goToHome();
+          // this.router.navigate([ROUTE_DEASHBOARD_MAIN_MENU_PAGE]);
         }
         this.pageActivityService.resetTimeout();
       });
