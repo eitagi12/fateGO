@@ -35,7 +35,7 @@ export class SummaryTradeInComponent implements OnInit {
     this.tradeinGrade = criteriaTradein.tradeinGrade;
   }
   gotoMainMenu () {
-    window.location.href = '/sale-portal/dashboard';
+    window.location.href = '/sales-portal/dashboard';
   }
 
   gotoPrintSummary() {
