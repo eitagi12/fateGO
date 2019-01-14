@@ -47,7 +47,7 @@ export class CriteriaTradeInComponent implements OnInit {
     const model: any = tradeIn.model;
 
 
-    this.tradeInService.getListValuationTradein(brand, model).subscribe(
+    this.tradeInService.getListValuationTradein(brand, model).then(
       (res: any) => {
         this.valuationlists = res.data.listValuation;
         for (const item of this.valuationlists) {
