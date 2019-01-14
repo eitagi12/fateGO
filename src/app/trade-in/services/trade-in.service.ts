@@ -76,6 +76,7 @@ export class TradeInService {
 
   removeTradein () {
     this.settingTradein.remove();
+    this.settingCriteriatTradein.remove();
   }
 
   getTradein () {

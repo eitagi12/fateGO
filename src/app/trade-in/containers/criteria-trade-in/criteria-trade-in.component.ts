@@ -16,14 +16,28 @@ export class CriteriaTradeInComponent implements OnInit {
   valuationlists: any;
   objCriteriatradein: Criteriatradein;
   objTradein: any;
+  isCheckCri = false;
+
+  criteriaForm: FormGroup;
   constructor(private router: Router,
     private homeService: HomeService,
     private tradeInService: TradeInService,
-    private pageLoadingService: PageLoadingService) { }
+    private pageLoadingService: PageLoadingService,
+    private fb: FormBuilder) { }
 
   ngOnInit() {
-   this.ListValuationTradein();
-   this.objTradein = this.tradeInService.getTradein();
+    this.ListValuationTradein();
+    this.objTradein = this.tradeInService.getTradein();
+  }
+
+  createForm(valuationlists: any[]) {
+    const controls = valuationlists.map(() => new FormControl(false));
+    console.log(controls);
+    this.criteriaForm = this.fb.group({
+      checkedCri: this.fb.array(controls)
+    });
+    console.log('criteriaForm   ');
+    console.log(this.criteriaForm.value);
   }
 
   ListValuationTradein() {
@@ -37,8 +51,10 @@ export class CriteriaTradeInComponent implements OnInit {
       (res: any) => {
         this.valuationlists = res.data.listValuation;
         for (const item of this.valuationlists) {
-            item.valChecked = 'N';
+          item.valChecked = 'N';
         }
+        console.log('00000000  ', this.valuationlists);
+        this.createForm(this.valuationlists);
         this.pageLoadingService.closeLoading();
       },
       (err: any) => {
@@ -55,7 +71,7 @@ export class CriteriaTradeInComponent implements OnInit {
     }
   }
 
-  OnDestroy () {
+  OnDestroy() {
     this.tradeInService.removeTradein();
   }
 
@@ -69,18 +85,21 @@ export class CriteriaTradeInComponent implements OnInit {
   }
 
   btnCancelFn() {
-    this.router.navigate(['trade-in/verify-trade-in']);
+    this.resetCriteriatradein();
   }
 
-  onNext(brand: string, model: string) {
+  onNext() {
     this.objCriteriatradein = {
-    brand: this.objTradein.brand,
-    model: this.objTradein.model,
-    matCode: this.objTradein.matCode,
-    serialNo: this.objTradein.serialNo,
-    listValuationTradein: this.valuationlists
+      brand: this.objTradein.brand,
+      model: this.objTradein.model,
+      matCode: this.objTradein.matCode,
+      serialNo: this.objTradein.serialNo,
+      listValuationTradein: this.valuationlists
     };
     this.tradeInService.setValuationlistTradein(this.objCriteriatradein);
     this.router.navigate(['trade-in/confirm-trade-in']);
+  }
+  resetCriteriatradein() {
+    this.criteriaForm.value.checkedCri = false;
   }
 }
