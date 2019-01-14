@@ -18,10 +18,11 @@ export class CreateNewRegisterService {
   createNewRegister(transaction: Transaction): Promise<any> {
     this.saveFaceImage(transaction);
     return this.getRequestCreateNewRegister(transaction).then((data) => {
-      return this.http.post(
-        '/api/customerportal/newRegister/createNewRegistration',
-        data
-      ).toPromise();
+      console.log(data);
+      // return this.http.post(
+      //   '/api/customerportal/newRegister/createNewRegistration',
+      //   data
+      // ).toPromise();
     });
   }
 
@@ -145,13 +146,13 @@ export class CreateNewRegisterService {
     // orderVerify
     if (faceRecognition && faceRecognition.kyc) {
       if (this.isReadCard(action)) {
-        data.orderVerify = 'Smart Card KYC';
+        data.orderVerify = 'Smart KYC';
       } else {
         data.orderVerify = 'User KYC';
       }
     } else {
       if (this.isReadCard(action)) {
-        data.orderVerify = 'Smart Card Face';
+        data.orderVerify = 'Smart Face';
       } else {
         data.orderVerify = 'User Face';
       }
