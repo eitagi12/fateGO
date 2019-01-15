@@ -298,7 +298,11 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
 
   getBllingCycle(billCycle: string): Promise<string> {
     if (!billCycle) {
-      return this.http.get('/api/customerportal/newRegister/queryBillCycle')
+      return this.http.get('/api/customerportal/newRegister/queryBillCycle', {
+        params: {
+          coProject: 'N'
+        }
+      })
         .toPromise()
         .then((resp: any) => {
           const data = resp.data.billCycles || [];

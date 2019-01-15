@@ -37,7 +37,11 @@ export class OrderPreToPostEbillingPageComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
 
-    this.http.get('/api/customerportal/newRegister/queryBillCycle').toPromise().then((resp: any) => {
+    this.http.get('/api/customerportal/newRegister/queryBillCycle', {
+      params: {
+        coProject: 'N'
+      }
+    }).toPromise().then((resp: any) => {
       const data = resp.data || {};
       this.billCycles = data.billCycles || [];
       if (!this.transaction.data.billingInformation.billCycle) {
@@ -48,7 +52,7 @@ export class OrderPreToPostEbillingPageComponent implements OnInit, OnDestroy {
 
   setBillingDefault(ebilling: Ebilling[]) {
     for (const ebill of ebilling) {
-      if (ebill.bill === this.transaction.data.customer.billCycle ) {
+      if (ebill.bill === this.transaction.data.customer.billCycle) {
         this.billCycle = ebill;
         this.transaction.data.billingInformation.billCycle = this.billCycle;
       }
