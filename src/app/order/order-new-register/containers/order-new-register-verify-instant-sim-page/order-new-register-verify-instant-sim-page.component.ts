@@ -55,9 +55,14 @@ export class OrderNewRegisterVerifyInstantSimPageComponent implements OnInit, On
         };
         this.pageLoadingService.closeLoading();
       }).catch((resp: any) => {
+        this.simSerialValid = false;
+        this.simSerial = undefined;
         const error = resp.error || [];
         this.pageLoadingService.closeLoading();
-        this.alertService.error(error.resultDescription);
+        this.alertService.notify({
+          type: 'error',
+          html: error.resultDescription
+        });
       });
   }
 
