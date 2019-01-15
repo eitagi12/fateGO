@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { HomeService, PageLoadingService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
-import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
+import { FormControl, FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { TradeInService } from '../../services/trade-in.service';
 import { Subscription } from 'rxjs';
 import { Criteriatradein } from 'src/app/shared/models/trade-in.model';
@@ -16,38 +16,29 @@ export class CriteriaTradeInComponent implements OnInit {
   valuationlists: any;
   objCriteriatradein: Criteriatradein;
   objTradein: any;
-  listForm: FormGroup;
   btnNextDisabled = true;
-  criteriaForm: FormGroup;
+  valuationlistForm: FormGroup;
 
 
   constructor(private router: Router,
     private homeService: HomeService,
     private tradeInService: TradeInService,
     private pageLoadingService: PageLoadingService,
+    
     private fb: FormBuilder) { }
 
   ngOnInit() {
     this.setFormValuation();
     this.ListValuationTradein();
     this.objTradein = this.tradeInService.getTradein();
+    this.createForm();
   }
 
-  createForm(valuationlists: any[]) {
-    const controls = valuationlists.map(() => new FormControl(false));
-    this.criteriaForm = this.fb.group({
-      checkedCri: this.fb.array(controls)
-    });
+  createForm() {
+    this.valuationlistForm = new FormGroup({
+      valuationlist: new FormControl("",[Validators.required])
+   });
   }
-  // createForm(valuationlists: any[]) {
-  //   const controls = valuationlists.map(() => new FormControl(false));
-  //   console.log(controls);
-  //   this.criteriaForm = this.fb.group({
-  //     checkedCri: this.fb.array(controls)
-  //   });
-  //   console.log('criteriaForm   ');
-  //   console.log(this.criteriaForm.value);
-  // }
 
   ListValuationTradein() {
     this.pageLoadingService.openLoading();
@@ -82,9 +73,9 @@ export class CriteriaTradeInComponent implements OnInit {
     }
   }
 
-  setFormValuation () {
-    this.listForm = new FormGroup({
-      valuationlists: new FormControl('', [Validators.required])
+  setFormValuation() {
+    this.valuationlistForm =  this.fb.group({
+      listVuation: ["",Validators.required]
     });
   }
 
@@ -102,8 +93,8 @@ export class CriteriaTradeInComponent implements OnInit {
   }
 
   onCancel() {
-    this.listForm.reset();
-    console.log(this.listForm.reset());
+    this.valuationlistForm.reset();
+    console.log(this.valuationlistForm.reset());
 
   }
 

@@ -22,10 +22,10 @@
         </div>
         <div class="card-body">
           <div class="row">
-            <form [formGroup]="listForm" class="checkbox-circle">
+            <form [formGroup]="valuationlistForm" class="checkbox-circle">
               <div class="form-row">
                 <div class="col-12 col-sm-12" *ngFor="let valuationlist of valuationlists">
-                  <input type="checkbox" id="{{valuationlist.valCode}}" value="{{valuationlist.valCode}}"
+                  <input type="checkbox" formControlName="listVuation" id="{{valuationlist.valCode}}" value="{{valuationlist.valCode}}"
                     (change)="selectValuationlistFn(valuationlist, $event)">
                   <label for="{{valuationlist.valCode}}"> {{valuationlist.valDesc}} </label>
                 </div>
