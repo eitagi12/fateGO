@@ -16,9 +16,10 @@ export class CriteriaTradeInComponent implements OnInit {
   valuationlists: any;
   objCriteriatradein: Criteriatradein;
   objTradein: any;
-  isCheckCri = false;
+  listForm: FormGroup;
+  btnNextDisabled = true;
 
-  criteriaForm: FormGroup;
+
   constructor(private router: Router,
     private homeService: HomeService,
     private tradeInService: TradeInService,
@@ -26,19 +27,20 @@ export class CriteriaTradeInComponent implements OnInit {
     private fb: FormBuilder) { }
 
   ngOnInit() {
+    this.setFormValuation();
     this.ListValuationTradein();
     this.objTradein = this.tradeInService.getTradein();
   }
 
-  createForm(valuationlists: any[]) {
-    const controls = valuationlists.map(() => new FormControl(false));
-    console.log(controls);
-    this.criteriaForm = this.fb.group({
-      checkedCri: this.fb.array(controls)
-    });
-    console.log('criteriaForm   ');
-    console.log(this.criteriaForm.value);
-  }
+  // createForm(valuationlists: any[]) {
+  //   const controls = valuationlists.map(() => new FormControl(false));
+  //   console.log(controls);
+  //   this.criteriaForm = this.fb.group({
+  //     checkedCri: this.fb.array(controls)
+  //   });
+  //   console.log('criteriaForm   ');
+  //   console.log(this.criteriaForm.value);
+  // }
 
   ListValuationTradein() {
     this.pageLoadingService.openLoading();
@@ -53,8 +55,7 @@ export class CriteriaTradeInComponent implements OnInit {
         for (const item of this.valuationlists) {
           item.valChecked = 'N';
         }
-        console.log('00000000  ', this.valuationlists);
-        this.createForm(this.valuationlists);
+        this.setFormValuation();
         this.pageLoadingService.closeLoading();
       },
       (err: any) => {
@@ -66,9 +67,17 @@ export class CriteriaTradeInComponent implements OnInit {
   selectValuationlistFn(val: any, checked: any) {
     if (checked.target.checked === true) {
       val.valChecked = 'Y';
+      this.btnNextDisabled = false;
     } else if (checked.target.checked === false) {
       val.valChecked = 'N';
+      this.btnNextDisabled = true;
     }
+  }
+
+  setFormValuation () {
+    this.listForm = new FormGroup({
+      valuationlists: new FormControl('', [Validators.required])
+    });
   }
 
   OnDestroy() {
@@ -84,8 +93,10 @@ export class CriteriaTradeInComponent implements OnInit {
     this.router.navigate(['trade-in/verify-trade-in']);
   }
 
-  btnCancelFn() {
-    this.resetCriteriatradein();
+  onCancel() {
+    this.listForm.reset();
+    console.log(this.listForm.reset());
+
   }
 
   onNext() {
@@ -99,7 +110,8 @@ export class CriteriaTradeInComponent implements OnInit {
     this.tradeInService.setValuationlistTradein(this.objCriteriatradein);
     this.router.navigate(['trade-in/confirm-trade-in']);
   }
-  resetCriteriatradein() {
-    this.criteriaForm.value.checkedCri = false;
+
+  isNext() {
+    return this.selectValuationlistFn;
   }
 }
