@@ -21,19 +21,22 @@
           เงื่อนไขประเมินราคา
         </div>
         <div class="card-body">
-          <div class="form-row">
-            <div class="col-12 col-sm-12" *ngFor="let valuationlist of valuationlists">
-              <input class="tradein-checkbox" type="checkbox" id="{{valuationlist.valCode}}" value="{{valuationlist.valCode}}"
-                (change)="selectValuationlistFn(valuationlist, $event)">
-              <label for="{{valuationlist.valCode}}"> {{valuationlist.valDesc}} </label>
-            </div>
+          <div class="row">
+            <form [formGroup]="listForm" class="checkbox-circle">
+              <div class="form-row">
+                <div class="col-12 col-sm-12" *ngFor="let valuationlist of valuationlists">
+                  <input type="checkbox" id="{{valuationlist.valCode}}" value="{{valuationlist.valCode}}"
+                    (change)="selectValuationlistFn(valuationlist, $event)">
+                  <label for="{{valuationlist.valCode}}"> {{valuationlist.valDesc}} </label>
+                </div>
+              </div>
+            </form>
           </div>
         </div>
       </div>
+      <mc-footer>
+        <button class="btn btn-secondary" (click)="onCancel()">CANCEL</button>
+        <button class="btn btn-success" (click)="onNext()" [disabled]="btnNextDisabled">CHECK TRADE IN PRICE</button>
+      </mc-footer>
     </div>
-    <mc-footer>
-      <button class="btn btn-secondary" (click)="btnCancelFn()">CANCEL</button>
-      <button class="btn btn-success" (click)="onNext()">CHECK TRADE IN PRICE</button>
-    </mc-footer>
   </div>
-</div>

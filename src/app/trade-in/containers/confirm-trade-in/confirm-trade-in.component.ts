@@ -21,6 +21,7 @@ export class ConfirmTradeInComponent implements OnInit {
   tradeinPrice: string;
   tradeinGrade: string;
   tradeinNo: string;
+  listForm: FormGroup;
   constructor(private router: Router,
     private homeService: HomeService,
     private tradeInService: TradeInService,
