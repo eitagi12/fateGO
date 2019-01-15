@@ -24,20 +24,12 @@ export class CriteriaTradeInComponent implements OnInit {
     private homeService: HomeService,
     private tradeInService: TradeInService,
     private pageLoadingService: PageLoadingService,
-    
     private fb: FormBuilder) { }
 
   ngOnInit() {
     this.setFormValuation();
     this.ListValuationTradein();
     this.objTradein = this.tradeInService.getTradein();
-    this.createForm();
-  }
-
-  createForm() {
-    this.valuationlistForm = new FormGroup({
-      valuationlist: new FormControl("",[Validators.required])
-   });
   }
 
   ListValuationTradein() {
@@ -53,7 +45,6 @@ export class CriteriaTradeInComponent implements OnInit {
         for (const item of this.valuationlists) {
           item.valChecked = 'N';
         }
-        // this.createForm(this.valuationlists);
         this.setFormValuation();
         this.pageLoadingService.closeLoading();
       },
@@ -75,7 +66,7 @@ export class CriteriaTradeInComponent implements OnInit {
 
   setFormValuation() {
     this.valuationlistForm =  this.fb.group({
-      listVuation: ["",Validators.required]
+      listVuation: ['', Validators.required]
     });
   }
 
@@ -94,8 +85,6 @@ export class CriteriaTradeInComponent implements OnInit {
 
   onCancel() {
     this.valuationlistForm.reset();
-    console.log(this.valuationlistForm.reset());
-
   }
 
   onNext() {
