@@ -25,7 +25,7 @@ export class OrderMnpNetworkTypePageComponent implements OnInit, OnDestroy {
 
   transaction: Transaction;
   mnpForm: FormGroup;
-  
+
 
 
   constructor(
@@ -64,38 +64,42 @@ export class OrderMnpNetworkTypePageComponent implements OnInit, OnDestroy {
     this.http.post(`/api/customerportal/newRegister/getCCCustInfo/${this.mnpForm.value.mobileNo}`, {
     }).toPromise()
       .then((resp: any) => {
-        const mobileNoStatus = resp.data
+        const outbuf = resp.data
           && resp.data.data
           && resp.data.data.A_GetCCCustInfoResponse
           && resp.data.data.A_GetCCCustInfoResponse.outbuf
-          && resp.data.data.A_GetCCCustInfoResponse.outbuf.mobileNoStatus
-          ? (resp.data.data.A_GetCCCustInfoResponse.outbuf.mobileNoStatus || '').trim() : null;
+          ? resp.data.data.A_GetCCCustInfoResponse.outbuf : {};
 
-        if ((mobileNoStatus && mobileNoStatus !== 'Active')
-          && (mobileNoStatus === 'Disconnect - Ported' || mobileNoStatus !== 'U')) { // เบอร์ AIS
 
+        const mobileNoStatus = (outbuf.mobileNoStatus || '').trim();
+        const networkType = (outbuf.networkType || '').trim();
+        const accountNo = (outbuf.accountNo || '').trim();
+
+        if (!outbuf || (accountNo && (mobileNoStatus === 'Disconnect - Ported' || mobileNoStatus === 'U' || mobileNoStatus === 'T'))
+          || mobileNoStatus !== 'Active' && !(mobileNoStatus || networkType)) {
+            this.transaction.data.simCard = {
+              mobileNo: this.mnpForm.value.mobileNo
+            };
+            this.transaction.data.customer = {
+              customerPinCode: this.mnpForm.value.pinCode,
+              birthdate: '',
+              idCardNo: '',
+              idCardType: '',
+              titleName: '',
+              expireDate: '',
+              firstName: '',
+              gender: '',
+              lastName: ''
+            };
+            this.router.navigate([ROUTE_ORDER_MNP_SELECT_REASON_PAGE]);
+        } else {
           return this.alertService.error(`หมายเลข ${this.mnpForm.value.mobileNo} เป็นเบอร์ AIS`);
-        } else {  // เบอร์ต่างค่าย
-          this.transaction.data.simCard = {
-            mobileNo: this.mnpForm.value.mobileNo
-          };
-          this.transaction.data.customer = {
-            customerPinCode: this.mnpForm.value.pinCode,
-            birthdate: '',
-            idCardNo: '',
-            idCardType: '',
-            titleName: '',
-            expireDate: '',
-            firstName: '',
-            gender: '',
-            lastName: ''
-          };
-          this.router.navigate([ROUTE_ORDER_MNP_SELECT_REASON_PAGE]);
         }
       })
       .then(() => {
         this.pageLoadingService.closeLoading();
       });
+
   }
 
   onHome() {
