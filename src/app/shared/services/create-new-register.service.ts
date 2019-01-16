@@ -18,11 +18,11 @@ export class CreateNewRegisterService {
   createNewRegister(transaction: Transaction): Promise<any> {
     this.saveFaceImage(transaction);
     return this.getRequestCreateNewRegister(transaction).then((data) => {
-      console.log(data);
-      // return this.http.post(
-      //   '/api/customerportal/newRegister/createNewRegistration',
-      //   data
-      // ).toPromise();
+      // console.log(data);
+      return this.http.post(
+        '/api/customerportal/newRegister/createNewRegistration',
+        data
+      ).toPromise();
     });
   }
 
