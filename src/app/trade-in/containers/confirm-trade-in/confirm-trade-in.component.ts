@@ -18,10 +18,10 @@ export class ConfirmTradeInComponent implements OnInit {
   criteriaObj: Criteriatradein;
   aisFlg: string;
   objTest: any;
-  tradeinPrice: string;
+  tradeinPrice: any;
   tradeinGrade: string;
   tradeinNo: string;
-  listForm: FormGroup;
+  btnNextDisabled = true;
   constructor(private router: Router,
     private homeService: HomeService,
     private tradeInService: TradeInService,
@@ -36,7 +36,6 @@ export class ConfirmTradeInComponent implements OnInit {
 
   getValuationTradein() {
     this.listValuation = JSON.parse(localStorage.getItem('Criteriatradein'));
-    console.log('listValuationTradein' , this.listValuation);
     this.valuationlists = this.listValuation.listValuationTradein;
   }
 
@@ -72,6 +71,7 @@ export class ConfirmTradeInComponent implements OnInit {
           this.tradeinGrade = response.data.tradeinGrade;
           this.tradeinPrice = response.data.tradeinPrice;
           this.tradeinNo = response.data.tradeinNo;
+          this.nextDisabled();
         }
         this.pageLoadingService.closeLoading();
       });
@@ -82,10 +82,11 @@ export class ConfirmTradeInComponent implements OnInit {
   }
 
   onHome() {
-    window.location.href = '/sale-portal/dashboard';
+    window.location.href = '/sales-portal/dashboard';
   }
 
   onBack() {
+    this.tradeInService.removeTradein();
     this.router.navigate(['trade-in/criteria-trade-in']);
   }
 
@@ -93,6 +94,13 @@ export class ConfirmTradeInComponent implements OnInit {
     this.router.navigate(['trade-in/criteria-trade-in']);
   }
 
+  nextDisabled() {
+    if (this.tradeinPrice > 0) {
+      this.btnNextDisabled = false;
+    } else if (this.tradeinPrice === 0) {
+      this.btnNextDisabled = true;
+    }
+  }
   onNext () {
     const objEstimate = {
       tradeinNo: this.tradeinNo,
