@@ -154,7 +154,9 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
       return false;
     }
     if (this.utils.isIdCardExpiredDate(expireDate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ');
+      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ').then(() => {
+        this.onBack();
+      });
       return false;
     }
     return true;
