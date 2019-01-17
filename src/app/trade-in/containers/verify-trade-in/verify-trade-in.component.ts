@@ -185,7 +185,7 @@ export class VerifyTradeInComponent implements OnInit {
   }
 
   onBack () {
-    window.location.href = '/sale-portal/dashboard';
+    window.location.href = '/sales-portal/dashboard';
   }
   setFormImei () {
     this.imeiForm = new FormGroup({
