@@ -1,11 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { HomeService, PageLoadingService, AlertService } from 'mychannel-shared-libs';
+import { Component, OnInit, ElementRef, Renderer, Output, EventEmitter } from '@angular/core';
+import { HomeService, PageLoadingService, AlertService, SalesService, TokenService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { TradeInService } from '../../services/trade-in.service';
-import { Subscription } from 'rxjs';
 import { Tradein } from 'src/app/shared/models/trade-in.model';
-
+import { BrandsOfProduct } from 'mychannel-shared-libs/lib/service/models/brands-of-product';
 
 @Component({
   selector: 'app-verify-trade-in',
@@ -14,9 +13,11 @@ import { Tradein } from 'src/app/shared/models/trade-in.model';
 })
 export class VerifyTradeInComponent implements OnInit {
 
+  brands: BrandsOfProduct[];
   imeiForm: FormGroup;
   submitted = false;
   listModelTradein = [];
+  defualtListModel = [];
   selectOp = null;
   butDisabled = false;
   objTradein: Tradein;
@@ -24,29 +25,46 @@ export class VerifyTradeInComponent implements OnInit {
   serialMatCode: string;
   isCheckImei = false;
   btnNextDisabled = true;
+  isSelectImg = false;
+  isLockImg = false;
   constructor(private router: Router,
               private homeService: HomeService,
               private tradeInService: TradeInService,
               private pageLoadingService: PageLoadingService,
-              private alertService: AlertService) { }
+              private alertService: AlertService,
+              private salesService: SalesService,
+              private tokenService: TokenService,
+              private elementRef: ElementRef,
+              private renderer: Renderer) { }
 
   ngOnInit () {
     this.setFormImei();
-    this.setListModelTradein();
+    this.callService();
   }
 
-  onHome () {
-    window.location.href = '/sale-portal/dashboard';
+  private callService () {
+    this.pageLoadingService.openLoading();
+    const locationCode = this.tokenService.getUser().locationCode;
+    Promise.all([this.tradeInService.getListModelTradeIn(), this.salesService.brandsOfProduct(locationCode)]).then(
+      (values: any[]) => {
+        this.pageLoadingService.closeLoading();
+        this.defualtListModel = values[0].data.listResult;
+        this.listModelTradein = this.defualtListModel;
+        const brandTradein = values[0].data.listResult.map(item => item.brand).filter(
+          (value, index, self) => self.indexOf(value) === index);
+        const objFilterBrand = values[1].data.filter(
+          (data) => {
+              if (brandTradein.includes(data.name)) {
+                return data;
+              }
+          }
+        );
+        this.brands = objFilterBrand;
+      }
+    );
   }
 
-  onBack () {
-    window.location.href = '/sale-portal/dashboard';
-  }
-  setFormImei () {
-    this.imeiForm = new FormGroup({
-      imei: new FormControl('', [Validators.required, Validators.minLength(15)])
-    });
-  }
+
 
   checkImei () {
     this.pageLoadingService.openLoading();
@@ -64,15 +82,6 @@ export class VerifyTradeInComponent implements OnInit {
             this.selectOp = null;
         }
       });
-  }
-  setListModelTradein () {
-    this.pageLoadingService.openLoading();
-    this.tradeInService.getListModelTradeIn().then(
-      (response) => {
-        this.pageLoadingService.closeLoading();
-        this.listModelTradein = response.data.listResult;
-      }
-    );
   }
   OnDestroy () {
     this.tradeInService.removeTradein();
@@ -118,7 +127,6 @@ export class VerifyTradeInComponent implements OnInit {
       const indexSelect = this.listModelTradein.findIndex(
         obj => obj.brand === brandImei && obj.model === modelImei
       );
-      console.log(indexSelect);
       if (indexSelect && indexSelect >= 0) {
         this.selectOp = this.listModelTradein[indexSelect];
         this.butDisabled = true;
@@ -129,6 +137,8 @@ export class VerifyTradeInComponent implements OnInit {
           serialNo: this.imeiForm.value.imei ? this.imeiForm.value.imei : ''
         };
         this.btnNextDisabled = false;
+        this.isLockImg = true;
+        this.setBorderImgOnselect(this.listModelTradein[indexSelect].brand);
       } else {
         this.btnNextDisabled = true;
         this.butDisabled = false;
@@ -145,6 +155,8 @@ export class VerifyTradeInComponent implements OnInit {
     this.tradeInService.removeTradein();
     this.isCheckImei = false;
     this.butDisabled = false;
+    this.listModelTradein = this.defualtListModel;
+    this.setBorderImgOnselect('');
   }
   checkValueTradein () {
     if (!this.imeiForm.invalid && this.objTradein.brand && this.objTradein.model && this.isCheckImei) {
@@ -165,6 +177,62 @@ export class VerifyTradeInComponent implements OnInit {
       this.router.navigate(['trade-in/criteria-trade-in']);
     } else {
       this.alertService.error('กรุณา กรอกข้อมูล ให้ครบ');
+    }
+  }
+
+  onHome () {
+    window.location.href = '/sales-portal/dashboard';
+  }
+
+  onBack () {
+    window.location.href = '/sale-portal/dashboard';
+  }
+  setFormImei () {
+    this.imeiForm = new FormGroup({
+      imei: new FormControl('', [Validators.required, Validators.minLength(15)])
+    });
+  }
+  selectImg($event) {
+    this.listModelTradein = this.defualtListModel;
+    this.selectOp = null;
+    const srcSelect = $event.target.src;
+    const nameSelect = this.brands.filter(
+      (data) => {
+        if (data.imageUrl === srcSelect) {
+          return data;
+        }
+      }
+    );
+    const objFilterListBySelectImg = this.listModelTradein.filter(
+      (data) => {
+        if (data.brand === nameSelect[0].name) {
+          return data;
+        } else {
+          return;
+        }
+      }
+    );
+    this.listModelTradein = objFilterListBySelectImg;
+    const nameBrandSelect = nameSelect[0].name;
+    this.setBorderImgOnselect(nameBrandSelect);
+
+  }
+
+
+  private getBrandElementById(brandId: string) {
+    return this.elementRef.nativeElement.querySelector(brandId);
+  }
+
+  setBorderImgOnselect (nameBrandSelect) {
+    const imagesContainerList = this.elementRef.nativeElement.querySelectorAll('.image-container');
+
+    for (const imagesContainer of imagesContainerList) {
+      console.log(imagesContainer);
+      if (imagesContainer.id === nameBrandSelect) {
+        this.renderer.setElementClass(this.getBrandElementById('#' + imagesContainer.id), 'active', true);
+      } else {
+          this.renderer.setElementClass(this.getBrandElementById('#' + imagesContainer.id), 'active', false);
+      }
     }
   }
 }

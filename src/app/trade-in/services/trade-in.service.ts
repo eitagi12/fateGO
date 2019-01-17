@@ -16,14 +16,12 @@ export class TradeInService {
 
 
   private get settingTradein(): NgxResource<object> {
-    console.log('localStorageService', this.localStorageService);
     return this.localStorageService
       .load(`Tradein`)
       .setDefaultValue({});
   }
 
   private get settingCriteriatTradein(): NgxResource<object> {
-    console.log('localStorageService', this.localStorageService);
     return this.localStorageService
       .load(`Criteriatradein`)
       .setDefaultValue({});
@@ -33,7 +31,6 @@ export class TradeInService {
     const url = '/api/salesportal/getlistmodeltradein';
     return this.http.get(url).toPromise();
   }
-  
 
   checkSerialTradein(imei: string): Promise<any> {
     const token = this.tokenService.getUser();
