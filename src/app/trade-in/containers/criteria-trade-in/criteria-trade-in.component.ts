@@ -75,7 +75,7 @@ export class CriteriaTradeInComponent implements OnInit {
   }
 
   onHome() {
-    window.location.href = '/sale-portal/dashboard';
+    window.location.href = '/sales-portal/dashboard';
   }
 
   onBack() {

@@ -1,0 +1,10 @@
+.image-container{
+    &.active{
+        border: solid;
+        border-color: #8cc53f;
+    }
+    &.disabled{
+        opacity: 0.5;
+    }
+}
+

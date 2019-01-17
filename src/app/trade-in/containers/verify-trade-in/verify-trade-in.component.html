@@ -38,20 +38,20 @@
             ยี่ห้อและรุ่นโทรศัพท์
         </div>
         <div class="card-body">
-            <div class="form-row">
-                <div class="col-3 col-sm-6">
-                    <p class="text-grey text-left">
-                        <label>ยี่ห้อโทรศัพท์ : </label>
-                        <img class="col-3 col-sm-4" src="assets/images/icon/img-placeholder.png">
-                    </p>
+            <div class="row">
+              <p class="text-grey">ยี่ห้อโทรศัพท์ : </p>
+                <div class="col-4 col-sm-3 col-md-1 col-lg-1 mb-3"  *ngFor="let brand of brands">
+                  <div class="image-container" [id]="brand.name">
+                      <div class="select-Img" (click)="selectImg($event)">
+                          <mc-lazy-load-image  [src]="brand?.imageUrl"></mc-lazy-load-image>
+                    </div>
+                  </div>
+                    
+                  
                 </div>
             </div>
-          <div class="form-row">
-              <!-- <div class="col-3 col-sm-2"> -->
-                  <p class="text-grey text-left">
-                      <label>รุ่นโทรศัพท์ : </label></p>
-                      
-              <!-- </div> -->
+          <div class="row">
+              <p class="text-grey text-left">รุ่นโทรศัพท์ : </p>
               <div class="col-3 col-sm-3 mx-4">
                 <select id="select-modelTrade-in"
                   (change)="selectModelTradeinFn($event)"
@@ -82,8 +82,5 @@
           </div>
         </div>
       </div>
-       
-  
-  
   </div>
 </div>
