@@ -1,7 +1,7 @@
 import { Component, OnInit, ElementRef, Renderer, Output, EventEmitter } from '@angular/core';
 import { HomeService, PageLoadingService, AlertService, SalesService, TokenService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, ValidationErrors } from '@angular/forms';
 import { TradeInService } from '../../services/trade-in.service';
 import { Tradein } from 'src/app/shared/models/trade-in.model';
 import { BrandsOfProduct } from 'mychannel-shared-libs/lib/service/models/brands-of-product';
@@ -190,7 +190,15 @@ export class VerifyTradeInComponent implements OnInit {
   setFormImei () {
     this.imeiForm = new FormGroup({
       imei: new FormControl('', [Validators.required, Validators.minLength(15)])
-    });
+    }, this.checkValueImei);
+  }
+  checkValueImei (control: FormGroup): ValidationErrors {
+    const valImei = control.get('imei');
+    const regex  = /([0-9]{15})+$/;
+    if (regex.test(valImei.value)) {
+      return null;
+    }
+    return {valid: true};
   }
   selectImg($event) {
     this.listModelTradein = this.defualtListModel;
