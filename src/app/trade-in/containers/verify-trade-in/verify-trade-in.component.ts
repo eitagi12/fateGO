@@ -235,7 +235,6 @@ export class VerifyTradeInComponent implements OnInit {
     const imagesContainerList = this.elementRef.nativeElement.querySelectorAll('.image-container');
 
     for (const imagesContainer of imagesContainerList) {
-      console.log(imagesContainer);
       if (imagesContainer.id === nameBrandSelect) {
         this.renderer.setElementClass(this.getBrandElementById('#' + imagesContainer.id), 'active', true);
       } else {
