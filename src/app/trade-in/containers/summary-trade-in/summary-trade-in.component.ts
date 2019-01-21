@@ -11,6 +11,7 @@ import { Router } from '@angular/router';
 export class SummaryTradeInComponent implements OnInit {
 
   tradeinNo: string;
+  brand: string;
   modelTradein: string;
   imeiTradein: string;
   tradeinPrice: string;
@@ -27,9 +28,10 @@ export class SummaryTradeInComponent implements OnInit {
 
   summaryTradein() {
     const criteriaTradein: any = JSON.parse(localStorage.getItem('Criteriatradein'));
-    console.log(criteriaTradein);
     this.tradeinNo = criteriaTradein.tradeinNo;
+    this.brand = criteriaTradein.brand;
     this.modelTradein = criteriaTradein.model;
+    this.tradeinGrade = criteriaTradein.tradeinGrade;
     this.imeiTradein = criteriaTradein.serialNo;
     this.tradeinPrice = criteriaTradein.tradeinPrice;
     this.tradeinGrade = criteriaTradein.tradeinGrade;
