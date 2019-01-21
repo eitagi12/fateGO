@@ -1,49 +1,3 @@
-<!-- <div class="mc-flex">
-  <mc-header title="Trade IN">
-    <div class="header-icon-left">
-      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
-    </div>
-    <div class="header-icon-right">
-      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
-    </div>
-  </mc-header>
-
-  <div class="mc-flex-wrap">
-    <div class="row bg-blue">
-
-      <div class="container-fluid mt-3">
-        <div>
-          <img src="assets/images/icon/icon-green-check-circle.png  " width="50" />
-        </div>
-        <span class="title">ทำรายการสำเร็จ</span>
-      </div>
-      <hr>
-      <div class="container-fluid mt-3">
-        <span>Trade IN No. :TIxxxxxxxx</span>
-        <br>
-        <span>Samsung Galaxy S6<br>IMEI : xxxxxxxxxx<br>ราคาประเมิน : B5,xxx</span>
-      </div>
-      <hr>
-      <div class="container-fluid mt-3">
-        <span>พิมพ์ใบประเมินราคา</span>
-        <div>
-          <img src="assets/images/icon/icon-green-check-circle.png  " width="50" />
-        </div>
-      </div>
-
-      <div class="row align-self-center">
-        <button class="btn btn-light-green text-white btn-block">MAIN MENU</button>
-      </div>
-    </div>
-
-  </div>
-
-
-</div> -->
-
-
-
-
 <div class="mc-flex">
   <mc-header title="Trade IN">
   </mc-header>
@@ -61,13 +15,14 @@
           <div>
             <span>Trade IN No. : {{tradeinNo}}</span><br><br>
             
-            <span>{{modelTradein}}<br>(IMEI : {{imeiTradein}})<br>เกรด : {{tradeinGrade}}<br>ราคาประเมิน : ฿{{tradeinPrice | number}}</span>
+            <span>IMEI : {{imeiTradein}}<br>ยี่ห้อ : {{brand}}<br>รุ่น : {{modelTradein}}<br>เกรด : {{tradeinGrade}}<br>ราคาประเมิน : {{tradeinPrice | number}} บาท (รวมVAT)</span><br>
+            <span class="remark">หมายเหตุ ปลดล็อค iCloud และ Reset เครื่องก่อนทำรายการ Trade In ทุกครั้ง (กรณีเป็น Samsung จะเป็น Google ID)</span>
           </div><br>
           <hr>
           <div>
             <span>พิมพ์ใบประเมินราคา</span><br><br>
             <img src="assets/images/icon/icon-printer.png  " (click)="gotoPrintSummary()" width="50" /><br><br><br>
-            <button class="btn btn-light-green text-white" (click)="gotoMainMenu()">MAIN MENU</button>
+            <button class="btn btn-light-green text-white" (click)="gotoMainMenu()">กลับสู่หน้าหลัก</button>
           </div>
         </div>
       </div>
