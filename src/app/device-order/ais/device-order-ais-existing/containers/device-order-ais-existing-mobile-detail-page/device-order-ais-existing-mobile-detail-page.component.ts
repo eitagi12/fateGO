@@ -12,7 +12,7 @@ import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.c
 export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit {
 
   wizards = WIZARD_DEVICE_ORDER_AIS;
-  
+
   constructor(
     private router: Router,
     private homeService: HomeService

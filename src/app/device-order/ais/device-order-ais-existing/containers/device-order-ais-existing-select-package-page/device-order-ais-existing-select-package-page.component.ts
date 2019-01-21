@@ -193,6 +193,7 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit 
     return (+mainPackage.numberOfMobile) > 0;
   }
 
+// tslint:disable-next-line: use-life-cycle-interface
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }

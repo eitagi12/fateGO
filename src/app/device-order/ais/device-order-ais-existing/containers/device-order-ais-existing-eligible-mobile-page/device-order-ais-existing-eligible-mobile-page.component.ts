@@ -94,6 +94,7 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
   }
 
 
+// tslint:disable-next-line: use-life-cycle-interface
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }
