@@ -62,11 +62,11 @@ export class AppComponent {
         }
         redirectTo += `${key}=${observer[key]}`;
       });
-      if (!this.isDeveloperMode()) {
+      // if (!this.isDeveloperMode()) {
         console.error('Error ', observer);
-      } else {
-        window.location.href = redirectTo;
-      }
+      // } else {
+      //   // window.location.href = redirectTo;
+      // }
     });
   }
 

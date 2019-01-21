@@ -19,12 +19,32 @@ import { DeviceOrderAisExistingAgreementSignPageComponent } from './containers/d
 import { DeviceOrderAisExistingAggregatePageComponent } from './containers/device-order-ais-existing-aggregate-page/device-order-ais-existing-aggregate-page.component';
 import { DeviceOrderAisExistingQueuePageComponent } from './containers/device-order-ais-existing-queue-page/device-order-ais-existing-queue-page.component';
 import { DeviceOrderAisExistingResultPageComponent } from './containers/device-order-ais-existing-result-page/device-order-ais-existing-result-page.component';
+import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 
 @NgModule({
   imports: [
     CommonModule,
+    MyChannelSharedLibsModule,
     DeviceOrderAisExistingRoutingModule
   ],
-  declarations: [DeviceOrderAisExistingValidateCustomerPageComponent, DeviceOrderAisExistingValidateCustomerKeyInPageComponent, DeviceOrderAisExistingValidateCustomerIdCardPageComponent, DeviceOrderAisExistingCustomerInfoPageComponent, DeviceOrderAisExistingEligibleMobilePageComponent, DeviceOrderAisExistingChangePackagePageComponent, DeviceOrderAisExistingMobileDetailPageComponent, DeviceOrderAisExistingPaymentDetailPageComponent, DeviceOrderAisExistingSelectPackagePageComponent, DeviceOrderAisExistingEffectiveStartDatePageComponent, DeviceOrderAisExistingMobileCarePageComponent, DeviceOrderAisExistingSummaryPageComponent, DeviceOrderAisExistingAgreementPageComponent, DeviceOrderAisExistingAgreementSignPageComponent, DeviceOrderAisExistingAggregatePageComponent, DeviceOrderAisExistingQueuePageComponent, DeviceOrderAisExistingResultPageComponent]
+  declarations: [
+    DeviceOrderAisExistingValidateCustomerPageComponent,
+    DeviceOrderAisExistingValidateCustomerKeyInPageComponent,
+    DeviceOrderAisExistingValidateCustomerIdCardPageComponent,
+    DeviceOrderAisExistingCustomerInfoPageComponent,
+    DeviceOrderAisExistingEligibleMobilePageComponent,
+    DeviceOrderAisExistingChangePackagePageComponent,
+    DeviceOrderAisExistingMobileDetailPageComponent,
+    DeviceOrderAisExistingPaymentDetailPageComponent,
+    DeviceOrderAisExistingSelectPackagePageComponent,
+    DeviceOrderAisExistingEffectiveStartDatePageComponent,
+    DeviceOrderAisExistingMobileCarePageComponent,
+    DeviceOrderAisExistingSummaryPageComponent,
+    DeviceOrderAisExistingAgreementPageComponent,
+    DeviceOrderAisExistingAgreementSignPageComponent,
+    DeviceOrderAisExistingAggregatePageComponent,
+    DeviceOrderAisExistingQueuePageComponent,
+    DeviceOrderAisExistingResultPageComponent
+  ]
 })
 export class DeviceOrderAisExistingModule { }
