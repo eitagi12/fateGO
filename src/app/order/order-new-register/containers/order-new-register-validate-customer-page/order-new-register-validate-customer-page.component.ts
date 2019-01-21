@@ -6,7 +6,7 @@ import {
 } from 'src/app/order/order-new-register/constants/route-path.constant';
 import { Router } from '@angular/router';
 import { HomeService, PageLoadingService, ApiRequestService } from 'mychannel-shared-libs';
-import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 
@@ -20,6 +20,7 @@ export class OrderNewRegisterValidateCustomerPageComponent implements OnInit, On
   transaction: Transaction;
   identityValid = false;
   identity: string;
+  billDeliveryAddress: BillDeliveryAddress;
 
   constructor(
     private router: Router,
@@ -71,6 +72,20 @@ export class OrderNewRegisterValidateCustomerPageComponent implements OnInit, On
         return Promise.resolve(data);
       })
       .then((customer) => { // load bill cycle
+        this.billDeliveryAddress = {
+          homeNo: customer.homeNo || '',
+          moo: customer.moo || '',
+          mooBan: customer.mooBan || '',
+          room: customer.room || '',
+          floor: customer.floor || '',
+          buildingName: customer.buildingName || '',
+          soi: customer.soi || '',
+          street: customer.street || '',
+          province: customer.province || '',
+          amphur: customer.amphur || '',
+          tumbol: customer.tumbol || '',
+          zipCode: customer.zipCode || '',
+        };
         this.transaction.data.customer = customer;
         return this.http.get(`/api/customerportal/newRegister/${this.identity}/queryBillingAccount`).toPromise()
           .then((resp: any) => {
@@ -94,9 +109,10 @@ export class OrderNewRegisterValidateCustomerPageComponent implements OnInit, On
       })
       .then((billingInformation: any) => {
         this.transaction.data.billingInformation = billingInformation;
+        this.transaction.data.billingInformation.billDeliveryAddress = this.billDeliveryAddress;
         this.router.navigate([ROUTE_ORDER_NEW_REGISTER_CUSTOMER_INFO_PAGE]);
       })
-      .catch(() => {
+      .catch((e) => {
         this.router.navigate([ROUTE_ORDER_NEW_REGISTER_VALIDATE_CUSTOMER_KEY_IN_PAGE], {
           queryParams: {
             idCardNo: this.identity

@@ -95,6 +95,21 @@ export interface Customer {
   customerPinCode?: string;
 }
 
+export interface BillDeliveryAddress {
+  homeNo: string;
+  moo?: string;
+  mooBan?: string;
+  room?: string;
+  floor?: string;
+  buildingName?: string;
+  soi?: string;
+  street?: string;
+  province: string;
+  amphur: string;
+  tumbol: string;
+  zipCode: string;
+}
+
 export interface SimCard {
   mobileNo: string;
   simSerial?: string;
@@ -151,6 +166,8 @@ export interface BillingInformation {
   billCyclesNetExtreme?: BillingAccount[];
   // change value billing
   billCycleData?: BillingAccountData;
+  // send bill devilery address
+  billDeliveryAddress?: BillDeliveryAddress;
 }
 
 export interface BillCycle {

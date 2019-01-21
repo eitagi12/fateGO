@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ReadCardProfile, HomeService, PageLoadingService, ApiRequestService, TokenService, ChannelType, Utils, AlertService, ValidateCustomerIdCardComponent, KioskControls, } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
-import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import {
   ROUTE_ORDER_NEW_REGISTER_FACE_CAPTURE_PAGE,
@@ -21,6 +21,7 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
   profile: ReadCardProfile;
   zipcode: string;
   readCardValid: boolean;
+  billDeliveryAddress: BillDeliveryAddress;
 
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
@@ -37,9 +38,9 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
     private alertService: AlertService,
   ) {
     this.homeService.callback = () => {
-      if (this.validateCustomerIdcard.koiskApiFn) {
-        this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
-      }
+        if (this.validateCustomerIdcard.koiskApiFn) {
+          this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+        }
       window.location.href = '/smart-shop';
     };
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
@@ -89,6 +90,20 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
         }).toPromise()
           .then((resp: any) => {
             const data = resp.data || {};
+            this.billDeliveryAddress = {
+              homeNo: data.homeNo || '',
+              moo: data.moo || '',
+              mooBan: data.mooBan || '',
+              room: data.room || '',
+              floor: data.floor || '',
+              buildingName: data.buildingName || '',
+              soi: data.soi || '',
+              street: data.street || '',
+              province: data.province || '',
+              amphur: data.amphur || '',
+              tumbol: data.tumbol || '',
+              zipCode: data.zipCode || '',
+            };
             return {
               caNumber: data.caNumber,
               mainMobile: data.mainMobile,
@@ -122,6 +137,7 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
       })
       .then((billingInformation: any) => {
         this.transaction.data.billingInformation = billingInformation;
+        this.transaction.data.billingInformation.billDeliveryAddress = this.billDeliveryAddress;
         if (this.checkBusinessLogic()) {
           this.router.navigate([ROUTE_ORDER_NEW_REGISTER_FACE_CAPTURE_PAGE]);
         }
@@ -162,7 +178,9 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
       return false;
     }
     if (this.utils.isIdCardExpiredDate(expireDate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ');
+      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ').then(() => {
+        this.onBack();
+      });
       return false;
     }
     return true;

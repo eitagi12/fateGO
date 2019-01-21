@@ -37,6 +37,7 @@ export class CreateMnpService {
     const mainPackage = transaction.data.mainPackage;
     const mainPackageOneLove = transaction.data.mainPackageOneLove;
     const onTopPackage = transaction.data.onTopPackage;
+    const customerDeliveryAddress = transaction.data.billingInformation.billDeliveryAddress;
 
     const billCycleData = billingInformation.billCycleData;
 
@@ -69,18 +70,18 @@ export class CreateMnpService {
       billName: billingInformation.mergeBilling ? billingInformation.mergeBilling.billingName : '',
       billCycle: billingInformation.mergeBilling ? billingInformation.mergeBilling.bill : customer.billCycle,
       billDeliveryAddress: billingInformation.mergeBilling ? billingInformation.mergeBilling.billingAddr : '',
-      billHomeNo: billingInformation.mergeBilling ? '' : customer.homeNo,
-      billBuildingName: billingInformation.mergeBilling ? '' : customer.buildingName,
-      billFloor: billingInformation.mergeBilling ? '' : customer.floor,
-      billRoom: billingInformation.mergeBilling ? '' : customer.room,
-      billMoo: billingInformation.mergeBilling ? '' : customer.moo,
-      billMooBan: billingInformation.mergeBilling ? '' : customer.mooBan,
-      billSoi: billingInformation.mergeBilling ? '' : customer.soi,
-      billStreet: billingInformation.mergeBilling ? '' : customer.street,
-      billTumbol: billingInformation.mergeBilling ? '' : customer.tumbol,
-      billAmphur: billingInformation.mergeBilling ? '' : customer.amphur,
-      billProvince: billingInformation.mergeBilling ? '' : customer.province,
-      billZipCode: billingInformation.mergeBilling ? '' : customer.zipCode,
+      billHomeNo: billingInformation.mergeBilling ? '' : customerDeliveryAddress.homeNo || customer.homeNo,
+      billBuildingName: billingInformation.mergeBilling ? '' : customerDeliveryAddress.buildingName || customer.buildingName,
+      billFloor: billingInformation.mergeBilling ? '' : customerDeliveryAddress.floor || customer.floor,
+      billRoom: billingInformation.mergeBilling ? '' : customerDeliveryAddress.room || customer.room,
+      billMoo: billingInformation.mergeBilling ? '' : customerDeliveryAddress.moo || customer.moo,
+      billMooBan: billingInformation.mergeBilling ? '' : customerDeliveryAddress.mooBan || customer.mooBan,
+      billSoi: billingInformation.mergeBilling ? '' : customerDeliveryAddress.soi || customer.soi,
+      billStreet: billingInformation.mergeBilling ? '' : customerDeliveryAddress.street || customer.street,
+      billTumbol: billingInformation.mergeBilling ? '' : customerDeliveryAddress.tumbol || customer.tumbol,
+      billAmphur: billingInformation.mergeBilling ? '' : customerDeliveryAddress.amphur || customer.amphur,
+      billProvince: billingInformation.mergeBilling ? '' : customerDeliveryAddress.province || customer.province,
+      billZipCode: billingInformation.mergeBilling ? '' : customerDeliveryAddress.zipCode || customer.zipCode,
       orderVerify: '',
       /* eApplication Parameters */
       homeNo: customer.homeNo || '',
