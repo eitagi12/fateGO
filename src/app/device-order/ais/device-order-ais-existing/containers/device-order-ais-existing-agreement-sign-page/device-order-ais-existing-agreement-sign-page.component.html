@@ -1,3 +1,57 @@
-<p>
-  device-order-ais-existing-agreement-sign-page works!
-</p>
+<div class="mc-flex">
+    <mc-header title="ลูกค้าปัจจุบัน">
+      <div class="header-icon-left">
+        <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+      </div>
+      <div class="header-icon-right">
+        <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+      </div>
+    </mc-header>
+    <div class="mc-flex-wrap">
+      <div class="mb-3 mt-3">
+        <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
+  
+        <div class="container-fluid">
+          <div class="card mb-3">
+            <div class="card-header bg-transparent"></div>
+            <div class="card-body">
+              ข้าพเจ้าผู้ใช้บริการขอรับรองว่าลายมือชื่อในแบบคำขอนี้
+              และข้อมูลรายละเอียดจากบัตรประจำตัวประชาชนที่ได้ให้แก่บริษัท เป็นลายมือชื่อและข้อมูลที่แท้จริงของข้าพเจ้า
+              ข้าพเจ้าได้อ่านและเข้าใจพร้อมตกลงปฏิบัติตาม “ข้อตกลงและเงื่อนไขการให้บริการโทรศัพท์เคลื่อนที่ฯ(Postpaid)”
+              ของ
+              บริษัท แอดวานซ์ ไวร์เลส เน็ทเวอร์ค จำกัด แล้วจึงได้ตกลงสมัครใช้บริการกับบริษัท
+              ทั้งนี้ข้าพเจ้ายินยอมให้บริษัทจำกัดวงเงินการใช้บริการ
+              และประมวลผลข้อมูลของข้าพเจ้าเพื่อนำไปใช้ประโยชน์เกี่ยวกับ หรือเกี่ยวเนื่องกับการให้บริการโทรศัพท์เคลื่อนที่
+            </div>
+            <div class="card-footer bg-transparent"></div>
+          </div>
+  
+          <div class="card">
+            <div class="card-header bg-transparent text-center">กรุณาเซ็นลายเซ็น</div>
+            <div class="card-body">
+              <div class="outer-card">
+                <div class="embed-responsive embed-responsive-4by3">
+                  <div class="embed-responsive-item">
+                    <img class="sing-photo" [src]="'data:image/jpeg;base64,' + signatureImage" *ngIf="signatureImage != null">
+                  </div>
+                </div>
+                <div class="mb-2">
+                  <!-- <mc-signature [onSign]="onOpenSignature" (completed)="onComplete($event)" (error)="onError($event)"></mc-signature> -->
+                </div>
+                <div class="text-center p-3">
+                  <a href="#" class="text-info" (click)="$event.preventDefault();openSignature()" *ngIf="signatureImage == null">เซ็นลายเซ็น</a>
+                  <a href="#" class="text-info" (click)="$event.preventDefault();onClearSignature()" *ngIf="signatureImage != null">แก้ไขลายเซ็น</a>
+                </div>
+              </div>
+            </div>
+          </div>
+  
+        </div>
+  
+      </div>
+    </div>
+    <mc-footer>
+      <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+      <button class="btn btn-success" (click)="onNext()">NEXT</button>
+    </mc-footer>
+  </div>

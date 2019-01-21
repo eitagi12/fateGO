@@ -12,6 +12,6 @@ export const ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE = '/device-order/a
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_SUMMARY_PAGE = '/device-order/ais/existing/summary';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_AGREEMENT_PAGE = '/device-order/ais/existing/agreement';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_AGREEMENT_SIGN_PAGE = '/device-order/ais/existing/agreement-sign';
-export const ROUTE_DEVICE_ORDER_AIS_EXISTING_DEVICE_SELLING_PAGE = '/device-order/ais/existing/aggregate';
+export const ROUTE_DEVICE_ORDER_AIS_EXISTING_AGGREGATE_PAGE = '/device-order/ais/existing/aggregate';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_QUEUE_PAGE = '/device-order/ais/existing/queue';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_RESULT_PAGE = '/device-order/ais/existing/result';
