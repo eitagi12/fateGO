@@ -89,6 +89,11 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_CHANGE_PACKAGE_PAGE]);
   }
 
+  onHome() {
+    this.homeService.goToHome();
+  }
+
+
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }

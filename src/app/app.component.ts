@@ -33,7 +33,7 @@ export class AppComponent {
     this.homeService.callback = () => {
       window.location.href = '/smart-shop';
     };
-    this.supportOptionSelect();
+   // this.supportOptionSelect();
   }
 
   initails() {
