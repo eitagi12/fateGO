@@ -111,7 +111,7 @@ export class OrderPreToPostCurrentInfoPageComponent implements OnInit, OnDestroy
         })
         .catch((resp: any) => {
           this.pageLoadingService.closeLoading();
-          this.alertService.error(resp.error.developerMessage);
+          this.alertService.error(resp.error.resultDescription);
         });
     } else {
       this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE]);

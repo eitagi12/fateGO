@@ -92,7 +92,7 @@ export class OrderPrtToPostValidateCustomerRepiPageComponent implements OnInit, 
           });
       })
       .catch((resp: any) => {
-        this.alertService.error(resp.developerMessage);
+        this.alertService.error(resp.resultDescription);
       })
       .then(() => {
         this.pageLoadingService.closeLoading();

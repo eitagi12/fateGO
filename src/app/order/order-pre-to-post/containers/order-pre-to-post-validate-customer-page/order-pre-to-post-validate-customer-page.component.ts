@@ -143,7 +143,7 @@ export class OrderPreToPostValidateCustomerPageComponent implements OnInit, OnDe
           this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE]);
         })
         .catch((resp: any) => {
-          this.alertService.error(resp.error.developerMessage);
+          this.alertService.error(resp.error.resultDescription);
         });
       return;
     }
@@ -189,7 +189,7 @@ export class OrderPreToPostValidateCustomerPageComponent implements OnInit, OnDe
         this.router.navigate([ROUTE_ORDER_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE]);
       })
       .catch((resp: any) => {
-        this.alertService.error(resp.error.developerMessage);
+        this.alertService.error(resp.error.resultDescription);
       })
       .then(() => {
         this.pageLoadingService.closeLoading();
