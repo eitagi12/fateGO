@@ -46,7 +46,7 @@
               <input type="text" value="เกรด : {{tradeinGrade}}" class="form-control" disabled>
             </div>
             <div class="col-md-6">
-              <input type="text" value="ราคา : ฿{{tradeinPrice | number}}" class="form-control" disabled>
+              <input type="text" value="ราคา : {{tradeinPrice | number}}บาท (รวม VAT)" class="form-control" disabled>
             </div>
           </div>
         </div>
@@ -54,7 +54,7 @@
     </div>
   </div>
   <mc-footer>
-    <button class="btn btn-secondary" (click)="btnCancelFn()">CANCEL</button>
-    <button class="btn btn-success" (click)="onNext()" [disabled]="btnNextDisabled">CONFIRM</button>
+    <button class="btn btn-secondary" (click)="btnCancelFn()">ยกเลิก</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="btnNextDisabled">ยืนยัน</button>
   </mc-footer>
 </div>
