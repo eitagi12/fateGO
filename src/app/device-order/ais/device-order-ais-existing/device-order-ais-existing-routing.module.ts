@@ -17,6 +17,10 @@ import { DeviceOrderAisExistingMobileDetailPageComponent } from './containers/de
 import { DeviceOrderAisExistingEffectiveStartDatePageComponent } from './containers/device-order-ais-existing-effective-start-date-page/device-order-ais-existing-effective-start-date-page.component';
 import { DeviceOrderAisExistingAggregatePageComponent } from './containers/device-order-ais-existing-aggregate-page/device-order-ais-existing-aggregate-page.component';
 import { DeviceOrderAisExistingQueuePageComponent } from './containers/device-order-ais-existing-queue-page/device-order-ais-existing-queue-page.component';
+import { DeviceOrderAisExistingQrCodeSummaryPageComponent } from './containers/device-order-ais-existing-qr-code-summary-page/device-order-ais-existing-qr-code-summary-page.component';
+import { DeviceOrderAisExistingQrCodeGeneratorPageComponent } from './containers/device-order-ais-existing-qr-code-generator-page/device-order-ais-existing-qr-code-generator-page.component';
+import { DeviceOrderAisExistingQrCodeErrorPageComponent } from './containers/device-order-ais-existing-qr-code-error-page/device-order-ais-existing-qr-code-error-page.component';
+import { DeviceOrderAisExistingQrCodeQueuePageComponent } from './containers/device-order-ais-existing-qr-code-queue-page/device-order-ais-existing-qr-code-queue-page.component';
 
 const routes: Routes = [
   {
@@ -86,6 +90,22 @@ const routes: Routes = [
   {
     path: 'result',
     component: DeviceOrderAisExistingResultPageComponent
+  },
+  {
+    path: 'qr-code-summary',
+    component: DeviceOrderAisExistingQrCodeSummaryPageComponent
+  },
+  {
+    path: 'qr-code-generator',
+    component: DeviceOrderAisExistingQrCodeGeneratorPageComponent
+  },
+  {
+    path: 'qr-code-queue',
+    component: DeviceOrderAisExistingQrCodeQueuePageComponent
+  },
+  {
+    path: 'qr-code-error',
+    component: DeviceOrderAisExistingQrCodeErrorPageComponent
   }
 ];
 

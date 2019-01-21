@@ -20,6 +20,10 @@ import { DeviceOrderAisExistingAggregatePageComponent } from './containers/devic
 import { DeviceOrderAisExistingQueuePageComponent } from './containers/device-order-ais-existing-queue-page/device-order-ais-existing-queue-page.component';
 import { DeviceOrderAisExistingResultPageComponent } from './containers/device-order-ais-existing-result-page/device-order-ais-existing-result-page.component';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
+import { DeviceOrderAisExistingQrCodeSummaryPageComponent } from './containers/device-order-ais-existing-qr-code-summary-page/device-order-ais-existing-qr-code-summary-page.component';
+import { DeviceOrderAisExistingQrCodeGeneratorPageComponent } from './containers/device-order-ais-existing-qr-code-generator-page/device-order-ais-existing-qr-code-generator-page.component';
+import { DeviceOrderAisExistingQrCodeQueuePageComponent } from './containers/device-order-ais-existing-qr-code-queue-page/device-order-ais-existing-qr-code-queue-page.component';
+import { DeviceOrderAisExistingQrCodeErrorPageComponent } from './containers/device-order-ais-existing-qr-code-error-page/device-order-ais-existing-qr-code-error-page.component';
 
 @NgModule({
   imports: [
@@ -44,7 +48,11 @@ import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
     DeviceOrderAisExistingAgreementSignPageComponent,
     DeviceOrderAisExistingAggregatePageComponent,
     DeviceOrderAisExistingQueuePageComponent,
-    DeviceOrderAisExistingResultPageComponent
+    DeviceOrderAisExistingResultPageComponent,
+    DeviceOrderAisExistingQrCodeSummaryPageComponent,
+    DeviceOrderAisExistingQrCodeGeneratorPageComponent,
+    DeviceOrderAisExistingQrCodeQueuePageComponent,
+    DeviceOrderAisExistingQrCodeErrorPageComponent
   ]
 })
 export class DeviceOrderAisExistingModule { }
