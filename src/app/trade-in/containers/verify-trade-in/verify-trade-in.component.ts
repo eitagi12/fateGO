@@ -93,7 +93,11 @@ export class VerifyTradeInComponent implements OnInit {
           }
         } else {
           this.tradeInService.setSerialNo(imei);
-          this.alertService.warning('ไม่พบหมายเลข imei ในระบบ กรุณา เลือก รุ่นโทรศัพท์');
+          const options = {
+            text: 'ไม่พบหมายเลข imei ในระบบ กรุณาเลือก ยี่ห้อ,รุ่นโทรศัพท์',
+            confirmButtonText: 'ตกลง'
+          };
+          this.alertService.notify(options);
           this.checkValueTradein();
         }
       }
