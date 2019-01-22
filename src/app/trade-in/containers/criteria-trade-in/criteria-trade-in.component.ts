@@ -57,15 +57,28 @@ export class CriteriaTradeInComponent implements OnInit {
   selectValuationlistFn(val: any, checked: any) {
     if (checked.target.checked === true) {
       val.valChecked = 'Y';
-      this.btnNextDisabled = false;
     } else if (checked.target.checked === false) {
       val.valChecked = 'N';
+    }
+    this.onDeleteChk();
+  }
+
+  onDeleteChk() {
+    let iChk = 0;
+    for (const itemCount of this.valuationlists) {
+      if (itemCount.valChecked === "Y") {
+        iChk++;
+      }
+    }
+    if (iChk == 0) {
       this.btnNextDisabled = true;
+    } else {
+      this.btnNextDisabled = false;
     }
   }
 
   setFormValuation() {
-    this.valuationlistForm =  this.fb.group({
+    this.valuationlistForm = this.fb.group({
       listVuation: ['', Validators.required]
     });
   }
