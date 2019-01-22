@@ -21,6 +21,10 @@ import { DeviceOrderAisExistingQrCodeSummaryPageComponent } from './containers/d
 import { DeviceOrderAisExistingQrCodeGeneratorPageComponent } from './containers/device-order-ais-existing-qr-code-generator-page/device-order-ais-existing-qr-code-generator-page.component';
 import { DeviceOrderAisExistingQrCodeErrorPageComponent } from './containers/device-order-ais-existing-qr-code-error-page/device-order-ais-existing-qr-code-error-page.component';
 import { DeviceOrderAisExistingQrCodeQueuePageComponent } from './containers/device-order-ais-existing-qr-code-queue-page/device-order-ais-existing-qr-code-queue-page.component';
+import { DeviceOrderAisExistingOneLovePageComponent } from './containers/device-order-ais-existing-one-love-page/device-order-ais-existing-one-love-page.component';
+import { DeviceOrderAisExistingMergeBillingPageComponent } from './containers/device-order-ais-existing-merge-billing-page/device-order-ais-existing-merge-billing-page.component';
+import { DeviceOrderAisExistingEapplicationPageComponent } from './containers/device-order-ais-existing-eapplication-page/device-order-ais-existing-eapplication-page.component';
+import { DeviceOrderAisExistingEbillingAddressPageComponent } from './containers/device-order-ais-existing-ebilling-address-page/device-order-ais-existing-ebilling-address-page.component';
 
 const routes: Routes = [
   {
@@ -106,7 +110,23 @@ const routes: Routes = [
   {
     path: 'qr-code-error',
     component: DeviceOrderAisExistingQrCodeErrorPageComponent
-  }
+  },
+  {
+    path: 'one-love',
+    component: DeviceOrderAisExistingOneLovePageComponent
+  },
+  {
+    path: 'merge-billing',
+    component: DeviceOrderAisExistingMergeBillingPageComponent
+  },
+  {
+    path: 'eapplication',
+    component: DeviceOrderAisExistingEapplicationPageComponent
+  },
+  {
+    path: 'ebilling-address',
+    component: DeviceOrderAisExistingEbillingAddressPageComponent
+  },
 ];
 
 @NgModule({
