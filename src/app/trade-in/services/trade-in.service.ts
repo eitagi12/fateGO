@@ -13,8 +13,12 @@ export class TradeInService {
   constructor(private http: HttpClient,
               private localStorageService: LocalStorageService,
               private tokenService: TokenService) { }
-
-
+  private objTradein = {
+    brand: '',
+    model: '',
+    matCode: '',
+    serialNo: ''
+  };
   private get settingTradein(): NgxResource<object> {
     return this.localStorageService
       .load(`Tradein`)
@@ -75,6 +79,10 @@ export class TradeInService {
   removeTradein () {
     this.settingTradein.remove();
     this.settingCriteriatTradein.remove();
+    this.objTradein.brand = '';
+    this.objTradein.model = '';
+    this.objTradein.matCode = '';
+    this.objTradein.serialNo = '';
   }
 
   getTradein () {
@@ -87,5 +95,20 @@ export class TradeInService {
 
   setEstimateTradein(objEstimate: object) {
     this.settingCriteriatTradein.update(objEstimate);
+  }
+  setSerialNo (serialNo: string) {
+    this.objTradein.serialNo = serialNo;
+  }
+  setMatCode (matCode: string) {
+    this.objTradein.matCode = matCode;
+  }
+  setBrand (brand: string) {
+    this.objTradein.brand = brand;
+  }
+  setModel (model: string) {
+    this.objTradein.model = model;
+  }
+  getObjTradein () {
+    return this.objTradein;
   }
 }

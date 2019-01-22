@@ -46,28 +46,22 @@
                           <mc-lazy-load-image  [src]="brand?.imageUrl"></mc-lazy-load-image>
                     </div>
                   </div>
-                    
-                  
                 </div>
             </div>
-          <div class="row">
+          <div *ngIf="isSelectImg">
+            <div class="row">
               <p class="text-grey text-left">รุ่นโทรศัพท์ : </p>
               <div class="col-3 col-sm-3 mx-4">
-                <select id="select-modelTrade-in"
-                  (change)="selectModelTradeinFn($event)"
-                  class="mc-input-select"
-                  [(ngModel)]='selectOp'
-                  class='form-control text-left'
-                  [disabled]='butDisabled'>
-                    <option [ngValue]="null">เลือก</option>
-                    <option *ngFor="let modelTradein of listModelTradein"
-                            [ngValue]="modelTradein">
-                            {{modelTradein.brand}} {{modelTradein.model}}
-                            </option>
-                  </select>
+                  <input type="text" 
+                          class="form-control" id="keyword" autocomplete="off" 
+                          maxlength="100" [(ngModel)]="keyword"
+                          [typeahead]="datasource"  typeaheadOptionField="datasource.commercialName" 
+                          [typeaheadScrollable]="true" [disabled]='butDisabledModel'
+                          (typeaheadOnSelect)="onProductSearch($event)" 
+                          [typeaheadItemTemplate]="searchTemplate">
               </div>
-              
-          </div>
+            </div>
+          </div>  
         </div>
       </div>
     </div>
