@@ -5,6 +5,8 @@ import { FormGroup, FormControl, Validators, ValidationErrors } from '@angular/f
 import { TradeInService } from '../../services/trade-in.service';
 import { Tradein } from 'src/app/shared/models/trade-in.model';
 import { BrandsOfProduct } from 'mychannel-shared-libs/lib/service/models/brands-of-product';
+import { Observable } from 'rxjs';
+import { mergeMap, filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-verify-trade-in',
@@ -18,15 +20,21 @@ export class VerifyTradeInComponent implements OnInit {
   submitted = false;
   listModelTradein = [];
   defualtListModel = [];
-  selectOp = null;
-  butDisabled = false;
-  objTradein: Tradein;
+  butDisabledModel = false;
   isNextPage = false;
   serialMatCode: string;
   isCheckImei = false;
   btnNextDisabled = true;
   isSelectImg = false;
   isLockImg = false;
+  keyword: string;
+  datasource: Observable<any>;
+  modelTradein: any;
+  productSearch: any;
+  defualtBrand = [];
+  brand: string;
+  checkSerial: any;
+  objSerival: any;
   constructor(private router: Router,
               private homeService: HomeService,
               private tradeInService: TradeInService,
@@ -40,6 +48,7 @@ export class VerifyTradeInComponent implements OnInit {
   ngOnInit () {
     this.setFormImei();
     this.callService();
+    this.createDataSource();
   }
 
   private callService () {
@@ -59,107 +68,98 @@ export class VerifyTradeInComponent implements OnInit {
               }
           }
         );
+        this.defualtBrand = objFilterBrand;
         this.brands = objFilterBrand;
       }
     );
   }
 
-
-
   checkImei () {
     this.pageLoadingService.openLoading();
     this.submitted = true;
-    this.isCheckImei = true;
-    this.tradeInService.checkSerialTradein(this.imeiForm.value.imei).then(
-        (response) => {
-          this.pageLoadingService.closeLoading();
-          if (response.data.status === 'S') {
-            this.serialMatCode = response.data.matcode;
-            this.setModelImeiToModelList(response.data.brand , response.data.model);
+    const imei = this.imeiForm.value.imei;
+    this.checkSerial = this.tradeInService.checkSerialTradein(imei);
+    this.checkSerial.then(
+      (response) => {
+        this.pageLoadingService.closeLoading();
+        if (response.data.status === 'S') {
+          this.tradeInService.setSerialNo(imei);
+          this.tradeInService.setMatCode(response.data.matcode);
+          if (this.checkBrandAndModelFromListModelTradein(response.data.brand , response.data.model)) {
+            this.setAutoSelect(response.data);
           } else {
-            this.alertService.warning('ไม่พบหมายเลข imei ในระบบ กรุณา เลือก รุ่นโทรศัพท์');
-            this.butDisabled = false;
-            this.selectOp = null;
+            this.alertService.warning('ไม่พบ model ที่ตรงกับ รายการ Tradein');
+            this.cancelSelected();
+          }
+        } else {
+          this.tradeInService.setSerialNo(imei);
+          const options = {
+            text: 'ไม่พบหมายเลข imei ในระบบ กรุณาเลือก ยี่ห้อ,รุ่นโทรศัพท์',
+            confirmButtonText: 'ตกลง'
+          };
+          this.alertService.notify(options);
+          this.checkValueTradein();
         }
-      });
+      }
+    );
   }
+
+  setAutoSelect (objSerival) {
+    this.setBrandImg(objSerival);
+    const serialNo = this.tradeInService.getObjTradein().serialNo;
+      this.setBorderImgOnSelect(objSerival.brand);
+      const objSelectTradein = {
+        item : {
+          brand : objSerival.brand,
+          model : objSerival.model,
+          commercialName : objSerival.commercialName,
+          serialNo : serialNo
+        }
+      };
+      this.isSelectImg = true;
+      this.onProductSearch(objSelectTradein);
+      this.keyword = objSerival.model;
+      this.butDisabledModel = true;
+  }
+  setBrandImg (objSerival) {
+    const filterBrand = this.brands.filter(
+      (data) => {
+        if (data.name === objSerival.brand) {
+          return data;
+          }
+        });
+      this.brands = filterBrand;
+  }
+
+  checkBrandAndModelFromListModelTradein (brand: string, model: string) {
+    const indexBrandModelList = this.listModelTradein.findIndex(
+      obj => obj.brand === brand && obj.model === model
+    );
+    if (indexBrandModelList >= 0) {
+      const objSelectTradein = this.listModelTradein[indexBrandModelList];
+      return objSelectTradein;
+    } else {
+      return;
+    }
+  }
+
   OnDestroy () {
     this.tradeInService.removeTradein();
-    this.isCheckImei = false;
   }
-  selectModelTradeinFn (val: any) {
-    if (this.imeiForm.value.imei) {
-      if (val.target['selectedIndex'] === 0) {
-        this.alertService.warning('กรุณาเลือก brand โทรศัพท์');
-        this.btnNextDisabled = true;
-        return;
-      } else {
-        if (this.isCheckImei) {
-          this.btnNextDisabled = false;
-        }
-        const index = val.target['selectedIndex'] - 1;
-        this.objTradein = {
-          brand: this.listModelTradein[index].brand,
-          model: this.listModelTradein[index].model,
-          matCode: this.serialMatCode ? this.serialMatCode : ' ',
-          serialNo: this.imeiForm.value.imei ? this.imeiForm.value.imei : ''
-        };
-        return this.objTradein;
-      }
-    } else {
-      if (val.target['selectedIndex'] === 0) {
-        this.alertService.warning('กรุณากรอก เลข imei');
-        return;
-      } else {
-        const index = val.target['selectedIndex'] - 1;
-        this.objTradein = {
-          brand: this.listModelTradein[index].brand,
-          model: this.listModelTradein[index].model,
-          matCode: this.serialMatCode ? this.serialMatCode : '',
-          serialNo: this.imeiForm.value.imei ? this.imeiForm.value.imei : ''
-        };
-        return this.objTradein;
-      }
-    }
-  }
-  setModelImeiToModelList (brandImei: string, modelImei: string) {
-    if (modelImei && brandImei) {
-      const indexSelect = this.listModelTradein.findIndex(
-        obj => obj.brand === brandImei && obj.model === modelImei
-      );
-      if (indexSelect && indexSelect >= 0) {
-        this.selectOp = this.listModelTradein[indexSelect];
-        this.butDisabled = true;
-        this.objTradein = {
-          brand: this.listModelTradein[indexSelect].brand,
-          model: this.listModelTradein[indexSelect].model,
-          matCode: this.serialMatCode ? this.serialMatCode : '',
-          serialNo: this.imeiForm.value.imei ? this.imeiForm.value.imei : ''
-        };
-        this.btnNextDisabled = false;
-        this.isLockImg = true;
-        this.setBorderImgOnselect(this.listModelTradein[indexSelect].brand);
-      } else {
-        this.btnNextDisabled = true;
-        this.butDisabled = false;
-        this.alertService.warning('ไม่พบ model ที่ตรงกับ รายการ Tradein');
-      }
-    } else {
-      this.butDisabled = false;
-      this.btnNextDisabled = true;
-    }
-  }
+
   cancelSelected () {
     this.imeiForm.reset();
-    this.selectOp = null;
     this.tradeInService.removeTradein();
-    this.isCheckImei = false;
-    this.butDisabled = false;
-    this.listModelTradein = this.defualtListModel;
-    this.setBorderImgOnselect('');
+    this.butDisabledModel = false;
+    this.setBorderImgOnSelect('');
+    this.isSelectImg = false;
+    this.keyword = null;
+    this.brands = this.defualtBrand;
+    this.btnNextDisabled = true;
   }
   checkValueTradein () {
-    if (!this.imeiForm.invalid && this.objTradein.brand && this.objTradein.model && this.isCheckImei) {
+    const objTradein = this.tradeInService.getObjTradein();
+    if (objTradein.serialNo && objTradein.model && this.isSelectImg) {
       this.isNextPage = true;
       this.btnNextDisabled = false;
       return this.isNextPage;
@@ -173,7 +173,8 @@ export class VerifyTradeInComponent implements OnInit {
   btnNextFn () {
     this.checkValueTradein();
     if (this.isNextPage) {
-      this.tradeInService.setSelectedTradein(this.objTradein);
+      const objTradein = this.tradeInService.getObjTradein();
+      this.tradeInService.setSelectedTradein(objTradein);
       this.router.navigate(['trade-in/criteria-trade-in']);
     } else {
       this.alertService.error('กรุณา กรอกข้อมูล ให้ครบ');
@@ -202,7 +203,6 @@ export class VerifyTradeInComponent implements OnInit {
   }
   selectImg($event) {
     this.listModelTradein = this.defualtListModel;
-    this.selectOp = null;
     const srcSelect = $event.target.src;
     const nameSelect = this.brands.filter(
       (data) => {
@@ -211,19 +211,10 @@ export class VerifyTradeInComponent implements OnInit {
         }
       }
     );
-    const objFilterListBySelectImg = this.listModelTradein.filter(
-      (data) => {
-        if (data.brand === nameSelect[0].name) {
-          return data;
-        } else {
-          return;
-        }
-      }
-    );
-    this.listModelTradein = objFilterListBySelectImg;
+    this.brand = nameSelect[0].name;
     const nameBrandSelect = nameSelect[0].name;
-    this.setBorderImgOnselect(nameBrandSelect);
-
+    this.setBorderImgOnSelect(nameBrandSelect);
+    this.isSelectImg = true;
   }
 
 
@@ -231,7 +222,7 @@ export class VerifyTradeInComponent implements OnInit {
     return this.elementRef.nativeElement.querySelector(brandId);
   }
 
-  setBorderImgOnselect (nameBrandSelect) {
+  setBorderImgOnSelect (nameBrandSelect) {
     const imagesContainerList = this.elementRef.nativeElement.querySelectorAll('.image-container');
 
     for (const imagesContainer of imagesContainerList) {
@@ -241,5 +232,33 @@ export class VerifyTradeInComponent implements OnInit {
           this.renderer.setElementClass(this.getBrandElementById('#' + imagesContainer.id), 'active', false);
       }
     }
+  }
+  private createDataSource() {
+    this.datasource = Observable.create((observer: any) => {
+      observer.next(this.keyword);
+    }).pipe(
+      mergeMap((keyword: string) => this.queryProducCatalogSearch(keyword))
+    );
+  }
+
+  private queryProducCatalogSearch(keyword: string): Promise<any> {
+    const model = this.defualtListModel.map(item => item.model).filter(
+      (value, index, self) => self.indexOf(value) === index);
+    const regex = /(TRADE IN)/;
+    return this.salesService.producCatalogSearch(keyword).then((resp) => {
+      const objFilterModel = resp.data.filter(
+        (data) => {
+          if (model.includes(data.model) && data.brand === this.brand && !regex.test(data.commercialName)) {
+            return data;
+          }
+        }
+      );
+      return objFilterModel;
+    });
+  }
+  onProductSearch (event) {
+    this.tradeInService.setBrand(event.item.brand);
+    this.tradeInService.setModel(event.item.model);
+    this.checkValueTradein();
   }
 }
