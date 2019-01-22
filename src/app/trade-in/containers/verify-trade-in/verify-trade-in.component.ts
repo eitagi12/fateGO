@@ -93,6 +93,7 @@ export class VerifyTradeInComponent implements OnInit {
           }
         } else {
           this.tradeInService.setSerialNo(imei);
+          this.tradeInService.setMatCode(' ');
           const options = {
             text: 'ไม่พบหมายเลข imei ในระบบ กรุณาเลือก ยี่ห้อ,รุ่นโทรศัพท์',
             confirmButtonText: 'ตกลง'
