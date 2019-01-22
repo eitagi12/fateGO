@@ -2,16 +2,16 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { HomeService, PageLoadingService, AlertService } from 'mychannel-shared-libs';
-import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 
-import { WIZARD_ORDER_PRE_TO_POST } from 'src/app/order/constants/wizard.constant';
+import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
 import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CUSTOMER_INFO_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ID_CARD_CAPTURE_REPI_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CUSTOMER_PROFILE_PAGE
 } from '../../constants/route-path.constant';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { environment } from 'src/environments/environment';
 
@@ -22,7 +22,7 @@ import { environment } from 'src/environments/environment';
   styleUrls: ['./device-order-ais-pre-to-post-otp-page.component.scss']
 })
 export class DeviceOrderAisPreToPostOtpPageComponent implements OnInit {
-  wizards = WIZARD_ORDER_PRE_TO_POST;
+  wizards = WIZARD_DEVICE_ORDER_AIS;
   otpForm: FormGroup;
   transaction: Transaction;
   registrationData: any;

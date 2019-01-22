@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { WIZARD_ORDER_PRE_TO_POST } from 'src/app/order/constants/wizard.constant';
+import { HttpClient } from '@angular/common/http';
+import { HomeService, ConfirmCustomerInfo, BillingInfo, MailBillingInfo, TelNoBillingInfo, TokenService } from 'mychannel-shared-libs';
+
+import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
 import {
-  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_AGREEMENT_SIGN_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_EAPPLICATION_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CONFIRM_USER_INFORMATION_PAGE
 } from '../../constants/route-path.constant';
-import { HomeService, ConfirmCustomerInfo, BillingInfo, MailBillingInfo, TelNoBillingInfo, TokenService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { HttpClient } from '@angular/common/http';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 
 @Component({
@@ -17,7 +18,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 })
 export class DeviceOrderAisPreToPostSummaryPageComponent implements OnInit {
 
-  wizards = WIZARD_ORDER_PRE_TO_POST;
+  wizards = WIZARD_DEVICE_ORDER_AIS;
   transaction: Transaction;
   confirmCustomerInfo: ConfirmCustomerInfo;
   billingInfo: BillingInfo;
@@ -79,7 +80,7 @@ export class DeviceOrderAisPreToPostSummaryPageComponent implements OnInit {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CONFIRM_USER_INFORMATION_PAGE]);
   }
   onNext() {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_AGREEMENT_SIGN_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_EAPPLICATION_PAGE]);
   }
 
   onHome() {

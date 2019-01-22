@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HomeService, PageLoadingService, AlertService } from 'mychannel-shared-libs';
 
-import { WIZARD_ORDER_PRE_TO_POST } from 'src/app/order/constants/wizard.constant';
+import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
+
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { CreatePreToPostService } from 'src/app/shared/services/create-pre-to-post.service';
@@ -14,7 +15,7 @@ import { CreatePreToPostService } from 'src/app/shared/services/create-pre-to-po
 })
 export class DeviceOrderAisPreToPostResultPageComponent implements OnInit {
 
-  wizards = WIZARD_ORDER_PRE_TO_POST;
+  wizards = WIZARD_DEVICE_ORDER_AIS;
 
   transaction: Transaction;
   serviceChange: any;

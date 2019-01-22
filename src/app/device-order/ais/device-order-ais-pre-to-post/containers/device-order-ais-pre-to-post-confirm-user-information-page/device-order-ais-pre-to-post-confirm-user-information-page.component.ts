@@ -3,9 +3,10 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { HomeService, ConfirmCustomerInfo, BillingInfo, MailBillingInfo, TelNoBillingInfo, BillingSystemType, Utils, AlertService } from 'mychannel-shared-libs';
 
-import { WIZARD_ORDER_PRE_TO_POST } from 'src/app/order/constants/wizard.constant';
+import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
 import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_SUMMARY_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_MOBILE_CARE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_EBILLING_ADDRESS_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_MERGE_BILLING_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ON_TOP_PAGE,
@@ -22,7 +23,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 })
 export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_PRE_TO_POST;
+  wizards = WIZARD_DEVICE_ORDER_AIS;
   transaction: Transaction;
   confirmCustomerInfo: ConfirmCustomerInfo;
   billingInfo: BillingInfo;
@@ -232,7 +233,7 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
     billCycleData.billingMethodText = this.billingInfo.billingMethod.text;
     billCycleData.billCycleText = this.billingInfo.billingCycle.text;
 
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_SUMMARY_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_MOBILE_CARE_PAGE]);
   }
 
   onEditAddress() {

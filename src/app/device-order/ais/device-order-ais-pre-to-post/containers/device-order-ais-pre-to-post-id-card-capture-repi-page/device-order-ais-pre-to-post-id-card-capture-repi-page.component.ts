@@ -1,14 +1,15 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { WIZARD_ORDER_PRE_TO_POST } from 'src/app/order/constants/wizard.constant';
+import { HttpClient } from '@angular/common/http';
 import { HomeService, CaptureAndSign, PageLoadingService, AlertService, TokenService, ChannelType } from 'mychannel-shared-libs';
-import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
-import { TransactionService } from 'src/app/shared/services/transaction.service';
+
+import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
 import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_SELECT_PACKAGE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_OTP_PAGE
 } from '../../constants/route-path.constant';
-import { HttpClient } from '@angular/common/http';
+import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
 
 @Component({
   selector: 'app-device-order-ais-pre-to-post-id-card-capture-repi-page',
@@ -16,7 +17,8 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./device-order-ais-pre-to-post-id-card-capture-repi-page.component.scss']
 })
 export class DeviceOrderAisPreToPostIdCardCaptureRepiPageComponent implements OnInit, OnDestroy {
-  wizards = WIZARD_ORDER_PRE_TO_POST;
+
+  wizards = WIZARD_DEVICE_ORDER_AIS;
 
   transaction: Transaction;
   captureAndSign: CaptureAndSign;

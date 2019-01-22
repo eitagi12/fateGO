@@ -12,6 +12,7 @@ import { DeviceOrderAisPreToPostOneLoveComponent } from './containers/device-ord
 import { DeviceOrderAisPreToPostOnTopPageComponent } from './containers/device-order-ais-pre-to-post-on-top-page/device-order-ais-pre-to-post-on-top-page.component';
 import { DeviceOrderAisPreToPostMergeBillingPageComponent } from './containers/device-order-ais-pre-to-post-merge-billing-page/device-order-ais-pre-to-post-merge-billing-page.component';
 import { DeviceOrderAisPreToPostConfirmUserInformationPageComponent } from './containers/device-order-ais-pre-to-post-confirm-user-information-page/device-order-ais-pre-to-post-confirm-user-information-page.component';
+import { DeviceOrderAisPreToPostMobileCarePageComponent } from './containers/device-order-ais-pre-to-post-mobile-care-page/device-order-ais-pre-to-post-mobile-care-page.component';
 import { DeviceOrderAisPreToPostEbillingAddressPageComponent } from './containers/device-order-ais-pre-to-post-ebilling-address-page/device-order-ais-pre-to-post-ebilling-address-page.component';
 import { DeviceOrderAisPreToPostSummaryPageComponent } from './containers/device-order-ais-pre-to-post-summary-page/device-order-ais-pre-to-post-summary-page.component';
 import { DeviceOrderAisPreToPostAgreementSignPageComponent } from './containers/device-order-ais-pre-to-post-agreement-sign-page/device-order-ais-pre-to-post-agreement-sign-page.component';
@@ -39,6 +40,7 @@ const routes: Routes = [
   { path: 'on-top', component: DeviceOrderAisPreToPostOnTopPageComponent },
   { path: 'merge-billing', component: DeviceOrderAisPreToPostMergeBillingPageComponent },
   { path: 'confirm-user-information', component: DeviceOrderAisPreToPostConfirmUserInformationPageComponent },
+  { path: 'mobile-care', component: DeviceOrderAisPreToPostMobileCarePageComponent },
   { path: 'ebilling-address', component: DeviceOrderAisPreToPostEbillingAddressPageComponent },
   { path: 'summary', component: DeviceOrderAisPreToPostSummaryPageComponent },
   { path: 'agreement-sign', component: DeviceOrderAisPreToPostAgreementSignPageComponent },

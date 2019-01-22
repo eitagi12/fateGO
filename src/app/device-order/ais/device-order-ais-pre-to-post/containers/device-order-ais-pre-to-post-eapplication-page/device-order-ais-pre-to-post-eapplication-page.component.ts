@@ -1,13 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Transaction } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
-import { CreateEapplicationService } from 'src/app/shared/services/create-eapplication.service';
-import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HomeService, PageLoadingService } from 'mychannel-shared-libs';
+
 import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_RESULT_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_AGGREGATE_PAGE
 } from '../../constants/route-path.constant';
+import { Transaction } from 'src/app/shared/models/transaction.model';
+import { CreateEapplicationService } from 'src/app/shared/services/create-eapplication.service';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
 
 @Component({
   selector: 'app-device-order-ais-pre-to-post-eapplication-page',

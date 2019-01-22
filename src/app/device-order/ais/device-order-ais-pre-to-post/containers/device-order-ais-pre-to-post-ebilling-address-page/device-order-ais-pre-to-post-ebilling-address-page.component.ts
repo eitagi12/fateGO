@@ -3,12 +3,13 @@ import { Router } from '@angular/router';
 import { HomeService, CustomerAddress } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 
-import { Transaction } from 'src/app/shared/models/transaction.model';
-import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
+import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
 import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CONFIRM_USER_INFORMATION_PAGE
 } from '../../constants/route-path.constant';
+
+import { Transaction } from 'src/app/shared/models/transaction.model';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
 
 @Component({
   selector: 'app-device-order-ais-pre-to-post-ebilling-address-page',
@@ -17,7 +18,7 @@ import {
 })
 export class DeviceOrderAisPreToPostEbillingAddressPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_NEW_REGISTER;
+  wizards = WIZARD_DEVICE_ORDER_AIS;
 
   transaction: Transaction;
   customerAddress: CustomerAddress;

@@ -28,6 +28,8 @@ import { DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent } from './co
 import { DeviceOrderAisPreToPostValidateCustomerIdCardRepiPageComponent } from './containers/device-order-ais-pre-to-post-validate-customer-id-card-repi-page/device-order-ais-pre-to-post-validate-customer-id-card-repi-page.component';
 import { DeviceOrderAisPreToPostValidateCustomerPageComponent } from './containers/device-order-ais-pre-to-post-validate-customer-page/device-order-ais-pre-to-post-validate-customer-page.component';
 import { DeviceOrderAisPrtToPostValidateCustomerRepiPageComponent } from './containers/device-order-ais-prt-to-post-validate-customer-repi-page/device-order-ais-prt-to-post-validate-customer-repi-page.component';
+import { DeviceOrderAisPreToPostMobileCarePageComponent } from './containers/device-order-ais-pre-to-post-mobile-care-page/device-order-ais-pre-to-post-mobile-care-page.component';
+import { DeviceOrderAisPreToPostAgreementPageComponent } from './containers/device-order-ais-pre-to-post-agreement-page/device-order-ais-pre-to-post-agreement-page.component';
 
 @NgModule({
   imports: [
@@ -61,7 +63,9 @@ import { DeviceOrderAisPrtToPostValidateCustomerRepiPageComponent } from './cont
     DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent,
     DeviceOrderAisPreToPostValidateCustomerIdCardRepiPageComponent,
     DeviceOrderAisPreToPostValidateCustomerPageComponent,
-    DeviceOrderAisPrtToPostValidateCustomerRepiPageComponent
+    DeviceOrderAisPrtToPostValidateCustomerRepiPageComponent,
+    DeviceOrderAisPreToPostMobileCarePageComponent,
+    DeviceOrderAisPreToPostAgreementPageComponent
   ]
 })
 export class DeviceOrderAisPreToPostModule { }

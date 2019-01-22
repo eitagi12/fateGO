@@ -3,12 +3,12 @@ import { OneLove, HomeService, AlertService, PageLoadingService } from 'mychanne
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
-import { WIZARD_ORDER_PRE_TO_POST } from 'src/app/order/constants/wizard.constant';
-import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
 import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_SELECT_PACKAGE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ON_TOP_PAGE
 } from '../../constants/route-path.constant';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { environment } from 'src/environments/environment';
 
@@ -19,7 +19,7 @@ import { environment } from 'src/environments/environment';
 })
 export class DeviceOrderAisPreToPostOneLoveComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_PRE_TO_POST;
+  wizards = WIZARD_DEVICE_ORDER_AIS;
 
   oneLove: OneLove;
   transaction: Transaction;

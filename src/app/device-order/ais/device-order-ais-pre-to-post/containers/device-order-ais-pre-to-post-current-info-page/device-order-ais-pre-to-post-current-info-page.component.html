@@ -8,6 +8,7 @@
   <div class="mc-flex-wrap">
     <div class="mt-3 mb-3">
       <div class="container-fluid">
+        <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
         <div class="container-fluid bg-white pt-3 pb-2 mb-3" *ngIf="balance && serviceChange && serviceAfterChanged">
           <div class="text-center">ข้อมูลปัจจุบันของคุณ</div>
           <hr>

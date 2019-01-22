@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { HomeService, PageLoadingService } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 
-import { WIZARD_ORDER_PRE_TO_POST } from 'src/app/order/constants/wizard.constant';
+import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
 import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_RESULT_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_AGREEMENT_SIGN_PAGE,
@@ -30,7 +30,7 @@ export interface CurrentServices {
 })
 export class DeviceOrderAisPreToPostAggregatePageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_PRE_TO_POST;
+  wizards = WIZARD_DEVICE_ORDER_AIS;
 
   transaction: Transaction;
   mobileNo: string;

@@ -1,16 +1,18 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { EligibleMobile, HomeService } from 'mychannel-shared-libs';
+import { HttpClient } from '@angular/common/http';
+
+import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
 import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_PAYMENT_DETAIL_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CURRENT_INFO_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_PAGE
 } from '../../constants/route-path.constant';
-import { HttpClient } from '@angular/common/http';
+
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { WIZARD_ORDER_PRE_TO_POST } from 'src/app/order/constants/wizard.constant';
 
 export interface BillingAccount {
   billingName: string;
@@ -32,7 +34,7 @@ export interface BillingAccount {
 })
 export class DeviceOrderAisPreToPostEligibleMobilePageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_PRE_TO_POST;
+  wizards = WIZARD_DEVICE_ORDER_AIS;
   eligibleMobiles: Array<EligibleMobile>;
   selectMobileNo: EligibleMobile;
   transaction: Transaction;

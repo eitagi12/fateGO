@@ -3,12 +3,13 @@ import { Router } from '@angular/router';
 import { FormBuilder } from '@angular/forms';
 import { HomeService } from 'mychannel-shared-libs';
 
-import { WIZARD_ORDER_PRE_TO_POST } from 'src/app/order/constants/wizard.constant';
+import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
 import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ON_TOP_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CONFIRM_USER_INFORMATION_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_SELECT_PACKAGE_PAGE
 } from '../../constants/route-path.constant';
+
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 
@@ -20,7 +21,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 export class DeviceOrderAisPreToPostMergeBillingPageComponent implements OnInit, OnDestroy {
 
   readonly REGEX_NET_EXTREME = /[Nn]et[Ee]xtreme/;
-  wizards = WIZARD_ORDER_PRE_TO_POST;
+  wizards = WIZARD_DEVICE_ORDER_AIS;
 
   transaction: Transaction;
 

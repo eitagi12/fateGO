@@ -1,10 +1,12 @@
 
 import { OnDestroy, OnInit, Component, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { PromotionShelve, HomeService, PageLoadingService, AlertService, PromotionShelveItem } from 'mychannel-shared-libs';
 import * as moment from 'moment';
 
+import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
 import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ID_CARD_CAPTURE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ON_TOP_PAGE,
@@ -12,9 +14,7 @@ import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ONE_LOVE_PAGE
 } from '../../constants/route-path.constant';
-import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { WIZARD_ORDER_PRE_TO_POST } from 'src/app/order/constants/wizard.constant';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 
 @Component({
@@ -27,7 +27,7 @@ export class DeviceOrderAisPreToPostSelectPackagePageComponent implements OnInit
   @ViewChild('conditionTemplate')
   conditionTemplate: any;
 
-  wizards = WIZARD_ORDER_PRE_TO_POST;
+  wizards = WIZARD_DEVICE_ORDER_AIS;
 
   transaction: Transaction;
   promotionShelves: PromotionShelve[];

@@ -5,6 +5,7 @@ import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 import { PageLoadingService, AlertService } from 'mychannel-shared-libs';
 
+import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
 import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CUSTOMER_INFO_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_SELECT_PACKAGE_PAGE,
@@ -33,6 +34,7 @@ export interface CurrentServices {
 })
 export class DeviceOrderAisPreToPostCurrentInfoPageComponent implements OnInit, OnDestroy {
 
+  wizards = WIZARD_DEVICE_ORDER_AIS;
   isLoad = true;
   mobileNo: string;
   transaction: Transaction;

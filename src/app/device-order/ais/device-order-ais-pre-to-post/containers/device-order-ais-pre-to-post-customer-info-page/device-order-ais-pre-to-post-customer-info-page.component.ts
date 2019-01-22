@@ -1,9 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { WIZARD_ORDER_PRE_TO_POST } from 'src/app/order/constants/wizard.constant';
-import { Transaction, TransactionAction, Customer } from 'src/app/shared/models/transaction.model';
 import { CustomerInfo, HomeService } from 'mychannel-shared-libs';
-import { TransactionService } from 'src/app/shared/services/transaction.service';
+
+import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
 import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ID_CARD_CAPTURE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE,
@@ -12,6 +11,8 @@ import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ID_CARD_CAPTURE_REPI_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_SELECT_PACKAGE_PAGE
 } from '../../constants/route-path.constant';
+import { Transaction, TransactionAction, Customer } from 'src/app/shared/models/transaction.model';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
 
 @Component({
   selector: 'app-device-order-ais-pre-to-post-customer-info-page',
@@ -20,7 +21,7 @@ import {
 })
 export class DeviceOrderAisPreToPostCustomerInfoPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_PRE_TO_POST;
+  wizards = WIZARD_DEVICE_ORDER_AIS;
   transaction: Transaction;
   customerInfo: CustomerInfo;
 
