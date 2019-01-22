@@ -38,7 +38,7 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
         if(this.validateCustomerIdcard.koiskApiFn){
           this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
         }
-      window.location.href = '/smart-shop';
+      window.location.href = '';
     };
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
   }

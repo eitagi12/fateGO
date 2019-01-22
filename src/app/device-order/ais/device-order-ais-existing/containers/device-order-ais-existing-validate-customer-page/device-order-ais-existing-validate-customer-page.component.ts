@@ -30,7 +30,7 @@ export class DeviceOrderAisExistingValidateCustomerPageComponent implements OnIn
     private http: HttpClient,
   ) {
     this.homeService.callback = () => {
-      window.location.href = '/smart-shop';
+      window.location.href = '';
     };
   }
 
