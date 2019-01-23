@@ -66,11 +66,11 @@ export class CriteriaTradeInComponent implements OnInit {
   onDeleteChk() {
     let iChk = 0;
     for (const itemCount of this.valuationlists) {
-      if (itemCount.valChecked === "Y") {
+      if (itemCount.valChecked === 'Y') {
         iChk++;
       }
     }
-    if (iChk == 0) {
+    if (iChk === 0) {
       this.btnNextDisabled = true;
     } else {
       this.btnNextDisabled = false;
@@ -110,9 +110,5 @@ export class CriteriaTradeInComponent implements OnInit {
     };
     this.tradeInService.setValuationlistTradein(this.objCriteriatradein);
     this.router.navigate(['trade-in/confirm-trade-in']);
-  }
-
-  isNext() {
-    return this.selectValuationlistFn;
   }
 }
