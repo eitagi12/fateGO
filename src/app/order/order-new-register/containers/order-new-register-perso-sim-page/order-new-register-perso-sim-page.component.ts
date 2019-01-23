@@ -149,6 +149,7 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
   transaction: Transaction;
   isNext: boolean;
   option: OptionPersoSim;
+  checkCardPresent = false;
 
   // WebSocket
   wsControlSim: any;
@@ -617,15 +618,20 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
         this.controlSim(ControlSimCard.EVENT_CHECK_SIM_STATE).then((resCheckSim: ControlSimResult) => {
           if (resCheckSim.result === SIMCardStatus.STATUS_IN_IC) {
             this.controlSim(ControlLED.EVENT_LED_ON);
+            this.checkCardPresent = true;
             return resCheckSim.isSuccess;
           } else {
             this.controlSim(ControlSimCard.EVENT_LOAD_SIM).then((resLoadSim: ControlSimResult) => {
               this.controlSim(ControlLED.EVENT_LED_ON);
+              if(resLoadSim.result == 'Success'){
+                this.checkCardPresent = true; 
+              }
               return resLoadSim.isSuccess;
             });
           }
         });
       } else {
+        this.checkCardPresent = false; 
         return false;
       }
     });
@@ -633,7 +639,7 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
 
   checkSimCardPresent() {
     return new Promise((resolve, reject) => {
-      const timeout = (this.typeSim === 'pullsim') ? 3 : 1000;
+      const timeout = 5;
       let checkTimeOut = 0;
       const intervalCheckSimCard = setInterval(() => {
         checkTimeOut++;
@@ -642,11 +648,11 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
           reject(false);
         }
         this.manageSim(PersoSimCommand.EVENT_CONNECT_SIM_READER, '').then((resCheckCard: ControlSimResult) => {
-          if (resCheckCard.result === 'Present' || resCheckCard.result === 'Connected') {
+          if ((resCheckCard.result === 'Present' || resCheckCard.result === 'Connected') && this.checkCardPresent) {
             clearInterval(intervalCheckSimCard);
-            resolve(resCheckCard);
-          } else {
-            checkTimeOut++;
+            setTimeout(() => {
+              resolve(resCheckCard);
+            }, 3000);
           }
         });
       }, 2000);
