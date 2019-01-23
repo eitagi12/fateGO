@@ -5,6 +5,9 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { HttpClient } from '@angular/common/http';
 import { ROUTE_DEVICE_ORDER_AIS_EXISTING_CUSTOMER_INFO_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from 'src/app/buy-product/constants/route-path.constant';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
 
 @Component({
   selector: 'app-device-order-ais-existing-validate-customer-id-card-page',
@@ -19,6 +22,7 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
   profile: ReadCardProfile;
   zipcode: string;
   readCardValid: boolean;
+  priceOption: PriceOption;
 
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
@@ -33,6 +37,7 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
     private tokenService: TokenService,
     private utils: Utils,
     private alertService: AlertService,
+    private priceOptionService: PriceOptionService
   ) {
     this.homeService.callback = () => {
         if(this.validateCustomerIdcard.koiskApiFn){
@@ -41,6 +46,7 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
       window.location.href = '';
     };
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
+    this.priceOption = this.priceOptionService.load();
   }
 
   ngOnInit() {
@@ -71,7 +77,7 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
   }
 
   onBack() {
-    this.homeService.goToHome();
+    this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
   }
 
   onNext() {

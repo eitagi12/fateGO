@@ -1,12 +1,14 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
-import { PromotionShelve, HomeService, PageLoadingService, AlertService, PromotionShelveItem } from 'mychannel-shared-libs';
+import { PromotionShelve, HomeService, PageLoadingService, AlertService, PromotionShelveItem, PromotionShelveGroup } from 'mychannel-shared-libs';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 import { ROUTE_DEVICE_ORDER_AIS_EXISTING_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE } from '../../constants/route-path.constant';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-select-package-page',
@@ -21,6 +23,7 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit 
   wizards = WIZARD_DEVICE_ORDER_AIS;
 
   transaction: Transaction;
+  priceOption: PriceOption;
   promotionShelves: PromotionShelve[];
   condition: any;
   modalRef: BsModalRef;
@@ -30,10 +33,10 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit 
     private homeService: HomeService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private alertService: AlertService,
-    private modalService: BsModalService,
+    private priceOptionService: PriceOptionService,
     private http: HttpClient
   ) {
+    this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
 
     delete this.transaction.data.mainPackageOneLove;
@@ -66,134 +69,91 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit 
 
   callService() {
     this.pageLoadingService.openLoading();
-
-    const billingInformation: any = this.transaction.data.billingInformation;
-    const isNetExtreme = billingInformation.billCyclesNetExtreme && billingInformation.billCyclesNetExtreme.length > 0 ? 'true' : 'false';
-    const mobileNo = this.transaction.data.simCard.mobileNo;
-
-    this.http.get(`/api/customerportal/queryCheckMinimumPackage/${mobileNo}`, {
+    const packageKeyRef = this.priceOption.trade.packageKeyRef;
+    this.http.post('/api/salesportal/promotion-shelves', {
+      userId: packageKeyRef
     }).toPromise()
       .then((resp: any) => {
-        const data = resp.data || {};
-        return data.MinimumPriceForPackage || 0;
-      }).then((minimumPriceForPackage: string) => {
-        return this.http.get('/api/customerportal/newRegister/queryMainPackage', {
-          params: {
-            orderType: 'New Registration',
-            isNetExtreme: isNetExtreme,
-            minPromotionPrice: minimumPriceForPackage
-          }
-        }).toPromise();
-      })
-      .then((resp: any) => {
-        const data = resp.data.packageList || [];
+        const data = resp.data.data || [];
         const promotionShelves: PromotionShelve[] = data.map((promotionShelve: any) => {
           return {
             title: promotionShelve.title,
-            // replace to class in css
-            icon: (promotionShelve.icon || '').replace(/\.jpg$/, '').replace(/_/g, '-'),
+            icon: promotionShelve.icon,
             promotions: promotionShelve.subShelves
+              .sort((a, b) => a.priority !== b.priority ? a.priority < b.priority ? -1 : 1 : 0)
               .map((subShelve: any) => {
                 return { // group
-                  // เอาไว้เปิด carousel ให้ check ว่ามี id ลูกตรงกัน
-                  id: subShelve.subShelveId,
+                  id: subShelve.id,
                   title: subShelve.title,
                   sanitizedName: subShelve.sanitizedName,
-                  items: (subShelve.items || []).map((promotion: any) => {
-                    return { // item
-                      id: promotion.itemId,
-                      title: promotion.shortNameThai,
-                      detail: promotion.statementThai,
-                      condition: subShelve.conditionCode,
-                      value: promotion
-                    };
-                  })
+                  items: []
                 };
               })
-          };
+          }
         });
         return Promise.resolve(promotionShelves);
       })
       .then((promotionShelves: PromotionShelve[]) => {
-        this.promotionShelves = this.buildPromotionShelveActive(promotionShelves);
-      })
-      .then(() => {
-        this.pageLoadingService.closeLoading();
-      });
+        const parameter = [{
+          'name': 'orderType',
+          'value': 'New Registration'
+        }, {
+          'name': 'billingSystem',
+          'value': 'IRB'
+        }];
 
-  }
+        const promiseAll = [];
+        promotionShelves.forEach((promotionShelve: PromotionShelve) => {
+          const promise = promotionShelve.promotions.map((promotion: PromotionShelveGroup) => {
+            return this.http.post('/api/salesportal/promotion-shelves/promotion', {
+              userId: packageKeyRef,
+              sanitizedName: promotion.sanitizedName,
+              parameters: parameter
+            }).toPromise().then((resp: any) => {
+              const data = resp.data.data || [];
+              const campaign: any = this.priceOption.campaign;
+              const minimumPackagePrice = +campaign.minimumPackagePrice;
+              const maxinumPackagePrice = +campaign.maxinumPackagePrice;
 
-  onTermConditions(condition: string) {
-    if (!condition) {
-      this.alertService.warning('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
-      return;
-    }
-    this.pageLoadingService.openLoading();
-    this.http.get('/api/customerportal/newRegister/termAndCondition', {
-      params: { conditionCode: condition }
-    }).toPromise()
-      .then((resp: any) => {
-        this.condition = resp.data || {};
-        this.modalRef = this.modalService.show(this.conditionTemplate, { class: 'modal-lg' });
-      })
-      .then(() => {
-        this.pageLoadingService.closeLoading();
-      });
-  }
-
-  buildPromotionShelveActive(promotionShelves: PromotionShelve[]): PromotionShelve[] {
-    const mainPackage: any = this.transaction.data.mainPackage || {};
-
-    if (!promotionShelves && promotionShelves.length <= 0) {
-      return;
-    }
-
-    if (mainPackage) {
-      let promotionShelveIndex = 0, promotionShelveGroupIndex = 0;
-      for (let i = 0; i < promotionShelves.length; i++) {
-        const promotions = promotionShelves[i].promotions || [];
-
-        let itemActive = false;
-        for (let ii = 0; ii < promotions.length; ii++) {
-          const active = (promotions[ii].items || []).find((promotionShelveItem: PromotionShelveItem) => {
-            return ('' + promotionShelveItem.id) === ('' + mainPackage.itemId);
+              // reference object
+              promotion.items = data.filter((promotion: any) => {
+                return promotion.customAttributes.chargeType === 'Post-paid' &&
+                  minimumPackagePrice <= +promotion.customAttributes.priceExclVat &&
+                  (maxinumPackagePrice > 0 ? maxinumPackagePrice >= +promotion.customAttributes.priceExclVat : true);
+              })
+                .sort((a, b) => {
+                  return +a.customAttributes.priceInclVat !== +b.customAttributes.priceInclVat ?
+                    +a.customAttributes.priceInclVat < +b.customAttributes.priceInclVat ? -1 : 1 : 0;
+                }).map((promotion: any) => {
+                  return { // item
+                    id: promotion.id,
+                    title: promotion.title,
+                    detail: promotion.detailTH,
+                    value: promotion
+                  };
+                });
+            });
           });
-          if (!!active) {
-            itemActive = true;
-            promotionShelveIndex = i;
-            promotionShelveGroupIndex = ii;
-            continue;
+          promiseAll.concat(promise);
+        });
+
+        Promise.all(promiseAll).then(() => {
+          // console.log(promotionShelves);
+          this.promotionShelves = promotionShelves;
+          if (this.promotionShelves && this.promotionShelves.length > 0) {
+            this.promotionShelves[0].active = true;
+            if (this.promotionShelves[0].promotions && this.promotionShelves[0].promotions.length > 0) {
+              this.promotionShelves[0].promotions[0].active = true;
+            }
           }
-        }
+        });
 
-        if (!itemActive) {
-          promotions[0].active = true;
-        }
-      }
-
-      promotionShelves[promotionShelveIndex].active = true;
-      promotionShelves[promotionShelveIndex].promotions[promotionShelveGroupIndex].active = true;
-    } else {
-      promotionShelves[0].active = true;
-      promotionShelves.forEach((promotionShelve: PromotionShelve) => {
-        if (promotionShelve.promotions && promotionShelve.promotions.length > 0) {
-          promotionShelve.promotions[0].active = true;
-        }
+      })
+      .then(() => {
+        this.pageLoadingService.closeLoading();
       });
-    }
-    return promotionShelves;
   }
 
-  isPackageOneLove(): boolean {
-    const REGEX_NET_EXTREME = /[Nn]et[Ee]xtreme/;
-    const mainPackage = this.transaction.data.mainPackage;
-    if (mainPackage && REGEX_NET_EXTREME.test(mainPackage.productPkg)) {
-      return false;
-    }
-    return (+mainPackage.numberOfMobile) > 0;
-  }
-
-// tslint:disable-next-line: use-life-cycle-interface
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }
