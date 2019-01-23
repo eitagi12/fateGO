@@ -174,7 +174,9 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
     const idCardType = this.transaction.data.customer.idCardType;
 
     if (this.utils.isLowerAge17Year(birthdate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
+      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี').then(() => {
+        this.onBack();
+      });
       return false;
     }
     if (this.utils.isIdCardExpiredDate(expireDate)) {
