@@ -12,7 +12,7 @@
     <div class="container-fluid mt-3">
       <div class="card mb-3">
         <div class="card-header bg-blue text-white shadow-sm">
-            ระบุหมายเลขเครื่อง
+            ระบุหมายเลข Imei
         </div>
         <div class="card-body">
           <form [formGroup]="imeiForm" (ngSubmit)="checkImei()">
@@ -44,7 +44,7 @@
           <div class="row">
               <div class="col-sm-12">
                 <div class="text-center">
-                    <button class="btn btn-light-blue text-white col-3 mx-2" (click)="scanBarcode()">สแกน Imei</button>
+                    <button class="btn btn-light-blue text-white col-3 mx-2" (click)="scanBarcode()">สแกน Barcode Imei</button>
                 </div>
               </div>
           </div>
