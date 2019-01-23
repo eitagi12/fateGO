@@ -59,7 +59,7 @@
         <div class="card-body">
             <div class="row">
               <p class="text-grey">ยี่ห้อโทรศัพท์ : </p>
-                <div class="col-4 col-sm-3 col-md-2 col-lg-3 mb-3"  *ngFor="let brand of brands">
+                <div class="col-5 col-sm-5 col-md-2 col-lg-1 mb-3"  *ngFor="let brand of brands">
                   <div class="image-container" [id]="brand.name">
                       <div class="select-Img" (click)="selectImg($event)">
                           <mc-lazy-load-image  [src]="brand?.imageUrl"></mc-lazy-load-image>
