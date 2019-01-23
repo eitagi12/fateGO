@@ -25,7 +25,7 @@ export class OrderMnpNetworkTypePageComponent implements OnInit, OnDestroy {
 
   transaction: Transaction;
   mnpForm: FormGroup;
-  
+
 
 
   constructor(
@@ -38,9 +38,6 @@ export class OrderMnpNetworkTypePageComponent implements OnInit, OnDestroy {
     private transactionService: TransactionService,
     private apiRequestService: ApiRequestService,
   ) {
-    this.homeService.callback = () => {
-      window.location.href = '/smart-shop';
-    };
     this.createTransaction();
   }
 

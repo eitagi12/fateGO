@@ -35,12 +35,6 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
     private pageLoadingService: PageLoadingService,
   ) {
     this.transaction = this.transactionService.load();
-    this.homeService.callback = () => {
-      if (this.validateCustomerIdcard.koiskApiFn) {
-        this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
-      }
-      window.location.href = '/smart-shop';
-    };
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
   }
 
@@ -58,7 +52,7 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
           this.validateCustomerIdcard.ngOnInit();
         }
       });
-    
+
     }
   }
 
