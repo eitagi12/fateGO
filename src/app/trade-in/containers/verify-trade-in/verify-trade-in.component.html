@@ -12,7 +12,7 @@
     <div class="container-fluid mt-3">
       <div class="card mb-3">
         <div class="card-header bg-blue text-white shadow-sm">
-            ระบุหมายเลขเครื่อง
+            ระบุหมายเลข Imei
         </div>
         <div class="card-body">
           <form [formGroup]="imeiForm" (ngSubmit)="checkImei()">
@@ -44,7 +44,7 @@
           <div class="row">
               <div class="col-sm-12">
                 <div class="text-center">
-                    <button class="btn btn-light-blue text-white col-3 mx-2" (click)="scanBarcode()">สแกน Imei</button>
+                    <button class="btn btn-light-blue text-white col-3 mx-2" (click)="scanBarcode()">สแกน Barcode Imei</button>
                 </div>
               </div>
           </div>
@@ -59,7 +59,7 @@
         <div class="card-body">
             <div class="row">
               <p class="text-grey">ยี่ห้อโทรศัพท์ : </p>
-                <div class="col-4 col-sm-3 col-md-2 col-lg-3 mb-3"  *ngFor="let brand of brands">
+                <div class="col-5 col-sm-5 col-md-2 col-lg-1 mb-3"  *ngFor="let brand of brands">
                   <div class="image-container" [id]="brand.name">
                       <div class="select-Img" (click)="selectImg($event)">
                           <mc-lazy-load-image  [src]="brand?.imageUrl"></mc-lazy-load-image>

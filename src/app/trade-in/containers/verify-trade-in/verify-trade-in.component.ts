@@ -16,22 +16,21 @@ export class VerifyTradeInComponent implements OnInit , OnDestroy {
 
   brands: BrandsOfProduct[];
   imeiForm: FormGroup;
-  submitted = false;
+  datasource: Observable<any>;
   listModelTradein = [];
   defualtListModel = [];
-  butDisabledModel = false;
-  isNextPage = false;
-  serialMatCode: string;
-  isCheckImei = false;
+  defualtBrand = [];
   btnNextDisabled = true;
+  submitted = false;
+  isCheckImei = false;
   isSelectImg = false;
   isLockImg = false;
+  isNextPage = false;
+  butDisabledModel = false;
   keyword: string;
-  datasource: Observable<any>;
+  serialMatCode: string;
   modelTradein: any;
   productSearch: any;
-  defualtBrand = [];
-  brand: string;
   checkSerial: any;
   objSerival: any;
   barcodeSubscription: Subscription;
@@ -60,13 +59,10 @@ export class VerifyTradeInComponent implements OnInit , OnDestroy {
   }
   btnNextFn () {
     this.checkValueTradein();
-    if (this.isNextPage) {
-      const objTradein = this.tradeInService.getObjTradein();
-      this.tradeInService.setSelectedTradein(objTradein);
-      this.router.navigate(['trade-in/criteria-trade-in']);
-    } else {
-      this.alertService.error('กรุณา กรอกข้อมูล ให้ครบ');
-    }
+    const objTradein = this.tradeInService.getObjTradein();
+    this.tradeInService.setSelectedTradein(objTradein);
+    this.router.navigate(['trade-in/criteria-trade-in']);
+    this.alertService.error('กรุณา กรอกข้อมูล ให้ครบ');
   }
 
   private callService () {
@@ -248,22 +244,18 @@ export class VerifyTradeInComponent implements OnInit , OnDestroy {
   checkValueTradein () {
     const objTradein = this.tradeInService.getObjTradein();
     if (objTradein.serialNo && objTradein.model && this.isSelectImg) {
-      this.isNextPage = true;
       this.btnNextDisabled = false;
-      return this.isNextPage;
     } else {
-      this.isNextPage = false;
       this.btnNextDisabled = true;
-      return this.isNextPage;
     }
   }
 
   cancelSelected () {
     this.imeiForm.reset();
     this.tradeInService.removeTradein();
-    this.butDisabledModel = false;
     this.setBorderImgOnSelect('');
     this.isSelectImg = false;
+    this.butDisabledModel = false;
     this.keyword = null;
     this.brands = this.defualtBrand;
     this.btnNextDisabled = true;
