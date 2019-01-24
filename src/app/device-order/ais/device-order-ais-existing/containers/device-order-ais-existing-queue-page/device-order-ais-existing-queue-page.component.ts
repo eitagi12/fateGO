@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { HomeService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
-import { ROUTE_DEVICE_ORDER_AIS_EXISTING_RESULT_PAGE } from '../../constants/route-path.constant';
+import {
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_RESULT_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_AGGREGATE_PAGE
+} from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-queue-page',
@@ -11,10 +13,8 @@ import { ROUTE_DEVICE_ORDER_AIS_EXISTING_RESULT_PAGE } from '../../constants/rou
 export class DeviceOrderAisExistingQueuePageComponent implements OnInit {
 
   constructor(
-    private router: Router,
-    private homeService: HomeService,
-  ) {
-  }
+    private router: Router
+  ) { }
 
   ngOnInit() {
   }
@@ -23,8 +23,8 @@ export class DeviceOrderAisExistingQueuePageComponent implements OnInit {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_RESULT_PAGE]);
   }
 
-  onHome() {
-    this.homeService.goToHome();
+  onBack() {
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_AGGREGATE_PAGE]);
   }
 
 }
