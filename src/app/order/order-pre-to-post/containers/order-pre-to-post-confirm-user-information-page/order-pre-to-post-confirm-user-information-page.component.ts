@@ -101,6 +101,7 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
     const billDeliveryAddress =  this.utils.getCurrentAddress({
       homeNo: customerbillDeliveryAddress.homeNo || customer.homeNo,
       moo: customerbillDeliveryAddress.moo || customer.moo,
+      mooBan: customerbillDeliveryAddress.mooBan || customer.mooBan,
       room: customerbillDeliveryAddress.room || customer.room,
       floor: customerbillDeliveryAddress.floor || customer.floor,
       buildingName: customerbillDeliveryAddress.buildingName || customer.buildingName,
