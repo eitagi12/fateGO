@@ -9,7 +9,6 @@ import {
 } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 
-
 @Component({
   selector: 'app-device-order-ais-existing-customer-info-page',
   templateUrl: './device-order-ais-existing-customer-info-page.component.html',
