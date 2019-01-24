@@ -42,6 +42,7 @@ export class CriteriaTradeInComponent implements OnInit {
     if (this.criteriatradein) {
       this.valuationlists = this.criteriatradein.listValuationTradein;
       this.pageLoadingService.closeLoading();
+      this.btnNextDisabled = false;
     } else if (!this.criteriatradein) {
       const tradeIn: any = JSON.parse(localStorage.getItem('Tradein'));
       const brand: any = tradeIn.brand;

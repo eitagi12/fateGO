@@ -62,7 +62,6 @@ export class VerifyTradeInComponent implements OnInit , OnDestroy {
     const objTradein = this.tradeInService.getObjTradein();
     this.tradeInService.setSelectedTradein(objTradein);
     this.router.navigate(['trade-in/criteria-trade-in']);
-    this.alertService.error('กรุณา กรอกข้อมูล ให้ครบ');
   }
 
   private callService () {
