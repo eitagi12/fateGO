@@ -92,11 +92,12 @@ export class CriteriaTradeInComponent implements OnInit {
     });
   }
 
-  OnDestroy() {
+  onDestroy() {
     this.tradeInService.removeTradein();
   }
 
   onHome() {
+    this.tradeInService.removeTradein();
     window.location.href = '/sales-portal/dashboard';
   }
 
