@@ -55,6 +55,7 @@ export class DeviceOrderAisExistingCustomerInfoPageComponent implements OnInit {
     this.homeService.goToHome();
   }
 
+// tslint:disable-next-line: use-life-cycle-interface
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }

@@ -29,7 +29,7 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit {
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
     private http: HttpClient
-  ) { 
+  ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
   }
@@ -58,7 +58,7 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit {
 
     this.pageLoadingService.openLoading();
 
-    const packageKeyRef = '1vP1Qbr1T6svJISttRAoZ0y95OsYxxh7bUnfMOAV8LmjpsVStlifT3fquoatH2JUz4LpfsD4tVY2p0LR'
+    const packageKeyRef = '1vP1Qbr1T6svJISttRAoZ0y95OsYxxh7bUnfMOAV8LmjpsVStlifT3fquoatH2JUz4LpfsD4tVY2p0LR';
     const chargeType = this.transaction.data.mainPackage['customAttributes'].billingSystem;
     const billingSystem = this.transaction.data.simCard.billingSystem || 'IRB';
     const endUserPrice = +this.priceOption.trade.normalPrice;
@@ -88,7 +88,7 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit {
           'value': 'IRB'
         }];
 
-        let promiseAll = mobileCareGroups.map((promotion: MobileCareGroup) => {
+        const promiseAll = mobileCareGroups.map((promotion: MobileCareGroup) => {
 
           return this.http.post('/api/salesportal/promotion-shelves/promotion', {
             userId: packageKeyRef,
@@ -125,7 +125,7 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit {
                 return 0;
               }
             })
-              .sort((a) => a.customAttributes.priceType === 'Recurring' ? 1 : -1)
+              .sort((a) => a.customAttributes.priceType === 'Recurring' ? 1 : -1);
             // sort priceType 'Recurring' first
 
             promotion.items = promotions.filter((promotion: any) => {
@@ -137,7 +137,7 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit {
                 title: promotion.title,
                 priceExclVat: +promotion.customAttributes.priceExclVat,
                 value: promotion
-              }
+              };
             });
 
             const mobileSegment = '';
@@ -150,7 +150,7 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit {
                 title: promotion.title,
                 priceExclVat: +promotion.customAttributes.priceExclVat,
                 value: promotion
-              }
+              };
             });
 
           });

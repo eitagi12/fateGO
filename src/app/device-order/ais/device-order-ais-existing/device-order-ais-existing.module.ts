@@ -28,6 +28,7 @@ import { DeviceOrderAisExistingOneLovePageComponent } from './containers/device-
 import { DeviceOrderAisExistingMergeBillingPageComponent } from './containers/device-order-ais-existing-merge-billing-page/device-order-ais-existing-merge-billing-page.component';
 import { DeviceOrderAisExistingEapplicationPageComponent } from './containers/device-order-ais-existing-eapplication-page/device-order-ais-existing-eapplication-page.component';
 import { DeviceOrderAisExistingEbillingAddressPageComponent } from './containers/device-order-ais-existing-ebilling-address-page/device-order-ais-existing-ebilling-address-page.component';
+import { DeviceOrderAisExistingMobileCareAvailablePageComponent } from './containers/device-order-ais-existing-mobile-care-available-page/device-order-ais-existing-mobile-care-available-page.component';
 
 @NgModule({
   imports: [
@@ -60,7 +61,8 @@ import { DeviceOrderAisExistingEbillingAddressPageComponent } from './containers
     DeviceOrderAisExistingOneLovePageComponent,
     DeviceOrderAisExistingMergeBillingPageComponent,
     DeviceOrderAisExistingEapplicationPageComponent,
-    DeviceOrderAisExistingEbillingAddressPageComponent
+    DeviceOrderAisExistingEbillingAddressPageComponent,
+    DeviceOrderAisExistingMobileCareAvailablePageComponent
   ]
 })
 export class DeviceOrderAisExistingModule { }

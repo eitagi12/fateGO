@@ -10,12 +10,13 @@
 
   <div class="mc-flex-wrap">
     <div class="mt-3 mb-3">
-      <button class="btn btn-success" (click)="qrcode()">จ่ายด้วย QR CODE</button>
+      <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
+     <p>เปลี่ยนบริการ mobile care หรือไม่</p>
     </div>
   </div>
 
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()" >NEXT</button>
   </mc-footer>
 </div>

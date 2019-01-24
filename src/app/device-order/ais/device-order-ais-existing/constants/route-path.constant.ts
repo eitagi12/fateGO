@@ -8,6 +8,7 @@ export const ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_DETAIL_PAGE = '/device-order
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_PAYMENT_DETAIL_PAGE = '/device-order/ais/existing/payment-detail';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_PAGE = '/device-order/ais/existing/select-package';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE = '/device-order/ais/existing/effective-start-date';
+export const ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE = '/device-order/ais/existing/mobile-care-available';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE = '/device-order/ais/existing/mobile-care';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_SUMMARY_PAGE = '/device-order/ais/existing/summary';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_AGREEMENT_PAGE = '/device-order/ais/existing/agreement';

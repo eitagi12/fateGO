@@ -63,6 +63,7 @@ export class DeviceOrderAisExistingAgreementSignPageComponent implements OnInit 
     ).subscribe();
   }
 
+// tslint:disable-next-line: use-life-cycle-interface
   ngOnDestroy(): void {
     this.signedSignatureSubscription.unsubscribe();
     if (this.signedOpenSubscription) {
