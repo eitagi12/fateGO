@@ -1,5 +1,5 @@
 <div class="mc-flex">
-  <mc-header title="ลูกค้าปัจจุบัน">
+  <mc-header title="รายการสินค้า">
     <div class="header-icon-left">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
@@ -10,12 +10,12 @@
 
   <div class="mc-flex-wrap">
     <div class="mt-3 mb-3">
-      <button class="btn btn-success" (click)="qrcode()">จ่ายด้วย QR CODE</button>
+      <mc-device-selling [deviceSelling]="deviceSelling"></mc-device-selling>
     </div>
   </div>
 
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()">CHECKOUT</button>
   </mc-footer>
 </div>

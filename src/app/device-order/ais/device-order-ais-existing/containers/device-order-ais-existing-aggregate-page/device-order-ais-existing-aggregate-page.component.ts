@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService } from 'mychannel-shared-libs';
+import { HomeService, DeviceSelling } from 'mychannel-shared-libs';
 import { ROUTE_DEVICE_ORDER_AIS_EXISTING_AGREEMENT_SIGN_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_QUEUE_PAGE } from '../../constants/route-path.constant';
 
 @Component({
@@ -10,6 +10,7 @@ import { ROUTE_DEVICE_ORDER_AIS_EXISTING_AGREEMENT_SIGN_PAGE, ROUTE_DEVICE_ORDER
 })
 export class DeviceOrderAisExistingAggregatePageComponent implements OnInit {
 
+  deviceSelling: DeviceSelling;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -17,6 +18,16 @@ export class DeviceOrderAisExistingAggregatePageComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.deviceSelling = {
+      brand: 'APPLE',
+      campaignName: '499 บาท',
+      color: 'BLACK',
+      fullName: 'dd  ff',
+      mobileNo: '0999999999',
+      model: 'dd',
+      price: 1000,
+      thumbnail: ''
+    };
   }
 
   onBack() {
