@@ -2,12 +2,15 @@ import { Component, OnInit } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { Router } from '@angular/router';
 import { HomeService, MobileCare, MobileCareGroup, PageLoadingService } from 'mychannel-shared-libs';
-import { ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_SUMMARY_PAGE } from '../../constants/route-path.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { HttpClient } from '@angular/common/http';
+import {
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_SUMMARY_PAGE
+} from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-mobile-care-page',
@@ -40,7 +43,7 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit {
   }
 
   onBack() {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE]);
   }
 
   onNext() {
