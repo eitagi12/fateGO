@@ -76,7 +76,6 @@ export class AppComponent {
   pageActivityHandler() {
     this.pageActivityService.setTimeout((counter) => {
       const url = this.router.url;
-      console.log('counter', counter);
       if (url.indexOf('main-menu') !== -1) {
         return false;
       }
