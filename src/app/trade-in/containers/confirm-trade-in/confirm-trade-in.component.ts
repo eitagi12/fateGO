@@ -86,11 +86,11 @@ export class ConfirmTradeInComponent implements OnInit {
   }
 
   onBack() {
-    this.tradeInService.removeTradein();
     this.router.navigate(['trade-in/criteria-trade-in']);
   }
 
   btnCancelFn() {
+    this.tradeInService.removeCriteriatTradein();
     this.router.navigate(['trade-in/criteria-trade-in']);
   }
 
