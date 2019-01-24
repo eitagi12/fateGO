@@ -1,17 +1,12 @@
 import { Injectable } from '@angular/core';
-import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
-import { LocalStorageService, NgxResource } from 'ngx-store';
-import { TokenService, ApiRequestService } from 'mychannel-shared-libs';
-import { TransactionService } from 'src/app/shared/services/transaction.service';
-
+import { TokenService } from 'mychannel-shared-libs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TradeInService {
   constructor(private http: HttpClient,
-              private localStorageService: LocalStorageService,
               private tokenService: TokenService) { }
   private objTradein = {
     brand: '',
@@ -19,17 +14,6 @@ export class TradeInService {
     matCode: '',
     serialNo: ''
   };
-  private get settingTradein(): NgxResource<object> {
-    return this.localStorageService
-      .load(`Tradein`)
-      .setDefaultValue({});
-  }
-
-  private get settingCriteriatTradein(): NgxResource<object> {
-    return this.localStorageService
-      .load(`Criteriatradein`)
-      .setDefaultValue({});
-  }
 
   getListModelTradeIn(): Promise<any> {
     const url = '/api/salesportal/getlistmodeltradein';
@@ -73,25 +57,12 @@ export class TradeInService {
   }
 
   removeTradein () {
-    this.settingTradein.remove();
-    this.settingCriteriatTradein.remove();
     this.objTradein.brand = '';
     this.objTradein.model = '';
     this.objTradein.matCode = '';
     this.objTradein.serialNo = '';
   }
 
-  getTradein () {
-    return this.settingTradein.value;
-  }
-
-  setValuationlistTradein(valuationlists) {
-    this.settingCriteriatTradein.save(valuationlists);
-  }
-
-  setEstimateTradein(objEstimate: object) {
-    this.settingCriteriatTradein.update(objEstimate);
-  }
   setSerialNo (serialNo: string) {
     this.objTradein.serialNo = serialNo;
   }
