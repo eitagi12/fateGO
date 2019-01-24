@@ -3,7 +3,6 @@ import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { LocalStorageService, NgxResource } from 'ngx-store';
 import { TokenService, ApiRequestService } from 'mychannel-shared-libs';
-import { Criteriatradein } from 'src/app/shared/models/trade-in.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 
 
@@ -13,9 +12,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 export class TradeInService {
   constructor(private http: HttpClient,
               private localStorageService: LocalStorageService,
-              private tokenService: TokenService,
-              private trandsactionService: TransactionService,
-              private apiRequestService: ApiRequestService) { }
+              private tokenService: TokenService) { }
   private objTradein = {
     brand: '',
     model: '',
@@ -75,12 +72,6 @@ export class TradeInService {
     return this.http.post(url, body).toPromise();
   }
 
-  setSelectedTradein(objTradein) {
-    // this.settingTradein.save(objTradein);
-    // this.apiRequestService.createRequestId();
-    this.trandsactionService.save({data: { tradein: objTradein}});
-  }
-
   removeTradein () {
     this.settingTradein.remove();
     this.settingCriteriatTradein.remove();
@@ -98,7 +89,7 @@ export class TradeInService {
     return this.settingTradein.value;
   }
 
-  setValuationlistTradein(valuationlists: Criteriatradein) {
+  setValuationlistTradein(valuationlists) {
     this.settingCriteriatTradein.save(valuationlists);
   }
 
