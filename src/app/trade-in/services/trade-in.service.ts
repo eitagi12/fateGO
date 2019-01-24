@@ -12,9 +12,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 export class TradeInService {
   constructor(private http: HttpClient,
               private localStorageService: LocalStorageService,
-              private tokenService: TokenService,
-              private trandsactionService: TransactionService,
-              private apiRequestService: ApiRequestService) { }
+              private tokenService: TokenService) { }
   private objTradein = {
     brand: '',
     model: '',
