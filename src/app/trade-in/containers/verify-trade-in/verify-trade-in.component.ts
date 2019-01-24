@@ -1,11 +1,13 @@
 import { Component, OnInit, ElementRef, Renderer, OnDestroy } from '@angular/core';
-import { PageLoadingService, AlertService, SalesService, TokenService, AisNativeService } from 'mychannel-shared-libs';
+import { PageLoadingService, AlertService, SalesService, TokenService, AisNativeService, ApiRequestService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { FormGroup, FormControl, Validators, ValidationErrors } from '@angular/forms';
 import { TradeInService } from '../../services/trade-in.service';
 import { BrandsOfProduct } from 'mychannel-shared-libs/lib/service/models/brands-of-product';
 import { Observable, Subscription } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
+import { TradeInTransactionService } from '../../services/trade-in-transaction.service';
+import { TradeInTranscation } from '../../services/models/trade-in-transcation.model';
 
 @Component({
   selector: 'app-verify-trade-in',
@@ -14,13 +16,14 @@ import { mergeMap } from 'rxjs/operators';
 })
 export class VerifyTradeInComponent implements OnInit , OnDestroy {
 
+  tradeInTransaction: TradeInTranscation;
   brands: BrandsOfProduct[];
   imeiForm: FormGroup;
   datasource: Observable<any>;
   listModelTradein = [];
   defualtListModel = [];
   defualtBrand = [];
-  btnNextDisabled = true;
+  butNextDisabled = true;
   submitted = false;
   isCheckImei = false;
   isSelectImg = false;
@@ -42,13 +45,16 @@ export class VerifyTradeInComponent implements OnInit , OnDestroy {
               private tokenService: TokenService,
               private elementRef: ElementRef,
               private renderer: Renderer,
-              private aisNativeService: AisNativeService) { }
+              private tradeInTransactionService: TradeInTransactionService,
+              private aisNativeService: AisNativeService,
+              private apiRequestService: ApiRequestService) { }
 
   ngOnInit () {
     this.setFormImei();
     this.callService();
     this.createDataSource();
     this.subscribeBarcode();
+    this.apiRequestService.createRequestId();
   }
   onHome () {
     window.location.href = '/sales-portal/dashboard';
@@ -58,9 +64,12 @@ export class VerifyTradeInComponent implements OnInit , OnDestroy {
     window.location.href = '/sales-portal/dashboard';
   }
   btnNextFn () {
-    this.checkValueTradein();
     const objTradein = this.tradeInService.getObjTradein();
-    this.tradeInService.setSelectedTradein(objTradein);
+    this.tradeInTransaction = {
+      data : {
+        tradeIn : objTradein
+      }
+    };
     this.router.navigate(['trade-in/criteria-trade-in']);
   }
 
@@ -243,9 +252,9 @@ export class VerifyTradeInComponent implements OnInit , OnDestroy {
   checkValueTradein () {
     const objTradein = this.tradeInService.getObjTradein();
     if (objTradein.serialNo && objTradein.model && this.isSelectImg) {
-      this.btnNextDisabled = false;
+      this.butNextDisabled = false;
     } else {
-      this.btnNextDisabled = true;
+      this.butNextDisabled = true;
     }
   }
 
@@ -257,11 +266,12 @@ export class VerifyTradeInComponent implements OnInit , OnDestroy {
     this.butDisabledModel = false;
     this.keyword = null;
     this.brands = this.defualtBrand;
-    this.btnNextDisabled = true;
+    this.butNextDisabled = true;
     this.submitted = false;
   }
 
   ngOnDestroy(): void {
     this.barcodeSubscription.unsubscribe();
+    this.tradeInTransactionService.save(this.tradeInTransaction);
   }
 }
