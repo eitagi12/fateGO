@@ -23,13 +23,7 @@ export class VerifyTradeInComponent implements OnInit , OnDestroy {
   listModelTradein = [];
   defualtListModel = [];
   defualtBrand = [];
-  butNextDisabled = true;
-  submitted = false;
-  isCheckImei = false;
   isSelectImg = false;
-  isLockImg = false;
-  isNextPage = false;
-  butDisabledModel = false;
   keyword: string;
   serialMatCode: string;
   modelTradein: any;
@@ -124,7 +118,6 @@ export class VerifyTradeInComponent implements OnInit , OnDestroy {
 
   checkImei () {
     this.pageLoadingService.openLoading();
-    this.submitted = true;
     const imei = this.imeiForm.value.imei;
     this.checkSerial = this.tradeInService.checkSerialTradein(imei);
     this.checkSerial.then(
@@ -147,7 +140,7 @@ export class VerifyTradeInComponent implements OnInit , OnDestroy {
             confirmButtonText: 'ตกลง'
           };
           this.alertService.notify(options);
-          this.checkValueTradein();
+          this.isCheckBtnNext();
         }
       });
   }
@@ -167,7 +160,7 @@ export class VerifyTradeInComponent implements OnInit , OnDestroy {
     this.isSelectImg = true;
     this.onProductSearch(objSelectTradein);
     this.keyword = objSerial.model;
-    this.butDisabledModel = true;
+    this.isCheckAutoSelect();
   }
   setBrandImg (objSerial) {
     const filterBrand = this.brands.filter(
@@ -247,15 +240,22 @@ export class VerifyTradeInComponent implements OnInit , OnDestroy {
   onProductSearch (event) {
     this.tradeInService.setBrand(event.item.brand);
     this.tradeInService.setModel(event.item.model);
-    this.checkValueTradein();
+    this.isCheckBtnNext();
   }
-  checkValueTradein () {
-    const objTradein = this.tradeInService.getObjTradein();
-    if (objTradein.serialNo && objTradein.model && this.isSelectImg) {
-      this.butNextDisabled = false;
-    } else {
-      this.butNextDisabled = true;
+
+  isCheckBtnNext (): boolean {
+    const data = this.tradeInService.getObjTradein();
+    if  (data.brand && data.model && data.serialNo) {
+      return false;
     }
+    return true;
+  }
+  isCheckAutoSelect(): boolean {
+    const data = this.tradeInService.getObjTradein();
+    if (this.isSelectImg && this.keyword && data.serialNo && data.model) {
+      return true;
+    }
+    return false;
   }
 
   cancelSelected () {
@@ -263,11 +263,8 @@ export class VerifyTradeInComponent implements OnInit , OnDestroy {
     this.tradeInService.removeTradein();
     this.setBorderImgOnSelect('');
     this.isSelectImg = false;
-    this.butDisabledModel = false;
     this.keyword = null;
     this.brands = this.defualtBrand;
-    this.butNextDisabled = true;
-    this.submitted = false;
   }
 
   ngOnDestroy(): void {
