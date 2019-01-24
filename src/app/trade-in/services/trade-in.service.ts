@@ -2,8 +2,9 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { LocalStorageService, NgxResource } from 'ngx-store';
-import { TokenService } from 'mychannel-shared-libs';
-import { Tradein, Criteriatradein } from 'src/app/shared/models/trade-in.model';
+import { TokenService, ApiRequestService } from 'mychannel-shared-libs';
+import { Criteriatradein } from 'src/app/shared/models/trade-in.model';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
 
 
 @Injectable({
@@ -12,7 +13,9 @@ import { Tradein, Criteriatradein } from 'src/app/shared/models/trade-in.model';
 export class TradeInService {
   constructor(private http: HttpClient,
               private localStorageService: LocalStorageService,
-              private tokenService: TokenService) { }
+              private tokenService: TokenService,
+              private trandsactionService: TransactionService,
+              private apiRequestService: ApiRequestService) { }
   private objTradein = {
     brand: '',
     model: '',
@@ -72,8 +75,10 @@ export class TradeInService {
     return this.http.post(url, body).toPromise();
   }
 
-  setSelectedTradein(objTradein: Tradein) {
-    this.settingTradein.save(objTradein);
+  setSelectedTradein(objTradein) {
+    // this.settingTradein.save(objTradein);
+    // this.apiRequestService.createRequestId();
+    this.trandsactionService.save({data: { tradein: objTradein}});
   }
 
   removeTradein () {

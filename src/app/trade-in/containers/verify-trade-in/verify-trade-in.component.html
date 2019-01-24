@@ -12,7 +12,7 @@
     <div class="container-fluid mt-3">
       <div class="card mb-3">
         <div class="card-header bg-blue text-white shadow-sm">
-            ระบุหมายเลข Imei
+            ระบุหมายเลข IMEI
         </div>
         <div class="card-body">
           <form [formGroup]="imeiForm" (ngSubmit)="checkImei()">
@@ -25,7 +25,7 @@
                       ตรวจสอบ</button>
               </div>
               <small class="form-text text-danger" *ngIf="imeiForm.controls.imei.touched && imeiForm.controls.imei.errors">
-                  * กรุณาระบุเลขimeiให้ถูกต้อง
+                  * กรุณาระบุเลข IMEI ให้ถูกต้อง
               </small>
             </div>
           </form>
@@ -44,7 +44,7 @@
           <div class="row">
               <div class="col-sm-12">
                 <div class="text-center">
-                    <button class="btn btn-light-blue text-white col-3 mx-2" (click)="scanBarcode()">สแกน Barcode Imei</button>
+                    <button class="btn btn-light-blue text-white col-3 mx-2" (click)="scanBarcode()">สแกน Barcode IMEI</button>
                 </div>
               </div>
           </div>
@@ -90,7 +90,7 @@
           <div class="col-sm-12">
             <div class="text-center">
               <button class="btn btn-secondary text-white col-2 mx-2" (click)="cancelSelected()">ยกเลิก</button>
-              <button class="btn btn-success text-white col-2 mx-2" (click)="btnNextFn()" [disabled]='btnNextDisabled'>ต่อไป</button>
+              <button class="btn btn-success text-white col-2 mx-2" (click)="btnNextFn()" [disabled]='butNextDisabled'>ต่อไป</button>
             </div>
           </div>
         </div>
