@@ -49,9 +49,6 @@ export class OrderPreToPostEligibleMobilePageComponent implements OnInit, OnDest
     private homeService: HomeService
   ) {
     this.transaction = this.transactionService.load();
-    this.homeService.callback = () => {
-      window.location.href = '/smart-shop';
-    };
   }
 
   ngOnInit() {

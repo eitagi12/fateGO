@@ -104,14 +104,17 @@ export class OrderPreToPostCurrentInfoPageComponent implements OnInit, OnDestroy
       }).toPromise()
         .then((resp: any) => {
 
-          this.transaction.data.simCard = { mobileNo: this.mobileNo , persoSim: false };
+          this.transaction.data.simCard = { mobileNo: this.mobileNo, persoSim: false };
           this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CUSTOMER_INFO_PAGE]);
           this.pageLoadingService.closeLoading();
 
         })
         .catch((resp: any) => {
           this.pageLoadingService.closeLoading();
-          this.alertService.error(resp.error.developerMessage);
+          this.alertService.notify({
+            type: 'error',
+            html: resp.error.resultDescription
+          });
         });
     } else {
       this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE]);

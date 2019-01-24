@@ -42,6 +42,7 @@
                 <div *ngIf="!isAisNative()">
                   <a href="#" (click)="$event.preventDefault(); onOpenCamera(); camera.next();" class="text-pink" *ngIf="!transaction?.data?.faceRecognition?.imageFaceUser">
                     <img src="assets/images/icon/icon-camera.png" class="icon-camera">
+                    <br><p>กรุณากดปุ่มถ่ายรูป</p>
                   </a>
                   <a href="#" (click)="$event.preventDefault(); onClearIdCardImage()" class="text-pink" *ngIf="transaction?.data?.faceRecognition?.imageFaceUser">
                     ถ่ายรูปใหม่

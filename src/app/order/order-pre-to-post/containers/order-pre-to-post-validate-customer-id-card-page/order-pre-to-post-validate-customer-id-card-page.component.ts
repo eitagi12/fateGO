@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { HomeService, ReadCardProfile, PageLoadingService, ApiRequestService, User, AlertService, ChannelType, TokenService, Utils, ValidateCustomerIdCardComponent, KioskControls } from 'mychannel-shared-libs';
-import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
 import {
   ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE,
   ROUTE_ORDER_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE
@@ -22,6 +22,7 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
   profile: ReadCardProfile;
   zipcode: string;
   readCardValid: boolean;
+  billDeliveryAddress: BillDeliveryAddress;
 
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
@@ -38,7 +39,7 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
     private utils: Utils,
   ) {
     this.homeService.callback = () => {
-      if(this.validateCustomerIdcard.koiskApiFn){
+      if (this.validateCustomerIdcard.koiskApiFn) {
         this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
       }
       window.location.href = '/smart-shop';
@@ -53,7 +54,7 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
 
   onError(valid: boolean) {
     this.readCardValid = valid;
-    if(!this.profile){
+    if (!this.profile) {
       this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
       this.validateCustomerIdcard.koiskApiFn.removedState().subscribe((removed: boolean) => {
         if (removed) {
@@ -61,7 +62,6 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
           this.validateCustomerIdcard.ngOnInit();
         }
       });
-    
     }
   }
 
@@ -72,7 +72,7 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
   }
 
   onBack() {
-    if(this.validateCustomerIdcard.koiskApiFn){
+    if (this.validateCustomerIdcard.koiskApiFn) {
       this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
     }
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE]);
@@ -87,6 +87,20 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
     }).toPromise()
       .then((resp: any) => {
         const data = resp.data || [];
+        this.billDeliveryAddress = {
+          homeNo: data.homeNo || '',
+          moo: data.moo || '',
+          mooBan: data.mooBan || '',
+          room: data.room || '',
+          floor: data.floor || '',
+          buildingName: data.buildingName || '',
+          soi: data.soi || '',
+          street: data.street || '',
+          province: data.province || '',
+          amphur: data.amphur || '',
+          tumbol: data.tumbol || '',
+          zipCode: data.zipCode || '',
+        };
 
         return this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
           .then((zipCode: string) => {
@@ -98,7 +112,9 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
             });
           });
       })
-      .then(() => { // load bill cycle
+      .then((customer: any) => { // load bill cycle
+        this.transaction.data.customer = Object.assign(this.profile, customer);
+
         return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
           .then((resp: any) => {
             const data = resp.data || {};
@@ -121,12 +137,25 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
       })
       .then((billingInformation: any) => {
         this.transaction.data.billingInformation = billingInformation;
+        this.transaction.data.billingInformation.billDeliveryAddress = this.billDeliveryAddress;
         if (this.checkBusinessLogic()) {
-         this.router.navigate([ROUTE_ORDER_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE]);
+          this.router.navigate([ROUTE_ORDER_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE]);
         }
       })
       .catch((resp: any) => {
-        this.alertService.error(resp.error.developerMessage);
+        const error = resp.error || [];
+        console.log(resp);
+
+        if (error && error.errors.length > 0) {
+          this.alertService.notify({
+            type: 'error',
+            html: error.errors.map((err) => {
+              return '<li class="text-left">' + err + '</li>';
+            }).join('')
+          });
+        } else {
+          this.alertService.error(error.resultDescription);
+        }
       });
   }
   checkBusinessLogic(): boolean {
@@ -139,7 +168,9 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
       return false;
     }
     if (this.utils.isIdCardExpiredDate(expireDate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ');
+      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ').then(() => {
+        this.onBack();
+      });
       return false;
     }
     return true;

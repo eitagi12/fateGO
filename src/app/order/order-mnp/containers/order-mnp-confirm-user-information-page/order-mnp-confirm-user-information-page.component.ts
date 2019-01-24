@@ -89,19 +89,34 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
     const billingInformation = this.transaction.data.billingInformation;
     const mergeBilling = billingInformation.mergeBilling;
     const billCycle = billingInformation.billCycle;
+    const customerbillDeliveryAddress = billingInformation.billDeliveryAddress;
 
-    const customerAddress = this.utils.getCurrentAddress({
-      homeNo: customer.homeNo,
-      moo: customer.moo,
-      room: customer.room,
-      floor: customer.floor,
-      buildingName: customer.buildingName,
-      soi: customer.soi,
-      street: customer.street,
-      tumbol: customer.tumbol,
-      amphur: customer.amphur,
-      province: customer.province,
-      zipCode: customer.zipCode
+    // const customerAddress = this.utils.getCurrentAddress({
+    //   homeNo: customer.homeNo,
+    //   moo: customer.moo,
+    //   room: customer.room,
+    //   floor: customer.floor,
+    //   buildingName: customer.buildingName,
+    //   soi: customer.soi,
+    //   street: customer.street,
+    //   tumbol: customer.tumbol,
+    //   amphur: customer.amphur,
+    //   province: customer.province,
+    //   zipCode: customer.zipCode
+    // });
+
+    const billDeliveryAddress =  this.utils.getCurrentAddress({
+      homeNo: customerbillDeliveryAddress.homeNo || customer.homeNo,
+      moo: customerbillDeliveryAddress.moo || customer.moo,
+      room: customerbillDeliveryAddress.room || customer.room,
+      floor: customerbillDeliveryAddress.floor || customer.floor,
+      buildingName: customerbillDeliveryAddress.buildingName || customer.buildingName,
+      soi: customerbillDeliveryAddress.soi || customer.soi,
+      street: customerbillDeliveryAddress.street || customer.street,
+      tumbol: customerbillDeliveryAddress.tumbol || customer.tumbol,
+      amphur: customerbillDeliveryAddress.amphur || customer.amphur,
+      province: customerbillDeliveryAddress.province || customer.province,
+      zipCode: customerbillDeliveryAddress.zipCode || customer.zipCode
     });
 
     this.billingInfo = {
@@ -125,7 +140,7 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
 
           // enable config
           this.billingInfo.billingAddress.isEdit = true;
-          this.billingInfo.billingAddress.text = customerAddress;
+          this.billingInfo.billingAddress.text = billDeliveryAddress;
 
           this.billingInfo.billingCycle.isEdit = true;
           this.billingInfo.billingCycle.isDelete = false;
@@ -136,7 +151,7 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
         }
       },
       billingAddress: {
-        text: (this.isMergeBilling() ? mergeBilling.billingAddr : null) || customerAddress || '-',
+        text: (this.isMergeBilling() ? mergeBilling.billingAddr : null) || billDeliveryAddress || '-',
         isEdit: !(!!mergeBilling),
         // isEdit: !(isMergeBilling || isPackageNetExtream),
         onEdit: () => {
@@ -298,7 +313,11 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
 
   getBllingCycle(billCycle: string): Promise<string> {
     if (!billCycle) {
-      return this.http.get('/api/customerportal/newRegister/queryBillCycle')
+      return this.http.get('/api/customerportal/newRegister/queryBillCycle', {
+        params: {
+          coProject: 'N'
+        }
+      })
         .toPromise()
         .then((resp: any) => {
           const data = resp.data.billCycles || [];
