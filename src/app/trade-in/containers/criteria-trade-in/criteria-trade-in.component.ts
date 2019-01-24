@@ -19,6 +19,7 @@ export class CriteriaTradeInComponent implements OnInit {
   btnNextDisabled = true;
   valuationlistForm: FormGroup;
 
+  criteriatradein: any;
 
   constructor(private router: Router,
     private homeService: HomeService,
@@ -33,25 +34,32 @@ export class CriteriaTradeInComponent implements OnInit {
   }
 
   ListValuationTradein() {
-    this.pageLoadingService.openLoading();
-    const tradeIn: any = JSON.parse(localStorage.getItem('Tradein'));
-    const brand: any = tradeIn.brand;
-    const model: any = tradeIn.model;
-
-
-    this.tradeInService.getListValuationTradein(brand, model).then(
-      (res: any) => {
-        this.valuationlists = res.data.listValuation;
-        for (const item of this.valuationlists) {
-          item.valChecked = 'N';
-        }
-        this.setFormValuation();
-        this.pageLoadingService.closeLoading();
-      },
-      (err: any) => {
-        this.pageLoadingService.closeLoading();
-        console.log(err);
-      });
+    if (typeof localStorage.getItem('Criteriatradein') !== null) {
+      this.criteriatradein = JSON.parse(localStorage.getItem('Criteriatradein'));
+    } else {
+      this.criteriatradein = false;
+    }
+    if (this.criteriatradein) {
+      this.valuationlists = this.criteriatradein.listValuationTradein;
+      this.pageLoadingService.closeLoading();
+    } else if (!this.criteriatradein) {
+      const tradeIn: any = JSON.parse(localStorage.getItem('Tradein'));
+      const brand: any = tradeIn.brand;
+      const model: any = tradeIn.model;
+      this.tradeInService.getListValuationTradein(brand, model).then(
+        (res: any) => {
+          this.valuationlists = res.data.listValuation;
+          for (const item of this.valuationlists) {
+            item.valChecked = 'N';
+          }
+          this.setFormValuation();
+          this.pageLoadingService.closeLoading();
+        },
+        (err: any) => {
+          this.pageLoadingService.closeLoading();
+          console.log(err);
+        });
+    }
   }
 
   selectValuationlistFn(val: any, checked: any) {
@@ -97,6 +105,7 @@ export class CriteriaTradeInComponent implements OnInit {
   }
 
   onCancel() {
+    this.tradeInService.removeCriteriatTradein();
     this.valuationlistForm.reset();
   }
 

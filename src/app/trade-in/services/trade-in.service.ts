@@ -85,6 +85,10 @@ export class TradeInService {
     this.objTradein.serialNo = '';
   }
 
+  removeCriteriatTradein() {
+    this.settingCriteriatTradein.remove();
+  }
+
   getTradein () {
     return this.settingTradein.value;
   }

@@ -90,6 +90,7 @@ export class ConfirmTradeInComponent implements OnInit {
   }
 
   btnCancelFn() {
+    this.tradeInService.removeCriteriatTradein();
     this.router.navigate(['trade-in/criteria-trade-in']);
   }
 
