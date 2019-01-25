@@ -25,11 +25,7 @@ export class VerifyTradeInComponent implements OnInit , OnDestroy {
   defualtBrand = [];
   isSelectImg = false;
   keyword: string;
-  serialMatCode: string;
-  modelTradein: any;
-  productSearch: any;
   checkSerial: any;
-  objSerival: any;
   barcodeSubscription: Subscription;
   constructor(private router: Router,
               private tradeInService: TradeInService,
@@ -136,7 +132,7 @@ export class VerifyTradeInComponent implements OnInit , OnDestroy {
           this.tradeInService.setSerialNo(imei);
           this.tradeInService.setMatCode(' ');
           const options = {
-            text: 'ไม่พบหมายเลข imei ในระบบ กรุณาเลือก ยี่ห้อ,รุ่นโทรศัพท์',
+            text: 'ไม่พบหมายเลข IMEI ในระบบ กรุณาเลือก ยี่ห้อ,รุ่นโทรศัพท์',
             confirmButtonText: 'ตกลง'
           };
           this.alertService.notify(options);
