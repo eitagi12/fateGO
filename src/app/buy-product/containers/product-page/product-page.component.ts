@@ -69,7 +69,8 @@ export class ProductPageComponent implements OnInit {
         const productStock: ProductStock = {
           ribbon: ribbon,
           thumbnail: product.imageUrl,
-          name: `${product.name} ${product.productSubtype === PRODUCT_HANDSET_BUNDLE ? '(แถมชิม)' : ''}`,
+          // name: `${product.name} ${product.productSubtype === PRODUCT_HANDSET_BUNDLE ? '(แถมชิม)' : ''}`,
+          name: product.name,
           quantity: 0,
           minNormalPrice: this.calMinPrice(subproducts, 'normalPrice') || +normalPrice.min || 0,
           maxNormalPrice: this.calMaxPrice(subproducts, 'normalPrice') || +normalPrice.max || 0,
@@ -93,6 +94,7 @@ export class ProductPageComponent implements OnInit {
               const subNormalPrice = sub.normalPrice || {};
               const subPromotionPrice = sub.promotionPrice || {};
               const stocks: any[] = respStock.data.listLocationCodeDestinationOut || [];
+
               const quantity = stocks.map((stock: any) => {
                 return +stock.qty || 0;
               }).reduce((previousValue: number, currentValue: number) => previousValue + currentValue, 0);
@@ -100,7 +102,8 @@ export class ProductPageComponent implements OnInit {
               productStock.quantity += quantity;
 
               productStock.stocks.push({
-                commercialName: `${sub.name} ${product.productSubtype === PRODUCT_HANDSET_BUNDLE ? '(แถมชิม)' : ''}`,
+                // commercialName: `${sub.name} ${product.productSubtype === PRODUCT_HANDSET_BUNDLE ? '(แถมชิม)' : ''}`,
+                commercialName: sub.name,
                 brand: brand,
                 model: sub.model,
                 productType: product.productType || '',
@@ -114,7 +117,7 @@ export class ProductPageComponent implements OnInit {
             });
           });
         } else {
-          console.log('not sub product ', product);
+          console.log('not sub product', product);
           this.salesService.productStock({
             locationCodeSource: user.locationCode,
             productType: product.productType || PRODUCT_TYPE,
@@ -135,7 +138,8 @@ export class ProductPageComponent implements OnInit {
             productStock.quantity += quantity;
             productStock.stocks = [
               {
-                commercialName: `${product.name} ${product.productSubtype === PRODUCT_HANDSET_BUNDLE ? '(แถมชิม)' : ''}`,
+                // commercialName: `${product.name} ${product.productSubtype === PRODUCT_HANDSET_BUNDLE ? '(แถมชิม)' : ''}`,
+                commercialName: product.name,
                 brand: brand,
                 model: product.model,
                 productType: product.productType || '',
