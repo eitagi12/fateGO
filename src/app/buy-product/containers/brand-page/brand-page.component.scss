@@ -44,3 +44,30 @@
         }
     }
 }
+/*
+.visible,
+.hidden {
+  overflow: hidden;
+  
+}
+
+.visible {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 1s linear;
+}
+
+.hidden {
+  visibility: hidden;
+  opacity: 0;
+}*/
+/*
+.visible > div,
+.hidden > div {
+
+}
+.hidden > div {
+  margin-top: -10000px;
+  transition: margin-top 0s 2s;
+}
+*/
