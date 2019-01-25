@@ -152,6 +152,8 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
             html: error.errors.map((err) => {
               return '<li class="text-left">' + err + '</li>';
             }).join('')
+          }).then(() => {
+            this.onBack();
           });
         } else {
           this.alertService.error(error.resultDescription);
