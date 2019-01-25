@@ -1,5 +1,6 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { TradeInService } from '../../services/trade-in.service';
+import { Component, OnInit } from '@angular/core';
+import { TradeInTransactionService } from '../../services/trade-in-transaction.service';
+import { TradeInTranscation } from '../../services/models/trade-in-transcation.model';
 
 @Component({
   selector: 'app-header-trade-in',
@@ -7,18 +8,13 @@ import { TradeInService } from '../../services/trade-in.service';
   styleUrls: ['./header-trade-in.component.scss']
 })
 export class HeaderTradeInComponent implements OnInit {
-  tradeinNo: string;
-  modelTradein: string;
-  imeiTradein: string;
-  estimatePrice: string;
-  objTradein: any;
-  constructor(private tradeInService: TradeInService) {
-    this.objTradein = this.tradeInService.getTradein();
+  tradeInTransaction: TradeInTranscation;
+
+  constructor(private tradeInTransactionService: TradeInTransactionService) {
+    this.tradeInTransaction = this.tradeInTransactionService.load();
    }
 
   ngOnInit() {
-    this.modelTradein = this.objTradein.brand + ' ' + this.objTradein.model;
-    this.imeiTradein = this.objTradein.serialNo;
   }
 
 }

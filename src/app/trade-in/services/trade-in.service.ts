@@ -40,7 +40,7 @@ export class TradeInService {
     return this.http.post(url, body).toPromise();
   }
 
-  getEstimateTradein(objEstimate: any, aisFlg: string): Promise<any> {
+  getEstimateTradein(objEstimate: any): Promise<any> {
     const url = '/api/salesportal/getEstimateTradein';
     const token = this.tokenService.getUser();
     const body = {
@@ -50,8 +50,8 @@ export class TradeInService {
       model: objEstimate.model,
       matCode: objEstimate.matCode,
       serialNo: objEstimate.serialNo,
-      aisFlg: aisFlg,
-      listValuation: objEstimate.listValuationTradein
+      aisFlg: objEstimate.aisFlg,
+      listValuation: objEstimate.listValuation
     };
     return this.http.post(url, body).toPromise();
   }

@@ -1,52 +1,47 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { HomeService, PageLoadingService } from 'mychannel-shared-libs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { PageLoadingService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
-import { FormControl, FormBuilder, Validators, FormGroup } from '@angular/forms';
+import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { TradeInService } from '../../services/trade-in.service';
-import { Subscription } from 'rxjs';
-import { Criteriatradein } from 'src/app/shared/models/trade-in.model';
+import { TradeInTranscation } from '../../services/models/trade-in-transcation.model';
+import { TradeInTransactionService } from '../../services/trade-in-transaction.service';
 
 @Component({
   selector: 'app-criteria-trade-in',
   templateUrl: './criteria-trade-in.component.html',
   styleUrls: ['./criteria-trade-in.component.scss']
 })
-export class CriteriaTradeInComponent implements OnInit {
-
+export class CriteriaTradeInComponent implements OnInit , OnDestroy {
+  tradeInTransaction: TradeInTranscation;
   valuationlists: any;
-  objCriteriatradein: Criteriatradein;
+  objCriteriatradein: any;
   objTradein: any;
   btnNextDisabled = true;
   valuationlistForm: FormGroup;
-
   criteriatradein: any;
 
   constructor(private router: Router,
-    private homeService: HomeService,
     private tradeInService: TradeInService,
     private pageLoadingService: PageLoadingService,
-    private fb: FormBuilder) { }
+    private fb: FormBuilder,
+    private tradeInTransactionService: TradeInTransactionService,
+    ) {
+      this.tradeInTransaction = this.tradeInTransactionService.load();
+     }
 
   ngOnInit() {
     this.setFormValuation();
     this.ListValuationTradein();
-    this.objTradein = this.tradeInService.getTradein();
   }
 
   ListValuationTradein() {
-    if (typeof localStorage.getItem('Criteriatradein') !== null) {
-      this.criteriatradein = JSON.parse(localStorage.getItem('Criteriatradein'));
-    } else {
-      this.criteriatradein = false;
-    }
-    if (this.criteriatradein) {
-      this.valuationlists = this.criteriatradein.listValuationTradein;
-      this.pageLoadingService.closeLoading();
+    if (this.tradeInTransaction.data.tradeIn.listValuation) {
+      this.valuationlists = this.tradeInTransaction.data.tradeIn.listValuation;
       this.btnNextDisabled = false;
-    } else if (!this.criteriatradein) {
-      const tradeIn: any = JSON.parse(localStorage.getItem('Tradein'));
-      const brand: any = tradeIn.brand;
-      const model: any = tradeIn.model;
+    } else {
+      this.pageLoadingService.closeLoading();
+      const brand: string = this.tradeInTransaction.data.tradeIn.brand;
+      const model: string = this.tradeInTransaction.data.tradeIn.model;
       this.tradeInService.getListValuationTradein(brand, model).then(
         (res: any) => {
           this.valuationlists = res.data.listValuation;
@@ -58,7 +53,6 @@ export class CriteriaTradeInComponent implements OnInit {
         },
         (err: any) => {
           this.pageLoadingService.closeLoading();
-          console.log(err);
         });
     }
   }
@@ -92,10 +86,6 @@ export class CriteriaTradeInComponent implements OnInit {
     });
   }
 
-  onDestroy() {
-    this.tradeInService.removeTradein();
-  }
-
   onHome() {
     this.tradeInService.removeTradein();
     window.location.href = '/sales-portal/dashboard';
@@ -107,19 +97,15 @@ export class CriteriaTradeInComponent implements OnInit {
   }
 
   onCancel() {
-    this.tradeInService.removeCriteriatTradein();
     this.valuationlistForm.reset();
   }
 
   onNext() {
-    this.objCriteriatradein = {
-      brand: this.objTradein.brand,
-      model: this.objTradein.model,
-      matCode: this.objTradein.matCode,
-      serialNo: this.objTradein.serialNo,
-      listValuationTradein: this.valuationlists
-    };
-    this.tradeInService.setValuationlistTradein(this.objCriteriatradein);
+    this.tradeInTransaction.data.tradeIn.listValuation = this.valuationlists;
     this.router.navigate(['trade-in/confirm-trade-in']);
+  }
+
+  ngOnDestroy(): void {
+    this.tradeInTransactionService.update(this.tradeInTransaction);
   }
 }

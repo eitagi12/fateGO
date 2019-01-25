@@ -1,53 +1,47 @@
-import { Component, OnInit } from '@angular/core';
-import { HomeService, PageLoadingService, TokenService } from 'mychannel-shared-libs';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { HomeService, PageLoadingService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
-import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { TradeInService } from '../../services/trade-in.service';
-import { Subscription } from 'rxjs';
-import { Criteriatradein } from 'src/app/shared/models/trade-in.model';
+import { TradeInTransactionService } from '../../services/trade-in-transaction.service';
+import { TradeInTranscation } from '../../services/models/trade-in-transcation.model';
 
 @Component({
   selector: 'app-confirm-trade-in',
   templateUrl: './confirm-trade-in.component.html',
   styleUrls: ['./confirm-trade-in.component.scss']
 })
-export class ConfirmTradeInComponent implements OnInit {
-
+export class ConfirmTradeInComponent implements OnInit , OnDestroy {
+  tradeInTransaction: TradeInTranscation;
   listValuation: any;
   valuationlists: any;
-  criteriaObj: Criteriatradein;
+  criteriaObj: any;
   aisFlg: string;
   objTest: any;
   tradeinPrice: any;
   tradeinGrade: string;
   tradeinNo: string;
   btnNextDisabled = true;
+  test: any;
   constructor(private router: Router,
-    private homeService: HomeService,
     private tradeInService: TradeInService,
     private pageLoadingService: PageLoadingService,
-    private tokenService: TokenService) { }
+    private tradeInTransactionService: TradeInTransactionService) {
+      this.tradeInTransaction = this.tradeInTransactionService.load();
 
+     }
 
   ngOnInit() {
-    this.getValuationTradein();
     this.getEstimateTradein();
-  }
-
-  getValuationTradein() {
-    this.listValuation = JSON.parse(localStorage.getItem('Criteriatradein'));
-    this.valuationlists = this.listValuation.listValuationTradein;
   }
 
   getEstimateTradein() {
     this.pageLoadingService.openLoading();
-    this.criteriaObj = JSON.parse(localStorage.getItem('Criteriatradein'));
-    if (this.criteriaObj && this.criteriaObj.matCode) {
+    if (this.tradeInTransaction.data.tradeIn.matCode) {
       this.aisFlg = 'Y';
     } else {
       this.aisFlg = 'N';
     }
-    const objFilterValDesc = this.criteriaObj.listValuationTradein.filter(
+    const objFilterValDesc = this.tradeInTransaction.data.tradeIn.listValuation.filter(
       (obj) => {
         if (obj && obj.valDesc) {
           const key = 'valDesc';
@@ -58,14 +52,14 @@ export class ConfirmTradeInComponent implements OnInit {
         }
     });
     const objRequestEstimate = {
-      brand: this.criteriaObj.brand,
-      model: this.criteriaObj.model,
-      matCode: this.criteriaObj.matCode,
-      serialNo: this.criteriaObj.serialNo,
-      listValuationTradein: objFilterValDesc
+      brand: this.tradeInTransaction.data.tradeIn.brand,
+      model: this.tradeInTransaction.data.tradeIn.model,
+      matCode: this.tradeInTransaction.data.tradeIn.matCode,
+      serialNo: this.tradeInTransaction.data.tradeIn.serialNo,
+      aisFlg: this.aisFlg,
+      listValuation: objFilterValDesc
     };
-
-    this.tradeInService.getEstimateTradein(objRequestEstimate , this.aisFlg).then(
+    this.tradeInService.getEstimateTradein(objRequestEstimate).then(
       (response) => {
         if (response.data.resultCode === 'S') {
           this.tradeinGrade = response.data.tradeinGrade;
@@ -75,10 +69,6 @@ export class ConfirmTradeInComponent implements OnInit {
         }
         this.pageLoadingService.closeLoading();
       });
-  }
-
-  onDestroy () {
-    this.tradeInService.removeTradein();
   }
 
   onHome() {
@@ -91,7 +81,7 @@ export class ConfirmTradeInComponent implements OnInit {
   }
 
   btnCancelFn() {
-    this.tradeInService.removeCriteriatTradein();
+    this.tradeInTransaction.data.tradeIn.listValuation = null;
     this.router.navigate(['trade-in/criteria-trade-in']);
   }
 
@@ -103,13 +93,12 @@ export class ConfirmTradeInComponent implements OnInit {
     }
   }
   onNext () {
-    const objEstimate = {
-      tradeinNo: this.tradeinNo,
-      tradeinPrice: this.tradeinPrice,
-      tradeinGrade: this.tradeinGrade
-    };
-    this.tradeInService.setEstimateTradein(objEstimate);
+    this.tradeInTransaction.data.tradeIn.tradeInNo = this.tradeinNo;
+    this.tradeInTransaction.data.tradeIn.tradeInGrade = this.tradeinGrade;
+    this.tradeInTransaction.data.tradeIn.tradeInPrice = this.tradeinPrice;
     this.router.navigate(['trade-in/summary-trade-in']);
   }
-
+  ngOnDestroy(): void {
+    this.tradeInTransactionService.update(this.tradeInTransaction);
+  }
 }

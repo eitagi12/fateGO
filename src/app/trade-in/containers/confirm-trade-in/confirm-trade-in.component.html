@@ -24,10 +24,10 @@
           <div class="row">
             <form class="checkbox-circle">
               <div class="form-row">
-                <div class="col-12 col-sm-12" *ngFor="let listValuationTradein of valuationlists">
-                  <input class="tradein-checkbox" [checked]="listValuationTradein.valChecked == 'Y'" type="checkbox" id="{{listValuationTradein.valCode}}"
-                    value="{{listValuationTradein.valCode}}" disabled>
-                  <label for="{{listValuationTradein.valCode}}"> {{listValuationTradein.valDesc}} </label>
+                <div class="col-12 col-sm-12" *ngFor="let listValuation of tradeInTransaction?.data.tradeIn.listValuation">
+                  <input class="tradein-checkbox" [checked]="listValuation.valChecked == 'Y'" type="checkbox" id="{{listValuation.valCode}}"
+                    value="{{listValuation.valCode}}" disabled>
+                  <label for="{{listValuation.valCode}}"> {{listValuation.valDesc}} </label>
                 </div>
               </div>
             </form>

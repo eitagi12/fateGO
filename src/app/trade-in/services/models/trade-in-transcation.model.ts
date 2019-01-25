@@ -16,6 +16,9 @@ export interface TradeIn {
     model: string;
     matCode?: string;
     serialNo: string;
+    tradeInNo?: string;
+    tradeInPrice?: string;
+    tradeInGrade?: string;
     listValuation?: ValValuation[];
   }
 
