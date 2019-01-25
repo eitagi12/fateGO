@@ -93,7 +93,6 @@
             </form>
           </div>
         </div>
-
         <div class="card mb-3" *ngIf="isSearchAgain">
           <div class="card-header bg-orange text-white rounded-top p-3">
             <div class="row">
@@ -117,7 +116,7 @@
                 </div>
               </div>
             </div>
-            <div class="row pt-1" *ngIf="!mobileNoConditions">
+            <div class="row pt-1" *ngIf="!mobileNoConditions || mobileNoConditions.length === 0">
               <div class="col-12 pt-5 pb-5 text-center">
                 ไม่พบหมายเลขที่คุณค้นหา กรุณากำหนดเงื่อนไขและค้นหาใหม่อีกครั้ง
               </div>
@@ -129,6 +128,6 @@
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()" [disabled]="!transaction?.data?.simCard?.mobileNo">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!transaction?.data?.simCard?.mobileNo && mobileNoConditions">NEXT</button>
   </mc-footer>
 </div>

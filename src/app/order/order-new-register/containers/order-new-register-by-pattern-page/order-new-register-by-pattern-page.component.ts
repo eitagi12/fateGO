@@ -84,6 +84,7 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
 
   onSearch(mobileNoCondition: any) {
     this.pageLoadingService.openLoading();
+    delete this.transaction.data.simCard;
 
     this.http.get('/api/salesportal/location-by-code', {
       params: { code: this.user.locationCode }
@@ -117,9 +118,11 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
         }).filter((condition: any) => condition.mobileNo.length > 0);
       })
       .catch((resp: any) => {
-        this.mobileNoConditions = undefined;
+        this.mobileNoConditions = [];
       })
       .then(() => {
+        console.log(this.mobileNoConditions);
+
         this.pageLoadingService.closeLoading();
       });
 
