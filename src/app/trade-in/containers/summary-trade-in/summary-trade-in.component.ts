@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { HomeService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
+import { TradeInTranscation } from '../../services/models/trade-in-transcation.model';
+import { TradeInTransactionService } from '../../services/trade-in-transaction.service';
 
 @Component({
   selector: 'app-summary-trade-in',
@@ -9,7 +11,7 @@ import { Router } from '@angular/router';
 })
 
 export class SummaryTradeInComponent implements OnInit {
-
+  tradeInTransaction: TradeInTranscation;
   tradeinNo: string;
   brand: string;
   modelTradein: string;
@@ -17,26 +19,25 @@ export class SummaryTradeInComponent implements OnInit {
   tradeinPrice: string;
   tradeinGrade: string;
 
-  tradeInService: any;
-
-  constructor(private homeService: HomeService,
-              private router: Router) { }
+  constructor(private router: Router,
+    private tradeInTransactionService: TradeInTransactionService) {
+    this.tradeInTransaction = this.tradeInTransactionService.load();
+  }
 
   ngOnInit() {
     this.summaryTradein();
   }
 
   summaryTradein() {
-    const criteriaTradein: any = JSON.parse(localStorage.getItem('Criteriatradein'));
-    this.tradeinNo = criteriaTradein.tradeinNo;
-    this.brand = criteriaTradein.brand;
-    this.modelTradein = criteriaTradein.model;
-    this.tradeinGrade = criteriaTradein.tradeinGrade;
-    this.imeiTradein = criteriaTradein.serialNo;
-    this.tradeinPrice = criteriaTradein.tradeinPrice;
-    this.tradeinGrade = criteriaTradein.tradeinGrade;
+    this.tradeinNo = this.tradeInTransaction.data.tradeIn.tradeInNo;
+    this.brand = this.tradeInTransaction.data.tradeIn.brand;
+    this.modelTradein = this.tradeInTransaction.data.tradeIn.model;
+    this.tradeinGrade = this.tradeInTransaction.data.tradeIn.tradeInGrade;
+    this.imeiTradein = this.tradeInTransaction.data.tradeIn.serialNo;
+    this.tradeinPrice = this.tradeInTransaction.data.tradeIn.tradeInPrice;
   }
-  gotoMainMenu () {
+
+  gotoMainMenu() {
     window.location.href = '/sales-portal/dashboard';
   }
 
