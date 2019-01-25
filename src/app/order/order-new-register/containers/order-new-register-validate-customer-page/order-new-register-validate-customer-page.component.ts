@@ -29,11 +29,7 @@ export class OrderNewRegisterValidateCustomerPageComponent implements OnInit, On
     private transactionService: TransactionService,
     private apiRequestService: ApiRequestService,
     private http: HttpClient,
-  ) {
-    this.homeService.callback = () => {
-      window.location.href = '/smart-shop';
-    };
-  }
+  ) { }
 
   ngOnInit() {
     this.createTransaction();

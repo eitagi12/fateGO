@@ -91,7 +91,7 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
     const mergeBilling = billingInformation.mergeBilling;
     const billCycle = billingInformation.billCycle;
     const customerbillDeliveryAddress = billingInformation.billDeliveryAddress;
-
+    console.log('customerbillDeliveryAddress', customerbillDeliveryAddress);
     // const customerAddress = this.utils.getCurrentAddress({
     //   homeNo: customer.homeNo,
     //   moo: customer.moo,
@@ -107,9 +107,10 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
     // });
 
 
-    const billDeliveryAddress =  this.utils.getCurrentAddress({
+    const billDeliveryAddress = this.utils.getCurrentAddress({
       homeNo: customerbillDeliveryAddress.homeNo || customer.homeNo,
       moo: customerbillDeliveryAddress.moo || customer.moo,
+      mooBan: customerbillDeliveryAddress.mooBan || customer.mooBan,
       room: customerbillDeliveryAddress.room || customer.room,
       floor: customerbillDeliveryAddress.floor || customer.floor,
       buildingName: customerbillDeliveryAddress.buildingName || customer.buildingName,

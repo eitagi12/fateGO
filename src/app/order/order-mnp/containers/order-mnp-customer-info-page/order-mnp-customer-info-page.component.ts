@@ -30,9 +30,6 @@ export class OrderMnpCustomerInfoPageComponent implements OnInit {
     private transactionService: TransactionService,
   ) {
     this.transaction = this.transactionService.load();
-    this.homeService.callback = () => {
-      window.location.href = '/smart-shop';
-    };
   }
 
   ngOnInit() {
