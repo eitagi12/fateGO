@@ -77,45 +77,86 @@ export class ProductPageComponent implements OnInit {
           maxPromotionPrice: this.calMaxPrice(subproducts, 'promotionPrice') || +promotionPrice.max || 0,
           stocks: []
         };
-        subproducts.forEach((sub: any) => {
+
+        if (subproducts.length) {
+
+          subproducts.forEach((sub: any) => {
+            this.salesService.productStock({
+              locationCodeSource: user.locationCode,
+              productType: product.productType || PRODUCT_TYPE,
+              productSubType: product.productSubtype || PRODUCT_SUB_TYPE,
+              model: sub.model,
+              color: sub.color,
+              subStockDestination: SUB_STOCK_DESTINATION,
+              listLocationCodeDestination: [user.locationCode]
+            }).then((respStock: any) => {
+              const subNormalPrice = sub.normalPrice || {};
+              const subPromotionPrice = sub.promotionPrice || {};
+              const stocks: any[] = respStock.data.listLocationCodeDestinationOut || [];
+              const quantity = stocks.map((stock: any) => {
+                return +stock.qty || 0;
+              }).reduce((previousValue: number, currentValue: number) => previousValue + currentValue, 0);
+
+              productStock.quantity += quantity;
+
+              productStock.stocks.push({
+                commercialName: `${sub.name} ${product.productSubtype === PRODUCT_HANDSET_BUNDLE ? '(แถมชิม)' : ''}`,
+                brand: brand,
+                model: sub.model,
+                productType: product.productType || '',
+                productSubtype: product.productSubtype || '',
+                quantity: +quantity || 0,
+                minNormalPrice: +subNormalPrice.min || 0,
+                maxNormalPrice: +subNormalPrice.max || 0,
+                minPromotionPrice: +subPromotionPrice.min || 0,
+                maxPromotionPrice: +subPromotionPrice.max || 0
+              });
+            });
+          });
+        } else {
+          console.log('not sub product ', product);
           this.salesService.productStock({
             locationCodeSource: user.locationCode,
             productType: product.productType || PRODUCT_TYPE,
             productSubType: product.productSubtype || PRODUCT_SUB_TYPE,
-            model: sub.model,
-            color: sub.color,
+            model: product.model,
+            color: product.color,
             subStockDestination: SUB_STOCK_DESTINATION,
             listLocationCodeDestination: [user.locationCode]
           }).then((respStock: any) => {
-            const subNormalPrice = sub.normalPrice || {};
-            const subPromotionPrice = sub.promotionPrice || {};
-            const stocks: any[] = respStock.data.listLocationCodeDestinationOut || [];
+            const subNormalPrice = product.normalPrice || {};
+            const subPromotionPrice = product.promotionPrice || {};
 
+            const stocks: any[] = respStock.data.listLocationCodeDestinationOut || [];
             const quantity = stocks.map((stock: any) => {
               return +stock.qty || 0;
             }).reduce((previousValue: number, currentValue: number) => previousValue + currentValue, 0);
 
             productStock.quantity += quantity;
-
-            productStock.stocks.push({
-              commercialName: `${sub.name} ${product.productSubtype === PRODUCT_HANDSET_BUNDLE ? '(แถมชิม)' : ''}`,
-              brand: brand,
-              model: sub.model,
-              productType: product.productType || '',
-              productSubtype: product.productSubtype || '',
-              quantity: +quantity || 0,
-              minNormalPrice: +subNormalPrice.min || 0,
-              maxNormalPrice: +subNormalPrice.max || 0,
-              minPromotionPrice: +subPromotionPrice.min || 0,
-              maxPromotionPrice: +subPromotionPrice.max || 0
-            });
+            productStock.stocks = [
+              {
+                commercialName: `${product.name} ${product.productSubtype === PRODUCT_HANDSET_BUNDLE ? '(แถมชิม)' : ''}`,
+                brand: brand,
+                model: product.model,
+                productType: product.productType || '',
+                productSubtype: product.productSubtype || '',
+                quantity: +quantity || 0,
+                minNormalPrice: +subNormalPrice.min || 0,
+                maxNormalPrice: +subNormalPrice.max || 0,
+                minPromotionPrice: +subPromotionPrice.min || 0,
+                maxPromotionPrice: +subPromotionPrice.max || 0
+              }
+            ];
 
           });
+        }
 
-        });
         this.productStocks.push(productStock);
       });
+      console.log('data', data);
+      console.log('productStocks', this.productStocks);
     });
+
 
   }
 

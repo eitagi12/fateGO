@@ -61,13 +61,16 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
         };
         this.reserveMobileService.selectMobileNumberRandom(dataRequest)
           .then(() => {
-            window.location.href = '/smart-shop';
+            this.router.navigate(['']);
+            // window.location.href = '/smart-shop';
           })
           .catch(() => {
-            window.location.href = '/smart-shop';
+            this.router.navigate(['']);
+            // window.location.href = '/smart-shop';
           });
       } else {
-        window.location.href = '/smart-shop';
+        this.router.navigate(['']);
+        // window.location.href = '/smart-shop';
       }
 
     };

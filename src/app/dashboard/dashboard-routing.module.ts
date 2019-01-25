@@ -6,15 +6,15 @@ import { MainMenuPageComponent } from './containers/main-menu-page/main-menu-pag
 
 const routes: Routes = [
   {
-    path: '', component: DashboardComponent,
-    children: [
-      {
-        path: '', component: PromotionPageComponent
-      },
-      {
-        path: 'main-menu', component: MainMenuPageComponent
-      },
-    ]
+    path: '', component: MainMenuPageComponent,
+    // children: [
+    //   {
+    //     path: '', component: PromotionPageComponent
+    //   },
+    //   {
+    //     path: 'main-menu', component: MainMenuPageComponent
+    //   },
+    // ]
   }
 ];
 

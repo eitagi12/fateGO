@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
+import { PageLoadingService } from 'mychannel-shared-libs';
 
 @Component({
   selector: 'app-main-menu-page',
@@ -7,9 +9,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MainMenuPageComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private router: Router,
+    private pageLoadingService: PageLoadingService,
+  ) { }
 
   ngOnInit() {
   }
+
+  goPage(page: string) {
+    this.pageLoadingService.openLoading();
+    this.router.navigate([page]).then(() => {
+      this.pageLoadingService.closeLoading();
+    });
+  }
+
 
 }
