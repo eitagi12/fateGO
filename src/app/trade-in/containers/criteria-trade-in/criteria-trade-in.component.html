@@ -34,9 +34,15 @@
           </div>
         </div>
       </div>
-      <mc-footer>
-        <button class="btn btn-secondary" (click)="onCancel()">ยกเลิก</button>
-        <button class="btn btn-success" (click)="onNext()" [disabled]="btnNextDisabled">ประเมินราคา</button>
-      </mc-footer>
+      <div class="container-fluid mt-3">
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="text-center">
+              <button class="btn btn-secondary text-white col-2 mx-2" (click)="onCancel()">ยกเลิก</button>
+              <button class="btn btn-success text-white col-2 mx-2" (click)="onNext()" [disabled]="btnNextDisabled">ประเมินราคา</button>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   </div>

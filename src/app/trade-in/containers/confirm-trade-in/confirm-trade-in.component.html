@@ -53,8 +53,14 @@
       </div>
     </div>
   </div>
-  <mc-footer>
-    <button class="btn btn-secondary" (click)="btnCancelFn()">ยกเลิก</button>
-    <button class="btn btn-success" (click)="onNext()" [disabled]="btnNextDisabled">ยืนยัน</button>
-  </mc-footer>
+  <div class="container-fluid mb-3">
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="text-center">
+          <button class="btn btn-secondary text-white col-2 mx-2" (click)="btnCancelFn()">ยกเลิก</button>
+          <button class="btn btn-success text-white col-2 mx-2" (click)="onNext()" [disabled]="btnNextDisabled">ยืนยัน</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>

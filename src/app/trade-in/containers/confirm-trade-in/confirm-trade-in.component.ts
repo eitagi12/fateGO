@@ -41,16 +41,14 @@ export class ConfirmTradeInComponent implements OnInit , OnDestroy {
     } else {
       this.aisFlg = 'N';
     }
-    const objFilterValDesc = this.tradeInTransaction.data.tradeIn.listValuation.filter(
-      (obj) => {
-        if (obj && obj.valDesc) {
-          const key = 'valDesc';
-          delete obj[key];
-          return obj;
-        } else {
-          return obj;
-        }
-    });
+    const objFilterValDesc = this.tradeInTransaction.data.tradeIn.listValuation.map(
+      (data) => {
+        return {
+          valCode: data.valCode,
+          valChecked: data.valChecked
+        };
+      }
+    );
     const objRequestEstimate = {
       brand: this.tradeInTransaction.data.tradeIn.brand,
       model: this.tradeInTransaction.data.tradeIn.model,
@@ -77,11 +75,17 @@ export class ConfirmTradeInComponent implements OnInit , OnDestroy {
   }
 
   onBack() {
+    this.tradeInTransaction.data.tradeIn.tradeInNo = null;
+    this.tradeInTransaction.data.tradeIn.tradeInGrade = null;
+    this.tradeInTransaction.data.tradeIn.tradeInPrice = null;
     this.router.navigate(['trade-in/criteria-trade-in']);
   }
 
   btnCancelFn() {
     this.tradeInTransaction.data.tradeIn.listValuation = null;
+    this.tradeInTransaction.data.tradeIn.tradeInNo = null;
+    this.tradeInTransaction.data.tradeIn.tradeInGrade = null;
+    this.tradeInTransaction.data.tradeIn.tradeInPrice = null;
     this.router.navigate(['trade-in/criteria-trade-in']);
   }
 
