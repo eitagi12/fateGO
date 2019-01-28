@@ -44,30 +44,19 @@
         }
     }
 }
-/*
-.visible,
-.hidden {
-  overflow: hidden;
-  
-}
 
-.visible {
-  visibility: visible;
-  opacity: 1;
-  transition: opacity 1s linear;
-}
-
-.hidden {
-  visibility: hidden;
-  opacity: 0;
-}*/
-/*
-.visible > div,
-.hidden > div {
-
-}
-.hidden > div {
-  margin-top: -10000px;
-  transition: margin-top 0s 2s;
-}
-*/
+/*.brand {
+    animation: 0.5s fadeIn;
+    animation-fill-mode: forwards;
+    visibility: hidden;
+  }
+    
+  @keyframes fadeIn {
+    99% {
+      visibility: hidden;
+    }
+    100% {
+      visibility: visible;
+    }
+  }
+  */

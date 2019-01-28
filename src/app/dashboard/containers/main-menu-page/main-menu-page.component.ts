@@ -10,6 +10,7 @@ export class MainMenuPageComponent implements OnInit {
   constructor() { }
 
   ngOnInit() {
+
   }
 
 }
