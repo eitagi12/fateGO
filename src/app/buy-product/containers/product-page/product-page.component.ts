@@ -117,7 +117,7 @@ export class ProductPageComponent implements OnInit {
             });
           });
         } else {
-          console.log('not sub product', product);
+          // not sub stock
           this.salesService.productStock({
             locationCodeSource: user.locationCode,
             productType: product.productType || PRODUCT_TYPE,
@@ -157,8 +157,6 @@ export class ProductPageComponent implements OnInit {
 
         this.productStocks.push(productStock);
       });
-      console.log('data', data);
-      console.log('productStocks', this.productStocks);
     });
 
 

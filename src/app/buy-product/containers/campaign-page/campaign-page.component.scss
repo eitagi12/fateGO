@@ -92,3 +92,53 @@
         margin-left: 0;
     }
 }
+
+.check-outer {
+    position: relative;
+    display: block;
+    border-radius: 50%;
+    float: left;
+}
+
+.block-color{
+    border: solid;
+    height: 50px;
+    padding-left: 0.5em;
+    min-width: 130px;
+    margin-top: 10px;
+    line-height: 20px;
+    padding-right: 0.6em;
+    border-radius: 5px;
+    border-color: #bfbfbf;
+    border-width: thin;
+    margin-right: 10px;
+    color: black;
+    background-color: #fff;
+
+    &.active {
+        box-shadow: 0 0 0 2px #9cc965;
+        border: #fff;
+    }
+}
+
+.color-name{
+   display: inline-block;
+    vertical-align: middle;
+    line-height: normal;
+    padding-left: 50px;
+    padding-top: 10px;
+}
+
+.check {
+    position: absolute;
+    display: block;
+    padding: 0.2em;
+    left: 5.2px;
+    text-align: center;
+}
+
+.color-group{
+   display: inline-block;
+   margin-right: 10px;
+   height: 78px;
+}
