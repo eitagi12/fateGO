@@ -175,6 +175,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     }
 
     onProductStockSelected(product) {
+        this.tabs = null;
         if (this.priceOption.productStock &&
             this.priceOption.productStock.colorName !== product.colorName) {
             this.priceOption.campaign = null;
@@ -320,6 +321,16 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             this.campaignSliders = [];
             return;
         }
+
+        this.tabs.map((val) => {
+            if (customerGroup.code === val.code) {
+                val.active = true;
+                return val;
+            } else {
+                val.active = false;
+                return val;
+            }
+        });
 
         this.campaignSliders = this.priceOptions
             .filter((campaign: any) => {

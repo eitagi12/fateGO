@@ -54,15 +54,16 @@
         color: #614e47;
         height: 47px;
         background-color: white;
-        border-bottom: 6px solid #BFBFBF;
-        &:not(:last-child) {
+        border-bottom: 3px solid #BFBFBF;
+        /*&:not(:last-child) {*/
             border-right: 1px solid #ccc;
             border: none;
-            border-bottom: 6px solid #BFBFBF;
-        }
+            border-bottom: 3px solid #BFBFBF;
+            height: 153px;
+        /*}*/
 
         &.active {
-            border-bottom: 6px solid #8cc53f;
+            border-bottom: 3px solid #BFBFBF;
         }
 
         .nav-link {       
@@ -70,13 +71,13 @@
             padding: 8px;
             white-space: nowrap;
             overflow: hidden;
-            &.active,
-            &:hover {
-                border-color: white;        
+            &.active{
+                background-color: #8cc53f;
+                border-color: #8cc53f;        
                 &:hover {
-                    border-color: white;
+                    border-color: #8cc53f;
                 }
-            }
+            }   
         }
     }
 }
@@ -116,7 +117,7 @@
     background-color: #fff;
 
     &.active {
-        box-shadow: 0 0 0 2px #9cc965;
+        box-shadow: 0 0 0 4px #9cc965;
         border: #fff;
     }
 }
@@ -141,4 +142,52 @@
    display: inline-block;
    margin-right: 10px;
    height: 78px;
+}
+
+.MC001{
+    background-image : url('/assets/images/icon/MC001.png');
+    background-repeat: no-repeat;
+    background-size: 140px;
+    padding-top: 105px;
+    background-position: top;
+    &.active {
+        color: #000;
+        background-image : url('/assets/images/icon/MC001-active.png');
+    }
+}
+
+.MC002{
+    background-image : url('/assets/images/icon/MC002.png');
+    background-repeat: no-repeat;
+    background-size: 140px;
+    padding-top: 105px;
+    background-position: top;
+    &.active {
+        color: #000;
+        background-image : url('/assets/images/icon/MC002-active.png');
+    }
+}
+
+.MC003{
+    background-image : url('/assets/images/icon/MC003.png');
+    background-repeat: no-repeat;
+    background-size: 140px;
+    padding-top: 105px;
+    background-position: top;
+    &.active {
+        color: #000;
+        background-image : url('/assets/images/icon/MC003-active.png');
+    }
+}
+
+.MC004{
+    background-image : url('/src/assets/images/icon/MC004.png');
+    background-repeat: no-repeat;
+    background-size: 140px;
+    padding-top: 105px;
+    background-position: top;
+    &.active {
+        color: #000;
+        background-image : url('/src/assets/images/icon/MC004-active.png');
+    }
 }

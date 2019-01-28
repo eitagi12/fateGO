@@ -57,8 +57,7 @@
                   <div class="color-group" *ngFor="let product of productDetail?.products">
                     <div class="block-color check-outer" (click)=" product?.stock?.qty ? onProductStockSelected(product) : null  ; $event.preventDefault();"
                       [ngClass]="{ 'active': product?.colorName && product?.colorName === priceOption?.productStock?.colorName, 'bg-blue-grey' : product?.stock?.qty === 0 }">
-                      <span class="check circle-qty " [ngStyle]="{ backgroundColor: '#' + product?.colorCode }">
-                      </span>
+                      <span class="check circle-qty " [ngStyle]="{ backgroundColor: '#' + product?.colorCode }"></span>
                       <span class="color-name"> {{product?.colorName || '&nbsp;'}}</span>
                     </div>
                     <div class="text-pink text-center"> {{ product?.stock?.qty ? '' : 'สินค้าหมดชั่วคราว' }}</div>
@@ -73,14 +72,19 @@
       </div>
     </div>
 
+    <div class="loading" *ngIf="!tabs"></div>
+
     <!-- campaigns -->
-    <div *ngIf="priceOption?.campaign?.length <= 0">
-      <tabset [justified]="true">
-        <div *ngFor="let tab of tabs">
-          {{ tab | json }}
-        </div>
+    <div *ngIf="priceOption?.campaign?.length <= 0 && tabs">
+        <tabset [justified]="true">
+          <tab *ngFor="let tab of tabs" [active]="tab.active" (select)="onCustomerGroupSelected(tab)">
+          <ng-template tabHeading>
+              <div class="{{tab.code}}" [ngClass]="{ 'active' : tab.active }"><b>{{ tab.name }}</b></div>
+          </ng-template>
+        </tab>
         <!-- <tab *ngFor="let tab of tabs" [heading]="tab.name" [active]="tab.active" (select)="onCustomerGroupSelected(tab)"></tab> -->
       </tabset>
+     
       <div class="bg-white pb-3" *ngIf="campaignSliders?.length > 0">
         <div class="p-3">
           <img class="icon" src="assets/images/icon/sale_portal_pink_circle_megaphone.png">
@@ -97,7 +101,7 @@
       </div>
     </div>
     <!-- trades -->
-    <div *ngIf="priceOption?.campaign?.campaignName">
+    <div *ngIf="priceOption?.campaign?.campaignName && tabs">
       <div class="container-fluid">
         <div class="row bg-white shadow-sm py-3 mb-2">
           <div class="col-12">
