@@ -58,12 +58,12 @@
         /*&:not(:last-child) {*/
             border-right: 1px solid #ccc;
             border: none;
-            border-bottom: 3px solid #BFBFBF;
+            border-bottom: 5px solid #BFBFBF;
             height: 153px;
         /*}*/
 
         &.active {
-            border-bottom: 3px solid #BFBFBF;
+            border-bottom: 5px solid #BFBFBF;
         }
 
         .nav-link {       
@@ -190,4 +190,8 @@
         color: #000;
         background-image : url('/src/assets/images/icon/MC004-active.png');
     }
+}
+
+.price{
+    height: 72vh;
 }

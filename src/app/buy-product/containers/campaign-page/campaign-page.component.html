@@ -75,7 +75,7 @@
     <div class="loading" *ngIf="!tabs"></div>
 
     <!-- campaigns -->
-    <div *ngIf="priceOption?.campaign?.length <= 0 && tabs">
+    <div class="bg-white price" *ngIf="priceOption?.campaign?.length <= 0 && tabs">
         <tabset [justified]="true">
           <tab *ngFor="let tab of tabs" [active]="tab.active" (select)="onCustomerGroupSelected(tab)">
           <ng-template tabHeading>
@@ -101,7 +101,7 @@
       </div>
     </div>
     <!-- trades -->
-    <div *ngIf="priceOption?.campaign?.campaignName && tabs">
+    <div *ngIf="priceOption?.campaign?.campaignName && tabs" >
       <div class="container-fluid">
         <div class="row bg-white shadow-sm py-3 mb-2">
           <div class="col-12">

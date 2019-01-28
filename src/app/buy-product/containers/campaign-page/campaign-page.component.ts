@@ -2,7 +2,7 @@ import { Component, OnInit, TemplateRef, ViewChild, OnDestroy } from '@angular/c
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { BsModalService, BsModalRef, TabsetComponent } from 'ngx-bootstrap';
 import { forkJoin } from 'rxjs';
-import { SalesService, TokenService, HomeService, User, CampaignSliderInstallment, CampaignSlider } from 'mychannel-shared-libs';
+import { SalesService, TokenService, HomeService, User, CampaignSliderInstallment, CampaignSlider, PageLoadingService } from 'mychannel-shared-libs';
 import { PRODUCT_TYPE, PRODUCT_SUB_TYPE, SUB_STOCK_DESTINATION, PRODUCT_HANDSET_BUNDLE } from 'src/app/buy-product/constants/products.constants';
 import { ROUTE_BUY_PRODUCT_PRODUCT_PAGE } from 'src/app/buy-product/constants/route-path.constant';
 import { AddToCartService } from 'src/app/buy-product/services/add-to-cart.service';
@@ -42,7 +42,8 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         private tokenService: TokenService,
         private homeService: HomeService,
         private addToCartService: AddToCartService,
-        private priceOptionService: PriceOptionService
+        private priceOptionService: PriceOptionService,
+        private pageLoadingService: PageLoadingService
     ) {
         this.priceOption = this.priceOptionService.load();
     }
@@ -374,10 +375,10 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     /* privilege */
     onTradeSelected(trade: any) {
         this.priceOption.trade = trade;
-
+        this.pageLoadingService.openLoading();
         this.addToCartService.reserveStock().then((nextUrl) => {
             console.log('Next url => ', nextUrl);
-            this.router.navigate([nextUrl]);
+            this.router.navigate([nextUrl]).then( () => this.pageLoadingService.closeLoading() );
         });
     }
 
