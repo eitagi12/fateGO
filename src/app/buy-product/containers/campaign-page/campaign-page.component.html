@@ -76,7 +76,10 @@
     <!-- campaigns -->
     <div *ngIf="priceOption?.campaign?.length <= 0">
       <tabset [justified]="true">
-        <tab *ngFor="let tab of tabs" [heading]="tab.name" [active]="tab.active" (select)="onCustomerGroupSelected(tab)"></tab>
+        <div *ngFor="let tab of tabs">
+          {{ tab | json }}
+        </div>
+        <!-- <tab *ngFor="let tab of tabs" [heading]="tab.name" [active]="tab.active" (select)="onCustomerGroupSelected(tab)"></tab> -->
       </tabset>
       <div class="bg-white pb-3" *ngIf="campaignSliders?.length > 0">
         <div class="p-3">
