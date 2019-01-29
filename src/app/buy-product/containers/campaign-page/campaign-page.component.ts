@@ -318,6 +318,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     }
 
     onCustomerGroupSelected(customerGroup: any) {
+        console.log('this.priceOptions', this.priceOptions);
         if (!this.priceOptions) {
             this.campaignSliders = [];
             return;
@@ -334,11 +335,9 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             }
         });
 
-        console.log('this.priceOptions', this.priceOptions);
-        
+
         this.campaignSliders = this.priceOptions
             .filter((campaign: any) => {
-                console.log('campaign', campaign);
                 // filter campaign by tab
                 return campaign.customerGroups.find((group: any) => group.code === customerGroup.code);
             }).map((campaign: any) => {
@@ -364,14 +363,14 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                     campaignSlider.mainPackagePrice = +campaign.minimumPackagePrice;
                 }
 
-                const privilegeByCustomerGroup = campaignSlider.value.privileges.filter((privilege) => {
-                    return privilege.customerGroups.find((privilegeGroup: any) => privilegeGroup.code === customerGroup.code);
-                });
-                campaignSlider.value.privileges = privilegeByCustomerGroup;
-               // console.log('campaignSlider', campaignSlider);
+                // const privilegeByCustomerGroup = campaignSlider.value.privileges.filter((privilege) => {
+                //     return privilege.customerGroups.find((privilegeGroup: any) => privilegeGroup.code === customerGroup.code);
+                // });
+                // campaignSlider.value.privileges = privilegeByCustomerGroup;
 
                 return campaignSlider;
             }).sort((a: any, b: any) => a.price - b.price);
+
     }
 
     onCampaignSelected(campaign: any) {
