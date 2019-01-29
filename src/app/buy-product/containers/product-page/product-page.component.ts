@@ -63,7 +63,7 @@ export class ProductPageComponent implements OnInit {
       data.products.map((product: any) => {
         const normalPrice = product.normalPrice || {};
         const promotionPrice = product.promotionPrice || {};
-        const subproducts = product.subProducts || [];
+        let subproducts = product.subProducts || [];
         const ribbonType = (product.itemType || '').toLowerCase();
         const ribbon = ['hot', 'new'].find((rib: string) => rib === ribbonType);
         const productStock: ProductStock = {
@@ -79,81 +79,52 @@ export class ProductPageComponent implements OnInit {
           stocks: []
         };
 
-        if (subproducts.length) {
+        if (!subproducts.length) {
+          // not sub product
+          subproducts = [{
+            commercialName: product.name,
+            model: product.model,
+            color: product.color,
+            normalPrice: product.normalPrice,
+            promotionPrice: product.promotionPrice
+          }];
+        }
 
-          subproducts.forEach((sub: any) => {
-            this.salesService.productStock({
-              locationCodeSource: user.locationCode,
-              productType: product.productType || PRODUCT_TYPE,
-              productSubType: product.productSubtype || PRODUCT_SUB_TYPE,
-              model: sub.model,
-              color: sub.color,
-              subStockDestination: SUB_STOCK_DESTINATION,
-              listLocationCodeDestination: [user.locationCode]
-            }).then((respStock: any) => {
-              const subNormalPrice = sub.normalPrice || {};
-              const subPromotionPrice = sub.promotionPrice || {};
-              const stocks: any[] = respStock.data.listLocationCodeDestinationOut || [];
-
-              const quantity = stocks.map((stock: any) => {
-                return +stock.qty || 0;
-              }).reduce((previousValue: number, currentValue: number) => previousValue + currentValue, 0);
-
-              productStock.quantity += quantity;
-
-              productStock.stocks.push({
-                // commercialName: `${sub.name} ${product.productSubtype === PRODUCT_HANDSET_BUNDLE ? '(แถมชิม)' : ''}`,
-                commercialName: sub.name,
-                brand: brand,
-                model: sub.model,
-                productType: product.productType || '',
-                productSubtype: product.productSubtype || '',
-                quantity: +quantity || 0,
-                minNormalPrice: +subNormalPrice.min || 0,
-                maxNormalPrice: +subNormalPrice.max || 0,
-                minPromotionPrice: +subPromotionPrice.min || 0,
-                maxPromotionPrice: +subPromotionPrice.max || 0
-              });
-            });
-          });
-        } else {
-          // not sub stock
+        subproducts.forEach((sub: any) => {
           this.salesService.productStock({
             locationCodeSource: user.locationCode,
             productType: product.productType || PRODUCT_TYPE,
             productSubType: product.productSubtype || PRODUCT_SUB_TYPE,
-            model: product.model,
-            color: product.color,
+            model: sub.model,
+            color: sub.color,
             subStockDestination: SUB_STOCK_DESTINATION,
             listLocationCodeDestination: [user.locationCode]
           }).then((respStock: any) => {
-            const subNormalPrice = product.normalPrice || {};
-            const subPromotionPrice = product.promotionPrice || {};
-
+            const subNormalPrice = sub.normalPrice || {};
+            const subPromotionPrice = sub.promotionPrice || {};
             const stocks: any[] = respStock.data.listLocationCodeDestinationOut || [];
+
             const quantity = stocks.map((stock: any) => {
               return +stock.qty || 0;
             }).reduce((previousValue: number, currentValue: number) => previousValue + currentValue, 0);
 
             productStock.quantity += quantity;
-            productStock.stocks = [
-              {
-                // commercialName: `${product.name} ${product.productSubtype === PRODUCT_HANDSET_BUNDLE ? '(แถมชิม)' : ''}`,
-                commercialName: product.name,
-                brand: brand,
-                model: product.model,
-                productType: product.productType || '',
-                productSubtype: product.productSubtype || '',
-                quantity: +quantity || 0,
-                minNormalPrice: +subNormalPrice.min || 0,
-                maxNormalPrice: +subNormalPrice.max || 0,
-                minPromotionPrice: +subPromotionPrice.min || 0,
-                maxPromotionPrice: +subPromotionPrice.max || 0
-              }
-            ];
 
+            productStock.stocks.push({
+              // commercialName: `${sub.name} ${product.productSubtype === PRODUCT_HANDSET_BUNDLE ? '(แถมชิม)' : ''}`,
+              commercialName: sub.name,
+              brand: brand,
+              model: sub.model,
+              productType: product.productType || '',
+              productSubtype: product.productSubtype || '',
+              quantity: +quantity || 0,
+              minNormalPrice: +subNormalPrice.min || 0,
+              maxNormalPrice: +subNormalPrice.max || 0,
+              minPromotionPrice: +subPromotionPrice.min || 0,
+              maxPromotionPrice: +subPromotionPrice.max || 0
+            });
           });
-        }
+        });
 
         this.productStocks.push(productStock);
       });
