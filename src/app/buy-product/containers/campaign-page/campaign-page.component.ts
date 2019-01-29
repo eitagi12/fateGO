@@ -323,6 +323,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             return;
         }
 
+        // set active tab
         this.tabs.map((val) => {
             if (customerGroup.code === val.code) {
                 val.active = true;
@@ -333,8 +334,11 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             }
         });
 
+        console.log('this.priceOptions', this.priceOptions);
+        
         this.campaignSliders = this.priceOptions
             .filter((campaign: any) => {
+                console.log('campaign', campaign);
                 // filter campaign by tab
                 return campaign.customerGroups.find((group: any) => group.code === customerGroup.code);
             }).map((campaign: any) => {
@@ -360,6 +364,12 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                     campaignSlider.mainPackagePrice = +campaign.minimumPackagePrice;
                 }
 
+                const privilegeByCustomerGroup = campaignSlider.value.privileges.filter((privilege) => {
+                    return privilege.customerGroups.find((privilegeGroup: any) => privilegeGroup.code === customerGroup.code);
+                });
+                campaignSlider.value.privileges = privilegeByCustomerGroup;
+               // console.log('campaignSlider', campaignSlider);
+
                 return campaignSlider;
             }).sort((a: any, b: any) => a.price - b.price);
     }
@@ -378,7 +388,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         this.pageLoadingService.openLoading();
         this.addToCartService.reserveStock().then((nextUrl) => {
             console.log('Next url => ', nextUrl);
-            this.router.navigate([nextUrl]).then( () => this.pageLoadingService.closeLoading() );
+            this.router.navigate([nextUrl]).then(() => this.pageLoadingService.closeLoading());
         });
     }
 
