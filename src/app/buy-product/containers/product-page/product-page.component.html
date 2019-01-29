@@ -30,8 +30,6 @@
       </ol>
     </nav>
     <div>
-      <div class="loading" *ngIf="productStocks[0] === undefined"></div>
-      <div class="text-center text-light-green" *ngIf="productStocks[0] === undefined"><h1>กำลังโหลดข้อมูล</h1></div>
       <div *ngFor="let productStock of productStocks">
         <mc-product-stock [productStock]="productStock" (view)="onView($event)" (compare)="onCompare($event)"></mc-product-stock>
       </div>
