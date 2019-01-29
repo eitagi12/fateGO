@@ -55,12 +55,12 @@
                 </div>
                 <div class="col-9 col-sm-10">
                   <div class="color-group" *ngFor="let product of productDetail?.products">
-                    <div class="block-color check-outer" (click)=" product?.stock?.qty ? onProductStockSelected(product) : null  ; $event.preventDefault();"
-                      [ngClass]="{ 'active': product?.colorName && product?.colorName === priceOption?.productStock?.colorName, 'bg-blue-grey' : product?.stock?.qty === 0 }">
+                    <div class="block-color check-outer" (click)=" product?.stock?.qty > 0 ? onProductStockSelected(product) : null  ; $event.preventDefault();"
+                      [ngClass]="{ 'active': product?.colorName && product?.colorName === priceOption?.productStock?.colorName, 'bg-blue-grey' : product?.stock?.qty < 1 }">
                       <span class="check circle-qty " [ngStyle]="{ backgroundColor: '#' + product?.colorCode }"></span>
                       <span class="color-name"> {{product?.colorName || '&nbsp;'}}</span>
                     </div>
-                    <div class="text-pink text-center"> {{ product?.stock?.qty ? '' : 'สินค้าหมดชั่วคราว' }}</div>
+                    <div class="text-pink text-center"> {{ product?.stock?.qty > 0 ? '' : 'สินค้าหมดชั่วคราว' }}</div>
                   </div>
                 </div>
               </div>
