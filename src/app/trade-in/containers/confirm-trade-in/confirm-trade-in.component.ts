@@ -12,16 +12,11 @@ import { TradeInTranscation } from '../../services/models/trade-in-transcation.m
 })
 export class ConfirmTradeInComponent implements OnInit , OnDestroy {
   tradeInTransaction: TradeInTranscation;
-  listValuation: any;
-  valuationlists: any;
-  criteriaObj: any;
   aisFlg: string;
-  objTest: any;
   tradeinPrice: any;
   tradeinGrade: string;
   tradeinNo: string;
   btnNextDisabled = true;
-  test: any;
   constructor(private router: Router,
     private tradeInService: TradeInService,
     private pageLoadingService: PageLoadingService,

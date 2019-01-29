@@ -39,7 +39,7 @@ export class CriteriaTradeInComponent implements OnInit , OnDestroy {
       this.valuationlists = this.tradeInTransaction.data.tradeIn.listValuation;
       this.btnNextDisabled = false;
     } else {
-      this.pageLoadingService.closeLoading();
+      this.pageLoadingService.openLoading();
       const brand: string = this.tradeInTransaction.data.tradeIn.brand;
       const model: string = this.tradeInTransaction.data.tradeIn.model;
       this.tradeInService.getListValuationTradein(brand, model).then(
@@ -87,12 +87,12 @@ export class CriteriaTradeInComponent implements OnInit , OnDestroy {
   }
 
   onHome() {
-    this.tradeInService.removeTradein();
+    this.tradeInTransactionService.remove();
     window.location.href = '/sales-portal/dashboard';
   }
 
   onBack() {
-    this.tradeInService.removeTradein();
+    this.tradeInTransactionService.remove();
     this.router.navigate(['trade-in/verify-trade-in']);
   }
 
