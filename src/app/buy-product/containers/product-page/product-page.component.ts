@@ -82,9 +82,10 @@ export class ProductPageComponent implements OnInit {
         if (!subproducts.length) {
           // not sub product
           subproducts = [{
-            commercialName: product.name,
+            name: product.name,
             model: product.model,
             color: product.color,
+            imageUrl: product.imageUrl,
             normalPrice: product.normalPrice,
             promotionPrice: product.promotionPrice
           }];
