@@ -15,10 +15,7 @@ export class OrderMnpResultPageComponent implements OnInit {
 
   wizards = WIZARD_ORDER_MNP;
   transaction: Transaction;
-  isSerSuccess: boolean;
-  messageStatus: string;
-  SUCCESS_MSG = 'ทำรายการสำเร็จ';
-  ERROR_MSG = 'ไม่สามารถให้บริการได้<br>กรุณาติดต่อพนักงานเพื่อดำเนินการ<br><br>ขออภัยในความไม่สะดวก';
+  isSuccess: boolean;
 
   constructor(private router: Router,
     private homeService: HomeService,
@@ -30,27 +27,25 @@ export class OrderMnpResultPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.pageLoadingService.openLoading();
-    this.createMnpService.createMnp(this.transaction).then((resp: any) => {
-      const data = resp.data || {};
-      this.transaction.data.order = {
-        orderNo: data.orderNo,
-        orderDate: data.orderDate
-      };
-      this.transactionService.update(this.transaction);
-      if (this.transaction.data.order.orderNo) {
-        this.isSerSuccess = true;
-        this.messageStatus = this.SUCCESS_MSG;
-      } else {
-        this.isSerSuccess = false;
-        this.messageStatus = this.ERROR_MSG;
-      }
-      this.pageLoadingService.closeLoading();
-    }).catch(() => {
-      this.isSerSuccess = false;
-      this.messageStatus = this.ERROR_MSG;
-      this.pageLoadingService.closeLoading();
-    });
+    // this.pageLoadingService.openLoading();
+    // this.createMnpService.createMnp(this.transaction).then((resp: any) => {
+    //   const data = resp.data || {};
+    //   this.transaction.data.order = {
+    //     orderNo: data.orderNo,
+    //     orderDate: data.orderDate
+    //   };
+    //   this.transactionService.update(this.transaction);
+    //   if (this.transaction.data.order.orderNo) {
+    //     this.isSuccess = true;
+    //   } else {
+    //     this.isSuccess = false;
+    //   }
+    //   this.pageLoadingService.closeLoading();
+    // }).catch(() => {
+    //   this.isSuccess = false;
+    //   this.pageLoadingService.closeLoading();
+    // });
+    this.isSuccess = false;
   }
 
   onMainMenu() {
