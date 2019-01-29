@@ -8,12 +8,18 @@
     <div class="mt-3 mb-3">
       <mc-wizard [wizards]="wizards" active="3"></mc-wizard>
       <div class="container-fluid">
-        <mc-result [isSuccess]="isSerSuccess" [messageStatus]="messageStatus" [mobileNo]="transaction?.data?.simCard?.mobileNo">
-          <div *ngIf="isSerSuccess">
-              <div class="text-center"> TRANSACTION ID : <span class="text-grey"> {{ transaction?.data?.order?.orderNo }}</span></div>
-              <div class="container text-center ">
-                ซิมใช้งานได้เมื่อได้รับ SMS ยืนยัน
-              </div>
+        <mc-result [success]="isSuccess" [mobileNo]="transaction?.data?.simCard?.mobileNo">
+          <div *ngIf="isSuccess">
+            <div class="text-center text-black"> TRANSACTION ID :
+              <span class="text-grey"> {{ transaction?.data?.order?.orderNo }}</span>
+            </div>
+            <div class="container text-center text-black mb-5 mt-1">
+              ซิมใช้งานได้เมื่อได้รับ SMS ยืนยัน
+            </div>
+            <div class="message-result text-center mb-5 text-black">
+              ระบบจัดส่ง SMS แจ้ง "รายละเอียดการทำรายการข้อตกลงและเงื่อนไขบริการโทรศัพท์เคลื่อนที่" ไปที่
+              <br> เบอร์ {{ transaction?.data?.simCard?.mobileNo | mobileNo }}
+            </div>
           </div>
         </mc-result>
       </div>
