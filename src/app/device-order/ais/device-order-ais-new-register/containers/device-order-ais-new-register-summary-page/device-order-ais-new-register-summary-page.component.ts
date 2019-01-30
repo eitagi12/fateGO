@@ -4,7 +4,9 @@ import { Router } from '@angular/router';
 import { HomeService } from 'mychannel-shared-libs';
 import {
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGREEMENT_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_MOBILE_CARE_PAGE
+  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_MOBILE_CARE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_EAPPLICATION_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_ECONTACT_PAGE
 } from 'src/app/device-order/ais/device-order-ais-new-register/constants/route-path.constant';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -41,7 +43,7 @@ export class DeviceOrderAisNewRegisterSummaryPageComponent implements OnInit {
   }
 
   onNext() {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGREEMENT_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_ECONTACT_PAGE]);
   }
 
   onHome() {

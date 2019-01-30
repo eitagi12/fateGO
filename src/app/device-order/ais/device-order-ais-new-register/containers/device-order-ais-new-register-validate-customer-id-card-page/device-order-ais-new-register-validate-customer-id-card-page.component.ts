@@ -1,85 +1,159 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { ReadCardProfile, HomeService, PageLoadingService, ApiRequestService, TokenService, ChannelType, Utils, AlertService, ValidateCustomerIdCardComponent, KioskControls, } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
-import { HomeService, ReadCardProfile, TokenService, User, PageLoadingService } from 'mychannel-shared-libs';
-import {
-  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VALIDATE_CUSTOMER_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VALIDATE_CUSTOMER_KEY_IN_PAGE
-} from 'src/app/device-order/ais/device-order-ais-new-register/constants/route-path.constant';
-import { HttpClient } from '@angular/common/http';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-
+import { HttpClient } from '@angular/common/http';
+import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from '../../../../../buy-product/constants/route-path.constant';
+import { PriceOption } from '../../../../../shared/models/price-option.model';
+import { PriceOptionService } from '../../../../../shared/services/price-option.service';
 @Component({
   selector: 'app-device-order-ais-new-register-validate-customer-id-card-page',
   templateUrl: './device-order-ais-new-register-validate-customer-id-card-page.component.html',
   styleUrls: ['./device-order-ais-new-register-validate-customer-id-card-page.component.scss']
 })
 export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implements OnInit, OnDestroy {
+  kioskApi: boolean;
+
   transaction: Transaction;
   profile: ReadCardProfile;
   zipcode: string;
   readCardValid: boolean;
+  priceOption: PriceOption;
+
+  @ViewChild(ValidateCustomerIdCardComponent)
+  validateCustomerIdcard: ValidateCustomerIdCardComponent;
 
   constructor(
     private router: Router,
     private homeService: HomeService,
-    private tokenService: TokenService,
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
-    private http: HttpClient
-  ) { }
+    private apiRequestService: ApiRequestService,
+    private http: HttpClient,
+    private tokenService: TokenService,
+    private utils: Utils,
+    private alertService: AlertService,
+    private priceOptionService: PriceOptionService
+  ) {
+    this.homeService.callback = () => {
+      if (this.validateCustomerIdcard.koiskApiFn) {
+        this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+      }
+      window.location.href = '/smart-shop';
+    };
+    this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
+    this.priceOption = this.priceOptionService.load();
+  }
 
   ngOnInit() {
     this.createTransaction();
+    console.log('priceOption', this.priceOption);
   }
 
   onError(valid: boolean) {
     this.readCardValid = valid;
+    if (!this.profile) {
+      this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
+      this.validateCustomerIdcard.koiskApiFn.removedState().subscribe((removed: boolean) => {
+        if (removed) {
+          this.validateCustomerIdcard.ngOnDestroy();
+          this.validateCustomerIdcard.ngOnInit();
+        }
+      });
+
+    }
   }
 
   onCompleted(profile: ReadCardProfile) {
     this.profile = profile;
-    this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol);
-  }
-
-  onBack() {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VALIDATE_CUSTOMER_PAGE]);
-  }
-
-  onNext() {
-    this.pageLoadingService.openLoading();
-    const user: User = this.tokenService.getUser();
-    this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryCustomerInfo`).toPromise()
-      .then((resp: any) => {
-        this.mapCustomer(resp.data);
-        return this.http.get(`/api/customerportal/customerprofile/${this.profile.idCardNo}/${user.username}/app3steps`).toPromise();
-      })
-      .then((resp: any) => {
-        return this.http.get(`/api/customerportal/asset/${this.profile.idCardNo}/contracts`).toPromise();
-      })
-      .then((resp: any) => {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE]);
-      })
-      .catch(() => {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VALIDATE_CUSTOMER_KEY_IN_PAGE], {
-          queryParams: {
-            idCardNo: this.profile.idCardNo
-          }
-        });
-      })
-      .then(() => {
-        this.pageLoadingService.closeLoading();
-      });
+    // auto next
+    this.onNext();
   }
 
   onHome() {
     this.homeService.goToHome();
   }
 
-  getZipCode(province: string, amphur: string, tumbol: string) {
+  onBack() {
+    this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
+  }
+
+  onNext() {
+    this.pageLoadingService.openLoading();
+
+    this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
+      .then((zipCode: string) => {
+        return this.http.get('/api/customerportal/validate-customer-new-register', {
+          params: {
+            identity: this.profile.idCardNo
+          }
+        }).toPromise()
+          .then((resp: any) => {
+            const data = resp.data || {};
+            return {
+              caNumber: data.caNumber,
+              mainMobile: data.mainMobile,
+              billCycle: data.billCycle,
+              zipCode: zipCode
+            };
+          }).catch(() => {
+            return {
+              zipCode: zipCode
+            };
+          });
+      })
+      .then((customer: any) => { // load bill cycle
+        this.transaction.data.customer = Object.assign(this.profile, customer);
+
+        return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
+          .then((resp: any) => {
+            const data = resp.data || {};
+            return this.http.post('/api/customerportal/verify/billingNetExtreme', {
+              businessType: '1',
+              listBillingAccount: data.billingAccountList
+            }).toPromise()
+              .then((respBillingNetExtreme: any) => {
+                return {
+                  billCycles: data.billingAccountList,
+                  billCyclesNetExtreme: respBillingNetExtreme.data
+                };
+              })
+              .catch(() => {
+                return {
+                  billCycles: data.billingAccountList
+                };
+              });
+          });
+      })
+      .then((billingInformation: any) => {
+        this.transaction.data.billingInformation = billingInformation;
+        if (this.checkBusinessLogic()) {
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE]);
+        }
+      });
+  }
+
+  checkBusinessLogic(): boolean {
+    const birthdate = this.transaction.data.customer.birthdate;
+    const expireDate = this.transaction.data.customer.expireDate;
+    const idCardType = this.transaction.data.customer.idCardType;
+
+    if (this.utils.isLowerAge17Year(birthdate)) {
+      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
+      return false;
+    }
+    if (this.utils.isIdCardExpiredDate(expireDate)) {
+      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ');
+      return false;
+    }
+    return true;
+  }
+
+  getZipCode(province: string, amphur: string, tumbol: string): Promise<string> {
     province = province.replace(/มหานคร$/, '');
-    this.http.get('/api/customerportal/newRegister/getAllProvinces').toPromise()
+    return this.http.get('/api/customerportal/newRegister/getAllProvinces').toPromise()
       .then((resp: any) => {
         const provinceId = (resp.data.provinces.find((prov: any) => prov.name === province) || {}).id;
 
@@ -89,60 +163,27 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
       })
       .then((resp: any) => {
         if (resp.data.zipcodes && resp.data.zipcodes.length > 0) {
-          console.log(resp.data.zipcodes[0]);
+          return resp.data.zipcodes[0];
+        } else {
+          return Promise.reject('ไม่พบรหัสไปรษณีย์');
         }
       });
   }
 
   ngOnDestroy(): void {
     this.transactionService.save(this.transaction);
+    this.pageLoadingService.closeLoading();
   }
 
   private createTransaction() {
-    // this.transaction = {
-    //   data: {
-    //     transactionType: TransactionType.DEVICE_ORDER_EXISTING_AIS,
-    //     action: TransactionAction.KEY_IN,
-    //   }
-    // };
-    // delete this.transaction.data.customer;
-  }
+    // New x-api-request-id
+    this.apiRequestService.createRequestId();
 
-  private mapCustomer(customer: any) {
-    const fullName = (customer.name || ' ').split(' ');
-    const address = customer.address || {};
-
-    this.transaction.data.customer = {
-      idCardNo: this.profile.idCardNo,
-      idCardType: customer.idCardType,
-      titleName: customer.accntTitle,
-      firstName: fullName[0],
-      lastName: fullName[1],
-      birthdate: customer.birthdate,
-      gender: customer.gender,
-      homeNo: address.homeNo,
-      moo: address.moo,
-      mooBan: address.mooban,
-      buildingName: address.buildingName,
-      floor: address.floor,
-      room: address.room,
-      street: address.street,
-      soi: address.soi,
-      tumbol: address.tumbol,
-      amphur: address.amphur,
-      province: address.province,
-      firstNameEn: this.profile.firstNameEn,
-      lastNameEn: this.profile.lastNameEn,
-      issueDate: customer.birthdate,
-      expireDate: this.profile.expireDate,
-      zipCode: address.zipCode,
-      mainMobile: customer.mainMobile,
-      mainPhone: customer.mainPhone,
-      billCycle: customer.billCycle,
-      caNumber: customer.accntNo,
-      imageSignature: '',
-      imageSmartCard: '',
-      imageReadSmartCard: this.profile.imageReadSmartCard,
+    this.transaction = {
+      data: {
+        transactionType: TransactionType. DEVICE_ORDER_NEW_REGISTER_AIS,
+        action: TransactionAction.READ_CARD,
+      }
     };
   }
 

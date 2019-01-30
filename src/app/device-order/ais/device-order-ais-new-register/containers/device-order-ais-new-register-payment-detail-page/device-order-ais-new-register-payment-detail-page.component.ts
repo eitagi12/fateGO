@@ -28,7 +28,6 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
     buyerAddress: '',
     telNo: ''
   };
-
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -37,7 +36,10 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+
+
+  }
 
   onBack() {
     if (TransactionAction.KEY_IN === this.transaction.data.action) {

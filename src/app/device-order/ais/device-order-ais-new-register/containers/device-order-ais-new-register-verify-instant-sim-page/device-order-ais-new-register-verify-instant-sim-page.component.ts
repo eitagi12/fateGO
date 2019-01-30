@@ -2,6 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { SimSerial, HomeService, AlertService, PageLoadingService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import {
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_SELECT_NUMBER_PAGE,
@@ -26,9 +27,9 @@ export class DeviceOrderAisNewRegisterVerifyInstantSimPageComponent implements O
   constructor(
     private router: Router,
     private homeService: HomeService,
-    private alertService: AlertService,
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
+    private alertService: AlertService,
     private http: HttpClient
   ) {
     this.transaction = this.transactionService.load();
@@ -40,19 +41,9 @@ export class DeviceOrderAisNewRegisterVerifyInstantSimPageComponent implements O
 
   onCheckSimSerial(serial: string): void {
     this.pageLoadingService.openLoading();
-    this.http.get(`/api/customerportal/newRegister/${serial}/queryMobileBySim`).toPromise()
+    this.http.get(`/api/customerportal/validate-verify-instant-sim?serialNo=${serial}`).toPromise()
       .then((resp: any) => {
         const simSerial = resp.data || [];
-
-        if (simSerial.mobileStatus === 'Registered') {
-          this.simSerialValid = false;
-          this.alertService.error(`หมายเลข ${serial} มีผู้ใช้งานแล้ว กรุณาเลือกหมายเลขใหม่`);
-          return;
-        } else if (simSerial.mobileStatus !== 'Registered' && simSerial.mobileStatus !== 'Reserved') {
-          this.simSerialValid = false;
-          this.alertService.error(`สถานะหมายเลข ${serial} ไม่พร้อมทำรายการ กรุณาเลือกหมายเลขใหม่`);
-          return;
-        }
         this.simSerialValid = true;
         this.simSerial = {
           mobileNo: simSerial.mobileNo,
@@ -63,9 +54,11 @@ export class DeviceOrderAisNewRegisterVerifyInstantSimPageComponent implements O
           simSerial: this.simSerial.simSerial,
           persoSim: false
         };
-      })
-      .then(() => {
         this.pageLoadingService.closeLoading();
+      }).catch((resp: any) => {
+        const error = resp.error || [];
+        this.pageLoadingService.closeLoading();
+        this.alertService.error(error.resultDescription);
       });
   }
 

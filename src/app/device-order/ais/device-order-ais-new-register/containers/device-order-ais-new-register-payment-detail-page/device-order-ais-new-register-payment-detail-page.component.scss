@@ -1,0 +1,35 @@
+.qr-lazy-load-image {
+    
+    margin-left: 70px;
+    margin-right: 70px;
+    padding: 7px;
+    width: 7px;
+    
+    &.active {
+        background-color: #8dc63f;   
+        border-radius: 10px; 
+    }
+}
+
+.qr-lazy-load-image:hover {
+    border-radius: 10px;
+    background-color:#8dc63f;
+}
+
+.bank-lazy-load-image {
+    
+    margin-left: 70px;
+    margin-right: 70px;
+    padding: 7px;
+    width: 7px;
+    
+    &.active {
+        background-color: #8dc63f;   
+        border-radius: 10px; 
+    }
+}
+
+.bank-lazy-load-image:hover {
+    border-radius: 10px;
+    background-color:#8dc63f;
+}

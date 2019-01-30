@@ -1,0 +1,19 @@
+<div class="mc-flex">
+  <mc-header title="DEVICE-SELLING">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <div class="mt-3">
+      <mc-aggegate [aggregate]="aggregate"></mc-aggegate>
+    </div>
+  </div>
+  <mc-footer>
+    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button class="btn btn-success" (click)="onNext()">NEXT</button>
+  </mc-footer>
+</div>

@@ -1,3 +1,34 @@
-<p>
-  device-order-ais-new-register-result-page works!
-</p>
+<div class="mc-flex">
+  <mc-header title="เครื่องพร้อมเปิดเบอร์ใหม่">
+    <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <div class="mt-3 mb-3">
+      <mc-wizard [wizards]="wizards" active="3"></mc-wizard>
+      <div class="container-fluid">
+        <mc-result [success]="isSuccess" [mobileNo]="transaction?.data?.simCard?.mobileNo">
+          <div>
+            <div class="container text-center text-light-green mb-5 message-status">
+              รายการสั่งซื้อของท่านได้เข้าสู่ระบบเรียบร้อยแล้ว
+            </div>
+            <div class="text-black">
+              หมายเลขสั่งซื้อในการชำระสินค้าของท่านคือ
+            </div>
+            <div class="text-center mb-3">
+                <div class="card">
+                  <div class="card-body queue-no text-light-green">
+                      {{ transaction?.data?.queue?.queueNo || 'A001' }}
+                  </div>
+                </div>
+              </div>
+          </div>
+        </mc-result>
+      </div>
+    </div>
+  </div>
+  <mc-footer>
+    <button class="btn btn-success" (click)="onMainMenu()">MAIN MENU</button>
+  </mc-footer>
+</div>

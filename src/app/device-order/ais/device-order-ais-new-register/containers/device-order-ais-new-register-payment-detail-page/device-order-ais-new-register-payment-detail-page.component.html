@@ -1,5 +1,5 @@
 <div class="mc-flex">
-  <mc-header title="รายการสินค้า">
+  <mc-header title="เครื่องพร้อมเปิดเบอร์ใหม่">
     <div class="header-icon-left">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
@@ -13,35 +13,48 @@
 
       <div class="container-fluid">
         <div class="card mb-3">
+          <div class="card-header bg-orange text-white rounded-top p-3">
+            รูปแบบการชำระเงิน
+          </div>
           <div class="card-header text-light-green bg-transparent">
-            แพ็กเกจชำระล่วงหน้า
+            ค่าเครื่อง iPhone X 256GB สี SPACE GREY
             <span class="pull-right">฿ {{ 1070 | number: '1.2-2' }}</span>
           </div>
           <div class="card-body">
             <form>
               <div class="form-group row">
-                <div class="col-12 col-sm-3">
+                <div class="col-12 col-sm-4">
                   <input class="form-check-input" type="radio" name="pay-advance" id="pay-advance-credit" value="option2">
                   <label class="form-check-label" for="pay-advance-credit">
-                    ชำระเงินด้วยเงินสด
+                    ชำระเงิน QR Code
                   </label>
                 </div>
-                <div class="col-12 col-sm-9">
+                <div class="col-12 col-sm-8">
                   <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="เต็มจำนวน">
                 </div>
               </div>
+              <div class="row">
+                <div class="qr-lazy-load-image col-2" *ngFor="let qrCode of qrCodes; let i = index">
+                  <mc-lazy-load-image [src]="qrCode.imageUrl"></mc-lazy-load-image>
+                </div>
+              </div>
               <div class="form-group row">
-                <div class="col-12 col-sm-3">
+                <div class="col-12 col-sm-4">
                   <input class="form-check-input" type="radio" name="pay-advance" id="pay-advance-debit" value="option2">
                   <label class="form-check-label" for="pay-advance-debit">
                     ชำระเงินด้วยบัตรเครดิต
                   </label>
                 </div>
-                <div class="col-12 col-sm-9">
-                  <select id="inputState" class="form-control" disabled >
+                <div class="col-12 col-sm-8">
+                  <select id="inputState" class="form-control" disabled>
                     <option selected>เต็มจำนวน</option>
                     <option>ผ่อนชำระ</option>
                   </select>
+                </div>
+              </div>
+              <div class="row">
+                <div class="qr-lazy-load-image col-2" *ngFor="let qrCode of qrCodes; let i = index">
+                  <mc-lazy-load-image [src]="qrCode.imageUrl"></mc-lazy-load-image>
                 </div>
               </div>
             </form>

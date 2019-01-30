@@ -99,7 +99,7 @@ export class DeviceOrderAisNewRegisterSelectPackagePageComponent implements OnIn
           'value': 'IRB'
         }];
 
-        let promiseAll = [];
+        const promiseAll = [];
         promotionShelves.forEach((promotionShelve: PromotionShelve) => {
           const promise = promotionShelve.promotions.map((promotion: PromotionShelveGroup) => {
             return this.http.post('/api/salesportal/promotion-shelves/promotion', {
