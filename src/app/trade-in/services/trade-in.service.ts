@@ -8,12 +8,6 @@ import { TokenService } from 'mychannel-shared-libs';
 export class TradeInService {
   constructor(private http: HttpClient,
               private tokenService: TokenService) { }
-  private objTradein = {
-    brand: '',
-    model: '',
-    matCode: '',
-    serialNo: ''
-  };
 
   getListModelTradeIn(): Promise<any> {
     const url = '/api/salesportal/getlistmodeltradein';
@@ -54,28 +48,5 @@ export class TradeInService {
       listValuation: objEstimate.listValuation
     };
     return this.http.post(url, body).toPromise();
-  }
-
-  removeTradein () {
-    this.objTradein.brand = '';
-    this.objTradein.model = '';
-    this.objTradein.matCode = '';
-    this.objTradein.serialNo = '';
-  }
-
-  setSerialNo (serialNo: string) {
-    this.objTradein.serialNo = serialNo;
-  }
-  setMatCode (matCode: string) {
-    this.objTradein.matCode = matCode;
-  }
-  setBrand (brand: string) {
-    this.objTradein.brand = brand;
-  }
-  setModel (model: string) {
-    this.objTradein.model = model;
-  }
-  getObjTradein () {
-    return this.objTradein;
   }
 }

@@ -7,7 +7,7 @@ import { BrandsOfProduct } from 'mychannel-shared-libs/lib/service/models/brands
 import { Observable, Subscription } from 'rxjs';
 import { mergeMap } from 'rxjs/operators';
 import { TradeInTransactionService } from '../../services/trade-in-transaction.service';
-import { TradeInTranscation } from '../../services/models/trade-in-transcation.model';
+import { TradeInTranscation, TransactionType } from '../../services/models/trade-in-transcation.model';
 
 @Component({
   selector: 'app-verify-trade-in',
@@ -45,6 +45,21 @@ export class VerifyTradeInComponent implements OnInit , OnDestroy {
     this.createDataSource();
     this.subscribeBarcode();
     this.apiRequestService.createRequestId();
+    this.createTransactionTradeIn();
+  }
+
+  createTransactionTradeIn () {
+    this.tradeInTransaction = {
+      data : {
+        transactionType: TransactionType.TRADE_IN,
+        tradeIn : {
+          brand: '',
+          model: '',
+          matCode: '',
+          serialNo: ''
+        }
+      }
+    };
   }
   onHome () {
     window.location.href = '/sales-portal/dashboard';
@@ -54,12 +69,6 @@ export class VerifyTradeInComponent implements OnInit , OnDestroy {
     window.location.href = '/sales-portal/dashboard';
   }
   btnNextFn () {
-    const objTradein = this.tradeInService.getObjTradein();
-    this.tradeInTransaction = {
-      data : {
-        tradeIn : objTradein
-      }
-    };
     this.router.navigate(['trade-in/criteria-trade-in']);
   }
 
@@ -115,13 +124,13 @@ export class VerifyTradeInComponent implements OnInit , OnDestroy {
   checkImei () {
     this.pageLoadingService.openLoading();
     const imei = this.imeiForm.value.imei;
+    this.tradeInTransaction.data.tradeIn.serialNo = imei;
     this.checkSerial = this.tradeInService.checkSerialTradein(imei);
     this.checkSerial.then(
       (response) => {
         this.pageLoadingService.closeLoading();
         if (response.data.status === 'S') {
-          this.tradeInService.setSerialNo(imei);
-          this.tradeInService.setMatCode(response.data.matcode);
+          this.tradeInTransaction.data.tradeIn.matCode = response.data.matCode;
           if (this.checkBrandAndModelFromListModelTradein(response.data.brand , response.data.model)) {
             this.setAutoSelect(response.data);
           } else {
@@ -129,8 +138,7 @@ export class VerifyTradeInComponent implements OnInit , OnDestroy {
             this.cancelSelected();
           }
         } else {
-          this.tradeInService.setSerialNo(imei);
-          this.tradeInService.setMatCode(' ');
+          this.tradeInTransaction.data.tradeIn.matCode = ' ';
           const options = {
             text: 'ไม่พบหมายเลข IMEI ในระบบ กรุณาเลือก ยี่ห้อ,รุ่นโทรศัพท์',
             confirmButtonText: 'ตกลง'
@@ -143,14 +151,13 @@ export class VerifyTradeInComponent implements OnInit , OnDestroy {
 
   setAutoSelect (objSerial) {
     this.setBrandImg(objSerial);
-    const serialNo = this.tradeInService.getObjTradein().serialNo;
     this.setBorderImgOnSelect(objSerial.brand);
     const objSelectTradein = {
       item : {
         brand : objSerial.brand,
         model : objSerial.model,
         commercialName : objSerial.commercialName,
-        serialNo : serialNo
+        serialNo : this.tradeInTransaction.data.tradeIn.serialNo
       }
     };
     this.isSelectImg = true;
@@ -188,7 +195,7 @@ export class VerifyTradeInComponent implements OnInit , OnDestroy {
           return data;
         }
       });
-    this.tradeInService.setBrand(nameSelect[0].name);
+    this.tradeInTransaction.data.tradeIn.brand = nameSelect[0].name;
     const nameBrandSelect = nameSelect[0].name;
     this.setBorderImgOnSelect(nameBrandSelect);
     this.isSelectImg = true;
@@ -220,7 +227,7 @@ export class VerifyTradeInComponent implements OnInit , OnDestroy {
   private queryProducCatalogSearch(keyword: string): Promise<any> {
     const model = this.defualtListModel.map(item => item.model).filter(
       (value, index, self) => self.indexOf(value) === index);
-    const brand = this.tradeInService.getObjTradein().brand;
+    const brand = this.tradeInTransaction.data.tradeIn.brand;
     const regex = /(TRADE IN)/;
     return this.salesService.producCatalogSearch(keyword).then((resp) => {
       const objFilterModel = resp.data.filter(
@@ -234,20 +241,20 @@ export class VerifyTradeInComponent implements OnInit , OnDestroy {
     });
   }
   onProductSearch (event) {
-    this.tradeInService.setBrand(event.item.brand);
-    this.tradeInService.setModel(event.item.model);
+    this.tradeInTransaction.data.tradeIn.brand = event.item.brand;
+    this.tradeInTransaction.data.tradeIn.model = event.item.model;
     this.isCheckBtnNext();
   }
 
   isCheckBtnNext (): boolean {
-    const data = this.tradeInService.getObjTradein();
-    if  (data.brand && data.model && data.serialNo) {
+    const data = this.tradeInTransaction.data.tradeIn;
+    if (data.brand && data.model && data.serialNo) {
       return false;
     }
     return true;
   }
   isCheckAutoSelect(): boolean {
-    const data = this.tradeInService.getObjTradein();
+    const data = this.tradeInTransaction.data.tradeIn;
     if (this.isSelectImg && this.keyword && data.serialNo && data.model) {
       return true;
     }
@@ -256,11 +263,11 @@ export class VerifyTradeInComponent implements OnInit , OnDestroy {
 
   cancelSelected () {
     this.imeiForm.reset();
-    this.tradeInService.removeTradein();
     this.setBorderImgOnSelect('');
     this.isSelectImg = false;
     this.keyword = null;
     this.brands = this.defualtBrand;
+    this.createTransactionTradeIn();
   }
 
   ngOnDestroy(): void {

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HomeService, PageLoadingService } from 'mychannel-shared-libs';
+import { PageLoadingService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TradeInService } from '../../services/trade-in.service';
 import { TradeInTransactionService } from '../../services/trade-in-transaction.service';
@@ -65,7 +65,6 @@ export class ConfirmTradeInComponent implements OnInit , OnDestroy {
   }
 
   onHome() {
-    this.tradeInService.removeTradein();
     window.location.href = '/sales-portal/dashboard';
   }
 

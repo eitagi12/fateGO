@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { HomeService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TradeInTranscation } from '../../services/models/trade-in-transcation.model';
 import { TradeInTransactionService } from '../../services/trade-in-transaction.service';

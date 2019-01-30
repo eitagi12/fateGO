@@ -1,3 +1,7 @@
+export enum TransactionType {
+    TRADE_IN = 'Trade-In'
+  }
+
 export interface TradeInTranscation {
     transactionId?: string;
     createDate?: string;
@@ -8,6 +12,7 @@ export interface TradeInTranscation {
 }
 
 export interface TradeInTranscationData {
+    transactionType: TransactionType;
     tradeIn?: TradeIn;
 }
 
