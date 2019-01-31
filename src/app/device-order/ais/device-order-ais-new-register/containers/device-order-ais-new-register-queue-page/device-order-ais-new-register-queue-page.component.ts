@@ -7,8 +7,8 @@ import {
 } from 'mychannel-shared-libs';
 import { Transaction, TransactionType } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
-import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_RESULT_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGGREGATE_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGGREGATE_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_RESULT_PAGE } from 'src/app/device-order/ais/device-order-ais-new-register/constants/route-path.constant';
+
 
 @Component({
   selector: 'app-device-order-ais-new-register-queue-page',
@@ -16,7 +16,6 @@ import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_RESULT_PAGE, ROUTE_DEVICE_ORDER_AIS
   styleUrls: ['./device-order-ais-new-register-queue-page.component.scss']
 })
 export class DeviceOrderAisNewRegisterQueuePageComponent implements OnInit, OnDestroy {
-  wizards = WIZARD_DEVICE_ORDER_AIS;
 
   transaction: Transaction;
   queueFrom: FormGroup;
@@ -42,7 +41,6 @@ export class DeviceOrderAisNewRegisterQueuePageComponent implements OnInit, OnDe
     this.queueFrom = this.fb.group({
       'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])],
     });
-    console.log('mobileNo', this.queueFrom);
   }
 
   onBack() {

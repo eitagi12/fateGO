@@ -1,11 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, AisNativeService, User, TokenService, ChannelType } from 'mychannel-shared-libs';
+import { HomeService, AisNativeService, User, TokenService, ChannelType, ShoppingCart } from 'mychannel-shared-libs';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Subscription } from 'rxjs';
-import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
-import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGREEMENT_SIGN_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGREEMENT_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_COMPARE_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_CAPTURE_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_EAPPLICATION_PAGE } from '../../constants/route-path.constant';
+import { ShoppingCartService } from 'src/app/device-order/ais/device-order-ais-new-register/service/shopping-cart.service';
+import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
+import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_EAPPLICATION_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_CAPTURE_PAGE } from 'src/app/device-order/ais/device-order-ais-new-register/constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-new-register-agreement-sign-page',
@@ -19,13 +20,15 @@ export class DeviceOrderAisNewRegisterAgreementSignPageComponent implements OnIn
   transaction: Transaction;
   signedSignatureSubscription: Subscription;
   signedOpenSubscription: Subscription;
+  shoppingCart: ShoppingCart;
 
   constructor(
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
     private aisNativeService: AisNativeService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private shoppingCartService: ShoppingCartService,
   ) {
     this.transaction = this.transactionService.load();
     this.signedSignatureSubscription = this.aisNativeService.getSigned().subscribe((signature: string) => {
@@ -34,6 +37,7 @@ export class DeviceOrderAisNewRegisterAgreementSignPageComponent implements OnIn
   }
 
   ngOnInit() {
+    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     if (!this.transaction.data.customer.imageSignature) {
       this.onSigned();
     }
