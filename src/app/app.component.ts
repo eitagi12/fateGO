@@ -4,7 +4,6 @@ import { setTheme } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
 import { environment } from '../environments/environment';
 import { debounceTime } from 'rxjs/operators';
-import { ROUTE_DEASHBOARD_MAIN_MENU_PAGE } from './dashboard/constants/route-path.constant';
 
 const { version: version } = require('../../package.json');
 
@@ -28,19 +27,29 @@ export class AppComponent {
     private router: Router,
     private homeService: HomeService,
   ) {
-    this.version = (environment.production ? '' : `[${environment.name}] `) + version;
+    this.homeService.callback = () => {
+      if (this.isDeveloperMode()) {
+        window.location.href = '/main-menu';
+      } else {
+        window.location.href = '/smart-shop/main-menu';
+      }
+    };
+
+    this.version = this.getVersion();
+
     this.initails();
     this.tokenHandler();
     this.errorHandler();
     this.pageActivityHandler();
-    this.homeService.callback = () => {
-      window.location.href = '/smart-shop';
-    };
     this.supportOptionSelect();
   }
 
   initails() {
     setTheme('bs4');
+  }
+
+  getVersion(): any {
+    return (environment.production ? '' : `[${environment.name}] `) + version;
   }
 
   tokenHandler() {
@@ -88,7 +97,7 @@ export class AppComponent {
       if (url.indexOf('validate-customer-id-card') !== -1) {
         return counter === 120;
       }
-        return counter === 60;
+      return counter === 60;
 
     }).subscribe(() => {
       this.alertService.notify({
@@ -104,7 +113,6 @@ export class AppComponent {
       }).then((data) => {
         if (!data.value) {
           this.homeService.goToHome();
-          // this.router.navigate([ROUTE_DEASHBOARD_MAIN_MENU_PAGE]);
         }
         this.pageActivityService.resetTimeout();
       });

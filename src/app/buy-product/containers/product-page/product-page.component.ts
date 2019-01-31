@@ -16,6 +16,7 @@ export class ProductPageComponent implements OnInit {
   countRow = 0;
   totalRow = 0;
 
+  productService: Promise<any>;
   params: Params;
   productStocks: ProductStock[] = [];
 
@@ -38,6 +39,12 @@ export class ProductPageComponent implements OnInit {
   ngOnInit() { }
 
   private callService(brand: string, model: string, offset: number) {
+    this.productService = new Promise((r, j) => {
+      setTimeout(() => {
+        r();
+      }, 10000);
+    });
+    return;
     const user: User = this.tokenService.getUser();
 
     const req = {
@@ -48,13 +55,12 @@ export class ProductPageComponent implements OnInit {
       location: user.locationCode
     };
 
-    let service;
     if (!!model) {
-      service = this.salesService.productsByBrandModel(Object.assign({ model: model }, req));
+      this.productService = this.salesService.productsByBrandModel(Object.assign({ model: model }, req));
     } else {
-      service = this.salesService.modelsOfProduct(req);
+      this.productService = this.salesService.modelsOfProduct(req);
     }
-    service.then((resp: any) => {
+    this.productService.then((resp: any) => {
       const data = resp.data;
 
       this.countRow += +data.countRow;

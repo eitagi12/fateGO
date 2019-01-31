@@ -13,6 +13,11 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'main-menu',
+    loadChildren: 'src/app/main-menu/main-menu.module#MainMenuModule',
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'buy-product',
     loadChildren: 'src/app/buy-product/buy-product.module#BuyProductModule',
     canActivate: [AuthGuard]
