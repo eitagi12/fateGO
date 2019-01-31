@@ -98,7 +98,6 @@ export class VerifyTradeInComponent implements OnInit , OnDestroy {
   subscribeBarcode() {
       this.barcodeSubscription = this.aisNativeService.getBarcode().subscribe(
           (barcode: string) => {
-            this.alertService.info(barcode);
             if (barcode.length === 15) {
               this.imeiForm.setValue({imei: barcode});
               this.checkImei();
