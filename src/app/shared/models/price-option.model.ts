@@ -6,3 +6,8 @@ export interface PriceOption {
     campaign: any;
     trade: any;
 }
+
+export class PrivilegeTradeInstallment {
+    installmentPercentage: number;
+    installmentMounth: number;
+}

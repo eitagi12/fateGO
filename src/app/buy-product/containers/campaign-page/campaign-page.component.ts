@@ -2,12 +2,25 @@ import { Component, OnInit, TemplateRef, ViewChild, OnDestroy } from '@angular/c
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { BsModalService, BsModalRef, TabsetComponent } from 'ngx-bootstrap';
 import { forkJoin } from 'rxjs';
-import { SalesService, TokenService, HomeService, User, CampaignSliderInstallment, CampaignSlider } from 'mychannel-shared-libs';
+import { SalesService, TokenService, HomeService, User, CampaignSliderInstallment, CampaignSlider, PromotionShelve, PageLoadingService, PromotionShelveGroup } from 'mychannel-shared-libs';
 import { PRODUCT_TYPE, PRODUCT_SUB_TYPE, SUB_STOCK_DESTINATION, PRODUCT_HANDSET_BUNDLE } from 'src/app/buy-product/constants/products.constants';
 import { ROUTE_BUY_PRODUCT_PRODUCT_PAGE } from 'src/app/buy-product/constants/route-path.constant';
 import { AddToCartService } from 'src/app/buy-product/services/add-to-cart.service';
-import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { PriceOption, PrivilegeTradeInstallment } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { HttpClient } from '@angular/common/http';
+
+
+export class PriceOptionPrivilegeTradeBank {
+    abb: string;
+    name: string;
+    imageUrl: string;
+    promotion: string;
+    installment: string;
+    remark: string;
+    installmentDatas?: PrivilegeTradeInstallment[];
+}
+
 
 @Component({
     selector: 'app-campaign',
@@ -18,6 +31,12 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
     @ViewChild('productSpecTemplate')
     productSpecTemplate: TemplateRef<any>;
+
+    @ViewChild('selectPackageTemplate')
+    selectPackageTemplate: TemplateRef<any>;
+
+    @ViewChild('installmentTemplate')
+    installmentTemplate: TemplateRef<any>;
 
     // local storage name
     priceOption: PriceOption;
@@ -33,6 +52,14 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     campaignSliders: CampaignSlider[];
     priceOptions: any;
 
+    promotionShelves: PromotionShelve[];
+
+    groupInstallmentByPercentageAndMonths: any;
+
+    priceWithBankInstallmentAndAdvancePayment = { data: [], isShowAllAdvancePay: false, fromTrade: false };
+
+    private privilegeTradeInstallmentGroup = [];
+
     // trade
     constructor(
         private modalService: BsModalService,
@@ -42,7 +69,9 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         private tokenService: TokenService,
         private homeService: HomeService,
         private addToCartService: AddToCartService,
-        private priceOptionService: PriceOptionService
+        private priceOptionService: PriceOptionService,
+        private pageLoadingService: PageLoadingService,
+        private http: HttpClient
     ) {
         this.priceOption = this.priceOptionService.load();
     }
@@ -84,6 +113,8 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     private callService(
         brand: string, model: string,
         productType?: string, productSubtype?: string) {
+
+        console.log('callService');
         const user: User = this.tokenService.getUser();
 
         // clear
@@ -126,6 +157,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
                 this.productDetail.products = products.map((product: any) => {
                     const stock = productStocks.find((productStock: any) => productStock.color === product.colorName) || { qty: 0 };
+                    console.log('stock=>', stock);
                     product.stock = stock;
                     return product;
                 }).sort((a, b) => a.stock.qty - b.stock.qty);
@@ -276,7 +308,67 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         return discounts ? discounts[0] : 0;
     }
 
-    private getInstallments(campaign: any): CampaignSliderInstallment[] {
+    onCustomerGroupSelected(customerGroup: any) {
+        if (!this.priceOptions) {
+            this.campaignSliders = [];
+            return;
+        }
+
+        this.campaignSliders = this.priceOptions
+            .filter((campaign: any) => {
+                // filter campaign by tab
+                return campaign.customerGroups.find((group: any) => group.code === customerGroup.code);
+            }).map((campaign: any) => {
+                // check prepaid flow
+                const prepaid = campaign.customerGroups.find((group: any) => group.flowId === '102');
+
+                const campaignSlider: CampaignSlider = {
+                    thumbnail: campaign.imageUrl,
+                    name: campaign.campaignName,
+                    minPromotionPrice: +campaign.minimumPromotionPrice,
+                    maxPromotionPrice: +campaign.maximumPromotionPrice,
+                    minAdvancePay: +campaign.minimumAdvancePay,
+                    maxAdvancePay: +campaign.maximumAdvancePay,
+                    contract: +campaign.maximumContract,
+                    value: campaign
+                };
+
+                campaignSlider.installments = this.getInstallments(campaign);
+                campaignSlider.discount = this.getDiscount(campaign);
+                campaignSlider.freeGoods = (campaign.freeGoods || []).map((freeGood: any) => freeGood.name);
+                if (prepaid) {
+                    campaignSlider.onTopPackagePrice = +campaign.minimumPackagePrice;
+                } else {
+                    campaignSlider.mainPackagePrice = +campaign.minimumPackagePrice;
+                }
+
+                return campaignSlider;
+            }).sort((a: any, b: any) => a.price - b.price);
+    }
+
+    onCampaignSelected(campaign: any) {
+        console.log('onCampaignSelected', campaign);
+        this.priceOption.campaign = campaign;
+    }
+
+    onPromotionShelve(campaign: any) {
+        console.log('onPromotionShelveSelect', campaign);
+        this.callPromotionShelveService(campaign);
+    }
+
+    onInstallmentList(campaignSlider: any) {
+        const priceList = [];
+        const campaign = campaignSlider.value;
+        const installments = campaignSlider.installments;
+
+        this.priceWithBankInstallmentAndAdvancePayment.data = this.getInstallments(campaign);
+        this.priceWithBankInstallmentAndAdvancePayment.isShowAllAdvancePay = false;
+        console.log('this.priceWithBankInstallmentAndAdvancePayment', this.priceWithBankInstallmentAndAdvancePayment);
+        // this.groupPrivilegeTradeInstallmentByPercentageMonth(campaignSlider);
+        this.showInstallmentListTemplate();
+    }
+
+    getInstallments(campaign: any): CampaignSliderInstallment[] {
         const banks: any = [];
         campaign.privileges.forEach((privilege: any) => {
             privilege.trades.forEach((trade: any) => {
@@ -315,49 +407,91 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         });
     }
 
-    onCustomerGroupSelected(customerGroup: any) {
-        if (!this.priceOptions) {
-            this.campaignSliders = [];
-            return;
-        }
+    callPromotionShelveService(getCampaign: any) {
+        this.pageLoadingService.openLoading();
+        const packageKeyRef = getCampaign.packageKeyRef;
+        this.http.post('/api/salesportal/promotion-shelves', {
+            userId: packageKeyRef
+        }).toPromise()
+            .then((resp: any) => {
+                const data = resp.data.data || [];
+                const promotionShelves: PromotionShelve[] = data.map((promotionShelve: any) => {
+                    return {
+                        title: promotionShelve.title,
+                        icon: promotionShelve.icon,
+                        promotions: promotionShelve.subShelves
+                            .sort((a, b) => a.priority !== b.priority ? a.priority < b.priority ? -1 : 1 : 0)
+                            .map((subShelve: any) => {
+                                return { // group
+                                    id: subShelve.id,
+                                    title: subShelve.title,
+                                    sanitizedName: subShelve.sanitizedName,
+                                    items: []
+                                };
+                            })
+                    };
+                });
+                return Promise.resolve(promotionShelves);
+            })
+            .then((promotionShelves: PromotionShelve[]) => {
+                const parameter = [{
+                    'name': 'orderType',
+                    'value': 'New Registration'
+                }, {
+                    'name': 'billingSystem',
+                    'value': 'IRB'
+                }];
 
-        this.campaignSliders = this.priceOptions
-            .filter((campaign: any) => {
-                // filter campaign by tab
-                return campaign.customerGroups.find((group: any) => group.code === customerGroup.code);
-            }).map((campaign: any) => {
-                // check prepaid flow
-                const prepaid = campaign.customerGroups.find((group: any) => group.flowId === '102');
+                const promiseAll = [];
+                promotionShelves.forEach((promotionShelve: PromotionShelve) => {
+                    const promise = promotionShelve.promotions.map((promotion: PromotionShelveGroup) => {
+                        return this.http.post('/api/salesportal/promotion-shelves/promotion', {
+                            userId: packageKeyRef,
+                            sanitizedName: promotion.sanitizedName,
+                            parameters: parameter
+                        }).toPromise().then((resp: any) => {
+                            const data = resp.data.data || [];
+                            const campaign: any = getCampaign;
+                            const minimumPackagePrice = +campaign.minimumPackagePrice;
+                            const maximumPackagePrice = +campaign.maximumPackagePrice;
 
-                const campaignSlider: CampaignSlider = {
-                    thumbnail: campaign.imageUrl,
-                    name: campaign.campaignName,
-                    minPromotionPrice: +campaign.minimumPromotionPrice,
-                    maxPromotionPrice: +campaign.maximumPromotionPrice,
-                    minAdvancePay: +campaign.minimumAdvancePay,
-                    maxAdvancePay: +campaign.maximumAdvancePay,
-                    contract: +campaign.maximumContract,
-                    value: campaign
-                };
-                campaignSlider.installments = this.getInstallments(campaign);
-                campaignSlider.discount = this.getDiscount(campaign);
-                campaignSlider.freeGoods = (campaign.freeGoods || []).map((freeGood: any) => freeGood.name);
-                if (prepaid) {
-                    campaignSlider.onTopPackagePrice = +campaign.minimumPackagePrice;
-                } else {
-                    campaignSlider.mainPackagePrice = +campaign.minimumPackagePrice;
-                }
+                            // reference object
+                            promotion.items = data.filter((promotion: any) => {
+                                return promotion.customAttributes.chargeType === 'Post-paid' &&
+                                    minimumPackagePrice <= +promotion.customAttributes.priceExclVat &&
+                                    (maximumPackagePrice > 0 ? maximumPackagePrice >= +promotion.customAttributes.priceExclVat : true);
+                            })
+                                .sort((a, b) => {
+                                    return +a.customAttributes.priceInclVat !== +b.customAttributes.priceInclVat ?
+                                        +a.customAttributes.priceInclVat < +b.customAttributes.priceInclVat ? -1 : 1 : 0;
+                                }).map((promotion: any) => {
+                                    return { // item
+                                        id: promotion.id,
+                                        title: promotion.title,
+                                        detail: promotion.detailTH,
+                                        value: promotion
+                                    };
+                                });
+                        });
+                    });
+                    promiseAll.concat(promise);
+                });
 
-                return campaignSlider;
-            }).sort((a: any, b: any) => a.price - b.price);
-    }
+                Promise.all(promiseAll).then(() => {
+                    this.promotionShelves = promotionShelves;
+                    if (this.promotionShelves && this.promotionShelves.length > 0) {
+                        this.promotionShelves[0].active = true;
+                        if (this.promotionShelves[0].promotions && this.promotionShelves[0].promotions.length > 0) {
+                            this.promotionShelves[0].promotions[0].active = true;
+                        }
+                    }
+                });
 
-    onCampaignSelected(campaign: any) {
-        this.priceOption.campaign = campaign;
-    }
-
-    onPromotionShelve(campaign: any) {
-        console.log('Selected campaign ', campaign);
+            })
+            .then(() => {
+                this.showSelectPackageTemplate();
+                this.pageLoadingService.closeLoading();
+            });
     }
 
     /* privilege */
@@ -368,6 +502,221 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             console.log('Next url => ', nextUrl);
             this.router.navigate([nextUrl]);
         });
+    }
+
+    groupPrivilegeTradeInstallmentByPercentageMonth(campaignSlider: any) {
+        const groupByPercentageAndMonths = new Array<PrivilegeTradeInstallment>();
+        const priceOptionForFilter = Object.assign({}, campaignSlider);
+        const filterPriceOption = this.getFilterPriceOptionByCustomerGroup(priceOptionForFilter);
+        try {
+            if (filterPriceOption.privileges) {
+                filterPriceOption.privileges
+                    .map(privilge => {
+                        privilge.trades
+                            .map(trade => {
+                                trade.banks.map(bank => {
+                                    bank.installmentDatas.map(installment => {
+                                        if (groupByPercentageAndMonths.length === 0) {
+                                            groupByPercentageAndMonths.push(installment);
+                                        } else {
+                                            const isExist = groupByPercentageAndMonths
+                                                .filter(
+                                                    installmentInGroup =>
+                                                        installmentInGroup.installmentMounth === installment.installmentMounth &&
+                                                        installmentInGroup.installmentPercentage === installment.installmentPercentage
+                                                );
+                                            if (isExist.length === 0) {
+                                                groupByPercentageAndMonths.push(installment);
+                                            }
+                                        }
+                                    });
+                                });
+                            });
+                    });
+            }
+        } catch (error) {
+            console.error('error', error);
+        }
+        // sort month desc
+        groupByPercentageAndMonths.sort((a, b) => {
+            return a.installmentMounth > b.installmentMounth ? -1 : (a.installmentMounth < b.installmentMounth ? 1 : 0);
+        });
+        // sort percentage asc
+        groupByPercentageAndMonths.sort((a, b) => {
+            return a.installmentPercentage > b.installmentPercentage ? 1 : (a.installmentPercentage < b.installmentPercentage ? -1 : 0);
+        });
+        this.groupInstallmentByPercentageAndMonths = groupByPercentageAndMonths;
+        this.groupBankByInstallment(filterPriceOption);
+    }
+
+    private groupBankByInstallment(priceOption: any) {
+        const priceWithInstallmentBankAndAdvancePaymentList = [];
+        const groupBankByInstallment = new Array<PrivilegeTradeInstallment>();
+        const priceWithInstallmentList = [];
+        for (const installmentGroupByMonthAndPercetage of this.groupInstallmentByPercentageAndMonths) {
+            const banks = [];
+            const priceList = [];
+            const advancePayList = [];
+            let showAdvancePay = false;
+            for (const privilege of priceOption.privileges) {
+                for (const trade of privilege.trades) {
+                    for (const bank of trade.banks) {
+                        const isExist = bank.installmentDatas
+                            .filter(
+                                installment =>
+                                    installment.installmentMounth === installmentGroupByMonthAndPercetage.installmentMounth &&
+                                    installment.installmentPercentage === installmentGroupByMonthAndPercetage.installmentPercentage);
+                        if (isExist.length > 0) {
+                            if (banks.length === 0) {
+                                const price = this.calculatePrice(
+                                    trade.promotionPrice,
+                                    installmentGroupByMonthAndPercetage.installmentMounth,
+                                    installmentGroupByMonthAndPercetage.installmentPercentage
+                                );
+                                const advancePay = this.calculateAdvancePay(
+                                    trade.promotionPrice,
+                                    trade.advancePay.amount,
+                                    installmentGroupByMonthAndPercetage.installmentMounth,
+                                    installmentGroupByMonthAndPercetage.installmentPercentage
+                                );
+                                showAdvancePay =
+                                    trade.advancePay.installmentFlag === 'Y' && trade.advancePay.amount !== null
+                                        && trade.advancePay.amount !== 0 && trade.advancePay.amount ? true : false;
+                                banks.push(bank);
+                                priceList.push(price);
+                                advancePayList.push(advancePay);
+                            } else {
+                                const isExistBank = banks
+                                    .filter(
+                                        (selectBank: PriceOptionPrivilegeTradeBank) =>
+                                            selectBank.abb === bank.abb);
+
+                                if (isExistBank.length === 0) {
+                                    const price = this.calculatePrice(
+                                        trade.promotionPrice,
+                                        installmentGroupByMonthAndPercetage.installmentMounth,
+                                        installmentGroupByMonthAndPercetage.installmentPercentage
+                                    );
+                                    const advancePay = this.calculateAdvancePay(
+                                        trade.promotionPrice,
+                                        trade.advancePay.amount,
+                                        installmentGroupByMonthAndPercetage.installmentMounth,
+                                        installmentGroupByMonthAndPercetage.installmentPercentage
+                                    );
+                                    showAdvancePay = trade.advancePay.installmentFlag === 'Y' && trade.advancePay.amount !== null
+                                        && trade.advancePay.amount !== 0 && trade.advancePay.amount ? true : false;
+                                    banks.push(bank);
+                                    priceList.push(price);
+                                    advancePayList.push(advancePay);
+                                } else {
+                                    const price = this.calculatePrice(
+                                        trade.promotionPrice,
+                                        installmentGroupByMonthAndPercetage.installmentMounth,
+                                        installmentGroupByMonthAndPercetage.installmentPercentage
+                                    );
+                                    const advancePay = this.calculateAdvancePay(
+                                        trade.promotionPrice,
+                                        trade.advancePay.amount,
+                                        installmentGroupByMonthAndPercetage.installmentMounth,
+                                        installmentGroupByMonthAndPercetage.installmentPercentage
+                                    );
+                                    showAdvancePay = trade.advancePay.installmentFlag === 'Y' && trade.advancePay.amount !== null
+                                        && trade.advancePay.amount !== 0 && trade.advancePay.amount ? true : false;
+                                    priceList.push(price);
+                                    advancePayList.push(advancePay);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            const filterZeroPriceList = priceList.filter(price => price !== 0);
+            const filterZeroAdvancePayList = advancePayList.filter(advancePay => advancePay !== 0);
+            const sortPriceList = filterZeroPriceList.sort((a, b) => a !== b ? a < b ? -1 : 1 : 0);
+            const sortAdvanceAdvancePayList = filterZeroAdvancePayList.sort((a, b) => a !== b ? a < b ? -1 : 1 : 0);
+            const priceWithInstallmentBankAndAdvancePayment = {
+                banks: banks,
+                installment: installmentGroupByMonthAndPercetage,
+                priceList: sortPriceList,
+                advancePayList: sortAdvanceAdvancePayList,
+                showAdvancePay: showAdvancePay
+            };
+            priceWithInstallmentList.push(priceWithInstallmentBankAndAdvancePayment);
+        }
+
+
+
+        const isShowAllAdvancePay = priceWithInstallmentList.filter(price => price.showAdvancePay === true);
+        if (isShowAllAdvancePay.length > 0) {
+            this.priceWithBankInstallmentAndAdvancePayment.isShowAllAdvancePay = true;
+        }
+
+        console.log('priceWithInstallmentList', priceWithInstallmentList);
+
+        this.priceWithBankInstallmentAndAdvancePayment.data = priceWithInstallmentList;
+    }
+
+    private getFilterPriceOptionByCustomerGroup(campaignSlider: any) {
+        if (campaignSlider.value.privileges) {
+            const filterPrivileges = campaignSlider.value.privileges
+                .filter(privilege => {
+                    const isPrivilegeInCustomerGroup =
+                        privilege.customerGroups.filter(customerGroup => customerGroup.code !== '5');
+                    return isPrivilegeInCustomerGroup.length > 0 ? true : false;
+                });
+
+            const filterPrivilegeAndTrade = filterPrivileges
+                .map(filterPrivilege => {
+                    const filterTrades = filterPrivilege.trades.filter(trade => {
+                        const isPrivilegeTradeInCustomerGroup =
+                            trade.customerGroups.filter(customerGroup => customerGroup.code === '5');
+                        return isPrivilegeTradeInCustomerGroup.length > 0 ? true : false;
+                    });
+                    filterPrivilege.trades = filterTrades;
+                    return filterPrivilege;
+                });
+
+            campaignSlider.value.privileges = filterPrivileges;
+        }
+        return campaignSlider;
+    }
+
+    private calculatePrice(priceAmount: number, installmentMonth: number, installmentPercentage: number) {
+        let price = 0;
+        if (installmentPercentage !== 0) {
+
+        }
+
+        //คำนวนเปอร์เซ็น
+        price = installmentPercentage === 0 ? priceAmount / installmentMonth : (priceAmount + (installmentMonth * (priceAmount * Math.ceil(installmentPercentage) / 100))) / installmentMonth
+        return Math.round(price);
+    }
+
+    private calculateAdvancePay(price: number, advancePayAmount: number, installmentMonth: number, installmentPercentage: number) {
+        if (price > 0) {
+            let advancePay = 0;
+            advancePay = installmentPercentage === 0 ?
+                (price + advancePayAmount) / installmentMonth :
+                (
+                    (price + advancePayAmount + (installmentMonth *
+                        (price + advancePayAmount) * Math.ceil(installmentPercentage) / 100)
+                    )
+                ) / installmentMonth;
+            return Math.round(advancePay);
+        } else {
+            return 0;
+        }
+    }
+
+    showSelectPackageTemplate(): void {
+        const modalOptions = { class: 'modal-lg' };
+        this.modalRef = this.modalService.show(this.selectPackageTemplate, modalOptions);
+    }
+
+    showInstallmentListTemplate(): void {
+        const modalOptions = { class: 'modal-lg' };
+        this.modalRef = this.modalService.show(this.installmentTemplate, modalOptions);
     }
 
     ngOnDestroy(): void {
