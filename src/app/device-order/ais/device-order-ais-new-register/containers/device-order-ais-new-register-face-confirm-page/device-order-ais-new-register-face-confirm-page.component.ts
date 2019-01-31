@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, AlertService, PageLoadingService } from 'mychannel-shared-libs';
+import { HomeService, AlertService, PageLoadingService, ShoppingCart } from 'mychannel-shared-libs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
 import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_COMPARE_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGGREGATE_PAGE, } from '../../constants/route-path.constant';
+import { ShoppingCartService } from 'src/app/device-order/ais/device-order-ais-new-register/service/shopping-cart.service';
 
 @Component({
   selector: 'app-device-order-ais-new-register-face-confirm-page',
@@ -16,6 +17,7 @@ export class DeviceOrderAisNewRegisterFaceConfirmPageComponent implements OnInit
   wizards = WIZARD_DEVICE_ORDER_AIS;
 
   confirmForm: FormGroup;
+  shoppingCart: ShoppingCart;
 
   constructor(
     private router: Router,
@@ -24,12 +26,14 @@ export class DeviceOrderAisNewRegisterFaceConfirmPageComponent implements OnInit
     private http: HttpClient,
     private pageLoadingService: PageLoadingService,
     private alertService: AlertService,
+    private shoppingCartService: ShoppingCartService,
 
   ) {
   }
 
   ngOnInit() {
     this.createForm();
+    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
   }
 
   createForm() {

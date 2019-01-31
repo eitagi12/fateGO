@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { PromotionShelve, HomeService, PageLoadingService, PromotionShelveGroup } from 'mychannel-shared-libs';
+import { PromotionShelve, HomeService, PageLoadingService, PromotionShelveGroup, ShoppingCart } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
@@ -12,6 +12,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { ShoppingCartService } from 'src/app/device-order/ais/device-order-ais-new-register/service/shopping-cart.service';
 
 @Component({
   selector: 'app-device-order-ais-new-register-select-package-page',
@@ -25,6 +26,7 @@ export class DeviceOrderAisNewRegisterSelectPackagePageComponent implements OnIn
   priceOption: PriceOption;
   transaction: Transaction;
   promotionShelves: PromotionShelve[];
+  shoppingCart: ShoppingCart;
 
   constructor(
     private router: Router,
@@ -32,13 +34,15 @@ export class DeviceOrderAisNewRegisterSelectPackagePageComponent implements OnIn
     private pageLoadingService: PageLoadingService,
     private priceOptionService: PriceOptionService,
     private transactionService: TransactionService,
-    private http: HttpClient
+    private http: HttpClient,
+    private shoppingCartService: ShoppingCartService,
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
   }
 
   ngOnInit() {
+    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     delete this.transaction.data.mainPackage;
     this.callService();
   }

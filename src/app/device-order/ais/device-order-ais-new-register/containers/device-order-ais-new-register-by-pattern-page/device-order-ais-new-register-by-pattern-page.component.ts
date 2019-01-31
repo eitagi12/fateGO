@@ -1,12 +1,13 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
 import { Transaction } from 'src/app/shared/models/transaction.model';
-import { MobileNoCondition, HomeService, TokenService, PageLoadingService, User } from 'mychannel-shared-libs';
+import { MobileNoCondition, HomeService, TokenService, PageLoadingService, User, ShoppingCart } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
 import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_SELECT_PACKAGE_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_SELECT_NUMBER_PAGE } from '../../constants/route-path.constant';
+import { ShoppingCartService } from 'src/app/device-order/ais/device-order-ais-new-register/service/shopping-cart.service';
 
 @Component({
   selector: 'app-device-order-ais-new-register-by-pattern-page',
@@ -24,6 +25,7 @@ export class DeviceOrderAisNewRegisterByPatternPageComponent implements OnInit, 
   element: any;
   el = [];
   user: User;
+  shoppingCart: ShoppingCart;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -31,7 +33,8 @@ export class DeviceOrderAisNewRegisterByPatternPageComponent implements OnInit, 
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
     private http: HttpClient,
-    public fb: FormBuilder
+    public fb: FormBuilder,
+    private shoppingCartService: ShoppingCartService,
   ) {
     this.transaction = this.transactionService.load();
     this.user = this.tokenService.getUser();
@@ -40,6 +43,9 @@ export class DeviceOrderAisNewRegisterByPatternPageComponent implements OnInit, 
 
   ngOnInit() {
     delete this.transaction.data.simCard;
+    this.shoppingCart = Object.assign(this.shoppingCartService.getShoppingCartData(), {
+      mobileNo: ''
+    });
     this.createForm();
   }
 

@@ -1,10 +1,12 @@
 import { Component, OnInit, EventEmitter, OnDestroy } from '@angular/core';
 import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
 import { Router } from '@angular/router';
-import { HomeService, Utils, AlertService, ImageUtils } from 'mychannel-shared-libs';
+import { HomeService, Utils, AlertService, ImageUtils, ShoppingCart } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_COMPARE_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGREEMENT_SIGN_PAGE } from '../../constants/route-path.constant';
+import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
+import { ShoppingCartService } from 'src/app/device-order/ais/device-order-ais-new-register/service/shopping-cart.service';
 
 @Component({
   selector: 'app-device-order-ais-new-register-face-capture-page',
@@ -13,7 +15,8 @@ import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_COMPARE_PAGE, ROUTE_DEVICE_ORD
 })
 export class DeviceOrderAisNewRegisterFaceCapturePageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_NEW_REGISTER;
+  wizards = WIZARD_DEVICE_ORDER_AIS;
+  shoppingCart: ShoppingCart;
 
   openCamera: boolean;
   transaction: Transaction;
@@ -24,7 +27,8 @@ export class DeviceOrderAisNewRegisterFaceCapturePageComponent implements OnInit
     private homeService: HomeService,
     private transactionService: TransactionService,
     private alertService: AlertService,
-    private utils: Utils
+    private utils: Utils,
+    private shoppingCartService: ShoppingCartService,
   ) {
     this.transaction = this.transactionService.load();
     this.homeService.callback = () => {
@@ -33,6 +37,7 @@ export class DeviceOrderAisNewRegisterFaceCapturePageComponent implements OnInit
   }
 
   ngOnInit() {
+    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.openCamera = !!(this.transaction.data.faceRecognition && this.transaction.data.faceRecognition.imageFaceUser);
   }
 

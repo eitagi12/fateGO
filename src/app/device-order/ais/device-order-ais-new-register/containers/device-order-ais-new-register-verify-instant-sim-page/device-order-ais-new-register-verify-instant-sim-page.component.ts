@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { SimSerial, HomeService, AlertService, PageLoadingService } from 'mychannel-shared-libs';
+import { SimSerial, HomeService, AlertService, PageLoadingService, ShoppingCart } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
@@ -10,6 +10,7 @@ import {
 } from 'src/app/device-order/ais/device-order-ais-new-register/constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { ShoppingCartService } from 'src/app/device-order/ais/device-order-ais-new-register/service/shopping-cart.service';
 
 @Component({
   selector: 'app-device-order-ais-new-register-verify-instant-sim-page',
@@ -23,6 +24,7 @@ export class DeviceOrderAisNewRegisterVerifyInstantSimPageComponent implements O
   transaction: Transaction;
   simSerial: SimSerial;
   simSerialValid: boolean;
+  shoppingCart: ShoppingCart;
 
   constructor(
     private router: Router,
@@ -30,13 +32,19 @@ export class DeviceOrderAisNewRegisterVerifyInstantSimPageComponent implements O
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
     private alertService: AlertService,
-    private http: HttpClient
+    private http: HttpClient,
+    private shoppingCartService: ShoppingCartService,
   ) {
     this.transaction = this.transactionService.load();
   }
 
   ngOnInit() {
     delete this.transaction.data.simCard;
+    console.log('this.transaction', this.transaction);
+
+    this.shoppingCart = Object.assign(this.shoppingCartService.getShoppingCartData(), {
+      mobileNo: ''
+    });
   }
 
   onCheckSimSerial(serial: string): void {
@@ -54,12 +62,16 @@ export class DeviceOrderAisNewRegisterVerifyInstantSimPageComponent implements O
           simSerial: this.simSerial.simSerial,
           persoSim: false
         };
+        this.shoppingCart = Object.assign(this.shoppingCart, {
+          mobileNo: simSerial.mobileNo
+        });
         this.pageLoadingService.closeLoading();
       }).catch((resp: any) => {
         const error = resp.error || [];
         this.pageLoadingService.closeLoading();
         this.alertService.error(error.resultDescription);
       });
+
   }
 
   onBack() {

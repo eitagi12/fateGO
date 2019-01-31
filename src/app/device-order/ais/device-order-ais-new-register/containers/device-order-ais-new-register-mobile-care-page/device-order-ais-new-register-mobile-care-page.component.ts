@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, MobileCare, PageLoadingService, MobileCareGroup } from 'mychannel-shared-libs';
+import { HomeService, MobileCare, PageLoadingService, MobileCareGroup, ShoppingCart } from 'mychannel-shared-libs';
 import {
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE,
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_SUMMARY_PAGE
@@ -11,6 +11,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { ShoppingCartService } from 'src/app/device-order/ais/device-order-ais-new-register/service/shopping-cart.service';
 
 @Component({
   selector: 'app-device-order-ais-new-register-mobile-care-page',
@@ -24,6 +25,7 @@ export class DeviceOrderAisNewRegisterMobileCarePageComponent implements OnInit,
   priceOption: PriceOption;
   transaction: Transaction;
   mobileCare: MobileCare;
+  shoppingCart: ShoppingCart;
 
   constructor(
     private router: Router,
@@ -31,13 +33,15 @@ export class DeviceOrderAisNewRegisterMobileCarePageComponent implements OnInit,
     private priceOptionService: PriceOptionService,
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
-    private http: HttpClient
+    private http: HttpClient,
+    private shoppingCartService: ShoppingCartService,
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
   }
 
   ngOnInit() {
+    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     delete this.transaction.data.mobileCarePackage;
     this.callService();
   }

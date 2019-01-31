@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, CustomerInfo } from 'mychannel-shared-libs';
+import { HomeService, CustomerInfo, ShoppingCart } from 'mychannel-shared-libs';
 import {
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_SELECT_NUMBER_PAGE,
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE
@@ -8,6 +8,7 @@ import {
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { ShoppingCartService } from 'src/app/device-order/ais/device-order-ais-new-register/service/shopping-cart.service';
 
 @Component({
   selector: 'app-device-order-ais-new-register-customer-info-page',
@@ -20,17 +21,20 @@ export class DeviceOrderAisNewRegisterCustomerInfoPageComponent implements OnIni
 
   transaction: Transaction;
   customerInfo: CustomerInfo;
+  shoppingCart: ShoppingCart;
 
   constructor(
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
+    private shoppingCartService: ShoppingCartService,
   ) {
     this.transaction = this.transactionService.load();
   }
 
   ngOnInit() {
     const customer: Customer = this.transaction.data.customer;
+    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.customerInfo = {
       titleName: customer.titleName,
       firstName: customer.firstName,

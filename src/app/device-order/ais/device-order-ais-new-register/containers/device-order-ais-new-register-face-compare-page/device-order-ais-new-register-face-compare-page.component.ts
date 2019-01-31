@@ -1,16 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
 import { Router } from '@angular/router';
-import { HomeService, PageLoadingService, CaptureAndSign, TokenService } from 'mychannel-shared-libs';
-import {
-  ROUTE_ORDER_NEW_REGISTER_FACE_CAPTURE_PAGE,
-  ROUTE_ORDER_NEW_REGISTER_SELECT_NUMBER_PAGE,
-  ROUTE_ORDER_NEW_REGISTER_FACE_CONFIRM_PAGE
-} from 'src/app/order/order-new-register/constants/route-path.constant';
+import { HomeService, PageLoadingService, CaptureAndSign, TokenService, ShoppingCart } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionAction, Customer, FaceRecognition } from 'src/app/shared/models/transaction.model';
 import { HttpClient } from '@angular/common/http';
 import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_CONFIRM_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_CAPTURE_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGGREGATE_PAGE } from '../../constants/route-path.constant';
+import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
+import { ShoppingCartService } from 'src/app/device-order/ais/device-order-ais-new-register/service/shopping-cart.service';
 
 @Component({
   selector: 'app-device-order-ais-new-register-face-compare-page',
@@ -19,8 +15,9 @@ import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_CONFIRM_PAGE, ROUTE_DEVICE_ORD
 })
 export class DeviceOrderAisNewRegisterFaceComparePageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_NEW_REGISTER;
+  wizards = WIZARD_DEVICE_ORDER_AIS;
   captureAndSign: CaptureAndSign;
+  shoppingCart: ShoppingCart;
 
   transaction: Transaction;
   constructor(
@@ -29,7 +26,8 @@ export class DeviceOrderAisNewRegisterFaceComparePageComponent implements OnInit
     private transactionService: TransactionService,
     private http: HttpClient,
     private pageLoadingService: PageLoadingService,
-    private tokenService: TokenService,
+    private shoppingCartService: ShoppingCartService,
+
 
 
   ) {
@@ -37,6 +35,7 @@ export class DeviceOrderAisNewRegisterFaceComparePageComponent implements OnInit
   }
 
   ngOnInit() {
+    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     // const faceImage = this.faceRecognitionService.getFaceImage();
   }
 
@@ -54,7 +53,6 @@ export class DeviceOrderAisNewRegisterFaceComparePageComponent implements OnInit
       selfieBase64Imgs: faceRecognition.imageFaceUser
     }).toPromise().then((resp: any) => {
       this.transaction.data.faceRecognition.kyc = !resp.data.match;
-      console.log('resp.data.match', resp.data.match);
       if (resp.data.match) {
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGGREGATE_PAGE]);
       } else {

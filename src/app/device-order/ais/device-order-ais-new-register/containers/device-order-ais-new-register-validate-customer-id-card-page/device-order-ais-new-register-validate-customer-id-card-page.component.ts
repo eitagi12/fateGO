@@ -49,7 +49,6 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
 
   ngOnInit() {
     this.createTransaction();
-    console.log('priceOption', this.priceOption);
   }
 
   onError(valid: boolean) {

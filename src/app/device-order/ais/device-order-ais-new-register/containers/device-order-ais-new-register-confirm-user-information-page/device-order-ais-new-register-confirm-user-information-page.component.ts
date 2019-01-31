@@ -1,12 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Transaction } from 'src/app/shared/models/transaction.model';
-import { ConfirmCustomerInfo, BillingInfo, BillingSystemType, MailBillingInfo, TelNoBillingInfo, Utils, AlertService } from 'mychannel-shared-libs';
+import { ConfirmCustomerInfo, BillingInfo, BillingSystemType, MailBillingInfo, TelNoBillingInfo, Utils, AlertService, ShoppingCart } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HomeService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
 import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_EDIT_BILLING_ADDRESS_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_MOBILE_CARE_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_SELECT_PACKAGE_PAGE } from '../../constants/route-path.constant';
+import { ShoppingCartService } from 'src/app/device-order/ais/device-order-ais-new-register/service/shopping-cart.service';
 
 @Component({
   selector: 'app-device-order-ais-new-register-confirm-user-information-page',
@@ -21,6 +22,7 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
   billingInfo: BillingInfo;
   mailBillingInfo: MailBillingInfo;
   telNoBillingInfo: TelNoBillingInfo;
+  shoppingCart: ShoppingCart;
 
   eBill: boolean;
   isTelNoBillingValid: boolean;
@@ -33,6 +35,7 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
     private alertService: AlertService,
     private utils: Utils,
     private http: HttpClient,
+    private shoppingCartService: ShoppingCartService,
   ) {
     this.transaction = this.transactionService.load();
 
@@ -43,6 +46,7 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
   }
 
   ngOnInit() {
+    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     const customer = this.transaction.data.customer;
     const mainPackage = this.transaction.data.mainPackage;
     const simCard = this.transaction.data.simCard;

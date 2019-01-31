@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService } from 'mychannel-shared-libs';
+import { HomeService, ShoppingCart } from 'mychannel-shared-libs';
 import { ReceiptInfo } from 'mychannel-shared-libs/lib/component/receipt-info/receipt-info.component';
 import {
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VALIDATE_CUSTOMER_PAGE,
@@ -10,6 +10,9 @@ import {
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { TransactionAction, Transaction } from 'src/app/shared/models/transaction.model';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { ShoppingCartService } from 'src/app/device-order/ais/device-order-ais-new-register/service/shopping-cart.service';
 
 @Component({
   selector: 'app-device-order-ais-new-register-payment-detail-page',
@@ -19,7 +22,8 @@ import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.c
 export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnInit {
 
   wizards = WIZARD_DEVICE_ORDER_AIS;
-
+  shoppingCart: ShoppingCart;
+  priceOption: PriceOption;
   transaction: Transaction;
   receiptInfo: ReceiptInfo = {
     taxId: '',
@@ -31,14 +35,14 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
   constructor(
     private router: Router,
     private homeService: HomeService,
-    private transactionService: TransactionService
+    private transactionService: TransactionService,
+    private shoppingCartService: ShoppingCartService,
   ) {
     this.transaction = this.transactionService.load();
   }
 
   ngOnInit() {
-
-
+    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
   }
 
   onBack() {

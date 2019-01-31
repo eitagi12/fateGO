@@ -8,17 +8,18 @@
     </div>
   </mc-header>
   <div class="mc-flex-wrap">
-    <div class="container-fluid">
-      <div class="card my-3">
-        <div class="card">
-          <div class="card-header bg-transparent text-center">คำขอใช้บริการโทรศัพท์เคลื่อนที่</div>
-          <div class="card-body">
-            <div class="img-eapplication">
-              <img class="img-fluid" *ngIf="getDataBase64Eapp" [src]="getDataBase64Eapp" />
-            </div>
+    <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
+    <div class="mb-3 mt-3">
+      <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
+      <div class="card">
+        <div class="card-header bg-transparent text-center">คำขอใช้บริการโทรศัพท์เคลื่อนที่</div>
+        <div class="card-body">
+          <div class="img-eapplication">
+            <img class="img-fluid" *ngIf="getDataBase64Eapp" [src]="getDataBase64Eapp" />
           </div>
         </div>
       </div>
+
     </div>
   </div>
   <mc-footer>

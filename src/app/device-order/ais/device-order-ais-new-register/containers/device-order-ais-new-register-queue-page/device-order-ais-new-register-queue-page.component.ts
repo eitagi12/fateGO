@@ -8,7 +8,7 @@ import {
 import { Transaction, TransactionType } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
-import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_RESULT_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_RESULT_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGGREGATE_PAGE } from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-new-register-queue-page',
@@ -46,7 +46,7 @@ export class DeviceOrderAisNewRegisterQueuePageComponent implements OnInit, OnDe
   }
 
   onBack() {
-    this.homeService.goToHome();
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGGREGATE_PAGE]);
   }
 
   onNext() {

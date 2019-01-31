@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { Router } from '@angular/router';
-import { HomeService } from 'mychannel-shared-libs';
+import { HomeService, ShoppingCart } from 'mychannel-shared-libs';
 import {
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGREEMENT_PAGE,
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_MOBILE_CARE_PAGE,
@@ -12,6 +12,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction } from 'src/app/shared/models/transaction.model';
+import { ShoppingCartService } from 'src/app/device-order/ais/device-order-ais-new-register/service/shopping-cart.service';
 
 @Component({
   selector: 'app-device-order-ais-new-register-summary-page',
@@ -24,18 +25,21 @@ export class DeviceOrderAisNewRegisterSummaryPageComponent implements OnInit {
 
   priceOption: PriceOption;
   transaction: Transaction;
+  shoppingCart: ShoppingCart;
 
   constructor(
     private router: Router,
     private homeService: HomeService,
     private priceOptionService: PriceOptionService,
     private transactionService: TransactionService,
+    private shoppingCartService: ShoppingCartService,
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
   }
 
   ngOnInit() {
+    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
   }
 
   onBack() {
