@@ -44,7 +44,7 @@
                 <img src="assets/images/icon/icon-dv.png" class="icon-dv m-2">
               </a>
               <a href="#" (click)="getProductSpecification(params?.brand, params?.model); $event.preventDefault();">
-                <img src="assets/images/icon/icon-page.png" class="icon-dv m-2">
+                <img src="assets/images/icon/spec_mobile_phone.png" class="icon-dv m-2">
               </a>
             </div>
             <!-- color -->
@@ -86,7 +86,7 @@
           </span>
         </div>
         <mc-campaign-slider [campaignSliders]="campaignSliders" (selected)="onCampaignSelected($event)"
-          (promotionShelve)="onPromotionShelve($event)"></mc-campaign-slider>
+          (promotionShelve)="onPromotionShelve($event)" (installmentList)="onInstallmentList($event)"></mc-campaign-slider>
       </div>
       <div class="not-found" *ngIf="campaignSliders?.length === 0">
         ไม่พบข้อมูลที่ท่านเลือก
@@ -148,6 +148,24 @@
                   <img src="assets/images/icon/sales_portal_green_phone.png" class="icon-trade">
                   <span>แพ็กเกจเริ่มต้น {{ +privilege?.minimumPackagePrice || 0 | number }} บาท/เดือน</span>
                   <!-- <span>แพ็คเกจเสริม {{ privilege?.minimumPackagePrice * 1.07 | number }} บาท ( รวมVAT )</span> -->
+                </div>
+
+                <div *ngIf="priceOption.minimumPackagePrice" class="row collapse align-middle detail-container" style="cursor: pointer">
+                  <div class="columns small-2">
+                    <img class="icon" src="assets/images/icon/sales_portal_green_phone.png">
+                  </div>
+                  <div class="columns small-10" (click)="onSelectPackage(priceOption)">
+                    <label *ngIf="(filterCustomerGroup$ | async)?.flowId !=='102' && priceOption.minimumPackagePrice !== 0">
+                      <u>
+                        {{ MINIMUM_PACKAGE }} {{ priceOption.minimumPackagePrice | number }} {{ BATH }}
+                      </u>
+                    </label>
+                    <label *ngIf="(filterCustomerGroup$ | async)?.flowId ==='102' && priceOption.minimumPackagePrice !== 0">
+                      <u>
+                        แพ็คเกจเสริม {{ (priceOption.minimumPackagePrice*1.07) | number }} {{ BATH }} ( รวมVAT )
+                      </u>
+                    </label>
+                  </div>
                 </div>
               </div>
             </div>
@@ -254,6 +272,22 @@
   </div>
 </ng-template>
 
+
+<ng-template #selectPackageTemplate>
+  <div class="modal-header bg-primary">
+    <h5 class="modal-title text-white">แพ็กเกจที่ร่วมรายการ</h5>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="container-fluid">
+    <div class="row bg-spac pt-2 pb-2">
+      <mc-promotion-shelve [view]="true" class="select-package-template" [promotionShelves]="promotionShelves"></mc-promotion-shelve>
+    </div>
+  </div>
+</ng-template>
+
+
 <ng-template #installmentTemplate>
   <div class="modal-header bg-primary">
     <h5 class="modal-title text-white">บัตรที่ร่วมรายการผ่อนชำระ</h5>
@@ -261,4 +295,58 @@
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
+  <div class="container-fluid">
+    <ng-container [ngSwitch]="true">
+      <div class="row bg-spac pt-2 pb-2 background-color">
+        <!-- isShowAllAdvancePay False -->
+        <ng-container *ngSwitchCase="!priceWithBankInstallmentAndAdvancePayment.isShowAllAdvancePay">
+          <div class="col-12 text-right">
+            ผ่อนชำระค่าเครื่อง (บาท / เดือน)
+          </div>
+        </ng-container>
+        <!-- isShowAllAdvancePay True and fromTrade True -->
+        <ng-container *ngSwitchCase="priceWithBankInstallmentAndAdvancePayment.isShowAllAdvancePay && priceWithBankInstallmentAndAdvancePayment.fromTrade">
+          <div class="col-6 ">
+            ผ่อนชำระค่าเครื่องพร้อมค่าแพ็กเกจล่วงหน้า (บาท / เดือน)
+          </div>
+        </ng-container>
+        <ng-container *ngSwitchDefault>
+          <div class="col-5">
+          </div>
+          <div class="col-4">
+            ผ่อนชำระค่าเครื่อง (บาท / เดือน)
+          </div>
+          <div class="col-3">
+            ผ่อนชำระค่าเครื่องพร้อมค่าแพ็กเกจล่วงหน้า (บาท / เดือน)
+          </div>
+        </ng-container>
+
+      </div>
+      <div class="row bg-spac pt-2 pb-2 justify-content-md-center border-buttom" *ngFor="let data of priceWithBankInstallmentAndAdvancePayment.data">
+        <div class="col-5">
+          <div class="row text-center">
+            <div class="col-12">
+              {{data.percentage}}% {{data.month}} เดือน
+            </div>
+            <div class="col-12">
+              <div class="row">
+                <div class="col-4" *ngFor="let bank of data.banks">
+                  <img class="img-fluid img-thumbnail" [src]="bank.imageUrl" onError="this.src='./assets/images/icon/img-placeholder.png';">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-4 align-self-center">
+          {{data.month / 2}}
+        </div>
+        <div class="col-3 align-self-center">
+          ผ่อนชำระค่าเครื่อง พร้อมค่าแพ็กเกจล่วงหน้า (บาท/เดือน)
+        </div>
+      </div>
+    </ng-container>
+  </div>
+  <button type="button" class="btn btn-primary" aria-label="Close" (click)="modalRef.hide()">
+    CLOSE
+  </button>
 </ng-template>

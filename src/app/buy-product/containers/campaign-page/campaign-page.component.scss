@@ -81,6 +81,10 @@
     }
 }
 
+.select-package-template {
+    width: 100%;
+}
+
 /* trades */
 .icon-trade {
     width: 16px;
@@ -91,4 +95,17 @@
     .icon-trade {
         margin-left: 0;
     }
+}
+
+.background-color {
+    background-color: #8dc63f;
+}
+
+.border-buttom {
+    border-bottom: 1px solid #989898;
+}
+
+:host /deep/  .modal-dialog {
+    max-width: 800px;
+    margin: 1.75rem auto;
 }
