@@ -28,12 +28,13 @@ export class SummaryTradeInComponent implements OnInit {
   }
 
   summaryTradein() {
-    this.tradeinNo = this.tradeInTransaction.data.tradeIn.tradeInNo;
-    this.brand = this.tradeInTransaction.data.tradeIn.brand;
-    this.modelTradein = this.tradeInTransaction.data.tradeIn.model;
-    this.tradeinGrade = this.tradeInTransaction.data.tradeIn.tradeInGrade;
-    this.imeiTradein = this.tradeInTransaction.data.tradeIn.serialNo;
-    this.tradeinPrice = this.tradeInTransaction.data.tradeIn.tradeInPrice;
+    const tradeInTransaction = this.tradeInTransaction.data.tradeIn;
+    this.tradeinNo = tradeInTransaction.tradeInNo;
+    this.brand = tradeInTransaction.brand;
+    this.modelTradein = tradeInTransaction.model;
+    this.tradeinGrade = tradeInTransaction.tradeInGrade;
+    this.imeiTradein = tradeInTransaction.serialNo;
+    this.tradeinPrice = tradeInTransaction.tradeInPrice;
   }
 
   gotoMainMenu() {
