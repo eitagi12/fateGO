@@ -1,7 +1,7 @@
 import { Component, OnInit, TemplateRef, ViewChild, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { BsModalService, BsModalRef, TabsetComponent } from 'ngx-bootstrap';
-import { forkJoin } from 'rxjs';
+import { forkJoin, concat } from 'rxjs';
 import { SalesService, TokenService, HomeService, User, CampaignSliderInstallment, CampaignSlider, PromotionShelve, PageLoadingService, PromotionShelveGroup } from 'mychannel-shared-libs';
 import { PRODUCT_TYPE, PRODUCT_SUB_TYPE, SUB_STOCK_DESTINATION, PRODUCT_HANDSET_BUNDLE } from 'src/app/buy-product/constants/products.constants';
 import { ROUTE_BUY_PRODUCT_PRODUCT_PAGE } from 'src/app/buy-product/constants/route-path.constant';
@@ -51,6 +51,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     tabs: any[];
     campaignSliders: CampaignSlider[];
     priceOptions: any;
+    priceOptionsData: any;
 
     promotionShelves: PromotionShelve[];
 
@@ -234,6 +235,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             location: user.locationCode
         }).then((resp: any) => {
             this.priceOptions = this.filterPriceOptions(resp.data.priceOptions || []);
+            this.priceOptionService.save(this.priceOptions);
             // init tab
             this.initialTabs(this.priceOptions);
         });
@@ -326,6 +328,8 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         });
 
 
+        this.priceOptions = this.priceOptionService.load();
+
         this.campaignSliders = this.priceOptions
             .filter((campaign: any) => {
                 // filter campaign by tab
@@ -354,10 +358,11 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                     campaignSlider.mainPackagePrice = +campaign.minimumPackagePrice;
                 }
 
-                // const privilegeByCustomerGroup = campaignSlider.value.privileges.filter((privilege) => {
-                //     return privilege.customerGroups.find((privilegeGroup: any) => privilegeGroup.code === customerGroup.code);
-                // });
-                // campaignSlider.value.privileges = privilegeByCustomerGroup;
+                const privilegeByCustomerGroup = campaignSlider.value.privileges.filter((privilege) => {
+                    return privilege.customerGroups.find((privilegeGroup: any) => privilegeGroup.code === customerGroup.code);
+                });
+
+                campaignSlider.value.privileges = privilegeByCustomerGroup;
 
                 return campaignSlider;
             }).sort((a: any, b: any) => a.price - b.price);
@@ -704,7 +709,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
         // คำนวนเปอร์เซ็น
         price = installmentPercentage === 0 ? priceAmount / installmentMonth :
-        (priceAmount + (installmentMonth * (priceAmount * Math.ceil(installmentPercentage) / 100))) / installmentMonth;
+            (priceAmount + (installmentMonth * (priceAmount * Math.ceil(installmentPercentage) / 100))) / installmentMonth;
         return Math.round(price);
     }
 

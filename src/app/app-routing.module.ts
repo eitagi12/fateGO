@@ -8,11 +8,6 @@ const routes: Routes = [
     path: '', redirectTo: 'main-menu', pathMatch: 'full'
   },
   {
-    path: 'main-menu',
-    loadChildren: 'src/app/dashboard/dashboard.module#DashboardModule',
-    canActivate: [AuthGuard]
-  },
-  {
     path: 'dashboard',
     loadChildren: 'src/app/dashboard/dashboard.module#DashboardModule',
     canActivate: [AuthGuard]
