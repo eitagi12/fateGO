@@ -36,7 +36,7 @@ export class AppComponent {
     this.homeService.callback = () => {
       this.router.navigate(['/']);
     };
-    this.supportOptionSelect();
+   // this.supportOptionSelect();
   }
 
   initails() {

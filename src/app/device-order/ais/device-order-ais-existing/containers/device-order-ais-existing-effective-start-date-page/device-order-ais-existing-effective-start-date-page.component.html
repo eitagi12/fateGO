@@ -1,0 +1,59 @@
+<div class="mc-flex">
+  <mc-header title="ลูกค้าปัจจุบัน">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+
+  <div class="mc-flex-wrap">
+    <div class="mt-3 mb-3">
+      <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
+
+      <div class="container-fluid">
+        <div class="bg-white border">
+          <div class="container pt-1 pb-1">
+            Package : แพ็กเกจ 4G Hot Deal UL 1099 บ.
+          </div>
+          <div class="bg-light-blue">
+            <div class="container text-white pt-3 pb-3 ">
+              เลือกวันที่มีผลการใช้งาน
+            </div>
+          </div>
+          <div class="container pt-3 pb-3">
+            <input type="radio" id="nextBill" name="bill">
+            <label for="nextBill" class="pt-2 float-left"></label>
+            <div  class="ml-3">
+              รอบบิลถัดไป <br>
+              พร้อมใช้งานวันที่ <span class="text-light-green">20/02/2019</span>
+            </div>
+          </div>
+          <div class="container pt-3 pb-3 border-top">
+            <input type="radio" id="nextBill2" name="bill">
+            <label for="nextBill2" class="pt-2 float-left"></label>
+            <div  class="ml-3">
+              วันถัดไป <br>
+              พร้อมใช้งานวันที่ <span class="text-light-green">20/02/2019</span>
+            </div>
+          </div>
+          <div class="container pt-3 pb-3 border-top">
+            <input type="radio" id="nextBill3" name="bill">
+            <label for="nextBill3" class="pt-2 float-left"></label>
+            <div  class="ml-3">
+              มีผลทันที <br>
+              พร้อมใช้งานได้ทันที <span class="text-light-green">หลังจากได้ SMS ยืนยัน</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <mc-footer>
+    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button class="btn btn-success" (click)="onNext()">NEXT</button>
+  </mc-footer>
+</div>

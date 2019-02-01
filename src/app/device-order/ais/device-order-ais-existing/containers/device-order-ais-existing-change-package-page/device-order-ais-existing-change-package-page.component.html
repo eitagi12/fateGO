@@ -1,0 +1,31 @@
+<div class="mc-flex">
+  <mc-header title="ลูกค้าปัจจุบัน">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+
+  <div class="mc-flex-wrap">
+    <div class="mt-3 mb-3">
+      <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
+      <div class="container-fluid">
+        <div class="card mb-3">
+          <h5 class="card-header bg-light-green text-white">ตรวจสอบสิทธิ์</h5>
+          <div class="card-body text-center">
+            <img class="imagecorrect mb-3" src="data:image/png;base64,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">
+            <p>เบอร์ 0910011413 ใช้แพ็กเกจหลักต่ำกว่า 0 บาท <br>
+              ยืนยันเปลี่ยนแพ็กเกจใหม่ เพื่อรับสิทธิ์ซื้อเครื่องราคาพิเศษ
+            </p>
+            <button class="btn btn-secondary btn-lg" (click)="onHome()">CANCEL</button>
+            <button class="btn btn-success btn-lg" (click)="onNext()">CONFIRM</button>
+            <p class="mt-3"><u class="text-light-green" (click)="onBack()">เปลี่ยนเบอร์ทำรายการ</u></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+</div>
