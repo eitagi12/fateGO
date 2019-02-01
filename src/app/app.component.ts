@@ -34,7 +34,7 @@ export class AppComponent {
     this.errorHandler();
     this.pageActivityHandler();
     this.homeService.callback = () => {
-      window.location.href = '/smart-shop';
+      this.router.navigate(['/']);
     };
     this.supportOptionSelect();
   }
@@ -65,11 +65,11 @@ export class AppComponent {
         }
         redirectTo += `${key}=${observer[key]}`;
       });
-      if (!this.isDeveloperMode()) {
+      // if (!this.isDeveloperMode()) {
         console.error('Error ', observer);
-      } else {
-        window.location.href = redirectTo;
-      }
+      // } else {
+      //   window.location.href = redirectTo;
+      // }
     });
   }
 

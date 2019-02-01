@@ -207,6 +207,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     }
 
     onProductStockSelected(product) {
+        this.tabs = null;
         if (this.priceOption.productStock &&
             this.priceOption.productStock.colorName !== product.colorName) {
             this.priceOption.campaign = null;
@@ -309,10 +310,23 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     }
 
     onCustomerGroupSelected(customerGroup: any) {
+        console.log('this.priceOptions', this.priceOptions);
         if (!this.priceOptions) {
             this.campaignSliders = [];
             return;
         }
+
+        // set active tab
+        this.tabs.map((val) => {
+            if (customerGroup.code === val.code) {
+                val.active = true;
+                return val;
+            } else {
+                val.active = false;
+                return val;
+            }
+        });
+
 
         this.campaignSliders = this.priceOptions
             .filter((campaign: any) => {
@@ -342,8 +356,14 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                     campaignSlider.mainPackagePrice = +campaign.minimumPackagePrice;
                 }
 
+                // const privilegeByCustomerGroup = campaignSlider.value.privileges.filter((privilege) => {
+                //     return privilege.customerGroups.find((privilegeGroup: any) => privilegeGroup.code === customerGroup.code);
+                // });
+                // campaignSlider.value.privileges = privilegeByCustomerGroup;
+
                 return campaignSlider;
             }).sort((a: any, b: any) => a.price - b.price);
+
     }
 
     onCampaignSelected(campaign: any) {
@@ -456,20 +476,20 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                             const maximumPackagePrice = +campaign.maximumPackagePrice;
 
                             // reference object
-                            promotion.items = data.filter((promotion: any) => {
-                                return promotion.customAttributes.chargeType === 'Post-paid' &&
-                                    minimumPackagePrice <= +promotion.customAttributes.priceExclVat &&
-                                    (maximumPackagePrice > 0 ? maximumPackagePrice >= +promotion.customAttributes.priceExclVat : true);
+                            promotion.items = data.filter((promotions: any) => {
+                                return promotions.customAttributes.chargeType === 'Post-paid' &&
+                                    minimumPackagePrice <= +promotions.customAttributes.priceExclVat &&
+                                    (maximumPackagePrice > 0 ? maximumPackagePrice >= +promotions.customAttributes.priceExclVat : true);
                             })
                                 .sort((a, b) => {
                                     return +a.customAttributes.priceInclVat !== +b.customAttributes.priceInclVat ?
                                         +a.customAttributes.priceInclVat < +b.customAttributes.priceInclVat ? -1 : 1 : 0;
-                                }).map((promotion: any) => {
+                                }).map((promotions: any) => {
                                     return { // item
-                                        id: promotion.id,
-                                        title: promotion.title,
-                                        detail: promotion.detailTH,
-                                        value: promotion
+                                        id: promotions.id,
+                                        title: promotions.title,
+                                        detail: promotions.detailTH,
+                                        value: promotions
                                     };
                                 });
                         });
@@ -497,10 +517,10 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     /* privilege */
     onTradeSelected(trade: any) {
         this.priceOption.trade = trade;
-
+        this.pageLoadingService.openLoading();
         this.addToCartService.reserveStock().then((nextUrl) => {
             console.log('Next url => ', nextUrl);
-            this.router.navigate([nextUrl]);
+            this.router.navigate([nextUrl]).then(() => this.pageLoadingService.closeLoading());
         });
     }
 
@@ -688,8 +708,9 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
         }
 
-        //คำนวนเปอร์เซ็น
-        price = installmentPercentage === 0 ? priceAmount / installmentMonth : (priceAmount + (installmentMonth * (priceAmount * Math.ceil(installmentPercentage) / 100))) / installmentMonth
+        // คำนวนเปอร์เซ็น
+        price = installmentPercentage === 0 ? priceAmount / installmentMonth :
+        (priceAmount + (installmentMonth * (priceAmount * Math.ceil(installmentPercentage) / 100))) / installmentMonth;
         return Math.round(price);
     }
 

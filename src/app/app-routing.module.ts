@@ -5,13 +5,18 @@ import { ErrorPageComponent } from './containers/error-page/error-page.component
 
 const routes: Routes = [
   {
-    path: '', redirectTo: 'dashboard', pathMatch: 'full'
+    path: '', redirectTo: 'main-menu', pathMatch: 'full'
   },
   {
-    path: 'dashboard',
+    path: 'main-menu',
     loadChildren: 'src/app/dashboard/dashboard.module#DashboardModule',
     canActivate: [AuthGuard]
   },
+  // {
+  //   path: 'dashboard',
+  //   loadChildren: 'src/app/dashboard/dashboard.module#DashboardModule',
+  //   canActivate: [AuthGuard]
+  // },
   {
     path: 'buy-product',
     loadChildren: 'src/app/buy-product/buy-product.module#BuyProductModule',

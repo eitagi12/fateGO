@@ -63,13 +63,14 @@ export class ProductPageComponent implements OnInit {
       data.products.map((product: any) => {
         const normalPrice = product.normalPrice || {};
         const promotionPrice = product.promotionPrice || {};
-        const subproducts = product.subProducts || [];
+        let subproducts = product.subProducts || [];
         const ribbonType = (product.itemType || '').toLowerCase();
         const ribbon = ['hot', 'new'].find((rib: string) => rib === ribbonType);
         const productStock: ProductStock = {
           ribbon: ribbon,
           thumbnail: product.imageUrl,
-          name: `${product.name} ${product.productSubtype === PRODUCT_HANDSET_BUNDLE ? '(แถมชิม)' : ''}`,
+          // name: `${product.name} ${product.productSubtype === PRODUCT_HANDSET_BUNDLE ? '(แถมชิม)' : ''}`,
+          name: product.name,
           quantity: 0,
           minNormalPrice: this.calMinPrice(subproducts, 'normalPrice') || +normalPrice.min || 0,
           maxNormalPrice: this.calMaxPrice(subproducts, 'normalPrice') || +normalPrice.max || 0,
@@ -77,6 +78,19 @@ export class ProductPageComponent implements OnInit {
           maxPromotionPrice: this.calMaxPrice(subproducts, 'promotionPrice') || +promotionPrice.max || 0,
           stocks: []
         };
+
+        if (!subproducts.length) {
+          // not sub product
+          subproducts = [{
+            name: product.name,
+            model: product.model,
+            color: product.color,
+            imageUrl: product.imageUrl,
+            normalPrice: product.normalPrice,
+            promotionPrice: product.promotionPrice
+          }];
+        }
+
         subproducts.forEach((sub: any) => {
           this.salesService.productStock({
             locationCodeSource: user.locationCode,
@@ -98,7 +112,8 @@ export class ProductPageComponent implements OnInit {
             productStock.quantity += quantity;
 
             productStock.stocks.push({
-              commercialName: `${sub.name} ${product.productSubtype === PRODUCT_HANDSET_BUNDLE ? '(แถมชิม)' : ''}`,
+              // commercialName: `${sub.name} ${product.productSubtype === PRODUCT_HANDSET_BUNDLE ? '(แถมชิม)' : ''}`,
+              commercialName: sub.name,
               brand: brand,
               model: sub.model,
               productType: product.productType || '',
@@ -109,13 +124,13 @@ export class ProductPageComponent implements OnInit {
               minPromotionPrice: +subPromotionPrice.min || 0,
               maxPromotionPrice: +subPromotionPrice.max || 0
             });
-
           });
-
         });
+
         this.productStocks.push(productStock);
       });
     });
+
 
   }
 

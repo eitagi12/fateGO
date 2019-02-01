@@ -1,5 +1,5 @@
 <div class="mc-flex">
-  <mc-header title="SHOPPING">
+  <mc-header title="เครื่อง">
     <div class="header-icon-left">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
@@ -54,13 +54,13 @@
                   เลือกสี :
                 </div>
                 <div class="col-9 col-sm-10">
-                  <div class="row">
-                    <div class="col-4 col-sm-2 col-lg-1 text-center" *ngFor="let product of productDetail?.products">
-                      <a href="#" class="circle-qty" [ngClass]="{ 'active': product?.colorName && product?.colorName === priceOption?.productStock?.colorName }"
-                        [ngStyle]="{ backgroundColor: '#' + product?.colorCode }" (click)="onProductStockSelected(product); $event.preventDefault();">
-                        {{ (product?.stock?.qty || 0) | number }}
-                      </a>
+                  <div class="color-group" *ngFor="let product of productDetail?.products">
+                    <div class="block-color check-outer" (click)=" product?.stock?.qty > 0 ? onProductStockSelected(product) : null  ; $event.preventDefault();"
+                      [ngClass]="{ 'active': product?.colorName && product?.colorName === priceOption?.productStock?.colorName, 'bg-blue-grey' : product?.stock?.qty < 1 }">
+                      <span class="check circle-qty " [ngStyle]="{ backgroundColor: '#' + product?.colorCode }"></span>
+                      <span class="color-name"> {{product?.colorName || '&nbsp;'}}</span>
                     </div>
+                    <div class="text-pink text-center"> {{ product?.stock?.qty > 0 ? '' : 'สินค้าหมดชั่วคราว' }}</div>
                   </div>
                 </div>
               </div>
@@ -73,10 +73,16 @@
     </div>
 
     <!-- campaigns -->
-    <div *ngIf="priceOption?.campaign?.length <= 0">
-      <tabset [justified]="true">
-        <tab *ngFor="let tab of tabs" [heading]="tab.name" [active]="tab.active" (select)="onCustomerGroupSelected(tab)"></tab>
+    <div class="bg-white price" *ngIf="priceOption?.campaign?.length <= 0 && tabs">
+        <tabset [justified]="true">
+          <tab *ngFor="let tab of tabs" [active]="tab.active" (select)="onCustomerGroupSelected(tab)">
+          <ng-template tabHeading>
+              <div class="{{tab.code}}" [ngClass]="{ 'active' : tab.active }"><b>{{ tab.name }}</b></div>
+          </ng-template>
+        </tab>
+        <!-- <tab *ngFor="let tab of tabs" [heading]="tab.name" [active]="tab.active" (select)="onCustomerGroupSelected(tab)"></tab> -->
       </tabset>
+     
       <div class="bg-white pb-3" *ngIf="campaignSliders?.length > 0">
         <div class="p-3">
           <img class="icon" src="assets/images/icon/sale_portal_pink_circle_megaphone.png">
@@ -93,7 +99,7 @@
       </div>
     </div>
     <!-- trades -->
-    <div *ngIf="priceOption?.campaign?.campaignName">
+    <div *ngIf="priceOption?.campaign?.campaignName && tabs" >
       <div class="container-fluid">
         <div class="row bg-white shadow-sm py-3 mb-2">
           <div class="col-12">

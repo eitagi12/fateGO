@@ -1,11 +1,23 @@
-.menu-flex {
-    display: flex;
-    flex-direction: column;
-    min-height: 100vh;
-    background: #b2d234;
+.background{
+    background-color: #FFFFFF;
 }
 
-.media {
-    border: solid 1px #fff;
-    flex: 5;
+.font-size{
+    font-size: 2em;
+}
+
+.title{
+    padding-top: 1em;
+    font-size: 3em;
+}
+
+a:link{
+    text-decoration:none;
+    color: #000000;
+}
+a:hover {
+    color: #000000;
+}
+a:visited {
+    color: #000000;
 }
