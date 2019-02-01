@@ -15,7 +15,7 @@ export class PrivilegeToTradeSliderPipe implements PipeTransform {
         ? trade.banks.filter(bank => bank.remark !== '' && bank.remark !== null && bank.remark) : [];
       return {
         description: (banks ? 'ผ่อนชำระค่าเครื่อง' : 'ชำระเต็มจำนวน')
-          + (trade.advancePay && trade.advancePay.installmentFlag === 'Y' ? ' และแพ็กเกจค่าบริการล่วงหน้า' : ''),
+          + (banks && trade.advancePay && trade.advancePay.installmentFlag === 'Y' ? ' และแพ็กเกจค่าบริการล่วงหน้า' : ''),
         installmentType: banks ? 'wallet' : 'bath',
         isCashBack: filterIsCashBack.length > 0 || false,
         value: trade
