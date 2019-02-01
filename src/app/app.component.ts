@@ -50,11 +50,7 @@ export class AppComponent {
 
   hoemeHandler() {
     this.homeService.callback = () => {
-      if (this.tokenService.getUser().channelType !== ChannelType.SMART_ORDER) {
-        window.location.href = '/';
-        return;
-      }
-      if (this.isDeveloperMode()) {
+      if (environment.name === 'LOCAL') {
         window.location.href = '/main-menu';
       } else {
         window.location.href = '/smart-shop/main-menu';

@@ -1,13 +1,17 @@
-import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import { Transaction } from 'src/app/shared/models/transaction.model';
-import { MobileNoCondition, HomeService, TokenService, PageLoadingService, User, ShoppingCart } from 'mychannel-shared-libs';
+import {
+  MobileNoCondition, HomeService, TokenService, PageLoadingService, ShoppingCart, MobileNo, User, AlertService
+} from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { HttpClient } from '@angular/common/http';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
-import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_SELECT_PACKAGE_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_SELECT_NUMBER_PAGE } from '../../constants/route-path.constant';
-import { ShoppingCartService } from 'src/app/device-order/ais/device-order-ais-new-register/service/shopping-cart.service';
+import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
+import { ShoppingCartService } from '../../service/shopping-cart.service';
+import {
+  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_SELECT_NUMBER_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_SELECT_PACKAGE_PAGE
+} from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-new-register-by-pattern-page',
@@ -17,66 +21,36 @@ import { ShoppingCartService } from 'src/app/device-order/ais/device-order-ais-n
 export class DeviceOrderAisNewRegisterByPatternPageComponent implements OnInit, OnDestroy {
   wizards = WIZARD_DEVICE_ORDER_AIS;
 
+  shoppingCart: ShoppingCart;
   transaction: Transaction;
   mobileNoConditions: MobileNoCondition[];
-
-  isSearchAgain = false;
-  mobileNoConditionForm: FormGroup;
-  element: any;
-  el = [];
+  mobileNo: MobileNo;
   user: User;
-  shoppingCart: ShoppingCart;
   constructor(
     private router: Router,
     private homeService: HomeService,
     private tokenService: TokenService,
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
+    private alertService: AlertService,
     private http: HttpClient,
-    public fb: FormBuilder,
     private shoppingCartService: ShoppingCartService,
   ) {
     this.transaction = this.transactionService.load();
     this.user = this.tokenService.getUser();
-
   }
 
   ngOnInit() {
+    if (this.transaction.data.simCard &&
+      this.transaction.data.simCard.mobileNo) {
+      this.onResereMobileNo(this.transaction.data.simCard.mobileNo, 'Unlock');
+    }
+    // ลบข้อมูลที่เคยเลือก simcard ทิ้ง
     delete this.transaction.data.simCard;
+    // อับเดดข้อมูลตะกร้า
     this.shoppingCart = Object.assign(this.shoppingCartService.getShoppingCartData(), {
       mobileNo: ''
     });
-    this.createForm();
-  }
-
-  createForm() {
-    this.mobileNoConditionForm = this.fb.group({
-      summary: ['', [Validators.pattern(/\d/)]],
-      like0: ['', [Validators.pattern(/\d/)]],
-      like1: ['', [Validators.pattern(/\d/)]],
-      like2: ['', [Validators.pattern(/\d/)]],
-      notLike0: ['', [Validators.pattern(/\d/)]],
-      notLike1: ['', [Validators.pattern(/\d/)]],
-      notLike2: ['', [Validators.pattern(/\d/)]],
-      // mobileFormat0: [{ value: 0, disabled: true }],
-      mobileFormat1: ['', [Validators.pattern(/\d/)]],
-      mobileFormat2: ['', [Validators.pattern(/\d/)]],
-      mobileFormat3: ['', [Validators.pattern(/\d/)]],
-      mobileFormat4: ['', [Validators.pattern(/\d/)]],
-      mobileFormat5: ['', [Validators.pattern(/\d/)]],
-      mobileFormat6: ['', [Validators.pattern(/\d/)]],
-      mobileFormat7: ['', [Validators.pattern(/\d/)]],
-      mobileFormat8: ['', [Validators.pattern(/\d/)]],
-      mobileFormat9: ['', [Validators.pattern(/\d/)]]
-    });
-  }
-
-  onBack() {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_SELECT_NUMBER_PAGE]);
-  }
-
-  onHome() {
-    this.homeService.goToHome();
   }
 
   onSearch(mobileNoCondition: any) {
@@ -86,18 +60,15 @@ export class DeviceOrderAisNewRegisterByPatternPageComponent implements OnInit, 
       params: { code: this.user.locationCode }
     }).toPromise()
       .then((resp: any) => {
-        return this.http.post('/api/customerportal/newRegister/queryMobileNoByConditions', {
-          channel: 'MyChannel',
-          classifyCode: 'All',
-          like: mobileNoCondition.like,
-          locationCd: this.user.locationCode,
-          mobileFormat: mobileNoCondition.mobileFormat,
-          notLike: mobileNoCondition.notLike,
-          partnerFlg: this.tokenService.isAspUser() ? 'Y' : 'N',
-          refNo: '',
-          region: resp.data.regionCode,
-          summary: mobileNoCondition.summary,
-        }).toPromise();
+        return this.http.post('/api/customerportal/newRegister/queryMobileNoByConditions',
+          Object.assign({
+            channel: 'MyChannel',
+            classifyCode: 'All',
+            locationCd: this.user.locationCode,
+            partnerFlg: this.tokenService.isAspUser() ? 'Y' : 'N',
+            refNo: '',
+            region: resp.data.regionCode,
+          }, mobileNoCondition)).toPromise();
       })
       .then((resp: any) => {
         const conditions = resp.data || [];
@@ -119,70 +90,53 @@ export class DeviceOrderAisNewRegisterByPatternPageComponent implements OnInit, 
 
   }
 
-
-  onNextTab(event: any): void {
-    console.log('event', event);
-    const keyCode: number = (event.which) ? event.which : event.keyCode;
-    const target: any = event.target;
-    // backspace
-    if (target.value === 'undefined' || event.target.value === '') {
-      const previousField: any = target.previousElementSibling;
-      if (keyCode === 8) {
-        if (previousField) {
-          previousField.focus();
-        }
-      }
-      return;
-    }
-
-    const nextField: any = target.nextElementSibling;
-
-    if (!nextField) {
-      return;
-    }
-    nextField.focus();
-
+  onCompleted(mobileNo: any) {
+    this.mobileNo = mobileNo;
   }
 
-  onSearchMobileNoByCondition() {
-    this.isSearchAgain = true;
-    const serch = {
-      summary: this.mobileNoConditionForm.controls['summary'].value || '',
-      like: (() => {
-        return ['like0', 'like1', 'like2'].map(controlName => {
-          return this.mobileNoConditionForm.controls[controlName].value;
-        }).filter(like => like).join(',');
-      })(),
-      notLike: (() => {
-        return ['notLike0', 'notLike1', 'notLike2'].map(controlName => {
-          return this.mobileNoConditionForm.controls[controlName].value;
-        }).filter(like => like).join(',');
-      })(),
-      mobileFormat: (() => {
-        return '0' + [
-          'mobileFormat1', 'mobileFormat2', 'mobileFormat3',
-          'mobileFormat4', 'mobileFormat5', 'mobileFormat6',
-          'mobileFormat7', 'mobileFormat8', 'mobileFormat9'].map(controlName => {
-            return this.mobileNoConditionForm.controls[controlName].value || '_';
-          }).join('');
-      })()
-    };
-    this.onSearch(serch);
-  }
-
-  onSelectMobileNo(value: any) {
-    this.transaction.data.simCard = {
-      mobileNo: value.mobileNo,
-      persoSim: true
-    };
+  onBack() {
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_SELECT_NUMBER_PAGE]);
   }
 
   onNext() {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_SELECT_PACKAGE_PAGE]);
+    this.pageLoadingService.openLoading();
+
+    const mobileNo = this.mobileNo.mobileNo;
+    this.onResereMobileNo(mobileNo, 'Lock')
+      .then((resp: any) => {
+        const data = resp.data || {};
+
+        if (data.returnCode === '008') {
+          this.transaction.data.simCard = {
+            mobileNo: mobileNo
+          };
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_SELECT_PACKAGE_PAGE]);
+          return;
+        }
+
+        if (data.returnCode === '002') {
+          this.alertService.error('เบอร์ ' + this.transaction.data.simCard.mobileNo + ' มีลูกค้าท่านอื่นจองไว้แล้ว กรุณาเลือกเบอร์ใหม่');
+        } else {
+          this.alertService.error(data.returnCode + ' ' + data.returnMessage);
+        }
+      })
+      .then(() => this.pageLoadingService.closeLoading());
+  }
+
+  onHome() {
+    this.homeService.goToHome();
   }
 
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
+  }
+
+  onResereMobileNo(mobileNo: string, action: string): Promise<any> {
+    return this.http.post('/api/customerportal/newRegister/selectMobileNumberRandom', {
+      userId: this.user.username,
+      mobileNo: mobileNo,
+      action: action
+    }).toPromise();
   }
 
 }

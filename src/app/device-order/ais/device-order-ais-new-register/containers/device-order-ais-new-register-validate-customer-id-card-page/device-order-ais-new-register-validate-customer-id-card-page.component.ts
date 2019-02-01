@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { ReadCardProfile, HomeService, PageLoadingService, ApiRequestService, TokenService, ChannelType, Utils, AlertService, ValidateCustomerIdCardComponent, KioskControls, } from 'mychannel-shared-libs';
+import { ReadCardProfile, HomeService, PageLoadingService, ApiRequestService, TokenService, ChannelType, Utils, AlertService, ValidateCustomerIdCardComponent, KioskControls, User, } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -8,6 +8,7 @@ import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE } from '../../c
 import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from '../../../../../buy-product/constants/route-path.constant';
 import { PriceOption } from '../../../../../shared/models/price-option.model';
 import { PriceOptionService } from '../../../../../shared/services/price-option.service';
+import { environment } from 'src/environments/environment';
 @Component({
   selector: 'app-device-order-ais-new-register-validate-customer-id-card-page',
   templateUrl: './device-order-ais-new-register-validate-customer-id-card-page.component.html',
@@ -21,6 +22,7 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
   zipcode: string;
   readCardValid: boolean;
   priceOption: PriceOption;
+  user: User;
 
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
@@ -37,11 +39,24 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
     private alertService: AlertService,
     private priceOptionService: PriceOptionService
   ) {
+    this.user = this.tokenService.getUser();
+
     this.homeService.callback = () => {
       if (this.validateCustomerIdcard.koiskApiFn) {
         this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
       }
-      window.location.href = '/smart-shop';
+
+      // Returns stock todo...
+
+      if (this.transaction.data.simCard
+        && this.transaction.data.simCard.mobileNo) {
+        this.onResereMobileNo(this.user.username, this.transaction.data.simCard.mobileNo).then(() => {
+          this.homeHandler();
+        });
+      } else {
+        this.homeHandler();
+      }
+
     };
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
     this.priceOption = this.priceOptionService.load();
@@ -180,10 +195,26 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
 
     this.transaction = {
       data: {
-        transactionType: TransactionType. DEVICE_ORDER_NEW_REGISTER_AIS,
+        transactionType: TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS,
         action: TransactionAction.READ_CARD,
       }
     };
+  }
+
+  homeHandler() {
+    if (environment.name === 'LOCAL') {
+      window.location.href = '/main-menu';
+    } else {
+      window.location.href = '/smart-shop/main-menu';
+    }
+  }
+
+  onResereMobileNo(mobileNo: string, action: string): Promise<any> {
+    return this.http.post('/api/customerportal/newRegister/selectMobileNumberRandom', {
+      userId: this.user.username,
+      mobileNo: mobileNo,
+      action: action
+    }).toPromise();
   }
 
 }
