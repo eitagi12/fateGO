@@ -34,6 +34,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     priceOptions: any;
 
     // trade
+    productDetailService: Promise<any>;
     constructor(
         private modalService: BsModalService,
         private router: Router,
@@ -90,13 +91,14 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         this.hansetBundle = `${productSubtype === PRODUCT_HANDSET_BUNDLE ? '(แถมชิม)' : ''}`;
         this.productDetail = {};
 
-        this.salesService.productDetail({
+        this.productDetailService = this.salesService.productDetail({
             brand: brand,
             location: user.locationCode,
             model: model,
             productType: productType || PRODUCT_TYPE,
             productSubtype: productSubtype || PRODUCT_SUB_TYPE
-        }).then((resp: any) => {
+        });
+        this.productDetailService.then((resp: any) => {
 
             const products: any[] = resp.data.products || [];
             forkJoin(products.map((product: any) => {

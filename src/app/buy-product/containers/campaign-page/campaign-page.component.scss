@@ -52,7 +52,6 @@
     border: none;
     .nav-item {
         color: #614e47;
-        height: 47px;
         background-color: white;
         border-bottom: 6px solid #BFBFBF;
         &:not(:last-child) {
@@ -61,15 +60,13 @@
             border-bottom: 6px solid #BFBFBF;
         }
 
-        &.active {
+        &.active {            
             border-bottom: 6px solid #8cc53f;
         }
 
-        .nav-link {       
-            color: inherit;     
+        .nav-link {
+            color: inherit;
             padding: 8px;
-            white-space: nowrap;
-            overflow: hidden;
             &.active,
             &:hover {
                 border-color: white;        
@@ -80,6 +77,7 @@
         }
     }
 }
+
 
 /* trades */
 .icon-trade {

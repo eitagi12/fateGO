@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { TokenService, ErrorsService, AlertService, PageActivityService, HomeService } from 'mychannel-shared-libs';
+import { TokenService, ErrorsService, AlertService, PageActivityService, HomeService, ChannelType } from 'mychannel-shared-libs';
 import { setTheme } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
 import { environment } from '../environments/environment';
@@ -28,6 +28,10 @@ export class AppComponent {
     private homeService: HomeService,
   ) {
     this.homeService.callback = () => {
+      if (this.tokenService.getUser().channelType !== ChannelType.SMART_ORDER) {
+        window.location.href = '/';
+        return;
+      }
       if (this.isDeveloperMode()) {
         window.location.href = '/main-menu';
       } else {

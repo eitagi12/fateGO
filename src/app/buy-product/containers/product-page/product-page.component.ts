@@ -39,12 +39,6 @@ export class ProductPageComponent implements OnInit {
   ngOnInit() { }
 
   private callService(brand: string, model: string, offset: number) {
-    this.productService = new Promise((r, j) => {
-      setTimeout(() => {
-        r();
-      }, 10000);
-    });
-    return;
     const user: User = this.tokenService.getUser();
 
     const req = {
