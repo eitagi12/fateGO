@@ -358,14 +358,34 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                     campaignSlider.mainPackagePrice = +campaign.minimumPackagePrice;
                 }
 
+                // Filter Customer Group In Privileges
                 const privilegeByCustomerGroup = campaignSlider.value.privileges.filter((privilege) => {
                     return privilege.customerGroups.find((privilegeGroup: any) => privilegeGroup.code === customerGroup.code);
                 });
 
-                campaignSlider.value.privileges = privilegeByCustomerGroup;
+                // Filter Customer Group Trade In Privileges
+                const filterPrivilegeInTrade = privilegeByCustomerGroup
+                    .map(filterPrivilege => {
+                        const filterTrades = filterPrivilege.trades
+                            .filter(trade => {
+                                const isPrivilegeTradeInCustomerGroup = trade.customerGroups
+                                    .filter(customer => customerGroup.code === customer.code);
+                                return isPrivilegeTradeInCustomerGroup.length > 0 ? true : false;
+                            });
+                        filterPrivilege.trades = filterTrades;
+                        return filterPrivilege;
+                    });
 
+                // Sort Price จากน้อยไปมาก
+                const privilege = filterPrivilegeInTrade
+                    .sort((a: any, b: any) =>
+                        (Number(a.maximumPromotionPrice) + Number(a.maximumAdvancePay)) -
+                        (Number(b.maximumPromotionPrice) + Number(b.maximumAdvancePay)));
+
+                campaignSlider.value.privileges = privilege;
                 return campaignSlider;
-            }).sort((a: any, b: any) => a.price - b.price);
+
+            }).sort((a: any, b: any) => Number(a.value.price) - Number(b.value.price));
 
     }
 
