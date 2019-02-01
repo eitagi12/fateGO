@@ -380,7 +380,8 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                 const privilege = filterPrivilegeInTrade
                     .sort((a: any, b: any) =>
                         (Number(a.maximumPromotionPrice) + Number(a.maximumAdvancePay)) -
-                        (Number(b.maximumPromotionPrice) + Number(b.maximumAdvancePay)));
+                        (Number(b.maximumPromotionPrice) + Number(b.maximumAdvancePay))
+                    );
 
                 campaignSlider.value.privileges = privilege;
                 return campaignSlider;
