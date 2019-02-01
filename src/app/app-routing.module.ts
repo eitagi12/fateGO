@@ -12,11 +12,11 @@ const routes: Routes = [
     loadChildren: 'src/app/dashboard/dashboard.module#DashboardModule',
     canActivate: [AuthGuard]
   },
-  // {
-  //   path: 'dashboard',
-  //   loadChildren: 'src/app/dashboard/dashboard.module#DashboardModule',
-  //   canActivate: [AuthGuard]
-  // },
+  {
+    path: 'dashboard',
+    loadChildren: 'src/app/dashboard/dashboard.module#DashboardModule',
+    canActivate: [AuthGuard]
+  },
   {
     path: 'main-menu',
     loadChildren: 'src/app/main-menu/main-menu.module#MainMenuModule',
