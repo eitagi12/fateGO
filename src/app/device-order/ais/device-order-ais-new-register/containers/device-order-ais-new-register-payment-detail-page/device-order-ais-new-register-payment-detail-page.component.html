@@ -15,18 +15,26 @@
       <div class="container-fluid">
         <div class="card mb-3">
           <div class="card-header bg-orange text-white rounded-top p-3">
-            รูปแบบการชำระเงิน
+            {{paymenDetail?.title}}
           </div>
           <div class="card-header text-light-green bg-transparent">
-            ค่าเครื่อง iPhone X 256GB สี SPACE GREY
-            <span class="pull-right">฿ {{ 1070 | number: '1.2-2' }}</span>
+            <div class="row">
+              <div class="col-12">
+                {{paymenDetail?.header}}
+                <span class="pull-right">฿ {{ paymenDetail?.price | number: '1.2-2' }}</span>
+              </div>
+              <div class="col-12" *ngIf="priceOption.advancePay && priceOption.advancePay.installmentFlag === 'Y'">
+                {{advancePaymenDetail.header}}
+                <span class="pull-right">฿ {{ advancePaymenDetail.price | number: '1.2-2' }}</span>
+              </div>
+            </div>
           </div>
+
           <div class="card-body">
             <form [formGroup]="paymentForm">
               <div class="form-group row">
                 <div class="col-12 col-sm-5">
-                  <input class="form-check-input" type="radio" name="paymentTypeRadio" id="payment-qrcode" value="qrcode"
-                    formControlName="paymentTypeRadio">
+                  <input class="form-check-input" type="radio" id="payment-qrcode" value="qrcode" formControlName="paymentTypeRadio">
                   <label class="form-check-label" for="payment-qrcode">
                     ชำระเงิน QR Code
                   </label>
@@ -45,8 +53,7 @@
               <hr>
               <div class="form-group row">
                 <div class="col-12 col-sm-5">
-                  <input class="form-check-input" type="radio" name="paymentTypeRadio" id="payment-credit" value="credit"
-                    formControlName="paymentTypeRadio">
+                  <input class="form-check-input" type="radio" id="payment-credit" value="credit" formControlName="paymentTypeRadio">
                   <label class="form-check-label" for="payment-credit">
                     ชำระเงินด้วยบัตรเครดิต
                   </label>
@@ -68,8 +75,19 @@
                 <div class="col-12 text-left mb-3" *ngIf="!selectBank">
                   <span class="text-pink">*กรุณาเลือธนาคาร</span>
                 </div>
+                <div class="row" *ngIf="priceOption.discount &&
+                priceOption.discount.specialType !== '' &&
+                priceOption.discount.specialAmount &&
+                priceOption.discount.specialAmount > 0">
+                  <div *ngIf="priceOption.discount.specialType === 'P'">
+                    โปรโมชั่นพิเศษลดเพิ่ม {{ priceOption.discount.specialAmount }} %
+                  </div>
+                  <div *ngIf="priceOption.discount.specialType === 'B'">
+                    โปรโมชั่นพิเศษลดเพิ่ม {{ priceOption.discount.specialAmount }} บาท
+                  </div>
+                </div>
               </div>
-              <div class="form-group row" *ngIf="(paymentType !== 'CA') && installments && paymentForm.controls['paymentTypeRadio'].value === 'credit'">
+              <div class="form-group row" *ngIf="(paymentType === 'CC') && installments && paymentForm.controls['paymentTypeRadio'].value === 'credit'">
                 <div class="col-12 text-center mb-3">
                   <span class="text-pink">*กรุณาเลือกรูปแบบการชำระเงิน</span>
                 </div>
@@ -84,8 +102,7 @@
               <hr>
               <div class="form-group row">
                 <div class="col-12 col-sm-5">
-                  <input class="form-check-input" type="radio" name="paymentTypeRadio" id="payment-debit" value="debit"
-                    formControlName="paymentTypeRadio">
+                  <input class="form-check-input" type="radio" id="payment-debit" value="debit" formControlName="paymentTypeRadio">
                   <label class="form-check-label" for="payment-debit">
                     ชำระที่เคาน์เตอร์
                   </label>
@@ -100,6 +117,77 @@
       </div>
 
       <!-- ############################################## advance payment ##############################################  -->
+
+      <div class="container-fluid">
+        <div class="card mb-3">
+          <div class="card-header text-light-green bg-transparent">
+            {{advancePaymenDetail.header}}
+            <span class="pull-right">฿ {{ advancePaymenDetail.price | number: '1.2-2' }}</span>
+          </div>
+          <div class="card-body">
+            <form [formGroup]="advancePaymentForm">
+              <div class="form-group row">
+                <div class="col-12 col-sm-5">
+                  <input class="form-check-input" type="radio" id="advance-payment-qrcode" value="qrcode"
+                    formControlName="paymentTypeRadio">
+                  <label class="form-check-label" for="advance-payment-qrcode">
+                    ชำระเงิน QR Code
+                  </label>
+                </div>
+                <div class="col-12 col-sm-7">
+                  <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="เต็มจำนวน">
+                </div>
+              </div>
+              <div class="form-group row" *ngIf="advancePaymentForm.controls['paymentTypeRadio'].value === 'qrcode'">
+                <div class="col-6 col-sm-3" *ngFor="let qrCode of qrCodes; let i = index" (click)="onSelectQRCodeAdvancePay(qrCode)">
+                  <div class="qr-lazy-load-image" [ngClass]="{'active': qrCode?.id === selectQRCodeAdvancePay?.id}">
+                    <mc-lazy-load-image [src]="qrCode.imageUrl"></mc-lazy-load-image>
+                  </div>
+                </div>
+              </div>
+              <hr>
+              <div class="form-group row">
+                <div class="col-12 col-sm-5">
+                  <input class="form-check-input" type="radio" id="advance-payment-credit" value="credit"
+                    formControlName="paymentTypeRadio">
+                  <label class="form-check-label" for="advance-payment-credit">
+                    ชำระเงินด้วยบัตรเครดิต
+                  </label>
+                </div>
+                <div class="col-12 col-sm-7">
+                  <select id="inputState" class="form-control" disabled>
+                    <option selected>เต็มจำนวน</option>
+                    <option>ผ่อนชำระ</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row" *ngIf="advancePaymentForm.controls['paymentTypeRadio'].value === 'credit'">
+
+                <div class="col-4 col-sm-2 mb-3" *ngFor="let bank of banks; let i = index" (click)="onSelectBankAdvancePay(bank)">
+                  <div class="bank-lazy-load-image" [ngClass]="{'active': bank?.abb === selectBankAdvancePay?.abb}">
+                    <mc-lazy-load-image [src]="bank?.imageUrl"></mc-lazy-load-image>
+                  </div>
+                </div>
+                <div class="col-12 text-left mb-3" *ngIf="!selectBankAdvancePay">
+                  <span class="text-pink">*กรุณาเลือธนาคาร</span>
+                </div>
+              </div>
+              <hr>
+              <div class="form-group row">
+                <div class="col-12 col-sm-5">
+                  <input class="form-check-input" type="radio" id="advance-payment-debit" value="debit" formControlName="paymentTypeRadio">
+                  <label class="form-check-label" for="advance-payment-debit">
+                    ชำระที่เคาน์เตอร์
+                  </label>
+                </div>
+                <div class="col-12 col-sm-7">
+                  <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="เต็มจำนวน">
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
 
       <mc-receipt-info [receiptInfo]="receiptInfo"></mc-receipt-info>
     </div>
