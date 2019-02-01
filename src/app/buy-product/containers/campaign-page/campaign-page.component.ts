@@ -61,6 +61,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     private privilegeTradeInstallmentGroup = [];
 
     // trade
+    productDetailService: Promise<any>;
     constructor(
         private modalService: BsModalService,
         private router: Router,
@@ -113,21 +114,20 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     private callService(
         brand: string, model: string,
         productType?: string, productSubtype?: string) {
-
-        console.log('callService');
         const user: User = this.tokenService.getUser();
 
         // clear
         this.hansetBundle = `${productSubtype === PRODUCT_HANDSET_BUNDLE ? '(แถมชิม)' : ''}`;
         this.productDetail = {};
 
-        this.salesService.productDetail({
+        this.productDetailService = this.salesService.productDetail({
             brand: brand,
             location: user.locationCode,
             model: model,
             productType: productType || PRODUCT_TYPE,
             productSubtype: productSubtype || PRODUCT_SUB_TYPE
-        }).then((resp: any) => {
+        });
+        this.productDetailService.then((resp: any) => {
 
             const products: any[] = resp.data.products || [];
             forkJoin(products.map((product: any) => {
@@ -157,7 +157,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
                 this.productDetail.products = products.map((product: any) => {
                     const stock = productStocks.find((productStock: any) => productStock.color === product.colorName) || { qty: 0 };
-                    console.log('stock=>', stock);
                     product.stock = stock;
                     return product;
                 }).sort((a, b) => a.stock.qty - b.stock.qty);
@@ -310,7 +309,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     }
 
     onCustomerGroupSelected(customerGroup: any) {
-        console.log('this.priceOptions', this.priceOptions);
         if (!this.priceOptions) {
             this.campaignSliders = [];
             return;
@@ -367,12 +365,10 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     }
 
     onCampaignSelected(campaign: any) {
-        console.log('onCampaignSelected', campaign);
         this.priceOption.campaign = campaign;
     }
 
     onPromotionShelve(campaign: any) {
-        console.log('onPromotionShelveSelect', campaign);
         this.callPromotionShelveService(campaign);
     }
 
@@ -383,8 +379,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
         this.priceWithBankInstallmentAndAdvancePayment.data = this.getInstallments(campaign);
         this.priceWithBankInstallmentAndAdvancePayment.isShowAllAdvancePay = false;
-        console.log('this.priceWithBankInstallmentAndAdvancePayment', this.priceWithBankInstallmentAndAdvancePayment);
-        // this.groupPrivilegeTradeInstallmentByPercentageMonth(campaignSlider);
         this.showInstallmentListTemplate();
     }
 

@@ -8,7 +8,6 @@ import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { AddToCartService } from './services/add-to-cart.service';
 /* Components */
 import { BuyProductRoutingModule } from './buy-product-routing.module';
-import { BuyProductComponent } from './buy-product.component';
 import { BrandPageComponent } from './containers/brand-page/brand-page.component';
 import { CampaignPageComponent } from './containers/campaign-page/campaign-page.component';
 import { ProductPageComponent } from './containers/product-page/product-page.component';
@@ -25,7 +24,6 @@ import { PrivilegeToTradeSliderPipe } from './pipes/privilege-to-trade-slider.pi
     TabsModule.forRoot()
   ],
   declarations: [
-    BuyProductComponent,
     BrandPageComponent,
     CampaignPageComponent,
     ProductPageComponent,

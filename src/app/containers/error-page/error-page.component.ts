@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { HomeService } from 'mychannel-shared-libs';
 
 @Component({
   selector: 'app-error-page',
@@ -7,16 +7,14 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./error-page.component.scss']
 })
 export class ErrorPageComponent implements OnInit {
-
-  routeParams;
-  data;
-
   constructor(
-    private activatedRoute: ActivatedRoute,
+    private homeService: HomeService
   ) { }
 
   ngOnInit() {
-    this.routeParams = this.activatedRoute.snapshot.queryParams;
-    this.data = this.activatedRoute.snapshot.data;
+  }
+
+  onToHome() {
+    this.homeService.goToHome();
   }
 }
