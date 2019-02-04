@@ -27,24 +27,24 @@ export class OrderMnpResultPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    // this.pageLoadingService.openLoading();
-    // this.createMnpService.createMnp(this.transaction).then((resp: any) => {
-    //   const data = resp.data || {};
-    //   this.transaction.data.order = {
-    //     orderNo: data.orderNo,
-    //     orderDate: data.orderDate
-    //   };
-    //   this.transactionService.update(this.transaction);
-    //   if (this.transaction.data.order.orderNo) {
-    //     this.isSuccess = true;
-    //   } else {
-    //     this.isSuccess = false;
-    //   }
-    //   this.pageLoadingService.closeLoading();
-    // }).catch(() => {
-    //   this.isSuccess = false;
-    //   this.pageLoadingService.closeLoading();
-    // });
+    this.pageLoadingService.openLoading();
+    this.createMnpService.createMnp(this.transaction).then((resp: any) => {
+      const data = resp.data || {};
+      this.transaction.data.order = {
+        orderNo: data.orderNo,
+        orderDate: data.orderDate
+      };
+      this.transactionService.update(this.transaction);
+      if (this.transaction.data.order.orderNo) {
+        this.isSuccess = true;
+      } else {
+        this.isSuccess = false;
+      }
+      this.pageLoadingService.closeLoading();
+    }).catch(() => {
+      this.isSuccess = false;
+      this.pageLoadingService.closeLoading();
+    });
     this.isSuccess = false;
   }
 
