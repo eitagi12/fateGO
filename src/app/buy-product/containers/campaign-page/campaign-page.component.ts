@@ -359,26 +359,15 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                     campaignSlider.mainPackagePrice = +campaign.minimumPackagePrice;
                 }
 
-                // Filter Customer Group In Privileges
-                const privilegeByCustomerGroup = campaignSlider.value.privileges.filter((privilege) => {
-                    return privilege.customerGroups.find((privilegeGroup: any) => privilegeGroup.code === customerGroup.code);
-                });
-
-                // Filter Customer Group Trade In Privileges
-                const filterPrivilegeInTrade = privilegeByCustomerGroup
-                    .map(filterPrivilege => {
-                        const filterTrades = filterPrivilege.trades
-                            .filter(trade => {
-                                const isPrivilegeTradeInCustomerGroup = trade.customerGroups
-                                    .filter(customer => customerGroup.code === customer.code);
-                                return isPrivilegeTradeInCustomerGroup.length > 0 ? true : false;
-                            });
-                        filterPrivilege.trades = filterTrades;
-                        return filterPrivilege;
-                    });
+                const campaignByGroup = campaignSlider.value.privileges
+                .filter(privileges => Object.keys(privileges.customerGroups
+                .filter(privilegeGroup => privilegeGroup.code === this.selectCustomerGroup.code)).length > 0)
+                .filter(privileges => Object.keys(privileges.trades.filter(trade => Object.keys(trade.customerGroups
+                .filter(treadGroup => treadGroup.code === this.selectCustomerGroup.code)).length > 0)).length > 0)
+                .filter(chanel => chanel.channels.indexOf('AIS') > -1);
 
                 // Sort Price จากน้อยไปมาก
-                const privilege = filterPrivilegeInTrade
+                const privilege = campaignByGroup
                     .sort((a: any, b: any) =>
                         (Number(a.maximumPromotionPrice) + Number(a.maximumAdvancePay)) -
                         (Number(b.maximumPromotionPrice) + Number(b.maximumAdvancePay))
