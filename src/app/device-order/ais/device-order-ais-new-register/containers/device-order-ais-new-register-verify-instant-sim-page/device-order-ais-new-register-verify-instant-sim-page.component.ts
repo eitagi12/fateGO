@@ -40,7 +40,6 @@ export class DeviceOrderAisNewRegisterVerifyInstantSimPageComponent implements O
 
   ngOnInit() {
     delete this.transaction.data.simCard;
-    console.log('this.transaction', this.transaction);
 
     this.shoppingCart = Object.assign(this.shoppingCartService.getShoppingCartData(), {
       mobileNo: ''

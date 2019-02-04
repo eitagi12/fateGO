@@ -1,7 +1,9 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { PromotionShelve, HomeService, PageLoadingService, PromotionShelveGroup, ShoppingCart } from 'mychannel-shared-libs';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { BsModalRef } from 'ngx-bootstrap';
+import {
+  PromotionShelve, HomeService, PageLoadingService, ShoppingCart
+} from 'mychannel-shared-libs';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import {
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_BY_PATTERN_PAGE,
@@ -13,6 +15,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ShoppingCartService } from 'src/app/device-order/ais/device-order-ais-new-register/service/shopping-cart.service';
+import { PromotionShelveService } from 'src/app/device-order/services/promotion-shelve.service';
 
 @Component({
   selector: 'app-device-order-ais-new-register-select-package-page',
@@ -23,10 +26,17 @@ export class DeviceOrderAisNewRegisterSelectPackagePageComponent implements OnIn
 
   wizards = WIZARD_DEVICE_ORDER_AIS;
 
+  @ViewChild('conditionTemplate')
+  conditionTemplate: any;
+
+
   priceOption: PriceOption;
   transaction: Transaction;
   promotionShelves: PromotionShelve[];
   shoppingCart: ShoppingCart;
+
+  condition: any;
+  modalRef: BsModalRef;
 
   constructor(
     private router: Router,
@@ -34,8 +44,8 @@ export class DeviceOrderAisNewRegisterSelectPackagePageComponent implements OnIn
     private pageLoadingService: PageLoadingService,
     private priceOptionService: PriceOptionService,
     private transactionService: TransactionService,
-    private http: HttpClient,
     private shoppingCartService: ShoppingCartService,
+    private promotionShelveService: PromotionShelveService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -70,89 +80,19 @@ export class DeviceOrderAisNewRegisterSelectPackagePageComponent implements OnIn
 
   callService() {
     this.pageLoadingService.openLoading();
-    const packageKeyRef = this.priceOption.trade.packageKeyRef;
-    this.http.post('/api/salesportal/promotion-shelves', {
-      userId: packageKeyRef
-    }).toPromise()
-      .then((resp: any) => {
-        const data = resp.data.data || [];
-        const promotionShelves: PromotionShelve[] = data.map((promotionShelve: any) => {
-          return {
-            title: promotionShelve.title,
-            icon: promotionShelve.icon,
-            promotions: promotionShelve.subShelves
-              .sort((a, b) => a.priority !== b.priority ? a.priority < b.priority ? -1 : 1 : 0)
-              .map((subShelve: any) => {
-                return { // group
-                  id: subShelve.id,
-                  title: subShelve.title,
-                  sanitizedName: subShelve.sanitizedName,
-                  items: []
-                };
-              })
-          }
-        });
-        return Promise.resolve(promotionShelves);
+
+    const campaign: any = this.priceOption.campaign;
+    this.promotionShelveService.getPromotionShelve(
+      {
+        packageKeyRef: this.priceOption.trade.packageKeyRef,
+        orderType: 'New Registration',
+        billingSystem: 'IRB'
+      },
+      +campaign.minimumPackagePrice, +campaign.maxinumPackagePrice)
+      .then((promotionShelves: any) => {
+        this.promotionShelves = this.promotionShelveService.defaultBySelected(promotionShelves, this.transaction.data.mainPackage);
       })
-      .then((promotionShelves: PromotionShelve[]) => {
-        const parameter = [{
-          'name': 'orderType',
-          'value': 'New Registration'
-        }, {
-          'name': 'billingSystem',
-          'value': 'IRB'
-        }];
-
-        const promiseAll = [];
-        promotionShelves.forEach((promotionShelve: PromotionShelve) => {
-          const promise = promotionShelve.promotions.map((promotion: PromotionShelveGroup) => {
-            return this.http.post('/api/salesportal/promotion-shelves/promotion', {
-              userId: packageKeyRef,
-              sanitizedName: promotion.sanitizedName,
-              parameters: parameter
-            }).toPromise().then((resp: any) => {
-              const data = resp.data.data || [];
-              const campaign: any = this.priceOption.campaign;
-              const minimumPackagePrice = +campaign.minimumPackagePrice;
-              const maxinumPackagePrice = +campaign.maxinumPackagePrice;
-
-              // reference object
-              promotion.items = data.filter((promotion: any) => {
-                return promotion.customAttributes.chargeType === 'Post-paid' &&
-                  minimumPackagePrice <= +promotion.customAttributes.priceExclVat &&
-                  (maxinumPackagePrice > 0 ? maxinumPackagePrice >= +promotion.customAttributes.priceExclVat : true);
-              })
-                .sort((a, b) => {
-                  return +a.customAttributes.priceInclVat !== +b.customAttributes.priceInclVat ?
-                    +a.customAttributes.priceInclVat < +b.customAttributes.priceInclVat ? -1 : 1 : 0;
-                }).map((promotion: any) => {
-                  return { // item
-                    id: promotion.id,
-                    title: promotion.title,
-                    detail: promotion.detailTH,
-                    value: promotion
-                  };
-                });
-            });
-          });
-          promiseAll.concat(promise);
-        });
-
-        Promise.all(promiseAll).then(() => {
-          // console.log(promotionShelves);
-          this.promotionShelves = promotionShelves;
-          if (this.promotionShelves && this.promotionShelves.length > 0) {
-            this.promotionShelves[0].active = true;
-            if (this.promotionShelves[0].promotions && this.promotionShelves[0].promotions.length > 0) {
-              this.promotionShelves[0].promotions[0].active = true;
-            }
-          }
-        });
-
-      })
-      .then(() => {
-        this.pageLoadingService.closeLoading();
-      });
+      .then(() => this.pageLoadingService.closeLoading());
   }
 
   ngOnDestroy(): void {

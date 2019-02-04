@@ -61,9 +61,9 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
       lastName: customer.lastName,
       idCardNo: customer.idCardNo,
       mobileNo: simCard.mobileNo,
-      mainPackage: mainPackage.shortNameThai,
+      mainPackage: mainPackage.title,
       onTopPackage: '',
-      packageDetail: mainPackage.statementThai
+      packageDetail: mainPackage.detailTH
     };
 
     this.mailBillingInfo = {

@@ -121,17 +121,18 @@ export interface SimCard {
 }
 
 export interface MainPackage {
-  billingSystem?: string;
-  duration?: string;
-  itemId: string;
-  itemsPriority?: string;
-  numberOfMobile?: string;
-  packageType?: string;
-  productPkg?: string;
-  promotionPackage?: string;
-  shortNameThai: string;
-  statementThai?: string;
-  parameters?: any;
+  [key: string]: any;
+  // billingSystem?: string;
+  // duration?: string;
+  // itemId: string;
+  // itemsPriority?: string;
+  // numberOfMobile?: string;
+  // packageType?: string;
+  // productPkg?: string;
+  // promotionPackage?: string;
+  // shortNameThai: string;
+  // statementThai?: string;
+  // parameters?: any;
 }
 
 export interface OnTopPackage {
