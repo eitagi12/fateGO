@@ -21,3 +21,4 @@ export const ROUTE_ORDER_NEW_REGISTER_AGREEMENT_SIGN_PAGE = '/order/new-register
 export const ROUTE_ORDER_NEW_REGISTER_PERSO_SIM_PAGE = '/order/new-register/perso-sim';
 export const ROUTE_ORDER_NEW_REGISTER_RESULT_PAGE = '/order/new-register/result';
 export const ROUTE_ORDER_NEW_REGISTER_EAPPLICATION_PAGE = '/order/new-register/eapplication';
+export const ROUTE_ORDER_NEW_REGISTER_VERIFY_DOCUMENT_PAGE = '/order/new-register/verify-document';
