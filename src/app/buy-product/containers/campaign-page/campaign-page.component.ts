@@ -46,6 +46,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     hansetBundle: string;
     productDetail: any;
     productSpec: any;
+    selectCustomerGroup: any;
 
     // campaign
     tabs: any[];
@@ -311,6 +312,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     }
 
     onCustomerGroupSelected(customerGroup: any) {
+        this.selectCustomerGroup = customerGroup;
         if (!this.priceOptions) {
             this.campaignSliders = [];
             return;
@@ -348,7 +350,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                     contract: +campaign.maximumContract,
                     value: campaign
                 };
-
                 campaignSlider.installments = this.getInstallments(campaign);
                 campaignSlider.discount = this.getDiscount(campaign);
                 campaignSlider.freeGoods = (campaign.freeGoods || []).map((freeGood: any) => freeGood.name);
@@ -390,6 +391,58 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
     }
 
+    getInstallment(installments: any, campaign: any) {
+      const campaignByGroup = campaign.privileges
+        .filter(privileges => Object.keys(privileges.customerGroups
+        .filter(customerGroup => customerGroup.code === this.selectCustomerGroup.code)).length > 0)
+        .filter(privileges => Object.keys(privileges.trades.filter(trade => Object.keys(trade.customerGroups
+        .filter(customerGroup => customerGroup.code === this.selectCustomerGroup.code)).length > 0)).length > 0);
+
+      console.log('campaignByGroup', campaignByGroup)
+      installments.forEach((installment: any) => {
+        const priceList: any[] = [];
+        const advancePayList: any[] = [];
+        let showAdvancePay = false;
+        campaignByGroup.forEach((privilege: any) => {
+          privilege.trades.forEach((trade: any) => {
+            const isExist = trade.banks.filter(filterBanks => installment.banks
+              .some(bank => bank.installment === filterBanks.installment && bank.abb === filterBanks.abb) > 0);
+            if (Object.keys(isExist).length > 0) {
+              const keys: string[] = (isExist[0].installment || '').split(/(%|เดือน)/);
+              const groupKey = `${(keys[0] || '').trim()}-${(keys[2] || '').trim()}`;
+              const key: string[] = groupKey.split('-');
+              const price = this.calculatePrice(
+                +trade.promotionPrice,
+                +key[1] || 0,
+                +key[0] || 0
+              );
+              const advancePay = this.calculateAdvancePay(
+                +trade.promotionPrice,
+                +trade.advancePay.amount,
+                +key[1] || 0,
+                +key[0] || 0
+              );
+              showAdvancePay = !!(trade.advancePay.installmentFlag === 'Y'
+                && trade.advancePay.amount !== null && trade.advancePay.amount !== 0 && trade.advancePay.amount);
+              if (price !== 0) {
+                priceList.push(price);
+              }
+              if (advancePay !== 0) {
+                advancePayList.push(advancePay);
+              }
+            }
+          });
+        });
+        const sortPriceList = priceList.sort((a, b) => a !== b ? a < b ? -1 : 1 : 0);
+        const sortAdvanceAdvancePayList = advancePayList.sort((a, b) => a !== b ? a < b ? -1 : 1 : 0);
+        const priceWithInstallmentBankAndAdvancePayment = {
+          priceList: sortPriceList,
+          advancePayList: sortAdvanceAdvancePayList,
+          showAdvancePay: showAdvancePay
+        };
+      });
+    }
+
     onCampaignSelected(campaign: any) {
         this.priceOption.campaign = campaign;
     }
@@ -406,6 +459,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         this.priceWithBankInstallmentAndAdvancePayment.data = this.getInstallments(campaign);
         this.priceWithBankInstallmentAndAdvancePayment.isShowAllAdvancePay = false;
         this.showInstallmentListTemplate();
+        this.getInstallment(installments, campaign);
     }
 
     getInstallments(campaign: any): CampaignSliderInstallment[] {
@@ -440,7 +494,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                 banks: installmentGroups[key]
             });
         });
-
         // จ่ายน้อยผ่อนนาน
         return installments.sort((a: any, b: any) => {
             return a.month > b.month ? -1 : 1;
