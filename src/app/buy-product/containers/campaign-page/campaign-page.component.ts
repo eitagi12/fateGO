@@ -387,7 +387,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         .filter(privileges => Object.keys(privileges.trades.filter(trade => Object.keys(trade.customerGroups
         .filter(customerGroup => customerGroup.code === this.selectCustomerGroup.code)).length > 0)).length > 0);
 
-      console.log('campaignByGroup', campaignByGroup)
+      console.log('campaignByGroup', campaignByGroup);
       installments.forEach((installment: any) => {
         const priceList: any[] = [];
         const advancePayList: any[] = [];
