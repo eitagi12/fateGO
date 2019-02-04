@@ -360,11 +360,17 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                 }
 
                 const campaignByGroup = campaignSlider.value.privileges
-                .filter(privileges => Object.keys(privileges.customerGroups
-                .filter(privilegeGroup => privilegeGroup.code === this.selectCustomerGroup.code)).length > 0)
-                .filter(privileges => Object.keys(privileges.trades.filter(trade => Object.keys(trade.customerGroups
-                .filter(treadGroup => treadGroup.code === this.selectCustomerGroup.code)).length > 0)).length > 0)
-                .filter(chanel => chanel.channels.indexOf('AIS') > -1);
+                    .filter(privileges => Object.keys(privileges.customerGroups
+                    .filter(privilegeGroup => privilegeGroup.code === this.selectCustomerGroup.code)).length > 0)
+                    .filter(privileges => Object.keys(privileges.trades.filter(trade => Object.keys(trade.customerGroups
+                    .filter(treadGroup => treadGroup.code === this.selectCustomerGroup.code)).length > 0)).length > 0)
+                    .filter(chanel => chanel.channels.indexOf('AIS') > -1)
+                    .map(privilegesPayment => {
+                       
+                        // รอ map data trade ใหม่
+                        return privilegesPayment;
+                        
+                    });
 
                 // Sort Price จากน้อยไปมาก
                 const privilege = campaignByGroup
@@ -381,55 +387,55 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     }
 
     getInstallment(installments: any, campaign: any) {
-      const campaignByGroup = campaign.privileges
-        .filter(privileges => Object.keys(privileges.customerGroups
-        .filter(customerGroup => customerGroup.code === this.selectCustomerGroup.code)).length > 0)
-        .filter(privileges => Object.keys(privileges.trades.filter(trade => Object.keys(trade.customerGroups
-        .filter(customerGroup => customerGroup.code === this.selectCustomerGroup.code)).length > 0)).length > 0);
+        const campaignByGroup = campaign.privileges
+            .filter(privileges => Object.keys(privileges.customerGroups
+                .filter(customerGroup => customerGroup.code === this.selectCustomerGroup.code)).length > 0)
+            .filter(privileges => Object.keys(privileges.trades.filter(trade => Object.keys(trade.customerGroups
+                .filter(customerGroup => customerGroup.code === this.selectCustomerGroup.code)).length > 0)).length > 0);
 
-      console.log('campaignByGroup', campaignByGroup);
-      installments.forEach((installment: any) => {
-        const priceList: any[] = [];
-        const advancePayList: any[] = [];
-        let showAdvancePay = false;
-        campaignByGroup.forEach((privilege: any) => {
-          privilege.trades.forEach((trade: any) => {
-            const isExist = trade.banks.filter(filterBanks => installment.banks
-              .some(bank => bank.installment === filterBanks.installment && bank.abb === filterBanks.abb) > 0);
-            if (Object.keys(isExist).length > 0) {
-              const keys: string[] = (isExist[0].installment || '').split(/(%|เดือน)/);
-              const groupKey = `${(keys[0] || '').trim()}-${(keys[2] || '').trim()}`;
-              const key: string[] = groupKey.split('-');
-              const price = this.calculatePrice(
-                +trade.promotionPrice,
-                +key[1] || 0,
-                +key[0] || 0
-              );
-              const advancePay = this.calculateAdvancePay(
-                +trade.promotionPrice,
-                +trade.advancePay.amount,
-                +key[1] || 0,
-                +key[0] || 0
-              );
-              showAdvancePay = !!(trade.advancePay.installmentFlag === 'Y'
-                && trade.advancePay.amount !== null && trade.advancePay.amount !== 0 && trade.advancePay.amount);
-              if (price !== 0) {
-                priceList.push(price);
-              }
-              if (advancePay !== 0) {
-                advancePayList.push(advancePay);
-              }
-            }
-          });
+        console.log('campaignByGroup', campaignByGroup);
+        installments.forEach((installment: any) => {
+            const priceList: any[] = [];
+            const advancePayList: any[] = [];
+            let showAdvancePay = false;
+            campaignByGroup.forEach((privilege: any) => {
+                privilege.trades.forEach((trade: any) => {
+                    const isExist = trade.banks.filter(filterBanks => installment.banks
+                        .some(bank => bank.installment === filterBanks.installment && bank.abb === filterBanks.abb) > 0);
+                    if (Object.keys(isExist).length > 0) {
+                        const keys: string[] = (isExist[0].installment || '').split(/(%|เดือน)/);
+                        const groupKey = `${(keys[0] || '').trim()}-${(keys[2] || '').trim()}`;
+                        const key: string[] = groupKey.split('-');
+                        const price = this.calculatePrice(
+                            +trade.promotionPrice,
+                            +key[1] || 0,
+                            +key[0] || 0
+                        );
+                        const advancePay = this.calculateAdvancePay(
+                            +trade.promotionPrice,
+                            +trade.advancePay.amount,
+                            +key[1] || 0,
+                            +key[0] || 0
+                        );
+                        showAdvancePay = !!(trade.advancePay.installmentFlag === 'Y'
+                            && trade.advancePay.amount !== null && trade.advancePay.amount !== 0 && trade.advancePay.amount);
+                        if (price !== 0) {
+                            priceList.push(price);
+                        }
+                        if (advancePay !== 0) {
+                            advancePayList.push(advancePay);
+                        }
+                    }
+                });
+            });
+            const sortPriceList = priceList.sort((a, b) => a !== b ? a < b ? -1 : 1 : 0);
+            const sortAdvanceAdvancePayList = advancePayList.sort((a, b) => a !== b ? a < b ? -1 : 1 : 0);
+            const priceWithInstallmentBankAndAdvancePayment = {
+                priceList: sortPriceList,
+                advancePayList: sortAdvanceAdvancePayList,
+                showAdvancePay: showAdvancePay
+            };
         });
-        const sortPriceList = priceList.sort((a, b) => a !== b ? a < b ? -1 : 1 : 0);
-        const sortAdvanceAdvancePayList = advancePayList.sort((a, b) => a !== b ? a < b ? -1 : 1 : 0);
-        const priceWithInstallmentBankAndAdvancePayment = {
-          priceList: sortPriceList,
-          advancePayList: sortAdvanceAdvancePayList,
-          showAdvancePay: showAdvancePay
-        };
-      });
     }
 
     onCampaignSelected(campaign: any) {

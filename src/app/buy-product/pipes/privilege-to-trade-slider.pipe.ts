@@ -17,7 +17,7 @@ export class PrivilegeToTradeSliderPipe implements PipeTransform {
       return [];
     }
     return (privilege.trades || []).map((trade: any) => {
-      console.log('(privilege.trades', trade);
+      // console.log('(privilege.trades', trade);
 
       const banks = (trade.banks || []).length > 0;
       const filterIsCashBack = banks

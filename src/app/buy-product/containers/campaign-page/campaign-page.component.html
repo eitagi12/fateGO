@@ -150,7 +150,7 @@
                   <img src="assets/images/icon/sales_portal_green_alert_person.png" class="icon-trade">
                   <span>ข้อตกลงรับสิทธ์ิต่อเนื่อง {{ privilege?.maximumContract }} เดือน</span>
                 </div>
-                <div class="col-12 col-sm-6 pt-3">
+                <div class="col-12 col-sm-6 pt-3" *ngIf="+privilege?.minimumPackagePrice">
                   <img src="assets/images/icon/sales_portal_green_phone.png" class="icon-trade">
                   <span>แพ็กเกจเริ่มต้น {{ +privilege?.minimumPackagePrice || 0 | number }} บาท/เดือน</span>
                   <!-- <span>แพ็คเกจเสริม {{ privilege?.minimumPackagePrice * 1.07 | number }} บาท ( รวมVAT )</span> -->
