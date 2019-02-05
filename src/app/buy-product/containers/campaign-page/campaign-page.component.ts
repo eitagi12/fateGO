@@ -366,10 +366,15 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                     .filter(treadGroup => treadGroup.code === this.selectCustomerGroup.code)).length > 0)).length > 0)
                     .filter(chanel => chanel.channels.indexOf('AIS') > -1)
                     .map(privilegesPayment => {
-                       
+
+                        // tread channels for Ais
+                        privilegesPayment.trades = privilegesPayment.trades.filter((trade: any) => trade.channels.indexOf('AIS') > -1);
+                        console.log('privilegesPayment.trades' , privilegesPayment.trades);
+
+
                         // รอ map data trade ใหม่
                         return privilegesPayment;
-                        
+
                     });
 
                 // Sort Price จากน้อยไปมาก
