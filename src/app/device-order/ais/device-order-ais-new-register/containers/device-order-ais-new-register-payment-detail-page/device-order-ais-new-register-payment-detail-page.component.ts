@@ -69,8 +69,9 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
   shoppingCart: ShoppingCart;
   priceOption: PriceOption;
   transaction: Transaction;
-  receiptInfo: ReceiptInfo;
 
+  receiptInfo: ReceiptInfo;
+  receiptInfoValid = true;
 
   qrCodes: PaymentDetailQRCode[];
   banks: PaymentDetailBank[];
@@ -130,7 +131,7 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
         this.transaction.data.customer.firstName + ' ' +
         this.transaction.data.customer.lastName,
       buyerAddress: this.getFullAddress(this.transaction.data.customer),
-      telNo: ''
+      telNo: this.transaction.data.receiptInfo ? this.transaction.data.receiptInfo.telNo : ''
     };
 
   }
@@ -153,6 +154,14 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
 
   onHome() {
     this.homeService.goToHome();
+  }
+
+  onReceiptInfoComplete(receiptInfo: ReceiptInfo) {
+    this.transaction.data.receiptInfo = receiptInfo;
+  }
+
+  onReceiptInfoError(error: boolean) {
+    this.receiptInfoValid = error;
   }
 
   getFullAddress(customer: Customer) {
