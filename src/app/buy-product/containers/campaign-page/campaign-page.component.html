@@ -40,12 +40,16 @@
               <h5 class="mt-0 text-brown">{{ productDetail?.name }} {{ hansetBundle }}</h5>
             </div>
             <div class="col-4 col-sm-2 text-right">
-              <a href="#" (click)="$event.preventDefault();">
+              <!-- <a href="#" (click)="$event.preventDefault();">
                 <img src="assets/images/icon/icon-dv.png" class="icon-dv m-2">
-              </a>
+              </a> -->
               <a href="#" (click)="getProductSpecification(params?.brand, params?.model); $event.preventDefault();">
                 <img src="assets/images/icon/spec_mobile_phone.png" class="icon-dv m-2">
               </a>
+            </div>
+            <!-- Max Price -->
+            <div class="col-12 text-right text-grey mb-2" *ngIf="priceOptions?.length">
+              ราคาเครื่องเปล่า ฿{{ priceOptions[0]?.maximumNormalPrice | number}}
             </div>
             <!-- color -->
             <div class="col-12 color-picker">
