@@ -367,12 +367,31 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                     .filter(chanel => chanel.channels.indexOf('AIS') > -1)
                     .map(privilegesPayment => {
 
-                        // tread channels for Ais
-                        privilegesPayment.trades = privilegesPayment.trades.filter((trade: any) => trade.channels.indexOf('AIS') > -1);
-                        console.log('privilegesPayment.trades' , privilegesPayment.trades);
+                        const paymentInTread = [];
 
+                        // map data Treads in Privilege
+                        privilegesPayment.trades = privilegesPayment.trades
+                        .filter((trade: any) => trade.channels.indexOf('AIS') > -1)
+                        .filter((tread) => {
 
-                        // รอ map data trade ใหม่
+                            // filter tread ซ้ำ
+                            return tread;
+                        })
+                        .map((treadData) => {
+
+                            const isPaymentCash = treadData.payments.find((payment) => payment.method === 'CA');
+                            const isPaymentCredist = treadData.payments.find((payment) => payment.method === 'CC');
+
+                            if (treadData.payments && treadData.payments.length && treadData.payments[0].installId === null) {
+                                const tradePayment = { cardType: '', method: 'CC/CA', installmentId: '' };
+                                treadData.payments = (isPaymentCredist  && isPaymentCash) ? [tradePayment] : treadData.payments;
+                            }
+
+                            treadData.priority = this.setPriorityByPaymentMethod(treadData);
+                            return treadData;
+                        })
+                        .sort((a, b) => a.priority - b.priority);
+
                         return privilegesPayment;
 
                     });
@@ -390,6 +409,59 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             }).sort((a: any, b: any) => Number(a.value.price) - Number(b.value.price));
 
     }
+
+    equals(x, y) {
+        let objectsAreSame = true;
+        for (const propertyName in x) {
+           if (x[propertyName] !== y[propertyName]) {
+              objectsAreSame = false;
+              break;
+           }
+        }
+        return objectsAreSame;
+     }
+
+     setPriorityByPaymentMethod(priceOptionPrivilegeTrade: any) {
+        const paymentTypes: any[] = priceOptionPrivilegeTrade.payments;
+        const banks: any[] = priceOptionPrivilegeTrade.banks;
+        const FIRST_PRIORITY = 1;
+        const SECOND_PRIORITY = 2;
+        const THIRD_PRIORITY = 3;
+        let priority = 3;
+        if (paymentTypes && paymentTypes.length >= 1) {
+            const paymentType: any = (paymentTypes.filter((paymentList: any) => paymentList.method !== 'PP'))[0];
+            if (paymentType.method) {
+              switch (paymentType.method) {
+                case 'CA':
+                    priority = THIRD_PRIORITY;
+                    break;
+                case 'CC':
+                    priority = FIRST_PRIORITY;
+                    break;
+                case 'CA/CC':
+                    priority = this.isFullPayment(banks) ? THIRD_PRIORITY : FIRST_PRIORITY;
+                    break;
+                default:
+                    priority = THIRD_PRIORITY;
+                    break;
+              }
+            }
+            if (priceOptionPrivilegeTrade.advancePay && priceOptionPrivilegeTrade.advancePay.installmentFlag === 'Y') {
+              priority = SECOND_PRIORITY;
+            }
+            return priority;
+          }
+    }
+
+    private isFullPayment(banks: PriceOptionPrivilegeTradeBank[]): boolean {
+        if (banks && banks.length > 0) {
+          const installmentBanks: PriceOptionPrivilegeTradeBank[] = banks
+            .filter((bank: PriceOptionPrivilegeTradeBank) => bank.installmentDatas ? bank.installmentDatas.length : false);
+            return !!installmentBanks.length;
+        } else {
+          return true;
+        }
+      }
 
     getInstallment(installments: any, campaign: any) {
         const campaignByGroup = campaign.privileges

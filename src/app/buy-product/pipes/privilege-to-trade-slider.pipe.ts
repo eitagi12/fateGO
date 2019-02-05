@@ -3,7 +3,6 @@ import { Pipe, PipeTransform } from '@angular/core';
 enum PaymentTypeConstant {
   CASH_PAYMENT = 'CA',
   CREDIT_CARD_PAYMENT = 'CC',
-  CASH_AND_CREDIT_CARD_PAYMENT = 'CA/CC',
   CREDIT_CARD_AND_CASH_PAYMENT = 'CC/CA',
 }
 
@@ -25,7 +24,8 @@ export class PrivilegeToTradeSliderPipe implements PipeTransform {
 
       let isPaymentCash;
       if (trade.payments.length > 0) {
-        isPaymentCash = trade.payments.find((payment) => payment.method === PaymentTypeConstant.CASH_PAYMENT);
+        isPaymentCash = trade.payments.find((payment) =>
+        payment.method === PaymentTypeConstant.CASH_PAYMENT || payment.method === PaymentTypeConstant.CREDIT_CARD_AND_CASH_PAYMENT);
       } else {
         isPaymentCash = true;
       }
