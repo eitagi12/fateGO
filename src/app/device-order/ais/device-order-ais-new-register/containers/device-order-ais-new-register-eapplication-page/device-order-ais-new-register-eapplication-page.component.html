@@ -9,13 +9,13 @@
   </mc-header>
   <div class="mc-flex-wrap">
     <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
-    <div class="mb-3 mt-3">
+    <div class="my-3">
       <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
-      <div class="card">
-        <div class="card-header bg-transparent text-center">คำขอใช้บริการโทรศัพท์เคลื่อนที่</div>
-        <div class="card-body">
-          <div class="img-eapplication">
-            <img class="img-fluid" *ngIf="getDataBase64Eapp" [src]="getDataBase64Eapp" />
+      <div class="container">
+        <div class="card" *ngIf="eApplicationSrc">
+          <div class="card-header bg-transparent text-center">คำขอใช้บริการโทรศัพท์เคลื่อนที่</div>
+          <div class="card-body">
+            <img [src]="'data:image/jpeg;base64,'+eApplicationSrc" class="img-fluid mx-auto d-block" />
           </div>
         </div>
       </div>

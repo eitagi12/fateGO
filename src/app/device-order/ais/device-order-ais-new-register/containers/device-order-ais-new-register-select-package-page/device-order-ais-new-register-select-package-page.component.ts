@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { BsModalRef } from 'ngx-bootstrap';
 import {
-  PromotionShelve, HomeService, PageLoadingService, ShoppingCart
+  PromotionShelve, HomeService, PageLoadingService, ShoppingCart, BillingSystemType
 } from 'mychannel-shared-libs';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import {
@@ -86,7 +86,7 @@ export class DeviceOrderAisNewRegisterSelectPackagePageComponent implements OnIn
       {
         packageKeyRef: this.priceOption.trade.packageKeyRef,
         orderType: 'New Registration',
-        billingSystem: 'IRB'
+        billingSystem: BillingSystemType.IRB
       },
       +campaign.minimumPackagePrice, +campaign.maxinumPackagePrice)
       .then((promotionShelves: any) => {
