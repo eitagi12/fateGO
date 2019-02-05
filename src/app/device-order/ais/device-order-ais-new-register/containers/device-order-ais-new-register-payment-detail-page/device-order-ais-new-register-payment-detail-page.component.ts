@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HomeService, ShoppingCart } from 'mychannel-shared-libs';
 import { ReceiptInfo } from 'mychannel-shared-libs/lib/component/receipt-info/receipt-info.component';
@@ -8,7 +8,7 @@ import {
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CUSTOMER_INFO_PAGE
 } from 'src/app/device-order/ais/device-order-ais-new-register/constants/route-path.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { TransactionAction, Transaction, Customer } from 'src/app/shared/models/transaction.model';
+import { TransactionAction, Transaction, Customer, Payment } from 'src/app/shared/models/transaction.model';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { ShoppingCartService } from 'src/app/device-order/ais/device-order-ais-new-register/service/shopping-cart.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -56,14 +56,14 @@ export interface PaymentDetailInstallment {
 
 export const CASH_PAYMENT = 'CA';
 export const CREDIT_CARD_PAYMENT = 'CC';
-export const CASH_AND_CREDIT_CARD_PAYMENT = 'CA/CC';
+export const CASH_AND_CREDIT_CARD_PAYMENT = 'CC/CA';
 
 @Component({
   selector: 'app-device-order-ais-new-register-payment-detail-page',
   templateUrl: './device-order-ais-new-register-payment-detail-page.component.html',
   styleUrls: ['./device-order-ais-new-register-payment-detail-page.component.scss']
 })
-export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnInit {
+export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnInit, OnDestroy {
 
   wizards = WIZARD_DEVICE_ORDER_AIS;
   shoppingCart: ShoppingCart;
@@ -102,6 +102,10 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
   }
 
   ngOnInit() {
+
+    // this.priceOption.trade.advancePay.amount = 0;
+    // this.priceOption.trade.advancePay.installmentFlag = 'N';
+
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.createForm();
     this.qrCodes = this.getQRCode();
@@ -131,6 +135,26 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
 
   }
 
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
+  }
+
+  onBack() {
+    if (TransactionAction.KEY_IN === this.transaction.data.action) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VALIDATE_CUSTOMER_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
+    }
+  }
+
+  onNext() {
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CUSTOMER_INFO_PAGE]);
+  }
+
+  onHome() {
+    this.homeService.goToHome();
+  }
+
   getFullAddress(customer: Customer) {
     if (!customer) {
       return '-';
@@ -157,6 +181,16 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
     });
 
     this.paymentForm.valueChanges.subscribe(observer => {
+
+      if (this.selectQRCode || this.selectBank) {
+        this.transaction.data.payment = {
+          method: this.getPaymentMethod(observer.paymentTypeRadio, this.selectQRCode),
+          type: observer.paymentTypeRadio,
+          qrCode: this.selectQRCode,
+          bank: this.selectBank
+        };
+      }
+
     });
 
     this.advancePaymentForm = this.fb.group({
@@ -164,65 +198,150 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
     });
 
     this.advancePaymentForm.valueChanges.subscribe(observer => {
-      console.log('advancePaymentForm', observer);
+      if (this.selectQRCodeAdvancePay || this.selectBankAdvancePay) {
+        this.transaction.data.advancePayment = {
+          method: this.getPaymentMethod(observer.paymentTypeRadio, this.selectQRCodeAdvancePay),
+          type: observer.paymentTypeRadio,
+          qrCode: this.selectQRCodeAdvancePay,
+          bank: this.selectBankAdvancePay
+        };
+      }
     });
-  }
-
-  onBack() {
-    if (TransactionAction.KEY_IN === this.transaction.data.action) {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VALIDATE_CUSTOMER_PAGE]);
-    } else {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
-    }
-  }
-
-  onNext() {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CUSTOMER_INFO_PAGE]);
-  }
-
-  onHome() {
-    this.homeService.goToHome();
   }
 
   onSelectQRCode(qrCode: PaymentDetailQRCode) {
     this.selectQRCode = Object.assign({}, qrCode);
+    this.selectQRCodeAdvancePay = Object.assign({}, qrCode);
+    this.paymentForm.patchValue({ paymentTypeRadio: 'qrcode' });
   }
   onSelectBank(bank: PaymentDetailBank) {
     this.selectBank = Object.assign({}, bank);
-    this.selectBank.installments = null;
+    this.selectBank.installments = undefined;
     this.installments = bank.installments;
+    this.paymentForm.patchValue({ paymentTypeRadio: 'credit' });
   }
   onSelectInstallment(installment: PaymentDetailInstallment[]) {
     this.selectBank.installments = Object.assign({}, installment);
+    this.paymentForm.patchValue({ paymentTypeRadio: 'credit' });
   }
 
-
   onSelectQRCodeAdvancePay(qrCode: PaymentDetailQRCode) {
+    this.selectQRCode = Object.assign({}, qrCode);
     this.selectQRCodeAdvancePay = Object.assign({}, qrCode);
+    this.advancePaymentForm.patchValue({ paymentTypeRadio: 'qrcode' });
   }
   onSelectBankAdvancePay(bank: PaymentDetailBank) {
     this.selectBankAdvancePay = Object.assign({}, bank);
-    this.selectBankAdvancePay.installments = null;
+    this.selectBankAdvancePay.installments = undefined;
+    this.advancePaymentForm.patchValue({ paymentTypeRadio: 'credit' });
+  }
+
+  checkPaymentFormValid(): boolean {
+    const type = this.paymentForm.controls['paymentTypeRadio'].value;
+    if (this.paymentType === CASH_PAYMENT) {
+      if (type === 'qrcode' && !this.selectQRCode) {
+        return false;
+      }
+    } else if (this.paymentType === CREDIT_CARD_PAYMENT) {
+      if (type === 'credit' && (!this.selectBank || !this.selectBank.installments)) {
+        return false;
+      }
+    } else if (this.paymentType === CASH_AND_CREDIT_CARD_PAYMENT) {
+      if (type === 'qrcode' && !this.selectQRCode) {
+        return false;
+      }
+      if (type === 'credit' && !this.selectBank) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  checkAdvancePaymentFormValid(): boolean {
+
+    if (this.priceOption.trade.advancePay &&
+      (this.priceOption.trade.advancePay.amount === 0 ||
+        this.priceOption.trade.advancePay.installmentFlag === 'Y')) {
+      return true;
+    }
+
+    const type = this.advancePaymentForm.controls['paymentTypeRadio'].value;
+
+    if (this.paymentType === CASH_PAYMENT) {
+      if (type === 'qrcode' && !this.selectQRCodeAdvancePay) {
+        return false;
+      }
+    } else if (this.paymentType === CREDIT_CARD_PAYMENT) {
+      if (type === 'qrcode' && !this.selectQRCodeAdvancePay) {
+        return false;
+      }
+      if (type === 'credit' && !this.selectBankAdvancePay) {
+        return false;
+      }
+    } else if (this.paymentType === CASH_AND_CREDIT_CARD_PAYMENT) {
+      if (type === 'qrcode' && !this.selectQRCodeAdvancePay) {
+        return false;
+      }
+      if (type === 'credit' && !this.selectBankAdvancePay) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   checkPaymentType() {
-    this.paymentType = this.priceOption.trade.payments.filter(payment => payment.method !== 'PP')[0].method;
-    if (this.paymentType === CASH_PAYMENT) {
-      this.paymentForm.get('paymentTypeRadio').enable();
-      this.paymentForm.patchValue({ paymentTypeRadio: 'qrcode' });
-    } else if (this.paymentType === CREDIT_CARD_PAYMENT) {
-      this.paymentForm.get('paymentTypeRadio').disable();
-      this.paymentForm.patchValue({ paymentTypeRadio: 'credit' });
-    } else if (this.paymentType === CASH_AND_CREDIT_CARD_PAYMENT) {
-      this.paymentForm.get('paymentTypeRadio').enable();
-      this.paymentForm.patchValue({ paymentTypeRadio: 'qrcode' });
+    this.paymentType = this.priceOption.trade.payments.filter(payment => payment.method !== 'PP')[0].method || '';
+    // this.paymentType = 'CC/CA';
+    if (this.transaction.data.payment) {
+      this.paymentForm.patchValue({ paymentTypeRadio: this.transaction.data.payment.type });
+      this.selectQRCode = this.transaction.data.payment.qrCode;
+      this.selectBank = this.transaction.data.payment.bank;
+      this.installments = this.banks.find(bank => bank.abb === this.selectBank.abb).installments;
     } else {
-      this.paymentForm.get('paymentTypeRadio').enable();
-      this.paymentForm.patchValue({ paymentTypeRadio: 'qrcode' });
+      if (this.paymentType === CASH_PAYMENT) {
+        this.paymentForm.get('paymentTypeRadio').enable();
+        this.paymentForm.patchValue({ paymentTypeRadio: 'qrcode' });
+      } else if (this.paymentType === CREDIT_CARD_PAYMENT) {
+        this.paymentForm.get('paymentTypeRadio').disable();
+        this.paymentForm.patchValue({ paymentTypeRadio: 'credit' });
+      } else if (this.paymentType === CASH_AND_CREDIT_CARD_PAYMENT) {
+        this.paymentForm.get('paymentTypeRadio').enable();
+        this.paymentForm.patchValue({ paymentTypeRadio: 'qrcode' });
+      } else {
+        this.paymentForm.get('paymentTypeRadio').enable();
+        this.paymentForm.patchValue({ paymentTypeRadio: 'qrcode' });
+      }
     }
 
-    this.advancePaymentForm.get('paymentTypeRadio').enable();
-    this.advancePaymentForm.patchValue({ paymentTypeRadio: 'qrcode' });
+    if (this.transaction.data.advancePayment) {
+      this.advancePaymentForm.patchValue({ paymentTypeRadio: this.transaction.data.advancePayment.type });
+      this.selectQRCodeAdvancePay = this.transaction.data.advancePayment.qrCode;
+      this.selectBankAdvancePay = this.transaction.data.advancePayment.bank;
+    } else {
+      this.advancePaymentForm.get('paymentTypeRadio').enable();
+      this.advancePaymentForm.patchValue({ paymentTypeRadio: 'qrcode' });
+    }
+
+  }
+
+  getPaymentMethod(paymentType: string, qrCode?: PaymentDetailQRCode): string {
+    if (paymentType === 'qrcode' && qrCode) {
+      if (qrCode.id === parseInt('002', 8)) { // Rabbit Line Pay
+        return 'RL';
+      }
+      if (qrCode.id === parseInt('003', 8)) { // Thai QR Payment
+        return 'PB';
+      }
+    }
+    if (paymentType === 'debit') {
+      return 'CA';
+    }
+    if (paymentType === 'credit') {
+      return 'CC';
+    }
+    return '';
   }
 
   getQRCode() {
