@@ -146,7 +146,7 @@
                     ฿{{ (+privilege?.maximumPromotionPrice) + (+privilege?.maximumAdvancePay) | number }} (รวม VAT)
                   </span>
                 </div>
-                <div class="col-12 col-sm-6 pt-3">
+                <div class="col-12 col-sm-6 pt-3" *ngIf="+privilege?.maximumContract">
                   <img src="assets/images/icon/sales_portal_green_alert_person.png" class="icon-trade">
                   <span>ข้อตกลงรับสิทธ์ิต่อเนื่อง {{ privilege?.maximumContract }} เดือน</span>
                 </div>

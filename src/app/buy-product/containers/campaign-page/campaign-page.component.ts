@@ -367,16 +367,9 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                     .filter(chanel => chanel.channels.indexOf('AIS') > -1)
                     .map(privilegesPayment => {
 
-                        const paymentInTread = [];
-
                         // map data Treads in Privilege
                         privilegesPayment.trades = privilegesPayment.trades
                         .filter((trade: any) => trade.channels.indexOf('AIS') > -1)
-                        .filter((tread) => {
-
-                            // filter tread ซ้ำ
-                            return tread;
-                        })
                         .map((treadData) => {
 
                             const isPaymentCash = treadData.payments.find((payment) => payment.method === 'CA');
@@ -389,6 +382,22 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
                             treadData.priority = this.setPriorityByPaymentMethod(treadData);
                             return treadData;
+
+                        })
+                        .filter((tread) => {
+
+                            /* Merge Trade Payment
+                                เงื่อนไขการรวม Trade จ่ายเงิน
+                                1.payments[0].installId === null
+                                2.payments[0].method == 'CC'
+                            */
+
+                            if (tread.payments && tread.payments.length > 0 && tread.payments[0].installId === null) {
+                                if (tread.payments[0].method === 'CC') {
+                                    return;
+                                }
+                            }
+                            return tread;
                         })
                         .sort((a, b) => a.priority - b.priority);
 
@@ -410,17 +419,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
     }
 
-    equals(x, y) {
-        let objectsAreSame = true;
-        for (const propertyName in x) {
-           if (x[propertyName] !== y[propertyName]) {
-              objectsAreSame = false;
-              break;
-           }
-        }
-        return objectsAreSame;
-     }
-
      setPriorityByPaymentMethod(priceOptionPrivilegeTrade: any) {
         const paymentTypes: any[] = priceOptionPrivilegeTrade.payments;
         const banks: any[] = priceOptionPrivilegeTrade.banks;
@@ -438,7 +436,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                 case 'CC':
                     priority = FIRST_PRIORITY;
                     break;
-                case 'CA/CC':
+                case 'CC/CA':
                     priority = this.isFullPayment(banks) ? THIRD_PRIORITY : FIRST_PRIORITY;
                     break;
                 default:
