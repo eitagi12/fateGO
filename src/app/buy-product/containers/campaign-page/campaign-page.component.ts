@@ -378,6 +378,11 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                             if (treadData.payments && treadData.payments.length && treadData.payments[0].installId === null) {
                                 const tradePayment = { cardType: '', method: 'CC/CA', installmentId: '' };
                                 treadData.payments = (isPaymentCredist  && isPaymentCash) ? [tradePayment] : treadData.payments;
+                            } else {
+                                // Tread for TDM
+                                if (!treadData.payments.length) {
+                                    treadData.payments = { cardType: '', method: 'CC/CA', installmentId: '' };
+                                }
                             }
 
                             treadData.priority = this.setPriorityByPaymentMethod(treadData);
@@ -421,45 +426,28 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
      setPriorityByPaymentMethod(priceOptionPrivilegeTrade: any) {
         const paymentTypes: any[] = priceOptionPrivilegeTrade.payments;
-        const banks: any[] = priceOptionPrivilegeTrade.banks;
-        const FIRST_PRIORITY = 1;
-        const SECOND_PRIORITY = 2;
-        const THIRD_PRIORITY = 3;
         let priority = 3;
         if (paymentTypes && paymentTypes.length >= 1) {
             const paymentType: any = (paymentTypes.filter((paymentList: any) => paymentList.method !== 'PP'))[0];
             if (paymentType.method) {
               switch (paymentType.method) {
                 case 'CA':
-                    priority = THIRD_PRIORITY;
+                    priority = 3;
                     break;
                 case 'CC':
-                    priority = FIRST_PRIORITY;
+                    priority = 1;
                     break;
                 case 'CC/CA':
-                    priority = this.isFullPayment(banks) ? THIRD_PRIORITY : FIRST_PRIORITY;
-                    break;
-                default:
-                    priority = THIRD_PRIORITY;
+                    priority = 3;
                     break;
               }
             }
             if (priceOptionPrivilegeTrade.advancePay && priceOptionPrivilegeTrade.advancePay.installmentFlag === 'Y') {
-              priority = SECOND_PRIORITY;
+              priority = 2;
             }
-            return priority;
           }
+          return priority;
     }
-
-    private isFullPayment(banks: PriceOptionPrivilegeTradeBank[]): boolean {
-        if (banks && banks.length > 0) {
-          const installmentBanks: PriceOptionPrivilegeTradeBank[] = banks
-            .filter((bank: PriceOptionPrivilegeTradeBank) => bank.installmentDatas ? bank.installmentDatas.length : false);
-            return !!installmentBanks.length;
-        } else {
-          return true;
-        }
-      }
 
     getInstallment(installments: any, campaign: any) {
         const campaignByGroup = campaign.privileges
