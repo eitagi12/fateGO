@@ -4,8 +4,8 @@ import { ChargeType } from 'mychannel-shared-libs';
 
 export interface PromotionShelveInfo {
   packageKeyRef: string;
-  orderType: 'New Registration';
-  billingSystem: 'IRB';
+  orderType: string; // 'New Registration';
+  billingSystem: string; // 'IRB'
 }
 
 @Injectable({

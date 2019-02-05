@@ -1,8 +1,5 @@
 import { NgModule, ErrorHandler } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  HammerGestureConfig
-} from '@angular/platform-browser';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { JwtModule, JWT_OPTIONS } from '@auth0/angular-jwt';
@@ -12,11 +9,11 @@ import {
   MyChannelSharedLibsModule,
 } from 'mychannel-shared-libs';
 import { AppRoutingModule } from './app-routing.module';
+import { CookiesStorageService } from 'ngx-store';
 /* Components */
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 import { ErrorPageComponent } from './containers/error-page/error-page.component';
-import { CookiesStorageService } from 'ngx-store';
 import { SharedModule } from './shared/shared.module';
 
 @NgModule({

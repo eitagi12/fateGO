@@ -12,7 +12,7 @@
     <div class="mt-3 mb-3">
       <mc-wizard [wizards]="wizards" active="3"></mc-wizard>
 
-      <mc-mobile-care [mobileCare]="mobileCare" (completed)="onCompleted($event)"></mc-mobile-care>
+      <mc-mobile-care [mobileCare]="mobileCare" [normalPrice]="priceOption?.trade?.normalPrice" (completed)="onCompleted($event)"></mc-mobile-care>
     </div>
   </div>
   <mc-footer>
