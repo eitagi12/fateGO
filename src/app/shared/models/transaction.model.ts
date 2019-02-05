@@ -1,4 +1,5 @@
 import { ChargeType } from 'mychannel-shared-libs';
+import { BestSeller } from 'mychannel-shared-libs/lib/service/models/best-seller';
 
 export enum TransactionType {
   DEVICE_ORDER_NEW_REGISTER_AIS = 'NewRegisterAIS',
@@ -47,6 +48,7 @@ export interface TransactionData {
   order?: Order;
   reasonCode?: string;
   billingInformation?: BillingInformation;
+  seller?: Seller;
 }
 
 export interface MainPromotion {
@@ -95,21 +97,6 @@ export interface Customer {
   customerPinCode?: string;
 }
 
-export interface BillDeliveryAddress {
-  homeNo: string;
-  moo?: string;
-  mooBan?: string;
-  room?: string;
-  floor?: string;
-  buildingName?: string;
-  soi?: string;
-  street?: string;
-  province: string;
-  amphur: string;
-  tumbol: string;
-  zipCode: string;
-}
-
 export interface SimCard {
   mobileNo: string;
   simSerial?: string;
@@ -122,17 +109,6 @@ export interface SimCard {
 
 export interface MainPackage {
   [key: string]: any;
-  // billingSystem?: string;
-  // duration?: string;
-  // itemId: string;
-  // itemsPriority?: string;
-  // numberOfMobile?: string;
-  // packageType?: string;
-  // productPkg?: string;
-  // promotionPackage?: string;
-  // shortNameThai: string;
-  // statementThai?: string;
-  // parameters?: any;
 }
 
 export interface OnTopPackage {
@@ -205,4 +181,27 @@ export interface BillingAccountData {
   billingMethodText?: string;
   billCycleText?: string;
   billAddressText?: string;
+}
+
+export interface BillDeliveryAddress {
+  homeNo: string;
+  moo?: string;
+  mooBan?: string;
+  room?: string;
+  floor?: string;
+  buildingName?: string;
+  soi?: string;
+  street?: string;
+  province: string;
+  amphur: string;
+  tumbol: string;
+  zipCode: string;
+}
+
+export interface Seller {
+  sellerName?: string;
+  locationName?: string;
+  locationCode?: string;
+  sellerNo?: string;
+  shareUser?: string;
 }
