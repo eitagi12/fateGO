@@ -189,11 +189,11 @@
         </div>
       </div>
 
-      <mc-receipt-info [receiptInfo]="receiptInfo"></mc-receipt-info>
+      <mc-receipt-info [receiptInfo]="receiptInfo" (complete)="onReceiptInfoComplete($event)" (error)="onReceiptInfoError($event)"></mc-receipt-info>
     </div>
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()" [disabled]="!(checkPaymentFormValid() && checkAdvancePaymentFormValid())">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!(checkPaymentFormValid() && checkAdvancePaymentFormValid() && receiptInfoValid)">NEXT</button>
   </mc-footer>
 </div>
