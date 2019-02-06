@@ -25,6 +25,7 @@ export class DeviceOrderAisNewRegisterQueuePageComponent implements OnInit {
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
   ) {
+    this.transaction = this.transactionService.load();
   }
 
   ngOnInit() {
@@ -42,10 +43,7 @@ export class DeviceOrderAisNewRegisterQueuePageComponent implements OnInit {
   }
 
   onNext() {
-    this.pageLoadingService.openLoading();
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_RESULT_PAGE]);
-    this.pageLoadingService.closeLoading();
-
   }
 
   onHome() {

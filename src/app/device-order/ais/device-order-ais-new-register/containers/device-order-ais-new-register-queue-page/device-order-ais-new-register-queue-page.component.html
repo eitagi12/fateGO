@@ -7,35 +7,31 @@
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
-
-  <div class="mc-flex-wrap">
+  <div class="mc-flex-wrap bg-white">
     <div class="my-3">
-      <div class="container-fluid">
-        <div class="card mb-3">
-          <div class="card-body">
-            <div class="text-center mt-3 mb-3">
-              <img src="assets/images/icon/sales_portal_white_check.png" class="icon">
-              <div class="text-green">หมายเลข 085-555-5555</div>
-              <div class="text-green">รายการสั่งซื้อของท่านได้เข้าสู่ระบบเรียบร้อยแล้ว</div>
-            </div>
 
-            <form [formGroup]="queueFrom">
-              <div class="form-group text-center">
-                <div class="mt-5">เบอร์โทรศัพท์รับหมายเลขสั่งซื้อเพื่อชำระสินค้าของท่านคือ</div>
-                <input class="form-control text-center mb-3" id="mobileNo" maxlength="10"
-                  autofocus autocomplete="off" formControlName="mobileNo" placeholder="ระบุเบอร์โทรศัพท์รับ SMS" [ngClass]="{ 'is-invalid' : queueFrom.controls.mobileNo.invalid && queueFrom.controls.mobileNo.touched}">
-                <small class="invalid-feedback" *ngIf="queueFrom.controls.mobileNo.touched && queueFrom.controls.mobileNo.errors">
-                  **กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง
-                </small>
-              </div>
-            </form>
-
-          </div>
+      <div class="container pt-3">
+        <img src="assets/images/icon/sales_portal_white_check.png" class="d-block m-auto icon">
+        <div class="my-3 text-center text-light-green">
+          <p>หมายเลข {{ transaction?.data?.simCard?.mobileNo | mobileNo }}</p>
+          <p>หมายเลขรายการสั่งชื้อของท่านได้เข้าสู่ระบบเรียบร้อยแล้ว</p>
         </div>
+        <form [formGroup]="queueFrom">
+          <div class="form-group">
+            <div class="mt-5">เบอร์โทรศัพท์รับหมายเลขสั่งซื้อเพื่อชำระสินค้าของท่านคือ</div>
+            <input class="form-control text-center mb-3" id="mobileNo" maxlength="10" autofocus autocomplete="off"
+              formControlName="mobileNo" placeholder="ระบุเบอร์โทรศัพท์รับ SMS" [ngClass]="{ 'is-invalid' : queueFrom.controls.mobileNo.invalid && queueFrom.controls.mobileNo.touched && queueFrom.controls.mobileNo.errors }">
+            <small class="invalid-feedback" *ngIf="queueFrom.controls.mobileNo.touched && queueFrom.controls.mobileNo.errors">
+              **กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง
+            </small>
+          </div>
+        </form>
+
       </div>
+
+
     </div>
   </div>
-
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
     <button class="btn btn-success" (click)="onNext()" [disabled]="queueFrom.invalid">NEXT</button>
