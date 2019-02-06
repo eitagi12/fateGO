@@ -704,7 +704,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         }
         price = installmentPercentage === 0 ?
             priceAmount / installmentMonth :
-            (priceAmount + (installmentMonth * (priceAmount * Math.ceil(installmentPercentage) / 100))) / installmentMonth
+            (priceAmount + (installmentMonth * (priceAmount * Math.ceil(installmentPercentage) / 100))) / installmentMonth;
         return Math.round(price);
     }
 
