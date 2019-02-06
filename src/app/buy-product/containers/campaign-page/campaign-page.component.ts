@@ -58,8 +58,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
     groupInstallmentByPercentageAndMonths: any;
 
-    priceWithBankInstallmentAndAdvancePayment = { data: [], isShowAllAdvancePay: false, fromTrade: false };
-
     private privilegeTradeInstallmentGroup = [];
 
     // trade
@@ -312,6 +310,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     }
 
     onCustomerGroupSelected(customerGroup: any) {
+        console.log('onCustomerGroupSelected');
         this.selectCustomerGroup = customerGroup;
         if (!this.priceOptions) {
             this.campaignSliders = [];
@@ -367,16 +366,9 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                     .filter(chanel => chanel.channels.indexOf('AIS') > -1)
                     .map(privilegesPayment => {
 
-                        const paymentInTread = [];
-
                         // map data Treads in Privilege
                         privilegesPayment.trades = privilegesPayment.trades
                         .filter((trade: any) => trade.channels.indexOf('AIS') > -1)
-                        .filter((tread) => {
-
-                            // filter tread ซ้ำ
-                            return tread;
-                        })
                         .map((treadData) => {
 
                             const isPaymentCash = treadData.payments.find((payment) => payment.method === 'CA');
@@ -385,10 +377,31 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                             if (treadData.payments && treadData.payments.length && treadData.payments[0].installId === null) {
                                 const tradePayment = { cardType: '', method: 'CC/CA', installmentId: '' };
                                 treadData.payments = (isPaymentCredist  && isPaymentCash) ? [tradePayment] : treadData.payments;
+                            } else {
+                                // Tread for TDM
+                                if (!treadData.payments.length) {
+                                    treadData.payments = { cardType: '', method: 'CC/CA', installmentId: '' };
+                                }
                             }
 
                             treadData.priority = this.setPriorityByPaymentMethod(treadData);
                             return treadData;
+
+                        })
+                        .filter((tread) => {
+
+                            /* Merge Trade Payment
+                                เงื่อนไขการรวม Trade จ่ายเงิน
+                                1.payments[0].installId === null
+                                2.payments[0].method == 'CC'
+                            */
+
+                            if (tread.payments && tread.payments.length > 0 && tread.payments[0].installId === null) {
+                                if (tread.payments[0].method === 'CC') {
+                                    return;
+                                }
+                            }
+                            return tread;
                         })
                         .sort((a, b) => a.priority - b.priority);
 
@@ -410,60 +423,35 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
     }
 
-    equals(x, y) {
-        let objectsAreSame = true;
-        for (const propertyName in x) {
-           if (x[propertyName] !== y[propertyName]) {
-              objectsAreSame = false;
-              break;
-           }
-        }
-        return objectsAreSame;
-     }
-
      setPriorityByPaymentMethod(priceOptionPrivilegeTrade: any) {
         const paymentTypes: any[] = priceOptionPrivilegeTrade.payments;
-        const banks: any[] = priceOptionPrivilegeTrade.banks;
-        const FIRST_PRIORITY = 1;
-        const SECOND_PRIORITY = 2;
-        const THIRD_PRIORITY = 3;
         let priority = 3;
         if (paymentTypes && paymentTypes.length >= 1) {
             const paymentType: any = (paymentTypes.filter((paymentList: any) => paymentList.method !== 'PP'))[0];
             if (paymentType.method) {
               switch (paymentType.method) {
                 case 'CA':
-                    priority = THIRD_PRIORITY;
+                    priority = 3;
                     break;
                 case 'CC':
-                    priority = FIRST_PRIORITY;
+                    priority = 1;
                     break;
-                case 'CA/CC':
-                    priority = this.isFullPayment(banks) ? THIRD_PRIORITY : FIRST_PRIORITY;
-                    break;
-                default:
-                    priority = THIRD_PRIORITY;
+                case 'CC/CA':
+                    priority = 3;
                     break;
               }
             }
             if (priceOptionPrivilegeTrade.advancePay && priceOptionPrivilegeTrade.advancePay.installmentFlag === 'Y') {
-              priority = SECOND_PRIORITY;
+              priority = 2;
             }
-            return priority;
           }
+          return priority;
     }
 
-    private isFullPayment(banks: PriceOptionPrivilegeTradeBank[]): boolean {
-        if (banks && banks.length > 0) {
-          const installmentBanks: PriceOptionPrivilegeTradeBank[] = banks
-            .filter((bank: PriceOptionPrivilegeTradeBank) => bank.installmentDatas ? bank.installmentDatas.length : false);
-            return !!installmentBanks.length;
-        } else {
-          return true;
-        }
-      }
-
     getInstallment(installments: any, campaign: any) {
+
+        const priceWithInstallmentList = [];
+
         const campaignByGroup = campaign.privileges
             .filter(privileges => Object.keys(privileges.customerGroups
                 .filter(customerGroup => customerGroup.code === this.selectCustomerGroup.code)).length > 0)
@@ -474,7 +462,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         installments.forEach((installment: any) => {
             const priceList: any[] = [];
             const advancePayList: any[] = [];
-            let showAdvancePay = false;
+            let showAdvancePay: boolean;
             campaignByGroup.forEach((privilege: any) => {
                 privilege.trades.forEach((trade: any) => {
                     const isExist = trade.banks.filter(filterBanks => installment.banks
@@ -489,30 +477,41 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                             +key[0] || 0
                         );
                         const advancePay = this.calculateAdvancePay(
-                            +trade.promotionPrice,
-                            +trade.advancePay.amount,
+                            +trade.promotionPrice || 0,
+                            +trade.advancePay.amount || 0,
                             +key[1] || 0,
                             +key[0] || 0
                         );
                         showAdvancePay = !!(trade.advancePay.installmentFlag === 'Y'
-                            && trade.advancePay.amount !== null && trade.advancePay.amount !== 0 && trade.advancePay.amount);
-                        if (price !== 0) {
-                            priceList.push(price);
-                        }
-                        if (advancePay !== 0) {
-                            advancePayList.push(advancePay);
-                        }
+                            && trade.advancePay.amount !== null && trade.advancePay.amount !== 0 && trade.advancePay.amount ? true : false);
+
+                        priceList.push(price);
+                        advancePayList.push(advancePay);
+
                     }
                 });
             });
-            const sortPriceList = priceList.sort((a, b) => a !== b ? a < b ? -1 : 1 : 0);
-            const sortAdvanceAdvancePayList = advancePayList.sort((a, b) => a !== b ? a < b ? -1 : 1 : 0);
+            const filterZeroPriceList = priceList.filter(price => price !== 0);
+            const filterZeroAdvancePayList = advancePayList.filter(advancePay => advancePay !== 0);
+            const sortPriceList = filterZeroPriceList.sort((a, b) => a !== b ? a < b ? -1 : 1 : 0);
+            const sortAdvanceAdvancePayList = filterZeroAdvancePayList.sort((a, b) => a !== b ? a < b ? -1 : 1 : 0);
             const priceWithInstallmentBankAndAdvancePayment = {
                 priceList: sortPriceList,
                 advancePayList: sortAdvanceAdvancePayList,
-                showAdvancePay: showAdvancePay
+                showAdvancePay: showAdvancePay,
+                banks: installment.banks,
+                month: installment.month,
+                percentage: installment.percentage
             };
+
+            priceWithInstallmentList.push(priceWithInstallmentBankAndAdvancePayment);
         });
+
+        this.privilegeTradeInstallmentGroup = priceWithInstallmentList;
+        if (this.privilegeTradeInstallmentGroup) {
+            console.log('privilegeTradeInstallmentGroup', this.privilegeTradeInstallmentGroup);
+            this.showInstallmentListTemplate();
+        }
     }
 
     onCampaignSelected(campaign: any) {
@@ -524,13 +523,13 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     }
 
     onInstallmentList(campaignSlider: any) {
-        const priceList = [];
-        const campaign = campaignSlider.value;
+        const selectCustomerGroup = {
+            code: 'MC001'
+        };
+        const campaignSliderForFilter = Object.assign({}, campaignSlider);
+        const filterPriceOption = this.getFilterPriceOptionByCustomerGroup(campaignSliderForFilter.value, selectCustomerGroup);
+        const campaign = filterPriceOption;
         const installments = campaignSlider.installments;
-
-        this.priceWithBankInstallmentAndAdvancePayment.data = this.getInstallments(campaign);
-        this.priceWithBankInstallmentAndAdvancePayment.isShowAllAdvancePay = false;
-        this.showInstallmentListTemplate();
         this.getInstallment(installments, campaign);
     }
 
@@ -560,6 +559,9 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         const installments: CampaignSliderInstallment[] = [];
         Object.keys(installmentGroups).forEach((key: string) => {
             const keys: string[] = key.split('-');
+            if (+keys[0] === 0 && +keys[1] === 0) {
+                return;
+            }
             installments.push({
                 percentage: +keys[0] || 0,
                 month: +keys[1] || 0,
@@ -669,192 +671,39 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         });
     }
 
-    groupPrivilegeTradeInstallmentByPercentageMonth(campaignSlider: any) {
-        const groupByPercentageAndMonths = new Array<PrivilegeTradeInstallment>();
-        const priceOptionForFilter = Object.assign({}, campaignSlider);
-        const filterPriceOption = this.getFilterPriceOptionByCustomerGroup(priceOptionForFilter);
-        try {
-            if (filterPriceOption.privileges) {
-                filterPriceOption.privileges
-                    .map(privilge => {
-                        privilge.trades
-                            .map(trade => {
-                                trade.banks.map(bank => {
-                                    bank.installmentDatas.map(installment => {
-                                        if (groupByPercentageAndMonths.length === 0) {
-                                            groupByPercentageAndMonths.push(installment);
-                                        } else {
-                                            const isExist = groupByPercentageAndMonths
-                                                .filter(
-                                                    installmentInGroup =>
-                                                        installmentInGroup.installmentMounth === installment.installmentMounth &&
-                                                        installmentInGroup.installmentPercentage === installment.installmentPercentage
-                                                );
-                                            if (isExist.length === 0) {
-                                                groupByPercentageAndMonths.push(installment);
-                                            }
-                                        }
-                                    });
-                                });
-                            });
-                    });
-            }
-        } catch (error) {
-            console.error('error', error);
-        }
-        // sort month desc
-        groupByPercentageAndMonths.sort((a, b) => {
-            return a.installmentMounth > b.installmentMounth ? -1 : (a.installmentMounth < b.installmentMounth ? 1 : 0);
-        });
-        // sort percentage asc
-        groupByPercentageAndMonths.sort((a, b) => {
-            return a.installmentPercentage > b.installmentPercentage ? 1 : (a.installmentPercentage < b.installmentPercentage ? -1 : 0);
-        });
-        this.groupInstallmentByPercentageAndMonths = groupByPercentageAndMonths;
-        this.groupBankByInstallment(filterPriceOption);
-    }
-
-    private groupBankByInstallment(priceOption: any) {
-        const priceWithInstallmentBankAndAdvancePaymentList = [];
-        const groupBankByInstallment = new Array<PrivilegeTradeInstallment>();
-        const priceWithInstallmentList = [];
-        for (const installmentGroupByMonthAndPercetage of this.groupInstallmentByPercentageAndMonths) {
-            const banks = [];
-            const priceList = [];
-            const advancePayList = [];
-            let showAdvancePay = false;
-            for (const privilege of priceOption.privileges) {
-                for (const trade of privilege.trades) {
-                    for (const bank of trade.banks) {
-                        const isExist = bank.installmentDatas
-                            .filter(
-                                installment =>
-                                    installment.installmentMounth === installmentGroupByMonthAndPercetage.installmentMounth &&
-                                    installment.installmentPercentage === installmentGroupByMonthAndPercetage.installmentPercentage);
-                        if (isExist.length > 0) {
-                            if (banks.length === 0) {
-                                const price = this.calculatePrice(
-                                    trade.promotionPrice,
-                                    installmentGroupByMonthAndPercetage.installmentMounth,
-                                    installmentGroupByMonthAndPercetage.installmentPercentage
-                                );
-                                const advancePay = this.calculateAdvancePay(
-                                    trade.promotionPrice,
-                                    trade.advancePay.amount,
-                                    installmentGroupByMonthAndPercetage.installmentMounth,
-                                    installmentGroupByMonthAndPercetage.installmentPercentage
-                                );
-                                showAdvancePay =
-                                    trade.advancePay.installmentFlag === 'Y' && trade.advancePay.amount !== null
-                                        && trade.advancePay.amount !== 0 && trade.advancePay.amount ? true : false;
-                                banks.push(bank);
-                                priceList.push(price);
-                                advancePayList.push(advancePay);
-                            } else {
-                                const isExistBank = banks
-                                    .filter(
-                                        (selectBank: PriceOptionPrivilegeTradeBank) =>
-                                            selectBank.abb === bank.abb);
-
-                                if (isExistBank.length === 0) {
-                                    const price = this.calculatePrice(
-                                        trade.promotionPrice,
-                                        installmentGroupByMonthAndPercetage.installmentMounth,
-                                        installmentGroupByMonthAndPercetage.installmentPercentage
-                                    );
-                                    const advancePay = this.calculateAdvancePay(
-                                        trade.promotionPrice,
-                                        trade.advancePay.amount,
-                                        installmentGroupByMonthAndPercetage.installmentMounth,
-                                        installmentGroupByMonthAndPercetage.installmentPercentage
-                                    );
-                                    showAdvancePay = trade.advancePay.installmentFlag === 'Y' && trade.advancePay.amount !== null
-                                        && trade.advancePay.amount !== 0 && trade.advancePay.amount ? true : false;
-                                    banks.push(bank);
-                                    priceList.push(price);
-                                    advancePayList.push(advancePay);
-                                } else {
-                                    const price = this.calculatePrice(
-                                        trade.promotionPrice,
-                                        installmentGroupByMonthAndPercetage.installmentMounth,
-                                        installmentGroupByMonthAndPercetage.installmentPercentage
-                                    );
-                                    const advancePay = this.calculateAdvancePay(
-                                        trade.promotionPrice,
-                                        trade.advancePay.amount,
-                                        installmentGroupByMonthAndPercetage.installmentMounth,
-                                        installmentGroupByMonthAndPercetage.installmentPercentage
-                                    );
-                                    showAdvancePay = trade.advancePay.installmentFlag === 'Y' && trade.advancePay.amount !== null
-                                        && trade.advancePay.amount !== 0 && trade.advancePay.amount ? true : false;
-                                    priceList.push(price);
-                                    advancePayList.push(advancePay);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            const filterZeroPriceList = priceList.filter(price => price !== 0);
-            const filterZeroAdvancePayList = advancePayList.filter(advancePay => advancePay !== 0);
-            const sortPriceList = filterZeroPriceList.sort((a, b) => a !== b ? a < b ? -1 : 1 : 0);
-            const sortAdvanceAdvancePayList = filterZeroAdvancePayList.sort((a, b) => a !== b ? a < b ? -1 : 1 : 0);
-            const priceWithInstallmentBankAndAdvancePayment = {
-                banks: banks,
-                installment: installmentGroupByMonthAndPercetage,
-                priceList: sortPriceList,
-                advancePayList: sortAdvanceAdvancePayList,
-                showAdvancePay: showAdvancePay
-            };
-            priceWithInstallmentList.push(priceWithInstallmentBankAndAdvancePayment);
-        }
-
-
-
-        const isShowAllAdvancePay = priceWithInstallmentList.filter(price => price.showAdvancePay === true);
-        if (isShowAllAdvancePay.length > 0) {
-            this.priceWithBankInstallmentAndAdvancePayment.isShowAllAdvancePay = true;
-        }
-
-        console.log('priceWithInstallmentList', priceWithInstallmentList);
-
-        this.priceWithBankInstallmentAndAdvancePayment.data = priceWithInstallmentList;
-    }
-
-    private getFilterPriceOptionByCustomerGroup(campaignSlider: any) {
-        if (campaignSlider.value.privileges) {
-            const filterPrivileges = campaignSlider.value.privileges
+    private getFilterPriceOptionByCustomerGroup(campaignSlider: any, selectCustomerGroup: any) {
+        if (campaignSlider.privileges) {
+            const filterPrivileges = campaignSlider.privileges
                 .filter(privilege => {
-                    const isPrivilegeInCustomerGroup =
-                        privilege.customerGroups.filter(customerGroup => customerGroup.code !== '5');
+                    const isPrivilegeInCustomerGroup = privilege.customerGroups.filter(customerGroup =>
+                        customerGroup.code === selectCustomerGroup.code
+                    );
                     return isPrivilegeInCustomerGroup.length > 0 ? true : false;
                 });
-
-            const filterPrivilegeAndTrade = filterPrivileges
-                .map(filterPrivilege => {
-                    const filterTrades = filterPrivilege.trades.filter(trade => {
-                        const isPrivilegeTradeInCustomerGroup =
-                            trade.customerGroups.filter(customerGroup => customerGroup.code === '5');
-                        return isPrivilegeTradeInCustomerGroup.length > 0 ? true : false;
+                const filterPrivilegeAndTrade = filterPrivileges
+                    .map(filterPrivilege => {
+                        const filterTrades = filterPrivilege.trades.filter(trade => {
+                            const isPrivilegeTradeInCustomerGroup = trade.customerGroups.filter(customerGroup =>
+                                customerGroup.code === selectCustomerGroup.code);
+                            return isPrivilegeTradeInCustomerGroup.length > 0 ? true : false;
+                        });
+                        filterPrivilege.trades = filterTrades;
+                        return filterPrivilege;
                     });
-                    filterPrivilege.trades = filterTrades;
-                    return filterPrivilege;
-                });
 
-            campaignSlider.value.privileges = filterPrivileges;
+                campaignSlider.privileges = filterPrivileges;
         }
         return campaignSlider;
     }
 
     private calculatePrice(priceAmount: number, installmentMonth: number, installmentPercentage: number) {
         let price = 0;
-        if (installmentPercentage !== 0) {
-
-        }
-
         // คำนวนเปอร์เซ็น
-        price = installmentPercentage === 0 ? priceAmount / installmentMonth :
+        if (installmentMonth === 0 && installmentPercentage === 0) {
+            return 0;
+        }
+        price = installmentPercentage === 0 ?
+            priceAmount / installmentMonth :
             (priceAmount + (installmentMonth * (priceAmount * Math.ceil(installmentPercentage) / 100))) / installmentMonth;
         return Math.round(price);
     }
@@ -862,6 +711,9 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     private calculateAdvancePay(price: number, advancePayAmount: number, installmentMonth: number, installmentPercentage: number) {
         if (price > 0) {
             let advancePay = 0;
+            if (installmentMonth === 0 && installmentPercentage === 0) {
+                return 0;
+            }
             advancePay = installmentPercentage === 0 ?
                 (price + advancePayAmount) / installmentMonth :
                 (

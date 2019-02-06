@@ -24,7 +24,7 @@
     </nav>
 
 
-    <div class="container-fluid text-success mb-2" [mcLoading]="productDetailService" >
+    <div class="container-fluid text-success mb-2" [mcLoading]="productDetailService">
       <div class="row bg-white shadow-sm pt-3 pb-3">
         <div class="col-12 col-sm-3 col-md-3 col-lg-2 mb-2">
           <div class="shadow-sm text-center">
@@ -40,12 +40,16 @@
               <h5 class="mt-0 text-brown">{{ productDetail?.name }} {{ hansetBundle }}</h5>
             </div>
             <div class="col-4 col-sm-2 text-right">
-              <a href="#" (click)="$event.preventDefault();">
+              <!-- <a href="#" (click)="$event.preventDefault();">
                 <img src="assets/images/icon/icon-dv.png" class="icon-dv m-2">
-              </a>
+              </a> -->
               <a href="#" (click)="getProductSpecification(params?.brand, params?.model); $event.preventDefault();">
                 <img src="assets/images/icon/spec_mobile_phone.png" class="icon-dv m-2">
               </a>
+            </div>
+            <!-- Max Price -->
+            <div class="col-12 text-right text-grey mb-2" *ngIf="priceOptions?.length">
+              ราคาเครื่องเปล่า ฿{{ priceOptions[0]?.maximumNormalPrice | number}}
             </div>
             <!-- color -->
             <div class="col-12 color-picker">
@@ -74,15 +78,15 @@
 
     <!-- campaigns -->
     <div class="bg-white price" *ngIf="priceOption?.campaign?.length <= 0 && tabs">
-        <tabset [justified]="true">
-          <tab *ngFor="let tab of tabs" [active]="tab.active" (select)="onCustomerGroupSelected(tab)">
+      <tabset [justified]="true">
+        <tab *ngFor="let tab of tabs" [active]="tab.active" (select)="onCustomerGroupSelected(tab)">
           <ng-template tabHeading>
-              <div class="{{tab.code}}" [ngClass]="{ 'active' : tab.active }"><b>{{ tab.name }}</b></div>
+            <div class="{{tab.code}}" [ngClass]="{ 'active' : tab.active }"><b>{{ tab.name }}</b></div>
           </ng-template>
         </tab>
         <!-- <tab *ngFor="let tab of tabs" [heading]="tab.name" [active]="tab.active" (select)="onCustomerGroupSelected(tab)"></tab> -->
       </tabset>
-     
+
       <div class="bg-white pb-3" *ngIf="campaignSliders?.length > 0">
         <div class="p-3">
           <img class="icon" src="assets/images/icon/sale_portal_pink_circle_megaphone.png">
@@ -99,7 +103,7 @@
       </div>
     </div>
     <!-- trades -->
-    <div *ngIf="priceOption?.campaign?.campaignName && tabs" >
+    <div *ngIf="priceOption?.campaign?.campaignName && tabs">
       <div class="container-fluid">
         <div class="row bg-white shadow-sm py-3 mb-2">
           <div class="col-12">
@@ -146,7 +150,7 @@
                     ฿{{ (+privilege?.maximumPromotionPrice) + (+privilege?.maximumAdvancePay) | number }} (รวม VAT)
                   </span>
                 </div>
-                <div class="col-12 col-sm-6 pt-3">
+                <div class="col-12 col-sm-6 pt-3" *ngIf="+privilege?.maximumContract">
                   <img src="assets/images/icon/sales_portal_green_alert_person.png" class="icon-trade">
                   <span>ข้อตกลงรับสิทธ์ิต่อเนื่อง {{ privilege?.maximumContract }} เดือน</span>
                 </div>
@@ -301,56 +305,131 @@
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
+  <!-- HEAD_COLUMN -->
   <div class="container-fluid">
     <ng-container [ngSwitch]="true">
       <div class="row bg-spac pt-2 pb-2 background-color">
-        <!-- isShowAllAdvancePay False -->
-        <ng-container *ngSwitchCase="!priceWithBankInstallmentAndAdvancePayment.isShowAllAdvancePay">
-          <div class="col-12 text-right">
+        <!-- showAdvancePay False -->
+        <ng-container *ngSwitchCase="!privilegeTradeInstallmentGroup[0].showAdvancePay">
+          <div class="col-4">
+          </div>
+          <div class="col-4">
+          </div>
+          <div class="col-4">
             ผ่อนชำระค่าเครื่อง (บาท / เดือน)
           </div>
         </ng-container>
-        <!-- isShowAllAdvancePay True and fromTrade True -->
-        <ng-container *ngSwitchCase="priceWithBankInstallmentAndAdvancePayment.isShowAllAdvancePay && priceWithBankInstallmentAndAdvancePayment.fromTrade">
+        <!-- showAdvancePay True and fromTrade True && privilegeTradeInstallmentGroup.fromTrade-->
+        <ng-container *ngSwitchCase="privilegeTradeInstallmentGroup[0].showAdvancePay && privilegeTradeInstallmentGroup[0].fromTrade">
           <div class="col-6 ">
             ผ่อนชำระค่าเครื่องพร้อมค่าแพ็กเกจล่วงหน้า (บาท / เดือน)
           </div>
         </ng-container>
         <ng-container *ngSwitchDefault>
-          <div class="col-5">
+          <div class="col-4">
           </div>
           <div class="col-4">
             ผ่อนชำระค่าเครื่อง (บาท / เดือน)
           </div>
-          <div class="col-3">
+          <div class="col-4">
             ผ่อนชำระค่าเครื่องพร้อมค่าแพ็กเกจล่วงหน้า (บาท / เดือน)
           </div>
         </ng-container>
-
       </div>
-      <div class="row bg-spac pt-2 pb-2 justify-content-md-center border-buttom" *ngFor="let data of priceWithBankInstallmentAndAdvancePayment.data">
-        <div class="col-5">
-          <div class="row text-center">
-            <div class="col-12">
-              {{data.percentage}}% {{data.month}} เดือน
-            </div>
-            <div class="col-12">
-              <div class="row">
-                <div class="col-4" *ngFor="let bank of data.banks">
-                  <img class="img-fluid img-thumbnail" [src]="bank.imageUrl" onError="this.src='./assets/images/icon/img-placeholder.png';">
+    </ng-container>
+
+    <div class="row bg-spac pt-2 pb-2 justify-content-md-center border-buttom" *ngFor="let installmentList of privilegeTradeInstallmentGroup">
+      <ng-container [ngSwitch]="true">
+
+        <ng-container *ngSwitchCase="!installmentList.showAdvancePay">
+          <div class="col-4">
+            <div class="row text-center">
+              <div class="col-12">
+                {{installmentList?.percentage}}% {{installmentList?.month}} เดือน
+              </div>
+              <div class="col-12">
+                <div class="row">
+                  <div class="col-4" *ngFor="let bank of installmentList?.banks">
+                    <img class="img-fluid img-thumbnail" [src]="bank.imageUrl" onError="this.src='./assets/images/icon/img-placeholder.png';">
+                  </div>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-        <div class="col-4 align-self-center">
-          {{data.month / 2}}
-        </div>
-        <div class="col-3 align-self-center">
-          ผ่อนชำระค่าเครื่อง พร้อมค่าแพ็กเกจล่วงหน้า (บาท/เดือน)
-        </div>
-      </div>
-    </ng-container>
+          <div class="col-4">
+          </div>
+          <div class="col-4 align-self-center">
+            <span *ngIf="installmentList.priceList[0] === installmentList.priceList[installmentList.priceList.length-1]">฿{{
+              installmentList.priceList[0] | number }}</span>
+            <span *ngIf="installmentList.priceList[0] !== installmentList.priceList[installmentList.priceList.length-1]">
+              ฿{{ installmentList.priceList[0] | number }} - ฿{{
+              installmentList.priceList[installmentList.priceList.length-1] | number }}</span>
+          </div>
+        </ng-container>
+
+        <!-- && privilegeTradeInstallmentGroup.fromTrade -->
+        <ng-container *ngSwitchCase="installmentList.showAdvancePay && installmentList.fromTrade">
+          <div class="col-6">
+            <div class="row text-center">
+              <div class="col-12">
+                {{installmentList?.percentage}}% {{installmentList?.month}} เดือน
+              </div>
+              <div class="col-12">
+                <div class="row">
+                  <div class="col-4" *ngFor="let bank of installmentList?.banks">
+                    <img class="img-fluid img-thumbnail" [src]="bank.imageUrl" onError="this.src='./assets/images/icon/img-placeholder.png';">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-6 align-self-center">
+            <span *ngIf="installmentList.priceList[0] === installmentList.priceList[installmentList.priceList.length-1]">฿{{
+              installmentList.priceList[0] | number }}</span>
+            <span *ngIf="installmentList.priceList[0] !== installmentList.priceList[installmentList.priceList.length-1]">
+              ฿{{ installmentList.priceList[0] | number }} - ฿{{
+              installmentList.priceList[installmentList.priceList.length-1] | number }}</span>
+          </div>
+        </ng-container>
+
+        <ng-container *ngSwitchDefault>
+          <div class="col-4">
+            <div class="row text-center">
+              <div class="col-12">
+                {{installmentList?.percentage}}% {{installmentList?.month}} เดือน
+              </div>
+              <div class="col-12">
+                <div class="row">
+                  <div class="col-4" *ngFor="let bank of installmentList?.banks">
+                    <img class="img-fluid img-thumbnail" [src]="bank.imageUrl" onError="this.src='./assets/images/icon/img-placeholder.png';">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="row text-center">
+              <span *ngIf="installmentList.priceList[0] === installmentList.priceList[installmentList.priceList.length-1]">
+                ฿{{installmentList.priceList[0] | number }}</span>
+              <span *ngIf="installmentList.priceList[0] !== installmentList.priceList[installmentList.priceList.length-1]">
+                ฿{{ installmentList.priceList[0] | number }} - ฿{{
+                installmentList.priceList[installmentList.priceList.length-1] | number }}</span>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="row text-center">
+              <span *ngIf="installmentList.advancePayList[0] === installmentList.advancePayList[installmentList.advancePayList.length-1]">
+                ฿{{installmentList.advancePayList[0] | number }}</span>
+              <span *ngIf="installmentList.advancePayList[0] !== installmentList.advancePayList[installmentList.advancePayList.length-1]">
+                ฿{{ installmentList.advancePayList[0] | number }} -
+                ฿{{installmentList.advancePayList[installmentList.advancePayList.length-1] | number }}</span>
+            </div>
+          </div>
+        </ng-container>
+
+
+      </ng-container>
+    </div>
   </div>
   <button type="button" class="btn btn-primary" aria-label="Close" (click)="modalRef.hide()">
     CLOSE

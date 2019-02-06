@@ -1,5 +1,6 @@
 import { ChargeType } from 'mychannel-shared-libs';
-import { BestSeller } from 'mychannel-shared-libs/lib/service/models/best-seller';
+import { PaymentDetailQRCode, PaymentDetailBank } from 'src/app/device-order/ais/device-order-ais-new-register/containers/device-order-ais-new-register-payment-detail-page/device-order-ais-new-register-payment-detail-page.component';
+import { ReceiptInfo } from 'mychannel-shared-libs/lib/component/receipt-info/receipt-info.component';
 
 export enum TransactionType {
   DEVICE_ORDER_NEW_REGISTER_AIS = 'NewRegisterAIS',
@@ -49,8 +50,16 @@ export interface TransactionData {
   reasonCode?: string;
   billingInformation?: BillingInformation;
   seller?: Seller;
+  payment?: Payment;
+  advancePayment?: Payment;
+  receiptInfo?: ReceiptInfo;
 }
-
+export interface Payment {
+  method: string;
+  type: string;
+  qrCode: PaymentDetailQRCode;
+  bank: PaymentDetailBank;
+}
 export interface MainPromotion {
   cammapign: any;
   privilege: any;

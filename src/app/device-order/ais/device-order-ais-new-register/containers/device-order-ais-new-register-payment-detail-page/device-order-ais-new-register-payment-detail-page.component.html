@@ -23,9 +23,9 @@
                 {{paymenDetail?.header}}
                 <span class="pull-right">฿ {{ paymenDetail?.price | number: '1.2-2' }}</span>
               </div>
-              <div class="col-12" *ngIf="priceOption.advancePay && priceOption.advancePay.installmentFlag === 'Y'">
-                {{advancePaymenDetail.header}}
-                <span class="pull-right">฿ {{ advancePaymenDetail.price | number: '1.2-2' }}</span>
+              <div class="col-12" *ngIf="priceOption?.trade?.advancePay && priceOption?.trade?.advancePay?.installmentFlag === 'Y'">
+                {{advancePaymenDetail?.header}}
+                <span class="pull-right">฿ {{ advancePaymenDetail?.price | number: '1.2-2' }}</span>
               </div>
             </div>
           </div>
@@ -46,7 +46,7 @@
               <div class="form-group row" *ngIf="paymentForm.controls['paymentTypeRadio'].value === 'qrcode'">
                 <div class="col-6 col-sm-3" *ngFor="let qrCode of qrCodes; let i = index" (click)="onSelectQRCode(qrCode)">
                   <div class="qr-lazy-load-image" [ngClass]="{'active': qrCode?.id === selectQRCode?.id}">
-                    <mc-lazy-load-image [src]="qrCode.imageUrl"></mc-lazy-load-image>
+                    <mc-lazy-load-image [src]="qrCode?.imageUrl"></mc-lazy-load-image>
                   </div>
                 </div>
               </div>
@@ -75,15 +75,15 @@
                 <div class="col-12 text-left mb-3" *ngIf="!selectBank">
                   <span class="text-pink">*กรุณาเลือธนาคาร</span>
                 </div>
-                <div class="row" *ngIf="priceOption.discount &&
-                priceOption.discount.specialType !== '' &&
-                priceOption.discount.specialAmount &&
-                priceOption.discount.specialAmount > 0">
-                  <div *ngIf="priceOption.discount.specialType === 'P'">
-                    โปรโมชั่นพิเศษลดเพิ่ม {{ priceOption.discount.specialAmount }} %
+                <div class="row" *ngIf="priceOption?.discount &&
+                priceOption?.discount?.specialType !== '' &&
+                priceOption?.discount?.specialAmount &&
+                priceOption?.discount?.specialAmount > 0">
+                  <div *ngIf="priceOption?.discount?.specialType === 'P'">
+                    โปรโมชั่นพิเศษลดเพิ่ม {{ priceOption?.discount?.specialAmount }} %
                   </div>
                   <div *ngIf="priceOption.discount.specialType === 'B'">
-                    โปรโมชั่นพิเศษลดเพิ่ม {{ priceOption.discount.specialAmount }} บาท
+                    โปรโมชั่นพิเศษลดเพิ่ม {{ priceOption?.discount?.specialAmount }} บาท
                   </div>
                 </div>
               </div>
@@ -93,7 +93,7 @@
                 </div>
                 <div class="col-12 col-sm-4" *ngFor="let installment of installments; let i = index">
                   <input class="form-check-input" type="radio" name="installment" id="installment-month-{{ i }}" value="installment"
-                    (click)="onSelectInstallment(installment)" [checked]="installment?.installmentMounth === selectBank?.installment?.installmentMounth && installment?.installmentPercentage === selectBank?.installment?.installmentPercentage">
+                    (click)="onSelectInstallment(installment)" [checked]="installment?.installmentMounth === selectBank?.installments?.installmentMounth && installment?.installmentPercentage === selectBank?.installments?.installmentPercentage">
                   <label class="form-check-label" for="installment-month-{{ i }}">
                     {{ installment?.installmentPercentage }}% {{ installment?.installmentMounth }} เดือน
                   </label>
@@ -117,8 +117,8 @@
       </div>
 
       <!-- ############################################## advance payment ##############################################  -->
-
-      <div class="container-fluid">
+      <div class="container-fluid" *ngIf="priceOption?.trade?.advancePay && priceOption?.trade?.advancePay?.amount !== 0 &&
+      (priceOption?.trade?.advancePay?.installmentFlag === 'N' || priceOption?.trade?.advancePay?.installmentFlag === '')">
         <div class="card mb-3">
           <div class="card-header text-light-green bg-transparent">
             {{advancePaymenDetail.header}}
@@ -141,7 +141,7 @@
               <div class="form-group row" *ngIf="advancePaymentForm.controls['paymentTypeRadio'].value === 'qrcode'">
                 <div class="col-6 col-sm-3" *ngFor="let qrCode of qrCodes; let i = index" (click)="onSelectQRCodeAdvancePay(qrCode)">
                   <div class="qr-lazy-load-image" [ngClass]="{'active': qrCode?.id === selectQRCodeAdvancePay?.id}">
-                    <mc-lazy-load-image [src]="qrCode.imageUrl"></mc-lazy-load-image>
+                    <mc-lazy-load-image [src]="qrCode?.imageUrl"></mc-lazy-load-image>
                   </div>
                 </div>
               </div>
@@ -189,11 +189,11 @@
         </div>
       </div>
 
-      <mc-receipt-info [receiptInfo]="receiptInfo"></mc-receipt-info>
+      <mc-receipt-info [receiptInfo]="receiptInfo" (complete)="onReceiptInfoComplete($event)" (error)="onReceiptInfoError($event)"></mc-receipt-info>
     </div>
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!(checkPaymentFormValid() && checkAdvancePaymentFormValid() && receiptInfoValid)">NEXT</button>
   </mc-footer>
 </div>

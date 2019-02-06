@@ -1,11 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
 
-enum PaymentTypeConstant {
-  CASH_PAYMENT = 'CA',
-  CREDIT_CARD_PAYMENT = 'CC',
-  CREDIT_CARD_AND_CASH_PAYMENT = 'CC/CA',
-}
-
 @Pipe({
   name: 'privilegeToTradeSlider'
 })
@@ -16,7 +10,6 @@ export class PrivilegeToTradeSliderPipe implements PipeTransform {
       return [];
     }
     return (privilege.trades || []).map((trade: any) => {
-      // console.log('(privilege.trades', trade);
 
       const banks = (trade.banks || []).length > 0;
       const filterIsCashBack = banks
@@ -25,7 +18,7 @@ export class PrivilegeToTradeSliderPipe implements PipeTransform {
       let isPaymentCash;
       if (trade.payments.length > 0) {
         isPaymentCash = trade.payments.find((payment) =>
-        payment.method === PaymentTypeConstant.CASH_PAYMENT || payment.method === PaymentTypeConstant.CREDIT_CARD_AND_CASH_PAYMENT);
+        payment.method === 'CA' || payment.method === 'CC/CA');
       } else {
         isPaymentCash = true;
       }
