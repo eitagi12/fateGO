@@ -1,12 +1,14 @@
 import { Component, OnInit, EventEmitter, OnDestroy } from '@angular/core';
-import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
 import { Router } from '@angular/router';
 import { HomeService, Utils, AlertService, ImageUtils, ShoppingCart } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
-import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_COMPARE_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGREEMENT_SIGN_PAGE } from '../../constants/route-path.constant';
-import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
+import { Transaction } from 'src/app/shared/models/transaction.model';
+import {
+  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_COMPARE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGREEMENT_SIGN_PAGE
+} from '../../constants/route-path.constant';
 import { ShoppingCartService } from 'src/app/device-order/ais/device-order-ais-new-register/service/shopping-cart.service';
+import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 
 @Component({
   selector: 'app-device-order-ais-new-register-face-capture-page',
@@ -31,9 +33,6 @@ export class DeviceOrderAisNewRegisterFaceCapturePageComponent implements OnInit
     private shoppingCartService: ShoppingCartService,
   ) {
     this.transaction = this.transactionService.load();
-    this.homeService.callback = () => {
-      window.location.href = '/smart-shop';
-    };
   }
 
   ngOnInit() {
