@@ -1,6 +1,4 @@
-import { ChargeType } from 'mychannel-shared-libs';
-import { PaymentDetailQRCode, PaymentDetailBank } from 'src/app/device-order/ais/device-order-ais-new-register/containers/device-order-ais-new-register-payment-detail-page/device-order-ais-new-register-payment-detail-page.component';
-import { ReceiptInfo } from 'mychannel-shared-libs/lib/component/receipt-info/receipt-info.component';
+import { ChargeType, PaymentDetailQRCode, PaymentDetailBank, ReceiptInfo } from 'mychannel-shared-libs';
 
 export enum TransactionType {
   DEVICE_ORDER_NEW_REGISTER_AIS = 'NewRegisterAIS',
