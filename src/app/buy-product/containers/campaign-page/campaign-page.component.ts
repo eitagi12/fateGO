@@ -472,7 +472,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             .filter(privileges => Object.keys(privileges.trades.filter(trade => Object.keys(trade.customerGroups
                 .filter(customerGroup => customerGroup.code === this.selectCustomerGroup.code)).length > 0)).length > 0);
 
-        console.log('campaignByGroup', campaignByGroup);
         installments.forEach((installment: any) => {
             const priceList: any[] = [];
             const advancePayList: any[] = [];
@@ -530,6 +529,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
     onCampaignSelected(campaign: any) {
         this.priceOption.campaign = campaign;
+        this.priceOption.campaign.customerGroup = this.tabs.find((val: any) => val.active);
     }
 
     onPromotionShelve(campaign: any) {

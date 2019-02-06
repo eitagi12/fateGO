@@ -108,15 +108,15 @@
         <div class="row bg-white shadow-sm py-3 mb-2">
           <div class="col-12">
             <img src="assets/images/icon/sales_portal_orange_circle_tag.png" class="icon" />
-            <span class="ml-2">{{ priceOption?.campaign?.campaignName }}</span>
+            <span class="ml-2">{{ campaignSlider?.name }}</span>
             <span class="pull-right text-light-green pt-2">รายละเอียดโครงการ</span>
           </div>
         </div>
 
         <div class="card mb-3" *ngFor="let privilege of priceOption?.campaign?.privileges">
           <div class="card-body">
-            <h6 class="text-black">{{ privilege?.privilegeDesc || privilege?.privilegeName }} ({{ privilege?.ussdCode }})</h6>
-            <!-- เครื่องโทรศัพท์ราคาพิเศษ AIS Hot Deal buffet net สำหรับลูกค้าปัจจุบัน -->
+            <h6 class="text-black">{{ priceOption?.campaign?.campaignName || priceOption?.campaign?.campaignDesc }} {{ priceOption?.campaign?.customerGroup?.name }} ({{ privilege?.ussdCode }})</h6>
+            <!-- เครื่องโทรศัพท์ราคาพิเศษ AIS Hot Deal buffet net สำหรับลูกค้าปัจจุบัน  {{ privilege?.privilegeDesc || privilege?.privilegeName }} -->
             <div class="mb-3">
               <div class="row">
                 <div class="col-8">
