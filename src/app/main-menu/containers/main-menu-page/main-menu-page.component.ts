@@ -27,7 +27,7 @@ export class MainMenuPageComponent implements OnInit {
   }
 
   keepCard() {
-    const ws = new WebSocket(environment.WEB_CONNECT_URL);
+    const ws = new WebSocket(`${environment.WEB_CONNECT_URL}/VendingAPI`);
     ws.onopen = () => {
       ws.send('KeepCard');
     };
