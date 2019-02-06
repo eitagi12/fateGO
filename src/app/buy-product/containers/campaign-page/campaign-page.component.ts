@@ -246,6 +246,12 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             if (campaign.promotionFlag !== 'Y') {
                 return false;
             }
+            if ('AISHOTDEAL_PREPAID_LOTUS' === campaign.code) {
+                return false;
+            }
+            if ('AISHOTDEAL_PREPAID' === campaign.code) {
+                return false;
+            }
 
             let allowPriceOption = true;
             // PREBOOKING === flowId
@@ -377,13 +383,17 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                             if (treadData.payments && treadData.payments.length && treadData.payments[0].installId === null) {
                                 const tradePayment = { cardType: '', method: 'CC/CA', installmentId: '' };
                                 treadData.payments = (isPaymentCredist  && isPaymentCash) ? [tradePayment] : treadData.payments;
+                                treadData.advancePay.installmentFlag = 'N';
+                                treadData.conditionCode =
+                                (treadData.advancePay && treadData.advancePay.matAirtime) ? 'CONDITION_2' : 'CONDITION_1';
+
                             } else {
-                                // Tread for TDM
+                                // Tread for TDM --> payments is []
                                 if (!treadData.payments.length) {
                                     treadData.payments = { cardType: '', method: 'CC/CA', installmentId: '' };
                                 }
                             }
-
+                            treadData.conditionCode = treadData.conditionCode || 'CONDITION_1';
                             treadData.priority = this.setPriorityByPaymentMethod(treadData);
                             return treadData;
 
@@ -391,7 +401,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                         .filter((tread) => {
 
                             /* Merge Trade Payment
-                                เงื่อนไขการรวม Trade จ่ายเงิน
+                                เงื่อนไขการรวม Trade จ่ายเงิน (เอา tread ออก)
                                 1.payments[0].installId === null
                                 2.payments[0].method == 'CC'
                             */
