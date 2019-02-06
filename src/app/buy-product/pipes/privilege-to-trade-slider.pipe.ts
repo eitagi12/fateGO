@@ -11,33 +11,66 @@ export class PrivilegeToTradeSliderPipe implements PipeTransform {
     }
     return (privilege.trades || []).map((trade: any) => {
 
+      // bank
       const banks = (trade.banks || []).length > 0;
       const filterIsCashBack = banks
         ? trade.banks.filter(bank => bank.remark !== '' && bank.remark !== null && bank.remark) : [];
+      const installments = banks ? this.getInstallments(trade.banks) : [];
 
-      let isPaymentCash;
-      if (trade.payments.length > 0) {
-        isPaymentCash = trade.payments.find((payment) =>
-        payment.method === 'CA' || payment.method === 'CC/CA');
-      } else {
-        isPaymentCash = true;
-      }
+      // CashBack
+      const isCashBack = filterIsCashBack.length > 0 || false;
 
+      // Gift
       const freeGoods = [];
-      trade.freeGoods.forEach(gift => {
-          freeGoods.push(gift.name);
-      });
+      trade.freeGoods.forEach(gift => { freeGoods.push(gift.name); });
+
+      // description
+      const isPaymentCash = trade.payments.length
+      ? trade.payments.find((payment) => payment.method === 'CA' || payment.method === 'CC/CA') : true;
+      const description = (isPaymentCash ? 'ชำระเต็มจำนวน' : 'ผ่อนชำระค่าเครื่อง')
+      + (banks && !isPaymentCash && trade.advancePay && trade.advancePay.installmentFlag === 'Y' ? ' และแพ็กเกจค่าบริการล่วงหน้า' : '');
+
 
       return {
-        description: (isPaymentCash ? 'ชำระเต็มจำนวน' : 'ผ่อนชำระค่าเครื่อง')
-          + (banks && !isPaymentCash && trade.advancePay && trade.advancePay.installmentFlag === 'Y' ? ' และแพ็กเกจค่าบริการล่วงหน้า' : ''),
+        description: description,
         installmentType: (banks && !isPaymentCash) ? 'wallet' : 'bath',
-        isCashBack: filterIsCashBack.length > 0 || false,
+        isCashBack: isCashBack,
         freeGoods: freeGoods,
-        installments: [{ percentage: 0 , mounth: 3 }],
+        installments: installments,
         value: trade
       };
     });
+  }
+
+  getInstallments(banks: any) {
+    const installmentGroups = banks.reduce((previousValue: any, currentValue: any) => {
+      const keys: string[] = (currentValue.installment || '').split(/(%|เดือน)/);
+      const groupKey = `${(keys[0] || '').trim()}-${(keys[2] || '').trim()}`;
+      if (!previousValue[groupKey]) {
+          previousValue[groupKey] = [currentValue];
+      } else {
+          const bankExist = previousValue[groupKey].find((bank: any) => bank.abb === currentValue.abb);
+          if (!bankExist) {
+              previousValue[groupKey].push(currentValue);
+          }
+      }
+      return previousValue;
+  }, {});
+    const installments = [];
+        Object.keys(installmentGroups).forEach((key: string) => {
+            const keys: string[] = key.split('-');
+            if (+keys[0] === 0 && +keys[1] === 0) {
+                return;
+            }
+            installments.push({
+                percentage: +keys[0] || 0,
+                mounth: +keys[1] || 0
+            });
+        });
+        // จ่ายน้อยผ่อนนาน
+        return installments.sort((a: any, b: any) => {
+            return a.month > b.month ? -1 : 1;
+        });
   }
 
 }
