@@ -115,7 +115,7 @@
 
         <div class="card mb-3" *ngFor="let privilege of priceOption?.campaign?.privileges">
           <div class="card-body">
-            <h6 class="text-black">{{ privilege?.privilegeDesc || privilege?.privilegeName }}</h6>
+            <h6 class="text-black">{{ privilege?.privilegeDesc || privilege?.privilegeName }} ({{ privilege?.ussdCode }})</h6>
             <!-- เครื่องโทรศัพท์ราคาพิเศษ AIS Hot Deal buffet net สำหรับลูกค้าปัจจุบัน -->
             <div class="mb-3">
               <div class="row">
@@ -150,13 +150,13 @@
                     ฿{{ (+privilege?.maximumPromotionPrice) + (+privilege?.maximumAdvancePay) | number }} (รวม VAT)
                   </span>
                 </div>
-                <div class="col-12 col-sm-6 pt-3" *ngIf="+privilege?.maximumContract">
+                <div class="col-12 col-sm-6 pt-3 text-grey" *ngIf="+privilege?.maximumContract">
                   <img src="assets/images/icon/sales_portal_green_alert_person.png" class="icon-trade">
                   <span>ข้อตกลงรับสิทธ์ิต่อเนื่อง {{ privilege?.maximumContract }} เดือน</span>
                 </div>
-                <div class="col-12 col-sm-6 pt-3" *ngIf="+privilege?.minimumPackagePrice">
+                <div class="col-12 col-sm-6 pt-3 text-grey" *ngIf="+privilege?.minimumPackagePrice">
                   <img src="assets/images/icon/sales_portal_green_phone.png" class="icon-trade">
-                  <span>แพ็กเกจเริ่มต้น {{ +privilege?.minimumPackagePrice || 0 | number }} บาท/เดือน</span>
+                  <span><u>แพ็กเกจเริ่มต้น {{ +privilege?.minimumPackagePrice || 0 | number }} บาท/เดือน</u></span>
                   <!-- <span>แพ็คเกจเสริม {{ privilege?.minimumPackagePrice * 1.07 | number }} บาท ( รวมVAT )</span> -->
                 </div>
 
@@ -179,7 +179,7 @@
                 </div>
               </div>
             </div>
-            <mc-trade-slider [tradeSliders]="privilege | privilegeToTradeSlider" (selected)="onTradeSelected($event)"></mc-trade-slider>
+            <mc-trade-slider [tradeSliders]="privilege | privilegeToTradeSlider" (selected)="onTradeSelected($event)" (installmentClick)="viewInstallment($event)"></mc-trade-slider>
           </div>
         </div>
       </div>

@@ -205,6 +205,10 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         });
     }
 
+    viewInstallment(tread: any) {
+        console.log('viewInstallment' , tread);
+    }
+
     onProductStockSelected(product) {
         this.tabs = null;
         if (this.priceOption.productStock &&
@@ -753,7 +757,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             queryParams[key] = this.params[key];
         });
         this.priceOption.queryParams = queryParams;
-
         this.priceOptionService.save(this.priceOption);
+
     }
 }
