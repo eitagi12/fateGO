@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { TokenService, ChannelType } from 'mychannel-shared-libs';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-main-menu-page',
@@ -14,9 +16,21 @@ export class MainMenuPageComponent implements OnInit {
     { link: '/order/pre-to-post', icon: '/assets/svg/ico-pre-to-post.svg', text: 'เปลี่ยนเติมเงินเป็นรายเดือน' }
   ];
 
-  constructor() { }
+  constructor(
+    private tokenService: TokenService
+  ) { }
 
   ngOnInit() {
+    if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {
+      this.keepCard(); // กรณีบัตรค้างในเครื่อง
+    }
+  }
+
+  keepCard() {
+    const ws = new WebSocket(environment.WEB_CONNECT_URL);
+    ws.onopen = () => {
+      ws.send('KeepCard');
+    };
   }
 
 }
