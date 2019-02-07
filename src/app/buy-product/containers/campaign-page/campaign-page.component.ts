@@ -424,7 +424,9 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                             })
                             .sort((a, b) => a.priority - b.priority);
 
-                        return privilegesPayment;
+                            if (privilegesPayment.trades.length) {
+                                return privilegesPayment;
+                            }
 
                     });
 
@@ -853,7 +855,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     onTradeSelected(trade: any) {
         this.priceOption.trade = trade;
         this.pageLoadingService.openLoading();
-        this.addToCartService.reserveStock().then((nextUrl) => {
+        this.addToCartService.reserveStock(this.priceOption.campaign).then((nextUrl) => {
             this.router.navigate([nextUrl]).then(() => this.pageLoadingService.closeLoading());
         });
     }
