@@ -75,9 +75,10 @@
         </div>
       </div>
     </div>
-
+    
     <!-- campaigns -->
-    <div class="bg-white price" *ngIf="priceOption?.campaign?.length <= 0 && tabs">
+    <div [mcLoading]="priceOptionDetailService">
+    <div class="bg-white price" *ngIf="priceOption?.campaign?.length <= 0 && tabs" [mcLoading]="priceOptionDetailService">
       <tabset [justified]="true">
         <tab *ngFor="let tab of tabs" [active]="tab.active" (select)="onCustomerGroupSelected(tab)">
           <ng-template tabHeading>
@@ -98,7 +99,7 @@
         <mc-campaign-slider [campaignSliders]="campaignSliders" (selected)="onCampaignSelected($event)"
           (promotionShelve)="onPromotionShelve($event)" (installmentList)="viewInstallmentList($event)"></mc-campaign-slider>
       </div>
-      <div class="not-found" *ngIf="campaignSliders?.length === 0">
+      <div class="not-found text-grey" *ngIf="campaignSliders?.length === 0">
         ไม่พบข้อมูลที่ท่านเลือก
       </div>
     </div>
@@ -108,7 +109,7 @@
         <div class="row bg-white shadow-sm py-3 mb-2">
           <div class="col-12">
             <img src="assets/images/icon/sales_portal_orange_circle_tag.png" class="icon" />
-            <span class="ml-2">{{ campaignSlider?.name }}</span>
+            <span class="ml-2">{{ priceOption?.campaign?.campaignName }}</span>
             <span class="pull-right text-light-green pt-2">รายละเอียดโครงการ</span>
           </div>
         </div>
@@ -154,7 +155,7 @@
                   <img src="assets/images/icon/sales_portal_green_alert_person.png" class="icon-trade">
                   <span>ข้อตกลงรับสิทธ์ิต่อเนื่อง {{ privilege?.maximumContract }} เดือน</span>
                 </div>
-                <div class="col-12 col-sm-6 pt-3 text-grey" *ngIf="+privilege?.minimumPackagePrice">
+                <div class="col-12 col-sm-6 pt-3 text-grey" *ngIf="+privilege?.minimumPackagePrice" (click)="showSelectPackageTemplate()">
                   <img src="assets/images/icon/sales_portal_green_phone.png" class="icon-trade">
                   <span><u>แพ็กเกจเริ่มต้น {{ +privilege?.minimumPackagePrice || 0 | number }} บาท/เดือน</u></span>
                   <!-- <span>แพ็คเกจเสริม {{ privilege?.minimumPackagePrice * 1.07 | number }} บาท ( รวมVAT )</span> -->
@@ -185,6 +186,7 @@
         </div>
       </div>
     </div>
+  </div>
     <!---------------------->
   </div>
 </div>
@@ -285,13 +287,13 @@
 
 
 <ng-template #selectPackageTemplate>
-  <div class="modal-header bg-primary">
+  <div class="modal-header bg-primary" >
     <h5 class="modal-title text-white">แพ็กเกจที่ร่วมรายการ</h5>
     <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
-  <div class="container-fluid">
+  <div class="container-fluid" [mcLoading]="packageDetailService">
     <div class="row bg-spac pt-2 pb-2">
       <mc-promotion-shelve [view]="true" class="select-package-template" [promotionShelves]="promotionShelves"></mc-promotion-shelve>
     </div>

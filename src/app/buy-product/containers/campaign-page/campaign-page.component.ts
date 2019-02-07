@@ -21,6 +21,13 @@ export class PriceOptionPrivilegeTradeBank {
     installmentDatas?: PrivilegeTradeInstallment[];
 }
 
+export enum orderType {
+    NEW_REGISTRATION = 'New Registration',
+    CHANGE_CHARGE_TYPE = 'Change Charge Type',
+    PORT_IN = 'Port - In',
+    CHANGE_SERVICE = 'Change Service',
+}
+
 
 @Component({
     selector: 'app-campaign',
@@ -52,8 +59,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     tabs: any[];
     campaignSliders: CampaignSlider[];
     priceOptions: any;
-    priceOptionsData: any;
-
     promotionShelves: PromotionShelve[];
 
     groupInstallmentByPercentageAndMonths: any;
@@ -62,6 +67,8 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
     // trade
     productDetailService: Promise<any>;
+    priceOptionDetailService: Promise<any>;
+    packageDetailService: Promise<any>;
     constructor(
         private modalService: BsModalService,
         private router: Router,
@@ -207,6 +214,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
     onProductStockSelected(product) {
         this.tabs = null;
+        this.campaignSliders = [];
         if (this.priceOption.productStock &&
             this.priceOption.productStock.colorName !== product.colorName) {
             this.priceOption.campaign = null;
@@ -225,18 +233,20 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     /* campaign */
     private callPriceOptionsService(brand: string, model: string, color: string, productType: string, productSubtype: string) {
         const user: User = this.tokenService.getUser();
-        this.salesService.priceOptions({
+        this.priceOptionDetailService = this.salesService.priceOptions({
             brand: brand,
             model: model,
             color: color,
             productType: productType,
             productSubtype: productSubtype,
             location: user.locationCode
-        }).then((resp: any) => {
+        });
+        this.priceOptionDetailService.then((resp: any) => {
             this.priceOptions = this.filterPriceOptions(resp.data.priceOptions || []);
             this.priceOptionService.save(this.priceOptions);
             // init tab
             this.initialTabs(this.priceOptions);
+            return ;
         });
     }
 
@@ -316,7 +326,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     }
 
     onCustomerGroupSelected(customerGroup: any) {
-        console.log('onCustomerGroupSelected');
         this.selectCustomerGroup = customerGroup;
         if (!this.priceOptions) {
             this.campaignSliders = [];
@@ -531,7 +540,12 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     }
 
     onPromotionShelve(campaign: any) {
-        this.callPromotionShelveService(campaign);
+        const modalOptions = { class: 'modal-lg modal-dialog-centered' };
+        this.modalRef = this.modalService.show(this.selectPackageTemplate, modalOptions);
+        this.packageDetailService = this.callPromotionShelveService(campaign)
+        .then((packageList: any) => {
+           this.promotionShelves = packageList;
+        });
     }
 
     viewInstallmentList(campaignSlider: any) {
@@ -732,94 +746,107 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     }
 
     callPromotionShelveService(getCampaign: any) {
-        this.pageLoadingService.openLoading();
-        const packageKeyRef = getCampaign.packageKeyRef;
-        this.http.post('/api/salesportal/promotion-shelves', {
-            userId: packageKeyRef
-        }).toPromise()
-            .then((resp: any) => {
-                const data = resp.data.data || [];
-                const promotionShelves: PromotionShelve[] = data.map((promotionShelve: any) => {
-                    return {
-                        title: promotionShelve.title,
-                        icon: promotionShelve.icon,
-                        promotions: promotionShelve.subShelves
-                            .sort((a, b) => a.priority !== b.priority ? a.priority < b.priority ? -1 : 1 : 0)
-                            .map((subShelve: any) => {
-                                return { // group
-                                    id: subShelve.id,
-                                    title: subShelve.title,
-                                    sanitizedName: subShelve.sanitizedName,
-                                    items: []
-                                };
-                            })
-                    };
-                });
-                return Promise.resolve(promotionShelves);
-            })
-            .then((promotionShelves: PromotionShelve[]) => {
-                const parameter = [{
-                    'name': 'orderType',
-                    'value': 'New Registration'
-                }, {
-                    'name': 'billingSystem',
-                    'value': 'IRB'
-                }];
+        return new Promise((resolve, reject) => {
+            const packageKeyRef = getCampaign.packageKeyRef;
+            let promotionShelvesList = [];
 
-                const promiseAll = [];
-                promotionShelves.forEach((promotionShelve: PromotionShelve) => {
-                    console.log('promotionShelve', promotionShelve);
+            this.http.post('/api/salesportal/promotion-shelves', { userId: packageKeyRef }).toPromise()
+                .then((resp: any) => {
+                    const data = resp.data.data || [];
+                    const promotionShelves: PromotionShelve[] = data.map((promotionShelve: any) => {
+                        return {
+                            title: promotionShelve.title,
+                            icon: promotionShelve.icon,
+                            promotions: promotionShelve.subShelves
+                                .sort((a, b) => a.priority !== b.priority ? a.priority < b.priority ? -1 : 1 : 0)
+                                .map((subShelve: any) => {
+                                    return { // group
+                                        id: subShelve.id,
+                                        title: subShelve.title,
+                                        sanitizedName: subShelve.sanitizedName,
+                                        items: []
+                                    };
+                                })
+                        };
+                    });
+                    return promotionShelves;
+                })
+                .then((promotionShelves: PromotionShelve[]) => {
+                    const customerGroup = this.tabs.find((val: any) => val.active);
+                    let promise;
+                    let parameter;
+                    if (customerGroup.code === 'MC002') {
+                        parameter = [{ 'name': 'orderType', 'value': orderType.CHANGE_CHARGE_TYPE }];
+                    } else
+                    if (customerGroup.code === 'MC003') {
+                        parameter = [{ 'name': 'orderType', 'value': orderType.PORT_IN }];
+                    } else
+                    if (customerGroup.code === 'MC004') {
+                        parameter = [{ 'name': 'orderType', 'value': orderType.CHANGE_SERVICE }];
+                    } else {
+                        parameter = [
+                            { 'name': 'orderType', 'value': orderType.NEW_REGISTRATION },
+                            { 'name': 'billingSystem', 'value': 'IRB' }
+                        ];
+                    }
 
-                    const promise = promotionShelve.promotions.map((promotion: PromotionShelveGroup) => {
-                        return this.http.post('/api/salesportal/promotion-shelves/promotion', {
-                            userId: packageKeyRef,
-                            sanitizedName: promotion.sanitizedName,
-                            parameters: parameter
-                        }).toPromise().then((resp: any) => {
-                            const data = resp.data.data || [];
-                            const campaign: any = getCampaign;
-                            const minimumPackagePrice = +campaign.minimumPackagePrice;
-                            const maximumPackagePrice = +campaign.maximumPackagePrice;
-
-                            console.log('promotion.items', promotion);
-
-                            // reference object
-                            promotion.items = data.filter((promotions: any) => {
-                                return promotions.customAttributes.chargeType === 'Post-paid' &&
-                                    minimumPackagePrice <= +promotions.customAttributes.priceExclVat &&
-                                    (maximumPackagePrice > 0 ? maximumPackagePrice >= +promotions.customAttributes.priceExclVat : true);
-                            })
-                                .sort((a, b) => {
-                                    return +a.customAttributes.priceInclVat !== +b.customAttributes.priceInclVat ?
-                                        +a.customAttributes.priceInclVat < +b.customAttributes.priceInclVat ? -1 : 1 : 0;
-                                }).map((promotions: any) => {
-                                    return { // item
-                                        id: promotions.id,
-                                        title: promotions.title,
-                                        detail: promotions.detailTH,
-                                        value: promotions
+                    promotionShelves.forEach((promotionShelve: PromotionShelve) => {
+                        promise = promotionShelve.promotions.map((promotion: PromotionShelveGroup) => {
+                            return this.http.post('/api/salesportal/promotion-shelves/promotion', {
+                                userId: packageKeyRef,
+                                sanitizedName: promotion.sanitizedName,
+                                parameters: parameter
+                            }).toPromise().then((resp: any) => {
+                                const data = resp.data.data || [];
+                                const campaign: any = getCampaign;
+                                const minimumPackagePrice = +campaign.minimumPackagePrice;
+                                const maximumPackagePrice = +campaign.maximumPackagePrice;
+                                // reference object
+                                promotion.items = data.filter((promotions: any) => {
+                                    return promotions.customAttributes.chargeType === 'Post-paid' &&
+                                        minimumPackagePrice <= +promotions.customAttributes.priceExclVat &&
+                                        (maximumPackagePrice > 0 ? maximumPackagePrice >= +promotions.customAttributes.priceExclVat : true);
+                                })
+                                    .sort((a, b) => {
+                                        return +a.customAttributes.priceInclVat !== +b.customAttributes.priceInclVat ?
+                                            +a.customAttributes.priceInclVat < +b.customAttributes.priceInclVat ? -1 : 1 : 0;
+                                    }).map((promotions: any) => {
+                                        return { // item
+                                            id: promotions.id,
+                                            title: promotions.title,
+                                            detail: promotions.detailTH,
+                                            value: promotions
                                     };
                                 });
+                            });
                         });
                     });
-                    promiseAll.concat(promise);
-                });
 
-                Promise.all(promiseAll).then(() => {
-                    this.promotionShelves = promotionShelves;
-                    if (this.promotionShelves && this.promotionShelves.length > 0) {
-                        this.promotionShelves[0].active = true;
-                        if (this.promotionShelves[0].promotions && this.promotionShelves[0].promotions.length > 0) {
-                            this.promotionShelves[0].promotions[0].active = true;
+                    promotionShelvesList = promotionShelves;
+                    return promise;
+                }).then((promise) => {
+                    return Promise.all(promise).then(() => {
+                        promotionShelvesList.map((promotion) => {
+                            promotion.promotions = promotion.promotions.filter((filterPromotion) => {
+                                if (filterPromotion.items && filterPromotion.items.length <= 0) {
+                                    return false;
+                                }
+                                return filterPromotion;
+                            });
+                           return promotion;
+                        });
+                        if (promotionShelvesList.length) {
+                            promotionShelvesList[0].active = true;
+                            if (promotionShelvesList[0].promotions && promotionShelvesList[0].promotions.length > 0) {
+                                promotionShelvesList[0].promotions[0].active = true;
+                            }
                         }
-                    }
-                });
-
+                        resolve(promotionShelvesList);
+                    })
+                    .catch(() => reject());
             })
-            .then(() => {
-                this.showSelectPackageTemplate();
-                this.pageLoadingService.closeLoading();
-            });
+            .catch(() => reject());
+        });
     }
 
     /* privilege */
@@ -864,8 +891,12 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     }
 
     showSelectPackageTemplate(): void {
-        const modalOptions = { class: 'modal-lg' };
+        const modalOptions = { class: 'modal-lg modal-dialog-centered' };
         this.modalRef = this.modalService.show(this.selectPackageTemplate, modalOptions);
+        this.packageDetailService = this.callPromotionShelveService(this.priceOption.campaign)
+        .then((packageList: any) => {
+            this.promotionShelves = packageList;
+        });
     }
 
     showInstallmentListTemplate(): void {
