@@ -59,7 +59,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     tabs: any[];
     campaignSliders: CampaignSlider[];
     priceOptions: any;
-    priceOptionsData: any;
     promotionShelves: PromotionShelve[];
 
     groupInstallmentByPercentageAndMonths: any;
@@ -68,6 +67,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
     // trade
     productDetailService: Promise<any>;
+    priceOptionDetailService: Promise<any>;
     packageDetailService: Promise<any>;
     constructor(
         private modalService: BsModalService,
@@ -214,6 +214,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
     onProductStockSelected(product) {
         this.tabs = null;
+        this.campaignSliders = [];
         if (this.priceOption.productStock &&
             this.priceOption.productStock.colorName !== product.colorName) {
             this.priceOption.campaign = null;
@@ -232,18 +233,20 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     /* campaign */
     private callPriceOptionsService(brand: string, model: string, color: string, productType: string, productSubtype: string) {
         const user: User = this.tokenService.getUser();
-        this.salesService.priceOptions({
+        this.priceOptionDetailService = this.salesService.priceOptions({
             brand: brand,
             model: model,
             color: color,
             productType: productType,
             productSubtype: productSubtype,
             location: user.locationCode
-        }).then((resp: any) => {
+        });
+        this.priceOptionDetailService.then((resp: any) => {
             this.priceOptions = this.filterPriceOptions(resp.data.priceOptions || []);
             this.priceOptionService.save(this.priceOptions);
             // init tab
             this.initialTabs(this.priceOptions);
+            return ;
         });
     }
 

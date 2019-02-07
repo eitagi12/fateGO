@@ -75,9 +75,10 @@
         </div>
       </div>
     </div>
-
+    
     <!-- campaigns -->
-    <div class="bg-white price" *ngIf="priceOption?.campaign?.length <= 0 && tabs">
+    <div [mcLoading]="priceOptionDetailService">
+    <div class="bg-white price" *ngIf="priceOption?.campaign?.length <= 0 && tabs" [mcLoading]="priceOptionDetailService">
       <tabset [justified]="true">
         <tab *ngFor="let tab of tabs" [active]="tab.active" (select)="onCustomerGroupSelected(tab)">
           <ng-template tabHeading>
@@ -98,7 +99,7 @@
         <mc-campaign-slider [campaignSliders]="campaignSliders" (selected)="onCampaignSelected($event)"
           (promotionShelve)="onPromotionShelve($event)" (installmentList)="viewInstallmentList($event)"></mc-campaign-slider>
       </div>
-      <div class="not-found" *ngIf="campaignSliders?.length === 0">
+      <div class="not-found text-grey" *ngIf="campaignSliders?.length === 0">
         ไม่พบข้อมูลที่ท่านเลือก
       </div>
     </div>
@@ -185,6 +186,7 @@
         </div>
       </div>
     </div>
+  </div>
     <!---------------------->
   </div>
 </div>
