@@ -528,6 +528,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
     onCampaignSelected(campaign: any) {
         this.priceOption.campaign = campaign;
+        this.priceOption.campaign.customerGroup = this.tabs.find((val: any) => val.active);
     }
 
     onPromotionShelve(campaign: any) {

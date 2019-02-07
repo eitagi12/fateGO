@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, ShoppingCart } from 'mychannel-shared-libs';
+import { HomeService, ShoppingCart, PaymentDetail, SelectPaymentDetail, PaymentDetailQRCode, PaymentDetailBank, PaymentDetailInstallment, PaymentDetailOption } from 'mychannel-shared-libs';
 import { ReceiptInfo } from 'mychannel-shared-libs/lib/component/receipt-info/receipt-info.component';
 import {
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VALIDATE_CUSTOMER_PAGE,
@@ -17,42 +17,42 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { from } from 'rxjs/internal/observable/from';
 import { groupBy, mergeMap, toArray, distinct } from 'rxjs/operators';
 
-export interface PaymentDetail {
-  title?: string;
-  header?: string;
-  price?: string;
-}
-export interface PaymentDetailQRCode {
-  id: number;
-  name: string;
-  imageUrl: string;
-  qrType: string;
-}
-export interface PaymentDetailAdvancePay {
-  amount: number;
-  installmentFlag: string;
-  matAirtime: string;
-  description: string;
-  promotions: PaymentDetailAdvancePayPromotion[];
-}
-export interface PaymentDetailAdvancePayPromotion {
-  promotionCode: string;
-  promotionName: string;
-  productType: string;
-  billingSystem: string;
-}
-export interface PaymentDetailBank {
-  abb: string;
-  name: string;
-  imageUrl: string;
-  promotion: string;
-  installments: PaymentDetailInstallment[];
-  remark: string;
-}
-export interface PaymentDetailInstallment {
-  installmentPercentage: number;
-  installmentMounth: number;
-}
+// export interface PaymentDetail {
+//   title?: string;
+//   header?: string;
+//   price?: string;
+// }
+// export interface PaymentDetailQRCode {
+//   id: number;
+//   name: string;
+//   imageUrl: string;
+//   qrType: string;
+// }
+// export interface PaymentDetailAdvancePay {
+//   amount: number;
+//   installmentFlag: string;
+//   matAirtime: string;
+//   description: string;
+//   promotions: PaymentDetailAdvancePayPromotion[];
+// }
+// export interface PaymentDetailAdvancePayPromotion {
+//   promotionCode: string;
+//   promotionName: string;
+//   productType: string;
+//   billingSystem: string;
+// }
+// export interface PaymentDetailBank {
+//   abb: string;
+//   name: string;
+//   imageUrl: string;
+//   promotion: string;
+//   installments: PaymentDetailInstallment[];
+//   remark: string;
+// }
+// export interface PaymentDetailInstallment {
+//   installmentPercentage: number;
+//   installmentMounth: number;
+// }
 
 export const CASH_PAYMENT = 'CA';
 export const CREDIT_CARD_PAYMENT = 'CC';
@@ -73,13 +73,19 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
   receiptInfo: ReceiptInfo;
   receiptInfoValid = true;
 
-  qrCodes: PaymentDetailQRCode[];
-  banks: PaymentDetailBank[];
-  paymentType: string;
+  paymentDetail: PaymentDetail;
+  selectPaymentDetail: SelectPaymentDetail;
+  paymentDetailOption: PaymentDetailOption;
+
+  paymentDetailAdvancePay: PaymentDetail;
+  selectPaymentDetailAdvancePay: SelectPaymentDetail;
+  paymentDetailAdvancePayOption: PaymentDetailOption;
+
+  paymentMethod: string;
 
   selectQRCode: PaymentDetailQRCode;
   selectBank: PaymentDetailBank;
-  installments: PaymentDetailInstallment[];
+  // installments: PaymentDetailInstallment[];
 
   selectQRCodeAdvancePay: PaymentDetailQRCode;
   selectBankAdvancePay: PaymentDetailBank;
@@ -87,8 +93,6 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
   paymentForm: FormGroup;
   advancePaymentForm: FormGroup;
 
-  paymenDetail: PaymentDetail;
-  advancePaymenDetail: PaymentDetail;
 
   constructor(
     private router: Router,
@@ -104,26 +108,74 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
 
   ngOnInit() {
 
-    // this.priceOption.trade.advancePay.amount = 0;
-    // this.priceOption.trade.advancePay.installmentFlag = 'N';
-
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-    this.createForm();
-    this.qrCodes = this.getQRCode();
-    this.banks = this.groupPrivilegeTradeBankByAbb(this.priceOption.trade.banks);
-    this.checkPaymentType();
 
-    this.paymenDetail = {
+    this.priceOption.trade.advancePay.amount = 1000;
+    this.priceOption.trade.advancePay.installmentFlag = 'N';
+    this.paymentMethod = this.priceOption.trade.payments.filter(payment => payment.method !== 'PP')[0].method || '';
+    this.paymentMethod = 'CC/CA';
+
+    // ############################################## payment detail ##############################################
+    this.paymentDetail = {
       title: 'รูปแบบการชำระเงิน',
       header: 'ค่าเครื่อง ' + this.priceOption.queryParams.model + ' สี ' + this.priceOption.productStock.colorName,
-      price: this.priceOption.trade.promotionPrice
+      price: this.priceOption.trade.promotionPrice,
+      qrCodes: this.getQRCode(),
+      banks: this.groupPrivilegeTradeBankByAbb(this.priceOption.trade.banks)
+    };
+    if (this.transaction.data.payment) {
+      this.selectPaymentDetail = {
+        paymentType: this.transaction.data.payment.type,
+        qrCode: this.transaction.data.payment.qrCode,
+        bank: this.transaction.data.payment.bank,
+      };
+      const bank = this.paymentDetail.banks.find(b => b.abb === this.selectPaymentDetail.bank.abb);
+      this.paymentDetail.installments = bank.installments;
+    } else {
+      this.selectPaymentDetail = {
+        paymentType: this.getPaymentType(),
+      };
+    }
+    this.paymentDetailOption = {
+      isInstallment: this.isInstallment(),
+      isEnable: this.isEnableForm()
     };
 
-    this.advancePaymenDetail = {
-      header: 'แพ็กเกจชำระล่วงหน้า',
-      price: this.priceOption.trade.advancePay.amount
+    // ############################################## advance payment ##############################################
+    this.paymentDetailAdvancePay = {
+      qrCodes: this.getQRCode(),
+      banks: this.groupPrivilegeTradeBankByAbb(this.priceOption.trade.banks)
+    };
+    if (this.transaction.data.advancePayment) {
+      this.selectPaymentDetailAdvancePay = {
+        paymentType: this.transaction.data.advancePayment.type,
+        qrCode: this.transaction.data.advancePayment.qrCode,
+        bank: this.transaction.data.advancePayment.bank,
+      };
+      const bank = this.paymentDetailAdvancePay.banks.find(b => b.abb === this.selectPaymentDetailAdvancePay.bank.abb);
+      this.paymentDetailAdvancePay.installments = bank.installments;
+    } else {
+      this.selectPaymentDetailAdvancePay = {
+        paymentType: this.getPaymentType(),
+      };
+    }
+    this.paymentDetailAdvancePayOption = {
+      isInstallment: false,
+      isEnable: true
     };
 
+    if (this.priceOption.trade.advancePay && this.priceOption.trade.advancePay.amount !== 0) {
+      const header = 'แพ็กเกจชำระล่วงหน้า';
+      const amount = this.priceOption.trade.advancePay.amount;
+      if (this.priceOption.trade.advancePay.installmentFlag === 'Y') {
+        this.paymentDetail.headerAdvancePay = header;
+        this.paymentDetail.priceAdvancePay = amount;
+      } else {
+        this.paymentDetailAdvancePay.headerAdvancePay = header;
+        this.paymentDetailAdvancePay.priceAdvancePay = amount;
+      }
+    }
+    // ############################################## receiptInfo ##############################################
     this.receiptInfo = {
       taxId: this.transaction.data.customer.idCardNo,
       branch: '',
@@ -133,7 +185,6 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
       buyerAddress: this.getFullAddress(this.transaction.data.customer),
       telNo: this.transaction.data.receiptInfo ? this.transaction.data.receiptInfo.telNo : ''
     };
-
   }
 
   ngOnDestroy(): void {
@@ -141,6 +192,9 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
   }
 
   onBack() {
+    delete this.transaction.data.payment;
+    delete this.transaction.data.advancePayment;
+
     if (TransactionAction.KEY_IN === this.transaction.data.action) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VALIDATE_CUSTOMER_PAGE]);
     } else {
@@ -149,6 +203,29 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
   }
 
   onNext() {
+    const paymentType = this.selectPaymentDetail.paymentType;
+    const qrCode = this.selectPaymentDetail.qrCode;
+    const bank = this.selectPaymentDetail.bank;
+
+    this.transaction.data.payment = {
+      method: this.getPaymentMethod(paymentType, qrCode),
+      type: paymentType,
+      qrCode: qrCode,
+      bank: bank
+    };
+
+    const paymentTypeAdvancePay = this.selectPaymentDetailAdvancePay.paymentType;
+    const qrCodeAdvancePay = this.selectPaymentDetailAdvancePay.qrCode;
+    const bankAdvancePay = this.selectPaymentDetailAdvancePay.bank;
+
+    this.transaction.data.advancePayment = {
+      method: this.getPaymentMethod(paymentTypeAdvancePay, qrCodeAdvancePay),
+      type: paymentTypeAdvancePay,
+      qrCode: qrCodeAdvancePay,
+      bank: bankAdvancePay
+    };
+
+
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CUSTOMER_INFO_PAGE]);
   }
 
@@ -156,7 +233,7 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
     this.homeService.goToHome();
   }
 
-  onReceiptInfoComplete(receiptInfo: ReceiptInfo) {
+  onReceiptInfoCompleted(receiptInfo: ReceiptInfo) {
     this.transaction.data.receiptInfo = receiptInfo;
   }
 
@@ -184,82 +261,55 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
     return fullAddress || '-';
   }
 
-  createForm() {
-    this.paymentForm = this.fb.group({
-      paymentTypeRadio: [null, Validators.required]
-    });
-
-    this.paymentForm.valueChanges.subscribe(observer => {
-
-      if (this.selectQRCode || this.selectBank) {
-        this.transaction.data.payment = {
-          method: this.getPaymentMethod(observer.paymentTypeRadio, this.selectQRCode),
-          type: observer.paymentTypeRadio,
-          qrCode: this.selectQRCode,
-          bank: this.selectBank
-        };
-      }
-
-    });
-
-    this.advancePaymentForm = this.fb.group({
-      paymentTypeRadio: [null, Validators.required]
-    });
-
-    this.advancePaymentForm.valueChanges.subscribe(observer => {
-      if (this.selectQRCodeAdvancePay || this.selectBankAdvancePay) {
-        this.transaction.data.advancePayment = {
-          method: this.getPaymentMethod(observer.paymentTypeRadio, this.selectQRCodeAdvancePay),
-          type: observer.paymentTypeRadio,
-          qrCode: this.selectQRCodeAdvancePay,
-          bank: this.selectBankAdvancePay
-        };
-      }
-    });
+  onSelectPaymentType(paymentType: string) {
+    this.selectPaymentDetail.paymentType = paymentType;
   }
-
   onSelectQRCode(qrCode: PaymentDetailQRCode) {
-    this.selectQRCode = Object.assign({}, qrCode);
-    this.selectQRCodeAdvancePay = Object.assign({}, qrCode);
-    this.paymentForm.patchValue({ paymentTypeRadio: 'qrcode' });
+    this.selectPaymentDetail.qrCode = Object.assign({}, qrCode);
+    this.selectPaymentDetailAdvancePay.qrCode = Object.assign({}, qrCode);
   }
   onSelectBank(bank: PaymentDetailBank) {
-    this.selectBank = Object.assign({}, bank);
-    this.selectBank.installments = undefined;
-    this.installments = bank.installments;
-    this.paymentForm.patchValue({ paymentTypeRadio: 'credit' });
+    this.selectPaymentDetail.bank = Object.assign({}, bank);
+    this.selectPaymentDetail.bank.installments = undefined;
+    this.paymentDetail.installments = bank.installments; // Object.assign({}, bank.installments);
   }
   onSelectInstallment(installment: PaymentDetailInstallment[]) {
-    this.selectBank.installments = Object.assign({}, installment);
-    this.paymentForm.patchValue({ paymentTypeRadio: 'credit' });
+    this.selectPaymentDetail.bank.installments = Object.assign({}, installment);
   }
 
+
+  onSelectPaymentTypeAdvancePay(paymentType: string) {
+    this.selectPaymentDetailAdvancePay.paymentType = paymentType;
+  }
   onSelectQRCodeAdvancePay(qrCode: PaymentDetailQRCode) {
-    this.selectQRCode = Object.assign({}, qrCode);
-    this.selectQRCodeAdvancePay = Object.assign({}, qrCode);
-    this.advancePaymentForm.patchValue({ paymentTypeRadio: 'qrcode' });
+    this.selectPaymentDetail.qrCode = Object.assign({}, qrCode);
+    this.selectPaymentDetailAdvancePay.qrCode = Object.assign({}, qrCode);
   }
   onSelectBankAdvancePay(bank: PaymentDetailBank) {
-    this.selectBankAdvancePay = Object.assign({}, bank);
-    this.selectBankAdvancePay.installments = undefined;
-    this.advancePaymentForm.patchValue({ paymentTypeRadio: 'credit' });
+    this.selectPaymentDetailAdvancePay.bank = Object.assign({}, bank);
+    this.selectPaymentDetailAdvancePay.bank.installments = undefined;
   }
 
   checkPaymentFormValid(): boolean {
-    const type = this.paymentForm.controls['paymentTypeRadio'].value;
-    if (this.paymentType === CASH_PAYMENT) {
-      if (type === 'qrcode' && !this.selectQRCode) {
+    const paymentType = this.selectPaymentDetail.paymentType;
+
+    if (this.paymentMethod === CASH_PAYMENT) {
+      if (paymentType === 'qrcode' && !this.selectPaymentDetail.qrCode) {
         return false;
       }
-    } else if (this.paymentType === CREDIT_CARD_PAYMENT) {
-      if (type === 'credit' && (!this.selectBank || !this.selectBank.installments)) {
+    }
+
+    if (this.paymentMethod === CREDIT_CARD_PAYMENT) {
+      if (paymentType === 'credit' && (!this.selectPaymentDetail.bank || !this.selectPaymentDetail.bank.installments)) {
         return false;
       }
-    } else if (this.paymentType === CASH_AND_CREDIT_CARD_PAYMENT) {
-      if (type === 'qrcode' && !this.selectQRCode) {
+    }
+
+    if (this.paymentMethod === CASH_AND_CREDIT_CARD_PAYMENT) {
+      if (paymentType === 'qrcode' && !this.selectPaymentDetail.qrCode) {
         return false;
       }
-      if (type === 'credit' && !this.selectBank) {
+      if (paymentType === 'credit' && !this.selectPaymentDetail.bank) {
         return false;
       }
     }
@@ -275,63 +325,64 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
       return true;
     }
 
-    const type = this.advancePaymentForm.controls['paymentTypeRadio'].value;
+    const paymentType = this.selectPaymentDetailAdvancePay.paymentType;
 
-    if (this.paymentType === CASH_PAYMENT) {
-      if (type === 'qrcode' && !this.selectQRCodeAdvancePay) {
+    if (this.paymentMethod === CASH_PAYMENT) {
+      if (paymentType === 'qrcode' && !this.selectPaymentDetailAdvancePay.qrCode) {
         return false;
       }
-    } else if (this.paymentType === CREDIT_CARD_PAYMENT) {
-      if (type === 'qrcode' && !this.selectQRCodeAdvancePay) {
+    }
+
+    if (this.paymentMethod === CREDIT_CARD_PAYMENT) {
+      if (paymentType === 'qrcode' && !this.selectPaymentDetailAdvancePay.qrCode) {
         return false;
       }
-      if (type === 'credit' && !this.selectBankAdvancePay) {
+      if (paymentType === 'credit' && !this.selectPaymentDetailAdvancePay.bank) {
         return false;
       }
-    } else if (this.paymentType === CASH_AND_CREDIT_CARD_PAYMENT) {
-      if (type === 'qrcode' && !this.selectQRCodeAdvancePay) {
+    }
+
+    if (this.paymentMethod === CASH_AND_CREDIT_CARD_PAYMENT) {
+      if (paymentType === 'qrcode' && !this.selectPaymentDetailAdvancePay.qrCode) {
         return false;
       }
-      if (type === 'credit' && !this.selectBankAdvancePay) {
+      if (paymentType === 'credit' && !this.selectPaymentDetailAdvancePay.bank) {
         return false;
       }
     }
 
     return true;
   }
-
-  checkPaymentType() {
-    this.paymentType = this.priceOption.trade.payments.filter(payment => payment.method !== 'PP')[0].method || '';
-    // this.paymentType = 'CC/CA';
-    if (this.transaction.data.payment) {
-      this.paymentForm.patchValue({ paymentTypeRadio: this.transaction.data.payment.type });
-      this.selectQRCode = this.transaction.data.payment.qrCode;
-      this.selectBank = this.transaction.data.payment.bank;
-      this.installments = this.banks.find(bank => bank.abb === this.selectBank.abb).installments;
-    } else {
-      if (this.paymentType === CASH_PAYMENT) {
-        this.paymentForm.get('paymentTypeRadio').enable();
-        this.paymentForm.patchValue({ paymentTypeRadio: 'qrcode' });
-      } else if (this.paymentType === CREDIT_CARD_PAYMENT) {
-        this.paymentForm.get('paymentTypeRadio').disable();
-        this.paymentForm.patchValue({ paymentTypeRadio: 'credit' });
-      } else if (this.paymentType === CASH_AND_CREDIT_CARD_PAYMENT) {
-        this.paymentForm.get('paymentTypeRadio').enable();
-        this.paymentForm.patchValue({ paymentTypeRadio: 'qrcode' });
-      } else {
-        this.paymentForm.get('paymentTypeRadio').enable();
-        this.paymentForm.patchValue({ paymentTypeRadio: 'qrcode' });
-      }
+  isInstallment(): boolean {
+    if (this.paymentMethod === 'CC' && this.selectPaymentDetail.paymentType === 'credit') {
+      return true;
     }
-
-    if (this.transaction.data.advancePayment) {
-      this.advancePaymentForm.patchValue({ paymentTypeRadio: this.transaction.data.advancePayment.type });
-      this.selectQRCodeAdvancePay = this.transaction.data.advancePayment.qrCode;
-      this.selectBankAdvancePay = this.transaction.data.advancePayment.bank;
-    } else {
-      this.advancePaymentForm.get('paymentTypeRadio').enable();
-      this.advancePaymentForm.patchValue({ paymentTypeRadio: 'qrcode' });
+    return false;
+  }
+  isEnableForm(): boolean {
+    if (this.paymentMethod === CASH_PAYMENT) {
+      return true;
     }
+    if (this.paymentMethod === CREDIT_CARD_PAYMENT) {
+      return false;
+    }
+    if (this.paymentMethod === CASH_AND_CREDIT_CARD_PAYMENT) {
+      return true;
+    }
+    return true;
+  }
+
+  getPaymentType(): string {
+    if (this.paymentMethod === CASH_PAYMENT) {
+      return 'qrcode';
+    }
+    if (this.paymentMethod === CREDIT_CARD_PAYMENT) {
+      return 'credit';
+    }
+    if (this.paymentMethod === CASH_AND_CREDIT_CARD_PAYMENT) {
+      return 'qrcode';
+    }
+    return 'qrcode';
 
   }
 
@@ -371,23 +422,6 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
   }
 
   groupPrivilegeTradeBankByAbb(banks: PaymentDetailBank[]) {
-
-    // const banks = from(this.priceOption.trade.banks);
-    // const resultGroup = banks.pipe(
-    //   groupBy(bank => bank.abb),
-    //   mergeMap(group => group.pipe(toArray()))
-    // );
-
-    // resultGroup.subscribe((data) => {
-
-    //   const myNewList = data.filter((obj, index, array) =>
-    //     index === array.findIndex((findTest) =>
-    //       findTest.installment === obj.installment
-    //     )
-    //   );
-    //   console.log(myNewList);
-
-    // });
 
     const newPrivilegTradeBankByAbbs = new Array<PaymentDetailBank>();
     const grouped = this.groupBy(banks, (bank: PaymentDetailBank) => bank.abb);
