@@ -205,10 +205,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         });
     }
 
-    viewInstallment(tread: any) {
-        console.log('viewInstallment' , tread);
-    }
-
     onProductStockSelected(product) {
         this.tabs = null;
         if (this.priceOption.productStock &&
@@ -370,54 +366,54 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
                 const campaignByGroup = campaignSlider.value.privileges
                     .filter(privileges => Object.keys(privileges.customerGroups
-                    .filter(privilegeGroup => privilegeGroup.code === this.selectCustomerGroup.code)).length > 0)
+                        .filter(privilegeGroup => privilegeGroup.code === this.selectCustomerGroup.code)).length > 0)
                     .filter(privileges => Object.keys(privileges.trades.filter(trade => Object.keys(trade.customerGroups
-                    .filter(treadGroup => treadGroup.code === this.selectCustomerGroup.code)).length > 0)).length > 0)
+                        .filter(treadGroup => treadGroup.code === this.selectCustomerGroup.code)).length > 0)).length > 0)
                     .filter(chanel => chanel.channels.indexOf('AIS') > -1)
                     .map(privilegesPayment => {
 
                         // map data Treads in Privilege
                         privilegesPayment.trades = privilegesPayment.trades
-                        .filter((trade: any) => trade.channels.indexOf('AIS') > -1)
-                        .map((treadData) => {
+                            .filter((trade: any) => trade.channels.indexOf('AIS') > -1)
+                            .map((treadData) => {
 
-                            const isPaymentCash = treadData.payments.find((payment) => payment.method === 'CA');
-                            const isPaymentCredist = treadData.payments.find((payment) => payment.method === 'CC');
+                                const isPaymentCash = treadData.payments.find((payment) => payment.method === 'CA');
+                                const isPaymentCredist = treadData.payments.find((payment) => payment.method === 'CC');
 
-                            if (treadData.payments && treadData.payments.length && treadData.payments[0].installId === null) {
-                                const tradePayment = { cardType: '', method: 'CC/CA', installmentId: '' };
-                                treadData.payments = (isPaymentCredist  && isPaymentCash) ? [tradePayment] : treadData.payments;
-                                treadData.advancePay.installmentFlag = 'N';
-                                treadData.conditionCode =
-                                (treadData.advancePay && treadData.advancePay.matAirtime) ? 'CONDITION_2' : 'CONDITION_1';
+                                if (treadData.payments && treadData.payments.length && treadData.payments[0].installId === null) {
+                                    const tradePayment = { cardType: '', method: 'CC/CA', installmentId: '' };
+                                    treadData.payments = (isPaymentCredist && isPaymentCash) ? [tradePayment] : treadData.payments;
+                                    treadData.advancePay.installmentFlag = 'N';
+                                    treadData.conditionCode =
+                                        (treadData.advancePay && treadData.advancePay.matAirtime) ? 'CONDITION_2' : 'CONDITION_1';
 
-                            } else {
-                                // Tread for TDM --> payments is []
-                                if (!treadData.payments.length) {
-                                    treadData.payments = { cardType: '', method: 'CC/CA', installmentId: '' };
+                                } else {
+                                    // Tread for TDM --> payments is []
+                                    if (!treadData.payments.length) {
+                                        treadData.payments = { cardType: '', method: 'CC/CA', installmentId: '' };
+                                    }
                                 }
-                            }
-                            treadData.conditionCode = treadData.conditionCode || 'CONDITION_1';
-                            treadData.priority = this.setPriorityByPaymentMethod(treadData);
-                            return treadData;
+                                treadData.conditionCode = treadData.conditionCode || 'CONDITION_1';
+                                treadData.priority = this.setPriorityByPaymentMethod(treadData);
+                                return treadData;
 
-                        })
-                        .filter((tread) => {
+                            })
+                            .filter((tread) => {
 
-                            /* Merge Trade Payment
-                                เงื่อนไขการรวม Trade จ่ายเงิน (เอา tread ออก)
-                                1.payments[0].installId === null
-                                2.payments[0].method == 'CC'
-                            */
+                                /* Merge Trade Payment
+                                    เงื่อนไขการรวม Trade จ่ายเงิน (เอา tread ออก)
+                                    1.payments[0].installId === null
+                                    2.payments[0].method == 'CC'
+                                */
 
-                            if (tread.payments && tread.payments.length > 0 && tread.payments[0].installId === null) {
-                                if (tread.payments[0].method === 'CC') {
-                                    return;
+                                if (tread.payments && tread.payments.length > 0 && tread.payments[0].installId === null) {
+                                    if (tread.payments[0].method === 'CC') {
+                                        return;
+                                    }
                                 }
-                            }
-                            return tread;
-                        })
-                        .sort((a, b) => a.priority - b.priority);
+                                return tread;
+                            })
+                            .sort((a, b) => a.priority - b.priority);
 
                         return privilegesPayment;
 
@@ -437,47 +433,46 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
     }
 
-     setPriorityByPaymentMethod(priceOptionPrivilegeTrade: any) {
+    setPriorityByPaymentMethod(priceOptionPrivilegeTrade: any) {
         const paymentTypes: any[] = priceOptionPrivilegeTrade.payments;
         let priority = 3;
         if (paymentTypes && paymentTypes.length >= 1) {
             const paymentType: any = (paymentTypes.filter((paymentList: any) => paymentList.method !== 'PP'))[0];
             if (paymentType.method) {
-              switch (paymentType.method) {
-                case 'CA':
-                    priority = 3;
-                    break;
-                case 'CC':
-                    priority = 1;
-                    break;
-                case 'CC/CA':
-                    priority = 3;
-                    break;
-              }
+                switch (paymentType.method) {
+                    case 'CA':
+                        priority = 3;
+                        break;
+                    case 'CC':
+                        priority = 1;
+                        break;
+                    case 'CC/CA':
+                        priority = 3;
+                        break;
+                }
             }
             if (priceOptionPrivilegeTrade.advancePay && priceOptionPrivilegeTrade.advancePay.installmentFlag === 'Y') {
-              priority = 2;
+                priority = 2;
             }
-          }
-          return priority;
+        }
+        return priority;
     }
 
-    getInstallment(installments: any, campaign: any) {
-
+    getInstallmentAndPrivileges(installments: any, privileges: any) {
+        this.privilegeTradeInstallmentGroup = [];
         const priceWithInstallmentList = [];
 
-        const campaignByGroup = campaign.privileges
-            .filter(privileges => Object.keys(privileges.customerGroups
+        const privilegesGroup = privileges
+            .filter(privilege => Object.keys(privilege.customerGroups
                 .filter(customerGroup => customerGroup.code === this.selectCustomerGroup.code)).length > 0)
-            .filter(privileges => Object.keys(privileges.trades.filter(trade => Object.keys(trade.customerGroups
+            .filter(privilege => Object.keys(privilege.trades.filter(trade => Object.keys(trade.customerGroups
                 .filter(customerGroup => customerGroup.code === this.selectCustomerGroup.code)).length > 0)).length > 0);
 
-        console.log('campaignByGroup', campaignByGroup);
         installments.forEach((installment: any) => {
             const priceList: any[] = [];
             const advancePayList: any[] = [];
             let showAdvancePay: boolean;
-            campaignByGroup.forEach((privilege: any) => {
+            privilegesGroup.forEach((privilege: any) => {
                 privilege.trades.forEach((trade: any) => {
                     const isExist = trade.banks.filter(filterBanks => installment.banks
                         .some(bank => bank.installment === filterBanks.installment && bank.abb === filterBanks.abb) > 0);
@@ -509,21 +504,24 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             const filterZeroAdvancePayList = advancePayList.filter(advancePay => advancePay !== 0);
             const sortPriceList = filterZeroPriceList.sort((a, b) => a !== b ? a < b ? -1 : 1 : 0);
             const sortAdvanceAdvancePayList = filterZeroAdvancePayList.sort((a, b) => a !== b ? a < b ? -1 : 1 : 0);
-            const priceWithInstallmentBankAndAdvancePayment = {
-                priceList: sortPriceList,
-                advancePayList: sortAdvanceAdvancePayList,
-                showAdvancePay: showAdvancePay,
-                banks: installment.banks,
-                month: installment.month,
-                percentage: installment.percentage
-            };
 
-            priceWithInstallmentList.push(priceWithInstallmentBankAndAdvancePayment);
+            if (sortPriceList.length > 0) {
+                const priceWithInstallmentBankAndAdvancePayment = {
+                    priceList: sortPriceList,
+                    advancePayList: sortAdvanceAdvancePayList,
+                    showAdvancePay: showAdvancePay,
+                    banks: installment.banks,
+                    month: installment.month,
+                    percentage: installment.percentage
+                };
+                priceWithInstallmentList.push(priceWithInstallmentBankAndAdvancePayment);
+            }
+
         });
 
         this.privilegeTradeInstallmentGroup = priceWithInstallmentList;
+
         if (this.privilegeTradeInstallmentGroup) {
-            console.log('privilegeTradeInstallmentGroup', this.privilegeTradeInstallmentGroup);
             this.showInstallmentListTemplate();
         }
     }
@@ -536,15 +534,64 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         this.callPromotionShelveService(campaign);
     }
 
-    onInstallmentList(campaignSlider: any) {
-        const selectCustomerGroup = {
-            code: 'MC001'
-        };
+    viewInstallmentList(campaignSlider: any) {
+        const tabActive = this.tabs.find(val => {
+            return val.active;
+        });
+
+        const selectCustomerGroupCode = tabActive.code;
+
         const campaignSliderForFilter = Object.assign({}, campaignSlider);
-        const filterPriceOption = this.getFilterPriceOptionByCustomerGroup(campaignSliderForFilter.value, selectCustomerGroup);
-        const campaign = filterPriceOption;
+        const filterPriceOption = this.getFilterPriceOptionByCustomerGroup(campaignSliderForFilter.value, selectCustomerGroupCode);
         const installments = campaignSlider.installments;
-        this.getInstallment(installments, campaign);
+        const privileges = filterPriceOption.privileges;
+        this.getInstallmentAndPrivileges(installments, privileges);
+    }
+
+    viewInstallment(campaignSlider: any) {
+        const installments = campaignSlider.installments;
+        const trade = campaignSlider.value;
+        let price: Number;
+        let advancePay: Number;
+        const installmentGroups = [];
+        this.privilegeTradeInstallmentGroup = [];
+        let isShowAdvancePay: boolean;
+
+        installments.filter((installment: any) => {
+            if (installment.banks.length > 0) {
+                price = this.calculatePrice(
+                    +trade.promotionPrice,
+                    +installment.month || 0,
+                    +installment.percentage || 0
+                );
+                advancePay = this.calculateAdvancePay(
+                    +trade.promotionPrice || 0,
+                    +trade.advancePay.amount || 0,
+                    +installment.month || 0,
+                    +installment.percentage || 0
+                );
+                isShowAdvancePay = !!(trade.advancePay.installmentFlag === 'Y'
+                    && trade.advancePay.amount !== null && trade.advancePay.amount !== 0 && trade.advancePay.amount ? true : false);
+            }
+            if (price > 0) {
+                const priceWithInstallmentBankAndAdvancePayment = {
+                    priceList: price,
+                    advancePayList: advancePay,
+                    showAdvancePay: isShowAdvancePay,
+                    banks: installment.banks,
+                    month: installment.month,
+                    percentage: installment.percentage,
+                    fromTrade: true
+                };
+                installmentGroups.push(priceWithInstallmentBankAndAdvancePayment);
+            }
+        });
+
+        this.privilegeTradeInstallmentGroup = installmentGroups;
+        if (this.privilegeTradeInstallmentGroup) {
+            this.showInstallmentListTemplate();
+        }
+
     }
 
     getInstallments(campaign: any): CampaignSliderInstallment[] {
@@ -680,32 +727,31 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         this.priceOption.trade = trade;
         this.pageLoadingService.openLoading();
         this.addToCartService.reserveStock().then((nextUrl) => {
-            console.log('Next url => ', nextUrl);
             this.router.navigate([nextUrl]).then(() => this.pageLoadingService.closeLoading());
         });
     }
 
-    private getFilterPriceOptionByCustomerGroup(campaignSlider: any, selectCustomerGroup: any) {
+    private getFilterPriceOptionByCustomerGroup(campaignSlider: any, selectCustomerGroupCode: string) {
         if (campaignSlider.privileges) {
             const filterPrivileges = campaignSlider.privileges
                 .filter(privilege => {
                     const isPrivilegeInCustomerGroup = privilege.customerGroups.filter(customerGroup =>
-                        customerGroup.code === selectCustomerGroup.code
+                        customerGroup.code === selectCustomerGroupCode
                     );
                     return isPrivilegeInCustomerGroup.length > 0 ? true : false;
                 });
-                const filterPrivilegeAndTrade = filterPrivileges
-                    .map(filterPrivilege => {
-                        const filterTrades = filterPrivilege.trades.filter(trade => {
-                            const isPrivilegeTradeInCustomerGroup = trade.customerGroups.filter(customerGroup =>
-                                customerGroup.code === selectCustomerGroup.code);
-                            return isPrivilegeTradeInCustomerGroup.length > 0 ? true : false;
-                        });
-                        filterPrivilege.trades = filterTrades;
-                        return filterPrivilege;
+            const filterPrivilegeAndTrade = filterPrivileges
+                .map(filterPrivilege => {
+                    const filterTrades = filterPrivilege.trades.filter(trade => {
+                        const isPrivilegeTradeInCustomerGroup = trade.customerGroups.filter(customerGroup =>
+                            customerGroup.code === selectCustomerGroupCode);
+                        return isPrivilegeTradeInCustomerGroup.length > 0 ? true : false;
                     });
+                    filterPrivilege.trades = filterTrades;
+                    return filterPrivilege;
+                });
 
-                campaignSlider.privileges = filterPrivileges;
+            campaignSlider.privileges = filterPrivileges;
         }
         return campaignSlider;
     }

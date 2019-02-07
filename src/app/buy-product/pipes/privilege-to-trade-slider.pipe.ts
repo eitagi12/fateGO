@@ -57,14 +57,15 @@ export class PrivilegeToTradeSliderPipe implements PipeTransform {
       return previousValue;
   }, {});
     const installments = [];
-        Object.keys(installmentGroups).forEach((key: string) => {
+        Object.keys(installmentGroups).forEach((key: any) => {
             const keys: string[] = key.split('-');
             if (+keys[0] === 0 && +keys[1] === 0) {
                 return;
             }
             installments.push({
                 percentage: +keys[0] || 0,
-                mounth: +keys[1] || 0
+                month: +keys[1] || 0,
+                banks: installmentGroups[key]
             });
         });
         // จ่ายน้อยผ่อนนาน
