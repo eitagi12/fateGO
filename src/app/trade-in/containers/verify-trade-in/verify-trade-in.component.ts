@@ -129,7 +129,11 @@ export class VerifyTradeInComponent implements OnInit , OnDestroy {
       (response) => {
         this.pageLoadingService.closeLoading();
         if (response.data.status === 'S') {
-          this.tradeInTransaction.data.tradeIn.matCode = response.data.matCode;
+          if (response.data.matCode !== undefined) {
+            this.tradeInTransaction.data.tradeIn.matCode = response.data.matCode;
+          }else{
+            this.tradeInTransaction.data.tradeIn.matCode = ' ';
+          }
           if (this.checkBrandAndModelFromListModelTradein(response.data.brand , response.data.model)) {
             this.setAutoSelect(response.data);
           } else {
