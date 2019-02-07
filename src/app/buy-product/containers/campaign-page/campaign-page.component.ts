@@ -424,7 +424,9 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                             })
                             .sort((a, b) => a.priority - b.priority);
 
-                        return privilegesPayment;
+                        if (privilegesPayment.trades.length) {
+                            return privilegesPayment;
+                        }
 
                     });
 
