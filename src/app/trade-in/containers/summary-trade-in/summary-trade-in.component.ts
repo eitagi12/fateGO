@@ -10,6 +10,7 @@ import { TradeInTransactionService } from '../../services/trade-in-transaction.s
 })
 
 export class SummaryTradeInComponent implements OnInit {
+  // aisNative: any = window.aisNative;
   tradeInTransaction: TradeInTranscation;
   tradeinNo: string;
   brand: string;
@@ -42,6 +43,27 @@ export class SummaryTradeInComponent implements OnInit {
   }
 
   gotoPrintSummary() {
-    this.router.navigate(['trade-in/receipt-trade-in']);
+    // this.router.navigate(['trade-in/receipt-trade-in']);
+    let aisNative = 'Mockup';
+    let tradePrint = {
+      tradeinNo : this.tradeinNo,
+      brand : this.brand,
+      modelTradein : this.modelTradein,
+      tradeinGrade : this.tradeinGrade,
+      imeiTradein : this.imeiTradein,
+      tradeinPrice : this.tradeinPrice
+    }
+
+    // if (typeof this.aisNative !== "undefined") {
+    if (aisNative !== "undefined") {
+      console.log('Hello one');
+      this.callPrint(tradePrint);
+    } else {
+      console.log('Hello two');
+    }
+  }
+
+  callPrint (tradeRep : any) {
+    console.log('Hello Print Show !');
   }
 }
