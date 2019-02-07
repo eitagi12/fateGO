@@ -900,7 +900,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     }
 
     showInstallmentListTemplate(): void {
-        const modalOptions = { class: 'modal-lg' };
+        const modalOptions = { class: 'modal-lg modal-dialog-centered' };
         this.modalRef = this.modalService.show(this.installmentTemplate, modalOptions);
     }
 
