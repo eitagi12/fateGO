@@ -25,6 +25,7 @@ export interface TradeIn {
     tradeInPrice?: string;
     tradeInGrade?: string;
     listValuation?: ValValuation[];
+    company?: string;
   }
 
   export interface ValValuation {

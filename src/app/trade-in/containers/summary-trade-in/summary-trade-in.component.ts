@@ -18,6 +18,8 @@ export class SummaryTradeInComponent implements OnInit {
   imeiTradein: string;
   tradeinPrice: string;
   tradeinGrade: string;
+  company: string;
+  unLockOs: string
 
   constructor(private router: Router,
     private tradeInTransactionService: TradeInTransactionService) {
@@ -36,6 +38,7 @@ export class SummaryTradeInComponent implements OnInit {
     this.tradeinGrade = tradeInTransaction.tradeInGrade;
     this.imeiTradein = tradeInTransaction.serialNo;
     this.tradeinPrice = tradeInTransaction.tradeInPrice;
+    this.company = tradeInTransaction.company;
   }
 
   gotoMainMenu() {
@@ -43,27 +46,27 @@ export class SummaryTradeInComponent implements OnInit {
   }
 
   gotoPrintSummary() {
-    // this.router.navigate(['trade-in/receipt-trade-in']);
     let aisNative = 'Mockup';
     let tradePrint = {
-      tradeinNo : this.tradeinNo,
-      brand : this.brand,
-      modelTradein : this.modelTradein,
-      tradeinGrade : this.tradeinGrade,
-      imeiTradein : this.imeiTradein,
-      tradeinPrice : this.tradeinPrice
+      tradeinNo: this.tradeinNo,
+      brand: this.brand,
+      modelTradein: this.modelTradein,
+      tradeinGrade: this.tradeinGrade,
+      imeiTradein: this.imeiTradein,
+      tradeinPrice: this.tradeinPrice,
+      company: this.company,
+      unLockOs: this.brand === 'APPLE' ? 'ปลดล็อค iCloud และ Reset' : 'ปลดล็อค Google Pay และ Reset'
     }
-
     // if (typeof this.aisNative !== "undefined") {
-    if (aisNative !== "undefined") {
-      console.log('Hello one');
-      this.callPrint(tradePrint);
-    } else {
-      console.log('Hello two');
-    }
+    // if (aisNative !== "undefined") {
+    //   console.log('Hello one');
+    //   this.callPrint(tradePrint);
+    // } else {
+    //   console.log('Hello two');
+    // }
   }
 
-  callPrint (tradeRep : any) {
-    console.log('Hello Print Show !');
-  }
+  // callPrint (tradeRep : any) {
+  //   console.log('Hello Print Show !');
+  // }
 }

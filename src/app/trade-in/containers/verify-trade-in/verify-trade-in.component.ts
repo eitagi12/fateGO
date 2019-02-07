@@ -56,7 +56,8 @@ export class VerifyTradeInComponent implements OnInit , OnDestroy {
           brand: '',
           model: '',
           matCode: '',
-          serialNo: ''
+          serialNo: '',
+          company: ''
         }
       }
     };
@@ -129,11 +130,8 @@ export class VerifyTradeInComponent implements OnInit , OnDestroy {
       (response) => {
         this.pageLoadingService.closeLoading();
         if (response.data.status === 'S') {
-          if (response.data.matCode !== undefined) {
-            this.tradeInTransaction.data.tradeIn.matCode = response.data.matCode;
-          }else{
-            this.tradeInTransaction.data.tradeIn.matCode = ' ';
-          }
+          this.tradeInTransaction.data.tradeIn.matCode = response.data.matcode ? response.data.matcode : ' ';
+          this.tradeInTransaction.data.tradeIn.company = response.data.company;
           if (this.checkBrandAndModelFromListModelTradein(response.data.brand , response.data.model)) {
             this.setAutoSelect(response.data);
           } else {
