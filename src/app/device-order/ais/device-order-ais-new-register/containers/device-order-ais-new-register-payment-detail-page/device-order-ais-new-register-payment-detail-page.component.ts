@@ -51,7 +51,7 @@ import { groupBy, mergeMap, toArray, distinct } from 'rxjs/operators';
 // }
 // export interface PaymentDetailInstallment {
 //   installmentPercentage: number;
-//   installmentMounth: number;
+//   installmentMonth: number;
 // }
 
 export const CASH_PAYMENT = 'CA';
@@ -466,13 +466,13 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
       const existInstallments = installmentDatas
         .filter(
           installment =>
-            (installment.installmentMounth === installmentMonth) &&
+            (installment.installmentMonth === installmentMonth) &&
             (installment.installmentPercentage === installmentPercentage)
         );
 
       if (existInstallments.length === 0 && (installmentMonth)) {
         const installmentData: PaymentDetailInstallment = {
-          installmentMounth: installmentMonth,
+          installmentMonth: installmentMonth,
           installmentPercentage: installmentPercentage
         };
 
@@ -482,7 +482,7 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
       }
     });
     return installmentDatas.sort((a: any, b: any) => {
-      return a.installmentMounth > b.installmentMounth ? -1 : 1;
+      return a.installmentMonth > b.installmentMonth ? -1 : 1;
     });
   }
   public getBankInstallmentMonth(installmentRemark: string) {

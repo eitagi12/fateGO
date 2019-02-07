@@ -31,5 +31,5 @@ export interface PrivilegeTradeBank {
 }
 export interface PrivilegeTradeInstallment {
     installmentPercentage: number;
-    installmentMounth: number;
+    installmentMonth: number;
 }
