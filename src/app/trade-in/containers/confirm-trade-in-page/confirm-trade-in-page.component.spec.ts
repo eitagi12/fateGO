@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ConfirmTradeInComponent } from './confirm-trade-in.component';
+import { ConfirmTradeInPageComponent } from './confirm-trade-in-page.component';
 
-describe('ConfirmTradeInComponent', () => {
-  let component: ConfirmTradeInComponent;
-  let fixture: ComponentFixture<ConfirmTradeInComponent>;
+describe('ConfirmTradeInPageComponent', () => {
+  let component: ConfirmTradeInPageComponent;
+  let fixture: ComponentFixture<ConfirmTradeInPageComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ConfirmTradeInComponent ]
+      declarations: [ ConfirmTradeInPageComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ConfirmTradeInComponent);
+    fixture = TestBed.createComponent(ConfirmTradeInPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
