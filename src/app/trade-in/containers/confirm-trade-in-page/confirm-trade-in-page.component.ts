@@ -6,11 +6,11 @@ import { TradeInTransactionService } from '../../services/trade-in-transaction.s
 import { TradeInTranscation } from '../../services/models/trade-in-transcation.model';
 
 @Component({
-  selector: 'app-confirm-trade-in',
-  templateUrl: './confirm-trade-in.component.html',
-  styleUrls: ['./confirm-trade-in.component.scss']
+  selector: 'app-confirm-trade-in-page',
+  templateUrl: './confirm-trade-in-page.component.html',
+  styleUrls: ['./confirm-trade-in-page.component.scss']
 })
-export class ConfirmTradeInComponent implements OnInit , OnDestroy {
+export class ConfirmTradeInPageComponent implements OnInit , OnDestroy {
   tradeInTransaction: TradeInTranscation;
   aisFlg: string;
   tradeinPrice: any;

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TradeInTranscation } from '../../services/models/trade-in-transcation.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -11,7 +11,7 @@ import { TradeInTransactionService } from '../../services/trade-in-transaction.s
   templateUrl: './criteria-trade-in-page.component.html',
   styleUrls: ['./criteria-trade-in-page.component.scss']
 })
-export class CriteriaTradeInPageComponent implements OnInit {
+export class CriteriaTradeInPageComponent implements OnInit, OnDestroy {
   tradeInTransaction: TradeInTranscation;
   valuationlists: any;
   objCriteriatradein: any;
@@ -92,16 +92,20 @@ export class CriteriaTradeInPageComponent implements OnInit {
 
   onBack() {
     this.tradeInTransactionService.remove();
-    this.router.navigate(['trade-in/verify-trade-in-page']);
+    this.router.navigate(['trade-in/verify-trade-in']);
   }
 
   onCancel() {
     this.valuationlistForm.reset();
+    for (const item of this.valuationlists) {
+      item.valChecked = 'N';
+    }
+    this.btnNextDisabled = true;
   }
 
   onNext() {
     this.tradeInTransaction.data.tradeIn.listValuation = this.valuationlists;
-    this.router.navigate(['trade-in/confirm-trade-in-page']);
+    this.router.navigate(['trade-in/confirm-trade-in']);
   }
 
   ngOnDestroy(): void {

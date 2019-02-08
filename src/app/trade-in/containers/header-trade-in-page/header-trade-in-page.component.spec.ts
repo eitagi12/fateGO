@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CriteriaTradeInComponent } from './criteria-trade-in.component';
+import { HeaderTradeInPageComponent } from './header-trade-in-page.component';
 
-describe('CriteriaTradeInComponent', () => {
-  let component: CriteriaTradeInComponent;
-  let fixture: ComponentFixture<CriteriaTradeInComponent>;
+describe('HeaderTradeInPageComponent', () => {
+  let component: HeaderTradeInPageComponent;
+  let fixture: ComponentFixture<HeaderTradeInPageComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CriteriaTradeInComponent ]
+      declarations: [ HeaderTradeInPageComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CriteriaTradeInComponent);
+    fixture = TestBed.createComponent(HeaderTradeInPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

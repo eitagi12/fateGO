@@ -1,25 +1,26 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { VerifyTradeInComponent } from './containers/verify-trade-in/verify-trade-in.component';
-import { CriteriaTradeInComponent } from './containers/criteria-trade-in/criteria-trade-in.component';
-import { ConfirmTradeInComponent } from './containers/confirm-trade-in/confirm-trade-in.component';
-import { SummaryTradeInComponent } from './containers/summary-trade-in/summary-trade-in.component';
+
+import { VerifyTradeInPageComponent } from 'src/app/trade-in/containers/verify-trade-in-page/verify-trade-in-page.component';
+import { ConfirmTradeInPageComponent } from 'src/app/trade-in/containers/confirm-trade-in-page/confirm-trade-in-page.component';
+import { CriteriaTradeInPageComponent } from 'src/app/trade-in/containers/criteria-trade-in-page/criteria-trade-in-page.component';
+import { SummaryTradeInPageComponent } from 'src/app/trade-in/containers/summary-trade-in-page/summary-trade-in-page.component';
 
 const routes: Routes = [
   {
     path: '', redirectTo: 'verify-trade-in', pathMatch: 'full'
   },
   {
-    path: 'verify-trade-in', component: VerifyTradeInComponent
+    path: 'verify-trade-in', component: VerifyTradeInPageComponent
   },
   {
-    path: 'criteria-trade-in', component: CriteriaTradeInComponent
+    path: 'criteria-trade-in', component: CriteriaTradeInPageComponent
   },
   {
-    path: 'confirm-trade-in', component: ConfirmTradeInComponent
+    path: 'confirm-trade-in', component: ConfirmTradeInPageComponent
   },
   {
-    path: 'summary-trade-in', component: SummaryTradeInComponent
+    path: 'summary-trade-in', component: SummaryTradeInPageComponent
   }
 ];
 
