@@ -21,6 +21,7 @@ export enum TransactionAction {
   READ_CARD_REPI = 'READ_CARD_REPI',
   KEY_IN = 'KEY_IN',
   KEY_IN_REPI = 'KEY_IN_REPI',
+  READ_PASSPORT = 'READ_PASSPORT',
 }
 
 export interface Transaction {
@@ -93,6 +94,8 @@ export interface Customer {
   imageSmartCard?: string;
   imageReadSmartCard?: string;
   customerPinCode?: string;
+  nationality?: string;
+  imageReadPassport?: string;
 }
 
 export interface BillDeliveryAddress {

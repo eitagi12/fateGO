@@ -27,6 +27,7 @@ import { OrderNewRegisterPersoSimPageComponent } from './containers/order-new-re
 import { OrderNewRegisterResultPageComponent } from './containers/order-new-register-result-page/order-new-register-result-page.component';
 import { OrderNewRegisterEapplicationPageComponent } from './containers/order-new-register-eapplication-page/order-new-register-eapplication-page.component';
 import { OrderNewRegisterVerifyDocumentPageComponent } from './containers/order-new-register-verify-document-page/order-new-register-verify-document-page.component';
+import { OrderNewRegisterPassportInfoPageComponent } from './containers/order-new-register-passport-info-page/order-new-register-passport-info-page.component';
 
 @NgModule({
   imports: [
@@ -61,6 +62,7 @@ import { OrderNewRegisterVerifyDocumentPageComponent } from './containers/order-
     OrderNewRegisterEbillingPageComponent,
     OrderNewRegisterEapplicationPageComponent,
     OrderNewRegisterVerifyDocumentPageComponent,
+    OrderNewRegisterPassportInfoPageComponent,
   ]
 })
 export class OrderNewRegisterModule { }

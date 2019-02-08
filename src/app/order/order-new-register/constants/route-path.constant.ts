@@ -22,3 +22,4 @@ export const ROUTE_ORDER_NEW_REGISTER_PERSO_SIM_PAGE = '/order/new-register/pers
 export const ROUTE_ORDER_NEW_REGISTER_RESULT_PAGE = '/order/new-register/result';
 export const ROUTE_ORDER_NEW_REGISTER_EAPPLICATION_PAGE = '/order/new-register/eapplication';
 export const ROUTE_ORDER_NEW_REGISTER_VERIFY_DOCUMENT_PAGE = '/order/new-register/verify-document';
+export const ROUTE_ORDER_NEW_REGISTER_PASSPOPRT_INFO_PAGE = '/order/new-register/passport-info';

@@ -109,11 +109,13 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
           params: {
             orderType: 'New Registration',
             isNetExtreme: isNetExtreme,
-            minPromotionPrice: minimumPriceForPackage
+            minPromotionPrice: minimumPriceForPackage,
+            maxPromotionPrice: '1000'
           }
         }).toPromise();
       })
       .then((resp: any) => {
+        console.log('res', resp);
         const data = resp.data.packageList || [];
         const promotionShelves: PromotionShelve[] = data.map((promotionShelve: any) => {
           return {
@@ -144,6 +146,7 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
       })
       .then((promotionShelves: PromotionShelve[]) => {
         this.promotionShelves = this.buildPromotionShelveActive(promotionShelves);
+        console.log(' this.promotionShelves', this.promotionShelves);
       })
       .then(() => {
         this.pageLoadingService.closeLoading();

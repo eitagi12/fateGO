@@ -59,7 +59,7 @@ export class CreateEapplicationService {
     if (action === TransactionAction.KEY_IN) {
       data.customerImg = 'data:image/jpeg;base64,' + customer.imageSmartCard;
     } else {
-      data.customerImg = 'data:image/jpeg;base64,' + customer.imageReadSmartCard;
+      data.customerImg = 'data:image/jpeg;base64,' + (customer.imageReadSmartCard || customer.imageReadPassport);
     }
 
     return data;

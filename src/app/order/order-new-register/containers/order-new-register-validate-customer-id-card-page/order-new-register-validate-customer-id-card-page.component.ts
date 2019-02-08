@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import {
-  ROUTE_ORDER_NEW_REGISTER_FACE_CAPTURE_PAGE,
+  ROUTE_ORDER_NEW_REGISTER_FACE_CAPTURE_PAGE, ROUTE_ORDER_NEW_REGISTER_VERIFY_DOCUMENT_PAGE,
 } from 'src/app/order/order-new-register/constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
 import { ReserveMobileService, SelectMobileNumberRandom } from 'src/app/order/order-shared/services/reserve-mobile.service';
@@ -80,9 +80,11 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
 
   onError(valid: boolean) {
     this.readCardValid = valid;
+    console.log('Error');
     if (!this.profile) {
       this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
       this.validateCustomerIdcard.koiskApiFn.removedState().subscribe((removed: boolean) => {
+        console.log('error', removed);
         if (removed) {
           this.validateCustomerIdcard.ngOnDestroy();
           this.validateCustomerIdcard.ngOnInit();
@@ -93,6 +95,7 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
   }
 
   onCompleted(profile: ReadCardProfile) {
+    console.log('Completed');
     this.profile = profile;
     // auto next
     this.onNext();
@@ -103,7 +106,8 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
   }
 
   onBack() {
-    this.homeService.goToHome();
+    // this.homeService.goToHome();
+    this.router.navigate([ROUTE_ORDER_NEW_REGISTER_VERIFY_DOCUMENT_PAGE]);
   }
 
   onNext() {

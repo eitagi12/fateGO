@@ -11,23 +11,13 @@
     <div class="mb-3 mt-3">
       <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
 
-      <div class="col-xs-12 col-sm-12">
-        <div class="card">
-          <div class="card-header text-center">
-            ข้อมูลใบหน้าจากรูปถ่าย
-          </div>
-          <div class="card-body">
-            <img [src]="'data:image/png;base64,' + transaction?.data?.faceRecognition?.imageFaceUser">
-          </div>
-        </div>
-      </div>
+      <mc-capture-and-sign [apiSigned]="apiSigned" [captureAndSign]="captureAndSign" (completed)="onCompleted($event)" (error)="onError($event)">
+      </mc-capture-and-sign>
 
-
-      
     </div>
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!idCardValid">NEXT</button>
   </mc-footer>
 </div>
