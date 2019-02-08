@@ -110,10 +110,14 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
 
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
 
-    this.priceOption.trade.advancePay.amount = 1000;
-    this.priceOption.trade.advancePay.installmentFlag = 'N';
-    this.paymentMethod = this.priceOption.trade.payments.filter(payment => payment.method !== 'PP')[0].method || '';
-    this.paymentMethod = 'CC/CA';
+    if (this.priceOption.trade.payments.length > 0) {
+      this.paymentMethod = this.priceOption.trade.payments.filter(payment => payment.method !== 'PP')[0].method || '';
+    } else {
+      this.paymentMethod = this.priceOption.trade.payments.method || '';
+    }
+    // this.priceOption.trade.advancePay.amount = 1000;
+    // this.priceOption.trade.advancePay.installmentFlag = 'N';
+    // this.paymentMethod = 'CC/CA';
 
     // ############################################## payment detail ##############################################
     this.paymentDetail = {

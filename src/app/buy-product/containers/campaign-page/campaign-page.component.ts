@@ -246,7 +246,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             this.priceOptionService.save(this.priceOptions);
             // init tab
             this.initialTabs(this.priceOptions);
-            return ;
+            return;
         });
     }
 
@@ -399,7 +399,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                                 } else {
                                     // Tread for TDM --> payments is []
                                     if (!treadData.payments.length) {
-                                        treadData.payments = { cardType: '', method: 'CC/CA', installmentId: '' };
+                                        treadData.payments = [{ cardType: '', method: 'CC/CA', installmentId: '' }];
                                     }
                                 }
                                 treadData.conditionCode = treadData.conditionCode || 'CONDITION_1';
@@ -424,9 +424,9 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                             })
                             .sort((a, b) => a.priority - b.priority);
 
-                            if (privilegesPayment.trades.length) {
-                                return privilegesPayment;
-                            }
+                        if (privilegesPayment.trades.length) {
+                            return privilegesPayment;
+                        }
 
                     });
 
@@ -545,9 +545,9 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         const modalOptions = { class: 'modal-lg modal-dialog-centered' };
         this.modalRef = this.modalService.show(this.selectPackageTemplate, modalOptions);
         this.packageDetailService = this.callPromotionShelveService(campaign)
-        .then((packageList: any) => {
-           this.promotionShelves = packageList;
-        });
+            .then((packageList: any) => {
+                this.promotionShelves = packageList;
+            });
     }
 
     viewInstallmentList(campaignSlider: any) {
@@ -780,17 +780,17 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                     if (customerGroup.code === 'MC002') {
                         parameter = [{ 'name': 'orderType', 'value': orderType.CHANGE_CHARGE_TYPE }];
                     } else
-                    if (customerGroup.code === 'MC003') {
-                        parameter = [{ 'name': 'orderType', 'value': orderType.PORT_IN }];
-                    } else
-                    if (customerGroup.code === 'MC004') {
-                        parameter = [{ 'name': 'orderType', 'value': orderType.CHANGE_SERVICE }];
-                    } else {
-                        parameter = [
-                            { 'name': 'orderType', 'value': orderType.NEW_REGISTRATION },
-                            { 'name': 'billingSystem', 'value': 'IRB' }
-                        ];
-                    }
+                        if (customerGroup.code === 'MC003') {
+                            parameter = [{ 'name': 'orderType', 'value': orderType.PORT_IN }];
+                        } else
+                            if (customerGroup.code === 'MC004') {
+                                parameter = [{ 'name': 'orderType', 'value': orderType.CHANGE_SERVICE }];
+                            } else {
+                                parameter = [
+                                    { 'name': 'orderType', 'value': orderType.NEW_REGISTRATION },
+                                    { 'name': 'billingSystem', 'value': 'IRB' }
+                                ];
+                            }
 
                     promotionShelves.forEach((promotionShelve: PromotionShelve) => {
                         promise = promotionShelve.promotions.map((promotion: PromotionShelveGroup) => {
@@ -818,8 +818,8 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                                             title: promotions.title,
                                             detail: promotions.detailTH,
                                             value: promotions
-                                    };
-                                });
+                                        };
+                                    });
                             });
                         });
                     });
@@ -835,7 +835,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                                 }
                                 return filterPromotion;
                             });
-                           return promotion;
+                            return promotion;
                         });
                         if (promotionShelvesList.length) {
                             promotionShelvesList[0].active = true;
@@ -845,9 +845,9 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                         }
                         resolve(promotionShelvesList);
                     })
-                    .catch(() => reject());
-            })
-            .catch(() => reject());
+                        .catch(() => reject());
+                })
+                .catch(() => reject());
         });
     }
 
@@ -896,9 +896,9 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         const modalOptions = { class: 'modal-lg modal-dialog-centered' };
         this.modalRef = this.modalService.show(this.selectPackageTemplate, modalOptions);
         this.packageDetailService = this.callPromotionShelveService(this.priceOption.campaign)
-        .then((packageList: any) => {
-            this.promotionShelves = packageList;
-        });
+            .then((packageList: any) => {
+                this.promotionShelves = packageList;
+            });
     }
 
     showInstallmentListTemplate(): void {
