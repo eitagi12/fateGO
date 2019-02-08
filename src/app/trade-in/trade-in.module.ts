@@ -12,6 +12,8 @@ import { HeaderTradeInComponent } from './containers/header-trade-in/header-trad
 import { ConfirmTradeInComponent } from './containers/confirm-trade-in/confirm-trade-in.component';
 import { SummaryTradeInComponent } from './containers/summary-trade-in/summary-trade-in.component';
 import { TypeaheadModule } from 'ngx-bootstrap';
+import { SummaryTradeInPageComponent } from './containers/summary-trade-in-page/summary-trade-in-page.component';
+import { CriteriaTradeInPageComponent } from './containers/criteria-trade-in-page/criteria-trade-in-page.component';
 
 @NgModule({
   imports: [
@@ -28,7 +30,9 @@ import { TypeaheadModule } from 'ngx-bootstrap';
     CriteriaTradeInComponent,
     HeaderTradeInComponent,
     ConfirmTradeInComponent,
-    SummaryTradeInComponent
+    SummaryTradeInComponent,
+    SummaryTradeInPageComponent,
+    CriteriaTradeInPageComponent
   ],
   providers: [
     TradeInService
