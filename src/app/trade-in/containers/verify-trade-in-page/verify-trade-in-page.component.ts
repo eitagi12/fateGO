@@ -228,7 +228,7 @@ export class VerifyTradeInPageComponent implements OnInit , OnDestroy {
       );
     }
 
-    private queryProducCatalogSearch(keyword: string): Promise<any> {
+    private queryProducCatalogSearch(keyword: string): any {
       const model = this.defualtListModel.map(item => item.model).filter(
         (value, index, self) => self.indexOf(value) === index);
       const brand = this.tradeInTransaction.data.tradeIn.brand;
