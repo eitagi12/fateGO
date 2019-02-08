@@ -7,7 +7,11 @@ import { HttpClient } from '@angular/common/http';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { environment } from 'src/environments/environment';
 import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
-import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_BY_PATTERN_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_EAPPLICATION_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGREEMENT_SIGN_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_BY_PATTERN_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_EAPPLICATION_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGREEMENT_SIGN_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_CAPTURE_PAGE
+} from '../../constants/route-path.constant';
 
 export enum PersoSimCommand {
   EVENT_CONNECT_LIB = 9000,
@@ -144,6 +148,7 @@ export class DeviceOrderAisNewRegisterPersoSimPageComponent implements OnInit, O
   transaction: Transaction;
   isNext: boolean;
   option: OptionPersoSim;
+  checkCardPresent = false;
 
   // WebSocket
   wsControlSim: any;
@@ -208,8 +213,7 @@ export class DeviceOrderAisNewRegisterPersoSimPageComponent implements OnInit, O
             this.alertService.error(ErrorPerSoSimMessage.ERROR_ORDER_MESSAGE);
             this.errorMessage = ErrorPerSoSimMessage.ERROR_ORDER_MESSAGE;
           }
-        } else
-          if (value.error.errorCase === ErrorPerSoSim.ERROR_PERSO) {
+        } else if (value.error.errorCase === ErrorPerSoSim.ERROR_PERSO) {
             this.alertService.question(value.error.messages, 'ตกลง').then((res) => {
               if (res.value) {
                 this.persoSimSubscription.unsubscribe();
@@ -225,8 +229,21 @@ export class DeviceOrderAisNewRegisterPersoSimPageComponent implements OnInit, O
               this.alertService.error(ErrorPerSoSimMessage.ERROR_CMD_MESSAGE);
               this.errorMessage = ErrorPerSoSimMessage.ERROR_CMD_MESSAGE;
             }
+          } else if (value.error.errorCase === ErrorPerSoSim.ERROR_WEB_SOCKET) {
+              if (!environment.production) {
+                this.alertService.question('ไม่สามารถ Perso Sim ได้ *(จำลอง Perso Sim เฉพาะเทสเท่านั้น)').then((question: any) => {
+                  if (question.value) {
+                    this.transaction.data.simCard.simSerial = '0660891230440';
+                    this.onNext();
+                  } else {
+                    this.alertService.error(value.error.messages);
+                  }
+                });
+              } else {
+                this.alertService.error(value.error.messages);
+              }
           } else {
-            this.alertService.error(value.error.messages);
+           this.alertService.error(value.error.messages);
           }
         this.errorMessage = value.error.messages;
       }
@@ -612,15 +629,20 @@ export class DeviceOrderAisNewRegisterPersoSimPageComponent implements OnInit, O
         this.controlSim(ControlSimCard.EVENT_CHECK_SIM_STATE).then((resCheckSim: ControlSimResult) => {
           if (resCheckSim.result === SIMCardStatus.STATUS_IN_IC) {
             this.controlSim(ControlLED.EVENT_LED_ON);
+            this.checkCardPresent = true;
             return resCheckSim.isSuccess;
           } else {
             this.controlSim(ControlSimCard.EVENT_LOAD_SIM).then((resLoadSim: ControlSimResult) => {
               this.controlSim(ControlLED.EVENT_LED_ON);
+              if (resLoadSim.result === 'Success') {
+                this.checkCardPresent = true;
+              }
               return resLoadSim.isSuccess;
             });
           }
         });
       } else {
+        this.checkCardPresent = false;
         return false;
       }
     });
@@ -628,7 +650,7 @@ export class DeviceOrderAisNewRegisterPersoSimPageComponent implements OnInit, O
 
   checkSimCardPresent() {
     return new Promise((resolve, reject) => {
-      const timeout = (this.typeSim === 'pullsim') ? 3 : 1000;
+      const timeout = 5;
       let checkTimeOut = 0;
       const intervalCheckSimCard = setInterval(() => {
         checkTimeOut++;
@@ -637,16 +659,17 @@ export class DeviceOrderAisNewRegisterPersoSimPageComponent implements OnInit, O
           reject(false);
         }
         this.manageSim(PersoSimCommand.EVENT_CONNECT_SIM_READER, '').then((resCheckCard: ControlSimResult) => {
-          if (resCheckCard.result === 'Present' || resCheckCard.result === 'Connected') {
+          if ((resCheckCard.result === 'Present' || resCheckCard.result === 'Connected') && this.checkCardPresent) {
             clearInterval(intervalCheckSimCard);
-            resolve(resCheckCard);
-          } else {
-            checkTimeOut++;
+            setTimeout(() => {
+              resolve(resCheckCard);
+            }, 3000);
           }
         });
       }, 2000);
     });
   }
+
 
   private persoSimFromAisNative(): Observable<PersoSim> {
     return;
@@ -678,7 +701,7 @@ export class DeviceOrderAisNewRegisterPersoSimPageComponent implements OnInit, O
   }
 
   onNext() {
-    // this.router.navigate([ROUTE_ORDER_NEW_REGISTER_RESULT_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_CAPTURE_PAGE]);
   }
 
   onHome() {
