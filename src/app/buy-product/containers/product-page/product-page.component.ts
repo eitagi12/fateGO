@@ -69,8 +69,7 @@ export class ProductPageComponent implements OnInit {
         const productStock: ProductStock = {
           ribbon: ribbon,
           thumbnail: product.imageUrl,
-          // name: `${product.name} ${product.productSubtype === PRODUCT_HANDSET_BUNDLE ? '(แถมชิม)' : ''}`,
-          name: product.name,
+          name: `${product.name} ${product.productSubtype === PRODUCT_HANDSET_BUNDLE ? '(แถมชิม)' : ''}`,
           quantity: 0,
           minNormalPrice: this.calMinPrice(subproducts, 'normalPrice') || +normalPrice.min || 0,
           maxNormalPrice: this.calMaxPrice(subproducts, 'normalPrice') || +normalPrice.max || 0,
@@ -82,7 +81,7 @@ export class ProductPageComponent implements OnInit {
         if (!subproducts.length) {
           // not sub product
           subproducts = [{
-            name: product.name,
+            name: `${product.name} ${product.productSubtype === PRODUCT_HANDSET_BUNDLE ? '(แถมชิม)' : ''}`,
             model: product.model,
             color: product.color,
             imageUrl: product.imageUrl,
@@ -112,8 +111,7 @@ export class ProductPageComponent implements OnInit {
             productStock.quantity += quantity;
 
             productStock.stocks.push({
-              // commercialName: `${sub.name} ${product.productSubtype === PRODUCT_HANDSET_BUNDLE ? '(แถมชิม)' : ''}`,
-              commercialName: sub.name,
+              commercialName: `${sub.name} ${product.productSubtype === PRODUCT_HANDSET_BUNDLE ? '(แถมชิม)' : ''}`,
               brand: brand,
               model: sub.model,
               productType: product.productType || '',
