@@ -6,7 +6,11 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { Subscription } from 'rxjs';
 import { ShoppingCartService } from 'src/app/device-order/ais/device-order-ais-new-register/service/shopping-cart.service';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
-import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_EAPPLICATION_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_CAPTURE_PAGE } from 'src/app/device-order/ais/device-order-ais-new-register/constants/route-path.constant';
+import { 
+  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_EAPPLICATION_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_CAPTURE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PERSO_SIM_PAGE
+} from 'src/app/device-order/ais/device-order-ais-new-register/constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-new-register-agreement-sign-page',
@@ -48,7 +52,11 @@ export class DeviceOrderAisNewRegisterAgreementSignPageComponent implements OnIn
   }
 
   onNext() {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_CAPTURE_PAGE]);
+    if (this.transaction.data.simCard.simSerial) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_CAPTURE_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PERSO_SIM_PAGE]);
+    }
   }
 
   onHome() {
