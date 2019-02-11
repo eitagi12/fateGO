@@ -55,25 +55,18 @@ export class CreateDeviceOrderAisNewRegisterService {
       if (resp.resultPass) {
         return this.getRequestCreateNewRegister(this.transaction, resp.result.queueNo).then((data) => {
           // console.log(data);
-          const options = {
-            interceptorOptions: {
-              isUseLocation: false
-            }
-          };
           return this.http.post('/api/customerportal/device-sell/order', data).toPromise();
         });
-      } else {
-        // this.router.navigate(['/device-selling/queue/result']);
       }
     });
 
   }
 
   public getQueueByNumber(mobileNo: string): Promise<any> {
-    const intercepterOptions = {
+    const body = {
       mobileNo: mobileNo
     };
-    return this.http.post('/device-order/transaction/get-queue-qmatic', intercepterOptions).toPromise();
+    return this.http.post('/device-order/transaction/get-queue-qmatic', body).toPromise();
   }
 
   getRequestCreateNewRegister(transaction: Transaction, queueNo: string): Promise<any> {
@@ -119,8 +112,8 @@ export class CreateDeviceOrderAisNewRegisterService {
       installmentTerm: payment && payment.bank ? payment.bank.installments[0].installmentMonth : 0,
       installmentRate: payment && payment.bank ? payment.bank.installments[0].installmentPercentage : 0,
       mobileAisFlg: 'Y',
-      paymentMethod: '', // paymentMethod,
-      bankCode: this.getBankCode(payment, advancePayment),
+      paymentMethod: this.getPaymentMethod(payment, advancePayment, trade) || '',
+      bankCode: this.getBankCode(payment, advancePayment) || '',
       tradeFreeGoodsId: trade.freeGoods[0] ? trade.freeGoods[0].tradeFreegoodsId : '',
       matairtimeId: '',
       tradeDiscountId: trade.discount ? trade.discount.tradeAirtimeId : '',
@@ -132,6 +125,20 @@ export class CreateDeviceOrderAisNewRegisterService {
     };
 
     return Promise.resolve(data);
+  }
+
+  private getPaymentMethod(payment: Payment, advancePayment: Payment, trade: any) {
+
+    if (trade.advancePay.installmentFlag === 'Y') {
+      return payment.method;
+    }
+
+    let paymentMethod = payment.method + '|';
+
+    if (advancePayment && +trade.advancePay.amount !== 0) {
+      paymentMethod += advancePayment.method;
+    }
+    return paymentMethod;
   }
 
   getBankCode(payment: Payment, advancePayment: Payment): string {
