@@ -1,0 +1,16 @@
+<div class="mc-flex">
+  <mc-header title="รายการสินค้า">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+  </mc-header>
+
+  <p>
+    device-order-ais-existing-ais-best-buy-check-out-page works!
+  </p>
+  
+  <mc-footer>
+    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!identityValid" >CHECK OUT</button>
+  </mc-footer>
+</div>
