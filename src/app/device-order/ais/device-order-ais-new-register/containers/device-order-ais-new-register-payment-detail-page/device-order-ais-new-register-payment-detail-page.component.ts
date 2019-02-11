@@ -115,6 +115,7 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
     } else {
       this.paymentMethod = this.priceOption.trade.payments.method || '';
     }
+
     // this.priceOption.trade.advancePay.amount = 1000;
     // this.priceOption.trade.advancePay.installmentFlag = 'N';
     // this.paymentMethod = 'CC/CA';
@@ -134,12 +135,13 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
         bank: this.transaction.data.payment.bank,
       };
       const bank = this.paymentDetail.banks.find(b => b.abb === this.selectPaymentDetail.bank.abb);
-      this.paymentDetail.installments = bank.installments;
+      this.paymentDetail.installments = bank ? bank.installments : [];
     } else {
       this.selectPaymentDetail = {
         paymentType: this.getPaymentType(),
       };
     }
+
     this.paymentDetailOption = {
       isInstallment: this.isInstallment(),
       isEnable: this.isEnableForm()
@@ -157,7 +159,7 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
         bank: this.transaction.data.advancePayment.bank,
       };
       const bank = this.paymentDetailAdvancePay.banks.find(b => b.abb === this.selectPaymentDetailAdvancePay.bank.abb);
-      this.paymentDetailAdvancePay.installments = bank.installments;
+      this.paymentDetailAdvancePay.installments = bank ? bank.installments : [];
     } else {
       this.selectPaymentDetailAdvancePay = {
         paymentType: this.getPaymentType(),
