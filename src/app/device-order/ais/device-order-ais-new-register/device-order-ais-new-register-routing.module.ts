@@ -24,6 +24,11 @@ import { DeviceOrderAisNewRegisterFaceConfirmPageComponent } from './containers/
 import { DeviceOrderAisNewRegisterAggregatePageComponent } from './containers/device-order-ais-new-register-aggregate-page/device-order-ais-new-register-aggregate-page.component';
 import { DeviceOrderAisNewRegisterQueuePageComponent } from './containers/device-order-ais-new-register-queue-page/device-order-ais-new-register-queue-page.component';
 import { DeviceOrderAisNewRegisterResultPageComponent } from './containers/device-order-ais-new-register-result-page/device-order-ais-new-register-result-page.component';
+import { DeviceOrderAisNewRegisterQrCodeSummaryPageComponent } from './containers/device-order-ais-new-register-qr-code-summary-page/device-order-ais-new-register-qr-code-summary-page.component';
+import { DeviceOrderAisNewRegisterQrCodeQueuePageComponent } from './containers/device-order-ais-new-register-qr-code-queue-page/device-order-ais-new-register-qr-code-queue-page.component';
+import { DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent } from './containers/device-order-ais-new-register-qr-code-generator-page/device-order-ais-new-register-qr-code-generator-page.component';
+import { DeviceOrderAisNewRegisterQrCodeErrorPageComponent } from './containers/device-order-ais-new-register-qr-code-error-page/device-order-ais-new-register-qr-code-error-page.component';
+
 const routes: Routes = [
   {
     path: 'validate-customer',
@@ -120,6 +125,24 @@ const routes: Routes = [
   {
     path: 'result',
     component: DeviceOrderAisNewRegisterResultPageComponent
+  },
+
+
+  {
+    path: 'qr-code-summary',
+    component: DeviceOrderAisNewRegisterQrCodeSummaryPageComponent
+  },
+  {
+    path: 'qr-code-queue',
+    component: DeviceOrderAisNewRegisterQrCodeQueuePageComponent
+  },
+  {
+    path: 'qr-code-generator',
+    component: DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent
+  },
+  {
+    path: 'qr-code-error',
+    component: DeviceOrderAisNewRegisterQrCodeErrorPageComponent
   },
 
 ];

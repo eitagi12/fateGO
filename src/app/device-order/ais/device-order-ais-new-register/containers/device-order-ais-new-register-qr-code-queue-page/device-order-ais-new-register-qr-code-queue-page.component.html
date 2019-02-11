@@ -1,3 +1,45 @@
-<p>
-  device-order-ais-new-register-qr-code-queue-page works!
-</p>
+<div class="mc-flex">
+  <mc-header title="เครื่องพร้อมเปิดเบอร์ใหม่"></mc-header>
+  <div class="mc-flex-wrap">
+    <div class="my-3">
+      <div class="container-fluid">
+
+        <div class="card mb-3">
+          <div class="card-body pt-5 text-center border-bottom text-light-green">
+            <img src="/assets/images/icon/icon-green-check-circle.png" class="icon" />
+            <div>หมายเลข 091-001-1376</div>
+            <div>ชำระค่าสินค้าเรียบร้อยแล้ว</div>
+            <div>หมายเลขอ้างอิง 1129943007</div>
+          </div>
+          <div class="card-body pt-5 border-bottom">
+            <div class="mb-2">รายการสินค้า</div>
+            <div class="ml-3 pb-3">
+              <i class="fa fa-circle mr-3 text-light-green"></i>
+              APPLE iPhone X 256GB สี SPACE GREY
+              <span class="badge badge-transparent pull-right">฿ {{ 42880 | number }}</span>
+            </div>
+            <div class="text-right mt-3">
+              รวมยอดชำระ (รวม VAT)
+              <span class="total pull-right">฿ {{ 42880 | number }}</span>
+            </div>
+          </div>
+          <div class="card-body pt-5 text-center text-grey">
+            <div class="mb-2">
+              <div>กรุณารับบัตรคิว แล้วระบุหมายเลขคิว</div>
+              <div>ในการชำระสินค้าของท่านด้านล่างนี้</div>
+            </div>
+            <form>
+              <div class="form-group row">
+                <input type="text" class="form-control col-6 offset-3" id="exampleFormControlFile1">
+              </div>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+  <mc-footer>
+    <button class="btn btn-success" (click)="onNext()">NEXT</button>
+  </mc-footer>
+</div>

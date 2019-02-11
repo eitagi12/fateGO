@@ -1,4 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { HomeService } from 'mychannel-shared-libs';
+import { Router } from '@angular/router';
+import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_GENERATOR_PAGE } from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-new-register-qr-code-error-page',
@@ -7,9 +10,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DeviceOrderAisNewRegisterQrCodeErrorPageComponent implements OnInit {
 
-  constructor() { }
+  constructor(
+    private router: Router,
+    private homeService: HomeService
+  ) { }
 
   ngOnInit() {
+  }
+
+  onBack() {
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_GENERATOR_PAGE]);
+  }
+
+  onHome() {
+
   }
 
 }

@@ -1,4 +1,9 @@
 import { Component, OnInit } from '@angular/core';
+import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Router } from '@angular/router';
+import { HomeService } from 'mychannel-shared-libs';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_QUEUE_PAGE } from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-new-register-qr-code-generator-page',
@@ -7,9 +12,29 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements OnInit {
 
-  constructor() { }
+  transaction: Transaction;
+
+  constructor(
+    private router: Router,
+    private homeService: HomeService,
+    private transactionService: TransactionService
+  ) {
+    this.transaction = this.transactionService.load();
+  }
 
   ngOnInit() {
+  }
+
+  onBack() {
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_SUMMARY_PAGE]);
+  }
+
+  onNext() {
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_QUEUE_PAGE]);
+  }
+
+  onHome() {
+    this.homeService.goToHome();
   }
 
 }

@@ -1,15 +1,18 @@
 import { Component } from '@angular/core';
-import { TokenService, ErrorsService, AlertService, PageActivityService, HomeService, ChannelType } from 'mychannel-shared-libs';
+import {
+  TokenService, ErrorsService, AlertService, PageActivityService, HomeService, ChannelType
+} from 'mychannel-shared-libs';
 import { setTheme } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
 import { environment } from '../environments/environment';
 import { debounceTime } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import * as moment from 'moment';
 
+const Moment = moment;
 const { version: version } = require('../../package.json');
 
-
-declare var Hammer: any;
-
+declare var swal: any;
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -26,6 +29,7 @@ export class AppComponent {
     private pageActivityService: PageActivityService,
     private router: Router,
     private homeService: HomeService,
+    private http: HttpClient
   ) {
     this.version = this.getVersion();
 
@@ -33,6 +37,7 @@ export class AppComponent {
     this.hoemeHandler();
     this.tokenHandler();
     this.errorHandler();
+    // this.checkServerTime();
 
     if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {
       this.onStopPropagation();
@@ -143,5 +148,47 @@ export class AppComponent {
     });
   }
 
+  checkServerTime() {
+    this.http.get('/api/customerportal/currentDate').toPromise()
+      .then((resp: any) => {
+        const TIME_DIFF_FORMAT = 'YYYY-MM-DD HH:mm:ss';
+        const localTime = Moment(Moment().format(TIME_DIFF_FORMAT));
+        const serverTime = Moment(Moment(resp.data).format(TIME_DIFF_FORMAT));
+
+        const getClock = (ms: number) => {
+          return Moment(resp.data).add(ms, 'second').format(TIME_DIFF_FORMAT);
+        };
+
+        console.log(serverTime);
+        console.log(localTime.subtract('m', 30));
+        console.log(localTime.add(30, 'm'));
+        console.log(serverTime.isBetween(localTime.subtract('minutes', 1), localTime.add('minutes', 1)));
+        if (!serverTime.isBetween(
+          localTime.subtract('minutes', 1),
+          localTime.add('minutes', 1)
+        )) {
+          let timerInterval;
+          this.alertService.notify({
+            type: 'warning',
+            html: `
+            <div>
+              <div class="text-center">โปรดตรวจสอบเวลาเครื่องให้ตรงกับเซอร์เวอร์</div>
+              <div class="mt-3">SERVER TIME: <strong></strong></div>
+            </div>
+            `,
+            onBeforeOpen: () => {
+              let i = 0;
+              timerInterval = setInterval(() => {
+                i++;
+                swal.getContent().querySelector('strong').textContent = getClock(i);
+              }, 1000);
+            },
+            onClose: () => {
+              clearInterval(timerInterval);
+            }
+          });
+        }
+      });
+  }
 
 }

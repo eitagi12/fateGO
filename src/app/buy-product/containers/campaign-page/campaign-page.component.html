@@ -1,10 +1,10 @@
 <div class="mc-flex">
   <mc-header title="เครื่อง">
     <div class="header-icon-left">
-      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+      <mc-header-icon src="/assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
     <div class="header-icon-right">
-      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+      <mc-header-icon src="/assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
   <div class="mc-flex-wrap">
@@ -28,7 +28,7 @@
       <div class="row bg-white shadow-sm pt-3 pb-3">
         <div class="col-12 col-sm-3 col-md-3 col-lg-2 mb-2">
           <div class="shadow-sm text-center">
-            <mc-lazy-load-image [src]="priceOption?.productStock?.images?.thumbnail" errorSrc="assets/images/icon/img-placeholder.png"></mc-lazy-load-image>
+            <mc-lazy-load-image [src]="priceOption?.productStock?.images?.thumbnail" errorSrc="/assets/images/icon/img-placeholder.png"></mc-lazy-load-image>
           </div>
           <div class="text-center text-brown mt-2 mb-2">{{ priceOption?.productStock?.colorName }}
           </div>
@@ -41,10 +41,10 @@
             </div>
             <div class="col-4 col-sm-2 text-right">
               <!-- <a href="#" (click)="$event.preventDefault();">
-                <img src="assets/images/icon/icon-dv.png" class="icon-dv m-2">
+                <img src="/assets/images/icon/icon-dv.png" class="icon-dv m-2">
               </a> -->
               <a href="#" (click)="getProductSpecification(params?.brand, params?.model); $event.preventDefault();">
-                <img src="assets/images/icon/spec_mobile_phone.png" class="icon-dv m-2">
+                <img src="/assets/images/icon/spec_mobile_phone.png" class="icon-dv m-2">
               </a>
             </div>
             <!-- Max Price -->
@@ -90,7 +90,7 @@
 
       <div class="bg-white pb-3" *ngIf="campaignSliders?.length > 0">
         <div class="p-3">
-          <img class="icon" src="assets/images/icon/sale_portal_pink_circle_megaphone.png">
+          <img class="icon" src="/assets/images/icon/sale_portal_pink_circle_megaphone.png">
           <span class="pl-3">
             โปรโมชั่นที่เข้าร่วมรายการ
             <span class="text-light-green">({{ campaignSliders?.length }})</span>
@@ -108,7 +108,7 @@
       <div class="container-fluid">
         <div class="row bg-white shadow-sm py-3 mb-2">
           <div class="col-12">
-            <img src="assets/images/icon/sales_portal_orange_circle_tag.png" class="icon" />
+            <img src="/assets/images/icon/sales_portal_orange_circle_tag.png" class="icon" />
             <span class="ml-2">{{ priceOption?.campaign?.campaignName }}</span>
             <span class="pull-right text-light-green pt-2">รายละเอียดโครงการ</span>
           </div>
@@ -152,18 +152,18 @@
                   </span>
                 </div>
                 <div class="col-12 col-sm-6 pt-3 text-grey" *ngIf="+privilege?.maximumContract">
-                  <img src="assets/images/icon/sales_portal_green_alert_person.png" class="icon-trade">
+                  <img src="/assets/images/icon/sales_portal_green_alert_person.png" class="icon-trade">
                   <span>ข้อตกลงรับสิทธ์ิต่อเนื่อง {{ privilege?.maximumContract }} เดือน</span>
                 </div>
                 <div class="col-12 col-sm-6 pt-3 text-grey" *ngIf="+privilege?.minimumPackagePrice" (click)="showSelectPackageTemplate()">
-                  <img src="assets/images/icon/sales_portal_green_phone.png" class="icon-trade">
+                  <img src="/assets/images/icon/sales_portal_green_phone.png" class="icon-trade">
                   <span><u>แพ็กเกจเริ่มต้น {{ +privilege?.minimumPackagePrice || 0 | number }} บาท/เดือน</u></span>
                   <!-- <span>แพ็คเกจเสริม {{ privilege?.minimumPackagePrice * 1.07 | number }} บาท ( รวมVAT )</span> -->
                 </div>
 
                 <div *ngIf="priceOption.minimumPackagePrice" class="row collapse align-middle detail-container" style="cursor: pointer">
                   <div class="columns small-2">
-                    <img class="icon" src="assets/images/icon/sales_portal_green_phone.png">
+                    <img class="icon" src="/assets/images/icon/sales_portal_green_phone.png">
                   </div>
                   <div class="columns small-10" (click)="onSelectPackage(priceOption)">
                     <label *ngIf="(filterCustomerGroup$ | async)?.flowId !=='102' && priceOption.minimumPackagePrice !== 0">
