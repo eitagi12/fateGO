@@ -9,11 +9,14 @@ import {
 } from 'src/app/order/order-new-register/constants/route-path.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { TranslateService } from '@ngx-translate/core';
+import { I18nService } from 'src/app/shared/services/i18n.service';
 
 @Component({
   selector: 'app-order-new-register-face-capture-page',
   templateUrl: './order-new-register-face-capture-page.component.html',
   styleUrls: ['./order-new-register-face-capture-page.component.scss']
+
 })
 export class OrderNewRegisterFaceCapturePageComponent implements OnInit, OnDestroy {
 
@@ -28,7 +31,9 @@ export class OrderNewRegisterFaceCapturePageComponent implements OnInit, OnDestr
     private homeService: HomeService,
     private transactionService: TransactionService,
     private alertService: AlertService,
-    private utils: Utils
+    private utils: Utils,
+    private i18nService: I18nService,
+    private translateService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -55,6 +60,11 @@ export class OrderNewRegisterFaceCapturePageComponent implements OnInit, OnDestr
 
   onOpenCamera() {
     this.openCamera = true;
+  }
+
+  switchLanguage(lang: string) {
+    // this.i18nService.setLang(lang);
+    this.translateService.use(lang);
   }
 
   onCameraCompleted(image: string) {

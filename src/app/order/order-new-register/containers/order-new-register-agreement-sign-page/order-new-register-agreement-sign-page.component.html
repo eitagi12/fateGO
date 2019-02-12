@@ -12,7 +12,7 @@
       <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
       <div class="container-fluid margin-top">
         <div class="card">
-          <div class="card-header bg-transparent text-center">ลงชื่อผู้ทำรายการ</div>
+          <div class="card-header bg-transparent text-center" translate>ลงชื่อผู้ทำรายการ</div>
           <div class="card-body">
             <div *ngIf="!transaction?.data?.customer?.imageSignature" class="signed">
               <img src="assets/images/icon/pen.png" (click)="$event.preventDefault(); onSigned()" *ngIf="signatureText !== 'แก้ไขลายเซ็น'" />
@@ -23,8 +23,8 @@
           </div>
           <div class="card-footer text-center">
             <a href="#" (click)="$event.preventDefault(); onSigned()" class="text-pink">
-              <span *ngIf="!transaction?.data?.customer?.imageSignature">เซ็นลายเซ็น</span>
-              <span *ngIf="transaction?.data?.customer?.imageSignature">แก้ไขลายเซ็น</span>
+              <span *ngIf="!transaction?.data?.customer?.imageSignature" translate>เซ็นลายเซ็น</span>
+              <span *ngIf="transaction?.data?.customer?.imageSignature" translate>แก้ไขลายเซ็น</span>
             </a>
           </div>
         </div>

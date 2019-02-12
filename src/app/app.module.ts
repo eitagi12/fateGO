@@ -4,7 +4,7 @@ import {
   HammerGestureConfig
 } from '@angular/platform-browser';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { JwtModule, JWT_OPTIONS } from '@auth0/angular-jwt';
 import {
   jwtOptionsFactory,
@@ -18,6 +18,12 @@ import { AppComponent } from './app.component';
 import { ErrorPageComponent } from './containers/error-page/error-page.component';
 import { CookiesStorageService } from 'ngx-store';
 import { SharedModule } from './shared/shared.module';
+import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+
+export function HttpLoaderFactory(http: HttpClient) {
+  return new TranslateHttpLoader(http);
+}
 
 @NgModule({
   declarations: [
@@ -42,6 +48,13 @@ import { SharedModule } from './shared/shared.module';
     }),
     SharedModule,
     AppRoutingModule,
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+      }
+    })
   ],
   providers: [
     {
