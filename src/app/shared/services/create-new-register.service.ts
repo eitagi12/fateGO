@@ -79,10 +79,8 @@ export class CreateNewRegisterService {
       isNewBa: billingInformation.mergeBilling ? false : true, /*required*/
       imageSignature: customer.imageSignature || '', /*required*/
       ascCode: '',
-      accountSubCat: 'THA',
       idCardType: customer.idCardType, /*required*/
       idCardNo: customer.idCardNo, /*required*/
-      titleName: this.utils.getPrefixName(customer.titleName), /*required*/
       firstName: customer.firstName, /*required*/
       lastName: customer.lastName, /*required*/
       caNumber: customer.caNumber || '',
@@ -144,12 +142,14 @@ export class CreateNewRegisterService {
     };
 
     if (action === TransactionAction.READ_PASSPORT) {
-        data.accountSubCat = 'FOR',
-        data.titleName = data.gender === 'F' ? 'Ms.' : 'Mr.',
+      data.accountSubCat = 'FOR',
+        data.titleName = customer.titleName,
         data.engFlage = 'Y',
         data.instanceName = '3G',
-        data.orderReason = '1164',
         data.citizenship = customer.nationality;
+    } else {
+      data.accountSubCat = 'THA',
+      data.titleName = this.utils.getPrefixName(customer.titleName); /*required*/
     }
 
     // orderVerify

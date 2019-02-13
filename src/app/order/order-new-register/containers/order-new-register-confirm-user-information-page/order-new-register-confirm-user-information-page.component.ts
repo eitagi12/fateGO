@@ -295,12 +295,11 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
   customerValid(): boolean {
     const customer = this.transaction.data.customer;
 
-    // return !!(customer.homeNo
-    //   && customer.province
-    //   && customer.amphur
-    //   && customer.tumbol
-    //   && customer.zipCode);
-    return true;
+    return !!(customer.homeNo
+      && customer.province
+      && customer.amphur
+      && customer.tumbol
+      && customer.zipCode);
   }
 
   getBllingCycle(billCycle: string): Promise<string> {

@@ -45,6 +45,7 @@ export class OrderNewRegisterPassportInfoPageComponent implements OnInit, OnDest
       imageSignature: customer.imageSignatureSmartCard
     };
     this.mapDatanationality();
+    customer.titleName = customer.gender === 'F' ? 'Ms.' : 'Mr.';
   }
 
   onCompleted(captureAndSign: CaptureAndSign) {
