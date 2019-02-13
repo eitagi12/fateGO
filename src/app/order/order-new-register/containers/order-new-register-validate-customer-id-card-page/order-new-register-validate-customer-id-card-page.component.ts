@@ -40,8 +40,6 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
     private reserveMobileService: ReserveMobileService,
   ) {
 
-   
-
     this.homeService.callback = () => {
 
       if (this.validateCustomerIdcard.koiskApiFn) {

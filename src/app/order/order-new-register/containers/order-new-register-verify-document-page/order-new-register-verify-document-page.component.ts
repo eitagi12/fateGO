@@ -4,7 +4,7 @@ import { ROUTE_ORDER_NEW_REGISTER_PASSPOPRT_INFO_PAGE, ROUTE_ORDER_NEW_REGISTER_
 import { HomeService, PageLoadingService, ApiRequestService, Utils, ReadCardProfile, AlertService, ReadPassport, ReadPassportService, ValidateCustomerIdCardComponent, KioskControls, VendingApiService, } from 'mychannel-shared-libs';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionType, TransactionAction} from 'src/app/shared/models/transaction.model';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -18,7 +18,6 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
   readPassprot: ReadPassport;
   profile: ReadCardProfile;
   transaction: Transaction;
-  billDeliveryAddress: BillDeliveryAddress;
   kioskApi = true;
   koiskApiFn: any;
   cardStateInterval: any;
@@ -72,20 +71,6 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
       }).toPromise()
         .then((resp: any) => {
           const data = resp.data || {};
-          this.billDeliveryAddress = {
-            homeNo: data.homeNo || '',
-            moo: data.moo || '',
-            mooBan: data.mooBan || '',
-            room: data.room || '',
-            floor: data.floor || '',
-            buildingName: data.buildingName || '',
-            soi: data.soi || '',
-            street: data.street || '',
-            province: data.province || '',
-            amphur: data.amphur || '',
-            tumbol: data.tumbol || '',
-            zipCode: data.zipCode || '',
-          };
           return {
             caNumber: data.caNumber,
             mainMobile: data.mainMobile,
@@ -115,7 +100,6 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
             });
         }).then((billingInformation: any) => {
           this.transaction.data.billingInformation = billingInformation;
-          this.transaction.data.billingInformation.billDeliveryAddress = this.billDeliveryAddress;
           if (this.checkBusinessLogic()) {
             this.vendingApiSubscription = this.vendingApiService.excuteCommand().subscribe((command: any) => {
               command.ws.close();
