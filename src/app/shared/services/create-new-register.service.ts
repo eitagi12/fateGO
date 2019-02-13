@@ -70,7 +70,7 @@ export class CreateNewRegisterService {
     const mainPackageOneLove = transaction.data.mainPackageOneLove;
     const onTopPackage = transaction.data.onTopPackage;
     const simCard = transaction.data.simCard;
-    const customerDeliveryAddress = transaction.data.billingInformation.billDeliveryAddress;
+    const billDeliveryAddress = transaction.data.billingInformation.billDeliveryAddress;
 
     const billCycleData = billingInformation.billCycleData;
 
@@ -103,18 +103,21 @@ export class CreateNewRegisterService {
       billName: billingInformation.mergeBilling ? billingInformation.mergeBilling.billingName : '',
       billCycle: billingInformation.mergeBilling ? billingInformation.mergeBilling.bill : customer.billCycle,
       billDeliveryAddress: billingInformation.mergeBilling ? billingInformation.mergeBilling.billingAddr : '',
-      billHomeNo: billingInformation.mergeBilling ? '' : customerDeliveryAddress.homeNo || customer.homeNo,
-      billBuildingName: billingInformation.mergeBilling ? '' : customerDeliveryAddress.buildingName || customer.buildingName,
-      billFloor: billingInformation.mergeBilling ? '' : customerDeliveryAddress.floor || customer.floor,
-      billRoom: billingInformation.mergeBilling ? '' : customerDeliveryAddress.room || customer.room,
-      billMoo: billingInformation.mergeBilling ? '' : customerDeliveryAddress.moo || customer.moo,
-      billMooBan: billingInformation.mergeBilling ? '' : customerDeliveryAddress.mooBan || customer.mooBan,
-      billSoi: billingInformation.mergeBilling ? '' : customerDeliveryAddress.soi || customer.soi,
-      billStreet: billingInformation.mergeBilling ? '' : customerDeliveryAddress.street || customer.street,
-      billTumbol: billingInformation.mergeBilling ? '' : customerDeliveryAddress.tumbol || customer.tumbol,
-      billAmphur: billingInformation.mergeBilling ? '' : customerDeliveryAddress.amphur || customer.amphur,
-      billProvince: billingInformation.mergeBilling ? '' : customerDeliveryAddress.province || customer.province,
-      billZipCode: billingInformation.mergeBilling ? '' : customerDeliveryAddress.zipCode || customer.zipCode,
+      billHomeNo: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.homeNo : customer.homeNo || '',
+      // tslint:disable-next-line:max-line-length
+      billBuildingName: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.buildingName : customer.buildingName || '',
+      billFloor: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.floor : customer.floor || '',
+      billRoom: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.room : customer.room || '',
+      billMoo: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.moo : customer.moo || '',
+      billMooBan: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.mooBan : customer.mooBan || '',
+      billSoi: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.soi : customer.soi || '',
+      billStreet: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.street : customer.street || '',
+      billTumbol: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.tumbol : customer.tumbol || '',
+      billAmphur: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.amphur : customer.amphur || '',
+      // tslint:disable-next-line:max-line-length
+      billProvince: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.province : customer.province || '',
+      // tslint:disable-next-line:max-line-length
+      billZipCode: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.zipCode : customer.zipCode || '',
       orderVerify: '',
       /* eApplication Parameters */
       homeNo: customer.homeNo || '',
