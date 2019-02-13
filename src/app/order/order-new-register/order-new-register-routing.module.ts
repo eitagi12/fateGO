@@ -26,7 +26,7 @@ import { OrderNewRegisterEapplicationPageComponent } from './containers/order-ne
 import { OrderNewRegisterVerifyDocumentPageComponent } from './containers/order-new-register-verify-document-page/order-new-register-verify-document-page.component';
 import { OrderNewRegisterPassportInfoPageComponent } from 'src/app/order/order-new-register/containers/order-new-register-passport-info-page/order-new-register-passport-info-page.component';
 const routes: Routes = [
-  { path: '', redirectTo: 'validate-customer-id-card', pathMatch: 'full' },
+  { path: '', redirectTo: 'verify-document', pathMatch: 'full' },
   { path: 'validate-customer', component: OrderNewRegisterValidateCustomerPageComponent },
   { path: 'validate-customer-id-card', component: OrderNewRegisterValidateCustomerIdCardPageComponent },
   { path: 'validate-customer-key-in', component: OrderNewRegisterValidateCustomerKeyInPageComponent },

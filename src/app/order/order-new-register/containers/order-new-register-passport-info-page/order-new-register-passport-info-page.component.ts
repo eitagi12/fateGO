@@ -5,6 +5,7 @@ import { HomeService, CaptureAndSign, TokenService, ChannelType } from 'mychanne
 import { Transaction, Customer, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ROUTE_ORDER_NEW_REGISTER_FACE_CAPTURE_PAGE, ROUTE_ORDER_NEW_REGISTER_VERIFY_DOCUMENT_PAGE } from '../../constants/route-path.constant';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-order-new-register-passport-info-page',
@@ -23,7 +24,8 @@ export class OrderNewRegisterPassportInfoPageComponent implements OnInit, OnDest
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private http: HttpClient,
   ) {
     this.transaction = this.transactionService.load();
 
@@ -42,6 +44,7 @@ export class OrderNewRegisterPassportInfoPageComponent implements OnInit, OnDest
       imageSmartCard: customer.imageReadPassport,
       imageSignature: customer.imageSignatureSmartCard
     };
+    this.mapDatanationality();
   }
 
   onCompleted(captureAndSign: CaptureAndSign) {
@@ -64,6 +67,18 @@ export class OrderNewRegisterPassportInfoPageComponent implements OnInit, OnDest
 
   onHome() {
     this.homeService.goToHome();
+  }
+
+  mapDatanationality() {
+    const nationality = this.transaction.data.customer.nationality;
+    return this.http.get('/api/customerportal/newRegister/queryNationality', {
+      params: {
+        code: nationality
+      }
+    }).toPromise()
+      .then((resp: any) => {
+        return this.transaction.data.customer.nationality = resp.data.nationality;
+      });
   }
 
   ngOnDestroy(): void {

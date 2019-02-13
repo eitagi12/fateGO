@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
 import { PromotionShelve, HomeService, PageLoadingService, AlertService, PromotionShelveItem, TokenService } from 'mychannel-shared-libs';
 import {
@@ -21,7 +21,7 @@ import { ReserveMobileService, SelectMobileNumberRandom } from 'src/app/order/or
   styleUrls: ['./order-new-register-select-package-page.component.scss']
 })
 export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDestroy {
-
+  readonly MAX_PROMOTION_PRICE = 500;
   @ViewChild('conditionTemplate')
   conditionTemplate: any;
 
@@ -98,24 +98,26 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
     const billingInformation: any = this.transaction.data.billingInformation;
     const isNetExtreme = billingInformation.billCyclesNetExtreme && billingInformation.billCyclesNetExtreme.length > 0 ? 'true' : 'false';
     const mobileNo = this.transaction.data.simCard.mobileNo;
-
+    const params: any = {
+      orderType: 'New Registration',
+      isNetExtreme: isNetExtreme,
+    };
+    if (this.transaction.data.action === TransactionAction.READ_PASSPORT) {
+      params.maxPromotionPrice = this.MAX_PROMOTION_PRICE;
+    }
     this.http.get(`/api/customerportal/queryCheckMinimumPackage/${mobileNo}`, {
     }).toPromise()
       .then((resp: any) => {
         const data = resp.data || {};
         return data.MinimumPriceForPackage || 0;
-      }).then((minimumPriceForPackage: string) => {
+      }).then((minPromotionPrice: string) => {
         return this.http.get('/api/customerportal/newRegister/queryMainPackage', {
-          params: {
-            orderType: 'New Registration',
-            isNetExtreme: isNetExtreme,
-            minPromotionPrice: minimumPriceForPackage,
-            maxPromotionPrice: '1000'
-          }
+          params: Object.assign({
+            minPromotionPrice: minPromotionPrice
+          }, params)
         }).toPromise();
       })
       .then((resp: any) => {
-        console.log('res', resp);
         const data = resp.data.packageList || [];
         const promotionShelves: PromotionShelve[] = data.map((promotionShelve: any) => {
           return {
@@ -146,7 +148,6 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
       })
       .then((promotionShelves: PromotionShelve[]) => {
         this.promotionShelves = this.buildPromotionShelveActive(promotionShelves);
-        console.log(' this.promotionShelves', this.promotionShelves);
       })
       .then(() => {
         this.pageLoadingService.closeLoading();

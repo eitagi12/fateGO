@@ -41,6 +41,8 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
     private reserveMobileService: ReserveMobileService,
   ) {
 
+   
+
     this.homeService.callback = () => {
 
       if (this.validateCustomerIdcard.koiskApiFn) {
@@ -76,13 +78,8 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
 
   ngOnInit() {
     this.createTransaction();
-  }
 
-  onError(valid: boolean) {
-    this.readCardValid = valid;
-    console.log('Error');
-    if (!this.profile) {
-      this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
+    if (this.validateCustomerIdcard.koiskApiFn) {
       this.validateCustomerIdcard.koiskApiFn.removedState().subscribe((removed: boolean) => {
         console.log('error', removed);
         if (removed) {
@@ -90,7 +87,14 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
           this.validateCustomerIdcard.ngOnInit();
         }
       });
+    }
+  }
 
+  onError(valid: boolean) {
+    this.readCardValid = valid;
+    console.log('Error');
+    if (!this.profile) {
+      this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
     }
   }
 

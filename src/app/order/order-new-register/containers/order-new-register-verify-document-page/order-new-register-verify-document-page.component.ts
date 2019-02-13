@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { ROUTE_ORDER_NEW_REGISTER_CUSTOMER_INFO_PAGE, ROUTE_ORDER_NEW_REGISTER_PASSPOPRT_INFO_PAGE, ROUTE_ORDER_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_ORDER_NEW_REGISTER_VERIFY_INSTANT_SIM_PAGE, ROUTE_ORDER_NEW_REGISTER_VERIFY_DOCUMENT_PAGE } from 'src/app/order/order-new-register/constants/route-path.constant';
-import { HomeService, PageLoadingService, ApiRequestService, Utils, ReadCardProfile, AlertService, ReadPassport, ReadPassportService, ReadCardService, ReadCard, ReadCardEvent, ValidateCustomerIdCardComponent, KioskControls, } from 'mychannel-shared-libs';
+import { ROUTE_ORDER_NEW_REGISTER_PASSPOPRT_INFO_PAGE, ROUTE_ORDER_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_ORDER_NEW_REGISTER_VERIFY_DOCUMENT_PAGE } from 'src/app/order/order-new-register/constants/route-path.constant';
+import { HomeService, PageLoadingService, ApiRequestService, Utils, ReadCardProfile, AlertService, ReadPassport, ReadPassportService, ValidateCustomerIdCardComponent, KioskControls, VendingApiService, } from 'mychannel-shared-libs';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
@@ -14,15 +14,14 @@ import { HttpClient } from '@angular/common/http';
 })
 export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDestroy {
   readPassportSubscription: Subscription;
-  readCardSubscription: Subscription;
+  vendingApiSubscription: Subscription;
   readPassprot: ReadPassport;
-  readCard: ReadCard;
   profile: ReadCardProfile;
   transaction: Transaction;
   billDeliveryAddress: BillDeliveryAddress;
   kioskApi = true;
   koiskApiFn: any;
-
+  cardStateInterval: any;
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
 
@@ -37,7 +36,7 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
     private pageLoadingService: PageLoadingService,
     private apiRequestService: ApiRequestService,
     private alertService: AlertService,
-    private readCardService: ReadCardService,
+    private vendingApiService: VendingApiService,
   ) {
   }
 
@@ -65,7 +64,7 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
   onReadPassport() {
     const customer = this.transaction.data.customer;
     this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
-      console.log('readPassport', readPassport);
+      this.pageLoadingService.openLoading();
       return this.http.get('/api/customerportal/validate-customer-new-register', {
         params: {
           identity: readPassport.profile.idCardNo
@@ -118,7 +117,12 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
           this.transaction.data.billingInformation = billingInformation;
           this.transaction.data.billingInformation.billDeliveryAddress = this.billDeliveryAddress;
           if (this.checkBusinessLogic()) {
+            this.vendingApiSubscription = this.vendingApiService.excuteCommand().subscribe((command: any) => {
+              command.ws.close();
+              clearInterval(this.cardStateInterval);
+            });
             this.router.navigate([ROUTE_ORDER_NEW_REGISTER_PASSPOPRT_INFO_PAGE]);
+            this.pageLoadingService.closeLoading();
           }
         }).catch((resp: any) => {
           const error = resp.error || [];
@@ -140,16 +144,40 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
   }
 
   onReadCard() {
-    console.log('บัตรประชาชน');
-    // if (this.kioskApi) {
-    //   this.koiskApiFn = this.readCardService.kioskApi();
-    // }
-    this.readCardSubscription = this.readCardService.onReadCard().subscribe((readCard: ReadCard) => {
-      console.log('readCard', readCard);
-      this.readCard = readCard;
-      if (readCard.eventName === ReadCardEvent.EVENT_CARD_LOAD_COMPLETED) {
-        this.router.navigate([ROUTE_ORDER_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
+    this.vendingApiSubscription = this.vendingApiService.excuteCommand().subscribe((command: any) => {
+      command.ws.send(KioskControls.LED_BLINK);
+      if (command.error) {
+        return;
+
       }
+      command.ws.onmessage = (event) => {
+        const message = JSON.parse(event.data);
+        console.log('message...', message);
+
+        console.log('message', message.Result);
+        const isCardInside = message && (message.Result === 'Card in IC position' || message.Result === 'Card in RF position');
+
+        if (isCardInside) {
+          command.ws.send(KioskControls.LED_OFF);
+          command.ws.close();
+          this.vendingApiSubscription.unsubscribe();
+          this.router.navigate([ROUTE_ORDER_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
+          clearInterval(this.cardStateInterval);
+        }
+
+        if (message.Command === KioskControls.LOAD_CARD) {
+          // cardStateInterval = window.setInterval(() => {
+          //   command.ws.send(KioskControls.GET_CARD_STATE);
+          // }, 1000);
+          this.cardStateInterval = setInterval(function() {
+            command.ws.send(KioskControls.GET_CARD_STATE);
+          }, 1000);
+        }
+
+
+      };
+      command.ws.send(KioskControls.LOAD_CARD);
+
     });
   }
   checkBusinessLogic(): boolean {
@@ -184,7 +212,8 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
   }
 
   ngOnDestroy(): void {
-    this.readCardSubscription.unsubscribe();
+    clearInterval(this.cardStateInterval);
+    this.vendingApiSubscription.unsubscribe();
     this.transactionService.save(this.transaction);
   }
 

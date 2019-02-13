@@ -143,6 +143,15 @@ export class CreateNewRegisterService {
       promotionActionStatus1: 'Add', /*When SelectedPackages*/
     };
 
+    if (action === TransactionAction.READ_PASSPORT) {
+        data.accountSubCat = 'FOR',
+        data.titleName = data.gender === 'F' ? 'Ms.' : 'Mr.',
+        data.engFlage = 'Y',
+        data.instanceName = '3G',
+        data.orderReason = '1164',
+        data.citizenship = customer.nationality;
+    }
+
     // orderVerify
     if (faceRecognition && faceRecognition.kyc) {
       if (this.isReadCard(action)) {
@@ -203,6 +212,7 @@ export class CreateNewRegisterService {
       });
     }
   }
+
 
   isReadCard(action: TransactionAction): boolean {
     return !!(action === TransactionAction.READ_CARD ||
