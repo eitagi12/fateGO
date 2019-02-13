@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ReadCardProfile, HomeService, PageLoadingService, ApiRequestService, TokenService, ChannelType, Utils, AlertService, ValidateCustomerIdCardComponent, KioskControls, } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
-import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import {
   ROUTE_ORDER_NEW_REGISTER_FACE_CAPTURE_PAGE, ROUTE_ORDER_NEW_REGISTER_VERIFY_DOCUMENT_PAGE,
@@ -23,7 +23,6 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
   profile: ReadCardProfile;
   zipcode: string;
   readCardValid: boolean;
-  billDeliveryAddress: BillDeliveryAddress;
 
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
@@ -126,20 +125,6 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
         }).toPromise()
           .then((resp: any) => {
             const data = resp.data || {};
-            this.billDeliveryAddress = {
-              homeNo: data.homeNo || '',
-              moo: data.moo || '',
-              mooBan: data.mooBan || '',
-              room: data.room || '',
-              floor: data.floor || '',
-              buildingName: data.buildingName || '',
-              soi: data.soi || '',
-              street: data.street || '',
-              province: data.province || '',
-              amphur: data.amphur || '',
-              tumbol: data.tumbol || '',
-              zipCode: data.zipCode || '',
-            };
             return {
               caNumber: data.caNumber,
               mainMobile: data.mainMobile,
@@ -173,16 +158,13 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
       })
       .then((billingInformation: any) => {
         this.transaction.data.billingInformation = billingInformation;
-        this.transaction.data.billingInformation.billDeliveryAddress = this.billDeliveryAddress;
         if (this.checkBusinessLogic()) {
           this.router.navigate([ROUTE_ORDER_NEW_REGISTER_FACE_CAPTURE_PAGE]);
         }
       })
       .catch((resp: any) => {
         const error = resp.error || [];
-        console.log(resp);
-
-        if (error && error.errors.length > 0) {
+        if (error && error.errors && error.errors.length > 0) {
           this.alertService.notify({
             type: 'error',
             html: error.errors.map((err) => {
@@ -191,8 +173,10 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
           }).then(() => {
             this.onBack();
           });
-        } else {
+        } else if (error.resultDescription) {
           this.alertService.error(error.resultDescription);
+        } else {
+          this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
         }
       });
   }
