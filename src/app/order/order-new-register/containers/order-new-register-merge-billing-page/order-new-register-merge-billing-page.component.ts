@@ -25,7 +25,7 @@ export class OrderNewRegisterMergeBillingPageComponent implements OnInit, OnDest
   transaction: Transaction;
 
   billingCyles: any[];
-  mergeBillingTmp: BillingAccount;
+  mergeBilling: BillingAccount;
 
   constructor(
     private router: Router,
@@ -38,6 +38,7 @@ export class OrderNewRegisterMergeBillingPageComponent implements OnInit, OnDest
 
   ngOnInit() {
     this.billingCyles = this.getBillingCycles();
+    this.mergeBilling = this.transaction.data.billingInformation.mergeBilling;
   }
 
   getBillingCycles(): any[] {
@@ -82,12 +83,12 @@ export class OrderNewRegisterMergeBillingPageComponent implements OnInit, OnDest
   }
 
   onNext() {
-    this.transaction.data.billingInformation.mergeBilling = this.mergeBillingTmp;
+    this.transaction.data.billingInformation.mergeBilling = this.mergeBilling;
     this.router.navigate([ROUTE_ORDER_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
   onCompleted(mergeBilling: BillingAccount) {
-    this.mergeBillingTmp = mergeBilling;
+    this.mergeBilling = mergeBilling;
   }
 
   onHome() {

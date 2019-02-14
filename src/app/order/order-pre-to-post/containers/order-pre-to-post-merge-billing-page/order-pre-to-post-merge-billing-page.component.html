@@ -10,12 +10,11 @@
   <div class="mc-flex-wrap">
     <div class="mb-3 mt-3">
       <mc-wizard [wizards]="wizards" active="3"></mc-wizard>
-      <mc-merge-billing [billingCyles]="billingCyles" [mergeBilling]="transaction?.data?.billingInformation?.mergeBilling"
-        (completed)="onCompleted($event)"></mc-merge-billing>
+      <mc-merge-billing [billingCyles]="billingCyles" [mergeBilling]="mergeBilling" (completed)="onCompleted($event)"></mc-merge-billing>
     </div>
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()" [disabled]="!transaction?.data?.billingInformation?.mergeBilling">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!mergeBilling">NEXT</button>
   </mc-footer>
 </div>
