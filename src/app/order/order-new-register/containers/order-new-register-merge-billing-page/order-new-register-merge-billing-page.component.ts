@@ -8,7 +8,7 @@ import {
   ROUTE_ORDER_NEW_REGISTER_SELECT_PACKAGE_PAGE
 } from 'src/app/order/order-new-register/constants/route-path.constant';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, BillingAccount } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 
 @Component({
@@ -25,7 +25,7 @@ export class OrderNewRegisterMergeBillingPageComponent implements OnInit, OnDest
   transaction: Transaction;
 
   billingCyles: any[];
-  mergeBilling: any;
+  mergeBillingTmp: BillingAccount;
 
   constructor(
     private router: Router,
@@ -38,7 +38,6 @@ export class OrderNewRegisterMergeBillingPageComponent implements OnInit, OnDest
 
   ngOnInit() {
     this.billingCyles = this.getBillingCycles();
-    this.mergeBilling = this.transaction.data.billingInformation.mergeBilling;
   }
 
   getBillingCycles(): any[] {
@@ -83,11 +82,12 @@ export class OrderNewRegisterMergeBillingPageComponent implements OnInit, OnDest
   }
 
   onNext() {
+    this.transaction.data.billingInformation.mergeBilling = this.mergeBillingTmp;
     this.router.navigate([ROUTE_ORDER_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
-  onCompleted(even: any) {
-    this.transaction.data.billingInformation.mergeBilling = even;
+  onCompleted(mergeBilling: BillingAccount) {
+    this.mergeBillingTmp = mergeBilling;
   }
 
   onHome() {

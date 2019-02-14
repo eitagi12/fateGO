@@ -163,9 +163,11 @@ export class OrderMnpEbillingAddressPageComponent implements OnInit, OnDestroy {
   onNext() {
     const billingInformation = this.transaction.data.billingInformation || {};
     const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
-    const customerAddress = Object.assign(customer, this.customerAddressTemp);
 
-    this.transaction.data.billingInformation.billDeliveryAddress = Object.assign(customerAddress);
+    this.transaction.data.billingInformation.billDeliveryAddress = Object.assign(
+      Object.assign({}, customer),
+      this.customerAddressTemp
+    );
 
     this.router.navigate([ROUTE_ORDER_MNP_CONFIRM_USER_INFORMATION_PAGE]);
   }

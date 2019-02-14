@@ -11,7 +11,8 @@
     <div class="mb-3 mt-3">
       <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
 
-      <mc-merge-billing [billingCyles]="billingCyles" [mergeBilling]="mergeBilling" (completed)="onCompleted($event)"></mc-merge-billing>
+      <mc-merge-billing [billingCyles]="billingCyles" [mergeBilling]="transaction?.data?.billingInformation?.mergeBilling"
+        (completed)="onCompleted($event)"></mc-merge-billing>
 
     </div>
   </div>

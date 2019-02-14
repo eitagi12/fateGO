@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_ORDER_MNP } from 'src/app/order/constants/wizard.constant';
 import { Router } from '@angular/router';
 import { HomeService } from 'mychannel-shared-libs';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, BillingAccount } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import {
   ROUTE_ORDER_MNP_ON_TOP_PAGE,
@@ -23,7 +23,7 @@ export class OrderMnpMergeBillingPageComponent implements OnInit, OnDestroy {
   transaction: Transaction;
 
   billingCyles: any[];
-  mergeBilling: any;
+  mergeBillingTmp: BillingAccount;
 
   constructor(
     private router: Router,
@@ -35,7 +35,6 @@ export class OrderMnpMergeBillingPageComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     this.billingCyles = this.getBillingCycles();
-    this.mergeBilling = this.transaction.data.billingInformation.mergeBilling;
   }
 
   getBillingCycles(): any[] {
@@ -79,11 +78,12 @@ export class OrderMnpMergeBillingPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  onCompleted(even: any) {
-    this.transaction.data.billingInformation.mergeBilling = even;
+  onCompleted(mergeBilling: BillingAccount) {
+    this.mergeBillingTmp = mergeBilling;
   }
 
   onNext() {
+    this.transaction.data.billingInformation.mergeBilling = this.mergeBillingTmp;
     this.router.navigate([ROUTE_ORDER_MNP_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
