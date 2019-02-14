@@ -8,7 +8,7 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [
     CommonModule,
     OrderRoutingModule,
-    TranslateModule.forRoot()
+    TranslateModule
   ],
   declarations: []
 })

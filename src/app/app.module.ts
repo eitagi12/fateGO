@@ -18,12 +18,7 @@ import { AppComponent } from './app.component';
 import { ErrorPageComponent } from './containers/error-page/error-page.component';
 import { CookiesStorageService } from 'ngx-store';
 import { SharedModule } from './shared/shared.module';
-import { TranslateModule, TranslateLoader } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-
-export function HttpLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http);
-}
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -48,13 +43,7 @@ export function HttpLoaderFactory(http: HttpClient) {
     }),
     SharedModule,
     AppRoutingModule,
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-      }
-    })
+    TranslateModule.forRoot()
   ],
   providers: [
     {

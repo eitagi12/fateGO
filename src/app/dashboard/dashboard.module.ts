@@ -7,6 +7,7 @@ import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
 import { PromotionPageComponent } from './containers/promotion-page/promotion-page.component';
 import { MainMenuPageComponent } from './containers/main-menu-page/main-menu-page.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -15,6 +16,7 @@ import { MainMenuPageComponent } from './containers/main-menu-page/main-menu-pag
     TabsModule.forRoot(),
     MyChannelSharedLibsModule,
     DashboardRoutingModule,
+    TranslateModule
   ],
   declarations: [
     DashboardComponent,

@@ -1,4 +1,5 @@
 {
+    "โปรโมชัน": "PROMO",
     "ไม่พบหมายเลขที่คุณค้นหา กรุณากำหนดเงื่อนไขและค้นหาใหม่อีกครั้ง": "NO_DATA_MAP!!",
     "หมายเลข": "Mobile Number",
     "ซิมใช้งานได้ภายใน 1 ชั่วโมง": "Your SIM card will be ready to use within 1 hour",
@@ -16,7 +17,7 @@
     "ลงชื่อผู้ทำรายการ": "NO_DATA_MAP!!",
     "กรุณาเลือกทำรายการ": "Main Menu",
     "ซื้อเครื่อง": "Device Purchasing",
-    "เปิดเบอร์ใหม่": "Port  your number to AIS",
+    "เปิดเบอร์ใหม่": "Port your number to AIS",
     "ย้ายค่ายมาใช้ AIS": "Move to AIS",
     "เปลี่ยนเติมเงินเป็นรายเดือน": "Switch to Postpaid",
     "เสียบบัตรประชาชน": "Insert your ID Card",

@@ -26,6 +26,7 @@ import { OrderNewRegisterAgreementSignPageComponent } from './containers/order-n
 import { OrderNewRegisterPersoSimPageComponent } from './containers/order-new-register-perso-sim-page/order-new-register-perso-sim-page.component';
 import { OrderNewRegisterResultPageComponent } from './containers/order-new-register-result-page/order-new-register-result-page.component';
 import { OrderNewRegisterEapplicationPageComponent } from './containers/order-new-register-eapplication-page/order-new-register-eapplication-page.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -33,7 +34,8 @@ import { OrderNewRegisterEapplicationPageComponent } from './containers/order-ne
     FormsModule,
     ReactiveFormsModule,
     OrderNewRegisterRoutingModule,
-    MyChannelSharedLibsModule
+    MyChannelSharedLibsModule,
+    TranslateModule
   ],
   declarations: [
     OrderNewRegisterValidateCustomerPageComponent,
