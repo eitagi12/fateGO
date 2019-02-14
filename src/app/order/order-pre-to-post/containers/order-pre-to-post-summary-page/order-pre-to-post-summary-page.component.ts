@@ -48,7 +48,6 @@ export class OrderPreToPostSummaryPageComponent implements OnInit {
       mainPackage: mainPackage.shortNameThai,
       onTopPackage: '',
       packageDetail: mainPackage.statementThai,
-      idCardType: customer.idCardType
     };
 
     this.billingInfo = {

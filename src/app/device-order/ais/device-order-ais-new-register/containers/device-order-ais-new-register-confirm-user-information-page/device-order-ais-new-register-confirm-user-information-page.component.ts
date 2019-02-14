@@ -45,7 +45,6 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
       mainPackage: mainPackage['title'],
       onTopPackage: '',
       packageDetail: mainPackage['detailTH'],
-      idCardType: customer.idCardType
     };
   }
 

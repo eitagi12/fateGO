@@ -66,8 +66,7 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
       mobileNo: simCard.mobileNo,
       mainPackage: mainPackage.shortNameThai,
       onTopPackage: '',
-      packageDetail: mainPackage.statementThai,
-      idCardType: customer.idCardType
+      packageDetail: mainPackage.statementThai
     };
 
     this.mailBillingInfo = {

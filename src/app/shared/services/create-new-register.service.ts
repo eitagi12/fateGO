@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Transaction, TransactionAction } from '../models/transaction.model';
 import { TokenService, Utils, ImageUtils, AWS_WATERMARK } from 'mychannel-shared-libs';
+import { observable, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -49,7 +50,7 @@ export class CreateNewRegisterService {
       idCardType: 'Thai National ID',
       customerId: customer.idCardNo || '',
       mobileNo: simCard.mobileNo || '',
-      base64Card: customer.imageReadSmartCard || customer.imageSmartCard,
+      base64Card: customer.imageReadSmartCard || customer.imageSmartCard || customer.imageReadPassport,
       base64Face: faceRecognition.imageFaceUser,
       channel: channel,
       userchannel: 'MyChannel'
@@ -151,19 +152,19 @@ export class CreateNewRegisterService {
         data.instanceName = '3G',
         data.citizenship = customer.nationality;
     } else {
-      data.accountSubCat = 'THA',
-      data.titleName = this.utils.getPrefixName(customer.titleName); /*required*/
+        data.accountSubCat = 'THA',
+        data.titleName = this.utils.getPrefixName(customer.titleName); /*required*/
     }
 
     // orderVerify
     if (faceRecognition && faceRecognition.kyc) {
-      if (this.isReadCard(action)) {
+      if (action === TransactionAction.READ_CARD) {
         data.orderVerify = 'Smart KYC';
       } else {
         data.orderVerify = 'User KYC';
       }
     } else {
-      if (this.isReadCard(action)) {
+      if (action === TransactionAction.READ_CARD) {
         data.orderVerify = 'Smart Face';
       } else {
         data.orderVerify = 'User Face';
@@ -197,28 +198,42 @@ export class CreateNewRegisterService {
     }
 
 
-    if (this.isReadCard(action)) {
+    if (action === TransactionAction.READ_CARD) {
       data.imageReadSmartCard = customer.imageReadSmartCard;
       data.firstNameEn = customer.firstNameEn;
       data.lastNameEn = customer.lastNameEn;
       data.issueDate = customer.issueDate;
       data.expireDate = customer.expireDate;
       return Promise.resolve(data);
-    } else {
+    }
+    if (action === TransactionAction.READ_PASSPORT) {
       return new ImageUtils().combine([
-        customer.imageSmartCard,
+        customer.imageReadPassport,
         customer.imageSignatureSmartCard,
         AWS_WATERMARK
       ]).then((imageSmatCard) => {
         data.imageTakePhoto = imageSmatCard;
         return Promise.resolve(data);
+      }).catch((error) => {
+        throw new Error(error);
       });
     }
-  }
+
+    if (action === TransactionAction.KEY_IN) {
+      return new ImageUtils().combine([
+        customer.imageReadPassport,
+        customer.imageSignatureSmartCard,
+        AWS_WATERMARK
+      ]).then((imageSmatCard) => {
+        data.imageTakePhoto = imageSmatCard;
+        return Promise.resolve(data);
+      }).catch((error) => {
+        throw new Error(error);
+      });
+    }
 
 
-  isReadCard(action: TransactionAction): boolean {
-    return !!(action === TransactionAction.READ_CARD ||
-      action === TransactionAction.READ_CARD_REPI);
+
   }
+
 }

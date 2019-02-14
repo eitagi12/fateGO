@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
 import { Router } from '@angular/router';
-import { HomeService, CaptureAndSign, TokenService, ChannelType } from 'mychannel-shared-libs';
+import { HomeService, CaptureAndSign, TokenService, ChannelType, ImageUtils } from 'mychannel-shared-libs';
 import { Transaction, Customer, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ROUTE_ORDER_NEW_REGISTER_FACE_CAPTURE_PAGE, ROUTE_ORDER_NEW_REGISTER_VERIFY_DOCUMENT_PAGE } from '../../constants/route-path.constant';
@@ -47,12 +47,12 @@ export class OrderNewRegisterPassportInfoPageComponent implements OnInit, OnDest
     this.mapDatanationality();
     customer.titleName = customer.gender === 'F' ? 'Ms.' : 'Mr.';
   }
-
   onCompleted(captureAndSign: CaptureAndSign) {
     const customer: Customer = this.transaction.data.customer;
     customer.imageSignatureSmartCard = captureAndSign.imageSignature;
-    customer.imageSmartCard = captureAndSign.imageSmartCard;
+    customer.imageReadPassport = captureAndSign.imageSmartCard;
   }
+
 
   onError(valid: boolean) {
     this.idCardValid = valid;

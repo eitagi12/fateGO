@@ -60,7 +60,6 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
       mainPackage: mainPackage.shortNameThai,
       onTopPackage: '',
       packageDetail: mainPackage.statementThai,
-      idCardType: customer.idCardType
     };
 
     this.mailBillingInfo = {
