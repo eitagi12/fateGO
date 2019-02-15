@@ -112,10 +112,10 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
         }).then((billingInformation: any) => {
           this.transaction.data.billingInformation = billingInformation;
           this.pageLoadingService.closeLoading();
+          this.transaction.data.action = TransactionAction.READ_PASSPORT;
           this.transactionService.update(this.transaction);
 
           if (this.checkBusinessLogic()) {
-            this.transaction.data.action = TransactionAction.READ_PASSPORT;
             this.router.navigate([ROUTE_ORDER_NEW_REGISTER_PASSPOPRT_INFO_PAGE]);
 
           }
