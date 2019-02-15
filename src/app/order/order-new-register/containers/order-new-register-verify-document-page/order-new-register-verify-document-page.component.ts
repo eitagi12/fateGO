@@ -69,16 +69,20 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
   }
   onReadPassport() {
     this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
+      console.log('readpassport', readPassport);
       this.pageLoadingService.openLoading();
       if (readPassport.error) {
         this.alertService.error('ไม่สามารถอ่านบัตรได้ กรุณาติดต่อพนักงาน');
-        return ;
+        return;
       }
       return this.http.get('/api/customerportal/validate-customer-new-register', {
         params: {
           identity: readPassport.profile.idCardNo
         }
-      }).toPromise()
+        // catch ไว้ก่อน เดี๋ยวมาทำต่อ
+      }).toPromise().catch(() => {
+        return {};
+      })
         .then((resp: any) => {
           const data = resp.data || {};
           return {
@@ -114,11 +118,11 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
           this.pageLoadingService.closeLoading();
           this.transaction.data.action = TransactionAction.READ_PASSPORT;
           this.transactionService.update(this.transaction);
+          this.router.navigate([ROUTE_ORDER_NEW_REGISTER_PASSPOPRT_INFO_PAGE]);
+          // if (this.checkBusinessLogic()) {
+          //   this.router.navigate([ROUTE_ORDER_NEW_REGISTER_PASSPOPRT_INFO_PAGE]);
 
-          if (this.checkBusinessLogic()) {
-            this.router.navigate([ROUTE_ORDER_NEW_REGISTER_PASSPOPRT_INFO_PAGE]);
-
-          }
+          // }
         }).catch((resp: any) => {
           this.pageLoadingService.closeLoading();
           const error = resp.error || [];
@@ -135,6 +139,7 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
             this.alertService.error(error.resultDescription);
           } else {
             this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+
           }
         });
     });
