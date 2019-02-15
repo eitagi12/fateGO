@@ -123,7 +123,7 @@ export class DeviceOrderAisNewRegisterPersoSimPageComponent implements OnInit, O
             });
           }
           if (persoSim.error) {
-            console.error('persoSimError', persoSim.error);
+            console.error(persoSim.error);
             this.errorMessage = this.ERROR_PERSO;
             this.alertService.error(this.ERROR_PERSO);
             this.koiskApiFn.close();
@@ -133,14 +133,14 @@ export class DeviceOrderAisNewRegisterPersoSimPageComponent implements OnInit, O
         // โหลด sim ไม่ได้
         this.errorMessage = this.ERROR_PERSO;
         this.alertService.error(this.ERROR_PERSO);
-        console.error('persoSimError', err);
+        console.error(err);
       });
     })
     .catch((err) => {
       //  ต่อ web socket ไม่ได้
       this.errorMessage = this.ERROR_PERSO;
       this.alertService.error(this.ERROR_PERSO);
-      console.error('persoSimError', err);
+      console.error(err);
     });
   }
 
@@ -156,7 +156,7 @@ export class DeviceOrderAisNewRegisterPersoSimPageComponent implements OnInit, O
         this.onNext();
       }
       if (persoSim.error) {
-        console.error('persoSimError', persoSim.error);
+        console.error(persoSim.error);
         this.errorMessage = this.ERROR_PERSO;
         this.alertService.error(this.ERROR_PERSO);
       }
