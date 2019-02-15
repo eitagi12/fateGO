@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, Utils, AlertService, TokenService, ChannelType, PersoSimService, PersoSimConfig, PersoSimError, KioskControlsPersoSim, ShoppingCart } from 'mychannel-shared-libs';
+import { HomeService, AlertService, TokenService, ChannelType, PersoSimService, PersoSimConfig, PersoSimError, KioskControlsPersoSim, ShoppingCart } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Observable, Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
@@ -43,7 +43,6 @@ export class DeviceOrderAisNewRegisterPersoSimPageComponent implements OnInit, O
 
   koiskApiFn: any;
   readonly ERROR_PERSO = 'ไม่สามารถให้บริการได้ กรุณาติดต่อพนักงานเพื่อดำเนินการ ขออภัยในความไม่สะดวก';
-
 
   constructor(
     private router: Router,
@@ -200,6 +199,9 @@ export class DeviceOrderAisNewRegisterPersoSimPageComponent implements OnInit, O
           ws.onmessage = (event: any) => {
             const msg = JSON.parse(event.data);
             isNoCardInside = msg && msg.Result === 'No card inside reader unit';
+            if (isNoCardInside) {
+              clearInterval(cardStateInterval);
+            }
             obs.next(isNoCardInside);
           };
           if (isNoCardInside) {
