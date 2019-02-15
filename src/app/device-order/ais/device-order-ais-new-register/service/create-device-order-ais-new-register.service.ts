@@ -43,19 +43,29 @@ export class CreateDeviceOrderAisNewRegisterService {
     private http: HttpClient,
     private utils: Utils,
     private tokenService: TokenService,
-    private priceOptionService: PriceOptionService,
-    private transactionService: TransactionService,
   ) {
-    this.priceOption = this.priceOptionService.load();
-    this.transaction = this.transactionService.load();
   }
 
-  createOrderNewRegister(): Promise<any> {
-    return this.getQueueByNumber(this.transaction.data.simCard.mobileNo).then((resp) => {
+  createOrderNewRegister(transaction: Transaction, priceOption: PriceOption): Promise<any> {
+    return this.getQueueByNumber(transaction.data.simCard.mobileNo).then((resp) => {
       if (resp.resultPass) {
-        return this.getRequestCreateNewRegister(this.transaction, resp.result.queueNo).then((data) => {
+        return this.getRequestCreateNewRegister(transaction, resp.result.queueNo).then((data) => {
           // console.log(data);
-          return this.http.post('/api/customerportal/device-sell/order', data).toPromise();
+          return this.http.post('/api/saleportal/device-sell/order', data).toPromise();
+          //   if (orderResponse) {
+          //     if (orderResponse.resultCode === 'S') {
+          //         return orderResponse;
+          //     } else {
+          //       switch (orderResponse.resultMessage) {
+          //         case 'QueueNo is duplicated':
+          //           throw 'เลขที่คิวซ้ำ กรุณาระบุใหม่';
+          //         default:
+          //           throw 'Fail to create the order';
+          //       }
+          //     }
+          // } else {
+          //     throw 'Fail';
+          // }
         });
       }
     });
@@ -66,7 +76,24 @@ export class CreateDeviceOrderAisNewRegisterService {
     const body = {
       mobileNo: mobileNo
     };
-    return this.http.post('/device-order/transaction/get-queue-qmatic', body).toPromise();
+    return this.http.post('/api/salesportal/device-order/transaction/get-queue-qmatic', body).toPromise();
+  }
+
+  updateOrderNewRegister(transaction: Transaction): Promise<any> {
+
+    // transaction.data.order = {
+    //   soId: queue.soId ? queue.soId : ''
+    // };
+    // transaction.data.queue = {
+    //   queueNo: deviceItemBuyingInformation.queueNo ? deviceItemBuyingInformation.queueNo : ''
+    // };
+    // transaction.issueBy = this.tokenService.getUsername();
+    // transaction.data.status = {
+    //   code: '002',
+    //   description: 'Waiting Payment'
+    // };
+
+    return this.http.post('/api/salesportal/device-order/update-transaction', transaction).toPromise();
   }
 
   getRequestCreateNewRegister(transaction: Transaction, queueNo: string): Promise<any> {
