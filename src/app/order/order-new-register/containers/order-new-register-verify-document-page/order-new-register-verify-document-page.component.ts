@@ -68,10 +68,7 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
     this.homeService.goToHome();
   }
   onReadPassport() {
-    this.transaction.data.action = TransactionAction.READ_PASSPORT;
     this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
-      console.log('readPassport', readPassport);
-      const customer = this.transaction.data.customer;
       this.pageLoadingService.openLoading();
       if (readPassport.error) {
         this.alertService.error('ไม่สามารถอ่านบัตรได้ กรุณาติดต่อพนักงาน');
@@ -118,6 +115,7 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
           this.transactionService.update(this.transaction);
 
           if (this.checkBusinessLogic()) {
+            this.transaction.data.action = TransactionAction.READ_PASSPORT;
             this.router.navigate([ROUTE_ORDER_NEW_REGISTER_PASSPOPRT_INFO_PAGE]);
 
           }
@@ -144,7 +142,6 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
 
   onReadCard() {
     this.vendingApiSubscription = this.vendingApiService.excuteCommand().subscribe((command: any) => {
-      console.log('command', command);
       this.closeVendingApi = command;
       if (command.error) {
         return;
