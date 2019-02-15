@@ -277,16 +277,14 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
   }
 
   customerValid(): boolean {
-    const customer = this.transaction.data.customer;
-    if (!customer.caNumber) {
-      return true;
-    } else {
-      return !!(customer.homeNo
-        && customer.province
-        && customer.amphur
-        && customer.tumbol
-        && customer.zipCode);
-    }
+    const billingInformation = this.transaction.data.billingInformation || {};
+    // ถ้าเป็น Newca จะไม่มี data.customer เลยต้องเช็คจากที่อยู่ว่า มีที่อยู่(billDeliveryAddress)ไหม
+    const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
+    return !!(customer.homeNo
+      && customer.province
+      && customer.amphur
+      && customer.tumbol
+      && customer.zipCode);
 
   }
 
