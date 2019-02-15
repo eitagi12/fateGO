@@ -63,6 +63,10 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
     this.homeService.goToHome();
     // this.router.navigate([ROUTE_ORDER_NEW_REGISTER_VERIFY_DOCUMENT_PAGE]);
   }
+
+  onHome() {
+    this.homeService.goToHome();
+  }
   onReadPassport() {
     this.transaction.data.action = TransactionAction.READ_PASSPORT;
     this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
