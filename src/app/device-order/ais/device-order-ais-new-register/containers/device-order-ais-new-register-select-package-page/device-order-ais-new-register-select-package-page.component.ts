@@ -14,7 +14,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { ShoppingCartService } from 'src/app/device-order/ais/device-order-ais-new-register/service/shopping-cart.service';
+import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { PromotionShelveService } from 'src/app/device-order/services/promotion-shelve.service';
 
 @Component({

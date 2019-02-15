@@ -6,7 +6,7 @@ import { Transaction, TransactionAction, Customer, FaceRecognition } from 'src/a
 import { HttpClient } from '@angular/common/http';
 import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_CONFIRM_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_CAPTURE_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGGREGATE_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
-import { ShoppingCartService } from 'src/app/device-order/ais/device-order-ais-new-register/service/shopping-cart.service';
+import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 
 @Component({
   selector: 'app-device-order-ais-new-register-face-compare-page',

@@ -10,7 +10,7 @@ import {
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { TransactionAction, Transaction, Customer, Payment } from 'src/app/shared/models/transaction.model';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
-import { ShoppingCartService } from 'src/app/device-order/ais/device-order-ais-new-register/service/shopping-cart.service';
+import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';

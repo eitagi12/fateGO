@@ -5,15 +5,17 @@ import { DeviceOrderRoutingModule } from './device-order-routing.module';
 import { DeviceOrderComponent } from './device-order.component';
 import { PromotionShelveService } from './services/promotion-shelve.service';
 import { MobileCareService } from './services/mobile-care.service';
+import { ShoppingCartService } from './services/shopping-cart.service';
 
 @NgModule({
   imports: [
     CommonModule,
-    DeviceOrderRoutingModule
+    DeviceOrderRoutingModule,
   ],
   providers: [
     PromotionShelveService,
-    MobileCareService
+    MobileCareService,
+    ShoppingCartService
   ],
   declarations: [DeviceOrderComponent]
 })
