@@ -198,7 +198,7 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
 
   ngOnDestroy(): void {
     if (this.transaction.data.action === TransactionAction.READ_PASSPORT) {
-      this.closeVendingApi.ws.close();
+      this.closeVendingApi.ws.send(KioskControls.LED_OFF);
     }
     clearInterval(this.cardStateInterval);
     this.vendingApiSubscription.unsubscribe();
