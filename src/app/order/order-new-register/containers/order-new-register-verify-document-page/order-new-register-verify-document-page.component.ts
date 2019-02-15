@@ -70,8 +70,13 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
   onReadPassport() {
     this.transaction.data.action = TransactionAction.READ_PASSPORT;
     this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
+      console.log('readPassport', readPassport);
       const customer = this.transaction.data.customer;
       this.pageLoadingService.openLoading();
+      if (readPassport.error) {
+        this.alertService.error('ไม่สามารถอ่านบัตรได้ กรุณาติดต่อพนักงาน');
+        return ;
+      }
       return this.http.get('/api/customerportal/validate-customer-new-register', {
         params: {
           identity: readPassport.profile.idCardNo
@@ -139,7 +144,11 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
 
   onReadCard() {
     this.vendingApiSubscription = this.vendingApiService.excuteCommand().subscribe((command: any) => {
+      console.log('command', command);
       this.closeVendingApi = command;
+      if (command.error) {
+        return;
+      }
       command.ws.send(KioskControls.LED_BLINK);
       if (command.error) {
         return;
