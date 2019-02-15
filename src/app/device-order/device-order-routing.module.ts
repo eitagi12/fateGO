@@ -12,6 +12,14 @@ const routes: Routes = [
         loadChildren: 'src/app/device-order/ais/device-order-ais-new-register/device-order-ais-new-register.module#DeviceOrderAisNewRegisterModule'
       },
       {
+        path: 'pre-to-post',
+        loadChildren: 'src/app/device-order/ais/device-order-ais-pre-to-post/device-order-ais-pre-to-post.module#DeviceOrderAisPreToPostModule',
+      },
+      {
+        path: 'mnp',
+        loadChildren: 'src/app/device-order/ais/device-order-ais-mnp/device-order-ais-mnp.module#DeviceOrderAisMnpModule',
+      },
+      {
         path: 'existing',
         loadChildren: 'src/app/device-order/ais/device-order-ais-existing/device-order-ais-existing.module#DeviceOrderAisExistingModule',
       }

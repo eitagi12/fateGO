@@ -1,0 +1,38 @@
+<div class="mc-flex">
+  <mc-header title="เปลี่ยนเติมเงินเป็นรายเดือน">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <div class="mb-3 mt-3">
+      <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
+      <div class="container-fluid margin-top">
+        <div class="card">
+          <div class="card-header bg-transparent text-center">ลงชื่อผู้ทำรายการ</div>
+          <div class="card-body">
+            <div *ngIf="!transaction?.data?.customer?.imageSignature" class="signed">
+              <img src="assets/images/icon/pen.png" (click)="$event.preventDefault(); onSigned()" *ngIf="signatureText !== 'แก้ไขลายเซ็น'" />
+            </div>
+            <div *ngIf="transaction?.data?.customer?.imageSignature" class="signed">
+              <img [src]="'data:image/jpeg;base64,' + transaction?.data?.customer?.imageSignature" *ngIf="signatureText !== 'แก้ไขลายเซ็น'">
+            </div>
+          </div>
+          <div class="card-footer text-center">
+            <a href="#" (click)="$event.preventDefault(); onSigned()" class="text-pink">
+              <span *ngIf="!transaction?.data?.customer?.imageSignature">เซ็นลายเซ็น</span>
+              <span *ngIf="transaction?.data?.customer?.imageSignature">แก้ไขลายเซ็น</span>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <mc-footer>
+    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!transaction?.data?.customer?.imageSignature">NEXT</button>
+  </mc-footer>
+</div>
