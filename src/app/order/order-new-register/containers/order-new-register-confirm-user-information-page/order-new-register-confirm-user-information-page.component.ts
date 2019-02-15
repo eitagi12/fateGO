@@ -278,12 +278,16 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
 
   customerValid(): boolean {
     const customer = this.transaction.data.customer;
+    if (!customer.caNumber) {
+      return true;
+    } else {
+      return !!(customer.homeNo
+        && customer.province
+        && customer.amphur
+        && customer.tumbol
+        && customer.zipCode);
+    }
 
-    return !!(customer.homeNo
-      && customer.province
-      && customer.amphur
-      && customer.tumbol
-      && customer.zipCode);
   }
 
   getBllingCycle(billCycle: string): Promise<string> {
