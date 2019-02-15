@@ -148,8 +148,7 @@ export class CreateNewRegisterService {
     if (action === TransactionAction.READ_PASSPORT) {
       data.accountSubCat = 'FOR',
         data.titleName = customer.titleName,
-        data.engFlage = 'Y',
-        data.instanceName = '3G',
+        data.engFlag = 'Y',
         data.citizenship = customer.nationality;
     } else {
         data.accountSubCat = 'THA',

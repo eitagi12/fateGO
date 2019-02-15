@@ -38,7 +38,6 @@ export class OrderNewRegisterPassportInfoPageComponent implements OnInit, OnDest
 
   ngOnInit() {
     const customer: Customer = this.transaction.data.customer;
-    console.log('data', customer);
     this.captureAndSign = {
       allowCapture: false,
       imageSmartCard: customer.imageReadPassport,
