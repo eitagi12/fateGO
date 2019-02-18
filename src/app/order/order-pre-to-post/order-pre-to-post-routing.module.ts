@@ -23,6 +23,9 @@ import { OrderPreToPostIdCardCaptureRepiPageComponent } from './containers/order
 import { OrderPreToPostEbillingPageComponent } from './containers/order-pre-to-post-ebilling-page/order-pre-to-post-ebilling-page.component';
 import { OrderPreToPostEapplicationPageComponent } from './containers/order-pre-to-post-eapplication-page/order-pre-to-post-eapplication-page.component';
 import { OrderPreToPostOneLoveComponent } from './containers/order-pre-to-post-one-love/order-pre-to-post-one-love.component';
+import { OrderPreToPostPassportInfoPageComponent } from './containers/order-pre-to-post-passport-info-page/order-pre-to-post-passport-info-page.component';
+import { OrderPreToPostPassportInfoRepiPageComponent } from './containers/order-pre-to-post-passport-info-repi-page/order-pre-to-post-passport-info-repi-page.component';
+import { OrderPreToPostVerifyDocumentRepiPageComponent } from './containers/order-pre-to-post-verify-document-repi-page/order-pre-to-post-verify-document-repi-page.component';
 const routes: Routes = [
   { path: '', redirectTo: 'validate-customer', pathMatch: 'full' },
   { path: 'validate-customer', component: OrderPreToPostValidateCustomerPageComponent },
@@ -47,7 +50,10 @@ const routes: Routes = [
   { path: 'customer-profile', component: OrderPreToPostCustomerProfilePageComponent },
   { path: 'id-card-capture-repi', component: OrderPreToPostIdCardCaptureRepiPageComponent },
   { path: 'ebilling', component: OrderPreToPostEbillingPageComponent },
-  { path: 'eapplication', component: OrderPreToPostEapplicationPageComponent }
+  { path: 'eapplication', component: OrderPreToPostEapplicationPageComponent },
+  { path: 'passport-info', component: OrderPreToPostPassportInfoPageComponent },
+  { path: 'passport-info-repi' , component: OrderPreToPostPassportInfoRepiPageComponent },
+  { path: 'verify-document-repi', component: OrderPreToPostVerifyDocumentRepiPageComponent }
 ];
 
 @NgModule({

@@ -28,6 +28,9 @@ import { OrderPreToPostIdCardCaptureRepiPageComponent } from './containers/order
 import { OrderPreToPostEbillingPageComponent } from './containers/order-pre-to-post-ebilling-page/order-pre-to-post-ebilling-page.component';
 import { OrderPreToPostEapplicationPageComponent } from './containers/order-pre-to-post-eapplication-page/order-pre-to-post-eapplication-page.component';
 import { OrderPreToPostOneLoveComponent } from './containers/order-pre-to-post-one-love/order-pre-to-post-one-love.component';
+import { OrderPreToPostPassportInfoPageComponent } from './containers/order-pre-to-post-passport-info-page/order-pre-to-post-passport-info-page.component';
+import { OrderPreToPostPassportInfoRepiPageComponent } from './containers/order-pre-to-post-passport-info-repi-page/order-pre-to-post-passport-info-repi-page.component';
+import { OrderPreToPostVerifyDocumentRepiPageComponent } from './containers/order-pre-to-post-verify-document-repi-page/order-pre-to-post-verify-document-repi-page.component';
 
 @NgModule({
   imports: [
@@ -61,6 +64,9 @@ import { OrderPreToPostOneLoveComponent } from './containers/order-pre-to-post-o
     OrderPreToPostEbillingPageComponent,
     OrderPreToPostEapplicationPageComponent,
     OrderPreToPostOneLoveComponent,
+    OrderPreToPostPassportInfoPageComponent,
+    OrderPreToPostPassportInfoRepiPageComponent,
+    OrderPreToPostVerifyDocumentRepiPageComponent,
   ]
 })
 export class OrderPreToPostModule { }

@@ -21,7 +21,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap';
   styleUrls: ['./order-pre-to-post-select-package-page.component.scss']
 })
 export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestroy {
-
+  readonly MAX_PROMOTION_PRICE = 500;
   @ViewChild('conditionTemplate')
   conditionTemplate: any;
 
@@ -92,6 +92,12 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
     this.pageLoadingService.openLoading();
     const billingInformation = this.transaction.data.billingInformation;
     const mobileNo = this.transaction.data.simCard.mobileNo;
+    const params: any = {
+      orderType: 'Change Charge Type',
+    };
+    if (this.transaction.data.action === TransactionAction.READ_PASSPORT) {
+      params.maxPromotionPrice = this.MAX_PROMOTION_PRICE;
+    }
 
     this.http.get(`/api/customerportal/greeting/${mobileNo}/profile`).toPromise()
       .then((greeting: any) => {
@@ -114,12 +120,12 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
           && billingInformation.billCyclesNetExtreme
           && billingInformation.billCyclesNetExtreme.length > 0 ? 'true' : 'false';
         return this.http.get('/api/customerportal/newRegister/queryMainPackage', {
-          params: {
-            orderType: 'Change Charge Type',
+          params: Object.assign({
             registerDate: regisDate,
             isNetExtreme: isNetExtreme
-          }
+          }, params)
         }).toPromise()
+
           .then((resp: any) => {
             const data = resp.data.packageList || [];
 

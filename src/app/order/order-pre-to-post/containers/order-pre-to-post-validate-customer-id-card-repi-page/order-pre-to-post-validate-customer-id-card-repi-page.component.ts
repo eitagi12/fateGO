@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { HomeService, ReadCardProfile, PageLoadingService, AlertService, TokenService, ChannelType, Utils, ValidateCustomerIdCardComponent, KioskControls } from 'mychannel-shared-libs';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
-import { ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_REPI_PAGE, ROUTE_ORDER_PRE_TO_POST_CUSTOMER_INFO_PAGE, ROUTE_ORDER_PRE_TO_POST_CUSTOMER_PROFILE_PAGE, ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE } from 'src/app/order/order-pre-to-post/constants/route-path.constant';
+import { ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_REPI_PAGE, ROUTE_ORDER_PRE_TO_POST_CUSTOMER_INFO_PAGE, ROUTE_ORDER_PRE_TO_POST_CUSTOMER_PROFILE_PAGE, ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE, ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_REPI_PAGE } from 'src/app/order/order-pre-to-post/constants/route-path.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 
@@ -44,7 +44,7 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
 
   onError(valid: boolean) {
     this.readCardValid = valid;
-    if(!this.profile){
+    if (!this.profile) {
       this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
       this.validateCustomerIdcard.koiskApiFn.removedState().subscribe((removed: boolean) => {
         if (removed) {
@@ -63,7 +63,7 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
   }
 
   onBack() {
-    this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE]);
+    this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_REPI_PAGE]);
   }
 
   onNext() {
@@ -160,11 +160,15 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
     const idCardType = this.transaction.data.customer.idCardType;
 
     if (this.utils.isLowerAge17Year(birthdate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
+      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี').then(() => {
+        this.onBack();
+      });
       return false;
     }
     if (this.utils.isIdCardExpiredDate(expireDate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ');
+      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ').then(() => {
+        this.onBack();
+      });
       return false;
     }
     return true;

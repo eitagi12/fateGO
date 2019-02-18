@@ -21,3 +21,9 @@ export const ROUTE_ORDER_PRE_TO_POST_OTP_PAGE = '/order/pre-to-post/otp';
 export const ROUTE_ORDER_PRE_TO_POST_ID_CARD_CAPTURE_REPI_PAGE = '/order/pre-to-post/id-card-capture-repi';
 export const ROUTE_ORDER_PRE_TO_POST_EBILLING_PAGE = '/order/pre-to-post/ebilling';
 export const ROUTE_ORDER_PRE_TO_POST_EAPPLICATION_PAGE = '/order/pre-to-post/eapplication';
+export const ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_PAGE = '/order/pre-to-post/passoprt-info';
+export const ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_REPI_PAGE = '/order/pre-to-post/passoprt-info-repi';
+export const ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_REPI_PAGE = '/order/pre-to-post/verify-document-repi';
+
+
+
