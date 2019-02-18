@@ -6,7 +6,7 @@ import { WIZARD_ORDER_MNP } from 'src/app/order/constants/wizard.constant';
 import { HomeService, PageLoadingService, ChargeType } from 'mychannel-shared-libs';
 import {
   ROUTE_ORDER_MNP_NETWORK_TYPE_PAGE,
-  ROUTE_ORDER_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE
+  ROUTE_ORDER_MNP_VERIFY_DOCUMENT_PAGE
 } from 'src/app/order/order-mnp/constants/route-path.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
@@ -58,7 +58,7 @@ export class OrderMnpSelectReasonPageComponent implements OnInit, OnDestroy {
       mobileNo: this.transaction.data.simCard.mobileNo,
       chargeType : ChargeType.POST_PAID
     };
-    this.router.navigate([ROUTE_ORDER_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
+    this.router.navigate([ROUTE_ORDER_MNP_VERIFY_DOCUMENT_PAGE]);
   }
 
   onHome() {

@@ -22,6 +22,8 @@ import { OrderMnpOnTopPageComponent } from './containers/order-mnp-on-top-page/o
 import { OrderMnpOneLovePageComponent } from './containers/order-mnp-one-love-page/order-mnp-one-love-page.component';
 import { OrderMnpEbillingPageComponent } from './containers/order-mnp-ebilling-page/order-mnp-ebilling-page.component';
 import { OrderMnpEapplicationPageComponent } from './containers/order-mnp-eapplication-page/order-mnp-eapplication-page.component';
+import { OrderMnpVerifyDocumentPageComponent } from './containers/order-mnp-verify-document-page/order-mnp-verify-document-page.component';
+import { OrderMnpPassportInfoPageComponent } from './containers/order-mnp-passport-info-page/order-mnp-passport-info-page.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -49,7 +51,9 @@ import { OrderMnpEapplicationPageComponent } from './containers/order-mnp-eappli
     OrderMnpOnTopPageComponent,
     OrderMnpOneLovePageComponent,
     OrderMnpEbillingPageComponent,
-    OrderMnpEapplicationPageComponent
+    OrderMnpEapplicationPageComponent,
+    OrderMnpVerifyDocumentPageComponent,
+    OrderMnpPassportInfoPageComponent
   ]
 })
 export class OrderMnpModule { }
