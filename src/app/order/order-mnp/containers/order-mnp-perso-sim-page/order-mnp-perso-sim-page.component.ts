@@ -186,6 +186,8 @@ export class OrderMnpPersoSimPageComponent implements OnInit, OnDestroy {
       key_sim: false
     };
     this.transaction = this.transactionService.load();
+    // this.transaction.data.simCard.simSerial = '1821501000414';
+    // this.onNext();
     if (this.transaction.data.simCard.mobileNo) {
       console.log('mobileNo', this.transaction.data.simCard.mobileNo);
       this.startPersoSim(this.transaction);
