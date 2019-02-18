@@ -8,6 +8,7 @@
     </div>
   </mc-header>
   <div class="mc-flex-wrap">
+      <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
     <div class="mb-3 mt-3">
       <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
 
@@ -18,4 +19,4 @@
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
     <button class="btn btn-success" (click)="onNext()">NEXT</button>
   </mc-footer>
-</div>
+</div> 

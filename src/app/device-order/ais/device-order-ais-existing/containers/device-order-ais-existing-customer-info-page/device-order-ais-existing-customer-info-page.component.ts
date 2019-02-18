@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
-import { CustomerInfo, HomeService } from 'mychannel-shared-libs';
+import { CustomerInfo, HomeService, ShoppingCart } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import {
@@ -20,11 +20,12 @@ export class DeviceOrderAisExistingCustomerInfoPageComponent implements OnInit {
 
   transaction: Transaction;
   customerInfo: CustomerInfo;
+  shoppingCart: ShoppingCart;
 
   constructor(
     private router: Router,
     private homeService: HomeService,
-    private transactionService: TransactionService,
+    private transactionService: TransactionService
   ) {
     this.transaction = this.transactionService.load();
   }
