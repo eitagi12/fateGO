@@ -10,7 +10,8 @@ import {
   ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE,
   ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_REPI_PAGE,
   ROUTE_ORDER_PRE_TO_POST_ID_CARD_CAPTURE_REPI_PAGE,
-  ROUTE_ORDER_PRE_TO_POST_SELECT_PACKAGE_PAGE
+  ROUTE_ORDER_PRE_TO_POST_SELECT_PACKAGE_PAGE,
+  ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_REPI_PAGE
 } from 'src/app/order/order-pre-to-post/constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
 
@@ -50,6 +51,8 @@ export class OrderPreToPostCustomerInfoPageComponent implements OnInit, OnDestro
     const action = this.transaction.data.action;
     if (action === TransactionAction.READ_CARD_REPI) {
       this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE]);
+    } else if (action === TransactionAction.READ_PASSPORT_REPI) {
+      this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_REPI_PAGE]);
     } else if (action === TransactionAction.KEY_IN_REPI) {
       this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_REPI_PAGE]);
     } else {
@@ -64,7 +67,10 @@ export class OrderPreToPostCustomerInfoPageComponent implements OnInit, OnDestro
       this.router.navigate([ROUTE_ORDER_PRE_TO_POST_ID_CARD_CAPTURE_PAGE]);
     } else if (action === TransactionAction.KEY_IN_REPI) {
       this.router.navigate([ROUTE_ORDER_PRE_TO_POST_ID_CARD_CAPTURE_REPI_PAGE]);
-    } else if (action === TransactionAction.READ_CARD || action === TransactionAction.READ_CARD_REPI) {
+    } else if (action === TransactionAction.READ_CARD
+      || action === TransactionAction.READ_CARD_REPI
+      || action === TransactionAction.READ_PASSPORT
+      || action === TransactionAction.READ_PASSPORT_REPI) {
       this.router.navigate([ROUTE_ORDER_PRE_TO_POST_SELECT_PACKAGE_PAGE]);
     }
   }

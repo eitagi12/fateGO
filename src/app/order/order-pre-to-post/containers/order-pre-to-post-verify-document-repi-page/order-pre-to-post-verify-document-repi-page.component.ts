@@ -69,6 +69,7 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
     this.homeService.goToHome();
   }
   onReadPassport() {
+    const mobileNo = this.transaction.data.simCard.mobileNo;
     this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
       console.log('readpassport', readPassport);
       this.pageLoadingService.openLoading();
@@ -116,14 +117,23 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
             });
         }).then((billingInformation: any) => {
           this.transaction.data.billingInformation = billingInformation;
-          this.pageLoadingService.closeLoading();
-          this.transaction.data.action = TransactionAction.READ_PASSPORT;
-          this.transactionService.update(this.transaction);
-          this.router.navigate([ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_REPI_PAGE]);
-          // if (this.checkBusinessLogic()) {
-          //   this.router.navigate([ROUTE_ORDER_NEW_REGISTER_PASSPOPRT_INFO_PAGE]);
-
-          // }
+        })
+        .then(() => {// verify Prepaid Ident
+          return this.http.get(`/api/customerportal/newRegister/verifyPrepaidIdent?idCard=${this.profile.idCardNo}&mobileNo=${mobileNo}`)
+            .toPromise()
+            .then((respPrepaidIdent: any) => {
+              if (respPrepaidIdent.data && respPrepaidIdent.data.success) {
+                if (this.checkBusinessLogic()) {
+                  this.transaction.data.action = TransactionAction.READ_CARD;
+                }
+              } else {
+                if (this.checkBusinessLogic()) {
+                  this.transaction.data.action = TransactionAction.READ_CARD_REPI;
+                }
+              }
+              this.router.navigate([ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_REPI_PAGE]);
+              this.pageLoadingService.closeLoading();
+            });
         }).catch((resp: any) => {
           this.pageLoadingService.closeLoading();
           const error = resp.error || [];

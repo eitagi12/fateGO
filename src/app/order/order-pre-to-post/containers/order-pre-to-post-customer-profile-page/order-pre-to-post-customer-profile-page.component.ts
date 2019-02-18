@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { HomeService, PageLoadingService, ApiRequestService } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { Transaction } from 'src/app/shared/models/transaction.model';
-import { ROUTE_ORDER_PRE_TO_POST_OTP_PAGE, ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_REPI_PAGE, ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE } from 'src/app/order/order-pre-to-post/constants/route-path.constant';
+import { ROUTE_ORDER_PRE_TO_POST_OTP_PAGE, ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_REPI_PAGE, ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE, ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_REPI_PAGE } from 'src/app/order/order-pre-to-post/constants/route-path.constant';
 
 @Component({
   selector: 'app-order-pre-to-post-customer-profile-page',
@@ -40,7 +40,7 @@ export class OrderPreToPostCustomerProfilePageComponent implements OnInit, OnDes
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_OTP_PAGE]);
   }
   onBack() {
-    this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE]);
+    this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_REPI_PAGE]);
   }
 
   onHome() {

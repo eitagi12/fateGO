@@ -82,7 +82,7 @@ export class OrderPreToPostCurrentInfoPageComponent implements OnInit, OnDestroy
 
   onBack() {
     const action = this.transaction.data.action;
-    if (action === TransactionAction.KEY_IN || action === TransactionAction.READ_CARD) {
+    if (action === TransactionAction.KEY_IN || action === TransactionAction.READ_CARD || action === TransactionAction.READ_PASSPORT) {
       this.router.navigate([ROUTE_ORDER_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE]);
     } else {
       this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE]);
