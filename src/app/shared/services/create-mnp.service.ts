@@ -38,6 +38,7 @@ export class CreateMnpService {
     const mainPackageOneLove = transaction.data.mainPackageOneLove;
     const onTopPackage = transaction.data.onTopPackage;
     const customerDeliveryAddress = transaction.data.billingInformation.billDeliveryAddress;
+    const billDeliveryAddress = transaction.data.billingInformation.billDeliveryAddress;
 
     const billCycleData = billingInformation.billCycleData;
 
@@ -70,18 +71,21 @@ export class CreateMnpService {
       billName: billingInformation.mergeBilling ? billingInformation.mergeBilling.billingName : '',
       billCycle: billingInformation.mergeBilling ? billingInformation.mergeBilling.bill : customer.billCycle,
       billDeliveryAddress: billingInformation.mergeBilling ? billingInformation.mergeBilling.billingAddr : '',
-      billHomeNo: billingInformation.mergeBilling ? '' : customerDeliveryAddress.homeNo || customer.homeNo,
-      billBuildingName: billingInformation.mergeBilling ? '' : customerDeliveryAddress.buildingName || customer.buildingName,
-      billFloor: billingInformation.mergeBilling ? '' : customerDeliveryAddress.floor || customer.floor,
-      billRoom: billingInformation.mergeBilling ? '' : customerDeliveryAddress.room || customer.room,
-      billMoo: billingInformation.mergeBilling ? '' : customerDeliveryAddress.moo || customer.moo,
-      billMooBan: billingInformation.mergeBilling ? '' : customerDeliveryAddress.mooBan || customer.mooBan,
-      billSoi: billingInformation.mergeBilling ? '' : customerDeliveryAddress.soi || customer.soi,
-      billStreet: billingInformation.mergeBilling ? '' : customerDeliveryAddress.street || customer.street,
-      billTumbol: billingInformation.mergeBilling ? '' : customerDeliveryAddress.tumbol || customer.tumbol,
-      billAmphur: billingInformation.mergeBilling ? '' : customerDeliveryAddress.amphur || customer.amphur,
-      billProvince: billingInformation.mergeBilling ? '' : customerDeliveryAddress.province || customer.province,
-      billZipCode: billingInformation.mergeBilling ? '' : customerDeliveryAddress.zipCode || customer.zipCode,
+      billHomeNo: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.homeNo : customer.homeNo || '',
+      // tslint:disable-next-line:max-line-length
+      billBuildingName: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.buildingName : customer.buildingName || '',
+      billFloor: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.floor : customer.floor || '',
+      billRoom: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.room : customer.room || '',
+      billMoo: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.moo : customer.moo || '',
+      billMooBan: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.mooBan : customer.mooBan || '',
+      billSoi: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.soi : customer.soi || '',
+      billStreet: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.street : customer.street || '',
+      billTumbol: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.tumbol : customer.tumbol || '',
+      billAmphur: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.amphur : customer.amphur || '',
+      // tslint:disable-next-line:max-line-length
+      billProvince: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.province : customer.province || '',
+      // tslint:disable-next-line:max-line-length
+      billZipCode: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.zipCode : customer.zipCode || '',
       orderVerify: '',
       /* eApplication Parameters */
       homeNo: customer.homeNo || '',
@@ -112,6 +116,16 @@ export class CreateMnpService {
       onTopPackages: [],
       promotionActionStatus1: 'Add', /*When SelectedPackages*/
     };
+
+    if (action === TransactionAction.READ_PASSPORT) {
+      data.accountSubCat = 'FOR',
+        data.titleName = customer.titleName,
+        data.engFlag = 'Y',
+        data.citizenship = customer.nationality;
+    } else {
+        data.accountSubCat = 'THA',
+        data.titleName = this.utils.getPrefixName(customer.titleName); /*required*/
+    }
 
     // orderVerify
     if (this.isReadCard(action)) {
@@ -146,23 +160,57 @@ export class CreateMnpService {
       data.mobileNoRef = billingInformation.mergeBilling.mobileNo[0];
     }
 
-    if (this.isReadCard(action)) {
+    if (action === TransactionAction.READ_CARD) {
       data.imageReadSmartCard = customer.imageReadSmartCard;
       data.firstNameEn = customer.firstNameEn;
       data.lastNameEn = customer.lastNameEn;
       data.issueDate = customer.issueDate;
       data.expireDate = customer.expireDate;
       return Promise.resolve(data);
-    } else {
+    }
+    if (action === TransactionAction.READ_PASSPORT) {
       return new ImageUtils().combine([
-        customer.imageSmartCard,
+        customer.imageReadPassport,
         customer.imageSignatureSmartCard,
         AWS_WATERMARK
       ]).then((imageSmatCard) => {
         data.imageTakePhoto = imageSmatCard;
         return Promise.resolve(data);
+      }).catch((error) => {
+        throw new Error(error);
       });
     }
+
+    if (action === TransactionAction.KEY_IN) {
+      return new ImageUtils().combine([
+        customer.imageReadPassport,
+        customer.imageSignatureSmartCard,
+        AWS_WATERMARK
+      ]).then((imageSmatCard) => {
+        data.imageTakePhoto = imageSmatCard;
+        return Promise.resolve(data);
+      }).catch((error) => {
+        throw new Error(error);
+      });
+    }
+
+    // if (this.isReadCard(action)) {
+    //   data.imageReadSmartCard = customer.imageReadSmartCard;
+    //   data.firstNameEn = customer.firstNameEn;
+    //   data.lastNameEn = customer.lastNameEn;
+    //   data.issueDate = customer.issueDate;
+    //   data.expireDate = customer.expireDate;
+    //   return Promise.resolve(data);
+    // } else {
+    //   return new ImageUtils().combine([
+    //     customer.imageSmartCard,
+    //     customer.imageSignatureSmartCard,
+    //     AWS_WATERMARK
+    //   ]).then((imageSmatCard) => {
+    //     data.imageTakePhoto = imageSmatCard;
+    //     return Promise.resolve(data);
+    //   });
+    // }
   }
 
   isReadCard(action: TransactionAction): boolean {

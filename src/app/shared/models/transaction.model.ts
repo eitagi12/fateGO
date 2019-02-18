@@ -94,6 +94,9 @@ export interface Customer {
   imageSmartCard?: string;
   imageReadSmartCard?: string;
   customerPinCode?: string;
+  // passport
+  issuingCountry?: string;
+  nationality?: string;
   imageReadPassport?: string;
 }
 
