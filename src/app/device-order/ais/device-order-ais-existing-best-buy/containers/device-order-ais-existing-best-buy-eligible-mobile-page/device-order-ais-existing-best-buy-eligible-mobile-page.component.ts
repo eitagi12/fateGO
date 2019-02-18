@@ -14,7 +14,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 })
 export class DeviceOrderAisExistingBestBuyEligibleMobilePageComponent implements OnInit, OnDestroy {
 
-  identityValid = true;
+  identityValid = false;
   transaction: Transaction;
   eligiblePrepaid: EligibleMobile[];
   eligiblePostpaid: EligibleMobile[];
@@ -60,23 +60,18 @@ export class DeviceOrderAisExistingBestBuyEligibleMobilePageComponent implements
     }).toPromise()
     .then((response: any) => {
       const eMobileResponse = response.data;
-      if (eMobileResponse.postpaid.length > 0) {
-        this.eligiblePostpaid = eMobileResponse.postpaid.map((eligibleMobile) => {
-          return {
-            mobileNo : eligibleMobile.mobileNo,
-            mobileStatus : eligibleMobile.mobileStatus,
-          };
-        });
-      }
-      if (eMobileResponse.prepaid.length > 0) {
-        this.eligiblePrepaid = eMobileResponse.prepaid.map((eligibleMobile) => {
-          return {
-            mobileNo : eligibleMobile.mobileNo,
-            mobileStatus : eligibleMobile.mobileStatus,
-          };
-        });
-      }
+      this.eligiblePostpaid = eMobileResponse.postpaid;
+      this.eligiblePrepaid = eMobileResponse.prepaid;
     });
+
+  }
+
+  onCompleted(mobileNo: string) {
+    this.transaction.data.simCard.mobileNo = mobileNo;
+    this.identityValid = true;
+  }
+
+  findPrivilegeCode() {
 
   }
 

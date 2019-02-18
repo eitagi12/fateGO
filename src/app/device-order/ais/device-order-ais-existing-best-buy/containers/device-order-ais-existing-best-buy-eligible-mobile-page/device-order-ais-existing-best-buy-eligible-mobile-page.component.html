@@ -11,8 +11,13 @@
     <div class="mb-3 mt-3">
       <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
 
-      <mc-eligible-mobile *ngIf="eligiblePostpaid && eligiblePostpaid.length > 0" title="Post Paid" [eligibleMobiles]="eligiblePostpaid"></mc-eligible-mobile>
-      <mc-eligible-mobile *ngIf="eligiblePrepaid && eligiblePrepaid.length > 0" title="Pre Paid" [eligibleMobiles]="eligiblePostpaid"></mc-eligible-mobile>
+      <mc-eligible-mobile *ngIf="eligiblePostpaid && eligiblePostpaid.length > 0" 
+        title="Post Paid"
+        [eligibleMobiles]="eligiblePostpaid" 
+        (completed)="onCompleted($event)">
+      </mc-eligible-mobile>
+      <mc-eligible-mobile *ngIf="eligiblePrepaid && eligiblePrepaid.length > 0" 
+        title="Pre Paid" [eligibleMobiles]="eligiblePostpaid"></mc-eligible-mobile>
     </div>
   </div>
   <mc-footer>
