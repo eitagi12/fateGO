@@ -49,7 +49,7 @@ export class OrderPreToPostOtpPageComponent implements OnInit {
   sendOTP() {
     this.pageLoadingService.openLoading();
     let mobile = this.registrationData.simCard.mobileNo;
-   
+
     if (environment.name !== 'PROD') {
       mobile = environment.TEST_OTP_MOBILE;
     }
@@ -68,7 +68,7 @@ export class OrderPreToPostOtpPageComponent implements OnInit {
   verifyOTP() {
     this.pageLoadingService.openLoading();
     let mobile = this.registrationData.simCard.mobileNo;
-        
+
     const otp = this.otpForm.value.otp;
     if (environment.name !== 'PROD') {
       mobile = environment.TEST_OTP_MOBILE;
@@ -83,7 +83,8 @@ export class OrderPreToPostOtpPageComponent implements OnInit {
   }
 
   navigateNext(): void {
-    if (this.transaction.data.action === TransactionAction.READ_CARD_REPI) {
+    if (this.transaction.data.action === TransactionAction.READ_CARD_REPI
+      || this.transaction.data.action === TransactionAction.READ_PASSPORT_REPI) {
       this.autoPI();
     } else {
       this.pageLoadingService.closeLoading();

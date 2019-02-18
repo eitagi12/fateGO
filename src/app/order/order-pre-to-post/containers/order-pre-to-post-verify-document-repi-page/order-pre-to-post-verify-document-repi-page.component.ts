@@ -40,10 +40,10 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
     private vendingApiService: VendingApiService,
     private readCardService: ReadCardService
   ) {
+    this.transaction = this.transactionService.load();
   }
 
   ngOnInit() {
-    this.createTransaction();
     this.onReadCard();
     this.onReadPassport();
     this.koiskApiFn = this.readCardService.kioskApi();
@@ -61,7 +61,7 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
     this.onReadPassport();
   }
   onBack() {
-    this.homeService.goToHome();
+    this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE]);
     // this.router.navigate([ROUTE_ORDER_NEW_REGISTER_VERIFY_DOCUMENT_PAGE]);
   }
 
@@ -119,22 +119,27 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
           this.transaction.data.billingInformation = billingInformation;
         })
         .then(() => {// verify Prepaid Ident
-          return this.http.get(`/api/customerportal/newRegister/verifyPrepaidIdent?idCard=${this.profile.idCardNo}&mobileNo=${mobileNo}`)
-            .toPromise()
-            .then((respPrepaidIdent: any) => {
-              if (respPrepaidIdent.data && respPrepaidIdent.data.success) {
-                if (this.checkBusinessLogic()) {
-                  this.transaction.data.action = TransactionAction.READ_CARD;
+          const idCardNo = this.transaction.data.customer.idCardNo;
+            console.log('idCardNo', idCardNo);
+            return this.http.get(`/api/customerportal/newRegister/verifyPrepaidIdent?idCard=${idCardNo}&mobileNo=${mobileNo}`)
+              .toPromise()
+              .then((respPrepaidIdent: any) => {
+                console.log('respPrepaidIdent', respPrepaidIdent);
+                if (respPrepaidIdent.data && respPrepaidIdent.data.success) {
+                  if (this.checkBusinessLogic()) {
+                    this.transaction.data.action = TransactionAction.READ_PASSPORT;
+                  }
+                } else {
+                  if (this.checkBusinessLogic()) {
+                    this.transaction.data.action = TransactionAction.READ_PASSPORT_REPI;
+                  }
                 }
-              } else {
-                if (this.checkBusinessLogic()) {
-                  this.transaction.data.action = TransactionAction.READ_CARD_REPI;
-                }
-              }
-              this.router.navigate([ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_REPI_PAGE]);
-              this.pageLoadingService.closeLoading();
-            });
+                this.transactionService.update(this.transaction);
+                this.router.navigate([ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_REPI_PAGE]);
+                this.pageLoadingService.closeLoading();
+              });
         }).catch((resp: any) => {
+          console.log('resp', resp);
           this.pageLoadingService.closeLoading();
           const error = resp.error || [];
           if (error && error.errors && error.errors.length > 0) {
@@ -202,23 +207,25 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
       this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ').then(() => {
         this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE]);
       });
-      return false;
+      // return false;
+      return true;
     }
     return true;
   }
-  private createTransaction() {
-    // New x-api-request-id
-    this.apiRequestService.createRequestId();
+  // private createTransaction() {
+  //   // New x-api-request-id
+  //   this.apiRequestService.createRequestId();
 
-    this.transaction = {
-      data: {
-        transactionType: TransactionType.ORDER_NEW_REGISTER,
-        action: null,
-      }
-    };
-  }
+  //   this.transaction = {
+  //     data: {
+  //       transactionType: TransactionType.ORDER_NEW_REGISTER,
+  //       action: null,
+  //     }
+  //   };
+  // }
 
   ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
     if (this.transaction.data.action === TransactionAction.READ_PASSPORT) {
       this.closeVendingApi.ws.send(KioskControls.LED_OFF);
     }
