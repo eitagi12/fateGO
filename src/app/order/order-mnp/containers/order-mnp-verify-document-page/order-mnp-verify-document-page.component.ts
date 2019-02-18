@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
-import { ReadPassport, ReadCard, ReadCardProfile, ValidateCustomerIdCardComponent, HomeService, Utils, ReadPassportService, ApiRequestService, PageLoadingService, AlertService, ReadCardService, ReadCardEvent } from 'mychannel-shared-libs';
+import { ReadPassport, ReadCard, ReadCardProfile, ValidateCustomerIdCardComponent, HomeService, Utils, ReadPassportService, ApiRequestService, PageLoadingService, AlertService, ReadCardService, ReadCardEvent, VendingApiService, KioskControls } from 'mychannel-shared-libs';
 import { Transaction, BillDeliveryAddress, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -15,15 +15,14 @@ import { ROUTE_ORDER_MNP_VERIFY_DOCUMENT_PAGE, ROUTE_ORDER_MNP_PASSPOPRT_INFO_PA
 export class OrderMnpVerifyDocumentPageComponent implements OnInit {
 
   readPassportSubscription: Subscription;
-  readCardSubscription: Subscription;
+  vendingApiSubscription: Subscription;
   readPassprot: ReadPassport;
-  readCard: ReadCard;
   profile: ReadCardProfile;
   transaction: Transaction;
-  billDeliveryAddress: BillDeliveryAddress;
   kioskApi = true;
   koiskApiFn: any;
-
+  cardStateInterval: any;
+  closeVendingApi: any;
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
 
@@ -38,14 +37,17 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
     private pageLoadingService: PageLoadingService,
     private apiRequestService: ApiRequestService,
     private alertService: AlertService,
-    private readCardService: ReadCardService,
+    private vendingApiService: VendingApiService,
+    private readCardService: ReadCardService
   ) {
   }
 
   ngOnInit() {
-    this.createTransaction();
+    this.transaction = this.transactionService.load();
     this.onReadCard();
     this.onReadPassport();
+    this.koiskApiFn = this.readCardService.kioskApi();
+
   }
   onCompleted(profile: ReadCardProfile) {
     this.profile = profile;
@@ -53,34 +55,30 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
     this.onReadPassport();
   }
   onBack() {
-    // this.homeService.goToHome();
-    this.router.navigate([ROUTE_ORDER_MNP_VERIFY_DOCUMENT_PAGE]);
+    this.homeService.goToHome();
+  }
+
+  onHome() {
+    this.homeService.goToHome();
   }
   onReadPassport() {
-    const customer = this.transaction.data.customer;
-    this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
-      console.log('readPassport', readPassport);
+    this.readPassportSubscription = this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
+      console.log('readpassport', readPassport);
+      this.pageLoadingService.openLoading();
+      if (readPassport.error) {
+        this.alertService.error('ไม่สามารถอ่านบัตรได้ กรุณาติดต่อพนักงาน');
+        return;
+      }
       return this.http.get('/api/customerportal/validate-customer-new-register', {
         params: {
           identity: readPassport.profile.idCardNo
         }
-      }).toPromise()
+        // catch ไว้ก่อน เดี๋ยวมาทำต่อ
+      }).toPromise().catch(() => {
+        return {};
+      })
         .then((resp: any) => {
           const data = resp.data || {};
-          this.billDeliveryAddress = {
-            homeNo: data.homeNo || '',
-            moo: data.moo || '',
-            mooBan: data.mooBan || '',
-            room: data.room || '',
-            floor: data.floor || '',
-            buildingName: data.buildingName || '',
-            soi: data.soi || '',
-            street: data.street || '',
-            province: data.province || '',
-            amphur: data.amphur || '',
-            tumbol: data.tumbol || '',
-            zipCode: data.zipCode || '',
-          };
           return {
             caNumber: data.caNumber,
             mainMobile: data.mainMobile,
@@ -88,7 +86,8 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
             // zipCode: zipCode
           };
         }).then((resp) => {
-          this.transaction.data.customer = Object.assign(readPassport.profile, customer);
+          this.transaction.data.customer = Object.assign(
+            Object.assign({}, this.transaction.data.customer), readPassport.profile);
           return this.http.get(`/api/customerportal/newRegister/${readPassport.profile.idCardNo}/queryBillingAccount`).toPromise()
             .then((respQueryBilling: any) => {
               const data = respQueryBilling.data || {};
@@ -110,14 +109,14 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
             });
         }).then((billingInformation: any) => {
           this.transaction.data.billingInformation = billingInformation;
-          this.transaction.data.billingInformation.billDeliveryAddress = this.billDeliveryAddress;
-          if (this.checkBusinessLogic()) {
-            this.router.navigate([ROUTE_ORDER_MNP_PASSPOPRT_INFO_PAGE]);
-          }
+          this.pageLoadingService.closeLoading();
+          this.transaction.data.action = TransactionAction.READ_PASSPORT;
+          this.transactionService.update(this.transaction);
+          this.router.navigate([ROUTE_ORDER_MNP_PASSPOPRT_INFO_PAGE]);
         }).catch((resp: any) => {
+          this.pageLoadingService.closeLoading();
           const error = resp.error || [];
-          console.log(resp);
-          if (error && error.errors.length > 0) {
+          if (error && error.errors && error.errors.length > 0) {
             this.alertService.notify({
               type: 'error',
               html: error.errors.map((err) => {
@@ -126,24 +125,45 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
             }).then(() => {
               this.onBack();
             });
-          } else {
+          } else if (error.resultDescription) {
             this.alertService.error(error.resultDescription);
+          } else {
+            this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+
           }
         });
     });
   }
 
   onReadCard() {
-    console.log('บัตรประชาชน');
-    // if (this.kioskApi) {
-    //   this.koiskApiFn = this.readCardService.kioskApi();
-    // }
-    this.readCardSubscription = this.readCardService.onReadCard().subscribe((readCard: ReadCard) => {
-      console.log('readCard', readCard);
-      this.readCard = readCard;
-      if (readCard.eventName === ReadCardEvent.EVENT_CARD_LOAD_COMPLETED) {
-        this.router.navigate([ROUTE_ORDER_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
+    this.vendingApiSubscription = this.vendingApiService.excuteCommand().subscribe((command: any) => {
+      this.closeVendingApi = command;
+      if (command.error) {
+        return;
       }
+      command.ws.send(KioskControls.LED_BLINK);
+      if (command.error) {
+        return;
+
+      }
+      command.ws.onmessage = (event) => {
+        const message = JSON.parse(event.data);
+        const isCardInside = message && (message.Result === 'Card in IC position' || message.Result === 'Card in RF position');
+
+        if (isCardInside) {
+          this.router.navigate([ROUTE_ORDER_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
+        }
+
+        if (message.Command === KioskControls.LOAD_CARD) {
+          this.cardStateInterval = setInterval(function () {
+            command.ws.send(KioskControls.GET_CARD_STATE);
+          }, 1000);
+        }
+
+
+      };
+      command.ws.send(KioskControls.LOAD_CARD);
+
     });
   }
   checkBusinessLogic(): boolean {
@@ -165,22 +185,15 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
     }
     return true;
   }
-  private createTransaction() {
-    // New x-api-request-id
-    this.apiRequestService.createRequestId();
-
-    this.transaction = {
-      data: {
-        transactionType: TransactionType.ORDER_MNP,
-        action: TransactionAction.READ_PASSPORT,
-      }
-    };
-  }
 
   // tslint:disable-next-line:use-life-cycle-interface
   ngOnDestroy(): void {
-    this.readCardSubscription.unsubscribe();
-    this.transactionService.save(this.transaction);
+    if (this.transaction.data.action === TransactionAction.READ_PASSPORT) {
+      this.closeVendingApi.ws.send(KioskControls.LED_OFF);
+    }
+    clearInterval(this.cardStateInterval);
+    this.vendingApiSubscription.unsubscribe();
+    this.readPassportSubscription.unsubscribe();
   }
 
 }

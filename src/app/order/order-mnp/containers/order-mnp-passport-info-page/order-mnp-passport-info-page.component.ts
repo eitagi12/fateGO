@@ -4,6 +4,7 @@ import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { CaptureAndSign, HomeService, TokenService, ChannelType } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { ROUTE_ORDER_MNP_VERIFY_DOCUMENT_PAGE, ROUTE_ORDER_MNP_CUSTOMER_INFO_PAGE } from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-order-mnp-passport-info-page',
@@ -52,6 +53,23 @@ export class OrderMnpPassportInfoPageComponent implements OnInit {
 
   onError(valid: boolean) {
     this.idCardValid = valid;
+  }
+
+  onBack() {
+    this.router.navigate([ROUTE_ORDER_MNP_VERIFY_DOCUMENT_PAGE]);
+  }
+
+  onNext() {
+    this.router.navigate([ROUTE_ORDER_MNP_CUSTOMER_INFO_PAGE]);
+  }
+
+  onHome() {
+    this.homeService.goToHome();
+  }
+
+  // tslint:disable-next-line:use-life-cycle-interface
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
   }
 
 }

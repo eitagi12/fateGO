@@ -23,6 +23,7 @@ export class OrderMnpSelectPackagePageComponent implements OnInit, OnDestroy {
   @ViewChild('conditionTemplate')
   conditionTemplate: any;
   wizards = WIZARD_ORDER_MNP;
+  readonly MAX_PROMOTION_PRICE = 500;
 
   promotionShelves: PromotionShelve[];
   transaction: Transaction;
@@ -82,16 +83,28 @@ export class OrderMnpSelectPackagePageComponent implements OnInit, OnDestroy {
     const billingInformation: any = this.transaction.data.billingInformation;
     const isNetExtreme = billingInformation &&
     billingInformation.billCyclesNetExtreme && billingInformation.billCyclesNetExtreme.length > 0 ? 'true' : 'false';
-    this.http.get('/api/customerportal/newRegister/queryMainPackage', {
-      params: {
-        orderType: 'Port – In',
-        isNetExtreme: isNetExtreme
-      }
+    const mobileNo = this.transaction.data.simCard.mobileNo;
+    const params: any = {
+      orderType: 'Port – In',
+      isNetExtreme: isNetExtreme,
+    };
+    if (this.transaction.data.action === TransactionAction.READ_PASSPORT) {
+      params.maxPromotionPrice = this.MAX_PROMOTION_PRICE;
+    }
+    this.http.get(`/api/customerportal/queryCheckMinimumPackage/${mobileNo}`, {
     }).toPromise()
       .then((resp: any) => {
-
+        const data = resp.data || {};
+        return data.MinimumPriceForPackage || 0;
+      }).then((minPromotionPrice: string) => {
+        return this.http.get('/api/customerportal/newRegister/queryMainPackage', {
+          params: Object.assign({
+            minPromotionPrice: minPromotionPrice
+          }, params)
+        }).toPromise();
+      })
+      .then((resp: any) => {
         const data = resp.data.packageList || [];
-
         const promotionShelves: PromotionShelve[] = data.map((promotionShelve: any) => {
           return {
             title: promotionShelve.title,
@@ -118,7 +131,6 @@ export class OrderMnpSelectPackagePageComponent implements OnInit, OnDestroy {
           };
         });
         return Promise.resolve(promotionShelves);
-
       })
       .then((promotionShelves: PromotionShelve[]) => {
         this.promotionShelves = this.buildPromotionShelveActive(promotionShelves);
@@ -126,7 +138,6 @@ export class OrderMnpSelectPackagePageComponent implements OnInit, OnDestroy {
       .then(() => {
         this.pageLoadingService.closeLoading();
       });
-
   }
 
 
