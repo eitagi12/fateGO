@@ -67,7 +67,7 @@ export interface Customer {
   firstName: string;
   lastName: string;
   birthdate: string;
-  gender: string;
+  gender?: string;
   homeNo?: string;
   moo?: string;
   mooBan?: string;
@@ -82,7 +82,7 @@ export interface Customer {
   firstNameEn?: string;
   lastNameEn?: string;
   issueDate?: string;
-  expireDate: string;
+  expireDate?: string;
   zipCode?: string;
   mainMobile?: string;
   mainPhone?: string;
