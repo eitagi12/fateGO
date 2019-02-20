@@ -8,7 +8,6 @@ import { PageLoadingService, AlertService } from 'mychannel-shared-libs';
 import {
   ROUTE_ORDER_PRE_TO_POST_CUSTOMER_INFO_PAGE,
   ROUTE_ORDER_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE,
-  ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE,
   ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_REPI_PAGE,
   ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_PAGE,
 } from '../../constants/route-path.constant';

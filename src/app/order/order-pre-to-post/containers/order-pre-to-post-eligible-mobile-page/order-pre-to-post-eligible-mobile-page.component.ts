@@ -4,7 +4,6 @@ import { Location } from '@angular/common';
 import { EligibleMobile, AlertService, HomeService } from 'mychannel-shared-libs';
 import {
   ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE,
-  ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE,
   ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_PAGE,
   ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_PAGE,
   ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_PAGE

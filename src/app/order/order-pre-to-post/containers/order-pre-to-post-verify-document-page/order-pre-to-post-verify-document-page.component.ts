@@ -264,13 +264,10 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
 
   ngOnDestroy(): void {
 
-    if (this.transaction.data.action === TransactionAction.READ_PASSPORT) {
-      console.log(this.closeVendingApi);
-      // this.closeVendingApi.ws.send(KioskControls.LED_OFF);
+    if (this.transaction.data.action === TransactionAction.READ_PASSPORT && this.closeVendingApi.ws) {
+      this.closeVendingApi.ws.send(KioskControls.LED_OFF);
     }
     clearInterval(this.cardStateInterval);
     this.vendingApiSubscription.unsubscribe();
   }
-
-
 }
