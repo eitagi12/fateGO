@@ -1,10 +1,10 @@
 <div class="mc-flex">
   <mc-header title="เครื่องพร้อมเปิดเบอร์ใหม่">
     <div class="header-icon-left">
-      <mc-header-icon src="/assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
     <div class="header-icon-right">
-      <mc-header-icon src="/assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
   <div class="mc-flex-wrap">
@@ -20,10 +20,10 @@
           <div class="card-body ">
             <div class="camera-width">
               <div *ngIf="!openCamera">
-                <img src="/assets/images/icon/icon_people.png" class="icon-people" />
+                <img src="assets/images/icon/icon_people.png" class="icon-people" />
               </div>
               <div [hidden]="!(openCamera && !transaction?.data?.faceRecognition?.imageFaceUser)" class="position-relative">
-                <img src="/assets/images/icon/icon_people_line.png" class="icon-people-wrap" />
+                <img src="assets/images/icon/icon_people_line.png" class="icon-people-wrap" />
                 <mc-camera [flip]="true" [countdown]="5" [onTakePhoto]="camera" (completed)="onCameraCompleted($event)" (error)="onCameraError($event)">
                 </mc-camera>
               </div>
@@ -42,7 +42,7 @@
                 <!-- WEB Step -->
                 <div *ngIf="!isAisNative()">
                   <a href="#" (click)="$event.preventDefault(); onOpenCamera(); camera.next();" class="text-pink" *ngIf="!transaction?.data?.faceRecognition?.imageFaceUser">
-                    <img src="/assets/images/icon/icon-camera.png" class="icon-camera">
+                    <img src="assets/images/icon/icon-camera.png" class="icon-camera">
                   </a>
                   <a href="#" (click)="$event.preventDefault(); onClearIdCardImage()" class="text-pink" *ngIf="transaction?.data?.faceRecognition?.imageFaceUser">
                     ถ่ายรูปใหม่

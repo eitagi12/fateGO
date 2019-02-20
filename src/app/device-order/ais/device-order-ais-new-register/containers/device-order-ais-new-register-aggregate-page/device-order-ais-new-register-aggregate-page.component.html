@@ -1,10 +1,10 @@
 <div class="mc-flex">
   <mc-header title="เครื่องพร้อมเปิดเบอร์ใหม่">
     <div class="header-icon-left">
-      <mc-header-icon src="/assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
     <div class="header-icon-right">
-      <mc-header-icon src="/assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
   <div class="mc-flex-wrap bg-white">
@@ -15,7 +15,7 @@
         <div class="row">
           <div class="col-6">
             <div class="ml-5">
-              <img src="/assets/images/icon/icon-person.png" class="icon-person" />
+              <img src="assets/images/icon/icon-person.png" class="icon-person" />
               {{ transaction?.data?.customer?.titleName }}
               {{ transaction?.data?.customer?.firstName }}
               {{ transaction?.data?.customer?.lastName }}
@@ -23,7 +23,7 @@
           </div>
           <div class="col-6 text-right">
             <div class="mr-5">
-              <img src="/assets/images/icon/sales_portal_green_phone.png" class="icon-mobile" />
+              <img src="assets/images/icon/sales_portal_green_phone.png" class="icon-mobile" />
               {{ transaction?.data?.simCard?.mobileNo | mobileNo }}
             </div>
           </div>
