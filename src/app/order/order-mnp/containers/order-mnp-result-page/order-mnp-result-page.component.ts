@@ -16,6 +16,7 @@ export class OrderMnpResultPageComponent implements OnInit {
   wizards = WIZARD_ORDER_MNP;
   transaction: Transaction;
   isSuccess: boolean;
+  checkOrderService: boolean;
 
   constructor(private router: Router,
     private homeService: HomeService,
@@ -29,6 +30,7 @@ export class OrderMnpResultPageComponent implements OnInit {
   ngOnInit() {
     this.pageLoadingService.openLoading();
     this.createMnpService.createMnp(this.transaction).then((resp: any) => {
+      this.checkOrderService = true;
       const data = resp.data || {};
       this.transaction.data.order = {
         orderNo: data.orderNo,
@@ -42,6 +44,7 @@ export class OrderMnpResultPageComponent implements OnInit {
       }
       this.pageLoadingService.closeLoading();
     }).catch(() => {
+      this.checkOrderService = true;
       this.isSuccess = false;
       this.pageLoadingService.closeLoading();
     });
