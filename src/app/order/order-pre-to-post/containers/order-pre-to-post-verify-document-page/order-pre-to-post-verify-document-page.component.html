@@ -36,7 +36,7 @@
         <label for="idcard" class="form-text text-muted">
           หมายเลขโทรศัพท์
         </label>
-        <input type="{{ inputType }}" class="form-control text-center" id="idcard" maxlength="10" placeholder="หมายเลขโทรศัพท์"
+        <input type="tel" class="form-control text-center" id="idcard" maxlength="10" placeholder="หมายเลขโทรศัพท์"
           autofocus autocomplete="off" formControlName="identity" [ngClass]="{ 'is-invalid' : validateCustomerForm.controls.identity.invalid && validateCustomerForm.controls.identity.touched}">
         <small class="invalid-feedback" *ngIf="validateCustomerForm.controls.identity.touched && validateCustomerForm.controls.identity.errors">
           * {{ validateCustomerForm.controls.identity.errors?.message || 'กรุณากรอกรูปแบบให้ถูกต้อง'}}
