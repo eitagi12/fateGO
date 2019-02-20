@@ -120,24 +120,24 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
         })
         .then(() => {// verify Prepaid Ident
           const idCardNo = this.transaction.data.customer.idCardNo;
-            console.log('idCardNo', idCardNo);
-            return this.http.get(`/api/customerportal/newRegister/verifyPrepaidIdent?idCard=${idCardNo}&mobileNo=${mobileNo}`)
-              .toPromise()
-              .then((respPrepaidIdent: any) => {
-                console.log('respPrepaidIdent', respPrepaidIdent);
-                if (respPrepaidIdent.data && respPrepaidIdent.data.success) {
-                  if (this.checkBusinessLogic()) {
-                    this.transaction.data.action = TransactionAction.READ_PASSPORT;
-                  }
-                } else {
-                  if (this.checkBusinessLogic()) {
-                    this.transaction.data.action = TransactionAction.READ_PASSPORT_REPI;
-                  }
+          console.log('idCardNo', idCardNo);
+          return this.http.get(`/api/customerportal/newRegister/verifyPrepaidIdent?idCard=${idCardNo}&mobileNo=${mobileNo}`)
+            .toPromise()
+            .then((respPrepaidIdent: any) => {
+              console.log('respPrepaidIdent', respPrepaidIdent);
+              if (respPrepaidIdent.data && respPrepaidIdent.data.success) {
+                if (this.checkBusinessLogic()) {
+                  this.transaction.data.action = TransactionAction.READ_PASSPORT;
                 }
-                this.transactionService.update(this.transaction);
-                this.router.navigate([ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_REPI_PAGE]);
-                this.pageLoadingService.closeLoading();
-              });
+              } else {
+                if (this.checkBusinessLogic()) {
+                  this.transaction.data.action = TransactionAction.READ_PASSPORT_REPI;
+                }
+              }
+              this.transactionService.update(this.transaction);
+              this.router.navigate([ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_REPI_PAGE]);
+              this.pageLoadingService.closeLoading();
+            });
         }).catch((resp: any) => {
           console.log('resp', resp);
           this.pageLoadingService.closeLoading();
@@ -226,7 +226,7 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
 
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
-    if (this.transaction.data.action === TransactionAction.READ_PASSPORT) {
+    if (this.transaction.data.action === TransactionAction.READ_PASSPORT && this.closeVendingApi.ws) {
       this.closeVendingApi.ws.send(KioskControls.LED_OFF);
     }
     clearInterval(this.cardStateInterval);
