@@ -1,0 +1,47 @@
+<div class="mc-flex">
+  <mc-header title="เปิดเบอร์ใหม่">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap bg-white text-center">
+    <div class="text-center mt-5">
+      <img src="assets/images/icon/passport-id-icon.png" class="icon-passport">
+    </div>
+    <div>
+      <div>Please open the passport page with</div>
+      <div> customer image and place it on the scan box.</div>
+      <div>กรุณาเปิดพาสปอร์ตหน้าที่มีรูปและวางที่ช่องแสกน</div>
+      <hr>
+      <div class="text-center">
+        Or
+      </div>
+      <hr>
+      <div class="text-center icon mt-5">
+        <img src="assets/images/icon/icon-ReadIDCard-04.png" class="icon">
+      </div>
+      <div> Insert the ID card in the card reader slot.</div>
+      <div>เสียบบัตรประชาชนที่ช่องอ่านบัตร</div>
+    </div>
+    <hr>
+    <div class="text-center">
+      Or
+    </div>
+    <hr>
+    <form [formGroup]="validateCustomerForm">
+      <div class="form-group">
+        <label for="idcard" class="form-text text-muted">
+          หมายเลขโทรศัพท์
+        </label>
+        <input type="{{ inputType }}" class="form-control text-center" id="idcard" maxlength="10" placeholder="หมายเลขโทรศัพท์"
+          autofocus autocomplete="off" formControlName="identity" [ngClass]="{ 'is-invalid' : validateCustomerForm.controls.identity.invalid && validateCustomerForm.controls.identity.touched}">
+        <small class="invalid-feedback" *ngIf="validateCustomerForm.controls.identity.touched && validateCustomerForm.controls.identity.errors">
+          * {{ validateCustomerForm.controls.identity.errors?.message || 'กรุณากรอกรูปแบบให้ถูกต้อง'}}
+        </small>
+      </div>
+    </form>
+  </div>
+</div>

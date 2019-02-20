@@ -2,10 +2,13 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_ORDER_PRE_TO_POST } from 'src/app/order/constants/wizard.constant';
 import { Router } from '@angular/router';
 import { HomeService, CaptureAndSign, TokenService, ChannelType } from 'mychannel-shared-libs';
-import { Transaction, Customer} from 'src/app/shared/models/transaction.model';
+import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
-import { ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE, ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE } from '../../constants/route-path.constant';
+import {
+  ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_PAGE,
+  ROUTE_ORDER_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE
+} from '../../constants/route-path.constant';
 
 
 @Component({
@@ -59,11 +62,11 @@ export class OrderPreToPostPassportInfoPageComponent implements OnInit, OnDestro
   }
 
   onBack() {
-    this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE]);
+    this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_PAGE]);
   }
 
   onNext() {
-    this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE]);
+    this.router.navigate([ROUTE_ORDER_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE]);
   }
 
   onHome() {

@@ -24,6 +24,7 @@ export const ROUTE_ORDER_PRE_TO_POST_EAPPLICATION_PAGE = '/order/pre-to-post/eap
 export const ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_PAGE = '/order/pre-to-post/passport-info';
 export const ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_REPI_PAGE = '/order/pre-to-post/passport-info-repi';
 export const ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_REPI_PAGE = '/order/pre-to-post/verify-document-repi';
+export const ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_PAGE = '/order/pre-to-post/verify-document';
 
 
 

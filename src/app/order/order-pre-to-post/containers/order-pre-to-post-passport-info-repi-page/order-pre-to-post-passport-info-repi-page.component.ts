@@ -5,7 +5,11 @@ import { HomeService, CaptureAndSign, TokenService, ChannelType } from 'mychanne
 import { Transaction, Customer, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
-import { ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE, ROUTE_ORDER_PRE_TO_POST_CUSTOMER_INFO_PAGE, ROUTE_ORDER_PRE_TO_POST_CUSTOMER_PROFILE_PAGE, ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_REPI_PAGE } from '../../constants/route-path.constant';
+import {
+  ROUTE_ORDER_PRE_TO_POST_CUSTOMER_INFO_PAGE,
+  ROUTE_ORDER_PRE_TO_POST_CUSTOMER_PROFILE_PAGE,
+  ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_REPI_PAGE
+} from '../../constants/route-path.constant';
 @Component({
   selector: 'app-order-pre-to-post-passport-info-repi-page',
   templateUrl: './order-pre-to-post-passport-info-repi-page.component.html',

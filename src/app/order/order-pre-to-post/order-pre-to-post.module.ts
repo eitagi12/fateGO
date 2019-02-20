@@ -31,6 +31,7 @@ import { OrderPreToPostOneLoveComponent } from './containers/order-pre-to-post-o
 import { OrderPreToPostPassportInfoPageComponent } from './containers/order-pre-to-post-passport-info-page/order-pre-to-post-passport-info-page.component';
 import { OrderPreToPostPassportInfoRepiPageComponent } from './containers/order-pre-to-post-passport-info-repi-page/order-pre-to-post-passport-info-repi-page.component';
 import { OrderPreToPostVerifyDocumentRepiPageComponent } from './containers/order-pre-to-post-verify-document-repi-page/order-pre-to-post-verify-document-repi-page.component';
+import { OrderPreToPostVerifyDocumentPageComponent } from './containers/order-pre-to-post-verify-document-page/order-pre-to-post-verify-document-page.component';
 
 @NgModule({
   imports: [
@@ -67,6 +68,7 @@ import { OrderPreToPostVerifyDocumentRepiPageComponent } from './containers/orde
     OrderPreToPostPassportInfoPageComponent,
     OrderPreToPostPassportInfoRepiPageComponent,
     OrderPreToPostVerifyDocumentRepiPageComponent,
+    OrderPreToPostVerifyDocumentPageComponent,
   ]
 })
 export class OrderPreToPostModule { }
