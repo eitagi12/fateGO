@@ -50,6 +50,8 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit 
     this.callService();
   }
 
+  onTermConditions(event: any) {}
+
   onCompleted(promotion: any) {
     // รอแก้ไขตัวแปรที่จะเก็บลงใน share transaction
     this.transaction.data.mainPackage = promotion;

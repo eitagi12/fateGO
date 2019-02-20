@@ -51,6 +51,7 @@ export interface TransactionData {
   payment?: Payment;
   advancePayment?: Payment;
   receiptInfo?: ReceiptInfo;
+  queue?: Queue;
 }
 export interface Payment {
   method: string;
@@ -211,4 +212,8 @@ export interface Seller {
   locationCode?: string;
   sellerNo?: string;
   shareUser?: string;
+}
+
+export interface Queue {
+  [key: string]: any;
 }

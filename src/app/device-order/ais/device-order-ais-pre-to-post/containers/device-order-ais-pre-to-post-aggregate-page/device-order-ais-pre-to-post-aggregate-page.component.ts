@@ -71,6 +71,8 @@ export class DeviceOrderAisPreToPostAggregatePageComponent implements OnInit, On
       });
   }
 
+  onTermConditions(event: any) {}
+
   onBack() {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_AGREEMENT_SIGN_PAGE]);
   }

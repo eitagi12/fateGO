@@ -42,6 +42,8 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit {
     this.callService();
   }
 
+  onTermConditions(event: any) {}
+
   onBack() {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE]);
   }
@@ -53,6 +55,8 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit {
   onHome() {
     this.homeService.goToHome();
   }
+
+  onCompleted(event: any) {}
 
   callService() {
     // this.mobileCare = {
