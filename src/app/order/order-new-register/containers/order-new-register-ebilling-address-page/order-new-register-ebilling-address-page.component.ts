@@ -8,6 +8,8 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { load } from '@angular/core/src/render3/instructions';
+import { NgxResource, LocalStorageService } from 'ngx-store';
 
 @Component({
   selector: 'app-order-new-register-ebilling-address-page',
@@ -19,6 +21,7 @@ export class OrderNewRegisterEbillingAddressPageComponent implements OnInit, OnD
   wizards = WIZARD_ORDER_NEW_REGISTER;
 
   transaction: Transaction;
+  translateLanguage: string;
   customerAddress: CustomerAddress;
   allZipCodes: string[];
   provinces: any[];
@@ -35,9 +38,12 @@ export class OrderNewRegisterEbillingAddressPageComponent implements OnInit, OnD
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
-    private http: HttpClient
+    private http: HttpClient,
+    private localStorageService: LocalStorageService
   ) {
     this.transaction = this.transactionService.load();
+    this.translateLanguage = this.localStorageService.get(`translateLanguage`);
+    console.log('translateLanguage', this.translateLanguage);
   }
 
   ngOnInit() {
@@ -48,40 +54,45 @@ export class OrderNewRegisterEbillingAddressPageComponent implements OnInit, OnD
       this.allZipCodes = resp.data.zipcodes || [];
     });
 
-    this.http.get('/api/customerportal/newRegister/getAllProvinces').subscribe((resp: any) => {
-      this.provinces = (resp.data.provinces || []);
+    this.http.get('/api/customerportal/newRegister/getAllProvinces'
+      , {
+        params: {
+          provinceSubType: this.translateLanguage === 'TH' ? 'THA' : 'ENG'
+        }
+      }).subscribe((resp: any) => {
+        this.provinces = (resp.data.provinces || []);
 
-      // this.customerAddress = {
-      //   homeNo: customer.homeNo,
-      //   moo: customer.moo,
-      //   mooBan: customer.mooBan,
-      //   room: customer.floor,
-      //   floor: customer.floor,
-      //   buildingName: customer.buildingName,
-      //   soi: customer.soi,
-      //   street: customer.street,
-      //   province: customer.province,
-      //   amphur: customer.amphur,
-      //   tumbol: customer.tumbol,
-      //   zipCode: customer.zipCode,
-      // };
+        // this.customerAddress = {
+        //   homeNo: customer.homeNo,
+        //   moo: customer.moo,
+        //   mooBan: customer.mooBan,
+        //   room: customer.floor,
+        //   floor: customer.floor,
+        //   buildingName: customer.buildingName,
+        //   soi: customer.soi,
+        //   street: customer.street,
+        //   province: customer.province,
+        //   amphur: customer.amphur,
+        //   tumbol: customer.tumbol,
+        //   zipCode: customer.zipCode,
+        // };
 
-      this.billDeliveryAddress = {
-        homeNo: billDeliveryAddress.homeNo,
-        moo: billDeliveryAddress.moo,
-        mooBan: billDeliveryAddress.mooBan,
-        room: billDeliveryAddress.floor,
-        floor: billDeliveryAddress.floor,
-        buildingName: billDeliveryAddress.buildingName,
-        soi: billDeliveryAddress.soi,
-        street: billDeliveryAddress.street,
-        province: billDeliveryAddress.province,
-        amphur: billDeliveryAddress.amphur,
-        tumbol: billDeliveryAddress.tumbol,
-        zipCode: billDeliveryAddress.zipCode,
-      };
+        this.billDeliveryAddress = {
+          homeNo: billDeliveryAddress.homeNo,
+          moo: billDeliveryAddress.moo,
+          mooBan: billDeliveryAddress.mooBan,
+          room: billDeliveryAddress.floor,
+          floor: billDeliveryAddress.floor,
+          buildingName: billDeliveryAddress.buildingName,
+          soi: billDeliveryAddress.soi,
+          street: billDeliveryAddress.street,
+          province: billDeliveryAddress.province,
+          amphur: billDeliveryAddress.amphur,
+          tumbol: billDeliveryAddress.tumbol,
+          zipCode: billDeliveryAddress.zipCode,
+        };
 
-    });
+      });
 
   }
 
