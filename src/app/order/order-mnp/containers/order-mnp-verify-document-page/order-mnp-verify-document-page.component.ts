@@ -20,7 +20,6 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
   profile: ReadCardProfile;
   transaction: Transaction;
   kioskApi = true;
-  koiskApiFn: any;
   cardStateInterval: any;
   closeVendingApi: any;
   @ViewChild(ValidateCustomerIdCardComponent)
@@ -46,14 +45,12 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
     this.transaction = this.transactionService.load();
     this.onReadCard();
     this.onReadPassport();
-    this.koiskApiFn = this.readCardService.kioskApi();
-
   }
+
   onCompleted(profile: ReadCardProfile) {
     this.profile = profile;
-    // auto next
-    this.onReadPassport();
   }
+
   onBack() {
     this.homeService.goToHome();
   }
@@ -61,6 +58,7 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
   onHome() {
     this.homeService.goToHome();
   }
+
   onReadPassport() {
     this.readPassportSubscription = this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
       console.log('readpassport', readPassport);
