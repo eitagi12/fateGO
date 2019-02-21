@@ -5,7 +5,8 @@ import { HomeService, Utils, AlertService, ImageUtils, I18nService } from 'mycha
 import {
   ROUTE_ORDER_NEW_REGISTER_ID_CARD_CAPTURE_PAGE,
   ROUTE_ORDER_NEW_REGISTER_FACE_COMPARE_PAGE,
-  ROUTE_ORDER_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE
+  ROUTE_ORDER_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE,
+  ROUTE_ORDER_NEW_REGISTER_PASSPOPRT_INFO_PAGE
 } from 'src/app/order/order-new-register/constants/route-path.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
@@ -42,6 +43,8 @@ export class OrderNewRegisterFaceCapturePageComponent implements OnInit, OnDestr
   onBack() {
     if (this.transaction.data.action === TransactionAction.READ_CARD) {
       this.router.navigate([ROUTE_ORDER_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
+    } else if (this.transaction.data.action === TransactionAction.READ_PASSPORT) {
+      this.router.navigate([ROUTE_ORDER_NEW_REGISTER_PASSPOPRT_INFO_PAGE]);
     } else {
       this.router.navigate([ROUTE_ORDER_NEW_REGISTER_ID_CARD_CAPTURE_PAGE]);
     }

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Transaction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 import { ConfirmCustomerInfo, BillingInfo, BillingSystemType, MailBillingInfo, TelNoBillingInfo, Utils, AlertService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HomeService } from 'mychannel-shared-libs';
@@ -67,7 +67,8 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
       mobileNo: simCard.mobileNo,
       mainPackage: mainPackage.shortNameThai,
       onTopPackage: '',
-      packageDetail: mainPackage.statementThai
+      packageDetail: mainPackage.statementThai,
+      idCardType: customer.idCardType
     };
 
     this.mailBillingInfo = {
@@ -86,40 +87,24 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
   }
 
   initBillingInfo() {
-    const customer = this.transaction.data.customer;
-    const billingInformation = this.transaction.data.billingInformation;
+    const billingInformation = this.transaction.data.billingInformation || {};
     const mergeBilling = billingInformation.mergeBilling;
     const billCycle = billingInformation.billCycle;
-    const customerbillDeliveryAddress = billingInformation.billDeliveryAddress;
-    console.log('customerbillDeliveryAddress', customerbillDeliveryAddress);
-    // const customerAddress = this.utils.getCurrentAddress({
-    //   homeNo: customer.homeNo,
-    //   moo: customer.moo,
-    //   room: customer.room,
-    //   floor: customer.floor,
-    //   buildingName: customer.buildingName,
-    //   soi: customer.soi,
-    //   street: customer.street,
-    //   tumbol: customer.tumbol,
-    //   amphur: customer.amphur,
-    //   province: customer.province,
-    //   zipCode: customer.zipCode
-    // });
+    const customer: any = billingInformation.billDeliveryAddress || this.transaction.data.customer;
 
-
-    const billDeliveryAddress = this.utils.getCurrentAddress({
-      homeNo: customerbillDeliveryAddress.homeNo || customer.homeNo,
-      moo: customerbillDeliveryAddress.moo || customer.moo,
-      mooBan: customerbillDeliveryAddress.mooBan || customer.mooBan,
-      room: customerbillDeliveryAddress.room || customer.room,
-      floor: customerbillDeliveryAddress.floor || customer.floor,
-      buildingName: customerbillDeliveryAddress.buildingName || customer.buildingName,
-      soi: customerbillDeliveryAddress.soi || customer.soi,
-      street: customerbillDeliveryAddress.street || customer.street,
-      tumbol: customerbillDeliveryAddress.tumbol || customer.tumbol,
-      amphur: customerbillDeliveryAddress.amphur || customer.amphur,
-      province: customerbillDeliveryAddress.province || customer.province,
-      zipCode: customerbillDeliveryAddress.zipCode || customer.zipCode
+    const customerAddress = this.utils.getCurrentAddress({
+      homeNo: customer.homeNo,
+      moo: customer.moo,
+      mooBan: customer.mooBan,
+      room: customer.room,
+      floor: customer.floor,
+      buildingName: customer.buildingName,
+      soi: customer.soi,
+      street: customer.street,
+      tumbol: customer.tumbol,
+      amphur: customer.amphur,
+      province: customer.province,
+      zipCode: customer.zipCode
     });
 
     this.billingInfo = {
@@ -143,7 +128,7 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
 
           // enable config
           this.billingInfo.billingAddress.isEdit = true;
-          this.billingInfo.billingAddress.text = billDeliveryAddress;
+          this.billingInfo.billingAddress.text = customerAddress;
 
           this.billingInfo.billingCycle.isEdit = true;
           this.billingInfo.billingCycle.isDelete = false;
@@ -154,7 +139,7 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
         }
       },
       billingAddress: {
-        text: (this.isMergeBilling() ? mergeBilling.billingAddr : null) || billDeliveryAddress || '-',
+        text: (this.isMergeBilling() ? mergeBilling.billingAddr : null) || customerAddress || '-',
         isEdit: !(!!mergeBilling),
         // isEdit: !(isMergeBilling || isPackageNetExtreme),
         onEdit: () => {
@@ -292,13 +277,15 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
   }
 
   customerValid(): boolean {
-    const customer = this.transaction.data.customer;
-
+    const billingInformation = this.transaction.data.billingInformation || {};
+    // ถ้าเป็น Newca จะไม่มี data.customer เลยต้องเช็คจากที่อยู่ว่า มีที่อยู่(billDeliveryAddress)ไหม
+    const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
     return !!(customer.homeNo
       && customer.province
       && customer.amphur
       && customer.tumbol
       && customer.zipCode);
+
   }
 
   getBllingCycle(billCycle: string): Promise<string> {
