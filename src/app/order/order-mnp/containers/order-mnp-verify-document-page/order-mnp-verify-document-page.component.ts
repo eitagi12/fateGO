@@ -9,7 +9,7 @@ import {
   ROUTE_ORDER_MNP_VERIFY_DOCUMENT_PAGE,
   ROUTE_ORDER_MNP_PASSPOPRT_INFO_PAGE,
   ROUTE_ORDER_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE,
-  ROUTE_ORDER_MNP_RESULT_PAGE
+  ROUTE_ORDER_MNP_SELECT_REASON_PAGE
  } from '../../constants/route-path.constant';
 
 @Component({
@@ -57,7 +57,7 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
   }
 
   onBack() {
-    this.router.navigate([ROUTE_ORDER_MNP_RESULT_PAGE]);
+    this.router.navigate([ROUTE_ORDER_MNP_SELECT_REASON_PAGE]);
   }
 
   onHome() {
