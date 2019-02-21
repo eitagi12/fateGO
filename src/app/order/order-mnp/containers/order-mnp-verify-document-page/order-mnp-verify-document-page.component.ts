@@ -5,7 +5,12 @@ import { Transaction, BillDeliveryAddress, TransactionType, TransactionAction } 
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { ROUTE_ORDER_MNP_VERIFY_DOCUMENT_PAGE, ROUTE_ORDER_MNP_PASSPOPRT_INFO_PAGE, ROUTE_ORDER_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE } from '../../constants/route-path.constant';
+import {
+  ROUTE_ORDER_MNP_VERIFY_DOCUMENT_PAGE,
+  ROUTE_ORDER_MNP_PASSPOPRT_INFO_PAGE,
+  ROUTE_ORDER_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE,
+  ROUTE_ORDER_MNP_RESULT_PAGE
+ } from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-order-mnp-verify-document-page',
@@ -52,7 +57,7 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
   }
 
   onBack() {
-    this.homeService.goToHome();
+    this.router.navigate([ROUTE_ORDER_MNP_RESULT_PAGE]);
   }
 
   onHome() {
