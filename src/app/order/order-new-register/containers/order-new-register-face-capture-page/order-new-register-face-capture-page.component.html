@@ -1,22 +1,13 @@
 <div class="mc-flex">
-  <mc-header title="เปิดเบอร์ใหม่">
-    <div class="header-icon-left">
-      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
-    </div>
-    <!-- <div class="header-icon-right dropdown">
-      <a href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        <img _ngcontent-c3="" class="icon pl-1 pr-1 text-white" src="assets/images/icon/icon-dark-green-arrow-down.png">
-        <img _ngcontent-c3="" class="icon pl-1 pr-1 text-white" src="assets/images/icon/icon-dark-green-arrow-down.png">
-      </a>
-      <div class="dropdown-menu">
-          <i class="dropdown-item fa fa-heart" (click)="switchLanguage('EN')"> Eng</i>
-          <i class="dropdown-item fa fa-heart" (click)="switchLanguage('TH')"> Th</i>
-      </div>
-    </div> -->
-    <div class="header-icon-right">
-      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
-    </div>
-  </mc-header>
+    <mc-header title="{{ 'เปิดเบอร์ใหม่' | translate }}">
+        <div class="header-icon-left w-25">
+          <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+        </div>
+        <div class="header-icon-right w-25 text-right">
+        <mc-dropdown-language></mc-dropdown-language>
+          <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+        </div>
+      </mc-header>
   <div class="mc-flex-wrap">
     <div class="mb-3 mt-3">
       <mc-wizard [wizards]="wizards" active="1"></mc-wizard>

@@ -25,7 +25,6 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
   readCardValid: boolean;
   billDeliveryAddress: BillDeliveryAddress;
 
-  languageConfig: any[];
 
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
@@ -78,10 +77,6 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
 
   ngOnInit() {
     this.createTransaction();
-    this.languageConfig = [
-        { name: 'Eng' , value: 'EN' , icon: 'assets/images/icon/svg/ico-03.svg'},
-        { name: 'Th' , value: 'TH' , icon: 'assets/images/icon/svg/ico-04.svg'}
-    ];
   }
 
   onError(valid: boolean) {

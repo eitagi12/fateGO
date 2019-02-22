@@ -1,5 +1,11 @@
 <div class="mc-flex">
-  <mc-header title="เปิดเบอร์ใหม่"></mc-header>
+  <mc-header title="{{ 'เปิดเบอร์ใหม่' | translate }}">
+      <div class="header-icon-left w-25">
+      </div>
+      <div class="header-icon-right w-25 text-right">
+      <mc-dropdown-language></mc-dropdown-language>
+      </div>
+    </mc-header>
   <div class="mc-flex-wrap">
     <div class="mt-3 mb-3">
       <mc-wizard [wizards]="wizards" active="3"></mc-wizard>

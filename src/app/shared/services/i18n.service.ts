@@ -39,10 +39,9 @@ export class I18nService implements Resolve<any> {
     return this.lang;
   }
 
-  private translateLoader(module: string, lang: string = 'en') {
-    this.http.get(`/i18n/${module}/${lang}.json`).toPromise().then((i18n: any) => {
+  private translateLoader(module: string, lang: string = 'en'): Promise<any> {
+    return this.http.get(`/i18n/${module}/${lang}.json`).toPromise().then((i18n: any) => {
       console.log('datafileProject', i18n);
-      this.translateService.setDefaultLang('th');
       this.translateService.setTranslation(lang, i18n);
       this.translateService.use(lang);
     });
