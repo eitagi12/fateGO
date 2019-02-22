@@ -71,13 +71,12 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
   onReadPassport() {
     const mobileNo = this.transaction.data.simCard.mobileNo;
     this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
-      console.log('readpassport', readPassport);
       this.pageLoadingService.openLoading();
       if (readPassport.error) {
         this.alertService.error('ไม่สามารถอ่านบัตรได้ กรุณาติดต่อพนักงาน');
         return;
       }
-      return this.http.get('/api/customerportal/validate-customer-new-register', {
+      return this.http.get('/api/customerportal/validate-customer-pre-to-post', {
         params: {
           identity: readPassport.profile.idCardNo
         }
@@ -120,11 +119,9 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
         })
         .then(() => {// verify Prepaid Ident
           const idCardNo = this.transaction.data.customer.idCardNo;
-          console.log('idCardNo', idCardNo);
           return this.http.get(`/api/customerportal/newRegister/verifyPrepaidIdent?idCard=${idCardNo}&mobileNo=${mobileNo}`)
             .toPromise()
             .then((respPrepaidIdent: any) => {
-              console.log('respPrepaidIdent', respPrepaidIdent);
               if (respPrepaidIdent.data && respPrepaidIdent.data.success) {
                 if (this.checkBusinessLogic()) {
                   this.transaction.data.action = TransactionAction.READ_PASSPORT;
@@ -139,7 +136,6 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
               this.pageLoadingService.closeLoading();
             });
         }).catch((resp: any) => {
-          console.log('resp', resp);
           this.pageLoadingService.closeLoading();
           const error = resp.error || [];
           if (error && error.errors && error.errors.length > 0) {

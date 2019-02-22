@@ -110,7 +110,6 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
 
   onReadPassport() {
     this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
-      console.log('readpassport', readPassport);
       this.pageLoadingService.openLoading();
       if (readPassport.error) {
         this.alertService.error('ไม่สามารถอ่านบัตรได้ กรุณาติดต่อพนักงาน');
@@ -256,7 +255,7 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
 
     this.transaction = {
       data: {
-        transactionType: TransactionType.ORDER_NEW_REGISTER,
+        transactionType: TransactionType.ORDER_PRE_TO_POST,
         action: null,
       }
     };

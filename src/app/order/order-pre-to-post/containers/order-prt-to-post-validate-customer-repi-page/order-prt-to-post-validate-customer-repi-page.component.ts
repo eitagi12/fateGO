@@ -29,7 +29,6 @@ export class OrderPrtToPostValidateCustomerRepiPageComponent implements OnInit, 
     private alertService: AlertService,
   ) {
     this.transaction = this.transactionService.load();
-    console.log('transaction', this.transaction);
   }
 
   ngOnInit() {
