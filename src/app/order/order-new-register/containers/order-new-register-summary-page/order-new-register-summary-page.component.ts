@@ -47,8 +47,11 @@ export class OrderNewRegisterSummaryPageComponent implements OnInit {
       mobileNo: simCard.mobileNo,
       mainPackage: mainPackage.shortNameThai,
       onTopPackage: '',
-      packageDetail: mainPackage.statementThai
+      packageDetail: mainPackage.statementThai,
+      idCardType: customer.idCardType
     };
+
+    console.log('data',this.confirmCustomerInfo);
 
     this.billingInfo = {
       billingMethod: {

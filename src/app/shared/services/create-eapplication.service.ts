@@ -56,10 +56,10 @@ export class CreateEapplicationService {
       signature: 'data:image/jpeg;base64,' + (customer.imageSignature || '')
     };
 
-    if (action === TransactionAction.KEY_IN) {
-      data.customerImg = 'data:image/jpeg;base64,' + customer.imageSmartCard;
+    if (action === TransactionAction.READ_CARD || action === TransactionAction.READ_CARD_REPI) {
+      data.customerImg = 'data:image/jpeg;base64,' + (customer.imageReadSmartCard);
     } else {
-      data.customerImg = 'data:image/jpeg;base64,' + customer.imageReadSmartCard;
+      data.customerImgKeyIn = 'data:image/jpeg;base64,' + (customer.imageSmartCard || customer.imageReadPassport);
     }
 
     return data;
