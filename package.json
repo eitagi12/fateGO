@@ -26,7 +26,8 @@
     "core-js": "^2.5.4",
     "mychannel-shared-libs": "git+https://vca.ais.co.th/myChannel/mychannel-shared-libs.git#5e26a38a0b9d777cf71b700ba30d7f0af97b148a",
     "rxjs": "6.2.2",
-    "zone.js": "~0.8.26"
+    "zone.js": "~0.8.26",
+    "@ngx-translate/core": "11.0.1"
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "~0.7.0",
