@@ -41,7 +41,7 @@ import { SharedModule } from './shared/shared.module';
       }
     }),
     SharedModule,
-    AppRoutingModule,
+    AppRoutingModule
   ],
   providers: [
     {

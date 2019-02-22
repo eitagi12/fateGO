@@ -16,8 +16,10 @@ export class DeviceOrderAisExistingBestBuyEligibleMobilePageComponent implements
 
   identityValid = false;
   transaction: Transaction;
-  eligiblePrepaid: EligibleMobile[];
-  eligiblePostpaid: EligibleMobile[];
+  eligiblePrepaid: any[];
+  eligiblePostpaid: any[];
+  mobileNo: any;
+  errorMsg = 'ไม่พบหมายเลขที่รับสิทธิ์ได้ในโครงการนี้';
 
   constructor(
     private router: Router,
@@ -43,18 +45,20 @@ export class DeviceOrderAisExistingBestBuyEligibleMobilePageComponent implements
   }
 
   onNext() {
+    this.transaction.data.customer.privilegeCode = this.mobileNo.privilegeCode || '';
+    this.transaction.data.simCard = { mobileNo: this.mobileNo.mobileNo };
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE]);
   }
 
   ngOnDestroy(): void {
-    this.transactionService.save(this.transaction);
+    this.transactionService.update(this.transaction);
   }
 
   getEligibleMobileNo() {
     const idCardNo = this.transaction.data.customer.idCardNo;
     // const trade = this.transaction.data.mainPromotion.trade;
     this.http.post('/api/customerportal/query-eligible-mobile-list', {
-      idCardNo: '1100701704931',
+      idCardNo: idCardNo,
       ussdCode: '*999*02#' || '*999*03*9#',
       mobileType: 'All'
     }).toPromise()
@@ -66,13 +70,11 @@ export class DeviceOrderAisExistingBestBuyEligibleMobilePageComponent implements
 
   }
 
-  onCompleted(mobileNo: string) {
-    this.transaction.data.simCard.mobileNo = mobileNo;
-    this.identityValid = true;
-  }
-
-  findPrivilegeCode() {
-
+  onCompleted(mobileNo: any) {
+    if (mobileNo) {
+      this.identityValid = true;
+      this.mobileNo = mobileNo;
+    }
   }
 
 }
