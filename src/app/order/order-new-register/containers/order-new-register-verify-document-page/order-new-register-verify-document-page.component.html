@@ -1,29 +1,27 @@
 <div class="mc-flex">
-  <mc-header title="เปิดเบอร์ใหม่">
-    <div class="header-icon-left">
-      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
-    </div>
-    <div class="header-icon-right">
-      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
-    </div>
-  </mc-header>
+    <mc-header title="{{ 'เปิดเบอร์ใหม่' | translate }}">
+        <div class="header-icon-left w-25">
+          <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+        </div>
+        <div class="header-icon-right w-25 text-right">
+        <mc-dropdown-language></mc-dropdown-language>
+          <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+        </div>
+      </mc-header>
   <div class="mc-flex-wrap bg-white text-center">
     <div class="text-center mt-5">
       <img src="assets/images/icon/passport-id-icon.png" class="icon-passport">
     </div>
     <div>
-    <div>Please open the passport page with</div>
-    <div> customer image and place it on the scan box.</div>
-    <div>กรุณาเปิดพาสปอร์ตหน้าที่มีรูปและวางที่ช่องแสกน</div>
+    <div translate>กรุณาเปิดพาสปอร์ตหน้าที่มีรูปและวางที่ช่องแสกน</div>
     <hr>
-    <div class="text-center">
-    Or
+    <div class="text-center" translate>
+    หรือ
     </div>
     <hr>
     <div class="text-center icon mt-5">
         <img src="assets/images/icon/icon-ReadIDCard-04.png" class="icon">
       </div>
-       <div> Insert the ID card in the card reader slot.</div>
-        <div>เสียบบัตรประชาชนที่ช่องอ่านบัตร</div>
+        <div translate>เสียบบัตรประชาชนที่ช่องอ่านบัตร</div>
   </div>
 </div>

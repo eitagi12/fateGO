@@ -51,7 +51,7 @@ export class OrderNewRegisterSummaryPageComponent implements OnInit {
       idCardType: customer.idCardType
     };
 
-    console.log('data',this.confirmCustomerInfo);
+    console.log('data', this.confirmCustomerInfo);
 
     this.billingInfo = {
       billingMethod: {
