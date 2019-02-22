@@ -30,6 +30,8 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
 
+  readonly ERR_MASSEAGE = 'ไม่สามารถให้บริการได้ กรุณาติดต่อพนักงานเพื่อดำเนินการ ขออภัยในความไม่สะดวก';
+
 
   constructor(
     private router: Router,
@@ -67,11 +69,11 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
   onReadPassport() {
     this.readPassportSubscription = this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
       console.log('readpassport', readPassport);
-      this.pageLoadingService.openLoading();
       if (readPassport.error) {
-        this.alertService.error('ไม่สามารถอ่านบัตรได้ กรุณาติดต่อพนักงาน');
+        this.alertService.error(this.ERR_MASSEAGE);
         return;
-      }
+      } else if (readPassport.profile && readPassport.profile.idCardNo) {
+        this.pageLoadingService.openLoading();
       return this.http.get('/api/customerportal/validate-customer-new-register', {
         params: {
           identity: readPassport.profile.idCardNo
@@ -116,6 +118,10 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
           this.transaction.data.action = TransactionAction.READ_PASSPORT;
           this.transactionService.update(this.transaction);
           this.router.navigate([ROUTE_ORDER_MNP_PASSPOPRT_INFO_PAGE]);
+          // if (this.checkBusinessLogic()) {
+          //   this.router.navigate([ROUTE_ORDER_NEW_REGISTER_PASSPOPRT_INFO_PAGE]);
+
+          // }
         }).catch((resp: any) => {
           this.pageLoadingService.closeLoading();
           const error = resp.error || [];
@@ -135,7 +141,13 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
 
           }
         });
+      } else {
+        if (readPassport.eventName && readPassport.eventName === 'OnScanDocError') {
+          this.alertService.error(this.ERR_MASSEAGE);
+        }
+      }
     });
+
   }
 
   onReadCard() {
