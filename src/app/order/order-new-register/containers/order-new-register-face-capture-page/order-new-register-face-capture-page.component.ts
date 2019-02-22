@@ -1,7 +1,7 @@
 import { Component, OnInit, EventEmitter, OnDestroy } from '@angular/core';
 import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
 import { Router } from '@angular/router';
-import { HomeService, Utils, AlertService, ImageUtils, I18nService } from 'mychannel-shared-libs';
+import { HomeService, Utils, AlertService, ImageUtils } from 'mychannel-shared-libs';
 import {
   ROUTE_ORDER_NEW_REGISTER_ID_CARD_CAPTURE_PAGE,
   ROUTE_ORDER_NEW_REGISTER_FACE_COMPARE_PAGE,
@@ -31,7 +31,7 @@ export class OrderNewRegisterFaceCapturePageComponent implements OnInit, OnDestr
     private transactionService: TransactionService,
     private alertService: AlertService,
     private utils: Utils,
-    private i18nService: I18nService
+    // private i18nService: I18nService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -63,7 +63,7 @@ export class OrderNewRegisterFaceCapturePageComponent implements OnInit, OnDestr
   }
 
   switchLanguage(lang: string) {
-    this.i18nService.setLang(lang);
+    // this.i18nService.setLang(lang);
   }
 
   onCameraCompleted(image: string) {
