@@ -19,7 +19,7 @@ import { mergeMap } from 'rxjs/operators';
 export class VerifyTradeInPageComponent implements OnInit , OnDestroy {
 
   tradeInTransaction: TradeInTranscation;
-  brands: Array<BrandsOfProduct>;
+  brands: BrandsOfProduct[];
   imeiForm: FormGroup;
   datasource: Observable<any>;
   listModelTradein: any = [];
