@@ -19,7 +19,6 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
   profile: ReadCardProfile;
   transaction: Transaction;
   kioskApi = true;
-  koiskApiFn: any;
   cardStateInterval: any;
   closeVendingApi: any;
   @ViewChild(ValidateCustomerIdCardComponent)
@@ -45,14 +44,6 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
     this.createTransaction();
     this.onReadCard();
     this.onReadPassport();
-    this.koiskApiFn = this.readCardService.kioskApi();
-    // this.onNext();
-    // this.readPassportService.readPassportFromWebSocket().subscribe((readPassprot: ReadPassprot) => {
-    //   console.log('readPassprot', readPassprot);
-    //   this.transaction.data.customer = this.readPassprot.profile;
-    // });
-    // this.readCardService.kioskApi().controls(KioskControls.GET_CARD_STATE).subscribe(msg => console.log('msg', msg));
-
   }
   onCompleted(profile: ReadCardProfile) {
     this.profile = profile;
@@ -68,7 +59,7 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
     this.homeService.goToHome();
   }
   onReadPassport() {
-    this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
+    this.readPassportSubscription = this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
       console.log('readpassport', readPassport);
       this.pageLoadingService.openLoading();
       if (readPassport.error) {
@@ -211,6 +202,7 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
     if (this.transaction.data.action === TransactionAction.READ_PASSPORT) {
       this.closeVendingApi.ws.send(KioskControls.LED_OFF);
     }
+    this.readPassportSubscription.unsubscribe();
     clearInterval(this.cardStateInterval);
     this.vendingApiSubscription.unsubscribe();
   }

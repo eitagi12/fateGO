@@ -256,6 +256,11 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
     const billingInformation = this.transaction.data.billingInformation;
     const mergeBilling: any = billingInformation.mergeBilling;
 
+    // ขา back หลังกลับมาจากหน้า summary
+    if (billingInformation && billingInformation.billCycleData) {
+      return billingInformation.billCycleData.billChannel;
+    }
+
     // default ตามรอบบิลที่เลือก
     if (this.isMergeBilling()) {
       if (mergeBilling.billMedia === 'SMS and eBill') {

@@ -50,11 +50,12 @@ export class CreateNewRegisterService {
       idCardType: 'Thai National ID',
       customerId: customer.idCardNo || '',
       mobileNo: simCard.mobileNo || '',
-      base64Card: customer.imageReadSmartCard || customer.imageSmartCard || customer.imageReadPassport,
-      base64Face: faceRecognition.imageFaceUser,
+      base64Card: 'data:image/png;base64,' + customer.imageReadSmartCard || customer.imageSmartCard || customer.imageReadPassport,
+      base64Face: 'data:image/png;base64,' + faceRecognition.imageFaceUser,
       channel: channel,
       userchannel: 'MyChannel'
-    }).toPromise().catch(() => { /* Ignore handdle error */ });
+    }).toPromise()
+      .catch(e => console.log(e));
 
   }
 
@@ -151,7 +152,7 @@ export class CreateNewRegisterService {
         data.engFlag = 'Y',
         data.citizenship = customer.nationality;
     } else {
-        data.accountSubCat = 'THA',
+      data.accountSubCat = 'THA',
         data.titleName = this.utils.getPrefixName(customer.titleName); /*required*/
     }
 

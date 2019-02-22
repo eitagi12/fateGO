@@ -76,7 +76,13 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
 
   ngOnInit() {
     this.createTransaction();
+  }
 
+  onError(valid: boolean) {
+    this.readCardValid = valid;
+    console.log('Error');
+    if (!this.profile) {
+      this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
     if (this.validateCustomerIdcard.koiskApiFn) {
       this.validateCustomerIdcard.koiskApiFn.removedState().subscribe((removed: boolean) => {
         if (removed) {
@@ -85,13 +91,6 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
         }
       });
     }
-  }
-
-  onError(valid: boolean) {
-    this.readCardValid = valid;
-    console.log('Error');
-    if (!this.profile) {
-      this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
     }
   }
 
