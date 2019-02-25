@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
+import { MyChannelSharedLibsModule, I18nService } from 'mychannel-shared-libs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { OrderNewRegisterRoutingModule } from './order-new-register-routing.module';
 import { OrderNewRegisterValidateCustomerPageComponent } from './containers/order-new-register-validate-customer-page/order-new-register-validate-customer-page.component';
@@ -37,7 +37,7 @@ import { OrderNewRegisterPassportInfoPageComponent } from './containers/order-ne
     ReactiveFormsModule,
     OrderNewRegisterRoutingModule,
     MyChannelSharedLibsModule,
-    TranslateModule
+    TranslateModule.forRoot()
   ],
   declarations: [
     OrderNewRegisterValidateCustomerPageComponent,
@@ -65,6 +65,9 @@ import { OrderNewRegisterPassportInfoPageComponent } from './containers/order-ne
     OrderNewRegisterEapplicationPageComponent,
     OrderNewRegisterVerifyDocumentPageComponent,
     OrderNewRegisterPassportInfoPageComponent,
-  ]
+  ],
+  providers: [
+    I18nService
+  ],
 })
 export class OrderNewRegisterModule { }

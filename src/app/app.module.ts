@@ -10,6 +10,7 @@ import {
   jwtOptionsFactory,
   ErrorsHandler,
   MyChannelSharedLibsModule,
+  I18nService,
 } from 'mychannel-shared-libs';
 import { AppRoutingModule } from './app-routing.module';
 /* Components */
@@ -49,7 +50,8 @@ import { TranslateModule } from '@ngx-translate/core';
     {
       provide: ErrorHandler,
       useClass: ErrorsHandler
-    }
+    },
+    I18nService
   ],
   bootstrap: [AppComponent]
 })
