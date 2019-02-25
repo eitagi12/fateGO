@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-
-import { ApiRequestService, PageLoadingService, HomeService } from 'mychannel-shared-libs';
+import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
+import { ApiRequestService, PageLoadingService, HomeService, MobileCare } from 'mychannel-shared-libs';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_CARE_AVAILABLE_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SUMMARY_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -16,7 +16,8 @@ export class DeviceOrderAisExistingBestBuyMobileCarePageComponent implements OnI
 
   identityValid = true;
   transaction: Transaction;
-
+  wizards = WIZARD_DEVICE_ORDER_AIS;
+  mobileCare: MobileCare;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -29,6 +30,10 @@ export class DeviceOrderAisExistingBestBuyMobileCarePageComponent implements OnI
   }
 
   ngOnInit() {
+  }
+
+  onCompleted(mobileCare: any) {
+    this.transaction.data.mobileCarePackage = mobileCare;
   }
 
   onHome() {

@@ -16,6 +16,7 @@ export class DeviceOrderAisExistingBestBuyMobileDetailPageComponent implements O
 
   identityValid = true;
   transaction: Transaction;
+  mobileInfo: MobileInfo;
 
   constructor(
     private router: Router,
@@ -45,6 +46,31 @@ export class DeviceOrderAisExistingBestBuyMobileDetailPageComponent implements O
 
   ngOnDestroy(): void {
     this.transactionService.save(this.transaction);
+  }
+
+  getMobileInfo() {
+    const mobileNo = this.transaction.data.simCard.mobileNo;
+    this.http.get(`/api/mobile-detail/${mobileNo}`).toPromise().then((response) => {
+      const mobileDetail = response.data || {};
+      const serviceYear = mobileDetail.serviceYear;
+      this.mobileInfo = {
+        mobileNo: mobileNo,
+        chargeType: this.mapChargeType(mobileDetail.chargeType),
+        status: mobileDetail.mobileStatus,
+        sagment: mobileDetail.mobileSegment,
+        serviceYear: `${serviceYear.year || ''} ปี ${serviceYear.month || ''} เดือน ${serviceYear.day || ''} วัน`,
+        mainPackage: mobileDetail.packageTitle
+      };
+    });
+  }
+
+
+  mapChargeType(chargeType: string): string {
+    if ('Post-paid' === chargeType) {
+      return 'รายเดือน';
+    } else {
+      return 'เติมเงิน';
+    }
   }
 
 }

@@ -93,6 +93,7 @@ export interface Customer {
   imageSmartCard?: string;
   imageReadSmartCard?: string;
   customerPinCode?: string;
+  privilegeCode?: string;
 }
 
 export interface BillDeliveryAddress {

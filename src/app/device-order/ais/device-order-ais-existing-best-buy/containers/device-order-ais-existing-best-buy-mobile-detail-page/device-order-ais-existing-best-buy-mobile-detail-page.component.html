@@ -7,11 +7,7 @@
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
-
-  <p>
-    device-order-ais-existing-ais-best-buy-mobile-detail-page works!
-  </p>
-  
+  <mc-mobile-info title="ข้อมูลลูกค้า" [mobileInfo]=mobileInfo></mc-mobile-info>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
     <button class="btn btn-success" (click)="onNext()" [disabled]="!identityValid" >NEXT</button>
