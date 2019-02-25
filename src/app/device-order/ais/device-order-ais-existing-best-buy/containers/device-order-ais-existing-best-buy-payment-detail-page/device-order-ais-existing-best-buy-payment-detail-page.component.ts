@@ -28,6 +28,19 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
     buyerAddress: '',
     telNo: ''
   };
+
+  // paymentDetail: PaymentDetail = {
+  //   title: '',
+  //   header: '',
+  //   price: '',
+  //   headerAdvancePay: '',
+  //   priceAdvancePay: '',
+  //   specialAmountPercent: '',
+  //   specialAmountBaht: '',
+  //   qrCodes: [],
+  //   banks: [],
+  //   installments: []
+  // };
   grandTotal: String;
   productDetail: String;
   priceOptionPrivilegeTrade: String;
