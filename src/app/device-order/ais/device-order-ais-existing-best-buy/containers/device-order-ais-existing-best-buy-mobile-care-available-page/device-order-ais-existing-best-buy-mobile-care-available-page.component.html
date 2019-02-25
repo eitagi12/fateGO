@@ -8,9 +8,7 @@
     </div>
   </mc-header>
 
-  <p>
-    device-order-ais-existing-ais-best-buy-mobile-care-available-page works!
-  </p>
+  <mc-mobile-care [mobileCare]="mobileCare" (completed)="onCompleted($event)"></mc-mobile-care>
   
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>

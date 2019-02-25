@@ -6,6 +6,7 @@ import { ApiRequestService, PageLoadingService, HomeService } from 'mychannel-sh
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_CARE_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CHECK_OUT_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-summary-page',
@@ -14,9 +15,9 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 })
 export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit, OnDestroy {
 
+  wizards = WIZARD_DEVICE_ORDER_AIS;
   identityValid = true;
   transaction: Transaction;
-  currentStep: number;
 
   constructor(
     private router: Router,
@@ -28,7 +29,6 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
   ) { }
 
   ngOnInit() {
-    this.currentStep = 4;
   }
 
   onHome() {
