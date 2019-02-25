@@ -16,6 +16,7 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
 
   identityValid = true;
   transaction: Transaction;
+  currentStep: number;
 
   constructor(
     private router: Router,
@@ -27,6 +28,7 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
   ) { }
 
   ngOnInit() {
+    this.currentStep = 4;
   }
 
   onHome() {
@@ -44,5 +46,7 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
   ngOnDestroy(): void {
     this.transactionService.save(this.transaction);
   }
+
+
 
 }
