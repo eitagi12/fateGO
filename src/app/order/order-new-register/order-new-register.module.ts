@@ -37,7 +37,7 @@ import { OrderNewRegisterPassportInfoPageComponent } from './containers/order-ne
     ReactiveFormsModule,
     OrderNewRegisterRoutingModule,
     MyChannelSharedLibsModule,
-    TranslateModule.forRoot()
+    TranslateModule
   ],
   declarations: [
     OrderNewRegisterValidateCustomerPageComponent,
@@ -65,9 +65,6 @@ import { OrderNewRegisterPassportInfoPageComponent } from './containers/order-ne
     OrderNewRegisterEapplicationPageComponent,
     OrderNewRegisterVerifyDocumentPageComponent,
     OrderNewRegisterPassportInfoPageComponent,
-  ],
-  providers: [
-    I18nService
   ],
 })
 export class OrderNewRegisterModule { }

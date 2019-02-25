@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard, I18nService } from 'mychannel-shared-libs';
 import { ErrorPageComponent } from './containers/error-page/error-page.component';
-import { TranslateModule } from 'mychannel-shared-libs/node_modules/@ngx-translate/core';
 
 const routes: Routes = [
   {
@@ -46,10 +45,7 @@ const routes: Routes = [
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(routes), TranslateModule.forRoot()],
-  exports: [RouterModule],
-  providers: [
-    I18nService
-  ],
+  imports: [RouterModule.forRoot(routes)],
+  exports: [RouterModule]
 })
 export class AppRoutingModule { }
