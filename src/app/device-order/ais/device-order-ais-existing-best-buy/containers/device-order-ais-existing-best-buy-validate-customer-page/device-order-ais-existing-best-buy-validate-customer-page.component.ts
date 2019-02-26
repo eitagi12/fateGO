@@ -2,10 +2,10 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-import { ApiRequestService, PageLoadingService, HomeService, Utils } from 'mychannel-shared-libs';
+import { ApiRequestService, PageLoadingService, HomeService, Utils, AlertService } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from 'src/app/buy-product/constants/route-path.constant';
-import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
 import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress, Customer, MainPromotion, ProductStock} from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
@@ -41,7 +41,8 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     private http: HttpClient,
     private utils: Utils,
     private localStorageService: LocalStorageService,
-    private priceOptionService: PriceOptionService
+    private priceOptionService: PriceOptionService,
+    private alertService: AlertService
   ) {
     // this.homeService.callback = () => {
     //   window.location.href = `/sales-portal/buy-product/brand/${this.band}/${this.model}`;
@@ -83,9 +84,18 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
       // KEY-IN MobileNo
       this.http.get(`/api/customerportal/mobile-detail/${this.identity}`)
       .toPromise()
-      .then((mobileDetail) => {
-        return;
+      .then((mobileDetail: any) => {
+        this.transaction.data.simCard = {
+          mobileNo: this.identity,
+          chargeType: mobileDetail.chargeType,
+          billingSystem: mobileDetail.billingSystem,
+          persoSim: false
+        };
+        this.transaction.data.action = TransactionAction.KEY_IN_REPI;
+        this.pageLoadingService.closeLoading();
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE]);
       });
+      return;
     }
 
     this.http.get(`/api/customerportal/newRegister/${this.identity}/queryCustomerInfo`)

@@ -17,6 +17,9 @@ import { DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent } from
 import { DeviceOrderAisExistingBestBuyValidateCustomerKeyInPageComponent } from './containers/device-order-ais-existing-best-buy-validate-customer-key-in-page/device-order-ais-existing-best-buy-validate-customer-key-in-page.component';
 import { DeviceOrderAisExistingBestBuyValidateCustomerPageComponent } from './containers/device-order-ais-existing-best-buy-validate-customer-page/device-order-ais-existing-best-buy-validate-customer-page.component';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
+import { DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent } from './containers/device-order-ais-existing-best-buy-validate-customer-repi-page/device-order-ais-existing-best-buy-validate-customer-repi-page.component';
+import { DeviceOrderAisExistingBestBuyCustomerProfilePageComponent } from './containers/device-order-ais-existing-best-buy-customer-profile-page/device-order-ais-existing-best-buy-customer-profile-page.component';
+import { DeviceOrderAisExistingBestBuyOtpPageComponent } from './containers/device-order-ais-existing-best-buy-otp-page/device-order-ais-existing-best-buy-otp-page.component';
 
 @NgModule({
   imports: [
@@ -39,7 +42,10 @@ import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
     DeviceOrderAisExistingBestBuySummaryPageComponent,
     DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent,
     DeviceOrderAisExistingBestBuyValidateCustomerKeyInPageComponent,
-    DeviceOrderAisExistingBestBuyValidateCustomerPageComponent
+    DeviceOrderAisExistingBestBuyValidateCustomerPageComponent,
+    DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent,
+    DeviceOrderAisExistingBestBuyCustomerProfilePageComponent,
+    DeviceOrderAisExistingBestBuyOtpPageComponent
   ]
 })
 export class DeviceOrderAisExistingBestBuyModule { }

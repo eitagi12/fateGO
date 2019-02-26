@@ -128,7 +128,6 @@ export interface Customer {
 export interface SimCard {
   mobileNo: string;
   simSerial?: string;
-  imei?: string;
   billingSystem?: string;
   moblieNoTypeA?: string;
   chargeType?: ChargeType;
