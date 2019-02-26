@@ -63,9 +63,9 @@
     "การรวมบิล": "Bill merging",
     "ที่อยู่จัดส่งเอกสาร": "Billing address",
     "รอบบิล": "Billing cycle",
-    "รอบบิล วันที่ 16 ถึง วันที่ 15 ของทุกเดือน": "Billing cycle : From the 16th to the 15th of every month",
+    "ของทุกเดือน": "of every month",
     "ช่องทางการรับบิล": "Bill channel",
-    "eBill(ดูบิลออนไลน์ผ่าน myAIS)": "eBill (View your bills online via your myAIS application)",
+    "eBill (ดูบิลออนไลน์ผ่าน my AIS)": "eBill (View your bills online via your myAIS application)",
     "SMS": "SMS bill to",
     "E-mail bill to": "Email bill to",
     "SMS bill to": "SMS bill to",
@@ -83,9 +83,11 @@
     "คุณไม่ได้ทำรายการภายในเวลาที่กำหนด ต้องการทำรายการต่อหรือไม่?": "Your sessing is about to expire Do you wish to continue with this transaction?",
     "ยกเลิก": "Abort",
     "ทำรายการต่อ": "Continue",
-    "หรือ": "Or",
+    "หรือ": "OR",
     "กรุณาเปิดพาสปอร์ตหน้าที่มีรูปและวางที่ช่องแสกน" : "Please open the passport page with customer image and place it on the scan box.",
     "เสียบบัตรประชาชนที่ช่องอ่านบัตร": "Insert the ID card in the card reader slot.",
     "เบอร์โทร": "Phone number",
-    "ปิด": "close"
+    "ปิด": "close",
+    "กรุณารอสักครู่": "Please wait",
+    "กรุณารอสักครู่...": "Please wait..."
 }

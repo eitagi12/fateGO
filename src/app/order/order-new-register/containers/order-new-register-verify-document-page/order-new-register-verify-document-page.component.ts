@@ -6,6 +6,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { HttpClient } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-order-new-register-verify-document-page',
@@ -24,6 +25,7 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
 
+  readonly ERR_MASSEAGE = 'ไม่สามารถให้บริการได้ กรุณาติดต่อพนักงานเพื่อดำเนินการ ขออภัยในความไม่สะดวก';
 
   constructor(
     private router: Router,
@@ -62,11 +64,11 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
   onReadPassport() {
     this.readPassportSubscription = this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
       console.log('readpassport', readPassport);
-      this.pageLoadingService.openLoading();
       if (readPassport.error) {
-        this.alertService.error(this.translation.instant('ไม่สามารถอ่าน Passport ได้ กรุณาติดต่อพนักงาน'));
+        this.alertService.error(this.translation.instant(this.ERR_MASSEAGE));
         return;
-      }
+      } else if (readPassport.profile && readPassport.profile.idCardNo) {
+        this.pageLoadingService.openLoading();
       return this.http.get('/api/customerportal/validate-customer-new-register', {
         params: {
           identity: readPassport.profile.idCardNo
@@ -134,7 +136,13 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
 
           }
         });
+      } else {
+        if (readPassport.eventName && readPassport.eventName === 'OnScanDocError') {
+          this.alertService.error(this.ERR_MASSEAGE);
+        }
+      }
     });
+
   }
 
   onReadCard() {
