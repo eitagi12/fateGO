@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { environment } from '../environments/environment';
 import { debounceTime } from 'rxjs/operators';
 import { ROUTE_DEASHBOARD_MAIN_MENU_PAGE } from './dashboard/constants/route-path.constant';
+import { TranslateService } from '@ngx-translate/core';
 
 const { version: version } = require('../../package.json');
 
@@ -27,6 +28,7 @@ export class AppComponent {
     private pageActivityService: PageActivityService,
     private router: Router,
     private homeService: HomeService,
+    private translation: TranslateService
   ) {
     this.version = (environment.production ? '' : `[${environment.name}] `) + version;
     this.initails();
@@ -94,12 +96,12 @@ export class AppComponent {
       this.alertService.notify({
         type: 'question',
         showConfirmButton: true,
-        confirmButtonText: 'ทำรายการต่อ',
-        cancelButtonText: 'ยกเลิก',
+        confirmButtonText: this.translation.instant('ทำรายการต่อ'),
+        cancelButtonText: this.translation.instant('ยกเลิก'),
         showCancelButton: true,
         reverseButtons: true,
         allowEscapeKey: false,
-        text: 'คุณไม่ได้ทำรายการภายในเวลาที่กำหนด ต้องการทำรายการต่อหรือไม่?',
+        text: this.translation.instant('คุณไม่ได้ทำรายการภายในเวลาที่กำหนด ต้องการทำรายการต่อหรือไม่?'),
         timer: 180000
       }).then((data) => {
         if (!data.value) {

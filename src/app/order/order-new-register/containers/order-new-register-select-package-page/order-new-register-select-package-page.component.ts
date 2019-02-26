@@ -14,6 +14,7 @@ import {
 } from 'src/app/order/order-new-register/constants/route-path.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ReserveMobileService, SelectMobileNumberRandom } from 'src/app/order/order-shared/services/reserve-mobile.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-order-new-register-select-package-page',
@@ -41,7 +42,8 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
     private reserveMobileService: ReserveMobileService,
     private alertService: AlertService,
     private modalService: BsModalService,
-    private http: HttpClient
+    private http: HttpClient,
+    private translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
 
@@ -157,7 +159,7 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
 
   onTermConditions(condition: string) {
     if (!condition) {
-      this.alertService.warning('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+      this.alertService.warning(this.translation.instant('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'));
       return;
     }
     this.pageLoadingService.openLoading();

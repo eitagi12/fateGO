@@ -10,6 +10,7 @@ import {
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-order-new-register-one-love-page',
@@ -34,7 +35,8 @@ export class OrderNewRegisterOneLovePageComponent implements OnInit, OnDestroy {
     private utils: Utils,
     private http: HttpClient,
     private transactionService: TransactionService,
-    private pageLoadingService: PageLoadingService
+    private pageLoadingService: PageLoadingService,
+    private translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -108,7 +110,7 @@ export class OrderNewRegisterOneLovePageComponent implements OnInit, OnDestroy {
 
           const mobileStatus = (data.mobileStatus || '').toLowerCase();
           if (environment.MOBILE_STATUS.indexOf(mobileStatus) === -1) {
-            this.alertService.error('หมายเลขดังกล่าวไม่สามารถใช้งานได้');
+            this.alertService.error(this.translation.instant('หมายเลขดังกล่าวไม่สามารถใช้งานได้'));
             return reject();
           }
           this.pageLoadingService.closeLoading();
@@ -116,7 +118,7 @@ export class OrderNewRegisterOneLovePageComponent implements OnInit, OnDestroy {
         })
         .catch(() => {
           this.pageLoadingService.closeLoading();
-          this.alertService.error('หมายเลขดังกล่าวไม่ใช่เครือข่าย AIS');
+          this.alertService.error(this.translation.instant('หมายเลขดังกล่าวไม่ใช่เครือข่าย AIS'));
           reject();
         });
     });

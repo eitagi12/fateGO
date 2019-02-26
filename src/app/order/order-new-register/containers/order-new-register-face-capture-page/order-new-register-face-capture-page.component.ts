@@ -10,6 +10,7 @@ import {
 } from 'src/app/order/order-new-register/constants/route-path.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-order-new-register-face-capture-page',
@@ -31,7 +32,7 @@ export class OrderNewRegisterFaceCapturePageComponent implements OnInit, OnDestr
     private transactionService: TransactionService,
     private alertService: AlertService,
     private utils: Utils,
-    // private i18nService: I18nService
+    private translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -89,7 +90,7 @@ export class OrderNewRegisterFaceCapturePageComponent implements OnInit, OnDestr
   }
 
   onCameraError(error: string) {
-    this.alertService.error(error);
+    this.alertService.error(this.translation.instant(error));
   }
 
   onClearIdCardImage() {

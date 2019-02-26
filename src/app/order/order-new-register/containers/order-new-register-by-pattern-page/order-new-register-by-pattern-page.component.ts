@@ -12,6 +12,7 @@ import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.consta
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ReserveMobileService, SelectMobileNumberRandom } from 'src/app/order/order-shared/services/reserve-mobile.service';
+import { TranslateService } from '@ngx-translate/core';
 
 
 @Component({
@@ -40,7 +41,8 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
     private reserveMobileService: ReserveMobileService,
     private alertService: AlertService,
     private http: HttpClient,
-    public fb: FormBuilder
+    public fb: FormBuilder,
+    private translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
     this.user = this.tokenService.getUser();
@@ -198,7 +200,10 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
         if (data.returnCode === '008') {
           this.router.navigate([ROUTE_ORDER_NEW_REGISTER_SELECT_PACKAGE_PAGE]);
         } else if (data.returnCode === '002') {
-          this.alertService.error('เบอร์ ' + this.transaction.data.simCard.mobileNo + ' มีลูกค้าท่านอื่นจองไว้แล้ว กรุณาเลือกเบอร์ใหม่');
+          this.alertService.error(
+            this.translation.instant('เบอร์') +
+            this.transaction.data.simCard.mobileNo +
+            this.translation.instant('มีลูกค้าท่านอื่นจองไว้แล้ว กรุณาเลือกเบอร์ใหม่'));
         } else {
           this.alertService.error(data.returnCode + ' ' + data.returnMessage);
         }
