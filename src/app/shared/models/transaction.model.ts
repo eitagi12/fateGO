@@ -22,6 +22,10 @@ export enum TransactionAction {
   KEY_IN = 'KEY_IN',
   KEY_IN_REPI = 'KEY_IN_REPI',
   READ_PASSPORT = 'READ_PASSPORT',
+<<<<<<< Updated upstream
+=======
+  READ_PASSPORT_REPI = 'READ_PASSPORT_REPI'
+>>>>>>> Stashed changes
 }
 
 export interface Transaction {
