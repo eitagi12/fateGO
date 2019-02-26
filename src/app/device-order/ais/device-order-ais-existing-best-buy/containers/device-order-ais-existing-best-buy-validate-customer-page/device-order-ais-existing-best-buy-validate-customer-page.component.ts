@@ -46,6 +46,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     // this.homeService.callback = () => {
     //   window.location.href = `/sales-portal/buy-product/brand/${this.band}/${this.model}`;
     // };
+    this.priceOption = this.priceOptionService.load();
    }
 
   ngOnInit() {
@@ -217,7 +218,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     return mainPromotion;
   }
 
-  createPriceOption(mainPromotion: MainPromotion, ) {
+  createPriceOption(mainPromotion: MainPromotion) {
     const productDetail: any = this.localStorageService.load('productDetail').value;
     const productInfo: any = this.localStorageService.load('productInfo').value;
     const thumbnail = (productInfo && productInfo.images) ? productInfo.images.thumbnail : '';
@@ -227,7 +228,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
       productSubType: productDetail.productSubType,
       productName: productDetail.name,
       model: productDetail.model,
-      brand: productDetail.band,
+      brand: productDetail.brand,
       color: productInfo,
       qty: productInfo.qty,
       thumbnail: thumbnail

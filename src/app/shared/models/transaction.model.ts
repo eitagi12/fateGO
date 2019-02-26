@@ -43,8 +43,8 @@ export interface TransactionData {
   onTopPackage?: OnTopPackage;
   mainPackageOneLove?: any[];
   mobileCarePackage?: MobileCarePackage;
-  faceRecognition?: FaceRecognition;
   existingMobileCare?: ExistingMobileCare;
+  faceRecognition?: FaceRecognition;
   order?: Order;
   reasonCode?: string;
   billingInformation?: BillingInformation;

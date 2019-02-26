@@ -66,6 +66,9 @@ export class DeviceOrderAisExistingBestBuyMobileDetailPageComponent implements O
         serviceYear: this.serviceYearWording(serviceYear.year, serviceYear.month, serviceYear.day),
         mainPackage: mobileDetail.packageTitle
       };
+
+      this.transaction.data.simCard.chargeType = mobileDetail.chargeType;
+      this.transaction.data.simCard.billingSystem = mobileDetail.billingSystem;
       this.pageLoadingService.closeLoading();
     });
   }
