@@ -1,7 +1,7 @@
 
 
 export interface PriceOption {
-    queryParams: any;
+    queryParams?: any;
     productStock: any;
     campaign: any;
     trade: any;

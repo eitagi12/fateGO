@@ -1,4 +1,4 @@
-import { ChargeType } from 'mychannel-shared-libs';
+import { ChargeType, PaymentDetailQRCode, PaymentDetailBank, ReceiptInfo } from 'mychannel-shared-libs';
 
 export enum TransactionType {
   DEVICE_ORDER_NEW_REGISTER_AIS = 'NewRegisterAIS',
@@ -44,11 +44,40 @@ export interface TransactionData {
   mainPackageOneLove?: any[];
   mobileCarePackage?: MobileCarePackage;
   faceRecognition?: FaceRecognition;
+  existingMobileCare?: ExistingMobileCare;
   order?: Order;
   reasonCode?: string;
   billingInformation?: BillingInformation;
+  seller?: Seller;
+  payment?: Payment;
+  advancePayment?: Payment;
+  receiptInfo?: ReceiptInfo;
+  queue?: Queue;
 }
 
+export interface ProductStock {
+  model: string;
+  company: string;
+  subStock?: string;
+  productType: number;
+  productSubType: string;
+  productName: string;
+  brand: string;
+  color: string;
+  location?: string;
+  locationName?: string;
+  qty: number;
+  flagReserve?: string;
+  flagWaiting?: string;
+  thumbnail?: string;
+}
+
+export interface Payment {
+  method: string;
+  type: string;
+  qrCode: PaymentDetailQRCode;
+  bank: PaymentDetailBank;
+}
 export interface MainPromotion {
   cammapign: any;
   privilege: any;
@@ -67,7 +96,7 @@ export interface Customer {
   firstName: string;
   lastName: string;
   birthdate: string;
-  gender?: string;
+  gender: string;
   homeNo?: string;
   moo?: string;
   mooBan?: string;
@@ -82,7 +111,7 @@ export interface Customer {
   firstNameEn?: string;
   lastNameEn?: string;
   issueDate?: string;
-  expireDate?: string;
+  expireDate: string;
   zipCode?: string;
   mainMobile?: string;
   mainPhone?: string;
@@ -96,21 +125,6 @@ export interface Customer {
   privilegeCode?: string;
 }
 
-export interface BillDeliveryAddress {
-  homeNo: string;
-  moo?: string;
-  mooBan?: string;
-  room?: string;
-  floor?: string;
-  buildingName?: string;
-  soi?: string;
-  street?: string;
-  province: string;
-  amphur: string;
-  tumbol: string;
-  zipCode: string;
-}
-
 export interface SimCard {
   mobileNo: string;
   simSerial?: string;
@@ -122,17 +136,7 @@ export interface SimCard {
 }
 
 export interface MainPackage {
-  billingSystem?: string;
-  duration?: string;
-  itemId: string;
-  itemsPriority?: string;
-  numberOfMobile?: string;
-  packageType?: string;
-  productPkg?: string;
-  promotionPackage?: string;
-  shortNameThai: string;
-  statementThai?: string;
-  parameters?: any;
+  [key: string]: any;
 }
 
 export interface OnTopPackage {
@@ -205,4 +209,63 @@ export interface BillingAccountData {
   billingMethodText?: string;
   billCycleText?: string;
   billAddressText?: string;
+}
+
+export interface BillDeliveryAddress {
+  homeNo: string;
+  moo?: string;
+  mooBan?: string;
+  room?: string;
+  floor?: string;
+  buildingName?: string;
+  soi?: string;
+  street?: string;
+  province: string;
+  amphur: string;
+  tumbol: string;
+  zipCode: string;
+}
+
+export interface Seller {
+  sellerName?: string;
+  locationName?: string;
+  locationCode?: string;
+  sellerNo?: string;
+  shareUser?: string;
+}
+
+export interface Queue {
+  [key: string]: any;
+}
+
+export interface ExistingMobileCare {
+  promotionName: string;
+  productClass: string;
+  produuctGroup: string;
+  productPkg: string;
+  productCd: string;
+  endDt?: string;
+  shortNameThai?: string;
+  shortNameEng?: string;
+  startDt?: string;
+  descThai?: string;
+  descEng?: string;
+  inStatementThai?: string;
+  inStatementEng?: string;
+  priceType?: string;
+  productSeq?: string;
+  monthlyFee?: string;
+  crmFlg?: string;
+  paymentMode?: string;
+  priceExclVat?: string;
+  integrationName?: string;
+  flagMain?: string;
+  handSet?: HandSetMobileCare;
+}
+
+export interface HandSetMobileCare {
+  brand?: string;
+  model?: string;
+  color?: string;
+  imei?: string;
 }

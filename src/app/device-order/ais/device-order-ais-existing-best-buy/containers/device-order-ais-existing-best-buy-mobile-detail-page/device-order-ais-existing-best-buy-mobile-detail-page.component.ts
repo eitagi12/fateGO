@@ -2,10 +2,11 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-import { ApiRequestService, PageLoadingService, HomeService } from 'mychannel-shared-libs';
+import { ApiRequestService, PageLoadingService, HomeService, MobileInfo } from 'mychannel-shared-libs';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-mobile-detail-page',
@@ -14,9 +15,11 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 })
 export class DeviceOrderAisExistingBestBuyMobileDetailPageComponent implements OnInit, OnDestroy {
 
+  wizards = WIZARD_DEVICE_ORDER_AIS;
+
   identityValid = true;
   transaction: Transaction;
-  // mobileInfo: MobileInfo;
+  mobileInfo: MobileInfo;
 
   constructor(
     private router: Router,
@@ -30,6 +33,7 @@ export class DeviceOrderAisExistingBestBuyMobileDetailPageComponent implements O
   }
 
   ngOnInit() {
+    this.getMobileInfo();
   }
 
   onHome() {
@@ -45,32 +49,51 @@ export class DeviceOrderAisExistingBestBuyMobileDetailPageComponent implements O
   }
 
   ngOnDestroy(): void {
-    this.transactionService.save(this.transaction);
+    this.transactionService.update(this.transaction);
   }
 
-  // getMobileInfo() {
-  //   const mobileNo = this.transaction.data.simCard.mobileNo;
-  //   this.http.get(`/api/mobile-detail/${mobileNo}`).toPromise().then((response) => {
-  //     const mobileDetail = response.data || {};
-  //     const serviceYear = mobileDetail.serviceYear;
-  //     this.mobileInfo = {
-  //       mobileNo: mobileNo,
-  //       chargeType: this.mapChargeType(mobileDetail.chargeType),
-  //       status: mobileDetail.mobileStatus,
-  //       sagment: mobileDetail.mobileSegment,
-  //       serviceYear: `${serviceYear.year || ''} ปี ${serviceYear.month || ''} เดือน ${serviceYear.day || ''} วัน`,
-  //       mainPackage: mobileDetail.packageTitle
-  //     };
-  //   });
-  // }
+  getMobileInfo() {
+    this.pageLoadingService.openLoading();
+    const mobileNo = this.transaction.data.simCard.mobileNo;
+    this.http.get(`/api/customerportal/mobile-detail/${mobileNo}`).toPromise().then((response: any) => {
+      const mobileDetail = response.data || {};
+      const serviceYear = mobileDetail.serviceYear;
+      this.mobileInfo = {
+        mobileNo: mobileNo,
+        chargeType: this.mapChargeType(mobileDetail.chargeType),
+        status: mobileDetail.mobileStatus,
+        sagment: mobileDetail.mobileSegment,
+        serviceYear: this.serviceYearWording(serviceYear.year, serviceYear.month, serviceYear.day),
+        mainPackage: mobileDetail.packageTitle
+      };
+      this.pageLoadingService.closeLoading();
+    });
+  }
 
 
-  mapChargeType(chargeType: string): string {
+  mapChargeType(chargeType: string): 'รายเดือน' | 'เติมเงิน' {
     if ('Post-paid' === chargeType) {
       return 'รายเดือน';
     } else {
       return 'เติมเงิน';
     }
+  }
+
+  serviceYearWording(year: string, month: string, day: string) {
+    let serviceYearWording = '';
+    if (year) {
+      serviceYearWording = `${year || ''} ปี `;
+    }
+
+    if (month) {
+      serviceYearWording += `${month} เดือน`;
+    }
+
+    if (day) {
+      serviceYearWording += `${day} วัน`;
+    }
+
+    return serviceYearWording;
   }
 
 }

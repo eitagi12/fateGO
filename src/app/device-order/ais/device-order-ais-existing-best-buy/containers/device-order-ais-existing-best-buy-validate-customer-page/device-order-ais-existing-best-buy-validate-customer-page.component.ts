@@ -6,9 +6,12 @@ import { ApiRequestService, PageLoadingService, HomeService, Utils } from 'mycha
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from 'src/app/buy-product/constants/route-path.constant';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
-import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress, Customer} from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress, Customer, MainPromotion, ProductStock} from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
+import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
+import { LocalStorageService } from 'ngx-store';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-validate-customer-page',
@@ -17,6 +20,7 @@ import { AbstractControl, ValidationErrors } from '@angular/forms';
 })
 export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implements OnInit, OnDestroy {
 
+  wizards = WIZARD_DEVICE_ORDER_AIS;
   readonly PLACEHOLDER = '(หมายเลขโทรศัพท์ / เลขบัตรประชาชน)';
   readonly PLACEHOLDER_HEADDER = 'กรอกเอกสารแสดงตน';
 
@@ -35,7 +39,9 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     private transactionService: TransactionService,
     private apiRequestService: ApiRequestService,
     private http: HttpClient,
-    private utils: Utils
+    private utils: Utils,
+    private localStorageService: LocalStorageService,
+    private priceOptionService: PriceOptionService
   ) {
     // this.homeService.callback = () => {
     //   window.location.href = `/sales-portal/buy-product/brand/${this.band}/${this.model}`;
@@ -109,8 +115,10 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
           mainMobile: data.mainMobile || '',
           mainPhone: data.mainPhone || '',
           billCycle: data.billCycle || '',
-          caNumber: data.accntNo || ''
-        }
+          caNumber: data.accntNo || '',
+          gender: data.gender || '',
+          expireDate: ''
+        };
         return Promise.resolve(customer);
       })
       .then((customer) => {
@@ -143,16 +151,19 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
 
   ngOnDestroy(): void {
     this.transactionService.save(this.transaction);
+    this.priceOptionService.save(this.priceOption);
   }
 
   private createTransaction() {
     // New x-api-request-id
     this.apiRequestService.createRequestId();
+    const mainPromotion = this.setMainPromotion();
 
     this.transaction = {
       data: {
         transactionType: TransactionType.DEVICE_ORDER_EXISTING_AIS,
         action: TransactionAction.KEY_IN,
+        mainPromotion: mainPromotion
       }
     };
   }
@@ -192,4 +203,40 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     }
   }
 
+  setMainPromotion(): MainPromotion {
+    const cammapign = this.localStorageService.load('priceOption').value;
+    const privilege = this.localStorageService.load('priceOptionPrivilege').value;
+    const trade = this.localStorageService.load('priceOptionPrivilegeTrade').value;
+
+    const mainPromotion: MainPromotion = {
+      cammapign: cammapign,
+      privilege: privilege,
+      trade: trade
+    };
+    this.createPriceOption(mainPromotion);
+    return mainPromotion;
+  }
+
+  createPriceOption(mainPromotion: MainPromotion, ) {
+    const productDetail: any = this.localStorageService.load('productDetail').value;
+    const productInfo: any = this.localStorageService.load('productInfo').value;
+    const thumbnail = (productInfo && productInfo.images) ? productInfo.images.thumbnail : '';
+    const device: ProductStock = {
+      company: productInfo.company,
+      productType: productDetail.productType,
+      productSubType: productDetail.productSubType,
+      productName: productDetail.name,
+      model: productDetail.model,
+      brand: productDetail.band,
+      color: productInfo,
+      qty: productInfo.qty,
+      thumbnail: thumbnail
+    };
+
+    this.priceOption = {
+      campaign: mainPromotion.cammapign,
+      trade: mainPromotion.trade,
+      productStock: device
+    };
+  }
 }

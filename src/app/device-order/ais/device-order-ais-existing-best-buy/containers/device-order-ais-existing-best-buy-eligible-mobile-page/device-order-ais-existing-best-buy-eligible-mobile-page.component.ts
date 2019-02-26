@@ -6,6 +6,7 @@ import { HomeService, PageLoadingService, ApiRequestService, EligibleMobile } fr
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-eligible-mobile-page',
@@ -13,6 +14,8 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
   styleUrls: ['./device-order-ais-existing-best-buy-eligible-mobile-page.component.scss']
 })
 export class DeviceOrderAisExistingBestBuyEligibleMobilePageComponent implements OnInit, OnDestroy {
+
+  wizards = WIZARD_DEVICE_ORDER_AIS;
 
   identityValid = false;
   transaction: Transaction;
@@ -56,10 +59,10 @@ export class DeviceOrderAisExistingBestBuyEligibleMobilePageComponent implements
 
   getEligibleMobileNo() {
     const idCardNo = this.transaction.data.customer.idCardNo;
-    // const trade = this.transaction.data.mainPromotion.trade;
+    const trade = this.transaction.data.mainPromotion.trade;
     this.http.post('/api/customerportal/query-eligible-mobile-list', {
       idCardNo: idCardNo,
-      ussdCode: '*999*02#' || '*999*03*9#',
+      ussdCode: '*999*02#', // trade.ussdCode ||
       mobileType: 'All'
     }).toPromise()
     .then((response: any) => {

@@ -13,8 +13,8 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 })
 export class DeviceOrderAisExistingBestBuyResultPageComponent implements OnInit {
 
-  identityValid = true;
   transaction: Transaction;
+  isSuccess: boolean;
 
   constructor(
     private router: Router,
@@ -28,6 +28,7 @@ export class DeviceOrderAisExistingBestBuyResultPageComponent implements OnInit 
    }
 
   ngOnInit() {
+    this.isSuccess = true;
   }
 
   onMainMenu() {

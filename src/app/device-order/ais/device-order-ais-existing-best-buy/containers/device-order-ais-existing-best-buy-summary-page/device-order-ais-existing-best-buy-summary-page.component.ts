@@ -26,7 +26,9 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
     private transactionService: TransactionService,
     private apiRequestService: ApiRequestService,
     private http: HttpClient
-  ) { }
+  ) {
+    this.transaction = this.transactionService.load();
+   }
 
   ngOnInit() {
   }
@@ -44,7 +46,7 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
   }
 
   ngOnDestroy(): void {
-    this.transactionService.save(this.transaction);
+    this.transactionService.update(this.transaction);
   }
 
 
