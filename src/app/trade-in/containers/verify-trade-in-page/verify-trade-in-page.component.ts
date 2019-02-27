@@ -102,11 +102,13 @@ export class VerifyTradeInPageComponent implements OnInit , OnDestroy {
     subscribeBarcode() {
         this.barcodeSubscription = this.aisNativeService.getBarcode().subscribe(
             (barcode: any) => {
-              if (barcode.length === 15) {
+              const regex: any  = /([0-9]{15})+$/;
+              if (barcode.length === 15 && regex.test(barcode)) {
+                this.cancelSelected();
                 this.imeiForm.setValue({imei: barcode});
                 this.checkImei();
               } else {
-                this.alertService.error('Barcode ไม่ตรงตามเงื่อนไข');
+                this.alertService.error(`กรุณาสแกน IMEI ให้ถูกต้อง`);
               }
           });
     }

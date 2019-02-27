@@ -20,6 +20,7 @@ export class SummaryTradeInPageComponent implements OnInit {
   tradeinGrade: string;
   company: string;
   unLockOs: string;
+  platform: string;
 
   constructor(private tradeInTransactionService: TradeInTransactionService,
     private aisNativeService: AisNativeService) {
@@ -27,6 +28,7 @@ export class SummaryTradeInPageComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.platform = this.brand === 'APPLE' ? 'iCloud' : 'Google Play';
     this.summaryTradein();
   }
 
@@ -54,7 +56,7 @@ export class SummaryTradeInPageComponent implements OnInit {
       imeiTradein: this.imeiTradein || '-',
       tradeinPrice: this.tradeinPrice || '-',
       company: this.company || '-',
-      unLockOs: this.brand === 'APPLE' ? 'ปลดล็อค iCloud และ Reset เครื่อง' : 'ปลดล็อค Google Pay และ Reset เครื่อง'
+      unLockOs: `ปลดล็อค ${this.platform} และ Reset เครื่อง`
     };
     this.aisNativeService.printThermalTradeIn(JSON.stringify(tradePrint));
     // window.aisNative.printThermalTradeIn(JSON.stringify(tradePrint));
