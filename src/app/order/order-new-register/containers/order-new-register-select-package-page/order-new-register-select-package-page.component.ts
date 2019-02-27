@@ -167,7 +167,7 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
     if (lang === 'EN') {
       this.promotionShelves = this.promotionShelves.map((promotionShelve: any) => {
         // title
-        promotionShelve.title = this.translation.instant(promotionShelve.title);
+        promotionShelve.title = promotionShelve.title;
         promotionShelve.promotions = promotionShelve.promotions
         .map((subShelve: any) => {
           // subShelve.title
@@ -187,7 +187,7 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
     } else {
       this.promotionShelves = this.promotionShelves.map((promotionShelve: any) => {
         // title
-        promotionShelve.title = this.translation.instant(promotionShelve.title);
+        promotionShelve.title = promotionShelve.title;
         promotionShelve.promotions = promotionShelve.promotions
         .map((subShelve: any) => {
           // subShelve.title
