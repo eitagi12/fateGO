@@ -17,6 +17,8 @@ export class OrderNewRegisterPassportInfoPageComponent implements OnInit, OnDest
   transaction: Transaction;
   captureAndSign: CaptureAndSign;
 
+  commandSign: any;
+
   apiSigned: string;
 
   idCardValid: boolean;
@@ -46,14 +48,19 @@ export class OrderNewRegisterPassportInfoPageComponent implements OnInit, OnDest
     this.mapDatanationality();
     customer.titleName = customer.gender === 'F' ? 'Ms.' : 'Mr.';
   }
+
   onCompleted(captureAndSign: CaptureAndSign) {
     const customer: Customer = this.transaction.data.customer;
     customer.imageSignatureSmartCard = captureAndSign.imageSignature;
     customer.imageReadPassport = captureAndSign.imageSmartCard;
   }
 
+  onCommand(command: any): void {
+    this.commandSign = command;
+  }
 
   onError(valid: boolean) {
+    console.log('valid', valid);
     this.idCardValid = valid;
   }
 
@@ -63,6 +70,10 @@ export class OrderNewRegisterPassportInfoPageComponent implements OnInit, OnDest
 
   onNext() {
     this.router.navigate([ROUTE_ORDER_NEW_REGISTER_FACE_CAPTURE_PAGE]);
+  }
+
+  getOnMessageWs() {
+    this.commandSign.ws.send('CaptureImage');
   }
 
   onHome() {
