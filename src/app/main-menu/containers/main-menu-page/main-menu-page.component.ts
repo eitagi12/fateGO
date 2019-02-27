@@ -31,6 +31,10 @@ export class MainMenuPageComponent implements OnInit {
     ws.onopen = () => {
       ws.send('KeepCard');
     };
+
+    ws.onmessage = () => {
+      ws.close();
+    };
   }
 
 }
