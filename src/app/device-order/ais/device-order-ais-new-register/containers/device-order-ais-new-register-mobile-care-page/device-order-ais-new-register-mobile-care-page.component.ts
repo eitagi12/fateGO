@@ -79,8 +79,7 @@ export class DeviceOrderAisNewRegisterMobileCarePageComponent implements OnInit,
       billingSystem: BillingSystemType.IRB
     }, chargeType, billingSystem, endUserPrice).then((mobileCare: any) => {
       this.mobileCare = {
-        promotions: mobileCare,
-        campaignPrice: 0
+        promotions: mobileCare
       };
       if (this.mobileCare.promotions && this.mobileCare.promotions.length > 0) {
         this.mobileCare.promotions[0].active = true;
