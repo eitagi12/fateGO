@@ -28,7 +28,6 @@ export class SummaryTradeInPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.platform = this.brand === 'APPLE' ? 'iCloud' : 'Google Play';
     this.summaryTradein();
   }
 
@@ -41,6 +40,7 @@ export class SummaryTradeInPageComponent implements OnInit {
     this.imeiTradein = tradeInTransaction.serialNo;
     this.tradeinPrice = tradeInTransaction.tradeInPrice;
     this.company = tradeInTransaction.company;
+    this.platform = this.brand === 'APPLE' ? 'iCloud' : 'Google Play';
   }
 
   gotoMainMenu() {

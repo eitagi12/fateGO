@@ -144,11 +144,13 @@ export class VerifyTradeInPageComponent implements OnInit , OnDestroy {
               this.cancelSelected();
             }
           } else {
-            this.tradeInTransaction.data.tradeIn.matCode = ' ';
             const options = {
               text: 'ไม่พบหมายเลข IMEI ในระบบ กรุณาเลือก ยี่ห้อ,รุ่นโทรศัพท์',
               confirmButtonText: 'ตกลง'
             };
+            this.cancelSelected();
+            this.tradeInTransaction.data.tradeIn.serialNo = imei;
+            this.tradeInTransaction.data.tradeIn.matCode = ' ';
             this.alertService.notify(options);
             this.isCheckBtnNext();
           }
@@ -261,14 +263,16 @@ export class VerifyTradeInPageComponent implements OnInit , OnDestroy {
     }
     isCheckAutoSelect(): boolean {
       const data = this.tradeInTransaction.data.tradeIn;
-      if (this.isSelectImg && this.keyword && data.serialNo && data.model) {
+      if (this.isSelectImg && this.keyword && data.serialNo && data.model && data.company) {
         return true;
       }
       return false;
     }
 
     cancelSelected () {
-      this.imeiForm.reset();
+      if (!this.imeiForm.value) {
+        this.imeiForm.reset();
+      }
       this.setBorderImgOnSelect('');
       this.isSelectImg = false;
       this.keyword = null;
