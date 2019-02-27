@@ -203,6 +203,11 @@ export class VerifyTradeInPageComponent implements OnInit , OnDestroy {
             return data;
           }
         });
+      if (this.tradeInTransaction.data.tradeIn.brand) {
+        this.keyword = null;
+        this.tradeInTransaction.data.tradeIn.model = null;
+        this.isCheckBtnNext();
+      }
       this.tradeInTransaction.data.tradeIn.brand = nameSelect[0].name;
       const nameBrandSelect = nameSelect[0].name;
       this.setBorderImgOnSelect(nameBrandSelect);
