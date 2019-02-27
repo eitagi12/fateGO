@@ -30,6 +30,7 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
 
   transaction: Transaction;
   promotionShelves: PromotionShelve[];
+  promotionData: any;
   condition: any;
   modalRef: BsModalRef;
 
@@ -57,6 +58,9 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
 
   ngOnInit() {
     this.callService();
+    this.translation.onLangChange.subscribe(lang => {
+      this.mapPromotionByLang(lang.lang);
+    });
   }
 
   onCompleted(promotion: any) {
@@ -121,6 +125,7 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
       })
       .then((resp: any) => {
         const data = resp.data.packageList || [];
+        this.promotionData = data;
         const promotionShelves: PromotionShelve[] = data.map((promotionShelve: any) => {
           return {
             title: promotionShelve.title,
@@ -152,9 +157,54 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
         this.promotionShelves = this.buildPromotionShelveActive(promotionShelves);
       })
       .then(() => {
+        this.mapPromotionByLang(this.translation.currentLang);
         this.pageLoadingService.closeLoading();
       });
 
+  }
+
+  mapPromotionByLang(lang: string) {
+    if (lang === 'EN') {
+      this.promotionShelves = this.promotionShelves.map((promotionShelve: any) => {
+        // title
+        promotionShelve.title = this.translation.instant(promotionShelve.title);
+        promotionShelve.promotions = promotionShelve.promotions
+        .map((subShelve: any) => {
+          // subShelve.title
+          subShelve.title = subShelve.title;
+          subShelve.sanitizedName = subShelve.sanitizedName;
+          subShelve.items = (subShelve.items || []).map((promotion: any) => {
+             // detail
+            promotion.title = promotion.value.shortNameEng;
+            promotion.detail = promotion.value.statementEng;
+            return  promotion;
+          });
+          return subShelve;
+        });
+        return promotionShelve;
+      });
+      this.promotionShelves = this.buildPromotionShelveActive(this.promotionShelves);
+    } else {
+      this.promotionShelves = this.promotionShelves.map((promotionShelve: any) => {
+        // title
+        promotionShelve.title = this.translation.instant(promotionShelve.title);
+        promotionShelve.promotions = promotionShelve.promotions
+        .map((subShelve: any) => {
+          // subShelve.title
+          subShelve.title = subShelve.title;
+          subShelve.sanitizedName = subShelve.sanitizedName;
+          subShelve.items = (subShelve.items || []).map((promotion: any) => {
+             // detail
+            promotion.title = promotion.value.shortNameThai;
+            promotion.detail = promotion.value.statementThai;
+            return  promotion;
+          });
+          return subShelve;
+        });
+        return promotionShelve;
+      });
+      this.promotionShelves = this.buildPromotionShelveActive(this.promotionShelves);
+    }
   }
 
   onTermConditions(condition: string) {
