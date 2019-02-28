@@ -39,7 +39,7 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
     private alertService: AlertService,
     private vendingApiService: VendingApiService,
     private readCardService: ReadCardService,
-    private translation: TranslateService
+    public translation: TranslateService
   ) {
   }
 
