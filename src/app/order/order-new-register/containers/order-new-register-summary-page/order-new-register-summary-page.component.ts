@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
 import {
   ROUTE_ORDER_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE,
@@ -8,13 +8,15 @@ import { Router } from '@angular/router';
 import { HomeService, ConfirmCustomerInfo, BillingInfo, TelNoBillingInfo, MailBillingInfo, TokenService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-order-new-register-summary-page',
   templateUrl: './order-new-register-summary-page.component.html',
   styleUrls: ['./order-new-register-summary-page.component.scss']
 })
-export class OrderNewRegisterSummaryPageComponent implements OnInit {
+export class OrderNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
 
   wizards = WIZARD_ORDER_NEW_REGISTER;
 
@@ -23,11 +25,13 @@ export class OrderNewRegisterSummaryPageComponent implements OnInit {
   billingInfo: BillingInfo;
   mailBillingInfo: MailBillingInfo;
   telNoBillingInfo: TelNoBillingInfo;
+  translationSubscribe: Subscription;
 
   constructor(
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
+    private translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -76,6 +80,20 @@ export class OrderNewRegisterSummaryPageComponent implements OnInit {
       mobileNo: billCycleData.mobileNoContact,
       phoneNo: billCycleData.phoneNoContact,
     };
+    this.mapCustomerInfoByLang(this.translation.currentLang);
+    this.translationSubscribe = this.translation.onLangChange.subscribe(lang => {
+      this.mapCustomerInfoByLang(lang.lang);
+    });
+  }
+
+  mapCustomerInfoByLang(lang: string) {
+    if (lang === 'EN') {
+      this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameEng;
+      this.confirmCustomerInfo.packageDetail = this.transaction.data.mainPackage.statementEng;
+    } else {
+      this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameThai;
+      this.confirmCustomerInfo.packageDetail = this.transaction.data.mainPackage.statementThai;
+    }
   }
 
   onBack() {
@@ -84,6 +102,12 @@ export class OrderNewRegisterSummaryPageComponent implements OnInit {
   onNext() {
     this.router.navigate([ROUTE_ORDER_NEW_REGISTER_AGREEMENT_SIGN_PAGE]);
   }
+
+  ngOnDestroy(): void {
+    this.translationSubscribe.unsubscribe();
+    this.transactionService.save(this.transaction);
+  }
+
 
   onHome() {
     this.homeService.goToHome();

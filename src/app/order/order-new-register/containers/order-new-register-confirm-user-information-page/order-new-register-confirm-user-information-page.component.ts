@@ -14,6 +14,8 @@ import {
 } from 'src/app/order/order-new-register/constants/route-path.constant';
 import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
 import { HttpClient } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -34,6 +36,8 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
   isTelNoBillingValid: boolean;
   isMailBillingInfoValid: boolean;
 
+  translationSubscribe: Subscription;
+
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -41,6 +45,7 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
     private alertService: AlertService,
     private utils: Utils,
     private http: HttpClient,
+    private translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
 
@@ -48,6 +53,9 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
     if (!this.transaction.data.billingInformation) {
       this.transaction.data.billingInformation = {};
     }
+    this.translationSubscribe = this.translation.onLangChange.subscribe(lang => {
+      this.mapCustomerInfoByLang(lang.lang);
+    });
   }
 
   ngOnInit() {
@@ -84,6 +92,17 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
     };
 
     this.initBillingInfo();
+    this.mapCustomerInfoByLang(this.translation.currentLang);
+  }
+
+  mapCustomerInfoByLang(lang: string) {
+    if (lang === 'EN') {
+      this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameEng;
+      this.confirmCustomerInfo.packageDetail = this.transaction.data.mainPackage.statementEng;
+    } else {
+      this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameThai;
+      this.confirmCustomerInfo.packageDetail = this.transaction.data.mainPackage.statementThai;
+    }
   }
 
   initBillingInfo() {
@@ -248,6 +267,7 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
   }
 
   ngOnDestroy(): void {
+    this.translationSubscribe.unsubscribe();
     this.transactionService.save(this.transaction);
   }
 

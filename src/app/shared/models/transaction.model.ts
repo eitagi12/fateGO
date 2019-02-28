@@ -122,6 +122,8 @@ export interface MainPackage {
   promotionPackage?: string;
   shortNameThai: string;
   statementThai?: string;
+  shortNameEng?: string;
+  statementEng?: string;
   parameters?: any;
 }
 
