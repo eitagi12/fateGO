@@ -61,6 +61,7 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
   onHome() {
     this.homeService.goToHome();
   }
+
   onReadPassport() {
     this.readPassportSubscription = this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
       console.log('readpassport', readPassport);
