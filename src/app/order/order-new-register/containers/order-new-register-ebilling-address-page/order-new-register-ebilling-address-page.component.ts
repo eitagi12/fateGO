@@ -119,11 +119,11 @@ export class OrderNewRegisterEbillingAddressPageComponent implements OnInit, OnD
     const province = this.getProvinceByName(params.provinceName);
     const req = {
       provinceId: province.id,
-      zipcode: params.zipCode
+      // zipcode: params.zipCode
     };
-    if (!params.zipCode) {
-      delete req.zipcode;
-    }
+    // if (!params.zipCode) {
+    //   delete req.zipcode;
+    // }
 
     this.http.get('/api/customerportal/newRegister/queryAmphur', {
       params: req
@@ -139,11 +139,11 @@ export class OrderNewRegisterEbillingAddressPageComponent implements OnInit, OnD
     const req = {
       provinceId: province.id,
       amphurName: params.amphurName,
-      zipcode: params.zipCode
+      // zipcode: params.zipCode
     };
-    if (!params.zipCode) {
-      delete req.zipcode;
-    }
+    // if (!params.zipCode) {
+    //   delete req.zipcode;
+    // }
 
     this.http.get('/api/customerportal/newRegister/queryTumbol', {
       params: req
