@@ -1,4 +1,5 @@
-import { ChargeType, PaymentDetailQRCode, PaymentDetailBank, ReceiptInfo } from 'mychannel-shared-libs';
+import { ChargeType, PaymentDetailBank, PaymentDetailQRCode, } from 'mychannel-shared-libs';
+import { ReceiptInfo } from 'mychannel-shared-libs/lib/component/receipt-info/receipt-info.component';
 
 export enum TransactionType {
   DEVICE_ORDER_NEW_REGISTER_AIS = 'NewRegisterAIS',
@@ -43,8 +44,8 @@ export interface TransactionData {
   onTopPackage?: OnTopPackage;
   mainPackageOneLove?: any[];
   mobileCarePackage?: MobileCarePackage;
-  existingMobileCare?: ExistingMobileCare;
   faceRecognition?: FaceRecognition;
+  existingMobileCare?: ExistingMobileCare;
   order?: Order;
   reasonCode?: string;
   billingInformation?: BillingInformation;
@@ -80,8 +81,8 @@ export interface Payment {
 }
 export interface MainPromotion {
   cammapign: any;
-  privilege: any;
-  trade: any;
+  privilege?: any;
+  trade?: any;
 }
 
 // tslint:disable-next-line:no-empty-interface
@@ -128,6 +129,7 @@ export interface Customer {
 export interface SimCard {
   mobileNo: string;
   simSerial?: string;
+  imei?: string;
   billingSystem?: string;
   moblieNoTypeA?: string;
   chargeType?: ChargeType;
