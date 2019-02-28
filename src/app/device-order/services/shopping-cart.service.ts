@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Transaction } from 'src/app/shared/models/transaction.model';
-import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 
@@ -21,17 +19,17 @@ export class ShoppingCartService {
     const customer = transaction.data.customer;
     const simCard = transaction.data.simCard;
     const campaign = priceOption.campaign;
-    const productStock = priceOption.productStock;
+    const trade = priceOption.trade || {};
+    const productDetail = priceOption.productDetail || {};
 
+    const advancePay = +trade.advancePay.amount || 0;
     return {
       fullName: customer.titleName + ' ' + customer.firstName + ' ' + customer.lastName,
       mobileNo: simCard && simCard.mobileNo ? simCard.mobileNo : '',
       campaignName: campaign.campaignName,
-      brand: productStock.stock.branch,
-      model: productStock.stock.model,
-      color: productStock.stock.color,
+      commercialName: productDetail.name,
       qty: 1,
-      price: +campaign.maximumPromotionPrice + (+campaign.minimumAdvancePay)
+      price: +trade.promotionPrice + advancePay
     };
   }
 }

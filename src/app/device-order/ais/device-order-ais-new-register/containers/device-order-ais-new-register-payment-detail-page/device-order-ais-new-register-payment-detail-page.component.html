@@ -12,21 +12,22 @@
     <div class="mt-3">
       <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
 
-      <mc-payment-detail [paymentDetail]="paymentDetail" [selectPaymentDetail]="selectPaymentDetail" [option]="paymentDetailOption"
+      <!-- <mc-payment-detail [paymentDetail]="paymentDetail" [selectPaymentDetail]="selectPaymentDetail" [option]="paymentDetailOption"
         (qrCode)="onSelectQRCode($event)" (bank)="onSelectBank($event)" (installment)="onSelectInstallment($event)"
         (paymentType)="onSelectPaymentType($event)"></mc-payment-detail>
 
       <mc-payment-detail *ngIf="priceOption?.trade?.advancePay && priceOption?.trade?.advancePay?.amount !== 0 &&
       (priceOption?.trade?.advancePay?.installmentFlag === 'N' || priceOption?.trade?.advancePay?.installmentFlag === '')"
         [paymentDetail]="paymentDetailAdvancePay" [selectPaymentDetail]="selectPaymentDetailAdvancePay" [option]="paymentDetailAdvancePayOption"
-        (qrCode)="onSelectQRCodeAdvancePay($event)" (bank)="onSelectBankAdvancePay($event)" (paymentType)="onSelectPaymentTypeAdvancePay($event)"></mc-payment-detail>
+        (qrCode)="onSelectQRCodeAdvancePay($event)" (bank)="onSelectBankAdvancePay($event)" (paymentType)="onSelectPaymentTypeAdvancePay($event)"></mc-payment-detail> -->
 
 
-      <mc-receipt-info [receiptInfo]="receiptInfo" (completed)="onReceiptInfoCompleted($event)" (error)="onReceiptInfoError($event)"></mc-receipt-info>
+      <!-- <mc-receipt-info [receiptInfo]="receiptInfo" (completed)="onReceiptInfoCompleted($event)" (error)="onReceiptInfoError($event)"></mc-receipt-info> -->
     </div>
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()" [disabled]="!(checkPaymentFormValid() && checkAdvancePaymentFormValid() && receiptInfoValid)">NEXT</button>
+    <!-- <button class="btn btn-success" (click)="onNext()" [disabled]="!(checkPaymentFormValid() && checkAdvancePaymentFormValid() && receiptInfoValid)">NEXT</button> -->
+    <button class="btn btn-success" (click)="onNext()">NEXT</button>
   </mc-footer>
 </div>

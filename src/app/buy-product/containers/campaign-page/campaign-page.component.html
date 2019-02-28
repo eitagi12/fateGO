@@ -24,7 +24,7 @@
     </nav>
 
 
-    <div class="container-fluid text-success mb-2" [mcLoading]="productDetailService">
+    <div class="container-fluid text-success mb-2">
       <div class="row bg-white shadow-sm pt-3 pb-3">
         <div class="col-12 col-sm-3 col-md-3 col-lg-2 mb-2">
           <div class="shadow-sm text-center">
@@ -40,32 +40,38 @@
               <h5 class="mt-0 text-brown">{{ productDetail?.name }} {{ hansetBundle }}</h5>
             </div>
             <div class="col-4 col-sm-2 text-right">
-              <!-- <a href="#" (click)="$event.preventDefault();">
-                <img src="assets/images/icon/icon-dv.png" class="icon-dv m-2">
-              </a> -->
               <a href="#" (click)="getProductSpecification(params?.brand, params?.model); $event.preventDefault();">
                 <img src="assets/images/icon/spec_mobile_phone.png" class="icon-dv m-2">
               </a>
             </div>
-            <!-- Max Price -->
-            <div class="col-12 text-right text-grey mb-2" *ngIf="priceOptions?.length">
-              ราคาเครื่องเปล่า ฿{{ priceOptions[0]?.maximumNormalPrice | number}}
+            <div class="col-12 text-right text-grey mb-2" *ngIf="priceOption?.campaign">
+              ราคาเครื่องเปล่า ฿{{ priceOption?.campaign?.maximumNormalPrice | number}}
             </div>
             <!-- color -->
-            <div class="col-12 color-picker">
+            <div class="col-12">
               <div class="row d-flex">
                 <div class="col-3 col-sm-2 text-grey align-self-center">
                   เลือกสี :
                 </div>
                 <div class="col-9 col-sm-10">
-                  <div class="color-group" *ngFor="let product of productDetail?.products">
-                    <div class="block-color check-outer" (click)=" product?.stock?.qty > 0 ? onProductStockSelected(product) : null  ; $event.preventDefault();"
-                      [ngClass]="{ 'active': product?.colorName && product?.colorName === priceOption?.productStock?.colorName, 'bg-blue-grey' : product?.stock?.qty < 1 }">
-                      <span class="check circle-qty " [ngStyle]="{ backgroundColor: '#' + product?.colorCode }"></span>
-                      <span class="color-name"> {{product?.colorName || '&nbsp;'}}</span>
+
+                  <form [formGroup]="colorForm">
+                    <div class="row">
+                      <ng-container *ngFor="let product of productDetail?.products; let i = index">
+                        <div class="col-sm-6 col-md-4 col-lg-3 px-0" *ngIf="product?.colorName">
+                          <input type="radio" id="product-{{ i }}" name="stock" formControlName="stock" [value]="product?.stock">
+                          <label for="product-{{ i }}" class="border shadow-sm rounded border-grey text-grey mb-1" [ngClass]="{ 'disabled': product?.stock?.qty <= 0 }"
+                          (click)="onCheckStock($event, product?.stock)">
+                            <small>{{ product?.colorName }}&nbsp;</small>
+                            <span>({{ product?.stock?.qty }})</span>
+                          </label>
+                          <div class="product-color" [ngStyle]="{ 'background-color': '#' + product?.colorCode }"></div>
+                          <small class="d-block text-center text-pink" [ngClass]="{ 'invisible': product?.stock?.qty > 0}">สินค้าหมดชั่วคราว</small>
+                        </div>
+                      </ng-container>
                     </div>
-                    <div class="text-pink text-center"> {{ product?.stock?.qty > 0 ? '' : 'สินค้าหมดชั่วคราว' }}</div>
-                  </div>
+                  </form>
+
                 </div>
               </div>
             </div>
@@ -75,36 +81,40 @@
         </div>
       </div>
     </div>
-    
-    <!-- campaigns -->
-    <div [mcLoading]="priceOptionDetailService">
-    <div class="bg-white price" *ngIf="priceOption?.campaign?.length <= 0 && tabs" [mcLoading]="priceOptionDetailService">
-      <tabset [justified]="true">
-        <tab *ngFor="let tab of tabs" [active]="tab.active" (select)="onCustomerGroupSelected(tab)">
-          <ng-template tabHeading>
-            <div class="{{tab.code}}" [ngClass]="{ 'active' : tab.active }"><b>{{ tab.name }}</b></div>
-          </ng-template>
-        </tab>
-        <!-- <tab *ngFor="let tab of tabs" [heading]="tab.name" [active]="tab.active" (select)="onCustomerGroupSelected(tab)"></tab> -->
-      </tabset>
 
-      <div class="bg-white pb-3" *ngIf="campaignSliders?.length > 0">
-        <div class="p-3">
-          <img class="icon" src="assets/images/icon/sale_portal_pink_circle_megaphone.png">
-          <span class="pl-3">
-            โปรโมชั่นที่เข้าร่วมรายการ
-            <span class="text-light-green">({{ campaignSliders?.length }})</span>
-          </span>
-        </div>
-        <mc-campaign-slider [campaignSliders]="campaignSliders" (selected)="onCampaignSelected($event)"
-          (promotionShelve)="onPromotionShelve($event)" (installmentList)="viewInstallmentList($event)"></mc-campaign-slider>
+    <!-- campaigns -->
+    <div [mcLoading]="priceOptionDetailService" [hidden]="priceOption?.campaign">
+      <div class="bg-white price" [hidden]="tabs?.length <= 0">
+        <tabset [justified]="true">
+          <tab *ngFor="let tab of tabs" [active]="tab.active">
+            <ng-template tabHeading>
+              <div class="{{tab.code}}" [ngClass]="{ 'active' : tab.active }"><b>{{ tab.name }}</b></div>
+            </ng-template>
+
+            <div class="bg-white pb-3" *ngIf="tab?.campaignSliders?.length > 0">
+              <div class="p-3">
+                <img class="icon" src="/assets/images/icon/sale_portal_pink_circle_megaphone.png">
+                <span class="pl-3">
+                  โปรโมชั่นที่เข้าร่วมรายการ
+                  <span class="text-light-green">({{ tab?.campaignSliders?.length }})</span>
+                </span>
+              </div>
+              <mc-campaign-slider [campaignSliders]="tab?.campaignSliders" (selected)="onCampaignSelected($event, tab.code)"
+                (promotionShelve)="onViewPromotionShelve($event)" (installments)="onViewInstallments($event)"></mc-campaign-slider>
+            </div>
+          </tab>
+          <!-- <tab *ngFor="let tab of tabs" [heading]="tab.name" [active]="tab.active" (select)="onCustomerGroupSelected(tab)"></tab> -->
+        </tabset>
       </div>
-      <div class="not-found text-grey" *ngIf="campaignSliders?.length === 0">
-        ไม่พบข้อมูลที่ท่านเลือก
-      </div>
+      <h3 class="not-found text-grey" *ngIf="(priceOptionDetailService | async) && tabs?.length <= 0">
+        ไม่พบข้อมูลโครงการที่ท่านเลือก
+      </h3>
     </div>
+
+
+
     <!-- trades -->
-    <div *ngIf="priceOption?.campaign?.campaignName && tabs">
+    <div *ngIf="priceOption?.campaign">
       <div class="container-fluid">
         <div class="row bg-white shadow-sm py-3 mb-2">
           <div class="col-12">
@@ -114,79 +124,66 @@
           </div>
         </div>
 
-        <div class="card mb-3" *ngFor="let privilege of priceOption?.campaign?.privileges">
+        <div class="card mb-2" *ngFor="let privilege of priceOption?.campaign?.privileges">
           <div class="card-body">
-            <h6 class="text-black">{{ priceOption?.campaign?.campaignName || priceOption?.campaign?.campaignDesc }} {{ priceOption?.campaign?.customerGroup?.name }} ({{ privilege?.ussdCode }})</h6>
-            <!-- เครื่องโทรศัพท์ราคาพิเศษ AIS Hot Deal buffet net สำหรับลูกค้าปัจจุบัน  {{ privilege?.privilegeDesc || privilege?.privilegeName }} -->
-            <div class="mb-3">
-              <div class="row">
-                <div class="col-8">
-                  <ng-container *ngIf="privilege?.minimumPromotionPrice || privilege?.maximumPromotionPrice">
-                    <span class="text-light-green mr-2">
-                      <span *ngIf="+privilege?.minimumPromotionPrice && !privilege?.maximumPromotionPrice">
-                        ฿{{ +privilege?.minimumPromotionPrice | number }}
-                      </span>
-                      <span *ngIf="+privilege?.maximumPromotionPrice">
-                        ฿{{ +privilege?.maximumPromotionPrice | number }}
-                      </span>
-                    </span>
-                  </ng-container>
-                  <ng-container *ngIf="+privilege?.minimumAdvancePay || +privilege?.maximumAdvancePay">
-                    (ค่าแพ็กเกจชำระล่วงหน้า
-                    <span *ngIf="+privilege?.minimumAdvancePay > 0">
-                      ฿{{ +privilege?.minimumAdvancePay | number }}
-                    </span>
-                    <span *ngIf="+privilege?.minimumAdvancePay
-                    && +privilege?.maximumAdvancePay 
-                    && (+privilege?.minimumAdvancePay !== +privilege?.maximumAdvancePay)">
-                      - </span>
-                    <span *ngIf="+privilege?.maximumAdvancePay && (+privilege?.minimumAdvancePay !== +privilege?.maximumAdvancePay)">
-                      ฿{{ +privilege?.maximumAdvancePay | number }}
-                    </span>
-                    )
-                  </ng-container>
-                </div>
-                <div class="col-4 text-right">
-                  <span class="text-orange">
-                    ฿{{ (+privilege?.maximumPromotionPrice) + (+privilege?.maximumAdvancePay) | number }} (รวม VAT)
+            <h6 class="text-black m-0">
+              {{ priceOption?.campaign?.campaignName || priceOption?.campaign?.campaignDesc }}
+              {{ priceOption?.customerGroup?.name }} ({{ privilege?.ussdCode }})
+            </h6>
+            <!-- price, advance pay -->
+            <div class="row mb-2">
+              <div class="col-6">
+                <ng-container *ngIf="+privilege?.minimumPromotionPrice > 0 || +privilege?.maximumPromotionPrice > 0">
+                  <span class="text-light-green mr-2">
+                    ฿{{ +(privilege?.maximumPromotionPrice || privilege?.minimumPromotionPrice) | number }}
                   </span>
-                </div>
-                <div class="col-12 col-sm-6 pt-3 text-grey" *ngIf="+privilege?.maximumContract">
-                  <img src="assets/images/icon/sales_portal_green_alert_person.png" class="icon-trade">
-                  <span>ข้อตกลงรับสิทธ์ิต่อเนื่อง {{ privilege?.maximumContract }} เดือน</span>
-                </div>
-                <div class="col-12 col-sm-6 pt-3 text-grey" *ngIf="+privilege?.minimumPackagePrice" (click)="showSelectPackageTemplate()">
-                  <img src="assets/images/icon/sales_portal_green_phone.png" class="icon-trade">
-                  <span><u>แพ็กเกจเริ่มต้น {{ +privilege?.minimumPackagePrice || 0 | number }} บาท/เดือน</u></span>
-                  <!-- <span>แพ็คเกจเสริม {{ privilege?.minimumPackagePrice * 1.07 | number }} บาท ( รวมVAT )</span> -->
-                </div>
-
-                <div *ngIf="priceOption.minimumPackagePrice" class="row collapse align-middle detail-container" style="cursor: pointer">
-                  <div class="columns small-2">
-                    <img class="icon" src="assets/images/icon/sales_portal_green_phone.png">
-                  </div>
-                  <div class="columns small-10" (click)="onSelectPackage(priceOption)">
-                    <label *ngIf="(filterCustomerGroup$ | async)?.flowId !=='102' && priceOption.minimumPackagePrice !== 0">
-                      <u>
-                        {{ MINIMUM_PACKAGE }} {{ priceOption.minimumPackagePrice | number }} {{ BATH }}
-                      </u>
-                    </label>
-                    <label *ngIf="(filterCustomerGroup$ | async)?.flowId ==='102' && priceOption.minimumPackagePrice !== 0">
-                      <u>
-                        แพ็คเกจเสริม {{ (priceOption.minimumPackagePrice*1.07) | number }} {{ BATH }} ( รวมVAT )
-                      </u>
-                    </label>
-                  </div>
+                </ng-container>
+                <ng-container *ngIf="+privilege?.minimumAdvancePay > 0 || +privilege?.maximumAdvancePay > 0">
+                  (ค่าแพ็กเกจชำระล่วงหน้า
+                  <span *ngIf="privilege?.minimumAdvancePay">
+                    ฿{{ privilege?.minimumAdvancePay | number }}
+                  </span>
+                  <span *ngIf="privilege?.minimumAdvancePay && privilege?.maximumAdvancePay 
+                    && (+privilege?.minimumAdvancePay < +privilege?.maximumAdvancePay)">
+                    - </span>
+                  <span *ngIf="+privilege?.minimumAdvancePay < +privilege?.maximumAdvancePay">
+                    ฿{{ privilege?.maximumAdvancePay | number }}
+                  </span>)
+                </ng-container>
+              </div>
+              <div class="col-6">
+                <div class="text-right text-pink">
+                  {{ getSummaryPrivilegePrice(privilege) | number }} (รวม VAT)
                 </div>
               </div>
             </div>
+
+            <!-- ข้อตกลง, แพ๊กเกจ -->
+            <div class="row my-3">
+              <div class="col-6 text-center">
+                <img src="assets/images/icon/sales_portal_green_alert_person.png" width="25" />
+                <span class="text-grey border-bottom">
+                  ข้อตกลงรับสิทธ์ิต่อเนื่อง {{ privilege?.maximumContract | number }} เดือน
+                </span>
+              </div>
+              <div class="col-6 text-center" *ngIf="privilege?.minimumPackagePrice > 0">
+                <img src="assets/images/icon/sales_portal_green_phone.png" width="15" />
+                <span *ngIf="priceOptoin?.customerGroup?.flowId !== '102'" class="text-grey border-bottom">
+                  แพ็กเกจเริ่มต้น {{ privilege?.minimumPackagePrice | number }} บาท/เดือน
+                </span>
+                <span *ngIf="priceOptoin?.customerGroup?.flowId === '102'" class="text-grey border-bottom">
+                  แพ็กเกจเสริม {{ (+privilege?.minimumPackagePrice * 1.07) | number }} บาท ( รวมVAT )</span>
+              </div>
+            </div>
+            <!-- slider trade -->
             <mc-trade-slider [tradeSliders]="privilege | privilegeToTradeSlider" (selected)="onTradeSelected($event)"
-              (installmentClick)="viewInstallment($event)"></mc-trade-slider>
+              (installments)="onViewInstallmentsFormTrede($event)">
+            </mc-trade-slider>
+
           </div>
         </div>
       </div>
     </div>
-  </div>
     <!---------------------->
   </div>
 </div>
@@ -286,183 +283,56 @@
 </ng-template>
 
 
-<ng-template #selectPackageTemplate>
-  <div class="modal-header bg-primary" >
-    <h5 class="modal-title text-white">แพ็กเกจที่ร่วมรายการ</h5>
-    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
-      <span aria-hidden="true">&times;</span>
-    </button>
-  </div>
-  <div class="container-fluid" [mcLoading]="packageDetailService">
-    <div class="row bg-spac pt-2 pb-2">
-      <mc-promotion-shelve [view]="true" class="select-package-template" [promotionShelves]="promotionShelves"></mc-promotion-shelve>
-    </div>
+<ng-template #promotionShelveTemplate>
+  <div class="py-3">
+    <mc-promotion-shelve [view]="true" [promotionShelves]="promotionShelves"></mc-promotion-shelve>
   </div>
 </ng-template>
 
 
 <ng-template #installmentTemplate>
-  <div class="modal-header bg-primary">
-    <h5 class="modal-title text-white">บัตรที่ร่วมรายการผ่อนชำระ</h5>
-    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+  <div class="modal-header bg-primary" style="border-bottom: none;">
+    <h6 class="modal-title text-white w-100 text-center">บัตรที่ร่วมรายการผ่อนชำระ</h6>
+    <button type="button" class="close pull-right" (click)="modalRef.hide()">
       <span aria-hidden="true">&times;</span>
     </button>
   </div>
-
-  <div class="container-fluid">
-    <ng-container [ngSwitch]="true">
-      <!-- HEAD_COLUMN -->
-      <div class="row bg-spac pt-2 pb-2 background-color">
-        <ng-container *ngSwitchCase="!privilegeTradeInstallmentGroup[0].showAdvancePay && !privilegeTradeInstallmentGroup[0].fromTrade">
-          <!-- !showAdvancePay &&  !fromTrade-->
-          <div class="col-6 center-span-text text-white align-self-center">
-          </div>
-          <div class="col-6 center-span-text text-white align-self-center">
-            <span>
-              ผ่อนชำระค่าเครื่อง (บาท / เดือน)
-            </span>
-          </div>
-        </ng-container>
-        <ng-container *ngSwitchCase="privilegeTradeInstallmentGroup[0].showAdvancePay && privilegeTradeInstallmentGroup[0].fromTrade">
-          <!-- showAdvancePay &&  fromTrade-->
-          <div class="col-6 center-span-text text-white align-self-center">
-          </div>
-          <div class="col-6 center-span-text text-white align-self-center">
-            <span>ผ่อนชำระค่าเครื่องพร้อม<br>ค่าแพ็กเกจล่วงหน้า (บาท / เดือน)</span>
-          </div>
-        </ng-container>
-        <ng-container *ngSwitchCase="!privilegeTradeInstallmentGroup[0].showAdvancePay && privilegeTradeInstallmentGroup[0].fromTrade">
-          <!-- !showAdvancePay &&  fromTrade-->
-          <div class="col-6 center-span-text text-white align-self-center">
-          </div>
-          <div class="col-6 center-span-text text-white align-self-center">
-            <span>ผ่อนชำระค่าเครื่อง (บาท / เดือน)</span>
-          </div>
-        </ng-container>
-        <ng-container *ngSwitchDefault>
-          <div class="col-4 center-span-text text-white align-self-center">
-          </div>
-          <div class="col-4 center-span-text text-white align-self-center">
-            <span>ผ่อนชำระค่าเครื่อง (บาท / เดือน)</span>
-          </div>
-          <div class="col-4 center-span-text text-white align-self-center">
-            <span>ผ่อนชำระค่าเครื่องพร้อม<br>ค่าแพ็กเกจล่วงหน้า (บาท / เดือน)</span>
-          </div>
-        </ng-container>
-      </div>
-    </ng-container>
-
-    <div class="row bg-spac pt-2 pb-2 justify-content-md-center border-buttom" *ngFor="let installmentList of privilegeTradeInstallmentGroup">
-      <ng-container [ngSwitch]="true">
-        <ng-container *ngSwitchCase="!installmentList.showAdvancePay && !installmentList.fromTrade">
-          <!-- !showAdvancePay &&  !fromTrade-->
-          <div class="col-6">
-            <div class="row text-center">
-              <div class="col-12">
-                {{installmentList?.percentage}}% {{installmentList?.month}} เดือน
-              </div>
-              <div class="col-12">
-                <div class="row">
-                  <div class="col-4" *ngFor="let bank of installmentList?.banks">
-                    <img class="img-fluid img-thumbnail" [src]="bank.imageUrl" onError="this.src='./assets/images/icon/img-placeholder.png';">
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-6 center-span-text text-light-green align-self-center">
-            <span *ngIf="installmentList.priceList[0] === installmentList.priceList[installmentList.priceList.length-1]">฿{{
-              installmentList.priceList[0] | number }}</span>
-            <span *ngIf="installmentList.priceList[0] !== installmentList.priceList[installmentList.priceList.length-1]">
-              ฿{{ installmentList.priceList[0] | number }} -
-              ฿{{installmentList.priceList[installmentList.priceList.length-1] | number }}</span>
-          </div>
-        </ng-container>
-
-        <ng-container *ngSwitchCase="installmentList.showAdvancePay && installmentList.fromTrade">
-          <!-- showAdvancePay &&  fromTrade-->
-          <div class="col-6">
-            <div class="row text-center">
-              <div class="col-12">
-                {{installmentList?.percentage}}% {{installmentList?.month}} เดือน
-              </div>
-              <div class="col-12">
-                <div class="row">
-                  <div class="col-4" *ngFor="let bank of installmentList?.banks">
-                    <img class="img-fluid img-thumbnail" [src]="bank.imageUrl" onError="this.src='./assets/images/icon/img-placeholder.png';">
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-6 center-span-text text-light-green align-self-center">
-            <span *ngIf="installmentList.advancePayList">
-              ฿{{installmentList.advancePayList | number }}</span>
-          </div>
-        </ng-container>
-
-        <ng-container *ngSwitchCase="!installmentList.showAdvancePay && installmentList.fromTrade">
-          <!-- !showAdvancePay &&  fromTrade-->
-          <div class="col-6">
-            <div class="row text-center">
-              <div class="col-12">
-                {{installmentList?.percentage}}% {{installmentList?.month}} เดือน
-              </div>
-              <div class="col-12">
-                <div class="row">
-                  <div class="col-4" *ngFor="let bank of installmentList?.banks">
-                    <img class="img-fluid img-thumbnail" [src]="bank.imageUrl" onError="this.src='./assets/images/icon/img-placeholder.png';">
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-6 center-span-text text-light-green align-self-center">
-            <span *ngIf="installmentList.priceList">
-              ฿{{installmentList.priceList | number }}</span>
-          </div>
-        </ng-container>
-
-        <ng-container *ngSwitchDefault>
-          <div class="col-4">
-            <div class="row text-center">
-              <div class="col-12">
-                {{installmentList?.percentage}}% {{installmentList?.month}} เดือน
-              </div>
-              <div class="col-12">
-                <div class="row">
-                  <div class="col-4" *ngFor="let bank of installmentList?.banks">
-                    <img class="img-fluid img-thumbnail" [src]="bank.imageUrl" onError="this.src='./assets/images/icon/img-placeholder.png';">
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="col-4 align-self-center">
-            <div class="center-span-text text-light-green ">
-              <span *ngIf="installmentList.priceList[0] === installmentList.priceList[installmentList.priceList.length-1]">
-                ฿{{installmentList.priceList[0] | number }}</span>
-              <span *ngIf="installmentList.priceList[0] !== installmentList.priceList[installmentList.priceList.length-1]">
-                ฿{{installmentList.priceList[0] | number }} -
-                ฿{{installmentList.priceList[installmentList.priceList.length-1] | number }}</span>
-            </div>
-          </div>
-          <div class="col-4 align-self-center">
-            <div class="center-span-text text-light-green">
-              <span *ngIf="installmentList.advancePayList[0] === installmentList.advancePayList[installmentList.advancePayList.length-1]">
-                ฿{{installmentList.advancePayList[0] | number }}</span>
-              <span *ngIf="installmentList.advancePayList[0] !== installmentList.advancePayList[installmentList.advancePayList.length-1]">
-                ฿{{ installmentList.advancePayList[0] | number }} -
-                ฿{{installmentList.advancePayList[installmentList.advancePayList.length-1] | number }}</span>
-            </div>
-          </div>
-        </ng-container>
-
-
-      </ng-container>
-    </div>
+  <div class="text-right bg-light-green text-white p-3">
+    <div>ผ่อนชำระค่าเครื่องพร้อม</div>
+    <!-- <div>ผ่อนชำระค่าเครื่อง (บาท / เดือน)</div>
+    <div>ค่าแพ็กเกจล่วงหน้า (บาท / เดือน)</div> -->
   </div>
-  <button type="button" class="btn btn-primary btn-lg" aria-label="Close" (click)="modalRef.hide()">
-    CLOSE
-  </button>
+  <div class="modal-body py-0" style="background-color: #f0f0f0;">
+    <div *ngFor="let installment of installments">
+      <div class="row border-bottom py-3">
+        <div class="col-5 pr-0">
+          <h6 class="text-center">{{ installment?.percentage }} % {{ installment?.month }} เดือน</h6>
+          <div *ngFor="let bank of installment.banks" class="pull-left m-2" style="width: 40px; height: 40px;">
+            <img [src]="bank?.imageUrl" class="m-auto d-block w-100 img-thumbnail" />
+          </div>
+          <div class="clearfix"></div>
+        </div>
+        <div class="col-7 pl-0 align-self-center text-right text-light-green">
+          <div class="row pr-3">
+            <div class="col-6 p-0">
+              <!-- <span>฿{{ installment?.promotionPrice?.min | number }} </span>
+              <span *ngIf="installment?.promotionPrice?.min !== installment?.promotionPrice?.max">
+                - ฿{{ installment?.promotionPrice?.max | number }}
+              </span> -->
+            </div>
+            <div class="col-6 p-0">
+              <span>฿{{ installment?.advancePay?.min | number }} </span>
+              <span *ngIf="installment?.advancePay?.min !== installment?.advancePay?.max">
+                - ฿{{ installment?.advancePay?.max | number }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-primary w-25 d-block m-auto" (click)="modalRef.hide()">CLOSE</button>
+  </div>
 </ng-template>

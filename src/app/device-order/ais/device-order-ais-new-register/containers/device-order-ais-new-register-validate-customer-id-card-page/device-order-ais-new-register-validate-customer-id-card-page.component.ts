@@ -4,11 +4,11 @@ import { Router } from '@angular/router';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
-import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE } from '../../constants/route-path.constant';
-import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from '../../../../../buy-product/constants/route-path.constant';
-import { PriceOption } from '../../../../../shared/models/price-option.model';
-import { PriceOptionService } from '../../../../../shared/services/price-option.service';
 import { environment } from 'src/environments/environment';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from 'src/app/buy-product/constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE } from '../../constants/route-path.constant';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
 @Component({
   selector: 'app-device-order-ais-new-register-validate-customer-id-card-page',
   templateUrl: './device-order-ais-new-register-validate-customer-id-card-page.component.html',
@@ -18,10 +18,11 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
   kioskApi: boolean;
 
   transaction: Transaction;
+  priceOption: PriceOption;
+
   profile: ReadCardProfile;
   zipcode: string;
   readCardValid: boolean;
-  priceOption: PriceOption;
   user: User;
 
   @ViewChild(ValidateCustomerIdCardComponent)

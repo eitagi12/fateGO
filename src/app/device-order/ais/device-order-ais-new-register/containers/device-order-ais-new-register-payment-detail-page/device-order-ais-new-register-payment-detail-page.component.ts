@@ -110,18 +110,18 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
 
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
 
-    if (this.priceOption.trade.payments.length > 0) {
-      this.paymentMethod = this.priceOption.trade.payments.filter(payment => payment.method !== 'PP')[0].method || '';
-    } else {
-      this.paymentMethod = this.priceOption.trade.payments.method || '';
-    }
+    // if (this.priceOption.trade.payments.length > 0) {
+    //   this.paymentMethod = this.priceOption.trade.payments.filter(payment => payment.method !== 'PP')[0].method || '';
+    // } else {
+    //   this.paymentMethod = this.priceOption.trade.payments.method || '';
+    // }
 
     // this.priceOption.trade.advancePay.amount = 1000;
     // this.priceOption.trade.advancePay.installmentFlag = 'N';
     // this.paymentMethod = 'CC/CA';
 
     // ############################################## payment detail ##############################################
-    this.paymentDetail = {
+    /*this.paymentDetail = {
       title: 'รูปแบบการชำระเงิน',
       header: 'ค่าเครื่อง ' + this.priceOption.queryParams.model + ' สี ' + this.priceOption.productStock.colorName,
       price: this.priceOption.trade.promotionPrice,
@@ -190,7 +190,7 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
         this.transaction.data.customer.lastName,
       buyerAddress: this.getFullAddress(this.transaction.data.customer),
       telNo: this.transaction.data.receiptInfo ? this.transaction.data.receiptInfo.telNo : ''
-    };
+    };*/
   }
 
   ngOnDestroy(): void {
@@ -209,27 +209,27 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
   }
 
   onNext() {
-    const paymentType = this.selectPaymentDetail.paymentType;
-    const qrCode = this.selectPaymentDetail.qrCode;
-    const bank = this.selectPaymentDetail.bank;
+    // const paymentType = this.selectPaymentDetail.paymentType;
+    // const qrCode = this.selectPaymentDetail.qrCode;
+    // const bank = this.selectPaymentDetail.bank;
 
-    this.transaction.data.payment = {
-      method: this.getPaymentMethod(paymentType, qrCode),
-      type: paymentType,
-      qrCode: qrCode,
-      bank: bank
-    };
+    // this.transaction.data.payment = {
+    //   method: this.getPaymentMethod(paymentType, qrCode),
+    //   type: paymentType,
+    //   qrCode: qrCode,
+    //   bank: bank
+    // };
 
-    const paymentTypeAdvancePay = this.selectPaymentDetailAdvancePay.paymentType;
-    const qrCodeAdvancePay = this.selectPaymentDetailAdvancePay.qrCode;
-    const bankAdvancePay = this.selectPaymentDetailAdvancePay.bank;
+    // const paymentTypeAdvancePay = this.selectPaymentDetailAdvancePay.paymentType;
+    // const qrCodeAdvancePay = this.selectPaymentDetailAdvancePay.qrCode;
+    // const bankAdvancePay = this.selectPaymentDetailAdvancePay.bank;
 
-    this.transaction.data.advancePayment = {
-      method: this.getPaymentMethod(paymentTypeAdvancePay, qrCodeAdvancePay),
-      type: paymentTypeAdvancePay,
-      qrCode: qrCodeAdvancePay,
-      bank: bankAdvancePay
-    };
+    // this.transaction.data.advancePayment = {
+    //   method: this.getPaymentMethod(paymentTypeAdvancePay, qrCodeAdvancePay),
+    //   type: paymentTypeAdvancePay,
+    //   qrCode: qrCodeAdvancePay,
+    //   bank: bankAdvancePay
+    // };
 
 
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CUSTOMER_INFO_PAGE]);

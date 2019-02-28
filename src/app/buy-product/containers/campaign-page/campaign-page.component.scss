@@ -1,40 +1,55 @@
+@import '~mychannel-shared-libs/scss/colors';
+
 .icon-dv,
 .icon {
     width: 40px;
 }
 
+input[type=radio], input[type=radio] + label {
+    display: block;
+    padding: 5px;
+}
 
-.circle-qty {
+/* Edit the properties below to change the colors of the un-checked radio button */
+.product-color,
+input[type=radio]+label:before {
+    content: '';
+    border: 2px solid $grey;
     display: inline-block;
-    text-decoration: none;
-    width: 40px;
-    height: 40px;
-    line-height: 40px;
-    font-weight: bold;
-    border-radius: 50%;
-    background-color: white;
-    border: 1px solid #ccc;
-    margin: 5px;
-
-    &.active {
-        box-shadow: 0 0 0 2px #9cc965;
-        border: 5px solid #fff;
-        width: 45px;
-        height: 45px;
-        line-height: 37px;
-    }
+    vertical-align: middle;
+    width: 30px;
+    height: 30px;
+    padding: 2px;
+    line-height: 15px;
+    margin-right: 10px;
+    text-align: center;
+}
+/* Edit the properties below to change the colors of the checked radio button */
+input[type=radio]:checked+label:before {
+    background-image: none;    
+    background-size: 18px;
 }
 
-@media only screen and (min-width: 1024px) {
-    .color-picker {
-        position: absolute;
-        bottom: 65px;
-    }
+input[type=radio]:checked+label {
+    border-color: $light-green !important;
 }
 
-.select-color {
-    width: 65px;
-    margin-top: 12px;
+input[type=radio]+label.disabled {
+    cursor: initial;
+    background: #D6D6D6;
+}
+
+input[type=radio]:disabled+label:before {
+    content: '';
+    border: 2px solid #CACACA;    
+}
+
+.product-color {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    border-radius: 15px;
+    border-width: 1px;
 }
 
 .bg-spac {
@@ -71,19 +86,19 @@
             padding: 8px;
             white-space: nowrap;
             overflow: hidden;
+            border-radius: 0;
+            &:hover {
+                border-color: transparent;
+            }
             &.active{
-                background-color: #8cc53f;
-                border-color: #8cc53f;        
+                background-color: $light-green;
+                border-color: $light-green;        
                 &:hover {
-                    border-color: #8cc53f;
+                    border-color: $light-green;
                 }
             }   
         }
     }
-}
-
-.select-package-template {
-    width: 100%;
 }
 
 /* trades */
@@ -92,150 +107,37 @@
     margin: 0 10px 0 50px;
 }
 
-@media only screen and (max-width: 425px) {
-    .icon-trade {
-        margin-left: 0;
-    }
-}
-
-.background-color {
-    background-color: #8dc63f;
-    height: 8rem;
-}
-
-.border-buttom {
-    border-bottom: 1px solid #989898;
-}
-
-:host /deep/  .modal-dialog {
-    max-width: 800px;
-    margin: 1.75rem auto;
-}
-.check-outer {
-    position: relative;
-    display: block;
-    border-radius: 50%;
-    float: left;
-}
-
-.block-color{
-    border: solid;
-    height: 50px;
-    padding-left: 0.5em;
-    min-width: 130px;
-    margin-top: 10px;
-    line-height: 20px;
-    padding-right: 0.6em;
-    border-radius: 5px;
-    border-color: #bfbfbf;
-    border-width: thin;
-    margin-right: 10px;
-    color: black;
-    background-color: #fff;
-
-    &.active {
-        box-shadow: 0 0 0 4px #9cc965;
-        border: #fff;
-    }
-}
-
-.color-name{
-   display: inline-block;
-    vertical-align: middle;
-    line-height: normal;
-    padding-left: 50px;
-    padding-top: 10px;
-}
-
-.check {
-    position: absolute;
-    display: block;
-    padding: 0.2em;
-    left: 5.2px;
-    text-align: center;
-}
-
-.color-group{
-   display: inline-block;
-   margin-right: 10px;
-   height: 78px;
-}
-
-.MC001{
-    background-image : url('/assets/images/icon/MC001.png');
+[class^=MC] {
     background-repeat: no-repeat;
     background-size: 140px;
     padding-top: 105px;
     background-position: top;
+}
+
+.MC001{
+    background-image : url('/assets/images/icon/MC001.png');
     &.active {
-        color: #000;
         background-image : url('/assets/images/icon/MC001-active.png');
     }
 }
 
 .MC002{
     background-image : url('/assets/images/icon/MC002.png');
-    background-repeat: no-repeat;
-    background-size: 140px;
-    padding-top: 105px;
-    background-position: top;
     &.active {
-        color: #000;
         background-image : url('/assets/images/icon/MC002-active.png');
     }
 }
 
 .MC003{
     background-image : url('/assets/images/icon/MC003.png');
-    background-repeat: no-repeat;
-    background-size: 140px;
-    padding-top: 105px;
-    background-position: top;
     &.active {
-        color: #000;
         background-image : url('/assets/images/icon/MC003-active.png');
     }
 }
 
 .MC004{
     background-image : url('/src/assets/images/icon/MC004.png');
-    background-repeat: no-repeat;
-    background-size: 140px;
-    padding-top: 105px;
-    background-position: top;
     &.active {
-        color: #000;
         background-image : url('/src/assets/images/icon/MC004-active.png');
     }
 }
-
-.price{
-    height: 72vh;
-}
-
-.center-span-text {
-    text-align: center;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-.thumbnail {
-    position: relative;
-    width: 200px;
-    height: 200px;
-    overflow: hidden;
-  }
-  .thumbnail img {
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    height: 100%;
-    width: auto;
-    -webkit-transform: translate(-50%,-50%);
-        -ms-transform: translate(-50%,-50%);
-            transform: translate(-50%,-50%);
-  }
-  .thumbnail img.portrait {
-    width: 100%;
-    height: auto;
-  }

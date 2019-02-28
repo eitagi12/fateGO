@@ -83,4 +83,9 @@ export class DeviceOrderAisNewRegisterSummaryPageComponent implements OnInit {
     this.modalRef = this.modalService.show(this.detailTemplate);
   }
 
+  summary(amount: number[]) {
+    return amount.reduce((prev, curr) => {
+      return prev + curr;
+    }, 0);
+  }
 }

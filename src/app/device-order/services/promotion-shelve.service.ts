@@ -5,7 +5,7 @@ import { ChargeType } from 'mychannel-shared-libs';
 export interface PromotionShelveInfo {
   packageKeyRef: string;
   orderType: string; // 'New Registration';
-  billingSystem: string; // 'IRB'
+  billingSystem?: string; // 'IRB'
 }
 
 @Injectable({
@@ -17,7 +17,10 @@ export class PromotionShelveService {
     private http: HttpClient
   ) { }
 
-  getPromotionShelve(promotionShelveInfo: PromotionShelveInfo, minimumPackagePrice: number, maxinumPackagePrice: number): Promise<any> {
+  getPromotionShelve(
+    promotionShelveInfo: PromotionShelveInfo,
+    minimumPackagePrice: number = 0,
+    maxinumPackagePrice: number = 0): Promise<any> {
     return this.http.post('/api/salesportal/promotion-shelves', {
       userId: promotionShelveInfo.packageKeyRef
     }).toPromise()
@@ -47,10 +50,14 @@ export class PromotionShelveService {
         const parameter = [{
           'name': 'orderType',
           'value': promotionShelveInfo.orderType
-        }, {
-          'name': 'billingSystem',
-          'value': promotionShelveInfo.billingSystem
         }];
+
+        if (promotionShelveInfo.billingSystem) {
+          parameter.push({
+            'name': 'billingSystem',
+            'value': promotionShelveInfo.billingSystem
+          });
+        }
 
         const promotions = [];
         (promotionShelves || []).forEach((promotionShelve: any) => {
@@ -89,8 +96,8 @@ export class PromotionShelveService {
       });
   }
 
-  defaultBySelected(promotionShelves: any, promotionShelveSelected: any): any[] {
-    if (!promotionShelves && promotionShelves.length <= 0) {
+  defaultBySelected(promotionShelves: any, promotionShelveSelected?: any): any[] {
+    if (!promotionShelves || promotionShelves.length <= 0) {
       return;
     }
 

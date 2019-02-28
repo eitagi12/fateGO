@@ -1,10 +1,12 @@
 
 
 export interface PriceOption {
-    queryParams: any;
-    productStock: any;
-    campaign: any;
-    trade: any;
+    queryParams?: any;
+    productDetail?: any;
+    productStock?: any;
+    customerGroup?: any;
+    campaign?: any;
+    trade?: any;
 }
 
 export interface PrivilegeTradeAdvancePay {

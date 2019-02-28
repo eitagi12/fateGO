@@ -3,7 +3,6 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { TokenService, User, ProductStock, ProductStockBrandAndModel, HomeService, SalesService } from 'mychannel-shared-libs';
 import { PRODUCT_TYPE, PRODUCT_SUB_TYPE, SUB_STOCK_DESTINATION, PRODUCT_HANDSET_BUNDLE } from 'src/app/buy-product/constants/products.constants';
 import { ROUTE_BUY_PRODUCT_BRAND_PAGE } from 'src/app/buy-product/constants/route-path.constant';
-import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 
 @Component({
   selector: 'app-product',
@@ -25,10 +24,8 @@ export class ProductPageComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private tokenService: TokenService,
     private salesService: SalesService,
-    private homeService: HomeService,
-    private priceOptionService: PriceOptionService
+    private homeService: HomeService
   ) {
-    this.priceOptionService.remove();
     this.activatedRoute.queryParams.subscribe((params: any) => {
       this.params = params;
 

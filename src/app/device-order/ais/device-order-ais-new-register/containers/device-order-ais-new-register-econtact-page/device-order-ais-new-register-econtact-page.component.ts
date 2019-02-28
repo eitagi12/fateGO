@@ -70,7 +70,7 @@ export class DeviceOrderAisNewRegisterEcontactPageComponent implements OnInit {
     const user = this.tokenService.getUser();
     const campaign: any = this.priceOption.campaign || {};
     const trade: any = this.priceOption.trade || {};
-    const stock: any = this.priceOption.productStock ? (this.priceOption.productStock.stock || {}) : {};
+    const stock: any = this.priceOption.productStock || {};
     const customer: any = this.transaction.data.customer || {};
     const seller: any = this.transaction.data.seller || {};
     const simCard: any = this.transaction.data.simCard || {};

@@ -15,20 +15,38 @@
         <div class="card mb-3">
           <div class="card-header bg-pink text-white">สรุปรายการสั่งชื้อสินค้า</div>
           <div class="card-body">
-            <p>AIS Hot Deal</p>
-            <p>
-              <i class="fa fa-circle mr-3 text-light-green"></i>
-              APPLE iPhone 7 128GB สี SILVER
-              <span class="pull-right text-light-green">฿ {{ 6125 | number }}</span>
-            </p>
-            <p>
-              <i class="fa fa-circle mr-3 text-light-green"></i>
-              แพ็กเกจค่าบริการรายเดือน 1,000 บาท (ไม่รวมVAT) รับส่วนลด 100 บาท นาน 10 เดือน
-              <span class="pull-right text-light-green">฿ {{ 6125 | number }}</span>
-            </p>
+            <p class="text-light-green">{{ priceOption?.campaign?.campaignName }}</p>
+            <div class="text-grey">
+              <p>
+                <i class="fa fa-circle mr-3 text-light-green"></i>
+                {{ priceOption?.productDetail?.name }}
+                <span *ngIf="priceOption?.productStock?.color">
+                  สี {{ priceOption?.productStock?.color }}
+                </span>
+                <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
+                  (แถมซิม)
+                </span>
+                <span class="pull-right text-light-green">
+                  ฿ {{ priceOption?.trade?.promotionPrice | number }}
+                </span>
+              </p>
+              <p *ngIf="priceOption?.trade?.advancePay?.amount > 0">
+                <i class="fa fa-circle mr-3 text-light-green"></i>
+                {{ priceOption?.trade?.advancePay?.description }}
+                <span class="pull-right text-light-green">
+                  ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
+                </span>
+              </p>
+            </div>
           </div>
           <div class="card-footer bg-transparent text-right">
-            รวมยอดชำระ(รวมVAT) <span class="text-light-green ml-2">฿ {{ 2780 | number }}</span>
+            รวมยอดชำระ(รวมVAT)
+            <span class="text-light-green ml-2">
+              ฿ {{ summary([
+              +priceOption?.trade?.promotionPrice,
+              +priceOption?.trade?.advancePay?.amount
+              ]) | number }}
+            </span>
           </div>
         </div>
 
@@ -56,8 +74,9 @@
                 <span>ไม่ซื้อบริการโมบายแคร์</span>
               </ng-container>
               <ng-container *ngIf="transaction?.data?.mobileCarePackage?.title">
-                <span>{{
-                  transaction?.data?.mobileCarePackage?.title }}</span>
+                <span>
+                  {{ transaction?.data?.mobileCarePackage?.title }}
+                </span>
                 <span class="pull-right" (click)="onOpenDetail(transaction?.data?.mobileCarePackage?.detailTH)">
                   <img src="assets/images/icon/icon-page.png" class="icon" />
                 </span>
@@ -76,15 +95,31 @@
             <p>
               ข้อมูลการชำระสินค้า
             </p>
-            <p>
+            <p *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N'">
               <i class="fa fa-circle mr-3 text-light-green"></i>
-              ค่าเครื่อง: ผ่อนชำระเครดิตธนาคาร ไทยพาณิชย์ จำกัด (มหาชน) 0 % 10 เดือน (1,971 บาทต่อเดือน)
-              <span class="pull-right text-light-green">฿ {{ 6125 | number:'1.2-2' }}</span>
+              {{ priceOption?.productDetail?.name }}
+              <span *ngIf="priceOption?.productStock?.color">
+                สี {{ priceOption?.productStock?.color }}
+              </span>
+              <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
+                (แถมซิม)
+              </span>
+              <span class="pull-right text-light-green">฿ {{ priceOption?.trade?.promotionPrice | number }}</span>
+            </p>
+            <p *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'Y'">
+              <i class="fa fa-circle mr-3 text-light-green"></i>
+              ค่าเครื่องและค่าแพ็กเกจล่วงหน้า : xx
+              <span class="pull-right text-light-green">฿ {{ summary([
+                +priceOption?.trade?.promotionPrice,
+                +priceOption?.trade?.advancePay?.amount
+                ]) | number }}</span>
             </p>
             <p>
               <i class="fa fa-circle mr-3 text-light-green"></i>
-              ค่าแพ็กเกจบริการล่วงหน้า: ชำระเต็มจำนวน(เงินสด)
-              <span class="pull-right text-light-green">฿ {{ 6125 | number:'1.2-2' }}</span>
+              ค่าแพ็กเกจบริการล่วงหน้า : ชำระเต็มจำนวน
+              <span class="pull-right text-light-green">
+                ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
+              </span>
             </p>
           </div>
           <div class="card-footer bg-transparent ">
@@ -116,7 +151,7 @@
             </p>
             <p>
               <i class="fa fa-circle mr-3 text-light-green"></i>
-              รับสิทธิ์ต่อเนื่องนาน 12 เดือน
+              รับสิทธิ์ต่อเนื่องนาน {{ priceOption?.campaign?.maximumContract }} เดือน
             </p>
 
           </div>
