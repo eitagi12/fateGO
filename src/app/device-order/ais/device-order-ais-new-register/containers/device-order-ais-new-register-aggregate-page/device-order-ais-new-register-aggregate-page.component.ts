@@ -7,6 +7,8 @@ import {
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_COMPARE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_SUMMARY_PAGE
 } from 'src/app/device-order/ais/device-order-ais-new-register/constants/route-path.constant';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
 @Component({
   selector: 'app-device-order-ais-new-register-aggregate-page',
   templateUrl: './device-order-ais-new-register-aggregate-page.component.html',
@@ -15,13 +17,16 @@ import {
 export class DeviceOrderAisNewRegisterAggregatePageComponent implements OnInit, OnDestroy {
   transaction: Transaction;
   aggregate: Aggregate;
+  priceOption: PriceOption;
 
   constructor(
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
+    private priceOptionService: PriceOptionService
   ) {
     this.transaction = this.transactionService.load();
+    this.priceOption = this.priceOptionService.load();
   }
 
   ngOnInit() { }
@@ -42,5 +47,11 @@ export class DeviceOrderAisNewRegisterAggregatePageComponent implements OnInit, 
 
   ngOnDestroy(): void {
     // this.transactionService.update(this.transaction);
+  }
+
+  summary(amount: number[]) {
+    return amount.reduce((prev, curr) => {
+      return prev + curr;
+    }, 0);
   }
 }

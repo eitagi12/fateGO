@@ -45,8 +45,8 @@ export class CreateEapplicationService {
       }) || '',
       mobileNumber: transaction.data.simCard.mobileNo || '',
       mainPackage: {
-        name: transaction.data.mainPackage.shortNameThai || '',
-        description: transaction.data.mainPackage.statementThai || ''
+        name: transaction.data.mainPackage.title || '',
+        description: transaction.data.mainPackage.detailTH || ''
       },
       billCycle: billCycleData.billCycleText || '',
       receiveBillMethod: billCycleData.receiveBillMethod || '',

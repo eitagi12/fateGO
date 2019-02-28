@@ -104,7 +104,7 @@ export class DeviceOrderAisNewRegisterEcontactPageComponent implements OnInit {
           packageDetail: mainPackage.detailTH,
           airTimeDiscount: this.getAirTimeDiscount(advancePay.amount, advancePay.promotions),
           airTimeMonth: this.getAirTimeMonth(advancePay.promotions),
-          price: this.decimalPipe.transform(trade.promotionPrice),
+          price: this.decimalPipe.transform(+trade.promotionPrice + (+advancePay.amount)),
           signature: '',
           mobileCarePackageTitle: mobileCarePackage ? `พร้อมใช้บริการ ${mobileCarePackage.detailTH}` : '',
           condition: condition.conditionText,

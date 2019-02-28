@@ -28,29 +28,71 @@
         </div>
 
         <div class="card mb-3">
-          <div class="card-header bg-pink text-white">รายการสินค้า</div>
+          <div class="card-header bg-pink text-white">สรุปรายการสั่งชื้อสินค้า</div>
           <div class="card-body">
-
-            <div class="text-green mb-2">AIS Hot Deal 1</div>
-            <div class="ml-3 pb-3 border-bottom">
-              <i class="fa fa-circle mr-3 text-light-green"></i>
-              APPLE iPhone X 256GB สี SPACE GREY
-              <span class="badge badge-transparent pull-right">฿ {{ 42880 | number }}</span>
+            <p class="text-light-green">{{ priceOption?.campaign?.campaignName }}</p>
+            <div class="text-grey">
+              <p>
+                <i class="fa fa-circle mr-3 text-light-green"></i>
+                {{ priceOption?.productDetail?.name }}
+                <span *ngIf="priceOption?.productStock?.color">
+                  {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.color }}
+                </span>
+                <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
+                  (แถมซิม)
+                </span>
+                <span class="pull-right text-light-green">
+                  ฿ {{ priceOption?.trade?.promotionPrice | number }}
+                </span>
+              </p>
+              <p *ngIf="priceOption?.trade?.advancePay?.amount > 0">
+                <i class="fa fa-circle mr-3 text-light-green"></i>
+                {{ priceOption?.trade?.advancePay?.description }}
+                <span class="pull-right text-light-green">
+                  ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
+                </span>
+              </p>
             </div>
-            <div class="text-right mt-3">
-              Total
-              <span class="total pull-right">฿ {{ 42880 | number }}</span>
-            </div>
+          </div>
+          <div class="card-footer bg-transparent text-right">
+            รวมยอดชำระ(รวมVAT)
+            <span class="text-light-green ml-2">
+              ฿ {{ summary([+priceOption?.trade?.promotionPrice, +priceOption?.trade?.advancePay?.amount]) | number }}
+            </span>
           </div>
         </div>
 
         <div class="card mb-3">
-          <div class="card-header bg-cyan text-white">รายละเอียดการชำระ</div>
-          <div class="card-body">xxx</div>
+          <div class="card-header bg-pink text-white">
+            รายละเอียดการชำระ
+          </div>
+          <div class="card-body text-grey">
+            <p *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N'">
+              <i class="fa fa-circle mr-3 text-light-green"></i>
+              {{ priceOption?.productDetail?.name }}
+              <span *ngIf="priceOption?.productStock?.color">
+                สี {{ priceOption?.productStock?.color }}
+              </span>
+              <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
+                (แถมซิม)
+              </span>
+              <span class="pull-right text-light-green">฿ {{ priceOption?.trade?.promotionPrice | number }}</span>
+            </p>
+            <p *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'Y'">
+              <span class="pull-right text-light-green">฿ {{ summary([
+                +priceOption?.trade?.promotionPrice,
+                +priceOption?.trade?.advancePay?.amount
+                ]) | number }}</span>
+            </p>
+            <p>
+              <i class="fa fa-circle mr-3 text-light-green"></i>
+              ค่าแพ็กเกจบริการล่วงหน้า : ชำระเต็มจำนวน
+              <span class="pull-right text-light-green">
+                ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
+              </span>
+            </p>
+          </div>
         </div>
-
-
-
       </div>
 
       <div class="container">
@@ -61,13 +103,13 @@
             <div class="text-pink">กรุณาเปิด Application เพื่อสแกน QR Code</div>
           </div>
           <div class="col-4 text-right">
-            <img src="assets/images/icon/Thai_Qr_Payment.png" />
+            <img class="img-fluid" src="assets/images/icon/Thai_Qr_Payment.png" />
           </div>
           <div class="col-12 mt-3">
             <form class="form-inline pull-right">
               <div class="form-group">
-                <label for="inputPassword6" class="text-light-green">ยอดชำระ</label>
-                <input type="password" id="inputPassword6" readonly class="form-control ml-3">
+                <label for="summaryInput" class="text-light-green">ยอดชำระ</label>
+                <input style="text-align: center" type="text" id="summaryInput" readonly class="form-control ml-3 text-light-green" value="฿{{ summary([+priceOption?.trade?.promotionPrice, +priceOption?.trade?.advancePay?.amount]) | number }}">
               </div>
             </form>
           </div>
