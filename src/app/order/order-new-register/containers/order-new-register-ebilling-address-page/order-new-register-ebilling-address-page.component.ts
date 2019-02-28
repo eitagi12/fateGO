@@ -10,6 +10,8 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { load } from '@angular/core/src/render3/instructions';
 import { NgxResource, LocalStorageService } from 'ngx-store';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-order-new-register-ebilling-address-page',
@@ -21,7 +23,6 @@ export class OrderNewRegisterEbillingAddressPageComponent implements OnInit, OnD
   wizards = WIZARD_ORDER_NEW_REGISTER;
 
   transaction: Transaction;
-  translateLanguage: string;
   customerAddress: CustomerAddress;
   allZipCodes: string[];
   provinces: any[];
@@ -31,6 +32,7 @@ export class OrderNewRegisterEbillingAddressPageComponent implements OnInit, OnD
 
   customerAddressTemp: CustomerAddress;
   billDeliveryAddress: CustomerAddress;
+  translationSubscribe: Subscription;
 
   ebillingAddressValid: boolean;
 
@@ -39,17 +41,26 @@ export class OrderNewRegisterEbillingAddressPageComponent implements OnInit, OnD
     private homeService: HomeService,
     private transactionService: TransactionService,
     private http: HttpClient,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
-    this.translateLanguage = this.localStorageService.get(`translateLanguage`);
-    console.log('translateLanguage', this.translateLanguage);
   }
 
   ngOnInit() {
+
+    console.log('this.translation.currentLang', this.translation.currentLang);
+    this.callService();
+    this.translationSubscribe = this.translation.onLangChange.subscribe(() => {
+      this.callService();
+    });
+
+
+  }
+
+  callService() {
     const billingInformation = this.transaction.data.billingInformation || {};
     const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
-
     this.http.get('/api/customerportal/newRegister/getAllZipcodes').subscribe((resp: any) => {
       this.allZipCodes = resp.data.zipcodes || [];
     });
@@ -57,7 +68,7 @@ export class OrderNewRegisterEbillingAddressPageComponent implements OnInit, OnD
     this.http.get('/api/customerportal/newRegister/getAllProvinces'
       , {
         params: {
-          provinceSubType: this.translateLanguage === 'TH' ? 'THA' : 'ENG'
+          provinceSubType: this.translation.currentLang === 'TH' ? 'THA' : 'ENG'
         }
       }).subscribe((resp: any) => {
         this.provinces = (resp.data.provinces || []);
@@ -91,9 +102,7 @@ export class OrderNewRegisterEbillingAddressPageComponent implements OnInit, OnD
         //   tumbol: billDeliveryAddress.tumbol,
         //   zipCode: billDeliveryAddress.zipCode,
         // };
-
       });
-
   }
 
   getProvinces(): string[] {
@@ -202,6 +211,7 @@ export class OrderNewRegisterEbillingAddressPageComponent implements OnInit, OnD
   }
 
   ngOnDestroy(): void {
+    this.translationSubscribe.unsubscribe();
     this.transactionService.update(this.transaction);
   }
 }
