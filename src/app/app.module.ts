@@ -1,5 +1,6 @@
 import { NgModule, ErrorHandler } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import {
   HammerGestureConfig
 } from '@angular/platform-browser';
@@ -41,7 +42,8 @@ import { SharedModule } from './shared/shared.module';
       }
     }),
     SharedModule,
-    AppRoutingModule
+    AppRoutingModule,
+    TranslateModule.forRoot()
   ],
   providers: [
     {

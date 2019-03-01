@@ -72,6 +72,7 @@ export class DeviceOrderAisExistingBestBuyMobileCarePageComponent implements OnI
     const billingSystem = this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
     const chargeType = this.transaction.data.simCard.chargeType;
     const endUserPrice = +this.priceOption.trade.normalPrice;
+    const exMobileCare = this.transaction.data.existingMobileCare;
 
     this.pageLoadingService.openLoading();
     this.mobileCareService.getMobileCare({
@@ -80,7 +81,8 @@ export class DeviceOrderAisExistingBestBuyMobileCarePageComponent implements OnI
     }, chargeType, billingSystem, endUserPrice).then((mobileCare: any) => {
       this.mobileCare = {
         promotions: mobileCare,
-        campaignPrice: 0
+        // campaignPrice: 0
+        existingMobileCare: exMobileCare ? true : false
       };
       if (this.mobileCare.promotions && this.mobileCare.promotions.length > 0) {
         this.mobileCare.promotions[0].active = true;

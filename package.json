@@ -23,9 +23,8 @@
     "@angular/platform-browser": "6.1.0",
     "@angular/platform-browser-dynamic": "6.1.0",
     "@angular/router": "6.1.0",
-    "@ngx-translate/core": "^11.0.1",
     "core-js": "^2.5.4",
-    "mychannel-shared-libs": "git+https://vca.ais.co.th/myChannel/mychannel-shared-libs.git#pvt",
+    "mychannel-shared-libs": "git+https://vca.ais.co.th/myChannel/mychannel-shared-libs.git#e520b28b4918ea08096a206fff421e45931f0f5b",
     "rxjs": "6.2.2",
     "zone.js": "~0.8.26"
   },
@@ -48,6 +47,7 @@
     "protractor": "~5.4.0",
     "ts-node": "~5.0.1",
     "tslint": "~5.9.1",
-    "typescript": "~2.7.2"
+    "typescript": "~2.7.2",
+    "@ngx-translate/core": "10.0.2"
   }
 }

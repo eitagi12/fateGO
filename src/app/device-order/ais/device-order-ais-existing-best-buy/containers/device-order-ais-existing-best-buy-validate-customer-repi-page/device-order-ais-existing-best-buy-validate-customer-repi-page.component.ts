@@ -54,6 +54,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
   }
 
   onReadCard() {
+    this.transaction.data.action = TransactionAction.READ_CARD_REPI;
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
   }
 

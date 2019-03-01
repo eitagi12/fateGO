@@ -54,6 +54,7 @@ export interface TransactionData {
   advancePayment?: Payment;
   receiptInfo?: ReceiptInfo;
   queue?: Queue;
+  prebooking?: Prebooking;
 }
 
 export interface ProductStock {
@@ -269,4 +270,10 @@ export interface HandSetMobileCare {
   model?: string;
   color?: string;
   imei?: string;
+}
+
+export interface Prebooking {
+  preBookingNo: string;
+  depositAmt: string;
+  reserveNo: string;
 }
