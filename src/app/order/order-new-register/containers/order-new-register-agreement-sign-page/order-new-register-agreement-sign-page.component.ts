@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
 import { Router } from '@angular/router';
-import { HomeService, AisNativeService, User, TokenService, ChannelType } from 'mychannel-shared-libs';
+import { HomeService, AisNativeService, User, TokenService, ChannelType, AlertService } from 'mychannel-shared-libs';
 import {
   ROUTE_ORDER_NEW_REGISTER_RESULT_PAGE,
   ROUTE_ORDER_NEW_REGISTER_PERSO_SIM_PAGE,
@@ -23,17 +23,29 @@ export class OrderNewRegisterAgreementSignPageComponent implements OnInit, OnDes
   transaction: Transaction;
   signedSignatureSubscription: Subscription;
   signedOpenSubscription: Subscription;
+  openSignedCommand: any;
+  isOpenSign: boolean;
 
   constructor(
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
     private aisNativeService: AisNativeService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private alertService: AlertService
   ) {
     this.transaction = this.transactionService.load();
     this.signedSignatureSubscription = this.aisNativeService.getSigned().subscribe((signature: string) => {
-      this.transaction.data.customer.imageSignature = signature;
+      if (signature) {
+        this.isOpenSign = false;
+        this.transaction.data.customer.imageSignature = signature;
+        this.router.navigate([ROUTE_ORDER_NEW_REGISTER_EAPPLICATION_PAGE]);
+      } else {
+        this.alertService.warning('กรุณาเซ็นลายเซ็น').then(() => {
+          this.onSigned();
+        });
+        return;
+      }
     });
   }
 
@@ -48,7 +60,11 @@ export class OrderNewRegisterAgreementSignPageComponent implements OnInit, OnDes
   }
 
   onNext() {
-    this.router.navigate([ROUTE_ORDER_NEW_REGISTER_EAPPLICATION_PAGE]);
+    if (this.transaction.data.customer.imageSignature && !this.isOpenSign) {
+      this.router.navigate([ROUTE_ORDER_NEW_REGISTER_EAPPLICATION_PAGE]);
+    } else {
+      this.openSignedCommand.ws.send('CaptureImage');
+    }
   }
 
   onHome() {
@@ -56,10 +72,13 @@ export class OrderNewRegisterAgreementSignPageComponent implements OnInit, OnDes
   }
 
   onSigned() {
+    this.isOpenSign = true;
     const user: User = this.tokenService.getUser();
     this.signedOpenSubscription = this.aisNativeService.openSigned(
-      ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'SignaturePad'
-    ).subscribe();
+      ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'SignaturePad', '{x:100,y:280}'
+    ).subscribe((command: any) => {
+      this.openSignedCommand = command;
+    });
   }
 
   ngOnDestroy(): void {
