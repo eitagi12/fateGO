@@ -48,13 +48,14 @@ export class SummaryTradeInPageComponent implements OnInit {
   }
 
   gotoPrintSummary() {
+    const price: any = +this.tradeinPrice;
     const tradePrint = {
       tradeinNo: this.tradeinNo || '-',
       brand: this.brand || '-',
       modelTradein: this.modelTradein || '-',
       tradeinGrade: this.tradeinGrade || '-',
       imeiTradein: this.imeiTradein || '-',
-      tradeinPrice: this.tradeinPrice || '-',
+      tradeinPrice: `${price.toLocaleString()} บาท (รวม VAT)` || '-',
       company: this.company || '-',
       unLockOs: `ปลดล็อค ${this.platform} และ Reset เครื่อง`
     };
