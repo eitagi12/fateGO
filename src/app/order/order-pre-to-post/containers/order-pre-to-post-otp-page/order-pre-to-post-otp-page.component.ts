@@ -135,6 +135,7 @@ export class OrderPreToPostOtpPageComponent implements OnInit {
     const mobileNo = this.transaction.data.simCard.mobileNo;
     const data: any = {
       idCardNo: customer.idCardNo || '-',
+      idCardType: customer.idCardType || '-',
       mobileNo: mobileNo || '-',
       birthdate: customer.birthdate || '-',
       firstName: customer.firstName || '-',

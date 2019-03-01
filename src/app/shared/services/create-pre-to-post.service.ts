@@ -17,6 +17,7 @@ export class CreatePreToPostService {
 
   createPreToPost(transaction: Transaction): Promise<any> {
     return this.getRequestCreatePreToPost(transaction).then((data) => {
+      // console.log('data', data);
       return this.http.post(
         '/api/customerportal/newRegister/createConvertPreToPost',
         data
@@ -109,13 +110,13 @@ export class CreatePreToPostService {
     };
 
     if (action === TransactionAction.READ_PASSPORT) {
-        data.accountSubCat = 'FOR',
-        data.titleName = customer.titleName,
-        data.engFlag = 'Y',
-        data.citizenship = customer.nationality;
+      data.accountSubCat = 'FOR';
+      data.titleName = customer.titleName;
+      data.engFlag = 'Y';
+      data.citizenship = customer.nationality;
     } else {
-        data.accountSubCat = 'THA',
-        data.titleName = this.utils.getPrefixName(customer.titleName); /*required*/
+      data.accountSubCat = 'THA';
+      data.titleName = this.utils.getPrefixName(customer.titleName); /*required*/
     }
 
 

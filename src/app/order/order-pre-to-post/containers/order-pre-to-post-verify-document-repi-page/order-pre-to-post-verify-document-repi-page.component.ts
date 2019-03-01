@@ -70,7 +70,7 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
   }
   onReadPassport() {
     const mobileNo = this.transaction.data.simCard.mobileNo;
-    this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
+    this.readPassportSubscription = this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
       this.pageLoadingService.openLoading();
       if (readPassport.error) {
         this.alertService.error('ไม่สามารถอ่านบัตรได้ กรุณาติดต่อพนักงาน');
@@ -221,12 +221,13 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
   // }
 
   ngOnDestroy(): void {
-    this.transactionService.update(this.transaction);
+    // this.transactionService.update(this.transaction);
     if (this.transaction.data.action === TransactionAction.READ_PASSPORT && this.closeVendingApi.ws) {
       this.closeVendingApi.ws.send(KioskControls.LED_OFF);
     }
     clearInterval(this.cardStateInterval);
     this.vendingApiSubscription.unsubscribe();
+    this.readPassportSubscription.unsubscribe();
   }
 
 

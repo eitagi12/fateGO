@@ -109,7 +109,7 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
   }
 
   onReadPassport() {
-    this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
+    this.readPassportSubscription = this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
       this.pageLoadingService.openLoading();
       if (readPassport.error) {
         this.alertService.error('ไม่สามารถอ่านบัตรได้ กรุณาติดต่อพนักงาน');
@@ -268,5 +268,6 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
     }
     clearInterval(this.cardStateInterval);
     this.vendingApiSubscription.unsubscribe();
+    this.readPassportSubscription.unsubscribe();
   }
 }

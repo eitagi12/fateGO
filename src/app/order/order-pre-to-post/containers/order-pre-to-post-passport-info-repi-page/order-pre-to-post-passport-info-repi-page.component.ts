@@ -41,7 +41,6 @@ export class OrderPreToPostPassportInfoRepiPageComponent implements OnInit, OnDe
 
   ngOnInit() {
     const customer: Customer = this.transaction.data.customer;
-    console.log('this.transaction', this.transaction);
     this.captureAndSign = {
       allowCapture: false,
       imageSmartCard: customer.imageReadPassport,
