@@ -105,6 +105,10 @@
     "จังหวัด": "Province",
     "อำเภอ/เขต": "District",
     "ตำบล/แขวง": "Subdistrict",
-    "รหัสไปรษณีย์": "Postal code"
+    "รหัสไปรษณีย์": "Postal code",
+    "กรุณาเลือกรอบบิลที่ต้องการ": "Please select your preferred billing cycle",
+    "วันที่": "From the",
+    "รอบค่าบริการ": "Billing cycle",
+    "ถึงวันที่": "to the"
 
 }
