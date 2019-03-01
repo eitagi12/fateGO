@@ -143,7 +143,7 @@ export class CreateNewRegisterService {
         ],
       }, /*required*/
       onTopPackages: [],
-      promotionActionStatus1: 'Add', /*When SelectedPackages*/,
+      promotionActionStatus1: 'Add', /*When SelectedPackages*/
       engFlag: customer.engFlag || 'N'
     };
 
