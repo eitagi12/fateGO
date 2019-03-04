@@ -2,15 +2,19 @@ import { Injectable } from '@angular/core';
 import { Utils, TokenService } from 'mychannel-shared-libs';
 import { Transaction, TransactionAction } from '../models/transaction.model';
 import { HttpClient } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CreateEapplicationService {
 
-  constructor(private http: HttpClient,
+  constructor(
+    private http: HttpClient,
     private utils: Utils,
-    private tokenService: TokenService) { }
+    private tokenService: TokenService,
+    private translation: TranslateService
+    ) { }
 
   createEapplication(transaction: Transaction): Promise<any> {
     return this.http.post(
@@ -48,7 +52,7 @@ export class CreateEapplicationService {
         amphur: customer.amphur || '',
         province: customer.province || '',
         zipCode: customer.zipCode || ''
-      }) || '',
+      }, this.translation.currentLang) || '',
       mobileNumber: transaction.data.simCard.mobileNo || '',
       mainPackage: {
         name: transaction.data.mainPackage.shortNameThai || '',
@@ -94,7 +98,7 @@ export class CreateEapplicationService {
         amphur: customer.amphur || '',
         province: customer.province || '',
         zipCode: customer.zipCode || ''
-      }) || '',
+      }, this.translation.currentLang) || '',
       mobileNumber: transaction.data.simCard.mobileNo || '',
 
       mainPackage: {

@@ -124,7 +124,7 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
       amphur: customer.amphur,
       province: customer.province,
       zipCode: customer.zipCode
-    });
+    }, this.translation.currentLang);
 
     this.billingInfo = {
       // merge bill ไม่เมื่อเลือก package net extrem
@@ -245,7 +245,7 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
 
   onNext() {
     if (!this.customerValid()) {
-      this.alertService.warning('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร');
+      this.alertService.warning(this.translation.instant('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร'));
       return;
     }
 

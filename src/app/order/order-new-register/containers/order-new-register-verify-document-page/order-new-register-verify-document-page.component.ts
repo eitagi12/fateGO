@@ -41,6 +41,12 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
     private readCardService: ReadCardService,
     public translation: TranslateService
   ) {
+    this.homeService.callback = () => {
+      if (this.transaction.data.action === TransactionAction.READ_PASSPORT) {
+        this.closeVendingApi.ws.send(KioskControls.LED_OFF);
+      }
+      window.location.href = '/smart-shop';
+    };
   }
 
   ngOnInit() {
