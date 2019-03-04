@@ -124,7 +124,7 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
       amphur: customer.amphur,
       province: customer.province,
       zipCode: customer.zipCode
-    }, this.translation.currentLang);
+    }, billingInformation.billDeliveryAddress.engFlag);
 
     this.billingInfo = {
       // merge bill ไม่เมื่อเลือก package net extrem
