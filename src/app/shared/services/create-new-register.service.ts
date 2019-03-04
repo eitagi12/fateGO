@@ -47,7 +47,7 @@ export class CreateNewRegisterService {
     this.http.post('/api/facerecog/save-imagesV2', {
       userId: user.username,
       locationCode: user.locationCode,
-      idCardType: 'Thai National ID',
+      idCardType: customer.idCardType === 'บัตรประชาชน' ? 1 : 3,
       customerId: customer.idCardNo || '',
       mobileNo: simCard.mobileNo || '',
       base64Card: 'data:image/png;base64,' + customer.imageReadSmartCard || customer.imageSmartCard || customer.imageReadPassport,

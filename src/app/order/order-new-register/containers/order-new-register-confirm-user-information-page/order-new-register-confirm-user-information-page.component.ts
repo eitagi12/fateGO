@@ -294,7 +294,7 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
   }
 
   getBllingCycle(billCycle: string): Promise<string> {
-    if (!billCycle) {
+    if (!billCycle) { // NewCa จะ defaultBill
       return this.http.get('/api/customerportal/newRegister/queryBillCycle', {
         params: {
           coProject: 'N'
@@ -311,8 +311,7 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
               billDefault: billing.billDefault
             };
           }).find(bill => bill.billDefault === 'Y');
-
-          this.transaction.data.billingInformation.billCycle = defaultBillCycle.billCycle;
+          this.transaction.data.customer.billCycle = defaultBillCycle.billCycle.bill;
           return defaultBillCycle.text;
         });
     }
