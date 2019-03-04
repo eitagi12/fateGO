@@ -44,7 +44,8 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
     private alertService: AlertService,
     private modalService: BsModalService,
     private http: HttpClient,
-    private translation: TranslateService
+    private translation: TranslateService,
+    private translateService: TranslateService,
   ) {
     this.transaction = this.transactionService.load();
 
@@ -57,9 +58,9 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
   }
 
   ngOnInit() {
-    this.callService();
-    this.translation.onLangChange.subscribe(lang => {
-      this.mapPromotionByLang(lang.lang);
+    this.callService(this.translateService.currentLang);
+    this.translation.onLangChange.subscribe(language => {
+      this.callService(language.lang);
     });
   }
 
@@ -98,7 +99,8 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
     this.homeService.goToHome();
   }
 
-  callService() {
+  callService(language: string) {
+    console.log('language', language);
     this.pageLoadingService.openLoading();
 
     const billingInformation: any = this.transaction.data.billingInformation;
@@ -141,8 +143,8 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
                   items: (subShelve.items || []).map((promotion: any) => {
                     return { // item
                       id: promotion.itemId,
-                      title: promotion.shortNameThai,
-                      detail: promotion.statementThai,
+                      title: language === 'EN' ? promotion.shortNameEng : promotion.shortNameThai,
+                      detail: language === 'EN' ? promotion.statementEng : promotion.shortNameThai,
                       condition: subShelve.conditionCode,
                       value: promotion
                     };
@@ -157,56 +159,10 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
         this.promotionShelves = this.buildPromotionShelveActive(promotionShelves);
       })
       .then(() => {
-        this.mapPromotionByLang(this.translation.currentLang);
         this.pageLoadingService.closeLoading();
       });
 
   }
-
-  mapPromotionByLang(lang: string) {
-    if (lang === 'EN') {
-      this.promotionShelves = this.promotionShelves.map((promotionShelve: any) => {
-        // title
-        promotionShelve.title = promotionShelve.title;
-        promotionShelve.promotions = promotionShelve.promotions
-        .map((subShelve: any) => {
-          // subShelve.title
-          subShelve.title = subShelve.title;
-          subShelve.sanitizedName = subShelve.sanitizedName;
-          subShelve.items = (subShelve.items || []).map((promotion: any) => {
-             // detail
-            promotion.title = promotion.value.shortNameEng;
-            promotion.detail = promotion.value.statementEng;
-            return  promotion;
-          });
-          return subShelve;
-        });
-        return promotionShelve;
-      });
-      this.promotionShelves = this.buildPromotionShelveActive(this.promotionShelves);
-    } else {
-      this.promotionShelves = this.promotionShelves.map((promotionShelve: any) => {
-        // title
-        promotionShelve.title = promotionShelve.title;
-        promotionShelve.promotions = promotionShelve.promotions
-        .map((subShelve: any) => {
-          // subShelve.title
-          subShelve.title = subShelve.title;
-          subShelve.sanitizedName = subShelve.sanitizedName;
-          subShelve.items = (subShelve.items || []).map((promotion: any) => {
-             // detail
-            promotion.title = promotion.value.shortNameThai;
-            promotion.detail = promotion.value.statementThai;
-            return  promotion;
-          });
-          return subShelve;
-        });
-        return promotionShelve;
-      });
-      this.promotionShelves = this.buildPromotionShelveActive(this.promotionShelves);
-    }
-  }
-
   onTermConditions(condition: string) {
     if (!condition) {
       this.alertService.warning(this.translation.instant('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'));
@@ -228,7 +184,7 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
   buildPromotionShelveActive(promotionShelves: PromotionShelve[]): PromotionShelve[] {
     const mainPackage: any = this.transaction.data.mainPackage || {};
 
-    if (!promotionShelves && promotionShelves.length <= 0) {
+    if (!promotionShelves || promotionShelves.length <= 0) {
       return;
     }
 
