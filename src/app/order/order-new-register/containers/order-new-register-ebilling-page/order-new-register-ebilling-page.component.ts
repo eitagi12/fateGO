@@ -61,6 +61,8 @@ export class OrderNewRegisterEbillingPageComponent implements OnInit, OnDestroy 
   }
 
   onCompleted(billCycle: any) {
+    console.log('billCycle' , billCycle);
+    
     this.billCycle = billCycle;
   }
 

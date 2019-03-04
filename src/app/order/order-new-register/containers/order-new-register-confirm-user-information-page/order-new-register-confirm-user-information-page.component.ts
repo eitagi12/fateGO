@@ -327,7 +327,7 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
             const bills = billing.billCycle.split(' ');
             return {
               billCycle: billing,
-              text: `วันที่ ${bills[1]} ถึงวันที่ ${bills[3]} ของทุกเดือน`,
+              text: this.getBillCycleText(bills),
               billDefault: billing.billDefault
             };
           }).find(bill => bill.billDefault === 'Y');
@@ -340,8 +340,36 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
       params: { billCycle: billCycle }
     }).toPromise()
       .then((resp: any) => {
-        return resp.data;
+        const bills = resp.data.split(' ');
+        return this.getBillCycleText(bills);
       });
+  }
+
+  getBillCycleText(bills: any): string {
+    console.log('getBillCycleText', this.translation.currentLang);
+    
+    if (this.translation.currentLang === 'TH') {
+      return `วันที่ ${bills[1] } ถึงวันที่ ${bills[3]} ของทุกเดือน`;
+    } else {
+      if (bills[3] === 'สิ้นเดือน') {
+        return `From the ${bills[1]}<sub>${this.dateSuffix(bills[1])}</sub> to the end of every month`;
+      } else {
+        return `From the ${bills[1]}<sub>${this.dateSuffix(bills[1])}</sub> to the ${bills[3]}<sub>${this.dateSuffix(bills[3])}</sub> of every month`;
+      }
+    } 
+  }
+
+  dateSuffix(value: string): string {
+    let suffix = 'th',
+        day = value;
+        if (day === '1' || day === '21' || day === '31') {
+            suffix = 'st'
+        } else if (day === '2' || day === '22') {
+            suffix = 'nd';
+        } else if (day === '3' || day === '23') {
+           suffix = 'rd';
+        }
+        return suffix;
   }
 
   isPackageNetExtreme(): boolean {
