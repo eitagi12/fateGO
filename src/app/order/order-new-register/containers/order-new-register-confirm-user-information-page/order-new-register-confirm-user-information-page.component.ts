@@ -346,8 +346,6 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
   }
 
   getBillCycleText(bills: any): string {
-    console.log('getBillCycleText', this.translation.currentLang);
-    
     if (this.translation.currentLang === 'TH') {
       return `วันที่ ${bills[1] } ถึงวันที่ ${bills[3]} ของทุกเดือน`;
     } else {
