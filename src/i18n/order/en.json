@@ -31,7 +31,7 @@
     "ดึงบัตรประชาชนออก": "Remove your ID card",
     "ชื่อ-นามสกุล": "Full name:",
     "เลขบัตรประชาชน": "ID Card Number:",
-    "ที่อยู่": "Address: ",
+    "ที่อยู่": "Address",
     "วันที่ออกบัตร": "Date of issue:",
     "ข้อมูลใบหน้าจาก บัตรประชาชน": "Image from ID Card",
     "ข้อมูลใบหน้าจากรูปถ่าย": "Image from camera",
@@ -93,5 +93,22 @@
     "กรุณารอสักครู่...": "Please wait...",
     "แพ็กเกจโทรและเน็ต": "Voice and data package",
     "แพ็กเกจอินเทอร์เน็ต": "Data package",
-    "แพ็กเกจสำหรับโทร": "Voice package"
+    "แพ็กเกจสำหรับโทร": "Voice package",
+    "บ้านเลขที่": "House number",
+    "หมู่ที่": "Moo",
+    "หมู่บ้าน": "Village",
+    "ห้อง": "Room No.",
+    "ชั้น": "Floor",
+    "ตึก": "Buidling",
+    "ซอย": "Soi",
+    "ถนน": "Street",
+    "จังหวัด": "Province",
+    "อำเภอ/เขต": "District",
+    "ตำบล/แขวง": "Subdistrict",
+    "รหัสไปรษณีย์": "Postal code",
+    "กรุณาเลือกรอบบิลที่ต้องการ": "Please select your preferred billing cycle",
+    "วันที่": "From the",
+    "รอบค่าบริการ": "Billing cycle",
+    "ถึงวันที่": "to the"
+
 }

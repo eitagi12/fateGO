@@ -49,16 +49,15 @@ export class OrderNewRegisterEbillingAddressPageComponent implements OnInit, OnD
 
   ngOnInit() {
 
-    console.log('this.translation.currentLang', this.translation.currentLang);
     this.callService();
     this.translationSubscribe = this.translation.onLangChange.subscribe(() => {
       this.callService();
     });
 
-
   }
 
   callService() {
+    this.transaction.data.customer.engFlag = (this.translation.currentLang === 'EN') ? 'Y' : 'N';
     const billingInformation = this.transaction.data.billingInformation || {};
     const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
     this.http.get('/api/customerportal/newRegister/getAllZipcodes').subscribe((resp: any) => {
