@@ -10,6 +10,8 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
+import * as moment from 'moment';
+const Moment = moment;
 
 @Component({
   selector: 'app-order-new-register-summary-page',
@@ -55,8 +57,6 @@ export class OrderNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
       idCardType: customer.idCardType
     };
 
-    console.log('data', this.confirmCustomerInfo);
-
     this.billingInfo = {
       billingMethod: {
         text: billCycleData.billingMethodText
@@ -87,6 +87,10 @@ export class OrderNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
   }
 
   mapCustomerInfoByLang(lang: string) {
+    const billingInformation = this.transaction.data.billingInformation;
+    const billCycleData = billingInformation.billCycleData;
+    const bills = billCycleData.billCycleText.split(' ');
+    let billCycleTextEng = "-";
     if (lang === 'EN') {
       this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameEng;
       this.confirmCustomerInfo.packageDetail = this.transaction.data.mainPackage.statementEng;
@@ -94,6 +98,13 @@ export class OrderNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
       this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameThai;
       this.confirmCustomerInfo.packageDetail = this.transaction.data.mainPackage.statementThai;
     }
+
+    if (bills[3] === 'สิ้นเดือน') {
+      billCycleTextEng = `From the ${Moment([0,0,bills[1]]).format('Do')} to the end of every month`;
+    } else {
+      billCycleTextEng = `From the ${Moment([0,0,bills[1]]).format('Do')} to the ${Moment([0,0,bills[3]]).format('Do')} of every month`;
+    }
+    this.transaction.data.billingInformation.billCycleData.billCycleTextEng = billCycleTextEng;
   }
 
   onBack() {

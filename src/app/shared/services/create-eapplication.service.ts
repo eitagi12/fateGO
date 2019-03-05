@@ -58,7 +58,7 @@ export class CreateEapplicationService {
         name: transaction.data.mainPackage.shortNameThai || '',
         description: transaction.data.mainPackage.statementThai || ''
       },
-      billCycle: billCycleData.billCycleText || '',
+      billCycle: billCycleData.billCycleText || '', 
       receiveBillMethod: billCycleData.receiveBillMethod || '',
       billDeliveryAddress: billCycleData.billAddressText || '',
       fullNameEN: `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}`,
@@ -115,11 +115,13 @@ export class CreateEapplicationService {
       language: language || '',
     };
     if (language === 'EN') {
+      data.billCycle = billCycleData.billCycleTextEng;
       data.mainPackage = {
         name: transaction.data.mainPackage.shortNameEng || '',
         description: transaction.data.mainPackage.statementEng || ''
       };
     } else {
+      data.billCycle = billCycleData.billCycleText;
       data.mainPackage = {
         name: transaction.data.mainPackage.shortNameThai || '',
         description: transaction.data.mainPackage.statementThai || ''
