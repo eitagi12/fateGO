@@ -59,12 +59,18 @@
             <p>
               <i class="fa fa-circle mr-3 text-light-green"></i>
               {{ productDetail?.name }} {{ productDetail?.productInfo?.colorName?'สี':'' }} {{ productInfo?.colorName }} 
-              <span class="pull-right text-light-green">฿ {{ 6125 | number:'1.2-2' }}</span>
+              <span class="pull-right text-light-green">
+                ฿ {{ 6125 | number:'1.2-2' }}
+                <!-- ฿ {{ (isPrebooking === true ? promotionPricePB : promotionPrice ) | number }} -->
+              </span>
             </p>
             <p>
               <i class="fa fa-circle mr-3 text-light-green"></i>
               ค่าแพ็กเกจบริการล่วงหน้า: ชำระเต็มจำนวน(เงินสด)
-              <span class="pull-right text-light-green">฿ {{ 6125 | number:'1.2-2' }}</span>
+              <span class="pull-right text-light-green">
+                ฿ {{ 6125 | number:'1.2-2' }}
+                <!-- ฿ {{ (isPrebooking === true ? promotionPricePB : promotionPrice) + trade?.advancePay?.amount | number }} -->
+              </span>
             </p>
           </div>
           <div class="card-footer bg-transparent ">

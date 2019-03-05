@@ -31,7 +31,7 @@ export const REMARK_ORDER_TYPE = '[OT]';
 export const REMARK_PROMPT_PAY_PAYMENT = '[PB]';
 export const REMARK_RABBIT_LINE_PAY_PAYMENT = '[RL]';
 
-export 
+
 
 @Injectable({
   providedIn: 'root'

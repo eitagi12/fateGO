@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
@@ -16,6 +16,9 @@ import { ProductDetail } from 'mychannel-shared-libs/lib/service/models/product-
 })
 export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit, OnDestroy {
 
+  @Input() isPrebooking: boolean;
+  @Input() depositAmt: number;
+
   wizards = WIZARD_DEVICE_ORDER_AIS;
   identityValid = true;
   transaction: Transaction;
@@ -23,6 +26,8 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
   paymentResult: number;
   customer: Customer;
   fullAddress: string;
+  promotionPricePB: number;
+
 
   constructor(
     private router: Router,
@@ -60,19 +65,19 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
           homeNo: 'string',
           moo: '75',
           mooBan: 'หมู่ที่ 5',
-          buildingName: 'string',
-          floor: 'string',
-          room: 'string',
-          street: 'string',
-          soi: 'string',
-          tumbol: 'string',
-          amphur: 'string',
-          province: 'string',
+          buildingName: 'กิ่งไผ่',
+          floor: '3',
+          room: '345',
+          street: 'พหลโยธิน',
+          soi: 'พหลโยธิน 23',
+          tumbol: 'ตากแดด',
+          amphur: 'ตากฝน',
+          province: 'ตากกล้วย',
           firstNameEn: 'string',
           lastNameEn: 'string',
           issueDate: 'string',
           expireDate: 'string',
-          zipCode: 'string',
+          zipCode: '86100',
           mainMobile: 'string',
           mainPhone: 'string',
           billCycle: 'string',
@@ -127,7 +132,12 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
 
     this.customer = this.transaction.data.customer;
     this.fullAddress = this.getFullAddress(this.customer);
-    this.paymentResult = this.calculatePaymentResult(this.transaction);
+    this.paymentResult = this.getPromotionPrice() + this.getPackagePrice();
+
+    if (this.isPrebooking) {
+      this.paymentResult = this.paymentResult - this.depositAmt;
+      this.promotionPricePB = this.getPromotionPrice() - this.depositAmt;
+    }
 
 
   }
@@ -148,11 +158,24 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
     this.transactionService.update(this.transaction);
   }
 
-  calculatePaymentResult(transaction) {
-    const promotionPrice = transaction.data.mainPromotion.trade.promotionPrice;
-    const packagePrice = +  transaction.data.mainPromotion.trade.advancePay.amount;
-    return promotionPrice + packagePrice;
+  // calculatePaymentResult(transaction) {
+  //   const promotionPrice = transaction.data.mainPromotion.trade.promotionPrice;
+  //   const packagePrice =  transaction.data.mainPromotion.trade.advancePay.amount;
+  //   return promotionPrice + packagePrice;
+  // }
+
+  getPromotionPrice(): number {
+    const promotionPrice: number  = this.transaction.data.mainPromotion.trade.promotionPrice;
+    return promotionPrice;
   }
+
+  getPackagePrice(): number {
+    const packagePrice: number  = this.transaction.data.mainPromotion.trade.advancePay.amount;
+    return packagePrice;
+  }
+
+
+
 
   getFullAddress(customer: Customer) {
     if (customer) {

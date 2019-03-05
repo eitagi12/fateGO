@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
@@ -7,6 +7,7 @@ import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE } from 'src/app/device-orde
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { DOCUMENT } from '@angular/platform-browser';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-queue-page',
@@ -20,6 +21,7 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
   queue: string;
 
   constructor(
+    @Inject(DOCUMENT) private document,
     private router: Router,
     private homeService: HomeService,
     private fb: FormBuilder,
@@ -33,6 +35,8 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
 
   ngOnInit() {
     this.createForm();
+    this.document.querySelector('body').classList.add('white-body');
+
   }
 
   createForm(): void {
@@ -54,5 +58,11 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }
+
+  // onSubmitQueue() {
+  //   const queueNo = this.queueFrom.value['queueNo'];
+  //   this.deviceSellingService.setQueue(queueNo);
+  //   this.createCampaignOrder(queueNo);
+  // }
 
 }
