@@ -116,6 +116,7 @@
     "วันกำหนดชำระ": "Payment due date",
     "กำลังเตรียมซิมใหม่": "Please wait",
     "กำลังอ่านซิม": "Please wait",
-    "กรุณาดึง SIM CARD ออก": "Remove your SIM card"
+    "กรุณาดึง SIM CARD ออก": "Remove your SIM card",
+    "กรุณาเลือกเบอร์ที่ต้องการรวมบิล": "Please select bill(s) you wish to merge"
 
 }
