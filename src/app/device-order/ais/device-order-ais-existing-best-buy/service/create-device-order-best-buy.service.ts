@@ -2,9 +2,10 @@ import { Injectable } from '@angular/core';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction, Payment, Customer, Prebooking } from 'src/app/shared/models/transaction.model';
 import { HttpClient } from '@angular/common/http';
-import { Utils, TokenService } from 'mychannel-shared-libs';
+import { Utils, TokenService, ApiRequestService, User } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import * as moment from 'moment';
 
 export const REMARK_CASH_PAYMENT = '[CA]';
 export const REMARK_CREDIT_CARD_PAYMENT = '[CC]';
@@ -31,7 +32,10 @@ export const REMARK_ORDER_TYPE = '[OT]';
 export const REMARK_PROMPT_PAY_PAYMENT = '[PB]';
 export const REMARK_RABBIT_LINE_PAY_PAYMENT = '[RL]';
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 0cb65a55535dd8678ce9a79b71cd1308930425db
 
 @Injectable({
   providedIn: 'root'
@@ -40,26 +44,30 @@ export class CreateDeviceOrderBestBuyService {
 
   priceOption: PriceOption;
   transaction: Transaction;
+  user: User;
 
   constructor(
     private http: HttpClient,
     private utils: Utils,
     private tokenService: TokenService,
     private transactionService: TransactionService,
-    private priceOptionService: PriceOptionService
+    private priceOptionService: PriceOptionService,
+    private apiRequestService: ApiRequestService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
+    this.user = this.tokenService.getUser();
   }
 
-  callAddToCart(): Promise<any> {
-    const device = this.priceOption.productStock;
-    const user = this.tokenService.getUser();
-    const preBooking: Prebooking = this.transaction.data.prebooking;
+  private callAddToCart(transaction, priceOption): Promise<any> {
+    const device = priceOption.productStock;
+    const preBooking: Prebooking = transaction.data.prebooking || {};
+    const customer = transaction.data.customer;
+    const cusNameOrder = customer.firstName && customer.lastName ? `${customer.firstName} ${customer.lastName}` : '-';
     const requestData: any = {
       soCompany: device.company || 'AWN',
-      locationSource: user.locationCode,
-      locationReceipt: user.locationCode,
+      locationSource: this.user.locationCode,
+      locationReceipt: this.user.locationCode,
       productType: device.productType || 'DEVICE',
       productSubType: device.productSubType || 'HANDSET',
       brand: device.brand,
@@ -68,31 +76,58 @@ export class CreateDeviceOrderBestBuyService {
       priceIncAmt: '',
       priceDiscountAmt: '',
       grandTotalAmt: '',
-      userId: user.username,
-      cusNameOrder: `${user.firstname} ${user.lastname}` || user.username,
+      userId: this.user.username,
+      cusNameOrder: cusNameOrder,
       preBookingNo: preBooking.preBookingNo,
       depositAmt: preBooking.depositAmt,
       reserveNo: preBooking.reserveNo
     };
 
-    return this.http.post('api/saleportal/device-sell/item', requestData).toPromise()
-    .then(res => res.json().data || []);
+    // return this.http.post('/api/salesportal/device-sell/item', requestData).toPromise()
+    //   .then((res: any) => res.data);
+    // TEST
+    return new Promise((resolve, reject) => {
+      resolve({resultCode: 'S', soId: '11111'});
+    });
   }
 
-  createTransaction() {
-
+  private createTransaction(transaction, priceOption): Promise<any> {
+    
+    return this.http.post('/api/salesportal/device-order/create-transaction', this.mapCreateTransactionDB(transaction, priceOption))
+      .toPromise().then(resp => transaction);
   }
 
-  addToCartOrder() {
+  createAddToCartTrasaction(transaction, priceOption) {
+    return new Promise((resolve, reject) => {
+      if (transaction
+        && transaction.data
+        && transaction.data.order
+        && transaction.data.order.soId) {
+        resolve(transaction);
+      } else {
+        this.callAddToCart(transaction, priceOption).then((response) => {
+          if (response.resultCode === 'S') {
+          transaction.data.order = {
+            soId: response.soId
+          };
+           this.createTransaction(transaction, priceOption).then((createTrans) => {
+              resolve(createTrans);
+            }).catch(resolve);
+          } else {
+            reject('Cannot add item to the cart');
+          }
+        }).catch(reject);
+      }
+    });
 
   }
 
   createDeviceOrder(transaction: Transaction, priceOption: PriceOption): Promise<any> {
     return this.getQueueByNumber(transaction.data.simCard.mobileNo).then((resp) => {
       if (resp.resultPass) {
-        return this.getRequestCreateNewRegister(transaction, resp.result.queueNo).then((data) => {
+        return this.getRequestCreateOrder(transaction, resp.result.queueNo).then((data) => {
           // console.log(data);
-          return this.http.post('/api/saleportal/device-sell/order', data).toPromise();
+          return this.http.post('/api/salesportal/device-sell/order', data).toPromise();
           //   if (orderResponse) {
           //     if (orderResponse.resultCode === 'S') {
           //         return orderResponse;
@@ -120,7 +155,7 @@ export class CreateDeviceOrderBestBuyService {
     return this.http.post('/api/salesportal/device-order/transaction/get-queue-qmatic', body).toPromise();
   }
 
-  updateOrderNewRegister(transaction: Transaction): Promise<any> {
+  updateOrder(transaction: Transaction): Promise<any> {
 
     // transaction.data.order = {
     //   soId: queue.soId ? queue.soId : ''
@@ -137,7 +172,7 @@ export class CreateDeviceOrderBestBuyService {
     return this.http.post('/api/salesportal/device-order/update-transaction', transaction).toPromise();
   }
 
-  getRequestCreateNewRegister(transaction: Transaction, queueNo: string): Promise<any> {
+  getRequestCreateOrder(transaction: Transaction, queueNo: string): Promise<any> {
 
     const user = this.tokenService.getUser();
     const action = transaction.data.action;
@@ -324,5 +359,65 @@ export class CreateDeviceOrderBestBuyService {
       postCode: customer.zipCode,
       country: '',
     };
+  }
+
+  // private generateTransactionId(): any {
+  //   let emptyString = '';
+  //   const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+  //   while (emptyString.length < 2) {
+  //     emptyString += alphabet[Math.floor(Math.random() * alphabet.length)];
+  //   }
+  //   const randomAlphabet: string = emptyString;
+  //   const today: any = moment().format('YYYYMMD');
+  //   const randomNumber: string = Math.floor(Math.random() * 1000000).toString();
+  //   const transactionId: string = randomAlphabet + today + randomNumber;
+  //   return transactionId;
+  // }
+
+  private mapCreateTransactionDB(transaction, priceOption) {
+    const username: any = this.tokenService.getUser().username;
+    const product: any = priceOption.productStock;
+    const main_promotion = {
+      campaign: priceOption.campaign,
+      privilege: priceOption.privilege,
+      trade: priceOption.trade
+    };
+    const device = {
+      model: product.model,
+      brand: product.brand,
+      amount: 1,
+      name: product.productName,
+      colorName: product.color,
+      colorCode: product.colorCode,
+      productType: product.productType,
+      productSubtype: product.productSubType
+    };
+
+    return {
+      transactionId: this.apiRequestService.getCurrentRequestId(),
+      data: {
+        ...transaction.data,
+        main_promotion: main_promotion,
+        device: device,
+        status: {
+          code: '001',
+          description: 'pending'
+        }
+      },
+      create_by: transaction.create_by,
+      issueBy: transaction.issueBy || username,
+      last_update_by: username
+    };
+  }
+
+  clearAddToCart(transactionId: string, soId: string) {
+    return this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
+      transactionId: transactionId,
+      soId: soId
+    }).toPromise().then((res: any) => res.data);
+  }
+
+  cancelTrasaction(transactionId: string) {
+    return this.http.post('/api/device-order/cancel-transaction', {transactionId: transactionId, issueBy: this.user.username}).toPromise();
   }
 }
