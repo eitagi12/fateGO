@@ -20,6 +20,7 @@ import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent } from './containers/device-order-ais-existing-best-buy-validate-customer-repi-page/device-order-ais-existing-best-buy-validate-customer-repi-page.component';
 import { DeviceOrderAisExistingBestBuyCustomerProfilePageComponent } from './containers/device-order-ais-existing-best-buy-customer-profile-page/device-order-ais-existing-best-buy-customer-profile-page.component';
 import { DeviceOrderAisExistingBestBuyOtpPageComponent } from './containers/device-order-ais-existing-best-buy-otp-page/device-order-ais-existing-best-buy-otp-page.component';
+import { CreateDeviceOrderBestBuyService } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/service/create-device-order-best-buy.service';
 
 @NgModule({
   imports: [
@@ -46,6 +47,9 @@ import { DeviceOrderAisExistingBestBuyOtpPageComponent } from './containers/devi
     DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent,
     DeviceOrderAisExistingBestBuyCustomerProfilePageComponent,
     DeviceOrderAisExistingBestBuyOtpPageComponent
+  ],
+  providers: [
+    CreateDeviceOrderBestBuyService
   ]
 })
 export class DeviceOrderAisExistingBestBuyModule { }

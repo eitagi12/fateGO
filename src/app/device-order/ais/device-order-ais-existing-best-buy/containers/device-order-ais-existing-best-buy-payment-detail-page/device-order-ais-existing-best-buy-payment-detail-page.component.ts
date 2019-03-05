@@ -2,13 +2,15 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-import { ApiRequestService, PageLoadingService, HomeService, ShoppingCart } from 'mychannel-shared-libs';
+import { ApiRequestService, PageLoadingService, HomeService, ShoppingCart, PaymentDetail, SelectPaymentDetail, PaymentDetailOption } from 'mychannel-shared-libs';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_CARE_AVAILABLE_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_CARE_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
 import { Transaction, ExistingMobileCare } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { ReceiptInfo } from 'mychannel-shared-libs/lib/component/receipt-info/receipt-info.component';
 import { ShoppingCartService } from 'src/app/device-order/service/shopping-cart.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-payment-detail-page',
@@ -22,18 +24,11 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
   identityValid = true;
   transaction: Transaction;
   shoppingCart: ShoppingCart;
+  priceOption: PriceOption;
+  paymentDetail: PaymentDetail;
+  selectPaymentDetail: SelectPaymentDetail;
+  option: PaymentDetailOption;
 
-  receiptInfo: ReceiptInfo = {
-    taxId: '',
-    branch: '',
-    buyer: '',
-    buyerAddress: '',
-    telNo: ''
-  };
-
-  grandTotal: String;
-  productDetail: String;
-  priceOptionPrivilegeTrade: String;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -41,17 +36,16 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
     private transactionService: TransactionService,
     private apiRequestService: ApiRequestService,
     private http: HttpClient,
-    private shoppingCartService: ShoppingCartService
+    private shoppingCartService: ShoppingCartService,
+    private priceOptionService: PriceOptionService
   ) {
     this.transaction = this.transactionService.load();
+    this.priceOption = this.priceOptionService.load();
    }
 
   ngOnInit() {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-    console.log(this.shoppingCart);
-    this.grandTotal = '44000';
-    this.productDetail = 'APPLE iPhone X 256GB สี SPACE GREY ';
-    this.priceOptionPrivilegeTrade = '1070 ';
+    setPamentDetail();
   }
 
   onHome() {
@@ -79,5 +73,20 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
 
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
+  }
+
+  setPamentDetail() {
+    // this.paymentDetail = {
+    //   title?: string;
+    //   header?: string;
+    //   price?: string;
+    //   headerAdvancePay?: string;
+    //   priceAdvancePay?: string;
+    //   specialAmountPercent?: string;
+    //   specialAmountBaht?: string;
+    //   qrCodes?: PaymentDetailQRCode[];
+    //   banks?: PaymentDetailBank[];
+    //   installments?: PaymentDetailInstallment[];
+    // }
   }
 }

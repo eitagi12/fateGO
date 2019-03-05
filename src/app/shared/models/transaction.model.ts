@@ -72,6 +72,7 @@ export interface ProductStock {
   flagReserve?: string;
   flagWaiting?: string;
   thumbnail?: string;
+  colorCode?: string;
 }
 
 export interface Payment {
@@ -113,7 +114,7 @@ export interface Customer {
   firstNameEn?: string;
   lastNameEn?: string;
   issueDate?: string;
-  expireDate: string;
+  expireDate?: string;
   zipCode?: string;
   mainMobile?: string;
   mainPhone?: string;
@@ -161,6 +162,7 @@ export interface FaceRecognition {
 export interface Order {
   orderNo: string;
   orderDate?: string;
+  soId?: string;
 }
 
 export interface BillingInformation {

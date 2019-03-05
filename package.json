@@ -24,7 +24,7 @@
     "@angular/platform-browser-dynamic": "6.1.0",
     "@angular/router": "6.1.0",
     "core-js": "^2.5.4",
-    "mychannel-shared-libs": "git+https://vca.ais.co.th/myChannel/mychannel-shared-libs.git#e520b28b4918ea08096a206fff421e45931f0f5b",
+    "mychannel-shared-libs": "git+https://vca.ais.co.th/myChannel/mychannel-shared-libs.git#pvt",
     "rxjs": "6.2.2",
     "zone.js": "~0.8.26"
   },

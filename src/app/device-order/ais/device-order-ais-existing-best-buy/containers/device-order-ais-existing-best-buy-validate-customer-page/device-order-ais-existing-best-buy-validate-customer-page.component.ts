@@ -12,6 +12,7 @@ import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { LocalStorageService } from 'ngx-store';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { CreateDeviceOrderBestBuyService } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/service/create-device-order-best-buy.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-validate-customer-page',
@@ -42,16 +43,21 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     private utils: Utils,
     private localStorageService: LocalStorageService,
     private priceOptionService: PriceOptionService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private createDeviceOrderBestBuyService: CreateDeviceOrderBestBuyService
   ) {
     // this.homeService.callback = () => {
     //   window.location.href = `/sales-portal/buy-product/brand/${this.band}/${this.model}`;
     // };
+    this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
    }
 
   ngOnInit() {
-    this.createTransaction();
+    if (!this.transaction || !this.transaction.data
+      || (!this.transaction.data.order && !this.transaction.data.order.soId)) {
+      this.createTransaction();
+    }
   }
 
   onError(valid: boolean) {
@@ -68,15 +74,17 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
   }
 
   onHome() {
-    this.homeService.goToHome();
+    this.homeService.callback = () => {
+      window.location.href = '/';
+    };
   }
 
   onBack() {
     // this.homeService.goToHome();
-    // this.homeService.callback = () => {
-    //   window.location.href = `/sales-portal/buy-product/brand/${this.band}/${this.model}`;
-    // };
-    this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
+    this.homeService.callback = () => {
+      window.location.href = `/sales-portal/buy-product/brand/${this.band}/${this.model}`;
+    };
+    // this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
   }
 
   onNext() {
@@ -99,38 +107,11 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
       return;
     }
 
+    // KEY-IN ID-Card
     this.http.get(`/api/customerportal/newRegister/${this.identity}/queryCustomerInfo`)
       .toPromise()
       .then((resp: any) => {
-        const data = resp.data || {};
-        const fullName = (data.name || ' ').split(' ');
-        const address = data.address || {};
-        const customer: Customer = {
-          idCardNo: this.identity || '',
-          idCardType: data.idCardType || '',
-          titleName: data.accntTitle || '',
-          firstName: fullName[0] || '',
-          lastName: fullName[1] || '',
-          birthdate: data.birthdate || '',
-          homeNo: address.houseNo || '',
-          moo: address.moo || '',
-          mooBan: address.mooban || '',
-          buildingName: address.buildingName || '',
-          floor: address.floor || '',
-          room: address.room || '',
-          street: address.streetName || '',
-          soi: address.soi || '',
-          tumbol: address.tumbol || '',
-          amphur: address.amphur || '',
-          province: address.provinceName || '',
-          zipCode: address.zipCode || '',
-          mainMobile: data.mainMobile || '',
-          mainPhone: data.mainPhone || '',
-          billCycle: data.billCycle || '',
-          caNumber: data.accntNo || '',
-          gender: data.gender || '',
-          expireDate: ''
-        };
+        const customer = this.mapCustomer(resp);
         return Promise.resolve(customer);
       })
       .then((customer) => {
@@ -151,13 +132,29 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
         this.transaction.data.customer = customer;
         this.transaction.data.billingInformation = {};
         this.transaction.data.billingInformation.billDeliveryAddress = this.billDeliveryAddress;
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
+        this.createDeviceOrderBestBuyService.createAddToCartTrasaction(this.transaction, this.priceOption)
+        .then((transaction) => {
+          this.transaction = transaction;
+          this.pageLoadingService.closeLoading();
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
+        });
       })
       .catch((e) => {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE]);
-      })
-      .then(() => {
-        this.pageLoadingService.closeLoading();
+        this.transaction.data.customer = {
+          idCardNo: this.identity || '',
+          idCardType: '',
+          titleName: '',
+          firstName: '',
+          lastName: '',
+          birthdate: '',
+          gender: '',
+          caNumber: null
+        };
+        this.createDeviceOrderBestBuyService.createAddToCartTrasaction(this.transaction, this.priceOption).then((transaction) => {
+          this.transaction = transaction;
+          this.pageLoadingService.closeLoading();
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE]);
+        });
       });
   }
 
@@ -169,7 +166,10 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
   private createTransaction() {
     // New x-api-request-id
     this.apiRequestService.createRequestId();
-    const mainPromotion = this.setMainPromotion();
+    let mainPromotion = null;
+    if (!this.priceOption.campaign) {
+      mainPromotion = this.setMainPromotion();
+    }
 
     this.transaction = {
       data: {
@@ -195,15 +195,6 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     }
 
     if (length === 13) {
-      // if (value.startsWith('0')) {
-      //   if (this.utils.isImmIdCard(value)) {
-      //     return null;
-      //   } else {
-      //     return {
-      //       message: 'กรุณากรอกเลขบัตรประจำตัวคนต่างด้าวให้ถูกต้อง',
-      //     };
-      //   }
-      // } else {
         if (this.utils.isThaiIdCard(value)) {
           return null;
         } else {
@@ -211,7 +202,6 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
             message: 'กรุณากรอกเลขบัตรประชาชนให้ถูกต้อง',
           };
         }
-      // }
     }
   }
 
@@ -240,15 +230,49 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
       productName: productDetail.name,
       model: productDetail.model,
       brand: productDetail.brand,
-      color: productInfo,
+      color: productInfo.colorName,
       qty: productInfo.qty,
-      thumbnail: thumbnail
+      thumbnail: thumbnail,
+      colorCode: productInfo.colorCode
     };
 
     this.priceOption = {
       campaign: mainPromotion.cammapign,
       trade: mainPromotion.trade,
       productStock: device
+    };
+  }
+
+  mapCustomer(resp) {
+    const data = resp.data || {};
+    const fullName = (data.name || ' ').split(' ');
+    const address = data.address || {};
+
+    return {
+      idCardNo: this.identity || '',
+      idCardType: data.idCardType || '',
+      titleName: data.accntTitle || '',
+      firstName: fullName[0] || '',
+      lastName: fullName[1] || '',
+      birthdate: data.birthdate || '',
+      homeNo: address.houseNo || '',
+      moo: address.moo || '',
+      mooBan: address.mooban || '',
+      buildingName: address.buildingName || '',
+      floor: address.floor || '',
+      room: address.room || '',
+      street: address.streetName || '',
+      soi: address.soi || '',
+      tumbol: address.tumbol || '',
+      amphur: address.amphur || '',
+      province: address.provinceName || '',
+      zipCode: address.zipCode || '',
+      mainMobile: data.mainMobile || '',
+      mainPhone: data.mainPhone || '',
+      billCycle: data.billCycle || '',
+      caNumber: data.accntNo || '',
+      gender: data.gender || '',
+      expireDate: ''
     };
   }
 }
