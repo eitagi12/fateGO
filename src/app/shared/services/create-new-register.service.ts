@@ -50,8 +50,8 @@ export class CreateNewRegisterService {
       idCardType: customer.idCardType === 'บัตรประชาชน' ? 'Thai National ID' : 'OTHER',
       customerId: customer.idCardNo || '',
       mobileNo: simCard.mobileNo || '',
-      base64Card: 'data:image/png;base64,' + customer.imageReadSmartCard || customer.imageSmartCard || customer.imageReadPassport,
-      base64Face: 'data:image/png;base64,' + faceRecognition.imageFaceUser,
+      base64Card: 'data:image/jpg;base64,' + customer.imageReadSmartCard || customer.imageSmartCard || customer.imageReadPassport,
+      base64Face: 'data:image/jpg;base64,' + faceRecognition.imageFaceUser,
       channel: channel,
       userchannel: 'MyChannel'
     }).toPromise()
