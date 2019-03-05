@@ -55,7 +55,7 @@ export class OrderNewRegisterEbillingPageComponent implements OnInit, OnDestroy 
     for (const ebill of ebilling) {
       if (ebill.bill === this.transaction.data.customer.billCycle) {
         this.billCycle = ebill;
-        this.transaction.data.billingInformation.billCycle = this.billCycle;
+        // this.transaction.data.billingInformation.billCycle = this.billCycle;
       }
     }
   }
@@ -74,7 +74,6 @@ export class OrderNewRegisterEbillingPageComponent implements OnInit, OnDestroy 
 
   onNext() {
     this.transaction.data.billingInformation.billCycle = this.billCycle;
-
     this.router.navigate([ROUTE_ORDER_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
