@@ -21,7 +21,7 @@
     "แก้ไข": "Edit",
     "ค้นหาเบอร์": "Search",
     "ใส่เงื่อนไขการเลือกเบอร์": "Please enter the selection criteria Numbers",
-    "ลงชื่อผู้ทำรายการ": "ลงชื่อผู้ทำรายการ (ไม่มีข้อมูล)",
+    "ลงชื่อผู้ทำรายการ": "Applicant's signature",
     "กรุณาเลือกทำรายการ": "Main Menu",
     "ซื้อเครื่อง": "Device Purchasing",
     "เปิดเบอร์ใหม่": "Port  your number to AIS",
@@ -113,6 +113,9 @@
     "รอบค่าบริการ": "Billing cycle",
     "ถึงวันที่": "to the",
     "ผลรวม": "Sum",
-    "วันกำหนดชำระ": "Payment due date"
+    "วันกำหนดชำระ": "Payment due date",
+    "กำลังเตรียมซิมใหม่": "Please wait",
+    "กำลังอ่านซิม": "Please wait",
+    "กรุณาดึง SIM CARD ออก": "Remove your SIM card"
 
 }
