@@ -25,6 +25,7 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
   closeVendingApi: any;
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
+  readonly ERR_MASSEAGE = 'ไม่สามารถให้บริการได้ กรุณาติดต่อพนักงานเพื่อดำเนินการ ขออภัยในความไม่สะดวก';
 
 
   constructor(
@@ -76,87 +77,92 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
       if (readPassport.error) {
         this.alertService.error('ไม่สามารถอ่านบัตรได้ กรุณาติดต่อพนักงาน');
         return;
-      }
+      } else if (readPassport.profile && readPassport.profile.idCardNo) {
 
-      return this.http.get('/api/customerportal/validate-customer-pre-to-post', {
-        params: {
-          identity: readPassport.profile.idCardNo,
-          idCardType: readPassport.profile.idCardType
-        }
-        // catch ไว้ก่อน เดี๋ยวมาทำต่อ
-      }).toPromise().catch(() => {
-        return {};
-      })
-        .then((resp: any) => {
-          const data = resp.data || {};
-          return {
-            caNumber: data.caNumber,
-            mainMobile: data.mainMobile,
-            billCycle: data.billCycle,
-            // zipCode: zipCode
-          };
-        }).then((resp) => {
-          this.transaction.data.customer = Object.assign(
-            Object.assign({}, this.transaction.data.customer), readPassport.profile);
-          return this.http.get(`/api/customerportal/newRegister/${readPassport.profile.idCardNo}/queryBillingAccount`).toPromise()
-            .then((respQueryBilling: any) => {
-              const data = respQueryBilling.data || {};
-              return this.http.post('/api/customerportal/verify/billingNetExtreme', {
-                businessType: '1',
-                listBillingAccount: data.billingAccountList
-              }).toPromise()
-                .then((respBillingNetExtreme: any) => {
-                  return {
-                    billCycles: data.billingAccountList,
-                    billCyclesNetExtreme: respBillingNetExtreme.data
-                  };
-                })
-                .catch(() => {
-                  return {
-                    billCycles: data.billingAccountList
-                  };
-                });
-            });
-        }).then((billingInformation: any) => {
-          this.transaction.data.billingInformation = billingInformation;
-        })
-        .then(() => {// verify Prepaid Ident
-          const idCardNo = this.transaction.data.customer.idCardNo;
-          return this.http.get(`/api/customerportal/newRegister/verifyPrepaidIdent?idCard=${idCardNo}&mobileNo=${mobileNo}`)
-            .toPromise()
-            .then((respPrepaidIdent: any) => {
-              if (respPrepaidIdent.data && respPrepaidIdent.data.success) {
-                if (this.checkBusinessLogic()) {
-                  this.transaction.data.action = TransactionAction.READ_PASSPORT;
-                }
-              } else {
-                if (this.checkBusinessLogic()) {
-                  this.transaction.data.action = TransactionAction.READ_PASSPORT_REPI;
-                }
-              }
-              this.transactionService.update(this.transaction);
-              this.router.navigate([ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_REPI_PAGE]);
-              this.pageLoadingService.closeLoading();
-            });
-        }).catch((resp: any) => {
-          this.pageLoadingService.closeLoading();
-          const error = resp.error || [];
-          if (error && error.errors && error.errors.length > 0) {
-            this.alertService.notify({
-              type: 'error',
-              html: error.errors.map((err) => {
-                return '<li class="text-left">' + err + '</li>';
-              }).join('')
-            }).then(() => {
-              this.onBack();
-            });
-          } else if (error.resultDescription) {
-            this.alertService.error(error.resultDescription);
-          } else {
-            this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
-
+        return this.http.get('/api/customerportal/validate-customer-pre-to-post', {
+          params: {
+            identity: readPassport.profile.idCardNo,
+            idCardType: readPassport.profile.idCardType
           }
-        });
+          // catch ไว้ก่อน เดี๋ยวมาทำต่อ
+        }).toPromise().catch(() => {
+          return {};
+        })
+          .then((resp: any) => {
+            const data = resp.data || {};
+            return {
+              caNumber: data.caNumber,
+              mainMobile: data.mainMobile,
+              billCycle: data.billCycle,
+              // zipCode: zipCode
+            };
+          }).then((resp) => {
+            this.transaction.data.customer = Object.assign(
+              Object.assign({}, this.transaction.data.customer), readPassport.profile);
+            return this.http.get(`/api/customerportal/newRegister/${readPassport.profile.idCardNo}/queryBillingAccount`).toPromise()
+              .then((respQueryBilling: any) => {
+                const data = respQueryBilling.data || {};
+                return this.http.post('/api/customerportal/verify/billingNetExtreme', {
+                  businessType: '1',
+                  listBillingAccount: data.billingAccountList
+                }).toPromise()
+                  .then((respBillingNetExtreme: any) => {
+                    return {
+                      billCycles: data.billingAccountList,
+                      billCyclesNetExtreme: respBillingNetExtreme.data
+                    };
+                  })
+                  .catch(() => {
+                    return {
+                      billCycles: data.billingAccountList
+                    };
+                  });
+              });
+          }).then((billingInformation: any) => {
+            this.transaction.data.billingInformation = billingInformation;
+          })
+          .then(() => {// verify Prepaid Ident
+            const idCardNo = this.transaction.data.customer.idCardNo;
+            return this.http.get(`/api/customerportal/newRegister/verifyPrepaidIdent?idCard=${idCardNo}&mobileNo=${mobileNo}`)
+              .toPromise()
+              .then((respPrepaidIdent: any) => {
+                if (respPrepaidIdent.data && respPrepaidIdent.data.success) {
+                  if (this.checkBusinessLogic()) {
+                    this.transaction.data.action = TransactionAction.READ_PASSPORT;
+                  }
+                } else {
+                  if (this.checkBusinessLogic()) {
+                    this.transaction.data.action = TransactionAction.READ_PASSPORT_REPI;
+                  }
+                }
+                this.transactionService.update(this.transaction);
+                this.router.navigate([ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_REPI_PAGE]);
+                this.pageLoadingService.closeLoading();
+              });
+          }).catch((resp: any) => {
+            this.pageLoadingService.closeLoading();
+            const error = resp.error || [];
+            if (error && error.errors && error.errors.length > 0) {
+              this.alertService.notify({
+                type: 'error',
+                html: error.errors.map((err) => {
+                  return '<li class="text-left">' + err + '</li>';
+                }).join('')
+              }).then(() => {
+                this.onBack();
+              });
+            } else if (error.resultDescription) {
+              this.alertService.error(error.resultDescription);
+            } else {
+              this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+
+            }
+          });
+      } else {
+        if (readPassport.eventName && readPassport.eventName === 'OnScanDocError') {
+          this.alertService.error(this.ERR_MASSEAGE);
+        }
+      }
     });
   }
 

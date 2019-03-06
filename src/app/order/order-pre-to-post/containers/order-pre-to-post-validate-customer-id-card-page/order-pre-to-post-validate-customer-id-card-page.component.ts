@@ -145,7 +145,6 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
       })
       .catch((resp: any) => {
         const error = resp.error || [];
-        console.log(resp);
 
         if (error && error.errors.length > 0) {
           this.alertService.notify({
