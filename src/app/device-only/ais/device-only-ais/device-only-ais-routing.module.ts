@@ -18,23 +18,23 @@ const routes: Routes = [
     component: DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent
   },
   {
-    path: 'queue-page',
+    path: 'queue',
     component: DeviceOnlyAisQueuePageComponent
   },
   {
-    path: 'qr-code-queue-page',
+    path: 'qr-code-queue',
     component: DeviceOnlyAisQrCodeQueuePageComponent
   },
   {
-    path: 'mobile-care-page',
+    path: 'mobile-care',
     component: DeviceOnlyAisSelectMobileCarePageComponent
   },
   {
-    path: 'summary-page',
+    path: 'summary',
     component: DeviceOnlyAisSummaryPageComponent
   },
   {
-    path: 'mobile-care-avaliable-page',
+    path: 'mobile-care-avaliable',
     component: DeviceOnlyAisMobileCareAvaliablePageComponent
   }
 ];
