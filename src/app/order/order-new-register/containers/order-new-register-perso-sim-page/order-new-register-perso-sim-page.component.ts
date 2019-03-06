@@ -623,15 +623,15 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
           } else {
             this.controlSim(ControlSimCard.EVENT_LOAD_SIM).then((resLoadSim: ControlSimResult) => {
               this.controlSim(ControlLED.EVENT_LED_ON);
-              if(resLoadSim.result == 'Success'){
-                this.checkCardPresent = true; 
+              if (resLoadSim.result === 'Success') {
+                this.checkCardPresent = true;
               }
               return resLoadSim.isSuccess;
             });
           }
         });
       } else {
-        this.checkCardPresent = false; 
+        this.checkCardPresent = false;
         return false;
       }
     });

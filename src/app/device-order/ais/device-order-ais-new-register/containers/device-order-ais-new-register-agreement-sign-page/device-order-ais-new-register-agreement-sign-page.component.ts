@@ -6,7 +6,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { Subscription } from 'rxjs';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
-import { 
+import {
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_EAPPLICATION_PAGE,
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_CAPTURE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PERSO_SIM_PAGE

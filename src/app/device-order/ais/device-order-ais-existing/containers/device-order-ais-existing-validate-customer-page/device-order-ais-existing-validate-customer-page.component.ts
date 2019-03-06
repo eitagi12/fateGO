@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
 import { HomeService, PageLoadingService, ApiRequestService } from 'mychannel-shared-libs';
@@ -15,7 +15,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
   templateUrl: './device-order-ais-existing-validate-customer-page.component.html',
   styleUrls: ['./device-order-ais-existing-validate-customer-page.component.scss']
 })
-export class DeviceOrderAisExistingValidateCustomerPageComponent implements OnInit {
+export class DeviceOrderAisExistingValidateCustomerPageComponent implements OnInit, OnDestroy {
 
   transaction: Transaction;
   identityValid = false;
