@@ -9,7 +9,6 @@ import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent } from './contrainers/device-only-ais-select-payment-and-receipt-information-page/device-only-ais-select-payment-and-receipt-information-page.component';
 import { DeviceOnlyAisCheckoutPaymentPageComponent } from './contrainers/device-only-ais-checkout-payment-page/device-only-ais-checkout-payment-page.component';
 import { DeviceOnlyAisSummaryPageComponent } from './contrainers/device-only-ais-summary-page/device-only-ais-summary-page.component';
-import { ProcessingStepComponent } from './components/processing-step/processing-step.component';
 import { DeviceOnlyAisQrCodeSummarayPageComponent } from './contrainers/device-only-ais-qr-code-summaray-page/device-only-ais-qr-code-summaray-page.component';
 import { DeviceOnlyAisQrCodeGeneratePageComponent } from './contrainers/device-only-ais-qr-code-generate-page/device-only-ais-qr-code-generate-page.component';
 
@@ -28,7 +27,6 @@ import { DeviceOnlyAisQrCodeGeneratePageComponent } from './contrainers/device-o
     DeviceOnlyAisQrCodeQueuePageComponent,
     DeviceOnlyAisCheckoutPaymentPageComponent,
     DeviceOnlyAisSummaryPageComponent,
-    ProcessingStepComponent,
     DeviceOnlyAisQrCodeSummarayPageComponent,
     DeviceOnlyAisQrCodeGeneratePageComponent]
 })
