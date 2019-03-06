@@ -71,14 +71,17 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
   onReadPassport() {
     const mobileNo = this.transaction.data.simCard.mobileNo;
     this.readPassportSubscription = this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
+
       this.pageLoadingService.openLoading();
       if (readPassport.error) {
         this.alertService.error('ไม่สามารถอ่านบัตรได้ กรุณาติดต่อพนักงาน');
         return;
       }
+
       return this.http.get('/api/customerportal/validate-customer-pre-to-post', {
         params: {
-          identity: readPassport.profile.idCardNo
+          identity: readPassport.profile.idCardNo,
+          idCardType: readPassport.profile.idCardType
         }
         // catch ไว้ก่อน เดี๋ยวมาทำต่อ
       }).toPromise().catch(() => {

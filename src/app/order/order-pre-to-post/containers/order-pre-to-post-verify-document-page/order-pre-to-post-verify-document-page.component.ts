@@ -115,9 +115,10 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
         this.alertService.error('ไม่สามารถอ่านบัตรได้ กรุณาติดต่อพนักงาน');
         return;
       }
-      return this.http.get('/api/customerportal/validate-customer-new-register', {
+      return this.http.get('/api/customerportal/validate-customer-pre-to-post', {
         params: {
-          identity: readPassport.profile.idCardNo
+          identity: readPassport.profile.idCardNo,
+          idCardType: readPassport.profile.idCardType
         }
         // catch ไว้ก่อน เดี๋ยวมาทำต่อ
       }).toPromise().catch(() => {

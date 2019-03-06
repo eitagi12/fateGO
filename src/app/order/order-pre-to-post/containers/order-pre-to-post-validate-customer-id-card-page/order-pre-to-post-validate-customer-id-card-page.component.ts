@@ -82,7 +82,8 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
     this.pageLoadingService.openLoading();
     this.http.get('/api/customerportal/validate-customer-pre-to-post', {
       params: {
-        identity: this.profile.idCardNo
+        identity: this.profile.idCardNo,
+        idCardType: this.profile.idCardType
       }
     }).toPromise()
       .then((resp: any) => {
