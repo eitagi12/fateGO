@@ -8,6 +8,8 @@ import { DeviceOnlyAisQrCodeQueuePageComponent } from './contrainers/device-only
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent } from './contrainers/device-only-ais-select-payment-and-receipt-information-page/device-only-ais-select-payment-and-receipt-information-page.component';
 import { DeviceOnlyAisSummaryPageComponent } from './contrainers/device-only-ais-summary-page/device-only-ais-summary-page.component';
+import { ProcessingStepComponent } from './components/processing-step/processing-step.component';
+
 
 @NgModule({
   imports: [
@@ -21,6 +23,7 @@ import { DeviceOnlyAisSummaryPageComponent } from './contrainers/device-only-ais
     DeviceOnlyAisMobileCareAvaliablePageComponent,
     DeviceOnlyAisQueuePageComponent,
     DeviceOnlyAisQrCodeQueuePageComponent,
-    DeviceOnlyAisSummaryPageComponent]
+    DeviceOnlyAisSummaryPageComponent,
+    ProcessingStepComponent]
 })
 export class DeviceOnlyAisModule { }
