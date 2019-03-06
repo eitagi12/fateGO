@@ -223,23 +223,24 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     const productDetail: any = this.localStorageService.load('productDetail').value;
     const productInfo: any = this.localStorageService.load('productInfo').value;
     const thumbnail = (productInfo && productInfo.images) ? productInfo.images.thumbnail : '';
-    const device: ProductStock = {
-      company: productInfo.company,
-      productType: productDetail.productType,
-      productSubType: productDetail.productSubType,
-      productName: productDetail.name,
-      model: productDetail.model,
-      brand: productDetail.brand,
-      color: productInfo.colorName,
-      qty: productInfo.qty,
-      thumbnail: thumbnail,
-      colorCode: productInfo.colorCode
-    };
+    // const device: ProductStock = {
+    //   company: productInfo.company,
+    //   productType: productDetail.productType,
+    //   productSubType: productDetail.productSubType,
+    //   productName: productDetail.name,
+    //   model: productDetail.model,
+    //   brand: productDetail.brand,
+    //   color: productInfo.colorName,
+    //   qty: productInfo.qty,
+    //   thumbnail: thumbnail,
+    //   colorCode: productInfo.colorCode
+    // };
 
     this.priceOption = {
       campaign: mainPromotion.cammapign,
       trade: mainPromotion.trade,
-      productStock: device
+      productDetail: productDetail,
+      productStock: productInfo
     };
   }
 

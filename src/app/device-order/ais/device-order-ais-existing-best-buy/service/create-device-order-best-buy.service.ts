@@ -32,10 +32,6 @@ export const REMARK_ORDER_TYPE = '[OT]';
 export const REMARK_PROMPT_PAY_PAYMENT = '[PB]';
 export const REMARK_RABBIT_LINE_PAY_PAYMENT = '[RL]';
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 0cb65a55535dd8678ce9a79b71cd1308930425db
 
 @Injectable({
   providedIn: 'root'
@@ -377,20 +373,21 @@ export class CreateDeviceOrderBestBuyService {
   private mapCreateTransactionDB(transaction, priceOption) {
     const username: any = this.tokenService.getUser().username;
     const product: any = priceOption.productStock;
+    const productDetail: any = priceOption.productDetail;
     const main_promotion = {
       campaign: priceOption.campaign,
       privilege: priceOption.privilege,
       trade: priceOption.trade
     };
     const device = {
-      model: product.model,
-      brand: product.brand,
+      model: productDetail.model,
+      brand: productDetail.brand,
       amount: 1,
-      name: product.productName,
+      name: productDetail.productName,
       colorName: product.color,
       colorCode: product.colorCode,
-      productType: product.productType,
-      productSubtype: product.productSubType
+      productType: productDetail.productType,
+      productSubtype: productDetail.productSubType
     };
 
     return {

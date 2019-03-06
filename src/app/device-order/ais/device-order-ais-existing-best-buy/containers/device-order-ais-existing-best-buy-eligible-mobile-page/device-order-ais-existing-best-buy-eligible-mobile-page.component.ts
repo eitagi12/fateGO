@@ -2,11 +2,12 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-import { HomeService, PageLoadingService, ApiRequestService, EligibleMobile, AlertService } from 'mychannel-shared-libs';
+import { HomeService, PageLoadingService, ApiRequestService, EligibleMobile, AlertService, ShoppingCart } from 'mychannel-shared-libs';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
+import { ShoppingCartService } from 'src/app/device-order/service/shopping-cart.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-eligible-mobile-page',
@@ -23,6 +24,7 @@ export class DeviceOrderAisExistingBestBuyEligibleMobilePageComponent implements
   eligiblePostpaid: any[];
   mobileNo: any;
   errorMsg = 'ไม่พบหมายเลขที่รับสิทธิ์ได้ในโครงการนี้';
+  shoppingCart: ShoppingCart;
 
   constructor(
     private router: Router,
@@ -31,12 +33,14 @@ export class DeviceOrderAisExistingBestBuyEligibleMobilePageComponent implements
     private transactionService: TransactionService,
     private apiRequestService: ApiRequestService,
     private http: HttpClient,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private shoppingCartService: ShoppingCartService
   ) {
     this.transaction = this.transactionService.load();
   }
 
   ngOnInit() {
+    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.getEligibleMobileNo();
   }
 

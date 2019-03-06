@@ -7,6 +7,7 @@ import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_PAGE, ROUTE_DEVICE_OR
 import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
+import { ShoppingCartService } from 'src/app/device-order/service/shopping-cart.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-customer-info-page',
@@ -19,6 +20,7 @@ export class DeviceOrderAisExistingBestBuyCustomerInfoPageComponent implements O
 
   transaction: Transaction;
   customerInfo: CustomerInfo;
+  shoppingCart: ShoppingCart;
 
   constructor(
     private router: Router,
@@ -26,12 +28,14 @@ export class DeviceOrderAisExistingBestBuyCustomerInfoPageComponent implements O
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private apiRequestService: ApiRequestService,
-    private http: HttpClient
+    private http: HttpClient,
+    private shoppingCartService: ShoppingCartService
   ) {
     this.transaction = this.transactionService.load();
   }
 
   ngOnInit() {
+    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     const customer: Customer = this.transaction.data.customer;
     this.customerInfo = {
       titleName: customer.titleName,
