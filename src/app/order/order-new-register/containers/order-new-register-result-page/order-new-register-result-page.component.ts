@@ -16,6 +16,7 @@ export class OrderNewRegisterResultPageComponent implements OnInit {
   wizards = WIZARD_ORDER_NEW_REGISTER;
   transaction: Transaction;
   isSuccess: boolean;
+  createTransactionService: Promise<any>;
   constructor(
     private homeService: HomeService,
     private transactionService: TransactionService,
@@ -27,7 +28,7 @@ export class OrderNewRegisterResultPageComponent implements OnInit {
 
   ngOnInit() {
     this.pageLoadingService.openLoading();
-    this.createNewRegisterService.createNewRegister(this.transaction).then((resp: any) => {
+    this.createTransactionService = this.createNewRegisterService.createNewRegister(this.transaction).then((resp: any) => {
       const data = resp.data || {};
       this.transaction.data.order = {
         orderNo: data.orderNo,
