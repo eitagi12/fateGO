@@ -145,7 +145,7 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
         });
       } else {
         if (readPassport.eventName && readPassport.eventName === 'OnScanDocError') {
-          this.alertService.error(this.ERR_MASSEAGE);
+          this.alertService.error(this.translation.instant(this.ERR_MASSEAGE));
         }
       }
     });
