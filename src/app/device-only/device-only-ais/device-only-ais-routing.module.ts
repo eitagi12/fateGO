@@ -4,6 +4,7 @@ import { DeviceOnlyAisQueuePageComponent } from './contrainers/device-only-ais-q
 import { DeviceOnlyAisQrCodeQueuePageComponent } from './contrainers/device-only-ais-qr-code-queue-page/device-only-ais-qr-code-queue-page.component';
 import { DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent } from './contrainers/device-only-ais-select-payment-and-receipt-information-page/device-only-ais-select-payment-and-receipt-information-page.component';
 import {DeviceOnlyAisCheckoutPaymentPageComponent} from './contrainers/device-only-ais-checkout-payment-page/device-only-ais-checkout-payment-page.component';
+import { DeviceOnlyAisSelectMobileCarePageComponent } from './contrainers/device-only-ais-select-mobile-care-page/device-only-ais-select-mobile-care-page.component';
 const routes: Routes = [
   {
     path: 'checkout-payment',
@@ -20,6 +21,10 @@ const routes: Routes = [
   {
     path: 'qr-code-queue-page',
     component: DeviceOnlyAisQrCodeQueuePageComponent
+  },
+  {
+    path: 'mobile-care-page',
+    component: DeviceOnlyAisSelectMobileCarePageComponent
   }
 ];
 
