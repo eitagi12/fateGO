@@ -41,6 +41,7 @@ export class OrderNewRegisterResultPageComponent implements OnInit {
         this.isSuccess = false;
       }
       this.pageLoadingService.closeLoading();
+
     }).catch(() => {
       this.isSuccess = false;
       this.pageLoadingService.closeLoading();
