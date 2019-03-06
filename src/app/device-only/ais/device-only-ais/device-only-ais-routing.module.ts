@@ -5,6 +5,7 @@ import { DeviceOnlyAisQrCodeQueuePageComponent } from './contrainers/device-only
 import { DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent } from './contrainers/device-only-ais-select-payment-and-receipt-information-page/device-only-ais-select-payment-and-receipt-information-page.component';
 import {DeviceOnlyAisCheckoutPaymentPageComponent} from './contrainers/device-only-ais-checkout-payment-page/device-only-ais-checkout-payment-page.component';
 import { DeviceOnlyAisSelectMobileCarePageComponent } from './contrainers/device-only-ais-select-mobile-care-page/device-only-ais-select-mobile-care-page.component';
+import { DeviceOnlyAisSummaryPageComponent } from 'src/app/device-only/ais/device-only-ais/contrainers/device-only-ais-summary-page/device-only-ais-summary-page.component';
 const routes: Routes = [
   {
     path: 'checkout-payment',
@@ -25,6 +26,10 @@ const routes: Routes = [
   {
     path: 'mobile-care-page',
     component: DeviceOnlyAisSelectMobileCarePageComponent
+  },
+  {
+    path: 'summary-page',
+    component: DeviceOnlyAisSummaryPageComponent
   }
 ];
 
