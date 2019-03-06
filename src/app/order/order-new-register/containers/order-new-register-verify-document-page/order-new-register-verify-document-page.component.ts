@@ -42,13 +42,10 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
     public translation: TranslateService
   ) {
     this.homeService.callback = () => {
-      if (this.transaction.data.action === TransactionAction.READ_PASSPORT) {
+      if (this.closeVendingApi.ws) {
         this.closeVendingApi.ws.send(KioskControls.LED_OFF);
       }
-      setTimeout(() => { // รอ websocket ปิดไฟให้เสร็จก่อน
-        window.location.href = '/smart-shop';
-      },400);
-      
+      window.location.href = '/smart-shop';
     };
   }
 
