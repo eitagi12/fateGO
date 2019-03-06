@@ -36,6 +36,8 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
   validateCustomerForm: FormGroup;
 
+  readonly ERR_MASSEAGE = 'ไม่สามารถให้บริการได้ กรุณาติดต่อพนักงานเพื่อดำเนินการ ขออภัยในความไม่สะดวก';
+
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -58,12 +60,6 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
     this.onReadCard();
     this.onReadPassport();
     this.koiskApiFn = this.readCardService.kioskApi();
-    // this.onNext();
-    // this.readPassportService.readPassportFromWebSocket().subscribe((readPassprot: ReadPassprot) => {
-    //   console.log('readPassprot', readPassprot);
-    //   this.transaction.data.customer = this.readPassprot.profile;
-    // });
-    // this.readCardService.kioskApi().controls(KioskControls.GET_CARD_STATE).subscribe(msg => console.log('msg', msg));
   }
   onCompleted(profile: ReadCardProfile) {
     this.profile = profile;
@@ -112,9 +108,9 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
     this.readPassportSubscription = this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
       this.pageLoadingService.openLoading();
       if (readPassport.error) {
-        this.alertService.error('ไม่สามารถอ่านบัตรได้ กรุณาติดต่อพนักงาน');
+        this.alertService.error(this.ERR_MASSEAGE);
         return;
-      }
+      } else if (readPassport.profile && readPassport.profile.idCardNo) {
       return this.http.get('/api/customerportal/validate-customer-pre-to-post', {
         params: {
           identity: readPassport.profile.idCardNo,
@@ -183,6 +179,11 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
 
           }
         });
+      } else {
+        if (readPassport.eventName && readPassport.eventName === 'OnScanDocError') {
+          this.alertService.error(this.ERR_MASSEAGE);
+        }
+      }
     });
   }
 
