@@ -1,3 +1,98 @@
-<p>
-  device-only-ais-qr-code-summaray-page works!
-</p>
+<div class="mc-flex">
+  
+<mc-header title="ชำระค่าสินค้า">
+        <div class="header-icon-left">
+          <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+        </div>
+        <div class="header-icon-right">
+          <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+        </div>
+      </mc-header>
+
+<div class="mc-flex-wrap">
+    <div class="my-3">
+        <div class="container-fluid">
+          <div class="row mb-3">
+            <div class="col-6">
+              <div class="ml-5">
+                <img src="assets/images/icon/icon-person.png" class="icon-person" />
+                น.ส. ทดสอบ ลองเทส
+              </div>
+            </div>
+            <div class="col-6 text-right">
+              <div class="mr-5">
+                <img src="assets/images/icon/sales_portal_green_phone.png" class="icon-mobile" />
+                0987654321
+              </div>
+            </div>
+          </div>
+  
+          <div class="card mb-3">
+            <div class="card-header bg-pink text-white">รายการสินค้า</div>
+            <div class="card-body">
+              <p class="text-light-green">
+                campaignName AIS EASY PLUS 
+              </p>
+              <div class="text-grey">
+                <p>
+                  <i class="fa fa-circle mr-3 text-light-green"></i>
+                  AIS EASY PLUS
+                  <span class="pull-right text-light-green">
+                     ฿ 2000
+                  </span>
+                </p>
+              </div>
+            </div>
+            <div class="card-footer bg-transparent text-right">
+              รวมยอดชำระ(รวมVAT)
+              <span class="text-light-green ml-2">
+                  ฿ 200000000
+              </span>
+            </div>
+          </div>
+  
+          <div class="card mb-3">
+            <div class="card-header bg-pink text-white">
+              รายละเอียดการชำระ
+            </div>
+            <div class="card-body text-grey">
+              <p>
+                <i class="fa fa-circle mr-3 text-light-green"></i>
+                ค่าแพ็กเกจบริการล่วงหน้า : ชำระเต็มจำนวน
+                <span class="pull-right text-light-green">
+                    ฿ 100000000
+                </span>
+              </p>
+            </div>
+          </div>
+          
+          <div class="container">
+            <div class="row">
+              <div class="col-8">
+                <img src="assets/images/icon/phone_qrcode.png" />
+                ชำระด้วย QR Code
+                <div class="text-pink">กรุณาเปิด Application เพื่อสแกน QR Code</div>
+              </div>
+              <div class="col-4 text-right">
+                <img class="img-fluid" src="assets/images/icon/Thai_Qr_Payment.png" />
+              </div>
+              <div class="col-12 mt-3">
+                <form class="form-inline pull-right">
+                  <div class="form-group">
+                    <label for="summaryInput" class="text-light-green">ยอดชำระ</label>
+                    <input style="text-align: center" type="text" id="summaryInput" readonly class="form-control ml-3 text-light-green" value="200000000">
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+</div>
+
+<mc-footer>
+  <button class="btn btn-secondary" (click)="onBack()">CANCEL</button>
+  <button class="btn btn-success" (click)="onNext()">PAY NOW</button>
+</mc-footer>
+</div>
