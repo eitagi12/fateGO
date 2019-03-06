@@ -160,12 +160,12 @@ export class AppComponent {
         };
 
         console.log(serverTime);
-        console.log(localTime.subtract('m', 30));
+        console.log(localTime.subtract(30, 'm'));
         console.log(localTime.add(30, 'm'));
-        console.log(serverTime.isBetween(localTime.subtract('minutes', 1), localTime.add('minutes', 1)));
+        console.log(serverTime.isBetween(localTime.subtract(1, 'minutes'), localTime.add(1, 'minutes')));
         if (!serverTime.isBetween(
-          localTime.subtract('minutes', 1),
-          localTime.add('minutes', 1)
+          localTime.subtract(1, 'minutes'),
+          localTime.add(1, 'minutes')
         )) {
           let timerInterval;
           this.alertService.notify({

@@ -49,7 +49,7 @@ export class OrderPreToPostOtpPageComponent implements OnInit {
   sendOTP() {
     this.pageLoadingService.openLoading();
     let mobile = this.registrationData.simCard.mobileNo;
-   
+
     if (environment.name !== 'PROD') {
       mobile = environment.TEST_OTP_MOBILE;
     }
@@ -68,7 +68,7 @@ export class OrderPreToPostOtpPageComponent implements OnInit {
   verifyOTP() {
     this.pageLoadingService.openLoading();
     let mobile = this.registrationData.simCard.mobileNo;
-        
+
     const otp = this.otpForm.value.otp;
     if (environment.name !== 'PROD') {
       mobile = environment.TEST_OTP_MOBILE;
