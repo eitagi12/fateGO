@@ -1,3 +1,5 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DeviceOnlyAisQueuePageComponent } from './device-only-ais-queue-page.component';
@@ -8,7 +10,10 @@ describe('DeviceOnlyAisQueuePageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DeviceOnlyAisQueuePageComponent ]
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+      declarations: [
+        DeviceOnlyAisQueuePageComponent
+      ]
     })
     .compileComponents();
   }));
