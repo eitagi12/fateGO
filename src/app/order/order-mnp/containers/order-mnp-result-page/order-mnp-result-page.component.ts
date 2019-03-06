@@ -47,7 +47,6 @@ export class OrderMnpResultPageComponent implements OnInit {
         this.isSuccess = false;
         this.pageLoadingService.closeLoading();
       });
-    this.isSuccess = false;
   }
 
   onMainMenu() {
