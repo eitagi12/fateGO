@@ -58,6 +58,8 @@
     "testMatch": [
       "<rootDir>/src/app/device-only/**/*.spec.ts"
     ],
-    "setupTestFrameworkScriptFile": "<rootDir>/src/setupJest.ts"
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/setupJest.ts"
+    ]
   }
 }

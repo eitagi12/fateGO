@@ -10,6 +10,7 @@ import { DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent } from './
 import { DeviceOnlyAisCheckoutPaymentPageComponent } from './contrainers/device-only-ais-checkout-payment-page/device-only-ais-checkout-payment-page.component';
 import { DeviceOnlyAisSummaryPageComponent } from './contrainers/device-only-ais-summary-page/device-only-ais-summary-page.component';
 import { ProcessingStepComponent } from './components/processing-step/processing-step.component';
+import { DeviceOnlyAisQrCodeSummarayPageComponent } from './contrainers/device-only-ais-qr-code-summaray-page/device-only-ais-qr-code-summaray-page.component';
 
 
 @NgModule({
@@ -26,6 +27,7 @@ import { ProcessingStepComponent } from './components/processing-step/processing
     DeviceOnlyAisQrCodeQueuePageComponent,
     DeviceOnlyAisCheckoutPaymentPageComponent,
     DeviceOnlyAisSummaryPageComponent,
-    ProcessingStepComponent]
+    ProcessingStepComponent,
+    DeviceOnlyAisQrCodeSummarayPageComponent]
 })
 export class DeviceOnlyAisModule { }

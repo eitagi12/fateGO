@@ -8,6 +8,7 @@ import { DeviceOnlyAisSelectMobileCarePageComponent } from './contrainers/device
 import { DeviceOnlyAisSummaryPageComponent } from 'src/app/device-only/ais/device-only-ais/contrainers/device-only-ais-summary-page/device-only-ais-summary-page.component';
 import { DeviceOnlyAisMobileCareAvaliablePageComponent} from './contrainers/device-only-ais-mobile-care-avaliable-page/device-only-ais-mobile-care-avaliable-page.component';
 import { from } from 'rxjs';
+import { DeviceOnlyAisQrCodeSummarayPageComponent } from './contrainers/device-only-ais-qr-code-summaray-page/device-only-ais-qr-code-summaray-page.component';
 const routes: Routes = [
   {
     path: 'checkout-payment',
@@ -24,6 +25,10 @@ const routes: Routes = [
   {
     path: 'qr-code-queue',
     component: DeviceOnlyAisQrCodeQueuePageComponent
+  },
+  {
+    path: 'qr-code-summary',
+    component: DeviceOnlyAisQrCodeSummarayPageComponent
   },
   {
     path: 'mobile-care',
