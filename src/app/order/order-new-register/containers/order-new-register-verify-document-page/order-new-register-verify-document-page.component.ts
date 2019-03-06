@@ -45,7 +45,10 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
       if (this.transaction.data.action === TransactionAction.READ_PASSPORT) {
         this.closeVendingApi.ws.send(KioskControls.LED_OFF);
       }
-      window.location.href = '/smart-shop';
+      setTimeout(() => { // รอ websocket ปิดไฟให้เสร็จก่อน
+        window.location.href = '/smart-shop';
+      },400);
+      
     };
   }
 
