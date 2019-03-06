@@ -28,24 +28,25 @@ export class OrderNewRegisterResultPageComponent implements OnInit {
 
   ngOnInit() {
     this.pageLoadingService.openLoading();
-    this.createTransactionService = this.createNewRegisterService.createNewRegister(this.transaction).then((resp: any) => {
-      const data = resp.data || {};
-      this.transaction.data.order = {
-        orderNo: data.orderNo,
-        orderDate: data.orderDate
-      };
-      this.transactionService.update(this.transaction);
-      if (this.transaction.data.order.orderNo) {
-        this.isSuccess = true;
-      } else {
-        this.isSuccess = false;
-      }
-      this.pageLoadingService.closeLoading();
+    this.createTransactionService = this.createNewRegisterService.createNewRegister(this.transaction)
+      .then((resp: any) => {
+        const data = resp.data || {};
+        this.transaction.data.order = {
+          orderNo: data.orderNo,
+          orderDate: data.orderDate
+        };
+        this.transactionService.update(this.transaction);
+        if (this.transaction.data.order.orderNo) {
+          this.isSuccess = true;
+        } else {
+          this.isSuccess = false;
+        }
+        this.pageLoadingService.closeLoading();
 
-    }).catch(() => {
-      this.isSuccess = false;
-      this.pageLoadingService.closeLoading();
-    });
+      }).catch(() => {
+        this.isSuccess = false;
+        this.pageLoadingService.closeLoading();
+      });
   }
 
   onMainMenu() {

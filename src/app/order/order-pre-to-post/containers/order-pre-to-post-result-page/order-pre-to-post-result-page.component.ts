@@ -18,6 +18,7 @@ export class OrderPreToPostResultPageComponent implements OnInit {
   transaction: Transaction;
   serviceChange: any;
   isSuccess: boolean;
+  createTransactionService: Promise<any>;
   constructor(
     private homeService: HomeService,
     private alertService: AlertService,
@@ -31,7 +32,7 @@ export class OrderPreToPostResultPageComponent implements OnInit {
 
   ngOnInit() {
     this.pageLoadingService.openLoading();
-    this.createPreToPostService.createPreToPost(this.transaction)
+    this.createTransactionService = this.createPreToPostService.createPreToPost(this.transaction)
       .then(resp => {
         const data = resp.data || {};
         this.transaction.data.order = {
