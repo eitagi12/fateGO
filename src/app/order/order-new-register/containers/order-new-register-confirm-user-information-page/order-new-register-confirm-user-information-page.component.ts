@@ -110,7 +110,7 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
     const mergeBilling = billingInformation.mergeBilling;
     const billCycle = billingInformation.billCycle;
     const customer: any = billingInformation.billDeliveryAddress || this.transaction.data.customer;
-
+    const engFlag = this.transaction.data.customer.engFlag || 'N';
     const customerAddress = this.utils.getCurrentAddress({
       homeNo: customer.homeNo,
       moo: customer.moo,
@@ -124,7 +124,7 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
       amphur: customer.amphur,
       province: customer.province,
       zipCode: customer.zipCode
-    });
+    }, engFlag);
 
     this.billingInfo = {
       // merge bill ไม่เมื่อเลือก package net extrem
@@ -245,7 +245,7 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
 
   onNext() {
     if (!this.customerValid()) {
-      this.alertService.warning('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร');
+      this.alertService.warning(this.translation.instant('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร'));
       return;
     }
 

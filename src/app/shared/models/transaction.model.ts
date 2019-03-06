@@ -197,5 +197,6 @@ export interface BillingAccountData {
 
   billingMethodText?: string;
   billCycleText?: string;
+  billCycleTextEng?: string;
   billAddressText?: string;
 }

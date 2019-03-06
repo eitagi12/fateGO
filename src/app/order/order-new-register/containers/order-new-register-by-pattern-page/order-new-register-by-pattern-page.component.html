@@ -16,9 +16,7 @@
         <div class="card mb-3">
           <div class="card-header bg-orange text-white rounded-top p-3">
             <div class="row">
-              <div class="col-8 text-left" translate>
-                ใส่เงื่อนไขการเลือกเบอร์
-              </div>
+              <div class="col-8 text-left" translate>ใส่เงื่อนไขการเลือกเบอร์</div>
             </div>
           </div>
           <div class="card-body bg-white">
@@ -88,7 +86,7 @@
               <div class="text-right">
                 <button class="btn btn-secondary mr-3" type="reset" translate>แก้ไข</button>
                 <button class="btn btn-primary" type="submit">
-                  <i class="fa fa-search"></i> <ng-container translate>ค้นหาเบอร์</ng-container>
+                  <i class="fa fa-search"></i> <span translate>ค้นหาเบอร์</span>
                 </button>
               </div>
             </form>
@@ -97,9 +95,7 @@
         <div class="card mb-3" *ngIf="isSearchAgain">
           <div class="card-header bg-orange text-white rounded-top p-3">
             <div class="row">
-              <div class="col-8 text-left" translate>
-                ผลลัพธ์
-              </div>
+              <div class="col-8 text-left" translate>ผลลัพธ์</div>
             </div>
           </div>
           <div class="card-body">
@@ -110,7 +106,7 @@
                     (click)="$event.preventDefault();onSelectMobileNo(mobileNo)">
                     <div class="border" [ngClass]="{'bg-green text-white': mobileNo?.mobileNo === transaction?.data?.simCard?.mobileNo}">
                       <h5 class="pt-2"><b>{{ mobileNo?.mobileNo | mobileNo}}</b></h5>
-                      <p>(ผลรวม {{ mobileNo?.summary }})</p>
+                      <p>(<span translate>ผลรวม</span> {{ mobileNo?.summary }})</p>
                     </div>
                   </div>
                   <hr>

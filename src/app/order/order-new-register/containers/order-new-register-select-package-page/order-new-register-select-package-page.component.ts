@@ -15,6 +15,7 @@ import {
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ReserveMobileService, SelectMobileNumberRandom } from 'src/app/order/order-shared/services/reserve-mobile.service';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-order-new-register-select-package-page',
@@ -33,6 +34,8 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
   promotionData: any;
   condition: any;
   modalRef: BsModalRef;
+
+  translateSubscribe: Subscription;
 
   constructor(
     private router: Router,
@@ -59,7 +62,7 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
 
   ngOnInit() {
     this.callService(this.translateService.currentLang);
-    this.translation.onLangChange.subscribe(language => {
+    this.translateSubscribe = this.translation.onLangChange.subscribe(language => {
       this.callService(language.lang);
     });
   }
@@ -234,6 +237,7 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
   }
 
   ngOnDestroy(): void {
+    this.translateSubscribe.unsubscribe();
     this.transactionService.update(this.transaction);
   }
 }

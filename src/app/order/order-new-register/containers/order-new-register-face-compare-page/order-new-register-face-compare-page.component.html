@@ -17,9 +17,7 @@
 
           <div class="col-xs-12 col-sm-6 mb-3">
             <div class="card">
-              <div class="card-header text-center" translate>
-                ข้อมูลใบหน้าจาก {{transaction.data.customer.idCardType}}
-              </div>
+              <div class="card-header text-center" translate>ข้อมูลใบหน้าจาก {{transaction.data.customer.idCardType}}</div>
               <div class="card-body">
                 <img [src]="'data:image/png;base64,' + transaction?.data?.customer?.imageReadSmartCard" *ngIf="transaction?.data?.action === 'READ_CARD'">
                 <img [src]="'data:image/png;base64,' + transaction?.data?.customer?.imageSmartCard" *ngIf="transaction?.data?.action === 'KEY_IN'">
@@ -30,9 +28,7 @@
 
           <div class="col-xs-12 col-sm-6">
             <div class="card">
-              <div class="card-header text-center" translate>
-                ข้อมูลใบหน้าจากรูปถ่าย
-              </div>
+              <div class="card-header text-center" translate>ข้อมูลใบหน้าจากรูปถ่าย</div>
               <div class="card-body">
                 <img [src]="'data:image/png;base64,' + transaction?.data?.faceRecognition?.imageFaceUser">
               </div>

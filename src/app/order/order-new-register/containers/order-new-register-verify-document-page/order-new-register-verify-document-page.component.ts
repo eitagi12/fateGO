@@ -41,6 +41,12 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
     private readCardService: ReadCardService,
     public translation: TranslateService
   ) {
+    this.homeService.callback = () => {
+      if (this.closeVendingApi.ws) {
+        this.closeVendingApi.ws.send(KioskControls.LED_OFF);
+      }
+      window.location.href = '/smart-shop';
+    };
   }
 
   ngOnInit() {
@@ -139,7 +145,7 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
         });
       } else {
         if (readPassport.eventName && readPassport.eventName === 'OnScanDocError') {
-          this.alertService.error(this.ERR_MASSEAGE);
+          this.alertService.error(this.translation.instant(this.ERR_MASSEAGE));
         }
       }
     });
