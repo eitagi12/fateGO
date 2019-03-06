@@ -35,6 +35,7 @@ export class CreateEapplicationService {
     const data: any = {
       fullNameTH: customer.firstName + ' ' + customer.lastName || '',
       idCard: customer.idCardNo || '',
+      idCardType: customer.idCardType || '',
       birthDate: customer.birthdate || '',
       customerAddress: this.utils.getCurrentAddress({
         homeNo: customer.homeNo || '',
