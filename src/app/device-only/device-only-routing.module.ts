@@ -9,7 +9,7 @@ const routes: Routes = [
     children: [
       {
         path: 'ais',
-        loadChildren: 'src/app/device-only/device-only-ais/device-only-ais.module#DeviceOnlyAisModule'
+        loadChildren: 'src/app/device-only/ais/device-only-ais/device-only-ais.module#DeviceOnlyAisModule'
       }
     ]
   }
