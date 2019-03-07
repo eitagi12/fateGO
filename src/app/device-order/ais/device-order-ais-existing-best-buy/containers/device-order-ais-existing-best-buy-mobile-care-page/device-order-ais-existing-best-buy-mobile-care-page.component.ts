@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, TemplateRef, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
-import { ApiRequestService, PageLoadingService, HomeService, MobileCare, ShoppingCart, BillingSystemType } from 'mychannel-shared-libs';
+import { ApiRequestService, PageLoadingService, HomeService, MobileCare, ShoppingCart, BillingSystemType, VAT } from 'mychannel-shared-libs';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_CARE_AVAILABLE_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SUMMARY_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -11,6 +11,8 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ShoppingCartService } from 'src/app/device-order/service/shopping-cart.service';
 import { MobileCareService } from 'src/app/device-order/service/mobile-care.service';
 import { MOBILE_CARE_PACKAGE_KEY_REF } from 'src/app/device-order/constants/cpc.constant';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-mobile-care-page',
@@ -26,6 +28,13 @@ export class DeviceOrderAisExistingBestBuyMobileCarePageComponent implements OnI
   priceOption: PriceOption;
   shoppingCart: ShoppingCart;
 
+  @ViewChild('template')
+  template: TemplateRef<any>;
+  modalRef: BsModalRef;
+
+  mobileCareForm: FormGroup;
+  notBuyMobileCareForm: FormGroup;
+
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -35,7 +44,9 @@ export class DeviceOrderAisExistingBestBuyMobileCarePageComponent implements OnI
     private http: HttpClient,
     private priceOptionService: PriceOptionService,
     private shoppingCartService: ShoppingCartService,
-    private mobileCareService: MobileCareService
+    private mobileCareService: MobileCareService,
+    private fb: FormBuilder,
+    private modalService: BsModalService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -45,12 +56,12 @@ export class DeviceOrderAisExistingBestBuyMobileCarePageComponent implements OnI
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     delete this.transaction.data.mobileCarePackage;
     this.callService();
-
+    this.createForm();
   }
 
-  onCompleted(mobileCare: any) {
-    this.transaction.data.mobileCarePackage = mobileCare;
-  }
+  // onCompleted(mobileCare: any) {
+  //   this.transaction.data.mobileCarePackage = mobileCare;
+  // }
 
   onHome() {
     this.homeService.goToHome();
@@ -91,5 +102,48 @@ export class DeviceOrderAisExistingBestBuyMobileCarePageComponent implements OnI
       .then(() => this.pageLoadingService.closeLoading());
   }
 
+  createForm() {
+    this.mobileCareForm = this.fb.group({
+      'mobileCare': [true, Validators.required],
+      'promotion': ['', Validators.required]
+    });
 
+    this.notBuyMobileCareForm = this.fb.group({
+      'notBuyMobile': [''],
+    });
+
+    this.mobileCareForm.valueChanges.subscribe((value: any) => {
+      if (!value.mobileCare) {
+        return this.onOpenNotBuyMobileCare();
+      } else {
+        this.notBuyMobileCareForm.patchValue({
+          notBuyMobile: ''
+        });
+      }
+      if (this.mobileCareForm.valid) {
+        this.transaction.data.mobileCarePackage = this.mobileCareForm.value.promotion.value;
+      }
+    });
+  }
+
+  getServiceChange(percentage: number): number {
+    return ((this.priceOption.trade.normalPrice || 0) * (percentage / 100) * (VAT / 100));
+  }
+
+  onOpenNotBuyMobileCare() {
+    this.modalRef = this.modalService.show(this.template, {
+      ignoreBackdropClick: true
+    });
+  }
+
+  onNotBuyMobileCare(dismiss: boolean) {
+    if (dismiss) { // cancel
+      this.mobileCareForm.patchValue({
+        mobileCare: true
+      });
+    } else {
+      this.transaction.data.mobileCarePackage = this.notBuyMobileCareForm.value.notBuyMobile;
+    }
+    this.modalRef.hide();
+  }
 }
