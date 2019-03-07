@@ -87,7 +87,8 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
       .then((zipCode: string) => {
         return this.http.get('/api/customerportal/validate-customer-mnp', {
           params: {
-            identity: this.profile.idCardNo
+            identity: this.profile.idCardNo,
+            idCardType: this.profile.idCardType,
           }
         }).toPromise()
           .then((resp: any) => {
