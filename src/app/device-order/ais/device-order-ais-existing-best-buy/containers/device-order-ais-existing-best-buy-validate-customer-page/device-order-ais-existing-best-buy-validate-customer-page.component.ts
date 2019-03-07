@@ -43,7 +43,6 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     private utils: Utils,
     private localStorageService: LocalStorageService,
     private priceOptionService: PriceOptionService,
-    private alertService: AlertService,
     private createDeviceOrderBestBuyService: CreateDeviceOrderBestBuyService
   ) {
     // this.homeService.callback = () => {

@@ -12,6 +12,7 @@ import { ReceiptInfo } from 'mychannel-shared-libs/lib/component/receipt-info/re
 import { ShoppingCartService } from 'src/app/device-order/service/shopping-cart.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { CreateDeviceOrderBestBuyService } from '../../service/create-device-order-best-buy.service';
 
 
 export const CASH_PAYMENT = 'CA';
@@ -38,10 +39,6 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
   selectPaymentDetail: SelectPaymentDetail;
   paymentDetailOption: PaymentDetailOption;
 
-  paymentDetailAdvancePay: PaymentDetail;
-  selectPaymentDetailAdvancePay: SelectPaymentDetail;
-  paymentDetailAdvancePayOption: PaymentDetailOption;
-
   paymentMethod: string;
 
   selectQRCode: PaymentDetailQRCode;
@@ -57,12 +54,11 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
   constructor(
     private router: Router,
     private homeService: HomeService,
-    private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private apiRequestService: ApiRequestService,
     private http: HttpClient,
     private shoppingCartService: ShoppingCartService,
-    private priceOptionService: PriceOptionService
+    private priceOptionService: PriceOptionService,
+    private createDeviceOrderBestBuyService: CreateDeviceOrderBestBuyService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -70,54 +66,63 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
 
   ngOnInit() {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-    if (this.priceOption.trade.payments.length > 0) {
-      this.paymentMethod = this.priceOption.trade.payments.filter(payment => payment.method !== 'PP')[0].method || '';
-    } else {
-      this.paymentMethod = this.priceOption.trade.payments.method || '';
-    }
+    
+      const productDetail = this.priceOption.productDetail;
+      const productInfo = this.priceOption.productStock;
+      if (this.priceOption.trade.payments.length > 0) {
+        this.paymentMethod = this.priceOption.trade.payments.filter(payment => payment.method !== 'PP')[0].method || '';
+      } else {
+        this.paymentMethod = this.priceOption.trade.payments.method || '';
+      }
 
-    this.priceOption.trade.advancePay.amount = 1000;
-    this.priceOption.trade.advancePay.installmentFlag = 'N';
-    this.paymentMethod = 'CC/CA';
+      this.priceOption.trade.advancePay.amount = 1000;
+      this.priceOption.trade.advancePay.installmentFlag = 'N';
+      this.paymentMethod = 'CC/CA';
 
-    // ############################################## payment detail ##############################################
-    this.paymentDetail = {
-      title: 'รูปแบบการชำระเงิน',
-      header: 'ค่าเครื่อง ' + this.priceOption.queryParams.model + ' สี ' + this.priceOption.productStock.colorName,
-      price: this.priceOption.trade.promotionPrice,
-      qrCodes: this.getQRCode(),
-      banks: this.groupPrivilegeTradeBankByAbb(this.priceOption.trade.banks)
-    };
+      this.onLoadDefaultBankData(this.priceOption.trade.banks).then((banks) => {
+        this.priceOption.trade.banks = banks;
+        // ############################################## payment detail ##############################################
+        this.paymentDetail = {
+          title: 'รูปแบบการชำระเงิน',
+          header: 'ค่าเครื่อง ' + productDetail.name + ' สี ' + productInfo.colorName,
+          price: this.priceOption.trade.promotionPrice,
+          qrCodes: this.getQRCode(),
+          banks: this.groupPrivilegeTradeBankByAbb(this.priceOption.trade.banks)
+        };
+      });
 
-    if (this.transaction.data.payment) {
-      this.selectPaymentDetail = {
-        paymentType: this.transaction.data.payment.type,
-        qrCode: this.transaction.data.payment.qrCode,
-        bank: this.transaction.data.payment.bank,
+      if (this.transaction.data.payment) {
+        this.selectPaymentDetail = {
+          paymentType: this.transaction.data.payment.type,
+          qrCode: this.transaction.data.payment.qrCode,
+          bank: this.transaction.data.payment.bank,
+        };
+        const bank = this.paymentDetail.banks.find(b => b.abb === this.selectPaymentDetail.bank.abb);
+        this.paymentDetail.installments = bank ? bank.installments : [];
+      } else {
+        this.selectPaymentDetail = {
+          paymentType: this.getPaymentType(),
+        };
+      }
+
+      this.paymentDetailOption = {
+        isInstallment: this.isInstallment(),
+        isEnable: this.isEnableForm()
       };
-      const bank = this.paymentDetail.banks.find(b => b.abb === this.selectPaymentDetail.bank.abb);
-      this.paymentDetail.installments = bank ? bank.installments : [];
-    } else {
-      this.selectPaymentDetail = {
-        paymentType: this.getPaymentType(),
+
+      // ############################################## receiptInfo ##############################################
+
+
+      this.receiptInfo = {
+        taxId: this.transaction.data.customer.idCardNo,
+        branch: '',
+        buyer: this.transaction.data.customer.titleName + ' ' +
+          this.transaction.data.customer.firstName + ' ' +
+          this.transaction.data.customer.lastName,
+        buyerAddress: this.getFullAddress(this.transaction.data.customer),
+        telNo: this.transaction.data.receiptInfo ? this.transaction.data.receiptInfo.telNo : ''
       };
-    }
 
-    this.paymentDetailOption = {
-      isInstallment: this.isInstallment(),
-      isEnable: this.isEnableForm()
-    };
-
-     // ############################################## receiptInfo ##############################################
-     this.receiptInfo = {
-      taxId: this.transaction.data.customer.idCardNo,
-      branch: '',
-      buyer: this.transaction.data.customer.titleName + ' ' +
-        this.transaction.data.customer.firstName + ' ' +
-        this.transaction.data.customer.lastName,
-      buyerAddress: this.getFullAddress(this.transaction.data.customer),
-      telNo: this.transaction.data.receiptInfo ? this.transaction.data.receiptInfo.telNo : ''
-    };
   }
 
   onHome() {
@@ -147,6 +152,142 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
     this.transactionService.update(this.transaction);
   }
 
+  onLoadDefaultBankData(banks: PaymentDetailBank[]) {
+    return new Promise((resolve, reject) => {
+      if (banks && banks.length > 0) {
+        resolve(banks);
+      } else {
+        this.createDeviceOrderBestBuyService.getBanks().then((bankByLocation) => {
+          resolve(bankByLocation);
+        }).catch((err: any) => resolve([]));
+      }
+    });
+  }
+
+  onReceiptInfoCompleted(receiptInfo: ReceiptInfo) {
+    this.transaction.data.receiptInfo = receiptInfo;
+  }
+
+  onReceiptInfoError(error: boolean) {
+    this.receiptInfoValid = error;
+  }
+
+  getFullAddress(customer: Customer) {
+    if (!customer) {
+      return '-';
+    }
+    const fullAddress =
+      (customer.homeNo ? customer.homeNo + ' ' : '') +
+      (customer.moo ? 'หมู่ที่ ' + customer.moo + ' ' : '') +
+      (customer.mooBan ? 'หมู่บ้าน ' + customer.mooBan + ' ' : '') +
+      (customer.room ? 'ห้อง ' + customer.room + ' ' : '') +
+      (customer.floor ? 'ชั้น ' + customer.floor + ' ' : '') +
+      (customer.buildingName ? 'อาคาร ' + customer.buildingName + ' ' : '') +
+      (customer.soi ? 'ซอย ' + customer.soi + ' ' : '') +
+      (customer.street ? 'ถนน ' + customer.street + ' ' : '') +
+      (customer.tumbol ? 'ตำบล/แขวง ' + customer.tumbol + ' ' : '') +
+      (customer.amphur ? 'อำเภอ/เขต ' + customer.amphur + ' ' : '') +
+      (customer.province ? 'จังหวัด ' + customer.province + ' ' : '') +
+      (customer.zipCode || '');
+    return fullAddress || '-';
+  }
+
+  onSelectPaymentType(paymentType: string) {
+    this.selectPaymentDetail.paymentType = paymentType;
+  }
+  onSelectQRCode(qrCode: PaymentDetailQRCode) {
+    this.selectPaymentDetail.qrCode = Object.assign({}, qrCode);
+    // this.selectPaymentDetailAdvancePay.qrCode = Object.assign({}, qrCode);
+  }
+  onSelectBank(bank: PaymentDetailBank) {
+    this.selectPaymentDetail.bank = Object.assign({}, bank);
+    this.selectPaymentDetail.bank.installments = undefined;
+    this.paymentDetail.installments = bank.installments; // Object.assign({}, bank.installments);
+  }
+  onSelectInstallment(installment: PaymentDetailInstallment[]) {
+    this.selectPaymentDetail.bank.installments = Object.assign({}, installment);
+  }
+
+
+
+  checkPaymentFormValid(): boolean {
+    const paymentType = this.selectPaymentDetail.paymentType;
+
+    if (this.paymentMethod === CASH_PAYMENT) {
+      if (paymentType === 'qrcode' && !this.selectPaymentDetail.qrCode) {
+        return false;
+      }
+    }
+
+    if (this.paymentMethod === CREDIT_CARD_PAYMENT) {
+      if (paymentType === 'credit' && (!this.selectPaymentDetail.bank || !this.selectPaymentDetail.bank.installments)) {
+        return false;
+      }
+    }
+
+    if (this.paymentMethod === CASH_AND_CREDIT_CARD_PAYMENT) {
+      if (paymentType === 'qrcode' && !this.selectPaymentDetail.qrCode) {
+        return false;
+      }
+      if (paymentType === 'credit' && !this.selectPaymentDetail.bank) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  isInstallment(): boolean {
+    if (this.paymentMethod === 'CC' && this.selectPaymentDetail.paymentType === 'credit') {
+      return true;
+    }
+    return false;
+  }
+  isEnableForm(): boolean {
+    if (this.paymentMethod === CASH_PAYMENT) {
+      return true;
+    }
+    if (this.paymentMethod === CREDIT_CARD_PAYMENT) {
+      return false;
+    }
+    if (this.paymentMethod === CASH_AND_CREDIT_CARD_PAYMENT) {
+      return true;
+    }
+    return true;
+  }
+
+  getPaymentType(): string {
+    if (this.paymentMethod === CASH_PAYMENT) {
+      return 'qrcode';
+    }
+    if (this.paymentMethod === CREDIT_CARD_PAYMENT) {
+      return 'credit';
+    }
+    if (this.paymentMethod === CASH_AND_CREDIT_CARD_PAYMENT) {
+      return 'qrcode';
+    }
+    return 'qrcode';
+
+  }
+
+  getPaymentMethod(paymentType: string, qrCode?: PaymentDetailQRCode): string {
+    if (paymentType === 'qrcode' && qrCode) {
+      if (qrCode.id === parseInt('002', 8)) { // Rabbit Line Pay
+        return 'RL';
+      }
+      if (qrCode.id === parseInt('003', 8)) { // Thai QR Payment
+        return 'PB';
+      }
+    }
+    if (paymentType === 'debit') {
+      return 'CA';
+    }
+    if (paymentType === 'credit') {
+      return 'CC';
+    }
+    return '';
+  }
+
   getQRCode() {
     return [
       {
@@ -165,10 +306,10 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
   }
 
   groupPrivilegeTradeBankByAbb(banks: PaymentDetailBank[]) {
+
     const newPrivilegTradeBankByAbbs = new Array<PaymentDetailBank>();
     const grouped = this.groupBy(banks, (bank: PaymentDetailBank) => bank.abb);
     const groupedKeys = Array.from(grouped.keys());
-
     for (const groupedKey of groupedKeys) {
       const groupBanks: PaymentDetailBank[] = grouped.get(groupedKey);
       const privilegTradeBank: PaymentDetailBank = {
@@ -228,7 +369,6 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
       return a.installmentMonth > b.installmentMonth ? -1 : 1;
     });
   }
-
   public getBankInstallmentMonth(installmentRemark: string) {
     const month = this.getInstallmentFormRemark(installmentRemark)['month'];
     return month !== undefined ? month : 0;
@@ -255,59 +395,4 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
       return installment;
     }
   }
-
-  getPaymentType(): string {
-    if (this.paymentMethod === CASH_PAYMENT) {
-      return 'qrcode';
-    }
-    if (this.paymentMethod === CREDIT_CARD_PAYMENT) {
-      return 'credit';
-    }
-    if (this.paymentMethod === CASH_AND_CREDIT_CARD_PAYMENT) {
-      return 'qrcode';
-    }
-    return 'qrcode';
-
-  }
-
-  isInstallment(): boolean {
-    if (this.paymentMethod === 'CC' && this.selectPaymentDetail.paymentType === 'credit') {
-      return true;
-    }
-    return false;
-  }
-
-  isEnableForm(): boolean {
-    if (this.paymentMethod === CASH_PAYMENT) {
-      return true;
-    }
-    if (this.paymentMethod === CREDIT_CARD_PAYMENT) {
-      return false;
-    }
-    if (this.paymentMethod === CASH_AND_CREDIT_CARD_PAYMENT) {
-      return true;
-    }
-    return true;
-  }
-
-  getFullAddress(customer: Customer) {
-    if (!customer) {
-      return '-';
-    }
-    const fullAddress =
-      (customer.homeNo ? customer.homeNo + ' ' : '') +
-      (customer.moo ? 'หมู่ที่ ' + customer.moo + ' ' : '') +
-      (customer.mooBan ? 'หมู่บ้าน ' + customer.mooBan + ' ' : '') +
-      (customer.room ? 'ห้อง ' + customer.room + ' ' : '') +
-      (customer.floor ? 'ชั้น ' + customer.floor + ' ' : '') +
-      (customer.buildingName ? 'อาคาร ' + customer.buildingName + ' ' : '') +
-      (customer.soi ? 'ซอย ' + customer.soi + ' ' : '') +
-      (customer.street ? 'ถนน ' + customer.street + ' ' : '') +
-      (customer.tumbol ? 'ตำบล/แขวง ' + customer.tumbol + ' ' : '') +
-      (customer.amphur ? 'อำเภอ/เขต ' + customer.amphur + ' ' : '') +
-      (customer.province ? 'จังหวัด ' + customer.province + ' ' : '') +
-      (customer.zipCode || '');
-    return fullAddress || '-';
-  }
-
 }

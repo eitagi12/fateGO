@@ -118,10 +118,10 @@ export class CreateDeviceOrderBestBuyService {
 
   }
 
-  createDeviceOrder(transaction: Transaction, priceOption: PriceOption): Promise<any> {
+  createDeviceOrder(transaction: Transaction, queueNo: string): Promise<any> {
     return this.getQueueByNumber(transaction.data.simCard.mobileNo).then((resp) => {
       if (resp.resultPass) {
-        return this.getRequestCreateOrder(transaction, resp.result.queueNo).then((data) => {
+        return this.getRequestCreateOrder(transaction, queueNo).then((data) => {
           // console.log(data);
           return this.http.post('/api/salesportal/device-sell/order', data).toPromise();
           //   if (orderResponse) {
@@ -415,6 +415,27 @@ export class CreateDeviceOrderBestBuyService {
   }
 
   cancelTrasaction(transactionId: string) {
-    return this.http.post('/api/device-order/cancel-transaction', {transactionId: transactionId, issueBy: this.user.username}).toPromise();
+    return this.http.post('/api/salesportal/device-order/cancel-transaction', {
+      transactionId: transactionId,
+      issueBy: this.user.username
+    }).toPromise();
+  }
+
+  getBanks() {
+    return this.http.post('/api/salesportal/banks-promotion', {
+      location: this.user.locationCode
+    }).toPromise().then((response: any) => {
+      return response.data.map((bank) => {
+        return {
+          abb: bank.abb,
+          imageUrl: bank.imageUrl,
+          name: bank.name,
+          promotion: '',
+          installment: '',
+          remark: '',
+          installmentDatas: new Array<any>()
+        };
+      });
+    });
   }
 }

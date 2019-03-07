@@ -53,9 +53,11 @@ export class DeviceOrderAisExistingBestBuyEligibleMobilePageComponent implements
   }
 
   onNext() {
+    this.pageLoadingService.openLoading();
     if (this.mobileNo.privilegeCode) {
       this.transaction.data.customer.privilegeCode = this.mobileNo.privilegeCode;
       this.transaction.data.simCard = { mobileNo: this.mobileNo.mobileNo };
+      this.pageLoadingService.closeLoading();
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE]);
       return;
     }
@@ -77,6 +79,8 @@ export class DeviceOrderAisExistingBestBuyEligibleMobilePageComponent implements
     }).catch((err) => {
       const errResponse: any = JSON.parse(err.data.response.developerMessage.replace('500 - ', ''));
       this.alertService.error(errResponse);
+    }).then(() => {  
+      this.pageLoadingService.closeLoading();
     });
 
   }
