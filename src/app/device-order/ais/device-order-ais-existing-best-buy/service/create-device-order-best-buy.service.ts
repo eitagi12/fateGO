@@ -41,6 +41,9 @@ export class CreateDeviceOrderBestBuyService {
   priceOption: PriceOption;
   transaction: Transaction;
   user: User;
+  _cookieService: any;
+  jwtHelper: any;
+  defaultEmployeeeCode: any;
 
   constructor(
     private http: HttpClient,
@@ -83,12 +86,12 @@ export class CreateDeviceOrderBestBuyService {
     //   .then((res: any) => res.data);
     // TEST
     return new Promise((resolve, reject) => {
-      resolve({resultCode: 'S', soId: '11111'});
+      resolve({ resultCode: 'S', soId: '11111' });
     });
   }
 
   private createTransaction(transaction, priceOption): Promise<any> {
-    
+
     return this.http.post('/api/salesportal/device-order/create-transaction', this.mapCreateTransactionDB(transaction, priceOption))
       .toPromise().then(resp => transaction);
   }
@@ -103,10 +106,10 @@ export class CreateDeviceOrderBestBuyService {
       } else {
         this.callAddToCart(transaction, priceOption).then((response) => {
           if (response.resultCode === 'S') {
-          transaction.data.order = {
-            soId: response.soId
-          };
-           this.createTransaction(transaction, priceOption).then((createTrans) => {
+            transaction.data.order = {
+              soId: response.soId
+            };
+            this.createTransaction(transaction, priceOption).then((createTrans) => {
               resolve(createTrans);
             }).catch(resolve);
           } else {
@@ -119,6 +122,32 @@ export class CreateDeviceOrderBestBuyService {
   }
 
   createDeviceOrder(transaction: Transaction, queueNo: string): Promise<any> {
+<<<<<<< Updated upstream
+=======
+<<<<<<< HEAD
+
+    return this.getRequestCreateOrder(transaction, queueNo).then((data) => {
+      // console.log(data);
+      return this.http.post('/api/salesportal/device-sell/order', data).toPromise()
+      .then((response: any) => {
+        this.updateOrder(transaction);
+        if (response) {
+          if (response.resultCode === 'S') {
+            return response;
+          } else {
+            switch (response.resultMessage) {
+              case 'QueueNo is duplicated':
+              throw 'เลขที่คิวซ้ำ กรุณาระบุใหม่';
+              default:
+              throw 'Fail to create the order';
+            }
+          }
+        } else {
+          throw 'Fail';
+        }
+      });
+=======
+>>>>>>> Stashed changes
     return this.getQueueByNumber(transaction.data.simCard.mobileNo).then((resp) => {
       if (resp.resultPass) {
         return this.getRequestCreateOrder(transaction, queueNo).then((data) => {
@@ -140,7 +169,9 @@ export class CreateDeviceOrderBestBuyService {
           // }
         });
       }
+>>>>>>> 556cb60afd9eb56d669e12ca0485a4487d930513
     });
+
 
   }
 
@@ -203,11 +234,11 @@ export class CreateDeviceOrderBestBuyService {
       customerAddress: this.getCustomerAddress(customer),
       tradeNo: trade.tradeNo,
       ussdCode: trade.ussdCode,
-      returnCode: '4GEYYY',
+      returnCode: customer.privilegeCode,
       cashBackFlg: '',
       matAirTime: trade.advancePay ? trade.advancePay.matAirtime : '',
       matCodeFreeGoods: '',
-      paymentRemark: this.getOrderRemark(undefined, trade, payment, advancePayment, undefined, queueNo),
+      paymentRemark: this.getOrderRemark(undefined, trade, payment, advancePayment, undefined, queueNo, transaction),
       installmentTerm: payment && payment.bank ? payment.bank.installments[0].installmentMonth : 0,
       installmentRate: payment && payment.bank ? payment.bank.installments[0].installmentPercentage : 0,
       mobileAisFlg: 'Y',
@@ -244,7 +275,15 @@ export class CreateDeviceOrderBestBuyService {
     return payment && payment.bank ? payment.bank.abb : '' + '|' + advancePayment && advancePayment.bank ? advancePayment.bank.abb : '';
   }
 
-  getOrderRemark(promotion: any, trade: any, payment: Payment, advancePayment: Payment, mobileCare: any, queueNo: string) {
+  getOrderRemark(
+    promotion: any,
+    trade: any,
+    payment: Payment,
+    advancePayment: Payment,
+    mobileCare: any,
+    queueNo: string,
+    transaction: Transaction) {
+    const customer = transaction.data.customer;
     const newLine = '\n';
     const comma = ',';
     const space = ' ';
@@ -310,7 +349,7 @@ export class CreateDeviceOrderBestBuyService {
     otherInformation += REMARK_SUMMARY_POINT + space + summaryPoint + comma + space;
     otherInformation += REMARK_SUMMARY_DISCOUNT + space + summaryDiscount + comma + space;
     otherInformation += REMARK_DISCOUNT + space + trade.discount.amount.toFixed(2) + comma + space;
-    otherInformation += REMARK_RETURN_CODE + space + '4GEYYY' + comma + space;
+    otherInformation += REMARK_RETURN_CODE + space + customer.privilegeCode + comma + space;
     otherInformation += REMARK_ORDER_TYPE + space + 'MC001' + comma + space;
     otherInformation += REMARK_PRMOTION_CODE + space + 'remark.mainPackageCode' + comma + space;
     otherInformation += REMARK_MOBILE_CARE_CODE + space + mobileCare.customAttributes.promotionCode + comma + space;
@@ -323,6 +362,12 @@ export class CreateDeviceOrderBestBuyService {
     return remarkDesc;
 
   }
+
+  public getUsername(): any {
+    return this._cookieService.get('accessToken')
+        ? this.jwtHelper.decodeToken(this._cookieService.get('accessToken')).username
+        : this.defaultEmployeeeCode;
+}
 
   getGrandTotalAmt(trade: any): string {
 
@@ -437,5 +482,6 @@ export class CreateDeviceOrderBestBuyService {
         };
       });
     });
+
   }
 }
