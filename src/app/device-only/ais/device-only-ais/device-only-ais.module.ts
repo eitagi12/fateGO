@@ -21,6 +21,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { ReceiptInformationComponent } from './components/receipt-information/receipt-information.component';
 import { BillingAddressService } from './services/billing-address.service';
 
+import { MobileCareAvaliableComponent } from './components/mobile-care-avaliable/mobile-care-avaliable.component';
 
 @NgModule({
   imports: [
@@ -47,6 +48,7 @@ import { BillingAddressService } from './services/billing-address.service';
     DeviceOnlyReadCardComponent,
     MobileCareComponent,
     ReceiptInformationComponent],
-  providers: [BillingAddressService]
+  providers: [BillingAddressService,
+    MobileCareAvaliableComponent]
 })
 export class DeviceOnlyAisModule { }

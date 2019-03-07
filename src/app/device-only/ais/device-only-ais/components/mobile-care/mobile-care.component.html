@@ -6,12 +6,12 @@
         </div>
         <div class="card-body">
           <div>
-            <input class="form-check-input" type="radio" id="mobile-care" [value]="true" formControlName="mobileCare">
-            <label class="form-check-label" for="mobile-care"> {{ 'บริการโมบายแคร์' | translate }}</label>
+            <input class="form-check-input" type="radio" id="button-buy-mobile-care" [value]="true" formControlName="mobileCare">
+            <label class="form-check-label" for="button-buy-mobile-care"> {{ 'บริการโมบายแคร์' | translate }}</label>
           </div>
           <div>
-            <input class="form-check-input" type="radio" id="ignore-mobile-care" [value]="false" formControlName="mobileCare">
-            <label class="form-check-label" for="ignore-mobile-care">{{ 'ไม่สนใจชื้อบริการโมบายแคร์' | translate }}</label>
+            <input class="form-check-input" type="radio" id="button-not-buy-mobile-care" [value]="false" formControlName="mobileCare">
+            <label class="form-check-label" for="button-not-buy-mobile-care">{{ 'ไม่สนใจชื้อบริการโมบายแคร์' | translate }}</label>
             <label class="text-light-green" [hidden]="!notBuyMobileCareForm.value.notBuyMobile">({{notBuyMobileCareForm.value.notBuyMobile }})</label>
           </div>
           <div *ngIf="mobileCare?.existingMobileCare">
