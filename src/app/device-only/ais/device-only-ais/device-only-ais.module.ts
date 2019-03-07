@@ -13,6 +13,7 @@ import { DeviceOnlyAisQrCodeSummarayPageComponent } from './containers/device-on
 import { DeviceOnlyAisQrCodeGeneratePageComponent } from './containers/device-only-ais-qr-code-generate-page/device-only-ais-qr-code-generate-page.component';
 import { DeviceOnlyAisCheckoutPaymentQrCodePageComponent } from './containers/device-only-ais-checkout-payment-qr-code-page/device-only-ais-checkout-payment-qr-code-page.component';
 import { DeviceOnlyAisKeyInQueuePageComponent } from './containers/device-only-ais-key-in-queue-page/device-only-ais-key-in-queue-page.component';
+import { DeviceOnlyReadCardComponent } from './components/device-only-read-card/device-only-read-card.component';
 
 
 @NgModule({
@@ -32,6 +33,7 @@ import { DeviceOnlyAisKeyInQueuePageComponent } from './containers/device-only-a
     DeviceOnlyAisQrCodeSummarayPageComponent,
     DeviceOnlyAisQrCodeGeneratePageComponent,
     DeviceOnlyAisCheckoutPaymentQrCodePageComponent,
-    DeviceOnlyAisKeyInQueuePageComponent]
+    DeviceOnlyAisKeyInQueuePageComponent,
+    DeviceOnlyReadCardComponent]
 })
 export class DeviceOnlyAisModule { }
