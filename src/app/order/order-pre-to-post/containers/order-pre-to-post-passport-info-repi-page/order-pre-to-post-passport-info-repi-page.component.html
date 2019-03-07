@@ -12,7 +12,7 @@
       <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
 
       <mc-capture-and-sign [apiSigned]="apiSigned" [title]="'ถ่ายรูปบัตรประชาชน หรือบัตรอื่นๆ'" [captureAndSign]="captureAndSign"
-        (completed)="onCompleted($event)" (error)="onError($event)">
+        (command)="onCommand($event)" (completed)="onCompleted($event)" (error)="onError($event)">
       </mc-capture-and-sign>
 
     </div>
