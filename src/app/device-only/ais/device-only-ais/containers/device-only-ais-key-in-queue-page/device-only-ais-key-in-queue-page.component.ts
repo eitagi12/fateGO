@@ -1,4 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE } from '../../constants/route-path.constant';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-device-only-ais-key-in-queue-page',
@@ -7,14 +9,14 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 })
 export class DeviceOnlyAisKeyInQueuePageComponent implements OnInit, OnDestroy {
 
-  constructor() { }
+  constructor(private router: Router) { }
 
   ngOnInit() {
 
   }
 
   onNext() {
-
+    this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE]);
   }
   ngOnDestroy(): void {
 

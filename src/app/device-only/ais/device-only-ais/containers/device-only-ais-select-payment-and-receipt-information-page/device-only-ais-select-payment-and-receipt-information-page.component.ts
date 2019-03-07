@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
 import { ShoppingCart, PaymentDetail, PaymentDetailQRCode, PaymentDetailBank, SelectPaymentDetail, PaymentDetailInstallment, PaymentDetailOption } from '../../../../../../../node_modules/mychannel-shared-libs';
-
+import { ReceiptInfo } from '../../components/receipt-information/receipt-information.component';
 @Component({
   selector: 'app-device-only-ais-select-payment-and-receipt-information-page',
   templateUrl: './device-only-ais-select-payment-and-receipt-information-page.component.html',
@@ -12,8 +12,10 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
   wizards = WIZARD_DEVICE_ONLY_AIS;
   shoppingCart: ShoppingCart;
   paymentDetail: PaymentDetail;
+  receiptInfo: ReceiptInfo;
   selectPaymentDetail: SelectPaymentDetail = {};
   paymentDetailOption: PaymentDetailOption;
+  isSuccess: boolean;
   constructor() { }
 
   ngOnInit() {
@@ -25,7 +27,13 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       qty: 1,
       price: 20780
     };
-
+    this.receiptInfo = {
+      taxId: 'XXXXXXXXX9249',
+      branch: 'Telewiz',
+      buyer: 'นาย เทส เทส',
+      buyerAddress: 'พลหโยธิน 19 แขวงบางซื่อ เขตบางซื่อ กรุงเทพฯ',
+      telNo: ''
+    };
     this.paymentDetail = {
       title: 'รูปแบบชำระเงิน',
       header: 'ค่าเครื่อง IPHONEX64 สี BLACK',
@@ -221,5 +229,23 @@ onSelectPaymentType(paymentType: string) {
 onSelectPaymentTypeAdvancePay(paymentType: string) {
   console.log('onSelectPaymentType', paymentType);
   this.selectPaymentDetail.paymentType = paymentType;
+}
+onCompleteBillingAddress(billingAddress) {
+  console.log('billingAddress', billingAddress);
+}
+
+onCompleteReceiptInfo(receiptInfo) {
+  console.log('billingAddress', receiptInfo);
+}
+
+onErrorBillingAddress(error: boolean) {
+  this.isSuccess = error;
+  console.log(this.isSuccess);
+}
+
+onErrorReceiptInfo(error: boolean) {
+  this.isSuccess = error;
+  console.log(this.isSuccess);
+
 }
 }
