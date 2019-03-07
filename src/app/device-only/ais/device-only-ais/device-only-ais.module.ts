@@ -46,7 +46,8 @@ import { BillingAddressService } from './services/billing-address.service';
     DeviceOnlyAisKeyInQueuePageComponent,
     DeviceOnlyReadCardComponent,
     MobileCareComponent,
-    ReceiptInformationComponent],
+    ReceiptInformationComponent
+  ],
   providers: [BillingAddressService]
 })
 export class DeviceOnlyAisModule { }

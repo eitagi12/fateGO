@@ -3,6 +3,21 @@
     <div class="card-header bg-light-blue text-white">
       ข้อมูลใบเสร็จรับเงิน
     </div>
+    <div class="card-footer bg-transparent">
+      <div class="row">
+        <label for="searchByNumber" class="col-12 col-sm-7 col-form-label">
+          ออกใบเสร็จตามใบแจ้งค่าใช้บริการเบอร์ AIS
+        </label>
+        <div class="col-12 col-sm-5">
+         <input type="text" placeholder="ระบุเบอร์ AIS" class="form-control" id="searchByNumber" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <app-device-only-read-card></app-device-only-read-card>
+        </div>
+      </div>
+    </div>
     <!-- <div class="card-body">
       <div>
         <label class="text-grey">ผู้ซื้อ </label> {{ receiptInfo?.buyer || '-' }}
