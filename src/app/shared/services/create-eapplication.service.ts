@@ -59,7 +59,7 @@ export class CreateEapplicationService {
         description: transaction.data.mainPackage.statementThai || ''
       },
       billCycle: billCycleData.billCycleText || '', 
-      receiveBillMethod: billCycleData.receiveBillMethod || '',
+      receiveBillMethod: this.translation.instant(billCycleData.receiveBillMethod) || '',
       billDeliveryAddress: billCycleData.billAddressText || '',
       fullNameEN: `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}`,
       issueDate: customer.issueDate || '',
@@ -107,7 +107,7 @@ export class CreateEapplicationService {
         description: transaction.data.mainPackage.statementThai || ''
       },
       billCycle: billCycleData.billCycleText || '',
-      receiveBillMethod: billCycleData.receiveBillMethod || '',
+      receiveBillMethod: this.translation.instant(billCycleData.receiveBillMethod) || '',
       billDeliveryAddress: billCycleData.billAddressText || '',
       fullNameEN: `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}`,
       issueDate: customer.issueDate || '',
