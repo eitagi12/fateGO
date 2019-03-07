@@ -20,6 +20,8 @@ export class OrderPreToPostPassportInfoRepiPageComponent implements OnInit, OnDe
   transaction: Transaction;
   captureAndSign: CaptureAndSign;
 
+  commandSign: any;
+
   apiSigned: string;
 
   idCardValid: boolean;
@@ -55,6 +57,9 @@ export class OrderPreToPostPassportInfoRepiPageComponent implements OnInit, OnDe
     customer.imageReadPassport = captureAndSign.imageSmartCard;
   }
 
+  onCommand(command: any): void {
+    this.commandSign = command;
+  }
 
   onError(valid: boolean) {
     this.idCardValid = valid;
@@ -74,6 +79,10 @@ export class OrderPreToPostPassportInfoRepiPageComponent implements OnInit, OnDe
 
   onHome() {
     this.homeService.goToHome();
+  }
+
+  getOnMessageWs() {
+    this.commandSign.ws.send('CaptureImage');
   }
 
   mapDatanationality() {

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Transaction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 import { ConfirmCustomerInfo, BillingInfo, BillingSystemType, MailBillingInfo, TelNoBillingInfo, Utils, AlertService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HomeService } from 'mychannel-shared-libs';
@@ -14,6 +14,8 @@ import {
 } from 'src/app/order/order-new-register/constants/route-path.constant';
 import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
 import { HttpClient } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -34,6 +36,8 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
   isTelNoBillingValid: boolean;
   isMailBillingInfoValid: boolean;
 
+  translationSubscribe: Subscription;
+
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -41,6 +45,7 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
     private alertService: AlertService,
     private utils: Utils,
     private http: HttpClient,
+    private translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
 
@@ -48,6 +53,9 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
     if (!this.transaction.data.billingInformation) {
       this.transaction.data.billingInformation = {};
     }
+    this.translationSubscribe = this.translation.onLangChange.subscribe(lang => {
+      this.mapCustomerInfoByLang(lang.lang);
+    });
   }
 
   ngOnInit() {
@@ -67,7 +75,8 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
       mobileNo: simCard.mobileNo,
       mainPackage: mainPackage.shortNameThai,
       onTopPackage: '',
-      packageDetail: mainPackage.statementThai
+      packageDetail: mainPackage.statementThai,
+      idCardType: customer.idCardType
     };
 
     this.mailBillingInfo = {
@@ -83,44 +92,39 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
     };
 
     this.initBillingInfo();
+    this.mapCustomerInfoByLang(this.translation.currentLang);
+  }
+
+  mapCustomerInfoByLang(lang: string) {
+    if (lang === 'EN') {
+      this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameEng;
+      this.confirmCustomerInfo.packageDetail = this.transaction.data.mainPackage.statementEng;
+    } else {
+      this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameThai;
+      this.confirmCustomerInfo.packageDetail = this.transaction.data.mainPackage.statementThai;
+    }
   }
 
   initBillingInfo() {
-    const customer = this.transaction.data.customer;
-    const billingInformation = this.transaction.data.billingInformation;
+    const billingInformation = this.transaction.data.billingInformation || {};
     const mergeBilling = billingInformation.mergeBilling;
     const billCycle = billingInformation.billCycle;
-    const customerbillDeliveryAddress = billingInformation.billDeliveryAddress;
-    console.log('customerbillDeliveryAddress', customerbillDeliveryAddress);
-    // const customerAddress = this.utils.getCurrentAddress({
-    //   homeNo: customer.homeNo,
-    //   moo: customer.moo,
-    //   room: customer.room,
-    //   floor: customer.floor,
-    //   buildingName: customer.buildingName,
-    //   soi: customer.soi,
-    //   street: customer.street,
-    //   tumbol: customer.tumbol,
-    //   amphur: customer.amphur,
-    //   province: customer.province,
-    //   zipCode: customer.zipCode
-    // });
-
-
-    const billDeliveryAddress = this.utils.getCurrentAddress({
-      homeNo: customerbillDeliveryAddress.homeNo || customer.homeNo,
-      moo: customerbillDeliveryAddress.moo || customer.moo,
-      mooBan: customerbillDeliveryAddress.mooBan || customer.mooBan,
-      room: customerbillDeliveryAddress.room || customer.room,
-      floor: customerbillDeliveryAddress.floor || customer.floor,
-      buildingName: customerbillDeliveryAddress.buildingName || customer.buildingName,
-      soi: customerbillDeliveryAddress.soi || customer.soi,
-      street: customerbillDeliveryAddress.street || customer.street,
-      tumbol: customerbillDeliveryAddress.tumbol || customer.tumbol,
-      amphur: customerbillDeliveryAddress.amphur || customer.amphur,
-      province: customerbillDeliveryAddress.province || customer.province,
-      zipCode: customerbillDeliveryAddress.zipCode || customer.zipCode
-    });
+    const customer: any = billingInformation.billDeliveryAddress || this.transaction.data.customer;
+    const engFlag = this.transaction.data.customer.engFlag || 'N';
+    const customerAddress = this.utils.getCurrentAddress({
+      homeNo: customer.homeNo,
+      moo: customer.moo,
+      mooBan: customer.mooBan,
+      room: customer.room,
+      floor: customer.floor,
+      buildingName: customer.buildingName,
+      soi: customer.soi,
+      street: customer.street,
+      tumbol: customer.tumbol,
+      amphur: customer.amphur,
+      province: customer.province,
+      zipCode: customer.zipCode
+    }, engFlag);
 
     this.billingInfo = {
       // merge bill ไม่เมื่อเลือก package net extrem
@@ -143,7 +147,7 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
 
           // enable config
           this.billingInfo.billingAddress.isEdit = true;
-          this.billingInfo.billingAddress.text = billDeliveryAddress;
+          this.billingInfo.billingAddress.text = customerAddress;
 
           this.billingInfo.billingCycle.isEdit = true;
           this.billingInfo.billingCycle.isDelete = false;
@@ -154,7 +158,7 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
         }
       },
       billingAddress: {
-        text: (this.isMergeBilling() ? mergeBilling.billingAddr : null) || billDeliveryAddress || '-',
+        text: (this.isMergeBilling() ? mergeBilling.billingAddr : null) || customerAddress || '-',
         isEdit: !(!!mergeBilling),
         // isEdit: !(isMergeBilling || isPackageNetExtreme),
         onEdit: () => {
@@ -241,7 +245,7 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
 
   onNext() {
     if (!this.customerValid()) {
-      this.alertService.warning('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร');
+      this.alertService.warning(this.translation.instant('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร'));
       return;
     }
 
@@ -263,6 +267,7 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
   }
 
   ngOnDestroy(): void {
+    this.translationSubscribe.unsubscribe();
     this.transactionService.save(this.transaction);
   }
 
@@ -270,6 +275,11 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
     const mainPackage = this.transaction.data.mainPackage;
     const billingInformation = this.transaction.data.billingInformation;
     const mergeBilling: any = billingInformation.mergeBilling;
+
+    // ขา back หลังกลับมาจากหน้า summary
+    if (billingInformation && billingInformation.billCycleData) {
+      return billingInformation.billCycleData.billChannel;
+    }
 
     // default ตามรอบบิลที่เลือก
     if (this.isMergeBilling()) {
@@ -292,13 +302,15 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
   }
 
   customerValid(): boolean {
-    const customer = this.transaction.data.customer;
-
+    const billingInformation = this.transaction.data.billingInformation || {};
+    // ถ้าเป็น Newca จะไม่มี data.customer เลยต้องเช็คจากที่อยู่ว่า มีที่อยู่(billDeliveryAddress)ไหม
+    const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
     return !!(customer.homeNo
       && customer.province
       && customer.amphur
       && customer.tumbol
       && customer.zipCode);
+
   }
 
   getBllingCycle(billCycle: string): Promise<string> {

@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
 import { PromotionShelve, HomeService, PageLoadingService, AlertService, PromotionShelveItem, TokenService } from 'mychannel-shared-libs';
 import {
@@ -14,6 +14,8 @@ import {
 } from 'src/app/order/order-new-register/constants/route-path.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ReserveMobileService, SelectMobileNumberRandom } from 'src/app/order/order-shared/services/reserve-mobile.service';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-order-new-register-select-package-page',
@@ -21,7 +23,7 @@ import { ReserveMobileService, SelectMobileNumberRandom } from 'src/app/order/or
   styleUrls: ['./order-new-register-select-package-page.component.scss']
 })
 export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDestroy {
-
+  readonly MAX_PROMOTION_PRICE = 500;
   @ViewChild('conditionTemplate')
   conditionTemplate: any;
 
@@ -29,8 +31,11 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
 
   transaction: Transaction;
   promotionShelves: PromotionShelve[];
+  promotionData: any;
   condition: any;
   modalRef: BsModalRef;
+
+  translateSubscribe: Subscription;
 
   constructor(
     private router: Router,
@@ -41,7 +46,9 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
     private reserveMobileService: ReserveMobileService,
     private alertService: AlertService,
     private modalService: BsModalService,
-    private http: HttpClient
+    private http: HttpClient,
+    private translation: TranslateService,
+    private translateService: TranslateService,
   ) {
     this.transaction = this.transactionService.load();
 
@@ -54,7 +61,10 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
   }
 
   ngOnInit() {
-    this.callService();
+    this.callService(this.translateService.currentLang);
+    this.translateSubscribe = this.translation.onLangChange.subscribe(language => {
+      this.callService(language.lang);
+    });
   }
 
   onCompleted(promotion: any) {
@@ -92,29 +102,35 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
     this.homeService.goToHome();
   }
 
-  callService() {
+  callService(language: string) {
+    console.log('language', language);
     this.pageLoadingService.openLoading();
 
     const billingInformation: any = this.transaction.data.billingInformation;
     const isNetExtreme = billingInformation.billCyclesNetExtreme && billingInformation.billCyclesNetExtreme.length > 0 ? 'true' : 'false';
     const mobileNo = this.transaction.data.simCard.mobileNo;
-
+    const params: any = {
+      orderType: 'New Registration',
+      isNetExtreme: isNetExtreme,
+    };
+    if (this.transaction.data.action === TransactionAction.READ_PASSPORT) {
+      params.maxPromotionPrice = this.MAX_PROMOTION_PRICE;
+    }
     this.http.get(`/api/customerportal/queryCheckMinimumPackage/${mobileNo}`, {
     }).toPromise()
       .then((resp: any) => {
         const data = resp.data || {};
         return data.MinimumPriceForPackage || 0;
-      }).then((minimumPriceForPackage: string) => {
+      }).then((minPromotionPrice: string) => {
         return this.http.get('/api/customerportal/newRegister/queryMainPackage', {
-          params: {
-            orderType: 'New Registration',
-            isNetExtreme: isNetExtreme,
-            minPromotionPrice: minimumPriceForPackage
-          }
+          params: Object.assign({
+            minPromotionPrice: minPromotionPrice
+          }, params)
         }).toPromise();
       })
       .then((resp: any) => {
         const data = resp.data.packageList || [];
+        this.promotionData = data;
         const promotionShelves: PromotionShelve[] = data.map((promotionShelve: any) => {
           return {
             title: promotionShelve.title,
@@ -130,8 +146,8 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
                   items: (subShelve.items || []).map((promotion: any) => {
                     return { // item
                       id: promotion.itemId,
-                      title: promotion.shortNameThai,
-                      detail: promotion.statementThai,
+                      title: language === 'EN' ? promotion.shortNameEng : promotion.shortNameThai,
+                      detail: language === 'EN' ? promotion.statementEng : promotion.shortNameThai,
                       condition: subShelve.conditionCode,
                       value: promotion
                     };
@@ -150,10 +166,9 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
       });
 
   }
-
   onTermConditions(condition: string) {
     if (!condition) {
-      this.alertService.warning('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+      this.alertService.warning(this.translation.instant('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'));
       return;
     }
     this.pageLoadingService.openLoading();
@@ -172,7 +187,7 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
   buildPromotionShelveActive(promotionShelves: PromotionShelve[]): PromotionShelve[] {
     const mainPackage: any = this.transaction.data.mainPackage || {};
 
-    if (!promotionShelves && promotionShelves.length <= 0) {
+    if (!promotionShelves || promotionShelves.length <= 0) {
       return;
     }
 
@@ -222,6 +237,7 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
   }
 
   ngOnDestroy(): void {
+    this.translateSubscribe.unsubscribe();
     this.transactionService.update(this.transaction);
   }
 }

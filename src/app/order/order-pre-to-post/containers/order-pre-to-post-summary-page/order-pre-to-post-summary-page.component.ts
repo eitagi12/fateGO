@@ -47,7 +47,7 @@ export class OrderPreToPostSummaryPageComponent implements OnInit {
       mobileNo: simCard.mobileNo,
       mainPackage: mainPackage.shortNameThai,
       onTopPackage: '',
-      packageDetail: mainPackage.statementThai
+      packageDetail: mainPackage.statementThai,
     };
 
     this.billingInfo = {

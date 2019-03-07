@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Transaction, TransactionAction } from '../models/transaction.model';
 import { TokenService, Utils, ImageUtils, AWS_WATERMARK } from 'mychannel-shared-libs';
+import { observable, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -49,11 +50,12 @@ export class CreateNewRegisterService {
       idCardType: 'Thai National ID',
       customerId: customer.idCardNo || '',
       mobileNo: simCard.mobileNo || '',
-      base64Card: customer.imageReadSmartCard || customer.imageSmartCard,
-      base64Face: faceRecognition.imageFaceUser,
+      base64Card: 'data:image/png;base64,' + customer.imageReadSmartCard || customer.imageSmartCard || customer.imageReadPassport,
+      base64Face: 'data:image/png;base64,' + faceRecognition.imageFaceUser,
       channel: channel,
       userchannel: 'MyChannel'
-    }).toPromise().catch(() => { /* Ignore handdle error */ });
+    }).toPromise()
+      .catch(e => console.log(e));
 
   }
 
@@ -70,7 +72,7 @@ export class CreateNewRegisterService {
     const mainPackageOneLove = transaction.data.mainPackageOneLove;
     const onTopPackage = transaction.data.onTopPackage;
     const simCard = transaction.data.simCard;
-    const customerDeliveryAddress = transaction.data.billingInformation.billDeliveryAddress;
+    const billDeliveryAddress = transaction.data.billingInformation.billDeliveryAddress;
 
     const billCycleData = billingInformation.billCycleData;
 
@@ -79,10 +81,8 @@ export class CreateNewRegisterService {
       isNewBa: billingInformation.mergeBilling ? false : true, /*required*/
       imageSignature: customer.imageSignature || '', /*required*/
       ascCode: '',
-      accountSubCat: 'THA',
       idCardType: customer.idCardType, /*required*/
       idCardNo: customer.idCardNo, /*required*/
-      titleName: this.utils.getPrefixName(customer.titleName), /*required*/
       firstName: customer.firstName, /*required*/
       lastName: customer.lastName, /*required*/
       caNumber: customer.caNumber || '',
@@ -103,18 +103,21 @@ export class CreateNewRegisterService {
       billName: billingInformation.mergeBilling ? billingInformation.mergeBilling.billingName : '',
       billCycle: billingInformation.mergeBilling ? billingInformation.mergeBilling.bill : customer.billCycle,
       billDeliveryAddress: billingInformation.mergeBilling ? billingInformation.mergeBilling.billingAddr : '',
-      billHomeNo: billingInformation.mergeBilling ? '' : customerDeliveryAddress.homeNo || customer.homeNo,
-      billBuildingName: billingInformation.mergeBilling ? '' : customerDeliveryAddress.buildingName || customer.buildingName,
-      billFloor: billingInformation.mergeBilling ? '' : customerDeliveryAddress.floor || customer.floor,
-      billRoom: billingInformation.mergeBilling ? '' : customerDeliveryAddress.room || customer.room,
-      billMoo: billingInformation.mergeBilling ? '' : customerDeliveryAddress.moo || customer.moo,
-      billMooBan: billingInformation.mergeBilling ? '' : customerDeliveryAddress.mooBan || customer.mooBan,
-      billSoi: billingInformation.mergeBilling ? '' : customerDeliveryAddress.soi || customer.soi,
-      billStreet: billingInformation.mergeBilling ? '' : customerDeliveryAddress.street || customer.street,
-      billTumbol: billingInformation.mergeBilling ? '' : customerDeliveryAddress.tumbol || customer.tumbol,
-      billAmphur: billingInformation.mergeBilling ? '' : customerDeliveryAddress.amphur || customer.amphur,
-      billProvince: billingInformation.mergeBilling ? '' : customerDeliveryAddress.province || customer.province,
-      billZipCode: billingInformation.mergeBilling ? '' : customerDeliveryAddress.zipCode || customer.zipCode,
+      billHomeNo: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.homeNo : customer.homeNo || '',
+      // tslint:disable-next-line:max-line-length
+      billBuildingName: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.buildingName : customer.buildingName || '',
+      billFloor: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.floor : customer.floor || '',
+      billRoom: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.room : customer.room || '',
+      billMoo: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.moo : customer.moo || '',
+      billMooBan: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.mooBan : customer.mooBan || '',
+      billSoi: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.soi : customer.soi || '',
+      billStreet: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.street : customer.street || '',
+      billTumbol: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.tumbol : customer.tumbol || '',
+      billAmphur: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.amphur : customer.amphur || '',
+      // tslint:disable-next-line:max-line-length
+      billProvince: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.province : customer.province || '',
+      // tslint:disable-next-line:max-line-length
+      billZipCode: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.zipCode : customer.zipCode || '',
       orderVerify: '',
       /* eApplication Parameters */
       homeNo: customer.homeNo || '',
@@ -141,17 +144,28 @@ export class CreateNewRegisterService {
       }, /*required*/
       onTopPackages: [],
       promotionActionStatus1: 'Add', /*When SelectedPackages*/
+      engFlag: customer.engFlag || 'N'
     };
+
+    if (action === TransactionAction.READ_PASSPORT) {
+      data.accountSubCat = 'FOR',
+        data.titleName = customer.titleName,
+        // data.engFlag = 'Y',
+        data.citizenship = customer.nationality;
+    } else {
+      data.accountSubCat = 'THA',
+        data.titleName = this.utils.getPrefixName(customer.titleName); /*required*/
+    }
 
     // orderVerify
     if (faceRecognition && faceRecognition.kyc) {
-      if (this.isReadCard(action)) {
+      if (action === TransactionAction.READ_CARD) {
         data.orderVerify = 'Smart KYC';
       } else {
         data.orderVerify = 'User KYC';
       }
     } else {
-      if (this.isReadCard(action)) {
+      if (action === TransactionAction.READ_CARD) {
         data.orderVerify = 'Smart Face';
       } else {
         data.orderVerify = 'User Face';
@@ -185,27 +199,42 @@ export class CreateNewRegisterService {
     }
 
 
-    if (this.isReadCard(action)) {
+    if (action === TransactionAction.READ_CARD) {
       data.imageReadSmartCard = customer.imageReadSmartCard;
       data.firstNameEn = customer.firstNameEn;
       data.lastNameEn = customer.lastNameEn;
       data.issueDate = customer.issueDate;
       data.expireDate = customer.expireDate;
       return Promise.resolve(data);
-    } else {
+    }
+    if (action === TransactionAction.READ_PASSPORT) {
       return new ImageUtils().combine([
-        customer.imageSmartCard,
+        customer.imageReadPassport,
         customer.imageSignatureSmartCard,
         AWS_WATERMARK
       ]).then((imageSmatCard) => {
         data.imageTakePhoto = imageSmatCard;
         return Promise.resolve(data);
+      }).catch((error) => {
+        throw new Error(error);
       });
     }
+
+    if (action === TransactionAction.KEY_IN) {
+      return new ImageUtils().combine([
+        customer.imageReadPassport,
+        customer.imageSignatureSmartCard,
+        AWS_WATERMARK
+      ]).then((imageSmatCard) => {
+        data.imageTakePhoto = imageSmatCard;
+        return Promise.resolve(data);
+      }).catch((error) => {
+        throw new Error(error);
+      });
+    }
+
+
+
   }
 
-  isReadCard(action: TransactionAction): boolean {
-    return !!(action === TransactionAction.READ_CARD ||
-      action === TransactionAction.READ_CARD_REPI);
-  }
 }

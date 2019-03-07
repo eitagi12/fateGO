@@ -7,6 +7,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { Transaction, TransactionType, TransactionAction, Customer, MainPackage } from 'src/app/shared/models/transaction.model';
 import { ROUTE_ORDER_NEW_REGISTER_ON_TOP_PAGE } from 'src/app/order/order-new-register/constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-order-pre-to-post-confirm-user-information-page',
@@ -33,6 +34,7 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
     private homeService: HomeService,
     private transactionService: TransactionService,
     private alertService: AlertService,
+    private translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
 
@@ -79,14 +81,16 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
   }
 
   initBillingInfo() {
-    const customer = this.transaction.data.customer;
-    const billingInformation = this.transaction.data.billingInformation;
+
+    const billingInformation = this.transaction.data.billingInformation || {};
     const mergeBilling = billingInformation.mergeBilling;
     const billCycle = billingInformation.billCycle;
+    const customer: any = billingInformation.billDeliveryAddress || this.transaction.data.customer;
 
     const customerAddress = this.utils.getCurrentAddress({
       homeNo: customer.homeNo,
       moo: customer.moo,
+      mooBan: customer.mooBan,
       room: customer.room,
       floor: customer.floor,
       buildingName: customer.buildingName,
@@ -216,7 +220,7 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
 
   onNext() {
     if (!this.customerValid()) {
-      this.alertService.warning('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร');
+      this.alertService.warning(this.translation.instant('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร'));
       return;
     }
 
@@ -292,7 +296,8 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
             const bills = billing.billCycle.split(' ');
             return {
               billCycle: billing,
-              text: `วันที่ ${bills[1]} ถึงวันที่ ${bills[3]} ของทุกเดือน`,
+              text: this.translation.instant('วันที่') +
+                    `${bills[1]} ${this.translation.instant('ถึงวันที่')} ${bills[3]} ${this.translation.instant('ของทุกเดือน')}`,
               billDefault: billing.billDefault
             };
           }).find(bill => bill.billDefault === 'Y');

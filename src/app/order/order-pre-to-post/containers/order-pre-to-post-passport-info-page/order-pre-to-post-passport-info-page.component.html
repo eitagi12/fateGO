@@ -18,7 +18,8 @@
     </div>
   </div>
   <mc-footer>
-    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()" [disabled]="!idCardValid">NEXT</button>
+    <button [hidden]="idCardValid" class="btn btn-success" (click)="getOnMessageWs()">Confirm</button>
+    <button [hidden]="!idCardValid" class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button [hidden]="!idCardValid" class="btn btn-success" (click)="onNext()" [disabled]="!idCardValid">NEXT</button>
   </mc-footer>
 </div>
