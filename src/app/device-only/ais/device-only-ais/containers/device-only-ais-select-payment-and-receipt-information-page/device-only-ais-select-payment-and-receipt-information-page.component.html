@@ -24,9 +24,21 @@
           (qrCode)="onSelectQRCodeAdvancePay($event)" (bank)="onSelectBankAdvancePay($event)" (paymentType)="onSelectPaymentTypeAdvancePay($event)"></mc-payment-detail>
       </div>
     </div>
+    <div class="mc-flex-wrap">
+      <div class="mt-3">
+        <app-receipt-information 
+        [receiptInfo]="receiptInfo"
+        (completedReceiptInfo)="onCompleteReceiptInfo($event)" 
+        (completedBillingAddress)="onCompleteBillingAddress($event)" 
+        (errorBillingAddress)="onErrorBillingAddress($event)" 
+        (errorReceiptInfo)="onErrorReceiptInfo($event)">
+      </app-receipt-information>
+      </div>
+    </div>
     <mc-footer>
       <button class="btn btn-secondary" (click)="onBack()">BACK</button>
       <!-- <button class="btn btn-success" (click)="onNext()" [disabled]="!(checkPaymentFormValid() && checkAdvancePaymentFormValid() && receiptInfoValid)">NEXT</button> -->
       <button class="btn btn-success" (click)="onNext()">NEXT</button>
     </mc-footer>
   </div>
+</div>

@@ -1,0 +1,103 @@
+<div class="container-fluid">
+  <div class="card mb-3">
+    <div class="card-header bg-light-blue text-white">
+      ข้อมูลใบเสร็จรับเงิน
+    </div>
+    <!-- <div class="card-body">
+      <div>
+        <label class="text-grey">ผู้ซื้อ </label> {{ receiptInfo?.buyer || '-' }}
+      </div>
+      <div>
+        <label class="text-grey">ที่อยู่ใบเสร็จรับเงิน </label> {{ receiptInfo?.buyerAddress || '-' }}
+      </div>
+    </div> -->
+    <div class="card-footer bg-transparent">
+      <div class="text-right" (click)="onClickInputBillingAddress()">
+        <label style="cursor: pointer" class="text-grey">ระบุที่อยู่ใบเสร็จรับเงิน</label>
+      </div>
+      <div *ngIf="!inputBillingAddress">
+        <div>
+          <label class="text-grey">ผู้ซื้อ </label>
+        </div>
+        <div>
+          <label class="text-grey">ที่อยู่ใบเสร็จรับเงิน </label>
+        </div>
+      </div>
+      <div *ngIf="inputBillingAddress">
+        <form [formGroup]="billingAddressForm" class="pt-2">
+         <div class="form-group row">
+           <label for="customerName" class="col-12 col-sm-3 col-form-label">ผู้ซื้อ</label>
+           <div class="col-12 col-sm-9">
+            <input type="text" class="form-control" id="customerName" formControlName="customerName"/>
+           </div>
+          </div>
+          <label class="col-12 col-sm-3 col-form-label">ที่อยู่ใบเสร็จรับเงิน</label>
+          <div class="form-group row">
+            <label for="addressNo" class="col-12 col-sm-3 col-form-label">บ้านเลขที่</label>
+            <div class="col-12 col-sm-9">
+              <input type="text" class="form-control" id="addressNo" formControlName="addressNo"/>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="road" class="col-12 col-sm-3 col-form-label">ซอย</label>
+            <div class="col-12 col-sm-9">
+              <input type="text" class="form-control" id="road" formControlName="road"/>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="subDistrict" class="col-12 col-sm-3 col-form-label">แขวง/ตำบล</label>
+            <div class="col-12 col-sm-9">
+              <input type="text" class="form-control" id="subDistrict" formControlName="subDistrict"/>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="district" class="col-12 col-sm-3 col-form-label">เขต/เมือง</label>
+            <div class="col-12 col-sm-9">
+              <input type="text" class="form-control" id="district" formControlName="district"/>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="province" class="col-12 col-sm-3 col-form-label">จังหวัด</label>
+            <div class="col-12 col-sm-9">
+              <input type="text" class="form-control" id="province" formControlName="province"/>
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="zipcode" class="col-12 col-sm-3 col-form-label">รหัสไปรษณีย์</label>
+            <div class="col-12 col-sm-9">
+                <select class="form-control" formControlName="zipcode" id="selectZipCode">
+                    <option value="" disabled selected>รหัสไปรษณีย์</option>
+                    <option *ngFor="let zipcode of dataBillingZipCode" value="{{zipcode}}">{{zipcode}}</option>
+                 </select>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="card-footer bg-transparent">
+      <form [formGroup]="receiptInfoForm" class="pt-2">
+        <div class="form-group row">
+          <label for="taxId" class="col-12 col-sm-3 col-form-label">Tax Id</label>
+          <div class="col-12 col-sm-9">
+            <input type="text" class="form-control" id="taxId" formControlName="taxId"/>
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="branch" class="col-12 col-sm-3 col-form-label">สาขาที่</label>
+          <div class="col-12 col-sm-9">
+            <input type="text" class="form-control" id="branch" formControlName="branch" readonly />
+          </div>
+        </div>
+        <div class="form-group row">
+          <label for="telNo" class="col-12 col-sm-3 col-form-label">เบอร์ติดต่อ</label>
+          <div class="col-12 col-sm-9">
+            <input type="text" maxlength="10" class="form-control" id="telNo" formControlName="telNo" [ngClass]="{ 'is-invalid' : receiptInfoForm.controls.telNo.invalid && receiptInfoForm.controls.telNo.touched }" />
+            <small class="form-text invalid-feedback" *ngIf="receiptInfoForm.controls.telNo.touched && receiptInfoForm.controls.telNo.errors">
+              * กรุณากรอกเบอร์ติดต่อให้ถูกต้อง
+            </small>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

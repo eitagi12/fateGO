@@ -18,6 +18,9 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MobileCareComponent } from './components/mobile-care/mobile-care.component';
 import { TabsModule} from 'ngx-bootstrap';
 import { TranslateModule } from '@ngx-translate/core';
+import { ReceiptInformationComponent } from './components/receipt-information/receipt-information.component';
+import { BillingAddressService } from './services/billing-address.service';
+
 
 @NgModule({
   imports: [
@@ -42,6 +45,8 @@ import { TranslateModule } from '@ngx-translate/core';
     DeviceOnlyAisCheckoutPaymentQrCodePageComponent,
     DeviceOnlyAisKeyInQueuePageComponent,
     DeviceOnlyReadCardComponent,
-    MobileCareComponent]
+    MobileCareComponent,
+    ReceiptInformationComponent],
+  providers: [BillingAddressService]
 })
 export class DeviceOnlyAisModule { }
