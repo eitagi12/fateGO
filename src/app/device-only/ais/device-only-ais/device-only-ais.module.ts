@@ -14,11 +14,15 @@ import { DeviceOnlyAisQrCodeGeneratePageComponent } from './containers/device-on
 import { DeviceOnlyAisCheckoutPaymentQrCodePageComponent } from './containers/device-only-ais-checkout-payment-qr-code-page/device-only-ais-checkout-payment-qr-code-page.component';
 import { DeviceOnlyAisKeyInQueuePageComponent } from './containers/device-only-ais-key-in-queue-page/device-only-ais-key-in-queue-page.component';
 import { DeviceOnlyReadCardComponent } from './components/device-only-read-card/device-only-read-card.component';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { MobileCareComponent } from './components/mobile-care/mobile-care.component';
 
 
 @NgModule({
   imports: [
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     DeviceOnlyAisRoutingModule,
     MyChannelSharedLibsModule
   ],
@@ -34,6 +38,7 @@ import { DeviceOnlyReadCardComponent } from './components/device-only-read-card/
     DeviceOnlyAisQrCodeGeneratePageComponent,
     DeviceOnlyAisCheckoutPaymentQrCodePageComponent,
     DeviceOnlyAisKeyInQueuePageComponent,
-    DeviceOnlyReadCardComponent]
+    DeviceOnlyReadCardComponent,
+    MobileCareComponent]
 })
 export class DeviceOnlyAisModule { }

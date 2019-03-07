@@ -1,0 +1,155 @@
+<div class="container-fluid">
+    <form [formGroup]="mobileCareForm"> 
+        <!-- [formGroup]="mobileCareForm" -->
+      <div class="card mb-3">
+        <div class="card-header bg-teal text-white">
+            <!-- {{ 'บริการโมบายแคร์' | translate }} -->
+            บริการโมบายแคร์
+        </div>
+        <div class="card-body">
+          <div>
+            <input class="form-check-input" type="radio" id="mobile-care" [value]="true" formControlName="mobileCare">
+            <label class="form-check-label" for="mobile-care">ชื้อบริการโมบายแคร์</label>
+          </div>
+          <div>
+            <input class="form-check-input" type="radio" id="ignore-mobile-care" [value]="false" formControlName="mobileCare">
+            <label class="form-check-label" for="ignore-mobile-care">ไม่สนใจชื้อบริการโมบายแคร์</label>
+            <label class="text-light-green" [hidden]="!notBuyMobileCareForm.value.notBuyMobile">({{notBuyMobileCareForm.value.notBuyMobile }})</label>
+          </div>
+          <div *ngIf="mobileCare?.existingMobileCare">
+            <small class="text-red">{{ 'หมายเหตุ : กรณีมีการสมัคร Mobile care ที่เครื่องใหม่ การรับประกันที่เครื่องเดิมจะสิ้นสุด'}}</small>
+          </div>
+        </div>
+  
+  
+        <div class="py-3 mobile-care-top" [hidden]="notBuyMobileCareForm.value.notBuyMobile">
+          <!-- <tabset> -->
+              <!-- [justified]="true" -->
+            <!-- <tab *ngFor="let promotion of mobileCare?.promotions" [active]="promotion.active"> -->
+              <ng-template tabHeading>
+                <div class="promotion" [ngClass]="promotion?.icon">
+                  {{ promotion?.title }}
+                </div>
+              </ng-template>
+              
+              <div class="pl-3 pt-3 pr-3 mt-3 mobile-care-top" *ngIf="promotion?.itemsSerenade?.length > 0">
+                <h6 class="text-pink">{{ 'สิทธิพิเศษสำหรับลูกค้า Serenade'}}</h6>
+                <div *ngFor="let item of promotion?.itemsSerenade">
+                  <input class="form-check-input" type="radio" id="mobile-care-package-{{ item?.id }}" [value]="item"
+                    formControlName="promotion">
+                  <label class="form-check-label" for="mobile-care-package-{{ item?.id }}">
+                    {{ item?.title }}
+                  </label>
+                  <span class="pull-right text-light-green">฿ {{ item?.priceExclVat | number:'1.2-2' }}</span>
+                </div>
+              </div>
+  
+              
+              <div class="pl-3 pt-3 pr-3 mt-3 mobile-care-top" *ngIf="promotion?.items?.length > 0">
+                <div *ngFor="let item of promotion?.items">
+                  <input class="form-check-input" type="radio" id="mobile-care-package-{{ item?.id }}" [value]="item"
+                    formControlName="promotion">
+                  <label class="form-check-label" for="mobile-care-package-{{ item?.id }}">
+                    {{ item?.title }}
+                  </label>
+                  <span class="pull-right text-light-green">฿ {{ item?.priceExclVat | number:'1.2-2' }}</span>
+                </div>
+              </div>
+            <!-- </tab> -->
+          <!-- </tabset> -->
+  
+        </div>
+      </div>
+    </form>
+  
+    <div class="card mb-3" [hidden]="notBuyMobileCareForm.value.notBuyMobile">
+      <div class="card-header bg-transparent">{{ 'อัตราค่าบริการ (รวม VAT)'  }}</div>
+      <div class="card-body">
+        <p>
+          <i class="fa fa-circle mr-3 text-light-green"></i>
+          {{ 'เปลี่ยนเครื่องในราคา 25% จากราคาปกติ'  }}
+          <span class="pull-right text-light-green">฿ {{ getServiceChange(25) | number:'1.2-2' }}</span>
+        </p>
+        <p>
+          <i class="fa fa-circle mr-3 text-light-green"></i>
+          {{'รับเครื่องทดแทนปีที่ 1 ในราคา 45% จากราคาปกติ'}}
+          <span class="pull-right text-light-green">฿ {{ getServiceChange(45) | number:'1.2-2' }}</span>
+        </p>
+        <p>
+          <i class="fa fa-circle mr-3 text-light-green"></i>
+          {{ 'รับเครื่องทดแทนปีที่ 2 ในราคา 40% จากราคาปกติ' }}
+          <span class="pull-right text-light-green">฿ {{ getServiceChange(40) | number:'1.2-2' }}</span>
+        </p>
+        <p>
+          <i class="fa fa-circle mr-3 text-light-green"></i>
+          {{ 'รับเครื่องทดแทนปีที่ 3 และปีที่ 4 ในราคา 30% จากราคาปกติ' }}
+          <span class="pull-right text-light-green">฿ {{ getServiceChange(30) | number:'1.2-2' }}</span>
+        </p>
+      </div>
+      <div class="card-footer bg-transparent text-red">
+        <div>
+          <small *ngIf="mobileCare?.nextBillEffective">
+            {{ '*ค่าแพ็กเกจจะเรียกเก็บในรอบบิลถัดไป' }}
+          </small>
+        </div>
+  
+        <div>
+          <small>
+              {{ '*ค่าบริการเปลี่ยนเครื่อง/รับเครื่องทดแทน ขึ้นอยู่กับราคาเครื่องตามประกาศของบริษัท ฯ ณ วันที่ซื้อเครื่อง ไม่รวมราคาโปรโมชั่น'  }}
+          </small>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <ng-template #template>
+    <div class="modal-header bg-white">
+      <h5 class="modal-title text-grey text-center">
+        {{ 'โปรดระบุเหตุผลที่ท่านยังไม่สนใจจะรับบริการ Mobile Care' }}
+      </h5>
+      <button type="button" class="close pull-right" aria-label="Close" (click)="onNotBuyMobileCare(true)">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+      <form [formGroup]="notBuyMobileCareForm">
+          <!-- [formGroup]="notBuyMobileCareForm" -->
+        <div>
+          <input class="form-check-input" type="radio" id="not-buy-mobile-care-n1" value="ราคาเครื่องถูกอยู่แล้ว"
+            formControlName="notBuyMobile">
+          <label class="form-check-label" for="not-buy-mobile-care-n1">
+            {{ 'ราคาเครื่องถูกอยู่แล้ว'  }}
+          </label>
+        </div>
+        <div>
+          <input class="form-check-input" type="radio" id="not-buy-mobile-care-n2" value="รักษาเครื่องดีอยู่แล้ว"
+            formControlName="notBuyMobile">
+          <label class="form-check-label" for="not-buy-mobile-care-n2">
+            {{ 'รักษาเครื่องดีอยู่แล้ว' }}
+          </label>
+        </div>
+        <div>
+          <input class="form-check-input" type="radio" id="not-buy-mobile-care-n3" value="เปลี่ยนเครื่องบ่อย"
+            formControlName="notBuyMobile">
+          <label class="form-check-label" for="not-buy-mobile-care-n3">
+            {{ 'เปลี่ยนเครื่องบ่อย'  }}
+          </label>
+        </div>
+        <div>
+          <input class="form-check-input" type="radio" id="not-buy-mobile-care-n4" value="ค่าบริการสูงเกินไป"
+            formControlName="notBuyMobile">
+          <label class="form-check-label" for="not-buy-mobile-care-n4">
+            {{ 'ค่าบริการสูงเกินไป' }}
+          </label>
+        </div>
+        <div>
+          <input class="form-check-input" type="radio" id="not-buy-mobile-care-n5" value="ยังไม่ตัดสินใจ" formControlName="notBuyMobile">
+          <label class="form-check-label" for="not-buy-mobile-care-n5">{{ 'ยังไม่ตัดสินใจ' }}</label>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer d-flex justify-content-center">
+      <button type="button" class="btn btn-secondary btn-not-buy-mobile-care" (click)="onNotBuyMobileCare(true)">CLOSE</button>
+      <button type="button" class="btn btn-success btn-not-buy-mobile-care" (click)="onNotBuyMobileCare(false)">NEXT</button>
+    </div>
+  </ng-template>
