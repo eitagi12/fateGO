@@ -16,7 +16,8 @@ import { DeviceOnlyAisKeyInQueuePageComponent } from './containers/device-only-a
 import { DeviceOnlyReadCardComponent } from './components/device-only-read-card/device-only-read-card.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MobileCareComponent } from './components/mobile-care/mobile-care.component';
-
+import { TabsModule} from 'ngx-bootstrap';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -24,7 +25,9 @@ import { MobileCareComponent } from './components/mobile-care/mobile-care.compon
     FormsModule,
     ReactiveFormsModule,
     DeviceOnlyAisRoutingModule,
-    MyChannelSharedLibsModule
+    MyChannelSharedLibsModule,
+    TabsModule.forRoot(),
+    TranslateModule
   ],
   declarations: [
     DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent,

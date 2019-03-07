@@ -85,7 +85,7 @@ export class MobileCareComponent implements OnInit {
   }
 
   getServiceChange(percentage: number): number {
-    return ((this.normalPrice || 10000) * (percentage / 100) * (this.VAT / 100));
+    return ((this.normalPrice || 0) * (percentage / 100) * (this.VAT / 100));
   }
 
   onOpenNotBuyMobileCare() {
