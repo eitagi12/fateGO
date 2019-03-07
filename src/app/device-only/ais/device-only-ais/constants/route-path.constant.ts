@@ -5,3 +5,5 @@ export const ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE = '/device-only/ais/queue';
 export const ROUTE_DEVICE_ONLY_AIS_QR_CODE_QUEUE_PAGE = '/device-only/ais/qr-code-queue';
 export const ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE = '/device-only/ais/summary';
 export const ROUTE_DEVICE_ONLY_AIS_MOBILE_CARE_AVALIABLE_PAGE = '/device-only/ais/mobile-care-avaliable';
+export const ROUTE_DEVICE_ONLY_AIS_QR_CODE_SUMMARY_PAGE = '/device-only/ais/qr-code-summary';
+export const ROUTE_DEVICE_ONLY_AIS_QR_CODE_GENERATE_PAGE = '/device-only/ais/qr-code-generate';
