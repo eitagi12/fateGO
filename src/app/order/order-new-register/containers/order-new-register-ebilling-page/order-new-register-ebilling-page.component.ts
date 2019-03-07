@@ -47,6 +47,8 @@ export class OrderNewRegisterEbillingPageComponent implements OnInit, OnDestroy 
       this.billCycles = data.billCycles || [];
       if (!this.transaction.data.billingInformation.billCycle) {
         this.setBillingDefault(data.billCycles || []);
+      } else {
+        this.billCycle = this.transaction.data.billingInformation.billCycle;
       }
     });
   }
@@ -55,7 +57,6 @@ export class OrderNewRegisterEbillingPageComponent implements OnInit, OnDestroy 
     for (const ebill of ebilling) {
       if (ebill.bill === this.transaction.data.customer.billCycle) {
         this.billCycle = ebill;
-        // this.transaction.data.billingInformation.billCycle = this.billCycle;
       }
     }
   }
