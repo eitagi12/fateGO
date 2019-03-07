@@ -17,17 +17,18 @@ export class CreateNewRegisterService {
   }
 
   createNewRegister(transaction: Transaction): Promise<any> {
-    this.saveFaceImage(transaction);
-    return this.getRequestCreateNewRegister(transaction).then((data) => {
-      console.log(data);
-      return this.http.post(
-        '/api/customerportal/newRegister/createNewRegistration',
-        data
-      ).toPromise();
-    });
+    return this.saveFaceImage(transaction)
+      .then(() => {
+        return this.getRequestCreateNewRegister(transaction).then((data) => {
+          return this.http.post(
+            '/api/customerportal/newRegister/createNewRegistration',
+            data
+          ).toPromise();
+        });
+      });
   }
 
-  saveFaceImage(transaction: Transaction) {
+  saveFaceImage(transaction: Transaction): Promise<any> {
     const user = this.tokenService.getUser();
     const customer = transaction.data.customer;
     const faceRecognition = transaction.data.faceRecognition;
@@ -63,8 +64,11 @@ export class CreateNewRegisterService {
       channel: channel,
       userchannel: 'MyChannel'
     };
-    this.http.post('/api/facerecog/save-imagesV2', param).toPromise()
-      .catch(e => console.log(e));
+    return this.http.post('/api/facerecog/save-imagesV2', param).toPromise()
+      .catch(e => {
+        console.log(e);
+        return Promise.resolve(null);
+      });
 
   }
 
