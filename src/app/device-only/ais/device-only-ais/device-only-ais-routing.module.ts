@@ -3,12 +3,14 @@ import { Routes, RouterModule } from '@angular/router';
 import { DeviceOnlyAisQueuePageComponent } from './containers/device-only-ais-queue-page/device-only-ais-queue-page.component';
 import { DeviceOnlyAisQrCodeQueuePageComponent } from './containers/device-only-ais-qr-code-queue-page/device-only-ais-qr-code-queue-page.component';
 import { DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent } from './containers/device-only-ais-select-payment-and-receipt-information-page/device-only-ais-select-payment-and-receipt-information-page.component';
-import {DeviceOnlyAisCheckoutPaymentPageComponent} from './containers/device-only-ais-checkout-payment-page/device-only-ais-checkout-payment-page.component';
+import { DeviceOnlyAisCheckoutPaymentPageComponent } from './containers/device-only-ais-checkout-payment-page/device-only-ais-checkout-payment-page.component';
 import { DeviceOnlyAisSelectMobileCarePageComponent } from './containers/device-only-ais-select-mobile-care-page/device-only-ais-select-mobile-care-page.component';
 import { DeviceOnlyAisSummaryPageComponent } from 'src/app/device-only/ais/device-only-ais/containers/device-only-ais-summary-page/device-only-ais-summary-page.component';
 import { DeviceOnlyAisMobileCareAvaliablePageComponent} from './containers/device-only-ais-mobile-care-avaliable-page/device-only-ais-mobile-care-avaliable-page.component';
 import { DeviceOnlyAisQrCodeSummarayPageComponent } from './containers/device-only-ais-qr-code-summaray-page/device-only-ais-qr-code-summaray-page.component';
 import { DeviceOnlyAisQrCodeGeneratePageComponent } from './containers/device-only-ais-qr-code-generate-page/device-only-ais-qr-code-generate-page.component';
+import { DeviceOnlyAisCheckoutPaymentQrCodePageComponent } from './containers/device-only-ais-checkout-payment-qr-code-page/device-only-ais-checkout-payment-qr-code-page.component';
+
 const routes: Routes = [
   {
     path: 'checkout-payment',
@@ -45,6 +47,10 @@ const routes: Routes = [
   {
     path: 'mobile-care-avaliable',
     component: DeviceOnlyAisMobileCareAvaliablePageComponent
+  },
+  {
+    path: 'checkout-payment-qr-code',
+    component: DeviceOnlyAisCheckoutPaymentQrCodePageComponent
   }
 ];
 
