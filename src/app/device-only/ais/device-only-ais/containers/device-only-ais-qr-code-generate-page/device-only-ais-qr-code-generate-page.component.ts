@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService } from 'mychannel-shared-libs';
+import { HomeService, AlertService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
@@ -21,7 +21,8 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
-    private priceOptionService: PriceOptionService
+    private priceOptionService: PriceOptionService,
+    private alertService: AlertService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -29,6 +30,7 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.onRefresh();
   }
 
   onBack() {
@@ -47,6 +49,10 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
     return amount.reduce((prev, curr) => {
       return prev + curr;
     }, 0);
+  }
+
+  onRefresh() {
+    this.alertService.question('สิ้นสุดระยะเวลาชำระเงินกรุณากดปุ่ม REFRESH เพื่อทำรายการใหม่', 'REFRESH', 'CANCLE');
   }
 
 }
