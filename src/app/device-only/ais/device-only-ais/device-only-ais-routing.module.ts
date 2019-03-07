@@ -10,7 +10,7 @@ import { DeviceOnlyAisMobileCareAvaliablePageComponent} from './containers/devic
 import { DeviceOnlyAisQrCodeSummarayPageComponent } from './containers/device-only-ais-qr-code-summaray-page/device-only-ais-qr-code-summaray-page.component';
 import { DeviceOnlyAisQrCodeGeneratePageComponent } from './containers/device-only-ais-qr-code-generate-page/device-only-ais-qr-code-generate-page.component';
 import { DeviceOnlyAisCheckoutPaymentQrCodePageComponent } from './containers/device-only-ais-checkout-payment-qr-code-page/device-only-ais-checkout-payment-qr-code-page.component';
-
+import { DeviceOnlyAisKeyInQueuePageComponent } from './containers/device-only-ais-key-in-queue-page/device-only-ais-key-in-queue-page.component';
 const routes: Routes = [
   {
     path: 'checkout-payment',
@@ -21,12 +21,16 @@ const routes: Routes = [
     component: DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent
   },
   {
-    path: 'queue',
-    component: DeviceOnlyAisQueuePageComponent
+    path: 'key-in-queue',
+    component: DeviceOnlyAisKeyInQueuePageComponent
   },
   {
     path: 'qr-code-queue',
     component: DeviceOnlyAisQrCodeQueuePageComponent
+  },
+  {
+    path: 'queue',
+    component: DeviceOnlyAisQueuePageComponent
   },
   {
     path: 'qr-code-summary',

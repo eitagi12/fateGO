@@ -1,51 +1,72 @@
 <div class="mc-flex">
-<mc-header title="ชำระสินค้า">
-  <div class="header-icon-right">
-    <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
-  </div>
-</mc-header>
-  <div class="mc-flex-wrap bg-white">
-    <div class="container-fluid mt-5">
-      <div class="card">
-        <div class="card-body">
-          <div class="text-center  bg-white">
-            <img src="assets/images/icon/icon-green-check-circle.png" class="d-block m-auto icon">
-              <div class="my-3 text-center">
-              <!-- <p>หมายเลข {{ transaction?.data?.simCard?.mobileNo | mobileNo }}</p> -->
-                <p>หมายเลข 098989898989</p>
-                <p>ชำระค้าสินค้าเรียบร้อยแล้ว</p>
-                <p>หมายเลขอ้างอิง 5399566516</p>
+    <mc-header title="ชำระสินค้า">
+      <div class="header-icon-right">
+        <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+      </div>
+    </mc-header>
+      <div class="mc-flex-wrap bg-white">
+        <div class="container-fluid mt-5">
+          <div class="card mx-5">
+            <div class="card-header  bg-white">
+              <div class="text-center  bg-white">
+                <img src="assets/images/icon/icon-green-check-circle.png" class="d-block m-auto icon">
+                  <div class="my-3 text-center">
+                  <!-- <p>หมายเลข {{ transaction?.data?.simCard?.mobileNo | mobileNo }}</p> -->
+                    <p>หมายเลข 098989898989</p>
+                    <p>ชำระค้าสินค้าเรียบร้อยแล้ว</p>
+                    <p>หมายเลขอ้างอิง 5399566516</p>
+                  </div>
               </div>
+            </div>
+            <div class="card-body bg-white">
+              <div class="text-left">
+                <p>รายการสินค้า</p>
+              </div>
+              <div class="row mb-2">
+                 <div class="col-6 text-left">
+                    <i class="fa fa-circle mr-3 text-light-green"></i>
+                    <span>Y81iสีBLACK</span>
+                    
+                 </div>
+                 <div class="col-6 text-right">
+                    <p>5464</p>
+                 </div>
+                 <div class="col-12 text-right">
+                  ยอดค้างชำระ(รวมVAT)
+                  <span class="text-light-green"> 3,999฿</span>
+                 </div>
+              </div>
+     
+  
+            </div>
+          </div>
+    
+        </div>
+        <div class="container-fluid mt-5">
+          <div class="text-center my-2 pt-5">
+            <div>
+              <h2>หมายเลขคิวในการชำระสินค้าของท่านคือ</h2>
+            </div>
+            <div class="row">
+              <div class="m-auto text-center col-4 mt-4">
+                <div class="card mt-2">
+                  <div class="card-body">
+                    <h1 class="text-light-green queue-no">
+                      A001
+                    </h1>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-        <div class="card-footer bg-white">
-          <div class="text-left">
-            <p>รายการสินค้า</p>
-          </div>
-          <div class="row">
-             <div class="col-6 text-left">
-                <i class="fa fa-circle mr-3 text-light-green"></i>
-                <span>Y81iสีBLACK</span>
-                
-             </div>
-             <div class="col-6 text-right">
-                <p>5464</p>
-             </div>
-             <div class="col-12 text-right">
-              ยอดค้างชำระ(รวมVAT)
-              <span class="text-light-green"> 3,999฿</span>
-             </div>
-          </div>
-        </div>
-      </div>
 
+        <div class="container-fluid my-5">
+          <div class="text-center">
+            <button class="btn btn-success btn-lg" click="onNext()">
+              NEXT
+            </button>
+          </div>
+        </div>
+      </div> 
     </div>
-    <div class="container-fluid mt-5">
-      <div class="text-center">
-        <button class="btn btn-success">
-          NEXT
-        </button>
-      </div>
-    </div>
-  </div> 
-</div>
