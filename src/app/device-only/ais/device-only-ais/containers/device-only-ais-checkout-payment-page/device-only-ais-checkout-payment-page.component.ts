@@ -18,9 +18,8 @@ export class DeviceOnlyAisCheckoutPaymentPageComponent implements OnInit, OnDest
   ngOnInit() {
   }
 
-onBack() {
-  this.router.navigate([ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE]);
-  
+  onBack() {
+    this.router.navigate([ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE]);
   }
 
   onNext() {

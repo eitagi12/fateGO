@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HomeService, Aggregate } from 'mychannel-shared-libs';
 import { ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE, ROUTE_DEVICE_ONLY_AIS_QR_CODE_SUMMARY_PAGE } from '../../constants/route-path.constant';
@@ -7,7 +7,7 @@ import { ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE, ROUTE_DEVICE_ONLY_AIS_QR_CODE_SUMMA
   templateUrl: './device-only-ais-checkout-payment-qr-code-page.component.html',
   styleUrls: ['./device-only-ais-checkout-payment-qr-code-page.component.scss']
 })
-export class DeviceOnlyAisCheckoutPaymentQrCodePageComponent implements OnInit {
+export class DeviceOnlyAisCheckoutPaymentQrCodePageComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
@@ -17,9 +17,8 @@ export class DeviceOnlyAisCheckoutPaymentQrCodePageComponent implements OnInit {
   ngOnInit() {
   }
 
-onBack() {
-  this.router.navigate([ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE]);
-  
+  onBack() {
+    this.router.navigate([ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE]);
   }
 
   onNext() {

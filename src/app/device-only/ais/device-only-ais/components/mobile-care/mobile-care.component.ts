@@ -34,7 +34,7 @@ export interface MobileCareItem {
 })
 export class MobileCareComponent implements OnInit {
 
-  public VAT: number = 1.07;
+  public VAT = 1.07;
 
   @Input()
   mobileCare: MobileCare;
