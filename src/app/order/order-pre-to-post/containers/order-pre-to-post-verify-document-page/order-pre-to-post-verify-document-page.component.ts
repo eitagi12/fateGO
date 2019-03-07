@@ -1,21 +1,23 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { debounceTime } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs/internal/Subscription';
+import { HttpClient } from '@angular/common/http';
+import { AbstractControl, ValidationErrors, FormBuilder, FormGroup, Validators } from '@angular/forms';
+
 import {
   HomeService, PageLoadingService, ApiRequestService, Utils, ReadCardProfile, AlertService,
   ReadPassport, ReadPassportService, ValidateCustomerIdCardComponent,
   KioskControls, VendingApiService, ReadCardService,
 } from 'mychannel-shared-libs';
-import { Subscription } from 'rxjs/internal/Subscription';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
-import { HttpClient } from '@angular/common/http';
 import {
   ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE,
   ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_PAGE,
   ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_PAGE
 } from '../../constants/route-path.constant';
-import { AbstractControl, ValidationErrors, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-order-pre-to-post-verify-document-page',
@@ -50,7 +52,8 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
     private apiRequestService: ApiRequestService,
     private alertService: AlertService,
     private vendingApiService: VendingApiService,
-    private readCardService: ReadCardService
+    private readCardService: ReadCardService,
+    public translation: TranslateService
   ) {
   }
 
@@ -108,80 +111,80 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
     this.readPassportSubscription = this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
       this.pageLoadingService.openLoading();
       if (readPassport.error) {
-        this.alertService.error(this.ERR_MASSEAGE);
+        this.alertService.error(this.translation.instant(this.ERR_MASSEAGE));
         return;
       } else if (readPassport.profile && readPassport.profile.idCardNo) {
-      return this.http.get('/api/customerportal/validate-customer-pre-to-post', {
-        params: {
-          identity: readPassport.profile.idCardNo,
-          idCardType: readPassport.profile.idCardType
-        }
-        // catch ไว้ก่อน เดี๋ยวมาทำต่อ
-      }).toPromise().catch(() => {
-        return {};
-      })
-        .then((resp: any) => {
-          const data = resp.data || {};
-          return {
-            caNumber: data.caNumber,
-            mainMobile: data.mainMobile,
-            billCycle: data.billCycle,
-            // zipCode: zipCode
-          };
-        }).then((resp) => {
-          this.transaction.data.customer = Object.assign(
-            Object.assign({}, this.transaction.data.customer), readPassport.profile);
-          return this.http.get(`/api/customerportal/newRegister/${readPassport.profile.idCardNo}/queryBillingAccount`).toPromise()
-            .then((respQueryBilling: any) => {
-              const data = respQueryBilling.data || {};
-              return this.http.post('/api/customerportal/verify/billingNetExtreme', {
-                businessType: '1',
-                listBillingAccount: data.billingAccountList
-              }).toPromise()
-                .then((respBillingNetExtreme: any) => {
-                  return {
-                    billCycles: data.billingAccountList,
-                    billCyclesNetExtreme: respBillingNetExtreme.data
-                  };
-                })
-                .catch(() => {
-                  return {
-                    billCycles: data.billingAccountList
-                  };
-                });
-            });
-        }).then((billingInformation: any) => {
-          this.transaction.data.billingInformation = billingInformation;
-          this.pageLoadingService.closeLoading();
-          this.transaction.data.action = TransactionAction.READ_PASSPORT;
-          this.transactionService.update(this.transaction);
-          this.router.navigate([ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_PAGE]);
-          // if (this.checkBusinessLogic()) {
-          //   this.router.navigate([ROUTE_ORDER_NEW_REGISTER_PASSPOPRT_INFO_PAGE]);
-
-          // }
-        }).catch((resp: any) => {
-          this.pageLoadingService.closeLoading();
-          const error = resp.error || [];
-          if (error && error.errors && error.errors.length > 0) {
-            this.alertService.notify({
-              type: 'error',
-              html: error.errors.map((err) => {
-                return '<li class="text-left">' + err + '</li>';
-              }).join('')
-            }).then(() => {
-              this.onBack();
-            });
-          } else if (error.resultDescription) {
-            this.alertService.error(error.resultDescription);
-          } else {
-            this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
-
+        return this.http.get('/api/customerportal/validate-customer-pre-to-post', {
+          params: {
+            identity: readPassport.profile.idCardNo,
+            idCardType: readPassport.profile.idCardType
           }
-        });
+          // catch ไว้ก่อน เดี๋ยวมาทำต่อ
+        }).toPromise().catch(() => {
+          return {};
+        })
+          .then((resp: any) => {
+            const data = resp.data || {};
+            return {
+              caNumber: data.caNumber,
+              mainMobile: data.mainMobile,
+              billCycle: data.billCycle,
+              // zipCode: zipCode
+            };
+          }).then((resp) => {
+            this.transaction.data.customer = Object.assign(
+              Object.assign({}, this.transaction.data.customer), readPassport.profile);
+            return this.http.get(`/api/customerportal/newRegister/${readPassport.profile.idCardNo}/queryBillingAccount`).toPromise()
+              .then((respQueryBilling: any) => {
+                const data = respQueryBilling.data || {};
+                return this.http.post('/api/customerportal/verify/billingNetExtreme', {
+                  businessType: '1',
+                  listBillingAccount: data.billingAccountList
+                }).toPromise()
+                  .then((respBillingNetExtreme: any) => {
+                    return {
+                      billCycles: data.billingAccountList,
+                      billCyclesNetExtreme: respBillingNetExtreme.data
+                    };
+                  })
+                  .catch(() => {
+                    return {
+                      billCycles: data.billingAccountList
+                    };
+                  });
+              });
+          }).then((billingInformation: any) => {
+            this.transaction.data.billingInformation = billingInformation;
+            this.pageLoadingService.closeLoading();
+            this.transaction.data.action = TransactionAction.READ_PASSPORT;
+            this.transactionService.update(this.transaction);
+            this.router.navigate([ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_PAGE]);
+            // if (this.checkBusinessLogic()) {
+            //   this.router.navigate([ROUTE_ORDER_NEW_REGISTER_PASSPOPRT_INFO_PAGE]);
+
+            // }
+          }).catch((resp: any) => {
+            this.pageLoadingService.closeLoading();
+            const error = resp.error || [];
+            if (error && error.errors && error.errors.length > 0) {
+              this.alertService.notify({
+                type: 'error',
+                html: error.errors.map((err) => {
+                  return '<li class="text-left">' + this.translation.instant(err) + '</li>';
+                }).join('')
+              }).then(() => {
+                this.onBack();
+              });
+            } else if (error.resultDescription) {
+              this.alertService.error(this.translation.instant(error.resultDescription));
+            } else {
+              this.alertService.error(this.translation.instant('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'));
+
+            }
+          });
       } else {
         if (readPassport.eventName && readPassport.eventName === 'OnScanDocError') {
-          this.alertService.error(this.ERR_MASSEAGE);
+          this.alertService.error(this.translation.instant(this.ERR_MASSEAGE));
         }
       }
     });
@@ -224,13 +227,13 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
     const idCardType = this.transaction.data.customer.idCardType;
 
     if (this.utils.isLowerAge17Year(birthdate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี').then(() => {
+      this.alertService.error(this.translation.instant('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี')).then(() => {
         this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE]);
       });
       return false;
     }
     if (this.utils.isIdCardExpiredDate(expireDate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ').then(() => {
+      this.alertService.error(this.translation.instant('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ')).then(() => {
         this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE]);
       });
       return false;

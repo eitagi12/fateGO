@@ -2,9 +2,11 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { HomeService, PageLoadingService, ApiRequestService, Utils, ReadCardProfile, AlertService, ReadPassport, ReadPassportService, ValidateCustomerIdCardComponent, KioskControls, VendingApiService, ReadCardService, } from 'mychannel-shared-libs';
 import { Subscription } from 'rxjs/internal/Subscription';
+import { TranslateService } from '@ngx-translate/core';
+import { HttpClient } from '@angular/common/http';
+
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
-import { HttpClient } from '@angular/common/http';
 import { ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE, ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_REPI_PAGE, ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE } from '../../constants/route-path.constant';
 
 
@@ -39,7 +41,8 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
     private apiRequestService: ApiRequestService,
     private alertService: AlertService,
     private vendingApiService: VendingApiService,
-    private readCardService: ReadCardService
+    private readCardService: ReadCardService,
+    public translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -75,7 +78,7 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
 
       this.pageLoadingService.openLoading();
       if (readPassport.error) {
-        this.alertService.error('ไม่สามารถอ่านบัตรได้ กรุณาติดต่อพนักงาน');
+        this.alertService.error(this.translation.instant(this.ERR_MASSEAGE));
         return;
       } else if (readPassport.profile && readPassport.profile.idCardNo) {
 
@@ -146,21 +149,21 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
               this.alertService.notify({
                 type: 'error',
                 html: error.errors.map((err) => {
-                  return '<li class="text-left">' + err + '</li>';
+                  return '<li class="text-left">' + this.translation.instant(err) + '</li>';
                 }).join('')
               }).then(() => {
                 this.onBack();
               });
             } else if (error.resultDescription) {
-              this.alertService.error(error.resultDescription);
+              this.alertService.error(this.translation.instant(error.resultDescription));
             } else {
-              this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+              this.alertService.error(this.translation.instant('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'));
 
             }
           });
       } else {
         if (readPassport.eventName && readPassport.eventName === 'OnScanDocError') {
-          this.alertService.error(this.ERR_MASSEAGE);
+          this.alertService.error(this.translation.instant(this.ERR_MASSEAGE));
         }
       }
     });
@@ -203,13 +206,13 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
     const idCardType = this.transaction.data.customer.idCardType;
 
     if (this.utils.isLowerAge17Year(birthdate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี').then(() => {
+      this.alertService.error(this.translation.instant('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี')).then(() => {
         this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE]);
       });
       return false;
     }
     if (this.utils.isIdCardExpiredDate(expireDate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ').then(() => {
+      this.alertService.error(this.translation.instant('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ')).then(() => {
         this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE]);
       });
       // return false;
