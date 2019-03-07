@@ -10,6 +10,7 @@
     "build-prod": "ng lint && ng build -c production",
     "test": "jest",
     "test:watch": "jest --watch",
+    "test:ci": "jest --runInBand --coverage --coverageDirectory=coverage/jest",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
