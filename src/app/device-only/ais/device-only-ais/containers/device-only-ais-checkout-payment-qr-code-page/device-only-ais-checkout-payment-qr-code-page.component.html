@@ -42,7 +42,8 @@
             <!-- <i class="fa fa-circle mr-3 text-light-green"></i> -->
             <span id="text-brand-model">
               {{model}}
-              <span *ngIf="priceOption?.productStock?.color">
+              <span>
+              <!-- <span *ngIf="priceOption?.productStock?.color"> -->
                 <!-- {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.color }} -->
                 สี {{color}}
               </span>
@@ -64,7 +65,8 @@
                   <span id="text-summary-brand-model">
                     {{model}}
                     <!-- {{ priceOption?.productDetail?.name }} -->
-                    <span *ngIf="priceOption?.productStock?.color">
+                    <span>
+                    <!-- <span *ngIf="priceOption?.productStock?.color"> -->
                         <span> สี </span>{{color}}
                       <!-- {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.color }} -->
                     </span>
