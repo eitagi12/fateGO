@@ -1,13 +1,17 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, PageLoadingService, ApiRequestService, Utils, ReadCardProfile, AlertService, ReadPassport, ReadPassportService, ValidateCustomerIdCardComponent, KioskControls, VendingApiService, ReadCardService, } from 'mychannel-shared-libs';
+import {
+  HomeService, PageLoadingService, Utils, ReadCardProfile,
+  AlertService, ReadPassport, ReadPassportService, ValidateCustomerIdCardComponent,
+  KioskControls, VendingApiService
+} from 'mychannel-shared-libs';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
-import { ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE, ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_REPI_PAGE, ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE } from '../../constants/route-path.constant';
+import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE, ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_REPI_PAGE, ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE, ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_PAGE, ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_REPI_PAGE } from '../../constants/route-path.constant';
 
 
 @Component({
@@ -38,10 +42,8 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
     private transactionService: TransactionService,
     private readPassportService: ReadPassportService,
     private pageLoadingService: PageLoadingService,
-    private apiRequestService: ApiRequestService,
     private alertService: AlertService,
     private vendingApiService: VendingApiService,
-    private readCardService: ReadCardService,
     public translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
@@ -50,14 +52,6 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
   ngOnInit() {
     this.onReadCard();
     this.onReadPassport();
-    this.koiskApiFn = this.readCardService.kioskApi();
-    // this.onNext();
-    // this.readPassportService.readPassportFromWebSocket().subscribe((readPassprot: ReadPassprot) => {
-    //   console.log('readPassprot', readPassprot);
-    //   this.transaction.data.customer = this.readPassprot.profile;
-    // });
-    // this.readCardService.kioskApi().controls(KioskControls.GET_CARD_STATE).subscribe(msg => console.log('msg', msg));
-
   }
   onCompleted(profile: ReadCardProfile) {
     this.profile = profile;
@@ -72,16 +66,15 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
   onHome() {
     this.homeService.goToHome();
   }
+
   onReadPassport() {
     const mobileNo = this.transaction.data.simCard.mobileNo;
     this.readPassportSubscription = this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
-
       this.pageLoadingService.openLoading();
       if (readPassport.error) {
         this.alertService.error(this.translation.instant(this.ERR_MASSEAGE));
         return;
       } else if (readPassport.profile && readPassport.profile.idCardNo) {
-
         return this.http.get('/api/customerportal/validate-customer-pre-to-post', {
           params: {
             identity: readPassport.profile.idCardNo,
@@ -129,15 +122,13 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
             return this.http.get(`/api/customerportal/newRegister/verifyPrepaidIdent?idCard=${idCardNo}&mobileNo=${mobileNo}`)
               .toPromise()
               .then((respPrepaidIdent: any) => {
+                // if (this.checkBusinessLogic()) {
                 if (respPrepaidIdent.data && respPrepaidIdent.data.success) {
-                  if (this.checkBusinessLogic()) {
-                    this.transaction.data.action = TransactionAction.READ_PASSPORT;
-                  }
+                  this.transaction.data.action = TransactionAction.READ_PASSPORT;
                 } else {
-                  if (this.checkBusinessLogic()) {
-                    this.transaction.data.action = TransactionAction.READ_PASSPORT_REPI;
-                  }
+                  this.transaction.data.action = TransactionAction.READ_PASSPORT_REPI;
                 }
+                // }
                 this.transactionService.update(this.transaction);
                 this.router.navigate([ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_REPI_PAGE]);
                 this.pageLoadingService.closeLoading();
@@ -207,33 +198,21 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
 
     if (this.utils.isLowerAge17Year(birthdate)) {
       this.alertService.error(this.translation.instant('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี')).then(() => {
-        this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE]);
+        this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_REPI_PAGE]);
       });
       return false;
     }
     if (this.utils.isIdCardExpiredDate(expireDate)) {
       this.alertService.error(this.translation.instant('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ')).then(() => {
-        this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE]);
+        this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_REPI_PAGE]);
       });
       // return false;
       return true;
     }
     return true;
   }
-  // private createTransaction() {
-  //   // New x-api-request-id
-  //   this.apiRequestService.createRequestId();
-
-  //   this.transaction = {
-  //     data: {
-  //       transactionType: TransactionType.ORDER_NEW_REGISTER,
-  //       action: null,
-  //     }
-  //   };
-  // }
 
   ngOnDestroy(): void {
-    // this.transactionService.update(this.transaction);
     if (this.transaction.data.action === TransactionAction.READ_PASSPORT && this.closeVendingApi.ws) {
       this.closeVendingApi.ws.send(KioskControls.LED_OFF);
     }

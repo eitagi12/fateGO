@@ -9,14 +9,15 @@ import { AbstractControl, ValidationErrors, FormBuilder, FormGroup, Validators }
 import {
   HomeService, PageLoadingService, ApiRequestService, Utils, ReadCardProfile, AlertService,
   ReadPassport, ReadPassportService, ValidateCustomerIdCardComponent,
-  KioskControls, VendingApiService,
+  KioskControls, VendingApiService, TokenService, ChannelType,
 } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import {
   ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE,
   ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_PAGE,
-  ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_PAGE
+  ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_PAGE,
+  ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_PAGE
 } from '../../constants/route-path.constant';
 
 @Component({
@@ -37,7 +38,6 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
   validateCustomerForm: FormGroup;
-
   readonly ERR_MASSEAGE = 'ไม่สามารถให้บริการได้ กรุณาติดต่อพนักงานเพื่อดำเนินการ ขออภัยในความไม่สะดวก';
 
   constructor(
@@ -46,6 +46,7 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
     private fb: FormBuilder,
     private utils: Utils,
     private http: HttpClient,
+    private tokenService: TokenService,
     private transactionService: TransactionService,
     private readPassportService: ReadPassportService,
     private pageLoadingService: PageLoadingService,
@@ -54,6 +55,14 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
     private vendingApiService: VendingApiService,
     public translation: TranslateService
   ) {
+    this.homeService.callback = () => {
+      if (this.validateCustomerIdcard.koiskApiFn) {
+        this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+      }
+      window.location.href = '/smart-shop';
+    };
+
+    this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
   }
 
   ngOnInit() {
@@ -129,9 +138,11 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
               billCycle: data.billCycle,
               // zipCode: zipCode
             };
-          }).then((resp) => {
+          }).then((customer) => {
             this.transaction.data.customer = Object.assign(
-              Object.assign({}, this.transaction.data.customer), readPassport.profile);
+              Object.assign({}, this.transaction.data.customer),
+              Object.assign(readPassport.profile, customer));
+
             return this.http.get(`/api/customerportal/newRegister/${readPassport.profile.idCardNo}/queryBillingAccount`).toPromise()
               .then((respQueryBilling: any) => {
                 const data = respQueryBilling.data || {};
@@ -226,13 +237,13 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
 
     if (this.utils.isLowerAge17Year(birthdate)) {
       this.alertService.error(this.translation.instant('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี')).then(() => {
-        this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE]);
+        this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_PAGE]);
       });
       return false;
     }
     if (this.utils.isIdCardExpiredDate(expireDate)) {
       this.alertService.error(this.translation.instant('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ')).then(() => {
-        this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE]);
+        this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_PAGE]);
       });
       return false;
     }
