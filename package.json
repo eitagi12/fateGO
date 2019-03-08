@@ -63,6 +63,11 @@
     ],
     "setupFilesAfterEnv": [
       "<rootDir>/src/setupJest.ts"
+    ],
+    "coverageReporters": [
+      "text",
+      "cobertura",
+      "html"
     ]
   }
 }
