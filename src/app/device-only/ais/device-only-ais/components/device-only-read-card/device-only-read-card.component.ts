@@ -9,7 +9,7 @@ export class DeviceOnlyReadCardComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
 }

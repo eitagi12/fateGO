@@ -20,7 +20,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 })
 export class DeviceOrderAisPreToPostOnTopPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   promotionShelves: PromotionShelve[];
   transaction: Transaction;
@@ -35,11 +35,11 @@ export class DeviceOrderAisPreToPostOnTopPageComponent implements OnInit, OnDest
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.callService();
   }
 
-  callService() {
+  callService(): void {
     this.http.get('/api/customerportal/newRegister/queryOnTopPackage', {
       params: {
         orderType: 'Change Charge Type',
@@ -88,7 +88,7 @@ export class DeviceOrderAisPreToPostOnTopPageComponent implements OnInit, OnDest
 
   }
 
-  onCompleted(promotion: any) {
+  onCompleted(promotion: any): void {
     this.transaction.data.mainPackage = promotion;
   }
 
@@ -96,10 +96,9 @@ export class DeviceOrderAisPreToPostOnTopPageComponent implements OnInit, OnDest
     this.transactionService.update(this.transaction);
   }
 
+  onTermConditions(): void { }
 
-  onTermConditions() { }
-
-  onBack() {
+  onBack(): void {
     if (this.transaction.data.mainPackageOneLove) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ONE_LOVE_PAGE]);
     } else {
@@ -107,13 +106,13 @@ export class DeviceOrderAisPreToPostOnTopPageComponent implements OnInit, OnDest
     }
   }
 
-  onNext() {
+  onNext(): void {
     this.isNetExtreme() ?
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_MERGE_BILLING_PAGE]) :
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

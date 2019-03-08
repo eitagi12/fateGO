@@ -32,7 +32,6 @@ import { DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent } from './contain
 import { DeviceOrderAisNewRegisterQrCodeQueuePageComponent } from './containers/device-order-ais-new-register-qr-code-queue-page/device-order-ais-new-register-qr-code-queue-page.component';
 import { DeviceOrderAisNewRegisterQrCodeErrorPageComponent } from './containers/device-order-ais-new-register-qr-code-error-page/device-order-ais-new-register-qr-code-error-page.component';
 
-
 @NgModule({
   imports: [
     CommonModule,

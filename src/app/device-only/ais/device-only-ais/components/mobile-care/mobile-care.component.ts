@@ -2,7 +2,6 @@ import { Component, OnInit, Input, ViewChild, TemplateRef, Output, EventEmitter 
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 
-
 export interface MobileCare {
   nextBillEffective?: boolean;
   existingMobileCare?: boolean;
@@ -26,7 +25,6 @@ export interface MobileCareItem {
   value: any;
 }
 
-
 @Component({
   selector: 'app-mobile-care',
   templateUrl: './mobile-care.component.html',
@@ -35,9 +33,9 @@ export interface MobileCareItem {
 export class MobileCareComponent implements OnInit {
   public moblieNo: string;
   public otp: string;
-  public isPrivilegeCus = false;
+  public isPrivilegeCus: boolean = false;
 
-  public VAT = 1.07;
+  public VAT: number = 1.07;
 
   @Input()
   mobileCare: MobileCare;
@@ -59,11 +57,11 @@ export class MobileCareComponent implements OnInit {
     private modalService: BsModalService
   ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.createForm();
   }
 
-  createForm() {
+  createForm(): void {
     this.mobileCareForm = this.fb.group({
       'mobileCare': [true, Validators.required],
       'promotion': ['', Validators.required]
@@ -91,13 +89,13 @@ export class MobileCareComponent implements OnInit {
     return ((this.normalPrice || 0) * (percentage / 100) * (this.VAT / 100));
   }
 
-  onOpenNotBuyMobileCare() {
+  onOpenNotBuyMobileCare(): void {
     this.modalRef = this.modalService.show(this.template, {
       ignoreBackdropClick: true
     });
   }
 
-  onNotBuyMobileCare(dismiss: boolean) {
+  onNotBuyMobileCare(dismiss: boolean): void {
     if (dismiss) { // cancel
       this.mobileCareForm.patchValue({
         mobileCare: true
@@ -108,7 +106,7 @@ export class MobileCareComponent implements OnInit {
     this.modalRef.hide();
   }
 
-  public checkMobileNo() {
+  public checkMobileNo(): void {
     this.isPrivilegeCus = !this.isPrivilegeCus;
   }
 

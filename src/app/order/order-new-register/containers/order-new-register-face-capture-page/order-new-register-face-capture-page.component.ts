@@ -17,7 +17,7 @@ import { Transaction, TransactionAction } from 'src/app/shared/models/transactio
 })
 export class OrderNewRegisterFaceCapturePageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_NEW_REGISTER;
+  wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
 
   openCamera: boolean;
   transaction: Transaction;
@@ -33,11 +33,11 @@ export class OrderNewRegisterFaceCapturePageComponent implements OnInit, OnDestr
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.openCamera = !!(this.transaction.data.faceRecognition && this.transaction.data.faceRecognition.imageFaceUser);
   }
 
-  onBack() {
+  onBack(): void {
     if (this.transaction.data.action === TransactionAction.READ_CARD) {
       this.router.navigate([ROUTE_ORDER_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
     } else {
@@ -45,19 +45,19 @@ export class OrderNewRegisterFaceCapturePageComponent implements OnInit, OnDestr
     }
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_ORDER_NEW_REGISTER_FACE_COMPARE_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onOpenCamera() {
+  onOpenCamera(): void {
     this.openCamera = true;
   }
 
-  onCameraCompleted(image: string) {
+  onCameraCompleted(image: string): void {
 
     const cropOption = {
       sizeWidth: 160,
@@ -79,11 +79,11 @@ export class OrderNewRegisterFaceCapturePageComponent implements OnInit, OnDestr
     });
   }
 
-  onCameraError(error: string) {
+  onCameraError(error: string): void {
     this.alertService.error(error);
   }
 
-  onClearIdCardImage() {
+  onClearIdCardImage(): void {
     this.transaction.data.faceRecognition.imageFaceUser = null;
   }
 

@@ -12,7 +12,7 @@ import { ReceiptInfo } from 'mychannel-shared-libs/lib/component/receipt-info/re
 })
 export class DeviceOrderAisExistingPaymentDetailPageComponent implements OnInit {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   receiptInfo: ReceiptInfo = {
     taxId: '',
@@ -27,18 +27,18 @@ export class DeviceOrderAisExistingPaymentDetailPageComponent implements OnInit 
     private homeService: HomeService
   ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_DETAIL_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

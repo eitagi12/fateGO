@@ -19,7 +19,7 @@ import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart
 })
 export class DeviceOrderAisNewRegisterVerifyInstantSimPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   transaction: Transaction;
   simSerial: SimSerial;
@@ -38,7 +38,7 @@ export class DeviceOrderAisNewRegisterVerifyInstantSimPageComponent implements O
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     delete this.transaction.data.simCard;
 
     this.shoppingCart = Object.assign(this.shoppingCartService.getShoppingCartData(), {
@@ -73,15 +73,15 @@ export class DeviceOrderAisNewRegisterVerifyInstantSimPageComponent implements O
 
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_SELECT_NUMBER_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_SELECT_PACKAGE_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

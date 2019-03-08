@@ -19,7 +19,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 })
 export class DeviceOrderAisPreToPostCustomerProfilePageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
   transaction: Transaction;
   titleName: string;
   firstName: string;
@@ -38,21 +38,21 @@ export class DeviceOrderAisPreToPostCustomerProfilePageComponent implements OnIn
     };
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const data = this.transaction.data.customer;
     this.titleName = data.titleName;
     this.firstName = data.firstName;
     this.lastName = data.lastName;
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_OTP_PAGE]);
   }
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
 
   }
   ngOnDestroy(): void {

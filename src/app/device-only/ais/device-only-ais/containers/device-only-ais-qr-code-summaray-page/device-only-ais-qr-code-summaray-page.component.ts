@@ -15,18 +15,18 @@ export class DeviceOnlyAisQrCodeSummarayPageComponent implements OnInit {
     private homeService: HomeService
     ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_GENERATE_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

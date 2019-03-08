@@ -9,7 +9,7 @@ export class DeviceOrderAisExistingMergeBillingPageComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
 }

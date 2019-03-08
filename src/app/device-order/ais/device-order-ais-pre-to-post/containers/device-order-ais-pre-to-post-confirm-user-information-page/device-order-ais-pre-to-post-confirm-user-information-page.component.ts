@@ -23,7 +23,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 })
 export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
   transaction: Transaction;
   confirmCustomerInfo: ConfirmCustomerInfo;
   billingInfo: BillingInfo;
@@ -50,7 +50,7 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
     }
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const customer = this.transaction.data.customer;
     const mainPackage = this.transaction.data.mainPackage;
     const simCard = this.transaction.data.simCard;
@@ -85,7 +85,7 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
     this.initBillingInfo();
   }
 
-  initBillingInfo() {
+  initBillingInfo(): void {
     const customer = this.transaction.data.customer;
     const billingInformation = this.transaction.data.billingInformation;
     const mergeBilling = billingInformation.mergeBilling;
@@ -179,7 +179,7 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
     });
   }
 
-  onMailBillingInfoCompleted(mailBillingInfo: any) {
+  onMailBillingInfoCompleted(mailBillingInfo: any): void {
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData || {};
 
@@ -191,11 +191,11 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
     this.transaction.data.billingInformation.billCycleData = billCycleData;
   }
 
-  onMailBillingInfoError(valid: boolean) {
+  onMailBillingInfoError(valid: boolean): void {
     this.isMailBillingInfoValid = valid;
   }
 
-  onTelNoBillingCompleted(telNoBilling: any) {
+  onTelNoBillingCompleted(telNoBilling: any): void {
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData || {};
 
@@ -205,11 +205,11 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
     this.transaction.data.billingInformation.billCycleData = billCycleData;
   }
 
-  onTelNoBillingError(valid: boolean) {
+  onTelNoBillingError(valid: boolean): void {
     this.isTelNoBillingValid = valid;
   }
 
-  onBack() {
+  onBack(): void {
     if (this.isPackageNetExtreme()) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_MERGE_BILLING_PAGE]);
     } else {
@@ -221,7 +221,7 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
     }
   }
 
-  onNext() {
+  onNext(): void {
     if (!this.customerValid()) {
       this.alertService.warning('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร');
       return;
@@ -236,7 +236,7 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_MOBILE_CARE_PAGE]);
   }
 
-  onEditAddress() {
+  onEditAddress(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_EBILLING_ADDRESS_PAGE]);
   }
 
@@ -265,7 +265,7 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
     }
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
@@ -282,7 +282,6 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
       && customer.tumbol
       && customer.zipCode);
   }
-
 
   getBllingCycle(billCycle: string): Promise<string> {
     if (!billCycle) {

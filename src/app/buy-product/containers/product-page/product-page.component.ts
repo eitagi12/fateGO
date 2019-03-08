@@ -11,9 +11,9 @@ import { ROUTE_BUY_PRODUCT_BRAND_PAGE } from 'src/app/buy-product/constants/rout
 })
 export class ProductPageComponent implements OnInit {
 
-  MAX_ROW = 10;
-  countRow = 0;
-  totalRow = 0;
+  MAX_ROW: number = 10;
+  countRow: number = 0;
+  totalRow: number = 0;
 
   productService: Promise<any>;
   params: Params;
@@ -33,9 +33,9 @@ export class ProductPageComponent implements OnInit {
     });
   }
 
-  ngOnInit() { }
+  ngOnInit(): void { }
 
-  private callService(brand: string, model: string, offset: number) {
+  private callService(brand: string, model: string, offset: number): void {
     const user: User = this.tokenService.getUser();
 
     const req = {
@@ -125,8 +125,6 @@ export class ProductPageComponent implements OnInit {
         this.productStocks.push(productStock);
       });
     });
-
-
   }
 
   calMinPrice(products: any[], key: string): number {
@@ -149,11 +147,11 @@ export class ProductPageComponent implements OnInit {
     return 0;
   }
 
-  onLoadMore() {
+  onLoadMore(): void {
     this.callService(this.params.brand, this.params.model, this.countRow + 1);
   }
 
-  onView(stock: ProductStockBrandAndModel) {
+  onView(stock: ProductStockBrandAndModel): void {
     /*
     - brand มาจากหน้า brand
     - model มาจากหน้า best seller
@@ -176,11 +174,11 @@ export class ProductPageComponent implements OnInit {
     this.router.navigate(['buy-product/campaign'], { queryParams });
   }
 
-  onCompare(stock: ProductStockBrandAndModel) {
+  onCompare(stock: ProductStockBrandAndModel): void {
     stock.compare = !stock.compare;
   }
 
-  onBack() {
+  onBack(): void {
     const queryParams: any = {};
     if (this.params.commercialName) {
       queryParams.tab = 'search';
@@ -188,7 +186,7 @@ export class ProductPageComponent implements OnInit {
     this.router.navigate([ROUTE_BUY_PRODUCT_BRAND_PAGE], { queryParams });
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

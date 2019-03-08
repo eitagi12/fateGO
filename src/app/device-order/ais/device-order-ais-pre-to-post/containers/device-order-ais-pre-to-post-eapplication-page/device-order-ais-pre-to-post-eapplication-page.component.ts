@@ -27,7 +27,7 @@ export class DeviceOrderAisPreToPostEapplicationPageComponent implements OnInit,
     private homeService: HomeService,
     private pageLoadingService: PageLoadingService) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.pageLoadingService.openLoading();
     this.transaction = this.transactionService.load();
     this.createEapplicationService.createEapplication(this.transaction).then(res => {
@@ -38,15 +38,15 @@ export class DeviceOrderAisPreToPostEapplicationPageComponent implements OnInit,
     });
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_AGGREGATE_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_RESULT_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

@@ -9,7 +9,7 @@ export class MobileCareAvaliableComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
 }

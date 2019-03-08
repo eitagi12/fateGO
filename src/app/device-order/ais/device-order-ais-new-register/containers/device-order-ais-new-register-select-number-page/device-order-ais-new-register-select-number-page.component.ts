@@ -15,8 +15,7 @@ import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart
 })
 export class DeviceOrderAisNewRegisterSelectNumberPageComponent implements OnInit {
 
-
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
   transaction: Transaction;
   shoppingCart: ShoppingCart;
 
@@ -29,23 +28,23 @@ export class DeviceOrderAisNewRegisterSelectNumberPageComponent implements OnIni
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
   }
 
-  onVerifyInstantSim() {
+  onVerifyInstantSim(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VERIFY_INSTANT_SIM_PAGE]);
 
   }
-  onByPattern() {
+  onByPattern(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_BY_PATTERN_PAGE]);
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CUSTOMER_INFO_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 }

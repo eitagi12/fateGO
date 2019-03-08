@@ -25,7 +25,7 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
   @ViewChild('conditionTemplate')
   conditionTemplate: any;
 
-  wizards = WIZARD_ORDER_NEW_REGISTER;
+  wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
 
   transaction: Transaction;
   promotionShelves: PromotionShelve[];
@@ -53,16 +53,16 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
 
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.callService();
   }
 
-  onCompleted(promotion: any) {
+  onCompleted(promotion: any): void {
     // รอแก้ไขตัวแปรที่จะเก็บลงใน share transaction
     this.transaction.data.mainPackage = promotion;
   }
 
-  onBack() {
+  onBack(): void {
 
     const user = this.tokenService.getUser();
 
@@ -80,7 +80,7 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
 
   }
 
-  onNext() {
+  onNext(): void {
     if (this.isPackageOneLove()) {
       this.router.navigate([ROUTE_ORDER_NEW_REGISTER_ONE_LOVE_PAGE]);
     } else {
@@ -88,11 +88,11 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
     }
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  callService() {
+  callService(): void {
     this.pageLoadingService.openLoading();
 
     const billingInformation: any = this.transaction.data.billingInformation;
@@ -151,7 +151,7 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
 
   }
 
-  onTermConditions(condition: string) {
+  onTermConditions(condition: string): void {
     if (!condition) {
       this.alertService.warning('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
       return;

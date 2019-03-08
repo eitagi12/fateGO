@@ -15,14 +15,13 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { environment } from 'src/environments/environment';
 
-
 @Component({
   selector: 'app-device-order-ais-pre-to-post-otp-page',
   templateUrl: './device-order-ais-pre-to-post-otp-page.component.html',
   styleUrls: ['./device-order-ais-pre-to-post-otp-page.component.scss']
 })
 export class DeviceOrderAisPreToPostOtpPageComponent implements OnInit {
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
   otpForm: FormGroup;
   transaction: Transaction;
   registrationData: any;
@@ -41,18 +40,20 @@ export class DeviceOrderAisPreToPostOtpPageComponent implements OnInit {
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.registrationData = this.transaction.data;
     this.mobileNo = this.registrationData.mainMobile;
     this.createForm();
     this.sendOTP();
   }
+
   private createForm(): void {
     this.otpForm = this.fb.group({
       otp: ['', [Validators.required, Validators.maxLength(5)]],
     });
   }
-  sendOTP() {
+
+  sendOTP(): void {
     this.pageLoadingService.openLoading();
     let mobile = this.registrationData.simCard.mobileNo;
 
@@ -71,7 +72,7 @@ export class DeviceOrderAisPreToPostOtpPageComponent implements OnInit {
       });
   }
 
-  verifyOTP() {
+  verifyOTP(): void {
     this.pageLoadingService.openLoading();
     let mobile = this.registrationData.simCard.mobileNo;
 
@@ -115,7 +116,7 @@ export class DeviceOrderAisPreToPostOtpPageComponent implements OnInit {
       });
   }
 
-  alertError(error): void {
+  alertError(error: { json: () => void; }): void {
     let errObj: any;
     let errMsg: any;
     let errDetail: any;
@@ -129,13 +130,16 @@ export class DeviceOrderAisPreToPostOtpPageComponent implements OnInit {
     }
     this.alertService.error(errMsg);
   }
-  onBack() {
+
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CUSTOMER_PROFILE_PAGE]);
   }
-  onHome() {
+
+  onHome(): void {
     this.homeService.goToHome();
   }
-  getRequestUpdatePrepaidIdentata() {
+
+  getRequestUpdatePrepaidIdentata(): void {
     const customer = this.transaction.data.customer;
     const mobileNo = this.transaction.data.simCard.mobileNo;
     const data: any = {

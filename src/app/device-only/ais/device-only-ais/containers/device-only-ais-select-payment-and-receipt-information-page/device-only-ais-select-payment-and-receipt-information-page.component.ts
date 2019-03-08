@@ -2,7 +2,6 @@ import { Component, OnInit, OnChanges } from '@angular/core';
 import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
-
 export interface SelectPaymentDetail {
   paymentType?: string; // 'qrcode' | 'credit' | 'debit';
   qrCode?: PaymentDetailQRCode;
@@ -49,7 +48,7 @@ export interface PaymentDetailOption {
 })
 export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implements OnInit {
 
-  wizards = WIZARD_DEVICE_ONLY_AIS;
+  wizards: string[] = WIZARD_DEVICE_ONLY_AIS;
   paymentForm: FormGroup;
   paymentDetail: PaymentDetail;
   selectPaymentDetail: SelectPaymentDetail = {};
@@ -58,7 +57,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
    private fb: FormBuilder,
   ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.createForm();
 
     this.paymentDetail = {
@@ -91,7 +90,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
     };
   }
 
-  createForm() {
+  createForm(): void {
     this.paymentForm = this.fb.group({
       paymentType: [null, Validators.required]
     });
@@ -113,7 +112,6 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       }
     ];
   }
-
 
   getBankData(): PaymentDetailBank[] {
     return [
@@ -239,12 +237,12 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       }
     ];
   }
-  onSelectQRCode(qrCode: PaymentDetailQRCode) {
+  onSelectQRCode(qrCode: PaymentDetailQRCode): void {
     console.log('onSelectQRCode', qrCode);
     this.selectPaymentDetail.qrCode = qrCode;
 
   }
-  onSelectBank(bank: PaymentDetailBank) {
+  onSelectBank(bank: PaymentDetailBank): void {
     console.log('onSelectBank', bank);
     this.selectPaymentDetail.bank = bank;
     console.log('bank.installments', bank.installments);
@@ -252,19 +250,16 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
 
     this.paymentDetail.installments = bank.installments; // Object.assign({}, bank.installments);
   }
-  onSelectInstallment(installment: PaymentDetailInstallment[]) {
+  onSelectInstallment(installment: PaymentDetailInstallment[]): void {
     console.log('onSelectInstallment', installment);
     this.selectPaymentDetail.bank.installments = installment;
   }
-  onSelectPaymentType(paymentType: string) {
+  onSelectPaymentType(paymentType: string): void {
     console.log('onSelectPaymentType', paymentType);
     this.selectPaymentDetail.paymentType = paymentType;
   }
-  onSelectPaymentTypeAdvancePay(paymentType: string) {
+  onSelectPaymentTypeAdvancePay(paymentType: string): void {
     console.log('onSelectPaymentType', paymentType);
     this.selectPaymentDetail.paymentType = paymentType;
   }
-
-
-
-  }
+}

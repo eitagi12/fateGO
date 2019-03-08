@@ -9,7 +9,7 @@ export class DeviceOnlyAisMobileCareAvaliablePageComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
 }

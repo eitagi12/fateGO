@@ -8,35 +8,36 @@ import { ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE, ROUTE_DEVICE_ONLY_AIS_QR_CODE_QUEUE
   styleUrls: ['./device-only-ais-checkout-payment-page.component.scss']
 })
 export class DeviceOnlyAisCheckoutPaymentPageComponent implements OnInit, OnDestroy {
-  price = '99999';
-  color = 'ROSESILVER';
-  mobileNo = '0987654321';
-  firstName = 'ปลายูดดดด';
-  lastName = 'จะจันทร์แล้ว';
-  titleName = 'นาย';
-  model = 'IPHONE 7';
-  campaignName = 'โครงการ ซื้อเครื่องเปล่า';
+  price: string = '99999';
+  color: string = 'ROSESILVER';
+  mobileNo: string = '0987654321';
+  firstName: string = 'ปลายูดดดด';
+  lastName: string = 'จะจันทร์แล้ว';
+  titleName: string = 'นาย';
+  model: string = 'IPHONE 7';
+  campaignName: string = 'โครงการ ซื้อเครื่องเปล่า';
+
   constructor(
     private router: Router,
     private homeService: HomeService,
   ) { }
-  ngOnInit() {
+
+  ngOnInit(): void {
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE]);
   }
-  onNext() {
+  onNext(): void {
     // QR code
     // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QUEUE_PAGE]);
     this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_QUEUE_PAGE]);
     // this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_SUMMARY_PAGE]);
     // รอหน้ามา
   }
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
   ngOnDestroy(): void {
   }
 }
-

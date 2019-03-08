@@ -28,22 +28,22 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
 
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_SUMMARY_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_QUEUE_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  summary(amount: number[]) {
+  summary(amount: number[]): number {
     return amount.reduce((prev, curr) => {
       return prev + curr;
     }, 0);

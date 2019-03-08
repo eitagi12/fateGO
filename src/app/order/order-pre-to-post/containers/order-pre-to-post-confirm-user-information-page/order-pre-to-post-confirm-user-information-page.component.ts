@@ -15,7 +15,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_PRE_TO_POST;
+  wizards: string[] = WIZARD_ORDER_PRE_TO_POST;
   transaction: Transaction;
   confirmCustomerInfo: ConfirmCustomerInfo;
   billingInfo: BillingInfo;
@@ -42,7 +42,7 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
     }
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const customer = this.transaction.data.customer;
     const mainPackage = this.transaction.data.mainPackage;
     const simCard = this.transaction.data.simCard;
@@ -77,7 +77,7 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
     this.initBillingInfo();
   }
 
-  initBillingInfo() {
+  initBillingInfo(): void {
     const customer = this.transaction.data.customer;
     const billingInformation = this.transaction.data.billingInformation;
     const mergeBilling = billingInformation.mergeBilling;
@@ -187,7 +187,7 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
     });
   }
 
-  onMailBillingInfoCompleted(mailBillingInfo: any) {
+  onMailBillingInfoCompleted(mailBillingInfo: any): void {
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData || {};
 
@@ -199,11 +199,11 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
     this.transaction.data.billingInformation.billCycleData = billCycleData;
   }
 
-  onMailBillingInfoError(valid: boolean) {
+  onMailBillingInfoError(valid: boolean): void {
     this.isMailBillingInfoValid = valid;
   }
 
-  onTelNoBillingCompleted(telNoBilling: any) {
+  onTelNoBillingCompleted(telNoBilling: any): void {
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData || {};
 
@@ -213,11 +213,11 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
     this.transaction.data.billingInformation.billCycleData = billCycleData;
   }
 
-  onTelNoBillingError(valid: boolean) {
+  onTelNoBillingError(valid: boolean): void {
     this.isTelNoBillingValid = valid;
   }
 
-  onBack() {
+  onBack(): void {
     if (this.isPackageNetExtreme()) {
       this.router.navigate([ROUTE_ORDER_PRE_TO_POST_MERGE_BILLING_PAGE]);
     } else {
@@ -229,7 +229,7 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
     }
   }
 
-  onNext() {
+  onNext(): void {
     if (!this.customerValid()) {
       this.alertService.warning('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร');
       return;
@@ -244,7 +244,7 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_SUMMARY_PAGE]);
   }
 
-  onEditAddress() {
+  onEditAddress(): void {
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_EBILLING_ADDRESS_PAGE]);
   }
 
@@ -273,7 +273,7 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
     }
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
@@ -290,7 +290,6 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
       && customer.tumbol
       && customer.zipCode);
   }
-
 
   getBllingCycle(billCycle: string): Promise<string> {
     if (!billCycle) {

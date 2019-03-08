@@ -11,7 +11,7 @@ export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit {
 
   ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
 
   }
 

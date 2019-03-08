@@ -20,7 +20,7 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
   @ViewChild('conditionTemplate')
   conditionTemplate: any;
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   transaction: Transaction;
   priceOption: PriceOption;
@@ -46,30 +46,30 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
     }
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.callService();
   }
 
-  onTermConditions(event: any) {}
+  onTermConditions(event: any): void {}
 
-  onCompleted(promotion: any) {
+  onCompleted(promotion: any): void {
     // รอแก้ไขตัวแปรที่จะเก็บลงใน share transaction
     this.transaction.data.mainPackage = promotion;
   }
 
-  onBack() {
+  onBack(): void {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_PAYMENT_DETAIL_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  callService() {
+  callService(): void {
     this.pageLoadingService.openLoading();
     const packageKeyRef = this.priceOption.trade.packageKeyRef;
     this.http.post('/api/salesportal/promotion-shelves', {

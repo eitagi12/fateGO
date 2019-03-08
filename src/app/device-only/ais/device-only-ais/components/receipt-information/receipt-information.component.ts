@@ -44,7 +44,7 @@ export class ReceiptInformationComponent implements OnInit {
     });
    }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.dataBillingZipCode = [41000, 41150];
     this.createForm();
   }
@@ -54,7 +54,7 @@ export class ReceiptInformationComponent implements OnInit {
     this.createBillingAddressForm();
   }
 
-  private createReceiptForm() {
+  private createReceiptForm(): void {
     this.receiptInfoForm = this.fb.group({
       taxId: ['', []],
       branch: ['', []],
@@ -71,7 +71,7 @@ export class ReceiptInformationComponent implements OnInit {
     });
   }
 
-  private createBillingAddressForm() {
+  private createBillingAddressForm(): void {
     this.billingAddressForm = this.fb.group({
       customerName: ['', []],
       addressNo: ['', []],
@@ -90,9 +90,7 @@ export class ReceiptInformationComponent implements OnInit {
     });
   }
 
-  onClickInputBillingAddress() {
+  onClickInputBillingAddress(): void {
     this.inputBillingAddress = true;
   }
-
-
 }

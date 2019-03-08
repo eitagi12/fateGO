@@ -15,7 +15,7 @@ import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart
 })
 export class DeviceOrderAisNewRegisterFaceComparePageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
   captureAndSign: CaptureAndSign;
   shoppingCart: ShoppingCart;
 
@@ -26,24 +26,21 @@ export class DeviceOrderAisNewRegisterFaceComparePageComponent implements OnInit
     private transactionService: TransactionService,
     private http: HttpClient,
     private pageLoadingService: PageLoadingService,
-    private shoppingCartService: ShoppingCartService,
-
-
-
+    private shoppingCartService: ShoppingCartService
   ) {
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     // const faceImage = this.faceRecognitionService.getFaceImage();
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_CAPTURE_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.pageLoadingService.openLoading();
     const customer: Customer = this.transaction.data.customer;
     const faceRecognition: FaceRecognition = this.transaction.data.faceRecognition;
@@ -67,7 +64,7 @@ export class DeviceOrderAisNewRegisterFaceComparePageComponent implements OnInit
     });
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

@@ -13,10 +13,10 @@ export class DeviceOrderAisNewRegisterQrCodeQueuePageComponent implements OnInit
     private router: Router
   ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_RESULT_PAGE]);
   }
 

@@ -17,7 +17,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 })
 export class OrderNewRegisterSelectNumberPageComponent implements OnInit {
 
-  wizards = WIZARD_ORDER_NEW_REGISTER;
+  wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
   transaction: Transaction;
 
   constructor(
@@ -28,21 +28,21 @@ export class OrderNewRegisterSelectNumberPageComponent implements OnInit {
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() { }
+  ngOnInit(): void { }
 
-  onVerifyInstantSim() {
+  onVerifyInstantSim(): void {
     this.router.navigate([ROUTE_ORDER_NEW_REGISTER_VERIFY_INSTANT_SIM_PAGE]);
   }
 
-  onByPattern() {
+  onByPattern(): void {
     this.router.navigate([ROUTE_ORDER_NEW_REGISTER_BY_PATTERN_PAGE]);
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_NEW_REGISTER_FACE_COMPARE_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

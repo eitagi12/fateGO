@@ -9,7 +9,7 @@ export class DeviceOrderAisExistingQrCodeSummaryPageComponent implements OnInit 
 
   constructor() { }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
 }

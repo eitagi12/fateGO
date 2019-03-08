@@ -9,7 +9,7 @@ export class DeviceOrderComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
 }

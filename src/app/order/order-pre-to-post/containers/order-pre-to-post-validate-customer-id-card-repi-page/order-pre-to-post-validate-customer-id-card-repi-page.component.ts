@@ -6,7 +6,6 @@ import { ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_REPI_PAGE, ROUTE_ORDER_PRE_TO
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 
-
 @Component({
   selector: 'app-order-pre-to-post-validate-customer-id-card-repi-page',
   templateUrl: './order-pre-to-post-validate-customer-id-card-repi-page.component.html',
@@ -38,11 +37,11 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.transaction.data.action = TransactionAction.READ_CARD_REPI;
   }
 
-  onError(valid: boolean) {
+  onError(valid: boolean): void {
     this.readCardValid = valid;
     if (!this.profile) {
       this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
@@ -55,21 +54,20 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
     }
   }
 
-  onCompleted(profile: ReadCardProfile) {
+  onCompleted(profile: ReadCardProfile): void {
     this.profile = profile;
 
     this.onNext();
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     const mobileNo = this.transaction.data.simCard.mobileNo;
 
     this.pageLoadingService.openLoading();
-
 
     this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
       .then((zipCode: string) => {
@@ -152,7 +150,6 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
       });
   }
 
-
   checkBusinessLogic(): boolean {
     const birthdate = this.transaction.data.customer.birthdate;
     const expireDate = this.transaction.data.customer.expireDate;
@@ -169,7 +166,7 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
     return true;
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
@@ -195,6 +192,4 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }
-
-
 }

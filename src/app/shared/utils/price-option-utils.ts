@@ -110,7 +110,7 @@ export class PriceOptionUtils {
     }
 
     // คำนวนเปอร์เซ็น
-    static calculatePrice(amount: number, month: number, percentage: number) {
+    static calculatePrice(amount: number, month: number, percentage: number): number {
         if (month === 0 && percentage === 0) {
             return 0;
         }
@@ -122,7 +122,7 @@ export class PriceOptionUtils {
     }
 
     // คำนวนผ่อนชำระค่าเครื่องพร้อมค่าแพ็กเกจล่วงหน้า
-    static calculateAdvancePay(price: number, advancePay: number, month: number, percentage: number) {
+    static calculateAdvancePay(price: number, advancePay: number, month: number, percentage: number): number {
         if (price <= 0 || month === 0 && percentage === 0) {
             return 0;
         }

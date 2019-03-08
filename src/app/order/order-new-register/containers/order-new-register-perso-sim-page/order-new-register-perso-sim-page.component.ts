@@ -132,7 +132,7 @@ export interface OptionPersoSim {
 })
 export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_NEW_REGISTER;
+  wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
   title: string;
   isControlSim: boolean;
   isManageSim: boolean;
@@ -149,17 +149,17 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
   transaction: Transaction;
   isNext: boolean;
   option: OptionPersoSim;
-  checkCardPresent = false;
+  checkCardPresent: boolean = false;
 
   // WebSocket
   wsControlSim: any;
   wsManageSim: any;
 
   // onerror  ใส่ error ว่าให้ error ได้กี่ครั้ง
-  checkErrSim = 0;
-  errSimOut = 3;
-  checkErrCmd = 3;
-  errCmd = 0;
+  checkErrSim: number = 0;
+  errSimOut: number = 3;
+  checkErrCmd: number = 3;
+  errCmd: number = 0;
 
   constructor(
     private router: Router,
@@ -177,7 +177,7 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
     }
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.option = {
       scan_sim: true,
       key_sim: false
@@ -188,7 +188,7 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
     }
   }
 
-  startPersoSim(transaction) {
+  startPersoSim(transaction: Transaction | Partial<Transaction>): void {
     this.errorMessage = '';
     this.persoSimSubscription = this.onPersoSim(transaction.data.simCard.mobileNo).subscribe((value) => {
       this.isNext = false;
@@ -239,7 +239,7 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
     });
   }
 
-  onPersoSim(mobileNo): Observable<PersoSim> {
+  onPersoSim(mobileNo: string): Observable<PersoSim> {
     this.mobileNo = mobileNo;
     if (this.utils.isAisNative()) {
       return this.persoSimFromAisNative();
@@ -410,7 +410,7 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
     });
   }
 
-  private checkCardOutted() {
+  private checkCardOutted(): Promise<any> {
     return new Promise((resolve) => {
       const checkCard = setInterval(() => {
         this.controlSim(ControlSimCard.EVENT_CHECK_SIM_STATE).then((resp: ControlSimResult) => {
@@ -424,7 +424,7 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
     });
   }
 
-  private errrorPersoSim(errrorCase: string, messages?: string) {
+  private errrorPersoSim(errrorCase: string, messages?: string): Promise<any> {
     return new Promise((resolve) => {
       let errNext = {
         progress: 0,
@@ -501,7 +501,7 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
     });
   }
 
-  closeWsAll() {
+  closeWsAll(): void {
     if (this.wsControlSim) {
       this.wsControlSim.close();
       this.wsControlSim = false;
@@ -512,7 +512,7 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
     }
   }
 
-  private checkOrderStatusCompleted(referenceNumber) {
+  private checkOrderStatusCompleted(referenceNumber: string): Promise<any> {
     return new Promise((resolve) => {
       let nubCount = 0;
       const checkOrder = setInterval(() => {
@@ -532,7 +532,7 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
     });
   }
 
-  private controlSim(event: string) {
+  private controlSim(event: string): Promise<any> {
     return new Promise((resolve) => {
       const result: ControlSimResult = {
         data: null,
@@ -566,7 +566,7 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
     });
   }
 
-  private manageSim(Command: number, Parameter: string) {
+  private manageSim(Command: number, Parameter: string): Promise<any> {
     return new Promise((resolve) => {
       const result: ControlSimResult = {
         data: null,
@@ -610,7 +610,7 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
     });
   }
 
-  loadSimCard() {
+  loadSimCard(): void {
     this.controlSim(ControlSimCard.EVENT_CHECK_SIM_INVENTORY).then((res: ControlSimResult) => {
       const statusInventory = res.result.split(' | ');
       if (statusInventory[0] !== SIMCardStatus.INVENTORY_1_EMPTY_CARD
@@ -637,7 +637,7 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
     });
   }
 
-  checkSimCardPresent() {
+  checkSimCardPresent(): Promise<any> {
     return new Promise((resolve, reject) => {
       const timeout = 5;
       let checkTimeOut = 0;
@@ -684,15 +684,15 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
     return this.http.post(getPrivateKeyCommandAPI, '').toPromise();
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_NEW_REGISTER_EAPPLICATION_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_ORDER_NEW_REGISTER_RESULT_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

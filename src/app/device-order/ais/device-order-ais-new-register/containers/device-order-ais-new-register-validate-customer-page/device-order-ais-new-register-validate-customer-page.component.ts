@@ -13,7 +13,6 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 
-
 @Component({
   selector: 'app-device-order-ais-new-register-validate-customer-page',
   templateUrl: './device-order-ais-new-register-validate-customer-page.component.html',
@@ -25,7 +24,7 @@ export class DeviceOrderAisNewRegisterValidateCustomerPageComponent implements O
 
   transaction: Transaction;
 
-  identityValid = false;
+  identityValid: boolean = false;
   identity: string;
 
   constructor(
@@ -39,27 +38,27 @@ export class DeviceOrderAisNewRegisterValidateCustomerPageComponent implements O
     this.priceOption = this.priceOptionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.createTransaction();
   }
 
-  onError(valid: boolean) {
+  onError(valid: boolean): void {
     this.identityValid = valid;
   }
 
-  onCompleted(identity: string) {
+  onCompleted(identity: string): void {
     this.identity = identity;
   }
 
-  onReadCard() {
+  onReadCard(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
   }
 
-  onNext() {
+  onNext(): void {
     this.pageLoadingService.openLoading();
     this.http.get(`/api/customerportal/newRegister/${this.identity}/queryCustomerInfo`)
       .toPromise()
@@ -82,7 +81,7 @@ export class DeviceOrderAisNewRegisterValidateCustomerPageComponent implements O
       });
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
@@ -90,7 +89,7 @@ export class DeviceOrderAisNewRegisterValidateCustomerPageComponent implements O
     this.transactionService.save(this.transaction);
   }
 
-  private createTransaction() {
+  private createTransaction(): void {
     // this.transaction = {
     //   data: {
     //     transactionType: TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS,
@@ -100,7 +99,7 @@ export class DeviceOrderAisNewRegisterValidateCustomerPageComponent implements O
     // delete this.transaction.data.customer;
   }
 
-  private mapCustomer(customer: any) {
+  private mapCustomer(customer: any): void {
     const fullName = (customer.name || ' ').split(' ');
     const address = customer.address || {};
 

@@ -48,7 +48,7 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
 
   transaction: Transaction;
 
-  identityValid = false;
+  identityValid: boolean = false;
   identity: string;
   ws: any;
   checkCardIntraval: any;
@@ -78,7 +78,7 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
     };
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.createTransaction();
 
     if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {
@@ -86,7 +86,7 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
     }
   }
 
-  checkCardPresent() {
+  checkCardPresent(): void {
     this.ws = new WebSocket(`${environment.WEB_CONNECT_URL}/VendingAPI`);
 
     this.ws.onopen = () => {
@@ -107,27 +107,27 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
 
   }
 
-  onError(valid: boolean) {
+  onError(valid: boolean): void {
     this.identityValid = valid;
   }
 
-  onCompleted(identity: string) {
+  onCompleted(identity: string): void {
     this.identity = identity;
   }
 
-  onReadCard() {
+  onReadCard(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
   }
 
-  onBack() {
+  onBack(): void {
     this.homeService.goToHome();
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onNext() {
+  onNext(): void {
 
     this.pageLoadingService.openLoading();
 
@@ -222,7 +222,7 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
     this.transactionService.save(this.transaction);
   }
 
-  private createTransaction() {
+  private createTransaction(): void {
     // New x-api-request-id
     this.apiRequestService.createRequestId();
 

@@ -11,14 +11,14 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy 
 
   constructor(private router: Router) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
-  onHome() {
+  onHome(): void {
 
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE]);
   }
   ngOnDestroy(): void {

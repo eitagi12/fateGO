@@ -15,10 +15,10 @@ export class DeviceOrderAisExistingResultPageComponent implements OnInit {
   ) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

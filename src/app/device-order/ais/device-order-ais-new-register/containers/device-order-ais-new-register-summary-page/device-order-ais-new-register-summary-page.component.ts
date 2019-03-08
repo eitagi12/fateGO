@@ -22,7 +22,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 })
 export class DeviceOrderAisNewRegisterSummaryPageComponent implements OnInit {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   @ViewChild('detailTemplate')
   detailTemplate: any;
@@ -47,7 +47,7 @@ export class DeviceOrderAisNewRegisterSummaryPageComponent implements OnInit {
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const customer = this.transaction.data.customer;
 
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
@@ -66,24 +66,24 @@ export class DeviceOrderAisNewRegisterSummaryPageComponent implements OnInit {
     });
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_MOBILE_CARE_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_ECONTACT_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onOpenDetail(detail: string) {
+  onOpenDetail(detail: string): void {
     this.detail = detail;
     this.modalRef = this.modalService.show(this.detailTemplate);
   }
 
-  summary(amount: number[]) {
+  summary(amount: number[]): number {
     return amount.reduce((prev, curr) => {
       return prev + curr;
     }, 0);

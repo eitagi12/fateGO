@@ -13,7 +13,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 })
 export class DeviceOrderAisExistingChangePackagePageComponent implements OnInit {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
   transaction: Transaction;
 
   constructor(
@@ -24,18 +24,18 @@ export class DeviceOrderAisExistingChangePackagePageComponent implements OnInit 
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_ELIGIBLE_MOBILE_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_DETAIL_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

@@ -21,7 +21,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 })
 export class DeviceOrderAisPreToPostCustomerInfoPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
   transaction: Transaction;
   customerInfo: CustomerInfo;
 
@@ -36,7 +36,7 @@ export class DeviceOrderAisPreToPostCustomerInfoPageComponent implements OnInit,
     };
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const customer: Customer = this.transaction.data.customer;
     this.customerInfo = {
       titleName: customer.titleName,
@@ -49,7 +49,7 @@ export class DeviceOrderAisPreToPostCustomerInfoPageComponent implements OnInit,
     };
   }
 
-  onBack() {
+  onBack(): void {
     const action = this.transaction.data.action;
     if (action === TransactionAction.READ_CARD_REPI) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE]);
@@ -60,7 +60,7 @@ export class DeviceOrderAisPreToPostCustomerInfoPageComponent implements OnInit,
     }
   }
 
-  onNext() {
+  onNext(): void {
     const action = this.transaction.data.action;
 
     if (action === TransactionAction.KEY_IN) {
@@ -72,7 +72,7 @@ export class DeviceOrderAisPreToPostCustomerInfoPageComponent implements OnInit,
     }
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

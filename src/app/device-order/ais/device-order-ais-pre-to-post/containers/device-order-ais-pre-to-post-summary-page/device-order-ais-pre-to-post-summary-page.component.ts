@@ -18,7 +18,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 })
 export class DeviceOrderAisPreToPostSummaryPageComponent implements OnInit {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
   transaction: Transaction;
   confirmCustomerInfo: ConfirmCustomerInfo;
   billingInfo: BillingInfo;
@@ -33,7 +33,7 @@ export class DeviceOrderAisPreToPostSummaryPageComponent implements OnInit {
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const customer = this.transaction.data.customer;
     const mainPackage = this.transaction.data.mainPackage;
     const billingInformation = this.transaction.data.billingInformation;
@@ -76,14 +76,14 @@ export class DeviceOrderAisPreToPostSummaryPageComponent implements OnInit {
     };
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CONFIRM_USER_INFORMATION_PAGE]);
   }
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_EAPPLICATION_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

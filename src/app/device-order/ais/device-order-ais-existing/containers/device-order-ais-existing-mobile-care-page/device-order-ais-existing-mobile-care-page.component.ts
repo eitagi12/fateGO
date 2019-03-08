@@ -19,7 +19,7 @@ import {
 })
 export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   priceOption: PriceOption;
   transaction: Transaction;
@@ -37,28 +37,28 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit {
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     delete this.transaction.data.mobileCarePackage;
     this.callService();
   }
 
-  onTermConditions(event: any) {}
+  onTermConditions(event: any): void {}
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_SUMMARY_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onCompleted(event: any) {}
+  onCompleted(event: any): void {}
 
-  callService() {
+  callService(): void {
     // this.mobileCare = {
     //   campaignPrice: +this.priceOption.trade.normalPrice
     // };

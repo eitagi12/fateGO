@@ -18,9 +18,9 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 })
 export class OrderNewRegisterMergeBillingPageComponent implements OnInit, OnDestroy {
 
-  readonly REGEX_NET_EXTREME = /[Nn]et[Ee]xtreme/;
+  readonly REGEX_NET_EXTREME: RegExp = /[Nn]et[Ee]xtreme/;
 
-  wizards = WIZARD_ORDER_NEW_REGISTER;
+  wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
 
   transaction: Transaction;
 
@@ -36,7 +36,7 @@ export class OrderNewRegisterMergeBillingPageComponent implements OnInit, OnDest
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.billingCyles = this.getBillingCycles();
     this.mergeBilling = this.transaction.data.billingInformation.mergeBilling;
   }
@@ -70,7 +70,7 @@ export class OrderNewRegisterMergeBillingPageComponent implements OnInit, OnDest
     return mainPackage && this.REGEX_NET_EXTREME.test(mainPackage.productPkg);
   }
 
-  onBack() {
+  onBack(): void {
     if (this.isPackageNetExtreme()) {
       if (this.transaction.data.onTopPackage) {
         this.router.navigate([ROUTE_ORDER_NEW_REGISTER_ON_TOP_PAGE]);
@@ -82,15 +82,15 @@ export class OrderNewRegisterMergeBillingPageComponent implements OnInit, OnDest
     }
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_ORDER_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
-  onCompleted(even: any) {
+  onCompleted(even: any): void {
     this.transaction.data.billingInformation.mergeBilling = even;
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

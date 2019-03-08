@@ -29,25 +29,25 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
 
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.pageActivityHandler();
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_SUMMARY_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_QUEUE_PAGE]);
   }
 
-  summary(amount: number[]) {
+  summary(amount: number[]): number {
     return amount.reduce((prev, curr) => {
       return prev + curr;
     }, 0);
   }
 
-  pageActivityHandler() {
+  pageActivityHandler(): void {
     this.pageActivityService.setTimeout((counter) => {
       return counter === 5;
     }).subscribe(() => {

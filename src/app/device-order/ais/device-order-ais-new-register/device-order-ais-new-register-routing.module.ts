@@ -126,8 +126,6 @@ const routes: Routes = [
     path: 'result',
     component: DeviceOrderAisNewRegisterResultPageComponent
   },
-
-
   {
     path: 'qr-code-summary',
     component: DeviceOrderAisNewRegisterQrCodeSummaryPageComponent

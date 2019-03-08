@@ -154,7 +154,7 @@ export class CreateDeviceOrderAisNewRegisterService {
     return Promise.resolve(data);
   }
 
-  private getPaymentMethod(payment: Payment, advancePayment: Payment, trade: any) {
+  private getPaymentMethod(payment: Payment, advancePayment: Payment, trade: any): string {
 
     if (trade.advancePay.installmentFlag === 'Y') {
       return payment.method;
@@ -172,7 +172,7 @@ export class CreateDeviceOrderAisNewRegisterService {
     return payment && payment.bank ? payment.bank.abb : '' + '|' + advancePayment && advancePayment.bank ? advancePayment.bank.abb : '';
   }
 
-  getOrderRemark(promotion: any, trade: any, payment: Payment, advancePayment: Payment, mobileCare: any, queueNo: string) {
+  getOrderRemark(promotion: any, trade: any, payment: Payment, advancePayment: Payment, mobileCare: any, queueNo: string): string {
     const newLine = '\n';
     const comma = ',';
     const space = ' ';
@@ -267,7 +267,7 @@ export class CreateDeviceOrderAisNewRegisterService {
     return result.toFixed(2) || '';
   }
 
-  getCustomerAddress(customer: Customer) {
+  getCustomerAddress(customer: Customer): any {
     return {
       addrNo: customer.homeNo,
       moo: customer.moo,

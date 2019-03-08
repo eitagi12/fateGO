@@ -21,7 +21,7 @@ export class PromotionPageComponent implements OnInit {
 
   campaigns: any[];
 
-  menus = [
+  menus: any[] = [
     {
       icon: 'assets/images/icon/bottom_menu_icon_device.png',
       label: 'เครื่อง',
@@ -127,12 +127,12 @@ export class PromotionPageComponent implements OnInit {
     private homeService: HomeService
   ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.defaultTab();
     this.callService();
   }
 
-  defaultTab() {
+  defaultTab(): void {
     this.activatedRoute.queryParams.subscribe((params: Params) => {
       if (!!params['tab']) {
         this.promotionTabs.tabs[0].active = false;
@@ -144,20 +144,20 @@ export class PromotionPageComponent implements OnInit {
     });
   }
 
-  onOpenModal(template: TemplateRef<any>, details: string) {
+  onOpenModal(template: TemplateRef<any>, details: string): void {
     this.details = details || '';
     this.modalRef = this.modalService.show(template);
   }
 
-  onBack() {
+  onBack(): void {
     this.homeService.goToHome();
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onTabSelected(tabName: string) {
+  onTabSelected(tabName: string): void {
     const queryParams: any = {};
     if ('hit' !== tabName) {
       queryParams.tab = tabName;
@@ -165,7 +165,7 @@ export class PromotionPageComponent implements OnInit {
     this.router.navigate(['dashboard'], { queryParams: queryParams });
   }
 
-  callService() {
+  callService(): void {
     this.salesService.campaigns(
       this.tokenService.getUser().locationCode
     ).then((resp: any) => {
@@ -178,7 +178,7 @@ export class PromotionPageComponent implements OnInit {
       });
   }
 
-  private mapMenus(menus: Menu[]) {
+  private mapMenus(menus: Menu[]): void {
     const saleMenus: any = (menus || []).find((menu: Menu) => {
       return menu.name === 'Sales Portal';
     });
@@ -206,7 +206,7 @@ export class PromotionPageComponent implements OnInit {
     this.menus = this.menus.filter((menu: any) => !menu.disabled);
   }
 
-  private goToURL(url: string) {
+  private goToURL(url: string): void {
     window.location.href = url;
   }
 

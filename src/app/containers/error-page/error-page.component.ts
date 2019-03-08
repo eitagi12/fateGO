@@ -11,10 +11,10 @@ export class ErrorPageComponent implements OnInit {
     private homeService: HomeService
   ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
-  onToHome() {
+  onToHome(): void {
     this.homeService.goToHome();
   }
 }

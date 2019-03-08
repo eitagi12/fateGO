@@ -63,11 +63,11 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
     this.priceOption = this.priceOptionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.createTransaction();
   }
 
-  onError(valid: boolean) {
+  onError(valid: boolean): void {
     this.readCardValid = valid;
     if (!this.profile) {
       this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
@@ -81,21 +81,21 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
     }
   }
 
-  onCompleted(profile: ReadCardProfile) {
+  onCompleted(profile: ReadCardProfile): void {
     this.profile = profile;
     // auto next
     this.onNext();
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
   }
 
-  onNext() {
+  onNext(): void {
     this.pageLoadingService.openLoading();
 
     this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
@@ -190,7 +190,7 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
     this.pageLoadingService.closeLoading();
   }
 
-  private createTransaction() {
+  private createTransaction(): void {
     // New x-api-request-id
     this.apiRequestService.createRequestId();
 
@@ -202,7 +202,7 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
     };
   }
 
-  homeHandler() {
+  homeHandler(): void {
     if (environment.name === 'LOCAL') {
       window.location.href = '/main-menu';
     } else {

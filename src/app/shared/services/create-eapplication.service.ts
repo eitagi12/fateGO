@@ -61,7 +61,6 @@ export class CreateEapplicationService {
       data.signature = 'data:image/jpeg;base64,' + (customer.imageSignature || '');
     }
 
-
     if (action === TransactionAction.KEY_IN) {
       data.customerImg = 'data:image/jpeg;base64,' + customer.imageSmartCard;
     } else {

@@ -29,19 +29,19 @@ export class DeviceOrderAisNewRegisterAggregatePageComponent implements OnInit, 
     this.priceOption = this.priceOptionService.load();
   }
 
-  ngOnInit() { }
+  ngOnInit(): void { }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_COMPARE_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     // QR code
     // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QUEUE_PAGE]);
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_SUMMARY_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
@@ -49,7 +49,7 @@ export class DeviceOrderAisNewRegisterAggregatePageComponent implements OnInit, 
     // this.transactionService.update(this.transaction);
   }
 
-  summary(amount: number[]) {
+  summary(amount: number[]): number {
     return amount.reduce((prev, curr) => {
       return prev + curr;
     }, 0);

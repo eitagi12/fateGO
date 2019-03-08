@@ -75,7 +75,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         this.user = this.tokenService.getUser();
     }
 
-    ngOnInit() {
+    ngOnInit(): void {
         this.createForm();
 
         this.activatedRoute.queryParams.subscribe((params: any) => {
@@ -87,7 +87,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         });
     }
 
-    createForm() {
+    createForm(): void {
         this.clearPriceOption();
         this.colorForm = this.fb.group({
             'stock': []
@@ -106,7 +106,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         });
     }
 
-    onBack() {
+    onBack(): void {
         if (this.priceOption && this.priceOption.campaign) {
             this.priceOption.customerGroup = null;
             this.priceOption.campaign = null;
@@ -126,17 +126,17 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         this.router.navigate([ROUTE_BUY_PRODUCT_PRODUCT_PAGE], { queryParams });
     }
 
-    onHome() {
+    onHome(): void {
         this.homeService.goToHome();
     }
 
-    onCheckStock($event, stock: any) {
+    onCheckStock($event: any, stock: any): void {
         if (stock && stock.qty <= 0) {
             $event.preventDefault();
         }
     }
 
-    getProductSpecification(brand: string, model: string) {
+    getProductSpecification(brand: string, model: string): void {
         const modalOptions = { class: 'modal-lg' };
         if (this.productSpec) {
             this.modalRef = this.modalService.show(this.productSpecTemplate, modalOptions);
@@ -162,7 +162,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             .then(() => this.pageLoadingService.closeLoading());
     }
 
-    onProductStockSelected(product) {
+    onProductStockSelected(product: { stock: { qty: number; }; }): void {
         if (product && product.stock && product.stock.qty <= 0) {
             return;
         }
@@ -181,7 +181,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         });
     }
 
-    clearPriceOption() {
+    clearPriceOption(): void {
         this.priceOption.customerGroup = null;
         this.priceOption.campaign = null;
         this.priceOption.trade = null;
@@ -309,14 +309,14 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         return tabs;
     }
 
-    onCampaignSelected(campaign: any, code: string) {
+    onCampaignSelected(campaign: any, code: string): void {
         this.priceOption.customerGroup = campaign.customerGroups.find(
             customerGroup => customerGroup.code === code
         );
         this.priceOption.campaign = campaign;
     }
 
-    onViewPromotionShelve(campaign: any) {
+    onViewPromotionShelve(campaign: any): void {
         const tabActive = this.tabs.find(tab => tab.active);
         const params: any = {
             packageKeyRef: campaign.packageKeyRef,
@@ -350,7 +350,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         }
     }
 
-    onViewInstallments(campaign: any) {
+    onViewInstallments(campaign: any): void {
         this.installments = PriceOptionUtils.getInstallmentsFromCampaign(campaign);
         this.modalRef = this.modalService.show(this.installmentTemplate, { class: 'modal-lg' });
     }
@@ -360,12 +360,12 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         return (+privilege.maximumPromotionPrice) + advancePay;
     }
 
-    onViewInstallmentsFormTrede(trade: any) {
+    onViewInstallmentsFormTrede(trade: any): void {
         this.installments = PriceOptionUtils.getInstallmentsFromTrades([trade]);
         this.modalRef = this.modalService.show(this.installmentTemplate, { class: 'modal-lg' });
     }
 
-    onTradeSelected(trade: any) {
+    onTradeSelected(trade: any): void {
         this.priceOption.trade = trade;
 
         this.pageLoadingService.openLoading();
@@ -380,7 +380,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     /* product stock */
     callService(
         brand: string, model: string,
-        productType?: string, productSubtype?: string) {
+        productType?: string, productSubtype?: string): void {
         const user: User = this.tokenService.getUser();
 
         // clear
@@ -451,7 +451,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         });
     }
 
-    callPriceOptionsService(brand: string, model: string, color: string, productType: string, productSubtype: string) {
+    callPriceOptionsService(brand: string, model: string, color: string, productType: string, productSubtype: string): void {
 
         this.priceOptionDetailService = this.salesService.priceOptions({
             brand: brand,

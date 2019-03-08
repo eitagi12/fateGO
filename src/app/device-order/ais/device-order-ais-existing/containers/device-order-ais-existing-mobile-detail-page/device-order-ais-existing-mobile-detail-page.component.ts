@@ -14,7 +14,7 @@ import {
 })
 export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
   mobileInfo: MobileInfo;
 
   constructor(
@@ -22,18 +22,18 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit {
     private homeService: HomeService
   ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_ELIGIBLE_MOBILE_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_PAYMENT_DETAIL_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

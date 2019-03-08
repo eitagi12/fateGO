@@ -19,7 +19,7 @@ import {
 })
 export class DeviceOrderAisNewRegisterAgreementSignPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   transaction: Transaction;
   signedSignatureSubscription: Subscription;
@@ -40,18 +40,18 @@ export class DeviceOrderAisNewRegisterAgreementSignPageComponent implements OnIn
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     if (!this.transaction.data.customer.imageSignature) {
       this.onSigned();
     }
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_EAPPLICATION_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     if (this.transaction.data.simCard.simSerial) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_CAPTURE_PAGE]);
     } else {
@@ -59,11 +59,11 @@ export class DeviceOrderAisNewRegisterAgreementSignPageComponent implements OnIn
     }
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onSigned() {
+  onSigned(): void {
     const user: User = this.tokenService.getUser();
     this.signedOpenSubscription = this.aisNativeService.openSigned(
       ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'SignaturePad'

@@ -13,7 +13,7 @@ import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE } fro
   styleUrls: ['./device-order-ais-new-register-ebilling-address-page.component.scss']
 })
 export class DeviceOrderAisNewRegisterEbillingAddressPageComponent implements OnInit, OnDestroy {
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   transaction: Transaction;
   customerAddress: CustomerAddress;
@@ -35,7 +35,7 @@ export class DeviceOrderAisNewRegisterEbillingAddressPageComponent implements On
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const customer = this.transaction.data.customer;
 
     this.http.get('/api/customerportal/newRegister/getAllZipcodes').subscribe((resp: any) => {
@@ -74,7 +74,7 @@ export class DeviceOrderAisNewRegisterEbillingAddressPageComponent implements On
     return (this.provinces || []).find((prov: any) => prov.name === provinceName) || {};
   }
 
-  onProvinceSelected(params: any) {
+  onProvinceSelected(params: any): void {
     const province = this.getProvinceByName(params.provinceName);
     const req = {
       provinceId: province.id,
@@ -93,7 +93,7 @@ export class DeviceOrderAisNewRegisterEbillingAddressPageComponent implements On
     });
   }
 
-  onAmphurSelected(params: any) {
+  onAmphurSelected(params: any): void {
     const province = this.getProvinceByName(params.provinceName);
     const req = {
       provinceId: province.id,
@@ -113,7 +113,7 @@ export class DeviceOrderAisNewRegisterEbillingAddressPageComponent implements On
     });
   }
 
-  onTumbolSelected(params: any) {
+  onTumbolSelected(params: any): void {
     const province = this.getProvinceByName(params.provinceName);
     this.http.get('/api/customerportal/newRegister/queryZipcode', {
       params: {
@@ -126,7 +126,7 @@ export class DeviceOrderAisNewRegisterEbillingAddressPageComponent implements On
     });
   }
 
-  onZipCodeSelected(zipCode: string) {
+  onZipCodeSelected(zipCode: string): void {
     this.http.get('/api/customerportal/newRegister/getProvinceIdByZipcode', {
       params: { zipcode: zipCode }
     }).toPromise()
@@ -145,19 +145,19 @@ export class DeviceOrderAisNewRegisterEbillingAddressPageComponent implements On
       });
   }
 
-  onCompleted(value: any) {
+  onCompleted(value: any): void {
     this.customerAddressTemp = value;
   }
 
-  onError(valid: boolean) {
+  onError(valid: boolean): void {
     this.ebillingAddressValid = valid;
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.transaction.data.customer = Object.assign(
       this.transaction.data.customer,
       this.customerAddressTemp || this.customerAddress
@@ -166,7 +166,7 @@ export class DeviceOrderAisNewRegisterEbillingAddressPageComponent implements On
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

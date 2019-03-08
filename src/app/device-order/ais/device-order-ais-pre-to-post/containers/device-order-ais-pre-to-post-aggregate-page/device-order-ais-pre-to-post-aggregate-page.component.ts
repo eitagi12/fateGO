@@ -30,7 +30,7 @@ export interface CurrentServices {
 })
 export class DeviceOrderAisPreToPostAggregatePageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   transaction: Transaction;
   mobileNo: string;
@@ -49,7 +49,7 @@ export class DeviceOrderAisPreToPostAggregatePageComponent implements OnInit, On
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.mobileNo = this.transaction.data.simCard.mobileNo;
 
     this.pageLoadingService.openLoading();
@@ -71,17 +71,17 @@ export class DeviceOrderAisPreToPostAggregatePageComponent implements OnInit, On
       });
   }
 
-  onTermConditions(event: any) {}
+  onTermConditions(event: any): void {}
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_AGREEMENT_SIGN_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_EAPPLICATION_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
@@ -90,4 +90,3 @@ export class DeviceOrderAisPreToPostAggregatePageComponent implements OnInit, On
   }
 
 }
-

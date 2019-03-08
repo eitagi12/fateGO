@@ -33,7 +33,7 @@ export interface CurrentServices {
 })
 export class OrderPreToPostCurrentInfoPageComponent implements OnInit, OnDestroy {
 
-  isLoad = true;
+  isLoad: boolean = true;
   mobileNo: string;
   transaction: Transaction;
 
@@ -54,7 +54,7 @@ export class OrderPreToPostCurrentInfoPageComponent implements OnInit, OnDestroy
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.mobileNo = this.transaction.data.simCard.mobileNo;
 
     this.pageLoadingService.openLoading();
@@ -80,7 +80,7 @@ export class OrderPreToPostCurrentInfoPageComponent implements OnInit, OnDestroy
       });
   }
 
-  onBack() {
+  onBack(): void {
     const action = this.transaction.data.action;
     if (action === TransactionAction.KEY_IN || action === TransactionAction.READ_CARD) {
       this.router.navigate([ROUTE_ORDER_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE]);
@@ -89,7 +89,7 @@ export class OrderPreToPostCurrentInfoPageComponent implements OnInit, OnDestroy
     }
   }
 
-  onNext() {
+  onNext(): void {
 
     const action = this.transaction.data.action;
 
@@ -121,7 +121,7 @@ export class OrderPreToPostCurrentInfoPageComponent implements OnInit, OnDestroy
     }
   }
 
-  openModal(template: any) {
+  openModal(template: any): void {
     this.modalRef = this.modalService.show(template);
   }
 

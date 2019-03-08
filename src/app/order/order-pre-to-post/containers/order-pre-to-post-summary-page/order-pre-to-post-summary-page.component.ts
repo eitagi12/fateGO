@@ -17,7 +17,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 })
 export class OrderPreToPostSummaryPageComponent implements OnInit {
 
-  wizards = WIZARD_ORDER_PRE_TO_POST;
+  wizards: string[] = WIZARD_ORDER_PRE_TO_POST;
   transaction: Transaction;
   confirmCustomerInfo: ConfirmCustomerInfo;
   billingInfo: BillingInfo;
@@ -32,7 +32,7 @@ export class OrderPreToPostSummaryPageComponent implements OnInit {
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const customer = this.transaction.data.customer;
     const mainPackage = this.transaction.data.mainPackage;
     const billingInformation = this.transaction.data.billingInformation;
@@ -75,14 +75,14 @@ export class OrderPreToPostSummaryPageComponent implements OnInit {
     };
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CONFIRM_USER_INFORMATION_PAGE]);
   }
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_AGREEMENT_SIGN_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

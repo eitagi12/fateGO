@@ -17,7 +17,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 })
 export class DeviceOrderAisPreToPostIdCardCapturePageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   transaction: Transaction;
   captureAndSign: CaptureAndSign;
@@ -40,7 +40,7 @@ export class DeviceOrderAisPreToPostIdCardCapturePageComponent implements OnInit
     }
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const customer: Customer = this.transaction.data.customer;
     this.captureAndSign = {
       allowCapture: true,
@@ -49,25 +49,25 @@ export class DeviceOrderAisPreToPostIdCardCapturePageComponent implements OnInit
     };
   }
 
-  onCompleted(captureAndSign: CaptureAndSign) {
+  onCompleted(captureAndSign: CaptureAndSign): void {
     const customer: Customer = this.transaction.data.customer;
     customer.imageSignatureSmartCard = captureAndSign.imageSignature;
     customer.imageSmartCard = captureAndSign.imageSmartCard;
   }
 
-  onError(valid: boolean) {
+  onError(valid: boolean): void {
     this.idCardValid = valid;
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CUSTOMER_INFO_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_SELECT_PACKAGE_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

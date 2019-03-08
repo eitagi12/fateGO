@@ -13,7 +13,6 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ReserveMobileService, SelectMobileNumberRandom } from 'src/app/order/order-shared/services/reserve-mobile.service';
 
-
 @Component({
   selector: 'app-order-new-register-by-pattern-page',
   templateUrl: './order-new-register-by-pattern-page.component.html',
@@ -21,15 +20,15 @@ import { ReserveMobileService, SelectMobileNumberRandom } from 'src/app/order/or
 })
 export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_NEW_REGISTER;
+  wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
 
   transaction: Transaction;
   mobileNoConditions: MobileNoCondition[] = [];
 
-  isSearchAgain = false;
+  isSearchAgain: boolean = false;
   mobileNoConditionForm: FormGroup;
   element: any;
-  el = [];
+  el: any[] = [];
   user: User;
   constructor(
     private router: Router,
@@ -47,12 +46,12 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
 
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     delete this.transaction.data.simCard;
     this.createForm();
   }
 
-  createForm() {
+  createForm(): void {
     this.mobileNoConditionForm = this.fb.group({
       summary: ['', [Validators.pattern(/\d/)]],
       like0: ['', [Validators.pattern(/\d/)]],
@@ -74,15 +73,15 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
     });
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_NEW_REGISTER_SELECT_NUMBER_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onSearch(mobileNoCondition: any) {
+  onSearch(mobileNoCondition: any): void {
     this.pageLoadingService.openLoading();
     delete this.transaction.data.simCard;
 
@@ -128,7 +127,6 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
 
   }
 
-
   onNextTab(event: any): void {
     const keyCode: number = (event.which) ? event.which : event.keyCode;
     const target: any = event.target;
@@ -152,7 +150,7 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
 
   }
 
-  onSearchMobileNoByCondition() {
+  onSearchMobileNoByCondition(): void {
     this.isSearchAgain = true;
     const serch = {
       summary: this.mobileNoConditionForm.controls['summary'].value || '',
@@ -178,14 +176,14 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
     this.onSearch(serch);
   }
 
-  onSelectMobileNo(value: any) {
+  onSelectMobileNo(value: any): void {
     this.transaction.data.simCard = {
       mobileNo: value.mobileNo,
       persoSim: true
     };
   }
 
-  onNext() {
+  onNext(): void {
 
     const dataRequest: SelectMobileNumberRandom = {
       userId: this.user.username,
@@ -208,6 +206,4 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }
-
 }
-

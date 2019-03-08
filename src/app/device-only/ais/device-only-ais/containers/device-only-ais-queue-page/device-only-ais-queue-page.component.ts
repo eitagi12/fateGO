@@ -9,13 +9,13 @@ export class DeviceOnlyAisQueuePageComponent implements OnInit, OnDestroy {
 
   constructor() { }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
-  onHome() {
+  onHome(): void {
   }
 
-  mainMenu() {
+  mainMenu(): void {
 
   }
 

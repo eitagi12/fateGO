@@ -11,7 +11,6 @@ import {
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 
-
 @Component({
   selector: 'app-device-order-ais-pre-to-post-validate-customer-id-card-repi-page',
   templateUrl: './device-order-ais-pre-to-post-validate-customer-id-card-repi-page.component.html',
@@ -48,11 +47,11 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardRepiPageComponent impl
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.transaction.data.action = TransactionAction.READ_CARD_REPI;
   }
 
-  onError(valid: boolean) {
+  onError(valid: boolean): void {
     this.readCardValid = valid;
     if (!this.profile) {
       this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
@@ -66,17 +65,17 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardRepiPageComponent impl
     }
   }
 
-  onCompleted(profile: ReadCardProfile) {
+  onCompleted(profile: ReadCardProfile): void {
     this.profile = profile;
 
     this.onNext();
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CURRENT_INFO_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     const mobileNo = this.transaction.data.simCard.mobileNo;
 
     this.pageLoadingService.openLoading();
@@ -147,7 +146,7 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardRepiPageComponent impl
       });
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
@@ -173,6 +172,5 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardRepiPageComponent impl
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }
-
 
 }
