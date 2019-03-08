@@ -18,6 +18,10 @@ export class DeviceOnlyAisKeyInQueuePageComponent implements OnInit, OnDestroy {
   onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE]);
   }
+
+  onHome(): void {
+
+  }
   ngOnDestroy(): void {
 
   }
