@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Input } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-import { ApiRequestService, PageLoadingService, HomeService, TokenService, User } from 'mychannel-shared-libs';
+import { ApiRequestService, PageLoadingService, HomeService, TokenService, User, AlertService } from 'mychannel-shared-libs';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_CARE_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CHECK_OUT_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
 import { Transaction, TransactionType, TransactionAction, Customer, Prebooking, Seller } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -11,6 +11,7 @@ import { ProductDetail } from 'mychannel-shared-libs/lib/service/models/product-
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { a, b } from '@angular/core/src/render3';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-summary-page',
@@ -20,16 +21,17 @@ import { a, b } from '@angular/core/src/render3';
 export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit, OnDestroy {
 
   wizards = WIZARD_DEVICE_ORDER_AIS;
-  identityValid = true;
+  identityValid = false;
   transaction: Transaction;
   pricreOption: PriceOption;
   productDetail: ProductDetail;
   paymentResult: number;
-  customer: Customer;
   fullAddress: string;
   promotionPricePB: number;
   prebooking: Prebooking;
   seller: Seller;
+  checkSellerForm: FormGroup;
+  sellerCode: string;
 
 
   constructor(
@@ -38,9 +40,10 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private tokenService: TokenService,
-    private apiRequestService: ApiRequestService,
     private http: HttpClient,
-    private priceOptionService: PriceOptionService
+    private priceOptionService: PriceOptionService,
+    public fb: FormBuilder,
+    private alertService: AlertService
   ) {
     this.transaction = this.transactionService.load();
     this.pricreOption = this.priceOptionService.load();
@@ -48,8 +51,7 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
 
 
   ngOnInit() {
-    this.customer = this.transaction.data.customer;
-    this.fullAddress = this.getFullAddress(this.customer);
+    this.fullAddress = this.getFullAddress(this.transaction.data.customer);
     this.paymentResult = this.getPromotionPrice() + this.getPackagePrice();
     const user = this.tokenService.getUser();
 
@@ -65,7 +67,7 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
       this.paymentResult = this.paymentResult - +this.prebooking.depositAmt;
       this.promotionPricePB = this.getPromotionPrice() - +this.prebooking.depositAmt;
     }
-
+    this.createForm();
 
   }
 
@@ -78,7 +80,20 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
   }
 
   onNext() {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CHECK_OUT_PAGE]);
+    this.pageLoadingService.openLoading();
+    this.http.get(`/api/customerportal/checkSeller/${this.sellerCode}`).toPromise()
+    .then((shopCheckSeller: any) => {
+      if (shopCheckSeller.condition) {
+        this.transaction.data.seller.employeeId = shopCheckSeller.isAscCode;
+          this.pageLoadingService.closeLoading();
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CHECK_OUT_PAGE]);
+        } else {
+          this.alertService.error(shopCheckSeller.message);
+        }
+      }).catch((error: any) => {
+        this.pageLoadingService.closeLoading();
+        this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+      });
   }
 
   ngOnDestroy(): void {
@@ -114,6 +129,20 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
     } else {
       return '-';
     }
+  }
+
+  createForm() {
+    this.checkSellerForm = this.fb.group({
+      checkSeller: ['', Validators.required]
+    });
+
+    this.checkSellerForm.valueChanges.subscribe((value) => {
+      console.log(value.checkSeller);
+      if (value.checkSeller) {
+        this.identityValid = true;
+        this.sellerCode = value.checkSeller;
+      }
+    });
   }
 
 }
