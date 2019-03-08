@@ -61,9 +61,7 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
         allowEscapeKey: false,
         text: 'สิ้นสุดระยะเวลาชำระเงินกรุณากดปุ่ม "REFRESH" เพื่อทำรายการใหม่'
       }).then(() => {
-        setTimeout(() => {
           this.onNext();
-      }, 3000);
       });
     });
   }
