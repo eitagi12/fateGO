@@ -35,7 +35,7 @@ export interface MobileCareItem {
 export class MobileCareComponent implements OnInit {
   public moblieNo: string;
   public otp: string;
-  public isPrivilegeCus:boolean = false;
+  public isPrivilegeCus = false;
 
   public VAT = 1.07;
 

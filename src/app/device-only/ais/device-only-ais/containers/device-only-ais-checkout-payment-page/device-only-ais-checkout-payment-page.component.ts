@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy} from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HomeService, Aggregate } from 'mychannel-shared-libs';
 import { ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE, ROUTE_DEVICE_ONLY_AIS_QR_CODE_QUEUE_PAGE } from '../../constants/route-path.constant';
@@ -8,14 +8,14 @@ import { ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE, ROUTE_DEVICE_ONLY_AIS_QR_CODE_QUEUE
   styleUrls: ['./device-only-ais-checkout-payment-page.component.scss']
 })
 export class DeviceOnlyAisCheckoutPaymentPageComponent implements OnInit, OnDestroy {
-  price ="99999";
-  color = "ROSESILVER";
-  mobileNo ="0987654321";
-  firstName = "ปลายูดดดด";
-  lastName = "จะจันทร์แล้ว";
-  titleName = "นาย";
-  model = "IPHONE 7";
-  campaignName = "โครงการ ซื้อเครื่องเปล่า";
+  price = '99999';
+  color = 'ROSESILVER';
+  mobileNo = '0987654321';
+  firstName = 'ปลายูดดดด';
+  lastName = 'จะจันทร์แล้ว';
+  titleName = 'นาย';
+  model = 'IPHONE 7';
+  campaignName = 'โครงการ ซื้อเครื่องเปล่า';
   constructor(
     private router: Router,
     private homeService: HomeService,

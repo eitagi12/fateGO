@@ -1,21 +1,21 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, Aggregate } from 'mychannel-shared-libs';
+import { HomeService } from 'mychannel-shared-libs';
 import { ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE, ROUTE_DEVICE_ONLY_AIS_QR_CODE_SUMMARY_PAGE } from '../../constants/route-path.constant';
 @Component({
   selector: 'app-device-only-ais-checkout-payment-qr-code-page',
   templateUrl: './device-only-ais-checkout-payment-qr-code-page.component.html',
   styleUrls: ['./device-only-ais-checkout-payment-qr-code-page.component.scss']
 })
-export class DeviceOnlyAisCheckoutPaymentQrCodePageComponent implements OnInit {
-price ="99999";
-color = "ROSESILVER";
-mobileNo ="0987654321";
-firstName = "ปลายูดดดด";
-lastName = "จะจันทร์แล้ว";
-titleName = "นาย";
-model = "IPHONE 7";
-campaignName = "โครงการ ซื้อเครื่องเปล่า";
+export class DeviceOnlyAisCheckoutPaymentQrCodePageComponent implements OnInit, OnDestroy {
+price = '99999';
+color = 'ROSESILVER';
+mobileNo = '0987654321';
+firstName = 'ปลายูดดดด';
+lastName = 'จะจันทร์แล้ว';
+titleName = 'นาย';
+model = 'IPHONE 7';
+campaignName = 'โครงการ ซื้อเครื่องเปล่า';
   constructor(
     private router: Router,
     private homeService: HomeService,
