@@ -8,6 +8,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DOCUMENT } from '@angular/platform-browser';
+import { CreateDeviceOrderBestBuyService } from '../../service/create-device-order-best-buy.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-queue-page',
@@ -28,10 +29,11 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private apiRequestService: ApiRequestService,
-    private http: HttpClient
+    private http: HttpClient,
+    private createBestBuyService: CreateDeviceOrderBestBuyService
   ) {
     this.transaction = this.transactionService.load();
-   }
+  }
 
   ngOnInit() {
     this.createForm();
@@ -52,6 +54,7 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
 
   onNext() {
     this.transaction.data.queue = { queueNo: this.queue };
+    this.createBestBuyService.createDeviceOrder(this.transaction, this.queue);
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE]);
   }
 

@@ -31,6 +31,7 @@ export interface Transaction {
   lastUpdateDate?: string;
   lastUpdateBy?: string;
   data?: TransactionData;
+  issueBy?: string;
 }
 
 export interface TransactionData {
@@ -160,7 +161,7 @@ export interface FaceRecognition {
 }
 
 export interface Order {
-  orderNo: string;
+  orderNo?: string;
   orderDate?: string;
   soId?: string;
 }
