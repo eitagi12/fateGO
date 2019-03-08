@@ -9,7 +9,7 @@ import { AbstractControl, ValidationErrors, FormBuilder, FormGroup, Validators }
 import {
   HomeService, PageLoadingService, ApiRequestService, Utils, ReadCardProfile, AlertService,
   ReadPassport, ReadPassportService, ValidateCustomerIdCardComponent,
-  KioskControls, VendingApiService, ReadCardService,
+  KioskControls, VendingApiService,
 } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
@@ -52,7 +52,6 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
     private apiRequestService: ApiRequestService,
     private alertService: AlertService,
     private vendingApiService: VendingApiService,
-    private readCardService: ReadCardService,
     public translation: TranslateService
   ) {
   }
@@ -62,7 +61,6 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
     this.createForm();
     this.onReadCard();
     this.onReadPassport();
-    this.koiskApiFn = this.readCardService.kioskApi();
   }
   onCompleted(profile: ReadCardProfile) {
     this.profile = profile;

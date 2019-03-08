@@ -9,7 +9,7 @@ import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms'
 import { HomeService } from 'mychannel-shared-libs';
 import { WIZARD_ORDER_PRE_TO_POST } from 'src/app/order/constants/wizard.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, BillingAccount } from 'src/app/shared/models/transaction.model';
 
 @Component({
   selector: 'app-order-pre-to-post-merge-billing-page',
@@ -23,7 +23,7 @@ export class OrderPreToPostMergeBillingPageComponent implements OnInit, OnDestro
   transaction: Transaction;
 
   billingCyles: any[];
-  mergeBilling: any;
+  mergeBilling: BillingAccount;
 
   constructor(
     private router: Router,
@@ -81,11 +81,12 @@ export class OrderPreToPostMergeBillingPageComponent implements OnInit, OnDestro
   }
 
   onNext() {
+    this.transaction.data.billingInformation.mergeBilling = this.mergeBilling;
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
-  onCompleted(even: any) {
-    this.transaction.data.billingInformation.mergeBilling = even;
+  onCompleted(mergeBilling: BillingAccount) {
+    this.mergeBilling = mergeBilling;
   }
 
   onHome() {

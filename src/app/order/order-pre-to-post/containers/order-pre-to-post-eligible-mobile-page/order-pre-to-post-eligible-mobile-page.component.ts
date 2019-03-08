@@ -99,6 +99,10 @@ export class OrderPreToPostEligibleMobilePageComponent implements OnInit, OnDest
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE]);
   }
 
+  onHome() {
+    this.homeService.goToHome();
+  }
+
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }

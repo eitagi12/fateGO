@@ -3,7 +3,7 @@ import { Router, Params, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
-import { PageLoadingService, AlertService } from 'mychannel-shared-libs';
+import { PageLoadingService, AlertService, HomeService } from 'mychannel-shared-libs';
 
 import {
   ROUTE_ORDER_PRE_TO_POST_CUSTOMER_INFO_PAGE,
@@ -45,6 +45,7 @@ export class OrderPreToPostCurrentInfoPageComponent implements OnInit, OnDestroy
   constructor(
     private router: Router,
     private http: HttpClient,
+    private homeService: HomeService,
     private modalService: BsModalService,
     private alertService: AlertService,
     private pageLoadingService: PageLoadingService,
@@ -122,6 +123,10 @@ export class OrderPreToPostCurrentInfoPageComponent implements OnInit, OnDestroy
 
   openModal(template: any) {
     this.modalRef = this.modalService.show(template);
+  }
+
+  onHome() {
+    this.homeService.goToHome();
   }
 
   ngOnDestroy(): void {

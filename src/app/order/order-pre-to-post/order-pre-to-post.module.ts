@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 
 import { OrderPreToPostRoutingModule } from './order-pre-to-post-routing.module';
@@ -39,7 +40,8 @@ import { OrderPreToPostVerifyDocumentPageComponent } from './containers/order-pr
     OrderPreToPostRoutingModule,
     MyChannelSharedLibsModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TranslateModule
   ],
   declarations: [
     OrderPreToPostValidateCustomerPageComponent,
