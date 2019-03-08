@@ -30,10 +30,12 @@
           <h1>ใช้เฉพาะเทสเท่านั้น</h1>
           <div class="container-scroll">
               <div class="child" *ngFor="let passport of passPortMocks">
-                <button class="btn btn-lg" [ngClass]="{'btn-success': passport.type === 'old' , 'btn-danger': passport.type !== 'old'}"
-                (click)="onClickMock(passport);" >{{ passport.name }} ({{ passport.type }})</button>
+                <button class="btn btn-success" (click)="onClickMock(passport);" >
+                  {{ passport.GivenName }} ({{ passport.PassportNumber }})
+                </button>
               </div>
           </div>
+          <hr>
         </div>
   </div>
 </div>
