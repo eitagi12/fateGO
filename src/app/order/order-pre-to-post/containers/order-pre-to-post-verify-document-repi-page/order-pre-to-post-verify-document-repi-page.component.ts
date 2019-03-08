@@ -92,9 +92,11 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
               billCycle: data.billCycle,
               // zipCode: zipCode
             };
-          }).then((resp) => {
+          }).then((customer) => {
             this.transaction.data.customer = Object.assign(
-              Object.assign({}, this.transaction.data.customer), readPassport.profile);
+              Object.assign({}, this.transaction.data.customer),
+              Object.assign(readPassport.profile, customer));
+
             return this.http.get(`/api/customerportal/newRegister/${readPassport.profile.idCardNo}/queryBillingAccount`).toPromise()
               .then((respQueryBilling: any) => {
                 const data = respQueryBilling.data || {};
