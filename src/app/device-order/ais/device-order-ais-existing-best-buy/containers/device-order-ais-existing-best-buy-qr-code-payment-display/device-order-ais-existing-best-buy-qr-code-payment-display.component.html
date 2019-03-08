@@ -1,0 +1,56 @@
+<section class="qr-code-payment-display content" id="sectionSalesPortalDeviceSellingQrCodePaymentDisplayContent">
+  <div class="qr-code-summary-container">
+    <div class="qr-code-summary-detail-container">
+      <div class="row header">
+        ข้อมูลการชำระ
+      </div>
+      <div class="content">
+        <div class="row align-top">
+          <span>
+            <h6>ชำระโดย</h6>
+          </span>
+          <span *ngIf="qrCodeType === '002'" class="small-offset-6 columns text-right">
+            <h6>Rabbit Line Pay</h6>
+          </span>
+
+          <span *ngIf="qrCodeType === '003'" class="small-offset-6 columns text-right">
+            <h6>Thai QR Promptpay</h6>
+          </span>
+        </div>
+      </div>
+      <div class="footer">
+        <div class="row align-middle align-spaced">
+          <div class="small-offset-6 small-6 columns text-right">
+            <h5>
+              <span class="font-dark-green" style="margin-left: 0.5px;">
+                ยอดชำระ {{ summaryPriceQRCode | number }}
+              </span>
+            </h5>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <span>
+    กรุณาเข้าสู่ Mobile Application
+    <br /> ของผู้ให้บริการ เพื่อชำระค่าสินค้าและบริการ
+  </span>
+  <br />
+  <div class="qr-code-box" [ngSwitch]="qrCodeType">
+    <div *ngSwitchCase="003">
+      <img src="assets/images/icon/Thai_Qr_Payment.png" class="qrPaymentHeader">
+      <br />
+      <br />
+      <img src="assets/images/icon/prompt-pay.png" class="qr-code-mini-logo">
+    </div>
+    <div *ngSwitchCase="002">
+      <img src="assets/images/icon/Rabbit_Line_Pay.png" class="qrPaymentHeader">
+    </div>
+    <br />
+    <img id="qrcode" style="width: 50%;">
+    <br />
+    <br />
+  </div>
+
+
+</section>

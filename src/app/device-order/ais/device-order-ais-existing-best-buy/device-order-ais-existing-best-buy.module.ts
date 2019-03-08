@@ -21,6 +21,8 @@ import { DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent } from '
 import { DeviceOrderAisExistingBestBuyCustomerProfilePageComponent } from './containers/device-order-ais-existing-best-buy-customer-profile-page/device-order-ais-existing-best-buy-customer-profile-page.component';
 import { DeviceOrderAisExistingBestBuyOtpPageComponent } from './containers/device-order-ais-existing-best-buy-otp-page/device-order-ais-existing-best-buy-otp-page.component';
 import { CreateDeviceOrderBestBuyService } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/service/create-device-order-best-buy.service';
+import { DeviceOrderAisExistingBestBuyQrCodePaymentGeneratorPageComponent } from './containers/device-order-ais-existing-best-buy-qr-code-payment-generator-page/device-order-ais-existing-best-buy-qr-code-payment-generator-page.component';
+import { DeviceOrderAisExistingBestBuyQrCodePaymentDisplayComponent } from './containers/device-order-ais-existing-best-buy-qr-code-payment-display/device-order-ais-existing-best-buy-qr-code-payment-display.component';
 
 @NgModule({
   imports: [
@@ -46,7 +48,9 @@ import { CreateDeviceOrderBestBuyService } from 'src/app/device-order/ais/device
     DeviceOrderAisExistingBestBuyValidateCustomerPageComponent,
     DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent,
     DeviceOrderAisExistingBestBuyCustomerProfilePageComponent,
-    DeviceOrderAisExistingBestBuyOtpPageComponent
+    DeviceOrderAisExistingBestBuyOtpPageComponent,
+    DeviceOrderAisExistingBestBuyQrCodePaymentGeneratorPageComponent,
+    DeviceOrderAisExistingBestBuyQrCodePaymentDisplayComponent
   ],
   providers: [
     CreateDeviceOrderBestBuyService
