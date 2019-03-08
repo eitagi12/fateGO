@@ -1,11 +1,12 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_ORDER_NEW_REGISTER_PASSPOPRT_INFO_PAGE, ROUTE_ORDER_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_ORDER_NEW_REGISTER_VERIFY_DOCUMENT_PAGE } from 'src/app/order/order-new-register/constants/route-path.constant';
-import { HomeService, PageLoadingService, ApiRequestService, Utils, ReadCardProfile, AlertService, ReadPassport, ReadPassportService, ValidateCustomerIdCardComponent, KioskControls, VendingApiService, ReadCardService, } from 'mychannel-shared-libs';
+import { HomeService, PageLoadingService, ApiRequestService, Utils, ReadCardProfile, AlertService, ReadPassport, ReadPassportService, ValidateCustomerIdCardComponent, KioskControls, VendingApiService, ReadCardService, Environment, } from 'mychannel-shared-libs';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-order-new-register-verify-document-page',
@@ -24,7 +25,48 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
 
+  isProduction: boolean;
+
   readonly ERR_MASSEAGE = 'ไม่สามารถให้บริการได้ กรุณาติดต่อพนักงานเพื่อดำเนินการ ขออภัยในความไม่สะดวก';
+
+  passPortMocks = [{
+    type: 'new',
+    name: 'nakarin',
+    lastname: '',
+    passportNo: '',
+    address: ''
+  }, {
+    type: 'old',
+    name: 'nakarin2',
+    lastname: '',
+    passportNo: '',
+    address: ''
+  }, {
+    type: 'old',
+    name: 'nakarin3',
+    lastname: '',
+    passportNo: '',
+    address: ''
+  }, {
+    type: 'new',
+    name: 'nakarin4',
+    lastname: '',
+    passportNo: '',
+    address: ''
+  }, {
+    type: 'new',
+    name: 'nakarin5',
+    lastname: '',
+    passportNo: '',
+    address: ''
+  }, {
+    type: 'old',
+    name: 'nakarin6',
+    lastname: '',
+    passportNo: '',
+    address: ''
+  }
+  ];
 
   constructor(
     private router: Router,
@@ -39,6 +81,7 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
     private vendingApiService: VendingApiService,
     private readCardService: ReadCardService
   ) {
+    this.isProduction = environment.production;
   }
 
   ngOnInit() {
@@ -59,6 +102,7 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
   onHome() {
     this.homeService.goToHome();
   }
+
   onReadPassport() {
     this.readPassportSubscription = this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
       console.log('readpassport', readPassport);
@@ -214,6 +258,10 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
     this.readPassportSubscription.unsubscribe();
     clearInterval(this.cardStateInterval);
     this.vendingApiSubscription.unsubscribe();
+  }
+
+  onClickMock(mock): void {
+    console.log(mock);
   }
 
 }

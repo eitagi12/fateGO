@@ -25,5 +25,15 @@
       </div>
        <div> Insert the ID card in the card reader slot.</div>
         <div>เสียบบัตรประชาชนที่ช่องอ่านบัตร</div>
+        <div *ngIf="!isProduction">
+          <hr>
+          <h1>ใช้เฉพาะเทสเท่านั้น</h1>
+          <div class="container-scroll">
+              <div class="child" *ngFor="let passport of passPortMocks">
+                <button class="btn btn-lg" [ngClass]="{'btn-success': passport.type === 'old' , 'btn-danger': passport.type !== 'old'}"
+                (click)="onClickMock(passport);" >{{ passport.name }} ({{ passport.type }})</button>
+              </div>
+          </div>
+        </div>
   </div>
 </div>
