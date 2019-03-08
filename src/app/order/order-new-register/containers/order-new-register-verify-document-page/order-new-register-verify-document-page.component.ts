@@ -127,9 +127,12 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
               billCycle: data.billCycle,
               // zipCode: zipCode
             };
-          }).then((resp) => {
+          }).then((customer) => {
             this.transaction.data.customer = Object.assign(
-              Object.assign({}, this.transaction.data.customer), readPassport.profile);
+              Object.assign({}, this.transaction.data.customer),
+              Object.assign(readPassport.profile, customer)
+            );
+            console.log('customer', this.transaction.data.customer);
             return this.http.get(`/api/customerportal/newRegister/${readPassport.profile.idCardNo}/queryBillingAccount`).toPromise()
               .then((respQueryBilling: any) => {
                 const data = respQueryBilling.data || {};
