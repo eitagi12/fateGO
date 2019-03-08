@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { AlertService, PageActivityService } from 'mychannel-shared-libs';
+import { AlertService, PageActivityService, HomeService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
@@ -22,7 +22,8 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
     private alertService: AlertService,
-    private pageActivityService: PageActivityService
+    private pageActivityService: PageActivityService,
+    private homeService: HomeService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -35,6 +36,10 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
 
   onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_SUMMARY_PAGE]);
+  }
+
+  onHome(): void {
+    this.homeService.goToHome();
   }
 
   onNext(): void {
