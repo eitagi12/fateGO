@@ -39,7 +39,7 @@ export class OrderPreToPostAgreementSignPageComponent implements OnInit, OnDestr
       if (signature) {
         this.isOpenSign = false;
         this.transaction.data.customer.imageSignature = signature;
-        this.router.navigate([ROUTE_ORDER_PRE_TO_POST_AGGREGATE_PAGE]);
+        this.onNext();
       } else {
         this.alertService.warning(this.translationService.instant('กรุณาเซ็นลายเซ็น')).then(() => {
           this.onSigned();
