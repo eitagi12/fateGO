@@ -47,9 +47,11 @@ import { MobileCareAvaliableComponent } from './components/mobile-care-avaliable
     DeviceOnlyAisKeyInQueuePageComponent,
     DeviceOnlyReadCardComponent,
     MobileCareComponent,
-    ReceiptInformationComponent
+    ReceiptInformationComponent,
+    MobileCareAvaliableComponent
   ],
-  providers: [BillingAddressService,
-    MobileCareAvaliableComponent]
+  providers: [
+    BillingAddressService
+  ]
 })
 export class DeviceOnlyAisModule { }
