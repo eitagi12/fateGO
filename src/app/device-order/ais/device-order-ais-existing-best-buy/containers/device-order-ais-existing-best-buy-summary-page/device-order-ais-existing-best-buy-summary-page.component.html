@@ -14,17 +14,12 @@
         <div class="card mb-3">
           <div class="card-header bg-pink text-white">สรุปรายการสั่งชื้อสินค้า</div>
           <div class="card-body">
-            <p>{{transaction?.data?.mainPromotion?.cammapign?.campaignName}}</p>
+            <p>{{pricreOption?.campaign?.campaignName}}</p>
             <p>
               <i class="fa fa-circle mr-3 text-light-green"></i>
-              <span>{{ productDetail?.name }} {{ productDetail?.productInfo?.colorName?'สี':'' }} {{ productInfo?.colorName }}
-                {{ productDetail?.productSubtype === 'HANDSET BUNDLE' ? '(แถมซิม)':'' }}</span>
-              <span class="pull-right text-light-green">฿ {{ transaction?.data?.mainPromotion?.trade?.promotionPrice | number }}</span>
-            </p>
-            <p>
-              <i class="fa fa-circle mr-3 text-light-green"></i>
-              {{ transaction?.data?.mainPromotion?.trade?.advancePay?.description || '' }}
-              <span class="pull-right text-light-green">฿ {{ transaction?.data?.mainPromotion?.trade?.advancePay?.amount | number }}</span>
+              <span>{{ pricreOption?.productDetail?.name }} {{ pricreOption?.productDetail?.productInfo?.colorName?'สี':'' }} {{ pricreOption?.productInfo?.colorName }}
+                {{ pricreOption?.productDetail?.productSubtype === 'HANDSET BUNDLE' ? '(แถมซิม)':'' }}</span>
+              <span class="pull-right text-light-green">฿ {{ pricreOption?.trade?.promotionPrice | number }}</span>
             </p>
           </div>
           <div class="card-footer bg-transparent text-right">
@@ -33,7 +28,7 @@
           </div>
         </div>
 
-        <div class="card mb-3">
+        <div class="card mb-3" *ngIf="!!transaction.data.existingMobileCare.promotionName">
           <div class="card-header bg-purple text-white">สินค้าและบริการอื่น</div>
           <div class="card-body">
             <p>
@@ -58,18 +53,9 @@
             </p>
             <p>
               <i class="fa fa-circle mr-3 text-light-green"></i>
-              {{ productDetail?.name }} {{ productDetail?.productInfo?.colorName?'สี':'' }} {{ productInfo?.colorName }} 
+              {{ pricreOption?.productDetail?.name }} {{ pricreOption?.productDetail?.productInfo?.colorName?'สี':'' }} {{ pricreOption?.productInfo?.colorName }} 
               <span class="pull-right text-light-green">
-                ฿ {{ 6125 | number:'1.2-2' }}
-                <!-- ฿ {{ (isPrebooking === true ? promotionPricePB : promotionPrice ) | number }} -->
-              </span>
-            </p>
-            <p>
-              <i class="fa fa-circle mr-3 text-light-green"></i>
-              ค่าแพ็กเกจบริการล่วงหน้า: ชำระเต็มจำนวน(เงินสด)
-              <span class="pull-right text-light-green">
-                ฿ {{ 6125 | number:'1.2-2' }}
-                <!-- ฿ {{ (isPrebooking === true ? promotionPricePB : promotionPrice) + trade?.advancePay?.amount | number }} -->
+                ฿ {{ (prebooking?.preBookingNo ? promotionPricePB : pricreOption?.trade?.promotionPrice ) | number }}
               </span>
             </p>
           </div>
@@ -107,13 +93,13 @@
               <div class="form-group row">
                 <label for="staticEmail" class="col-6 col-sm-4 col-form-label">พนักงานขาย</label>
                 <div class="col-6 col-sm-8">
-                    {{transaction?.data?.seller?.sellerName}}
+                    {{ seller?.sellerName }}
                 </div>
               </div>
               <div class="form-group row">
                 <label for="staticEmail" class="col-6 col-sm-4 col-form-label">สาขา</label>
                 <div class="col-6 col-sm-8">
-                    {{transaction?.data?.seller?.locationName}}
+                    {{seller?.locationName}}
                 </div>
               </div>
               <div class="form-group row">

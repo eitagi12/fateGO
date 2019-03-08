@@ -236,6 +236,8 @@ export interface Seller {
   locationCode?: string;
   sellerNo?: string;
   shareUser?: string;
+  employeeId?: string;
+  ascCode?: string;
 }
 
 export interface Queue {
