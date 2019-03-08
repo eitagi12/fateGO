@@ -5,15 +5,25 @@
     </div>
     <div class="card-footer bg-transparent">
       <div class="row">
-        <label for="searchByNumber" class="col-12 col-sm-7 col-form-label">
+        <label class="col-12 col-sm-7 col-form-label" for="searchByNumber" >
           ออกใบเสร็จตามใบแจ้งค่าใช้บริการเบอร์ AIS
         </label>
         <div class="col-12 col-sm-5">
-         <input type="text" placeholder="ระบุเบอร์ AIS" class="form-control" id="searchByNumber" />
+          <div class="row search-box m-auto">
+            <div class="col-12 col-sm-9">
+              <input type="text" placeholder="ระบุเบอร์ AIS" id="searchByNumber"
+                    class="search-input" maxlength="10" />
+            </div>
+            <div class="col-12 col-sm-3">
+              <button class="search-btn" >
+                <img src="assets/images/icon/device_only_search_icon.png" />
+              </button>
+            </div>
+          </div>
         </div>
       </div>
       <div class="row">
-        <div class="col-12">
+        <div class="col-12" style="padding: 20px 0">
           <app-device-only-read-card></app-device-only-read-card>
         </div>
       </div>

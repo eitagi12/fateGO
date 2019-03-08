@@ -1,0 +1,15 @@
+.search-box {
+    text-align: center;
+    border: 1px solid #ced4da;
+    .search-input {
+        height: 100%;
+        font-size: 1rem;
+        border: none;
+        &:focus { outline: none; }
+        &::placeholder { color: #ced4da; }
+    }
+    .search-btn {
+        background: none;
+        border: none;
+    }
+}

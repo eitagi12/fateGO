@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, Aggregate } from 'mychannel-shared-libs';
+import { HomeService } from 'mychannel-shared-libs';
 import { ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE, ROUTE_DEVICE_ONLY_AIS_QR_CODE_SUMMARY_PAGE } from '../../constants/route-path.constant';
 @Component({
   selector: 'app-device-only-ais-checkout-payment-qr-code-page',
@@ -8,7 +8,14 @@ import { ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE, ROUTE_DEVICE_ONLY_AIS_QR_CODE_SUMMA
   styleUrls: ['./device-only-ais-checkout-payment-qr-code-page.component.scss']
 })
 export class DeviceOnlyAisCheckoutPaymentQrCodePageComponent implements OnInit, OnDestroy {
-
+price = '99999';
+color = 'ROSESILVER';
+mobileNo = '0987654321';
+firstName = 'ปลายูดดดด';
+lastName = 'จะจันทร์แล้ว';
+titleName = 'นาย';
+model = 'IPHONE 7';
+campaignName = 'โครงการ ซื้อเครื่องเปล่า';
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -16,11 +23,9 @@ export class DeviceOnlyAisCheckoutPaymentQrCodePageComponent implements OnInit, 
 
   ngOnInit() {
   }
-
-  onBack() {
-    this.router.navigate([ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE]);
+onBack() {
+  this.router.navigate([ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE]);
   }
-
   onNext() {
     // QR code
     // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QUEUE_PAGE]);
@@ -28,18 +33,9 @@ export class DeviceOnlyAisCheckoutPaymentQrCodePageComponent implements OnInit, 
     // this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_SUMMARY_PAGE]);
     // รอหน้ามา
   }
-
   onHome() {
     this.homeService.goToHome();
   }
-
   ngOnDestroy(): void {
-    // this.transactionService.update(this.transaction);
   }
-
-  // summary(amount: number[]) {
-  //   return amount.reduce((prev, curr) => {
-  //     return prev + curr;
-  //   }, 0);
-  // }
 }

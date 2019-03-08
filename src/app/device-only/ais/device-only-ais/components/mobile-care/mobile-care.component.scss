@@ -1,0 +1,89 @@
+h3{
+    text-align: center;
+    color: #5baeee;
+}
+
+@media only screen and (min-width: 768px) {
+    .search-btn{
+        background-color: white;
+        border: none;
+        width: 10%;
+    }
+    
+    .mobile-input{
+        width: 86%;
+        font-size: 13px;
+        text-align: center;
+        padding: 5px 10px 7px 10px;
+        border: none;
+    }
+
+    .otp-input{
+        width: 86%;
+        font-size: 13px;
+        text-align: center;
+        padding: 0px 10px 0px 10px;
+        border: none;
+    }
+    
+    .box-search{
+        text-align: center;
+        border: 1px solid #e9dfdf;
+        width: 50%;
+        margin-left: 25%;
+        border-radius: 1%;
+        float: left;
+    }
+    
+    .btn-get-otp{
+        width: 10%;
+        font-size: 11px;
+        margin-left: -10%;
+        padding: 13px;
+        color: white;
+        background-color: #5baeee;
+        border: none;
+    }
+}
+
+@media only screen and (min-width: 992px) {
+    .search-btn{
+        background-color: white;
+        border: none;
+    }
+    
+    .mobile-input{
+        width: 86%;
+        font-size: 19px;
+        text-align: center;
+        padding: 15px 10px 15px 10px;
+        border: none;
+    }
+
+    .otp-input{
+        width: 86%;
+        font-size: 19px;
+        text-align: center;
+        padding: 5px 10px 5px 10px;
+        border: none;
+    }
+    
+    .box-search{
+        text-align: center;
+        border: 1px solid #e9dfdf;
+        width: 50%;
+        margin-left: 25%;
+        border-radius: 1%;
+        float: left;
+    }
+    
+    .btn-get-otp{
+        width: 10%;
+        font-size: 20px;
+        margin-left: -10%;
+        padding: 13px;
+        color: white;
+        background-color: #5baeee;
+        border: none;
+    }
+}

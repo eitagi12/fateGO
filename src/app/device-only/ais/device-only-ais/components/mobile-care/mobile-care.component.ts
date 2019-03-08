@@ -33,6 +33,9 @@ export interface MobileCareItem {
   styleUrls: ['./mobile-care.component.scss']
 })
 export class MobileCareComponent implements OnInit {
+  public moblieNo: string;
+  public otp: string;
+  public isPrivilegeCus = false;
 
   public VAT = 1.07;
 
@@ -103,6 +106,10 @@ export class MobileCareComponent implements OnInit {
       this.completed.emit(this.notBuyMobileCareForm.value.notBuyMobile);
     }
     this.modalRef.hide();
+  }
+
+  public checkMobileNo() {
+    this.isPrivilegeCus = !this.isPrivilegeCus;
   }
 
 }
