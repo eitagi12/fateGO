@@ -13,16 +13,21 @@
       <div class="container-fluid">
         <div class="card mb-3">
           <div class="card-header bg-pink text-white">สรุปรายการสั่งชื้อสินค้า</div>
-          <div class="card-body">
-            <p>{{pricreOption?.campaign?.campaignName}}</p>
-            <p>
-              <i class="fa fa-circle mr-3 text-light-green"></i>
-              <span>{{ pricreOption?.productDetail?.name }} {{ pricreOption?.productDetail?.productInfo?.colorName?'สี':'' }} {{ pricreOption?.productInfo?.colorName }}
-                {{ pricreOption?.productDetail?.productSubtype === 'HANDSET BUNDLE' ? '(แถมซิม)':'' }}</span>
-              <span class="pull-right text-light-green">฿ {{ pricreOption?.trade?.promotionPrice | number }}</span>
-            </p>
+          <div class="card-body border-0 pb-0">
+            <div class="row">
+              <div class="col-12  border border-top-0 border-left-0 border-right-0">
+                <p>{{pricreOption?.campaign?.campaignName}}</p>
+                <p>
+                  <i class="fa fa-circle mr-3 text-light-green"></i>
+                  <span>{{ pricreOption?.productDetail?.name }} {{ pricreOption?.productDetail?.productInfo?.colorName?'สี':''
+                    }} {{ pricreOption?.productInfo?.colorName }} {{ pricreOption?.productDetail?.productSubtype === 'HANDSET
+                    BUNDLE' ? '(แถมซิม)':'' }}</span>
+                  <span class="pull-right text-light-green">฿ {{ pricreOption?.trade?.promotionPrice | number }}</span>
+                </p>
+              </div>
+            </div>
           </div>
-          <div class="card-footer bg-transparent text-right">
+          <div class="card-footer bg-transparent text-right border-0 py-3">
             รวมยอดชำระ(รวมVAT)
             <span class="text-light-green ml-2">฿ {{ paymentResult | number:'1.2-2' }}</span>
           </div>
@@ -31,15 +36,15 @@
         <div class="card mb-3" *ngIf="!!transaction.data.existingMobileCare.promotionName">
           <div class="card-header bg-purple text-white">สินค้าและบริการอื่น</div>
           <div class="card-body">
-            <p>
-              <i class="fa fa-circle mr-3 text-light-green"></i>
-              {{ transaction?.data?.existingMobileCare?.promotionName }}
-              <span class="pull-right">
-                <img src="assets/images/icon/icon-page.png" class="icon" />
-              </span>
-            </p>
-          </div>
-          <div class="card-footer bg-transparent text-right">
+            <div class="row">
+              <div class="col-12 border border-top-0 border-left-0 border-right-0 py-2">
+                <i class="fa fa-circle mr-3 text-light-green"></i>
+                {{ transaction?.data?.existingMobileCare?.promotionName }}
+                <span class="pull-right icon-position">
+                  <img src="assets/images/icon/icon-page.png" class="icon" />
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -47,37 +52,46 @@
           <div class="card-header bg-pink text-white">
             รายละเอียดการชำระ
           </div>
-          <div class="card-body">
-            <p>
-              ข้อมูลการชำระสินค้า
-            </p>
-            <p>
-              <i class="fa fa-circle mr-3 text-light-green"></i>
-              {{ pricreOption?.productDetail?.name }} {{ pricreOption?.productDetail?.productInfo?.colorName?'สี':'' }} {{ pricreOption?.productInfo?.colorName }} 
-              <span class="pull-right text-light-green">
-                ฿ {{ (prebooking?.preBookingNo ? promotionPricePB : pricreOption?.trade?.promotionPrice ) | number }}
-              </span>
-            </p>
-          </div>
-          <div class="card-footer bg-transparent ">
-            <p>
-              ข้อมูลใบเสร็จรับเงิน
-            </p>
+          <div class="card-body border-0">
             <div class="row">
-              <p class="col-12 col-sm-4">
-                <i class="fa fa-circle mr-3 text-light-green"></i>
-                ผู้ชื้อ
-              </p>
-              <p class="col-12 col-sm-8 text-light-green">
-                  {{transaction?.data?.customer?.titleName }}  {{transaction?.data?.customer?.firstName}}  {{transaction?.data?.customer?.lastName}}
-              </p>
-              <p class="col-12 col-sm-4">
-                <i class="fa fa-circle mr-3 text-light-green"></i>
-                ที่อยู่ในใบเสร็จรับเงิน
-              </p>
-              <p class="col-12 col-sm-8 text-light-green">
-               {{fullAddress}}
-              </p>
+              <div class="col-12">
+                <p>
+                  ข้อมูลการชำระสินค้า
+                </p>
+                <p>
+                  <i class="fa fa-circle mr-3 text-light-green"></i>
+                  {{ pricreOption?.productDetail?.name }} {{ pricreOption?.productDetail?.productInfo?.colorName?'สี':'' }} {{ pricreOption?.productInfo?.colorName
+                  }}
+                  <span class="pull-right text-light-green">
+                    ฿ {{ (prebooking?.preBookingNo ? promotionPricePB : pricreOption?.trade?.promotionPrice ) | number }}
+                  </span>
+                </p>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer bg-transparent border-0">
+            <div class="row">
+              <div class="col-12">
+                <p>
+                  ข้อมูลใบเสร็จรับเงิน
+                </p>
+                <div class="row">
+                  <p class="col-12 col-sm-4">
+                    <i class="fa fa-circle mr-3 text-light-green"></i>
+                    ผู้ชื้อ
+                  </p>
+                  <p class="col-12 col-sm-8 text-light-green">
+                    {{transaction?.data?.customer?.titleName }} {{transaction?.data?.customer?.firstName}} {{transaction?.data?.customer?.lastName}}
+                  </p>
+                  <p class="col-12 col-sm-4">
+                    <i class="fa fa-circle mr-3 text-light-green"></i>
+                    ที่อยู่ในใบเสร็จรับเงิน
+                  </p>
+                  <p class="col-12 col-sm-8 text-light-green">
+                    {{fullAddress}}
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
           <div class="card-footer bg-transparent text-right">
@@ -93,13 +107,13 @@
               <div class="form-group row">
                 <label for="staticEmail" class="col-6 col-sm-4 col-form-label">พนักงานขาย</label>
                 <div class="col-6 col-sm-8">
-                    {{ seller?.sellerName }}
+                  {{ seller?.sellerName }}
                 </div>
               </div>
               <div class="form-group row">
                 <label for="staticEmail" class="col-6 col-sm-4 col-form-label">สาขา</label>
                 <div class="col-6 col-sm-8">
-                    {{seller?.locationName}}
+                  {{seller?.locationName}}
                 </div>
               </div>
 
