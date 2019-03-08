@@ -75,7 +75,7 @@ export class OrderNewRegisterAgreementSignPageComponent implements OnInit, OnDes
     this.isOpenSign = true;
     const user: User = this.tokenService.getUser();
     this.signedOpenSubscription = this.aisNativeService.openSigned(
-      ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'SignaturePad', '{x:100,y:280}'
+      ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'SignaturePad',
     ).subscribe((command: any) => {
       this.openSignedCommand = command;
     });

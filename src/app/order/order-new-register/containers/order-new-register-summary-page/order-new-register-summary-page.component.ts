@@ -50,9 +50,6 @@ export class OrderNewRegisterSummaryPageComponent implements OnInit {
       packageDetail: mainPackage.statementThai,
       idCardType: customer.idCardType
     };
-
-    console.log('data',this.confirmCustomerInfo);
-
     this.billingInfo = {
       billingMethod: {
         text: billCycleData.billingMethodText

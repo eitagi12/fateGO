@@ -60,7 +60,6 @@ export class OrderNewRegisterPassportInfoPageComponent implements OnInit, OnDest
   }
 
   onError(valid: boolean) {
-    console.log('valid', valid);
     this.idCardValid = valid;
   }
 
