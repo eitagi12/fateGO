@@ -121,58 +121,29 @@ export class CreateDeviceOrderBestBuyService {
 
   }
 
-  createDeviceOrder(transaction: Transaction, queueNo: string): Promise<any> {
-<<<<<<< Updated upstream
-=======
-<<<<<<< HEAD
+  createDeviceOrder(transaction: Transaction, queueNo: string): any {
 
     return this.getRequestCreateOrder(transaction, queueNo).then((data) => {
+      this.updateOrder(transaction, data);
       // console.log(data);
       return this.http.post('/api/salesportal/device-sell/order', data).toPromise()
-      .then((response: any) => {
-        this.updateOrder(transaction);
-        if (response) {
-          if (response.resultCode === 'S') {
-            return response;
-          } else {
-            switch (response.resultMessage) {
-              case 'QueueNo is duplicated':
-              throw 'เลขที่คิวซ้ำ กรุณาระบุใหม่';
-              default:
-              throw 'Fail to create the order';
+        .then((response: any) => {
+          if (response) {
+            if (response.resultCode === 'S') {
+              return response;
+            } else {
+              switch (response.resultMessage) {
+                case 'QueueNo is duplicated':
+                  throw 'เลขที่คิวซ้ำ กรุณาระบุใหม่';
+                default:
+                  throw 'Fail to create the order';
+              }
             }
+          } else {
+            throw 'Fail';
           }
-        } else {
-          throw 'Fail';
-        }
-      });
-=======
->>>>>>> Stashed changes
-    return this.getQueueByNumber(transaction.data.simCard.mobileNo).then((resp) => {
-      if (resp.resultPass) {
-        return this.getRequestCreateOrder(transaction, queueNo).then((data) => {
-          // console.log(data);
-          return this.http.post('/api/salesportal/device-sell/order', data).toPromise();
-          //   if (orderResponse) {
-          //     if (orderResponse.resultCode === 'S') {
-          //         return orderResponse;
-          //     } else {
-          //       switch (orderResponse.resultMessage) {
-          //         case 'QueueNo is duplicated':
-          //           throw 'เลขที่คิวซ้ำ กรุณาระบุใหม่';
-          //         default:
-          //           throw 'Fail to create the order';
-          //       }
-          //     }
-          // } else {
-          //     throw 'Fail';
-          // }
         });
-      }
->>>>>>> 556cb60afd9eb56d669e12ca0485a4487d930513
     });
-
-
   }
 
   getQueueByNumber(mobileNo: string): Promise<any> {
@@ -182,15 +153,18 @@ export class CreateDeviceOrderBestBuyService {
     return this.http.post('/api/salesportal/device-order/transaction/get-queue-qmatic', body).toPromise();
   }
 
-  updateOrder(transaction: Transaction): Promise<any> {
+  updateOrder(transaction: Transaction, data: any): Promise<any> {
 
-    // transaction.data.order = {
-    //   soId: queue.soId ? queue.soId : ''
-    // };
-    // transaction.data.queue = {
-    //   queueNo: deviceItemBuyingInformation.queueNo ? deviceItemBuyingInformation.queueNo : ''
-    // };
-    // transaction.issueBy = this.tokenService.getUsername();
+    transaction.data.order = {
+      soId: data.soId ? data.soId : ''
+    };
+
+    transaction.data.queue = {
+      queueNo: data.queueNo ? data.queueNo : ''
+    };
+
+    transaction.issueBy = this.user.username;
+
     // transaction.data.status = {
     //   code: '002',
     //   description: 'Waiting Payment'
@@ -365,9 +339,9 @@ export class CreateDeviceOrderBestBuyService {
 
   public getUsername(): any {
     return this._cookieService.get('accessToken')
-        ? this.jwtHelper.decodeToken(this._cookieService.get('accessToken')).username
-        : this.defaultEmployeeeCode;
-}
+      ? this.jwtHelper.decodeToken(this._cookieService.get('accessToken')).username
+      : this.defaultEmployeeeCode;
+  }
 
   getGrandTotalAmt(trade: any): string {
 
