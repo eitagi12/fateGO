@@ -1,6 +1,12 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { HttpClient, HttpHandler } from '@angular/common/http';
+
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { DeviceOnlyAisQrCodeSummarayPageComponent } from './device-only-ais-qr-code-summaray-page.component';
+import { CookiesStorageService } from 'ngx-store';
+import { JwtHelperService } from '@auth0/angular-jwt/src/jwthelper.service';
 
 describe('DeviceOnlyAisQrCodeSummarayPageComponent', () => {
   let component: DeviceOnlyAisQrCodeSummarayPageComponent;
@@ -8,7 +14,20 @@ describe('DeviceOnlyAisQrCodeSummarayPageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DeviceOnlyAisQrCodeSummarayPageComponent ]
+      imports: [
+        RouterTestingModule
+      ],
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
+      declarations: [ DeviceOnlyAisQrCodeSummarayPageComponent ],
+      providers: [
+        CookiesStorageService,
+        {
+          provide: JwtHelperService,
+          useValue: {}
+        },
+        HttpClient,
+        HttpHandler
+      ]
     })
     .compileComponents();
   }));

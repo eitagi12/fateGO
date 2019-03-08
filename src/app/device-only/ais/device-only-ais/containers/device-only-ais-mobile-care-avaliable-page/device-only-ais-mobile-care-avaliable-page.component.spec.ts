@@ -1,3 +1,5 @@
+import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DeviceOnlyAisMobileCareAvaliablePageComponent } from './device-only-ais-mobile-care-avaliable-page.component';
@@ -8,6 +10,7 @@ describe('DeviceOnlyAisMobileCareAvaliablePageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
       declarations: [ DeviceOnlyAisMobileCareAvaliablePageComponent ]
     })
     .compileComponents();
