@@ -14,6 +14,7 @@ import { DeviceOrderAisExistingBestBuyCheckOutPageComponent } from 'src/app/devi
 import { DeviceOrderAisExistingBestBuyQueuePageComponent } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/containers/device-order-ais-existing-best-buy-queue-page/device-order-ais-existing-best-buy-queue-page.component';
 import { DeviceOrderAisExistingBestBuyResultPageComponent } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/containers/device-order-ais-existing-best-buy-result-page/device-order-ais-existing-best-buy-result-page.component';
 import { DeviceOrderAisExistingBestBuyQrCodePaymentGeneratorPageComponent } from './containers/device-order-ais-existing-best-buy-qr-code-payment-generator-page/device-order-ais-existing-best-buy-qr-code-payment-generator-page.component';
+import { DeviceOrderAisExistingBestBuyQrCodeSummaryPageComponent } from './containers/device-order-ais-existing-best-buy-qr-code-summary-page/device-order-ais-existing-best-buy-qr-code-summary-page.component';
 
 const routes: Routes = [
   // { path: '', redirectTo: 'validate-customer', pathMatch: 'full' },
@@ -27,6 +28,7 @@ const routes: Routes = [
   { path: 'mobile-care-available', component: DeviceOrderAisExistingBestBuyMobileCareAvailablePageComponent },
   { path: 'mobile-care', component: DeviceOrderAisExistingBestBuyMobileCarePageComponent },
   { path: 'summary', component: DeviceOrderAisExistingBestBuySummaryPageComponent },
+  { path: 'qrcodesummary', component:  DeviceOrderAisExistingBestBuyQrCodeSummaryPageComponent},
   { path: 'qrcode', component:  DeviceOrderAisExistingBestBuyQrCodePaymentGeneratorPageComponent},
   { path: 'check-out', component: DeviceOrderAisExistingBestBuyCheckOutPageComponent },
   { path: 'queue', component: DeviceOrderAisExistingBestBuyQueuePageComponent},

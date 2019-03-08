@@ -68,10 +68,8 @@ export class DeviceOrderAisExistingBestBuyQrCodePaymentGeneratorPageComponent im
         timer: 180000
       }).then((data) => {
         if (!data.value) {
-          console.log('data.value=',data.value);
-          // this.homeService.goToHome();
+          this.homeService.goToHome();
         }
-        console.log('data22=',data);
         this.pageActivityService.resetTimeout();
       });
     });
