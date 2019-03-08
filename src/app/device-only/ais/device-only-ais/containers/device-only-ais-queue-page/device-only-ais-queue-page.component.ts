@@ -15,8 +15,8 @@ export class DeviceOnlyAisQueuePageComponent implements OnInit, OnDestroy {
   onHome() {
   }
 
-  onNext() {
-    window.location.href = '/';
+  mainMenu() {
+
   }
 
   ngOnDestroy(): void {

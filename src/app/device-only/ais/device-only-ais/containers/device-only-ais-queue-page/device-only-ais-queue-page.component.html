@@ -12,9 +12,11 @@
                 <img src="assets/images/icon/icon-green-check-circle.png" class="d-block m-auto icon">
                   <div class="my-3 text-center">
                   <!-- <p>หมายเลข {{ transaction?.data?.simCard?.mobileNo | mobileNo }}</p> -->
-                    <p>หมายเลข 098989898989</p>
+                    <p>หมายเลข  
+                    <span id="text-mobile-no">098989898989</span></p> 
                     <p>ชำระค้าสินค้าเรียบร้อยแล้ว</p>
-                    <p>หมายเลขอ้างอิง 5399566516</p>
+                    <p>หมายเลขอ้างอิง 
+                    <span id="text-transaction-no">6568989595912</span></p>
                   </div>
               </div>
             </div>
@@ -25,15 +27,15 @@
               <div class="row mb-2">
                  <div class="col-6 text-left">
                     <i class="fa fa-circle mr-3 text-light-green"></i>
-                    <span>Y81iสีBLACK</span>
+                    <span id="text-brand-model">Y81iสีBLACK</span>
                     
                  </div>
                  <div class="col-6 text-right">
-                    <p>5464</p>
+                    <p id="text-normal-price">฿ 3,999</p>
                  </div>
                  <div class="col-12 text-right">
                   ยอดค้างชำระ(รวมVAT)
-                  <span class="text-light-green"> 3,999฿</span>
+                  <span class="text-light-green" id="text-include-vat-price">฿ 3,999</span>
                  </div>
               </div>
      
@@ -51,7 +53,7 @@
               <div class="m-auto text-center col-4 mt-4">
                 <div class="card mt-2">
                   <div class="card-body">
-                    <h1 class="text-light-green queue-no">
+                    <h1 class="text-light-green queue-no" id="text-queue-no">
                       A001
                     </h1>
                   </div>
@@ -63,8 +65,8 @@
 
         <div class="container-fluid my-5">
           <div class="text-center">
-            <button class="btn btn-success btn-lg" click="onNext()">
-              NEXT
+            <button class="btn btn-success btn-lg" click="mainMenu()" id="button-main-menu">
+              MAIN MENU
             </button>
           </div>
         </div>
