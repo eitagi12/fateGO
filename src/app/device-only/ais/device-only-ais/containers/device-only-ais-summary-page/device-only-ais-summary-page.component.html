@@ -9,17 +9,47 @@
   </mc-header>
 
   <div class="mc-flex-wrap">
+    <div class="card border-0">
+      <div class="container-fluid mt-3 mb-3">
+        <div class="row pl-3 pr-3">
+          <div class="col-12 col-sm-6">
+            <img src="assets/images/icon/icon-person.png" class="icon-img icon-person" />
+            <span id="text-customer-name"> นาย ก็มา ดิค้าบ </span>
+          </div>
+          <div class="col-12 col-sm-6 text-sm-right">
+            <img src="assets/images/icon/sales_portal_green_phone.png" class="icon-img icon-phone" />
+            <span id="text-mobile-no"> 0987654321 </span>
+          </div>
+        </div>
+      </div>
+      <hr class="mt-0 mb-0">
+      <div class="container-fluid mt-3 mb-3">
+        <div class="row pl-3 pr-3">
+          <div class="col-8 col-sm-10 text-left text-brown">
+            <p class="text-light-green" id="text-campaign-name">ซื้อเครื่องเปล่า</p>
+            <span id="text-brand-model">SAMSUNG J7 PRIME สี BLACK จำนวน 1 เครื่อง</span>
+          </div>
+          <div class="col-4 col-sm-2 text-center text-brown">
+            <img src="assets/images/icon/icon-cart.png" width="35px" class="mb-1" />
+            <h4 class="text-light-green" id="text-total-price">
+              ฿ 8,700
+            </h4>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <div class="mt-3 mb-3">
       <div class="container-fluid">
         <div class="card mb-3">
           <div class="card-header bg-pink text-white">สรุปรายการสั่งชื้อสินค้า</div>
           <div class="card-body">
-            <p class="text-light-green">ซื้อเครื่องเปล่า</p>
+            <p class="text-light-green" id="text-campaign-name-summary">ซื้อเครื่องเปล่า</p>
             <i class="fa fa-circle mr-3 text-light-green"></i>
-            <span class="text-grey">
+            <span class="text-grey" id="text-brand-model-summary">
               SUNSAMG S5560 สี NOBLE BACK
             </span>
-            <span class="pull-right text-light-green">
+            <span class="pull-right text-light-green" id="text-model-price">
               ฿ 4,000
             </span>
           </div>
@@ -27,7 +57,7 @@
             <span>
               รวมยอดชำระ(รวมVAT)
             </span>
-            <span class="text-light-green ml-2">
+            <span class="text-light-green ml-2" id="text-summary-price">
               ฿ 4,200
             </span>
           </div>
@@ -37,7 +67,7 @@
           <div class="card-header bg-purple text-white">สินค้าและบริการอื่น</div>
           <div class="card-body">
             <i class="fa fa-circle mr-3 text-light-green"></i>
-            <span class="text-grey">
+            <span class="text-grey" id="text-mobile-care">
               AIS Mobile Care Swap+Replace รายเดือน 49 บาท
             </span>
             <span class="pull-right">
@@ -57,19 +87,10 @@
             </p>
             <p>
               <i class="fa fa-circle mr-3 text-light-green"></i>
-              <span class="text-grey">
+              <span class="text-grey" id="text-patment-method">
                 ค่าเครื่อง : ผ่อนชำระเครดิตธนาคารไทยพานิชย์ จำกัด (มหาชน) 0% 10 เดือน (400 บาทต่อเดือน)
               </span>
-              <span class="pull-right text-light-green">
-                ฿ 4,000
-              </span>
-            </p>
-            <p>
-              <i class="fa fa-circle mr-3 text-light-green"></i>
-              <span class="text-grey">
-                ค่าแพ็กเกจบริการล่วงหน้า : ชำระเต็มจำนวน
-              </span>
-              <span class="pull-right text-light-green">
+              <span class="pull-right text-light-green" id="text-payment-price">
                 ฿ 4,000
               </span>
             </p>
@@ -86,7 +107,7 @@
                 </span>
               </div>
               <div class="col-12 col-sm-8">
-                <p class="text-light-green">
+                <p class="text-light-green" id="text-receipt-customer-name">
                   นาย ก็มา ดิค้าบ
                 </p>
               </div>
@@ -98,8 +119,8 @@
                 </span>
               </div>
               <div class="col-12 col-sm-8">
-                <p class="text-light-green">
-                  อยู่ที่ไหนก้ได้โตแล้ว
+                <p class="text-light-green" id="text-receipt-billing-address">
+                  อยู่ที่ไหนก็ได้โตแล้ว
                 </p>
               </div>
             </div>
@@ -129,7 +150,7 @@
                 </p>
               </div>
               <div class="col-12 col-sm-8">
-                <p>
+                <p id="text-seller-location">
                   MC
                 </p>
               </div>
@@ -140,7 +161,7 @@
                 </p>
               </div>
               <div class="col-12 col-sm-8">
-                <p>
+                <p id="text-location">
                   สาขาอาคารเอไอเอส 2
                 </p>
               </div>
@@ -152,7 +173,7 @@
                 </p>
               </div>
               <div class="col-12 col-sm-8">
-                <input type="text" class="form-control w-100">
+                <input type="text" class="form-control w-100" id="input-asc-code">
               </div>
             </div>
           </div>
@@ -162,7 +183,7 @@
   </div>
 
   <mc-footer>
-    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()">NEXT</button>
+    <button class="btn btn-secondary" id="button-back" (click)="onBack()">BACK</button>
+    <button class="btn btn-success" id="button-next" (click)="onNext()">NEXT</button>
   </mc-footer>
 </div>

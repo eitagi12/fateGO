@@ -109,7 +109,7 @@ export class MobileCareComponent implements OnInit {
   }
 
   public checkMobileNo() {
-    this.isPrivilegeCus = true;
+    this.isPrivilegeCus = !this.isPrivilegeCus;
   }
 
 }

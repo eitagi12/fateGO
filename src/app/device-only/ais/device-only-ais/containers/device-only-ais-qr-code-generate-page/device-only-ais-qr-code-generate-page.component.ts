@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, AlertService } from 'mychannel-shared-libs';
+import { AlertService, PageActivityService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
@@ -19,10 +19,10 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
 
   constructor(
     private router: Router,
-    private homeService: HomeService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private pageActivityService: PageActivityService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -30,7 +30,7 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.onRefresh();
+    this.pageActivityHandler();
   }
 
   onBack() {
@@ -41,18 +41,28 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
     this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_QUEUE_PAGE]);
   }
 
-  onHome() {
-    this.homeService.goToHome();
-  }
-
   summary(amount: number[]) {
     return amount.reduce((prev, curr) => {
       return prev + curr;
     }, 0);
   }
 
-  onRefresh() {
-    this.alertService.question('สิ้นสุดระยะเวลาชำระเงินกรุณากดปุ่ม REFRESH เพื่อทำรายการใหม่', 'REFRESH', 'CANCLE');
+  pageActivityHandler() {
+    this.pageActivityService.setTimeout((counter) => {
+      return counter === 5;
+    }).subscribe(() => {
+      this.alertService.notify({
+        type: 'question',
+        cancelButtonText: 'CANCLE',
+        confirmButtonText: 'REFRESH',
+        showCancelButton: true,
+        showConfirmButton: true,
+        reverseButtons: true,
+        allowEscapeKey: false,
+        text: 'สิ้นสุดระยะเวลาชำระเงินกรุณากดปุ่ม "REFRESH" เพื่อทำรายการใหม่'
+      }).then(() => {
+          this.onNext();
+      });
+    });
   }
-
 }
