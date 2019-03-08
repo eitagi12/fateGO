@@ -1,6 +1,8 @@
 import { Component, OnInit, OnChanges } from '@angular/core';
 import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Router } from '../../../../../../../node_modules/@angular/router';
+import { ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE } from '../../constants/route-path.constant';
 
 export interface SelectPaymentDetail {
   paymentType?: string; // 'qrcode' | 'credit' | 'debit';
@@ -55,6 +57,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
   paymentDetailOption: PaymentDetailOption;
   constructor(
    private fb: FormBuilder,
+   private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -88,6 +91,15 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       isInstallment: true,
       isEnable: true
     };
+  }
+  onHome(): void {
+  }
+
+  onBack(): void {
+  }
+
+  onNext(): void {
+    this.router.navigate([ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE]);
   }
 
   createForm(): void {

@@ -13,12 +13,12 @@
         <div class="row pl-3 pr-3">
           <div class="col-12 col-sm-6 text-brown">
             <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEEAAAA6CAMAAADYzMR1AAAAhFBMVEUAAACNxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj8Qf88uAAAAK3RSTlMAY1D4CQMTBfPu0DYjHw7JjUM9KJl3b+TbpX5oMSwZw720klcQr11TB4VVb092TgAAAixJREFUSMelltuaqjAMhQvIWRRB8QSOoqPOXu//fruEGSxY/VL570xkQXNqxBvuWRoBwck6iI+YpeiISmGOhR7fE2GG+40BYWImcETDep/PJl7WqjlGEltIgsXfT+9Evy98gTMkc/Xke4onPwsk4PZsV0iuXIUmjcEw9ssmFD5PYALJYmj1A2k98xRuADbP5iuZWXwBsF982oxVC/TPF8oxR8FrQqZzFNKx5yhMm1TqHAvpSLkKJ52jlI4lRyF59Q2xdNTcOAQ6hy0dO46CD4mu+HbS/k9wCAFMNfaNtFcshRqA9aKiWJOKshbpzRuDzvK0JWkJfmOshsZDq8sjo1GgGXxf7DkbPHdAAklpdFc4/bBHzDmpzqPtsC+RCz42+lMmBkmaMIdamIkDILwbKXiQOL8SlWN4BmKBLpoZwB/Tw1uKFocVKLnGTLtIlGpL8YmbhK5dym0Tho0njKiOaKjUZSTlayRFCKLrrhOI6DZjdHaZBiDUVnaXf7ZNMXXfvdyK0HE89MKyRsfpdtD2Y1k7eFAnT6E94kG4y4etVKiPbzNfu5jc5qrIWT2O/Xh+vcrdN2GK0+ChEavrCeEsM0awPbvbFH96As6OoszCr2oQS6WHrr4w4l50/eaGzekvwpgDJdj7HT8kYMrFaev2R3cj82dh2A7h/DMFv924HDrEZ8zp7frxwV9+s1EKK7oTQkrJCAU6y87+jCMt4FuMI6N6GEMlCowjEbk1jvt/2LKEbgNMQ0wAAAAASUVORK5CYII="
-              class="icon icon-person" *ngIf="shoppingCart?.fullName" />
+              class="icon icon-person" />
             <span>นาย ธีระยุทธ เจโตวิมุติพงศ์</span>
           </div>
           <div class="col-12 col-sm-6 text-sm-right text-brown">
             <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABsAAAAtCAMAAABoKeDXAAAAM1BMVEUAAAB0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ25Zr8AAAAEHRSTlMAkBBwgNEwiPTesFJIEpc9LEzSRQAAAGVJREFUOMvt1LsSgCAMRNFF0fBm//9rdWiJsXLGgtPeAposgCJuJgW3RF0CPIPbZy7QIzJDkxlBVmgqCXKDZhvt0I32CGQ/Nd16b7XVft/Ea+T1HprTtG/+ad27tRPWvli7ZO3ZBeGQE1v36RJMAAAAAElFTkSuQmCC"
-              class="icon icon-phone" *ngIf="shoppingCart?.mobileNo" />
+              class="icon icon-phone" />
             <span>0889540584</span>
           </div>
         </div>
@@ -65,8 +65,8 @@
           <form [formGroup]="paymentForm">
             <div class="form-group row">
               <div class="col-12 col-sm-5">
-                <input class="form-check-input" type="radio" id="payment-qrcode-{{formID}}" value="qrcode" formControlName="paymentType">
-                <label class="form-check-label" id="label-box-qr-code" for="payment-qrcode-{{formID}}">
+                <input class="form-check-input" type="radio" id="payment-qrcode" value="qrcode" formControlName="paymentType">
+                <label class="form-check-label" id="label-box-qr-code" for="payment-qrcode">
                   ชำระเงิน QR Code
                 </label>
               </div>
@@ -74,7 +74,7 @@
                 <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="เต็มจำนวน">
               </div>
             </div>
-            <div class="form-group row" *ngIf="paymentForm.controls['paymentType'].value === 'qrcode'">
+            <div class="form-group row">
               <div class="col-12 col-sm-3" id="icon-qr-payment-{{i}}" *ngFor="let qrCode of paymentDetail?.qrCodes; let i = index" (click)="onSelectQRCode(qrCode)">
                 <div class="qr-lazy-load-image" [ngClass]="{'active': qrCode?.id === selectPaymentDetail.qrCode?.id}">
                   <mc-lazy-load-image [src]="qrCode?.imageUrl"></mc-lazy-load-image>
@@ -84,19 +84,19 @@
             <hr>
             <div class="form-group row">
               <div class="col-12 col-sm-5">
-                <input class="form-check-input" type="radio" id="payment-credit-{{formID}}" value="credit" formControlName="paymentType">
-                <label class="form-check-label" id = "label-box-credit-card" for="payment-credit-{{formID}}">
+                <input class="form-check-input" type="radio" id="payment-credit" value="credit" formControlName="paymentType">
+                <label class="form-check-label" id = "label-box-credit-card" for="payment-credit">
                   ชำระเงินด้วยบัตรเครดิต
                 </label>
               </div>
               <div class="col-12 col-sm-7">
                 <select id="inputState" class="form-control" disabled>
-                  <option [selected]="!option?.isInstallment">เต็มจำนวน</option>
-                  <option [selected]="option?.isInstallment">ผ่อนชำระ</option>
+                  <option>เต็มจำนวน</option>
+                  <option>ผ่อนชำระ</option>
                 </select>
               </div>
             </div>
-            <div class="form-group row" *ngIf="paymentForm.controls['paymentType'].value === 'credit'">
+            <div class="form-group row" >
     
               <div class="col-4 col-sm-2 mb-3" id="icon-bank-payment-{{i}}" *ngFor="let bank of paymentDetail?.banks; let i = index" (click)="onSelectBank(bank)">
                 <div class="bank-lazy-load-image" [ngClass]="{'active': bank?.abb === selectPaymentDetail.bank?.abb}">
@@ -115,14 +115,13 @@
                 </div>
               </div>
             </div>
-            <div class="form-group row" *ngIf="option?.isInstallment && paymentDetail?.installments && paymentForm.controls['paymentType'].value === 'credit'">
+            <div class="form-group row">
               <div class="col-12 text-center mb-3">
                 <span class="text-pink"> *กรุณาเลือกรูปแบบการชำระเงิน</span>
               </div>
-              <div class="col-12 col-sm-4" *ngFor="let installment of paymentDetail?.installments; let i = index">
-                <input class="form-check-input" type="radio" name="installment" id="installment-month-{{ i }}" value="installment"
-                  (click)="onSelectInstallment(installment)" [checked]="installment?.installmentMonth === 'selectPaymentDetail?.bank?.installments[0]?.installmentMonth' && installment?.installmentPercentage === 'selectPaymentDetail?.bank?.installments[0]?.installmentPercentage'">
-                <label class="form-check-label" for="installment-month-{{ i }}">
+              <div class="col-12 col-sm-4">
+                <input class="form-check-input" type="radio" name="installment" id="installment-month" value="installment">
+                <label class="form-check-label" for="installment-month">
                  6% 10 เดือน
                 </label>
               </div>
@@ -130,8 +129,8 @@
             <hr>
             <div class="form-group row">
               <div class="col-12 col-sm-5">
-                <input class="form-check-input" type="radio" id="payment-debit-{{formID}}" value="debit" formControlName="paymentType">
-                <label class="form-check-label" id = "label-cash-payment" for="payment-debit-{{formID}}">
+                <input class="form-check-input" type="radio" id="payment-debit}" value="debit" formControlName="paymentType">
+                <label class="form-check-label" id = "label-cash-payment" for="payment-debit">
                    ชำระที่เคาน์เตอร์
                 </label>
               </div>
