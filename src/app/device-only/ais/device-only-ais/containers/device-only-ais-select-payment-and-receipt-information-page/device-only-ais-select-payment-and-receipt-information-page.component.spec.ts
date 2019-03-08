@@ -1,8 +1,16 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
+import { ReactiveFormsModule } from '@angular/forms';
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent } from './device-only-ais-select-payment-and-receipt-information-page.component';
+
+@Pipe({name: 'translate'})
+class MockPipe implements PipeTransform {
+    transform(value: number): number {
+        return value;
+    }
+}
 
 describe('DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent', () => {
   let component: DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent;
@@ -10,8 +18,12 @@ describe('DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
+      imports: [ ReactiveFormsModule ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent ]
+      declarations: [
+        DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent,
+        MockPipe
+      ]
     })
     .compileComponents();
   }));
