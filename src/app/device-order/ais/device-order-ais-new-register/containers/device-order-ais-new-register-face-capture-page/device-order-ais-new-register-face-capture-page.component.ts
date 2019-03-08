@@ -9,7 +9,7 @@ export class DeviceOrderAisNewRegisterFaceCapturePageComponent implements OnInit
 
   constructor() { }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
 }

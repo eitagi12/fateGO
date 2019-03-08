@@ -1,5 +1,3 @@
-
-
 export interface PriceOption {
     queryParams: any;
     productStock: any;

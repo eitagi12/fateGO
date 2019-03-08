@@ -9,7 +9,7 @@ export class DeviceOrderAisNewRegisterEbillingAddressPageComponent implements On
 
   constructor() { }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
 }

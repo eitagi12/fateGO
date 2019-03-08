@@ -30,24 +30,24 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
     private http: HttpClient
   ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.createTransaction();
   }
 
-  onError(valid: boolean) {
+  onError(valid: boolean): void {
     this.readCardValid = valid;
   }
 
-  onCompleted(profile: ReadCardProfile) {
+  onCompleted(profile: ReadCardProfile): void {
     this.profile = profile;
     this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol);
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VALIDATE_CUSTOMER_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.pageLoadingService.openLoading();
     const user: User = this.tokenService.getUser();
     this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryCustomerInfo`).toPromise()
@@ -73,11 +73,11 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
       });
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  getZipCode(province: string, amphur: string, tumbol: string) {
+  getZipCode(province: string, amphur: string, tumbol: string): void {
     province = province.replace(/มหานคร$/, '');
     this.http.get('/api/customerportal/newRegister/getAllProvinces').toPromise()
       .then((resp: any) => {
@@ -98,7 +98,7 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
     this.transactionService.save(this.transaction);
   }
 
-  private createTransaction() {
+  private createTransaction(): void {
     // this.transaction = {
     //   data: {
     //     transactionType: TransactionType.DEVICE_ORDER_EXISTING_AIS,
@@ -108,7 +108,7 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
     // delete this.transaction.data.customer;
   }
 
-  private mapCustomer(customer: any) {
+  private mapCustomer(customer: any): void {
     const fullName = (customer.name || ' ').split(' ');
     const address = customer.address || {};
 

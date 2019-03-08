@@ -17,7 +17,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 })
 export class OrderNewRegisterIdCardCapturePageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_NEW_REGISTER;
+  wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
   transaction: Transaction;
   captureAndSign: CaptureAndSign;
 
@@ -39,7 +39,7 @@ export class OrderNewRegisterIdCardCapturePageComponent implements OnInit, OnDes
     }
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const customer: Customer = this.transaction.data.customer;
     this.captureAndSign = {
       allowCapture: true,
@@ -48,17 +48,17 @@ export class OrderNewRegisterIdCardCapturePageComponent implements OnInit, OnDes
     };
   }
 
-  onCompleted(captureAndSign: CaptureAndSign) {
+  onCompleted(captureAndSign: CaptureAndSign): void {
     const customer: Customer = this.transaction.data.customer;
     customer.imageSignatureSmartCard = captureAndSign.imageSignature;
     customer.imageSmartCard = captureAndSign.imageSmartCard;
   }
 
-  onError(valid: boolean) {
+  onError(valid: boolean): void {
     this.idCardValid = valid;
   }
 
-  onBack() {
+  onBack(): void {
     if (this.transaction.data.customer.caNumber) {
       if (this.transaction.data.action === TransactionAction.KEY_IN) {
         this.router.navigate([ROUTE_ORDER_NEW_REGISTER_CUSTOMER_INFO_PAGE]);
@@ -70,11 +70,11 @@ export class OrderNewRegisterIdCardCapturePageComponent implements OnInit, OnDes
     }
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_ORDER_NEW_REGISTER_FACE_CAPTURE_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

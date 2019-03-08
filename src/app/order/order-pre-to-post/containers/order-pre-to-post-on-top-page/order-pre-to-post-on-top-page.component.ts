@@ -12,7 +12,6 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { HttpClient } from '@angular/common/http';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 
-
 @Component({
   selector: 'app-order-pre-to-post-on-top-page',
   templateUrl: './order-pre-to-post-on-top-page.component.html',
@@ -20,7 +19,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 })
 export class OrderPreToPostOnTopPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_PRE_TO_POST;
+  wizards: string[] = WIZARD_ORDER_PRE_TO_POST;
 
   promotionShelves: PromotionShelve[];
   transaction: Transaction;
@@ -35,11 +34,11 @@ export class OrderPreToPostOnTopPageComponent implements OnInit, OnDestroy {
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.callService();
   }
 
-  callService() {
+  callService(): void {
     // /api/customerportal/newRegister/queryOnTopPackage?orderType=Change%20Charge%20Type&billingSystem=IRB
     this.http.get('/api/customerportal/newRegister/queryOnTopPackage', {
       params: {
@@ -89,7 +88,7 @@ export class OrderPreToPostOnTopPageComponent implements OnInit, OnDestroy {
 
   }
 
-  onCompleted(promotion: any) {
+  onCompleted(promotion: any): void {
     this.transaction.data.mainPackage = promotion;
   }
 
@@ -97,10 +96,9 @@ export class OrderPreToPostOnTopPageComponent implements OnInit, OnDestroy {
     this.transactionService.update(this.transaction);
   }
 
+  onTermConditions(): void { }
 
-  onTermConditions() { }
-
-  onBack() {
+  onBack(): void {
     if (this.transaction.data.mainPackageOneLove) {
       this.router.navigate([ROUTE_ORDER_PRE_TO_POST_ONE_LOVE_PAGE]);
     } else {
@@ -108,13 +106,13 @@ export class OrderPreToPostOnTopPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  onNext() {
+  onNext(): void {
     this.isNetExtreme() ?
       this.router.navigate([ROUTE_ORDER_PRE_TO_POST_MERGE_BILLING_PAGE]) :
       this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

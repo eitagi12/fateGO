@@ -19,7 +19,7 @@ import {
 })
 export class OrderMnpCustomerInfoPageComponent implements OnInit {
 
-  wizards = WIZARD_ORDER_MNP;
+  wizards: string[] = WIZARD_ORDER_MNP;
 
   transaction: Transaction;
   customerInfo: CustomerInfo;
@@ -32,7 +32,7 @@ export class OrderMnpCustomerInfoPageComponent implements OnInit {
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const customer: Customer = this.transaction.data.customer;
     this.customerInfo = {
       titleName: customer.titleName,
@@ -45,7 +45,7 @@ export class OrderMnpCustomerInfoPageComponent implements OnInit {
     };
   }
 
-  onBack() {
+  onBack(): void {
     if (this.transaction.data.customer.caNumber) {
       if (this.transaction.data.action === TransactionAction.KEY_IN) {
         this.router.navigate([ROUTE_ORDER_MNP_VALIDATE_CUSTOMER_PAGE]);
@@ -57,7 +57,7 @@ export class OrderMnpCustomerInfoPageComponent implements OnInit {
     }
   }
 
-  onNext() {
+  onNext(): void {
     if (this.transaction.data.action === TransactionAction.KEY_IN) {
       this.router.navigate([ROUTE_ORDER_MNP_ID_CARD_CAPTURE_PAGE]);
     } else {
@@ -65,7 +65,7 @@ export class OrderMnpCustomerInfoPageComponent implements OnInit {
     }
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

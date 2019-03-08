@@ -13,7 +13,7 @@ import { ROUTE_ORDER_PRE_TO_POST_OTP_PAGE, ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUST
   styleUrls: ['./order-pre-to-post-customer-profile-page.component.scss']
 })
 export class OrderPreToPostCustomerProfilePageComponent implements OnInit, OnDestroy {
-  wizards = WIZARD_ORDER_PRE_TO_POST;
+  wizards: string[] = WIZARD_ORDER_PRE_TO_POST;
   transaction: Transaction;
   titleName: string;
   firstName: string;
@@ -29,23 +29,24 @@ export class OrderPreToPostCustomerProfilePageComponent implements OnInit, OnDes
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const data = this.transaction.data.customer;
     this.titleName = data.titleName;
     this.firstName = data.firstName;
     this.lastName = data.lastName;
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_OTP_PAGE]);
   }
-  onBack() {
+
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE]);
   }
 
-  onHome() {
-
+  onHome(): void {
   }
+
   ngOnDestroy(): void {
     this.transactionService.save(this.transaction);
   }

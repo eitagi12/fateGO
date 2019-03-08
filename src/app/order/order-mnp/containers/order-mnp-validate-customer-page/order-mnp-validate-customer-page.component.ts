@@ -19,7 +19,7 @@ import {
 export class OrderMnpValidateCustomerPageComponent implements OnInit, OnDestroy {
 
   transaction: Transaction;
-  identityValid = false;
+  identityValid: boolean = false;
   identity: string;
   billDeliveryAddress: BillDeliveryAddress;
 
@@ -33,31 +33,31 @@ export class OrderMnpValidateCustomerPageComponent implements OnInit, OnDestroy 
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.transaction.data.action = TransactionAction.KEY_IN;
   }
 
-  onError(valid: boolean) {
+  onError(valid: boolean): void {
     this.identityValid = valid;
   }
 
-  onCompleted(identity: string) {
+  onCompleted(identity: string): void {
     this.identity = identity;
   }
 
-  onReadCard() {
+  onReadCard(): void {
     this.router.navigate([ROUTE_ORDER_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_MNP_SELECT_REASON_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onNext() {
+  onNext(): void {
     this.pageLoadingService.openLoading();
     this.http.get(`/api/customerportal/validate-customer-mnp`, {
       params: {
@@ -118,7 +118,6 @@ export class OrderMnpValidateCustomerPageComponent implements OnInit, OnDestroy 
       });
 
   }
-
 
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);

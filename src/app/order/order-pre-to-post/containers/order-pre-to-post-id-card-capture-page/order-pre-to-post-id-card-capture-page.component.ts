@@ -16,7 +16,7 @@ import {
 })
 export class OrderPreToPostIdCardCapturePageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_PRE_TO_POST;
+  wizards: string[] = WIZARD_ORDER_PRE_TO_POST;
 
   transaction: Transaction;
   captureAndSign: CaptureAndSign;
@@ -39,7 +39,7 @@ export class OrderPreToPostIdCardCapturePageComponent implements OnInit, OnDestr
     }
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const customer: Customer = this.transaction.data.customer;
     this.captureAndSign = {
       allowCapture: true,
@@ -48,25 +48,25 @@ export class OrderPreToPostIdCardCapturePageComponent implements OnInit, OnDestr
     };
   }
 
-  onCompleted(captureAndSign: CaptureAndSign) {
+  onCompleted(captureAndSign: CaptureAndSign): void {
     const customer: Customer = this.transaction.data.customer;
     customer.imageSignatureSmartCard = captureAndSign.imageSignature;
     customer.imageSmartCard = captureAndSign.imageSmartCard;
   }
 
-  onError(valid: boolean) {
+  onError(valid: boolean): void {
     this.idCardValid = valid;
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CUSTOMER_INFO_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_SELECT_PACKAGE_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

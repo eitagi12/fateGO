@@ -26,7 +26,7 @@ export class CreateNewRegisterService {
     });
   }
 
-  saveFaceImage(transaction: Transaction) {
+  saveFaceImage(transaction: Transaction): void {
     const user = this.tokenService.getUser();
     const customer = transaction.data.customer;
     const faceRecognition = transaction.data.faceRecognition;
@@ -56,8 +56,6 @@ export class CreateNewRegisterService {
     }).toPromise().catch(() => { /* Ignore handdle error */ });
 
   }
-
-
 
   getRequestCreateNewRegister(transaction: Transaction): Promise<any> {
 
@@ -183,7 +181,6 @@ export class CreateNewRegisterService {
       data.mobileNoRef = ''; /*เบอร์รวมบิล*/
       data.mobileNoRef = billingInformation.mergeBilling.mobileNo[0];
     }
-
 
     if (this.isReadCard(action)) {
       data.imageReadSmartCard = customer.imageReadSmartCard;

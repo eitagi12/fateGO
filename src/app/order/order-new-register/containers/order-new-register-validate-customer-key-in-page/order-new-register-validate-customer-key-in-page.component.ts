@@ -33,35 +33,34 @@ export class OrderNewRegisterValidateCustomerKeyInPageComponent implements OnIni
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.activatedRoute.queryParams.subscribe((params: Params) => this.params = params);
-
     this.callService();
   }
 
-  onError(valid: boolean) {
+  onError(valid: boolean): void {
     this.keyInValid = valid;
   }
 
-  onCompleted(value: any) {
+  onCompleted(value: any): void {
     this.mapCustomerInfo(value);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     if (this.checkBusinessLogic()) {
       this.router.navigate([ROUTE_ORDER_NEW_REGISTER_ID_CARD_CAPTURE_PAGE]);
     }
   }
 
-  callService() {
+  callService(): void {
     this.customerService.queryCardType().then((resp: any) => {
       this.cardTypes = (resp.data.cardTypes || []).map((cardType: any) => cardType.name);
     });
@@ -71,7 +70,7 @@ export class OrderNewRegisterValidateCustomerKeyInPageComponent implements OnIni
     });
   }
 
-  mapCustomerInfo(customer: any) {
+  mapCustomerInfo(customer: any): void {
 
     const birthdate = customer.birthDay + '/' + customer.birthMonth + '/' + customer.birthYear;
     const expireDate = customer.expireDay + '/' + customer.expireMonth + '/' + customer.expireYear;

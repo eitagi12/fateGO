@@ -19,7 +19,7 @@ import { environment } from 'src/environments/environment';
 })
 export class OrderPreToPostOneLoveComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_PRE_TO_POST;
+  wizards: string[] = WIZARD_ORDER_PRE_TO_POST;
 
   oneLove: OneLove;
   transaction: Transaction;
@@ -36,7 +36,7 @@ export class OrderPreToPostOneLoveComponent implements OnInit, OnDestroy {
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const mainPackage = this.transaction.data.mainPackage;
     const numberOfMobile = mainPackage ? +mainPackage.numberOfMobile : 0;
     this.oneLove = {
@@ -45,18 +45,17 @@ export class OrderPreToPostOneLoveComponent implements OnInit, OnDestroy {
     };
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_SELECT_PACKAGE_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     const mainPackage = this.transaction.data.mainPackage;
     const parameters = mainPackage.parameters || [];
-
 
     this.transaction.data.mainPackageOneLove = this.mobileOneLove.map((mobileNo: string, index: number) => {
       const parameter: any[] = parameters[index].Parameter;
@@ -76,7 +75,7 @@ export class OrderPreToPostOneLoveComponent implements OnInit, OnDestroy {
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_ON_TOP_PAGE]);
   }
 
-  getParameterName(parameters: any[], name: string) {
+  getParameterName(parameters: any[], name: string): any {
     let parameter = parameters.find((param: any) => {
       return param.Name === name;
     });
@@ -87,11 +86,11 @@ export class OrderPreToPostOneLoveComponent implements OnInit, OnDestroy {
     return parameter;
   }
 
-  onCompleted(value: any) {
+  onCompleted(value: any): void {
     this.mobileOneLove = value;
   }
 
-  onError(error: boolean) {
+  onError(error: boolean): void {
     this.isError = error;
   }
 

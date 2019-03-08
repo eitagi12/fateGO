@@ -18,7 +18,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 })
 export class OrderMnpSelectReasonPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_MNP;
+  wizards: string[] = WIZARD_ORDER_MNP;
 
   transaction: Transaction;
   reasons: any[];
@@ -35,7 +35,7 @@ export class OrderMnpSelectReasonPageComponent implements OnInit, OnDestroy {
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.pageLoadingService.openLoading();
     this.createForm();
     this.callService();
@@ -48,11 +48,11 @@ export class OrderMnpSelectReasonPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_MNP_NETWORK_TYPE_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.transaction.data.reasonCode = this.reasonForm.value.reasonCode;
     this.transaction.data.simCard = {
       mobileNo: this.transaction.data.simCard.mobileNo,
@@ -61,11 +61,11 @@ export class OrderMnpSelectReasonPageComponent implements OnInit, OnDestroy {
     this.router.navigate([ROUTE_ORDER_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  callService() {
+  callService(): void {
     this.pageLoadingService.openLoading();
     this.http.get(`/api/customerportal/newRegister/queryOrderReasonByType`)
       .toPromise()
@@ -93,6 +93,4 @@ export class OrderMnpSelectReasonPageComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }
-
-
 }

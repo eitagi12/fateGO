@@ -16,7 +16,7 @@ import {
 })
 export class OrderNewRegisterCustomerInfoPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_NEW_REGISTER;
+  wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
 
   transaction: Transaction;
   customerInfo: CustomerInfo;
@@ -29,7 +29,7 @@ export class OrderNewRegisterCustomerInfoPageComponent implements OnInit, OnDest
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const customer: Customer = this.transaction.data.customer;
     this.customerInfo = {
       titleName: customer.titleName,
@@ -42,15 +42,15 @@ export class OrderNewRegisterCustomerInfoPageComponent implements OnInit, OnDest
     };
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_NEW_REGISTER_VALIDATE_CUSTOMER_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_ORDER_NEW_REGISTER_ID_CARD_CAPTURE_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

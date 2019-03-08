@@ -34,13 +34,13 @@ export class BrandPageComponent implements OnInit {
     private homeService: HomeService
   ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.callService();
     this.defaultTab();
     this.createDataSource();
   }
 
-  defaultTab() {
+  defaultTab(): void {
     this.activatedRoute.queryParams.subscribe((params: Params) => {
       if (!!params['tab']) {
         this.brandTabs.tabs[0].active = false;
@@ -52,19 +52,19 @@ export class BrandPageComponent implements OnInit {
     });
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEASHBOARD_PROMOTION_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onClearSearch() {
+  onClearSearch(): void {
     this.keyword = null;
   }
 
-  onBannerSliderSelected(bestSeller: BestSeller) {
+  onBannerSliderSelected(bestSeller: BestSeller): void {
     this.router.navigate([ROUTE_BUY_PRODUCT_PRODUCT_PAGE], {
       queryParams: {
         brand: bestSeller.brand,
@@ -73,13 +73,13 @@ export class BrandPageComponent implements OnInit {
     });
   }
 
-  onProductSearch(product: any) {
+  onProductSearch(product: any): void {
     if (product.item && product.item.brand) {
       this.productSearch = product.item;
     }
   }
 
-  onSearch() {
+  onSearch(): void {
     if (!this.productSearch) {
       this.alertService.warning('ไม่มีข้อมูลที่ต้องการค้นหา');
       return;
@@ -90,7 +90,7 @@ export class BrandPageComponent implements OnInit {
     });
   }
 
-  onTabSelected(tabName: string) {
+  onTabSelected(tabName: string): void {
     const queryParams: any = {};
     if ('brand' !== tabName) {
       queryParams.tab = tabName;
@@ -98,7 +98,7 @@ export class BrandPageComponent implements OnInit {
     this.router.navigate(['/buy-product/brand'], { queryParams: queryParams });
   }
 
-  private createDataSource() {
+  private createDataSource(): void {
     this.datasource = Observable.create((observer: any) => {
       observer.next(this.keyword);
     }).pipe(
@@ -112,7 +112,7 @@ export class BrandPageComponent implements OnInit {
     });
   }
 
-  private callService() {
+  private callService(): void {
     const locationCode = this.tokenService.getUser().locationCode;
 
     Promise.all([

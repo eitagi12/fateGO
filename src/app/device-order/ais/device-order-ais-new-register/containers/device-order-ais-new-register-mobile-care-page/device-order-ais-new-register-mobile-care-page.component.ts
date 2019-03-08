@@ -19,7 +19,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 })
 export class DeviceOrderAisNewRegisterMobileCarePageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   priceOption: PriceOption;
   transaction: Transaction;
@@ -37,24 +37,24 @@ export class DeviceOrderAisNewRegisterMobileCarePageComponent implements OnInit,
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     delete this.transaction.data.mobileCarePackage;
     this.callService();
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_SUMMARY_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onCompleted(mobileCare: any) {
+  onCompleted(mobileCare: any): void {
     this.transaction.data.mobileCarePackage = mobileCare;
   }
 
@@ -62,14 +62,14 @@ export class DeviceOrderAisNewRegisterMobileCarePageComponent implements OnInit,
     this.transactionService.update(this.transaction);
   }
 
-  callService() {
+  callService(): void {
     this.mobileCare = {
       campaignPrice: +this.priceOption.trade.normalPrice
-    };
+    } as any;
 
     this.pageLoadingService.openLoading();
 
-    const packageKeyRef = '1vP1Qbr1T6svJISttRAoZ0y95OsYxxh7bUnfMOAV8LmjpsVStlifT3fquoatH2JUz4LpfsD4tVY2p0LR'
+    const packageKeyRef = '1vP1Qbr1T6svJISttRAoZ0y95OsYxxh7bUnfMOAV8LmjpsVStlifT3fquoatH2JUz4LpfsD4tVY2p0LR';
     const chargeType = this.transaction.data.mainPackage['customAttributes'].billingSystem;
     const billingSystem = this.transaction.data.simCard.billingSystem || 'IRB';
     const endUserPrice = +this.priceOption.trade.normalPrice;
@@ -99,7 +99,7 @@ export class DeviceOrderAisNewRegisterMobileCarePageComponent implements OnInit,
           'value': 'IRB'
         }];
 
-        let promiseAll = mobileCareGroups.map((promotion: MobileCareGroup) => {
+        const promiseAll = mobileCareGroups.map((promotion: MobileCareGroup) => {
 
           return this.http.post('/api/salesportal/promotion-shelves/promotion', {
             userId: packageKeyRef,
@@ -109,8 +109,8 @@ export class DeviceOrderAisNewRegisterMobileCarePageComponent implements OnInit,
             const data = resp.data.data || [];
 
             // reference object
-            const promotions = data.filter((promotion: any) => {
-              const customAttributes: any = promotion.customAttributes;
+            const promotions = data.filter((_promotion: any) => {
+              const customAttributes: any = _promotion.customAttributes;
 
               if ((/^Bundle/i).test(customAttributes.offerType)
                 || !(customAttributes.chargeType === 'All' || customAttributes.chargeType === chargeType)) {
@@ -136,32 +136,32 @@ export class DeviceOrderAisNewRegisterMobileCarePageComponent implements OnInit,
                 return 0;
               }
             })
-              .sort((a) => a.customAttributes.priceType === 'Recurring' ? 1 : -1)
+              .sort((a) => a.customAttributes.priceType === 'Recurring' ? 1 : -1);
             // sort priceType 'Recurring' first
 
-            promotion.items = promotions.filter((promotion: any) => {
-              const packageType: any[] = (promotion.customAttributes.packageType || '').split(',');
+            promotion.items = promotions.filter((_promotion: any) => {
+              const packageType: any[] = (_promotion.customAttributes.packageType || '').split(',');
               return packageType.filter(pkg => !(/^(Emerald|Gold|Platinum)$/i).test(pkg.trim())).length > 0;
-            }).map((promotion: any) => {
+            }).map((_promotion: any) => {
               return {
-                id: promotion.id,
-                title: promotion.title,
-                priceExclVat: +promotion.customAttributes.priceExclVat,
-                value: promotion
-              }
+                id: _promotion.id,
+                title: _promotion.title,
+                priceExclVat: +_promotion.customAttributes.priceExclVat,
+                value: _promotion
+              };
             });
 
             const mobileSegment = '';
-            promotion.itemsSerenade = promotions.filter((promotion: any) => {
-              const packageType: any[] = (promotion.customAttributes.packageType || '').split(',');
-              return mobileSegment && packageType.filter(pkg => mobileSegment == pkg.trim()).length > 0;
-            }).map((promotion: any) => {
+            promotion.itemsSerenade = promotions.filter((_promotion: any) => {
+              const packageType: any[] = (_promotion.customAttributes.packageType || '').split(',');
+              return mobileSegment && packageType.filter(pkg => mobileSegment === pkg.trim()).length > 0;
+            }).map((_promotion: any) => {
               return {
-                id: promotion.id,
-                title: promotion.title,
-                priceExclVat: +promotion.customAttributes.priceExclVat,
-                value: promotion
-              }
+                id: _promotion.id,
+                title: _promotion.title,
+                priceExclVat: +_promotion.customAttributes.priceExclVat,
+                value: _promotion
+              };
             });
 
           });

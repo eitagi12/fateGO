@@ -21,12 +21,10 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 })
 export class OrderMnpNetworkTypePageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_MNP;
+  wizards: string[] = WIZARD_ORDER_MNP;
 
   transaction: Transaction;
   mnpForm: FormGroup;
-
-
 
   constructor(
     private router: Router,
@@ -41,7 +39,7 @@ export class OrderMnpNetworkTypePageComponent implements OnInit, OnDestroy {
     this.createTransaction();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.createForm();
   }
 
@@ -52,11 +50,11 @@ export class OrderMnpNetworkTypePageComponent implements OnInit, OnDestroy {
     });
   }
 
-  onBack() {
+  onBack(): void {
     this.homeService.goToHome();
   }
 
-  onNext() {
+  onNext(): void {
     this.pageLoadingService.openLoading();
     this.http.post(`/api/customerportal/newRegister/getCCCustInfo/${this.mnpForm.value.mobileNo}`, {
     }).toPromise()
@@ -66,7 +64,6 @@ export class OrderMnpNetworkTypePageComponent implements OnInit, OnDestroy {
           && resp.data.data.A_GetCCCustInfoResponse
           && resp.data.data.A_GetCCCustInfoResponse.outbuf
           ? resp.data.data.A_GetCCCustInfoResponse.outbuf : {};
-
 
         const mobileNoStatus = (outbuf.mobileNoStatus || '').trim();
         const networkType = (outbuf.networkType || '').trim();
@@ -99,7 +96,7 @@ export class OrderMnpNetworkTypePageComponent implements OnInit, OnDestroy {
 
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
@@ -107,7 +104,7 @@ export class OrderMnpNetworkTypePageComponent implements OnInit, OnDestroy {
     this.transactionService.save(this.transaction);
   }
 
-  private createTransaction() {
+  private createTransaction(): void {
     // New x-api-request-id
     this.apiRequestService.createRequestId();
 
@@ -119,4 +116,3 @@ export class OrderMnpNetworkTypePageComponent implements OnInit, OnDestroy {
     };
   }
 }
-

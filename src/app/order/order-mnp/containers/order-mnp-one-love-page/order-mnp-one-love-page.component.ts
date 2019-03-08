@@ -19,7 +19,7 @@ import { environment } from 'src/environments/environment';
 })
 export class OrderMnpOneLovePageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_MNP;
+  wizards: string[] = WIZARD_ORDER_MNP;
   oneLove: OneLove;
   transaction: Transaction;
   mobileOneLove: string[];
@@ -36,7 +36,7 @@ export class OrderMnpOneLovePageComponent implements OnInit, OnDestroy {
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const mainPackage = this.transaction.data.mainPackage;
     const numberOfMobile = mainPackage ? +mainPackage.numberOfMobile : 0;
     this.oneLove = {
@@ -45,15 +45,15 @@ export class OrderMnpOneLovePageComponent implements OnInit, OnDestroy {
     };
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_MNP_SELECT_PACKAGE_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     const mainPackage = this.transaction.data.mainPackage;
     const parameters = mainPackage.parameters || [];
 
@@ -69,11 +69,11 @@ export class OrderMnpOneLovePageComponent implements OnInit, OnDestroy {
     this.router.navigate([ROUTE_ORDER_MNP_ON_TOP_PAGE]);
   }
 
-  onCompleted(value: any) {
+  onCompleted(value: any): void {
     this.mobileOneLove = value;
   }
 
-  onError(error: boolean) {
+  onError(error: boolean): void {
     this.isError = error;
   }
 

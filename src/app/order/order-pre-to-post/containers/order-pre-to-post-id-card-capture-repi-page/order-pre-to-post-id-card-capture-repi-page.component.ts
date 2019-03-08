@@ -16,7 +16,7 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./order-pre-to-post-id-card-capture-repi-page.component.scss']
 })
 export class OrderPreToPostIdCardCaptureRepiPageComponent implements OnInit, OnDestroy {
-  wizards = WIZARD_ORDER_PRE_TO_POST;
+  wizards: string[] = WIZARD_ORDER_PRE_TO_POST;
 
   transaction: Transaction;
   captureAndSign: CaptureAndSign;
@@ -40,7 +40,8 @@ export class OrderPreToPostIdCardCaptureRepiPageComponent implements OnInit, OnD
       this.apiSigned = 'SignaturePad';
     }
   }
-  ngOnInit() {
+
+  ngOnInit(): void {
     const customer: Customer = this.transaction.data.customer;
     this.captureAndSign = {
       allowCapture: true,
@@ -49,21 +50,21 @@ export class OrderPreToPostIdCardCaptureRepiPageComponent implements OnInit, OnD
     };
   }
 
-  onCompleted(captureAndSign: CaptureAndSign) {
+  onCompleted(captureAndSign: CaptureAndSign): void {
     const customer: Customer = this.transaction.data.customer;
     customer.imageSignatureSmartCard = captureAndSign.imageSignature;
     customer.imageSmartCard = captureAndSign.imageSmartCard;
   }
 
-  onError(valid: boolean) {
+  onError(valid: boolean): void {
     this.idCardValid = valid;
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_OTP_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.http.post(`/api/customerportal/newRegister/updatePrepaidIdent`,
       this.getRequestUpdatePrepaidIdent()
     ).toPromise()
@@ -75,7 +76,7 @@ export class OrderPreToPostIdCardCaptureRepiPageComponent implements OnInit, OnD
       });
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
@@ -83,7 +84,7 @@ export class OrderPreToPostIdCardCaptureRepiPageComponent implements OnInit, OnD
     this.transactionService.update(this.transaction);
   }
 
-  getRequestUpdatePrepaidIdent() {
+  getRequestUpdatePrepaidIdent(): void {
     const customer = this.transaction.data.customer;
     const mobileNo = this.transaction.data.simCard.mobileNo;
     const data: any = {

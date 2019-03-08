@@ -18,7 +18,7 @@ import { ConfirmCustomerInfo } from 'mychannel-shared-libs';
 })
 export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implements OnInit {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   transaction: Transaction;
   confirmCustomerInfo: ConfirmCustomerInfo;
@@ -33,7 +33,7 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const customer = this.transaction.data.customer;
     const mainPackage = this.transaction.data.mainPackage;
     this.confirmCustomerInfo = {
@@ -48,28 +48,28 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
     };
   }
 
-  onTelNoBillingCompleted(event: any) {
+  onTelNoBillingCompleted(event: any): void {
     console.log('onTelNoBillingCompleted ', event);
   }
 
-  onTelNoBillingError(valid: boolean) {
+  onTelNoBillingError(valid: boolean): void {
     console.log('onTelNoBillingError ', valid);
     this.isTelNoBillingValid = valid;
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_SELECT_PACKAGE_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_MOBILE_CARE_PAGE]);
   }
 
-  onEditAddress() {
+  onEditAddress(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_EDIT_BILLING_ADDRESS_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

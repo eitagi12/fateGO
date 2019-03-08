@@ -23,7 +23,8 @@
     "import-spacing": true,
     "indent": [
       true,
-      "spaces"
+      "spaces",
+      2
     ],
     "interface-over-type-literal": true,
     "label-position": true,
@@ -59,11 +60,12 @@
     "no-construct": true,
     "no-debugger": true,
     "no-duplicate-super": true,
+    "no-duplicate-variable": true,
     "no-empty": false,
     "no-empty-interface": true,
     "no-eval": true,
     "no-inferrable-types": [
-      true,
+      false,
       "ignore-params"
     ],
     "no-misused-new": true,
@@ -78,6 +80,7 @@
     "no-use-before-declare": true,
     "no-var-keyword": true,
     "object-literal-sort-keys": false,
+    "no-consecutive-blank-lines": true,
     "one-line": [
       true,
       "check-open-brace",
@@ -109,6 +112,13 @@
         "variable-declaration": "nospace"
       }
     ],
+    "typedef": [
+      true,
+      "call-signature",
+      "property-declaration",
+      "parameter",
+      "member-variable-declaration"
+    ],
     "unified-signatures": true,
     "variable-name": false,
     "whitespace": [
@@ -117,7 +127,8 @@
       "check-decl",
       "check-operator",
       "check-separator",
-      "check-type"
+      "check-type",
+      "check-type-operator"
     ],
     "no-output-on-prefix": true,
     "use-input-property-decorator": true,
@@ -128,6 +139,7 @@
     "use-life-cycle-interface": true,
     "use-pipe-transform-interface": true,
     "component-class-suffix": true,
-    "directive-class-suffix": true
+    "directive-class-suffix": true,
+    "space-before-function-paren": [true, "never"]
   }
 }
