@@ -24,4 +24,8 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit {
     this.router.navigate([ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_PAGE]);
   }
 
+  onHome(): void {
+    // do something
+  }
+
 }
