@@ -17,12 +17,8 @@ export class DeviceOrderAisExistingBestBuyResultPageComponent implements OnInit 
   isSuccess: boolean;
 
   constructor(
-    private router: Router,
     private homeService: HomeService,
-    private pageLoadingService: PageLoadingService,
-    private transactionService: TransactionService,
-    private apiRequestService: ApiRequestService,
-    private http: HttpClient
+    private transactionService: TransactionService
   ) {
     this.transaction = this.transactionService.load();
    }

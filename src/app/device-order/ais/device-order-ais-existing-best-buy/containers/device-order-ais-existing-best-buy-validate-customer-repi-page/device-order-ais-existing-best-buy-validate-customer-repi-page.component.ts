@@ -5,10 +5,9 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { HttpClient } from '@angular/common/http';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
-import { Transaction, BillDeliveryAddress, Customer, TransactionAction, TransactionType } from 'src/app/shared/models/transaction.model';
+import { Transaction, BillDeliveryAddress, Customer, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
-import { AbstractControl, ValidationErrors } from '@angular/forms';
+import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_RPI_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-validate-customer-repi-page',
@@ -18,7 +17,7 @@ import { AbstractControl, ValidationErrors } from '@angular/forms';
 export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent implements OnInit, OnDestroy {
 
   wizards = WIZARD_DEVICE_ORDER_AIS;
-  readonly PLACEHOLDER = '(หมายเลขโทรศัพท์ / เลขบัตรประชาชน)';
+  readonly PLACEHOLDER = '(เลขบัตรประชาชน)';
   readonly PLACEHOLDER_HEADDER = 'กรอกเอกสารแสดงตน';
 
   transaction: Transaction;
@@ -34,10 +33,8 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
     private homeService: HomeService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private apiRequestService: ApiRequestService,
     private http: HttpClient,
-    private utils: Utils,
-    private priceOptionService: PriceOptionService
+    private utils: Utils
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -55,7 +52,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
 
   onReadCard() {
     this.transaction.data.action = TransactionAction.READ_CARD_REPI;
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_RPI_PAGE]);
   }
 
   onHome() {

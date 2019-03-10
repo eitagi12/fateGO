@@ -171,6 +171,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     }
 
     this.transaction = {
+      transactionId: this.createDeviceOrderBestBuyService.generateTransactionId(this.apiRequestService.getCurrentRequestId()),
       data: {
         transactionType: TransactionType.DEVICE_ORDER_EXISTING_AIS,
         action: TransactionAction.KEY_IN,
@@ -205,12 +206,12 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
   }
 
   setMainPromotion(): MainPromotion {
-    const cammapign = this.localStorageService.load('priceOption').value;
+    const campaign = this.localStorageService.load('priceOption').value;
     const privilege = this.localStorageService.load('priceOptionPrivilege').value;
     const trade = this.localStorageService.load('priceOptionPrivilegeTrade').value;
 
     const mainPromotion: MainPromotion = {
-      cammapign: cammapign,
+      campaign: campaign,
       privilege: privilege,
       trade: trade
     };
@@ -236,7 +237,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     // };
 
     this.priceOption = {
-      campaign: mainPromotion.cammapign,
+      campaign: mainPromotion.campaign,
       trade: mainPromotion.trade,
       productDetail: productDetail,
       productStock: productInfo

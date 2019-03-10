@@ -66,7 +66,6 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
 
   ngOnInit() {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-    
       const productDetail = this.priceOption.productDetail;
       const productInfo = this.priceOption.productStock;
       if (this.priceOption.trade.payments.length > 0) {

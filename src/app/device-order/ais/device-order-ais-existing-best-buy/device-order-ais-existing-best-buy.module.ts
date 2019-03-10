@@ -15,17 +15,17 @@ import { DeviceOrderAisExistingBestBuyQueuePageComponent } from './containers/de
 import { DeviceOrderAisExistingBestBuyResultPageComponent } from './containers/device-order-ais-existing-best-buy-result-page/device-order-ais-existing-best-buy-result-page.component';
 import { DeviceOrderAisExistingBestBuySummaryPageComponent } from './containers/device-order-ais-existing-best-buy-summary-page/device-order-ais-existing-best-buy-summary-page.component';
 import { DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent } from './containers/device-order-ais-existing-best-buy-validate-customer-id-card-page/device-order-ais-existing-best-buy-validate-customer-id-card-page.component';
-import { DeviceOrderAisExistingBestBuyValidateCustomerKeyInPageComponent } from './containers/device-order-ais-existing-best-buy-validate-customer-key-in-page/device-order-ais-existing-best-buy-validate-customer-key-in-page.component';
 import { DeviceOrderAisExistingBestBuyValidateCustomerPageComponent } from './containers/device-order-ais-existing-best-buy-validate-customer-page/device-order-ais-existing-best-buy-validate-customer-page.component';
-import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent } from './containers/device-order-ais-existing-best-buy-validate-customer-repi-page/device-order-ais-existing-best-buy-validate-customer-repi-page.component';
 import { DeviceOrderAisExistingBestBuyCustomerProfilePageComponent } from './containers/device-order-ais-existing-best-buy-customer-profile-page/device-order-ais-existing-best-buy-customer-profile-page.component';
 import { DeviceOrderAisExistingBestBuyOtpPageComponent } from './containers/device-order-ais-existing-best-buy-otp-page/device-order-ais-existing-best-buy-otp-page.component';
-import { CreateDeviceOrderBestBuyService } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/service/create-device-order-best-buy.service';
 import { DeviceOrderAisExistingBestBuyQrCodePaymentGeneratorPageComponent } from './containers/device-order-ais-existing-best-buy-qr-code-payment-generator-page/device-order-ais-existing-best-buy-qr-code-payment-generator-page.component';
 import { DeviceOrderAisExistingBestBuyQrCodeSummaryPageComponent } from './containers/device-order-ais-existing-best-buy-qr-code-summary-page/device-order-ais-existing-best-buy-qr-code-summary-page.component';
 import { DeviceOrderAisExistingBestBuyQrCodeErrorPageComponent } from './containers/device-order-ais-existing-best-buy-qr-code-error-page/device-order-ais-existing-best-buy-qr-code-error-page.component';
 import { DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent } from './containers/device-order-ais-existing-best-buy-qr-code-queue-page/device-order-ais-existing-best-buy-qr-code-queue-page.component';
+import { DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponent } from './containers/device-order-ais-existing-best-buy-validate-customer-id-card-repi-page/device-order-ais-existing-best-buy-validate-customer-id-card-repi-page.component';
+import { CreateDeviceOrderBestBuyService } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/service/create-device-order-best-buy.service';
+import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 
 @NgModule({
   imports: [
@@ -48,7 +48,6 @@ import { DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent } from './contain
     DeviceOrderAisExistingBestBuyResultPageComponent,
     DeviceOrderAisExistingBestBuySummaryPageComponent,
     DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent,
-    DeviceOrderAisExistingBestBuyValidateCustomerKeyInPageComponent,
     DeviceOrderAisExistingBestBuyValidateCustomerPageComponent,
     DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent,
     DeviceOrderAisExistingBestBuyCustomerProfilePageComponent,
@@ -56,7 +55,8 @@ import { DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent } from './contain
     DeviceOrderAisExistingBestBuyQrCodePaymentGeneratorPageComponent,
     DeviceOrderAisExistingBestBuyQrCodeSummaryPageComponent,
     DeviceOrderAisExistingBestBuyQrCodeErrorPageComponent,
-    DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent
+    DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent,
+    DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponent
   ],
   providers: [
     CreateDeviceOrderBestBuyService

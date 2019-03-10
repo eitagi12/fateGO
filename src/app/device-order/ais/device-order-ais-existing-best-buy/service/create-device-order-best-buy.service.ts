@@ -38,29 +38,21 @@ export const REMARK_RABBIT_LINE_PAY_PAYMENT = '[RL]';
 })
 export class CreateDeviceOrderBestBuyService {
 
-  priceOption: PriceOption;
-  transaction: Transaction;
   user: User;
-  _cookieService: any;
-  jwtHelper: any;
-  defaultEmployeeeCode: any;
 
   constructor(
     private http: HttpClient,
     private utils: Utils,
     private tokenService: TokenService,
-    private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
     private apiRequestService: ApiRequestService
   ) {
-    this.transaction = this.transactionService.load();
-    this.priceOption = this.priceOptionService.load();
     this.user = this.tokenService.getUser();
   }
 
-  private callAddToCart(transaction, priceOption): Promise<any> {
+  private callAddToCart(transaction: Transaction, priceOption: PriceOption): Promise<any> {
     const device = priceOption.productStock;
-    const preBooking: Prebooking = transaction.data.prebooking || {};
+    const preBooking: Prebooking = transaction.data.prebooking;
     const customer = transaction.data.customer;
     const cusNameOrder = customer.firstName && customer.lastName ? `${customer.firstName} ${customer.lastName}` : '-';
     const requestData: any = {
@@ -90,13 +82,12 @@ export class CreateDeviceOrderBestBuyService {
     });
   }
 
-  private createTransaction(transaction, priceOption): Promise<any> {
-
-    return this.http.post('/api/salesportal/device-order/create-transaction', this.mapCreateTransactionDB(transaction, priceOption))
+  private createTransaction(transaction: Transaction, priceOption: PriceOption): Promise<any> {
+    return this.http.post('/api/salesportal/device-order/create-transaction', this.mapCreateTransactionDb(transaction, priceOption))
       .toPromise().then(resp => transaction);
   }
 
-  createAddToCartTrasaction(transaction, priceOption) {
+  createAddToCartTrasaction(transaction: Transaction, priceOption: PriceOption) {
     return new Promise((resolve, reject) => {
       if (transaction
         && transaction.data
@@ -121,72 +112,54 @@ export class CreateDeviceOrderBestBuyService {
 
   }
 
-  createDeviceOrder(transaction: Transaction, queueNo: string): any {
-
-    return this.getRequestCreateOrder(transaction, queueNo).then((data) => {
-      this.updateOrder(transaction, data);
-      // console.log(data);
-      return this.http.post('/api/salesportal/device-sell/order', data).toPromise()
-        .then((response: any) => {
-          if (response) {
-            if (response.resultCode === 'S') {
-              return response;
-            } else {
-              switch (response.resultMessage) {
-                case 'QueueNo is duplicated':
-                  throw 'เลขที่คิวซ้ำ กรุณาระบุใหม่';
-                default:
-                  throw 'Fail to create the order';
+  createDeviceOrder(transaction: Transaction, priceOption: PriceOption): Promise<any> {
+    return new Promise((resolve, reject) => {
+      this.getRequestCreateOrder(transaction, priceOption).then((data) => {
+        this.http.post('/api/salesportal/device-sell/order', data).toPromise()
+          .then((response: any) => {
+            if (response) {
+              if (response.resultCode === 'S') {
+                this.updateTransactionOrder(transaction, priceOption).then((updateStatus) => {
+                  resolve(updateStatus);
+                }).catch((err) => reject('อัพเดทพัง'));
+              } else {
+                switch (response.resultMessage) {
+                  case 'QueueNo is duplicated':
+                    reject('เลขที่คิวซ้ำ กรุณาระบุใหม่');
+                    break;
+                  default:
+                    reject('Fail to create the order');
+                }
               }
+            } else {
+              reject('Fail');
             }
-          } else {
-            throw 'Fail';
-          }
-        });
+          });
+      });
     });
   }
 
-  getQueueByNumber(mobileNo: string): Promise<any> {
-    const body = {
-      mobileNo: mobileNo
-    };
-    return this.http.post('/api/salesportal/device-order/transaction/get-queue-qmatic', body).toPromise();
+  private updateTransactionOrder(transaction: Transaction, priceOption: PriceOption) {
+    const shareTrasaction = this.mapUpdateTransactionDb(transaction, priceOption);
+    return this.http.post('/api/salesportal/device-order/update-transaction', shareTrasaction).toPromise();
   }
 
-  updateOrder(transaction: Transaction, data: any): Promise<any> {
-
-    transaction.data.order = {
-      soId: data.soId ? data.soId : ''
-    };
-
-    transaction.data.queue = {
-      queueNo: data.queueNo ? data.queueNo : ''
-    };
-
-    transaction.issueBy = this.user.username;
-
-    // transaction.data.status = {
-    //   code: '002',
-    //   description: 'Waiting Payment'
-    // };
-
-    return this.http.post('/api/salesportal/device-order/update-transaction', transaction).toPromise();
-  }
-
-  getRequestCreateOrder(transaction: Transaction, queueNo: string): Promise<any> {
+  private getRequestCreateOrder(transaction: Transaction, priceOption: PriceOption): Promise<any> {
 
     const user = this.tokenService.getUser();
-    const action = transaction.data.action;
     const customer = transaction.data.customer;
-    const productStock = this.priceOption.productStock;
-    const trade = this.priceOption.trade;
+    const productStock = priceOption.productStock;
+    const trade = priceOption.trade;
     const payment = transaction.data.payment;
     const advancePayment = transaction.data.advancePayment;
     const simCard = transaction.data.simCard;
-    const mainPackage = transaction.data.mainPackage;
+    const queue = transaction.data.queue;
+    const seller = transaction.data.seller;
+    const prebooking = transaction.data.prebooking;
+    const mobileCare = transaction.data.mobileCarePackage;
 
     const data: any = {
-      soId: '', // this.soId,
+      soId: transaction.data.order.soId || '',
       soCompany: productStock.stock.company,
       locationSource: user.locationCode,
       locationReceipt: user.locationCode,
@@ -200,8 +173,8 @@ export class CreateDeviceOrderBestBuyService {
       priceDiscountAmt: trade.discount.amount.toFixed(2),
       grandTotalAmt: this.getGrandTotalAmt(trade),
       userId: user.username,
-      saleCode: '', // seller && seller.sellerNo || '',
-      queueNo: queueNo || '',
+      saleCode: seller.employeeId || '',
+      queueNo: queue.queueNo || '',
       cusNameOrder: customer.titleName + ' ' + customer.firstName + ' ' + customer.lastName,
       taxCardId: customer.idCardNo || '',
       cusMobileNoOrder: simCard.mobileNo || '',
@@ -210,9 +183,9 @@ export class CreateDeviceOrderBestBuyService {
       ussdCode: trade.ussdCode,
       returnCode: customer.privilegeCode,
       cashBackFlg: '',
-      matAirTime: trade.advancePay ? trade.advancePay.matAirtime : '',
+      matAirTime: '',
       matCodeFreeGoods: '',
-      paymentRemark: this.getOrderRemark(undefined, trade, payment, advancePayment, undefined, queueNo, transaction),
+      paymentRemark: this.getOrderRemark(trade, payment, advancePayment, mobileCare, queue.queueNo, transaction),
       installmentTerm: payment && payment.bank ? payment.bank.installments[0].installmentMonth : 0,
       installmentRate: payment && payment.bank ? payment.bank.installments[0].installmentPercentage : 0,
       mobileAisFlg: 'Y',
@@ -224,8 +197,8 @@ export class CreateDeviceOrderBestBuyService {
       tradeAirtimeId: trade.advancePay ? trade.advancePay.tradeAirtimeId : '',
       focCode: '',
       bankAbbr: this.getBankCode(payment, advancePayment),
-      preBookingNo: '',
-      depositAmt: '',
+      preBookingNo: prebooking ? prebooking.preBookingNo : '',
+      depositAmt: prebooking ? prebooking.depositAmt : '',
     };
 
     return Promise.resolve(data);
@@ -245,12 +218,12 @@ export class CreateDeviceOrderBestBuyService {
     return paymentMethod;
   }
 
-  getBankCode(payment: Payment, advancePayment: Payment): string {
+  private getBankCode(payment: Payment, advancePayment: Payment): string {
     return payment && payment.bank ? payment.bank.abb : '' + '|' + advancePayment && advancePayment.bank ? advancePayment.bank.abb : '';
   }
 
-  getOrderRemark(
-    promotion: any,
+  private getOrderRemark(
+    // promotion: any,
     trade: any,
     payment: Payment,
     advancePayment: Payment,
@@ -324,10 +297,12 @@ export class CreateDeviceOrderBestBuyService {
     otherInformation += REMARK_SUMMARY_DISCOUNT + space + summaryDiscount + comma + space;
     otherInformation += REMARK_DISCOUNT + space + trade.discount.amount.toFixed(2) + comma + space;
     otherInformation += REMARK_RETURN_CODE + space + customer.privilegeCode + comma + space;
-    otherInformation += REMARK_ORDER_TYPE + space + 'MC001' + comma + space;
-    otherInformation += REMARK_PRMOTION_CODE + space + 'remark.mainPackageCode' + comma + space;
-    otherInformation += REMARK_MOBILE_CARE_CODE + space + mobileCare.customAttributes.promotionCode + comma + space;
-    otherInformation += REMARK_MOBILE_CARE + space + mobileCare.customAttributes.shortNameThai + comma + space;
+    otherInformation += REMARK_ORDER_TYPE + space + 'MC004' + comma + space;
+    if (mobileCare) {
+      otherInformation += REMARK_PRMOTION_CODE + space + 'remark.mainPackageCode' + comma + space;
+      otherInformation += REMARK_MOBILE_CARE_CODE + space + mobileCare.customAttributes.promotionCode + comma + space;
+      otherInformation += REMARK_MOBILE_CARE + space + mobileCare.customAttributes.shortNameThai + comma + space;
+    }
     otherInformation += REMARK_PRIVILEGE_DESC + space + 'remark.privilegeDesc' + comma + space;
     otherInformation += REMARK_QUEUE_NUMBER + space + queueNo;
 
@@ -337,13 +312,7 @@ export class CreateDeviceOrderBestBuyService {
 
   }
 
-  public getUsername(): any {
-    return this._cookieService.get('accessToken')
-      ? this.jwtHelper.decodeToken(this._cookieService.get('accessToken')).username
-      : this.defaultEmployeeeCode;
-  }
-
-  getGrandTotalAmt(trade: any): string {
+  private getGrandTotalAmt(trade: any): string {
 
     const normalPrice: number = trade.normalPrice;
     const advancePay: number = trade.advancePay.amount;
@@ -358,7 +327,7 @@ export class CreateDeviceOrderBestBuyService {
     return result.toFixed(2) || '';
   }
 
-  getCustomerAddress(customer: Customer) {
+  private getCustomerAddress(customer: Customer) {
     return {
       addrNo: customer.homeNo,
       moo: customer.moo,
@@ -376,29 +345,70 @@ export class CreateDeviceOrderBestBuyService {
     };
   }
 
-  // private generateTransactionId(): any {
-  //   let emptyString = '';
-  //   const alphabet = 'abcdefghijklmnopqrstuvwxyz';
-  //   while (emptyString.length < 2) {
-  //     emptyString += alphabet[Math.floor(Math.random() * alphabet.length)];
-  //   }
-  //   const randomAlphabet: string = emptyString;
-  //   const today: any = moment().format('YYYYMMD');
-  //   const randomNumber: string = Math.floor(Math.random() * 1000000).toString();
-  //   const transactionId: string = randomAlphabet + today + randomNumber;
-  //   return transactionId;
-  // }
+  generateTransactionId(requestId: string): any {
+    let emptyString = '';
+    const alphabet = 'abcdefghijklmnopqrstuvwxyz';
+    while (emptyString.length < 2) {
+      emptyString += alphabet[Math.floor(Math.random() * alphabet.length)];
+    }
+    const randomAlphabet: string = emptyString;
+    const transactionId: string = randomAlphabet + requestId;
+    return transactionId;
+  }
 
-  private mapCreateTransactionDB(transaction, priceOption) {
+  private mapCreateTransactionDb(transaction: Transaction, priceOption: PriceOption) {
     const username: any = this.tokenService.getUser().username;
+    return {
+      transactionId: transaction.transactionId,
+      data: {
+        ...transaction.data,
+        main_promotion: transaction.data.mainPromotion,
+        device: this.getDevice(priceOption),
+        status: {
+          code: '001',
+          description: 'pending'
+        }
+      },
+      create_by: username,
+      issueBy: transaction.issueBy || username,
+      last_update_by: username
+    };
+  }
+
+  private mapUpdateTransactionDb(transaction: Transaction, priceOption: PriceOption) {
+    return {
+      transactionId: transaction.transactionId,
+      data: {
+        customer: transaction.data.customer,
+        main_promotion: transaction.data.mainPromotion,
+        air_time: transaction.data.advancePayment,
+        sim_card: transaction.data.simCard,
+        main_package: transaction.data.mainPackage || null,
+        device: this.getDevice(priceOption),
+        mobile_care_package: transaction.data.mobileCarePackage,
+        existing_mobile_care_package: transaction.data.existingMobileCare,
+        preBooking: transaction.data.prebooking,
+        billing_information: transaction.data.billingInformation,
+        queue: transaction.data.queue.queueNo,
+        seller: transaction.data.seller,
+        order: transaction.data.order,
+        provision: {},
+        currentProcess: {},
+        status: {
+          code: '002',
+          description: 'Waiting Payment'
+        },
+        transactionType: transaction.data.transactionType
+      },
+      issueBy: this.user.username,
+      last_update_by: this.user.username
+    };
+  }
+
+  private getDevice(priceOption: PriceOption) {
     const product: any = priceOption.productStock;
     const productDetail: any = priceOption.productDetail;
-    const main_promotion = {
-      campaign: priceOption.campaign,
-      privilege: priceOption.privilege,
-      trade: priceOption.trade
-    };
-    const device = {
+    return {
       model: productDetail.model,
       brand: productDetail.brand,
       amount: 1,
@@ -407,22 +417,6 @@ export class CreateDeviceOrderBestBuyService {
       colorCode: product.colorCode,
       productType: productDetail.productType,
       productSubtype: productDetail.productSubType
-    };
-
-    return {
-      transactionId: this.apiRequestService.getCurrentRequestId(),
-      data: {
-        ...transaction.data,
-        main_promotion: main_promotion,
-        device: device,
-        status: {
-          code: '001',
-          description: 'pending'
-        }
-      },
-      create_by: transaction.create_by,
-      issueBy: transaction.issueBy || username,
-      last_update_by: username
     };
   }
 

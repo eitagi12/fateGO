@@ -56,6 +56,7 @@ export interface TransactionData {
   receiptInfo?: ReceiptInfo;
   queue?: Queue;
   prebooking?: Prebooking;
+  status?: Status;
 }
 
 export interface ProductStock {
@@ -83,7 +84,7 @@ export interface Payment {
   bank: PaymentDetailBank;
 }
 export interface MainPromotion {
-  cammapign: any;
+  campaign: any;
   privilege?: any;
   trade?: any;
 }
@@ -281,4 +282,9 @@ export interface Prebooking {
   preBookingNo: string;
   depositAmt: string;
   reserveNo: string;
+}
+
+export interface Status {
+  code: string;
+  description: string;
 }

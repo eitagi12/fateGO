@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { TokenService, ErrorsService, AlertService, PageActivityService, HomeService } from 'mychannel-shared-libs';
+import { TokenService, ErrorsService, AlertService, PageActivityService, HomeService, ChannelType } from 'mychannel-shared-libs';
 import { setTheme } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
 import { environment } from '../environments/environment';
@@ -47,7 +47,7 @@ export class AppComponent {
     let devAccessToken = '';
     if (this.isDeveloperMode()) {
       // tslint:disable-next-line:max-line-length
-      devAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik1DIiwidGltZXN0YW1wIjoiMjAxODEwMDExNzM3IiwibG9jYXRpb25Db2RlIjoiMTEwMCIsImlhdCI6MTUzODM5MDI2OCwiZXhwIjoyNTQwOTgyMjY4fQ.tMYDOKJf8X3LFuqBD3-gO6HIHMzxQubd9RO0kvSWRXM';
+      devAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik1DIiwidGltZXN0YW1wIjoiMjAxODA4MTUxMTExIiwibG9jYXRpb25Db2RlIjoiMTEwMCIsImlhdCI6MTUzNDMwNjI3NCwiZXhwIjoxNjk5ODk4Mjc0fQ.WZgkH35wUV6S4WElfDBxVc_R74RMhm9Xp3znHD7coM4yt';
     }
     this.tokenService.checkTokenExpired(devAccessToken);
   }
@@ -74,6 +74,11 @@ export class AppComponent {
   }
 
   pageActivityHandler() {
+    const token = this.tokenService.getUser();
+    if (token.channelType !== ChannelType.SMART_ORDER) {
+      return;
+    }
+
     this.pageActivityService.setTimeout((counter) => {
       const url = this.router.url;
       if (url.indexOf('main-menu') !== -1) {

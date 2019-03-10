@@ -142,7 +142,7 @@ export class DeviceOrderAisExistingBestBuyMobileCarePageComponent implements OnI
         mobileCare: true
       });
     } else {
-      this.transaction.data.mobileCarePackage = this.notBuyMobileCareForm.value.notBuyMobile;
+      this.transaction.data.mobileCarePackage = {reason: this.notBuyMobileCareForm.value.notBuyMobile};
     }
     this.modalRef.hide();
   }

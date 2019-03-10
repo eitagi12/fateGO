@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
+
 import { DeviceOrderAisExistingBestBuyValidateCustomerPageComponent } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/containers/device-order-ais-existing-best-buy-validate-customer-page/device-order-ais-existing-best-buy-validate-customer-page.component';
 import { DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/containers/device-order-ais-existing-best-buy-validate-customer-id-card-page/device-order-ais-existing-best-buy-validate-customer-id-card-page.component';
-import { DeviceOrderAisExistingBestBuyValidateCustomerKeyInPageComponent } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/containers/device-order-ais-existing-best-buy-validate-customer-key-in-page/device-order-ais-existing-best-buy-validate-customer-key-in-page.component';
 import { DeviceOrderAisExistingBestBuyCustomerInfoPageComponent } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/containers/device-order-ais-existing-best-buy-customer-info-page/device-order-ais-existing-best-buy-customer-info-page.component';
 import { DeviceOrderAisExistingBestBuyMobileDetailPageComponent } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/containers/device-order-ais-existing-best-buy-mobile-detail-page/device-order-ais-existing-best-buy-mobile-detail-page.component';
 import { DeviceOrderAisExistingBestBuyEligibleMobilePageComponent } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/containers/device-order-ais-existing-best-buy-eligible-mobile-page/device-order-ais-existing-best-buy-eligible-mobile-page.component';
@@ -15,12 +15,15 @@ import { DeviceOrderAisExistingBestBuyQueuePageComponent } from 'src/app/device-
 import { DeviceOrderAisExistingBestBuyResultPageComponent } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/containers/device-order-ais-existing-best-buy-result-page/device-order-ais-existing-best-buy-result-page.component';
 import { DeviceOrderAisExistingBestBuyQrCodePaymentGeneratorPageComponent } from './containers/device-order-ais-existing-best-buy-qr-code-payment-generator-page/device-order-ais-existing-best-buy-qr-code-payment-generator-page.component';
 import { DeviceOrderAisExistingBestBuyQrCodeSummaryPageComponent } from './containers/device-order-ais-existing-best-buy-qr-code-summary-page/device-order-ais-existing-best-buy-qr-code-summary-page.component';
+import { DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent } from './containers/device-order-ais-existing-best-buy-validate-customer-repi-page/device-order-ais-existing-best-buy-validate-customer-repi-page.component';
+import { DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponent } from './containers/device-order-ais-existing-best-buy-validate-customer-id-card-repi-page/device-order-ais-existing-best-buy-validate-customer-id-card-repi-page.component';
 
 const routes: Routes = [
   // { path: '', redirectTo: 'validate-customer', pathMatch: 'full' },
   { path: 'validate-customer', component: DeviceOrderAisExistingBestBuyValidateCustomerPageComponent },
   { path: 'validate-customer-id-card', component: DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent},
-  { path: 'validate-customer-key-in', component: DeviceOrderAisExistingBestBuyValidateCustomerKeyInPageComponent },
+  { path: 'validate-customer-repi', component: DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent},
+  { path: 'validate-customer-id-card-repi', component: DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponent},
   { path: 'customer-info', component: DeviceOrderAisExistingBestBuyCustomerInfoPageComponent },
   { path: 'mobile-detail', component: DeviceOrderAisExistingBestBuyMobileDetailPageComponent },
   { path: 'eligible-mobile', component: DeviceOrderAisExistingBestBuyEligibleMobilePageComponent },

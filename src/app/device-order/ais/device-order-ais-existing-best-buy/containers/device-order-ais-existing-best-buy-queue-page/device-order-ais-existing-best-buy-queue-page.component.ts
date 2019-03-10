@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-import { ApiRequestService, PageLoadingService, HomeService } from 'mychannel-shared-libs';
+import { ApiRequestService, PageLoadingService, HomeService, AlertService } from 'mychannel-shared-libs';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -24,20 +24,18 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
   constructor(
     @Inject(DOCUMENT) private document,
     private router: Router,
-    private homeService: HomeService,
     private fb: FormBuilder,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private apiRequestService: ApiRequestService,
-    private http: HttpClient,
-    private createBestBuyService: CreateDeviceOrderBestBuyService
+    private createBestBuyService: CreateDeviceOrderBestBuyService,
+    private alertService: AlertService
   ) {
     this.transaction = this.transactionService.load();
   }
 
   ngOnInit() {
     this.createForm();
-    this.document.querySelector('body').classList.add('white-body');
+    // this.document.querySelector('body').classList.add('white-body');
 
   }
 
@@ -54,18 +52,18 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
 
   onNext() {
     this.transaction.data.queue = { queueNo: this.queue };
-    this.createBestBuyService.createDeviceOrder(this.transaction, this.queue);
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE]);
+    this.createBestBuyService.createDeviceOrder(this.transaction).then((response: any) => {
+      if (response) {
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE]);
+      } else {
+        this.alertService.error('ระบบขัดข้อง');
+      }
+    }).catch((err: any) => {
+      this.alertService.error(err);
+    });
   }
 
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }
-
-  // onSubmitQueue() {
-  //   const queueNo = this.queueFrom.value['queueNo'];
-  //   this.deviceSellingService.setQueue(queueNo);
-  //   this.createCampaignOrder(queueNo);
-  // }
-
 }

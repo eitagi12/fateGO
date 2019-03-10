@@ -53,18 +53,19 @@ export class DeviceOrderAisExistingBestBuyCheckOutPageComponent implements OnIni
   setDeviceSelling() {
     const customer = this.transaction.data.customer;
     const mobileNo = this.transaction.data.simCard.mobileNo;
-    const campaign = this.transaction.data.mainPromotion.cammapign;
-    const trade = this.transaction.data.mainPromotion.trade;
-    const device = this.priceOption.productStock;
+    const campaign = this.priceOption.campaign;
+    const trade = this.priceOption.trade;
+    const productDetail = this.priceOption.productDetail;
+    const productStock = this.priceOption.productStock;
     this.deviceSelling = {
       fullName: `${customer.firstName} ${customer.lastName}`,
       mobileNo: mobileNo,
-      thumbnail: device.thumbnail,
-      campaignName: campaign.campaignName || 'Ais Best Buy',
-      brand: device.brand,
-      model: device.model,
-      color: device.colorName,
-      price: +trade.promotionPrice || 20320
+      thumbnail: productStock.images.thumbnail,
+      campaignName: campaign.campaignName,
+      brand: productDetail.brand,
+      model: productDetail.model,
+      color: productDetail.colorName,
+      price: +trade.promotionPrice
     };
   }
 
