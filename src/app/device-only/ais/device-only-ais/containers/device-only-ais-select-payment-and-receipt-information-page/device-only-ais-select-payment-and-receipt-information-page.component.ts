@@ -55,6 +55,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
   paymentDetail: PaymentDetail;
   selectPaymentDetail: SelectPaymentDetail = {};
   paymentDetailOption: PaymentDetailOption;
+  isSuccess: boolean;
   constructor(
    private fb: FormBuilder,
    private router: Router
@@ -273,5 +274,13 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
   onSelectPaymentTypeAdvancePay(paymentType: string): void {
     console.log('onSelectPaymentType', paymentType);
     this.selectPaymentDetail.paymentType = paymentType;
+  }
+  onComplete(receiptInfo: any): void {
+    console.log('receiptInfo', receiptInfo);
+  }
+
+  onError(error: boolean): void {
+    this.isSuccess = error;
+    console.log(this.isSuccess);
   }
 }

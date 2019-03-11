@@ -142,6 +142,7 @@
         </div>
       </div>
     </div>
+    <app-receipt-information (completed)="onComplete($event)" (error)="onError($event)"></app-receipt-information>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
     <!-- <button class="btn btn-success" (click)="onNext()" [disabled]="!(checkPaymentFormValid() && checkAdvancePaymentFormValid() && receiptInfoValid)">NEXT</button> -->

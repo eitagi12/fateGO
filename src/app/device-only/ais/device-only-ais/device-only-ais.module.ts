@@ -20,6 +20,7 @@ import { TabsModule} from 'ngx-bootstrap';
 import { TranslateModule } from '@ngx-translate/core';
 import { ReceiptInformationComponent } from './components/receipt-information/receipt-information.component';
 import { BillingAddressService } from './services/billing-address.service';
+import { BillingAddressComponent } from './components/billing-address/billing-address.component';
 
 import { MobileCareAvaliableComponent } from './components/mobile-care-avaliable/mobile-care-avaliable.component';
 
@@ -48,7 +49,8 @@ import { MobileCareAvaliableComponent } from './components/mobile-care-avaliable
     DeviceOnlyReadCardComponent,
     MobileCareComponent,
     ReceiptInformationComponent,
-    MobileCareAvaliableComponent
+    MobileCareAvaliableComponent,
+    BillingAddressComponent
   ],
   providers: [
     BillingAddressService

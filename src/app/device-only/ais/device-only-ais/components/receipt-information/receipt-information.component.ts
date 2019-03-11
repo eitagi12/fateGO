@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter  } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors  } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
 import { BillingAddressService } from '../../services/billing-address.service';
 
@@ -22,39 +22,30 @@ export class ReceiptInformationComponent implements OnInit {
   receiptInfo: ReceiptInfo;
 
   @Output()
-  completedBillingAddress: EventEmitter<any> = new EventEmitter<any>();
+  completed: EventEmitter<any> = new EventEmitter<any>();
 
   @Output()
-  completedReceiptInfo: EventEmitter<ReceiptInfo> = new EventEmitter<ReceiptInfo>();
-
-  @Output()
-  errorReceiptInfo: EventEmitter<boolean> = new EventEmitter<boolean>();
-
-  @Output()
-  errorBillingAddress: EventEmitter<boolean> = new EventEmitter<boolean>();
+  error: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   receiptInfoForm: FormGroup;
   billingAddressForm: FormGroup;
   inputBillingAddress: boolean;
-  dataBillingZipCode: any;
+  provinces: any;
+  allZipCodes: any;
+  districts: any;
+  subDistricts: any;
+  zipCode: any;
 
   constructor(private fb: FormBuilder, private billingAddress: BillingAddressService) {
-    this.billingAddress.getZipCode().then(response => {
-      console.log('response', response);
-    });
+    this.billingAddress.getProvinces().then(this.getDataProvinces());
+    this.billingAddress.getZipCodes().then(this.getDataZipCodes());
    }
 
   ngOnInit(): void {
-    this.dataBillingZipCode = [41000, 41150];
     this.createForm();
   }
 
   private createForm(): void {
-    this.createReceiptForm();
-    this.createBillingAddressForm();
-  }
-
-  private createReceiptForm(): void {
     this.receiptInfoForm = this.fb.group({
       taxId: ['', []],
       branch: ['', []],
@@ -62,30 +53,11 @@ export class ReceiptInformationComponent implements OnInit {
       buyerAddress: ['', []],
       telNo: ['', [Validators.pattern(/^0[6-9]\d{8}$/)]]
     });
-    this.receiptInfoForm.patchValue(this.receiptInfo);
+    // this.receiptInfoForm.patchValue(this.receiptInfo);
     this.receiptInfoForm.valueChanges.pipe(debounceTime(750)).subscribe(event => {
-      this.errorReceiptInfo.emit(this.receiptInfoForm.valid);
+      this.error.emit(this.receiptInfoForm.valid);
       if (this.receiptInfoForm.valid) {
-        this.completedReceiptInfo.emit(this.receiptInfoForm.value);
-      }
-    });
-  }
-
-  private createBillingAddressForm(): void {
-    this.billingAddressForm = this.fb.group({
-      customerName: ['', []],
-      addressNo: ['', []],
-      road: ['', []],
-      subDistrict: ['', []],
-      district: ['', []],
-      province: ['', []],
-      zipcode: ['', []]
-    });
-    this.billingAddressForm.valueChanges.pipe(debounceTime(750)).subscribe(event => {
-      this.errorReceiptInfo.emit(this.billingAddressForm.valid);
-      if (this.billingAddressForm.valid) {
-        console.log('billingAddressForm.value', this.billingAddressForm.value);
-        this.completedBillingAddress.emit(this.billingAddressForm.value);
+        this.completed.emit(this.receiptInfoForm.value);
       }
     });
   }
@@ -93,4 +65,70 @@ export class ReceiptInformationComponent implements OnInit {
   onClickInputBillingAddress(): void {
     this.inputBillingAddress = true;
   }
+
+  getProvinceByName(provinceName: string): any {
+    return (this.provinces || []).find((prov: any) => prov.name === provinceName) || {};
+  }
+
+  onProvinceSelected(params: any): void {
+    const province = this.getProvinceByName(params.provinceName);
+    const req = {
+      provinceId: province.id,
+      zipCode: params.zipCode
+    };
+    if (!params.zipCode) {
+      delete req.zipCode;
+    }
+    this.billingAddress.getDistrict(req).then(this.getdataDistrict());
+  }
+
+  onDistrictSelected(params: any): void {
+    const province = this.getProvinceByName(params.provinceName);
+    const req = {
+      provinceId: province.id,
+      amphurName: params.districtName,
+      zipCode: params.zipCode
+    };
+    if (!params.zipCode) {
+      delete req.zipCode;
+    }
+    this.billingAddress.getSubDistrict(req).then(this.getDataSubDistrict());
+  }
+
+  onSubDistrictSelected(params: any): void {
+    const province = this.getProvinceByName(params.provinceName);
+    const req  = {
+      provinceId: province.id,
+      amphurName: params.districtName,
+      tumbolName: params.subDistrictName
+    };
+    this.billingAddress.queryZipCode(req).then(this.getDataZipCode());
+  }
+
+  private getDataZipCode(): (value: any) => any {
+    return (resp: any) => this.zipCode = resp;
+  }
+
+  private getDataSubDistrict(): (value: any) => any {
+    return (resp: string[]) => this.subDistricts = resp;
+  }
+
+  private getdataDistrict(): (value: any) => any {
+    return (resp: string[] ) => this.districts = resp;
+  }
+
+  private getDataZipCodes(): (value: any) => any {
+    return (resp: string[]) => this.allZipCodes = resp;
+  }
+
+  private getDataProvinces(): (value: any) => any {
+    return (resp: string[]) => this.provinces = resp;
+  }
+
+  getProvinces(): string[] {
+    return (this.provinces || []).map((province: any) => {
+      return province.name;
+    });
+  }
+
 }
