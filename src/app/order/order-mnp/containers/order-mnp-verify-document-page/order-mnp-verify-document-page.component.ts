@@ -11,6 +11,7 @@ import {
   ROUTE_ORDER_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE,
   ROUTE_ORDER_MNP_SELECT_REASON_PAGE
  } from '../../constants/route-path.constant';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-order-mnp-verify-document-page',
@@ -44,7 +45,8 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
     private apiRequestService: ApiRequestService,
     private alertService: AlertService,
     private vendingApiService: VendingApiService,
-    private readCardService: ReadCardService
+    private readCardService: ReadCardService,
+    public translation: TranslateService
   ) {
   }
 

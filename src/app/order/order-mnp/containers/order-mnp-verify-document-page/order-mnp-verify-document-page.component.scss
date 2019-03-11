@@ -1,14 +1,19 @@
 
 .icon-passport{
-    width: 45vw;
+    width: 350;
 }
 
 
 .icon{
-    width: 45vw;
+    width: 250;
 }
 
-hr{
-    border: 3px solid #cccccc;
-    border-radius: 5px;
+#container-scroll {
+  white-space: nowrap;
+  overflow: auto;
+  width: 300px;
+}
+
+.child {
+  display:inline-block;
 }

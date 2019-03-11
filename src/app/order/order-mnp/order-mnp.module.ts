@@ -24,13 +24,15 @@ import { OrderMnpEbillingPageComponent } from './containers/order-mnp-ebilling-p
 import { OrderMnpEapplicationPageComponent } from './containers/order-mnp-eapplication-page/order-mnp-eapplication-page.component';
 import { OrderMnpVerifyDocumentPageComponent } from './containers/order-mnp-verify-document-page/order-mnp-verify-document-page.component';
 import { OrderMnpPassportInfoPageComponent } from './containers/order-mnp-passport-info-page/order-mnp-passport-info-page.component';
+import { TranslateModule } from '@ngx-translate/core';
 @NgModule({
   imports: [
     CommonModule,
     OrderMnpRoutingModule,
     MyChannelSharedLibsModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TranslateModule
   ],
   declarations: [
     OrderMnpNetworkTypePageComponent,
