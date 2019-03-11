@@ -48,6 +48,12 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
     private readCardService: ReadCardService,
     public translation: TranslateService
   ) {
+    this.homeService.callback = () => {
+      if (this.closeVendingApi.ws) {
+        this.closeVendingApi.ws.send(KioskControls.LED_OFF);
+      }
+      window.location.href = '/smart-shop';
+    };
   }
 
   ngOnInit() {
