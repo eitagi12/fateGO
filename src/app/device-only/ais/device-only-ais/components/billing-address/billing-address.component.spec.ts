@@ -1,25 +1,27 @@
-// import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-// import { BillingAddressComponent } from './billing-address.component';
+import { BillingAddressComponent } from './billing-address.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
-// describe('BillingAddressComponent', () => {
-//   let component: BillingAddressComponent;
-//   let fixture: ComponentFixture<BillingAddressComponent>;
+describe('BillingAddressComponent', () => {
+  let component: BillingAddressComponent;
+  let fixture: ComponentFixture<BillingAddressComponent>;
 
-//   beforeEach(async(() => {
-//     TestBed.configureTestingModule({
-//       declarations: [ BillingAddressComponent ]
-//     })
-//     .compileComponents();
-//   }));
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: [ ReactiveFormsModule],
+      declarations: [ BillingAddressComponent]
+    })
+    .compileComponents();
+  }));
 
-//   beforeEach(() => {
-//     fixture = TestBed.createComponent(BillingAddressComponent);
-//     component = fixture.componentInstance;
-//     fixture.detectChanges();
-//   });
+  beforeEach(() => {
+    fixture = TestBed.createComponent(BillingAddressComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+  });
 
-//   it('should create', () => {
-//     expect(component).toBeTruthy();
-//   });
-// });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});

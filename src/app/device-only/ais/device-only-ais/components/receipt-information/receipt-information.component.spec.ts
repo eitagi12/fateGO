@@ -8,9 +8,9 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ReceiptInformationComponent, ReceiptInfo } from './receipt-information.component';
 import { BillingAddressService } from '../../services/billing-address.service';
 
-// describe('ReceiptInformationComponent', () => {
-//   let component: ReceiptInformationComponent;
-//   let fixture: ComponentFixture<ReceiptInformationComponent>;
+describe('ReceiptInformationComponent', () => {
+  let component: ReceiptInformationComponent;
+  let fixture: ComponentFixture<ReceiptInformationComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
@@ -36,7 +36,7 @@ import { BillingAddressService } from '../../services/billing-address.service';
     fixture.detectChanges();
   });
 
-//   it('should create', () => {
-//     expect(component).toBeTruthy();
-//   });
-// });
+  it('should create', () => {
+    expect(component).toBeTruthy();
+  });
+});
