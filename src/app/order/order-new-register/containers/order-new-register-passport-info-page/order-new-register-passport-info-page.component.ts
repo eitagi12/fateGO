@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, SimpleChanges, OnChanges, EventEmitter } from '@angular/core';
 import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
 import { Router } from '@angular/router';
-import { HomeService, CaptureAndSign, TokenService, ChannelType, ImageUtils, AlertService, Utils, User } from 'mychannel-shared-libs';
+import { HomeService, CaptureAndSign, TokenService, ChannelType, ImageUtils, AlertService, Utils, User, AWS_WATERMARK } from 'mychannel-shared-libs';
 import { Transaction, Customer, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ROUTE_ORDER_NEW_REGISTER_FACE_CAPTURE_PAGE, ROUTE_ORDER_NEW_REGISTER_VERIFY_DOCUMENT_PAGE } from '../../constants/route-path.constant';
@@ -32,6 +32,7 @@ export class OrderNewRegisterPassportInfoPageComponent implements OnInit, OnDest
   translationSubscribe: Subscription;
   isOpenSign: boolean;
   openSignedCommand: any;
+  watermark = AWS_WATERMARK;
 
   constructor(
     private router: Router,
