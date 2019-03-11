@@ -80,7 +80,7 @@ export class OrderNewRegisterPassportInfoPageComponent implements OnInit, OnDest
   }
 
   mapDatanationality() {
-    const nationality = this.transaction.data.customer.nationality;
+    const nationality = this.transaction.data.customer.issuingCountry;
     return this.http.get('/api/customerportal/newRegister/queryNationality', {
       params: {
         code: nationality
