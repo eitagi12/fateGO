@@ -49,7 +49,7 @@ export class OrderNewRegisterFaceComparePageComponent implements OnInit, OnDestr
     const faceRecognition: FaceRecognition = this.transaction.data.faceRecognition;
 
     this.http.post('/api/facerecog/facecompare', {
-      cardBase64Imgs: this.isReadCard() ? customer.imageReadSmartCard : customer.imageSmartCard,
+      cardBase64Imgs: this.isReadCard() ? customer.imageReadSmartCard : (customer.imageSmartCard || customer.imageReadPassport),
       selfieBase64Imgs: faceRecognition.imageFaceUser
     }).toPromise().then((resp: any) => {
       this.transaction.data.faceRecognition.kyc = !resp.data.match;

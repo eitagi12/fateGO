@@ -1,5 +1,11 @@
 <div class="mc-flex">
-  <mc-header title="เปิดเบอร์ใหม่"></mc-header>
+  <mc-header title="{{ 'เปิดเบอร์ใหม่' | translate }}">
+      <div class="header-icon-left w-25 ml-5">
+      </div>
+      <div class="header-icon-right w-25 text-right mr-4">
+      <mc-dropdown-language></mc-dropdown-language>
+      </div>
+    </mc-header>
   <div class="mc-flex-wrap">
     <div class="mt-3 mb-3">
       <mc-wizard [wizards]="wizards" active="3"></mc-wizard>
@@ -9,10 +15,8 @@
             <div class="text-center text-black"> TRANSACTION ID :
               <span class="text-grey"> {{ transaction?.data?.order?.orderNo }}</span>
             </div>
-            <div class="container text-center text-black mb-5 mt-1">
-              ซิมใช้งานได้ภายใน 1 ชั่วโมง
-            </div>
-            <div class="message-result text-center mb-5 text-black">
+            <div class="container text-center text-black mb-5 mt-1" translate>ซิมใช้งานได้ภายใน 1 ชั่วโมง</div>
+            <div class="message-result text-center mb-5 text-black" translate>
               ระบบจัดส่ง SMS แจ้ง "รายละเอียดการทำรายการข้อตกลงและเงื่อนไขบริการโทรศัพท์เคลื่อนที่" ไปที่
               <br> เบอร์ {{ transaction?.data?.simCard?.mobileNo | mobileNo }}
             </div>

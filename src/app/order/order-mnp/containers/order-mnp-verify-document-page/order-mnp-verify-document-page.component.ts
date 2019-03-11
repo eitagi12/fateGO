@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ReadPassport, ReadCard, ReadCardProfile, ValidateCustomerIdCardComponent, HomeService, Utils, ReadPassportService, ApiRequestService, PageLoadingService, AlertService, ReadCardService, ReadCardEvent, VendingApiService, KioskControls } from 'mychannel-shared-libs';
-import { Transaction, BillDeliveryAddress, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';

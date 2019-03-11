@@ -5,15 +5,18 @@ import { HomeService, Utils, AlertService, ImageUtils } from 'mychannel-shared-l
 import {
   ROUTE_ORDER_NEW_REGISTER_ID_CARD_CAPTURE_PAGE,
   ROUTE_ORDER_NEW_REGISTER_FACE_COMPARE_PAGE,
-  ROUTE_ORDER_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE
+  ROUTE_ORDER_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE,
+  ROUTE_ORDER_NEW_REGISTER_PASSPOPRT_INFO_PAGE
 } from 'src/app/order/order-new-register/constants/route-path.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-order-new-register-face-capture-page',
   templateUrl: './order-new-register-face-capture-page.component.html',
   styleUrls: ['./order-new-register-face-capture-page.component.scss']
+
 })
 export class OrderNewRegisterFaceCapturePageComponent implements OnInit, OnDestroy {
 
@@ -28,7 +31,8 @@ export class OrderNewRegisterFaceCapturePageComponent implements OnInit, OnDestr
     private homeService: HomeService,
     private transactionService: TransactionService,
     private alertService: AlertService,
-    private utils: Utils
+    private utils: Utils,
+    private translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -40,6 +44,8 @@ export class OrderNewRegisterFaceCapturePageComponent implements OnInit, OnDestr
   onBack() {
     if (this.transaction.data.action === TransactionAction.READ_CARD) {
       this.router.navigate([ROUTE_ORDER_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
+    } else if (this.transaction.data.action === TransactionAction.READ_PASSPORT) {
+      this.router.navigate([ROUTE_ORDER_NEW_REGISTER_PASSPOPRT_INFO_PAGE]);
     } else {
       this.router.navigate([ROUTE_ORDER_NEW_REGISTER_ID_CARD_CAPTURE_PAGE]);
     }
@@ -55,6 +61,10 @@ export class OrderNewRegisterFaceCapturePageComponent implements OnInit, OnDestr
 
   onOpenCamera() {
     this.openCamera = true;
+  }
+
+  switchLanguage(lang: string) {
+    // this.i18nService.setLang(lang);
   }
 
   onCameraCompleted(image: string) {
@@ -80,7 +90,7 @@ export class OrderNewRegisterFaceCapturePageComponent implements OnInit, OnDestr
   }
 
   onCameraError(error: string) {
-    this.alertService.error(error);
+    this.alertService.error(this.translation.instant(error));
   }
 
   onClearIdCardImage() {

@@ -37,7 +37,6 @@ export class CreateMnpService {
     const mainPackage = transaction.data.mainPackage;
     const mainPackageOneLove = transaction.data.mainPackageOneLove;
     const onTopPackage = transaction.data.onTopPackage;
-    const customerDeliveryAddress = transaction.data.billingInformation.billDeliveryAddress;
     const billDeliveryAddress = transaction.data.billingInformation.billDeliveryAddress;
 
     const billCycleData = billingInformation.billCycleData;

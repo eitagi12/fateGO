@@ -1,18 +1,16 @@
-import { Component, OnInit } from '@angular/core';
-import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
-import { HomeService, PageLoadingService } from 'mychannel-shared-libs';
-import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { Transaction } from 'src/app/shared/models/transaction.model';
-import { CreateNewRegisterService } from 'src/app/shared/services/create-new-register.service';
-
+import { Component, OnInit } from "@angular/core";
+import { WIZARD_ORDER_NEW_REGISTER } from "src/app/order/constants/wizard.constant";
+import { HomeService, PageLoadingService } from "mychannel-shared-libs";
+import { TransactionService } from "src/app/shared/services/transaction.service";
+import { Transaction } from "src/app/shared/models/transaction.model";
+import { CreateNewRegisterService } from "src/app/shared/services/create-new-register.service";
 
 @Component({
-  selector: 'app-order-new-register-result-page',
-  templateUrl: './order-new-register-result-page.component.html',
-  styleUrls: ['./order-new-register-result-page.component.scss']
+  selector: "app-order-new-register-result-page",
+  templateUrl: "./order-new-register-result-page.component.html",
+  styleUrls: ["./order-new-register-result-page.component.scss"]
 })
 export class OrderNewRegisterResultPageComponent implements OnInit {
-
   wizards = WIZARD_ORDER_NEW_REGISTER;
   transaction: Transaction;
   isSuccess: boolean;
@@ -39,9 +37,8 @@ export class OrderNewRegisterResultPageComponent implements OnInit {
       } else {
         this.isSuccess = false;
       }
-      this.pageLoadingService.closeLoading();
-    }).catch(() => {
-      this.isSuccess = false;
+
+    }).then(() => {
       this.pageLoadingService.closeLoading();
     });
   }
@@ -49,5 +46,4 @@ export class OrderNewRegisterResultPageComponent implements OnInit {
   onMainMenu() {
     this.homeService.goToHome();
   }
-
 }

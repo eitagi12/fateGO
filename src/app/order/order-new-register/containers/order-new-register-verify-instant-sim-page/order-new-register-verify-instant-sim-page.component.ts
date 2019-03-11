@@ -9,6 +9,7 @@ import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.consta
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-order-new-register-verify-instant-sim-page',
@@ -29,7 +30,8 @@ export class OrderNewRegisterVerifyInstantSimPageComponent implements OnInit, On
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
     private alertService: AlertService,
-    private http: HttpClient
+    private http: HttpClient,
+    private translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -61,7 +63,7 @@ export class OrderNewRegisterVerifyInstantSimPageComponent implements OnInit, On
         this.pageLoadingService.closeLoading();
         this.alertService.notify({
           type: 'error',
-          html: error.resultDescription
+          html: this.translation.instant(error.resultDescription.replace(/<br>/, ' '))
         });
       });
   }

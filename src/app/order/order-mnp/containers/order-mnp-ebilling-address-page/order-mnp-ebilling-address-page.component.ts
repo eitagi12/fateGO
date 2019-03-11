@@ -66,8 +66,6 @@ export class OrderMnpEbillingAddressPageComponent implements OnInit, OnDestroy {
       };
 
     });
-
-
   }
 
   getProvinces(): string[] {

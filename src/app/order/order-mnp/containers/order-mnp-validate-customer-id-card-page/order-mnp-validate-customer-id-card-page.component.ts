@@ -5,7 +5,7 @@ import {
   ROUTE_ORDER_MNP_CUSTOMER_INFO_PAGE,
   ROUTE_ORDER_MNP_SELECT_REASON_PAGE
 } from 'src/app/order/order-mnp/constants/route-path.constant';
-import { Transaction, TransactionAction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { ReadCardProfile, HomeService, TokenService, PageLoadingService, ChannelType, Utils, AlertService, KioskControls, ValidateCustomerIdCardComponent } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 
@@ -24,7 +24,6 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
   readCardValid: boolean;
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
-  billDeliveryAddress: BillDeliveryAddress;
 
   constructor(
     private router: Router,
@@ -93,21 +92,6 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
         }).toPromise()
           .then((resp: any) => {
             const data = resp.data || {};
-            this.billDeliveryAddress = {
-              homeNo: data.homeNo || '',
-              moo: data.moo || '',
-              mooBan: data.mooBan || '',
-              room: data.room || '',
-              floor: data.floor || '',
-              buildingName: data.buildingName || '',
-              soi: data.soi || '',
-              street: data.street || '',
-              province: data.province || '',
-              amphur: data.amphur || '',
-              tumbol: data.tumbol || '',
-              zipCode: data.zipCode || '',
-            };
-
             return {
               caNumber: data.caNumber,
               mainMobile: data.mainMobile,
@@ -141,16 +125,13 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
       })
       .then((billingInformation: any) => {
         this.transaction.data.billingInformation = billingInformation;
-        this.transaction.data.billingInformation.billDeliveryAddress = this.billDeliveryAddress;
         if (this.checkBusinessLogic()) {
           this.router.navigate([ROUTE_ORDER_MNP_CUSTOMER_INFO_PAGE]);
         }
       })
       .catch((resp: any) => {
         const error = resp.error || [];
-        console.log(resp);
-
-        if (error && error.errors.length > 0) {
+        if (error && error.errors && error.errors.length > 0) {
           this.alertService.notify({
             type: 'error',
             html: error.errors.map((err) => {
@@ -159,8 +140,10 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
           }).then(() => {
             this.onBack();
           });
-        } else {
+        } else if (error.resultDescription) {
           this.alertService.error(error.resultDescription);
+        } else {
+          this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
         }
       });
   }

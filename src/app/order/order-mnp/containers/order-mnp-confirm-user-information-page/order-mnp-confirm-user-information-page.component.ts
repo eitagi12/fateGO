@@ -86,10 +86,9 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
   }
 
   initBillingInfo() {
-    const billingInformation = this.transaction.data.billingInformation;
+    const billingInformation = this.transaction.data.billingInformation || {};
     const mergeBilling = billingInformation.mergeBilling;
     const billCycle = billingInformation.billCycle;
-    const customerbillDeliveryAddress = billingInformation.billDeliveryAddress;
     const customer: any = billingInformation.billDeliveryAddress || this.transaction.data.customer;
 
     const customerAddress = this.utils.getCurrentAddress({
@@ -106,21 +105,6 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
       province: customer.province,
       zipCode: customer.zipCode
     });
-
-    // const billDeliveryAddress =  this.utils.getCurrentAddress({
-    //   homeNo: customerbillDeliveryAddress.homeNo || customer.homeNo,
-    //   moo: customerbillDeliveryAddress.moo || customer.moo,
-    //   mooBan: customerbillDeliveryAddress.mooBan || customer.mooBan,
-    //   room: customerbillDeliveryAddress.room || customer.room,
-    //   floor: customerbillDeliveryAddress.floor || customer.floor,
-    //   buildingName: customerbillDeliveryAddress.buildingName || customer.buildingName,
-    //   soi: customerbillDeliveryAddress.soi || customer.soi,
-    //   street: customerbillDeliveryAddress.street || customer.street,
-    //   tumbol: customerbillDeliveryAddress.tumbol || customer.tumbol,
-    //   amphur: customerbillDeliveryAddress.amphur || customer.amphur,
-    //   province: customerbillDeliveryAddress.province || customer.province,
-    //   zipCode: customerbillDeliveryAddress.zipCode || customer.zipCode
-    // });
 
     this.billingInfo = {
       // merge bill ไม่เมื่อเลือก package net extrem

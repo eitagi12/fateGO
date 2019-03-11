@@ -13,6 +13,7 @@ import { Observable, Subscription } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { environment } from 'src/environments/environment';
+import { TranslateService } from '@ngx-translate/core';
 
 export enum PersoSimCommand {
   EVENT_CONNECT_LIB = 9000,
@@ -79,7 +80,7 @@ export enum ErrorPerSoSimMessage {
   ERROR_SIM_MESSAGE = 'กรุณารอสักครู่ ระบบกำลังทำรายการ',
   ERROR_CMD_MESSAGE = 'ไม่สามารถให้บริการได้ กรุณาติดต่อพนักงานเพื่อดำเนินการ ขออภัยในความไม่สะดวก',
   ERROR_PERSO_MESSAGE = 'เบอร์นี้ถูกเลือกแล้ว กรุณาเลือกเบอร์ใหม่ เพื่อทำรายการ',
-  ERROR_ORDER_MESSAGE = 'ไม่สามารถให้บริการได้ กรุณาติดต่อพนักงานเพื่อดำเนินการขออภัยในความไม่สะดวก',
+  ERROR_ORDER_MESSAGE = 'ไม่สามารถให้บริการได้ กรุณาติดต่อพนักงานเพื่อดำเนินการ ขออภัยในความไม่สะดวก',
   ERROR_PRIVATE_KEY_MESSAGE = 'ไม่สามารถให้บริการได้ กรุณาติดต่อพนักงานเพื่อดำเนินการ ขออภัยในความไม่สะดวก',
   ERROR_WEB_SOCKET_MESSAGE = 'ไม่สามารถให้บริการได้ กรุณาติดต่อพนักงานเพื่อดำเนินการ ขออภัยในความไม่สะดวก',
   ERROR_SIM_EMPTY_MESSAGE = 'ไม่สามารถให้บริการได้ กรุณาติดต่อพนักงานเพื่อดำเนินการ ขออภัยในความไม่สะดวก'
@@ -168,7 +169,8 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
     private http: HttpClient,
     private tokenService: TokenService,
     private transactionService: TransactionService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private translation: TranslateService
   ) {
     if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {
       this.typeSim = 'pullsim';
@@ -211,12 +213,12 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
             this.startPersoSim(this.transaction);
           } else {
             this.persoSimSubscription.unsubscribe();
-            this.alertService.error(ErrorPerSoSimMessage.ERROR_ORDER_MESSAGE);
+            this.alertService.error(this.translation.instant(ErrorPerSoSimMessage.ERROR_ORDER_MESSAGE));
             this.errorMessage = ErrorPerSoSimMessage.ERROR_ORDER_MESSAGE;
           }
         } else
           if (value.error.errorCase === ErrorPerSoSim.ERROR_PERSO) {
-            this.alertService.question(value.error.messages, 'ตกลง').then((res) => {
+            this.alertService.question(this.translation.instant(value.error.messages), this.translation.instant('ตกลง')).then((res) => {
               if (res.value) {
                 this.persoSimSubscription.unsubscribe();
                 this.router.navigate([ROUTE_ORDER_NEW_REGISTER_BY_PATTERN_PAGE]);
@@ -228,13 +230,13 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
               this.startPersoSim(this.transaction);
             } else {
               this.persoSimSubscription.unsubscribe();
-              this.alertService.error(ErrorPerSoSimMessage.ERROR_CMD_MESSAGE);
+              this.alertService.error(this.translation.instant(ErrorPerSoSimMessage.ERROR_CMD_MESSAGE));
               this.errorMessage = ErrorPerSoSimMessage.ERROR_CMD_MESSAGE;
             }
           } else {
-            this.alertService.error(value.error.messages);
+            this.alertService.error(this.translation.instant(value.error.messages));
           }
-        this.errorMessage = value.error.messages;
+        this.errorMessage = this.translation.instant(value.error.messages);
       }
     });
   }

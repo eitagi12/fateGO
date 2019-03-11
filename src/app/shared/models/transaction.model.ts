@@ -98,21 +98,8 @@ export interface Customer {
   issuingCountry?: string;
   nationality?: string;
   imageReadPassport?: string;
-}
+  engFlag?: string;
 
-export interface BillDeliveryAddress {
-  homeNo: string;
-  moo?: string;
-  mooBan?: string;
-  room?: string;
-  floor?: string;
-  buildingName?: string;
-  soi?: string;
-  street?: string;
-  province: string;
-  amphur: string;
-  tumbol: string;
-  zipCode: string;
 }
 
 export interface SimCard {
@@ -136,6 +123,8 @@ export interface MainPackage {
   promotionPackage?: string;
   shortNameThai: string;
   statementThai?: string;
+  shortNameEng?: string;
+  statementEng?: string;
   parameters?: any;
 }
 
@@ -171,8 +160,8 @@ export interface BillingInformation {
   billCyclesNetExtreme?: BillingAccount[];
   // change value billing
   billCycleData?: BillingAccountData;
-  // send bill devilery address
-  billDeliveryAddress?: BillDeliveryAddress;
+  // send bill devilery address ข้อมูลที่อยู่ที่ถูกแก้ไข
+  billDeliveryAddress?: Customer;
 }
 
 export interface BillCycle {
@@ -208,5 +197,6 @@ export interface BillingAccountData {
 
   billingMethodText?: string;
   billCycleText?: string;
+  billCycleTextEng?: string;
   billAddressText?: string;
 }
