@@ -300,14 +300,14 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         }, {});
 
         const installments: CampaignSliderInstallment[] = [];
-        Object.keys(installmentGroups).forEach((key: string) => {
-            const keys: string[] = key.split('-');
-            installments.push({
-                percentage: +keys[0] || 0,
-                month: +keys[1] || 0,
-                banks: installmentGroups[key]
-            });
-        });
+        // Object.keys(installmentGroups).forEach((key: string) => {
+        //     const keys: string[] = key.split('-');
+        //     installments.push({
+        //         percentage: +keys[0] || 0,
+        //         month: +keys[1] || 0,
+        //         banks: installmentGroups[key]
+        //     });
+        // });
 
         // จ่ายน้อยผ่อนนาน
         return installments.sort((a: any, b: any) => {
