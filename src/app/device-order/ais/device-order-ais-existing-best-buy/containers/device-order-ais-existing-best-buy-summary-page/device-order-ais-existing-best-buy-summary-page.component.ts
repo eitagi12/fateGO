@@ -122,7 +122,7 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
 
   createForm() {
     this.checkSellerForm = this.fb.group({
-      checkSeller: ['', Validators.compose([Validators.required, Validators.pattern(/^[0-9]+$/])]
+      checkSeller: ['', Validators.compose([Validators.required, Validators.pattern(/^[0-9]+$/)])]
     });
 
     this.checkSellerForm.valueChanges.subscribe((value) => {
