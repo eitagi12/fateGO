@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, TemplateRef } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, AfterViewInit, ElementRef } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { FormGroup, FormBuilder } from '@angular/forms';
 
@@ -16,6 +16,9 @@ export class DeviceOnlyReadCardComponent implements OnInit {
   template: TemplateRef<any>;
   modalBillAddress: BsModalRef;
 
+  @ViewChild('progressBarReadSmartCard')
+  progressBarReadSmartCard: ElementRef;
+
   constructor(
     private bsModalService: BsModalService,
     private fb: FormBuilder
@@ -23,16 +26,12 @@ export class DeviceOnlyReadCardComponent implements OnInit {
 
   ngOnInit(): void {
     this.createSelectBillingAddressForm();
+    console.log(this.progressBarReadSmartCard.nativeElement);
   }
 
   public createSelectBillingAddressForm(): void {
     this.selectBillingAddressForm = this.fb.group({
       'billingAddress': '',
-    });
-    this.selectBillingAddressForm.valueChanges.subscribe((value: any) => {
-      if (!value.billingAddress) {
-        // this.onOpenNotSelectBillingAddress();
-      }
     });
   }
 
