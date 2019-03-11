@@ -1,22 +1,13 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { DeviceOnlyReadCardComponent } from './device-only-read-card.component';
+import { BsModalService } from 'ngx-bootstrap';
 
 describe('DeviceOnlyReadCardComponent', () => {
   let component: DeviceOnlyReadCardComponent;
-  let fixture: ComponentFixture<DeviceOnlyReadCardComponent>;
-
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ DeviceOnlyReadCardComponent ]
-    })
-    .compileComponents();
-  }));
+  let bsModalService: any;
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DeviceOnlyReadCardComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    bsModalService = {};
+    component = new DeviceOnlyReadCardComponent(bsModalService);
   });
 
   it('should create', () => {

@@ -23,7 +23,6 @@ import { BillingAddressService } from './services/billing-address.service';
 import { BillingAddressComponent } from './components/billing-address/billing-address.component';
 
 import { MobileCareAvaliableComponent } from './components/mobile-care-avaliable/mobile-care-avaliable.component';
-import { SelectBillingAddressByReadCardComponent } from './components/select-billing-address-by-read-card/select-billing-address-by-read-card.component';
 
 @NgModule({
   imports: [
@@ -51,8 +50,7 @@ import { SelectBillingAddressByReadCardComponent } from './components/select-bil
     MobileCareComponent,
     ReceiptInformationComponent,
     MobileCareAvaliableComponent,
-    BillingAddressComponent,
-    SelectBillingAddressByReadCardComponent
+    BillingAddressComponent
   ],
   providers: [
     BillingAddressService
