@@ -55,7 +55,7 @@ export interface TransactionData {
   advancePayment?: Payment;
   receiptInfo?: ReceiptInfo;
   queue?: Queue;
-  prebooking?: Prebooking;
+  preBooking?: Prebooking;
   status?: Status;
 }
 

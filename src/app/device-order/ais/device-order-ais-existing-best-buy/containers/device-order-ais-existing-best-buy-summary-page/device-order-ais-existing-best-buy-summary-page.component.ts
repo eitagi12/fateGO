@@ -74,8 +74,8 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
       zipCode: customer.zipCode
     });
 
-    this.deposit = this.transaction.data.prebooking 
-                    && this.transaction.data.prebooking.depositAmt ? Math.abs(+this.transaction.data.prebooking.depositAmt) : 0;
+    this.deposit = this.transaction.data.preBooking
+                    && this.transaction.data.preBooking.depositAmt ? Math.abs(+this.transaction.data.preBooking.depositAmt) : 0;
 
     this.http.get(`/api/salesportal/location-by-code?code=${user.locationCode}`).toPromise().then((response: any) => {
       this.seller = {

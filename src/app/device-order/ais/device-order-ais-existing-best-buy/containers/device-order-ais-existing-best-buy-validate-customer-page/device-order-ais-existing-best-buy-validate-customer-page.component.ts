@@ -43,7 +43,8 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     private utils: Utils,
     private localStorageService: LocalStorageService,
     private priceOptionService: PriceOptionService,
-    private createDeviceOrderBestBuyService: CreateDeviceOrderBestBuyService
+    private createDeviceOrderBestBuyService: CreateDeviceOrderBestBuyService,
+    private alertService: AlertService
   ) {
     // this.homeService.callback = () => {
     //   window.location.href = `/sales-portal/buy-product/brand/${this.band}/${this.model}`;
@@ -139,6 +140,10 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
         });
       })
       .catch((e) => {
+        if (!/Data Not Found./.test(e.error.resultDescription)) {
+          this.alertService.error(e.error.resultDescription);
+          return;
+        }
         this.transaction.data.customer = {
           idCardNo: this.identity || '',
           idCardType: '',
@@ -170,12 +175,15 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
       mainPromotion = this.setMainPromotion();
     }
 
+    const preBooking = this.localStorageService.load('preBooking').value;
+
     this.transaction = {
       transactionId: this.createDeviceOrderBestBuyService.generateTransactionId(this.apiRequestService.getCurrentRequestId()),
       data: {
         transactionType: TransactionType.DEVICE_ORDER_EXISTING_AIS,
         action: TransactionAction.KEY_IN,
-        mainPromotion: mainPromotion
+        mainPromotion: mainPromotion,
+        preBooking: preBooking
       }
     };
   }
@@ -222,7 +230,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
   createPriceOption(mainPromotion: MainPromotion) {
     const productDetail: any = this.localStorageService.load('productDetail').value;
     const productInfo: any = this.localStorageService.load('productInfo').value;
-    const thumbnail = (productInfo && productInfo.images) ? productInfo.images.thumbnail : '';
+    // const thumbnail = (productInfo && productInfo.images) ? productInfo.images.thumbnail : '';
     // const device: ProductStock = {
     //   company: productInfo.company,
     //   productType: productDetail.productType,

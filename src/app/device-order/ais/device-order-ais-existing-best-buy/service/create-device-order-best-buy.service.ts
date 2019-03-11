@@ -39,6 +39,7 @@ export const REMARK_RABBIT_LINE_PAY_PAYMENT = '[RL]';
 export class CreateDeviceOrderBestBuyService {
 
   user: User;
+  priceOption: PriceOption;
 
   constructor(
     private http: HttpClient,
@@ -47,12 +48,13 @@ export class CreateDeviceOrderBestBuyService {
     private priceOptionService: PriceOptionService,
     private apiRequestService: ApiRequestService
   ) {
+    this.priceOption = this.priceOptionService.load();
     this.user = this.tokenService.getUser();
   }
 
   private callAddToCart(transaction: Transaction, priceOption: PriceOption): Promise<any> {
     const device = priceOption.productStock;
-    const preBooking: Prebooking = transaction.data.prebooking;
+    const preBooking: Prebooking = transaction.data.preBooking;
     const customer = transaction.data.customer;
     const cusNameOrder = customer.firstName && customer.lastName ? `${customer.firstName} ${customer.lastName}` : '-';
     const requestData: any = {
@@ -69,9 +71,9 @@ export class CreateDeviceOrderBestBuyService {
       grandTotalAmt: '',
       userId: this.user.username,
       cusNameOrder: cusNameOrder,
-      preBookingNo: preBooking.preBookingNo,
-      depositAmt: preBooking.depositAmt,
-      reserveNo: preBooking.reserveNo
+      preBookingNo: preBooking ? preBooking.preBookingNo : '',
+      depositAmt: preBooking ? preBooking.depositAmt : '',
+      reserveNo: preBooking ? preBooking.reserveNo : ''
     };
 
     // return this.http.post('/api/salesportal/device-sell/item', requestData).toPromise()
@@ -112,14 +114,14 @@ export class CreateDeviceOrderBestBuyService {
 
   }
 
-  createDeviceOrder(transaction: Transaction, priceOption: PriceOption): Promise<any> {
+  createDeviceOrder(transaction: Transaction): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.getRequestCreateOrder(transaction, priceOption).then((data) => {
+      this.getRequestCreateOrder(transaction).then((data) => {
         this.http.post('/api/salesportal/device-sell/order', data).toPromise()
           .then((response: any) => {
             if (response) {
               if (response.resultCode === 'S') {
-                this.updateTransactionOrder(transaction, priceOption).then((updateStatus) => {
+                this.updateTransactionOrder(transaction).then((updateStatus) => {
                   resolve(updateStatus);
                 }).catch((err) => reject('อัพเดทพัง'));
               } else {
@@ -139,23 +141,23 @@ export class CreateDeviceOrderBestBuyService {
     });
   }
 
-  private updateTransactionOrder(transaction: Transaction, priceOption: PriceOption) {
-    const shareTrasaction = this.mapUpdateTransactionDb(transaction, priceOption);
+  private updateTransactionOrder(transaction: Transaction) {
+    const shareTrasaction = this.mapUpdateTransactionDb(transaction);
     return this.http.post('/api/salesportal/device-order/update-transaction', shareTrasaction).toPromise();
   }
 
-  private getRequestCreateOrder(transaction: Transaction, priceOption: PriceOption): Promise<any> {
+  private getRequestCreateOrder(transaction: Transaction): Promise<any> {
 
     const user = this.tokenService.getUser();
     const customer = transaction.data.customer;
-    const productStock = priceOption.productStock;
-    const trade = priceOption.trade;
+    const productStock = this.priceOption.productStock;
+    const trade = transaction.data.mainPromotion.trade;
     const payment = transaction.data.payment;
     const advancePayment = transaction.data.advancePayment;
     const simCard = transaction.data.simCard;
     const queue = transaction.data.queue;
     const seller = transaction.data.seller;
-    const prebooking = transaction.data.prebooking;
+    const prebooking = transaction.data.preBooking;
     const mobileCare = transaction.data.mobileCarePackage;
 
     const data: any = {
@@ -375,7 +377,7 @@ export class CreateDeviceOrderBestBuyService {
     };
   }
 
-  private mapUpdateTransactionDb(transaction: Transaction, priceOption: PriceOption) {
+  private mapUpdateTransactionDb(transaction: Transaction) {
     return {
       transactionId: transaction.transactionId,
       data: {
@@ -384,10 +386,10 @@ export class CreateDeviceOrderBestBuyService {
         air_time: transaction.data.advancePayment,
         sim_card: transaction.data.simCard,
         main_package: transaction.data.mainPackage || null,
-        device: this.getDevice(priceOption),
+        device: this.getDevice(this.priceOption),
         mobile_care_package: transaction.data.mobileCarePackage,
         existing_mobile_care_package: transaction.data.existingMobileCare,
-        preBooking: transaction.data.prebooking,
+        preBooking: transaction.data.preBooking,
         billing_information: transaction.data.billingInformation,
         queue: transaction.data.queue.queueNo,
         seller: transaction.data.seller,
