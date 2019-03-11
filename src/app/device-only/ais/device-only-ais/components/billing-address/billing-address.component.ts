@@ -1,13 +1,32 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { debounceTime, distinct } from 'rxjs/operators';
+
+export interface CustomerAddress {
+  homeNo: string;
+  moo?: string;
+  mooBan?: string;
+  room?: string;
+  floor?: string;
+  buildingName?: string;
+  soi?: string;
+  street?: string;
+  province: string;
+  amphur: string;
+  tumbol: string;
+  zipCode: string;
+}
 
 @Component({
   selector: 'app-billing-address',
   templateUrl: './billing-address.component.html',
   styleUrls: ['./billing-address.component.scss']
 })
-export class BillingAddressComponent implements OnInit {
+export class BillingAddressComponent implements OnInit, OnChanges {
+
+  @Input()
+  customerAddress: CustomerAddress;
+
   @Input()
   allZipCodes: string[];
 
@@ -15,22 +34,22 @@ export class BillingAddressComponent implements OnInit {
   provinces: string[];
 
   @Input()
-  districts: string[];
+  amphurs: string[];
 
   @Input()
-  subDistricts: string[];
+  tumbols: string[];
 
   @Input()
-  zipCode: string[];
+  zipCodes: string[];
 
   @Output()
   provinceSelected: EventEmitter<any> = new EventEmitter<any>();
 
   @Output()
-  distinctSelected: EventEmitter<any> = new EventEmitter<any>();
+  amphurSelected: EventEmitter<any> = new EventEmitter<any>();
 
   @Output()
-  subDistinctSelected: EventEmitter<any> = new EventEmitter<any>();
+  tumbolSelected: EventEmitter<any> = new EventEmitter<any>();
 
   @Output()
   zipCodeSelected: EventEmitter<any> = new EventEmitter<any>();
@@ -41,77 +60,100 @@ export class BillingAddressComponent implements OnInit {
   @Output()
   error: EventEmitter<boolean> = new EventEmitter<boolean>();
 
-  billingAddressForm: FormGroup;
+  customerAddressForm: FormGroup;
 
-  constructor(private fb: FormBuilder) { }
+  constructor(
+    public fb: FormBuilder
+  ) {
+  }
 
   ngOnInit(): void {
     this.createForm();
   }
 
-   private createForm(): void {
-    this.billingAddressForm = this.fb.group({
-      customerName: ['', []],
-      addressNo: ['', []],
-      road: ['', []],
-      subDistrict: ['', []],
-      district: ['', []],
-      province: ['', []],
+  ngOnChanges(changes: SimpleChanges): void {
+    if (!this.customerAddressForm) {
+      return;
+    }
+
+    if (changes.customerAddress) {
+      const currentValue: any = changes.customerAddress.currentValue;
+      const previousValue: any = changes.customerAddress.previousValue;
+      if (previousValue && currentValue.province === previousValue.province) {
+        this.customerAddressForm.patchValue({
+          province: currentValue.province,
+          zipCode: currentValue.zipCode
+        });
+      } else {
+        this.customerAddressForm.patchValue(currentValue || {});
+      }
+    }
+
+    if (changes.amphurs
+      && changes.amphurs.currentValue
+      && changes.amphurs.currentValue.length === 1) {
+      this.customerAddressForm.patchValue({
+        amphur: changes.amphurs.currentValue[0]
+      });
+    }
+
+    if (changes.tumbols
+      && changes.tumbols.currentValue
+      && changes.tumbols.currentValue.length === 1) {
+      this.customerAddressForm.patchValue({
+        tumbol: changes.tumbols.currentValue[0]
+      });
+    }
+
+    if (changes.zipCodes
+      && changes.zipCodes.currentValue
+      && changes.zipCodes.currentValue.length === 1) {
+      this.customerAddressForm.patchValue({
+        zipCode: changes.zipCodes.currentValue[0]
+      });
+    }
+  }
+
+  clearCustomerAddressForm(event: any): void {
+    event.preventDefault();
+    this.customerAddressForm.reset();
+    this.customerAddressForm.patchValue({
+      amphur: '',
+    });
+    this.disableFormAmphurAndTumbol();
+  }
+
+  createForm(): void {
+    this.customerAddressForm = this.fb.group({
+      homeNo: ['', [Validators.required, Validators.pattern(/^[0-9^/]*$/)]],
+      moo: [''],
+      mooBan: [''],
+      room: [''],
+      floor: [''],
+      buildingName: [''],
+      soi: [''],
+      street: [''],
+      province: ['', [Validators.required]],
+      amphur: ['', [Validators.required]],
+      tumbol: ['', [Validators.required]],
       zipCode: ['', [Validators.required, Validators.maxLength(5), this.validateZipCode.bind(this)]],
     });
-    this.billingAddressForm.valueChanges.pipe(debounceTime(750)).subscribe(event => {
-      this.error.emit(this.billingAddressForm.valid);
-      if (this.billingAddressForm.valid) {
-        this.completed.emit(this.billingAddressForm.value);
+    this.disableFormAmphurAndTumbol();
+    this.customerAddressForm.valueChanges.pipe(debounceTime(750)).subscribe((value: any) => {
+      this.error.emit(this.customerAddressForm.valid);
+      if (this.customerAddressForm.valid) {
+        this.completed.emit(value);
       }
     });
-    this.provincesForm().valueChanges.subscribe((provinceName: any) => {
-      this.billingAddressForm.patchValue({
-        district: '',
-        subDistrict: '',
-      });
-      this.districtsForm().enable();
-      this.subDistrictsForm().disable();
-      if (provinceName) {
-        const controlsZipCode = this.zipCodesForm();
-        this.provinceSelected.emit({
-          provinceName: provinceName,
-          zipCode: controlsZipCode.invalid ? controlsZipCode.value : null
-        });
-      }
-    });
-
-    this.districtsForm().valueChanges.subscribe((districtName: any) => {
-      this.billingAddressForm.patchValue({
-        subDistrict: '',
-      });
-      this.subDistrictsForm().enable();
-      if (districtName) {
-        const controlsZipCode = this.zipCodesForm();
-        this.distinctSelected.emit({
-          provinceName: this.billingAddressForm.value.province || '',
-          districtName: districtName,
-          zipCode: controlsZipCode.invalid ? controlsZipCode.value : null
-        });
-      }
-    });
-
-    this.subDistrictsForm().valueChanges.subscribe((subDistrictName: any) => {
-      if (subDistrictName) {
-        const controlsZipCode = this.zipCodesForm();
-        console.log('this.billingAddressForm.value', this.billingAddressForm.value);
-        this.subDistinctSelected.emit({
-          provinceName: this.billingAddressForm.value.province || '',
-          districtName: this.billingAddressForm.value.district || '',
-          subDistrictName: subDistrictName,
-          zipCode: controlsZipCode.invalid ? controlsZipCode.value : null
-        });
-      }
-    });
+    this.customerAddressForm.patchValue(this.customerAddress || {});
+    this.provinceFormControl();
+    this.amphurFormControl();
+    this.tumbolFormControl();
+    this.zipCodeFormControl();
   }
 
   validateZipCode(control: AbstractControl): ValidationErrors | null {
-    const isZipCode = (this.zipCode || []).find(zipCode => zipCode === control.value);
+    const isZipCode = (this.zipCodes || []).find(zipCode => zipCode === control.value);
     if (isZipCode) {
       return null;
     }
@@ -120,19 +162,88 @@ export class BillingAddressComponent implements OnInit {
     };
   }
 
-  private provincesForm(): AbstractControl {
-    return this.billingAddressForm.controls['province'];
+  private provinceFormControl(): void {
+    this.provinceForm().valueChanges.subscribe((provinceName: any) => {
+      this.customerAddressForm.patchValue({
+        amphur: '',
+        tumbol: '',
+      });
+      this.amphurForm().enable();
+      this.tumbolForm().disable();
+      if (provinceName) {
+        const controlsZipCode = this.zipCodeForm();
+        this.provinceSelected.emit({
+          provinceName: provinceName,
+          zipCode: controlsZipCode.invalid ? controlsZipCode.value : null
+        });
+      }
+    });
   }
 
-  private districtsForm(): AbstractControl {
-    return this.billingAddressForm.controls['district'];
+  private amphurFormControl(): void {
+    this.amphurForm().valueChanges.subscribe((amphurName: any) => {
+      this.customerAddressForm.patchValue({
+        tumbol: '',
+      });
+      this.tumbolForm().enable();
+      if (amphurName) {
+        const controlsZipCode = this.zipCodeForm();
+        this.amphurSelected.emit({
+          provinceName: this.customerAddressForm.value.province || '',
+          amphurName: amphurName,
+          zipCode: controlsZipCode.invalid ? controlsZipCode.value : null
+        });
+      }
+    });
   }
 
-  private zipCodesForm(): AbstractControl {
-    return this.billingAddressForm.controls['zipCode'];
+  private tumbolFormControl(): void {
+    this.tumbolForm().valueChanges.subscribe((tumbolName: any) => {
+      if (tumbolName) {
+        const controlsZipCode = this.zipCodeForm();
+        this.tumbolSelected.emit({
+          provinceName: this.customerAddressForm.value.province || '',
+          amphurName: this.customerAddressForm.value.amphur || '',
+          tumbolName: tumbolName,
+          zipCode: controlsZipCode.invalid ? controlsZipCode.value : null
+        });
+      }
+    });
   }
 
-  private subDistrictsForm(): AbstractControl {
-    return this.billingAddressForm.controls['subDistrict'];
+  private zipCodeFormControl(): void {
+    this.zipCodeForm().valueChanges.pipe(debounceTime(750))
+      .subscribe((zipCode: string) => {
+        const controls = this.zipCodeForm();
+        if (controls.invalid
+          && zipCode
+          && zipCode.length === 5
+          && this.customerAddress
+          && this.customerAddress.zipCode !== zipCode) {
+          this.zipCodeSelected.emit(controls.value);
+        }
+      });
   }
+
+  private disableFormAmphurAndTumbol(): void {
+    this.amphurForm().disable();
+    this.tumbolForm().disable();
+  }
+
+  private provinceForm(): AbstractControl {
+    return this.customerAddressForm.controls['province'];
+  }
+
+  private zipCodeForm(): AbstractControl {
+    return this.customerAddressForm.controls['zipCode'];
+  }
+
+  private tumbolForm(): AbstractControl {
+    return this.customerAddressForm.controls['tumbol'];
+  }
+
+  private amphurForm(): AbstractControl {
+    return this.customerAddressForm.controls['amphur'];
+  }
+
 }

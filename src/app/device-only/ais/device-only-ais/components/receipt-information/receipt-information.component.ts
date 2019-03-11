@@ -2,6 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter  } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors  } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
 import { BillingAddressService } from '../../services/billing-address.service';
+import { HttpClient } from '@angular/common/http';
 
 export interface ReceiptInfo {
   taxId: string;
@@ -29,19 +30,39 @@ export class ReceiptInformationComponent implements OnInit {
 
   receiptInfoForm: FormGroup;
   billingAddressForm: FormGroup;
+  customerAddress: any;
   inputBillingAddress: boolean;
   provinces: any;
   allZipCodes: any;
-  districts: any;
-  subDistricts: any;
+  amphurs: any;
+  tumbols: any;
   zipCode: any;
 
-  constructor(private fb: FormBuilder, private billingAddress: BillingAddressService) {
-    this.billingAddress.getProvinces().then(this.getDataProvinces());
-    this.billingAddress.getZipCodes().then(this.getDataZipCodes());
+  customerAddressTemp: any;
+  ebillingAddressValid: boolean;
+
+  constructor(
+    private fb: FormBuilder,
+    private billingAddress: BillingAddressService) {
+    this.billingAddress.getProvinces().then(this.responseProvinces());
+    this.billingAddress.getZipCodes().then(this.responseZipCodes());
    }
 
   ngOnInit(): void {
+    this.customerAddress = {
+      homeNo: '',
+      moo: '',
+      mooBan: '',
+      room: '',
+      floor: '',
+      buildingName: '',
+      soi: '',
+      street: '',
+      province: '',
+      amphur: '',
+      tumbol: '',
+      zipCode: '',
+    };
     this.createForm();
   }
 
@@ -66,69 +87,96 @@ export class ReceiptInformationComponent implements OnInit {
     this.inputBillingAddress = true;
   }
 
-  getProvinceByName(provinceName: string): any {
+  onProvinceSelected(params: any): void {
+    const province = this.findProvinceByName(params.provinceName);
+    const req = {
+      provinceId: province.id,
+      zipcode: params.zipCode
+    };
+    if (!params.zipCode) {
+      delete req.zipcode;
+    }
+    this.billingAddress.getAmphurs(req).then(this.responseAmphur());
+  }
+
+  onAmphurSelected(params: any): void {
+    const province = this.findProvinceByName(params.provinceName);
+    const req = {
+      provinceId: province.id,
+      amphurName: params.amphurName,
+      zipcode: params.zipCode
+    };
+    if (!params.zipCode) {
+      delete req.zipcode;
+    }
+    this.billingAddress.getTumbols(req).then(this.responseTumbols());
+  }
+
+  onTumbolSelected(params: any): void {
+    const province = this.findProvinceByName(params.provinceName);
+    const req  = {
+      provinceId: province.id,
+      amphurName: params.amphurName,
+      tumbolName: params.tumbolName
+    };
+    this.billingAddress.queryZipCode(req).then(this.responseZipCode());
+  }
+
+  onZipCodeSelected(zipCode: string): void {
+    this.billingAddress.getProvinceIdByZipCode(zipCode).then(provinceId => {
+      const province = this.findProvinceByProvinceID(provinceId);
+      if (!province) { return; }
+      this.assignProvinceAndZipCode(province, zipCode);
+    });
+  }
+
+  onCompleted(value: any): void {
+    this.customerAddressTemp = value;
+  }
+
+  onError(valid: boolean): void {
+    this.ebillingAddressValid = valid;
+  }
+
+  private assignProvinceAndZipCode(province: any, zipCode: string): void {
+    this.customerAddress = Object.assign(Object.assign({}, this.customerAddress), {
+      province: province.name,
+      zipCode: zipCode
+    });
+  }
+
+  private findProvinceByName(provinceName: string): any {
     return (this.provinces || []).find((prov: any) => prov.name === provinceName) || {};
   }
 
-  onProvinceSelected(params: any): void {
-    const province = this.getProvinceByName(params.provinceName);
-    const req = {
-      provinceId: province.id,
-      zipCode: params.zipCode
-    };
-    if (!params.zipCode) {
-      delete req.zipCode;
-    }
-    this.billingAddress.getDistrict(req).then(this.getdataDistrict());
+  private findProvinceByProvinceID(provinceId: string): any {
+    return this.provinces.find((prov: any) => prov.id === provinceId);
   }
 
-  onDistrictSelected(params: any): void {
-    const province = this.getProvinceByName(params.provinceName);
-    const req = {
-      provinceId: province.id,
-      amphurName: params.districtName,
-      zipCode: params.zipCode
-    };
-    if (!params.zipCode) {
-      delete req.zipCode;
-    }
-    this.billingAddress.getSubDistrict(req).then(this.getDataSubDistrict());
-  }
-
-  onSubDistrictSelected(params: any): void {
-    const province = this.getProvinceByName(params.provinceName);
-    const req  = {
-      provinceId: province.id,
-      amphurName: params.districtName,
-      tumbolName: params.subDistrictName
-    };
-    this.billingAddress.queryZipCode(req).then(this.getDataZipCode());
-  }
-
-  private getDataZipCode(): (value: any) => any {
-    return (resp: any) => this.zipCode = resp;
-  }
-
-  private getDataSubDistrict(): (value: any) => any {
-    return (resp: string[]) => this.subDistricts = resp;
-  }
-
-  private getdataDistrict(): (value: any) => any {
-    return (resp: string[] ) => this.districts = resp;
-  }
-
-  private getDataZipCodes(): (value: any) => any {
-    return (resp: string[]) => this.allZipCodes = resp;
-  }
-
-  private getDataProvinces(): (value: any) => any {
-    return (resp: string[]) => this.provinces = resp;
-  }
-
-  getProvinces(): string[] {
+  private getProvinces(): string[] {
     return (this.provinces || []).map((province: any) => {
       return province.name;
     });
+  }
+
+  private responseZipCode(): (value: any) => any {
+    return (resp: any) => this.zipCode = resp;
+  }
+
+  private responseTumbols(): (value: any) => any {
+    return (resp: string[]) => this.tumbols = resp;
+  }
+
+  private responseAmphur(): (value: any) => any {
+    return (resp: string[] ) => this.amphurs = resp;
+  }
+
+  private responseZipCodes(): (value: any) => any {
+    return (resp: string[]) => this.allZipCodes = resp;
+  }
+
+  private responseProvinces(): (value: any) => any {
+    return (resp: string[]) => this.provinces = resp;
   }
 
 }
