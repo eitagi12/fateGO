@@ -119,9 +119,10 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
       isEnable: this.isEnableForm()
     };
 
-    // ############################################## receiptInfo ##############################################
 
     this.createForm();
+    // ############################################## receiptInfo ##############################################
+
     this.receiptInfo = {
       taxId: this.transaction.data.customer.idCardNo,
       branch: '',
@@ -131,7 +132,6 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
       buyerAddress: this.getFullAddress(this.transaction.data.customer),
       telNo: this.transaction.data.receiptInfo ? this.transaction.data.receiptInfo.telNo : ''
     };
-
   }
 
   onHome() {

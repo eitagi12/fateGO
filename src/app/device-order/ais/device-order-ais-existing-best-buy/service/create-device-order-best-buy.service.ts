@@ -45,27 +45,27 @@ export class CreateDeviceOrderBestBuyService {
     private http: HttpClient,
     private utils: Utils,
     private tokenService: TokenService,
-    private priceOptionService: PriceOptionService,
-    private apiRequestService: ApiRequestService
+    private priceOptionService: PriceOptionService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.user = this.tokenService.getUser();
   }
 
   private callAddToCart(transaction: Transaction, priceOption: PriceOption): Promise<any> {
-    const device = priceOption.productStock;
+    const productStock = priceOption.productStock;
+    const productDetail = priceOption.productDetail;
     const preBooking: Prebooking = transaction.data.preBooking;
     const customer = transaction.data.customer;
     const cusNameOrder = customer.firstName && customer.lastName ? `${customer.firstName} ${customer.lastName}` : '-';
     const requestData: any = {
-      soCompany: device.company || 'AWN',
+      soCompany: productStock.company || 'AWN',
       locationSource: this.user.locationCode,
       locationReceipt: this.user.locationCode,
-      productType: device.productType || 'DEVICE',
-      productSubType: device.productSubType || 'HANDSET',
-      brand: device.brand,
-      model: device.model,
-      color: device.color,
+      productType: productDetail.productType || 'DEVICE',
+      productSubType: productDetail.productSubType || 'HANDSET',
+      brand: productDetail.brand,
+      model: productDetail.model,
+      color: productStock.color,
       priceIncAmt: '',
       priceDiscountAmt: '',
       grandTotalAmt: '',
@@ -156,14 +156,16 @@ export class CreateDeviceOrderBestBuyService {
     const seller = transaction.data.seller;
     const prebooking = transaction.data.preBooking;
     const mobileCare = transaction.data.mobileCarePackage;
+    const order = transaction.data.order;
+
 
     const data: any = {
-      soId: transaction.data.order.soId || '',
+      soId: order.soId,
       soCompany: productStock.company,
-      locationSource: user.locationCode,
-      locationReceipt: user.locationCode,
+      locationSource: this.user.locationCode,
+      locationReceipt: this.user.locationCode,
       productType: productDetail.productType || 'DEVICE',
-      productSubType: productDetail.productSubType || 'HANDSET',
+      productSubType: productDetail.productSubtype || 'HANDSET',
       brand: productDetail.brand,
       model: productDetail.model,
       color: productStock.color,
@@ -171,16 +173,16 @@ export class CreateDeviceOrderBestBuyService {
       priceIncAmt: trade.normalPrice.toFixed(2),
       priceDiscountAmt: (+trade.discount.amount).toFixed(2),
       grandTotalAmt: this.getGrandTotalAmt(trade),
-      userId: user.username,
-      saleCode: seller.employeeId || '',
+      userId: this.user.username,
+      saleCode: seller && seller.employeeId ? seller.employeeId : '',
       queueNo: queue.queueNo || '',
-      cusNameOrder: customer.titleName + ' ' + customer.firstName + ' ' + customer.lastName,
-      taxCardId: customer.idCardNo || '',
-      cusMobileNoOrder: simCard.mobileNo || '',
+      cusNameOrder: this.getFullName(customer),
+      taxCardId: customer && customer.idCardNo || '',
+      cusMobileNoOrder: simCard && simCard.mobileNo || '',
       customerAddress: this.getCustomerAddress(customer),
-      tradeNo: trade.tradeNo,
-      ussdCode: trade.ussdCode,
-      returnCode: customer.privilegeCode,
+      tradeNo: trade && trade.tradeNo || '',
+      ussdCode: trade && trade.ussdCode || '',
+      returnCode: '4GEYYY', // customer.privilegeCode || '',
       cashBackFlg: '',
       matAirTime: '',
       matCodeFreeGoods: '',
@@ -188,8 +190,8 @@ export class CreateDeviceOrderBestBuyService {
       installmentTerm: payment && payment.bank ? payment.bank.installments[0].installmentMonth : 0,
       installmentRate: payment && payment.bank ? payment.bank.installments[0].installmentPercentage : 0,
       mobileAisFlg: 'Y',
-      paymentMethod: this.getPaymentMethod(payment, advancePayment, trade) || '',
-      bankCode: this.getBankCode(payment, advancePayment) || '',
+      paymentMethod: payment.method,
+      bankCode: this.getBankCode(payment, advancePayment),
       tradeFreeGoodsId: trade.freeGoods[0] ? trade.freeGoods[0].tradeFreegoodsId : '',
       matairtimeId: '',
       tradeDiscountId: trade.discount ? trade.discount.tradeAirtimeId : '',
@@ -197,7 +199,7 @@ export class CreateDeviceOrderBestBuyService {
       focCode: '',
       bankAbbr: this.getBankCode(payment, advancePayment),
       preBookingNo: prebooking ? prebooking.preBookingNo : '',
-      depositAmt: prebooking ? prebooking.depositAmt : '',
+      depositAmt: prebooking ? prebooking.depositAmt : ''
     };
 
     return Promise.resolve(data);
@@ -388,7 +390,7 @@ export class CreateDeviceOrderBestBuyService {
         existing_mobile_care_package: transaction.data.existingMobileCare,
         preBooking: transaction.data.preBooking,
         billing_information: transaction.data.billingInformation,
-        queue: transaction.data.queue.queueNo,
+        queue: transaction.data.queue,
         seller: transaction.data.seller,
         order: transaction.data.order,
         provision: {},
@@ -450,5 +452,10 @@ export class CreateDeviceOrderBestBuyService {
       });
     });
 
+  }
+
+  getFullName(customer: Customer){
+    return customer && customer.titleName && customer.firstName && customer.lastName
+        ? `${customer.titleName} ${customer.firstName} ${customer.lastName}` : '';
   }
 }

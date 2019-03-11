@@ -71,21 +71,34 @@ export class DeviceOrderAisExistingBestBuyEligibleMobilePageComponent implements
       msisdn: this.mobileNo.mobileNo,
       shortCode: trade.ussdCode
     }).toPromise()
-    .then((response: any) => {
-      const privilege = response.data;
-      if (privilege && privilege.description && privilege.description.toUpperCase() === 'SUCCESS') {
-        this.transaction.data.customer.privilegeCode = privilege.msgBarcode;
-        this.transaction.data.simCard = { mobileNo: this.mobileNo.mobileNo };
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE]);
-      } else {
-        this.alertService.error(privilege.description);
-      }
-    }).catch((err) => {
-      const errResponse: any = JSON.parse(err.data.response.developerMessage.replace('500 - ', ''));
-      this.alertService.error(errResponse);
-    }).then(() => {
-      this.pageLoadingService.closeLoading();
-    });
+      .then((response: any) => {
+        const privilege = response.data;
+        if (privilege && privilege.description && privilege.description.toUpperCase() === 'SUCCESS') {
+          this.transaction.data.customer.privilegeCode = privilege.msgBarcode;
+          this.transaction.data.simCard = { mobileNo: this.mobileNo.mobileNo };
+          if (this.transaction.data.customer.caNumber) {
+            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE]);
+            return;
+          }
+          this.http.get(`/api/customerportal/customerprofile/${this.mobileNo.mobileNo}`).toPromise()
+            .then((customer: any) => {
+              const profile = customer.data;
+              const names = profile.name.split(' ');
+              this.transaction.data.customer.titleName = profile.title;
+              this.transaction.data.customer.firstName = names[0];
+              this.transaction.data.customer.lastName = names[1];
+              this.transaction.data.customer.birthdate = profile.profile.birthdate;
+              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE]);
+            });
+        } else {
+          this.alertService.error(privilege.description);
+        }
+      }).catch((err) => {
+        const errResponse: any = JSON.parse(err.data.response.developerMessage.replace('500 - ', ''));
+        this.alertService.error(errResponse);
+      }).then(() => {
+        this.pageLoadingService.closeLoading();
+      });
 
   }
 
@@ -101,11 +114,11 @@ export class DeviceOrderAisExistingBestBuyEligibleMobilePageComponent implements
       ussdCode: trade.ussdCode,
       mobileType: 'All'
     }).toPromise()
-    .then((response: any) => {
-      const eMobileResponse = response.data;
-      this.eligiblePostpaid = eMobileResponse.postpaid;
-      this.eligiblePrepaid = eMobileResponse.prepaid;
-    });
+      .then((response: any) => {
+        const eMobileResponse = response.data;
+        this.eligiblePostpaid = eMobileResponse.postpaid;
+        this.eligiblePrepaid = eMobileResponse.prepaid;
+      });
 
   }
 
