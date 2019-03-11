@@ -100,15 +100,15 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
     this.pageLoadingService.openLoading();
     this.http.get(`/api/customerportal/checkSeller/${this.sellerCode}`).toPromise()
     .then((shopCheckSeller: any) => {
-      if (shopCheckSeller.condition) {
+      if (shopCheckSeller.data.condition) {
         this.transaction.data.seller = {
           ...this.seller,
-          employeeId: shopCheckSeller.isAscCode
+          employeeId: shopCheckSeller.data.isAscCode
         };
         this.pageLoadingService.closeLoading();
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CHECK_OUT_PAGE]);
         } else {
-          this.alertService.error(shopCheckSeller.message);
+          this.alertService.error(shopCheckSeller.data.message);
         }
       }).catch((error: any) => {
         this.pageLoadingService.closeLoading();
