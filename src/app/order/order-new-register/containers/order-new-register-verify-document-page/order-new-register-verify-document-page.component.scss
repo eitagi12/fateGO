@@ -8,7 +8,12 @@
     width: 250;
 }
 
-:host /deep/ hr {
-    border: 3px solid #ccc;
-    border-radius: 5px;
+#container-scroll {
+  white-space: nowrap;
+  overflow: auto;
+  width: 300px;
+}
+
+.child {
+  display:inline-block;
 }

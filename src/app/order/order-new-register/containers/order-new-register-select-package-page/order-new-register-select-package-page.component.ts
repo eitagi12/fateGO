@@ -116,6 +116,7 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
     if (this.transaction.data.action === TransactionAction.READ_PASSPORT) {
       params.maxPromotionPrice = this.MAX_PROMOTION_PRICE;
     }
+    console.log('mobileNo', mobileNo);
     this.http.get(`/api/customerportal/queryCheckMinimumPackage/${mobileNo}`, {
     }).toPromise()
       .then((resp: any) => {

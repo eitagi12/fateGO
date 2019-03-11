@@ -56,7 +56,6 @@ export class OrderNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
       packageDetail: mainPackage.statementThai,
       idCardType: customer.idCardType
     };
-
     this.billingInfo = {
       billingMethod: {
         text: billCycleData.billingMethodText
