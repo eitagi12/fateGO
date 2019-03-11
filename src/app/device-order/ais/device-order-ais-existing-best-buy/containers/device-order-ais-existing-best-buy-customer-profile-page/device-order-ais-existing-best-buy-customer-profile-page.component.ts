@@ -3,9 +3,9 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { Router } from '@angular/router';
 import { HomeService } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
-import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_REPI_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_OTP_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_REPI_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_OTP_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_RPI_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-customer-profile-page',
@@ -41,7 +41,11 @@ export class DeviceOrderAisExistingBestBuyCustomerProfilePageComponent implement
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_OTP_PAGE]);
   }
   onBack() {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_REPI_PAGE]);
+    if (this.transaction.data.action === TransactionAction.KEY_IN_REPI) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_REPI_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_RPI_PAGE]);
+    }
   }
 
   onHome() {

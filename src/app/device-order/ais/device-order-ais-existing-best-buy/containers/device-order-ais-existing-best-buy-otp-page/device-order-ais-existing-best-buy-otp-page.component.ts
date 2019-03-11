@@ -7,7 +7,7 @@ import { HomeService, PageLoadingService, AlertService } from 'mychannel-shared-
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CAPTURE_REPI_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CAPTURE_REPI_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-otp-page',
@@ -76,28 +76,20 @@ export class DeviceOrderAisExistingBestBuyOtpPageComponent implements OnInit {
     }
     this.http.post(`/api/customerportal/newRegister/${mobile}/verifyOTP`, { pwd: otp, transactionID: this.transactionID }).toPromise()
       .then((resp: any) => {
-        this.navigateNext();
+        this.autoPI();
       }).catch((error) => {
         this.pageLoadingService.closeLoading();
         this.alertService.error('รหัส OTP ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง');
       });
   }
 
-  navigateNext(): void {
-    if (this.transaction.data.action === TransactionAction.READ_CARD_REPI) {
-      this.autoPI();
-    } else {
-      this.pageLoadingService.closeLoading();
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CAPTURE_REPI_PAGE]);
-    }
-  }
   autoPI(): void {
     this.http.post(`/api/customerportal/newRegister/updatePrepaidIdent`, this.getRequestUpdatePrepaidIdentata()
     ).toPromise()
       .then((response: any) => {
         this.pageLoadingService.closeLoading();
         if (response && response.data && response.data.success) {
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE]);
         } else {
           this.alertService.error('ระบบไม่สามารถแสดงตนได้กรุณาติดต่อเจ้าหน้าที่');
         }
@@ -156,7 +148,7 @@ export class DeviceOrderAisExistingBestBuyOtpPageComponent implements OnInit {
       imageReadSmartCard: customer.imageReadSmartCard || '-',
       isSmartCard: 'Y',
       smartCardVersion: 'v1',
-      urlPicture: '-'
+      urlPicture: ''
     };
     return data;
   }
