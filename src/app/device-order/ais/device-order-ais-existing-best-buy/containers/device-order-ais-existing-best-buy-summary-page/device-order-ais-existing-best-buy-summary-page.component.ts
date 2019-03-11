@@ -25,7 +25,7 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
 
   identityValid = false;
   transaction: Transaction;
-  pricreOption: PriceOption;
+  priceOption: PriceOption;
 
   @ViewChild('detailTemplate')
   detailTemplate: any;
@@ -53,7 +53,7 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
 
   ) {
     this.transaction = this.transactionService.load();
-    this.pricreOption = this.priceOptionService.load();
+    this.priceOption = this.priceOptionService.load();
   }
 
 
@@ -122,12 +122,11 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
 
   createForm() {
     this.checkSellerForm = this.fb.group({
-      checkSeller: ['', Validators.required, Validators.pattern(/^[0-9]+$/)]
+      checkSeller: ['', Validators.compose([Validators.required, Validators.pattern(/^[0-9]+$/])]
     });
 
     this.checkSellerForm.valueChanges.subscribe((value) => {
       if (value.checkSeller) {
-        this.identityValid = true;
         this.sellerCode = value.checkSeller;
       }
     });

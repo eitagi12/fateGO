@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 import { HomeService, PageLoadingService, ApiRequestService, EligibleMobile, AlertService, ShoppingCart } from 'mychannel-shared-libs';
-import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
@@ -49,7 +49,11 @@ export class DeviceOrderAisExistingBestBuyEligibleMobilePageComponent implements
   }
 
   onBack() {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
+    if (this.transaction.data.customer.caNumber) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_PAGE]);
+    }
   }
 
   onNext() {
@@ -79,7 +83,7 @@ export class DeviceOrderAisExistingBestBuyEligibleMobilePageComponent implements
     }).catch((err) => {
       const errResponse: any = JSON.parse(err.data.response.developerMessage.replace('500 - ', ''));
       this.alertService.error(errResponse);
-    }).then(() => {  
+    }).then(() => {
       this.pageLoadingService.closeLoading();
     });
 
@@ -94,7 +98,7 @@ export class DeviceOrderAisExistingBestBuyEligibleMobilePageComponent implements
     const trade = this.transaction.data.mainPromotion.trade;
     this.http.post('/api/customerportal/query-eligible-mobile-list', {
       idCardNo: idCardNo,
-      ussdCode: trade.ussdCode || '*999*02#',
+      ussdCode: trade.ussdCode,
       mobileType: 'All'
     }).toPromise()
     .then((response: any) => {

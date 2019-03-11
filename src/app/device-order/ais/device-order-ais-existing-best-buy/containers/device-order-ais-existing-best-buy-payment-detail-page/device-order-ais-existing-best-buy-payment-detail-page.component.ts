@@ -1,9 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { FormGroup } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
-import { ApiRequestService, PageLoadingService, HomeService, ShoppingCart, PaymentDetail, SelectPaymentDetail, PaymentDetailOption, PaymentDetailQRCode, PaymentDetailBank, PaymentDetailInstallment } from 'mychannel-shared-libs';
+import { ApiRequestService, PageLoadingService, HomeService, ShoppingCart, PaymentDetail, SelectPaymentDetail, PaymentDetailOption, PaymentDetailQRCode, PaymentDetailBank, PaymentDetailInstallment, User, TokenService } from 'mychannel-shared-libs';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_CARE_AVAILABLE_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_CARE_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
 import { Transaction, ExistingMobileCare, Customer } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -31,6 +31,7 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
   transaction: Transaction;
   shoppingCart: ShoppingCart;
   priceOption: PriceOption;
+  user: User;
 
   receiptInfo: ReceiptInfo;
   receiptInfoValid = true;
@@ -51,6 +52,9 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
   paymentForm: FormGroup;
   advancePaymentForm: FormGroup;
 
+  formID: string;
+  showQRCode: boolean;
+
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -58,69 +62,75 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
     private http: HttpClient,
     private shoppingCartService: ShoppingCartService,
     private priceOptionService: PriceOptionService,
-    private createDeviceOrderBestBuyService: CreateDeviceOrderBestBuyService
+    private createDeviceOrderBestBuyService: CreateDeviceOrderBestBuyService,
+    private fb: FormBuilder,
+    private tokenService: TokenService,
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
+    this.user = this.tokenService.getUser();
    }
 
   ngOnInit() {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-      const productDetail = this.priceOption.productDetail;
-      const productInfo = this.priceOption.productStock;
-      if (this.priceOption.trade.payments.length > 0) {
-        this.paymentMethod = this.priceOption.trade.payments.filter(payment => payment.method !== 'PP')[0].method || '';
-      } else {
-        this.paymentMethod = this.priceOption.trade.payments.method || '';
-      }
+    this.formID = this.getRandomNum(10);
+    const productDetail = this.priceOption.productDetail;
+    const productInfo = this.priceOption.productStock;
+    if (this.priceOption.trade.payments.length > 0) {
+      this.paymentMethod = this.priceOption.trade.payments.filter(payment => payment.method !== 'PP')[0].method || '';
+    } else {
+      this.paymentMethod = this.priceOption.trade.payments.method || '';
+    }
+    this.showQRCode = this.paymentMethod === 'CC' && this.user.userType !== 'ASP'
+              && this.user.channelType !== 'sff-web' && this.priceOption.productStock.company === 'AWN'
+              && this.user.username === 'duangdat';
+    // this.priceOption.trade.advancePay.amount = 1000;
+    // this.priceOption.trade.advancePay.installmentFlag = 'N';
+    // this.paymentMethod = 'CC/CA';
 
-      this.priceOption.trade.advancePay.amount = 1000;
-      this.priceOption.trade.advancePay.installmentFlag = 'N';
-      this.paymentMethod = 'CC/CA';
-
-      this.onLoadDefaultBankData(this.priceOption.trade.banks).then((banks) => {
-        this.priceOption.trade.banks = banks;
-        // ############################################## payment detail ##############################################
-        this.paymentDetail = {
-          title: 'รูปแบบการชำระเงิน',
-          header: 'ค่าเครื่อง ' + productDetail.name + ' สี ' + productInfo.colorName,
-          price: this.priceOption.trade.promotionPrice,
-          qrCodes: this.getQRCode(),
-          banks: this.groupPrivilegeTradeBankByAbb(this.priceOption.trade.banks)
-        };
-      });
-
-      if (this.transaction.data.payment) {
-        this.selectPaymentDetail = {
-          paymentType: this.transaction.data.payment.type,
-          qrCode: this.transaction.data.payment.qrCode,
-          bank: this.transaction.data.payment.bank,
-        };
-        const bank = this.paymentDetail.banks.find(b => b.abb === this.selectPaymentDetail.bank.abb);
-        this.paymentDetail.installments = bank ? bank.installments : [];
-      } else {
-        this.selectPaymentDetail = {
-          paymentType: this.getPaymentType(),
-        };
-      }
-
-      this.paymentDetailOption = {
-        isInstallment: this.isInstallment(),
-        isEnable: this.isEnableForm()
+    this.onLoadDefaultBankData(this.priceOption.trade.banks).then((banks) => {
+      this.priceOption.trade.banks = banks;
+      // ############################################## payment detail ##############################################
+      this.paymentDetail = {
+        title: 'รูปแบบการชำระเงิน',
+        header: 'ค่าเครื่อง ' + productDetail.name + ' สี ' + productInfo.colorName,
+        price: this.priceOption.trade.promotionPrice,
+        qrCodes: this.getQRCode(),
+        banks: this.groupPrivilegeTradeBankByAbb(this.priceOption.trade.banks)
       };
+    });
 
-      // ############################################## receiptInfo ##############################################
-
-
-      this.receiptInfo = {
-        taxId: this.transaction.data.customer.idCardNo,
-        branch: '',
-        buyer: this.transaction.data.customer.titleName + ' ' +
-          this.transaction.data.customer.firstName + ' ' +
-          this.transaction.data.customer.lastName,
-        buyerAddress: this.getFullAddress(this.transaction.data.customer),
-        telNo: this.transaction.data.receiptInfo ? this.transaction.data.receiptInfo.telNo : ''
+    if (this.transaction.data.payment) {
+      this.selectPaymentDetail = {
+        paymentType: this.transaction.data.payment.type,
+        qrCode: this.transaction.data.payment.qrCode,
+        bank: this.transaction.data.payment.bank,
       };
+      const bank = this.paymentDetail.banks.find(b => b.abb === this.selectPaymentDetail.bank.abb);
+      this.paymentDetail.installments = bank ? bank.installments : [];
+    } else {
+      this.selectPaymentDetail = {
+        paymentType: this.getPaymentType(),
+      };
+    }
+
+    this.paymentDetailOption = {
+      isInstallment: this.isInstallment(),
+      isEnable: this.isEnableForm()
+    };
+
+    // ############################################## receiptInfo ##############################################
+
+    this.createForm();
+    this.receiptInfo = {
+      taxId: this.transaction.data.customer.idCardNo,
+      branch: '',
+      buyer: this.transaction.data.customer.titleName + ' ' +
+        this.transaction.data.customer.firstName + ' ' +
+        this.transaction.data.customer.lastName,
+      buyerAddress: this.getFullAddress(this.transaction.data.customer),
+      telNo: this.transaction.data.receiptInfo ? this.transaction.data.receiptInfo.telNo : ''
+    };
 
   }
 
@@ -140,6 +150,12 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
         const existingMobileCare: ExistingMobileCare = exMobileCare.existMobileCarePackage;
         existingMobileCare.handSet = exMobileCare.existHandSet;
         this.transaction.data.existingMobileCare = existingMobileCare;
+        this.transaction.data.payment = {
+          method: this.paymentMethod,
+          type: this.selectPaymentDetail.paymentType,
+          qrCode: this.selectPaymentDetail.qrCode,
+          bank: this.selectPaymentDetail.bank
+        };
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_CARE_AVAILABLE_PAGE]);
       } else {
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_CARE_PAGE]);
@@ -207,8 +223,6 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
     this.selectPaymentDetail.bank.installments = Object.assign({}, installment);
   }
 
-
-
   checkPaymentFormValid(): boolean {
     const paymentType = this.selectPaymentDetail.paymentType;
 
@@ -257,15 +271,15 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
 
   getPaymentType(): string {
     if (this.paymentMethod === CASH_PAYMENT) {
-      return 'qrcode';
+      return this.showQRCode ? 'qrcode' : 'debit';
     }
     if (this.paymentMethod === CREDIT_CARD_PAYMENT) {
       return 'credit';
     }
     if (this.paymentMethod === CASH_AND_CREDIT_CARD_PAYMENT) {
-      return 'qrcode';
+      return this.showQRCode ? 'qrcode' : 'debit';
     }
-    return 'qrcode';
+    return this.showQRCode ? 'qrcode' : 'debit';
 
   }
 
@@ -393,5 +407,30 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
     } else {
       return installment;
     }
+  }
+
+  createForm() {
+    this.paymentForm = this.fb.group({
+      paymentType: [null, Validators.required]
+    });
+    this.paymentForm.valueChanges.subscribe(observer => {
+      this.selectPaymentDetail.paymentType = observer.paymentType;
+    });
+
+    if (this.selectPaymentDetail) {
+      this.paymentForm.patchValue({ paymentType: this.selectPaymentDetail.paymentType });
+    }
+    if (this.paymentDetailOption && this.paymentDetailOption.isEnable) {
+      this.paymentForm.get('paymentType').enable();
+    } else {
+      this.paymentForm.get('paymentType').disable();
+    }
+  }
+
+  getRandomNum(length: number): string {
+    const randomNum =
+      (Math.pow(10, length).toString().slice(length - 1) +
+        Math.floor((Math.random() * Math.pow(10, length)) + 1).toString()).slice(-length);
+    return randomNum;
   }
 }

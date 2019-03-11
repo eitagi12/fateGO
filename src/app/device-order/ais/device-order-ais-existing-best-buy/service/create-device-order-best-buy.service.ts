@@ -76,12 +76,12 @@ export class CreateDeviceOrderBestBuyService {
       reserveNo: preBooking ? preBooking.reserveNo : ''
     };
 
-    // return this.http.post('/api/salesportal/device-sell/item', requestData).toPromise()
-    //   .then((res: any) => res.data);
+    return this.http.post('/api/salesportal/device-sell/item', requestData).toPromise()
+      .then((res: any) => res.data);
     // TEST
-    return new Promise((resolve, reject) => {
-      resolve({ resultCode: 'S', soId: '11111' });
-    });
+    // return new Promise((resolve, reject) => {
+    //   resolve({ resultCode: 'S', soId: '11111' });
+    // });
   }
 
   private createTransaction(transaction: Transaction, priceOption: PriceOption): Promise<any> {
@@ -119,22 +119,18 @@ export class CreateDeviceOrderBestBuyService {
       this.getRequestCreateOrder(transaction).then((data) => {
         this.http.post('/api/salesportal/device-sell/order', data).toPromise()
           .then((response: any) => {
-            if (response) {
-              if (response.resultCode === 'S') {
-                this.updateTransactionOrder(transaction).then((updateStatus) => {
-                  resolve(updateStatus);
-                }).catch((err) => reject('อัพเดทพัง'));
-              } else {
-                switch (response.resultMessage) {
-                  case 'QueueNo is duplicated':
-                    reject('เลขที่คิวซ้ำ กรุณาระบุใหม่');
-                    break;
-                  default:
-                    reject('Fail to create the order');
-                }
-              }
+            if (response.data.resultCode === 'S') {
+              this.updateTransactionOrder(transaction).then((updateStatus) => {
+                resolve(updateStatus);
+              }).catch((err) => reject('ไม่สามารถทำรายการได้ในขณะนี้'));
             } else {
-              reject('Fail');
+              switch (response.resultMessage) {
+                case 'QueueNo is duplicated':
+                  reject('เลขที่คิวซ้ำ กรุณาระบุใหม่');
+                  break;
+                default:
+                  reject('Fail to create the order');
+              }
             }
           });
       });
@@ -151,6 +147,7 @@ export class CreateDeviceOrderBestBuyService {
     const user = this.tokenService.getUser();
     const customer = transaction.data.customer;
     const productStock = this.priceOption.productStock;
+    const productDetail = this.priceOption.productDetail;
     const trade = transaction.data.mainPromotion.trade;
     const payment = transaction.data.payment;
     const advancePayment = transaction.data.advancePayment;
@@ -162,17 +159,17 @@ export class CreateDeviceOrderBestBuyService {
 
     const data: any = {
       soId: transaction.data.order.soId || '',
-      soCompany: productStock.stock.company,
+      soCompany: productStock.company,
       locationSource: user.locationCode,
       locationReceipt: user.locationCode,
-      productType: productStock.stock.productType || 'DEVICE',
-      productSubType: productStock.stock.productSubType || 'HANDSET',
-      brand: productStock.stock.brand,
-      model: productStock.stock.model,
-      color: productStock.stock.color,
+      productType: productDetail.productType || 'DEVICE',
+      productSubType: productDetail.productSubType || 'HANDSET',
+      brand: productDetail.brand,
+      model: productDetail.model,
+      color: productStock.color,
       matCode: '',
       priceIncAmt: trade.normalPrice.toFixed(2),
-      priceDiscountAmt: trade.discount.amount.toFixed(2),
+      priceDiscountAmt: (+trade.discount.amount).toFixed(2),
       grandTotalAmt: this.getGrandTotalAmt(trade),
       userId: user.username,
       saleCode: seller.employeeId || '',
@@ -221,7 +218,7 @@ export class CreateDeviceOrderBestBuyService {
   }
 
   private getBankCode(payment: Payment, advancePayment: Payment): string {
-    return payment && payment.bank ? payment.bank.abb : '' + '|' + advancePayment && advancePayment.bank ? advancePayment.bank.abb : '';
+    return payment && payment.bank ? payment.bank.abb : '' + '|';
   }
 
   private getOrderRemark(
@@ -297,7 +294,7 @@ export class CreateDeviceOrderBestBuyService {
     let otherInformation = '';
     otherInformation += REMARK_SUMMARY_POINT + space + summaryPoint + comma + space;
     otherInformation += REMARK_SUMMARY_DISCOUNT + space + summaryDiscount + comma + space;
-    otherInformation += REMARK_DISCOUNT + space + trade.discount.amount.toFixed(2) + comma + space;
+    otherInformation += REMARK_DISCOUNT + space + (+trade.discount.amount).toFixed(2) + comma + space;
     otherInformation += REMARK_RETURN_CODE + space + customer.privilegeCode + comma + space;
     otherInformation += REMARK_ORDER_TYPE + space + 'MC004' + comma + space;
     if (mobileCare) {
