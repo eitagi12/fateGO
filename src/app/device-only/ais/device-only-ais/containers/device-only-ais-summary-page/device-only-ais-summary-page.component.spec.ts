@@ -1,30 +1,34 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import {RouterTestingModule} from '@angular/router/testing';
-
 import { DeviceOnlyAisSummaryPageComponent } from './device-only-ais-summary-page.component';
+import { ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE, ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_PAGE } from 'src/app/device-only/ais/device-only-ais/constants/route-path.constant';
 
 describe('DeviceOnlyAisSummaryPageComponent', () => {
   let component: DeviceOnlyAisSummaryPageComponent;
-  let fixture: ComponentFixture<DeviceOnlyAisSummaryPageComponent>;
-
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [ RouterTestingModule ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ DeviceOnlyAisSummaryPageComponent ]
-    })
-    .compileComponents();
-  }));
+  let router;
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DeviceOnlyAisSummaryPageComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    router = {
+      navigate: jest.fn()
+    };
+    component = new DeviceOnlyAisSummaryPageComponent(
+      router
+    );
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('onBack', () => {
+    it('should route navigate to ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE', () => {
+      component.onBack();
+      expect(router.navigate).toHaveBeenCalledWith([ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE]);
+    });
+  });
+
+  describe('onNext', () => {
+    it('should route to navigate to ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_PAGE', () => {
+      component.onNext();
+      expect(router.navigate).toHaveBeenCalledWith([ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_PAGE]);
+    });
   });
 });

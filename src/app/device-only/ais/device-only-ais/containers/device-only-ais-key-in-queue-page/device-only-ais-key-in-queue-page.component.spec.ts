@@ -1,30 +1,23 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-
 import { DeviceOnlyAisKeyInQueuePageComponent } from './device-only-ais-key-in-queue-page.component';
+import { ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE } from '../../constants/route-path.constant';
 
-describe('DeviceOnlyAisKeyInQueuePageComponent', () => {
+describe('test device only ais queue page', () => {
   let component: DeviceOnlyAisKeyInQueuePageComponent;
-  let fixture: ComponentFixture<DeviceOnlyAisKeyInQueuePageComponent>;
-
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [ RouterTestingModule ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ DeviceOnlyAisKeyInQueuePageComponent ]
-    })
-    .compileComponents();
-  }));
-
   beforeEach(() => {
-    fixture = TestBed.createComponent(DeviceOnlyAisKeyInQueuePageComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    component = new DeviceOnlyAisKeyInQueuePageComponent(
+      {navigate: jest.fn()}
+    );
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
+  describe('test onNext', () => {
+    it('go to page queue', () => {
+      component.onNext();
+      expect(component.router.navigate).toHaveBeenCalledWith([ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE]);
+    });
+  });
+
 });
