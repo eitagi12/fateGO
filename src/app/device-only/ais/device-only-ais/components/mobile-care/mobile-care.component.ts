@@ -112,10 +112,4 @@ export class MobileCareComponent implements OnInit {
     this.isPrivilegeCus = !this.isPrivilegeCus;
   }
 
-  public onBack(): void {}
-
-  public onHome(): void {}
-
-  public onNext(): void {}
-
 }
