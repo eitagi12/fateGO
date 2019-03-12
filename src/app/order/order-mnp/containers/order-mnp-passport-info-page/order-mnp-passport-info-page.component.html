@@ -11,10 +11,9 @@
   <div class="mc-flex-wrap">
     <div class="mb-3 mt-3">
       <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
-
-      <mc-capture-and-sign [apiSigned]="apiSigned" [captureAndSign]="captureAndSign" (command)="onCommand($event)" (completed)="onCompleted($event)" (error)="onError($event)">
+      <mc-capture-and-sign [apiSigned]="apiSigned" [captureAndSign]="captureAndSign" (command)="onCommand($event)"
+        (completed)="onCompleted($event)" (error)="onError($event)">
       </mc-capture-and-sign>
-
     </div>
   </div>
   <mc-footer>

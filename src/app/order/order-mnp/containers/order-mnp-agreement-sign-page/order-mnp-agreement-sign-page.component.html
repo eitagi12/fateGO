@@ -16,10 +16,12 @@
           <div class="card-header bg-transparent text-center" translate>ลงชื่อผู้ทำรายการ</div>
           <div class="card-body">
             <div *ngIf="!transaction?.data?.customer?.imageSignature" class="signed">
-              <img src="assets/images/icon/pen.png" (click)="$event.preventDefault(); onSigned()" *ngIf="signatureText !== 'แก้ไขลายเซ็น'" />
+              <img src="assets/images/icon/pen.png" (click)="$event.preventDefault(); onSigned()"
+                *ngIf="signatureText !== 'แก้ไขลายเซ็น'" />
             </div>
             <div *ngIf="transaction?.data?.customer?.imageSignature" class="signed">
-              <img [src]="'data:image/jpeg;base64,' + transaction?.data?.customer?.imageSignature" *ngIf="signatureText !== 'แก้ไขลายเซ็น'">
+              <img [src]="'data:image/jpeg;base64,' + transaction?.data?.customer?.imageSignature"
+                *ngIf="signatureText !== 'แก้ไขลายเซ็น'">
             </div>
           </div>
           <div class="card-footer text-center">
@@ -34,6 +36,7 @@
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()" [disabled]="!transaction?.data?.customer?.imageSignature">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()"
+      [disabled]="!transaction?.data?.customer?.imageSignature">NEXT</button>
   </mc-footer>
 </div>
