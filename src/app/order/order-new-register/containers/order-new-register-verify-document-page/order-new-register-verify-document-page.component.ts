@@ -321,7 +321,8 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
         this.pageLoadingService.openLoading();
         return this.http.get('/api/customerportal/validate-customer-new-register', {
           params: {
-            identity: readPassport.profile.idCardNo
+            identity: readPassport.profile.idCardNo,
+            idCardType: readPassport.profile.idCardType
           }
           // catch ไว้ก่อน เดี๋ยวมาทำต่อ
         }).toPromise().catch(() => {
