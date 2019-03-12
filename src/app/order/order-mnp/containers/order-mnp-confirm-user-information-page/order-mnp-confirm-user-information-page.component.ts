@@ -14,6 +14,7 @@ import {
 } from 'src/app/order/order-mnp/constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-order-mnp-confirm-user-information-page',
@@ -34,6 +35,8 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
   isTelNoBillingValid: boolean;
   isMailBillingInfoValid: boolean;
 
+  translationSubscribe: Subscription;
+
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -49,6 +52,10 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
     if (!this.transaction.data.billingInformation) {
       this.transaction.data.billingInformation = {};
     }
+    this.translationSubscribe = this.translation.onLangChange.subscribe(lang => {
+      this.mapCustomerInfoByLang(lang.lang);
+    });
+
   }
 
   ngOnInit() {
@@ -85,6 +92,17 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
     };
 
     this.initBillingInfo();
+    this.mapCustomerInfoByLang(this.translation.currentLang);
+  }
+
+  mapCustomerInfoByLang(lang: string) {
+    if (lang === 'EN') {
+      this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameEng;
+      this.confirmCustomerInfo.packageDetail = this.transaction.data.mainPackage.statementEng;
+    } else {
+      this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameThai;
+      this.confirmCustomerInfo.packageDetail = this.transaction.data.mainPackage.statementThai;
+    }
   }
 
   initBillingInfo() {
@@ -92,7 +110,7 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
     const mergeBilling = billingInformation.mergeBilling;
     const billCycle = billingInformation.billCycle;
     const customer: any = billingInformation.billDeliveryAddress || this.transaction.data.customer;
-
+    const engFlag = this.transaction.data.customer.engFlag || 'N';
     const customerAddress = this.utils.getCurrentAddress({
       homeNo: customer.homeNo,
       moo: customer.moo,
@@ -106,7 +124,7 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
       amphur: customer.amphur,
       province: customer.province,
       zipCode: customer.zipCode
-    });
+    }, engFlag);
 
     this.billingInfo = {
       // merge bill ไม่เมื่อเลือก package net extrem
@@ -194,11 +212,6 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
     this.transaction.data.billingInformation.billCycleData = billCycleData;
   }
 
-  onTelNoBillingError(valid: boolean) {
-    this.isTelNoBillingValid = valid;
-  }
-
-
   onMailBillingInfoError(valid: boolean) {
     this.isMailBillingInfoValid = valid;
   }
@@ -212,6 +225,11 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
 
     this.transaction.data.billingInformation.billCycleData = billCycleData;
   }
+
+  onTelNoBillingError(valid: boolean) {
+    this.isTelNoBillingValid = valid;
+  }
+
 
   onBack() {
     if (this.isPackageNetExtreme()) {
@@ -240,15 +258,6 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
     this.router.navigate([ROUTE_ORDER_MNP_SUMMARY_PAGE]);
   }
 
-
-  onEditMergeBill() {
-    this.router.navigate([ROUTE_ORDER_MNP_MERGE_BILLING_PAGE]);
-  }
-
-  onEditBilling() {
-    this.router.navigate([ROUTE_ORDER_MNP_EBILLING_PAGE]);
-  }
-
   onEditAddress() {
     this.router.navigate([ROUTE_ORDER_MNP_EBILLING_ADDRESS_PAGE]);
   }
@@ -257,11 +266,8 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
     this.homeService.goToHome();
   }
 
-  isNext(): boolean {
-    return this.isTelNoBillingValid;
-  }
-
   ngOnDestroy(): void {
+    this.translationSubscribe.unsubscribe();
     this.transactionService.update(this.transaction);
   }
 
@@ -269,6 +275,11 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
     const mainPackage = this.transaction.data.mainPackage;
     const billingInformation = this.transaction.data.billingInformation;
     const mergeBilling: any = billingInformation.mergeBilling;
+
+    // ขา back หลังกลับมาจากหน้า summary
+    if (billingInformation && billingInformation.billCycleData) {
+      return billingInformation.billCycleData.billChannel;
+    }
 
     // default ตามรอบบิลที่เลือก
     if (this.isMergeBilling()) {
@@ -299,7 +310,6 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
       && customer.amphur
       && customer.tumbol
       && customer.zipCode);
-
   }
 
   getBllingCycle(billCycle: string): Promise<string> {
@@ -320,7 +330,6 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
               billDefault: billing.billDefault
             };
           }).find(bill => bill.billDefault === 'Y');
-
           this.transaction.data.billingInformation.billCycle = defaultBillCycle.billCycle;
           return defaultBillCycle.text;
         });
