@@ -69,15 +69,15 @@ export class OrderMnpAgreementSignPageComponent implements OnInit, OnDestroy {
     this.commandSigned.ws.send('CaptureImage');
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_MNP_SUMMARY_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_ORDER_MNP_EAPPLICATION_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
