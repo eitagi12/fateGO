@@ -70,7 +70,7 @@ export class OrderMnpPassportInfoPageComponent implements OnInit {
   }
 
   onNext() {
-    this.router.navigate([ROUTE_ORDER_MNP_SELECT_PACKAGE_PAGE]);
+    this.router.navigate([ROUTE_ORDER_MNP_CUSTOMER_INFO_PAGE]);
   }
 
   onHome() {
