@@ -12,4 +12,10 @@ export class DeviceOnlyAisMobileCareAvaliablePageComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  public onHome(): void {}
+
+  public onNext(): void {}
+
+  public onBack(): void {}
+
 }

@@ -2,10 +2,9 @@
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
-  HomeService, PageLoadingService, AlertService,
-  ApiRequestService, REGEX_MOBILE, KioskControls, ValidateCustomerIdCardComponent
+  HomeService, PageLoadingService, AlertService, REGEX_MOBILE
 } from 'mychannel-shared-libs';
 import {
   ROUTE_ORDER_MNP_SELECT_REASON_PAGE
@@ -34,7 +33,6 @@ export class OrderMnpNetworkTypePageComponent implements OnInit, OnDestroy {
     private alertService: AlertService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private apiRequestService: ApiRequestService,
   ) {
     this.createTransaction();
   }
@@ -71,21 +69,21 @@ export class OrderMnpNetworkTypePageComponent implements OnInit, OnDestroy {
 
         if (!outbuf || (accountNo && (mobileNoStatus === 'Disconnect - Ported' || mobileNoStatus === 'U' || mobileNoStatus === 'T'))
           || mobileNoStatus !== 'Active' && !(mobileNoStatus || networkType)) {
-            this.transaction.data.simCard = {
-              mobileNo: this.mnpForm.value.mobileNo
-            };
-            this.transaction.data.customer = {
-              customerPinCode: this.mnpForm.value.pinCode,
-              birthdate: '',
-              idCardNo: '',
-              idCardType: '',
-              titleName: '',
-              expireDate: '',
-              firstName: '',
-              gender: '',
-              lastName: ''
-            };
-            this.router.navigate([ROUTE_ORDER_MNP_SELECT_REASON_PAGE]);
+          this.transaction.data.simCard = {
+            mobileNo: this.mnpForm.value.mobileNo
+          };
+          this.transaction.data.customer = {
+            customerPinCode: this.mnpForm.value.pinCode,
+            birthdate: '',
+            idCardNo: '',
+            idCardType: '',
+            titleName: '',
+            expireDate: '',
+            firstName: '',
+            gender: '',
+            lastName: ''
+          };
+          this.router.navigate([ROUTE_ORDER_MNP_SELECT_REASON_PAGE]);
         } else {
           return this.alertService.error(`หมายเลข ${this.mnpForm.value.mobileNo} เป็นเบอร์ AIS`);
         }
@@ -105,9 +103,6 @@ export class OrderMnpNetworkTypePageComponent implements OnInit, OnDestroy {
   }
 
   private createTransaction(): void {
-    // New x-api-request-id
-    this.apiRequestService.createRequestId();
-
     this.transaction = {
       data: {
         transactionType: TransactionType.ORDER_MNP,

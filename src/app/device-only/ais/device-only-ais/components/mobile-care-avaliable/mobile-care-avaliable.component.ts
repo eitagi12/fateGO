@@ -14,10 +14,4 @@ export class MobileCareAvaliableComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  public onHome(): void {}
-
-  public onNext(): void {}
-
-  public onBack(): void {}
-
 }

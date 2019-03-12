@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
-import { HomeService, PageLoadingService, ApiRequestService, Utils, AlertService, TokenService, ChannelType } from 'mychannel-shared-libs';
+import { HomeService, PageLoadingService, Utils, AlertService, TokenService, ChannelType } from 'mychannel-shared-libs';
 
 import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_PAGE,
@@ -61,7 +61,6 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
     private alertService: AlertService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private apiRequestService: ApiRequestService,
     private tokenService: TokenService,
   ) {
     this.homeService.callback = () => {
@@ -223,9 +222,6 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
   }
 
   private createTransaction(): void {
-    // New x-api-request-id
-    this.apiRequestService.createRequestId();
-
     this.transaction = {
       data: {
         transactionType: TransactionType.ORDER_PRE_TO_POST,

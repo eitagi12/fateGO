@@ -1,5 +1,15 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { ValidateCustomerIdCardComponent, HomeService, PageLoadingService, ReadCardProfile, ApiRequestService, TokenService, Utils, AlertService, KioskControls, ChannelType } from 'mychannel-shared-libs';
+import {
+  ValidateCustomerIdCardComponent,
+  HomeService,
+  PageLoadingService,
+  ReadCardProfile,
+  TokenService,
+  Utils,
+  AlertService,
+  KioskControls,
+  ChannelType
+} from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
@@ -32,7 +42,6 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
     private homeService: HomeService,
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
-    private apiRequestService: ApiRequestService,
     private http: HttpClient,
     private tokenService: TokenService,
     private utils: Utils,
@@ -40,9 +49,9 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
     private priceOptionService: PriceOptionService
   ) {
     this.homeService.callback = () => {
-        if (this.validateCustomerIdcard.koiskApiFn) {
-          this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
-        }
+      if (this.validateCustomerIdcard.koiskApiFn) {
+        this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+      }
       window.location.href = '';
     };
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
@@ -176,9 +185,6 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
   }
 
   private createTransaction(): void {
-    // New x-api-request-id
-    this.apiRequestService.createRequestId();
-
     this.transaction = {
       data: {
         transactionType: TransactionType.ORDER_NEW_REGISTER,

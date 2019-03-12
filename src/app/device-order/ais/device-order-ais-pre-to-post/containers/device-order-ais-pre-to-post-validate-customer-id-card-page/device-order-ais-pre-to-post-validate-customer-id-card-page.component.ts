@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, ReadCardProfile, PageLoadingService, ApiRequestService, User, AlertService, ChannelType, TokenService, Utils, ValidateCustomerIdCardComponent, KioskControls } from 'mychannel-shared-libs';
+import { HomeService, ReadCardProfile, PageLoadingService, AlertService, ChannelType, TokenService, Utils, ValidateCustomerIdCardComponent, KioskControls } from 'mychannel-shared-libs';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE,
@@ -34,7 +34,6 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
     private tokenService: TokenService,
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
-    private apiRequestService: ApiRequestService,
     private utils: Utils,
   ) {
     this.homeService.callback = () => {
@@ -174,9 +173,6 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
   }
 
   private createTransaction(): void {
-    // New x-api-request-id
-    this.apiRequestService.createRequestId();
-
     this.transaction = {
       data: {
         transactionType: TransactionType.ORDER_PRE_TO_POST,

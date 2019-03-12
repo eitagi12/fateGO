@@ -1,1 +1,13 @@
+<mc-header title="ลูกค้าปัจจุบัน">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+</mc-header>
 <app-mobile-care></app-mobile-care>
+<mc-footer>
+    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button class="btn btn-success" (click)="onNext()">NEXT</button>
+</mc-footer>

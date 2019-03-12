@@ -15,4 +15,10 @@ export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit {
 
   }
 
+  public onBack(): void {}
+
+  public onHome(): void {}
+
+  public onNext(): void {}
+
 }

@@ -132,7 +132,7 @@
             </h6>
             <!-- price, advance pay -->
             <div class="row mb-2">
-              <div class="col-6">
+              <div class="col-8">
                 <ng-container *ngIf="+privilege?.minimumPromotionPrice > 0 || +privilege?.maximumPromotionPrice > 0">
                   <span class="text-light-green mr-2">
                     ฿{{ +(privilege?.maximumPromotionPrice || privilege?.minimumPromotionPrice) | number }}
@@ -151,7 +151,7 @@
                   </span>)
                 </ng-container>
               </div>
-              <div class="col-6">
+              <div class="col-4">
                 <div class="text-right text-pink">
                   {{ getSummaryPrivilegePrice(privilege) | number }} (รวม VAT)
                 </div>

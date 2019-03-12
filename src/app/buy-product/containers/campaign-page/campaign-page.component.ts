@@ -222,6 +222,13 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             return trade.customerGroups.find(
                 customerGroup => customerGroup.code === code
             );
+        }).filter((trade: any) => {
+            const payment = (trade.payments || []).find(p => p.method !== 'PP') || {};
+            if (payment.method !== 'CC') {
+                return true;
+            } else { // Trade เป็นผ่อนชำระ ต้องมี installment
+                return (trade.banks || []).find((bank: any) => bank.installment);
+            }
         });
     }
 
@@ -241,7 +248,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                     return privilege;
                 }).sort((a, b) =>
                     // แพคเกจน้อยไปมาก
-                    (+b.minimumPromotionPrice) - (+a.minimumPromotionPrice)
+                    (+a.minimumPromotionPrice) - (+b.minimumPromotionPrice)
                 );
 
                 const campaignFromFilter = Object.assign(
