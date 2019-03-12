@@ -55,30 +55,33 @@ export class OrderMnpEbillingAddressPageComponent implements OnInit, OnDestroy {
     this.transaction.data.customer.engFlag = (this.translation.currentLang === 'EN') ? 'Y' : 'N';
     const billingInformation = this.transaction.data.billingInformation || {};
     const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
-
     this.http.get('/api/customerportal/newRegister/getAllZipcodes').subscribe((resp: any) => {
       this.allZipCodes = resp.data.zipcodes || [];
     });
 
-    this.http.get('/api/customerportal/newRegister/getAllProvinces').subscribe((resp: any) => { 
-      this.provinces = (resp.data.provinces || []);
+    this.http.get('/api/customerportal/newRegister/getAllProvinces'
+      , {
+        params: {
+          provinceSubType: this.translation.currentLang === 'TH' ? 'THA' : 'ENG'
+        }
+      }).subscribe((resp: any) => {
+        this.provinces = (resp.data.provinces || []);
 
-      this.customerAddress = {
-        homeNo: customer.homeNo,
-        moo: customer.moo,
-        mooBan: customer.mooBan,
-        room: customer.room,
-        floor: customer.floor,
-        buildingName: customer.buildingName,
-        soi: customer.soi,
-        street: customer.street,
-        province: customer.province,
-        amphur: customer.amphur,
-        tumbol: customer.tumbol,
-        zipCode: customer.zipCode,
-      };
-
-    });
+        this.customerAddress = {
+          homeNo: customer.homeNo,
+          moo: customer.moo,
+          mooBan: customer.mooBan,
+          room: customer.floor,
+          floor: customer.floor,
+          buildingName: customer.buildingName,
+          soi: customer.soi,
+          street: customer.street,
+          province: customer.province,
+          amphur: customer.amphur,
+          tumbol: customer.tumbol,
+          zipCode: customer.zipCode,
+        };
+      });
   }
 
   getProvinces(): string[] {
