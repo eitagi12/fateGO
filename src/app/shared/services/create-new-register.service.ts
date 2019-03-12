@@ -188,7 +188,7 @@ export class CreateNewRegisterService {
     if (customer.nationality === 'Thailand') {
       data.billLanguage = 'Thai';
     } else {
-      data.billLanguage = 'Eng';
+      data.billLanguage = 'English';
     }
 
     // has one love
