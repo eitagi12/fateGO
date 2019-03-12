@@ -9,7 +9,7 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 })
 export class DeviceOnlyReadCardComponent implements OnInit {
 
-  public name: string = 'ชื่อคนไง นามสกุลก็มีนะ';
+  public name: string = 'นาย ธีระยุทธ เจโตวิมุติพงศ์';
   public selectBillingAddressForm: FormGroup;
 
   @ViewChild('select_billing_address')

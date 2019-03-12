@@ -1,7 +1,9 @@
 import { Component, OnInit, Input, ViewChild, TemplateRef, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
-import { WIZARD_DEVICE_ORDER_ASP } from 'src/app/device-order/constants/wizard.constant';
+import { Router } from '../../../../../../../node_modules/@angular/router';
+import { ROUTE_DEVICE_ONLY_AIS_SELECT_PAYMENT_AND_RECEIPT_INFORMATION_PAGE, ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE } from '../../constants/route-path.constant';
+import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
 
 export interface MobileCare {
   nextBillEffective?: boolean;
@@ -32,7 +34,7 @@ export interface MobileCareItem {
   styleUrls: ['./mobile-care.component.scss']
 })
 export class MobileCareComponent implements OnInit {
-  wizards: string[] = WIZARD_DEVICE_ORDER_ASP;
+  wizards: string[] = WIZARD_DEVICE_ONLY_AIS;
   public moblieNo: string;
   public otp: string;
   public isPrivilegeCus: boolean = false;
@@ -56,7 +58,8 @@ export class MobileCareComponent implements OnInit {
   notBuyMobileCareForm: FormGroup;
   constructor(
     private fb: FormBuilder,
-    private modalService: BsModalService
+    private modalService: BsModalService,
+    private router: Router
   ) { }
 
   ngOnInit(): void {
@@ -112,10 +115,12 @@ export class MobileCareComponent implements OnInit {
     this.isPrivilegeCus = !this.isPrivilegeCus;
   }
 
-  public onBack(): void {}
-
+  public onBack(): void {
+    this.router.navigate([ROUTE_DEVICE_ONLY_AIS_SELECT_PAYMENT_AND_RECEIPT_INFORMATION_PAGE]);
+  }
   public onHome(): void {}
 
-  public onNext(): void {}
-
+  public onNext(): void {
+    this.router.navigate([ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE]);
+  }
 }
