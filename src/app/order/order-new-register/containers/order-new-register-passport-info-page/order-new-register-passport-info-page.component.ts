@@ -84,6 +84,9 @@ export class OrderNewRegisterPassportInfoPageComponent implements OnInit, OnDest
     this.mapDatanationality();
     customer.titleName = customer.gender === 'F' ? 'Ms.' : 'Mr.';
     this.idCardValid = this.transaction.data.customer.imageSignatureSmartCard ? true : false;
+    if (!this.transaction.data.customer.imageSignatureSmartCard) {
+      this.onSigned();
+    }
   }
 
 
