@@ -14,7 +14,6 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { CreateDeviceOrderBestBuyService } from '../../service/create-device-order-best-buy.service';
 
-
 export const CASH_PAYMENT = 'CA';
 export const CREDIT_CARD_PAYMENT = 'CC';
 export const CASH_AND_CREDIT_CARD_PAYMENT = 'CC/CA';
@@ -25,16 +24,15 @@ export const CASH_AND_CREDIT_CARD_PAYMENT = 'CC/CA';
 })
 export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: any = WIZARD_DEVICE_ORDER_AIS;
 
-  identityValid = true;
   transaction: Transaction;
   shoppingCart: ShoppingCart;
   priceOption: PriceOption;
   user: User;
 
   receiptInfo: ReceiptInfo;
-  receiptInfoValid = true;
+  receiptInfoValid: boolean = true;
 
   paymentDetail: PaymentDetail;
   selectPaymentDetail: SelectPaymentDetail;
@@ -72,7 +70,7 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
     this.user = this.tokenService.getUser();
    }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.formID = this.getRandomNum(10);
     this.depositOrDiscount = this.transaction.data.preBooking
@@ -128,7 +126,6 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
       isEnable: this.isEnableForm()
     };
 
-
     this.createForm();
     // ############################################## receiptInfo ##############################################
 
@@ -143,15 +140,15 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
     };
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     const mobileNo = this.transaction.data.simCard.mobileNo;
     this.http.get(`/api/customerportal/get-existing-mobile-care/${mobileNo}`).toPromise().then((response: any) => {
       const exMobileCare = response.data;
@@ -176,7 +173,7 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
     this.transactionService.update(this.transaction);
   }
 
-  onLoadDefaultBankData(banks: PaymentDetailBank[]) {
+  onLoadDefaultBankData(banks: PaymentDetailBank[]): Promise<any> {
     return new Promise((resolve, reject) => {
       if (banks && banks.length > 0) {
         resolve(banks);
@@ -188,19 +185,19 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
     });
   }
 
-  onReceiptInfoCompleted(receiptInfo: ReceiptInfo) {
+  onReceiptInfoCompleted(receiptInfo: ReceiptInfo): void {
     this.transaction.data.receiptInfo = receiptInfo;
   }
 
-  onReceiptInfoError(error: boolean) {
+  onReceiptInfoError(error: boolean): void {
     this.receiptInfoValid = error;
   }
 
-  getFullAddress(customer: Customer) {
+  getFullAddress(customer: Customer): string {
     if (!customer) {
       return '-';
     }
-    const fullAddress =
+    const fullAddress: string =
       (customer.homeNo ? customer.homeNo + ' ' : '') +
       (customer.moo ? 'หมู่ที่ ' + customer.moo + ' ' : '') +
       (customer.mooBan ? 'หมู่บ้าน ' + customer.mooBan + ' ' : '') +
@@ -216,19 +213,19 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
     return fullAddress || '-';
   }
 
-  onSelectPaymentType(paymentType: string) {
+  onSelectPaymentType(paymentType: string): void {
     this.selectPaymentDetail.paymentType = paymentType;
   }
-  onSelectQRCode(qrCode: PaymentDetailQRCode) {
+  onSelectQRCode(qrCode: PaymentDetailQRCode): void {
     this.selectPaymentDetail.qrCode = Object.assign({}, qrCode);
     // this.selectPaymentDetailAdvancePay.qrCode = Object.assign({}, qrCode);
   }
-  onSelectBank(bank: PaymentDetailBank) {
+  onSelectBank(bank: PaymentDetailBank): void {
     this.selectPaymentDetail.bank = Object.assign({}, bank);
     this.selectPaymentDetail.bank.installments = undefined;
     this.paymentDetail.installments = bank.installments; // Object.assign({}, bank.installments);
   }
-  onSelectInstallment(installment: PaymentDetailInstallment[]) {
+  onSelectInstallment(installment: PaymentDetailInstallment[]): void {
     this.selectPaymentDetail.bank.installments = Object.assign({}, installment);
   }
 
@@ -310,7 +307,7 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
     return '';
   }
 
-  getQRCode() {
+  getQRCode(): any {
     return [
       {
         id: 1,
@@ -327,7 +324,7 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
     ];
   }
 
-  groupPrivilegeTradeBankByAbb(banks: PaymentDetailBank[]) {
+  groupPrivilegeTradeBankByAbb(banks: PaymentDetailBank[]): PaymentDetailBank[] {
 
     const newPrivilegTradeBankByAbbs = new Array<PaymentDetailBank>();
     const grouped = this.groupBy(banks, (bank: PaymentDetailBank) => bank.abb);
@@ -348,7 +345,7 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
     return newPrivilegTradeBankByAbbs;
   }
 
-  private groupBy(list: any, keyGetter: any) {
+  private groupBy(list: any, keyGetter: any): Map<any, any> {
     const map = new Map();
     list.forEach((item) => {
       const key = keyGetter(item);
@@ -362,7 +359,7 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
     return map;
   }
 
-  public getBanksInstallmentDatas(banks: PaymentDetailBank[]) {
+  public getBanksInstallmentDatas(banks: PaymentDetailBank[]): PaymentDetailInstallment[] {
     const installmentDatas = new Array<PaymentDetailInstallment>();
     banks.forEach((bank: any) => {
       const installmentPercentage = this.getBankInstallmentPercentage(bank.installment) ?
@@ -391,17 +388,17 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
       return a.installmentMonth > b.installmentMonth ? -1 : 1;
     });
   }
-  public getBankInstallmentMonth(installmentRemark: string) {
+  public getBankInstallmentMonth(installmentRemark: string): number {
     const month = this.getInstallmentFormRemark(installmentRemark)['month'];
     return month !== undefined ? month : 0;
   }
 
-  public getBankInstallmentPercentage(installmentRemark: string) {
+  public getBankInstallmentPercentage(installmentRemark: string): number {
     const percentage = this.getInstallmentFormRemark(installmentRemark)['percentage'];
     return percentage !== undefined ? percentage : 0;
   }
 
-  private getInstallmentFormRemark(installmentRemark: string) {
+  private getInstallmentFormRemark(installmentRemark: string): any {
     const installment = {
       percentage: 0,
       month: 0
@@ -418,7 +415,7 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
     }
   }
 
-  createForm() {
+  createForm(): void {
     this.discountForm = this.fb.group({
       discountType: [null, Validators.required]
     });

@@ -15,7 +15,7 @@ import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_OTP_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_B
 })
 export class DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: any = WIZARD_DEVICE_ORDER_AIS;
 
   transaction: Transaction;
   captureAndSign: CaptureAndSign;
@@ -36,16 +36,16 @@ export class DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent impleme
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const customer: Customer = this.transaction.data.customer;
     this.openCamera = !!(customer.imageSmartCard);
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_OTP_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.http.post(`/api/customerportal/newRegister/updatePrepaidIdent`,
       this.getRequestUpdatePrepaidIdent()
     ).toPromise()
@@ -58,7 +58,7 @@ export class DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent impleme
       });
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
@@ -66,7 +66,7 @@ export class DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent impleme
     this.transactionService.update(this.transaction);
   }
 
-  getRequestUpdatePrepaidIdent() {
+  getRequestUpdatePrepaidIdent(): any {
     const customer = this.transaction.data.customer;
     const mobileNo = this.transaction.data.simCard.mobileNo;
     const data: any = {
@@ -97,11 +97,11 @@ export class DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent impleme
     return data;
   }
 
-  onOpenCamera() {
+  onOpenCamera(): void {
     this.openCamera = true;
   }
 
-  onCameraCompleted(image: string) {
+  onCameraCompleted(image: string): void {
 
     const cropOption = {
       sizeWidth: 160,
@@ -119,11 +119,11 @@ export class DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent impleme
     });
   }
 
-  onCameraError(error: string) {
+  onCameraError(error: string): void {
     this.alertService.error(error);
   }
 
-  onClearIdCardImage() {
+  onClearIdCardImage(): void {
     this.transaction.data.customer.imageSmartCard = null;
   }
 

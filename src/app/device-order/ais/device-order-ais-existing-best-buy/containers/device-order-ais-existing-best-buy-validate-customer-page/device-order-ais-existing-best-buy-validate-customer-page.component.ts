@@ -21,12 +21,12 @@ import { CreateDeviceOrderBestBuyService } from 'src/app/device-order/ais/device
 })
 export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
-  readonly PLACEHOLDER = '(หมายเลขโทรศัพท์ / เลขบัตรประชาชน)';
-  readonly PLACEHOLDER_HEADDER = 'กรอกเอกสารแสดงตน';
+  wizards: any = WIZARD_DEVICE_ORDER_AIS;
+  readonly PLACEHOLDER: string = '(หมายเลขโทรศัพท์ / เลขบัตรประชาชน)';
+  readonly PLACEHOLDER_HEADDER: string = 'กรอกเอกสารแสดงตน';
 
   transaction: Transaction;
-  identityValid = false;
+  identityValid: boolean = false;
   identity: string;
   band: string;
   model: string;
@@ -53,33 +53,33 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     this.priceOption = this.priceOptionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (!this.transaction || !this.transaction.data
       || (!this.transaction.data.order && !this.transaction.data.order.soId)) {
       this.createTransaction();
     }
   }
 
-  onError(valid: boolean) {
+  onError(valid: boolean): void {
     this.identityValid = valid;
   }
 
-  onCompleted(identity: string) {
+  onCompleted(identity: string): void {
     this.identity = identity;
   }
 
-  onReadCard() {
+  onReadCard(): void {
     this.transaction.data.action = TransactionAction.READ_CARD;
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.callback = () => {
       window.location.href = '/';
     };
   }
 
-  onBack() {
+  onBack(): void {
     // this.homeService.goToHome();
     this.homeService.callback = () => {
       window.location.href = `/sales-portal/buy-product/brand/${this.band}/${this.model}`;
@@ -87,7 +87,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     // this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
   }
 
-  onNext() {
+  onNext(): void {
     this.pageLoadingService.openLoading();
     if (this.utils.isMobileNo(this.identity)) {
       // KEY-IN MobileNo
@@ -210,7 +210,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     this.priceOptionService.save(this.priceOption);
   }
 
-  private createTransaction() {
+  private createTransaction(): void {
     // New x-api-request-id
     this.apiRequestService.createRequestId();
     let mainPromotion = null;
@@ -271,7 +271,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     return mainPromotion;
   }
 
-  createPriceOption(mainPromotion: MainPromotion) {
+  createPriceOption(mainPromotion: MainPromotion): void {
     const productDetail: any = this.localStorageService.load('productDetail').value;
     const productInfo: any = this.localStorageService.load('productInfo').value;
     // const thumbnail = (productInfo && productInfo.images) ? productInfo.images.thumbnail : '';
@@ -296,7 +296,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     };
   }
 
-  mapCustomer(resp) {
+  mapCustomer(resp: any): Customer {
     const data = resp.data || {};
     const fullName = (data.name || ' ').split(' ');
     const address = data.address || {};

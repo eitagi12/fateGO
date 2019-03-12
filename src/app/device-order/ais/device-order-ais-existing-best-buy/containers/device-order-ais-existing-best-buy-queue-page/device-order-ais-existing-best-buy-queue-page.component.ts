@@ -22,7 +22,6 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
   queue: string;
 
   constructor(
-    @Inject(DOCUMENT) private document,
     private router: Router,
     private fb: FormBuilder,
     private pageLoadingService: PageLoadingService,
@@ -33,7 +32,7 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.createForm();
     // this.document.querySelector('body').classList.add('white-body');
 
@@ -49,8 +48,7 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
     });
   }
 
-
-  onNext() {
+  onNext(): void {
     this.transaction.data.queue = { queueNo: this.queue };
     this.createBestBuyService.createDeviceOrder(this.transaction).then((response: any) => {
       if (response) {

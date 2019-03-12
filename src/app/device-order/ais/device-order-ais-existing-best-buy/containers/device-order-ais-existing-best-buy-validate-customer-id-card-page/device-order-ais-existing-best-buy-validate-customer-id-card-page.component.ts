@@ -40,10 +40,10 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent im
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
-  onError(valid: boolean) {
+  onError(valid: boolean): void {
     this.readCardValid = valid;
     if (!this.profile) {
       this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
@@ -57,13 +57,13 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent im
     }
   }
 
-  onCompleted(profile: ReadCardProfile) {
+  onCompleted(profile: ReadCardProfile): void {
     this.profile = profile;
     // auto next
     this.onNext();
   }
 
-  onNext() {
+  onNext(): void {
     const action = this.transaction.data.action;
     this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryCustomerInfo`)
     .toPromise()
@@ -87,11 +87,11 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent im
     });
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onBack() {
+  onBack(): void {
     const action = this.transaction.data.action;
     if (action === TransactionAction.KEY_IN || action === TransactionAction.READ_CARD) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_PAGE]);

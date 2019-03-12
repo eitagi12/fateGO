@@ -21,9 +21,8 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 })
 export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: any = WIZARD_DEVICE_ORDER_AIS;
 
-  identityValid = false;
   transaction: Transaction;
   priceOption: PriceOption;
 
@@ -56,8 +55,7 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
     this.priceOption = this.priceOptionService.load();
   }
 
-
-  ngOnInit() {
+  ngOnInit(): void {
     const user = this.tokenService.getUser();
     const customer = this.transaction.data.customer;
     this.customerAddress = this.utils.getCurrentAddress({
@@ -88,15 +86,15 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
 
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_CARE_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.pageLoadingService.openLoading();
     this.http.get(`/api/customerportal/checkSeller/${this.sellerCode}`).toPromise()
     .then((shopCheckSeller: any) => {
@@ -120,7 +118,7 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
     this.transactionService.update(this.transaction);
   }
 
-  createForm() {
+  createForm(): void {
     this.checkSellerForm = this.fb.group({
       checkSeller: ['', Validators.compose([Validators.required, Validators.pattern(/^[0-9]+$/)])]
     });
@@ -132,16 +130,14 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
     });
   }
 
-  onOpenDetail(detail: string) {
+  onOpenDetail(detail: string): void {
     this.detail = detail;
     this.modalRef = this.modalService.show(this.detailTemplate);
   }
 
-  summary(amount: number[]) {
+  summary(amount: number[]): number {
     return amount.reduce((prev, curr) => {
       return prev + curr;
     }, 0);
   }
-
-
 }

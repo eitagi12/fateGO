@@ -16,14 +16,14 @@ import { ShoppingCartService } from 'src/app/device-order/service/shopping-cart.
 })
 export class DeviceOrderAisExistingBestBuyEligibleMobilePageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: any = WIZARD_DEVICE_ORDER_AIS;
 
-  identityValid = false;
+  identityValid: boolean = false;
   transaction: Transaction;
   eligiblePrepaid: any[];
   eligiblePostpaid: any[];
   mobileNo: any;
-  errorMsg = 'ไม่พบหมายเลขที่รับสิทธิ์ได้ในโครงการนี้';
+  errorMsg: string = 'ไม่พบหมายเลขที่รับสิทธิ์ได้ในโครงการนี้';
   shoppingCart: ShoppingCart;
 
   constructor(
@@ -39,16 +39,16 @@ export class DeviceOrderAisExistingBestBuyEligibleMobilePageComponent implements
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.getEligibleMobileNo();
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onBack() {
+  onBack(): void {
     if (this.transaction.data.customer.caNumber) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
     } else {
@@ -56,7 +56,7 @@ export class DeviceOrderAisExistingBestBuyEligibleMobilePageComponent implements
     }
   }
 
-  onNext() {
+  onNext(): void {
     this.pageLoadingService.openLoading();
     if (this.mobileNo.privilegeCode) {
       this.transaction.data.customer.privilegeCode = this.mobileNo.privilegeCode;
@@ -106,7 +106,7 @@ export class DeviceOrderAisExistingBestBuyEligibleMobilePageComponent implements
     this.transactionService.update(this.transaction);
   }
 
-  getEligibleMobileNo() {
+  getEligibleMobileNo(): void {
     const idCardNo = this.transaction.data.customer.idCardNo;
     const trade = this.transaction.data.mainPromotion.trade;
     this.http.post('/api/customerportal/query-eligible-mobile-list', {
@@ -122,7 +122,7 @@ export class DeviceOrderAisExistingBestBuyEligibleMobilePageComponent implements
 
   }
 
-  onCompleted(mobileNo: any) {
+  onCompleted(mobileNo: any): void {
     if (mobileNo) {
       this.identityValid = true;
       this.mobileNo = mobileNo;

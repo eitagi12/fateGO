@@ -23,11 +23,11 @@ export class DeviceOrderAisExistingBestBuyResultPageComponent implements OnInit 
     this.transaction = this.transactionService.load();
    }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.isSuccess = true;
   }
 
-  onMainMenu() {
+  onMainMenu(): void {
     this.homeService.goToHome();
   }
 

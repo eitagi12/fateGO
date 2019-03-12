@@ -14,7 +14,7 @@ import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_REPI_PAGE, ROUTE_DEVI
 })
 export class DeviceOrderAisExistingBestBuyCustomerProfilePageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: any = WIZARD_DEVICE_ORDER_AIS;
   transaction: Transaction;
   titleName: string;
   firstName: string;
@@ -30,7 +30,7 @@ export class DeviceOrderAisExistingBestBuyCustomerProfilePageComponent implement
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const data = this.transaction.data.customer;
     this.customerInfoError = data && data.caNumber && data.firstName ? false : true;
     this.titleName = data.titleName;
@@ -38,10 +38,10 @@ export class DeviceOrderAisExistingBestBuyCustomerProfilePageComponent implement
     this.lastName = data.lastName;
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_OTP_PAGE]);
   }
-  onBack() {
+  onBack(): void {
     if (this.transaction.data.action === TransactionAction.KEY_IN_REPI) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_REPI_PAGE]);
     } else {
@@ -49,7 +49,7 @@ export class DeviceOrderAisExistingBestBuyCustomerProfilePageComponent implement
     }
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
   ngOnDestroy(): void {

@@ -16,9 +16,8 @@ import { ShoppingCartService } from 'src/app/device-order/service/shopping-cart.
 })
 export class DeviceOrderAisExistingBestBuyMobileDetailPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
-
-  identityValid = true;
+  wizards: any = WIZARD_DEVICE_ORDER_AIS;
+  
   transaction: Transaction;
   mobileInfo: MobileInfo;
   shoppingCart: ShoppingCart;

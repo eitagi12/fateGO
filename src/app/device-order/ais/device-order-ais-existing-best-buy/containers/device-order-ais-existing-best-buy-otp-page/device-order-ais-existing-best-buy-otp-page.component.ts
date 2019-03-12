@@ -16,7 +16,7 @@ import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_
 })
 export class DeviceOrderAisExistingBestBuyOtpPageComponent implements OnInit {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: any = WIZARD_DEVICE_ORDER_AIS;
   otpForm: FormGroup;
   transaction: Transaction;
   registrationData: any;
@@ -36,7 +36,7 @@ export class DeviceOrderAisExistingBestBuyOtpPageComponent implements OnInit {
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.registrationData = this.transaction.data;
     this.mobileNo = this.registrationData.mainMobile;
     this.createForm();
@@ -47,7 +47,7 @@ export class DeviceOrderAisExistingBestBuyOtpPageComponent implements OnInit {
       otp: ['', [Validators.required, Validators.maxLength(5)]],
     });
   }
-  sendOTP() {
+  sendOTP(): void {
     this.pageLoadingService.openLoading();
     let mobile = this.registrationData.simCard.mobileNo;
 
@@ -66,7 +66,7 @@ export class DeviceOrderAisExistingBestBuyOtpPageComponent implements OnInit {
       });
   }
 
-  verifyOTP() {
+  verifyOTP(): void {
     this.pageLoadingService.openLoading();
     let mobile = this.registrationData.simCard.mobileNo;
 
@@ -112,7 +112,7 @@ export class DeviceOrderAisExistingBestBuyOtpPageComponent implements OnInit {
       });
   }
 
-  alertError(error): void {
+  alertError(error: any): void {
     let errObj: any;
     let errMsg: any;
     let errDetail: any;
@@ -126,13 +126,13 @@ export class DeviceOrderAisExistingBestBuyOtpPageComponent implements OnInit {
     }
     this.alertService.error(errMsg);
   }
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
   }
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
-  getRequestUpdatePrepaidIdentata() {
+  getRequestUpdatePrepaidIdentata(): any {
     const customer = this.transaction.data.customer;
     const mobileNo = this.transaction.data.simCard.mobileNo;
     const data: any = {

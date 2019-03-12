@@ -32,7 +32,6 @@ export const REMARK_ORDER_TYPE = '[OT]';
 export const REMARK_PROMPT_PAY_PAYMENT = '[PB]';
 export const REMARK_RABBIT_LINE_PAY_PAYMENT = '[RL]';
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -89,7 +88,7 @@ export class CreateDeviceOrderBestBuyService {
       .toPromise().then(resp => transaction);
   }
 
-  createAddToCartTrasaction(transaction: Transaction, priceOption: PriceOption) {
+  createAddToCartTrasaction(transaction: Transaction, priceOption: PriceOption): Promise<any> {
     return new Promise((resolve, reject) => {
       if (transaction
         && transaction.data
@@ -137,7 +136,7 @@ export class CreateDeviceOrderBestBuyService {
     });
   }
 
-  private updateTransactionOrder(transaction: Transaction) {
+  private updateTransactionOrder(transaction: Transaction): Promise<any> {
     const shareTrasaction = this.mapUpdateTransactionDb(transaction);
     return this.http.post('/api/salesportal/device-order/update-transaction', shareTrasaction).toPromise();
   }
@@ -157,7 +156,6 @@ export class CreateDeviceOrderBestBuyService {
     const prebooking = transaction.data.preBooking;
     const mobileCare = transaction.data.mobileCarePackage;
     const order = transaction.data.order;
-
 
     const data: any = {
       soId: order.soId,
@@ -205,7 +203,7 @@ export class CreateDeviceOrderBestBuyService {
     return Promise.resolve(data);
   }
 
-  private getPaymentMethod(payment: Payment, advancePayment: Payment, trade: any) {
+  private getPaymentMethod(payment: Payment, advancePayment: Payment, trade: any): string {
 
     if (trade.advancePay.installmentFlag === 'Y') {
       return payment.method;
@@ -230,7 +228,7 @@ export class CreateDeviceOrderBestBuyService {
     advancePayment: Payment,
     mobileCare: any,
     queueNo: string,
-    transaction: Transaction) {
+    transaction: Transaction): string {
     const customer = transaction.data.customer;
     const newLine = '\n';
     const comma = ',';
@@ -328,7 +326,7 @@ export class CreateDeviceOrderBestBuyService {
     return result.toFixed(2) || '';
   }
 
-  private getCustomerAddress(customer: Customer) {
+  private getCustomerAddress(customer: Customer): any {
     return {
       addrNo: customer.homeNo,
       moo: customer.moo,
@@ -357,7 +355,7 @@ export class CreateDeviceOrderBestBuyService {
     return transactionId;
   }
 
-  private mapCreateTransactionDb(transaction: Transaction, priceOption: PriceOption) {
+  private mapCreateTransactionDb(transaction: Transaction, priceOption: PriceOption): any {
     const username: any = this.tokenService.getUser().username;
     return {
       transactionId: transaction.transactionId,
@@ -376,7 +374,7 @@ export class CreateDeviceOrderBestBuyService {
     };
   }
 
-  private mapUpdateTransactionDb(transaction: Transaction) {
+  private mapUpdateTransactionDb(transaction: Transaction): any {
     return {
       transactionId: transaction.transactionId,
       data: {
@@ -406,7 +404,7 @@ export class CreateDeviceOrderBestBuyService {
     };
   }
 
-  private getDevice(priceOption: PriceOption) {
+  private getDevice(priceOption: PriceOption): any {
     const product: any = priceOption.productStock;
     const productDetail: any = priceOption.productDetail;
     return {
@@ -421,21 +419,21 @@ export class CreateDeviceOrderBestBuyService {
     };
   }
 
-  clearAddToCart(transactionId: string, soId: string) {
+  clearAddToCart(transactionId: string, soId: string): Promise<any> {
     return this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
       transactionId: transactionId,
       soId: soId
     }).toPromise().then((res: any) => res.data);
   }
 
-  cancelTrasaction(transactionId: string) {
+  cancelTrasaction(transactionId: string): Promise<any> {
     return this.http.post('/api/salesportal/device-order/cancel-transaction', {
       transactionId: transactionId,
       issueBy: this.user.username
     }).toPromise();
   }
 
-  getBanks() {
+  getBanks(): Promise<any> {
     return this.http.post('/api/salesportal/banks-promotion', {
       location: this.user.locationCode
     }).toPromise().then((response: any) => {
@@ -454,7 +452,7 @@ export class CreateDeviceOrderBestBuyService {
 
   }
 
-  getFullName(customer: Customer){
+  getFullName(customer: Customer): string {
     return customer && customer.titleName && customer.firstName && customer.lastName
         ? `${customer.titleName} ${customer.firstName} ${customer.lastName}` : '';
   }

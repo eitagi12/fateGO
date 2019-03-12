@@ -17,12 +17,12 @@ import { CreateDeviceOrderBestBuyService } from '../../service/create-device-ord
 })
 export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
-  readonly PLACEHOLDER = '(เลขบัตรประชาชน)';
-  readonly PLACEHOLDER_HEADDER = 'กรอกเอกสารแสดงตน';
+  wizards: any = WIZARD_DEVICE_ORDER_AIS;
+  readonly PLACEHOLDER: string = '(เลขบัตรประชาชน)';
+  readonly PLACEHOLDER_HEADDER: string = 'กรอกเอกสารแสดงตน';
 
   transaction: Transaction;
-  identityValid = false;
+  identityValid: boolean = false;
   identity: string;
   band: string;
   model: string;
@@ -44,31 +44,31 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
     this.priceOption = this.priceOptionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
-  onError(valid: boolean) {
+  onError(valid: boolean): void {
     this.identityValid = valid;
   }
 
-  onCompleted(identity: string) {
+  onCompleted(identity: string): void {
     this.identity = identity;
   }
 
-  onReadCard() {
+  onReadCard(): void {
     this.transaction.data.action = TransactionAction.READ_CARD_REPI;
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_RPI_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.pageLoadingService.openLoading();
     const mobileNo = this.transaction.data.simCard.mobileNo;
     this.transaction.data.action = TransactionAction.KEY_IN_REPI;
@@ -253,7 +253,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
                   this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
                 });
               });
-            })
+            });
           } else {
             this.alertService.error('ไม่สามารถทำรายการได้ เบอร์รายเดือน ข้อมูลการแสดงตนไม่ถูกต้อง');
           }

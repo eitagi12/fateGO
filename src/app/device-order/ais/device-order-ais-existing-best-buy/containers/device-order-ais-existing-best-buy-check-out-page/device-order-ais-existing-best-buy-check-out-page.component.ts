@@ -16,7 +16,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 })
 export class DeviceOrderAisExistingBestBuyCheckOutPageComponent implements OnInit, OnDestroy {
 
-  identityValid = true;
+  identityValid: boolean = true;
   transaction: Transaction;
   deviceSelling: DeviceSelling;
   priceOption: PriceOption;
@@ -34,15 +34,15 @@ export class DeviceOrderAisExistingBestBuyCheckOutPageComponent implements OnIni
     this.priceOption = this.priceOptionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.setDeviceSelling();
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SUMMARY_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_QUEUE_PAGE]);
   }
 
@@ -50,7 +50,7 @@ export class DeviceOrderAisExistingBestBuyCheckOutPageComponent implements OnIni
     this.transactionService.update(this.transaction);
   }
 
-  setDeviceSelling() {
+  setDeviceSelling(): void {
     const customer = this.transaction.data.customer;
     const mobileNo = this.transaction.data.simCard.mobileNo;
     const campaign = this.priceOption.campaign;

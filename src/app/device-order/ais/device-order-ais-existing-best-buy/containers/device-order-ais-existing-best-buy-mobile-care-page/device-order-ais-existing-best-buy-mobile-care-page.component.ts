@@ -21,9 +21,10 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 })
 export class DeviceOrderAisExistingBestBuyMobileCarePageComponent implements OnInit, OnDestroy {
 
-  identityValid = true;
+  wizards: any = WIZARD_DEVICE_ORDER_AIS;
+
+  identityValid: boolean = true;
   transaction: Transaction;
-  wizards = WIZARD_DEVICE_ORDER_AIS;
   mobileCare: MobileCare;
   priceOption: PriceOption;
   shoppingCart: ShoppingCart;
@@ -52,7 +53,7 @@ export class DeviceOrderAisExistingBestBuyMobileCarePageComponent implements OnI
     this.priceOption = this.priceOptionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     delete this.transaction.data.mobileCarePackage;
     this.callService();
@@ -63,15 +64,15 @@ export class DeviceOrderAisExistingBestBuyMobileCarePageComponent implements OnI
   //   this.transaction.data.mobileCarePackage = mobileCare;
   // }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_CARE_AVAILABLE_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SUMMARY_PAGE]);
   }
 
@@ -79,7 +80,7 @@ export class DeviceOrderAisExistingBestBuyMobileCarePageComponent implements OnI
     this.transactionService.update(this.transaction);
   }
 
-  callService() {
+  callService(): void {
     const billingSystem = this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
     const chargeType = this.transaction.data.simCard.chargeType;
     const endUserPrice = +this.priceOption.trade.normalPrice;
@@ -102,7 +103,7 @@ export class DeviceOrderAisExistingBestBuyMobileCarePageComponent implements OnI
       .then(() => this.pageLoadingService.closeLoading());
   }
 
-  createForm() {
+  createForm(): void {
     this.mobileCareForm = this.fb.group({
       'mobileCare': [true, Validators.required],
       'promotion': ['', Validators.required]
@@ -130,13 +131,13 @@ export class DeviceOrderAisExistingBestBuyMobileCarePageComponent implements OnI
     return ((this.priceOption.trade.normalPrice || 0) * (percentage / 100) * (VAT / 100));
   }
 
-  onOpenNotBuyMobileCare() {
+  onOpenNotBuyMobileCare(): void {
     this.modalRef = this.modalService.show(this.template, {
       ignoreBackdropClick: true
     });
   }
 
-  onNotBuyMobileCare(dismiss: boolean) {
+  onNotBuyMobileCare(dismiss: boolean): void {
     if (dismiss) { // cancel
       this.mobileCareForm.patchValue({
         mobileCare: true

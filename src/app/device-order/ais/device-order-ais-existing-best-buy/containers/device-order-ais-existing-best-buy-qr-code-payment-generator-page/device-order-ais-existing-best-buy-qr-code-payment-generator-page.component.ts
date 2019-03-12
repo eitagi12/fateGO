@@ -15,7 +15,7 @@ export class DeviceOrderAisExistingBestBuyQrCodePaymentGeneratorPageComponent im
 
   transaction: Transaction;
   priceOption: PriceOption;
- 
+
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -26,33 +26,32 @@ export class DeviceOrderAisExistingBestBuyQrCodePaymentGeneratorPageComponent im
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
- 
   }
- 
-  ngOnInit() {
+
+  ngOnInit(): void {
     // this.onRefresh();
     this.pageActivityHandler();
   }
- 
-  onBack() {
+
+  onBack(): void {
     // this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_SUMMARY_PAGE]);
   }
- 
-  onNext() {
+
+  onNext(): void {
     // this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_QUEUE_PAGE]);
   }
- 
-  onHome() {
+
+  onHome(): void {
     this.homeService.goToHome();
   }
- 
-  summary(amount: number[]) {
+
+  summary(amount: number[]): number {
     return amount.reduce((prev, curr) => {
       return prev + curr;
     }, 0);
   }
- 
-  pageActivityHandler() {
+
+  pageActivityHandler(): any {
     this.pageActivityService.setTimeout((counter) => {
       return counter === 5;
     }).subscribe(() => {

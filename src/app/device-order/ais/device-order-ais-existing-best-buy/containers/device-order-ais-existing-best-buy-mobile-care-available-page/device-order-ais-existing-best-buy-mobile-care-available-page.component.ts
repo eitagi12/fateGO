@@ -19,9 +19,9 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 })
 export class DeviceOrderAisExistingBestBuyMobileCareAvailablePageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: any = WIZARD_DEVICE_ORDER_AIS;
 
-  identityValid = false;
+  identityValid: boolean = false;
   transaction: Transaction;
   shoppingCart: ShoppingCart;
   exMobileCare: ExistingMobileCare;
@@ -45,22 +45,22 @@ export class DeviceOrderAisExistingBestBuyMobileCareAvailablePageComponent imple
     this.priceOption = this.priceOptionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.exMobileCare = this.transaction.data.existingMobileCare;
     this.productStock = this.priceOption.productStock;
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.createForm();
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     if (this.changeMobileCare) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_CARE_PAGE]);
     } else {
@@ -72,7 +72,7 @@ export class DeviceOrderAisExistingBestBuyMobileCareAvailablePageComponent imple
     this.transactionService.save(this.transaction);
   }
 
-  createForm() {
+  createForm(): void {
     this.exMobileCareForm = this.fb.group({
       changeMobileCare: ['', Validators.required]
     });

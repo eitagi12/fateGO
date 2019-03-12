@@ -17,78 +17,76 @@ export class QrcodePaymentService {
   qrCodePaymentType: string;
   qrCodeAdvancPaymentDesc: string;
   // qrCodeQueueSummary: qrQueueSummaryModel;
-
-
   constructor() {
 
   }
 
-  public setQRcodePaymentSelected(qrcodedetail: PaymentDetailQRCode) {
+  public setQRcodePaymentSelected(qrcodedetail: PaymentDetailQRCode): any {
     this.qrcodedetail = qrcodedetail;
   }
 
-  public getQRcodePaymentSelected() {
+  public getQRcodePaymentSelected(): any {
     return this.qrcodedetail;
   }
 
-  public setQRcodeAdvancePaymentSelected(qrcodeAdvancePay: PaymentDetailQRCode) {
+  public setQRcodeAdvancePaymentSelected(qrcodeAdvancePay: PaymentDetailQRCode): any {
     this.qrcodeAdvancePay = qrcodeAdvancePay;
   }
-  public getQRcodeAdvancePaymentSelected() {
+  public getQRcodeAdvancePaymentSelected(): any {
     return this.qrcodeAdvancePay;
   }
 
-  public setIsCashAdavancPay(isCash: boolean) {
+  public setIsCashAdavancPay(isCash: boolean): any {
     this.isCashAdavancePay = isCash;
   }
 
-  public getIsCashAdavancPay() {
+  public getIsCashAdavancPay(): any {
     return this.isCashAdavancePay;
   }
-  public setIsCashQRPayment(isCash: boolean) {
+  public setIsCashQRPayment(isCash: boolean): any {
     this.isCashPayment = isCash;
   }
 
-  public getIsCashQRPayment() {
+  public getIsCashQRPayment(): any {
     return this.isCashPayment;
   }
 
-  public setIsSelectQRCodePayment(isSelectedQRCode: boolean) {
+  public setIsSelectQRCodePayment(isSelectedQRCode: boolean): any {
     this.isSelectQRCodePayment = isSelectedQRCode;
   }
-  public getIsSelectQRCodePayment() {
+  public getIsSelectQRCodePayment(): any {
     return this.isSelectQRCodePayment;
   }
-  public setIsSelectQRCodeAdvanc(isSelectedQRCode: boolean) {
+  public setIsSelectQRCodeAdvanc(isSelectedQRCode: boolean): any {
     this.isSelectedQRCodeAdavanc = isSelectedQRCode;
   }
 
-  public getIsSelectQRCodeAdvanc() {
+  public getIsSelectQRCodeAdvanc(): any {
     return this.isSelectedQRCodeAdavanc;
   }
 
-  public setSummaryPriceQRCodePayment(summaryPrice: number) {
+  public setSummaryPriceQRCodePayment(summaryPrice: number): any {
     this.summaryPriceQRCodePayment = summaryPrice;
   }
-  public getSummaryPriceQRCodePayment() {
+  public getSummaryPriceQRCodePayment(): any {
     return this.summaryPriceQRCodePayment;
   }
-  public setQRCodePaymentDesc(paymentDesc: string) {
+  public setQRCodePaymentDesc(paymentDesc: string): any {
     this.qrCodePaymentDesc = paymentDesc;
   }
-  public getQRCodePaymentDesc() {
+  public getQRCodePaymentDesc(): any {
     return this.qrCodePaymentDesc;
   }
-  public setQRCodePaymentType(paymentType: string) {
+  public setQRCodePaymentType(paymentType: string): any {
     this.qrCodePaymentType = paymentType;
   }
-  public getQRCodePaymentType() {
+  public getQRCodePaymentType(): any {
     return this.qrCodePaymentType;
   }
-  public setQRCodeAdvancPaymentDesc(paymentDesc: string) {
+  public setQRCodeAdvancPaymentDesc(paymentDesc: string): any {
     this.qrCodeAdvancPaymentDesc = paymentDesc;
   }
-  public getQRCodeAdvancPaymentDesc() {
+  public getQRCodeAdvancPaymentDesc(): any {
     return this.qrCodeAdvancPaymentDesc;
   }
 

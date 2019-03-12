@@ -16,7 +16,7 @@ import { ShoppingCartService } from 'src/app/device-order/service/shopping-cart.
 })
 export class DeviceOrderAisExistingBestBuyCustomerInfoPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: any = WIZARD_DEVICE_ORDER_AIS;
 
   transaction: Transaction;
   customerInfo: CustomerInfo;
@@ -34,7 +34,7 @@ export class DeviceOrderAisExistingBestBuyCustomerInfoPageComponent implements O
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     const customer: Customer = this.transaction.data.customer;
     this.customerInfo = {
@@ -48,11 +48,11 @@ export class DeviceOrderAisExistingBestBuyCustomerInfoPageComponent implements O
     };
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onBack() {
+  onBack(): void {
     const action = this.transaction.data.action;
     if (action === TransactionAction.KEY_IN || action === TransactionAction.READ_CARD) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_PAGE]);
@@ -61,7 +61,7 @@ export class DeviceOrderAisExistingBestBuyCustomerInfoPageComponent implements O
     }
   }
 
-  onNext() {
+  onNext(): void {
     const action = this.transaction.data.action;
     if (action === TransactionAction.KEY_IN || action === TransactionAction.READ_CARD) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE]);
