@@ -20,8 +20,6 @@ export class OrderNewRegisterPassportInfoPageComponent implements OnInit, OnDest
   transaction: Transaction;
   captureAndSign: CaptureAndSign;
 
-  apiSigned: any;
-
   commandSignSubscription: Subscription;
 
   signedSubscription: Subscription;
@@ -33,6 +31,8 @@ export class OrderNewRegisterPassportInfoPageComponent implements OnInit, OnDest
   isOpenSign: boolean;
   openSignedCommand: any;
   watermark = AWS_WATERMARK;
+
+  idCardValid: boolean;
 
   constructor(
     private router: Router,
@@ -46,12 +46,6 @@ export class OrderNewRegisterPassportInfoPageComponent implements OnInit, OnDest
     private translationService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
-
-    if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {
-      this.apiSigned = 'OnscreenSignpad';
-    } else {
-      this.apiSigned = 'SignaturePad';
-    }
 
     this.currentLang = this.translationService.currentLang || 'TH';
     this.translationSubscribe = this.translationService.onLangChange.subscribe(lang => {
@@ -67,7 +61,7 @@ export class OrderNewRegisterPassportInfoPageComponent implements OnInit, OnDest
     this.signedSubscription = this.aisNativeOrderService.getSigned().subscribe((signature: string) => {
       this.isOpenSign = false;
       if (signature) {
-        this.transaction.data.customer.imageSignature = signature;
+        this.transaction.data.customer.imageSignatureSmartCard = signature;
         this.captureAndSign.imageSignature = signature;
       } else {
         this.isOpenSign = true;
@@ -89,10 +83,12 @@ export class OrderNewRegisterPassportInfoPageComponent implements OnInit, OnDest
     };
     this.mapDatanationality();
     customer.titleName = customer.gender === 'F' ? 'Ms.' : 'Mr.';
+    this.idCardValid = this.transaction.data.customer.imageSignatureSmartCard ? true : false;
   }
 
+
   checkLogicNext(): boolean {
-    if (this.isOpenSign || this.transaction.data.customer.imageSignature) {
+    if (this.isOpenSign || this.transaction.data.customer.imageSignatureSmartCard) {
       return true;
     } else {
       return false;
@@ -105,12 +101,10 @@ export class OrderNewRegisterPassportInfoPageComponent implements OnInit, OnDest
   }
 
   onNext() {
-    if (this.transaction.data.customer.imageSignature && !this.isOpenSign) {
+    if (this.transaction.data.customer.imageSignatureSmartCard && !this.isOpenSign) {
       this.router.navigate([ROUTE_ORDER_NEW_REGISTER_FACE_CAPTURE_PAGE]);
     } else {
-      if (this.openSignedCommand && !this.openSignedCommand.error) {
-        this.openSignedCommand.ws.send('CaptureImage');
-      }
+      this.getOnMessageWs();
     }
   }
 
@@ -161,11 +155,18 @@ export class OrderNewRegisterPassportInfoPageComponent implements OnInit, OnDest
     this.onChangeCaptureAndSign();
   }
 
+  getOnMessageWs(): void {
+    if (this.openSignedCommand && !this.openSignedCommand.error) {
+      this.openSignedCommand.ws.send('CaptureImage');
+    }
+  }
+
   onSigned() {
+    this.idCardValid = false;
     this.isOpenSign = true;
     const user: User = this.tokenService.getUser();
     this.signedOpenSubscription = this.aisNativeOrderService.openSigned(
-      ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'SignaturePad', `{x:100,y:280,Language: ${this.currentLang}}`
+      ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'OnscreenSignpad', `{x:100,y:280,Language: ${this.currentLang}}`
     ).subscribe((command: any) => {
       this.openSignedCommand = command;
     });
@@ -200,6 +201,8 @@ export class OrderNewRegisterPassportInfoPageComponent implements OnInit, OnDest
     } else {
       valid = !!this.captureAndSign.imageSignature;
     }
+
+    this.idCardValid = valid;
 
     if (valid) {
       const customer: Customer = this.transaction.data.customer;
