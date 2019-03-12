@@ -2,6 +2,7 @@ import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform, NO_ERRORS_SCHEMA } from '@
 import { ReactiveFormsModule } from '@angular/forms';
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { MobileCareComponent } from './mobile-care.component';
 import { BsModalService, ComponentLoaderFactory, PositioningService } from 'ngx-bootstrap';
@@ -19,7 +20,7 @@ describe('MobileCareComponent', () => {
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      imports: [ ReactiveFormsModule ],
+      imports: [ ReactiveFormsModule, RouterTestingModule ],
       schemas: [
         CUSTOM_ELEMENTS_SCHEMA,
         NO_ERRORS_SCHEMA
