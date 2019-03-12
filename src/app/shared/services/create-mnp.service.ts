@@ -133,6 +133,12 @@ export class CreateMnpService {
       data.orderVerify = 'User';
     }
 
+    if (customer.nationality === 'Thailand') {
+      data.billLanguage = 'Thai';
+    } else {
+      data.billLanguage = 'Eng';
+    }
+
     // has one love
     if (mainPackageOneLove && mainPackageOneLove.length > 0) {
       data.mainPackage.mainPackageOneLove = [];

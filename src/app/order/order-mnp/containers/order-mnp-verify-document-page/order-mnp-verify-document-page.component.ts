@@ -211,9 +211,7 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
 
   // tslint:disable-next-line:use-life-cycle-interface
   ngOnDestroy(): void {
-    if (this.transaction.data.action === TransactionAction.READ_PASSPORT) {
-      this.closeVendingApi.ws.send(KioskControls.LED_OFF);
-    }
+    this.closeVendingApi.ws.send(KioskControls.LED_OFF);
     clearInterval(this.cardStateInterval);
     this.vendingApiSubscription.unsubscribe();
     this.readPassportSubscription.unsubscribe();
