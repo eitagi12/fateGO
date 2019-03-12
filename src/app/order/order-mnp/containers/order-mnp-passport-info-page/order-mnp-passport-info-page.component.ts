@@ -18,6 +18,8 @@ export class OrderMnpPassportInfoPageComponent implements OnInit {
   transaction: Transaction;
   captureAndSign: CaptureAndSign;
 
+  commandSign: any;
+
   apiSigned: string;
 
   idCardValid: boolean;
@@ -55,6 +57,10 @@ export class OrderMnpPassportInfoPageComponent implements OnInit {
     customer.imageSmartCard = captureAndSign.imageSmartCard;
   }
 
+  onCommand(command: any): void {
+    this.commandSign = command;
+  }
+
   onError(valid: boolean) {
     this.idCardValid = valid;
   }
@@ -69,6 +75,10 @@ export class OrderMnpPassportInfoPageComponent implements OnInit {
 
   onHome() {
     this.homeService.goToHome();
+  }
+
+  getOnMessageWs() {
+    this.commandSign.ws.send('CaptureImage');
   }
 
   mapDatanationality() {
