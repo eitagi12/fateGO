@@ -1,6 +1,4 @@
 import { Injectable } from '@angular/core';
-import { Transaction } from 'src/app/shared/models/transaction.model';
-import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 
@@ -34,5 +32,4 @@ export class ShoppingCartService {
       price: +trade.promotionPrice + advancePay
     };
   }
-
 }

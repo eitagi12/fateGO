@@ -88,6 +88,7 @@ export class MobileCareService {
                 })
                 .sort((a) => a.customAttributes.priceType === 'Recurring' ? 1 : -1);
 
+
               mobileCare.items = promotionData.filter((promotion: any) => {
                 const packageType: any[] = (promotion.customAttributes.packageType || '').split(',');
                 return packageType.filter(pkg => !(/^(Emerald|Gold|Platinum)$/i).test(pkg.trim())).length > 0;

@@ -9,10 +9,10 @@ import { Transaction, ExistingMobileCare, Customer } from 'src/app/shared/models
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { ReceiptInfo } from 'mychannel-shared-libs/lib/component/receipt-info/receipt-info.component';
-import { ShoppingCartService } from 'src/app/device-order/service/shopping-cart.service';
+import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { CreateDeviceOrderBestBuyService } from '../../service/create-device-order-best-buy.service';
+import { CreateDeviceOrderBestBuyService } from '../../services/create-device-order-best-buy.service';
 
 export const CASH_PAYMENT = 'CA';
 export const CREDIT_CARD_PAYMENT = 'CC';

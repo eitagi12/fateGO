@@ -12,7 +12,7 @@ import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { LocalStorageService } from 'ngx-store';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { CreateDeviceOrderBestBuyService } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/service/create-device-order-best-buy.service';
+import { CreateDeviceOrderBestBuyService } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/services/create-device-order-best-buy.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-validate-customer-page',

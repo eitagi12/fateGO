@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, Input, ViewChild } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-import { ApiRequestService, PageLoadingService, HomeService, TokenService, User, AlertService, Utils } from 'mychannel-shared-libs';
+import { ApiRequestService, PageLoadingService, HomeService, TokenService, User, AlertService, Utils, ShoppingCart } from 'mychannel-shared-libs';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_CARE_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CHECK_OUT_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
 import { Transaction, TransactionType, TransactionAction, Customer, Prebooking, Seller } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -13,6 +13,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { a, b } from '@angular/core/src/render3';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-summary-page',
@@ -25,6 +26,7 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
 
   transaction: Transaction;
   priceOption: PriceOption;
+  shoppingCart: ShoppingCart;
 
   @ViewChild('detailTemplate')
   detailTemplate: any;
@@ -48,14 +50,15 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
     public fb: FormBuilder,
     private alertService: AlertService,
     private modalService: BsModalService,
-    private utils: Utils
-
+    private utils: Utils,
+    private shoppingCartService: ShoppingCartService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
   }
 
   ngOnInit(): void {
+    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     const user = this.tokenService.getUser();
     const customer = this.transaction.data.customer;
     this.customerAddress = this.utils.getCurrentAddress({

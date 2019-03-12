@@ -8,7 +8,7 @@ import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER
 import { Transaction, ExistingMobileCare, ProductStock } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
-import { ShoppingCartService } from 'src/app/device-order/service/shopping-cart.service';
+import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 

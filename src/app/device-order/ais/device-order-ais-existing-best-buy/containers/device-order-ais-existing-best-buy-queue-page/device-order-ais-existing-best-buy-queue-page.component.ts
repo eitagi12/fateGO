@@ -8,7 +8,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DOCUMENT } from '@angular/platform-browser';
-import { CreateDeviceOrderBestBuyService } from '../../service/create-device-order-best-buy.service';
+import { CreateDeviceOrderBestBuyService } from '../../services/create-device-order-best-buy.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-queue-page',
