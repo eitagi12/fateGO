@@ -8,6 +8,7 @@ import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import * as moment from 'moment';
+import { TranslateService } from '@ngx-translate/core';
 
 const REGEX_DATA_IMAGE = /^data:image\/[a-z]+;base64,/g;
 const Moment = moment;
@@ -281,7 +282,8 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
     private apiRequestService: ApiRequestService,
     private alertService: AlertService,
     private vendingApiService: VendingApiService,
-    private readCardService: ReadCardService
+    private readCardService: ReadCardService,
+    public translation: TranslateService
   ) {
     this.isProduction = environment.production;
     this.homeService.callback = () => {

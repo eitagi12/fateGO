@@ -18,6 +18,7 @@ import { AppComponent } from './app.component';
 import { ErrorPageComponent } from './containers/error-page/error-page.component';
 import { CookiesStorageService } from 'ngx-store';
 import { SharedModule } from './shared/shared.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import { SharedModule } from './shared/shared.module';
   imports: [
     CommonModule,
     BrowserModule,
+    TranslateModule.forRoot(),
     HttpClientModule, // ต้อง import แค่ครั้งเดียว
     MyChannelSharedLibsModule.forRoot({
       production: environment.production,
