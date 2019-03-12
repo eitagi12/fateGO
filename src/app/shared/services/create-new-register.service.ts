@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Transaction, TransactionAction } from '../models/transaction.model';
 import { TokenService, Utils, ImageUtils, AWS_WATERMARK } from 'mychannel-shared-libs';
 import { observable, Observable } from 'rxjs';
+import { elementStyleProp } from '@angular/core/src/render3/instructions';
 
 @Injectable({
   providedIn: 'root'
@@ -182,6 +183,12 @@ export class CreateNewRegisterService {
       } else {
         data.orderVerify = 'User Face';
       }
+    }
+
+    if (customer.nationality === 'Thailand') {
+      data.billLanguage = 'Thai';
+    } else {
+      data.billLanguage = 'Eng';
     }
 
     // has one love
