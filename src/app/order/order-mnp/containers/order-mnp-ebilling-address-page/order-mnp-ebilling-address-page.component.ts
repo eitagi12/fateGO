@@ -8,6 +8,8 @@ import {
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-order-mnp-ebilling-address-page',
@@ -29,17 +31,28 @@ export class OrderMnpEbillingAddressPageComponent implements OnInit, OnDestroy {
   customerAddressTemp: CustomerAddress;
   billDeliveryAddress: CustomerAddress;
   ebillingAddressValid: boolean;
+  translationSubscribe: Subscription;
 
   constructor(
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
-    private http: HttpClient
+    private http: HttpClient,
+    private translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
   }
 
   ngOnInit() {
+
+    this.callService();
+    this.translationSubscribe = this.translation.onLangChange.subscribe(() => {
+      this.callService();
+    });
+  }
+
+  callService() {
+    this.transaction.data.customer.engFlag = (this.translation.currentLang === 'EN') ? 'Y' : 'N';
     const billingInformation = this.transaction.data.billingInformation || {};
     const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
 
@@ -47,7 +60,7 @@ export class OrderMnpEbillingAddressPageComponent implements OnInit, OnDestroy {
       this.allZipCodes = resp.data.zipcodes || [];
     });
 
-    this.http.get('/api/customerportal/newRegister/getAllProvinces').subscribe((resp: any) => {
+    this.http.get('/api/customerportal/newRegister/getAllProvinces').subscribe((resp: any) => { 
       this.provinces = (resp.data.provinces || []);
 
       this.customerAddress = {
@@ -172,6 +185,7 @@ export class OrderMnpEbillingAddressPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.translationSubscribe.unsubscribe();
     this.transactionService.update(this.transaction);
   }
 

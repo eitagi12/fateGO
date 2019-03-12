@@ -113,13 +113,13 @@ export class CreateMnpService {
         ]
       }, /*required*/
       onTopPackages: [],
+      engFlag: customer.engFlag || 'N',
       promotionActionStatus1: 'Add', /*When SelectedPackages*/
     };
 
     if (action === TransactionAction.READ_PASSPORT) {
       data.accountSubCat = 'FOR',
         data.titleName = customer.titleName,
-        data.engFlag = 'Y',
         data.citizenship = customer.nationality;
     } else {
         data.accountSubCat = 'THA',
