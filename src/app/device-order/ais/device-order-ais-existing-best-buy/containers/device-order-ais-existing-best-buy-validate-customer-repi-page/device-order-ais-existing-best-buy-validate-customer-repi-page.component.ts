@@ -111,23 +111,9 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
               return Promise.resolve(customer);
             })
             .then((customer) => {
-              this.billDeliveryAddress = {
-                homeNo: customer.homeNo || '',
-                moo: customer.moo || '',
-                mooBan: customer.mooBan || '',
-                room: customer.room || '',
-                floor: customer.floor || '',
-                buildingName: customer.buildingName || '',
-                soi: customer.soi || '',
-                street: customer.street || '',
-                province: customer.province || '',
-                amphur: customer.amphur || '',
-                tumbol: customer.tumbol || '',
-                zipCode: customer.zipCode || '',
-              };
               this.transaction.data.customer = { ...this.transaction.data.customer, ...customer };
               this.transaction.data.billingInformation = {};
-              this.transaction.data.billingInformation.billDeliveryAddress = this.billDeliveryAddress;
+              this.transaction.data.billingInformation.billDeliveryAddress = customer;
               this.createDeviceOrderBestBuyService.createAddToCartTrasaction(this.transaction, this.priceOption).then((transaction) => {
                 this.transaction = transaction;
                 this.pageLoadingService.closeLoading();
