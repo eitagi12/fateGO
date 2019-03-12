@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { ReadCardProfile, HomeService, PageLoadingService, ApiRequestService, TokenService, ChannelType, Utils, AlertService, ValidateCustomerIdCardComponent, KioskControls, User, } from 'mychannel-shared-libs';
+import { ReadCardProfile, HomeService, PageLoadingService, TokenService, ChannelType, Utils, AlertService, ValidateCustomerIdCardComponent, KioskControls, User, } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -33,7 +33,6 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
     private homeService: HomeService,
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
-    private apiRequestService: ApiRequestService,
     private http: HttpClient,
     private tokenService: TokenService,
     private utils: Utils,
@@ -191,9 +190,6 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
   }
 
   private createTransaction() {
-    // New x-api-request-id
-    this.apiRequestService.createRequestId();
-
     this.transaction = {
       data: {
         transactionType: TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS,

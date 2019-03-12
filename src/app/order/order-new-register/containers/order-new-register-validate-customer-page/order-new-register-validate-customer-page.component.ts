@@ -5,7 +5,7 @@ import {
   ROUTE_ORDER_NEW_REGISTER_VALIDATE_CUSTOMER_KEY_IN_PAGE
 } from 'src/app/order/order-new-register/constants/route-path.constant';
 import { Router } from '@angular/router';
-import { HomeService, PageLoadingService, ApiRequestService } from 'mychannel-shared-libs';
+import { HomeService, PageLoadingService } from 'mychannel-shared-libs';
 import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
@@ -27,7 +27,6 @@ export class OrderNewRegisterValidateCustomerPageComponent implements OnInit, On
     private homeService: HomeService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private apiRequestService: ApiRequestService,
     private http: HttpClient,
   ) { }
 
@@ -125,9 +124,6 @@ export class OrderNewRegisterValidateCustomerPageComponent implements OnInit, On
   }
 
   private createTransaction() {
-    // New x-api-request-id
-    this.apiRequestService.createRequestId();
-
     this.transaction = {
       data: {
         transactionType: TransactionType.ORDER_NEW_REGISTER,

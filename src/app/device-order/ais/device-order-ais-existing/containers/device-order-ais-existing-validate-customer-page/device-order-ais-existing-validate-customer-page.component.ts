@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
-import { HomeService, PageLoadingService, ApiRequestService } from 'mychannel-shared-libs';
+import { HomeService, PageLoadingService } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import {
   ROUTE_DEVICE_ORDER_AIS_EXISTING_VALIDATE_CUSTOMER_ID_CARD_PAGE,
@@ -15,7 +15,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
   templateUrl: './device-order-ais-existing-validate-customer-page.component.html',
   styleUrls: ['./device-order-ais-existing-validate-customer-page.component.scss']
 })
-export class DeviceOrderAisExistingValidateCustomerPageComponent implements OnInit {
+export class DeviceOrderAisExistingValidateCustomerPageComponent implements OnInit, OnDestroy {
 
   transaction: Transaction;
   identityValid = false;
@@ -26,7 +26,6 @@ export class DeviceOrderAisExistingValidateCustomerPageComponent implements OnIn
     private homeService: HomeService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private apiRequestService: ApiRequestService,
     private http: HttpClient,
   ) {
     this.homeService.callback = () => {
@@ -113,9 +112,6 @@ export class DeviceOrderAisExistingValidateCustomerPageComponent implements OnIn
   }
 
   private createTransaction() {
-    // New x-api-request-id
-    this.apiRequestService.createRequestId();
-
     this.transaction = {
       data: {
         transactionType: TransactionType.ORDER_NEW_REGISTER,

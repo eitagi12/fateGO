@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { ReadCardProfile, HomeService, PageLoadingService, ApiRequestService, TokenService, ChannelType, Utils, AlertService, ValidateCustomerIdCardComponent, KioskControls, } from 'mychannel-shared-libs';
+import { ReadCardProfile, HomeService, PageLoadingService, TokenService, ChannelType, Utils, AlertService, ValidateCustomerIdCardComponent, KioskControls, } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -8,7 +8,6 @@ import {
 } from 'src/app/order/order-new-register/constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
 import { ReserveMobileService, SelectMobileNumberRandom } from 'src/app/order/order-shared/services/reserve-mobile.service';
-import { request } from 'https';
 
 @Component({
   selector: 'app-order-new-register-validate-customer-id-card-page',
@@ -35,7 +34,6 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
     private homeService: HomeService,
     private tokenService: TokenService,
     private alertService: AlertService,
-    private apiRequestService: ApiRequestService,
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
     private reserveMobileService: ReserveMobileService,
@@ -246,9 +244,6 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
   }
 
   private createTransaction() {
-    // New x-api-request-id
-    this.apiRequestService.createRequestId();
-
     this.transaction = {
       data: {
         transactionType: TransactionType.ORDER_NEW_REGISTER,

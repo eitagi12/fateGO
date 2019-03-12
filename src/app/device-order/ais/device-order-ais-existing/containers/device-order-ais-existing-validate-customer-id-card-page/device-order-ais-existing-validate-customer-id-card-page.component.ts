@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { ValidateCustomerIdCardComponent, HomeService, PageLoadingService, ReadCardProfile, ApiRequestService, TokenService, Utils, AlertService, KioskControls, ChannelType } from 'mychannel-shared-libs';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { ValidateCustomerIdCardComponent, HomeService, PageLoadingService, ReadCardProfile, TokenService, Utils, AlertService, KioskControls, ChannelType } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
@@ -14,7 +14,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
   templateUrl: './device-order-ais-existing-validate-customer-id-card-page.component.html',
   styleUrls: ['./device-order-ais-existing-validate-customer-id-card-page.component.scss']
 })
-export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implements OnInit {
+export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implements OnInit, OnDestroy {
 
   kioskApi: boolean;
 
@@ -32,7 +32,6 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
     private homeService: HomeService,
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
-    private apiRequestService: ApiRequestService,
     private http: HttpClient,
     private tokenService: TokenService,
     private utils: Utils,
@@ -40,9 +39,9 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
     private priceOptionService: PriceOptionService
   ) {
     this.homeService.callback = () => {
-        if(this.validateCustomerIdcard.koiskApiFn){
-          this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
-        }
+      if (this.validateCustomerIdcard.koiskApiFn) {
+        this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+      }
       window.location.href = '';
     };
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
@@ -55,7 +54,7 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
 
   onError(valid: boolean) {
     this.readCardValid = valid;
-    if(!this.profile){
+    if (!this.profile) {
       this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
       this.validateCustomerIdcard.koiskApiFn.removedState().subscribe((removed: boolean) => {
         if (removed) {
@@ -176,9 +175,6 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
   }
 
   private createTransaction() {
-    // New x-api-request-id
-    this.apiRequestService.createRequestId();
-
     this.transaction = {
       data: {
         transactionType: TransactionType.ORDER_NEW_REGISTER,
