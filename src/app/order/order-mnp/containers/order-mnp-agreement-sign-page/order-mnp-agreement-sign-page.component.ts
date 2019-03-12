@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_ORDER_MNP } from 'src/app/order/constants/wizard.constant';
 import { Router } from '@angular/router';
-import { HomeService, AisNativeService, TokenService, User, ChannelType } from 'mychannel-shared-libs';
+import { HomeService, AisNativeService, TokenService, User, ChannelType, AlertService } from 'mychannel-shared-libs';
 import {
   ROUTE_ORDER_MNP_SUMMARY_PAGE,
   ROUTE_ORDER_MNP_EAPPLICATION_PAGE
@@ -10,6 +10,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { Subscription } from 'rxjs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { CreateNewRegisterService } from 'src/app/shared/services/create-new-register.service';
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-order-mnp-agreement-sign-page',
   templateUrl: './order-mnp-agreement-sign-page.component.html',
@@ -24,6 +25,7 @@ export class OrderMnpAgreementSignPageComponent implements OnInit, OnDestroy {
   signedOpenSubscription: Subscription;
 
   commandSigned: any;
+  isOpenSign: boolean;
 
   constructor(
     private router: Router,
@@ -31,11 +33,21 @@ export class OrderMnpAgreementSignPageComponent implements OnInit, OnDestroy {
     private transactionService: TransactionService,
     private aisNativeService: AisNativeService,
     private tokenService: TokenService,
-    private createNewRegisterService: CreateNewRegisterService
+    private createNewRegisterService: CreateNewRegisterService,
+    private alertService: AlertService,
+    private translationService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
     this.signedSignatureSubscription = this.aisNativeService.getSigned().subscribe((signature: string) => {
-      this.transaction.data.customer.imageSignature = signature;
+      if (signature) {
+        this.isOpenSign = false;
+        this.transaction.data.customer.imageSignature = signature;
+      } else {
+        this.alertService.warning(this.translationService.instant('กรุณาเซ็นลายเซ็น')).then(() => {
+          this.onSigned();
+        });
+        return;
+      }
     });
   }
 
