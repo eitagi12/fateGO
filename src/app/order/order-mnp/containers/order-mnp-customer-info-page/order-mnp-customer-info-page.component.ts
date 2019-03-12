@@ -11,6 +11,7 @@ import {
   ROUTE_ORDER_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE,
   ROUTE_ORDER_MNP_SELECT_PACKAGE_PAGE
 } from 'src/app/order/order-mnp/constants/route-path.constant';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-order-mnp-customer-info-page',
@@ -28,6 +29,7 @@ export class OrderMnpCustomerInfoPageComponent implements OnInit {
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
+    public translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
   }

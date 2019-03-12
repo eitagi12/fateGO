@@ -35,8 +35,8 @@
     </div>
   </div>
   <mc-footer>
-    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()"
-      [disabled]="!transaction?.data?.customer?.imageSignature">NEXT</button>
+    <button [hidden]="transaction?.data?.customer?.imageSignature" class="btn btn-success" (click)="getOnMessageWs()">Confirm</button>
+    <button [hidden]="!transaction?.data?.customer?.imageSignature"class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button [hidden]="!transaction?.data?.customer?.imageSignature"class="btn btn-success" (click)="onNext()"[disabled]="!transaction?.data?.customer?.imageSignature">NEXT</button>
   </mc-footer>
 </div>

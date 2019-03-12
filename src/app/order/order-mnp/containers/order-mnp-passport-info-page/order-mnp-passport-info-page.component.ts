@@ -4,7 +4,7 @@ import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { CaptureAndSign, HomeService, TokenService, ChannelType } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { ROUTE_ORDER_MNP_VERIFY_DOCUMENT_PAGE, ROUTE_ORDER_MNP_CUSTOMER_INFO_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_ORDER_MNP_VERIFY_DOCUMENT_PAGE, ROUTE_ORDER_MNP_CUSTOMER_INFO_PAGE, ROUTE_ORDER_MNP_SELECT_PACKAGE_PAGE } from '../../constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -70,7 +70,7 @@ export class OrderMnpPassportInfoPageComponent implements OnInit {
   }
 
   onNext() {
-    this.router.navigate([ROUTE_ORDER_MNP_CUSTOMER_INFO_PAGE]);
+    this.router.navigate([ROUTE_ORDER_MNP_SELECT_PACKAGE_PAGE]);
   }
 
   onHome() {

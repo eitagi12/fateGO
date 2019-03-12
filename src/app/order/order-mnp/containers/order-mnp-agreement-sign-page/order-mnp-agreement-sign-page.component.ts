@@ -57,6 +57,7 @@ export class OrderMnpAgreementSignPageComponent implements OnInit, OnDestroy {
 
   onSigned() {
     const user: User = this.tokenService.getUser();
+    this.transaction.data.customer.imageSignature = '';
     this.signedOpenSubscription = this.aisNativeService.openSigned(
       ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'SignaturePad'
     ).subscribe();
