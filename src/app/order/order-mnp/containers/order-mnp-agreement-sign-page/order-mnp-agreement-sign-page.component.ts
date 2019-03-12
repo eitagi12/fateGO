@@ -23,6 +23,8 @@ export class OrderMnpAgreementSignPageComponent implements OnInit, OnDestroy {
   signedSignatureSubscription: Subscription;
   signedOpenSubscription: Subscription;
 
+  commandSigned: any;
+
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -60,7 +62,13 @@ export class OrderMnpAgreementSignPageComponent implements OnInit, OnDestroy {
     this.transaction.data.customer.imageSignature = '';
     this.signedOpenSubscription = this.aisNativeService.openSigned(
       ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'SignaturePad'
-    ).subscribe();
+    ).subscribe( (command: any) => {
+      this.commandSigned = command;
+    });
+  }
+
+  getOnMessageWs() {
+    this.commandSigned.ws.send('CaptureImage');
   }
 
   ngOnDestroy(): void {
