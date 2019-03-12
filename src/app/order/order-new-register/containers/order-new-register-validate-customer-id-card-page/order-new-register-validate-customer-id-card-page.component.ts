@@ -114,7 +114,8 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
       .then((zipCode: string) => {
         return this.http.get('/api/customerportal/validate-customer-new-register', {
           params: {
-            identity: this.profile.idCardNo
+            identity: this.profile.idCardNo,
+            idCardType: this.profile.idCardType
           }
         }).toPromise()
           .then((resp: any) => {
