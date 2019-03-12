@@ -486,24 +486,16 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
     const mapData = function mapDataFromAisWebConnect(data: any): any {
       return {
         idCardType: 'หนังสือเดินทาง',
-        expireDate: convertStringToDateF(data.ExpireDate),
-        issuingCountry: defaultIfEmptyF(data.IssuingCountry),
-        firstName: defaultIfEmptyF(data.GivenName),
-        lastName: defaultIfEmptyF(data.Surname),
-        nationality: defaultIfEmptyF(data.Nationality),
-        birthdate: convertStringToDateF(data.BirthDate),
-        gender: defaultIfEmptyF(data.Sex) === '1' ? 'M' : 'F',
-        idCardNo: defaultIfEmptyF(data.PassportNumber),
+        expireDate: this.convertStringToDate(data.ExpireDate),
+        issuingCountry: this.defaultIfEmpty(data.IssuingCountry),
+        firstName: this.defaultIfEmpty(data.GivenName),
+        lastName: this.defaultIfEmpty(data.Surname),
+        nationality: this.defaultIfEmpty(data.Nationality),
+        birthdate: this.convertStringToDate(data.BirthDate),
+        gender: this.defaultIfEmpty(data.Sex) === '1' ? 'M' : 'F',
+        idCardNo: this.defaultIfEmpty(data.PassportNumber),
         imageReadPassport: (data.imageReadPassport || '').replace(REGEX_DATA_IMAGE, ''),
       };
-    };
-
-    const defaultIfEmptyF = function defaultIfEmpty(text: string): string {
-      return (text || '').trim();
-    };
-
-    const convertStringToDateF = function convertStringToDate(dateStr: string): string {
-      return  Moment(dateStr, 'YYMMDD').add(543 , 'years').format('DD/MM/YYYY');
     };
 
     readPassport.profile = mapData(mock);
@@ -576,6 +568,14 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
 
         }
       });
+  }
+
+  defaultIfEmpty(text: string): string {
+    return (text || '').trim();
+  }
+
+  convertStringToDate(dateStr: string): string {
+    return  Moment(dateStr, 'YYMMDD').add(543 , 'years').format('DD/MM/YYYY');
   }
 
 }
