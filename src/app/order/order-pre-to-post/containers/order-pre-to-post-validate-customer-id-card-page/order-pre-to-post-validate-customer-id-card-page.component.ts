@@ -49,13 +49,15 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
   onError(valid: boolean) {
     this.readCardValid = valid;
     if (!this.profile) {
-      this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
-      this.validateCustomerIdcard.koiskApiFn.removedState().subscribe((removed: boolean) => {
-        if (removed) {
-          this.validateCustomerIdcard.ngOnDestroy();
-          this.validateCustomerIdcard.ngOnInit();
-        }
-      });
+      this.alertService.error(this.translation.instant('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน'));
+      if (this.validateCustomerIdcard.koiskApiFn) {
+        this.validateCustomerIdcard.koiskApiFn.removedState().subscribe((removed: boolean) => {
+          if (removed) {
+            this.validateCustomerIdcard.ngOnDestroy();
+            this.validateCustomerIdcard.ngOnInit();
+          }
+        });
+      }
     }
   }
 
@@ -66,9 +68,6 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
   }
 
   onBack() {
-    if (this.validateCustomerIdcard.koiskApiFn) {
-      this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
-    }
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_PAGE]);
   }
 

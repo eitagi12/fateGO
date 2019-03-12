@@ -244,7 +244,7 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
   }
 
   onNext() {
-    if (!this.customerValid()) {
+    if (!this.customerValid() && !this.isMergeBilling()) {
       this.alertService.warning(this.translation.instant('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร'));
       return;
     }

@@ -9,6 +9,7 @@ import {
 } from 'src/app/order/order-pre-to-post/constants/route-path.constant';
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { AisNativeOrderService } from 'src/app/shared/services/ais-native-order.service';
 @Component({
   selector: 'app-order-pre-to-post-agreement-sign-page',
   templateUrl: './order-pre-to-post-agreement-sign-page.component.html',
@@ -33,7 +34,8 @@ export class OrderPreToPostAgreementSignPageComponent implements OnInit, OnDestr
     private aisNativeService: AisNativeService,
     private tokenService: TokenService,
     private alertService: AlertService,
-    private translationService: TranslateService
+    private translationService: TranslateService,
+    private aisNativeOrderService: AisNativeOrderService,
   ) {
     this.transaction = this.transactionService.load();
     this.signedSignatureSubscription = this.aisNativeService.getSigned().subscribe((signature: string) => {
@@ -96,7 +98,7 @@ export class OrderPreToPostAgreementSignPageComponent implements OnInit, OnDestr
   onSigned() {
     this.isOpenSign = true;
     const user: User = this.tokenService.getUser();
-    this.signedOpenSubscription = this.aisNativeService.openSigned(
+    this.signedOpenSubscription = this.aisNativeOrderService.openSigned(
       ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'SignaturePad', `{x:100,y:280,Language: ${this.currentLang}}`
     ).subscribe((command: any) => {
       this.openSignedCommand = command;

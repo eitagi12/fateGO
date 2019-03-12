@@ -20,6 +20,7 @@ import {
   ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_PAGE
 } from '../../constants/route-path.constant';
 
+import { environment } from 'src/environments/environment';
 const REGEX_DATA_IMAGE = /^data:image\/[a-z]+;base64,/g;
 import * as moment from 'moment';
 const Moment = moment;
@@ -298,6 +299,7 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
     private vendingApiService: VendingApiService,
     public translation: TranslateService
   ) {
+    this.isProduction = environment.production;
     this.homeService.callback = () => {
 
       if (this.validateCustomerIdcard && this.validateCustomerIdcard.koiskApiFn) {
@@ -412,9 +414,9 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
             this.pageLoadingService.closeLoading();
             this.transaction.data.action = TransactionAction.READ_PASSPORT;
             this.transactionService.update(this.transaction);
-            if (this.checkBusinessLogic()) {
+            // if (this.checkBusinessLogic()) {
               this.router.navigate([ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_PAGE]);
-            }
+            // }
           }).catch((resp: any) => {
             this.pageLoadingService.closeLoading();
             const error = resp.error || [];

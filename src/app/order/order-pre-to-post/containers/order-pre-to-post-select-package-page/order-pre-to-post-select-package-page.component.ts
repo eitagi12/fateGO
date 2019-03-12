@@ -7,7 +7,9 @@ import {
   ROUTE_ORDER_PRE_TO_POST_ON_TOP_PAGE,
   ROUTE_ORDER_PRE_TO_POST_CUSTOMER_INFO_PAGE,
   ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE,
-  ROUTE_ORDER_PRE_TO_POST_ONE_LOVE_PAGE
+  ROUTE_ORDER_PRE_TO_POST_ONE_LOVE_PAGE,
+  ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_PAGE,
+  ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_REPI_PAGE
 } from 'src/app/order/order-pre-to-post/constants/route-path.constant';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -56,12 +58,12 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
 
   onBack() {
     const action = this.transaction.data.action;
-    if (action === TransactionAction.READ_CARD_REPI) {
-      this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE]);
-    } else if (action === TransactionAction.READ_CARD) {
+    if (action === TransactionAction.READ_CARD_REPI || action === TransactionAction.READ_PASSPORT_REPI) {
+      this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_REPI_PAGE]);
+    } else if (action === TransactionAction.READ_CARD || action === TransactionAction.READ_PASSPORT) {
       this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CUSTOMER_INFO_PAGE]);
     } else if (action === TransactionAction.KEY_IN_REPI) {
-      this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE]);
+      this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_PAGE]);
     } else {
       this.router.navigate([ROUTE_ORDER_PRE_TO_POST_ID_CARD_CAPTURE_PAGE]);
     }
