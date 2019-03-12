@@ -13,20 +13,43 @@ export class PrivilegeToTradeSliderPipe implements PipeTransform {
 
     return (privilege.trades || []).map((trade: any) => {
 
-      let description = trade.payments ? 'ชำระเต็มจำนวน' : 'ผ่อนชำระค่าเครื่อง';
-      if (this.isAdvancePay(trade)) {
-        description += 'และแพ็กเกจค่าบริการล่วงหน้า';
-      }
-      return {
-        description: description,
-        installmentType: (trade.banks && !this.isPayment(trade)) ? 'wallet' : 'bath',
-        isCashBack: (trade.banks || []).find(bank => bank.remark !== '' && bank.remark !== null && bank.remark),
+      const advancePay = trade.advancePay || {};
+      const discount = trade.discount || {};
+      const installmentFlag = advancePay.installmentFlag === 'Y';
+      const payment = (trade.payments || []).find(p => p.method !== 'PP') || {};
+      const installments = PriceOptionUtils.getInstallmentsFromTrades(
+        privilege.trades
+      );
+      const isRemark = !!(trade.banks || []).find(bank => bank.remark !== '' && bank.remark !== null && bank.remark);
+
+      const slider: any = {
         freeGoods: (trade.freeGoods || []).map(freeGood => freeGood.name),
-        installments: PriceOptionUtils.getInstallmentsFromTrades(
-          privilege.trades
-        ),
+        installments: installments,
+        installmentType: installmentFlag ? 'bath' : 'wallet',
+        specialType: discount.specialType,
+        specialAmount: +advancePay.amount,
         value: trade
       };
+      switch (payment.method) {
+        case 'CC':
+          if (installments) {
+            slider.isCashBack = isRemark;
+            slider.description = 'ผ่อนชำระค่าเครื่อง';
+            // ใช้คะแนนบัตรเครดิต
+            slider.paymentPoint = !!(trade.payments || []).find(p => p.method === 'PP');
+          } else {
+            slider.description = 'ชำระเต็มจำนวน';
+          }
+          break;
+        case 'CA':
+        case 'CA/CC':
+        default:
+          slider.description = 'ชำระเต็มจำนวน';
+      }
+      if (installmentFlag) {
+        slider.description += 'และแพ็กเกจค่าบริการล่วงหน้า';
+      }
+      return slider;
     });
   }
 

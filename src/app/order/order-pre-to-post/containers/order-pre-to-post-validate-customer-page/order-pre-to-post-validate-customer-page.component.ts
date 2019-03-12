@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, PageLoadingService, ApiRequestService, Utils, AlertService, TokenService, ChannelType } from 'mychannel-shared-libs';
+import { HomeService, PageLoadingService, Utils, AlertService, TokenService, ChannelType } from 'mychannel-shared-libs';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
@@ -59,7 +59,6 @@ export class OrderPreToPostValidateCustomerPageComponent implements OnInit, OnDe
     private alertService: AlertService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private apiRequestService: ApiRequestService,
     private tokenService: TokenService,
   ) {
     this.homeService.callback = () => {
@@ -221,9 +220,6 @@ export class OrderPreToPostValidateCustomerPageComponent implements OnInit, OnDe
   }
 
   private createTransaction(): void {
-    // New x-api-request-id
-    this.apiRequestService.createRequestId();
-
     this.transaction = {
       data: {
         transactionType: TransactionType.ORDER_PRE_TO_POST,
