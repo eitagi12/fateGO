@@ -15,7 +15,7 @@
 
       <div class="container-fluid">
         <div class="card mb-3">
-          <div class="card-header bg-pink text-white">เบอร์ที่ท่านต้องการย้ายค่าย</div>
+          <div class="card-header bg-pink text-white" translate>เบอร์ที่ท่านต้องการย้ายค่าย</div>
           <div class="card-body">
             <div class="text-center text-green">
               {{ transaction?.data?.simCard?.mobileNo | mobileNo}}
@@ -25,7 +25,7 @@
 
         <form [formGroup]="reasonForm">
           <div class="card mb-3">
-            <div class="card-header bg-pink text-white">เหตุผลที่ลูกค้าย้ายค่าย</div>
+            <div class="card-header bg-pink text-white" translate>เหตุผลที่ลูกค้าย้ายค่าย</div>
             <div class="card-body">
               <div class="text-center ">
                 <select class="form-control" formControlName="reasonCode" [ngClass]="{'is-invalid': !reasonForm.controls['reasonCode'].valid && reasonForm.controls['reasonCode'].dirty }" >
@@ -38,16 +38,16 @@
           </div>
 
           <div class="card mb-3">
-            <div class="card-header bg-pink text-white">เลือกระบบที่ท่านต้องการ</div>
+            <div class="card-header bg-pink text-white" translate>เลือกระบบที่ท่านต้องการ</div>
             <div class="card-body">
               <div class="row text-center">
                 <div class="col-6 border-right">
                   <input type="radio" id="post-paid" value="Post-paid" formControlName="chargeType">
-                  <label for="post-paid">ระบบรายเดือน</label>
+                  <label for="post-paid" translate>ระบบรายเดือน</label>
                 </div>
                 <div class="col-6">
                   <input type="radio" id="pre-paid" value="Pre-paid" formControlName="chargeType">
-                  <label for="pre-paid">ระบบเติมเงิน</label>
+                  <label for="pre-paid" translate>ระบบเติมเงิน</label>
                 </div>
               </div>
             </div>

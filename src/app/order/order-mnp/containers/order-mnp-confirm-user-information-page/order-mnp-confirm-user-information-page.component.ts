@@ -13,6 +13,7 @@ import {
   ROUTE_ORDER_MNP_SELECT_PACKAGE_PAGE
 } from 'src/app/order/order-mnp/constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-order-mnp-confirm-user-information-page',
@@ -40,6 +41,7 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
     private alertService: AlertService,
     private utils: Utils,
     private http: HttpClient,
+    public translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
 
@@ -225,7 +227,7 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
 
   onNext() {
     if (!this.customerValid()) {
-      this.alertService.warning('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร');
+      this.alertService.warning(this.translation.instant('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร'));
       return;
     }
 
