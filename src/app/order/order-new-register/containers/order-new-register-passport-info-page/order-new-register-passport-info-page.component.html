@@ -19,11 +19,6 @@
           </h5>
           <div class="card-body">
             <div class="camera-width">
-              <div [hidden]="!isAllowCapture() || hasImageSmartCard()">
-                <mc-camera [crop]="false" [onTakePhoto]="camera" (completed)="onCameraCompleted($event)" (error)="onCameraError($event)">
-                </mc-camera>
-              </div>
-      
               <div class="embed-responsive embed-responsive-4by3" [hidden]="!(!isAllowCapture() || hasImageSmartCard())">
                 <div class="embed-responsive-item">
                   <img class="capture-and-sign capture" alt="" [src]="'data:image/png;base64,' + captureAndSign?.imageSmartCard" />

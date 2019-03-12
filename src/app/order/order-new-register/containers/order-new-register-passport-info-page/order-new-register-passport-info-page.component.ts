@@ -199,14 +199,8 @@ export class OrderNewRegisterPassportInfoPageComponent implements OnInit, OnDest
 
   private onChangeCaptureAndSign() {
     let valid = false;
-    if (this.isAllowCapture()) {
-      valid = !!(this.captureAndSign.imageSmartCard && this.captureAndSign.imageSignature);
-    } else {
-      valid = !!this.captureAndSign.imageSignature;
-    }
-
+    valid = !!this.captureAndSign.imageSignature;
     this.idCardValid = valid;
-
     if (valid) {
       const customer: Customer = this.transaction.data.customer;
       customer.imageSignatureSmartCard = this.captureAndSign.imageSignature;
