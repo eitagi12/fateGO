@@ -40,6 +40,7 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
     public translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
+    this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
   }
 
   ngOnInit() {

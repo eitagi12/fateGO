@@ -186,8 +186,6 @@ export class OrderPreToPostEbillingAddressPageComponent implements OnInit, OnDes
       Object.assign({}, customer),
       this.customerAddressTemp
     );
-    this.transactionService.update(this.transaction);
-
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
@@ -196,6 +194,8 @@ export class OrderPreToPostEbillingAddressPageComponent implements OnInit, OnDes
   }
 
   ngOnDestroy(): void {
+    this.translationSubscribe.unsubscribe();
+    this.transactionService.update(this.transaction);
   }
 }
 

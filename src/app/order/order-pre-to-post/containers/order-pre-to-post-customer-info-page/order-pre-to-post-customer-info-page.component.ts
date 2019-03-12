@@ -41,7 +41,7 @@ export class OrderPreToPostCustomerInfoPageComponent implements OnInit, OnDestro
       firstName: customer.firstName,
       lastName: customer.lastName,
       idCardNo: customer.idCardNo,
-      idCardType: 'บัตรประชาชน',
+      idCardType: customer.idCardType,
       birthdate: customer.birthdate,
       mobileNo: customer.mainMobile,
     };

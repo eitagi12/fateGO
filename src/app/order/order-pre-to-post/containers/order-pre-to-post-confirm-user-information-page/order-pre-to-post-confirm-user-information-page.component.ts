@@ -14,8 +14,7 @@ import {
   ROUTE_ORDER_PRE_TO_POST_SELECT_PACKAGE_PAGE
 } from 'src/app/order/order-pre-to-post/constants/route-path.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { Transaction, TransactionType, TransactionAction, Customer, MainPackage } from 'src/app/shared/models/transaction.model';
-import { ROUTE_ORDER_NEW_REGISTER_ON_TOP_PAGE } from 'src/app/order/order-new-register/constants/route-path.constant';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 import { Subscription } from 'rxjs';
 
 @Component({

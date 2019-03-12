@@ -107,18 +107,23 @@ export class CreatePreToPostService {
       }, /*required*/
       onTopPackages: [],
       promotionActionStatus1: 'Add', /*When SelectedPackages*/
+      engFlag: customer.engFlag || 'N'
     };
 
     if (action === TransactionAction.READ_PASSPORT) {
       data.accountSubCat = 'FOR';
       data.titleName = customer.titleName;
-      data.engFlag = 'Y';
       data.citizenship = customer.nationality;
     } else {
       data.accountSubCat = 'THA';
       data.titleName = this.utils.getPrefixName(customer.titleName); /*required*/
     }
 
+    if (customer.nationality === 'Thailand') {
+      data.billLanguage = 'Thai';
+    } else {
+      data.billLanguage = 'Eng';
+    }
 
     // orderVerify
     if (action === TransactionAction.READ_CARD) {

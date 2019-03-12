@@ -24,6 +24,7 @@ export class OrderPreToPostAgreementSignPageComponent implements OnInit, OnDestr
   openSignedCommand: any;
   isOpenSign: boolean;
   currentLang: string;
+  translationSubscribe: Subscription;
 
   constructor(
     private router: Router,
@@ -36,18 +37,36 @@ export class OrderPreToPostAgreementSignPageComponent implements OnInit, OnDestr
   ) {
     this.transaction = this.transactionService.load();
     this.signedSignatureSubscription = this.aisNativeService.getSigned().subscribe((signature: string) => {
+      this.isOpenSign = false;
       if (signature) {
-        this.isOpenSign = false;
         this.transaction.data.customer.imageSignature = signature;
-        this.onNext();
       } else {
+        this.isOpenSign = true;
         this.alertService.warning(this.translationService.instant('กรุณาเซ็นลายเซ็น')).then(() => {
           this.onSigned();
         });
         return;
       }
     });
-    this.currentLang = this.translationService.currentLang;
+
+    this.currentLang = this.translationService.currentLang || 'TH';
+    this.translationSubscribe = this.translationService.onLangChange.subscribe(lang => {
+      if (this.signedOpenSubscription) {
+        this.signedOpenSubscription.unsubscribe();
+      }
+      this.currentLang = typeof (lang) === 'object' ? lang.lang : lang;
+      if (this.isOpenSign) {
+        this.onSigned();
+      }
+    });
+  }
+
+  checkLogicNext(): boolean {
+    if (this.isOpenSign || this.transaction.data.customer.imageSignature) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   ngOnInit() {
@@ -61,10 +80,12 @@ export class OrderPreToPostAgreementSignPageComponent implements OnInit, OnDestr
   }
 
   onNext() {
-    if (this.transaction.data.customer.imageSignature && !this.isOpenSign) {
+    if (this.transaction.data.customer.imageSignature) {
       this.router.navigate([ROUTE_ORDER_PRE_TO_POST_AGGREGATE_PAGE]);
     } else {
-      this.openSignedCommand.ws.send('CaptureImage');
+      if (this.openSignedCommand && !this.openSignedCommand.error) {
+        this.openSignedCommand.ws.send('CaptureImage');
+      }
     }
   }
 
@@ -86,6 +107,9 @@ export class OrderPreToPostAgreementSignPageComponent implements OnInit, OnDestr
     this.signedSignatureSubscription.unsubscribe();
     if (this.signedOpenSubscription) {
       this.signedOpenSubscription.unsubscribe();
+    }
+    if (this.translationSubscribe) {
+      this.translationSubscribe.unsubscribe();
     }
     this.transactionService.update(this.transaction);
   }
