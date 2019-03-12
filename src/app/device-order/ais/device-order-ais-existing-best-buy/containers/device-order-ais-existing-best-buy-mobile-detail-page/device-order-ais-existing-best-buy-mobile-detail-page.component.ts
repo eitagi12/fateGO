@@ -17,7 +17,6 @@ import { ShoppingCartService } from 'src/app/device-order/service/shopping-cart.
 export class DeviceOrderAisExistingBestBuyMobileDetailPageComponent implements OnInit, OnDestroy {
 
   wizards: any = WIZARD_DEVICE_ORDER_AIS;
-  
   transaction: Transaction;
   mobileInfo: MobileInfo;
   shoppingCart: ShoppingCart;
@@ -34,16 +33,16 @@ export class DeviceOrderAisExistingBestBuyMobileDetailPageComponent implements O
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.getMobileInfo();
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onBack() {
+  onBack(): void {
     const action = this.transaction.data.action;
     if (action === TransactionAction.KEY_IN || action === TransactionAction.READ_CARD) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE]);
@@ -52,7 +51,7 @@ export class DeviceOrderAisExistingBestBuyMobileDetailPageComponent implements O
     }
   }
 
-  onNext() {
+  onNext(): void {
     const action = this.transaction.data.action;
     if (action === TransactionAction.KEY_IN || action === TransactionAction.READ_CARD) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE]);
@@ -65,7 +64,7 @@ export class DeviceOrderAisExistingBestBuyMobileDetailPageComponent implements O
     this.transactionService.update(this.transaction);
   }
 
-  getMobileInfo() {
+  getMobileInfo(): void {
     this.pageLoadingService.openLoading();
     const mobileNo = this.transaction.data.simCard.mobileNo;
     this.http.get(`/api/customerportal/mobile-detail/${mobileNo}`).toPromise().then((response: any) => {
@@ -86,7 +85,6 @@ export class DeviceOrderAisExistingBestBuyMobileDetailPageComponent implements O
     });
   }
 
-
   mapChargeType(chargeType: string): 'รายเดือน' | 'เติมเงิน' {
     if ('Post-paid' === chargeType) {
       return 'รายเดือน';
@@ -95,7 +93,7 @@ export class DeviceOrderAisExistingBestBuyMobileDetailPageComponent implements O
     }
   }
 
-  serviceYearWording(year: string, month: string, day: string) {
+  serviceYearWording(year: string, month: string, day: string): string {
     let serviceYearWording = '';
     if (year) {
       serviceYearWording = `${year || ''} ปี `;
