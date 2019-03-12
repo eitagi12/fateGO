@@ -22,7 +22,7 @@ import { DeviceOrderAisExistingBestBuyOtpPageComponent } from './containers/devi
 import { DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent } from './containers/device-order-ais-existing-best-buy-idcard-capture-repi-page/device-order-ais-existing-best-buy-idcard-capture-repi-page.component';
 
 const routes: Routes = [
-  // { path: '', redirectTo: 'validate-customer', pathMatch: 'full' },
+  { path: '', redirectTo: 'validate-customer', pathMatch: 'full' },
   { path: 'validate-customer', component: DeviceOrderAisExistingBestBuyValidateCustomerPageComponent },
   { path: 'validate-customer-id-card', component: DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent},
   { path: 'validate-customer-repi', component: DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent},
