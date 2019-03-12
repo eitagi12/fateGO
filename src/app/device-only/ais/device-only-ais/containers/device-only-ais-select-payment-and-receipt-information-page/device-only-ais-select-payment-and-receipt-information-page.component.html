@@ -15,12 +15,12 @@
           <div class="col-12 col-sm-6 text-brown">
             <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEEAAAA6CAMAAADYzMR1AAAAhFBMVEUAAACNxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj8Qf88uAAAAK3RSTlMAY1D4CQMTBfPu0DYjHw7JjUM9KJl3b+TbpX5oMSwZw720klcQr11TB4VVb092TgAAAixJREFUSMelltuaqjAMhQvIWRRB8QSOoqPOXu//fruEGSxY/VL570xkQXNqxBvuWRoBwck6iI+YpeiISmGOhR7fE2GG+40BYWImcETDep/PJl7WqjlGEltIgsXfT+9Evy98gTMkc/Xke4onPwsk4PZsV0iuXIUmjcEw9ssmFD5PYALJYmj1A2k98xRuADbP5iuZWXwBsF982oxVC/TPF8oxR8FrQqZzFNKx5yhMm1TqHAvpSLkKJ52jlI4lRyF59Q2xdNTcOAQ6hy0dO46CD4mu+HbS/k9wCAFMNfaNtFcshRqA9aKiWJOKshbpzRuDzvK0JWkJfmOshsZDq8sjo1GgGXxf7DkbPHdAAklpdFc4/bBHzDmpzqPtsC+RCz42+lMmBkmaMIdamIkDILwbKXiQOL8SlWN4BmKBLpoZwB/Tw1uKFocVKLnGTLtIlGpL8YmbhK5dym0Tho0njKiOaKjUZSTlayRFCKLrrhOI6DZjdHaZBiDUVnaXf7ZNMXXfvdyK0HE89MKyRsfpdtD2Y1k7eFAnT6E94kG4y4etVKiPbzNfu5jc5qrIWT2O/Xh+vcrdN2GK0+ChEavrCeEsM0awPbvbFH96As6OoszCr2oQS6WHrr4w4l50/eaGzekvwpgDJdj7HT8kYMrFaev2R3cj82dh2A7h/DMFv924HDrEZ8zp7frxwV9+s1EKK7oTQkrJCAU6y87+jCMt4FuMI6N6GEMlCowjEbk1jvt/2LKEbgNMQ0wAAAAASUVORK5CYII="
               class="icon icon-person" />
-            <span>นาย ธีระยุทธ เจโตวิมุติพงศ์</span>
+            <span id="text-customer-name">นาย ธีระยุทธ เจโตวิมุติพงศ์</span>
           </div>
           <div class="col-12 col-sm-6 text-sm-right text-brown">
             <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABsAAAAtCAMAAABoKeDXAAAAM1BMVEUAAAB0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ25Zr8AAAAEHRSTlMAkBBwgNEwiPTesFJIEpc9LEzSRQAAAGVJREFUOMvt1LsSgCAMRNFF0fBm//9rdWiJsXLGgtPeAposgCJuJgW3RF0CPIPbZy7QIzJDkxlBVmgqCXKDZhvt0I32CGQ/Nd16b7XVft/Ea+T1HprTtG/+ad27tRPWvli7ZO3ZBeGQE1v36RJMAAAAAElFTkSuQmCC"
               class="icon icon-phone" />
-            <span>0889540584</span>
+            <span id="text-mobile-no">0889540584</span>
           </div>
         </div>
       </div>
@@ -28,8 +28,8 @@
       <div class="container-fluid mt-3 mb-3">
         <div class="row pl-3 pr-3">
           <div class="col-8 col-sm-10 text-left text-brown">
-            <p class="text-light-green">ซื้อเครื่องเปล่า</p>
-            <div>Samsung Galaxy S10
+            <p class="text-light-green" id="text-campaign-name">ซื้อเครื่องเปล่า</p>
+            <div id="text-brand-model">Samsung S10 Plus
               <span>BLACK</span> 1 เครื่อง</div>
           </div>
           <div class="col-4 col-sm-2 text-center text-brown">
@@ -43,108 +43,105 @@
       </div>
     </div>
 
+    <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
 
-
-
-  <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
-
-  <div class="container-fluid">
-    <div class="card mb-3">
-      <div class="card-header bg-orange text-white rounded-top p-3">
-        รูปแบบชำระเงิน
-      </div>
-      <div class="card-header text-light-green bg-transparent">
-        <div class="row">
-          <div class="col-12" id="text-brand-model">
-            ค่าเครื่อง Samsung Galaxy S10 สี BLACK
-            <span class="pull-right" id="text-brand-model-price">฿ 45,700</span>
+    <div class="container-fluid">
+      <div class="card mb-3">
+        <div class="card-header bg-orange text-white rounded-top p-3">
+          รูปแบบชำระเงิน
+        </div>
+        <div class="card-header text-light-green bg-transparent">
+          <div class="row">
+            <div class="col-12" id="text-brand-model">
+              ค่าเครื่อง Samsung Galaxy S10 สี BLACK
+              <span class="pull-right" id="text-brand-model-price">฿ 45,700</span>
+            </div>
           </div>
         </div>
-      </div>
 
-      <div class="card-body">
-        <form [formGroup]="paymentForm">
-          <div class="form-group row">
-            <div class="col-12 col-sm-5">
-              <input class="form-check-input" type="radio" id="payment-qrcode" value="qrcode" formControlName="paymentType">
-              <label class="form-check-label" id="label-box-qr-code" for="payment-qrcode">
-                ชำระเงิน QR Code
-              </label>
-            </div>
-            <div class="col-12 col-sm-7">
-              <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="เต็มจำนวน">
-            </div>
-          </div>
-          <div class="form-group row">
-            <div class="col-12 col-sm-3" id="icon-qr-payment-{{i}}" *ngFor="let qrCode of paymentDetail?.qrCodes; let i = index" (click)="onSelectQRCode(qrCode)">
-              <div class="qr-lazy-load-image" [ngClass]="{'active': qrCode?.id === selectPaymentDetail.qrCode?.id}">
-                <mc-lazy-load-image [src]="qrCode?.imageUrl"></mc-lazy-load-image>
+        <div class="card-body">
+          <form [formGroup]="paymentForm">
+            <div class="form-group row">
+              <div class="col-12 col-sm-5">
+                <input class="form-check-input" type="radio" id="payment-qrcode" value="qrcode" formControlName="paymentType">
+                <label class="form-check-label" id="label-box-qr-code" for="payment-qrcode">
+                  ชำระเงิน QR Code
+                </label>
+              </div>
+              <div class="col-12 col-sm-7">
+                <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="เต็มจำนวน">
               </div>
             </div>
-          </div>
-          <hr>
-          <div class="form-group row">
-            <div class="col-12 col-sm-5">
-              <input class="form-check-input" type="radio" id="payment-credit" value="credit" formControlName="paymentType">
-              <label class="form-check-label" id="label-box-credit-card" for="payment-credit">
-                ชำระเงินด้วยบัตรเครดิต
-              </label>
+            <div class="form-group row">
+              <div class="col-12 col-sm-3" id="icon-qr-payment-{{i}}" *ngFor="let qrCode of paymentDetail?.qrCodes; let i = index" (click)="onSelectQRCode(qrCode)">
+                <div class="qr-lazy-load-image" [ngClass]="{'active': qrCode?.id === selectPaymentDetail.qrCode?.id}">
+                  <mc-lazy-load-image [src]="qrCode?.imageUrl"></mc-lazy-load-image>
+                </div>
+              </div>
             </div>
-            <div class="col-12 col-sm-7">
-              <select id="inputState" class="form-control" disabled>
-                <option>เต็มจำนวน</option>
-                <option>ผ่อนชำระ</option>
-              </select>
+            <hr>
+            <div class="form-group row">
+              <div class="col-12 col-sm-5">
+                <input class="form-check-input" type="radio" id="payment-credit" value="credit" formControlName="paymentType">
+                <label class="form-check-label" id="label-box-credit-card" for="payment-credit">
+                  ชำระเงินด้วยบัตรเครดิต
+                </label>
+              </div>
+              <div class="col-12 col-sm-7">
+                <select id="inputState" class="form-control" disabled>
+                  <option>เต็มจำนวน</option>
+                  <option>ผ่อนชำระ</option>
+                </select>
+              </div>
             </div>
-          </div>
-          <div class="form-group row">
+            <div class="form-group row">
 
-            <div class="col-4 col-sm-2 mb-3" id="icon-bank-payment-{{i}}" *ngFor="let bank of paymentDetail?.banks; let i = index" (click)="onSelectBank(bank)">
-              <div class="bank-lazy-load-image" [ngClass]="{'active': bank?.abb === selectPaymentDetail.bank?.abb}">
-                <mc-lazy-load-image [src]="bank?.imageUrl"></mc-lazy-load-image>
+              <div class="col-4 col-sm-2 mb-3" id="icon-bank-payment-{{i}}" *ngFor="let bank of paymentDetail?.banks; let i = index" (click)="onSelectBank(bank)">
+                <div class="bank-lazy-load-image" [ngClass]="{'active': bank?.abb === selectPaymentDetail.bank?.abb}">
+                  <mc-lazy-load-image [src]="bank?.imageUrl"></mc-lazy-load-image>
+                </div>
+              </div>
+              <div class="col-12 text-left mb-3" *ngIf="!selectPaymentDetail.bank">
+                <span class="text-pink">*กรุณาเลือกธนาคาร</span>
+              </div>
+              <div class="row">
+                <div *ngIf="paymentDetail?.specialAmountPercent">
+                  โปรโมชั่นพิเศษลดเพิ่ม 6 %
+                </div>
+                <div *ngIf="paymentDetail?.specialAmountBaht">
+                  โปรโมชั่นพิเศษลดเพิ่ม 100 บาท
+                </div>
               </div>
             </div>
-            <div class="col-12 text-left mb-3" *ngIf="!selectPaymentDetail.bank">
-              <span class="text-pink">*กรุณาเลือกธนาคาร</span>
-            </div>
-            <div class="row">
-              <div *ngIf="paymentDetail?.specialAmountPercent">
-                โปรโมชั่นพิเศษลดเพิ่ม 6 %
+            <div class="form-group row">
+              <div class="col-12 text-center mb-3">
+                <span class="text-pink"> *กรุณาเลือกรูปแบบการชำระเงิน</span>
               </div>
-              <div *ngIf="paymentDetail?.specialAmountBaht">
-                โปรโมชั่นพิเศษลดเพิ่ม 100 บาท
+              <div class="col-12 col-sm-4">
+                <input class="form-check-input" type="radio" name="installment" id="installment-month" value="installment">
+                <label class="form-check-label" id="label-box-installment" for="installment-month">
+                  6% 10 เดือน
+                </label>
               </div>
             </div>
-          </div>
-          <div class="form-group row">
-            <div class="col-12 text-center mb-3">
-              <span class="text-pink"> *กรุณาเลือกรูปแบบการชำระเงิน</span>
+            <hr>
+            <div class="form-group row">
+              <div class="col-12 col-sm-5">
+                <input class="form-check-input" type="radio" id="payment-debit}" value="debit" formControlName="paymentType">
+                <label class="form-check-label" id="label-cash-payment" for="payment-debit">
+                  ชำระที่เคาน์เตอร์
+                </label>
+              </div>
+              <div class="col-12 col-sm-7">
+                <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{ 'เต็มจำนวน' | translate }}">
+              </div>
             </div>
-            <div class="col-12 col-sm-4">
-              <input class="form-check-input" type="radio" name="installment" id="installment-month" value="installment">
-              <label class="form-check-label" id="label-box-installment" for="installment-month">
-                6% 10 เดือน
-              </label>
-            </div>
-          </div>
-          <hr>
-          <div class="form-group row">
-            <div class="col-12 col-sm-5">
-              <input class="form-check-input" type="radio" id="payment-debit}" value="debit" formControlName="paymentType">
-              <label class="form-check-label" id="label-cash-payment" for="payment-debit">
-                ชำระที่เคาน์เตอร์
-              </label>
-            </div>
-            <div class="col-12 col-sm-7">
-              <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{ 'เต็มจำนวน' | translate }}">
-            </div>
-          </div>
-        </form>
+          </form>
+        </div>
       </div>
+      <app-receipt-information (completed)="onComplete($event)" (error)="onError($event)"></app-receipt-information>
     </div>
-    <app-receipt-information (completed)="onComplete($event)" (error)="onError($event)"></app-receipt-information>
   </div>
-</div>
 
   <mc-footer>
     <button class="btn btn-secondary" id="button-back" (click)="onBack()">BACK</button>
