@@ -91,7 +91,7 @@ export class OrderNewRegisterPassportInfoPageComponent implements OnInit, OnDest
 
 
   checkLogicNext(): boolean {
-    if (this.isOpenSign || this.transaction.data.customer.imageSignatureSmartCard) {
+    if (this.transaction.data.customer.imageSignatureSmartCard) {
       return true;
     } else {
       return false;
