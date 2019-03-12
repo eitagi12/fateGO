@@ -1,5 +1,6 @@
 import { ChargeType, PaymentDetailBank, PaymentDetailQRCode, } from 'mychannel-shared-libs';
 import { ReceiptInfo } from 'mychannel-shared-libs/lib/component/receipt-info/receipt-info.component';
+import { DeviceOrderAisNewRegisterConfirmUserInformationPageComponent } from 'src/app/device-order/ais/device-order-ais-new-register/containers/device-order-ais-new-register-confirm-user-information-page/device-order-ais-new-register-confirm-user-information-page.component';
 
 export enum TransactionType {
   DEVICE_ORDER_NEW_REGISTER_AIS = 'NewRegisterAIS',
@@ -57,6 +58,7 @@ export interface TransactionData {
   queue?: Queue;
   preBooking?: Prebooking;
   status?: Status;
+  discount?: Discount;
 }
 
 export interface ProductStock {
@@ -281,10 +283,14 @@ export interface HandSetMobileCare {
 export interface Prebooking {
   preBookingNo: string;
   depositAmt: string;
-  reserveNo: string;
+  reserveNo?: string;
+  deliveryDt: string;
 }
 
 export interface Status {
   code: string;
   description: string;
+}
+export interface Discount {
+  type: string;
 }

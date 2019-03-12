@@ -19,7 +19,7 @@ export class DeviceOrderAisExistingBestBuyCustomerProfilePageComponent implement
   titleName: string;
   firstName: string;
   lastName: string;
-  customerInfoError: any;
+  customerInfoError: boolean;
 
   constructor(
     private transactionService: TransactionService,
@@ -32,6 +32,7 @@ export class DeviceOrderAisExistingBestBuyCustomerProfilePageComponent implement
 
   ngOnInit() {
     const data = this.transaction.data.customer;
+    this.customerInfoError = data && data.caNumber && data.firstName ? false : true;
     this.titleName = data.titleName;
     this.firstName = data.firstName;
     this.lastName = data.lastName;

@@ -34,12 +34,14 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
     private homeService: HomeService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
+    private priceOptionService: PriceOptionService,
     private http: HttpClient,
     private utils: Utils,
     private alertService: AlertService,
     private createDeviceOrderBestBuyService: CreateDeviceOrderBestBuyService
   ) {
     this.transaction = this.transactionService.load();
+    this.priceOption = this.priceOptionService.load();
   }
 
   ngOnInit() {
@@ -69,6 +71,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
   onNext() {
     this.pageLoadingService.openLoading();
     const mobileNo = this.transaction.data.simCard.mobileNo;
+    this.transaction.data.action = TransactionAction.KEY_IN_REPI;
     this.http.get(`/api/customerportal/newRegister/verifyPrepaidIdent?idCard=${this.identity}&mobileNo=${mobileNo}`)
       .toPromise()
       .then((respPrepaidIdent: any) => {
@@ -122,11 +125,14 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
                 tumbol: customer.tumbol || '',
                 zipCode: customer.zipCode || '',
               };
-              this.transaction.data.customer = customer;
+              this.transaction.data.customer = { ...this.transaction.data.customer, ...customer };
               this.transaction.data.billingInformation = {};
               this.transaction.data.billingInformation.billDeliveryAddress = this.billDeliveryAddress;
-              this.transaction.data.action = TransactionAction.KEY_IN;
-              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
+              this.createDeviceOrderBestBuyService.createAddToCartTrasaction(this.transaction, this.priceOption).then((transaction) => {
+                this.transaction = transaction;
+                this.pageLoadingService.closeLoading();
+                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
+              });
             })
             .catch((e) => {
               if (!/Data Not Found./.test(e.error.resultDescription)) {
@@ -160,8 +166,97 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
         } else {
           // REPI
           this.pageLoadingService.closeLoading();
-          this.transaction.data.action = TransactionAction.KEY_IN_REPI;
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
+          const simCard = this.transaction.data.simCard;
+          if (simCard.chargeType === 'Pre-paid') {
+            this.http.get(`/api/customerportal/newRegister/${this.identity}/queryCustomerInfo`)
+            .toPromise()
+            .then((resp: any) => {
+              const data = resp.data || {};
+              const fullName = (data.name || ' ').split(' ');
+              const address = data.address || {};
+              const customer: Customer = {
+                idCardNo: this.identity || '',
+                idCardType: data.idCardType || '',
+                titleName: data.accntTitle || '',
+                firstName: fullName[0] || '',
+                lastName: fullName[1] || '',
+                birthdate: data.birthdate || '',
+                homeNo: address.houseNo || '',
+                moo: address.moo || '',
+                mooBan: address.mooban || '',
+                buildingName: address.buildingName || '',
+                floor: address.floor || '',
+                room: address.room || '',
+                street: address.streetName || '',
+                soi: address.soi || '',
+                tumbol: address.tumbol || '',
+                amphur: address.amphur || '',
+                province: address.provinceName || '',
+                zipCode: address.zipCode || '',
+                mainMobile: data.mainMobile || '',
+                mainPhone: data.mainPhone || '',
+                billCycle: data.billCycle || '',
+                caNumber: data.accntNo || '',
+                gender: data.gender || '',
+                expireDate: ''
+              };
+              return Promise.resolve(customer);
+            })
+            .then((customer) => {
+              this.billDeliveryAddress = {
+                homeNo: customer.homeNo || '',
+                moo: customer.moo || '',
+                mooBan: customer.mooBan || '',
+                room: customer.room || '',
+                floor: customer.floor || '',
+                buildingName: customer.buildingName || '',
+                soi: customer.soi || '',
+                street: customer.street || '',
+                province: customer.province || '',
+                amphur: customer.amphur || '',
+                tumbol: customer.tumbol || '',
+                zipCode: customer.zipCode || '',
+              };
+              this.transaction.data.customer = { ...this.transaction.data.customer, ...customer };
+              this.transaction.data.billingInformation = {};
+              this.transaction.data.billingInformation.billDeliveryAddress = this.billDeliveryAddress;
+              this.createDeviceOrderBestBuyService.createAddToCartTrasaction(this.transaction, this.priceOption).then((transaction) => {
+                this.transaction = transaction;
+                this.pageLoadingService.closeLoading();
+                this.transaction.data.action = TransactionAction.KEY_IN_REPI;
+                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
+              });
+            })
+            .catch((e) => {
+              if (!/Data Not Found./.test(e.error.resultDescription)) {
+                this.alertService.error(e.error.resultDescription);
+                return;
+              }
+              this.http.get(`/api/customerportal/customerprofile/${mobileNo}`).toPromise()
+              .then((customer: any) => {
+                const profile = customer.data;
+                const names = profile.name.split(' ');
+                this.transaction.data.customer = {
+                  idCardNo: this.identity || '',
+                  idCardType: 'ID_CARD',
+                  titleName: profile.title,
+                  firstName: names[0],
+                  lastName: names[1],
+                  birthdate: profile.birthdate,
+                  gender: '',
+                  caNumber: null
+                };
+                this.createDeviceOrderBestBuyService.createAddToCartTrasaction(this.transaction, this.priceOption).then((transaction) => {
+                  this.transaction = transaction;
+                  this.pageLoadingService.closeLoading();
+                  this.transaction.data.action = TransactionAction.KEY_IN_REPI;
+                  this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
+                });
+              });
+            })
+          } else {
+            this.alertService.error('ไม่สามารถทำรายการได้ เบอร์รายเดือน ข้อมูลการแสดงตนไม่ถูกต้อง');
+          }
         }
       });
 

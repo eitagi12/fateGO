@@ -17,6 +17,9 @@ import { DeviceOrderAisExistingBestBuyQrCodePaymentGeneratorPageComponent } from
 import { DeviceOrderAisExistingBestBuyQrCodeSummaryPageComponent } from './containers/device-order-ais-existing-best-buy-qr-code-summary-page/device-order-ais-existing-best-buy-qr-code-summary-page.component';
 import { DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent } from './containers/device-order-ais-existing-best-buy-validate-customer-repi-page/device-order-ais-existing-best-buy-validate-customer-repi-page.component';
 import { DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponent } from './containers/device-order-ais-existing-best-buy-validate-customer-id-card-repi-page/device-order-ais-existing-best-buy-validate-customer-id-card-repi-page.component';
+import { DeviceOrderAisExistingBestBuyCustomerProfilePageComponent } from './containers/device-order-ais-existing-best-buy-customer-profile-page/device-order-ais-existing-best-buy-customer-profile-page.component';
+import { DeviceOrderAisExistingBestBuyOtpPageComponent } from './containers/device-order-ais-existing-best-buy-otp-page/device-order-ais-existing-best-buy-otp-page.component';
+import { DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent } from './containers/device-order-ais-existing-best-buy-idcard-capture-repi-page/device-order-ais-existing-best-buy-idcard-capture-repi-page.component';
 
 const routes: Routes = [
   // { path: '', redirectTo: 'validate-customer', pathMatch: 'full' },
@@ -25,6 +28,9 @@ const routes: Routes = [
   { path: 'validate-customer-repi', component: DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent},
   { path: 'validate-customer-id-card-repi', component: DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponent},
   { path: 'customer-info', component: DeviceOrderAisExistingBestBuyCustomerInfoPageComponent },
+  { path: 'customer-profile', component: DeviceOrderAisExistingBestBuyCustomerProfilePageComponent },
+  { path: 'otp', component: DeviceOrderAisExistingBestBuyOtpPageComponent },
+  { path: 'id-card-capture-repi', component: DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent },
   { path: 'mobile-detail', component: DeviceOrderAisExistingBestBuyMobileDetailPageComponent },
   { path: 'eligible-mobile', component: DeviceOrderAisExistingBestBuyEligibleMobilePageComponent },
   { path: 'payment-detail', component: DeviceOrderAisExistingBestBuyPaymentDetailPageComponent },

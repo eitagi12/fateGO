@@ -50,10 +50,11 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
   selectBankAdvancePay: PaymentDetailBank;
 
   paymentForm: FormGroup;
-  advancePaymentForm: FormGroup;
+  discountForm: FormGroup;
 
   formID: string;
   showQRCode: boolean;
+  depositOrDiscount: boolean;
 
   constructor(
     private router: Router,
@@ -74,6 +75,14 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
   ngOnInit() {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.formID = this.getRandomNum(10);
+    this.depositOrDiscount = this.transaction.data.preBooking
+                && this.transaction.data.preBooking.depositAmt
+                && this.transaction.data.preBooking.preBookingNo ? true : false;
+    // this.transaction.data.preBooking = {
+    //   depositAmt: '2000',
+    //   preBookingNo: 'BP201903040000001',
+    //   deliveryDt: '25/02/2019 08:00'
+    // };
     const productDetail = this.priceOption.productDetail;
     const productInfo = this.priceOption.productStock;
     if (this.priceOption.trade.payments.length > 0) {
@@ -410,6 +419,18 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
   }
 
   createForm() {
+    this.discountForm = this.fb.group({
+      discountType: [null, Validators.required]
+    });
+
+    if (this.transaction.data.preBooking && this.transaction.data.preBooking.depositAmt) {
+      this.discountForm.controls['discountType'].setValue('preBooking');
+    }
+
+    this.discountForm.valueChanges.subscribe(observer => {
+      this.transaction.data.discount = { type: observer.paymentType };
+    });
+
     this.paymentForm = this.fb.group({
       paymentType: [null, Validators.required]
     });

@@ -76,11 +76,20 @@ export class DeviceOrderAisExistingBestBuyOtpPageComponent implements OnInit {
     }
     this.http.post(`/api/customerportal/newRegister/${mobile}/verifyOTP`, { pwd: otp, transactionID: this.transactionID }).toPromise()
       .then((resp: any) => {
-        this.autoPI();
+        this.navigateNext();
       }).catch((error) => {
         this.pageLoadingService.closeLoading();
         this.alertService.error('รหัส OTP ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง');
       });
+  }
+
+  navigateNext(): void {
+    if (this.transaction.data.action === TransactionAction.READ_CARD_REPI) {
+      this.autoPI();
+    } else {
+      this.pageLoadingService.closeLoading();
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CAPTURE_REPI_PAGE]);
+    }
   }
 
   autoPI(): void {
@@ -89,6 +98,7 @@ export class DeviceOrderAisExistingBestBuyOtpPageComponent implements OnInit {
       .then((response: any) => {
         this.pageLoadingService.closeLoading();
         if (response && response.data && response.data.success) {
+          this.transaction.data.action = TransactionAction.READ_CARD;
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE]);
         } else {
           this.alertService.error('ระบบไม่สามารถแสดงตนได้กรุณาติดต่อเจ้าหน้าที่');

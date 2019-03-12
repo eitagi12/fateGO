@@ -3,8 +3,8 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 import { ApiRequestService, PageLoadingService, HomeService, CustomerInfo, ShoppingCart } from 'mychannel-shared-libs';
-import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
-import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
+import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_REPI_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
+import { Transaction, Customer, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { ShoppingCartService } from 'src/app/device-order/service/shopping-cart.service';
@@ -53,11 +53,21 @@ export class DeviceOrderAisExistingBestBuyCustomerInfoPageComponent implements O
   }
 
   onBack() {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_PAGE]);
+    const action = this.transaction.data.action;
+    if (action === TransactionAction.KEY_IN || action === TransactionAction.READ_CARD) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_REPI_PAGE]);
+    }
   }
 
   onNext() {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE]);
+    const action = this.transaction.data.action;
+    if (action === TransactionAction.KEY_IN || action === TransactionAction.READ_CARD) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE]);
+    }
   }
 
   ngOnDestroy(): void {
