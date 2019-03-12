@@ -7,7 +7,6 @@ import { CreateNewRegisterService } from 'src/app/shared/services/create-new-reg
 import { HomeService, PageLoadingService } from 'mychannel-shared-libs';
 import {
   ROUTE_ORDER_MNP_AGREEMENT_SIGN_PAGE,
-  ROUTE_ORDER_MNP_RESULT_PAGE,
   ROUTE_ORDER_MNP_PERSO_SIM_PAGE } from '../../constants/route-path.constant';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';

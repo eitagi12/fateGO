@@ -19,7 +19,7 @@
             <div class="container text-center text-black mb-5 mt-1" translate>ซิมใช้งานได้เมื่อได้รับ SMS ยืนยัน</div>
             <div class="message-result text-center mb-5 text-black">
               <span translate>ระบบจัดส่ง SMS แจ้ง "รายละเอียดการทำรายการข้อตกลงและเงื่อนไขบริการโทรศัพท์เคลื่อนที่" ไปที่</span>
-              <br> เบอร์ {{ transaction?.data?.simCard?.mobileNo | mobileNo }}
+              <br> <span translate>เบอร์</span> {{ transaction?.data?.simCard?.mobileNo | mobileNo }}
             </div>
           </div>
         </mc-result>

@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_ORDER_MNP } from 'src/app/order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { HomeService, Ebilling } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -20,7 +19,6 @@ export class OrderMnpEbillingPageComponent implements OnInit, OnDestroy {
   wizards = WIZARD_ORDER_MNP;
 
   transaction: Transaction;
-
   billCycleValid: boolean;
   billCycle: any;
   billCycles: Ebilling[];
@@ -32,14 +30,12 @@ export class OrderMnpEbillingPageComponent implements OnInit, OnDestroy {
     private transactionService: TransactionService,
   ) {
     this.transaction = this.transactionService.load();
-
     if (!this.transaction.data.billingInformation) {
       this.transaction.data.billingInformation = {};
     }
   }
 
   ngOnInit() {
-
     this.http.get('/api/customerportal/newRegister/queryBillCycle', {
       params: {
         coProject: 'N'

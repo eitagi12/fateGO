@@ -9,7 +9,6 @@ import {
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { Subscription } from 'rxjs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { CreateNewRegisterService } from 'src/app/shared/services/create-new-register.service';
 import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-order-mnp-agreement-sign-page',
@@ -33,7 +32,6 @@ export class OrderMnpAgreementSignPageComponent implements OnInit, OnDestroy {
     private transactionService: TransactionService,
     private aisNativeService: AisNativeService,
     private tokenService: TokenService,
-    private createNewRegisterService: CreateNewRegisterService,
     private alertService: AlertService,
     private translationService: TranslateService
   ) {
@@ -57,18 +55,6 @@ export class OrderMnpAgreementSignPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  onBack() {
-    this.router.navigate([ROUTE_ORDER_MNP_SUMMARY_PAGE]);
-  }
-
-  onNext() {
-    this.router.navigate([ROUTE_ORDER_MNP_EAPPLICATION_PAGE]);
-  }
-
-  onHome() {
-    this.homeService.goToHome();
-  }
-
   onSigned() {
     const user: User = this.tokenService.getUser();
     this.transaction.data.customer.imageSignature = '';
@@ -81,6 +67,18 @@ export class OrderMnpAgreementSignPageComponent implements OnInit, OnDestroy {
 
   getOnMessageWs() {
     this.commandSigned.ws.send('CaptureImage');
+  }
+
+  onBack() {
+    this.router.navigate([ROUTE_ORDER_MNP_SUMMARY_PAGE]);
+  }
+
+  onNext() {
+    this.router.navigate([ROUTE_ORDER_MNP_EAPPLICATION_PAGE]);
+  }
+
+  onHome() {
+    this.homeService.goToHome();
   }
 
   ngOnDestroy(): void {
