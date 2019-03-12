@@ -5,9 +5,9 @@
       <label class="col-9 m-auto" > Read Smart Card </label>
     </div>
   </div>
-  <div class="device-only-read-card-progress" id="progress-bar-read-smart-card">
+  <div class="device-only-read-card-progress" #progressBarArea>
     <div class="progress-bg">
-      <div class="progress-precent" #progressBarReadSmartCard></div>
+      <div class="progress-precent" id="progress-bar-read-smart-card" #progressBarReadSmartCard></div>
     </div>
   </div>
 </div>
@@ -28,7 +28,7 @@
         <input class="form-check-input" type="radio" value="ที่อยู่0"
           formControlName="billingAddress" id="modal-text-customer-id-card-address">
         <label class="form-check-label" class="col-11" for="modal-text-customer-id-card-address">
-          {{ 'ที่อยู่' }}
+          {{ 'ที่อยู่ xxx xxxxxxx xxxxxxxxx xxxxxxxx xxxxx' }}
         </label>
       </div>
       <br/>
@@ -36,27 +36,29 @@
       <div>
         <input class="form-check-input" type="radio" value="ที่อยู่1"
           formControlName="billingAddress" id="modal-text-billing-address-1">
-        <label class="form-check-label" class="col-9">{{ 'เบอร์' }}</label>
+        <label class="form-check-label" class="col-9">{{ '09X XXX XXXX' }}</label>
         <label class="form-check-label" class="col-2">{{ 'Active' }}</label>
         <label class="col-1"></label>
         <label class="form-check-label" class="col-11" for="modal-text-billing-address-1">
-          &nbsp;&nbsp;&nbsp;{{ 'ที่อยู่' }}
+          &nbsp;&nbsp;&nbsp;{{ 'ที่อยู่ xxx xxxxxxx xxxxxxxxx xxxxxxxx xxxxx' }}
         </label>
       </div>
       <div>
         <input class="form-check-input" type="radio" value="ที่อยู่2"
           formControlName="billingAddress" id="modal-text-billing-address-2">
-        <label class="form-check-label" class="col-9">{{ 'เบอร์' }}</label>
+        <label class="form-check-label" class="col-9">{{ '08X XXX XXXX' }}</label>
         <label class="form-check-label" class="col-2">{{ 'Active' }}</label>
         <label class="col-1"></label>
         <label class="form-check-label" class="col-11" for="modal-text-billing-address-2">
-          &nbsp;&nbsp;&nbsp;{{ 'ที่อยู่ ' }}
+          &nbsp;&nbsp;&nbsp;{{ 'ที่อยู่ xxx xxxxxxx xxxxxxxxx xxxxxxxx xxxxx' }}
         </label>
       </div>
     </form>
   </div>
   <div class="modal-body d-flex justify-content-center">
-    <button type="button" class="btn btn-secondary" (click)="closeModalSelectAddress()">CLOSE</button>
-    <button type="button" class="btn btn-success text-white" (click)="selectBillingAddress()">SELECT</button>
+    <button type="button" class="btn btn-secondary" id="modal-button-close"
+      (click)="closeModalSelectAddress()">CLOSE</button>
+    <button type="button" class="btn btn-success text-white" id="modal-button-select"
+      (click)="selectBillingAddress()">SELECT</button>
   </div>
 </ng-template>

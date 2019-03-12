@@ -13,11 +13,11 @@ export class DeviceOnlyReadCardComponent implements OnInit {
   public selectBillingAddressForm: FormGroup;
 
   @ViewChild('select_billing_address')
-  template: TemplateRef<any>;
+  selectBillingAddressTemplate: TemplateRef<any>;
   modalBillAddress: BsModalRef;
 
-  @ViewChild('progressBarReadSmartCard')
-  progressBarReadSmartCard: ElementRef;
+  @ViewChild('progressBarArea') progressBarArea: ElementRef;
+  @ViewChild('progressBarReadSmartCard') progressBarReadSmartCard: ElementRef;
 
   constructor(
     private bsModalService: BsModalService,
@@ -26,7 +26,7 @@ export class DeviceOnlyReadCardComponent implements OnInit {
 
   ngOnInit(): void {
     this.createSelectBillingAddressForm();
-    console.log(this.progressBarReadSmartCard.nativeElement);
+    this.progressBarArea.nativeElement.style.display = 'none';
   }
 
   public createSelectBillingAddressForm(): void {
@@ -36,7 +36,17 @@ export class DeviceOnlyReadCardComponent implements OnInit {
   }
 
   public readCard(): void {
-    this.modalBillAddress = this.bsModalService.show(this.template);
+    let width = 1;
+    this.progressBarArea.nativeElement.style.display = 'block';
+    const id = setInterval(() => {
+      if (width >= 100) {
+        clearInterval(id);
+        this.modalBillAddress = this.bsModalService.show(this.selectBillingAddressTemplate);
+      } else {
+        width += 2;
+        this.progressBarReadSmartCard.nativeElement.style.width = width + '%';
+      }
+    }, 25);
   }
 
   public closeModalSelectAddress(): void {
