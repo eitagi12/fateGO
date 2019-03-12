@@ -472,6 +472,10 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
       eventName: null
     };
 
+    const defaultIfEmptyF = function defaultIfEmpty(text: string): string {
+      return (text || '').trim();
+    };
+
     const mapData = function mapDataFromAisWebConnect(data: any): any {
       return {
         idCardType: 'หนังสือเดินทาง',
@@ -487,9 +491,7 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
       };
     };
 
-    const defaultIfEmptyF = function defaultIfEmpty(text: string): string {
-      return (text || '').trim();
-    };
+
 
     const convertStringToDateF = function convertStringToDate(dateStr: string): string {
       return Moment(dateStr, 'YYMMDD').add(543, 'years').format('DD/MM/YYYY');

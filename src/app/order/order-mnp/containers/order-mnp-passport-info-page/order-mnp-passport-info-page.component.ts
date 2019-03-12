@@ -104,7 +104,7 @@ export class OrderMnpPassportInfoPageComponent implements OnInit, OnDestroy, OnC
 
   onNext() {
     if (this.transaction.data.customer.imageSignatureSmartCard && !this.isOpenSign) {
-      this.router.navigate([ROUTE_ORDER_MNP_SELECT_PACKAGE_PAGE]);
+      this.router.navigate([ROUTE_ORDER_MNP_CUSTOMER_INFO_PAGE]);
     } else {
       this.getOnMessageWs();
     }
