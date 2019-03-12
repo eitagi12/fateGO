@@ -180,7 +180,7 @@ export interface BillingInformation {
   // change value billing
   billCycleData?: BillingAccountData;
   // send bill devilery address
-  billDeliveryAddress?: BillDeliveryAddress;
+  billDeliveryAddress?: Customer;
 }
 
 export interface BillCycle {
