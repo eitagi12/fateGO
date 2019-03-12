@@ -64,7 +64,7 @@ export interface AirTime {
 
 export interface Customer {
   idCardNo: string;
-  idCardType: string;
+  idCardType: 'บัตรประชาชน' | 'บัตรประจำตัวคนต่างด้าว' | 'หนังสือเดินทาง';
   titleName: string;
   firstName: string;
   lastName: string;
