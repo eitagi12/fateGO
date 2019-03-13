@@ -16,7 +16,7 @@ describe('DeviceOnlyAisSelectMobileCarePageComponent', () => {
       imports: [ RouterTestingModule ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
       declarations: [ DeviceOnlyAisSelectMobileCarePageComponent ],
-      providers: [ 
+      providers: [
         CookiesStorageService,
         {
           provide: JwtHelperService,
@@ -24,9 +24,8 @@ describe('DeviceOnlyAisSelectMobileCarePageComponent', () => {
         },
         HttpClient,
         HttpHandler
-       ]
-    })
-    .compileComponents();
+      ]
+    }).compileComponents();
   }));
 
   beforeEach(() => {
