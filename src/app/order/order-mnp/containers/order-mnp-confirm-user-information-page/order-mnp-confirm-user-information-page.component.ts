@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy, TemplateRef } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_ORDER_MNP } from 'src/app/order/constants/wizard.constant';
-import { Transaction, MainPackage } from 'src/app/shared/models/transaction.model';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 import { ConfirmCustomerInfo, HomeService, Utils, BillingInfo, MailBillingInfo, TelNoBillingInfo, BillingSystemType, AlertService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -22,7 +22,6 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./order-mnp-confirm-user-information-page.component.scss']
 })
 export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDestroy {
-
   wizards = WIZARD_ORDER_MNP;
 
   transaction: Transaction;
@@ -268,7 +267,7 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
 
   ngOnDestroy(): void {
     this.translationSubscribe.unsubscribe();
-    this.transactionService.update(this.transaction);
+    this.transactionService.save(this.transaction);
   }
 
   getBillChannel(): any {

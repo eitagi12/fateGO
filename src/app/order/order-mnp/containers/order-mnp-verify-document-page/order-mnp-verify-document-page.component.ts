@@ -469,7 +469,6 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
   }
 
   convertStringToDate(dateStr: string): any {
-    alert('lll');
     return Moment(dateStr, 'YYMMDD').add(543, 'years').format('DD/MM/YYYY');
   }
 
