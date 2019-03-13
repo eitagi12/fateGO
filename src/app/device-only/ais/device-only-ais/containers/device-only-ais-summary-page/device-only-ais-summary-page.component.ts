@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE, ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_PAGE } from 'src/app/device-only/ais/device-only-ais/constants/route-path.constant';
 import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
+import { HomeService } from 'mychannel-shared-libs';
 
 @Component({
   selector: 'app-device-only-ais-summary-page',
@@ -13,7 +14,8 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit {
   wizards: string[] = WIZARD_DEVICE_ONLY_AIS;
 
   constructor(
-    private router: Router
+    private router: Router,
+    private homeService: HomeService
   ) { }
 
   ngOnInit(): void {
@@ -28,7 +30,7 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit {
   }
 
   onHome(): void {
-    // do something
+    this.homeService.goToHome();
   }
 
 }
