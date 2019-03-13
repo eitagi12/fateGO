@@ -1,7 +1,7 @@
 import { Component, OnInit, OnChanges, SimpleChanges, OnDestroy } from '@angular/core';
 import { WIZARD_ORDER_MNP } from 'src/app/order/constants/wizard.constant';
 import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
-import { CaptureAndSign, HomeService, TokenService, ChannelType, AlertService, Utils, User } from 'mychannel-shared-libs';
+import { CaptureAndSign, HomeService, TokenService, ChannelType, AlertService, Utils, User, AWS_WATERMARK } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ROUTE_ORDER_MNP_VERIFY_DOCUMENT_PAGE, ROUTE_ORDER_MNP_CUSTOMER_INFO_PAGE, ROUTE_ORDER_MNP_SELECT_PACKAGE_PAGE } from '../../constants/route-path.constant';
@@ -31,6 +31,8 @@ export class OrderMnpPassportInfoPageComponent implements OnInit, OnDestroy, OnC
   signedSubscription: Subscription;
   openSignedCommand: any;
   commandSignSubscription: Subscription;
+
+  watermark: string = AWS_WATERMARK;
 
   idCardValid: boolean;
   constructor(
