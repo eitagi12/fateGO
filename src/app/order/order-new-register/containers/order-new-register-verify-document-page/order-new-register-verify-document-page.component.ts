@@ -488,22 +488,30 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
       eventName: null
     };
 
-    const mapData = function mapDataFromAisWebConnect(data: any): any {
+    const defaultIfEmpty = (text: string): string => {
+      return (text || '').trim();
+    };
+
+    const convertStringToDate = (dateStr: string): string => {
+      return  Moment(dateStr, 'YYMMDD').add(543 , 'years').format('DD/MM/YYYY');
+    };
+
+    const mapDataFromAisWebConnect = (data: any): any => {
       return {
         idCardType: 'หนังสือเดินทาง',
-        expireDate: this.convertStringToDate(data.ExpireDate),
-        issuingCountry: this.defaultIfEmpty(data.IssuingCountry),
-        firstName: this.defaultIfEmpty(data.GivenName),
-        lastName: this.defaultIfEmpty(data.Surname),
-        nationality: this.defaultIfEmpty(data.Nationality),
-        birthdate: this.convertStringToDate(data.BirthDate),
-        gender: this.defaultIfEmpty(data.Sex) === '1' ? 'M' : 'F',
-        idCardNo: this.defaultIfEmpty(data.PassportNumber),
+        expireDate: convertStringToDate(data.ExpireDate),
+        issuingCountry: defaultIfEmpty(data.IssuingCountry),
+        firstName: defaultIfEmpty(data.GivenName),
+        lastName: defaultIfEmpty(data.Surname),
+        nationality: defaultIfEmpty(data.Nationality),
+        birthdate: convertStringToDate(data.BirthDate),
+        gender: defaultIfEmpty(data.Sex) === '1' ? 'M' : 'F',
+        idCardNo: defaultIfEmpty(data.PassportNumber),
         imageReadPassport: (data.imageReadPassport || '').replace(REGEX_DATA_IMAGE, ''),
       };
     };
 
-    readPassport.profile = mapData(mock);
+    readPassport.profile = mapDataFromAisWebConnect(mock);
 
     this.http.get('/api/customerportal/validate-customer-new-register', {
       params: {
@@ -574,13 +582,6 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
         }
       });
   }
-
-  defaultIfEmpty(text: string): string {
-    return (text || '').trim();
-  }
-
-  convertStringToDate(dateStr: string): string {
-    return  Moment(dateStr, 'YYMMDD').add(543 , 'years').format('DD/MM/YYYY');
-  }
+  // mockFunc
 
 }

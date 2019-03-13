@@ -463,15 +463,6 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
     this.readPassportSubscription.unsubscribe();
   }
 
-
-  defaultIfEmpty(text: string): any {
-    return (text || '').trim();
-  }
-
-  convertStringToDate(dateStr: string): any {
-    return Moment(dateStr, 'YYMMDD').add(543, 'years').format('DD/MM/YYYY');
-  }
-
   // mockFunc
   onClickMock(mock): void {
     const readPassport: ReadPassport = {
@@ -480,17 +471,25 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
       eventName: null
     };
 
+    const defaultIfEmpty = (text: string): any => {
+      return (text || '').trim();
+    };
+
+    const convertStringToDate = (dateStr: string): any => {
+      return Moment(dateStr, 'YYMMDD').add(543, 'years').format('DD/MM/YYYY');
+    };
+
     const mapData = (data: any) => {
       return {
         idCardType: 'หนังสือเดินทาง',
-        expireDate: this.convertStringToDate(data.ExpireDate),
-        issuingCountry: this.defaultIfEmpty(data.IssuingCountry),
-        firstName: this.defaultIfEmpty(data.GivenName),
-        lastName: this.defaultIfEmpty(data.Surname),
-        nationality: this.defaultIfEmpty(data.Nationality),
-        birthdate: this.convertStringToDate(data.BirthDate),
-        gender: this.defaultIfEmpty(data.Sex) === '1' ? 'M' : 'F',
-        idCardNo: this.defaultIfEmpty(data.PassportNumber),
+        expireDate: convertStringToDate(data.ExpireDate),
+        issuingCountry: defaultIfEmpty(data.IssuingCountry),
+        firstName: defaultIfEmpty(data.GivenName),
+        lastName: defaultIfEmpty(data.Surname),
+        nationality: defaultIfEmpty(data.Nationality),
+        birthdate: convertStringToDate(data.BirthDate),
+        gender: defaultIfEmpty(data.Sex) === '1' ? 'M' : 'F',
+        idCardNo: defaultIfEmpty(data.PassportNumber),
         imageReadPassport: (data.imageReadPassport || '').replace(REGEX_DATA_IMAGE, ''),
       };
     };
@@ -566,6 +565,6 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
         }
       });
   }
-
+  // mockFunc
 
 }
