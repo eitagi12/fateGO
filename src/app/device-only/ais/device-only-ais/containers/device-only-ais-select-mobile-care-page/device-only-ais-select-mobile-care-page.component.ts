@@ -9,7 +9,7 @@ import { HomeService } from 'mychannel-shared-libs';
   styleUrls: ['./device-only-ais-select-mobile-care-page.component.scss']
 })
 export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit {
-  public isVerify: boolean = true;
+  public isVerify: boolean = false;
 
   constructor(
     private router: Router,
