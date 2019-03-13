@@ -5,6 +5,7 @@ import { Router } from '../../../../../../../node_modules/@angular/router';
 import { ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE } from '../../constants/route-path.constant';
 import { HomeService } from '../../../../../../../node_modules/mychannel-shared-libs';
 import { TokenService } from 'mychannel-shared-libs';
+import { CookiesStorageService } from 'ngx-store';
 
 export interface SelectPaymentDetail {
   paymentType?: string; // 'qrcode' | 'credit' | 'debit';
@@ -62,13 +63,16 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
     private fb: FormBuilder,
     private router: Router,
     private homeService: HomeService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private cookie: CookiesStorageService
   ) { }
 
   ngOnInit(): void {
     this.createForm();
-    this.tokenHandler();
-
+    // tslint:disable-next-line:max-line-length
+    this.cookie.set('accessToken', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik1DIiwidGltZXN0YW1wIjoiMjAxODEwMDExNzM3IiwibG9jYXRpb25Db2RlIjoiMTEwMCIsImlhdCI6MTUzODM5MDI2OCwiZXhwIjoyNTQwOTgyMjY4fQ.tMYDOKJf8X3LFuqBD3-gO6HIHMzxQubd9RO0kvSWRXM');
+    // tslint:disable-next-line:max-line-length
+    this.cookie.set('refreshToken', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik1DIiwidGltZXN0YW1wIjoiMjAxODEwMDExNzM3IiwibG9jYXRpb25Db2RlIjoiMTEwMCIsImlhdCI6MTUzODM5MDI2OCwiZXhwIjoyNTQwOTgyMjY4fQ.tMYDOKJf8X3LFuqBD3-gO6HIHMzxQubd9RO0kvSWRXM');
     this.paymentDetail = {
       title: 'รูปแบบชำระเงิน',
       header: 'ค่าเครื่อง IPHONEX64 สี BLACK',
@@ -97,13 +101,6 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       isInstallment: true,
       isEnable: true
     };
-  }
-
-  tokenHandler(): void {
-    let devAccessToken = '';
-    // tslint:disable-next-line:max-line-length
-    devAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik1DIiwidGltZXN0YW1wIjoiMjAxODEwMDExNzM3IiwibG9jYXRpb25Db2RlIjoiMTEwMCIsImlhdCI6MTUzODM5MDI2OCwiZXhwIjoyNTQwOTgyMjY4fQ.tMYDOKJf8X3LFuqBD3-gO6HIHMzxQubd9RO0kvSWRXM';
-    this.tokenService.checkTokenExpired(devAccessToken);
   }
 
   onHome(): void {
