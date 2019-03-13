@@ -44,6 +44,7 @@ export class OrderNewRegisterAgreementSignPageComponent implements OnInit, OnDes
   ) {
     this.transaction = this.transactionService.load();
     this.signedSignatureSubscription = this.aisNativeOrderService.getSigned().subscribe((signature: string) => {
+      this.isOpenSign = false;
       if (signature) {
         this.isOpenSign = false;
         this.transaction.data.customer.imageSignature = signature;
