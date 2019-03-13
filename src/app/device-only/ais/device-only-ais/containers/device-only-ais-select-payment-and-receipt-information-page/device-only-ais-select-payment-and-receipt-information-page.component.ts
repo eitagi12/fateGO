@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '../../../../../../../node_modules/@angular/router';
 import { ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE } from '../../constants/route-path.constant';
 import { HomeService } from '../../../../../../../node_modules/mychannel-shared-libs';
+import { TokenService } from 'mychannel-shared-libs';
 
 export interface SelectPaymentDetail {
   paymentType?: string; // 'qrcode' | 'credit' | 'debit';
@@ -58,13 +59,15 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
   paymentDetailOption: PaymentDetailOption;
   isSuccess: boolean;
   constructor(
-   private fb: FormBuilder,
-   private router: Router,
-   private homeService: HomeService
+    private fb: FormBuilder,
+    private router: Router,
+    private homeService: HomeService,
+    private tokenService: TokenService
   ) { }
 
   ngOnInit(): void {
     this.createForm();
+    this.tokenHandler();
 
     this.paymentDetail = {
       title: 'รูปแบบชำระเงิน',
@@ -95,6 +98,14 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       isEnable: true
     };
   }
+
+  tokenHandler(): void {
+    let devAccessToken = '';
+    // tslint:disable-next-line:max-line-length
+    devAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik1DIiwidGltZXN0YW1wIjoiMjAxODEwMDExNzM3IiwibG9jYXRpb25Db2RlIjoiMTEwMCIsImlhdCI6MTUzODM5MDI2OCwiZXhwIjoyNTQwOTgyMjY4fQ.tMYDOKJf8X3LFuqBD3-gO6HIHMzxQubd9RO0kvSWRXM';
+    this.tokenService.checkTokenExpired(devAccessToken);
+  }
+
   onHome(): void {
     this.homeService.goToHome();
   }
