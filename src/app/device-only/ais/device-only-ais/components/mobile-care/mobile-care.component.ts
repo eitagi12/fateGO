@@ -4,6 +4,7 @@ import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { Router } from '../../../../../../../node_modules/@angular/router';
 import { ROUTE_DEVICE_ONLY_AIS_SELECT_PAYMENT_AND_RECEIPT_INFORMATION_PAGE, ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
+import { AlertService } from 'mychannel-shared-libs';
 
 export interface MobileCare {
   nextBillEffective?: boolean;
@@ -59,7 +60,8 @@ export class MobileCareComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private modalService: BsModalService,
-    private router: Router
+    private router: Router,
+    private alertService: AlertService,
   ) { }
 
   ngOnInit(): void {
@@ -69,8 +71,8 @@ export class MobileCareComponent implements OnInit {
 
   oncheckValidators(): void {
     this.myForm = new FormGroup({
-      'mobileNo': new FormControl(this.myForm.mobileNo, [Validators.required, Validators.maxLength(10)]),
-      'otpNo': new FormControl(this.myForm.mobileNo, [Validators.required, Validators.maxLength(5)]),
+      'mobileNo': new FormControl('', [Validators.required, Validators.maxLength(10)]),
+      'otpNo': new FormControl('', [Validators.required, Validators.maxLength(5)]),
     });
   }
 
@@ -129,6 +131,21 @@ export class MobileCareComponent implements OnInit {
 
   public checkMobileNo(): void {
     this.isPrivilegeCus = !this.isPrivilegeCus;
+    this.alertService.notify({
+      type: 'warning',
+      width: '80%',
+      cancelButtonText: 'เปลี่ยนเบอร์ใหม่',
+      cancelButtonClass: 'btn-secondary btn-lg text-black mr-2',
+      confirmButtonText: 'สมัครกับเครื่องใหม่',
+      confirmButtonClass: 'btn-success btn-lg text-white mr-2',
+      showCancelButton: true,
+      showConfirmButton: true,
+      reverseButtons: true,
+      allowEscapeKey: false,
+      html: `หมายเลข 0xx-xxx-xxxx สมัครบริการโมบายแคร์กับเครื่อง <br> Sumsung Note 9 เรียบร้อยแล้ว
+      <br> (แพ็กเกจ xxxxxx สิ้นสุด dd/mm/yyyy) <br> กรุณาเปลี่ยนเบอร์ใหม่ หรือยืนยันสมัครบริการโมบายแคร์กับ <br>
+      เครื่อง iPhone 6S Plus`
+    });
   }
 
   public onBack(): void {
