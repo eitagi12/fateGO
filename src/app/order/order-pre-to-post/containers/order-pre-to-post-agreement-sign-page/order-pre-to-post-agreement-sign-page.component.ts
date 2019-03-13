@@ -42,6 +42,7 @@ export class OrderPreToPostAgreementSignPageComponent implements OnInit, OnDestr
       this.isOpenSign = false;
       if (signature) {
         this.transaction.data.customer.imageSignature = signature;
+        this.router.navigate([ROUTE_ORDER_PRE_TO_POST_AGGREGATE_PAGE]);
       } else {
         this.isOpenSign = true;
         this.alertService.warning(this.translationService.instant('กรุณาเซ็นลายเซ็น')).then(() => {
@@ -82,13 +83,14 @@ export class OrderPreToPostAgreementSignPageComponent implements OnInit, OnDestr
   }
 
   onNext() {
-    if (this.transaction.data.customer.imageSignature) {
-      this.router.navigate([ROUTE_ORDER_PRE_TO_POST_AGGREGATE_PAGE]);
+    if (this.openSignedCommand && !this.openSignedCommand.error) {
+      this.openSignedCommand.ws.send('CaptureImage');
     } else {
-      if (this.openSignedCommand && !this.openSignedCommand.error) {
-        this.openSignedCommand.ws.send('CaptureImage');
+      if (this.transaction.data.customer.imageSignature) {
+        this.router.navigate([ROUTE_ORDER_PRE_TO_POST_AGGREGATE_PAGE]);
       }
     }
+
   }
 
   onHome() {
