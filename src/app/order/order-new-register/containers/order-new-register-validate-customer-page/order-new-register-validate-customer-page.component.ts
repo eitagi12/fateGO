@@ -6,7 +6,7 @@ import {
 } from 'src/app/order/order-new-register/constants/route-path.constant';
 import { Router } from '@angular/router';
 import { HomeService, PageLoadingService, ApiRequestService } from 'mychannel-shared-libs';
-import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress, Customer } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 
@@ -20,7 +20,7 @@ export class OrderNewRegisterValidateCustomerPageComponent implements OnInit, On
   transaction: Transaction;
   identityValid: boolean = false;
   identity: string;
-  billDeliveryAddress: BillDeliveryAddress;
+  billDeliveryAddress: Customer;
 
   constructor(
     private router: Router,
@@ -81,6 +81,13 @@ export class OrderNewRegisterValidateCustomerPageComponent implements OnInit, On
           amphur: customer.amphur || '',
           tumbol: customer.tumbol || '',
           zipCode: customer.zipCode || '',
+          idCardNo: '',
+          idCardType: '',
+          titleName: '',
+          firstName: '',
+          lastName: '',
+          birthdate: '',
+          gender: ''
         };
         this.transaction.data.customer = customer;
         return this.http.get(`/api/customerportal/newRegister/${this.identity}/queryBillingAccount`).toPromise()
