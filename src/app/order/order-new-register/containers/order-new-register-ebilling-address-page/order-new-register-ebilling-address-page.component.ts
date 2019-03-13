@@ -6,7 +6,7 @@ import {
   ROUTE_ORDER_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE
 } from 'src/app/order/order-new-register/constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 
 @Component({
@@ -19,15 +19,15 @@ export class OrderNewRegisterEbillingAddressPageComponent implements OnInit, OnD
   wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
 
   transaction: Transaction;
-  customerAddress: CustomerAddress;
+  customerAddress: Customer;
   allZipCodes: string[];
   provinces: any[];
   amphurs: string[];
   tumbols: string[];
   zipCodes: string[];
 
-  customerAddressTemp: CustomerAddress;
-  billDeliveryAddress: CustomerAddress;
+  customerAddressTemp: Customer;
+  billDeliveryAddress: Customer;
 
   ebillingAddressValid: boolean;
 
@@ -79,6 +79,13 @@ export class OrderNewRegisterEbillingAddressPageComponent implements OnInit, OnD
         amphur: billDeliveryAddress.amphur,
         tumbol: billDeliveryAddress.tumbol,
         zipCode: billDeliveryAddress.zipCode,
+        idCardNo: '',
+        idCardType: '',
+        titleName: '',
+        firstName: '',
+        lastName: '',
+        birthdate: '',
+        gender: ''
       };
 
     });

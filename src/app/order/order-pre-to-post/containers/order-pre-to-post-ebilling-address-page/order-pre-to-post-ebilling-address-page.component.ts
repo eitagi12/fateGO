@@ -3,7 +3,7 @@ import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.consta
 import { Router } from '@angular/router';
 import { HomeService, CustomerAddress } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ROUTE_ORDER_PRE_TO_POST_CONFIRM_USER_INFORMATION_PAGE } from 'src/app/order/order-pre-to-post/constants/route-path.constant';
 
@@ -17,15 +17,15 @@ export class OrderPreToPostEbillingAddressPageComponent implements OnInit, OnDes
   wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
 
   transaction: Transaction;
-  customerAddress: CustomerAddress;
+  customerAddress: Customer;
   allZipCodes: string[];
   provinces: any[];
   amphurs: string[];
   tumbols: string[];
   zipCodes: string[];
 
-  customerAddressTemp: CustomerAddress;
-  billDeliveryAddress: CustomerAddress;
+  customerAddressTemp: Customer;
+  billDeliveryAddress: Customer;
   ebillingAddressValid: boolean;
 
   constructor(
@@ -76,6 +76,13 @@ export class OrderPreToPostEbillingAddressPageComponent implements OnInit, OnDes
         amphur: billDeliveryAddress.amphur,
         tumbol: billDeliveryAddress.tumbol,
         zipCode: billDeliveryAddress.zipCode,
+        idCardNo: '',
+        idCardType: '',
+        titleName: '',
+        firstName: '',
+        lastName: '',
+        birthdate: '',
+        gender: ''
       };
     });
   }

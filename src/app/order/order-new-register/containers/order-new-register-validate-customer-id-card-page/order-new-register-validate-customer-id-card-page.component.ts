@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ReadCardProfile, HomeService, PageLoadingService, ApiRequestService, TokenService, ChannelType, Utils, AlertService, ValidateCustomerIdCardComponent, KioskControls, } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
-import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress, Customer } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import {
   ROUTE_ORDER_NEW_REGISTER_FACE_CAPTURE_PAGE,
@@ -23,7 +23,7 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
   profile: ReadCardProfile;
   zipcode: string;
   readCardValid: boolean;
-  billDeliveryAddress: BillDeliveryAddress;
+  billDeliveryAddress: Customer;
 
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
@@ -131,6 +131,13 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
               amphur: data.amphur || '',
               tumbol: data.tumbol || '',
               zipCode: data.zipCode || '',
+              idCardNo: '',
+              idCardType: '',
+              titleName: '',
+              firstName: '',
+              lastName: '',
+              birthdate: '',
+              gender: ''
             };
             return {
               caNumber: data.caNumber,

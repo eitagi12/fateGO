@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Transaction, TransactionAction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionAction, BillDeliveryAddress, Customer } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
 import { PageLoadingService, HomeService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -21,7 +21,7 @@ export class OrderMnpValidateCustomerPageComponent implements OnInit, OnDestroy 
   transaction: Transaction;
   identityValid: boolean = false;
   identity: string;
-  billDeliveryAddress: BillDeliveryAddress;
+  billDeliveryAddress: Customer;
 
   constructor(
     private router: Router,
@@ -80,6 +80,13 @@ export class OrderMnpValidateCustomerPageComponent implements OnInit, OnDestroy 
           amphur: resp.data.amphur || '',
           tumbol: resp.data.tumbol || '',
           zipCode: resp.data.zipCode || '',
+          idCardNo: '',
+          idCardType: '',
+          titleName: '',
+          firstName: '',
+          lastName: '',
+          birthdate: '',
+          gender: ''
         };
 
         return this.http.get(`/api/customerportal/newRegister/${this.identity}/queryBillingAccount`).toPromise()
