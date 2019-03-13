@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_PAGE, ROUTE_DEVICE_ONLY_AIS_QR_CODE_GENERATE_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_QR_CODE_PAGE, ROUTE_DEVICE_ONLY_AIS_QR_CODE_GENERATE_PAGE } from '../../constants/route-path.constant';
 import { Router } from '@angular/router';
 import { HomeService } from 'mychannel-shared-libs';
 
@@ -19,7 +19,7 @@ export class DeviceOnlyAisQrCodeSummarayPageComponent implements OnInit {
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_QR_CODE_PAGE]);
   }
 
   onNext(): void {

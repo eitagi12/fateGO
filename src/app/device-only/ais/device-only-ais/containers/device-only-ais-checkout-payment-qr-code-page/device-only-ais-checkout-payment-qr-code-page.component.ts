@@ -8,13 +8,13 @@ import { ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE, ROUTE_DEVICE_ONLY_AIS_QR_CODE_SUMMA
   styleUrls: ['./device-only-ais-checkout-payment-qr-code-page.component.scss']
 })
 export class DeviceOnlyAisCheckoutPaymentQrCodePageComponent implements OnInit, OnDestroy {
-  price: string = '99999';
-  color: string = 'ROSESILVER';
-  mobileNo: string = '0987654321';
-  firstName: string = 'ปลายูดดดด';
-  lastName: string = 'จะจันทร์แล้ว';
+  price: string = '45,700';
+  color: string = 'BLACK';
+  mobileNo: string = '0889540584';
+  firstName: string = 'ธีระยุทธ ';
+  lastName: string = 'เจโตวิมุติพงศ์';
   titleName: string = 'นาย';
-  model: string = 'IPHONE 7';
+  model: string = 'Samsung S10 Plus';
   campaignName: string = 'โครงการ ซื้อเครื่องเปล่า';
   constructor(
     private router: Router,
@@ -28,10 +28,7 @@ onBack(): void {
   }
   onNext(): void {
     // QR code
-    // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QUEUE_PAGE]);
     this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_SUMMARY_PAGE]);
-    // this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_SUMMARY_PAGE]);
-    // รอหน้ามา
   }
   onHome(): void {
     this.homeService.goToHome();

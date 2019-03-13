@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HomeService, Aggregate } from 'mychannel-shared-libs';
-import { ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE, ROUTE_DEVICE_ONLY_AIS_QR_CODE_QUEUE_PAGE, ROUTE_DEVICE_ONLY_AIS_QR_CODE_SUMMARY_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ONLY_AIS_KEY_IN_QUEUE, ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE} from '../../constants/route-path.constant';
 @Component({
   selector: 'app-device-only-ais-checkout-payment-page',
   templateUrl: './device-only-ais-checkout-payment-page.component.html',
@@ -29,11 +29,7 @@ export class DeviceOnlyAisCheckoutPaymentPageComponent implements OnInit, OnDest
     this.router.navigate([ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE]);
   }
   onNext(): void {
-    // QR code
-    // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QUEUE_PAGE]);
-    // this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_QUEUE_PAGE]);
-    this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_SUMMARY_PAGE]);
-    // รอหน้ามา
+    this.router.navigate([ROUTE_DEVICE_ONLY_AIS_KEY_IN_QUEUE]);
   }
   onHome(): void {
     this.homeService.goToHome();
