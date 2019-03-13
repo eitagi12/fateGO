@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE } from '../../constants/route-path.constant';
 import { Router } from '@angular/router';
+import { HomeService } from 'mychannel-shared-libs';
 
 @Component({
   selector: 'app-device-only-ais-key-in-queue-page',
@@ -9,7 +10,8 @@ import { Router } from '@angular/router';
 })
 export class DeviceOnlyAisKeyInQueuePageComponent implements OnInit, OnDestroy {
 
-  constructor(private router: Router) { }
+  constructor(private router: Router,
+              private homeService: HomeService) { }
 
   ngOnInit(): void {
 
@@ -20,7 +22,7 @@ export class DeviceOnlyAisKeyInQueuePageComponent implements OnInit, OnDestroy {
   }
 
   onHome(): void {
-
+    this.homeService.goToHome();
   }
   ngOnDestroy(): void {
 
