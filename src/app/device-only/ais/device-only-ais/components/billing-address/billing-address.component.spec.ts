@@ -1,7 +1,8 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BillingAddressComponent } from './billing-address.component';
+import { BillingAddressComponent, CustomerAddress } from './billing-address.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { debounceTime } from 'rxjs/operators';
 
 describe('BillingAddressComponent', () => {
   let component: BillingAddressComponent;
@@ -43,5 +44,26 @@ describe('BillingAddressComponent', () => {
     let errors = {};
     errors = homeNo.errors || {};
     expect(errors['pattern']).toBeTruthy();
+  });
+
+  it('submitting a form emits a customer address', (done) => {
+    component.zipCodes = ['11011', '11012'];
+    component.customerAddressForm.controls['homeNo'].setValue('123');
+    component.customerAddressForm.controls['province'].setValue('testProvice');
+    component.customerAddressForm.controls['amphur'].setValue('testAmphur');
+    component.customerAddressForm.controls['tumbol'].setValue('testTumbol');
+    component.customerAddressForm.controls['zipCode'].setValue('11011');
+    expect(component.customerAddressForm.valid).toBeTruthy();
+
+    let customerAddress: CustomerAddress;
+    component.completed.subscribe(value => {
+      customerAddress = value;
+      expect(customerAddress.homeNo).toBe('123');
+      expect(customerAddress.province).toBe('testProvice');
+      expect(customerAddress.amphur).toBe('testAmphur');
+      expect(customerAddress.tumbol).toBe('testTumbol');
+      expect(customerAddress.zipCode).toBe('11011');
+      done();
+    });
   });
 });
