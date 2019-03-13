@@ -472,22 +472,9 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
       eventName: null
     };
 
-    const mapData = function mapDataFromAisWebConnect(data: any): any {
-      return {
-        idCardType: 'หนังสือเดินทาง',
-        expireDate: this.convertStringToDate(data.ExpireDate),
-        issuingCountry: this.defaultIfEmpty(data.IssuingCountry),
-        firstName: this.defaultIfEmpty(data.GivenName),
-        lastName: this.defaultIfEmpty(data.Surname),
-        nationality: this.defaultIfEmpty(data.Nationality),
-        birthdate: this.convertStringToDate(data.BirthDate),
-        gender: this.defaultIfEmpty(data.Sex) === '1' ? 'M' : 'F',
-        idCardNo: this.defaultIfEmpty(data.PassportNumber),
-        imageReadPassport: (data.imageReadPassport || '').replace(REGEX_DATA_IMAGE, ''),
-      };
-    };
+    readPassport.profile = this.mapDataFromAisWebConnect(mock);
 
-    readPassport.profile = mapData(mock);
+    console.log('readPassport', readPassport);
 
     this.http.get('/api/customerportal/validate-customer-new-register', {
       params: {
@@ -559,6 +546,21 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
       });
   }
 
+  mapDataFromAisWebConnect(data: any): any {
+    return {
+      idCardType: 'หนังสือเดินทาง',
+      expireDate: this.convertStringToDate(data.ExpireDate),
+      issuingCountry: this.defaultIfEmpty(data.IssuingCountry),
+      firstName: this.defaultIfEmpty(data.GivenName),
+      lastName: this.defaultIfEmpty(data.Surname),
+      nationality: this.defaultIfEmpty(data.Nationality),
+      birthdate: this.convertStringToDate(data.BirthDate),
+      gender: this.defaultIfEmpty(data.Sex) === '1' ? 'M' : 'F',
+      idCardNo: this.defaultIfEmpty(data.PassportNumber),
+      imageReadPassport: (data.imageReadPassport || '').replace(REGEX_DATA_IMAGE, ''),
+    };
+  }
+
   defaultIfEmpty(text: string): string {
     return (text || '').trim();
   }
@@ -566,5 +568,7 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
   convertStringToDate(dateStr: string): string {
     return Moment(dateStr, 'YYMMDD').add(543, 'years').format('DD/MM/YYYY');
   }
+
+  // mockFunc
 
 }
