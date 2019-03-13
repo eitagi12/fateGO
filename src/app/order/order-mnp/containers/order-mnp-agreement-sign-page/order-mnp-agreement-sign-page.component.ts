@@ -10,6 +10,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { Subscription } from 'rxjs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { TranslateService } from '@ngx-translate/core';
+import { AisNativeOrderService } from 'src/app/shared/services/ais-native-order.service';
 @Component({
   selector: 'app-order-mnp-agreement-sign-page',
   templateUrl: './order-mnp-agreement-sign-page.component.html',
@@ -25,28 +26,47 @@ export class OrderMnpAgreementSignPageComponent implements OnInit, OnDestroy {
 
   commandSigned: any;
   isOpenSign: boolean;
+  currentLang: string;
+  translationSubscribe: Subscription;
+
+  openSignedCommand: any;
 
   constructor(
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
-    private aisNativeService: AisNativeService,
+    private aisNativeOrderService: AisNativeOrderService,
     private tokenService: TokenService,
     private alertService: AlertService,
     private translationService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
-    this.signedSignatureSubscription = this.aisNativeService.getSigned().subscribe((signature: string) => {
+    this.signedSignatureSubscription = this.aisNativeOrderService.getSigned().subscribe((signature: string) => {
+      this.isOpenSign = false;
       if (signature) {
-        this.isOpenSign = false;
         this.transaction.data.customer.imageSignature = signature;
+        this.router.navigate([ROUTE_ORDER_MNP_EAPPLICATION_PAGE]);
       } else {
+        this.isOpenSign = true;
         this.alertService.warning(this.translationService.instant('กรุณาเซ็นลายเซ็น')).then(() => {
           this.onSigned();
         });
         return;
       }
     });
+
+    this.currentLang = this.translationService.currentLang || 'TH';
+    this.translationSubscribe = this.translationService.onLangChange.subscribe(lang => {
+      if (this.signedOpenSubscription) {
+        this.signedOpenSubscription.unsubscribe();
+      }
+      this.currentLang = typeof (lang) === 'object' ? lang.lang : lang;
+      if (this.isOpenSign) {
+        this.onSigned();
+      }
+    });
+
+
   }
 
   ngOnInit() {
@@ -55,14 +75,23 @@ export class OrderMnpAgreementSignPageComponent implements OnInit, OnDestroy {
     }
   }
 
+  checkLogicNext(): boolean {
+    if (this.isOpenSign || this.transaction.data.customer.imageSignature) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   onSigned() {
+    this.isOpenSign = true;
     const user: User = this.tokenService.getUser();
-    this.transaction.data.customer.imageSignature = '';
-    this.signedOpenSubscription = this.aisNativeService.openSigned(
-      ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'SignaturePad'
-    ).subscribe( (command: any) => {
-      this.commandSigned = command;
+    this.signedOpenSubscription = this.aisNativeOrderService.openSigned(
+      ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'SignaturePad', `{x:100,y:280,Language: ${this.currentLang}}`
+    ).subscribe((command: any) => {
+      this.openSignedCommand = command;
     });
+
   }
 
   getOnMessageWs() {
@@ -74,7 +103,13 @@ export class OrderMnpAgreementSignPageComponent implements OnInit, OnDestroy {
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_ORDER_MNP_EAPPLICATION_PAGE]);
+    if (this.openSignedCommand && !this.openSignedCommand.error) {
+      this.openSignedCommand.ws.send('CaptureImage');
+    } else {
+      if (this.transaction.data.customer.imageSignature) {
+        this.router.navigate([ROUTE_ORDER_MNP_EAPPLICATION_PAGE]);
+      }
+    }
   }
 
   onHome(): void {
@@ -85,6 +120,10 @@ export class OrderMnpAgreementSignPageComponent implements OnInit, OnDestroy {
     this.signedSignatureSubscription.unsubscribe();
     if (this.signedOpenSubscription) {
       this.signedOpenSubscription.unsubscribe();
+    }
+
+    if (this.translationSubscribe) {
+      this.translationSubscribe.unsubscribe();
     }
     this.transactionService.update(this.transaction);
   }
