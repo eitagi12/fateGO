@@ -244,11 +244,10 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
   }
 
   onNext() {
-    if (!this.customerValid()) {
+    if (!this.customerValid() && !this.isMergeBilling()) {
       this.alertService.warning(this.translation.instant('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร'));
       return;
     }
-
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData;
     billCycleData.billAddressText = this.billingInfo.billingAddress.text;
