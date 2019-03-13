@@ -13,32 +13,30 @@ import {
 })
 export class DeviceOrderAisNewRegisterAgreementSignPageComponent implements OnInit {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
-
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
   signatureImage: string;
+
   constructor(
     private router: Router,
     private homeService: HomeService,
   ) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGREEMENT_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
 
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onOpenSignature() {
-
-  }
+  onOpenSignature(): void { }
 
 }

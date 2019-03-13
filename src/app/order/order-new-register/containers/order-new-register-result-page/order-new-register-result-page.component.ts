@@ -5,7 +5,6 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { CreateNewRegisterService } from 'src/app/shared/services/create-new-register.service';
 
-
 @Component({
   selector: 'app-order-new-register-result-page',
   templateUrl: './order-new-register-result-page.component.html',
@@ -13,7 +12,7 @@ import { CreateNewRegisterService } from 'src/app/shared/services/create-new-reg
 })
 export class OrderNewRegisterResultPageComponent implements OnInit {
 
-  wizards = WIZARD_ORDER_NEW_REGISTER;
+  wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
   transaction: Transaction;
   isSuccess: boolean;
   constructor(
@@ -25,7 +24,7 @@ export class OrderNewRegisterResultPageComponent implements OnInit {
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.pageLoadingService.openLoading();
     this.createNewRegisterService.createNewRegister(this.transaction).then((resp: any) => {
       const data = resp.data || {};
@@ -46,7 +45,7 @@ export class OrderNewRegisterResultPageComponent implements OnInit {
     });
   }
 
-  onMainMenu() {
+  onMainMenu(): void {
     this.homeService.goToHome();
   }
 

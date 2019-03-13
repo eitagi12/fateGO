@@ -16,7 +16,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 })
 export class OrderMnpIdCardCapturePageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_MNP;
+  wizards: string[] = WIZARD_ORDER_MNP;
 
   apiSigned: string;
   transaction: Transaction;
@@ -38,7 +38,7 @@ export class OrderMnpIdCardCapturePageComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const customer: Customer = this.transaction.data.customer;
     this.captureAndSign = {
       allowCapture: true,
@@ -47,25 +47,25 @@ export class OrderMnpIdCardCapturePageComponent implements OnInit, OnDestroy {
     };
   }
 
-  onCompleted(captureAndSign: CaptureAndSign) {
+  onCompleted(captureAndSign: CaptureAndSign): void {
     const customer: Customer = this.transaction.data.customer;
     customer.imageSignatureSmartCard = captureAndSign.imageSignature;
     customer.imageSmartCard = captureAndSign.imageSmartCard;
   }
 
-  onError(valid: boolean) {
+  onError(valid: boolean): void {
     this.idCardValid = valid;
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_MNP_CUSTOMER_INFO_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_ORDER_MNP_SELECT_PACKAGE_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

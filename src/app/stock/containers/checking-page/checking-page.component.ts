@@ -14,14 +14,14 @@ export class CheckingPageComponent implements OnInit {
     private homeService: HomeService
   ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
-  onBack() {
+  onBack(): void {
     this.location.back();
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

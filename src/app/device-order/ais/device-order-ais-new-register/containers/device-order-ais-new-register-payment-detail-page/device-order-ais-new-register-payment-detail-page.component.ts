@@ -18,7 +18,7 @@ import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.c
 })
 export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnInit {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   transaction: Transaction;
   receiptInfo: ReceiptInfo = {
@@ -37,9 +37,9 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() { }
+  ngOnInit(): void { }
 
-  onBack() {
+  onBack(): void {
     if (TransactionAction.KEY_IN === this.transaction.data.action) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VALIDATE_CUSTOMER_PAGE]);
     } else {
@@ -47,11 +47,11 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
     }
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CUSTOMER_INFO_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

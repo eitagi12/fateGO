@@ -13,9 +13,9 @@ import { ROUTE_ORDER_PRE_TO_POST_CUSTOMER_PROFILE_PAGE, ROUTE_ORDER_PRE_TO_POST_
   styleUrls: ['./order-prt-to-post-validate-customer-repi-page.component.scss']
 })
 export class OrderPrtToPostValidateCustomerRepiPageComponent implements OnInit, OnDestroy {
-  wizards = WIZARD_ORDER_PRE_TO_POST;
+  wizards: string[] = WIZARD_ORDER_PRE_TO_POST;
   transaction: Transaction;
-  identityValid = false;
+  identityValid: boolean = false;
   identity: string;
   idCardNo: string;
   mobileNo: string;
@@ -32,10 +32,10 @@ export class OrderPrtToPostValidateCustomerRepiPageComponent implements OnInit, 
     console.log('transaction', this.transaction);
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
-  onNext() {
+  onNext(): void {
     this.pageLoadingService.openLoading();
     const mobileNo = this.transaction.data.simCard.mobileNo;
     this.http.get('/api/customerportal/validate-customer-pre-to-post', {
@@ -99,23 +99,23 @@ export class OrderPrtToPostValidateCustomerRepiPageComponent implements OnInit, 
       });
   }
 
-  onError(valid: boolean) {
+  onError(valid: boolean): void {
     this.identityValid = valid;
   }
 
-  onCompleted(identity: string) {
+  onCompleted(identity: string): void {
     this.identity = identity;
   }
 
-  onReadCard() {
+  onReadCard(): void {
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE]);
   }
   ngOnDestroy(): void {

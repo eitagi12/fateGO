@@ -15,28 +15,28 @@ import {
 })
 export class DeviceOrderAisNewRegisterSelectNumberPageComponent implements OnInit {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   constructor(
     private router: Router,
     private homeService: HomeService,
   ) { }
 
-  ngOnInit() { }
+  ngOnInit(): void { }
 
-  onVerifyInstantSim() {
+  onVerifyInstantSim(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VERIFY_INSTANT_SIM_PAGE]);
   }
 
-  onByPattern() {
+  onByPattern(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_BY_PATTERN_PAGE]);
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CUSTOMER_INFO_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 }

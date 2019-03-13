@@ -27,7 +27,7 @@ export class OrderPreToPostEapplicationPageComponent implements OnInit, OnDestro
     private homeService: HomeService,
     private pageLoadingService: PageLoadingService) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.pageLoadingService.openLoading();
     this.transaction = this.transactionService.load();
     this.createEapplicationService.createEapplication(this.transaction).then(res => {
@@ -38,15 +38,15 @@ export class OrderPreToPostEapplicationPageComponent implements OnInit, OnDestro
     });
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_AGGREGATE_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_RESULT_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

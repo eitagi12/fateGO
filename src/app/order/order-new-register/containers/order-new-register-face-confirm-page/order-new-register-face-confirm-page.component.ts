@@ -17,7 +17,7 @@ import { environment } from 'src/environments/environment';
 })
 export class OrderNewRegisterFaceConfirmPageComponent implements OnInit {
 
-  wizards = WIZARD_ORDER_NEW_REGISTER;
+  wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
 
   confirmForm: FormGroup;
 
@@ -32,11 +32,11 @@ export class OrderNewRegisterFaceConfirmPageComponent implements OnInit {
   ) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.createForm();
   }
 
-  createForm() {
+  createForm(): void {
     let username;
     if (environment.name === 'LOCAL' || environment.name === 'PVT') {
       username = 'netnapht';
@@ -47,11 +47,11 @@ export class OrderNewRegisterFaceConfirmPageComponent implements OnInit {
     });
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_NEW_REGISTER_FACE_COMPARE_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.pageLoadingService.openLoading();
     const username = this.confirmForm.value.username;
     this.http.get('/api/customerportal/checkEmployeeCode', {
@@ -71,7 +71,7 @@ export class OrderNewRegisterFaceConfirmPageComponent implements OnInit {
       });
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

@@ -9,7 +9,7 @@ export class DeviceOrderAisNewRegisterFaceConfirmPageComponent implements OnInit
 
   constructor() { }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
 }

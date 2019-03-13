@@ -17,7 +17,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 })
 export class DeviceOrderAisNewRegisterByPatternPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   transaction: Transaction;
   mobileNoConditions: MobileNoCondition[];
@@ -33,19 +33,19 @@ export class DeviceOrderAisNewRegisterByPatternPageComponent implements OnInit, 
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     delete this.transaction.data.simCard;
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_SELECT_NUMBER_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onSearch(mobileNoCondition: any) {
+  onSearch(mobileNoCondition: any): void {
     this.pageLoadingService.openLoading();
 
     const user = this.tokenService.getUser();
@@ -86,7 +86,7 @@ export class DeviceOrderAisNewRegisterByPatternPageComponent implements OnInit, 
 
   }
 
-  onCompleted(value: any) {
+  onCompleted(value: any): void {
     this.transaction.data.simCard = {
       mobileNo: value.mobileNo,
       persoSim: true

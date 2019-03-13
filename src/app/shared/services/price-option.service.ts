@@ -17,15 +17,15 @@ export class PriceOptionService {
       .setDefaultValue({});
   }
 
-  remove() {
+  remove(): void {
     this.settings.remove();
   }
 
-  save(priceOption: PriceOption) {
+  save(priceOption: PriceOption): void {
     this.settings.save(priceOption);
   }
 
-  update(priceOption: PriceOption) {
+  update(priceOption: PriceOption): void {
     this.settings.update(priceOption);
   }
 

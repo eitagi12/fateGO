@@ -24,27 +24,27 @@ export class DeviceOrderAisNewRegisterValidateCustomerKeyInPageComponent impleme
     private homeService: HomeService
   ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.activatedRoute.queryParams.subscribe((params: Params) => this.params = params);
   }
 
-  onError(valid: boolean) {
+  onError(valid: boolean): void {
     this.keyInValid = valid;
   }
 
-  onCompleted(value: any) {
+  onCompleted(value: any): void {
     console.log(value);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VALIDATE_CUSTOMER_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE]);
   }
 

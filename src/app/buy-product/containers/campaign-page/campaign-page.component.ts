@@ -44,20 +44,20 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         private addToCartService: AddToCartService,
         private priceOptionService: PriceOptionService
     ) {
-        this.priceOption = this.priceOptionService.load();
+      this.priceOption = this.priceOptionService.load();
     }
 
-    ngOnInit() {
-        this.activatedRoute.queryParams.subscribe((params: any) => {
-            this.params = params;
-            this.callService(
-                params.brand, params.model,
-                params.productType, params.productSubtype
-            );
-        });
+    ngOnInit(): void {
+      this.activatedRoute.queryParams.subscribe((params: any) => {
+        this.params = params;
+        this.callService(
+          params.brand, params.model,
+          params.productType, params.productSubtype
+        );
+      });
     }
 
-    onBack() {
+    onBack(): void {
         if (this.priceOption && this.priceOption.campaign) {
             this.priceOption.campaign = null;
             return;
@@ -76,14 +76,14 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         this.router.navigate([ROUTE_BUY_PRODUCT_PRODUCT_PAGE], { queryParams });
     }
 
-    onHome() {
+    onHome(): void {
         this.homeService.goToHome();
     }
 
     /* product stock */
     private callService(
         brand: string, model: string,
-        productType?: string, productSubtype?: string) {
+        productType?: string, productSubtype?: string): void {
         const user: User = this.tokenService.getUser();
 
         // clear
@@ -150,7 +150,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         });
     }
 
-    getProductSpecification(brand: string, model: string) {
+    getProductSpecification(brand: string, model: string): void {
         const modalOptions = { class: 'modal-lg' };
         if (this.productSpec) {
             this.modalRef = this.modalService.show(this.productSpecTemplate, modalOptions);
@@ -174,7 +174,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         });
     }
 
-    onProductStockSelected(product) {
+    onProductStockSelected(product: { colorName: string; }): void {
         if (this.priceOption.productStock &&
             this.priceOption.productStock.colorName !== product.colorName) {
             this.priceOption.campaign = null;
@@ -191,7 +191,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     }
 
     /* campaign */
-    private callPriceOptionsService(brand: string, model: string, color: string, productType: string, productSubtype: string) {
+    private callPriceOptionsService(brand: string, model: string, color: string, productType: string, productSubtype: string): void {
         const user: User = this.tokenService.getUser();
         this.salesService.priceOptions({
             brand: brand,
@@ -228,7 +228,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         });
     }
 
-    private initialTabs(priceOptions: any[]) {
+    private initialTabs(priceOptions: any[]): void {
         this.tabs = [];
 
         priceOptions.forEach((priceOption: any) => {
@@ -315,7 +315,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         });
     }
 
-    onCustomerGroupSelected(customerGroup: any) {
+    onCustomerGroupSelected(customerGroup: any): void {
         if (!this.priceOptions) {
             this.campaignSliders = [];
             return;
@@ -352,18 +352,17 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             }).sort((a: any, b: any) => a.price - b.price);
     }
 
-    onCampaignSelected(campaign: any) {
+    onCampaignSelected(campaign: any): void {
         this.priceOption.campaign = campaign;
     }
 
-    onPromotionShelve(campaign: any) {
+    onPromotionShelve(campaign: any): void {
         console.log('Selected campaign ', campaign);
     }
 
     /* privilege */
-    onTradeSelected(trade: any) {
+    onTradeSelected(trade: any): void {
         this.priceOption.trade = trade;
-
         this.addToCartService.reserveStock().then((nextUrl) => {
             console.log('Next url => ', nextUrl);
             this.router.navigate([nextUrl]);

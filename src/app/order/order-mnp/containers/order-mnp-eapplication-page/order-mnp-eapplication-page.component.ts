@@ -26,7 +26,7 @@ export class OrderMnpEapplicationPageComponent implements OnInit, OnDestroy {
     private homeService: HomeService,
     private pageLoadingService: PageLoadingService) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.pageLoadingService.openLoading();
     this.transaction = this.transactionService.load();
     this.createEapplicationService.createEapplication(this.transaction).then(res => {
@@ -37,15 +37,15 @@ export class OrderMnpEapplicationPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_MNP_AGREEMENT_SIGN_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_ORDER_MNP_PERSO_SIM_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

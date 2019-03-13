@@ -9,20 +9,20 @@ import { Transaction, TransactionAction } from 'src/app/shared/models/transactio
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 
-
 @Component({
   selector: 'app-order-pre-to-post-otp-page',
   templateUrl: './order-pre-to-post-otp-page.component.html',
   styleUrls: ['./order-pre-to-post-otp-page.component.scss']
 })
 export class OrderPreToPostOtpPageComponent implements OnInit {
-  wizards = WIZARD_ORDER_PRE_TO_POST;
+  wizards: string[] = WIZARD_ORDER_PRE_TO_POST;
   otpForm: FormGroup;
   transaction: Transaction;
   registrationData: any;
   mobileNo: string;
   transactionID: string;
   isOtpValid: boolean;
+
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -35,21 +35,22 @@ export class OrderPreToPostOtpPageComponent implements OnInit {
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.registrationData = this.transaction.data;
     this.mobileNo = this.registrationData.mainMobile;
     this.createForm();
     this.sendOTP();
   }
+
   private createForm(): void {
     this.otpForm = this.fb.group({
       otp: ['', [Validators.required, Validators.maxLength(5)]],
     });
   }
-  sendOTP() {
+
+  sendOTP(): void {
     this.pageLoadingService.openLoading();
     let mobile = this.registrationData.simCard.mobileNo;
-   
     if (environment.name !== 'PROD') {
       mobile = environment.TEST_OTP_MOBILE;
     }
@@ -65,10 +66,10 @@ export class OrderPreToPostOtpPageComponent implements OnInit {
       });
   }
 
-  verifyOTP() {
+  verifyOTP(): void {
     this.pageLoadingService.openLoading();
     let mobile = this.registrationData.simCard.mobileNo;
-        
+
     const otp = this.otpForm.value.otp;
     if (environment.name !== 'PROD') {
       mobile = environment.TEST_OTP_MOBILE;
@@ -90,6 +91,7 @@ export class OrderPreToPostOtpPageComponent implements OnInit {
       this.router.navigate([ROUTE_ORDER_PRE_TO_POST_ID_CARD_CAPTURE_REPI_PAGE]);
     }
   }
+
   autoPI(): void {
     this.http.post(`/api/customerportal/newRegister/updatePrepaidIdent`, this.getRequestUpdatePrepaidIdentata()
     ).toPromise()
@@ -100,16 +102,16 @@ export class OrderPreToPostOtpPageComponent implements OnInit {
         } else {
           this.alertService.error('ระบบไม่สามารถแสดงตนได้กรุณาติดต่อเจ้าหน้าที่');
         }
-      }).catch((error) => {
+      }).catch((error: any) => {
         this.pageLoadingService.closeLoading();
         this.alertService.error('รหัส OTP ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง');
-      }).catch((error) => {
+      }).catch((error: any) => {
         this.pageLoadingService.closeLoading();
         this.alertService.error('ระบบไม่สามารถแสดงตนได้กรุณาติดต่อเจ้าหน้าที่');
       });
   }
 
-  alertError(error): void {
+  alertError(error: any): void {
     let errObj: any;
     let errMsg: any;
     let errDetail: any;
@@ -123,13 +125,16 @@ export class OrderPreToPostOtpPageComponent implements OnInit {
     }
     this.alertService.error(errMsg);
   }
-  onBack() {
+
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CUSTOMER_PROFILE_PAGE]);
   }
-  onHome() {
+
+  onHome(): void {
     this.homeService.goToHome();
   }
-  getRequestUpdatePrepaidIdentata() {
+
+  getRequestUpdatePrepaidIdentata(): void {
     const customer = this.transaction.data.customer;
     const mobileNo = this.transaction.data.simCard.mobileNo;
     const data: any = {

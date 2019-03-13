@@ -20,7 +20,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 })
 export class DeviceOrderAisNewRegisterSelectPackagePageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   priceOption: PriceOption;
   transaction: Transaction;
@@ -38,17 +38,17 @@ export class DeviceOrderAisNewRegisterSelectPackagePageComponent implements OnIn
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     delete this.transaction.data.mainPackage;
     this.callService();
   }
 
-  onCompleted(promotion) {
+  onCompleted(promotion: any): void {
     // รอแก้ไขตัวแปรที่จะเก็บลงใน share transaction
     this.transaction.data.mainPackage = promotion;
   }
 
-  onBack() {
+  onBack(): void {
     if (this.transaction.data.simCard.simSerial) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VERIFY_INSTANT_SIM_PAGE]);
     } else {
@@ -56,15 +56,15 @@ export class DeviceOrderAisNewRegisterSelectPackagePageComponent implements OnIn
     }
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  callService() {
+  callService(): void {
     this.pageLoadingService.openLoading();
     const packageKeyRef = this.priceOption.trade.packageKeyRef;
     this.http.post('/api/salesportal/promotion-shelves', {
@@ -86,7 +86,7 @@ export class DeviceOrderAisNewRegisterSelectPackagePageComponent implements OnIn
                   items: []
                 };
               })
-          }
+          };
         });
         return Promise.resolve(promotionShelves);
       })
@@ -99,7 +99,7 @@ export class DeviceOrderAisNewRegisterSelectPackagePageComponent implements OnIn
           'value': 'IRB'
         }];
 
-        let promiseAll = [];
+        const promiseAll = [];
         promotionShelves.forEach((promotionShelve: PromotionShelve) => {
           const promise = promotionShelve.promotions.map((promotion: PromotionShelveGroup) => {
             return this.http.post('/api/salesportal/promotion-shelves/promotion', {
@@ -113,20 +113,20 @@ export class DeviceOrderAisNewRegisterSelectPackagePageComponent implements OnIn
               const maxinumPackagePrice = +campaign.maxinumPackagePrice;
 
               // reference object
-              promotion.items = data.filter((promotion: any) => {
-                return promotion.customAttributes.chargeType === 'Post-paid' &&
-                  minimumPackagePrice <= +promotion.customAttributes.priceExclVat &&
-                  (maxinumPackagePrice > 0 ? maxinumPackagePrice >= +promotion.customAttributes.priceExclVat : true);
+              promotion.items = data.filter((_promotion: any) => {
+                return _promotion.customAttributes.chargeType === 'Post-paid' &&
+                  minimumPackagePrice <= +_promotion.customAttributes.priceExclVat &&
+                  (maxinumPackagePrice > 0 ? maxinumPackagePrice >= +_promotion.customAttributes.priceExclVat : true);
               })
                 .sort((a, b) => {
                   return +a.customAttributes.priceInclVat !== +b.customAttributes.priceInclVat ?
                     +a.customAttributes.priceInclVat < +b.customAttributes.priceInclVat ? -1 : 1 : 0;
-                }).map((promotion: any) => {
+                }).map((_promotion: any) => {
                   return { // item
-                    id: promotion.id,
-                    title: promotion.title,
-                    detail: promotion.detailTH,
-                    value: promotion
+                    id: _promotion.id,
+                    title: _promotion.title,
+                    detail: _promotion.detailTH,
+                    value: _promotion
                   };
                 });
             });

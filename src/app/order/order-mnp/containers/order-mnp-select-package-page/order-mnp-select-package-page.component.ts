@@ -22,7 +22,7 @@ export class OrderMnpSelectPackagePageComponent implements OnInit, OnDestroy {
 
   @ViewChild('conditionTemplate')
   conditionTemplate: any;
-  wizards = WIZARD_ORDER_MNP;
+  wizards: string[] = WIZARD_ORDER_MNP;
 
   promotionShelves: PromotionShelve[];
   transaction: Transaction;
@@ -47,11 +47,11 @@ export class OrderMnpSelectPackagePageComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.callService();
   }
 
-  onBack() {
+  onBack(): void {
     if (this.transaction.data.action === TransactionAction.KEY_IN) {
       this.router.navigate([ROUTE_ORDER_MNP_ID_CARD_CAPTURE_PAGE]);
     } else {
@@ -59,7 +59,7 @@ export class OrderMnpSelectPackagePageComponent implements OnInit, OnDestroy {
     }
   }
 
-  onNext() {
+  onNext(): void {
     if (this.isPackageOneLove()) {
       this.router.navigate([ROUTE_ORDER_MNP_ONE_LOVE_PAGE]);
     } else {
@@ -67,16 +67,16 @@ export class OrderMnpSelectPackagePageComponent implements OnInit, OnDestroy {
     }
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onCompleted(promotion) {
+  onCompleted(promotion: any): void {
     // รอแก้ไขตัวแปรที่จะเก็บลงใน share transaction
     this.transaction.data.mainPackage = promotion;
   }
 
-  callService() {
+  callService(): void {
     this.pageLoadingService.openLoading();
 
     const billingInformation: any = this.transaction.data.billingInformation;
@@ -129,8 +129,7 @@ export class OrderMnpSelectPackagePageComponent implements OnInit, OnDestroy {
 
   }
 
-
-  onTermConditions(condition: string) {
+  onTermConditions(condition: string): void {
     if (!condition) {
       this.alertService.warning('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
       return;

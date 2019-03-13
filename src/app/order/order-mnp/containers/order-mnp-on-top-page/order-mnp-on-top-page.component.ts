@@ -18,7 +18,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 })
 export class OrderMnpOnTopPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_MNP;
+  wizards: string[] = WIZARD_ORDER_MNP;
 
   promotionShelves: PromotionShelve[];
   transaction: Transaction;
@@ -33,11 +33,11 @@ export class OrderMnpOnTopPageComponent implements OnInit, OnDestroy {
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.callService();
   }
 
-  callService() {
+  callService(): void {
     this.pageLoadingService.openLoading();
     // /api/customerportal/newRegister/queryOnTopPackage?orderType=Change%20Charge%20Type&billingSystem=IRB
     this.http.get('/api/customerportal/newRegister/queryOnTopPackage', {
@@ -89,7 +89,7 @@ export class OrderMnpOnTopPageComponent implements OnInit, OnDestroy {
 
   }
 
-  onCompleted(promotion: any) {
+  onCompleted(promotion: any): void {
     this.transaction.data.mainPackage = promotion;
   }
 
@@ -97,21 +97,20 @@ export class OrderMnpOnTopPageComponent implements OnInit, OnDestroy {
     this.transactionService.update(this.transaction);
   }
 
+  onTermConditions(): void { }
 
-  onTermConditions() { }
-
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_MNP_SELECT_PACKAGE_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     const mainPackage = this.transaction.data.mainPackage;
     this.isNetExtreme(mainPackage.productPkg) ?
       this.router.navigate([ROUTE_ORDER_MNP_MERGE_BILLING_PAGE]) :
       this.router.navigate([ROUTE_ORDER_MNP_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Params, Data } from '@angular/router';
 
 @Component({
   selector: 'app-error-page',
@@ -8,14 +8,14 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class ErrorPageComponent implements OnInit {
 
-  routeParams;
-  data;
+  routeParams: Params;
+  data: Data;
 
   constructor(
     private activatedRoute: ActivatedRoute,
   ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.routeParams = this.activatedRoute.snapshot.queryParams;
     this.data = this.activatedRoute.snapshot.data;
   }

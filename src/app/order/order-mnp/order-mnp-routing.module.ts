@@ -20,7 +20,6 @@ import { OrderMnpOneLovePageComponent } from './containers/order-mnp-one-love-pa
 import { OrderMnpEbillingPageComponent } from './containers/order-mnp-ebilling-page/order-mnp-ebilling-page.component';
 import { OrderMnpEapplicationPageComponent } from './containers/order-mnp-eapplication-page/order-mnp-eapplication-page.component';
 
-
 const routes: Routes = [
   { path: '', redirectTo: 'networt-type', pathMatch: 'full' },
   { path: 'networt-type', component: OrderMnpNetworkTypePageComponent },

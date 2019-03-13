@@ -9,7 +9,7 @@ export class DeviceOrderAisNewRegisterDeviceSellingPageComponent implements OnIn
 
   constructor() { }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
 }

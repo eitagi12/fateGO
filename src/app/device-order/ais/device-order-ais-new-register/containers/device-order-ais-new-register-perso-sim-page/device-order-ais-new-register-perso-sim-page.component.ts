@@ -10,24 +10,24 @@ import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.c
 })
 export class DeviceOrderAisNewRegisterPersoSimPageComponent implements OnInit {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   constructor(
     private router: Router,
     private homeService: HomeService
   ) { }
 
-  ngOnInit() { }
+  ngOnInit(): void { }
 
-  onBack() {
+  onBack(): void {
     // this.router.navigate([]);
   }
 
-  onNext() {
+  onNext(): void {
     // this.router.navigate([]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

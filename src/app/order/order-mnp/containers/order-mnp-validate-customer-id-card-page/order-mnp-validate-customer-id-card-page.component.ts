@@ -46,11 +46,11 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.transaction.data.action = TransactionAction.READ_CARD;
   }
 
-  onError(valid: boolean) {
+  onError(valid: boolean): void {
     this.readCardValid = valid;
     if (!this.profile) {
       this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
@@ -63,24 +63,24 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
     }
   }
 
-  onCompleted(profile: ReadCardProfile) {
+  onCompleted(profile: ReadCardProfile): void {
     this.profile = profile;
     // auto next
     this.onNext();
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onBack() {
+  onBack(): void {
     if (this.validateCustomerIdcard.koiskApiFn) {
       this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
     }
     this.router.navigate([ROUTE_ORDER_MNP_SELECT_REASON_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.pageLoadingService.openLoading();
 
     this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)

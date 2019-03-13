@@ -16,7 +16,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 })
 export class OrderNewRegisterEbillingAddressPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_NEW_REGISTER;
+  wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
 
   transaction: Transaction;
   customerAddress: CustomerAddress;
@@ -40,7 +40,7 @@ export class OrderNewRegisterEbillingAddressPageComponent implements OnInit, OnD
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const customer = this.transaction.data.customer;
     const billDeliveryAddress = this.transaction.data.billingInformation.billDeliveryAddress;
 
@@ -95,7 +95,7 @@ export class OrderNewRegisterEbillingAddressPageComponent implements OnInit, OnD
     return (this.provinces || []).find((prov: any) => prov.name === provinceName) || {};
   }
 
-  onProvinceSelected(params: any) {
+  onProvinceSelected(params: any): void {
     const province = this.getProvinceByName(params.provinceName);
     const req = {
       provinceId: province.id,
@@ -114,7 +114,7 @@ export class OrderNewRegisterEbillingAddressPageComponent implements OnInit, OnD
     });
   }
 
-  onAmphurSelected(params: any) {
+  onAmphurSelected(params: any): void {
     const province = this.getProvinceByName(params.provinceName);
     const req = {
       provinceId: province.id,
@@ -134,7 +134,7 @@ export class OrderNewRegisterEbillingAddressPageComponent implements OnInit, OnD
     });
   }
 
-  onTumbolSelected(params: any) {
+  onTumbolSelected(params: any): void {
     const province = this.getProvinceByName(params.provinceName);
     this.http.get('/api/customerportal/newRegister/queryZipcode', {
       params: {
@@ -147,7 +147,7 @@ export class OrderNewRegisterEbillingAddressPageComponent implements OnInit, OnD
     });
   }
 
-  onZipCodeSelected(zipCode: string) {
+  onZipCodeSelected(zipCode: string): void {
     this.http.get('/api/customerportal/newRegister/getProvinceIdByZipcode', {
       params: { zipcode: zipCode }
     }).toPromise()
@@ -166,25 +166,25 @@ export class OrderNewRegisterEbillingAddressPageComponent implements OnInit, OnD
       });
   }
 
-  onCompleted(value: any) {
+  onCompleted(value: any): void {
     this.customerAddressTemp = value;
   }
 
-  onError(valid: boolean) {
+  onError(valid: boolean): void {
     this.ebillingAddressValid = valid;
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.transaction.data.billingInformation.billDeliveryAddress = this.customerAddressTemp || this.customerAddress;
 
     this.router.navigate([ROUTE_ORDER_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
