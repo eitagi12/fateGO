@@ -482,30 +482,30 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
       eventName: null
     };
 
-    const defaultIfEmptyF = function defaultIfEmpty(text: string): string {
+    const defaultIfEmpty = (text: string): string => {
       return (text || '').trim();
     };
 
-    const convertStringToDateF = function convertStringToDate(dateStr: string): string {
+    const convertStringToDate = (dateStr: string): string => {
       return Moment(dateStr, 'YYMMDD').add(543, 'years').format('DD/MM/YYYY');
     };
 
-    const mapData = function mapDataFromAisWebConnect(data: any): any {
+    const mapDataFromAisWebConnect = (data: any): any => {
       return {
         idCardType: 'หนังสือเดินทาง',
-        expireDate: convertStringToDateF(data.ExpireDate),
-        issuingCountry: defaultIfEmptyF(data.IssuingCountry),
-        firstName: defaultIfEmptyF(data.GivenName),
-        lastName: defaultIfEmptyF(data.Surname),
-        nationality: defaultIfEmptyF(data.Nationality),
-        birthdate: convertStringToDateF(data.BirthDate),
-        gender: defaultIfEmptyF(data.Sex) === '1' ? 'M' : 'F',
-        idCardNo: defaultIfEmptyF(data.PassportNumber),
+        expireDate: convertStringToDate(data.ExpireDate),
+        issuingCountry: defaultIfEmpty(data.IssuingCountry),
+        firstName: defaultIfEmpty(data.GivenName),
+        lastName: defaultIfEmpty(data.Surname),
+        nationality: defaultIfEmpty(data.Nationality),
+        birthdate: convertStringToDate(data.BirthDate),
+        gender: defaultIfEmpty(data.Sex) === '1' ? 'M' : 'F',
+        idCardNo: defaultIfEmpty(data.PassportNumber),
         imageReadPassport: (data.imageReadPassport || '').replace(REGEX_DATA_IMAGE, ''),
       };
     };
 
-    readPassport.profile = mapData(mock);
+    readPassport.profile = mapDataFromAisWebConnect(mock);
 
     this.http.get('/api/customerportal/validate-customer-pre-to-post', {
       params: {
