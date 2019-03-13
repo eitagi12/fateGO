@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy, TemplateRef } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_ORDER_MNP } from 'src/app/order/constants/wizard.constant';
-import { Transaction, MainPackage } from 'src/app/shared/models/transaction.model';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 import { ConfirmCustomerInfo, HomeService, Utils, BillingInfo, MailBillingInfo, TelNoBillingInfo, BillingSystemType, AlertService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -22,7 +22,6 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./order-mnp-confirm-user-information-page.component.scss']
 })
 export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDestroy {
-
   wizards = WIZARD_ORDER_MNP;
 
   transaction: Transaction;
@@ -44,7 +43,7 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
     private alertService: AlertService,
     private utils: Utils,
     private http: HttpClient,
-    public translation: TranslateService
+    public translateService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
 
@@ -52,7 +51,7 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
     if (!this.transaction.data.billingInformation) {
       this.transaction.data.billingInformation = {};
     }
-    this.translationSubscribe = this.translation.onLangChange.subscribe(lang => {
+    this.translationSubscribe = this.translateService.onLangChange.subscribe(lang => {
       this.mapCustomerInfoByLang(lang.lang);
     });
 
@@ -92,7 +91,7 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
     };
 
     this.initBillingInfo();
-    this.mapCustomerInfoByLang(this.translation.currentLang);
+    this.mapCustomerInfoByLang(this.translateService.currentLang);
   }
 
   mapCustomerInfoByLang(lang: string) {
@@ -244,8 +243,8 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
   }
 
   onNext() {
-    if (!this.customerValid()) {
-      this.alertService.warning(this.translation.instant('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร'));
+    if (!this.customerValid() && !this.isMergeBilling()) {
+      this.alertService.warning(this.translateService.instant('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร'));
       return;
     }
 
@@ -268,7 +267,7 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
 
   ngOnDestroy(): void {
     this.translationSubscribe.unsubscribe();
-    this.transactionService.update(this.transaction);
+    this.transactionService.save(this.transaction);
   }
 
   getBillChannel(): any {
@@ -330,7 +329,7 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
               billDefault: billing.billDefault
             };
           }).find(bill => bill.billDefault === 'Y');
-          this.transaction.data.billingInformation.billCycle = defaultBillCycle.billCycle;
+          this.transaction.data.customer.billCycle = defaultBillCycle.billCycle.bill;
           return defaultBillCycle.text;
         });
     }

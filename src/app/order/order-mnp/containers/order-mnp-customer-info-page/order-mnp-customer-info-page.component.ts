@@ -29,7 +29,7 @@ export class OrderMnpCustomerInfoPageComponent implements OnInit {
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
-    public translation: TranslateService
+    public translateService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
   }

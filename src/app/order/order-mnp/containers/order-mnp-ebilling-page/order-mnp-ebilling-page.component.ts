@@ -19,6 +19,7 @@ export class OrderMnpEbillingPageComponent implements OnInit, OnDestroy {
   wizards = WIZARD_ORDER_MNP;
 
   transaction: Transaction;
+
   billCycleValid: boolean;
   billCycle: any;
   billCycles: Ebilling[];
@@ -30,12 +31,13 @@ export class OrderMnpEbillingPageComponent implements OnInit, OnDestroy {
     private transactionService: TransactionService,
   ) {
     this.transaction = this.transactionService.load();
+
     if (!this.transaction.data.billingInformation) {
       this.transaction.data.billingInformation = {};
     }
   }
 
-  ngOnInit() {
+ ngOnInit(): void {
     this.http.get('/api/customerportal/newRegister/queryBillCycle', {
       params: {
         coProject: 'N'
@@ -45,6 +47,8 @@ export class OrderMnpEbillingPageComponent implements OnInit, OnDestroy {
       this.billCycles = data.billCycles || [];
       if (!this.transaction.data.billingInformation.billCycle) {
         this.setBillingDefault(data.billCycles || []);
+      } else {
+        this.billCycle = this.transaction.data.billingInformation.billCycle;
       }
     });
   }
@@ -53,7 +57,7 @@ export class OrderMnpEbillingPageComponent implements OnInit, OnDestroy {
     for (const ebill of ebilling) {
       if (ebill.bill === this.transaction.data.customer.billCycle) {
         this.billCycle = ebill;
-        this.transaction.data.billingInformation.billCycle = this.billCycle;
+        // this.transaction.data.billingInformation.billCycle = this.billCycle;
       }
     }
   }

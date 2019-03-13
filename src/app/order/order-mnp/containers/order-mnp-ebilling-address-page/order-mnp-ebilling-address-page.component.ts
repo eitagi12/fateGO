@@ -30,8 +30,9 @@ export class OrderMnpEbillingAddressPageComponent implements OnInit, OnDestroy {
 
   customerAddressTemp: CustomerAddress;
   billDeliveryAddress: CustomerAddress;
-  ebillingAddressValid: boolean;
   translationSubscribe: Subscription;
+
+  ebillingAddressValid: boolean;
 
   constructor(
     private router: Router,
@@ -94,15 +95,15 @@ export class OrderMnpEbillingAddressPageComponent implements OnInit, OnDestroy {
     return (this.provinces || []).find((prov: any) => prov.name === provinceName) || {};
   }
 
-  onProvinceSelected(params: any) {
+  onProvinceSelected(params: any): void {
     const province = this.getProvinceByName(params.provinceName);
     const req = {
       provinceId: province.id,
-      zipcode: params.zipCode
+      // zipcode: params.zipCode
     };
-    if (!params.zipCode) {
-      delete req.zipcode;
-    }
+    // if (!params.zipCode) {
+    //   delete req.zipcode;
+    // }
 
     this.http.get('/api/customerportal/newRegister/queryAmphur', {
       params: req
@@ -113,16 +114,16 @@ export class OrderMnpEbillingAddressPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  onAmphurSelected(params: any) {
+  onAmphurSelected(params: any): void {
     const province = this.getProvinceByName(params.provinceName);
     const req = {
       provinceId: province.id,
       amphurName: params.amphurName,
-      zipcode: params.zipCode
+      // zipcode: params.zipCode
     };
-    if (!params.zipCode) {
-      delete req.zipcode;
-    }
+    // if (!params.zipCode) {
+    //   delete req.zipcode;
+    // }
 
     this.http.get('/api/customerportal/newRegister/queryTumbol', {
       params: req
@@ -180,6 +181,7 @@ export class OrderMnpEbillingAddressPageComponent implements OnInit, OnDestroy {
     const billingInformation = this.transaction.data.billingInformation || {};
     const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
     this.transaction.data.billingInformation.billDeliveryAddress = Object.assign(customer, this.customerAddressTemp);
+    this.transactionService.update(this.transaction);
     this.router.navigate([ROUTE_ORDER_MNP_CONFIRM_USER_INFORMATION_PAGE]);
   }
 

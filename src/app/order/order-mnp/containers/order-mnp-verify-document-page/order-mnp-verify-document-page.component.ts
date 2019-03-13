@@ -513,10 +513,12 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
           billCycle: data.billCycle,
           // zipCode: zipCode
         };
-      }).then((resp) => {
+      }).then((customer) => {
         this.transaction.data.customer = Object.assign(
-          Object.assign({}, this.transaction.data.customer), readPassport.profile);
-        return this.http.get(`/api/customerportal/newRegister/${mock.PassportNumber}/queryBillingAccount`).toPromise()
+          Object.assign({}, this.transaction.data.customer),
+          Object.assign(readPassport.profile, customer));
+
+        return this.http.get(`/api/customerportal/newRegister/${readPassport.profile.idCardNo}/queryBillingAccount`).toPromise()
           .then((respQueryBilling: any) => {
             const data = respQueryBilling.data || {};
             return this.http.post('/api/customerportal/verify/billingNetExtreme', {
@@ -542,7 +544,7 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
         this.transactionService.update(this.transaction);
         this.router.navigate([ROUTE_ORDER_MNP_PASSPOPRT_INFO_PAGE]);
         // if (this.checkBusinessLogic()) {
-        //    this.router.navigate([ROUTE_ORDER_MNP_PASSPOPRT_INFO_PAGE]);
+          //  this.router.navigate([ROUTE_ORDER_MNP_PASSPOPRT_INFO_PAGE]);
 
         // }
       }).catch((resp: any) => {
@@ -552,7 +554,7 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
           this.alertService.notify({
             type: 'error',
             html: error.errors.map((err) => {
-              return '<li class="text-left">' + err + '</li>';
+              return '<li class="text-left">' + this.translation.instant(err) + '</li>';
             }).join('')
           }).then(() => {
             this.onBack();
