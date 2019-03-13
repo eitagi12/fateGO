@@ -59,10 +59,8 @@ export class OrderNewRegisterAgreementSignPageComponent implements OnInit, OnDes
     this.router.navigate([ROUTE_ORDER_NEW_REGISTER_SUMMARY_PAGE]);
   }
 
-  onNext() {
-    if (this.transaction.data.customer.imageSignature && !this.isOpenSign) {
-      this.router.navigate([ROUTE_ORDER_NEW_REGISTER_EAPPLICATION_PAGE]);
-    } else {
+  onNext(): void {
+    if (this.openSignedCommand && !this.openSignedCommand.error) {
       this.openSignedCommand.ws.send('CaptureImage');
     }
   }
