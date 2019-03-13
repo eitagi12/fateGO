@@ -19,6 +19,7 @@ export class OrderMnpEbillingPageComponent implements OnInit, OnDestroy {
   wizards = WIZARD_ORDER_MNP;
 
   transaction: Transaction;
+
   billCycleValid: boolean;
   billCycle: any;
   billCycles: Ebilling[];
@@ -30,12 +31,13 @@ export class OrderMnpEbillingPageComponent implements OnInit, OnDestroy {
     private transactionService: TransactionService,
   ) {
     this.transaction = this.transactionService.load();
+
     if (!this.transaction.data.billingInformation) {
       this.transaction.data.billingInformation = {};
     }
   }
 
-  ngOnInit() {
+ ngOnInit(): void {
     this.http.get('/api/customerportal/newRegister/queryBillCycle', {
       params: {
         coProject: 'N'

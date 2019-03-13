@@ -329,7 +329,7 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
               billDefault: billing.billDefault
             };
           }).find(bill => bill.billDefault === 'Y');
-          this.transaction.data.billingInformation.billCycle = defaultBillCycle.billCycle;
+          this.transaction.data.customer.billCycle = defaultBillCycle.billCycle.bill;
           return defaultBillCycle.text;
         });
     }
