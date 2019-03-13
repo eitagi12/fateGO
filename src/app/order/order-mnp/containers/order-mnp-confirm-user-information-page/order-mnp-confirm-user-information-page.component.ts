@@ -43,7 +43,7 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
     private alertService: AlertService,
     private utils: Utils,
     private http: HttpClient,
-    public translation: TranslateService
+    public translateService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
 
@@ -51,7 +51,7 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
     if (!this.transaction.data.billingInformation) {
       this.transaction.data.billingInformation = {};
     }
-    this.translationSubscribe = this.translation.onLangChange.subscribe(lang => {
+    this.translationSubscribe = this.translateService.onLangChange.subscribe(lang => {
       this.mapCustomerInfoByLang(lang.lang);
     });
 
@@ -91,7 +91,7 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
     };
 
     this.initBillingInfo();
-    this.mapCustomerInfoByLang(this.translation.currentLang);
+    this.mapCustomerInfoByLang(this.translateService.currentLang);
   }
 
   mapCustomerInfoByLang(lang: string) {
@@ -244,7 +244,7 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
 
   onNext() {
     if (!this.customerValid()) {
-      this.alertService.warning(this.translation.instant('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร'));
+      this.alertService.warning(this.translateService.instant('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร'));
       return;
     }
 
