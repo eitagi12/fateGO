@@ -113,7 +113,7 @@
                 <div class="box-search" style="padding: 8px 0px 10px">
                   <input type="text" formControlName="otpNo" (keypress)="keyPress($event)"  id="input-otp" placeholder="ระบุ OTP" class="otp-input" maxlength="5">
                 </div>
-                <button class="btn-get-otp" id="button-verify">Verify</button>
+                <button class="btn-get-otp" id="button-verify" (click)="checkVerify()">Verify</button>
               </div>
             </form>
           </div>
