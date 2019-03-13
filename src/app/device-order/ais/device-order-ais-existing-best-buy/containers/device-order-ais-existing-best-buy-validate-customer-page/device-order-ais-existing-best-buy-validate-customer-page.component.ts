@@ -47,11 +47,18 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     private alertService: AlertService
 
   ) {
-    // this.homeService.callback = () => {
-    //   window.location.href = `/sales-portal/buy-product/brand/${this.band}/${this.model}`;
-    // };
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
+    this.homeService.callback = () => {
+      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+        .then((response: any) => {
+          if (response.value === true) {
+           this.createDeviceOrderBestBuyService.cancelOrderAndRedirect(this.transaction, '/').then((url: string) => {
+              window.location.href = url;
+           });
+          }
+        });
+    };
   }
 
   ngOnInit(): void {
@@ -75,34 +82,15 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
   }
 
   onHome(): void {
-    this.homeService.callback = () => {
-      window.location.href = '/';
-    };
-    this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
-    .then((response: any) => {
-      console.log('Response', response);
-      if (response.value === true) {
-        console.log('true');
-        // service
-        // transactionId: string, soId: string
-        // this.createDeviceOrderBestBuyService.clearAddToCart("111", "11");
-        // this.createDeviceOrderBestBuyService.clearAddToCart(this.transaction.transactionId, this.transaction.data.order.soId);
-        // redirect
-        // this.homeService.goToHome();
-        // cancelTransaction
-        // backtohomepage
-      } else {
-        console.log('disnius');
-      }
-    });
+    this.homeService.goToHome();
   }
 
   onBack(): void {
-    // this.homeService.goToHome();
-    this.homeService.callback = () => {
-      window.location.href = `/sales-portal/buy-product/brand/${this.band}/${this.model}`;
-    };
-    // this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
+    this.createDeviceOrderBestBuyService.cancelOrderAndRedirect(this.transaction
+        , `/sales-portal/buy-product/brand/${this.band}/${this.model}`)
+        .then((url: string) => {
+          window.location.href = url;
+     });
   }
 
   onNext(): void {

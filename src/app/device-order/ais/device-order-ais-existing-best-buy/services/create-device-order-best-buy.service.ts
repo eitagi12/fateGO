@@ -456,4 +456,20 @@ export class CreateDeviceOrderBestBuyService {
     return customer && customer.titleName && customer.firstName && customer.lastName
         ? `${customer.titleName} ${customer.firstName} ${customer.lastName}` : '';
   }
+
+  cancelOrderAndRedirect(transaction: Transaction, redirectUrl: string): Promise<string> {
+    if (transaction
+      && transaction.data
+      && transaction.data.order
+      && transaction.data.order.soId) {
+      this.clearAddToCart(transaction.transactionId, transaction.data.order.soId)
+      .then((res: any) => {
+        if (res.isSuccess) {
+          return redirectUrl;
+        }
+      });
+    } else {
+      return Promise.resolve(redirectUrl);
+    }
+  }
 }
