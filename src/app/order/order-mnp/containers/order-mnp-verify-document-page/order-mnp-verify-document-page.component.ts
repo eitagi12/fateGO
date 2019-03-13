@@ -463,16 +463,25 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
     this.readPassportSubscription.unsubscribe();
   }
 
+
+  defaultIfEmpty(text: string): any {
+    return (text || '').trim();
+  }
+
+  convertStringToDate(dateStr: string): any {
+    alert('lll');
+    return Moment(dateStr, 'YYMMDD').add(543, 'years').format('DD/MM/YYYY');
+  }
+
   // mockFunc
   onClickMock(mock): void {
-
     const readPassport: ReadPassport = {
       profile: null,
       error: null,
       eventName: null
     };
 
-    const mapData = function mapDataFromAisWebConnect(data: any): any {
+    const mapData = (data: any) => {
       return {
         idCardType: 'หนังสือเดินทาง',
         expireDate: this.convertStringToDate(data.ExpireDate),
@@ -559,12 +568,5 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
       });
   }
 
-  defaultIfEmpty(text: string): string {
-    return (text || '').trim();
-  }
-
-  convertStringToDate(dateStr: string): string {
-    return Moment(dateStr, 'YYMMDD').add(543, 'years').format('DD/MM/YYYY');
-  }
 
 }
