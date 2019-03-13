@@ -491,7 +491,7 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
       return  Moment(dateStr, 'YYMMDD').add(543 , 'years').format('DD/MM/YYYY');
     };
 
-    const mapData = function mapDataFromAisWebConnect(data: any): any {
+    const mapDataFromAisWebConnect = (data: any): any => {
       return {
         idCardType: 'หนังสือเดินทาง',
         expireDate: convertStringToDate(data.ExpireDate),
@@ -506,7 +506,7 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
       };
     };
 
-    readPassport.profile = mapData(mock);
+    readPassport.profile = mapDataFromAisWebConnect(mock);
 
     this.http.get('/api/customerportal/validate-customer-new-register', {
       params: {
