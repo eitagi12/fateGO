@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { AlertService, PageActivityService, HomeService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -16,6 +16,7 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
 
   transaction: Transaction;
   priceOption: PriceOption;
+  refreshQRCode: EventEmitter<boolean>;
 
   constructor(
     private router: Router,
@@ -27,7 +28,7 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
-
+    this.refreshQRCode = new EventEmitter<boolean>();
   }
 
   ngOnInit(): void {
@@ -44,6 +45,10 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
 
   onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_QUEUE_PAGE]);
+  }
+
+  onRefresh(): void {
+    this.refreshQRCode.emit(true);
   }
 
   summary(amount: number[]): number {
