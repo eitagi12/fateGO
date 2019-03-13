@@ -86,8 +86,9 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
   }
 
   onBack(): void {
+    const productDetail = this.priceOption.productDetail;
     this.createDeviceOrderBestBuyService.cancelOrderAndRedirect(this.transaction
-        , `/sales-portal/buy-product/brand/${this.band}/${this.model}`)
+        , `/sales-portal/buy-product/brand/${productDetail.band}/${productDetail.model}`)
         .then((url: string) => {
           window.location.href = url;
      });
