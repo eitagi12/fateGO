@@ -28,8 +28,6 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
   transaction: Transaction;
   identityValid: boolean = false;
   identity: string;
-  band: string;
-  model: string;
   priceOption: PriceOption;
   billDeliveryAddress: BillDeliveryAddress;
 
@@ -88,7 +86,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
   onBack(): void {
     const productDetail = this.priceOption.productDetail;
     this.createDeviceOrderBestBuyService.cancelOrderAndRedirect(this.transaction
-        , `/sales-portal/buy-product/brand/${productDetail.band}/${productDetail.model}`)
+        , `/sales-portal/buy-product/brand/${productDetail.brand}/${productDetail.model}`)
         .then((url: string) => {
           window.location.href = url;
      });
