@@ -9,7 +9,7 @@
     "build-sit": "ng lint && ng build -c sit",
     "build-prod": "ng lint && ng build -c production",
     "test": "jest",
-    "test:watch": "jest --watch",
+    "test:watch": "jest --watchAll",
     "test:ci": "jest --runInBand --coverage --coverageDirectory=coverage/jest",
     "lint": "ng lint",
     "e2e": "ng e2e",
