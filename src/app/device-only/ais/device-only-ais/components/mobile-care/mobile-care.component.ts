@@ -1,8 +1,6 @@
 import { Component, OnInit, Input, ViewChild, TemplateRef, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl, FormControl } from '@angular/forms';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
-import { Router } from '../../../../../../../node_modules/@angular/router';
-import { ROUTE_DEVICE_ONLY_AIS_SELECT_PAYMENT_AND_RECEIPT_INFORMATION_PAGE, ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
 import { AlertService } from 'mychannel-shared-libs';
 
@@ -60,8 +58,7 @@ export class MobileCareComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private modalService: BsModalService,
-    private router: Router,
-    private alertService: AlertService,
+    private alertService: AlertService
   ) { }
 
   ngOnInit(): void {
@@ -148,14 +145,4 @@ export class MobileCareComponent implements OnInit {
     });
   }
 
-  public onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ONLY_AIS_SELECT_PAYMENT_AND_RECEIPT_INFORMATION_PAGE]);
-  }
-  public onHome(): void {
-    // do something
-  }
-
-  public onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE]);
-  }
 }
