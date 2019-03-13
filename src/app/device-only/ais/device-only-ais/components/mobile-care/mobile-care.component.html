@@ -107,23 +107,25 @@
             <h3>สิทธิพิเศษสำหรับลูกค้า</h3>
           </div>
           <div class="card-body">
-            <div style="text-align: center;">
-              <div class="box-search">
-                <input type="text" id="input-mobile-no" placeholder="ระบุเบอร์มือถือ AIS รับสิทธิสมัครบริการโมบายแคร์" class="mobile-input"
-                  maxlength="10">
-                <button class="search-btn" (click)="checkMobileNo()" id="button-search-mobile-no">
-                  <img src="assets/images/icon/device_only_search_icon.png">
-                </button>
+            <!-- <form [formGroup]="myForm" > -->
+              <div style="text-align: center;">
+                <div class="box-search">
+                  <input formControlName="mobileNo" type="text" (keypress)="keyPress($event)" id="input-mobile-no" placeholder="ระบุเบอร์มือถือ AIS รับสิทธิสมัครบริการโมบายแคร์" class="mobile-input"
+                    maxlength="10">
+                  <button class="search-btn" (click)="checkMobileNo()" id="button-search-mobile-no">
+                    <img src="assets/images/icon/device_only_search_icon.png">
+                  </button>
+                </div>
+                <button *ngIf="isPrivilegeCus" class="btn-get-otp" id="button-get-otp">Get OTP</button>
               </div>
-              <button *ngIf="isPrivilegeCus" class="btn-get-otp" id="button-get-otp">Get OTP</button>
-            </div>
-            <p></p>
-            <div *ngIf="isPrivilegeCus" style="text-align: center;">
-              <div class="box-search" style="padding: 8px 0px 10px">
-                <input type="text" id="input-otp" placeholder="ระบุ OTP" class="otp-input" maxlength="5">
+              <p></p>
+              <div *ngIf="isPrivilegeCus" style="text-align: center;">
+                <div class="box-search" style="padding: 8px 0px 10px">
+                  <input type="text" formControlName="otpNo" (keypress)="keyPress($event)"  id="input-otp" placeholder="ระบุ OTP" class="otp-input" maxlength="5">
+                </div>
+                <button class="btn-get-otp" id="button-verify">Verify</button>
               </div>
-              <button class="btn-get-otp" id="button-verify">Verify</button>
-            </div>
+            <!-- </form> -->
           </div>
         </div>
 

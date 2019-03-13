@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, ViewChild, TemplateRef, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl, FormControl } from '@angular/forms';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { Router } from '../../../../../../../node_modules/@angular/router';
 import { ROUTE_DEVICE_ONLY_AIS_SELECT_PAYMENT_AND_RECEIPT_INFORMATION_PAGE, ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE } from '../../constants/route-path.constant';
@@ -53,7 +53,7 @@ export class MobileCareComponent implements OnInit {
   @ViewChild('template')
   template: TemplateRef<any>;
   modalRef: BsModalRef;
-
+  myForm: any;
   mobileCareForm: FormGroup;
   notBuyMobileCareForm: FormGroup;
   constructor(
@@ -64,6 +64,22 @@ export class MobileCareComponent implements OnInit {
 
   ngOnInit(): void {
     this.createForm();
+    this.oncheckValidators();
+  }
+
+  oncheckValidators(): void {
+    this.myForm = new FormGroup({
+      'mobileNo': new FormControl(this.myForm.mobileNo, [Validators.required, Validators.maxLength(10)]),
+      'otpNo': new FormControl(this.myForm.mobileNo, [Validators.required, Validators.maxLength(5)]),
+    });
+  }
+
+  keyPress(event: any): void {
+    const pattern = /[0-9\+\-\ ]/;
+    const inputChar = String.fromCharCode(event.charCode);
+    if (event.keyCode !== 8 && !pattern.test(inputChar)) {
+      event.preventDefault();
+    }
   }
 
   createForm(): void {
