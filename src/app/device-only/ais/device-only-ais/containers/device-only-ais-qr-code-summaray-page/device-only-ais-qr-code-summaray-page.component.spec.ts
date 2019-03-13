@@ -1,44 +1,42 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
-import { HttpClient, HttpHandler } from '@angular/common/http';
-
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { RouterTestingModule } from '@angular/router/testing';
-
 import { DeviceOnlyAisQrCodeSummarayPageComponent } from './device-only-ais-qr-code-summaray-page.component';
-import { CookiesStorageService } from 'ngx-store';
-import { JwtHelperService } from '@auth0/angular-jwt/src/jwthelper.service';
+import { ROUTE_DEVICE_ONLY_AIS_QR_CODE_GENERATE_PAGE, ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_PAGE } from 'src/app/device-only/ais/device-only-ais/constants/route-path.constant';
 
 describe('DeviceOnlyAisQrCodeSummarayPageComponent', () => {
   let component: DeviceOnlyAisQrCodeSummarayPageComponent;
-  let fixture: ComponentFixture<DeviceOnlyAisQrCodeSummarayPageComponent>;
-
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule
-      ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ DeviceOnlyAisQrCodeSummarayPageComponent ],
-      providers: [
-        CookiesStorageService,
-        {
-          provide: JwtHelperService,
-          useValue: {}
-        },
-        HttpClient,
-        HttpHandler
-      ]
-    })
-    .compileComponents();
-  }));
+  let router;
+  let homeService;
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DeviceOnlyAisQrCodeSummarayPageComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    router = {
+      navigate: jest.fn()
+    };
+
+    homeService = {
+      goToHome: jest.fn()
+    };
+
+    component = new DeviceOnlyAisQrCodeSummarayPageComponent(
+      router,
+      homeService
+    );
   });
 
-  it('should create', () => {
+  it('should create component', () => {
     expect(component).toBeTruthy();
   });
+
+  describe('onBack', () => {
+    it('should route navigate to ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_PAGE', () => {
+      component.onBack();
+      expect(router.navigate).toHaveBeenCalledWith([ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_PAGE]);
+    });
+  });
+
+  describe('onNext', () => {
+    it('should route to navigate to ROUTE_DEVICE_ONLY_AIS_QR_CODE_GENERATE_PAGE', () => {
+      component.onNext();
+      expect(router.navigate).toHaveBeenCalledWith([ROUTE_DEVICE_ONLY_AIS_QR_CODE_GENERATE_PAGE]);
+    });
+  });
+
 });

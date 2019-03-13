@@ -9,28 +9,22 @@
     </div>
   </mc-header>
 
-  <div class="mc-flex-wrap">
-    <div class="my-3">
-      <div class="container-fluid">
-        <div class="row mb-3">
-          <div class="col-6">
-            <div class="ml-5">
-              <img src="assets/images/icon/icon-person.png" class="icon-person" />
-              <span id="text-customer-name">
-                นาย ธีระยุทธ เจโตวิมุติพงศ์
-              </span>
-            </div>
-          </div>
-          <div class="col-6 text-right">
-            <div class="mr-5">
-              <img src="assets/images/icon/sales_portal_green_phone.png" class="icon-mobile" />
-              <span id="text-mobile-no">
-                0889540584
-              </span>
-            </div>
-          </div>
+  <div class="mc-flex-wrap bg-white">
+    <div class="container-fluid mt-3 mb-3">
+      <div class="row pl-3 pr-3">
+        <div class="col-12 col-sm-6">
+          <img src="assets/images/icon/icon-person.png" class="icon-img icon-person" />
+          <span id="text-customer-name">นาย ธีระยุทธ เจโตวิมุติพงศ์</span>
         </div>
+        <div class="col-12 col-sm-6 text-sm-right">
+          <img src="assets/images/icon/sales_portal_green_phone.png" class="icon-img icon-phone" />
+          <span id="text-mobile-no">0889540584</span>
+        </div>
+      </div>
+    </div>
 
+    <div class="mt-3 mb-3">
+      <div class="container-fluid mt-3 mb-3">
         <div class="card mb-3">
           <div class="card-header bg-pink text-white">รายการสินค้า</div>
           <div class="card-body">
@@ -54,50 +48,55 @@
             </span>
           </div>
         </div>
+      </div>
+    </div>
 
-        <div class="card mb-3">
-          <div class="card-header bg-pink text-white">
-            รายละเอียดการชำระ
-          </div>
-          <div class="card-body text-grey">
-            <p>
-              <i class="fa fa-circle mr-3 text-light-green"></i>
-              <span id="text-brand-model-payment">
-                Samsung S10 Plus สี BLACK: ชำระเต็มจำนวน
-              </span>
-              <span class="pull-right text-light-green" id="text-normal-price-payment">
-                ฿ 45,700
-              </span>
-            </p>
-          </div>
+    <div class="container-fluid mt-3 mb-3">
+      <div class="card mb-3">
+        <div class="card-header bg-pink text-white">
+          รายละเอียดการชำระ
         </div>
+        <div class="card-body text-grey">
+          <p>
+            <i class="fa fa-circle mr-3 text-light-green"></i>
+            <span id="text-brand-model-payment">
+              Samsung S10 Plus สี BLACK: ชำระเต็มจำนวน
+            </span>
+            <span class="pull-right text-light-green" id="text-normal-price-payment">
+              ฿ 45,700
+            </span>
+          </p>
+        </div>
+      </div>
+    </div>
 
-        <div class="container">
-          <div class="row">
-            <div class="col-8">
-              <img src="assets/images/icon/phone_qrcode.png" />
-              <span id="text-qr-code-type">
-                ชำระด้วย QR Code
-              </span>
-              <div class="text-pink">กรุณาเปิด Application เพื่อสแกน QR Code</div>
-            </div>
-            <div class="col-4 text-right">
-              <img class="img-fluid" src="assets/images/icon/Thai_Qr_Payment.png" />
-            </div>
-            <div class="col-12 mt-3">
-              <form class="form-inline pull-right">
-                <div class="form-group">
-                  <label for="text-total-price" class="text-light-green">ยอดชำระ</label>
-                  <input style="text-align: center" type="text" id="text-total-price" readonly class="form-control ml-3 text-light-green" value="45,700">
-                </div>
-              </form>
-            </div>
-          </div>
+    <div class="container-fluid mt-3 mb-3">
+      <div class="row">
+        <div class="col-8">
+          <img src="assets/images/icon/phone_qrcode.png" />
+          <span id="text-qr-code-type">
+            ชำระด้วย QR Code
+          </span>
+          <div class="text-pink">กรุณาเปิด Application เพื่อสแกน QR Code</div>
+        </div>
+        <div class="col-4 text-right">
+          <img class="img-fluid" src="assets/images/icon/Thai_Qr_Payment.png" />
         </div>
       </div>
 
+        <div class="col-12 mt-4">
+          <form class="form-inline pull-right">
+            <div class="form-group">
+              <label for="text-total-price" class="text-light-green">ยอดชำระ</label>
+              <input style="text-align: center" type="text" id="text-total-price" readonly
+                class="form-control ml-3 text-light-green" value="45,700">
+            </div>
+          </form>
+        </div>
     </div>
+
   </div>
+
 
   <mc-footer>
     <button class="btn btn-secondary" id="button-back" (click)="onBack()">CANCEL</button>
