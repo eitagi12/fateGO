@@ -5,6 +5,9 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent } from './device-only-ais-select-payment-and-receipt-information-page.component';
 import { RouterTestingModule } from '@angular/router/testing';
+import { CookiesStorageService } from '../../../../../../../node_modules/ngx-store';
+import { JwtHelperService } from '../../../../../../../node_modules/@auth0/angular-jwt/src/jwthelper.service';
+import { HttpClient, HttpHandler } from '../../../../../../../node_modules/@angular/common/http';
 
 @Pipe({name: 'translate'})
 class MockPipe implements PipeTransform {
@@ -24,6 +27,15 @@ describe('DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent', () => {
       declarations: [
         DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent,
         MockPipe
+      ],
+      providers: [
+        CookiesStorageService,
+        {
+            provide: JwtHelperService,
+            useValue: {}
+        },
+        HttpClient,
+        HttpHandler
       ]
     })
     .compileComponents();
