@@ -4,13 +4,18 @@ import { ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE, ROUTE_DEVICE_ONLY_AIS_CH
 describe('DeviceOnlyAisSummaryPageComponent', () => {
   let component: DeviceOnlyAisSummaryPageComponent;
   let router;
+  let homeService;
 
   beforeEach(() => {
     router = {
       navigate: jest.fn()
     };
+    homeService = {
+      goToHome: jest.fn()
+    };
     component = new DeviceOnlyAisSummaryPageComponent(
-      router
+      router,
+      homeService
     );
   });
 
