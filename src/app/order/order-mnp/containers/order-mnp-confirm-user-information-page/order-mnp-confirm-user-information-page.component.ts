@@ -243,7 +243,7 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
   }
 
   onNext() {
-    if (!this.customerValid()) {
+    if (!this.customerValid() && !this.isMergeBilling()) {
       this.alertService.warning(this.translateService.instant('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร'));
       return;
     }

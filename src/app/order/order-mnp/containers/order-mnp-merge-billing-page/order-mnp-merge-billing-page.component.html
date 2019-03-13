@@ -18,6 +18,6 @@
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
     <button class="btn btn-success" (click)="onNext()"
-      [disabled]="!transaction?.data?.billingInformation?.mergeBilling">NEXT</button>
+    [disabled]="!mergeBilling">NEXT</button>
   </mc-footer>
 </div>
