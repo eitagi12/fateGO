@@ -42,7 +42,7 @@
       </div>
       <div *ngIf="inputBillingAddress">
           <app-billing-address 
-           [customerAddress]="customerAddress"
+          [customerAddress]="customerAddress"
           [allZipCodes]="allZipCodes"
           [provinces]="getProvinces()"
           [amphurs]="amphurs"
@@ -60,19 +60,19 @@
     <div class="card-footer bg-transparent">
       <form [formGroup]="receiptInfoForm" class="pt-2">
         <div class="form-group row">
-          <label for="taxId" class="col-12 col-sm-3 col-form-label">Tax Id</label>
+          <label for="taxId" class="col-12 col-sm-3 col-form-label" id="txtTaxID">Tax Id</label>
           <div class="col-12 col-sm-9">
             <input type="text" class="form-control" id="taxId" formControlName="taxId"/>
           </div>
         </div>
         <div class="form-group row">
-          <label for="branch" class="col-12 col-sm-3 col-form-label">สาขาที่</label>
+          <label for="branch" class="col-12 col-sm-3 col-form-label" id="txtBranch">สาขาที่</label>
           <div class="col-12 col-sm-9">
             <input type="text" class="form-control" id="branch" formControlName="branch" readonly />
           </div>
         </div>
         <div class="form-group row">
-          <label for="telNo" class="col-12 col-sm-3 col-form-label">เบอร์ติดต่อ</label>
+          <label for="telNo" class="col-12 col-sm-3 col-form-label" id="txtTelNo">เบอร์ติดต่อ</label>
           <div class="col-12 col-sm-9">
             <input type="text" maxlength="10" class="form-control" id="telNo" formControlName="telNo" [ngClass]="{ 'is-invalid' : receiptInfoForm.controls.telNo.invalid && receiptInfoForm.controls.telNo.touched }" />
             <!-- <small class="form-text invalid-feedback" *ngIf="receiptInfoForm.controls.telNo.touched && receiptInfoForm.controls.telNo.errors">

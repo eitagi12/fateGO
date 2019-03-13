@@ -154,9 +154,7 @@ export class ReceiptInformationComponent implements OnInit {
   }
 
   private getProvinces(): string[] {
-    return (this.provinces || []).map((province: any) => {
-      return province.name;
-    });
+    return (this.provinces || []).map((province: any) => province.name);
   }
 
   private responseZipCode(): (value: any) => any {

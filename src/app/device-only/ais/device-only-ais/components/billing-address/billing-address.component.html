@@ -2,11 +2,11 @@
     <div class="card mb-3">
       <div class="card-header bg-deep-orange border-0 text-white rounded-top p-3">
         <div class="row">
-          <div class="col-8 text-left">
+          <div class="col-8 text-left" id="txtBillingAddress">
               ที่อยู่ในการจัดส่งเอกสาร
           </div>
           <div class="col-4 text-right">
-            <a href="#" (click)="clearCustomerAddressForm($event)" class="text-white"><u>CLEAR</u></a>
+            <a href="#" (click)="clearCustomerAddressForm($event)" class="text-white" id="linkClearCustomerAddressForm"><u>CLEAR</u></a>
           </div>
         </div>
       </div>
@@ -14,7 +14,7 @@
         <div class="pt-1 bg-white">
           <form [formGroup]="customerAddressForm">
             <div class="form-group">
-              <label for="homeNo">บ้านเลขที่
+              <label for="homeNo" id="txtHomeNo">บ้านเลขที่
                 <span class="text-red"> *</span>
               </label>
               <input type="text" autocomplete="off" class="form-control" id="inputHomeNo" maxlength="10" formControlName="homeNo"
@@ -22,42 +22,42 @@
             </div>
   
             <div class="form-group">
-              <label for="moo">หมู่ที่</label>
+              <label for="moo" id="txtMoo">หมู่ที่</label>
               <input type="text" autocomplete="off" class="form-control" id="inputMoo" maxlength="30" formControlName="moo">
             </div>
   
             <div class="form-group">
-              <label for="mooBan">หมู่บ้าน</label>
+              <label for="mooBan" id="txtMooBan">หมู่บ้าน</label>
               <input type="text" autocomplete="off" class="form-control" id="inputMooBan" maxlength="50" formControlName="mooBan">
             </div>
   
             <div class="form-group">
-              <label for="room">ห้อง</label>
+              <label for="room" id="txtRoom">ห้อง</label>
               <input type="text" autocomplete="off" class="form-control" id="inputRoom" maxlength="30" formControlName="room">
             </div>
   
             <div class="form-group">
-              <label for="floor">ชั้น</label>
+              <label for="floor" id="txtFloor">ชั้น</label>
               <input type="text" autocomplete="off" class="form-control" id="inputFloor" maxlength="30" formControlName="floor">
             </div>
   
             <div class="form-group">
-              <label for="buildingName">ตึก</label>
+              <label for="buildingName" id="txtBuildingName">ตึก</label>
               <input type="text" autocomplete="off" class="form-control" id="InputBuildingName" maxlength="80" formControlName="buildingName">
             </div>
   
             <div class="form-group">
-              <label for="soi">ซอย</label>
+              <label for="soi" id="txtSoi">ซอย</label>
               <input type="text" autocomplete="off" class="form-control" id="inputSoi" maxlength="50" formControlName="soi">
             </div>
   
             <div class="form-group">
-              <label for="street">ถนน</label>
+              <label for="street" id="txtStreetName">ถนน</label>
               <input type="text" autocomplete="off" class="form-control" id="inputStreet" maxlength="80" formControlName="street">
             </div>
   
             <div class="form-group">
-              <label for="province">จังหวัด
+              <label for="province" id="txtProvince">จังหวัด
                 <span class="text-red"> *</span>
               </label>
               <select class="form-control" title="กรุณาเลือกจังหวัด" id="selectProvince" formControlName="province" [ngClass]="{'is-invalid': customerAddressForm.controls['province'].invalid && customerAddressForm.controls['province'].dirty }" >
@@ -67,7 +67,7 @@
             </div>
   
             <div class="form-group">
-              <label for="amphur" class="col-form-label">อำเภอ/เขต
+              <label for="amphur" class="col-form-label" id="txtAmphur">อำเภอ/เขต
                 <span class="text-red"> *</span>
               </label>
               <select class="form-control" title="กรุณาเลือกอำเภอ/เขต" id="selectAmphur" formControlName="amphur" [ngClass]="{'is-invalid': customerAddressForm.controls['amphur'].invalid && customerAddressForm.controls['amphur'].dirty }" >
@@ -77,7 +77,7 @@
             </div>
   
             <div class="form-group">
-              <label for="tumbol" class="col-form-label">ตำบล/แขวง
+              <label for="tumbol" class="col-form-label" id="txtTumbol">ตำบล/แขวง
                 <span class="text-red"> *</span>
               </label>
               <select class="form-control" title="กรุณาเลือกตำบล/แขวง" id="selectTumbol" formControlName="tumbol" [ngClass]="{'is-invalid': customerAddressForm.controls['tumbol'].invalid && customerAddressForm.controls['tumbol'].dirty }" >
@@ -87,7 +87,7 @@
             </div>
   
             <div class="form-group position-relative">
-              <label for="zipCodes" class="col-form-label">รหัสไปรษณีย์
+              <label for="zipCodes" class="col-form-label" id="txtZipCode">รหัสไปรษณีย์
                 <span class="text-red"> *</span>
               </label>
               <input type="text" id="selectZipCode" maxlength="5" autocomplete="off" formControlName="zipCode" placeholder="กรุณาเลือกรหัสไปรษณีย์"
