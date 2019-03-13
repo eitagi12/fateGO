@@ -33,6 +33,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
   priceOption: PriceOption;
   billDeliveryAddress: BillDeliveryAddress;
 
+
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -45,6 +46,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     private priceOptionService: PriceOptionService,
     private createDeviceOrderBestBuyService: CreateDeviceOrderBestBuyService,
     private alertService: AlertService
+
   ) {
     // this.homeService.callback = () => {
     //   window.location.href = `/sales-portal/buy-product/brand/${this.band}/${this.model}`;
@@ -77,6 +79,23 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     this.homeService.callback = () => {
       window.location.href = '/';
     };
+    this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+    .then((response: any) => {
+      console.log('Response', response);
+      if (response.value === true) {
+        console.log('true');
+        // service
+        // transactionId: string, soId: string
+        this.createDeviceOrderBestBuyService.clearAddToCart("111", "11");
+        // this.createDeviceOrderBestBuyService.clearAddToCart(this.transaction.transactionId, this.transaction.data.order.soId);
+        // redirect
+        // this.homeService.goToHome();
+        // cancelTransaction
+        // backtohomepage
+      } else {
+        console.log('disnius');
+      }
+    });
   }
 
   onBack(): void {
