@@ -33,7 +33,6 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
   priceOption: PriceOption;
   billDeliveryAddress: BillDeliveryAddress;
 
-
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -86,7 +85,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
         console.log('true');
         // service
         // transactionId: string, soId: string
-        this.createDeviceOrderBestBuyService.clearAddToCart("111", "11");
+        // this.createDeviceOrderBestBuyService.clearAddToCart("111", "11");
         // this.createDeviceOrderBestBuyService.clearAddToCart(this.transaction.transactionId, this.transaction.data.order.soId);
         // redirect
         // this.homeService.goToHome();
