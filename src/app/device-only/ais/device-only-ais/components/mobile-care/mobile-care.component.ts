@@ -49,6 +49,8 @@ export class MobileCareComponent implements OnInit {
   @Output()
   completed: EventEmitter<any> = new EventEmitter<any>();
 
+  @Output() verifyOtp: EventEmitter<any> = new EventEmitter<any>();
+
   @ViewChild('template')
   template: TemplateRef<any>;
   modalRef: BsModalRef;
@@ -143,6 +145,10 @@ export class MobileCareComponent implements OnInit {
       <br> (แพ็กเกจ xxxxxx สิ้นสุด dd/mm/yyyy) <br> กรุณาเปลี่ยนเบอร์ใหม่ หรือยืนยันสมัครบริการโมบายแคร์กับ <br>
       เครื่อง iPhone 6S Plus`
     });
+  }
+
+  public checkVerify(): void {
+    this.verifyOtp.emit(false);
   }
 
 }
