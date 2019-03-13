@@ -355,6 +355,7 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
               this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE]);
             })
             .catch((error: any) => {
+              this.validateCustomerForm.patchValue({ identity: '' });
               this.alertService.error(error.error.resultDescription);
             });
         }
@@ -415,7 +416,7 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
             this.transaction.data.action = TransactionAction.READ_PASSPORT;
             this.transactionService.update(this.transaction);
             // if (this.checkBusinessLogic()) {
-              this.router.navigate([ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_PAGE]);
+            this.router.navigate([ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_PAGE]);
             // }
           }).catch((resp: any) => {
             this.pageLoadingService.closeLoading();
