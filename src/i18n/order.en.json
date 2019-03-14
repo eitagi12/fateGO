@@ -46,6 +46,7 @@
     "รหัสผ่าน": "Password",
     "เลือกแพ็กเกจ": "Package selection",
     "ยืนยันและรับSIM": "Confirm and receive SIM card",
+    "ยืนยัน": "Confirm",
     "เลือกเบอร์ที่ต้องการหรือ SCAN SIM": "Pick a number you like or SCAN SIM",
     "เลือกเบอร์แบบระบุเงื่อนไข": "Select the number with conditions",
     "เลือกเบอร์โทรในแบบของคุณ": "Choose your new number in your own style",
@@ -139,7 +140,9 @@
     "ขออภัยในความไม่สะดวก": "We apologize for any inconvenience",
     "กรุณาเลือกจังหวัด": "Please select your province.",
     "กรุณาเลือกอำเภอ/เขต": "Please select your district.",
-    "กรุณาเลือกตำบล/แขวง": "Please select your subdistrict."
+    "กรุณาเลือกตำบล/แขวง": "Please select your subdistrict.",
+    "หนังสือเดินทาง": "Passport",
+    "บัตรประชาชน": "ID Card"
 
 
 
