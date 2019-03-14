@@ -10,6 +10,16 @@ import { HomeService } from 'mychannel-shared-libs';
 })
 export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit {
   public isVerify: boolean = false;
+  public promotionMock: any = [{
+    id: '1',
+    title: 'AIS Mobile Care-Swap+Replace เหมาจ่าย 12 เดือน 969',
+    priceExclVat: '969'
+  },
+  {
+    id: '2',
+    title: 'AIS Mobile Care-Swap+Replace รายเดือน 89 บาท',
+    priceExclVat: '89'
+  }];
 
   constructor(
     private router: Router,

@@ -36,13 +36,14 @@ export class MobileCareComponent implements OnInit {
   wizards: string[] = WIZARD_DEVICE_ONLY_AIS;
   public moblieNo: string;
   public otp: string;
-  public isPrivilegeCus: boolean = false;
-
+  public isPrivilegeCustomer: boolean = false;
+  public mobileNoPost: string;
   public VAT: number = 1.07;
   public isValidNotBuyMobile: boolean = false;
 
   @Input()
   mobileCare: MobileCare;
+  @Input() promotionMock: any;
 
   @Input()
   normalPrice: number;
@@ -140,8 +141,20 @@ export class MobileCareComponent implements OnInit {
     this.modalRef.hide();
   }
 
+  public searchMobileNo(): void {
+    this.mobileNoPost = this.mobileNoPost;
+    this.checkMobileNo();
+  }
+
   public checkMobileNo(): void {
-    this.isPrivilegeCus = !this.isPrivilegeCus;
+    const MOBILE_NO_POSTPAID = '0800000000';
+    // if(this.mobileNoPost === MOBILE_NO_POSTPAID) { Mock postpaid mobile number
+      this.isPrivilegeCustomer = !this.isPrivilegeCustomer;
+      this.popupMobileCare();
+    // }
+  }
+
+  private popupMobileCare(): void {
     this.alertService.notify({
       type: 'warning',
       width: '80%',
