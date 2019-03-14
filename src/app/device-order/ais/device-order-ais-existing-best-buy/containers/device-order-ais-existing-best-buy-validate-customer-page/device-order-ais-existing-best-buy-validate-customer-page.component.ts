@@ -84,12 +84,17 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
   }
 
   onBack(): void {
-    const productDetail = this.priceOption.productDetail;
-    this.createDeviceOrderBestBuyService.cancelOrderAndRedirect(this.transaction
-        , `/sales-portal/buy-product/brand/${productDetail.brand}/${productDetail.model}`)
-        .then((url: string) => {
-          window.location.href = url;
-     });
+    this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+        .then((response: any) => {
+          if (response.value === true) {
+            const productDetail = this.priceOption.productDetail;
+            this.createDeviceOrderBestBuyService.cancelOrderAndRedirect(this.transaction
+                , `/sales-portal/buy-product/brand/${productDetail.brand}/${productDetail.model}`)
+                .then((url: string) => {
+                  window.location.href = url;
+             });
+          }
+        });
   }
 
   onNext(): void {
