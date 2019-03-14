@@ -96,8 +96,8 @@ export class ReceiptInformationComponent implements OnInit {
     this.receiptInfoForm.controls['taxId'].setValue(this.customerInfoMock.taxId);
   }
 
-  onClickInputBillingAddress(): void {
-    this.inputBillingAddress = true;
+  switchKeyInBillingAddress(): void {
+    this.inputBillingAddress = !this.inputBillingAddress;
   }
 
   onProvinceSelected(params: any): void {
