@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors  
 import { debounceTime } from 'rxjs/operators';
 import { BillingAddressService } from '../../services/billing-address.service';
 import { HttpClient } from '@angular/common/http';
+import { AlertService, REGEX_MOBILE } from 'mychannel-shared-libs';
 
 export interface ReceiptInfo {
   taxId: string;
@@ -36,6 +37,7 @@ export class ReceiptInformationComponent implements OnInit {
     status: ''
   };
 
+  searchByMobileNoForm: FormGroup;
   receiptInfoForm: FormGroup;
   billingAddressForm: FormGroup;
   customerAddress: any;
@@ -51,7 +53,8 @@ export class ReceiptInformationComponent implements OnInit {
 
   constructor(
     private fb: FormBuilder,
-    private billingAddress: BillingAddressService) {
+    private billingAddress: BillingAddressService,
+    private alertService: AlertService) {
     this.billingAddress.getProvinces().then(this.responseProvinces());
     this.billingAddress.getZipCodes().then(this.responseZipCodes());
    }
@@ -72,6 +75,7 @@ export class ReceiptInformationComponent implements OnInit {
       zipCode: '',
     };
     this.createForm();
+    this.createSearchByMobileNoForm();
   }
 
   private createForm(): void {
@@ -91,9 +95,43 @@ export class ReceiptInformationComponent implements OnInit {
     });
   }
 
+  private createSearchByMobileNoForm(): void {
+    this.searchByMobileNoForm = this.fb.group({
+      mobileNo: ['', Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])]
+    });
+  }
+
   setCustomerInfo(data: Object): void {
     this.customerInfoMock = data;
     this.receiptInfoForm.controls['taxId'].setValue(this.customerInfoMock.taxId);
+  }
+
+  searchCustomerInfo(): void {
+    if (this.searchByMobileNoForm.valid) {
+      if (this.searchByMobileNoForm.value.mobileNo === '0889540584') {
+        this.setCustomerInfo({
+          taxId: '1234500678910',
+          name: 'นาย ธีระยุทธ เจโตวิมุติพงศ์',
+          mobileNo: '0889540584',
+          billingAddress: 'ซ.พหลโยธิน 9 ตึก ESV ชั้น 22 แขวงสามเสนใน เขตพญาไท กรุงเทพฯ 10400',
+          status: 'Active'
+        });
+      } else {
+        this.alertService.notify({
+          type: 'error',
+          confirmButtonText: 'OK',
+          showConfirmButton: true,
+          text: 'ไม่พบหมายเลขนี้ในระบบ AIS'
+        });
+      }
+    } else {
+      this.alertService.notify({
+        type: 'warning',
+        confirmButtonText: 'OK',
+        showConfirmButton: true,
+        text: 'กรุณาระบุหมายเลขโทรศัพท์ให้ถูกต้อง'
+      });
+    }
   }
 
   onClickInputBillingAddress(): void {
