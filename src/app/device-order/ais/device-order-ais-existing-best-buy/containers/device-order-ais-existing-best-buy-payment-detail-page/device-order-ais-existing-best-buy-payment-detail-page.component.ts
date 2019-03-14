@@ -91,9 +91,6 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
     this.showQRCode = this.paymentMethod === 'CC' && this.user.userType !== 'ASP'
               && this.user.channelType !== 'sff-web' && this.priceOption.productStock.company === 'AWN'
               && this.user.username === 'duangdat';
-    // this.priceOption.trade.advancePay.amount = 1000;
-    // this.priceOption.trade.advancePay.installmentFlag = 'N';
-    // this.paymentMethod = 'CC/CA';
 
     this.onLoadDefaultBankData(this.priceOption.trade.banks).then((banks) => {
       this.priceOption.trade.banks = banks;

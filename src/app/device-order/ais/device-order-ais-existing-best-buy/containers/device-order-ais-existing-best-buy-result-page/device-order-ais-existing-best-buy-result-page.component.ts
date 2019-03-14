@@ -28,7 +28,8 @@ export class DeviceOrderAisExistingBestBuyResultPageComponent implements OnInit 
   }
 
   onMainMenu(): void {
-    this.homeService.goToHome();
+    this.transactionService.remove();
+    window.location.href = '/';
   }
 
 }

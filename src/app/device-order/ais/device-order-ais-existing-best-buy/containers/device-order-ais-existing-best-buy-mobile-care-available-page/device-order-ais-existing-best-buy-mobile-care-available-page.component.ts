@@ -33,10 +33,7 @@ export class DeviceOrderAisExistingBestBuyMobileCareAvailablePageComponent imple
   constructor(
     private router: Router,
     private homeService: HomeService,
-    private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private apiRequestService: ApiRequestService,
-    private http: HttpClient,
     public fb: FormBuilder,
     private shoppingCartService: ShoppingCartService,
     private priceOptionService: PriceOptionService
@@ -69,7 +66,7 @@ export class DeviceOrderAisExistingBestBuyMobileCareAvailablePageComponent imple
   }
 
   ngOnDestroy(): void {
-    this.transactionService.save(this.transaction);
+    this.transactionService.update(this.transaction);
   }
 
   createForm(): void {
@@ -81,6 +78,7 @@ export class DeviceOrderAisExistingBestBuyMobileCareAvailablePageComponent imple
       if (value.changeMobileCare === 'Yes') {
         this.changeMobileCare = true;
       } else {
+        this.transaction.data.mobileCarePackage = null;
         this.changeMobileCare = false;
       }
       this.identityValid = true;

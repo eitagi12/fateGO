@@ -180,7 +180,7 @@ export class CreateDeviceOrderBestBuyService {
       customerAddress: this.getCustomerAddress(customer),
       tradeNo: trade && trade.tradeNo || '',
       ussdCode: trade && trade.ussdCode || '',
-      returnCode: '4GEYYY', // customer.privilegeCode || '',
+      returnCode: customer.privilegeCode || '',
       cashBackFlg: '',
       matAirTime: '',
       matCodeFreeGoods: '',
@@ -297,7 +297,7 @@ export class CreateDeviceOrderBestBuyService {
     otherInformation += REMARK_DISCOUNT + space + (+trade.discount.amount).toFixed(2) + comma + space;
     otherInformation += REMARK_RETURN_CODE + space + customer.privilegeCode + comma + space;
     otherInformation += REMARK_ORDER_TYPE + space + 'MC004' + comma + space;
-    if (mobileCare) {
+    if (mobileCare && !mobileCare.reason) {
       otherInformation += REMARK_PRMOTION_CODE + space + 'remark.mainPackageCode' + comma + space;
       otherInformation += REMARK_MOBILE_CARE_CODE + space + mobileCare.customAttributes.promotionCode + comma + space;
       otherInformation += REMARK_MOBILE_CARE + space + mobileCare.customAttributes.shortNameThai + comma + space;

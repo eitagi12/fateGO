@@ -235,6 +235,6 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
   }
 
   ngOnDestroy(): void {
-    this.transactionService.save(this.transaction);
+    this.transactionService.update(this.transaction);
   }
 }

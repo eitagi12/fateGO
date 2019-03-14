@@ -2,14 +2,13 @@ import { Component, OnInit, OnDestroy, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-import { ApiRequestService, PageLoadingService, HomeService, AlertService } from 'mychannel-shared-libs';
+import { PageLoadingService, AlertService } from 'mychannel-shared-libs';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { DOCUMENT } from '@angular/platform-browser';
 import { CreateDeviceOrderBestBuyService } from '../../services/create-device-order-best-buy.service';
-import { PriceOption } from '../../../../../shared/models/price-option.model';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 
 @Component({
@@ -27,7 +26,6 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
   constructor(
     private router: Router,
     private fb: FormBuilder,
-    private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private createBestBuyService: CreateDeviceOrderBestBuyService,
     private alertService: AlertService,
@@ -39,8 +37,6 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
 
   ngOnInit(): void {
     this.createForm();
-    // this.document.querySelector('body').classList.add('white-body');
-
   }
 
   createForm(): void {
@@ -61,8 +57,6 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
       } else {
         this.alertService.error('ระบบขัดข้อง');
       }
-    }).catch((err: any) => {
-      this.alertService.error(err);
     });
   }
 
