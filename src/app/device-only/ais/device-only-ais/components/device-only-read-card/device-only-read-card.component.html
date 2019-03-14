@@ -18,39 +18,29 @@
   </h5>
   <div class="card-header bg-transparent">
     <label style="margin-top:10px;">ผู้ซื้อ
-      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label id="modal-text-customer-name">{{name}}</label>
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label id="modal-text-customer-name">{{customerInfoMock[0].name}}</label>
     </label>
   </div>
   <div class="card-body">
     <form [formGroup]="selectBillingAddressForm">
       <h5>ที่อยู่ตามบัตรประชาชน</h5>
       <div>
-        <input class="form-check-input" type="radio" value="ที่อยู่0"
+        <input class="form-check-input" type="radio" value="ที่อยู่ตามบัตรประชาชน"
           formControlName="billingAddress" id="modal-text-customer-id-card-address">
         <label class="form-check-label" class="col-11" for="modal-text-customer-id-card-address">
-          {{ 'ที่อยู่ xxx xxxxxxx xxxxxxxxx xxxxxxxx xxxxx' }}
+          {{ 'ที่อยู่: ' + customerInfoMock[0].billingAddress }}
         </label>
       </div>
       <br/>
       <h5>ที่อยู่ตามใบแจ้งค่าใช้บริการเบอร์ AIS ของท่าน</h5>
-      <div>
+      <div *ngFor="let itemBA of customerInfoMock">
         <input class="form-check-input" type="radio" value="ที่อยู่1"
           formControlName="billingAddress" id="modal-text-billing-address-1">
-        <label class="form-check-label" class="col-9">{{ '09X XXX XXXX' }}</label>
-        <label class="form-check-label" class="col-2">{{ 'Active' }}</label>
+        <label class="form-check-label" class="col-9">{{ itemBA.mobileNo }}</label>
+        <label class="form-check-label" class="col-2">{{ itemBA.status }}</label>
         <label class="col-1"></label>
         <label class="form-check-label" class="col-11" for="modal-text-billing-address-1">
-          &nbsp;&nbsp;&nbsp;{{ 'ที่อยู่ xxx xxxxxxx xxxxxxxxx xxxxxxxx xxxxx' }}
-        </label>
-      </div>
-      <div>
-        <input class="form-check-input" type="radio" value="ที่อยู่2"
-          formControlName="billingAddress" id="modal-text-billing-address-2">
-        <label class="form-check-label" class="col-9">{{ '08X XXX XXXX' }}</label>
-        <label class="form-check-label" class="col-2">{{ 'Active' }}</label>
-        <label class="col-1"></label>
-        <label class="form-check-label" class="col-11" for="modal-text-billing-address-2">
-          &nbsp;&nbsp;&nbsp;{{ 'ที่อยู่ xxx xxxxxxx xxxxxxxxx xxxxxxxx xxxxx' }}
+          &nbsp;&nbsp;{{ 'ที่อยู่: ' + itemBA.billingAddress }}
         </label>
       </div>
     </form>

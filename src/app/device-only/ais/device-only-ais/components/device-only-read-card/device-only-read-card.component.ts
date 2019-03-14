@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, TemplateRef, AfterViewInit, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, ElementRef, Output, EventEmitter } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { FormGroup, FormBuilder } from '@angular/forms';
 
@@ -9,7 +9,18 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 })
 export class DeviceOnlyReadCardComponent implements OnInit {
 
-  public name: string = 'นาย ธีระยุทธ เจโตวิมุติพงศ์';
+  @Output() customerInfo: EventEmitter<Object> = new EventEmitter<Object>();
+
+  public customerInfoMock: Array<object> = [
+    {
+      taxId: '',
+      name: 'นาย ธีระยุทธ เจโตวิมุติพงศ์',
+      mobileNo: '0889540584',
+      billingAddress: 'ซ.พหลโยธิน 9 ตึก ESV ชั้น 22 แขวงสามเสนใน เขตพญาไท กรุงเทพฯ 10400',
+      status: 'Active'
+    }
+  ];
+  public canReadSmartCard: boolean = true;
   public selectBillingAddressForm: FormGroup;
 
   @ViewChild('select_billing_address')
@@ -36,25 +47,35 @@ export class DeviceOnlyReadCardComponent implements OnInit {
   }
 
   public readCard(): void {
-    let width = 1;
-    this.progressBarArea.nativeElement.style.display = 'block';
-    const id = setInterval(() => {
-      if (width >= 100) {
-        clearInterval(id);
-        this.modalBillAddress = this.bsModalService.show(this.selectBillingAddressTemplate);
-      } else {
-        width += 2;
-        this.progressBarReadSmartCard.nativeElement.style.width = width + '%';
-      }
-    }, 25);
+    if (this.canReadSmartCard) {
+      let width = 1;
+      this.progressBarArea.nativeElement.style.display = 'block';
+      this.canReadSmartCard = false;
+      const id = setInterval(() => {
+        if (width >= 100) {
+          clearInterval(id);
+          this.modalBillAddress = this.bsModalService.show(this.selectBillingAddressTemplate);
+        } else {
+          width += 2;
+          this.progressBarReadSmartCard.nativeElement.style.width = width + '%';
+        }
+      }, 25);
+    } else {
+      setTimeout(() => {
+        this.canReadSmartCard = true;
+      }, 10);
+    }
   }
 
   public closeModalSelectAddress(): void {
     this.modalBillAddress.hide();
+    this.canReadSmartCard = true;
   }
 
   public selectBillingAddress(): void {
-
+    this.modalBillAddress.hide();
+    this.canReadSmartCard = true;
+    this.customerInfo.emit(this.customerInfoMock[0]);
   }
 
 }
