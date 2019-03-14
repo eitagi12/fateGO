@@ -86,7 +86,7 @@ export class ReceiptInformationComponent implements OnInit {
       buyerAddress: ['', []],
       telNo: ['', [Validators.pattern(/^0[6-9]\d{8}$/)]]
     });
-    // this.receiptInfoForm.patchValue(this.receiptInfo);
+    this.receiptInfoForm.controls['taxId'].disable();
     this.receiptInfoForm.valueChanges.pipe(debounceTime(750)).subscribe(event => {
       this.error.emit(this.receiptInfoForm.valid);
       if (this.receiptInfoForm.valid) {
@@ -136,6 +136,11 @@ export class ReceiptInformationComponent implements OnInit {
 
   switchKeyInBillingAddress(): void {
     this.inputBillingAddress = !this.inputBillingAddress;
+    if (this.inputBillingAddress) {
+      this.receiptInfoForm.controls['taxId'].enable();
+    } else {
+      this.receiptInfoForm.controls['taxId'].disable();
+    }
   }
 
   onProvinceSelected(params: any): void {

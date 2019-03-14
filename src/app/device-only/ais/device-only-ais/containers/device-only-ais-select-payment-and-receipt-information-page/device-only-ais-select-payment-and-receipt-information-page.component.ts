@@ -1,6 +1,6 @@
 import { Component, OnInit, OnChanges } from '@angular/core';
 import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, ValidatorFn } from '@angular/forms';
 import { Router } from '../../../../../../../node_modules/@angular/router';
 import { ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE } from '../../constants/route-path.constant';
 import { HomeService } from '../../../../../../../node_modules/mychannel-shared-libs';
@@ -59,6 +59,9 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
   selectPaymentDetail: SelectPaymentDetail = {};
   paymentDetailOption: PaymentDetailOption;
   isSuccess: boolean;
+  isQrcode: boolean;
+  isCredit: boolean;
+  isDebit: boolean;
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -118,6 +121,22 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
     this.paymentForm = this.fb.group({
       paymentType: [null, Validators.required]
     });
+    this.paymentForm.valueChanges.subscribe((payment: any) => {
+      const paymentType: string = payment.paymentType;
+      this.checkTypePaymentType(paymentType);
+    });
+  }
+
+  private checkTypePaymentType(paymentType: string): void {
+    if (paymentType === 'qrcode') {
+      this.isQrcode = true;
+    }
+    if (paymentType === 'credit') {
+      this.isCredit = true;
+    }
+    if (paymentType === 'debit') {
+      this.isDebit = true;
+    }
   }
 
   getQRCodeData(): PaymentDetailQRCode[] {

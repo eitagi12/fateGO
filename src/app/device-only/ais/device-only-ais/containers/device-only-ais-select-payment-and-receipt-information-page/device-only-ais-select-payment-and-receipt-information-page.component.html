@@ -72,7 +72,7 @@
                 <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="เต็มจำนวน">
               </div>
             </div>
-            <div class="form-group row">
+            <div *ngIf="isQrcode" class="form-group row">
               <div class="col-12 col-sm-3" id="icon-qr-payment-{{i}}" *ngFor="let qrCode of paymentDetail?.qrCodes; let i = index" (click)="onSelectQRCode(qrCode)">
                 <div class="qr-lazy-load-image" [ngClass]="{'active': qrCode?.id === selectPaymentDetail.qrCode?.id}">
                   <mc-lazy-load-image [src]="qrCode?.imageUrl"></mc-lazy-load-image>
@@ -94,8 +94,7 @@
                 </select>
               </div>
             </div>
-            <div class="form-group row">
-
+            <div *ngIf="isCredit" class="form-group row">
               <div class="col-4 col-sm-2 mb-3" id="icon-bank-payment-{{i}}" *ngFor="let bank of paymentDetail?.banks; let i = index" (click)="onSelectBank(bank)">
                 <div class="bank-lazy-load-image" [ngClass]="{'active': bank?.abb === selectPaymentDetail.bank?.abb}">
                   <mc-lazy-load-image [src]="bank?.imageUrl"></mc-lazy-load-image>
@@ -113,7 +112,7 @@
                 </div>
               </div>
             </div>
-            <div class="form-group row">
+            <div  *ngIf="isCredit" class="form-group row">
               <div class="col-12 text-center mb-3">
                 <span class="text-pink"> *กรุณาเลือกรูปแบบการชำระเงิน</span>
               </div>
