@@ -106,13 +106,15 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
       province: customer.province,
       zipCode: customer.zipCode
     });
-
+    console.log('billCycle', !!customer.billCycle);
+    console.log('caNumber', !!customer.caNumber);
+    console.log('รวมบิล', (customer.caNumber ||  customer.billCycle));
     this.billingInfo = {
       // merge bill ไม่เมื่อเลือก package net extrem
       billingMethod: {
         text: this.isMergeBilling() ? `${billingInformation.mergeBilling.mobileNo[0]}` : null,
         // net extrem แก้ไขไม่ได้, โปรไฟล์ใหม่แก้ไขไม่ได้
-        isEdit: !!customer.billCycle,
+        isEdit: customer.caNumber &&  customer.billCycle,
         // isEdit: false,
         // net extrem ลบไม่ได้, มีบิลใหม่ลบได้แล้วแสดงบิลเก่า
         isDelete: !!mergeBilling,
