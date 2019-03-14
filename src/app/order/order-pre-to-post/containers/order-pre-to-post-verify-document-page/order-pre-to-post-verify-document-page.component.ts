@@ -576,7 +576,6 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
       return {};
     })
       .then((resp: any) => {
-        console.log('resp', resp);
         const data = resp.data || {};
         return {
           caNumber: data.caNumber,
