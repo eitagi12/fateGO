@@ -28,6 +28,14 @@ export class ReceiptInformationComponent implements OnInit {
   @Output()
   error: EventEmitter<boolean> = new EventEmitter<boolean>();
 
+  public customerInfoMock: any = {
+    taxId: '',
+    name: '',
+    mobileNo: '',
+    billingAddress: '',
+    status: ''
+  };
+
   receiptInfoForm: FormGroup;
   billingAddressForm: FormGroup;
   customerAddress: any;
@@ -81,6 +89,11 @@ export class ReceiptInformationComponent implements OnInit {
         this.completed.emit(this.receiptInfoForm.value);
       }
     });
+  }
+
+  setCustomerInfo(data: Object): void {
+    this.customerInfoMock = data;
+    this.receiptInfoForm.controls['taxId'].setValue(this.customerInfoMock.taxId);
   }
 
   onClickInputBillingAddress(): void {

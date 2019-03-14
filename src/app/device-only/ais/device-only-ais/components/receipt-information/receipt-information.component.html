@@ -24,7 +24,9 @@
       </div>
       <div class="row">
         <div class="col-12">
-          <app-device-only-read-card></app-device-only-read-card>
+          <app-device-only-read-card
+            (customerInfo) = "setCustomerInfo($event)" 
+          ></app-device-only-read-card>
         </div>
       </div>
     </div>
@@ -34,10 +36,10 @@
       </div>
       <div *ngIf="!inputBillingAddress">
         <div>
-          <label class="text-grey">ผู้ซื้อ </label>
+          <label class="text-grey">ผู้ซื้อ &nbsp;&nbsp;&nbsp;{{ this.customerInfoMock.name }} </label>
         </div>
         <div>
-          <label class="text-grey">ที่อยู่ใบเสร็จรับเงิน </label>
+          <label class="text-grey">ที่อยู่ใบเสร็จรับเงิน &nbsp;&nbsp;&nbsp;{{ this.customerInfoMock.billingAddress }}</label>
         </div>
       </div>
       <div *ngIf="inputBillingAddress">

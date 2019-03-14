@@ -11,9 +11,9 @@ export class DeviceOnlyReadCardComponent implements OnInit {
 
   @Output() customerInfo: EventEmitter<Object> = new EventEmitter<Object>();
 
-  public customerInfoMock: Array<object> = [
+  public customerInfoMock: Array<Object> = [
     {
-      taxId: '',
+      taxId: '1234500678910',
       name: 'นาย ธีระยุทธ เจโตวิมุติพงศ์',
       mobileNo: '0889540584',
       billingAddress: 'ซ.พหลโยธิน 9 ตึก ESV ชั้น 22 แขวงสามเสนใน เขตพญาไท กรุงเทพฯ 10400',
