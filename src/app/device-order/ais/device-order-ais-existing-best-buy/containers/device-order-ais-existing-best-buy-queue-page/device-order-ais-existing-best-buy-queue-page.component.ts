@@ -9,6 +9,8 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { DOCUMENT } from '@angular/platform-browser';
 import { CreateDeviceOrderBestBuyService } from '../../services/create-device-order-best-buy.service';
+import { PriceOption } from '../../../../../shared/models/price-option.model';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-queue-page',
@@ -18,6 +20,7 @@ import { CreateDeviceOrderBestBuyService } from '../../services/create-device-or
 export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, OnDestroy {
 
   transaction: Transaction;
+  priceOption: PriceOption;
   queueFrom: FormGroup;
   queue: string;
 
@@ -27,9 +30,11 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private createBestBuyService: CreateDeviceOrderBestBuyService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private priceOptionService: PriceOptionService
   ) {
     this.transaction = this.transactionService.load();
+    this.priceOption = this.priceOptionService.load();
   }
 
   ngOnInit(): void {
@@ -50,7 +55,7 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
 
   onNext(): void {
     this.transaction.data.queue = { queueNo: this.queue };
-    this.createBestBuyService.createDeviceOrder(this.transaction).then((response: any) => {
+    this.createBestBuyService.createDeviceOrder(this.transaction, this.priceOption).then((response: any) => {
       if (response) {
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE]);
       } else {
