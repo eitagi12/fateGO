@@ -106,9 +106,6 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
       province: customer.province,
       zipCode: customer.zipCode
     });
-    console.log('billCycle', !!customer.billCycle);
-    console.log('caNumber', !!customer.caNumber);
-    console.log('รวมบิล', (customer.caNumber ||  customer.billCycle));
     this.billingInfo = {
       // merge bill ไม่เมื่อเลือก package net extrem
       billingMethod: {
