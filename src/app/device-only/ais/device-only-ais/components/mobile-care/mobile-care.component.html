@@ -205,6 +205,6 @@
     </div>
     <div class="modal-footer d-flex justify-content-center">
       <button type="button" class="btn btn-secondary btn-not-buy-mobile-care" (click)="onNotBuyMobileCare(true)">CLOSE</button>
-      <button type="button" class="btn btn-success btn-not-buy-mobile-care" (click)="onNotBuyMobileCare(false)">NEXT</button>
+      <button type="button" class="btn btn-success btn-not-buy-mobile-care" (click)="onNotBuyMobileCare(false)" [disabled]="!isValidNotBuyMobile">NEXT</button>
     </div>
   </ng-template>

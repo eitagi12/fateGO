@@ -39,6 +39,7 @@ export class MobileCareComponent implements OnInit {
   public isPrivilegeCus: boolean = false;
 
   public VAT: number = 1.07;
+  public isValidNotBuyMobile: boolean = false;
 
   @Input()
   mobileCare: MobileCare;
@@ -114,6 +115,17 @@ export class MobileCareComponent implements OnInit {
   onOpenNotBuyMobileCare(): void {
     this.modalRef = this.modalService.show(this.template, {
       ignoreBackdropClick: true
+    });
+    this.checkSelectNotbuyMobilecare();
+  }
+
+  public checkSelectNotbuyMobilecare(): void {
+    this.notBuyMobileCareForm.valueChanges.subscribe((value: any) => {
+      if (!value.notBuyMobile) {
+        this.isValidNotBuyMobile = false;
+      } else {
+        this.isValidNotBuyMobile = true;
+      }
     });
   }
 
