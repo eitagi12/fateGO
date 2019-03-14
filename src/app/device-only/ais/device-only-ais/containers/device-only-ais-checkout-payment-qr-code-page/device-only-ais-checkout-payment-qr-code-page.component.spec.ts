@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, PipeTransform, Pipe } from '@angular/core';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
@@ -7,6 +7,13 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { DeviceOnlyAisCheckoutPaymentQrCodePageComponent } from './device-only-ais-checkout-payment-qr-code-page.component';
 import { CookiesStorageService } from 'ngx-store';
 import { JwtHelperService } from '@auth0/angular-jwt/src/jwthelper.service';
+
+@Pipe({name: 'mobileNo'})
+class MockMobileNoPipe implements PipeTransform {
+  transform(value: string): string {
+      return value;
+  }
+}
 
 describe('DeviceOnlyAisCheckoutPaymentQrCodePageComponent', () => {
   let component: DeviceOnlyAisCheckoutPaymentQrCodePageComponent;
@@ -18,7 +25,10 @@ describe('DeviceOnlyAisCheckoutPaymentQrCodePageComponent', () => {
         RouterTestingModule
       ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ DeviceOnlyAisCheckoutPaymentQrCodePageComponent ],
+      declarations: [
+        DeviceOnlyAisCheckoutPaymentQrCodePageComponent,
+        MockMobileNoPipe
+      ],
       providers: [
         CookiesStorageService,
         {
