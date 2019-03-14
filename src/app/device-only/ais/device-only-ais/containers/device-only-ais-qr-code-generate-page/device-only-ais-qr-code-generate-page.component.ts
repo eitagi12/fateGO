@@ -48,6 +48,7 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
   }
 
   onRefresh(): void {
+    location.reload();
     this.refreshQRCode.emit(true);
   }
 
@@ -70,8 +71,12 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
         reverseButtons: true,
         allowEscapeKey: false,
         text: 'สิ้นสุดระยะเวลาชำระเงินกรุณากดปุ่ม "REFRESH" เพื่อทำรายการใหม่'
-      }).then(() => {
+      }).then((data) => {
+        if (data) {
           this.onNext();
+        } else {
+          this.onRefresh();
+        }
       });
     });
   }

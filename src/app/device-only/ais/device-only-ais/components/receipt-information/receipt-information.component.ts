@@ -134,8 +134,8 @@ export class ReceiptInformationComponent implements OnInit {
     }
   }
 
-  onClickInputBillingAddress(): void {
-    this.inputBillingAddress = true;
+  switchKeyInBillingAddress(): void {
+    this.inputBillingAddress = !this.inputBillingAddress;
   }
 
   onProvinceSelected(params: any): void {
