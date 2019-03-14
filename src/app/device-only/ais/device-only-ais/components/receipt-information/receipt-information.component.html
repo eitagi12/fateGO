@@ -1,4 +1,3 @@
-<div class="container-fluid">
   <div class="card mb-3">
     <div class="card-header bg-light-blue text-white">
       ข้อมูลใบเสร็จรับเงิน
@@ -74,7 +73,7 @@
           </div>
         </div>
         <div class="form-group row">
-          <label for="telNo" class="col-12 col-sm-3 col-form-label" id="txtTelNo">เบอร์ติดต่อ</label>
+          <label for="telNo" class="col-12 col-sm-3 col-form-label" id="txtTelNo">เบอร์ติดต่ออื่น</label>
           <div class="col-12 col-sm-9">
             <input type="text" maxlength="10" class="form-control" id="telNo" formControlName="telNo" [ngClass]="{ 'is-invalid' : receiptInfoForm.controls.telNo.invalid && receiptInfoForm.controls.telNo.touched }" />
             <!-- <small class="form-text invalid-feedback" *ngIf="receiptInfoForm.controls.telNo.touched && receiptInfoForm.controls.telNo.errors">
@@ -85,4 +84,4 @@
       </form>
     </div>
   </div>
-</div>
+

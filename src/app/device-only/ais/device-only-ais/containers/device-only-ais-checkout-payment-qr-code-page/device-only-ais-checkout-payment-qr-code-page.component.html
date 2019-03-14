@@ -18,7 +18,7 @@
           </div>
           <div class="col-12 col-sm-6 text-sm-right">
             <img src="assets/images/icon/sales_portal_green_phone.png" class="icon-img icon-phone" />
-            <span id="text-mobile-no">{{mobileNo}}</span>
+            <span id="text-mobile-no">{{ mobileNo | mobileNo }}</span>
           </div>
         </div>
         <div class="border-bottom mt-3 mb-5"></div>
@@ -60,8 +60,7 @@
                     </span>
                   </span>
                   <span class="pull-right text-light-green">
-                    ฿<span id="text-summary-price">
-                      {{price}}
+                    ฿<span id="text-summary-price">{{price}}
                       <!-- ฿{{ summary([+priceOption?.trade?.promotionPrice, +priceOption?.trade?.advancePay?.amount]) | number }} 999999 -->
                     </span>
                   </span>

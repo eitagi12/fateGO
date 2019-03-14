@@ -3,6 +3,7 @@ import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl, FormC
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
 import { AlertService } from 'mychannel-shared-libs';
+import { MobileNoService } from './mobile-no.service';
 
 export interface MobileCare {
   nextBillEffective?: boolean;
@@ -30,7 +31,8 @@ export interface MobileCareItem {
 @Component({
   selector: 'app-mobile-care',
   templateUrl: './mobile-care.component.html',
-  styleUrls: ['./mobile-care.component.scss']
+  styleUrls: ['./mobile-care.component.scss'],
+  providers: [MobileNoService]
 })
 export class MobileCareComponent implements OnInit {
   wizards: string[] = WIZARD_DEVICE_ONLY_AIS;
@@ -56,13 +58,14 @@ export class MobileCareComponent implements OnInit {
   @ViewChild('template')
   template: TemplateRef<any>;
   modalRef: BsModalRef;
-  myForm: any;
+  myForm: FormGroup;
   mobileCareForm: FormGroup;
   notBuyMobileCareForm: FormGroup;
   constructor(
     private fb: FormBuilder,
     private modalService: BsModalService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private mobileNoService: MobileNoService
   ) { }
 
   ngOnInit(): void {
@@ -151,10 +154,12 @@ export class MobileCareComponent implements OnInit {
     // if(this.mobileNoPost === MOBILE_NO_POSTPAID) { Mock postpaid mobile number
       this.isPrivilegeCustomer = !this.isPrivilegeCustomer;
       this.popupMobileCare();
+
     // }
   }
 
   private popupMobileCare(): void {
+    const form = this.myForm.getRawValue();
     this.alertService.notify({
       type: 'warning',
       width: '80%',
@@ -166,9 +171,9 @@ export class MobileCareComponent implements OnInit {
       showConfirmButton: true,
       reverseButtons: true,
       allowEscapeKey: false,
-      html: `หมายเลข 0xx-xxx-xxxx สมัครบริการโมบายแคร์กับเครื่อง <br> Sumsung Note 9 เรียบร้อยแล้ว
+      html: `หมายเลข ${this.mobileNoService.getMobileNo(form.mobileNo)} สมัครบริการโมบายแคร์กับเครื่อง <br> Samsung Note 9 เรียบร้อยแล้ว
       <br> (แพ็กเกจ xxxxxx สิ้นสุด dd/mm/yyyy) <br> กรุณาเปลี่ยนเบอร์ใหม่ หรือยืนยันสมัครบริการโมบายแคร์กับ <br>
-      เครื่อง iPhone 6S Plus`
+      เครื่อง Samsung S10 Plus`
     });
   }
 
