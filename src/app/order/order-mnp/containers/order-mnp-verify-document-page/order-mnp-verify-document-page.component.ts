@@ -342,9 +342,10 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
               billCycle: data.billCycle,
               // zipCode: zipCode
             };
-          }).then((resp) => {
+          }).then((customer) => {
             this.transaction.data.customer = Object.assign(
-              Object.assign({}, this.transaction.data.customer), readPassport.profile);
+              Object.assign({}, this.transaction.data.customer),
+              Object.assign(readPassport.profile, customer));
             return this.http.get(`/api/customerportal/newRegister/${readPassport.profile.idCardNo}/queryBillingAccount`).toPromise()
               .then((respQueryBilling: any) => {
                 const data = respQueryBilling.data || {};
@@ -498,14 +499,14 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
 
     this.http.get('/api/customerportal/validate-customer-new-register', {
       params: {
-        identity: mock.PassportNumber
+        identity: mock.PassportNumber,
+        idCardType: readPassport.profile.idCardType
       }
       // catch ไว้ก่อน เดี๋ยวมาทำต่อ
     }).toPromise().catch(() => {
       return {};
     })
       .then((resp: any) => {
-        console.log('resp', resp);
         const data = resp.data || {};
         return {
           caNumber: data.caNumber,
