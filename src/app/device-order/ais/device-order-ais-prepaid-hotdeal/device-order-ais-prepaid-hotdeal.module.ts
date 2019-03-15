@@ -13,11 +13,16 @@ import { DeviceOrderAisPrepaidHotdealValidateCustomerPageComponent } from './con
 import { DeviceOrderAisPrepaidHotdealValidateCustomerIdCardPageComponent } from './containers/device-order-ais-prepaid-hotdeal-validate-customer-id-card-page/device-order-ais-prepaid-hotdeal-validate-customer-id-card-page.component';
 import { DeviceOrderAisPrepaidHotdealValidateCustomerIdCardRepiPageComponent } from './containers/device-order-ais-prepaid-hotdeal-validate-customer-id-card-repi-page/device-order-ais-prepaid-hotdeal-validate-customer-id-card-repi-page.component';
 import { DeviceOrderAisPrepaidHotdealRoutingModule } from './device-order-ais-prepaid-hotdeal-routing.module';
+import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   imports: [
     CommonModule,
-    DeviceOrderAisPrepaidHotdealRoutingModule
+    DeviceOrderAisPrepaidHotdealRoutingModule,
+    MyChannelSharedLibsModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   declarations: [
     DeviceOrderAisPrepaidHotdealValidateCustomerPageComponent,
