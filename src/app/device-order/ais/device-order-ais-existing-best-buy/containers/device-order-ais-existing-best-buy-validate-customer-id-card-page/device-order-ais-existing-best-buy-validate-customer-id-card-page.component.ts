@@ -7,6 +7,9 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_REPI_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
 import { Transaction, TransactionAction, Customer, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { CustomerInfoService } from '../../services/customer-info.service';
+import { CreateDeviceOrderBestBuyService } from '../../services/create-device-order-best-buy.service';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-validate-customer-id-card-page',
@@ -33,11 +36,13 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent im
     private homeService: HomeService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private apiRequestService: ApiRequestService,
     private alertService: AlertService,
-    private http: HttpClient
+    private customerInfoService: CustomerInfoService,
+    private createDeviceOrderBestBuyService: CreateDeviceOrderBestBuyService,
+    private priceOptionService: PriceOptionService
   ) {
     this.transaction = this.transactionService.load();
+    this.priceOption = this.priceOptionService.load();
   }
 
   ngOnInit(): void {
@@ -59,31 +64,23 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent im
 
   onCompleted(profile: ReadCardProfile): void {
     this.profile = profile;
-    // auto next
-    this.onNext();
   }
 
   onNext(): void {
-    const action = this.transaction.data.action;
-    this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryCustomerInfo`)
-    .toPromise()
-    .then(() => {
-      if (action === TransactionAction.KEY_IN || action === TransactionAction.READ_CARD) {
+    this.customerInfoService.getCustomerInfoByIdCard(this.profile.idCardNo).then((customer: Customer) => {
+      this.transaction.data.customer = {...this.profile, ...customer};
+      this.createDeviceOrderBestBuyService.createAddToCartTrasaction(this.transaction, this.priceOption).then((transaction) => {
+        this.transaction = transaction;
+        this.pageLoadingService.closeLoading();
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
-      } else {
-        const mobileNo = this.transaction.data.simCard.mobileNo;
-        this.http.get(`/api/customerportal/newRegister/verifyPrepaidIdent?idCard=${this.profile.idCardNo}&mobileNo=${mobileNo}`)
-          .toPromise()
-          .then((respPrepaidIdent: any) => {
-            if (respPrepaidIdent.data && respPrepaidIdent.data.success) {
-              this.transaction.data.action = TransactionAction.KEY_IN;
-              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
-            } else {
-              this.transaction.data.action = TransactionAction.KEY_IN_REPI;
-              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
-            }
-          });
-      }
+      });
+    }).catch(() => {
+      this.transaction.data.customer = this.profile;
+      this.createDeviceOrderBestBuyService.createAddToCartTrasaction(this.transaction, this.priceOption).then((transaction) => {
+        this.transaction = transaction;
+        this.pageLoadingService.closeLoading();
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
+      });
     });
   }
 
@@ -92,12 +89,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent im
   }
 
   onBack(): void {
-    const action = this.transaction.data.action;
-    if (action === TransactionAction.KEY_IN || action === TransactionAction.READ_CARD) {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_PAGE]);
-    } else {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_REPI_PAGE]);
-    }
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_PAGE]);
   }
 
   ngOnDestroy(): void {

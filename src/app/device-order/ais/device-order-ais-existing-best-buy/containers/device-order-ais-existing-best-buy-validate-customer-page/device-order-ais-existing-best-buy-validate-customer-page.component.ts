@@ -209,9 +209,11 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
   private createTransaction(): void {
     // New x-api-request-id
     this.apiRequestService.createRequestId();
-    let mainPromotion = null;
+
+    const mainPromotion = this.setMainPromotion();
+
     if (!this.priceOption.campaign) {
-      mainPromotion = this.setMainPromotion();
+      this.createPriceOption(mainPromotion);
     }
 
     const preBooking = this.localStorageService.load('preBooking').value;
@@ -254,7 +256,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
   }
 
   setMainPromotion(): MainPromotion {
-    const campaign = this.localStorageService.load('priceOption').value;
+    const campaign = this.priceOption.campaign ? this.priceOption.campaign : this.localStorageService.load('priceOption').value;
     const privilege = this.localStorageService.load('priceOptionPrivilege').value;
     const trade = this.localStorageService.load('priceOptionPrivilegeTrade').value;
 
@@ -263,7 +265,6 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
       privilege: privilege,
       trade: trade
     };
-    this.createPriceOption(mainPromotion);
     return mainPromotion;
   }
 

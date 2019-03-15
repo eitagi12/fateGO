@@ -7,6 +7,9 @@ import { Transaction, TransactionAction, Customer } from 'src/app/shared/models/
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_REPI_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE } from '../../constants/route-path.constant';
 import { CustomerInfoService } from '../../services/customer-info.service';
+import { CreateDeviceOrderBestBuyService } from '../../services/create-device-order-best-buy.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-validate-customer-id-card-repi-page',
@@ -20,6 +23,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
   zipcode: string;
   readCardValid: boolean;
   mobileNo: string;
+  priceOption: PriceOption;
 
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
@@ -32,9 +36,12 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
     private alertService: AlertService,
     private customerInfoService: CustomerInfoService,
     private transactionService: TransactionService,
+    private priceOptionService: PriceOptionService,
     private pageLoadingService: PageLoadingService,
+    private createDeviceOrderBestBuyService: CreateDeviceOrderBestBuyService
   ) {
     this.transaction = this.transactionService.load();
+    this.priceOption = this.priceOptionService.load();
   }
 
   ngOnInit(): void {
@@ -79,7 +86,11 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
               if (respPrepaidIdent.data && respPrepaidIdent.data.success) {
                 const expireDate = this.transaction.data.customer.expireDate;
                 if (this.utils.isIdCardExpiredDate(expireDate)) {
-                  this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE]);
+                  this.createDeviceOrderBestBuyService.createAddToCartTrasaction(this.transaction, this.priceOption).then((transaction) => {
+                    this.transaction = transaction;
+                    this.pageLoadingService.closeLoading();
+                    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE]);
+                  });
                 }
               } else {
                 const expireDate = this.transaction.data.customer.expireDate;
@@ -87,7 +98,12 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
                 if (this.utils.isIdCardExpiredDate(expireDate)) {
                   const simCard = this.transaction.data.simCard;
                   if (simCard.chargeType === 'Pre-paid') {
-                    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
+                    this.createDeviceOrderBestBuyService.createAddToCartTrasaction(this.transaction, this.priceOption)
+                    .then((transaction) => {
+                      this.transaction = transaction;
+                      this.pageLoadingService.closeLoading();
+                      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
+                    });
                   } else {
                     this.alertService.error('ไม่สามารถทำรายการได้ เบอร์รายเดือน ข้อมูลการแสดงตนไม่ถูกต้อง');
                   }
