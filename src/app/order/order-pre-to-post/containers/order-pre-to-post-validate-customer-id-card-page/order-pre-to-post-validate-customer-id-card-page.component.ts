@@ -160,6 +160,9 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
   }
 
   onHome() {
+    if (this.validateCustomerIdcard && this.validateCustomerIdcard.koiskApiFn) {
+      this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+    }
     this.homeService.goToHome();
   }
 
