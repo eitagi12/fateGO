@@ -354,6 +354,8 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                 return 'Port - In';
             case 'MC004':
                 return 'Change Service';
+            case 'MC005':
+                return 'Device Only';
         }
     }
 
@@ -372,7 +374,11 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         this.modalRef = this.modalService.show(this.installmentTemplate, { class: 'modal-lg' });
     }
 
-    onTradeSelected(trade: any): void {
+  onTradeSelected(trade: any): void {
+        if (trade.tradeNo === 'TP99999999') {
+          this.router.navigate(['/device-only/ais/select-payment']);
+          return;
+        }
         this.priceOption.trade = trade;
 
         this.pageLoadingService.openLoading();
@@ -401,7 +407,36 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             productType: productType || PRODUCT_TYPE,
             productSubtype: productSubtype || PRODUCT_SUB_TYPE
         });
-        this.productDetailService.then((resp: any) => {
+      this.productDetailService.then((resp: any) => {
+            resp = {
+              'resultCode': '20000',
+              'resultDescription': 'Success',
+              'developerMessage': 'Success',
+              'data': {
+                'statusCode': '20000',
+                'dv': [],
+                'model': 'G965O',
+                'name': 'Galaxy S10 Plus 512GB',
+                'productSubtype': 'HANDSET',
+                'products': [
+                  {
+                    'colorName': 'BLACK',
+                    'colorCode': null,
+                    'sku': 'undefined',
+                    'images': {
+                      'thumbnail': null,
+                      'baseView': [
+                        {
+                          'image': ''
+                        }
+                      ]
+                    }
+                  }
+                ],
+                'statusDesc': 'Success',
+                'productType': 'DEVICE'
+              }
+            };
 
             // เก็บข้อมูลไว้ไปแสดงหน้าอื่นโดยไม่เปลี่ยนแปลงค่าข้างใน
             this.priceOption.productDetail = resp.data || {};
@@ -413,7 +448,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                     productType: product.productType || PRODUCT_TYPE,
                     productSubType: product.productSubtype || PRODUCT_SUB_TYPE,
                     model: model,
-                    color: product.colorName,
+                    color: (product.colorName === 'BLACK') ? 'CORAL BLUE' : product.colorName,
                     subStockDestination: SUB_STOCK_DESTINATION,
                     listLocationCodeDestination: [user.locationCode]
                 }).then((respStock: any) => respStock.data.listLocationCodeDestinationOut || []);
@@ -427,13 +462,14 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                 }, [])
                     .map((stock: any) => {
                         stock.colorCode = (products.find((product: any) => {
-                            return product.colorName === stock.color;
+                            return ((product.colorName === 'BLACK') ? 'CORAL BLUE' : product.colorName) === stock.color;
                         }) || {}).colorCode;
                         return stock;
                     });
 
                 this.productDetail.products = products.map((product: any) => {
-                    const stock = productStocks.find((productStock: any) => productStock.color === product.colorName) || { qty: 0 };
+                    // tslint:disable-next-line:max-line-length
+                    const stock = productStocks.find((productStock: any) => productStock.color === (product.colorName === 'BLACK') ? 'CORAL BLUE' : product.colorName) || { qty: 0 };
                     product.stock = stock;
                     return product;
                 }).sort((a, b) => a.stock.qty - b.stock.qty);
@@ -468,7 +504,151 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             productSubtype: productSubtype,
             location: this.user.locationCode
         });
-        this.priceOptionDetailService.then((resp: any) => {
+      this.priceOptionDetailService.then((resp: any) => {
+        resp.data.priceOptions = [
+          {
+            'campaignId': '1090356',
+            'campaignName': 'Device Only',
+            'campaignDesc': 'Device Only',
+            // tslint:disable-next-line:max-line-length
+            'imageUrl': 'https://store.ais.co.th/media/catalog/product/cache/2/small_image/210x/9df78eab33525d08d6e5fb8d27136e95/s/1/s10_prism_black_front_t_1.jpg',
+            'channels': [
+              'ASP',
+              'AIS'
+            ],
+            'minimumPackagePrice': '0',
+            'maximumPackagePrice': '0',
+            'packageKeyRef': '496ebae87cc70e08d63d34a7c5aa0767',
+            'conditionCode': '',
+            'promotionFlag': 'Y',
+            'publish': true,
+            'allowedAddToCart': true,
+            'code': 'AISHOTDEAL',
+            'priceType': 'PROMOTION',
+            'maximumContract': '0',
+            'price': '45700',
+            'freeGoods': [],
+            'customerGroups': [
+              {
+                'name': 'เครื่องเปล่า',
+                'code': 'MC005',
+                'flowId': '000'
+              }
+            ],
+            'minimumPromotionPrice': '45700',
+            'maximumPromotionPrice': '45700',
+            'minimumNormalPrice': '45700',
+            'maximumNormalPrice': '45700',
+            'minimumAdvancePay': '0',
+            'maximumAdvancePay': '0',
+            'privileges': [
+              {
+                'privilegeId': '2018-00147',
+                'privilegeName': 'DEVICE ONLY TP99999999_1_*999*99# - เครื่องเปล่า ',
+                'privilegeDesc': 'DEVICE ONLY TP99999999_1_*999*99# - เครื่องเปล่า ',
+                'ussdCode': '*999*99#',
+                'minimumPackagePrice': '0',
+                'maximumPackagePrice': '0',
+                'packageKeyRef': 'dee618c00a3913e99fc03f6dafb129c9',
+                'channels': [
+                  'ASP',
+                  'AIS'
+                ],
+                'customerGroups': [
+                  {
+                    'name': 'เครื่องเปล่า',
+                    'code': 'MC005',
+                    'flowId': '000'
+                  }
+                ],
+                'minimumNormalPrice': '45700',
+                'maximumNormalPrice': '45700',
+                'minimumPromotionPrice': '45700',
+                'maximumPromotionPrice': '45700',
+                'minimumAdvancePay': '0',
+                'maximumAdvancePay': '0',
+                'maximumContract': '0',
+                'trades': [
+                  {
+                    'tradeNo': 'TP99999999',
+                    'tradeName': 'Device Only Trade Product',
+                    'tradeDesc': 'โครงการจำหน่ายเครื่องราคาุบัน DT (*999*02#)',
+                    'normalPrice': '45700',
+                    'promotionPrice': '45700',
+                    'durationContract': '0',
+                    'advancePay': {
+                      'tradeAirtimeId': '0',
+                      'amount': '0',
+                      'installmentFlag': 'N',
+                      'matAirtime': '',
+                      'description': '',
+                      'promotions': [
+                      ]
+                    },
+                    'priceType': 'PROMOTION',
+                    'ussdCode': '*999*99#',
+                    'packageKeyRef': 'dee618c00a3913e99fc03f6dafb129c9',
+                    'priceDiscount': '7000',
+                    'focCode': '0',
+                    'productType': 'DEVICE',
+                    'productSubtype': 'HANDSET',
+                    'maximumPackage': null,
+                    'minimumPackage': null,
+                    'serviceLockHs': null,
+                    'priceGroups': [
+                      {
+                        'priceType': 'EUP',
+                        'price': '45700'
+                      }
+                    ],
+                    'discount': null,
+                    'payments': [
+                      {
+                        'cardType': 'VISA',
+                        'method': 'CC/CA',
+                        'installId': 96
+                      }
+                    ],
+                    'banks': [],
+                    'freeGoods': [],
+                    'matCode': 'undefined',
+                    'channels': [
+                      'ASP',
+                      'AIS'
+                    ],
+                    'tradeChannels': [
+                      {
+                        'partnerCode': null,
+                        'locationCode': null,
+                        'locationCodePartner': null,
+                        'region': null,
+                        'locType': null,
+                        'locSubtype': null,
+                        'province': 'ALL'
+                      },
+                      {
+                        'partnerCode': null,
+                        'locationCode': null,
+                        'locationCodePartner': null,
+                        'region': null,
+                        'locType': null,
+                        'locSubtype': null,
+                        'province': 'ALL'
+                      }
+                    ],
+                    'customerGroups': [
+                      {
+                        'name': 'เครื่องเปล่า',
+                        'code': 'MC005',
+                        'flowId': '000'
+                      }
+                    ]
+                  }
+                ],
+                'freeGoods': []
+              }
+            ]
+          }, ...resp.data.priceOptions];
             const priceOptions = this.filterCampaigns(resp.data.priceOptions || []);
 
             // generate customer tabs
