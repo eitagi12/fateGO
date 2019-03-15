@@ -185,9 +185,7 @@ export class CreateNewRegisterService {
       }
     }
 
-    if (customer.nationality === 'Thailand') {
-      data.billLanguage = 'Thai';
-    } else {
+    if (customer.nationality !== 'Thailand') {
       data.billLanguage = 'English';
     }
 
