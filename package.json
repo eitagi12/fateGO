@@ -12,8 +12,13 @@
     "test:watch": "jest --watchAll",
     "test:ci": "jest --runInBand --coverage --coverageDirectory=coverage/jest",
     "lint": "ng lint",
-    "e2e": "ng e2e",
-    "precommit": "npm run lint"
+    "e2e": "ng e2e"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "npm run lint",
+      "pre-push": "npm run lint"
+    }
   },
   "private": true,
   "dependencies": {
