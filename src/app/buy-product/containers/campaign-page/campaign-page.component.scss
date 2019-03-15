@@ -26,7 +26,7 @@ input[type=radio]+label:before {
 }
 /* Edit the properties below to change the colors of the checked radio button */
 input[type=radio]:checked+label:before {
-    background-image: none;    
+    background-image: none;
     background-size: 18px;
 }
 
@@ -41,7 +41,7 @@ input[type=radio]+label.disabled {
 
 input[type=radio]:disabled+label:before {
     content: '';
-    border: 2px solid #CACACA;    
+    border: 2px solid #CACACA;
 }
 
 .product-color {
@@ -81,8 +81,8 @@ input[type=radio]:disabled+label:before {
             border-bottom: 5px solid #BFBFBF;
         }
 
-        .nav-link {       
-            color: inherit;     
+        .nav-link {
+            color: inherit;
             padding: 8px;
             white-space: nowrap;
             overflow: hidden;
@@ -92,11 +92,11 @@ input[type=radio]:disabled+label:before {
             }
             &.active{
                 background-color: $light-green;
-                border-color: $light-green;        
+                border-color: $light-green;
                 &:hover {
                     border-color: $light-green;
                 }
-            }   
+            }
         }
     }
 }
@@ -140,4 +140,11 @@ input[type=radio]:disabled+label:before {
     &.active {
         background-image : url('/src/assets/images/icon/MC004-active.png');
     }
+}
+
+.MC005{
+  background-image : url('/src/assets/images/icon/MC005.png');
+  &.active {
+      background-image : url('/src/assets/images/icon/MC005-active.png');
+  }
 }
