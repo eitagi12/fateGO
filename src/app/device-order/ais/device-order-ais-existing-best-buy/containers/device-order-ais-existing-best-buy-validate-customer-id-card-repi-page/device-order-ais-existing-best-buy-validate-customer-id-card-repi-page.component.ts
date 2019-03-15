@@ -56,7 +56,6 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
 
   onCompleted(profile: ReadCardProfile): void {
     this.profile = profile;
-
     this.onNext();
   }
 
@@ -74,127 +73,51 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
         this.customerInfoService.getCustomerInfoByIdCard(this.profile.idCardNo, zipCode).then((customer: Customer) => {
           this.transaction.data.customer = Object.assign(this.profile, customer);
           this.transaction.data.billingInformation = { billDeliveryAddress : this.transaction.data.customer };
+          // verify Prepaid Ident
+          this.customerInfoService.verifyPrepaidIdent(this.profile.idCardNo, mobileNo)
+            .then((respPrepaidIdent: any) => {
+              if (respPrepaidIdent.data && respPrepaidIdent.data.success) {
+                const expireDate = this.transaction.data.customer.expireDate;
+                if (this.utils.isIdCardExpiredDate(expireDate)) {
+                  this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE]);
+                }
+              } else {
+                const expireDate = this.transaction.data.customer.expireDate;
+                this.transaction.data.action = TransactionAction.READ_CARD_REPI;
+                if (this.utils.isIdCardExpiredDate(expireDate)) {
+                  const simCard = this.transaction.data.simCard;
+                  if (simCard.chargeType === 'Pre-paid') {
+                    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
+                  } else {
+                    this.alertService.error('ไม่สามารถทำรายการได้ เบอร์รายเดือน ข้อมูลการแสดงตนไม่ถูกต้อง');
+                  }
+                }
+              }
+              this.pageLoadingService.closeLoading();
+            });
         });
       });
+    }).catch((resp: any) => {
+      const error = resp.error || [];
+      console.log(resp);
+
+      if (error && error.errors.length > 0) {
+        this.alertService.notify({
+          type: 'error',
+          html: error.errors.map((err) => {
+            return '<li class="text-left">' + err + '</li>';
+          }).join('')
+        }).then(() => {
+          this.onBack();
+        });
+      } else {
+        this.alertService.error(error.resultDescription);
+      }
     });
-
-    // this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
-    //   .then((zipCode: string) => {
-    //     return this.http.get('/api/customerportal/validate-customer-pre-to-post', {
-    //       params: {
-    //         identity: this.profile.idCardNo
-    //       }
-    //     }).toPromise()
-    //       .then((resp: any) => {
-    //         const data = resp.data || {};
-    //         return {
-    //           caNumber: data.caNumber,
-    //           isNewCa: false,
-    //           mainMobile: data.mainMobile,
-    //           billCycle: data.billCycle,
-    //           zipCode: zipCode
-    //         };
-    //       });
-    //   })
-    //   .then((customer: any) => { // load bill cycle
-    //     this.transaction.data.customer = Object.assign(this.profile, customer);
-
-    //     return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
-    //       .then((resp: any) => {
-    //         const data = resp.data || {};
-    //         return this.http.post('/api/customerportal/verify/billingNetExtreme', {
-    //           businessType: '1',
-    //           listBillingAccount: data.billingAccountList
-    //         }).toPromise()
-    //           .then((respBillingNetExtreme: any) => {
-    //             return {
-    //               billCycles: data.billingAccountList,
-    //               billCyclesNetExtreme: respBillingNetExtreme.data
-    //             };
-    //           })
-    //           .catch(() => {
-    //             return {
-    //               billCycles: data.billingAccountList
-    //             };
-    //           });
-    //       });
-    //   })
-    //   .then((billingInformation: any) => {
-    //     this.transaction.data.billingInformation = billingInformation;
-    //   })
-    //   .then(() => {// verify Prepaid Ident
-    //     return this.http.get(`/api/customerportal/newRegister/verifyPrepaidIdent?idCard=${this.profile.idCardNo}&mobileNo=${mobileNo}`)
-    //       .toPromise()
-    //       .then((respPrepaidIdent: any) => {
-    //         if (respPrepaidIdent.data && respPrepaidIdent.data.success) {
-    //           if (this.checkBusinessLogic()) {
-    //             this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE]);
-    //           }
-    //         } else {
-    //           this.transaction.data.action = TransactionAction.READ_CARD_REPI;
-    //           if (this.checkBusinessLogic()) {
-    //             this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
-    //           }
-    //         }
-    //         this.pageLoadingService.closeLoading();
-    //       });
-    //   })
-    //   .catch((resp: any) => {
-    //     const error = resp.error || [];
-    //     console.log(resp);
-
-    //     if (error && error.errors.length > 0) {
-    //       this.alertService.notify({
-    //         type: 'error',
-    //         html: error.errors.map((err) => {
-    //           return '<li class="text-left">' + err + '</li>';
-    //         }).join('')
-    //       }).then(() => {
-    //         this.onBack();
-    //       });
-    //     } else {
-    //       this.alertService.error(error.resultDescription);
-    //     }
-    //   });
-  }
-
-  checkBusinessLogic(): boolean {
-    const birthdate = this.transaction.data.customer.birthdate;
-    const expireDate = this.transaction.data.customer.expireDate;
-    const idCardType = this.transaction.data.customer.idCardType;
-
-    if (this.utils.isLowerAge17Year(birthdate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
-      return false;
-    }
-    if (this.utils.isIdCardExpiredDate(expireDate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ');
-      return false;
-    }
-    return true;
   }
 
   onHome(): void {
     this.homeService.goToHome();
-  }
-
-  getZipCode(province: string, amphur: string, tumbol: string): Promise<string> {
-    province = province.replace(/มหานคร$/, '');
-    return this.http.get('/api/customerportal/newRegister/getAllProvinces').toPromise()
-      .then((resp: any) => {
-        const provinceId = (resp.data.provinces.find((prov: any) => prov.name === province) || {}).id;
-
-        return this.http.get(
-          `/api/customerportal/newRegister/queryZipcode?provinceId=${provinceId}&amphurName=${amphur}&tumbolName=${tumbol}`
-        ).toPromise();
-      })
-      .then((resp: any) => {
-        if (resp.data.zipcodes && resp.data.zipcodes.length > 0) {
-          return resp.data.zipcodes[0];
-        } else {
-          return Promise.reject('ไม่พบรหัสไปรษณีย์');
-        }
-      });
   }
 
   ngOnDestroy(): void {

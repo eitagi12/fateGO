@@ -26,7 +26,6 @@ export class DeviceOrderAisExistingBestBuyMobileDetailPageComponent implements O
     private homeService: HomeService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private apiRequestService: ApiRequestService,
     private http: HttpClient,
     private shoppingCartService: ShoppingCartService
   ) {

@@ -151,7 +151,6 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
             });
         } else {
           // REPI
-          this.pageLoadingService.closeLoading();
           const simCard = this.transaction.data.simCard;
           if (simCard.chargeType === 'Pre-paid') {
             this.http.get(`/api/customerportal/newRegister/${this.identity}/queryCustomerInfo`)
