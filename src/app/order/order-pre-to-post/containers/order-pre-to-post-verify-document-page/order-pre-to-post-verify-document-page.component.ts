@@ -8,7 +8,7 @@ import { AbstractControl, ValidationErrors, FormBuilder, FormGroup, Validators }
 
 import {
   HomeService, PageLoadingService, ApiRequestService, Utils, ReadCardProfile, AlertService,
-  ReadPassport, ReadPassportService, ValidateCustomerIdCardComponent,
+  ReadPassport, ReadPassportService,
   KioskControls, VendingApiService, TokenService, ChannelType,
 } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -31,9 +31,6 @@ const Moment = moment;
   styleUrls: ['./order-pre-to-post-verify-document-page.component.scss']
 })
 export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDestroy {
-
-  @ViewChild(ValidateCustomerIdCardComponent)
-  validateCustomerIdcard: ValidateCustomerIdCardComponent;
 
   readPassportSubscription: Subscription;
   vendingApiSubscription: Subscription;
@@ -302,9 +299,6 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
     this.isProduction = environment.production;
     this.homeService.callback = () => {
 
-      if (this.validateCustomerIdcard && this.validateCustomerIdcard.koiskApiFn) {
-        this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
-      }
       if (this.closeVendingApi && this.closeVendingApi.ws) {
         this.closeVendingApi.ws.send(KioskControls.LED_OFF);
       }
@@ -522,12 +516,9 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
   }
 
   ngOnDestroy(): void {
-
     this.transactionService.save(this.transaction);
-    if (this.transaction.data.action === TransactionAction.READ_PASSPORT) {
-      if (this.closeVendingApi && this.closeVendingApi.ws) {
-        this.closeVendingApi.ws.send(KioskControls.LED_OFF);
-      }
+    if (this.closeVendingApi && this.closeVendingApi.ws) {
+      this.closeVendingApi.ws.send(KioskControls.LED_OFF);
     }
     clearInterval(this.cardStateInterval);
     this.vendingApiSubscription.unsubscribe();
