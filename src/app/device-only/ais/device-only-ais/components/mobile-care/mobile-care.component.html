@@ -115,13 +115,13 @@
           <h3>สิทธิพิเศษสำหรับลูกค้า</h3>
         </div>
         <div class="card-body">
-          <form [formGroup]="myForm">
+          <form [formGroup]="privilegeCustomerForm">
             <div style="text-align: center;">
               <div>
                 <div class="box-search-mobileNo">
                   <input autocomplete="off" formControlName="mobileNo" type="text" (keypress)="keyPress($event)"
                     id="input-mobile-no" placeholder="ระบุเบอร์มือถือ AIS รับสิทธิสมัครบริการโมบายแคร์"
-                    class="mobile-input" maxlength="10" [(ngModel)]="this.mobileNoPost">
+                    class="mobile-input" maxlength="10" >
                   <button class="search-btn" (click)="searchMobileNo()" id="button-search-mobile-no">
                     <img src="assets/images/icon/device_only_search_icon.png">
                   </button>

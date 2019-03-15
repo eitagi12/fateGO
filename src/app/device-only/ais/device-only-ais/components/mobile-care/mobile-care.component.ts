@@ -58,7 +58,8 @@ export class MobileCareComponent implements OnInit {
   @ViewChild('template')
   template: TemplateRef<any>;
   modalRef: BsModalRef;
-  myForm: FormGroup;
+  // myForm: FormGroup;
+  public privilegeCustomerForm: FormGroup;
   mobileCareForm: FormGroup;
   notBuyMobileCareForm: FormGroup;
   constructor(
@@ -74,9 +75,17 @@ export class MobileCareComponent implements OnInit {
   }
 
   oncheckValidators(): void {
-    this.myForm = new FormGroup({
-      'mobileNo': new FormControl('', [Validators.required, Validators.maxLength(10)]),
-      'otpNo': new FormControl('', [Validators.required, Validators.maxLength(5)]),
+    this.privilegeCustomerForm = new FormGroup({
+      'mobileNo': new FormControl('', [
+        Validators.maxLength(10),
+        Validators.minLength(10),
+        Validators.pattern('^(0)(6|8|9)[0-9]*$|^((88)(6|8|9)[0-9]*)$'),
+        Validators.required,
+      ]),
+      'otpNo': new FormControl('', [
+        Validators.maxLength(4),
+        Validators.required
+      ]),
     });
   }
 
@@ -145,21 +154,35 @@ export class MobileCareComponent implements OnInit {
   }
 
   public searchMobileNo(): void {
-    this.mobileNoPost = this.mobileNoPost;
-    this.checkMobileNo();
+    if (this.privilegeCustomerForm.value) {
+      this.checkMobileNo(this.privilegeCustomerForm.value.mobileNo);
+    } else {
+      this.alertService.notify({
+        type: 'warning',
+        confirmButtonText: 'OK',
+        showConfirmButton: true,
+        text: 'กรุณาระบุหมายเลขโทรศัพท์ให้ถูกต้อง'
+      });
+    }
   }
 
-  public checkMobileNo(): void {
-    const MOBILE_NO_POSTPAID = '0800000000';
-    // if(this.mobileNoPost === MOBILE_NO_POSTPAID) { Mock postpaid mobile number
+  public checkMobileNo(mobileNo: string): void {
+    const MOBILE_NO_POSTPAID = '0889540584';
+    if (mobileNo === MOBILE_NO_POSTPAID) {
       this.isPrivilegeCustomer = !this.isPrivilegeCustomer;
       this.popupMobileCare();
-
-    // }
+    } else {
+      this.alertService.notify({
+        type: 'error',
+        confirmButtonText: 'OK',
+        showConfirmButton: true,
+        text: 'เบอร์ไม่ถูกต้อง'
+    });
+    }
   }
 
   private popupMobileCare(): void {
-    const form = this.myForm.getRawValue();
+    const form = this.privilegeCustomerForm.getRawValue();
     this.alertService.notify({
       type: 'warning',
       width: '80%',
