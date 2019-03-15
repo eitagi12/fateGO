@@ -10,6 +10,7 @@ import { HomeService } from 'mychannel-shared-libs';
 })
 export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit {
   public isVerify: boolean = false;
+  public isBuyMobileCare: boolean = false;
   public promotionMock: any = [{
     id: '1',
     title: 'AIS Mobile Care-Swap+Replace เหมาจ่าย 12 เดือน 969',
@@ -27,6 +28,9 @@ export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    console.log('isBuyMobileCare', this.isBuyMobileCare);
+    console.log('isVerify', this.isVerify);
+
   }
 
   public onBack(): void {
@@ -43,6 +47,14 @@ export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit {
 
   public checkVerify(verify: boolean): void {
     this.isVerify = verify;
+    console.log('isVerify', this.isVerify);
+
+  }
+
+  public checkBuyMobileCare(buymobilecare: boolean): void {
+    this.isBuyMobileCare = buymobilecare;
+    console.log('isBuyMobileCare', this.isBuyMobileCare);
+
   }
 
 }

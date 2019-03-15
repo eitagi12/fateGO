@@ -55,6 +55,8 @@ export class MobileCareComponent implements OnInit {
 
   @Output() verifyOtp: EventEmitter<any> = new EventEmitter<any>();
 
+  @Output() checkBuyMobileCare: EventEmitter<any> = new EventEmitter<any>();
+
   @ViewChild('template')
   template: TemplateRef<any>;
   modalRef: BsModalRef;
@@ -136,8 +138,11 @@ export class MobileCareComponent implements OnInit {
     this.notBuyMobileCareForm.valueChanges.subscribe((value: any) => {
       if (!value.notBuyMobile) {
         this.isValidNotBuyMobile = false;
+        this.checkBuyMobileCare.emit(false);
+
       } else {
         this.isValidNotBuyMobile = true;
+        this.checkBuyMobileCare.emit(true);
       }
     });
   }
@@ -201,7 +206,7 @@ export class MobileCareComponent implements OnInit {
   }
 
   public checkVerify(): void {
-    this.verifyOtp.emit(false);
+    this.verifyOtp.emit(true);
   }
 
 }

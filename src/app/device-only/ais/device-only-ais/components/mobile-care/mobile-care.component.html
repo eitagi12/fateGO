@@ -226,6 +226,6 @@
     <button type="button" class="btn btn-secondary btn-not-buy-mobile-care"
       (click)="onNotBuyMobileCare(true)">CLOSE</button>
     <button type="button" class="btn btn-success btn-not-buy-mobile-care"
-      (click)="onNotBuyMobileCare(false)">NEXT</button>
+      (click)="onNotBuyMobileCare(false)" [disabled]="!isValidNotBuyMobile">NEXT</button>
   </div>
 </ng-template>
