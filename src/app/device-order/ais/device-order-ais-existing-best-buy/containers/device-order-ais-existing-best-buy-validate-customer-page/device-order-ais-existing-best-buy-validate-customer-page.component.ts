@@ -13,6 +13,8 @@ import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.c
 import { LocalStorageService } from 'ngx-store';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { CreateDeviceOrderBestBuyService } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/services/create-device-order-best-buy.service';
+import { CustomerInfoService } from '../../services/customer-info.service';
+import { PrivilegeService } from '../../services/privilege.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-validate-customer-page',
@@ -34,16 +36,16 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
   constructor(
     private router: Router,
     private homeService: HomeService,
+    private utils: Utils,
+    private alertService: AlertService,
+    private apiRequestService: ApiRequestService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private apiRequestService: ApiRequestService,
-    private http: HttpClient,
-    private utils: Utils,
     private localStorageService: LocalStorageService,
     private priceOptionService: PriceOptionService,
-    private createDeviceOrderBestBuyService: CreateDeviceOrderBestBuyService,
-    private alertService: AlertService
-
+    private customerInfoService: CustomerInfoService,
+    private privilegeService: PrivilegeService,
+    private createDeviceOrderBestBuyService: CreateDeviceOrderBestBuyService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -60,8 +62,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
   }
 
   ngOnInit(): void {
-    if (!this.transaction || !this.transaction.data
-      || (!this.transaction.data.order && !this.transaction.data.order.soId)) {
+    if (!this.transaction || !this.transaction.data) {
       this.createTransaction();
     }
   }
@@ -101,103 +102,34 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     this.pageLoadingService.openLoading();
     if (this.utils.isMobileNo(this.identity)) {
       // KEY-IN MobileNo
-      this.http.post('/api/customerportal/check-privilege-by-number', {
-        mobileNo: this.identity,
-        ussdCode: this.priceOption.trade.ussdCode,
-        chkMainProFlg: false
-      }).toPromise()
-        .then((checkPrivilege: any) => {
-          this.pageLoadingService.openLoading();
-          const privilegeInfo = checkPrivilege.data;
-          if (privilegeInfo.privilegeCode) {
-            this.transaction.data.customer = {
-              idCardNo: '',
-              idCardType: '',
-              titleName: '',
-              firstName: '',
-              lastName: '',
-              birthdate: '',
-              gender: '',
-              caNumber: null,
-              privilegeCode: privilegeInfo.privilegeCode
-            };
-            this.transaction.data.simCard = { mobileNo: this.identity };
-            this.pageLoadingService.closeLoading();
-            this.transaction.data.action = TransactionAction.KEY_IN_REPI;
-            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE]);
-            return;
-          }
-
-          const trade = this.transaction.data.mainPromotion.trade;
-          this.http.post('/api/salesportal/privilege/request-use-privilege', {
-            msisdn: this.identity,
-            shortCode: trade.ussdCode
-          }).toPromise()
-            .then((response: any) => {
-              const privilege = response.data;
-              if (privilege && privilege.description && privilege.description.toUpperCase() === 'SUCCESS') {
-                this.transaction.data.customer = {
-                  idCardNo: '',
-                  idCardType: '',
-                  titleName: '',
-                  firstName: '',
-                  lastName: '',
-                  birthdate: '',
-                  gender: '',
-                  caNumber: null,
-                  privilegeCode: privilege.msgBarcode
-                };
-                this.transaction.data.simCard = { mobileNo: this.identity };
-                this.transaction.data.action = TransactionAction.KEY_IN_REPI;
-                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE]);
-              } else {
-                this.alertService.error(privilege.description);
-              }
-            }).catch((err) => {
-              const errResponse: any = JSON.parse(err.data.response.developerMessage.replace('500 - ', ''));
-              this.alertService.error(errResponse);
-            });
+      this.privilegeService.checkAndGetPrivilegeCode(this.identity, this.priceOption.trade.ussdCode).then((privligeCode) => {
+        this.customerInfoService.getCustomerProfileByMobileNo(this.identity).then((customer: Customer) => {
+          customer.privilegeCode = privligeCode;
+          this.transaction.data.customer = customer;
+          this.transaction.data.customer.repi = true;
+          this.transaction.data.simCard = { mobileNo: this.identity };
+          this.transaction.data.action = TransactionAction.KEY_IN_REPI;
+          this.pageLoadingService.closeLoading();
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE]);
         });
+      });
     } else {
       // KEY-IN ID-Card
-      this.http.get(`/api/customerportal/newRegister/${this.identity}/queryCustomerInfo`)
-        .toPromise()
-        .then((resp: any) => {
-          const customer = this.mapCustomer(resp);
-          return Promise.resolve(customer);
-        })
-        .then((customer) => {
-          this.transaction.data.customer = customer;
-          this.transaction.data.billingInformation = {};
-          this.transaction.data.billingInformation.billDeliveryAddress = customer;
-          this.createDeviceOrderBestBuyService.createAddToCartTrasaction(this.transaction, this.priceOption)
-            .then((transaction) => {
-              this.transaction = transaction;
-              this.pageLoadingService.closeLoading();
-              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
-            });
-        })
-        .catch((e) => {
-          if (!/Data Not Found./.test(e.error.resultDescription)) {
-            this.alertService.error(e.error.resultDescription);
-            return;
-          }
-          this.transaction.data.customer = {
-            idCardNo: this.identity || '',
-            idCardType: 'ID_CARD',
-            titleName: '',
-            firstName: '',
-            lastName: '',
-            birthdate: '',
-            gender: '',
-            caNumber: null
-          };
-          this.createDeviceOrderBestBuyService.createAddToCartTrasaction(this.transaction, this.priceOption).then((transaction) => {
+      this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customer: Customer) => {
+        this.transaction.data.customer = customer;
+        this.transaction.data.billingInformation = {};
+        this.transaction.data.billingInformation.billDeliveryAddress = customer;
+        this.createDeviceOrderBestBuyService.createAddToCartTrasaction(this.transaction, this.priceOption)
+          .then((transaction) => {
             this.transaction = transaction;
             this.pageLoadingService.closeLoading();
-            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE]);
-          });
+            if (this.transaction.data.customer.caNumber) {
+              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
+            } else {
+              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE]);
+            }
         });
+      });
     }
   }
 
@@ -271,58 +203,11 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
   createPriceOption(mainPromotion: MainPromotion): void {
     const productDetail: any = this.localStorageService.load('productDetail').value;
     const productInfo: any = this.localStorageService.load('productInfo').value;
-    // const thumbnail = (productInfo && productInfo.images) ? productInfo.images.thumbnail : '';
-    // const device: ProductStock = {
-    //   company: productInfo.company,
-    //   productType: productDetail.productType,
-    //   productSubType: productDetail.productSubType,
-    //   productName: productDetail.name,
-    //   model: productDetail.model,
-    //   brand: productDetail.brand,
-    //   color: productInfo.colorName,
-    //   qty: productInfo.qty,
-    //   thumbnail: thumbnail,
-    //   colorCode: productInfo.colorCode
-    // };
-
     this.priceOption = {
       campaign: mainPromotion.campaign,
       trade: mainPromotion.trade,
       productDetail: productDetail,
       productStock: productInfo
-    };
-  }
-
-  mapCustomer(resp: any): Customer {
-    const data = resp.data || {};
-    const fullName = (data.name || ' ').split(' ');
-    const address = data.address || {};
-
-    return {
-      idCardNo: this.identity || '',
-      idCardType: data.idCardType || '',
-      titleName: data.accntTitle || '',
-      firstName: fullName[0] || '',
-      lastName: fullName[1] || '',
-      birthdate: data.birthdate || '',
-      homeNo: address.houseNo || '',
-      moo: address.moo || '',
-      mooBan: address.mooban || '',
-      buildingName: address.buildingName || '',
-      floor: address.floor || '',
-      room: address.room || '',
-      street: address.streetName || '',
-      soi: address.soi || '',
-      tumbol: address.tumbol || '',
-      amphur: address.amphur || '',
-      province: address.provinceName || '',
-      zipCode: address.zipCode || '',
-      mainMobile: data.mainMobile || '',
-      mainPhone: data.mainPhone || '',
-      billCycle: data.billCycle || '',
-      caNumber: data.accntNo || '',
-      gender: data.gender || '',
-      expireDate: ''
     };
   }
 }

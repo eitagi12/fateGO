@@ -1,8 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-import { ApiRequestService, PageLoadingService, HomeService, CustomerInfo, ShoppingCart } from 'mychannel-shared-libs';
+import { HomeService, CustomerInfo, ShoppingCart, Utils } from 'mychannel-shared-libs';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_REPI_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
 import { Transaction, Customer, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -25,10 +24,7 @@ export class DeviceOrderAisExistingBestBuyCustomerInfoPageComponent implements O
   constructor(
     private router: Router,
     private homeService: HomeService,
-    private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private apiRequestService: ApiRequestService,
-    private http: HttpClient,
     private shoppingCartService: ShoppingCartService
   ) {
     this.transaction = this.transactionService.load();

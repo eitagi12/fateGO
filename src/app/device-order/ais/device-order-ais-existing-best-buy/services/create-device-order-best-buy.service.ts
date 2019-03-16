@@ -2,10 +2,8 @@ import { Injectable } from '@angular/core';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction, Payment, Customer, Prebooking } from 'src/app/shared/models/transaction.model';
 import { HttpClient } from '@angular/common/http';
-import { Utils, TokenService, ApiRequestService, User } from 'mychannel-shared-libs';
-import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { Utils, TokenService, User } from 'mychannel-shared-libs';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import * as moment from 'moment';
 
 export const REMARK_CASH_PAYMENT = '[CA]';
 export const REMARK_CREDIT_CARD_PAYMENT = '[CC]';
@@ -42,11 +40,8 @@ export class CreateDeviceOrderBestBuyService {
 
   constructor(
     private http: HttpClient,
-    private utils: Utils,
-    private tokenService: TokenService,
-    private priceOptionService: PriceOptionService
+    private tokenService: TokenService
   ) {
-    // this.priceOption = this.priceOptionService.load();
     this.user = this.tokenService.getUser();
   }
 
@@ -77,10 +72,6 @@ export class CreateDeviceOrderBestBuyService {
 
     return this.http.post('/api/salesportal/device-sell/item', requestData).toPromise()
       .then((res: any) => res.data);
-    // TEST
-    // return new Promise((resolve, reject) => {
-    //   resolve({ resultCode: 'S', soId: '11111' });
-    // });
   }
 
   private createTransaction(transaction: Transaction, priceOption: PriceOption): Promise<any> {
@@ -222,7 +213,6 @@ export class CreateDeviceOrderBestBuyService {
   }
 
   private getOrderRemark(
-    // promotion: any,
     trade: any,
     payment: Payment,
     advancePayment: Payment,

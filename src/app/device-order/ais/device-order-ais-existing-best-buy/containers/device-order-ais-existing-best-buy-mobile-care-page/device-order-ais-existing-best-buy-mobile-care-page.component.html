@@ -186,6 +186,6 @@
 
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()" [disabled]="!(mobileCareForm.valid || notBuyMobileCareForm.valid)">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!(mobileCareForm.valid || !!notBuyMobileCareForm.value.notBuyMobile)">NEXT</button>
   </mc-footer>
 </div>

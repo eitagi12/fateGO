@@ -130,6 +130,7 @@ export interface Customer {
   imageReadSmartCard?: string;
   customerPinCode?: string;
   privilegeCode?: string;
+  repi?: boolean;
 }
 
 export interface SimCard {

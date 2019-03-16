@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-import { ApiRequestService, PageLoadingService, HomeService, ReadCardProfile, User, AlertService, ValidateCustomerIdCardComponent } from 'mychannel-shared-libs';
+import { PageLoadingService, HomeService, ReadCardProfile, User, AlertService, ValidateCustomerIdCardComponent } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_REPI_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
-import { Transaction, TransactionAction, Customer, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
+import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
+import { Transaction, Customer, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { CustomerInfoService } from '../../services/customer-info.service';
 import { CreateDeviceOrderBestBuyService } from '../../services/create-device-order-best-buy.service';

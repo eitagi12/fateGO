@@ -89,6 +89,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
                   this.createDeviceOrderBestBuyService.createAddToCartTrasaction(this.transaction, this.priceOption).then((transaction) => {
                     this.transaction = transaction;
                     this.pageLoadingService.closeLoading();
+                    this.transaction.data.action = TransactionAction.READ_CARD;
                     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE]);
                   });
                 }
