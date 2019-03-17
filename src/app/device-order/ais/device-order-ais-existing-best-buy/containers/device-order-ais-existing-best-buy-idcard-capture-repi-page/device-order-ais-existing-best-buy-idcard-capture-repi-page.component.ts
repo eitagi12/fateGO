@@ -7,6 +7,7 @@ import { CaptureAndSign, HomeService, PageLoadingService, AlertService, TokenSer
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_OTP_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE } from '../../constants/route-path.constant';
+import { CustomerInfoService } from '../../services/customer-info.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-idcard-capture-repi-page',
@@ -29,9 +30,9 @@ export class DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent impleme
     private homeService: HomeService,
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
-    private http: HttpClient,
     private alertService: AlertService,
-    private utils: Utils
+    private utils: Utils,
+    private customerInfoService: CustomerInfoService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -46,15 +47,17 @@ export class DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent impleme
   }
 
   onNext(): void {
-    this.http.post(`/api/customerportal/newRegister/updatePrepaidIdent`,
-      this.getRequestUpdatePrepaidIdent()
-    ).toPromise()
+    this.pageLoadingService.openLoading();
+    this.customerInfoService.callUpdatePrepaidIdentify(this.transaction.data.customer, this.transaction.data.simCard.mobileNo)
       .then((response: any) => {
-        this.transaction.data.action = TransactionAction.KEY_IN;
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE]);
-      }).catch((error) => {
-        this.pageLoadingService.closeLoading();
-        this.alertService.error('ระบบไม่สามารถแสดงตนได้กรุณาติดต่อเจ้าหน้าที่');
+        if (response && response.data && response.data.success) {
+          this.transaction.data.action = TransactionAction.READ_CARD;
+          this.pageLoadingService.closeLoading();
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE]);
+        } else {
+          this.pageLoadingService.closeLoading();
+          this.alertService.error('ระบบไม่สามารถแสดงตนได้กรุณาติดต่อเจ้าหน้าที่');
+        }
       });
   }
 

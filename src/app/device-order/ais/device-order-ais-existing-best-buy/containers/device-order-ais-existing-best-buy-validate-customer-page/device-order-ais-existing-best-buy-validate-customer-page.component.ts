@@ -6,7 +6,7 @@ import { ApiRequestService, PageLoadingService, HomeService, Utils, AlertService
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from 'src/app/buy-product/constants/route-path.constant';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
-import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress, Customer, MainPromotion, ProductStock } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress, Customer, MainPromotion, ProductStock, Prebooking } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
@@ -148,7 +148,12 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
       this.createPriceOption(mainPromotion);
     }
 
-    const preBooking = this.localStorageService.load('preBooking').value;
+    // const preBooking = this.localStorageService.load('preBooking').value;
+    const preBooking: Prebooking = {
+      preBookingNo: 'PB100000000000000',
+      depositAmt: '2000',
+      deliveryDt: '17/03/2019'
+    };
 
     this.transaction = {
       transactionId: this.createDeviceOrderBestBuyService.generateTransactionId(this.apiRequestService.getCurrentRequestId()),

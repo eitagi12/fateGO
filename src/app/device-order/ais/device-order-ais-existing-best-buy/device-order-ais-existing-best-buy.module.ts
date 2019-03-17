@@ -21,7 +21,6 @@ import { DeviceOrderAisExistingBestBuyCustomerProfilePageComponent } from './con
 import { DeviceOrderAisExistingBestBuyOtpPageComponent } from './containers/device-order-ais-existing-best-buy-otp-page/device-order-ais-existing-best-buy-otp-page.component';
 import { DeviceOrderAisExistingBestBuyQrCodePaymentGeneratorPageComponent } from './containers/device-order-ais-existing-best-buy-qr-code-payment-generator-page/device-order-ais-existing-best-buy-qr-code-payment-generator-page.component';
 import { DeviceOrderAisExistingBestBuyQrCodeSummaryPageComponent } from './containers/device-order-ais-existing-best-buy-qr-code-summary-page/device-order-ais-existing-best-buy-qr-code-summary-page.component';
-import { DeviceOrderAisExistingBestBuyQrCodeErrorPageComponent } from './containers/device-order-ais-existing-best-buy-qr-code-error-page/device-order-ais-existing-best-buy-qr-code-error-page.component';
 import { DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent } from './containers/device-order-ais-existing-best-buy-qr-code-queue-page/device-order-ais-existing-best-buy-qr-code-queue-page.component';
 import { DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponent } from './containers/device-order-ais-existing-best-buy-validate-customer-id-card-repi-page/device-order-ais-existing-best-buy-validate-customer-id-card-repi-page.component';
 import { CreateDeviceOrderBestBuyService } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/services/create-device-order-best-buy.service';
@@ -55,7 +54,6 @@ import { DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent } from './c
     DeviceOrderAisExistingBestBuyOtpPageComponent,
     DeviceOrderAisExistingBestBuyQrCodePaymentGeneratorPageComponent,
     DeviceOrderAisExistingBestBuyQrCodeSummaryPageComponent,
-    DeviceOrderAisExistingBestBuyQrCodeErrorPageComponent,
     DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent,
     DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponent,
     DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent

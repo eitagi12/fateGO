@@ -16,3 +16,7 @@ export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SUMMARY_PAGE = '/device-order/ais/b
 export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CHECK_OUT_PAGE = '/device-order/ais/best-buy/check-out';
 export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_QUEUE_PAGE = '/device-order/ais/best-buy/queue';
 export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE = '/device-order/ais/best-buy/result';
+
+export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_QR_CODE_SUMMARY_PAGE = '/device-order/ais/best-buy/qr-code-summary';
+export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_QR_CODE_QUEUE_PAGE = '/device-order/ais/best-buy/qr-code-queue';
+export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_QR_CODE_GENERATOR_PAGE = '/device-order/ais/best-buy/qr-code-generator';

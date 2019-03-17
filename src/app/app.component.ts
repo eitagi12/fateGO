@@ -1,14 +1,18 @@
 import { Component } from '@angular/core';
-import { TokenService, ErrorsService, AlertService, PageActivityService, HomeService, ChannelType } from 'mychannel-shared-libs';
+import {
+  TokenService, ErrorsService, AlertService, PageActivityService, HomeService, ChannelType
+} from 'mychannel-shared-libs';
 import { setTheme } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
 import { environment } from '../environments/environment';
 import { debounceTime } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import * as moment from 'moment';
 
+const Moment = moment;
 const { version: version } = require('../../package.json');
 
-declare var Hammer: any;
-
+declare var swal: any;
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -24,27 +28,45 @@ export class AppComponent {
     private pageActivityService: PageActivityService,
     private router: Router,
     private homeService: HomeService,
+    private http: HttpClient
   ) {
-    this.version = (environment.production ? '' : `[${environment.name}] `) + version;
+    this.version = this.getVersion();
+
     this.initails();
+    this.hoemeHandler();
     this.tokenHandler();
     this.errorHandler();
-    this.pageActivityHandler();
-    this.homeService.callback = () => {
-      window.location.href = '/smart-shop';
-    };
-    this.supportOptionSelect();
+    // this.checkServerTime();
+
+    if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {
+      this.onStopPropagation();
+      this.pageActivityHandler();
+    }
   }
 
   initails(): void {
     setTheme('bs4');
   }
 
+  getVersion(): any {
+    return (environment.production ? '' : `[${environment.name}] `) + version;
+  }
+
+  hoemeHandler(): void {
+    this.homeService.callback = () => {
+      if (environment.name === 'LOCAL') {
+        window.location.href = '/main-menu';
+      } else {
+        window.location.href = '/smart-shop/main-menu';
+      }
+    };
+  }
+
   tokenHandler(): void {
     let devAccessToken = '';
     if (this.isDeveloperMode()) {
       // tslint:disable-next-line:max-line-length
-      devAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik1DIiwidGltZXN0YW1wIjoiMjAxODA4MTUxMTExIiwibG9jYXRpb25Db2RlIjoiMTEwMCIsImlhdCI6MTUzNDMwNjI3NCwiZXhwIjoxNjk5ODk4Mjc0fQ.WZgkH35wUV6S4WElfDBxVc_R74RMhm9Xp3znHD7coM4';
+      devAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik1DIiwidGltZXN0YW1wIjoiMjAxODEwMDExNzM3IiwibG9jYXRpb25Db2RlIjoiMTEwMCIsImlhdCI6MTUzODM5MDI2OCwiZXhwIjoyNTQwOTgyMjY4fQ.tMYDOKJf8X3LFuqBD3-gO6HIHMzxQubd9RO0kvSWRXM';
     }
     this.tokenService.checkTokenExpired(devAccessToken);
   }
@@ -54,8 +76,7 @@ export class AppComponent {
       this.alertService.error('Unauthorized: Access is denied due to invalid credentials.');
     });
 
-    const ONE_SECOND = 1000;
-    this.errorsService.getErrorContextInfo().pipe(debounceTime(ONE_SECOND)).subscribe((observer) => {
+    this.errorsService.getErrorContextInfo().pipe(debounceTime(1000)).subscribe((observer) => {
       let redirectTo = '/error?';
       Object.keys(observer).forEach((key: string, index: number) => {
         if (index > 0) {
@@ -72,31 +93,22 @@ export class AppComponent {
   }
 
   pageActivityHandler(): void {
-    const token = this.tokenService.getUser();
-    if (token.channelType !== ChannelType.SMART_ORDER) {
-      return;
-    }
-
     this.pageActivityService.setTimeout((counter) => {
       const url = this.router.url;
-      const PERSO_SIM = 300;
-      const FACE_COMFIRM = 900;
-      const VALIDATE_CUSTOMER_IDCARD = 120;
-      const OTHER = 60;
-
       if (url.indexOf('main-menu') !== -1) {
         return false;
       }
       if (url.indexOf('perso-sim') !== -1) {
-        return counter === PERSO_SIM;
+        return counter === 300;
       }
       if (url.indexOf('face-confirm') !== -1) {
-        return counter === FACE_COMFIRM;
+        return counter === 900;
       }
       if (url.indexOf('validate-customer-id-card') !== -1) {
-        return counter === VALIDATE_CUSTOMER_IDCARD;
+        return counter === 120;
       }
-      return counter === OTHER;
+      return counter === 60;
+
     }).subscribe(() => {
       this.alertService.notify({
         type: 'question',
@@ -111,7 +123,6 @@ export class AppComponent {
       }).then((data) => {
         if (!data.value) {
           this.homeService.goToHome();
-          // this.router.navigate([ROUTE_DEASHBOARD_MAIN_MENU_PAGE]);
         }
         this.pageActivityService.resetTimeout();
       });
@@ -122,17 +133,61 @@ export class AppComponent {
     return 'LOCAL' === environment.name;
   }
 
-  supportOptionSelect(): void {
+  onStopPropagation(): void {
     this.router.events.subscribe(path => {
       const select_options = window.document.getElementsByTagName('select');
       for (const key in select_options) {
         if (select_options.hasOwnProperty(key)) {
           const option = select_options[key];
-          option.addEventListener('click', (e) => {
+          option.addEventListener('click', (e: any) => {
             e.stopPropagation();
           });
         }
       }
     });
   }
+
+  checkServerTime(): void {
+    this.http.get('/api/customerportal/currentDate').toPromise()
+      .then((resp: any) => {
+        const TIME_DIFF_FORMAT = 'YYYY-MM-DD HH:mm:ss';
+        const localTime = Moment(Moment().format(TIME_DIFF_FORMAT));
+        const serverTime = Moment(Moment(resp.data).format(TIME_DIFF_FORMAT));
+
+        const getClock = (ms: number) => {
+          return Moment(resp.data).add(ms, 'second').format(TIME_DIFF_FORMAT);
+        };
+
+        console.log(serverTime);
+        console.log(localTime.subtract(30, 'm'));
+        console.log(localTime.add(30, 'm'));
+        console.log(serverTime.isBetween(localTime.subtract(1, 'minutes'), localTime.add(1, 'minutes')));
+        if (!serverTime.isBetween(
+          localTime.subtract(1, 'minutes'),
+          localTime.add(1, 'minutes')
+        )) {
+          let timerInterval;
+          this.alertService.notify({
+            type: 'warning',
+            html: `
+            <div>
+              <div class="text-center">โปรดตรวจสอบเวลาเครื่องให้ตรงกับเซอร์เวอร์</div>
+              <div class="mt-3">SERVER TIME: <strong></strong></div>
+            </div>
+            `,
+            onBeforeOpen: () => {
+              let i = 0;
+              timerInterval = setInterval(() => {
+                i++;
+                swal.getContent().querySelector('strong').textContent = getClock(i);
+              }, 1000);
+            },
+            onClose: () => {
+              clearInterval(timerInterval);
+            }
+          });
+        }
+      });
+  }
+
 }

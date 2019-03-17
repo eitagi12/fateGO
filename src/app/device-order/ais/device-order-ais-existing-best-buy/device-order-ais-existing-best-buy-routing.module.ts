@@ -20,6 +20,7 @@ import { DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponent } 
 import { DeviceOrderAisExistingBestBuyCustomerProfilePageComponent } from './containers/device-order-ais-existing-best-buy-customer-profile-page/device-order-ais-existing-best-buy-customer-profile-page.component';
 import { DeviceOrderAisExistingBestBuyOtpPageComponent } from './containers/device-order-ais-existing-best-buy-otp-page/device-order-ais-existing-best-buy-otp-page.component';
 import { DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent } from './containers/device-order-ais-existing-best-buy-idcard-capture-repi-page/device-order-ais-existing-best-buy-idcard-capture-repi-page.component';
+import { DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent } from './containers/device-order-ais-existing-best-buy-qr-code-queue-page/device-order-ais-existing-best-buy-qr-code-queue-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'validate-customer', pathMatch: 'full' },
@@ -37,8 +38,9 @@ const routes: Routes = [
   { path: 'mobile-care-available', component: DeviceOrderAisExistingBestBuyMobileCareAvailablePageComponent },
   { path: 'mobile-care', component: DeviceOrderAisExistingBestBuyMobileCarePageComponent },
   { path: 'summary', component: DeviceOrderAisExistingBestBuySummaryPageComponent },
-  { path: 'qrcodesummary', component:  DeviceOrderAisExistingBestBuyQrCodeSummaryPageComponent},
-  { path: 'qrcode', component:  DeviceOrderAisExistingBestBuyQrCodePaymentGeneratorPageComponent},
+  { path: 'qr-code-summary', component:  DeviceOrderAisExistingBestBuyQrCodeSummaryPageComponent },
+  { path: 'qr-code-generator', component:  DeviceOrderAisExistingBestBuyQrCodePaymentGeneratorPageComponent },
+  { path: 'qr-code-queue', component:  DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent },
   { path: 'check-out', component: DeviceOrderAisExistingBestBuyCheckOutPageComponent },
   { path: 'queue', component: DeviceOrderAisExistingBestBuyQueuePageComponent},
   { path: 'result', component: DeviceOrderAisExistingBestBuyResultPageComponent }

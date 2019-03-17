@@ -59,6 +59,8 @@ export interface TransactionData {
   preBooking?: Prebooking;
   status?: Status;
   discount?: Discount;
+  // MPAY
+  mpayPayment?: QrCodePrePostMpayModel;
 }
 
 export interface ProductStock {
@@ -294,4 +296,15 @@ export interface Status {
 }
 export interface Discount {
   type: string;
+}
+export interface QrCodePrePostMpayModel {
+  orderId: string;
+  tranDtm?: string;
+  tranId?: string;
+  amount?: number;
+  qrType?: string;
+  status?: string;
+  locationCode?: string;
+  offerId?: string;
+  startDtm?: string;
 }

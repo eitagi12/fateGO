@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction, Payment, Customer, Prebooking } from 'src/app/shared/models/transaction.model';
 import { HttpClient } from '@angular/common/http';
-import { Utils, TokenService, User } from 'mychannel-shared-libs';
+import { Utils, TokenService, User, PaymentDetailQRCode } from 'mychannel-shared-libs';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 
 export const REMARK_CASH_PAYMENT = '[CA]';
@@ -104,9 +104,9 @@ export class CreateDeviceOrderBestBuyService {
 
   }
 
-  createDeviceOrder(transaction: Transaction, priceOption: PriceOption): Promise<any> {
+  createDeviceOrder(transaction: Transaction, priceOption: PriceOption, transId?: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      this.getRequestCreateOrder(transaction, priceOption).then((data) => {
+      this.getRequestCreateOrder(transaction, priceOption, transId).then((data) => {
         this.http.post('/api/salesportal/device-sell/order', data).toPromise()
           .then((response: any) => {
             if (response.data.resultCode === 'S') {
@@ -132,7 +132,7 @@ export class CreateDeviceOrderBestBuyService {
     return this.http.post('/api/salesportal/device-order/update-transaction', shareTrasaction).toPromise();
   }
 
-  private getRequestCreateOrder(transaction: Transaction, priceOption: PriceOption): Promise<any> {
+  private getRequestCreateOrder(transaction: Transaction, priceOption: PriceOption, transId?: string): Promise<any> {
 
     const user = this.tokenService.getUser();
     const customer = transaction.data.customer;
@@ -147,6 +147,11 @@ export class CreateDeviceOrderBestBuyService {
     const prebooking = transaction.data.preBooking;
     const mobileCare = transaction.data.mobileCarePackage;
     const order = transaction.data.order;
+
+    let qrAmt;
+    if (payment.type === 'qrcode' && transId) {
+      qrAmt = this.getQrAmount(trade.normalPrice, trade.discount);
+    }
 
     const data: any = {
       soId: order.soId,
@@ -179,7 +184,7 @@ export class CreateDeviceOrderBestBuyService {
       installmentTerm: payment && payment.bank ? payment.bank.installments[0].installmentMonth : 0,
       installmentRate: payment && payment.bank ? payment.bank.installments[0].installmentPercentage : 0,
       mobileAisFlg: 'Y',
-      paymentMethod: payment.method,
+      paymentMethod: this.getPaymentMethod(payment, null, trade),
       bankCode: this.getBankCode(payment, advancePayment),
       tradeFreeGoodsId: trade.freeGoods[0] ? trade.freeGoods[0].tradeFreegoodsId : '',
       matairtimeId: '',
@@ -188,10 +193,17 @@ export class CreateDeviceOrderBestBuyService {
       focCode: '',
       bankAbbr: this.getBankCode(payment, advancePayment),
       preBookingNo: prebooking ? prebooking.preBookingNo : '',
-      depositAmt: prebooking ? prebooking.depositAmt : ''
+      depositAmt: prebooking ? prebooking.depositAmt : '',
+      qrTransId: transId ? transId : '',
+      qrAmt: qrAmt
     };
 
     return Promise.resolve(data);
+  }
+
+  private getQrAmount(normalPrice: number, discount: any): string {
+    const qrAmt: number = normalPrice - discount.amount;
+    return qrAmt.toFixed(2);
   }
 
   private getPaymentMethod(payment: Payment, advancePayment: Payment, trade: any): string {
@@ -204,6 +216,20 @@ export class CreateDeviceOrderBestBuyService {
 
     if (advancePayment && +trade.advancePay.amount !== 0) {
       paymentMethod += advancePayment.method;
+    }
+    return paymentMethod;
+  }
+
+  private replacePaymentMethodForQRCodeWithOutAirtime(trade: any, qrCode: PaymentDetailQRCode): string {
+    let paymentMethod;
+    if (qrCode) {
+      if (qrCode.qrType === '003') {
+        paymentMethod = 'PB';
+        return paymentMethod;
+      } else {
+        paymentMethod = 'RL';
+        return paymentMethod;
+      }
     }
     return paymentMethod;
   }

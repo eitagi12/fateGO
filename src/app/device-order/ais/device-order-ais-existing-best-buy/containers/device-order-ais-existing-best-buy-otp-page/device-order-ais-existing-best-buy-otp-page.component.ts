@@ -8,6 +8,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CAPTURE_REPI_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
+import { CustomerInfoService } from '../../services/customer-info.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-otp-page',
@@ -32,6 +33,7 @@ export class DeviceOrderAisExistingBestBuyOtpPageComponent implements OnInit {
     private fb: FormBuilder,
     private http: HttpClient,
     private alertService: AlertService,
+    private customerInfoService: CustomerInfoService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -93,8 +95,8 @@ export class DeviceOrderAisExistingBestBuyOtpPageComponent implements OnInit {
   }
 
   autoPI(): void {
-    this.http.post(`/api/customerportal/newRegister/updatePrepaidIdent`, this.getRequestUpdatePrepaidIdentata()
-    ).toPromise()
+    this.pageLoadingService.openLoading();
+    this.customerInfoService.callUpdatePrepaidIdentify(this.transaction.data.customer, this.transaction.data.simCard.mobileNo)
       .then((response: any) => {
         this.pageLoadingService.closeLoading();
         if (response && response.data && response.data.success) {
@@ -132,35 +134,4 @@ export class DeviceOrderAisExistingBestBuyOtpPageComponent implements OnInit {
   onHome(): void {
     this.homeService.goToHome();
   }
-  getRequestUpdatePrepaidIdentata(): any {
-    const customer = this.transaction.data.customer;
-    const mobileNo = this.transaction.data.simCard.mobileNo;
-    const data: any = {
-      idCardNo: customer.idCardNo || '-',
-      mobileNo: mobileNo || '-',
-      birthdate: customer.birthdate || '-',
-      firstName: customer.firstName || '-',
-      lastName: customer.lastName || '-',
-      gender: customer.gender || '-',
-      homeNo: customer.homeNo || '-',
-      buildingName: customer.buildingName || '-',
-      floor: customer.floor || '-',
-      room: customer.room || '-',
-      moo: customer.moo || '-',
-      mooBan: customer.mooBan || '-',
-      soi: customer.soi || '-',
-      street: customer.street || '-',
-      tumbol: customer.tumbol || '-',
-      amphur: customer.amphur || '-',
-      province: customer.province || '-',
-      zipCode: customer.zipCode || '-',
-      idCardImage: '-',
-      imageReadSmartCard: customer.imageReadSmartCard || '-',
-      isSmartCard: 'Y',
-      smartCardVersion: 'v1',
-      urlPicture: ''
-    };
-    return data;
-  }
-
 }

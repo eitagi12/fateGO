@@ -1,5 +1,15 @@
 import { Component, OnInit } from '@angular/core';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+
+import { AlertService } from 'mychannel-shared-libs';
+import { CreateDeviceOrderBestBuyService } from '../../services/create-device-order-best-buy.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { Transaction } from 'src/app/shared/models/transaction.model';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { QrcodePaymentService } from '../../services/qrcode-payment.service';
+import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE } from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-qr-code-queue-page',
@@ -8,15 +18,59 @@ import { Router } from '@angular/router';
 })
 export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements OnInit {
 
+  transaction: Transaction;
+  priceOption: PriceOption;
+  queueFrom: FormGroup;
+  queue: string;
+  transId: string;
+  deposit: number;
+
   constructor(
-    private router: Router
+    private router: Router,
+    private fb: FormBuilder,
+    private transactionService: TransactionService,
+    private createBestBuyService: CreateDeviceOrderBestBuyService,
+    private alertService: AlertService,
+    private priceOptionService: PriceOptionService,
+    private qrcodePaymentService: QrcodePaymentService
   ) { }
 
   ngOnInit(): void {
+    this.deposit = this.transaction.data.preBooking
+      && this.transaction.data.preBooking.depositAmt ? -Math.abs(+this.transaction.data.preBooking.depositAmt) : 0;
+    this.getTransactionId();
+    this.createForm();
+  }
+
+  getTransactionId(): void {
+    this.qrcodePaymentService.getInquiryCallbackMpay(this.transaction.data.order.soId).then((transId: any) => {
+      this.transId = transId.mpay_payment.tranId;
+    });
+  }
+
+  createForm(): void {
+    this.queueFrom = this.fb.group({
+      'queue': ['', Validators.compose([Validators.required, Validators.pattern(/([A-Y]{1}[0-9]{3})/)])],
+    });
+
+    this.queueFrom.valueChanges.subscribe((value) => {
+      this.queue = value.queue;
+    });
   }
 
   onNext(): void {
-    this.router.navigate(['']);
+    this.transaction.data.queue = { queueNo: this.queue };
+    this.createBestBuyService.createDeviceOrder(this.transaction, this.priceOption, this.transId).then((response: any) => {
+      if (response) {
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE]);
+      }
+    });
+  }
+
+  summary(amount: number[]): number {
+    return amount.reduce((prev, curr) => {
+      return prev + curr;
+    }, 0);
   }
 
 }

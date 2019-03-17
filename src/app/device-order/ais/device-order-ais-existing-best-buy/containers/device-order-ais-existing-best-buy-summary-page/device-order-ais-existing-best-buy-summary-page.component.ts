@@ -74,7 +74,7 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
     });
 
     this.deposit = this.transaction.data.preBooking
-                    && this.transaction.data.preBooking.depositAmt ? Math.abs(+this.transaction.data.preBooking.depositAmt) : 0;
+                    && this.transaction.data.preBooking.depositAmt ? -Math.abs(+this.transaction.data.preBooking.depositAmt) : 0;
 
     this.http.get(`/api/salesportal/location-by-code?code=${user.locationCode}`).toPromise().then((response: any) => {
       this.seller = {
