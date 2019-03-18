@@ -59,12 +59,7 @@ export class OrderNewRegisterEbillingAddressPageComponent implements OnInit, OnD
       this.customerAddress.tumbol = null;
       this.customerAddress.province = null;
     });
-
   }
-  onResetFrom() {
-
-  }
-
   callService() {
     this.transaction.data.customer.engFlag = (this.translation.currentLang === 'EN') ? 'Y' : 'N';
     const billingInformation = this.transaction.data.billingInformation || {};
