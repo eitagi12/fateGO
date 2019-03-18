@@ -6,6 +6,8 @@ import { DepositSummaryComponent } from './deposit-summary.component';
 import { DepositPaymentPageComponent } from './ais/container/deposit-payment-page/deposit-payment-page.component';
 import { DepositPaymentSummaryPageComponent } from './ais/container/deposit-payment-summary-page/deposit-payment-summary-page.component';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
+import { DepositPaymentSummaryComponent } from './components/deposit-payment-summary/deposit-payment-summary.component';
+import { DepositSellerInfoComponent } from './components/deposit-seller-info/deposit-seller-info.component';
 
 @NgModule({
   imports: [
@@ -13,6 +15,7 @@ import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
     DepositSummaryRoutingModule,
     MyChannelSharedLibsModule
   ],
-  declarations: [DepositSummaryComponent, DepositPaymentPageComponent, DepositPaymentSummaryPageComponent]
+  declarations: [DepositSummaryComponent, DepositPaymentPageComponent, DepositPaymentSummaryPageComponent,
+     DepositPaymentSummaryComponent, DepositSellerInfoComponent]
 })
 export class DepositSummaryModule { }

@@ -1,3 +1,15 @@
-<p>
-  deposit-payment-summary-page works!
-</p>
+<section class="summary-page-container">
+  <span defaultOverlayTarget></span>
+  <mc-device-order-header title="รายการสินค้า" [backUrl]="backUrl" [channelType]="channelType">
+  </mc-device-order-header>
+  <div class="padding-content">
+      <div class="content-fixed" [ngClass]="{'fixed': fixed}">
+        <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
+        </div>
+  </div>
+  <mc-deposit-payment-summary></mc-deposit-payment-summary>
+  <mc-deposit-seller-info [seller]="seller$ | async"></mc-deposit-seller-info>
+  <section class="deposit-payment-summary footer">
+    <mc-next-back-btn (onNextEvent)="onNext($event)" (onCancelEvent)="onCancel($event)"></mc-next-back-btn>
+  </section>
+</section>

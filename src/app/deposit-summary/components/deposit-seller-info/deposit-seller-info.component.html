@@ -1,0 +1,33 @@
+<div class="seller-info-container">
+  <div class="row columns header">
+    รหัสผู้ขาย
+  </div>
+  <div class="content">
+    <div class="row">
+      <div class="small-12 columns">
+        <div class="row" style="margin-bottom: 0.875em">
+          <div class="small-4 columns font-darker-gray">พนักงานขาย</div>
+          <div class="small-8 columns" id="lblRegNumSellerInfoName">
+            {{seller.sellerName}}
+          </div>
+        </div>
+        <div class="row" style="margin-bottom: 0.875em">
+          <div class="small-4 columns font-darker-gray">สาขา</div>
+          <div class="small-8 columns" id="lblRegNumSellerInfoLocationName">
+            {{seller.locationName}}
+          </div>
+        </div>
+        <div class="row">
+          <div class="small-4 columns font-darker-gray" style="position: relative;">
+            <div style="float: left;">รหัสพนักงานขาย/</div>
+            <div style="float: left;">ASC Code <span class="font-pink" *ngIf="!isUserASPType()">*</span></div>
+            <div style="clear: both;"></div>
+          </div>
+          <div class="small-8 columns">
+            <input autocomplete="off" id="sellerNo" name="sellerNo" type="text" [(ngModel)]="seller.sellerNo">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

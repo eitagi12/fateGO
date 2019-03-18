@@ -1,0 +1,136 @@
+<div class="deposit-payment-summary-container">
+  <div class="deposit-payment-summary-detail-container">
+    <div class="row columns summarydepositheader">
+      สรุปรายการจองสินค้า
+    </div>
+    <div class="content">
+      <div class="row align-top align-spaced">
+        <div class="small-9 columns">
+          <div class="circle green-yellow"></div>
+          <span> ค่ามัดจำ {{ brand }} {{ model }} สี {{ colorName }} </span>
+        </div>
+        <div class="small-3 columns font-dark-green text-right">
+             ฿ {{ depositAmt | number }}
+        </div>
+      </div>
+      <div class="footer">
+        <div class="row align-middle align-spaced">
+          <div class="small-offset-6 small-6 columns text-right">
+            <h5>รวมยอดชำระ(รวมVAT)
+              <span class="font-dark-green" style="margin-left: 1rem;">
+                ฿ 5,000.00
+              </span>
+            </h5>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="payment-method-container">
+    <div class="row columns paymentdetailheader">
+      รายละเอียดการชำระ
+    </div>
+    <div class="content">
+      <div class="row align-top align-spaced">
+        <div class="small-9 columns">
+          ข้อมูลชำระสินค้า
+        </div>
+        <div class="small-3 columns font-dark-green text-right">
+        </div>
+      </div>
+      <div class="row align-top align-spaced">
+        <div class="small-9 columns">
+          <div class="circle green-yellow"></div>
+          <span>มัดจำค่าเครื่อง : เงินสด (เต็มจำนวน) </span>
+        </div>
+        <div class="small-3 columns font-dark-green text-right">
+          ฿ 5,000.00
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="customer-detail-container">
+    <div class="row columns customerdetailheader">
+      ข้อมูลผู้รับสินค้า
+    </div>
+    <div class="content">
+      <div class="row align-top align-spaced">
+        <div class="small-9 columns">
+          <span>
+            ผู้ซื้อ
+          </span>
+          <span class="span-font-black">
+              {{ customerFullName }}
+          </span>
+        </div>
+        <div class="small-3 columns font-black text-right">
+        </div>
+        <div class="small-9 columns">
+          <span>
+            ที่อยู่
+          </span>
+          <span class="span-font-black">
+              {{ customerFullAddress }}
+          </span>
+        </div>
+        <div class="small-3 columns font-dark-green text-right">
+        </div>
+        <div class="small-9 columns">
+          <span>
+            หมายเลขโทรศัพท์
+          </span>
+          <span class="span-font-black">
+              {{ mobileNo }}
+          </span>
+        </div>
+        <div class="small-3 columns font-dark-green text-right">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="customer-receipt-container">
+    <div class="row columns receiptheader">
+      ข้อมูลใบเสร็จรับเงิน
+    </div>
+    <div class="content">
+      <div class="row align-top align-spaced">
+        <div class="small-9 columns">
+          <span>
+            ผู้ซื้อ
+          </span>
+          <span class="span-font-black">
+              {{ customerFullName }}
+          </span>
+        </div>
+        <div class="small-3 columns font-dark-green text-right">
+        </div>
+        <div class="small-9 columns">
+          <span>
+            ที่อยู่
+          </span>
+          <span class="span-font-black">
+             {{ customerFullAddress }}
+          </span>
+        </div>
+        <div class="small-3 columns font-dark-green text-right">
+          
+        </div>
+        <div class="small-9 columns">
+          <span>
+            Tax ID
+          </span>
+          <span class="span-font-black">
+          {{ customerIdCardNo | idCardNumber}}
+          </span>
+        </div>
+        <div class="small-3 columns font-dark-green text-right">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

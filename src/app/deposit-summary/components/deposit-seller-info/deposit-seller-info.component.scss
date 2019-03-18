@@ -1,0 +1,51 @@
+@import "src/assets/scss/util/color";
+@import 'node_modules/foundation-sites/scss/util/util';
+.seller-info-container {
+    background-color: $mc-white;
+    border-radius: 0.2em;
+    border: 0.05em solid $mc-bright-gray;
+    .header {
+        @include breakpoint(small only) {
+            font-size: 1.4rem;
+        }
+
+        @include breakpoint(medium) {
+            font-size: 1.8rem;
+        }
+
+        padding: 1em;
+        background-color: $mc-purple;
+        color: $mc-white;
+    }
+    .content {
+        padding: 1em;
+        input {
+            border: 2px solid $mc-bright-gray;
+            border-radius: 6px;        
+            //color: $mc-dark-green;
+            box-shadow: none;
+        }
+        label {
+            font-size: 1em;
+            color: $mc-darker-gray;
+        }
+    }
+}
+
+// icon
+.icon {
+    width: 1.5em;
+}
+
+@include breakpoint(small only) {
+    input {
+        font-size: 1.2rem;
+        color: $mc-brown;
+    }
+}
+
+@include breakpoint(medium) {
+    input {
+        color: $mc-brown;
+    }
+}
