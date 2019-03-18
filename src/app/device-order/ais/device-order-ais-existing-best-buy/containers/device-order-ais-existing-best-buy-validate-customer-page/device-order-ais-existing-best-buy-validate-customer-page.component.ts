@@ -140,7 +140,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
 
   private createTransaction(): void {
     // New x-api-request-id
-    this.apiRequestService.createRequestId();
+    // this.apiRequestService.createRequestId();
 
     const mainPromotion = this.setMainPromotion();
 

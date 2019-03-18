@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AuthGuard } from 'mychannel-shared-libs';
+import { AuthGuard, ApiRequestGuard } from 'mychannel-shared-libs';
 import { ErrorPageComponent } from './containers/error-page/error-page.component';
 
 const routes: Routes = [
@@ -25,7 +25,7 @@ const routes: Routes = [
   {
     path: 'device-order',
     loadChildren: 'src/app/device-order/device-order.module#DeviceOrderModule',
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard, ApiRequestGuard]
   },
   {
     path: 'order',
