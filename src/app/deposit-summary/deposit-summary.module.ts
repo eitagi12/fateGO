@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 import { DepositSummaryRoutingModule } from './deposit-summary-routing.module';
 import { DepositSummaryComponent } from './deposit-summary.component';
@@ -14,7 +15,9 @@ import { DepositResultComponent } from './ais/container/deposit-result/deposit-r
   imports: [
     CommonModule,
     DepositSummaryRoutingModule,
-    MyChannelSharedLibsModule
+    MyChannelSharedLibsModule,
+    FormsModule,
+    ReactiveFormsModule
   ],
   declarations: [DepositSummaryComponent, DepositPaymentPageComponent,
     DepositPaymentSummaryPageComponent, DepositQueueComponent, DepositResultComponent,
