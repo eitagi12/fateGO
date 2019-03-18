@@ -39,56 +39,25 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
     private pageLoadingService: PageLoadingService,
     private reserveMobileService: ReserveMobileService,
   ) {
-
-    this.homeService.callback = () => {
-
-      if (this.validateCustomerIdcard.koiskApiFn) {
-        this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
-      }
-
-      this.transaction = this.transactionService.load();
-
-      if (this.transaction.data &&
-        this.transaction.data.simCard &&
-        this.transaction.data.simCard.mobileNo) {
-
-        const user = this.tokenService.getUser();
-        const dataRequest: SelectMobileNumberRandom = {
-          userId: user.username,
-          mobileNo: this.transaction.data.simCard.mobileNo,
-          action: 'Unlock'
-        };
-        this.reserveMobileService.selectMobileNumberRandom(dataRequest)
-          .then(() => {
-            window.location.href = '/smart-shop';
-          })
-          .catch(() => {
-            window.location.href = '/smart-shop';
-          });
-      } else {
-        window.location.href = '/smart-shop';
-      }
-
-    };
+    this.transaction = this.transactionService.load();
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
   }
 
   ngOnInit() {
-    this.createTransaction();
   }
 
   onError(valid: boolean) {
     this.readCardValid = valid;
     if (!this.profile) {
       this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
-    if (this.validateCustomerIdcard.koiskApiFn) {
-      this.validateCustomerIdcard.koiskApiFn.removedState().subscribe((removed: boolean) => {
-        if (removed) {
-          this.validateCustomerIdcard.ngOnDestroy();
-          this.validateCustomerIdcard.ngOnInit();
-        }
-      });
-    }
+      if (this.validateCustomerIdcard.koiskApiFn) {
+        this.validateCustomerIdcard.koiskApiFn.removedState().subscribe((removed: boolean) => {
+          if (removed) {
+            this.validateCustomerIdcard.ngOnDestroy();
+            this.validateCustomerIdcard.ngOnInit();
+          }
+        });
+      }
     }
   }
 
@@ -99,6 +68,9 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
   }
 
   onHome() {
+    if (this.validateCustomerIdcard && this.validateCustomerIdcard.koiskApiFn) {
+      this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+    }
     this.homeService.goToHome();
   }
 
@@ -153,10 +125,10 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
       })
       .then((billingInformation: any) => {
         this.transaction.data.billingInformation = billingInformation;
-        if (this.checkBusinessLogic()) {
-          // this.transaction.data.action = TransactionAction.READ_CARD;
-          this.router.navigate([ROUTE_ORDER_NEW_REGISTER_FACE_CAPTURE_PAGE]);
-        }
+        // if (this.checkBusinessLogic()) {
+        // this.transaction.data.action = TransactionAction.READ_CARD;
+        this.router.navigate([ROUTE_ORDER_NEW_REGISTER_FACE_CAPTURE_PAGE]);
+        // }
       })
       .catch((resp: any) => {
         const error = resp.error || [];
@@ -231,15 +203,4 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
     this.transactionService.save(this.transaction);
   }
 
-  private createTransaction() {
-    // New x-api-request-id
-    this.apiRequestService.createRequestId();
-
-    this.transaction = {
-      data: {
-        transactionType: TransactionType.ORDER_NEW_REGISTER,
-        action: TransactionAction.READ_CARD,
-      }
-    };
-  }
 }

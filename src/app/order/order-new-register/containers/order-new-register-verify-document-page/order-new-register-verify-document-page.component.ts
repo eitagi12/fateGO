@@ -1,10 +1,11 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_ORDER_NEW_REGISTER_PASSPOPRT_INFO_PAGE, ROUTE_ORDER_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_ORDER_NEW_REGISTER_VERIFY_DOCUMENT_PAGE } from 'src/app/order/order-new-register/constants/route-path.constant';
-import { HomeService, PageLoadingService, ApiRequestService, Utils, ReadCardProfile, AlertService, ReadPassport, ReadPassportService, ValidateCustomerIdCardComponent, KioskControls, VendingApiService, ReadCardService, Environment, } from 'mychannel-shared-libs';
+import { HomeService, PageLoadingService, ApiRequestService, Utils, ReadCardProfile, AlertService, ReadPassport, ReadPassportService, ValidateCustomerIdCardComponent, KioskControls, VendingApiService, ReadCardService, Environment, TokenService } from 'mychannel-shared-libs';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { ReserveMobileService, SelectMobileNumberRandom } from 'src/app/order/order-shared/services/reserve-mobile.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import * as moment from 'moment';
@@ -281,14 +282,33 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
     private pageLoadingService: PageLoadingService,
     private apiRequestService: ApiRequestService,
     private alertService: AlertService,
+    private tokenService: TokenService,
     private vendingApiService: VendingApiService,
     private readCardService: ReadCardService,
+    private reserveMobileService: ReserveMobileService,
     public translation: TranslateService
   ) {
     this.isProduction = environment.production;
     this.homeService.callback = () => {
-      if (this.closeVendingApi.ws) {
-        this.closeVendingApi.ws.send(KioskControls.LED_OFF);
+      if (this.transaction.data &&
+        this.transaction.data.simCard &&
+        this.transaction.data.simCard.mobileNo) {
+
+        const user = this.tokenService.getUser();
+        const dataRequest: SelectMobileNumberRandom = {
+          userId: user.username,
+          mobileNo: this.transaction.data.simCard.mobileNo,
+          action: 'Unlock'
+        };
+        this.reserveMobileService.selectMobileNumberRandom(dataRequest)
+          .then(() => {
+            window.location.href = '/smart-shop';
+          })
+          .catch(() => {
+            window.location.href = '/smart-shop';
+          });
+      } else {
+        window.location.href = '/smart-shop';
       }
       window.location.href = '/smart-shop';
     };
@@ -305,11 +325,17 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
     this.onReadPassport();
   }
   onBack() {
+    if (this.closeVendingApi && this.closeVendingApi.ws) {
+      this.closeVendingApi.ws.send(KioskControls.LED_OFF);
+    }
     this.homeService.goToHome();
     // this.router.navigate([ROUTE_ORDER_NEW_REGISTER_VERIFY_DOCUMENT_PAGE]);
   }
 
   onHome() {
+    if (this.closeVendingApi && this.closeVendingApi.ws) {
+      this.closeVendingApi.ws.send(KioskControls.LED_OFF);
+    }
     this.homeService.goToHome();
   }
 
@@ -378,9 +404,8 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
             this.pageLoadingService.closeLoading();
             this.transaction.data.action = TransactionAction.READ_PASSPORT;
             this.transactionService.update(this.transaction);
-            this.router.navigate([ROUTE_ORDER_NEW_REGISTER_PASSPOPRT_INFO_PAGE]);
             // if (this.checkBusinessLogic()) {
-            //   this.router.navigate([ROUTE_ORDER_NEW_REGISTER_PASSPOPRT_INFO_PAGE]);
+            this.router.navigate([ROUTE_ORDER_NEW_REGISTER_PASSPOPRT_INFO_PAGE]);
 
             // }
           }).catch((resp: any) => {
@@ -399,7 +424,6 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
               this.alertService.error(error.resultDescription);
             } else {
               this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
-
             }
           });
       } else {
@@ -419,7 +443,6 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
       command.ws.send(KioskControls.LED_BLINK);
       if (command.error) {
         return;
-
       }
       command.ws.onmessage = (event) => {
         const message = JSON.parse(event.data);
@@ -473,10 +496,8 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
   }
 
   ngOnDestroy(): void {
-    if (this.transaction.data.action === TransactionAction.READ_PASSPORT) {
-      if (this.closeVendingApi && this.closeVendingApi.ws) {
-        this.closeVendingApi.ws.send(KioskControls.LED_OFF);
-      }
+    if (this.closeVendingApi && this.closeVendingApi.ws) {
+      this.closeVendingApi.ws.send(KioskControls.LED_OFF);
     }
     this.readPassportSubscription.unsubscribe();
     clearInterval(this.cardStateInterval);
@@ -526,7 +547,6 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
       return {};
     })
       .then((resp: any) => {
-        console.log('resp', resp);
         const data = resp.data || {};
         return {
           caNumber: data.caNumber,
