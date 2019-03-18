@@ -386,7 +386,7 @@ export class CreateDeviceOrderBestBuyService {
           code: '001',
           description: 'pending'
         },
-        contract: transaction.data.mainPromotion.campaign.conditionCode
+        contract: transaction.data.mainPromotion.campaign.conditionCode || {}
       },
       create_by: username,
       issueBy: transaction.issueBy || username,
@@ -411,7 +411,7 @@ export class CreateDeviceOrderBestBuyService {
         queue: transaction.data.queue,
         seller: transaction.data.seller,
         order: transaction.data.order,
-        contract: transaction.data.mainPromotion.campaign.conditionCode,
+        contract: transaction.data.mainPromotion.campaign.conditionCode || {},
         provision: {},
         currentProcess: {},
         status: {
