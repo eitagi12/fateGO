@@ -55,6 +55,7 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
     this.transaction.data.queue = { queueNo: this.queue };
     this.createBestBuyService.createDeviceOrder(this.transaction, this.priceOption).then((response: any) => {
       if (response) {
+        this.pageLoadingService.closeLoading();
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE]);
       }
     }).catch((e) => {

@@ -64,6 +64,7 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
     this.transaction.data.queue = { queueNo: this.queue };
     this.createBestBuyService.createDeviceOrder(this.transaction, this.priceOption, this.transId).then((response: any) => {
       if (response) {
+        this.pageLoadingService.closeLoading();
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_QR_CODE_QUEUE_SUMMARY_PAGE]);
       }
     }).catch((e) => {
