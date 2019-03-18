@@ -332,11 +332,23 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
         })
           .then((resp: any) => {
             const data = resp.data || {};
+            // readPassport NewCa จะไม่ได้ address
             return {
               caNumber: data.caNumber,
               mainMobile: data.mainMobile,
               billCycle: data.billCycle,
-              // zipCode: zipCode
+              homeNo: data.homeNo,
+              moo: data.moo,
+              mooBan: data.mooBan,
+              room: data.room,
+              floor: data.floor,
+              buildingName: data.buildingName,
+              soi: data.soi,
+              street: data.street,
+              tumbol: data.tumbol,
+              amphur: data.amphur,
+              province: data.province,
+              zipCode: data.zipCode
             };
           }).then((customer) => {
             this.transaction.data.customer = Object.assign(
@@ -400,6 +412,26 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
     });
 
   }
+
+  getZipCode(province: string, amphur: string, tumbol: string): Promise<string> {
+    province = province.replace(/มหานคร$/, '');
+    return this.http.get('/api/customerportal/newRegister/getAllProvinces').toPromise()
+      .then((resp: any) => {
+        const provinceId = (resp.data.provinces.find((prov: any) => prov.name === province) || {}).id;
+
+        return this.http.get(
+          `/api/customerportal/newRegister/queryZipcode?provinceId=${provinceId}&amphurName=${amphur}&tumbolName=${tumbol}`
+        ).toPromise();
+      })
+      .then((resp: any) => {
+        if (resp.data.zipcodes && resp.data.zipcodes.length > 0) {
+          return resp.data.zipcodes[0];
+        } else {
+          return Promise.reject('ไม่พบรหัสไปรษณีย์');
+        }
+      });
+  }
+
 
   onReadCard() {
     this.vendingApiSubscription = this.vendingApiService.excuteCommand().subscribe((command: any) => {
@@ -488,7 +520,7 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
     };
 
     const convertStringToDate = (dateStr: string): string => {
-      return  Moment(dateStr, 'YYMMDD').add(543 , 'years').format('DD/MM/YYYY');
+      return Moment(dateStr, 'YYMMDD').add(543, 'years').format('DD/MM/YYYY');
     };
 
     const mapDataFromAisWebConnect = (data: any): any => {
