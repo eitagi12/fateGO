@@ -29,7 +29,8 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
     private transactionService: TransactionService,
     private createBestBuyService: CreateDeviceOrderBestBuyService,
     private alertService: AlertService,
-    private priceOptionService: PriceOptionService
+    private priceOptionService: PriceOptionService,
+    private pageLoadingService: PageLoadingService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -50,13 +51,15 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
   }
 
   onNext(): void {
+    this.pageLoadingService.openLoading();
     this.transaction.data.queue = { queueNo: this.queue };
     this.createBestBuyService.createDeviceOrder(this.transaction, this.priceOption).then((response: any) => {
       if (response) {
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE]);
-      } else {
-        this.alertService.error('ระบบขัดข้อง');
       }
+    }).catch((e) => {
+      this.pageLoadingService.closeLoading();
+      this.alertService.error(e);
     });
   }
 

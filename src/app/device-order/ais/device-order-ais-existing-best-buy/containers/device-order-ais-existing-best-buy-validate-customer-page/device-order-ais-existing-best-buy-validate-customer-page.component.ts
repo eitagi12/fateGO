@@ -128,6 +128,9 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
             } else {
               this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE]);
             }
+        }).catch((e) => {
+          this.pageLoadingService.closeLoading();
+          this.alertService.error(e);
         });
       });
     }

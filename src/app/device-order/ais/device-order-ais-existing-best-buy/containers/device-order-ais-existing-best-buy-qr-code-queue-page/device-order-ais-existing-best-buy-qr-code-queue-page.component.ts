@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { AlertService } from 'mychannel-shared-libs';
+import { AlertService, PageLoadingService } from 'mychannel-shared-libs';
 import { CreateDeviceOrderBestBuyService } from '../../services/create-device-order-best-buy.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -30,7 +30,9 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
     private fb: FormBuilder,
     private transactionService: TransactionService,
     private createBestBuyService: CreateDeviceOrderBestBuyService,
-    private qrcodePaymentService: QrcodePaymentService
+    private qrcodePaymentService: QrcodePaymentService,
+    private pageLoadingService: PageLoadingService,
+    private alertService: AlertService
   ) { }
 
   ngOnInit(): void {
@@ -58,11 +60,15 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
   }
 
   onNext(): void {
+    this.pageLoadingService.openLoading();
     this.transaction.data.queue = { queueNo: this.queue };
     this.createBestBuyService.createDeviceOrder(this.transaction, this.priceOption, this.transId).then((response: any) => {
       if (response) {
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_QR_CODE_QUEUE_SUMMARY_PAGE]);
       }
+    }).catch((e) => {
+      this.pageLoadingService.closeLoading();
+      this.alertService.error(e);
     });
   }
 

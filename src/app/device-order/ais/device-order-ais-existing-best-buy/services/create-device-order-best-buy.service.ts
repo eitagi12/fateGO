@@ -88,7 +88,7 @@ export class CreateDeviceOrderBestBuyService {
         resolve(transaction);
       } else {
         this.callAddToCart(transaction, priceOption).then((response) => {
-          if (response.resultCode === 'S') {
+          if (response.resultCode === 'L') {
             transaction.data.order = {
               soId: response.soId
             };
@@ -98,7 +98,7 @@ export class CreateDeviceOrderBestBuyService {
           } else {
             reject('Cannot add item to the cart');
           }
-        }).catch(reject);
+        });
       }
     });
 
@@ -112,7 +112,7 @@ export class CreateDeviceOrderBestBuyService {
             if (response.data.resultCode === 'S') {
               this.updateTransactionOrder(transaction, priceOption).then((updateStatus) => {
                 resolve(updateStatus);
-              }).catch((err) => reject('ไม่สามารถทำรายการได้ในขณะนี้'));
+              }).catch((err: any) => { reject('ไม่สามารถทำรายการได้ในขณะนี้'); });
             } else {
               switch (response.resultMessage) {
                 case 'QueueNo is duplicated':

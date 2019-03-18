@@ -72,6 +72,9 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent im
         this.transaction = transaction;
         this.pageLoadingService.closeLoading();
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
+      }).catch((e) => {
+        this.pageLoadingService.closeLoading();
+        this.alertService.error(e);
       });
     }).catch(() => {
       this.transaction.data.customer = this.profile;
@@ -79,6 +82,9 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent im
         this.transaction = transaction;
         this.pageLoadingService.closeLoading();
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
+      }).catch((e) => {
+        this.pageLoadingService.closeLoading();
+        this.alertService.error(e);
       });
     });
   }

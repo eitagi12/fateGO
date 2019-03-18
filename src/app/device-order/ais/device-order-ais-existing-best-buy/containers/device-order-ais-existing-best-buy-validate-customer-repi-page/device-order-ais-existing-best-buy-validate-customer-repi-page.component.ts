@@ -87,6 +87,9 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
             this.transaction.data.action = TransactionAction.KEY_IN;
             this.pageLoadingService.closeLoading();
             this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
+          }).catch((e) => {
+            this.pageLoadingService.closeLoading();
+            this.alertService.error(e);
           });
         });
       } else {
@@ -103,6 +106,9 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
               this.transaction.data.action = TransactionAction.KEY_IN_REPI;
               this.pageLoadingService.closeLoading();
                 this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
+            }).catch((e) => {
+              this.pageLoadingService.closeLoading();
+              this.alertService.error(e);
             });
           });
         } else {
