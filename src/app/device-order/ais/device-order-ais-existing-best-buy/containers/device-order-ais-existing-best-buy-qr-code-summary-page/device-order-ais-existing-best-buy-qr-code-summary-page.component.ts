@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { HomeService, AlertService } from 'mychannel-shared-libs';
@@ -13,7 +13,7 @@ import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_QR_CODE_GENERATOR_PAGE } from '../../co
   templateUrl: './device-order-ais-existing-best-buy-qr-code-summary-page.component.html',
   styleUrls: ['./device-order-ais-existing-best-buy-qr-code-summary-page.component.scss']
 })
-export class DeviceOrderAisExistingBestBuyQrCodeSummaryPageComponent implements OnInit {
+export class DeviceOrderAisExistingBestBuyQrCodeSummaryPageComponent implements OnInit, OnDestroy {
 
   transaction: Transaction;
   priceOption: PriceOption;
@@ -64,4 +64,7 @@ export class DeviceOrderAisExistingBestBuyQrCodeSummaryPageComponent implements 
     }, 0);
   }
 
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
+  }
 }

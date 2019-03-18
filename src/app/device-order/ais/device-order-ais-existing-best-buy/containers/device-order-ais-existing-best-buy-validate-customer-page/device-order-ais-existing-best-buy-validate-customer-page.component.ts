@@ -148,12 +148,12 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
       this.createPriceOption(mainPromotion);
     }
 
-    // const preBooking = this.localStorageService.load('preBooking').value;
-    const preBooking: Prebooking = {
-      preBookingNo: 'PB100000000000000',
-      depositAmt: '2000',
-      deliveryDt: '17/03/2019'
-    };
+    const preBooking = this.localStorageService.load('preBooking').value;
+    // const preBooking: Prebooking = {
+    //   preBookingNo: 'PB100000000000000',
+    //   depositAmt: '2000',
+    //   deliveryDt: '17/03/2019'
+    // };
 
     this.transaction = {
       transactionId: this.createDeviceOrderBestBuyService.generateTransactionId(this.apiRequestService.getCurrentRequestId()),

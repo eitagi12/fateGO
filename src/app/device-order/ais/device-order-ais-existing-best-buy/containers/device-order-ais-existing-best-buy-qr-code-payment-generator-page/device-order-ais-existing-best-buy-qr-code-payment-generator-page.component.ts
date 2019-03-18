@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Transaction, QrCodePrePostMpayModel } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { HomeService, AlertService, PageActivityService, TokenService } from 'mychannel-shared-libs';
@@ -17,7 +17,7 @@ import { toDataURL } from 'qrcode';
   templateUrl: './device-order-ais-existing-best-buy-qr-code-payment-generator-page.component.html',
   styleUrls: ['./device-order-ais-existing-best-buy-qr-code-payment-generator-page.component.scss']
 })
-export class DeviceOrderAisExistingBestBuyQrCodePaymentGeneratorPageComponent implements OnInit {
+export class DeviceOrderAisExistingBestBuyQrCodePaymentGeneratorPageComponent implements OnInit, OnDestroy {
 
   transaction: Transaction;
   priceOption: PriceOption;
@@ -284,5 +284,9 @@ export class DeviceOrderAisExistingBestBuyQrCodePaymentGeneratorPageComponent im
       status: 'WAITING',
     };
     // --End Mock data
+  }
+
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
   }
 }

@@ -26,6 +26,7 @@ import { DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponent } 
 import { CreateDeviceOrderBestBuyService } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/services/create-device-order-best-buy.service';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent } from './containers/device-order-ais-existing-best-buy-idcard-capture-repi-page/device-order-ais-existing-best-buy-idcard-capture-repi-page.component';
+import { DeviceOrderAisExistingBestBuyQrCodeQueueSummaryPageComponent } from './containers/device-order-ais-existing-best-buy-qr-code-queue-summary-page/device-order-ais-existing-best-buy-qr-code-queue-summary-page.component';
 
 @NgModule({
   imports: [
@@ -56,7 +57,8 @@ import { DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent } from './c
     DeviceOrderAisExistingBestBuyQrCodeSummaryPageComponent,
     DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent,
     DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponent,
-    DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent
+    DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent,
+    DeviceOrderAisExistingBestBuyQrCodeQueueSummaryPageComponent
   ],
   providers: [
     CreateDeviceOrderBestBuyService

@@ -89,10 +89,10 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
       this.paymentMethod = this.priceOption.trade.payments.method || '';
     }
 
-    // this.showQRCode = this.paymentMethod !== 'CC' && this.user.userType !== 'ASP'
-    //           && this.user.channelType !== 'sff-web' && this.priceOption.productStock.company === 'AWN'
-    //           && this.user.username === 'duangdat';
-    this.showQRCode = true;
+    this.showQRCode = this.paymentMethod !== 'CC' && this.user.userType !== 'ASP'
+              && this.user.channelType !== 'sff-web' && this.priceOption.productStock.company === 'AWN'
+              && this.user.username === 'duangdat';
+    // this.showQRCode = true;
 
     this.onLoadDefaultBankData(this.priceOption.trade.banks).then((banks) => {
       this.priceOption.trade.banks = banks;

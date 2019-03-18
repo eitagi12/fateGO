@@ -153,6 +153,9 @@ export class CreateDeviceOrderBestBuyService {
       qrAmt = this.getQrAmount(trade.normalPrice, trade.discount);
     }
 
+    const paymentMethod = (payment.type === 'qrcode' && transId) ? this.replacePaymentMethodForQRCodeWithOutAirtime(payment.qrCode)
+       : this.getPaymentMethod(payment, null, trade);
+
     const data: any = {
       soId: order.soId,
       soCompany: productStock.company,
@@ -184,7 +187,7 @@ export class CreateDeviceOrderBestBuyService {
       installmentTerm: payment && payment.bank ? payment.bank.installments[0].installmentMonth : 0,
       installmentRate: payment && payment.bank ? payment.bank.installments[0].installmentPercentage : 0,
       mobileAisFlg: 'Y',
-      paymentMethod: this.getPaymentMethod(payment, null, trade),
+      paymentMethod: paymentMethod,
       bankCode: this.getBankCode(payment, advancePayment),
       tradeFreeGoodsId: trade.freeGoods[0] ? trade.freeGoods[0].tradeFreegoodsId : '',
       matairtimeId: '',
@@ -220,7 +223,7 @@ export class CreateDeviceOrderBestBuyService {
     return paymentMethod;
   }
 
-  private replacePaymentMethodForQRCodeWithOutAirtime(trade: any, qrCode: PaymentDetailQRCode): string {
+  private replacePaymentMethodForQRCodeWithOutAirtime(qrCode: PaymentDetailQRCode): string {
     let paymentMethod;
     if (qrCode) {
       if (qrCode.qrType === '003') {

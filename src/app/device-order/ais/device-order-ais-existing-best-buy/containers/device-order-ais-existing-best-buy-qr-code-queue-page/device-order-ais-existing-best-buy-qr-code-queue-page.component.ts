@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 
@@ -9,14 +9,14 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { QrcodePaymentService } from '../../services/qrcode-payment.service';
-import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_QR_CODE_QUEUE_SUMMARY_PAGE } from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-qr-code-queue-page',
   templateUrl: './device-order-ais-existing-best-buy-qr-code-queue-page.component.html',
   styleUrls: ['./device-order-ais-existing-best-buy-qr-code-queue-page.component.scss']
 })
-export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements OnInit {
+export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements OnInit, OnDestroy {
 
   transaction: Transaction;
   priceOption: PriceOption;
@@ -30,8 +30,6 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
     private fb: FormBuilder,
     private transactionService: TransactionService,
     private createBestBuyService: CreateDeviceOrderBestBuyService,
-    private alertService: AlertService,
-    private priceOptionService: PriceOptionService,
     private qrcodePaymentService: QrcodePaymentService
   ) { }
 
@@ -45,6 +43,7 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
   getTransactionId(): void {
     this.qrcodePaymentService.getInquiryCallbackMpay(this.transaction.data.order.soId).then((transId: any) => {
       this.transId = transId.mpay_payment.tranId;
+      this.transaction.data.mpayPayment.tranId = this.transId;
     });
   }
 
@@ -62,7 +61,7 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
     this.transaction.data.queue = { queueNo: this.queue };
     this.createBestBuyService.createDeviceOrder(this.transaction, this.priceOption, this.transId).then((response: any) => {
       if (response) {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE]);
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_QR_CODE_QUEUE_SUMMARY_PAGE]);
       }
     });
   }
@@ -71,6 +70,10 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
     return amount.reduce((prev, curr) => {
       return prev + curr;
     }, 0);
+  }
+
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
   }
 
 }
