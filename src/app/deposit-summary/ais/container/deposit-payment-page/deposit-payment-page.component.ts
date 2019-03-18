@@ -7,7 +7,7 @@ import { PriceOption } from '../../../../shared/models/price-option.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Router } from '@angular/router';
-import { DEPOSIT_QUEUE_PAGE } from 'src/app/deposit-summary/constants/route-path.constant';
+import { DEPOSIT_PAYMENT_SUMMARY_PAGE } from 'src/app/deposit-summary/constants/route-path.constant';
 
 @Component({
   selector: 'app-deposit-payment-page',
@@ -47,6 +47,6 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
   }
 
   onNext(): void {
-    this.router.navigate([DEPOSIT_QUEUE_PAGE]);
+    this.router.navigate([DEPOSIT_PAYMENT_SUMMARY_PAGE]);
   }
 }
