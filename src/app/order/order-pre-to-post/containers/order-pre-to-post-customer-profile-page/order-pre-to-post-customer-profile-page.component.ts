@@ -44,7 +44,7 @@ export class OrderPreToPostCustomerProfilePageComponent implements OnInit, OnDes
   }
 
   onHome() {
-
+    this.homeService.goToHome();
   }
   ngOnDestroy(): void {
     this.transactionService.save(this.transaction);
