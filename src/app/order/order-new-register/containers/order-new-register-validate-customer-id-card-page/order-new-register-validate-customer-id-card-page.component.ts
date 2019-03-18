@@ -125,6 +125,7 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
       })
       .then((billingInformation: any) => {
         this.transaction.data.billingInformation = billingInformation;
+        this.pageLoadingService.closeLoading();
         // if (this.checkBusinessLogic()) {
         // this.transaction.data.action = TransactionAction.READ_CARD;
         this.router.navigate([ROUTE_ORDER_NEW_REGISTER_FACE_CAPTURE_PAGE]);
@@ -146,8 +147,6 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
         } else {
           this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
         }
-      }).then(() => {
-        this.pageLoadingService.closeLoading();
       });
   }
 
