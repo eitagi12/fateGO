@@ -9,7 +9,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 @Component({
   selector: 'app-deposit-result',
   templateUrl: './deposit-result.component.html',
-  styleUrls: ['./deposit-result.scss']
+  styleUrls: ['./deposit-result.component.scss']
 })
 export class DepositResultComponent implements OnInit {
 

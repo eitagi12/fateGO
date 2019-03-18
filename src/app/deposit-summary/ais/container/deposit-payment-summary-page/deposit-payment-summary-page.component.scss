@@ -1,24 +1,24 @@
 // @import "src/assets/scss/util/color";
 
 
-.summary-page content {
-    &.content {
-        margin-top: 4.5em;
-        margin-bottom: 5.5em;
-        flex: 1 0 auto;
-        position: relative;
-        overflow-y: auto;
-        .padding-content {
-            margin-left: 2em;
-            margin-right: 2em;
-        }
-    }
-    &.footer {
-        flex: 0 0 auto;
-        position: fixed;
-        left: 0;
-        bottom: 0;
-        width: 100%;
-        z-index: 1;
-    }
-}
+// .summary-page content {
+//     &.content {
+//         margin-top: 4.5em;
+//         margin-bottom: 5.5em;
+//         flex: 1 0 auto;
+//         position: relative;
+//         overflow-y: auto;
+//         .padding-content {
+//             margin-left: 2em;
+//             margin-right: 2em;
+//         }
+//     }
+//     &.footer {
+//         flex: 0 0 auto;
+//         position: fixed;
+//         left: 0;
+//         bottom: 0;
+//         width: 100%;
+//         z-index: 1;
+//     }
+// }
