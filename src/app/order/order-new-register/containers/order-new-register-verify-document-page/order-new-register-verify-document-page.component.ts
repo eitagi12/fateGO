@@ -410,27 +410,6 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
     });
 
   }
-
-  getZipCode(province: string, amphur: string, tumbol: string): Promise<string> {
-    province = province.replace(/มหานคร$/, '');
-    return this.http.get('/api/customerportal/newRegister/getAllProvinces').toPromise()
-      .then((resp: any) => {
-        const provinceId = (resp.data.provinces.find((prov: any) => prov.name === province) || {}).id;
-
-        return this.http.get(
-          `/api/customerportal/newRegister/queryZipcode?provinceId=${provinceId}&amphurName=${amphur}&tumbolName=${tumbol}`
-        ).toPromise();
-      })
-      .then((resp: any) => {
-        if (resp.data.zipcodes && resp.data.zipcodes.length > 0) {
-          return resp.data.zipcodes[0];
-        } else {
-          return Promise.reject('ไม่พบรหัสไปรษณีย์');
-        }
-      });
-  }
-
-
   onReadCard() {
     this.vendingApiSubscription = this.vendingApiService.excuteCommand().subscribe((command: any) => {
       this.closeVendingApi = command;
