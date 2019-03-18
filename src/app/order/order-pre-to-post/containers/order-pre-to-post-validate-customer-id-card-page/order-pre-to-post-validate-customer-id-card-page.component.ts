@@ -41,6 +41,13 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
   ) {
     this.transaction = this.transactionService.load();
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
+
+    this.homeService.callback = () => {
+      if (this.validateCustomerIdcard && this.validateCustomerIdcard.koiskApiFn) {
+        this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+      }
+      window.location.href = '/smart-shop';
+    };
   }
 
   ngOnInit() {
