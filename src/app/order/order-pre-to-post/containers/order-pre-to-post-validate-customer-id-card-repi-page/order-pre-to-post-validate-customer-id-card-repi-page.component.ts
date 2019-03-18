@@ -65,6 +65,9 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
   }
 
   onBack() {
+    if (this.validateCustomerIdcard && this.validateCustomerIdcard.koiskApiFn) {
+      this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+    }
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_REPI_PAGE]);
   }
 
@@ -175,6 +178,9 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
   }
 
   onHome() {
+    if (this.validateCustomerIdcard && this.validateCustomerIdcard.koiskApiFn) {
+      this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+    }
     this.homeService.goToHome();
   }
 

@@ -298,10 +298,6 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
   ) {
     this.isProduction = environment.production;
     this.homeService.callback = () => {
-
-      if (this.closeVendingApi && this.closeVendingApi.ws) {
-        this.closeVendingApi.ws.send(KioskControls.LED_OFF);
-      }
       window.location.href = '/smart-shop';
     };
   }
@@ -318,11 +314,17 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
     this.onReadPassport();
   }
   onBack() {
+    if (this.closeVendingApi && this.closeVendingApi.ws) {
+      this.closeVendingApi.ws.send(KioskControls.LED_OFF);
+    }
     this.homeService.goToHome();
     // this.router.navigate([ROUTE_ORDER_NEW_REGISTER_VERIFY_DOCUMENT_PAGE]);
   }
 
   onHome() {
+    if (this.closeVendingApi && this.closeVendingApi.ws) {
+      this.closeVendingApi.ws.send(KioskControls.LED_OFF);
+    }
     this.homeService.goToHome();
   }
 
@@ -374,12 +376,25 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
         })
           .then((resp: any) => {
             const data = resp.data || {};
+            // readPassport NewCa จะไม่ได้ address
             return {
               caNumber: data.caNumber,
               mainMobile: data.mainMobile,
               billCycle: data.billCycle,
-              // zipCode: zipCode
+              homeNo: data.homeNo,
+              moo: data.moo,
+              mooBan: data.mooBan,
+              room: data.room,
+              floor: data.floor,
+              buildingName: data.buildingName,
+              soi: data.soi,
+              street: data.street,
+              tumbol: data.tumbol,
+              amphur: data.amphur,
+              province: data.province,
+              zipCode: data.zipCode
             };
+
           }).then((customer) => {
             this.transaction.data.customer = Object.assign(
               Object.assign({}, this.transaction.data.customer),
