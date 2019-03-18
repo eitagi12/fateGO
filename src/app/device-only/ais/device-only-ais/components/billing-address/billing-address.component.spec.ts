@@ -1,8 +1,7 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 
 import { BillingAddressComponent, CustomerAddress } from './billing-address.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { debounceTime } from 'rxjs/operators';
 
 describe('BillingAddressComponent', () => {
   let component: BillingAddressComponent;
@@ -46,7 +45,7 @@ describe('BillingAddressComponent', () => {
     expect(errors['pattern']).toBeTruthy();
   });
 
-  it('submitting a form emits a customer address', (done) => {
+  it('submitting a form emits a customer address', fakeAsync(() => {
     component.zipCodes = ['11011', '11012'];
     component.customerAddressForm.controls['homeNo'].setValue('123');
     component.customerAddressForm.controls['province'].setValue('testProvice');
@@ -55,15 +54,18 @@ describe('BillingAddressComponent', () => {
     component.customerAddressForm.controls['zipCode'].setValue('11011');
     expect(component.customerAddressForm.valid).toBeTruthy();
 
+    // Emit event to mother component
     let customerAddress: CustomerAddress;
     component.completed.subscribe(value => {
       customerAddress = value;
-      expect(customerAddress.homeNo).toBe('123');
-      expect(customerAddress.province).toBe('testProvice');
-      expect(customerAddress.amphur).toBe('testAmphur');
-      expect(customerAddress.tumbol).toBe('testTumbol');
-      expect(customerAddress.zipCode).toBe('11011');
-      done();
     });
-  });
+
+    tick(750); // because set debounceTime to 750 in component
+
+    expect(customerAddress.homeNo).toBe('123');
+    expect(customerAddress.province).toBe('testProvice');
+    expect(customerAddress.amphur).toBe('testAmphur');
+    expect(customerAddress.tumbol).toBe('testTumbol');
+    expect(customerAddress.zipCode).toBe('11011');
+  }));
 });
