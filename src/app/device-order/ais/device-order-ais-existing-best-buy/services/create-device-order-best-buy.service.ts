@@ -478,7 +478,7 @@ export class CreateDeviceOrderBestBuyService {
         ? `${customer.titleName} ${customer.firstName} ${customer.lastName}` : '';
   }
 
-  cancelOrderAndRedirect(transaction: Transaction): Promise<any> {
+  cancelOrder(transaction: Transaction): Promise<any> {
     return new Promise((resolve, reject) => {
       if (transaction
         && transaction.data

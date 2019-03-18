@@ -41,11 +41,10 @@ export class DeviceOrderAisExistingBestBuyQrCodeSummaryPageComponent implements 
         .then((response: any) => {
           if (response.value === true) {
             const productDetail = this.priceOption.productDetail;
-            this.createDeviceOrderBestBuyService.cancelOrderAndRedirect(this.transaction
-                , `/sales-portal/buy-product/brand/${productDetail.brand}/${productDetail.model}`)
-                .then((url: string) => {
-                  window.location.href = url;
-             });
+            this.createDeviceOrderBestBuyService.cancelOrder(this.transaction)
+                .then((isSuccess: any) => {
+                  window.location.href = `/sales-portal/buy-product/brand/${productDetail.brand}/${productDetail.model}`;
+             }).catch(() => window.location.href = `/sales-portal/buy-product/brand/${productDetail.brand}/${productDetail.model}`);
           }
         });
   }
