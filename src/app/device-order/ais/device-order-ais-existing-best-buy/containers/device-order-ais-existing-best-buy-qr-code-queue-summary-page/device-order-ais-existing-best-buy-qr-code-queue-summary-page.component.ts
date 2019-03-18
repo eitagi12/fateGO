@@ -15,6 +15,7 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueueSummaryPageComponent implem
   transaction: Transaction;
   priceOption: PriceOption;
   isSuccess: boolean;
+  deposit: number;
 
   constructor(
     private transactionService: TransactionService,
@@ -26,6 +27,8 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueueSummaryPageComponent implem
 
   ngOnInit(): void {
     this.isSuccess = true;
+    this.deposit = this.transaction.data.preBooking
+                    && this.transaction.data.preBooking.depositAmt ? -Math.abs(+this.transaction.data.preBooking.depositAmt) : 0;
   }
 
   onMainMenu(): void {
