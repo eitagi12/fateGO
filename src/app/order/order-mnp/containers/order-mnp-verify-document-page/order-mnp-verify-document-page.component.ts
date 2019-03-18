@@ -291,12 +291,6 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
     public translation: TranslateService
   ) {
     this.isProduction = environment.production;
-    this.homeService.callback = () => {
-      if (this.closeVendingApi.ws) {
-        this.closeVendingApi.ws.send(KioskControls.LED_OFF);
-      }
-      window.location.href = '/smart-shop';
-    };
   }
 
   ngOnInit() {
@@ -310,10 +304,16 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
   }
 
   onBack() {
+    if (this.closeVendingApi && this.closeVendingApi.ws) {
+      this.closeVendingApi.ws.send(KioskControls.LED_OFF);
+    }
     this.router.navigate([ROUTE_ORDER_MNP_SELECT_REASON_PAGE]);
   }
 
   onHome() {
+    if (this.closeVendingApi && this.closeVendingApi.ws) {
+      this.closeVendingApi.ws.send(KioskControls.LED_OFF);
+    }
     this.homeService.goToHome();
   }
 
@@ -467,7 +467,8 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
 
   // tslint:disable-next-line:use-life-cycle-interface
   ngOnDestroy(): void {
-    if (this.closeVendingApi.ws) {
+    this.transactionService.update(this.transaction);
+    if (this.closeVendingApi && this.closeVendingApi.ws) {
       this.closeVendingApi.ws.send(KioskControls.LED_OFF);
     }
     clearInterval(this.cardStateInterval);
@@ -556,7 +557,7 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
         this.transactionService.update(this.transaction);
         this.router.navigate([ROUTE_ORDER_MNP_PASSPOPRT_INFO_PAGE]);
         // if (this.checkBusinessLogic()) {
-          //  this.router.navigate([ROUTE_ORDER_MNP_PASSPOPRT_INFO_PAGE]);
+        //  this.router.navigate([ROUTE_ORDER_MNP_PASSPOPRT_INFO_PAGE]);
 
         // }
       }).catch((resp: any) => {

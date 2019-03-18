@@ -38,12 +38,6 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
     private translateService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
-    this.homeService.callback = () => {
-      if (this.validateCustomerIdcard.koiskApiFn) {
-        this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
-      }
-      window.location.href = '/smart-shop';
-    };
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
   }
 
@@ -71,11 +65,14 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
   }
 
   onHome() {
+    if (this.validateCustomerIdcard && this.validateCustomerIdcard.koiskApiFn) {
+      this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+    }
     this.homeService.goToHome();
   }
 
   onBack() {
-    if (this.validateCustomerIdcard.koiskApiFn) {
+    if (this.validateCustomerIdcard && this.validateCustomerIdcard.koiskApiFn) {
       this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
     }
     this.router.navigate([ROUTE_ORDER_MNP_SELECT_REASON_PAGE]);
