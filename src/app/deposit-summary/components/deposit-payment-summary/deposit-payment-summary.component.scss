@@ -1,119 +1,113 @@
-@import "src/assets/scss/util/color";
-@import 'node_modules/foundation-sites/scss/util/util';
+// @import "src/assets/scss/util/color";
+// @import 'node_modules/foundation-sites/scss/util/util';
 
-.deposit-payment-summary-container {
-    .deposit-payment-summary-detail-container {
-        background-color: $mc-white;
-        border-radius: 0.2em;
-        border: 0.05em solid $mc-bright-gray;
-        margin: 10px;
-        .summarydepositheader {
-            @include breakpoint(small only) {
-                font-size: 1.4rem;
-            }
+// .deposit-payment-summary-container {
+//     .deposit-payment-summary-detail-container {
+//         background-color: $mc-white;
+//         border-radius: 0.2em;
+//         border: 0.05em solid $mc-bright-gray;
+//         margin: 10px;
+//         .summarydepositheader {
+//             @include breakpoint(small only) {
+//                 font-size: 1.4rem;
+//             }
     
-            @include breakpoint(medium) {
-                font-size: 1.8rem;
-            }
-            padding: 1em;
-            background-color: $mc-pink;
-            color: $mc-white;
-        }
-        .content {
-            line-height: 3em;
-            margin: 1em;
-            color: $mc-darker-gray;
-        }
-        .footer {
-            margin: 0em 1em;
-            padding-bottom: 1em;
-        }
-    }
-    .payment-method-container {
-        background-color: $mc-white;
-        border-radius: 0.2em;
-        border: 0.05em solid $mc-bright-gray;
-        margin: 10px;
-         .paymentdetailheader{
-             @include breakpoint(small only) {
-                  font-size: 1.4rem;
-                    }
-              @include breakpoint(medium) {
-                        font-size: 1.8rem;
-                    }
-                 padding: 1em;
-                 background-color: $mc-bright-pink;
-                 color: $mc-white;
-                   }
-                   .content {
-                    line-height: 3em;
-                    margin: 1em;
-                    color: $mc-darker-gray;
-                }
-                .footer {
-                    margin: 0em 1em;
-                    padding-bottom: 1em;
-                }
-    }
-    .customer-detail-container {
-        background-color: $mc-white;
-        border-radius: 0.2em;
-        border: 0.05em solid $mc-bright-gray;
-        margin: 10px;
-        .customerdetailheader {
-            @include breakpoint(small only) {
-                font-size: 1.4rem;
-                  }
-            @include breakpoint(medium) {
-                      font-size: 1.8rem;
-                  }
-               padding: 1em;
-               background-color: $mc-bright-blue;
-               color: $mc-white;
-        }
-        .content {
-            line-height: 3em;
-            margin: 1em;
-            color: $mc-darker-gray;
-          }
-          .span-font-black {
-            padding-left: 30px;
-            color:black
-        }
-    }
+//             @include breakpoint(medium) {
+//                 font-size: 1.8rem;
+//             }
+//             padding: 1em;
+//             background-color: $mc-pink;
+//             color: $mc-white;
+//         }
+//         .content {
+//             line-height: 3em;
+//             margin: 1em;
+//             color: $mc-darker-gray;
+//         }
+//         .footer {
+//             margin: 0em 1em;
+//             padding-bottom: 1em;
+//         }
+//     }
+//     .payment-method-container {
+//         background-color: $mc-white;
+//         border-radius: 0.2em;
+//         border: 0.05em solid $mc-bright-gray;
+//         margin: 10px;
+//          .paymentdetailheader{
+//              @include breakpoint(small only) {
+//                   font-size: 1.4rem;
+//                     }
+//               @include breakpoint(medium) {
+//                         font-size: 1.8rem;
+//                     }
+//                  padding: 1em;
+//                  background-color: $mc-bright-pink;
+//                  color: $mc-white;
+//                    }
+//                    .content {
+//                     line-height: 3em;
+//                     margin: 1em;
+//                     color: $mc-darker-gray;
+//                 }
+//                 .footer {
+//                     margin: 0em 1em;
+//                     padding-bottom: 1em;
+//                 }
+//     }
+//     .customer-detail-container {
+//         background-color: $mc-white;
+//         border-radius: 0.2em;
+//         border: 0.05em solid $mc-bright-gray;
+//         margin: 10px;
+//         .customerdetailheader {
+//             @include breakpoint(small only) {
+//                 font-size: 1.4rem;
+//                   }
+//             @include breakpoint(medium) {
+//                       font-size: 1.8rem;
+//                   }
+//                padding: 1em;
+//                background-color: $mc-bright-blue;
+//                color: $mc-white;
+//         }
+//         .content {
+//             line-height: 3em;
+//             margin: 1em;
+//             color: $mc-darker-gray;
+//           }
+//           .span-font-black {
+//             padding-left: 30px;
+//             color:black
+//         }
+//     }
 
-    .customer-receipt-container {
-        background-color: $mc-white;
-        border-radius: 0.2em;
-        border: 0.05em solid $mc-bright-gray;
-        margin: 10px;
-        .receiptheader {
-            @include breakpoint(small only) {
-                font-size: 1.4rem;
-                  }
-            @include breakpoint(medium) {
-                      font-size: 1.8rem;
-                  }
-                  padding: 1em;
-                  background-color: $mc-dim-orange;
-                  color: $mc-white;
-        }
-        .content {
-            line-height: 3em;
-            margin: 1em;
-            color: $mc-darker-gray;
-          }
-          .span-font-black {
-              padding-left:30px; 
-              color:black
-          }
+//     .customer-receipt-container {
+//         background-color: $mc-white;
+//         border-radius: 0.2em;
+//         border: 0.05em solid $mc-bright-gray;
+//         margin: 10px;
+//         .receiptheader {
+//             @include breakpoint(small only) {
+//                 font-size: 1.4rem;
+//                   }
+//             @include breakpoint(medium) {
+//                       font-size: 1.8rem;
+//                   }
+//                   padding: 1em;
+//                   background-color: $mc-dim-orange;
+//                   color: $mc-white;
+//         }
+//         .content {
+//             line-height: 3em;
+//             margin: 1em;
+//             color: $mc-darker-gray;
+//           }
+//           .span-font-black {
+//               padding-left:30px; 
+//               color:black
+//           }
 
-    }
+//     }
     
-
-
-
-
-  
-    
-}
+// }

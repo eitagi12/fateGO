@@ -8,13 +8,13 @@
         <div class="row" style="margin-bottom: 0.875em">
           <div class="small-4 columns font-darker-gray">พนักงานขาย</div>
           <div class="small-8 columns" id="lblRegNumSellerInfoName">
-            {{seller.sellerName}}
+            {{ seller?.sellerName }}
           </div>
         </div>
         <div class="row" style="margin-bottom: 0.875em">
           <div class="small-4 columns font-darker-gray">สาขา</div>
           <div class="small-8 columns" id="lblRegNumSellerInfoLocationName">
-            {{seller.locationName}}
+            {{seller?.locationName}}
           </div>
         </div>
         <div class="row">
@@ -24,7 +24,7 @@
             <div style="clear: both;"></div>
           </div>
           <div class="small-8 columns">
-            <input autocomplete="off" id="sellerNo" name="sellerNo" type="text" [(ngModel)]="seller.sellerNo">
+            <!-- <input autocomplete="off" id="sellerNo" name="sellerNo" type="text" [(ngModel)]="seller.sellerNo"> -->
           </div>
         </div>
       </div>

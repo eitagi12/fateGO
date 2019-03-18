@@ -1,6 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Customer, ProductInfo, Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { Utils } from 'mychannel-shared-libs';
 
 @Component({
   selector: 'app-deposit-payment-summary',
@@ -21,32 +22,30 @@ export class DepositPaymentSummaryComponent implements OnInit {
   public brand: string;
   public model: string;
   public tradeReserve: any;
-  constructor(private transactionService: TransactionService) {
+  constructor(private transactionService: TransactionService,
+    private utils: Utils) {
     this.transaction = this.transactionService.load();
   }
 
   ngOnInit(): void {
-    const CUSTOMER_DATA = this.transactionService.load().data.customer;
-    this.customerFullName = CUSTOMER_DATA.firstName + ' ' + CUSTOMER_DATA.lastName;
-    this.customerIdCardNo = CUSTOMER_DATA.idCardNo;
-    this.customerFullAddress =  CUSTOMER_DATA.moo + ' ' + CUSTOMER_DATA.mooBan + ' ' + CUSTOMER_DATA.soi + ' ' + CUSTOMER_DATA.street
-    + ' ' + CUSTOMER_DATA.amphur + ' ' + CUSTOMER_DATA.floor + ' ' + CUSTOMER_DATA.room + ' ' + CUSTOMER_DATA.buildingName
-    + ' ' + CUSTOMER_DATA.homeNo + ' ' + + CUSTOMER_DATA.province + ' ' + CUSTOMER_DATA.tumbol + CUSTOMER_DATA.zipCode;
+    // const customer = this.transaction.data.customer;
+    // this.customerFullAddress = this.utils.getCurrentAddress({
+    //   homeNo: customer.homeNo,
+    //   moo: customer.moo,
+    //   room: customer.room,
+    //   floor: customer.floor,
+    //   buildingName: customer.buildingName,
+    //   soi: customer.soi,
+    //   street: customer.street,
+    //   tumbol: customer.tumbol,
+    //   amphur: customer.amphur,
+    //   province: customer.province,
+    //   zipCode: customer.zipCode
+    // });
 
   }
   // get reserveProductInfo(): ProductInfo {
 
   //   return this._reserveProductInfo;
   // }
-
-  // get customer(): Customer {
-  //   var customerData = this.transactionService.load().data.customer;
-  //   this.customerFullName = customerData.firstName + ' ' + customerData.lastName;
-  //   this.customerIdCardNo = customerData.idCardNo;
-  //   this.customerFullAddress =  customerData.moo + ' ' + customerData.mooBan + ' ' + customerData.soi + ' ' + customerData.street
-  //   + ' ' + customerData.amphur + ' ' + customerData.floor + ' ' + customerData.room + ' ' + customerData.buildingName
-  //   + ' ' + customerData.homeNo + ' ' + + customerData.province + ' ' + customerData.tumbol + customerData.zipCode
-  //   return this._customer;
-  // }
-
 }

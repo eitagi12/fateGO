@@ -48,8 +48,9 @@ export interface TransactionData {
   order?: Order;
   reasonCode?: string;
   billingInformation?: BillingInformation;
-  queue?: any ;
-  payment?: any ;
+  queue?: any;
+  payment?: any;
+  seller?: Seller;
 }
 
 export interface MainPromotion {
@@ -222,58 +223,61 @@ export interface ProductInfo {
   tradeReserve?: any;
 }
 export class ProductImage {
-thumbnail: string;
-baseView: BaseView[];
+  thumbnail: string;
+  baseView: BaseView[];
 }
 export class BaseView {
-imageUrl: string;
+  imageUrl: string;
 }
 export class Seller {
-sellerName: string;
-locationName?: string;
-locationCode?: string;
-sellerNo?: string;
-shareUser?: string;
-isAscCode?: boolean;
+  sellerName: string;
+  locationName?: string;
+  locationCode?: string;
+  sellerNo?: string;
+  shareUser?: string;
+  isAscCode?: boolean;
+  employeeId?: string;
+  ascCode?: string;
+
 }
 export interface ShopLocation {
-id?: string;
-code?: string;
-displayName?: string;
-regions?: string;
-province?: string;
-distinct?: string;
-subDistinct?: string;
-locationType?: string;
-regionCode?: string;
+  id?: string;
+  code?: string;
+  displayName?: string;
+  regions?: string;
+  province?: string;
+  distinct?: string;
+  subDistinct?: string;
+  locationType?: string;
+  regionCode?: string;
 }
 export interface ShopEmployeeDetail {
-pin?: string;
-username?: string;
-thPrefix?: string;
-thFirstName?: string;
-thLastName?: string;
-enPrefix?: string;
-enFirstName?: string;
-enLastName?: string;
-email?: string;
-employeeType?: string;
-employeeGroup?: string;
-positionId?: string;
-positionCode?: string;
-positionDesc?: string;
-telNo?: string;
-orgCode?: string;
-orgName?: string;
-orgDesc?: string;
-companyCode?: string;
-coName?: string;
-nickName?: string;
-dpCode?: string;
-dpName?: string;
-dpDesc?: string;
-scCode?: string;
-scName?: string;
-scDesc?: string;
-mobileNo?: string;
+  pin?: string;
+  username?: string;
+  thPrefix?: string;
+  thFirstName?: string;
+  thLastName?: string;
+  enPrefix?: string;
+  enFirstName?: string;
+  enLastName?: string;
+  email?: string;
+  employeeType?: string;
+  employeeGroup?: string;
+  positionId?: string;
+  positionCode?: string;
+  positionDesc?: string;
+  telNo?: string;
+  orgCode?: string;
+  orgName?: string;
+  orgDesc?: string;
+  companyCode?: string;
+  coName?: string;
+  nickName?: string;
+  dpCode?: string;
+  dpName?: string;
+  dpDesc?: string;
+  scCode?: string;
+  scName?: string;
+  scDesc?: string;
+  mobileNo?: string;
 }

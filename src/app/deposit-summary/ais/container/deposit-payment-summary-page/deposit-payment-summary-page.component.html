@@ -1,15 +1,22 @@
-<section class="summary-page-container">
-  <span defaultOverlayTarget></span>
-  <mc-device-order-header title="รายการสินค้า" [backUrl]="backUrl" [channelType]="channelType">
-  </mc-device-order-header>
-  <div class="padding-content">
-      <div class="content-fixed" [ngClass]="{'fixed': fixed}">
-        <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
-        </div>
+<div class="mc-flex">
+  <mc-header title="รายการสินค้า">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <div class="mt-3">
+      <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
+      <section class="summary-page-container">
+        <!-- <mc-deposit-payment-summary></mc-deposit-payment-summary> -->
+      </section>
+    </div>
   </div>
-  <mc-deposit-payment-summary></mc-deposit-payment-summary>
-  <mc-deposit-seller-info [seller]="seller$ | async"></mc-deposit-seller-info>
-  <section class="deposit-payment-summary footer">
-    <mc-next-back-btn (onNextEvent)="onNext($event)" (onCancelEvent)="onCancel($event)"></mc-next-back-btn>
-  </section>
-</section>
+  <mc-footer>
+    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button class="btn btn-success" (click)="onNext()">NEXT</button>
+  </mc-footer>
+</div>
