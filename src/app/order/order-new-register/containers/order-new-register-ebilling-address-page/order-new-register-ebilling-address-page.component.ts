@@ -12,6 +12,7 @@ import { load } from '@angular/core/src/render3/instructions';
 import { NgxResource, LocalStorageService } from 'ngx-store';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-order-new-register-ebilling-address-page',
@@ -48,11 +49,19 @@ export class OrderNewRegisterEbillingAddressPageComponent implements OnInit, OnD
   }
 
   ngOnInit() {
-
     this.callService();
-    this.translationSubscribe = this.translation.onLangChange.subscribe(() => {
+    this.translationSubscribe = this.translation.onLangChange.pipe(debounceTime(750)).subscribe(() => {
       this.callService();
+      this.amphurs = [];
+      this.tumbols = [];
+      this.zipCodes = [];
+      this.customerAddress.amphur = null;
+      this.customerAddress.tumbol = null;
+      this.customerAddress.province = null;
     });
+
+  }
+  onResetFrom() {
 
   }
 
@@ -71,7 +80,6 @@ export class OrderNewRegisterEbillingAddressPageComponent implements OnInit, OnD
         }
       }).subscribe((resp: any) => {
         this.provinces = (resp.data.provinces || []);
-
         this.customerAddress = {
           homeNo: customer.homeNo,
           moo: customer.moo,
@@ -86,21 +94,6 @@ export class OrderNewRegisterEbillingAddressPageComponent implements OnInit, OnD
           tumbol: customer.tumbol,
           zipCode: customer.zipCode,
         };
-
-        // this.billDeliveryAddress = {
-        //   homeNo: billDeliveryAddress.homeNo,
-        //   moo: billDeliveryAddress.moo,
-        //   mooBan: billDeliveryAddress.mooBan,
-        //   room: billDeliveryAddress.floor,
-        //   floor: billDeliveryAddress.floor,
-        //   buildingName: billDeliveryAddress.buildingName,
-        //   soi: billDeliveryAddress.soi,
-        //   street: billDeliveryAddress.street,
-        //   province: billDeliveryAddress.province,
-        //   amphur: billDeliveryAddress.amphur,
-        //   tumbol: billDeliveryAddress.tumbol,
-        //   zipCode: billDeliveryAddress.zipCode,
-        // };
       });
   }
 
