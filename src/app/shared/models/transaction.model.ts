@@ -13,7 +13,8 @@ export enum TransactionType {
   ORDER_NEW_REGISTER = 'NewRegister',
   ORDER_PRE_TO_POST = 'ConvertPreToPost',
   ORDER_MNP = 'Port-In',
-  ORDER_EXISTING = 'Existing'
+  ORDER_EXISTING = 'Existing',
+  RESERVE_WITH_DEPOSIT = 'ReserveWithDeposit'
 }
 
 export enum TransactionAction {
