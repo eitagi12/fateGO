@@ -132,7 +132,9 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
           this.billingInfo.billingCycle.isEdit = true;
           this.billingInfo.billingCycle.isDelete = false;
 
-          this.getBllingCycle(customer.billCycle).then((billCycleText: string) => {
+          const bill = billCycle && billCycle.bill ? billCycle.bill : customer.billCycle;
+          this.billingInfo.billingCycle.isDelete = !!(billCycle && billCycle.bill);
+          this.getBllingCycle(bill).then((billCycleText: string) => {
             this.billingInfo.billingCycle.text = billCycleText;
           });
         }
