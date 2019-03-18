@@ -88,7 +88,7 @@ export class CreateDeviceOrderBestBuyService {
         resolve(transaction);
       } else {
         this.callAddToCart(transaction, priceOption).then((response) => {
-          if (response.resultCode === 'L') {
+          if (response.resultCode === 'S') {
             transaction.data.order = {
               soId: response.soId
             };
