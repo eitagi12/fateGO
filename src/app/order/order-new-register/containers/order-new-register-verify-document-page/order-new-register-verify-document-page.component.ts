@@ -315,7 +315,6 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
 
   onReadPassport() {
     this.readPassportSubscription = this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
-      console.log('readpassport', readPassport);
       if (readPassport.error) {
         this.alertService.error(this.ERR_MASSEAGE);
         return;
@@ -355,7 +354,6 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
               Object.assign({}, this.transaction.data.customer),
               Object.assign(readPassport.profile, customer)
             );
-            console.log('customer', this.transaction.data.customer);
             return this.http.get(`/api/customerportal/newRegister/${readPassport.profile.idCardNo}/queryBillingAccount`).toPromise()
               .then((respQueryBilling: any) => {
                 const data = respQueryBilling.data || {};
