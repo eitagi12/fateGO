@@ -9,7 +9,7 @@ export class DepositSummaryComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
 }

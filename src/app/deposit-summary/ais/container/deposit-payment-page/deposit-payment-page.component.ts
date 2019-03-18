@@ -9,7 +9,7 @@ export class DepositPaymentPageComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
 }
