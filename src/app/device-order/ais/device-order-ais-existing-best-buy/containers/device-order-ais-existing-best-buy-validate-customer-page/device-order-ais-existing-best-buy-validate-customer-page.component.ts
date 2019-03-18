@@ -53,11 +53,11 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
       this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
         .then((response: any) => {
           if (response.value === true) {
-           this.createDeviceOrderBestBuyService.cancelOrderAndRedirect(this.transaction, '/').then((url: string) => {
-              window.location.href = url;
+           this.createDeviceOrderBestBuyService.cancelOrderAndRedirect(this.transaction).then((isSuccess: any) => {
+              window.location.href = '/';
            });
           }
-        });
+        }).catch(() => window.location.href = '/');
     };
   }
 
@@ -89,10 +89,9 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
         .then((response: any) => {
           if (response.value === true) {
             const productDetail = this.priceOption.productDetail;
-            this.createDeviceOrderBestBuyService.cancelOrderAndRedirect(this.transaction
-                , `/sales-portal/buy-product/brand/${productDetail.brand}/${productDetail.model}`)
-                .then((url: string) => {
-                  window.location.href = url;
+            this.createDeviceOrderBestBuyService.cancelOrderAndRedirect(this.transaction)
+                .then((isSuccess: any) => {
+                  window.location.href = `/sales-portal/buy-product/brand/${productDetail.brand}/${productDetail.model}`;
              });
           }
         });

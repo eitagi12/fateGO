@@ -68,6 +68,8 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent im
   onNext(): void {
     this.customerInfoService.getCustomerInfoByIdCard(this.profile.idCardNo).then((customer: Customer) => {
       this.transaction.data.customer = {...this.profile, ...customer};
+      this.transaction.data.billingInformation = {};
+        this.transaction.data.billingInformation.billDeliveryAddress = this.transaction.data.customer;
       this.createDeviceOrderBestBuyService.createAddToCartTrasaction(this.transaction, this.priceOption).then((transaction) => {
         this.transaction = transaction;
         this.pageLoadingService.closeLoading();

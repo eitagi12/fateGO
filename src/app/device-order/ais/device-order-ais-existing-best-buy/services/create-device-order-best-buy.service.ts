@@ -407,7 +407,7 @@ export class CreateDeviceOrderBestBuyService {
         mobile_care_package: transaction.data.mobileCarePackage,
         existing_mobile_care_package: transaction.data.existingMobileCare,
         preBooking: transaction.data.preBooking,
-        billing_information: transaction.data.billingInformation,
+        billing_information: transaction.data.billingInformation || {},
         queue: transaction.data.queue,
         seller: transaction.data.seller,
         order: transaction.data.order,
@@ -478,19 +478,19 @@ export class CreateDeviceOrderBestBuyService {
         ? `${customer.titleName} ${customer.firstName} ${customer.lastName}` : '';
   }
 
-  cancelOrderAndRedirect(transaction: Transaction, redirectUrl: string): Promise<string> {
-    if (transaction
-      && transaction.data
-      && transaction.data.order
-      && transaction.data.order.soId) {
-      this.clearAddToCart(transaction.transactionId, transaction.data.order.soId)
-      .then((res: any) => {
-        if (res.isSuccess) {
-          return redirectUrl;
-        }
-      });
-    } else {
-      return Promise.resolve(redirectUrl);
-    }
+  cancelOrderAndRedirect(transaction: Transaction): Promise<any> {
+    return new Promise((resolve, reject) => {
+      if (transaction
+        && transaction.data
+        && transaction.data.order
+        && transaction.data.order.soId) {
+        this.clearAddToCart(transaction.transactionId, transaction.data.order.soId)
+        .then((res: any) => {
+          resolve(res.isSuccess);
+        });
+      } else {
+        resolve(false);
+      }
+    });
   }
 }
