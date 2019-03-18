@@ -379,12 +379,25 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
         })
           .then((resp: any) => {
             const data = resp.data || {};
+            // readPassport NewCa จะไม่ได้ address
             return {
               caNumber: data.caNumber,
               mainMobile: data.mainMobile,
               billCycle: data.billCycle,
-              // zipCode: zipCode
+              homeNo: data.homeNo,
+              moo: data.moo,
+              mooBan: data.mooBan,
+              room: data.room,
+              floor: data.floor,
+              buildingName: data.buildingName,
+              soi: data.soi,
+              street: data.street,
+              tumbol: data.tumbol,
+              amphur: data.amphur,
+              province: data.province,
+              zipCode: data.zipCode
             };
+
           }).then((customer) => {
             this.transaction.data.customer = Object.assign(
               Object.assign({}, this.transaction.data.customer),
