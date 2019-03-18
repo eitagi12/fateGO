@@ -308,10 +308,16 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
     this.onReadPassport();
   }
   onBack() {
+    if (this.closeVendingApi && this.closeVendingApi.ws) {
+      this.closeVendingApi.ws.send(KioskControls.LED_OFF);
+    }
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE]);
   }
 
   onHome() {
+    if (this.closeVendingApi && this.closeVendingApi.ws) {
+      this.closeVendingApi.ws.send(KioskControls.LED_OFF);
+    }
     this.homeService.goToHome();
   }
 
@@ -462,10 +468,8 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
   }
 
   ngOnDestroy(): void {
-    if (this.transaction.data.action === TransactionAction.READ_PASSPORT) {
-      if (this.closeVendingApi && this.closeVendingApi.ws) {
-        this.closeVendingApi.ws.send(KioskControls.LED_OFF);
-      }
+    if (this.closeVendingApi && this.closeVendingApi.ws) {
+      this.closeVendingApi.ws.send(KioskControls.LED_OFF);
     }
     clearInterval(this.cardStateInterval);
     this.vendingApiSubscription.unsubscribe();

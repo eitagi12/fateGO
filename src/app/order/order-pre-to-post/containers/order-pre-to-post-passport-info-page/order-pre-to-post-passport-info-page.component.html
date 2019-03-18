@@ -1,5 +1,5 @@
 <div class="mc-flex">
-  <mc-header title="{{ 'เปิดเบอร์ใหม่' | translate }}">
+  <mc-header title="{{'เปลี่ยนเติมเงินเป็นรายเดือน' | translate}}">
     <div class="header-icon-left w-25">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
@@ -15,9 +15,9 @@
       <!-- mc-capture-and-sign -->
       <div [hidden]="isOpenSign" class="container-fluid">
         <div class="card">
-          <h5 class="card-header bg-transparent text-center">
+          <!-- <h5 class="card-header bg-transparent text-center">
             ถ่ายรูปบัตรประชาชน หรือบัตรอื่นๆ
-          </h5>
+          </h5> -->
           <div class="card-body">
             <div class="camera-width">
               <div class="embed-responsive embed-responsive-4by3" [hidden]="!(!isAllowCapture() || hasImageSmartCard())">

@@ -301,13 +301,6 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
   ) {
     this.isProduction = environment.production;
     this.homeService.callback = () => {
-
-      if (this.validateCustomerIdcard && this.validateCustomerIdcard.koiskApiFn) {
-        this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
-      }
-      if (this.closeVendingApi && this.closeVendingApi.ws) {
-        this.closeVendingApi.ws.send(KioskControls.LED_OFF);
-      }
       window.location.href = '/smart-shop';
     };
   }
@@ -324,11 +317,17 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
     this.onReadPassport();
   }
   onBack() {
+    if (this.closeVendingApi && this.closeVendingApi.ws) {
+      this.closeVendingApi.ws.send(KioskControls.LED_OFF);
+    }
     this.homeService.goToHome();
     // this.router.navigate([ROUTE_ORDER_NEW_REGISTER_VERIFY_DOCUMENT_PAGE]);
   }
 
   onHome() {
+    if (this.closeVendingApi && this.closeVendingApi.ws) {
+      this.closeVendingApi.ws.send(KioskControls.LED_OFF);
+    }
     this.homeService.goToHome();
   }
 
@@ -523,10 +522,9 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
 
   ngOnDestroy(): void {
 
-    if (this.transaction.data.action === TransactionAction.READ_PASSPORT) {
-      if (this.closeVendingApi && this.closeVendingApi.ws) {
-        this.closeVendingApi.ws.send(KioskControls.LED_OFF);
-      }
+    this.transactionService.save(this.transaction);
+    if (this.closeVendingApi && this.closeVendingApi.ws) {
+      this.closeVendingApi.ws.send(KioskControls.LED_OFF);
     }
     clearInterval(this.cardStateInterval);
     this.vendingApiSubscription.unsubscribe();
@@ -575,7 +573,6 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
       return {};
     })
       .then((resp: any) => {
-        console.log('resp', resp);
         const data = resp.data || {};
         return {
           caNumber: data.caNumber,

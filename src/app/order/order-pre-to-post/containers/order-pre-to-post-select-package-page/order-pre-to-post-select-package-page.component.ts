@@ -97,7 +97,8 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
     const params: any = {
       orderType: 'Change Charge Type',
     };
-    if (this.transaction.data.action === TransactionAction.READ_PASSPORT) {
+    if (this.transaction.data.action === TransactionAction.READ_PASSPORT
+      || this.transaction.data.action === TransactionAction.READ_PASSPORT_REPI) {
       params.maxPromotionPrice = this.MAX_PROMOTION_PRICE;
     }
 

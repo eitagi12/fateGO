@@ -160,6 +160,9 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
   }
 
   onHome() {
+    if (this.validateCustomerIdcard && this.validateCustomerIdcard.koiskApiFn) {
+      this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+    }
     this.homeService.goToHome();
   }
 
@@ -183,7 +186,7 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
   }
 
   ngOnDestroy(): void {
-    this.transactionService.save(this.transaction);
+    this.transactionService.update(this.transaction);
     this.pageLoadingService.closeLoading();
   }
 }
