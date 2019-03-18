@@ -24,6 +24,21 @@
 
     </div>
   </div>
+</div>
+
+<div *ngIf="!isProduction" style="text-align: center;">
+  <hr>
+  <h1>ใช้เฉพาะเทสเท่านั้น</h1>
+  <div class="container-scroll">
+    <div class="child" *ngFor="let passport of passPortMocks">
+      <button class="btn btn-success" (click)="onClickMock(passport);">
+        {{ passport.GivenName }} ({{ passport.PassportNumber }})
+      </button>
+    </div>
+  </div>
+  <hr>
+</div>
+
 
   <ng-template #passport>
     <div class="text-center">
@@ -41,18 +56,3 @@
     </div>
     <div>เสียบบัตรประชาชนที่ช่องอ่านบัตร</div>
     </ng-template>
-
-    <div *ngIf="!isProduction" style="text-align: center;">
-      <hr>
-      <h1>ใช้เฉพาะเทสเท่านั้น</h1>
-      <div class="container-scroll">
-        <div class="child" *ngFor="let passport of passPortMocks">
-          <button class="btn btn-success" (click)="onClickMock(passport);">
-            {{ passport.GivenName }} ({{ passport.PassportNumber }})
-          </button>
-        </div>
-      </div>
-      <hr>
-    </div>
-    
-</div>

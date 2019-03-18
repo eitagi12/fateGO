@@ -315,7 +315,6 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
 
   onReadPassport() {
     this.readPassportSubscription = this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
-      console.log('readpassport', readPassport);
       if (readPassport.error) {
         this.alertService.error(this.ERR_MASSEAGE);
         return;
@@ -332,18 +331,29 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
         })
           .then((resp: any) => {
             const data = resp.data || {};
+            // readPassport NewCa จะไม่ได้ address
             return {
               caNumber: data.caNumber,
               mainMobile: data.mainMobile,
               billCycle: data.billCycle,
-              // zipCode: zipCode
+              homeNo: data.homeNo,
+              moo: data.moo,
+              mooBan: data.mooBan,
+              room: data.room,
+              floor: data.floor,
+              buildingName: data.buildingName,
+              soi: data.soi,
+              street: data.street,
+              tumbol: data.tumbol,
+              amphur: data.amphur,
+              province: data.province,
+              zipCode: data.zipCode
             };
           }).then((customer) => {
             this.transaction.data.customer = Object.assign(
               Object.assign({}, this.transaction.data.customer),
               Object.assign(readPassport.profile, customer)
             );
-            console.log('customer', this.transaction.data.customer);
             return this.http.get(`/api/customerportal/newRegister/${readPassport.profile.idCardNo}/queryBillingAccount`).toPromise()
               .then((respQueryBilling: any) => {
                 const data = respQueryBilling.data || {};
@@ -400,7 +410,6 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
     });
 
   }
-
   onReadCard() {
     this.vendingApiSubscription = this.vendingApiService.excuteCommand().subscribe((command: any) => {
       this.closeVendingApi = command;
@@ -488,7 +497,7 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
     };
 
     const convertStringToDate = (dateStr: string): string => {
-      return  Moment(dateStr, 'YYMMDD').add(543 , 'years').format('DD/MM/YYYY');
+      return Moment(dateStr, 'YYMMDD').add(543, 'years').format('DD/MM/YYYY');
     };
 
     const mapDataFromAisWebConnect = (data: any): any => {
