@@ -154,7 +154,7 @@ export class CreateDeviceOrderBestBuyService {
     }
 
     const paymentMethod = (payment.type === 'qrcode' && transId) ? this.replacePaymentMethodForQRCodeWithOutAirtime(payment.qrCode)
-       : this.getPaymentMethod(payment, null, trade);
+       : payment.method;
 
     const data: any = {
       soId: order.soId,
