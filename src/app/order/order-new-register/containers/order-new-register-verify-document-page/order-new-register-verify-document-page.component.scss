@@ -1,16 +1,16 @@
 
 .icon-passport{
-    width: 350;
+    width: 100%;
 }
 
-
 .icon{
-    width: 250;
+    width: 90%;
 }
 
 :host /deep/ hr {
     border: 3px solid #ccc;
     border-radius: 5px;
+    background-color: #ccc;
 }
 
 #container-scroll {
@@ -21,4 +21,8 @@
 
 .child {
   display:inline-block;
+}
+
+.massage-box{
+  font-size: 1.197em;
 }
