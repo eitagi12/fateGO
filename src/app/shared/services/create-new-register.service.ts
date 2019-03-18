@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Transaction, TransactionAction } from '../models/transaction.model';
 import { TokenService, Utils, ImageUtils, AWS_WATERMARK } from 'mychannel-shared-libs';
 import { observable, Observable } from 'rxjs';
+import { elementStyleProp } from '@angular/core/src/render3/instructions';
 
 @Injectable({
   providedIn: 'root'
@@ -17,23 +18,24 @@ export class CreateNewRegisterService {
   }
 
   createNewRegister(transaction: Transaction): Promise<any> {
-    this.saveFaceImage(transaction);
-    return this.getRequestCreateNewRegister(transaction).then((data) => {
-      // console.log(data);
-      return this.http.post(
-        '/api/customerportal/newRegister/createNewRegistration',
-        data
-      ).toPromise();
-    });
+    return this.saveFaceImage(transaction)
+      .then(() => {
+        return this.getRequestCreateNewRegister(transaction).then((data) => {
+          return this.http.post(
+            '/api/customerportal/newRegister/createNewRegistration',
+            data
+          ).toPromise();
+        });
+      });
   }
 
-  saveFaceImage(transaction: Transaction) {
+  saveFaceImage(transaction: Transaction): Promise<any> {
     const user = this.tokenService.getUser();
     const customer = transaction.data.customer;
     const faceRecognition = transaction.data.faceRecognition;
     const simCard = transaction.data.simCard;
+    const action = transaction.data.action;
     const channelKyc = transaction.data.faceRecognition.kyc;
-
     let channel = 'MC';
     if (channelKyc) {
       channel += '_KYC';
@@ -43,19 +45,31 @@ export class CreateNewRegisterService {
     } else {
       channel += '_SM';
     }
+    let base64Card: any;
+    if (action === TransactionAction.READ_CARD) {
+      base64Card = customer.imageReadSmartCard;
+    } else if (action === TransactionAction.READ_PASSPORT) {
+      base64Card = customer.imageReadPassport;
+    } else {
+      base64Card = customer.imageSmartCard;
+    }
 
-    this.http.post('/api/facerecog/save-imagesV2', {
+    const param: any = {
       userId: user.username,
       locationCode: user.locationCode,
-      idCardType: 'Thai National ID',
+      idCardType: customer.idCardType === 'บัตรประชาชน' ? 'Thai National ID' : 'OTHER',
       customerId: customer.idCardNo || '',
       mobileNo: simCard.mobileNo || '',
-      base64Card: 'data:image/png;base64,' + customer.imageReadSmartCard || customer.imageSmartCard || customer.imageReadPassport,
-      base64Face: 'data:image/png;base64,' + faceRecognition.imageFaceUser,
+      base64Card: base64Card ? `data:image/jpg;base64,${base64Card}` : '',
+      base64Face: faceRecognition.imageFaceUser ? `data:image/jpg;base64,${faceRecognition.imageFaceUser}` : '',
       channel: channel,
       userchannel: 'MyChannel'
-    }).toPromise()
-      .catch(e => console.log(e));
+    };
+    return this.http.post('/api/facerecog/save-imagesV2', param).toPromise()
+      .catch(e => {
+        console.log(e);
+        return Promise.resolve(null);
+      });
 
   }
 
@@ -170,6 +184,10 @@ export class CreateNewRegisterService {
       } else {
         data.orderVerify = 'User Face';
       }
+    }
+
+    if (customer.nationality !== 'Thailand') {
+      data.billLanguage = 'English';
     }
 
     // has one love

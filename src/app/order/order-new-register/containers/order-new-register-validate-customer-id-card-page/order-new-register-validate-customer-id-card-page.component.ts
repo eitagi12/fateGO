@@ -82,7 +82,6 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
 
   onError(valid: boolean) {
     this.readCardValid = valid;
-    console.log('Error');
     if (!this.profile) {
       this.alertService.error(this.translation.instant('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน'));
     if (this.validateCustomerIdcard.koiskApiFn) {
@@ -97,7 +96,6 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
   }
 
   onCompleted(profile: ReadCardProfile) {
-    console.log('Completed');
     this.profile = profile;
     // auto next
     this.onNext();
@@ -119,7 +117,8 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
       .then((zipCode: string) => {
         return this.http.get('/api/customerportal/validate-customer-new-register', {
           params: {
-            identity: this.profile.idCardNo
+            identity: this.profile.idCardNo,
+            idCardType: this.profile.idCardType
           }
         }).toPromise()
           .then((resp: any) => {

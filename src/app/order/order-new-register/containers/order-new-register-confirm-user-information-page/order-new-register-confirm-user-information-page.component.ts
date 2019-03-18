@@ -131,7 +131,7 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
       billingMethod: {
         text: this.isMergeBilling() ? `${billingInformation.mergeBilling.mobileNo[0]}` : null,
         // net extrem แก้ไขไม่ได้, โปรไฟล์ใหม่แก้ไขไม่ได้
-        isEdit: !!customer.billCycle,
+        isEdit: customer.caNumber &&  customer.billCycle,
         // isEdit: false,
         // net extrem ลบไม่ได้, มีบิลใหม่ลบได้แล้วแสดงบิลเก่า
         isDelete: !!mergeBilling,
@@ -313,7 +313,7 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
   }
 
   getBllingCycle(billCycle: string): Promise<string> {
-    if (!billCycle) {
+    if (!billCycle) { // NewCa จะ defaultBill
       return this.http.get('/api/customerportal/newRegister/queryBillCycle', {
         params: {
           coProject: 'N'
@@ -330,8 +330,7 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
               billDefault: billing.billDefault
             };
           }).find(bill => bill.billDefault === 'Y');
-
-          this.transaction.data.billingInformation.billCycle = defaultBillCycle.billCycle;
+          this.transaction.data.customer.billCycle = defaultBillCycle.billCycle.bill;
           return defaultBillCycle.text;
         });
     }
