@@ -1,4 +1,4 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { CUSTOM_ELEMENTS_SCHEMA, PipeTransform, Pipe } from '@angular/core';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
@@ -19,7 +19,9 @@ describe('DeviceOnlyAisQrCodeGeneratePageComponent', () => {
         RouterTestingModule,
       ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ DeviceOnlyAisQrCodeGeneratePageComponent ],
+      declarations: [
+        DeviceOnlyAisQrCodeGeneratePageComponent
+      ],
       providers: [
         CookiesStorageService,
         {
