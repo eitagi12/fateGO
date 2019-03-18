@@ -199,7 +199,7 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
   }
 
   ngOnDestroy(): void {
-    this.transactionService.save(this.transaction);
+    this.transactionService.update(this.transaction);
   }
 
 }

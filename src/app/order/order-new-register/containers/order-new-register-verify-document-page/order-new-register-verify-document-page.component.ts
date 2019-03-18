@@ -496,6 +496,7 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
   }
 
   ngOnDestroy(): void {
+    this.transactionService.save(this.transaction);
     if (this.closeVendingApi && this.closeVendingApi.ws) {
       this.closeVendingApi.ws.send(KioskControls.LED_OFF);
     }
