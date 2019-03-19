@@ -53,59 +53,8 @@ export class ProductPageComponent implements OnInit {
     }
     this.productService.then((resp: any) => {
       const data = resp.data;
-
       this.countRow += +data.countRow;
       this.totalRow = +data.totalRow;
-      const s10Model = {
-        'brand': 'SAMSUNG',
-        'name': 'Galaxy S10 Plus',
-        'model': 'Galaxy S10 Plus',
-        // tslint:disable-next-line:max-line-length
-        'imageUrl': 'https://store.ais.co.th/media/catalog/product/cache/2/small_image/210x/9df78eab33525d08d6e5fb8d27136e95/c/e/ceramin_black10p_1_1.png',
-        'itemType': 'HOT',
-        'dv': [],
-        'productType': 'DEVICE',
-        'productSubtype': 'HANDSET',
-        'normalPrice': {
-          'min': '35900',
-          'max': '45700'
-        },
-        'promotionPrice': {
-          'min': '24900',
-          'max': '38900'
-        },
-        'subProducts': [
-          {
-            'name': 'Galaxy S10 Plus 512GB',
-            'model': 'G965O',
-            'imageUrl': 'N/A',
-            'normalPrice': {
-              'min': '45700',
-              'max': '45700'
-            },
-            'promotionPrice': {
-              'min': '28900',
-              'max': '38900'
-            }
-          },
-          {
-            'name': 'Galaxy S10 Plus 128GB',
-            'model': 'G965O',
-            'imageUrl': 'N/A',
-            'normalPrice': {
-              'min': '35900',
-              'max': '35900'
-            },
-            'promotionPrice': {
-              'min': '24900',
-              'max': '30900'
-            }
-          }
-        ]
-      };
-      this.countRow++;
-      this.totalRow++;
-      data.products = [s10Model, ...data.products];
       data.products.map((product: any) => {
         const normalPrice = product.normalPrice || {};
         const promotionPrice = product.promotionPrice || {};
