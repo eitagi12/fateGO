@@ -121,14 +121,14 @@ export class CreateDeviceOrderAisNewRegisterService {
       matCode: '',
       priceIncAmt: trade.normalPrice.toFixed(2),
       priceDiscountAmt: trade.discount.amount.toFixed(2),
-      grandTotalAmt: this.getGrandTotalAmt(trade),
+      // grandTotalAmt: this.getGrandTotalAmt(trade),
       userId: user.username,
       saleCode: '', // seller && seller.sellerNo || '',
       queueNo: queueNo || '',
       cusNameOrder: customer.titleName + ' ' + customer.firstName + ' ' + customer.lastName,
       taxCardId: customer.idCardNo || '',
       cusMobileNoOrder: simCard.mobileNo || '',
-      customerAddress: this.getCustomerAddress(customer),
+      // customerAddress: this.getCustomerAddress(customer),
       tradeNo: trade.tradeNo,
       ussdCode: trade.ussdCode,
       returnCode: '4GEYYY',
@@ -136,17 +136,17 @@ export class CreateDeviceOrderAisNewRegisterService {
       matAirTime: trade.advancePay ? trade.advancePay.matAirtime : '',
       matCodeFreeGoods: '',
       paymentRemark: this.getOrderRemark(undefined, trade, payment, advancePayment, undefined, queueNo),
-      installmentTerm: payment && payment.bank ? payment.bank.installments[0].installmentMonth : 0,
-      installmentRate: payment && payment.bank ? payment.bank.installments[0].installmentPercentage : 0,
+      // installmentTerm: payment && payment.bank ? payment.bank.installments[0].installmentMonth : 0,
+      // installmentRate: payment && payment.bank ? payment.bank.installments[0].installmentPercentage : 0,
       mobileAisFlg: 'Y',
-      paymentMethod: this.getPaymentMethod(payment, advancePayment, trade) || '',
-      bankCode: this.getBankCode(payment, advancePayment) || '',
+      // paymentMethod: this.getPaymentMethod(payment, advancePayment, trade) || '',
+      // bankCode: this.getBankCode(payment, advancePayment) || '',
       tradeFreeGoodsId: trade.freeGoods[0] ? trade.freeGoods[0].tradeFreegoodsId : '',
       matairtimeId: '',
       tradeDiscountId: trade.discount ? trade.discount.tradeAirtimeId : '',
       tradeAirtimeId: trade.advancePay ? trade.advancePay.tradeAirtimeId : '',
       focCode: '',
-      bankAbbr: this.getBankCode(payment, advancePayment),
+      // bankAbbr: this.getBankCode(payment, advancePayment),
       preBookingNo: '',
       depositAmt: '',
     };
@@ -156,21 +156,21 @@ export class CreateDeviceOrderAisNewRegisterService {
 
   private getPaymentMethod(payment: Payment, advancePayment: Payment, trade: any) {
 
-    if (trade.advancePay.installmentFlag === 'Y') {
-      return payment.method;
-    }
+    // if (trade.advancePay.installmentFlag === 'Y') {
+    //   return payment.method;
+    // }
 
-    let paymentMethod = payment.method + '|';
+    // let paymentMethod = payment.method + '|';
 
-    if (advancePayment && +trade.advancePay.amount !== 0) {
-      paymentMethod += advancePayment.method;
-    }
-    return paymentMethod;
+    // if (advancePayment && +trade.advancePay.amount !== 0) {
+    //   paymentMethod += advancePayment.method;
+    // }
+    // return paymentMethod;
   }
 
-  getBankCode(payment: Payment, advancePayment: Payment): string {
-    return payment && payment.bank ? payment.bank.abb : '' + '|' + advancePayment && advancePayment.bank ? advancePayment.bank.abb : '';
-  }
+  // getBankCode(payment: Payment, advancePayment: Payment): string {
+  //   return payment && payment.bank ? payment.bank.abb : '' + '|' + advancePayment && advancePayment.bank ? advancePayment.bank.abb : '';
+  // }
 
   getOrderRemark(promotion: any, trade: any, payment: Payment, advancePayment: Payment, mobileCare: any, queueNo: string) {
     const newLine = '\n';
@@ -185,18 +185,18 @@ export class CreateDeviceOrderAisNewRegisterService {
     if (trade.advancePay.installmentFlag !== 'Y' && +trade.advancePay.amount !== 0) {
       if (advancePayment) {
         advancePay += REMARK_AIR_TIME;
-        if (advancePayment.type === 'qrcode') {
-          // if (advancePayment.qrCode.id === parseInt('003', 8)) {
-          //   advancePay += REMARK_PROMPT_PAY_PAYMENT;
-          // } else {
-          //   advancePay += REMARK_RABBIT_LINE_PAY_PAYMENT;
-          // }
-        } else if (advancePayment.type === 'credit') {
-          advancePay += REMARK_CREDIT_CARD_PAYMENT + comma + space;
-          advancePay += REMARK_BANK + advancePayment.bank.abb;
-        } else {
-          advancePay += REMARK_CASH_PAYMENT;
-        }
+        // if (advancePayment.type === 'qrcode') {
+        // if (advancePayment.qrCode.id === parseInt('003', 8)) {
+        //   advancePay += REMARK_PROMPT_PAY_PAYMENT;
+        // } else {
+        //   advancePay += REMARK_RABBIT_LINE_PAY_PAYMENT;
+        // }
+        // } else if (advancePayment.type === 'credit') {
+        //   advancePay += REMARK_CREDIT_CARD_PAYMENT + comma + space;
+        //   advancePay += REMARK_BANK + advancePayment.bank.abb;
+        // } else {
+        //   advancePay += REMARK_CASH_PAYMENT;
+        // }
       }
     }
     remarkDesc += advancePay + newLine;
@@ -211,77 +211,77 @@ export class CreateDeviceOrderAisNewRegisterService {
     }
 
     if (payment) {
-      if (payment.type === 'qrcode') {
-        // if (payment.qrCode.id === parseInt('003', 8)) {
-        //   tradeAndInstallment += REMARK_PROMPT_PAY_PAYMENT + comma + space;
-        // } else {
-        //   tradeAndInstallment += REMARK_RABBIT_LINE_PAY_PAYMENT + comma + space;
-        // }
-      } else if (payment.type === 'credit') {
-        tradeAndInstallment += REMARK_CREDIT_CARD_PAYMENT + comma + space;
-        tradeAndInstallment += REMARK_BANK + payment.bank.abb + comma + space;
-        if (payment.bank.installments.length > 0) {
-          tradeAndInstallment += REMARK_INSTALLMENT + payment.bank.installments[0].installmentPercentage +
-            '%' + space + payment.bank.installments[0].installmentMonth + 'เดือน' + comma + space;
-        }
-      } else {
-        tradeAndInstallment += REMARK_CASH_PAYMENT + comma + space;
-      }
+      // if (payment.type === 'qrcode') {
+      // if (payment.qrCode.id === parseInt('003', 8)) {
+      //   tradeAndInstallment += REMARK_PROMPT_PAY_PAYMENT + comma + space;
+      // } else {
+      //   tradeAndInstallment += REMARK_RABBIT_LINE_PAY_PAYMENT + comma + space;
+      // }
+      // } else if (payment.type === 'credit') {
+      //   tradeAndInstallment += REMARK_CREDIT_CARD_PAYMENT + comma + space;
+      //   tradeAndInstallment += REMARK_BANK + payment.bank.abb + comma + space;
+      //   if (payment.bank.installments.length > 0) {
+      //     tradeAndInstallment += REMARK_INSTALLMENT + payment.bank.installments[0].installmentPercentage +
+      //       '%' + space + payment.bank.installments[0].installmentMonth + 'เดือน' + comma + space;
+      //   }
+    } else {
+      tradeAndInstallment += REMARK_CASH_PAYMENT + comma + space;
     }
-    tradeAndInstallment += REMARK_TRADE_NO + trade.tradeNo;
-    remarkDesc += tradeAndInstallment + newLine;
-
-    // otherInformation
-    const summaryPoint = 0;
-    const summaryDiscount = 0;
-    let otherInformation = '';
-    otherInformation += REMARK_SUMMARY_POINT + space + summaryPoint + comma + space;
-    otherInformation += REMARK_SUMMARY_DISCOUNT + space + summaryDiscount + comma + space;
-    otherInformation += REMARK_DISCOUNT + space + trade.discount.amount.toFixed(2) + comma + space;
-    otherInformation += REMARK_RETURN_CODE + space + '4GEYYY' + comma + space;
-    otherInformation += REMARK_ORDER_TYPE + space + 'MC001' + comma + space;
-    otherInformation += REMARK_PRMOTION_CODE + space + 'remark.mainPackageCode' + comma + space;
-    otherInformation += REMARK_MOBILE_CARE_CODE + space + mobileCare.customAttributes.promotionCode + comma + space;
-    otherInformation += REMARK_MOBILE_CARE + space + mobileCare.customAttributes.shortNameThai + comma + space;
-    otherInformation += REMARK_PRIVILEGE_DESC + space + 'remark.privilegeDesc' + comma + space;
-    otherInformation += REMARK_QUEUE_NUMBER + space + queueNo;
-
-    remarkDesc += otherInformation + newLine;
-
-    return remarkDesc;
-
   }
+  // tradeAndInstallment += REMARK_TRADE_NO + trade.tradeNo;
+  // remarkDesc += tradeAndInstallment + newLine;
 
-  getGrandTotalAmt(trade: any): string {
+  // otherInformation
+  // const summaryPoint = 0;
+  // const summaryDiscount = 0;
+  // let otherInformation = '';
+  // otherInformation += REMARK_SUMMARY_POINT + space + summaryPoint + comma + space;
+  // otherInformation += REMARK_SUMMARY_DISCOUNT + space + summaryDiscount + comma + space;
+  // otherInformation += REMARK_DISCOUNT + space + trade.discount.amount.toFixed(2) + comma + space;
+  // otherInformation += REMARK_RETURN_CODE + space + '4GEYYY' + comma + space;
+  // otherInformation += REMARK_ORDER_TYPE + space + 'MC001' + comma + space;
+  // otherInformation += REMARK_PRMOTION_CODE + space + 'remark.mainPackageCode' + comma + space;
+  // otherInformation += REMARK_MOBILE_CARE_CODE + space + mobileCare.customAttributes.promotionCode + comma + space;
+  // otherInformation += REMARK_MOBILE_CARE + space + mobileCare.customAttributes.shortNameThai + comma + space;
+  // otherInformation += REMARK_PRIVILEGE_DESC + space + 'remark.privilegeDesc' + comma + space;
+  // otherInformation += REMARK_QUEUE_NUMBER + space + queueNo;
 
-    const normalPrice: number = trade.normalPrice;
-    const advancePay: number = trade.advancePay.amount;
-    const discount: number = trade.discount.amount || 0;
-    const depositAmt = 0;
-    const useDeposit = false;
+  // remarkDesc += otherInformation + newLine;
 
-    let result: any = normalPrice;
-    result += advancePay && advancePay ? +advancePay : 0;
-    result -= discount && discount ? +discount : 0;
-    result -= useDeposit ? depositAmt : 0;
-    return result.toFixed(2) || '';
-  }
+  // return remarkDesc;
 
-  getCustomerAddress(customer: Customer) {
-    return {
-      addrNo: customer.homeNo,
-      moo: customer.moo,
-      mooban: '',
-      buildingName: '',
-      floor: '',
-      room: '',
-      soi: customer.soi,
-      streetName: customer.street,
-      tumbon: customer.tumbol,
-      amphur: customer.amphur,
-      province: customer.province,
-      postCode: customer.zipCode,
-      country: '',
-    };
-  }
 }
+
+  // getGrandTotalAmt(trade: any): string {
+
+    // const normalPrice: number = trade.normalPrice;
+    // const advancePay: number = trade.advancePay.amount;
+    // const discount: number = trade.discount.amount || 0;
+    // const depositAmt = 0;
+    // const useDeposit = false;
+
+    // let result: any = normalPrice;
+    // result += advancePay && advancePay ? +advancePay : 0;
+    // result -= discount && discount ? +discount : 0;
+    // result -= useDeposit ? depositAmt : 0;
+  //   return result.toFixed(2) || '';
+  // }
+
+  // getCustomerAddress(customer: Customer) {
+  //   return {
+  //     addrNo: customer.homeNo,
+  //     moo: customer.moo,
+  //     mooban: '',
+  //     buildingName: '',
+  //     floor: '',
+  //     room: '',
+  //     soi: customer.soi,
+  //     streetName: customer.street,
+  //     tumbon: customer.tumbol,
+  //     amphur: customer.amphur,
+  //     province: customer.province,
+  //     postCode: customer.zipCode,
+  //     country: '',
+  //   };
+  // }
+// }
