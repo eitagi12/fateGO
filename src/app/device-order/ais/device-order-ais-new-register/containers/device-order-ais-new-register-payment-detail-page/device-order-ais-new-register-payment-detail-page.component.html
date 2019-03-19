@@ -9,9 +9,128 @@
   </mc-header>
   <div class="mc-flex-wrap">
     <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
-    <div class="mt-3">
+
+    <div class="my-3">
       <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
 
+      <form [formGroup]="paymentDetailForm">
+        <div class="container-fluid">
+
+          <div class="card mb-3">
+            <div class="card-header bg-orange text-white">รูปแบบชำระเงิน</div>
+            <div class="card-body py-2 text-light-green border-bottom">
+              ค่าเครื่อง
+              {{ priceOption?.productDetail?.name }}
+              <span *ngIf="priceOption?.productStock?.color">
+                สี {{ priceOption?.productStock?.color }}
+              </span>
+              <span class="pull-right">
+                $ {{ priceOption?.trade?.promotionPrice | number }}
+              </span>
+            </div>
+            <div class="card-body py-2">
+              <div class="row">
+                <div class="col-6 px-2">
+                  <input type="radio" id="payment-qr-code" name="paymentType" value="QR_CODE"
+                    formControlName="paymentType">
+                  <label for="payment-qr-code">ชำระเงินด้วย QR Code</label>
+                </div>
+                <div class="col-6 px-2">
+                  <input type="text" disabled="" class="form-control-plaintext ml-2" value="เต็มจำนวน">
+                </div>
+                <div class="col-12" *ngIf="paymentDetailForm?.value?.paymentType === 'QR_CODE'">
+                  <div class="row qr-codes">
+                    <div class="col-2 p-2">
+                      <input type="radio" id="thai-qr" name="paymentQrCodeType" value="THAI_QR"
+                        formControlName="paymentQrCodeType">
+                      <label for="thai-qr" class="qr-code"
+                        [ngClass]="{'active': paymentDetailForm?.value?.paymentQrCodeType === 'THAI_QR' }">
+                        <mc-lazy-load-image src="assets/images/icon/Thai_Qr_Payment.png"></mc-lazy-load-image>
+                      </label>
+                    </div>
+                    <div class="col-2 p-2">
+                      <input type="radio" id="line-qr" name="paymentQrCodeType" value="LINE_QR"
+                        formControlName="paymentQrCodeType">
+                      <label for="line-qr" class="qr-code"
+                        [ngClass]="{'active': paymentDetailForm?.value?.paymentQrCodeType === 'LINE_QR' }">
+                        <mc-lazy-load-image src="assets/images/icon/Rabbit_Line_Pay.png"></mc-lazy-load-image>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="card-body py-2 border-top">
+              <div class="row">
+                <div class="col-6 px-2">
+                  <input type="radio" id="payment-debit" name="paymentType" value="DEBIT" formControlName="paymentType">
+                  <label for="payment-debit">ชำระที่เคาน์เตอร์</label>
+                </div>
+                <div class="col-6 px-2">
+                  <input type="text" disabled="" class="form-control-plaintext ml-2" value="เต็มจำนวน">
+                </div>
+              </div>
+            </div>
+            <div class="card-body py-2 border-top">
+              <div class="row">
+                <div class="col-6 px-2">
+                  <input type="radio" id="payment-credit" name="paymentType" value="CREDIT"
+                    formControlName="paymentType">
+                  <label for="payment-credit">ชำระเงินด้วยบัตรเครดิต</label>
+                </div>
+                <div class="col-6 px-2">
+                  <select class="form-control" formControlName="paymentForm">
+                    <option value="FULL">เต็มจำนวน</option>
+                    <option value="INSTALLMENT">ผ่อนชำระ</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <ng-container *ngIf="paymentDetailForm?.value?.paymentType === 'CREDIT'">
+              <div class="card-body py-2 border-top">
+                <div class="text-center text-pink">
+                  <small>ระบุธนาคาร</small>
+                </div>
+                <div class="row banks" [ngClass]="{'more': isBankCollapsed}">
+                  <ng-container *ngFor="let bank of getBanks()">
+                    <div class="col-2 p-2">
+                      <input type="radio" [attr.id]="bank?.abb" name="paymentBank" [value]="bank"
+                        formControlName="paymentBank">
+                      <label [attr.for]="bank?.abb" class="bank"
+                        [ngClass]="{'active': paymentDetailForm?.value?.paymentBank?.abb === bank?.abb }">
+                        <mc-lazy-load-image [src]="bank?.imageUrl"></mc-lazy-load-image>
+                      </label>
+                    </div>
+                  </ng-container>
+                </div>
+                <div class="text-right" *ngIf="getBanks()?.length > 6 && !isBankCollapsed">
+                  <a href="#" (click)="$event.preventDefault(); isBankCollapsed = !isBankCollapsed">
+                    <u>More</u>
+                  </a>
+                </div>
+              </div>
+              <div class="card-body py-2 border-top"
+                *ngIf="paymentDetailForm?.value?.paymentBankAbb && banksPayment?.length > 0">
+                <div class="text-center text-pink">
+                  <small>กรุณาเลือกรูปแบบการชำระเงิน</small>
+                </div>
+                <div class="row">
+                  <ng-container *ngFor="let bank of banksPayment">
+                    <div class="col-3 p-2">
+                      <input type="radio" id="payment-method-{{ bank?.percentage }}-{{ bank?.month }}"
+                        name="paymentMethod" [value]="bank" formControlName="paymentMethod">
+                      <label for="payment-method-{{ bank?.percentage }}-{{ bank?.month }}">{{ bank?.percentage }}%
+                        {{ bank?.month }} เดือน
+                      </label>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </form>
       <!-- <mc-payment-detail [paymentDetail]="paymentDetail" [selectPaymentDetail]="selectPaymentDetail" [option]="paymentDetailOption"
         (qrCode)="onSelectQRCode($event)" (bank)="onSelectBank($event)" (installment)="onSelectInstallment($event)"
         (paymentType)="onSelectPaymentType($event)"></mc-payment-detail>
@@ -22,12 +141,12 @@
         (qrCode)="onSelectQRCodeAdvancePay($event)" (bank)="onSelectBankAdvancePay($event)" (paymentType)="onSelectPaymentTypeAdvancePay($event)"></mc-payment-detail> -->
 
 
-      <!-- <mc-receipt-info [receiptInfo]="receiptInfo" (completed)="onReceiptInfoCompleted($event)" (error)="onReceiptInfoError($event)"></mc-receipt-info> -->
+      <mc-receipt-info [receiptInfo]="receiptInfo" (completed)="onReceiptInfoCompleted($event)"
+        (error)="onReceiptInfoError($event)"></mc-receipt-info>
     </div>
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <!-- <button class="btn btn-success" (click)="onNext()" [disabled]="!(checkPaymentFormValid() && checkAdvancePaymentFormValid() && receiptInfoValid)">NEXT</button> -->
-    <button class="btn btn-success" (click)="onNext()">NEXT</button>
+    <button class="btn btn-success" [disabled]="!isNext()" (click)="onNext()">NEXT</button>
   </mc-footer>
 </div>

@@ -359,6 +359,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
     onViewInstallments(campaign: any) {
         this.installments = PriceOptionUtils.getInstallmentsFromCampaign(campaign);
+        console.log(this.installments);
         this.modalRef = this.modalService.show(this.installmentTemplate, { class: 'modal-lg' });
     }
 
@@ -378,10 +379,10 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         this.pageLoadingService.openLoading();
         this.addToCartService.reserveStock(this.priceOption)
             .then((data: any) => {
+                this.pageLoadingService.closeLoading();
                 this.router.navigate([data.nextUrl]);
             })
-            .catch((error) => this.alertService.error(error))
-            .then(() => this.pageLoadingService.closeLoading());
+            .catch((error) => this.alertService.error(error));
     }
 
     /* product stock */

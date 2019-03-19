@@ -186,11 +186,11 @@ export class CreateDeviceOrderAisNewRegisterService {
       if (advancePayment) {
         advancePay += REMARK_AIR_TIME;
         if (advancePayment.type === 'qrcode') {
-          if (advancePayment.qrCode.id === parseInt('003', 8)) {
-            advancePay += REMARK_PROMPT_PAY_PAYMENT;
-          } else {
-            advancePay += REMARK_RABBIT_LINE_PAY_PAYMENT;
-          }
+          // if (advancePayment.qrCode.id === parseInt('003', 8)) {
+          //   advancePay += REMARK_PROMPT_PAY_PAYMENT;
+          // } else {
+          //   advancePay += REMARK_RABBIT_LINE_PAY_PAYMENT;
+          // }
         } else if (advancePayment.type === 'credit') {
           advancePay += REMARK_CREDIT_CARD_PAYMENT + comma + space;
           advancePay += REMARK_BANK + advancePayment.bank.abb;
@@ -212,11 +212,11 @@ export class CreateDeviceOrderAisNewRegisterService {
 
     if (payment) {
       if (payment.type === 'qrcode') {
-        if (payment.qrCode.id === parseInt('003', 8)) {
-          tradeAndInstallment += REMARK_PROMPT_PAY_PAYMENT + comma + space;
-        } else {
-          tradeAndInstallment += REMARK_RABBIT_LINE_PAY_PAYMENT + comma + space;
-        }
+        // if (payment.qrCode.id === parseInt('003', 8)) {
+        //   tradeAndInstallment += REMARK_PROMPT_PAY_PAYMENT + comma + space;
+        // } else {
+        //   tradeAndInstallment += REMARK_RABBIT_LINE_PAY_PAYMENT + comma + space;
+        // }
       } else if (payment.type === 'credit') {
         tradeAndInstallment += REMARK_CREDIT_CARD_PAYMENT + comma + space;
         tradeAndInstallment += REMARK_BANK + payment.bank.abb + comma + space;

@@ -24,8 +24,7 @@ export class PrivilegeToTradeSliderPipe implements PipeTransform {
 
       const slider: any = {
         freeGoods: (trade.freeGoods || []).map(freeGood => freeGood.name),
-        installments: installments,
-        installmentType: installmentFlag ? 'bath' : 'wallet',
+        installmentType: 'wallet', // 'bath',
         specialType: discount.specialType,
         specialAmount: +advancePay.amount,
         value: trade
@@ -35,8 +34,12 @@ export class PrivilegeToTradeSliderPipe implements PipeTransform {
           if (installments) {
             slider.isCashBack = isRemark;
             slider.description = 'ผ่อนชำระค่าเครื่อง';
+            if (installmentFlag) {
+              slider.description += 'และแพ็กเกจค่าบริการล่วงหน้า';
+            }
             // ใช้คะแนนบัตรเครดิต
             slider.paymentPoint = !!(trade.payments || []).find(p => p.method === 'PP');
+            slider.installments = installments;
           } else {
             slider.description = 'ชำระเต็มจำนวน';
           }
@@ -45,9 +48,6 @@ export class PrivilegeToTradeSliderPipe implements PipeTransform {
         case 'CA/CC':
         default:
           slider.description = 'ชำระเต็มจำนวน';
-      }
-      if (installmentFlag) {
-        slider.description += 'และแพ็กเกจค่าบริการล่วงหน้า';
       }
       return slider;
     });
