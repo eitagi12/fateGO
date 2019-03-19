@@ -88,7 +88,7 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
   }
 
   onNext(): void {
-    this.router.navigate([DEPOSIT_QUEUE_PAGE]);
+    this.router.navigate([DEPOSIT_PAYMENT_SUMMARY_PAGE]);
   }
   onBack(): void {
     window.location.href = '';

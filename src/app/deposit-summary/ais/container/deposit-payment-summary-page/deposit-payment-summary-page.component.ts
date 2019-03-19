@@ -6,15 +6,10 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { Router } from '@angular/router';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { HttpClient } from '@angular/common/http';
-import {
-  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGREEMENT_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_MOBILE_CARE_PAGE,
-  ROUTE_DEVICE_SELLING_QUEUE
-} from 'src/app/device-order/ais/device-order-ais-new-register/constants/route-path.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { DEPOSIT_PAYMENT_SUMMARY_PAGE } from 'src/app/deposit-summary/constants/route-path.constant';
+import { DEPOSIT_PAYMENT_SUMMARY_PAGE, DEPOSIT_QUEUE_PAGE } from 'src/app/deposit-summary/constants/route-path.constant';
 
 @Component({
   selector: 'app-deposit-payment-summary-page',
@@ -41,7 +36,7 @@ export class DepositPaymentSummaryPageComponent implements OnInit {
   deposit: number;
   sellerCode: string;
   checkSellerForm: FormGroup;
-  seller: Seller;
+  seller: Seller = {};
 
   constructor(
     private router: Router,
@@ -105,7 +100,7 @@ export class DepositPaymentSummaryPageComponent implements OnInit {
           employeeId: shopCheckSeller.data.isAscCode
         };
         this.pageLoadingService.closeLoading();
-        this.router.navigate([ROUTE_DEVICE_SELLING_QUEUE]);
+        this.router.navigate([DEPOSIT_QUEUE_PAGE]);
         } else {
           this.alertService.error(shopCheckSeller.data.message);
         }

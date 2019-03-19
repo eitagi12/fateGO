@@ -51,10 +51,12 @@
                     ASC Code
                   </span>
                   <span style="color:#ff1744; margin-right: 3em" *ngIf="!isUserASPType()">*</span>
+                  <form [formGroup]="checkSellerForm">
                   <input autocomplete="off" id="sellerNo" name="sellerNo" type="text" 
                   [(ngModel)]="seller.sellerNo" 
                   style="padding-left: 0.5em"
                   formControlName="checkSeller">
+                </form>
                   <!-- <input type="text" class="form-control" id="sellerNo" value="" autocomplete="off"
                   formControlName="checkSeller"> -->
                 </div>
