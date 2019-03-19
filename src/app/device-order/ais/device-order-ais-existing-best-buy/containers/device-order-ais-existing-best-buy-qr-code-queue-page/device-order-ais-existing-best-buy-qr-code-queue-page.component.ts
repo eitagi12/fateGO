@@ -48,7 +48,7 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
 
   getTransactionId(): void {
     this.qrcodePaymentService.getInquiryCallbackMpay(this.transaction.data.order.soId).then((transId: any) => {
-      this.transId = transId.mpay_payment.tranId;
+      this.transId = transId.data.mpay_payment.tranId;
       this.transaction.data.mpayPayment.tranId = this.transId;
     });
   }

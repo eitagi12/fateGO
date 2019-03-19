@@ -433,10 +433,10 @@ export class CreateDeviceOrderBestBuyService {
       brand: productDetail.brand,
       amount: 1,
       name: productDetail.productName,
-      colorName: product.color,
+      colorName: product.colorName,
       colorCode: product.colorCode,
       productType: productDetail.productType,
-      productSubtype: productDetail.productSubType
+      productSubtype: productDetail.productSubtype
     };
   }
 
