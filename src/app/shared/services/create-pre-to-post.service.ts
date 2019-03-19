@@ -119,10 +119,8 @@ export class CreatePreToPostService {
       data.titleName = this.utils.getPrefixName(customer.titleName); /*required*/
     }
 
-    if (customer.nationality === 'Thailand') {
-      data.billLanguage = 'Thai';
-    } else {
-      data.billLanguage = 'Eng';
+    if (customer.nationality !== 'Thailand') {
+      data.billLanguage = 'English';
     }
 
     // orderVerify
