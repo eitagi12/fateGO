@@ -11,6 +11,8 @@ import {
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Subscription } from 'rxjs';
+import { AisNativeOrderService } from 'src/app/shared/services/ais-native-order.service';
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-order-new-register-agreement-sign-page',
   templateUrl: './order-new-register-agreement-sign-page.component.html',
@@ -26,16 +28,23 @@ export class OrderNewRegisterAgreementSignPageComponent implements OnInit, OnDes
   openSignedCommand: any;
   isOpenSign: boolean;
 
+  translationSubscribe: Subscription;
+  currentLang: string;
+
+  commandSigned: any;
+
   constructor(
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
-    private aisNativeService: AisNativeService,
+    private aisNativeOrderService: AisNativeOrderService,
     private tokenService: TokenService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private translationService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
-    this.signedSignatureSubscription = this.aisNativeService.getSigned().subscribe((signature: string) => {
+    this.signedSignatureSubscription = this.aisNativeOrderService.getSigned().subscribe((signature: string) => {
+      this.isOpenSign = false;
       if (signature) {
         this.isOpenSign = false;
         this.transaction.data.customer.imageSignature = signature;
@@ -47,6 +56,18 @@ export class OrderNewRegisterAgreementSignPageComponent implements OnInit, OnDes
         return;
       }
     });
+
+    this.currentLang = this.translationService.currentLang || 'TH';
+    this.translationSubscribe = this.translationService.onLangChange.subscribe(lang => {
+      if (this.signedOpenSubscription) {
+        this.signedOpenSubscription.unsubscribe();
+      }
+      this.currentLang = typeof (lang) === 'object' ? lang.lang : lang;
+      if (this.isOpenSign) {
+        this.onSigned();
+      }
+    });
+
   }
 
   ngOnInit() {
@@ -59,11 +80,13 @@ export class OrderNewRegisterAgreementSignPageComponent implements OnInit, OnDes
     this.router.navigate([ROUTE_ORDER_NEW_REGISTER_SUMMARY_PAGE]);
   }
 
-  onNext() {
-    if (this.transaction.data.customer.imageSignature && !this.isOpenSign) {
-      this.router.navigate([ROUTE_ORDER_NEW_REGISTER_EAPPLICATION_PAGE]);
-    } else {
+  onNext(): void {
+    if (this.openSignedCommand && !this.openSignedCommand.error) {
       this.openSignedCommand.ws.send('CaptureImage');
+    } else {
+      if (this.transaction.data.customer.imageSignature) {
+        this.router.navigate([ROUTE_ORDER_NEW_REGISTER_EAPPLICATION_PAGE]);
+      }
     }
   }
 
@@ -71,20 +94,38 @@ export class OrderNewRegisterAgreementSignPageComponent implements OnInit, OnDes
     this.homeService.goToHome();
   }
 
-  onSigned() {
+  checkLogicNext(): boolean {
+    if (this.isOpenSign || this.transaction.data.customer.imageSignature) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  onSigned(): void {
     this.isOpenSign = true;
     const user: User = this.tokenService.getUser();
-    this.signedOpenSubscription = this.aisNativeService.openSigned(
-      ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'SignaturePad',
+    this.signedOpenSubscription = this.aisNativeOrderService.openSigned(
+      ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'OnscreenSignpad', `{x:100,y:280,Language: ${this.currentLang}}`
     ).subscribe((command: any) => {
       this.openSignedCommand = command;
     });
+
   }
+
+  getOnMessageWs(): void {
+    this.commandSigned.ws.send('CaptureImage');
+  }
+
 
   ngOnDestroy(): void {
     this.signedSignatureSubscription.unsubscribe();
     if (this.signedOpenSubscription) {
       this.signedOpenSubscription.unsubscribe();
+    }
+
+    if (this.translationSubscribe) {
+      this.translationSubscribe.unsubscribe();
     }
     this.transactionService.update(this.transaction);
   }
