@@ -142,6 +142,8 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
         },
         onDelete: () => {
           delete this.transaction.data.billingInformation.mergeBilling;
+          delete this.transaction.data.billingInformation.billCycleData;
+          const simCard = this.transaction.data.simCard;
 
           this.billingInfo.billingMethod.text = null;
           this.billingInfo.billingMethod.isDelete = false;
@@ -153,6 +155,10 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
           this.billingInfo.billingCycle.isEdit = true;
           this.billingInfo.billingCycle.isDelete = false;
 
+          this.mailBillingInfo = {
+            mobileNo: simCard.mobileNo,
+            billChannel: this.getBillChannel()
+          };
           const bill = billCycle && billCycle.bill ? billCycle.bill : customer.billCycle;
           this.billingInfo.billingCycle.isDelete = !!(billCycle && billCycle.bill);
           this.getBllingCycle(bill).then((billCycleText: string) => {
@@ -269,11 +275,6 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
     const billingInformation = this.transaction.data.billingInformation;
     const mergeBilling: any = billingInformation.mergeBilling;
 
-    // ขา back หลังกลับมาจากหน้า summary
-    if (billingInformation && billingInformation.billCycleData) {
-      return billingInformation.billCycleData.billChannel;
-    }
-
     // default ตามรอบบิลที่เลือก
     if (this.isMergeBilling()) {
       if (mergeBilling.billMedia === 'SMS and eBill') {
@@ -284,6 +285,12 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
         return 'other';
       }
     }
+
+    // ขา back หลังกลับมาจากหน้า summary
+    if (billingInformation && billingInformation.billCycleData) {
+      return billingInformation.billCycleData.billChannel;
+    }
+
 
     // เลือกบิลตามแพจเกจ
     const billingSystem = mainPackage.billingSystem;
