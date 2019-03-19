@@ -75,10 +75,12 @@ export class CreateDeviceOrderService {
   }
 
   createDeviceOrder(transaction: Transaction, priceOption: PriceOption, transId?: string): Promise<any> {
+    console.log('test');
     return new Promise((resolve, reject) => {
       this.getRequestCreateOrder(transaction, priceOption, transId).then((data) => {
         this.http.post('/api/salesportal/device-sell/order', data).toPromise()
           .then((response: any) => {
+            console.log(JSON.stringify(response));
             if (response.data.resultCode === 'S') {
               resolve(response);
             } else {
@@ -99,30 +101,29 @@ export class CreateDeviceOrderService {
 
     const user = this.tokenService.getUser();
     const customer = transaction.data.customer;
-    const productStock = priceOption.productStock;
+    const productStock = priceOption.productStock || '';
     // const productDetail = priceOption.productDetail;
-    const trade = transaction.data.mainPromotion.trade;
-    const payment = transaction.data.payment;
+    // const trade = transaction.data.mainPromotion.trade;
+    const payment = transaction.data.payment || '';
     // const advancePayment = transaction.data.advancePayment;
-    const simCard = transaction.data.simCard;
-    const queue = transaction.data.queue;
+    const simCard = transaction.data.simCard || '';
+    const queue = transaction.data.queue || '';
     // const seller = transaction.data.seller;
     // const prebooking = transaction.data.preBooking;
-    const mobileCare = transaction.data.mobileCarePackage;
-    const order = transaction.data.order;
+    const order = transaction.data.order || '';
     const data: any = {
       // soId: order.soId,
-      soCompany: productStock.company,
-      locationSource: this.user.locationCode,
-      locationReceipt: this.user.locationCode,
+      soCompany: productStock.company || '',
+      locationSource: this.user.locationCode || '',
+      locationReceipt: this.user.locationCode || '',
       // productType: productDetail.productType || 'DEVICE',
       // productSubType: productDetail.productSubtype || 'HANDSET',
       // brand: productDetail.brand,
       // model: productDetail.model,
       color: productStock.color,
       matCode: '',
-      priceIncAmt: trade.normalPrice.toFixed(2),
-      priceDiscountAmt: (+trade.discount.amount).toFixed(2),
+      priceIncAmt:  '',
+      priceDiscountAmt:  '',
       // grandTotalAmt: this.getGrandTotalAmt(trade),
       userId: this.user.username,
       // saleCode: seller && seller.employeeId ? seller.employeeId : '',
@@ -131,8 +132,8 @@ export class CreateDeviceOrderService {
       taxCardId: customer && customer.idCardNo || '',
       cusMobileNoOrder: simCard && simCard.mobileNo || '',
       customerAddress: this.getCustomerAddress(customer),
-      tradeNo: trade && trade.tradeNo || '',
-      ussdCode: trade && trade.ussdCode || '',
+      tradeNo: '',
+      ussdCode: '',
       // returnCode: customer.privilegeCode || '',
       cashBackFlg: '',
       matAirTime: '',
@@ -143,10 +144,10 @@ export class CreateDeviceOrderService {
       mobileAisFlg: 'Y',
       // paymentMethod: paymentMethod,
       // bankCode: this.getBankCode(payment, advancePayment),
-      tradeFreeGoodsId: trade.freeGoods[0] ? trade.freeGoods[0].tradeFreegoodsId : '',
+      tradeFreeGoodsId: '',
       matairtimeId: '',
-      tradeDiscountId: trade.discount ? trade.discount.tradeAirtimeId : '',
-      tradeAirtimeId: trade.advancePay ? trade.advancePay.tradeAirtimeId : '',
+      tradeDiscountId: '',
+      tradeAirtimeId:  '',
       focCode: '',
       // bankAbbr: this.getBankCode(payment, advancePayment),
       // preBookingNo: prebooking ? prebooking.preBookingNo : '',
@@ -165,7 +166,7 @@ export class CreateDeviceOrderService {
 
   private getCustomerAddress(customer: Customer): any {
     return {
-      addrNo: customer.homeNo,
+      addrNo: customer.homeNo || '',
       moo: customer.moo,
       mooban: '',
       buildingName: '',

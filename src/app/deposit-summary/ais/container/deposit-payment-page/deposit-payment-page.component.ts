@@ -14,6 +14,7 @@ import { DepositSummaryServicesService } from 'src/app/deposit-summary/services/
 export const CASH_PAYMENT = 'CA';
 export const CREDIT_CARD_PAYMENT = 'CC';
 export const CASH_AND_CREDIT_CARD_PAYMENT = 'CC/CA';
+import { DEPOSIT_QUEUE_PAGE } from 'src/app/deposit-summary/constants/route-path.constant';
 
 @Component({
   selector: 'app-deposit-payment-page',
@@ -87,7 +88,7 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
   }
 
   onNext(): void {
-    this.router.navigate([DEPOSIT_PAYMENT_SUMMARY_PAGE]);
+    this.router.navigate([DEPOSIT_QUEUE_PAGE]);
   }
   onBack(): void {
     window.location.href = '';

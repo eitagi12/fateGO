@@ -10,6 +10,7 @@ import { DepositPaymentSummaryComponent } from './components/deposit-payment-sum
 import { DepositSellerInfoComponent } from './components/deposit-seller-info/deposit-seller-info.component';
 import { DepositQueueComponent } from './ais/container/deposit-queue/deposit-queue.component';
 import { DepositResultComponent } from './ais/container/deposit-result/deposit-result.component';
+import { CreateDeviceOrderService } from './services/create-device-order.service';
 @NgModule({
   imports: [
     CommonModule,
@@ -20,6 +21,9 @@ import { DepositResultComponent } from './ais/container/deposit-result/deposit-r
   ],
   declarations: [DepositSummaryComponent, DepositPaymentPageComponent,
     DepositPaymentSummaryPageComponent, DepositQueueComponent, DepositResultComponent,
-    DepositSellerInfoComponent, DepositPaymentSummaryComponent]
+    DepositSellerInfoComponent, DepositPaymentSummaryComponent],
+    providers : [
+      CreateDeviceOrderService
+    ]
 })
 export class DepositSummaryModule { }
