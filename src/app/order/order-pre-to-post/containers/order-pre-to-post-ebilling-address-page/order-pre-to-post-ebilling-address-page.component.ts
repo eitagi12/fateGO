@@ -43,11 +43,18 @@ export class OrderPreToPostEbillingAddressPageComponent implements OnInit, OnDes
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.callService();
-    this.translationSubscribe = this.translation.onLangChange.subscribe(() => {
+    this.translationSubscribe = this.translation.onLangChange.pipe(debounceTime(750)).subscribe(() => {
       this.callService();
+      this.amphurs = [];
+      this.tumbols = [];
+      this.zipCodes = [];
+      this.customerAddress.amphur = null;
+      this.customerAddress.tumbol = null;
+      this.customerAddress.province = null;
     });
+
   }
 
   callService() {
