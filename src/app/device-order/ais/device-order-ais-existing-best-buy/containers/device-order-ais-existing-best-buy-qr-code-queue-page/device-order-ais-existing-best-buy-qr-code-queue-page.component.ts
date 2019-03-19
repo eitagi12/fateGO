@@ -29,11 +29,15 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
     private router: Router,
     private fb: FormBuilder,
     private transactionService: TransactionService,
+    private priceOptionService: PriceOptionService,
     private createBestBuyService: CreateDeviceOrderBestBuyService,
     private qrcodePaymentService: QrcodePaymentService,
     private pageLoadingService: PageLoadingService,
     private alertService: AlertService
-  ) { }
+  ) {
+    this.transaction = this.transactionService.load();
+    this.priceOption = this.priceOptionService.load();
+   }
 
   ngOnInit(): void {
     this.deposit = this.transaction.data.preBooking

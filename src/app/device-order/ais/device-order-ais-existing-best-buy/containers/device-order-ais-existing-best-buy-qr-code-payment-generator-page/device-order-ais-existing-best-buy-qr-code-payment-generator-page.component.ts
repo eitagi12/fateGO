@@ -287,6 +287,12 @@ export class DeviceOrderAisExistingBestBuyQrCodePaymentGeneratorPageComponent im
   }
 
   ngOnDestroy(): void {
+    if (this.subscription$) {
+      this.subscription$.unsubscribe();
+    }
+    if (this.checkInquiryCallbackMpaySubscribtion$) {
+      this.checkInquiryCallbackMpaySubscribtion$.unsubscribe();
+    }
     this.transactionService.update(this.transaction);
   }
 }

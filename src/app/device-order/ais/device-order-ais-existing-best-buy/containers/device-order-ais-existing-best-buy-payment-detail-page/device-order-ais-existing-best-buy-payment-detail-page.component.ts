@@ -91,7 +91,7 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
 
     this.showQRCode = this.paymentMethod !== 'CC' && this.user.userType !== 'ASP'
               && this.user.channelType !== 'sff-web' && this.priceOption.productStock.company === 'AWN'
-              && this.user.username === 'duangdat';
+              && this.user.username.toLowerCase() === 'duangdat';
     // this.showQRCode = true;
 
     this.onLoadDefaultBankData(this.priceOption.trade.banks).then((banks) => {
