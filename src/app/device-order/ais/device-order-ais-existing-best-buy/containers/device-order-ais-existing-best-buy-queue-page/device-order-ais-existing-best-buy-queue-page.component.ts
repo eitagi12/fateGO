@@ -65,6 +65,7 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
   }
 
   ngOnDestroy(): void {
+    this.transactionService.remove();
     this.transactionService.update(this.transaction);
   }
 }

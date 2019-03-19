@@ -168,6 +168,13 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
         };
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_CARE_AVAILABLE_PAGE]);
       } else {
+        this.transaction.data.existingMobileCare = null;
+        this.transaction.data.payment = {
+          method: this.paymentMethod,
+          type: this.selectPaymentDetail.paymentType,
+          qrCode: this.selectPaymentDetail.qrCode,
+          bank: this.selectPaymentDetail.bank
+        };
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_CARE_PAGE]);
       }
     });

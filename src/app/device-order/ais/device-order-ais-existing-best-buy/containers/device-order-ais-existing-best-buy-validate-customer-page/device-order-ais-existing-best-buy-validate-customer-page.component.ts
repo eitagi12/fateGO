@@ -54,10 +54,14 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
         .then((response: any) => {
           if (response.value === true) {
            this.createDeviceOrderBestBuyService.cancelOrder(this.transaction).then((isSuccess: any) => {
+              this.transactionService.remove();
               window.location.href = '/';
            });
           }
-        }).catch(() => window.location.href = '/');
+        }).catch(() => {
+          this.transactionService.remove();
+          window.location.href = '/';
+        });
     };
   }
 
@@ -91,6 +95,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
             const productDetail = this.priceOption.productDetail;
             this.createDeviceOrderBestBuyService.cancelOrder(this.transaction)
                 .then((isSuccess: any) => {
+                  this.transactionService.remove();
                   window.location.href = `/sales-portal/buy-product/brand/${productDetail.brand}/${productDetail.model}`;
              });
           }
