@@ -10,6 +10,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { HttpClient } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-order-mnp-ebilling-address-page',
@@ -45,11 +46,17 @@ export class OrderMnpEbillingAddressPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-
     this.callService();
-    this.translationSubscribe = this.translation.onLangChange.subscribe(() => {
+    this.translationSubscribe = this.translation.onLangChange.pipe(debounceTime(750)).subscribe(() => {
       this.callService();
+      this.amphurs = [];
+      this.tumbols = [];
+      this.zipCodes = [];
+      this.customerAddress.amphur = null;
+      this.customerAddress.tumbol = null;
+      this.customerAddress.province = null;
     });
+
   }
 
   callService() {
