@@ -14,6 +14,8 @@ import {
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { DEPOSIT_PAYMENT_SUMMARY_PAGE } from 'src/app/deposit-summary/constants/route-path.constant';
+
 @Component({
   selector: 'app-deposit-payment-summary-page',
   templateUrl: './deposit-payment-summary-page.component.html',
@@ -55,34 +57,20 @@ export class DepositPaymentSummaryPageComponent implements OnInit {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
   }
-
   ngOnInit(): void {
-    // const user = this.tokenService.getUser();
-    // const customer = this.transaction.data.customer;
-    // this.customerAddress = this.utils.getCurrentAddress({
-    //   homeNo: customer.homeNo,
-    //   moo: customer.moo,
-    //   room: customer.room,
-    //   floor: customer.floor,
-    //   buildingName: customer.buildingName,
-    //   soi: customer.soi,
-    //   street: customer.street,
-    //   tumbol: customer.tumbol,
-    //   amphur: customer.amphur,
-    //   province: customer.province,
-    //   zipCode: customer.zipCode
-    // });
-
-    // this.http.get(`/api/salesportal/location-by-code?code=${user.locationCode}`).toPromise().then((response: any) => {
-    //   this.seller = {
-    //     sellerName: user.firstname && user.lastname ? `${user.firstname} ${user.lastname}` : user.username,
-    //     locationName: response.data.displayName,
-    //     locationCode: user.locationCode
-    //   };
-    // });
-    // this.createForm();
-
+    const user = this.tokenService.getUser();
+    user.ascCode = '66111';
+    this.http.get(`/api/salesportal/location-by-code?code=${user.locationCode}`).toPromise().then((response: any) => {
+      this.seller = {
+        sellerName: user.firstname && user.lastname ? `${user.firstname} ${user.lastname}` : user.username,
+        locationName: response.data.displayName,
+        locationCode: user.locationCode,
+        sellerNo : user.ascCode
+      };
+    });
+    this.createForm();
   }
+
   createForm(): void {
     this.checkSellerForm = this.fb.group({
       checkSeller: ['', Validators.compose([Validators.required, Validators.pattern(/^[0-9]+$/)])]
@@ -104,7 +92,7 @@ export class DepositPaymentSummaryPageComponent implements OnInit {
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_MOBILE_CARE_PAGE]);
+    this.router.navigate([DEPOSIT_PAYMENT_SUMMARY_PAGE]);
   }
 
   onNext(): void {
@@ -125,5 +113,10 @@ export class DepositPaymentSummaryPageComponent implements OnInit {
         this.pageLoadingService.closeLoading();
         this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
       });
+  }
+  summary(amount: number[]): number {
+    return amount.reduce((prev, curr) => {
+      return prev + curr;
+    }, 0);
   }
 }

@@ -1,6 +1,9 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Seller } from 'src/app/shared/models/transaction.model';
+import { Seller, Transaction } from 'src/app/shared/models/transaction.model';
 import { TokenService, UserType } from 'mychannel-shared-libs';
+import { HttpClient } from '@angular/common/http';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 
 @Component({
   selector: 'app-deposit-seller-info',
@@ -8,24 +11,19 @@ import { TokenService, UserType } from 'mychannel-shared-libs';
   styleUrls: ['./deposit-seller-info.component.scss']
 })
 export class DepositSellerInfoComponent implements OnInit {
-  @Input() seller: Seller;
+  seller: Seller;
+  transaction: Transaction;
+  sellerCode: string;
+  checkSellerForm: FormGroup;
   constructor(
-    private tokenServie: TokenService
+    private tokenService: TokenService,
+    private http: HttpClient,
+    private transactionService: TransactionService,
+    public fb: FormBuilder
   ) {
     this.seller = this.seller || new Seller();
+    this.transaction = this.transactionService.load();
   }
   ngOnInit(): void {
-  }
-
-  isUserASPType(): boolean {
-    return this.tokenServie.getUser().userType === 'ASP';
-  }
-  setSeller(seller: Seller): void {
-    this.seller = seller;
-  }
-  getSeller(): Seller {
-    return Object.assign(this.seller, {
-      sellerNo: this.seller.sellerNo || ''
-    });
   }
 }

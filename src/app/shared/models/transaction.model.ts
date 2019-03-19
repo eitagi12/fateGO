@@ -230,7 +230,7 @@ export class BaseView {
   imageUrl: string;
 }
 export class Seller {
-  sellerName: string;
+  sellerName?: string;
   locationName?: string;
   locationCode?: string;
   sellerNo?: string;

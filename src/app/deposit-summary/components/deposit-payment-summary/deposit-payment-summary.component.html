@@ -5,25 +5,28 @@
     </div>
     <div class="content">
       <div class="row align-top align-spaced">
-        <div class="small-9 columns">
-          <div class="circle green-yellow"></div>
-          <span>
-             <!-- ค่ามัดจำ {{ brand }} {{ model }} สี {{ colorName }} -->
-             </span>
+        <div class="col-9">
+          <div class="dot"></div>
+          <span style="margin-left: 10px;">
+            ค่ามัดจำเครื่อง {{ brand }} {{ model }} {{ colorName }}
+          </span>
         </div>
-        <div class="small-3 columns font-dark-green text-right">
-             <!-- ฿ {{ depositAmt | number }} -->
+        <div class="col-3" style="text-align: right;">
+          <span>
+            ฿ {{ depositAmt | number }}
+          </span>
         </div>
       </div>
-      <div class="footer">
-        <div class="row align-middle align-spaced">
-          <div class="small-offset-6 small-6 columns text-right">
-            <h5>รวมยอดชำระ(รวมVAT)
-              <span class="font-dark-green" style="margin-left: 1rem;">
-                ฿ 5,000.00
-              </span>
-            </h5>
-          </div>
+      <div class="row align-top align-spaced">
+        <div class="col-9">
+          <span style="margin-left: 40px;">
+            ยอดรวมชำระ (รวมVAT)
+          </span>
+        </div>
+        <div class="col-3" style="text-align: right;">
+          <span>
+            ฿ {{ summaryPrice | number}}
+          </span>
         </div>
       </div>
     </div>
@@ -36,19 +39,25 @@
     </div>
     <div class="content">
       <div class="row align-top align-spaced">
-        <div class="small-9 columns">
-          ข้อมูลชำระสินค้า
+        <div class="col-9">
+          <span style="color: #9e9e9e">
+            ข้อมูลชำระสินค้า
+          </span>
         </div>
-        <div class="small-3 columns font-dark-green text-right">
+        <div class="col-3">
         </div>
       </div>
       <div class="row align-top align-spaced">
-        <div class="small-9 columns">
-          <div class="circle green-yellow"></div>
-          <span>มัดจำค่าเครื่อง : เงินสด (เต็มจำนวน) </span>
+        <div class="col-9">
+          <div class="dot"></div>
+          <span style="margin-left: 5px;">
+            มัดจำค่าเครื่อง : เงินสด (เต็มจำนวน)
+          </span>
         </div>
-        <div class="small-3 columns font-dark-green text-right">
-          ฿ 5,000.00
+        <div class="col-3" style="text-align: right;">
+          <span>
+            ฿ 5,000.00
+          </span>
         </div>
       </div>
     </div>
@@ -61,35 +70,35 @@
     </div>
     <div class="content">
       <div class="row align-top align-spaced">
-        <div class="small-9 columns">
-          <span>
+        <div class="col-9">
+          <span style="margin-right: 9em">
             ผู้ซื้อ
           </span>
           <span class="span-font-black">
-              <!-- {{ customerFullName }} -->
+            {{ customerFullName }}
           </span>
         </div>
-        <div class="small-3 columns font-black text-right">
+        <div class="col-3">
         </div>
-        <div class="small-9 columns">
-          <span>
+        <div class="col-9">
+          <span style="margin-right: 9em">
             ที่อยู่
           </span>
           <span class="span-font-black">
-              <!-- {{ customerFullAddress }} -->
+            {{ customerFullAddress }}
           </span>
         </div>
-        <div class="small-3 columns font-dark-green text-right">
+        <div class="col-3">
         </div>
-        <div class="small-9 columns">
-          <span>
+        <div class="col-9">
+          <span style="margin-right:3.7em">
             หมายเลขโทรศัพท์
           </span>
           <span class="span-font-black">
-              <!-- {{ mobileNo }} -->
+            {{ mobileNo }}
           </span>
         </div>
-        <div class="small-3 columns font-dark-green text-right">
+        <div class="col-3">
         </div>
       </div>
     </div>
@@ -101,36 +110,36 @@
     </div>
     <div class="content">
       <div class="row align-top align-spaced">
-        <div class="small-9 columns">
-          <span>
+        <div class="col-9">
+          <span style="margin-right: 9em">
             ผู้ซื้อ
           </span>
           <span class="span-font-black">
-              <!-- {{ customerFullName }} -->
+            {{ customerFullName }}
           </span>
         </div>
-        <div class="small-3 columns font-dark-green text-right">
+        <div class="col-3">
         </div>
-        <div class="small-9 columns">
-          <span>
+        <div class="col-9">
+          <span style="margin-right: 9em">
             ที่อยู่
           </span>
           <span class="span-font-black">
-             <!-- {{ customerFullAddress }} -->
+            {{ customerFullAddress }}
           </span>
         </div>
-        <div class="small-3 columns font-dark-green text-right">
-          
+        <div class="col-3">
+
         </div>
-        <div class="small-9 columns">
-          <span>
+        <div class="col-9">
+          <span style="margin-right: 8em">
             Tax ID
           </span>
           <span class="span-font-black">
-          <!-- {{ customerIdCardNo | idCardNumber}} -->
+           {{ customerIdCardNo | idCard}} 
           </span>
         </div>
-        <div class="small-3 columns font-dark-green text-right">
+        <div class="col-3">
         </div>
       </div>
     </div>

@@ -4,29 +4,48 @@
   </div>
   <div class="content">
     <div class="row">
-      <div class="small-12 columns">
-        <div class="row" style="margin-bottom: 0.875em">
-          <div class="small-4 columns font-darker-gray">พนักงานขาย</div>
-          <div class="small-8 columns" id="lblRegNumSellerInfoName">
-            {{ seller?.sellerName }}
-          </div>
-        </div>
-        <div class="row" style="margin-bottom: 0.875em">
-          <div class="small-4 columns font-darker-gray">สาขา</div>
-          <div class="small-8 columns" id="lblRegNumSellerInfoLocationName">
-            {{seller?.locationName}}
-          </div>
-        </div>
-        <div class="row">
-          <div class="small-4 columns font-darker-gray" style="position: relative;">
-            <div style="float: left;">รหัสพนักงานขาย/</div>
-            <div style="float: left;">ASC Code <span class="font-pink" *ngIf="!isUserASPType()">*</span></div>
-            <div style="clear: both;"></div>
-          </div>
-          <div class="small-8 columns">
-            <!-- <input autocomplete="off" id="sellerNo" name="sellerNo" type="text" [(ngModel)]="seller.sellerNo"> -->
-          </div>
-        </div>
+      <div class="col-9">
+        <span style="color:gray; margin-right: 10em">
+          พนักงานขาย
+        </span>
+        <span class="span-font-black">
+          {{ seller?.sellerName }}
+        </span>
+      </div>
+      <div class="col-3">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-9">
+        <span style="color: gray; margin-right: 13em">
+          สาขา
+        </span>
+        <span class="span-font-black">
+          {{seller?.locationName}}
+        </span>
+      </div>
+      <div class="col-3">
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-9">
+        <span style="float: left; color: gray">
+          รหัสพนักงานขาย/
+        </span>
+        <span style="float: left; color: gray">
+          ASC Code
+        </span>
+        <span style="color:#ff1744; margin-right: 3em" *ngIf="!isUserASPType()">*</span>
+        <input autocomplete="off" id="sellerNo" name="sellerNo" type="text" 
+        [(ngModel)]="seller.sellerNo" 
+        style="padding-left: 0.5em"
+        formControlName="checkSeller">
+        <!-- <input type="text" class="form-control" id="sellerNo" value="" autocomplete="off"
+        formControlName="checkSeller"> -->
+      </div>
+      <div class="col-3">
+       
       </div>
     </div>
   </div>
