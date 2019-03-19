@@ -290,7 +290,9 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
     public translation: TranslateService
   ) {
     this.isProduction = environment.production;
+
     this.homeService.callback = () => {
+      this.transaction = this.transactionService.load();
       if (this.transaction.data &&
         this.transaction.data.simCard &&
         this.transaction.data.simCard.mobileNo) {
@@ -311,8 +313,8 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
       } else {
         window.location.href = '/smart-shop';
       }
-      window.location.href = '/smart-shop';
     };
+
   }
 
   ngOnInit() {
