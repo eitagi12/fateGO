@@ -10,6 +10,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CreateDeviceOrderService } from '../../../services/create-device-order.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { WIZARD_RESERVE_WITH_DEPOSIT } from '../../../constants/wizard.constant';
 
 @Component({
   selector: 'app-deposit-queue',
@@ -22,7 +23,7 @@ export class DepositQueueComponent implements OnInit, OnDestroy {
   priceOption: PriceOption;
   queueFrom: FormGroup;
   queue: string;
-
+  wizards: any = WIZARD_RESERVE_WITH_DEPOSIT;
   constructor(
     private router: Router,
     private fb: FormBuilder,
@@ -57,6 +58,9 @@ export class DepositQueueComponent implements OnInit, OnDestroy {
       } else {
         this.alertService.error('ระบบขัดข้อง');
       }
+    }).catch((err) => {
+      console.log('Error!!!');
+      this.router.navigate([DEPOSIT_RESULT_PAGE]);
     });
   }
 
