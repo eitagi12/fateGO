@@ -67,7 +67,7 @@
               <label class="text-light-green"
                 [hidden]="!notBuyMobileCareForm.value.notBuyMobile">({{notBuyMobileCareForm.value.notBuyMobile }})</label>
             </div>
-            <div *ngIf="mobileCare?.existingMobileCare">
+            <div>
               <small class="text-red">{{ 'หมายเหตุ : กรณีมีการสมัคร Mobile care ที่เครื่องใหม่ การรับประกันที่เครื่องเดิมจะสิ้นสุด' | translate
                   }}</small>
             </div>

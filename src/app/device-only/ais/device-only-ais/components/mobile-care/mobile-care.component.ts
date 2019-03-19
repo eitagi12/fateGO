@@ -4,6 +4,7 @@ import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
 import { AlertService } from 'mychannel-shared-libs';
 import { MobileNoService } from './mobile-no.service';
+import { text } from '@angular/core/src/render3/instructions';
 
 export interface MobileCare {
   nextBillEffective?: boolean;
@@ -43,12 +44,9 @@ export class MobileCareComponent implements OnInit {
   public VAT: number = 1.07;
   public isValidNotBuyMobile: boolean = false;
 
-  @Input()
-  mobileCare: MobileCare;
   @Input() promotionMock: any;
 
-  @Input()
-  normalPrice: number;
+  public normalPriceMock: number;
 
   @Output()
   completed: EventEmitter<any> = new EventEmitter<any>();
@@ -60,12 +58,12 @@ export class MobileCareComponent implements OnInit {
   @ViewChild('template')
   template: TemplateRef<any>;
   modalRef: BsModalRef;
-  // myForm: FormGroup;
   public privilegeCustomerForm: FormGroup;
   mobileCareForm: FormGroup;
   notBuyMobileCareForm: FormGroup;
+
   constructor(
-    private fb: FormBuilder,
+    private formBuilder: FormBuilder,
     private modalService: BsModalService,
     private alertService: AlertService,
     private mobileNoService: MobileNoService
@@ -76,7 +74,7 @@ export class MobileCareComponent implements OnInit {
     this.oncheckValidators();
   }
 
-  oncheckValidators(): void {
+  public oncheckValidators(): void {
     this.privilegeCustomerForm = new FormGroup({
       'mobileNo': new FormControl('', [
         Validators.maxLength(10),
@@ -91,7 +89,7 @@ export class MobileCareComponent implements OnInit {
     });
   }
 
-  keyPress(event: any): void {
+  public keyPress(event: any): void {
     const pattern = /[0-9\+\-\ ]/;
     const inputChar = String.fromCharCode(event.charCode);
     if (event.keyCode !== 8 && !pattern.test(inputChar)) {
@@ -99,13 +97,13 @@ export class MobileCareComponent implements OnInit {
     }
   }
 
-  createForm(): void {
-    this.mobileCareForm = this.fb.group({
+  public createForm(): void {
+    this.mobileCareForm = this.formBuilder.group({
       'mobileCare': [true, Validators.required],
       'promotion': ['', Validators.required]
     });
 
-    this.notBuyMobileCareForm = this.fb.group({
+    this.notBuyMobileCareForm = this.formBuilder.group({
       'notBuyMobile': [''],
     });
 
@@ -123,11 +121,11 @@ export class MobileCareComponent implements OnInit {
     });
   }
 
-  getServiceChange(percentage: number): number {
-    return ((this.normalPrice || 0) * (percentage / 100) * (this.VAT / 100));
+  public getServiceChange(percentage: number): number {
+    return ((this.normalPriceMock || 0) * (percentage / 100) * (this.VAT / 100));
   }
 
-  onOpenNotBuyMobileCare(): void {
+  public onOpenNotBuyMobileCare(): void {
     this.modalRef = this.modalService.show(this.template, {
       ignoreBackdropClick: true
     });
@@ -136,37 +134,44 @@ export class MobileCareComponent implements OnInit {
 
   public checkSelectNotbuyMobilecare(): void {
     this.notBuyMobileCareForm.valueChanges.subscribe((value: any) => {
-      if (!value.notBuyMobile) {
-        this.isValidNotBuyMobile = false;
-        this.checkBuyMobileCare.emit(false);
-
-      } else {
+      if (value.notBuyMobile) {
         this.isValidNotBuyMobile = true;
-        this.checkBuyMobileCare.emit(true);
+        this.enableNextButton();
+      } else {
+        this.isValidNotBuyMobile = false;
+        this.disableNextButton();
       }
     });
   }
 
-  onNotBuyMobileCare(dismiss: boolean): void {
-    if (dismiss) { // cancel
+  private enableNextButton(): void {
+    this.checkBuyMobileCare.emit(true);
+  }
+
+  private disableNextButton(): void {
+    this.checkBuyMobileCare.emit(false);
+  }
+
+  public onNotBuyMobileCare(dismiss: boolean): void {
+    if (dismiss) {
       this.mobileCareForm.patchValue({
         mobileCare: true
       });
     } else {
-      this.completed.emit(this.notBuyMobileCareForm.value.notBuyMobile);
+      // this.completed.emit(this.notBuyMobileCareForm.value.notBuyMobile);
     }
     this.modalRef.hide();
   }
 
   public searchMobileNo(): void {
-    if (this.privilegeCustomerForm.value) {
+    if (this.privilegeCustomerForm.value.mobileNo.length === 10) {
       this.checkMobileNo(this.privilegeCustomerForm.value.mobileNo);
     } else {
       this.alertService.notify({
         type: 'warning',
         confirmButtonText: 'OK',
         showConfirmButton: true,
-        text: 'กรุณาระบุหมายเลขโทรศัพท์ให้ถูกต้อง'
+        text: 'กรุณาระบุเบอร์ให้ครบ 10 หลัก'
       });
     }
   }
@@ -206,7 +211,15 @@ export class MobileCareComponent implements OnInit {
   }
 
   public checkVerify(): void {
-    this.verifyOtp.emit(true);
+    if (this.privilegeCustomerForm.value.otpNo === '9999') {
+      this.enableNextButton();
+    } else {
+      this.disableNextButton();
+      this.alertService.notify({
+        type: 'error',
+        text: 'กรุณาระบุรหัส OTP'
+      });
+    }
   }
 
 }

@@ -9,7 +9,6 @@ import { HomeService } from 'mychannel-shared-libs';
   styleUrls: ['./device-only-ais-select-mobile-care-page.component.scss']
 })
 export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit {
-  public isVerify: boolean = false;
   public isBuyMobileCare: boolean = false;
   public promotionMock: any = [{
     id: '1',
@@ -28,8 +27,6 @@ export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log('isBuyMobileCare', this.isBuyMobileCare);
-    console.log('isVerify', this.isVerify);
 
   }
 
@@ -45,16 +42,8 @@ export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit {
     this.router.navigate([ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE]);
   }
 
-  public checkVerify(verify: boolean): void {
-    this.isVerify = verify;
-    console.log('isVerify', this.isVerify);
-
-  }
-
   public checkBuyMobileCare(buymobilecare: boolean): void {
     this.isBuyMobileCare = buymobilecare;
-    console.log('isBuyMobileCare', this.isBuyMobileCare);
-
   }
 
 }
