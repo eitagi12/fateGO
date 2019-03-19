@@ -52,8 +52,6 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
       'margin-left': '15px'
     };
     this.formID = this.getRandomNum(10);
-    this.productImage = this.priceOption.trade.images.thumbnail ? this.priceOption.trade.images.thumbnail
-    : 'assets/images/icon/img-placeholder-gray.png';
     this.transaction = {
       transactionId: this.apiRequestService.getCurrentRequestId(),
       data: {
@@ -65,6 +63,8 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     this.priceOption = {
       trade: this.localStorageService.load('reserveProductInfo').value
     };
+    this.productImage = this.priceOption.trade.images.thumbnail ? this.priceOption.trade.images.thumbnail
+    : 'assets/images/icon/img-placeholder-gray.png';
     this.paymentMethod =  'CA';
     this.onLoadDefaultBankData(this.priceOption.trade.banks).then((banks) => {
       this.priceOption.trade.banks = banks;
