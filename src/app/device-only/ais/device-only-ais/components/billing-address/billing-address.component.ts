@@ -1,6 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { debounceTime, distinct } from 'rxjs/operators';
+import { Utils, CustomerAddress } from 'mychannel-shared-libs';
 
 export interface CustomerAddress {
   titleName: string;
@@ -30,6 +31,9 @@ export class BillingAddressComponent implements OnInit, OnChanges {
 
   @Input()
   customerAddress: CustomerAddress;
+
+  @Input()
+  idCardNo: string[];
 
   @Input()
   allZipCodes: string[];
@@ -68,10 +72,20 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   error: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   customerAddressForm: FormGroup;
+  private formErrors: { idCardNo: string; } = {
+    idCardNo: ''
+  };
+
+  idCardMaxLength: number = 13;
+  debounceTimeInMS: number = 500;
+  identityValue: string;
 
   constructor(
-    public fb: FormBuilder
-  ) { }
+    public fb: FormBuilder,
+    private utils: Utils
+
+  ) {
+  }
 
   ngOnInit(): void {
     this.createForm();
@@ -131,6 +145,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
 
   createForm(): void {
     this.customerAddressForm = this.fb.group({
+      idCardNo: ['', [Validators.required, Validators.pattern(/^[1-8]\d{12}$/), this.validateIdCard.bind(this)]],
       titleName: ['', [Validators.required]],
       homeNo: ['', [Validators.required, Validators.pattern(/^[0-9^/]*$/)]],
       moo: [''],
@@ -145,6 +160,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       tumbol: ['', [Validators.required]],
       zipCode: ['', [Validators.required, Validators.maxLength(5), this.validateZipCode.bind(this)]],
     });
+
     this.disableFormAmphurAndTumbol();
     this.customerAddressForm.valueChanges.pipe(debounceTime(750)).subscribe((value: any) => {
       this.error.emit(this.customerAddressForm.valid);
@@ -178,6 +194,20 @@ export class BillingAddressComponent implements OnInit, OnChanges {
         });
       }
     });
+  }
+
+  validateIdCard(control: AbstractControl): ValidationErrors | null {
+    const value = control.value;
+    const inputLength = value.length;
+    if (inputLength === 13) {
+    if (this.utils.isThaiIdCard(value)) {
+      return null;
+    } else {
+      return {
+        message: 'กรุณากรอกเลขบัตรประชาชนให้ถูกต้อง',
+      };
+    }
+  }
   }
 
   private provinceFormControl(): void {

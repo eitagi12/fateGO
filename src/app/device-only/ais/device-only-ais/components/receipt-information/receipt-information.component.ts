@@ -69,6 +69,7 @@ export class ReceiptInformationComponent implements OnInit {
 
   ngOnInit(): void {
     this.customerAddress = {
+      idCardNo: '',
       titleName: '',
       homeNo: '',
       moo: '',

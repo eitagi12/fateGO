@@ -47,6 +47,7 @@ describe('BillingAddressComponent', () => {
 
   it('submitting a form emits a customer address', fakeAsync(() => {
     component.zipCodes = ['11011', '11012'];
+    component.customerAddressForm.controls['idCardNo'].setValue('1670300171423');
     component.customerAddressForm.controls['titleName'].setValue('นาย');
     component.customerAddressForm.controls['homeNo'].setValue('123');
     component.customerAddressForm.controls['province'].setValue('testProvice');
