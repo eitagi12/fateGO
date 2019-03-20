@@ -24,6 +24,9 @@ export class ReceiptInformationComponent implements OnInit {
   @Input()
   receiptInfo: ReceiptInfo;
 
+  @Input()
+  locationName: string;
+
   @Output()
   completed: EventEmitter<any> = new EventEmitter<any>();
 
@@ -79,6 +82,7 @@ export class ReceiptInformationComponent implements OnInit {
     };
     this.createForm();
     this.createSearchByMobileNoForm();
+    this.receiptInfoForm.controls['locationName'].setValue(this.locationName);
   }
 
   private createForm(): void {
@@ -87,7 +91,8 @@ export class ReceiptInformationComponent implements OnInit {
       branch: ['', []],
       buyer: ['', []],
       buyerAddress: ['', []],
-      telNo: ['', [Validators.pattern(/^0[6-9]\d{8}$/)]]
+      telNo: ['', [Validators.pattern(/^0[6-9]\d{8}$/)]],
+      locationName: ''
     });
     this.receiptInfoForm.controls['taxId'].disable();
     this.receiptInfoForm.valueChanges.pipe(debounceTime(750)).subscribe(event => {
