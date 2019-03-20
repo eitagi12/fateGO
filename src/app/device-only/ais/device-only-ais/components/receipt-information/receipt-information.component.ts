@@ -145,7 +145,7 @@ export class ReceiptInformationComponent implements OnInit {
           type: 'error',
           confirmButtonText: 'OK',
           showConfirmButton: true,
-          text: 'ไม่พบหมายเลขนี้ในระบบ AIS'
+          text: 'เบอร์นี้ไม่ใช่ระบบ AIS กรุณาเปลี่ยนเบอร์ใหม่'
         });
       }
     } else {
@@ -153,7 +153,7 @@ export class ReceiptInformationComponent implements OnInit {
         type: 'warning',
         confirmButtonText: 'OK',
         showConfirmButton: true,
-        text: 'กรุณาระบุหมายเลขโทรศัพท์ให้ถูกต้อง'
+        text: 'กรุณาระบุเบอร์ให้ครบ 10 หลัก'
       });
     }
   }
