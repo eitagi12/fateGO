@@ -54,6 +54,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     productDetailService: Promise<any>;
     priceOptionDetailService: Promise<any>;
     packageDetailService: Promise<any>;
+    isAdvancePay: boolean;
 
     constructor(
         private fb: FormBuilder,
@@ -357,10 +358,12 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         }
     }
 
-    onViewInstallments(campaign: any) {
+    onViewInstallments(campaign: any): void {
+        console.log('campaign', campaign);
         this.installments = PriceOptionUtils.getInstallmentsFromCampaign(campaign);
-        console.log(this.installments);
         this.modalRef = this.modalService.show(this.installmentTemplate, { class: 'modal-lg' });
+        console.log('this.installments', this.installments);
+        this.isAdvancePay = this.installments.filter(price => price.advancePay.min > 0 || price.advancePay.max > 0).length > 0;
     }
 
     getSummaryPrivilegePrice(privilege: any): number {
