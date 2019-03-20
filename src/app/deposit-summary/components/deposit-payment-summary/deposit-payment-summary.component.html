@@ -51,12 +51,12 @@
         <div class="col-9">
           <div class="dot"></div>
           <span style="margin-left: 5px;">
-            มัดจำค่าเครื่อง : เงินสด (เต็มจำนวน)
+            มัดจำค่าเครื่อง : {{ paymentType }} (เต็มจำนวน)
           </span>
         </div>
         <div class="col-3" style="text-align: right;">
           <span>
-            ฿ 5,000.00
+            ฿ {{ depositAmt | number }}
           </span>
         </div>
       </div>
@@ -136,7 +136,7 @@
             Tax ID
           </span>
           <span class="span-font-black">
-           {{ customerIdCardNo | idCard}} 
+            {{ customerIdCardNo | idCard}}
           </span>
         </div>
         <div class="col-3">

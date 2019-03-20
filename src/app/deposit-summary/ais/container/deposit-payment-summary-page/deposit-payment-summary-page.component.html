@@ -13,59 +13,51 @@
       <section class="summary-page-container">
         <app-deposit-payment-summary></app-deposit-payment-summary>
         <div class="seller-info-container">
-            <div class="row columns header">
-              รหัสผู้ขาย
+          <div class="row columns header">
+            รหัสผู้ขาย
+          </div>
+          <div class="content">
+            <div class="row">
+              <div class="col-9">
+                <span style="color:gray; margin-right: 10em">
+                  พนักงานขาย
+                </span>
+                <span class="span-font-black">
+                  {{ seller?.sellerName }}
+                </span>
+              </div>
+              <div class="col-3">
+              </div>
             </div>
-            <div class="content">
-              <div class="row">
-                <div class="col-9">
-                  <span style="color:gray; margin-right: 10em">
-                    พนักงานขาย
-                  </span>
-                  <span class="span-font-black">
-                    {{ seller?.sellerName }}
-                  </span>
-                </div>
-                <div class="col-3">
-                </div>
+
+            <div class="row">
+              <div class="col-9">
+                <span style="color: gray; margin-right: 13em">
+                  สาขา
+                </span>
+                <span class="span-font-black">
+                  {{seller?.locationName}}
+                </span>
               </div>
-          
-              <div class="row">
-                <div class="col-9">
-                  <span style="color: gray; margin-right: 13em">
-                    สาขา
-                  </span>
-                  <span class="span-font-black">
-                    {{seller?.locationName}}
-                  </span>
-                </div>
-                <div class="col-3">
-                </div>
+              <div class="col-3">
               </div>
-              <div class="row">
-                <div class="col-9">
-                  <span style="float: left; color: gray">
-                    รหัสพนักงานขาย/
-                  </span>
-                  <span style="float: left; color: gray">
-                    ASC Code
-                  </span>
-                  <span style="color:#ff1744; margin-right: 3em" *ngIf="!isUserASPType()">*</span>
-                  <form [formGroup]="checkSellerForm">
-                  <input autocomplete="off" id="sellerNo" name="sellerNo" type="text" 
-                  [(ngModel)]="seller.sellerNo" 
-                  style="padding-left: 0.5em"
-                  formControlName="checkSeller">
+            </div>
+            <div class="row">
+              <label class="col-2 col-form-label">
+                <span style="color: gray">
+                  รหัสพนักงานขาย/ASC Code
+                </span>
+                <span class="text-red">*</span>
+              </label>
+              <div class="col-6 col-sm-8">
+                <form [formGroup]="checkSellerForm" style="margin-left: 4em;">
+                  <input autocomplete="off" id="sellerNo" name="sellerNo" type="text" [(ngModel)]="seller.sellerNo" style="padding-left: 1em;"
+                    formControlName="checkSeller">
                 </form>
-                  <!-- <input type="text" class="form-control" id="sellerNo" value="" autocomplete="off"
-                  formControlName="checkSeller"> -->
-                </div>
-                <div class="col-3">
-                 
-                </div>
               </div>
             </div>
           </div>
+        </div>
       </section>
     </div>
   </div>

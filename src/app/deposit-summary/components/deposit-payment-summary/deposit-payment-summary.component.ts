@@ -26,10 +26,11 @@ export class DepositPaymentSummaryComponent implements OnInit {
   public model: string;
   public tradeReserve: any;
   public summaryPrice: number;
+  public paymentType: string;
+
   constructor(
     private transactionService: TransactionService,
-    private priceOptionService: PriceOptionService,
-    private utils: Utils) {
+    private priceOptionService: PriceOptionService) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
   }
@@ -39,8 +40,8 @@ export class DepositPaymentSummaryComponent implements OnInit {
     const reserveProductInfo = this.priceOption.trade;
     this.customerFullName = customer.firstName + ' ' + customer.lastName;
     this.customerFullAddress = customer.homeNo + ' ' + customer.moo + ' ' + customer.room + ' ' +
-     customer.floor + ' ' + customer.buildingName + ' ' + customer.soi + ' ' + customer.street + ' ' +
-     customer.tumbol + ' ' + customer.amphur + ' ' + customer.province + ' ' + customer.zipCode;
+      customer.floor + ' ' + customer.buildingName + ' ' + customer.soi + ' ' + customer.street + ' ' +
+      customer.tumbol + ' ' + customer.amphur + ' ' + customer.province + ' ' + customer.zipCode;
     this.customerIdCardNo = customer.idCardNo;
     this.mobileNo = customer.mainMobile;
     this.brand = reserveProductInfo.brand;
@@ -48,5 +49,11 @@ export class DepositPaymentSummaryComponent implements OnInit {
     this.model = reserveProductInfo.model;
     this.depositAmt = reserveProductInfo.tradeReserve.trades[0].deposit.depositIncludeVat;
     this.summaryPrice = reserveProductInfo.tradeReserve.trades[0].normalPrice;
+    if (this.transaction.data.payment === 'CA') {
+      this.paymentType = 'เงินสด';
+    } else {
+      this.paymentType = 'บัตรเครดิต';
+    }
+
   }
 }

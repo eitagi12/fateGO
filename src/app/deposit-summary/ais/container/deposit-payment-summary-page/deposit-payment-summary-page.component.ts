@@ -18,11 +18,7 @@ import { DEPOSIT_PAYMENT_SUMMARY_PAGE, DEPOSIT_QUEUE_PAGE } from 'src/app/deposi
 })
 export class DepositPaymentSummaryPageComponent implements OnInit {
 
-  // public backUrl: string;
   public channelType: string;
-  // sellerCode: string;
-  // seller: Seller;
-  // transaction: Transaction;
   wizards: any = WIZARD_DEVICE_ORDER_AIS;
 
   transaction: Transaction;
@@ -54,13 +50,12 @@ export class DepositPaymentSummaryPageComponent implements OnInit {
   }
   ngOnInit(): void {
     const user = this.tokenService.getUser();
-    user.ascCode = '66111';
     this.http.get(`/api/salesportal/location-by-code?code=${user.locationCode}`).toPromise().then((response: any) => {
       this.seller = {
         sellerName: user.firstname && user.lastname ? `${user.firstname} ${user.lastname}` : user.username,
         locationName: response.data.displayName,
         locationCode: user.locationCode,
-        sellerNo : user.ascCode
+        sellerNo: user.ascCode
       };
     });
     this.createForm();

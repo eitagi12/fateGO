@@ -1,154 +1,153 @@
 <div class="mc-flex">
-    <mc-header title="การจองสินค้า">
-      <div class="header-icon-left">
-        <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
-      </div>
-    </mc-header>
-    <div class="mc-flex-wrap">
-      <div class="mt-3">
-        <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
-      </div>
-      <div class="container-fluid">
-        <div class="card mb-3">
-          <div class="card-body text-right ">
-            <div class="row">
-              <div id="product" class="col-sm-3">
-                <mc-lazy-load-image [src]="productImage"></mc-lazy-load-image>
+  <mc-header title="การจองสินค้า">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <div class="mt-3">
+      <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
+    </div>
+    <div class="container-fluid">
+      <div class="card mb-3">
+        <div class="card-body text-right ">
+          <div class="row">
+            <div id="product" class="col-sm-3">
+              <mc-lazy-load-image [src]="productImage"></mc-lazy-load-image>
+            </div>
+            <div class="col-sm-9 mt-0">
+              <div class="row">
+                <div class="col-sm-3 text-secondary">
+                  Model :
+                </div>
+                <div class="col-sm-6 text-left">
+                  {{ priceOption?.trade?.model }}
+                </div>
               </div>
-              <div class="col-sm-9 mt-0">
-                <div class="row">
-                  <div class="col-sm-3 text-secondary">
-                    Model :
-                  </div>
-                  <div class="col-sm-6 text-left">
-                    {{ priceOption?.trade?.model }}
-                  </div>
+              <br>
+              <div class="row">
+                <div class="col-sm-3 text-secondary">
+                  สี :
                 </div>
-                <br>
-                <div class="row">
-                  <div class="col-sm-3 text-secondary">
-                    สี :
-                  </div>
-                  <div>
-                    <input type="radio" value="color" [ngStyle]="colorCode">
-                  </div>
+                <div>
+                  <input type="radio" value="color" [ngStyle]="colorCode">
                 </div>
-                <br>
-                <div class="row">
-                  <div class="col-sm-3 text-secondary">
-                    จำนวน :
-                  </div>
-                  <div class="col-sm-6 text-left">
-                    {{ priceOption?.trade?.qtyWH }}
-                  </div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="col-sm-3 text-secondary">
+                  จำนวน :
+                </div>
+                <div class="col-sm-6 text-left">
+                  {{ priceOption?.trade?.qtyWH }}
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-
-
-      <div class="container-fluid">
-        <div class="card mb-3">
-          <div class="card-header text-white rounded-top p-3" style="background-color:#ffab40">
-            รูปแแบชำระเงิน
-          </div>
-          <div class="card-header bg-transparent">
-            <div class="row">
-              <div class="col-12">
-                ค่ามัดจำเครื่อง {{ priceOption?.trade?.model + ' สี ' + priceOption?.trade?.colorName }}
-                <span class="pull-right">฿ {{ priceOption?.trade?.tradeReserve?.trades[0].deposit.depositIncludeVat | number}}</span>
-              </div>
-            </div>
-          </div>
-          <div class="card-body">
-            <form [formGroup]="paymentForm">
-              <div class="form-group row">
-                <div class="col-12 col-sm-5">
-                  <input class="form-check-input" type="radio" id="payment-debit-{{formID}}" value="debit" 
-                  formControlName="paymentType" (click)="onSelectPaymentType('debit')">
-                  <label class="form-check-label text-secondary" for="payment-debit-{{formID}}">
-                    {{ 'ชำระเงินด้วยเงินสด' }}
-                  </label>
-                </div>
-                <div class="col-12 col-sm-7">
-                  <input type="text" readonly class="form-control" id="staticEmail" value="{{ 'เต็มจำนวน' }}">
-                </div>
-              </div>
-              <hr>
-              <div class="form-group row">
-                <div class="col-12 col-sm-5">
-                  <input class="form-check-input" type="radio" id="payment-credit-{{formID}}" value="credit" 
-                  formControlName="paymentType" (click)="onSelectPaymentType('credit')">
-                  <label class="form-check-label text-secondary" for="payment-credit-{{formID}}">
-                    {{ 'ชำระเงินด้วยบัตรเครดิต' }}
-                  </label>
-                </div>
-                <div class="col-12 col-sm-7">
-                  <input type="text" readonly class="form-control" id="inputState" value="{{ 'เต็มจำนวน' }}">
-                </div>
-              </div>
-              <div class="form-group row" *ngIf="paymentForm.controls['paymentType'].value === 'credit'">
-  
-                <div class="col-4 col-sm-2 mb-3" *ngFor="let bank of paymentDetail?.banks; let i = index" (click)="onSelectBank(bank)">
-                  <div class="bank-lazy-load-image" [ngClass]="{'active': bank?.abb === selectPaymentDetail.bank?.abb}">
-                    <mc-lazy-load-image [src]="bank?.imageUrl"></mc-lazy-load-image>
-                  </div>
-                </div>
-                <div class="col-12 text-left mb-3">
-                  <span class="text-pink">{{ '*กรุณาเลือธนาคาร' }}</span>
-                </div>
-              </div>
-            </form>
           </div>
         </div>
       </div>
     </div>
 
-    <div class="container-fluid">
-        <div class="card mb-3">
-    <div class="card-header text-white bg-sky">
-        ข้อมูลผู้รับสินค้า
-       </div>
- <div class="card-body">
-   <form>
-     <div class="form-group row">
-       <div class="col-sm-4">
-         <label class="form-check-label text-light-gray">
-           ผู้ซื้อ 
-         </label>
-        </div>
-         <div class="col-12 col-sm-4 text-left text-light-gray">
-            {{ customerFullName }}
-         </div>
-     </div>
-     <div class="form-group row">
-       <div class="col-12 col-sm-4">
-         <label class="form-check-label text-light-gray">
-           ที่อยู่
-         </label>
-       </div>
-       <div class="col-12 col-sm-8">
-         <input type="text" class="form-control" autocomplete="off" maxlength="100" value="{{customerFullAddress}}">
-       </div>
-     </div>
-     <div class="form-group row">
-       <div class="col-12 col-sm-4">
-         <label class="form-check-label text-light-gray">
-           หมายเลขโทรศัพท์
-         </label>
-       </div>
-       <div class="col-12 col-sm-4 text-left text-light-gray">
-          0897774545
-       </div>
-     </div>
-   </form>
-   </div>
- </div>
-</div>
 
-<div class="container-fluid">
+    <div class="container-fluid">
+      <div class="card mb-3">
+        <div class="card-header text-white rounded-top p-3" style="background-color:#ffab40">
+          รูปแแบชำระเงิน
+        </div>
+        <div class="card-header bg-transparent">
+          <div class="row">
+            <div class="col-12">
+              ค่ามัดจำเครื่อง {{ priceOption?.trade?.model + ' สี ' + priceOption?.trade?.colorName }}
+              <span class="pull-right">฿ {{ priceOption?.trade?.tradeReserve?.trades[0].deposit.depositIncludeVat | number}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="paymentForm">
+            <div class="form-group row">
+              <div class="col-12 col-sm-5">
+                <input class="form-check-input" type="radio" id="payment-debit-{{formID}}" value="debit" formControlName="paymentType" (click)="onSelectPaymentType('debit')">
+                <label class="form-check-label text-secondary" for="payment-debit-{{formID}}">
+                  {{ 'ชำระเงินด้วยเงินสด' }}
+                </label>
+              </div>
+              <div class="col-12 col-sm-7">
+                <input type="text" readonly class="form-control" id="staticEmail" value="{{ 'เต็มจำนวน' }}">
+              </div>
+            </div>
+            <hr>
+            <div class="form-group row">
+              <div class="col-12 col-sm-5">
+                <input class="form-check-input" type="radio" id="payment-credit-{{formID}}" value="credit" formControlName="paymentType"
+                  (click)="onSelectPaymentType('credit')">
+                <label class="form-check-label text-secondary" for="payment-credit-{{formID}}">
+                  {{ 'ชำระเงินด้วยบัตรเครดิต' }}
+                </label>
+              </div>
+              <div class="col-12 col-sm-7">
+                <input type="text" readonly class="form-control" id="inputState" value="{{ 'เต็มจำนวน' }}">
+              </div>
+            </div>
+            <div class="form-group row" *ngIf="paymentForm.controls['paymentType'].value === 'credit'">
+
+              <div class="col-4 col-sm-2 mb-3" *ngFor="let bank of paymentDetail?.banks; let i = index" (click)="onSelectBank(bank)">
+                <div class="bank-lazy-load-image" [ngClass]="{'active': bank?.abb === selectPaymentDetail.bank?.abb}">
+                  <mc-lazy-load-image [src]="bank?.imageUrl"></mc-lazy-load-image>
+                </div>
+              </div>
+              <div class="col-12 text-left mb-3">
+                <span class="text-pink">{{ '*กรุณาเลือธนาคาร' }}</span>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid">
+    <div class="card mb-3">
+      <div class="card-header text-white bg-sky">
+        ข้อมูลผู้รับสินค้า
+      </div>
+      <div class="card-body">
+        <form>
+          <div class="form-group row">
+            <div class="col-sm-4">
+              <label class="form-check-label text-light-gray">
+                ผู้ซื้อ
+              </label>
+            </div>
+            <div class="col-12 col-sm-4 text-left text-light-gray">
+              {{ customerFullName }}
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-12 col-sm-4">
+              <label class="form-check-label text-light-gray">
+                ที่อยู่
+              </label>
+            </div>
+            <div class="col-12 col-sm-8">
+              <input type="text" class="form-control" autocomplete="off" maxlength="100" value="{{customerFullAddress}}">
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-12 col-sm-4">
+              <label class="form-check-label text-light-gray">
+                หมายเลขโทรศัพท์
+              </label>
+            </div>
+            <div class="col-12 col-sm-4 text-left text-light-gray">
+              0897774545
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="container-fluid">
     <div class="card mb-3">
       <div class="card-header bg-blue text-white">
         ข้อมูลใบเสร็จรับเงิน
@@ -156,37 +155,37 @@
       <div class="card-body">
         <div class="form-group row">
           <div class="col-12 col-sm-4 text-light-gray">ชื่อ</div>
-        <div class="col-12 col-sm-8 text-light-gray">
+          <div class="col-12 col-sm-8 text-light-gray">
             {{ customerFullName }}
-         </div>
+          </div>
         </div>
         <div class="form-group row">
           <div class="col-12 col-sm-4 text-light-gray">ที่อยู่ในใบเสร็จรับเงิน</div>
           <div class="col-12 col-sm-8 text-light-gray">
-              {{ customerFullAddress }}
-           </div>
+            {{ customerFullAddress }}
+          </div>
         </div>
         <div class="form-group row">
           <div class="col-12 col-sm-4 text-light-gray">Tax ID</div>
-        <div class="col-12 col-sm-8">
-          <input type="text" class="form-control" autocomplete="off" maxlength="16" value="{{idCardNo}}" disabled>
+          <div class="col-12 col-sm-8">
+            <input type="text" class="form-control" autocomplete="off" maxlength="16" value="{{idCardNo}}" disabled>
+          </div>
         </div>
-      </div>
         <div class="form-group row">
           <div class="col-12 col-sm-4 text-light-gray">สาขาที่</div>
-        <div class="col-12 col-sm-8">
-          <input type="text"  class="form-control" autocomplete="off" maxlength="12" disabled>
+          <div class="col-12 col-sm-8">
+            <input type="text" class="form-control" autocomplete="off" maxlength="12" disabled>
+          </div>
         </div>
-      </div>
         <div class="form-group row">
           <div class="col-12 col-sm-4 text-light-gray">เบอร์ติดต่ออื่น</div>
-        <div class="col-12 col-sm-8">
-          <input type="text" class="form-control " autocomplete="off" maxlength="10">
+          <div class="col-12 col-sm-8">
+            <input type="text" class="form-control " autocomplete="off" maxlength="10">
+          </div>
         </div>
       </div>
-      </div>
-      </div>
-      </div>
+    </div>
+  </div>
 
 
     <mc-footer>
