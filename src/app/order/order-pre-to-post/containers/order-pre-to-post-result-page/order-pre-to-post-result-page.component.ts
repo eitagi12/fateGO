@@ -54,8 +54,8 @@ export class OrderPreToPostResultPageComponent implements OnInit {
       })
       .catch((error: any) => {
         this.isSuccess = false;
-        this.alertService.error(error);
         this.pageLoadingService.closeLoading();
+        this.alertService.error(error);
       });
   }
 

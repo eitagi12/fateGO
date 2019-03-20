@@ -25,7 +25,7 @@ export class CreatePreToPostService {
     });
   }
 
-  getRequestCreatePreToPost(transaction: Transaction): any {
+  getRequestCreatePreToPost(transaction: Transaction): Promise<any> {
 
     const user = this.tokenService.getUser();
     const action = transaction.data.action;
@@ -114,13 +114,14 @@ export class CreatePreToPostService {
       data.accountSubCat = 'FOR';
       data.titleName = customer.titleName;
       data.citizenship = customer.nationality;
+
+      if (customer.nationality !== 'Thailand') {
+        data.billLanguage = 'English';
+      }
+
     } else {
       data.accountSubCat = 'THA';
       data.titleName = this.utils.getPrefixName(customer.titleName); /*required*/
-    }
-
-    if (customer.nationality !== 'Thailand') {
-      data.billLanguage = 'English';
     }
 
     // orderVerify
@@ -173,7 +174,7 @@ export class CreatePreToPostService {
         data.imageTakePhoto = imageSmatCard;
         return Promise.resolve(data);
       }).catch((error) => {
-        throw new Error(error);
+        return Promise.resolve(error);
       });
     }
 
@@ -186,7 +187,7 @@ export class CreatePreToPostService {
         data.imageTakePhoto = imageSmatCard;
         return Promise.resolve(data);
       }).catch((error) => {
-        throw new Error(error);
+        return Promise.resolve(error);
       });
     }
 
