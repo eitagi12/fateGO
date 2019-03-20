@@ -23,6 +23,10 @@ import { BillingAddressService } from './services/billing-address.service';
 import { BillingAddressComponent } from './components/billing-address/billing-address.component';
 
 import { MobileCareAvaliableComponent } from './components/mobile-care-avaliable/mobile-care-avaliable.component';
+import { SummaryOrderDetailComponent } from './components/summary-order-detail/summary-order-detail.component';
+import { SummaryProductAndServiceComponent } from './components/summary-product-and-service/summary-product-and-service.component';
+import { SummaryPaymentDetailComponent } from './components/summary-payment-detail/summary-payment-detail.component';
+import { SummarySellerCodeComponent } from './components/summary-seller-code/summary-seller-code.component';
 
 @NgModule({
   imports: [
@@ -50,7 +54,11 @@ import { MobileCareAvaliableComponent } from './components/mobile-care-avaliable
     MobileCareComponent,
     ReceiptInformationComponent,
     MobileCareAvaliableComponent,
-    BillingAddressComponent
+    BillingAddressComponent,
+    SummaryOrderDetailComponent,
+    SummaryProductAndServiceComponent,
+    SummaryPaymentDetailComponent,
+    SummarySellerCodeComponent
   ],
   providers: [
     BillingAddressService
