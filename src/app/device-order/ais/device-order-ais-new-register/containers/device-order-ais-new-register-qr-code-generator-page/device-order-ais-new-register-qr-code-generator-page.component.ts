@@ -1,34 +1,119 @@
-import { Component, OnInit } from '@angular/core';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Transaction, Payment } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
-import { HomeService } from 'mychannel-shared-libs';
+import { HomeService, AlertService, TokenService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_QUEUE_PAGE } from '../../constants/route-path.constant';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { Observable, Subscription, interval, Observer, BehaviorSubject } from 'rxjs';
+import { QRCodePaymentService, QRCodeModel, QRCodePrePostMpayModel } from 'src/app/shared/services/qrcode-payment.service';
+import { toDataURL } from 'qrcode';
+import { environment } from 'src/environments/environment';
+
+export class QRodePrePostMpayModel {
+  orderId: string;
+  tranDtm: string;
+  tranId: string;
+  amount: number;
+  qrType: string;
+  status: string;
+  locationCode: string;
+  offerId: string;
+  startDtm: string;
+}
 
 @Component({
   selector: 'app-device-order-ais-new-register-qr-code-generator-page',
   templateUrl: './device-order-ais-new-register-qr-code-generator-page.component.html',
   styleUrls: ['./device-order-ais-new-register-qr-code-generator-page.component.scss']
 })
-export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements OnInit {
+export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements OnInit, OnDestroy {
 
   transaction: Transaction;
   priceOption: PriceOption;
+  payment: Payment;
+
+  // qrCode
+  private subscription$: Subscription;
+  private checkInquiryCallbackMpaySubscribtion$: Subscription;
+  private intravalTimeSubscription$: Subscription;
+  private currentDateTime: number;
+  private currentTimeCounter: BehaviorSubject<number> = new BehaviorSubject(null);
+  private orderID: string;
+  public isPaid = false;
+  public timeCounterRenderer: string;
+  public textQRCode: string;
+  public isTimeLowerThanFifthteenSeconds: boolean;
+  public qrCodePrePostMpayModel: QRodePrePostMpayModel;
+  public refreshCount = 1;
+  private NEW_LINE = '\n';
+  qrCodeImageSrc: string;
+  private startTimeInMininte = 5;
+
+  qrcodeImageBranner: any = {
+    THAI_QR: {
+      branner: 'assets/images/icon/th_qr_code_branner.png',
+      logo: 'assets/images/icon/prompt-pay.png'
+    },
+    LINE_PAY: {
+      branner: 'assets/images/icon/line_qr_code_branner.png',
+      logo: ''
+    }
+  };
 
   constructor(
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
-    private priceOptionService: PriceOptionService
+    private priceOptionService: PriceOptionService,
+    private qrcodePaymentService: QRCodePaymentService,
+    private alertService: AlertService,
+    private tokenService: TokenService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
-
+    this.payment = this.transaction.data.payment;
+    this.qrCodePrePostMpayModel = new QRCodePrePostMpayModel();
   }
 
   ngOnInit() {
+    this.initialOrderID();
+    if (this.orderID && this.payment.paymentQrCodeType) {
+      this.orderID = `${this.orderID}_${this.refreshCount}`;
+      // this.getQRCode(this.mockTHPayGetQRCodeRequest); // mock
+      this.getQRCode(this.setBodyRequestForGetQRCode());
+
+      this.setBodyRequestForPreMpay();
+      this.qrcodePaymentService.insertPreMpay(this.qrCodePrePostMpayModel).subscribe(
+        (data: any) => {
+          console.log(data);
+          this.qrcodePaymentService.updateMpayObjectInTransaction(this.qrCodePrePostMpayModel);
+        },
+        (error: any) => {
+          this.alertService.error(error);
+        }
+      );
+      this.subscribeInquiryCallbackMpay();
+    } else {
+      // handler when not found soID
+    }
+  }
+
+  public getQRCode(qrModel: QRCodeModel): void {
+    this.qrcodePaymentService.getQRCode(qrModel).then(
+      (qrcode: any) => {
+        this.processQRCode(qrcode);
+      },
+      (error: any) => {
+        console.error('error', error);
+        this.showPopupMessage(error);
+        this.alertService.error(error);
+      });
+  }
+
+  getSummaryAmount(): number {
+    return this.summary([+this.priceOption.trade.promotionPrice + (+this.priceOption.trade.advancePay.amount)]);
   }
 
   onBack() {
@@ -49,4 +134,288 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
     }, 0);
   }
 
+
+  processQRCode(qrCodeResponse: any): void {
+    if (qrCodeResponse && qrCodeResponse.data) {
+      this.textQRCode = qrCodeResponse.data.qrCodeStr;
+      // const validTime: moment.Moment = moment(qrCode.data.qrCodeValidity, "DD/MM/YYYY'T'HH:mm:ss'Z'");
+      this.currentDateTime = qrCodeResponse.data.currentDate;
+      const validTime: number = this.getFiveMinuteValidTime(qrCodeResponse.data.currentDate);
+      this.getTimeCounter(validTime);
+      this.renderTime();
+
+    } else {
+      // handler when not found data
+    }
+
+    if (this.textQRCode) {
+      toDataURL(this.textQRCode, { errorCorrectionLevel: 'H' }, (error, url) => {
+        if (error) {
+          console.error(error);
+        }
+        this.qrCodeImageSrc = url;
+      });
+    }
+  }
+
+  getFiveMinuteValidTime(currentDateTime: number): number {
+    return currentDateTime + (60000 * this.startTimeInMininte);
+  }
+
+  getTimeCounter(furture: number): void {
+    const diff: number = furture - this.currentDateTime;
+    const intravalTime = interval(1000);
+    this.intravalTimeSubscription$ = intravalTime.subscribe((index: number) => {
+      this.currentTimeCounter.next(Math.floor((diff / 1000) - index));
+    });
+  }
+
+  renderTime(): void {
+    this.subscription$ = this.currentTimeCounter.subscribe((x: number) => {
+      this.timeCounterRenderer = this.qrcodePaymentService.convertTimeForRender(x);
+      this.isTimeLowerThanFifthteenSeconds = this.isTimeLowerThanFifthteenSecondsFn(x);
+      const times: number = this.qrcodePaymentService.convertTimeToMinutes(x);
+      const timeLowerThanOrEqualToZero: boolean = times < 0;
+      if (timeLowerThanOrEqualToZero) {
+        this.inquiryMpay().then((isSuccess: boolean) => {
+          if (isSuccess) {
+            this.updateMpayDataStatus();
+            this.goToMpayQueuePage();
+          } else {
+            this.subscription$.unsubscribe();
+            this.checkInquiryCallbackMpaySubscribtion$.unsubscribe();
+            this.showPopupMessage('สิ้นสุดระยะเวลาชำระเงิน กรุณากดปุ่ม "REFRESH"' + this.NEW_LINE + 'เพื่อทำรายการใหม่');
+          }
+        });
+      } else if (this.isPaid) {
+        this.qrcodePaymentService.updateMpayObjectInTransaction(this.qrCodePrePostMpayModel);
+        this.goToMpayQueuePage();
+      }
+    });
+  }
+
+  initialOrderID(): void {
+    const orderID: { soID: string, error: string } = this.qrcodePaymentService.getSoID();
+    if (orderID.error !== null) {
+      this.alertService.error(orderID.error);
+
+      // mock on error อย่าลืมเอาออก
+      this.orderID = '66030';
+    } else {
+      this.orderID = orderID.soID;
+    }
+  }
+
+  goToMpayQueuePage(): void {
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_QUEUE_PAGE]);
+  }
+
+  inquiryMpay(): Promise<boolean> {
+    return this.qrcodePaymentService.getInquiryMpay({ orderId: this.orderID }).then((res: any) => {
+      console.log('inquiryMpay', res);
+      if (res && res.data && res.data.status && res.data.status === 'SUCCESS') {
+        this.qrCodePrePostMpayModel.status = res.data.status;
+        this.qrCodePrePostMpayModel.tranId = res.data.tranId;
+        this.qrCodePrePostMpayModel.tranDtm = res.data.tranDtm;
+        this.qrCodePrePostMpayModel.amount = res.data.amount;
+        this.qrCodePrePostMpayModel.qrType = res.data.qrType;
+        return true;
+      }
+      return false;
+    });
+  }
+
+  showPopupMessage(message: string): void {
+    this.alertService.notify({
+      type: 'question',
+      showConfirmButton: true,
+      confirmButtonText: 'REFRESH',
+      cancelButtonText: 'CANCEL',
+      showCancelButton: true,
+      reverseButtons: true,
+      allowEscapeKey: false,
+      text: message,
+      timer: 180000
+    }).then(btn => {
+      if (btn.value) { // true
+        this.goToMpaySummaryPage();
+      } else { // false
+        console.log('alertService', btn);
+        this.onRefreshQRCode();
+      }
+
+    });
+  }
+
+  goToMpaySummaryPage(): void {
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_SUMMARY_PAGE]);
+  }
+
+  setBodyRequestForGetQRCode(): QRCodeModel {
+    const qrModel: QRCodeModel = new QRCodeModel();
+    qrModel.orderId = this.orderID;
+    qrModel.channel = 'WEB';
+
+    if (this.payment.paymentQrCodeType === 'LINE_QR') {
+      qrModel.serviceId = environment.MPAY_QRCODE_SERVICE_ID.RL;
+      qrModel.terminalId = environment.MPAY_QRCODE_TERMINAL_ID.RL;
+    } else if (this.payment.paymentQrCodeType === 'THAI_QR') {
+      qrModel.serviceId = environment.MPAY_QRCODE_SERVICE_ID.PB;
+      qrModel.terminalId = environment.MPAY_QRCODE_TERMINAL_ID.PB;
+    }
+    qrModel.locationName = this.tokenService.getUser().locationCode;
+    qrModel.amount = this.getSummaryAmount();
+    qrModel.qrType = this.payment.paymentQrCodeType === 'THAI_QR' ? '003' : '002';
+    return qrModel;
+  }
+
+  isTimeLowerThanFifthteenSecondsFn(t: number): boolean {
+    const fifthteenSeconds = 15;
+    const m: number = this.qrcodePaymentService.convertTimeToMinutes(t);
+    const s: number = this.qrcodePaymentService.convertTimeToSeconds(t, m);
+    if (((m === 0 && s < fifthteenSeconds) || m < 0)) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  updateMpayDataStatus(): void {
+    this.qrcodePaymentService.updatePostMpay(this.qrCodePrePostMpayModel).subscribe(
+      (data: any) => {
+        this.qrcodePaymentService.updateMpayObjectInTransaction(this.qrCodePrePostMpayModel);
+      },
+      (error: any) => {
+        this.alertService.error(error);
+      }
+    );
+  }
+
+  onRefreshQRCode(): void {
+    if (this.subscription$) {
+      this.subscription$.unsubscribe();
+    }
+    if (this.checkInquiryCallbackMpaySubscribtion$) {
+      this.checkInquiryCallbackMpaySubscribtion$.unsubscribe();
+    }
+    if (this.intravalTimeSubscription$) {
+      this.intravalTimeSubscription$.unsubscribe();
+    }
+    if (this.orderID && this.payment.paymentQrCodeType) {
+      this.inquiryMpay().then((isSuccess: boolean) => {
+        if (isSuccess) {
+          this.updateMpayDataStatus();
+          this.goToMpayQueuePage();
+        } else {
+          this.initialOrderID();
+          this.refreshCount = this.refreshCount + 1;
+          this.orderID = `${this.orderID}_${this.refreshCount}`;
+          this.getQRCode(this.setBodyRequestForGetQRCode());
+          this.setBodyRequestForPreMpay();
+          this.qrcodePaymentService.updatePostMpay(this.qrCodePrePostMpayModel).subscribe(
+            (data: any) => {
+              this.qrcodePaymentService.updateMpayObjectInTransaction(this.qrCodePrePostMpayModel);
+            },
+            (error: any) => {
+              this.showPopupMessage(error);
+            }
+          );
+          this.subscribeInquiryCallbackMpay();
+        }
+      }).catch((error: any) => {
+        this.showPopupMessage(error);
+      });
+    }
+  }
+
+  setBodyRequestForPreMpay(): void {
+    this.qrCodePrePostMpayModel.orderId = this.orderID;
+    this.qrCodePrePostMpayModel.amount = this.getSummaryAmount();
+    this.qrCodePrePostMpayModel.qrType = this.payment.paymentQrCodeType === 'THAI_QR' ? '003' : '002';
+    this.qrCodePrePostMpayModel.status = 'WAITING';
+  }
+
+  subscribeInquiryCallbackMpay(): void {
+    this.checkInquiryCallbackMpaySubscribtion$ = this.qrcodePaymentService.checkInquiryCallbackMpay({ orderId: this.orderID })
+      .subscribe(
+        (data: any) => {
+          if (data && data.DATA && data.DATA.mpay_payment
+            && data.DATA.mpay_payment.status && data.DATA.mpay_payment.status === 'SUCCESS') {
+            this.qrCodePrePostMpayModel = data.DATA.mpay_payment;
+            this.isPaid = true;
+          } else {
+            if (data && !data.DATA) {
+              this.goToMpayErrorPage();
+            } else {
+              if (data && data.DATA && data.DATA.mpay_payment
+                && data.DATA.mpay_payment.startDtm) {
+                this.qrCodePrePostMpayModel.startDtm = data.DATA.mpay_payment.startDtm;
+              }
+            }
+
+          }
+        },
+        (error: any) => {
+          this.alertService.error(error);
+        }
+      );
+  }
+
+  goToMpayErrorPage(): void {
+    alert('Errror');
+    // this.router.navigate(['/device-selling/qr-code-payment/queue-summary-error']);
+  }
+
+  isDeveloperMode(): boolean {
+    return 'LOCAL' === environment.name;
+  }
+
+  ngOnDestroy(): void {
+    if (this.subscription$) {
+      this.subscription$.unsubscribe();
+    }
+    if (this.checkInquiryCallbackMpaySubscribtion$) {
+      this.checkInquiryCallbackMpaySubscribtion$.unsubscribe();
+    }
+  }
+
+}
+
+
+export class MockQRTesting {
+  private mockTHPayGetQRCodeRequest: QRCodeModel = {
+    orderId: '6666',
+    channel: 'POS',
+    serviceId: environment.MPAY_QRCODE_SERVICE_ID.PB,
+    terminalId: environment.MPAY_QRCODE_TERMINAL_ID.PB,
+    locationName: 'Shop01',
+    amount: 2345,
+    qrType: '003',
+    macAddress: '00-14-22-01-23-45'
+  };
+
+  private mockLinePayGetQRCodeRequest: QRCodeModel = {
+    orderId: '6666',
+    channel: 'POS',
+    serviceId: environment.MPAY_QRCODE_SERVICE_ID.RL,
+    terminalId: environment.MPAY_QRCODE_TERMINAL_ID.RL,
+    locationName: 'Shop01',
+    amount: 2345,
+    qrType: '002',
+    macAddress: '00-14-22-01-23-45'
+  };
+
+  private mockResponsTHAIQrcode: any =
+    {
+      data: {
+        respDesc: 'Success',
+        orderId: '6666',
+        // tslint:disable-next-line:max-line-length
+        qrCodeStr: '00020101021130740016A00000067701011201150105548038329010216500000000000468303110000001234631940016A00000067701011301031100203CsB035601165000000000004683021100000012346030710000000406Shop01530376454072345.005802TH5914MPAY_PROMPTPAY6211070710000006304E98D',
+        qrFormat: 'TEXT',
+        qrCodeValidity: '24 / 03 / 2019T09: 37: 33Z',
+        respCode: '0000',
+        currentDate: 1552988218913
+      }
+    };
 }
