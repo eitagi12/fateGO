@@ -102,7 +102,7 @@ export class CreateDeviceOrderService {
     const user = this.tokenService.getUser();
     const customer = transaction.data.customer;
     const productStock = priceOption.productStock || '';
-    // const productDetail = priceOption.productDetail;
+    const productDetail = priceOption.trade;
     // const trade = transaction.data.mainPromotion.trade;
     const payment = transaction.data.payment || '';
     // const advancePayment = transaction.data.advancePayment;
@@ -118,9 +118,9 @@ export class CreateDeviceOrderService {
       locationReceipt: this.user.locationCode || '',
       // productType: productDetail.productType || 'DEVICE',
       // productSubType: productDetail.productSubtype || 'HANDSET',
-      // brand: productDetail.brand,
-      // model: productDetail.model,
-      color: productStock.color,
+      brand: productDetail.brand,
+      model: productDetail.model,
+      color: productDetail.colorName,
       matCode: '',
       priceIncAmt:  '',
       priceDiscountAmt:  '',

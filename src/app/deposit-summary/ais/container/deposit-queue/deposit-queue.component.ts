@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
 import { PageLoadingService, AlertService } from 'mychannel-shared-libs';
-import { DEPOSIT_RESULT_PAGE } from '../../../constants/route-path.constant';
+import { DEPOSIT_RESULT_PAGE, DEPOSIT_PAYMENT_SUMMARY_PAGE} from '../../../constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -66,5 +66,9 @@ export class DepositQueueComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
+  }
+
+  onBack(): void {
+    this.router.navigate([DEPOSIT_PAYMENT_SUMMARY_PAGE]);
   }
 }
