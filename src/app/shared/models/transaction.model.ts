@@ -9,6 +9,7 @@ export enum TransactionType {
   DEVICE_ORDER_MNP_ASP = 'Port-InASP',
   DEVICE_ORDER_EXISTING_AIS = 'ExistingAIS',
   DEVICE_ORDER_EXISTING_ASP = 'ExistingASP',
+  DEVICE_ORDER_DEVICE_ONLY = 'DeviceOnlyAIS',
   // pure
   ORDER_NEW_REGISTER = 'NewRegister',
   ORDER_PRE_TO_POST = 'ConvertPreToPost',

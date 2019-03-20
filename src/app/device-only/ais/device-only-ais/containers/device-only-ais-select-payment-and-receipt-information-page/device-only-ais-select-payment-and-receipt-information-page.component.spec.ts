@@ -1,53 +1,33 @@
-import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
-import { ReactiveFormsModule } from '@angular/forms';
-
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent } from './device-only-ais-select-payment-and-receipt-information-page.component';
-import { RouterTestingModule } from '@angular/router/testing';
-import { CookiesStorageService } from '../../../../../../../node_modules/ngx-store';
-import { JwtHelperService } from '../../../../../../../node_modules/@auth0/angular-jwt/src/jwthelper.service';
-import { HttpClient, HttpHandler } from '../../../../../../../node_modules/@angular/common/http';
+import { Builder } from 'protractor';
+import { FormBuilder } from '@angular/forms';
+import { Router } from '@angular/router';
+import { Type } from '@angular/compiler';
+import { TypeModifier } from '@angular/compiler/src/output/output_ast';
+import { HomeService } from 'mychannel-shared-libs';
 
-@Pipe({name: 'translate'})
-class MockPipe implements PipeTransform {
-    transform(value: number): number {
-        return value;
-    }
-}
-
-describe('DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent', () => {
+describe('test device only ais queue page', () => {
   let component: DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent;
-  let fixture: ComponentFixture<DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent>;
-
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [ ReactiveFormsModule, RouterTestingModule ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [
-        DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent,
-        MockPipe
-      ],
-      providers: [
-        CookiesStorageService,
-        {
-            provide: JwtHelperService,
-            useValue: {}
-        },
-        HttpClient,
-        HttpHandler
-      ]
-    })
-    .compileComponents();
-  }));
+  const router: any = {};
+  const homeService: any = {};
+  const apiRequestService: any = {};
+  let transactionService: any;
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
+    transactionService = {
+      load: jest.fn()
+    };
+    component = new DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent(
+      new FormBuilder(),
+      router,
+      homeService,
+      apiRequestService,
+      transactionService
+    );
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
 });

@@ -4,6 +4,7 @@ import { debounceTime } from 'rxjs/operators';
 import { BillingAddressService } from '../../services/billing-address.service';
 import { HttpClient } from '@angular/common/http';
 import { AlertService, REGEX_MOBILE } from 'mychannel-shared-libs';
+import { TransactionAction } from 'src/app/shared/models/transaction.model';
 
 export interface ReceiptInfo {
   taxId: string;
@@ -29,6 +30,9 @@ export class ReceiptInformationComponent implements OnInit {
   @Output()
   error: EventEmitter<boolean> = new EventEmitter<boolean>();
 
+  @Output()
+  action: EventEmitter<string> = new EventEmitter<string>();
+
   public customerInfoMock: any = {
     taxId: '',
     name: '',
@@ -47,7 +51,6 @@ export class ReceiptInformationComponent implements OnInit {
   amphurs: any;
   tumbols: any;
   zipCode: any;
-
   customerAddressTemp: any;
   ebillingAddressValid: boolean;
 
@@ -102,6 +105,7 @@ export class ReceiptInformationComponent implements OnInit {
   }
 
   setCustomerInfo(data: Object): void {
+    this.action.emit(TransactionAction.READ_CARD);
     this.customerInfoMock = data;
     this.receiptInfoForm.controls['taxId'].setValue(this.customerInfoMock.taxId);
   }

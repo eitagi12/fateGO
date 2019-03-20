@@ -1,11 +1,11 @@
-import { Component, OnInit, OnChanges } from '@angular/core';
+import { Component, OnInit, OnChanges, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
 import { FormBuilder, FormGroup, Validators, ValidatorFn } from '@angular/forms';
 import { Router } from '../../../../../../../node_modules/@angular/router';
 import { ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE } from '../../constants/route-path.constant';
-import { HomeService } from '../../../../../../../node_modules/mychannel-shared-libs';
-import { TokenService } from 'mychannel-shared-libs';
-import { CookiesStorageService } from 'ngx-store';
+import { HomeService, ApiRequestService } from '../../../../../../../node_modules/mychannel-shared-libs';
+import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
 
 export interface SelectPaymentDetail {
   paymentType?: string; // 'qrcode' | 'credit' | 'debit';
@@ -51,8 +51,9 @@ export interface PaymentDetailOption {
   templateUrl: './device-only-ais-select-payment-and-receipt-information-page.component.html',
   styleUrls: ['./device-only-ais-select-payment-and-receipt-information-page.component.scss']
 })
-export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implements OnInit {
+export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implements OnInit , OnDestroy {
 
+  transaction: Transaction;
   wizards: string[] = WIZARD_DEVICE_ONLY_AIS;
   paymentForm: FormGroup;
   paymentDetail: PaymentDetail;
@@ -66,44 +67,49 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
     private fb: FormBuilder,
     private router: Router,
     private homeService: HomeService,
-    private tokenService: TokenService,
-    private cookie: CookiesStorageService
-  ) { }
+    private apiRequestService: ApiRequestService,
+    private transactionService: TransactionService
+  ) {
+    this.transaction = this.transactionService.load();
+   }
 
   ngOnInit(): void {
+    this.apiRequestService.createRequestId();
     this.createForm();
-    // tslint:disable-next-line:max-line-length
-    this.cookie.set('accessToken', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik1DIiwidGltZXN0YW1wIjoiMjAxODEwMDExNzM3IiwibG9jYXRpb25Db2RlIjoiMTEwMCIsImlhdCI6MTUzODM5MDI2OCwiZXhwIjoyNTQwOTgyMjY4fQ.tMYDOKJf8X3LFuqBD3-gO6HIHMzxQubd9RO0kvSWRXM');
-    // tslint:disable-next-line:max-line-length
-    this.cookie.set('refreshToken', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik1DIiwidGltZXN0YW1wIjoiMjAxODEwMDExNzM3IiwibG9jYXRpb25Db2RlIjoiMTEwMCIsImlhdCI6MTUzODM5MDI2OCwiZXhwIjoyNTQwOTgyMjY4fQ.tMYDOKJf8X3LFuqBD3-gO6HIHMzxQubd9RO0kvSWRXM');
-    this.paymentDetail = {
-      title: 'รูปแบบชำระเงิน',
-      header: 'ค่าเครื่อง IPHONEX64 สี BLACK',
-      price: '20780',
-      headerAdvancePay: '',
-      priceAdvancePay: '',
-      specialAmountPercent: '',
-      specialAmountBaht: '',
-      qrCodes: this.getQRCodeData(),
-      banks: this.getBankData()
-    };
-
-    this.selectPaymentDetail = {
-      paymentType: 'qrcode',
-      qrCode: this.getQRCodeData()[1],
-      bank: {
-        abb: 'CITI',
-        imageUrl: 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/CITI_CITI.png',
-        installments: [{ installmentPercentage: 0, installmentMonth: 6 }],
-        name: 'ซิตี้แบงก์',
-        remark: null,
-      }
-    };
-
-    this.paymentDetailOption = {
-      isInstallment: true,
-      isEnable: true
-    };
+    if (!this.transaction.data) {
+      this.transaction = {
+        data : {
+          action: TransactionAction.KEY_IN,
+          transactionType: TransactionType.DEVICE_ORDER_DEVICE_ONLY
+        }
+      };
+    }
+       this.paymentDetail = {
+         title: 'รูปแบบชำระเงิน',
+         header: 'ค่าเครื่อง IPHONEX64 สี BLACK',
+         price: '20780',
+         headerAdvancePay: '',
+         priceAdvancePay: '',
+         specialAmountPercent: '',
+         specialAmountBaht: '',
+         qrCodes: this.getQRCodeData(),
+         banks: this.getBankData()
+       };
+       this.selectPaymentDetail = {
+         paymentType: 'qrcode',
+         qrCode: this.getQRCodeData()[1],
+         bank: {
+           abb: 'CITI',
+           imageUrl: 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/CITI_CITI.png',
+           installments: [{ installmentPercentage: 0, installmentMonth: 6 }],
+           name: 'ซิตี้แบงก์',
+           remark: null,
+         }
+       };
+       this.paymentDetailOption = {
+         isInstallment: true,
+         isEnable: true
+       };
   }
 
   onHome(): void {
@@ -312,5 +318,17 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
   onError(error: boolean): void {
     this.isSuccess = error;
     console.log(this.isSuccess);
+  }
+
+  checkAction(action: string): void {
+    if (action === 'READ_CARD') {
+      this.transaction.data.action = TransactionAction.READ_CARD;
+    } else {
+      this.transaction.data.action = TransactionAction.KEY_IN;
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.transactionService.save(this.transaction);
   }
 }

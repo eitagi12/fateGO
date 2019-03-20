@@ -138,7 +138,7 @@
           </form>
         </div>
       </div>
-      <app-receipt-information (completed)="onComplete($event)" (error)="onError($event)"></app-receipt-information>
+      <app-receipt-information (completed)="onComplete($event)" (error)="onError($event)" (action)="checkAction($event)"></app-receipt-information>
     </div>
   </div>
 
