@@ -19,7 +19,7 @@
             <label for="titleName" id="textTitleName">คำนำหน้าชื่อ
               <span class="text-red"> *</span>
             </label>
-            <select *ngIf="titleNames" class="form-control" title="คำนำหน้าชื่อ" id="selecttitleName" formControlName="titleName" [ngClass]="{'is-invalid': customerAddressForm.controls['titleName'].invalid && customerAddressForm.controls['titleName'].dirty }">
+            <select class="form-control" title="คำนำหน้าชื่อ" id="selecttitleName" formControlName="titleName" [ngClass]="{'is-invalid': customerAddressForm.controls['titleName'].invalid && customerAddressForm.controls['titleName'].dirty }">
               <option disabled value="">คำนำหน้าชื่อ</option>
               <option *ngFor="let titleName of titleNames" [value]="titleName">{{ titleName }}</option>
             </select>
