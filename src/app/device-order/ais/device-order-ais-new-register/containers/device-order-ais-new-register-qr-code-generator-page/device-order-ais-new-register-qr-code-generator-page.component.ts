@@ -3,7 +3,7 @@ import { Transaction, Payment } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
 import { HomeService, AlertService, TokenService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_QUEUE_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_QUEUE_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_ERROR_PAGE } from '../../constants/route-path.constant';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Observable, Subscription, interval, Observer, BehaviorSubject } from 'rxjs';
@@ -50,17 +50,7 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
   private NEW_LINE = '\n';
   qrCodeImageSrc: string;
   private startTimeInMininte = 5;
-
-  qrcodeImageBranner: any = {
-    THAI_QR: {
-      branner: 'assets/images/icon/th_qr_code_branner.png',
-      logo: 'assets/images/icon/prompt-pay.png'
-    },
-    LINE_PAY: {
-      branner: 'assets/images/icon/line_qr_code_branner.png',
-      logo: ''
-    }
-  };
+  qrcodeImageBranner: any ;
 
   constructor(
     private router: Router,
@@ -75,6 +65,7 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
     this.priceOption = this.priceOptionService.load();
     this.payment = this.transaction.data.payment;
     this.qrCodePrePostMpayModel = new QRCodePrePostMpayModel();
+    this.qrcodeImageBranner = this.qrcodePaymentService.getBrannerImage();
   }
 
   ngOnInit() {
@@ -362,8 +353,7 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
   }
 
   goToMpayErrorPage(): void {
-    alert('Errror');
-    // this.router.navigate(['/device-selling/qr-code-payment/queue-summary-error']);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_ERROR_PAGE]);
   }
 
   isDeveloperMode(): boolean {

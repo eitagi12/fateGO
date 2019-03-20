@@ -64,6 +64,21 @@ export class QRCodePaymentService {
     return this.http.post(this.apiQRCode, bodyRequest).toPromise();
   }
 
+  getBrannerImage() {
+    return {
+      THAI_QR: {
+        logo: 'assets/images/icon/Thai_Qr_Payment.png',
+        branner: 'assets/images/icon/th_qr_code_branner.png',
+        branner_detail: 'assets/images/icon/prompt-pay.png'
+      },
+      LINE_PAY: {
+        logo: 'assets/images/icon/Rabbit_Line_Pay.png',
+        branner: 'assets/images/icon/line_qr_code_branner.png',
+        branner_detail: ''
+      }
+    };
+  }
+
   convertTimeForRender(t: number): string {
     let minutes: number = this.convertTimeToMinutes(t);
     let seconds: number = this.convertTimeToSeconds(t, minutes);
