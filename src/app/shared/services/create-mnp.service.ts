@@ -118,7 +118,8 @@ export class CreateMnpService {
     };
 
     if (action === TransactionAction.READ_PASSPORT) {
-      data.accountSubCat = 'FOR',
+        data.billLanguage = 'English';
+        data.accountSubCat = 'FOR',
         data.titleName = customer.titleName,
         data.citizenship = customer.nationality;
     } else {
@@ -131,12 +132,6 @@ export class CreateMnpService {
       data.orderVerify = 'Smart Card';
     } else {
       data.orderVerify = 'User';
-    }
-
-    if (customer.nationality === 'Thailand') {
-      data.billLanguage = 'Thai';
-    } else {
-      data.billLanguage = 'Eng';
     }
 
     // has one love
