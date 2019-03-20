@@ -185,10 +185,6 @@ export class CreateNewRegisterService {
       }
     }
 
-    if (customer.nationality !== 'Thailand') {
-      data.billLanguage = 'English';
-    }
-
     // has one love
     if (mainPackageOneLove && mainPackageOneLove.length > 0) {
       data.mainPackage.mainPackageOneLove = [];
@@ -225,6 +221,9 @@ export class CreateNewRegisterService {
       return Promise.resolve(data);
     }
     if (action === TransactionAction.READ_PASSPORT) {
+      if (customer.nationality !== 'Thailand') {
+        data.billLanguage = 'English';
+      }
       return new ImageUtils().combine([
         customer.imageReadPassport,
         customer.imageSignatureSmartCard,
