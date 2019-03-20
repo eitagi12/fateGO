@@ -144,6 +144,9 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
           delete this.transaction.data.billingInformation.mergeBilling;
           delete this.transaction.data.billingInformation.billCycleData;
           const simCard = this.transaction.data.simCard;
+          // tslint:disable-next-line:no-shadowed-variable
+          const billingInformation = this.transaction.data.billingInformation;
+          const billCycleData: any = billingInformation.billCycleData || {};
 
           this.billingInfo.billingMethod.text = null;
           this.billingInfo.billingMethod.isDelete = false;
@@ -156,7 +159,9 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
           this.billingInfo.billingCycle.isDelete = false;
 
           this.mailBillingInfo = {
+            email: billCycleData.email,
             mobileNo: simCard.mobileNo,
+            address: billCycleData.billAddressText,
             billChannel: this.getBillChannel()
           };
           const bill = billCycle && billCycle.bill ? billCycle.bill : customer.billCycle;
