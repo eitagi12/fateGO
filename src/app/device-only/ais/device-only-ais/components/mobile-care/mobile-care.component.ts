@@ -204,9 +204,9 @@ export class MobileCareComponent implements OnInit {
       showConfirmButton: true,
       reverseButtons: true,
       allowEscapeKey: false,
-      html: `หมายเลข ${this.mobileNoService.getMobileNo(form.mobileNo)} สมัครบริการโมบายแคร์กับเครื่อง <br> Samsung Note 9 เรียบร้อยแล้ว
+      html: `หมายเลข ${this.mobileNoService.getMobileNo(form.mobileNo)} สมัครบริการโมบายแคร์กับเครื่อง <br> Samsung Note 9 แล้ว
       <br> (แพ็กเกจ xxxxxx สิ้นสุด dd/mm/yyyy) <br> กรุณาเปลี่ยนเบอร์ใหม่ หรือยืนยันสมัครบริการโมบายแคร์กับ <br>
-      เครื่อง Samsung S10 Plus`
+      เครื่อง Samsung S10 Plus <br> <div class="text-red">*บริการโมบายแคร์กับเครื่องเดิมจะสิ้นสุดทันที</div>`
     });
   }
 
