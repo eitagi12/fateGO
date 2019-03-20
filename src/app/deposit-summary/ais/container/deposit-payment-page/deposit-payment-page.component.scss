@@ -1,13 +1,10 @@
-.qr-lazy-load-image {    
-    // margin-left: 70px;
-    // margin-right: 70px;
+.qr-lazy-load-image {
     margin: 0 auto;
     padding: 7px;
     width: 130px;
 
     &.active {
-        // background-color: #8dc63f;   
-        border-radius: 10px; 
+        border-radius: 10px;
         box-shadow: 0 0 3px 3px #8dc63f;
     }
 }
@@ -15,19 +12,15 @@
 .qr-lazy-load-image:hover {
     border-radius: 10px;
     box-shadow: 0 0 3px 3px #8dc63f;
-    // background-color:#8dc63f;
 }
 
-.bank-lazy-load-image {    
-    // margin-left: 80px;
-    // margin-right: 70px;
+.bank-lazy-load-image {
     margin: 0 auto;
     padding: 7px;
     width: 70px;
     
     &.active {
-        // background-color: #8dc63f;   
-        border-radius: 10px; 
+        border-radius: 10px;
         box-shadow: 0 0 3px 3px #8dc63f;
     }
 }
@@ -35,86 +28,21 @@
 .bank-lazy-load-image:hover {
     border-radius: 10px;
     box-shadow: 0 0 3px 3px #8dc63f;
-    // background-color:#8dc63f;
 }
 
-.col-1-5{
-    width: 20%;
-    float:left;
-}
-
-
-.show-reserve-stock-title {
-    text-align: center;
-}
-
-.show-reserve-stock-product-detail {
-    
-    margin-bottom: 0.75em;  
-    border-radius: 0.2em;
-    border: 0.05em;
-    padding: 1em;
-    > .detail-first-section {
-        padding-bottom: 0.5em;
-        border-bottom: 2px ;
-    }
-
-    > .detail-second-section {
-       padding: 0.5em 0em;
-       
-    }
-}
-
-.btn-container {
-            text-align: center;
-            button {
-                padding-top: 20px;
-                padding-bottom: 20px;
-                padding-right: 40px;
-                padding-left: 40px;
-
-                &.small {
-                    padding-right: 5px;
-                    padding-left: 5px;
-                }
-                
-            }
-        }
-
-
-.product-color-container {
-    padding: 0.3em 0em;    
-}
-.detail-text-container {
-    padding: 0.3em 0em;
-}
-.product-color {
-    margin-left: 0.75em;
-    display: block;
-    border: 1.5px;
+.circle-qty {
+    display: inline-block;
+    text-decoration: none;
+    width: 40px;
+    height: 40px;
+    line-height: 40px;
+    font-weight: bold;
     border-radius: 50%;
-    height: 2em;
-    width: 2em;
-    top: 4px;
-    left: 4px;
-    transition: border .25s linear;
-    -webkit-transition: border .25s linear;
-    }
-
-.show-reserve-stock {
-    &.footer{
-      margin-top: 2em;
-      margin-bottom: 2em;  
-    }
- .text-underline {
-     text-decoration: underline;
-     cursor:pointer;
-   }
- .icon-expand-reserve{
-     width: 25px;
-     height: 25px;
-     margin: 0 0.5em 0em;
- }
+    background-color: white;
+    border: 1px solid #ccc;
+    width: 1.5em;
+    height: 1.5em;
+    margin-left: 15px;
 }
     
 .bg-sky{

@@ -34,11 +34,13 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
   paymentForm: FormGroup;
   discountForm: FormGroup;
   paymentMethod: string;
-  colorCode: any;
   customer: Customer;
   customerFullName: string;
   customerFullAddress: string;
   idCardNo: string;
+  colorCodeStyle: any;
+  priceOptionPayment: any;
+  priceOptionBank: any;
 
   constructor(private localStorageService: LocalStorageService,
               private apiRequestService: ApiRequestService,
@@ -49,12 +51,6 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
               private fb: FormBuilder) { }
 
   ngOnInit(): void {
-    this.colorCode = {
-      'background-color': 'green',
-      'width': '1.5em',
-      'height': '1.5em',
-      'margin-left': '15px'
-    };
     this.formID = this.getRandomNum(10);
     this.transaction = {
       transactionId: this.apiRequestService.getCurrentRequestId(),
@@ -69,8 +65,23 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     };
     this.productImage = this.priceOption.trade.images.thumbnail ? this.priceOption.trade.images.thumbnail
     : 'assets/images/icon/img-placeholder-gray.png';
-    this.paymentMethod =  'CA';
-    this.onLoadDefaultBankData(this.priceOption.trade.banks).then((banks) => {
+    const colorCode = this.priceOption.trade.colorCode ? this.priceOption.trade.colorCode
+    : 'white';
+    this.colorCodeStyle = {
+      'background-color': colorCode,
+    };
+    console.log('priceOption : ', this.priceOption);
+
+    if (this.priceOption && this.priceOption.trade && this.priceOption.trade.tradeReserve
+      && this.priceOption.trade.tradeReserve.trades[0] && this.priceOption.trade.tradeReserve.trades[0].payments) {
+     this.paymentMethod = this.priceOption.trade.tradeReserve.trades[0].payments[0].method;
+     this.priceOptionPayment = this.priceOption.trade.tradeReserve.trades[0].payments
+     .filter(payment => payment.method !== 'CA');
+    } else {
+      this.paymentMethod = 'CA';
+    }
+
+    this.onLoadDefaultBankData(this.priceOptionPayment).then((banks) => {
       this.priceOption.trade.banks = banks;
       // ############################################## payment detail ##############################################
       this.paymentDetail = {
@@ -144,6 +155,7 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     this.selectPaymentDetail.bank = Object.assign({}, bank);
     this.selectPaymentDetail.bank.installments = undefined;
     this.paymentDetail.installments = bank.installments;
+    this.checkPaymentFormValid();
   }
   groupPrivilegeTradeBankByAbb(banks: PaymentDetailBank[]): PaymentDetailBank[] {
     const newPrivilegTradeBankByAbbs = new Array<PaymentDetailBank>();
@@ -165,7 +177,7 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     return newPrivilegTradeBankByAbbs;
   }
 
-  private groupBy(list: any, keyGetter: any): Map<any, any> {
+   groupBy(list: any, keyGetter: any): Map<any, any> {
     const map = new Map();
     list.forEach((item) => {
       const key = keyGetter(item);
@@ -212,7 +224,7 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
   checkPaymentFormValid(): boolean {
     const paymentType = this.selectPaymentDetail.paymentType;
     if (this.paymentMethod === CREDIT_CARD_PAYMENT) {
-      if (paymentType === 'credit' && (!this.selectPaymentDetail.bank || !this.selectPaymentDetail.bank.installments)) {
+      if (paymentType === 'credit' && (!this.selectPaymentDetail.bank)) {
         return false;
       }
     }
