@@ -94,7 +94,8 @@ export class ReceiptInformationComponent implements OnInit {
       branch: ['', []],
       buyer: ['', []],
       buyerAddress: ['', []],
-      telNo: ['', [Validators.pattern(/^0[6-9]\d{8}$/), Validators.required]]
+      telNo: ['', [Validators.pattern(/^0[6-9]\d{8}$/), Validators.required]],
+      locationName: ''
     });
     this.receiptInfoForm.controls['taxId'].disable();
     this.receiptInfoForm.valueChanges.pipe(debounceTime(750)).subscribe(event => {
