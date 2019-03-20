@@ -4,7 +4,7 @@ import { FormBuilder, FormGroup, Validators, ValidatorFn } from '@angular/forms'
 import { Router } from '../../../../../../../node_modules/@angular/router';
 import { ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE } from '../../constants/route-path.constant';
 import { HomeService, ApiRequestService } from '../../../../../../../node_modules/mychannel-shared-libs';
-import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionType, TransactionAction, Customer } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 
 export interface SelectPaymentDetail {
@@ -311,8 +311,8 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
     console.log('onSelectPaymentType', paymentType);
     this.selectPaymentDetail.paymentType = paymentType;
   }
-  onComplete(receiptInfo: any): void {
-    console.log('receiptInfo', receiptInfo);
+  onComplete(customerInfo: Customer): void {
+    console.log('customerInfo', customerInfo);
   }
 
   onError(error: boolean): void {

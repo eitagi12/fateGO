@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild, TemplateRef, ElementRef, Output, EventEmitter } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { FormGroup, FormBuilder } from '@angular/forms';
+import { TransactionAction } from 'src/app/shared/models/transaction.model';
 
 @Component({
   selector: 'app-device-only-read-card',
@@ -13,6 +14,13 @@ export class DeviceOnlyReadCardComponent implements OnInit {
 
   public customerInfoMock: Array<Object> = [
     {
+      idCardNo: '1234500678910',
+      idCardType: 'บัตรประชาชน',
+      titleName: 'นาย',
+      firstName: 'ธีระยุทธ',
+      lastName: 'เจโตวิมุติพงศ์',
+      birthdate: '2019-12-10',
+      gender: 'M',
       taxId: '1234500678910',
       name: 'นาย ธีระยุทธ เจโตวิมุติพงศ์',
       mobileNo: '0889540584',
@@ -75,7 +83,10 @@ export class DeviceOnlyReadCardComponent implements OnInit {
   public selectBillingAddress(): void {
     this.modalBillAddress.hide();
     this.canReadSmartCard = true;
-    this.customerInfo.emit(this.customerInfoMock[0]);
+    this.customerInfo.emit({
+      customer: this.customerInfoMock[0],
+      action: TransactionAction.READ_CARD
+    });
   }
 
 }

@@ -104,21 +104,33 @@ export class ReceiptInformationComponent implements OnInit {
     });
   }
 
-  setCustomerInfo(data: Object): void {
-    this.action.emit(TransactionAction.READ_CARD);
-    this.customerInfoMock = data;
-    this.receiptInfoForm.controls['taxId'].setValue(this.customerInfoMock.taxId);
+  setCustomerInfo(data: any): void {
+    this.action.emit(data.action);
+    this.completed.emit(data.customer);
+    this.receiptInfoForm.controls['taxId'].setValue(data.customer.idCardNo);
+    // mock for review
+    this.customerInfoMock = data.customer;
   }
 
   searchCustomerInfo(): void {
     if (this.searchByMobileNoForm.valid) {
       if (this.searchByMobileNoForm.value.mobileNo === '0889540584') {
         this.setCustomerInfo({
-          taxId: '1234500678910',
-          name: 'นาย ธีระยุทธ เจโตวิมุติพงศ์',
-          mobileNo: '0889540584',
-          billingAddress: 'ซ.พหลโยธิน 9 ตึก ESV ชั้น 22 แขวงสามเสนใน เขตพญาไท กรุงเทพฯ 10400',
-          status: 'Active'
+          customer: {
+            idCardNo: '1234500678910',
+            idCardType: 'บัตรประชาชน',
+            titleName: 'นาย',
+            firstName: 'ธีระยุทธ',
+            lastName: 'เจโตวิมุติพงศ์',
+            birthdate: '2019-12-10',
+            gender: 'M',
+            taxId: '1234500678910',
+            name: 'นาย ธีระยุทธ เจโตวิมุติพงศ์',
+            mobileNo: '0889540584',
+            billingAddress: 'ซ.พหลโยธิน 9 ตึก ESV ชั้น 22 แขวงสามเสนใน เขตพญาไท กรุงเทพฯ 10400',
+            status: 'Active'
+          },
+          action: TransactionAction.KEY_IN
         });
       } else {
         this.alertService.notify({
