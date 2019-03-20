@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_RESERVE_WITH_DEPOSIT } from '../../../constants/wizard.constant';
 import { LocalStorageService } from 'ngx-store';
 import { ApiRequestService, PaymentDetailInstallment, SelectPaymentDetail, PaymentDetailBank, HomeService, Utils, AlertService, PaymentDetail, PaymentDetailOption } from 'mychannel-shared-libs';
-import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionType, TransactionAction, Customer } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from '../../../../shared/models/price-option.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -35,6 +35,10 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
   discountForm: FormGroup;
   paymentMethod: string;
   colorCode: any;
+  customer: Customer;
+  customerFullName: string;
+  customerFullAddress: string;
+  idCardNo: string;
 
   constructor(private localStorageService: LocalStorageService,
               private apiRequestService: ApiRequestService,
@@ -77,6 +81,7 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
       paymentType: this.getPaymentType()
     };
     this.createForm();
+    this.createProductRecipient();
   }
   ngOnDestroy(): void {
     this.transaction.data.payment = {
@@ -159,6 +164,7 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
 
     return newPrivilegTradeBankByAbbs;
   }
+
   private groupBy(list: any, keyGetter: any): Map<any, any> {
     const map = new Map();
     list.forEach((item) => {
@@ -172,6 +178,37 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     });
     return map;
   }
+
+  createProductRecipient(): void {
+    this.customerFullName = this.transaction.data.customer.titleName + ' ' + this.transaction.data.customer.firstName +
+    ' ' + this.transaction.data.customer.lastName;
+    this.customerFullAddress = this.getFullAddress(this.transaction.data.customer);
+    this.idCardNo = this.transaction.data.customer.idCardNo;
+      if (this.idCardNo) {
+        this.idCardNo = this.idCardNo.substring(9);
+        this.idCardNo = 'xxxxxxxxx' + this.idCardNo;
+      }
+  }
+  getFullAddress(customer: Customer): string {
+    if (!customer) {
+      return '-';
+    }
+    const fullAddress =
+      (customer.homeNo ? customer.homeNo + ' ' : '') +
+      (customer.moo ? 'หมู่ที่ ' + customer.moo + ' ' : '') +
+      (customer.mooBan ? 'หมู่บ้าน ' + customer.mooBan + ' ' : '') +
+      (customer.room ? 'ห้อง ' + customer.room + ' ' : '') +
+      (customer.floor ? 'ชั้น ' + customer.floor + ' ' : '') +
+      (customer.buildingName ? 'อาคาร ' + customer.buildingName + ' ' : '') +
+      (customer.soi ? 'ซอย ' + customer.soi + ' ' : '') +
+      (customer.street ? 'ถนน ' + customer.street + ' ' : '') +
+      (customer.tumbol ? 'ตำบล/แขวง ' + customer.tumbol + ' ' : '') +
+      (customer.amphur ? 'อำเภอ/เขต ' + customer.amphur + ' ' : '') +
+      (customer.province ? 'จังหวัด ' + customer.province + ' ' : '') +
+      (customer.zipCode || '');
+    return fullAddress || '-';
+  }
+
   checkPaymentFormValid(): boolean {
     const paymentType = this.selectPaymentDetail.paymentType;
     if (this.paymentMethod === CREDIT_CARD_PAYMENT) {
