@@ -49,8 +49,10 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
   public refreshCount = 1;
   private NEW_LINE = '\n';
   qrCodeImageSrc: string;
-  private startTimeInMininte = 5;
+  private startTimeInMininte = 0.11;
   qrcodeImageBranner: any ;
+  mcLoadingQrcodePaymentService: Promise<any>; // for mcLoading
+  private timeLowerThanOrEqualToZero: boolean;
 
   constructor(
     private router: Router,
@@ -92,7 +94,7 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
   }
 
   public getQRCode(qrModel: QRCodeModel): void {
-    this.qrcodePaymentService.getQRCode(qrModel).then(
+    this.mcLoadingQrcodePaymentService = this.qrcodePaymentService.getQRCode(qrModel).then(
       (qrcode: any) => {
         this.processQRCode(qrcode);
       },
@@ -166,8 +168,8 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
       this.timeCounterRenderer = this.qrcodePaymentService.convertTimeForRender(x);
       this.isTimeLowerThanFifthteenSeconds = this.isTimeLowerThanFifthteenSecondsFn(x);
       const times: number = this.qrcodePaymentService.convertTimeToMinutes(x);
-      const timeLowerThanOrEqualToZero: boolean = times < 0;
-      if (timeLowerThanOrEqualToZero) {
+      this.timeLowerThanOrEqualToZero = times < 0;
+      if (this.timeLowerThanOrEqualToZero) {
         this.inquiryMpay().then((isSuccess: boolean) => {
           if (isSuccess) {
             this.updateMpayDataStatus();
@@ -188,10 +190,10 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
   initialOrderID(): void {
     const orderID: { soID: string, error: string } = this.qrcodePaymentService.getSoID();
     if (orderID.error !== null) {
-      this.alertService.error(orderID.error);
+      // this.alertService.error(orderID.error);
 
       // mock on error อย่าลืมเอาออก
-      this.orderID = '66030';
+      this.orderID = '66134';
     } else {
       this.orderID = orderID.soID;
     }
@@ -203,7 +205,7 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
 
   inquiryMpay(): Promise<boolean> {
     return this.qrcodePaymentService.getInquiryMpay({ orderId: this.orderID }).then((res: any) => {
-      console.log('inquiryMpay', res);
+      console.log('inquiryMpay', res.data.status);
       if (res && res.data && res.data.status && res.data.status === 'SUCCESS') {
         this.qrCodePrePostMpayModel.status = res.data.status;
         this.qrCodePrePostMpayModel.tranId = res.data.tranId;
@@ -228,11 +230,11 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
       text: message,
       timer: 180000
     }).then(btn => {
-      if (btn.value) { // true
-        this.goToMpaySummaryPage();
-      } else { // false
-        console.log('alertService', btn);
+      console.log('btn', btn);
+      if (btn.value) { // refresh
         this.onRefreshQRCode();
+      } else { // cancel
+        this.goToMpaySummaryPage();
       }
 
     });
@@ -292,6 +294,9 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
     if (this.intravalTimeSubscription$) {
       this.intravalTimeSubscription$.unsubscribe();
     }
+
+    this.currentTimeCounter.next(null);
+
     if (this.orderID && this.payment.paymentQrCodeType) {
       this.inquiryMpay().then((isSuccess: boolean) => {
         if (isSuccess) {
@@ -329,7 +334,8 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
   subscribeInquiryCallbackMpay(): void {
     this.checkInquiryCallbackMpaySubscribtion$ = this.qrcodePaymentService.checkInquiryCallbackMpay({ orderId: this.orderID })
       .subscribe(
-        (data: any) => {
+        (resp: any) => {
+          const data = resp.data || {};
           if (data && data.DATA && data.DATA.mpay_payment
             && data.DATA.mpay_payment.status && data.DATA.mpay_payment.status === 'SUCCESS') {
             this.qrCodePrePostMpayModel = data.DATA.mpay_payment;
@@ -343,7 +349,6 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
                 this.qrCodePrePostMpayModel.startDtm = data.DATA.mpay_payment.startDtm;
               }
             }
-
           }
         },
         (error: any) => {
@@ -353,7 +358,8 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
   }
 
   goToMpayErrorPage(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_ERROR_PAGE]);
+    alert('goToMpayErrorPage');
+    // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_ERROR_PAGE]);
   }
 
   isDeveloperMode(): boolean {
