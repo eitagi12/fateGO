@@ -118,7 +118,9 @@ export class CreateMnpService {
     };
 
     if (action === TransactionAction.READ_PASSPORT) {
-        data.billLanguage = 'English';
+        if (customer.nationality !== 'Thailand') {
+          data.billLanguage = 'English';
+        }
         data.accountSubCat = 'FOR',
         data.titleName = customer.titleName,
         data.citizenship = customer.nationality;
