@@ -49,6 +49,7 @@ export class ReceiptInformationComponent implements OnInit {
   billingAddressForm: FormGroup;
   customerAddress: any;
   inputBillingAddress: boolean;
+  titleName: any;
   provinces: any;
   allZipCodes: any;
   amphurs: any;
@@ -61,12 +62,14 @@ export class ReceiptInformationComponent implements OnInit {
     private fb: FormBuilder,
     private billingAddress: BillingAddressService,
     private alertService: AlertService) {
+    this.billingAddress.getTitleName().then(this.responseTitleNames());
     this.billingAddress.getProvinces().then(this.responseProvinces());
     this.billingAddress.getZipCodes().then(this.responseZipCodes());
    }
 
   ngOnInit(): void {
     this.customerAddress = {
+      titleName: '',
       homeNo: '',
       moo: '',
       mooBan: '',
@@ -232,6 +235,10 @@ export class ReceiptInformationComponent implements OnInit {
 
   private getProvinces(): string[] {
     return (this.provinces || []).map((province: any) => province.name);
+  }
+
+  private responseTitleNames(): (value: any) => any {
+    return (resp: string[]) => this.titleName = resp;
   }
 
   private responseZipCode(): (value: any) => any {

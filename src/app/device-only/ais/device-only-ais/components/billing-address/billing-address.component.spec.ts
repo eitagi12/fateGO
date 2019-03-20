@@ -47,6 +47,7 @@ describe('BillingAddressComponent', () => {
 
   it('submitting a form emits a customer address', fakeAsync(() => {
     component.zipCodes = ['11011', '11012'];
+    component.customerAddressForm.controls['titleName'].setValue('นาย');
     component.customerAddressForm.controls['homeNo'].setValue('123');
     component.customerAddressForm.controls['province'].setValue('testProvice');
     component.customerAddressForm.controls['amphur'].setValue('testAmphur');
@@ -61,7 +62,7 @@ describe('BillingAddressComponent', () => {
     });
 
     tick(750); // because set debounceTime to 750 in component
-
+    expect(customerAddress.titleName).toBe('นาย');
     expect(customerAddress.homeNo).toBe('123');
     expect(customerAddress.province).toBe('testProvice');
     expect(customerAddress.amphur).toBe('testAmphur');

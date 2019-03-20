@@ -43,6 +43,7 @@
       </div>
       <div *ngIf="inputBillingAddress">
           <app-billing-address 
+          [titleNames]="titleName"
           [customerAddress]="customerAddress"
           [allZipCodes]="allZipCodes"
           [provinces]="getProvinces()"

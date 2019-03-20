@@ -10,6 +10,10 @@ export class BillingAddressService {
 
   constructor(private http: HttpClient) { }
 
+  getTitleName(): Promise<Object> {
+    return this.http.get(API.QUERY_TITLENAMES).toPromise().then(this.responseTitleName());
+  }
+
   getProvinces(): Promise<string[]> {
     return this.http.get(API.GET_ALL_PROVINCES).toPromise().then(this.sortProvincesName());
   }
@@ -32,6 +36,10 @@ export class BillingAddressService {
 
   getProvinceIdByZipCode(zipCode: string): Promise<any> {
     return this.http.get(API.GET_PROVINCE_BY_ZIP_CODE, {params: { zipcode: zipCode }}).toPromise().then(this.responseProvinceID());
+  }
+
+  private responseTitleName(): (value: Object) => any {
+    return (resp: any) => resp.data.titleNames || [];
   }
 
   private responseProvinceID(): (value: Object) => any {

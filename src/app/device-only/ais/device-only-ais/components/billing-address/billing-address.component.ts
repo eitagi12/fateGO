@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors }
 import { debounceTime, distinct } from 'rxjs/operators';
 
 export interface CustomerAddress {
+  titleName: string;
   homeNo: string;
   moo?: string;
   mooBan?: string;
@@ -25,6 +26,9 @@ export interface CustomerAddress {
 export class BillingAddressComponent implements OnInit, OnChanges {
 
   @Input()
+  titleNames: string[];
+
+  @Input()
   customerAddress: CustomerAddress;
 
   @Input()
@@ -41,6 +45,9 @@ export class BillingAddressComponent implements OnInit, OnChanges {
 
   @Input()
   zipCodes: string[];
+
+  @Input()
+  titleNameSelected: EventEmitter<any> = new EventEmitter<any>();
 
   @Output()
   provinceSelected: EventEmitter<any> = new EventEmitter<any>();
@@ -64,8 +71,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
 
   constructor(
     public fb: FormBuilder
-  ) {
-  }
+  ) { }
 
   ngOnInit(): void {
     this.createForm();
@@ -125,6 +131,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
 
   createForm(): void {
     this.customerAddressForm = this.fb.group({
+      titleName: ['', [Validators.required]],
       homeNo: ['', [Validators.required, Validators.pattern(/^[0-9^/]*$/)]],
       moo: [''],
       mooBan: [''],
@@ -146,6 +153,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       }
     });
     this.customerAddressForm.patchValue(this.customerAddress || {});
+    this.titleFormControl();
     this.provinceFormControl();
     this.amphurFormControl();
     this.tumbolFormControl();
@@ -160,6 +168,16 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     return {
       field: 'zipCode'
     };
+  }
+
+  private titleFormControl(): void {
+    this.titleNameForm().valueChanges.subscribe((titleName: any) => {
+      if (titleName) {
+        this.titleNameSelected.emit({
+          titleName: titleName
+        });
+      }
+    });
   }
 
   private provinceFormControl(): void {
@@ -228,6 +246,10 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   private disableFormAmphurAndTumbol(): void {
     this.amphurForm().disable();
     this.tumbolForm().disable();
+  }
+
+  private titleNameForm(): AbstractControl {
+    return this.customerAddressForm.controls['titleName'];
   }
 
   private provinceForm(): AbstractControl {
