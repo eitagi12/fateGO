@@ -49,6 +49,7 @@ export class OrderPreToPostResultPageComponent implements OnInit {
         return this.http.get(`/api/customerportal/newRegister/${this.transaction.data.simCard.mobileNo}/queryCurrentServices`).toPromise();
       })
       .then((resp: any) => {
+        this.pageLoadingService.closeLoading();
         const currentServices = resp.data || [];
         this.serviceChange = currentServices.services.filter(service => service.canTransfer);
       })
