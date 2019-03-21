@@ -359,10 +359,8 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     }
 
     onViewInstallments(campaign: any): void {
-        console.log('campaign', campaign);
         this.installments = PriceOptionUtils.getInstallmentsFromCampaign(campaign);
         this.modalRef = this.modalService.show(this.installmentTemplate, { class: 'modal-lg' });
-        console.log('this.installments', this.installments);
         this.isAdvancePay = this.installments.filter(price => price.advancePay.min > 0 || price.advancePay.max > 0).length > 0;
     }
 
