@@ -1,5 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HomeService } from 'mychannel-shared-libs';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 
 @Component({
   selector: 'app-device-only-ais-queue-page',
@@ -8,7 +10,13 @@ import { HomeService } from 'mychannel-shared-libs';
 })
 export class DeviceOnlyAisQueuePageComponent implements OnInit, OnDestroy {
 
-  constructor(private homeService: HomeService) { }
+  transaction: Transaction;
+  constructor(
+    private homeService: HomeService,
+    private transactionService: TransactionService
+    ) {
+      this.transaction = this.transactionService.load();
+    }
 
   ngOnInit(): void {
   }
@@ -22,7 +30,7 @@ export class DeviceOnlyAisQueuePageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-
+    this.transactionService.save(this.transaction);
   }
 
 }

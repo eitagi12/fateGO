@@ -47,7 +47,8 @@ export class DeviceOnlyAisKeyInQueuePageComponent implements OnInit, OnDestroy {
   onHome(): void {
     this.homeService.goToHome();
   }
-  ngOnDestroy(): void {
 
+  ngOnDestroy(): void {
+    this.transactionService.save(this.transaction);
   }
 }

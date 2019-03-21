@@ -2,6 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE } from '../../constants/route-path.constant';
 import { HomeService } from 'mychannel-shared-libs';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 
 @Component({
   selector: 'app-device-only-ais-qr-code-queue-page',
@@ -10,8 +12,14 @@ import { HomeService } from 'mychannel-shared-libs';
 })
 export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy {
 
-  constructor(private router: Router,
-              private homeService: HomeService) { }
+  transaction: Transaction;
+  constructor(
+    private router: Router,
+    private homeService: HomeService,
+    private transactionService: TransactionService
+    ) {
+      this.transaction = this.transactionService.load();
+     }
 
   ngOnInit(): void {
   }
