@@ -97,12 +97,19 @@ export interface Customer {
   imageSmartCard?: string;
   imageReadSmartCard?: string;
   customerPinCode?: string;
+  selectedMobile?: string;
+  otherPhoneNumber?: string;
   shipaddress?: Recipientinformation;
+  selectedLocation?: SelectedLocation;
 }
 
 export interface Recipientinformation {
   shipCusName?: string;
   shipCusAddr?: string;
+}
+
+export interface SelectedLocation {
+  locationNameTH?: string;
 }
 
 export interface BillDeliveryAddress {

@@ -41,6 +41,10 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
   colorCodeStyle: any;
   priceOptionPayment: any;
   priceOptionBank: any;
+  selectedMobile: string;
+  locationNameTH: string;
+  recipientCustomerAddress: string;
+  otherPhoneNumber: string;
 
   constructor(private localStorageService: LocalStorageService,
               private apiRequestService: ApiRequestService,
@@ -99,8 +103,20 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
       paymentMethod: this.paymentMethod,
       selectPaymentDetail: this.selectPaymentDetail
     };
+    this.transaction.data.customer.shipaddress = {
+      shipCusAddr: this.customerFullAddress,
+      shipCusName: this.customerFullName
+    };
+    this.transaction.data.customer.otherPhoneNumber = this.otherPhoneNumber;
     this.transactionServicet.save(this.transaction);
     this.priceOptionService.save(this.priceOption);
+  }
+  onAddrChanges(fullAddress: string): void {
+    this.customerFullAddress = fullAddress;
+  }
+
+  onchangeOtherPhoneNumber(otherPhoneNumber: string): void {
+    this.otherPhoneNumber = otherPhoneNumber;
   }
 
   onNext(): void {
@@ -195,11 +211,14 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     this.customerFullName = this.transaction.data.customer.titleName + ' ' + this.transaction.data.customer.firstName +
     ' ' + this.transaction.data.customer.lastName;
     this.customerFullAddress = this.getFullAddress(this.transaction.data.customer);
+    this.recipientCustomerAddress =  this.getFullAddress(this.transaction.data.customer);
     this.idCardNo = this.transaction.data.customer.idCardNo;
       if (this.idCardNo) {
         this.idCardNo = this.idCardNo.substring(9);
         this.idCardNo = 'xxxxxxxxx' + this.idCardNo;
       }
+      this.selectedMobile = this.transaction.data.customer.selectedMobile;
+      this.locationNameTH = this.transaction.data.customer.selectedLocation.locationNameTH;
   }
   getFullAddress(customer: Customer): string {
     if (!customer) {
