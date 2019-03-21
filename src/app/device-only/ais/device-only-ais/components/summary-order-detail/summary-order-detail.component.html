@@ -1,13 +1,13 @@
 <div class="card mb-3">
   <div class="card-header bg-pink text-white">สรุปรายการสั่งชื้อสินค้า</div>
   <div class="card-body">
-    <p class="text-light-green" id="text-campaign-name-summary">ซื้อเครื่องเปล่า</p>
+    <p class="text-light-green" id="text-campaign-name-summary">{{ priceOption?.campaignName }}</p>
     <i class="fa fa-circle mr-3 text-light-green"></i>
     <span class="text-grey" id="text-brand-model-summary">
-      Samsung S10 Plus สี BLACK
+     {{ priceOption?.productDetail?.name }}
     </span>
     <span class="pull-right text-light-green" id="text-model-price">
-      ฿{{ 45700 | number }}
+      ฿{{ priceOption?.trade?.promotionPrice | number }}
     </span>
   </div>
   <div class="card-footer bg-transparent text-right">
@@ -15,7 +15,10 @@
       รวมยอดชำระ(รวมVAT)
     </span>
     <span class="text-light-green ml-2" id="text-summary-price">
-      ฿{{ 45700 | number }}
+      ฿{{ summary([
+        +priceOption?.trade?.promotionPrice,
+        +priceOption?.trade?.advancePay?.amount
+        ]) | number }}
     </span>
   </div>
 </div>

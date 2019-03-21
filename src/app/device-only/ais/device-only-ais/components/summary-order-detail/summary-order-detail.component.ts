@@ -1,4 +1,8 @@
 import { Component, OnInit } from '@angular/core';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { Transaction } from 'src/app/shared/models/transaction.model';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
 
 @Component({
   selector: 'app-summary-order-detail',
@@ -7,9 +11,24 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SummaryOrderDetailComponent implements OnInit {
 
-  constructor() { }
+  priceOption: PriceOption;
+  transaction: Transaction;
+
+  constructor(
+    private priceOptionService: PriceOptionService,
+    private transactionService: TransactionService
+  ) {
+    this.priceOption = this.priceOptionService.load();
+    this.transaction = this.transactionService.load();
+   }
 
   ngOnInit(): void {
+  }
+
+  summary(amount: number[]): number {
+    return amount.reduce((prev, curr) => {
+      return prev + curr;
+    }, 0);
   }
 
 }

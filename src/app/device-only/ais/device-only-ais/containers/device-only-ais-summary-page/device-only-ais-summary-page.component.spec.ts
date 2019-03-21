@@ -5,6 +5,7 @@ describe('DeviceOnlyAisSummaryPageComponent', () => {
   let component: DeviceOnlyAisSummaryPageComponent;
   let router;
   let homeService;
+  let transactionService;
 
   beforeEach(() => {
     router = {
@@ -13,9 +14,13 @@ describe('DeviceOnlyAisSummaryPageComponent', () => {
     homeService = {
       goToHome: jest.fn()
     };
+    transactionService = {
+      load: jest.fn()
+    };
     component = new DeviceOnlyAisSummaryPageComponent(
       router,
-      homeService
+      homeService,
+      transactionService
     );
   });
 

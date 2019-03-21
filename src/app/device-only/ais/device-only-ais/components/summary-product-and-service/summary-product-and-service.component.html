@@ -3,9 +3,9 @@
   <div class="card-body">
     <i class="fa fa-circle mr-3 text-light-green"></i>
     <span class="text-grey" id="text-mobile-care">
-      AIS Mobile Care Swap+Replace รายเดือน 89 บาท
+      {{ transaction?.data?.mobileCarePackage?.title }}
     </span>
-    <span class="pull-right">
+    <span class="pull-right" (click)="onOpenDetail(transaction?.data?.mobileCarePackage?.detailTH)">
       <img src="assets/images/icon/icon-page.png" class="icon" />
     </span>
   </div>

@@ -1,4 +1,6 @@
 import { Component, OnInit } from '@angular/core';
+import { Transaction } from 'src/app/shared/models/transaction.model';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
 
 @Component({
   selector: 'app-summary-seller-code',
@@ -7,9 +9,17 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SummarySellerCodeComponent implements OnInit {
 
-  constructor() { }
+  transaction: Transaction;
+  locationCode: string;
+
+  constructor(
+    private transacService: TransactionService
+  ) {
+    this.transaction = this.transacService.load();
+  }
 
   ngOnInit(): void {
+    this.locationCode = this.transaction.data.seller.locationCode ? this.transaction.data.seller.locationCode : '';
   }
 
 }

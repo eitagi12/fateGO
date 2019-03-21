@@ -11,7 +11,7 @@
       </div>
       <div class="col-12 col-sm-8">
         <p id="text-seller-location">
-          MC
+          {{ transaction?.create_by }}
         </p>
       </div>
 
@@ -33,7 +33,7 @@
         </p>
       </div>
       <div class="col-12 col-sm-8">
-        <input type="text" class="form-control w-100" id="input-asc-code">
+        <input type="text" class="form-control w-100" id="input-asc-code" [(ngModel)]="locationCode">
       </div>
     </div>
   </div>
