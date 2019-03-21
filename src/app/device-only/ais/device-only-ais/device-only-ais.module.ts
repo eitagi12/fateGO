@@ -29,6 +29,7 @@ import { SummaryPaymentDetailComponent } from './components/summary-payment-deta
 import { SummarySellerCodeComponent } from './components/summary-seller-code/summary-seller-code.component';
 import { SelectPaymentComponent } from './components/select-payment/select-payment.component';
 import { CreateOrderService } from './services/create-order.service';
+import { CustomerInformationService } from './services/customer-information.service';
 
 @NgModule({
   imports: [
@@ -65,7 +66,8 @@ import { CreateOrderService } from './services/create-order.service';
   ],
   providers: [
     BillingAddressService,
-    CreateOrderService
+    CreateOrderService,
+    CustomerInformationService
   ]
 })
 export class DeviceOnlyAisModule { }
