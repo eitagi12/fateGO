@@ -123,7 +123,7 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     this.router.navigate([DEPOSIT_PAYMENT_SUMMARY_PAGE]);
   }
   onBack(): void {
-    window.location.href = '';
+    window.location.href = '/sales-portal/reserve-stock/list-mobile-no';
   }
   getRandomNum(length: number): string {
     const randomNum =
