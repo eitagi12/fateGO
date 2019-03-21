@@ -52,6 +52,7 @@ export interface TransactionData {
   advancePayment?: Payment;
   receiptInfo?: ReceiptInfo;
   queue?: Queue;
+  mpay_payment?: any;
 }
 export interface Payment {
   'paymentQrCodeType': 'THAI_QR' | 'LINE_QR';
@@ -140,6 +141,7 @@ export interface FaceRecognition {
 export interface Order {
   orderNo: string;
   orderDate?: string;
+  soId?: string;
 }
 
 export interface BillingInformation {

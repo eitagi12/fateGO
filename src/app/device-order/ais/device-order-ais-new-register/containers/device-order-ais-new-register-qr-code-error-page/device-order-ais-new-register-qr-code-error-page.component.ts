@@ -15,15 +15,15 @@ export class DeviceOrderAisNewRegisterQrCodeErrorPageComponent implements OnInit
     private homeService: HomeService
   ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_GENERATOR_PAGE]);
   }
 
-  onHome() {
-
+  onHome(): void {
+    this.homeService.goToHome();
   }
 
 }
