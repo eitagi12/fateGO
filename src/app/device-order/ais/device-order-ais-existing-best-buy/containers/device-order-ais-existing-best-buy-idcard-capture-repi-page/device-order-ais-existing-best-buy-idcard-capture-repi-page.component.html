@@ -21,8 +21,7 @@
               <div *ngIf="!openCamera">
                 <img src="assets/images/icon/icon_people.png" class="icon-people" />
               </div>
-              <div [hidden]="!(openCamera && !transaction?.data?.customer?.imageSmartCard)"
-                class="position-relative">
+              <div [hidden]="!(openCamera && !transaction?.data?.customer?.imageSmartCard)" class="position-relative">
                 <mc-camera [onTakePhoto]="camera" (completed)="onCameraCompleted($event)"
                   (error)="onCameraError($event)">
                 </mc-camera>
@@ -30,7 +29,7 @@
               <div class="embed-responsive embed-responsive-4by3 position-relative"
                 [hidden]="!transaction?.data?.customer?.imageSmartCard">
                 <div class="embed-responsive-item center">
-                  <img class="img-result position-relative"
+                  <img class="img-result"
                     [src]="'data:image/png;base64,'+ transaction?.data?.customer?.imageSmartCard" />
                 </div>
               </div>
@@ -64,8 +63,6 @@
                     *ngIf="transaction?.data?.customer?.imageSmartCard">
                     ถ่ายรูปใหม่
                   </a>
-
-                  <span *ngIf="transaction?.data?.customer?.imageSmartCard">ถ่ายรูปใหม่</span>
                 </div>
               </div>
 
@@ -82,6 +79,7 @@
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()" [disabled]="!!!transaction.data.customer.imageSmartCard">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()"
+      [disabled]="!!!transaction.data.customer.imageSmartCard">NEXT</button>
   </mc-footer>
 </div>

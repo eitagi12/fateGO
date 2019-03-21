@@ -32,7 +32,8 @@ import { SharedModule } from './shared/shared.module';
     MyChannelSharedLibsModule.forRoot({
       production: environment.production,
       NAME: environment.name,
-      WEB_CONNECT_URL: environment.WEB_CONNECT_URL
+      WEB_CONNECT_URL: environment.WEB_CONNECT_URL,
+      CAMERA_DEVLICE: []
     }),
     JwtModule.forRoot({
       jwtOptionsProvider: {
