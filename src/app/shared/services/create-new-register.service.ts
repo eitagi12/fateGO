@@ -144,13 +144,12 @@ export class CreateNewRegisterService {
       }, /*required*/
       onTopPackages: [],
       promotionActionStatus1: 'Add', /*When SelectedPackages*/
-      engFlag: customer.engFlag || 'N'
+      engFlag: 'N'
     };
 
     if (action === TransactionAction.READ_PASSPORT) {
       data.accountSubCat = 'FOR',
         data.titleName = customer.titleName,
-        // data.engFlag = 'Y',
         data.citizenship = customer.nationality;
     } else {
       data.accountSubCat = 'THA',
