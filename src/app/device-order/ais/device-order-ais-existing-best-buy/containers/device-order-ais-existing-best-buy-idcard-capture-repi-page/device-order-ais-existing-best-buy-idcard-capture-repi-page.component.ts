@@ -103,4 +103,8 @@ export class DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent impleme
     return this.utils.isAisNative();
   }
 
+  hasImageSmartCard(): boolean {
+    return !!this.transaction.data.customer.imageSmartCard;
+  }
+
 }

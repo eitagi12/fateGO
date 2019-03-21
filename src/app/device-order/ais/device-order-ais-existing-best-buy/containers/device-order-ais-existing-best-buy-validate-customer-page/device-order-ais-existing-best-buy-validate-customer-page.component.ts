@@ -70,11 +70,14 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
   }
 
   onError(valid: boolean): void {
-    this.identityValid = valid;
+    this.identityValid = !valid;
   }
 
   onCompleted(identity: string): void {
-    this.identity = identity;
+    if (identity.length === 10 || identity.length === 13) {
+      this.identity = identity;
+      this.identityValid = true;
+    }
   }
 
   onReadCard(): void {
@@ -115,6 +118,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE]);
         });
       });
+      return;
     } else {
       // KEY-IN ID-Card
       this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customer: Customer) => {
