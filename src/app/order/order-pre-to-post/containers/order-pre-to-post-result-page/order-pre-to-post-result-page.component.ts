@@ -17,7 +17,8 @@ export class OrderPreToPostResultPageComponent implements OnInit {
 
   transaction: Transaction;
   serviceChange: any;
-  isSuccess: boolean;
+  isSuccess = false;
+
   constructor(
     private homeService: HomeService,
     private alertService: AlertService,
@@ -50,12 +51,13 @@ export class OrderPreToPostResultPageComponent implements OnInit {
       .then((resp: any) => {
         const currentServices = resp.data || [];
         this.serviceChange = currentServices.services.filter(service => service.canTransfer);
-        this.pageLoadingService.closeLoading();
       })
-      .catch((error: any) => {
+      .catch((errors: any) => {
+        const error = errors.error || [];
         this.isSuccess = false;
         this.pageLoadingService.closeLoading();
-        this.alertService.error(error);
+        this.alertService.error(error.resultDescription);
+
       });
   }
 
