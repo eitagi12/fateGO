@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, interval, BehaviorSubject, timer } from 'rxjs';
-import { Transaction } from '../models/transaction.model';
+import { Transaction, Payment } from '../models/transaction.model';
 import { TransactionService } from './transaction.service';
 import { switchMap, map } from 'rxjs/operators';
 
@@ -27,6 +27,13 @@ export class QRCode {
 export interface QRCodeInquiryCallBackModel {
   orderId: string;
   tranId?: string;
+}
+
+export interface ImageBrannerQRCode {
+  code: string;
+  logo: string;
+  branner: string;
+  branner_detail: string;
 }
 
 export class QRCodePrePostMpayModel {
@@ -64,19 +71,29 @@ export class QRCodePaymentService {
     return this.http.post(this.apiQRCode, bodyRequest).toPromise();
   }
 
-  getBrannerImage() {
-    return {
-      THAI_QR: {
+  getBrannerImagePaymentQrCodeType(paymentQrCodeType: string): any {
+    if (paymentQrCodeType === 'THAI_QR') {
+      return {
+        code: '003',
         logo: 'assets/images/icon/Thai_Qr_Payment.png',
         branner: 'assets/images/icon/th_qr_code_branner.png',
         branner_detail: 'assets/images/icon/prompt-pay.png'
-      },
-      LINE_PAY: {
+      };
+    } else if (paymentQrCodeType === 'LINE_QR') {
+      return {
+        code: '002',
         logo: 'assets/images/icon/Rabbit_Line_Pay.png',
         branner: 'assets/images/icon/line_qr_code_branner.png',
         branner_detail: ''
-      }
-    };
+      };
+    } else {
+      return {
+        code: null,
+        logo: null,
+        branner: null,
+        branner_detail: null
+      };
+    }
   }
 
   convertTimeForRender(t: number): string {
@@ -124,7 +141,7 @@ export class QRCodePaymentService {
   }
 
   checkInquiryCallbackMpay(bodyRequest: QRCodeInquiryCallBackModel): Observable<any> {
-    const source  = timer(this.initialDelay, this.intervalTime);
+    const source = timer(this.initialDelay, this.intervalTime);
     return source.pipe(map((res: any) => res.data || {}), switchMap(() => this.getInquiryCallbackMpay(bodyRequest)));
   }
 

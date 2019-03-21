@@ -9,7 +9,7 @@ import { Router } from '@angular/router';
 import { HomeService } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { QRCodePaymentService } from 'src/app/shared/services/qrcode-payment.service';
+import { QRCodePaymentService, ImageBrannerQRCode } from 'src/app/shared/services/qrcode-payment.service';
 
 @Component({
   selector: 'app-device-order-ais-new-register-qr-code-summary-page',
@@ -22,7 +22,7 @@ export class DeviceOrderAisNewRegisterQrCodeSummaryPageComponent implements OnIn
   priceOption: PriceOption;
   payment: Payment;
 
-  qrcodeImageBranner: any ;
+  brannerImagePaymentQrCode: ImageBrannerQRCode;
 
   constructor(
     private router: Router,
@@ -34,7 +34,7 @@ export class DeviceOrderAisNewRegisterQrCodeSummaryPageComponent implements OnIn
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     this.payment = this.transaction.data.payment;
-    this.qrcodeImageBranner = this.qrcodePaymentService.getBrannerImage();
+    this.brannerImagePaymentQrCode = this.qrcodePaymentService.getBrannerImagePaymentQrCodeType(this.payment.paymentQrCodeType);
   }
 
   ngOnInit() {

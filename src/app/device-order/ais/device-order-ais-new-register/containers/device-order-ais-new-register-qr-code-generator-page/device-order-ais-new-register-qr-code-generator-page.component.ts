@@ -7,7 +7,7 @@ import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_SUMMARY_PAGE, ROUTE_DEVICE_
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Observable, Subscription, interval, Observer, BehaviorSubject } from 'rxjs';
-import { QRCodePaymentService, QRCodeModel, QRCodePrePostMpayModel } from 'src/app/shared/services/qrcode-payment.service';
+import { QRCodePaymentService, QRCodeModel, QRCodePrePostMpayModel, ImageBrannerQRCode } from 'src/app/shared/services/qrcode-payment.service';
 import { toDataURL } from 'qrcode';
 import { environment } from 'src/environments/environment';
 
@@ -50,7 +50,7 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
   private NEW_LINE = '\n';
   qrCodeImageSrc: string;
   private startTimeInMininte = 0.11;
-  qrcodeImageBranner: any ;
+  brannerImagePaymentQrCode: ImageBrannerQRCode ;
   mcLoadingQrcodePaymentService: Promise<any>; // for mcLoading
   private timeLowerThanOrEqualToZero: boolean;
 
@@ -67,7 +67,7 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
     this.priceOption = this.priceOptionService.load();
     this.payment = this.transaction.data.payment;
     this.qrCodePrePostMpayModel = new QRCodePrePostMpayModel();
-    this.qrcodeImageBranner = this.qrcodePaymentService.getBrannerImage();
+    this.brannerImagePaymentQrCode = this.qrcodePaymentService.getBrannerImagePaymentQrCodeType(this.payment.paymentQrCodeType);
   }
 
   ngOnInit() {
@@ -258,7 +258,7 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
     }
     qrModel.locationName = this.tokenService.getUser().locationCode;
     qrModel.amount = this.getSummaryAmount();
-    qrModel.qrType = this.payment.paymentQrCodeType === 'THAI_QR' ? '003' : '002';
+    qrModel.qrType = this.brannerImagePaymentQrCode.code;
     return qrModel;
   }
 
@@ -327,7 +327,7 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
   setBodyRequestForPreMpay(): void {
     this.qrCodePrePostMpayModel.orderId = this.orderID;
     this.qrCodePrePostMpayModel.amount = this.getSummaryAmount();
-    this.qrCodePrePostMpayModel.qrType = this.payment.paymentQrCodeType === 'THAI_QR' ? '003' : '002';
+    this.qrCodePrePostMpayModel.qrType = this.brannerImagePaymentQrCode.code;
     this.qrCodePrePostMpayModel.status = 'WAITING';
   }
 
