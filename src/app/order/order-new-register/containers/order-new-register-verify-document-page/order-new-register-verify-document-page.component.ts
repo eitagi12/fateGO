@@ -532,7 +532,7 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
         issuingCountry: defaultIfEmpty(data.IssuingCountry),
         firstName: defaultIfEmpty(data.GivenName),
         lastName: defaultIfEmpty(data.Surname),
-        nationality: defaultIfEmpty(data.Nationality),
+        nationality: defaultIfEmpty(data.IssuingCountry),
         birthdate: convertStringToDate(data.BirthDate),
         gender: defaultIfEmpty(data.Sex) === '1' ? 'M' : 'F',
         idCardNo: defaultIfEmpty(data.PassportNumber),
