@@ -54,6 +54,7 @@ export class MobileCareComponent implements OnInit {
   @Output() verifyOtp: EventEmitter<any> = new EventEmitter<any>();
 
   @Output() checkBuyMobileCare: EventEmitter<any> = new EventEmitter<any>();
+  @Output() isReasonNotBuyMobileCare: EventEmitter<any> = new EventEmitter<any>();
 
   @ViewChild('template')
   template: TemplateRef<any>;
@@ -159,6 +160,8 @@ export class MobileCareComponent implements OnInit {
       });
     } else {
       // this.completed.emit(this.notBuyMobileCareForm.value.notBuyMobile);
+      this.isReasonNotBuyMobileCare.emit(this.notBuyMobileCareForm.value.notBuyMobile);
+
     }
     this.modalRef.hide();
   }
