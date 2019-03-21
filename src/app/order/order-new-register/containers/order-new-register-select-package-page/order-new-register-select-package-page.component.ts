@@ -103,7 +103,6 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
   }
 
   callService(language: string) {
-    console.log('language', language);
     this.pageLoadingService.openLoading();
 
     const billingInformation: any = this.transaction.data.billingInformation;
@@ -116,7 +115,6 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
     if (this.transaction.data.action === TransactionAction.READ_PASSPORT) {
       params.maxPromotionPrice = this.MAX_PROMOTION_PRICE;
     }
-    console.log('mobileNo', mobileNo);
     this.http.get(`/api/customerportal/queryCheckMinimumPackage/${mobileNo}`, {
     }).toPromise()
       .then((resp: any) => {
