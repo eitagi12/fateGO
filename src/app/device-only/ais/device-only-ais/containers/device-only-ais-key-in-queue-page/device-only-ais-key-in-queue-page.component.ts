@@ -44,6 +44,8 @@ export class DeviceOnlyAisKeyInQueuePageComponent implements OnInit, OnDestroy {
       this.transaction.data.queue = {
         queueNo: this.queueForm.value.queueNo
         };
+      } else {
+        this.transaction.data.queue.queueNo = this.queueForm.value.queueNo;
       }
     this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE]);
   }
