@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, ReadCardProfile, PageLoadingService, AlertService, TokenService, ChannelType, Utils, ValidateCustomerIdCardComponent, KioskControls } from 'mychannel-shared-libs';
+import { HomeService, ReadCardProfile, PageLoadingService, AlertService, TokenService, ChannelType, Utils, ValidateCustomerIdCardComponent, KioskControls, OnscreenKeyboardService } from 'mychannel-shared-libs';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_REPI_PAGE, ROUTE_ORDER_PRE_TO_POST_CUSTOMER_INFO_PAGE, ROUTE_ORDER_PRE_TO_POST_CUSTOMER_PROFILE_PAGE, ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE } from 'src/app/order/order-pre-to-post/constants/route-path.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -33,6 +33,7 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
     private tokenService: TokenService,
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
+    private onscreenKeyboardService: OnscreenKeyboardService
   ) {
     this.transaction = this.transactionService.load();
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
@@ -63,6 +64,14 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
 
   onProgress(progress: number): void {
     this.progressReadCard = progress;
+  }
+
+  progressDoing(): boolean {
+    return this.progressReadCard > 0 &&  this.progressReadCard < 100 ? true : false;
+  }
+
+  isRunOnKiosk(): boolean {
+    return this.onscreenKeyboardService.checkRunOnKiosk();
   }
 
   onBack(): void {

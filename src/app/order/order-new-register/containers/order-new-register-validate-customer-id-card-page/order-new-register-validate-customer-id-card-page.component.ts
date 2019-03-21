@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { ReadCardProfile, HomeService, PageLoadingService, ApiRequestService, TokenService, ChannelType, Utils, AlertService, ValidateCustomerIdCardComponent, KioskControls, } from 'mychannel-shared-libs';
+import { ReadCardProfile, HomeService, PageLoadingService, TokenService, ChannelType, Utils, AlertService, ValidateCustomerIdCardComponent, KioskControls, OnscreenKeyboardService, ApiRequestService, } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -40,6 +40,7 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
     private reserveMobileService: ReserveMobileService,
+    private onscreenKeyboardService: OnscreenKeyboardService
   ) {
 
     this.homeService.callback = () => {
@@ -101,6 +102,14 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
 
   onProgress(progress: number): void {
     this.progressReadCard = progress;
+  }
+
+  progressDoing(): boolean {
+    return this.progressReadCard > 0 &&  this.progressReadCard < 100 ? true : false;
+  }
+
+  isRunOnKiosk(): boolean {
+    return this.onscreenKeyboardService.checkRunOnKiosk();
   }
 
   onHome(): void {

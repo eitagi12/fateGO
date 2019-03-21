@@ -6,7 +6,7 @@ import {
   ROUTE_ORDER_MNP_SELECT_REASON_PAGE
 } from 'src/app/order/order-mnp/constants/route-path.constant';
 import { Transaction, TransactionAction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
-import { ReadCardProfile, HomeService, TokenService, PageLoadingService, ChannelType, Utils, AlertService, KioskControls, ValidateCustomerIdCardComponent } from 'mychannel-shared-libs';
+import { ReadCardProfile, HomeService, TokenService, PageLoadingService, ChannelType, Utils, AlertService, KioskControls, ValidateCustomerIdCardComponent, OnscreenKeyboardService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 
 @Component({
@@ -36,6 +36,7 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
     private tokenService: TokenService,
     private utils: Utils,
     private alertService: AlertService,
+    private onscreenKeyboardService: OnscreenKeyboardService
   ) {
     this.transaction = this.transactionService.load();
     this.homeService.callback = () => {
@@ -72,6 +73,14 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
 
   onProgress(progress: number): void {
     this.progressReadCard = progress;
+  }
+
+  progressDoing(): boolean {
+    return this.progressReadCard > 0 &&  this.progressReadCard < 100 ? true : false;
+  }
+
+  isRunOnKiosk(): boolean {
+    return this.onscreenKeyboardService.checkRunOnKiosk();
   }
 
   onHome(): void {
