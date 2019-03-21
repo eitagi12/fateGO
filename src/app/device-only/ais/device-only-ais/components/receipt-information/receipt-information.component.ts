@@ -162,9 +162,7 @@ export class ReceiptInformationComponent implements OnInit {
   switchKeyInBillingAddress(): void {
     this.inputBillingAddress = !this.inputBillingAddress;
     if (this.inputBillingAddress) {
-      this.receiptInfoForm.controls['taxId'].enable();
-    } else {
-      this.receiptInfoForm.controls['taxId'].disable();
+      this.action.emit(TransactionAction.KEY_IN);
     }
   }
 
@@ -213,6 +211,9 @@ export class ReceiptInformationComponent implements OnInit {
 
   onCompleted(value: any): void {
     this.customerAddressTemp = value;
+    if (this.customerAddressTemp.idCardNo) {
+      this.receiptInfoForm.controls['taxId'].setValue(this.customerAddressTemp.idCardNo);
+    }
   }
 
   onError(valid: boolean): void {
