@@ -27,6 +27,7 @@ import { SummaryOrderDetailComponent } from './components/summary-order-detail/s
 import { SummaryProductAndServiceComponent } from './components/summary-product-and-service/summary-product-and-service.component';
 import { SummaryPaymentDetailComponent } from './components/summary-payment-detail/summary-payment-detail.component';
 import { SummarySellerCodeComponent } from './components/summary-seller-code/summary-seller-code.component';
+import { SelectPaymentComponent } from './components/select-payment/select-payment.component';
 
 @NgModule({
   imports: [
@@ -58,7 +59,8 @@ import { SummarySellerCodeComponent } from './components/summary-seller-code/sum
     SummaryOrderDetailComponent,
     SummaryProductAndServiceComponent,
     SummaryPaymentDetailComponent,
-    SummarySellerCodeComponent
+    SummarySellerCodeComponent,
+    SelectPaymentComponent
   ],
   providers: [
     BillingAddressService
