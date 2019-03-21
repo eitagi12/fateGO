@@ -25,6 +25,7 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
   billDeliveryAddress: BillDeliveryAddress;
+  progressReadCard: number;
 
   constructor(
     private router: Router,
@@ -67,6 +68,10 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
     this.profile = profile;
     // auto next
     this.onNext();
+  }
+
+  onProgress(progress: number): void {
+    this.progressReadCard = progress;
   }
 
   onHome(): void {
