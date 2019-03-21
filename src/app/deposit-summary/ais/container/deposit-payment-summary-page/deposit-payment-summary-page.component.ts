@@ -9,7 +9,7 @@ import { HttpClient } from '@angular/common/http';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { DEPOSIT_PAYMENT_SUMMARY_PAGE, DEPOSIT_QUEUE_PAGE } from 'src/app/deposit-summary/constants/route-path.constant';
+import { DEPOSIT_PAYMENT_SUMMARY_PAGE, DEPOSIT_QUEUE_PAGE, DEPOSIT_PAYMENT_PAGE } from 'src/app/deposit-summary/constants/route-path.constant';
 
 @Component({
   selector: 'app-deposit-payment-summary-page',
@@ -82,7 +82,7 @@ export class DepositPaymentSummaryPageComponent implements OnInit {
   }
 
   onBack(): void {
-    this.router.navigate([DEPOSIT_PAYMENT_SUMMARY_PAGE]);
+    this.router.navigate([DEPOSIT_PAYMENT_PAGE]);
   }
 
   onNext(): void {
