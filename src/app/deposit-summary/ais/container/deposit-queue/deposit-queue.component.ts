@@ -52,7 +52,7 @@ export class DepositQueueComponent implements OnInit, OnDestroy {
 
   onNext(): void {
     this.transaction.data.queue = { queueNo: this.queue };
-    this.createOrderService.createDeviceOrder(this.transaction, this.priceOption).then((response: any) => {
+    this.createOrderService.createDeviceOrderDt(this.transaction, this.priceOption).then((response: any) => {
       if (response) {
         this.router.navigate([DEPOSIT_RESULT_PAGE]);
       } else {

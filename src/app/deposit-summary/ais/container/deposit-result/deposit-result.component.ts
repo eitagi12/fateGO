@@ -6,7 +6,8 @@ import { ApiRequestService, PageLoadingService, HomeService } from 'mychannel-sh
 import { WIZARD_RESERVE_WITH_DEPOSIT } from '../../../constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { PriceOption } from '../../../../shared/models/price-option.model';
 @Component({
   selector: 'app-deposit-result',
   templateUrl: './deposit-result.component.html',
@@ -15,13 +16,16 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 export class DepositResultComponent implements OnInit {
 
   transaction: Transaction;
+  priceOption: PriceOption;
   isSuccess: boolean;
   wizards: any = WIZARD_RESERVE_WITH_DEPOSIT;
   constructor(
     private homeService: HomeService,
-    private transactionService: TransactionService
+    private transactionService: TransactionService,
+    private priceOptionService: PriceOptionService
   ) {
     this.transaction = this.transactionService.load();
+    this.priceOption = this.priceOptionService.load();
    }
 
   ngOnInit(): void {

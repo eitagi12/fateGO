@@ -74,11 +74,11 @@ export class CreateDeviceOrderService {
       .then((res: any) => res.data);
   }
 
-  createDeviceOrder(transaction: Transaction, priceOption: PriceOption, transId?: string): Promise<any> {
+  createDeviceOrderDt(transaction: Transaction, priceOption: PriceOption, transId?: string): Promise<any> {
     console.log('test');
     return new Promise((resolve, reject) => {
       this.getRequestCreateOrder(transaction, priceOption, transId).then((data) => {
-        this.http.post('/api/salesportal/device-sell/order', data).toPromise()
+        this.http.post('/api/salesportal/dt/create-order', data).toPromise()
           .then((response: any) => {
             console.log(JSON.stringify(response));
             if (response.data.resultCode === 'S') {
@@ -103,7 +103,7 @@ export class CreateDeviceOrderService {
     const customer = transaction.data.customer;
     const productStock = priceOption.productStock || '';
     const productDetail = priceOption.trade;
-    // const trade = transaction.data.mainPromotion.trade;
+    const trade = priceOption.trade;
     const payment = transaction.data.payment || '';
     // const advancePayment = transaction.data.advancePayment;
     const simCard = transaction.data.simCard || '';
@@ -112,25 +112,25 @@ export class CreateDeviceOrderService {
     // const prebooking = transaction.data.preBooking;
     const order = transaction.data.order || '';
     const data: any = {
-      // soId: order.soId,
-      soCompany: productStock.company || '',
+      soId: '29326',
+      soCompany: trade.company || 'AWN',
       locationSource: this.user.locationCode || '',
       locationReceipt: this.user.locationCode || '',
-      // productType: productDetail.productType || 'DEVICE',
-      // productSubType: productDetail.productSubtype || 'HANDSET',
+      productType: trade.productType || 'DEVICE',
+      productSubType: trade.productSubtype || 'HANDSET',
       brand: productDetail.brand,
       model: productDetail.model,
       color: productDetail.colorName,
       matCode: '',
       priceIncAmt:  '',
       priceDiscountAmt:  '',
-      // grandTotalAmt: this.getGrandTotalAmt(trade),
+      grandTotalAmt: '',
       userId: this.user.username,
       // saleCode: seller && seller.employeeId ? seller.employeeId : '',
       queueNo: queue.queueNo || '',
       cusNameOrder: this.getFullName(customer),
       taxCardId: customer && customer.idCardNo || '',
-      cusMobileNoOrder: simCard && simCard.mobileNo || '',
+      cusMobileNoOrder: simCard && simCard.mobileNo || '',   //
       customerAddress: this.getCustomerAddress(customer),
       tradeNo: '',
       ussdCode: '',
@@ -151,9 +151,13 @@ export class CreateDeviceOrderService {
       focCode: '',
       // bankAbbr: this.getBankCode(payment, advancePayment),
       // preBookingNo: prebooking ? prebooking.preBookingNo : '',
-      // depositAmt: prebooking ? prebooking.depositAmt : '',
-      qrTransId: transId ? transId : '',
+      depositAmt: trade ? trade.tradeReserve.trades[0].deposit.depositIncludeVat : '',
       // qrAmt: qrAmt
+      storeName : 'WH',
+      soChannelType : 'MC_PRE',
+     soDocumentType : 'DEPOSIT_TF',
+     shipCusName : 'ชื่อผู้รับสินค้า',
+     shipCusAddr : '999/55 ถ.พหลโยธิน พญาไท พญาไท กทม. 10400',
     };
 
     return Promise.resolve(data);
