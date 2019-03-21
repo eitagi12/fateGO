@@ -5,6 +5,7 @@ export interface PriceOption {
     customerGroup?: any;
     campaign?: any;
     trade?: any;
+    campaignName?: any;
 }
 
 export interface PrivilegeTradeAdvancePay {
