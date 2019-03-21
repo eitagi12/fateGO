@@ -18,7 +18,6 @@ describe('test device only ais queue page', () => {
       load: jest.fn()
     };
     component = new DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent(
-      new FormBuilder(),
       router,
       homeService,
       apiRequestService,
