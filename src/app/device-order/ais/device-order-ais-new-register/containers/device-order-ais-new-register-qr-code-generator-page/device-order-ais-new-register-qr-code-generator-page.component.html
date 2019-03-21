@@ -31,9 +31,9 @@
         </div>
 
         <div [mcLoading]="mcLoadingQrcodePaymentService" class="qr-code border bg-white mb-3">
-          <img [src]="payment.paymentQrCodeType === 'THAI_QR' ? qrcodeImageBranner.THAI_QR.branner : qrcodeImageBranner.LINE_PAY.branner" class="d-block w-100" />
+          <img [src]="brannerImagePaymentQrCode.branner" class="d-block w-100" />
           <div class="mt-2">
-            <img [src]="payment.paymentQrCodeType === 'THAI_QR' ? qrcodeImageBranner.THAI_QR.branner_detail : qrcodeImageBranner.LINE_PAY.branner_detail" class="d-block w-25 m-auto" />
+            <img [src]="brannerImagePaymentQrCode.branner_detail" class="d-block w-25 m-auto" />
           </div>
           <div>
             <img [hidden]="!qrCodeImageSrc" [src]="qrCodeImageSrc"
