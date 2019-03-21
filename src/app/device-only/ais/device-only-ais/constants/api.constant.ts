@@ -6,4 +6,5 @@ export const API = {
     QUERY_TUMBOLS: `/api/customerportal/newRegister/queryTumbol`,
     QUERY_ZIPCODE: `/api/customerportal/newRegister/queryZipcode`,
     GET_PROVINCE_BY_ZIP_CODE: `/api/customerportal/newRegister/getProvinceIdByZipcode`,
+    GET_BILLING: `/api/customerportal/billing/`,
 };
