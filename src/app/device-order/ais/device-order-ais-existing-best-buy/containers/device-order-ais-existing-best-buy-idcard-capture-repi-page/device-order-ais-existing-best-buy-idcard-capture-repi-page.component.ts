@@ -69,57 +69,26 @@ export class DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent impleme
     this.transactionService.update(this.transaction);
   }
 
-  getRequestUpdatePrepaidIdent(): any {
-    const customer = this.transaction.data.customer;
-    const mobileNo = this.transaction.data.simCard.mobileNo;
-    const data: any = {
-      idCardNo: customer.idCardNo || '-',
-      mobileNo: mobileNo || '-',
-      birthdate: customer.birthdate || '',
-      firstName: customer.firstName || '-',
-      lastName: customer.lastName || '-',
-      gender: customer.gender || '-',
-      homeNo: customer.homeNo || '-',
-      buildingName: customer.buildingName || '-',
-      floor: customer.floor || '-',
-      room: customer.room || '-',
-      moo: customer.moo || '-',
-      mooBan: customer.mooBan || '-',
-      soi: customer.soi || '-',
-      street: customer.street || '-',
-      tumbol: customer.tumbol || '-',
-      amphur: customer.amphur || '-',
-      province: customer.province || '-',
-      zipCode: customer.zipCode || '-',
-      idCardImage: '-',
-      imageReadSmartCard: customer.imageReadSmartCard || customer.imageSmartCard || '-',
-      isSmartCard: 'Y',
-      smartCardVersion: 'v1',
-      urlPicture: '-'
-    };
-    return data;
-  }
-
   onOpenCamera(): void {
     this.openCamera = true;
   }
 
   onCameraCompleted(image: string): void {
 
-    const cropOption = {
-      sizeWidth: 160,
-      sizeHeight: 240,
-      startX: 80,
-      startY: 0,
-      flip: true,
-      quality: 1
-    };
+    // const cropOption = {
+    //   sizeWidth: 160,
+    //   sizeHeight: 240,
+    //   startX: 80,
+    //   startY: 0,
+    //   flip: true,
+    //   quality: 1
+    // };
 
-    new ImageUtils().cropping(image, cropOption).then(res => {
-      this.transaction.data.customer.imageSmartCard = res;
-    }).catch(() => {
+    // new ImageUtils().cropping(image, cropOption).then(res => {
+      // this.transaction.data.customer.imageSmartCard = res;
+    // }).catch(() => {
       this.transaction.data.customer.imageSmartCard = image;
-    });
+    // });
   }
 
   onCameraError(error: string): void {
