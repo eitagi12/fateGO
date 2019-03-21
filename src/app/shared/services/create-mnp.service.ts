@@ -113,9 +113,16 @@ export class CreateMnpService {
         ]
       }, /*required*/
       onTopPackages: [],
-      engFlag: customer.engFlag || 'N',
+      engFlag: 'N',
       promotionActionStatus1: 'Add', /*When SelectedPackages*/
     };
+
+    // เช็ค Eng Flag จากจังหวัด
+    if (customer.province && !!customer.province.match(/[a-z]/i)) {
+      data.engFlag = 'Y';
+    } else {
+      data.engFlag = 'N';
+    }
 
     if (action === TransactionAction.READ_PASSPORT) {
         if (customer.nationality !== 'Thailand') {

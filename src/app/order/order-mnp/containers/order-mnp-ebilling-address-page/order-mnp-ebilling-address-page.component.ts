@@ -60,7 +60,6 @@ export class OrderMnpEbillingAddressPageComponent implements OnInit, OnDestroy {
   }
 
   callService() {
-    this.transaction.data.customer.engFlag = (this.translation.currentLang === 'EN') ? 'Y' : 'N';
     const billingInformation = this.transaction.data.billingInformation || {};
     const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
     this.http.get('/api/customerportal/newRegister/getAllZipcodes').subscribe((resp: any) => {

@@ -109,7 +109,7 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
     const mergeBilling = billingInformation.mergeBilling;
     const billCycle = billingInformation.billCycle;
     const customer: any = billingInformation.billDeliveryAddress || this.transaction.data.customer;
-    const engFlag = this.transaction.data.customer.engFlag || 'N';
+    const engFlag = customer.province && !!customer.province.match(/[a-z]/i) ? 'Y' : 'N';
     const customerAddress = this.utils.getCurrentAddress({
       homeNo: customer.homeNo,
       moo: customer.moo,
