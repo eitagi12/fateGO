@@ -30,14 +30,14 @@ describe('BillingAddressComponent', () => {
     expect(homeNo.valid).toBeFalsy();
   });
 
-  it('should have error message for require valididy when homeNo filed empty', () => {
+  it('should have error message for require validity when homeNo field empty', () => {
     const homeNo = component.customerAddressForm.controls['homeNo'];
     let errors = {};
     errors = homeNo.errors || {};
     expect(errors['required']).toBeTruthy();
   });
 
-  it('should have error message for pattern valididy when homeNo filed is wrong format', () => {
+  it('should have error message for pattern validity when homeNo field is wrong format', () => {
     const homeNo = component.customerAddressForm.controls['homeNo'];
     homeNo.setValue('test');
     let errors = {};
