@@ -9,6 +9,7 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { ReserveMobileService, SelectMobileNumberRandom } from 'src/app/order/order-shared/services/reserve-mobile.service';
 import { request } from 'https';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-order-new-register-validate-customer-id-card-page',
@@ -24,6 +25,7 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
   zipcode: string;
   readCardValid: boolean;
 
+
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
 
@@ -38,6 +40,7 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
     private reserveMobileService: ReserveMobileService,
+    private translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
@@ -49,15 +52,15 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
   onError(valid: boolean) {
     this.readCardValid = valid;
     if (!this.profile) {
-      this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
-      if (this.validateCustomerIdcard.koiskApiFn) {
-        this.validateCustomerIdcard.koiskApiFn.removedState().subscribe((removed: boolean) => {
-          if (removed) {
-            this.validateCustomerIdcard.ngOnDestroy();
-            this.validateCustomerIdcard.ngOnInit();
-          }
-        });
-      }
+      this.alertService.error(this.translation.instant('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน'));
+    if (this.validateCustomerIdcard.koiskApiFn) {
+      this.validateCustomerIdcard.koiskApiFn.removedState().subscribe((removed: boolean) => {
+        if (removed) {
+          this.validateCustomerIdcard.ngOnDestroy();
+          this.validateCustomerIdcard.ngOnInit();
+        }
+      });
+    }
     }
   }
 
@@ -137,15 +140,15 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
           this.alertService.notify({
             type: 'error',
             html: error.errors.map((err) => {
-              return '<li class="text-left">' + err + '</li>';
+              return '<li class="text-left">' + this.translation.instant(err) + '</li>';
             }).join('')
           }).then(() => {
             this.onBack();
           });
         } else if (error.resultDescription) {
-          this.alertService.error(error.resultDescription);
+          this.alertService.error(this.translation.instant(error.resultDescription));
         } else {
-          this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+          this.alertService.error(this.translation.instant('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'));
         }
       });
   }
@@ -153,7 +156,7 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
   getErrorMessage(errorList: string[]): string {
     let errMessageListHtml = '';
     errorList.forEach(error => {
-      errMessageListHtml += '<li class="text-left">' + error + '</li>';
+      errMessageListHtml += '<li class="text-left">' + this.translation.instant(error) + '</li>';
     });
 
     return errMessageListHtml;
@@ -165,13 +168,13 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
     const idCardType = this.transaction.data.customer.idCardType;
 
     if (this.utils.isLowerAge17Year(birthdate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี').then(() => {
+      this.alertService.error(this.translation.instant('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี')).then(() => {
         this.onBack();
       });
       return false;
     }
     if (this.utils.isIdCardExpiredDate(expireDate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ').then(() => {
+      this.alertService.error(this.translation.instant('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ')).then(() => {
         this.onBack();
       });
       return false;

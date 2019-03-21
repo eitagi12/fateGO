@@ -99,6 +99,7 @@ export interface Customer {
   issuingCountry?: string;
   nationality?: string;
   imageReadPassport?: string;
+  engFlag?: string;
 
 }
 
@@ -123,6 +124,8 @@ export interface MainPackage {
   promotionPackage?: string;
   shortNameThai: string;
   statementThai?: string;
+  shortNameEng?: string;
+  statementEng?: string;
   parameters?: any;
 }
 
@@ -195,5 +198,6 @@ export interface BillingAccountData {
 
   billingMethodText?: string;
   billCycleText?: string;
+  billCycleTextEng?: string;
   billAddressText?: string;
 }

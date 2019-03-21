@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
+import { MyChannelSharedLibsModule, I18nService } from 'mychannel-shared-libs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { OrderNewRegisterRoutingModule } from './order-new-register-routing.module';
 import { OrderNewRegisterValidateCustomerPageComponent } from './containers/order-new-register-validate-customer-page/order-new-register-validate-customer-page.component';
@@ -26,6 +26,7 @@ import { OrderNewRegisterAgreementSignPageComponent } from './containers/order-n
 import { OrderNewRegisterPersoSimPageComponent } from './containers/order-new-register-perso-sim-page/order-new-register-perso-sim-page.component';
 import { OrderNewRegisterResultPageComponent } from './containers/order-new-register-result-page/order-new-register-result-page.component';
 import { OrderNewRegisterEapplicationPageComponent } from './containers/order-new-register-eapplication-page/order-new-register-eapplication-page.component';
+import { TranslateModule } from '@ngx-translate/core';
 import { OrderNewRegisterVerifyDocumentPageComponent } from './containers/order-new-register-verify-document-page/order-new-register-verify-document-page.component';
 import { OrderNewRegisterPassportInfoPageComponent } from './containers/order-new-register-passport-info-page/order-new-register-passport-info-page.component';
 
@@ -35,7 +36,8 @@ import { OrderNewRegisterPassportInfoPageComponent } from './containers/order-ne
     FormsModule,
     ReactiveFormsModule,
     OrderNewRegisterRoutingModule,
-    MyChannelSharedLibsModule
+    MyChannelSharedLibsModule,
+    TranslateModule
   ],
   declarations: [
     OrderNewRegisterValidateCustomerPageComponent,
@@ -63,6 +65,6 @@ import { OrderNewRegisterPassportInfoPageComponent } from './containers/order-ne
     OrderNewRegisterEapplicationPageComponent,
     OrderNewRegisterVerifyDocumentPageComponent,
     OrderNewRegisterPassportInfoPageComponent,
-  ]
+  ],
 })
 export class OrderNewRegisterModule { }

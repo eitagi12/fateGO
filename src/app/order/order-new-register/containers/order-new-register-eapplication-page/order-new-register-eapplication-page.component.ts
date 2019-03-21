@@ -10,6 +10,8 @@ import {
   ROUTE_ORDER_NEW_REGISTER_RESULT_PAGE
 } from 'src/app/order/order-new-register/constants/route-path.constant';
 import { HomeService, PageLoadingService } from 'mychannel-shared-libs';
+import { Subscription } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-order-new-register-eapplication-page',
@@ -20,18 +22,27 @@ export class OrderNewRegisterEapplicationPageComponent implements OnInit, OnDest
 
   transaction: Transaction;
   getDataBase64Eapp: string;
+  translationSubscribe: Subscription;
 
   constructor(
     private router: Router,
     private createEapplicationService: CreateEapplicationService,
     private transactionService: TransactionService,
     private homeService: HomeService,
+    private translateService: TranslateService,
     private pageLoadingService: PageLoadingService) { }
 
   ngOnInit() {
     this.pageLoadingService.openLoading();
     this.transaction = this.transactionService.load();
-    this.createEapplicationService.createEapplication(this.transaction).then(res => {
+    this.callService(this.transaction, this.translateService.currentLang);
+    this.translationSubscribe = this.translateService.onLangChange.subscribe(language => {
+      this.callService(this.transaction, language.lang);
+    });
+  }
+
+  callService(transaction: Transaction, language: string) {
+    this.createEapplicationService.createEapplicationV2(transaction, language).then(res => {
       this.getDataBase64Eapp = 'data:image/jpeg;base64,' + res.data;
     }).then(() => {
       this.pageLoadingService.closeLoading();
@@ -55,6 +66,7 @@ export class OrderNewRegisterEapplicationPageComponent implements OnInit, OnDest
   }
 
   ngOnDestroy(): void {
-    this.transactionService.update(this.transaction);
+    this.translationSubscribe.unsubscribe();
+    this.transactionService.save(this.transaction);
   }
 }

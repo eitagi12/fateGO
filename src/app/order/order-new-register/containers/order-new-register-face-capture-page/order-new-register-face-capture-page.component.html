@@ -1,34 +1,37 @@
 <div class="mc-flex">
-  <mc-header title="เปิดเบอร์ใหม่">
-    <div class="header-icon-left">
-      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
-    </div>
-    <div class="header-icon-right">
-      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
-    </div>
-  </mc-header>
+    <mc-header title="{{ 'เปิดเบอร์ใหม่' | translate }}">
+        <div class="header-icon-left w-25">
+          <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+        </div>
+        <div class="header-icon-right w-25 text-right">
+        <mc-dropdown-language></mc-dropdown-language>
+          <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+        </div>
+      </mc-header>
   <div class="mc-flex-wrap">
     <div class="mb-3 mt-3">
       <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
 
       <div class="container-fluid">
         <div class="card">
-          <h5 class="card-header bg-transparent text-center">
-            ถ่ายรูปผู้ขอใช้บริการ
-          </h5>
+          <h5 class="card-header bg-transparent text-center">{{ 'ถ่ายรูปผู้ขอใช้บริการ' | translate }}</h5>
           <div class="card-body ">
             <div class="camera-width">
               <div *ngIf="!openCamera">
                 <img src="assets/images/icon/icon_people.png" class="icon-people" />
               </div>
-              <div [hidden]="!(openCamera && !transaction?.data?.faceRecognition?.imageFaceUser)" class="position-relative">
+              <div [hidden]="!(openCamera && !transaction?.data?.faceRecognition?.imageFaceUser)"
+                class="position-relative">
                 <img src="assets/images/icon/icon_people_line.png" class="icon-people-wrap" />
-                <mc-camera [flip]="true" [countdown]="5" [onTakePhoto]="camera" (completed)="onCameraCompleted($event)" (error)="onCameraError($event)">
+                <mc-camera [flip]="true" [countdown]="5" [onTakePhoto]="camera" (completed)="onCameraCompleted($event)"
+                  (error)="onCameraError($event)">
                 </mc-camera>
               </div>
-              <div class="embed-responsive embed-responsive-4by3 position-relative" [hidden]="!transaction?.data?.faceRecognition?.imageFaceUser">
+              <div class="embed-responsive embed-responsive-4by3 position-relative"
+                [hidden]="!transaction?.data?.faceRecognition?.imageFaceUser">
                 <div class="embed-responsive-item center">
-                  <img class="img-result" [src]="'data:image/png;base64,'+ transaction?.data?.faceRecognition?.imageFaceUser" />
+                  <img class="img-result"
+                    [src]="'data:image/png;base64,'+ transaction?.data?.faceRecognition?.imageFaceUser" />
                 </div>
               </div>
 
@@ -40,19 +43,23 @@
               <div class="border-right p-3 col-12">
                 <!-- WEB Step -->
                 <div *ngIf="!isAisNative()">
-                  <a href="#" (click)="$event.preventDefault(); onOpenCamera(); camera.next();" class="text-pink" *ngIf="!transaction?.data?.faceRecognition?.imageFaceUser">
+                  <a href="#" (click)="$event.preventDefault(); onOpenCamera(); camera.next();" class="text-pink"
+                    *ngIf="!transaction?.data?.faceRecognition?.imageFaceUser">
                     <img src="assets/images/icon/icon-camera.png" class="icon-camera">
-                    <br><p>กรุณากดปุ่มถ่ายรูป</p>
+                    <br>
+                    <p>{{ 'กรุณากดปุ่มถ่ายรูป' | translate }}</p>
                   </a>
-                  <a href="#" (click)="$event.preventDefault(); onClearIdCardImage()" class="text-pink" *ngIf="transaction?.data?.faceRecognition?.imageFaceUser">
-                    ถ่ายรูปใหม่
+                  <a href="#" (click)="$event.preventDefault(); onClearIdCardImage()" class="text-pink"
+                    *ngIf="transaction?.data?.faceRecognition?.imageFaceUser">
+                    {{ 'ถ่ายรูปใหม่' | translate }}
                   </a>
                 </div>
                 <!-- Native Step -->
                 <div *ngIf="isAisNative()">
-                  <a href="#" (click)="$event.preventDefault(); camera.next();" class="text-pink" *ngIf="!transaction?.data?.faceRecognition?.imageFaceUser">
-                    <span *ngIf="!transaction?.data?.faceRecognition?.imageFaceUser">ถ่ายรูป</span>
-                    <span *ngIf="transaction?.data?.faceRecognition?.imageFaceUser">ถ่ายรูปใหม่</span>
+                  <a href="#" (click)="$event.preventDefault(); camera.next();" class="text-pink"
+                    *ngIf="!transaction?.data?.faceRecognition?.imageFaceUser">
+                    <span *ngIf="!transaction?.data?.faceRecognition?.imageFaceUser">{{ 'ถ่ายรูป' | translate }}</span>
+                    <span *ngIf="transaction?.data?.faceRecognition?.imageFaceUser">{{ 'ถ่ายรูปใหม่' | translate }}</span>
                   </a>
                 </div>
               </div>
@@ -68,6 +75,7 @@
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()" [disabled]="!transaction?.data?.faceRecognition?.imageFaceUser">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()"
+      [disabled]="!transaction?.data?.faceRecognition?.imageFaceUser">NEXT</button>
   </mc-footer>
 </div>

@@ -4,12 +4,13 @@ import {
   HammerGestureConfig
 } from '@angular/platform-browser';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { JwtModule, JWT_OPTIONS } from '@auth0/angular-jwt';
 import {
   jwtOptionsFactory,
   ErrorsHandler,
   MyChannelSharedLibsModule,
+  I18nService,
 } from 'mychannel-shared-libs';
 import { AppRoutingModule } from './app-routing.module';
 /* Components */
@@ -44,12 +45,14 @@ import { TranslateModule } from '@ngx-translate/core';
     }),
     SharedModule,
     AppRoutingModule,
+    TranslateModule.forRoot()
   ],
   providers: [
     {
       provide: ErrorHandler,
       useClass: ErrorsHandler
-    }
+    },
+    I18nService
   ],
   bootstrap: [AppComponent]
 })

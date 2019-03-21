@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { environment } from '../environments/environment';
 import { debounceTime } from 'rxjs/operators';
 import { ROUTE_DEASHBOARD_MAIN_MENU_PAGE } from './dashboard/constants/route-path.constant';
+import { TranslateService } from '@ngx-translate/core';
 
 const { version: version } = require('../../package.json');
 
@@ -27,6 +28,7 @@ export class AppComponent {
     private pageActivityService: PageActivityService,
     private router: Router,
     private homeService: HomeService,
+    private translation: TranslateService
   ) {
     this.version = (environment.production ? '' : `[${environment.name}] `) + version;
     this.initails();
@@ -47,7 +49,7 @@ export class AppComponent {
     let devAccessToken = '';
     if (this.isDeveloperMode()) {
       // tslint:disable-next-line:max-line-length
-      devAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlBLVFRFU1QwMSIsInRpbWVzdGFtcCI6IjIwMTgwNzEzMTQ1MiIsImxvY2F0aW9uQ29kZSI6IjEyMTMiLCJpYXQiOjE1MzE0NjgxOTAsImV4cCI6MjUzNDA2MDE5MH0.u4DpOA_uoF98SXwWzmi5F1sXqOPuPB13tzuNOP1TW9o';
+      devAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlBLVFRFU1QwMSIsInRpbWVzdGFtcCI6IjIwMTgwNzEzMTQ1MiIsImxvY2F0aW9uQ29kZSI6IjEyMTMiLCJjaGFubmVsVHlwZSI6InNtYXJ0LW9yZGVyIiwiaWF0IjoxNTMxNDY4MTkwLCJleHAiOjI1MzQwNjAxOTB9.PM1KeaDnmVd1BRxloC8SYNjKq1_kEnt51MAfAs67GpE';
     }
     this.tokenService.checkTokenExpired(devAccessToken);
   }
@@ -94,12 +96,12 @@ export class AppComponent {
       this.alertService.notify({
         type: 'question',
         showConfirmButton: true,
-        confirmButtonText: 'ทำรายการต่อ',
-        cancelButtonText: 'ยกเลิก',
+        confirmButtonText: this.translation.instant('ทำรายการต่อ'),
+        cancelButtonText: this.translation.instant('ยกเลิก'),
         showCancelButton: true,
         reverseButtons: true,
         allowEscapeKey: false,
-        text: 'คุณไม่ได้ทำรายการภายในเวลาที่กำหนด ต้องการทำรายการต่อหรือไม่?',
+        text: this.translation.instant('คุณไม่ได้ทำรายการภายในเวลาที่กำหนด ต้องการทำรายการต่อหรือไม่?'),
         timer: 180000
       }).then((data) => {
         if (!data.value) {
