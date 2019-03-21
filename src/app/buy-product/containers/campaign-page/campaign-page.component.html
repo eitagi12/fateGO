@@ -143,7 +143,7 @@
                   <span *ngIf="privilege?.minimumAdvancePay">
                     ฿{{ privilege?.minimumAdvancePay | number }}
                   </span>
-                  <span *ngIf="privilege?.minimumAdvancePay && privilege?.maximumAdvancePay 
+                  <span *ngIf="privilege?.minimumAdvancePay && privilege?.maximumAdvancePay
                     && (+privilege?.minimumAdvancePay < +privilege?.maximumAdvancePay)">
                     - </span>
                   <span *ngIf="+privilege?.minimumAdvancePay < +privilege?.maximumAdvancePay">
