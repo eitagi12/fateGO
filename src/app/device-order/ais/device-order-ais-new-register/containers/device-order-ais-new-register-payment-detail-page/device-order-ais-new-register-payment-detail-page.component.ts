@@ -331,9 +331,15 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
   }
 
   onNext() {
-    this.transaction.data.payment = Object.assign({
+    const payment: any = {
       paymentForm: this.isFullPayment() ? 'FULL' : 'INSTALLMENT'
-    }, this.paymentDetailForm.value);
+    };
+
+    this.transaction.data.payment = Object.assign(payment, this.paymentDetailForm.value);
+
+    if (this.isAdvancePay()) {
+      this.transaction.data.advancePayment = Object.assign(payment, this.paymentAdvancePayForm.value);
+    }
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CUSTOMER_INFO_PAGE]);
   }
 
