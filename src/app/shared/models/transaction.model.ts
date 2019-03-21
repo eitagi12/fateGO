@@ -100,7 +100,6 @@ export interface Customer {
   issuingCountry?: string;
   nationality?: string;
   imageReadPassport?: string;
-  engFlag?: string;
 
 }
 
