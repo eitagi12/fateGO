@@ -108,8 +108,14 @@ export class CreatePreToPostService {
         }, /*required*/
         onTopPackages: [],
         promotionActionStatus1: 'Add', /*When SelectedPackages*/
-        engFlag: customer.engFlag || 'N'
       };
+
+      // เช็ค Eng Flag จากจังหวัด
+      if (customer.province && !!customer.province.match(/[a-z]/i)) {
+        data.engFlag = 'Y';
+      } else {
+        data.engFlag = 'N';
+      }
 
       if (action === TransactionAction.READ_PASSPORT || action === TransactionAction.READ_PASSPORT_REPI) {
         data.accountSubCat = 'FOR';
