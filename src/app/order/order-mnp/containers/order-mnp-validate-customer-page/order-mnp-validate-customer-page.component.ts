@@ -22,6 +22,7 @@ export class OrderMnpValidateCustomerPageComponent implements OnInit, OnDestroy 
   identityValid: boolean = false;
   identity: string;
   billDeliveryAddress: BillDeliveryAddress;
+  progressReadCard: number;
 
   constructor(
     private router: Router,
@@ -43,6 +44,10 @@ export class OrderMnpValidateCustomerPageComponent implements OnInit, OnDestroy 
 
   onCompleted(identity: string): void {
     this.identity = identity;
+  }
+
+  onProgress(progress: number): void {
+    this.progressReadCard = progress;
   }
 
   onReadCard(): void {

@@ -19,6 +19,7 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
   zipcode: string;
   readCardValid: boolean;
   mobileNo: string;
+  progressReadCard: number;
 
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
@@ -58,6 +59,10 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
     this.profile = profile;
 
     this.onNext();
+  }
+
+  onProgress(progress: number): void {
+    this.progressReadCard = progress;
   }
 
   onBack(): void {

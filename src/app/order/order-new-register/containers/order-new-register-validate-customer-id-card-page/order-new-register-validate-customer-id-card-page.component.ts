@@ -24,6 +24,7 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
   zipcode: string;
   readCardValid: boolean;
   billDeliveryAddress: BillDeliveryAddress;
+  progressReadCard: number;
 
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
@@ -96,6 +97,10 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
     this.profile = profile;
     // auto next
     this.onNext();
+  }
+
+  onProgress(progress: number): void {
+    this.progressReadCard = progress;
   }
 
   onHome(): void {

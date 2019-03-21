@@ -23,6 +23,7 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
   zipcode: string;
   readCardValid: boolean;
   billDeliveryAddress: BillDeliveryAddress;
+  progressReadCard: number;
 
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
@@ -69,6 +70,10 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
     this.profile = profile;
     // auto next
     this.onNext();
+  }
+
+  onProgress(progress: number): void {
+    this.progressReadCard = progress;
   }
 
   onBack(): void {
