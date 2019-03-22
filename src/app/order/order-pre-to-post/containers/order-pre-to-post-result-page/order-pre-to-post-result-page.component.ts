@@ -13,7 +13,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class OrderPreToPostResultPageComponent implements OnInit {
 
-  wizards = WIZARD_ORDER_PRE_TO_POST;
+  wizards: string[] = WIZARD_ORDER_PRE_TO_POST;
 
   transaction: Transaction;
   serviceChange: any;
@@ -29,7 +29,7 @@ export class OrderPreToPostResultPageComponent implements OnInit {
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.pageLoadingService.openLoading();
     this.createPreToPostService.createPreToPost(this.transaction)
       .then(resp => {
@@ -59,7 +59,7 @@ export class OrderPreToPostResultPageComponent implements OnInit {
       });
   }
 
-  onMainMenu() {
+  onMainMenu(): void {
     this.homeService.goToHome();
   }
 

@@ -18,14 +18,13 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 })
 export class OrderMnpSummaryPageComponent implements OnInit {
 
-  wizards = WIZARD_ORDER_MNP;
+  wizards: string[] = WIZARD_ORDER_MNP;
 
   transaction: Transaction;
   confirmCustomerInfo: ConfirmCustomerInfo;
   billingInfo: BillingInfo;
   mailBillingInfo: MailBillingInfo;
   telNoBillingInfo: TelNoBillingInfo;
-
 
   constructor(
     private router: Router,
@@ -35,7 +34,7 @@ export class OrderMnpSummaryPageComponent implements OnInit {
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const customer = this.transaction.data.customer;
     const mainPackage = this.transaction.data.mainPackage;
     const billingInformation = this.transaction.data.billingInformation;
@@ -78,15 +77,15 @@ export class OrderMnpSummaryPageComponent implements OnInit {
     };
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_MNP_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_ORDER_MNP_AGREEMENT_SIGN_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

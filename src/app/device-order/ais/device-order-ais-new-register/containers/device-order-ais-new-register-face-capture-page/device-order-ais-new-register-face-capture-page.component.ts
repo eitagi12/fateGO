@@ -17,7 +17,7 @@ import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.c
 })
 export class DeviceOrderAisNewRegisterFaceCapturePageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
   shoppingCart: ShoppingCart;
 
   openCamera: boolean;
@@ -35,12 +35,12 @@ export class DeviceOrderAisNewRegisterFaceCapturePageComponent implements OnInit
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.openCamera = !!(this.transaction.data.faceRecognition && this.transaction.data.faceRecognition.imageFaceUser);
   }
 
-  onBack() {
+  onBack(): void {
     // if (this.transaction.data.action === TransactionAction.READ_CARD) {
     //   this.router.navigate([]);
     // } else {
@@ -49,19 +49,19 @@ export class DeviceOrderAisNewRegisterFaceCapturePageComponent implements OnInit
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGREEMENT_SIGN_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_COMPARE_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onOpenCamera() {
+  onOpenCamera(): void {
     this.openCamera = true;
   }
 
-  onCameraCompleted(image: string) {
+  onCameraCompleted(image: string): void {
 
     const cropOption = {
       sizeWidth: 160,
@@ -83,11 +83,11 @@ export class DeviceOrderAisNewRegisterFaceCapturePageComponent implements OnInit
     });
   }
 
-  onCameraError(error: string) {
+  onCameraError(error: string): void {
     this.alertService.error(error);
   }
 
-  onClearIdCardImage() {
+  onClearIdCardImage(): void {
     this.transaction.data.faceRecognition.imageFaceUser = null;
   }
 

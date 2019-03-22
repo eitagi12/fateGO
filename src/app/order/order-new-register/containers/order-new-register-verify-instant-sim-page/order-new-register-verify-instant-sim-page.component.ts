@@ -17,7 +17,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class OrderNewRegisterVerifyInstantSimPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_NEW_REGISTER;
+  wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
 
   transaction: Transaction;
   simSerial: SimSerial;
@@ -34,7 +34,7 @@ export class OrderNewRegisterVerifyInstantSimPageComponent implements OnInit, On
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     delete this.transaction.data.simCard;
   }
 
@@ -66,15 +66,15 @@ export class OrderNewRegisterVerifyInstantSimPageComponent implements OnInit, On
       });
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_NEW_REGISTER_SELECT_NUMBER_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_ORDER_NEW_REGISTER_SELECT_PACKAGE_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

@@ -25,7 +25,7 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
   @ViewChild('conditionTemplate')
   conditionTemplate: any;
 
-  wizards = WIZARD_ORDER_PRE_TO_POST;
+  wizards: string[] = WIZARD_ORDER_PRE_TO_POST;
 
   transaction: Transaction;
   promotionShelves: PromotionShelve[];
@@ -50,11 +50,11 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
     }
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.callService();
   }
 
-  onBack() {
+  onBack(): void {
     const action = this.transaction.data.action;
     if (action === TransactionAction.READ_CARD_REPI) {
       this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE]);
@@ -67,7 +67,7 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
     }
   }
 
-  onNext() {
+  onNext(): void {
     if (this.isPackageOneLove()) {
       this.router.navigate([ROUTE_ORDER_PRE_TO_POST_ONE_LOVE_PAGE]);
     } else {
@@ -75,7 +75,7 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
     }
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
@@ -83,11 +83,11 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
     this.transactionService.update(this.transaction);
   }
 
-  onCompleted(promotion) {
+  onCompleted(promotion: any): void {
     this.transaction.data.mainPackage = promotion;
   }
 
-  callService() {
+  callService(): void {
 
     this.pageLoadingService.openLoading();
     const billingInformation = this.transaction.data.billingInformation;
@@ -158,7 +158,7 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
     // });
   }
 
-  onTermConditions(condition: any) {
+  onTermConditions(condition: any): void {
     if (!condition) {
       this.alertService.warning('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
       return;

@@ -9,7 +9,7 @@ export class DeviceOrderAisExistingEbillingAddressPageComponent implements OnIni
 
   constructor() { }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
 }

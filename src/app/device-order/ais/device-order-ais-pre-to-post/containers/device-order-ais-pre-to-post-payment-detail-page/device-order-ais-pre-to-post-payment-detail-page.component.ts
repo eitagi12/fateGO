@@ -28,13 +28,13 @@ export const CASH_AND_CREDIT_CARD_PAYMENT = 'CC/CA';
 })
 export class DeviceOrderAisPreToPostPaymentDetailPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
   shoppingCart: ShoppingCart;
   priceOption: PriceOption;
   transaction: Transaction;
 
   receiptInfo: ReceiptInfo;
-  receiptInfoValid = true;
+  receiptInfoValid: boolean = true;
 
   paymentDetail: PaymentDetail;
   selectPaymentDetail: SelectPaymentDetail;
@@ -56,7 +56,6 @@ export class DeviceOrderAisPreToPostPaymentDetailPageComponent implements OnInit
   paymentForm: FormGroup;
   advancePaymentForm: FormGroup;
 
-
   constructor(
     private router: Router,
     private fb: FormBuilder,
@@ -69,7 +68,7 @@ export class DeviceOrderAisPreToPostPaymentDetailPageComponent implements OnInit
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
 
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
 
@@ -160,14 +159,14 @@ export class DeviceOrderAisPreToPostPaymentDetailPageComponent implements OnInit
     this.transactionService.update(this.transaction);
   }
 
-  onBack() {
+  onBack(): void {
     delete this.transaction.data.payment;
     delete this.transaction.data.advancePayment;
 
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     const paymentType = this.selectPaymentDetail.paymentType;
     const qrCode = this.selectPaymentDetail.qrCode;
     const bank = this.selectPaymentDetail.bank;
@@ -193,19 +192,19 @@ export class DeviceOrderAisPreToPostPaymentDetailPageComponent implements OnInit
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CURRENT_INFO_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onReceiptInfoCompleted(receiptInfo: ReceiptInfo) {
+  onReceiptInfoCompleted(receiptInfo: ReceiptInfo): void {
     this.transaction.data.receiptInfo = receiptInfo;
   }
 
-  onReceiptInfoError(error: boolean) {
+  onReceiptInfoError(error: boolean): void {
     this.receiptInfoValid = error;
   }
 
-  getFullAddress(customer: Customer) {
+  getFullAddress(customer: Customer): any {
     if (!customer) {
       return '-';
     }
@@ -225,31 +224,30 @@ export class DeviceOrderAisPreToPostPaymentDetailPageComponent implements OnInit
     return fullAddress || '-';
   }
 
-  onSelectPaymentType(paymentType: string) {
+  onSelectPaymentType(paymentType: string): void {
     this.selectPaymentDetail.paymentType = paymentType;
   }
-  onSelectQRCode(qrCode: PaymentDetailQRCode) {
+  onSelectQRCode(qrCode: PaymentDetailQRCode): void {
     this.selectPaymentDetail.qrCode = Object.assign({}, qrCode);
     this.selectPaymentDetailAdvancePay.qrCode = Object.assign({}, qrCode);
   }
-  onSelectBank(bank: PaymentDetailBank) {
+  onSelectBank(bank: PaymentDetailBank): void {
     this.selectPaymentDetail.bank = Object.assign({}, bank);
     this.selectPaymentDetail.bank.installments = undefined;
     this.paymentDetail.installments = bank.installments; // Object.assign({}, bank.installments);
   }
-  onSelectInstallment(installment: PaymentDetailInstallment[]) {
+  onSelectInstallment(installment: PaymentDetailInstallment[]): void {
     this.selectPaymentDetail.bank.installments = Object.assign({}, installment);
   }
 
-
-  onSelectPaymentTypeAdvancePay(paymentType: string) {
+  onSelectPaymentTypeAdvancePay(paymentType: string): void {
     this.selectPaymentDetailAdvancePay.paymentType = paymentType;
   }
-  onSelectQRCodeAdvancePay(qrCode: PaymentDetailQRCode) {
+  onSelectQRCodeAdvancePay(qrCode: PaymentDetailQRCode): void {
     this.selectPaymentDetail.qrCode = Object.assign({}, qrCode);
     this.selectPaymentDetailAdvancePay.qrCode = Object.assign({}, qrCode);
   }
-  onSelectBankAdvancePay(bank: PaymentDetailBank) {
+  onSelectBankAdvancePay(bank: PaymentDetailBank): void {
     this.selectPaymentDetailAdvancePay.bank = Object.assign({}, bank);
     this.selectPaymentDetailAdvancePay.bank.installments = undefined;
   }
@@ -368,7 +366,7 @@ export class DeviceOrderAisPreToPostPaymentDetailPageComponent implements OnInit
     return '';
   }
 
-  getQRCode() {
+  getQRCode(): any {
     return [
       {
         id: 1,
@@ -385,7 +383,7 @@ export class DeviceOrderAisPreToPostPaymentDetailPageComponent implements OnInit
     ];
   }
 
-  groupPrivilegeTradeBankByAbb(banks: PaymentDetailBank[]) {
+  groupPrivilegeTradeBankByAbb(banks: PaymentDetailBank[]): any {
 
     const newPrivilegTradeBankByAbbs = new Array<PaymentDetailBank>();
     const grouped = this.groupBy(banks, (bank: PaymentDetailBank) => bank.abb);
@@ -406,7 +404,7 @@ export class DeviceOrderAisPreToPostPaymentDetailPageComponent implements OnInit
     return newPrivilegTradeBankByAbbs;
   }
 
-  private groupBy(list: any, keyGetter: any) {
+  private groupBy(list: any, keyGetter: any): any {
     const map = new Map();
     list.forEach((item) => {
       const key = keyGetter(item);
@@ -420,7 +418,7 @@ export class DeviceOrderAisPreToPostPaymentDetailPageComponent implements OnInit
     return map;
   }
 
-  public getBanksInstallmentDatas(banks: PaymentDetailBank[]) {
+  public getBanksInstallmentDatas(banks: PaymentDetailBank[]): any {
     const installmentDatas = new Array<PaymentDetailInstallment>();
     banks.forEach((bank: any) => {
       const installmentPercentage = this.getBankInstallmentPercentage(bank.installment) ?
@@ -449,17 +447,17 @@ export class DeviceOrderAisPreToPostPaymentDetailPageComponent implements OnInit
       return a.installmentMonth > b.installmentMonth ? -1 : 1;
     });
   }
-  public getBankInstallmentMonth(installmentRemark: string) {
+  public getBankInstallmentMonth(installmentRemark: string): any {
     const month = this.getInstallmentFormRemark(installmentRemark)['month'];
     return month !== undefined ? month : 0;
   }
 
-  public getBankInstallmentPercentage(installmentRemark: string) {
+  public getBankInstallmentPercentage(installmentRemark: string): any {
     const percentage = this.getInstallmentFormRemark(installmentRemark)['percentage'];
     return percentage !== undefined ? percentage : 0;
   }
 
-  private getInstallmentFormRemark(installmentRemark: string) {
+  private getInstallmentFormRemark(installmentRemark: string): any {
     const installment = {
       percentage: 0,
       month: 0
@@ -476,4 +474,3 @@ export class DeviceOrderAisPreToPostPaymentDetailPageComponent implements OnInit
     }
   }
 }
-

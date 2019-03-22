@@ -17,8 +17,8 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
   styleUrls: ['./order-pre-to-post-merge-billing-page.component.scss']
 })
 export class OrderPreToPostMergeBillingPageComponent implements OnInit, OnDestroy {
-  readonly REGEX_NET_EXTREME = /[Nn]et[Ee]xtreme/;
-  wizards = WIZARD_ORDER_PRE_TO_POST;
+  readonly REGEX_NET_EXTREME: any = /[Nn]et[Ee]xtreme/;
+  wizards: string[] = WIZARD_ORDER_PRE_TO_POST;
 
   transaction: Transaction;
 
@@ -34,7 +34,7 @@ export class OrderPreToPostMergeBillingPageComponent implements OnInit, OnDestro
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.billingCyles = this.getBillingCycles();
     this.mergeBilling = this.transaction.data.billingInformation.mergeBilling;
   }
@@ -68,7 +68,7 @@ export class OrderPreToPostMergeBillingPageComponent implements OnInit, OnDestro
     return mainPackage && this.REGEX_NET_EXTREME.test(mainPackage.productPkg);
   }
 
-  onBack() {
+  onBack(): void {
     if (this.isPackageNetExtreme()) {
       if (this.transaction.data.onTopPackage) {
         this.router.navigate([ROUTE_ORDER_PRE_TO_POST_ON_TOP_PAGE]);
@@ -80,15 +80,15 @@ export class OrderPreToPostMergeBillingPageComponent implements OnInit, OnDestro
     }
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
-  onCompleted(even: any) {
+  onCompleted(even: any): void {
     this.transaction.data.billingInformation.mergeBilling = even;
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

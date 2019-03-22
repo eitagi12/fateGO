@@ -21,7 +21,6 @@ declare var swal: any;
 export class AppComponent {
   version: string;
 
-
   constructor(
     private errorsService: ErrorsService,
     private tokenService: TokenService,
@@ -45,7 +44,7 @@ export class AppComponent {
     }
   }
 
-  initails() {
+  initails(): void {
     setTheme('bs4');
   }
 
@@ -53,7 +52,7 @@ export class AppComponent {
     return (environment.production ? '' : `[${environment.name}] `) + version;
   }
 
-  hoemeHandler() {
+  hoemeHandler(): void {
     this.homeService.callback = () => {
       if (environment.name === 'LOCAL') {
         window.location.href = '/main-menu';
@@ -63,7 +62,7 @@ export class AppComponent {
     };
   }
 
-  tokenHandler() {
+  tokenHandler(): void {
     let devAccessToken = '';
     if (this.isDeveloperMode()) {
       // tslint:disable-next-line:max-line-length
@@ -72,7 +71,7 @@ export class AppComponent {
     this.tokenService.checkTokenExpired(devAccessToken);
   }
 
-  errorHandler() {
+  errorHandler(): void {
     this.errorsService.getUnauthorized().subscribe((observer) => {
       this.alertService.error('Unauthorized: Access is denied due to invalid credentials.');
     });
@@ -93,7 +92,7 @@ export class AppComponent {
     });
   }
 
-  pageActivityHandler() {
+  pageActivityHandler(): void {
     this.pageActivityService.setTimeout((counter) => {
       const url = this.router.url;
       if (url.indexOf('main-menu') !== -1) {
@@ -134,13 +133,13 @@ export class AppComponent {
     return 'LOCAL' === environment.name;
   }
 
-  onStopPropagation() {
+  onStopPropagation(): void {
     this.router.events.subscribe(path => {
       const select_options = window.document.getElementsByTagName('select');
       for (const key in select_options) {
         if (select_options.hasOwnProperty(key)) {
           const option = select_options[key];
-          option.addEventListener('click', function (e) {
+          option.addEventListener('click', (e) => {
             e.stopPropagation();
           });
         }
@@ -148,7 +147,7 @@ export class AppComponent {
     });
   }
 
-  checkServerTime() {
+  checkServerTime(): void {
     this.http.get('/api/customerportal/currentDate').toPromise()
       .then((resp: any) => {
         const TIME_DIFF_FORMAT = 'YYYY-MM-DD HH:mm:ss';

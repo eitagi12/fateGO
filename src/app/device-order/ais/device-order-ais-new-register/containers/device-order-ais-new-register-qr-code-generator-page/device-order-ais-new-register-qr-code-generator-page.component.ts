@@ -41,15 +41,15 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
   currentDateTime: number;
   currentTimeCounter: BehaviorSubject<number> = new BehaviorSubject(null);
   orderID: string;
-  isPaid = false;
+  isPaid: boolean = false;
   timeCounterRenderer: string;
   textQRCode: string;
   isTimeLowerThanFifthteenSeconds: boolean;
   qrCodePrePostMpayModel: QRodePrePostMpayModel;
-  refreshCount = 1;
-  NEW_LINE = '\n';
+  refreshCount: number = 1;
+  NEW_LINE: string = '\n';
   qrCodeImageSrc: string;
-  startTimeInMininte = 5;
+  startTimeInMininte: number = 5;
   brannerImagePaymentQrCode: ImageBrannerQRCode ;
   mcLoadingQrcodePaymentService: Promise<any>; // for mcLoading
   timeLowerThanOrEqualToZero: boolean;
@@ -73,7 +73,7 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
     this.brannerImagePaymentQrCode = this.qrcodePaymentService.getBrannerImagePaymentQrCodeType(this.payment.paymentQrCodeType);
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.initialOrderID();
     if (this.orderID && this.payment.paymentQrCodeType) {
       this.orderID = `${this.orderID}_${this.refreshCount}`;
@@ -114,24 +114,23 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
     return this.summary([+this.priceOption.trade.promotionPrice + (+this.priceOption.trade.advancePay.amount)]);
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_SUMMARY_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_QUEUE_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  summary(amount: number[]) {
+  summary(amount: number[]): number {
     return amount.reduce((prev, curr) => {
       return prev + curr;
     }, 0);
   }
-
 
   processQRCode(qrCodeResponse: any): void {
     if (qrCodeResponse && qrCodeResponse.data) {
@@ -381,7 +380,6 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
   }
 
 }
-
 
 export class MockQRTesting {
   private mockTHPayGetQRCodeRequest: QRCodeModel = {

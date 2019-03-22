@@ -14,7 +14,7 @@ import { Router } from '@angular/router';
 })
 export class DeviceOrderAisNewRegisterResultPageComponent implements OnInit {
 
-  wizards = WIZARD_ORDER_NEW_REGISTER;
+  wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
   transaction: Transaction;
   isSuccess: boolean;
 
@@ -28,15 +28,15 @@ export class DeviceOrderAisNewRegisterResultPageComponent implements OnInit {
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.isSuccess = true;
   }
 
-  onMainMenu() {
+  onMainMenu(): void {
     this.homeService.goToHome();
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QUEUE_PAGE]);
   }
 

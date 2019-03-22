@@ -9,7 +9,7 @@ export class DeviceOrderAisExistingQrCodeGeneratorPageComponent implements OnIni
 
   constructor() { }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
 }

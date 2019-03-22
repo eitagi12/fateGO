@@ -25,14 +25,14 @@ export class DeviceOrderAisNewRegisterQrCodeQueuePageComponent implements OnInit
     this.priceOption = this.priceOptionService.load();
    }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_RESULT_PAGE]);
   }
 
-  summary(amount: number[]) {
+  summary(amount: number[]): number {
     return amount.reduce((prev, curr) => {
       return prev + curr;
     }, 0);

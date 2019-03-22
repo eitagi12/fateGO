@@ -5,7 +5,6 @@ import { Transaction, Payment } from '../models/transaction.model';
 import { TransactionService } from './transaction.service';
 import { switchMap, map } from 'rxjs/operators';
 
-
 export class QRCodeModel {
   public orderId: string;
   public channel: string;
@@ -53,14 +52,13 @@ export class QRCodePrePostMpayModel {
 })
 export class QRCodePaymentService {
 
-
-  private apiQRCode = '/api/salesportal/mpay/generate-qr-code';
-  private apiQRCodeInquiryCallBackMpay = '/api/salesportal/mpay/check-response-mpay';
-  private apiQRCodeInquiryMpay = '/api/salesportal/mpay/inquiry';
-  private intervalTime = 5000;
-  private initialDelay = 15000;
-  private apiUpdatePostMpay = '/api/salesportal/mpay/mpay-notify';
-  private apiInsertPreMpay = '/api/salesportal/mpay/mpay-insert';
+  private apiQRCode: string = '/api/salesportal/mpay/generate-qr-code';
+  private apiQRCodeInquiryCallBackMpay: string = '/api/salesportal/mpay/check-response-mpay';
+  private apiQRCodeInquiryMpay: string = '/api/salesportal/mpay/inquiry';
+  private intervalTime: number = 5000;
+  private initialDelay: number = 15000;
+  private apiUpdatePostMpay: string = '/api/salesportal/mpay/mpay-notify';
+  private apiInsertPreMpay: string = '/api/salesportal/mpay/mpay-insert';
 
   checkInquiryCallbackMpayRes: BehaviorSubject<any> = new BehaviorSubject(null);
 

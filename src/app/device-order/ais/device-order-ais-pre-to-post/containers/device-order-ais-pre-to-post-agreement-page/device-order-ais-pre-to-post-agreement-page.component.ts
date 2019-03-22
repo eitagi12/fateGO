@@ -9,7 +9,7 @@ export class DeviceOrderAisPreToPostAgreementPageComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
 }

@@ -9,14 +9,13 @@ import { Transaction, TransactionAction } from 'src/app/shared/models/transactio
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 
-
 @Component({
   selector: 'app-order-pre-to-post-otp-page',
   templateUrl: './order-pre-to-post-otp-page.component.html',
   styleUrls: ['./order-pre-to-post-otp-page.component.scss']
 })
 export class OrderPreToPostOtpPageComponent implements OnInit {
-  wizards = WIZARD_ORDER_PRE_TO_POST;
+  wizards: string[] = WIZARD_ORDER_PRE_TO_POST;
   otpForm: FormGroup;
   transaction: Transaction;
   registrationData: any;
@@ -35,7 +34,7 @@ export class OrderPreToPostOtpPageComponent implements OnInit {
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.registrationData = this.transaction.data;
     this.mobileNo = this.registrationData.mainMobile;
     this.createForm();
@@ -46,7 +45,7 @@ export class OrderPreToPostOtpPageComponent implements OnInit {
       otp: ['', [Validators.required, Validators.maxLength(5)]],
     });
   }
-  sendOTP() {
+  sendOTP(): void {
     this.pageLoadingService.openLoading();
     let mobile = this.registrationData.simCard.mobileNo;
 
@@ -65,7 +64,7 @@ export class OrderPreToPostOtpPageComponent implements OnInit {
       });
   }
 
-  verifyOTP() {
+  verifyOTP(): void {
     this.pageLoadingService.openLoading();
     let mobile = this.registrationData.simCard.mobileNo;
 
@@ -109,7 +108,7 @@ export class OrderPreToPostOtpPageComponent implements OnInit {
       });
   }
 
-  alertError(error): void {
+  alertError(error: any): void {
     let errObj: any;
     let errMsg: any;
     let errDetail: any;
@@ -123,13 +122,13 @@ export class OrderPreToPostOtpPageComponent implements OnInit {
     }
     this.alertService.error(errMsg);
   }
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CUSTOMER_PROFILE_PAGE]);
   }
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
-  getRequestUpdatePrepaidIdentata() {
+  getRequestUpdatePrepaidIdentata(): void {
     const customer = this.transaction.data.customer;
     const mobileNo = this.transaction.data.simCard.mobileNo;
     const data: any = {

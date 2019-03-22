@@ -30,7 +30,7 @@ export interface CurrentServices {
 })
 export class OrderPreToPostAggregatePageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_PRE_TO_POST;
+  wizards: string[] = WIZARD_ORDER_PRE_TO_POST;
 
   transaction: Transaction;
   mobileNo: string;
@@ -49,7 +49,7 @@ export class OrderPreToPostAggregatePageComponent implements OnInit, OnDestroy {
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.mobileNo = this.transaction.data.simCard.mobileNo;
 
     this.pageLoadingService.openLoading();
@@ -71,15 +71,15 @@ export class OrderPreToPostAggregatePageComponent implements OnInit, OnDestroy {
       });
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_AGREEMENT_SIGN_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_EAPPLICATION_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

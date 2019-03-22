@@ -47,7 +47,7 @@ export class OrderPreToPostValidateCustomerPageComponent implements OnInit, OnDe
 
   transaction: Transaction;
 
-  identityValid = false;
+  identityValid: boolean = false;
   identity: string;
   ws: any;
   checkCardIntraval: any;
@@ -76,7 +76,7 @@ export class OrderPreToPostValidateCustomerPageComponent implements OnInit, OnDe
     };
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.createTransaction();
 
     if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {
@@ -84,7 +84,7 @@ export class OrderPreToPostValidateCustomerPageComponent implements OnInit, OnDe
     }
   }
 
-  checkCardPresent() {
+  checkCardPresent(): void {
     this.ws = new WebSocket(`${environment.WEB_CONNECT_URL}/VendingAPI`);
 
     this.ws.onopen = () => {
@@ -105,27 +105,27 @@ export class OrderPreToPostValidateCustomerPageComponent implements OnInit, OnDe
 
   }
 
-  onError(valid: boolean) {
+  onError(valid: boolean): void {
     this.identityValid = valid;
   }
 
-  onCompleted(identity: string) {
+  onCompleted(identity: string): void {
     this.identity = identity;
   }
 
-  onReadCard() {
+  onReadCard(): void {
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
   }
 
-  onBack() {
+  onBack(): void {
     this.homeService.goToHome();
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onNext() {
+  onNext(): void {
 
     this.pageLoadingService.openLoading();
 
@@ -220,7 +220,7 @@ export class OrderPreToPostValidateCustomerPageComponent implements OnInit, OnDe
     this.transactionService.save(this.transaction);
   }
 
-  private createTransaction() {
+  private createTransaction(): void {
     this.transaction = {
       data: {
         transactionType: TransactionType.ORDER_PRE_TO_POST,

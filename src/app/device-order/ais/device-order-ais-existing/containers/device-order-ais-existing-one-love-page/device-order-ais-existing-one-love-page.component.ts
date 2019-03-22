@@ -9,7 +9,7 @@ export class DeviceOrderAisExistingOneLovePageComponent implements OnInit {
 
   constructor() { }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
 }

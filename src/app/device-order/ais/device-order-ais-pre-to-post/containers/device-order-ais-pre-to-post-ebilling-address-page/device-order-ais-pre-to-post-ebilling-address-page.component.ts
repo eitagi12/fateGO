@@ -18,7 +18,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 })
 export class DeviceOrderAisPreToPostEbillingAddressPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   transaction: Transaction;
   customerAddress: CustomerAddress;
@@ -40,7 +40,7 @@ export class DeviceOrderAisPreToPostEbillingAddressPageComponent implements OnIn
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const customer = this.transaction.data.customer;
 
     this.http.get('/api/customerportal/newRegister/getAllZipcodes').subscribe((resp: any) => {
@@ -79,7 +79,7 @@ export class DeviceOrderAisPreToPostEbillingAddressPageComponent implements OnIn
     return (this.provinces || []).find((prov: any) => prov.name === provinceName) || {};
   }
 
-  onProvinceSelected(params: any) {
+  onProvinceSelected(params: any): void {
     const province = this.getProvinceByName(params.provinceName);
     const req = {
       provinceId: province.id,
@@ -98,7 +98,7 @@ export class DeviceOrderAisPreToPostEbillingAddressPageComponent implements OnIn
     });
   }
 
-  onAmphurSelected(params: any) {
+  onAmphurSelected(params: any): void {
     const province = this.getProvinceByName(params.provinceName);
     const req = {
       provinceId: province.id,
@@ -118,7 +118,7 @@ export class DeviceOrderAisPreToPostEbillingAddressPageComponent implements OnIn
     });
   }
 
-  onTumbolSelected(params: any) {
+  onTumbolSelected(params: any): void {
     const province = this.getProvinceByName(params.provinceName);
     this.http.get('/api/customerportal/newRegister/queryZipcode', {
       params: {
@@ -131,7 +131,7 @@ export class DeviceOrderAisPreToPostEbillingAddressPageComponent implements OnIn
     });
   }
 
-  onZipCodeSelected(zipCode: string) {
+  onZipCodeSelected(zipCode: string): void {
     this.http.get('/api/customerportal/newRegister/getProvinceIdByZipcode', {
       params: { zipcode: zipCode }
     }).toPromise()
@@ -150,19 +150,19 @@ export class DeviceOrderAisPreToPostEbillingAddressPageComponent implements OnIn
       });
   }
 
-  onCompleted(value: any) {
+  onCompleted(value: any): void {
     this.customerAddressTemp = value;
   }
 
-  onError(valid: boolean) {
+  onError(valid: boolean): void {
     this.ebillingAddressValid = valid;
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.transaction.data.customer = Object.assign(
       this.transaction.data.customer,
       this.customerAddressTemp || this.customerAddress
@@ -171,7 +171,7 @@ export class DeviceOrderAisPreToPostEbillingAddressPageComponent implements OnIn
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
@@ -179,4 +179,3 @@ export class DeviceOrderAisPreToPostEbillingAddressPageComponent implements OnIn
     this.transactionService.update(this.transaction);
   }
 }
-

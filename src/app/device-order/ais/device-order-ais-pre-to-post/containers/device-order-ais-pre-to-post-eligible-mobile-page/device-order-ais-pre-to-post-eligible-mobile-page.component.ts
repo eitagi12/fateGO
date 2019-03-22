@@ -34,7 +34,7 @@ export interface BillingAccount {
 })
 export class DeviceOrderAisPreToPostEligibleMobilePageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
   eligibleMobiles: Array<EligibleMobile>;
   selectMobileNo: EligibleMobile;
   transaction: Transaction;
@@ -55,7 +55,7 @@ export class DeviceOrderAisPreToPostEligibleMobilePageComponent implements OnIni
     };
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (this.transaction.data.customer) {
       this.idCardNo = this.transaction.data.customer.idCardNo;
       this.getMobileList();
@@ -64,7 +64,7 @@ export class DeviceOrderAisPreToPostEligibleMobilePageComponent implements OnIni
     }
   }
 
-  getMobileList() {
+  getMobileList(): void {
     this.http.get(`/api/customerportal/newRegister/${this.idCardNo}/queryPrepaidMobileList`).toPromise()
       .then((resp: any) => {
         const prepaidMobileList = resp.data.prepaidMobileList || [];
@@ -74,7 +74,7 @@ export class DeviceOrderAisPreToPostEligibleMobilePageComponent implements OnIni
       });
   }
 
-  mapPrepaidMobileNo(mobileList) {
+  mapPrepaidMobileNo(mobileList: any): void {
     const mobiles: Array<EligibleMobile> = new Array<EligibleMobile>();
     mobileList.forEach(element => {
       mobiles.push({ mobileNo: element.mobileNo, mobileStatus: element.status });
@@ -82,11 +82,11 @@ export class DeviceOrderAisPreToPostEligibleMobilePageComponent implements OnIni
     this.eligibleMobiles = mobiles;
   }
 
-  onComplete(eligibleMobile: EligibleMobile) {
+  onComplete(eligibleMobile: EligibleMobile): void {
     this.selectMobileNo = eligibleMobile;
   }
 
-  onBack() {
+  onBack(): void {
     const action = this.transaction.data.action;
     if (action === TransactionAction.READ_CARD) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
@@ -95,7 +95,7 @@ export class DeviceOrderAisPreToPostEligibleMobilePageComponent implements OnIni
     }
   }
 
-  onNext() {
+  onNext(): void {
     this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo, persoSim: false };
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_PAYMENT_DETAIL_PAGE]);
   }

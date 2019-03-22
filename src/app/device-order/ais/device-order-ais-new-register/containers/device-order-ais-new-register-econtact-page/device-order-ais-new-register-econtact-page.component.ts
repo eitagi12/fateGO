@@ -21,7 +21,7 @@ import { DecimalPipe } from '@angular/common';
   providers: [IdCardPipe, DecimalPipe]
 })
 export class DeviceOrderAisNewRegisterEcontactPageComponent implements OnInit {
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   priceOption: PriceOption;
   transaction: Transaction;
@@ -46,26 +46,25 @@ export class DeviceOrderAisNewRegisterEcontactPageComponent implements OnInit {
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.callService();
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_SUMMARY_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_EAPPLICATION_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  callService() {
+  callService(): void {
     // http://10.137.16.46:8080/api/salesportal/promotion-shelves/promotion/condition
-
 
     const user = this.tokenService.getUser();
     const campaign: any = this.priceOption.campaign || {};
@@ -113,7 +112,6 @@ export class DeviceOrderAisNewRegisterEcontactPageComponent implements OnInit {
         docType: 'ECONTRACT',
         location: user.locationCode
       };
-
 
       return this.http.post('/api/salesportal/generate-e-document', params).toPromise().then((eDocResp: any) => {
         return eDocResp.data || '';

@@ -32,13 +32,13 @@ export class DeviceOrderAisNewRegisterAggregatePageComponent implements OnInit, 
     this.payment = this.transaction.data.payment;
   }
 
-  ngOnInit() { }
+  ngOnInit(): void { }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_COMPARE_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     if (this.payment.paymentType === 'CREDIT' || this.payment.paymentType === 'DEBIT') {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QUEUE_PAGE]);
     } else if (this.payment.paymentType === 'QR_CODE') {
@@ -47,7 +47,7 @@ export class DeviceOrderAisNewRegisterAggregatePageComponent implements OnInit, 
 
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
@@ -55,7 +55,7 @@ export class DeviceOrderAisNewRegisterAggregatePageComponent implements OnInit, 
     // this.transactionService.update(this.transaction);
   }
 
-  summary(amount: number[]) {
+  summary(amount: number[]): number {
     return amount.reduce((prev, curr) => {
       return prev + curr;
     }, 0);

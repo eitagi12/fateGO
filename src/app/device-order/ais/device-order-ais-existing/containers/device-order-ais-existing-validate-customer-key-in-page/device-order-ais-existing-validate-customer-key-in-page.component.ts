@@ -9,7 +9,7 @@ export class DeviceOrderAisExistingValidateCustomerKeyInPageComponent implements
 
   constructor() { }
 
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
 }

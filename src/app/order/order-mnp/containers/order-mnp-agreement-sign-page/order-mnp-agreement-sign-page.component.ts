@@ -17,7 +17,7 @@ import { CreateNewRegisterService } from 'src/app/shared/services/create-new-reg
 })
 export class OrderMnpAgreementSignPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_MNP;
+  wizards: string[] = WIZARD_ORDER_MNP;
 
   transaction: Transaction;
   signedSignatureSubscription: Subscription;
@@ -37,25 +37,25 @@ export class OrderMnpAgreementSignPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (!this.transaction.data.customer.imageSignature) {
       this.onSigned();
     }
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_MNP_SUMMARY_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_ORDER_MNP_EAPPLICATION_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onSigned() {
+  onSigned(): void {
     const user: User = this.tokenService.getUser();
     this.signedOpenSubscription = this.aisNativeService.openSigned(
       ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'SignaturePad'

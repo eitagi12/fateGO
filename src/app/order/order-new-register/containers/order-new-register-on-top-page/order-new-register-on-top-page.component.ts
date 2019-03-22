@@ -19,7 +19,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class OrderNewRegisterOnTopPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_NEW_REGISTER;
+  wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
 
   transaction: Transaction;
   promotionShelves: PromotionShelve[];
@@ -34,11 +34,11 @@ export class OrderNewRegisterOnTopPageComponent implements OnInit, OnDestroy {
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.callService();
   }
 
-  callService() {
+  callService(): void {
     this.pageLoadingService.openLoading();
     // /api/customerportal/newRegister/queryOnTopPackage?orderType=Change%20Charge%20Type&billingSystem=IRB
     this.http.get('/api/customerportal/newRegister/queryOnTopPackage', {
@@ -90,7 +90,7 @@ export class OrderNewRegisterOnTopPageComponent implements OnInit, OnDestroy {
 
   }
 
-  onBack() {
+  onBack(): void {
     if (this.transaction.data.mainPackageOneLove) {
       this.router.navigate([ROUTE_ORDER_NEW_REGISTER_ONE_LOVE_PAGE]);
     } else {
@@ -98,7 +98,7 @@ export class OrderNewRegisterOnTopPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  onCompleted(promotion: any) {
+  onCompleted(promotion: any): void {
     this.transaction.data.mainPackage = promotion;
   }
 
@@ -106,9 +106,9 @@ export class OrderNewRegisterOnTopPageComponent implements OnInit, OnDestroy {
     this.transactionService.update(this.transaction);
   }
 
-  onTermConditions() { }
+  onTermConditions(): void { }
 
-  onNext() {
+  onNext(): void {
     if (this.isPackageNetExtreme()) {
       this.router.navigate([ROUTE_ORDER_NEW_REGISTER_MERGE_BILLING_PAGE]);
     } else {
@@ -116,7 +116,7 @@ export class OrderNewRegisterOnTopPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

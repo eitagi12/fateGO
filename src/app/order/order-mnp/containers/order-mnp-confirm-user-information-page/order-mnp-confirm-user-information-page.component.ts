@@ -21,7 +21,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_MNP;
+  wizards: string[] = WIZARD_ORDER_MNP;
 
   transaction: Transaction;
   confirmCustomerInfo: ConfirmCustomerInfo;
@@ -49,7 +49,7 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
     }
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const customer = this.transaction.data.customer;
     const mainPackage = this.transaction.data.mainPackage;
     const simCard = this.transaction.data.simCard;
@@ -84,7 +84,7 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
     this.initBillingInfo();
   }
 
-  initBillingInfo() {
+  initBillingInfo(): void {
     const customer = this.transaction.data.customer;
     const billingInformation = this.transaction.data.billingInformation;
     const mergeBilling = billingInformation.mergeBilling;
@@ -194,7 +194,7 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
     });
   }
 
-  onMailBillingInfoCompleted(mailBillingInfo: any) {
+  onMailBillingInfoCompleted(mailBillingInfo: any): void {
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData || {};
 
@@ -206,16 +206,15 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
     this.transaction.data.billingInformation.billCycleData = billCycleData;
   }
 
-  onTelNoBillingError(valid: boolean) {
+  onTelNoBillingError(valid: boolean): void {
     this.isTelNoBillingValid = valid;
   }
 
-
-  onMailBillingInfoError(valid: boolean) {
+  onMailBillingInfoError(valid: boolean): void {
     this.isMailBillingInfoValid = valid;
   }
 
-  onTelNoBillingCompleted(telNoBilling: any) {
+  onTelNoBillingCompleted(telNoBilling: any): void {
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData || {};
 
@@ -225,7 +224,7 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
     this.transaction.data.billingInformation.billCycleData = billCycleData;
   }
 
-  onBack() {
+  onBack(): void {
     if (this.isPackageNetExtreme()) {
       this.router.navigate([ROUTE_ORDER_MNP_MERGE_BILLING_PAGE]);
     } else {
@@ -237,7 +236,7 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
     }
   }
 
-  onNext() {
+  onNext(): void {
     if (!this.customerValid()) {
       this.alertService.warning('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร');
       return;
@@ -252,20 +251,19 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
     this.router.navigate([ROUTE_ORDER_MNP_SUMMARY_PAGE]);
   }
 
-
-  onEditMergeBill() {
+  onEditMergeBill(): void {
     this.router.navigate([ROUTE_ORDER_MNP_MERGE_BILLING_PAGE]);
   }
 
-  onEditBilling() {
+  onEditBilling(): void {
     this.router.navigate([ROUTE_ORDER_MNP_EBILLING_PAGE]);
   }
 
-  onEditAddress() {
+  onEditAddress(): void {
     this.router.navigate([ROUTE_ORDER_MNP_EBILLING_ADDRESS_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

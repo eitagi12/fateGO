@@ -18,7 +18,7 @@ import { HttpClient } from '@angular/common/http';
 export class OrderNewRegisterValidateCustomerPageComponent implements OnInit, OnDestroy {
 
   transaction: Transaction;
-  identityValid = false;
+  identityValid: boolean = false;
   identity: string;
   billDeliveryAddress: BillDeliveryAddress;
 
@@ -30,31 +30,31 @@ export class OrderNewRegisterValidateCustomerPageComponent implements OnInit, On
     private http: HttpClient,
   ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.createTransaction();
   }
 
-  onError(valid: boolean) {
+  onError(valid: boolean): void {
     this.identityValid = valid;
   }
 
-  onCompleted(identity: string) {
+  onCompleted(identity: string): void {
     this.identity = identity;
   }
 
-  onReadCard() {
+  onReadCard(): void {
     this.router.navigate([ROUTE_ORDER_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onBack() {
+  onBack(): void {
     this.homeService.goToHome();
   }
 
-  onNext() {
+  onNext(): void {
     this.pageLoadingService.openLoading();
     this.http.get('/api/customerportal/validate-customer-new-register', {
       params: {
@@ -123,7 +123,7 @@ export class OrderNewRegisterValidateCustomerPageComponent implements OnInit, On
     this.transactionService.save(this.transaction);
   }
 
-  private createTransaction() {
+  private createTransaction(): void {
     this.transaction = {
       data: {
         transactionType: TransactionType.ORDER_NEW_REGISTER,

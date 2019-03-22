@@ -22,7 +22,7 @@ import { MOBILE_CARE_PACKAGE_KEY_REF } from 'src/app/device-order/constants/cpc.
 })
 export class DeviceOrderAisNewRegisterMobileCarePageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   priceOption: PriceOption;
   transaction: Transaction;
@@ -42,25 +42,25 @@ export class DeviceOrderAisNewRegisterMobileCarePageComponent implements OnInit,
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     delete this.transaction.data.mobileCarePackage;
     this.callService();
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_SUMMARY_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onCompleted(mobileCare: any) {
+  onCompleted(mobileCare: any): void {
     this.transaction.data.mobileCarePackage = mobileCare;
   }
 
@@ -68,7 +68,7 @@ export class DeviceOrderAisNewRegisterMobileCarePageComponent implements OnInit,
     this.transactionService.update(this.transaction);
   }
 
-  callService() {
+  callService(): void {
     const billingSystem = this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
     const chargeType = this.transaction.data.mainPackage.customAttributes.billingSystem;
     const endUserPrice = +this.priceOption.trade.normalPrice;

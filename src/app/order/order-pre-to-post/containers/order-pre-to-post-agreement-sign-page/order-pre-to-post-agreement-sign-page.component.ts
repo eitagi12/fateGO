@@ -15,7 +15,7 @@ import { Subscription } from 'rxjs';
 })
 export class OrderPreToPostAgreementSignPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_PRE_TO_POST;
+  wizards: string[] = WIZARD_ORDER_PRE_TO_POST;
 
   transaction: Transaction;
   signedSignatureSubscription: Subscription;
@@ -34,25 +34,25 @@ export class OrderPreToPostAgreementSignPageComponent implements OnInit, OnDestr
     });
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (!this.transaction.data.customer.imageSignature) {
       this.onSigned();
     }
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_SUMMARY_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_AGGREGATE_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onSigned() {
+  onSigned(): void {
     const user: User = this.tokenService.getUser();
     this.signedOpenSubscription = this.aisNativeService.openSigned(
       ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'SignaturePad'

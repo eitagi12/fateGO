@@ -18,7 +18,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 export class DeviceOrderAisExistingValidateCustomerPageComponent implements OnInit, OnDestroy {
 
   transaction: Transaction;
-  identityValid = false;
+  identityValid: boolean = false;
   identity: string;
 
   constructor(
@@ -33,31 +33,31 @@ export class DeviceOrderAisExistingValidateCustomerPageComponent implements OnIn
     };
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.createTransaction();
   }
 
-  onError(valid: boolean) {
+  onError(valid: boolean): void {
     this.identityValid = valid;
   }
 
-  onCompleted(identity: string) {
+  onCompleted(identity: string): void {
     this.identity = identity;
   }
 
-  onReadCard() {
+  onReadCard(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onBack() {
+  onBack(): void {
     this.homeService.goToHome();
   }
 
-  onNext() {
+  onNext(): void {
     this.pageLoadingService.openLoading();
     this.http.get('/api/customerportal/validate-customer-new-register', {
       params: {
@@ -111,7 +111,7 @@ export class DeviceOrderAisExistingValidateCustomerPageComponent implements OnIn
     this.transactionService.save(this.transaction);
   }
 
-  private createTransaction() {
+  private createTransaction(): void {
     this.transaction = {
       data: {
         transactionType: TransactionType.ORDER_NEW_REGISTER,

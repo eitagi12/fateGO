@@ -13,7 +13,7 @@ import { CreateMnpService } from 'src/app/shared/services/create-mnp.service';
 })
 export class OrderMnpResultPageComponent implements OnInit {
 
-  wizards = WIZARD_ORDER_MNP;
+  wizards: string[] = WIZARD_ORDER_MNP;
   transaction: Transaction;
   isSuccess: boolean;
 
@@ -26,7 +26,7 @@ export class OrderMnpResultPageComponent implements OnInit {
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     // this.pageLoadingService.openLoading();
     // this.createMnpService.createMnp(this.transaction).then((resp: any) => {
     //   const data = resp.data || {};
@@ -48,11 +48,11 @@ export class OrderMnpResultPageComponent implements OnInit {
     this.isSuccess = false;
   }
 
-  onMainMenu() {
+  onMainMenu(): void {
     this.homeService.goToHome();
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

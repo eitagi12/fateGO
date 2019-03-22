@@ -22,7 +22,7 @@ export class DeviceOrderAisNewRegisterAgreementPageComponent implements OnInit, 
     private homeService: HomeService,
     private pageLoadingService: PageLoadingService) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.pageLoadingService.openLoading();
     this.transaction = this.transactionService.load();
     this.createEapplicationService.createEapplication(this.transaction).then(res => {
@@ -32,11 +32,11 @@ export class DeviceOrderAisNewRegisterAgreementPageComponent implements OnInit, 
     });
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_SUMMARY_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     if (this.transaction.data.simCard.simSerial) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGREEMENT_SIGN_PAGE]);
     } else {
@@ -44,7 +44,7 @@ export class DeviceOrderAisNewRegisterAgreementPageComponent implements OnInit, 
     }
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

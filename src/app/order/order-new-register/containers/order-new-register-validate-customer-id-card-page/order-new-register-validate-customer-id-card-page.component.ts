@@ -75,11 +75,11 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.createTransaction();
   }
 
-  onError(valid: boolean) {
+  onError(valid: boolean): void {
     this.readCardValid = valid;
     if (!this.profile) {
       this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
@@ -93,21 +93,21 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
     }
   }
 
-  onCompleted(profile: ReadCardProfile) {
+  onCompleted(profile: ReadCardProfile): void {
     this.profile = profile;
     // auto next
     this.onNext();
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onBack() {
+  onBack(): void {
     this.homeService.goToHome();
   }
 
-  onNext() {
+  onNext(): void {
     this.pageLoadingService.openLoading();
 
     this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
@@ -243,7 +243,7 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
     this.pageLoadingService.closeLoading();
   }
 
-  private createTransaction() {
+  private createTransaction(): void {
     this.transaction = {
       data: {
         transactionType: TransactionType.ORDER_NEW_REGISTER,

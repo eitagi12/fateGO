@@ -17,7 +17,7 @@ import {
 })
 export class OrderMnpEbillingPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_MNP;
+  wizards: string[] = WIZARD_ORDER_MNP;
 
   transaction: Transaction;
 
@@ -38,7 +38,7 @@ export class OrderMnpEbillingPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
 
     this.http.get('/api/customerportal/newRegister/queryBillCycle', {
       params: {
@@ -53,7 +53,7 @@ export class OrderMnpEbillingPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  setBillingDefault(ebilling: Ebilling[]) {
+  setBillingDefault(ebilling: Ebilling[]): void {
     for (const ebill of ebilling) {
       if (ebill.bill === this.transaction.data.customer.billCycle) {
         this.billCycle = ebill;
@@ -62,24 +62,24 @@ export class OrderMnpEbillingPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  onCompleted(billCycle: any) {
+  onCompleted(billCycle: any): void {
     this.billCycle = billCycle;
   }
 
-  onError(valid: boolean) {
+  onError(valid: boolean): void {
     this.billCycleValid = valid;
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_MNP_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.transaction.data.billingInformation.billCycle = this.billCycle;
     this.router.navigate([ROUTE_ORDER_MNP_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
@@ -87,4 +87,3 @@ export class OrderMnpEbillingPageComponent implements OnInit, OnDestroy {
     this.transactionService.update(this.transaction);
   }
 }
-

@@ -28,7 +28,7 @@ export class OrderNewRegisterEapplicationPageComponent implements OnInit, OnDest
     private homeService: HomeService,
     private pageLoadingService: PageLoadingService) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.pageLoadingService.openLoading();
     this.transaction = this.transactionService.load();
     this.createEapplicationService.createEapplication(this.transaction).then(res => {
@@ -38,11 +38,11 @@ export class OrderNewRegisterEapplicationPageComponent implements OnInit, OnDest
     });
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_NEW_REGISTER_AGREEMENT_SIGN_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     if (this.transaction.data.simCard.simSerial) {
       this.router.navigate([ROUTE_ORDER_NEW_REGISTER_RESULT_PAGE]);
     } else {
@@ -50,7 +50,7 @@ export class OrderNewRegisterEapplicationPageComponent implements OnInit, OnDest
     }
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

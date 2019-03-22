@@ -26,7 +26,7 @@ export interface OptionPersoSim {
 })
 export class DeviceOrderAisNewRegisterPersoSimPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   title: string;
   isManageSim: boolean;
@@ -40,8 +40,8 @@ export class DeviceOrderAisNewRegisterPersoSimPageComponent implements OnInit, O
   shoppingCart: ShoppingCart;
 
   koiskApiFn: any;
-  readonly ERROR_PERSO = 'ไม่สามารถให้บริการได้ กรุณาติดต่อพนักงานเพื่อดำเนินการ ขออภัยในความไม่สะดวก';
-  readonly ERROR_PERSO_PC = 'ไม่สามารถ Perso Sim ได้';
+  readonly ERROR_PERSO: string = 'ไม่สามารถให้บริการได้ กรุณาติดต่อพนักงานเพื่อดำเนินการ ขออภัยในความไม่สะดวก';
+  readonly ERROR_PERSO_PC: string = 'ไม่สามารถ Perso Sim ได้';
 
   constructor(
     private router: Router,
@@ -58,7 +58,7 @@ export class DeviceOrderAisNewRegisterPersoSimPageComponent implements OnInit, O
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (this.transaction.data.simCard.mobileNo) {
       this.setConfigPersoSim().then(() => {
         if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {
@@ -72,8 +72,7 @@ export class DeviceOrderAisNewRegisterPersoSimPageComponent implements OnInit, O
     }
   }
 
-
-  persoSimKoisk() {
+  persoSimKoisk(): void {
     this.title = 'กำลังเตรียมซิมใหม่';
 
     this.koiskApiFn = this.kioskApi();
@@ -115,8 +114,7 @@ export class DeviceOrderAisNewRegisterPersoSimPageComponent implements OnInit, O
     });
   }
 
-
- persoSimWebsocket() {
+ persoSimWebsocket(): void {
     // for pc
     this.title = 'กรุณาเสียบ Sim Card';
      this.persoSimSubscription = this.persoSimService.onPersoSim(this.persoSimConfig).subscribe((persoSim: any) => {
@@ -134,8 +132,7 @@ export class DeviceOrderAisNewRegisterPersoSimPageComponent implements OnInit, O
     });
  }
 
-
- async setConfigPersoSim() {
+ async setConfigPersoSim(): Promise<any> {
   return this.persoSimConfig = await {
     serviceGetPrivateKey: () => {
       return this.http.post('/api/customerportal/newRegister/getPrivateKeyCommand', {
@@ -170,7 +167,7 @@ export class DeviceOrderAisNewRegisterPersoSimPageComponent implements OnInit, O
     };
 }
 
- kioskApi() {
+ kioskApi(): any {
   if (!WebSocket) {
     return {};
   }
@@ -262,15 +259,15 @@ export class DeviceOrderAisNewRegisterPersoSimPageComponent implements OnInit, O
   };
 }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGREEMENT_SIGN_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_CAPTURE_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

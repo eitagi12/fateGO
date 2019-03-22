@@ -46,11 +46,11 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.createTransaction();
   }
 
-  onError(valid: boolean) {
+  onError(valid: boolean): void {
     this.readCardValid = valid;
     if (!this.profile) {
       this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
@@ -64,20 +64,20 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
     }
   }
 
-  onCompleted(profile: ReadCardProfile) {
+  onCompleted(profile: ReadCardProfile): void {
     this.profile = profile;
     // auto next
     this.onNext();
   }
 
-  onBack() {
+  onBack(): void {
     if (this.validateCustomerIdcard.koiskApiFn) {
       this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
     }
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.pageLoadingService.openLoading();
     this.http.get('/api/customerportal/validate-customer-pre-to-post', {
       params: {
@@ -144,7 +144,7 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
     return true;
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
@@ -172,7 +172,7 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
     this.pageLoadingService.closeLoading();
   }
 
-  private createTransaction() {
+  private createTransaction(): void {
     this.transaction = {
       data: {
         transactionType: TransactionType.ORDER_PRE_TO_POST,

@@ -18,7 +18,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class OrderNewRegisterFaceComparePageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_NEW_REGISTER;
+  wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
   captureAndSign: CaptureAndSign;
 
   transaction: Transaction;
@@ -30,20 +30,19 @@ export class OrderNewRegisterFaceComparePageComponent implements OnInit, OnDestr
     private pageLoadingService: PageLoadingService,
     private tokenService: TokenService,
 
-
   ) {
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     // const faceImage = this.faceRecognitionService.getFaceImage();
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_NEW_REGISTER_FACE_CAPTURE_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.pageLoadingService.openLoading();
     const customer: Customer = this.transaction.data.customer;
     const faceRecognition: FaceRecognition = this.transaction.data.faceRecognition;
@@ -67,7 +66,7 @@ export class OrderNewRegisterFaceComparePageComponent implements OnInit, OnDestr
     });
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
@@ -79,6 +78,3 @@ export class OrderNewRegisterFaceComparePageComponent implements OnInit, OnDestr
     this.transactionService.update(this.transaction);
   }
 }
-
-
-

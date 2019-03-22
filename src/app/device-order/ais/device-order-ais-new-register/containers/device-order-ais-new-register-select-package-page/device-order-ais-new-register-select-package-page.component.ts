@@ -24,11 +24,10 @@ import { PromotionShelveService } from 'src/app/device-order/services/promotion-
 })
 export class DeviceOrderAisNewRegisterSelectPackagePageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   @ViewChild('conditionTemplate')
   conditionTemplate: any;
-
 
   priceOption: PriceOption;
   transaction: Transaction;
@@ -51,18 +50,18 @@ export class DeviceOrderAisNewRegisterSelectPackagePageComponent implements OnIn
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     delete this.transaction.data.mainPackage;
     this.callService();
   }
 
-  onCompleted(promotion) {
+  onCompleted(promotion: any): void {
     // รอแก้ไขตัวแปรที่จะเก็บลงใน share transaction
     this.transaction.data.mainPackage = promotion;
   }
 
-  onBack() {
+  onBack(): void {
     if (this.transaction.data.simCard.simSerial) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VERIFY_INSTANT_SIM_PAGE]);
     } else {
@@ -70,15 +69,15 @@ export class DeviceOrderAisNewRegisterSelectPackagePageComponent implements OnIn
     }
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  callService() {
+  callService(): void {
     this.pageLoadingService.openLoading();
 
     const campaign: any = this.priceOption.campaign;

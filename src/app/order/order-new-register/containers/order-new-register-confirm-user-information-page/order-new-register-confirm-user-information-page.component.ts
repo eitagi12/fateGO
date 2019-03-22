@@ -15,14 +15,13 @@ import {
 import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
 import { HttpClient } from '@angular/common/http';
 
-
 @Component({
   selector: 'app-order-new-register-confirm-user-information-page',
   templateUrl: './order-new-register-confirm-user-information-page.component.html',
   styleUrls: ['./order-new-register-confirm-user-information-page.component.scss'],
 })
 export class OrderNewRegisterConfirmUserInformationPageComponent implements OnInit, OnDestroy {
-  wizards = WIZARD_ORDER_NEW_REGISTER;
+  wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
 
   transaction: Transaction;
   confirmCustomerInfo: ConfirmCustomerInfo;
@@ -50,7 +49,7 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
     }
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const customer = this.transaction.data.customer;
     const mainPackage = this.transaction.data.mainPackage;
     const simCard = this.transaction.data.simCard;
@@ -85,7 +84,7 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
     this.initBillingInfo();
   }
 
-  initBillingInfo() {
+  initBillingInfo(): void {
     const customer = this.transaction.data.customer;
     const billingInformation = this.transaction.data.billingInformation;
     const mergeBilling = billingInformation.mergeBilling;
@@ -105,7 +104,6 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
     //   province: customer.province,
     //   zipCode: customer.zipCode
     // });
-
 
     const billDeliveryAddress = this.utils.getCurrentAddress({
       homeNo: customerbillDeliveryAddress.homeNo || customer.homeNo,
@@ -197,7 +195,7 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
 
   }
 
-  onMailBillingInfoCompleted(mailBillingInfo: any) {
+  onMailBillingInfoCompleted(mailBillingInfo: any): void {
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData || {};
 
@@ -209,11 +207,11 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
     this.transaction.data.billingInformation.billCycleData = billCycleData;
   }
 
-  onMailBillingInfoError(valid: boolean) {
+  onMailBillingInfoError(valid: boolean): void {
     this.isMailBillingInfoValid = valid;
   }
 
-  onTelNoBillingCompleted(telNoBilling: any) {
+  onTelNoBillingCompleted(telNoBilling: any): void {
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData || {};
 
@@ -223,11 +221,11 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
     this.transaction.data.billingInformation.billCycleData = billCycleData;
   }
 
-  onTelNoBillingError(valid: boolean) {
+  onTelNoBillingError(valid: boolean): void {
     this.isTelNoBillingValid = valid;
   }
 
-  onBack() {
+  onBack(): void {
     if (this.isPackageNetExtreme()) {
       this.router.navigate([ROUTE_ORDER_NEW_REGISTER_MERGE_BILLING_PAGE]);
     } else {
@@ -239,7 +237,7 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
     }
   }
 
-  onNext() {
+  onNext(): void {
     if (!this.customerValid()) {
       this.alertService.warning('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร');
       return;
@@ -254,11 +252,11 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
     this.router.navigate([ROUTE_ORDER_NEW_REGISTER_SUMMARY_PAGE]);
   }
 
-  onEditAddress() {
+  onEditAddress(): void {
     this.router.navigate([ROUTE_ORDER_NEW_REGISTER_EBILLING_ADDRESS_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

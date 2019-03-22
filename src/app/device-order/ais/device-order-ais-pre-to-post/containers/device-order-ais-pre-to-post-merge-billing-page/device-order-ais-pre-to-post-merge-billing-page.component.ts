@@ -20,8 +20,8 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 })
 export class DeviceOrderAisPreToPostMergeBillingPageComponent implements OnInit, OnDestroy {
 
-  readonly REGEX_NET_EXTREME = /[Nn]et[Ee]xtreme/;
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  readonly REGEX_NET_EXTREME: any = /[Nn]et[Ee]xtreme/;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   transaction: Transaction;
 
@@ -37,7 +37,7 @@ export class DeviceOrderAisPreToPostMergeBillingPageComponent implements OnInit,
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.billingCyles = this.getBillingCycles();
     this.mergeBilling = this.transaction.data.billingInformation.mergeBilling;
   }
@@ -71,7 +71,7 @@ export class DeviceOrderAisPreToPostMergeBillingPageComponent implements OnInit,
     return mainPackage && this.REGEX_NET_EXTREME.test(mainPackage.productPkg);
   }
 
-  onBack() {
+  onBack(): void {
     if (this.isPackageNetExtreme()) {
       if (this.transaction.data.onTopPackage) {
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ON_TOP_PAGE]);
@@ -83,15 +83,15 @@ export class DeviceOrderAisPreToPostMergeBillingPageComponent implements OnInit,
     }
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
-  onCompleted(even: any) {
+  onCompleted(even: any): void {
     this.transaction.data.billingInformation.mergeBilling = even;
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

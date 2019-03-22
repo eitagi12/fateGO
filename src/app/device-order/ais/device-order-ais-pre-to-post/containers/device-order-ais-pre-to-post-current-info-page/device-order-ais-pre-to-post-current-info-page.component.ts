@@ -34,8 +34,8 @@ export interface CurrentServices {
 })
 export class DeviceOrderAisPreToPostCurrentInfoPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
-  isLoad = true;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
+  isLoad: boolean = true;
   mobileNo: string;
   transaction: Transaction;
 
@@ -56,7 +56,7 @@ export class DeviceOrderAisPreToPostCurrentInfoPageComponent implements OnInit, 
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.mobileNo = this.transaction.data.simCard.mobileNo;
 
     this.pageLoadingService.openLoading();
@@ -82,7 +82,7 @@ export class DeviceOrderAisPreToPostCurrentInfoPageComponent implements OnInit, 
       });
   }
 
-  onBack() {
+  onBack(): void {
     const action = this.transaction.data.action;
     if (action === TransactionAction.KEY_IN || action === TransactionAction.READ_CARD) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE]);
@@ -91,7 +91,7 @@ export class DeviceOrderAisPreToPostCurrentInfoPageComponent implements OnInit, 
     }
   }
 
-  onNext() {
+  onNext(): void {
 
     const action = this.transaction.data.action;
 
@@ -120,7 +120,7 @@ export class DeviceOrderAisPreToPostCurrentInfoPageComponent implements OnInit, 
     }
   }
 
-  openModal(template: any) {
+  openModal(template: any): void {
     this.modalRef = this.modalService.show(template);
   }
 

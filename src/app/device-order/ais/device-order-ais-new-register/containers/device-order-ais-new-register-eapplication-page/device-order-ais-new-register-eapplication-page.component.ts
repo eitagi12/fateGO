@@ -18,7 +18,7 @@ import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.c
 })
 export class DeviceOrderAisNewRegisterEapplicationPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   transaction: Transaction;
   shoppingCart: ShoppingCart;
@@ -34,7 +34,7 @@ export class DeviceOrderAisNewRegisterEapplicationPageComponent implements OnIni
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.pageLoadingService.openLoading();
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.createEapplicationService.createEapplication(this.transaction)
@@ -42,15 +42,15 @@ export class DeviceOrderAisNewRegisterEapplicationPageComponent implements OnIni
       .then(() => this.pageLoadingService.closeLoading());
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_ECONTACT_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGREEMENT_SIGN_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

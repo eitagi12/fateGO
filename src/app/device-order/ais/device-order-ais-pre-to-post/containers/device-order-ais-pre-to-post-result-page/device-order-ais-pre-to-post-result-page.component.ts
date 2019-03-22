@@ -15,14 +15,14 @@ import { CreatePreToPostService } from 'src/app/shared/services/create-pre-to-po
 })
 export class DeviceOrderAisPreToPostResultPageComponent implements OnInit {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   transaction: Transaction;
   serviceChange: any;
   isSerSuccess: boolean;
   messageStatus: string;
-  SUCCESS_MSG = 'ทำรายการสำเร็จ';
-  ERROR_MSG = 'ไม่สามารถให้บริการได้<br>กรุณาติดต่อพนักงานเพื่อดำเนินการ<br><br>ขออภัยในความไม่สะดวก';
+  SUCCESS_MSG: string = 'ทำรายการสำเร็จ';
+  ERROR_MSG: string = 'ไม่สามารถให้บริการได้<br>กรุณาติดต่อพนักงานเพื่อดำเนินการ<br><br>ขออภัยในความไม่สะดวก';
 
   constructor(
     private homeService: HomeService,
@@ -35,7 +35,7 @@ export class DeviceOrderAisPreToPostResultPageComponent implements OnInit {
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.pageLoadingService.openLoading();
     this.createPreToPostService.createPreToPost(this.transaction)
       .then(resp => {
@@ -68,7 +68,7 @@ export class DeviceOrderAisPreToPostResultPageComponent implements OnInit {
       });
   }
 
-  onMainMenu() {
+  onMainMenu(): void {
     this.homeService.goToHome();
   }
 

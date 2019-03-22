@@ -17,7 +17,7 @@ export class DeviceOrderAisExistingAggregatePageComponent implements OnInit {
   ) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.deviceSelling = {
       brand: 'APPLE',
       campaignName: '499 บาท',
@@ -30,15 +30,15 @@ export class DeviceOrderAisExistingAggregatePageComponent implements OnInit {
     };
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_AGREEMENT_SIGN_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_QUEUE_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

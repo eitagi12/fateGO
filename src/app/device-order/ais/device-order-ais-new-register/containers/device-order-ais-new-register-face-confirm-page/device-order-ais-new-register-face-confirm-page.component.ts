@@ -17,7 +17,7 @@ import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart
   styleUrls: ['./device-order-ais-new-register-face-confirm-page.component.scss']
 })
 export class DeviceOrderAisNewRegisterFaceConfirmPageComponent implements OnInit {
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   confirmForm: FormGroup;
   shoppingCart: ShoppingCart;
@@ -34,12 +34,12 @@ export class DeviceOrderAisNewRegisterFaceConfirmPageComponent implements OnInit
   ) {
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.createForm();
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
   }
 
-  createForm() {
+  createForm(): void {
     let username;
     if (environment.name === 'LOCAL' || environment.name === 'PVT') {
       username = 'netnapht';
@@ -50,11 +50,11 @@ export class DeviceOrderAisNewRegisterFaceConfirmPageComponent implements OnInit
     });
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_COMPARE_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.pageLoadingService.openLoading();
     const username = this.confirmForm.value.username;
     this.http.get('/api/customerportal/checkEmployeeCode', {
@@ -74,7 +74,7 @@ export class DeviceOrderAisNewRegisterFaceConfirmPageComponent implements OnInit
       });
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 }

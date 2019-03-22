@@ -14,7 +14,7 @@ import { ROUTE_ORDER_PRE_TO_POST_CONFIRM_USER_INFORMATION_PAGE } from 'src/app/o
 })
 export class OrderPreToPostEbillingAddressPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_NEW_REGISTER;
+  wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
 
   transaction: Transaction;
   customerAddress: CustomerAddress;
@@ -37,7 +37,7 @@ export class OrderPreToPostEbillingAddressPageComponent implements OnInit, OnDes
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     const customer = this.transaction.data.customer;
     const billDeliveryAddress = this.transaction.data.billingInformation.billDeliveryAddress;
 
@@ -92,7 +92,7 @@ export class OrderPreToPostEbillingAddressPageComponent implements OnInit, OnDes
     return (this.provinces || []).find((prov: any) => prov.name === provinceName) || {};
   }
 
-  onProvinceSelected(params: any) {
+  onProvinceSelected(params: any): void {
     const province = this.getProvinceByName(params.provinceName);
     const req = {
       provinceId: province.id,
@@ -111,7 +111,7 @@ export class OrderPreToPostEbillingAddressPageComponent implements OnInit, OnDes
     });
   }
 
-  onAmphurSelected(params: any) {
+  onAmphurSelected(params: any): void {
     const province = this.getProvinceByName(params.provinceName);
     const req = {
       provinceId: province.id,
@@ -131,7 +131,7 @@ export class OrderPreToPostEbillingAddressPageComponent implements OnInit, OnDes
     });
   }
 
-  onTumbolSelected(params: any) {
+  onTumbolSelected(params: any): void {
     const province = this.getProvinceByName(params.provinceName);
     this.http.get('/api/customerportal/newRegister/queryZipcode', {
       params: {
@@ -144,7 +144,7 @@ export class OrderPreToPostEbillingAddressPageComponent implements OnInit, OnDes
     });
   }
 
-  onZipCodeSelected(zipCode: string) {
+  onZipCodeSelected(zipCode: string): void {
     this.http.get('/api/customerportal/newRegister/getProvinceIdByZipcode', {
       params: { zipcode: zipCode }
     }).toPromise()
@@ -163,25 +163,25 @@ export class OrderPreToPostEbillingAddressPageComponent implements OnInit, OnDes
       });
   }
 
-  onCompleted(value: any) {
+  onCompleted(value: any): void {
     this.customerAddressTemp = value;
   }
 
-  onError(valid: boolean) {
+  onError(valid: boolean): void {
     this.ebillingAddressValid = valid;
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.transaction.data.billingInformation.billDeliveryAddress = this.customerAddressTemp || this.customerAddress;
 
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
@@ -189,4 +189,3 @@ export class OrderPreToPostEbillingAddressPageComponent implements OnInit, OnDes
     this.transactionService.update(this.transaction);
   }
 }
-

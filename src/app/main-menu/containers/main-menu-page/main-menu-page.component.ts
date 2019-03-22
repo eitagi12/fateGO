@@ -9,7 +9,7 @@ import { environment } from 'src/environments/environment';
 })
 export class MainMenuPageComponent implements OnInit {
 
-  menus = [
+  menus: any = [
     { link: '/buy-product/brand', icon: 'assets/svg/ico-device.svg', text: 'ซื้อเครื่อง' },
     { link: '/order/new-register', icon: 'assets/svg/ico-new-register-1.svg', text: 'เปิดเบอร์ใหม่' },
     { link: '/order/mnp', icon: 'assets/svg/ico-mpn.svg', text: 'ย้ายค่ายมา AIS' },
@@ -20,13 +20,13 @@ export class MainMenuPageComponent implements OnInit {
     private tokenService: TokenService
   ) { }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {
       this.keepCard(); // กรณีบัตรค้างในเครื่อง
     }
   }
 
-  keepCard() {
+  keepCard(): void {
     const ws = new WebSocket(`${environment.WEB_CONNECT_URL}/VendingAPI`);
     ws.onopen = () => {
       ws.send('KeepCard');

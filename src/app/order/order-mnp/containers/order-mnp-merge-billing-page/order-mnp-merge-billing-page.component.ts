@@ -17,8 +17,8 @@ import {
 })
 export class OrderMnpMergeBillingPageComponent implements OnInit, OnDestroy {
 
-  readonly REGEX_NET_EXTREME = /[Nn]et[Ee]xtreme/;
-  wizards = WIZARD_ORDER_MNP;
+  readonly REGEX_NET_EXTREME: any = /[Nn]et[Ee]xtreme/;
+  wizards: string[] = WIZARD_ORDER_MNP;
 
   transaction: Transaction;
 
@@ -33,7 +33,7 @@ export class OrderMnpMergeBillingPageComponent implements OnInit, OnDestroy {
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.billingCyles = this.getBillingCycles();
     this.mergeBilling = this.transaction.data.billingInformation.mergeBilling;
   }
@@ -67,7 +67,7 @@ export class OrderMnpMergeBillingPageComponent implements OnInit, OnDestroy {
     return mainPackage && this.REGEX_NET_EXTREME.test(mainPackage.productPkg);
   }
 
-  onBack() {
+  onBack(): void {
     if (this.isPackageNetExtreme()) {
       if (this.transaction.data.onTopPackage) {
         this.router.navigate([ROUTE_ORDER_MNP_ON_TOP_PAGE]);
@@ -79,15 +79,15 @@ export class OrderMnpMergeBillingPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  onCompleted(even: any) {
+  onCompleted(even: any): void {
     this.transaction.data.billingInformation.mergeBilling = even;
   }
 
-  onNext() {
+  onNext(): void {
     this.router.navigate([ROUTE_ORDER_MNP_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

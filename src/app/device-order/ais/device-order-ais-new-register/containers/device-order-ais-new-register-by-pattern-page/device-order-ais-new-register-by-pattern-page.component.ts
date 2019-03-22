@@ -19,7 +19,7 @@ import {
   styleUrls: ['./device-order-ais-new-register-by-pattern-page.component.scss']
 })
 export class DeviceOrderAisNewRegisterByPatternPageComponent implements OnInit, OnDestroy {
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   shoppingCart: ShoppingCart;
   transaction: Transaction;
@@ -40,7 +40,7 @@ export class DeviceOrderAisNewRegisterByPatternPageComponent implements OnInit, 
     this.user = this.tokenService.getUser();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     if (this.transaction.data.simCard &&
       this.transaction.data.simCard.mobileNo) {
       this.onResereMobileNo(this.transaction.data.simCard.mobileNo, 'Unlock');
@@ -53,7 +53,7 @@ export class DeviceOrderAisNewRegisterByPatternPageComponent implements OnInit, 
     });
   }
 
-  onSearch(mobileNoCondition: any) {
+  onSearch(mobileNoCondition: any): void {
     this.pageLoadingService.openLoading();
 
     this.http.get('/api/salesportal/location-by-code', {
@@ -90,15 +90,15 @@ export class DeviceOrderAisNewRegisterByPatternPageComponent implements OnInit, 
 
   }
 
-  onCompleted(mobileNo: any) {
+  onCompleted(mobileNo: any): void {
     this.mobileNo = mobileNo;
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_SELECT_NUMBER_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.pageLoadingService.openLoading();
 
     const mobileNo = this.mobileNo.mobileNo;
@@ -123,7 +123,7 @@ export class DeviceOrderAisNewRegisterByPatternPageComponent implements OnInit, 
       .then(() => this.pageLoadingService.closeLoading());
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 

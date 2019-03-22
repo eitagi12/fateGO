@@ -24,7 +24,7 @@ import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 })
 export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   shoppingCart: ShoppingCart;
   priceOption: PriceOption;
@@ -39,7 +39,7 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
   banksPayment: any[];
 
   receiptInfo: ReceiptInfo;
-  receiptInfoValid = true;
+  receiptInfoValid: boolean = true;
 
   constructor(
     private utils: Utils,
@@ -54,13 +54,12 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
 
     this.banks = this.priceOption.trade.banks || [];
     const customer: any = this.transaction.data.customer || {};
     const receiptInfo: any = this.transaction.data.receiptInfo || {};
-
 
     this.receiptInfo = {
       taxId: customer.idCardNo,
@@ -158,7 +157,7 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
     this.paymentDetailForm.controls['paymentForm'].disable();
   }
 
-  customValidate(group: FormGroup) {
+  customValidate(group: FormGroup): any {
     switch (group.value.paymentType) {
       case 'QR_CODE':
         if (!group.value.paymentQrCodeType) {
@@ -181,7 +180,7 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
     return null;
   }
 
-  changePaymentType(paymentType: string, sourceControl: any, targetControl: any) {
+  changePaymentType(paymentType: string, sourceControl: any, targetControl: any): void {
     let paymentQrCodeType;
     if (paymentType === 'QR_CODE'
       && targetControl.value.paymentType === 'QR_CODE') {
@@ -193,7 +192,7 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
     }, { emitEvent: false });
   }
 
-  changePaymentQrCodeType(qrCodeType: string, sourceControl: any, targetControl: any) {
+  changePaymentQrCodeType(qrCodeType: string, sourceControl: any, targetControl: any): void {
     const value = targetControl.value;
     if (!(qrCodeType && value.paymentType === 'QR_CODE')) {
       return;
@@ -260,7 +259,7 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
       });
   }
 
-  onBack() {
+  onBack(): void {
     if (TransactionAction.KEY_IN === this.transaction.data.action) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VALIDATE_CUSTOMER_PAGE]);
     } else {
@@ -284,7 +283,7 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
     return valid;
   }
 
-  onNext() {
+  onNext(): void {
     this.transaction.data.payment = Object.assign({
       paymentForm: this.isFullPayment() ? 'FULL' : 'INSTALLMENT'
     }, this.paymentDetailForm.value);
@@ -295,15 +294,15 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CUSTOMER_INFO_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
-  onReceiptInfoCompleted(receiptInfo: ReceiptInfo) {
+  onReceiptInfoCompleted(receiptInfo: ReceiptInfo): void {
     this.transaction.data.receiptInfo = receiptInfo;
   }
 
-  onReceiptInfoError(error: boolean) {
+  onReceiptInfoError(error: boolean): void {
     this.receiptInfoValid = error;
   }
 
