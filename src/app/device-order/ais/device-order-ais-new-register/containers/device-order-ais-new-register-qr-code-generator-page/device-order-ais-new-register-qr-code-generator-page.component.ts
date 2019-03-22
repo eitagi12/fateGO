@@ -36,7 +36,7 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
 
   // qrCode
   private subscription$: Subscription;
-  private checkInquiryCallbackMpaySubscribtion$: Subscription;
+  // private checkInquiryCallbackMpaySubscribtion$: Subscription;
   private intravalTimeSubscription$: Subscription;
   private currentDateTime: number;
   private currentTimeCounter: BehaviorSubject<number> = new BehaviorSubject(null);
@@ -49,10 +49,13 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
   public refreshCount = 1;
   private NEW_LINE = '\n';
   qrCodeImageSrc: string;
-  private startTimeInMininte = 0.11;
+  private startTimeInMininte = 5;
   brannerImagePaymentQrCode: ImageBrannerQRCode ;
   mcLoadingQrcodePaymentService: Promise<any>; // for mcLoading
   private timeLowerThanOrEqualToZero: boolean;
+
+  private isPayment: false;
+  private isAdavance: false;
 
   constructor(
     private router: Router,
@@ -78,7 +81,7 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
       this.getQRCode(this.setBodyRequestForGetQRCode());
 
       this.setBodyRequestForPreMpay();
-      this.qrcodePaymentService.insertPreMpay(this.qrCodePrePostMpayModel).subscribe(
+      this.qrcodePaymentService.insertPreMpay(this.qrCodePrePostMpayModel).then(
         (data: any) => {
           console.log(data);
           this.qrcodePaymentService.updateMpayObjectInTransaction(this.qrCodePrePostMpayModel);
@@ -99,9 +102,11 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
         this.processQRCode(qrcode);
       },
       (error: any) => {
-        console.error('error', error);
-        this.showPopupMessage(error);
-        this.alertService.error(error);
+        if (error && error.error && error.error.errors && error.error.errors.respCode && error.error.errors.respDesc) {
+          this.alertService.error(error.error.errors.respDesc);
+        } else {
+          this.alertService.error(error);
+        }
       });
   }
 
@@ -176,7 +181,6 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
             this.goToMpayQueuePage();
           } else {
             this.subscription$.unsubscribe();
-            this.checkInquiryCallbackMpaySubscribtion$.unsubscribe();
             this.showPopupMessage('สิ้นสุดระยะเวลาชำระเงิน กรุณากดปุ่ม "REFRESH"' + this.NEW_LINE + 'เพื่อทำรายการใหม่');
           }
         });
@@ -193,7 +197,9 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
       // this.alertService.error(orderID.error);
 
       // mock on error อย่าลืมเอาออก
-      this.orderID = '66134';
+      if (this.isDeveloperMode()) {
+        this.orderID = '66343';
+      }
     } else {
       this.orderID = orderID.soID;
     }
@@ -205,13 +211,15 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
 
   inquiryMpay(): Promise<boolean> {
     return this.qrcodePaymentService.getInquiryMpay({ orderId: this.orderID }).then((res: any) => {
-      console.log('inquiryMpay', res.data.status);
       if (res && res.data && res.data.status && res.data.status === 'SUCCESS') {
         this.qrCodePrePostMpayModel.status = res.data.status;
         this.qrCodePrePostMpayModel.tranId = res.data.tranId;
         this.qrCodePrePostMpayModel.tranDtm = res.data.tranDtm;
         this.qrCodePrePostMpayModel.amount = res.data.amount;
         this.qrCodePrePostMpayModel.qrType = res.data.qrType;
+
+        // set transactionId
+        this.transaction.transactionId = res.data.tranId;
         return true;
       }
       return false;
@@ -274,7 +282,7 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
   }
 
   updateMpayDataStatus(): void {
-    this.qrcodePaymentService.updatePostMpay(this.qrCodePrePostMpayModel).subscribe(
+    this.qrcodePaymentService.updatePostMpay(this.qrCodePrePostMpayModel).then(
       (data: any) => {
         this.qrcodePaymentService.updateMpayObjectInTransaction(this.qrCodePrePostMpayModel);
       },
@@ -287,9 +295,6 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
   onRefreshQRCode(): void {
     if (this.subscription$) {
       this.subscription$.unsubscribe();
-    }
-    if (this.checkInquiryCallbackMpaySubscribtion$) {
-      this.checkInquiryCallbackMpaySubscribtion$.unsubscribe();
     }
     if (this.intravalTimeSubscription$) {
       this.intravalTimeSubscription$.unsubscribe();
@@ -308,7 +313,7 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
           this.orderID = `${this.orderID}_${this.refreshCount}`;
           this.getQRCode(this.setBodyRequestForGetQRCode());
           this.setBodyRequestForPreMpay();
-          this.qrcodePaymentService.updatePostMpay(this.qrCodePrePostMpayModel).subscribe(
+          this.qrcodePaymentService.updatePostMpay(this.qrCodePrePostMpayModel).then(
             (data: any) => {
               this.qrcodePaymentService.updateMpayObjectInTransaction(this.qrCodePrePostMpayModel);
             },
@@ -331,10 +336,12 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
     this.qrCodePrePostMpayModel.status = 'WAITING';
   }
 
+  // subscribe payment 'SUCCESS' every 5 sec
   subscribeInquiryCallbackMpay(): void {
-    this.checkInquiryCallbackMpaySubscribtion$ = this.qrcodePaymentService.checkInquiryCallbackMpay({ orderId: this.orderID })
+    this.qrcodePaymentService.checkInquiryCallbackMpay({ orderId: this.orderID })
       .subscribe(
         (resp: any) => {
+          console.log('checkInquiryCallbackMpay', resp);
           const data = resp.data || {};
           if (data && data.DATA && data.DATA.mpay_payment
             && data.DATA.mpay_payment.status && data.DATA.mpay_payment.status === 'SUCCESS') {
@@ -367,11 +374,9 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
   }
 
   ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
     if (this.subscription$) {
       this.subscription$.unsubscribe();
-    }
-    if (this.checkInquiryCallbackMpaySubscribtion$) {
-      this.checkInquiryCallbackMpaySubscribtion$.unsubscribe();
     }
   }
 

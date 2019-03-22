@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, interval, BehaviorSubject, timer } from 'rxjs';
+import { BehaviorSubject, timer, Observable } from 'rxjs';
 import { Transaction, Payment } from '../models/transaction.model';
 import { TransactionService } from './transaction.service';
 import { switchMap, map } from 'rxjs/operators';
@@ -145,9 +145,9 @@ export class QRCodePaymentService {
     return source.pipe(map((res: any) => res.data || {}), switchMap(() => this.getInquiryCallbackMpay(bodyRequest)));
   }
 
-  getInquiryCallbackMpay(bodyRequest: QRCodeInquiryCallBackModel): Observable<any> {
+  getInquiryCallbackMpay(bodyRequest: QRCodeInquiryCallBackModel): Promise<any> {
     return this.http
-      .post(this.apiQRCodeInquiryCallBackMpay, bodyRequest);
+      .post(this.apiQRCodeInquiryCallBackMpay, bodyRequest).toPromise();
   }
 
   getInquiryMpay(bodyRequest: QRCodeInquiryCallBackModel): Promise<any> {
@@ -156,12 +156,12 @@ export class QRCodePaymentService {
       .toPromise();
   }
 
-  updatePostMpay(bodyRequest: QRCodePrePostMpayModel): Observable<any> {
-    return this.http.post(this.apiUpdatePostMpay, bodyRequest);
+  updatePostMpay(bodyRequest: QRCodePrePostMpayModel): Promise<any> {
+    return this.http.post(this.apiUpdatePostMpay, bodyRequest).toPromise();
   }
 
-  insertPreMpay(bodyRequest: QRCodePrePostMpayModel): Observable<any> {
-    return this.http.post(this.apiInsertPreMpay, bodyRequest);
+  insertPreMpay(bodyRequest: QRCodePrePostMpayModel): Promise<any> {
+    return this.http.post(this.apiInsertPreMpay, bodyRequest).toPromise();
   }
 
   updateMpayObjectInTransaction(data: any): void {
