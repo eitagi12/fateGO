@@ -553,6 +553,7 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
       .then((resp: any) => {
         const data = resp.data || {};
         // readPassport NewCa จะไม่ได้ address
+        console.log('data', data);
         return {
           caNumber: data.caNumber,
           mainMobile: data.mainMobile,
@@ -570,9 +571,11 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
           province: data.province,
           zipCode: data.zipCode
         };
-      }).then((resp) => {
+      }).then((customer) => {
         this.transaction.data.customer = Object.assign(
-          Object.assign({}, this.transaction.data.customer), readPassport.profile);
+          Object.assign({}, this.transaction.data.customer),
+          Object.assign(readPassport.profile, customer)
+        );
         return this.http.get(`/api/customerportal/newRegister/${mock.PassportNumber}/queryBillingAccount`).toPromise()
           .then((respQueryBilling: any) => {
             const data = respQueryBilling.data || {};
