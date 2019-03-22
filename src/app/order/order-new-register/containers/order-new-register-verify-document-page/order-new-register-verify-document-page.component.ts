@@ -553,6 +553,7 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
       .then((resp: any) => {
         const data = resp.data || {};
         // readPassport NewCa จะไม่ได้ address
+        console.log('data', data);
         return {
           caNumber: data.caNumber,
           mainMobile: data.mainMobile,
@@ -610,15 +611,15 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
           this.alertService.notify({
             type: 'error',
             html: error.errors.map((err) => {
-              return '<li class="text-left">' + err + '</li>';
+              return '<li class="text-left">' + this.translation.instant(err) + '</li>';
             }).join('')
           }).then(() => {
             this.onBack();
           });
         } else if (error.resultDescription) {
-          this.alertService.error(error.resultDescription);
+          this.alertService.error(this.translation.instant(error.resultDescription));
         } else {
-          this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+          this.alertService.error(this.translation.instant('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'));
 
         }
       });
