@@ -34,7 +34,7 @@ export class AppComponent {
     this.initails();
     this.tokenHandler();
     this.errorHandler();
-    // this.pageActivityHandler();
+    this.pageActivityHandler();
     this.homeService.callback = () => {
       window.location.href = '/smart-shop';
     };
