@@ -45,14 +45,13 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
   locationNameTH: string;
   recipientCustomerAddress: string;
   otherPhoneNumber: string;
-
   constructor(private localStorageService: LocalStorageService,
-              private apiRequestService: ApiRequestService,
-              private transactionServicet: TransactionService,
-              private priceOptionService: PriceOptionService,
-              private router: Router,
-              private depositSummaryServicesService: DepositSummaryServicesService,
-              private fb: FormBuilder) { }
+    private apiRequestService: ApiRequestService,
+    private transactionServicet: TransactionService,
+    private priceOptionService: PriceOptionService,
+    private router: Router,
+    private depositSummaryServicesService: DepositSummaryServicesService,
+    private fb: FormBuilder) { }
 
   ngOnInit(): void {
     this.formID = this.getRandomNum(10);
@@ -68,9 +67,9 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
       trade: this.localStorageService.load('reserveProductInfo').value
     };
     this.productImage = this.priceOption.trade.images.thumbnail ? this.priceOption.trade.images.thumbnail
-    : 'assets/images/icon/img-placeholder-gray.png';
+      : 'assets/images/icon/img-placeholder-gray.png';
     const colorCode = this.priceOption.trade.colorCode ? this.priceOption.trade.colorCode
-    : 'white';
+      : 'white';
     this.colorCodeStyle = {
       'background-color': colorCode,
     };
@@ -78,14 +77,17 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
 
     if (this.priceOption && this.priceOption.trade && this.priceOption.trade.tradeReserve
       && this.priceOption.trade.tradeReserve.trades[0] && this.priceOption.trade.tradeReserve.trades[0].payments) {
-     this.paymentMethod = this.priceOption.trade.tradeReserve.trades[0].payments[0].method;
-     this.priceOptionPayment = this.priceOption.trade.tradeReserve.trades[0].payments
-     .filter(payment => payment.method !== 'CA');
+      this.priceOptionPayment = this.priceOption.trade.tradeReserve.trades[0].payments
+        .filter(payment => (payment.method === 'CC') || payment.method === 'CA');
+      this.priceOptionBank = this.priceOption.trade.tradeReserve.trades[0].payments
+        .filter(payment => payment.method === 'CC' && payment.abb !== null);
+      this.paymentMethod = this.priceOptionPayment.filter(payment => payment.method === 'CA') ? 'CA' :
+        this.priceOptionPayment.filter(payment => payment.method === 'CC') ? 'CC' : 'CA';
     } else {
       this.paymentMethod = 'CA';
     }
 
-    this.onLoadDefaultBankData(this.priceOptionPayment).then((banks) => {
+    this.onLoadDefaultBankData(this.priceOptionBank).then((banks) => {
       this.priceOption.trade.banks = banks;
       // ############################################## payment detail ##############################################
       this.paymentDetail = {
@@ -95,6 +97,7 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     this.selectPaymentDetail = {
       paymentType: this.getPaymentType()
     };
+
     this.createForm();
     this.createProductRecipient();
   }
@@ -133,15 +136,12 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
   }
   getPaymentType(): string {
     if (this.paymentMethod === CASH_PAYMENT) {
-      return  'debit';
+      return 'debit';
     }
     if (this.paymentMethod === CREDIT_CARD_PAYMENT) {
       return 'credit';
     }
-    if (this.paymentMethod === CASH_AND_CREDIT_CARD_PAYMENT) {
-      return  'debit';
-    }
-    return  'debit';
+    return 'debit';
   }
   getPaymentMethod(paymentType: string): string {
     if (paymentType === 'debit') {
@@ -152,6 +152,15 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     }
     return '';
   }
+  showPaymentMethod(method: string): boolean {
+    const paymentMethod = this.priceOptionPayment.filter(payment => payment.method === method);
+    if (paymentMethod.length > 0)                                              {
+      return null;
+    } else {
+      return true;
+    }
+  }
+
   onLoadDefaultBankData(banks: PaymentDetailBank[]): Promise<any> {
     return new Promise((resolve, reject) => {
       if (banks && banks.length > 0) {
@@ -167,7 +176,7 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     this.selectPaymentDetail.paymentType = paymentType;
     this.paymentMethod = this.getPaymentMethod(paymentType);
   }
-  onSelectBank( bank: PaymentDetailBank): void {
+  onSelectBank(bank: PaymentDetailBank): void {
     this.selectPaymentDetail.bank = Object.assign({}, bank);
     this.selectPaymentDetail.bank.installments = undefined;
     this.paymentDetail.installments = bank.installments;
@@ -193,7 +202,7 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     return newPrivilegTradeBankByAbbs;
   }
 
-   groupBy(list: any, keyGetter: any): Map<any, any> {
+  groupBy(list: any, keyGetter: any): Map<any, any> {
     const map = new Map();
     list.forEach((item) => {
       const key = keyGetter(item);
@@ -209,16 +218,16 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
 
   createProductRecipient(): void {
     this.customerFullName = this.transaction.data.customer.titleName + ' ' + this.transaction.data.customer.firstName +
-    ' ' + this.transaction.data.customer.lastName;
+      ' ' + this.transaction.data.customer.lastName;
     this.customerFullAddress = this.getFullAddress(this.transaction.data.customer);
-    this.recipientCustomerAddress =  this.getFullAddress(this.transaction.data.customer);
+    this.recipientCustomerAddress = this.getFullAddress(this.transaction.data.customer);
     this.idCardNo = this.transaction.data.customer.idCardNo;
-      if (this.idCardNo) {
-        this.idCardNo = this.idCardNo.substring(9);
-        this.idCardNo = 'xxxxxxxxx' + this.idCardNo;
-      }
-      this.selectedMobile = this.transaction.data.customer.selectedMobile;
-      this.locationNameTH = this.transaction.data.customer.selectedLocation.locationNameTH;
+    if (this.idCardNo) {
+      this.idCardNo = this.idCardNo.substring(9);
+      this.idCardNo = 'xxxxxxxxx' + this.idCardNo;
+    }
+    this.selectedMobile = this.transaction.data.customer.selectedMobile;
+    this.locationNameTH = this.transaction.data.customer.selectedLocation.locationNameTH;
   }
   getFullAddress(customer: Customer): string {
     if (!customer) {
