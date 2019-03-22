@@ -109,6 +109,8 @@ export interface Recipientinformation {
 }
 
 export interface SelectedLocation {
+  locationCode?: string;
+  locationNameEN?: string;
   locationNameTH?: string;
 }
 

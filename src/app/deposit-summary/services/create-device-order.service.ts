@@ -3,6 +3,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { HttpClient } from '@angular/common/http';
 import { TokenService, User } from 'mychannel-shared-libs';
+import { LocalStorageService } from 'ngx-store';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 
 export const REMARK_CASH_PAYMENT = '[CA]';
@@ -40,7 +41,8 @@ export class CreateDeviceOrderService {
 
   constructor(
     private http: HttpClient,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private localStorageService: LocalStorageService
   ) {
     this.user = this.tokenService.getUser();
   }
@@ -112,16 +114,16 @@ export class CreateDeviceOrderService {
     // const prebooking = transaction.data.preBooking;
     const order = transaction.data.order || '';
     const data: any = {
-      soId: '29326',
+      soId: this.localStorageService.load('reserveSoId').value,
       soCompany: trade.company || 'AWN',
       locationSource: this.user.locationCode || '',
-      locationReceipt: this.user.locationCode || '',
+      locationReceipt: customer.selectedLocation.locationCode || '',
       productType: trade.productType || 'DEVICE',
       productSubType: trade.productSubtype || 'HANDSET',
       brand: productDetail.brand,
       model: productDetail.model,
       color: productDetail.colorName,
-      matCode: '',
+      matCode: trade.sku[0],
       priceIncAmt:  '',
       priceDiscountAmt:  '',
       grandTotalAmt: '',
@@ -142,7 +144,7 @@ export class CreateDeviceOrderService {
       // installmentTerm: payment && payment.bank ? payment.bank.installments[0].installmentMonth : 0,
       // installmentRate: payment && payment.bank ? payment.bank.installments[0].installmentPercentage : 0,
       mobileAisFlg: 'Y',
-      // paymentMethod: paymentMethod,
+      paymentMethod: payment.paymentMethod,
       // bankCode: this.getBankCode(payment, advancePayment),
       tradeFreeGoodsId: '',
       matairtimeId: '',
@@ -156,8 +158,8 @@ export class CreateDeviceOrderService {
       storeName : 'WH',
       soChannelType : 'MC_PRE',
      soDocumentType : 'DEPOSIT_TF',
-     shipCusName : 'ชื่อผู้รับสินค้า',
-     shipCusAddr : '999/55 ถ.พหลโยธิน พญาไท พญาไท กทม. 10400',
+     shipCusName : customer.shipaddress.shipCusAddr,
+     shipCusAddr : customer.shipaddress.shipCusName,
     };
 
     return Promise.resolve(data);

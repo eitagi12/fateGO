@@ -13,11 +13,11 @@
                 <h5 class="text-center text-light-green">ดำเนินการเรียบร้อย
                 </h5>
                 <br>
-                <h5 class="text-center text-black">เลขที่ใบจอง RExxxxxxxxxxxx
+                <h5 class="text-center text-black">เลขที่ใบจอง {{transaction?.data.payment?.reserveNo}}
                 </h5>
                 <h5 class="text-center text-secondary">ติดต่อรับ {{priceOption?.trade?.productName}}
                 </h5>
-                <h5 class="text-center text-secondary">ที่ xxxxxxxxxxxxxxxxxxxx
+                <h5 class="text-center text-secondary">ที่ {{transaction?.data.customer?.selectedLocation?.locationNameTH}}
                 </h5>
                 <!-- <h4 class="text-center text-light-green">หมายเลข {{ transaction?.data?.simCard?.mobileNo | mobileNo: '-' }}
               </h4> -->
