@@ -10,6 +10,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { DEPOSIT_PAYMENT_SUMMARY_PAGE, DEPOSIT_QUEUE_PAGE, DEPOSIT_PAYMENT_PAGE } from 'src/app/deposit-summary/constants/route-path.constant';
+import { WIZARD_RESERVE_WITH_DEPOSIT } from 'src/app/deposit-summary/constants/wizard.constant';
 
 @Component({
   selector: 'app-deposit-payment-summary-page',
@@ -19,7 +20,7 @@ import { DEPOSIT_PAYMENT_SUMMARY_PAGE, DEPOSIT_QUEUE_PAGE, DEPOSIT_PAYMENT_PAGE 
 export class DepositPaymentSummaryPageComponent implements OnInit {
 
   public channelType: string;
-  wizards: any = WIZARD_DEVICE_ORDER_AIS;
+  wizards: any = WIZARD_RESERVE_WITH_DEPOSIT;
 
   transaction: Transaction;
   priceOption: PriceOption;
