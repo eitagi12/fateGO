@@ -157,8 +157,8 @@ export class CreateNewRegisterService {
         ],
       }, /*required*/
       onTopPackages: [],
+      engFlag: 'N',
       promotionActionStatus1: 'Add', /*When SelectedPackages*/
-      engFlag: 'N'
     };
       // เช็ค Eng Flag จากจังหวัด
       if (customer.province && !!customer.province.match(/[a-z]/i)) {
@@ -189,10 +189,6 @@ export class CreateNewRegisterService {
       } else {
         data.orderVerify = 'User Face';
       }
-    }
-
-    if (customer.nationality !== 'Thailand') {
-      data.billLanguage = 'English';
     }
 
     // has one love
@@ -231,6 +227,9 @@ export class CreateNewRegisterService {
       return Promise.resolve(data);
     }
     if (action === TransactionAction.READ_PASSPORT) {
+      if (customer.nationality !== 'Thailand') {
+        data.billLanguage = 'English';
+      }
       return new ImageUtils().combine([
         customer.imageReadPassport,
         customer.imageSignatureSmartCard,

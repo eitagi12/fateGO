@@ -532,7 +532,7 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
         issuingCountry: defaultIfEmpty(data.IssuingCountry),
         firstName: defaultIfEmpty(data.GivenName),
         lastName: defaultIfEmpty(data.Surname),
-        nationality: defaultIfEmpty(data.Nationality),
+        nationality: defaultIfEmpty(data.IssuingCountry),
         birthdate: convertStringToDate(data.BirthDate),
         gender: defaultIfEmpty(data.Sex) === '1' ? 'M' : 'F',
         idCardNo: defaultIfEmpty(data.PassportNumber),
@@ -552,15 +552,28 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
     })
       .then((resp: any) => {
         const data = resp.data || {};
+        // readPassport NewCa จะไม่ได้ address
         return {
           caNumber: data.caNumber,
           mainMobile: data.mainMobile,
           billCycle: data.billCycle,
-          // zipCode: zipCode
+          homeNo: data.homeNo,
+          moo: data.moo,
+          mooBan: data.mooBan,
+          room: data.room,
+          floor: data.floor,
+          buildingName: data.buildingName,
+          soi: data.soi,
+          street: data.street,
+          tumbol: data.tumbol,
+          amphur: data.amphur,
+          province: data.province,
+          zipCode: data.zipCode
         };
-      }).then((resp) => {
+      }).then((customer) => {
         this.transaction.data.customer = Object.assign(
-          Object.assign({}, this.transaction.data.customer), readPassport.profile);
+          Object.assign({}, this.transaction.data.customer),
+          Object.assign(readPassport.profile, customer));
         return this.http.get(`/api/customerportal/newRegister/${mock.PassportNumber}/queryBillingAccount`).toPromise()
           .then((respQueryBilling: any) => {
             const data = respQueryBilling.data || {};

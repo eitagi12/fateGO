@@ -130,7 +130,7 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
         this.transaction.data.billingInformation = billingInformation;
         this.pageLoadingService.closeLoading();
         // if (this.checkBusinessLogic()) {
-        // this.transaction.data.action = TransactionAction.READ_CARD;
+        this.transaction.data.action = TransactionAction.READ_CARD;
         this.router.navigate([ROUTE_ORDER_NEW_REGISTER_FACE_CAPTURE_PAGE]);
         // }
       })

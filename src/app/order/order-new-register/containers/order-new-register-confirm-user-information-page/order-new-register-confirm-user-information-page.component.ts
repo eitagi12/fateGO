@@ -145,6 +145,9 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
           // delete this.transaction.data.billingInformation.billCycle;
           delete this.transaction.data.billingInformation.billCycleData;
           const simCard = this.transaction.data.simCard;
+          // tslint:disable-next-line:no-shadowed-variable
+          const billingInformation = this.transaction.data.billingInformation;
+          const billCycleData: any = billingInformation.billCycleData || {};
 
           this.billingInfo.billingMethod.text = null;
           this.billingInfo.billingMethod.isDelete = false;
@@ -157,10 +160,12 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
           this.billingInfo.billingCycle.isDelete = false;
 
          // this.mailBillingInfo.billChannel = this.getBillChannel();
-          this.mailBillingInfo = {
-            mobileNo: simCard.mobileNo,
-            billChannel: this.getBillChannel()
-          };
+         this.mailBillingInfo = {
+          email: billCycleData.email,
+          mobileNo: simCard.mobileNo,
+          address: billCycleData.billAddressText,
+          billChannel: this.getBillChannel()
+        };
           const bill = billCycle && billCycle.bill ? billCycle.bill : customer.billCycle;
           this.billingInfo.billingCycle.isDelete = !!(billCycle && billCycle.bill);
           this.getBllingCycle(bill).then((billCycleText: string) => {
