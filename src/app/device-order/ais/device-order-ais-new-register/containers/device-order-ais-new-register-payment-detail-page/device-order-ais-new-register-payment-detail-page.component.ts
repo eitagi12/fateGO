@@ -1,11 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import {
-  HomeService, ShoppingCart, PaymentDetail, SelectPaymentDetail,
-  PaymentDetailQRCode, PaymentDetailBank, PaymentDetailInstallment,
-  PaymentDetailOption,
-  ReceiptInfo,
-  Utils
+  HomeService, ShoppingCart, ReceiptInfo, Utils
 } from 'mychannel-shared-libs';
 import {
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VALIDATE_CUSTOMER_PAGE,
@@ -13,56 +9,13 @@ import {
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CUSTOMER_INFO_PAGE
 } from 'src/app/device-order/ais/device-order-ais-new-register/constants/route-path.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { TransactionAction, Transaction, Customer, Payment } from 'src/app/shared/models/transaction.model';
+import { TransactionAction, Transaction } from 'src/app/shared/models/transaction.model';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { from } from 'rxjs/internal/observable/from';
-import { groupBy, mergeMap, toArray, distinct, debounceTime } from 'rxjs/operators';
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
-
-// export interface PaymentDetail {
-//   title?: string;
-//   header?: string;
-//   price?: string;
-// }
-// export interface PaymentDetailQRCode {
-//   id: number;
-//   name: string;
-//   imageUrl: string;
-//   qrType: string;
-// }
-// export interface PaymentDetailAdvancePay {
-//   amount: number;
-//   installmentFlag: string;
-//   matAirtime: string;
-//   description: string;
-//   promotions: PaymentDetailAdvancePayPromotion[];
-// }
-// export interface PaymentDetailAdvancePayPromotion {
-//   promotionCode: string;
-//   promotionName: string;
-//   productType: string;
-//   billingSystem: string;
-// }
-// export interface PaymentDetailBank {
-//   abb: string;
-//   name: string;
-//   imageUrl: string;
-//   promotion: string;
-//   installments: PaymentDetailInstallment[];
-//   remark: string;
-// }
-// export interface PaymentDetailInstallment {
-//   installmentPercentage: number;
-//   installmentMonth: number;
-// }
-
-export const CASH_PAYMENT = 'CA';
-export const CREDIT_CARD_PAYMENT = 'CC';
-export const CASH_AND_CREDIT_CARD_PAYMENT = 'CC/CA';
 
 @Component({
   selector: 'app-device-order-ais-new-register-payment-detail-page',
@@ -149,8 +102,7 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
     this.paymentAdvancePayForm = this.fb.group({
       'paymentQrCodeType': [''],
       'paymentType': ['DEBIT', Validators.required],
-      'paymentBank': [''],
-      'paymentMethod': ['']
+      'paymentBank': ['']
     }, { validator: this.customValidate.bind(this) });
 
     // Events
@@ -204,7 +156,6 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
       paymentForm: this.fullPayment ? 'FULL' : 'INSTALLMENT'
     });
     this.paymentDetailForm.controls['paymentForm'].disable();
-
   }
 
   customValidate(group: FormGroup) {
@@ -216,7 +167,10 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
         break;
       case 'CREDIT':
         if (group.value.paymentBank) {
-          if (!this.isFullPayment() && !group.value.paymentMethod) {
+          if (!this.isFullPayment()
+            // Advance pay จะไม่มี paymentMethod ไม่ต้อง check
+            && group.controls['paymentMethod']
+            && !group.value.paymentMethod) {
             return { field: 'paymentMethod' };
           }
         } else {
@@ -331,14 +285,12 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
   }
 
   onNext() {
-    const payment: any = {
+    this.transaction.data.payment = Object.assign({
       paymentForm: this.isFullPayment() ? 'FULL' : 'INSTALLMENT'
-    };
-
-    this.transaction.data.payment = Object.assign(payment, this.paymentDetailForm.value);
+    }, this.paymentDetailForm.value);
 
     if (this.isAdvancePay()) {
-      this.transaction.data.advancePayment = Object.assign(payment, this.paymentAdvancePayForm.value);
+      this.transaction.data.advancePayment = Object.assign({}, this.paymentAdvancePayForm.value);
     }
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CUSTOMER_INFO_PAGE]);
   }

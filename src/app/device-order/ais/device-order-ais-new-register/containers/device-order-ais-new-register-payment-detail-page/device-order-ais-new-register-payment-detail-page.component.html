@@ -12,7 +12,6 @@
 
     <div class="my-3">
       <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
-
       <!-- PAYMENT DETAIL FORM -->
       <form [formGroup]="paymentDetailForm">
         <div class="container-fluid">
@@ -29,7 +28,7 @@
                 ฿ {{ priceOption?.trade?.promotionPrice | number }}
               </span>
             </div>
-            <div class="card-body py-2 border-top">
+            <div class="card-body py-2 border-top" [hidden]="!fullPayment">
               <div class="row">
                 <div class="col-6 px-2">
                   <input type="radio" id="payment-qr-code" name="paymentType" value="QR_CODE"
@@ -61,7 +60,7 @@
                 </div>
               </div>
             </div>
-            <div class="card-body py-2 border-top">
+            <div class="card-body py-2 border-top" [hidden]="!fullPayment">
               <div class="row">
                 <div class="col-6 px-2">
                   <input type="radio" id="payment-debit" name="paymentType" value="DEBIT" formControlName="paymentType">
