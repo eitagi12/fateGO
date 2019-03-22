@@ -260,11 +260,10 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
   }
 
   onNext() {
-    if (!this.customerValid()) {
+    if (!this.customerValid() && !this.isMergeBilling()) {
       this.alertService.warning(this.translation.instant('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร'));
       return;
     }
-
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData;
     billCycleData.billAddressText = this.billingInfo.billingAddress.text;
@@ -308,7 +307,6 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
       return billingInformation.billCycleData.billChannel;
     }
 
-
     // เลือกบิลตามแพจเกจ
     const billingSystem = mainPackage.billingSystem;
     if (billingSystem && billingSystem === BillingSystemType.BOS) {
@@ -331,7 +329,7 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
   }
 
   getBllingCycle(billCycle: string): Promise<string> {
-    if (!billCycle) {
+    if (!billCycle) { // NewCa จะ defaultBill
       return this.http.get('/api/customerportal/newRegister/queryBillCycle', {
         params: {
           coProject: 'N'
@@ -348,8 +346,7 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
               billDefault: billing.billDefault
             };
           }).find(bill => bill.billDefault === 'Y');
-
-          this.transaction.data.billingInformation.billCycle = defaultBillCycle.billCycle;
+          this.transaction.data.customer.billCycle = defaultBillCycle.billCycle.bill;
           return defaultBillCycle.text;
         });
     }

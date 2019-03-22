@@ -63,7 +63,7 @@ export class OrderNewRegisterVerifyInstantSimPageComponent implements OnInit, On
         this.pageLoadingService.closeLoading();
         this.alertService.notify({
           type: 'error',
-          html: this.translation.instant(error.resultDescription)
+          html: this.translation.instant(error.resultDescription.replace(/<br>/, ' '))
         });
       });
   }

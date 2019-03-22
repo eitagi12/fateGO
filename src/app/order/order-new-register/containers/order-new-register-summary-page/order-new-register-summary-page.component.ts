@@ -90,7 +90,7 @@ export class OrderNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData;
     const bills = billCycleData.billCycleText.split(' ');
-    let billCycleTextEng = "-";
+    let billCycleTextEng = '-';
     if (lang === 'EN') {
       this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameEng;
       this.confirmCustomerInfo.packageDetail = this.transaction.data.mainPackage.statementEng;
@@ -100,9 +100,9 @@ export class OrderNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
     }
 
     if (bills[3] === 'สิ้นเดือน') {
-      billCycleTextEng = `From the ${Moment([0,0,bills[1]]).format('Do')} to the end of every month`;
+      billCycleTextEng = `From the ${Moment([0, 0, bills[1]]).format('Do')} to the end of every month`;
     } else {
-      billCycleTextEng = `From the ${Moment([0,0,bills[1]]).format('Do')} to the ${Moment([0,0,bills[3]]).format('Do')} of every month`;
+      billCycleTextEng = `From the ${Moment([0, 0, bills[1]]).format('Do')} to the ${Moment([0, 0, bills[3]]).format('Do')} of every month`;
     }
     this.transaction.data.billingInformation.billCycleData.billCycleTextEng = billCycleTextEng;
   }
