@@ -574,8 +574,7 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
       }).then((customer) => {
         this.transaction.data.customer = Object.assign(
           Object.assign({}, this.transaction.data.customer),
-          Object.assign(readPassport.profile, customer)
-        );
+          Object.assign(readPassport.profile, customer));
         return this.http.get(`/api/customerportal/newRegister/${mock.PassportNumber}/queryBillingAccount`).toPromise()
           .then((respQueryBilling: any) => {
             const data = respQueryBilling.data || {};
