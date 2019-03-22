@@ -26,13 +26,12 @@
       <form [formGroup]="validateCustomerForm">
         <div class="form-group">
           <label for="idcard" class="form-text text-muted" translate>หมายเลขโทรศัพท์</label>
-          <input type="tel" class="form-control text-center" id="idcard" maxlength="10" placeholder="หมายเลขโทรศัพท์"
+          <input type="tel" class="form-control text-center" id="idcard" maxlength="10" placeholder="{{'หมายเลขโทรศัพท์' | translate}}"
             autofocus autocomplete="off" formControlName="identity"
             [ngClass]="{ 'is-invalid' : validateCustomerForm.controls.identity.invalid && validateCustomerForm.controls.identity.touched}">
           <small class="invalid-feedback"
-            *ngIf="validateCustomerForm.controls.identity.touched && validateCustomerForm.controls.identity.errors">
-            * {{ validateCustomerForm.controls.identity.errors?.message || 'กรุณากรอกรูปแบบให้ถูกต้อง' | translate }}
-          </small>
+            *ngIf="validateCustomerForm.controls.identity.touched && validateCustomerForm.controls.identity.errors" 
+            translate>* {{ validateCustomerForm.controls.identity.errors?.message || 'กรุณาระบุเบอร์โทรให้ถูกต้อง' }}</small>
         </div>
       </form>
     </div>

@@ -351,8 +351,9 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
               this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE]);
             })
             .catch((error: any) => {
+              this.pageLoadingService.closeLoading();
               this.validateCustomerForm.patchValue({ identity: '' });
-              this.alertService.error(error.error.resultDescription);
+              this.alertService.error(this.translation.instant(error.error.resultDescription));
             });
         }
       });
@@ -641,15 +642,15 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
           this.alertService.notify({
             type: 'error',
             html: error.errors.map((err) => {
-              return '<li class="text-left">' + err + '</li>';
+              return '<li class="text-left">' + this.translation.instant(err) + '</li>';
             }).join('')
           }).then(() => {
             this.onBack();
           });
         } else if (error.resultDescription) {
-          this.alertService.error(error.resultDescription);
+          this.alertService.error(this.translation.instant(error.resultDescription));
         } else {
-          this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+          this.alertService.error(this.translation.instant('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'));
 
         }
       });
