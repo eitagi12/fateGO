@@ -1,12 +1,12 @@
 import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { HttpClient, HttpHandler } from '@angular/common/http';
 
 import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { ReceiptInformationComponent, ReceiptInfo } from './receipt-information.component';
 import { BillingAddressService } from '../../services/billing-address.service';
+import { AlertService } from 'mychannel-shared-libs';
 
 describe('ReceiptInformationComponent', () => {
   let component: ReceiptInformationComponent;
@@ -35,8 +35,10 @@ describe('ReceiptInformationComponent', () => {
             })
           }
         },
-        HttpClient,
-        HttpHandler
+        {
+          provide : AlertService,
+          useValue : {}
+        }
       ]
     })
     .compileComponents();
