@@ -344,7 +344,7 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
   onReadPassport() {
     this.readPassportSubscription = this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
       if (readPassport.error) {
-        this.alertService.error(this.ERR_MASSEAGE);
+        this.alertService.error(this.translation.instant(this.ERR_MASSEAGE));
         return;
       } else if (readPassport.profile && readPassport.profile.idCardNo) {
         this.pageLoadingService.openLoading();
@@ -423,7 +423,7 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
                 this.onBack();
               });
             } else if (error.resultDescription) {
-              this.alertService.error(error.resultDescription);
+              this.alertService.error(this.translation.instant(error.resultDescription));
             } else {
               this.alertService.error(this.translation.instant('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'));
 
@@ -431,7 +431,7 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
           });
       } else {
         if (readPassport.eventName && readPassport.eventName === 'OnScanDocError') {
-          this.alertService.error(this.ERR_MASSEAGE);
+          this.alertService.error(this.translation.instant(this.ERR_MASSEAGE));
         }
       }
     });
@@ -611,15 +611,15 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
           this.alertService.notify({
             type: 'error',
             html: error.errors.map((err) => {
-              return '<li class="text-left">' + err + '</li>';
+              return '<li class="text-left">' + this.translation.instant(err) + '</li>';
             }).join('')
           }).then(() => {
             this.onBack();
           });
         } else if (error.resultDescription) {
-          this.alertService.error(error.resultDescription);
+          this.alertService.error(this.translation.instant(error.resultDescription));
         } else {
-          this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+          this.alertService.error(this.translation.instant('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'));
 
         }
       });
