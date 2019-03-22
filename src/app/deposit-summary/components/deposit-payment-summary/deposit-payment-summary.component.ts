@@ -1,5 +1,5 @@
 import { Component, OnInit, Input } from '@angular/core';
-import { Customer, ProductInfo, Transaction } from 'src/app/shared/models/transaction.model';
+import { Customer, ProductInfo, Transaction, SelectedLocation, Recipientinformation } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Utils } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
@@ -27,6 +27,7 @@ export class DepositPaymentSummaryComponent implements OnInit {
   public tradeReserve: any;
   public summaryPrice: number;
   public paymentType: string;
+  public customerReceiptAddress: string;
 
   constructor(
     private transactionService: TransactionService,
@@ -43,7 +44,8 @@ export class DepositPaymentSummaryComponent implements OnInit {
       customer.floor + ' ' + customer.buildingName + ' ' + customer.soi + ' ' + customer.street + ' ' +
       customer.tumbol + ' ' + customer.amphur + ' ' + customer.province + ' ' + customer.zipCode;
     this.customerIdCardNo = customer.idCardNo;
-    this.mobileNo = customer.mainMobile;
+    this.mobileNo = customer.selectedMobile;
+    this.customerReceiptAddress = this.transaction.data.customer.shipaddress.shipCusAddr;
     this.brand = reserveProductInfo.brand;
     this.colorName = reserveProductInfo.colorName;
     this.model = reserveProductInfo.model;
