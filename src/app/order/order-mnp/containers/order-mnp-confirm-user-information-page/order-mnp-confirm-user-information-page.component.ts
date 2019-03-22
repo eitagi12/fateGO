@@ -108,6 +108,7 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
     const billingInformation = this.transaction.data.billingInformation || {};
     const mergeBilling = billingInformation.mergeBilling;
     const billCycle = billingInformation.billCycle;
+    const billCycles = [] = billingInformation.billCycles;
     const customer: any = billingInformation.billDeliveryAddress || this.transaction.data.customer;
     const engFlag = customer.province && !!customer.province.match(/[a-z]/i) ? 'Y' : 'N';
     const customerAddress = this.utils.getCurrentAddress({
@@ -131,7 +132,7 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
         text: this.isMergeBilling() ? `${billingInformation.mergeBilling.mobileNo[0]}` : null,
         // net extrem แก้ไขไม่ได้, โปรไฟล์ใหม่แก้ไขไม่ได้
         // isEdit: !!customer.billCycle,
-        isEdit: customer.caNumber && customer.billCycle,
+        isEdit: !!(customer.caNumber && customer.billCycle && billCycles && billCycles.length > 0),
         // isEdit: false,
         // net extrem ลบไม่ได้, มีบิลใหม่ลบได้แล้วแสดงบิลเก่า
         isDelete: !!mergeBilling,
