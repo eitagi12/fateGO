@@ -89,6 +89,7 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
   }
 
   ngOnDestroy(): void {
+    this.translateSubscribe.unsubscribe();
     this.transactionService.update(this.transaction);
   }
 

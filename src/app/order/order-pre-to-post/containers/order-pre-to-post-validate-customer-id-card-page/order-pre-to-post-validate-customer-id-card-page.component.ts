@@ -79,6 +79,7 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
   }
 
   onNext() {
+    this.transaction.data.action =  TransactionAction.READ_CARD;
     this.pageLoadingService.openLoading();
     this.http.get('/api/customerportal/validate-customer-pre-to-post', {
       params: {
