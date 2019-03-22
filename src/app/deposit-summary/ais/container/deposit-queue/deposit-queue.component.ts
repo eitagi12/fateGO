@@ -61,8 +61,7 @@ export class DepositQueueComponent implements OnInit, OnDestroy {
         this.alertService.error('ระบบขัดข้อง');
       }
     }).catch((err) => {
-      console.log('Error!!!');
-      this.router.navigate([DEPOSIT_RESULT_PAGE]);
+      this.alertService.error('ระบบขัดข้อง');
     });
   }
 
