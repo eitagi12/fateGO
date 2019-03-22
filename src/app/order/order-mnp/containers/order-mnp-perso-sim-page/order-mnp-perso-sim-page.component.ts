@@ -626,20 +626,20 @@ export class OrderMnpPersoSimPageComponent implements OnInit, OnDestroy {
         this.controlSim(ControlSimCard.EVENT_CHECK_SIM_STATE).then((resCheckSim: ControlSimResult) => {
           if (resCheckSim.result === SIMCardStatus.STATUS_IN_IC) {
             this.controlSim(ControlLED.EVENT_LED_ON);
-            this.checkCardPresent = true; 
+            this.checkCardPresent = true;
             return resCheckSim.isSuccess;
           } else {
             this.controlSim(ControlSimCard.EVENT_LOAD_SIM).then((resLoadSim: ControlSimResult) => {
               this.controlSim(ControlLED.EVENT_LED_ON);
-              if(resLoadSim.result == 'Success'){
-                this.checkCardPresent = true; 
+              if (resLoadSim.result === 'Success') {
+                this.checkCardPresent = true;
               }
               return resLoadSim.isSuccess;
             });
           }
         });
       } else {
-        this.checkCardPresent = false; 
+        this.checkCardPresent = false;
         return false;
       }
     });

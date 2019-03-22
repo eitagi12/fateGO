@@ -105,8 +105,8 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit {
             const data = resp.data.data || [];
 
             // reference object
-            const promotions = data.filter((promotion: any) => {
-              const customAttributes: any = promotion.customAttributes;
+            const promotions = data.filter((promotionfilter: any) => {
+              const customAttributes: any = promotionfilter.customAttributes;
 
               if ((/^Bundle/i).test(customAttributes.offerType)
                 || !(customAttributes.chargeType === 'All' || customAttributes.chargeType === chargeType)) {
@@ -135,28 +135,28 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit {
               .sort((a) => a.customAttributes.priceType === 'Recurring' ? 1 : -1);
             // sort priceType 'Recurring' first
 
-            promotion.items = promotions.filter((promotion: any) => {
-              const packageType: any[] = (promotion.customAttributes.packageType || '').split(',');
+            promotion.items = promotions.filter((promotionfilter: any) => {
+              const packageType: any[] = (promotionfilter.customAttributes.packageType || '').split(',');
               return packageType.filter(pkg => !(/^(Emerald|Gold|Platinum)$/i).test(pkg.trim())).length > 0;
-            }).map((promotion: any) => {
+            }).map((promotionsmap: any) => {
               return {
-                id: promotion.id,
-                title: promotion.title,
-                priceExclVat: +promotion.customAttributes.priceExclVat,
-                value: promotion
+                id: promotionsmap.id,
+                title: promotionsmap.title,
+                priceExclVat: +promotionsmap.customAttributes.priceExclVat,
+                value: promotionsmap
               };
             });
 
             const mobileSegment = '';
-            promotion.itemsSerenade = promotions.filter((promotion: any) => {
-              const packageType: any[] = (promotion.customAttributes.packageType || '').split(',');
-              return mobileSegment && packageType.filter(pkg => mobileSegment == pkg.trim()).length > 0;
-            }).map((promotion: any) => {
+            promotion.itemsSerenade = promotions.filter((promo: any) => {
+              const packageType: any[] = (promo.customAttributes.packageType || '').split(',');
+              return mobileSegment && packageType.filter(pkg => mobileSegment === pkg.trim()).length > 0;
+            }).map((promomap: any) => {
               return {
-                id: promotion.id,
-                title: promotion.title,
-                priceExclVat: +promotion.customAttributes.priceExclVat,
-                value: promotion
+                id: promomap.id,
+                title: promomap.title,
+                priceExclVat: +promomap.customAttributes.priceExclVat,
+                value: promomap
               };
             });
 

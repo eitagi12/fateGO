@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { PromotionShelve, HomeService, PageLoadingService, AlertService, PromotionShelveItem, PromotionShelveGroup } from 'mychannel-shared-libs';
@@ -15,7 +15,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
   templateUrl: './device-order-ais-existing-select-package-page.component.html',
   styleUrls: ['./device-order-ais-existing-select-package-page.component.scss']
 })
-export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit {
+export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit, OnDestroy {
 
   @ViewChild('conditionTemplate')
   conditionTemplate: any;
@@ -91,7 +91,7 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit 
                   items: []
                 };
               })
-          }
+          };
         });
         return Promise.resolve(promotionShelves);
       })
@@ -118,20 +118,20 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit 
               const maxinumPackagePrice = +campaign.maxinumPackagePrice;
 
               // reference object
-              promotion.items = data.filter((promotion: any) => {
-                return promotion.customAttributes.chargeType === 'Post-paid' &&
-                  minimumPackagePrice <= +promotion.customAttributes.priceExclVat &&
-                  (maxinumPackagePrice > 0 ? maxinumPackagePrice >= +promotion.customAttributes.priceExclVat : true);
+              promotion.items = data.filter((promotions: any) => {
+                return promotions.customAttributes.chargeType === 'Post-paid' &&
+                  minimumPackagePrice <= +promotions.customAttributes.priceExclVat &&
+                  (maxinumPackagePrice > 0 ? maxinumPackagePrice >= +promotions.customAttributes.priceExclVat : true);
               })
                 .sort((a, b) => {
                   return +a.customAttributes.priceInclVat !== +b.customAttributes.priceInclVat ?
                     +a.customAttributes.priceInclVat < +b.customAttributes.priceInclVat ? -1 : 1 : 0;
-                }).map((promotion: any) => {
+                }).map((promotionmap: any) => {
                   return { // item
-                    id: promotion.id,
-                    title: promotion.title,
-                    detail: promotion.detailTH,
-                    value: promotion
+                    id: promotionmap.id,
+                    title: promotionmap.title,
+                    detail: promotionmap.detailTH,
+                    value: promotionmap
                   };
                 });
             });

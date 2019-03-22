@@ -293,7 +293,7 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
 
 
   getBllingCycle(billCycle: string): Promise<string> {
-    if (!billCycle) {   
+    if (!billCycle) {
       return this.http.get('/api/customerportal/newRegister/queryBillCycle', {
         params: {
           coProject: 'N'
