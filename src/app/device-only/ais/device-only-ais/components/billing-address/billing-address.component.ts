@@ -1,10 +1,12 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { debounceTime, distinct } from 'rxjs/operators';
 import { Utils, CustomerAddress } from 'mychannel-shared-libs';
 
 export interface CustomerAddress {
   titleName: string;
+  firstName: string;
+  lastName: string;
   homeNo: string;
   moo?: string;
   mooBan?: string;
@@ -28,6 +30,12 @@ export class BillingAddressComponent implements OnInit, OnChanges {
 
   @Input()
   titleNames: string[];
+
+  @Input()
+  firstName: string[];
+
+  @Input()
+  lastName: string[];
 
   @Input()
   customerAddress: CustomerAddress;
@@ -72,6 +80,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   error: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   customerAddressForm: FormGroup;
+  private valueFn: any = Validators.nullValidator;
   private formErrors: { idCardNo: string; } = {
     idCardNo: ''
   };
@@ -83,7 +92,6 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   constructor(
     public fb: FormBuilder,
     private utils: Utils
-
   ) {
   }
 
@@ -94,6 +102,24 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges): void {
     if (!this.customerAddressForm) {
       return;
+    }
+
+    if (changes.firstName) {
+      const change = changes['validateCharacter'];
+      if (change) {
+        this.valueFn = this.validateCharacter();
+      } else {
+        this.valueFn = Validators.nullValidator;
+      }
+    }
+
+    if (changes.lastName) {
+      const change = changes['validateCharacter'];
+      if (change) {
+        this.valueFn = this.validateCharacter();
+      } else {
+        this.valueFn = Validators.nullValidator;
+      }
     }
 
     if (changes.customerAddress) {
@@ -147,6 +173,8 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     this.customerAddressForm = this.fb.group({
       idCardNo: ['', [Validators.required, Validators.pattern(/^[1-8]\d{12}$/), this.validateIdCard.bind(this)]],
       titleName: ['', [Validators.required]],
+      firstName: ['', [Validators.required, this.validateCharacter()]],
+      lastName: ['', [Validators.required, this.validateCharacter()]],
       homeNo: ['', [Validators.required, Validators.pattern(/^[0-9^/]*$/)]],
       moo: [''],
       mooBan: [''],
@@ -196,18 +224,27 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     });
   }
 
+  validateCharacter(): ValidatorFn {
+    return (control: AbstractControl): { [key: string]: any } => {
+      const reg = /[!$%^&*()_+|~=`{}\[\]:";'<>?,\/@#./1-9]/;
+      const stringValue = control.value;
+      const no = reg.test(stringValue);
+      return no ? { 'validateCharacter': { stringValue } } : null;
+    };
+  }
+
   validateIdCard(control: AbstractControl): ValidationErrors | null {
     const value = control.value;
     const inputLength = value.length;
     if (inputLength === 13) {
-    if (this.utils.isThaiIdCard(value)) {
-      return null;
-    } else {
-      return {
-        message: 'กรุณากรอกเลขบัตรประชาชนให้ถูกต้อง',
-      };
+      if (this.utils.isThaiIdCard(value)) {
+        return null;
+      } else {
+        return {
+          message: 'กรุณากรอกเลขบัตรประชาชนให้ถูกต้อง',
+        };
+      }
     }
-  }
   }
 
   private provinceFormControl(): void {

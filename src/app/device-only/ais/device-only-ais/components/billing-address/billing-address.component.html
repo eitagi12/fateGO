@@ -38,6 +38,22 @@
           </div>
 
           <div class="form-group">
+            <label for="firstName" id="textFirstName">ชื่อ
+              <span class="text-red"> *</span>
+            </label>
+            <input type="text" autocomplete="off" class="form-control" id="inputfirstName" maxlength="50" formControlName="firstName"
+              [ngClass]="{'is-invalid': !customerAddressForm.controls['firstName'].valid && customerAddressForm.controls['firstName'].dirty }">
+          </div>
+
+          <div class="form-group">
+              <label for="lastName" id="textLastName">นามสกุล
+                <span class="text-red"> *</span>
+              </label>
+              <input type="text" autocomplete="off" class="form-control" id="inputlastName" maxlength="50" formControlName="lastName"
+                [ngClass]="{'is-invalid': !customerAddressForm.controls['lastName'].valid && customerAddressForm.controls['lastName'].dirty }">
+            </div>
+
+          <div class="form-group">
             <label for="homeNo" id="txtHomeNo">บ้านเลขที่
               <span class="text-red"> *</span>
             </label>

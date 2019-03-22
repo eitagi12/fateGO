@@ -49,6 +49,8 @@ describe('BillingAddressComponent', () => {
     component.zipCodes = ['11011', '11012'];
     component.customerAddressForm.controls['idCardNo'].setValue('1670300171423');
     component.customerAddressForm.controls['titleName'].setValue('นาย');
+    component.customerAddressForm.controls['firstName'].setValue('John');
+    component.customerAddressForm.controls['lastName'].setValue('Yoyo');
     component.customerAddressForm.controls['homeNo'].setValue('123');
     component.customerAddressForm.controls['province'].setValue('testProvice');
     component.customerAddressForm.controls['amphur'].setValue('testAmphur');
@@ -64,6 +66,8 @@ describe('BillingAddressComponent', () => {
 
     tick(750); // because set debounceTime to 750 in component
     expect(customerAddress.titleName).toBe('นาย');
+    expect(customerAddress.firstName).toBe('John');
+    expect(customerAddress.lastName).toBe('Yoyo');
     expect(customerAddress.homeNo).toBe('123');
     expect(customerAddress.province).toBe('testProvice');
     expect(customerAddress.amphur).toBe('testAmphur');

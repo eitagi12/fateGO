@@ -71,6 +71,8 @@ export class ReceiptInformationComponent implements OnInit {
     this.customerAddress = {
       idCardNo: '',
       titleName: '',
+      firstName: '',
+      lastName: '',
       homeNo: '',
       moo: '',
       mooBan: '',
