@@ -7,10 +7,13 @@ describe('BillingAddressComponent', () => {
   let component: BillingAddressComponent;
   let fixture: ComponentFixture<BillingAddressComponent>;
 
-  setupTestBed({
-    imports: [ ReactiveFormsModule],
-    declarations: [ BillingAddressComponent]
-  });
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      imports: [ ReactiveFormsModule],
+      declarations: [ BillingAddressComponent]
+    })
+    .compileComponents();
+  }));
 
   beforeEach(() => {
     fixture = TestBed.createComponent(BillingAddressComponent);
