@@ -42,7 +42,7 @@
         </div>
 
         <div class="text-center">
-          <h4 [class]="timeLowerThanOrEqualToZero ? 'text-pink' : 'text-light-green'">{{ timeCounterRenderer }}</h4>
+          <h4 [ngClass]="{ 'text-pink': timeLowerThanOrEqualToZero }">{{ timeCounterRenderer }}</h4>
           <div>" กรุณาชำระเงินภายในเวลาที่กำหนด "</div>
         </div>
 
@@ -52,10 +52,10 @@
   <mc-footer>
     <button class="btn btn-success" (click)="onRefreshQRCode()">REFRESH</button>
     <!-- for develop -->
-    <button [hidden]="!isDeveloperMode()" class="btn btn-secondary" (click)="onBack()">BACK (DV)</button>
-    <button [hidden]="!isDeveloperMode()" class="btn btn-success">CONFIRM (DV)</button>
-    <a [hidden]="!isDeveloperMode()" routerLink="../qr-code-queue" class="btn btn-success">QUEUE (DV)</a>
-    <a [hidden]="!isDeveloperMode()" routerLink="../qr-code-error" class="btn btn-success">ERROR (DV)</a>
+    <button [hidden]="!isDeveloperMode" class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button [hidden]="!isDeveloperMode" class="btn btn-success">CONFIRM</button>
+    <a [hidden]="!isDeveloperMode" routerLink="../qr-code-queue" class="btn btn-success">QUEUE</a>
+    <a [hidden]="!isDeveloperMode" routerLink="../qr-code-error" class="btn btn-success">ERROR</a>
     <!-- for develop -->
   </mc-footer>
 </div>

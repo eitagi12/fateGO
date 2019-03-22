@@ -35,27 +35,27 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
   payment: Payment;
 
   // qrCode
-  private subscription$: Subscription;
+  subscription$: Subscription;
   // private checkInquiryCallbackMpaySubscribtion$: Subscription;
-  private intravalTimeSubscription$: Subscription;
-  private currentDateTime: number;
-  private currentTimeCounter: BehaviorSubject<number> = new BehaviorSubject(null);
-  private orderID: string;
-  public isPaid = false;
-  public timeCounterRenderer: string;
-  public textQRCode: string;
-  public isTimeLowerThanFifthteenSeconds: boolean;
-  public qrCodePrePostMpayModel: QRodePrePostMpayModel;
-  public refreshCount = 1;
-  private NEW_LINE = '\n';
+  intravalTimeSubscription$: Subscription;
+  currentDateTime: number;
+  currentTimeCounter: BehaviorSubject<number> = new BehaviorSubject(null);
+  orderID: string;
+  isPaid = false;
+  timeCounterRenderer: string;
+  textQRCode: string;
+  isTimeLowerThanFifthteenSeconds: boolean;
+  qrCodePrePostMpayModel: QRodePrePostMpayModel;
+  refreshCount = 1;
+  NEW_LINE = '\n';
   qrCodeImageSrc: string;
-  private startTimeInMininte = 5;
+  startTimeInMininte = 5;
   brannerImagePaymentQrCode: ImageBrannerQRCode ;
   mcLoadingQrcodePaymentService: Promise<any>; // for mcLoading
-  private timeLowerThanOrEqualToZero: boolean;
+  timeLowerThanOrEqualToZero: boolean;
 
-  private isPayment: false;
-  private isAdavance: false;
+  isPayment: false;
+  isAdavance: false;
 
   constructor(
     private router: Router,
