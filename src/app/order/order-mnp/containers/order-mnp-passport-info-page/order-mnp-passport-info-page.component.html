@@ -43,17 +43,17 @@
               <!-- WEB Step -->
               <div *ngIf="!isAisNative()">
                 <a href="#" (click)="$event.preventDefault(); camera.next();" class="text-pink" *ngIf="!hasImageSmartCard()">
-                  ถ่ายรูป
+                  <span translate>ถ่ายรูป</span> 
                 </a>
                 <a href="#" (click)="$event.preventDefault(); onClearImage()" class="text-pink" *ngIf="hasImageSmartCard()">
-                  ถ่ายรูปใหม่
+                 <span translate>ถ่ายรูปใหม่</span> 
                 </a>
               </div>
               <!-- Native Step -->
               <div *ngIf="isAisNative()">
                 <a href="#" (click)="$event.preventDefault(); camera.next();" class="text-pink" *ngIf="!hasImageSmartCard()">
-                  <span *ngIf="!hasImageSmartCard()"> ถ่ายรูป </span>
-                  <span *ngIf="hasImageSmartCard()"> ถ่ายรูปใหม่</span>
+                  <span *ngIf="!hasImageSmartCard()" translate> ถ่ายรูป </span>
+                  <span *ngIf="hasImageSmartCard()" translate> ถ่ายรูปใหม่</span>
                 </a>
               </div>
             </div>
@@ -64,8 +64,8 @@
             }">
               <!-- WEB Step -->
               <a href="#" (click)="$event.preventDefault(); onSigned()" class="text-pink">
-                <span *ngIf="!hasImageSignature()">เซ็นลายเซ็น</span>
-                <span *ngIf="hasImageSignature()">เซ็นลายเซ็นใหม่</span>
+                <span *ngIf="!hasImageSignature()" translate>เซ็นลายเซ็น</span>
+                <span *ngIf="hasImageSignature()" translate>เซ็นลายเซ็นใหม่</span>
               </a>
             </div>
           </div>

@@ -11,13 +11,13 @@
   <div class="mc-flex-wrap bg-white text-center ">
     <div class="container">
 
-      <div *ngTemplateOutlet="translation.currentLang === 'EN' ? passport : idCard">
+      <div *ngTemplateOutlet="translateService.currentLang === 'EN' ? passport : idCard">
       </div>
 
       <h4 class="text-center mt-4"><b translate>หรือ</b></h4>
       <hr class="shadow-sm">
 
-      <div *ngTemplateOutlet="translation.currentLang === 'TH' ? passport : idCard">
+      <div *ngTemplateOutlet="translateService.currentLang === 'TH' ? passport : idCard">
       </div>
 
     </div>

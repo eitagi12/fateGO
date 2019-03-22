@@ -288,7 +288,7 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
     private alertService: AlertService,
     private vendingApiService: VendingApiService,
     private readCardService: ReadCardService,
-    public translation: TranslateService
+    public translateService: TranslateService
   ) {
     this.isProduction = environment.production;
   }
@@ -320,7 +320,7 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
   onReadPassport() {
     this.readPassportSubscription = this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
       if (readPassport.error) {
-        this.alertService.error(this.ERR_MASSEAGE);
+        this.alertService.error(this.translateService.instant(this.ERR_MASSEAGE));
         return;
       } else if (readPassport.profile && readPassport.profile.idCardNo) {
         this.pageLoadingService.openLoading();
@@ -393,15 +393,15 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
               this.alertService.notify({
                 type: 'error',
                 html: error.errors.map((err) => {
-                  return '<li class="text-left">' + err + '</li>';
+                  return '<li class="text-left">' + this.translateService.instant(err) + '</li>';
                 }).join('')
               }).then(() => {
                 this.onBack();
               });
             } else if (error.resultDescription) {
-              this.alertService.error(error.resultDescription);
+              this.alertService.error(this.translateService.instant(error.resultDescription));
             } else {
-              this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+              this.alertService.error(this.translateService.instant('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'));
 
             }
           });
@@ -451,13 +451,13 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
     const idCardType = this.transaction.data.customer.idCardType;
 
     if (this.utils.isLowerAge17Year(birthdate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี').then(() => {
+      this.alertService.error(this.translateService.instant('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี')).then(() => {
         this.router.navigate([ROUTE_ORDER_MNP_VERIFY_DOCUMENT_PAGE]);
       });
       return false;
     }
     if (this.utils.isIdCardExpiredDate(expireDate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ').then(() => {
+      this.alertService.error(this.translateService.instant('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ')).then(() => {
         this.router.navigate([ROUTE_ORDER_MNP_VERIFY_DOCUMENT_PAGE]);
       });
       return false;
@@ -579,15 +579,15 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
           this.alertService.notify({
             type: 'error',
             html: error.errors.map((err) => {
-              return '<li class="text-left">' + this.translation.instant(err) + '</li>';
+              return '<li class="text-left">' + this.translateService.instant(err) + '</li>';
             }).join('')
           }).then(() => {
             this.onBack();
           });
         } else if (error.resultDescription) {
-          this.alertService.error(error.resultDescription);
+          this.alertService.error(this.translateService.instant(error.resultDescription));
         } else {
-          this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+          this.alertService.error(this.translateService.instant('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'));
 
         }
       });

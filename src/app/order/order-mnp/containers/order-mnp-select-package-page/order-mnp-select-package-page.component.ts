@@ -130,7 +130,7 @@ export class OrderMnpSelectPackagePageComponent implements OnInit, OnDestroy {
                     return { // item
                       id: promotion.itemId,
                       title: language === 'EN' ? promotion.shortNameEng : promotion.shortNameThai,
-                      detail: language === 'EN' ? promotion.statementEng : promotion.shortNameThai,
+                      detail: language === 'EN' ? promotion.statementEng : promotion.statementThai,
                       condition: subShelve.conditionCode,
                       value: promotion
                     };
