@@ -68,7 +68,9 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
     if (this.validateCustomerIdcard && this.validateCustomerIdcard.koiskApiFn) {
       this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
     }
-    this.homeService.goToHome();
+    setTimeout(() => {  // รอ web connect ทำงานให้เสร็จก่อน
+      this.homeService.goToHome();
+    }, 750);
   }
 
   onBack() {
