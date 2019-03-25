@@ -318,7 +318,9 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
     if (this.closeVendingApi && this.closeVendingApi.ws) {
       this.closeVendingApi.ws.send(KioskControls.LED_OFF);
     }
-    this.homeService.goToHome();
+    setTimeout(() => { // รอ webconnect ทำงานเสร็จก่อน
+      this.homeService.goToHome();
+    }, 750);
   }
 
   onReadPassport() {
@@ -485,8 +487,10 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
       this.closeVendingApi.ws.send(KioskControls.LED_OFF);
     }
     clearInterval(this.cardStateInterval);
-    this.vendingApiSubscription.unsubscribe();
-    this.readPassportSubscription.unsubscribe();
+    setTimeout(() => {
+      this.vendingApiSubscription.unsubscribe();
+      this.readPassportSubscription.unsubscribe();
+    }, 750);
   }
 
   // mockFunc

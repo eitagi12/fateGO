@@ -537,8 +537,11 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
       this.closeVendingApi.ws.send(KioskControls.LED_OFF);
     }
     clearInterval(this.cardStateInterval);
-    this.vendingApiSubscription.unsubscribe();
-    this.readPassportSubscription.unsubscribe();
+    setTimeout(() => {
+      this.vendingApiSubscription.unsubscribe();
+      this.readPassportSubscription.unsubscribe();
+    }, 750);
+
   }
   // mockFunc
   onClickMock(mock): void {

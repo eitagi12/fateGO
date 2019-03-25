@@ -171,7 +171,9 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
     if (this.validateCustomerIdcard && this.validateCustomerIdcard.koiskApiFn) {
       this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
     }
-    this.homeService.goToHome();
+    setTimeout(() => {
+      this.homeService.goToHome();
+    }, 750);
   }
 
   getZipCode(province: string, amphur: string, tumbol: string): Promise<string> {
@@ -194,6 +196,11 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
   }
 
   ngOnDestroy(): void {
+    setTimeout(() => {
+      if (this.validateCustomerIdcard.koiskApiFn) {
+        this.validateCustomerIdcard.koiskApiFn.close();
+      }
+    }, 750);
     this.transactionService.update(this.transaction);
     this.pageLoadingService.closeLoading();
   }
