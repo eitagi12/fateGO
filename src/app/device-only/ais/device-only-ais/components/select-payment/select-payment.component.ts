@@ -1,47 +1,15 @@
 import { Component, OnInit } from '@angular/core';
 import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { PaymentDetail, SelectPaymentDetail, PaymentDetailOption, PaymentDetailQRCode, PaymentDetailBank, PaymentDetailInstallment } from 'mychannel-shared-libs';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { Transaction } from 'src/app/shared/models/transaction.model';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 
-export interface SelectPaymentDetail {
-  paymentType?: string; // 'qrcode' | 'credit' | 'debit';
-  qrCode?: PaymentDetailQRCode;
-  bank?: PaymentDetailBank;
-}
-export interface PaymentDetailBank {
-  abb: string;
-  name: string;
-  imageUrl: string;
-  promotion?: string;
-  installments: PaymentDetailInstallment[];
-  remark?: string;
-}
-export interface PaymentDetailInstallment {
-  installmentPercentage: number;
-  installmentMonth: number;
-}
-export interface PaymentDetail {
-  title?: string;
-  header?: string;
-  price?: string;
-  headerAdvancePay?: string;
-  priceAdvancePay?: string;
-  specialAmountPercent?: string;
-  specialAmountBaht?: string;
-  qrCodes?: PaymentDetailQRCode[];
-  banks?: PaymentDetailBank[];
-  installments?: PaymentDetailInstallment[];
-}
-export interface PaymentDetailQRCode {
-  id: number;
-  name: string;
-  imageUrl: string;
-  qrType: string;
-}
-export interface PaymentDetailOption {
-  isInstallment: boolean;
-  isEnable: boolean;
-}
-
+export const CASH_PAYMENT = 'CA';
+export const CREDIT_CARD_PAYMENT = 'CC';
+export const CASH_AND_CREDIT_CARD_PAYMENT = 'CC/CA';
 @Component({
   selector: 'app-select-payment',
   templateUrl: './select-payment.component.html',
@@ -58,62 +26,55 @@ export class SelectPaymentComponent implements OnInit {
   isCredit: boolean;
   isDebit: boolean;
 
+  paymentMethod: string;
+  transaction: Transaction;
+  priceOption: PriceOption;
+  formID: string;
+  showQRCode: boolean;
+
   constructor(
-    private fb: FormBuilder
-  ) { }
+    private fb: FormBuilder,
+    private transactionService: TransactionService,
+    private priceOptionService: PriceOptionService
+  ) {
+    this.transaction = this.transactionService.load();
+    this.priceOption = this.priceOptionService.load();
+  }
   ngOnInit(): void {
+    const productDetail = this.priceOption.productDetail;
+
+    const productInfo = this.priceOption.productStock;
+    this.onLoadDefaultBankData(this.priceOption.trade.banks).then((banks) => {
+      this.priceOption.trade.banks = banks;
+      // ############################################## payment detail ##############################################
+      this.paymentDetail = {
+        title: 'รูปแบบการชำระเงิน',
+        header: 'ค่าเครื่อง ' + productDetail.name,
+        price: this.priceOption.trade.promotionPrice,
+        qrCodes: this.getQRCode(),
+        banks: this.groupPrivilegeTradeBankByAbb(this.priceOption.trade.banks)
+      };
+    });
+
+    console.log('" testt== "', this.transaction);
+
+    this.paymentDetailOption = {
+      isInstallment: this.isInstallment(),
+      isEnable: this.isEnableForm()
+    };
+
     this.createForm();
-       this.paymentDetail = {
-         title: 'รูปแบบชำระเงิน',
-         header: 'ค่าเครื่อง IPHONEX64 สี BLACK',
-         price: '20780',
-         headerAdvancePay: '',
-         priceAdvancePay: '',
-         specialAmountPercent: '',
-         specialAmountBaht: '',
-         qrCodes: this.getQRCodeData(),
-         banks: this.getBankData()
-       };
-       this.selectPaymentDetail = {
-         paymentType: 'qrcode',
-         qrCode: this.getQRCodeData()[1],
-         bank: {
-           abb: 'CITI',
-           imageUrl: 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/CITI_CITI.png',
-           installments: [{ installmentPercentage: 0, installmentMonth: 6 }],
-           name: 'ซิตี้แบงก์',
-           remark: null,
-         }
-       };
-       this.paymentDetailOption = {
-         isInstallment: true,
-         isEnable: true
-       };
   }
 
-  createForm(): void {
-    this.paymentForm = this.fb.group({
-      paymentType: [null, Validators.required]
-    });
-    this.paymentForm.valueChanges.subscribe((payment: any) => {
-      const paymentType: string = payment.paymentType;
-      this.checkTypePaymentType(paymentType);
+  onLoadDefaultBankData(banks: PaymentDetailBank[]): Promise<any> {
+    return new Promise((resolve, reject) => {
+      if (banks && banks.length > 0) {
+        resolve(banks);
+      }
     });
   }
 
-  private checkTypePaymentType(paymentType: string): void {
-    if (paymentType === 'qrcode') {
-      this.isQrcode = true;
-    }
-    if (paymentType === 'credit') {
-      this.isCredit = true;
-    }
-    if (paymentType === 'debit') {
-      this.isDebit = true;
-    }
-  }
-
-  getQRCodeData(): PaymentDetailQRCode[] {
+  getQRCode(): any {
     return [
       {
         id: 1,
@@ -130,154 +91,164 @@ export class SelectPaymentComponent implements OnInit {
     ];
   }
 
-  getBankData(): PaymentDetailBank[] {
-    return [
-      {
-        abb: 'CITIREADY',
-        imageUrl: 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/CITIREADY_citibank02.jpg',
-        installments: [
-          {
-            installmentPercentage: 0,
-            installmentMonth: 3
-          },
-          {
-            installmentPercentage: 0,
-            installmentMonth: 6
-          },
-          {
-            installmentPercentage: 0,
-            installmentMonth: 12
-          },
-        ],
-        name: 'ซิตี้แบงก์ เรดดี้เครดิต',
-        remark: null,
-      },
-      {
-        abb: 'CITI',
-        imageUrl: 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/CITI_CITI.png',
-        installments: [
-          {
-            installmentPercentage: 0,
-            installmentMonth: 3
-          },
-          {
-            installmentPercentage: 0,
-            installmentMonth: 6
-          },
-          {
-            installmentPercentage: 0,
-            installmentMonth: 12
-          },
-        ],
-        name: 'ซิตี้แบงก์',
-        remark: null,
-      },
-      {
-        abb: 'SCB',
-        imageUrl: 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/SCB_SCB02.png',
-        installments: [
-          {
-            installmentPercentage: 0,
-            installmentMonth: 3
-          },
-          {
-            installmentPercentage: 0,
-            installmentMonth: 6
-          },
-          {
-            installmentPercentage: 0,
-            installmentMonth: 12
-          },
-        ],
-        name: 'ไทยพาณิชย์ จำกัด (มหาชน)',
-        remark: null,
-      },
-      {
-        abb: 'KBNK',
-        imageUrl: 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/KBNK_kBank02.png',
-        installments: [
-          {
-            installmentPercentage: 0,
-            installmentMonth: 3
-          },
-          {
-            installmentPercentage: 0,
-            installmentMonth: 6
-          },
-          {
-            installmentPercentage: 0,
-            installmentMonth: 12
-          },
-        ],
-        name: 'กสิกรไทย จำกัด (มหาชน)',
-        remark: null,
-      },
-      {
-        abb: 'NBNK',
-        imageUrl: 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/NBNK_NBNK.png',
-        installments: [
-          {
-            installmentPercentage: 0,
-            installmentMonth: 3
-          },
-          {
-            installmentPercentage: 0,
-            installmentMonth: 6
-          },
-          {
-            installmentPercentage: 0,
-            installmentMonth: 12
-          },
-        ],
-        name: 'ธนชาต จำกัด(มหาชน)',
-        remark: null,
-      },
-      {
-        abb: 'SCIB',
-        imageUrl: 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/SCIB_siamcitybank.jpg',
-        installments: [
-          {
-            installmentPercentage: 0,
-            installmentMonth: 3
-          },
-          {
-            installmentPercentage: 0,
-            installmentMonth: 6
-          },
-          {
-            installmentPercentage: 0,
-            installmentMonth: 12
-          },
-        ],
-        name: 'นครหลวงไทย  จำกัด (มหาชน)',
-        remark: null,
+  isInstallment(): boolean {
+    if (this.paymentMethod === 'CC' && this.selectPaymentDetail.paymentType === 'credit') {
+      return true;
+    }
+    return false;
+  }
+  isEnableForm(): boolean {
+    if (this.paymentMethod === CASH_PAYMENT) {
+      return true;
+    }
+    if (this.paymentMethod === CREDIT_CARD_PAYMENT) {
+      return false;
+    }
+    if (this.paymentMethod === CASH_AND_CREDIT_CARD_PAYMENT) {
+      return true;
+    }
+    return true;
+  }
+
+  // private checkTypePaymentType(paymentType: string): void {
+  //   if (paymentType === 'qrcode') {
+  //     this.isQrcode = true;
+  //   }
+  //   if (paymentType === 'credit') {
+  //     this.isCredit = true;
+  //   }
+  //   if (paymentType === 'debit') {
+  //     this.isDebit = true;
+  //   }
+  // }
+
+    getPaymentType(): string {
+    if (this.paymentMethod === CASH_PAYMENT) {
+      return this.showQRCode ? 'qrcode' : 'debit';
+    }
+    if (this.paymentMethod === CREDIT_CARD_PAYMENT) {
+      return 'credit';
+    }
+    if (this.paymentMethod === CASH_AND_CREDIT_CARD_PAYMENT) {
+      return this.showQRCode ? 'qrcode' : 'debit';
+    }
+    return this.showQRCode ? 'qrcode' : 'debit';
+
+  }
+  groupPrivilegeTradeBankByAbb(banks: PaymentDetailBank[]): PaymentDetailBank[] {
+
+    const newPrivilegTradeBankByAbbs = new Array<PaymentDetailBank>();
+    const grouped = this.groupBy(banks, (bank: PaymentDetailBank) => bank.abb);
+    const groupedKeys = Array.from(grouped.keys());
+    for (const groupedKey of groupedKeys) {
+      const groupBanks: PaymentDetailBank[] = grouped.get(groupedKey);
+      const privilegTradeBank: PaymentDetailBank = {
+        abb: groupBanks[0].abb,
+        name: groupBanks[0].name,
+        imageUrl: groupBanks[0].imageUrl,
+        promotion: groupBanks[0].promotion,
+        installments: this.getBanksInstallmentDatas(groupBanks),
+        remark: groupBanks[0].remark
+      };
+      newPrivilegTradeBankByAbbs.push(privilegTradeBank);
+    }
+
+    return newPrivilegTradeBankByAbbs;
+  }
+
+  private groupBy(list: any, keyGetter: any): Map<any, any> {
+    const map = new Map();
+    list.forEach((item) => {
+      const key = keyGetter(item);
+      const collection = map.get(key);
+      if (!collection) {
+        map.set(key, [item]);
+      } else {
+        collection.push(item);
       }
-    ];
+    });
+    return map;
   }
-  onSelectQRCode(qrCode: PaymentDetailQRCode): void {
-    console.log('onSelectQRCode', qrCode);
-    this.selectPaymentDetail.qrCode = qrCode;
 
-  }
-  onSelectBank(bank: PaymentDetailBank): void {
-    console.log('onSelectBank', bank);
-    this.selectPaymentDetail.bank = bank;
-    console.log('bank.installments', bank.installments);
-    console.log('this.paymentDetail.installments', this.paymentDetail.installments);
+  public getBanksInstallmentDatas(banks: PaymentDetailBank[]): PaymentDetailInstallment[] {
+    const installmentDatas = new Array<PaymentDetailInstallment>();
+    banks.forEach((bank: any) => {
+      const installmentPercentage = this.getBankInstallmentPercentage(bank.installment) ?
+        this.getBankInstallmentPercentage(bank.installment) : 0;
+      const installmentMonth = this.getBankInstallmentMonth(bank.installment) ? this.getBankInstallmentMonth(bank.installment) : 0;
 
-    this.paymentDetail.installments = bank.installments; // Object.assign({}, bank.installments);
+      const existInstallments = installmentDatas
+        .filter(
+          installment =>
+            (installment.installmentMonth === installmentMonth) &&
+            (installment.installmentPercentage === installmentPercentage)
+        );
+
+      if (existInstallments.length === 0 && (installmentMonth)) {
+        const installmentData: PaymentDetailInstallment = {
+          installmentMonth: installmentMonth,
+          installmentPercentage: installmentPercentage
+        };
+
+        installmentDatas.push(installmentData);
+      } else {
+
+      }
+    });
+    return installmentDatas.sort((a: any, b: any) => {
+      return a.installmentMonth > b.installmentMonth ? -1 : 1;
+    });
   }
-  onSelectInstallment(installment: PaymentDetailInstallment[]): void {
-    console.log('onSelectInstallment', installment);
-    this.selectPaymentDetail.bank.installments = installment;
+  public getBankInstallmentMonth(installmentRemark: string): number {
+    const month = this.getInstallmentFormRemark(installmentRemark)['month'];
+    return month !== undefined ? month : 0;
   }
-  onSelectPaymentType(paymentType: string): void {
-    console.log('onSelectPaymentType', paymentType);
-    this.selectPaymentDetail.paymentType = paymentType;
+
+  public getBankInstallmentPercentage(installmentRemark: string): number {
+    const percentage = this.getInstallmentFormRemark(installmentRemark)['percentage'];
+    return percentage !== undefined ? percentage : 0;
   }
-  onSelectPaymentTypeAdvancePay(paymentType: string): void {
-    console.log('onSelectPaymentType', paymentType);
-    this.selectPaymentDetail.paymentType = paymentType;
+
+  private getInstallmentFormRemark(installmentRemark: string): any {
+    const installment = {
+      percentage: 0,
+      month: 0
+    };
+    const monthWord = 'เดือน';
+    if (installmentRemark && installmentRemark !== '' && installmentRemark.includes('%') && installmentRemark.includes(monthWord)) {
+      const trimInstallmentString = installmentRemark.replace(/\s+/g, '');
+      const installmentData = (/^\s?(\d+.?\d*)\s?\%\s?(\d+)/.exec(trimInstallmentString));
+      installment.percentage = +installmentData[1];
+      installment.month = +installmentData[2];
+      return installment;
+    } else {
+      return installment;
+    }
+  }
+
+  createForm(): void {
+    this.paymentForm = this.fb.group({
+      paymentType: [null, Validators.required]
+    });
+    this.paymentForm.valueChanges.subscribe(observer => {
+      this.selectPaymentDetail.paymentType = observer.paymentType;
+    });
+
+    if (this.selectPaymentDetail) {
+      this.paymentForm.patchValue({ paymentType: this.selectPaymentDetail.paymentType });
+    }
+    if (this.paymentDetailOption && this.paymentDetailOption.isEnable) {
+      this.paymentForm.get('paymentType').enable();
+    } else {
+      this.paymentForm.get('paymentType').disable();
+    }
+  }
+
+  getRandomNum(length: number): string {
+    const randomNum =
+      (Math.pow(10, length).toString().slice(length - 1) +
+        Math.floor((Math.random() * Math.pow(10, length)) + 1).toString()).slice(-length);
+    return randomNum;
   }
 
 }
