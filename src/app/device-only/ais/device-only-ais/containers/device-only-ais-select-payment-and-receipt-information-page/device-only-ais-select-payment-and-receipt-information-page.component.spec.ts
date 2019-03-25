@@ -12,16 +12,25 @@ describe('test device only ais queue page', () => {
   const homeService: any = {};
   const apiRequestService: any = {};
   let transactionService: any;
+  let priceOptionService: any;
+  const createOrderService: any = {};
+  const alertService: any = {};
 
   beforeEach(() => {
     transactionService = {
+      load: jest.fn()
+    };
+    priceOptionService = {
       load: jest.fn()
     };
     component = new DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent(
       router,
       homeService,
       apiRequestService,
-      transactionService
+      transactionService,
+      priceOptionService,
+      createOrderService,
+      alertService
     );
   });
 
