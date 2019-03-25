@@ -9,6 +9,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from 'src/app/buy-product/constants/route-path.constant';
 import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE } from '../../constants/route-path.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-device-order-ais-new-register-validate-customer-id-card-page',
   templateUrl: './device-order-ais-new-register-validate-customer-id-card-page.component.html',
@@ -37,7 +38,8 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
     private tokenService: TokenService,
     private utils: Utils,
     private alertService: AlertService,
-    private priceOptionService: PriceOptionService
+    private priceOptionService: PriceOptionService,
+    private translateService: TranslateService
   ) {
     this.user = this.tokenService.getUser();
 
@@ -63,6 +65,7 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
   }
 
   ngOnInit(): void {
+    this.translateService.use('TH');
     this.createTransaction();
   }
 
