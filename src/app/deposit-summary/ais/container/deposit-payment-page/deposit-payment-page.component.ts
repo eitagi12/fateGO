@@ -219,7 +219,15 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
   createProductRecipient(): void {
     this.customerFullName = this.transaction.data.customer.titleName + ' ' + this.transaction.data.customer.firstName +
       ' ' + this.transaction.data.customer.lastName;
-    this.customerFullAddress = this.getFullAddress(this.transaction.data.customer);
+     const transactionLocalStorage = this.localStorageService.load('transaction').value;
+    if ( transactionLocalStorage && transactionLocalStorage.data && transactionLocalStorage.data.customer
+      && transactionLocalStorage.data.customer.shipaddress
+      && transactionLocalStorage.data.customer.shipaddress.shipCusAddr
+      && transactionLocalStorage.data.customer.shipaddress.shipCusName === this.customerFullName ) {
+        this.customerFullAddress = transactionLocalStorage.data.customer.shipaddress.shipCusAddr;
+    } else {
+      this.customerFullAddress = this.getFullAddress(this.transaction.data.customer);
+    }
     this.recipientCustomerAddress = this.getFullAddress(this.transaction.data.customer);
     this.idCardNo = this.transaction.data.customer.idCardNo;
     if (this.idCardNo) {

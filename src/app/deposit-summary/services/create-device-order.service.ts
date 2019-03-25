@@ -110,7 +110,7 @@ export class CreateDeviceOrderService {
     // const advancePayment = transaction.data.advancePayment;
     const simCard = transaction.data.simCard || '';
     const queue = transaction.data.queue || '';
-    // const seller = transaction.data.seller;
+    const seller = transaction.data.seller;
     // const prebooking = transaction.data.preBooking;
     const order = transaction.data.order || '';
     const data: any = {
@@ -126,21 +126,21 @@ export class CreateDeviceOrderService {
       matCode: trade.sku[0],
       priceIncAmt:  '',
       priceDiscountAmt:  '',
-      grandTotalAmt: '',
+      grandTotalAmt: trade ? trade.tradeReserve.trades[0].deposit.depositIncludeVat : '',
       userId: this.user.username,
       // saleCode: seller && seller.employeeId ? seller.employeeId : '',
       queueNo: queue.queueNo || '',
       cusNameOrder: this.getFullName(customer),
       taxCardId: customer && customer.idCardNo || '',
-      cusMobileNoOrder: simCard && simCard.mobileNo || '',   //
+      cusMobileNoOrder: customer.selectedMobile || '',   //
       customerAddress: this.getCustomerAddress(customer),
-      tradeNo: '',
+      tradeNo: trade ? trade.tradeReserve.trades[0].tradeNo : '',
       ussdCode: '',
       // returnCode: customer.privilegeCode || '',
       cashBackFlg: '',
       matAirTime: '',
       matCodeFreeGoods: '',
-      // paymentRemark: this.getOrderRemark(trade, payment, advancePayment, mobileCare, queue.queueNo, transaction),
+      paymentRemark: this.getPaymentRemark(transaction , priceOption),
       // installmentTerm: payment && payment.bank ? payment.bank.installments[0].installmentMonth : 0,
       // installmentRate: payment && payment.bank ? payment.bank.installments[0].installmentPercentage : 0,
       mobileAisFlg: 'Y',
@@ -153,8 +153,10 @@ export class CreateDeviceOrderService {
       focCode: '',
       // bankAbbr: this.getBankCode(payment, advancePayment),
       // preBookingNo: prebooking ? prebooking.preBookingNo : '',
-      depositAmt: trade ? trade.tradeReserve.trades[0].deposit.depositIncludeVat : '',
+      depositAmt: '',
       // qrAmt: qrAmt
+      saleCode : seller.sellerNo ? seller.sellerNo : '',
+      bankAbbr : payment.selectPaymentDetail.bank ? payment.selectPaymentDetail.bank.abb : '',
       storeName : 'WH',
       soChannelType : 'MC_PRE',
      soDocumentType : 'DEPOSIT_TF',
@@ -235,6 +237,22 @@ export class CreateDeviceOrderService {
   getFullName(customer: Customer): string {
     return customer && customer.titleName && customer.firstName && customer.lastName
         ? `${customer.titleName} ${customer.firstName} ${customer.lastName}` : '';
+  }
+  getPaymentRemark(transaction: Transaction, priceOption: PriceOption): string {
+    let paymentRemark = '';
+    paymentRemark = REMARK_PROMOTION_NAME + ' ';
+    paymentRemark += REMARK_DEVICE;
+    if (transaction.data.payment.paymentMethod === 'CA') {
+      paymentRemark += REMARK_CASH_PAYMENT;
+    } else {
+      paymentRemark += REMARK_CREDIT_CARD_PAYMENT + ', ';
+      paymentRemark += REMARK_BANK + transaction.data.payment.selectPaymentDetail.bank.abb;
+    }
+    paymentRemark += ', ' + REMARK_TRADE_NO + priceOption.trade.tradeReserve.trades[0].tradeNo + ', ';
+    paymentRemark += REMARK_PRIVILEGE_DESC + ' ' + priceOption.trade.tradeReserve.
+    trades[0].tradeName + ', ' + REMARK_QUEUE_NUMBER + ' ' + transaction.data.queue.queueNo;
+
+    return paymentRemark;
   }
 
 }
