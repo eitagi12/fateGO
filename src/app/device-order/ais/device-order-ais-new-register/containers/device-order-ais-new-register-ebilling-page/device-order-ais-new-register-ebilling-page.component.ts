@@ -15,7 +15,7 @@ import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE } fro
 })
 export class DeviceOrderAisNewRegisterEbillingPageComponent implements OnInit, OnDestroy {
 
-  wizards = WIZARD_ORDER_NEW_REGISTER;
+  wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
 
   transaction: Transaction;
 
@@ -36,7 +36,7 @@ export class DeviceOrderAisNewRegisterEbillingPageComponent implements OnInit, O
     }
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
 
     this.http.get('/api/customerportal/newRegister/queryBillCycle', {
       params: {
@@ -51,7 +51,7 @@ export class DeviceOrderAisNewRegisterEbillingPageComponent implements OnInit, O
     });
   }
 
-  setBillingDefault(ebilling: Ebilling[]) {
+  setBillingDefault(ebilling: Ebilling[]): void {
     for (const ebill of ebilling) {
       if (ebill.bill === this.transaction.data.customer.billCycle) {
         this.billCycle = ebill;
@@ -60,25 +60,25 @@ export class DeviceOrderAisNewRegisterEbillingPageComponent implements OnInit, O
     }
   }
 
-  onCompleted(billCycle: any) {
+  onCompleted(billCycle: any): void {
     this.billCycle = billCycle;
   }
 
-  onError(valid: boolean) {
+  onError(valid: boolean): void {
     this.billCycleValid = valid;
   }
 
-  onBack() {
+  onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
-  onNext() {
+  onNext(): void {
     this.transaction.data.billingInformation.billCycle = this.billCycle;
 
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
-  onHome() {
+  onHome(): void {
     this.homeService.goToHome();
   }
 
