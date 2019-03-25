@@ -69,9 +69,8 @@ export class DeviceOrderAisNewRegisterEcontactPageComponent implements OnInit {
     const user = this.tokenService.getUser();
     const campaign: any = this.priceOption.campaign || {};
     const trade: any = this.priceOption.trade || {};
-    const stock: any = this.priceOption.productStock || {};
+    const productStock: any = this.priceOption.productStock || {};
     const customer: any = this.transaction.data.customer || {};
-    const seller: any = this.transaction.data.seller || {};
     const simCard: any = this.transaction.data.simCard || {};
     const mainPackage: any = this.transaction.data.mainPackage || {};
     const mobileCarePackage: any = this.transaction.data.mobileCarePackage || {};
@@ -86,15 +85,15 @@ export class DeviceOrderAisNewRegisterEcontactPageComponent implements OnInit {
       const params = {
         data: {
           campaignName: campaign.campaignName,
-          locationName: seller.locationName || '',
+          locationName: productStock.locationName || '',
           customerType: '',
           idCard: this.idCardPipe.transform(customer.idCardNo), // this.transformIDcard(customer.idCardNo),
           fullName: `${customer.firstName || ''} ${customer.lastName || ''}`,
           mobileNumber: simCard.mobileNo,
           imei: simCard.imei || '',
-          brand: stock.brand,
-          model: stock.model,
-          color: stock.color,
+          brand: productStock.brand,
+          model: productStock.model,
+          color: productStock.color,
           priceIncludeVat: this.decimalPipe.transform(trade.normalPrice),
           priceDiscount: this.decimalPipe.transform(trade.discount ? trade.discount.amount : 0),
           netPrice: this.decimalPipe.transform(trade.promotionPrice),
