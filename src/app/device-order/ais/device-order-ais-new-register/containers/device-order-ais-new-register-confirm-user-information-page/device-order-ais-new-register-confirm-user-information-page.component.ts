@@ -9,7 +9,8 @@ import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
 import {
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_EDIT_BILLING_ADDRESS_PAGE,
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_MOBILE_CARE_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_SELECT_PACKAGE_PAGE
+  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_SELECT_PACKAGE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_EBILLING_PAGE
 } from '../../constants/route-path.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 
@@ -147,11 +148,10 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
       billingCycle: {
         text: '-',
         // net extrem ลบไม่ได้, merge bill ลบไม่ได้
-        // isEdit: !(!!mergeBilling),
-        // isDelete: !(!!mergeBilling) && !!billCycle,
-        isEdit: false,
+        isEdit: !(!!mergeBilling),
+        isDelete: !(!!mergeBilling) && !!billCycle,
         onEdit: () => {
-          // this.router.navigate([ROUTE_ORDER_NEW_REGISTER_EBILLING_PAGE]);
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_EBILLING_PAGE]);
         },
         onDelete: () => {
           delete billingInformation.billCycle;
