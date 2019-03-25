@@ -50,6 +50,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
   }
 
   onBack(): void {
+    this.transactionService.remove();
   }
 
   onNext(): void {
