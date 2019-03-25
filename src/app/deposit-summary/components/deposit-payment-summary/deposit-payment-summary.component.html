@@ -25,7 +25,7 @@
         </div>
         <div class="col-3" style="text-align: right;">
           <span>
-            ฿ {{ summaryPrice | number}}
+            ฿ {{ depositAmt | number}}
           </span>
         </div>
       </div>
@@ -80,16 +80,14 @@
         </div>
         <div class="col-3">
         </div>
-        <div class="col-9">
-          <span style="margin-right: 9em">
-            ที่อยู่
-          </span>
-          <span class="span-font-black">
-            {{ customerReceiptAddress }}
-          </span>
-        </div>
-        <div class="col-3">
-        </div>
+        <div class="col-12">
+            <span>
+              ที่อยู่
+            </span>
+            <span class="span-font-black" style="margin-left: 9em">
+                {{ customerReceiptAddress }}
+            </span>
+          </div>
         <div class="col-9">
           <span style="margin-right:3.7em">
             หมายเลขโทรศัพท์
@@ -120,17 +118,15 @@
         </div>
         <div class="col-3">
         </div>
-        <div class="col-9">
-          <span style="margin-right: 9em">
-            ที่อยู่
-          </span>
-          <span class="span-font-black">
-            {{ customerFullAddress }}
-          </span>
-        </div>
-        <div class="col-3">
-
-        </div>
+          <div class="col-12">
+            <span>
+              ที่อยู่
+            </span>
+            <span class="span-font-black" style="margin-left: 9em">
+                {{ customerFullAddress }}
+            </span>
+          </div>
+       
         <div class="col-9">
           <span style="margin-right: 8em">
             Tax ID

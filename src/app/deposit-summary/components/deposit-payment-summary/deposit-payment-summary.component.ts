@@ -40,9 +40,7 @@ export class DepositPaymentSummaryComponent implements OnInit {
     const customer = this.transaction.data.customer;
     const reserveProductInfo = this.priceOption.trade;
     this.customerFullName = customer.firstName + ' ' + customer.lastName;
-    this.customerFullAddress = customer.homeNo + ' ' + customer.moo + ' ' + customer.room + ' ' +
-      customer.floor + ' ' + customer.buildingName + ' ' + customer.soi + ' ' + customer.street + ' ' +
-      customer.tumbol + ' ' + customer.amphur + ' ' + customer.province + ' ' + customer.zipCode;
+    this.customerFullAddress = this.getFullAddress(customer);
     this.customerIdCardNo = customer.idCardNo;
     this.mobileNo = customer.selectedMobile;
     this.customerReceiptAddress = this.transaction.data.customer.shipaddress.shipCusAddr;
@@ -58,4 +56,24 @@ export class DepositPaymentSummaryComponent implements OnInit {
     }
 
   }
+  getFullAddress(customer: Customer): string {
+    if (!customer) {
+      return '-';
+    }
+    const fullAddress =
+      (customer.homeNo ? customer.homeNo + ' ' : '') +
+      (customer.moo ? 'หมู่ที่ ' + customer.moo + ' ' : '') +
+      (customer.mooBan ? 'หมู่บ้าน ' + customer.mooBan + ' ' : '') +
+      (customer.room ? 'ห้อง ' + customer.room + ' ' : '') +
+      (customer.floor ? 'ชั้น ' + customer.floor + ' ' : '') +
+      (customer.buildingName ? 'อาคาร ' + customer.buildingName + ' ' : '') +
+      (customer.soi ? 'ซอย ' + customer.soi + ' ' : '') +
+      (customer.street ? 'ถนน ' + customer.street + ' ' : '') +
+      (customer.tumbol ? 'ตำบล/แขวง ' + customer.tumbol + ' ' : '') +
+      (customer.amphur ? 'อำเภอ/เขต ' + customer.amphur + ' ' : '') +
+      (customer.province ? 'จังหวัด ' + customer.province + ' ' : '') +
+      (customer.zipCode || '');
+    return fullAddress || '-';
+  }
+
 }
