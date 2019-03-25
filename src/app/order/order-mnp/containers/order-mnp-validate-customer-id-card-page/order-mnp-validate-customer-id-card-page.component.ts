@@ -186,6 +186,12 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
   }
 
   ngOnDestroy(): void {
+    setTimeout(() => {  // รอ web connect ทำงานให้เสร็จก่อน
+      if (this.validateCustomerIdcard.koiskApiFn) {
+        this.validateCustomerIdcard.koiskApiFn.close();
+      }
+    }, 750);
+
     this.transactionService.update(this.transaction);
     this.pageLoadingService.closeLoading();
   }

@@ -472,8 +472,12 @@ export class OrderMnpVerifyDocumentPageComponent implements OnInit {
       this.closeVendingApi.ws.send(KioskControls.LED_OFF);
     }
     clearInterval(this.cardStateInterval);
-    this.vendingApiSubscription.unsubscribe();
-    this.readPassportSubscription.unsubscribe();
+
+    setTimeout(() => {  // รอ web connect ทำงานให้เสร็จก่อน
+      this.vendingApiSubscription.unsubscribe();
+      this.readPassportSubscription.unsubscribe();
+    }, 750);
+
   }
 
   // mockFunc
