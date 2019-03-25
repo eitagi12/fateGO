@@ -5,6 +5,8 @@ import { BillingAddressService } from '../../services/billing-address.service';
 import { AlertService, REGEX_MOBILE } from 'mychannel-shared-libs';
 import { TransactionAction, Customer, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
 import { CustomerInformationService } from '../../services/customer-information.service';
+import { StringifyOptions } from 'querystring';
+import { forEach } from '@angular/router/src/utils/collection';
 
 export interface ReceiptInfo {
   taxId: string;
@@ -57,6 +59,9 @@ export class ReceiptInformationComponent implements OnInit {
   zipCode: any;
   customerAddressTemp: any;
   ebillingAddressValid: boolean;
+
+  nameText: string;
+  billingAddressText: string;
 
   constructor(
     private fb: FormBuilder,
@@ -144,8 +149,8 @@ export class ReceiptInformationComponent implements OnInit {
     this.action.emit(data.action);
     this.completed.emit({ customer, billDeliveryAddress });
     this.receiptInfoForm.controls['taxId'].setValue(data.customer.idCardNo);
-    // mock for review
-    this.customerInfoMock = data.customer;
+    this.nameText = data.customer.titleName + ' ' + data.customer.firstName + ' ' + data.customer.lastName;
+    this.billingAddressText = this.convertBillingAddressToString(billDeliveryAddress);
   }
 
   searchCustomerInfo(): void {
@@ -183,6 +188,16 @@ export class ReceiptInformationComponent implements OnInit {
         text: 'กรุณาระบุเบอร์ให้ครบ 10 หลัก'
       });
     }
+  }
+
+  convertBillingAddressToString(billDeliveryAddress: BillDeliveryAddress): string {
+    let str: string = '';
+    for (const item in billDeliveryAddress) {
+      if (billDeliveryAddress.hasOwnProperty(item)) {
+          str += ' ' + billDeliveryAddress[item];
+      }
+    }
+    return str;
   }
 
   switchKeyInBillingAddress(): void {

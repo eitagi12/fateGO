@@ -36,10 +36,10 @@
       </div>
       <div *ngIf="!inputBillingAddress">
         <div>
-          <label class="text-grey">ผู้ซื้อ &nbsp;&nbsp;&nbsp;{{ this.customerInfoMock.name }} </label>
+          <label class="text-grey">ผู้ซื้อ &nbsp;&nbsp;&nbsp;{{ nameText }} </label>
         </div>
         <div>
-          <label class="text-grey">ที่อยู่ใบเสร็จรับเงิน &nbsp;&nbsp;&nbsp;{{ this.customerInfoMock.billingAddress }}</label>
+          <label class="text-grey">ที่อยู่ใบเสร็จรับเงิน &nbsp;&nbsp;&nbsp;{{ billingAddressText }}</label>
         </div>
       </div>
       <div *ngIf="inputBillingAddress">
