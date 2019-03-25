@@ -2,9 +2,9 @@ import { Component, OnInit, Input, Output, EventEmitter  } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors  } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
 import { BillingAddressService } from '../../services/billing-address.service';
-import { HttpClient } from '@angular/common/http';
 import { AlertService, REGEX_MOBILE } from 'mychannel-shared-libs';
-import { TransactionAction } from 'src/app/shared/models/transaction.model';
+import { TransactionAction, Customer, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
+import { CustomerInformationService } from '../../services/customer-information.service';
 
 export interface ReceiptInfo {
   taxId: string;
@@ -61,6 +61,7 @@ export class ReceiptInformationComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private billingAddress: BillingAddressService,
+    private customerInformationService: CustomerInformationService,
     private alertService: AlertService) {
     this.billingAddress.getTitleName().then(this.responseTitleNames());
     this.billingAddress.getProvinces().then(this.responseProvinces());
@@ -116,8 +117,32 @@ export class ReceiptInformationComponent implements OnInit {
   }
 
   setCustomerInfo(data: any): void {
+    const customer: Customer = {
+      idCardNo: data.customer.idCardNo,
+      idCardType: data.customer.idCardType || 'บัตรประชาชน',
+      titleName: data.customer.titleName,
+      firstName: data.customer.firstName,
+      lastName: data.customer.lastName,
+      birthdate: data.customer.birthdate || '',
+      gender: data.customer.gender || '',
+      expireDate: data.customer.expireDate || ''
+    };
+    const billDeliveryAddress: BillDeliveryAddress = {
+      homeNo: data.customer.homeNo,
+      moo: data.customer.moo || '',
+      mooBan: data.customer.mooBan || '',
+      room: data.customer.room || '',
+      floor: data.customer.floor || '',
+      buildingName: data.customer.buildingName || '',
+      soi: data.customer.soi || '',
+      street: data.customer.street || '',
+      province: data.customer.province,
+      amphur: data.customer.amphur,
+      tumbol: data.customer.tumbol,
+      zipCode: data.customer.zipCode
+    };
     this.action.emit(data.action);
-    this.completed.emit(data.customer);
+    this.completed.emit({ customer, billDeliveryAddress });
     this.receiptInfoForm.controls['taxId'].setValue(data.customer.idCardNo);
     // mock for review
     this.customerInfoMock = data.customer;
@@ -125,32 +150,31 @@ export class ReceiptInformationComponent implements OnInit {
 
   searchCustomerInfo(): void {
     if (this.searchByMobileNoForm.valid) {
-      if (this.searchByMobileNoForm.value.mobileNo === '0889540584') {
-        this.setCustomerInfo({
-          customer: {
-            idCardNo: '1234500678910',
-            idCardType: 'บัตรประชาชน',
-            titleName: 'นาย',
-            firstName: 'ธีระยุทธ',
-            lastName: 'เจโตวิมุติพงศ์',
-            birthdate: '2019-12-10',
-            gender: 'M',
-            taxId: '1234500678910',
-            name: 'นาย ธีระยุทธ เจโตวิมุติพงศ์',
-            mobileNo: '0889540584',
-            billingAddress: 'ซ.พหลโยธิน 9 ตึก ESV ชั้น 22 แขวงสามเสนใน เขตพญาไท กรุงเทพฯ 10400',
-            status: 'Active'
-          },
-          action: TransactionAction.KEY_IN
+      const mobileNo = this.searchByMobileNoForm.value.mobileNo;
+      this.customerInformationService.getBillingByMobileNo(mobileNo)
+        .then((res) => {
+          if (res && res.data && res.data.billingAddress) {
+            this.setCustomerInfo({
+              customer: this.customerInformationService.mapAttributeFromGetBill(res.data.billingAddress),
+              action: TransactionAction.KEY_IN
+            });
+          } else {
+            this.alertService.notify({
+              type: 'error',
+              confirmButtonText: 'OK',
+              showConfirmButton: true,
+              text: 'เบอร์นี้ไม่ใช่ระบบ AIS กรุณาเปลี่ยนเบอร์ใหม่'
+            });
+          }
+        })
+        .catch((err) => {
+          this.alertService.notify({
+            type: 'error',
+            confirmButtonText: 'OK',
+            showConfirmButton: true,
+            text: 'เบอร์นี้ไม่ใช่ระบบ AIS กรุณาเปลี่ยนเบอร์ใหม่'
+          });
         });
-      } else {
-        this.alertService.notify({
-          type: 'error',
-          confirmButtonText: 'OK',
-          showConfirmButton: true,
-          text: 'เบอร์นี้ไม่ใช่ระบบ AIS กรุณาเปลี่ยนเบอร์ใหม่'
-        });
-      }
     } else {
       this.alertService.notify({
         type: 'warning',
@@ -213,6 +237,10 @@ export class ReceiptInformationComponent implements OnInit {
 
   onCompleted(value: any): void {
     this.customerAddressTemp = value;
+    this.setCustomerInfo({
+      customer: value,
+      action: TransactionAction.KEY_IN
+    });
     if (this.customerAddressTemp.idCardNo) {
       this.receiptInfoForm.controls['taxId'].setValue(this.customerAddressTemp.idCardNo);
     }
