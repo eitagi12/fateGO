@@ -110,7 +110,7 @@ export class CreateDeviceOrderService {
     // const advancePayment = transaction.data.advancePayment;
     const simCard = transaction.data.simCard || '';
     const queue = transaction.data.queue || '';
-    // const seller = transaction.data.seller;
+    const seller = transaction.data.seller;
     // const prebooking = transaction.data.preBooking;
     const order = transaction.data.order || '';
     const data: any = {
@@ -155,7 +155,7 @@ export class CreateDeviceOrderService {
       // preBookingNo: prebooking ? prebooking.preBookingNo : '',
       depositAmt: '',
       // qrAmt: qrAmt
-      saleCode : '',
+      saleCode : seller.sellerNo ? seller.sellerNo : '',
       bankAbbr : payment.selectPaymentDetail.bank ? payment.selectPaymentDetail.bank.abb : '',
       storeName : 'WH',
       soChannelType : 'MC_PRE',
