@@ -202,6 +202,11 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
   }
 
   ngOnDestroy(): void {
+    setTimeout(() => { // รอ webconnect ทำงานเสร็จก่อน
+     if (this.validateCustomerIdcard.koiskApiFn) {
+      this.validateCustomerIdcard.koiskApiFn.close();
+     }
+    }, 750);
     this.transactionService.update(this.transaction);
   }
 

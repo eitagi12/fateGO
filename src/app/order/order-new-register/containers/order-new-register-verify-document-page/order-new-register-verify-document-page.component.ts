@@ -503,9 +503,11 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
     if (this.closeVendingApi && this.closeVendingApi.ws) {
       this.closeVendingApi.ws.send(KioskControls.LED_OFF);
     }
-    this.readPassportSubscription.unsubscribe();
     clearInterval(this.cardStateInterval);
-    this.vendingApiSubscription.unsubscribe();
+    setTimeout(() => { // รอ webconnect ทำงานเสร็จก่อน
+      this.readPassportSubscription.unsubscribe();
+      this.vendingApiSubscription.unsubscribe();
+    }, 750);
   }
 
   // mockFunc
