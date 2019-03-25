@@ -22,10 +22,6 @@ const routes: Routes = [
       {
         path: 'existing',
         loadChildren: 'src/app/device-order/ais/device-order-ais-existing/device-order-ais-existing.module#DeviceOrderAisExistingModule',
-      },
-      {
-        path: 'prepaid-hotdeal',
-        loadChildren: 'src/app/device-order/ais/device-order-ais-prepaid-hotdeal/device-order-ais-prepaid-hotdeal.module#DeviceOrderAisPrepaidHotdealModule',
       }
     ]
   },
