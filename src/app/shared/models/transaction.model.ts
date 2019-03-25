@@ -30,6 +30,7 @@ export interface Transaction {
   lastUpdateDate?: string;
   lastUpdateBy?: string;
   data?: TransactionData;
+  issueBy?: string;
 }
 
 export interface TransactionData {
@@ -65,6 +66,7 @@ export interface MainPromotion {
   cammapign: any;
   privilege: any;
   trade: any;
+  campaign: any;
 }
 
 // tslint:disable-next-line:no-empty-interface
