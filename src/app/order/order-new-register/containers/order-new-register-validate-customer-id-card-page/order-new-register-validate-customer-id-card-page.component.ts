@@ -74,7 +74,9 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
     if (this.validateCustomerIdcard && this.validateCustomerIdcard.koiskApiFn) {
       this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
     }
-    this.homeService.goToHome();
+    setTimeout(() => {
+      this.homeService.goToHome();
+    }, 750);
   }
 
   onBack() {

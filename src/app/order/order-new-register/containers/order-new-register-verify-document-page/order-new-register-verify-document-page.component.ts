@@ -338,7 +338,9 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
     if (this.closeVendingApi && this.closeVendingApi.ws) {
       this.closeVendingApi.ws.send(KioskControls.LED_OFF);
     }
-    this.homeService.goToHome();
+    setTimeout(() => {
+      this.homeService.goToHome();
+    }, 750);
   }
 
   onReadPassport() {
