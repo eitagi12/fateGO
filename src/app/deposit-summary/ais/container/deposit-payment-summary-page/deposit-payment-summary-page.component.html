@@ -50,8 +50,8 @@
                 <span class="text-red">*</span>
               </label>
               <div class="col-6 col-sm-8">
-                <form [formGroup]="checkSellerForm" style="margin-left: 4em;">
-                  <input autocomplete="off" id="sellerNo" 
+                <form [formGroup]="checkSellerForm">
+                  <input autocomplete="off" id="sellerNo"
                   name="sellerNo" type="text" [(ngModel)]="seller.sellerNo" style="padding-left: 1em;margin-left: 2.5em;"
                     formControlName="checkSeller">
                 </form>
