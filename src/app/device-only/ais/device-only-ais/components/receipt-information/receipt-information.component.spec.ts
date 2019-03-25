@@ -7,6 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ReceiptInformationComponent, ReceiptInfo } from './receipt-information.component';
 import { BillingAddressService } from '../../services/billing-address.service';
 import { AlertService } from 'mychannel-shared-libs';
+import { HttpClient, HttpHandler } from '@angular/common/http';
 
 describe('ReceiptInformationComponent', () => {
   let component: ReceiptInformationComponent;
@@ -21,6 +22,8 @@ describe('ReceiptInformationComponent', () => {
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
       declarations: [ ReceiptInformationComponent ],
       providers: [
+        HttpClient,
+        HttpHandler,
         {
           provide : BillingAddressService,
           useValue: {
