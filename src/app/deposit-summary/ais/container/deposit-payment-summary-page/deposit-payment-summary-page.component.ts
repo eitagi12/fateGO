@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy} from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { PageLoadingService, AlertService, TokenService, Utils } from 'mychannel-shared-libs';
 import { Seller, Transaction } from 'src/app/shared/models/transaction.model';
@@ -17,7 +17,7 @@ import { WIZARD_RESERVE_WITH_DEPOSIT } from 'src/app/deposit-summary/constants/w
   templateUrl: './deposit-payment-summary-page.component.html',
   styleUrls: ['./deposit-payment-summary-page.component.scss']
 })
-export class DepositPaymentSummaryPageComponent implements OnInit {
+export class DepositPaymentSummaryPageComponent implements OnInit, OnDestroy {
 
   public channelType: string;
   wizards: any = WIZARD_RESERVE_WITH_DEPOSIT;
@@ -58,6 +58,9 @@ export class DepositPaymentSummaryPageComponent implements OnInit {
         locationCode: user.locationCode,
         sellerNo: user.ascCode
       };
+    });
+    this.http.get(`/api/customerportal/newRegister/getEmployeeDetail/username/${user.username}`).toPromise().then((response: any) => {
+      this.seller.sellerNo = response.data.pin;
     });
     this.createForm();
   }
@@ -109,5 +112,9 @@ export class DepositPaymentSummaryPageComponent implements OnInit {
     return amount.reduce((prev, curr) => {
       return prev + curr;
     }, 0);
+  }
+  ngOnDestroy(): void {
+    this.transactionService.save(this.transaction);
+    this.priceOptionService.save(this.priceOption);
   }
 }
