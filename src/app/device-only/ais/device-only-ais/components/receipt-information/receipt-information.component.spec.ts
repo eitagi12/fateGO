@@ -13,39 +13,35 @@ describe('ReceiptInformationComponent', () => {
   let component: ReceiptInformationComponent;
   let fixture: ComponentFixture<ReceiptInformationComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        ReactiveFormsModule,
-        RouterTestingModule
-      ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ ReceiptInformationComponent ],
-      providers: [
-        HttpClient,
-        HttpHandler,
-        {
-          provide : BillingAddressService,
-          useValue: {
-            getTitleName: jest.fn(() => {
-              return Promise.resolve();
-            }),
-            getProvinces: jest.fn(() => {
-              return Promise.resolve();
-            }),
-            getZipCodes: jest.fn(() => {
-              return Promise.resolve();
-            })
-          }
-        },
-        {
-          provide : AlertService,
-          useValue : {}
+  setupTestBed({
+    imports: [
+      ReactiveFormsModule,
+      RouterTestingModule
+    ],
+    declarations: [ ReceiptInformationComponent ],
+    providers: [
+      HttpClient,
+      HttpHandler,
+      {
+        provide : BillingAddressService,
+        useValue: {
+          getTitleName: jest.fn(() => {
+            return Promise.resolve();
+          }),
+          getProvinces: jest.fn(() => {
+            return Promise.resolve();
+          }),
+          getZipCodes: jest.fn(() => {
+            return Promise.resolve();
+          })
         }
-      ]
-    })
-    .compileComponents();
-  }));
+      },
+      {
+        provide : AlertService,
+        useValue : {}
+      }
+    ]
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(ReceiptInformationComponent);

@@ -8,29 +8,26 @@ describe('SummarySellerCodeComponent', () => {
   let component: SummarySellerCodeComponent;
   let fixture: ComponentFixture<SummarySellerCodeComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [SummarySellerCodeComponent],
-      providers: [
-        {
-          provide: TransactionService,
-          useValue: {
-            load: jest.fn(() => {
-              return {
-                data: {
-                  seller: {
-                    locationCode: '1100'
-                  }
+  setupTestBed({
+    declarations: [SummarySellerCodeComponent],
+    providers: [
+      {
+        provide: TransactionService,
+        useValue: {
+          load: jest.fn(() => {
+            return {
+              data: {
+                seller: {
+                  locationCode: '1100'
                 }
-              };
-            })
-          }
+              }
+            };
+          })
         }
-      ],
-      imports: [FormsModule]
-    })
-      .compileComponents();
-  }));
+      }
+    ],
+    imports: [FormsModule]
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SummarySellerCodeComponent);

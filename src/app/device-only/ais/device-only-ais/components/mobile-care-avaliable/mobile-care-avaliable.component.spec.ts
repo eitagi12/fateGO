@@ -9,14 +9,10 @@ describe('MobileCareAvaliableComponent', () => {
   let component: MobileCareAvaliableComponent;
   let fixture: ComponentFixture<MobileCareAvaliableComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [ RouterTestingModule ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [ MobileCareAvaliableComponent ]
-    })
-    .compileComponents();
-  }));
+  setupTestBed({
+    imports: [ RouterTestingModule ],
+    declarations: [ MobileCareAvaliableComponent ]
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(MobileCareAvaliableComponent);

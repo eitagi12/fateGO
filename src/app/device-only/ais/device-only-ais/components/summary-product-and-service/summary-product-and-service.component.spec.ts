@@ -8,24 +8,21 @@ describe('SummaryProductAndServiceComponent', () => {
   let component: SummaryProductAndServiceComponent;
   let fixture: ComponentFixture<SummaryProductAndServiceComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ SummaryProductAndServiceComponent ],
-      providers: [
-        {
-          provide: BsModalService,
-          useValue: {}
-        },
-        {
-          provide: TransactionService,
-          useValue: {
-            load: jest.fn()
-          }
+  setupTestBed({
+    declarations: [SummaryProductAndServiceComponent],
+    providers: [
+      {
+        provide: BsModalService,
+        useValue: {}
+      },
+      {
+        provide: TransactionService,
+        useValue: {
+          load: jest.fn()
         }
-      ]
-    })
-    .compileComponents();
-  }));
+      }
+    ]
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SummaryProductAndServiceComponent);

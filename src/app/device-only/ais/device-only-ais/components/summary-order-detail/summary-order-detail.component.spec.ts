@@ -8,26 +8,23 @@ describe('SummaryOrderDetailComponent', () => {
   let component: SummaryOrderDetailComponent;
   let fixture: ComponentFixture<SummaryOrderDetailComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ SummaryOrderDetailComponent ],
-      providers: [
-        {
-          provide: TransactionService,
-          useValue: {
-            load: jest.fn()
-          }
-        },
-        {
-          provide: PriceOptionService,
-          useValue: {
-            load: jest.fn()
-          }
+  setupTestBed({
+    declarations: [SummaryOrderDetailComponent],
+    providers: [
+      {
+        provide: TransactionService,
+        useValue: {
+          load: jest.fn()
         }
-      ]
-    })
-    .compileComponents();
-  }));
+      },
+      {
+        provide: PriceOptionService,
+        useValue: {
+          load: jest.fn()
+        }
+      }
+    ]
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SummaryOrderDetailComponent);

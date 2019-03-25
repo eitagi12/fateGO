@@ -18,20 +18,16 @@ describe('SelectPaymentComponent', () => {
   let component: SelectPaymentComponent;
   let fixture: ComponentFixture<SelectPaymentComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        ReactiveFormsModule,
-        TranslateModule
-      ],
-      schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
-      declarations: [
-        SelectPaymentComponent,
-        MockPipe
-      ]
-    })
-    .compileComponents();
-  }));
+  setupTestBed({
+    imports: [
+      ReactiveFormsModule,
+      TranslateModule
+    ],
+    declarations: [
+      SelectPaymentComponent,
+      MockPipe
+    ]
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SelectPaymentComponent);

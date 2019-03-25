@@ -18,25 +18,22 @@ describe('MobileCareComponent', () => {
   let component: MobileCareComponent;
   let fixture: ComponentFixture<MobileCareComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [ ReactiveFormsModule, RouterTestingModule ],
-      schemas: [
-        CUSTOM_ELEMENTS_SCHEMA,
-        NO_ERRORS_SCHEMA
-      ],
-      declarations: [
-        MobileCareComponent,
-        MockPipe
-     ],
-     providers: [
-      BsModalService,
-      PositioningService,
-      ComponentLoaderFactory
-     ]
-    })
-    .compileComponents();
-  }));
+  setupTestBed({
+    imports: [ ReactiveFormsModule, RouterTestingModule ],
+    schemas: [
+      CUSTOM_ELEMENTS_SCHEMA,
+      NO_ERRORS_SCHEMA
+    ],
+    declarations: [
+      MobileCareComponent,
+      MockPipe
+    ],
+    providers: [
+    BsModalService,
+    PositioningService,
+    ComponentLoaderFactory
+    ]
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(MobileCareComponent);
