@@ -31,7 +31,7 @@
                 <select class="form-control" formControlName="reasonCode"
                   [ngClass]="{'is-invalid': !reasonForm.controls['reasonCode'].valid && reasonForm.controls['reasonCode'].dirty }">
                   <option [value]="reason?.reasonCode" *ngFor="let reason of reasons">
-                    {{ reason?.reasonName }}
+                    {{ reason?.reasonName | translate }}
                   </option>
                 </select>
               </div>

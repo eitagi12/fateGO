@@ -181,7 +181,20 @@
     "2,000 ขึ้นไป": "B2,000 and over",
     "รวมบิลกับหมายเลข": "Merging bill payments of mobile numbers.",
     "สรุปผลเปลี่ยนเติมเงินเป็นรายเดือน": "Transaction summary: Switching from Prepaid to Postpaid service",
-    "ผลการโอนย้ายบริการเสริม": "Value added services transferred"
+    "ผลการโอนย้ายบริการเสริม": "Value added services transferred",
+    "ลูกค้าขอโอนย้ายเลขหมาย": "Customer's request to swith network",
+    "ลูกค้าได้รับการยกเว้นค่าธรรมเนียมการโอนย้ายเลขหมาย": "Customer receives network switching fee waiver",
+    "ย้ายเบอร์มาใช้เอไอเอส": "Port in to AIS Network",
+    "พนักงานย้ายเบอร์ไม่ถูกต้อง": "Staff switched the wrong number",
+    "MNP ลูกค้าแสดงใบเสร็จรับเงิน": "MNP customer shows receipt",
+    "Internal Port": "Internal port",
+    "มีความต้องการเปลี่ยนระบบ": "Need to change network",
+    "Corporate ขอยกเว้นค่าธรรมเนียมการโอนย้ายเลขหมาย": "Corporate request network switching fee waiver",
+    "ทดลองใช้ฟรี Service 1 เดือน": "1 month service free trial",
+    "RSME-สมัครแพ็กเกจ Sharing / แพ็กเกจ SME": "RSME Subscription to sharing package/SME package",
+    "ผ่าน GSS & ARB ยกเว้นค่าธรรมเนียมการโอนย้ายเลขหมาย": "Network customer shows receipt/ waiver for network switching fee",
+    "MNP ลูกค้าแสดงใบเสร็จรับเงิน ยกเว้นค่าธรรมเนียนการโอนย้ายเลขหมาย": "MNP customer show receipt/ waiver for network switching fee",
+    "ทั่วไป-ไม่พอใจในเครือข่ายเดิม": "Other/ not satisfied with previous network provider"
 
 
 
