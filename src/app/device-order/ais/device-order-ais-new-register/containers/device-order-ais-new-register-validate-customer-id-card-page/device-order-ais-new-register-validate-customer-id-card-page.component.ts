@@ -13,6 +13,7 @@ import { Observable } from 'rxjs';
 import { ProductDetail } from 'mychannel-shared-libs/lib/service/models/product-detail';
 import { ProductStock } from 'mychannel-shared-libs/lib/service/models/product-stock';
 import * as moment from 'moment';
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-device-order-ais-new-register-validate-customer-id-card-page',
   templateUrl: './device-order-ais-new-register-validate-customer-id-card-page.component.html',
@@ -41,7 +42,8 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
     private tokenService: TokenService,
     private utils: Utils,
     private alertService: AlertService,
-    private priceOptionService: PriceOptionService
+    private priceOptionService: PriceOptionService,
+    private translateService: TranslateService
   ) {
     this.user = this.tokenService.getUser();
 
@@ -67,6 +69,7 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
   }
 
   ngOnInit(): void {
+    this.translateService.use('TH');
     this.createTransaction();
   }
 

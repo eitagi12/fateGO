@@ -15,7 +15,7 @@ export class PrivilegeToTradeSliderPipe implements PipeTransform {
 
       const advancePay = trade.advancePay || {};
       const discount = trade.discount || {};
-      const installmentFlag = advancePay.installmentFlag === 'N' && +advancePay.amount > 0;
+      const installmentFlag = advancePay.installmentFlag === 'Y' && +advancePay.amount > 0;
       const payment = (trade.payments || []).find(p => p.method !== 'PP') || {};
       const installments = PriceOptionUtils.getInstallmentsFromTrades(
         privilege.trades
