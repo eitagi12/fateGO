@@ -49,9 +49,9 @@ export class DepositPaymentSummaryComponent implements OnInit {
     this.model = reserveProductInfo.model;
     this.depositAmt = reserveProductInfo.tradeReserve.trades[0].deposit.depositIncludeVat;
     this.summaryPrice = reserveProductInfo.tradeReserve.trades[0].normalPrice;
-    if (this.transaction.data.payment === 'CA') {
+    if (this.transaction.data.payment.paymentMethod === 'CA') {
       this.paymentType = 'เงินสด';
-    } else {
+    } else if (this.transaction.data.payment.paymentMethod === 'CC') {
       this.paymentType = 'บัตรเครดิต';
     }
 
