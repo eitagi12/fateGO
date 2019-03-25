@@ -379,11 +379,10 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
         this.pageLoadingService.openLoading();
         this.addToCartService.reserveStock(this.priceOption)
-            .then((data: any) => {
-                this.pageLoadingService.closeLoading();
-                this.router.navigate([data.nextUrl]);
+            .then((nextUrl: string) => {
+                this.router.navigate([nextUrl]);
             })
-            .catch((error) => this.alertService.error(error));
+            .then(() => this.pageLoadingService.closeLoading());
     }
 
     /* product stock */

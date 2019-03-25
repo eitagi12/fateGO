@@ -2,11 +2,6 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE } from 'src/app/device-order/ais/device-order-ais-new-register/constants/route-path.constant';
 
-export interface AddToCart {
-  soId: string;
-  nextUrl: string;
-}
-
 @Injectable({
   providedIn: 'root'
 })
@@ -15,8 +10,8 @@ export class AddToCartService {
     private http: HttpClient
   ) { }
 
-  reserveStock(priceOption: any): Promise<AddToCart> {
-    return new Promise<AddToCart>((resovle, reject) => {
+  reserveStock(priceOption: any): Promise<string> {
+    return new Promise<string>((resovle, reject) => {
       console.log('PriceOption ::: ', priceOption);
 
       let nextUrl;
@@ -31,10 +26,7 @@ export class AddToCartService {
           return reject('My Channel flow not implemented.');
       }
 
-      resovle({
-        soId: '' + (Math.random() * 10 + 1),
-        nextUrl: nextUrl
-      });
+      resovle(nextUrl);
 
     });
   }
