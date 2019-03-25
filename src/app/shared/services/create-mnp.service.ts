@@ -125,6 +125,7 @@ export class CreateMnpService {
     }
 
     if (action === TransactionAction.READ_PASSPORT) {
+        data.reasonCode = '1164'; // fix reasonCode for passport
         if (customer.nationality !== 'Thailand') {
           data.billLanguage = 'English';
         }
