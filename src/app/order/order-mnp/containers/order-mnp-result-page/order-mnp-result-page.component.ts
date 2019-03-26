@@ -29,26 +29,29 @@ export class OrderMnpResultPageComponent implements OnInit {
 
   ngOnInit() {
     this.pageLoadingService.openLoading();
-    this.createMnpService.createMnp(this.transaction).then((resp: any) => {
-      this.checkOrderService = true;
-      const data = resp.data || {};
-      this.transaction.data.order = {
-        orderNo: data.orderNo,
-        orderDate: data.orderDate
-      };
-      this.transactionService.update(this.transaction);
-      if (this.transaction.data.order.orderNo) {
-        this.isSuccess = true;
-      } else {
+    setTimeout(() => {
+      this.createMnpService.createMnp(this.transaction).then((resp: any) => {
+        this.checkOrderService = true;
+        const data = resp.data || {};
+        this.transaction.data.order = {
+          orderNo: data.orderNo,
+          orderDate: data.orderDate
+        };
+        this.transactionService.update(this.transaction);
+        if (this.transaction.data.order.orderNo) {
+          this.isSuccess = true;
+        } else {
+          this.isSuccess = false;
+        }
+        this.pageLoadingService.closeLoading();
+      }).catch(() => {
+        this.checkOrderService = true;
         this.isSuccess = false;
-      }
-      this.pageLoadingService.closeLoading();
-    }).catch(() => {
-      this.checkOrderService = true;
+        this.pageLoadingService.closeLoading();
+      });
       this.isSuccess = false;
-      this.pageLoadingService.closeLoading();
-    });
-    this.isSuccess = false;
+    }, 3000);
+
   }
 
   onMainMenu() {
