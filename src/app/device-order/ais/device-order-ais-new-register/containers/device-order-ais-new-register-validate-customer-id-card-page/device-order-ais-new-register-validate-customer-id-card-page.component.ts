@@ -71,6 +71,7 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
   ngOnInit(): void {
     this.translateService.use('TH');
     this.createTransaction();
+    this.checkSoIdDuplicate();
   }
 
   onError(valid: boolean): void {
@@ -155,6 +156,27 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE]);
         }
       });
+  }
+
+  // check When Comeback to ValidateIDcardPage and have SoId
+  checkSoIdDuplicate(): void {
+    const transaction = this.transactionService.load();
+    if (transaction && transaction.data && transaction.data.order && transaction.data.order.soId) {
+      const _paramSoId = transaction.data.order.soId;
+      const _userId = this.tokenService.getUser().username;
+      if (_paramSoId) {
+        const requestData = {
+          soId: _paramSoId,
+          userId: _userId
+        };
+        this.http.post('/api/salesportal/device-sell/item/remove', requestData).toPromise().then((resp: any) => {
+          const data = resp.data || {};
+          if (data.resultCode === 'S') {
+            console.log('Success is RemoveItemBackendCart');
+          }
+        });
+      }
+    }
   }
 
   checkBusinessLogic(): boolean {

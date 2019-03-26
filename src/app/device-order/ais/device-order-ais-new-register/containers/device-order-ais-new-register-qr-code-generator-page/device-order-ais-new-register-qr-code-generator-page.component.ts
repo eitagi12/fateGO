@@ -364,8 +364,7 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
   }
 
   goToMpayErrorPage(): void {
-    alert('goToMpayErrorPage');
-    // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_ERROR_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_ERROR_PAGE]);
   }
 
   isDeveloperMode(): boolean {

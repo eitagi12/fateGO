@@ -155,7 +155,7 @@
                   (
                     (+priceOption?.trade?.promotionPrice) 
                     + (priceOption?.trade?.advancePay?.installmentFlag === 'N' ? +priceOption?.trade?.advancePay?.amount : 0)
-                  ) / transaction?.data?.payment?.paymentMethod?.month | number
+                  ) / transaction?.data?.payment?.paymentMethod?.month | number: '1.2-2'
                 }} บาทต่อเดือน
                 )
               </small>
