@@ -226,8 +226,6 @@ export class SelectPaymentComponent implements OnInit {
 
     if (this.selectPaymentDetail) {
       this.paymentForm.patchValue({ paymentType: this.selectPaymentDetail.paymentType });
-      console.log('select paymant', this.selectPaymentDetail);
-
     }
     if (this.paymentDetailOption && this.paymentDetailOption.isEnable) {
       this.paymentForm.get('paymentType').enable();

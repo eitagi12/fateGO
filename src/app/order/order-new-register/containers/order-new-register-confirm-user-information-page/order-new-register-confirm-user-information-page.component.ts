@@ -90,7 +90,6 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
     const mergeBilling = billingInformation.mergeBilling;
     const billCycle = billingInformation.billCycle;
     const customerbillDeliveryAddress = billingInformation.billDeliveryAddress;
-    console.log('customerbillDeliveryAddress', customerbillDeliveryAddress);
     // const customerAddress = this.utils.getCurrentAddress({
     //   homeNo: customer.homeNo,
     //   moo: customer.moo,
