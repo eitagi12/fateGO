@@ -10,8 +10,8 @@ const mock = () => {
   };
 };
 
-Object.defineProperty(window, 'localStorage', {value: mock()});
-Object.defineProperty(window, 'sessionStorage', {value: mock()});
+Object.defineProperty(window, 'localStorage', { value: mock() });
+Object.defineProperty(window, 'sessionStorage', { value: mock() });
 Object.defineProperty(document, 'doctype', {
   value: '<!DOCTYPE html>'
 });
@@ -35,3 +35,50 @@ Object.defineProperty(document.body.style, 'transform', {
     };
   },
 });
+
+//
+// Mock Canvas / Context2D calls
+//
+const mockCanvas = (window) => {
+  window.HTMLCanvasElement.prototype.getContext = () => {
+    return {
+      fillRect: () => { },
+      clearRect: () => { },
+      getImageData: (x, y, w, h) => {
+        return {
+          data: new Array(w * h * 4)
+        };
+      },
+      putImageData: () => { },
+      createImageData: () => {
+        return [];
+      },
+      setTransform: () => { },
+      drawImage: () => { },
+      save: () => { },
+      fillText: () => { },
+      restore: () => { },
+      beginPath: () => { },
+      moveTo: () => { },
+      lineTo: () => { },
+      closePath: () => { },
+      stroke: () => { },
+      translate: () => { },
+      scale: () => { },
+      rotate: () => { },
+      arc: () => { },
+      fill: () => { },
+      measureText: () => {
+        return { width: 0 };
+      },
+      transform: () => { },
+      rect: () => { },
+      clip: () => { },
+    };
+  };
+
+  window.HTMLCanvasElement.prototype.toDataURL = () => {
+    return '';
+  };
+};
+mockCanvas(window);
