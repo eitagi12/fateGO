@@ -73,7 +73,6 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     this.colorCodeStyle = {
       'background-color': colorCode,
     };
-    console.log('priceOption : ', this.priceOption);
 
     if (this.priceOption && this.priceOption.trade && this.priceOption.trade.tradeReserve
       && this.priceOption.trade.tradeReserve.trades[0] && this.priceOption.trade.tradeReserve.trades[0].payments) {
