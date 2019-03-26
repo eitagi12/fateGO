@@ -9,10 +9,14 @@
     <p>
       <i class="fa fa-circle mr-3 text-light-green"></i>
       <span class="text-grey" id="text-patment-method">
-        ค่าเครื่อง : ชำระเต็มจำนวน (ชำระโดย : Thai QR Payment)
+        {{ priceOption?.productDetail?.name }}
+        <span *ngIf="priceOption?.productStock?.color">
+          สี {{ priceOption?.productStock?.color }} 
+        </span> 
+        <!-- : {{ paymentDesc }} -->
       </span>
       <span class="pull-right text-light-green" id="text-payment-price">
-        ฿{{ 45700 | number }}
+        ฿{{ priceOption?.trade?.promotionPrice | number }}
       </span>
     </p>
   </div>
@@ -29,7 +33,9 @@
       </div>
       <div class="col-12 col-sm-8">
         <p class="text-light-green" id="text-receipt-customer-name">
-          นาย ธีระยุทธ เจโตวิมุติพงศ์
+          {{ transaction?.data?.customer?.titleName }}
+          {{ transaction?.data?.customer?.firstName }}
+          {{ transaction?.data?.customer?.lastName }}
         </p>
       </div>
 
@@ -41,7 +47,7 @@
       </div>
       <div class="col-12 col-sm-8">
         <p class="text-light-green" id="text-receipt-billing-address">
-          ซ.พหลโยธิน 9 ตึก ESV ชั้น 22 แขวงสามเสนใน เขตพญาไท กรุงเทพฯ 10400
+          {{ customerAddress }}
         </p>
       </div>
     </div>
