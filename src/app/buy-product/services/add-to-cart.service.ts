@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE } from 'src/app/device-order/ais/device-order-ais-new-register/constants/route-path.constant';
+import { ROUTE_DEVICE_ONLY_AIS_SELECT_PAYMENT_AND_RECEIPT_INFORMATION_PAGE } from 'src/app/device-only/ais/device-only-ais/constants/route-path.constant';
 
 export interface AddToCart {
   soId: string;
@@ -27,6 +28,9 @@ export class AddToCartService {
         case 'MC002': // Pre to Post
         case 'MC003': // MNP
         case 'MC004': // Existing
+        case 'MC005': // Device Only
+          nextUrl = ROUTE_DEVICE_ONLY_AIS_SELECT_PAYMENT_AND_RECEIPT_INFORMATION_PAGE;
+          break;
         default:
           return reject('My Channel flow not implemented.');
       }

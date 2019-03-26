@@ -1,7 +1,7 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { PaymentDetail, SelectPaymentDetail, PaymentDetailOption, PaymentDetailQRCode, PaymentDetailBank, PaymentDetailInstallment } from 'mychannel-shared-libs';
+import { PaymentDetail, SelectPaymentDetail, PaymentDetailOption, PaymentDetailBank, PaymentDetailInstallment } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -42,21 +42,27 @@ export class SelectPaymentComponent implements OnInit {
     this.priceOption = this.priceOptionService.load();
   }
   ngOnInit(): void {
+    this.formID = this.getRandomNum(10);
     const productDetail = this.priceOption.productDetail;
-
     const productInfo = this.priceOption.productStock;
+    if (this.priceOption.trade.payments.length > 0) {
+      this.paymentMethod = this.priceOption.trade.payments.filter(payment => payment.method !== 'PP')[0].method || '';
+    } else {
+      this.paymentMethod = this.priceOption.trade.payments.method || '';
+    }
     this.onLoadDefaultBankData(this.priceOption.trade.banks).then((banks) => {
       this.priceOption.trade.banks = banks;
-      // ############################################## payment detail ##############################################
       this.paymentDetail = {
         title: 'รูปแบบการชำระเงิน',
         header: 'ค่าเครื่อง ' + productDetail.name,
         price: this.priceOption.trade.promotionPrice,
-        qrCodes: this.getQRCode(),
+        // qrCodes: this.getQRCode(),
         banks: this.groupPrivilegeTradeBankByAbb(this.priceOption.trade.banks)
       };
     });
-
+    this.selectPaymentDetail = {
+      paymentType: this.getPaymentType(),
+    };
     this.paymentDetailOption = {
       isInstallment: this.isInstallment(),
       isEnable: this.isEnableForm()
@@ -73,21 +79,18 @@ export class SelectPaymentComponent implements OnInit {
     });
   }
 
-  getQRCode(): any {
-    return [
-      {
-        id: 1,
-        name: 'Thai QR Payment',
-        imageUrl: 'assets/images/icon/Thai_Qr_Payment.png',
-        qrType: '003'
-      },
-      {
-        id: 2,
-        name: 'Rabbit Line Pay',
-        imageUrl: 'assets/images/icon/Rabbit_Line_Pay.png',
-        qrType: '002'
-      }
-    ];
+  onSelectPaymentType(paymentType: string): void {
+    this.selectPaymentDetail.paymentType = paymentType;
+  }
+
+  onSelectBank(bank: PaymentDetailBank): void {
+    this.isSelectBank.emit(bank);
+    this.selectPaymentDetail.bank = Object.assign({}, bank);
+    this.selectPaymentDetail.bank.installments = undefined;
+    this.paymentDetail.installments = bank.installments; // Object.assign({}, bank.installments);
+  }
+  onSelectInstallment(installment: PaymentDetailInstallment[]): void {
+    this.selectPaymentDetail.bank.installments = Object.assign({}, installment);
   }
 
   isInstallment(): boolean {
@@ -109,19 +112,7 @@ export class SelectPaymentComponent implements OnInit {
     return true;
   }
 
-  // private checkTypePaymentType(paymentType: string): void {
-  //   if (paymentType === 'qrcode') {
-  //     this.isQrcode = true;
-  //   }
-  //   if (paymentType === 'credit') {
-  //     this.isCredit = true;
-  //   }
-  //   if (paymentType === 'debit') {
-  //     this.isDebit = true;
-  //   }
-  // }
-
-    getPaymentType(): string {
+  getPaymentType(): string {
     if (this.paymentMethod === CASH_PAYMENT) {
       return this.showQRCode ? 'qrcode' : 'debit';
     }
@@ -251,9 +242,9 @@ export class SelectPaymentComponent implements OnInit {
         Math.floor((Math.random() * Math.pow(10, length)) + 1).toString()).slice(-length);
     return randomNum;
   }
-  onSelectBank(bank: any): void {
-    this.isSelectBank.emit(bank);
-    console.log('cdscdscdscdscdsdcsc', bank);
-  }
+  // onSelectBank(bank: any): void {
+  //   this.isSelectBank.emit(bank);
+  //   console.log('cdscdscdscdscdsdcsc', bank);
+  // }
 
 }

@@ -52,7 +52,10 @@ describe('SelectPaymentComponent', () => {
             return {
               productDetail: {},
               productStock: {},
-              trade: {}
+              trade: {
+                payments: []
+              }
+
             };
           })
         }
@@ -69,4 +72,5 @@ describe('SelectPaymentComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
 });
