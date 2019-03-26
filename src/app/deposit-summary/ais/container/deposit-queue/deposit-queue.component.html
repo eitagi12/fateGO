@@ -1,18 +1,18 @@
 <div class="mc-flex">
   <mc-header title="รายการสินค้า"></mc-header>
-  <div class="mc-flex-wrap">
+  <div class="mc-flex-wrap deposit-queue-background">
     <div class="my-3">
       <mc-wizard [wizards]="wizards" active="3"></mc-wizard>
       <div class="container-fluid">
-        <div class="container pt-3 deposit-queue-background">
+        <div class="container pt-3">
           <form [formGroup]="queueFrom">
             <div class="mt-5 form-group">
-              <div class="text-center">กรุณารับบัตรคิว แล้วระบุหมายเลขคิว</div>
-              <div class="text-center">ในการชำระสินค้าของท่าน ด้านล่างนี้</div>
+              <h5 class="text-center font-bold">กรุณารับบัตรคิว แล้วระบุหมายเลขคิว</h5>
+              <h5 class="text-center font-bold">ในการชำระสินค้าของท่าน ด้านล่างนี้</h5>
               <input class="form-control text-center mb-3" id="queue" maxlength="4" autofocus autocomplete="off"
                 formControlName="queue" placeholder="ระบุเลขที่คิว" [ngClass]="{ 'is-invalid' : queueFrom.controls.queue.invalid && queueFrom.controls.queue.touched && queueFrom.controls.queue.errors }" style="margin-top: 1em">
-              <small class="invalid-feedback" *ngIf="queueFrom.controls.queue.touched && queueFrom.controls.queue.errors">
-                **กรุณากรอกหมายเลขคิวให้ถูกต้อง
+              <small class="invalid-feedback font-bold" *ngIf="queueFrom.controls.queue.touched && queueFrom.controls.queue.errors">
+                <h5>**กรุณากรอกหมายเลขคิวให้ถูกต้อง</h5>
               </small>
             </div>
           </form>

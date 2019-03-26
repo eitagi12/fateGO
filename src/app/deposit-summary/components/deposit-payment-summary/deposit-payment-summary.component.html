@@ -80,14 +80,16 @@
         </div>
         <div class="col-3">
         </div>
+
         <div class="col-12">
-            <span>
-              ที่อยู่
-            </span>
-            <span class="span-font-black" style="margin-left: 9em">
-                {{ customerReceiptAddress }}
-            </span>
-          </div>
+          <label>
+            ที่อยู่
+          </label>
+          <p class="span-font-black" style="margin-left: 11em;margin-top: -3em">
+            {{ customerReceiptAddress }}
+          </p>
+        </div>
+
         <div class="col-9">
           <span style="margin-right:3.7em">
             หมายเลขโทรศัพท์
@@ -107,37 +109,37 @@
       ข้อมูลใบเสร็จรับเงิน
     </div>
     <div class="content">
-      <div class="row align-top align-spaced">
-        <div class="col-9">
-          <span style="margin-right: 9em">
-            ผู้ซื้อ
-          </span>
-          <span class="span-font-black">
-            {{ customerFullName }}
-          </span>
-        </div>
-        <div class="col-3">
-        </div>
-          <div class="col-12">
-            <span>
-              ที่อยู่
-            </span>
-            <span class="span-font-black" style="margin-left: 9em">
-                {{ customerFullAddress }}
-            </span>
-          </div>
-       
-        <div class="col-9">
-          <span style="margin-right: 8em">
-            Tax ID
-          </span>
-          <span class="span-font-black">
-            {{ customerIdCardNo | idCard}}
-          </span>
-        </div>
-        <div class="col-3">
-        </div>
+
+      <div class="col-9">
+        <span style="margin-right: 9em">
+          ผู้ซื้อ
+        </span>
+        <span class="span-font-black">
+          {{ customerFullName }}
+        </span>
       </div>
+      <div class="col-3">
+      </div>
+
+
+      <label style="margin-left: 1em;">
+        ที่อยู่
+      </label>
+      <p class="span-font-black" style="margin-left: 12em;margin-top: -3em">
+        {{ customerFullAddress }}
+      </p>
+
+      <div class="col-9">
+        <span style="margin-right: 8em">
+          Tax ID
+        </span>
+        <span class="span-font-black">
+          {{ customerIdCardNo | idCard}}
+        </span>
+      </div>
+      <div class="col-3">
+      </div>
+
     </div>
   </div>
 </div>
