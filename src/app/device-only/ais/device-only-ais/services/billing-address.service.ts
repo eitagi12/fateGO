@@ -1,14 +1,28 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Subscription, Observable } from 'rxjs';
 import { API } from '../constants/api.constant';
+import { TokenService } from 'mychannel-shared-libs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class BillingAddressService {
 
-  constructor(private http: HttpClient) { }
-
+  constructor(
+    private http: HttpClient,
+    private tokenService: TokenService) {}
+  getLocationName(): Observable<any> {
+      const locationCode = this.tokenService.getUser().locationCode;
+      // const locationCodeAPI = API.QUERY_LOCATIONNAME + '?code=' + locationCode;
+      console.log(locationCode);
+      // console.log('api', locationCodeAPI);
+      return this.http.get(API.QUERY_LOCATIONNAME, {
+        params: {
+          code: locationCode
+        }
+      });
+    }
   getTitleName(): Promise<Object> {
     return this.http.get(API.QUERY_TITLENAMES).toPromise().then(this.responseTitleName());
   }

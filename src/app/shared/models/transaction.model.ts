@@ -70,7 +70,14 @@ export interface MainPromotion {
 export interface AirTime {
   [key: string]: any;
 }
-
+export interface Receipt {
+  taxId: string;
+  branch: string;
+  buyer: string;
+  buyerAddress: string;
+  telNo: string;
+  locationName: string;
+}
 export interface Customer {
   idCardNo: string;
   idCardType: string;

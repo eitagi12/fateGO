@@ -2,8 +2,10 @@ import { Component, OnInit, Input, Output, EventEmitter  } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors  } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
 import { BillingAddressService } from '../../services/billing-address.service';
-import { AlertService, REGEX_MOBILE } from 'mychannel-shared-libs';
-import { TransactionAction, Customer, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
+import { HttpClient } from '@angular/common/http';
+import { AlertService, REGEX_MOBILE, AuthenService } from 'mychannel-shared-libs';
+import { TokenService } from 'mychannel-shared-libs';
+import { TransactionAction, Customer, BillDeliveryAddress, Receipt } from 'src/app/shared/models/transaction.model';
 import { CustomerInformationService } from '../../services/customer-information.service';
 import { StringifyOptions } from 'querystring';
 import { forEach } from '@angular/router/src/utils/collection';
@@ -14,6 +16,7 @@ export interface ReceiptInfo {
   buyer: string;
   buyerAddress: string;
   telNo: string;
+  locationName: string;
 }
 
 @Component({
@@ -22,9 +25,13 @@ export interface ReceiptInfo {
   styleUrls: ['./receipt-information.component.scss']
 })
 export class ReceiptInformationComponent implements OnInit {
+  [x: string]: any;
 
   @Input()
   receiptInfo: ReceiptInfo;
+
+  @Input()
+  branch: any;
 
   @Input()
   locationName: string;
@@ -43,7 +50,9 @@ export class ReceiptInformationComponent implements OnInit {
     name: '',
     mobileNo: '',
     billingAddress: '',
-    status: ''
+    status: '',
+    branch: '',
+    locationName: ''
   };
 
   searchByMobileNoForm: FormGroup;
@@ -59,14 +68,13 @@ export class ReceiptInformationComponent implements OnInit {
   zipCode: any;
   customerAddressTemp: any;
   ebillingAddressValid: boolean;
-
   nameText: string;
   billingAddressText: string;
-
   constructor(
     private fb: FormBuilder,
     private billingAddress: BillingAddressService,
     private customerInformationService: CustomerInformationService,
+    private authHttpService: AuthenService,
     private alertService: AlertService) {
     this.billingAddress.getTitleName().then(this.responseTitleNames());
     this.billingAddress.getProvinces().then(this.responseProvinces());
@@ -94,7 +102,10 @@ export class ReceiptInformationComponent implements OnInit {
     };
     this.createForm();
     this.createSearchByMobileNoForm();
-    this.receiptInfoForm.controls['locationName'].setValue(this.locationName);
+    this.billingAddress.getLocationName()
+    .subscribe((resp) => this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName));
+    // this.receiptInfoForm.controls['locationName'].setValue(this.locationName = this.tokenService.getUser().locationCode);
+    // console.log(this.locationName);
   }
 
   private createForm(): void {
@@ -104,9 +115,10 @@ export class ReceiptInformationComponent implements OnInit {
       buyer: ['', []],
       buyerAddress: ['', []],
       telNo: ['', [Validators.pattern(/^0[6-9]\d{8}$/), Validators.required]],
-      locationName: ''
+      locationName: ['', []]
     });
     this.receiptInfoForm.controls['taxId'].disable();
+    this.receiptInfoForm.controls['branch'].disable();
     this.receiptInfoForm.valueChanges.pipe(debounceTime(750)).subscribe(event => {
       this.error.emit(this.receiptInfoForm.valid);
       if (this.receiptInfoForm.valid) {
@@ -114,13 +126,21 @@ export class ReceiptInformationComponent implements OnInit {
       }
     });
   }
-
   private createSearchByMobileNoForm(): void {
     this.searchByMobileNoForm = this.fb.group({
       mobileNo: ['', Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])]
     });
   }
-
+  setReceiptInfo(data: any): void {
+    const  receipt: Receipt = {
+      taxId: data.receipt.taxId,
+      branch: data.receipt.branch,
+      buyer: data.receipt.buyer,
+      buyerAddress: data.receipt.buyerAddress,
+      telNo: data.receipt.telNo,
+      locationName: data.receipt.locationName
+    };
+  }
   setCustomerInfo(data: any): void {
     const customer: Customer = {
       idCardNo: data.customer.idCardNo,
@@ -152,7 +172,6 @@ export class ReceiptInformationComponent implements OnInit {
     this.nameText = data.customer.titleName + ' ' + data.customer.firstName + ' ' + data.customer.lastName;
     this.billingAddressText = this.convertBillingAddressToString(billDeliveryAddress);
   }
-
   searchCustomerInfo(): void {
     if (this.searchByMobileNoForm.valid) {
       const mobileNo = this.searchByMobileNoForm.value.mobileNo;
@@ -161,25 +180,25 @@ export class ReceiptInformationComponent implements OnInit {
           if (res && res.data && res.data.billingAddress) {
             this.setCustomerInfo({
               customer: this.customerInformationService.mapAttributeFromGetBill(res.data.billingAddress),
-              action: TransactionAction.KEY_IN
-            });
-          } else {
-            this.alertService.notify({
-              type: 'error',
-              confirmButtonText: 'OK',
-              showConfirmButton: true,
-              text: 'เบอร์นี้ไม่ใช่ระบบ AIS กรุณาเปลี่ยนเบอร์ใหม่'
-            });
-          }
-        })
-        .catch((err) => {
-          this.alertService.notify({
-            type: 'error',
-            confirmButtonText: 'OK',
-            showConfirmButton: true,
-            text: 'เบอร์นี้ไม่ใช่ระบบ AIS กรุณาเปลี่ยนเบอร์ใหม่'
-          });
+          action: TransactionAction.KEY_IN
         });
+      } else {
+        this.alertService.notify({
+          type: 'error',
+          confirmButtonText: 'OK',
+          showConfirmButton: true,
+          text: 'เบอร์นี้ไม่ใช่ระบบ AIS กรุณาเปลี่ยนเบอร์ใหม่'
+        });
+      }
+    })
+      .catch((err) => {
+        this.alertService.notify({
+          type: 'error',
+          confirmButtonText: 'OK',
+          showConfirmButton: true,
+          text: 'เบอร์นี้ไม่ใช่ระบบ AIS กรุณาเปลี่ยนเบอร์ใหม่'
+        });
+      });
     } else {
       this.alertService.notify({
         type: 'warning',
@@ -203,7 +222,11 @@ export class ReceiptInformationComponent implements OnInit {
   switchKeyInBillingAddress(): void {
     this.inputBillingAddress = !this.inputBillingAddress;
     if (this.inputBillingAddress) {
-      this.action.emit(TransactionAction.KEY_IN);
+      this.receiptInfoForm.controls['taxId'].enable();
+      this.receiptInfoForm.controls['branch'].disable();
+    } else {
+      this.receiptInfoForm.controls['taxId'].disable();
+      this.receiptInfoForm.controls['branch'].disable();
     }
   }
 
@@ -307,5 +330,8 @@ export class ReceiptInformationComponent implements OnInit {
   private responseProvinces(): (value: any) => any {
     return (resp: string[]) => this.provinces = resp;
   }
-
+  private responseTelNo(): AbstractControl {
+    return this.receiptInfoForm.controls['telNo'];
+    // return this.customerAddressForm.controls['amphur'];
+  }
 }
