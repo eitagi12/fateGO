@@ -67,7 +67,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
   }
 
   onNext(): void {
-    this.createTransaction();
+    this.createAddToCartTrasaction();
   }
 
   onComplete(customerInfo: Customer): void {
@@ -87,15 +87,12 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
     }
   }
 
-  private createTransaction(): void {
-    this.createOrderService.createTransaction(this.transaction, this.priceOption).then((res) => {
-      if (res) {
-        this.router.navigate([ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE]);
-      } else {
-        this.alertService.error('ระบบไม่สามารถทำรายการได้');
-      }
-    }).catch((err) => {
-      this.alertService.error(err);
+  createAddToCartTrasaction(): void {
+    this.createOrderService.createAddToCartTrasaction(this.transaction, this.priceOption).then((transaction) => {
+      this.transaction = transaction;
+      this.router.navigate([ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE]);
+    }).catch((e) => {
+      this.alertService.error(e);
     });
   }
 

@@ -145,8 +145,9 @@ export interface FaceRecognition {
 }
 
 export interface Order {
-  orderNo: string;
+  orderNo?: string;
   orderDate?: string;
+  soId?: string;
 }
 
 export interface BillingInformation {
