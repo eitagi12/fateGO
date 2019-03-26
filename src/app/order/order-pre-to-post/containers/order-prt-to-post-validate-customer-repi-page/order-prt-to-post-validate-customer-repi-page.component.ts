@@ -25,7 +25,6 @@ export class OrderPrtToPostValidateCustomerRepiPageComponent implements OnInit, 
     private homeService: HomeService,
     private http: HttpClient,
     private pageLoadingService: PageLoadingService,
-    private apiRequestService: ApiRequestService,
     private alertService: AlertService,
   ) {
     this.transaction = this.transactionService.load();
