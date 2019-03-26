@@ -7,17 +7,19 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { CreateOrderService } from '../../services/create-order.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { Product } from 'src/app/device-only/ais/device-only-ais/models/product.model';
 
 @Component({
   selector: 'app-device-only-ais-select-payment-and-receipt-information-page',
   templateUrl: './device-only-ais-select-payment-and-receipt-information-page.component.html',
   styleUrls: ['./device-only-ais-select-payment-and-receipt-information-page.component.scss']
 })
-export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implements OnInit , OnDestroy {
+export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implements OnInit, OnDestroy {
 
   transaction: Transaction;
   private priceOption: PriceOption;
   isSuccess: boolean;
+  public product: Product;
 
   constructor(
     private router: Router,
@@ -30,13 +32,13 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
-   }
+  }
 
   ngOnInit(): void {
     this.apiRequestService.createRequestId();
     if (!this.transaction.data) {
       this.transaction = {
-        data : {
+        data: {
           action: TransactionAction.KEY_IN,
           transactionType: TransactionType.DEVICE_ORDER_DEVICE_ONLY
         },
@@ -51,7 +53,17 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
 
   onBack(): void {
     this.transactionService.remove();
-    window.location.href = '/buy-product/campaign';
+    this.product = this.priceOption.queryParams;
+    const brand: string = encodeURIComponent(this.product.brand ? this.product.brand : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
+    const model: string = encodeURIComponent(this.product.model ? this.product.model : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
+    // replace '%28 %29' for() case url refresh error
+    const url: string = `/sales-portal/buy-product/brand/${brand}/${model}`;
+    const queryParams: any = {
+      modelColor: this.product.color,
+      productType: this.product.productType,
+      productSubType: this.product.productSubtype
+    };
+    this.router.navigate([url], { queryParams });
   }
 
   onNext(): void {
