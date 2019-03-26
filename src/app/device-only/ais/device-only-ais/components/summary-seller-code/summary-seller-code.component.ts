@@ -19,7 +19,7 @@ export class SummarySellerCodeComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.locationCode = this.transaction.data.seller.locationCode ? this.transaction.data.seller.locationCode : '';
+    // this.locationCode = this.transaction.data.seller.locationCode ? this.transaction.data.seller.locationCode : '';
   }
 
 }

@@ -57,8 +57,6 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
     const brand: string = encodeURIComponent(this.product.brand ? this.product.brand : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
     const model: string = encodeURIComponent(this.product.model ? this.product.model : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
     // replace '%28 %29' for() case url refresh error
-    console.log('model>>>>', model);
-
     const url: string = `/sales-portal/buy-product/brand/${brand}/${model}`;
     const queryParams: string =
       '?modelColor=' + this.product.color +
