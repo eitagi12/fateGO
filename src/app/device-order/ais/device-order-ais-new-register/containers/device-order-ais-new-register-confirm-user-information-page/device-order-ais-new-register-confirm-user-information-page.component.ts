@@ -271,8 +271,6 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
     if (billingInformation && billingInformation.billCycleData) {
       return billingInformation.billCycleData.billChannel;
     }
-
-
     // เลือกบิลตามแพจเกจ
     const billingSystem = mainPackage.billingSystem;
     if (billingSystem && billingSystem === BillingSystemType.BOS) {
