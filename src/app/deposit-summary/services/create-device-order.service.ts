@@ -160,8 +160,8 @@ export class CreateDeviceOrderService {
       storeName : 'WH',
       soChannelType : 'MC_PRE',
      soDocumentType : 'DEPOSIT_TF',
-     shipCusName : customer.shipaddress.shipCusAddr,
-     shipCusAddr : customer.shipaddress.shipCusName,
+     shipCusName : customer.shipaddress.shipCusName,
+     shipCusAddr : customer.shipaddress.shipCusAddr,
     };
 
     return Promise.resolve(data);
