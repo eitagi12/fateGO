@@ -34,7 +34,6 @@ export class PromotionShelveService {
             promotions: promotionShelve.subShelves
               .sort((a, b) => a.priority !== b.priority ? a.priority < b.priority ? -1 : 1 : 0)
               .map((subShelve: any) => {
-                console.log('shelve', subShelve);
                 return { // group
                   id: subShelve.id,
                   title: subShelve.title,
