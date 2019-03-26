@@ -91,7 +91,7 @@ export class DepositPaymentSummaryPageComponent implements OnInit, OnDestroy {
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    this.http.get(`/api/customerportal/checkSeller/${this.sellerCode}`).toPromise()
+    this.http.get(`/api/customerportal/checkSeller/${this.seller.sellerNo}`).toPromise()
     .then((shopCheckSeller: any) => {
       if (shopCheckSeller.data.condition) {
         this.transaction.data.seller = {
