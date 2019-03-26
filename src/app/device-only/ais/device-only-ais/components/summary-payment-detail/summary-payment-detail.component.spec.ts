@@ -1,14 +1,47 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
 import { SummaryPaymentDetailComponent } from './summary-payment-detail.component';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
 
 describe('SummaryPaymentDetailComponent', () => {
   let component: SummaryPaymentDetailComponent;
   let fixture: ComponentFixture<SummaryPaymentDetailComponent>;
 
-  setupTestBed({
-    declarations: [SummaryPaymentDetailComponent]
-  });
+    setupTestBed({
+      declarations: [SummaryPaymentDetailComponent],
+        providers: [
+        {
+          provide: PriceOptionService,
+          useValue: {
+            load: jest.fn()
+           }
+        }, {
+          provide: TransactionService,
+          useValue: {
+            load: jest.fn(() => {
+              return {
+                data: {
+                  customer: {
+                    homeNo: '',
+                    moo: '',
+                    room: '',
+                    floor: '',
+                    buildingName: '',
+                    soi: '',
+                    street: '',
+                    tumbol: '',
+                    amphur: '',
+                    province: '',
+                    zipCode: ''
+                  }
+                }
+              };
+            }),
+           }
+        }
+      ]
+    });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SummaryPaymentDetailComponent);
@@ -16,7 +49,8 @@ describe('SummaryPaymentDetailComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
+  it('should create ', () => {
     expect(component).toBeTruthy();
   });
+
 });
