@@ -249,8 +249,7 @@ export class CreateDeviceOrderService {
       paymentRemark += REMARK_BANK + transaction.data.payment.selectPaymentDetail.bank.abb;
     }
     paymentRemark += ', ' + REMARK_TRADE_NO + priceOption.trade.tradeReserve.trades[0].tradeNo + ', ';
-    paymentRemark += REMARK_PRIVILEGE_DESC + ' ' + priceOption.trade.tradeReserve.
-    trades[0].tradeName + ', ' + REMARK_QUEUE_NUMBER + ' ' + transaction.data.queue.queueNo;
+    paymentRemark += REMARK_PRIVILEGE_DESC + ' ' + ', ' + REMARK_QUEUE_NUMBER + ' ' + transaction.data.queue.queueNo;
 
     return paymentRemark;
   }
