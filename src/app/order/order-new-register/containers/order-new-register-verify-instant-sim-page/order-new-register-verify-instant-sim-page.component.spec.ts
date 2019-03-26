@@ -5,13 +5,17 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TokenService } from 'mychannel-shared-libs';
+import { HttpClientModule } from '@angular/common/http';
 
 describe('OrderNewRegisterVerifyInstantSimPageComponent', () => {
   let component: OrderNewRegisterVerifyInstantSimPageComponent;
   let fixture: ComponentFixture<OrderNewRegisterVerifyInstantSimPageComponent>;
 
   setupTestBed({
-    imports: [RouterTestingModule],
+    imports: [
+      RouterTestingModule,
+      HttpClientModule
+    ],
     declarations: [OrderNewRegisterVerifyInstantSimPageComponent],
     providers: [
       {

@@ -30,7 +30,14 @@ describe('OrderNewRegisterSummaryPageComponent', () => {
           load: jest.fn(() => {
             return {
               data: {
-                customer: {}
+                billingInformation: {
+                  billCycleData: {}
+                },
+                customer: {},
+                simCard: {
+                  mobileNo: ''
+                },
+                mainPackage: {}
               }
             } as Transaction;
           })
