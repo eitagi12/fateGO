@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter } from '@angular/core';
 import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PaymentDetail, SelectPaymentDetail, PaymentDetailOption, PaymentDetailQRCode, PaymentDetailBank, PaymentDetailInstallment } from 'mychannel-shared-libs';
@@ -25,6 +25,7 @@ export class SelectPaymentComponent implements OnInit {
   isQrcode: boolean;
   isCredit: boolean;
   isDebit: boolean;
+  @Output() isSelectBank: EventEmitter<any> = new EventEmitter<any>();
 
   paymentMethod: string;
   transaction: Transaction;
@@ -234,6 +235,8 @@ export class SelectPaymentComponent implements OnInit {
 
     if (this.selectPaymentDetail) {
       this.paymentForm.patchValue({ paymentType: this.selectPaymentDetail.paymentType });
+      console.log('select paymant', this.selectPaymentDetail);
+
     }
     if (this.paymentDetailOption && this.paymentDetailOption.isEnable) {
       this.paymentForm.get('paymentType').enable();
@@ -247,6 +250,10 @@ export class SelectPaymentComponent implements OnInit {
       (Math.pow(10, length).toString().slice(length - 1) +
         Math.floor((Math.random() * Math.pow(10, length)) + 1).toString()).slice(-length);
     return randomNum;
+  }
+  onSelectBank(bank: any): void {
+    this.isSelectBank.emit(bank);
+    console.log('cdscdscdscdscdsdcsc', bank);
   }
 
 }

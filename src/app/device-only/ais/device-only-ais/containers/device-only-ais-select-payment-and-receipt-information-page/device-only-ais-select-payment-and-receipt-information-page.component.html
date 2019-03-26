@@ -7,7 +7,7 @@
       <mc-header-icon src="assets/images/icon/icon-home.png" id="button-home" (click)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
-  <app-select-payment></app-select-payment>
+  <app-select-payment (isSelectBank)="selectBank($event)"></app-select-payment>
   <app-receipt-information (completed)="onComplete($event)" (error)="onError($event)" (action)="checkAction($event)">
   </app-receipt-information>
 

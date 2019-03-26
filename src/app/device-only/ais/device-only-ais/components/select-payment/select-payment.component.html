@@ -70,16 +70,18 @@
             </select>
           </div>
         </div>
-        <div class="form-group row" *ngIf="paymentForm.controls['paymentType'].value === 'credit'">
 
+
+
+        <div class="form-group row" *ngIf="paymentForm.controls['paymentType'].value === 'credit'">
+          <div class="col-12 text-left mb-3">
+            <span class="text-pink">{{ '*กรุณาเลือกธนาคาร' }}</span>
+          </div>
           <div class="col-4 col-sm-2 mb-3" *ngFor="let bank of paymentDetail?.banks; let i = index"
             (click)="onSelectBank(bank)">
             <div class="bank-lazy-load-image" [ngClass]="{'active': bank?.abb === selectPaymentDetail.bank?.abb}">
               <mc-lazy-load-image [src]="bank?.imageUrl"></mc-lazy-load-image>
             </div>
-          </div>
-          <div class="col-12 text-left mb-3" *ngIf="!selectPaymentDetail.bank">
-            <span class="text-pink">{{ '*กรุณาเลือกธนาคาร' }}</span>
           </div>
           <div class="row">
             <div *ngIf="paymentDetail?.specialAmountPercent">

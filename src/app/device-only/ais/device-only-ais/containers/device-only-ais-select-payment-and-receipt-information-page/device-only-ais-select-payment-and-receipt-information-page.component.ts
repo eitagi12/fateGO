@@ -20,6 +20,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
   private priceOption: PriceOption;
   isSuccess: boolean;
   public product: Product;
+  isSelectBank: any;
 
   constructor(
     private router: Router,
@@ -94,6 +95,18 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
     }).catch((e) => {
       this.alertService.error(e);
     });
+  }
+
+  public selectBank(isselectbank: any): void {
+    this.isSelectBank = isselectbank;
+    console.log('this.isSelectBank ==>', this.isSelectBank);
+    if (!this.transaction.data.payment) {
+      console.log('111');
+    this.transaction.data.payment = this.isSelectBank;
+    } else {
+      console.log('222');
+      this.transaction.data.payment = this.isSelectBank;
+    }
   }
 
   ngOnDestroy(): void {
