@@ -63,7 +63,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       productType: this.product.productType,
       productSubType: this.product.productSubtype
     };
-    window.location.href = url + queryParams;
+    this.router.navigate([url], { queryParams });
   }
 
   onNext(): void {
