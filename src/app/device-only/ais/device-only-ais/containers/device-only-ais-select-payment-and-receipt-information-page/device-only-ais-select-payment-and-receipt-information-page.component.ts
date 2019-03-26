@@ -51,6 +51,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
 
   onBack(): void {
     this.transactionService.remove();
+    window.location.href = '/buy-product/campaign';
   }
 
   onNext(): void {
