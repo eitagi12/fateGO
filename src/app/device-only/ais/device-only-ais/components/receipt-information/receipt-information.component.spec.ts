@@ -6,7 +6,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 
 import { ReceiptInformationComponent, ReceiptInfo } from './receipt-information.component';
 import { BillingAddressService } from '../../services/billing-address.service';
-import { AlertService } from 'mychannel-shared-libs';
+import { AlertService, CustomerService } from 'mychannel-shared-libs';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 
 describe('ReceiptInformationComponent', () => {
@@ -38,7 +38,9 @@ describe('ReceiptInformationComponent', () => {
       },
       {
         provide : AlertService,
-        useValue : {}
+        useValue : {
+          notify: jest.fn()
+        }
       }
     ]
   });
@@ -97,4 +99,23 @@ describe('ReceiptInformationComponent', () => {
     tick(750); // because set debounceTime to 750 in component
     expect(receiptInfo.telNo).toBe('0867876746');
   }));
+
+  describe('searchCustomerInfo function', () => {
+
+    it('should have error message for require validity when mobileNo field is empty', () => {
+      const mobileNo = component.searchByMobileNoForm.controls['mobileNo'];
+      let errors = {};
+      errors = mobileNo.errors || {};
+      expect(errors['required']).toBeTruthy();
+    });
+
+    it('should have error message for require validity when mobileNo field is wrong format', () => {
+      const mobileNo = component.searchByMobileNoForm.controls['mobileNo'];
+      let errors = {};
+      errors = mobileNo.errors || {};
+      expect(errors['required']).toBeTruthy();
+    });
+
+  });
+
 });
