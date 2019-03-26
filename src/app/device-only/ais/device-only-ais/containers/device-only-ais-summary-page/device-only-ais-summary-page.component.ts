@@ -15,6 +15,8 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit {
 
   wizards: string[] = WIZARD_DEVICE_ONLY_AIS;
   transaction: Transaction;
+  isReasonNotBuyMobileCare: string;
+  // telNo: string;
 
   constructor(
     private router: Router,
@@ -25,6 +27,8 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    // this.telNo = this.transaction.data.receiptInfo.telNo;
+    this.isReasonNotBuyMobileCare = this.transaction.data.reasonCode;
   }
 
   onBack(): void {

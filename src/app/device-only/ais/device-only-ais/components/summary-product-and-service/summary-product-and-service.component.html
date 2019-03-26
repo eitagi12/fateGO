@@ -2,8 +2,11 @@
   <div class="card-header bg-purple text-white">สินค้าและบริการอื่น</div>
   <div class="card-body">
     <i class="fa fa-circle mr-3 text-light-green"></i>
-    <span class="text-grey" id="text-mobile-care">
+    <span class="text-grey" id="text-package-mobile-care">
       {{ transaction?.data?.mobileCarePackage?.title }}
+    </span>
+    <span class="text-gray" id="text-mobile-care">
+      ( หมายเลขที่รับสิทธิ์ : {{ '0889540584' | mobileNo }} )
     </span>
     <span class="pull-right" (click)="onOpenDetail(transaction?.data?.mobileCarePackage?.detailTH)">
       <img src="assets/images/icon/icon-page.png" class="icon" />

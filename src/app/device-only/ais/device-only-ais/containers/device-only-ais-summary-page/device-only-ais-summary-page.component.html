@@ -18,7 +18,7 @@
           </div>
           <div class="col-12 col-sm-6 text-sm-right">
             <img src="assets/images/icon/sales_portal_green_phone.png" class="icon-img icon-phone" />
-            <span id="text-mobile-no">{{ '0889540584' | mobileNo}}</span>
+            <!-- <span id="text-mobile-no">{{ telNo | mobileNo}}</span> -->
           </div>
         </div>
       </div>
@@ -47,7 +47,7 @@
         <app-summary-order-detail></app-summary-order-detail>
 
         <!-- สินค้าและบริการอื่น -->
-        <app-summary-product-and-service *ngIf="transaction?.data?.mobileCarePackage?.title"></app-summary-product-and-service>
+        <app-summary-product-and-service *ngIf="isReasonNotBuyMobileCare"></app-summary-product-and-service>
 
         <!-- รายละเอียดการชำระ -->
         <app-summary-payment-detail></app-summary-payment-detail>
