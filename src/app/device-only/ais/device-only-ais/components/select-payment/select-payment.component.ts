@@ -56,8 +56,6 @@ export class SelectPaymentComponent implements OnInit {
       };
     });
 
-    console.log('" testt== "', this.transaction);
-
     this.paymentDetailOption = {
       isInstallment: this.isInstallment(),
       isEnable: this.isEnableForm()
