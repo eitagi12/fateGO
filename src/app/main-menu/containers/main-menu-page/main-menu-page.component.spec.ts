@@ -16,20 +16,17 @@ describe('MainMenuPageComponent', () => {
     }
   };
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      imports: [
-        RouterTestingModule
-      ],
-      declarations: [
-        MainMenuPageComponent
-      ],
-      providers: [
-        mockTokenService
-      ]
-    })
-    .compileComponents();
-  }));
+  setupTestBed({
+    imports: [
+      RouterTestingModule
+    ],
+    declarations: [
+      MainMenuPageComponent
+    ],
+    providers: [
+      mockTokenService
+    ]
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(MainMenuPageComponent);
