@@ -1,6 +1,8 @@
 <div style="padding: 20px 0 0"> 
   <div class="m-auto bg-light-green device-only-read-card-btn" id="button-read-smart-card">
-    <div class="row m-auto" (click)="readCard()">
+      <!-- <mc-validate-customer-id-card [kioskApi]="kioskApi" (error)="onError($event)" (completed)="onCompleted($event)">
+      </mc-validate-customer-id-card> -->
+    <div class="row m-auto" (click)="readCard()" (error)="onError($event)" (completed)="onCompleted($event)">
       <img class="col-3" src="assets/images/icon/device_only_read_card_icon.png" />
       <label class="col-9 m-auto" > Read Smart Card </label>
     </div>
@@ -8,6 +10,7 @@
   <div class="device-only-read-card-progress" #progressBarArea>
     <div class="progress-bg">
       <div class="progress-precent" id="progress-bar-read-smart-card" #progressBarReadSmartCard></div>
+      <div>
     </div>
   </div>
 </div>
@@ -28,19 +31,20 @@
         <input class="form-check-input" type="radio" value="ที่อยู่ตามบัตรประชาชน"
           formControlName="billingAddress" id="modal-text-customer-id-card-address">
         <label class="form-check-label" class="col-11" for="modal-text-customer-id-card-address">
-          {{ 'ที่อยู่: ' + customerInfoMock[0].billingAddress }}
+          {{ 'ที่อยู่: ' + customerInfoMock[0].billingAddr }}
         </label>
       </div>
       <br/>
       <h5>ที่อยู่ตามใบแจ้งค่าใช้บริการเบอร์ AIS ของท่าน</h5>
-      <div *ngFor="let itemBA of customerInfoMock">
-        <input class="form-check-input" type="radio" value="ที่อยู่1"
-          formControlName="billingAddress" id="modal-text-billing-address-1">
+      
+      <div *ngFor="let itemBA of customerInfoMock; let i = index">
+        <input class="form-check-input" type="radio" value="ที่อยู่{{i+1}}"
+          formControlName="billingAddress" id="modal-text-billing-address-{{i+1}}">
         <label class="form-check-label" class="col-9">{{ itemBA.mobileNo }}</label>
         <label class="form-check-label" class="col-2">{{ itemBA.status }}</label>
         <label class="col-1"></label>
         <label class="form-check-label" class="col-11" for="modal-text-billing-address-1">
-          &nbsp;&nbsp;{{ 'ที่อยู่: ' + itemBA.billingAddress }}
+          &nbsp;&nbsp;{{ 'ที่อยู่: ' + itemBA.billingAddr }}
         </label>
       </div>
     </form>
