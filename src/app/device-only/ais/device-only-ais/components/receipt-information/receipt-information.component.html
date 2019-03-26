@@ -69,9 +69,9 @@
           </div>
         </div>
         <div class="form-group row">
-          <label for="locationName" class="col-12 col-sm-3 col-form-label" id="txtBranch">สาขาที่</label>
+          <label for="branch" class="col-12 col-sm-3 col-form-label" id="txtBranch">สาขาที่</label>
           <div class="col-12 col-sm-9">
-            <input type="text" class="form-control" id="branch" formControlName="locationName" readonly/>
+            <input type="text" class="form-control" id="branch" formControlName="branch" readonly/>
           </div>
         </div>
         <div class="form-group row">
@@ -81,9 +81,9 @@
           </label>
           <div class="col-12 col-sm-9">
             <input type="text" maxlength="10" class="form-control" id="telNo" formControlName="telNo" [ngClass]="{ 'is-invalid' : receiptInfoForm.controls.telNo.invalid && receiptInfoForm.controls.telNo.touched }" />
-            <!-- <small class="form-text invalid-feedback" *ngIf="receiptInfoForm.controls.telNo.touched && receiptInfoForm.controls.telNo.errors">
+            <small class="form-text invalid-feedback" *ngIf="receiptInfoForm.controls.telNo.touched && receiptInfoForm.controls.telNo.errors">
               * กรุณากรอกเบอร์ติดต่อให้ถูกต้อง
-            </small> -->
+            </small>
           </div>
         </div>
       </form>

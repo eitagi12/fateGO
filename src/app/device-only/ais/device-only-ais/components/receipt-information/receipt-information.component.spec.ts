@@ -8,6 +8,7 @@ import { ReceiptInformationComponent, ReceiptInfo } from './receipt-information.
 import { BillingAddressService } from '../../services/billing-address.service';
 import { AlertService, CustomerService } from 'mychannel-shared-libs';
 import { HttpClient, HttpHandler } from '@angular/common/http';
+import { Observable } from 'rxjs';
 
 describe('ReceiptInformationComponent', () => {
   let component: ReceiptInformationComponent;
@@ -33,6 +34,9 @@ describe('ReceiptInformationComponent', () => {
           }),
           getZipCodes: jest.fn(() => {
             return Promise.resolve();
+          }),
+          getLocationName: jest.fn(() => {
+            return new Observable(() => {});
           })
         }
       },
