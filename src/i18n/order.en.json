@@ -171,7 +171,7 @@
     "บาท": "Baht",
     "บริการเสริมตามรายการด้านล่าง สิ้นสุดทันทีหลังจากเปลี่ยนเป็นรายเดือน": "The following on-top package(s) will be terminated after switching to postpaid service",
     "เงื่อนไขการโอนเงินอัตโนมัติใช้สิทธิ์ค่าโทร": "Voice allowance received condition",
-    "รายละเอียดโอนเงินอัตโนมัติดังนี้": "Voice allwance received detail",
+    "รายละเอียดโอนเงินอัตโนมัติ ดังนี้": "Voice allwance received detail",
     "จำนวนเงินคงเหลือ (บาท)": "Remaining balance (Baht)",
     "ค่าโทรที่ได้รับ (บาท)": "Voice allowance received (Baht)",
     "2,000 ขึ้นไป": "B2,000 and over",
@@ -183,7 +183,8 @@
     "จำนวน": "Total of",
     "เบอร์": "numbers",
     "ยืนยัน": "Confirm",
-    "บัตรประชาชน": "ID Card"
+    "บัตรประชาชน": "ID Card",
+    "ขึ้นไป": "and over"
 
 
 
