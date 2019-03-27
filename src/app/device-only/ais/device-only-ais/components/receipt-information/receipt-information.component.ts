@@ -44,7 +44,7 @@ export class ReceiptInformationComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private billingAddress: BillingAddressService,
-    private customerInformationService: CustomerInformationService,
+    private customerInfoService: CustomerInformationService,
     private alertService: AlertService) {
     this.billingAddress.getTitleName().then(this.responseTitleNames());
     this.billingAddress.getProvinces().then(this.responseProvinces());
@@ -130,16 +130,16 @@ export class ReceiptInformationComponent implements OnInit {
     this.customerInfo = { customer, billDeliveryAddress };
     this.receiptInfoForm.controls['taxId'].setValue(data.customer.idCardNo);
     this.nameText = data.customer.titleName + ' ' + data.customer.firstName + ' ' + data.customer.lastName;
-    this.billingAddressText = this.convertBillingAddressToString(billDeliveryAddress);
+    this.billingAddressText = this.customerInfoService.convertBillingAddressToString(billDeliveryAddress);
   }
   searchCustomerInfo(): void {
     if (this.searchByMobileNoForm.valid) {
       const mobileNo = this.searchByMobileNoForm.value.mobileNo;
-      this.customerInformationService.getBillingByMobileNo(mobileNo)
+      this.customerInfoService.getBillingByMobileNo(mobileNo)
         .then((res) => {
           if (res && res.data && res.data.billingAddress) {
             this.setCustomerInfo({
-              customer: this.customerInformationService.mapAttributeFromGetBill(res.data.billingAddress),
+              customer: this.customerInfoService.mapAttributeFromGetBill(res.data.billingAddress),
           action: TransactionAction.KEY_IN
         });
       } else {
@@ -169,15 +169,7 @@ export class ReceiptInformationComponent implements OnInit {
     }
   }
 
-  convertBillingAddressToString(billDeliveryAddress: BillDeliveryAddress): string {
-    let str: string = '';
-    for (const item in billDeliveryAddress) {
-      if (billDeliveryAddress.hasOwnProperty(item)) {
-          str += ' ' + billDeliveryAddress[item];
-      }
-    }
-    return str;
-  }
+  
 
   switchKeyInBillingAddress(): void {
     this.inputBillingAddress = !this.inputBillingAddress;

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { API } from '../constants/api.constant';
 import { HttpClient } from '@angular/common/http';
-import { Customer } from 'src/app/shared/models/transaction.model';
+import { Customer, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
 
 @Injectable({
   providedIn: 'root'
@@ -44,6 +44,16 @@ export class CustomerInformationService {
       zipCode: billingAddress.portalCode,
     };
     return customer;
+  }
+
+  convertBillingAddressToString(billDeliveryAddress: BillDeliveryAddress): string {
+    let str: string = '';
+    for (const item in billDeliveryAddress) {
+      if (billDeliveryAddress.hasOwnProperty(item)) {
+        str += ' ' + billDeliveryAddress[item];
+      }
+    }
+    return str;
   }
 
 }
