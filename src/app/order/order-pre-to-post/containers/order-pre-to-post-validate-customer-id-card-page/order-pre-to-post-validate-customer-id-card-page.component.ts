@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { HomeService, ReadCardProfile, PageLoadingService, ApiRequestService, User, AlertService, ChannelType, TokenService, Utils, ValidateCustomerIdCardComponent, KioskControls, OnscreenKeyboardService } from 'mychannel-shared-libs';
-import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import {
   ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE,
   ROUTE_ORDER_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE
@@ -22,7 +22,6 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
   profile: ReadCardProfile;
   zipcode: string;
   readCardValid: boolean;
-  billDeliveryAddress: BillDeliveryAddress;
   progressReadCard: number;
 
   @ViewChild(ValidateCustomerIdCardComponent)

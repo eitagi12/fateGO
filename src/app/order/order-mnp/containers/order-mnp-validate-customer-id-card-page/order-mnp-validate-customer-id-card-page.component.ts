@@ -5,7 +5,7 @@ import {
   ROUTE_ORDER_MNP_CUSTOMER_INFO_PAGE,
   ROUTE_ORDER_MNP_SELECT_REASON_PAGE
 } from 'src/app/order/order-mnp/constants/route-path.constant';
-import { Transaction, TransactionAction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { ReadCardProfile, HomeService, TokenService, PageLoadingService, ChannelType, Utils, AlertService, KioskControls, ValidateCustomerIdCardComponent, OnscreenKeyboardService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 
@@ -24,7 +24,6 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
   readCardValid: boolean;
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
-  billDeliveryAddress: BillDeliveryAddress;
   progressReadCard: number;
 
   constructor(
