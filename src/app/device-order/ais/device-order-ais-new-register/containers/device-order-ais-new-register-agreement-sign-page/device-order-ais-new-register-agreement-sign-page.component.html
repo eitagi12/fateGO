@@ -27,7 +27,7 @@
         </div>
 
         <div class="card">
-          <div class="card-header bg-transparent text-center">กรุณาเซ็นลายเซ็น</div>
+          <div class="card-header bg-transparent text-center" translate>กรุณาเซ็นลายเซ็น</div>
           <div class="card-body">
             <div class="outer-card">
               <div class="embed-responsive embed-responsive-4by3">
@@ -39,8 +39,8 @@
                 <!-- <mc-signature [onSign]="onOpenSignature" (completed)="onComplete($event)" (error)="onError($event)"></mc-signature> -->
               </div>
               <div class="text-center p-3">
-                <a href="#" class="text-info" (click)="$event.preventDefault();openSignature()" *ngIf="signatureImage == null">เซ็นลายเซ็น</a>
-                <a href="#" class="text-info" (click)="$event.preventDefault();onClearSignature()" *ngIf="signatureImage != null">แก้ไขลายเซ็น</a>
+                <a href="#" class="text-info" (click)="$event.preventDefault();openSignature()" *ngIf="signatureImage == null" translate>เซ็นลายเซ็น</a>
+                <a href="#" class="text-info" (click)="$event.preventDefault();onClearSignature()" *ngIf="signatureImage != null" translate>แก้ไขลายเซ็น</a>
               </div>
             </div>
           </div>

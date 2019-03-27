@@ -64,8 +64,8 @@
             }">
                 <!-- WEB Step -->
                 <a href="#" (click)="$event.preventDefault(); onSigned()" class="text-pink">
-                  <span *ngIf="!hasImageSignature()">เซ็นลายเซ็น</span>
-                  <span *ngIf="hasImageSignature()">เซ็นลายเซ็นใหม่</span>
+                  <span *ngIf="!hasImageSignature()" translate>เซ็นลายเซ็น</span>
+                  <span *ngIf="hasImageSignature()" translate>เซ็นลายเซ็นใหม่</span>
                 </a>
               </div>
             </div>

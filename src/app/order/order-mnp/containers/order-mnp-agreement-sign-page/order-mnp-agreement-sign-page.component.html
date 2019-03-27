@@ -26,8 +26,8 @@
             </div>
             <div class="card-footer text-center">
               <a href="#" (click)="$event.preventDefault(); onSigned()" class="text-pink">
-                <span *ngIf="!transaction?.data?.customer?.imageSignature">เซ็นลายเซ็น</span>
-                <span *ngIf="transaction?.data?.customer?.imageSignature">แก้ไขลายเซ็น</span>
+                <span *ngIf="!transaction?.data?.customer?.imageSignature" translate>เซ็นลายเซ็น</span>
+                <span *ngIf="transaction?.data?.customer?.imageSignature" translate>แก้ไขลายเซ็น</span>
               </a> 
             </div>
           </div>
