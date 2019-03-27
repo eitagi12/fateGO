@@ -119,7 +119,7 @@ export class CreateDeviceOrderService {
       locationSource: this.user.locationCode || '',
       locationReceipt: customer.selectedLocation.locationCode || '',
       productType: trade.productType || '',
-      productSubType: trade.productSubtype || '',
+      productSubType: trade.productSubType || '',
       brand: productDetail.brand,
       model: productDetail.model,
       color: productDetail.colorName,
