@@ -344,23 +344,27 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
 
   onReadPassport(): void {
     this.readPassportSubscription = this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
+      let validateCustomer: any;
+      if (environment.name === 'SIT' || environment.name === 'PROD') {
+        validateCustomer = readPassport.profile && readPassport.profile.idCardNo && readPassport.profile.issuingCountry !== 'THA';
+      } else {
+        validateCustomer = readPassport.profile && readPassport.profile.idCardNo;
+      }
       if (readPassport.error) {
         this.alertService.error(this.translation.instant(this.ERR_MASSEAGE));
         return;
-      } else if (readPassport.profile && readPassport.profile.idCardNo) {
+      } else if (validateCustomer) {
         this.pageLoadingService.openLoading();
         return this.http.get('/api/customerportal/validate-customer-new-register', {
           params: {
             identity: readPassport.profile.idCardNo,
             idCardType: readPassport.profile.idCardType
           }
-          // catch ไว้ก่อน เดี๋ยวมาทำต่อ
-        }).toPromise().catch(() => {
-          return {};
-        })
+        }).toPromise()
           .then((resp: any) => {
             const data = resp.data || {};
             // readPassport NewCa จะไม่ได้ address
+            console.log('data', data);
             return {
               caNumber: data.caNumber,
               mainMobile: data.mainMobile,
@@ -433,6 +437,9 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
       } else {
         if (readPassport.eventName && readPassport.eventName === 'OnScanDocError') {
           this.alertService.error(this.translation.instant(this.ERR_MASSEAGE));
+        }
+        if (readPassport.profile.issuingCountry === 'THA') {
+          this.alertService.error('ไม่สามารถทำรายการด้วยหนังสือเดินทางประเทศไทย');
         }
       }
     });
