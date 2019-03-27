@@ -101,7 +101,7 @@ export class DepositPaymentSummaryPageComponent implements OnInit, OnDestroy {
         this.pageLoadingService.closeLoading();
         this.router.navigate([DEPOSIT_QUEUE_PAGE]);
         } else {
-          this.alertService.error(shopCheckSeller.data.message);
+          this.alertService.error(shopCheckSeller.data.message.replace('<br/> ', ' '));
         }
       }).catch((error: any) => {
         this.pageLoadingService.closeLoading();
