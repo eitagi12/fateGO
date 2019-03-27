@@ -86,8 +86,8 @@ export class CreateDeviceOrderService {
             if (response.data.resultCode === 'S') {
               resolve(response);
             } else {
-              switch (response.resultMessage) {
-                case 'QueueNo is duplicated':
+              switch (response.data.resultCode) {
+                case 'F':
                   reject('เลขที่คิวซ้ำ กรุณาระบุใหม่');
                   break;
                 default:
