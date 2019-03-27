@@ -1,13 +1,20 @@
 <div class="mc-flex">
-  <mc-header title="รายการสินค้า"></mc-header>
+  <mc-header title="รายการสินค้า">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
   <div class="mc-flex-wrap deposit-queue-background">
     <div class="my-3">
       <div class="container-fluid">
         <div class="container pt-3">
           <form [formGroup]="queueFrom">
             <div class="mt-5 form-group">
-              <h5 class="text-center font-bold">กรุณารับบัตรคิว แล้วระบุหมายเลขคิว</h5>
-              <h5 class="text-center font-bold">ในการชำระสินค้าของท่าน ด้านล่างนี้</h5>
+              <h5 class="text-center font-bold">กรุณารับคิว แล้วระบุหมายเลขคิว</h5>
+              <h5 class="text-center font-bold">ในการชำระค่ามัดจำสินค้าของท่าน ด้านล่างนี้</h5>
               <input class="form-control text-center mb-3" id="queue" maxlength="4" autofocus autocomplete="off"
                 formControlName="queue" placeholder="ระบุเลขที่คิว" [ngClass]="{ 'is-invalid' : queueFrom.controls.queue.invalid && queueFrom.controls.queue.touched && queueFrom.controls.queue.errors }" style="margin-top: 1em">
               <small class="invalid-feedback font-bold" *ngIf="queueFrom.controls.queue.touched && queueFrom.controls.queue.errors">
