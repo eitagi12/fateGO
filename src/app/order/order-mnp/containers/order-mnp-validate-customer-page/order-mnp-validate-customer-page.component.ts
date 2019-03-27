@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
-import { PageLoadingService, HomeService } from 'mychannel-shared-libs';
+import { PageLoadingService, HomeService, OnscreenKeyboardService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 import {
@@ -21,6 +21,7 @@ export class OrderMnpValidateCustomerPageComponent implements OnInit, OnDestroy 
   transaction: Transaction;
   identityValid: boolean = false;
   identity: string;
+  progressReadCard: number;
 
   constructor(
     private router: Router,
@@ -28,6 +29,7 @@ export class OrderMnpValidateCustomerPageComponent implements OnInit, OnDestroy 
     private transactionService: TransactionService,
     private http: HttpClient,
     private homeService: HomeService,
+    private onscreenKeyboardService: OnscreenKeyboardService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -42,6 +44,18 @@ export class OrderMnpValidateCustomerPageComponent implements OnInit, OnDestroy 
 
   onCompleted(identity: string): void {
     this.identity = identity;
+  }
+
+  onProgress(progress: number): void {
+    this.progressReadCard = progress;
+  }
+
+  progressDoing(): boolean {
+    return this.progressReadCard > 0 &&  this.progressReadCard < 100 ? true : false;
+  }
+
+  isRunOnKiosk(): boolean {
+    return this.onscreenKeyboardService.checkRunOnKiosk();
   }
 
   onReadCard(): void {

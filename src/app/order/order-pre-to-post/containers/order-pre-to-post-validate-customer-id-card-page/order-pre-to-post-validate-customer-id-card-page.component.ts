@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, ReadCardProfile, PageLoadingService, ApiRequestService, User, AlertService, ChannelType, TokenService, Utils, ValidateCustomerIdCardComponent, KioskControls } from 'mychannel-shared-libs';
+import { HomeService, ReadCardProfile, PageLoadingService, ApiRequestService, User, AlertService, ChannelType, TokenService, Utils, ValidateCustomerIdCardComponent, KioskControls, OnscreenKeyboardService } from 'mychannel-shared-libs';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import {
   ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE,
@@ -22,6 +22,7 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
   profile: ReadCardProfile;
   zipcode: string;
   readCardValid: boolean;
+  progressReadCard: number;
 
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
@@ -36,6 +37,7 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
     private pageLoadingService: PageLoadingService,
     private apiRequestService: ApiRequestService,
     private utils: Utils,
+    private onscreenKeyboardService: OnscreenKeyboardService
   ) {
     this.homeService.callback = () => {
       if (this.validateCustomerIdcard.koiskApiFn) {
@@ -68,6 +70,18 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
     this.profile = profile;
     // auto next
     this.onNext();
+  }
+
+  onProgress(progress: number): void {
+    this.progressReadCard = progress;
+  }
+
+  progressDoing(): boolean {
+    return this.progressReadCard > 0 &&  this.progressReadCard < 100 ? true : false;
+  }
+
+  isRunOnKiosk(): boolean {
+    return this.onscreenKeyboardService.checkRunOnKiosk();
   }
 
   onBack(): void {
