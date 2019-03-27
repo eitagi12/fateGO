@@ -28,9 +28,6 @@ export class AddToCartService {
         case 'MC002': // Pre to Post
         case 'MC003': // MNP
         case 'MC004': // Existing
-        case 'MC005': // Device Only
-          nextUrl = ROUTE_DEVICE_ONLY_AIS_SELECT_PAYMENT_AND_RECEIPT_INFORMATION_PAGE;
-          break;
         default:
           return reject('My Channel flow not implemented.');
       }

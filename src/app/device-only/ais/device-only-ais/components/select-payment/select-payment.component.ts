@@ -126,7 +126,6 @@ export class SelectPaymentComponent implements OnInit {
 
   }
   groupPrivilegeTradeBankByAbb(banks: PaymentDetailBank[]): PaymentDetailBank[] {
-
     const newPrivilegTradeBankByAbbs = new Array<PaymentDetailBank>();
     const grouped = this.groupBy(banks, (bank: PaymentDetailBank) => bank.abb);
     const groupedKeys = Array.from(grouped.keys());

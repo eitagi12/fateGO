@@ -5,7 +5,7 @@
       <div class="row pl-3 pr-3">
         <div class="col-8 col-sm-10 text-left text-brown">
           <p class="text-light-green" id="text-campaign-name">ซื้อเครื่องเปล่า</p>
-          <div id="text-brand-model"> {{priceOption?.productDetail?.name}} สี {{priceOption?.productStock?.color}} 
+          <div id="text-brand-model"> {{priceOption?.productDetail?.name}} สี {{priceOption?.productStock?.color}}
             <!-- <span>BLACK</span> 1 เครื่อง -->
           </div>
         </div>
@@ -23,90 +23,92 @@
 
   <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
 
-  <div class="card mb-3">
-    <div class="card-header bg-orange text-white rounded-top p-3" *ngIf="paymentDetail?.title">
-      {{paymentDetail?.title}}
-    </div>
-    <div class="card-header text-light-green bg-transparent">
-      <div class="row">
-        <div class="col-12" *ngIf="paymentDetail?.header">
-          {{paymentDetail?.header}} สี {{priceOption?.productStock?.color}} 
-          <span class="pull-right">฿{{ paymentDetail?.price | number }}</span> 
-        </div>
-        <div class="col-12" *ngIf="paymentDetail?.headerAdvancePay">
-          {{paymentDetail?.headerAdvancePay}}
-          <span class="pull-right">฿{{ paymentDetail?.priceAdvancePay | number }}</span>
+  <div class="container-fluid">
+    <div class="card mb-3">
+      <div class="card-header bg-orange text-white rounded-top p-3" *ngIf="paymentDetail?.title">
+        {{paymentDetail?.title}}
+      </div>
+      <div class="card-header text-light-green bg-transparent">
+        <div class="row">
+          <div class="col-12" *ngIf="paymentDetail?.header">
+            {{paymentDetail?.header}} สี {{priceOption?.productStock?.color}}
+            <span class="pull-right">฿{{ paymentDetail?.price | number }}</span>
+          </div>
+          <div class="col-12" *ngIf="paymentDetail?.headerAdvancePay">
+            {{paymentDetail?.headerAdvancePay}}
+            <span class="pull-right">฿{{ paymentDetail?.priceAdvancePay | number }}</span>
+          </div>
         </div>
       </div>
-    </div>
 
-    <div class="card-body">
-      <form [formGroup]="paymentForm">
-        <div class="form-group row">
-          <div class="col-12 col-sm-5">
-            <input class="form-check-input" type="radio" id="payment-debit-{{formID}}" value="debit"
-              formControlName="paymentType">
-            <label class="form-check-label" for="payment-debit-{{formID}}">
-              {{ 'ชำระเงินด้วยเงินสด' }}
-            </label>
-          </div>
-          <div class="col-12 col-sm-7">
-            <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{ 'เต็มจำนวน' }}">
-          </div>
-        </div>
-        <hr>
-        <div class="form-group row">
-          <div class="col-12 col-sm-5">
-            <input class="form-check-input" type="radio" id="payment-credit-{{formID}}" value="credit"
-              formControlName="paymentType">
-            <label class="form-check-label" for="payment-credit-{{formID}}">
-              {{ 'ชำระเงินด้วยบัตรเครดิต' }}
-            </label>
-          </div>
-          <div class="col-12 col-sm-7">
-            <select id="inputState" class="form-control" disabled>
-              <option [selected]="!paymentDetailOption?.isInstallment">{{ 'เต็มจำนวน' }}</option>
-              <option [selected]="paymentDetailOption?.isInstallment">{{ 'ผ่อนชำระ' }}</option>
-            </select>
-          </div>
-        </div>
-
-
-
-        <div class="form-group row" *ngIf="paymentForm.controls['paymentType'].value === 'credit'">
-          <div class="col-12 text-left mb-3">
-            <span class="text-pink">{{ '*กรุณาเลือกธนาคาร' }}</span>
-          </div>
-          <div class="col-4 col-sm-2 mb-3" *ngFor="let bank of paymentDetail?.banks; let i = index"
-            (click)="onSelectBank(bank)">
-            <div class="bank-lazy-load-image" [ngClass]="{'active': bank?.abb === selectPaymentDetail.bank?.abb}">
-              <mc-lazy-load-image [src]="bank?.imageUrl"></mc-lazy-load-image>
+      <div class="card-body">
+        <form [formGroup]="paymentForm">
+          <div class="form-group row">
+            <div class="col-12 col-sm-5">
+              <input class="form-check-input" type="radio" id="payment-debit-{{formID}}" value="debit"
+                formControlName="paymentType">
+              <label class="form-check-label" for="payment-debit-{{formID}}">
+                {{ 'ชำระเงินด้วยเงินสด' }}
+              </label>
+            </div>
+            <div class="col-12 col-sm-7">
+              <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{ 'เต็มจำนวน' }}">
             </div>
           </div>
-          <div class="row">
-            <div *ngIf="paymentDetail?.specialAmountPercent">
-              {{ 'โปรโมชั่นพิเศษลดเพิ่ม' }} {{ paymentDetail?.specialAmountPercent }} %
+          <hr>
+          <div class="form-group row">
+            <div class="col-12 col-sm-5">
+              <input class="form-check-input" type="radio" id="payment-credit-{{formID}}" value="credit"
+                formControlName="paymentType">
+              <label class="form-check-label" for="payment-credit-{{formID}}">
+                {{ 'ชำระเงินด้วยบัตรเครดิต' }}
+              </label>
             </div>
-            <div *ngIf="paymentDetail?.specialAmountBaht">
-              {{ 'โปรโมชั่นพิเศษลดเพิ่ม' }} {{ paymentDetail?.specialAmountBaht }} {{ 'บาท' }}
+            <div class="col-12 col-sm-7">
+              <select id="inputState" class="form-control" disabled>
+                <option [selected]="!paymentDetailOption?.isInstallment">{{ 'เต็มจำนวน' }}</option>
+                <option [selected]="paymentDetailOption?.isInstallment">{{ 'ผ่อนชำระ' }}</option>
+              </select>
             </div>
           </div>
-        </div>
-        <div class="form-group row"
-          *ngIf="paymentDetailOption?.isInstallment && paymentDetail?.installments && paymentForm.controls['paymentType'].value === 'credit'">
-          <div class="col-12 text-center mb-3">
-            <span class="text-pink"> {{ '*กรุณาเลือกรูปแบบการชำระเงิน' }}</span>
+
+
+
+          <div class="form-group row" *ngIf="paymentForm.controls['paymentType'].value === 'credit'">
+            <div class="col-12 text-left mb-3">
+              <span class="text-pink">{{ '*กรุณาเลือกธนาคาร' }}</span>
+            </div>
+            <div class="col-4 col-sm-2 mb-3" *ngFor="let bank of paymentDetail?.banks; let i = index"
+              (click)="onSelectBank(bank)">
+              <div class="bank-lazy-load-image" [ngClass]="{'active': bank?.abb === selectPaymentDetail.bank?.abb}">
+                <mc-lazy-load-image [src]="bank?.imageUrl"></mc-lazy-load-image>
+              </div>
+            </div>
+            <div class="row">
+              <div *ngIf="paymentDetail?.specialAmountPercent">
+                {{ 'โปรโมชั่นพิเศษลดเพิ่ม' }} {{ paymentDetail?.specialAmountPercent }} %
+              </div>
+              <div *ngIf="paymentDetail?.specialAmountBaht">
+                {{ 'โปรโมชั่นพิเศษลดเพิ่ม' }} {{ paymentDetail?.specialAmountBaht }} {{ 'บาท' }}
+              </div>
+            </div>
           </div>
-          <div class="col-12 col-sm-4" *ngFor="let installment of paymentDetail?.installments; let i = index">
-            <input class="form-check-input" type="radio" name="installment" id="installment-month-{{ i }}"
-              value="installment" (click)="onSelectInstallment(installment)"
-              [checked]="installment?.installmentMonth === 'selectPaymentDetail?.bank?.installments[0]?.installmentMonth' && installment?.installmentPercentage === 'selectPaymentDetail?.bank?.installments[0]?.installmentPercentage'">
-            <label class="form-check-label" for="installment-month-{{ i }}">
-              {{ installment?.installmentPercentage }}% {{ installment?.installmentMonth }} {{ 'เดือน' }}
-            </label>
+          <div class="form-group row"
+            *ngIf="paymentDetailOption?.isInstallment && paymentDetail?.installments && paymentForm.controls['paymentType'].value === 'credit'">
+            <div class="col-12 text-center mb-3">
+              <span class="text-pink"> {{ '*กรุณาเลือกรูปแบบการชำระเงิน' }}</span>
+            </div>
+            <div class="col-12 col-sm-4" *ngFor="let installment of paymentDetail?.installments; let i = index">
+              <input class="form-check-input" type="radio" name="installment" id="installment-month-{{ i }}"
+                value="installment" (click)="onSelectInstallment(installment)"
+                [checked]="installment?.installmentMonth === 'selectPaymentDetail?.bank?.installments[0]?.installmentMonth' && installment?.installmentPercentage === 'selectPaymentDetail?.bank?.installments[0]?.installmentPercentage'">
+              <label class="form-check-label" for="installment-month-{{ i }}">
+                {{ installment?.installmentPercentage }}% {{ installment?.installmentMonth }} {{ 'เดือน' }}
+              </label>
+            </div>
           </div>
-        </div>
-      </form>
+        </form>
+      </div>
     </div>
   </div>
 </div>
