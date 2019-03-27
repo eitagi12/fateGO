@@ -44,7 +44,7 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
       mobileNo: customer.mainMobile,
       mainPackage: mainPackage['title'],
       onTopPackage: '',
-      packageDetail: mainPackage['detailTH']
+      packageDetail: mainPackage['detailTH'],
     };
   }
 

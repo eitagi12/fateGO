@@ -38,9 +38,8 @@ export class OrderNewRegisterResultPageComponent implements OnInit {
       } else {
         this.isSuccess = false;
       }
-      this.pageLoadingService.closeLoading();
-    }).catch(() => {
-      this.isSuccess = false;
+
+    }).then(() => {
       this.pageLoadingService.closeLoading();
     });
   }
@@ -48,5 +47,4 @@ export class OrderNewRegisterResultPageComponent implements OnInit {
   onMainMenu(): void {
     this.homeService.goToHome();
   }
-
 }

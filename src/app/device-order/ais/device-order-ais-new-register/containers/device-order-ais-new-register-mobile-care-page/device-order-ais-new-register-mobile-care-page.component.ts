@@ -63,9 +63,9 @@ export class DeviceOrderAisNewRegisterMobileCarePageComponent implements OnInit,
   }
 
   callService(): void {
-    this.mobileCare = {
-      campaignPrice: +this.priceOption.trade.normalPrice
-    } as any;
+    // this.mobileCare = {
+    //   campaignPrice: +this.priceOption.trade.normalPrice
+    // };
 
     this.pageLoadingService.openLoading();
 

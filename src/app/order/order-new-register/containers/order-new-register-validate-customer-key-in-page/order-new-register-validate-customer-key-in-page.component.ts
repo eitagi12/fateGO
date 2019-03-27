@@ -7,6 +7,7 @@ import {
   ROUTE_ORDER_NEW_REGISTER_ID_CARD_CAPTURE_PAGE,
   ROUTE_ORDER_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE
 } from 'src/app/order/order-new-register/constants/route-path.constant';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-order-new-register-validate-customer-key-in-page',
@@ -29,6 +30,7 @@ export class OrderNewRegisterValidateCustomerKeyInPageComponent implements OnIni
     private customerService: CustomerService,
     private alertService: AlertService,
     private utils: Utils,
+    private translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -97,11 +99,11 @@ export class OrderNewRegisterValidateCustomerKeyInPageComponent implements OnIni
     const idCardType = this.transaction.data.customer.idCardType;
 
     if (this.utils.isLowerAge17Year(birthdate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
+      this.alertService.error(this.translation.instant('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี'));
       return false;
     }
     if (this.utils.isIdCardExpiredDate(expireDate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ').then(() => {
+      this.alertService.error(this.translation.instant('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ')).then(() => {
         this.onBack();
       });
       return false;

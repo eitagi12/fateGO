@@ -9,6 +9,7 @@ import {
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-order-new-register-face-confirm-page',
@@ -28,7 +29,7 @@ export class OrderNewRegisterFaceConfirmPageComponent implements OnInit {
     private http: HttpClient,
     private pageLoadingService: PageLoadingService,
     private alertService: AlertService,
-
+    private translation: TranslateService
   ) {
   }
 
@@ -63,7 +64,7 @@ export class OrderNewRegisterFaceConfirmPageComponent implements OnInit {
         if (resp && resp.data) {
           this.router.navigate([ROUTE_ORDER_NEW_REGISTER_SELECT_NUMBER_PAGE]);
         } else {
-          return this.alertService.error('ชื่อ/รหัสผ่าน ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง');
+          return this.alertService.error(this.translation.instant('ชื่อ/รหัสผ่าน ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง'));
         }
       })
       .then(() => {

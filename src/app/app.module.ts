@@ -4,12 +4,13 @@ import {
   HammerGestureConfig
 } from '@angular/platform-browser';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HttpClient } from '@angular/common/http';
 import { JwtModule, JWT_OPTIONS } from '@auth0/angular-jwt';
 import {
   jwtOptionsFactory,
   ErrorsHandler,
   MyChannelSharedLibsModule,
+  I18nService,
 } from 'mychannel-shared-libs';
 import { AppRoutingModule } from './app-routing.module';
 /* Components */
@@ -18,6 +19,7 @@ import { AppComponent } from './app.component';
 import { ErrorPageComponent } from './containers/error-page/error-page.component';
 import { CookiesStorageService } from 'ngx-store';
 import { SharedModule } from './shared/shared.module';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -27,6 +29,7 @@ import { SharedModule } from './shared/shared.module';
   imports: [
     CommonModule,
     BrowserModule,
+    TranslateModule.forRoot(),
     HttpClientModule, // ต้อง import แค่ครั้งเดียว
     MyChannelSharedLibsModule.forRoot({
       production: environment.production,
@@ -42,12 +45,14 @@ import { SharedModule } from './shared/shared.module';
     }),
     SharedModule,
     AppRoutingModule,
+    TranslateModule.forRoot()
   ],
   providers: [
     {
       provide: ErrorHandler,
       useClass: ErrorsHandler
-    }
+    },
+    I18nService
   ],
   bootstrap: [AppComponent]
 })
