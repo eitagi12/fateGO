@@ -9,6 +9,7 @@ import {
 } from 'src/app/device-order/ais/device-order-ais-new-register/constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-device-order-ais-new-register-verify-instant-sim-page',
@@ -29,7 +30,8 @@ export class DeviceOrderAisNewRegisterVerifyInstantSimPageComponent implements O
     private alertService: AlertService,
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
-    private http: HttpClient
+    private http: HttpClient,
+    private translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -46,11 +48,13 @@ export class DeviceOrderAisNewRegisterVerifyInstantSimPageComponent implements O
 
         if (simSerial.mobileStatus === 'Registered') {
           this.simSerialValid = false;
-          this.alertService.error(`หมายเลข ${serial} มีผู้ใช้งานแล้ว กรุณาเลือกหมายเลขใหม่`);
+          const noStatus = this.translation.instant('หมายเลข');
+          this.alertService.error( noStatus + serial + this.translation.instant('มีผู้ใช้งานแล้ว กรุณาเลือกหมายเลขใหม่'));
           return;
         } else if (simSerial.mobileStatus !== 'Registered' && simSerial.mobileStatus !== 'Reserved') {
           this.simSerialValid = false;
-          this.alertService.error(`สถานะหมายเลข ${serial} ไม่พร้อมทำรายการ กรุณาเลือกหมายเลขใหม่`);
+          const noStatus = this.translation.instant('หมายเลข');
+          this.alertService.error(noStatus + serial + this.translation.instant('ไม่พร้อมทำรายการ กรุณาเลือกหมายเลขใหม่'));
           return;
         }
         this.simSerialValid = true;

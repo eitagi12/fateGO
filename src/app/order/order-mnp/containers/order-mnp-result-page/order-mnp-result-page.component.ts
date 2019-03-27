@@ -16,6 +16,7 @@ export class OrderMnpResultPageComponent implements OnInit {
   wizards: string[] = WIZARD_ORDER_MNP;
   transaction: Transaction;
   isSuccess: boolean;
+  createTransactionService: Promise<any>;
 
   constructor(private router: Router,
     private homeService: HomeService,
@@ -28,24 +29,24 @@ export class OrderMnpResultPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.pageLoadingService.openLoading();
-    this.createMnpService.createMnp(this.transaction).then((resp: any) => {
-      const data = resp.data || {};
-      this.transaction.data.order = {
-        orderNo: data.orderNo,
-        orderDate: data.orderDate
-      };
-      this.transactionService.update(this.transaction);
-      if (this.transaction.data.order.orderNo) {
-        this.isSuccess = true;
-      } else {
+    this.createTransactionService = this.createMnpService.createMnp(this.transaction)
+      .then((resp: any) => {
+        const data = resp.data || {};
+        this.transaction.data.order = {
+          orderNo: data.orderNo,
+          orderDate: data.orderDate
+        };
+        this.transactionService.update(this.transaction);
+        if (this.transaction.data.order.orderNo) {
+          this.isSuccess = true;
+        } else {
+          this.isSuccess = false;
+        }
+        this.pageLoadingService.closeLoading();
+      }).catch(() => {
         this.isSuccess = false;
-      }
-      this.pageLoadingService.closeLoading();
-    }).catch(() => {
-      this.isSuccess = false;
-      this.pageLoadingService.closeLoading();
-    });
-    this.isSuccess = false;
+        this.pageLoadingService.closeLoading();
+      });
   }
 
   onMainMenu(): void {

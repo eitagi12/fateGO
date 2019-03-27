@@ -299,14 +299,14 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             return previousValue;
         }, {});
 
-        const installments: CampaignSliderInstallment[] = [];
+        const installments = [];
         Object.keys(installmentGroups).forEach((key: string) => {
             const keys: string[] = key.split('-');
-            installments.push({
-                percentage: +keys[0] || 0,
-                month: +keys[1] || 0,
-                banks: installmentGroups[key]
-            });
+            // installments.push({
+            //     percentage: +keys[0] || 0,
+            //     month: +keys[1] || 0,
+            //     banks: installmentGroups[key]
+            // });
         });
 
         // จ่ายน้อยผ่อนนาน

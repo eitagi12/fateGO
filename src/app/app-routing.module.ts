@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AuthGuard } from 'mychannel-shared-libs';
+import { AuthGuard, I18nService } from 'mychannel-shared-libs';
 import { ErrorPageComponent } from './containers/error-page/error-page.component';
 
 const routes: Routes = [
@@ -10,7 +10,10 @@ const routes: Routes = [
   {
     path: 'dashboard',
     loadChildren: 'src/app/dashboard/dashboard.module#DashboardModule',
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+    resolve: {
+      i18n: I18nService
+    }
   },
   {
     path: 'buy-product',
@@ -30,7 +33,10 @@ const routes: Routes = [
   {
     path: 'order',
     loadChildren: 'src/app/order/order.module#OrderModule',
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+    resolve: {
+      i18n: I18nService
+    }
   },
   {
     path: 'error',

@@ -106,21 +106,6 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
         }).toPromise()
           .then((resp: any) => {
             const data = resp.data || {};
-            this.billDeliveryAddress = {
-              homeNo: data.homeNo || '',
-              moo: data.moo || '',
-              mooBan: data.mooBan || '',
-              room: data.room || '',
-              floor: data.floor || '',
-              buildingName: data.buildingName || '',
-              soi: data.soi || '',
-              street: data.street || '',
-              province: data.province || '',
-              amphur: data.amphur || '',
-              tumbol: data.tumbol || '',
-              zipCode: data.zipCode || '',
-            };
-
             return {
               caNumber: data.caNumber,
               mainMobile: data.mainMobile,
@@ -154,16 +139,13 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
       })
       .then((billingInformation: any) => {
         this.transaction.data.billingInformation = billingInformation;
-        this.transaction.data.billingInformation.billDeliveryAddress = this.billDeliveryAddress;
         if (this.checkBusinessLogic()) {
           this.router.navigate([ROUTE_ORDER_MNP_CUSTOMER_INFO_PAGE]);
         }
       })
       .catch((resp: any) => {
         const error = resp.error || [];
-        console.log(resp);
-
-        if (error && error.errors.length > 0) {
+        if (error && error.errors && error.errors.length > 0) {
           this.alertService.notify({
             type: 'error',
             html: error.errors.map((err) => {
@@ -172,8 +154,10 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
           }).then(() => {
             this.onBack();
           });
-        } else {
+        } else if (error.resultDescription) {
           this.alertService.error(error.resultDescription);
+        } else {
+          this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
         }
       });
   }
