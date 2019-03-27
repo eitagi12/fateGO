@@ -1,14 +1,12 @@
 import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
-import { HttpClient, HttpHandler } from '@angular/common/http';
 import { By } from '@angular/platform-browser';
 
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { DeviceOnlyAisQrCodeSummarayPageComponent } from './device-only-ais-qr-code-summaray-page.component';
-import { CookiesStorageService } from 'ngx-store';
-import { JwtHelperService } from '@auth0/angular-jwt/src/jwthelper.service';
 import { ROUTE_DEVICE_ONLY_AIS_QR_CODE_GENERATE_PAGE, ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_QR_CODE_PAGE } from '../../constants/route-path.constant';
+import { HomeService } from 'mychannel-shared-libs';
 
 @Pipe({name: 'mobileNo'})
 class MockMobileNoPipe implements PipeTransform {
@@ -32,13 +30,10 @@ describe('DeviceOnlyAisQrCodeSummarayPageComponent', () => {
         MockMobileNoPipe
       ],
       providers: [
-        CookiesStorageService,
         {
-          provide: JwtHelperService,
+          provide: HomeService,
           useValue: {}
-        },
-        HttpClient,
-        HttpHandler
+        }
       ]
     })
     .compileComponents();
