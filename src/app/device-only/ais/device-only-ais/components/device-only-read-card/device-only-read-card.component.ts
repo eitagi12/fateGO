@@ -29,7 +29,7 @@ export class DeviceOnlyReadCardComponent implements OnInit {
   public infoBySmartCard: Object ;
   public nameTextBySmartCard: string;
   public addressTextBySmartCard: string;
-  public listBillingAccount: Array<Object>;
+  public listBillingAccount: Array<any>;
 
   constructor(
     private bsModalService: BsModalService,
@@ -183,7 +183,9 @@ export class DeviceOnlyReadCardComponent implements OnInit {
           this.canReadSmartCard = true;
           this.pageLoadingService.closeLoading();
       })
-      .catch((err) => {});
+      .catch(() => {
+        this.pageLoadingService.closeLoading();
+      });
     }
   }
 }

@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors  
 import { debounceTime } from 'rxjs/operators';
 import { BillingAddressService } from '../../services/billing-address.service';
 import { HttpClient } from '@angular/common/http';
-import { AlertService, REGEX_MOBILE, ReceiptInfo } from 'mychannel-shared-libs';
+import { AlertService, REGEX_MOBILE, ReceiptInfo, PageLoadingService } from 'mychannel-shared-libs';
 import { TokenService } from 'mychannel-shared-libs';
 import { TransactionAction, Customer, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
 import { CustomerInformationService } from '../../services/customer-information.service';
@@ -45,7 +45,9 @@ export class ReceiptInformationComponent implements OnInit {
     private fb: FormBuilder,
     private billingAddress: BillingAddressService,
     private customerInfoService: CustomerInformationService,
-    private alertService: AlertService) {
+    private alertService: AlertService,
+    private pageLoadingService: PageLoadingService
+    ) {
     this.billingAddress.getTitleName().then(this.responseTitleNames());
     this.billingAddress.getProvinces().then(this.responseProvinces());
     this.billingAddress.getZipCodes().then(this.responseZipCodes());
@@ -134,6 +136,7 @@ export class ReceiptInformationComponent implements OnInit {
   }
   searchCustomerInfo(): void {
     if (this.searchByMobileNoForm.valid) {
+      this.pageLoadingService.openLoading();
       const mobileNo = this.searchByMobileNoForm.value.mobileNo;
       this.customerInfoService.getBillingByMobileNo(mobileNo)
         .then((res) => {
@@ -142,6 +145,7 @@ export class ReceiptInformationComponent implements OnInit {
               customer: this.customerInfoService.mapAttributeFromGetBill(res.data.billingAddress),
               action: TransactionAction.KEY_IN
             });
+            this.pageLoadingService.closeLoading();
           } else {
             this.alertService.notify({
               type: 'error',
@@ -152,6 +156,7 @@ export class ReceiptInformationComponent implements OnInit {
           }
       })
       .catch((err) => {
+        this.pageLoadingService.closeLoading();
         this.alertService.notify({
           type: 'error',
           confirmButtonText: 'OK',
