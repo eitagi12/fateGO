@@ -1,0 +1,88 @@
+.icon-mobile-care,
+.icon-mobile-care-active {
+    width: 100px;
+}
+
+.nav-item {
+    margin: 0 2px;
+}
+
+.nav-link {
+    background-color: #eff0f1;
+    color: #999999;
+
+    .icon-mobile-care-active {
+        display: none;
+    }
+    
+    &.active {
+        background-color: #ff807d;
+        .icon-mobile-care {
+            display: none;
+        }
+
+        .icon-mobile-care-active {
+            display: inline-block;
+        }
+    }
+}
+
+:host /deep/ .nav-tabs {
+    border: none;
+    margin-bottom: 4px;
+    padding: 0 15px;
+
+    .nav-item {
+        color: #614e47;
+        height: auto;
+        border-bottom: 0px;
+
+        &:not(:last-child) {
+            border-right: 1px solid transparent;
+        }
+
+        &.active {            
+            border-bottom: 0px;
+        }
+
+        .nav-link {
+            color: inherit;
+            padding: 0px;
+            border: 0px;
+
+            &.active,
+            &:hover {
+                border-color: transparent;        
+                &:hover {
+                    border-color: transparent;
+                }
+            }
+
+            &.active {
+                .promotion { 
+                    border-radius: 5px;
+                    background-image: url(../../../../../../assets/images/promotions/final-banner-mobile-care.png);
+                    background-color: transparent;
+                    background-position: center;
+                }
+            }
+        }
+    }
+}
+
+.promotion {
+    background-size: 100% 100%;
+    min-height: 157px;
+    background-position: center;
+    line-height: 70px;        
+    display: block;
+    height: 100px;
+}
+
+.btn-not-buy-mobile-care {
+    width: 100px;
+}
+
+.mobile-care-top {
+    border-top: 2px solid rgba(0, 0, 0, 0.125);
+}
