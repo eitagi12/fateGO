@@ -118,20 +118,20 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
               const maxinumPackagePrice = +campaign.maxinumPackagePrice;
 
               // reference object
-              promotion.items = data.filter((_promotion: any) => {
-                return _promotion.customAttributes.chargeType === 'Post-paid' &&
-                  minimumPackagePrice <= +_promotion.customAttributes.priceExclVat &&
-                  (maxinumPackagePrice > 0 ? maxinumPackagePrice >= +_promotion.customAttributes.priceExclVat : true);
+              promotion.items = data.filter((promotions: any) => {
+                return promotions.customAttributes.chargeType === 'Post-paid' &&
+                  minimumPackagePrice <= +promotions.customAttributes.priceExclVat &&
+                  (maxinumPackagePrice > 0 ? maxinumPackagePrice >= +promotions.customAttributes.priceExclVat : true);
               })
                 .sort((a, b) => {
                   return +a.customAttributes.priceInclVat !== +b.customAttributes.priceInclVat ?
                     +a.customAttributes.priceInclVat < +b.customAttributes.priceInclVat ? -1 : 1 : 0;
-                }).map((_promotion: any) => {
+                }).map((promotionmap: any) => {
                   return { // item
-                    id: _promotion.id,
-                    title: _promotion.title,
-                    detail: _promotion.detailTH,
-                    value: _promotion
+                    id: promotionmap.id,
+                    title: promotionmap.title,
+                    detail: promotionmap.detailTH,
+                    value: promotionmap
                   };
                 });
             });

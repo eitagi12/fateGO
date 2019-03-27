@@ -79,7 +79,7 @@ export class PromotionShelveService {
                     +a.customAttributes.priceInclVat < +b.customAttributes.priceInclVat ? -1 : 1 : 0;
                 }).map((promotionData: any) => {
                   return { // item
-                    id: promotionData.id,
+                    id: promotionData.id + Math.floor(Math.random() * 100) + 1,
                     title: promotionData.title,
                     detail: promotionData.detailTH,
                     value: promotionData

@@ -20,7 +20,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 })
 export class DeviceOrderAisPreToPostMergeBillingPageComponent implements OnInit, OnDestroy {
 
-  readonly REGEX_NET_EXTREME: RegExp = /[Nn]et[Ee]xtreme/;
+  readonly REGEX_NET_EXTREME: any = /[Nn]et[Ee]xtreme/;
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   transaction: Transaction;

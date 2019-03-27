@@ -15,7 +15,7 @@ export class PrivilegeToTradeSliderPipe implements PipeTransform {
 
       const advancePay = trade.advancePay || {};
       const discount = trade.discount || {};
-      const installmentFlag = advancePay.installmentFlag === 'Y';
+      const installmentFlag = advancePay.installmentFlag === 'Y' && +advancePay.amount > 0;
       const payment = (trade.payments || []).find(p => p.method !== 'PP') || {};
       const installments = PriceOptionUtils.getInstallmentsFromTrades(
         privilege.trades
@@ -24,8 +24,7 @@ export class PrivilegeToTradeSliderPipe implements PipeTransform {
 
       const slider: any = {
         freeGoods: (trade.freeGoods || []).map(freeGood => freeGood.name),
-        installments: installments,
-        installmentType: installmentFlag ? 'bath' : 'wallet',
+        installmentType: 'wallet', // 'bath',
         specialType: discount.specialType,
         specialAmount: +advancePay.amount,
         value: trade
@@ -37,6 +36,7 @@ export class PrivilegeToTradeSliderPipe implements PipeTransform {
             slider.description = 'ผ่อนชำระค่าเครื่อง';
             // ใช้คะแนนบัตรเครดิต
             slider.paymentPoint = !!(trade.payments || []).find(p => p.method === 'PP');
+            slider.installments = installments;
           } else {
             slider.description = 'ชำระเต็มจำนวน';
           }

@@ -91,11 +91,11 @@ export class DeviceOrderAisPreToPostPaymentDetailPageComponent implements OnInit
       banks: this.groupPrivilegeTradeBankByAbb(this.priceOption.trade.banks)
     };
     if (this.transaction.data.payment) {
-      this.selectPaymentDetail = {
-        paymentType: this.transaction.data.payment.type,
-        qrCode: this.transaction.data.payment.qrCode,
-        bank: this.transaction.data.payment.bank,
-      };
+      // this.selectPaymentDetail = {
+      //   paymentType: this.transaction.data.payment.type,
+      //   qrCode: this.transaction.data.payment.qrCode,
+      //   bank: this.transaction.data.payment.bank,
+      // };
       const bank = this.paymentDetail.banks.find(b => b.abb === this.selectPaymentDetail.bank.abb);
       this.paymentDetail.installments = bank ? bank.installments : [];
     } else {
@@ -115,11 +115,11 @@ export class DeviceOrderAisPreToPostPaymentDetailPageComponent implements OnInit
       banks: this.groupPrivilegeTradeBankByAbb(this.priceOption.trade.banks)
     };
     if (this.transaction.data.advancePayment) {
-      this.selectPaymentDetailAdvancePay = {
-        paymentType: this.transaction.data.advancePayment.type,
-        qrCode: this.transaction.data.advancePayment.qrCode,
-        bank: this.transaction.data.advancePayment.bank,
-      };
+      // this.selectPaymentDetailAdvancePay = {
+      //   paymentType: this.transaction.data.advancePayment.type,
+      //   qrCode: this.transaction.data.advancePayment.qrCode,
+      //   bank: this.transaction.data.advancePayment.bank,
+      // };
       const bank = this.paymentDetailAdvancePay.banks.find(b => b.abb === this.selectPaymentDetailAdvancePay.bank.abb);
       this.paymentDetailAdvancePay.installments = bank ? bank.installments : [];
     } else {
@@ -171,23 +171,23 @@ export class DeviceOrderAisPreToPostPaymentDetailPageComponent implements OnInit
     const qrCode = this.selectPaymentDetail.qrCode;
     const bank = this.selectPaymentDetail.bank;
 
-    this.transaction.data.payment = {
-      method: this.getPaymentMethod(paymentType, qrCode),
-      type: paymentType,
-      qrCode: qrCode,
-      bank: bank
-    };
+    // this.transaction.data.payment = {
+    //   method: this.getPaymentMethod(paymentType, qrCode),
+    //   type: paymentType,
+    //   qrCode: qrCode,
+    //   bank: bank
+    // };
 
     const paymentTypeAdvancePay = this.selectPaymentDetailAdvancePay.paymentType;
     const qrCodeAdvancePay = this.selectPaymentDetailAdvancePay.qrCode;
     const bankAdvancePay = this.selectPaymentDetailAdvancePay.bank;
 
-    this.transaction.data.advancePayment = {
-      method: this.getPaymentMethod(paymentTypeAdvancePay, qrCodeAdvancePay),
-      type: paymentTypeAdvancePay,
-      qrCode: qrCodeAdvancePay,
-      bank: bankAdvancePay
-    };
+    // this.transaction.data.advancePayment = {
+    //   method: this.getPaymentMethod(paymentTypeAdvancePay, qrCodeAdvancePay),
+    //   type: paymentTypeAdvancePay,
+    //   qrCode: qrCodeAdvancePay,
+    //   bank: bankAdvancePay
+    // };
 
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CURRENT_INFO_PAGE]);
   }
@@ -204,7 +204,7 @@ export class DeviceOrderAisPreToPostPaymentDetailPageComponent implements OnInit
     this.receiptInfoValid = error;
   }
 
-  getFullAddress(customer: Customer): string {
+  getFullAddress(customer: Customer): any {
     if (!customer) {
       return '-';
     }
@@ -366,12 +366,7 @@ export class DeviceOrderAisPreToPostPaymentDetailPageComponent implements OnInit
     return '';
   }
 
-  getQRCode(): {
-    id: number;
-    name: string;
-    imageUrl: string;
-    qrType: string;
-  }[] {
+  getQRCode(): any {
     return [
       {
         id: 1,
@@ -388,8 +383,7 @@ export class DeviceOrderAisPreToPostPaymentDetailPageComponent implements OnInit
     ];
   }
 
-  groupPrivilegeTradeBankByAbb(banks: PaymentDetailBank[]): any[] {
-
+  groupPrivilegeTradeBankByAbb(banks: PaymentDetailBank[]): any {
     const newPrivilegTradeBankByAbbs = new Array<PaymentDetailBank>();
     const grouped = this.groupBy(banks, (bank: PaymentDetailBank) => bank.abb);
     const groupedKeys = Array.from(grouped.keys());

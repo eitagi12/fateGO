@@ -151,7 +151,7 @@ export class AppComponent {
     this.http.get('/api/customerportal/currentDate').toPromise()
       .then((resp: any) => {
         const TIME_DIFF_FORMAT = 'YYYY-MM-DD HH:mm:ss';
-        const localTime = Moment(Moment().format(TIME_DIFF_FORMAT));
+        const localTime: any = Moment(Moment().format(TIME_DIFF_FORMAT));
         const serverTime = Moment(Moment(resp.data).format(TIME_DIFF_FORMAT));
 
         const getClock = (ms: number) => {

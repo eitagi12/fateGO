@@ -128,7 +128,6 @@ export class OrderPreToPostOtpPageComponent implements OnInit {
   onHome(): void {
     this.homeService.goToHome();
   }
-
   getRequestUpdatePrepaidIdentata(): void {
     const customer = this.transaction.data.customer;
     const mobileNo = this.transaction.data.simCard.mobileNo;

@@ -60,7 +60,6 @@ export class CreateEapplicationService {
       || transactionType === TransactionType.ORDER_MNP) {
       data.signature = 'data:image/jpeg;base64,' + (customer.imageSignature || '');
     }
-
     if (action === TransactionAction.KEY_IN) {
       data.customerImg = 'data:image/jpeg;base64,' + customer.imageSmartCard;
     } else {

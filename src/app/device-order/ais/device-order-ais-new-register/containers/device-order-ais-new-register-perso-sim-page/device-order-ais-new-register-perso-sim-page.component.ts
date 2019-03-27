@@ -114,7 +114,7 @@ export class DeviceOrderAisNewRegisterPersoSimPageComponent implements OnInit, O
     });
   }
 
-  persoSimWebsocket(): void {
+ persoSimWebsocket(): void {
     // for pc
     this.title = 'กรุณาเสียบ Sim Card';
      this.persoSimSubscription = this.persoSimService.onPersoSim(this.persoSimConfig).subscribe((persoSim: any) => {
@@ -132,38 +132,38 @@ export class DeviceOrderAisNewRegisterPersoSimPageComponent implements OnInit, O
     });
  }
 
-  async setConfigPersoSim(): Promise<any> {
-    return this.persoSimConfig = await {
-      serviceGetPrivateKey: () => {
-        return this.http.post('/api/customerportal/newRegister/getPrivateKeyCommand', {
-          params: { }
-        }).toPromise();
-      },
-      serviceGetPersoDataCommand: (serialNo: string, indexNo: string)  => {
-        return this.http.get('/api/customerportal/newRegister/queryPersoData', {
-          params: {
-            indexNo: indexNo,
-            serialNo: serialNo,
-            mobileNo: this.transaction.data.simCard.mobileNo,
-            simService: 'Normal',
-            sourceSystem: 'MC-KIOSK'
-          }
-        }).toPromise();
-      },
-      serviceCreateOrderPersoSim: (refNo: string) => {
-        return this.http.get('/api/customerportal/newRegister/createPersoSim', {
-          params: {
-            refNo: refNo
-          }
-        }).toPromise();
-      },
-      serviceCheckOrderPersoSim: (refNo: string) => {
-        return this.http.get('/api/customerportal/newRegister/checkOrderStatus', {
-          params: {
-            refNo: refNo
-          }
-        }).toPromise();
-      }
+ async setConfigPersoSim(): Promise<any> {
+  return this.persoSimConfig = await {
+    serviceGetPrivateKey: () => {
+      return this.http.post('/api/customerportal/newRegister/getPrivateKeyCommand', {
+        params: { }
+      }).toPromise();
+    },
+    serviceGetPersoDataCommand: (serialNo: string, indexNo: string)  => {
+      return this.http.get('/api/customerportal/newRegister/queryPersoData', {
+        params: {
+          indexNo: indexNo,
+          serialNo: serialNo,
+          mobileNo: this.transaction.data.simCard.mobileNo,
+          simService: 'Normal',
+          sourceSystem: 'MC-KIOSK'
+        }
+      }).toPromise();
+    },
+    serviceCreateOrderPersoSim: (refNo: string) => {
+      return this.http.get('/api/customerportal/newRegister/createPersoSim', {
+        params: {
+          refNo: refNo
+        }
+      }).toPromise();
+    },
+    serviceCheckOrderPersoSim: (refNo: string) => {
+      return this.http.get('/api/customerportal/newRegister/checkOrderStatus', {
+        params: {
+          refNo: refNo
+        }
+      }).toPromise();
+    }
     };
   }
 

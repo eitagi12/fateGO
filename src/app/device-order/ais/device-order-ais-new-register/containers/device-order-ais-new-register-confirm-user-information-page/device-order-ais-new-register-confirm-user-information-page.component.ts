@@ -9,7 +9,8 @@ import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
 import {
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_EDIT_BILLING_ADDRESS_PAGE,
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_MOBILE_CARE_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_SELECT_PACKAGE_PAGE
+  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_SELECT_PACKAGE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_EBILLING_PAGE,
 } from '../../constants/route-path.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 
@@ -86,14 +87,16 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
   }
 
   initBillingInfo(): void {
-    const customer = this.transaction.data.customer;
-    const billingInformation = this.transaction.data.billingInformation;
+    const billingInformation = this.transaction.data.billingInformation || {};
     const mergeBilling = billingInformation.mergeBilling;
     const billCycle = billingInformation.billCycle;
+    const billCycles = [] = billingInformation.billCycles;
+    const customer: any = billingInformation.billDeliveryAddress || this.transaction.data.customer;
 
     const customerAddress = this.utils.getCurrentAddress({
       homeNo: customer.homeNo,
       moo: customer.moo,
+      mooBan: customer.mooBan,
       room: customer.room,
       floor: customer.floor,
       buildingName: customer.buildingName,
@@ -110,11 +113,11 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
       billingMethod: {
         text: this.isMergeBilling() ? `${billingInformation.mergeBilling.mobileNo[0]}` : null,
         // net extrem แก้ไขไม่ได้, โปรไฟล์ใหม่แก้ไขไม่ได้
-        // isEdit: !!customer.billCycle,
         isEdit: false,
+        // isEdit: !!(customer.caNumber && customer.billCycle && billCycles && billCycles.length > 0),
         // net extrem ลบไม่ได้, มีบิลใหม่ลบได้แล้วแสดงบิลเก่า
-        // isDelete: !!mergeBilling,
         isDelete: false,
+        // isDelete: !!mergeBilling,
         onEdit: () => {
           // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_MERGE_BILLING_PAGE]);
         },
@@ -147,11 +150,10 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
       billingCycle: {
         text: '-',
         // net extrem ลบไม่ได้, merge bill ลบไม่ได้
-        // isEdit: !(!!mergeBilling),
-        // isDelete: !(!!mergeBilling) && !!billCycle,
-        isEdit: false,
+        isEdit: !(!!mergeBilling),
+        isDelete: !(!!mergeBilling) && !!billCycle,
         onEdit: () => {
-          // this.router.navigate([ROUTE_ORDER_NEW_REGISTER_EBILLING_PAGE]);
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_EBILLING_PAGE]);
         },
         onDelete: () => {
           delete billingInformation.billCycle;
@@ -266,7 +268,9 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
         return 'other';
       }
     }
-
+    if (billingInformation && billingInformation.billCycleData) {
+      return billingInformation.billCycleData.billChannel;
+    }
     // เลือกบิลตามแพจเกจ
     const billingSystem = mainPackage.billingSystem;
     if (billingSystem && billingSystem === BillingSystemType.BOS) {
@@ -277,8 +281,9 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
   }
 
   customerValid(): boolean {
-    const customer = this.transaction.data.customer;
-
+    const billingInformation = this.transaction.data.billingInformation || {};
+    // ถ้าเป็น Newca จะไม่มี data.customer เลยต้องเช็คจากที่อยู่ว่า มีที่อยู่(billDeliveryAddress)ไหม
+    const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
     return !!(customer.homeNo
       && customer.province
       && customer.amphur

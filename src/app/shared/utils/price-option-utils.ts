@@ -23,7 +23,8 @@ export class PriceOptionUtils {
                     month: month,
                     name: bank.name,
                     advancePay: this.calculateAdvancePay(+trade.promotionPrice, advancePayAmount, month, percentage),
-                    promotionPrice: this.calculatePrice(+trade.promotionPrice, month, percentage)
+                    promotionPrice: this.calculatePrice(+trade.promotionPrice, month, percentage),
+                    showAdvancePay: advancePayAmount > 0 ? true : false
                 };
             })
                 .filter(bank => {
@@ -59,11 +60,11 @@ export class PriceOptionUtils {
             const promotionPrice = trade.map(o => o.promotionPrice);
             return {
                 group: key,
-                month: trade[0].month,
-                percentage: trade[0].percentage,
+                month: trade[0].month, // array ที่มีค่าเดียวกัน
+                percentage: trade[0].percentage, // array ที่มีค่าเดียวกัน
                 advancePay: {
-                    min: Math.min(...advancePay),
-                    max: Math.max(...advancePay)
+                    min: trade[0].showAdvancePay ? Math.min(...advancePay) : 0,
+                    max: trade[0].showAdvancePay ? Math.max(...advancePay) : 0
                 },
                 promotionPrice: {
                     min: Math.min(...promotionPrice),

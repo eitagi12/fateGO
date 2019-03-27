@@ -9,6 +9,7 @@ export const ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_BY_PATTERN_PAGE = '/device-orde
 export const ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_SELECT_PACKAGE_PAGE = '/device-order/ais/new-register/select-package';
 export const ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE = '/device-order/ais/new-register/confirm-user-information';
 export const ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_EDIT_BILLING_ADDRESS_PAGE = '/device-order/ais/new-register/ebilling-address';
+export const ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_EBILLING_PAGE = '/device-order/ais/new-register/ebilling';
 export const ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_MOBILE_CARE_PAGE = '/device-order/ais/new-register/mobile-care';
 export const ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_SUMMARY_PAGE = '/device-order/ais/new-register/summary';
 export const ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGREEMENT_PAGE = '/device-order/ais/new-register/agreement';
