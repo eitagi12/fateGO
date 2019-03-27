@@ -12,6 +12,11 @@ export class CustomerInformationService {
     private http: HttpClient
   ) { }
 
+  getBillingByIdCard(idCardNo: string): Promise<any> {
+    const getBillingAccountAPI = `/api/customerportal/newRegister/${idCardNo}/queryBillingAccount`;
+    return this.http.get(getBillingAccountAPI).toPromise();
+  }
+
   getBillingByMobileNo(mobileNo: string): Promise<any> {
     if (!mobileNo) {
       return Promise.reject('mobile no not found.');

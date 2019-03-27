@@ -31,23 +31,23 @@
     <form [formGroup]="selectBillingAddressForm">
       <h5>ที่อยู่ตามบัตรประชาชน</h5>
       <div>
-        <input class="form-check-input" type="radio" value="ที่อยู่ตามบัตรประชาชน"
+        <input class="form-check-input" type="radio" value="0"
           formControlName="billingAddress" id="modal-text-customer-id-card-address">
         <label class="form-check-label" class="col-11" for="modal-text-customer-id-card-address">
-          {{ 'ที่อยู่: ' + customerInfoMock[0].billingAddr }}
+          {{ 'ที่อยู่: ' + addressTextBySmartCard }}
         </label>
       </div>
       <br/>
       <h5>ที่อยู่ตามใบแจ้งค่าใช้บริการเบอร์ AIS ของท่าน</h5>
       
-      <div *ngFor="let itemBA of customerInfoMock; let i = index">
-        <input class="form-check-input" type="radio" value="ที่อยู่{{i+1}}"
+      <div *ngFor="let itemBA of listBillingAccount; let i = index">
+        <input class="form-check-input" type="radio" value="{{i+1}}"
           formControlName="billingAddress" id="modal-text-billing-address-{{i+1}}">
-        <label class="form-check-label" class="col-9">{{ itemBA.mobileNo }}</label>
+        <label class="form-check-label" class="col-9">{{ itemBA.mobileNo[0] }}</label>
         <label class="form-check-label" class="col-2">{{ itemBA.status }}</label>
         <label class="col-1"></label>
         <label class="form-check-label" class="col-11" for="modal-text-billing-address-1">
-          &nbsp;&nbsp;{{ 'ที่อยู่: ' + itemBA.billingAddr }}
+          &nbsp;&nbsp;{{ itemBA.billingAddr }}
         </label>
       </div>
     </form>

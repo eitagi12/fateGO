@@ -1,9 +1,9 @@
 import { Component, OnInit, ViewChild, TemplateRef, ElementRef, Output, EventEmitter } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { TransactionAction } from 'src/app/shared/models/transaction.model';
-import { ReadCardService, ReadCardProfile} from 'mychannel-shared-libs';
-import { HttpClient } from '@angular/common/http';
+import { ReadCardService, ReadCardProfile } from 'mychannel-shared-libs';
+import { CustomerInformationService } from '../../services/customer-information.service';
 @Component({
   selector: 'app-device-only-read-card',
   templateUrl: './device-only-read-card.component.html',
@@ -15,9 +15,12 @@ export class DeviceOnlyReadCardComponent implements OnInit {
 
   @Output() customerInfo: EventEmitter<Object> = new EventEmitter<Object>();
 
-  public customerInfoMock: Array<Object> ;
   public canReadSmartCard: boolean = true;
   public selectBillingAddressForm: FormGroup;
+  public infoBySmartCard: Object ;
+  public nameTextBySmartCard: string;
+  public addressTextBySmartCard: string;
+  public listBillingAccount: Array<Object>;
 
   @ViewChild('select_billing_address')
   selectBillingAddressTemplate: TemplateRef<any>;
@@ -30,7 +33,7 @@ export class DeviceOnlyReadCardComponent implements OnInit {
     private bsModalService: BsModalService,
     private fb: FormBuilder,
     private readCardService: ReadCardService,
-    private http: HttpClient,
+    private customerInformationService: CustomerInformationService
   ) {}
 
   ngOnInit(): void {
@@ -40,7 +43,7 @@ export class DeviceOnlyReadCardComponent implements OnInit {
 
   public createSelectBillingAddressForm(): void {
     this.selectBillingAddressForm = this.fb.group({
-      'billingAddress': '',
+      'billingAddress': ['', [Validators.required]],
     });
   }
 
@@ -55,64 +58,71 @@ export class DeviceOnlyReadCardComponent implements OnInit {
       EVENT_CARD_REMOVED: 'OnCardRemoved',
     };
     const promises: any = new Promise((resolve, reject) => {
-          this.readCardService.onReadCard().subscribe((readCard: any) =>  {
-            this.progressBarArea.nativeElement.style.display = 'none';
-            if (readCard.eventName === readCardEvent.EVENT_CARD_REMOVED) {
-              this.messages =  '';
-              width = 0;
-              this.progressBarArea.nativeElement.style.display = 'block';
-              this.progressBarReadSmartCard.nativeElement.style.width = '0%';
-            }
+      this.readCardService.onReadCard().subscribe((readCard: any) =>  {
+        this.progressBarArea.nativeElement.style.display = 'none';
+        if (readCard.eventName === readCardEvent.EVENT_CARD_REMOVED) {
+          this.messages =  '';
+          width = 0;
+          this.progressBarArea.nativeElement.style.display = 'block';
+          this.progressBarReadSmartCard.nativeElement.style.width = '0%';
+        }
 
-            if (readCard.eventName === readCardEvent.EVENT_CARD_LOAD_COMPLETED) {
-              this.messages =  'ตรวจสอบสำเร็จ โปรดดึงบัตรออก';
-              this.progressBarArea.nativeElement.style.display = 'block';
-              const customer: String = readCard.profile;
-              if (customer) {
-                resolve(customer);
-              }
-            }
+        if (readCard.eventName === readCardEvent.EVENT_CARD_LOAD_COMPLETED) {
+          this.messages =  'ตรวจสอบสำเร็จ โปรดดึงบัตรออก';
+          this.progressBarArea.nativeElement.style.display = 'block';
+          const customer: String = readCard.profile;
+          if (customer) {
+            resolve(customer);
+          }
+        }
 
-            if (readCard.eventName === readCardEvent.EVENT_CARD_LOAD_ERROR) {
-               alert('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาเสียบบัตรใหม่อีกครั้ง');
+        if (readCard.eventName === readCardEvent.EVENT_CARD_LOAD_ERROR) {
+            alert('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาเสียบบัตรใหม่อีกครั้ง');
+          this.progressBarArea.nativeElement.style.display = 'none';
+          this.progressBarReadSmartCard.nativeElement.style.width = '0%';
+        }
+
+        if (readCard.eventName === readCardEvent.EVENT_CARD_INITIALIZED) {
+          setTimeout(() => {
+          if (readCard.eventName !== readCardEvent.EVENT_CARD_INSERTED) {
+              this.messages =  'โปรดเสียบบัตรประชาชน';
               this.progressBarArea.nativeElement.style.display = 'none';
-              this.progressBarReadSmartCard.nativeElement.style.width = '0%';
-            }
+          }}, 10);
+        }
 
-            if (readCard.eventName === readCardEvent.EVENT_CARD_INITIALIZED) {
-              setTimeout(() => {
-              if (readCard.eventName !== readCardEvent.EVENT_CARD_INSERTED) {
-                  this.messages =  'โปรดเสียบบัตรประชาชน';
-                  this.progressBarArea.nativeElement.style.display = 'none';
-              }}, 10);
-            }
-
-            if (readCard.eventName === readCardEvent.EVENT_CARD_INSERTED) {
-                width = 0;
-                this.messages =  '';
-            }
-            if (readCard.eventName === readCardEvent.EVENT_CARD_LOAD_PROGRESS) {
-                this.progressBarArea.nativeElement.style.display = 'block';
-                width = +readCard.progress;
-                this.progressBarReadSmartCard.nativeElement.style.width = width + '%';
-            }
-            });
+        if (readCard.eventName === readCardEvent.EVENT_CARD_INSERTED) {
+            width = 0;
+            this.messages =  '';
+        }
+        if (readCard.eventName === readCardEvent.EVENT_CARD_LOAD_PROGRESS) {
+            this.progressBarArea.nativeElement.style.display = 'block';
+            width = +readCard.progress;
+            this.progressBarReadSmartCard.nativeElement.style.width = width + '%';
+        }
+      });
     }).catch((err) => {
       console.log(err);
     });
       return promises;
   }
-  public getbillingCycle(customer: String): void {
-    this.http.get(`/api/customerportal/newRegister/${customer}/queryBillingAccount`).toPromise()
-    .then((resp: any) => {
-      this.customerInfoMock = resp.data.billingAccountList;
-      if (this.customerInfoMock.length > 0) {
-        this.modalBillAddress = this.bsModalService.show(this.selectBillingAddressTemplate);
-      } else {
-        // alert('ไม่มีข้อมูลอยู่ในระบบกรุณาตรวจสอบรายการใหม่');
-      }
-    });
+
+  public getbillingCycle(customer: any): void {
+    this.infoBySmartCard = customer;
+    this.nameTextBySmartCard = customer.titleName + ' ' + customer.firstName + ' ' + customer.lastName;
+    this.addressTextBySmartCard = this.customerInformationService.convertBillingAddressToString(customer);
+    this.customerInformationService.getBillingByIdCard(customer.idCardNo)
+      .then((res) => {
+        console.log('getBillingByIdCard : res ==>> ', res);
+        if (res && res.data && res.data.billingAccountList) {
+          this.listBillingAccount = res.data.billingAccountList;
+          this.modalBillAddress = this.bsModalService.show(this.selectBillingAddressTemplate);
+        } else {
+          // hide layout for list billing account
+          // alert('ไม่มีข้อมูลอยู่ในระบบกรุณาตรวจสอบรายการใหม่');
+        }
+      });
   }
+
   public readCard(): void {
     new Promise((resolve, reject): void => {
       resolve(this.readingCard());
@@ -122,6 +132,7 @@ export class DeviceOnlyReadCardComponent implements OnInit {
       console.log(err);
     });
   }
+
   public closeModalSelectAddress(): void {
     this.modalBillAddress.hide();
     this.canReadSmartCard = true;
@@ -131,7 +142,7 @@ export class DeviceOnlyReadCardComponent implements OnInit {
     this.modalBillAddress.hide();
     this.canReadSmartCard = true;
     this.customerInfo.emit({
-      customer: this.customerInfoMock[0],
+      customer: this.listBillingAccount[0],
       action: TransactionAction.READ_CARD
     });
   }
