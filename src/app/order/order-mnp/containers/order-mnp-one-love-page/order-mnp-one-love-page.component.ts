@@ -11,6 +11,7 @@ import {
 } from 'src/app/order/order-mnp/constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { environment } from 'src/environments/environment';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-order-mnp-one-love-page',
@@ -31,7 +32,8 @@ export class OrderMnpOneLovePageComponent implements OnInit, OnDestroy {
     private alertService: AlertService,
     private http: HttpClient,
     private transactionService: TransactionService,
-    private pageLoadingService: PageLoadingService
+    private pageLoadingService: PageLoadingService,
+    private translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -89,15 +91,15 @@ export class OrderMnpOneLovePageComponent implements OnInit, OnDestroy {
 
           const mobileStatus = (data.mobileStatus || '').toLowerCase();
           if (environment.MOBILE_STATUS.indexOf(mobileStatus) === -1) {
-            this.alertService.error('หมายเลขดังกล่าวไม่สามารถใช้งานได้');
+            this.alertService.error(this.translation.instant('หมายเลขดังกล่าวไม่สามารถใช้งานได้'));
             return reject();
           }
           // this.pageLoadingService.closeLoading();
           return resolve();
         })
         .catch(() => {
-          // this.pageLoadingService.closeLoading();
-          this.alertService.error('หมายเลขดังกล่าวไม่ใช่เครือข่าย AIS');
+          this.pageLoadingService.closeLoading();
+          this.alertService.error(this.translation.instant('หมายเลขดังกล่าวไม่ใช่เครือข่าย AIS'));
           reject();
         });
     });

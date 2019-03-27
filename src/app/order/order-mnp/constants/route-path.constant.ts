@@ -17,3 +17,5 @@ export const ROUTE_ORDER_MNP_ON_TOP_PAGE = '/order/mnp/on-top';
 export const ROUTE_ORDER_MNP_ONE_LOVE_PAGE = '/order/mnp/one-love';
 export const ROUTE_ORDER_MNP_EBILLING_PAGE = '/order/mnp/ebilling';
 export const ROUTE_ORDER_MNP_EAPPLICATION_PAGE = '/order/mnp/eapplication';
+export const ROUTE_ORDER_MNP_VERIFY_DOCUMENT_PAGE = '/order/mnp/verify-document';
+export const ROUTE_ORDER_MNP_PASSPOPRT_INFO_PAGE = '/order/mnp/passport-info';

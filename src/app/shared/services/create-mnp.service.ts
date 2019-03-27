@@ -116,6 +116,26 @@ export class CreateMnpService {
       promotionActionStatus1: 'Add', /*When SelectedPackages*/
     };
 
+    // เช็ค Eng Flag จากจังหวัด
+    if (data.billProvince.match(/[a-z]/i)) {
+      data.engFlag = 'Y';
+    } else {
+      data.engFlag = 'N';
+    }
+
+    if (action === TransactionAction.READ_PASSPORT) {
+        // data.reasonCode = '1164'; // fix reasonCode for passport
+        if (customer.nationality !== 'Thailand') {
+          data.billLanguage = 'English';
+        }
+        data.accountSubCat = 'FOR',
+        data.titleName = customer.titleName,
+        data.citizenship = customer.nationality;
+    } else {
+        data.accountSubCat = 'THA',
+        data.titleName = this.utils.getPrefixName(customer.titleName); /*required*/
+    }
+
     // orderVerify
     if (this.isReadCard(action)) {
       data.orderVerify = 'Smart Card';
@@ -149,23 +169,57 @@ export class CreateMnpService {
       data.mobileNoRef = billingInformation.mergeBilling.mobileNo[0];
     }
 
-    if (this.isReadCard(action)) {
+    if (action === TransactionAction.READ_CARD) {
       data.imageReadSmartCard = customer.imageReadSmartCard;
       data.firstNameEn = customer.firstNameEn;
       data.lastNameEn = customer.lastNameEn;
       data.issueDate = customer.issueDate;
       data.expireDate = customer.expireDate;
       return Promise.resolve(data);
-    } else {
+    }
+    if (action === TransactionAction.READ_PASSPORT) {
       return new ImageUtils().combine([
-        customer.imageSmartCard,
+        customer.imageReadPassport,
         customer.imageSignatureSmartCard,
         AWS_WATERMARK
       ]).then((imageSmatCard) => {
         data.imageTakePhoto = imageSmatCard;
         return Promise.resolve(data);
+      }).catch((error) => {
+        throw new Error(error);
       });
     }
+
+    if (action === TransactionAction.KEY_IN) {
+      return new ImageUtils().combine([
+        customer.imageReadPassport,
+        customer.imageSignatureSmartCard,
+        AWS_WATERMARK
+      ]).then((imageSmatCard) => {
+        data.imageTakePhoto = imageSmatCard;
+        return Promise.resolve(data);
+      }).catch((error) => {
+        throw new Error(error);
+      });
+    }
+
+    // if (this.isReadCard(action)) {
+    //   data.imageReadSmartCard = customer.imageReadSmartCard;
+    //   data.firstNameEn = customer.firstNameEn;
+    //   data.lastNameEn = customer.lastNameEn;
+    //   data.issueDate = customer.issueDate;
+    //   data.expireDate = customer.expireDate;
+    //   return Promise.resolve(data);
+    // } else {
+    //   return new ImageUtils().combine([
+    //     customer.imageSmartCard,
+    //     customer.imageSignatureSmartCard,
+    //     AWS_WATERMARK
+    //   ]).then((imageSmatCard) => {
+    //     data.imageTakePhoto = imageSmatCard;
+    //     return Promise.resolve(data);
+    //   });
+    // }
   }
 
   isReadCard(action: TransactionAction): boolean {

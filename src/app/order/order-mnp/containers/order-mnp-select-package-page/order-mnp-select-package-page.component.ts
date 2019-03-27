@@ -12,6 +12,8 @@ import { HttpClient } from '@angular/common/http';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-order-mnp-select-package-page',
@@ -19,15 +21,18 @@ import { BsModalService, BsModalRef } from 'ngx-bootstrap';
   styleUrls: ['./order-mnp-select-package-page.component.scss']
 })
 export class OrderMnpSelectPackagePageComponent implements OnInit, OnDestroy {
-
+  readonly MAX_PROMOTION_PRICE: number = 500;
   @ViewChild('conditionTemplate')
   conditionTemplate: any;
   wizards: string[] = WIZARD_ORDER_MNP;
 
   promotionShelves: PromotionShelve[];
   transaction: Transaction;
+  promotionData: any;
   condition: any;
   modalRef: BsModalRef;
+
+  translateSubscribe: Subscription;
 
   constructor(
     private router: Router,
@@ -37,6 +42,7 @@ export class OrderMnpSelectPackagePageComponent implements OnInit, OnDestroy {
     private homeService: HomeService,
     private alertService: AlertService,
     private modalService: BsModalService,
+    private translateService: TranslateService,
   ) {
     this.transaction = this.transactionService.load();
 
@@ -48,7 +54,10 @@ export class OrderMnpSelectPackagePageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.callService();
+    this.callService(this.translateService.currentLang);
+    this.translateSubscribe = this.translateService.onLangChange.subscribe(language => {
+      this.callService(language.lang);
+    });
   }
 
   onBack(): void {
@@ -76,22 +85,34 @@ export class OrderMnpSelectPackagePageComponent implements OnInit, OnDestroy {
     this.transaction.data.mainPackage = promotion;
   }
 
-  callService(): void {
+  callService(language: string): void {
     this.pageLoadingService.openLoading();
 
     const billingInformation: any = this.transaction.data.billingInformation;
     const isNetExtreme = billingInformation &&
     billingInformation.billCyclesNetExtreme && billingInformation.billCyclesNetExtreme.length > 0 ? 'true' : 'false';
-    this.http.get('/api/customerportal/newRegister/queryMainPackage', {
-      params: {
-        orderType: 'Port – In',
-        isNetExtreme: isNetExtreme
-      }
+    const mobileNo = this.transaction.data.simCard.mobileNo;
+    const params: any = {
+      orderType: 'Port – In',
+      isNetExtreme: isNetExtreme,
+    };
+    if (this.transaction.data.action === TransactionAction.READ_PASSPORT) {
+      params.maxPromotionPrice = this.MAX_PROMOTION_PRICE;
+    }
+    this.http.get(`/api/customerportal/queryCheckMinimumPackage/${mobileNo}`, {
     }).toPromise()
       .then((resp: any) => {
-
+        const data = resp.data || {};
+        return data.MinimumPriceForPackage || 0;
+      }).then((minPromotionPrice: string) => {
+        return this.http.get('/api/customerportal/newRegister/queryMainPackage', {
+          params: Object.assign({
+            minPromotionPrice: minPromotionPrice
+          }, params)
+        }).toPromise();
+      })
+      .then((resp: any) => {
         const data = resp.data.packageList || [];
-
         const promotionShelves: PromotionShelve[] = data.map((promotionShelve: any) => {
           return {
             title: promotionShelve.title,
@@ -107,8 +128,8 @@ export class OrderMnpSelectPackagePageComponent implements OnInit, OnDestroy {
                   items: (subShelve.items || []).map((promotion: any) => {
                     return { // item
                       id: promotion.itemId,
-                      title: promotion.shortNameThai,
-                      detail: promotion.statementThai,
+                      title: language === 'EN' ? promotion.shortNameEng : promotion.shortNameThai,
+                      detail: language === 'EN' ? promotion.statementEng : promotion.statementThai,
                       condition: subShelve.conditionCode,
                       value: promotion
                     };
@@ -118,7 +139,6 @@ export class OrderMnpSelectPackagePageComponent implements OnInit, OnDestroy {
           };
         });
         return Promise.resolve(promotionShelves);
-
       })
       .then((promotionShelves: PromotionShelve[]) => {
         this.promotionShelves = this.buildPromotionShelveActive(promotionShelves);
@@ -126,7 +146,6 @@ export class OrderMnpSelectPackagePageComponent implements OnInit, OnDestroy {
       .then(() => {
         this.pageLoadingService.closeLoading();
       });
-
   }
 
   onTermConditions(condition: string): void {
@@ -200,6 +219,7 @@ export class OrderMnpSelectPackagePageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.translateSubscribe.unsubscribe();
     this.transactionService.update(this.transaction);
   }
 }

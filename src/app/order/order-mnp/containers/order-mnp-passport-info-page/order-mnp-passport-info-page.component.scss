@@ -1,0 +1,42 @@
+// mc-capture-and-sign
+.camera-width {
+    max-width: 768px;
+    width: 100%;
+    margin: 0 auto;
+
+    img {
+        width: 100%;
+    }
+}
+
+.signature {
+    background-color: #b0a799;
+    color: #fff;
+    text-align: center;
+    font-size: 15px;
+    padding: 5px;
+    border-top-width: 1px;
+}
+
+.capture-and-sign {
+    position: absolute;
+    left: 0;
+    top: 0;
+
+    &.capture {
+        z-index: 1;
+    }
+
+    &.signed {
+        z-index: 2;
+        left: 50%;
+        top: 50%;
+        width: 70% !important;
+        transform: translate(-50%, -50%);
+    }
+
+    &.watermark {
+        z-index: 3;
+    }
+}
+// mc-capture-and-sign

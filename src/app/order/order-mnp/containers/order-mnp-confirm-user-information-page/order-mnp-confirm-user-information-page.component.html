@@ -1,9 +1,10 @@
 <div class="mc-flex">
-  <mc-header title="ย้ายค่ายเบอร์เดิม">
-    <div class="header-icon-left">
+  <mc-header title="{{ 'ย้ายค่ายเบอร์เดิม' | translate }}">
+    <div class="header-icon-left w-25">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
-    <div class="header-icon-right">
+    <div class="header-icon-right w-25 text-right">
+      <mc-dropdown-language></mc-dropdown-language>
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
@@ -17,8 +18,9 @@
       <mc-billing-info [billingInfo]="billingInfo" (editAddress)="onEditAddress()">
       </mc-billing-info>
 
-      <mc-mail-billing-info [eBill]="eBill" [disabled]="isPackageNetExtreme() || isMergeBilling()" [mailBillingInfo]="mailBillingInfo"
-        (completed)="onMailBillingInfoCompleted($event)" (error)="onMailBillingInfoError($event)">
+      <mc-mail-billing-info [eBill]="eBill" [disabled]="isPackageNetExtreme() || isMergeBilling()"
+        [mailBillingInfo]="mailBillingInfo" (completed)="onMailBillingInfoCompleted($event)"
+        (error)="onMailBillingInfoError($event)">
       </mc-mail-billing-info>
 
       <mc-tel-no-billing-info [telNoBillingInfo]="telNoBillingInfo" (completed)="onTelNoBillingCompleted($event)"
@@ -30,7 +32,8 @@
 
 
   <mc-footer>
-      <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-      <button class="btn btn-success" (click)="onNext()" [disabled]="!(isTelNoBillingValid &&(isMailBillingInfoValid || isMergeBilling()))">NEXT</button>
-    </mc-footer>
+    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button class="btn btn-success" (click)="onNext()"
+      [disabled]="!(isTelNoBillingValid &&(isMailBillingInfoValid || isMergeBilling()))">NEXT</button>
+  </mc-footer>
 </div>

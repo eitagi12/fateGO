@@ -158,13 +158,12 @@ export class CreateNewRegisterService {
       engFlag: 'N',
       promotionActionStatus1: 'Add', /*When SelectedPackages*/
     };
-
-    // เช็ค Eng Flag จากจังหวัด
-    if (customer.province && !!customer.province.match(/[a-z]/i)) {
-      data.engFlag = 'Y';
-    } else {
-      data.engFlag = 'N';
-    }
+      // เช็ค Eng Flag จากจังหวัด
+      if (customer.province && !!customer.province.match(/[a-z]/i)) {
+        data.engFlag = 'Y';
+      } else {
+        data.engFlag = 'N';
+      }
 
     if (action === TransactionAction.READ_PASSPORT) {
       data.accountSubCat = 'FOR',

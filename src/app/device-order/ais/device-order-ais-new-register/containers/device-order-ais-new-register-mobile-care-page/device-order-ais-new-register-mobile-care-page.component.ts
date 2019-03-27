@@ -39,7 +39,7 @@ export class DeviceOrderAisNewRegisterMobileCarePageComponent implements OnInit,
 
   ngOnInit(): void {
     delete this.transaction.data.mobileCarePackage;
-    this.callService();
+    // this.callService();
   }
 
   onBack(): void {

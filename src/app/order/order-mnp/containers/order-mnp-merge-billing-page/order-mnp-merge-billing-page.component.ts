@@ -81,6 +81,7 @@ export class OrderMnpMergeBillingPageComponent implements OnInit, OnDestroy {
 
   onCompleted(mergeBilling: BillingAccount): void {
     this.mergeBilling = mergeBilling;
+    // this.transaction.data.billingInformation.mergeBilling = even;
   }
 
   onNext(): void {
