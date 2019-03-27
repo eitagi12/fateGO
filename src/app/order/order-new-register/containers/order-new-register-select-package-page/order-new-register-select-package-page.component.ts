@@ -146,7 +146,7 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
                     return { // item
                       id: promotion.itemId,
                       title: language === 'EN' ? promotion.shortNameEng : promotion.shortNameThai,
-                      detail: language === 'EN' ? promotion.statementEng : promotion.statementEng,
+                      detail: language === 'EN' ? promotion.statementEng : promotion.statementThai,
                       condition: subShelve.conditionCode,
                       value: promotion
                     };
