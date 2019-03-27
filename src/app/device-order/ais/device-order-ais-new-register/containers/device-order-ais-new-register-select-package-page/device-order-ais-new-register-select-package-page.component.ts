@@ -83,7 +83,7 @@ export class DeviceOrderAisNewRegisterSelectPackagePageComponent implements OnIn
     const campaign: any = this.priceOption.campaign;
     this.promotionShelveService.getPromotionShelve(
       {
-        packageKeyRef: this.priceOption.trade.packageKeyRef,
+        packageKeyRef: campaign.packageKeyRef,
         orderType: 'New Registration',
         billingSystem: BillingSystemType.IRB
       },

@@ -11,6 +11,7 @@ import {
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-device-order-ais-new-register-verify-instant-sim-page',
@@ -47,29 +48,35 @@ export class DeviceOrderAisNewRegisterVerifyInstantSimPageComponent implements O
   }
 
   onCheckSimSerial(serial: string): void {
-    this.pageLoadingService.openLoading();
-    this.http.get(`/api/customerportal/validate-verify-instant-sim?serialNo=${serial}`).toPromise()
-      .then((resp: any) => {
-        const simSerial = resp.data || [];
-        this.simSerialValid = true;
-        this.simSerial = {
-          mobileNo: simSerial.mobileNo,
-          simSerial: serial
-        };
-        this.transaction.data.simCard = {
-          mobileNo: this.simSerial.mobileNo,
-          simSerial: this.simSerial.simSerial,
-          persoSim: false
-        };
-        this.shoppingCart = Object.assign(this.shoppingCart, {
-          mobileNo: simSerial.mobileNo
-        });
-        this.pageLoadingService.closeLoading();
-      }).catch((resp: any) => {
-        const error = resp.error || [];
-        this.pageLoadingService.closeLoading();
-        this.alertService.error(error.resultDescription);
+    let validateVerifyInstantSim;
+    if (environment.name === 'LOCAL' && serial === '9999999999999') {
+      validateVerifyInstantSim = Promise.resolve({
+        data: {
+          mobileNo: '0999999999'
+        }
       });
+    } else {
+      validateVerifyInstantSim = this.http.get(`/api/customerportal/validate-verify-instant-sim?serialNo=${serial}`).toPromise();
+    }
+
+    this.pageLoadingService.openLoading();
+    validateVerifyInstantSim.then((resp: any) => {
+      const simSerial = resp.data || {};
+      this.simSerialValid = true;
+      this.simSerial = {
+        mobileNo: simSerial.mobileNo,
+        simSerial: serial
+      };
+      this.transaction.data.simCard = {
+        mobileNo: this.simSerial.mobileNo,
+        simSerial: this.simSerial.simSerial,
+        persoSim: false
+      };
+      this.shoppingCart = Object.assign(this.shoppingCart, {
+        mobileNo: simSerial.mobileNo
+      });
+
+    }).then(() => this.pageLoadingService.closeLoading());
 
   }
 

@@ -9,6 +9,11 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from 'src/app/buy-product/constants/route-path.constant';
 import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE } from '../../constants/route-path.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { Observable } from 'rxjs';
+import { ProductDetail } from 'mychannel-shared-libs/lib/service/models/product-detail';
+import { ProductStock } from 'mychannel-shared-libs/lib/service/models/product-stock';
+import * as moment from 'moment';
+import { TranslateService } from '@ngx-translate/core';
 @Component({
   selector: 'app-device-order-ais-new-register-validate-customer-id-card-page',
   templateUrl: './device-order-ais-new-register-validate-customer-id-card-page.component.html',
@@ -37,7 +42,8 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
     private tokenService: TokenService,
     private utils: Utils,
     private alertService: AlertService,
-    private priceOptionService: PriceOptionService
+    private priceOptionService: PriceOptionService,
+    private translateService: TranslateService
   ) {
     this.user = this.tokenService.getUser();
 
@@ -63,7 +69,9 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
   }
 
   ngOnInit(): void {
+    this.translateService.use('TH');
     this.createTransaction();
+    this.checkSoIdDuplicate();
   }
 
   onError(valid: boolean): void {
@@ -96,7 +104,6 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-
     this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
       .then((zipCode: string) => {
         return this.http.get('/api/customerportal/validate-customer-new-register', {
@@ -120,7 +127,8 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
       })
       .then((customer: any) => { // load bill cycle
         this.transaction.data.customer = Object.assign(this.profile, customer);
-
+        return this.createAddToCartTrasaction(this.transaction, this.priceOption);
+      }).then(() => {
         return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
           .then((resp: any) => {
             const data = resp.data || {};
@@ -140,13 +148,35 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
                 };
               });
           });
-      })
-      .then((billingInformation: any) => {
+      }).catch((error: any) => {
+        this.alertService.error(error);
+      }).then((billingInformation: any) => {
         this.transaction.data.billingInformation = billingInformation;
         if (this.checkBusinessLogic()) {
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE]);
         }
       });
+  }
+
+  // check When Comeback to ValidateIDcardPage and have SoId
+  checkSoIdDuplicate(): void {
+    const transaction = this.transactionService.load();
+    if (transaction && transaction.data && transaction.data.order && transaction.data.order.soId) {
+      const _paramSoId = transaction.data.order.soId;
+      const _userId = this.tokenService.getUser().username;
+      if (_paramSoId) {
+        const requestData = {
+          soId: _paramSoId,
+          userId: _userId
+        };
+        this.http.post('/api/salesportal/device-sell/item/remove', requestData).toPromise().then((resp: any) => {
+          const data = resp.data || {};
+          if (data.resultCode === 'S') {
+            console.log('Success is RemoveItemBackendCart');
+          }
+        });
+      }
+    }
   }
 
   checkBusinessLogic(): boolean {
@@ -214,4 +244,106 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
     }).toPromise();
   }
 
+  createAddToCartTrasaction(transaction: Transaction, priceOption: PriceOption): Promise<any> {
+    return new Promise((resolve, reject) => {
+      if (transaction && transaction.data && transaction.data.order && transaction.data.order.soId) {
+        resolve(transaction);
+      } else {
+        this.callAddToCartService(transaction, priceOption).then((response) => {
+          if (response.resultCode === 'S') {
+            transaction.data.order = {
+              orderNo: '',
+              soId: response.soId
+            };
+            this.createTransactionService(transaction, priceOption).then((createTrans) => {
+              resolve(createTrans);
+            }).catch(resolve);
+          } else {
+            reject('Cannot add item to the cart');
+          }
+        });
+      }
+    });
+  }
+
+  private callAddToCartService(transaction: Transaction, priceOption: PriceOption): Promise<any> {
+    const productStock = priceOption.productStock;
+    const productDetail = priceOption.productDetail;
+    const customer = transaction.data.customer;
+    const cusNameOrder = customer.firstName && customer.lastName ? `${customer.firstName} ${customer.lastName}` : '-';
+    const requestData: any = {
+      soCompany: productStock.company || 'AWN',
+      locationSource: this.user.locationCode,
+      locationReceipt: this.user.locationCode,
+      productType: productDetail.productType || 'DEVICE',
+      productSubType: productDetail.productSubType || 'HANDSET',
+      brand: productStock.brand,
+      model: productDetail.model,
+      color: productStock.color,
+      priceIncAmt: '',
+      priceDiscountAmt: '',
+      grandTotalAmt: '',
+      userId: this.user.username,
+      cusNameOrder: cusNameOrder,
+      preBookingNo: '',
+      depositAmt: '',
+      reserveNo: ''
+    };
+    return this.http.post('/api/salesportal/device-sell/item', requestData).toPromise()
+      .then((res: any) => res.data || {});
+  }
+
+  private createTransactionService(transaction: Transaction, priceOption: PriceOption): Promise<any> {
+    return this.http.post('/api/salesportal/device-order/create-transaction', this.mapCreateTransactionDb(transaction, priceOption))
+      .toPromise().then(resp => transaction);
+  }
+
+  private mapCreateTransactionDb(transaction: Transaction, priceOption: PriceOption): any {
+    const username: any = this.tokenService.getUser().username;
+    const transactionDb = {
+      transactionId: this.generateTransactionId(),
+      data: {
+        ...transaction.data,
+        main_promotion: { campaign: priceOption.campaign, privilege: priceOption.campaign.privilege, trade: priceOption.trade } || {},
+        device: this.getDevice(priceOption),
+        status: {
+          code: '001',
+          description: 'pending'
+        },
+        contract: priceOption.campaign.conditionCode || {}
+      },
+      create_by: username,
+      issueBy: transaction.issueBy || username,
+      last_update_by: username
+    };
+    return transactionDb;
+  }
+
+  private getDevice(priceOption: PriceOption): any {
+    const product: any = priceOption.productStock;
+    const productDetail: any = priceOption.productDetail;
+    return {
+      model: productDetail.model,
+      brand: productDetail.brand,
+      amount: 1,
+      name: productDetail.productName,
+      colorName: product.colorName,
+      colorCode: product.colorCode,
+      productType: productDetail.productType,
+      productSubtype: productDetail.productSubtype
+    };
+  }
+
+  generateTransactionId(): string {
+    let emptyString: string = '';
+    const alphabet: string = 'abcdefghijklmnopqrstuvwxyz';
+    while (emptyString.length < 2) {
+      emptyString += alphabet[Math.floor(Math.random() * alphabet.length)];
+    }
+    const randomAlphabet = emptyString;
+    const today: any = moment().format('YYYYMMD');
+    const randomNumber = Math.floor(Math.random() * 1000000).toString();
+    const transactionId = randomAlphabet + today + randomNumber;
+    return transactionId;
+  }
 }

@@ -31,6 +31,7 @@ import { DeviceOrderAisNewRegisterQrCodeSummaryPageComponent } from './container
 import { DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent } from './containers/device-order-ais-new-register-qr-code-generator-page/device-order-ais-new-register-qr-code-generator-page.component';
 import { DeviceOrderAisNewRegisterQrCodeQueuePageComponent } from './containers/device-order-ais-new-register-qr-code-queue-page/device-order-ais-new-register-qr-code-queue-page.component';
 import { DeviceOrderAisNewRegisterQrCodeErrorPageComponent } from './containers/device-order-ais-new-register-qr-code-error-page/device-order-ais-new-register-qr-code-error-page.component';
+import { DeviceOrderAisNewRegisterEbillingPageComponent } from './containers/device-order-ais-new-register-ebilling-page/device-order-ais-new-register-ebilling-page.component';
 
 @NgModule({
   imports: [
@@ -70,6 +71,7 @@ import { DeviceOrderAisNewRegisterQrCodeErrorPageComponent } from './containers/
     DeviceOrderAisNewRegisterQrCodeQueuePageComponent,
     DeviceOrderAisNewRegisterQrCodeErrorPageComponent,
     DeviceOrderAisNewRegisterEcontactPageComponent,
+    DeviceOrderAisNewRegisterEbillingPageComponent,
   ]
 })
 export class DeviceOrderAisNewRegisterModule { }

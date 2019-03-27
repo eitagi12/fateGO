@@ -95,32 +95,72 @@
             <p>
               ข้อมูลการชำระสินค้า
             </p>
-            <p *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N'">
-              <i class="fa fa-circle mr-3 text-light-green"></i>
-              {{ priceOption?.productDetail?.name }}
-              <span *ngIf="priceOption?.productStock?.color">
-                สี {{ priceOption?.productStock?.color }}
-              </span>
-              <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
-                (แถมซิม)
-              </span>
-              <span class="pull-right text-light-green">฿ {{ priceOption?.trade?.promotionPrice | number }}</span>
-            </p>
-            <p *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'Y'">
-              <i class="fa fa-circle mr-3 text-light-green"></i>
-              ค่าเครื่องและค่าแพ็กเกจล่วงหน้า : xx
-              <span class="pull-right text-light-green">฿ {{ summary([
-                +priceOption?.trade?.promotionPrice,
-                +priceOption?.trade?.advancePay?.amount
-                ]) | number }}</span>
-            </p>
-            <p>
-              <i class="fa fa-circle mr-3 text-light-green"></i>
-              ค่าแพ็กเกจบริการล่วงหน้า : ชำระเต็มจำนวน
-              <span class="pull-right text-light-green">
-                ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
-              </span>
-            </p>
+
+            <!-- ชำระเต็มจำนวน -->
+            <ng-container
+              *ngIf="!priceOption?.trade?.advancePay || priceOption?.trade?.advancePay?.installmentFlag === 'N'">
+              <p>
+                <i class="fa fa-circle mr-3 text-light-green"></i>
+                {{ priceOption?.productDetail?.name }}
+                <span *ngIf="priceOption?.productStock?.color">
+                  สี {{ priceOption?.productStock?.color }}
+                </span>
+                <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
+                  (แถมซิม)
+                </span>
+                <span>: ชำระเต็มจำนวน</span>
+                <span class="pull-right text-light-green">
+                  ฿ {{ priceOption?.trade?.promotionPrice | number }}
+                </span>
+              </p>
+
+              <!-- ค่าแพ็กเกจบริการล่วงหน้า -->
+              <p *ngIf="(+priceOption?.trade?.advancePay?.amount) > 0">
+                <i class="fa fa-circle mr-3 text-light-green"></i>
+                ค่าแพ็กเกจบริการล่วงหน้า : ชำระเต็มจำนวน
+                <span class="pull-right text-light-green">
+                  ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
+                </span>
+              </p>
+            </ng-container>
+
+            <!-- ค่าเครื่องและค่าแพ็กเกจล่วงหน้า -->
+            <ng-container *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'Y'">
+              <p>
+                <i class="fa fa-circle mr-3 text-light-green"></i>
+                ค่าเครื่องและค่าแพ็กเกจล่วงหน้า :
+                <span *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">ชำระเต็มจำนวน</span>
+                <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">ผ่อนชำระบัตรเคดิต</span>
+                <span class="pull-right text-light-green">฿ {{ summary([
+                  +priceOption?.trade?.promotionPrice,
+                  +priceOption?.trade?.advancePay?.amount
+                  ]) | number }}</span>
+              </p>
+            </ng-container>
+
+            <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">
+              <small class="text-muted">
+                (ชำระโดย เงินสด)
+              </small>
+            </ng-container>
+
+            <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">
+              <small class="text-muted">
+                (
+                ชำระโดย บัตรเคดิต
+                {{ transaction?.data?.payment?.paymentMethod?.name }}
+                {{ transaction?.data?.payment?.paymentMethod?.percentage }} %
+                {{ transaction?.data?.payment?.paymentMethod?.month }} เดือน
+                {{ 
+                  (
+                    (+priceOption?.trade?.promotionPrice) 
+                    + (priceOption?.trade?.advancePay?.installmentFlag === 'N' ? +priceOption?.trade?.advancePay?.amount : 0)
+                  ) / transaction?.data?.payment?.paymentMethod?.month | number: '1.2-2'
+                }} บาทต่อเดือน
+                )
+              </small>
+            </ng-container>
+
           </div>
           <div class="card-footer bg-transparent ">
             <p>

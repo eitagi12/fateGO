@@ -52,7 +52,6 @@ export class DeviceOrderAisPreToPostOtpPageComponent implements OnInit {
       otp: ['', [Validators.required, Validators.maxLength(5)]],
     });
   }
-
   sendOTP(): void {
     this.pageLoadingService.openLoading();
     let mobile = this.registrationData.simCard.mobileNo;
@@ -130,15 +129,12 @@ export class DeviceOrderAisPreToPostOtpPageComponent implements OnInit {
     }
     this.alertService.error(errMsg);
   }
-
   onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CUSTOMER_PROFILE_PAGE]);
   }
-
   onHome(): void {
     this.homeService.goToHome();
   }
-
   getRequestUpdatePrepaidIdentata(): void {
     const customer = this.transaction.data.customer;
     const mobileNo = this.transaction.data.simCard.mobileNo;

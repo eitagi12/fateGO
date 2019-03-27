@@ -1,4 +1,4 @@
-import { ChargeType, PaymentDetailQRCode, PaymentDetailBank, ReceiptInfo } from 'mychannel-shared-libs';
+import { ChargeType } from 'mychannel-shared-libs';
 
 export enum TransactionType {
   DEVICE_ORDER_NEW_REGISTER_AIS = 'NewRegisterAIS',
@@ -31,6 +31,7 @@ export interface Transaction {
   lastUpdateDate?: string;
   lastUpdateBy?: string;
   data?: TransactionData;
+  issueBy?: string;
 }
 
 export interface TransactionData {
@@ -53,17 +54,20 @@ export interface TransactionData {
   advancePayment?: Payment;
   receiptInfo?: ReceiptInfo;
   queue?: Queue;
+  mpay_payment?: any;
 }
 export interface Payment {
-  method: string;
-  type: string;
-  qrCode: PaymentDetailQRCode;
-  bank: PaymentDetailBank;
+  'paymentQrCodeType': 'THAI_QR' | 'LINE_QR';
+  'paymentType': 'DEBIT' | 'CREDIT' | 'QR_CODE';
+  'paymentForm': 'FULL' | 'INSTALLMENT';
+  'paymentBank': any;
+  'paymentMethod': any;
 }
 export interface MainPromotion {
   cammapign: any;
   privilege: any;
   trade: any;
+  campaign: any;
 }
 
 // tslint:disable-next-line:no-empty-interface
@@ -221,6 +225,14 @@ export interface Seller {
   locationCode?: string;
   sellerNo?: string;
   shareUser?: string;
+}
+
+export interface ReceiptInfo {
+  branch?: string;
+  buyer: string;
+  buyerAddress: string;
+  taxId?: string;
+  telNo?: string;
 }
 
 export interface Queue {

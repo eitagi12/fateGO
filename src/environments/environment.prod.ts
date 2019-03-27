@@ -6,4 +6,6 @@ export const environment = {
   WEB_CONNECT_URL: 'wss://localhost:8088',
   TEST_OTP_MOBILE : null,
   MOBILE_STATUS: ['000', 'active', '377', 'terminate', '378', 'suspend', '379', 'disable'],
+  MPAY_QRCODE_SERVICE_ID: { PB: '3000000000026569', RL: '3000000000026571' },
+  MPAY_QRCODE_TERMINAL_ID: { PB: 3082, RL: 5767 },
 };

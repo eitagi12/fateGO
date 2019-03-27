@@ -23,7 +23,7 @@ export class DeviceOrderAisNewRegisterQrCodeErrorPageComponent implements OnInit
   }
 
   onHome(): void {
-
+    this.homeService.goToHome();
   }
 
 }

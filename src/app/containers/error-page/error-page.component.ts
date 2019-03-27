@@ -14,7 +14,7 @@ export class ErrorPageComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onToHome(): void {
+  onHome(): void {
     this.homeService.goToHome();
   }
 }

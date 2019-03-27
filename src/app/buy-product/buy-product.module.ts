@@ -12,6 +12,7 @@ import { BrandPageComponent } from './containers/brand-page/brand-page.component
 import { CampaignPageComponent } from './containers/campaign-page/campaign-page.component';
 import { ProductPageComponent } from './containers/product-page/product-page.component';
 import { PrivilegeToTradeSliderPipe } from './pipes/privilege-to-trade-slider.pipe';
+import { FlowService } from './services/flow.service';
 
 @NgModule({
   imports: [
@@ -30,7 +31,7 @@ import { PrivilegeToTradeSliderPipe } from './pipes/privilege-to-trade-slider.pi
     PrivilegeToTradeSliderPipe,
   ],
   providers: [
-    AddToCartService,
+    FlowService
   ]
 })
 export class BuyProductModule { }
