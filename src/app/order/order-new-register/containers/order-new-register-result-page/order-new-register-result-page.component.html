@@ -10,7 +10,7 @@
     <div class="mt-3 mb-3">
       <mc-wizard [wizards]="wizards" active="3"></mc-wizard>
       <div class="container-fluid">
-        <mc-result [success]="isSuccess" [mobileNo]="transaction?.data?.simCard?.mobileNo">
+        <mc-result [success]="isSuccess" [mobileNo]="transaction?.data?.simCard?.mobileNo" [mcLoading]="createTransactionService">
           <div *ngIf="isSuccess">
             <div class="text-center text-black"> TRANSACTION ID :
               <span class="text-grey"> {{ transaction?.data?.order?.orderNo }}</span>
