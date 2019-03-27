@@ -75,6 +75,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
     this.transaction.data.billingInformation = {
       billDeliveryAddress: customerInfo.billDeliveryAddress
     };
+    this.transaction.data.receiptInfo = customerInfo.receiptInfo;
   }
 
   onError(error: boolean): void {
