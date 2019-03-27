@@ -80,7 +80,6 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
 
   onError(error: boolean): void {
     this.isSuccess = error;
-    console.log(this.isSuccess);
   }
 
   checkAction(action: string): void {
