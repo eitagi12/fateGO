@@ -169,8 +169,6 @@ export class ReceiptInformationComponent implements OnInit {
     }
   }
 
-  
-
   switchKeyInBillingAddress(): void {
     this.inputBillingAddress = !this.inputBillingAddress;
   }
