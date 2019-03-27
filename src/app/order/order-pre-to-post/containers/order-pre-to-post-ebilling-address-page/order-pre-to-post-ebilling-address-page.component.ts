@@ -162,7 +162,11 @@ export class OrderPreToPostEbillingAddressPageComponent implements OnInit, OnDes
   onNext(): void {
     const billingInformation = this.transaction.data.billingInformation || {};
     const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
-    this.transaction.data.billingInformation.billDeliveryAddress = Object.assign(customer, this.customerAddressTemp);
+
+    this.transaction.data.billingInformation.billDeliveryAddress = Object.assign(
+      Object.assign({}, customer),
+      this.customerAddressTemp
+    );
 
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CONFIRM_USER_INFORMATION_PAGE]);
   }
