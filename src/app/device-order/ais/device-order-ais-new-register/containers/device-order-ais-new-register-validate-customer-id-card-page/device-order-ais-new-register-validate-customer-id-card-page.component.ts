@@ -275,19 +275,6 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
     };
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
   // ต้องอยู่หน้าถัดไปหรือป่าว
   // check When Comeback to ValidateIDcardPage and have SoId
   checkSoIdDuplicate(): void {
@@ -309,13 +296,6 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
       }
     }
   }
-
-
-
-
-
-
-
 
   createAddToCartTrasaction(transaction: Transaction, priceOption: PriceOption): Promise<any> {
     return new Promise((resolve, reject) => {
