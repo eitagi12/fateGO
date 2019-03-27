@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, TemplateRef, ElementRef, Output, EventEmitter } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { TransactionAction } from 'src/app/shared/models/transaction.model';
+import { TransactionAction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
 import { ReadCardService, ReadCardProfile } from 'mychannel-shared-libs';
 import { CustomerInformationService } from '../../services/customer-information.service';
 @Component({
@@ -28,6 +28,7 @@ export class DeviceOnlyReadCardComponent implements OnInit {
 
   @ViewChild('progressBarArea') progressBarArea: ElementRef;
   @ViewChild('progressBarReadSmartCard') progressBarReadSmartCard: ElementRef;
+  @ViewChild('listBillingAccountBox')  listBillingAccountBox: ElementRef;
 
   constructor(
     private bsModalService: BsModalService,
@@ -109,17 +110,39 @@ export class DeviceOnlyReadCardComponent implements OnInit {
   public getbillingCycle(customer: any): void {
     this.infoBySmartCard = customer;
     this.nameTextBySmartCard = customer.titleName + ' ' + customer.firstName + ' ' + customer.lastName;
-    this.addressTextBySmartCard = this.customerInformationService.convertBillingAddressToString(customer);
+    const billDeliveryAddress: BillDeliveryAddress = {
+      homeNo: customer.homeNo,
+      moo: customer.moo || '',
+      mooBan: customer.mooBan || '',
+      room: customer.room || '',
+      floor: customer.floor || '',
+      buildingName: customer.buildingName || '',
+      soi: customer.soi || '',
+      street: customer.street || '',
+      province: customer.province,
+      amphur: customer.amphur,
+      tumbol: customer.tumbol,
+      zipCode: customer.zipCode
+    };
+    this.addressTextBySmartCard = this.customerInformationService.convertBillingAddressToString(billDeliveryAddress);
     this.customerInformationService.getBillingByIdCard(customer.idCardNo)
       .then((res) => {
         console.log('getBillingByIdCard : res ==>> ', res);
         if (res && res.data && res.data.billingAccountList) {
-          this.listBillingAccount = res.data.billingAccountList;
+          this.listBillingAccount = res.data.billingAccountList.filter((item) => {
+            if (item.mobileNo && item.mobileNo[0].length > 0) {
+              return item;
+            }
+          });
           this.modalBillAddress = this.bsModalService.show(this.selectBillingAddressTemplate);
         } else {
+          this.progressBarArea.nativeElement.style.display = 'none';
           // hide layout for list billing account
           // alert('ไม่มีข้อมูลอยู่ในระบบกรุณาตรวจสอบรายการใหม่');
         }
+      })
+      .catch(() => {
+        this.listBillingAccountBox.nativeElement.style.display = 'none';
       });
   }
 
