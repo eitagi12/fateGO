@@ -22,6 +22,10 @@ const routes: Routes = [
       {
         path: 'existing',
         loadChildren: 'src/app/device-order/ais/device-order-ais-existing/device-order-ais-existing.module#DeviceOrderAisExistingModule',
+      },
+      {
+        path: 'best-buy',
+        loadChildren: 'src/app/device-order/ais/device-order-ais-existing-best-buy/device-order-ais-existing-best-buy.module#DeviceOrderAisExistingBestBuyModule'
       }
     ]
   },
