@@ -12,7 +12,7 @@
     <div class="mt-3 mb-3">
       <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
 
-      <mc-sim-serial [simSerial]="simSerial" (serial)="onCheckSimSerial($event)"></mc-sim-serial>
+      <mc-sim-serial #mcSimSerial [simSerial]="simSerial" (serial)="onCheckSimSerial($event)"></mc-sim-serial>
     </div>
   </div>
   <mc-footer>
