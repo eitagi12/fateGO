@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { ApiRequestService, PageLoadingService, HomeService, Utils, AlertService } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
-import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress, Customer, MainPromotion, ProductStock, Prebooking } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress, Customer, MainPromotion } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
@@ -51,10 +51,10 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
       this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
         .then((response: any) => {
           if (response.value === true) {
-           this.createDeviceOrderBestBuyService.cancelOrder(this.transaction).then((isSuccess: any) => {
+            this.createDeviceOrderBestBuyService.cancelOrder(this.transaction).then((isSuccess: any) => {
               this.transactionService.remove();
               window.location.href = '/';
-           });
+            });
           }
         }).catch(() => {
           this.transactionService.remove();
@@ -91,16 +91,16 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
 
   onBack(): void {
     this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
-        .then((response: any) => {
-          if (response.value === true) {
-            const productDetail = this.priceOption.productDetail;
-            this.createDeviceOrderBestBuyService.cancelOrder(this.transaction)
-                .then((isSuccess: any) => {
-                  this.transactionService.remove();
-                  window.location.href = `/sales-portal/buy-product/brand/${productDetail.brand}/${productDetail.model}`;
-             });
-          }
-        });
+      .then((response: any) => {
+        if (response.value === true) {
+          const productDetail = this.priceOption.productDetail;
+          this.createDeviceOrderBestBuyService.cancelOrder(this.transaction)
+            .then((isSuccess: any) => {
+              this.transactionService.remove();
+              window.location.href = `/sales-portal/buy-product/brand/${productDetail.brand}/${productDetail.model}`;
+            });
+        }
+      });
   }
 
   onNext(): void {
@@ -124,7 +124,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
       this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customer: Customer) => {
         this.transaction.data.customer = customer;
         this.transaction.data.billingInformation = {};
-        this.transaction.data.billingInformation.billDeliveryAddress = customer;
+        // this.transaction.data.billingInformation.billDeliveryAddress = customer;
         this.createDeviceOrderBestBuyService.createAddToCartTrasaction(this.transaction, this.priceOption)
           .then((transaction) => {
             this.transaction = transaction;
@@ -134,10 +134,10 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
             } else {
               this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE]);
             }
-        }).catch((e) => {
-          this.pageLoadingService.closeLoading();
-          this.alertService.error(e);
-        });
+          }).catch((e) => {
+            this.pageLoadingService.closeLoading();
+            this.alertService.error(e);
+          });
       });
     }
   }

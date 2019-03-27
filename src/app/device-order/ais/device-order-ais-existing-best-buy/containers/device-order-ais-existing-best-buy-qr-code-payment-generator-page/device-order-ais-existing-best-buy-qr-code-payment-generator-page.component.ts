@@ -1,16 +1,16 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Transaction, QrCodePrePostMpayModel } from 'src/app/shared/models/transaction.model';
-import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { HomeService, AlertService, PageActivityService, TokenService } from 'mychannel-shared-libs';
-import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Router } from '@angular/router';
-import { environment } from 'src/environments/environment';
 import { QrCodeModel, QrcodePaymentService } from '../../services/qrcode-payment.service';
 import { interval, Observable, Subscription } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_QR_CODE_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_QR_CODE_QUEUE_PAGE } from '../../constants/route-path.constant';
 import { toDataURL } from 'qrcode';
+import { Transaction } from 'src/app/shared/models/transaction.model';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-qr-code-payment-generator-page',
@@ -30,7 +30,7 @@ export class DeviceOrderAisExistingBestBuyQrCodePaymentGeneratorPageComponent im
   isPaid: boolean = false;
   timeCounterRenderer: string;
   isTimeLowerThanFifthteenSeconds: boolean;
-  qrCodePrePostMpayModel: QrCodePrePostMpayModel;
+  qrCodePrePostMpayModel: any;
   orderID: string;
   checkInquiryCallbackMpaySubscribtion$: Subscription;
 
@@ -64,7 +64,8 @@ export class DeviceOrderAisExistingBestBuyQrCodePaymentGeneratorPageComponent im
     //   this.alertService.error('ไม่พบการเลือกชนิด QRCode ในระบบ');
     // }
 
-    if (order.soId && payment.qrCode.qrType) {
+    // [SORRY Krap]
+    /*if (order.soId && payment.qrCode.qrType) {
       this.orderID = `${order.soId}_${this.refreshCount}`;
       this.getQRCode(this.setBodyRequestForGetQRCode(order.soId, payment.qrCode.qrType));
       this.setBodyRequestForPreMpay();
@@ -72,7 +73,7 @@ export class DeviceOrderAisExistingBestBuyQrCodePaymentGeneratorPageComponent im
         this.transaction.data.mpayPayment = this.qrCodePrePostMpayModel;
       });
       this.subscribeInquiryCallbackMpay();
-    }
+    }*/
   }
 
   onBack(): void {
@@ -141,7 +142,7 @@ export class DeviceOrderAisExistingBestBuyQrCodePaymentGeneratorPageComponent im
           }
         });
       } else if (this.isPaid) {
-        this.transaction.data.mpayPayment = this.qrCodePrePostMpayModel;
+        // this.transaction.data.mpayPayment = this.qrCodePrePostMpayModel;
         this.goToMpayQueuePage();
       }
     });
@@ -205,7 +206,7 @@ export class DeviceOrderAisExistingBestBuyQrCodePaymentGeneratorPageComponent im
 
   updateMpayDataStatus(): void {
     this.qrcodePaymentService.updatePostMpay(this.qrCodePrePostMpayModel).then((data: any) => {
-      this.transaction.data.mpayPayment = this.qrCodePrePostMpayModel;
+      // this.transaction.data.mpayPayment = this.qrCodePrePostMpayModel;
     });
   }
 
@@ -235,7 +236,7 @@ export class DeviceOrderAisExistingBestBuyQrCodePaymentGeneratorPageComponent im
     if (this.checkInquiryCallbackMpaySubscribtion$) {
       this.checkInquiryCallbackMpaySubscribtion$.unsubscribe();
     }
-    if (this.transaction.data.order.soId && this.transaction.data.payment.qrCode.qrType) {
+    /*if (this.transaction.data.order.soId && this.transaction.data.payment.qrCode.qrType) {
       this.inquiryMpay().then((isSuccess: boolean) => {
         if (isSuccess) {
           this.updateMpayDataStatus();
@@ -246,7 +247,7 @@ export class DeviceOrderAisExistingBestBuyQrCodePaymentGeneratorPageComponent im
           this.getQRCode(this.setBodyRequestForGetQRCode(this.transaction.data.order.soId, this.transaction.data.payment.qrCode.qrType));
           this.setBodyRequestForPreMpay();
           this.qrcodePaymentService.updatePostMpay(this.qrCodePrePostMpayModel).then((data: any) => {
-            this.transaction.data.mpayPayment = this.qrCodePrePostMpayModel;
+            // this.transaction.data.mpayPayment = this.qrCodePrePostMpayModel;
           }).catch((error: any) => {
             this.notifyMessage(error);
           });
@@ -255,7 +256,7 @@ export class DeviceOrderAisExistingBestBuyQrCodePaymentGeneratorPageComponent im
       }).catch((error: any) => {
         this.notifyMessage(error);
       });
-    }
+    }*/
   }
 
   subscribeInquiryCallbackMpay(): void {
@@ -280,7 +281,7 @@ export class DeviceOrderAisExistingBestBuyQrCodePaymentGeneratorPageComponent im
     this.qrCodePrePostMpayModel = {
       orderId: this.orderID,
       amount: this.summary([+this.priceOption.trade.promotionPrice, this.deposit]),
-      qrType: this.transaction.data.payment.qrCode.qrType,
+      // qrType: this.transaction.data.payment.qrCode.qrType,
       status: 'WAITING',
     };
     // --End Mock data

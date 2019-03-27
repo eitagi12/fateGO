@@ -81,7 +81,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
             this.transaction.data.customer = { ...this.transaction.data.customer, ...customerInfo };
           }
           this.transaction.data.billingInformation = {};
-          this.transaction.data.billingInformation.billDeliveryAddress = this.transaction.data.customer;
+          // this.transaction.data.billingInformation.billDeliveryAddress = this.transaction.data.customer;
           this.createDeviceOrderBestBuyService.createAddToCartTrasaction(this.transaction, this.priceOption).then((transaction) => {
             this.transaction = transaction;
             this.transaction.data.action = TransactionAction.KEY_IN;
@@ -100,7 +100,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
               this.transaction.data.customer = { ...this.transaction.data.customer, ...customerInfo };
             }
             this.transaction.data.billingInformation = {};
-            this.transaction.data.billingInformation.billDeliveryAddress = this.transaction.data.customer;
+            // this.transaction.data.billingInformation.billDeliveryAddress = this.transaction.data.customer;
             this.createDeviceOrderBestBuyService.createAddToCartTrasaction(this.transaction, this.priceOption).then((transaction) => {
               this.transaction = transaction;
               this.transaction.data.action = TransactionAction.KEY_IN_REPI;

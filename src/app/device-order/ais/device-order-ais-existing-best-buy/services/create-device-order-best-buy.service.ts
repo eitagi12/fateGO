@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction, Payment, Customer, Prebooking } from 'src/app/shared/models/transaction.model';
 import { HttpClient } from '@angular/common/http';
-import { Utils, TokenService, User, PaymentDetailQRCode } from 'mychannel-shared-libs';
+import { Utils, TokenService, User } from 'mychannel-shared-libs';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 
 export const REMARK_CASH_PAYMENT = '[CA]';
@@ -148,6 +148,8 @@ export class CreateDeviceOrderBestBuyService {
     const mobileCare = transaction.data.mobileCarePackage;
     const order = transaction.data.order;
 
+    // [SORY Krap]
+    /*
     let qrAmt;
     if (payment.type === 'qrcode' && transId) {
       qrAmt = this.getQrAmount(trade.normalPrice, trade.discount);
@@ -155,7 +157,7 @@ export class CreateDeviceOrderBestBuyService {
 
     const paymentMethod = (payment.type === 'qrcode' && transId) ? this.replacePaymentMethodForQRCodeWithOutAirtime(payment.qrCode)
        : payment.method;
-
+*/
     const data: any = {
       soId: order.soId,
       soCompany: productStock.company,
@@ -184,10 +186,11 @@ export class CreateDeviceOrderBestBuyService {
       matAirTime: '',
       matCodeFreeGoods: '',
       paymentRemark: this.getOrderRemark(trade, payment, advancePayment, mobileCare, queue.queueNo, transaction),
-      installmentTerm: payment && payment.bank ? payment.bank.installments[0].installmentMonth : 0,
+      // [SORRY Krap]
+      /*installmentTerm: payment && payment.bank ? payment.bank.installments[0].installmentMonth : 0,
       installmentRate: payment && payment.bank ? payment.bank.installments[0].installmentPercentage : 0,
       mobileAisFlg: 'Y',
-      paymentMethod: paymentMethod,
+      paymentMethod: paymentMethod,*/
       bankCode: this.getBankCode(payment, advancePayment),
       tradeFreeGoodsId: trade.freeGoods[0] ? trade.freeGoods[0].tradeFreegoodsId : '',
       matairtimeId: '',
@@ -198,7 +201,8 @@ export class CreateDeviceOrderBestBuyService {
       preBookingNo: prebooking ? prebooking.preBookingNo : '',
       depositAmt: prebooking ? prebooking.depositAmt : '',
       qrTransId: transId ? transId : '',
-      qrAmt: qrAmt
+      // [SORRY Krap]
+      /*qrAmt: qrAmt*/
     };
 
     return Promise.resolve(data);
@@ -210,20 +214,21 @@ export class CreateDeviceOrderBestBuyService {
   }
 
   private getPaymentMethod(payment: Payment, advancePayment: Payment, trade: any): string {
-
-    if (trade.advancePay.installmentFlag === 'Y') {
-      return payment.method;
-    }
-
-    let paymentMethod = payment.method + '|';
-
-    if (advancePayment && +trade.advancePay.amount !== 0) {
-      paymentMethod += advancePayment.method;
-    }
-    return paymentMethod;
+    // [SORRY Krap]
+    /*
+        if (trade.advancePay.installmentFlag === 'Y') {
+          return payment.method;
+        }
+        let paymentMethod = payment.method + '|';
+        if (advancePayment && +trade.advancePay.amount !== 0) {
+          paymentMethod += advancePayment.method;
+        }
+        return paymentMethod;
+        */
+    return null;
   }
 
-  private replacePaymentMethodForQRCodeWithOutAirtime(qrCode: PaymentDetailQRCode): string {
+  private replacePaymentMethodForQRCodeWithOutAirtime(qrCode: any): string {
     let paymentMethod;
     if (qrCode) {
       if (qrCode.qrType === '003') {
@@ -238,7 +243,9 @@ export class CreateDeviceOrderBestBuyService {
   }
 
   private getBankCode(payment: Payment, advancePayment: Payment): string {
-    return payment && payment.bank ? payment.bank.abb : '' + '|';
+    // [SORRY Krap]
+    // return payment && payment.bank ? payment.bank.abb : '' + '|';
+    return null;
   }
 
   private getOrderRemark(
@@ -261,7 +268,8 @@ export class CreateDeviceOrderBestBuyService {
     if (trade.advancePay.installmentFlag !== 'Y' && +trade.advancePay.amount !== 0) {
       if (advancePayment) {
         advancePay += REMARK_AIR_TIME;
-        if (advancePayment.type === 'qrcode') {
+        // [SORRY Krap]
+        /*if (advancePayment.type === 'qrcode') {
           if (advancePayment.qrCode.id === parseInt('003', 8)) {
             advancePay += REMARK_PROMPT_PAY_PAYMENT;
           } else {
@@ -272,7 +280,7 @@ export class CreateDeviceOrderBestBuyService {
           advancePay += REMARK_BANK + advancePayment.bank.abb;
         } else {
           advancePay += REMARK_CASH_PAYMENT;
-        }
+        }*/
       }
     }
     remarkDesc += advancePay + newLine;
@@ -287,6 +295,8 @@ export class CreateDeviceOrderBestBuyService {
     }
 
     if (payment) {
+      // [SORRY Krap]
+      /*
       if (payment.type === 'qrcode') {
         if (payment.qrCode.id === parseInt('003', 8)) {
           tradeAndInstallment += REMARK_PROMPT_PAY_PAYMENT + comma + space;
@@ -302,7 +312,7 @@ export class CreateDeviceOrderBestBuyService {
         }
       } else {
         tradeAndInstallment += REMARK_CASH_PAYMENT + comma + space;
-      }
+      }*/
     }
     tradeAndInstallment += REMARK_TRADE_NO + trade.tradeNo;
     remarkDesc += tradeAndInstallment + newLine;
@@ -389,7 +399,8 @@ export class CreateDeviceOrderBestBuyService {
         contract: transaction.data.mainPromotion.campaign.conditionCode || {}
       },
       create_by: username,
-      issueBy: transaction.issueBy || username,
+      // [SORRY Krap] อันนี้ไม่น่าใช้ใช่ปะ
+      // issueBy: transaction.issueBy || username,
       last_update_by: username
     };
   }
@@ -475,7 +486,7 @@ export class CreateDeviceOrderBestBuyService {
 
   getFullName(customer: Customer): string {
     return customer && customer.titleName && customer.firstName && customer.lastName
-        ? `${customer.titleName} ${customer.firstName} ${customer.lastName}` : '';
+      ? `${customer.titleName} ${customer.firstName} ${customer.lastName}` : '';
   }
 
   cancelOrder(transaction: Transaction): Promise<any> {
@@ -485,9 +496,9 @@ export class CreateDeviceOrderBestBuyService {
         && transaction.data.order
         && transaction.data.order.soId) {
         this.clearAddToCart(transaction.transactionId, transaction.data.order.soId)
-        .then((res: any) => {
-          resolve(res.isSuccess);
-        });
+          .then((res: any) => {
+            resolve(res.isSuccess);
+          });
       } else {
         resolve(false);
       }

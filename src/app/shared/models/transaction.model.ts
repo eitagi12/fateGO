@@ -67,7 +67,6 @@ export interface Payment {
   'paymentMethod': any;
 }
 export interface MainPromotion {
-  cammapign: any;
   privilege: any;
   trade: any;
   campaign: any;

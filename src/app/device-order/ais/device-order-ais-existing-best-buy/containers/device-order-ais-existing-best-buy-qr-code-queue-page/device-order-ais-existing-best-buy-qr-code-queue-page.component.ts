@@ -50,7 +50,7 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
     this.qrcodePaymentService.getInquiryCallbackMpay(this.transaction.data.order.soId).then((transId: any) => {
       if (transId && transId.data && transId.data.DATA && transId.data.DATA.mpay_payment) {
         this.transId = transId.data.DATA.mpay_payment.tranId;
-        this.transaction.data.mpayPayment.tranId = this.transId;
+        // this.transaction.data.mpayPayment.tranId = this.transId;
       } else {
         this.alertService.error('เกิดข้อผิดพลาด ระบบไม่สามารถเรียก orderID(soID) มาใช้งานได้');
       }

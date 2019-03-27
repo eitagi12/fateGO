@@ -3,8 +3,14 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
-import { HomeService, ShoppingCart, PaymentDetail, SelectPaymentDetail, PaymentDetailOption, PaymentDetailQRCode, PaymentDetailBank, PaymentDetailInstallment, User, TokenService } from 'mychannel-shared-libs';
-import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_CARE_AVAILABLE_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_CARE_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_REPI_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
+import { HomeService, ShoppingCart, PaymentDetail, User, TokenService } from 'mychannel-shared-libs';
+import {
+  ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_CARE_AVAILABLE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_CARE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_REPI_PAGE
+} from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
 import { Transaction, ExistingMobileCare, Customer } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
@@ -34,18 +40,18 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
   receiptInfo: ReceiptInfo;
   receiptInfoValid: boolean = true;
 
-  paymentDetail: PaymentDetail;
-  selectPaymentDetail: SelectPaymentDetail;
-  paymentDetailOption: PaymentDetailOption;
+  paymentDetail: any;
+  selectPaymentDetail: any;
+  paymentDetailOption: any;
 
   paymentMethod: string;
 
-  selectQRCode: PaymentDetailQRCode;
-  selectBank: PaymentDetailBank;
+  selectQRCode: any;
+  selectBank: any;
   // installments: PaymentDetailInstallment[];
 
-  selectQRCodeAdvancePay: PaymentDetailQRCode;
-  selectBankAdvancePay: PaymentDetailBank;
+  selectQRCodeAdvancePay: any;
+  selectBankAdvancePay: any;
 
   paymentForm: FormGroup;
   discountForm: FormGroup;
@@ -68,14 +74,15 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     this.user = this.tokenService.getUser();
-   }
+  }
 
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.formID = this.getRandomNum(10);
     this.depositOrDiscount = this.transaction.data.preBooking
-                && this.transaction.data.preBooking.depositAmt
-                && this.transaction.data.preBooking.preBookingNo ? true : false;
+      && this.transaction.data.preBooking.depositAmt
+      && this.transaction.data.preBooking.preBookingNo ? true : false;
+    // [SORRY Krap]
     // this.transaction.data.preBooking = {
     //   depositAmt: '2000',
     //   preBookingNo: 'BP201903040000001',
@@ -90,8 +97,8 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
     }
 
     this.showQRCode = this.paymentMethod !== 'CC' && this.user.userType !== 'ASP'
-              && this.user.channelType !== 'sff-web' && this.priceOption.productStock.company === 'AWN'
-              && this.user.username.toLowerCase() === 'duangdat';
+      && this.user.channelType !== 'sff-web' && this.priceOption.productStock.company === 'AWN'
+      && this.user.username.toLowerCase() === 'duangdat';
     // this.showQRCode = true;
 
     this.onLoadDefaultBankData(this.priceOption.trade.banks).then((banks) => {
@@ -108,9 +115,10 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
 
     if (this.transaction.data.payment) {
       this.selectPaymentDetail = {
-        paymentType: this.transaction.data.payment.type,
+        // [SORRY Krap]
+        /*paymentType: this.transaction.data.payment.type,
         qrCode: this.transaction.data.payment.qrCode,
-        bank: this.transaction.data.payment.bank,
+        bank: this.transaction.data.payment.bank,*/
       };
       const bank = this.paymentDetail.banks.find(b => b.abb === this.selectPaymentDetail.bank.abb);
       this.paymentDetail.installments = bank ? bank.installments : [];
@@ -160,21 +168,23 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
         const existingMobileCare: ExistingMobileCare = exMobileCare.existMobileCarePackage;
         existingMobileCare.handSet = exMobileCare.existHandSet;
         this.transaction.data.existingMobileCare = existingMobileCare;
-        this.transaction.data.payment = {
+        // [SORRY Krap]
+        /*this.transaction.data.payment = {
           method: this.paymentMethod,
           type: this.selectPaymentDetail.paymentType,
           qrCode: this.selectPaymentDetail.qrCode,
           bank: this.selectPaymentDetail.bank
-        };
+        };*/
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_CARE_AVAILABLE_PAGE]);
       } else {
         this.transaction.data.existingMobileCare = null;
-        this.transaction.data.payment = {
+        // [SORRY Krap]
+        /*this.transaction.data.payment = {
           method: this.paymentMethod,
           type: this.selectPaymentDetail.paymentType,
           qrCode: this.selectPaymentDetail.qrCode,
           bank: this.selectPaymentDetail.bank
-        };
+        };*/
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_CARE_PAGE]);
       }
     });
@@ -184,7 +194,7 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
     this.transactionService.update(this.transaction);
   }
 
-  onLoadDefaultBankData(banks: PaymentDetailBank[]): Promise<any> {
+  onLoadDefaultBankData(banks: any[]): Promise<any> {
     return new Promise((resolve, reject) => {
       if (banks && banks.length > 0) {
         resolve(banks);
@@ -227,16 +237,16 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
   onSelectPaymentType(paymentType: string): void {
     this.selectPaymentDetail.paymentType = paymentType;
   }
-  onSelectQRCode(qrCode: PaymentDetailQRCode): void {
+  onSelectQRCode(qrCode: any): void {
     this.selectPaymentDetail.qrCode = Object.assign({}, qrCode);
     // this.selectPaymentDetailAdvancePay.qrCode = Object.assign({}, qrCode);
   }
-  onSelectBank(bank: PaymentDetailBank): void {
+  onSelectBank(bank: any): void {
     this.selectPaymentDetail.bank = Object.assign({}, bank);
     this.selectPaymentDetail.bank.installments = undefined;
     this.paymentDetail.installments = bank.installments; // Object.assign({}, bank.installments);
   }
-  onSelectInstallment(installment: PaymentDetailInstallment[]): void {
+  onSelectInstallment(installment: any[]): void {
     this.selectPaymentDetail.bank.installments = Object.assign({}, installment);
   }
 
@@ -300,7 +310,7 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
 
   }
 
-  getPaymentMethod(paymentType: string, qrCode?: PaymentDetailQRCode): string {
+  getPaymentMethod(paymentType: string, qrCode?: any): string {
     if (paymentType === 'qrcode' && qrCode) {
       if (qrCode.id === parseInt('002', 8)) { // Rabbit Line Pay
         return 'RL';
@@ -335,14 +345,14 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
     ];
   }
 
-  groupPrivilegeTradeBankByAbb(banks: PaymentDetailBank[]): PaymentDetailBank[] {
+  groupPrivilegeTradeBankByAbb(banks: any[]): any[] {
 
-    const newPrivilegTradeBankByAbbs = new Array<PaymentDetailBank>();
-    const grouped = this.groupBy(banks, (bank: PaymentDetailBank) => bank.abb);
+    const newPrivilegTradeBankByAbbs = new Array<any>();
+    const grouped = this.groupBy(banks, (bank: any) => bank.abb);
     const groupedKeys = Array.from(grouped.keys());
     for (const groupedKey of groupedKeys) {
-      const groupBanks: PaymentDetailBank[] = grouped.get(groupedKey);
-      const privilegTradeBank: PaymentDetailBank = {
+      const groupBanks: any[] = grouped.get(groupedKey);
+      const privilegTradeBank: any = {
         abb: groupBanks[0].abb,
         name: groupBanks[0].name,
         imageUrl: groupBanks[0].imageUrl,
@@ -370,8 +380,8 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
     return map;
   }
 
-  public getBanksInstallmentDatas(banks: PaymentDetailBank[]): PaymentDetailInstallment[] {
-    const installmentDatas = new Array<PaymentDetailInstallment>();
+  public getBanksInstallmentDatas(banks: any[]): any[] {
+    const installmentDatas = new Array<any>();
     banks.forEach((bank: any) => {
       const installmentPercentage = this.getBankInstallmentPercentage(bank.installment) ?
         this.getBankInstallmentPercentage(bank.installment) : 0;
@@ -385,7 +395,7 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
         );
 
       if (existInstallments.length === 0 && (installmentMonth)) {
-        const installmentData: PaymentDetailInstallment = {
+        const installmentData: any = {
           installmentMonth: installmentMonth,
           installmentPercentage: installmentPercentage
         };

@@ -80,7 +80,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
         this.customerInfoService.getCustomerInfoByIdCard(this.profile.idCardNo, zipCode).then((customer: Customer) => {
           this.transaction.data.customer = Object.assign(this.profile, customer);
           this.transaction.data.billingInformation = {};
-          this.transaction.data.billingInformation.billDeliveryAddress = this.transaction.data.customer;
+          // this.transaction.data.billingInformation.billDeliveryAddress = this.transaction.data.customer;
           // verify Prepaid Ident
           this.customerInfoService.verifyPrepaidIdent(this.profile.idCardNo, mobileNo)
             .then((respPrepaidIdent: any) => {

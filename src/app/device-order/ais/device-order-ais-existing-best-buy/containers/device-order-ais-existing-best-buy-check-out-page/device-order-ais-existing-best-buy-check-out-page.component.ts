@@ -44,7 +44,7 @@ export class DeviceOrderAisExistingBestBuyCheckOutPageComponent implements OnIni
 
   onNext(): void {
     const payment: Payment = this.transaction.data.payment;
-    if (payment.type === 'qrcode') {
+    if (payment.paymentType === 'QR_CODE') {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_QR_CODE_SUMMARY_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_QUEUE_PAGE]);
