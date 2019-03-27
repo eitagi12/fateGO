@@ -9,6 +9,7 @@ import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.consta
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ROUTE_ORDER_PRE_TO_POST_CONFIRM_USER_INFORMATION_PAGE } from 'src/app/order/order-pre-to-post/constants/route-path.constant';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-order-pre-to-post-ebilling-address-page',
@@ -43,15 +44,21 @@ export class OrderPreToPostEbillingAddressPageComponent implements OnInit, OnDes
     this.transaction = this.transactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.callService();
-    this.translationSubscribe = this.translation.onLangChange.subscribe(() => {
+    this.translationSubscribe = this.translation.onLangChange.pipe(debounceTime(750)).subscribe(() => {
       this.callService();
+      this.amphurs = [];
+      this.tumbols = [];
+      this.zipCodes = [];
+      this.customerAddress.amphur = null;
+      this.customerAddress.tumbol = null;
+      this.customerAddress.province = null;
     });
+
   }
 
   callService() {
-    this.transaction.data.customer.engFlag = (this.translation.currentLang === 'EN') ? 'Y' : 'N';
     const billingInformation = this.transaction.data.billingInformation || {};
     const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
     this.http.get('/api/customerportal/newRegister/getAllZipcodes').subscribe((resp: any) => {

@@ -11,6 +11,7 @@ import { FormBuilder, FormGroup } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-order-new-register-one-love-page',
@@ -21,6 +22,7 @@ export class OrderNewRegisterOneLovePageComponent implements OnInit, OnDestroy {
 
   wizards = WIZARD_ORDER_NEW_REGISTER;
   transaction: Transaction;
+  translationSubscribe: Subscription;
 
   oneLove: OneLove;
   oneLoveForm: FormGroup;
@@ -48,6 +50,19 @@ export class OrderNewRegisterOneLovePageComponent implements OnInit, OnDestroy {
       numberOfMobile: numberOfMobile,
       mainPackageText: mainPackage.shortNameThai
     };
+    this.oneLoveByLang();
+    this.translationSubscribe = this.translation.onLangChange.subscribe(lang => {
+      this.oneLoveByLang();
+    });
+  }
+
+  oneLoveByLang() {
+    const mainPackage = this.transaction.data.mainPackage;
+    if (this.translation.currentLang === 'EN') {
+      this.oneLove.mainPackageText = mainPackage.shortNameEng;
+    } else {
+      this.oneLove.mainPackageText = mainPackage.shortNameThai;
+    }
   }
 
   onHome() {
@@ -125,6 +140,7 @@ export class OrderNewRegisterOneLovePageComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
+    this.translationSubscribe.unsubscribe();
     this.transactionService.update(this.transaction);
   }
 

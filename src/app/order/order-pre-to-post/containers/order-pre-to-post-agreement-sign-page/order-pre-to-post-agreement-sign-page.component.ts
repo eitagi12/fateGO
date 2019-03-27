@@ -27,18 +27,19 @@ export class OrderPreToPostAgreementSignPageComponent implements OnInit, OnDestr
   currentLang: string;
   translationSubscribe: Subscription;
 
+  commandSigned: any;
+
   constructor(
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
-    private aisNativeService: AisNativeService,
     private tokenService: TokenService,
     private alertService: AlertService,
     private translationService: TranslateService,
     private aisNativeOrderService: AisNativeOrderService,
   ) {
     this.transaction = this.transactionService.load();
-    this.signedSignatureSubscription = this.aisNativeService.getSigned().subscribe((signature: string) => {
+    this.signedSignatureSubscription = this.aisNativeOrderService.getSigned().subscribe((signature: string) => {
       this.isOpenSign = false;
       if (signature) {
         this.transaction.data.customer.imageSignature = signature;
@@ -105,6 +106,10 @@ export class OrderPreToPostAgreementSignPageComponent implements OnInit, OnDestr
     ).subscribe((command: any) => {
       this.openSignedCommand = command;
     });
+  }
+
+  getOnMessageWs(): void {
+    this.commandSigned.ws.send('CaptureImage');
   }
 
   ngOnDestroy(): void {

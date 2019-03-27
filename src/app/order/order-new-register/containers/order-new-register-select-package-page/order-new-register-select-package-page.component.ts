@@ -103,7 +103,6 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
   }
 
   callService(language: string) {
-    console.log('language', language);
     this.pageLoadingService.openLoading();
 
     const billingInformation: any = this.transaction.data.billingInformation;

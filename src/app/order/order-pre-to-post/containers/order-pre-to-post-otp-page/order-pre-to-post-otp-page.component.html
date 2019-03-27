@@ -15,24 +15,23 @@
         <div class="card">
           <div class="card-body text-center">
 
-            <p>ระบุรหัส OTP ที่ได้รับ</p>
+            <p translate>ระบุรหัส OTP ที่ได้รับ</p>
             <hr>
             <form [formGroup]="otpForm">
               <div class="form-group">
-                <input type="tel" class="form-control text-center" id="otp" maxlength="5" minlength="5" placeholder="กรุณาใส่รหัสที่ได้รับจาก SMS" autofocus
+                <input type="tel" class="form-control text-center" id="otp" maxlength="5" minlength="5" placeholder="{{ 'กรุณาใส่รหัสที่ได้รับจาก SMS' | translate}}" autofocus
                   autocomplete="off" formControlName="otp">
               </div>
               <div class="text-grey mt-4 pb-5">
-                <div>รหัส OTP มีอายุใช้งาน 15 นาที</div>
-                <div>หากไม่ได้รับรหัส กรุณาตรวจสอบหมายเลขโทรศัพท์อีกครั้ง</div>
+                <div translate>รหัส OTP มีอายุใช้งาน 15 นาที</div>
+                <div translate>หากไม่ได้รับรหัส กรุณาตรวจสอบหมายเลขโทรศัพท์อีกครั้ง</div>
               </div>
               <div class="row">
                 <div class="col-6 col-sm-6 text-center">
-                  <a (click)="sendOTP()"><u>ขอรับรหัสใหม่</u></a>
+                  <a (click)="sendOTP()"><u translate>ขอรับรหัสใหม่</u></a>
                 </div>
                 <div class="col-6 col-sm-6 text-center">
-                  <button [disabled]="!otpForm.valid" type="submit" id="btnOtp" class="btn btn-success btn-lg" (click)="verifyOTP()">ตกลง
-                  </button>
+                  <button [disabled]="!otpForm.valid" type="submit" id="btnOtp" class="btn btn-success btn-lg" (click)="verifyOTP()" translate>ตกลง</button>
                 </div>
               </div>
 

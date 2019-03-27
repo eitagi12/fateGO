@@ -351,8 +351,9 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
               this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE]);
             })
             .catch((error: any) => {
+              this.pageLoadingService.closeLoading();
               this.validateCustomerForm.patchValue({ identity: '' });
-              this.alertService.error(error.error.resultDescription);
+              this.alertService.error(this.translation.instant(error.error.resultDescription));
             });
         }
       });
@@ -536,8 +537,11 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
       this.closeVendingApi.ws.send(KioskControls.LED_OFF);
     }
     clearInterval(this.cardStateInterval);
-    this.vendingApiSubscription.unsubscribe();
-    this.readPassportSubscription.unsubscribe();
+    setTimeout(() => {
+      this.vendingApiSubscription.unsubscribe();
+      this.readPassportSubscription.unsubscribe();
+    }, 750);
+
   }
   // mockFunc
   onClickMock(mock): void {
@@ -555,7 +559,7 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
         issuingCountry: defaultIfEmpty(data.IssuingCountry),
         firstName: defaultIfEmpty(data.GivenName),
         lastName: defaultIfEmpty(data.Surname),
-        nationality: defaultIfEmpty(data.Nationality),
+        nationality: defaultIfEmpty(data.IssuingCountry),
         birthdate: convertStringToDate(data.BirthDate),
         gender: defaultIfEmpty(data.Sex) === '1' ? 'M' : 'F',
         idCardNo: defaultIfEmpty(data.PassportNumber),
@@ -583,15 +587,28 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
     })
       .then((resp: any) => {
         const data = resp.data || {};
+        // readPassport NewCa จะไม่ได้ address
         return {
           caNumber: data.caNumber,
           mainMobile: data.mainMobile,
           billCycle: data.billCycle,
-          // zipCode: zipCode
+          homeNo: data.homeNo,
+          moo: data.moo,
+          mooBan: data.mooBan,
+          room: data.room,
+          floor: data.floor,
+          buildingName: data.buildingName,
+          soi: data.soi,
+          street: data.street,
+          tumbol: data.tumbol,
+          amphur: data.amphur,
+          province: data.province,
+          zipCode: data.zipCode
         };
-      }).then((resp) => {
+      }).then((customer) => {
         this.transaction.data.customer = Object.assign(
-          Object.assign({}, this.transaction.data.customer), readPassport.profile);
+          Object.assign({}, this.transaction.data.customer),
+          Object.assign(readPassport.profile, customer));
         return this.http.get(`/api/customerportal/newRegister/${mock.PassportNumber}/queryBillingAccount`).toPromise()
           .then((respQueryBilling: any) => {
             const data = respQueryBilling.data || {};
@@ -628,15 +645,15 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
           this.alertService.notify({
             type: 'error',
             html: error.errors.map((err) => {
-              return '<li class="text-left">' + err + '</li>';
+              return '<li class="text-left">' + this.translation.instant(err) + '</li>';
             }).join('')
           }).then(() => {
             this.onBack();
           });
         } else if (error.resultDescription) {
-          this.alertService.error(error.resultDescription);
+          this.alertService.error(this.translation.instant(error.resultDescription));
         } else {
-          this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+          this.alertService.error(this.translation.instant('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'));
 
         }
       });

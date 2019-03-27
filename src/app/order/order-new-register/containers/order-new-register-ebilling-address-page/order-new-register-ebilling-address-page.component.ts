@@ -12,6 +12,7 @@ import { load } from '@angular/core/src/render3/instructions';
 import { NgxResource, LocalStorageService } from 'ngx-store';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-order-new-register-ebilling-address-page',
@@ -48,16 +49,18 @@ export class OrderNewRegisterEbillingAddressPageComponent implements OnInit, OnD
   }
 
   ngOnInit() {
-
     this.callService();
-    this.translationSubscribe = this.translation.onLangChange.subscribe(() => {
+    this.translationSubscribe = this.translation.onLangChange.pipe(debounceTime(750)).subscribe(() => {
       this.callService();
+      this.amphurs = [];
+      this.tumbols = [];
+      this.zipCodes = [];
+      this.customerAddress.amphur = null;
+      this.customerAddress.tumbol = null;
+      this.customerAddress.province = null;
     });
-
   }
-
   callService() {
-    this.transaction.data.customer.engFlag = (this.translation.currentLang === 'EN') ? 'Y' : 'N';
     const billingInformation = this.transaction.data.billingInformation || {};
     const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
     this.http.get('/api/customerportal/newRegister/getAllZipcodes').subscribe((resp: any) => {
@@ -71,7 +74,6 @@ export class OrderNewRegisterEbillingAddressPageComponent implements OnInit, OnD
         }
       }).subscribe((resp: any) => {
         this.provinces = (resp.data.provinces || []);
-
         this.customerAddress = {
           homeNo: customer.homeNo,
           moo: customer.moo,
@@ -86,21 +88,6 @@ export class OrderNewRegisterEbillingAddressPageComponent implements OnInit, OnD
           tumbol: customer.tumbol,
           zipCode: customer.zipCode,
         };
-
-        // this.billDeliveryAddress = {
-        //   homeNo: billDeliveryAddress.homeNo,
-        //   moo: billDeliveryAddress.moo,
-        //   mooBan: billDeliveryAddress.mooBan,
-        //   room: billDeliveryAddress.floor,
-        //   floor: billDeliveryAddress.floor,
-        //   buildingName: billDeliveryAddress.buildingName,
-        //   soi: billDeliveryAddress.soi,
-        //   street: billDeliveryAddress.street,
-        //   province: billDeliveryAddress.province,
-        //   amphur: billDeliveryAddress.amphur,
-        //   tumbol: billDeliveryAddress.tumbol,
-        //   zipCode: billDeliveryAddress.zipCode,
-        // };
       });
   }
 
@@ -200,8 +187,8 @@ export class OrderNewRegisterEbillingAddressPageComponent implements OnInit, OnD
   onNext() {
     const billingInformation = this.transaction.data.billingInformation || {};
     const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
-    this.transaction.data.billingInformation.billDeliveryAddress = Object.assign(customer, this.customerAddressTemp);
-
+    this.transaction.data.billingInformation.billDeliveryAddress = Object.assign(Object.assign({}, customer), this.customerAddressTemp);
+    this.transactionService.update(this.transaction);
     this.router.navigate([ROUTE_ORDER_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE]);
   }
 

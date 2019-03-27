@@ -16,6 +16,8 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { HttpClient } from '@angular/common/http';
 import * as moment from 'moment';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-order-pre-to-post-select-package-page',
@@ -33,6 +35,7 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
   promotionShelves: PromotionShelve[];
   condition: any;
   modalRef: BsModalRef;
+  translateSubscribe: Subscription;
 
   constructor(
     private router: Router,
@@ -41,7 +44,8 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
     private modalService: BsModalService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private http: HttpClient
+    private http: HttpClient,
+    private translateService: TranslateService,
   ) {
     this.transaction = this.transactionService.load();
 
@@ -53,7 +57,10 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
   }
 
   ngOnInit() {
-    this.callService();
+    this.callService(this.translateService.currentLang);
+    this.translateSubscribe = this.translateService.onLangChange.subscribe(language => {
+      this.callService(language.lang);
+    });
   }
 
   onBack() {
@@ -82,6 +89,7 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
   }
 
   ngOnDestroy(): void {
+    this.translateSubscribe.unsubscribe();
     this.transactionService.update(this.transaction);
   }
 
@@ -89,7 +97,7 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
     this.transaction.data.mainPackage = promotion;
   }
 
-  callService() {
+  callService(language: string) {
 
     this.pageLoadingService.openLoading();
     const billingInformation = this.transaction.data.billingInformation;
@@ -125,13 +133,13 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
         return this.http.get('/api/customerportal/newRegister/queryMainPackage', {
           params: Object.assign({
             registerDate: regisDate,
-            isNetExtreme: isNetExtreme
+            isNetExtreme: isNetExtreme,
+            langauge: language
           }, params)
         }).toPromise()
 
           .then((resp: any) => {
             const data = resp.data.packageList || [];
-
             const promotionShelves: PromotionShelve[] = data.map((promotionShelve: any) => {
               return {
                 title: promotionShelve.title,
@@ -147,8 +155,8 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
                       items: (subShelve.items || []).map((promotion: any) => {
                         return { // item
                           id: promotion.itemId,
-                          title: promotion.shortNameThai,
-                          detail: promotion.statementThai,
+                          title: language === 'EN' ? promotion.shortNameEng : promotion.shortNameThai,
+                          detail: language === 'EN' ? promotion.statementEng : promotion.shortNameThai,
                           condition: subShelve.conditionCode,
                           value: promotion
                         };

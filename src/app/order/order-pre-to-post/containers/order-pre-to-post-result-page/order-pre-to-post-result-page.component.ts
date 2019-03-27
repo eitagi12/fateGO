@@ -17,7 +17,8 @@ export class OrderPreToPostResultPageComponent implements OnInit {
 
   transaction: Transaction;
   serviceChange: any;
-  isSuccess: boolean;
+  isSuccess = false;
+
   constructor(
     private homeService: HomeService,
     private alertService: AlertService,
@@ -30,33 +31,30 @@ export class OrderPreToPostResultPageComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.pageLoadingService.openLoading();
-    this.createPreToPostService.createPreToPost(this.transaction)
-      .then(resp => {
-        const data = resp.data || {};
-        this.transaction.data.order = {
-          orderNo: data.orderNo,
-          orderDate: data.orderDate
-        };
-        if (this.transaction.data.order.orderNo) {
-          this.isSuccess = true;
-        } else {
-          this.isSuccess = false;
-        }
-        this.transactionService.update(this.transaction);
+    // this.pageLoadingService.openLoading();
+    // this.createPreToPostService.createPreToPost(this.transaction)
+    //   .then(resp => {
+    //     const data = resp.data || {};
+    //     this.transaction.data.order = {
+    //       orderNo: data.orderNo,
+    //       orderDate: data.orderDate
+    //     };
+    //     if (this.transaction.data.order.orderNo) {
+    //       this.isSuccess = true;
+    //     } else {
+    //       this.isSuccess = false;
+    //     }
+    //     this.transactionService.update(this.transaction);
 
-        return this.http.get(`/api/customerportal/newRegister/${this.transaction.data.simCard.mobileNo}/queryCurrentServices`).toPromise();
-      })
-      .then((resp: any) => {
-        const currentServices = resp.data || [];
-        this.serviceChange = currentServices.services.filter(service => service.canTransfer);
-        this.pageLoadingService.closeLoading();
-      })
-      .catch((error: any) => {
-        this.isSuccess = false;
-        this.alertService.error(error);
-        this.pageLoadingService.closeLoading();
-      });
+    //     return this.http.get(`/api/customerportal/newRegister/${this.transaction.data.simCard.mobileNo}/queryCurrentServices`).toPromise();
+    //   })
+    //   .then((resp: any) => {
+    //     const currentServices = resp.data || [];
+    //     this.serviceChange = currentServices.services.filter(service => service.canTransfer);
+    //   })
+    //   .then(() => {
+    //     this.pageLoadingService.closeLoading();
+    //   });
   }
 
   onMainMenu() {

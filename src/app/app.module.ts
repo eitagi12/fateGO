@@ -29,6 +29,7 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [
     CommonModule,
     BrowserModule,
+    TranslateModule.forRoot(),
     HttpClientModule, // ต้อง import แค่ครั้งเดียว
     MyChannelSharedLibsModule.forRoot({
       production: environment.production,
