@@ -30,7 +30,6 @@ export interface Transaction {
   lastUpdateDate?: string;
   lastUpdateBy?: string;
   data?: TransactionData;
-  issueBy?: string;
 }
 
 export interface TransactionData {

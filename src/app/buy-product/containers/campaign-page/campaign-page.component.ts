@@ -1,15 +1,24 @@
 import { Component, OnInit, TemplateRef, ViewChild, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
-import { SalesService, TokenService, HomeService, User, CampaignSliderInstallment, PromotionShelve, PageLoadingService, BillingSystemType, AlertService } from 'mychannel-shared-libs';
-import { PRODUCT_TYPE, PRODUCT_SUB_TYPE, SUB_STOCK_DESTINATION, PRODUCT_HANDSET_BUNDLE } from 'src/app/buy-product/constants/products.constants';
-import { ROUTE_BUY_PRODUCT_PRODUCT_PAGE } from 'src/app/buy-product/constants/route-path.constant';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { forkJoin } from 'rxjs/internal/observable/forkJoin';
+import { debounceTime } from 'rxjs/internal/operators/debounceTime';
+import {
+    SalesService, TokenService, HomeService, User,
+    CampaignSliderInstallment, PromotionShelve,
+    PageLoadingService, BillingSystemType, AlertService
+} from 'mychannel-shared-libs';
+import {
+    PRODUCT_TYPE, PRODUCT_SUB_TYPE,
+    SUB_STOCK_DESTINATION, PRODUCT_HANDSET_BUNDLE
+} from 'src/app/buy-product/constants/products.constants';
+import {
+    ROUTE_BUY_PRODUCT_PRODUCT_PAGE
+} from 'src/app/buy-product/constants/route-path.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { forkJoin } from 'rxjs/internal/observable/forkJoin';
 import { PromotionShelveService } from 'src/app/device-order/services/promotion-shelve.service';
-import { FormBuilder, FormGroup } from '@angular/forms';
-import { debounceTime } from 'rxjs/internal/operators/debounceTime';
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { FlowService } from '../../services/flow.service';
