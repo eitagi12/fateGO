@@ -43,17 +43,8 @@ export class CreateOrderService {
   }
 
   private getDevice(priceOption: PriceOption): any {
-    const product: any = {
-      colorCode: 'FEDBD5',
-      colorName: 'ROSE GOLD'
-    };
-    const productDetail: any = {
-      model: 'MOCK IPHONE7256',
-      brand: 'MOCK APPLE',
-      name: 'MOCK IPHONE 7 256GB',
-      productType: '',
-      productSubtype: ''
-    };
+    const product: any = priceOption.productStock;
+    const productDetail: any = priceOption.productDetail;
     return {
       model: productDetail.model,
       brand: productDetail.brand,
