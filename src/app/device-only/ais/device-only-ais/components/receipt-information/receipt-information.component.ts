@@ -140,17 +140,17 @@ export class ReceiptInformationComponent implements OnInit {
           if (res && res.data && res.data.billingAddress) {
             this.setCustomerInfo({
               customer: this.customerInfoService.mapAttributeFromGetBill(res.data.billingAddress),
-          action: TransactionAction.KEY_IN
-        });
-      } else {
-        this.alertService.notify({
-          type: 'error',
-          confirmButtonText: 'OK',
-          showConfirmButton: true,
-          text: 'เบอร์นี้ไม่ใช่ระบบ AIS กรุณาเปลี่ยนเบอร์ใหม่'
-        });
-      }
-    })
+              action: TransactionAction.KEY_IN
+            });
+          } else {
+            this.alertService.notify({
+              type: 'error',
+              confirmButtonText: 'OK',
+              showConfirmButton: true,
+              text: 'เบอร์นี้ไม่ใช่ระบบ AIS กรุณาเปลี่ยนเบอร์ใหม่'
+            });
+          }
+      })
       .catch((err) => {
         this.alertService.notify({
           type: 'error',
