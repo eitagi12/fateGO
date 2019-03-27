@@ -109,7 +109,7 @@ export class CreateDeviceOrderService {
     const payment = transaction.data.payment || '';
     // const advancePayment = transaction.data.advancePayment;
     const simCard = transaction.data.simCard || '';
-    const queue = transaction.data.queue || '';
+    const queue = transaction.data.queue;
     const seller = transaction.data.seller;
     // const prebooking = transaction.data.preBooking;
     const order = transaction.data.order || '';
@@ -118,8 +118,8 @@ export class CreateDeviceOrderService {
       soCompany: trade.company || 'AWN',
       locationSource: this.user.locationCode || '',
       locationReceipt: customer.selectedLocation.locationCode || '',
-      productType: trade.productType || 'DEVICE',
-      productSubType: trade.productSubtype || 'HANDSET',
+      productType: trade.productType || '',
+      productSubType: trade.productSubtype || '',
       brand: productDetail.brand,
       model: productDetail.model,
       color: productDetail.colorName,
