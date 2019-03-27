@@ -8,7 +8,6 @@ import { CreateOrderService } from '../../services/create-order.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Product } from 'src/app/device-only/ais/device-only-ais/models/product.model';
-
 @Component({
   selector: 'app-device-only-ais-select-payment-and-receipt-information-page',
   templateUrl: './device-only-ais-select-payment-and-receipt-information-page.component.html',
@@ -71,8 +70,11 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
     this.createAddToCartTrasaction();
   }
 
-  onComplete(customerInfo: Customer): void {
-    console.log('customerInfo', customerInfo);
+  onComplete(customerInfo: any): void {
+    this.transaction.data.customer = customerInfo.customer;
+    this.transaction.data.billingInformation = {
+      billDeliveryAddress: customerInfo.billDeliveryAddress
+    };
   }
 
   onError(error: boolean): void {
