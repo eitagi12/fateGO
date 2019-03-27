@@ -1,12 +1,12 @@
-import { CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+
 import { ReactiveFormsModule } from '@angular/forms';
 
-import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
+import {  ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { ReceiptInformationComponent, ReceiptInfo } from './receipt-information.component';
 import { BillingAddressService } from '../../services/billing-address.service';
-import { AlertService, CustomerService } from 'mychannel-shared-libs';
+import { AlertService } from 'mychannel-shared-libs';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
@@ -76,12 +76,6 @@ describe('ReceiptInformationComponent', () => {
     expect(errors['pattern']).toBeTruthy();
   });
 
-  it('should have taxID equal customerAddressTemp.idCardNo', () => {
-    const value = { 'idCardNo' : '1411900262244'};
-    component.onCompleted(value);
-    expect(component.customerAddressTemp.idCardNo).toBe('1411900262244');
-  });
-
   it('should have taxID equal receiptInfoForm taxID', () => {
     const value = { 'idCardNo' : '14799002554661'};
     component.onCompleted(value);
@@ -97,7 +91,7 @@ describe('ReceiptInformationComponent', () => {
     // Emit event to mother component
     let receiptInfo: ReceiptInfo;
     component.completed.subscribe(value => {
-      receiptInfo = value;
+      receiptInfo = value.receiptInfo;
     });
 
     tick(750); // because set debounceTime to 750 in component
