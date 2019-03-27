@@ -1,0 +1,80 @@
+<div class="mc-flex">
+  <mc-header title="{{'เปลี่ยนเติมเงินเป็นรายเดือน' | translate}}">
+    <div class="header-icon-left w-25">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right w-25 text-right">
+      <mc-dropdown-language></mc-dropdown-language>
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <div class="mb-3 mt-3">
+      <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
+
+      <!-- mc-capture-and-sign -->
+      <div [hidden]="isOpenSign" class="container-fluid">
+        <div class="card">
+          <!-- <h5 class="card-header bg-transparent text-center">
+            ถ่ายรูปบัตรประชาชน หรือบัตรอื่นๆ
+          </h5> -->
+          <div class="card-body">
+            <div class="camera-width">
+              <div class="embed-responsive embed-responsive-4by3" [hidden]="!(!isAllowCapture() || hasImageSmartCard())">
+                <div class="embed-responsive-item">
+                  <img class="capture-and-sign capture" alt="" [src]="'data:image/png;base64,' + captureAndSign?.imageSmartCard" />
+                  <img class="capture-and-sign signed" alt="" [src]="'data:image/png;base64,' + captureAndSign?.imageSignature" />
+                  <img class="capture-and-sign watermark" alt="" [src]="'data:image/png;base64,' + watermark" />
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="card-footer signature" [hidden]="!(!isAllowCapture() || hasImageSmartCard())">
+            <!-- กรุณาเซ็นลายเซ็น -->
+          </div>
+          <div class="card-footer bg-transparent text-center p-0">
+            <div class="row">
+              <div class="border-right p-3 col-6" [ngClass]="{ 
+              'd-none': !isAllowCapture(), 
+              'col-6': hasImageSmartCard(),
+              'col-12': !hasImageSmartCard()
+            }">
+                <!-- WEB Step -->
+                <div *ngIf="!isAisNative()">
+                  <a href="#" (click)="$event.preventDefault(); camera.next();" class="text-pink" *ngIf="!hasImageSmartCard()" translate>ถ่ายรูป</a>
+                  <a href="#" (click)="$event.preventDefault(); onClearImage()" class="text-pink" *ngIf="hasImageSmartCard()" translate>ถ่ายรูปใหม่</a>
+                </div>
+                <!-- Native Step -->
+                <div *ngIf="isAisNative()">
+                  <a href="#" (click)="$event.preventDefault(); camera.next();" class="text-pink" *ngIf="!hasImageSmartCard()">
+                    <span *ngIf="!hasImageSmartCard()" translate> ถ่ายรูป </span>
+                    <span *ngIf="hasImageSmartCard()" translate> ถ่ายรูปใหม่</span>
+                  </a>
+                </div>
+              </div>
+              <div class="p-3 col-6" [ngClass]="{ 
+              'col-12': !isAllowCapture(), 
+              'col-6': hasImageSmartCard(),
+              'd-none': !(!isAllowCapture() || hasImageSmartCard())
+            }">
+                <!-- WEB Step -->
+                <a href="#" (click)="$event.preventDefault(); onSigned()" class="text-pink">
+                  <span *ngIf="!hasImageSignature()" translate>เซ็นลายเซ็น</span>
+                  <span *ngIf="hasImageSignature()" translate>เซ็นลายเซ็นใหม่</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- /mc-capture-and-sign -->
+
+    </div>
+  </div>
+  <mc-footer>
+    <button [hidden]="idCardValid" class="btn btn-success" (click)="getOnMessageWs()">Confirm</button>
+    <button [hidden]="!idCardValid" class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button [hidden]="!idCardValid" class="btn btn-success" (click)="onNext()" [disabled]="!checkLogicNext()">NEXT</button>
+  </mc-footer>
+</div>

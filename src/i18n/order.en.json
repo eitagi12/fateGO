@@ -171,12 +171,12 @@
     "ข้อมูลปัจจุบันของคุณ": "Customer information",
     "ยอดเงินคงเหลือ": "Remaining balance",
     "ค่าโทรที่ได้รับ": "Voice allowance received",
-    "ยอดเงินคงเหลือจะถูกโอนเป็นค่าโทรที่ระบบรายเดือนให้โดยอัตโนมัติ": "Remaining balance will be automatically converted to voice call on the postpaid system.",
+    "* ยอดเงินคงเหลือจะถูกโอนเป็นค่าโทร ที่ระบบรายเดือนให้โดยอัตโนมัติ": "Remaining balance will be automatically converted to voice call on the postpaid system.",
     "บาท": "Baht",
-    "บริการเสริมตามรายการด้านล่างสิ้นสุดทันทีหลังจากเปลี่ยนเป็นรายเดือน": "The following on-top package(s) will be terminated after switching to postpaid service",
+    "บริการเสริมตามรายการด้านล่าง สิ้นสุดทันทีหลังจากเปลี่ยนเป็นรายเดือน": "The following on-top package(s) will be terminated after switching to postpaid service",
     "เงื่อนไขการโอนเงินอัตโนมัติใช้สิทธิ์ค่าโทร": "Voice allowance received condition",
-    "รายละเอียดโอนเงินอัตโนมัติดังนี้": "Voice allwance received detail",
-    "จำนวนเงินคงเหลือ (บาท)": "Remaining balance(Baht)",
+    "รายละเอียดโอนเงินอัตโนมัติ ดังนี้": "Voice allwance received detail",
+    "จำนวนเงินคงเหลือ (บาท)": "Remaining balance (Baht)",
     "ค่าโทรที่ได้รับ (บาท)": "Voice allowance received (Baht)",
     "2,000 ขึ้นไป": "B2,000 and over",
     "รวมบิลกับหมายเลข": "Merging bill payments of mobile numbers.",
@@ -194,7 +194,12 @@
     "RSME-สมัครแพ็กเกจ Sharing / แพ็กเกจ SME": "RSME Subscription to sharing package/SME package",
     "ผ่าน GSS & ARB ยกเว้นค่าธรรมเนียมการโอนย้ายเลขหมาย": "Network customer shows receipt/ waiver for network switching fee",
     "MNP ลูกค้าแสดงใบเสร็จรับเงิน ยกเว้นค่าธรรมเนียนการโอนย้ายเลขหมาย": "MNP customer show receipt/ waiver for network switching fee",
-    "ทั่วไป-ไม่พอใจในเครือข่ายเดิม": "Other/ not satisfied with previous network provider"
+    "ทั่วไป-ไม่พอใจในเครือข่ายเดิม": "Other/ not satisfied with previous network provider",
+    "หมายเลขโทรศัพท์": "Mobile Number",
+    "* กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง": "Please enter your mobile number correctly.",
+    "จำนวน": "Total of",
+    "เบอร์": "numbers",
+    "ขึ้นไป": "and over"
 
 
 

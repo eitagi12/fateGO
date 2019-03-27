@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 
 import { OrderPreToPostRoutingModule } from './order-pre-to-post-routing.module';
@@ -28,6 +29,10 @@ import { OrderPreToPostIdCardCaptureRepiPageComponent } from './containers/order
 import { OrderPreToPostEbillingPageComponent } from './containers/order-pre-to-post-ebilling-page/order-pre-to-post-ebilling-page.component';
 import { OrderPreToPostEapplicationPageComponent } from './containers/order-pre-to-post-eapplication-page/order-pre-to-post-eapplication-page.component';
 import { OrderPreToPostOneLoveComponent } from './containers/order-pre-to-post-one-love/order-pre-to-post-one-love.component';
+import { OrderPreToPostPassportInfoPageComponent } from './containers/order-pre-to-post-passport-info-page/order-pre-to-post-passport-info-page.component';
+import { OrderPreToPostPassportInfoRepiPageComponent } from './containers/order-pre-to-post-passport-info-repi-page/order-pre-to-post-passport-info-repi-page.component';
+import { OrderPreToPostVerifyDocumentRepiPageComponent } from './containers/order-pre-to-post-verify-document-repi-page/order-pre-to-post-verify-document-repi-page.component';
+import { OrderPreToPostVerifyDocumentPageComponent } from './containers/order-pre-to-post-verify-document-page/order-pre-to-post-verify-document-page.component';
 
 @NgModule({
   imports: [
@@ -35,7 +40,8 @@ import { OrderPreToPostOneLoveComponent } from './containers/order-pre-to-post-o
     OrderPreToPostRoutingModule,
     MyChannelSharedLibsModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TranslateModule
   ],
   declarations: [
     OrderPreToPostValidateCustomerPageComponent,
@@ -61,6 +67,10 @@ import { OrderPreToPostOneLoveComponent } from './containers/order-pre-to-post-o
     OrderPreToPostEbillingPageComponent,
     OrderPreToPostEapplicationPageComponent,
     OrderPreToPostOneLoveComponent,
+    OrderPreToPostPassportInfoPageComponent,
+    OrderPreToPostPassportInfoRepiPageComponent,
+    OrderPreToPostVerifyDocumentRepiPageComponent,
+    OrderPreToPostVerifyDocumentPageComponent,
   ]
 })
 export class OrderPreToPostModule { }

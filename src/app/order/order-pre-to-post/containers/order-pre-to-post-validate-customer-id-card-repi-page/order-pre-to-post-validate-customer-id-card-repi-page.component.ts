@@ -2,9 +2,10 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { HomeService, ReadCardProfile, PageLoadingService, AlertService, TokenService, ChannelType, Utils, ValidateCustomerIdCardComponent, KioskControls, OnscreenKeyboardService } from 'mychannel-shared-libs';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
-import { ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_REPI_PAGE, ROUTE_ORDER_PRE_TO_POST_CUSTOMER_INFO_PAGE, ROUTE_ORDER_PRE_TO_POST_CUSTOMER_PROFILE_PAGE, ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE } from 'src/app/order/order-pre-to-post/constants/route-path.constant';
+import { ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_REPI_PAGE, ROUTE_ORDER_PRE_TO_POST_CUSTOMER_INFO_PAGE, ROUTE_ORDER_PRE_TO_POST_CUSTOMER_PROFILE_PAGE, ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE, ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_REPI_PAGE } from 'src/app/order/order-pre-to-post/constants/route-path.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-order-pre-to-post-validate-customer-id-card-repi-page',
@@ -33,7 +34,8 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
     private tokenService: TokenService,
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
-    private onscreenKeyboardService: OnscreenKeyboardService
+    private onscreenKeyboardService: OnscreenKeyboardService,
+    public translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
@@ -46,13 +48,15 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
   onError(valid: boolean): void {
     this.readCardValid = valid;
     if (!this.profile) {
-      this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
-      this.validateCustomerIdcard.koiskApiFn.removedState().subscribe((removed: boolean) => {
-        if (removed) {
-          this.validateCustomerIdcard.ngOnDestroy();
-          this.validateCustomerIdcard.ngOnInit();
-        }
-      });
+      this.alertService.error(this.translation.instant('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน'));
+      if (this.validateCustomerIdcard.koiskApiFn) {
+        this.validateCustomerIdcard.koiskApiFn.removedState().subscribe((removed: boolean) => {
+          if (removed) {
+            this.validateCustomerIdcard.ngOnDestroy();
+            this.validateCustomerIdcard.ngOnInit();
+          }
+        });
+      }
     }
   }
 
@@ -82,12 +86,12 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
     const mobileNo = this.transaction.data.simCard.mobileNo;
 
     this.pageLoadingService.openLoading();
-
     this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
       .then((zipCode: string) => {
         return this.http.get('/api/customerportal/validate-customer-pre-to-post', {
           params: {
-            identity: this.profile.idCardNo
+            identity: this.profile.idCardNo,
+            idCardType: this.profile.idCardType
           }
         }).toPromise()
           .then((resp: any) => {
@@ -131,35 +135,34 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
         return this.http.get(`/api/customerportal/newRegister/verifyPrepaidIdent?idCard=${this.profile.idCardNo}&mobileNo=${mobileNo}`)
           .toPromise()
           .then((respPrepaidIdent: any) => {
+            // if (this.checkBusinessLogic()) {
             if (respPrepaidIdent.data && respPrepaidIdent.data.success) {
               this.transaction.data.action = TransactionAction.READ_CARD;
-              if (this.checkBusinessLogic()) {
-                this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CUSTOMER_INFO_PAGE]);
-              }
+              this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CUSTOMER_INFO_PAGE]);
             } else {
               this.transaction.data.action = TransactionAction.READ_CARD_REPI;
-              if (this.checkBusinessLogic()) {
-                this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CUSTOMER_PROFILE_PAGE]);
-              }
+              this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CUSTOMER_PROFILE_PAGE]);
             }
+            // }
             this.pageLoadingService.closeLoading();
           });
       })
       .catch((resp: any) => {
         const error = resp.error || [];
-        console.log(resp);
 
-        if (error && error.errors.length > 0) {
+        if (error && error.errors && error.errors.length > 0) {
           this.alertService.notify({
             type: 'error',
             html: error.errors.map((err) => {
-              return '<li class="text-left">' + err + '</li>';
+              return '<li class="text-left">' + this.translation.instant(err) + '</li>';
             }).join('')
           }).then(() => {
             this.onBack();
           });
+        } else if (error.resultDescription) {
+          this.alertService.error(this.translation.instant(error.resultDescription));
         } else {
-          this.alertService.error(error.resultDescription);
+          this.alertService.error(this.translation.instant('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'));
         }
       });
   }
@@ -170,18 +173,27 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
     const idCardType = this.transaction.data.customer.idCardType;
 
     if (this.utils.isLowerAge17Year(birthdate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
+      this.alertService.error(this.translation.instant('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี')).then(() => {
+        this.onBack();
+      });
       return false;
     }
     if (this.utils.isIdCardExpiredDate(expireDate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ');
+      this.alertService.error(this.translation.instant('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ')).then(() => {
+        this.onBack();
+      });
       return false;
     }
     return true;
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    if (this.validateCustomerIdcard && this.validateCustomerIdcard.koiskApiFn) {
+      this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+    }
+    setTimeout(() => {
+      this.homeService.goToHome();
+    }, 750);
   }
 
   getZipCode(province: string, amphur: string, tumbol: string): Promise<string> {
@@ -204,6 +216,12 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
   }
 
   ngOnDestroy(): void {
+    setTimeout(() => {
+      if (this.validateCustomerIdcard.koiskApiFn) {
+        this.validateCustomerIdcard.koiskApiFn.close();
+      }
+    }, 750);
     this.transactionService.update(this.transaction);
+    this.pageLoadingService.closeLoading();
   }
 }

@@ -1,9 +1,10 @@
 <div class="mc-flex">
-  <mc-header title="เปลี่ยนเติมเงินเป็นรายเดือน">
-    <div class="header-icon-left">
+  <mc-header title="{{'เปลี่ยนเติมเงินเป็นรายเดือน' | translate}}">
+    <div class="header-icon-left w-25">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
-    <div class="header-icon-right">
+    <div class="header-icon-right w-25 text-right">
+      <mc-dropdown-language></mc-dropdown-language>
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
@@ -13,17 +14,15 @@
 
       <div class="container-fluid">
         <div class="card mb-3">
-          <div class="card-header bg-transparent text-center">
-            สรุปผลเปลี่ยนเติมเงินเป็นรายเดือน
-          </div>
+          <div class="card-header bg-transparent text-center" translate>สรุปผลเปลี่ยนเติมเงินเป็นรายเดือน</div>
           <div class="card-body text-center">
             <div class="row">
-              <div class="col-sm-6 text-left text-green">หมายเลข</div>
+              <div class="col-sm-6 text-left text-green" translate>หมายเลข</div>
               <div class="col-sm-6 text-left">{{ mobileNo | mobileNo }}</div>
             </div>
             <div class="row">
-              <div class="col-sm-6 text-left text-green">ค่าโทรที่ได้รับ</div>
-              <div class="col-sm-6 text-left">{{ balance?.transferBalance | number }} บาท</div>
+              <div class="col-sm-6 text-left text-green" translate>ค่าโทรที่ได้รับ</div>
+              <div class="col-sm-6 text-left">{{ balance?.transferBalance | number }} <span translate>บาท</span></div>
             </div>
           </div>
         </div>
@@ -33,14 +32,14 @@
             <div class="row mb-3">
               <div class="col-sm-6 text-left">
                 <i class="fa fa-circle text-green mr-3"></i>
-                ผลการโอนย้ายบริการเสริม
+                <span translate>ผลการโอนย้ายบริการเสริม</span>
               </div>
-              <div class="col-sm-6 text-right">ทั้งหมด {{ serviceChange?.length }} บริการ</div>
+              <div class="col-sm-6 text-right"><span translate>ทั้งหมด</span> {{ serviceChange?.length }} <span translate>บริการ</span></div>
             </div>
             <div class="row" *ngFor="let service of serviceChange">
               <ul>
                 <li class="text-grey d-inline"><i class="fa fa-check text-green mr-3"></i>
-                  {{ service?.serviceName }}
+                  <span translate>{{ service?.serviceName }}</span>
                 </li>
               </ul>
             </div>

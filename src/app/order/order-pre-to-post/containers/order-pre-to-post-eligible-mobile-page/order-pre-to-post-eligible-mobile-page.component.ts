@@ -4,8 +4,9 @@ import { Location } from '@angular/common';
 import { EligibleMobile, AlertService, HomeService } from 'mychannel-shared-libs';
 import {
   ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE,
-  ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE,
-  ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_PAGE
+  ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_PAGE,
+  ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_PAGE,
+  ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_PAGE
 } from '../../constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
 import { LocalStorageService } from 'ngx-store';
@@ -67,6 +68,7 @@ export class OrderPreToPostEligibleMobilePageComponent implements OnInit, OnDest
         this.mapPrepaidMobileNo(prepaidMobileList);
       })
       .catch(() => {
+        this.eligibleMobiles = [];
       });
   }
 
@@ -84,16 +86,21 @@ export class OrderPreToPostEligibleMobilePageComponent implements OnInit, OnDest
 
   onBack(): void {
     const action = this.transaction.data.action;
-    if (action === TransactionAction.READ_CARD) {
-      this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
+    if (action === TransactionAction.READ_PASSPORT) {
+      this.router.navigate([ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_PAGE]);
     } else {
-      this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE]);
+      this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_PAGE]);
     }
   }
 
   onNext(): void {
-    this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo , persoSim: false };
+
+    this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo, persoSim: false };
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE]);
+  }
+
+  onHome(): void {
+    this.homeService.goToHome();
   }
 
   ngOnDestroy(): void {

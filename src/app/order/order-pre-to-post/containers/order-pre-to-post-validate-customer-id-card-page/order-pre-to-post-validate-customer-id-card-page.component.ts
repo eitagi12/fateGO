@@ -3,11 +3,13 @@ import { Router } from '@angular/router';
 import { HomeService, ReadCardProfile, PageLoadingService, ApiRequestService, User, AlertService, ChannelType, TokenService, Utils, ValidateCustomerIdCardComponent, KioskControls, OnscreenKeyboardService } from 'mychannel-shared-libs';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import {
-  ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE,
-  ROUTE_ORDER_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE
+  ROUTE_ORDER_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE,
+  ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_PAGE,
+  ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE
 } from 'src/app/order/order-pre-to-post/constants/route-path.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-order-pre-to-post-validate-customer-id-card-page',
@@ -37,32 +39,35 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
     private pageLoadingService: PageLoadingService,
     private apiRequestService: ApiRequestService,
     private utils: Utils,
-    private onscreenKeyboardService: OnscreenKeyboardService
+    private onscreenKeyboardService: OnscreenKeyboardService,
+    public translation: TranslateService
   ) {
+    this.transaction = this.transactionService.load();
+    this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
+
     this.homeService.callback = () => {
-      if (this.validateCustomerIdcard.koiskApiFn) {
+      if (this.validateCustomerIdcard && this.validateCustomerIdcard.koiskApiFn) {
         this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
       }
       window.location.href = '/smart-shop';
     };
-
-    this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
   }
 
   ngOnInit(): void {
-    this.createTransaction();
   }
 
   onError(valid: boolean): void {
     this.readCardValid = valid;
     if (!this.profile) {
-      this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
-      this.validateCustomerIdcard.koiskApiFn.removedState().subscribe((removed: boolean) => {
-        if (removed) {
-          this.validateCustomerIdcard.ngOnDestroy();
-          this.validateCustomerIdcard.ngOnInit();
-        }
-      });
+      this.alertService.error(this.translation.instant('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน'));
+      if (this.validateCustomerIdcard.koiskApiFn) {
+        this.validateCustomerIdcard.koiskApiFn.removedState().subscribe((removed: boolean) => {
+          if (removed) {
+            this.validateCustomerIdcard.ngOnDestroy();
+            this.validateCustomerIdcard.ngOnInit();
+          }
+        });
+      }
     }
   }
 
@@ -92,22 +97,24 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
   }
 
   onNext(): void {
+    this.transaction.data.action =  TransactionAction.READ_CARD;
     this.pageLoadingService.openLoading();
     this.http.get('/api/customerportal/validate-customer-pre-to-post', {
       params: {
-        identity: this.profile.idCardNo
+        identity: this.profile.idCardNo,
+        idCardType: this.profile.idCardType
       }
     }).toPromise()
       .then((resp: any) => {
         const data = resp.data || [];
         return this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
           .then((zipCode: string) => {
-            this.transaction.data.customer = Object.assign(this.profile, {
+            return {
               caNumber: data.caNumber,
               mainMobile: data.mainMobile,
               billCycle: data.billCycle,
               zipCode: zipCode
-            });
+            };
           });
       })
       .then((customer: any) => { // load bill cycle
@@ -141,19 +148,20 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
       })
       .catch((resp: any) => {
         const error = resp.error || [];
+
         if (error && error.errors && error.errors.length > 0) {
           this.alertService.notify({
             type: 'error',
             html: error.errors.map((err) => {
-              return '<li class="text-left">' + err + '</li>';
+              return '<li class="text-left">' + this.translation.instant(err) + '</li>';
             }).join('')
           }).then(() => {
             this.onBack();
           });
         } else if (error.resultDescription) {
-          this.alertService.error(error.resultDescription);
+          this.alertService.error(this.translation.instant(error.resultDescription));
         } else {
-          this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+          this.alertService.error(this.translation.instant('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'));
         }
       });
   }
@@ -163,13 +171,13 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
     const idCardType = this.transaction.data.customer.idCardType;
 
     if (this.utils.isLowerAge17Year(birthdate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี').then(() => {
+      this.alertService.error(this.translation.instant('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี')).then(() => {
         this.onBack();
       });
       return false;
     }
     if (this.utils.isIdCardExpiredDate(expireDate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ').then(() => {
+      this.alertService.error(this.translation.instant('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ')).then(() => {
         this.onBack();
       });
       return false;
@@ -178,7 +186,12 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    if (this.validateCustomerIdcard && this.validateCustomerIdcard.koiskApiFn) {
+      this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+    }
+    setTimeout(() => {
+      this.homeService.goToHome();
+    }, 750);
   }
 
   getZipCode(province: string, amphur: string, tumbol: string): Promise<string> {
@@ -201,19 +214,12 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
   }
 
   ngOnDestroy(): void {
-    this.transactionService.save(this.transaction);
-    this.pageLoadingService.closeLoading();
-  }
-
-  private createTransaction(): void {
-    // New x-api-request-id
-    this.apiRequestService.createRequestId();
-
-    this.transaction = {
-      data: {
-        transactionType: TransactionType.ORDER_PRE_TO_POST,
-        action: TransactionAction.READ_CARD,
+    setTimeout(() => {
+      if (this.validateCustomerIdcard.koiskApiFn) {
+        this.validateCustomerIdcard.koiskApiFn.close();
       }
-    };
+    }, 750);
+    this.transactionService.update(this.transaction);
+    this.pageLoadingService.closeLoading();
   }
 }

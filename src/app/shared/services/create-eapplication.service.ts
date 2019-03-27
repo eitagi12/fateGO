@@ -14,7 +14,7 @@ export class CreateEapplicationService {
     private utils: Utils,
     private tokenService: TokenService,
     private translation: TranslateService
-    ) { }
+  ) { }
 
   createEapplication(transaction: Transaction): Promise<any> {
     return this.http.post(

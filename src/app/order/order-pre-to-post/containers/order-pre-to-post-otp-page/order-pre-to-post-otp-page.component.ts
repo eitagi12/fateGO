@@ -84,7 +84,8 @@ export class OrderPreToPostOtpPageComponent implements OnInit {
   }
 
   navigateNext(): void {
-    if (this.transaction.data.action === TransactionAction.READ_CARD_REPI) {
+    if (this.transaction.data.action === TransactionAction.READ_CARD_REPI
+      || this.transaction.data.action === TransactionAction.READ_PASSPORT_REPI) {
       this.autoPI();
     } else {
       this.pageLoadingService.closeLoading();
@@ -139,6 +140,7 @@ export class OrderPreToPostOtpPageComponent implements OnInit {
     const mobileNo = this.transaction.data.simCard.mobileNo;
     const data: any = {
       idCardNo: customer.idCardNo || '-',
+      idCardType: customer.idCardType || '-',
       mobileNo: mobileNo || '-',
       birthdate: customer.birthdate || '-',
       firstName: customer.firstName || '-',

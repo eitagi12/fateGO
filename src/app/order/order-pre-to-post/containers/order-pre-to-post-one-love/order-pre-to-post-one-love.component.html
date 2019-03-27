@@ -1,5 +1,13 @@
 <div class="mc-flex">
-  <mc-header title="เปลี่ยนเติมเงินเป็นรายเดือน"></mc-header>
+  <mc-header title="{{'เปลี่ยนเติมเงินเป็นรายเดือน' | translate}}">
+    <div class="header-icon-left w-25">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right w-25 text-right">
+      <mc-dropdown-language></mc-dropdown-language>
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
   <div class="mc-flex-wrap">
     <div class="mt-3 mb-3">
       <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
