@@ -254,4 +254,10 @@ export class CreateDeviceOrderService {
     return paymentRemark;
   }
 
+  removeAddCart(soId: string, userId: string): Promise<any> {
+    return this.http.post('/api/salesportal/device-sell/item/remove', {
+      userId: userId,
+      soId: soId
+    }).toPromise().then((res: any) => res.data);
+  }
 }
