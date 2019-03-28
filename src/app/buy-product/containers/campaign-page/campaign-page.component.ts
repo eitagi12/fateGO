@@ -207,7 +207,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
             switch (campaign.code) {
                 case 'AISHOTDEAL_PREPAID_LOTUS':
-                case 'AISHOTDEAL_PREPAID':
+                // case 'AISHOTDEAL_PREPAID':
                 case 'PREBOOKING':
                 case 'LOTUS':
                     return false;
@@ -324,6 +324,13 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         }
 
         return tabs;
+    }
+
+    setActiveTabs(tabCode: any): void {
+        this.tabs = this.tabs.map((tabData) => {
+            tabData.active = !!(tabData.code === tabCode);
+            return tabData;
+        });
     }
 
     onCampaignSelected(campaign: any, code: string): void {
