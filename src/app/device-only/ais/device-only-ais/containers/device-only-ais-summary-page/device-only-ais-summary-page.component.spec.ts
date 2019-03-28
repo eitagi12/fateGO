@@ -1,44 +1,58 @@
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DeviceOnlyAisSummaryPageComponent } from './device-only-ais-summary-page.component';
-import { ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE, ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_PAGE } from 'src/app/device-only/ais/device-only-ais/constants/route-path.constant';
+import { Router } from '@angular/router';
+import { HomeService } from 'mychannel-shared-libs';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 
 describe('DeviceOnlyAisSummaryPageComponent', () => {
   let component: DeviceOnlyAisSummaryPageComponent;
-  let router;
-  let homeService;
-  let transactionService;
+  let fixture: ComponentFixture<DeviceOnlyAisSummaryPageComponent>;
+
+  setupTestBed({
+    declarations: [DeviceOnlyAisSummaryPageComponent],
+    providers: [
+      {
+        provide: Router,
+        useValue: {
+          navigate: jest.fn()
+        }
+      },
+      {
+        provide: HomeService,
+        useValue: {
+          goToHome: jest.fn()
+        }
+      },
+      {
+        provide: TransactionService,
+        useValue: {
+          load: jest.fn(() => {
+            return {
+              data: {
+                reasonCode: 'ยังไม่ตัดสินใจ'
+              }
+            };
+          })
+        }
+      },
+      {
+        provide: PriceOptionService,
+        useValue: {
+          load: jest.fn()
+        }
+      }
+    ]
+  });
 
   beforeEach(() => {
-    router = {
-      navigate: jest.fn()
-    };
-    homeService = {
-      goToHome: jest.fn()
-    };
-    transactionService = {
-      load: jest.fn()
-    };
-    component = new DeviceOnlyAisSummaryPageComponent(
-      router,
-      homeService,
-      transactionService
-    );
+    fixture = TestBed.createComponent(DeviceOnlyAisSummaryPageComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
 
-  describe('onBack', () => {
-    it('should route navigate to ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE', () => {
-      component.onBack();
-      expect(router.navigate).toHaveBeenCalledWith([ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE]);
-    });
-  });
-
-  describe('onNext', () => {
-    it('should route to navigate to ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_PAGE', () => {
-      component.onNext();
-      expect(router.navigate).toHaveBeenCalledWith([ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_PAGE]);
-    });
-  });
 });

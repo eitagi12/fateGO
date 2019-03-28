@@ -3,8 +3,14 @@
   <div class="card-body">
     <p class="text-light-green" id="text-campaign-name-summary">{{ priceOption?.campaign?.campaignName }}</p>
     <i class="fa fa-circle mr-3 text-light-green"></i>
-    <span class="text-grey" id="text-brand-model-summary">
-     {{ priceOption?.productDetail?.name }}
+    <span class="text-grey" id="text-brand-summary">
+      {{ priceOption?.productDetail?.brand }}
+    </span>
+    <span class="text-grey" id="text-model-summary">
+      {{ priceOption?.productDetail?.model }}
+    </span>
+    <span class="text-grey" id="text-color-summary">
+      {{ priceOption?.productStock?.colorName }}
     </span>
     <span class="pull-right text-light-green" id="text-model-price">
       ฿{{ priceOption?.trade?.promotionPrice | number }}
