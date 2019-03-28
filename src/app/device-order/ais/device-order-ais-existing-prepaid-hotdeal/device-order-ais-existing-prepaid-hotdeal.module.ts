@@ -13,9 +13,14 @@ import { DeviceOrderAisExistingPrepaidHotdealMobileCarePageComponent } from './c
 import { DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent } from './containers/device-order-ais-existing-prepaid-hotdeal-eligible-mobile-page/device-order-ais-existing-prepaid-hotdeal-eligible-mobile-page.component';
 import { DeviceOrderAisExistingPrepaidHotdealCustomerInfoPageComponent } from './containers/device-order-ais-existing-prepaid-hotdeal-customer-info-page/device-order-ais-existing-prepaid-hotdeal-customer-info-page.component';
 import { DeviceOrderAisExistingPrepaidHotdealAggregatePageComponent } from './containers/device-order-ais-existing-prepaid-hotdeal-aggregate-page/device-order-ais-existing-prepaid-hotdeal-aggregate-page.component';
+import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 
 @NgModule({
-  imports: [CommonModule, DeviceOrderAisExistingPrepaidHotdealRoutingModule],
+  imports: [
+    CommonModule,
+    DeviceOrderAisExistingPrepaidHotdealRoutingModule,
+    MyChannelSharedLibsModule
+  ],
   declarations: [
     DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageComponent,
     DeviceOrderAisExistingPrepaidHotdealValidateCustomerPageComponent,

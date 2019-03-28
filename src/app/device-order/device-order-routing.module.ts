@@ -26,6 +26,10 @@ const routes: Routes = [
       {
         path: 'best-buy',
         loadChildren: 'src/app/device-order/ais/device-order-ais-existing-best-buy/device-order-ais-existing-best-buy.module#DeviceOrderAisExistingBestBuyModule'
+      },
+      {
+        path: 'prepaid-hotdeal',
+        loadChildren: 'src/app/device-order/ais/device-order-ais-existing-prepaid-hotdeal/device-order-ais-existing-prepaid-hotdeal.module#DeviceOrderAisExistingPrepaidHotdealModule'
       }
     ]
   },
