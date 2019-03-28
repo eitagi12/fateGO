@@ -32,31 +32,29 @@ export class OrderPreToPostResultPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.pageLoadingService.openLoading();
-    // this.createPreToPostService.createPreToPost(this.transaction)
-    //   .then(resp => {
-    //     const data = resp.data || {};
-    //     this.transaction.data.order = {
-    //       orderNo: data.orderNo,
-    //       orderDate: data.orderDate
-    //     };
-    //     if (this.transaction.data.order.orderNo) {
-    //       this.isSuccess = true;
-    //     } else {
-    //       this.isSuccess = false;
-    //     }
-    //     this.transactionService.update(this.transaction);
-
-    // tslint:disable-next-line:max-line-length
-    //     return this.http.get(`/api/customerportal/newRegister/${this.transaction.data.simCard.mobileNo}/queryCurrentServices`).toPromise();
-    //   })
-    //   .then((resp: any) => {
-    //     const currentServices = resp.data || [];
-    //     this.serviceChange = currentServices.services.filter(service => service.canTransfer);
-    //   })
-    //   .then(() => {
-    //     this.pageLoadingService.closeLoading();
-    //   });
+    this.pageLoadingService.openLoading();
+    this.createPreToPostService.createPreToPost(this.transaction)
+      .then(resp => {
+        const data = resp.data || {};
+        this.transaction.data.order = {
+          orderNo: data.orderNo,
+          orderDate: data.orderDate
+        };
+        if (this.transaction.data.order.orderNo) {
+          this.isSuccess = true;
+        } else {
+          this.isSuccess = false;
+        }
+        this.transactionService.update(this.transaction);
+        return this.http.get(`/api/customerportal/newRegister/${this.transaction.data.simCard.mobileNo}/queryCurrentServices`).toPromise();
+      })
+      .then((resp: any) => {
+        const currentServices = resp.data || [];
+        this.serviceChange = currentServices.services.filter(service => service.canTransfer);
+      })
+      .then(() => {
+        this.pageLoadingService.closeLoading();
+      });
   }
 
   onMainMenu(): void {
