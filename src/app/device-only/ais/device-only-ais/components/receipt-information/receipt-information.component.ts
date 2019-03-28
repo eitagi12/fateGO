@@ -100,7 +100,6 @@ export class ReceiptInformationComponent implements OnInit {
     });
   }
   setCustomerInfo(data: any): void {
-    console.log(data);
     const customer: Customer = {
       idCardNo: data.customer.idCardNo,
       idCardType: data.customer.idCardType || 'บัตรประชาชน',
