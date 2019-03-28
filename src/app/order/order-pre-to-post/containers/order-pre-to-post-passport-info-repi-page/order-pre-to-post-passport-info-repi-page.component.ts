@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, SimpleChanges, OnChanges, EventEmitter } from '@angular/core';
 import { WIZARD_ORDER_PRE_TO_POST } from 'src/app/order/constants/wizard.constant';
 import { Router } from '@angular/router';
-import { HomeService, CaptureAndSign, TokenService, ChannelType, ImageUtils, AlertService, Utils, User, AWS_WATERMARK } from 'mychannel-shared-libs';
+import { HomeService, CaptureAndSign, TokenService, ChannelType, ImageUtils, AlertService, Utils, User, AWS_WATERMARK, AWS_WATERMARK_EN } from 'mychannel-shared-libs';
 import { Transaction, Customer, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
@@ -49,6 +49,7 @@ export class OrderPreToPostPassportInfoRepiPageComponent implements OnInit, OnDe
     this.transaction = this.transactionService.load();
 
     this.currentLang = this.translationService.currentLang || 'TH';
+    this.changeWatherMark(this.currentLang);
     this.translationSubscribe = this.translationService.onLangChange.subscribe(lang => {
       if (this.signedOpenSubscription) {
         this.signedOpenSubscription.unsubscribe();
@@ -57,6 +58,7 @@ export class OrderPreToPostPassportInfoRepiPageComponent implements OnInit, OnDe
       if (this.isOpenSign) {
         this.onSigned();
       }
+      this.changeWatherMark(this.currentLang);
     });
 
     this.signedSubscription = this.aisNativeOrderService.getSigned().subscribe((signature: string) => {
@@ -73,6 +75,14 @@ export class OrderPreToPostPassportInfoRepiPageComponent implements OnInit, OnDe
       }
       this.onChangeCaptureAndSign();
     });
+  }
+
+  changeWatherMark(lang: string): void {
+    if (lang === 'EN') {
+      this.watermark = AWS_WATERMARK_EN;
+    } else {
+      this.watermark = AWS_WATERMARK;
+    }
   }
 
   ngOnInit() {
