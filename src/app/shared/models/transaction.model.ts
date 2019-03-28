@@ -65,10 +65,9 @@ export interface Payment {
   'paymentMethod': any;
 }
 export interface MainPromotion {
-  cammapign: any;
-  privilege: any;
-  trade: any;
-  campaign: any;
+  campaign?: any;
+  privilege?: any;
+  trade?: any;
 }
 
 // tslint:disable-next-line:no-empty-interface

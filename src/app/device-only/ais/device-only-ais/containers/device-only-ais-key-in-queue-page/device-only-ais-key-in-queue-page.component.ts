@@ -61,7 +61,7 @@ export class DeviceOnlyAisKeyInQueuePageComponent implements OnInit, OnDestroy {
   }
 
   private stepNextQueuePage(): any {
-    this.createOrderService.updateTransactionDB(this.transaction).then((response) => {
+    this.createOrderService.updateTransactionDB(this.transaction, this.priceOption).then((response) => {
       if (response = true) {
         this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).then((res) => {
           this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE]);
