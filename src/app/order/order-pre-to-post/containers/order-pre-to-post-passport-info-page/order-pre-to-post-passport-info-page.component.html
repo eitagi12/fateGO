@@ -48,8 +48,8 @@
                 <!-- Native Step -->
                 <div *ngIf="isAisNative()">
                   <a href="#" (click)="$event.preventDefault(); camera.next();" class="text-pink" *ngIf="!hasImageSmartCard()">
-                    <span *ngIf="!hasImageSmartCard()" translate> ถ่ายรูป </span>
-                    <span *ngIf="hasImageSmartCard()" translate> ถ่ายรูปใหม่</span>
+                    <span *ngIf="!hasImageSmartCard()" translate>ถ่ายรูป</span>
+                    <span *ngIf="hasImageSmartCard()" translate>ถ่ายรูปใหม่</span>
                   </a>
                 </div>
               </div>
