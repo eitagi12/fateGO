@@ -14,7 +14,6 @@ import { CustomerInformationService } from '../../services/customer-information.
   styleUrls: ['./receipt-information.component.scss']
 })
 export class ReceiptInformationComponent implements OnInit {
-  [x: string]: any;
 
   @Output()
   completed: EventEmitter<any> = new EventEmitter<any>();
@@ -92,7 +91,7 @@ export class ReceiptInformationComponent implements OnInit {
       this.error.emit(this.receiptInfoForm.valid);
       if (this.receiptInfoForm.valid) {
         const receiptInfo: ReceiptInfo = this.receiptInfoForm.value;
-        this.completed.emit({...this.customerInfo, receiptInfo});
+        this.completed.emit({...this.customerInfo, receiptInfo });
       }
     });
   }
@@ -102,8 +101,9 @@ export class ReceiptInformationComponent implements OnInit {
       mobileNo: ['', Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])]
     });
   }
-
   setCustomerInfo(data: any): void {
+    this.createForm();
+    console.log(data);
     const customer: Customer = {
       idCardNo: data.customer.idCardNo,
       idCardType: data.customer.idCardType || 'บัตรประชาชน',
@@ -131,6 +131,8 @@ export class ReceiptInformationComponent implements OnInit {
     this.action.emit(data.action);
     this.customerInfo = { customer, billDeliveryAddress };
     this.receiptInfoForm.controls['taxId'].setValue(data.customer.idCardNo);
+    this.billingAddress.getLocationName()
+    .subscribe((resp) => this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName));
     this.nameText = data.customer.titleName + ' ' + data.customer.firstName + ' ' + data.customer.lastName;
     this.billingAddressText = this.customerInfoService.convertBillingAddressToString(billDeliveryAddress);
   }
@@ -222,9 +224,11 @@ export class ReceiptInformationComponent implements OnInit {
   }
 
   onCompleted(value: any): void {
+    this.receiptInfoForm = value;
     this.setCustomerInfo({
       customer: value,
       action: TransactionAction.KEY_IN
+
     });
     this.receiptInfoForm.controls['taxId'].setValue(value.idCardNo);
   }

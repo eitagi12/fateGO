@@ -14,9 +14,6 @@ export class BillingAddressService {
     private tokenService: TokenService) {}
   getLocationName(): Observable<any> {
       const locationCode = this.tokenService.getUser().locationCode;
-      // const locationCodeAPI = API.QUERY_LOCATIONNAME + '?code=' + locationCode;
-      console.log(locationCode);
-      // console.log('api', locationCodeAPI);
       return this.http.get(API.QUERY_LOCATIONNAME, {
         params: {
           code: locationCode

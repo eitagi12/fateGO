@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '../../../../../../../node_modules/@angular/router';
 import { ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE } from '../../constants/route-path.constant';
 import { HomeService, ApiRequestService, AlertService, PageLoadingService, SelectPaymentDetail, PaymentDetailOption, PaymentDetailQRCode } from '../../../../../../../node_modules/mychannel-shared-libs';
-import { Transaction, TransactionType, TransactionAction, Customer } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionType, TransactionAction, Customer, Receipt } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { CreateOrderService } from '../../services/create-order.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
@@ -79,6 +79,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       billDeliveryAddress: customerInfo.billDeliveryAddress
     };
     this.transaction.data.receiptInfo = customerInfo.receiptInfo;
+    console.log('data', customerInfo);
   }
 
   onError(error: boolean): void {
