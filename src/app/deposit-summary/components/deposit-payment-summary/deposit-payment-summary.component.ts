@@ -4,6 +4,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { Utils } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { last } from '@angular/router/src/utils/collection';
 
 @Component({
   selector: 'app-deposit-payment-summary',
@@ -42,7 +43,7 @@ export class DepositPaymentSummaryComponent implements OnInit {
     this.customerFullName = customer.firstName + ' ' + customer.lastName;
     this.customerFullAddress = this.getFullAddress(customer);
     this.customerIdCardNo = customer.idCardNo;
-    this.mobileNo = customer.selectedMobile;
+    this.mobileNo = this.getMobileFormat(customer.selectedMobile);
     this.customerReceiptAddress = this.transaction.data.customer.shipaddress.shipCusAddr;
     this.brand = reserveProductInfo.brand;
     this.colorName = reserveProductInfo.colorName;
@@ -76,4 +77,14 @@ export class DepositPaymentSummaryComponent implements OnInit {
     return fullAddress || '-';
   }
 
+  getMobileFormat(mobileNo: string): string {
+    let firstThreeDigitMobileNo = '';
+    let lastForthDigitMobileNo = '' ;
+    let result = '';
+    if (mobileNo) {
+      firstThreeDigitMobileNo = mobileNo.substring(0, 3);
+      lastForthDigitMobileNo = mobileNo.substring(6, 10);
+      return result = firstThreeDigitMobileNo + 'xxx' + lastForthDigitMobileNo;
+    }
+  }
 }
