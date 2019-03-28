@@ -8,6 +8,7 @@ import { HomeService } from 'mychannel-shared-libs';
 
 describe('test device only ais queue page', () => {
   let component: DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent;
+  const fb: any = {};
   const router: any = {};
   const homeService: any = {};
   const apiRequestService: any = {};
@@ -15,6 +16,7 @@ describe('test device only ais queue page', () => {
   let priceOptionService: any;
   const createOrderService: any = {};
   const alertService: any = {};
+  const  homeButtonService: any = {};
 
   beforeEach(() => {
     transactionService = {
@@ -25,12 +27,14 @@ describe('test device only ais queue page', () => {
     };
     component = new DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent(
       router,
+      fb,
       homeService,
       apiRequestService,
       transactionService,
       priceOptionService,
       createOrderService,
-      alertService
+      alertService,
+      homeButtonService
     );
   });
 

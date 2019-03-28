@@ -7,8 +7,122 @@
       <mc-header-icon src="assets/images/icon/icon-home.png" id="button-home" (click)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
-  <app-select-payment (isSelectBank)="selectBank($event)"></app-select-payment>
-  <app-receipt-information (completed)="onComplete($event)" (error)="onError($event)" (action)="checkAction($event)">
+  <div class="mc-flex-wrap">
+    <div class="card border-0">
+      <hr class="mt-0 mb-0">
+      <div class="container-fluid mt-3 mb-3">
+        <div class="row pl-3 pr-3">
+          <div class="col-8 col-sm-10 text-left text-brown">
+            <p class="text-light-green" id="text-campaign-name">ซื้อเครื่องเปล่า</p>
+            <div id="text-brand-model"> {{ priceOption?.productDetail?.name }} สี {{ priceOption?.productStock?.color }}
+              <!-- <span>BLACK</span> 1 เครื่อง -->
+            </div>
+          </div>
+          <div class="col-4 col-sm-2 text-center text-brown">
+            <img
+              src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHEAAABXCAMAAAAEVVrJAAAAaVBMVEUAAAD////T6bX1+u7////////2+/GNxj+324ei0GOw13q12oKez1yPx0Om0miYzFGUyUqSyEep1G663IqazVaWyk693o+OxkGy2H2u1nas1XOk0WWRyEXG4p/D4ZnA4JXK5KXc7sTS6LN1z0uxAAAAB3RSTlMABzIkC4Y6G1AA8QAAAnhJREFUaN7dmtuS2jAMhkW7rXJ0EkLOCbB9/4esvXRwCUmMkdDO7nfBcOHJP5F1tANQhnNUAK9kwiUyeB0lLgOvo6BL0onkJSHVih2IohUbECUXN2urFUsQRSseQBR5b03EFetPiY8CREnFzbrXikcQRSuG4ORrx0clrhhrxQBEIXQfhI0MOWnBQYjsKNjkhPwMLrPyA5uMesUEfCToqg6dXlEz+2ICW/ywK3hA10b+RA1zTim3FQ+8ipnzcW9mKGkla8Ob2chcsv7tfjc8ZrWuf4Jtfim9KOac4sDBbkJeUnCCvOwfmXhYeXDiySIOetSITjzvJtKEOjpbbSOhicd2FA9PPBFXipOdeIwLik48pijEohOPKXz0ws2/jXYtZ4vjpkImao/uhAcPg/DQ+Cn2AQmTuZRffjoDid4vxE7mHWUPTvTylBwbI3gwUiPy6Gul/qPtIzAgIm/C4E9bqCEqVsyJ3x1eMXgRIKU1754xEWXiyVGjwJMGaVTgi0ISB/AHCaT1sxHVBs9Q/3l++99BksjraOc73PF0KeL6/BmPaAj57nhaNKxp1nglId/xRPfHrtlCC28pqGbNbTIolMqXgjtCQzrsMytJbFWm/94swbsMf5GxeUoR73j2l0OZ5MaE87JW3bTWVG+Nz/pnXL8TudUwO97RvPVCuRqmvXVf28IxfKuwneHnRQ4oVD6KO3ugSiBu3Io8ja5luFfMoyuJcS7m7xgmG422S1ubF1qWgf4m6I+omTuX4pvnbVhH9sQEh9mAYSUbaw+6w6bRNMX5x7+loO2P5zJDA3Awbo7a1cxxWcjwSr55h5gCF6fi3xPLdbuv3pT8BWzFR0YdTPwzAAAAAElFTkSuQmCC"
+              width="35px" class="mb-1" />
+            <h4>
+              <p class="text-light-green">฿{{ priceOption?.trade?.promotionPrice | number }} </p>
+            </h4>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="my-3">
+      <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
+      <!-- PAYMENT DETAIL FORM -->
+      <form [formGroup]="paymentDetailForm">
+        <div class="container-fluid">
+
+          <div class="card mb-3">
+            <div class="card-header bg-orange text-white">รูปแบบชำระเงิน</div>
+            <div class="card-body py-2 text-light-green">
+              ค่าเครื่อง
+              {{ priceOption?.productDetail?.name }}
+              <span *ngIf="priceOption?.productStock?.color">
+                สี {{ priceOption?.productStock?.color }}
+              </span>
+              <span class="pull-right">
+                ฿ {{ priceOption?.trade?.promotionPrice | number }}
+              </span>
+            </div>
+           
+            <div class="card-body py-2 border-top" [hidden]="!fullPayment">
+              <div class="row">
+                <div class="col-6 px-2">
+                  <input type="radio" id="payment-debit" name="paymentType" value="DEBIT" formControlName="paymentType">
+                  <label for="payment-debit">ชำระที่เคาน์เตอร์</label>
+                </div>
+                <div class="col-6 px-2">
+                  <input type="text" disabled="" class="form-control-plaintext ml-2" value="เต็มจำนวน">
+                </div>
+              </div>
+            </div>
+            <div class="card-body py-2 border-top">
+              <div class="row">
+                <div class="col-6 px-2">
+                  <input type="radio" id="payment-credit" name="paymentType" value="CREDIT"
+                    formControlName="paymentType">
+                  <label for="payment-credit">ชำระเงินด้วยบัตรเครดิต</label>
+                </div>
+                <div class="col-6 px-2">
+                  <select class="form-control" formControlName="paymentForm">
+                    <option value="FULL">เต็มจำนวน</option>
+                    <option value="INSTALLMENT">ผ่อนชำระ</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <ng-container *ngIf="paymentDetailForm?.value?.paymentType === 'CREDIT'">
+              <div class="card-body py-2 border-top">
+                <div class="text-center text-pink">
+                  <small>ระบุธนาคาร</small>
+                </div>
+                <div class="row banks" [ngClass]="{'more': isBankCollapsed}">
+                  <ng-container *ngFor="let bank of getBanks()">
+                    <div class="col-2 p-2">
+                      <input type="radio" [attr.id]="bank?.abb" name="paymentBank" [value]="bank"
+                        formControlName="paymentBank">
+                      <label [attr.for]="bank?.abb" class="bank"
+                        [ngClass]="{'active': paymentDetailForm?.value?.paymentBank?.abb === bank?.abb }">
+                        <mc-lazy-load-image [src]="bank?.imageUrl"></mc-lazy-load-image>
+                      </label>
+                    </div>
+                  </ng-container>
+                </div>
+                <div class="text-right" *ngIf="getBanks()?.length > 6 && !isBankCollapsed">
+                  <a href="#" (click)="$event.preventDefault(); isBankCollapsed = !isBankCollapsed">
+                    <u>More</u>
+                  </a>
+                </div>
+              </div>
+              <div class="card-body py-2 border-top"
+                *ngIf="paymentDetailForm?.value?.paymentBank && banksPayment?.length > 0">
+                <div class="text-center text-pink">
+                  <small>กรุณาเลือกรูปแบบการชำระเงิน</small>
+                </div>
+                <div class="row">
+                  <ng-container *ngFor="let bank of banksPayment">
+                    <div class="col-3 p-2">
+                      <input type="radio" id="payment-method-{{ bank?.percentage }}-{{ bank?.month }}"
+                        name="paymentMethod" [value]="bank" formControlName="paymentMethod">
+                      <label for="payment-method-{{ bank?.percentage }}-{{ bank?.month }}">{{ bank?.percentage }}%
+                        {{ bank?.month }} เดือน
+                      </label>
+                    </div>
+                  </ng-container>
+                </div>
+              </div>
+            </ng-container>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+    <app-receipt-information (completed)="onComplete($event)" (error)="onError($event)" (action)="checkAction($event)">
   </app-receipt-information>
 
   <mc-footer>
