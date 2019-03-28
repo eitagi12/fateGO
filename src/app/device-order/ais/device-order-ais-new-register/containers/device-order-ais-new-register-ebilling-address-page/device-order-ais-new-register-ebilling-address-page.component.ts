@@ -24,6 +24,7 @@ export class DeviceOrderAisNewRegisterEbillingAddressPageComponent implements On
   zipCodes: string[];
 
   customerAddressTemp: CustomerAddress;
+  billDeliveryAddress: CustomerAddress;
   ebillingAddressValid: boolean;
 
   constructor(
@@ -36,20 +37,19 @@ export class DeviceOrderAisNewRegisterEbillingAddressPageComponent implements On
   }
 
   ngOnInit(): void {
-    const customer = this.transaction.data.customer;
+    const billingInformation = this.transaction.data.billingInformation || {};
+    const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
 
     this.http.get('/api/customerportal/newRegister/getAllZipcodes').subscribe((resp: any) => {
       this.allZipCodes = resp.data.zipcodes || [];
     });
-
     this.http.get('/api/customerportal/newRegister/getAllProvinces').subscribe((resp: any) => {
       this.provinces = (resp.data.provinces || []);
-
       this.customerAddress = {
         homeNo: customer.homeNo,
         moo: customer.moo,
         mooBan: customer.mooBan,
-        room: customer.floor,
+        room: customer.room,
         floor: customer.floor,
         buildingName: customer.buildingName,
         soi: customer.soi,
@@ -59,7 +59,6 @@ export class DeviceOrderAisNewRegisterEbillingAddressPageComponent implements On
         tumbol: customer.tumbol,
         zipCode: customer.zipCode,
       };
-
     });
 
   }
@@ -158,11 +157,10 @@ export class DeviceOrderAisNewRegisterEbillingAddressPageComponent implements On
   }
 
   onNext(): void {
-    this.transaction.data.customer = Object.assign(
-      this.transaction.data.customer,
-      this.customerAddressTemp || this.customerAddress
-    );
-
+    const billingInformation = this.transaction.data.billingInformation || {};
+    const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
+    this.transaction.data.billingInformation.billDeliveryAddress = Object.assign(Object.assign({}, customer), this.customerAddressTemp);
+    this.transactionService.update(this.transaction);
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE]);
   }
 

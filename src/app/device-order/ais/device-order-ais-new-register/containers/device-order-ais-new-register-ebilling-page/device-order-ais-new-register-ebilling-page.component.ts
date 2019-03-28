@@ -47,6 +47,8 @@ export class DeviceOrderAisNewRegisterEbillingPageComponent implements OnInit, O
       this.billCycles = data.billCycles || [];
       if (!this.transaction.data.billingInformation.billCycle) {
         this.setBillingDefault(data.billCycles || []);
+      } else {
+        this.billCycle = this.transaction.data.billingInformation.billCycle;
       }
     });
   }
@@ -55,7 +57,6 @@ export class DeviceOrderAisNewRegisterEbillingPageComponent implements OnInit, O
     for (const ebill of ebilling) {
       if (ebill.bill === this.transaction.data.customer.billCycle) {
         this.billCycle = ebill;
-        this.transaction.data.billingInformation.billCycle = this.billCycle;
       }
     }
   }
@@ -74,7 +75,6 @@ export class DeviceOrderAisNewRegisterEbillingPageComponent implements OnInit, O
 
   onNext(): void {
     this.transaction.data.billingInformation.billCycle = this.billCycle;
-
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
