@@ -8,6 +8,7 @@ import { CreateOrderService } from '../../services/create-order.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Product } from 'src/app/device-only/ais/device-only-ais/models/product.model';
+import { HomeButtonService } from '../../services/home-button.service';
 @Component({
   selector: 'app-device-only-ais-select-payment-and-receipt-information-page',
   templateUrl: './device-only-ais-select-payment-and-receipt-information-page.component.html',
@@ -29,12 +30,14 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
     private priceOptionService: PriceOptionService,
     private createOrderService: CreateOrderService,
     private alertService: AlertService,
+    private homeButtonService: HomeButtonService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
   }
 
   ngOnInit(): void {
+    this.homeButtonService.initEventButtonHome();
     this.apiRequestService.createRequestId();
     if (!this.transaction.data) {
       this.transaction = {

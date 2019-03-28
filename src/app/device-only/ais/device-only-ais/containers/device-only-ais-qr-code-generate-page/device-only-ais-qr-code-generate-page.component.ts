@@ -6,6 +6,8 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ROUTE_DEVICE_ONLY_AIS_QR_CODE_SUMMARY_PAGE, ROUTE_DEVICE_ONLY_AIS_QR_CODE_QUEUE_PAGE } from '../../constants/route-path.constant';
+import { CreateOrderService } from '../../services/create-order.service';
+import { HomeButtonService } from '../../services/home-button.service';
 
 @Component({
   selector: 'app-device-only-ais-qr-code-generate-page',
@@ -24,7 +26,8 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
     private priceOptionService: PriceOptionService,
     private alertService: AlertService,
     private pageActivityService: PageActivityService,
-    private homeService: HomeService
+    private homeService: HomeService,
+    private homeButtonService: HomeButtonService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -32,6 +35,7 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.homeButtonService.initEventButtonHome();
     this.pageActivityHandler();
   }
 

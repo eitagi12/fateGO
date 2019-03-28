@@ -5,6 +5,7 @@ import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
 import { HomeService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
+import { HomeButtonService } from '../../services/home-button.service';
 
 @Component({
   selector: 'app-device-only-ais-summary-page',
@@ -22,11 +23,13 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit {
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
+    private homeButtonService: HomeButtonService
   ) {
     this.transaction = this.transactionService.load();
   }
 
   ngOnInit(): void {
+    this.homeButtonService.initEventButtonHome();
     // this.telNo = this.transaction.data.receiptInfo.telNo;
     this.isReasonNotBuyMobileCare = this.transaction.data.reasonCode;
   }

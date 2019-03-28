@@ -3,8 +3,10 @@ import { HttpClient, HttpHandler } from '@angular/common/http';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { DeviceOnlyAisCheckoutPaymentQrCodePageComponent } from './device-only-ais-checkout-payment-qr-code-page.component';
-import { CookiesStorageService } from 'ngx-store';
+import { CookiesStorageService, LocalStorageService } from 'ngx-store';
 import { JwtHelperService } from '@auth0/angular-jwt/src/jwthelper.service';
+import { Router } from '@angular/router';
+import { TokenService } from 'mychannel-shared-libs';
 
 @Pipe({name: 'mobileNo'})
 class MockMobileNoPipe implements PipeTransform {
@@ -32,7 +34,18 @@ describe('DeviceOnlyAisCheckoutPaymentQrCodePageComponent', () => {
         useValue: {}
       },
       HttpClient,
-      HttpHandler
+      HttpHandler,
+      {
+        provide: Router,
+        useValue: {}
+      },
+      LocalStorageService,
+      {
+        provide: TokenService,
+        useValue: {
+          getUser: jest.fn()
+        }
+      }
     ]
   });
 

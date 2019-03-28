@@ -7,6 +7,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { JwtHelperService } from '@auth0/angular-jwt/src/jwthelper.service';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { TokenService } from 'mychannel-shared-libs';
 
 describe('DeviceOnlyAisSelectMobileCarePageComponent', () => {
   let component: DeviceOnlyAisSelectMobileCarePageComponent;
@@ -29,6 +30,13 @@ describe('DeviceOnlyAisSelectMobileCarePageComponent', () => {
           provide: TransactionService,
           useValue: {
             load: jest.fn()
+          }
+        },
+        LocalStorageService,
+        {
+          provide: TokenService,
+          useValue: {
+            getUser: jest.fn()
           }
         }
       ]

@@ -1,11 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE } from '../../constants/route-path.constant';
 import { Router } from '@angular/router';
-import { HomeService } from 'mychannel-shared-libs';
-import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
-import { validate } from '@babel/types';
+import { HomeService, AlertService } from 'mychannel-shared-libs';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { CreateOrderService } from '../../services/create-order.service';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { HomeButtonService } from '../../services/home-button.service';
 
 @Component({
   selector: 'app-device-only-ais-key-in-queue-page',
@@ -20,10 +22,13 @@ export class DeviceOnlyAisKeyInQueuePageComponent implements OnInit, OnDestroy {
     public router: Router,
     private fb: FormBuilder,
     private transactionService: TransactionService,
-    private homeService: HomeService) { }
+    private homeService: HomeService,
+    private homeButtonService: HomeButtonService) {
+      this.transaction = this.transactionService.load();
+     }
 
   ngOnInit(): void {
-    this.transaction = this.transactionService.load();
+    this.homeButtonService.initEventButtonHome();
     this.createQueueForm();
   }
 

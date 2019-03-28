@@ -5,8 +5,11 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 
 import { DeviceOnlyAisQrCodeSummarayPageComponent } from './device-only-ais-qr-code-summaray-page.component';
+import { LocalStorageService } from 'ngx-store';
 import { ROUTE_DEVICE_ONLY_AIS_QR_CODE_GENERATE_PAGE, ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_QR_CODE_PAGE } from '../../constants/route-path.constant';
-import { HomeService } from 'mychannel-shared-libs';
+import { TokenService, HomeService } from 'mychannel-shared-libs';
+import { Router } from '@angular/router';
+import { HttpClient, HttpHandler } from '@angular/common/http';
 
 @Pipe({name: 'mobileNo'})
 class MockMobileNoPipe implements PipeTransform {
@@ -18,7 +21,8 @@ class MockMobileNoPipe implements PipeTransform {
 describe('DeviceOnlyAisQrCodeSummarayPageComponent', () => {
   let component: DeviceOnlyAisQrCodeSummarayPageComponent;
   let fixture: ComponentFixture<DeviceOnlyAisQrCodeSummarayPageComponent>;
-
+  let router: Router;
+  let navigateMock: any;
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [
@@ -30,9 +34,18 @@ describe('DeviceOnlyAisQrCodeSummarayPageComponent', () => {
         MockMobileNoPipe
       ],
       providers: [
+        HttpClient,
+        HttpHandler,
         {
           provide: HomeService,
           useValue: {}
+        },
+        LocalStorageService,
+        {
+          provide: TokenService,
+          useValue: {
+            getUser: jest.fn()
+          }
         }
       ]
     })
@@ -43,6 +56,8 @@ describe('DeviceOnlyAisQrCodeSummarayPageComponent', () => {
     fixture = TestBed.createComponent(DeviceOnlyAisQrCodeSummarayPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    router = TestBed.get(Router);
+    navigateMock = spyOn(router, 'navigate');
   });
 
   it('should create', () => {
@@ -68,14 +83,12 @@ describe('DeviceOnlyAisQrCodeSummarayPageComponent', () => {
   }));
 
   it('should navigate to ROUTE_DEVICE_ONLY_AIS_QR_CODE_GENERATE_PAGE when execute method onNext', () => {
-    jest.spyOn(component.router, 'navigate').mockImplementation();
     component.onNext();
-    expect(component.router.navigate).toHaveBeenCalledWith([ROUTE_DEVICE_ONLY_AIS_QR_CODE_GENERATE_PAGE]);
+    expect(navigateMock).toHaveBeenCalledWith([ROUTE_DEVICE_ONLY_AIS_QR_CODE_GENERATE_PAGE]);
   });
 
   it('should navigate to ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_QR_CODE_PAGE when execute method onBack', () => {
-    jest.spyOn(component.router, 'navigate').mockImplementation();
     component.onBack();
-    expect(component.router.navigate).toHaveBeenCalledWith([ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_QR_CODE_PAGE]);
+    expect(navigateMock).toHaveBeenCalledWith([ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_QR_CODE_PAGE]);
   });
 });

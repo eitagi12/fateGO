@@ -3,7 +3,9 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { DeviceOnlyAisKeyInQueuePageComponent } from './device-only-ais-key-in-queue-page.component';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { HomeService } from 'mychannel-shared-libs';
+import { HomeService, TokenService } from 'mychannel-shared-libs';
+import { HttpClientModule } from '@angular/common/http';
+import { LocalStorageService } from 'ngx-store';
 
 describe('DeviceOnlyAisKeyInQueuePageComponent', () => {
   let component: DeviceOnlyAisKeyInQueuePageComponent;
@@ -12,7 +14,8 @@ describe('DeviceOnlyAisKeyInQueuePageComponent', () => {
   setupTestBed({
     imports: [
       ReactiveFormsModule,
-      RouterTestingModule
+      RouterTestingModule,
+      HttpClientModule
     ],
     declarations: [
       DeviceOnlyAisKeyInQueuePageComponent
@@ -29,7 +32,14 @@ describe('DeviceOnlyAisKeyInQueuePageComponent', () => {
         useValue: {
           load: jest.fn()
         }
-      }
+      },
+      {
+        provide: TokenService,
+        useValue: {
+          getUser: jest.fn()
+        }
+      },
+      LocalStorageService
     ]
   });
 
