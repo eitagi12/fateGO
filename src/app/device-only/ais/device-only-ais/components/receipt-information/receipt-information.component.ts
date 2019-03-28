@@ -85,8 +85,6 @@ export class ReceiptInformationComponent implements OnInit {
       buyerAddress: ['', []],
       telNo: ['', [Validators.pattern(/^0[6-9]\d{8}$/), Validators.required]],
     });
-    this.receiptInfoForm.controls['taxId'].disable();
-    this.receiptInfoForm.controls['branch'].disable();
     this.receiptInfoForm.valueChanges.pipe(debounceTime(750)).subscribe(event => {
       this.error.emit(this.receiptInfoForm.valid);
       if (this.receiptInfoForm.valid) {
@@ -102,7 +100,6 @@ export class ReceiptInformationComponent implements OnInit {
     });
   }
   setCustomerInfo(data: any): void {
-    this.createForm();
     console.log(data);
     const customer: Customer = {
       idCardNo: data.customer.idCardNo,
@@ -224,7 +221,6 @@ export class ReceiptInformationComponent implements OnInit {
   }
 
   onCompleted(value: any): void {
-    this.receiptInfoForm = value;
     this.setCustomerInfo({
       customer: value,
       action: TransactionAction.KEY_IN

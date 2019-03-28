@@ -34,10 +34,11 @@
           </div>
           <div class="col-xs-12 col-sm-7 mb-3">
             <span id="text-brand-model">
+                {{ priceOption?.productDetail?.brand }}
                 {{ priceOption?.productDetail?.name }}
               <span>
                 <!-- <span *ngIf="priceOption?.productStock?.color"> -->
-                {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.color }}
+                {{ priceOption?.productStock?.colorName? 'สี': '' }} {{ priceOption?.productStock?.colorName }}
               </span>
             </span>
             <p id="text-campaign-name">{{ priceOption?.campaign?.campaignName }} </p>
@@ -58,15 +59,15 @@
                 <p>
                   <i class="fa fa-circle mr-3 text-light-green"></i>
                   <span id="text-summary-brand-model">
+                    {{ priceOption?.productDetail?.brand }}
                     {{ priceOption?.productDetail?.name }}
                     <span>
                       <!-- <span *ngIf="priceOption?.productStock?.color"> -->
-                      {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.color }}
+                      {{ priceOption?.productStock?.colorName?'สี': '' }} {{ priceOption?.productStock?.colorName }}
                     </span>
                   </span>
                   <span class="pull-right text-light-green">
-                    ฿ <span id="text-summary-price">
-                    {{ summary([+priceOption?.trade?.promotionPrice]) | number }}
+                    ฿<span id="text-summary-price">{{ summary([+priceOption?.trade?.promotionPrice]) | number }}
                   </span>
                   </span>
                 </p>
@@ -74,7 +75,7 @@
               <div class="border-bottom mt-3 mb-5"></div>
               <div class="text-right mt-3">
                 Total
-                ฿<span class="total pull-right text-light-green" id="text-total-price">{{ summary([+priceOption?.trade?.promotionPrice]) | number }}</span>
+                <span class="total pull-right text-light-green">฿<span id="text-total-price"> {{ summary([+priceOption?.trade?.promotionPrice]) | number }}</span></span>
               </div>
             </div>
           </div>

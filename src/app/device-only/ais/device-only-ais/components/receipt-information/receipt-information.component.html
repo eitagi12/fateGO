@@ -63,9 +63,9 @@
     <div class="card-footer bg-transparent">
       <form [formGroup]="receiptInfoForm" class="pt-2">
         <div class="form-group row">
-          <label for="taxId" class="col-12 col-sm-3 col-form-label" id="txtTaxID">Tax Id</label>
+          <label for="taxId" class="col-12 col-sm-3 col-form-label" id="txtTaxID">Tax Id </label>
           <div class="col-12 col-sm-9">
-            <input type="text" class="form-control" id="taxId" formControlName="taxId" readonly/>
+            <input type="text" class="form-control" id="taxId" formControlName="taxId" [value]= "receiptInfoForm.get('taxId').value | idCard"     readonly/>
           </div>
         </div>
         <div class="form-group row">
