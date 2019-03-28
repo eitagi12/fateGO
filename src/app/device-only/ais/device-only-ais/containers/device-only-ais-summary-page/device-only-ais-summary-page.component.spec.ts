@@ -1,9 +1,13 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DeviceOnlyAisSummaryPageComponent } from './device-only-ais-summary-page.component';
 import { Router } from '@angular/router';
-import { HomeService } from 'mychannel-shared-libs';
+import { HomeService, TokenService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { HttpClient } from '@angular/common/http';
+import { HttpHandler } from '@angular/common/http';
+import { CookiesStorageService } from 'ngx-store';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 describe('DeviceOnlyAisSummaryPageComponent', () => {
   let component: DeviceOnlyAisSummaryPageComponent;
@@ -12,6 +16,15 @@ describe('DeviceOnlyAisSummaryPageComponent', () => {
   setupTestBed({
     declarations: [DeviceOnlyAisSummaryPageComponent],
     providers: [
+      HttpClient,
+      HttpHandler,
+      CookiesStorageService,
+      {
+        provide: TokenService,
+        useValue: {
+          getUser: jest.fn()
+        }
+      },
       {
         provide: Router,
         useValue: {
