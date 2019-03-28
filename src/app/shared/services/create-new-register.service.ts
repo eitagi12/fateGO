@@ -162,7 +162,7 @@ export class CreateNewRegisterService {
     };
 
     // เช็ค Eng Flag จากจังหวัด
-    if (customer.province && !!customer.province.match(/[a-z]/i)) {
+    if (data.billProvince.match(/[a-z]/i)) {
       data.engFlag = 'Y';
     } else {
       data.engFlag = 'N';
