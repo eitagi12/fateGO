@@ -181,7 +181,7 @@ export class CreateOrderService {
       matCode: priceOption.productStock.colorCode,
       priceIncAmt: '',
       priceDiscountAmt: '',
-      grandTotalAmt: '',
+      grandTotalAmt: priceOption.trade.promotionPrice,
       userId: this.user.username,
       saleCode: transaction.data.seller.sellerNo || '661111',
       queueNo: transaction.data.queue.queueNo,
