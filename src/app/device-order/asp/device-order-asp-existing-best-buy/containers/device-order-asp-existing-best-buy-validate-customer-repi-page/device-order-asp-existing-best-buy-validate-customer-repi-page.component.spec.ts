@@ -1,8 +1,7 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent } from './device-order-asp-existing-best-buy-validate-customer-repi-page.component';
 
-describe('DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent', () => {
+describe('DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent', () => {
   let component: DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent;
   let fixture: ComponentFixture<DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent>;
 
