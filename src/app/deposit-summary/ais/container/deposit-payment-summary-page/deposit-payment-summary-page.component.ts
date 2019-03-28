@@ -11,6 +11,8 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { DEPOSIT_PAYMENT_SUMMARY_PAGE, DEPOSIT_QUEUE_PAGE, DEPOSIT_PAYMENT_PAGE } from 'src/app/deposit-summary/constants/route-path.constant';
 import { WIZARD_RESERVE_WITH_DEPOSIT } from 'src/app/deposit-summary/constants/wizard.constant';
+import { LocalStorageService } from 'ngx-store';
+import { CreateDeviceOrderService } from 'src/app/deposit-summary/services/create-device-order.service';
 
 @Component({
   selector: 'app-deposit-payment-summary-page',
@@ -39,6 +41,8 @@ export class DepositPaymentSummaryPageComponent implements OnInit, OnDestroy {
     private router: Router,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
+    private localStorageService: LocalStorageService,
+    private createDeviceOrderService: CreateDeviceOrderService,
     private tokenService: TokenService,
     private http: HttpClient,
     private priceOptionService: PriceOptionService,
@@ -88,7 +92,6 @@ export class DepositPaymentSummaryPageComponent implements OnInit, OnDestroy {
   onBack(): void {
     this.router.navigate([DEPOSIT_PAYMENT_PAGE]);
   }
-
   onNext(): void {
     this.pageLoadingService.openLoading();
     this.http.get(`/api/customerportal/checkSeller/${this.seller.sellerNo}`).toPromise()
@@ -101,12 +104,35 @@ export class DepositPaymentSummaryPageComponent implements OnInit, OnDestroy {
         this.pageLoadingService.closeLoading();
         this.router.navigate([DEPOSIT_QUEUE_PAGE]);
         } else {
-          this.alertService.error(shopCheckSeller.data.message);
+          this.alertService.error(shopCheckSeller.data.message.replace('<br/> ', ' '));
         }
       }).catch((error: any) => {
         this.pageLoadingService.closeLoading();
         this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
       });
+  }
+  onHome(): void {
+    this.alertRemoveAddCart('/');
+  }
+  alertRemoveAddCart(url: string): void {
+    this.alertService.notify({
+      type: 'question',
+      showConfirmButton: true,
+      confirmButtonText: 'CONFIRM',
+      cancelButtonText: 'CANCEL',
+      showCancelButton: true,
+      reverseButtons: true,
+      allowEscapeKey: false,
+      html: 'ต้องการยกเลิกรายการขายหรือไม่ <br> การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที'
+    }).then((data) => {
+        if (data.value) {
+          const userId = this.tokenService.getUser().username;
+          const soId = this.localStorageService.load('reserveSoId').value;
+          this.createDeviceOrderService.removeAddCart(soId, userId).then( (res) => {
+            window.location.href = url;
+          });
+        }
+    });
   }
   summary(amount: number[]): number {
     return amount.reduce((prev, curr) => {

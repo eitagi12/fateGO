@@ -86,8 +86,8 @@ export class CreateDeviceOrderService {
             if (response.data.resultCode === 'S') {
               resolve(response);
             } else {
-              switch (response.resultMessage) {
-                case 'QueueNo is duplicated':
+              switch (response.data.resultCode) {
+                case 'F':
                   reject('เลขที่คิวซ้ำ กรุณาระบุใหม่');
                   break;
                 default:
@@ -109,7 +109,7 @@ export class CreateDeviceOrderService {
     const payment = transaction.data.payment || '';
     // const advancePayment = transaction.data.advancePayment;
     const simCard = transaction.data.simCard || '';
-    const queue = transaction.data.queue || '';
+    const queue = transaction.data.queue;
     const seller = transaction.data.seller;
     // const prebooking = transaction.data.preBooking;
     const order = transaction.data.order || '';
@@ -118,8 +118,8 @@ export class CreateDeviceOrderService {
       soCompany: trade.company || 'AWN',
       locationSource: this.user.locationCode || '',
       locationReceipt: customer.selectedLocation.locationCode || '',
-      productType: trade.productType || 'DEVICE',
-      productSubType: trade.productSubtype || 'HANDSET',
+      productType: trade.productType || '',
+      productSubType: trade.productSubType || '',
       brand: productDetail.brand,
       model: productDetail.model,
       color: productDetail.colorName,
@@ -254,4 +254,10 @@ export class CreateDeviceOrderService {
     return paymentRemark;
   }
 
+  removeAddCart(soId: string, userId: string): Promise<any> {
+    return this.http.post('/api/salesportal/device-sell/item/remove', {
+      userId: userId,
+      soId: soId
+    }).toPromise().then((res: any) => res.data);
+  }
 }

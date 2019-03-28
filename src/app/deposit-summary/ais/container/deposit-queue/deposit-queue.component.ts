@@ -61,7 +61,7 @@ export class DepositQueueComponent implements OnInit, OnDestroy {
         this.alertService.error('ระบบขัดข้อง');
       }
     }).catch((err) => {
-      this.alertService.error('ระบบขัดข้อง');
+      this.alertService.error(err);
     });
   }
 

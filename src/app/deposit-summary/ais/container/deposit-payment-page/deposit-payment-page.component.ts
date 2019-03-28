@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_RESERVE_WITH_DEPOSIT } from '../../../constants/wizard.constant';
 import { LocalStorageService } from 'ngx-store';
-import { ApiRequestService, PaymentDetailInstallment, SelectPaymentDetail, PaymentDetailBank, HomeService, Utils, AlertService, PaymentDetail, PaymentDetailOption } from 'mychannel-shared-libs';
+import { ApiRequestService, PaymentDetailInstallment, SelectPaymentDetail, PaymentDetailBank, HomeService, Utils, AlertService, PaymentDetail, PaymentDetailOption, TokenService } from 'mychannel-shared-libs';
 import { Transaction, TransactionType, TransactionAction, Customer } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from '../../../../shared/models/price-option.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -15,6 +15,7 @@ export const CASH_PAYMENT = 'CA';
 export const CREDIT_CARD_PAYMENT = 'CC';
 export const CASH_AND_CREDIT_CARD_PAYMENT = 'CC/CA';
 import { DEPOSIT_QUEUE_PAGE } from 'src/app/deposit-summary/constants/route-path.constant';
+import { CreateDeviceOrderService } from 'src/app/deposit-summary/services/create-device-order.service';
 
 @Component({
   selector: 'app-deposit-payment-page',
@@ -51,6 +52,9 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     private priceOptionService: PriceOptionService,
     private router: Router,
     private depositSummaryServicesService: DepositSummaryServicesService,
+    private createDeviceOrderService: CreateDeviceOrderService,
+    private tokenService: TokenService,
+    private alertService: AlertService,
     private fb: FormBuilder) { }
 
   ngOnInit(): void {
@@ -120,12 +124,36 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
   onchangeOtherPhoneNumber(otherPhoneNumber: string): void {
     this.otherPhoneNumber = otherPhoneNumber;
   }
-
+  onHome(): void {
+    const url = '/';
+    this.alertRemoveAddCart(url);
+  }
   onNext(): void {
     this.router.navigate([DEPOSIT_PAYMENT_SUMMARY_PAGE]);
   }
   onBack(): void {
-    window.location.href = '/sales-portal/reserve-stock/list-mobile-no';
+    const url = '/sales-portal/reserve-stock/list-mobile-no';
+    this.alertRemoveAddCart(url);
+  }
+  alertRemoveAddCart(url: string): void {
+    this.alertService.notify({
+      type: 'question',
+      showConfirmButton: true,
+      confirmButtonText: 'CONFIRM',
+      cancelButtonText: 'CANCEL',
+      showCancelButton: true,
+      reverseButtons: true,
+      allowEscapeKey: false,
+      html: 'ต้องการยกเลิกรายการขายหรือไม่ <br> การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที'
+    }).then((data) => {
+        if (data.value) {
+          const userId = this.tokenService.getUser().username;
+          const soId = this.localStorageService.load('reserveSoId').value;
+          this.createDeviceOrderService.removeAddCart(soId, userId).then( (res) => {
+            window.location.href = url;
+          });
+        }
+    });
   }
   getRandomNum(length: number): string {
     const randomNum =
