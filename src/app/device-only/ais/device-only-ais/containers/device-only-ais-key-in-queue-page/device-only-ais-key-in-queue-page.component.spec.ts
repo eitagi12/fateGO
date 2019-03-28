@@ -6,7 +6,14 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { HomeService, TokenService } from 'mychannel-shared-libs';
 import { HttpClientModule } from '@angular/common/http';
 import { LocalStorageService } from 'ngx-store';
+import { Pipe, PipeTransform } from '@angular/core';
 
+@Pipe({name: 'mobileNo'})
+class MockMobileNoPipe implements PipeTransform {
+  transform(value: string): string {
+      return value;
+  }
+}
 describe('DeviceOnlyAisKeyInQueuePageComponent', () => {
   let component: DeviceOnlyAisKeyInQueuePageComponent;
   let fixture: ComponentFixture<DeviceOnlyAisKeyInQueuePageComponent>;
@@ -18,7 +25,8 @@ describe('DeviceOnlyAisKeyInQueuePageComponent', () => {
       HttpClientModule
     ],
     declarations: [
-      DeviceOnlyAisKeyInQueuePageComponent
+      DeviceOnlyAisKeyInQueuePageComponent,
+      MockMobileNoPipe
     ],
     providers: [
       {

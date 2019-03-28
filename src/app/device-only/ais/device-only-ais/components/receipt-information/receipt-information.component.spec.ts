@@ -9,7 +9,14 @@ import { BillingAddressService } from '../../services/billing-address.service';
 import { AlertService } from 'mychannel-shared-libs';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Pipe, PipeTransform } from '@angular/core';
 
+@Pipe({name: 'idCard'})
+class MockIdCardNoPipe implements PipeTransform {
+  transform(value: string): string {
+      return value;
+  }
+}
 describe('ReceiptInformationComponent', () => {
   let component: ReceiptInformationComponent;
   let fixture: ComponentFixture<ReceiptInformationComponent>;
@@ -19,7 +26,7 @@ describe('ReceiptInformationComponent', () => {
       ReactiveFormsModule,
       RouterTestingModule
     ],
-    declarations: [ ReceiptInformationComponent ],
+    declarations: [ ReceiptInformationComponent, MockIdCardNoPipe ],
     providers: [
       HttpClient,
       HttpHandler,
@@ -86,6 +93,7 @@ describe('ReceiptInformationComponent', () => {
 
   it('submitting a form emits a receipt information', fakeAsync(() => {
     component.receiptInfoForm.controls['telNo'].setValue('0867876746');
+    component.receiptInfoForm.controls['taxId'].setValue('01234567890123');
     expect(component.receiptInfoForm.valid).toBeTruthy();
 
     // Emit event to mother component

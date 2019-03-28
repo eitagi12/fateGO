@@ -55,6 +55,7 @@ export interface TransactionData {
   receiptInfo?: ReceiptInfo;
   queue?: Queue;
   mpay_payment?: any;
+  status?: any;
 }
 export interface Payment {
   'paymentQrCodeType': 'THAI_QR' | 'LINE_QR';

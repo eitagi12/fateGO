@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { TokenService } from 'mychannel-shared-libs';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { User } from 'mychannel-shared-libs';
 @Injectable({
@@ -152,4 +152,78 @@ export class CreateOrderService {
     }).toPromise();
   }
 
+  updateTransactionDB(transaction: Transaction): Promise<any> {
+    const status = { code: '002', description: 'Waiting Payment'};
+    const updateTransaction = {...transaction,
+      issueBy: this.user.username};
+    updateTransaction.data.status = status;
+      return this.http.post('/api/salesportal/device-order/update-transaction', updateTransaction).toPromise().then(
+      (response: any) => response.isSuccess
+    ).catch((err) =>  err);
+  }
+
+  createOrderDeviceOnly(transaction: Transaction, priceOption: PriceOption): Promise<any> {
+    const order = this.mapCreateOrder(transaction, priceOption);
+    return this.http.post('/api/salesportal/device-sell/order', order).toPromise().then().catch();
+  }
+
+  mapCreateOrder(transaction: Transaction, priceOption: PriceOption): any {
+    return {
+      soId: transaction.data.order.soId,
+      soCompany: priceOption.productStock.company,
+      locationSource: this.user.locationCode,
+      locationReceipt: this.user.locationCode,
+      productType: priceOption.productDetail.productType,
+      productSubType: priceOption.productDetail.productSubtype,
+      brand: priceOption.productDetail.brand,
+      model: priceOption.productDetail.model,
+      color: priceOption.productStock.colorName,
+      matCode: priceOption.productStock.colorCode,
+      priceIncAmt: '',
+      priceDiscountAmt: '',
+      grandTotalAmt: '',
+      userId: this.user.username,
+      saleCode: transaction.data.seller.sellerNo || '661111',
+      queueNo: transaction.data.queue.queueNo,
+      cusNameOrder: transaction.data.customer.firstName + ' ' + transaction.data.customer.lastName,
+      taxCardId: transaction.data.customer.idCardNo,
+      cusMobileNoOrder: transaction.data.receiptInfo.telNo,
+      customerAddress: this.mapCusAddress(transaction.data.billingInformation.billDeliveryAddress),
+      tradeNo: priceOption.trade.tradeNo
+      // ussdCode: priceOption.trade.ussdCode,
+      // returnCode: '4GEYYY',
+      // matAirTime: '',
+      // matCodeFreeGoods: '',
+      // paymentRemark: '',
+      // installmentTerm: 0,
+      // installmentRate: 0,
+      // mobileAisFlg: '',
+      // paymentMethod: 'CA|CC',
+      // bankAbbr: '',
+      // tradeFreeGoodsId: '',
+      // matairtimeId: '',
+      // tradeDiscountId: '',
+      // focCode: '',
+      // preBookingNo: '',
+      // depositAmt: '',
+      // bankCode: ''
+    };
+  }
+  mapCusAddress(addressCus: BillDeliveryAddress): any {
+    return {
+      addrNo: addressCus.homeNo,
+      moo: addressCus.moo || '',
+      mooban: addressCus.mooBan || '',
+      buildingName: addressCus.buildingName || '',
+      floor: addressCus.floor || '',
+      room: addressCus.room || '',
+      soi: addressCus.soi || '',
+      streetName: addressCus.street || '',
+      tumbon: addressCus.tumbol || '',
+      amphur: addressCus.amphur || '',
+      province: addressCus.province || '',
+      postCode: addressCus.zipCode || '',
+      country: ''
+    };
+  }
 }

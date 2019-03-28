@@ -3,6 +3,8 @@ import { HomeService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { HomeButtonService } from '../../services/home-button.service';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
 
 @Component({
   selector: 'app-device-only-ais-queue-page',
@@ -12,12 +14,15 @@ import { HomeButtonService } from '../../services/home-button.service';
 export class DeviceOnlyAisQueuePageComponent implements OnInit, OnDestroy {
 
   transaction: Transaction;
+  priceOption: PriceOption;
   constructor(
     private homeService: HomeService,
     private transactionService: TransactionService,
-    private homeButtonService: HomeButtonService
+    private homeButtonService: HomeButtonService,
+    private priceOptionService: PriceOptionService
     ) {
       this.transaction = this.transactionService.load();
+      this.priceOption = this.priceOptionService.load();
     }
 
   ngOnInit(): void {

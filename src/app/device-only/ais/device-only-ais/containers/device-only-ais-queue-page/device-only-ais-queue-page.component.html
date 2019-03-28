@@ -13,10 +13,11 @@
                   <div class="my-3 text-center">
                   <!-- <p>หมายเลข {{ transaction?.data?.simCard?.mobileNo | mobileNo }}</p> -->
                     <p>หมายเลข  
-                    <span id="text-mobile-no">{{ '0889540584' | mobileNo }}</span></p> 
-                    <p>ชำระค้าสินค้าเรียบร้อยแล้ว</p>
-                    <p>หมายเลขอ้างอิง 
-                    <span id="text-transaction-no">2019031111009</span></p>
+                      <span id="text-mobile-no">{{ transaction?.data?.receiptInfo?.telNo | mobileNo }}</span></p>
+                    <p>รายการสั่งซื้อของท่านได้เข้าสู่ระบบเรียบร้อยแล้ว</p> 
+                    <!-- กรณี จ่ายด้วย Rabbit -->
+                    <!-- <p>หมายเลขอ้างอิง -->
+                    <!-- <span id="text-transaction-no">{{ transaction?.data?.}}</span></p> -->
                   </div>
               </div>
             </div>
@@ -27,14 +28,14 @@
               <div class="row mb-2">
                  <div class="col-6 text-left">
                     <i class="fa fa-circle mr-3 text-light-green"></i>
-                    <span id="text-brand-model">Samsung S10 Plus สี BLACK</span>
+                    <span id="text-brand-model"> {{  priceOption?.productDetail?.name }}</span>
                  </div>
                  <div class="col-6 text-right">
-                    <p id="text-normal-price">฿45,700</p>
+                    <p id="text-normal-price">฿ {{ priceOption?.trade?.promotionPrice | number}} </p>
                  </div>
                  <div class="col-12 text-right">
                   ยอดค้างชำระ(รวมVAT)
-                  <span class="text-light-green" id="text-include-vat-price">฿45,700</span>
+                  <span class="text-light-green" id="text-include-vat-price">฿ {{ priceOption?.trade?.promotionPrice | number}} </span>
                  </div>
               </div>
             </div>

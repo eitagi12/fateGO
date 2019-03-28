@@ -5,10 +5,16 @@ describe('test device only ais queue page', () => {
   const transactionService: any = {
     load: jest.fn()
   };
+  const homeButtonService: any = {};
+  const priceOptionService: any = {
+    load: jest.fn()
+  };
   beforeEach(() => {
     component = new DeviceOnlyAisQueuePageComponent(
       homeService,
-      transactionService
+      transactionService,
+      homeButtonService,
+      priceOptionService
     );
   });
 

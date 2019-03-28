@@ -8,6 +8,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { CreateOrderService } from '../../services/create-order.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { HomeButtonService } from '../../services/home-button.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
 
 @Component({
   selector: 'app-device-only-ais-key-in-queue-page',
@@ -16,15 +17,19 @@ import { HomeButtonService } from '../../services/home-button.service';
 })
 export class DeviceOnlyAisKeyInQueuePageComponent implements OnInit, OnDestroy {
   public queueForm: FormGroup;
-  private transaction: Transaction;
-
+  transaction: Transaction;
+  priceOption: PriceOption;
   constructor(
     public router: Router,
     private fb: FormBuilder,
     private transactionService: TransactionService,
     private homeService: HomeService,
-    private homeButtonService: HomeButtonService) {
+    private homeButtonService: HomeButtonService,
+    private priceOptionService: PriceOptionService,
+    private createOrderService: CreateOrderService,
+    private alertService: AlertService) {
       this.transaction = this.transactionService.load();
+      this.priceOption = this.priceOptionService.load();
      }
 
   ngOnInit(): void {
@@ -52,7 +57,21 @@ export class DeviceOnlyAisKeyInQueuePageComponent implements OnInit, OnDestroy {
       } else {
         this.transaction.data.queue.queueNo = this.queueForm.value.queueNo;
       }
-    this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE]);
+    this.stepNextQueuePage();
+  }
+
+  private stepNextQueuePage(): any {
+    this.createOrderService.updateTransactionDB(this.transaction).then((response) => {
+      if (response = true) {
+        this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).then((res) => {
+          this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE]);
+        }).catch((errs) => {
+          this.alertService.warning('ระบบไม่สามารถทำรายการได้');
+        });
+      }
+    }).catch((err) => {
+      this.alertService.warning('ระบบไม่สามารถ update รายการสินค้าได้');
+    });
   }
 
   onHome(): void {

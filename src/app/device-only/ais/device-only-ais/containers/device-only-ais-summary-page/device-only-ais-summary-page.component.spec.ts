@@ -8,13 +8,20 @@ import { HttpClient } from '@angular/common/http';
 import { HttpHandler } from '@angular/common/http';
 import { CookiesStorageService } from 'ngx-store';
 import { JwtHelperService } from '@auth0/angular-jwt';
+import { Pipe, PipeTransform } from '@angular/core';
 
+@Pipe({name: 'mobileNo'})
+class MockMobileNoPipe implements PipeTransform {
+  transform(value: string): string {
+      return value;
+  }
+}
 describe('DeviceOnlyAisSummaryPageComponent', () => {
   let component: DeviceOnlyAisSummaryPageComponent;
   let fixture: ComponentFixture<DeviceOnlyAisSummaryPageComponent>;
 
   setupTestBed({
-    declarations: [DeviceOnlyAisSummaryPageComponent],
+    declarations: [DeviceOnlyAisSummaryPageComponent, MockMobileNoPipe],
     providers: [
       HttpClient,
       HttpHandler,
