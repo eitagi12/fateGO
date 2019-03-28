@@ -8,12 +8,14 @@
     </p>
     <p>
       <i class="fa fa-circle mr-3 text-light-green"></i>
-      <span class="text-grey" id="text-patment-method">
-        {{ priceOption?.productDetail?.name }}
-        <span *ngIf="priceOption?.productStock?.color">
-          สี {{ priceOption?.productStock?.color }} 
-        </span> 
-        <!-- : {{ paymentDesc }} -->
+      <span class="text-grey" id="text-brand-payment-summary">
+        {{ priceOption?.productDetail?.brand }}
+      </span>
+      <span class="text-grey" id="text-model-payment-summary">
+        {{ priceOption?.productDetail?.model }}
+      </span>
+      <span class="text-grey" id="text-color-payment-summary">
+        {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.color }}
       </span>
       <span class="pull-right text-light-green" id="text-payment-price">
         ฿{{ priceOption?.trade?.promotionPrice | number }}
@@ -33,9 +35,8 @@
       </div>
       <div class="col-12 col-sm-8">
         <p class="text-light-green" id="text-receipt-customer-name">
-          {{ transaction?.data?.customer?.titleName }}
-          {{ transaction?.data?.customer?.firstName }}
-          {{ transaction?.data?.customer?.lastName }}
+          {{ transaction?.data?.customer?.titleName }} {{ transaction?.data?.customer?.firstName }} {{ transaction?.data?.customer?.lastName
+          }}
         </p>
       </div>
 

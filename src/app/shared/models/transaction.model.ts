@@ -225,6 +225,7 @@ export interface Seller {
   locationCode?: string;
   sellerNo?: string;
   shareUser?: string;
+  isAscCode?: boolean;
 }
 
 export interface ReceiptInfo {
