@@ -1,7 +1,6 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Transaction, Seller } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { ShopCheckSeller } from 'src/app/device-only/ais/device-only-ais/models/ShopCheckSeller.model';
 
 @Component({
   selector: 'app-summary-seller-code',
