@@ -30,6 +30,7 @@ import { SummarySellerCodeComponent } from './components/summary-seller-code/sum
 import { SelectPaymentComponent } from './components/select-payment/select-payment.component';
 import { CreateOrderService } from './services/create-order.service';
 import { CustomerInformationService } from './services/customer-information.service';
+import { SellerService } from 'src/app/device-only/ais/device-only-ais/services/seller.service';
 
 @NgModule({
   imports: [
@@ -67,7 +68,8 @@ import { CustomerInformationService } from './services/customer-information.serv
   providers: [
     BillingAddressService,
     CreateOrderService,
-    CustomerInformationService
+    CustomerInformationService,
+    SellerService
   ]
 })
 export class DeviceOnlyAisModule { }
