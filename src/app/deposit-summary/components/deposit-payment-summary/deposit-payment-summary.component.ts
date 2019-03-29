@@ -1,10 +1,8 @@
-import { Component, OnInit, Input } from '@angular/core';
-import { Customer, ProductInfo, Transaction, SelectedLocation, Recipientinformation } from 'src/app/shared/models/transaction.model';
+import { Component, OnInit } from '@angular/core';
+import { Customer, Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { Utils } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { last } from '@angular/router/src/utils/collection';
 
 @Component({
   selector: 'app-deposit-payment-summary',

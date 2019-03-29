@@ -21,7 +21,7 @@ export class DepositSellerInfoComponent implements OnInit {
     private transactionService: TransactionService,
     public fb: FormBuilder
   ) {
-    this.seller = this.seller || new Seller();
+    this.seller = this.seller || {};
     this.transaction = this.transactionService.load();
   }
   ngOnInit(): void {
