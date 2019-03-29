@@ -4,6 +4,7 @@ import { TokenService } from 'mychannel-shared-libs';
 import { Transaction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { User } from 'mychannel-shared-libs';
+import { map } from 'rxjs/operators';
 @Injectable({
   providedIn: 'root'
 })
@@ -157,18 +158,22 @@ export class CreateOrderService {
     const updateTransaction = {...transaction,
       issueBy: this.user.username};
     updateTransaction.data.status = status;
-    updateTransaction.data.mainPromotion = priceOption;
-      return this.http.post('/api/salesportal/device-order/update-transaction', updateTransaction).toPromise().then(
-      (response: any) => response.isSuccess
-    ).catch((err) =>  err);
+    updateTransaction.data.mainPromotion = {
+      campaign: priceOption.campaign,
+      trade: priceOption.trade
+    };
+      return this.http.post('/api/salesportal/device-order/update-transaction', updateTransaction).pipe(
+        map((res: any) => res.data.isSuccess)
+    ).toPromise();
   }
 
   createOrderDeviceOnly(transaction: Transaction, priceOption: PriceOption): Promise<any> {
     const order = this.mapCreateOrder(transaction, priceOption);
-    return this.http.post('/api/salesportal/device-sell/order', order).toPromise().then().catch();
+    return this.http.post('/api/salesportal/device-sell/order', order).toPromise();
   }
 
   mapCreateOrder(transaction: Transaction, priceOption: PriceOption): any {
+    const sellerNo = (transaction.data.seller && transaction.data.seller.sellerNo)  ? transaction.data.seller.sellerNo : '661111';
     return {
       soId: transaction.data.order.soId,
       soCompany: priceOption.productStock.company,
@@ -184,7 +189,7 @@ export class CreateOrderService {
       priceDiscountAmt: '',
       grandTotalAmt: priceOption.trade.promotionPrice,
       userId: this.user.username,
-      saleCode: transaction.data.seller.sellerNo || '661111',
+      saleCode: sellerNo,
       queueNo: transaction.data.queue.queueNo,
       cusNameOrder: transaction.data.customer.firstName + ' ' + transaction.data.customer.lastName,
       taxCardId: transaction.data.customer.idCardNo,
@@ -212,19 +217,19 @@ export class CreateOrderService {
   }
   mapCusAddress(addressCus: BillDeliveryAddress): any {
     return {
-      addrNo: addressCus.homeNo,
-      moo: addressCus.moo || '',
-      mooban: addressCus.mooBan || '',
-      buildingName: addressCus.buildingName || '',
-      floor: addressCus.floor || '',
-      room: addressCus.room || '',
-      soi: addressCus.soi || '',
-      streetName: addressCus.street || '',
-      tumbon: addressCus.tumbol || '',
-      amphur: addressCus.amphur || '',
-      province: addressCus.province || '',
-      postCode: addressCus.zipCode || '',
-      country: ''
+      addrNo: addressCus.homeNo ? addressCus.homeNo : '',
+      moo: addressCus.moo ? addressCus.moo : '',
+      mooban: addressCus.mooBan ? addressCus.mooBan : '',
+      buildingName: addressCus.buildingName ? addressCus.buildingName : '',
+      floor: addressCus.floor ? addressCus.floor : '',
+      room: addressCus.room ? addressCus.room : '',
+      soi: addressCus.soi ? addressCus.soi : '',
+      streetName: addressCus.street ? addressCus.street : '',
+      tumbon: addressCus.tumbol ? addressCus.tumbol : '',
+      amphur: addressCus.amphur ? addressCus.amphur : '',
+      province: addressCus.province ? addressCus.province : '',
+      postCode: addressCus.zipCode ? addressCus.zipCode : '',
+      country: 'THAI'
     };
   }
 }

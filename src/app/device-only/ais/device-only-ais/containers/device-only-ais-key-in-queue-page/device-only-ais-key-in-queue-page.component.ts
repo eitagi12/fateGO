@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE } from '../../constants/route-path.constant';
 import { Router } from '@angular/router';
-import { HomeService, AlertService } from 'mychannel-shared-libs';
+import { HomeService, AlertService, PageLoadingService } from 'mychannel-shared-libs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -27,7 +27,8 @@ export class DeviceOnlyAisKeyInQueuePageComponent implements OnInit, OnDestroy {
     private homeButtonService: HomeButtonService,
     private priceOptionService: PriceOptionService,
     private createOrderService: CreateOrderService,
-    private alertService: AlertService) {
+    private alertService: AlertService,
+    private pageLoadingService: PageLoadingService) {
       this.transaction = this.transactionService.load();
       this.priceOption = this.priceOptionService.load();
      }
@@ -61,15 +62,24 @@ export class DeviceOnlyAisKeyInQueuePageComponent implements OnInit, OnDestroy {
   }
 
   private stepNextQueuePage(): any {
+    this.pageLoadingService.openLoading();
     this.createOrderService.updateTransactionDB(this.transaction, this.priceOption).then((response) => {
-      if (response = true) {
+      if (response === true) {
         this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).then((res) => {
-          this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE]);
+          if (res.data.resultCode === 'S') {
+            this.pageLoadingService.closeLoading();
+            this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE]);
+          } else {
+            this.pageLoadingService.closeLoading();
+            this.alertService.warning('ระบบไม่สามารถทำรายการได้');
+          }
         }).catch((errs) => {
+          this.pageLoadingService.closeLoading();
           this.alertService.warning('ระบบไม่สามารถทำรายการได้');
         });
       }
     }).catch((err) => {
+      this.pageLoadingService.closeLoading();
       this.alertService.warning('ระบบไม่สามารถ update รายการสินค้าได้');
     });
   }
