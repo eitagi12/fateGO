@@ -49,9 +49,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
     {
       provide: ErrorHandler,
       useClass: ErrorsHandler
-    },
-    I18nService,
-    TranslateService
+    }
   ],
   bootstrap: [AppComponent]
 })
