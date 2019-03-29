@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_RESERVE_WITH_DEPOSIT } from '../../../constants/wizard.constant';
 import { LocalStorageService } from 'ngx-store';
-import { ApiRequestService, PaymentDetailInstallment, SelectPaymentDetail, PaymentDetailBank, HomeService, Utils, AlertService, PaymentDetail, PaymentDetailOption, TokenService } from 'mychannel-shared-libs';
+import { ApiRequestService, AlertService, TokenService } from 'mychannel-shared-libs';
 import { Transaction, TransactionType, TransactionAction, Customer } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from '../../../../shared/models/price-option.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -29,9 +29,9 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
   priceOption: PriceOption;
   productImage: String;
   formID: String;
-  paymentDetail: PaymentDetail;
-  selectPaymentDetail: SelectPaymentDetail;
-  paymentDetailOption: PaymentDetailOption;
+  paymentDetail: any;
+  selectPaymentDetail: any;
+  paymentDetailOption: any;
   paymentForm: FormGroup;
   discountForm: FormGroup;
   paymentMethod: string;
@@ -188,7 +188,7 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  onLoadDefaultBankData(banks: PaymentDetailBank[]): Promise<any> {
+  onLoadDefaultBankData(banks: any[]): Promise<any> {
     return new Promise((resolve, reject) => {
       if (banks && banks.length > 0) {
         resolve(banks);
@@ -203,19 +203,19 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     this.selectPaymentDetail.paymentType = paymentType;
     this.paymentMethod = this.getPaymentMethod(paymentType);
   }
-  onSelectBank(bank: PaymentDetailBank): void {
+  onSelectBank(bank: any): void {
     this.selectPaymentDetail.bank = Object.assign({}, bank);
     this.selectPaymentDetail.bank.installments = undefined;
     this.paymentDetail.installments = bank.installments;
     this.checkPaymentFormValid();
   }
-  groupPrivilegeTradeBankByAbb(banks: PaymentDetailBank[]): PaymentDetailBank[] {
-    const newPrivilegTradeBankByAbbs = new Array<PaymentDetailBank>();
-    const grouped = this.groupBy(banks, (bank: PaymentDetailBank) => bank.abb);
+  groupPrivilegeTradeBankByAbb(banks: any[]): any[] {
+    const newPrivilegTradeBankByAbbs = new Array<any>();
+    const grouped = this.groupBy(banks, (bank: any) => bank.abb);
     const groupedKeys = Array.from(grouped.keys());
     for (const groupedKey of groupedKeys) {
-      const groupBanks: PaymentDetailBank[] = grouped.get(groupedKey);
-      const privilegTradeBank: PaymentDetailBank = {
+      const groupBanks: any[] = grouped.get(groupedKey);
+      const privilegTradeBank: any = {
         abb: groupBanks[0].abb,
         name: groupBanks[0].name,
         imageUrl: groupBanks[0].imageUrl,

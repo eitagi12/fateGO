@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Utils, TokenService, User, PaymentDetailQRCode } from 'mychannel-shared-libs';
+import { Utils, TokenService, User } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 
 @Injectable({
