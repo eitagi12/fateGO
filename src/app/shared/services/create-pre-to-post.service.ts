@@ -79,7 +79,7 @@ export class CreatePreToPostService {
         billTumbol: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.tumbol : customer.tumbol || '',
         billAmphur: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.amphur : customer.amphur || '',
         // tslint:disable-next-line:max-line-length
-        billProvince: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.province : customer.province || '',
+        billProvince: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.province.replace(/มหานคร$/, '') : customer.province.replace(/มหานคร$/, '') || '',
         // tslint:disable-next-line:max-line-length
         billZipCode: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.zipCode : customer.zipCode || '',
         orderVerify: '',
