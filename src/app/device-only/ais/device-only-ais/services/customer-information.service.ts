@@ -12,6 +12,16 @@ export class CustomerInformationService {
     private http: HttpClient
   ) { }
 
+  getZipCode(province: string, amphur: string , tumbol: string): Promise<any> {
+    province = province.replace(/มหานคร$/, '');
+      return this.http.get('/api/customerportal/newRegister/getAllProvinces').toPromise()
+      .then((resp: any) => {
+          const provinceId = (resp.data.provinces.find((prov: any) => prov.name === province) || {}).id;
+          const getZipcodeAPI =
+          `/api/customerportal/newRegister/queryZipcode?provinceId=${provinceId}&amphurName=${amphur}&tumbolName=${tumbol}`;
+          return this.http.get(getZipcodeAPI).toPromise();
+   });
+  }
   getBillingByIdCard(idCardNo: string): Promise<any> {
     const getBillingAccountAPI = `/api/customerportal/newRegister/${idCardNo}/queryBillingAccount`;
     return this.http.get(getBillingAccountAPI).toPromise();
