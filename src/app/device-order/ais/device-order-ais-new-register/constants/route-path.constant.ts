@@ -20,3 +20,4 @@ export const ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_CONFIRM_PAGE = '/device-or
 export const ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QUEUE_PAGE = '/device-order/ais/new-register/queue';
 export const ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_RESULT_PAGE = '/device-order/ais/new-register/result';
 export const ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_EDIT_BILLING_ADDRESS_PAGE = '/device-order/ais/new-register/ebilling-address';
+export const ROUTE_DEVICE_SELLING_QUEUE = '/device-selling/queue';

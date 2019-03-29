@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AuthGuard, I18nService } from 'mychannel-shared-libs';
+import { AuthGuard, I18nService, ApiRequestGuard } from 'mychannel-shared-libs';
 import { ErrorPageComponent } from './containers/error-page/error-page.component';
 
 const routes: Routes = [
@@ -37,6 +37,11 @@ const routes: Routes = [
     resolve: {
       i18n: I18nService
     }
+  },
+  {
+    path: 'deposit-summary',
+    loadChildren: 'src/app/deposit-summary/deposit-summary.module#DepositSummaryModule',
+    canActivate: [AuthGuard, ApiRequestGuard]
   },
   {
     path: 'error',
