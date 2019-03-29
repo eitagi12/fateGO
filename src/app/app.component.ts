@@ -59,7 +59,7 @@ export class AppComponent {
 
     const ONE_SECOND = 1000;
     this.errorsService.getErrorContextInfo().pipe(debounceTime(ONE_SECOND)).subscribe((observer) => {
-      let redirectTo = '/error?';
+      let redirectTo = 'error?';
       Object.keys(observer).forEach((key: string, index: number) => {
         if (index > 0) {
           redirectTo += '&';
