@@ -349,10 +349,16 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
               this.transactionService.update(this.transaction);
               this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE]);
             })
-            .catch((error: any) => {
+            .catch((resp: any) => {
               this.pageLoadingService.closeLoading();
               this.validateCustomerForm.patchValue({ identity: '' });
-              this.alertService.error(this.translation.instant(error.error.resultDescription));
+
+              const error = resp.error || [];
+              if (error && error.resultDescription) {
+                this.alertService.error(this.translation.instant(error.resultDescription));
+              } else {
+                this.alertService.error(this.translation.instant('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'));
+              }
             });
         }
       });

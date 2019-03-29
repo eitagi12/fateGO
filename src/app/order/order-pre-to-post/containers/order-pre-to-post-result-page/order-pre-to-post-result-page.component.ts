@@ -53,8 +53,9 @@ export class OrderPreToPostResultPageComponent implements OnInit {
       .then((resp: any) => {
         const currentServices = resp.data || [];
         this.serviceChange = currentServices.services.filter(service => service.canTransfer);
-      })
-      .then(() => {
+        this.pageLoadingService.closeLoading();
+      }).catch(() => {
+        this.isSuccess = false;
         this.pageLoadingService.closeLoading();
       });
   }
