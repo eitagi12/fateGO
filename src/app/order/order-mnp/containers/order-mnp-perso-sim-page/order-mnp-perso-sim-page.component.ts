@@ -13,6 +13,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { environment } from 'src/environments/environment';
+import { TranslateService } from '@ngx-translate/core';
 
 export enum PersoSimCommand {
   EVENT_CONNECT_LIB = 9000,
@@ -170,7 +171,8 @@ export class OrderMnpPersoSimPageComponent implements OnInit, OnDestroy {
     private http: HttpClient,
     private tokenService: TokenService,
     private transactionService: TransactionService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private translateService: TranslateService
   ) {
     if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {
       this.typeSim = 'pullsim';
@@ -216,12 +218,12 @@ export class OrderMnpPersoSimPageComponent implements OnInit, OnDestroy {
           if (this.checkErrSim < 3) {
             this.startPersoSim(this.transaction);
           } else {
-            this.alertService.error(ErrorPerSoSimMessage.ERROR_ORDER_MESSAGE);
+            this.alertService.error(this.translateService.instant(ErrorPerSoSimMessage.ERROR_ORDER_MESSAGE));
             this.errorMessage = ErrorPerSoSimMessage.ERROR_ORDER_MESSAGE;
           }
         } else
           if (value.error.errorCase === ErrorPerSoSim.ERROR_PERSO) {
-            this.alertService.question(value.error.messages, 'ตกลง').then((res) => {
+            this.alertService.question(this.translateService.instant(value.error.messages), 'ตกลง').then((res) => {
               if (res.value) {
                 this.persoSimSubscription.unsubscribe();
                 this.router.navigate([ROUTE_ORDER_MNP_NETWORK_TYPE_PAGE]);
@@ -233,11 +235,11 @@ export class OrderMnpPersoSimPageComponent implements OnInit, OnDestroy {
               this.startPersoSim(this.transaction);
             } else {
               this.persoSimSubscription.unsubscribe();
-              this.alertService.error(ErrorPerSoSimMessage.ERROR_CMD_MESSAGE);
+              this.alertService.error(this.translateService.instant(ErrorPerSoSimMessage.ERROR_CMD_MESSAGE));
               this.errorMessage = ErrorPerSoSimMessage.ERROR_CMD_MESSAGE;
             }
           } else {
-            this.alertService.error(value.error.messages);
+            this.alertService.error(this.translateService.instant(value.error.messages));
           }
         console.log('value.error.messages', value.error.messages);
         this.errorMessage = value.error.messages;
