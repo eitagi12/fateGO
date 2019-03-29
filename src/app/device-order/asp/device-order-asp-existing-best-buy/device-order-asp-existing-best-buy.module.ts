@@ -1,5 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TabsModule } from 'ngx-bootstrap';
+
 import { DeviceOrderAspExistingBestBuyCheckOutPageComponent } from './containers/device-order-asp-existing-best-buy-check-out-page/device-order-asp-existing-best-buy-check-out-page.component';
 import { DeviceOrderAspExistingBestBuyCustomerInfoPageComponent } from './containers/device-order-asp-existing-best-buy-customer-info-page/device-order-asp-existing-best-buy-customer-info-page.component';
 import { DeviceOrderAspExistingBestBuyCustomerProfilePageComponent } from './containers/device-order-asp-existing-best-buy-customer-profile-page/device-order-asp-existing-best-buy-customer-profile-page.component';
@@ -21,10 +24,17 @@ import { DeviceOrderAspExistingBestBuyValidateCustomerIdCardPageComponent } from
 import { DeviceOrderAspExistingBestBuyValidateCustomerIdCardRepiPageComponent } from './containers/device-order-asp-existing-best-buy-validate-customer-id-card-repi-page/device-order-asp-existing-best-buy-validate-customer-id-card-repi-page.component';
 import { DeviceOrderAspExistingBestBuyValidateCustomerPageComponent } from './containers/device-order-asp-existing-best-buy-validate-customer-page/device-order-asp-existing-best-buy-validate-customer-page.component';
 import { DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent } from './containers/device-order-asp-existing-best-buy-validate-customer-repi-page/device-order-asp-existing-best-buy-validate-customer-repi-page.component';
+import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
+import { DeviceOrderAspExistingBestBuyRoutingModule } from './device-order-asp-existing-best-buy-routing.module';
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MyChannelSharedLibsModule,
+    TabsModule.forRoot(),
+    DeviceOrderAspExistingBestBuyRoutingModule
   ],
   declarations: [DeviceOrderAspExistingBestBuyCheckOutPageComponent,
     DeviceOrderAspExistingBestBuyCustomerInfoPageComponent,

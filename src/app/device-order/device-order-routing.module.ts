@@ -52,6 +52,10 @@ const routes: Routes = [
       //   path: 'existing',
       //   loadChildren: 'src/app/device-order/asp/device-order-asp-existing.module#DeviceOrderAspExistingModule',
       // }
+      {
+        path: 'best-buy',
+        loadChildren: 'src/app/device-order/asp/device-order-asp-existing-best-buy/device-order-asp-existing-best-buy.module#DeviceOrderAspExistingBestBuyModule'
+      }
     ]
   }
 ];
