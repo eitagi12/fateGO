@@ -17,9 +17,9 @@ export class DepositPaymentSummaryComponent implements OnInit {
   transaction: Transaction;
   priceOption: PriceOption;
 
-  private customerFullName: string;
-  private customerFullAddress: string;
-  private customerIdCardNo: string;
+  public customerFullName: string;
+  public customerFullAddress: string;
+  public customerIdCardNo: string;
   public mobileNo: string;
   public depositAmt: boolean;
   public colorName: string;
