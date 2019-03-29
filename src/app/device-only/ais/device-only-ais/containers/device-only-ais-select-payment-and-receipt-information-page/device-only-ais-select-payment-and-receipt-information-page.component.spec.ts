@@ -27,7 +27,6 @@ describe('test device only ais queue page', () => {
     };
     component = new DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent(
       router,
-      fb,
       homeService,
       apiRequestService,
       transactionService,
