@@ -212,6 +212,7 @@
     "ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้": "Unable to proceed your transaction. Please contact our staff.",
     "ชื่อ/รหัสผ่าน ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง": "You have entered incorrect user name/ password. Please try again",
     "สำหรับคนไทยกรุณาใช้บัตรประชาชนทำรายการ": "For Thai citizen, please use your ID card to proceed with a transaction",
-    "แสดงตนซ้ำ": "Redo"
+    "แสดงตนซ้ำ": "Prepaid identify",
+    "กรุณาใส่รหัสที่ได้รับจาก SMS": "Please enter your OTP received via SMS"
 
 }
