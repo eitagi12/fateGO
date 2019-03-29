@@ -30,6 +30,7 @@ import { SummarySellerCodeComponent } from './components/summary-seller-code/sum
 import { CreateOrderService } from './services/create-order.service';
 import { CustomerInformationService } from './services/customer-information.service';
 import { SellerService } from 'src/app/device-only/ais/device-only-ais/services/seller.service';
+import { ShoppingCartDetailComponent } from './components/shopping-cart-detail/shopping-cart-detail.component';
 
 @NgModule({
   imports: [
@@ -61,7 +62,8 @@ import { SellerService } from 'src/app/device-only/ais/device-only-ais/services/
     SummaryOrderDetailComponent,
     SummaryProductAndServiceComponent,
     SummaryPaymentDetailComponent,
-    SummarySellerCodeComponent
+    SummarySellerCodeComponent,
+    ShoppingCartDetailComponent
   ],
   providers: [
     BillingAddressService,

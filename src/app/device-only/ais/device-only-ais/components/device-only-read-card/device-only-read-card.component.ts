@@ -145,17 +145,25 @@ export class DeviceOnlyReadCardComponent implements OnInit {
         this.listBillingAccountBox.nativeElement.style.display = 'none';
       });
   }
-
-  public readCard(): void {
+    public zipcode(customer: any): any {
+      return this.customerInfoService.getZipCode(customer.province, customer.amphur, customer.tumbol)
+      .then((res) => {
+          const zipCode: String = res.data.zipcodes[0];
+          return zipCode;
+      });
+    }
+ public readCard(): void {
     new Promise((resolve, reject): void => {
       resolve(this.readingCard());
     }).then((customer: any) => {
-      this.getbillingCycle(customer);
+    this.zipcode(customer).then((res) => {
+        customer.zipCode = res;
+        this.getbillingCycle(customer);
+    });
     }).catch((err) => {
       console.log(err);
     });
   }
-
   public closeModalSelectAddress(): void {
     this.modalBillAddress.hide();
     this.canReadSmartCard = true;
