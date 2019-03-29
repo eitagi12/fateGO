@@ -81,14 +81,13 @@
         </div>
       </div>
     </div>
-
     <!-- campaigns -->
     <div [mcLoading]="priceOptionDetailService" [hidden]="priceOption?.campaign">
       <div class="bg-white price" [hidden]="tabs?.length <= 0">
         <tabset [justified]="true">
           <tab *ngFor="let tab of tabs" [active]="tab.active">
             <ng-template tabHeading>
-              <div class="{{tab.code}}" [ngClass]="{ 'active' : tab.active }"><b>{{ tab.name }}</b></div>
+              <div class="{{tab.code}}" [ngClass]="{ 'active' : tab.active }" (click)="setActiveTabs(tab.code)"><b>{{ tab.name }}</b></div>
             </ng-template>
 
             <div class="bg-white pb-3" *ngIf="tab?.campaignSliders?.length > 0">

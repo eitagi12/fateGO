@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import {
-  HomeService, ShoppingCart, ReceiptInfo, Utils
+  HomeService, ShoppingCart, ReceiptInfo, Utils, PaymentDetail
 } from 'mychannel-shared-libs';
 import {
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VALIDATE_CUSTOMER_PAGE,
@@ -14,7 +14,6 @@ import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.c
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 
 @Component({
@@ -29,21 +28,19 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
   priceOption: PriceOption;
   transaction: Transaction;
 
-  paymentDetailForm: FormGroup;
-  paymentAdvancePayForm: FormGroup;
-  isBankCollapsed: boolean;
-  isBankAdvancePayCollapsed: boolean;
-  fullPayment: boolean;
+  payementDetail: PaymentDetail;
   banks: any[];
-  banksPayment: any[];
+  paymentDetailValid: boolean;
 
   receiptInfo: ReceiptInfo;
-  receiptInfoValid: boolean = true;
+  receiptInfoValid: boolean;
+
+  paymentDetailTemp: any;
+  receiptInfoTemp: any;
 
   constructor(
     private utils: Utils,
     private router: Router,
-    private fb: FormBuilder,
     private homeService: HomeService,
     private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,
@@ -56,9 +53,21 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
 
-    this.banks = this.priceOption.trade.banks || [];
     const customer: any = this.transaction.data.customer || {};
     const receiptInfo: any = this.transaction.data.receiptInfo || {};
+
+    const trade: any = this.priceOption.trade || {};
+    const advancePay: any = trade.advancePay || {};
+
+    this.payementDetail = {
+      commercialName: ``,
+      promotionPrice: +(trade.promotionPrice || 0),
+      isFullPayment: this.isFullPayment(),
+      installmentFlag: advancePay.installmentFlag === 'N' && +(advancePay.amount || 0) > 0,
+      advancePay: +(advancePay.amount || 0)
+    };
+
+    this.banks = trade.banks || [];
 
     this.receiptInfo = {
       taxId: customer.idCardNo,
@@ -81,127 +90,22 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
       telNo: receiptInfo.telNo
     };
 
-    this.createForm();
   }
 
-  createForm(): void {
-
-    this.fullPayment = this.isFullPayment();
-
-    this.paymentDetailForm = this.fb.group({
-      'paymentQrCodeType': [''],
-      'paymentType': ['', Validators.required],
-      'paymentForm': [''],
-      'paymentBank': [''],
-      'paymentMethod': ['']
-    }, { validator: this.customValidate.bind(this) });
-
-    // Advance pay
-    this.paymentAdvancePayForm = this.fb.group({
-      'paymentQrCodeType': [''],
-      'paymentType': ['DEBIT', Validators.required],
-      'paymentBank': ['']
-    }, { validator: this.customValidate.bind(this) });
-
-    // Events
-    this.paymentDetailForm.controls['paymentType'].valueChanges.subscribe((obs: any) => {
-      this.changePaymentType(obs, this.paymentDetailForm, this.paymentAdvancePayForm);
-    });
-
-    this.paymentAdvancePayForm.controls['paymentType'].valueChanges.subscribe((obs: any) => {
-      this.changePaymentType(obs, this.paymentAdvancePayForm, this.paymentDetailForm);
-    });
-
-    this.paymentDetailForm.controls['paymentQrCodeType'].valueChanges.subscribe((obs: any) => {
-      this.changePaymentQrCodeType(obs, this.paymentDetailForm, this.paymentAdvancePayForm);
-    });
-
-    this.paymentAdvancePayForm.controls['paymentQrCodeType'].valueChanges.subscribe((obs: any) => {
-      this.changePaymentQrCodeType(obs, this.paymentAdvancePayForm, this.paymentDetailForm);
-    });
-
-    this.paymentDetailForm.controls['paymentBank'].valueChanges.subscribe((bank: any) => {
-      this.paymentDetailForm.patchValue({ paymentMethod: '' });
-      if (this.fullPayment) {
-        return;
-      }
-      this.banksPayment = this.banks
-        .filter(b => b.abb === bank.abb)
-        .reduce((prev, curr) => {
-          const instalmment = curr.installment.split(/เดือน|%/);
-          if (instalmment && instalmment.length >= 1) {
-            curr.percentage = +instalmment[0];
-            curr.month = +instalmment[1];
-          } else {
-            curr.percentage = 0;
-            curr.month = 0;
-          }
-          if (!prev.find(p => p.month === curr.month && p.percentage === curr.percentage)) {
-            prev.push(curr);
-          }
-          return prev;
-        }, [])
-        .sort((a, b) => {
-          // month + percentage to string and convert to number
-          const aMonthAndPercentage = +`${a.month}${a.percentage}`;
-          const bMonthAndPercentage = +`${b.month}${b.percentage}`;
-          return bMonthAndPercentage - aMonthAndPercentage;
-        });
-    });
-
-    this.paymentDetailForm.patchValue({
-      paymentType: this.fullPayment ? 'DEBIT' : 'CREDIT',
-      paymentForm: this.fullPayment ? 'FULL' : 'INSTALLMENT'
-    });
-    this.paymentDetailForm.controls['paymentForm'].disable();
+  onPaymentCompleted(payment: any): void {
+    this.paymentDetailTemp = payment;
   }
 
-  customValidate(group: FormGroup): any {
-    switch (group.value.paymentType) {
-      case 'QR_CODE':
-        if (!group.value.paymentQrCodeType) {
-          return { field: 'paymentQrCodeType' };
-        }
-        break;
-      case 'CREDIT':
-        if (group.value.paymentBank) {
-          if (!this.isFullPayment()
-            // Advance pay จะไม่มี paymentMethod ไม่ต้อง check
-            && group.controls['paymentMethod']
-            && !group.value.paymentMethod) {
-            return { field: 'paymentMethod' };
-          }
-        } else {
-          return { field: 'paymentBank' };
-        }
-        break;
-    }
-    return null;
+  onPaymentError(valid: boolean): void {
+    this.paymentDetailValid = valid;
   }
 
-  changePaymentType(paymentType: string, sourceControl: any, targetControl: any): void {
-    let paymentQrCodeType;
-    if (paymentType === 'QR_CODE'
-      && targetControl.value.paymentType === 'QR_CODE') {
-      paymentQrCodeType = targetControl.value.paymentQrCodeType;
-    }
-    sourceControl.patchValue({
-      paymentQrCodeType: paymentQrCodeType,
-      paymentBank: ''
-    }, { emitEvent: false });
+  onReceiptInfoCompleted(receiptInfo: ReceiptInfo): void {
+    this.receiptInfoTemp = receiptInfo;
   }
 
-  changePaymentQrCodeType(qrCodeType: string, sourceControl: any, targetControl: any): void {
-    const value = targetControl.value;
-    if (!(qrCodeType && value.paymentType === 'QR_CODE')) {
-      return;
-    }
-    targetControl.patchValue({
-      paymentQrCodeType: qrCodeType
-    }, { emitEvent: false });
-    sourceControl.patchValue({
-      paymentQrCodeType: qrCodeType
-    }, { emitEvent: false });
+  onReceiptInfoError(valid: boolean): void {
+    this.receiptInfoValid = valid;
   }
 
   isFullPayment(): boolean {
@@ -221,43 +125,6 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
     }
   }
 
-  getBanks(): any[] {
-    return this.banks.reduce((prev, curr) => {
-      const exists = prev.find(p => p.abb === curr.abb);
-      if (!exists) {
-        prev.push(curr);
-      }
-      return prev;
-    }, []);
-  }
-
-  onSelectBank(bank: any): void {
-    this.banks.forEach((b: any) => {
-      b.checked = false;
-    });
-    bank.checked = true;
-    this.banksPayment = this.banks
-      .filter(b => b.abb === bank.abb)
-      .reduce((prev, curr) => {
-        const instalmment = curr.installment.split(/เดือน|%/);
-        if (instalmment && instalmment.length >= 1) {
-          curr.percentage = +instalmment[0];
-          curr.month = +instalmment[1];
-        } else {
-          curr.percentage = 0;
-          curr.month = 0;
-        }
-        prev.push(curr);
-        return prev;
-      }, [])
-      .sort((a, b) => {
-        // month + percentage to string and convert to number
-        const aMonthAndPercentage = +`${a.month}${a.percentage}`;
-        const bMonthAndPercentage = +`${b.month}${b.percentage}`;
-        return bMonthAndPercentage - aMonthAndPercentage;
-      });
-  }
-
   onBack(): void {
     if (TransactionAction.KEY_IN === this.transaction.data.action) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VALIDATE_CUSTOMER_PAGE]);
@@ -266,43 +133,20 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
     }
   }
 
-  isAdvancePay(): boolean {
-    const trade = this.priceOption.trade;
-    const advancePay = trade.advancePay || {};
-    // Y = ผ่อนรวมค่าเครื่อง
-    // N = ...
-    return advancePay.installmentFlag === 'N' && (+advancePay.amount) > 0;
-  }
-
   isNext(): boolean {
-    let valid = this.receiptInfoValid && this.paymentDetailForm.valid;
-    if (this.isAdvancePay()) {
-      valid = valid && this.paymentAdvancePayForm.valid;
-    }
-    return valid;
+    return this.paymentDetailValid && this.receiptInfoValid;
   }
 
   onNext(): void {
-    this.transaction.data.payment = Object.assign({
-      paymentForm: this.isFullPayment() ? 'FULL' : 'INSTALLMENT'
-    }, this.paymentDetailForm.value);
+    this.transaction.data.payment = this.paymentDetailTemp.payment;
+    this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;
+    this.transaction.data.receiptInfo = this.receiptInfoTemp;
 
-    if (this.isAdvancePay()) {
-      this.transaction.data.advancePayment = Object.assign({}, this.paymentAdvancePayForm.value);
-    }
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CUSTOMER_INFO_PAGE]);
   }
 
   onHome(): void {
     this.homeService.goToHome();
-  }
-
-  onReceiptInfoCompleted(receiptInfo: ReceiptInfo): void {
-    this.transaction.data.receiptInfo = receiptInfo;
-  }
-
-  onReceiptInfoError(error: boolean): void {
-    this.receiptInfoValid = error;
   }
 
   ngOnDestroy(): void {

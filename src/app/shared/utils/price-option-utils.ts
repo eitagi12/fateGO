@@ -3,7 +3,10 @@ export class PriceOptionUtils {
     static getInstallmentsFromCampaign(campaign: any): any[] {
 
         return this.getInstallmentsFromTrades(
-            campaign.privileges.flatMap(privilege => privilege.trades)
+            (campaign.privileges || []).reduce((prev: any, curr: any) => {
+                (curr.trades || []).forEach((trade: any) => prev.push(trade));
+                return prev;
+            }, [])
         );
 
     }
