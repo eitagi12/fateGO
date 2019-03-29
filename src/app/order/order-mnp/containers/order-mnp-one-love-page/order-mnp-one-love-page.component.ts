@@ -12,6 +12,7 @@ import {
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { environment } from 'src/environments/environment';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-order-mnp-one-love-page',
@@ -25,6 +26,8 @@ export class OrderMnpOneLovePageComponent implements OnInit, OnDestroy {
   transaction: Transaction;
   mobileOneLove: string[];
   isError: boolean;
+
+  translationSubscribe: Subscription;
 
   constructor(
     private router: Router,
@@ -45,6 +48,19 @@ export class OrderMnpOneLovePageComponent implements OnInit, OnDestroy {
       numberOfMobile: numberOfMobile,
       mainPackageText: mainPackage.shortNameThai
     };
+    this.oneLoveByLang();
+    this.translationSubscribe = this.translation.onLangChange.subscribe(lang => {
+      this.oneLoveByLang();
+    });
+  }
+
+  oneLoveByLang(): void {
+    const mainPackage = this.transaction.data.mainPackage;
+    if (this.translation.currentLang === 'EN') {
+      this.oneLove.mainPackageText = mainPackage.shortNameEng;
+    } else {
+      this.oneLove.mainPackageText = mainPackage.shortNameThai;
+    }
   }
 
   onHome() {
