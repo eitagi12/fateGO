@@ -43,8 +43,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
       }
     }),
     SharedModule,
-    AppRoutingModule,
-    TranslateModule.forRoot(),
+    AppRoutingModule
   ],
   providers: [
     {
