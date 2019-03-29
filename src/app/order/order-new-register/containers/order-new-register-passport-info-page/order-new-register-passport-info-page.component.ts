@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, SimpleChanges, OnChanges, EventEmitter } from '@angular/core';
 import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
 import { Router } from '@angular/router';
-import { HomeService, CaptureAndSign, TokenService, ChannelType, ImageUtils, AlertService, Utils, User, AWS_WATERMARK } from 'mychannel-shared-libs';
+import { HomeService, CaptureAndSign, TokenService, ChannelType, ImageUtils, AlertService, Utils, User, AWS_WATERMARK, AWS_WATERMARK_EN } from 'mychannel-shared-libs';
 import { Transaction, Customer, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ROUTE_ORDER_NEW_REGISTER_FACE_CAPTURE_PAGE, ROUTE_ORDER_NEW_REGISTER_VERIFY_DOCUMENT_PAGE } from '../../constants/route-path.constant';
@@ -48,6 +48,7 @@ export class OrderNewRegisterPassportInfoPageComponent implements OnInit, OnDest
     this.transaction = this.transactionService.load();
 
     this.currentLang = this.translationService.currentLang || 'TH';
+    this.changeWatherMark(this.currentLang);
     this.translationSubscribe = this.translationService.onLangChange.subscribe(lang => {
       if (this.signedOpenSubscription) {
         this.signedOpenSubscription.unsubscribe();
@@ -56,6 +57,7 @@ export class OrderNewRegisterPassportInfoPageComponent implements OnInit, OnDest
       if (this.isOpenSign) {
         this.onSigned();
       }
+      this.changeWatherMark(this.currentLang);
     });
 
     this.signedSubscription = this.aisNativeOrderService.getSigned().subscribe((signature: string) => {
@@ -72,6 +74,14 @@ export class OrderNewRegisterPassportInfoPageComponent implements OnInit, OnDest
       }
       this.onChangeCaptureAndSign();
     });
+  }
+
+  changeWatherMark(lang: string): void {
+    if (lang === 'EN') {
+      this.watermark = AWS_WATERMARK_EN;
+    } else {
+      this.watermark = AWS_WATERMARK;
+    }
   }
 
   ngOnInit(): void {

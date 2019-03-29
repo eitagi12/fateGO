@@ -83,6 +83,7 @@
     "ทำรายการสำเร็จ": "Transaction completed",
     "Transaction ID": "Transaction ID",
     "ซิมใช้งานได้ภายใน 1 ชั่วโมงซิมใช้งานได้เมื่อได้รับ SMS ยืนยัน": "Your SIM card will be ready to use within 1 hour once the confirmation SMS is received",
+    "ซิมใช้งานได้ภายใน 1 ชั่วโมง ซิมใช้งานได้เมื่อได้รับ SMS ยืนยัน": "Your SIM card will be ready to use within 1 hour once the confirmation SMS is received",
     "ขอบคุณที่เลือกใช้บริการ AIS": "Thank you for choosing AIS",
     "คุณไม่ได้ทำรายการภายในเวลาที่กำหนด ต้องการทำรายการต่อหรือไม่?": "Your sessing is about to expire Do you wish to continue with this transaction?",
     "ยกเลิก": "Abort",
@@ -206,11 +207,15 @@
     "เฉพาะสิทธิ์การโทรภายในประเทศเท่านั้น": "The calling privilege is for the domestic uses only.",
     "คิดค่าโทรที่ได้รับหลังหักโปรโมชั่นหลัก": "The incurred charge will be accounted after the main promotion",
     "ยอดเงินคงเหลือในกระเป๋า 1 ของคุณจะถูกโอนเป็นค่าโทรที่ระบบรายเดือนให้อัตโนมัติ ส่วนเงินคงเหลือในกระเป๋า 2 ไมสามารถโอนได้ ควรใช้ให้หมดก่อนทำรายการ": "The balance from your 1st  wallet will be transferred to your postpaid account automatically; However, the remaining balance of your 2nd  wallet cannot be transferred, please use it before starting this transaction.",
+    "*ยอดเงินคงเหลือในกระเป๋า 1 ของคุณ จะถูกโอนเป็นค่าโทรที่ รับรายเดือนให้อัตโนมัติ ส่วนเงินคงเหลือในกระเป๋า 2 ไม่สามารถโอนได้ ควรใช้ให้หมดก่อนทำรายการ": "The balance from your 1st  wallet will be transferred to your postpaid account automatically; However, the remaining balance of your 2nd  wallet cannot be transferred, please use it before starting this transaction.",
     "เอกสารฉบับนี้ใช้เพื่อเป็นหลักฐานการใช้บริการที่ AWN เท่านั้น": "This document applies for AWN services only.",
     "ไม่พบหมายเลขเติมเงินที่แสดงตนตาม ID No ที่ระบุ": "Not found your prepaid mobile number on prepaid identification data.",
     "เบอร์นี้ถูกเลือกแล้ว กรุณาเลือกเบอร์ใหม่ เพื่อทำรายการ": "This mobile number has already been used.Please select a new number.",
     "ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้": "Unable to proceed your transaction. Please contact our staff.",
     "ชื่อ/รหัสผ่าน ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง": "You have entered incorrect user name/ password. Please try again",
-    "สำหรับคนไทยกรุณาใช้บัตรประชาชนทำรายการ": "For Thai citizen, please use your ID card to proceed with a transaction"
+    "สำหรับคนไทยกรุณาใช้บัตรประชาชนทำรายการ": "For Thai citizen, please use your ID card to proceed with a transaction",
+    "แสดงตนซ้ำ": "Prepaid identify",
+    "กรุณาใส่รหัสที่ได้รับจาก SMS": "Please enter your OTP received via SMS",
+    "ระบบจัดส่ง SMS แจ้ง รายละเอียดการทำรายการข้อตกลงและเงื่อนไขบริการโทรศัพท์เคลื่อนที่ ไปที่": "The system will send the transaction details with the usage terms and conditions via SMS to"
 
 }
