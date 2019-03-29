@@ -1,11 +1,9 @@
 import { NgModule, ErrorHandler } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import {
-  HammerGestureConfig
-} from '@angular/platform-browser';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule, HttpClient } from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 import { JwtModule, JWT_OPTIONS } from '@auth0/angular-jwt';
+
 import {
   jwtOptionsFactory,
   ErrorsHandler,
@@ -13,13 +11,13 @@ import {
   I18nService,
 } from 'mychannel-shared-libs';
 import { AppRoutingModule } from './app-routing.module';
+import { CookiesStorageService } from 'ngx-store';
 /* Components */
 import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 import { ErrorPageComponent } from './containers/error-page/error-page.component';
-import { CookiesStorageService } from 'ngx-store';
 import { SharedModule } from './shared/shared.module';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -29,13 +27,13 @@ import { TranslateModule } from '@ngx-translate/core';
   imports: [
     CommonModule,
     BrowserModule,
-    TranslateModule.forRoot(),
     HttpClientModule, // ต้อง import แค่ครั้งเดียว
+    TranslateModule.forRoot(),
     MyChannelSharedLibsModule.forRoot({
       production: environment.production,
       NAME: environment.name,
       WEB_CONNECT_URL: environment.WEB_CONNECT_URL,
-      CAMERA_DEVLICE: [ new RegExp(/^USB Camera.*/), new RegExp(/^HP.*/)]
+      CAMERA_DEVLICE: [ new RegExp(/^USB Camera+/), new RegExp(/^HP+/)]
     }),
     JwtModule.forRoot({
       jwtOptionsProvider: {
@@ -52,7 +50,8 @@ import { TranslateModule } from '@ngx-translate/core';
       provide: ErrorHandler,
       useClass: ErrorsHandler
     },
-    I18nService
+    I18nService,
+    TranslateService
   ],
   bootstrap: [AppComponent]
 })
