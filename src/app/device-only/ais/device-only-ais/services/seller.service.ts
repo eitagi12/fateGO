@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { API } from 'src/app/device-only/ais/device-only-ais/constants/api.constant';
 import { HttpClient } from '@angular/common/http';
-import { ShopCheckSeller } from 'src/app/device-only/ais/device-only-ais/models/ShopCheckSeller.model';
 
 @Injectable({
   providedIn: 'root'
