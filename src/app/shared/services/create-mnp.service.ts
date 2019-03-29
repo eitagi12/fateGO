@@ -97,7 +97,7 @@ export class CreateMnpService {
       street: customer.street || '',
       tumbol: customer.tumbol || '',
       amphur: customer.amphur || '',
-      province: customer.province || '',
+      province: customer.province.replace(/มหานคร$/, '') || '',
       zipCode: customer.zipCode || '',
       reasonCode: transaction.data.reasonCode || '',
       chargeType: simCard.chargeType || '',

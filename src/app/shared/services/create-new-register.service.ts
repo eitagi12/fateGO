@@ -142,7 +142,7 @@ export class CreateNewRegisterService {
       street: customer.street || '',
       tumbol: customer.tumbol || '',
       amphur: customer.amphur || '',
-      province: customer.province || '',
+      province: customer.province.replace(/มหานคร$/, '') || '',
       zipCode: customer.zipCode || '',
       isPersoSim: simCard.persoSim,
       mainPackage: {

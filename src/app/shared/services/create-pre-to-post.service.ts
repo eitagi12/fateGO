@@ -94,7 +94,7 @@ export class CreatePreToPostService {
         street: customer.street || '',
         tumbol: customer.tumbol || '',
         amphur: customer.amphur || '',
-        province: customer.province || '',
+        province: customer.province.replace(/มหานคร$/, '') || '',
         zipCode: customer.zipCode || '',
         isPersoSim: simCard.persoSim,
         mainPackage: {
@@ -116,7 +116,6 @@ export class CreatePreToPostService {
       } else {
         data.engFlag = 'N';
       }
-
       if (action === TransactionAction.READ_PASSPORT || action === TransactionAction.READ_PASSPORT_REPI) {
         data.accountSubCat = 'FOR';
         data.titleName = customer.titleName;
