@@ -46,7 +46,7 @@ export class OrderPreToPostAggregatePageComponent implements OnInit, OnDestroy {
     private transactionService: TransactionService,
     private homeService: HomeService,
     private pageLoadingService: PageLoadingService,
-    private translationService: TranslateService,
+    public translationService: TranslateService,
   ) {
     this.transaction = this.transactionService.load();
   }
