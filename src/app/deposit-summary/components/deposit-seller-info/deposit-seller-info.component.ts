@@ -26,4 +26,8 @@ export class DepositSellerInfoComponent implements OnInit {
   }
   ngOnInit(): void {
   }
+
+  isUserASPType(): boolean {
+    return true;
+  }
 }
