@@ -9,42 +9,7 @@
   </mc-header>
 
   <div class="mc-flex-wrap">
-    <div class="card border-0">
-      <div class="container-fluid mt-3 mb-3">
-        <div class="row pl-3 pr-3">
-          <div class="col-12 col-sm-6">
-            <img src="assets/images/icon/icon-person.png" class="icon-img icon-person" />
-            <span id="text-customer-name">
-              {{ transaction?.data?.customer?.titleName }} 
-              {{ transaction?.data?.customer?.firstName }} 
-              {{ transaction?.data?.customer?.lastName}} 
-            </span>
-          </div>
-          <div class="col-12 col-sm-6 text-sm-right">
-            <img src="assets/images/icon/sales_portal_green_phone.png" class="icon-img icon-phone" />
-            <span id="text-mobile-no"> {{ transaction?.data?.receiptInfo?.telNo | mobileNo }}</span>
-          </div>
-        </div>
-      </div>
-      <hr class="mt-0 mb-0">
-      <div class="container-fluid mt-3 mb-3">
-        <div class="row pl-3 pr-3">
-          <div class="col-8 col-sm-10 text-left text-brown">
-            <p class="text-light-green" id="text-campaign-name">{{ priceOption?.campaign?.campaignName }}</p>
-            <span id="text-brand"> {{ priceOption?.productDetail?.brand }} </span>
-            <span id="text-model"> {{ priceOption?.productDetail?.model }} </span>
-            <span id="text-color"> สี {{ priceOption?.productStock?.colorName }}</span>
-            <span id="text-amount"> จำนวน เครื่อง</span>
-          </div>
-          <div class="col-4 col-sm-2 text-center text-brown">
-            <img src="assets/images/icon/icon-cart.png" width="35px" class="mb-1" />
-            <h4 class="text-light-green" id="text-total-price">
-              ฿{{ priceOption?.trade?.promotionPrice | number }}
-            </h4>
-          </div>
-        </div>
-      </div>
-    </div>
+    <app-shopping-cart-detail></app-shopping-cart-detail>
 
     <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
 

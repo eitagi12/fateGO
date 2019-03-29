@@ -10,12 +10,13 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { JwtHelperService } from '@auth0/angular-jwt/src/jwthelper.service';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { CookiesStorageService, LocalStorageService } from 'ngx-store';
+import { TokenService } from 'mychannel-shared-libs';
 
-@Pipe({name: 'number'})
+@Pipe({ name: 'mobileNo' })
 class MockPipe implements PipeTransform {
-    transform(value: string): string {
-      return value;
-    }
+  transform(value: string): string {
+    return value;
+  }
 }
 
 describe('SelectPaymentComponent', () => {
@@ -42,7 +43,15 @@ describe('SelectPaymentComponent', () => {
       {
         provide: TransactionService,
         useValue: {
-          load: jest.fn()
+          load: jest.fn(() => {
+            return{
+              data: {
+                receipInfo: {
+                  telNo: ''
+                }
+              }
+            };
+          })
         }
       },
       {

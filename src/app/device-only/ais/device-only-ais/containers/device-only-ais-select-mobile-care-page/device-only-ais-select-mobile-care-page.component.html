@@ -7,7 +7,10 @@
        <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
-  <app-mobile-care [promotionMock]="promotionMock" (checkBuyMobileCare)="checkBuyMobileCare($event)" (isReasonNotBuyMobileCare)="ReasonNotBuyMobileCare($event)"></app-mobile-care>
+  <div class="mc-flex-wrap">
+    <app-shopping-cart-detail></app-shopping-cart-detail>
+    <app-mobile-care [promotionMock]="promotionMock" (checkBuyMobileCare)="checkBuyMobileCare($event)" (isReasonNotBuyMobileCare)="ReasonNotBuyMobileCare($event)"></app-mobile-care>
+  </div>
   <mc-footer>
     <button class="btn btn-secondary" id="button-back" (click)="onBack()">BACK</button>
     <button class="btn btn-success" id="button-next" (click)="onNext()" [disabled]="!isBuyMobileCare">NEXT</button>

@@ -30,7 +30,11 @@ import { SummarySellerCodeComponent } from './components/summary-seller-code/sum
 import { SelectPaymentComponent } from './components/select-payment/select-payment.component';
 import { CreateOrderService } from './services/create-order.service';
 import { CustomerInformationService } from './services/customer-information.service';
+<<<<<<< Updated upstream
 import { SellerService } from 'src/app/device-only/ais/device-only-ais/services/seller.service';
+=======
+import { ShoppingCartDetailComponent } from './components/shopping-cart-detail/shopping-cart-detail.component';
+>>>>>>> Stashed changes
 
 @NgModule({
   imports: [
@@ -63,7 +67,8 @@ import { SellerService } from 'src/app/device-only/ais/device-only-ais/services/
     SummaryProductAndServiceComponent,
     SummaryPaymentDetailComponent,
     SummarySellerCodeComponent,
-    SelectPaymentComponent
+    SelectPaymentComponent,
+    ShoppingCartDetailComponent
   ],
   providers: [
     BillingAddressService,
