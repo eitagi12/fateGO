@@ -56,6 +56,6 @@
     <button type="button" class="btn btn-secondary" id="modal-button-close"
       (click)="closeModalSelectAddress()">CLOSE</button>
     <button type="button" class="btn btn-success text-white" id="modal-button-select"
-      (click)="selectBillingAddress()">SELECT</button>
+      (click)="selectBillingAddress()" [disabled]="!isSelect">SELECT</button>
   </div>
 </ng-template>

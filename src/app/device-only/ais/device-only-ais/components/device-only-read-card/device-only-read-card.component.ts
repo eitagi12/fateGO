@@ -1,5 +1,6 @@
 import { Component, OnInit, ViewChild, TemplateRef, ElementRef, Output, EventEmitter } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { debounceTime } from 'rxjs/operators';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { TransactionAction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
 import { ReadCardService, ReadCardProfile, PageLoadingService } from 'mychannel-shared-libs';
@@ -30,6 +31,7 @@ export class DeviceOnlyReadCardComponent implements OnInit {
   public nameTextBySmartCard: string;
   public addressTextBySmartCard: string;
   public listBillingAccount: Array<any>;
+  public isSelect: boolean;
 
   constructor(
     private bsModalService: BsModalService,
@@ -42,11 +44,17 @@ export class DeviceOnlyReadCardComponent implements OnInit {
   ngOnInit(): void {
     this.createSelectBillingAddressForm();
     this.progressBarArea.nativeElement.style.display = 'none';
+    this.isSelect = false;
   }
 
   public createSelectBillingAddressForm(): void {
     this.selectBillingAddressForm = this.fb.group({
       'billingAddress': ['', [Validators.required]],
+    });
+    this.selectBillingAddressForm.valueChanges.pipe(debounceTime(350)).subscribe(event => {
+      if (this.selectBillingAddressForm.valid) {
+        this.isSelect = true;
+      }
     });
   }
 
