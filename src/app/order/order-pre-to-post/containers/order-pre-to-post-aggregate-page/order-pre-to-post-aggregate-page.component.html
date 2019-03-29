@@ -34,7 +34,15 @@
                 <i class="fa fa-circle text-green mr-3"></i>
                 <span translate>ผลการโอนย้ายบริการเสริม</span>
               </div>
-              <div class="col-sm-6 text-right"><span translate>ทั้งหมด</span> {{ serviceChange?.length }} <span translate>บริการ</span></div>
+              <div class="col-sm-6 text-right">
+                
+                <div *ngIf="translationService.currentLang === 'EN'">
+                    {{ serviceChange?.length }} package(s)
+                </div>
+                <div *ngIf="translationService.currentLang === 'TH'">
+                    ทั้งหมด {{ serviceChange?.length }} บริการ
+                </div>
+              </div>
             </div>
             <div class="row" *ngFor="let service of serviceChange">
               <ul>

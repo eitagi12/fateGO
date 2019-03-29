@@ -5,6 +5,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { CreatePreToPostService } from 'src/app/shared/services/create-pre-to-post.service';
 import { HttpClient } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-order-pre-to-post-result-page',
@@ -25,7 +26,8 @@ export class OrderPreToPostResultPageComponent implements OnInit {
     private transactionService: TransactionService,
     private createPreToPostService: CreatePreToPostService,
     private pageLoadingService: PageLoadingService,
-    private http: HttpClient
+    private http: HttpClient,
+    private translationService: TranslateService,
   ) {
     this.transaction = this.transactionService.load();
   }
