@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_RESERVE_WITH_DEPOSIT } from '../../../constants/wizard.constant';
 import { LocalStorageService } from 'ngx-store';
-import { ApiRequestService, PaymentDetailInstallment, SelectPaymentDetail, PaymentDetailBank, HomeService, Utils, AlertService, PaymentDetail, PaymentDetailOption, TokenService } from 'mychannel-shared-libs';
+import { ApiRequestService, PaymentDetailBank, HomeService, Utils, AlertService, PaymentDetail, TokenService } from 'mychannel-shared-libs';
 import { Transaction, TransactionType, TransactionAction, Customer } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from '../../../../shared/models/price-option.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -30,8 +30,8 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
   productImage: String;
   formID: String;
   paymentDetail: PaymentDetail;
-  selectPaymentDetail: SelectPaymentDetail;
-  paymentDetailOption: PaymentDetailOption;
+  // selectPaymentDetail: SelectPaymentDetail;
+  // paymentDetailOption: PaymentDetailOption;
   paymentForm: FormGroup;
   discountForm: FormGroup;
   paymentMethod: string;
@@ -93,22 +93,22 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     this.onLoadDefaultBankData(this.priceOptionBank).then((banks) => {
       this.priceOption.trade.banks = banks;
       // ############################################## payment detail ##############################################
-      this.paymentDetail = {
-        banks: this.groupPrivilegeTradeBankByAbb(this.priceOption.trade.banks)
-      };
+      // this.paymentDetail = {
+      //   banks: this.groupPrivilegeTradeBankByAbb(this.priceOption.trade.banks)
+      // };
     });
-    this.selectPaymentDetail = {
-      paymentType: this.getPaymentType()
-    };
+    // this.selectPaymentDetail = {
+    //   paymentType: this.getPaymentType()
+    // };
 
     this.createForm();
     this.createProductRecipient();
   }
   ngOnDestroy(): void {
-    this.transaction.data.payment = {
-      paymentMethod: this.paymentMethod,
-      selectPaymentDetail: this.selectPaymentDetail
-    };
+    // this.transaction.data.payment = {
+    //   paymentMethod: this.paymentMethod,
+    //   selectPaymentDetail: this.selectPaymentDetail
+    // };
     this.transaction.data.customer.shipaddress = {
       shipCusAddr: this.customerFullAddress,
       shipCusName: this.customerFullName
@@ -200,31 +200,31 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     });
   }
   onSelectPaymentType(paymentType: string): void {
-    this.selectPaymentDetail.paymentType = paymentType;
+    // this.selectPaymentDetail.paymentType = paymentType;
     this.paymentMethod = this.getPaymentMethod(paymentType);
   }
   onSelectBank(bank: PaymentDetailBank): void {
-    this.selectPaymentDetail.bank = Object.assign({}, bank);
-    this.selectPaymentDetail.bank.installments = undefined;
-    this.paymentDetail.installments = bank.installments;
+    // this.selectPaymentDetail.bank = Object.assign({}, bank);
+    // this.selectPaymentDetail.bank.installments = undefined;
+    // this.paymentDetail.installments = bank.installments;
     this.checkPaymentFormValid();
   }
   groupPrivilegeTradeBankByAbb(banks: PaymentDetailBank[]): PaymentDetailBank[] {
     const newPrivilegTradeBankByAbbs = new Array<PaymentDetailBank>();
     const grouped = this.groupBy(banks, (bank: PaymentDetailBank) => bank.abb);
     const groupedKeys = Array.from(grouped.keys());
-    for (const groupedKey of groupedKeys) {
-      const groupBanks: PaymentDetailBank[] = grouped.get(groupedKey);
-      const privilegTradeBank: PaymentDetailBank = {
-        abb: groupBanks[0].abb,
-        name: groupBanks[0].name,
-        imageUrl: groupBanks[0].imageUrl,
-        promotion: groupBanks[0].promotion,
-        installments: null,
-        remark: groupBanks[0].remark
-      };
-      newPrivilegTradeBankByAbbs.push(privilegTradeBank);
-    }
+    // for (const groupedKey of groupedKeys) {
+    //   const groupBanks: PaymentDetailBank[] = grouped.get(groupedKey);
+    //   const privilegTradeBank: PaymentDetailBank = {
+    //     abb: groupBanks[0].abb,
+    //     name: groupBanks[0].name,
+    //     imageUrl: groupBanks[0].imageUrl,
+    //     promotion: groupBanks[0].promotion,
+    //     installments: null,
+    //     remark: groupBanks[0].remark
+    //   };
+    //   newPrivilegTradeBankByAbbs.push(privilegTradeBank);
+    // }
 
     return newPrivilegTradeBankByAbbs;
   }
@@ -285,17 +285,17 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
   }
 
   checkPaymentFormValid(): boolean {
-    const paymentType = this.selectPaymentDetail.paymentType;
-    if (this.paymentMethod === CREDIT_CARD_PAYMENT) {
-      if (paymentType === 'credit' && (!this.selectPaymentDetail.bank)) {
-        return false;
-      }
-    }
-    if (this.paymentMethod === CASH_AND_CREDIT_CARD_PAYMENT) {
-      if (paymentType === 'credit' && !this.selectPaymentDetail.bank) {
-        return false;
-      }
-    }
+    // const paymentType = this.selectPaymentDetail.paymentType;
+    // if (this.paymentMethod === CREDIT_CARD_PAYMENT) {
+    //   if (paymentType === 'credit' && (!this.selectPaymentDetail.bank)) {
+    //     return false;
+    //   }
+    // }
+    // if (this.paymentMethod === CASH_AND_CREDIT_CARD_PAYMENT) {
+    //   if (paymentType === 'credit' && !this.selectPaymentDetail.bank) {
+    //     return false;
+    //   }
+    // }
     return true;
   }
   createForm(): void {
@@ -305,12 +305,12 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     this.paymentForm = this.fb.group({
       paymentType: [null, Validators.required]
     });
-    this.paymentForm.valueChanges.subscribe(observer => {
-      this.selectPaymentDetail.paymentType = observer.paymentType;
-    });
+    // this.paymentForm.valueChanges.subscribe(observer => {
+    //   this.selectPaymentDetail.paymentType = observer.paymentType;
+    // });
 
-    if (this.selectPaymentDetail) {
-      this.paymentForm.patchValue({ paymentType: this.selectPaymentDetail.paymentType });
-    }
+    // if (this.selectPaymentDetail) {
+    //   this.paymentForm.patchValue({ paymentType: this.selectPaymentDetail.paymentType });
+    // }
   }
 }
