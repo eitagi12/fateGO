@@ -226,6 +226,7 @@ export interface BillDeliveryAddress {
 }
 
 export interface Seller {
+  isAscCode?: boolean;
   sellerName?: string;
   locationName?: string;
   locationCode?: string;

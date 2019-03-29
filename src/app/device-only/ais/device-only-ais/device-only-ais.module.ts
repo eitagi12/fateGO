@@ -27,7 +27,6 @@ import { SummaryOrderDetailComponent } from './components/summary-order-detail/s
 import { SummaryProductAndServiceComponent } from './components/summary-product-and-service/summary-product-and-service.component';
 import { SummaryPaymentDetailComponent } from './components/summary-payment-detail/summary-payment-detail.component';
 import { SummarySellerCodeComponent } from './components/summary-seller-code/summary-seller-code.component';
-import { SelectPaymentComponent } from './components/select-payment/select-payment.component';
 import { CreateOrderService } from './services/create-order.service';
 import { CustomerInformationService } from './services/customer-information.service';
 import { SellerService } from 'src/app/device-only/ais/device-only-ais/services/seller.service';
@@ -62,8 +61,7 @@ import { SellerService } from 'src/app/device-only/ais/device-only-ais/services/
     SummaryOrderDetailComponent,
     SummaryProductAndServiceComponent,
     SummaryPaymentDetailComponent,
-    SummarySellerCodeComponent,
-    SelectPaymentComponent
+    SummarySellerCodeComponent
   ],
   providers: [
     BillingAddressService,
