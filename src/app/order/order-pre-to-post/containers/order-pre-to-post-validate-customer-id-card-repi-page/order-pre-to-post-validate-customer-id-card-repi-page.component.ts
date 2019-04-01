@@ -71,7 +71,7 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
   }
 
   progressDoing(): boolean {
-    return this.progressReadCard > 0 &&  this.progressReadCard < 100 ? true : false;
+    return this.progressReadCard > 0 && this.progressReadCard < 100 ? true : false;
   }
 
   isRunOnKiosk(): boolean {
@@ -135,15 +135,15 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
         return this.http.get(`/api/customerportal/newRegister/verifyPrepaidIdent?idCard=${this.profile.idCardNo}&mobileNo=${mobileNo}`)
           .toPromise()
           .then((respPrepaidIdent: any) => {
-            // if (this.checkBusinessLogic()) {
-            if (respPrepaidIdent.data && respPrepaidIdent.data.success) {
-              this.transaction.data.action = TransactionAction.READ_CARD;
-              this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CUSTOMER_INFO_PAGE]);
-            } else {
-              this.transaction.data.action = TransactionAction.READ_CARD_REPI;
-              this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CUSTOMER_PROFILE_PAGE]);
+            if (this.checkBusinessLogic()) {
+              if (respPrepaidIdent.data && respPrepaidIdent.data.success) {
+                this.transaction.data.action = TransactionAction.READ_CARD;
+                this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CUSTOMER_INFO_PAGE]);
+              } else {
+                this.transaction.data.action = TransactionAction.READ_CARD_REPI;
+                this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CUSTOMER_PROFILE_PAGE]);
+              }
             }
-            // }
             this.pageLoadingService.closeLoading();
           });
       })

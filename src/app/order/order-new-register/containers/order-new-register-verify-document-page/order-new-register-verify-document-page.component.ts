@@ -419,10 +419,9 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
           this.pageLoadingService.closeLoading();
           this.transaction.data.action = TransactionAction.READ_PASSPORT;
           this.transactionService.update(this.transaction);
-          // if (this.checkBusinessLogic()) {
-          this.router.navigate([ROUTE_ORDER_NEW_REGISTER_PASSPOPRT_INFO_PAGE]);
-
-          // }
+          if (this.checkBusinessLogic()) {
+            this.router.navigate([ROUTE_ORDER_NEW_REGISTER_PASSPOPRT_INFO_PAGE]);
+          }
         }).catch((resp: any) => {
           this.pageLoadingService.closeLoading();
           const error = resp.error || [];
@@ -603,11 +602,9 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
         this.pageLoadingService.closeLoading();
         this.transaction.data.action = TransactionAction.READ_PASSPORT;
         this.transactionService.update(this.transaction);
-        this.router.navigate([ROUTE_ORDER_NEW_REGISTER_PASSPOPRT_INFO_PAGE]);
-        // if (this.checkBusinessLogic()) {
-        //   this.router.navigate([ROUTE_ORDER_NEW_REGISTER_PASSPOPRT_INFO_PAGE]);
-
-        // }
+        if (this.checkBusinessLogic()) {
+          this.router.navigate([ROUTE_ORDER_NEW_REGISTER_PASSPOPRT_INFO_PAGE]);
+        }
       }).catch((resp: any) => {
         this.pageLoadingService.closeLoading();
         const error = resp.error || [];

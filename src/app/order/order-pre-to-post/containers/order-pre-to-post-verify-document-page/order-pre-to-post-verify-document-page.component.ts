@@ -441,9 +441,9 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
           this.pageLoadingService.closeLoading();
           this.transaction.data.action = TransactionAction.READ_PASSPORT;
           this.transactionService.update(this.transaction);
-          // if (this.checkBusinessLogic()) {
-          this.router.navigate([ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_PAGE]);
-          // }
+          if (this.checkBusinessLogic()) {
+            this.router.navigate([ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_PAGE]);
+          }
         }).catch((resp: any) => {
           this.pageLoadingService.closeLoading();
           const error = resp.error || [];
