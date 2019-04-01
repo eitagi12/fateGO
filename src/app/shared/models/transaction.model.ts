@@ -57,14 +57,15 @@ export interface TransactionData {
   preBooking?: Prebooking;
   discount?: Discount;
   // MPAY
-  // mpayPayment?: QrCodePrePostMpayModel;
+  mpayPayment?: QrCodePrePostMpayModel;
+  status?: Status;
 }
 export interface Payment {
-  'paymentQrCodeType': 'THAI_QR' | 'LINE_QR';
-  'paymentType': 'DEBIT' | 'CREDIT' | 'QR_CODE';
-  'paymentForm': 'FULL' | 'INSTALLMENT';
-  'paymentBank': any;
-  'paymentMethod': any;
+  paymentQrCodeType: 'THAI_QR' | 'LINE_QR';
+  paymentType: 'DEBIT' | 'CREDIT' | 'QR_CODE';
+  paymentForm: 'FULL' | 'INSTALLMENT';
+  paymentBank: any;
+  paymentMethod: any;
 }
 export interface MainPromotion {
   privilege: any;
