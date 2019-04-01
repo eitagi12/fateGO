@@ -586,14 +586,13 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
 
     readPassport.profile = mapDataFromAisWebConnect(mock);
 
+    this.pageLoadingService.openLoading();
     this.http.get('/api/customerportal/validate-customer-pre-to-post', {
       params: {
         identity: mock.PassportNumber
       }
       // catch ไว้ก่อน เดี๋ยวมาทำต่อ
-    }).toPromise().catch(() => {
-      return {};
-    })
+    }).toPromise()
       .then((resp: any) => {
         const data = resp.data || {};
         // readPassport NewCa จะไม่ได้ address
