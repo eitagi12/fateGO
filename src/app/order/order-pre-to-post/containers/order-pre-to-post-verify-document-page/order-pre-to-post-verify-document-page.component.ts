@@ -375,7 +375,7 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
         this.alertService.error(this.translation.instant(this.ERR_MASSEAGE));
         return;
       }
-      if (readPassport.profile && readPassport.profile.idCardNo) {
+      if (!readPassport.profile && !readPassport.profile.idCardNo) {
         this.alertService.error(this.translation.instant(this.ERR_MASSEAGE));
         return;
       }
@@ -591,7 +591,6 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
       params: {
         identity: mock.PassportNumber
       }
-      // catch ไว้ก่อน เดี๋ยวมาทำต่อ
     }).toPromise()
       .then((resp: any) => {
         const data = resp.data || {};
