@@ -175,7 +175,7 @@
               </div>
             </div>
             <!-- slider trade -->
-            <mc-trade-slider [tradeSliders]="privilege | privilegeToTradeSlider" (selected)="onTradeSelected($event)"
+            <mc-trade-slider [tradeSliders]="privilege | privilegeToTradeSlider" (selected)="onTradeSelected(privilege, $event)"
               (installments)="onViewInstallmentsFormTrede($event)">
             </mc-trade-slider>
 

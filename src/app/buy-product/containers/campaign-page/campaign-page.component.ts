@@ -390,7 +390,8 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         this.modalRef = this.modalService.show(this.installmentTemplate, { class: 'modal-lg' });
     }
 
-    onTradeSelected(trade: any): void {
+    onTradeSelected(privilege: any, trade: any): void {
+        this.priceOption.privilege = privilege;
         this.priceOption.trade = trade;
 
         this.pageLoadingService.openLoading();
