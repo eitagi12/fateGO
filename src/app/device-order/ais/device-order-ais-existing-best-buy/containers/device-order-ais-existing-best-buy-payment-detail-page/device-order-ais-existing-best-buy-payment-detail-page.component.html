@@ -1,0 +1,175 @@
+<div class="mc-flex">
+  <mc-header title="รายการสินค้า">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <div class="mt-3">
+      <mc-shopping-cart [shoppingCart]=shoppingCart></mc-shopping-cart>
+      <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
+
+      <div class="container-fluid" *ngIf="depositOrDiscount">
+        <div class="card mb-3">
+          <div class="card-header bg-teal text-white rounded-top p-3" >
+            ค่ามัดจำและส่วนลดอื่นๆ
+          </div>
+          <div class="card-header text-green bg-transparent">
+            <div class="row">
+              <div class="col-12" *ngIf="paymentDetail?.header">
+                ค่ามัดจำสินค้า {{ priceOption?.productDetail?.name + ' สี ' + priceOption?.productStock?.colorName}}
+                <span class="pull-right text-danger">฿ - {{ transaction?.data?.preBooking.depositAmt | number}}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <form [formGroup]="discountForm">
+              <div class="form-group row">
+                <div class="col-12 col-sm-10">
+                  <input class="form-check-input" type="radio" id="prebooking-discount" value="preBooking"
+                    formControlName="discountType">
+                  <label class="form-check-label" for="prebooking-discount">
+                      มัดจำเครื่อง{{priceOption?.productDetail?.name}} สี: {{priceOption?.productStock?.colorName}} 
+                      (นัดรับสินค้าวันที่: {{transaction?.data?.preBooking?.deliveryDt}}) 
+                      ({{transaction?.data?.preBooking?.preBookingNo}})
+                  </label>
+                </div>
+                <div class="col-12 col-sm-2">
+                    <span class="pull-right text-light-grey">฿ {{ transaction?.data?.preBooking.depositAmt | number}}</span>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div class="container-fluid">
+        <div class="card mb-3">
+          <div class="card-header bg-orange text-white rounded-top p-3" *ngIf="paymentDetail?.title">
+            {{paymentDetail?.title}}
+          </div>
+          <div class="card-header text-green bg-transparent">
+            <div class="row">
+              <div class="col-12" *ngIf="paymentDetail?.header">
+                {{paymentDetail?.header}}
+                <span class="pull-right">฿ {{ paymentDetail?.price | number: '1.2-2' }}</span>
+              </div>
+              <div class="col-12" *ngIf="paymentDetail?.headerAdvancePay">
+                {{paymentDetail?.headerAdvancePay}}
+                <span class="pull-right">฿ {{ paymentDetail?.priceAdvancePay | number: '1.2-2' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="card-body">
+            <form [formGroup]="paymentForm">
+              <div class="form-group row">
+                <div class="col-12 col-sm-5">
+                  <input class="form-check-input" type="radio" id="payment-debit-{{formID}}" value="debit"
+                    formControlName="paymentType">
+                  <label class="form-check-label" for="payment-debit-{{formID}}">
+                    {{ 'ชำระเงินด้วยเงินสด' }}
+                  </label>
+                </div>
+                <div class="col-12 col-sm-7">
+                  <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="{{ 'เต็มจำนวน' }}">
+                </div>
+              </div>
+              <hr>
+              <div class="form-group row">
+                <div class="col-12 col-sm-5">
+                  <input class="form-check-input" type="radio" id="payment-credit-{{formID}}" value="credit"
+                    formControlName="paymentType">
+                  <label class="form-check-label" for="payment-credit-{{formID}}">
+                    {{ 'ชำระเงินด้วยบัตรเครดิต' }}
+                  </label>
+                </div>
+                <div class="col-12 col-sm-7">
+                  <select id="inputState" class="form-control" disabled>
+                    <option [selected]="!paymentDetailOption?.isInstallment">{{ 'เต็มจำนวน' }}</option>
+                    <option [selected]="paymentDetailOption?.isInstallment">{{ 'ผ่อนชำระ' }}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row" *ngIf="paymentForm.controls['paymentType'].value === 'credit'">
+
+                <div class="col-4 col-sm-2 mb-3" *ngFor="let bank of paymentDetail?.banks; let i = index"
+                  (click)="onSelectBank(bank)">
+                  <div class="bank-lazy-load-image" [ngClass]="{'active': bank?.abb === selectPaymentDetail.bank?.abb}">
+                    <mc-lazy-load-image [src]="bank?.imageUrl"></mc-lazy-load-image>
+                  </div>
+                </div>
+                <div class="col-12 text-left mb-3" *ngIf="!selectPaymentDetail.bank">
+                  <span class="text-pink">{{ '*กรุณาเลือกธนาคาร' }}</span>
+                </div>
+                <div class="row">
+                  <div *ngIf="paymentDetail?.specialAmountPercent">
+                    {{ 'โปรโมชั่นพิเศษลดเพิ่ม' }} {{ paymentDetail?.specialAmountPercent }} %
+                  </div>
+                  <div *ngIf="paymentDetail?.specialAmountBaht">
+                    {{ 'โปรโมชั่นพิเศษลดเพิ่ม' }} {{ paymentDetail?.specialAmountBaht }} {{ 'บาท' }}
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row"
+                *ngIf="paymentDetailOption?.isInstallment && paymentDetail?.installments && paymentForm.controls['paymentType'].value === 'credit'">
+                <div class="col-12 text-center mb-3">
+                  <span class="text-pink"> {{ '*กรุณาเลือกรูปแบบการชำระเงิน' }}</span>
+                </div>
+                <div class="col-12 col-sm-4" *ngFor="let installment of paymentDetail?.installments; let i = index">
+                  <input class="form-check-input" type="radio" name="installment" id="installment-month-{{ i }}"
+                    value="installment" (click)="onSelectInstallment(installment)"
+                    [checked]="installment?.installmentMonth === 'selectPaymentDetail?.bank?.installments[0]?.installmentMonth' && installment?.installmentPercentage === 'selectPaymentDetail?.bank?.installments[0]?.installmentPercentage'">
+                  <label class="form-check-label" for="installment-month-{{ i }}">
+                    {{ installment?.installmentPercentage }}% {{ installment?.installmentMonth }} {{ 'เดือน' }}
+                  </label>
+                </div>
+              </div>
+              <hr>
+              <div *ngIf="showQRCode">
+                <div class="form-group row">
+                  <div class="col-12 col-sm-5">
+                    <input class="form-check-input" type="radio" id="payment-qrcode-{{formID}}" value="qrcode"
+                      formControlName="paymentType">
+                    <label class="form-check-label" for="payment-qrcode-{{formID}}">
+                      {{ 'ชำระเงิน QR Code' }}
+                    </label>
+                  </div>
+                  <div class="col-12 col-sm-7">
+                    <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="เต็มจำนวน">
+                  </div>
+                </div>
+                <div class="form-group row" *ngIf="paymentForm.controls['paymentType'].value === 'qrcode'">
+                  <div class="col-6 col-sm-3" *ngFor="let qrCode of paymentDetail?.qrCodes; let i = index"
+                    (click)="onSelectQRCode(qrCode)">
+                    <div class="qr-lazy-load-image"
+                      [ngClass]="{'active': qrCode?.id === selectPaymentDetail.qrCode?.id}">
+                      <mc-lazy-load-image [src]="qrCode?.imageUrl"></mc-lazy-load-image>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+
+
+      <!-- <mc-payment-detail [paymentDetail]="paymentDetail" [selectPaymentDetail]="selectPaymentDetail" [option]="paymentDetailOption"
+        (qrCode)="onSelectQRCode($event)" (bank)="onSelectBank($event)" (installment)="onSelectInstallment($event)"
+        (paymentType)="onSelectPaymentType($event)"></mc-payment-detail> -->
+
+      <mc-receipt-info [receiptInfo]="receiptInfo"></mc-receipt-info>
+    </div>
+  </div>
+  <mc-footer>
+    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button class="btn btn-success" (click)="onNext()"
+      [disabled]="!(checkPaymentFormValid() && receiptInfoValid)">NEXT</button>
+  </mc-footer>
+</div>

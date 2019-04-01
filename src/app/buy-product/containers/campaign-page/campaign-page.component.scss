@@ -5,6 +5,10 @@
     width: 40px;
 }
 
+.price{
+    height: 74vh;
+}
+
 input[type=radio], input[type=radio] + label {
     display: block;
     padding: 5px;
@@ -31,7 +35,7 @@ input[type=radio]:checked+label:before {
 }
 
 input[type=radio]:checked+label {
-    border-color: $light-green !important;
+    border-color: $lime !important;
 }
 
 input[type=radio]+label.disabled {
@@ -91,10 +95,10 @@ input[type=radio]:disabled+label:before {
                 border-color: transparent;
             }
             &.active{
-                background-color: $light-green;
-                border-color: $light-green;        
+                background-color: $lime;
+                border-color: $lime;        
                 &:hover {
-                    border-color: $light-green;
+                    border-color: $lime;
                 }
             }   
         }
