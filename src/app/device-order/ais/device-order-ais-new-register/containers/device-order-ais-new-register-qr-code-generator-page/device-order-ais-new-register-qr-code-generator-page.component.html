@@ -12,15 +12,15 @@
       <div class="container-fluid">
 
         <div class="card mb-5">
-          <div class="card-header bg-light-green text-white">ข้อมูลการชำระ</div>
-          <div class="card-body text-grey">
+          <div class="card-header bg-lime text-white">ข้อมูลการชำระ</div>
+          <div class="card-body text-light-grey">
             <div class="border-bottom mb-3">
               ชำระโดย
               <span class="pull-right">{{ payment.paymentQrCodeType === 'THAI_QR' ? 'Thai QR Payment' : 'Rabbit Line Pay' }}</span>
             </div>
             <div class="text-right">
               ยอดชำระ
-              <span class="total pull-right text-light-green">฿ {{ getSummaryAmount() | number }}</span>
+              <span class="total pull-right text-green">฿ {{ getSummaryAmount() | number }}</span>
             </div>
           </div>
         </div>

@@ -17,7 +17,7 @@
           <div class="card-header bg-teal text-white rounded-top p-3" >
             ค่ามัดจำและส่วนลดอื่นๆ
           </div>
-          <div class="card-header text-light-green bg-transparent">
+          <div class="card-header text-green bg-transparent">
             <div class="row">
               <div class="col-12" *ngIf="paymentDetail?.header">
                 ค่ามัดจำสินค้า {{ priceOption?.productDetail?.name + ' สี ' + priceOption?.productStock?.colorName}}
@@ -39,7 +39,7 @@
                   </label>
                 </div>
                 <div class="col-12 col-sm-2">
-                    <span class="pull-right text-grey">฿ {{ transaction?.data?.preBooking.depositAmt | number}}</span>
+                    <span class="pull-right text-light-grey">฿ {{ transaction?.data?.preBooking.depositAmt | number}}</span>
                 </div>
               </div>
             </form>
@@ -52,7 +52,7 @@
           <div class="card-header bg-orange text-white rounded-top p-3" *ngIf="paymentDetail?.title">
             {{paymentDetail?.title}}
           </div>
-          <div class="card-header text-light-green bg-transparent">
+          <div class="card-header text-green bg-transparent">
             <div class="row">
               <div class="col-12" *ngIf="paymentDetail?.header">
                 {{paymentDetail?.header}}

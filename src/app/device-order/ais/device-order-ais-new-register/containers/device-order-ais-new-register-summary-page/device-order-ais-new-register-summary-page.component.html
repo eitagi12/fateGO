@@ -15,10 +15,10 @@
         <div class="card mb-3">
           <div class="card-header bg-pink text-white">สรุปรายการสั่งชื้อสินค้า</div>
           <div class="card-body">
-            <p class="text-light-green">{{ priceOption?.campaign?.campaignName }}</p>
-            <div class="text-grey">
+            <p class="text-green">{{ priceOption?.campaign?.campaignName }}</p>
+            <div class="text-light-grey">
               <p>
-                <i class="fa fa-circle mr-3 text-light-green"></i>
+                <i class="fa fa-circle mr-3 text-green"></i>
                 {{ priceOption?.productDetail?.name }}
                 <span *ngIf="priceOption?.productStock?.color">
                   สี {{ priceOption?.productStock?.color }}
@@ -26,14 +26,14 @@
                 <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
                   (แถมซิม)
                 </span>
-                <span class="pull-right text-light-green">
+                <span class="pull-right text-green">
                   ฿ {{ priceOption?.trade?.promotionPrice | number }}
                 </span>
               </p>
               <p *ngIf="priceOption?.trade?.advancePay?.amount > 0">
-                <i class="fa fa-circle mr-3 text-light-green"></i>
+                <i class="fa fa-circle mr-3 text-green"></i>
                 {{ priceOption?.trade?.advancePay?.description }}
-                <span class="pull-right text-light-green">
+                <span class="pull-right text-green">
                   ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
                 </span>
               </p>
@@ -41,7 +41,7 @@
           </div>
           <div class="card-footer bg-transparent text-right">
             รวมยอดชำระ(รวมVAT)
-            <span class="text-light-green ml-2">
+            <span class="text-green ml-2">
               ฿ {{ summary([
               +priceOption?.trade?.promotionPrice,
               +priceOption?.trade?.advancePay?.amount
@@ -51,10 +51,10 @@
         </div>
 
         <div class="card mb-3">
-          <div class="card-header bg-light-green text-white">แพ็กเกจใช้บริการ</div>
+          <div class="card-header bg-lime text-white">แพ็กเกจใช้บริการ</div>
           <div class="card-body">
             <p>
-              <i class="fa fa-circle mr-3 text-light-green"></i>
+              <i class="fa fa-circle mr-3 text-green"></i>
               {{ transaction?.data?.mainPackage?.title }}
               <span class="pull-right" (click)="onOpenDetail(transaction?.data?.mainPackage?.detailTH)">
                 <img src="assets/images/icon/icon-page.png" class="icon" />
@@ -69,7 +69,7 @@
           <div class="card-header bg-purple text-white">สินค้าและบริการอื่น</div>
           <div class="card-body">
             <p>
-              <i class="fa fa-circle mr-3 text-light-green"></i>
+              <i class="fa fa-circle mr-3 text-green"></i>
               <ng-container *ngIf="!transaction?.data?.mobileCarePackage?.title">
                 <span>ไม่ซื้อบริการโมบายแคร์</span>
               </ng-container>
@@ -100,7 +100,7 @@
             <ng-container
               *ngIf="!priceOption?.trade?.advancePay || priceOption?.trade?.advancePay?.installmentFlag === 'N'">
               <p>
-                <i class="fa fa-circle mr-3 text-light-green"></i>
+                <i class="fa fa-circle mr-3 text-green"></i>
                 {{ priceOption?.productDetail?.name }}
                 <span *ngIf="priceOption?.productStock?.color">
                   สี {{ priceOption?.productStock?.color }}
@@ -109,16 +109,16 @@
                   (แถมซิม)
                 </span>
                 <span>: ชำระเต็มจำนวน</span>
-                <span class="pull-right text-light-green">
+                <span class="pull-right text-green">
                   ฿ {{ priceOption?.trade?.promotionPrice | number }}
                 </span>
               </p>
 
               <!-- ค่าแพ็กเกจบริการล่วงหน้า -->
               <p *ngIf="(+priceOption?.trade?.advancePay?.amount) > 0">
-                <i class="fa fa-circle mr-3 text-light-green"></i>
+                <i class="fa fa-circle mr-3 text-green"></i>
                 ค่าแพ็กเกจบริการล่วงหน้า : ชำระเต็มจำนวน
-                <span class="pull-right text-light-green">
+                <span class="pull-right text-green">
                   ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
                 </span>
               </p>
@@ -127,11 +127,11 @@
             <!-- ค่าเครื่องและค่าแพ็กเกจล่วงหน้า -->
             <ng-container *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'Y'">
               <p>
-                <i class="fa fa-circle mr-3 text-light-green"></i>
+                <i class="fa fa-circle mr-3 text-green"></i>
                 ค่าเครื่องและค่าแพ็กเกจล่วงหน้า :
                 <span *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">ชำระเต็มจำนวน</span>
                 <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">ผ่อนชำระบัตรเคดิต</span>
-                <span class="pull-right text-light-green">฿ {{ summary([
+                <span class="pull-right text-green">฿ {{ summary([
                   +priceOption?.trade?.promotionPrice,
                   +priceOption?.trade?.advancePay?.amount
                   ]) | number }}</span>
@@ -168,19 +168,19 @@
             </p>
             <div class="row">
               <p class="col-12 col-sm-4">
-                <i class="fa fa-circle mr-3 text-light-green"></i>
+                <i class="fa fa-circle mr-3 text-green"></i>
                 ผู้ชื้อ
               </p>
-              <p class="col-12 col-sm-8 text-light-green">
+              <p class="col-12 col-sm-8 text-green">
                 {{ transaction?.data?.customer?.titleName }}
                 {{ transaction?.data?.customer?.firstName }}
                 {{ transaction?.data?.customer?.lastName }}
               </p>
               <p class="col-12 col-sm-4">
-                <i class="fa fa-circle mr-3 text-light-green"></i>
+                <i class="fa fa-circle mr-3 text-green"></i>
                 ที่อยู่ในใบเสร็จรับเงิน
               </p>
-              <p class="col-12 col-sm-8 text-light-green">
+              <p class="col-12 col-sm-8 text-green">
                 {{ customerAddress }}
               </p>
             </div>
@@ -190,7 +190,7 @@
               ข้อตกลงรับสิทธิ์ต่อเนื่อง
             </p>
             <p>
-              <i class="fa fa-circle mr-3 text-light-green"></i>
+              <i class="fa fa-circle mr-3 text-green"></i>
               รับสิทธิ์ต่อเนื่องนาน {{ priceOption?.campaign?.maximumContract }} เดือน
             </p>
 

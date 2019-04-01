@@ -35,7 +35,7 @@ input[type=radio]:checked+label:before {
 }
 
 input[type=radio]:checked+label {
-    border-color: $light-green !important;
+    border-color: $lime !important;
 }
 
 input[type=radio]+label.disabled {
@@ -98,7 +98,7 @@ input[type=radio]:disabled+label:before {
                 background-color: $light-green;
                 border-color: $light-green;
                 &:hover {
-                    border-color: $light-green;
+                    border-color: $lime;
                 }
             }
         }
