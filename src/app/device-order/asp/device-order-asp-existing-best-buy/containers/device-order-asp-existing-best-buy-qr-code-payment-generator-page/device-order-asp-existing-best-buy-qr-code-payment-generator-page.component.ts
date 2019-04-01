@@ -10,9 +10,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { environment } from 'src/environments/environment';
 import { ROUTE_DEVICE_ORDER_ASP_BEST_BUY_QR_CODE_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_QR_CODE_QUEUE_PAGE } from '../../constants/route-path.constant';
-
-////////////////////////  ดึง Service จาก flow ais  /////////////////////////
-import { QrcodePaymentService, QrCodeModel } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/services/qrcode-payment.service';
+import { QrcodePaymentService } from '../../services/qrcode-payment.service';
 
 @Component({
   selector: 'app-device-order-asp-existing-best-buy-qr-code-payment-generator-page',

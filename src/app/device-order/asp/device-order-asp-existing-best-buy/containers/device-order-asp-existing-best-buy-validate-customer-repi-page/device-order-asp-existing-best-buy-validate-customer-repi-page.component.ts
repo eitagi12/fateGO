@@ -9,10 +9,8 @@ import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.c
 import { Transaction, BillDeliveryAddress, Customer, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ROUTE_DEVICE_ORDER_ASP_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_RPI_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_DETAIL_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_PROFILE_PAGE } from '../../constants/route-path.constant';
-
-////////////////////////  ดึง Service จาก flow ais  /////////////////////////
-import { CreateDeviceOrderBestBuyService } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/services/create-device-order-best-buy.service';
-import { CustomerInfoService } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/services/customer-info.service';
+import { CreateDeviceOrderBestBuyService } from '../../services/create-device-order-best-buy.service';
+import { CustomerInfoService } from '../../services/customer-info.service';
 
 @Component({
   selector: 'app-device-order-asp-existing-best-buy-validate-customer-repi-page',
