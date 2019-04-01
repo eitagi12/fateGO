@@ -247,9 +247,10 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         return priceOptions
             .filter((campaign: any) => {
                 // filter campaign here
-                return campaign.customerGroups.find(
-                    customerGroup => customerGroup.code === code
-                );
+                return campaign.code !== 'AISHOTDEAL_PREPAID'
+                    && campaign.customerGroups.find(
+                        customerGroup => customerGroup.code === code
+                    );
             }).map((campaign: any) => {
                 // filter privilege and trades
                 const privileges = this.filterPrivileges(

@@ -28,7 +28,8 @@
       <div class="row bg-white shadow-sm pt-3 pb-3">
         <div class="col-12 col-sm-3 col-md-3 col-lg-2 mb-2">
           <div class="shadow-sm text-center">
-            <mc-lazy-load-image [src]="priceOption?.productStock?.images?.thumbnail" errorsrc="assets/images/icon/img-placeholder.png"></mc-lazy-load-image>
+            <mc-lazy-load-image [src]="priceOption?.productStock?.images?.thumbnail"
+              errorsrc="assets/images/icon/img-placeholder.png"></mc-lazy-load-image>
           </div>
           <div class="text-center text-brown mt-2 mb-2">{{ priceOption?.productStock?.colorName }}
           </div>
@@ -59,14 +60,18 @@
                     <div class="row">
                       <ng-container *ngFor="let product of productDetail?.products; let i = index">
                         <div class="col-sm-6 col-md-4 col-lg-3 px-0" *ngIf="product?.colorName">
-                          <input type="radio" id="product-{{ i }}" name="stock" formControlName="stock" [value]="product?.stock">
-                          <label for="product-{{ i }}" class="border shadow-sm rounded border-light-grey text-light-grey mb-1"
-                            [ngClass]="{ 'disabled': product?.stock?.qty <= 0 }" (click)="onCheckStock($event, product?.stock)">
+                          <input type="radio" id="product-{{ i }}" name="stock" formControlName="stock"
+                            [value]="product?.stock">
+                          <label for="product-{{ i }}"
+                            class="border shadow-sm rounded border-light-grey text-light-grey mb-1"
+                            [ngClass]="{ 'disabled': product?.stock?.qty <= 0 }"
+                            (click)="onCheckStock($event, product?.stock)">
                             <small>{{ product?.colorName }}&nbsp;</small>
                             <!-- <span>({{ product?.stock?.qty }})</span> -->
                           </label>
                           <div class="product-color" [ngStyle]="{ 'background-color': '#' + product?.colorCode }"></div>
-                          <small class="d-block text-center text-pink" [ngClass]="{ 'invisible': product?.stock?.qty > 0}">สินค้าหมดชั่วคราว</small>
+                          <small class="d-block text-center text-pink"
+                            [ngClass]="{ 'invisible': product?.stock?.qty > 0}">สินค้าหมดชั่วคราว</small>
                         </div>
                       </ng-container>
                     </div>
@@ -87,7 +92,8 @@
         <tabset [justified]="true">
           <tab *ngFor="let tab of tabs" [active]="tab.active">
             <ng-template tabHeading>
-              <div class="{{tab.code}}" [ngClass]="{ 'active' : tab.active }" (click)="setActiveTabs(tab.code)"><b>{{ tab.name }}</b></div>
+              <div class="{{tab.code}}" [ngClass]="{ 'active' : tab.active }" (click)="setActiveTabs(tab.code)">
+                <b>{{ tab.name }}</b></div>
             </ng-template>
 
             <div class="bg-white pb-3" *ngIf="tab?.campaignSliders?.length > 0">
@@ -98,8 +104,9 @@
                   <span class="text-green">({{ tab?.campaignSliders?.length }})</span>
                 </span>
               </div>
-              <mc-campaign-slider [campaignSliders]="tab?.campaignSliders" (selected)="onCampaignSelected($event, tab.code)"
-                (promotionShelve)="onViewPromotionShelve($event)" (installments)="onViewInstallments($event)"></mc-campaign-slider>
+              <mc-campaign-slider [campaignSliders]="tab?.campaignSliders"
+                (selected)="onCampaignSelected($event, tab.code)" (promotionShelve)="onViewPromotionShelve($event)"
+                (installments)="onViewInstallments($event)"></mc-campaign-slider>
             </div>
           </tab>
           <!-- <tab *ngFor="let tab of tabs" [heading]="tab.name" [active]="tab.active" (select)="onCustomerGroupSelected(tab)"></tab> -->
@@ -123,64 +130,66 @@
           </div>
         </div>
 
-        <div class="card mb-2" *ngFor="let privilege of priceOption?.campaign?.privileges">
-          <div class="card-body">
-            <h6 class="text-black m-0">
-              {{ priceOption?.campaign?.campaignName || priceOption?.campaign?.campaignDesc }}
-              {{ priceOption?.customerGroup?.name }} ({{ privilege?.ussdCode }})
-            </h6>
-            <!-- price, advance pay -->
-            <div class="row mb-2">
-              <div class="col-8">
-                <ng-container *ngIf="+privilege?.minimumPromotionPrice > 0 || +privilege?.maximumPromotionPrice > 0">
-                  <span class="text-green mr-2">
-                    ฿{{ +(privilege?.maximumPromotionPrice || privilege?.minimumPromotionPrice) | number }}
-                  </span>
-                </ng-container>
-                <ng-container *ngIf="+privilege?.minimumAdvancePay > 0 || +privilege?.maximumAdvancePay > 0">
-                  (ค่าแพ็กเกจชำระล่วงหน้า
-                  <span *ngIf="privilege?.minimumAdvancePay">
-                    ฿{{ privilege?.minimumAdvancePay | number }}
-                  </span>
-                  <span *ngIf="privilege?.minimumAdvancePay && privilege?.maximumAdvancePay 
+        <ng-container *ngFor="let privilege of priceOption?.campaign?.privileges">
+          <div class="card mb-2" *ngIf="privilege?.trades">
+            <div class="card-body">
+              <h6 class="text-black m-0">
+                {{ priceOption?.campaign?.campaignName || priceOption?.campaign?.campaignDesc }}
+                {{ priceOption?.customerGroup?.name }} ({{ privilege?.ussdCode }})
+              </h6>
+              <!-- price, advance pay -->
+              <div class="row mb-2">
+                <div class="col-8">
+                  <ng-container *ngIf="+privilege?.minimumPromotionPrice > 0 || +privilege?.maximumPromotionPrice > 0">
+                    <span class="text-green mr-2">
+                      ฿{{ +(privilege?.maximumPromotionPrice || privilege?.minimumPromotionPrice) | number }}
+                    </span>
+                  </ng-container>
+                  <ng-container *ngIf="+privilege?.minimumAdvancePay > 0 || +privilege?.maximumAdvancePay > 0">
+                    (ค่าแพ็กเกจชำระล่วงหน้า
+                    <span *ngIf="privilege?.minimumAdvancePay">
+                      ฿{{ privilege?.minimumAdvancePay | number }}
+                    </span>
+                    <span *ngIf="privilege?.minimumAdvancePay && privilege?.maximumAdvancePay 
                     && (+privilege?.minimumAdvancePay < +privilege?.maximumAdvancePay)">
-                    - </span>
-                  <span *ngIf="+privilege?.minimumAdvancePay < +privilege?.maximumAdvancePay">
-                    ฿{{ privilege?.maximumAdvancePay | number }}
-                  </span>)
-                </ng-container>
-              </div>
-              <div class="col-4">
-                <div class="text-right text-pink">
-                  {{ getSummaryPrivilegePrice(privilege) | number }} (รวม VAT)
+                      - </span>
+                    <span *ngIf="+privilege?.minimumAdvancePay < +privilege?.maximumAdvancePay">
+                      ฿{{ privilege?.maximumAdvancePay | number }}
+                    </span>)
+                  </ng-container>
+                </div>
+                <div class="col-4">
+                  <div class="text-right text-pink">
+                    {{ getSummaryPrivilegePrice(privilege) | number }} (รวม VAT)
+                  </div>
                 </div>
               </div>
-            </div>
 
-            <!-- ข้อตกลง, แพ๊กเกจ -->
-            <div class="row my-3">
-              <div class="col-6 text-center">
-                <img src="assets/images/icon/sales_portal_green_alert_person.png" width="25" />
-                <span class="text-light-grey border-bottom">
-                  ข้อตกลงรับสิทธ์ิต่อเนื่อง {{ privilege?.maximumContract | number }} เดือน
-                </span>
+              <!-- ข้อตกลง, แพ๊กเกจ -->
+              <div class="row my-3">
+                <div class="col-6 text-center">
+                  <img src="assets/images/icon/sales_portal_green_alert_person.png" width="25" />
+                  <span class="text-light-grey border-bottom">
+                    ข้อตกลงรับสิทธ์ิต่อเนื่อง {{ privilege?.maximumContract | number }} เดือน
+                  </span>
+                </div>
+                <div class="col-6 text-center" *ngIf="privilege?.minimumPackagePrice > 0">
+                  <img src="assets/images/icon/sales_portal_green_phone.png" width="15" />
+                  <span *ngIf="priceOptoin?.customerGroup?.flowId !== '102'" class="text-light-grey border-bottom">
+                    แพ็กเกจเริ่มต้น {{ privilege?.minimumPackagePrice | number }} บาท/เดือน
+                  </span>
+                  <span *ngIf="priceOptoin?.customerGroup?.flowId === '102'" class="text-light-grey border-bottom">
+                    แพ็กเกจเสริม {{ (+privilege?.minimumPackagePrice * 1.07) | number }} บาท ( รวมVAT )</span>
+                </div>
               </div>
-              <div class="col-6 text-center" *ngIf="privilege?.minimumPackagePrice > 0">
-                <img src="assets/images/icon/sales_portal_green_phone.png" width="15" />
-                <span *ngIf="priceOptoin?.customerGroup?.flowId !== '102'" class="text-light-grey border-bottom">
-                  แพ็กเกจเริ่มต้น {{ privilege?.minimumPackagePrice | number }} บาท/เดือน
-                </span>
-                <span *ngIf="priceOptoin?.customerGroup?.flowId === '102'" class="text-light-grey border-bottom">
-                  แพ็กเกจเสริม {{ (+privilege?.minimumPackagePrice * 1.07) | number }} บาท ( รวมVAT )</span>
-              </div>
-            </div>
-            <!-- slider trade -->
-            <mc-trade-slider [tradeSliders]="privilege | privilegeToTradeSlider" (selected)="onTradeSelected(privilege, $event)"
-              (installments)="onViewInstallmentsFormTrede($event)">
-            </mc-trade-slider>
+              <!-- slider trade -->
+              <mc-trade-slider [tradeSliders]="privilege | privilegeToTradeSlider"
+                (selected)="onTradeSelected(privilege, $event)" (installments)="onViewInstallmentsFormTrede($event)">
+              </mc-trade-slider>
 
+            </div>
           </div>
-        </div>
+        </ng-container>
       </div>
     </div>
     <!---------------------->
