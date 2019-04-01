@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import {
-  HomeService, ShoppingCart, ReceiptInfo, Utils, PaymentDetail
+  HomeService, ShoppingCart, ReceiptInfo, Utils, PaymentDetail, PaymentDetailBank
 } from 'mychannel-shared-libs';
 import {
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VALIDATE_CUSTOMER_PAGE,
@@ -30,7 +30,7 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
   transaction: Transaction;
 
   payementDetail: PaymentDetail;
-  banks: any[];
+  banks: PaymentDetailBank[];
   paymentDetailValid: boolean;
 
   receiptInfo: ReceiptInfo;

@@ -37,7 +37,7 @@
 
     <div [mcLoading]="productService">
       <div class="text-center mb-3" [ngClass]="{'d-none': countRow >= totalRow }">
-        <div class="my-3 text-grey">{{ countRow | number }} of {{ totalRow | number }}</div>
+        <div class="my-3 text-light-grey">{{ countRow | number }} of {{ totalRow | number }}</div>
         <div class="mt-3">
           <button class="btn btn-light-green px-3" (click)="onLoadMore()">LOAD MORE</button>
         </div>

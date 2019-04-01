@@ -5,7 +5,7 @@
         <div class="container-fluid">
   
           <div class="card mb-3">
-            <div class="card-body pt-5 text-center border-bottom text-light-green">
+            <div class="card-body pt-5 text-center border-bottom text-green">
               <img src="assets/images/icon/icon-green-check-circle.png" class="icon" />
               <div>หมายเลข  {{ transaction?.data?.simCard?.mobileNo | mobileNo }}</div>
               <div>ชำระค่าสินค้าเรียบร้อยแล้ว</div>
@@ -14,10 +14,10 @@
             <div class="card mb-3">
                 <div class="card-header bg-pink text-white">สรุปรายการสั่งชื้อสินค้า</div>
                 <div class="card-body">
-                  <p class="text-light-green">{{ priceOption?.campaign?.campaignName }}</p>
-                  <div class="text-grey">
+                  <p class="text-green">{{ priceOption?.campaign?.campaignName }}</p>
+                  <div class="text-light-grey">
                     <p>
-                      <i class="fa fa-circle mr-3 text-light-green"></i>
+                      <i class="fa fa-circle mr-3 text-green"></i>
                       {{ priceOption?.productDetail?.name }}
                       <span *ngIf="priceOption?.productStock?.color">
                         {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.color }}
@@ -25,14 +25,14 @@
                       <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
                         (แถมซิม)
                       </span>
-                      <span class="pull-right text-light-green">
+                      <span class="pull-right text-green">
                         ฿ {{ priceOption?.trade?.promotionPrice | number }}
                       </span>
                     </p>
                     <p *ngIf="priceOption?.trade?.advancePay?.amount > 0">
-                      <i class="fa fa-circle mr-3 text-light-green"></i>
+                      <i class="fa fa-circle mr-3 text-green"></i>
                       {{ priceOption?.trade?.advancePay?.description }}
-                      <span class="pull-right text-light-green">
+                      <span class="pull-right text-green">
                         ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
                       </span>
                     </p>
@@ -40,12 +40,12 @@
                 </div>
                 <div class="card-footer bg-transparent text-right">
                   รวมยอดชำระ(รวมVAT)
-                  <span class="text-light-green ml-2">
+                  <span class="text-green ml-2">
                     ฿ {{ summary([+priceOption?.trade?.promotionPrice, +priceOption?.trade?.advancePay?.amount]) | number }}
                   </span>
                 </div>
               </div>
-            <div class="card-body pt-5 text-center text-grey">
+            <div class="card-body pt-5 text-center text-light-grey">
               <div class="mb-2">
                 <div>กรุณารับบัตรคิว แล้วระบุหมายเลขคิว</div>
                 <div>ในการชำระสินค้าของท่านด้านล่างนี้</div>
