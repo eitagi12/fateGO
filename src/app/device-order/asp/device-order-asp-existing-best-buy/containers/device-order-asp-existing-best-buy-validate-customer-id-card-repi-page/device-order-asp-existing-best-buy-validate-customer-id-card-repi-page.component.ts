@@ -8,10 +8,8 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { ROUTE_DEVICE_ORDER_ASP_BEST_BUY_VALIDATE_CUSTOMER_REPI_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_PROFILE_PAGE } from '../../constants/route-path.constant';
-
-////////////////////////  ดึง Service จาก flow ais  /////////////////////////
-import { CustomerInfoService } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/services/customer-info.service';
-import { CreateDeviceOrderBestBuyService } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/services/create-device-order-best-buy.service';
+import { CustomerInfoService } from '../../services/customer-info.service';
+import { CreateDeviceOrderBestBuyService } from '../../services/create-device-order-best-buy.service';
 
 @Component({
   selector: 'app-device-order-asp-existing-best-buy-validate-customer-id-card-repi-page',

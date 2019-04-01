@@ -11,7 +11,7 @@ import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart
 
 ///////////////////  ดึง service จาก flow ais  ////////////////////////
 import { PrivilegeService } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/services/privilege.service';
-import { CustomerInfoService } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/services/customer-info.service';
+import { CustomerInfoService } from '../../services/customer-info.service';
 
 @Component({
   selector: 'app-device-order-asp-existing-best-buy-eligible-mobile-page',
