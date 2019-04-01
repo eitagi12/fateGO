@@ -8,10 +8,8 @@ import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
-
-///////////////////  ดึง service จาก flow ais  ////////////////////////
-import { PrivilegeService } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/services/privilege.service';
 import { CustomerInfoService } from '../../services/customer-info.service';
+import { PrivilegeService } from '../../services/privilege.service';
 
 @Component({
   selector: 'app-device-order-asp-existing-best-buy-eligible-mobile-page',

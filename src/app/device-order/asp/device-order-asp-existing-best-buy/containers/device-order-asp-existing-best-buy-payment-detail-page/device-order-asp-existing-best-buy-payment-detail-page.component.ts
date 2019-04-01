@@ -17,9 +17,7 @@ import { ReceiptInfo } from 'mychannel-shared-libs/lib/component/receipt-info/re
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-
-///////////////////  ดึง service จาก flow ais  ////////////////////////
-import { CreateDeviceOrderBestBuyService } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/services/create-device-order-best-buy.service';
+import { CreateDeviceOrderBestBuyService } from '../../services/create-device-order-best-buy.service';
 
 export const CASH_PAYMENT = 'CA';
 export const CREDIT_CARD_PAYMENT = 'CC';
