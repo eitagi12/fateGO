@@ -11,9 +11,7 @@ describe('test device only ais queue page', () => {
   };
   beforeEach(() => {
     component = new DeviceOnlyAisQueuePageComponent(
-      homeService,
       transactionService,
-      homeButtonService,
       priceOptionService
     );
   });
