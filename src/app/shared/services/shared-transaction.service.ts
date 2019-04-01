@@ -1,11 +1,23 @@
 import { Injectable } from '@angular/core';
 import { Transaction } from '../models/transaction.model';
 import { PriceOption } from '../models/price-option.model';
-import * as moment from 'moment';
 import { TokenService } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 
+import * as moment from 'moment';
 const Moment = moment;
+
+export const SharedTransactionStatus = {
+  PENDING: {
+    code: '001',
+    description: 'pending'
+  },
+  WAITING_PAYMENT: { // Update Step หน้าสุดท้าย รอจ่ายตัง
+    code: '002',
+    description: 'Waiting Payment'
+  }
+};
+
 @Injectable({
   providedIn: 'root'
 })
@@ -22,10 +34,7 @@ export class SharedTransactionService {
     transaction.transactionId = this.getTransactionId();
     transaction.createBy = user.username;
     transaction.createDate = Moment().toISOString();
-    transaction.data.status = {
-      code: '001',
-      description: 'pending'
-    };
+    transaction.data.status = SharedTransactionStatus.PENDING;
 
     return this.http.post('api/salesportal/device-order/create-transaction',
       this.getRequestSharedTransaction(transaction, priceOption)
@@ -36,8 +45,15 @@ export class SharedTransactionService {
     const user = this.tokenService.getUser();
     //
     transaction.lastUpdateBy = user.username;
-    transaction.createDate = Moment().toISOString();
-    return null;
+    transaction.lastUpdateDate = Moment().toISOString();
+    transaction.data.status = {
+      code: '001',
+      description: 'pending'
+    };
+
+    return this.http.post('api/salesportal/device-order/update-transaction',
+      this.getRequestSharedTransaction(transaction, priceOption)
+    ).toPromise();
   }
 
   private getRequestSharedTransaction(transaction: Transaction, priceOption: PriceOption): any {
@@ -80,9 +96,14 @@ export class SharedTransactionService {
           sellerName: '',
           employeeId: '',
           ascCode: ''
-        }
+        },
+        status: data.status || {}
       }
     };
+
+    if (transaction.data.preBooking) {
+      params.data.pre_booking = transaction.data.preBooking;
+    }
 
     return params;
   }
