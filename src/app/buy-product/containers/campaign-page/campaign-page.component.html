@@ -23,15 +23,14 @@
       </ol>
     </nav>
 
-
     <div class="container-fluid text-green mb-2">
       <div class="row bg-white shadow-sm pt-3 pb-3">
         <div class="col-12 col-sm-3 col-md-3 col-lg-2 mb-2">
           <div class="shadow-sm text-center">
-            <mc-lazy-load-image [src]="priceOption?.productStock?.images?.thumbnail"
+            <mc-lazy-load-image [src]="thumbnail"
               errorsrc="assets/images/icon/img-placeholder.png"></mc-lazy-load-image>
           </div>
-          <div class="text-center text-brown mt-2 mb-2">{{ priceOption?.productStock?.colorName }}
+          <div class="text-center text-brown mt-2 mb-2">{{ colorForm?.value?.stock?.color }}
           </div>
         </div>
         <div class="col-12 col-sm-9 col-md-9 col-lg-10">

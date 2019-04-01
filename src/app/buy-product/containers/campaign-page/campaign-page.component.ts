@@ -47,6 +47,8 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     priceOption: PriceOption;
 
     maximumNormalPrice: number;
+    thumbnail: string;
+
     modalRef: BsModalRef;
     params: Params;
     hansetBundle: string;
@@ -106,6 +108,12 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
         this.colorForm.valueChanges.pipe(debounceTime(1000)).subscribe(obs => {
             const stock = obs.stock;
+
+            const product = (this.priceOption.productDetail.products || []).find((p: any) => {
+                return p.colorName === stock.color;
+            });
+            this.thumbnail = product && product.images ? product.images.thumbnail : '';
+
             this.clearPriceOption();
             this.callPriceOptionsService(
                 this.params.brand,
