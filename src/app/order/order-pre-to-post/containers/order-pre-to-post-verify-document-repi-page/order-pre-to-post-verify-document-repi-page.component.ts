@@ -325,108 +325,114 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
   onReadPassport(): void {
     const mobileNo = this.transaction.data.simCard.mobileNo;
     this.readPassportSubscription = this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
-      this.pageLoadingService.openLoading();
+
       if (readPassport.error) {
         this.alertService.error(this.translation.instant(this.ERR_MASSEAGE));
         return;
-      } else if (readPassport.profile && readPassport.profile.idCardNo) {
-        return this.http.get('/api/customerportal/validate-customer-pre-to-post', {
-          params: {
-            identity: readPassport.profile.idCardNo,
-            idCardType: readPassport.profile.idCardType
-          }
-          // catch ไว้ก่อน เดี๋ยวมาทำต่อ
-        }).toPromise().catch(() => {
-          return {};
-        })
-          .then((resp: any) => {
-            const data = resp.data || {};
-            // readPassport NewCa จะไม่ได้ address
-            return {
-              caNumber: data.caNumber,
-              mainMobile: data.mainMobile,
-              billCycle: data.billCycle,
-              homeNo: data.homeNo,
-              moo: data.moo,
-              mooBan: data.mooBan,
-              room: data.room,
-              floor: data.floor,
-              buildingName: data.buildingName,
-              soi: data.soi,
-              street: data.street,
-              tumbol: data.tumbol,
-              amphur: data.amphur,
-              province: data.province,
-              zipCode: data.zipCode
-            };
-
-          }).then((customer) => {
-            this.transaction.data.customer = Object.assign(
-              Object.assign({}, this.transaction.data.customer),
-              Object.assign(readPassport.profile, customer));
-
-            return this.http.get(`/api/customerportal/newRegister/${readPassport.profile.idCardNo}/queryBillingAccount`).toPromise()
-              .then((respQueryBilling: any) => {
-                const data = respQueryBilling.data || {};
-                return this.http.post('/api/customerportal/verify/billingNetExtreme', {
-                  businessType: '1',
-                  listBillingAccount: data.billingAccountList
-                }).toPromise()
-                  .then((respBillingNetExtreme: any) => {
-                    return {
-                      billCycles: data.billingAccountList,
-                      billCyclesNetExtreme: respBillingNetExtreme.data
-                    };
-                  })
-                  .catch(() => {
-                    return {
-                      billCycles: data.billingAccountList
-                    };
-                  });
-              });
-          }).then((billingInformation: any) => {
-            this.transaction.data.billingInformation = billingInformation;
-          })
-          .then(() => {// verify Prepaid Ident
-            const idCardNo = this.transaction.data.customer.idCardNo;
-            return this.http.get(`/api/customerportal/newRegister/verifyPrepaidIdent?idCard=${idCardNo}&mobileNo=${mobileNo}`)
-              .toPromise()
-              .then((respPrepaidIdent: any) => {
-                // if (this.checkBusinessLogic()) {
-                if (respPrepaidIdent.data && respPrepaidIdent.data.success) {
-                  this.transaction.data.action = TransactionAction.READ_PASSPORT;
-                } else {
-                  this.transaction.data.action = TransactionAction.READ_PASSPORT_REPI;
-                }
-                // }
-                this.transactionService.update(this.transaction);
-                this.router.navigate([ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_REPI_PAGE]);
-                this.pageLoadingService.closeLoading();
-              });
-          }).catch((resp: any) => {
-            this.pageLoadingService.closeLoading();
-            const error = resp.error || [];
-            if (error && error.errors && error.errors.length > 0) {
-              this.alertService.notify({
-                type: 'error',
-                html: error.errors.map((err) => {
-                  return '<li class="text-left">' + this.translation.instant(err) + '</li>';
-                }).join('')
-              }).then(() => {
-                this.onBack();
-              });
-            } else if (error.resultDescription) {
-              this.alertService.error(this.translation.instant(error.resultDescription));
-            } else {
-              this.alertService.error(this.translation.instant('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'));
-
-            }
-          });
-      } else {
-        if (readPassport.eventName && readPassport.eventName === 'OnScanDocError') {
-          this.alertService.error(this.translation.instant(this.ERR_MASSEAGE));
-        }
       }
+      if (readPassport.eventName && readPassport.eventName === 'OnScanDocError') {
+        this.alertService.error(this.translation.instant(this.ERR_MASSEAGE));
+        return;
+      }
+      if (readPassport.profile && readPassport.profile.idCardNo) {
+        this.alertService.error(this.translation.instant(this.ERR_MASSEAGE));
+        return;
+      }
+      if (readPassport.profile.issuingCountry === 'THA' && (environment.name === 'SIT' || environment.name === 'PROD')) {
+        this.alertService.error('ไม่สามารถทำรายการด้วยหนังสือเดินทางประเทศไทย');
+        return;
+      }
+
+      this.pageLoadingService.openLoading();
+      return this.http.get('/api/customerportal/validate-customer-pre-to-post', {
+        params: {
+          identity: readPassport.profile.idCardNo,
+          idCardType: readPassport.profile.idCardType
+        }
+      }).toPromise()
+        .then((resp: any) => {
+          const data = resp.data || {};
+          // readPassport NewCa จะไม่ได้ address
+          return {
+            caNumber: data.caNumber,
+            mainMobile: data.mainMobile,
+            billCycle: data.billCycle,
+            homeNo: data.homeNo,
+            moo: data.moo,
+            mooBan: data.mooBan,
+            room: data.room,
+            floor: data.floor,
+            buildingName: data.buildingName,
+            soi: data.soi,
+            street: data.street,
+            tumbol: data.tumbol,
+            amphur: data.amphur,
+            province: data.province,
+            zipCode: data.zipCode
+          };
+
+        }).then((customer) => {
+          this.transaction.data.customer = Object.assign(
+            Object.assign({}, this.transaction.data.customer),
+            Object.assign(readPassport.profile, customer));
+
+          return this.http.get(`/api/customerportal/newRegister/${readPassport.profile.idCardNo}/queryBillingAccount`).toPromise()
+            .then((respQueryBilling: any) => {
+              const data = respQueryBilling.data || {};
+              return this.http.post('/api/customerportal/verify/billingNetExtreme', {
+                businessType: '1',
+                listBillingAccount: data.billingAccountList
+              }).toPromise()
+                .then((respBillingNetExtreme: any) => {
+                  return {
+                    billCycles: data.billingAccountList,
+                    billCyclesNetExtreme: respBillingNetExtreme.data
+                  };
+                })
+                .catch(() => {
+                  return {
+                    billCycles: data.billingAccountList
+                  };
+                });
+            });
+        }).then((billingInformation: any) => {
+          this.transaction.data.billingInformation = billingInformation;
+        })
+        .then(() => {// verify Prepaid Ident
+          const idCardNo = this.transaction.data.customer.idCardNo;
+          return this.http.get(`/api/customerportal/newRegister/verifyPrepaidIdent?idCard=${idCardNo}&mobileNo=${mobileNo}`)
+            .toPromise()
+            .then((respPrepaidIdent: any) => {
+              // if (this.checkBusinessLogic()) {
+              if (respPrepaidIdent.data && respPrepaidIdent.data.success) {
+                this.transaction.data.action = TransactionAction.READ_PASSPORT;
+              } else {
+                this.transaction.data.action = TransactionAction.READ_PASSPORT_REPI;
+              }
+              // }
+              this.transactionService.update(this.transaction);
+              this.router.navigate([ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_REPI_PAGE]);
+              this.pageLoadingService.closeLoading();
+            });
+        }).catch((resp: any) => {
+          this.pageLoadingService.closeLoading();
+          const error = resp.error || [];
+          if (error && error.errors && error.errors.length > 0) {
+            this.alertService.notify({
+              type: 'error',
+              html: error.errors.map((err) => {
+                return '<li class="text-left">' + this.translation.instant(err) + '</li>';
+              }).join('')
+            }).then(() => {
+              this.onBack();
+            });
+          } else if (error.resultDescription) {
+            this.alertService.error(this.translation.instant(error.resultDescription));
+          } else {
+            this.alertService.error(this.translation.instant('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'));
+
+          }
+        });
     });
   }
 
@@ -537,24 +543,24 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
     })
       .then((resp: any) => {
         const data = resp.data || {};
-            // readPassport NewCa จะไม่ได้ address
-            return {
-              caNumber: data.caNumber,
-              mainMobile: data.mainMobile,
-              billCycle: data.billCycle,
-              homeNo: data.homeNo,
-              moo: data.moo,
-              mooBan: data.mooBan,
-              room: data.room,
-              floor: data.floor,
-              buildingName: data.buildingName,
-              soi: data.soi,
-              street: data.street,
-              tumbol: data.tumbol,
-              amphur: data.amphur,
-              province: data.province,
-              zipCode: data.zipCode
-            };
+        // readPassport NewCa จะไม่ได้ address
+        return {
+          caNumber: data.caNumber,
+          mainMobile: data.mainMobile,
+          billCycle: data.billCycle,
+          homeNo: data.homeNo,
+          moo: data.moo,
+          mooBan: data.mooBan,
+          room: data.room,
+          floor: data.floor,
+          buildingName: data.buildingName,
+          soi: data.soi,
+          street: data.street,
+          tumbol: data.tumbol,
+          amphur: data.amphur,
+          province: data.province,
+          zipCode: data.zipCode
+        };
 
       }).then((customer) => {
         this.transaction.data.customer = Object.assign(
