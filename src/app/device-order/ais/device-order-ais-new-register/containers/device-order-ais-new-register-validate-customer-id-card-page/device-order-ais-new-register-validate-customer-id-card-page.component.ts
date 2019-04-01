@@ -233,29 +233,31 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
     }
   }
 
-  returnStock(): Promise<any> {
-    const transaction = this.transactionService.load();
+  returnStock(): Promise<void> {
+    return new Promise(resolve => {
+      const transaction = this.transactionService.load();
 
-    const promise = [];
-    if (transaction.data) {
-      if (transaction.data.simCard && transaction.data.simCard.mobileNo) {
-        const unlockMobile = this.http.post('/api/customerportal/newRegister/selectMobileNumberRandom', {
-          userId: this.user.username,
-          mobileNo: transaction.data.simCard.mobileNo,
-          action: 'Unlock'
-        }).toPromise().catch(() => Promise.resolve());
-        promise.push(unlockMobile);
+      const promiseAll = [];
+      if (transaction.data) {
+        if (transaction.data.simCard && transaction.data.simCard.mobileNo) {
+          const unlockMobile = this.http.post('/api/customerportal/newRegister/selectMobileNumberRandom', {
+            userId: this.user.username,
+            mobileNo: transaction.data.simCard.mobileNo,
+            action: 'Unlock'
+          }).toPromise().catch(() => Promise.resolve());
+          promiseAll.push(unlockMobile);
+        }
+        if (transaction.data.order && transaction.data.order.soId) {
+          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
+            location: this.priceOption.productStock.location,
+            soId: transaction.data.order.soId,
+            transactionId: transaction.transactionId
+          }).toPromise().catch(() => Promise.resolve());
+          promiseAll.push(order);
+        }
       }
-      if (transaction.data.order && transaction.data.order.soId) {
-        const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
-          location: this.priceOption.productStock.location,
-          soId: transaction.data.order.soId,
-          transactionId: transaction.transactionId
-        }).toPromise().catch(() => Promise.resolve());
-        promise.push(order);
-      }
-    }
-    return Promise.all(promise);
+      Promise.all(promiseAll).then(() => resolve());
+    });
   }
 
   getRequestAddDeviceSellingCart(): any {
