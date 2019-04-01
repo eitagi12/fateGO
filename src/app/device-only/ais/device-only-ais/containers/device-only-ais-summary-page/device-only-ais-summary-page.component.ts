@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE, ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_PAGE } from 'src/app/device-only/ais/device-only-ais/constants/route-path.constant';
 import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
@@ -17,7 +17,7 @@ import { SummarySellerCodeComponent } from 'src/app/device-only/ais/device-only-
   templateUrl: './device-only-ais-summary-page.component.html',
   styleUrls: ['./device-only-ais-summary-page.component.scss']
 })
-export class DeviceOnlyAisSummaryPageComponent implements OnInit {
+export class DeviceOnlyAisSummaryPageComponent implements OnInit , OnDestroy {
 
   @ViewChild(SummarySellerCodeComponent) summarySellerCode: SummarySellerCodeComponent;
 
@@ -46,10 +46,21 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit {
   }
 
   checkSeller(seller: Seller): void {
+    if (!seller.sellerNo) {
+      this.alertService.warning('กรุณากรอกข้อมูลให้ถูกต้อง');
+      return;
+    }
     this.sellerService.checkSeller(seller.sellerNo)
     .then((shopCheckSeller: ShopCheckSeller) => {
       if (shopCheckSeller.condition) {
-        seller.isAscCode = shopCheckSeller.isAscCode;
+        if (!this.transaction.data.seller) {
+          this.transaction.data.seller = {
+            sellerNo: seller.sellerNo
+          };
+        } else {
+        this.transaction.data.seller.sellerNo = seller.sellerNo;
+        }
+        this.router.navigate([ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_PAGE]);
       } else {
         this.alertService.warning(shopCheckSeller.message);
       }
@@ -66,11 +77,13 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit {
   onNext(): void {
     const seller: Seller = this.summarySellerCode.getSeller();
     this.checkSeller(seller);
-    this.router.navigate([ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_PAGE]);
   }
 
   onHome(): void {
     this.homeService.goToHome();
   }
 
+  ngOnDestroy(): void {
+    this.transactionService.save(this.transaction);
+  }
 }

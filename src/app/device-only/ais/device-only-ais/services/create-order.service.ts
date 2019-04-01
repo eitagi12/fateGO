@@ -173,7 +173,7 @@ export class CreateOrderService {
   }
 
   mapCreateOrder(transaction: Transaction, priceOption: PriceOption): any {
-    const sellerNo = (transaction.data.seller && transaction.data.seller.sellerNo)  ? transaction.data.seller.sellerNo : '661111';
+    const sellerNo = (transaction.data.seller && transaction.data.seller.sellerNo)  ? transaction.data.seller.sellerNo : '';
     return {
       soId: transaction.data.order.soId,
       soCompany: priceOption.productStock.company,
@@ -229,7 +229,7 @@ export class CreateOrderService {
       amphur: addressCus.amphur ? addressCus.amphur : '',
       province: addressCus.province ? addressCus.province : '',
       postCode: addressCus.zipCode ? addressCus.zipCode : '',
-      country: 'THAI'
+      country: 'THA'
     };
   }
 }
