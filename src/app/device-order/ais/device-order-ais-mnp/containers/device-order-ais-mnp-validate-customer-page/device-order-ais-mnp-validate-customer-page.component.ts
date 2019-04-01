@@ -1,24 +1,20 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
 import { HomeService, PageLoadingService } from 'mychannel-shared-libs';
-import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from 'src/app/buy-product/constants/route-path.constant';
-import {
-  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VALIDATE_CUSTOMER_KEY_IN_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE
-} from 'src/app/device-order/ais/device-order-ais-new-register/constants/route-path.constant';
-import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { HttpClient } from '@angular/common/http';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { ROUTE_DEVICE_ORDER_AIS_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_ELIGIBLE_MOBILE_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from 'src/app/buy-product/constants/route-path.constant';
 
 @Component({
-  selector: 'app-device-order-ais-new-register-validate-customer-page',
-  templateUrl: './device-order-ais-new-register-validate-customer-page.component.html',
-  styleUrls: ['./device-order-ais-new-register-validate-customer-page.component.scss']
+  selector: 'app-device-order-ais-mnp-validate-customer-page',
+  templateUrl: './device-order-ais-mnp-validate-customer-page.component.html',
+  styleUrls: ['./device-order-ais-mnp-validate-customer-page.component.scss']
 })
-export class DeviceOrderAisNewRegisterValidateCustomerPageComponent implements OnInit, OnDestroy {
+export class DeviceOrderAisMnpValidateCustomerPageComponent implements OnInit, OnDestroy {
 
   priceOption: PriceOption;
 
@@ -51,7 +47,7 @@ export class DeviceOrderAisNewRegisterValidateCustomerPageComponent implements O
   }
 
   onReadCard(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
   }
 
   onBack(): void {
@@ -67,10 +63,10 @@ export class DeviceOrderAisNewRegisterValidateCustomerPageComponent implements O
         return this.http.get(`/api/customerportal/newRegister/${this.identity}/blackListLimit`).toPromise();
       })
       .then((resp: any) => {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE]);
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_ELIGIBLE_MOBILE_PAGE]);
       })
       .catch((resp: any) => {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VALIDATE_CUSTOMER_KEY_IN_PAGE], {
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE], {
           queryParams: {
             idCardNo: this.identity
           }
@@ -92,7 +88,7 @@ export class DeviceOrderAisNewRegisterValidateCustomerPageComponent implements O
   private createTransaction(): void {
     this.transaction = {
       data: {
-        transactionType: TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS,
+        transactionType: TransactionType.DEVICE_ORDER_MNP_AIS,
         action: TransactionAction.KEY_IN,
       }
     };

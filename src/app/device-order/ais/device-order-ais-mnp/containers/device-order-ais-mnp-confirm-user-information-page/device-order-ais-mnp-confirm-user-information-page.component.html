@@ -1,0 +1,34 @@
+<div class="mc-flex">
+  <mc-header title="ลูกค้าย้ายค่าย">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
+    <div class="mt-3 mb-3">
+      <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
+
+      <mc-confirm-customer-info [confirmCustomerInfo]="confirmCustomerInfo">
+      </mc-confirm-customer-info>
+
+      <mc-billing-info [billingInfo]="billingInfo" (editAddress)="onEditAddress()">
+      </mc-billing-info>
+
+      <mc-mail-billing-info [eBill]="eBill" [disabled]="isPackageNetExtreme() || isMergeBilling()" [mailBillingInfo]="mailBillingInfo"
+        (completed)="onMailBillingInfoCompleted($event)" (error)="onMailBillingInfoError($event)">
+
+      </mc-mail-billing-info>
+
+      <mc-tel-no-billing-info [telNoBillingInfo]="telNoBillingInfo" (completed)="onTelNoBillingCompleted($event)" (error)="onTelNoBillingError($event)">
+      </mc-tel-no-billing-info>
+    </div>
+  </div>
+  <mc-footer>
+    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!(isTelNoBillingValid &&(isMailBillingInfoValid || isMergeBilling()))">NEXT</button>
+  </mc-footer>
+</div>

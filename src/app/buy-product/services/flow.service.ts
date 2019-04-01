@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import {
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE
 } from 'src/app/device-order/ais/device-order-ais-new-register/constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE } from 'src/app/device-order/ais/device-order-ais-mnp/constants/route-path.constant';
 
 @Injectable({
   providedIn: 'root'
@@ -21,6 +22,9 @@ export class FlowService {
           break;
         case 'MC002': // Pre to Post
         case 'MC003': // MNP
+          console.log('MC003');
+          nextUrl = ROUTE_DEVICE_ORDER_AIS_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE;
+          break;
         case 'MC004': // Existing
         default:
           return reject('My Channel flow not implemented.');
