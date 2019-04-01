@@ -587,13 +587,13 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
         return this.http.get(`/api/customerportal/newRegister/verifyPrepaidIdent?idCard=${idCardNo}&mobileNo=${mobileNo}`)
           .toPromise()
           .then((respPrepaidIdent: any) => {
-            // if (this.checkBusinessLogic()) {
-            if (respPrepaidIdent.data && respPrepaidIdent.data.success) {
-              this.transaction.data.action = TransactionAction.READ_PASSPORT;
-            } else {
-              this.transaction.data.action = TransactionAction.READ_PASSPORT_REPI;
-            }
-            // }
+            if (this.checkBusinessLogic()) {
+              if (respPrepaidIdent.data && respPrepaidIdent.data.success) {
+                this.transaction.data.action = TransactionAction.READ_PASSPORT;
+              } else {
+                this.transaction.data.action = TransactionAction.READ_PASSPORT_REPI;
+              }
+              }
             this.transactionService.update(this.transaction);
             this.router.navigate([ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_REPI_PAGE]);
             this.pageLoadingService.closeLoading();
