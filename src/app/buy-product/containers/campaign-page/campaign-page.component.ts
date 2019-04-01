@@ -46,6 +46,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     transaction: Transaction;
     priceOption: PriceOption;
 
+    maximumNormalPrice: number;
     modalRef: BsModalRef;
     params: Params;
     hansetBundle: string;
@@ -488,7 +489,9 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         });
         this.priceOptionDetailService.then((resp: any) => {
             const priceOptions = this.filterCampaigns(resp.data.priceOptions || []);
-
+            if (priceOptions && priceOptions.length > 0) {
+                this.maximumNormalPrice = priceOptions[0].maximumNormalPrice;
+            }
             // generate customer tabs
             this.tabs = this.getTabsFormPriceOptions(priceOptions);
             this.tabs.forEach((tab: any) => {
