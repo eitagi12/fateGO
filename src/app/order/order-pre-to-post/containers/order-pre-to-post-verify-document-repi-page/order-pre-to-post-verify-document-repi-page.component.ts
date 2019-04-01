@@ -392,13 +392,13 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
             return this.http.get(`/api/customerportal/newRegister/verifyPrepaidIdent?idCard=${idCardNo}&mobileNo=${mobileNo}`)
               .toPromise()
               .then((respPrepaidIdent: any) => {
-                // if (this.checkBusinessLogic()) {
-                if (respPrepaidIdent.data && respPrepaidIdent.data.success) {
-                  this.transaction.data.action = TransactionAction.READ_PASSPORT;
-                } else {
-                  this.transaction.data.action = TransactionAction.READ_PASSPORT_REPI;
+                if (this.checkBusinessLogic()) {
+                  if (respPrepaidIdent.data && respPrepaidIdent.data.success) {
+                    this.transaction.data.action = TransactionAction.READ_PASSPORT;
+                  } else {
+                    this.transaction.data.action = TransactionAction.READ_PASSPORT_REPI;
+                  }
                 }
-                // }
                 this.transactionService.update(this.transaction);
                 this.router.navigate([ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_REPI_PAGE]);
                 this.pageLoadingService.closeLoading();
@@ -537,24 +537,24 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
     })
       .then((resp: any) => {
         const data = resp.data || {};
-            // readPassport NewCa จะไม่ได้ address
-            return {
-              caNumber: data.caNumber,
-              mainMobile: data.mainMobile,
-              billCycle: data.billCycle,
-              homeNo: data.homeNo,
-              moo: data.moo,
-              mooBan: data.mooBan,
-              room: data.room,
-              floor: data.floor,
-              buildingName: data.buildingName,
-              soi: data.soi,
-              street: data.street,
-              tumbol: data.tumbol,
-              amphur: data.amphur,
-              province: data.province,
-              zipCode: data.zipCode
-            };
+        // readPassport NewCa จะไม่ได้ address
+        return {
+          caNumber: data.caNumber,
+          mainMobile: data.mainMobile,
+          billCycle: data.billCycle,
+          homeNo: data.homeNo,
+          moo: data.moo,
+          mooBan: data.mooBan,
+          room: data.room,
+          floor: data.floor,
+          buildingName: data.buildingName,
+          soi: data.soi,
+          street: data.street,
+          tumbol: data.tumbol,
+          amphur: data.amphur,
+          province: data.province,
+          zipCode: data.zipCode
+        };
 
       }).then((customer) => {
         this.transaction.data.customer = Object.assign(
@@ -593,7 +593,7 @@ export class OrderPreToPostVerifyDocumentRepiPageComponent implements OnInit, On
               } else {
                 this.transaction.data.action = TransactionAction.READ_PASSPORT_REPI;
               }
-              }
+            }
             this.transactionService.update(this.transaction);
             this.router.navigate([ROUTE_ORDER_PRE_TO_POST_PASSPORT_INFO_REPI_PAGE]);
             this.pageLoadingService.closeLoading();

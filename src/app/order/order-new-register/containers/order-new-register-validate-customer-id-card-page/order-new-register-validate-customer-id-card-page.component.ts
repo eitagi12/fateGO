@@ -54,14 +54,14 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
     this.readCardValid = valid;
     if (!this.profile) {
       this.alertService.error(this.translation.instant('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน'));
-    if (this.validateCustomerIdcard.koiskApiFn) {
-      this.validateCustomerIdcard.koiskApiFn.removedState().subscribe((removed: boolean) => {
-        if (removed) {
-          this.validateCustomerIdcard.ngOnDestroy();
-          this.validateCustomerIdcard.ngOnInit();
-        }
-      });
-    }
+      if (this.validateCustomerIdcard.koiskApiFn) {
+        this.validateCustomerIdcard.koiskApiFn.removedState().subscribe((removed: boolean) => {
+          if (removed) {
+            this.validateCustomerIdcard.ngOnDestroy();
+            this.validateCustomerIdcard.ngOnInit();
+          }
+        });
+      }
     }
   }
 
@@ -76,7 +76,7 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
   }
 
   progressDoing(): boolean {
-    return this.progressReadCard > 0 &&  this.progressReadCard < 100 ? true : false;
+    return this.progressReadCard > 0 && this.progressReadCard < 100 ? true : false;
   }
 
   isRunOnKiosk(): boolean {
@@ -144,10 +144,10 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
       .then((billingInformation: any) => {
         this.transaction.data.billingInformation = billingInformation;
         this.pageLoadingService.closeLoading();
-        // if (this.checkBusinessLogic()) {
-        this.transaction.data.action = TransactionAction.READ_CARD;
-        this.router.navigate([ROUTE_ORDER_NEW_REGISTER_FACE_CAPTURE_PAGE]);
-        // }
+        if (this.checkBusinessLogic()) {
+          this.transaction.data.action = TransactionAction.READ_CARD;
+          this.router.navigate([ROUTE_ORDER_NEW_REGISTER_FACE_CAPTURE_PAGE]);
+        }
       })
       .catch((resp: any) => {
         const error = resp.error || [];
@@ -218,9 +218,9 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
 
   ngOnDestroy(): void {
     setTimeout(() => { // รอ webconnect ทำงานเสร็จก่อน
-     if (this.validateCustomerIdcard.koiskApiFn) {
-      this.validateCustomerIdcard.koiskApiFn.close();
-     }
+      if (this.validateCustomerIdcard.koiskApiFn) {
+        this.validateCustomerIdcard.koiskApiFn.close();
+      }
     }, 750);
     this.transactionService.update(this.transaction);
   }
