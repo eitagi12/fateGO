@@ -16,9 +16,7 @@ export class DeviceOnlyAisQueuePageComponent implements OnInit, OnDestroy {
   transaction: Transaction;
   priceOption: PriceOption;
   constructor(
-    private homeService: HomeService,
     private transactionService: TransactionService,
-    private homeButtonService: HomeButtonService,
     private priceOptionService: PriceOptionService
     ) {
       this.transaction = this.transactionService.load();
@@ -26,19 +24,19 @@ export class DeviceOnlyAisQueuePageComponent implements OnInit, OnDestroy {
     }
 
   ngOnInit(): void {
-    this.homeButtonService.initEventButtonHome();
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    window.location.href = '/';
   }
 
   mainMenu(): void {
-    this.homeService.goToHome();
+    window.location.href = '/';
   }
 
   ngOnDestroy(): void {
-    this.transactionService.save(this.transaction);
+    this.transactionService.remove();
+    this.priceOptionService.remove();
   }
 
 }
