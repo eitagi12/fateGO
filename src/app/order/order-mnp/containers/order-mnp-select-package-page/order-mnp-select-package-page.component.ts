@@ -107,7 +107,8 @@ export class OrderMnpSelectPackagePageComponent implements OnInit, OnDestroy {
       }).then((minPromotionPrice: string) => {
         return this.http.get('/api/customerportal/newRegister/queryMainPackage', {
           params: Object.assign({
-            minPromotionPrice: minPromotionPrice
+            minPromotionPrice: minPromotionPrice,
+            langauge: language
           }, params)
         }).toPromise();
       })
