@@ -46,6 +46,9 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     transaction: Transaction;
     priceOption: PriceOption;
 
+    maximumNormalPrice: number;
+    thumbnail: string;
+
     modalRef: BsModalRef;
     params: Params;
     hansetBundle: string;
@@ -105,6 +108,12 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
         this.colorForm.valueChanges.pipe(debounceTime(1000)).subscribe(obs => {
             const stock = obs.stock;
+
+            const product = (this.priceOption.productDetail.products || []).find((p: any) => {
+                return p.colorName === stock.color;
+            });
+            this.thumbnail = product && product.images ? product.images.thumbnail : '';
+
             this.clearPriceOption();
             this.callPriceOptionsService(
                 this.params.brand,
@@ -246,9 +255,10 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         return priceOptions
             .filter((campaign: any) => {
                 // filter campaign here
-                return campaign.customerGroups.find(
-                    customerGroup => customerGroup.code === code
-                );
+                return campaign.code !== 'AISHOTDEAL_PREPAID'
+                    && campaign.customerGroups.find(
+                        customerGroup => customerGroup.code === code
+                    );
             }).map((campaign: any) => {
                 // filter privilege and trades
                 const privileges = this.filterPrivileges(
@@ -390,7 +400,8 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         this.modalRef = this.modalService.show(this.installmentTemplate, { class: 'modal-lg' });
     }
 
-    onTradeSelected(trade: any): void {
+    onTradeSelected(privilege: any, trade: any): void {
+        this.priceOption.privilege = privilege;
         this.priceOption.trade = trade;
 
         this.pageLoadingService.openLoading();
@@ -487,7 +498,9 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         });
         this.priceOptionDetailService.then((resp: any) => {
             const priceOptions = this.filterCampaigns(resp.data.priceOptions || []);
-
+            if (priceOptions && priceOptions.length > 0) {
+                this.maximumNormalPrice = priceOptions[0].maximumNormalPrice;
+            }
             // generate customer tabs
             this.tabs = this.getTabsFormPriceOptions(priceOptions);
             this.tabs.forEach((tab: any) => {

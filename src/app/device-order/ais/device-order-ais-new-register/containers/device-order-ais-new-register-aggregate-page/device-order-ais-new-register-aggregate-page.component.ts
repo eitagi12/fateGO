@@ -1,8 +1,8 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { HomeService, Aggregate } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { Transaction, Payment } from 'src/app/shared/models/transaction.model';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 import {
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_COMPARE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_SUMMARY_PAGE,
@@ -15,11 +15,10 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
   templateUrl: './device-order-ais-new-register-aggregate-page.component.html',
   styleUrls: ['./device-order-ais-new-register-aggregate-page.component.scss']
 })
-export class DeviceOrderAisNewRegisterAggregatePageComponent implements OnInit, OnDestroy {
+export class DeviceOrderAisNewRegisterAggregatePageComponent implements OnInit {
   transaction: Transaction;
   aggregate: Aggregate;
   priceOption: PriceOption;
-  payment: Payment;
 
   constructor(
     private router: Router,
@@ -29,7 +28,6 @@ export class DeviceOrderAisNewRegisterAggregatePageComponent implements OnInit, 
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
-    this.payment = this.transaction.data.payment;
   }
 
   ngOnInit(): void { }
@@ -39,9 +37,10 @@ export class DeviceOrderAisNewRegisterAggregatePageComponent implements OnInit, 
   }
 
   onNext(): void {
-    if (this.payment.paymentType === 'CREDIT' || this.payment.paymentType === 'DEBIT') {
+    const payment = this.transaction.data.payment;
+    if (payment.paymentType === 'CREDIT' || payment.paymentType === 'DEBIT') {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QUEUE_PAGE]);
-    } else if (this.payment.paymentType === 'QR_CODE') {
+    } else if (payment.paymentType === 'QR_CODE') {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_SUMMARY_PAGE]);
     }
 
@@ -51,8 +50,11 @@ export class DeviceOrderAisNewRegisterAggregatePageComponent implements OnInit, 
     this.homeService.goToHome();
   }
 
-  ngOnDestroy(): void {
-    // this.transactionService.update(this.transaction);
+  getThumbnail(): string {
+    const product = (this.priceOption.productDetail.products || []).find((p: any) => {
+      return p.colorName === this.priceOption.productStock.color;
+    });
+    return product && product.images ? product.images.thumbnail : '';
   }
 
   summary(amount: number[]): number {

@@ -7,14 +7,14 @@
         <mc-result [success]="isSuccess" [mobileNo]="transaction?.data?.simCard?.mobileNo">
           <div *ngIf="isSuccess">
             <div class="text-center text-black"> TRANSACTION ID :
-              <span class="text-grey"> {{ transaction?.data?.order?.orderNo }}</span>
+              <span class="text-light-grey"> {{ transaction?.data?.order?.orderNo }}</span>
             </div>
-              <div class="text-grey float-left"><i class="fa fa fa-circle text-light-green"></i>&nbsp;&nbsp;
+              <div class="text-light-grey float-left"><i class="fa fa fa-circle text-green"></i>&nbsp;&nbsp;
                 ผลการโอนย้ายบริการเสริม</div>
-              <div class="text-grey float-right">ทั้งหมด {{ serviceChange?.length }} บริการ</div>
+              <div class="text-light-grey float-right">ทั้งหมด {{ serviceChange?.length }} บริการ</div>
               <div class="row" *ngFor="let service of serviceChange">
                 <ul>
-                  <li class="text-grey d-inline"><i class="fa fa-times text-pink mr-3"></i>
+                  <li class="text-light-grey d-inline"><i class="fa fa-times text-pink mr-3"></i>
                     {{ service?.serviceName }}
                   </li>
                 </ul>
