@@ -361,7 +361,7 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
         this.alertService.error('ไม่สามารถทำรายการด้วยหนังสือเดินทางประเทศไทย');
         return;
       }
-      
+
       this.pageLoadingService.openLoading();
       return this.http.get('/api/customerportal/validate-customer-new-register', {
         params: {
