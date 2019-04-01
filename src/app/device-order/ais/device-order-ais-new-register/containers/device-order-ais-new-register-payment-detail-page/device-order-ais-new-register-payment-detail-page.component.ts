@@ -54,18 +54,26 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
 
+    const productDetail = this.priceOption.productDetail || {};
+    const productStock = this.priceOption.productStock || {};
     const customer: any = this.transaction.data.customer || {};
     const receiptInfo: any = this.transaction.data.receiptInfo || {};
 
     const trade: any = this.priceOption.trade || {};
     const advancePay: any = trade.advancePay || {};
 
+    let commercialName = productDetail.name;
+    if (productStock.color) {
+      commercialName += ` สี ${productStock.color}`;
+    }
+
     this.payementDetail = {
-      commercialName: ``,
+      commercialName: commercialName,
       promotionPrice: +(trade.promotionPrice || 0),
       isFullPayment: this.isFullPayment(),
       installmentFlag: advancePay.installmentFlag === 'N' && +(advancePay.amount || 0) > 0,
-      advancePay: +(advancePay.amount || 0)
+      advancePay: +(advancePay.amount || 0),
+      qrCode: true
     };
 
     this.banks = trade.banks || [];
@@ -94,7 +102,6 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
   }
 
   onPaymentCompleted(payment: any): void {
-    console.log(payment);
     this.paymentDetailTemp = payment;
   }
 
