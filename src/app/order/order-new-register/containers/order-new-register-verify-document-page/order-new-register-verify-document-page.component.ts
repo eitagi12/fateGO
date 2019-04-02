@@ -358,10 +358,10 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
         return;
       }
       if (readPassport.profile.issuingCountry === 'THA' && (environment.name === 'SIT' || environment.name === 'PROD')) {
-        this.alertService.error('ไม่สามารถทำรายการด้วยหนังสือเดินทางประเทศไทย');
+        this.alertService.error(this.translation.instant('สำหรับคนไทยกรุณาใช้บัตรประชาชนทำรายการ'));
         return;
       }
-      
+
       this.pageLoadingService.openLoading();
       return this.http.get('/api/customerportal/validate-customer-new-register', {
         params: {
