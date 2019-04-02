@@ -21,7 +21,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { PromotionShelveService } from 'src/app/device-order/services/promotion-shelve.service';
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 import { Transaction } from 'src/app/shared/models/transaction.model';
-import { FlowService } from '../../services/flow.service';
+import { FlowService, CustomerGroup } from '../../services/flow.service';
 
 @Component({
     selector: 'app-campaign',
@@ -254,11 +254,15 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     getCampaignSliders(priceOptions: any[], code: string): any[] {
         return priceOptions
             .filter((campaign: any) => {
-                // filter campaign here
-                return campaign.code !== 'AISHOTDEAL_PREPAID'
-                    && campaign.customerGroups.find(
-                        customerGroup => customerGroup.code === code
-                    );
+                let allowCampaign: boolean = !!campaign.customerGroups.find(
+                    group => group.code === code
+                );
+
+                if (CustomerGroup.EXISTING) {
+                    allowCampaign = allowCampaign && campaign.code === 'AISHOTDEAL_PREPAID';
+                }
+
+                return allowCampaign;
             }).map((campaign: any) => {
                 // filter privilege and trades
                 const privileges = this.filterPrivileges(
@@ -373,13 +377,13 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
     getOrderTypeFromCustomerGroup(customerGroup: string): string {
         switch (customerGroup) {
-            case 'MC001':
+            case CustomerGroup.NEW_REGISTER:
                 return 'New Registration';
-            case 'MC002':
+            case CustomerGroup.PRE_TO_POST:
                 return 'Change Charge Type';
-            case 'MC003':
+            case CustomerGroup.MNP:
                 return 'Port - In';
-            case 'MC004':
+            case CustomerGroup.EXISTING:
                 return 'Change Service';
         }
     }
