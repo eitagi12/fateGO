@@ -36,7 +36,7 @@ export class SharedTransactionService {
     transaction.createDate = Moment().toISOString();
     transaction.data.status = SharedTransactionStatus.PENDING;
 
-    return this.http.post('api/salesportal/device-order/create-transaction',
+    return this.http.post('/api/salesportal/device-order/create-transaction',
       this.getRequestSharedTransaction(transaction, priceOption)
     ).toPromise();
   }
@@ -51,7 +51,7 @@ export class SharedTransactionService {
       description: 'pending'
     };
 
-    return this.http.post('api/salesportal/device-order/update-transaction',
+    return this.http.post('/api/salesportal/device-order/update-transaction',
       this.getRequestSharedTransaction(transaction, priceOption)
     ).toPromise();
   }
