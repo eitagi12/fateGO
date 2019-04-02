@@ -133,22 +133,9 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
           return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
             .then((resp: any) => {
               const data = resp.data || {};
-              // load bill next extreme
-              return this.http.post('/api/customerportal/verify/billingNetExtreme', {
-                businessType: '1',
-                listBillingAccount: data.billingAccountList
-              }).toPromise()
-                .then((respBillingNetExtreme: any) => {
-                  return {
-                    billCycles: data.billingAccountList,
-                    billCyclesNetExtreme: respBillingNetExtreme.data
-                  };
-                })
-                .catch(() => {
-                  return {
-                    billCycles: data.billingAccountList
-                  };
-                });
+              return {
+                billCycles: data.billingAccountList
+              };
             });
         }).then((billingInformation: any) => {
           this.transaction.data.billingInformation = billingInformation;
