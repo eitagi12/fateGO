@@ -239,7 +239,7 @@ export interface ReceiptInfo {
 }
 
 export interface Queue {
-  [key: string]: any;
+  queueNo: string;
 }
 
 export interface ExistingMobileCare {
