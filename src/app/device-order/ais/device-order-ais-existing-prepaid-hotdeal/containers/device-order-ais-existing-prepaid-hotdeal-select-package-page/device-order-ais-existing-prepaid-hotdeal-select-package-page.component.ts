@@ -45,10 +45,10 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
-    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
   }
 
   ngOnInit(): void {
+    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     delete this.transaction.data.mainPackage;
     this.callService();
   }
@@ -77,6 +77,10 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
       .then(() => this.pageLoadingService.closeLoading());
   }
 
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
+  }
+
   onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_MOBILE_CARE_PAGE]);
   }
@@ -89,7 +93,4 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
     this.homeService.goToHome();
   }
 
-  ngOnDestroy(): void {
-    this.transactionService.update(this.transaction);
-  }
 }
