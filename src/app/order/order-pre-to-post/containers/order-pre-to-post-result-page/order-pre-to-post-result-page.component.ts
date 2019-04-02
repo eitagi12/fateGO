@@ -35,7 +35,7 @@ export class OrderPreToPostResultPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.pageLoadingService.openLoading();
-    this.createPreToPostService.createPreToPost(this.transaction)
+    this.createTransactionService = this.createPreToPostService.createPreToPost(this.transaction)
       .then(resp => {
         const data = resp.data || {};
         this.transaction.data.order = {
