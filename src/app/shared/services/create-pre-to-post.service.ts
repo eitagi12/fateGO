@@ -79,7 +79,7 @@ export class CreatePreToPostService {
         billTumbol: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.tumbol : customer.tumbol || '',
         billAmphur: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.amphur : customer.amphur || '',
         // tslint:disable-next-line:max-line-length
-        billProvince: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.province.replace(/มหานคร$/, '') : customer.province.replace(/มหานคร$/, '') || '',
+        billProvince: billingInformation.mergeBilling ? '' : billDeliveryAddress ? (billDeliveryAddress.province || '').replace(/มหานคร$/, '') : (customer.province || '').replace(/มหานคร$/, ''),
         // tslint:disable-next-line:max-line-length
         billZipCode: billingInformation.mergeBilling ? '' : billDeliveryAddress ? billDeliveryAddress.zipCode : customer.zipCode || '',
         orderVerify: '',
@@ -94,7 +94,7 @@ export class CreatePreToPostService {
         street: customer.street || '',
         tumbol: customer.tumbol || '',
         amphur: customer.amphur || '',
-        province: customer.province.replace(/มหานคร$/, '') || '',
+        province: (customer.province || '').replace(/มหานคร$/, ''),
         zipCode: customer.zipCode || '',
         isPersoSim: simCard.persoSim,
         mainPackage: {
