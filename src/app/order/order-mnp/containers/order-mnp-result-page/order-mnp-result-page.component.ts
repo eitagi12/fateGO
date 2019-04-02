@@ -31,7 +31,7 @@ export class OrderMnpResultPageComponent implements OnInit {
   ngOnInit(): void {
     this.pageLoadingService.openLoading();
     setTimeout(() => {
-      this.createMnpService.createMnp(this.transaction).then((resp: any) => {
+      this.createTransactionService = this.createMnpService.createMnp(this.transaction).then((resp: any) => {
         this.checkOrderService = true;
         const data = resp.data || {};
         this.transaction.data.order = {
