@@ -7,8 +7,11 @@
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
-  <div class="mc-flex-wrap bg-white">
-  
+  <div class="mc-flex-wrap">
+    <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
+    <div class="my-3">
+        <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
+    </div>
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
