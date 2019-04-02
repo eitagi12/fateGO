@@ -7,7 +7,6 @@ import { DepositPaymentPageComponent } from './ais/container/deposit-payment-pag
 import { DepositPaymentSummaryPageComponent } from './ais/container/deposit-payment-summary-page/deposit-payment-summary-page.component';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { DepositPaymentSummaryComponent } from './components/deposit-payment-summary/deposit-payment-summary.component';
-import { DepositSellerInfoComponent } from './components/deposit-seller-info/deposit-seller-info.component';
 import { DepositQueueComponent } from './ais/container/deposit-queue/deposit-queue.component';
 import { DepositResultComponent } from './ais/container/deposit-result/deposit-result.component';
 import { CreateDeviceOrderService } from './services/create-device-order.service';
@@ -20,8 +19,7 @@ import { CreateDeviceOrderService } from './services/create-device-order.service
     ReactiveFormsModule
   ],
   declarations: [DepositSummaryComponent, DepositPaymentPageComponent,
-    DepositPaymentSummaryPageComponent, DepositQueueComponent, DepositResultComponent,
-    DepositSellerInfoComponent, DepositPaymentSummaryComponent],
+    DepositPaymentSummaryPageComponent, DepositQueueComponent, DepositResultComponent, DepositPaymentSummaryComponent],
     providers : [
       CreateDeviceOrderService
     ]
