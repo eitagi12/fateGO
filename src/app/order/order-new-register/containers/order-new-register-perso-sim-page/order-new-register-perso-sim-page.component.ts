@@ -44,7 +44,8 @@ export enum ControlSimCard {
   EVENT_CHECK_SIM_INVENTORY = 'GetSIMInventory',
   EVENT_CHECK_SIM_STATE = 'GetCardState',
   EVENT_CHECK_BIN_STATE = 'GetBinState',
-  EVENT_LOAD_SIM = 'LoadSIM',
+  EVENT_LOAD_SIM_STACKER1 = 'LoadSIM|STACKER1',
+  EVENT_LOAD_SIM_STACKER2 = 'LoadSIM|STACKER2',
   EVENT_KEEP_SIM = 'KeepCard',
   EVENT_RELEASE_SIM = 'ReleaseSIM'
 }
@@ -623,7 +624,7 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
             this.checkCardPresent = true;
             return resCheckSim.isSuccess;
           } else {
-            this.controlSim(ControlSimCard.EVENT_LOAD_SIM).then((resLoadSim: ControlSimResult) => {
+            this.controlSim(ControlSimCard.EVENT_LOAD_SIM_STACKER1).then((resLoadSim: ControlSimResult) => {
               this.controlSim(ControlLED.EVENT_LED_ON);
               if (resLoadSim.result === 'Success') {
                 this.checkCardPresent = true;
