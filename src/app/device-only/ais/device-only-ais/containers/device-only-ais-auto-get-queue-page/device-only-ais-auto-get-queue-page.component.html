@@ -1,0 +1,67 @@
+<div class="mc-flex">
+  <mc-header title="ชำระสินค้า">
+    <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap bg-white">
+    <div class="container-fluid mt-5">
+      <div class="card mx-5">
+        <div class="card-header bg-white">
+          <div class="text-center  bg-white">
+            <img src="assets/images/icon/icon-green-check-circle.png" class="d-block m-auto icon">
+            <div class="my-3 text-center">
+              <!-- <p>หมายเลข {{ transaction?.data?.simCard?.mobileNo | mobileNo }}</p> -->
+              <p>หมายเลข
+                <span id="text-mobile-no">{{  transaction?.data?.receiptInfo?.telNo | mobileNo}}</span></p>
+            </div>
+          </div>
+        </div>
+        <div class="card-body bg-white">
+          <div class="text-left">
+            <p>รายการสินค้า</p>
+          </div>
+          <div class="row mb-5">
+            <div class="col-6 text-left">
+              <i class="fa fa-circle mr-3 text-light-green"></i>
+              <span id="text-brand-model">
+                {{  priceOption?.productDetail?.name }}
+              </span>
+            </div>
+            <div class="col-6 text-right">
+              <p id="text-normal-price">฿ {{ priceOption?.trade?.promotionPrice | number}} </p>
+            </div>
+            <div class="col-12 text-right">
+              ยอดค้างชำระ(รวมVAT)
+              <span class="text-light-green" id="text-include-vat-price"> {{ priceOption?.trade?.promotionPrice | number}} </span>
+            </div>
+          </div>
+          <div class="row mt-5" [formGroup]="mobileForm">
+            <div class="col-12 mt-1">
+              <div class="text-center mb-2">
+                เบอร์โทรศัพท์รับหมายเลขคิว
+                <br>
+                เพื่อชำระสินค้าของท่านคือ
+              </div>
+              <div class="m-auto text-center col-4 py-3">
+                <input type="text" id="input-mobile-no" maxlength="10" formControlName="mobileNo"
+                  class="form-control text-center">
+                <div>
+                  <div *ngIf="f.mobileNo.errors && (f.mobileNo.errors.minlength || f.mobileNo.errors.pattern)"
+                    style="color: red">กรุณากรอกเบอร์ให้ถูกต้อง</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid my-5">
+      <div class="text-center">
+        <button class="btn btn-success btn-lg" id="button-next" [disabled]="mobileForm.invalid" (click)="onNext()">
+          NEXT
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

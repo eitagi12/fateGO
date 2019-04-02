@@ -9,3 +9,4 @@ export const ROUTE_DEVICE_ONLY_AIS_MOBILE_CARE_AVALIABLE_PAGE = '/device-only/ai
 export const ROUTE_DEVICE_ONLY_AIS_QR_CODE_SUMMARY_PAGE = '/device-only/ais/qr-code-summary';
 export const ROUTE_DEVICE_ONLY_AIS_QR_CODE_GENERATE_PAGE = '/device-only/ais/qr-code-generate';
 export const ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_QR_CODE_PAGE = '/device-only/ais/checkout-payment-qr-code';
+export const ROUTE_DEVICE_ONLY_AIS_AUTO_GET_QUEUE_PAGE = '/device-only/ais/auto-get-queue';

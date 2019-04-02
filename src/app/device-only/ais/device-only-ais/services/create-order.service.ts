@@ -174,6 +174,12 @@ export class CreateOrderService {
 
   mapCreateOrder(transaction: Transaction, priceOption: PriceOption): any {
     const sellerNo = (transaction.data.seller && transaction.data.seller.sellerNo)  ? transaction.data.seller.sellerNo : '';
+    const mapInstallmentTerm = transaction.data.payment.paymentMethod.month
+                              ? transaction.data.payment.paymentMethod.month : 0;
+    const mapInstallmentRate = transaction.data.payment.paymentMethod.percentage
+                              ? transaction.data.payment.paymentMethod.percentage : 0;
+    const mapBankAbb = transaction.data.payment.paymentMethod.abb ? transaction.data.payment.paymentMethod.abb : '';
+    const mapPaymentMethod = this.mapPaymentType(transaction.data.payment.paymentType);
     return {
       soId: transaction.data.order.soId,
       soCompany: priceOption.productStock.company,
@@ -195,17 +201,17 @@ export class CreateOrderService {
       taxCardId: transaction.data.customer.idCardNo,
       cusMobileNoOrder: transaction.data.receiptInfo.telNo,
       customerAddress: this.mapCusAddress(transaction.data.billingInformation.billDeliveryAddress),
-      tradeNo: priceOption.trade.tradeNo
+      tradeNo: priceOption.trade.tradeNo,
       // ussdCode: priceOption.trade.ussdCode,
       // returnCode: '4GEYYY',
       // matAirTime: '',
       // matCodeFreeGoods: '',
-      // paymentRemark: '',
-      // installmentTerm: 0,
-      // installmentRate: 0,
+      paymentRemark: '',
+      installmentTerm: mapInstallmentTerm,
+      installmentRate: mapInstallmentRate,
       // mobileAisFlg: '',
-      // paymentMethod: 'CA|CC',
-      // bankAbbr: '',
+      paymentMethod: mapPaymentMethod,
+      bankAbbr: mapBankAbb
       // tradeFreeGoodsId: '',
       // matairtimeId: '',
       // tradeDiscountId: '',
@@ -231,5 +237,14 @@ export class CreateOrderService {
       postCode: addressCus.zipCode ? addressCus.zipCode : '',
       country: 'THA'
     };
+  }
+
+  mapPaymentType(paymentType: string): string {
+      if (paymentType === 'CREDIT') {
+        return 'CC';
+      }
+      if (paymentType === 'DEBIT') {
+        return 'CA';
+      }
   }
 }
