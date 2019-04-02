@@ -39,7 +39,6 @@ export class DeviceOrderAisNewRegisterEcontactPageComponent implements OnInit {
     private shoppingCartService: ShoppingCartService,
     private idCardPipe: IdCardPipe,
     private decimalPipe: DecimalPipe,
-    private utils: Utils
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -112,10 +111,9 @@ export class DeviceOrderAisNewRegisterEcontactPageComponent implements OnInit {
       };
 
       return this.http.post('/api/salesportal/generate-e-document', params).toPromise().then((eDocResp: any) => {
-        return eDocResp.data || '';
+        this.eContactSrc = eDocResp.data || '';
       });
     })
-      .then((eContact: string) => this.eContactSrc = eContact)
       .then(() => this.pageLoadingService.closeLoading());
   }
 
