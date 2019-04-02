@@ -123,7 +123,7 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
         return this.http.get('/api/customerportal/newRegister/queryMainPackage', {
           params: Object.assign({
             minPromotionPrice: minPromotionPrice,
-            langauge: language
+            language: language
           }, params)
         }).toPromise();
       })

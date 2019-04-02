@@ -133,7 +133,7 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
           params: Object.assign({
             registerDate: regisDate,
             isNetExtreme: isNetExtreme,
-            langauge: language
+            language: language
           }, params)
         }).toPromise()
 
