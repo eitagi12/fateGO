@@ -258,8 +258,16 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                     group => group.code === code
                 );
 
-                if (CustomerGroup.EXISTING) {
-                    allowCampaign = allowCampaign && campaign.code === 'AISHOTDEAL_PREPAID';
+                const campaignCode: string = campaign.code;
+
+                // Allow campaing flow existing only
+                if (this.flowService.isCampaignPrepaid(campaignCode)) {
+                    allowCampaign = allowCampaign && CustomerGroup.EXISTING === code;
+                }
+
+                // Not allow prebooking
+                if (this.flowService.isCampaignPrebooking(campaignCode)) {
+                    allowCampaign = false;
                 }
 
                 return allowCampaign;
@@ -361,7 +369,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             orderType: this.getOrderTypeFromCustomerGroup(this.tabs.find(tab => tab.active))
         };
 
-        if (tabActive.code === 'MC001') {
+        if (tabActive.code === CustomerGroup.NEW_REGISTER) {
             params.billingSystem = BillingSystemType.IRB;
         }
 
@@ -413,6 +421,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             .then((nextUrl: string) => {
                 this.router.navigate([nextUrl]);
             })
+            .catch((error: string) => this.alertService.error(error))
             .then(() => this.pageLoadingService.closeLoading());
     }
 
