@@ -97,7 +97,7 @@ export class DeviceOrderAisPreToPostEligibleMobilePageComponent implements OnIni
 
   onNext(): void {
     this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo, persoSim: false };
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_PAYMENT_DETAIL_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CURRENT_INFO_PAGE]);
   }
 
   ngOnDestroy(): void {

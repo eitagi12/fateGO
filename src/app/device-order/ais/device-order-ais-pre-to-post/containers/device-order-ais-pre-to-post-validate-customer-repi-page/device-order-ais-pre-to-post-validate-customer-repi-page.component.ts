@@ -14,11 +14,12 @@ import { WIZARD_ORDER_PRE_TO_POST } from 'src/app/order/constants/wizard.constan
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 
 @Component({
-  selector: 'app-device-order-ais-prt-to-post-validate-customer-repi-page',
-  templateUrl: './device-order-ais-prt-to-post-validate-customer-repi-page.component.html',
-  styleUrls: ['./device-order-ais-prt-to-post-validate-customer-repi-page.component.scss']
+  selector: 'app-device-order-ais-pre-to-post-validate-customer-repi-page',
+  templateUrl: './device-order-ais-pre-to-post-validate-customer-repi-page.component.html',
+  styleUrls: ['./device-order-ais-pre-to-post-validate-customer-repi-page.component.scss']
 })
-export class DeviceOrderAisPrtToPostValidateCustomerRepiPageComponent implements OnInit, OnDestroy {
+export class DeviceOrderAisPreToPostValidateCustomerRepiPageComponent implements OnInit, OnDestroy {
+
   wizards: string[] = WIZARD_ORDER_PRE_TO_POST;
   transaction: Transaction;
   identityValid: boolean = false;

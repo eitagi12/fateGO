@@ -1,5 +1,9 @@
+export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VERIFY_DOCUMENT_PAGE = '/device-order/ais/pre-to-post/verify-document';
+export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VERIFY_DOCUMENT_REPI_PAGE = '/device-order/ais/pre-to-post/verify-document-repi';
 export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE = '/device-order/ais/pre-to-post/validate-customer';
+export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_REPI_PAGE = '/device-order/ais/pre-to-post/validate-customer-repi';
 export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_PAGE = '/device-order/ais/pre-to-post/validate-customer-id-card';
+export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE = '/device-order/ais/pre-to-post/validate-customer-id-card-repi';
 export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CURRENT_INFO_PAGE = '/device-order/ais/pre-to-post/current-info';
 export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE = '/device-order/ais/pre-to-post/eligible-mobile';
 export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_PAYMENT_DETAIL_PAGE = '/device-order/ais/pre-to-post/payment-detail';
@@ -16,10 +20,15 @@ export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_AGREEMENT_SIGN_PAGE = '/device-o
 export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_AGGREGATE_PAGE = '/device-order/ais/pre-to-post/aggregate';
 export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_RESULT_PAGE = '/device-order/ais/pre-to-post/result';
 export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_EBILLING_ADDRESS_PAGE = '/device-order/ais/pre-to-post/ebilling-address';
-export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_REPI_PAGE = '/device-order/ais/pre-to-post/validate-customer-repi';
-export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE = '/device-order/ais/pre-to-post/validate-customer-id-card-repi';
 export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CUSTOMER_PROFILE_PAGE = '/device-order/ais/pre-to-post/customer-profile';
 export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_OTP_PAGE = '/device-order/ais/pre-to-post/otp';
 export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ID_CARD_CAPTURE_REPI_PAGE = '/device-order/ais/pre-to-post/id-card-capture-repi';
 export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_EBILLING_PAGE = '/device-order/ais/pre-to-post/ebilling';
 export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_EAPPLICATION_PAGE = '/device-order/ais/pre-to-post/eapplication';
+export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ECONTRACT_PAGE = '/device-order/ais/pre-to-post/econtract';
+export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_QUEUE_PAGE = '/device-order/ais/pre-to-post/queue';
+
+export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_QR_CODE_SUMMARY_PAGE = '/device-order/ais/pre-to-post/qr-code-summary';
+export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_QR_CODE_QUEUE_PAGE = '/device-order/ais/pre-to-post/qr-code-queue';
+export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_QR_CODE_GENERATOR_PAGE = '/device-order/ais/pre-to-post/qr-code-generator';
+export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_QR_CODE_ERROR_PAGE = '/device-order/ais/pre-to-post/qr-code-error';

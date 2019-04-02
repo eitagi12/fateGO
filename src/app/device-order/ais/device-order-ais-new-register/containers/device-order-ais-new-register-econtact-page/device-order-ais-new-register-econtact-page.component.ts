@@ -17,8 +17,7 @@ import { DecimalPipe } from '@angular/common';
 @Component({
   selector: 'app-device-order-ais-new-register-econtact-page',
   templateUrl: './device-order-ais-new-register-econtact-page.component.html',
-  styleUrls: ['./device-order-ais-new-register-econtact-page.component.scss'],
-  providers: [IdCardPipe, DecimalPipe]
+  styleUrls: ['./device-order-ais-new-register-econtact-page.component.scss']
 })
 export class DeviceOrderAisNewRegisterEcontactPageComponent implements OnInit {
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;

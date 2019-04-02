@@ -40,7 +40,7 @@ export class DeviceOrderAisNewRegisterEbillingPageComponent implements OnInit, O
 
     this.http.get('/api/customerportal/newRegister/queryBillCycle', {
       params: {
-        coProject: 'N'
+        coProject: 'ํY'
       }
     }).toPromise().then((resp: any) => {
       const data = resp.data || {};
