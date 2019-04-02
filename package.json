@@ -30,7 +30,6 @@
     "mychannel-shared-libs": "git+https://vca.ais.co.th/myChannel/mychannel-shared-libs.git#develop",
     "qrcode": "^1.3.3",
     "rxjs": "6.2.2",
-    "rxjs-compat": "6.2.2",
     "zone.js": "~0.8.26"
   },
   "devDependencies": {
