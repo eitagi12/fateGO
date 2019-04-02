@@ -13,7 +13,6 @@ import { DeviceOrderAisPreToPostEapplicationPageComponent } from './containers/d
 import { DeviceOrderAisPreToPostEbillingAddressPageComponent } from './containers/device-order-ais-pre-to-post-ebilling-address-page/device-order-ais-pre-to-post-ebilling-address-page.component';
 import { DeviceOrderAisPreToPostEbillingPageComponent } from './containers/device-order-ais-pre-to-post-ebilling-page/device-order-ais-pre-to-post-ebilling-page.component';
 import { DeviceOrderAisPreToPostEligibleMobilePageComponent } from './containers/device-order-ais-pre-to-post-eligible-mobile-page/device-order-ais-pre-to-post-eligible-mobile-page.component';
-import { DeviceOrderAisPreToPostIdCardCapturePageComponent } from './containers/device-order-ais-pre-to-post-id-card-capture-page/device-order-ais-pre-to-post-id-card-capture-page.component';
 import { DeviceOrderAisPreToPostMergeBillingPageComponent } from './containers/device-order-ais-pre-to-post-merge-billing-page/device-order-ais-pre-to-post-merge-billing-page.component';
 import { DeviceOrderAisPreToPostOnTopPageComponent } from './containers/device-order-ais-pre-to-post-on-top-page/device-order-ais-pre-to-post-on-top-page.component';
 import { DeviceOrderAisPreToPostOneLoveComponent } from './containers/device-order-ais-pre-to-post-one-love/device-order-ais-pre-to-post-one-love.component';
@@ -57,7 +56,6 @@ import { DeviceOrderAisPreToPostCustomerProfilePageComponent } from './container
     DeviceOrderAisPreToPostEbillingAddressPageComponent,
     DeviceOrderAisPreToPostEbillingPageComponent,
     DeviceOrderAisPreToPostEligibleMobilePageComponent,
-    DeviceOrderAisPreToPostIdCardCapturePageComponent,
     DeviceOrderAisPreToPostMergeBillingPageComponent,
     DeviceOrderAisPreToPostOnTopPageComponent,
     DeviceOrderAisPreToPostOneLoveComponent,

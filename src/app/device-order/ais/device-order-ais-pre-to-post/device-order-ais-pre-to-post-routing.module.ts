@@ -8,7 +8,6 @@ import { DeviceOrderAisPreToPostEligibleMobilePageComponent } from './containers
 import { DeviceOrderAisPreToPostPaymentDetailPageComponent } from './containers/device-order-ais-pre-to-post-payment-detail-page/device-order-ais-pre-to-post-payment-detail-page.component';
 import { DeviceOrderAisPreToPostCurrentInfoPageComponent } from './containers/device-order-ais-pre-to-post-current-info-page/device-order-ais-pre-to-post-current-info-page.component';
 import { DeviceOrderAisPreToPostCustomerInfoPageComponent } from './containers/device-order-ais-pre-to-post-customer-info-page/device-order-ais-pre-to-post-customer-info-page.component';
-import { DeviceOrderAisPreToPostIdCardCapturePageComponent } from './containers/device-order-ais-pre-to-post-id-card-capture-page/device-order-ais-pre-to-post-id-card-capture-page.component';
 import { DeviceOrderAisPreToPostSelectPackagePageComponent } from './containers/device-order-ais-pre-to-post-select-package-page/device-order-ais-pre-to-post-select-package-page.component';
 import { DeviceOrderAisPreToPostOneLoveComponent } from './containers/device-order-ais-pre-to-post-one-love/device-order-ais-pre-to-post-one-love.component';
 import { DeviceOrderAisPreToPostOnTopPageComponent } from './containers/device-order-ais-pre-to-post-on-top-page/device-order-ais-pre-to-post-on-top-page.component';
@@ -42,7 +41,6 @@ const routes: Routes = [
   { path: 'current-info', component: DeviceOrderAisPreToPostCurrentInfoPageComponent },
   { path: 'customer-info', component: DeviceOrderAisPreToPostCustomerInfoPageComponent },
   { path: 'customer-profile', component: DeviceOrderAisPreToPostCustomerProfilePageComponent },
-  { path: 'id-card-capture', component: DeviceOrderAisPreToPostIdCardCapturePageComponent },
   { path: 'select-package', component: DeviceOrderAisPreToPostSelectPackagePageComponent },
   { path: 'one-love', component: DeviceOrderAisPreToPostOneLoveComponent },
   { path: 'on-top', component: DeviceOrderAisPreToPostOnTopPageComponent },

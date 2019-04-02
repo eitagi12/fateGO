@@ -4,10 +4,8 @@ import { CustomerInfo, HomeService } from 'mychannel-shared-libs';
 
 import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
 import {
-  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ID_CARD_CAPTURE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CURRENT_INFO_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ID_CARD_CAPTURE_REPI_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_SELECT_PACKAGE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VERIFY_DOCUMENT_REPI_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_PAYMENT_DETAIL_PAGE
@@ -63,12 +61,7 @@ export class DeviceOrderAisPreToPostCustomerInfoPageComponent implements OnInit,
 
   onNext(): void {
     const action = this.transaction.data.action;
-
-    if (action === TransactionAction.KEY_IN) {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ID_CARD_CAPTURE_PAGE]);
-    } else if (action === TransactionAction.KEY_IN_REPI) {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ID_CARD_CAPTURE_REPI_PAGE]);
-    } else if (action === TransactionAction.READ_CARD || action === TransactionAction.READ_CARD_REPI) {
+    if (action === TransactionAction.READ_CARD || action === TransactionAction.READ_CARD_REPI) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_PAYMENT_DETAIL_PAGE]);
     }
   }
