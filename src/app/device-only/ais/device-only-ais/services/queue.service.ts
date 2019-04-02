@@ -14,7 +14,7 @@ export class QueueService {
     const intercepterOption = {
       mobileNo: mobileNo
     };
-    return this.http.post('/api/device-order/transaction/get-queue-qmatic', intercepterOption).pipe(
+    return this.http.post('/api/salesportal/device-order/transaction/get-queue-qmatic', intercepterOption).pipe(
       map((response: any) => response.data.queue || '')
     ).toPromise();
   }
