@@ -21,6 +21,9 @@ export enum TransactionAction {
   READ_CARD_REPI = 'READ_CARD_REPI',
   KEY_IN = 'KEY_IN',
   KEY_IN_REPI = 'KEY_IN_REPI',
+  READ_PASSPORT = 'READ_PASSPORT',
+  READ_PASSPORT_REPI = 'READ_PASSPORT_REPI'
+
 }
 
 export interface Transaction {

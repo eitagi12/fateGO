@@ -5,8 +5,7 @@ import { HomeService, AisNativeService, TokenService, User, ChannelType } from '
 
 import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
 import {
-  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_SUMMARY_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_AGGREGATE_PAGE
+  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_AGGREGATE_PAGE, ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_EAPPLICATION_PAGE
 } from '../../constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -44,7 +43,7 @@ export class DeviceOrderAisPreToPostAgreementSignPageComponent implements OnInit
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_SUMMARY_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_EAPPLICATION_PAGE]);
   }
 
   onNext(): void {

@@ -1,11 +1,12 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DecimalPipe } from '@angular/common';
 
 import { DeviceOrderRoutingModule } from './device-order-routing.module';
 import { DeviceOrderComponent } from './device-order.component';
 import { PromotionShelveService } from './services/promotion-shelve.service';
 import { MobileCareService } from './services/mobile-care.service';
 import { ShoppingCartService } from './services/shopping-cart.service';
+import { IdCardPipe } from 'mychannel-shared-libs';
 
 @NgModule({
   imports: [
@@ -15,7 +16,9 @@ import { ShoppingCartService } from './services/shopping-cart.service';
   providers: [
     PromotionShelveService,
     MobileCareService,
-    ShoppingCartService
+    ShoppingCartService,
+    IdCardPipe,
+    DecimalPipe
   ],
   declarations: [DeviceOrderComponent]
 })

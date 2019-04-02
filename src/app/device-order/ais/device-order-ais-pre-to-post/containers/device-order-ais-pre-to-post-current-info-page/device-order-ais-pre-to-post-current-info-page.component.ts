@@ -7,11 +7,10 @@ import { PageLoadingService, AlertService } from 'mychannel-shared-libs';
 
 import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
 import {
-  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CUSTOMER_INFO_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_SELECT_PACKAGE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE
+  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_PAYMENT_DETAIL_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VERIFY_DOCUMENT_PAGE
 } from '../../constants/route-path.constant';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -83,19 +82,21 @@ export class DeviceOrderAisPreToPostCurrentInfoPageComponent implements OnInit, 
   }
 
   onBack(): void {
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE]);
+
     const action = this.transaction.data.action;
-    if (action === TransactionAction.KEY_IN || action === TransactionAction.READ_CARD) {
+    if (action === TransactionAction.KEY_IN || action === TransactionAction.READ_CARD || action === TransactionAction.READ_PASSPORT) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE]);
     } else {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE]);
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VERIFY_DOCUMENT_PAGE]);
     }
+
   }
 
   onNext(): void {
-
     const action = this.transaction.data.action;
 
-    if (action === TransactionAction.KEY_IN || action === TransactionAction.READ_CARD) {
+    if (action === TransactionAction.READ_CARD || action === TransactionAction.READ_PASSPORT) {
 
       this.pageLoadingService.openLoading();
 
@@ -107,13 +108,16 @@ export class DeviceOrderAisPreToPostCurrentInfoPageComponent implements OnInit, 
         .then((resp: any) => {
 
           this.transaction.data.simCard = { mobileNo: this.mobileNo, persoSim: false };
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_SELECT_PACKAGE_PAGE]);
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_PAYMENT_DETAIL_PAGE]);
           this.pageLoadingService.closeLoading();
 
         })
         .catch((resp: any) => {
           this.pageLoadingService.closeLoading();
-          this.alertService.error(resp.error.developerMessage);
+          this.alertService.notify({
+            type: 'error',
+            html: resp.error.resultDescription
+          });
         });
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE]);
