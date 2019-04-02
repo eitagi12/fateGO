@@ -19,6 +19,7 @@ export class DeviceOnlyAisKeyInQueuePageComponent implements OnInit, OnDestroy {
   public queueForm: FormGroup;
   transaction: Transaction;
   priceOption: PriceOption;
+  queue: string;
   constructor(
     public router: Router,
     private fb: FormBuilder,
@@ -43,8 +44,11 @@ export class DeviceOnlyAisKeyInQueuePageComponent implements OnInit, OnDestroy {
       queueNo: (['', Validators.compose([
         Validators.required,
         Validators.minLength(4),
-        Validators.pattern('^[A-Z0-9]+$')
+        Validators.pattern(/([A-Y]{1}[0-9]{3})/)
       ])])
+    });
+    this.queueForm.valueChanges.subscribe((value) => {
+      this.queue = value.queue;
     });
   }
 

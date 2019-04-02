@@ -58,7 +58,7 @@
     </div>
     <div class="container-fluid my-5">
       <div class="text-center">
-        <button class="btn btn-success btn-lg" id="button-next" (click)="onNext()">
+        <button class="btn btn-success btn-lg" id="button-next" (click)="onNext()" [disabled]="queueForm.invalid">
           NEXT
         </button>
       </div>
