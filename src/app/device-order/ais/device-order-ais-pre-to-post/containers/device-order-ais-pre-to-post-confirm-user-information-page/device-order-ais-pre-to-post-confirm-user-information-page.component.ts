@@ -1,9 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Transaction } from 'src/app/shared/models/transaction.model';
+import { ConfirmCustomerInfo, BillingInfo, BillingSystemType, MailBillingInfo, TelNoBillingInfo, Utils, AlertService, ShoppingCart } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
+import { HomeService } from 'mychannel-shared-libs';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
-import { HomeService, ConfirmCustomerInfo, BillingInfo, MailBillingInfo, TelNoBillingInfo, BillingSystemType, Utils, AlertService } from 'mychannel-shared-libs';
-
 import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
+
 import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_SUMMARY_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_MOBILE_CARE_PAGE,
@@ -13,8 +16,7 @@ import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_EBILLING_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_SELECT_PACKAGE_PAGE
 } from '../../constants/route-path.constant';
-import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 
 @Component({
   selector: 'app-device-order-ais-pre-to-post-confirm-user-information-page',
@@ -22,13 +24,14 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
   styleUrls: ['./device-order-ais-pre-to-post-confirm-user-information-page.component.scss']
 })
 export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implements OnInit, OnDestroy {
-
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
+
   transaction: Transaction;
   confirmCustomerInfo: ConfirmCustomerInfo;
   billingInfo: BillingInfo;
   mailBillingInfo: MailBillingInfo;
   telNoBillingInfo: TelNoBillingInfo;
+  shoppingCart: ShoppingCart;
 
   eBill: boolean;
   isTelNoBillingValid: boolean;
@@ -36,21 +39,23 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
 
   constructor(
     private router: Router,
-    private utils: Utils,
-    private http: HttpClient,
     private homeService: HomeService,
     private transactionService: TransactionService,
     private alertService: AlertService,
+    private utils: Utils,
+    private http: HttpClient,
+    private shoppingCartService: ShoppingCartService,
   ) {
     this.transaction = this.transactionService.load();
 
-    // pre-to-post profile not found.
+    // New register profile not found.
     if (!this.transaction.data.billingInformation) {
       this.transaction.data.billingInformation = {};
     }
   }
 
   ngOnInit(): void {
+    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     const customer = this.transaction.data.customer;
     const mainPackage = this.transaction.data.mainPackage;
     const simCard = this.transaction.data.simCard;
@@ -65,9 +70,9 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
       lastName: customer.lastName,
       idCardNo: customer.idCardNo,
       mobileNo: simCard.mobileNo,
-      mainPackage: mainPackage.shortNameThai,
+      mainPackage: mainPackage.title,
       onTopPackage: '',
-      packageDetail: mainPackage.statementThai
+      packageDetail: mainPackage.detailTH
     };
 
     this.mailBillingInfo = {
@@ -86,14 +91,16 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
   }
 
   initBillingInfo(): void {
-    const customer = this.transaction.data.customer;
-    const billingInformation = this.transaction.data.billingInformation;
+    const billingInformation = this.transaction.data.billingInformation || {};
     const mergeBilling = billingInformation.mergeBilling;
     const billCycle = billingInformation.billCycle;
+    const billCycles = [] = billingInformation.billCycles;
+    const customer: any = billingInformation.billDeliveryAddress || this.transaction.data.customer;
 
     const customerAddress = this.utils.getCurrentAddress({
       homeNo: customer.homeNo,
       moo: customer.moo,
+      mooBan: customer.mooBan,
       room: customer.room,
       floor: customer.floor,
       buildingName: customer.buildingName,
@@ -106,17 +113,17 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
     });
 
     this.billingInfo = {
-      // merge bill ไม่เมื่อเลือก package net extream
+      // merge bill ไม่เมื่อเลือก package net extrem
       billingMethod: {
         text: this.isMergeBilling() ? `${billingInformation.mergeBilling.mobileNo[0]}` : null,
         // net extrem แก้ไขไม่ได้, โปรไฟล์ใหม่แก้ไขไม่ได้
-        isEdit: !!customer.billCycle,
-        // isEdit: false,
+        isEdit: false,
+        // isEdit: !!(customer.caNumber && customer.billCycle && billCycles && billCycles.length > 0),
         // net extrem ลบไม่ได้, มีบิลใหม่ลบได้แล้วแสดงบิลเก่า
-        isDelete: !!mergeBilling,
-        // isDelete: false,
+        isDelete: false,
+        // isDelete: !!mergeBilling,
         onEdit: () => {
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_MERGE_BILLING_PAGE]);
+          // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_MERGE_BILLING_PAGE]);
         },
         onDelete: () => {
           delete this.transaction.data.billingInformation.mergeBilling;
@@ -139,14 +146,14 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
       billingAddress: {
         text: (this.isMergeBilling() ? mergeBilling.billingAddr : null) || customerAddress || '-',
         isEdit: !(!!mergeBilling),
-        // isEdit: !(isMergeBilling || isPackageNetExtream),
+        // isEdit: !(isMergeBilling || isPackageNetExtreme),
         onEdit: () => {
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_EBILLING_ADDRESS_PAGE]);
         }
       },
       billingCycle: {
         text: '-',
-        // net extream ลบไม่ได้, merge bill ลบไม่ได้
+        // net extrem ลบไม่ได้, merge bill ลบไม่ได้
         isEdit: !(!!mergeBilling),
         isDelete: !(!!mergeBilling) && !!billCycle,
         onEdit: () => {
@@ -177,6 +184,7 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
     ).then((billCycleText: string) => {
       this.billingInfo.billingCycle.text = billCycleText;
     });
+
   }
 
   onMailBillingInfoCompleted(mailBillingInfo: any): void {
@@ -210,15 +218,16 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
   }
 
   onBack(): void {
-    if (this.isPackageNetExtreme()) {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_MERGE_BILLING_PAGE]);
-    } else {
-      if (this.transaction.data.onTopPackage) {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ON_TOP_PAGE]);
-      } else {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_SELECT_PACKAGE_PAGE]);
-      }
-    }
+    // if (this.isPackageNetExtreme()) {
+    //   // this.router.navigate([ROUTE_ORDER_NEW_REGISTER_MERGE_BILLING_PAGE]);
+    // } else {
+    //   if (this.transaction.data.onTopPackage) {
+    //     // this.router.navigate([ROUTE_ORDER_NEW_REGISTER_ON_TOP_PAGE]);
+    //   } else {
+    //     // this.router.navigate([ROUTE_ORDER_NEW_REGISTER_SELECT_PACKAGE_PAGE]);
+    //   }
+    // }
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_SELECT_PACKAGE_PAGE]);
   }
 
   onNext(): void {
@@ -240,6 +249,14 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_EBILLING_ADDRESS_PAGE]);
   }
 
+  onHome(): void {
+    this.homeService.goToHome();
+  }
+
+  ngOnDestroy(): void {
+    this.transactionService.save(this.transaction);
+  }
+
   getBillChannel(): any {
     const mainPackage = this.transaction.data.mainPackage;
     const billingInformation = this.transaction.data.billingInformation;
@@ -255,7 +272,9 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
         return 'other';
       }
     }
-
+    if (billingInformation && billingInformation.billCycleData) {
+      return billingInformation.billCycleData.billChannel;
+    }
     // เลือกบิลตามแพจเกจ
     const billingSystem = mainPackage.billingSystem;
     if (billingSystem && billingSystem === BillingSystemType.BOS) {
@@ -265,17 +284,10 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
     }
   }
 
-  onHome(): void {
-    this.homeService.goToHome();
-  }
-
-  ngOnDestroy(): void {
-    this.transactionService.update(this.transaction);
-  }
-
   customerValid(): boolean {
-    const customer = this.transaction.data.customer;
-
+    const billingInformation = this.transaction.data.billingInformation || {};
+    // ถ้าเป็น Newca จะไม่มี data.customer เลยต้องเช็คจากที่อยู่ว่า มีที่อยู่(billDeliveryAddress)ไหม
+    const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
     return !!(customer.homeNo
       && customer.province
       && customer.amphur

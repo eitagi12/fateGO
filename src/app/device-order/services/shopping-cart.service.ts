@@ -21,13 +21,19 @@ export class ShoppingCartService {
     const campaign = priceOption.campaign;
     const trade = priceOption.trade || {};
     const productDetail = priceOption.productDetail || {};
+    const productStock = priceOption.productStock || {};
 
     const advancePay = +trade.advancePay.amount || 0;
+
+    let commercialName = productDetail.name;
+    if (productStock.color) {
+      commercialName += ` สี ${productStock.color}`;
+    }
     return {
       fullName: customer.titleName + ' ' + customer.firstName + ' ' + customer.lastName,
       mobileNo: simCard && simCard.mobileNo ? simCard.mobileNo : '',
       campaignName: campaign.campaignName,
-      commercialName: productDetail.name,
+      commercialName: commercialName,
       qty: 1,
       price: +trade.promotionPrice + advancePay
     };

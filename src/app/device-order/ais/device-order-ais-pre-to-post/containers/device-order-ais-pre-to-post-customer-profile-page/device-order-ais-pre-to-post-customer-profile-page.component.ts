@@ -33,12 +33,10 @@ export class DeviceOrderAisPreToPostCustomerProfilePageComponent implements OnIn
     private http: HttpClient,
   ) {
     this.transaction = this.transactionService.load();
-    this.homeService.callback = () => {
-      window.location.href = '/smart-shop';
-    };
   }
 
   ngOnInit(): void {
+
     const data = this.transaction.data.customer;
     this.titleName = data.titleName;
     this.firstName = data.firstName;

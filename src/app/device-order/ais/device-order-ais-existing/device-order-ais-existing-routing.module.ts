@@ -26,6 +26,7 @@ import { DeviceOrderAisExistingOneLovePageComponent } from './containers/device-
 import { DeviceOrderAisExistingMergeBillingPageComponent } from './containers/device-order-ais-existing-merge-billing-page/device-order-ais-existing-merge-billing-page.component';
 import { DeviceOrderAisExistingEapplicationPageComponent } from './containers/device-order-ais-existing-eapplication-page/device-order-ais-existing-eapplication-page.component';
 import { DeviceOrderAisExistingEbillingAddressPageComponent } from './containers/device-order-ais-existing-ebilling-address-page/device-order-ais-existing-ebilling-address-page.component';
+import { DeviceOrderAisExistingEcontractPageComponent } from './containers/device-order-ais-existing-econtract-page/device-order-ais-existing-econtract-page.component';
 
 const routes: Routes = [
   {
@@ -81,8 +82,8 @@ const routes: Routes = [
     component: DeviceOrderAisExistingSummaryPageComponent
   },
   {
-    path: 'agreement',
-    component: DeviceOrderAisExistingAgreementPageComponent
+    path: 'econtract',
+    component: DeviceOrderAisExistingEcontractPageComponent
   },
   {
     path: 'agreement-sign',

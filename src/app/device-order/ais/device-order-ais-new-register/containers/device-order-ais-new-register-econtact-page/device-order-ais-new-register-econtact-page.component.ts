@@ -17,8 +17,7 @@ import { DecimalPipe } from '@angular/common';
 @Component({
   selector: 'app-device-order-ais-new-register-econtact-page',
   templateUrl: './device-order-ais-new-register-econtact-page.component.html',
-  styleUrls: ['./device-order-ais-new-register-econtact-page.component.scss'],
-  providers: [IdCardPipe, DecimalPipe]
+  styleUrls: ['./device-order-ais-new-register-econtact-page.component.scss']
 })
 export class DeviceOrderAisNewRegisterEcontactPageComponent implements OnInit {
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
@@ -40,7 +39,6 @@ export class DeviceOrderAisNewRegisterEcontactPageComponent implements OnInit {
     private shoppingCartService: ShoppingCartService,
     private idCardPipe: IdCardPipe,
     private decimalPipe: DecimalPipe,
-    private utils: Utils
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -112,10 +110,9 @@ export class DeviceOrderAisNewRegisterEcontactPageComponent implements OnInit {
       };
 
       return this.http.post('/api/salesportal/generate-e-document', params).toPromise().then((eDocResp: any) => {
-        return eDocResp.data || '';
+        this.eContactSrc = eDocResp.data || '';
       });
     })
-      .then((eContact: string) => this.eContactSrc = eContact)
       .then(() => this.pageLoadingService.closeLoading());
   }
 

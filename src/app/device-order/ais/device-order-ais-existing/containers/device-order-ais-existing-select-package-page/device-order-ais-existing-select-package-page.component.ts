@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
-import { PromotionShelve, HomeService, PageLoadingService, AlertService, PromotionShelveItem, PromotionShelveGroup } from 'mychannel-shared-libs';
+import { PromotionShelve, HomeService, PageLoadingService, AlertService, PromotionShelveItem, PromotionShelveGroup, ShoppingCart } from 'mychannel-shared-libs';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -9,6 +9,7 @@ import { HttpClient } from '@angular/common/http';
 import { ROUTE_DEVICE_ORDER_AIS_EXISTING_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE } from '../../constants/route-path.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-select-package-page',
@@ -27,14 +28,16 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
   promotionShelves: PromotionShelve[];
   condition: any;
   modalRef: BsModalRef;
+  shoppingCart: ShoppingCart;
 
   constructor(
     private router: Router,
+    private http: HttpClient,
     private homeService: HomeService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
-    private http: HttpClient
+    private shoppingCartService: ShoppingCartService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -47,6 +50,7 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
   }
 
   ngOnInit(): void {
+    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.callService();
   }
 

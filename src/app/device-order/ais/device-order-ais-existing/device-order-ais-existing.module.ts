@@ -29,10 +29,14 @@ import { DeviceOrderAisExistingMergeBillingPageComponent } from './containers/de
 import { DeviceOrderAisExistingEapplicationPageComponent } from './containers/device-order-ais-existing-eapplication-page/device-order-ais-existing-eapplication-page.component';
 import { DeviceOrderAisExistingEbillingAddressPageComponent } from './containers/device-order-ais-existing-ebilling-address-page/device-order-ais-existing-ebilling-address-page.component';
 import { DeviceOrderAisExistingMobileCareAvailablePageComponent } from './containers/device-order-ais-existing-mobile-care-available-page/device-order-ais-existing-mobile-care-available-page.component';
+import { DeviceOrderAisExistingEcontractPageComponent } from './containers/device-order-ais-existing-econtract-page/device-order-ais-existing-econtract-page.component';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   imports: [
     CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
     MyChannelSharedLibsModule,
     DeviceOrderAisExistingRoutingModule
   ],
@@ -62,7 +66,8 @@ import { DeviceOrderAisExistingMobileCareAvailablePageComponent } from './contai
     DeviceOrderAisExistingMergeBillingPageComponent,
     DeviceOrderAisExistingEapplicationPageComponent,
     DeviceOrderAisExistingEbillingAddressPageComponent,
-    DeviceOrderAisExistingMobileCareAvailablePageComponent
+    DeviceOrderAisExistingMobileCareAvailablePageComponent,
+    DeviceOrderAisExistingEcontractPageComponent
   ]
 })
 export class DeviceOrderAisExistingModule { }

@@ -1,0 +1,40 @@
+<div class="mc-flex">
+  <mc-header title="รายการสินค้า">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+
+  <div class="mc-flex-wrap">
+    <div class="mb-3 mt-3">
+      <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
+      <div class="container-fluid">
+          <div class="btn btn-block bg-white text-brown text-left mb-3">
+              <p class=" text-center">รายละเอียดสถานะบัญชีลูกค้า</p>
+              <hr>
+              <div *ngIf="!customerInfoError">
+                  <img src="assets/images/icon/icon-person.png" width="28" />
+                  <span id="TitleNameSpan">{{titleName}}</span>
+                  <span id="FirstNameSpan"> {{firstName}}</span>&nbsp;
+                  <span id="LastNameSpan">{{lastName}}</span>
+                </div>
+          </div>
+          <div class="btn btn-block bg-white text-brown text-center mb-3">
+              <img class="m-3" width="45"src="assets/images/icon/icon-red-alert-circle.png">
+              <div class="text-red">ระบบไม่สามารถทำรายการได้</div>
+              <hr>
+              <div class="text-left"> ● ไม่สามารถทำรายการได้ ข้อมูลการแสดงตนไม่ถูกต้อง</div>
+          </div>
+        </div>
+    </div>
+  </div>
+
+
+  <mc-footer>
+    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button class="btn btn-success" (click)="onNext()">แสดงตนซ้ำ</button>
+  </mc-footer>
+</div>

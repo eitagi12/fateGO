@@ -39,13 +39,20 @@ export class DeviceOrderAisPreToPostEbillingPageComponent implements OnInit, OnD
   }
 
   ngOnInit(): void {
-
-    this.http.get('/api/customerportal/newRegister/queryBillCycle').toPromise().then((resp: any) => {
+    this.http.get('/api/customerportal/newRegister/queryBillCycle', {
+      params: {
+        coProject: 'ํY'
+      }
+    }).toPromise().then((resp: any) => {
       const data = resp.data || {};
       this.billCycles = data.billCycles || [];
       if (!this.transaction.data.billingInformation.billCycle) {
         this.setBillingDefault(data.billCycles || []);
+      } else {
+        this.billCycle = this.transaction.data.billingInformation.billCycle;
       }
+      console.log('this.billCycle', this.billCycle);
+
     });
   }
 
@@ -53,7 +60,6 @@ export class DeviceOrderAisPreToPostEbillingPageComponent implements OnInit, OnD
     for (const ebill of ebilling) {
       if (ebill.bill === this.transaction.data.customer.billCycle) {
         this.billCycle = ebill;
-        this.transaction.data.billingInformation.billCycle = this.billCycle;
       }
     }
   }
@@ -72,7 +78,6 @@ export class DeviceOrderAisPreToPostEbillingPageComponent implements OnInit, OnD
 
   onNext(): void {
     this.transaction.data.billingInformation.billCycle = this.billCycle;
-
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CONFIRM_USER_INFORMATION_PAGE]);
   }
 

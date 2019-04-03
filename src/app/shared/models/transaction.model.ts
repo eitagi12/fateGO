@@ -22,6 +22,9 @@ export enum TransactionAction {
   READ_CARD_REPI = 'READ_CARD_REPI',
   KEY_IN = 'KEY_IN',
   KEY_IN_REPI = 'KEY_IN_REPI',
+  READ_PASSPORT = 'READ_PASSPORT',
+  READ_PASSPORT_REPI = 'READ_PASSPORT_REPI'
+
 }
 
 export interface Transaction {
@@ -60,14 +63,15 @@ export interface TransactionData {
   preBooking?: Prebooking;
   discount?: Discount;
   // MPAY
-  // mpayPayment?: QrCodePrePostMpayModel;
+  mpayPayment?: QrCodePrePostMpayModel;
+  status?: Status;
 }
 export interface Payment {
-  'paymentQrCodeType': 'THAI_QR' | 'LINE_QR';
-  'paymentType': 'DEBIT' | 'CREDIT' | 'QR_CODE';
-  'paymentForm': 'FULL' | 'INSTALLMENT';
-  'paymentBank': any;
-  'paymentMethod': any;
+  paymentQrCodeType: 'THAI_QR' | 'LINE_QR';
+  paymentType: 'DEBIT' | 'CREDIT' | 'QR_CODE';
+  paymentForm: 'FULL' | 'INSTALLMENT';
+  paymentBank: any;
+  paymentMethod: any;
 }
 export interface MainPromotion {
   campaign?: any;

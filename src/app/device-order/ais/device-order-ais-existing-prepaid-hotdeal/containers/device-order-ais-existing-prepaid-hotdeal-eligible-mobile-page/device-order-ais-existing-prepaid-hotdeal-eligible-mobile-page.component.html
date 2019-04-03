@@ -7,11 +7,16 @@
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
-  <div class="mc-flex-wrap bg-white">
-  
+  <div class="mc-flex-wrap">
+    <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
+    <div class="my-3">
+        <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
+        <mc-eligible-mobile title="Pre Paid" (completed)="onComplete($event)" errorMessage="ไม่พบหมายเลขเติมเงินที่แสดงตนตาม ID No ที่ระบุ"
+        [eligibleMobiles]="eligibleMobiles"></mc-eligible-mobile>
+    </div>
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!selectMobileNo">NEXT</button>
   </mc-footer>
 </div>
