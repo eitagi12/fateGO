@@ -400,7 +400,7 @@ export class CreateDeviceOrderBestBuyService {
       },
       create_by: username,
       // [SORRY Krap] อันนี้ไม่น่าใช้ใช่ปะ
-      // issueBy: transaction.issueBy || username,
+      issueBy: this.user.username,
       last_update_by: username
     };
   }
