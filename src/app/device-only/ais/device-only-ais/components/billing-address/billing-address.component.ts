@@ -235,7 +235,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
 
   validateIdCard(control: AbstractControl): ValidationErrors | null {
     const value = control.value;
-    const inputLength = value.length;
+    const inputLength = value ? value.length : 0;
     if (inputLength === 13) {
       if (this.utils.isThaiIdCard(value)) {
         return null;

@@ -9,9 +9,19 @@ import { TokenService } from 'mychannel-shared-libs';
 })
 export class BillingAddressService {
 
+  private isKeyInBillingAddress: boolean = false;
+
   constructor(
     private http: HttpClient,
     private tokenService: TokenService) {}
+
+  public getIsKeyInBillingAddress(): boolean {
+    return this.isKeyInBillingAddress;
+  }
+  public setIsKeyInBillingAddress(value: boolean): void {
+    this.isKeyInBillingAddress = value;
+  }
+
   getLocationName(): Observable<any> {
       const locationCode = this.tokenService.getUser().locationCode;
       return this.http.get(API.QUERY_LOCATIONNAME, {

@@ -29,7 +29,7 @@ export class ReceiptInformationComponent implements OnInit {
   receiptInfoForm: FormGroup;
   billingAddressForm: FormGroup;
   customerAddress: any;
-  inputBillingAddress: boolean;
+  isShowInputForKeyIn: boolean;
   titleName: any;
   provinces: any;
   allZipCodes: any;
@@ -47,6 +47,7 @@ export class ReceiptInformationComponent implements OnInit {
     private alertService: AlertService,
     private pageLoadingService: PageLoadingService
     ) {
+    this.isShowInputForKeyIn = this.billingAddress.getIsKeyInBillingAddress();
     this.billingAddress.getTitleName().then(this.responseTitleNames());
     this.billingAddress.getProvinces().then(this.responseProvinces());
     this.billingAddress.getZipCodes().then(this.responseZipCodes());
@@ -174,7 +175,9 @@ export class ReceiptInformationComponent implements OnInit {
   }
 
   switchKeyInBillingAddress(): void {
-    this.inputBillingAddress = !this.inputBillingAddress;
+    const isShowInput = !this.isShowInputForKeyIn;
+    this.billingAddress.setIsKeyInBillingAddress(isShowInput);
+    this.isShowInputForKeyIn = isShowInput;
   }
 
   onProvinceSelected(params: any): void {
