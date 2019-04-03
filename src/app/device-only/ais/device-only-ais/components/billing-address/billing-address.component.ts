@@ -167,6 +167,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       amphur: '',
     });
     this.disableFormAmphurAndTumbol();
+    this.completed.emit(this.customerAddressForm.value);
   }
 
   createForm(): void {
