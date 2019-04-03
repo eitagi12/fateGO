@@ -4,7 +4,8 @@ import { Router } from '@angular/router';
 import { HomeService, User, AisNativeService, TokenService, ChannelType } from 'mychannel-shared-libs';
 import {
   ROUTE_DEVICE_ORDER_AIS_EXISTING_AGREEMENT_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_EXISTING_AGGREGATE_PAGE
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_AGGREGATE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_ECONTRACT
 } from '../../constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { Subscription } from 'rxjs';
@@ -44,7 +45,7 @@ export class DeviceOrderAisExistingAgreementSignPageComponent implements OnInit 
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_AGREEMENT_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_ECONTRACT]);
   }
 
   onNext(): void {

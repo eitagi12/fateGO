@@ -1,4 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { Transaction, Payment } from 'src/app/shared/models/transaction.model';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { ImageBrannerQRCode, QRCodePaymentService } from 'src/app/shared/services/qrcode-payment.service';
+import { Router } from '@angular/router';
+import { HomeService } from 'mychannel-shared-libs';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { ROUTE_DEVICE_ORDER_AIS_EXISTING_AGGREGATE_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_GENERATOR_PAGE } from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-qr-code-summary-page',
@@ -7,9 +15,44 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DeviceOrderAisExistingQrCodeSummaryPageComponent implements OnInit {
 
-  constructor() { }
+  transaction: Transaction;
+  priceOption: PriceOption;
+  payment: Payment;
+
+  brannerImagePaymentQrCode: ImageBrannerQRCode;
+
+  constructor(
+    private router: Router,
+    private homeService: HomeService,
+    private transactionService: TransactionService,
+    private priceOptionService: PriceOptionService,
+    private qrcodePaymentService: QRCodePaymentService
+  ) {
+    this.transaction = this.transactionService.load();
+    this.priceOption = this.priceOptionService.load();
+    this.payment = this.transaction.data.payment;
+    this.brannerImagePaymentQrCode = this.qrcodePaymentService.getBrannerImagePaymentQrCodeType(this.payment.paymentQrCodeType);
+  }
 
   ngOnInit(): void {
+  }
+
+  onBack(): void {
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_AGGREGATE_PAGE]);
+  }
+
+  onNext(): void {
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_GENERATOR_PAGE]);
+  }
+
+  onHome(): void {
+    this.homeService.goToHome();
+  }
+
+  summary(amount: number[]): any {
+    return amount.reduce((prev, curr) => {
+      return prev + curr;
+    }, 0);
   }
 
 }

@@ -8,6 +8,7 @@
       </div>
     </mc-header>
     <div class="mc-flex-wrap">
+      <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
       <div class="mt-3 mb-3">
         <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
         <mc-promotion-shelve [selected]="transaction?.data?.mainPackage" [promotionShelves]="promotionShelves"

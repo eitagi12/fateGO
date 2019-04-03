@@ -11,6 +11,7 @@ export const ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE = '/devic
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE = '/device-order/ais/existing/mobile-care-available';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE = '/device-order/ais/existing/mobile-care';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_SUMMARY_PAGE = '/device-order/ais/existing/summary';
+export const ROUTE_DEVICE_ORDER_AIS_EXISTING_ECONTRACT = '/device-order/ais/existing/econtract';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_AGREEMENT_PAGE = '/device-order/ais/existing/agreement';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_AGREEMENT_SIGN_PAGE = '/device-order/ais/existing/agreement-sign';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_AGGREGATE_PAGE = '/device-order/ais/existing/aggregate';
@@ -20,3 +21,8 @@ export const ROUTE_DEVICE_ORDER_AIS_EXISTING_ONE_LOVE_PAGE = '/device-order/ais/
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_MERGE_BILLING_PAGE = '/device-order/ais/existing/merge-billing';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_EAPPLICATION_PAGE = '/device-order/ais/existing/eapplication';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_EBILLING_ADDRESS_PAGE = '/device-order/ais/existing/ebilling-address';
+
+export const ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_SUMMARY_PAGE = '/device-order/ais/existing/qr-code-summary';
+export const ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_QUEUE_PAGE = '/device-order/ais/existing/qr-code-queue';
+export const ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_GENERATOR_PAGE = '/device-order/ais/existing/qr-code-generator';
+export const ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_ERROR_PAGE = '/device-order/ais/existing/qr-code-error';
