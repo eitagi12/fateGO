@@ -71,6 +71,8 @@ export interface Payment {
   paymentForm: 'FULL' | 'INSTALLMENT';
   paymentBank: any;
   paymentMethod: any;
+  qrCode?: any;
+  type?: any;
 }
 export interface MainPromotion {
   campaign?: any;
