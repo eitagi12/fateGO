@@ -9,7 +9,6 @@ import { DeviceOrderAisPreToPostPaymentDetailPageComponent } from './containers/
 import { DeviceOrderAisPreToPostCurrentInfoPageComponent } from './containers/device-order-ais-pre-to-post-current-info-page/device-order-ais-pre-to-post-current-info-page.component';
 import { DeviceOrderAisPreToPostCustomerInfoPageComponent } from './containers/device-order-ais-pre-to-post-customer-info-page/device-order-ais-pre-to-post-customer-info-page.component';
 import { DeviceOrderAisPreToPostSelectPackagePageComponent } from './containers/device-order-ais-pre-to-post-select-package-page/device-order-ais-pre-to-post-select-package-page.component';
-import { DeviceOrderAisPreToPostOneLoveComponent } from './containers/device-order-ais-pre-to-post-one-love/device-order-ais-pre-to-post-one-love.component';
 import { DeviceOrderAisPreToPostOnTopPageComponent } from './containers/device-order-ais-pre-to-post-on-top-page/device-order-ais-pre-to-post-on-top-page.component';
 import { DeviceOrderAisPreToPostMergeBillingPageComponent } from './containers/device-order-ais-pre-to-post-merge-billing-page/device-order-ais-pre-to-post-merge-billing-page.component';
 import { DeviceOrderAisPreToPostConfirmUserInformationPageComponent } from './containers/device-order-ais-pre-to-post-confirm-user-information-page/device-order-ais-pre-to-post-confirm-user-information-page.component';
@@ -42,7 +41,6 @@ const routes: Routes = [
   { path: 'customer-info', component: DeviceOrderAisPreToPostCustomerInfoPageComponent },
   { path: 'customer-profile', component: DeviceOrderAisPreToPostCustomerProfilePageComponent },
   { path: 'select-package', component: DeviceOrderAisPreToPostSelectPackagePageComponent },
-  { path: 'one-love', component: DeviceOrderAisPreToPostOneLoveComponent },
   { path: 'on-top', component: DeviceOrderAisPreToPostOnTopPageComponent },
   { path: 'merge-billing', component: DeviceOrderAisPreToPostMergeBillingPageComponent },
   { path: 'confirm-user-information', component: DeviceOrderAisPreToPostConfirmUserInformationPageComponent },

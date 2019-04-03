@@ -9,7 +9,10 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { DecimalPipe } from '@angular/common';
-import { ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_EAPPLICATION_PAGE } from '../../constants/route-path.constant';
+import {
+  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_SUMMARY_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_EAPPLICATION_PAGE
+} from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-pre-to-post-econtract-page',
@@ -36,7 +39,6 @@ export class DeviceOrderAisPreToPostEcontractPageComponent implements OnInit {
     private shoppingCartService: ShoppingCartService,
     private idCardPipe: IdCardPipe,
     private decimalPipe: DecimalPipe,
-    private utils: Utils
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -109,10 +111,9 @@ export class DeviceOrderAisPreToPostEcontractPageComponent implements OnInit {
       };
 
       return this.http.post('/api/salesportal/generate-e-document', params).toPromise().then((eDocResp: any) => {
-        return eDocResp.data || '';
+        this.eContactSrc = eDocResp.data || '';
       });
     })
-      .then((eContact: string) => this.eContactSrc = eContact)
       .then(() => this.pageLoadingService.closeLoading());
   }
 

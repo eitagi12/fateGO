@@ -19,7 +19,7 @@
           </div>
         </div>
         <mc-promotion-shelve [selected]="transaction?.data?.mainPackage" [promotionShelves]="promotionShelves"
-          (completed)="onCompleted($event)" (condition)="onTermConditions($event)"></mc-promotion-shelve>
+          (completed)="onCompleted($event)"></mc-promotion-shelve>
       </div>
       <p class="text-center my-5" *ngIf="promotionShelves?.length === 0">ไม่พบแพ็กเกจที่ร่วมรายการ</p>
     </div>
