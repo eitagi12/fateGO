@@ -44,7 +44,9 @@ describe('ReceiptInformationComponent', () => {
           }),
           getLocationName: jest.fn(() => {
             return new Observable(() => {});
-          })
+          }),
+          getIsKeyInBillingAddress: jest.fn(),
+          setIsKeyInBillingAddress: jest.fn()
         }
       },
       {
