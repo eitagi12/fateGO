@@ -10,6 +10,7 @@ import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
+import { FormGroup, FormControl, FormBuilder } from '@angular/forms';
 
 export interface BillingAccount {
   billingName: string;
@@ -37,6 +38,7 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
   transaction: Transaction;
   billingAccountList: Array<BillingAccount>;
   billingNetExtremeList: Array<BillingAccount>;
+  eligibleAddMobile: FormGroup;
 
   idCardNo: string;
 
@@ -46,20 +48,34 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
     private http: HttpClient,
     private shoppingCartService: ShoppingCartService,
     private transactionService: TransactionService,
+    private fb: FormBuilder
   ) {
     this.transaction = this.transactionService.load();
     this.shoppingCart = Object.assign(this.shoppingCartService.getShoppingCartData(), {
       mobileNo: ''
     });
+    this.createForm();
   }
 
   ngOnInit(): void {
+
     if (this.transaction.data.customer) {
       this.idCardNo = this.transaction.data.customer.idCardNo;
       this.getMobileList();
     } else {
       this.onBack();
     }
+  }
+
+  createForm(): void {
+    this.eligibleAddMobile = this.fb.group({
+      mobileAdd: new FormControl()
+    });
+
+    this.eligibleAddMobile.valueChanges.subscribe((value) => {
+      console.log('value', value);
+
+    });
   }
 
   getMobileList(): void {
