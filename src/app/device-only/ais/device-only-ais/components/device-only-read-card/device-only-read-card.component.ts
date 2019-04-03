@@ -68,53 +68,57 @@ export class DeviceOnlyReadCardComponent implements OnInit {
       EVENT_CARD_LOAD_ERROR: 'OnCardLoadError',
       EVENT_CARD_REMOVED: 'OnCardRemoved',
     };
-    const promises: any = new Promise((resolve, reject) => {
-      this.readCardService.onReadCard().subscribe((readCard: any) =>  {
-        this.progressBarArea.nativeElement.style.display = 'none';
-        if (readCard.eventName === readCardEvent.EVENT_CARD_REMOVED) {
-          this.messages =  '';
-          width = 0;
-          this.progressBarArea.nativeElement.style.display = 'block';
-          this.progressBarReadSmartCard.nativeElement.style.width = '0%';
-        }
-
-        if (readCard.eventName === readCardEvent.EVENT_CARD_LOAD_COMPLETED) {
-          this.messages =  'ตรวจสอบสำเร็จ โปรดดึงบัตรออก';
-          this.progressBarArea.nativeElement.style.display = 'block';
-          const customer: String = readCard.profile;
-          if (customer) {
-            resolve(customer);
-          }
-        }
-
-        if (readCard.eventName === readCardEvent.EVENT_CARD_LOAD_ERROR) {
-            alert('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาเสียบบัตรใหม่อีกครั้ง');
+      const promises: any = new Promise((resolve, reject) => {
+        this.readCardService.onReadCard().subscribe((readCard: any) =>  {
           this.progressBarArea.nativeElement.style.display = 'none';
-          this.progressBarReadSmartCard.nativeElement.style.width = '0%';
-        }
-
-        if (readCard.eventName === readCardEvent.EVENT_CARD_INITIALIZED) {
-          setTimeout(() => {
-          if (readCard.eventName !== readCardEvent.EVENT_CARD_INSERTED) {
-              this.messages =  'โปรดเสียบบัตรประชาชน';
-              this.progressBarArea.nativeElement.style.display = 'none';
-          }}, 10);
-        }
-
-        if (readCard.eventName === readCardEvent.EVENT_CARD_INSERTED) {
-            width = 0;
+          if (readCard.eventName === readCardEvent.EVENT_CARD_REMOVED) {
             this.messages =  '';
-        }
-        if (readCard.eventName === readCardEvent.EVENT_CARD_LOAD_PROGRESS) {
+            width = 0;
             this.progressBarArea.nativeElement.style.display = 'block';
-            width = +readCard.progress;
-            this.progressBarReadSmartCard.nativeElement.style.width = width + '%';
-        }
+            this.progressBarReadSmartCard.nativeElement.style.width = '0%';
+          }
+          if (readCard.eventName === readCardEvent.EVENT_CARD_LOAD_ERROR) {
+              alert('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาเสียบบัตรใหม่อีกครั้ง');
+            this.progressBarArea.nativeElement.style.display = 'none';
+            this.progressBarReadSmartCard.nativeElement.style.width = '0%';
+            this.pageLoadingService.closeLoading();
+          }
+          if (readCard.eventName === readCardEvent.EVENT_CARD_INITIALIZED) {
+            setTimeout(() => {
+            if (readCard.eventName !== readCardEvent.EVENT_CARD_INSERTED) {
+                this.messages =  'โปรดเสียบบัตรประชาชน';
+                this.progressBarArea.nativeElement.style.display = 'none';
+                this.pageLoadingService.closeLoading();
+            }}, 10);
+          }
+          if (readCard.eventName === readCardEvent.EVENT_CARD_INSERTED) {
+              width = 0;
+              this.messages =  '';
+          }
+          if (readCard.eventName === readCardEvent.EVENT_CARD_LOAD_PROGRESS) {
+              this.progressBarArea.nativeElement.style.display = 'block';
+              width = +readCard.progress;
+              this.progressBarReadSmartCard.nativeElement.style.width = width + '%';
+          }
+          if (readCard.progress  === 100 || readCard.eventName === readCardEvent.EVENT_CARD_LOAD_COMPLETED) {
+            this.canReadSmartCard = false;
+            const customer: String = readCard.profile;
+            if (customer) {
+              resolve(customer);
+              this.progressBarArea.nativeElement.style.display = 'none';
+              this.progressBarReadSmartCard.nativeElement.style.width = '100%';
+              this.messages =  'ตรวจสอบสำเร็จ โปรดดึงบัตรออก';
+            }
+          }
+        });
+      }).catch((err) => {
+        console.log(err);
+        this.pageLoadingService.closeLoading();
+        alert('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาเสียบบัตรใหม่อีกครั้ง');
       });
-    }).catch((err) => {
-      console.log(err);
-    });
-      return promises;
+        return promises;
+
+    // }
   }
 
   public getbillingCycle(customer: any): void {
@@ -161,15 +165,18 @@ export class DeviceOnlyReadCardComponent implements OnInit {
       });
     }
  public readCard(): void {
+  this.pageLoadingService.openLoading();
     new Promise((resolve, reject): void => {
       resolve(this.readingCard());
     }).then((customer: any) => {
     this.zipcode(customer).then((res) => {
         customer.zipCode = res;
         this.getbillingCycle(customer);
+        this.pageLoadingService.closeLoading();
     });
     }).catch((err) => {
       console.log(err);
+      this.pageLoadingService.closeLoading();
     });
   }
   public closeModalSelectAddress(): void {
@@ -178,6 +185,7 @@ export class DeviceOnlyReadCardComponent implements OnInit {
   }
 
   public selectBillingAddress(): void {
+    this.pageLoadingService.openLoading();
     const billingAddressSelected = this.selectBillingAddressForm.value.billingAddress;
     if (billingAddressSelected === this.ADDRESS_BY_SMART_CARD) {
       this.customerInfo.emit({
@@ -186,6 +194,7 @@ export class DeviceOnlyReadCardComponent implements OnInit {
       });
       this.modalBillAddress.hide();
       this.canReadSmartCard = true;
+      this.pageLoadingService.closeLoading();
     } else {
       this.pageLoadingService.openLoading();
       const mobileNo = this.listBillingAccount[billingAddressSelected].mobileNo[0];
