@@ -1,20 +1,27 @@
 <div class="mc-flex">
-    <mc-header title="ลูกค้าปัจจุบัน">
-      <div class="header-icon-left">
-        <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
-      </div>
-      <div class="header-icon-right">
-        <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
-      </div>
-    </mc-header>
-    <div class="mc-flex-wrap">
-      <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
-      <div class="my-3">
-          <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
-      </div>
+  <mc-header title="ลูกค้าปัจจุบัน">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
-    <mc-footer>
-      <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-      <button class="btn btn-success" (click)="onNext()">NEXT</button>
-    </mc-footer>
+    <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
+    <div class="my-3">
+      <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
+
+      <mc-payment-detail [paymentDetail]="payementDetail" [banks]="banks" (completed)="onPaymentCompleted($event)"
+        (error)="onPaymentError($event)">
+      </mc-payment-detail>
+
+      <mc-receipt-info [receiptInfo]="receiptInfo" (completed)="onReceiptInfoCompleted($event)"
+        (error)="onReceiptInfoError($event)"></mc-receipt-info>
+    </div>
   </div>
+  <mc-footer>
+    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button class="btn btn-success" [disabled]="!isNext()" (click)="onNext()">NEXT</button>
+  </mc-footer>
+</div>
