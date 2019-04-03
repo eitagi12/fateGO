@@ -4,6 +4,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MobileCareComponent } from './mobile-care.component';
 import { BsModalService, ComponentLoaderFactory, PositioningService } from 'ngx-bootstrap';
+import { HttpClient, HttpHandler } from '@angular/common/http';
 
 @Pipe({name: 'translate'})
 class MockPipe implements PipeTransform {
@@ -23,6 +24,8 @@ describe('MobileCareComponent', () => {
       MockPipe
     ],
     providers: [
+      HttpClient,
+      HttpHandler,
       BsModalService,
       PositioningService,
       ComponentLoaderFactory

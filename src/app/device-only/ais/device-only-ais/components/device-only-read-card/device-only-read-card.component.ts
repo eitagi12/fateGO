@@ -200,6 +200,7 @@ export class DeviceOnlyReadCardComponent implements OnInit {
       const mobileNo = this.listBillingAccount[billingAddressSelected].mobileNo[0];
       this.customerInfoService.getBillingByMobileNo(mobileNo)
         .then((res) => {
+          this.customerInfoService.setSelectedMobileNo(mobileNo);
           this.customerInfo.emit({
             customer: this.customerInfoService.mapAttributeFromGetBill(res.data.billingAddress),
             action: TransactionAction.KEY_IN

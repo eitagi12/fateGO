@@ -143,6 +143,7 @@ export class ReceiptInformationComponent implements OnInit {
               customer: this.customerInfoService.mapAttributeFromGetBill(res.data.billingAddress),
               action: TransactionAction.KEY_IN
             });
+            this.customerInfoService.setSelectedMobileNo(mobileNo);
             this.pageLoadingService.closeLoading();
           } else {
             this.alertService.notify({
@@ -223,7 +224,6 @@ export class ReceiptInformationComponent implements OnInit {
     this.setCustomerInfo({
       customer: value,
       action: TransactionAction.KEY_IN
-
     });
     this.receiptInfoForm.controls['taxId'].setValue(value.idCardNo);
   }

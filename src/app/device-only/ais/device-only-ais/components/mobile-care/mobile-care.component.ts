@@ -4,7 +4,7 @@ import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
 import { AlertService } from 'mychannel-shared-libs';
 import { MobileNoService } from './mobile-no.service';
-import { text } from '@angular/core/src/render3/instructions';
+import { CustomerInformationService } from '../../services/customer-information.service';
 
 export interface MobileCare {
   nextBillEffective?: boolean;
@@ -67,7 +67,8 @@ export class MobileCareComponent implements OnInit {
     private formBuilder: FormBuilder,
     private modalService: BsModalService,
     private alertService: AlertService,
-    private mobileNoService: MobileNoService
+    private mobileNoService: MobileNoService,
+    private customerInformationService: CustomerInformationService
   ) { }
 
   ngOnInit(): void {
@@ -76,8 +77,10 @@ export class MobileCareComponent implements OnInit {
   }
 
   public oncheckValidators(): void {
+    const mobileNoDefault = this.customerInformationService.getSelectedMobileNo()
+                            ? this.customerInformationService.getSelectedMobileNo() : '';
     this.privilegeCustomerForm = new FormGroup({
-      'mobileNo': new FormControl('', [
+      'mobileNo': new FormControl(mobileNoDefault, [
         Validators.maxLength(10),
         Validators.minLength(10),
         Validators.pattern('^(0)(6|8|9)[0-9]*$|^((88)(6|8|9)[0-9]*)$'),
@@ -180,8 +183,7 @@ export class MobileCareComponent implements OnInit {
   }
 
   public checkMobileNo(mobileNo: string): void {
-    const MOBILE_NO_POSTPAID = '0889540584';
-    if (mobileNo === MOBILE_NO_POSTPAID) {
+    if (mobileNo) {
       this.isPrivilegeCustomer = !this.isPrivilegeCustomer;
       this.popupMobileCare();
     } else {

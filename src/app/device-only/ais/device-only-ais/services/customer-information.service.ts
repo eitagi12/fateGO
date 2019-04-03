@@ -7,7 +7,7 @@ import { Customer, BillDeliveryAddress } from 'src/app/shared/models/transaction
   providedIn: 'root'
 })
 export class CustomerInformationService {
-
+  private selectedMobileNo: string;
   constructor(
     private http: HttpClient
   ) { }
@@ -31,8 +31,17 @@ export class CustomerInformationService {
     if (!mobileNo) {
       return Promise.reject('mobile no not found.');
     }
+    this.setSelectedMobileNo(mobileNo);
     const getBillingAPI = API.GET_BILLING + `${mobileNo}`;
     return this.http.get(getBillingAPI).toPromise();
+  }
+
+  setSelectedMobileNo(mobileNo: string): void {
+    this.selectedMobileNo = mobileNo;
+  }
+
+  getSelectedMobileNo(): string {
+    return this.selectedMobileNo;
   }
 
   mapAttributeFromGetBill(billingAddress: any): Customer {
