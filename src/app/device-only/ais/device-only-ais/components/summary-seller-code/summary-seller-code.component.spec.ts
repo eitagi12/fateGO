@@ -3,6 +3,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SummarySellerCodeComponent } from './summary-seller-code.component';
 import { FormsModule } from '@angular/forms';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { TokenService } from 'mychannel-shared-libs';
 
 describe('SummarySellerCodeComponent', () => {
   let component: SummarySellerCodeComponent;
@@ -22,6 +23,14 @@ describe('SummarySellerCodeComponent', () => {
                 }
               }
             };
+          })
+        }
+      },
+      {
+        provide: TokenService,
+        useValue: {
+          getUser: jest.fn(() => {
+            return { username: 'MC'}
           })
         }
       }

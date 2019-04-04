@@ -6,11 +6,12 @@
     <div class="row">
       <div class="col-12 col-sm-4">
         <p class="text-grey">
-          รหัสพนักงานขาย
+          ชื่อพนักงานขาย
         </p>
       </div>
       <div class="col-12 col-sm-8">
         <p id="text-seller-location">
+          {{username}}
           <!-- {{ transaction?.create_by }} -->
         </p>
       </div>
@@ -22,7 +23,7 @@
       </div>
       <div class="col-12 col-sm-8">
         <p id="text-location">
-          สาขาอาคารเอไอเอส 2
+        {{transaction?.data?.receiptInfo?.branch}}
         </p>
       </div>
 
@@ -33,7 +34,7 @@
         <span class="text-red">*</span>
       </div>
       <div class="col-12 col-sm-8">
-        <input type="text" class="form-control w-100" id="input-asc-code" autocomplete="off" [(ngModel)]="seller.sellerNo">
+        <input type="text" class="form-control w-100" id="input-asc-code" maxlength="6" autocomplete="off" [(ngModel)]="seller.sellerNo">
       </div>
     </div>
   </div>
