@@ -5,6 +5,8 @@ import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
 import { AlertService } from 'mychannel-shared-libs';
 import { MobileNoService } from './mobile-no.service';
 import { CustomerInformationService } from '../../services/customer-information.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 
 export interface MobileCare {
   nextBillEffective?: boolean;
@@ -48,6 +50,8 @@ export class MobileCareComponent implements OnInit {
 
   public normalPriceMock: number;
 
+  public normalPrice: number;
+
   @Output()
   completed: EventEmitter<any> = new EventEmitter<any>();
 
@@ -62,14 +66,16 @@ export class MobileCareComponent implements OnInit {
   public privilegeCustomerForm: FormGroup;
   mobileCareForm: FormGroup;
   notBuyMobileCareForm: FormGroup;
+  priceOption: PriceOption;
 
   constructor(
     private formBuilder: FormBuilder,
     private modalService: BsModalService,
     private alertService: AlertService,
     private mobileNoService: MobileNoService,
-    private customerInformationService: CustomerInformationService
-  ) { }
+    private customerInformationService: CustomerInformationService,
+    private priceOptionService: PriceOptionService
+  ) { this.priceOption = this.priceOptionService.load(); }
 
   ngOnInit(): void {
     this.createForm();
@@ -126,7 +132,7 @@ export class MobileCareComponent implements OnInit {
   }
 
   public getServiceChange(percentage: number): number {
-    return ((this.normalPriceMock || 0) * (percentage / 100) * (this.VAT / 100));
+    return ((this.priceOption.trade.normalPrice || 0) * (percentage / 100) + (this.priceOption.trade.normalPrice || 0) * (this.VAT / 100));
   }
 
   public onOpenNotBuyMobileCare(): void {

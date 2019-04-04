@@ -5,6 +5,7 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { MobileCareComponent } from './mobile-care.component';
 import { BsModalService, ComponentLoaderFactory, PositioningService } from 'ngx-bootstrap';
 import { HttpClient, HttpHandler } from '@angular/common/http';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 
 @Pipe({name: 'translate'})
 class MockPipe implements PipeTransform {
@@ -28,7 +29,18 @@ describe('MobileCareComponent', () => {
       HttpHandler,
       BsModalService,
       PositioningService,
-      ComponentLoaderFactory
+      ComponentLoaderFactory,
+      {
+        provide : PriceOptionService,
+        useValue : {
+          load: jest.fn(() => {
+            return {
+              trade: {
+                normalPrice: '18500'
+              }
+            };
+          })
+        }}
     ]
   });
 
