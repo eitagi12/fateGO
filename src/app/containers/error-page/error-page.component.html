@@ -1,20 +1,5 @@
-<div class="mc-flex">
-  <div class="mc-flex-wrap">
-    <div class="container mt-3 mb-3">
-
-      <div class="pre-container mb-3" *ngIf="routeParams">
-        <p>Error sent to the server</p>
-        <pre>
-{{ routeParams | json }}
-        </pre>
-      </div>
-
-      <div *ngIf="routeParams.message" class="text-center">
-        <a class="btn btn-primary" routerLink="/">
-          Go Back to home
-        </a>
-      </div>
-
-    </div>
+<mc-error>
+  <div class="text-center">
+    <button class="btn btn-success" (click)="goToHome()">Go Back to home</button>
   </div>
-</div>
+</mc-error>

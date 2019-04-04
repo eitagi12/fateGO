@@ -215,6 +215,9 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
   }
 
   onMailBillingInfoCompleted(mailBillingInfo: any): void {
+    if (!mailBillingInfo) {
+      return;
+    }
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData || {};
 

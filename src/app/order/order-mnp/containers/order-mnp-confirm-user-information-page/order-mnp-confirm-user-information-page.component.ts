@@ -216,6 +216,9 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
   }
 
   onMailBillingInfoCompleted(mailBillingInfo: any): void {
+    if (!mailBillingInfo) {
+      return;
+    }
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData || {};
 

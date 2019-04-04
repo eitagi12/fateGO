@@ -216,6 +216,10 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
   }
 
   onMailBillingInfoCompleted(mailBillingInfo: any): void {
+    if (!mailBillingInfo) {
+      return;
+    }
+    console.log(mailBillingInfo);
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData || {};
 
