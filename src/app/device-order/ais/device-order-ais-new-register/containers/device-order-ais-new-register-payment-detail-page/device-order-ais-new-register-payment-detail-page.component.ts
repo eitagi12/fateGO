@@ -60,13 +60,13 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
     const trade: any = this.priceOption.trade || {};
     const advancePay: any = trade.advancePay || {};
 
-    // this.payementDetail = {
-    //   commercialName: ``,
-    //   promotionPrice: +(trade.promotionPrice || 0),
-    //   isFullPayment: this.isFullPayment(),
-    //   installmentFlag: advancePay.installmentFlag === 'N' && +(advancePay.amount || 0) > 0,
-    //   advancePay: +(advancePay.amount || 0)
-    // };
+    this.payementDetail = {
+      commercialName: ``,
+      promotionPrice: +(trade.promotionPrice || 0),
+      isFullPayment: this.isFullPayment(),
+      installmentFlag: advancePay.installmentFlag === 'N' && +(advancePay.amount || 0) > 0,
+      advancePay: +(advancePay.amount || 0)
+    };
 
     this.banks = trade.banks || [];
 
