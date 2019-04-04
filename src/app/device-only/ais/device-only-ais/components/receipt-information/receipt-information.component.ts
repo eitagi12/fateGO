@@ -150,6 +150,7 @@ export class ReceiptInformationComponent implements OnInit {
     this.action.emit(data.action);
     this.customerInfo = { customer, billDeliveryAddress };
     this.receiptInfoForm.controls['taxId'].setValue(data.customer.idCardNo);
+    this.receiptInfoForm.controls['telNo'].setValue(this.customerInfoService.getSelectedMobileNo());
     this.billingAddress.getLocationName()
     .subscribe((resp) => this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName));
     this.nameText = data.customer.titleName + ' ' + data.customer.firstName + ' ' + data.customer.lastName;
@@ -185,6 +186,7 @@ export class ReceiptInformationComponent implements OnInit {
           showConfirmButton: true,
           text: 'เบอร์นี้ไม่ใช่ระบบ AIS กรุณาเปลี่ยนเบอร์ใหม่'
         });
+        this.searchByMobileNoForm.controls['mobileNo'].setValue('');
       });
     } else {
       this.alertService.notify({

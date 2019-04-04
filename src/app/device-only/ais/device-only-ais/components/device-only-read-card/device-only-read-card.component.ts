@@ -264,8 +264,9 @@ export class DeviceOnlyReadCardComponent implements OnInit {
           this.canReadSmartCard = true;
           this.pageLoadingService.closeLoading();
       })
-      .catch(() => {
-        this.pageLoadingService.closeLoading();
+      .catch((err) => {
+        this.alertService.error(err.error.resultDescription);
+        // this.pageLoadingService.closeLoading();
       });
     }
   }
