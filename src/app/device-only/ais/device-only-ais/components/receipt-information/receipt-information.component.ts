@@ -1,4 +1,4 @@
-import { Component, OnInit, Output, EventEmitter  } from '@angular/core';
+import { Component, OnInit, Output, EventEmitter, Input  } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors  } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
 import { BillingAddressService } from '../../services/billing-address.service';
@@ -14,6 +14,9 @@ import { CustomerInformationService } from '../../services/customer-information.
   styleUrls: ['./receipt-information.component.scss']
 })
 export class ReceiptInformationComponent implements OnInit {
+
+  @Input()
+  customerInfoTemp: any;
 
   @Output()
   completed: EventEmitter<any> = new EventEmitter<any>();
@@ -39,6 +42,7 @@ export class ReceiptInformationComponent implements OnInit {
   ebillingAddressValid: boolean;
   nameText: string;
   billingAddressText: string;
+  keyInCustomerAddressTemp: any;
 
   constructor(
     private fb: FormBuilder,
@@ -76,6 +80,25 @@ export class ReceiptInformationComponent implements OnInit {
     this.createSearchByMobileNoForm();
     this.billingAddress.getLocationName()
       .subscribe((resp) => this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName));
+    if (this.customerInfoTemp) {
+      this.setDataFromCustomerInfoTemp();
+    }
+  }
+
+  private setDataFromCustomerInfoTemp(): void {
+    const customer = this.customerInfoTemp.customer;
+    const billDeliveryAddress = this.customerInfoTemp.billDeliveryAddress;
+    const receiptInfo = this.customerInfoTemp.receiptInfo;
+    for (const item in receiptInfo) {
+      if (receiptInfo.hasOwnProperty(item)) {
+        this.receiptInfoForm.controls[item].setValue(receiptInfo[item]);
+      }
+    }
+    this.nameText = customer.titleName + ' ' + customer.firstName + ' ' + customer.lastName;
+    this.billingAddressText = this.customerInfoService.convertBillingAddressToString(billDeliveryAddress);
+    if (this.isShowInputForKeyIn) {
+      this.keyInCustomerAddressTemp = { ...customer, ...billDeliveryAddress};
+    }
   }
 
   private createForm(): void {

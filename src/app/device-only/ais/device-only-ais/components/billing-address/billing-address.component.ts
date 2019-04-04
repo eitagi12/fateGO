@@ -28,6 +28,8 @@ export interface CustomerAddress {
 })
 export class BillingAddressComponent implements OnInit, OnChanges {
 
+  @Input() keyInCustomerAddressTemp: any;
+
   @Input()
   titleNames: string[];
 
@@ -100,56 +102,56 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (!this.customerAddressForm) {
-      return;
-    }
+    // if (!this.customerAddressForm) {
+    //   return;
+    // }
 
-    if (changes.firstName) {
-      const change = changes['validateCharacter'];
-      if (change) {
-        this.valueFn = this.validateCharacter();
-      } else {
-        this.valueFn = Validators.nullValidator;
-      }
-    }
+    // if (changes.firstName) {
+    //   const change = changes['validateCharacter'];
+    //   if (change) {
+    //     this.valueFn = this.validateCharacter();
+    //   } else {
+    //     this.valueFn = Validators.nullValidator;
+    //   }
+    // }
 
-    if (changes.lastName) {
-      const change = changes['validateCharacter'];
-      if (change) {
-        this.valueFn = this.validateCharacter();
-      } else {
-        this.valueFn = Validators.nullValidator;
-      }
-    }
+    // if (changes.lastName) {
+    //   const change = changes['validateCharacter'];
+    //   if (change) {
+    //     this.valueFn = this.validateCharacter();
+    //   } else {
+    //     this.valueFn = Validators.nullValidator;
+    //   }
+    // }
 
-    if (changes.customerAddress) {
-      const currentValue: any = changes.customerAddress.currentValue;
-      const previousValue: any = changes.customerAddress.previousValue;
-      if (previousValue && currentValue.province === previousValue.province) {
-        this.customerAddressForm.patchValue({
-          province: currentValue.province,
-          zipCode: currentValue.zipCode
-        });
-      } else {
-        this.customerAddressForm.patchValue(currentValue || {});
-      }
-    }
+    // if (changes.customerAddress) {
+    //   const currentValue: any = changes.customerAddress.currentValue;
+    //   const previousValue: any = changes.customerAddress.previousValue;
+    //   if (previousValue && currentValue.province === previousValue.province) {
+    //     this.customerAddressForm.patchValue({
+    //       province: currentValue.province,
+    //       zipCode: currentValue.zipCode
+    //     });
+    //   } else {
+    //     this.customerAddressForm.patchValue(currentValue || {});
+    //   }
+    // }
 
-    if (changes.amphurs
-      && changes.amphurs.currentValue
-      && changes.amphurs.currentValue.length === 1) {
-      this.customerAddressForm.patchValue({
-        amphur: changes.amphurs.currentValue[0]
-      });
-    }
+    // if (changes.amphurs
+    //   && changes.amphurs.currentValue
+    //   && changes.amphurs.currentValue.length === 1) {
+    //   this.customerAddressForm.patchValue({
+    //     amphur: changes.amphurs.currentValue[0]
+    //   });
+    // }
 
-    if (changes.tumbols
-      && changes.tumbols.currentValue
-      && changes.tumbols.currentValue.length === 1) {
-      this.customerAddressForm.patchValue({
-        tumbol: changes.tumbols.currentValue[0]
-      });
-    }
+    // if (changes.tumbols
+    //   && changes.tumbols.currentValue
+    //   && changes.tumbols.currentValue.length === 1) {
+    //   this.customerAddressForm.patchValue({
+    //     tumbol: changes.tumbols.currentValue[0]
+    //   });
+    // }
 
     if (changes.zipCodes
       && changes.zipCodes.currentValue
@@ -203,6 +205,13 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     this.amphurFormControl();
     this.tumbolFormControl();
     this.zipCodeFormControl();
+    if (this.keyInCustomerAddressTemp) {
+      for (const item in this.keyInCustomerAddressTemp) {
+        if (this.keyInCustomerAddressTemp.hasOwnProperty(item) && this.customerAddressForm.value.hasOwnProperty(item)) {
+          this.customerAddressForm.controls[item].setValue(this.keyInCustomerAddressTemp[item]);
+        }
+      }
+    }
   }
 
   validateZipCode(control: AbstractControl): ValidationErrors | null {

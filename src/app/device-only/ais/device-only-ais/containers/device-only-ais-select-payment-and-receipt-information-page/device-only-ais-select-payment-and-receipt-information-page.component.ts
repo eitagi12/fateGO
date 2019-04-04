@@ -33,6 +33,8 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
   paymentDetailValid: boolean;
   banksPayment: any[];
 
+  customerInfoTemp: any;
+
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -81,6 +83,12 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
           transactionType: TransactionType.DEVICE_ORDER_DEVICE_ONLY
         },
         transactionId: this.createOrderService.generateTransactionId(this.apiRequestService.getCurrentRequestId())
+      };
+    } else if (this.transaction.data.customer && this.transaction.data.billingInformation) {
+      this.customerInfoTemp = {
+        customer: this.transaction.data.customer,
+        billDeliveryAddress: this.transaction.data.billingInformation.billDeliveryAddress,
+        receiptInfo: this.transaction.data.receiptInfo
       };
     }
   }

@@ -49,6 +49,7 @@
         (zipCodeSelected)="onZipCodeSelected($event)"
         (completed)="onCompleted($event)"
         (error)="onError($event)"
+        [keyInCustomerAddressTemp]="keyInCustomerAddressTemp"
         ></app-billing-address>
       </div>
       <ng-template #customerDetail>

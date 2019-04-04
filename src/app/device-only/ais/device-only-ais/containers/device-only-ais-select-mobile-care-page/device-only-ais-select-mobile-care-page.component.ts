@@ -1,11 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ROUTE_DEVICE_ONLY_AIS_SELECT_PAYMENT_AND_RECEIPT_INFORMATION_PAGE, ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE } from '../../constants/route-path.constant';
 import { Router } from '../../../../../../../node_modules/@angular/router';
-import { HomeService, AlertService } from 'mychannel-shared-libs';
+import { HomeService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
-import { CreateOrderService } from '../../services/create-order.service';
-import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { HomeButtonService } from '../../services/home-button.service';
 
 @Component({

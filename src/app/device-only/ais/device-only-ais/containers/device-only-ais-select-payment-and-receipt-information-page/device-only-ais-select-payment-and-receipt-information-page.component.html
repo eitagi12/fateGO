@@ -10,8 +10,12 @@
   <div class="mc-flex-wrap">
     <mc-payment-detail [paymentDetail]="paymentDetail" [banks]="banks" (completed)="onPaymentDetailCompleted($event)" (error)="onPaymentDetailError($event)"></mc-payment-detail>
   </div>
-    <app-receipt-information (completed)="onComplete($event)" (error)="onError($event)" (action)="checkAction($event)">
-  </app-receipt-information>
+    <app-receipt-information
+    (completed)="onComplete($event)"
+    (error)="onError($event)"
+    (action)="checkAction($event)"
+    [customerInfoTemp]="customerInfoTemp"
+    ></app-receipt-information>
 
   <mc-footer>
     <button class="btn btn-secondary" id="button-back" (click)="onBack()">BACK</button>
