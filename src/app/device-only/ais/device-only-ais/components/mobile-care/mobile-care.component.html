@@ -85,12 +85,12 @@
                 <div class="box-search-mobileNo">
                   <input autocomplete="off" formControlName="mobileNo" type="text" (keypress)="keyPress($event)"
                     id="input-mobile-no" placeholder="ระบุเบอร์มือถือ AIS รับสิทธิสมัครบริการโมบายแคร์"
-                    class="mobile-input" maxlength="10" >
+                    class="mobile-input" maxlength="10">
                   <button class="search-btn" (click)="searchMobileNo()" id="button-search-mobile-no">
                     <img src="assets/images/icon/device_only_search_icon.png">
                   </button>
                 </div>
-                <button *ngIf="isPrivilegeCustomer" class="btn-get-otp" id="button-get-otp">Get OTP</button>
+                <button *ngIf="isPrivilegeCustomer" class="btn-get-otp" id="button-get-otp" (click)="sendOTP()">Get OTP</button>
               </div>
               <br>
               <div *ngIf="isPrivilegeCustomer">
@@ -98,7 +98,7 @@
                   <input autocomplete="off" type="text" formControlName="otpNo" (keypress)="keyPress($event)"
                     id="input-otp" placeholder="ระบุ OTP" class="otp-input" maxlength="5">
                 </div>
-                <button class="btn-get-otp" id="button-verify" (click)="checkVerify()">Verify</button>
+                <button class="btn-get-otp" id="button-verify" (click)="verifyOTP()">Verify</button>
               </div>
             </div>
           </form>

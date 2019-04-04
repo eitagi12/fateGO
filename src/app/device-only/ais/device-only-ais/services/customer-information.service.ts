@@ -36,6 +36,11 @@ export class CustomerInformationService {
     return this.http.get(getBillingAPI).toPromise();
   }
 
+  getProfileByMobileNo(mobileNo: string): Promise<any> {
+    const getProfileAPI = `/api/customerportal/asset/${mobileNo}/profile`;
+    return this.http.get(getProfileAPI).toPromise();
+  }
+
   setSelectedMobileNo(mobileNo: string): void {
     this.selectedMobileNo = mobileNo;
   }

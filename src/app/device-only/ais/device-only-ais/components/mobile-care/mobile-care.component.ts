@@ -2,11 +2,16 @@ import { Component, OnInit, Input, ViewChild, TemplateRef, Output, EventEmitter 
 import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl, FormControl } from '@angular/forms';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
-import { AlertService } from 'mychannel-shared-libs';
+import { AlertService, PageLoadingService } from 'mychannel-shared-libs';
 import { MobileNoService } from './mobile-no.service';
 import { CustomerInformationService } from '../../services/customer-information.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { forEach } from '../../../../../../../node_modules/@angular/router/src/utils/collection';
+import { HttpClient } from '../../../../../../../node_modules/@angular/common/http';
+import { environment } from 'src/environments/environment';
+import { TransactionService } from '../../../../../shared/services/transaction.service';
+import { Transaction } from '../../../../../shared/models/transaction.model';
 
 export interface MobileCare {
   nextBillEffective?: boolean;
@@ -45,18 +50,12 @@ export class MobileCareComponent implements OnInit {
   public mobileNoPost: string;
   public VAT: number = 1.07;
   public isValidNotBuyMobile: boolean = false;
-
-  @Input() promotionMock: any;
-
   public normalPriceMock: number;
-
   public normalPrice: number;
 
-  @Output()
-  completed: EventEmitter<any> = new EventEmitter<any>();
-
+  @Input() promotionMock: any;
+  @Output() completed: EventEmitter<any> = new EventEmitter<any>();
   @Output() verifyOtp: EventEmitter<any> = new EventEmitter<any>();
-
   @Output() checkBuyMobileCare: EventEmitter<any> = new EventEmitter<any>();
   @Output() isReasonNotBuyMobileCare: EventEmitter<any> = new EventEmitter<any>();
 
@@ -67,6 +66,8 @@ export class MobileCareComponent implements OnInit {
   mobileCareForm: FormGroup;
   notBuyMobileCareForm: FormGroup;
   priceOption: PriceOption;
+  transaction: Transaction;
+  transactionID: string;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -74,8 +75,14 @@ export class MobileCareComponent implements OnInit {
     private alertService: AlertService,
     private mobileNoService: MobileNoService,
     private customerInformationService: CustomerInformationService,
-    private priceOptionService: PriceOptionService
-  ) { this.priceOption = this.priceOptionService.load(); }
+    private priceOptionService: PriceOptionService,
+    private http: HttpClient,
+    private pageLoadingService: PageLoadingService,
+    private transactionService: TransactionService
+  ) {
+    this.priceOption = this.priceOptionService.load();
+    this.transaction = this.transactionService.load();
+  }
 
   ngOnInit(): void {
     this.createForm();
@@ -83,8 +90,8 @@ export class MobileCareComponent implements OnInit {
   }
 
   public oncheckValidators(): void {
-    const mobileNoDefault = this.customerInformationService.getSelectedMobileNo()
-                            ? this.customerInformationService.getSelectedMobileNo() : '';
+    let mobileNoDefault = this.customerInformationService.getSelectedMobileNo();
+    mobileNoDefault = mobileNoDefault ? mobileNoDefault : '';
     this.privilegeCustomerForm = new FormGroup({
       'mobileNo': new FormControl(mobileNoDefault, [
         Validators.maxLength(10),
@@ -93,7 +100,7 @@ export class MobileCareComponent implements OnInit {
         Validators.required,
       ]),
       'otpNo': new FormControl('', [
-        Validators.maxLength(4),
+        Validators.maxLength(5),
         Validators.required
       ]),
     });
@@ -177,7 +184,7 @@ export class MobileCareComponent implements OnInit {
 
   public searchMobileNo(): void {
     if (this.privilegeCustomerForm.value.mobileNo.length === 10) {
-      this.checkMobileNo(this.privilegeCustomerForm.value.mobileNo);
+      this.checkChargeType(this.privilegeCustomerForm.value.mobileNo);
     } else {
       this.alertService.notify({
         type: 'warning',
@@ -188,18 +195,41 @@ export class MobileCareComponent implements OnInit {
     }
   }
 
-  public checkMobileNo(mobileNo: string): void {
+  public checkChargeType(mobileNo: string): void {
     if (mobileNo) {
-      this.isPrivilegeCustomer = !this.isPrivilegeCustomer;
-      this.popupMobileCare();
+      this.pageLoadingService.openLoading();
+      this.customerInformationService.getProfileByMobileNo(mobileNo).then((res) => {
+        if (res.data.chargeType === 'Post-paid') {
+          this.pageLoadingService.closeLoading();
+          this.checkMobileCare(mobileNo);
+        } else {
+          this.pageLoadingService.closeLoading();
+          this.alertService.warning('เบอร์นี้เป็นระบบเติมเงิน ไม่สามารถทำรายการได้');
+        }
+      });
     } else {
+      this.pageLoadingService.closeLoading();
       this.alertService.notify({
         type: 'error',
         confirmButtonText: 'OK',
         showConfirmButton: true,
         text: 'เบอร์ไม่ถูกต้อง'
-    });
+      });
     }
+  }
+
+  private checkMobileCare(mobileNo: string): void {
+    this.customerInformationService.getBillingByMobileNo(mobileNo).then((res: any) => {
+      for (let index = 0; index < res.data.currentPackage.length; index++) {
+        const productGroupPackage = res.data.currentPackage[index].produuctGroup;
+        if (productGroupPackage && productGroupPackage === 'Mobile Care') {
+          this.isPrivilegeCustomer = false;
+          this.popupMobileCare();
+        } else {
+          this.isPrivilegeCustomer = true;
+        }
+      }
+    });
   }
 
   private popupMobileCare(): void {
@@ -218,19 +248,55 @@ export class MobileCareComponent implements OnInit {
       html: `หมายเลข ${this.mobileNoService.getMobileNo(form.mobileNo)} สมัครบริการโมบายแคร์กับเครื่อง <br> Samsung Note 9 แล้ว
       <br> (แพ็กเกจ xxxxxx สิ้นสุด dd/mm/yyyy) <br> กรุณาเปลี่ยนเบอร์ใหม่ หรือยืนยันสมัครบริการโมบายแคร์กับ <br>
       เครื่อง Samsung S10 Plus <br> <div class="text-red">*บริการโมบายแคร์กับเครื่องเดิมจะสิ้นสุดทันที</div>`
+    }).then((data) => {
+      if (data.value && data.value === true) {
+        this.sendOTP();
+        this.isPrivilegeCustomer = true;
+      } else {
+        this.isPrivilegeCustomer = false;
+        this.privilegeCustomerForm.get('mobileNo').setValue('');
+      }
     });
   }
 
-  public checkVerify(): void {
-    if (this.privilegeCustomerForm.value.otpNo === '9999') {
-      this.enableNextButton();
-    } else {
-      this.disableNextButton();
-      this.alertService.notify({
-        type: 'error',
-        text: 'กรุณาระบุรหัส OTP'
-      });
+  sendOTP(): void {
+    let mobile = this.customerInformationService.getSelectedMobileNo();
+    if (environment.name !== 'PROD') {
+      mobile = environment.TEST_OTP_MOBILE;
     }
+    this.pageLoadingService.openLoading();
+    this.http.post(`/api/customerportal/newRegister/${mobile}/sendOTP`, { digits: '5' }).toPromise()
+      .then((resp: any) => {
+        if (resp && resp.data) {
+          this.transactionID = resp.data.transactionID;
+          this.pageLoadingService.closeLoading();
+        }
+      }).catch((error) => {
+        this.pageLoadingService.closeLoading();
+        this.alertService.error(error);
+      });
   }
 
+  verifyOTP(): void {
+    const otp = this.privilegeCustomerForm.value.otpNo;
+    let mobile = this.customerInformationService.getSelectedMobileNo();
+    if (environment.name !== 'PROD') {
+      mobile = environment.TEST_OTP_MOBILE;
+    }
+    this.pageLoadingService.openLoading();
+    this.http.post(`/api/customerportal/newRegister/${mobile}/verifyOTP`, { pwd: otp, transactionID: this.transactionID }).toPromise()
+      .then((resp: any) => {
+        if (resp && resp.data) {
+          this.pageLoadingService.closeLoading();
+          this.enableNextButton();
+        } else {
+          this.pageLoadingService.closeLoading();
+          this.alertService.error('รหัส OTP ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง');
+          this.disableNextButton();
+        }
+      }).catch((error) => {
+        this.pageLoadingService.closeLoading();
+        this.alertService.error('รหัส OTP ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง');
+      });
+  }
 }
