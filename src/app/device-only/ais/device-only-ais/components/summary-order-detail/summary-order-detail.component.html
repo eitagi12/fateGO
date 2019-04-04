@@ -1,18 +1,20 @@
 <div class="card mb-3">
   <div class="card-header bg-pink text-white">สรุปรายการสั่งชื้อสินค้า</div>
   <div class="card-body">
-    <p class="text-light-green" id="text-campaign-name-summary">{{ priceOption?.campaign?.campaignName }}</p>
+    <p class="text-light-green" id="text-campaign-name-summary">{{ priceOption?.campaign?.campaignName }} </p>
     <i class="fa fa-circle mr-3 text-light-green"></i>
+    <span>
     <span class="text-grey" id="text-brand-summary">
       {{ priceOption?.productDetail?.brand }}
     </span>
     <span class="text-grey" id="text-model-summary">
       {{ priceOption?.productDetail?.model }}
     </span>
-    <span class="text-grey" id="text-color-summary">
-      {{ priceOption?.productStock?.colorName }}
+    <span class="text-grey" id="text-color-summary" *ngIf="priceOption?.productStock?.colorName">
+            {{ priceOption?.productStock?.colorName?'สี': '' }} {{ priceOption?.productStock?.colorName }} 
     </span>
-    <span class="pull-right text-light-green" id="text-model-price">
+  </span>
+    <span class="pull-right text-green" id="text-model-price">
       ฿{{ priceOption?.trade?.promotionPrice | number }}
     </span>
   </div>
@@ -20,7 +22,7 @@
     <span>
       รวมยอดชำระ(รวมVAT)
     </span>
-    <span class="text-light-green ml-2" id="text-summary-price">
+    <span class="text-green ml-2" id="text-summary-price">
       ฿{{ summary([
         +priceOption?.trade?.promotionPrice,
         +priceOption?.trade?.advancePay?.amount

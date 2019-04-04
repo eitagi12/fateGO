@@ -14,10 +14,10 @@
       <span class="text-grey" id="text-model-payment-summary">
         {{ priceOption?.productDetail?.model }}
       </span>
-      <span class="text-grey" id="text-color-payment-summary">
-        {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.color }}
-      </span>
-      <span class="pull-right text-light-green" id="text-payment-price">
+      <span class="text-grey" id="text-color-summary" *ngIf="priceOption?.productStock?.colorName">
+          {{ priceOption?.productStock?.colorName?'สี': '' }} {{ priceOption?.productStock?.colorName }} 
+    </span>
+      <span class="pull-right text-green" id="text-payment-price">
         ฿{{ priceOption?.trade?.promotionPrice | number }}
       </span>
     </p>
@@ -34,7 +34,7 @@
         </span>
       </div>
       <div class="col-12 col-sm-8">
-        <p class="text-light-green" id="text-receipt-customer-name">
+        <p class="text-green" id="text-receipt-customer-name">
           {{ transaction?.data?.customer?.titleName }} {{ transaction?.data?.customer?.firstName }} {{ transaction?.data?.customer?.lastName
           }}
         </p>
@@ -47,7 +47,7 @@
         </span>
       </div>
       <div class="col-12 col-sm-8">
-        <p class="text-light-green" id="text-receipt-billing-address">
+        <p class="text-green" id="text-receipt-billing-address">
             {{ transaction?.data?.billingInformation?.billDeliveryAddress?.homeNo }}
       <span *ngIf="transaction?.data?.billingInformation?.billDeliveryAddress?.moo">
           หมู่{{ transaction?.data?.billingInformation?.billDeliveryAddress?.moo }}

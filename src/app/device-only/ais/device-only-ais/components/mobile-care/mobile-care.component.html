@@ -19,7 +19,7 @@
                 <label class="form-check-label" for="button-buy-mobile-care-{{ item?.id }}">
                   {{ item?.title }}
                 </label>
-                <span class="pull-right text-light-green">฿ {{ item?.priceExclVat | number:'1.2-2' }}</span>
+                <span class="pull-right text-lime">฿ {{ item?.priceExclVat | number:'1.2-2' }}</span>
               </div>
             </div>
 
@@ -28,7 +28,7 @@
                 formControlName="mobileCare">
               <label class="form-check-label"
                 for="button-not-buy-mobile-care">{{ 'ไม่สนใจชื้อบริการโมบายแคร์' | translate }}</label>
-              <label class="text-light-green"
+              <label class="text-lime"
                 [hidden]="!notBuyMobileCareForm.value.notBuyMobile">({{notBuyMobileCareForm.value.notBuyMobile }})</label>
             </div>
             <div>
@@ -111,22 +111,22 @@
             <p>
               <i class="fa fa-circle mr-3 text-light-green"></i>
               {{ 'เปลี่ยนเครื่องในราคา 25% จากราคาปกติ' | translate }}
-              <span class="pull-right text-light-green">฿{{ getServiceChange(25) | number:'1.2-2' }}</span>
+              <span class="pull-right text-lime">฿{{ getServiceChange(25) | number:'1.2-2' }}</span>
             </p>
             <p>
               <i class="fa fa-circle mr-3 text-light-green"></i>
               {{ 'รับเครื่องทดแทนปีที่ 1 ในราคา 45% จากราคาปกติ' | translate }}
-              <span class="pull-right text-light-green">฿{{ getServiceChange(45) | number:'1.2-2' }}</span>
+              <span class="pull-right text-lime">฿{{ getServiceChange(45) | number:'1.2-2' }}</span>
             </p>
             <p>
               <i class="fa fa-circle mr-3 text-light-green"></i>
               {{ 'รับเครื่องทดแทนปีที่ 2 ในราคา 40% จากราคาปกติ' | translate }}
-              <span class="pull-right text-light-green">฿{{ getServiceChange(40) | number:'1.2-2' }}</span>
+              <span class="pull-right text-lime">฿{{ getServiceChange(40) | number:'1.2-2' }}</span>
             </p>
             <p>
               <i class="fa fa-circle mr-3 text-light-green"></i>
               {{ 'รับเครื่องทดแทนปีที่ 3 และปีที่ 4 ในราคา 30% จากราคาปกติ' | translate }}
-              <span class="pull-right text-light-green">฿{{ getServiceChange(30) | number:'1.2-2' }}</span>
+              <span class="pull-right text-lime">฿{{ getServiceChange(30) | number:'1.2-2' }}</span>
             </p>
           </div>
 
