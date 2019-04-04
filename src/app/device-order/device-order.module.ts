@@ -7,6 +7,7 @@ import { PromotionShelveService } from './services/promotion-shelve.service';
 import { MobileCareService } from './services/mobile-care.service';
 import { ShoppingCartService } from './services/shopping-cart.service';
 import { IdCardPipe } from 'mychannel-shared-libs';
+import { MobileListService } from './services/mobile-list.service';
 
 @NgModule({
   imports: [
@@ -17,6 +18,7 @@ import { IdCardPipe } from 'mychannel-shared-libs';
     PromotionShelveService,
     MobileCareService,
     ShoppingCartService,
+    MobileListService,
     IdCardPipe,
     DecimalPipe
   ],
