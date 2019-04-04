@@ -3,7 +3,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { debounceTime } from 'rxjs/operators';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { TransactionAction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
-import { ReadCardService, ReadCardProfile, PageLoadingService } from 'mychannel-shared-libs';
+import { ReadCardService, ReadCardProfile, PageLoadingService, Utils, AlertService } from 'mychannel-shared-libs';
 import { CustomerInformationService } from '../../services/customer-information.service';
 @Component({
   selector: 'app-device-only-read-card',
@@ -38,7 +38,9 @@ export class DeviceOnlyReadCardComponent implements OnInit {
     private fb: FormBuilder,
     private readCardService: ReadCardService,
     private customerInfoService: CustomerInformationService,
-    private pageLoadingService: PageLoadingService
+    private pageLoadingService: PageLoadingService,
+    private utils: Utils,
+    private alertService: AlertService
   ) {}
 
   ngOnInit(): void {
@@ -57,9 +59,54 @@ export class DeviceOnlyReadCardComponent implements OnInit {
       }
     });
   }
-
-  readingCard(): any {
-    let width: number;
+  readCardFromAisNative(): void {
+    let width: number = 1;
+    const ReadCard = {
+      progress: 0,
+      profile: null,
+      error: null,
+      eventName: null
+    };
+    this.progressBarArea.nativeElement.style.display = 'none';
+    this.progressBarReadSmartCard.nativeElement.style.width = '0%';
+    const cardPresentedInterval = setInterval(() => {
+      if (ReadCard.progress === 0) {
+        this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้');
+        this.messages = '';
+        this.progressBarArea.nativeElement.style.display = 'none';
+        this.progressBarReadSmartCard.nativeElement.style.width = '0%';
+        clearInterval(cardPresentedInterval);
+      }
+    }, 5000);
+      const promises: any = new Promise((resolve, reject) => {
+        this.readCardService.onReadCard().subscribe((readCard: any) =>  {
+            this.progressBarArea.nativeElement.style.display = 'none';
+            this.canReadSmartCard = false;
+            const customer: String = readCard.profile;
+            if (readCard.progress === 100) {
+              this.progressBarArea.nativeElement.style.display = 'block';
+              const id = setInterval(() => {
+                if (width >= 100) {
+                  clearInterval(id);
+                  clearInterval(cardPresentedInterval);
+                  resolve(customer);
+                } else {
+                  width ++ ;
+                  this.progressBarReadSmartCard.nativeElement.style.width = width + '%';
+                }
+               }, 10);
+            }
+        });
+      }).catch((err) => {
+        console.log(err);
+        this.pageLoadingService.closeLoading();
+        this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาเสียบบัตรใหม่อีกครั้ง');
+      });
+      return promises;
+  }
+  readCardFromWebSocket(): void {
+    let width: number = 1;
+    this.messages = '';
     const  readCardEvent: any = {
       EVENT_CARD_INITIALIZED: 'OnInitialized',
       EVENT_CARD_INSERTED: 'OnCardInserted',
@@ -68,9 +115,10 @@ export class DeviceOnlyReadCardComponent implements OnInit {
       EVENT_CARD_LOAD_ERROR: 'OnCardLoadError',
       EVENT_CARD_REMOVED: 'OnCardRemoved',
     };
+    this.progressBarArea.nativeElement.style.display = 'none';
+    this.progressBarReadSmartCard.nativeElement.style.width = '0%';
       const promises: any = new Promise((resolve, reject) => {
         this.readCardService.onReadCard().subscribe((readCard: any) =>  {
-          this.progressBarArea.nativeElement.style.display = 'none';
           if (readCard.eventName === readCardEvent.EVENT_CARD_REMOVED) {
             this.messages =  '';
             width = 0;
@@ -78,7 +126,7 @@ export class DeviceOnlyReadCardComponent implements OnInit {
             this.progressBarReadSmartCard.nativeElement.style.width = '0%';
           }
           if (readCard.eventName === readCardEvent.EVENT_CARD_LOAD_ERROR) {
-              alert('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาเสียบบัตรใหม่อีกครั้ง');
+            this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาเสียบบัตรใหม่อีกครั้ง');
             this.progressBarArea.nativeElement.style.display = 'none';
             this.progressBarReadSmartCard.nativeElement.style.width = '0%';
             this.pageLoadingService.closeLoading();
@@ -100,25 +148,32 @@ export class DeviceOnlyReadCardComponent implements OnInit {
               width = +readCard.progress;
               this.progressBarReadSmartCard.nativeElement.style.width = width + '%';
           }
-          if (readCard.progress  === 100 || readCard.eventName === readCardEvent.EVENT_CARD_LOAD_COMPLETED) {
+          if (readCard.eventName === readCardEvent.EVENT_CARD_LOAD_COMPLETED) {
             this.canReadSmartCard = false;
             const customer: String = readCard.profile;
-            if (customer) {
-              resolve(customer);
+              if (customer) {
+                resolve(customer);
+                this.progressBarReadSmartCard.nativeElement.style.width = '100%';
+                this.messages =  'ตรวจสอบสำเร็จ โปรดดึงบัตรออก';
+              }
               this.progressBarArea.nativeElement.style.display = 'none';
-              this.progressBarReadSmartCard.nativeElement.style.width = '100%';
-              this.messages =  'ตรวจสอบสำเร็จ โปรดดึงบัตรออก';
-            }
           }
         });
+
       }).catch((err) => {
         console.log(err);
         this.pageLoadingService.closeLoading();
-        alert('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาเสียบบัตรใหม่อีกครั้ง');
+        this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาเสียบบัตรใหม่อีกครั้ง');
       });
-        return promises;
+      return promises;
+  }
 
-    // }
+  readingCard(): any {
+    if (this.utils.isAisNative()) {
+      return this.readCardFromAisNative();
+    } else {
+      return this.readCardFromWebSocket();
+    }
   }
 
   public getbillingCycle(customer: any): void {
