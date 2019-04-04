@@ -33,6 +33,7 @@ export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit , OnDe
     private homeButtonService: HomeButtonService
   ) {
     this.transaction = this.transactionService.load();
+    console.log('care : this.transaction : ', this.transaction);
   }
 
   ngOnInit(): void {
@@ -63,6 +64,7 @@ export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit , OnDe
   }
 
   ngOnDestroy(): void {
+    console.log('care des : this.transaction : ', this.transaction);
     this.transactionService.save(this.transaction);
   }
 

@@ -88,7 +88,8 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       this.customerInfoTemp = {
         customer: this.transaction.data.customer,
         billDeliveryAddress: this.transaction.data.billingInformation.billDeliveryAddress,
-        receiptInfo: this.transaction.data.receiptInfo
+        receiptInfo: this.transaction.data.receiptInfo,
+        action: this.transaction.data.action
       };
     }
   }

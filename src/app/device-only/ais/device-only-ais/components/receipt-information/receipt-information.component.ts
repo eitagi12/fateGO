@@ -1,10 +1,8 @@
 import { Component, OnInit, Output, EventEmitter, Input  } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors  } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl  } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
 import { BillingAddressService } from '../../services/billing-address.service';
-import { HttpClient } from '@angular/common/http';
 import { AlertService, REGEX_MOBILE, ReceiptInfo, PageLoadingService } from 'mychannel-shared-libs';
-import { TokenService } from 'mychannel-shared-libs';
 import { TransactionAction, Customer, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
 import { CustomerInformationService } from '../../services/customer-information.service';
 
@@ -89,15 +87,17 @@ export class ReceiptInformationComponent implements OnInit {
     const customer = this.customerInfoTemp.customer;
     const billDeliveryAddress = this.customerInfoTemp.billDeliveryAddress;
     const receiptInfo = this.customerInfoTemp.receiptInfo;
+    this.setCustomerInfo({
+      customer: { ...customer, ...billDeliveryAddress},
+      action: this.customerInfoTemp.action
+    });
+    if (this.isShowInputForKeyIn) {
+      this.keyInCustomerAddressTemp = { ...customer, ...billDeliveryAddress};
+    }
     for (const item in receiptInfo) {
       if (receiptInfo.hasOwnProperty(item)) {
         this.receiptInfoForm.controls[item].setValue(receiptInfo[item]);
       }
-    }
-    this.nameText = customer.titleName + ' ' + customer.firstName + ' ' + customer.lastName;
-    this.billingAddressText = this.customerInfoService.convertBillingAddressToString(billDeliveryAddress);
-    if (this.isShowInputForKeyIn) {
-      this.keyInCustomerAddressTemp = { ...customer, ...billDeliveryAddress};
     }
   }
 
