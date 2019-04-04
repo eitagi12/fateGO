@@ -3,7 +3,7 @@ import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/
 import { ReadCardProfile, HomeService, TokenService, PageLoadingService, User, ValidateCustomerIdCardComponent, Utils, AlertService, KioskControls, ChannelType } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { ROUTE_DEVICE_ORDER_AIS_MNP_PAYMENT_DETAIL_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_MNP_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_CUSTOMER_INFO_PAGE } from '../../constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -151,7 +151,7 @@ export class DeviceOrderAisMnpValidateCustomerIdCardPageComponent implements OnI
       }).then((billingInformation: any) => {
         this.transaction.data.billingInformation = billingInformation;
         if (this.checkBusinessLogic()) {
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_PAYMENT_DETAIL_PAGE]);
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_CUSTOMER_INFO_PAGE]);
         }
       });
   }
@@ -311,7 +311,7 @@ export class DeviceOrderAisMnpValidateCustomerIdCardPageComponent implements OnI
         contract: priceOption.campaign.conditionCode || {}
       },
       create_by: username,
-      issueBy: transaction.issueBy || username,
+      issueBy: transaction.createDate || username,
       last_update_by: username
     };
     return transactionDb;

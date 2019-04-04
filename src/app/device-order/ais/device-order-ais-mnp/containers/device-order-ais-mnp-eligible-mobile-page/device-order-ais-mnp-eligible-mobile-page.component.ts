@@ -5,7 +5,7 @@ import { Transaction, BillingAccount, TransactionAction } from 'src/app/shared/m
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { ROUTE_DEVICE_ORDER_AIS_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_VALIDATE_CUSTOMER_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_PAYMENT_DETAIL_PAGE } from '../../../device-order-ais-mnp/constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_VALIDATE_CUSTOMER_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_DETAIL_PAGE } from '../../../device-order-ais-mnp/constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-mnp-eligible-mobile-page',
@@ -49,8 +49,6 @@ export class DeviceOrderAisMnpEligibleMobilePageComponent implements OnInit, OnD
       .then((resp: any) => {
         const postpaidMobileList = resp.data.postpaidMobileList || [];
         this.mapPostpaidMobileNo(postpaidMobileList	);
-      })
-      .catch(() => {
       });
   }
 
@@ -77,7 +75,7 @@ export class DeviceOrderAisMnpEligibleMobilePageComponent implements OnInit, OnD
 
   onNext(): void {
     this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo, persoSim: false };
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_PAYMENT_DETAIL_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_DETAIL_PAGE]);
   }
 
   ngOnDestroy(): void {

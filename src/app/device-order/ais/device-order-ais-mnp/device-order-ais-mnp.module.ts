@@ -34,6 +34,8 @@ import { DeviceOrderAisMnpVerifyInstantSimPageComponent } from './containers/dev
 import { DeviceOrderAisMnpEligibleMobilePageComponent } from './containers/device-order-ais-mnp-eligible-mobile-page/device-order-ais-mnp-eligible-mobile-page.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
+import { DeviceOrderAisMnpMobileDetailPageComponent } from './containers/device-order-ais-mnp-mobile-detail-page/device-order-ais-mnp-mobile-detail-page.component';
+import { DeviceOrderAisMnpEffectiveStartDatePageComponent } from './containers/device-order-ais-mnp-effective-start-date-page/device-order-ais-mnp-effective-start-date-page.component';
 
 @NgModule({
   imports: [
@@ -73,7 +75,9 @@ import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
     DeviceOrderAisMnpValidateCustomerKeyInPageComponent,
     DeviceOrderAisMnpValidateCustomerPageComponent,
     DeviceOrderAisMnpVerifyInstantSimPageComponent,
-    DeviceOrderAisMnpEligibleMobilePageComponent
+    DeviceOrderAisMnpEligibleMobilePageComponent,
+    DeviceOrderAisMnpMobileDetailPageComponent,
+    DeviceOrderAisMnpEffectiveStartDatePageComponent
   ]
 })
 export class DeviceOrderAisMnpModule { }

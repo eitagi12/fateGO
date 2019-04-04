@@ -30,7 +30,7 @@ import { TranslateModule } from '@ngx-translate/core';
       production: environment.production,
       NAME: environment.name,
       WEB_CONNECT_URL: environment.WEB_CONNECT_URL,
-      CAMERA_DEVLICE: [ new RegExp(/^USB Camera+/), new RegExp(/^HP+/)]
+      CAMERA_DEVLICE: [ '/^USB Camera+/', '/^HP+/']
     }),
     JwtModule.forRoot({
       jwtOptionsProvider: {

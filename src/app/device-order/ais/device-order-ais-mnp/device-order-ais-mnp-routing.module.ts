@@ -30,6 +30,8 @@ import { DeviceOrderAisMnpQrCodeQueuePageComponent } from './containers/device-o
 import { DeviceOrderAisMnpQrCodeGeneratorPageComponent } from './containers/device-order-ais-mnp-qr-code-generator-page/device-order-ais-mnp-qr-code-generator-page.component';
 import { DeviceOrderAisMnpQrCodeErrorPageComponent } from './containers/device-order-ais-mnp-qr-code-error-page/device-order-ais-mnp-qr-code-error-page.component';
 import { DeviceOrderAisMnpEligibleMobilePageComponent } from './containers/device-order-ais-mnp-eligible-mobile-page/device-order-ais-mnp-eligible-mobile-page.component';
+import { DeviceOrderAisMnpMobileDetailPageComponent } from './containers/device-order-ais-mnp-mobile-detail-page/device-order-ais-mnp-mobile-detail-page.component';
+import { DeviceOrderAisMnpEffectiveStartDatePageComponent } from './containers/device-order-ais-mnp-effective-start-date-page/device-order-ais-mnp-effective-start-date-page.component';
 
 const routes: Routes = [
   { path: 'validate-customer', component: DeviceOrderAisMnpValidateCustomerPageComponent },
@@ -62,6 +64,8 @@ const routes: Routes = [
   { path: 'qr-code-generator', component: DeviceOrderAisMnpQrCodeGeneratorPageComponent },
   { path: 'qr-code-error', component: DeviceOrderAisMnpQrCodeErrorPageComponent },
   { path: 'eligible-mobile', component: DeviceOrderAisMnpEligibleMobilePageComponent },
+  { path: 'mobile-detail', component: DeviceOrderAisMnpMobileDetailPageComponent },
+  { path: 'effective-start-date', component: DeviceOrderAisMnpEffectiveStartDatePageComponent },
 ];
 
 @NgModule({
