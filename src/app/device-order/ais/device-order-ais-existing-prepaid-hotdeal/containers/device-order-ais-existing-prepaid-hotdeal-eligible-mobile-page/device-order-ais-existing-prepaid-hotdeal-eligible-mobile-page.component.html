@@ -28,8 +28,12 @@
               <div class="container-fluid">
                 <form [formGroup]="eligibleAddMobile">
                   <div class="pb-3 pt-2">
-                  <input type="text" class="form-control" placeholder="เบอร์เติมเงิน 10 หลัก" maxlength="10" formControlName="mobileAdd">
-                  </div>
+                  <input type="text" class="form-control" placeholder="เบอร์เติมเงิน 10 หลัก" maxlength="10" formControlName="mobileAdd"
+                  [ngClass]="{ 'is-invalid' : eligibleAddMobile.controls.mobileAdd.invalid && eligibleAddMobile.controls.mobileAdd.touched }">
+                  <small class="form-text invalid-feedback" *ngIf="eligibleAddMobile.controls.mobileAdd.touched && eligibleAddMobile.controls.mobileAdd.errors">
+                    * กรุณากรอกเบอร์ติดต่อให้ถูกต้อง
+                </small>
+                </div>
                 </form>
               </div>
             </div>
@@ -40,6 +44,6 @@
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()" [disabled]="!selectMobileNo">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!selectMobileNo && !addMobileNo">NEXT</button>
   </mc-footer>
 </div>
