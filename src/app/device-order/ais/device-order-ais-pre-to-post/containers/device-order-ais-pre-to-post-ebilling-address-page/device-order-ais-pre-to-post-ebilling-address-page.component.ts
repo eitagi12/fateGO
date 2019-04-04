@@ -29,6 +29,7 @@ export class DeviceOrderAisPreToPostEbillingAddressPageComponent implements OnIn
   zipCodes: string[];
 
   customerAddressTemp: CustomerAddress;
+  billDeliveryAddress: CustomerAddress;
   ebillingAddressValid: boolean;
 
   constructor(
@@ -41,7 +42,8 @@ export class DeviceOrderAisPreToPostEbillingAddressPageComponent implements OnIn
   }
 
   ngOnInit(): void {
-    const customer = this.transaction.data.customer;
+    const billingInformation = this.transaction.data.billingInformation || {};
+    const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
 
     this.http.get('/api/customerportal/newRegister/getAllZipcodes').subscribe((resp: any) => {
       this.allZipCodes = resp.data.zipcodes || [];
@@ -54,7 +56,7 @@ export class DeviceOrderAisPreToPostEbillingAddressPageComponent implements OnIn
         homeNo: customer.homeNo,
         moo: customer.moo,
         mooBan: customer.mooBan,
-        room: customer.floor,
+        room: customer.room,
         floor: customer.floor,
         buildingName: customer.buildingName,
         soi: customer.soi,
@@ -163,11 +165,10 @@ export class DeviceOrderAisPreToPostEbillingAddressPageComponent implements OnIn
   }
 
   onNext(): void {
-    this.transaction.data.customer = Object.assign(
-      this.transaction.data.customer,
-      this.customerAddressTemp || this.customerAddress
-    );
-
+    const billingInformation = this.transaction.data.billingInformation || {};
+    const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
+    this.transaction.data.billingInformation.billDeliveryAddress = Object.assign(Object.assign({}, customer), this.customerAddressTemp);
+    this.transactionService.update(this.transaction);
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CONFIRM_USER_INFORMATION_PAGE]);
   }
 

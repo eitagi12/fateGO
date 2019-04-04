@@ -1,14 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { EligibleMobile, HomeService } from 'mychannel-shared-libs';
-import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import {
   ROUTE_DEVICE_ORDER_AIS_EXISTING_CUSTOMER_INFO_PAGE,
   ROUTE_DEVICE_ORDER_AIS_EXISTING_CHANGE_PACKAGE_PAGE
 } from '../../constants/route-path.constant';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { EligibleMobileService } from 'src/app/device-order/services/eligible-mobile.service';
 
 export interface BillingAccount {
   billingName: string;
@@ -34,6 +36,7 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
   eligibleMobiles: Array<EligibleMobile>;
   selectMobileNo: EligibleMobile;
   transaction: Transaction;
+  priceOption: PriceOption;
   billingAccountList: Array<BillingAccount>;
   billingNetExtremeList: Array<BillingAccount>;
 
@@ -41,38 +44,24 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
 
   constructor(
     private router: Router,
-    private http: HttpClient,
     private transactionService: TransactionService,
-    private homeService: HomeService
+    private homeService: HomeService,
+    private priceOptionService: PriceOptionService,
+    private eligibleMobileService: EligibleMobileService
   ) {
     this.transaction = this.transactionService.load();
+    this.priceOption = this.priceOptionService.load();
   }
 
   ngOnInit(): void {
     if (this.transaction.data.customer) {
       this.idCardNo = this.transaction.data.customer.idCardNo;
-      this.getMobileList();
+      const ussdCode = this.priceOption.trade.ussdCode;
+      this.eligibleMobileService.getMobileList(this.idCardNo, ussdCode, `POSTPAID`)
+      .then(mobiles =>  this.eligibleMobiles = mobiles);
     } else {
       this.onBack();
     }
-  }
-
-  getMobileList(): void {
-    this.http.get(`/api/customerportal/newRegister/${this.idCardNo}/queryPrepaidMobileList`).toPromise()
-      .then((resp: any) => {
-        const postpaidMobileList = resp.data.postpaidMobileList || [];
-        this.mapPrepaidMobileNo(postpaidMobileList);
-      })
-      .catch(() => {
-      });
-  }
-
-  mapPrepaidMobileNo(mobileList: any): void {
-    const mobiles: Array<EligibleMobile> = new Array<EligibleMobile>();
-    mobileList.forEach(element => {
-      mobiles.push({ mobileNo: element.mobileNo, mobileStatus: element.status });
-    });
-    this.eligibleMobiles = mobiles;
   }
 
   onComplete(eligibleMobile: EligibleMobile): void {

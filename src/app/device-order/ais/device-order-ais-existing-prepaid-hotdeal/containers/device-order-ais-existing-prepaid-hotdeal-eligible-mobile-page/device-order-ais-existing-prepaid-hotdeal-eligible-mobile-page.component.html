@@ -7,11 +7,43 @@
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
-  <div class="mc-flex-wrap bg-white">
-  
+  <div class="mc-flex-wrap">
+    <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
+    <div class="my-3">
+        <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
+        <mc-eligible-mobile title="Pre Paid" (completed)="onComplete($event)" errorMessage="ไม่พบหมายเลขเติมเงินที่แสดงตนตาม ID No ที่ระบุ"
+        [eligibleMobiles]="eligibleMobiles"></mc-eligible-mobile>
+
+        <div class="container-fluid">
+          <div class="card mb-3 ">
+            <div class="bg-light-blue text-white card-header p-1">
+              <div class="row d-flex">
+                <div class="col-8 col-sm-9 pt-2 pb-2 pl-4">
+                    ระบุเบอร์เพิ่ม
+                </div>
+                <div class="col-4 col-sm-3 text-center "></div>
+              </div>
+            </div>
+            <div class="mt-2">
+              <div class="container-fluid">
+                <form [formGroup]="eligibleAddMobile">
+                  <div class="pb-3 pt-2">
+                  <input type="text" class="form-control" placeholder="เบอร์เติมเงิน 10 หลัก" maxlength="10" formControlName="mobileAdd"
+                  [ngClass]="{ 'is-invalid' : eligibleAddMobile.controls.mobileAdd.invalid && eligibleAddMobile.controls.mobileAdd.touched }">
+                  <small class="form-text invalid-feedback" *ngIf="eligibleAddMobile.controls.mobileAdd.touched && eligibleAddMobile.controls.mobileAdd.errors">
+                    * กรุณากรอกเบอร์ติดต่อให้ถูกต้อง
+                </small>
+                </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      
+    </div>
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!selectMobileNo && !addMobileNo">NEXT</button>
   </mc-footer>
 </div>

@@ -1,16 +1,16 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
+import { HomeService, AisNativeService, User, TokenService, ChannelType, ShoppingCart } from 'mychannel-shared-libs';
+import { Transaction } from 'src/app/shared/models/transaction.model';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Subscription } from 'rxjs';
-import { HomeService, AisNativeService, TokenService, User, ChannelType } from 'mychannel-shared-libs';
+import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 
 import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
 import {
-  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_SUMMARY_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_AGGREGATE_PAGE
+  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_AGGREGATE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_EAPPLICATION_PAGE
 } from '../../constants/route-path.constant';
-import { Transaction } from 'src/app/shared/models/transaction.model';
-import { TransactionService } from 'src/app/shared/services/transaction.service';
-
 @Component({
   selector: 'app-device-order-ais-pre-to-post-agreement-sign-page',
   templateUrl: './device-order-ais-pre-to-post-agreement-sign-page.component.html',
@@ -23,13 +23,15 @@ export class DeviceOrderAisPreToPostAgreementSignPageComponent implements OnInit
   transaction: Transaction;
   signedSignatureSubscription: Subscription;
   signedOpenSubscription: Subscription;
+  shoppingCart: ShoppingCart;
 
   constructor(
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
     private aisNativeService: AisNativeService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private shoppingCartService: ShoppingCartService,
   ) {
     this.transaction = this.transactionService.load();
     this.signedSignatureSubscription = this.aisNativeService.getSigned().subscribe((signature: string) => {
@@ -38,13 +40,14 @@ export class DeviceOrderAisPreToPostAgreementSignPageComponent implements OnInit
   }
 
   ngOnInit(): void {
+    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     if (!this.transaction.data.customer.imageSignature) {
       this.onSigned();
     }
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_SUMMARY_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_EAPPLICATION_PAGE]);
   }
 
   onNext(): void {

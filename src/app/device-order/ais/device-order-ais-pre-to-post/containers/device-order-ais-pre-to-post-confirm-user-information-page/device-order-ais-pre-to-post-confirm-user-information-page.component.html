@@ -1,5 +1,5 @@
 <div class="mc-flex">
-  <mc-header title="เปลี่ยนเติมเงินเป็นรายเดือน">
+  <mc-header title="เครื่องพร้อมเปลี่ยนเป็นรายเดือน">
     <div class="header-icon-left">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
@@ -8,6 +8,7 @@
     </div>
   </mc-header>
   <div class="mc-flex-wrap">
+    <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
     <div class="mt-3 mb-3">
       <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
 
@@ -19,10 +20,10 @@
 
       <mc-mail-billing-info [eBill]="eBill" [disabled]="isPackageNetExtreme() || isMergeBilling()" [mailBillingInfo]="mailBillingInfo"
         (completed)="onMailBillingInfoCompleted($event)" (error)="onMailBillingInfoError($event)">
+
       </mc-mail-billing-info>
 
-      <mc-tel-no-billing-info [telNoBillingInfo]="telNoBillingInfo" (completed)="onTelNoBillingCompleted($event)"
-        (error)="onTelNoBillingError($event)">
+      <mc-tel-no-billing-info [telNoBillingInfo]="telNoBillingInfo" (completed)="onTelNoBillingCompleted($event)" (error)="onTelNoBillingError($event)">
       </mc-tel-no-billing-info>
     </div>
   </div>

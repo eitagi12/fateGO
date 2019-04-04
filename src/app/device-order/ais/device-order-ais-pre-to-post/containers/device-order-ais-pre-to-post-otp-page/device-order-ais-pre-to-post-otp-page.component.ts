@@ -8,7 +8,6 @@ import { HttpClient } from '@angular/common/http';
 import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
 import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CUSTOMER_INFO_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ID_CARD_CAPTURE_REPI_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CUSTOMER_PROFILE_PAGE
 } from '../../constants/route-path.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -90,9 +89,6 @@ export class DeviceOrderAisPreToPostOtpPageComponent implements OnInit {
   navigateNext(): void {
     if (this.transaction.data.action === TransactionAction.READ_CARD_REPI) {
       this.autoPI();
-    } else {
-      this.pageLoadingService.closeLoading();
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ID_CARD_CAPTURE_REPI_PAGE]);
     }
   }
   autoPI(): void {

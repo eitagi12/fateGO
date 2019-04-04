@@ -1,27 +1,53 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService } from 'mychannel-shared-libs';
+import { HomeService, ShoppingCart, ProductStock } from 'mychannel-shared-libs';
 import {
   ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_SUMMARY_PAGE
 } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
+import { Transaction, ExistingMobileCare } from 'src/app/shared/models/transaction.model';
 
 @Component({
   selector: 'app-device-order-ais-existing-mobile-care-available-page',
   templateUrl: './device-order-ais-existing-mobile-care-available-page.component.html',
   styleUrls: ['./device-order-ais-existing-mobile-care-available-page.component.scss']
 })
-export class DeviceOrderAisExistingMobileCareAvailablePageComponent implements OnInit {
+export class DeviceOrderAisExistingMobileCareAvailablePageComponent implements OnInit, OnDestroy {
 
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
+  transaction: Transaction;
+  shoppingCart: ShoppingCart;
+  exMobileCare: ExistingMobileCare;
+  productStock: ProductStock;
+  exMobileCareForm: FormGroup;
+  changeMobileCare: boolean;
+  priceOption: PriceOption;
+
   constructor(
     private router: Router,
-    private homeService: HomeService
-  ) { }
+    private homeService: HomeService,
+    private transactionService: TransactionService,
+    public fb: FormBuilder,
+    private shoppingCartService: ShoppingCartService,
+    private priceOptionService: PriceOptionService
+  ) {
+    this.transaction = this.transactionService.load();
+    this.priceOption = this.priceOptionService.load();
+   }
 
   ngOnInit(): void {
+    this.exMobileCare = this.transaction.data.existingMobileCare;
+    this.productStock = this.priceOption.productStock;
+    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
+    this.createForm();
   }
 
   onBack(): void {
@@ -29,11 +55,33 @@ export class DeviceOrderAisExistingMobileCareAvailablePageComponent implements O
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE]);
+    if (this.changeMobileCare) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_SUMMARY_PAGE]);
+    }
   }
 
   onHome(): void {
     this.homeService.goToHome();
   }
 
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
+  }
+
+  createForm(): void {
+    this.exMobileCareForm = this.fb.group({
+      changeMobileCare: ['', Validators.required]
+    });
+
+    this.exMobileCareForm.valueChanges.subscribe((value) => {
+      if (value.changeMobileCare === 'Yes') {
+        this.changeMobileCare = true;
+      } else {
+        this.transaction.data.mobileCarePackage = null;
+        this.changeMobileCare = false;
+      }
+    });
+  }
 }

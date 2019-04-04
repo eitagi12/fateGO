@@ -29,18 +29,12 @@ export class TransactionService {
   }
 
   save(transaction: Transaction): void {
-    this.settings.save(Object.assign({
-      createDate: Moment().toISOString(),
-      createBy: this.user.username
-    }, transaction));
+    this.settings.save(transaction);
   }
 
   update(transaction: Partial<Transaction>): void {
     this.remove();
-    this.settings.save(Object.assign({
-      lastUpdateDate: Moment().toISOString(),
-      lastUpdateBy: this.user.username
-    }, transaction));
+    this.settings.update(transaction);
   }
 
   load(): Transaction {

@@ -9,7 +9,10 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from 'src/app/buy-product/constants/route-path.constant';
 import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE } from '../../constants/route-path.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import * as moment from 'moment';
+
+const Moment = moment;
 
 @Component({
   selector: 'app-device-order-ais-new-register-validate-customer-id-card-page',
@@ -33,49 +36,43 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
   constructor(
     private router: Router,
     private homeService: HomeService,
+    private priceOptionService: PriceOptionService,
     private transactionService: TransactionService,
+    private sharedTransactionService: SharedTransactionService,
     private pageLoadingService: PageLoadingService,
     private http: HttpClient,
     private tokenService: TokenService,
     private utils: Utils,
     private alertService: AlertService,
-    private priceOptionService: PriceOptionService
   ) {
     this.user = this.tokenService.getUser();
     this.priceOption = this.priceOptionService.load();
 
     this.homeService.callback = () => {
-      if (this.validateCustomerIdcard.koiskApiFn) {
-        this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
-      }
-      // Returns stock todo...
-      const transaction = this.transactionService.load();
-      if (transaction.data.simCard
-        && transaction.data.simCard.mobileNo) {
-        this.returnStock(this.user.username, transaction.data.simCard.mobileNo).then(() => {
-          this.homeHandler();
-        });
-      } else {
-        this.homeHandler();
-      }
 
+      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่<br>การยกเลิกระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที')
+        .then((data: any) => {
+          if (!data.value) {
+            return false;
+          }
+          if (this.validateCustomerIdcard.koiskApiFn) {
+            this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+          }
+          // Returns stock (sim card, soId) todo...
+          return this.returnStock().then(() => true);
+        })
+        .then((isNext: boolean) => {
+          if (isNext) {
+            this.homeHandler();
+          }
+        });
     };
 
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
   }
 
   ngOnInit(): void {
-    this.createTransaction();
     this.onRemoveCardState();
-  }
-
-  createTransaction(): void {
-    this.transaction = {
-      data: {
-        transactionType: TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS,
-        action: TransactionAction.READ_CARD,
-      }
-    };
   }
 
   onRemoveCardState(): void {
@@ -110,11 +107,17 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
+    this.returnStock().then(() => {
+      this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
+    });
   }
 
   onNext(): void {
     this.pageLoadingService.openLoading();
+    // มี auto next ทำให้ create transaction ช้ากว่า read card
+    // this.returnStock().then(() => {
+
+    this.createTransaction();
     this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
       .then((zipCode: string) => {
         return this.http.get('/api/customerportal/validate-customer-new-register', {
@@ -140,41 +143,40 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
         return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
           .then((resp: any) => {
             const data = resp.data || {};
-            // load bill next extreme
-            return this.http.post('/api/customerportal/verify/billingNetExtreme', {
-              businessType: '1',
-              listBillingAccount: data.billingAccountList
-            }).toPromise()
-              .then((respBillingNetExtreme: any) => {
-                return {
-                  billCycles: data.billingAccountList,
-                  billCyclesNetExtreme: respBillingNetExtreme.data
-                };
-              })
-              .catch(() => {
-                return {
-                  billCycles: data.billingAccountList
-                };
-              });
+            return {
+              billCycles: data.billingAccountList
+            };
           });
       }).then((billingInformation: any) => {
         this.transaction.data.billingInformation = billingInformation;
 
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE]);
-        /*this.conditionIdentityValid()
+        return this.conditionIdentityValid()
           .then(() => {
             return this.http.post(
               '/api/salesportal/add-device-selling-cart',
               this.getRequestAddDeviceSellingCart()
             ).toPromise()
-            .then((resp: any) => resp.data.soId);
+              .then((resp: any) => resp.data.soId);
           })
           .then((soId: string) => {
-            console.log('So id ', soId);
-            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE]);
-          }).catch((error: string) => this.alertService.error(error));*/
+            this.transaction.data.order = { soId: soId };
+
+            return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+          })
+          .then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE]));
 
       }).then(() => this.pageLoadingService.closeLoading());
+
+    // });
+  }
+
+  createTransaction(): void {
+    this.transaction = {
+      data: {
+        transactionType: TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS,
+        action: TransactionAction.READ_CARD,
+      }
+    };
   }
 
   getZipCode(province: string, amphur: string, tumbol: string): Promise<string> {
@@ -219,7 +221,7 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
   }
 
   ngOnDestroy(): void {
-    this.transactionService.save(this.transaction);
+    this.transactionService.update(this.transaction);
   }
 
   homeHandler(): void {
@@ -230,25 +232,31 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
     }
   }
 
-  returnStock(mobileNo: string, action: string): Promise<any> {
-    return this.http.post('/api/customerportal/newRegister/selectMobileNumberRandom', {
-      userId: this.user.username,
-      mobileNo: mobileNo,
-      action: action
-    }).toPromise();
-  }
+  returnStock(): Promise<void> {
+    return new Promise(resolve => {
+      const transaction = this.transactionService.load();
 
-  createSharedTransactions(soId: string): Promise<any> {
-    const params = {
-      transactionId: '',
-      createDate: this.transaction.createDate,
-      createBy: this.transaction.createBy,
-      lastUpdateDate: this.transaction.lastUpdateDate,
-      lastUpdateBy: this.transaction.lastUpdateBy,
-      data: {}
-    };
-    console.log('Shared :: ', params);
-    return Promise.resolve(params);
+      const promiseAll = [];
+      if (transaction.data) {
+        if (transaction.data.simCard && transaction.data.simCard.mobileNo) {
+          const unlockMobile = this.http.post('/api/customerportal/newRegister/selectMobileNumberRandom', {
+            userId: this.user.username,
+            mobileNo: transaction.data.simCard.mobileNo,
+            action: 'Unlock'
+          }).toPromise().catch(() => Promise.resolve());
+          promiseAll.push(unlockMobile);
+        }
+        if (transaction.data.order && transaction.data.order.soId) {
+          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
+            location: this.priceOption.productStock.location,
+            soId: transaction.data.order.soId,
+            transactionId: transaction.transactionId
+          }).toPromise().catch(() => Promise.resolve());
+          promiseAll.push(order);
+        }
+      }
+      Promise.all(promiseAll).then(() => resolve());
+    });
   }
 
   getRequestAddDeviceSellingCart(): any {
@@ -275,128 +283,4 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
     };
   }
 
-  // ต้องอยู่หน้าถัดไปหรือป่าว
-  // check When Comeback to ValidateIDcardPage and have SoId
-  checkSoIdDuplicate(): void {
-    const transaction = this.transactionService.load();
-    if (transaction && transaction.data && transaction.data.order && transaction.data.order.soId) {
-      const _paramSoId = transaction.data.order.soId;
-      const _userId = this.tokenService.getUser().username;
-      if (_paramSoId) {
-        const requestData = {
-          soId: _paramSoId,
-          userId: _userId
-        };
-        this.http.post('/api/salesportal/device-sell/item/remove', requestData).toPromise().then((resp: any) => {
-          const data = resp.data || {};
-          if (data.resultCode === 'S') {
-            console.log('Success is RemoveItemBackendCart');
-          }
-        });
-      }
-    }
-  }
-
-  createAddToCartTrasaction(transaction: Transaction, priceOption: PriceOption): Promise<any> {
-    return new Promise((resolve, reject) => {
-      if (transaction && transaction.data && transaction.data.order && transaction.data.order.soId) {
-        resolve(transaction);
-      } else {
-        this.callAddToCartService(transaction, priceOption).then((response) => {
-          if (response.resultCode === 'S') {
-            transaction.data.order = {
-              orderNo: '',
-              soId: response.soId
-            };
-            this.createTransactionService(transaction, priceOption).then((createTrans) => {
-              resolve(createTrans);
-            }).catch(resolve);
-          } else {
-            reject('Cannot add item to the cart');
-          }
-        });
-      }
-    });
-  }
-
-  private callAddToCartService(transaction: Transaction, priceOption: PriceOption): Promise<any> {
-    const productStock = priceOption.productStock;
-    const productDetail = priceOption.productDetail;
-    const customer = transaction.data.customer;
-    const cusNameOrder = customer.firstName && customer.lastName ? `${customer.firstName} ${customer.lastName}` : '-';
-    const requestData: any = {
-      soCompany: productStock.company || 'AWN',
-      locationSource: this.user.locationCode,
-      locationReceipt: this.user.locationCode,
-      productType: productDetail.productType || 'DEVICE',
-      productSubType: productDetail.productSubType || 'HANDSET',
-      brand: productStock.brand,
-      model: productDetail.model,
-      color: productStock.color,
-      priceIncAmt: '',
-      priceDiscountAmt: '',
-      grandTotalAmt: '',
-      userId: this.user.username,
-      cusNameOrder: cusNameOrder,
-      preBookingNo: '',
-      depositAmt: '',
-      reserveNo: ''
-    };
-    return this.http.post('/api/salesportal/device-sell/item', requestData).toPromise()
-      .then((res: any) => res.data || {});
-  }
-
-  private createTransactionService(transaction: Transaction, priceOption: PriceOption): Promise<any> {
-    return this.http.post('/api/salesportal/device-order/create-transaction', this.mapCreateTransactionDb(transaction, priceOption))
-      .toPromise().then(resp => transaction);
-  }
-
-  private mapCreateTransactionDb(transaction: Transaction, priceOption: PriceOption): any {
-    const username: any = this.tokenService.getUser().username;
-    const transactionDb = {
-      transactionId: this.generateTransactionId(),
-      data: {
-        ...transaction.data,
-        main_promotion: { campaign: priceOption.campaign, privilege: priceOption.campaign.privilege, trade: priceOption.trade } || {},
-        device: this.getDevice(priceOption),
-        status: {
-          code: '001',
-          description: 'pending'
-        },
-        contract: priceOption.campaign.conditionCode || {}
-      },
-      create_by: username,
-      // issueBy: transaction.issueBy || username,
-      last_update_by: username
-    };
-    return transactionDb;
-  }
-
-  private getDevice(priceOption: PriceOption): any {
-    const product: any = priceOption.productStock;
-    const productDetail: any = priceOption.productDetail;
-    return {
-      model: productDetail.model,
-      brand: productDetail.brand,
-      amount: 1,
-      name: productDetail.productName,
-      colorName: product.colorName,
-      colorCode: product.colorCode,
-      productType: productDetail.productType,
-      productSubtype: productDetail.productSubtype
-    };
-  }
-
-  generateTransactionId(): string {
-    let emptyString: string = '';
-    const alphabet: string = 'abcdefghijklmnopqrstuvwxyz';
-    while (emptyString.length < 2) {
-      emptyString += alphabet[Math.floor(Math.random() * alphabet.length)];
-    }
-    const randomAlphabet = emptyString;
-    const today: any = moment().format('YYYYMMD');
-    const randomNumber = Math.floor(Math.random() * 1000000).toString();
-    const transactionId = randomAlphabet + today + randomNumber;
-    return transactionId;
-  }
 }

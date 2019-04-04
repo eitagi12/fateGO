@@ -21,7 +21,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { PromotionShelveService } from 'src/app/device-order/services/promotion-shelve.service';
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 import { Transaction } from 'src/app/shared/models/transaction.model';
-import { FlowService } from '../../services/flow.service';
+import { FlowService, CustomerGroup } from '../../services/flow.service';
 
 @Component({
     selector: 'app-campaign',
@@ -45,6 +45,9 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     // local storage name
     transaction: Transaction;
     priceOption: PriceOption;
+
+    maximumNormalPrice: number;
+    thumbnail: string;
 
     modalRef: BsModalRef;
     params: Params;
@@ -105,6 +108,12 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
         this.colorForm.valueChanges.pipe(debounceTime(1000)).subscribe(obs => {
             const stock = obs.stock;
+
+            const product = (this.priceOption.productDetail.products || []).find((p: any) => {
+                return p.colorName === stock.color;
+            });
+            this.thumbnail = product && product.images ? product.images.thumbnail : '';
+
             this.clearPriceOption();
             this.callPriceOptionsService(
                 this.params.brand,
@@ -245,10 +254,23 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     getCampaignSliders(priceOptions: any[], code: string): any[] {
         return priceOptions
             .filter((campaign: any) => {
-                // filter campaign here
-                return campaign.customerGroups.find(
-                    customerGroup => customerGroup.code === code
+                let allowCampaign: boolean = !!campaign.customerGroups.find(
+                    group => group.code === code
                 );
+
+                const campaignCode: string = campaign.code;
+
+                // Allow campaing flow existing only
+                if (this.flowService.isCampaignPrepaid(campaignCode)) {
+                    allowCampaign = allowCampaign && CustomerGroup.EXISTING === code;
+                }
+
+                // Not allow prebooking
+                if (this.flowService.isCampaignPrebooking(campaignCode)) {
+                    allowCampaign = false;
+                }
+
+                return allowCampaign;
             }).map((campaign: any) => {
                 // filter privilege and trades
                 const privileges = this.filterPrivileges(
@@ -347,7 +369,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             orderType: this.getOrderTypeFromCustomerGroup(this.tabs.find(tab => tab.active))
         };
 
-        if (tabActive.code === 'MC001') {
+        if (tabActive.code === CustomerGroup.NEW_REGISTER) {
             params.billingSystem = BillingSystemType.IRB;
         }
 
@@ -363,13 +385,13 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
     getOrderTypeFromCustomerGroup(customerGroup: string): string {
         switch (customerGroup) {
-            case 'MC001':
+            case CustomerGroup.NEW_REGISTER:
                 return 'New Registration';
-            case 'MC002':
+            case CustomerGroup.PRE_TO_POST:
                 return 'Change Charge Type';
-            case 'MC003':
+            case CustomerGroup.MNP:
                 return 'Port - In';
-            case 'MC004':
+            case CustomerGroup.EXISTING:
                 return 'Change Service';
         }
     }
@@ -390,7 +412,8 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         this.modalRef = this.modalService.show(this.installmentTemplate, { class: 'modal-lg' });
     }
 
-    onTradeSelected(trade: any): void {
+    onTradeSelected(privilege: any, trade: any): void {
+        this.priceOption.privilege = privilege;
         this.priceOption.trade = trade;
 
         this.pageLoadingService.openLoading();
@@ -398,6 +421,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             .then((nextUrl: string) => {
                 this.router.navigate([nextUrl]);
             })
+            .catch((error: string) => this.alertService.error(error))
             .then(() => this.pageLoadingService.closeLoading());
     }
 
@@ -487,7 +511,9 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         });
         this.priceOptionDetailService.then((resp: any) => {
             const priceOptions = this.filterCampaigns(resp.data.priceOptions || []);
-
+            if (priceOptions && priceOptions.length > 0) {
+                this.maximumNormalPrice = priceOptions[0].maximumNormalPrice;
+            }
             // generate customer tabs
             this.tabs = this.getTabsFormPriceOptions(priceOptions);
             this.tabs.forEach((tab: any) => {

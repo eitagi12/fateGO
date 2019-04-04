@@ -311,7 +311,7 @@ export class DeviceOrderAisMnpValidateCustomerIdCardPageComponent implements OnI
         contract: priceOption.campaign.conditionCode || {}
       },
       create_by: username,
-      issueBy: transaction.createDate || username,
+      // issueBy: transaction.issueBy || username,
       last_update_by: username
     };
     return transactionDb;

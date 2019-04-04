@@ -37,6 +37,9 @@ export class PrivilegeToTradeSliderPipe implements PipeTransform {
             // ใช้คะแนนบัตรเครดิต
             slider.paymentPoint = !!(trade.payments || []).find(p => p.method === 'PP');
             slider.installments = installments;
+            if (installmentFlag) {
+              slider.description += 'และแพ็กเกจค่าบริการล่วงหน้า';
+            }
           } else {
             slider.description = 'ชำระเต็มจำนวน';
           }
@@ -45,9 +48,6 @@ export class PrivilegeToTradeSliderPipe implements PipeTransform {
         case 'CA/CC':
         default:
           slider.description = 'ชำระเต็มจำนวน';
-      }
-      if (installmentFlag) {
-        slider.description += 'และแพ็กเกจค่าบริการล่วงหน้า';
       }
       return slider;
     });

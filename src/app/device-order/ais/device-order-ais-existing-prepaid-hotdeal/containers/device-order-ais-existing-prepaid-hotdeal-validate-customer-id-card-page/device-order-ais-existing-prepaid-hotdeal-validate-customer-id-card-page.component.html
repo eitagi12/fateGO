@@ -8,10 +8,11 @@
     </div>
   </mc-header>
   <div class="mc-flex-wrap bg-white">
-  
+    <mc-validate-customer-id-card [kioskApi]="kioskApi" (error)="onError($event)" (completed)="onCompleted($event)">
+    </mc-validate-customer-id-card>
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()">NEXT</button>
+    <button class="btn btn-success" *ngIf="!kioskApi" (click)="onNext()" [disabled]="!(!!profile)">NEXT</button>
   </mc-footer>
 </div>

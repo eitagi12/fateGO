@@ -4,6 +4,7 @@ export interface PriceOption {
     productStock?: any;
     customerGroup?: any;
     campaign?: any;
+    privilege?: any;
     trade?: any;
 }
 

@@ -80,14 +80,16 @@ export class DeviceOrderAisNewRegisterSelectPackagePageComponent implements OnIn
   callService(): void {
     this.pageLoadingService.openLoading();
 
-    const campaign: any = this.priceOption.campaign;
+    const trade: any = this.priceOption.trade;
+    const privilege: any = this.priceOption.privilege;
+
     this.promotionShelveService.getPromotionShelve(
       {
-        packageKeyRef: campaign.packageKeyRef,
+        packageKeyRef: trade.packageKeyRef,
         orderType: 'New Registration',
         billingSystem: BillingSystemType.IRB
       },
-      +campaign.minimumPackagePrice, +campaign.maxinumPackagePrice)
+      +privilege.minimumPackagePrice, +privilege.maxinumPackagePrice)
       .then((promotionShelves: any) => {
         this.promotionShelves = this.promotionShelveService.defaultBySelected(promotionShelves, this.transaction.data.mainPackage);
       })
