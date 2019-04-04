@@ -56,7 +56,7 @@ export class DeviceOrderAisPreToPostEbillingAddressPageComponent implements OnIn
         homeNo: customer.homeNo,
         moo: customer.moo,
         mooBan: customer.mooBan,
-        room: customer.floor,
+        room: customer.room,
         floor: customer.floor,
         buildingName: customer.buildingName,
         soi: customer.soi,

@@ -2,14 +2,16 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { Router } from '@angular/router';
 import { HomeService, ShoppingCart, Utils } from 'mychannel-shared-libs';
-
+import {
+  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_MOBILE_CARE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ECONTRACT_PAGE
+} from '../../constants/route-path.constant';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
-import { ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_MOBILE_CARE_PAGE, ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ECONTRACT_PAGE } from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-pre-to-post-summary-page',
