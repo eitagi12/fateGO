@@ -30,7 +30,7 @@ describe('SummarySellerCodeComponent', () => {
         provide: TokenService,
         useValue: {
           getUser: jest.fn(() => {
-            return { username: 'MC'}
+            return { username: 'MC'};
           })
         }
       }
