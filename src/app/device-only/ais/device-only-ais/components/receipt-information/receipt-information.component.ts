@@ -37,7 +37,6 @@ export class ReceiptInformationComponent implements OnInit {
   amphurs: any;
   tumbols: any;
   zipCode: any;
-  ebillingAddressValid: boolean;
   nameText: string;
   billingAddressText: string;
   keyInCustomerAddressTemp: any;
@@ -201,6 +200,9 @@ export class ReceiptInformationComponent implements OnInit {
     const isShowInput = !this.isShowInputForKeyIn;
     this.billingAddress.setIsKeyInBillingAddress(isShowInput);
     this.isShowInputForKeyIn = isShowInput;
+    this.nameText = '';
+    this.billingAddressText = '';
+    this.receiptInfoForm.controls['taxId'].setValue('');
   }
 
   onProvinceSelected(params: any): void {
@@ -255,7 +257,7 @@ export class ReceiptInformationComponent implements OnInit {
   }
 
   onError(valid: boolean): void {
-    this.ebillingAddressValid = valid;
+    this.error.emit(valid);
   }
 
   private assignProvinceAndZipCode(province: any, zipCode: string): void {
