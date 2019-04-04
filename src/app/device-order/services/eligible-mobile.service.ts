@@ -5,7 +5,7 @@ import { EligibleMobile, AlertService } from 'mychannel-shared-libs';
 @Injectable({
   providedIn: 'root'
 })
-export class MobileListService {
+export class EligibleMobileService {
 
   constructor(
     private http: HttpClient,
@@ -33,7 +33,7 @@ export class MobileListService {
     }
   }
 
-  private async prepaidMobileList(resp: any): Promise<EligibleMobile[]> {
+  async prepaidMobileList(resp: any): Promise<EligibleMobile[]> {
     const prepaidMobileList = resp.data.postpaidMobileList || [];
     const mobiles: Array<EligibleMobile> = new Array<EligibleMobile>();
     prepaidMobileList.forEach((mobile: {
@@ -46,7 +46,7 @@ export class MobileListService {
     return mobiles;
   }
 
-  private async postpaidMobileList(resp: any, ussdCode: string): Promise<EligibleMobile[]> {
+  async postpaidMobileList(resp: any, ussdCode: string): Promise<EligibleMobile[]> {
     const postpaidMobileList = resp.data.postpaidMobileList || [];
     const mobiles: Array<EligibleMobile> = new Array<EligibleMobile>();
     postpaidMobileList.forEach(async(mobile: any) => {
@@ -105,7 +105,7 @@ export class MobileListService {
     });
   }
 
-  private checkDeviceTransaction(mobileNo: string, ussdCode: string, resovle: (value?: any) => void, status: string): void {
+  checkDeviceTransaction(mobileNo: string, ussdCode: string, resovle: (value?: any) => void, status: string): void {
     this.http.post(`/api/salesportal/privilege/check-device-transaction`, {
       msisdn: mobileNo,
       shortCode: ussdCode,

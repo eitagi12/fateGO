@@ -1,17 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { EligibleMobile, HomeService } from 'mychannel-shared-libs';
-import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import {
   ROUTE_DEVICE_ORDER_AIS_EXISTING_CUSTOMER_INFO_PAGE,
   ROUTE_DEVICE_ORDER_AIS_EXISTING_CHANGE_PACKAGE_PAGE
 } from '../../constants/route-path.constant';
-import { MobileListService } from 'src/app/device-order/services/mobile-list.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { EligibleMobileService } from 'src/app/device-order/services/eligible-mobile.service';
 
 export interface BillingAccount {
   billingName: string;
@@ -48,7 +47,7 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
     private transactionService: TransactionService,
     private homeService: HomeService,
     private priceOptionService: PriceOptionService,
-    private mobileListService: MobileListService
+    private eligibleMobileService: EligibleMobileService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -58,7 +57,7 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
     if (this.transaction.data.customer) {
       this.idCardNo = this.transaction.data.customer.idCardNo;
       const ussdCode = this.priceOption.trade.ussdCode;
-      this.mobileListService.getMobileList(this.idCardNo, ussdCode, `POSTPAID`)
+      this.eligibleMobileService.getMobileList(this.idCardNo, ussdCode, `POSTPAID`)
       .then(mobiles =>  this.eligibleMobiles = mobiles);
     } else {
       this.onBack();
