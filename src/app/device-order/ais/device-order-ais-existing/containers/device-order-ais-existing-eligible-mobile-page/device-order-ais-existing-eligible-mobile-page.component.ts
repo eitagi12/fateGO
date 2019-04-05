@@ -1,16 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
-import { EligibleMobile, HomeService } from 'mychannel-shared-libs';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { HomeService } from 'mychannel-shared-libs';
+import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import {
   ROUTE_DEVICE_ORDER_AIS_EXISTING_CUSTOMER_INFO_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_EXISTING_CHANGE_PACKAGE_PAGE
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_CHANGE_PACKAGE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_DETAIL_PAGE
 } from '../../constants/route-path.constant';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { EligibleMobileService } from 'src/app/device-order/services/eligible-mobile.service';
+import { HttpClient } from '@angular/common/http';
+import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
+import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
 
 export interface BillingAccount {
   billingName: string;
@@ -23,6 +26,13 @@ export interface BillingAccount {
   bill: string;
   productPkg: string;
   billMedia: string;
+}
+
+interface EligibleMobile {
+  mobileNo: string;
+  mobileStatus: 'Active' | 'Suspended';
+  privilegeCode?: string;
+  privilegeMessage?: string;
 }
 
 @Component({
@@ -44,10 +54,12 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
 
   constructor(
     private router: Router,
+    private http: HttpClient,
     private transactionService: TransactionService,
     private homeService: HomeService,
     private priceOptionService: PriceOptionService,
-    private eligibleMobileService: EligibleMobileService
+    private privilegeService: PrivilegeService,
+    private customerInfoService: CustomerInfoService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -57,8 +69,17 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
     if (this.transaction.data.customer) {
       this.idCardNo = this.transaction.data.customer.idCardNo;
       const ussdCode = this.priceOption.trade.ussdCode;
-      this.eligibleMobileService.getMobileList(this.idCardNo, ussdCode, `POSTPAID`)
-      .then(mobiles =>  this.eligibleMobiles = mobiles);
+      this.http.post('/api/customerportal/query-eligible-mobile-list', {
+        idCardNo: this.idCardNo,
+        ussdCode: ussdCode,
+        mobileType: `Post-paid`,
+        chkMainProFlg: true
+      }).toPromise()
+        .then((response: any) => {
+          const eMobileResponse = response.data;
+          console.log('eMobileResponse.postpaid ', eMobileResponse.postpaid );
+          this.eligibleMobiles = eMobileResponse.postpaid || [];
+        });
     } else {
       this.onBack();
     }
@@ -74,7 +95,26 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
 
   onNext(): void {
     this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo, persoSim: false };
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_CHANGE_PACKAGE_PAGE]);
+    if (this.selectMobileNo.privilegeCode) {
+      this.transaction.data.customer.privilegeCode = this.selectMobileNo.privilegeCode;
+    } else if (this.selectMobileNo.privilegeMessage === `MT_INVALID_CRITERIA_MAINPRO`) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_CHANGE_PACKAGE_PAGE]);
+    } else {
+      const ussdCode = this.priceOption.trade.ussdCode;
+      console.log(this.selectMobileNo.mobileNo, ussdCode, this.selectMobileNo.privilegeCode);
+      this.privilegeService.requestUsePrivilege(this.selectMobileNo.mobileNo, ussdCode, this.selectMobileNo.privilegeCode)
+      .then((privilegeCode) => {
+        this.transaction.data.customer.privilegeCode = privilegeCode;
+        this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo };
+        if (this.transaction.data.customer && this.transaction.data.customer.firstName === '-') {
+          this.customerInfoService.getCustomerProfileByMobileNo(this.transaction.data.simCard.mobileNo,
+            this.transaction.data.customer.idCardNo).then((customer: Customer) => {
+              this.transaction.data.customer = { ...this.transaction.data.customer, ...customer };
+            });
+        }
+      });
+    }
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_DETAIL_PAGE]);
   }
 
   onHome(): void {
