@@ -11,6 +11,7 @@ import { HttpClient } from '../../../../../../../node_modules/@angular/common/ht
 import { environment } from 'src/environments/environment';
 import { TransactionService } from '../../../../../shared/services/transaction.service';
 import { Transaction } from '../../../../../shared/models/transaction.model';
+import { MobileCareService } from '../../services/mobile-care.service';
 
 export interface MobileCare {
   nextBillEffective?: boolean;
@@ -51,6 +52,7 @@ export class MobileCareComponent implements OnInit {
   public isValidNotBuyMobile: boolean = false;
   public normalPriceMock: number;
   public normalPrice: number;
+  public currentPackageMobileCare: any[];
 
   @Input() promotionMock: any;
   @Output() completed: EventEmitter<any> = new EventEmitter<any>();
@@ -76,7 +78,8 @@ export class MobileCareComponent implements OnInit {
     private priceOptionService: PriceOptionService,
     private http: HttpClient,
     private pageLoadingService: PageLoadingService,
-    private transactionService: TransactionService
+    private transactionService: TransactionService,
+    private mobileCareService: MobileCareService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -219,18 +222,22 @@ export class MobileCareComponent implements OnInit {
   private checkMobileCare(mobileNo: string): void {
     this.customerInformationService.getBillingByMobileNo(mobileNo).then((res: any) => {
       for (let index = 0; index < res.data.currentPackage.length; index++) {
-        const productGroupPackage = res.data.currentPackage[index].produuctGroup;
-        if (productGroupPackage && productGroupPackage === 'Mobile Care') {
+        if (res.data.currentPackage[index].produuctGroup && res.data.currentPackage[index].produuctGroup === 'Mobile Care') {
+          this.currentPackageMobileCare = res.data.currentPackage[index];
           this.isPrivilegeCustomer = false;
-          this.popupMobileCare();
+          this.popupMobileCare(this.currentPackageMobileCare);
+          console.log('=====> : ', res.data);
         } else {
+          this.currentPackageMobileCare = res.data.currentPackage;
           this.isPrivilegeCustomer = true;
         }
       }
     });
   }
 
-  private popupMobileCare(): void {
+  private popupMobileCare(currentPackageMobileCare: any): void {
+    const endDt = currentPackageMobileCare.endDt;
+    const descThai = currentPackageMobileCare.descThai;
     const form = this.privilegeCustomerForm.getRawValue();
     this.alertService.notify({
       type: 'warning',
@@ -243,10 +250,9 @@ export class MobileCareComponent implements OnInit {
       showConfirmButton: true,
       reverseButtons: true,
       allowEscapeKey: false,
-      // ${this.mobileNoService.getMobileNo(form.mobileNo)}
-      html: `หมายเลข สมัครบริการโมบายแคร์กับเครื่อง <br> Samsung Note 9 แล้ว
-      <br> (แพ็กเกจ xxxxxx สิ้นสุด dd/mm/yyyy) <br> กรุณาเปลี่ยนเบอร์ใหม่ หรือยืนยันสมัครบริการโมบายแคร์กับ <br>
-      เครื่อง Samsung S10 Plus <br> <div class="text-red">*บริการโมบายแคร์กับเครื่องเดิมจะสิ้นสุดทันที</div>`
+      html: `หมายเลข ${this.mobileCareService.mobileNoPipe(form.mobileNo)}  สมัครบริการโมบายแคร์กับเครื่อง <br> Samsung Note 9 แล้ว
+      <br> (แพ็กเกจ ${descThai} สิ้นสุด ${endDt}) <br> กรุณาเปลี่ยนเบอร์ใหม่ หรือยืนยันสมัครบริการโมบายแคร์กับ <br>
+      เครื่อง iPhone 6S Plus <br> <div class="text-red">*บริการโมบายแคร์กับเครื่องเดิมจะสิ้นสุดทันที</div>`
     }).then((data) => {
       if (data.value && data.value === true) {
         this.sendOTP();

@@ -14,8 +14,8 @@ export class MobileCareService {
     private http: HttpClient
   ) { }
 
-  mobileNoPipe(mobile: string): string {
-    return new MobileNoPipe().transform(mobile);
+  mobileNoPipe(mobileNo: string): string {
+    return new MobileNoPipe().transform(mobileNo);
   }
 
   getMobileCare(
