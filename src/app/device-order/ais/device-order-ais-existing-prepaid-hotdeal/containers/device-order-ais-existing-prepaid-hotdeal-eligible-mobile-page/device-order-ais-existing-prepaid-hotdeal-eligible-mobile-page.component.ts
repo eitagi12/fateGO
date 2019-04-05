@@ -187,8 +187,8 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
                   } else {
                       return null;
                   }
-              }).catch((error: any) => {
-                  console.log('Check device transaction ', error);
+              }).catch((errorres: any) => {
+                  console.log('Check device transaction ', errorres);
                   return null;
               });
                 // this.checkDeviceTransaction(mobile, ussdCode)

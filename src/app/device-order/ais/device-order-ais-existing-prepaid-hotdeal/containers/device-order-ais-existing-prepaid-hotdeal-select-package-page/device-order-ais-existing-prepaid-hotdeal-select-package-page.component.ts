@@ -66,7 +66,7 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
     const trade: any = this.priceOption.trade;
     const privilege: any = this.priceOption.privilege;
 
-    this.http.get('/api/customerportal/newRegister/queryOnTopPackage'{
+    this.http.get('/api/customerportal/newRegister/queryOnTopPackage', {
       params: {
         orderType: 'Change Promotion',
         billingSystem: BillingSystemType.IRB,
@@ -76,9 +76,9 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
       }
     }).toPromise()
     .then((resp: any) => {
-      this.pageLoadingService.closeLoading()
+      this.pageLoadingService.closeLoading();
       console.log('resp', resp);
-      
+
     });
 
     this.promotionShelveService.getPromotionShelve(
