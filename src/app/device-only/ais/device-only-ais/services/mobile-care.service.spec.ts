@@ -1,11 +1,16 @@
 import { TestBed, inject } from '@angular/core/testing';
-
 import { MobileCareService } from './mobile-care.service';
+import { HttpClient } from '@angular/common/http';
+import { HttpHandler } from '@angular/common/http';
 
 describe('MobileCareService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
-      providers: [MobileCareService]
+      providers: [
+        MobileCareService,
+        HttpClient,
+        HttpHandler
+      ]
     });
   });
 
