@@ -216,6 +216,9 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
   }
 
   onMailBillingInfoCompleted(mailBillingInfo: any): void {
+    if (!mailBillingInfo) {
+      return;
+    }
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData || {};
 
@@ -243,6 +246,11 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
 
   onTelNoBillingError(valid: boolean): void {
     this.isTelNoBillingValid = valid;
+  }
+
+  isNext(): boolean {
+    // !(isTelNoBillingValid &&(isMailBillingInfoValid || isMergeBilling()))
+    return this.isTelNoBillingValid && this.isMailBillingInfoValid;
   }
 
   onBack(): void {

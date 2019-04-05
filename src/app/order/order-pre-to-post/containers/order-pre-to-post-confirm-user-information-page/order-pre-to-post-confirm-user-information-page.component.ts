@@ -215,6 +215,9 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
   }
 
   onMailBillingInfoCompleted(mailBillingInfo: any): void {
+    if (!mailBillingInfo) {
+      return;
+    }
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData || {};
 
@@ -242,6 +245,11 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
 
   onTelNoBillingError(valid: boolean): void {
     this.isTelNoBillingValid = valid;
+  }
+
+  isNext(): boolean {
+    // !(isTelNoBillingValid &&(isMailBillingInfoValid || isMergeBilling()))
+    return this.isTelNoBillingValid && this.isMailBillingInfoValid;
   }
 
   onBack(): void {

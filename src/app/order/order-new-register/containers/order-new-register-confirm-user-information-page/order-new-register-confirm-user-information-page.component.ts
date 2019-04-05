@@ -216,6 +216,10 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
   }
 
   onMailBillingInfoCompleted(mailBillingInfo: any): void {
+    if (!mailBillingInfo) {
+      return;
+    }
+    console.log(mailBillingInfo);
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData || {};
 
@@ -243,6 +247,11 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
 
   onTelNoBillingError(valid: boolean): void {
     this.isTelNoBillingValid = valid;
+  }
+
+  isNext(): boolean {
+    // !(isTelNoBillingValid &&(isMailBillingInfoValid || isMergeBilling()))
+    return this.isTelNoBillingValid && this.isMailBillingInfoValid;
   }
 
   onBack(): void {

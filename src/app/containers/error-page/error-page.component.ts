@@ -19,4 +19,8 @@ export class ErrorPageComponent implements OnInit {
     this.routeParams = this.activatedRoute.snapshot.queryParams;
     this.data = this.activatedRoute.snapshot.data;
   }
+
+  goToHome(): void {
+    window.location.href = '/smart-shop';
+  }
 }
