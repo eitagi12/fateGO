@@ -105,6 +105,9 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
     // tslint:disable-next-line:no-shadowed-variable
     const errMsg = 'ไม่สามารถทำรายการได้ เนื่องจากหมายเลขนี้ยังไม่เปิดใช้บริการในระบบเติมเงิน';
     const errMsgNotPrepaid = 'ไม่สามารถทำรายการได้ เนื่องจากเป็นหมายเลขระบบรายเดือน';
+    const verify: any = {
+      isVerify: false
+    };
     return new Promise((resolve, reject) => {
       this.http.get(`/api/customerportal/asset/${mobileNo}/profile`).toPromise()
       .then((resp: any) => {
@@ -112,6 +115,7 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
           return reject(errMsg);
         }
         const data = resp.data;
+        verify.profile = data;
         const status = data.mobileStatus;
         if (data.chargeType !== 'Pre-paid') {
           return reject(errMsgNotPrepaid);
@@ -132,9 +136,10 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
           this.http.get(`/api/customerportal/newRegister/verifyPrepaidIdent?idCard=${this.idCardNo}&mobileNo=${this.addMobileNo}`)
           .toPromise()
           .then((respPrepaid: any) => {
-            resolve(!!(respPrepaid.data && respPrepaid.data.success));
+            verify.isVerify = !!(respPrepaid.data && respPrepaid.data.success);
+            resolve(verify);
           })
-          .catch(() => { resolve(false); });
+          .catch(() => { resolve(verify); });
         })
         .catch((err: any) => {
           const error = err.error;
@@ -154,12 +159,23 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
     if (this.addMobileNo) {
       this.verifyMobileNo(this.addMobileNo, ussdCode).then((res: any) => {
         this.pageLoadingService.closeLoading();
-        if (res) {
+        const profile = res.profile;
+        this.transaction.data.simCard = {
+          mobileNo: this.addMobileNo,
+          persoSim: false,
+          chargeType: profile.chargeType || ChargeType.PRE_PAID,
+          simSerial: profile.simSerialNo,
+          billingSystem: profile.billingSystem,
+          nType: profile.product,
+          mobileNoStatus: 'Active'
+        };
+        if (res.isVerify) {
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_CUSTOMER_INFO_PAGE]);
         } else {
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_OTP_PAGE]);
         }
       }).catch((err: any) => {
+        console.log('err', err);
         this.pageLoadingService.closeLoading();
         this.alertService.error(err);
       });
