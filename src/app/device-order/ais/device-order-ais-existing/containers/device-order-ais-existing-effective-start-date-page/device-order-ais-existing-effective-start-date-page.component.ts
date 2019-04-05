@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { Router } from '@angular/router';
-import { HomeService } from 'mychannel-shared-libs';
+import { HomeService, ShoppingCart } from 'mychannel-shared-libs';
 import {
   ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE
 } from '../../constants/route-path.constant';
+import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-effective-start-date-page',
@@ -15,13 +16,15 @@ import {
 export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements OnInit {
 
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
-
+  shoppingCart: ShoppingCart;
   constructor(
     private router: Router,
-    private homeService: HomeService
+    private homeService: HomeService,
+    private shoppingCartService: ShoppingCartService,
   ) { }
 
   ngOnInit(): void {
+    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
   }
 
   onBack(): void {

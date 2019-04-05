@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
-import { HomeService } from 'mychannel-shared-libs';
+import { HomeService, ShoppingCart } from 'mychannel-shared-libs';
 import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -14,6 +14,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { HttpClient } from '@angular/common/http';
 import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
 import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
+import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 
 export interface BillingAccount {
   billingName: string;
@@ -49,6 +50,7 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
   priceOption: PriceOption;
   billingAccountList: Array<BillingAccount>;
   billingNetExtremeList: Array<BillingAccount>;
+  shoppingCart: ShoppingCart;
 
   idCardNo: string;
 
@@ -59,18 +61,20 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
     private homeService: HomeService,
     private priceOptionService: PriceOptionService,
     private privilegeService: PrivilegeService,
-    private customerInfoService: CustomerInfoService
+    private customerInfoService: CustomerInfoService,
+    private shoppingCartService: ShoppingCartService,
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
   }
 
   ngOnInit(): void {
+    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     if (this.transaction.data.customer) {
       this.idCardNo = this.transaction.data.customer.idCardNo;
       const ussdCode = this.priceOption.trade.ussdCode;
       this.http.post('/api/customerportal/query-eligible-mobile-list', {
-        idCardNo: this.idCardNo,
+        idCardNo: '1670300171423',
         ussdCode: ussdCode,
         mobileType: `Post-paid`,
         chkMainProFlg: true
