@@ -150,9 +150,6 @@ export class ReceiptInformationComponent implements OnInit {
     this.action.emit(data.action);
     this.customerInfo = { customer, billDeliveryAddress };
     this.receiptInfoForm.controls['taxId'].setValue(data.customer.idCardNo);
-    if (this.customerInfoService.getSelectedMobileNo()) {
-      this.receiptInfoForm.controls['telNo'].setValue(this.customerInfoService.getSelectedMobileNo());
-    }
     this.billingAddress.getLocationName()
     .subscribe((resp) => this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName));
     this.nameText = data.customer.titleName + ' ' + data.customer.firstName + ' ' + data.customer.lastName;
