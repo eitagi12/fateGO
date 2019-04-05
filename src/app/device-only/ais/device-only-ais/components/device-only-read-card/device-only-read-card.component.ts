@@ -243,6 +243,7 @@ export class DeviceOnlyReadCardComponent implements OnInit {
     this.pageLoadingService.openLoading();
     const billingAddressSelected = this.selectBillingAddressForm.value.billingAddress;
     if (billingAddressSelected === this.ADDRESS_BY_SMART_CARD) {
+      this.customerInfoService.setSelectedMobileNo('');
       this.customerInfo.emit({
         customer: this.infoBySmartCard,
         action: TransactionAction.READ_CARD
