@@ -128,6 +128,7 @@ export interface SimCard {
   persoSim?: boolean;
   privilegeCode?: string;
   nType?: string;
+  mobileNoStatus?: 'Active' | 'Suspended';
 }
 
 export interface MainPackage {
