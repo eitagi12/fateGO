@@ -47,13 +47,7 @@ describe('DeviceOnlyAisSummaryPageComponent', () => {
       {
         provide: TransactionService,
         useValue: {
-          load: jest.fn(() => {
-            return {
-              data: {
-                reasonCode: 'ยังไม่ตัดสินใจ'
-              }
-            };
-          })
+          load: jest.fn()
         }
       },
       {

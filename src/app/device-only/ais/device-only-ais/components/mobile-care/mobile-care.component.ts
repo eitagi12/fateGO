@@ -3,7 +3,6 @@ import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl, FormC
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
 import { AlertService, PageLoadingService } from 'mychannel-shared-libs';
-import { MobileNoService } from './mobile-no.service';
 import { CustomerInformationService } from '../../services/customer-information.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -40,7 +39,7 @@ export interface MobileCareItem {
   selector: 'app-mobile-care',
   templateUrl: './mobile-care.component.html',
   styleUrls: ['./mobile-care.component.scss'],
-  providers: [MobileNoService]
+  providers: []
 })
 export class MobileCareComponent implements OnInit {
   wizards: string[] = WIZARD_DEVICE_ONLY_AIS;
@@ -73,7 +72,6 @@ export class MobileCareComponent implements OnInit {
     private formBuilder: FormBuilder,
     private modalService: BsModalService,
     private alertService: AlertService,
-    private mobileNoService: MobileNoService,
     private customerInformationService: CustomerInformationService,
     private priceOptionService: PriceOptionService,
     private http: HttpClient,
@@ -245,7 +243,8 @@ export class MobileCareComponent implements OnInit {
       showConfirmButton: true,
       reverseButtons: true,
       allowEscapeKey: false,
-      html: `หมายเลข ${this.mobileNoService.getMobileNo(form.mobileNo)} สมัครบริการโมบายแคร์กับเครื่อง <br> Samsung Note 9 แล้ว
+      // ${this.mobileNoService.getMobileNo(form.mobileNo)}
+      html: `หมายเลข สมัครบริการโมบายแคร์กับเครื่อง <br> Samsung Note 9 แล้ว
       <br> (แพ็กเกจ xxxxxx สิ้นสุด dd/mm/yyyy) <br> กรุณาเปลี่ยนเบอร์ใหม่ หรือยืนยันสมัครบริการโมบายแคร์กับ <br>
       เครื่อง Samsung S10 Plus <br> <div class="text-red">*บริการโมบายแคร์กับเครื่องเดิมจะสิ้นสุดทันที</div>`
     }).then((data) => {

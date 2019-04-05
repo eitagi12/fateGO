@@ -42,7 +42,7 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit , OnDestroy {
 
   ngOnInit(): void {
     this.homeButtonService.initEventButtonHome();
-    this.isReasonNotBuyMobileCare = this.transaction.data.reasonCode ? false : true;
+    // this.isReasonNotBuyMobileCare = this.transaction.data.reasonCode ? false : true;
   }
 
   checkSeller(seller: Seller): void {
