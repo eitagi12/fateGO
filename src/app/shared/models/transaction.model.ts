@@ -127,6 +127,7 @@ export interface SimCard {
   chargeType?: ChargeType;
   persoSim?: boolean;
   privilegeCode?: string;
+  nType?: string;
 }
 
 export interface MainPackage {

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, ShoppingCart, EligibleMobile, REGEX_MOBILE, PageLoadingService } from 'mychannel-shared-libs';
+import { HomeService, ShoppingCart, EligibleMobile, REGEX_MOBILE, PageLoadingService, ChargeType } from 'mychannel-shared-libs';
 import {
   ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_CUSTOMER_INFO_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_VALIDATE_CUSTOMER_ID_CARD_PAGE
@@ -12,6 +12,8 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { resolve } from 'dns';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 
 export interface BillingAccount {
   billingName: string;
@@ -41,6 +43,7 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
   billingAccountList: Array<BillingAccount>;
   billingNetExtremeList: Array<BillingAccount>;
   eligibleAddMobile: FormGroup;
+  priceOption: PriceOption;
 
   idCardNo: string;
 
@@ -50,6 +53,7 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
     private http: HttpClient,
     private shoppingCartService: ShoppingCartService,
     private transactionService: TransactionService,
+    private priceOptionService: PriceOptionService,
     private fb: FormBuilder,
     private pageLoadingService: PageLoadingService,
   ) {
@@ -57,6 +61,7 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
     this.shoppingCart = Object.assign(this.shoppingCartService.getShoppingCartData(), {
       mobileNo: ''
     });
+    this.priceOption = this.priceOptionService.load();
     this.createForm();
   }
 
@@ -86,8 +91,8 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
   getMobileList(): void {
     this.http.get(`/api/customerportal/newRegister/${this.idCardNo}/queryPrepaidMobileList`).toPromise()
       .then((resp: any) => {
-        const postpaidMobileList = resp.data.postpaidMobileList || [];
-        this.mapPrepaidMobileNo(postpaidMobileList);
+        const prepaidMobileList = resp.data.prepaidMobileList || [];
+        this.mapPrepaidMobileNo(prepaidMobileList);
       })
       .catch(() => {
       });
@@ -99,6 +104,8 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
       mobiles.push({ mobileNo: element.mobileNo, mobileStatus: element.status });
     });
     this.eligibleMobiles = mobiles;
+    console.log('this.eligibleMobiles', this.eligibleMobiles);
+    console.log('checkPrivilage', this.checkPrivilage(this.eligibleMobiles));
   }
 
   verifyMobileNo(mobileNo: string): Promise<any> {
@@ -141,11 +148,12 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
     });
   }
 
-  checkPrivilage(mobiles: any[], ussdCode: string): Promise<any[]> {
+  checkPrivilage(mobiles: any[]): Promise<any[]> {
     if (!mobiles) {
         return Promise.resolve([]);
     }
     const promise = [];
+    const ussdCode = this.priceOption.trade.ussdCode;
     mobiles.forEach(mobile => {
         // tslint:disable-next-line:no-shadowed-variable
         const service = new Promise((resolve, reject) => {
@@ -160,11 +168,31 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
                 resolve(null);
             }
           }).catch((error: any) => {
-            console.log('Check privilage ', error);
+            // console.log('Check privilage ', error);
             const data = this.handleResponseError(error);
               if (data.description === 'DUPLICATE' || data.description === 'SEND_MSG_AGAIN') {
-                  // this.checkDeviceTransaction(mobile, ussdCode)
-                  //           .then(resolve).catch(() => resolve(null));
+                this.http.post(`/api/salesportal/privilege/check-device-transaction`, {
+                  msisdn: mobile.mobileNo,
+                  shortCode: ussdCode,
+                  numDay: 15
+                }).toPromise()
+                .then((deviceResp: any) => {
+                  if (deviceResp.data.status === '20000') {
+                      // ตรวจสอบสิทธิ์การใช้ privilege
+                      return {
+                          mobileNo: mobile.mobileNo,
+                          privilegeCode: ussdCode,
+                          status: mobile.status
+                      };
+                  } else {
+                      return null;
+                  }
+              }).catch((error: any) => {
+                  console.log('Check device transaction ', error);
+                  return null;
+              });
+                // this.checkDeviceTransaction(mobile, ussdCode)
+                // .then(resolve).catch(() => resolve(null));
               } else {
                 resolve(null);
               }
@@ -196,10 +224,31 @@ handleResponseError(error: any): any {
     if (this.addMobileNo) {
       this.verifyMobileNo(this.addMobileNo).then((res: any) => {
         this.pageLoadingService.closeLoading();
+      }).catch(() => {
+        this.pageLoadingService.closeLoading();
+      });
+    } else {
+      this.http.get(`/api/customerportal/asset/${this.selectMobileNo.mobileNo}/profile`).toPromise()
+      .then((resp: any) => {
+        if (resp && resp.data) {
+          const data = resp.data;
+          this.transaction.data.simCard = {
+            mobileNo: this.selectMobileNo.mobileNo,
+            persoSim: false,
+            chargeType: data.chargeType || ChargeType.PRE_PAID,
+            simSerial: data.simSerialNo,
+            billingSystem: data.billingSystem,
+            nType: data.product
+          };
+          this.pageLoadingService.closeLoading();
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_CUSTOMER_INFO_PAGE]);
+        } else {
+          this.pageLoadingService.closeLoading();
+        }
+      }).catch(() => {
+        this.pageLoadingService.closeLoading();
       });
     }
-    // this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo , persoSim: false };
-    // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_CUSTOMER_INFO_PAGE]);
   }
 
   onBack(): void {

@@ -13,6 +13,7 @@ import { BsModalRef } from 'ngx-bootstrap';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PromotionShelveService } from 'src/app/device-order/services/promotion-shelve.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-device-order-ais-existing-prepaid-hotdeal-select-package-page',
@@ -41,7 +42,8 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
     private priceOptionService: PriceOptionService,
     private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,
-    private promotionShelveService: PromotionShelveService
+    private promotionShelveService: PromotionShelveService,
+    private http: HttpClient,
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -63,6 +65,21 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
 
     const trade: any = this.priceOption.trade;
     const privilege: any = this.priceOption.privilege;
+
+    this.http.get('/api/customerportal/newRegister/queryOnTopPackage'{
+      params: {
+        orderType: 'Change Promotion',
+        billingSystem: BillingSystemType.IRB,
+        chargeType: 'Pre-paid',
+        allowNtype: '3PE',
+        cpcUserId: trade.packageKeyRef
+      }
+    }).toPromise()
+    .then((resp: any) => {
+      this.pageLoadingService.closeLoading()
+      console.log('resp', resp);
+      
+    });
 
     this.promotionShelveService.getPromotionShelve(
       {

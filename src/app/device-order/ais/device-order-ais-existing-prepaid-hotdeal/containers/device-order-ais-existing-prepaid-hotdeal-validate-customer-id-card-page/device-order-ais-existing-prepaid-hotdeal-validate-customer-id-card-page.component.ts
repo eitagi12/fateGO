@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, ValidateCustomerIdCardComponent, ReadCardProfile, PageLoadingService, TokenService, AlertService, Utils, KioskControls, ChannelType } from 'mychannel-shared-libs';
+import { HomeService, ValidateCustomerIdCardComponent, ReadCardProfile, PageLoadingService, TokenService, AlertService, Utils, KioskControls, ChannelType, ChargeType } from 'mychannel-shared-libs';
 import { ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_ELIGIBLE_MOBILE_PAGE } from '../../constants/route-path.constant';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
