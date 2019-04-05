@@ -248,6 +248,11 @@ export class OrderMnpConfirmUserInformationPageComponent implements OnInit, OnDe
     this.isTelNoBillingValid = valid;
   }
 
+  isNext(): boolean {
+    // !(isTelNoBillingValid &&(isMailBillingInfoValid || isMergeBilling()))
+    return this.isTelNoBillingValid && this.isMailBillingInfoValid;
+  }
+
   onBack(): void {
     if (this.isPackageNetExtreme()) {
       this.router.navigate([ROUTE_ORDER_MNP_MERGE_BILLING_PAGE]);

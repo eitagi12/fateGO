@@ -247,6 +247,11 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
     this.isTelNoBillingValid = valid;
   }
 
+  isNext(): boolean {
+    // !(isTelNoBillingValid &&(isMailBillingInfoValid || isMergeBilling()))
+    return this.isTelNoBillingValid && this.isMailBillingInfoValid;
+  }
+
   onBack(): void {
     if (this.isPackageNetExtreme()) {
       this.router.navigate([ROUTE_ORDER_PRE_TO_POST_MERGE_BILLING_PAGE]);

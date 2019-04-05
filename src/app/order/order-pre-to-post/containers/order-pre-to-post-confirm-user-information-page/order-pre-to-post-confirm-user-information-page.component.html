@@ -18,8 +18,9 @@
       <mc-billing-info [billingInfo]="billingInfo" (editAddress)="onEditAddress()">
       </mc-billing-info>
 
-      <mc-mail-billing-info [eBill]="eBill" [disabled]="isPackageNetExtreme() || isMergeBilling()" [mailBillingInfo]="mailBillingInfo"
-        (completed)="onMailBillingInfoCompleted($event)" (error)="onMailBillingInfoError($event)">
+      <mc-mail-billing-info [eBill]="eBill" [disabled]="isPackageNetExtreme() || isMergeBilling()"
+        [mailBillingInfo]="mailBillingInfo" (completed)="onMailBillingInfoCompleted($event)"
+        (error)="onMailBillingInfoError($event)">
       </mc-mail-billing-info>
 
       <mc-tel-no-billing-info [telNoBillingInfo]="telNoBillingInfo" (completed)="onTelNoBillingCompleted($event)"
@@ -29,6 +30,6 @@
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()" [disabled]="!(isTelNoBillingValid &&(isMailBillingInfoValid || isMergeBilling()))">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!isNext()">NEXT</button>
   </mc-footer>
 </div>

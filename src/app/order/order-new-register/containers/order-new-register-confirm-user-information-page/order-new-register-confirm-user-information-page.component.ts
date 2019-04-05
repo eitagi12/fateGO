@@ -249,6 +249,11 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
     this.isTelNoBillingValid = valid;
   }
 
+  isNext(): boolean {
+    // !(isTelNoBillingValid &&(isMailBillingInfoValid || isMergeBilling()))
+    return this.isTelNoBillingValid && this.isMailBillingInfoValid;
+  }
+
   onBack(): void {
     if (this.isPackageNetExtreme()) {
       this.router.navigate([ROUTE_ORDER_NEW_REGISTER_MERGE_BILLING_PAGE]);
