@@ -22,6 +22,8 @@ export class DeviceOnlyAutoGetQueuePageComponent implements OnInit, OnDestroy {
   priceOption: PriceOption;
   queueSubscript: Subscription;
   public mobileForm: FormGroup;
+  public queue: string;
+  public queueForm: FormGroup;
 
   constructor(
     public router: Router,
@@ -41,6 +43,7 @@ export class DeviceOnlyAutoGetQueuePageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.homeButtonService.initEventButtonHome();
     this.createForm();
+    this.createQueueForm();
   }
 
   onHome(): void {
@@ -60,30 +63,54 @@ export class DeviceOnlyAutoGetQueuePageComponent implements OnInit, OnDestroy {
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    this.autoGetQueue();
+    if (!this.transaction.data.queue) {
+      this.autoGetQueue();
+    } else {
+      this.transaction.data.queue.queueNo = this.queueForm.value.queueNo;
+    }
   }
 
   private autoGetQueue(): void {
     const mobile = this.mobileForm.value.mobileNo;
     this.queueService.autoGetQueue(mobile).then((data) => {
       this.checkDataLinkPage(data);
-    }).catch((error) => {
+      this.transaction.data.queue = {
+        queueNo: data
+      };
+    }).catch((error: any) => {
       this.pageLoadingService.closeLoading();
       this.router.navigate([ROUTE_DEVICE_ONLY_AIS_KEY_IN_QUEUE]);
     });
   }
 
   private checkDataLinkPage(data: any): void {
+    this.queue = data;
     if (data) {
-      this.transaction.data.queue.queueNo = data;
-      this.createOrderService.updateTransactionDB(this.transaction, this.priceOption);
-      this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption);
-      this.pageLoadingService.closeLoading();
-      this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE]);
+      this.createOrderService.updateTransactionDB(this.transaction, this.priceOption).then((response) => {
+        if (response === true) {
+          this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).then((res) => {
+            if (res.data.resultCode === 'S') {
+              this.pageLoadingService.closeLoading();
+              this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE]);
+            } else {
+
+            }
+          });
+        }
+      }).catch((err: any) => {
+        console.log(err);
+
+      });
     } else {
       this.pageLoadingService.closeLoading();
       this.router.navigate([ROUTE_DEVICE_ONLY_AIS_KEY_IN_QUEUE]);
     }
+  }
+
+  public createQueueForm(): void {
+    this.queueForm = this.fb.group({
+      queueNo: (['', Validators])
+    });
   }
 
   ngOnDestroy(): void {
