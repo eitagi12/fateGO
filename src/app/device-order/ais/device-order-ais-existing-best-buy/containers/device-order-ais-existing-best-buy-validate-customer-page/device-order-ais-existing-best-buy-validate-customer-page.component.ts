@@ -38,7 +38,6 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     private utils: Utils,
     private http: HttpClient,
     private alertService: AlertService,
-    private apiRequestService: ApiRequestService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private localStorageService: LocalStorageService,

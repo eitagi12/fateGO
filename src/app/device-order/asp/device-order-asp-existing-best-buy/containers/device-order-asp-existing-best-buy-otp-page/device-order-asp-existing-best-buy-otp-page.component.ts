@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
+import { WIZARD_DEVICE_ORDER_AIS, WIZARD_DEVICE_ORDER_ASP } from 'src/app/device-order/constants/wizard.constant';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
-import { HomeService, PageLoadingService, AlertService } from 'mychannel-shared-libs';
+import { HomeService, PageLoadingService, AlertService, TokenService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -17,7 +17,7 @@ import { CustomerInfoService } from '../../services/customer-info.service';
 })
 export class DeviceOrderAspExistingBestBuyOtpPageComponent implements OnInit {
 
-  wizards: any = WIZARD_DEVICE_ORDER_AIS;
+  wizards: any = this.tokenService.isTelewizUser ? WIZARD_DEVICE_ORDER_ASP : WIZARD_DEVICE_ORDER_AIS;
   otpForm: FormGroup;
   transaction: Transaction;
   registrationData: any;
@@ -33,7 +33,8 @@ export class DeviceOrderAspExistingBestBuyOtpPageComponent implements OnInit {
     private fb: FormBuilder,
     private http: HttpClient,
     private alertService: AlertService,
-    private customerInfoService: CustomerInfoService
+    private customerInfoService: CustomerInfoService,
+    private tokenService: TokenService
   ) {
     this.transaction = this.transactionService.load();
   }
