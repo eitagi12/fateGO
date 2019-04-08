@@ -46,10 +46,7 @@ export class SharedTransactionService {
     //
     transaction.lastUpdateBy = user.username;
     transaction.lastUpdateDate = Moment().toISOString();
-    transaction.data.status = {
-      code: '001',
-      description: 'pending'
-    };
+    transaction.data.status = SharedTransactionStatus.WAITING_PAYMENT;
 
     return this.http.post('/api/salesportal/device-order/update-transaction',
       this.getRequestSharedTransaction(transaction, priceOption)
@@ -75,10 +72,10 @@ export class SharedTransactionService {
         sim_card: data.simCard || {},
         device: {
           amount: 1,
-          brand: productStock.brand,
-          model: productStock.model || '',
+          brand: productStock.brand || productDetail.brand,
+          model: productStock.model || productDetail.model || '',
           colorCode: productStock.colorCode || '',
-          colorName: productStock.color || '',
+          colorName: productStock.color || productStock.colorName || '',
           company: productStock.company || '',
           name: productDetail.name || ''
         },
@@ -91,18 +88,59 @@ export class SharedTransactionService {
         },
         queue: {},
         seller: {
-          locationCode: productStock.location || '',
-          locationName: productStock.locationName || '',
-          sellerName: '',
+          locationCode: !!data.seller ? data.seller.locationCode : productStock.location || '',
+          locationName: !!data.seller ? data.seller.locationName : productStock.locationName || '',
+          sellerName: !!data.seller ? data.seller.sellerName : '',
           employeeId: '',
-          ascCode: ''
+          ascCode: '',
+          isAscCode: !this.tokenService.isAisUser(),
+          sellerNo: !!data.seller ? data.seller.sellerNo : ''
         },
         status: data.status || {}
       }
     };
 
-    if (transaction.data.preBooking) {
+    if (data.preBooking) {
       params.data.pre_booking = transaction.data.preBooking;
+    }
+
+    if (data.mainPromotion) {
+      // เดี๋ยวปรับอีกทีว่าเก็บอะไรบ้าง
+      params.data.main_promotion = {
+        campaign: priceOption.campaign,
+        privilege: priceOption.privilege,
+        trade: priceOption.trade
+      };
+    }
+
+    if (data.billingInformation) {
+      // หน้า web payment ใช้ show ที่อยู่รับบิล
+      params.data.billing_information = {
+        customer: data.billingInformation.billDeliveryAddress
+      };
+    }
+
+    if (priceOption.trade) {
+      // ใช้ check airtime
+      params.data.air_time = priceOption.trade.advancePay;
+    }
+
+    if (data.existingMobileCare) {
+      // ของเดิม เก็บเป็น list TODO
+      params.data.existing_mobile_care_package = [data.existingMobileCare];
+    }
+
+    if (data.mobileCarePackage) {
+      if (typeof data.mobileCarePackage === 'string' || data.mobileCarePackage instanceof String) {
+        // ของเดิม เก็บ reason ไว้ใน object
+        params.data.mobile_care_package = { reason: data.mobileCarePackage };
+      } else {
+        params.data.mobile_care_package = data.mobileCarePackage;
+      }
+    }
+
+    if (data.queue) {
+      params.data.queue = data.queue;
     }
 
     return params;

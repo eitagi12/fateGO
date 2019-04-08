@@ -23,7 +23,6 @@ import { DeviceOrderAisExistingBestBuyQrCodePaymentGeneratorPageComponent } from
 import { DeviceOrderAisExistingBestBuyQrCodeSummaryPageComponent } from './containers/device-order-ais-existing-best-buy-qr-code-summary-page/device-order-ais-existing-best-buy-qr-code-summary-page.component';
 import { DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent } from './containers/device-order-ais-existing-best-buy-qr-code-queue-page/device-order-ais-existing-best-buy-qr-code-queue-page.component';
 import { DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponent } from './containers/device-order-ais-existing-best-buy-validate-customer-id-card-repi-page/device-order-ais-existing-best-buy-validate-customer-id-card-repi-page.component';
-import { CreateDeviceOrderBestBuyService } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/services/create-device-order-best-buy.service';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent } from './containers/device-order-ais-existing-best-buy-idcard-capture-repi-page/device-order-ais-existing-best-buy-idcard-capture-repi-page.component';
 import { DeviceOrderAisExistingBestBuyQrCodeQueueSummaryPageComponent } from './containers/device-order-ais-existing-best-buy-qr-code-queue-summary-page/device-order-ais-existing-best-buy-qr-code-queue-summary-page.component';
@@ -60,8 +59,6 @@ import { DeviceOrderAisExistingBestBuyQrCodeQueueSummaryPageComponent } from './
     DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent,
     DeviceOrderAisExistingBestBuyQrCodeQueueSummaryPageComponent
   ],
-  providers: [
-    CreateDeviceOrderBestBuyService
-  ]
+  providers: []
 })
 export class DeviceOrderAisExistingBestBuyModule { }

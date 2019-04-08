@@ -16,18 +16,13 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 })
 export class DeviceOrderAisExistingBestBuyCheckOutPageComponent implements OnInit, OnDestroy {
 
-  identityValid: boolean = true;
   transaction: Transaction;
   deviceSelling: DeviceSelling;
   priceOption: PriceOption;
 
   constructor(
     private router: Router,
-    private homeService: HomeService,
-    private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private apiRequestService: ApiRequestService,
-    private http: HttpClient,
     private priceOptionService: PriceOptionService
   ) {
     this.transaction = this.transactionService.load();
@@ -43,8 +38,7 @@ export class DeviceOrderAisExistingBestBuyCheckOutPageComponent implements OnIni
   }
 
   onNext(): void {
-    const payment: Payment = this.transaction.data.payment;
-    if (payment.paymentType === 'QR_CODE') {
+    if (this.isQrCodePayment()) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_QR_CODE_SUMMARY_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_QUEUE_PAGE]);
@@ -62,6 +56,8 @@ export class DeviceOrderAisExistingBestBuyCheckOutPageComponent implements OnIni
     const trade = this.priceOption.trade;
     const productDetail = this.priceOption.productDetail;
     const productStock = this.priceOption.productStock;
+    const prebooking = this.transaction.data.preBooking;
+    const depositAmt = prebooking ? -prebooking.depositAmt : 0;
     this.deviceSelling = {
       fullName: `${customer.firstName} ${customer.lastName}`,
       mobileNo: mobileNo,
@@ -70,8 +66,13 @@ export class DeviceOrderAisExistingBestBuyCheckOutPageComponent implements OnIni
       brand: productDetail.brand,
       model: productDetail.model,
       color: productDetail.colorName,
-      price: +trade.promotionPrice
+      price: +trade.promotionPrice + depositAmt
     };
+  }
+
+  isQrCodePayment(): boolean {
+    const payment: Payment = this.transaction.data.payment;
+    return payment.paymentType === 'QR_CODE';
   }
 
 }
