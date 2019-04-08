@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { ApiRequestService, PageLoadingService, HomeService, Utils, AlertService, User, TokenService } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 
-import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress, Customer, MainPromotion, Prebooking } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress, Customer, MainPromotion, Prebooking, Device } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { AbstractControl, ValidationErrors, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { WIZARD_DEVICE_ORDER_AIS, WIZARD_DEVICE_ORDER_ASP } from 'src/app/device-order/constants/wizard.constant';
@@ -175,12 +175,16 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
     //   depositAmt: '2000',
     //   deliveryDt: '17/03/2019'
     // };
-
+    let device: Device;
+    if (this.tokenService.isTelewizUser()) {
+      device = this.localStorageService.load('device').value;
+    }
     this.transaction = {
       data: {
         transactionType: TransactionType.DEVICE_ORDER_EXISTING_AIS,
         action: TransactionAction.KEY_IN,
-        preBooking: preBooking
+        preBooking: preBooking,
+        device: device
       }
     };
   }

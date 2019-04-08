@@ -77,7 +77,8 @@ export class SharedTransactionService {
           colorCode: productStock.colorCode || '',
           colorName: productStock.color || productStock.colorName || '',
           company: productStock.company || '',
-          name: productDetail.name || ''
+          name: productDetail.name || '',
+          imei: !!data.device ? data.device.imei : ''
         },
         billing_information: {},
         mobile_care_package: {},

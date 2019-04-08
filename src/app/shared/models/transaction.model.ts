@@ -62,6 +62,7 @@ export interface TransactionData {
   // MPAY
   mpayPayment?: QrCodePrePostMpayModel;
   status?: Status;
+  device?: Device;
 }
 export interface Payment {
   paymentQrCodeType: 'THAI_QR' | 'LINE_QR';
@@ -301,4 +302,8 @@ export interface QrCodePrePostMpayModel {
   locationCode?: string;
   offerId?: string;
   startDtm?: string;
+}
+
+export interface Device {
+  imei?: string;
 }
