@@ -36,7 +36,7 @@ export class DeviceOrderAisExistingQrCodeGeneratorPageComponent implements OnIni
 
   // qrCode
   subscription$: Subscription;
-  // private checkInquiryCallbackMpaySubscribtion$: Subscription;
+  private checkInquiryCallbackMpaySubscribtion$: Subscription;
   intravalTimeSubscription$: Subscription;
   currentDateTime: number;
   currentTimeCounter: BehaviorSubject<number> = new BehaviorSubject(null);
@@ -337,7 +337,7 @@ export class DeviceOrderAisExistingQrCodeGeneratorPageComponent implements OnIni
 
   // subscribe payment 'SUCCESS' every 5 sec
   subscribeInquiryCallbackMpay(): void {
-    this.qrcodePaymentService.checkInquiryCallbackMpay({ orderId: this.orderID })
+    this.checkInquiryCallbackMpaySubscribtion$ = this.qrcodePaymentService.checkInquiryCallbackMpay({ orderId: this.orderID })
       .subscribe(
         (resp: any) => {
           console.log('checkInquiryCallbackMpay', resp);
@@ -375,6 +375,9 @@ export class DeviceOrderAisExistingQrCodeGeneratorPageComponent implements OnIni
     this.transactionService.update(this.transaction);
     if (this.subscription$) {
       this.subscription$.unsubscribe();
+    }
+    if (this.checkInquiryCallbackMpaySubscribtion$) {
+      this.checkInquiryCallbackMpaySubscribtion$.unsubscribe();
     }
   }
 

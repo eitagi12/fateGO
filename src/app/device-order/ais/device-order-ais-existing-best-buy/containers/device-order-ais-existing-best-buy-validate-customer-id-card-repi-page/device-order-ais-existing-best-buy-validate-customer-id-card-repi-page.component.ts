@@ -2,14 +2,14 @@ import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-import { ReadCardProfile, ValidateCustomerIdCardComponent, Utils, HomeService, AlertService, TokenService, PageLoadingService } from 'mychannel-shared-libs';
-import { Transaction, TransactionAction, Customer } from 'src/app/shared/models/transaction.model';
+import { ReadCardProfile, ValidateCustomerIdCardComponent, Utils, HomeService, AlertService, TokenService, PageLoadingService, User } from 'mychannel-shared-libs';
+import { Transaction, TransactionAction, Customer, Prebooking } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_REPI_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE } from '../../constants/route-path.constant';
 import { CustomerInfoService } from '../../services/customer-info.service';
-import { CreateDeviceOrderBestBuyService } from '../../services/create-device-order-best-buy.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-validate-customer-id-card-repi-page',
@@ -24,6 +24,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
   readCardValid: boolean;
   mobileNo: string;
   priceOption: PriceOption;
+  user: User;
 
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
@@ -38,10 +39,12 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
     private pageLoadingService: PageLoadingService,
-    private createDeviceOrderBestBuyService: CreateDeviceOrderBestBuyService
+    private tokenService: TokenService,
+    private sharedTransactionService: SharedTransactionService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
+    this.user = this.tokenService.getUser();
   }
 
   ngOnInit(): void {
@@ -76,42 +79,78 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
     this.pageLoadingService.openLoading();
 
     this.customerInfoService.getProvinceId(this.profile.province).then((provinceId: string) => {
-      this.customerInfoService.getZipCode(provinceId, this.profile.amphur, this.profile.tumbol).then((zipCode: string) => {
-        this.customerInfoService.getCustomerInfoByIdCard(this.profile.idCardNo, zipCode).then((customer: Customer) => {
+      return this.customerInfoService.getZipCode(provinceId, this.profile.amphur, this.profile.tumbol).then((zipCode: string) => {
+        return this.customerInfoService.getCustomerInfoByIdCard(this.profile.idCardNo, zipCode).then((customer: Customer) => {
           this.transaction.data.customer = Object.assign(this.profile, customer);
+          const addressCustomer = this.transaction.data.customer;
           this.transaction.data.billingInformation = {};
-          // this.transaction.data.billingInformation.billDeliveryAddress = this.transaction.data.customer;
+          this.transaction.data.billingInformation.billDeliveryAddress = {
+            homeNo: addressCustomer.homeNo,
+            moo: addressCustomer.moo,
+            mooBan: addressCustomer.mooBan,
+            room: addressCustomer.room,
+            floor: addressCustomer.floor,
+            buildingName: addressCustomer.buildingName,
+            soi: addressCustomer.soi,
+            street: addressCustomer.street,
+            province: addressCustomer.province,
+            amphur: addressCustomer.amphur,
+            tumbol: addressCustomer.tumbol,
+            zipCode: addressCustomer.zipCode
+          };
           // verify Prepaid Ident
-          this.customerInfoService.verifyPrepaidIdent(this.profile.idCardNo, mobileNo)
+          return this.customerInfoService.verifyPrepaidIdent(this.profile.idCardNo, mobileNo)
             .then((respPrepaidIdent: any) => {
               if (respPrepaidIdent.data && respPrepaidIdent.data.success) {
                 const expireDate = this.transaction.data.customer.expireDate;
                 if (this.utils.isIdCardExpiredDate(expireDate)) {
-                  this.createDeviceOrderBestBuyService.createAddToCartTrasaction(this.transaction, this.priceOption).then((transaction) => {
-                    this.transaction = transaction;
-                    this.pageLoadingService.closeLoading();
-                    this.transaction.data.action = TransactionAction.READ_CARD;
-                    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE]);
-                  });
+                  return this.http.post('/api/salesportal/add-device-selling-cart',
+                    this.getRequestAddDeviceSellingCart()
+                  ).toPromise()
+                    .then((resp: any) => {
+                      this.transaction.data.order = { soId: resp.data.soId };
+                      this.transaction.data.action = TransactionAction.READ_CARD;
+                      return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+                    }).then(() => {
+                      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE]);
+                    });
+                  // this.createDeviceOrderBestBuyService.createAddToCartTrasaction
+                  // (this.transaction, this.priceOption).then((transaction) => {
+                  //   this.transaction = transaction;
+                  //   this.pageLoadingService.closeLoading();
+                  //   this.transaction.data.action = TransactionAction.READ_CARD;
+                  //   this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE]);
+                  // });
+                } else {
+                  const idCardType = this.transaction.data.customer.idCardType;
+                  this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ');
                 }
               } else {
-                const expireDate = this.transaction.data.customer.expireDate;
                 this.transaction.data.action = TransactionAction.READ_CARD_REPI;
-                if (this.utils.isIdCardExpiredDate(expireDate)) {
+                if (this.checkBusinessLogic()) {
                   const simCard = this.transaction.data.simCard;
                   if (simCard.chargeType === 'Pre-paid') {
-                    this.createDeviceOrderBestBuyService.createAddToCartTrasaction(this.transaction, this.priceOption)
-                    .then((transaction) => {
-                      this.transaction = transaction;
-                      this.pageLoadingService.closeLoading();
+                    return this.http.post('/api/salesportal/add-device-selling-cart',
+                    this.getRequestAddDeviceSellingCart()
+                  ).toPromise()
+                    .then((resp: any) => {
+                      this.transaction.data.order = { soId: resp.data.soId };
+                      this.transaction.data.action = TransactionAction.READ_CARD;
+                      return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+                    }).then(() => {
                       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
                     });
+                    // this.createDeviceOrderBestBuyService.createAddToCartTrasaction(this.transaction, this.priceOption)
+                    // .then((transaction) => {
+                    //   this.transaction = transaction;
+                    //   this.pageLoadingService.closeLoading();
+                    //   this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
+                    // });
                   } else {
                     this.alertService.error('ไม่สามารถทำรายการได้ เบอร์รายเดือน ข้อมูลการแสดงตนไม่ถูกต้อง');
                   }
                 }
               }
-              this.pageLoadingService.closeLoading();
             });
         });
       });
@@ -131,7 +170,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
       } else {
         this.alertService.error(error.resultDescription);
       }
-    });
+    }).then(() => this.pageLoadingService.closeLoading());
   }
 
   onHome(): void {
@@ -142,4 +181,46 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
     this.transactionService.update(this.transaction);
   }
 
+  getRequestAddDeviceSellingCart(): any {
+    const productStock = this.priceOption.productStock;
+    const productDetail = this.priceOption.productDetail;
+    const customer = this.transaction.data.customer;
+    const preBooking: Prebooking = this.transaction.data.preBooking;
+    return {
+      soCompany: productStock.company || 'AWN',
+      locationSource: this.user.locationCode,
+      locationReceipt: this.user.locationCode,
+      productType: productDetail.productType || 'DEVICE',
+      productSubType: productDetail.productSubType || 'HANDSET',
+      brand: productDetail.brand,
+      model: productDetail.model,
+      color: productStock.color,
+      priceIncAmt: '',
+      priceDiscountAmt: '',
+      grandTotalAmt: '',
+      userId: this.user.username,
+      cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
+      preBookingNo: preBooking ? preBooking.preBookingNo : '',
+      depositAmt: preBooking ? preBooking.depositAmt : '',
+      reserveNo: preBooking ? preBooking.reserveNo : ''
+    };
+  }
+
+  checkBusinessLogic(): boolean {
+    const birthdate = this.transaction.data.customer.birthdate;
+    const expireDate = this.transaction.data.customer.expireDate;
+    const idCardType = this.transaction.data.customer.idCardType;
+
+    if (this.utils.isLowerAge17Year(birthdate)) {
+      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
+      return false;
+    }
+    if (this.utils.isIdCardExpiredDate(expireDate)) {
+      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ').then(() => {
+        this.onBack();
+      });
+      return false;
+    }
+    return true;
+  }
 }

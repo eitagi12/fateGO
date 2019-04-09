@@ -16,9 +16,7 @@ import { DeviceOrderAisMnpMobileCarePageComponent } from './containers/device-or
 import { DeviceOrderAisMnpSummaryPageComponent } from './containers/device-order-ais-mnp-summary-page/device-order-ais-mnp-summary-page.component';
 import { DeviceOrderAisMnpAgreementPageComponent } from './containers/device-order-ais-mnp-agreement-page/device-order-ais-mnp-agreement-page.component';
 import { DeviceOrderAisMnpEcontactPageComponent } from './containers/device-order-ais-mnp-econtact-page/device-order-ais-mnp-econtact-page.component';
-import { DeviceOrderAisMnpEapplicationPageComponent } from './containers/device-order-ais-mnp-eapplication-page/device-order-ais-mnp-eapplication-page.component';
 import { DeviceOrderAisMnpAgreementSignPageComponent } from './containers/device-order-ais-mnp-agreement-sign-page/device-order-ais-mnp-agreement-sign-page.component';
-import { DeviceOrderAisMnpPersoSimPageComponent } from './containers/device-order-ais-mnp-perso-sim-page/device-order-ais-mnp-perso-sim-page.component';
 import { DeviceOrderAisMnpFaceCapturePageComponent } from './containers/device-order-ais-mnp-face-capture-page/device-order-ais-mnp-face-capture-page.component';
 import { DeviceOrderAisMnpFaceComparePageComponent } from './containers/device-order-ais-mnp-face-compare-page/device-order-ais-mnp-face-compare-page.component';
 import { DeviceOrderAisMnpFaceConfirmPageComponent } from './containers/device-order-ais-mnp-face-confirm-page/device-order-ais-mnp-face-confirm-page.component';
@@ -32,6 +30,7 @@ import { DeviceOrderAisMnpQrCodeErrorPageComponent } from './containers/device-o
 import { DeviceOrderAisMnpEligibleMobilePageComponent } from './containers/device-order-ais-mnp-eligible-mobile-page/device-order-ais-mnp-eligible-mobile-page.component';
 import { DeviceOrderAisMnpMobileDetailPageComponent } from './containers/device-order-ais-mnp-mobile-detail-page/device-order-ais-mnp-mobile-detail-page.component';
 import { DeviceOrderAisMnpEffectiveStartDatePageComponent } from './containers/device-order-ais-mnp-effective-start-date-page/device-order-ais-mnp-effective-start-date-page.component';
+import { DeviceOrderAisMnpMobileCareAvaliblePageComponent } from './containers/device-order-ais-mnp-mobile-care-avalible-page/device-order-ais-mnp-mobile-care-avalible-page.component';
 
 const routes: Routes = [
   { path: 'validate-customer', component: DeviceOrderAisMnpValidateCustomerPageComponent },
@@ -47,12 +46,11 @@ const routes: Routes = [
   { path: 'ebilling-address', component: DeviceOrderAisMnpEbillingAddressPageComponent },
   { path: 'ebilling', component: DeviceOrderAisMnpEbillingPageComponent },
   { path: 'mobile-care', component: DeviceOrderAisMnpMobileCarePageComponent },
+  { path: 'mobile-care-avalible', component: DeviceOrderAisMnpMobileCareAvaliblePageComponent },
   { path: 'summary', component: DeviceOrderAisMnpSummaryPageComponent },
   { path: 'agreement', component: DeviceOrderAisMnpAgreementPageComponent },
   { path: 'econtact', component: DeviceOrderAisMnpEcontactPageComponent },
-  { path: 'eapplication', component: DeviceOrderAisMnpEapplicationPageComponent },
   { path: 'agreement-sign', component: DeviceOrderAisMnpAgreementSignPageComponent },
-  { path: 'perso-sim', component: DeviceOrderAisMnpPersoSimPageComponent },
   { path: 'face-capture', component: DeviceOrderAisMnpFaceCapturePageComponent },
   { path: 'face-compare', component: DeviceOrderAisMnpFaceComparePageComponent },
   { path: 'face-confirm', component: DeviceOrderAisMnpFaceConfirmPageComponent },

@@ -9,10 +9,6 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ROUTE_DEVICE_ORDER_ASP_BEST_BUY_QR_CODE_QUEUE_SUMMARY_PAGE } from '../../constants/route-path.constant';
 
-////////////////////////  ดึง Service จาก flow ais  /////////////////////////
-import { CreateDeviceOrderBestBuyService } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/services/create-device-order-best-buy.service';
-import { QrcodePaymentService } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/services/qrcode-payment.service';
-
 @Component({
   selector: 'app-device-order-asp-existing-best-buy-qr-code-queue-page',
   templateUrl: './device-order-asp-existing-best-buy-qr-code-queue-page.component.html',
@@ -32,8 +28,6 @@ export class DeviceOrderAspExistingBestBuyQrCodeQueuePageComponent implements On
     private fb: FormBuilder,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
-    private createBestBuyService: CreateDeviceOrderBestBuyService,
-    private qrcodePaymentService: QrcodePaymentService,
     private pageLoadingService: PageLoadingService,
     private alertService: AlertService
   ) {
@@ -49,14 +43,14 @@ export class DeviceOrderAspExistingBestBuyQrCodeQueuePageComponent implements On
   }
 
   getTransactionId(): void {
-    this.qrcodePaymentService.getInquiryCallbackMpay(this.transaction.data.order.soId).then((transId: any) => {
-      if (transId && transId.data && transId.data.DATA && transId.data.DATA.mpay_payment) {
-        this.transId = transId.data.DATA.mpay_payment.tranId;
-        // this.transaction.data.mpayPayment.tranId = this.transId;
-      } else {
-        this.alertService.error('เกิดข้อผิดพลาด ระบบไม่สามารถเรียก orderID(soID) มาใช้งานได้');
-      }
-    });
+    // this.qrcodePaymentService.getInquiryCallbackMpay(this.transaction.data.order.soId).then((transId: any) => {
+    //   if (transId && transId.data && transId.data.DATA && transId.data.DATA.mpay_payment) {
+    //     this.transId = transId.data.DATA.mpay_payment.tranId;
+    //     // this.transaction.data.mpayPayment.tranId = this.transId;
+    //   } else {
+    //     this.alertService.error('เกิดข้อผิดพลาด ระบบไม่สามารถเรียก orderID(soID) มาใช้งานได้');
+    //   }
+    // });
   }
 
   createForm(): void {
@@ -72,15 +66,15 @@ export class DeviceOrderAspExistingBestBuyQrCodeQueuePageComponent implements On
   onNext(): void {
     this.pageLoadingService.openLoading();
     this.transaction.data.queue = { queueNo: this.queue };
-    this.createBestBuyService.createDeviceOrder(this.transaction, this.priceOption, this.transId).then((response: any) => {
-      if (response) {
-        this.pageLoadingService.closeLoading();
-        this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_QR_CODE_QUEUE_SUMMARY_PAGE]);
-      }
-    }).catch((e) => {
-      this.pageLoadingService.closeLoading();
-      this.alertService.error(e);
-    });
+    // this.createBestBuyService.createDeviceOrder(this.transaction, this.priceOption, this.transId).then((response: any) => {
+    //   if (response) {
+    //     this.pageLoadingService.closeLoading();
+    //     this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_QR_CODE_QUEUE_SUMMARY_PAGE]);
+    //   }
+    // }).catch((e) => {
+    //   this.pageLoadingService.closeLoading();
+    //   this.alertService.error(e);
+    // });
   }
 
   summary(amount: number[]): number {

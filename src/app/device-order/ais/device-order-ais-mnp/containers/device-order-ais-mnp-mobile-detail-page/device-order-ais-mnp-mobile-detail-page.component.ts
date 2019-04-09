@@ -84,7 +84,7 @@ export class DeviceOrderAisMnpMobileDetailPageComponent implements OnInit , OnDe
 
   callService(): void {
     this.pageLoadingService.openLoading();
-    const idCardNo = '1221003650348';
+    const idCardNo = this.transaction.data.customer.idCardNo;
     this.http.get(`/api/customerportal/newRegister/${idCardNo}/queryBillingAccount`)
     .toPromise().then((resp: any) => {
       const data = resp.data || {};

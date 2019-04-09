@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { CreateEapplicationService } from 'src/app/shared/services/create-eapplication.service';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HomeService, PageLoadingService } from 'mychannel-shared-libs';
-import { ROUTE_DEVICE_ORDER_AIS_MNP_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_AGREEMENT_SIGN_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_PERSO_SIM_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_MNP_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_AGREEMENT_SIGN_PAGE } from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-mnp-agreement-page',
@@ -37,11 +37,7 @@ export class DeviceOrderAisMnpAgreementPageComponent implements OnInit, OnDestro
   }
 
   onNext(): void {
-    if (this.transaction.data.simCard.simSerial) {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_AGREEMENT_SIGN_PAGE]);
-    } else {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_PERSO_SIM_PAGE]);
-    }
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_AGREEMENT_SIGN_PAGE]);
   }
 
   onHome(): void {

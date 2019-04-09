@@ -62,6 +62,7 @@ export interface TransactionData {
   // MPAY
   mpayPayment?: QrCodePrePostMpayModel;
   status?: Status;
+  device?: Device;
 }
 export interface Payment {
   paymentQrCodeType: 'THAI_QR' | 'LINE_QR';
@@ -170,6 +171,8 @@ export interface BillingInformation {
   billCycleData?: BillingAccountData;
   // send bill devilery address
   billDeliveryAddress?: BillDeliveryAddress;
+  // วันที่มีผลการใช้งาน B: รอบถัดไป D: วันถัดไป I: มีผลทันที
+  overRuleStartDate?: string;
 }
 
 export interface BillCycle {
@@ -229,8 +232,6 @@ export interface Seller {
   locationCode?: string;
   sellerNo?: string;
   shareUser?: string;
-  employeeId?: string;
-  ascCode?: string;
 }
 
 export interface ReceiptInfo {
@@ -301,4 +302,8 @@ export interface QrCodePrePostMpayModel {
   locationCode?: string;
   offerId?: string;
   startDtm?: string;
+}
+
+export interface Device {
+  imei?: string;
 }
