@@ -3,11 +3,12 @@ import { Router } from '@angular/router';
 import { HomeService, Aggregate } from 'mychannel-shared-libs';
 import {
   ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_SUMMARY_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_QUEUE_PAGE
+  ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_QUEUE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_QR_CODE_SUMMARY_PAGE
 } from '../../constants/route-path.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, Payment } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 
 @Component({
@@ -48,7 +49,11 @@ export class DeviceOrderAisExistingPrepaidHotdealAggregatePageComponent implemen
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_QUEUE_PAGE]);
+    if (this.isQrCodePayment()) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_QR_CODE_SUMMARY_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_QUEUE_PAGE]);
+    }
   }
 
   onBack(): void {
@@ -58,4 +63,10 @@ export class DeviceOrderAisExistingPrepaidHotdealAggregatePageComponent implemen
   onHome(): void {
     this.homeService.goToHome();
   }
+
+  isQrCodePayment(): boolean {
+    const payment: Payment = this.transaction.data.payment;
+    return payment.paymentType === 'QR_CODE';
+  }
+
 }
