@@ -81,7 +81,6 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
       }).toPromise()
         .then((response: any) => {
           const eMobileResponse = response.data;
-          console.log('eMobileResponse.postpaid ', eMobileResponse.postpaid );
           this.eligibleMobiles = eMobileResponse.postpaid || [];
         });
     } else {
@@ -105,7 +104,6 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_CHANGE_PACKAGE_PAGE]);
     } else {
       const ussdCode = this.priceOption.trade.ussdCode;
-      console.log(this.selectMobileNo.mobileNo, ussdCode, this.selectMobileNo.privilegeCode);
       this.privilegeService.requestUsePrivilege(this.selectMobileNo.mobileNo, ussdCode, this.selectMobileNo.privilegeCode)
       .then((privilegeCode) => {
         this.transaction.data.customer.privilegeCode = privilegeCode;

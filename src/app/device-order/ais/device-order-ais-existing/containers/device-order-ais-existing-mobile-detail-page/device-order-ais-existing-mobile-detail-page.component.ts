@@ -55,9 +55,9 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
         serviceYear: this.serviceYearWording(serviceYear.year, serviceYear.month, serviceYear.day),
         mainPackage: mobileDetail.packageTitle
       };
-
       this.transaction.data.simCard.chargeType = mobileDetail.chargeType;
       this.transaction.data.simCard.billingSystem = mobileDetail.billingSystem;
+      this.transaction.data.currentPackage = mobileDetail.package;
       this.pageLoadingService.closeLoading();
     }).catch(err => {
       this.pageLoadingService.closeLoading();
@@ -80,7 +80,7 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
     }
 
     if (month) {
-      serviceYearWording += `${month} เดือน`;
+      serviceYearWording += `${month} เดือน `;
     }
 
     if (day) {
