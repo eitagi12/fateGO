@@ -354,4 +354,12 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
     const qrAmt: number = normalPrice - discount.amount;
     return qrAmt.toFixed(2);
   }
+
+  checkValid(): boolean {
+    if (!this.isAutoGenQueue) {
+      return !this.queueFrom.invalid;
+    } else {
+      return !this.mobileFrom.invalid;
+    }
+  }
 }

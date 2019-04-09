@@ -57,7 +57,7 @@ export class DeviceOrderAisExistingBestBuyCheckOutPageComponent implements OnIni
     const productDetail = this.priceOption.productDetail;
     const productStock = this.priceOption.productStock;
     const prebooking = this.transaction.data.preBooking;
-    const depositAmt = prebooking ? -prebooking.depositAmt : 0;
+    const depositAmt = prebooking && prebooking.depositAmt ? -prebooking.depositAmt : 0;
     this.deviceSelling = {
       fullName: `${customer.firstName} ${customer.lastName}`,
       mobileNo: mobileNo,

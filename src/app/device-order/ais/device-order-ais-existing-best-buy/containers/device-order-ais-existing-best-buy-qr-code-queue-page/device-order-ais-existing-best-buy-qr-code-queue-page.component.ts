@@ -370,4 +370,12 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
     return qrAmt.toFixed(2);
   }
 
+  checkValid(): boolean {
+    if (!this.isAutoGenQueue) {
+      return !this.queueFrom.invalid;
+    } else {
+      return !this.mobileFrom.invalid;
+    }
+  }
+
 }

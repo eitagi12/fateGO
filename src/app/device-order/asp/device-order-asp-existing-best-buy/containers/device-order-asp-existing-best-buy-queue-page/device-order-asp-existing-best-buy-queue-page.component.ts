@@ -357,4 +357,12 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
       });
   }
 
+  checkValid(): boolean {
+    if (!this.isAutoGenQueue) {
+      return !this.queueFrom.invalid;
+    } else {
+      return !this.mobileFrom.invalid;
+    }
+  }
+
 }
