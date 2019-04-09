@@ -70,7 +70,7 @@ export class DeviceOrderAspExistingBestBuyCheckOutPageComponent implements OnIni
       campaignName: campaign.campaignName,
       brand: productDetail.brand,
       model: productDetail.model,
-      color: productDetail.colorName,
+      color: productDetail.colorName || productStock.colorName,
       price: +trade.promotionPrice + depositAmt
     };
   }

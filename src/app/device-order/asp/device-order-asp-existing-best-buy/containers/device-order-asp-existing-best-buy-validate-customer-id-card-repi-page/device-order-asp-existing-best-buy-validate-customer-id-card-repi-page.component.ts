@@ -103,7 +103,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardRepiPageComponen
             .then((respPrepaidIdent: any) => {
               if (respPrepaidIdent.data && respPrepaidIdent.data.success) {
                 const expireDate = this.transaction.data.customer.expireDate;
-                // if (this.utils.isIdCardExpiredDate(expireDate)) {
+                if (this.utils.isIdCardExpiredDate(expireDate)) {
                   return this.http.post('/api/salesportal/add-device-selling-cart',
                     this.getRequestAddDeviceSellingCart()
                   ).toPromise()
@@ -114,11 +114,14 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardRepiPageComponen
                     }).then(() => {
                       this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_PAYMENT_DETAIL_PAGE]);
                     });
-                // }
+                } else {
+                  const idCardType = this.transaction.data.customer.idCardType;
+                  this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ');
+                }
               } else {
                 const expireDate = this.transaction.data.customer.expireDate;
                 this.transaction.data.action = TransactionAction.READ_CARD_REPI;
-                // if (this.utils.isIdCardExpiredDate(expireDate)) {
+                if (this.checkBusinessLogic()) {
                   const simCard = this.transaction.data.simCard;
                   if (simCard.chargeType === 'Pre-paid') {
                     return this.http.post('/api/salesportal/add-device-selling-cart',
@@ -134,7 +137,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardRepiPageComponen
                   } else {
                     this.alertService.error('ไม่สามารถทำรายการได้ เบอร์รายเดือน ข้อมูลการแสดงตนไม่ถูกต้อง');
                   }
-                // }
+                }
               }
             });
         });
@@ -191,4 +194,21 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardRepiPageComponen
     };
   }
 
+  checkBusinessLogic(): boolean {
+    const birthdate = this.transaction.data.customer.birthdate;
+    const expireDate = this.transaction.data.customer.expireDate;
+    const idCardType = this.transaction.data.customer.idCardType;
+
+    if (this.utils.isLowerAge17Year(birthdate)) {
+      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
+      return false;
+    }
+    if (this.utils.isIdCardExpiredDate(expireDate)) {
+      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ').then(() => {
+        this.onBack();
+      });
+      return false;
+    }
+    return true;
+  }
 }

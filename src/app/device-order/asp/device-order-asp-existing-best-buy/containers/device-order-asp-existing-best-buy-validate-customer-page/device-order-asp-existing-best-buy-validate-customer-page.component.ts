@@ -191,7 +191,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
 
   customerValidate(control: AbstractControl): ValidationErrors {
     const value = control.value;
-    const length = control.value.length;
+    const length: number = control.value.length;
 
     if (length >= 10) {
       if (length === 10) {
@@ -252,8 +252,8 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
       locationReceipt: this.user.locationCode,
       productType: productDetail.productType || 'DEVICE',
       productSubType: productDetail.productSubType || 'HANDSET',
-      brand: productDetail.brand,
-      model: productDetail.model,
+      brand: productDetail.brand || productStock.brand,
+      model: productDetail.model || productStock.model,
       color: productStock.color,
       priceIncAmt: '',
       priceDiscountAmt: '',

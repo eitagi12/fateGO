@@ -72,12 +72,12 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
     const paymentMethod = this.priceOption.trade.payment ? this.priceOption.trade.payment.method : '';
 
     this.depositOrDiscount = this.transaction.data.preBooking
-                && this.transaction.data.preBooking.depositAmt
-                && this.transaction.data.preBooking.preBookingNo ? true : false;
+      && this.transaction.data.preBooking.depositAmt
+      && this.transaction.data.preBooking.preBookingNo ? true : false;
 
     const showQRCode: boolean = paymentMethod !== 'CC' && this.user.userType !== 'ASP'
-              && this.user.channelType !== 'sff-web' && this.priceOption.productStock.company === 'AWN'
-              && this.user.username.toLowerCase() === 'duangdat';
+      && this.user.channelType !== 'sff-web' && this.priceOption.productStock.company === 'AWN'
+      && this.user.username.toLowerCase() === 'duangdat';
 
     const productDetail = this.priceOption.productDetail || {};
     const productStock = this.priceOption.productStock || {};
@@ -102,7 +102,23 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
     };
 
     if (trade.banks && trade.banks.length > 0) {
-      this.banks = trade.banks;
+      if (!this.isFullPayment()) {
+        this.banks = (this.priceOption.trade.banks || []).map((b: any) => {
+          return b.installmentDatas.map((data: any) => {
+            return {
+              ...b,
+              installment: `${data.installmentPercentage}% ${data.installmentMounth}`
+            };
+          });
+        }).reduce((prev: any, curr: any) => {
+          curr.forEach((element: any) => {
+            prev.push(element);
+          });
+          return prev;
+        }, []);
+      } else {
+        this.banks = trade.banks;
+      }
     } else {
       this.http.post('/api/salesportal/banks-promotion', {
         location: this.tokenService.getUser().locationCode

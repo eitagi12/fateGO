@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HomeService } from 'mychannel-shared-libs';
+import { HomeService, TokenService, ChannelType } from 'mychannel-shared-libs';
 
 @Component({
   selector: 'app-error-page',
@@ -8,7 +8,8 @@ import { HomeService } from 'mychannel-shared-libs';
 })
 export class ErrorPageComponent implements OnInit {
   constructor(
-    private homeService: HomeService
+    private homeService: HomeService,
+    private tokenService: TokenService
   ) { }
 
   ngOnInit(): void {
@@ -17,4 +18,14 @@ export class ErrorPageComponent implements OnInit {
   onHome(): void {
     this.homeService.goToHome();
   }
+
+  goToHome(): void {
+    const channelType = this.tokenService.getUser().channelType;
+    if (ChannelType.SMART_ORDER === channelType) {
+      window.location.href = '/smart-shop';
+    } else {
+      window.location.href = '/';
+    }
+  }
+
 }

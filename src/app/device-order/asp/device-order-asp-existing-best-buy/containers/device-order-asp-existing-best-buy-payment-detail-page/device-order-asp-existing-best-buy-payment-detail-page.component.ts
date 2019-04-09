@@ -98,7 +98,23 @@ export class DeviceOrderAspExistingBestBuyPaymentDetailPageComponent implements 
     };
 
     if (trade.banks && trade.banks.length > 0) {
-      this.banks = trade.banks;
+      if (!this.isFullPayment()) {
+        this.banks = (this.priceOption.trade.banks || []).map((b: any) => {
+          return b.installmentDatas.map((data: any) => {
+            return {
+              ...b,
+              installment: `${data.installmentPercentage}% ${data.installmentMounth}`
+            };
+          });
+        }).reduce((prev: any, curr: any) => {
+          curr.forEach((element: any) => {
+            prev.push(element);
+          });
+          return prev;
+        }, []);
+      } else {
+        this.banks = trade.banks;
+      }
     } else {
       this.http.post('/api/salesportal/banks-promotion', {
         location: this.tokenService.getUser().locationCode
@@ -106,6 +122,8 @@ export class DeviceOrderAspExistingBestBuyPaymentDetailPageComponent implements 
         this.banks = resp.data || [];
       });
     }
+
+    console.log(this.banks);
 
     this.receiptInfo = {
       taxId: customer.idCardNo,
