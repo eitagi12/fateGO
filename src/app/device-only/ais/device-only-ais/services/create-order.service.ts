@@ -153,15 +153,9 @@ export class CreateOrderService {
     }).toPromise();
   }
 
-  updateTransactionDB(transaction: Transaction, priceOption: PriceOption): Promise<any> {
-    const status = { code: '002', description: 'Waiting Payment'};
+  updateTransactionDB(transaction: Transaction): Promise<any> {
     const updateTransaction = {...transaction,
       issueBy: this.user.username};
-    updateTransaction.data.status = status;
-    updateTransaction.data.mainPromotion = {
-      campaign: priceOption.campaign,
-      trade: priceOption.trade
-    };
       return this.http.post('/api/salesportal/device-order/update-transaction', updateTransaction).pipe(
         map((res: any) => res.data.isSuccess)
     ).toPromise();

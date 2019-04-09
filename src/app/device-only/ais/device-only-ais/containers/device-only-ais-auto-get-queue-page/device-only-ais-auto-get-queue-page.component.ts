@@ -3,7 +3,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { HomeService, PageLoadingService, REGEX_MOBILE } from 'mychannel-shared-libs';
+import { HomeService, PageLoadingService, REGEX_MOBILE, AlertService } from 'mychannel-shared-libs';
 import { HomeButtonService } from '../../services/home-button.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { CreateOrderService } from '../../services/create-order.service';
@@ -34,7 +34,8 @@ export class DeviceOnlyAutoGetQueuePageComponent implements OnInit, OnDestroy {
     private createOrderService: CreateOrderService,
     private queueService: QueueService,
     private pageLoadingService: PageLoadingService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private alertService: AlertService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -43,7 +44,6 @@ export class DeviceOnlyAutoGetQueuePageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.homeButtonService.initEventButtonHome();
     this.createForm();
-    this.createQueueForm();
   }
 
   onHome(): void {
@@ -62,20 +62,20 @@ export class DeviceOnlyAutoGetQueuePageComponent implements OnInit, OnDestroy {
   get f(): any { return this.mobileForm.controls; }
 
   onNext(): void {
-    this.pageLoadingService.openLoading();
-    if (!this.transaction.data.queue) {
       this.autoGetQueue();
-    } else {
-      this.transaction.data.queue.queueNo = this.queueForm.value.queueNo;
-    }
   }
 
   private autoGetQueue(): void {
+    this.pageLoadingService.openLoading();
     const mobile = this.mobileForm.value.mobileNo;
     this.queueService.autoGetQueue(mobile).then((data) => {
-      this.transaction.data.queue = {
-        queueNo: data
-      };
+        const queue = {
+          queueNo: data
+        };
+        this.transaction.data = {
+          ...this.transaction.data,
+          queue: queue
+        };
       this.checkDataLinkPage(data);
     }).catch((error: any) => {
       this.pageLoadingService.closeLoading();
@@ -84,9 +84,14 @@ export class DeviceOnlyAutoGetQueuePageComponent implements OnInit, OnDestroy {
   }
 
   private checkDataLinkPage(data: any): void {
-    this.queue = data;
     if (data) {
-      this.createOrderService.updateTransactionDB(this.transaction, this.priceOption).then((response) => {
+      const status = { code: '002', description: 'Waiting Payment'};
+      this.transaction.data.status = status;
+      this.transaction.data.mainPromotion = {
+        campaign: this.priceOption.campaign,
+        trade: this.priceOption.trade
+      };
+      this.createOrderService.updateTransactionDB(this.transaction).then((response) => {
         if (response === true) {
           this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).then((res) => {
             if (res.data.resultCode === 'S') {
@@ -99,19 +104,14 @@ export class DeviceOnlyAutoGetQueuePageComponent implements OnInit, OnDestroy {
           });
         }
       }).catch((err: any) => {
+        this.pageLoadingService.closeLoading();
+        this.alertService.error('ระบบไม่สามารถทำรายการได้ใน ขณะนี้');
         console.log(err);
-
       });
     } else {
       this.pageLoadingService.closeLoading();
       this.router.navigate([ROUTE_DEVICE_ONLY_AIS_KEY_IN_QUEUE]);
     }
-  }
-
-  public createQueueForm(): void {
-    this.queueForm = this.fb.group({
-      queueNo: (['', Validators])
-    });
   }
 
   ngOnDestroy(): void {

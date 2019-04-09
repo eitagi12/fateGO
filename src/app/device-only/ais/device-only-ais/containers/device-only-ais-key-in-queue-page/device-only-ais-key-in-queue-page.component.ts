@@ -67,7 +67,13 @@ export class DeviceOnlyAisKeyInQueuePageComponent implements OnInit, OnDestroy {
 
   private stepNextQueuePage(): any {
     this.pageLoadingService.openLoading();
-    this.createOrderService.updateTransactionDB(this.transaction, this.priceOption).then((response) => {
+    const status = { code: '002', description: 'Waiting Payment'};
+    this.transaction.data.status = status;
+    this.transaction.data.mainPromotion = {
+      campaign: this.priceOption.campaign,
+      trade: this.priceOption.trade
+    };
+    this.createOrderService.updateTransactionDB(this.transaction).then((response) => {
       if (response === true) {
         this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).then((res) => {
           if (res.data.resultCode === 'S') {
