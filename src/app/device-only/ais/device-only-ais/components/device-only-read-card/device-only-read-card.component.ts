@@ -32,6 +32,7 @@ export class DeviceOnlyReadCardComponent implements OnInit {
   public addressTextBySmartCard: string;
   public listBillingAccount: Array<any>;
   public isSelect: boolean;
+  public unsubscribe: any;
 
   constructor(
     private bsModalService: BsModalService,
@@ -72,16 +73,13 @@ export class DeviceOnlyReadCardComponent implements OnInit {
     const cardPresentedInterval = setInterval(() => {
       if (ReadCard.progress === 0) {
         this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้');
+        this.unsubscribe.unsubscribe();
         this.messages = '';
-        this.progressBarArea.nativeElement.style.display = 'none';
-        this.progressBarReadSmartCard.nativeElement.style.width = '0%';
         clearInterval(cardPresentedInterval);
       }
-    }, 5000);
+    }, 10000);
       const promises: any = new Promise((resolve, reject) => {
-        this.readCardService.onReadCard().subscribe((readCard: any) =>  {
-            this.progressBarArea.nativeElement.style.display = 'none';
-            this.canReadSmartCard = false;
+       this.unsubscribe = this.readCardService.onReadCard().subscribe((readCard: any) =>  {
             const customer: String = readCard.profile;
             if (readCard.progress === 100) {
               this.progressBarArea.nativeElement.style.display = 'block';
@@ -90,6 +88,7 @@ export class DeviceOnlyReadCardComponent implements OnInit {
                   clearInterval(id);
                   clearInterval(cardPresentedInterval);
                   resolve(customer);
+                  this.unsubscribe.unsubscribe();
                 } else {
                   width ++ ;
                   this.progressBarReadSmartCard.nativeElement.style.width = width + '%';
@@ -207,6 +206,8 @@ export class DeviceOnlyReadCardComponent implements OnInit {
         } else {
           this.progressBarArea.nativeElement.style.display = 'none';
         }
+        this.pageLoadingService.closeLoading();
+        this.isSelect = true;
       })
       .catch(() => {
         this.listBillingAccountBox.nativeElement.style.display = 'none';
@@ -227,7 +228,6 @@ export class DeviceOnlyReadCardComponent implements OnInit {
     this.zipcode(customer).then((res) => {
         customer.zipCode = res;
         this.getbillingCycle(customer);
-        this.pageLoadingService.closeLoading();
     });
     }).catch((err) => {
       console.log(err);
@@ -240,16 +240,15 @@ export class DeviceOnlyReadCardComponent implements OnInit {
   }
 
   public selectBillingAddress(): void {
-    this.pageLoadingService.openLoading();
     const billingAddressSelected = this.selectBillingAddressForm.value.billingAddress;
     if (billingAddressSelected === this.ADDRESS_BY_SMART_CARD) {
+      this.isSelect = false;
+      this.modalBillAddress.hide();
+      this.canReadSmartCard = true;
       this.customerInfo.emit({
         customer: this.infoBySmartCard,
         action: TransactionAction.READ_CARD
       });
-      this.modalBillAddress.hide();
-      this.canReadSmartCard = true;
-      this.pageLoadingService.closeLoading();
     } else {
       this.pageLoadingService.openLoading();
       const mobileNo = this.listBillingAccount[billingAddressSelected].mobileNo[0];
@@ -266,7 +265,6 @@ export class DeviceOnlyReadCardComponent implements OnInit {
       })
       .catch((err) => {
         this.alertService.error(err.error.resultDescription);
-        // this.pageLoadingService.closeLoading();
       });
     }
   }
