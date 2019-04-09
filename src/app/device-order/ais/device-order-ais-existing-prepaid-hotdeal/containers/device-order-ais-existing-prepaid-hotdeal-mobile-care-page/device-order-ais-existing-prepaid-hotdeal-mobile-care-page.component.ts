@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HomeService, ShoppingCart, PageLoadingService, MobileCare, BillingSystemType } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import {
@@ -19,7 +19,7 @@ import { MOBILE_CARE_PACKAGE_KEY_REF } from 'src/app/device-order/constants/cpc.
   templateUrl: './device-order-ais-existing-prepaid-hotdeal-mobile-care-page.component.html',
   styleUrls: ['./device-order-ais-existing-prepaid-hotdeal-mobile-care-page.component.scss']
 })
-export class DeviceOrderAisExistingPrepaidHotdealMobileCarePageComponent implements OnInit {
+export class DeviceOrderAisExistingPrepaidHotdealMobileCarePageComponent implements OnInit, OnDestroy {
 
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
@@ -61,7 +61,7 @@ export class DeviceOrderAisExistingPrepaidHotdealMobileCarePageComponent impleme
     this.pageLoadingService.openLoading();
     this.mobileCareService.getMobileCare({
       packageKeyRef: MOBILE_CARE_PACKAGE_KEY_REF,
-      billingSystem: billingSystem
+      billingSystem: BillingSystemType.IRB
     }, chargeType, billingSystem, endUserPrice).then((mobileCare: any) => {
       this.mobileCare = {
         promotions: mobileCare,
@@ -85,6 +85,10 @@ export class DeviceOrderAisExistingPrepaidHotdealMobileCarePageComponent impleme
 
   onHome(): void {
     this.homeService.goToHome();
+  }
+
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
   }
 
 }

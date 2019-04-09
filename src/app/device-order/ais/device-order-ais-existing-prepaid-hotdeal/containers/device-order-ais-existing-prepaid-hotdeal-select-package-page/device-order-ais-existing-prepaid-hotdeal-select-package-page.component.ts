@@ -3,12 +3,13 @@ import { Router } from '@angular/router';
 import { HomeService, ShoppingCart, PromotionShelve, PageLoadingService, BillingSystemType } from 'mychannel-shared-libs';
 import {
   ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_PAYMENT_DETAIL_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_MOBILE_CARE_PAGE
+  ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_MOBILE_CARE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_MOBILE_CARE_AVAILABLE_PAGE
 } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, ExistingMobileCare } from 'src/app/shared/models/transaction.model';
 import { BsModalRef } from 'ngx-bootstrap';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -119,7 +120,26 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_MOBILE_CARE_PAGE]);
+    this.pageLoadingService.openLoading();
+    const mobileNo = this.transaction.data.simCard.mobileNo;
+    this.http.get(`/api/customerportal/get-existing-mobile-care/${mobileNo}`).toPromise().then((response: any) => {
+      this.pageLoadingService.closeLoading();
+      const exMobileCare = response.data;
+      if (exMobileCare.hasExistingMobileCare) {
+        const existingMobileCare: ExistingMobileCare = exMobileCare.existMobileCarePackage;
+        existingMobileCare.handSet = exMobileCare.existHandSet;
+        this.transaction.data.existingMobileCare = existingMobileCare;
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_MOBILE_CARE_AVAILABLE_PAGE]);
+      } else {
+        this.transaction.data.existingMobileCare = null;
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_MOBILE_CARE_PAGE]);
+      }
+    })
+    .catch(() => {
+      this.pageLoadingService.closeLoading();
+      this.transaction.data.existingMobileCare = null;
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_MOBILE_CARE_PAGE]);
+    });
   }
 
   onBack(): void {
