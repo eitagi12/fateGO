@@ -70,16 +70,16 @@ export class DeviceOrderAisExistingPrepaidHotdealSummaryPageComponent implements
 
     this.getBalanceSubscription.then((resp: any) => {
       this.pageLoadingService.closeLoading();
-      const transferBalance = Number(resp.data.transferBalance);
+      const remainingBalance = Number(resp.data.remainingBalance) / 100;
       let money = 0;
       if (typeof (mobileCarePackage) === 'object') {
         money = Number(mainPackage.priceIncludeVat) + Number(mobileCarePackage.customAttributes.priceInclVat);
       } else {
         money = Number(mainPackage.priceIncludeVat);
       }
-      const addMoney = !!((transferBalance - money) < 0);
-      const addMoneyPrice = (transferBalance - money) >= 0 ? 0 : money - transferBalance;
-      this.balance = {  balance: transferBalance, addMoney: addMoney, addMoneyPrice: addMoneyPrice };
+      const addMoney = !!((remainingBalance - money) < 0);
+      const addMoneyPrice = (remainingBalance - money) >= 0 ? 0 : money - remainingBalance;
+      this.balance = {  balance: remainingBalance, addMoney: addMoney, addMoneyPrice: addMoneyPrice };
     })
     .catch((err: any) => {
       this.pageLoadingService.closeLoading();
