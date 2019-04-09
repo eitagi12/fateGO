@@ -6,21 +6,48 @@
     <p>
       ข้อมูลการชำระสินค้า
     </p>
-    <p>
-      <i class="fa fa-circle mr-3 text-lime"></i>
-      <span class="text-grey" id="text-brand-payment-summary">
-        {{ priceOption?.productDetail?.brand }}
+    <ng-container *ngIf="!priceOption?.trade?.advancePay || priceOption?.trade?.advancePay?.installmentFlag === 'N'">
+      <p>
+        <i class="fa fa-circle mr-3 text-lime"></i>
+        <span class="text-grey" id="text-brand-payment-summary">
+          {{ priceOption?.productDetail?.brand }}
+        </span>
+        <span class="text-grey" id="text-model-payment-summary">
+          {{ priceOption?.productDetail?.model }}
+        </span>
+        <span class="text-grey" id="text-color-summary" *ngIf="priceOption?.productStock?.colorName">
+          {{ priceOption?.productStock?.colorName?'สี': '' }} {{ priceOption?.productStock?.colorName }}
+        </span>
+        <span class="text-grey">: ชำระเต็มจำนวน</span>
+        <span class="pull-right text-grey">
+          ฿ {{ priceOption?.trade?.promotionPrice | number }}
+        </span>
+      </p>
+    </ng-container>
+
+    <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">
+      <span class="text-grey" id="text-cash-summary">
+        (ชำระโดย เงินสด)
       </span>
-      <span class="text-grey" id="text-model-payment-summary">
-        {{ priceOption?.productDetail?.model }}
+    </ng-container>
+
+    <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">
+      <span class="text-grey"  id="text-credit-summary">
+        (
+        ชำระโดย บัตรเคดิต
+        {{ transaction?.data?.payment?.paymentMethod?.name }}
+        {{ transaction?.data?.payment?.paymentMethod?.percentage }} %
+        {{ transaction?.data?.payment?.paymentMethod?.month }} เดือน
+        {{ 
+                  (
+                    (+priceOption?.trade?.promotionPrice) 
+                    + (priceOption?.trade?.advancePay?.installmentFlag === 'N' ? +priceOption?.trade?.advancePay?.amount : 0)
+                  ) / transaction?.data?.payment?.paymentMethod?.month | number: '1.2-2'
+                }} บาทต่อเดือน
+        )
       </span>
-      <span class="text-grey" id="text-color-summary" *ngIf="priceOption?.productStock?.colorName">
-          {{ priceOption?.productStock?.colorName?'สี': '' }} {{ priceOption?.productStock?.colorName }} 
-    </span>
-      <span class="pull-right text-green" id="text-payment-price">
-        ฿{{ priceOption?.trade?.promotionPrice | number }}
-      </span>
-    </p>
+    </ng-container>
+
   </div>
   <div class="card-footer bg-transparent ">
     <p>
@@ -48,30 +75,30 @@
       </div>
       <div class="col-12 col-sm-8">
         <p class="text-green" id="text-receipt-billing-address">
-            {{ transaction?.data?.billingInformation?.billDeliveryAddress?.homeNo }}
-      <span *ngIf="transaction?.data?.billingInformation?.billDeliveryAddress?.moo">
-          หมู่{{ transaction?.data?.billingInformation?.billDeliveryAddress?.moo }}
-      </span>
-      <span *ngIf="transaction?.data?.billingInformation?.billDeliveryAddress?.mooBan">
-          หมู่บ้าน{{ transaction?.data?.billingInformation?.billDeliveryAddress?.mooBan }}</span>
+          {{ transaction?.data?.billingInformation?.billDeliveryAddress?.homeNo }}
+          <span *ngIf="transaction?.data?.billingInformation?.billDeliveryAddress?.moo">
+            หมู่{{ transaction?.data?.billingInformation?.billDeliveryAddress?.moo }}
+          </span>
+          <span *ngIf="transaction?.data?.billingInformation?.billDeliveryAddress?.mooBan">
+            หมู่บ้าน{{ transaction?.data?.billingInformation?.billDeliveryAddress?.mooBan }}</span>
           <span *ngIf="transaction?.data?.billingInformation?.billDeliveryAddress?.room">
-          ห้อง{{ transaction?.data?.billingInformation?.billDeliveryAddress?.room }}</span>
+            ห้อง{{ transaction?.data?.billingInformation?.billDeliveryAddress?.room }}</span>
           <span *ngIf="transaction?.data?.billingInformation?.billDeliveryAddress?.floor">
-          ชั้น {{ transaction?.data?.billingInformation?.billDeliveryAddress?.floor }}</span>
+            ชั้น {{ transaction?.data?.billingInformation?.billDeliveryAddress?.floor }}</span>
           <span *ngIf="transaction?.data?.billingInformation?.billDeliveryAddress?.buildingName">
-          อาคาร{{ transaction?.data?.billingInformation?.billDeliveryAddress?.buildingName }}</span>
+            อาคาร{{ transaction?.data?.billingInformation?.billDeliveryAddress?.buildingName }}</span>
           <span *ngIf="transaction?.data?.billingInformation?.billDeliveryAddress?.soi">
-          ซอย {{ transaction?.data?.billingInformation?.billDeliveryAddress?.soi }}</span>
+            ซอย {{ transaction?.data?.billingInformation?.billDeliveryAddress?.soi }}</span>
           <span *ngIf="transaction?.data?.billingInformation?.billDeliveryAddress?.street">
-          ถนน{{ transaction?.data?.billingInformation?.billDeliveryAddress?.street }}</span>
+            ถนน{{ transaction?.data?.billingInformation?.billDeliveryAddress?.street }}</span>
           <span *ngIf="transaction?.data?.billingInformation?.billDeliveryAddress?.province">
-          จังหวัด {{ transaction?.data?.billingInformation?.billDeliveryAddress?.province }}</span>
+            จังหวัด {{ transaction?.data?.billingInformation?.billDeliveryAddress?.province }}</span>
           <span *ngIf="transaction?.data?.billingInformation?.billDeliveryAddress?.amphur">
-          อำเภอ{{ transaction?.data?.billingInformation?.billDeliveryAddress?.amphur }}</span>
+            อำเภอ{{ transaction?.data?.billingInformation?.billDeliveryAddress?.amphur }}</span>
           <span *ngIf="transaction?.data?.billingInformation?.billDeliveryAddress?.tumbol">
-          ตำบล/แขวง{{ transaction?.data?.billingInformation?.billDeliveryAddress?.tumbol }}</span>
+            ตำบล/แขวง{{ transaction?.data?.billingInformation?.billDeliveryAddress?.tumbol }}</span>
           {{ transaction?.data?.billingInformation?.billDeliveryAddress?.zipCode }}
-      
+
         </p>
       </div>
     </div>
