@@ -5,6 +5,15 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { TransactionAction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
 import { ReadCardService, ReadCardProfile, PageLoadingService, Utils, AlertService } from 'mychannel-shared-libs';
 import { CustomerInformationService } from '../../services/customer-information.service';
+
+declare let window: any;
+export enum ReadCardAisNative {
+  EVENT_CHECK_STATUS = 2,
+  EVENT_LOAD_PROGRESS = 3,
+  EVENT_CARD_PROFILE = 4,
+  EVENT_CARD_PROFILE_PHOTO = 5
+}
+
 @Component({
   selector: 'app-device-only-read-card',
   templateUrl: './device-only-read-card.component.html',
@@ -62,7 +71,7 @@ export class DeviceOnlyReadCardComponent implements OnInit {
   }
   readCardFromAisNative(): void {
     let width: number = 1;
-    const ReadCard = {
+    const data = {
       progress: 0,
       profile: null,
       error: null,
@@ -70,14 +79,34 @@ export class DeviceOnlyReadCardComponent implements OnInit {
     };
     this.progressBarArea.nativeElement.style.display = 'none';
     this.progressBarReadSmartCard.nativeElement.style.width = '0%';
+    let cardStatus ;
     const cardPresentedInterval = setInterval(() => {
-      if (ReadCard.progress === 0) {
+      if (data.progress === 0 && cardStatus === 'Presented') {
         this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้');
         this.unsubscribe.unsubscribe();
-        this.messages = '';
         clearInterval(cardPresentedInterval);
       }
     }, 10000);
+
+    const readCardInterval = setInterval(() => {
+      cardStatus = window.aisNative.sendIccCommand(0, ReadCardAisNative.EVENT_CHECK_STATUS, '');
+      data.profile = null;
+      data.error = null;
+      const loadProgress: string = window.aisNative.sendIccCommand(0, ReadCardAisNative.EVENT_LOAD_PROGRESS, '');
+      data.progress = parseInt(loadProgress, 10);
+      if (data.progress < 100) {
+        return;
+      }
+      const profile = window.aisNative.sendIccCommand(0, ReadCardAisNative.EVENT_CARD_PROFILE, '');
+      const photo = window.aisNative.sendIccCommand(0, ReadCardAisNative.EVENT_CARD_PROFILE_PHOTO, '');
+
+      if (profile && photo) {
+      } else {
+        data.progress = 0;
+        data.error = 'อ่านบัตรประชาชนไม่สมบูรณ์ กรุณาลองใหม่อีกครั้ง';
+      }
+    }, 1000);
+
       const promises: any = new Promise((resolve, reject) => {
        this.unsubscribe = this.readCardService.onReadCard().subscribe((readCard: any) =>  {
             const customer: String = readCard.profile;
@@ -101,6 +130,13 @@ export class DeviceOnlyReadCardComponent implements OnInit {
         this.pageLoadingService.closeLoading();
         this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาเสียบบัตรใหม่อีกครั้ง');
       });
+      setTimeout(() => {
+        if (data.progress === 0 && cardStatus === 'Absent') {
+          clearInterval(readCardInterval);
+          this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้');
+          this.unsubscribe.unsubscribe();
+        }
+      }, 3000);
       return promises;
   }
   readCardFromWebSocket(): void {
