@@ -61,7 +61,9 @@ export class OrderPreToPostResultPageComponent implements OnInit {
   }
 
   onMainMenu(): void {
-    this.homeService.goToHome();
+     // bug gotohome จะ unlock เบอร์ ทำให้ออก orderไม่สำเร็จ
+     window.location.href = '/smart-shop';
+     // this.homeService.goToHome();
   }
 
 }

@@ -46,12 +46,12 @@ export class DepositPaymentSummaryComponent implements OnInit {
     this.brand = reserveProductInfo.brand;
     this.colorName = reserveProductInfo.colorName;
     this.model = reserveProductInfo.model;
-    if(reserveProductInfo.tradeReserve.trades[0].deposit) {
+    if (reserveProductInfo.tradeReserve.trades[0].deposit) {
       this.depositAmt = reserveProductInfo.tradeReserve.trades[0].deposit.depositIncludeVat;
     }
-     if(reserveProductInfo.tradeReserve.trades[0].normalPrice) {
+    if (reserveProductInfo.tradeReserve.trades[0].normalPrice) {
       this.summaryPrice = reserveProductInfo.tradeReserve.trades[0].normalPrice;
-     }
+    }
     if (this.transaction.data.payment && this.transaction.data.payment.paymentMethod === 'CA') {
       this.paymentType = 'เงินสด';
     } else if (this.transaction.data.payment && this.transaction.data.payment.paymentMethod === 'CC') {
@@ -81,7 +81,7 @@ export class DepositPaymentSummaryComponent implements OnInit {
 
   getMobileFormat(mobileNo: string): string {
     let firstThreeDigitMobileNo = '';
-    let lastForthDigitMobileNo = '' ;
+    let lastForthDigitMobileNo = '';
     let result = '';
     if (mobileNo) {
       firstThreeDigitMobileNo = mobileNo.substring(0, 3);
