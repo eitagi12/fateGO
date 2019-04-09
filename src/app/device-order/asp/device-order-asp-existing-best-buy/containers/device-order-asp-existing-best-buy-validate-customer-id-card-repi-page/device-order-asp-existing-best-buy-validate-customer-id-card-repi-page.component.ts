@@ -109,7 +109,6 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardRepiPageComponen
                   ).toPromise()
                     .then((resp: any) => {
                       this.transaction.data.order = { soId: resp.data.soId };
-                      this.transaction.data.action = TransactionAction.READ_CARD;
                       return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
                     }).then(() => {
                       this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_PAYMENT_DETAIL_PAGE]);
@@ -120,7 +119,6 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardRepiPageComponen
                 }
               } else {
                 const expireDate = this.transaction.data.customer.expireDate;
-                this.transaction.data.action = TransactionAction.READ_CARD_REPI;
                 if (this.utils.isIdCardExpiredDate(expireDate)) {
                   const simCard = this.transaction.data.simCard;
                   if (simCard.chargeType === 'Pre-paid') {
@@ -129,7 +127,6 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardRepiPageComponen
                   ).toPromise()
                     .then((resp: any) => {
                       this.transaction.data.order = { soId: resp.data.soId };
-                      this.transaction.data.action = TransactionAction.READ_CARD_REPI;
                       return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
                     }).then(() => {
                       this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_PROFILE_PAGE]);

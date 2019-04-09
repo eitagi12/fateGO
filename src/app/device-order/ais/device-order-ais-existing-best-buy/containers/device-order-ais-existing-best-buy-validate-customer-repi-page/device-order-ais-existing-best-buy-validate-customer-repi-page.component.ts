@@ -49,6 +49,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
   }
 
   ngOnInit(): void {
+    this.transaction.data.action = TransactionAction.KEY_IN_REPI;
   }
 
   onError(valid: boolean): void {
@@ -75,7 +76,6 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
   onNext(): void {
     this.pageLoadingService.openLoading();
     const mobileNo = this.transaction.data.simCard.mobileNo;
-    this.transaction.data.action = TransactionAction.KEY_IN_REPI;
     this.customerInfoService.verifyPrepaidIdent(this.identity, mobileNo).then((verifySuccess: boolean) => {
       if (verifySuccess) {
         this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customerInfo: any) => {
@@ -107,19 +107,9 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
               this.transaction.data.order = { soId: resp.data.soId };
               return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
             }).then(() => {
-              this.transaction.data.action = TransactionAction.KEY_IN;
               this.pageLoadingService.closeLoading();
               this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
             });
-          // this.createDeviceOrderBestBuyService.createAddToCartTrasaction(this.transaction, this.priceOption).then((transaction) => {
-          //   this.transaction = transaction;
-          //   this.transaction.data.action = TransactionAction.KEY_IN;
-          //   this.pageLoadingService.closeLoading();
-          //   this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
-          // }).catch((e) => {
-          //   this.pageLoadingService.closeLoading();
-          //   this.alertService.error(e);
-          // });
         });
       } else {
         const simCard = this.transaction.data.simCard;
@@ -153,20 +143,9 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
                 this.transaction.data.order = { soId: resp.data.soId };
                 return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
               }).then(() => {
-                this.transaction.data.action = TransactionAction.KEY_IN_REPI;
                 this.pageLoadingService.closeLoading();
                 this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
               });
-            // this.transaction.data.billingInformation.billDeliveryAddress = this.transaction.data.customer;
-            // this.createDeviceOrderBestBuyService.createAddToCartTrasaction(this.transaction, this.priceOption).then((transaction) => {
-            //   this.transaction = transaction;
-            //   this.transaction.data.action = TransactionAction.KEY_IN_REPI;
-            //   this.pageLoadingService.closeLoading();
-            //   this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
-            // }).catch((e) => {
-            //   this.pageLoadingService.closeLoading();
-            //   this.alertService.error(e);
-            // });
           });
         } else {
           // .then(() => this.pageLoadingService.closeLoading());

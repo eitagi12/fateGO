@@ -109,24 +109,15 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
                   ).toPromise()
                     .then((resp: any) => {
                       this.transaction.data.order = { soId: resp.data.soId };
-                      this.transaction.data.action = TransactionAction.READ_CARD;
                       return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
                     }).then(() => {
                       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE]);
                     });
-                  // this.createDeviceOrderBestBuyService.createAddToCartTrasaction
-                  // (this.transaction, this.priceOption).then((transaction) => {
-                  //   this.transaction = transaction;
-                  //   this.pageLoadingService.closeLoading();
-                  //   this.transaction.data.action = TransactionAction.READ_CARD;
-                  //   this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE]);
-                  // });
                 } else {
                   const idCardType = this.transaction.data.customer.idCardType;
                   this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ');
                 }
               } else {
-                this.transaction.data.action = TransactionAction.READ_CARD_REPI;
                 const expireDate = this.transaction.data.customer.expireDate;
                 if (this.utils.isIdCardExpiredDate(expireDate)) {
                   const simCard = this.transaction.data.simCard;
