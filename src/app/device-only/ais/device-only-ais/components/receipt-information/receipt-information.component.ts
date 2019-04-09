@@ -205,6 +205,9 @@ export class ReceiptInformationComponent implements OnInit {
     const isShowInput = !this.isShowInputForKeyIn;
     this.billingAddress.setIsKeyInBillingAddress(isShowInput);
     this.isShowInputForKeyIn = isShowInput;
+    if (this.receiptInfoForm.valid) {
+      this.onError(true);
+    }
   }
 
   onProvinceSelected(params: any): void {
