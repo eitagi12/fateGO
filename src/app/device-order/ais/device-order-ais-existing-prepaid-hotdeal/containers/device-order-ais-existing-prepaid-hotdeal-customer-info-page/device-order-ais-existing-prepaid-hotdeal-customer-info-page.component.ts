@@ -52,7 +52,7 @@ export class DeviceOrderAisExistingPrepaidHotdealCustomerInfoPageComponent imple
     this.http.get(`/api/customerportal/newRegister/${mobileNo}/queryBalance`).toPromise()
     .then((resp: any) => {
       this.pageLoadingService.closeLoading();
-      this.customerInfo.balance = resp.data.transferBalance;
+      this.customerInfo.balance = Number(resp.data.remainingBalance) / 100;
     })
     .catch(() => {
       this.pageLoadingService.closeLoading();
