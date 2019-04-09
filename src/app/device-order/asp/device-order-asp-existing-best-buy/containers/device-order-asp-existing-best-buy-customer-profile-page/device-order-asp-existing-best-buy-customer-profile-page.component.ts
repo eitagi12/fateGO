@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Router } from '@angular/router';
-import { HomeService } from 'mychannel-shared-libs';
+import { HomeService, TokenService } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
-import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
+import { WIZARD_DEVICE_ORDER_AIS, WIZARD_DEVICE_ORDER_ASP } from 'src/app/device-order/constants/wizard.constant';
 import { ROUTE_DEVICE_ORDER_ASP_BEST_BUY_VALIDATE_CUSTOMER_REPI_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_OTP_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_RPI_PAGE } from 'src/app/device-order/asp/device-order-asp-existing-best-buy/constants/route-path.constant';
 
 @Component({
@@ -14,7 +14,7 @@ import { ROUTE_DEVICE_ORDER_ASP_BEST_BUY_VALIDATE_CUSTOMER_REPI_PAGE, ROUTE_DEVI
 })
 export class DeviceOrderAspExistingBestBuyCustomerProfilePageComponent implements OnInit, OnDestroy {
 
-  wizards: any = WIZARD_DEVICE_ORDER_AIS;
+  wizards: any = this.tokenService.isTelewizUser ? WIZARD_DEVICE_ORDER_ASP : WIZARD_DEVICE_ORDER_AIS;
   transaction: Transaction;
   titleName: string;
   firstName: string;
@@ -25,7 +25,7 @@ export class DeviceOrderAspExistingBestBuyCustomerProfilePageComponent implement
     private transactionService: TransactionService,
     private router: Router,
     private homeService: HomeService,
-    private http: HttpClient
+    private tokenService: TokenService
   ) {
     this.transaction = this.transactionService.load();
   }

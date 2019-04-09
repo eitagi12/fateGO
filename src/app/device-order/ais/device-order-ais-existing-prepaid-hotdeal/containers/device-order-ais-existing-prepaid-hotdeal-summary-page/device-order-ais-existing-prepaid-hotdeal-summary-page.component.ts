@@ -20,9 +20,7 @@ export class DeviceOrderAisExistingPrepaidHotdealSummaryPageComponent implements
     private homeService: HomeService,
     private shoppingCartService: ShoppingCartService,
   ) {
-    this.shoppingCart = Object.assign(this.shoppingCartService.getShoppingCartData(), {
-      mobileNo: ''
-    });
+    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
   }
 
   ngOnInit(): void {

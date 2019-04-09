@@ -8,6 +8,8 @@ import { MobileCareService } from './services/mobile-care.service';
 import { ShoppingCartService } from './services/shopping-cart.service';
 import { IdCardPipe } from 'mychannel-shared-libs';
 import { EligibleMobileService } from './services/eligible-mobile.service';
+import { PrivilegeService } from './services/privilege.service';
+import { CustomerInfoService } from './services/customer-info.service';
 
 @NgModule({
   imports: [
@@ -19,6 +21,8 @@ import { EligibleMobileService } from './services/eligible-mobile.service';
     MobileCareService,
     ShoppingCartService,
     EligibleMobileService,
+    PrivilegeService,
+    CustomerInfoService,
     IdCardPipe,
     DecimalPipe
   ],

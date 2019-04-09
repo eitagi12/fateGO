@@ -13,6 +13,7 @@ import { BsModalRef } from 'ngx-bootstrap';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PromotionShelveService } from 'src/app/device-order/services/promotion-shelve.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-device-order-ais-existing-prepaid-hotdeal-select-package-page',
@@ -41,7 +42,8 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
     private priceOptionService: PriceOptionService,
     private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,
-    private promotionShelveService: PromotionShelveService
+    private promotionShelveService: PromotionShelveService,
+    private http: HttpClient,
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -54,7 +56,6 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
   }
 
   onCompleted(promotion: any): void {
-    // รอแก้ไขตัวแปรที่จะเก็บลงใน share transaction
     this.transaction.data.mainPackage = promotion;
   }
 
@@ -63,18 +64,54 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
 
     const trade: any = this.priceOption.trade;
     const privilege: any = this.priceOption.privilege;
+    const simcard = this.transaction.data.simCard;
 
-    this.promotionShelveService.getPromotionShelve(
-      {
-        packageKeyRef: trade.packageKeyRef,
-        orderType: 'New Registration',
-        billingSystem: BillingSystemType.IRB
-      },
-      +privilege.minimumPackagePrice, +privilege.maxinumPackagePrice)
-      .then((promotionShelves: any) => {
-        this.promotionShelves = this.promotionShelveService.defaultBySelected(promotionShelves, this.transaction.data.mainPackage);
-      })
-      .then(() => this.pageLoadingService.closeLoading());
+    this.http.get('/api/customerportal/newRegister/queryOnTopPackage', {
+      params: {
+        orderType: 'Change Promotion',
+        billingSystem: BillingSystemType.IRB,
+        chargeType: simcard.chargeType,
+        allowNtype: simcard.nType,
+        cpcUserId: trade.packageKeyRef
+      }
+    }).toPromise()
+    .then((resp: any) => {
+      const data = resp.data.packageList || [];
+      const promotionShelves: PromotionShelve[] = data.map((promotionShelve: any) => {
+        return {
+          title: promotionShelve.title,
+          // replace to class in css
+          icon: (promotionShelve.icon || '').replace(/\.jpg$/, '').replace(/_/g, '-'),
+          promotions: promotionShelve.subShelves
+            .map((subShelve: any) => {
+              return { // group
+                id: subShelve.subShelveId,
+                title: subShelve.title,
+                sanitizedName: subShelve.sanitizedName,
+                items: (subShelve.items || []).map((promotion: any) => {
+                  return { // item
+                    id: promotion.itemId,
+                    title: promotion.shortNameThai,
+                    detail: promotion.statementThai,
+                    value: promotion
+                  };
+                })
+              };
+            })
+        };
+      });
+      return Promise.resolve(promotionShelves);
+    }).then((promotionShelves: PromotionShelve[]) => {
+      this.promotionShelves = promotionShelves;
+      if (this.promotionShelves && this.promotionShelves.length > 0) {
+        this.promotionShelves[0].active = true;
+        if (this.promotionShelves[0].promotions && this.promotionShelves[0].promotions.length > 0) {
+          this.promotionShelves[0].promotions[0].active = true;
+        }
+      }
+    }).then(() => {
+      this.pageLoadingService.closeLoading();
+    });
   }
 
   ngOnDestroy(): void {

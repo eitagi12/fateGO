@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { Router } from '@angular/router';
-import { HomeService, User, AisNativeService, TokenService, ChannelType } from 'mychannel-shared-libs';
+import { HomeService, User, AisNativeService, TokenService, ChannelType, ShoppingCart } from 'mychannel-shared-libs';
 import {
   ROUTE_DEVICE_ORDER_AIS_EXISTING_AGREEMENT_PAGE,
   ROUTE_DEVICE_ORDER_AIS_EXISTING_AGGREGATE_PAGE,
@@ -10,6 +10,7 @@ import {
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { Subscription } from 'rxjs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-agreement-sign-page',
@@ -23,6 +24,7 @@ export class DeviceOrderAisExistingAgreementSignPageComponent implements OnInit 
   transaction: Transaction;
   signedSignatureSubscription: Subscription;
   signedOpenSubscription: Subscription;
+  shoppingCart: ShoppingCart;
 
   signatureImage: string;
   constructor(
@@ -30,7 +32,8 @@ export class DeviceOrderAisExistingAgreementSignPageComponent implements OnInit 
     private homeService: HomeService,
     private transactionService: TransactionService,
     private aisNativeService: AisNativeService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private shoppingCartService: ShoppingCartService,
   ) {
     this.transaction = this.transactionService.load();
     this.signedSignatureSubscription = this.aisNativeService.getSigned().subscribe((signature: string) => {
@@ -39,6 +42,7 @@ export class DeviceOrderAisExistingAgreementSignPageComponent implements OnInit 
   }
 
   ngOnInit(): void {
+    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     if (!this.transaction.data.customer.imageSignature) {
       this.onSigned();
     }
@@ -63,7 +67,7 @@ export class DeviceOrderAisExistingAgreementSignPageComponent implements OnInit 
     ).subscribe();
   }
 
-// tslint:disable-next-line: use-life-cycle-interface
+  // tslint:disable-next-line: use-life-cycle-interface
   ngOnDestroy(): void {
     this.signedSignatureSubscription.unsubscribe();
     if (this.signedOpenSubscription) {

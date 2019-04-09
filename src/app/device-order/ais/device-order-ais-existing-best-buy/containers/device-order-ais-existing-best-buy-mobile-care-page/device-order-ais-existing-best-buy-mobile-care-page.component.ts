@@ -23,31 +23,19 @@ export class DeviceOrderAisExistingBestBuyMobileCarePageComponent implements OnI
 
   wizards: any = WIZARD_DEVICE_ORDER_AIS;
 
-  identityValid: boolean = true;
+  priceOption: PriceOption;
   transaction: Transaction;
   mobileCare: MobileCare;
-  priceOption: PriceOption;
   shoppingCart: ShoppingCart;
-
-  @ViewChild('template')
-  template: TemplateRef<any>;
-  modalRef: BsModalRef;
-
-  mobileCareForm: FormGroup;
-  notBuyMobileCareForm: FormGroup;
 
   constructor(
     private router: Router,
     private homeService: HomeService,
-    private pageLoadingService: PageLoadingService,
-    private transactionService: TransactionService,
-    private apiRequestService: ApiRequestService,
-    private http: HttpClient,
     private priceOptionService: PriceOptionService,
+    private transactionService: TransactionService,
+    private pageLoadingService: PageLoadingService,
     private shoppingCartService: ShoppingCartService,
-    private mobileCareService: MobileCareService,
-    private fb: FormBuilder,
-    private modalService: BsModalService
+    private mobileCareService: MobileCareService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -57,12 +45,7 @@ export class DeviceOrderAisExistingBestBuyMobileCarePageComponent implements OnI
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     delete this.transaction.data.mobileCarePackage;
     this.callService();
-    this.createForm();
   }
-
-  // onCompleted(mobileCare: any) {
-  //   this.transaction.data.mobileCarePackage = mobileCare;
-  // }
 
   onHome(): void {
     this.homeService.goToHome();
@@ -84,6 +67,10 @@ export class DeviceOrderAisExistingBestBuyMobileCarePageComponent implements OnI
     this.transactionService.update(this.transaction);
   }
 
+  onCompleted(mobileCare: any): void {
+    this.transaction.data.mobileCarePackage = mobileCare;
+  }
+
   callService(): void {
     const billingSystem = this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
     const chargeType = this.transaction.data.simCard.chargeType;
@@ -97,58 +84,13 @@ export class DeviceOrderAisExistingBestBuyMobileCarePageComponent implements OnI
     }, chargeType, billingSystem, endUserPrice).then((mobileCare: any) => {
       this.mobileCare = {
         promotions: mobileCare,
-        // campaignPrice: 0
-        existingMobileCare: exMobileCare ? true : false
+        existingMobileCare: !!exMobileCare
       };
       if (this.mobileCare.promotions && this.mobileCare.promotions.length > 0) {
         this.mobileCare.promotions[0].active = true;
       }
+      return;
     })
       .then(() => this.pageLoadingService.closeLoading());
-  }
-
-  createForm(): void {
-    this.mobileCareForm = this.fb.group({
-      'mobileCare': [true, Validators.required],
-      'promotion': ['', Validators.required]
-    });
-
-    this.notBuyMobileCareForm = this.fb.group({
-      'notBuyMobile': [''],
-    });
-
-    this.mobileCareForm.valueChanges.subscribe((value: any) => {
-      if (!value.mobileCare) {
-        return this.onOpenNotBuyMobileCare();
-      } else {
-        this.notBuyMobileCareForm.patchValue({
-          notBuyMobile: ''
-        });
-      }
-      if (this.mobileCareForm.valid) {
-        this.transaction.data.mobileCarePackage = this.mobileCareForm.value.promotion.value;
-      }
-    });
-  }
-
-  getServiceChange(percentage: number): number {
-    return ((this.priceOption.trade.normalPrice || 0) * (percentage / 100) * (VAT / 100));
-  }
-
-  onOpenNotBuyMobileCare(): void {
-    this.modalRef = this.modalService.show(this.template, {
-      ignoreBackdropClick: true
-    });
-  }
-
-  onNotBuyMobileCare(dismiss: boolean): void {
-    if (dismiss) { // cancel
-      this.mobileCareForm.patchValue({
-        mobileCare: true
-      });
-    } else {
-      this.transaction.data.mobileCarePackage = {reason: this.notBuyMobileCareForm.value.notBuyMobile};
-    }
-    this.modalRef.hide();
   }
 }

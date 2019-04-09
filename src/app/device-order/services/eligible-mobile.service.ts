@@ -34,7 +34,7 @@ export class EligibleMobileService {
   }
 
   async prepaidMobileList(resp: any): Promise<EligibleMobile[]> {
-    const prepaidMobileList = resp.data.postpaidMobileList || [];
+    const prepaidMobileList = resp.data.prepaidMobileList || [];
     const mobiles: Array<EligibleMobile> = new Array<EligibleMobile>();
     prepaidMobileList.forEach((mobile: {
       mobileNo: string;

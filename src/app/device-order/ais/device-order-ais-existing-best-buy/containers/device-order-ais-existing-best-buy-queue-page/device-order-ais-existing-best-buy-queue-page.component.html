@@ -2,8 +2,32 @@
   <mc-header title="รายการสินค้า"></mc-header>
 
   <div class="mc-flex-wrap bg-white">
-      <div class="my-3">
-  
+    <div class="my-3">
+
+      <div *ngIf="isAutoGenQueue">
+        <div class="container pt-3">
+          <img src="assets/images/icon/sales_portal_white_check.png" class="d-block m-auto icon">
+          <div class="my-3 text-center text-green">
+            <p>หมายเลข {{ transaction?.data?.simCard?.mobileNo | mobileNo }}</p>
+            <p>หมายเลขรายการสั่งชื้อของท่านได้เข้าสู่ระบบเรียบร้อยแล้ว</p>
+          </div>
+          <form [formGroup]="mobileFrom">
+            <div class="form-group">
+              <div class="mt-5 text-center">เบอร์โทรศัพท์รับหมายเลขสั่งซื้อเพื่อชำระสินค้าของท่านคือ</div>
+              <input class="form-control text-center mb-3" id="mobileNo" maxlength="10" autofocus autocomplete="off"
+                formControlName="mobileNo" placeholder="ระบุเบอร์โทรศัพท์รับ SMS" value="mobileNo"
+                [ngClass]="{ 'is-invalid' : mobileFrom.controls.mobileNo.invalid && mobileFrom.controls.mobileNo.touched && mobileFrom.controls.mobileNo.errors }">
+              <small class="invalid-feedback"
+                *ngIf="mobileFrom.controls.mobileNo.touched && mobileFrom.controls.mobileNo.errors">
+                **กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง
+              </small>
+            </div>
+          </form>
+
+        </div>
+      </div>
+
+      <div *ngIf="!isAutoGenQueue">
         <div class="container pt-3">
           <img src="assets/images/icon/sales_portal_white_check.png" class="d-block m-auto icon">
           <div class="my-3 text-center text-green">
@@ -15,20 +39,23 @@
               <div class="text-center">กรุณารับบัตรคิว แล้วระบุหมายเลขคิว</div>
               <div class="text-center">ในการชำระสินค้าของท่าน ด้านล่างนี้</div>
               <input class="form-control text-center mb-3" id="queue" maxlength="4" autofocus autocomplete="off"
-                formControlName="queue" placeholder="ระบุเลขที่คิว" [ngClass]="{ 'is-invalid' : queueFrom.controls.queue.invalid && queueFrom.controls.queue.touched && queueFrom.controls.queue.errors }">
-              <small class="invalid-feedback" *ngIf="queueFrom.controls.queue.touched && queueFrom.controls.queue.errors">
+                formControlName="queue" placeholder="ระบุเลขที่คิว"
+                [ngClass]="{ 'is-invalid' : queueFrom.controls.queue.invalid && queueFrom.controls.queue.touched && queueFrom.controls.queue.errors }">
+              <small class="invalid-feedback"
+                *ngIf="queueFrom.controls.queue.touched && queueFrom.controls.queue.errors">
                 **กรุณากรอกหมายเลขคิวให้ถูกต้อง
               </small>
             </div>
           </form>
-  
+
         </div>
-  
-  
       </div>
+
+
     </div>
-  
+  </div>
+
   <mc-footer>
-    <button class="btn btn-success" (click)="onNext()" [disabled]="queueFrom.invalid" >NEXT</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="queueFrom.invalid && mobileFrom.invalid">NEXT</button>
   </mc-footer>
 </div>

@@ -12,7 +12,7 @@
   
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" *ngIf="transaction?.data?.payment?.type !== 'qrcode'" (click)="onNext()" [disabled]="!identityValid" >CHECK OUT</button>
-    <button class="btn btn-success" *ngIf="transaction?.data?.payment?.type === 'qrcode'" (click)="onNext()" [disabled]="!identityValid" >PAYMENT</button>
+    <button class="btn btn-success" *ngIf="!isQrCodePayment()" (click)="onNext()">CHECK OUT</button>
+    <button class="btn btn-success" *ngIf="isQrCodePayment()" (click)="onNext()">PAYMENT</button>
   </mc-footer>
 </div>

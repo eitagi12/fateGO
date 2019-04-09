@@ -4,7 +4,7 @@ import { Transaction, Customer, TransactionAction } from 'src/app/shared/models/
 import { HttpClient } from '@angular/common/http';
 
 import { CaptureAndSign, HomeService, PageLoadingService, AlertService, TokenService, Utils, ImageUtils } from 'mychannel-shared-libs';
-import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
+import { WIZARD_DEVICE_ORDER_AIS, WIZARD_DEVICE_ORDER_ASP } from 'src/app/device-order/constants/wizard.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ROUTE_DEVICE_ORDER_ASP_BEST_BUY_OTP_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_PAYMENT_DETAIL_PAGE } from '../../constants/route-path.constant';
 import { CustomerInfoService } from '../../services/customer-info.service';
@@ -16,7 +16,7 @@ import { CustomerInfoService } from '../../services/customer-info.service';
 })
 export class DeviceOrderAspExistingBestBuyIdcardCaptureRepiPageComponent implements OnInit, OnDestroy {
 
-  wizards: any = WIZARD_DEVICE_ORDER_AIS;
+  wizards: any = this.tokenService.isTelewizUser ? WIZARD_DEVICE_ORDER_ASP : WIZARD_DEVICE_ORDER_AIS;
 
   transaction: Transaction;
   captureAndSign: CaptureAndSign;
@@ -32,7 +32,8 @@ export class DeviceOrderAspExistingBestBuyIdcardCaptureRepiPageComponent impleme
     private pageLoadingService: PageLoadingService,
     private alertService: AlertService,
     private utils: Utils,
-    private customerInfoService: CustomerInfoService
+    private customerInfoService: CustomerInfoService,
+    private tokenService: TokenService
   ) {
     this.transaction = this.transactionService.load();
   }

@@ -1,0 +1,44 @@
+.read-card{
+    margin: 50px; 
+    border:1px solid #b7b7b7; 
+    border-radius: 4px;
+  }
+
+.read-card-title {
+    background: #8cc53f; 
+    border-radius: 3px; 
+    width: 100%; 
+    padding: 8px 10px 8px 15px; 
+    color: #fff;
+}
+
+.otherid-container-pc{
+    padding: 50px 60px;
+}
+
+.line-center-pc {
+    max-width: 400px;
+    text-align: center;
+    border-left: 1px solid #cbcbcb;
+    line-height: 0.1em;
+    margin: 30px auto 30px auto;
+    span {
+      background:#fff;
+      // padding:0 20px;
+      margin-top: 80px;
+      margin-left: -33px;
+      padding: 20px;
+      position: absolute;
+    }
+}
+
+.idcard-img-pc{
+    display: block;
+    width: 100px;
+    margin: auto;
+    padding: 20px 0 80px 0;
+}
+
+.font-small1{
+    color: #989898;
+  }
