@@ -19,6 +19,7 @@ export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit , OnDe
   priceOption: PriceOption;
   shoppingCart: ShoppingCart;
   mobileCare: MobileCare;
+  isVerifyflag: boolean = false;
   public isBuyMobileCare: boolean = false;
   public isReasonNotBuyMobileCare: string;
 
@@ -41,6 +42,9 @@ export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit , OnDe
     this.router.navigate([ROUTE_DEVICE_ONLY_AIS_SELECT_PAYMENT_AND_RECEIPT_INFORMATION_PAGE]);
   }
 
+  public isVerifyNext(): boolean {
+    return !(this.transaction.data.mobileCarePackage && this.isVerifyflag);
+  }
   public onHome(): void {
     this.homeService.goToHome();
   }
@@ -49,10 +53,15 @@ export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit , OnDe
     this.router.navigate([ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE]);
   }
 
-  onCompleted(mobileCare: any): void {
+  onPromotion(mobileCare: any): void {
     this.transaction.data.mobileCarePackage = mobileCare;
   }
-
+  onIsVerify(isVerifyflag: any): void {
+    this.isVerifyflag = isVerifyflag;
+  }
+  onCompleted(simCard: any): void {
+    this.transaction.data.simCard = simCard;
+  }
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }

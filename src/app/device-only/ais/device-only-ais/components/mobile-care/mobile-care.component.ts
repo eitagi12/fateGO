@@ -50,11 +50,14 @@ export class MobileCareComponent implements OnInit {
   public mobileNoPost: string;
   public VAT: number = 1.07;
   public currentPackageMobileCare: any[];
+  billingSystem: any;
 
   @Input() mobileCare: MobileCare;
   @Input() normalPrice: number;
 
   @Output() completed: EventEmitter<any> = new EventEmitter<any>();
+  @Output() isVerifyflag: EventEmitter<any> = new EventEmitter<any>();
+  @Output() promotion: EventEmitter<any> = new EventEmitter<any>();
   @Output() verifyOtp: EventEmitter<any> = new EventEmitter<any>();
   @Output() checkBuyMobileCare: EventEmitter<any> = new EventEmitter<any>();
   @Output() isReasonNotBuyMobileCare: EventEmitter<any> = new EventEmitter<any>();
@@ -133,7 +136,7 @@ export class MobileCareComponent implements OnInit {
         });
       }
       if (this.mobileCareForm.valid) {
-        this.completed.emit(this.mobileCareForm.value.promotion.value);
+        this.promotion.emit(this.mobileCareForm.value.promotion.value);
       }
     });
   }
@@ -154,7 +157,7 @@ export class MobileCareComponent implements OnInit {
         mobileCare: true
       });
     } else {
-      this.completed.emit(this.notBuyMobileCareForm.value.notBuyMobile);
+      this.promotion.emit(this.notBuyMobileCareForm.value.notBuyMobile);
     }
     this.modalRef.hide();
   }
@@ -177,7 +180,7 @@ export class MobileCareComponent implements OnInit {
       this.pageLoadingService.openLoading();
       this.customerInformationService.getProfileByMobileNo(mobileNo).then((res) => {
         if (res.data.chargeType === 'Post-paid') {
-          this.pageLoadingService.closeLoading();
+          this.billingSystem = res.data.billingSystem;
           this.checkMobileCare(mobileNo);
         } else {
           this.pageLoadingService.closeLoading();
@@ -198,6 +201,7 @@ export class MobileCareComponent implements OnInit {
   private checkMobileCare(mobileNo: string): void {
     this.customerInformationService.getBillingByMobileNo(mobileNo).then((res: any) => {
       for (let index = 0; index < res.data.currentPackage.length; index++) {
+        this.pageLoadingService.closeLoading();
         if (res.data.currentPackage[index].produuctGroup && res.data.currentPackage[index].produuctGroup === 'Mobile Care') {
           this.currentPackageMobileCare = res.data.currentPackage[index];
           this.isPrivilegeCustomer = false;
@@ -269,9 +273,15 @@ export class MobileCareComponent implements OnInit {
       .then((resp: any) => {
         if (resp && resp.data) {
           this.pageLoadingService.closeLoading();
+          this.completed.emit({
+            mobileNo: this.privilegeCustomerForm.value.mobileNo,
+            billingSystem: this.billingSystem
+          });
+          this.isVerifyflag.emit(true);
         } else {
           this.pageLoadingService.closeLoading();
           this.alertService.error('รหัส OTP ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง');
+          this.isVerifyflag.emit(false);
         }
       }).catch((error) => {
         this.pageLoadingService.closeLoading();
@@ -280,8 +290,8 @@ export class MobileCareComponent implements OnInit {
   }
 
   callService(): void {
-    const billingSystem = BillingSystemType.IRB;
-    const chargeType = BillingSystemType.IRB;
+    const billingSystem = BillingSystemType.IRB; // || BillingSystemType.IRB
+    const chargeType = BillingSystemType.IRB; // || BillingSystemType.IRB
     const endUserPrice = +this.priceOption.trade.normalPrice;
 
     this.pageLoadingService.openLoading();
@@ -296,6 +306,7 @@ export class MobileCareComponent implements OnInit {
       if (this.mobileCare.promotions && this.mobileCare.promotions.length > 0) {
         this.mobileCare.promotions[0].active = true;
       }
+      console.log('kkkkkkk', mobileCare);
     }).then(() => this.pageLoadingService.closeLoading());
   }
 }

@@ -11,10 +11,16 @@
     <app-shopping-cart-detail></app-shopping-cart-detail>
     <!-- <app-mobile-care-avaliable></app-mobile-care-avaliable> -->
     <!-- <mc-mobile-care [mobileCare]="mobileCare" [normalPrice]="priceOption?.trade?.normalPrice" (completed)="onCompleted($event)" ></app-mobile-care> -->
-    <app-mobile-care [mobileCare]="mobileCare" [normalPrice]="priceOption?.trade?.normalPrice" (completed)="onCompleted($event)"></app-mobile-care>
+    <app-mobile-care
+      [mobileCare]="mobileCare"
+      [normalPrice]="priceOption?.trade?.normalPrice"  
+      (promotion)="onPromotion($event)"
+      (isVerifyflag)="onIsVerify($event)"
+      (completed)="onCompleted($event)">
+    </app-mobile-care>
   </div>
   <mc-footer>
     <button class="btn btn-secondary" id="button-back" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" id="button-next" (click)="onNext()" [disabled]="!transaction?.data?.mobileCarePackage">NEXT</button>
+    <button class="btn btn-success" id="button-next" (click)="onNext()" [disabled]="isVerifyNext()">NEXT</button>
   </mc-footer>
 </div>

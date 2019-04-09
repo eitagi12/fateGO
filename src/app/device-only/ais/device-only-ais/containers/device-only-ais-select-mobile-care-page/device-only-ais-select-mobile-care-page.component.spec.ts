@@ -12,7 +12,7 @@ import { By } from '@angular/platform-browser';
 import { ROUTE_DEVICE_ONLY_AIS_SELECT_PAYMENT_AND_RECEIPT_INFORMATION_PAGE, ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE } from '../../constants/route-path.constant';
 import { Router } from '@angular/router';
 
-describe('DeviceOnlyAisSelectMobileCarePageComponent', () => {
+xdescribe('DeviceOnlyAisSelectMobileCarePageComponent', () => {
   let component: DeviceOnlyAisSelectMobileCarePageComponent;
   let fixture: ComponentFixture<DeviceOnlyAisSelectMobileCarePageComponent>;
   let nextButton: DebugElement;
