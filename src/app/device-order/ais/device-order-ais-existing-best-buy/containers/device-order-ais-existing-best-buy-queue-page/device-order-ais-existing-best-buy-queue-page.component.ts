@@ -357,9 +357,9 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
 
   checkValid(): boolean {
     if (!this.isAutoGenQueue) {
-      return !this.queueFrom.invalid;
+      return !!this.queueFrom.invalid;
     } else {
-      return !this.mobileFrom.invalid;
+      return !!this.mobileFrom.invalid;
     }
   }
 }
