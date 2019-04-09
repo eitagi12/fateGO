@@ -73,10 +73,10 @@ export class DeviceOnlyAutoGetQueuePageComponent implements OnInit, OnDestroy {
   private autoGetQueue(): void {
     const mobile = this.mobileForm.value.mobileNo;
     this.queueService.autoGetQueue(mobile).then((data) => {
-      this.checkDataLinkPage(data);
       this.transaction.data.queue = {
         queueNo: data
       };
+      this.checkDataLinkPage(data);
     }).catch((error: any) => {
       this.pageLoadingService.closeLoading();
       this.router.navigate([ROUTE_DEVICE_ONLY_AIS_KEY_IN_QUEUE]);
@@ -92,8 +92,9 @@ export class DeviceOnlyAutoGetQueuePageComponent implements OnInit, OnDestroy {
             if (res.data.resultCode === 'S') {
               this.pageLoadingService.closeLoading();
               this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE]);
-            } else {
-
+            } else if (res.data.resultCode === 'F') {
+              this.pageLoadingService.closeLoading();
+              this.router.navigate([ROUTE_DEVICE_ONLY_AIS_KEY_IN_QUEUE]);
             }
           });
         }

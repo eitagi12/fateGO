@@ -54,10 +54,10 @@
         <div class="card">
           <div class="card-body">
             <div class="card-body">
-              <p class="text-light-green">สรุปรายการซื้อ</p>
+              <p class="text-green">สรุปรายการซื้อ</p>
               <div class="text-grey">
                 <p>
-                  <i class="fa fa-circle mr-3 text-light-green"></i>
+                  <i class="fa fa-circle mr-3 text-lime"></i>
                   <span id="text-summary-brand-model">
                     {{ priceOption?.productDetail?.brand }}
                     {{ priceOption?.productDetail?.name }}
@@ -66,7 +66,7 @@
                       {{ priceOption?.productStock?.colorName?'สี': '' }} {{ priceOption?.productStock?.colorName }}
                     </span>
                   </span>
-                  <span class="pull-right text-green">
+                  <span class="pull-right">
                     ฿<span id="text-summary-price">{{ summary([+priceOption?.trade?.promotionPrice]) | number }}
                   </span>
                   </span>
