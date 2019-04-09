@@ -111,7 +111,7 @@
               </div>
               <div *ngIf="!balance?.addMoney">
                   <img class="icon-warning mb-3" src="assets/images/icon/icon_pouch.png">
-                  <p class="text-green">ยอดเงินคงเหลือ {{ balance | number}} บาท</p>
+                  <p class="text-green">ยอดเงินคงเหลือ {{ balance?.balance | number}} บาท</p>
               </div>
                 <button class="btn btn-success" (click)="getBalance()">อัพเดตยอดเงิน</button>
             </div>
