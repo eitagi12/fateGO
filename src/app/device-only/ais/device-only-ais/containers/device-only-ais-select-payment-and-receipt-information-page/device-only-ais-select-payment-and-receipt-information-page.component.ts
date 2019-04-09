@@ -62,19 +62,23 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       advancePay: 0
     };
 
-    this.banks = (this.priceOption.trade.banks || []).map((b: any) => {
-      return b.installmentDatas.map((data: any) => {
-        return {
-          ...b,
-          installment: `${data.installmentPercentage}% ${data.installmentMounth}`
-        };
-      });
-    }).reduce((prev: any, curr: any) => {
-      curr.forEach((element: any) => {
-        prev.push(element);
-      });
-      return prev;
-    }, []);
+    if (this.isFullPayment()) {
+      this.banks = this.priceOption.trade.banks || [];
+    } else {
+      this.banks = (this.priceOption.trade.banks || []).map((b: any) => {
+        return b.installmentDatas.map((data: any) => {
+          return {
+            ...b,
+            installment: `${data.installmentPercentage}% ${data.installmentMounth}`
+          };
+        });
+      }).reduce((prev: any, curr: any) => {
+        curr.forEach((element: any) => {
+          prev.push(element);
+        });
+        return prev;
+      }, []);
+    }
 
     if (!this.transaction.data) {
       this.transaction = {
