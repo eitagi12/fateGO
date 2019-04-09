@@ -46,11 +46,15 @@ export class DepositPaymentSummaryComponent implements OnInit {
     this.brand = reserveProductInfo.brand;
     this.colorName = reserveProductInfo.colorName;
     this.model = reserveProductInfo.model;
-    this.depositAmt = reserveProductInfo.tradeReserve.trades[0].deposit.depositIncludeVat;
-    this.summaryPrice = reserveProductInfo.tradeReserve.trades[0].normalPrice;
-    if (this.transaction.data.payment.paymentMethod === 'CA') {
+    if(reserveProductInfo.tradeReserve.trades[0].deposit) {
+      this.depositAmt = reserveProductInfo.tradeReserve.trades[0].deposit.depositIncludeVat;
+    }
+     if(reserveProductInfo.tradeReserve.trades[0].normalPrice) {
+      this.summaryPrice = reserveProductInfo.tradeReserve.trades[0].normalPrice;
+     }
+    if (this.transaction.data.payment && this.transaction.data.payment.paymentMethod === 'CA') {
       this.paymentType = 'เงินสด';
-    } else if (this.transaction.data.payment.paymentMethod === 'CC') {
+    } else if (this.transaction.data.payment && this.transaction.data.payment.paymentMethod === 'CC') {
       this.paymentType = 'บัตรเครดิต';
     }
 
