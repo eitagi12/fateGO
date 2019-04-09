@@ -194,24 +194,32 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     const value = control.value;
     const length = control.value.length;
 
-    if (length === 10) {
-      if (this.utils.isMobileNo(value)) {
-        return null;
+    if (length >= 10) {
+      if (length === 10) {
+        if (this.utils.isMobileNo(value)) {
+          return null;
+        } else {
+          return {
+            message: 'กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง',
+          };
+        }
+      } else if (length === 13) {
+        if (this.utils.isThaiIdCard(value)) {
+          return null;
+        } else {
+          return {
+            message: 'กรุณากรอกเลขบัตรประชาชนให้ถูกต้อง',
+          };
+        }
       } else {
         return {
-          message: 'กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง',
-        };
+            message: 'กรุณากรอกรูปแบบให้ถูกต้อง',
+          };
       }
-    }
-
-    if (length === 13) {
-      if (this.utils.isThaiIdCard(value)) {
-        return null;
-      } else {
-        return {
-          message: 'กรุณากรอกเลขบัตรประชาชนให้ถูกต้อง',
-        };
-      }
+    } else {
+      return {
+        message: 'กรุณากรอกรูปแบบให้ถูกต้อง',
+      };
     }
   }
 
