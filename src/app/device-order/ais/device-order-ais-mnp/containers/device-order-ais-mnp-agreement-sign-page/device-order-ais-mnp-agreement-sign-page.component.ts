@@ -6,7 +6,7 @@ import { ShoppingCart, HomeService, AisNativeService, TokenService, User, Channe
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
-import { ROUTE_DEVICE_ORDER_AIS_MNP_SUMMARY_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_MNP_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_AGGREGATE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_ECONTACT_PAGE } from '../../constants/route-path.constant';
 import { TranslateService } from '@ngx-translate/core';
 import { AisNativeMnpService } from '../../services/ais-native-mnp-services.service';
 
@@ -22,97 +22,46 @@ export class DeviceOrderAisMnpAgreementSignPageComponent implements OnInit, OnDe
   transaction: Transaction;
   signedSignatureSubscription: Subscription;
   signedOpenSubscription: Subscription;
-  openSignedCommand: any;
-  isOpenSign: boolean;
-
-  translationSubscribe: Subscription;
-  currentLang: string;
-
-  commandSigned: any;
+  shoppingCart: ShoppingCart;
 
   constructor(
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
-    private aisNativeOrderService: AisNativeMnpService,
+    private aisNativeService: AisNativeService,
     private tokenService: TokenService,
-    private alertService: AlertService,
-    private translationService: TranslateService
+    private shoppingCartService: ShoppingCartService,
   ) {
     this.transaction = this.transactionService.load();
-    this.signedSignatureSubscription = this.aisNativeOrderService.getSigned().subscribe((signature: string) => {
-      this.isOpenSign = false;
-      if (signature) {
-        this.isOpenSign = false;
-        this.transaction.data.customer.imageSignature = signature;
-        // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_EAPPLICATION_PAGE]); // ROUTE_DEVICE_ORDER_AIS_MNP_DEVICE_SELLING_LIST_PAGE
-      } else {
-        this.alertService.warning('กรุณาเซ็นลายเซ็น').then(() => {
-          this.onSigned();
-        });
-        return;
-      }
+    this.signedSignatureSubscription = this.aisNativeService.getSigned().subscribe((signature: string) => {
+      this.transaction.data.customer.imageSignature = signature;
     });
+  }
 
-    this.currentLang = this.translationService.currentLang || 'TH';
-    this.translationSubscribe = this.translationService.onLangChange.subscribe(lang => {
-      if (this.signedOpenSubscription) {
-        this.signedOpenSubscription.unsubscribe();
-      }
-      this.currentLang = typeof (lang) === 'object' ? lang.lang : lang;
-      if (this.isOpenSign) {
-        this.onSigned();
-      }
-    });
-
+  onBack(): void {
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_ECONTACT_PAGE]);
   }
 
   ngOnInit(): void {
+    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     if (!this.transaction.data.customer.imageSignature) {
       this.onSigned();
     }
   }
 
-  onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_SUMMARY_PAGE]);
-  }
-
   onNext(): void {
-    if (this.openSignedCommand && !this.openSignedCommand.error) {
-      this.openSignedCommand.ws.send('CaptureImage');
-    } else {
-      if (this.transaction.data.customer.imageSignature) {
-        // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_EAPPLICATION_PAGE]);
-        // ROUTE_DEVICE_ORDER_AIS_MNP_DEVICE_SELLING_LIST_PAGE
-      }
-    }
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_AGGREGATE_PAGE]);
   }
 
   onHome(): void {
     this.homeService.goToHome();
   }
 
-  checkLogicNext(): boolean {
-    if (this.isOpenSign || this.transaction.data.customer.imageSignature) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   onSigned(): void {
-    this.isOpenSign = true;
     const user: User = this.tokenService.getUser();
-    this.signedOpenSubscription = this.aisNativeOrderService.openSigned(
-      ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'OnscreenSignpad', `{x:100,y:280,Language: ${this.currentLang}}`
-    ).subscribe((command: any) => {
-      this.openSignedCommand = command;
-    });
-
-  }
-
-  getOnMessageWs(): void {
-    this.commandSigned.ws.send('CaptureImage');
+    this.signedOpenSubscription = this.aisNativeService.openSigned(
+      ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'SignaturePad'
+    ).subscribe();
   }
 
   ngOnDestroy(): void {
@@ -120,10 +69,7 @@ export class DeviceOrderAisMnpAgreementSignPageComponent implements OnInit, OnDe
     if (this.signedOpenSubscription) {
       this.signedOpenSubscription.unsubscribe();
     }
-
-    if (this.translationSubscribe) {
-      this.translationSubscribe.unsubscribe();
-    }
     this.transactionService.update(this.transaction);
   }
+
 }

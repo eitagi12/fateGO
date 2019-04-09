@@ -81,7 +81,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
   onNext(): void {
     this.pageLoadingService.openLoading();
     const mobileNo = this.transaction.data.simCard.mobileNo;
-    
+
     this.customerInfoService.verifyPrepaidIdent(this.identity, mobileNo).then((verifySuccess: boolean) => {
       if (verifySuccess) {
         this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customerInfo: any) => {
