@@ -123,6 +123,12 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
         },
         onDelete: () => {
           delete this.transaction.data.billingInformation.mergeBilling;
+          // delete this.transaction.data.billingInformation.billCycle;
+          delete this.transaction.data.billingInformation.billCycleData;
+          const simCard = this.transaction.data.simCard;
+          // tslint:disable-next-line:no-shadowed-variable
+          const billingInformation = this.transaction.data.billingInformation;
+          const billCycleData: any = billingInformation.billCycleData || {};
 
           this.billingInfo.billingMethod.text = null;
           this.billingInfo.billingMethod.isDelete = false;
@@ -134,10 +140,20 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
           this.billingInfo.billingCycle.isEdit = true;
           this.billingInfo.billingCycle.isDelete = false;
 
-          this.getBllingCycle(customer.billCycle).then((billCycleText: string) => {
+          // this.mailBillingInfo.billChannel = this.getBillChannel();
+          this.mailBillingInfo = {
+            email: billCycleData.email,
+            mobileNo: simCard.mobileNo,
+            address: billCycleData.billAddressText,
+            billChannel: this.getBillChannel()
+          };
+          const bill = billCycle && billCycle.bill ? billCycle.bill : customer.billCycle;
+          this.billingInfo.billingCycle.isDelete = !!(billCycle && billCycle.bill);
+          this.getBllingCycle(bill).then((billCycleText: string) => {
             this.billingInfo.billingCycle.text = billCycleText;
           });
         }
+
       },
       billingAddress: {
         text: (this.isMergeBilling() ? mergeBilling.billingAddr : null) || customerAddress || '-',
@@ -184,6 +200,9 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
   }
 
   onMailBillingInfoCompleted(mailBillingInfo: any): void {
+    if (!mailBillingInfo) {
+      return;
+    }
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData || {};
 
@@ -193,6 +212,7 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
     billCycleData.receiveBillMethod = mailBillingInfo.receiveBillMethod;
 
     this.transaction.data.billingInformation.billCycleData = billCycleData;
+
   }
 
   onMailBillingInfoError(valid: boolean): void {
@@ -212,7 +232,10 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
   onTelNoBillingError(valid: boolean): void {
     this.isTelNoBillingValid = valid;
   }
-
+  isNext(): boolean {
+    // !(isTelNoBillingValid &&(isMailBillingInfoValid || isMergeBilling()))
+    return this.isTelNoBillingValid && this.isMailBillingInfoValid;
+  }
   onBack(): void {
     // if (this.isPackageNetExtreme()) {
     //   // this.router.navigate([ROUTE_ORDER_NEW_REGISTER_MERGE_BILLING_PAGE]);
@@ -227,11 +250,11 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
   }
 
   onNext(): void {
-    if (!this.customerValid()) {
+
+    if (!this.customerValid() && !this.isMergeBilling()) {
       this.alertService.warning('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร');
       return;
     }
-
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData;
     billCycleData.billAddressText = this.billingInfo.billingAddress.text;
