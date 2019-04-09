@@ -113,6 +113,10 @@ export class ReceiptInformationComponent implements OnInit {
       if (this.receiptInfoForm.valid) {
         const receiptInfo: ReceiptInfo = this.receiptInfoForm.value;
         this.completed.emit({...this.customerInfo, receiptInfo });
+        if (this.isShowInputForKeyIn) {
+          this.nameText = '';
+          this.billingAddressText = '';
+        }
       }
     });
   }
@@ -201,9 +205,6 @@ export class ReceiptInformationComponent implements OnInit {
     const isShowInput = !this.isShowInputForKeyIn;
     this.billingAddress.setIsKeyInBillingAddress(isShowInput);
     this.isShowInputForKeyIn = isShowInput;
-    this.nameText = '';
-    this.billingAddressText = '';
-    this.receiptInfoForm.controls['taxId'].setValue('');
   }
 
   onProvinceSelected(params: any): void {
