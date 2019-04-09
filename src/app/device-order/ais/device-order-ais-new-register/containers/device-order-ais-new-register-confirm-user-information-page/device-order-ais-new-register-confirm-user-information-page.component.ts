@@ -107,7 +107,8 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
       province: customer.province,
       zipCode: customer.zipCode
     });
-
+    console.log('mergebill', !!billCycle);
+    console.log('isDelete', !(!!mergeBilling) && !!billCycle);
     this.billingInfo = {
       // merge bill ไม่เมื่อเลือก package net extrem
       billingMethod: {
@@ -316,7 +317,11 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
 
   getBllingCycle(billCycle: string): Promise<string> {
     if (!billCycle) {
-      return this.http.get('/api/customerportal/newRegister/queryBillCycle')
+      return this.http.get('/api/customerportal/newRegister/queryBillCycle', {
+        params: {
+          coProject: 'Y'
+        }
+      })
         .toPromise()
         .then((resp: any) => {
           const data = resp.data.billCycles || [];
@@ -329,7 +334,7 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
             };
           }).find(bill => bill.billDefault === 'Y');
 
-          this.transaction.data.billingInformation.billCycle = defaultBillCycle.billCycle;
+          this.transaction.data.customer.billCycle = defaultBillCycle.billCycle.bill;
           return defaultBillCycle.text;
         });
     }
