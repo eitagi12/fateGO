@@ -136,7 +136,7 @@ export class DeviceOnlyReadCardComponent implements OnInit {
           this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้');
           this.unsubscribe.unsubscribe();
         }
-      }, 3000);
+      }, 30000);
       return promises;
   }
   readCardFromWebSocket(): void {
