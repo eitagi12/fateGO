@@ -2,20 +2,19 @@
   <div class="card-header bg-purple text-white">สินค้าและบริการอื่น</div>
   <div class="card-body">
     <i class="fa fa-circle mr-3 text-lime"></i>
-  <span class="text-grey" id="text-package-mobile-care" >
-      <span *ngIf= "!transaction?.data?.mobileCarePackage" >
-        ไม่ซื้อโมบายแคร์
-      </span> 
-      <span *ngIf= "transaction?.data?.mobileCarePackage">
-        มีโมบายแคร์รอ data 
-        <!-- {{ transaction?.data?.mobileCarePackage?.title }}  -->
-        <span class="text-gray" id="text-mobile-care">
-        ( หมายเลขที่รับสิทธิ์ : {{ '`รอเบอร์ที่จะสมัครโมบายแคร์' | mobileNo }} )
+    <span class="text-grey" id="text-package-mobile-care">
+      <span *ngIf="!transaction?.data?.mobileCarePackage?.title" id="text-not-mobile-care">
+        ไม่สนใจซื้อบริการโมบายแคร์
       </span>
-      <span class="pull-right" (click)="onOpenDetail(transaction?.data?.mobileCarePackage?.detailTH)">
-          <img src="assets/images/icon/icon-page.png" class="icon" />
-        </span>
-    </span>
+      <span *ngIf="transaction?.data?.mobileCarePackage?.title" id="text-mobile-care">
+        {{ transaction?.data?.mobileCarePackage?.title }}
+        <span class="pull-right" (click)="onOpenDetail(transaction?.data?.mobileCarePackage?.detailTH)">
+            <img src="assets/images/icon/icon-page.png" class="icon" />
+          </span>
+        <p class="text-gray" id="text-mobile-priviledge" class="mobile-care">
+          ( หมายเลขที่รับสิทธิ์ : {{ '0891230440' | mobileNo }} )
+        </p>
+      </span>
     </span>
   </div>
 </div>

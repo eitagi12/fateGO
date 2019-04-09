@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionData } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 
@@ -11,10 +11,11 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 export class SummaryProductAndServiceComponent implements OnInit {
 
   @ViewChild('detailTemplate')
-  transaction: Transaction;
   detailTemplate: any;
+
   modalRef: BsModalRef;
   detail: string;
+  transaction: Transaction;
 
   constructor(
     private transactionService: TransactionService,
@@ -24,6 +25,7 @@ export class SummaryProductAndServiceComponent implements OnInit {
    }
 
   ngOnInit(): void {
+    console.log(this.transaction);
   }
 
   onOpenDetail(detail: string): void {
