@@ -92,8 +92,6 @@ export class SharedTransactionService {
           locationCode: !!data.seller ? data.seller.locationCode : productStock.location || '',
           locationName: !!data.seller ? data.seller.locationName : productStock.locationName || '',
           sellerName: !!data.seller ? data.seller.sellerName : '',
-          employeeId: '',
-          ascCode: '',
           isAscCode: !this.tokenService.isAisUser(),
           sellerNo: !!data.seller ? data.seller.sellerNo : ''
         },
