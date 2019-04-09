@@ -56,11 +56,11 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
     if (this.transaction.data.simCard.mobileNo) {
       this.mobileFrom.controls.mobileNo.setValue(this.transaction.data.simCard.mobileNo);
       this.mobileNo = this.transaction.data.simCard.mobileNo;
-    } else {
-      this.mobileFrom.valueChanges.subscribe((value) => {
-        this.mobileNo = value.mobileNo;
-      });
     }
+
+    this.mobileFrom.valueChanges.subscribe((value) => {
+      this.mobileNo = value.mobileNo;
+    });
 
     this.queueFrom = this.fb.group({
       'queue': ['', Validators.compose([Validators.required, Validators.pattern(/([A-Y]{1}[0-9]{3})/)])],
@@ -224,12 +224,12 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
 
   private getInstallmentTerm(payment: Payment): any {
     return payment && payment.paymentBank && payment.paymentBank.installments ?
-           payment.paymentBank.installments[0].installmentMonth : 0;
+      payment.paymentBank.installments[0].installmentMonth : 0;
   }
 
   private getInstallmentRate(payment: Payment): any {
     return payment && payment.paymentBank && payment.paymentBank.installments ?
-           payment.paymentBank.installments[0].installmentPercentage : 0;
+      payment.paymentBank.installments[0].installmentPercentage : 0;
   }
 
   private getGrandTotalAmt(trade: any, prebooking: Prebooking): string {
