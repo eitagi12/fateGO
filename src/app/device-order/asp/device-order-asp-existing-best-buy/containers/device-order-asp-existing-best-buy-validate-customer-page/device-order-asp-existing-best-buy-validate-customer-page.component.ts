@@ -68,6 +68,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
   }
 
   ngOnInit(): void {
+    this.createTransaction();
     if (this.tokenService.isTelewizUser()) {
       this.createForm();
     }
@@ -104,7 +105,6 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    this.createTransaction();
     if (this.utils.isMobileNo(this.identity)) {
       // KEY-IN MobileNo
       this.privilegeService.checkAndGetPrivilegeCode(this.identity, this.priceOption.trade.ussdCode).then((privligeCode) => {

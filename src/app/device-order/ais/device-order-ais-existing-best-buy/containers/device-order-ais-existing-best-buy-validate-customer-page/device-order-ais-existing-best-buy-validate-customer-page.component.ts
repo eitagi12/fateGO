@@ -63,6 +63,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
   }
 
   ngOnInit(): void {
+    this.createTransaction();
   }
 
   onError(valid: boolean): void {
@@ -96,7 +97,6 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    this.createTransaction();
     if (this.utils.isMobileNo(this.identity)) {
       // KEY-IN MobileNo
       this.privilegeService.checkAndGetPrivilegeCode(this.identity, this.priceOption.trade.ussdCode).then((privligeCode) => {
