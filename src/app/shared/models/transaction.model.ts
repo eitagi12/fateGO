@@ -168,6 +168,8 @@ export interface BillingInformation {
   billCycleData?: BillingAccountData;
   // send bill devilery address
   billDeliveryAddress?: BillDeliveryAddress;
+  // วันที่มีผลการใช้งาน B: รอบถัดไป D: วันถัดไป I: มีผลทันที
+  overRuleStartDate?: string;
 }
 
 export interface BillCycle {

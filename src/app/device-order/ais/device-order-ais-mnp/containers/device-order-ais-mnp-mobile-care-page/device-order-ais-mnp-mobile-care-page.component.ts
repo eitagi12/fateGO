@@ -41,7 +41,7 @@ export class DeviceOrderAisMnpMobileCarePageComponent implements OnInit, OnDestr
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     delete this.transaction.data.mobileCarePackage;
-    // this.callService();
+    this.callService();
   }
 
   onBack(): void {
