@@ -11,8 +11,6 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { MobileCareService } from 'src/app/device-order/services/mobile-care.service';
 import { MOBILE_CARE_PACKAGE_KEY_REF } from 'src/app/device-order/constants/cpc.constant';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-device-order-asp-existing-best-buy-mobile-care-page',
@@ -73,7 +71,8 @@ export class DeviceOrderAspExistingBestBuyMobileCarePageComponent implements OnI
   }
 
   callService(): void {
-    const billingSystem = this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
+    const billingSystem = ( this.transaction.data.simCard.billingSystem === 'RTBS')
+                ? BillingSystemType.IRB : this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
     const chargeType = this.transaction.data.simCard.chargeType;
     const endUserPrice = +this.priceOption.trade.normalPrice;
     const exMobileCare = this.transaction.data.existingMobileCare;

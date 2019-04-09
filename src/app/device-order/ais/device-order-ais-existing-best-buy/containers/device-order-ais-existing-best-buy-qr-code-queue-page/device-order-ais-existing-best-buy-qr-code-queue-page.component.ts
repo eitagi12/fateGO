@@ -166,7 +166,7 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
           mobileNo: mobileNo
         }).toPromise()
           .then((response: any) => {
-            if (response && response.data && response.data.queueNo) {
+            if (response && response.data && response.data.data && response.data.data.queueNo) {
               resolve(response.data.queueNo);
             } else {
               reject(null);
@@ -214,7 +214,7 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
       priceDiscountAmt: (+trade.discount.amount).toFixed(2),
       grandTotalAmt: this.getGrandTotalAmt(trade, prebooking),
       userId: this.user.username,
-      saleCode: seller && seller.employeeId ? seller.employeeId : '',
+      saleCode: seller && seller.sellerNo ? seller.sellerNo : '',
       queueNo: queue.queueNo || '',
       cusNameOrder: `${customer.titleName || ''}${customer.firstName || ''} ${customer.lastName || ''}`.trim(),
       taxCardId: customer && customer.idCardNo || '',
@@ -227,8 +227,8 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
       matAirTime: '',
       matCodeFreeGoods: '',
       paymentRemark: this.getOrderRemark(trade, payment, mobileCare, queue.queueNo, transaction),
-      installmentTerm: payment && payment.paymentBank ? payment.paymentBank.installments[0].installmentMonth : 0,
-      installmentRate: payment && payment.paymentBank ? payment.paymentBank.installments[0].installmentPercentage : 0,
+      installmentTerm: payment.paymentMethod.month,
+      installmentRate: payment.paymentMethod.percentage,
       mobileAisFlg: 'Y',
       paymentMethod: paymentMethod,
       bankCode: payment && payment.paymentBank ? payment.paymentBank.abb : '',
@@ -318,8 +318,8 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
         tradeAndInstallment += '[CC]' + comma + space;
         tradeAndInstallment += '[B]' + payment.paymentBank.abb + comma + space;
         if (payment.paymentBank.installments.length > 0) {
-          tradeAndInstallment += '[I]' + payment.paymentBank.installments[0].installmentPercentage +
-            '%' + space + payment.paymentBank.installments[0].installmentMonth + 'เดือน' + comma + space;
+          tradeAndInstallment += '[I]' + payment.paymentMethod.percentage +
+            '%' + space + payment.paymentMethod.month + 'เดือน' + comma + space;
         }
       } else {
         tradeAndInstallment += '[CA]' + comma + space;

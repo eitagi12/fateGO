@@ -110,7 +110,7 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
         if (shopCheckSeller.data.condition) {
           this.transaction.data.seller = {
             ...this.seller,
-            employeeId: shopCheckSeller.data.isAscCode
+            isAscCode: shopCheckSeller.data.isAscCode
           };
           if (!this.tokenService.isTelewizUser()) {
             this.pageLoadingService.closeLoading();
@@ -207,7 +207,7 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
       priceDiscountAmt: (+trade.discount.amount).toFixed(2),
       grandTotalAmt: this.getGrandTotalAmt(trade, prebooking),
       userId: this.user.username,
-      saleCode: seller && seller.employeeId ? seller.employeeId : '',
+      saleCode: seller && seller.sellerNo ? seller.sellerNo : '',
       queueNo: queue.queueNo || '',
       cusNameOrder: `${customer.titleName || ''}${customer.firstName || ''} ${customer.lastName || ''}`.trim(),
       taxCardId: customer && customer.idCardNo || '',
@@ -220,8 +220,8 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
       matAirTime: '',
       matCodeFreeGoods: '',
       paymentRemark: this.getOrderRemark(trade, payment, mobileCare, queue.queueNo, transaction),
-      installmentTerm: this.getInstallmentTerm(payment),
-      installmentRate: this.getInstallmentRate(payment),
+      installmentTerm: payment.paymentMethod.month, // this.getInstallmentTerm(payment),
+      installmentRate: payment.paymentMethod.percentage, // this.getInstallmentRate(payment),
       mobileAisFlg: 'Y',
       paymentMethod: paymentMethod,
       bankCode: payment && payment.paymentBank ? payment.paymentBank.abb : '',
@@ -240,15 +240,15 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
     return Promise.resolve(data);
   }
 
-  private getInstallmentTerm(payment: Payment): any {
-    return payment && payment.paymentBank && payment.paymentBank.installments ?
-      payment.paymentBank.installments[0].installmentMonth : 0;
-  }
+  // private getInstallmentTerm(payment: Payment): any {
+  //   return payment && payment.paymentBank && payment.paymentBank.installment ?
+  //   payment.paymentBank.installment : 0;
+  // }
 
-  private getInstallmentRate(payment: Payment): any {
-    return payment && payment.paymentBank && payment.paymentBank.installments ?
-      payment.paymentBank.installments[0].installmentPercentage : 0;
-  }
+  // private getInstallmentRate(payment: Payment): any {
+  //   return payment && payment.paymentBank && payment.paymentBank.installment ?
+  //     payment.paymentBank.installments[0].installmentPercentage : 0;
+  // }
 
   private getGrandTotalAmt(trade: any, prebooking: Prebooking): string {
 
@@ -321,8 +321,8 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
         tradeAndInstallment += '[CC]' + comma + space;
         tradeAndInstallment += '[B]' + payment.paymentBank.abb + comma + space;
         if (payment.paymentBank.installments.length > 0) {
-          tradeAndInstallment += '[I]' + payment.paymentBank.installments[0].installmentPercentage +
-            '%' + space + payment.paymentBank.installments[0].installmentMonth + 'เดือน' + comma + space;
+          tradeAndInstallment += '[I]' + payment.paymentMethod.percentage +
+            '%' + space + payment.paymentMethod.month + 'เดือน' + comma + space;
         }
       } else {
         tradeAndInstallment += '[CA]' + comma + space;

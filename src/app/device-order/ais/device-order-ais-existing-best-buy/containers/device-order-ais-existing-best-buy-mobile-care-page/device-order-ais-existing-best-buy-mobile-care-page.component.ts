@@ -72,7 +72,8 @@ export class DeviceOrderAisExistingBestBuyMobileCarePageComponent implements OnI
   }
 
   callService(): void {
-    const billingSystem = this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
+    const billingSystem = ( this.transaction.data.simCard.billingSystem === 'RTBS')
+                ? BillingSystemType.IRB : this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
     const chargeType = this.transaction.data.simCard.chargeType;
     const endUserPrice = +this.priceOption.trade.normalPrice;
     const exMobileCare = this.transaction.data.existingMobileCare;
