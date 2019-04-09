@@ -27,9 +27,6 @@ export class DeviceOrderAisExistingPrepaidHotdealPaymentDetailPageComponent impl
   banks: PaymentDetailBank[];
   paymentDetailValid: boolean;
 
-  receiptInfo: ReceiptInfo;
-  receiptInfoValid: boolean;
-
   paymentDetailTemp: any;
   receiptInfoTemp: any;
 
@@ -92,27 +89,6 @@ export class DeviceOrderAisExistingPrepaidHotdealPaymentDetailPageComponent impl
       ;
     }
 
-    this.receiptInfo = {
-      taxId: customer.idCardNo,
-      branch: '',
-      buyer: `${customer.titleName} ${customer.firstName} ${customer.lastName}`,
-      buyerAddress: this.utils.getCurrentAddress({
-        homeNo: customer.homeNo,
-        moo: customer.moo,
-        mooBan: customer.mooBan,
-        room: customer.room,
-        floor: customer.floor,
-        buildingName: customer.buildingName,
-        soi: customer.soi,
-        street: customer.street,
-        tumbol: customer.tumbol,
-        amphur: customer.amphur,
-        province: customer.province,
-        zipCode: customer.zipCode,
-      }),
-      telNo: receiptInfo.telNo
-    };
-
   }
 
   onPaymentCompleted(payment: any): void {
@@ -121,14 +97,6 @@ export class DeviceOrderAisExistingPrepaidHotdealPaymentDetailPageComponent impl
 
   onPaymentError(valid: boolean): void {
     this.paymentDetailValid = valid;
-  }
-
-  onReceiptInfoCompleted(receiptInfo: ReceiptInfo): void {
-    this.receiptInfoTemp = receiptInfo;
-  }
-
-  onReceiptInfoError(valid: boolean): void {
-    this.receiptInfoValid = valid;
   }
 
   isFullPayment(): boolean {
@@ -149,7 +117,7 @@ export class DeviceOrderAisExistingPrepaidHotdealPaymentDetailPageComponent impl
   }
 
   isNext(): boolean {
-    return this.paymentDetailValid && this.receiptInfoValid;
+    return this.paymentDetailValid;
   }
 
   onNext(): void {

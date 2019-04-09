@@ -65,19 +65,24 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
 
     const trade: any = this.priceOption.trade;
     const privilege: any = this.priceOption.privilege;
+    const simcard = this.transaction.data.simCard;
 
     this.http.get('/api/customerportal/newRegister/queryOnTopPackage', {
       params: {
         orderType: 'Change Promotion',
         billingSystem: BillingSystemType.IRB,
-        chargeType: 'Pre-paid',
-        allowNtype: '3PE',
+        chargeType: simcard.chargeType,
+        allowNtype: simcard.nType,
         cpcUserId: trade.packageKeyRef
       }
     }).toPromise()
     .then((resp: any) => {
+      const promotionShelves = resp.data.packageList || [];
       this.pageLoadingService.closeLoading();
-      console.log('resp', resp);
+      // console.log('promotionShelves', promotionShelves);
+      // this.promotionShelves = promotionShelves.map((promotion: any) => {
+      //   promotion.promotions = promotion.subShelves;
+      // });
 
     });
 
@@ -89,6 +94,7 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
       },
       +privilege.minimumPackagePrice, +privilege.maxinumPackagePrice)
       .then((promotionShelves: any) => {
+        console.log('promotionShelves', promotionShelves);
         this.promotionShelves = this.promotionShelveService.defaultBySelected(promotionShelves, this.transaction.data.mainPackage);
       })
       .then(() => this.pageLoadingService.closeLoading());
