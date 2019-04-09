@@ -9,10 +9,12 @@
   </mc-header>
   <div class="mc-flex-wrap">
     <app-shopping-cart-detail></app-shopping-cart-detail>
-    <app-mobile-care [promotionMock]="promotionMock" (checkBuyMobileCare)="checkBuyMobileCare($event)" (isReasonNotBuyMobileCare)="ReasonNotBuyMobileCare($event)"></app-mobile-care>
+    <!-- <app-mobile-care-avaliable></app-mobile-care-avaliable> -->
+    <!-- <mc-mobile-care [mobileCare]="mobileCare" [normalPrice]="priceOption?.trade?.normalPrice" (completed)="onCompleted($event)" ></app-mobile-care> -->
+    <app-mobile-care [mobileCare]="mobileCare" [normalPrice]="priceOption?.trade?.normalPrice" (completed)="onCompleted($event)"></app-mobile-care>
   </div>
   <mc-footer>
     <button class="btn btn-secondary" id="button-back" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" id="button-next" (click)="onNext()" [disabled]="!isBuyMobileCare">NEXT</button>
+    <button class="btn btn-success" id="button-next" (click)="onNext()" [disabled]="!transaction?.data?.mobileCarePackage">NEXT</button>
   </mc-footer>
 </div>

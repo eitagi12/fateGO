@@ -2,7 +2,7 @@ import { Component, OnInit, Input, ViewChild, TemplateRef, Output, EventEmitter 
 import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl, FormControl } from '@angular/forms';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
-import { AlertService, PageLoadingService } from 'mychannel-shared-libs';
+import { AlertService, PageLoadingService, BillingSystemType, ShoppingCart} from 'mychannel-shared-libs';
 import { CustomerInformationService } from '../../services/customer-information.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -12,11 +12,11 @@ import { environment } from 'src/environments/environment';
 import { TransactionService } from '../../../../../shared/services/transaction.service';
 import { Transaction } from '../../../../../shared/models/transaction.model';
 import { MobileCareService } from '../../services/mobile-care.service';
+import { MOBILE_CARE_PACKAGE_KEY_REF } from '../../constants/cpc.constant';
 
 export interface MobileCare {
   nextBillEffective?: boolean;
   existingMobileCare?: boolean;
-  campaignPrice: number;
   promotions?: MobileCareGroup[];
 }
 
@@ -35,13 +35,13 @@ export interface MobileCareItem {
   priceExclVat: number;
   value: any;
 }
-
 @Component({
   selector: 'app-mobile-care',
   templateUrl: './mobile-care.component.html',
   styleUrls: ['./mobile-care.component.scss'],
   providers: []
 })
+
 export class MobileCareComponent implements OnInit {
   wizards: string[] = WIZARD_DEVICE_ONLY_AIS;
   public moblieNo: string;
@@ -49,17 +49,15 @@ export class MobileCareComponent implements OnInit {
   public isPrivilegeCustomer: boolean = false;
   public mobileNoPost: string;
   public VAT: number = 1.07;
-  public isValidNotBuyMobile: boolean = false;
-  public normalPriceMock: number;
-  public normalPrice: number;
   public currentPackageMobileCare: any[];
 
-  @Input() promotionMock: any;
+  @Input() mobileCare: MobileCare;
+  @Input() normalPrice: number;
+
   @Output() completed: EventEmitter<any> = new EventEmitter<any>();
   @Output() verifyOtp: EventEmitter<any> = new EventEmitter<any>();
   @Output() checkBuyMobileCare: EventEmitter<any> = new EventEmitter<any>();
   @Output() isReasonNotBuyMobileCare: EventEmitter<any> = new EventEmitter<any>();
-
   @ViewChild('template')
   template: TemplateRef<any>;
   modalRef: BsModalRef;
@@ -88,6 +86,7 @@ export class MobileCareComponent implements OnInit {
   ngOnInit(): void {
     this.createForm();
     this.oncheckValidators();
+    this.callService();
   }
 
   public oncheckValidators(): void {
@@ -147,27 +146,6 @@ export class MobileCareComponent implements OnInit {
     this.modalRef = this.modalService.show(this.template, {
       ignoreBackdropClick: true
     });
-    this.checkSelectNotbuyMobilecare();
-  }
-
-  public checkSelectNotbuyMobilecare(): void {
-    this.notBuyMobileCareForm.valueChanges.subscribe((value: any) => {
-      if (value.notBuyMobile) {
-        this.isValidNotBuyMobile = true;
-        this.enableNextButton();
-      } else {
-        this.isValidNotBuyMobile = false;
-        this.disableNextButton();
-      }
-    });
-  }
-
-  private enableNextButton(): void {
-    this.checkBuyMobileCare.emit(true);
-  }
-
-  private disableNextButton(): void {
-    this.checkBuyMobileCare.emit(false);
   }
 
   public onNotBuyMobileCare(dismiss: boolean): void {
@@ -176,9 +154,7 @@ export class MobileCareComponent implements OnInit {
         mobileCare: true
       });
     } else {
-      // this.completed.emit(this.notBuyMobileCareForm.value.notBuyMobile);
-      this.isReasonNotBuyMobileCare.emit(this.notBuyMobileCareForm.value.notBuyMobile);
-
+      this.completed.emit(this.notBuyMobileCareForm.value.notBuyMobile);
     }
     this.modalRef.hide();
   }
@@ -293,15 +269,33 @@ export class MobileCareComponent implements OnInit {
       .then((resp: any) => {
         if (resp && resp.data) {
           this.pageLoadingService.closeLoading();
-          this.enableNextButton();
         } else {
           this.pageLoadingService.closeLoading();
           this.alertService.error('รหัส OTP ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง');
-          this.disableNextButton();
         }
       }).catch((error) => {
         this.pageLoadingService.closeLoading();
         this.alertService.error('รหัส OTP ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง');
       });
+  }
+
+  callService(): void {
+    const billingSystem = BillingSystemType.IRB;
+    const chargeType = BillingSystemType.IRB;
+    const endUserPrice = +this.priceOption.trade.normalPrice;
+
+    this.pageLoadingService.openLoading();
+    this.mobileCareService.getMobileCare({
+      packageKeyRef: MOBILE_CARE_PACKAGE_KEY_REF,
+      billingSystem: BillingSystemType.IRB
+    }, chargeType, billingSystem, endUserPrice).then((mobileCare: any) => {
+      this.mobileCare = {
+        promotions: mobileCare
+      };
+
+      if (this.mobileCare.promotions && this.mobileCare.promotions.length > 0) {
+        this.mobileCare.promotions[0].active = true;
+      }
+    }).then(() => this.pageLoadingService.closeLoading());
   }
 }

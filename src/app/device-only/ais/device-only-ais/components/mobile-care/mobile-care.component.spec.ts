@@ -6,7 +6,7 @@ import { MobileCareComponent } from './mobile-care.component';
 import { BsModalService, ComponentLoaderFactory, PositioningService } from 'ngx-bootstrap';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { TokenService } from '../../../../../../../node_modules/mychannel-shared-libs';
+import { TokenService, PageLoadingService } from '../../../../../../../node_modules/mychannel-shared-libs';
 import { LocalStorageService } from '../../../../../../../node_modules/ngx-store';
 
 @Pipe({name: 'translate'})
@@ -39,7 +39,7 @@ describe('MobileCareComponent', () => {
           load: jest.fn(() => {
             return {
               trade: {
-                normalPrice: '18500'
+                normalPrice: '20500'
               }
             };
           })
@@ -49,6 +49,13 @@ describe('MobileCareComponent', () => {
         provide: TokenService,
         useValue: {
           getUser: jest.fn()
+        }
+      },
+      {
+        provide : PageLoadingService,
+        useValue : {
+          openLoading: jest.fn(),
+          closeLoading: jest.fn()
         }
       }
     ]
