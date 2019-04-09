@@ -75,17 +75,20 @@ export class DeviceOnlyAisKeyInQueuePageComponent implements OnInit, OnDestroy {
     };
     this.createOrderService.updateTransactionDB(this.transaction).then((response) => {
       if (response === true) {
-        this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).then((res) => {
-          if (res.data.resultCode === 'S') {
-            this.pageLoadingService.closeLoading();
+        this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).subscribe(
+          (res) => {
+          if (res === 'S') {
             this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE]);
           } else {
-            this.pageLoadingService.closeLoading();
             this.alertService.warning('ระบบไม่สามารถทำรายการได้');
           }
-        }).catch((errs) => {
+        },
+        (err) => {
           this.pageLoadingService.closeLoading();
           this.alertService.warning('ระบบไม่สามารถทำรายการได้');
+        },
+        () => {
+          this.pageLoadingService.closeLoading();
         });
       }
     }).catch((err) => {

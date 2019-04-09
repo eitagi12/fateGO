@@ -93,19 +93,26 @@ export class DeviceOnlyAutoGetQueuePageComponent implements OnInit, OnDestroy {
       };
       this.createOrderService.updateTransactionDB(this.transaction).then((response) => {
         if (response === true) {
-          this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).then((res) => {
-            if (res.data.resultCode === 'S') {
-              this.pageLoadingService.closeLoading();
+          this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).subscribe(
+            (res) => {
+            if (res === 'S') {
               this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE]);
-            } else if (res.data.resultCode === 'F') {
-              this.pageLoadingService.closeLoading();
+            } else if (res === 'F') {
               this.router.navigate([ROUTE_DEVICE_ONLY_AIS_KEY_IN_QUEUE]);
             }
-          });
+          },
+          (err) => {
+            this.pageLoadingService.closeLoading();
+            this.router.navigate([ROUTE_DEVICE_ONLY_AIS_KEY_IN_QUEUE]);
+          },
+          () => {
+            this.pageLoadingService.closeLoading();
+          }
+         );
         }
       }).catch((err: any) => {
         this.pageLoadingService.closeLoading();
-        this.alertService.error('ระบบไม่สามารถทำรายการได้ใน ขณะนี้');
+        this.alertService.error('ระบบไม่สามารถทำรายการได้ในขณะนี้');
         console.log(err);
       });
     } else {

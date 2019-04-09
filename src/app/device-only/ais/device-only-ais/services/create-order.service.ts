@@ -5,6 +5,7 @@ import { Transaction, BillDeliveryAddress } from 'src/app/shared/models/transact
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { User } from 'mychannel-shared-libs';
 import { map } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
@@ -161,9 +162,11 @@ export class CreateOrderService {
     ).toPromise();
   }
 
-  createOrderDeviceOnly(transaction: Transaction, priceOption: PriceOption): Promise<any> {
+  createOrderDeviceOnly(transaction: Transaction, priceOption: PriceOption): Observable<any> {
     const order = this.mapCreateOrder(transaction, priceOption);
-    return this.http.post('/api/salesportal/device-sell/order', order).toPromise();
+    return this.http.post('/api/salesportal/device-sell/order', order).pipe(
+      map((response: any) => response.data.resultCode)
+    );
   }
 
   mapCreateOrder(transaction: Transaction, priceOption: PriceOption): any {
