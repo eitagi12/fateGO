@@ -56,7 +56,6 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
   }
 
   onCompleted(promotion: any): void {
-    // รอแก้ไขตัวแปรที่จะเก็บลงใน share transaction
     this.transaction.data.mainPackage = promotion;
   }
 
@@ -77,27 +76,42 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
       }
     }).toPromise()
     .then((resp: any) => {
-      const promotionShelves = resp.data.packageList || [];
+      const data = resp.data.packageList || [];
+      const promotionShelves: PromotionShelve[] = data.map((promotionShelve: any) => {
+        return {
+          title: promotionShelve.title,
+          // replace to class in css
+          icon: (promotionShelve.icon || '').replace(/\.jpg$/, '').replace(/_/g, '-'),
+          promotions: promotionShelve.subShelves
+            .map((subShelve: any) => {
+              return { // group
+                id: subShelve.subShelveId,
+                title: subShelve.title,
+                sanitizedName: subShelve.sanitizedName,
+                items: (subShelve.items || []).map((promotion: any) => {
+                  return { // item
+                    id: promotion.itemId,
+                    title: promotion.shortNameThai,
+                    detail: promotion.statementThai,
+                    value: promotion
+                  };
+                })
+              };
+            })
+        };
+      });
+      return Promise.resolve(promotionShelves);
+    }).then((promotionShelves: PromotionShelve[]) => {
+      this.promotionShelves = promotionShelves;
+      if (this.promotionShelves && this.promotionShelves.length > 0) {
+        this.promotionShelves[0].active = true;
+        if (this.promotionShelves[0].promotions && this.promotionShelves[0].promotions.length > 0) {
+          this.promotionShelves[0].promotions[0].active = true;
+        }
+      }
+    }).then(() => {
       this.pageLoadingService.closeLoading();
-      // console.log('promotionShelves', promotionShelves);
-      // this.promotionShelves = promotionShelves.map((promotion: any) => {
-      //   promotion.promotions = promotion.subShelves;
-      // });
-
     });
-
-    this.promotionShelveService.getPromotionShelve(
-      {
-        packageKeyRef: trade.packageKeyRef,
-        orderType: 'New Registration',
-        billingSystem: BillingSystemType.IRB
-      },
-      +privilege.minimumPackagePrice, +privilege.maxinumPackagePrice)
-      .then((promotionShelves: any) => {
-        console.log('promotionShelves', promotionShelves);
-        this.promotionShelves = this.promotionShelveService.defaultBySelected(promotionShelves, this.transaction.data.mainPackage);
-      })
-      .then(() => this.pageLoadingService.closeLoading());
   }
 
   ngOnDestroy(): void {
