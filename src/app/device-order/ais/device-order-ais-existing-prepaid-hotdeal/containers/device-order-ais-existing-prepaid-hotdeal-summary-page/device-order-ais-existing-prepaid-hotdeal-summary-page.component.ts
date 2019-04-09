@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, ShoppingCart, PageLoadingService, TokenService, AlertService, Utils } from 'mychannel-shared-libs';
+import { HomeService, ShoppingCart, PageLoadingService, AlertService } from 'mychannel-shared-libs';
 import { ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_MOBILE_CARE_PAGE, ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_AGGREGATE_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { Transaction, Seller } from 'src/app/shared/models/transaction.model';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder } from '@angular/forms';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -24,6 +24,7 @@ export class DeviceOrderAisExistingPrepaidHotdealSummaryPageComponent implements
   transaction: Transaction;
   priceOption: PriceOption;
   shoppingCart: ShoppingCart;
+  getBalanceSubscription: Promise<any>;
 
   @ViewChild('detailTemplate')
   detailTemplate: any;
@@ -35,19 +36,18 @@ export class DeviceOrderAisExistingPrepaidHotdealSummaryPageComponent implements
   sellerCode: string;
   checkSellerForm: FormGroup;
   seller: Seller;
+  balance: any;
 
   constructor(
     private router: Router,
     private homeService: HomeService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private tokenService: TokenService,
     private http: HttpClient,
     private priceOptionService: PriceOptionService,
     public fb: FormBuilder,
     private alertService: AlertService,
     private modalService: BsModalService,
-    private utils: Utils,
     private shoppingCartService: ShoppingCartService
   ) {
     this.transaction = this.transactionService.load();
@@ -56,40 +56,44 @@ export class DeviceOrderAisExistingPrepaidHotdealSummaryPageComponent implements
   }
 
   ngOnInit(): void {
-    const user = this.tokenService.getUser();
-    const customer = this.transaction.data.customer;
-    this.customerAddress = this.utils.getCurrentAddress({
-      homeNo: customer.homeNo,
-      moo: customer.moo,
-      room: customer.room,
-      floor: customer.floor,
-      buildingName: customer.buildingName,
-      soi: customer.soi,
-      street: customer.street,
-      tumbol: customer.tumbol,
-      amphur: customer.amphur,
-      province: customer.province,
-      zipCode: customer.zipCode
+    this.getBalance();
+  }
+
+  getBalance(): void {
+    const simcard = this.transaction.data.simCard;
+    const mainPackage = this.transaction.data.mainPackage;
+    const mobileCarePackage = this.transaction.data.mobileCarePackage;
+
+    this.pageLoadingService.openLoading();
+    this.balance = {  balance: 0, addMoney: true, addMoneyPrice: 0 };
+    this.getBalanceSubscription = this.http.get(`/api/customerportal/newRegister/${simcard.mobileNo}/queryBalance`).toPromise();
+
+    this.getBalanceSubscription.then((resp: any) => {
+      this.pageLoadingService.closeLoading();
+      const transferBalance = Number(resp.data.transferBalance);
+      let money = 0;
+      if (typeof (mobileCarePackage) === 'object') {
+        money = Number(mainPackage.priceIncludeVat) + Number(mobileCarePackage.customAttributes.priceInclVat);
+      } else {
+        money = Number(mainPackage.priceIncludeVat);
+      }
+      const addMoney = !!((transferBalance - money) < 0);
+      const addMoneyPrice = (transferBalance - money) >= 0 ? 0 : money - transferBalance;
+      this.balance = {  balance: transferBalance, addMoney: addMoney, addMoneyPrice: addMoneyPrice };
+    })
+    .catch((err: any) => {
+      this.pageLoadingService.closeLoading();
+      this.alertService.error(err);
     });
-
-    // this.packagePrice + this.mobileCarePrice
-
-    // this.http.get(`/api/salesportal/location-by-code?code=${user.locationCode}`).toPromise().then((response: any) => {
-    //   this.seller = {
-    //     sellerName: user.firstname && user.lastname ? `${user.firstname} ${user.lastname}` : user.username,
-    //     locationName: response.data.displayName,
-    //     locationCode: user.locationCode
-    //   };
-    // });
   }
 
   getSummaryPrice(): number {
     const onTopPack = this.transaction.data.mainPackage.priceIncludeVat;
     const promotion = this.priceOption.trade.promotionPrice;
     const existingMobileCare = this.transaction.data.existingMobileCare;
-    if (existingMobileCare) {
-      // return Number(onTopPack) + Number(promotion) + Number(existingMobileCare);
-      return 0;
+    const mobileCarePackage = this.transaction.data.mobileCarePackage;
+    if (typeof (mobileCarePackage) === 'object') {
+      return Number(onTopPack) + Number(promotion) + Number(mobileCarePackage.customAttributes.priceInclVat);
     } else {
       return Number(onTopPack) + Number(promotion);
     }
@@ -98,12 +102,6 @@ export class DeviceOrderAisExistingPrepaidHotdealSummaryPageComponent implements
   onOpenDetail(detail: string): void {
     this.detail = detail;
     this.modalRef = this.modalService.show(this.detailTemplate);
-  }
-
-  summary(amount: number[]): number {
-    return amount.reduce((prev, curr) => {
-      return prev + curr;
-    }, 0);
   }
 
   onNext(): void {

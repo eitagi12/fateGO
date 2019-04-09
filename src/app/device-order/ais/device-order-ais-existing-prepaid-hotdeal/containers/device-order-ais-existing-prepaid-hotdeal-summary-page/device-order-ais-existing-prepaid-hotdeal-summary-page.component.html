@@ -37,11 +37,11 @@
                     ฿ {{ transaction?.data?.mainPackage?.priceIncludeVat | number }}
                   </span>
                 </p>
-                <p *ngIf="transaction?.data?.existingMobileCare">
+                <p *ngIf="transaction?.data?.mobileCarePackage?.customAttributes">
                   <i class="fa fa-circle mr-3 text-green"></i>
                   ค่าแพ็กเกจโมบายแคร์
                   <span class="pull-right text-green">
-                    ฿ {{ transaction?.data?.mainPackage?.priceIncludeVat | number }}
+                    ฿ {{ transaction?.data?.mobileCarePackage?.customAttributes?.priceInclVat | number }}
                   </span>
                 </p>
               </div>
@@ -60,7 +60,7 @@
               <p>
                 <i class="fa fa-circle mr-3 text-green"></i>
                   <span > {{ transaction?.data?.mainPackage?.shortNameThai }}</span>
-                  <span class="pull-right" (click)="onOpenDetail(transaction?.data?.mobileCarePackage?.detailTH)">
+                  <span class="pull-right" (click)="onOpenDetail(transaction?.data?.mainPackage?.descriptionThai)">
                     <img src="assets/images/icon/icon-page.png" class="icon" />
                   </span>
               </p>
@@ -90,12 +90,12 @@
                 ค่าแพ็กเกจเสริม (รวม VAT)
                 <span class="pull-right text-green"> ฿ {{ transaction?.data?.mainPackage?.priceIncludeVat | number }}</span>
               </p>
-              <p *ngIf="transaction?.data?.existingMobileCare">
+              <p *ngIf="transaction?.data?.mobileCarePackage?.customAttributes">
                 <i class="fa fa-circle mr-3 text-green"></i>
                 ค่าแพ็กเกจโมบายแคร์ (รวม VAT)
-                <span class="pull-right text-green"> ฿ {{ transaction?.data?.mainPackage?.priceIncludeVat | number }}</span>
+                <span class="pull-right text-green">฿ {{ transaction?.data?.mobileCarePackage?.customAttributes?.priceInclVat | number }}</span>
               </p>
-              <p *ngIf="!transaction?.data?.existingMobileCare">
+              <p *ngIf="!transaction?.data?.mobileCarePackage?.customAttributes">
                   <i class="fa fa-circle mr-3 text-green"></i>
                   ไม่ซื้อโมบายแคร์
                 </p>
@@ -103,14 +103,20 @@
           </div>
 
           <div class="card mb-3 bg-white">
-            <div class="p-3 text-pink text-center"> 
-                <img class="icon-warning mb-3" src="assets/images/icon/icon-red-alert-circle.png">
-                <p>ยอดเงินคงเหลือ 50 บาท กรุณาเติมเงินเพิ่ม 2,088.93 บาท เพื่อสมัครแพ็กเกจ</p>
-                <p> * เมื่อเติมเงินเรียบร้อยแล้ว กรุณากดปุ่มเพื่ออัพเดตยอดเงินคงเหลือ</p>
-                <button class="btn btn-success" >อัพเดตยอดเงิน</button>
+            <div class="p-3 text-pink text-center" [mcLoading]="getBalanceSubscription"> 
+              <div *ngIf="balance?.addMoney">
+                  <img class="icon-warning mb-3" src="assets/images/icon/icon-red-alert-circle.png">
+                  <p>ยอดเงินคงเหลือ {{ balance?.balance | number }} บาท กรุณาเติมเงินเพิ่ม {{ balance?.addMoneyPrice | number }} บาท เพื่อสมัครแพ็กเกจ</p>
+                  <p> * เมื่อเติมเงินเรียบร้อยแล้ว กรุณากดปุ่มเพื่ออัพเดตยอดเงินคงเหลือ</p>
+              </div>
+              <div *ngIf="!balance?.addMoney">
+                  <img class="icon-warning mb-3" src="assets/images/icon/icon_pouch.png">
+                  <p class="text-green">ยอดเงินคงเหลือ {{ balance | number}} บาท</p>
+              </div>
+                <button class="btn btn-success" (click)="getBalance()">อัพเดตยอดเงิน</button>
             </div>
           </div>
-
+          
         </div>
       </div>
     </div>

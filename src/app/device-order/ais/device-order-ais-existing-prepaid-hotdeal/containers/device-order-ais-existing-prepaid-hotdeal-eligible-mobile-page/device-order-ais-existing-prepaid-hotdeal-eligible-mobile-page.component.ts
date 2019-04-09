@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, ShoppingCart, EligibleMobile, REGEX_MOBILE, PageLoadingService, ChargeType, AlertService } from 'mychannel-shared-libs';
+import { HomeService, ShoppingCart, EligibleMobile, REGEX_MOBILE, PageLoadingService, ChargeType, AlertService, BillingSystemType } from 'mychannel-shared-libs';
 import {
   ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_CUSTOMER_INFO_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_VALIDATE_CUSTOMER_ID_CARD_PAGE,
@@ -165,7 +165,7 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
           persoSim: false,
           chargeType: profile.chargeType || ChargeType.PRE_PAID,
           simSerial: profile.simSerialNo,
-          billingSystem: profile.billingSystem,
+          billingSystem: (profile.billingSystem === BillingSystemType.BOS) ? BillingSystemType.BOS : BillingSystemType.IRB,
           nType: profile.product,
           mobileNoStatus: 'Active'
         };
@@ -189,7 +189,7 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
             persoSim: false,
             chargeType: data.chargeType || ChargeType.PRE_PAID,
             simSerial: data.simSerialNo,
-            billingSystem: data.billingSystem,
+            billingSystem: (data.billingSystem === BillingSystemType.BOS) ? BillingSystemType.BOS : BillingSystemType.IRB,
             nType: data.product,
             mobileNoStatus: this.selectMobileNo.mobileStatus
           };
