@@ -232,6 +232,8 @@ export interface Seller {
   locationCode?: string;
   sellerNo?: string;
   shareUser?: string;
+  // flow deposit ใช้ ยังลบไม่ได้
+  employeeId?: string;
 }
 
 export interface ReceiptInfo {

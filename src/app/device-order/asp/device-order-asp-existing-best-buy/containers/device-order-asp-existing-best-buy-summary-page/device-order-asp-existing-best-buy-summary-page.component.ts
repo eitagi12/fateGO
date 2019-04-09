@@ -108,10 +108,7 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
     this.http.get(`/api/customerportal/checkSeller/${this.sellerCode}`).toPromise()
       .then((shopCheckSeller: any) => {
         if (shopCheckSeller.data.condition) {
-          this.transaction.data.seller = {
-            ...this.seller,
-            isAscCode: shopCheckSeller.data.isAscCode
-          };
+          this.transaction.data.seller = this.seller;
           if (!this.tokenService.isTelewizUser()) {
             this.pageLoadingService.closeLoading();
             this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CHECK_OUT_PAGE]);
