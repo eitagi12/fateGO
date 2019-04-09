@@ -121,7 +121,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardRepiPageComponen
               } else {
                 const expireDate = this.transaction.data.customer.expireDate;
                 this.transaction.data.action = TransactionAction.READ_CARD_REPI;
-                if (this.checkBusinessLogic()) {
+                if (this.utils.isIdCardExpiredDate(expireDate)) {
                   const simCard = this.transaction.data.simCard;
                   if (simCard.chargeType === 'Pre-paid') {
                     return this.http.post('/api/salesportal/add-device-selling-cart',
@@ -129,7 +129,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardRepiPageComponen
                   ).toPromise()
                     .then((resp: any) => {
                       this.transaction.data.order = { soId: resp.data.soId };
-                      this.transaction.data.action = TransactionAction.READ_CARD;
+                      this.transaction.data.action = TransactionAction.READ_CARD_REPI;
                       return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
                     }).then(() => {
                       this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
@@ -137,6 +137,9 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardRepiPageComponen
                   } else {
                     this.alertService.error('ไม่สามารถทำรายการได้ เบอร์รายเดือน ข้อมูลการแสดงตนไม่ถูกต้อง');
                   }
+                } else {
+                  const idCardType = this.transaction.data.customer.idCardType;
+                  this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ');
                 }
               }
             });
@@ -192,23 +195,5 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardRepiPageComponen
       depositAmt: preBooking ? preBooking.depositAmt : '',
       reserveNo: preBooking ? preBooking.reserveNo : ''
     };
-  }
-
-  checkBusinessLogic(): boolean {
-    const birthdate = this.transaction.data.customer.birthdate;
-    const expireDate = this.transaction.data.customer.expireDate;
-    const idCardType = this.transaction.data.customer.idCardType;
-
-    if (this.utils.isLowerAge17Year(birthdate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
-      return false;
-    }
-    if (this.utils.isIdCardExpiredDate(expireDate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ').then(() => {
-        this.onBack();
-      });
-      return false;
-    }
-    return true;
   }
 }

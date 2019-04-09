@@ -149,7 +149,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
                 this.transaction.data.order = { soId: resp.data.soId };
                 return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
               }).then(() => {
-                this.transaction.data.action = TransactionAction.KEY_IN;
+                this.transaction.data.action = TransactionAction.KEY_IN_REPI;
                 this.pageLoadingService.closeLoading();
                 this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
               });
