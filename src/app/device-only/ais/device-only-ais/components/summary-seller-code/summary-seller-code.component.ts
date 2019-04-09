@@ -25,7 +25,6 @@ export class SummarySellerCodeComponent implements OnInit {
     if (!this.seller) {
       this.seller = {};
     }
-    // this.locationCode = this.transaction.data.seller.locationCode ? this.transaction.data.seller.locationCode : '';
   }
   setSeller(seller: Seller): void {
     this.seller = seller;

@@ -12,7 +12,6 @@ export class SummaryProductAndServiceComponent implements OnInit {
 
   @ViewChild('detailTemplate')
   detailTemplate: any;
-
   modalRef: BsModalRef;
   detail: string;
   transaction: Transaction;
@@ -25,7 +24,6 @@ export class SummaryProductAndServiceComponent implements OnInit {
    }
 
   ngOnInit(): void {
-    console.log(this.transaction);
   }
 
   onOpenDetail(detail: string): void {

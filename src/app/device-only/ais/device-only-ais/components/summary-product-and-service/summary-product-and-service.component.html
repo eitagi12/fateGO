@@ -3,11 +3,11 @@
   <div class="card-body">
     <p>
       <i class="fa fa-circle mr-3 text-lime"></i>
-      <ng-container *ngIf="!transaction?.data?.mobileCarePackage?.title" id="text-not-mobile-care">
-        <span>ไม่ซื้อบริการโมบายแคร์</span>
+      <ng-container *ngIf="!transaction?.data?.mobileCarePackage?.title">
+        <span class="text-grey" id="text-not-mobile-care">ไม่ซื้อบริการโมบายแคร์</span>
       </ng-container>
       <ng-container *ngIf="transaction?.data?.mobileCarePackage?.title">
-        <span class="text-grey" id="text-package-mobile-care">
+        <span class="text-grey" id="text-mobile-care">
           {{ transaction?.data?.mobileCarePackage?.title }}
         </span>
         <span class="pull-right" (click)="onOpenDetail(transaction?.data?.mobileCarePackage?.detailTH)">
@@ -20,6 +20,5 @@
         ( หมายเลขที่รับสิทธิ์ : {{ '0891230440' | mobileNo }} )
       </span>
     </ng-container>
-
   </div>
 </div>

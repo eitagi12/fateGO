@@ -1,5 +1,5 @@
 <div class="card mb-3">
-  <div class="card-header bg-pink text-white">
+  <div class="card-header text-white" style="background: #FF80AB;">
     รายละเอียดการชำระ
   </div>
   <div class="card-body">
@@ -19,7 +19,7 @@
           {{ priceOption?.productStock?.colorName?'สี': '' }} {{ priceOption?.productStock?.colorName }}
         </span>
         <span class="text-grey">: ชำระเต็มจำนวน</span>
-        <span class="pull-right text-grey">
+        <span class="pull-right text-grey" id="text-price-summary">
           ฿ {{ priceOption?.trade?.promotionPrice | number }}
         </span>
       </p>
@@ -38,12 +38,8 @@
         {{ transaction?.data?.payment?.paymentMethod?.name }}
         {{ transaction?.data?.payment?.paymentMethod?.percentage }} %
         {{ transaction?.data?.payment?.paymentMethod?.month }} เดือน
-        {{ 
-                  (
-                    (+priceOption?.trade?.promotionPrice) 
-                    + (priceOption?.trade?.advancePay?.installmentFlag === 'N' ? +priceOption?.trade?.advancePay?.amount : 0)
-                  ) / transaction?.data?.payment?.paymentMethod?.month | number: '1.2-2'
-                }} บาทต่อเดือน
+        {{ ((+priceOption?.trade?.promotionPrice) + (priceOption?.trade?.advancePay?.installmentFlag === 'N' ? +priceOption?.trade?.advancePay?.amount : 0)) / transaction?.data?.payment?.paymentMethod?.month | number: '1.2-2' }} 
+        บาทต่อเดือน
         )
       </span>
     </ng-container>
@@ -103,13 +99,4 @@
       </div>
     </div>
   </div>
-  <!-- <div class="card-footer bg-transparent">
-      <p>
-        ข้อตกลงรับสิทธิ์ต่อเนื่อง
-      </p>
-      <i class="fa fa-circle mr-3 text-light-green"></i>
-      <span class="text-grey">
-        รับสิทธิ์ต่อเนื่องนาน 12 เดือน
-      </span>
-    </div> -->
 </div>
