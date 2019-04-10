@@ -52,6 +52,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
 
   ngOnInit(): void {
     this.transaction.data.action = TransactionAction.KEY_IN_REPI;
+    console.log('ngOnInit');
   }
 
   onError(valid: boolean): void {
@@ -78,6 +79,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
   onNext(): void {
     this.pageLoadingService.openLoading();
     const mobileNo = this.transaction.data.simCard.mobileNo;
+    this.transaction.data.customer.repi = true;
     this.customerInfoService.verifyPrepaidIdent(this.identity, mobileNo).then((verifySuccess: boolean) => {
       if (verifySuccess) {
         this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customerInfo: any) => {
@@ -110,7 +112,11 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
               return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
             }).then(() => {
               this.pageLoadingService.closeLoading();
-              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
+              if (customerInfo.firstName) {
+                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
+              } else {
+                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE]);
+              }
             });
         });
       } else {

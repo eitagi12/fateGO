@@ -10,6 +10,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { ROUTE_DEVICE_ORDER_ASP_BEST_BUY_RESULT_PAGE } from '../../constants/route-path.constant';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
+import { QueuePageService } from 'src/app/device-order/services/queue-page.service';
 @Component({
   selector: 'app-device-order-asp-existing-best-buy-queue-page',
   templateUrl: './device-order-asp-existing-best-buy-queue-page.component.html',
@@ -35,7 +36,8 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
     private priceOptionService: PriceOptionService,
     private pageLoadingService: PageLoadingService,
     private tokenService: TokenService,
-    private sharedTransactionService: SharedTransactionService
+    private sharedTransactionService: SharedTransactionService,
+    private queuePageService: QueuePageService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -75,15 +77,23 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
     if (this.isAutoGenQueue) {
       this.onSendSMSQueue(this.mobileNo).then((queue) => {
         if (queue) {
-          this.transaction.data.queue = { queueNo: this.queue };
-          return this.http.post('/api/salesportal/device-sell/order', this.getRequestCreateOrder(this.transaction, this.priceOption))
-          .toPromise()
-            .then(() => {
-              return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
-                this.pageLoadingService.closeLoading();
-                this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_RESULT_PAGE]);
-              });
-            });
+          // this.transaction.data.queue = { queueNo: this.queue };
+          // return this.http.post('/api/salesportal/device-sell/order', this.getRequestCreateOrder(this.transaction, this.priceOption))
+          // .toPromise()
+          //   .then(() => {
+          //     return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
+          //       this.pageLoadingService.closeLoading();
+          //       this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_RESULT_PAGE]);
+          //     });
+          //   });
+          this.transaction.data.queue = { queueNo: queue };
+          return this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption)
+          .then(() => {
+            return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
+          }).then(() => {
+              this.pageLoadingService.closeLoading();
+              this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_RESULT_PAGE]);
+          });
         } else {
           this.isAutoGenQueue = false;
           this.pageLoadingService.closeLoading();

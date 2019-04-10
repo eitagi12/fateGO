@@ -91,7 +91,7 @@ export class DeviceOrderAisExistingPrepaidHotdealQueuePageComponent implements O
       tradeNo: trade.tradeNo || '',
       ussdCode: trade.ussdCode || '',
       priceDiscountAmt: Number((+discount.amount || 0)),
-      grandTotalAmt: Number((+trade.normalPrice || 0)),
+      grandTotalAmt: Number((+trade.promotionPrice || 0)),
       soId: order.soId,
       queueNo: queue.queueNo || '',
       cusNameOrder: `${customer.titleName || ''} ${customer.firstName || ''} ${customer.lastName || ''}`.trim(),
@@ -115,17 +115,18 @@ export class DeviceOrderAisExistingPrepaidHotdealQueuePageComponent implements O
       returnCode: simCard.privilegeCode || '4GEYYY',
       // cashBackFlg: cashBackFlg,
       matAirTime: trade.matAirtime || '',
-      // matCodeFreeGoods: matCodeFreeGoods,
+      matCodeFreeGoods: '',
       paymentRemark: this.getOrderRemark(trade, payment, mobileCare, queue.queueNo, this.transaction),
       installmentTerm: paymentMethod && paymentMethod.month ? paymentMethod.month : 0,
       installmentRate: paymentMethod && paymentMethod.percentage ? paymentMethod.percentage : 0,
       mobileAisFlg: 'Y',
-      paymentMethod: this.getPaymentMethod(trade, advancePay),
-      bankCode: this.getBankCode(trade, payment, advancePay),
-      tradeFreeGoodsId: trade.freeGoods[0] && trade.freeGoods[0].tradeFreegoodsId ? trade.freeGoods[0].tradeFreegoodsId : '',
-      tradeDiscountId: trade.discount.tradeDiscountId || '',
-      tradeAirtimeId: trade.advancePay.tradeAirtimeId || '',
-      bankAbbr: this.getBankCode(trade, payment, advancePay),
+      reqMinimumBalance: Number((+data.mainPackage.priceIncludeVat || 0)) + Number((+mobileCare.priceInclVat || 0)),
+      // paymentMethod: this.getPaymentMethod(trade, advancePay),
+      // bankCode: this.getBankCode(trade, payment, advancePay),
+      // tradeFreeGoodsId: trade.freeGoods[0] && trade.freeGoods[0].tradeFreegoodsId ? trade.freeGoods[0].tradeFreegoodsId : '',
+      // tradeDiscountId: trade.discount.tradeDiscountId || '',
+      // tradeAirtimeId: trade.advancePay.tradeAirtimeId || '',
+      // bankAbbr: this.getBankCode(trade, payment, advancePay),
       convertToNetwotkType: customerGroup.code === 'MC002' ? '3G POSTPAID' : undefined
     };
   }
@@ -178,7 +179,7 @@ export class DeviceOrderAisExistingPrepaidHotdealQueuePageComponent implements O
     const space = ' ';
 
     // campaign REMARK_PROMOTION_NAME'[PM]'
-    let remarkDesc = '[PM]' + space + '' + newLine;
+    let remarkDesc = '[PM]' + space + '' + transaction.data.mainPackage.shortNameThai + newLine + newLine + newLine;
 
     // advancePay
     const advancePay = '';

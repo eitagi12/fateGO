@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { Router } from '@angular/router';
 import { HomeService, MobileCare, PageLoadingService, ShoppingCart, BillingSystemType } from 'mychannel-shared-libs';
@@ -21,7 +21,7 @@ import { MOBILE_CARE_PACKAGE_KEY_REF } from 'src/app/device-order/constants/cpc.
   templateUrl: './device-order-ais-existing-mobile-care-page.component.html',
   styleUrls: ['./device-order-ais-existing-mobile-care-page.component.scss']
 })
-export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit {
+export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit, OnDestroy {
 
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
@@ -35,10 +35,9 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit {
     private homeService: HomeService,
     private priceOptionService: PriceOptionService,
     private transactionService: TransactionService,
-    private shoppingCartService: ShoppingCartService,
-    private mobileCareService: MobileCareService,
     private pageLoadingService: PageLoadingService,
-    private http: HttpClient
+    private shoppingCartService: ShoppingCartService,
+    private mobileCareService: MobileCareService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -49,8 +48,6 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit {
     delete this.transaction.data.mobileCarePackage;
     this.callService();
   }
-
-  onTermConditions(event: any): void {}
 
   onBack(): void {
     if (this.transaction.data.existingMobileCare) {
@@ -72,6 +69,10 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit {
     this.transaction.data.mobileCarePackage = mobileCare;
   }
 
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
+  }
+
   callService(): void {
     const billingSystem = this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
     const chargeType = this.transaction.data.mainPackage.customAttributes.billingSystem;
@@ -89,6 +90,6 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit {
         this.mobileCare.promotions[0].active = true;
       }
     })
-      .then(() => this.pageLoadingService.closeLoading());
+    .then(() => this.pageLoadingService.closeLoading());
   }
 }

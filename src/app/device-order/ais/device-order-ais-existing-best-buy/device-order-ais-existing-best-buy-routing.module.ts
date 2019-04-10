@@ -28,7 +28,7 @@ const routes: Routes = [
   { path: 'validate-customer', component: DeviceOrderAisExistingBestBuyValidateCustomerPageComponent },
   { path: 'validate-customer-id-card', component: DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent},
   { path: 'validate-customer-repi', component: DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent},
-  { path: 'validate-customer-id-card-repi', component: DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponent},
+  { path: 'validate-customer-id-card-repi', component: DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent},
   { path: 'customer-info', component: DeviceOrderAisExistingBestBuyCustomerInfoPageComponent },
   { path: 'customer-profile', component: DeviceOrderAisExistingBestBuyCustomerProfilePageComponent },
   { path: 'otp', component: DeviceOrderAisExistingBestBuyOtpPageComponent },
