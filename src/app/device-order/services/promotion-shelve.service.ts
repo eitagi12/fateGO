@@ -92,7 +92,14 @@ export class PromotionShelveService {
 
         });
 
-        return Promise.all(promotions).then(() => promotionShelves);
+        return Promise.all(promotions).then(() => {
+          (promotionShelves || []).forEach((promotionShelve: any) => {
+            promotionShelve.promotions = (promotionShelve.promotions || []).filter((promomotion: any) => {
+              return (promomotion.items || []).length > 0;
+            });
+          });
+          return promotionShelves;
+        });
       });
   }
 
