@@ -11,7 +11,7 @@
       <div class="mb-3 mt-3">
         <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
         <mc-validate-customer (completed)="onCompleted($event)" (error)="onError($event)" (readCard)="onReadCard()" [placeholderHeadder]="PLACEHOLDER_HEADDER"
-          [placeholder]="PLACEHOLDER">
+          [placeholder]="PLACEHOLDER" [validate]="customerValidate">
         </mc-validate-customer>
       </div>
     </div>

@@ -208,7 +208,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
 
   customerValidate(control: AbstractControl): ValidationErrors {
     const value = control.value;
-    const length = control.value.length;
+    const length: number = control.value.length;
 
     if (length === 13) {
         if (this.utils.isThaiIdCard(value)) {

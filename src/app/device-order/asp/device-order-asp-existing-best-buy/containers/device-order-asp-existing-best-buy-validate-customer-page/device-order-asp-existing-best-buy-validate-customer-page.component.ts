@@ -94,15 +94,20 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
   }
 
   onBack(): void {
-    this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+    const queryParams = this.priceOption.queryParams;
+    if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
       .then((response: any) => {
         if (response.value === true) {
-          const queryParams = this.priceOption.queryParams;
           this.returnStock().then(() => {
             window.location.href = `/sales-portal/buy-product/brand/${queryParams.brand}/${queryParams.model}`;
           });
         }
       });
+    } else {
+      this.transactionService.remove();
+      window.location.href = `/sales-portal/buy-product/brand/${queryParams.brand}/${queryParams.model}`;
+    }
   }
 
   onNext(): void {
