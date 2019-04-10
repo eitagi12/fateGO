@@ -312,3 +312,15 @@ export interface QrCodePrePostMpayModel {
   offerId?: string;
   startDtm?: string;
 }
+
+export interface Device {
+  imei?: string;
+  model?: string;
+  brand?: string;
+  amount?: string;
+  name?: string;
+  colorName?: string;
+  colorCode?: string;
+  productType?: string;
+  productSubtype?: string;
+}
