@@ -238,7 +238,7 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
     const normalPrice: number = trade.normalPrice;
     const advancePay: number = +trade.advancePay.amount;
     const discount: number = +trade.discount.amount || 0;
-    const depositAmt: number = prebooking ? +prebooking.depositAmt : 0;
+    const depositAmt: number = prebooking && prebooking.depositAmt ? +prebooking.depositAmt : 0;
 
     let result: any = normalPrice;
     result += advancePay;
@@ -323,7 +323,7 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
     otherInformation += '[D]' + space + (+trade.discount.amount).toFixed(2) + comma + space;
     otherInformation += '[RC]' + space + customer.privilegeCode + comma + space;
     otherInformation += '[OT]' + space + 'MC004' + comma + space;
-    if (mobileCare && !mobileCare.reason) {
+    if (mobileCare && !(typeof mobileCare === 'string' || mobileCare instanceof String)) {
       otherInformation += '[PC]' + space + 'remark.mainPackageCode' + comma + space;
       otherInformation += '[MCC]' + space + mobileCare.customAttributes.promotionCode + comma + space;
       otherInformation += '[MC]' + space + mobileCare.customAttributes.shortNameThai + comma + space;

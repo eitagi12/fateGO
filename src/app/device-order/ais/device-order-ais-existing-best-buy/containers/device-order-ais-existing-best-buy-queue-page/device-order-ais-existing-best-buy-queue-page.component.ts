@@ -197,7 +197,7 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
       model: productDetail.model,
       color: productStock.color,
       matCode: '',
-      priceIncAmt: (+trade.normalPrice || 0).toFixed(2),
+      priceIncAmt: (+trade.normalPrice).toFixed(2),
       priceDiscountAmt: (+trade.discount.amount || 0).toFixed(2),
       grandTotalAmt: this.getGrandTotalAmt(trade, prebooking),
       userId: this.user.username,
@@ -249,7 +249,7 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
     const normalPrice: number = trade.normalPrice;
     const advancePay: number = +trade.advancePay.amount;
     const discount: number = +trade.discount.amount || 0;
-    const depositAmt: number = prebooking ? +prebooking.depositAmt : 0;
+    const depositAmt: number = prebooking && prebooking.depositAmt ? +prebooking.depositAmt : 0;
 
     let result: any = normalPrice;
     result += advancePay;
@@ -334,7 +334,7 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
     otherInformation += '[D]' + space + (+trade.discount.amount).toFixed(2) + comma + space;
     otherInformation += '[RC]' + space + customer.privilegeCode + comma + space;
     otherInformation += '[OT]' + space + 'MC004' + comma + space;
-    if (mobileCare && !mobileCare.reason) {
+    if (mobileCare && !(typeof mobileCare === 'string' || mobileCare instanceof String)) {
       otherInformation += '[PC]' + space + 'remark.mainPackageCode' + comma + space;
       otherInformation += '[MCC]' + space + mobileCare.customAttributes.promotionCode + comma + space;
       otherInformation += '[MC]' + space + mobileCare.customAttributes.shortNameThai + comma + space;
