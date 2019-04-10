@@ -204,7 +204,6 @@ export class MobileCareComponent implements OnInit {
   }
 
   private checkMobileCare(mobileNo: string): void {
-    console.log('checkMobileCare');
     this.customerInformationService.getBillingByMobileNo(mobileNo)
       .then((res: any) => {
         let indexExistingMobileCare: any;
@@ -230,7 +229,6 @@ export class MobileCareComponent implements OnInit {
     const endDt = currentPackageMobileCare.endDt;
     const descThai = currentPackageMobileCare.descThai;
     const form = this.privilegeCustomerForm.getRawValue();
-    console.log('sssssssssssssss', this.privilegeCustomerForm);
     this.alertService.notify({
       type: 'warning',
       width: '80%',
@@ -246,7 +244,6 @@ export class MobileCareComponent implements OnInit {
       <br> (แพ็กเกจ ${descThai} สิ้นสุด ${endDt}) <br> กรุณาเปลี่ยนเบอร์ใหม่ หรือยืนยันสมัครบริการโมบายแคร์กับ <br>
       เครื่อง iPhone 6S Plus <br> <div class="text-red">*บริการโมบายแคร์กับเครื่องเดิมจะสิ้นสุดทันที</div>`
     }).then((data) => {
-      console.log('popupMobileCare : ', data);
       if (data.value && data.value === true) {
         this.existingMobileCare.emit(this.currentPackageMobileCare);
         this.sendOTP();
