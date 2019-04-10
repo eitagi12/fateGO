@@ -24,7 +24,9 @@ import { debounceTime } from 'rxjs/operators';
 })
 export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implements OnInit, OnDestroy {
 
+  isTelewiz: boolean = this.tokenService.isTelewizUser();
   wizards: any = this.tokenService.isTelewizUser() ? WIZARD_DEVICE_ORDER_ASP : WIZARD_DEVICE_ORDER_AIS;
+  active: number = this.isTelewiz ? 2 : 1;
   readonly PLACEHOLDER: string = '(หมายเลขโทรศัพท์ / เลขบัตรประชาชน)';
   readonly PLACEHOLDER_HEADDER: string = 'กรอกเอกสารแสดงตน';
 

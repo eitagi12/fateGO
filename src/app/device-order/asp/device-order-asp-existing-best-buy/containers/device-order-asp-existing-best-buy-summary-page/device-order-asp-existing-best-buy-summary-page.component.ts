@@ -21,7 +21,8 @@ import { SharedTransactionService } from 'src/app/shared/services/shared-transac
 })
 export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit, OnDestroy {
 
-  wizards: any = this.tokenService.isTelewizUser ? WIZARD_DEVICE_ORDER_ASP : WIZARD_DEVICE_ORDER_AIS;
+  wizards: any = this.tokenService.isTelewizUser() ? WIZARD_DEVICE_ORDER_ASP : WIZARD_DEVICE_ORDER_AIS;
+  active: number = this.tokenService.isTelewizUser() ? 5 : 4;
 
   transaction: Transaction;
   priceOption: PriceOption;
@@ -109,6 +110,7 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
       .then((shopCheckSeller: any) => {
         if (shopCheckSeller.data.condition) {
           this.transaction.data.seller = this.seller;
+          this.transaction.data.seller.sellerNo = this.sellerCode;
           if (!this.tokenService.isTelewizUser()) {
             this.pageLoadingService.closeLoading();
             this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CHECK_OUT_PAGE]);

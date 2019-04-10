@@ -16,7 +16,8 @@ import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart
 })
 export class DeviceOrderAspExistingBestBuyMobileDetailPageComponent implements OnInit, OnDestroy {
 
-  wizards: any = this.tokenService.isTelewizUser ? WIZARD_DEVICE_ORDER_ASP : WIZARD_DEVICE_ORDER_AIS;
+  wizards: any = this.tokenService.isTelewizUser() ? WIZARD_DEVICE_ORDER_ASP : WIZARD_DEVICE_ORDER_AIS;
+  active: number = this.tokenService.isTelewizUser() ? 3 : 2;
   transaction: Transaction;
   mobileInfo: MobileInfo;
   shoppingCart: ShoppingCart;
