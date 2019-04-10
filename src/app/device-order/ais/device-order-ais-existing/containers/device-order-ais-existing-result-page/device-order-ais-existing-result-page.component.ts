@@ -5,6 +5,7 @@ import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.c
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ROUTE_DEVICE_ORDER_AIS_EXISTING_RESULT_PAGE } from '../../constants/route-path.constant';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-device-order-ais-existing-result-page',
@@ -21,6 +22,7 @@ export class DeviceOrderAisExistingResultPageComponent implements OnInit {
     private homeService: HomeService,
     private transactionService: TransactionService,
     private router: Router,
+
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -30,7 +32,12 @@ export class DeviceOrderAisExistingResultPageComponent implements OnInit {
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    if (environment.name === 'LOCAL') {
+      window.location.href = '/main-menu';
+    } else {
+      window.location.href = '/smart-digital/main-menu';
+    }
+
   }
 
   onBack(): void {

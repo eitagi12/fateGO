@@ -1,12 +1,12 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, ExistingMobileCare } from 'src/app/shared/models/transaction.model';
 import { PromotionShelve, HomeService, PageLoadingService, AlertService, PromotionShelveItem, PromotionShelveGroup, ShoppingCart } from 'mychannel-shared-libs';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
-import { ROUTE_DEVICE_ORDER_AIS_EXISTING_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_EXISTING_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE } from '../../constants/route-path.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
@@ -28,6 +28,7 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
   promotionShelves: PromotionShelve[];
   condition: any;
   selectCurrentPackage: boolean;
+  showSelectCurrentPackage: boolean;
   showCurrentPackage: boolean;
   modalRef: BsModalRef;
   shoppingCart: ShoppingCart;
@@ -49,9 +50,17 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
       delete this.transaction.data.billingInformation.billCycle;
       delete this.transaction.data.billingInformation.mergeBilling;
     }
-    if (this.priceOption.privilege.minimumPackagePrice <= this.transaction.data.currentPackage.priceExclVat) {
+    const advancePay: any = this.priceOption.trade.advancePay && this.priceOption.trade.advancePay.amount || 0;
+    if (this.isNotMathHotDeal && !advancePay) {
       this.showCurrentPackage = true;
     }
+    if (this.priceOption.privilege.minimumPackagePrice <= this.transaction.data.currentPackage.priceExclVat) {
+      this.showSelectCurrentPackage = true;
+    }
+  }
+
+  get isNotMathHotDeal(): boolean {
+    return !this.priceOption.campaign.campaignName.match(/\b(\w*Hot\s+Deal\w*)\b/);
   }
 
   ngOnInit(): void {
@@ -78,7 +87,20 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
   }
 
   onNext(): void {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE]);
+    this.pageLoadingService.openLoading();
+    const mobileNo = this.transaction.data.simCard.mobileNo;
+    this.http.get(`/api/customerportal/get-existing-mobile-care/${mobileNo}`).toPromise().then((response: any) => {
+      const exMobileCare = response.data;
+      if (exMobileCare.hasExistingMobileCare) {
+        const existingMobileCare: ExistingMobileCare = exMobileCare.existMobileCarePackage;
+        existingMobileCare.handSet = exMobileCare.existHandSet;
+        this.transaction.data.existingMobileCare = existingMobileCare;
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE]);
+      } else {
+        this.transaction.data.existingMobileCare = null;
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE]);
+      }
+    }).then(() => this.pageLoadingService.closeLoading());
   }
 
   onHome(): void {
