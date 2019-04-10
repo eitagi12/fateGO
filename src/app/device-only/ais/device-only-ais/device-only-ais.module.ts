@@ -2,7 +2,6 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DeviceOnlyAisRoutingModule } from './device-only-ais-routing.module';
 import { DeviceOnlyAisSelectMobileCarePageComponent } from './containers/device-only-ais-select-mobile-care-page/device-only-ais-select-mobile-care-page.component';
-import { DeviceOnlyAisMobileCareAvaliablePageComponent } from './containers/device-only-ais-mobile-care-avaliable-page/device-only-ais-mobile-care-avaliable-page.component';
 import { DeviceOnlyAisQueuePageComponent } from './containers/device-only-ais-queue-page/device-only-ais-queue-page.component';
 import { DeviceOnlyAisQrCodeQueuePageComponent } from './containers/device-only-ais-qr-code-queue-page/device-only-ais-qr-code-queue-page.component';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
@@ -45,7 +44,6 @@ import { DeviceOnlyAutoGetQueuePageComponent } from './containers/device-only-ai
   declarations: [
     DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent,
     DeviceOnlyAisSelectMobileCarePageComponent,
-    DeviceOnlyAisMobileCareAvaliablePageComponent,
     DeviceOnlyAisQueuePageComponent,
     DeviceOnlyAisQrCodeQueuePageComponent,
     DeviceOnlyAisCheckoutPaymentPageComponent,

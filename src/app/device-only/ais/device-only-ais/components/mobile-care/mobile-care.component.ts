@@ -1,12 +1,11 @@
 import { Component, OnInit, Input, ViewChild, TemplateRef, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
-import { AlertService, PageLoadingService, BillingSystemType, ShoppingCart} from 'mychannel-shared-libs';
+import { AlertService, PageLoadingService, BillingSystemType } from 'mychannel-shared-libs';
 import { CustomerInformationService } from '../../services/customer-information.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { forEach } from '../../../../../../../node_modules/@angular/router/src/utils/collection';
 import { HttpClient } from '../../../../../../../node_modules/@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { TransactionService } from '../../../../../shared/services/transaction.service';
@@ -206,7 +205,6 @@ export class MobileCareComponent implements OnInit {
           this.currentPackageMobileCare = res.data.currentPackage[index];
           this.isPrivilegeCustomer = false;
           this.popupMobileCare(this.currentPackageMobileCare);
-          console.log('=====> : ', res.data);
         } else {
           this.currentPackageMobileCare = res.data.currentPackage;
           this.isPrivilegeCustomer = true;
