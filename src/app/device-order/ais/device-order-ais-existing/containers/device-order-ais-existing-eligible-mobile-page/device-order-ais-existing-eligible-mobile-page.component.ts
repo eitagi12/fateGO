@@ -66,6 +66,8 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
+
+    delete this.transaction.data.currentPackage;
   }
 
   ngOnInit(): void {
@@ -100,8 +102,11 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
     this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo, persoSim: false };
     if (this.selectMobileNo.privilegeCode) {
       this.transaction.data.customer.privilegeCode = this.selectMobileNo.privilegeCode;
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_DETAIL_PAGE]);
+
     } else if (this.selectMobileNo.privilegeMessage === `MT_INVALID_CRITERIA_MAINPRO`) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_CHANGE_PACKAGE_PAGE]);
+
     } else {
       const ussdCode = this.priceOption.trade.ussdCode;
       this.privilegeService.requestUsePrivilege(this.selectMobileNo.mobileNo, ussdCode, this.selectMobileNo.privilegeCode)
@@ -114,9 +119,8 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
               this.transaction.data.customer = { ...this.transaction.data.customer, ...customer };
             });
         }
-      });
+      }).then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_DETAIL_PAGE]));
     }
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_DETAIL_PAGE]);
   }
 
   onHome(): void {
