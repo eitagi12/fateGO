@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
-import { HomeService, PageLoadingService, AlertService, User, TokenService } from 'mychannel-shared-libs';
+import { HomeService, PageLoadingService, AlertService, User, TokenService, Utils } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
@@ -11,6 +11,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_RPI_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
 import { CustomerInfoService } from '../../services/customer-info.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
+import { AbstractControl, ValidationErrors } from '@angular/forms';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-validate-customer-repi-page',
@@ -41,7 +42,8 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
     private priceOptionService: PriceOptionService,
     private customerInfoService: CustomerInfoService,
     private sharedTransactionService: SharedTransactionService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private utils: Utils
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -183,5 +185,24 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
       depositAmt: preBooking ? preBooking.depositAmt : '',
       reserveNo: preBooking ? preBooking.reserveNo : ''
     };
+  }
+
+  customerValidate(control: AbstractControl): ValidationErrors {
+    const value = control.value;
+    const length: number = control.value.length;
+
+    if (length === 13) {
+        if (this.utils.isThaiIdCard(value)) {
+          return null;
+        } else {
+          return {
+            message: 'กรุณากรอกเลขบัตรประชาชนให้ถูกต้อง',
+          };
+        }
+      } else {
+        return {
+            message: 'กรุณากรอกรูปแบบให้ถูกต้อง',
+          };
+      }
   }
 }

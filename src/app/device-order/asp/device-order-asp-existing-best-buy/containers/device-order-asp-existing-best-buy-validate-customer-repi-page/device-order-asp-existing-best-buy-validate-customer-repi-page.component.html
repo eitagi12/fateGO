@@ -51,7 +51,7 @@
 
       <div *ngIf="!isTelewiz">
         <mc-validate-customer (completed)="onCompleted($event)" (error)="onError($event)" (readCard)="onReadCard()"
-          [placeholderHeadder]="PLACEHOLDER_HEADDER" [placeholder]="PLACEHOLDER">
+          [placeholderHeadder]="PLACEHOLDER_HEADDER" [placeholder]="PLACEHOLDER" [validate]="customerValidate">
         </mc-validate-customer>
       </div>
     </div>
