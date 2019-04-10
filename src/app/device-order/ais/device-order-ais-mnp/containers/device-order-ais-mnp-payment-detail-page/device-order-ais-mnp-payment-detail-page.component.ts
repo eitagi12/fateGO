@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
-import { ShoppingCart, ReceiptInfo, Utils, HomeService } from 'mychannel-shared-libs';
+import { ShoppingCart, ReceiptInfo, Utils, HomeService, PaymentDetail, PaymentDetailBank, TokenService } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -9,7 +9,8 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
-import { ROUTE_DEVICE_ORDER_AIS_MNP_VALIDATE_CUSTOMER_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_CUSTOMER_INFO_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_MNP_VALIDATE_CUSTOMER_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_SELECT_PACKAGE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_DETAIL_PAGE } from '../../constants/route-path.constant';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-device-order-ais-mnp-payment-detail-page',
@@ -24,22 +25,22 @@ export class DeviceOrderAisMnpPaymentDetailPageComponent implements OnInit, OnDe
   priceOption: PriceOption;
   transaction: Transaction;
 
-  paymentDetailForm: FormGroup;
-  paymentAdvancePayForm: FormGroup;
-  isBankCollapsed: boolean;
-  isBankAdvancePayCollapsed: boolean;
-  fullPayment: boolean;
-  banks: any[];
-  banksPayment: any[];
+  payementDetail: PaymentDetail;
+  banks: PaymentDetailBank[];
+  paymentDetailValid: boolean;
 
   receiptInfo: ReceiptInfo;
-  receiptInfoValid: boolean = true;
+  receiptInfoValid: boolean;
+
+  paymentDetailTemp: any;
+  receiptInfoTemp: any;
 
   constructor(
+    private http: HttpClient,
     private utils: Utils,
     private router: Router,
-    private fb: FormBuilder,
     private homeService: HomeService,
+    private tokenService: TokenService,
     private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,
     private priceOptionService: PriceOptionService
@@ -51,9 +52,37 @@ export class DeviceOrderAisMnpPaymentDetailPageComponent implements OnInit, OnDe
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
 
-    this.banks = this.priceOption.trade.banks || [];
+    const productDetail = this.priceOption.productDetail || {};
+    const productStock = this.priceOption.productStock || {};
     const customer: any = this.transaction.data.customer || {};
     const receiptInfo: any = this.transaction.data.receiptInfo || {};
+
+    const trade: any = this.priceOption.trade || {};
+    const advancePay: any = trade.advancePay || {};
+
+    let commercialName = productDetail.name;
+    if (productStock.color) {
+      commercialName += ` สี ${productStock.color}`;
+    }
+
+    this.payementDetail = {
+      commercialName: commercialName,
+      promotionPrice: +(trade.promotionPrice || 0),
+      isFullPayment: this.isFullPayment(),
+      installmentFlag: advancePay.installmentFlag === 'N' && +(advancePay.amount || 0) > 0,
+      advancePay: +(advancePay.amount || 0),
+      qrCode: true
+    };
+
+    if (trade.banks && trade.banks.length > 0) {
+      this.banks = trade.banks;
+    } else {
+      this.http.post('/api/salesportal/banks-promotion', {
+        location: this.tokenService.getUser().locationCode
+      }).toPromise().then((resp: any) => {
+        this.banks = resp.data || [];
+      });
+    }
 
     this.receiptInfo = {
       taxId: customer.idCardNo,
@@ -76,127 +105,22 @@ export class DeviceOrderAisMnpPaymentDetailPageComponent implements OnInit, OnDe
       telNo: receiptInfo.telNo
     };
 
-    this.createForm();
   }
 
-  createForm(): void {
-
-    this.fullPayment = this.isFullPayment();
-
-    this.paymentDetailForm = this.fb.group({
-      'paymentQrCodeType': [''],
-      'paymentType': ['', Validators.required],
-      'paymentForm': [''],
-      'paymentBank': [''],
-      'paymentMethod': ['']
-    }, { validator: this.customValidate.bind(this) });
-
-    // Advance pay
-    this.paymentAdvancePayForm = this.fb.group({
-      'paymentQrCodeType': [''],
-      'paymentType': ['DEBIT', Validators.required],
-      'paymentBank': ['']
-    }, { validator: this.customValidate.bind(this) });
-
-    // Events
-    this.paymentDetailForm.controls['paymentType'].valueChanges.subscribe((obs: any) => {
-      this.changePaymentType(obs, this.paymentDetailForm, this.paymentAdvancePayForm);
-    });
-
-    this.paymentAdvancePayForm.controls['paymentType'].valueChanges.subscribe((obs: any) => {
-      this.changePaymentType(obs, this.paymentAdvancePayForm, this.paymentDetailForm);
-    });
-
-    this.paymentDetailForm.controls['paymentQrCodeType'].valueChanges.subscribe((obs: any) => {
-      this.changePaymentQrCodeType(obs, this.paymentDetailForm, this.paymentAdvancePayForm);
-    });
-
-    this.paymentAdvancePayForm.controls['paymentQrCodeType'].valueChanges.subscribe((obs: any) => {
-      this.changePaymentQrCodeType(obs, this.paymentAdvancePayForm, this.paymentDetailForm);
-    });
-
-    this.paymentDetailForm.controls['paymentBank'].valueChanges.subscribe((bank: any) => {
-      this.paymentDetailForm.patchValue({ paymentMethod: '' });
-      if (this.fullPayment) {
-        return;
-      }
-      this.banksPayment = this.banks
-        .filter(b => b.abb === bank.abb)
-        .reduce((prev, curr) => {
-          const instalmment = curr.installment.split(/เดือน|%/);
-          if (instalmment && instalmment.length >= 1) {
-            curr.percentage = +instalmment[0];
-            curr.month = +instalmment[1];
-          } else {
-            curr.percentage = 0;
-            curr.month = 0;
-          }
-          if (!prev.find(p => p.month === curr.month && p.percentage === curr.percentage)) {
-            prev.push(curr);
-          }
-          return prev;
-        }, [])
-        .sort((a, b) => {
-          // month + percentage to string and convert to number
-          const aMonthAndPercentage = +`${a.month}${a.percentage}`;
-          const bMonthAndPercentage = +`${b.month}${b.percentage}`;
-          return bMonthAndPercentage - aMonthAndPercentage;
-        });
-    });
-
-    this.paymentDetailForm.patchValue({
-      paymentType: this.fullPayment ? 'DEBIT' : 'CREDIT',
-      paymentForm: this.fullPayment ? 'FULL' : 'INSTALLMENT'
-    });
-    this.paymentDetailForm.controls['paymentForm'].disable();
+  onPaymentCompleted(payment: any): void {
+    this.paymentDetailTemp = payment;
   }
 
-  customValidate(group: FormGroup): any {
-    switch (group.value.paymentType) {
-      case 'QR_CODE':
-        if (!group.value.paymentQrCodeType) {
-          return { field: 'paymentQrCodeType' };
-        }
-        break;
-      case 'CREDIT':
-        if (group.value.paymentBank) {
-          if (!this.isFullPayment()
-            // Advance pay จะไม่มี paymentMethod ไม่ต้อง check
-            && group.controls['paymentMethod']
-            && !group.value.paymentMethod) {
-            return { field: 'paymentMethod' };
-          }
-        } else {
-          return { field: 'paymentBank' };
-        }
-        break;
-    }
-    return null;
+  onPaymentError(valid: boolean): void {
+    this.paymentDetailValid = valid;
   }
 
-  changePaymentType(paymentType: string, sourceControl: any, targetControl: any): void {
-    let paymentQrCodeType;
-    if (paymentType === 'QR_CODE'
-      && targetControl.value.paymentType === 'QR_CODE') {
-      paymentQrCodeType = targetControl.value.paymentQrCodeType;
-    }
-    sourceControl.patchValue({
-      paymentQrCodeType: paymentQrCodeType,
-      paymentBank: ''
-    }, { emitEvent: false });
+  onReceiptInfoCompleted(receiptInfo: ReceiptInfo): void {
+    this.receiptInfoTemp = receiptInfo;
   }
 
-  changePaymentQrCodeType(qrCodeType: string, sourceControl: any, targetControl: any): void {
-    const value = targetControl.value;
-    if (!(qrCodeType && value.paymentType === 'QR_CODE')) {
-      return;
-    }
-    targetControl.patchValue({
-      paymentQrCodeType: qrCodeType
-    }, { emitEvent: false });
-    sourceControl.patchValue({
-      paymentQrCodeType: qrCodeType
-    }, { emitEvent: false });
+  onReceiptInfoError(valid: boolean): void {
+    this.receiptInfoValid = valid;
   }
 
   isFullPayment(): boolean {
@@ -216,88 +140,24 @@ export class DeviceOrderAisMnpPaymentDetailPageComponent implements OnInit, OnDe
     }
   }
 
-  getBanks(): any[] {
-    return this.banks.reduce((prev, curr) => {
-      const exists = prev.find(p => p.abb === curr.abb);
-      if (!exists) {
-        prev.push(curr);
-      }
-      return prev;
-    }, []);
-  }
-
-  onSelectBank(bank: any): void {
-    this.banks.forEach((b: any) => {
-      b.checked = false;
-    });
-    bank.checked = true;
-    this.banksPayment = this.banks
-      .filter(b => b.abb === bank.abb)
-      .reduce((prev, curr) => {
-        const instalmment = curr.installment.split(/เดือน|%/);
-        if (instalmment && instalmment.length >= 1) {
-          curr.percentage = +instalmment[0];
-          curr.month = +instalmment[1];
-        } else {
-          curr.percentage = 0;
-          curr.month = 0;
-        }
-        prev.push(curr);
-        return prev;
-      }, [])
-      .sort((a, b) => {
-        // month + percentage to string and convert to number
-        const aMonthAndPercentage = +`${a.month}${a.percentage}`;
-        const bMonthAndPercentage = +`${b.month}${b.percentage}`;
-        return bMonthAndPercentage - aMonthAndPercentage;
-      });
-  }
-
   onBack(): void {
-    if (TransactionAction.KEY_IN === this.transaction.data.action) {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_VALIDATE_CUSTOMER_PAGE]);
-    } else {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
-    }
-  }
-
-  isAdvancePay(): boolean {
-    const trade = this.priceOption.trade;
-    const advancePay = trade.advancePay || {};
-    // Y = ผ่อนรวมค่าเครื่อง
-    // N = ...
-    return advancePay.installmentFlag === 'N' && (+advancePay.amount) > 0;
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_DETAIL_PAGE]);
   }
 
   isNext(): boolean {
-    let valid = this.receiptInfoValid && this.paymentDetailForm.valid;
-    if (this.isAdvancePay()) {
-      valid = valid && this.paymentAdvancePayForm.valid;
-    }
-    return valid;
+    return this.paymentDetailValid && this.receiptInfoValid;
   }
 
   onNext(): void {
-    this.transaction.data.payment = Object.assign({
-      paymentForm: this.isFullPayment() ? 'FULL' : 'INSTALLMENT'
-    }, this.paymentDetailForm.value);
+    this.transaction.data.payment = this.paymentDetailTemp.payment;
+    this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;
+    this.transaction.data.receiptInfo = this.receiptInfoTemp;
 
-    if (this.isAdvancePay()) {
-      this.transaction.data.advancePayment = Object.assign({}, this.paymentAdvancePayForm.value);
-    }
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_CUSTOMER_INFO_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_SELECT_PACKAGE_PAGE]);
   }
 
   onHome(): void {
     this.homeService.goToHome();
-  }
-
-  onReceiptInfoCompleted(receiptInfo: ReceiptInfo): void {
-    this.transaction.data.receiptInfo = receiptInfo;
-  }
-
-  onReceiptInfoError(error: boolean): void {
-    this.receiptInfoValid = error;
   }
 
   ngOnDestroy(): void {

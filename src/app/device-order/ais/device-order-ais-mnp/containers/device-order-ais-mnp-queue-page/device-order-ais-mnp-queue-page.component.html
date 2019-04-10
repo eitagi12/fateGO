@@ -12,13 +12,13 @@
 
       <div class="container pt-3">
         <img src="assets/images/icon/sales_portal_white_check.png" class="d-block m-auto icon">
-        <div class="my-3 text-center text-light-green">
-          <p>หมายเลข {{ transaction?.data?.simCard?.mobileNo | mobileNo }}</p>
-          <p>หมายเลขรายการสั่งชื้อของท่านได้เข้าสู่ระบบเรียบร้อยแล้ว</p>
+        <div class="my-3 text-center text-green">
+          <h4>หมายเลข {{ transaction?.data?.simCard?.mobileNo | mobileNo }}</h4>
+          <h4>หมายเลขรายการสั่งชื้อของท่านได้เข้าสู่ระบบเรียบร้อยแล้ว</h4>
         </div>
         <form [formGroup]="queueFrom">
           <div class="form-group">
-            <div class="mt-5">เบอร์โทรศัพท์รับหมายเลขสั่งซื้อเพื่อชำระสินค้าของท่านคือ</div>
+            <div class="text-center mt-5">เบอร์โทรศัพท์รับหมายเลขสั่งซื้อเพื่อชำระสินค้าของท่านคือ</div>
             <input class="form-control text-center mb-3" id="mobileNo" maxlength="10" autofocus autocomplete="off"
               formControlName="mobileNo" placeholder="ระบุเบอร์โทรศัพท์รับ SMS" [ngClass]="{ 'is-invalid' : queueFrom.controls.mobileNo.invalid && queueFrom.controls.mobileNo.touched && queueFrom.controls.mobileNo.errors }">
             <small class="invalid-feedback" *ngIf="queueFrom.controls.mobileNo.touched && queueFrom.controls.mobileNo.errors">

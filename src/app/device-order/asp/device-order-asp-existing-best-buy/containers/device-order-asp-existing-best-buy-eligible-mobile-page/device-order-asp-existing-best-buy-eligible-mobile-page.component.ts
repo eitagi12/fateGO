@@ -98,8 +98,10 @@ export class DeviceOrderAspExistingBestBuyEligibleMobilePageComponent implements
         const eMobileResponse = response.data;
         this.eligiblePostpaid = eMobileResponse.postpaid;
         this.eligiblePrepaid = eMobileResponse.prepaid;
+      }).catch(() => {
+        this.eligiblePostpaid = [];
+        this.eligiblePrepaid = [];
       });
-
   }
 
   onCompleted(mobileNo: any): void {

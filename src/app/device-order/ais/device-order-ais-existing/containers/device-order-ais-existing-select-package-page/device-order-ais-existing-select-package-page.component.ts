@@ -27,6 +27,8 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
   priceOption: PriceOption;
   promotionShelves: PromotionShelve[];
   condition: any;
+  selectCurrentPackage: boolean;
+  showCurrentPackage: boolean;
   modalRef: BsModalRef;
   shoppingCart: ShoppingCart;
 
@@ -47,6 +49,9 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
       delete this.transaction.data.billingInformation.billCycle;
       delete this.transaction.data.billingInformation.mergeBilling;
     }
+    if (this.priceOption.privilege.minimumPackagePrice <= this.transaction.data.currentPackage.priceExclVat) {
+      this.showCurrentPackage = true;
+    }
   }
 
   ngOnInit(): void {
@@ -58,7 +63,14 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
 
   onCompleted(promotion: any): void {
     // รอแก้ไขตัวแปรที่จะเก็บลงใน share transaction
+    this.selectCurrentPackage = false;
     this.transaction.data.mainPackage = promotion;
+  }
+
+  onClickCurrentPackage(): void {
+    this.selectCurrentPackage = true;
+    this.transaction.data.mainPackage = null;
+    this.promotionShelves[0].promotions.forEach((promotion: any) => promotion.active = false);
   }
 
   onBack(): void {

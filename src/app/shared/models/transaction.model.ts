@@ -43,6 +43,7 @@ export interface TransactionData {
   customer?: Customer;
   simCard?: SimCard;
   mainPackage?: MainPackage;
+  currentPackage?: CurrentPackage;
   onTopPackage?: OnTopPackage;
   mainPackageOneLove?: any[];
   mobileCarePackage?: MobileCarePackage;
@@ -133,6 +134,10 @@ export interface SimCard {
 }
 
 export interface MainPackage {
+  [key: string]: any;
+}
+
+export interface CurrentPackage {
   [key: string]: any;
 }
 
