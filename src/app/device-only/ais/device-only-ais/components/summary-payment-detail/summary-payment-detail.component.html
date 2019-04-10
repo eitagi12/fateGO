@@ -18,14 +18,15 @@
         <span class="text-grey" id="text-color-summary" *ngIf="priceOption?.productStock?.colorName">
           {{ priceOption?.productStock?.colorName?'สี': '' }} {{ priceOption?.productStock?.colorName }}
         </span>
-        <span class="text-grey">: ชำระเต็มจำนวน</span>
-        <span class="pull-right text-grey" id="text-price-summary">
+        <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'"> : ชำระเต็มจำนวน</span>
+        <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'"> : ผ่อนชำระบัตรเครดิต</span>
+        <span class="pull-right text-lime" id="text-price-summary">
           ฿ {{ priceOption?.trade?.promotionPrice | number }}
         </span>
       </p>
     </ng-container>
 
-    <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">
+    <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'FULL' && transaction?.data?.payment?.paymentType !== 'CREDIT'">
       <span class="text-grey" id="text-cash-summary">
         (ชำระโดย เงินสด)
       </span>
@@ -34,7 +35,7 @@
     <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">
       <span class="text-grey"  id="text-credit-summary">
         (
-        ชำระโดย บัตรเคดิต
+        ชำระโดย เครดิตธนาคาร
         {{ transaction?.data?.payment?.paymentMethod?.name }}
         {{ transaction?.data?.payment?.paymentMethod?.percentage }} %
         {{ transaction?.data?.payment?.paymentMethod?.month }} เดือน
@@ -43,6 +44,16 @@
         )
       </span>
     </ng-container>
+
+    <ng-container *ngIf="transaction?.data?.payment?.paymentForm !== 'INSTALLMENT' && transaction?.data?.payment?.paymentType === 'CREDIT'">
+        <span class="text-grey"  id="text-credit-summary">
+          (
+          ชำระโดย เครดิตธนาคาร
+          {{ transaction?.data?.payment?.paymentMethod?.name }}
+          {{ transaction?.data?.payment?.paymentBank?.name}}
+          )
+        </span>
+      </ng-container>
 
   </div>
   <div class="card-footer bg-transparent ">
