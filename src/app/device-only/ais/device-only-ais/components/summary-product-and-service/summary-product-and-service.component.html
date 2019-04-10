@@ -22,3 +22,12 @@
     </ng-container>
   </div>
 </div>
+
+<ng-template #detailTemplate>
+  <div class="modal-body" [innerHTML]="detail"></div>
+  <div class="modal-footer">
+    <div class="w-100 text-center">
+      <button class="btn btn-success px-5" (click)="modalRef.hide()">ปิด</button>
+    </div>
+  </div>
+</ng-template>
