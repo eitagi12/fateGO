@@ -8,7 +8,7 @@ import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_SELECT_PACKAGE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_MERGE_BILLING_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CONFIRM_USER_INFORMATION_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ONE_LOVE_PAGE
+  // ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ONE_LOVE_PAGE
 } from '../../constants/route-path.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
@@ -100,7 +100,7 @@ export class DeviceOrderAisPreToPostOnTopPageComponent implements OnInit, OnDest
 
   onBack(): void {
     if (this.transaction.data.mainPackageOneLove) {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ONE_LOVE_PAGE]);
+      // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ONE_LOVE_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_SELECT_PACKAGE_PAGE]);
     }

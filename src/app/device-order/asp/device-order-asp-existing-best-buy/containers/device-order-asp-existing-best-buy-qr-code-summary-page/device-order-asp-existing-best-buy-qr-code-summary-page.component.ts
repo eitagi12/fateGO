@@ -6,9 +6,8 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Router } from '@angular/router';
 import { ROUTE_DEVICE_ORDER_ASP_BEST_BUY_QR_CODE_GENERATOR_PAGE } from '../../constants/route-path.constant';
-
-////////////////////////  ดึง Service จาก flow ais  /////////////////////////
-import { CreateDeviceOrderBestBuyService } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/services/create-device-order-best-buy.service';
+import { ImageBrannerQRCode, QRCodePaymentService } from 'src/app/shared/services/qrcode-payment.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-device-order-asp-existing-best-buy-qr-code-summary-page',
@@ -21,16 +20,21 @@ export class DeviceOrderAspExistingBestBuyQrCodeSummaryPageComponent implements 
   priceOption: PriceOption;
   deposit: number;
 
+  brannerImagePaymentQrCode: ImageBrannerQRCode;
+
   constructor(
     private router: Router,
+    private http: HttpClient,
     private homeService: HomeService,
     private alertService: AlertService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
-    private createDeviceOrderBestBuyService: CreateDeviceOrderBestBuyService
+    private qrcodePaymentService: QRCodePaymentService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
+    this.brannerImagePaymentQrCode = this.qrcodePaymentService.getBrannerImagePaymentQrCodeType(
+      this.transaction.data.payment.paymentQrCodeType);
   }
 
   ngOnInit(): void {
@@ -40,15 +44,14 @@ export class DeviceOrderAspExistingBestBuyQrCodeSummaryPageComponent implements 
 
   onBack(): void {
     this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
-        .then((response: any) => {
-          if (response.value === true) {
-            const productDetail = this.priceOption.productDetail;
-            this.createDeviceOrderBestBuyService.cancelOrder(this.transaction)
-                .then((isSuccess: any) => {
-                  window.location.href = `/sales-portal/buy-product/brand/${productDetail.brand}/${productDetail.model}`;
-             }).catch(() => window.location.href = `/sales-portal/buy-product/brand/${productDetail.brand}/${productDetail.model}`);
-          }
-        });
+      .then((response: any) => {
+        if (response.value === true) {
+          const queryParams = this.priceOption.queryParams;
+          this.returnStock().then(() => {
+            window.location.href = `/sales-portal/buy-product/brand/${queryParams.brand}/${queryParams.model}`;
+          });
+        }
+      });
   }
 
   onNext(): void {
@@ -67,6 +70,25 @@ export class DeviceOrderAspExistingBestBuyQrCodeSummaryPageComponent implements 
 
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
+  }
+
+  returnStock(): Promise<void> {
+    return new Promise(resolve => {
+      const transaction = this.transactionService.load();
+
+      const promiseAll = [];
+      if (transaction.data) {
+        if (transaction.data.order && transaction.data.order.soId) {
+          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
+            location: this.priceOption.productStock.location,
+            soId: transaction.data.order.soId,
+            transactionId: transaction.transactionId
+          }).toPromise().catch(() => Promise.resolve());
+          promiseAll.push(order);
+        }
+      }
+      Promise.all(promiseAll).then(() => resolve());
+    });
   }
 
 }

@@ -1,30 +1,45 @@
 import { Router } from '@angular/router';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   HomeService, PageLoadingService, REGEX_MOBILE
 } from 'mychannel-shared-libs';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import {
+  Transaction
+} from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGGREGATE_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_RESULT_PAGE } from 'src/app/device-order/ais/device-order-ais-new-register/constants/route-path.constant';
+import {
+  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGGREGATE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_RESULT_PAGE
+} from 'src/app/device-order/ais/device-order-ais-new-register/constants/route-path.constant';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
+import { QueuePageService } from 'src/app/device-order/services/queue-page.service';
 
 @Component({
   selector: 'app-device-order-ais-new-register-queue-page',
   templateUrl: './device-order-ais-new-register-queue-page.component.html',
   styleUrls: ['./device-order-ais-new-register-queue-page.component.scss']
 })
-export class DeviceOrderAisNewRegisterQueuePageComponent implements OnInit {
+export class DeviceOrderAisNewRegisterQueuePageComponent implements OnInit, OnDestroy {
 
   transaction: Transaction;
+  priceOption: PriceOption;
   queueFrom: FormGroup;
+
   constructor(
+    private fb: FormBuilder,
     private router: Router,
     private homeService: HomeService,
-    private fb: FormBuilder,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
+    private priceOptionService: PriceOptionService,
+    private queuePageService: QueuePageService,
+    private sharedTransactionService: SharedTransactionService
   ) {
     this.transaction = this.transactionService.load();
+    this.priceOption = this.priceOptionService.load();
   }
 
   ngOnInit(): void {
@@ -42,11 +57,32 @@ export class DeviceOrderAisNewRegisterQueuePageComponent implements OnInit {
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_RESULT_PAGE]);
+    this.pageLoadingService.openLoading();
+    this.queuePageService.getQueueQmatic(this.queueFrom.value.mobileNo)
+      .then((resp: any) => {
+        const data = resp.data && resp.data.result ? resp.data.result : {};
+        return data.queueNo;
+      })
+      .then((queueNo: string) => {
+        this.transaction.data.queue = {
+          queueNo: queueNo
+        };
+        return this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption)
+          .then(() => {
+            return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
+          });
+      })
+      .then(() => {
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_RESULT_PAGE]);
+      })
+      .then(() => this.pageLoadingService.closeLoading());
   }
 
   onHome(): void {
     this.homeService.goToHome();
   }
 
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
+  }
 }

@@ -50,9 +50,6 @@ export class CustomerInfoService {
         };
         return customer;
       }).catch((e) => {
-        if (!this.DATA_NOT_FOUND.test(e.error.resultDescription)) {
-          return Promise.reject(e);
-        }
         const customer: Customer = {
           idCardNo: idCardNo || '',
           idCardType: this.ID_CARD_CONST,
@@ -63,7 +60,6 @@ export class CustomerInfoService {
           gender: '',
           caNumber: null
         };
-
         return Promise.resolve(customer);
       });
   }

@@ -45,6 +45,7 @@ export interface TransactionData {
   customer?: Customer;
   simCard?: SimCard;
   mainPackage?: MainPackage;
+  currentPackage?: CurrentPackage;
   onTopPackage?: OnTopPackage;
   mainPackageOneLove?: any[];
   mobileCarePackage?: MobileCarePackage;
@@ -138,9 +139,16 @@ export interface SimCard {
   moblieNoTypeA?: string;
   chargeType?: ChargeType;
   persoSim?: boolean;
+  privilegeCode?: string;
+  nType?: string;
+  mobileNoStatus?: 'Active' | 'Suspended';
 }
 
 export interface MainPackage {
+  [key: string]: any;
+}
+
+export interface CurrentPackage {
   [key: string]: any;
 }
 
@@ -179,6 +187,8 @@ export interface BillingInformation {
   billCycleData?: BillingAccountData;
   // send bill devilery address
   billDeliveryAddress?: BillDeliveryAddress;
+  // วันที่มีผลการใช้งาน B: รอบถัดไป D: วันถัดไป I: มีผลทันที
+  overRuleStartDate?: string;
 }
 
 export interface BillCycle {
@@ -239,8 +249,8 @@ export interface Seller {
   locationCode?: string;
   sellerNo?: string;
   shareUser?: string;
+  // flow deposit ใช้ ยังลบไม่ได้
   employeeId?: string;
-  ascCode?: string;
 }
 
 export interface ReceiptInfo {
@@ -252,7 +262,7 @@ export interface ReceiptInfo {
 }
 
 export interface Queue {
-  [key: string]: any;
+  queueNo: string;
 }
 
 export interface ExistingMobileCare {

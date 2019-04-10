@@ -39,10 +39,10 @@ export class DeviceOrderAisNewRegisterEbillingAddressPageComponent implements On
   ngOnInit(): void {
     const billingInformation = this.transaction.data.billingInformation || {};
     const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
-
     this.http.get('/api/customerportal/newRegister/getAllZipcodes').subscribe((resp: any) => {
       this.allZipCodes = resp.data.zipcodes || [];
     });
+    customer.province = customer.province.replace(/มหานคร$/, '');
     this.http.get('/api/customerportal/newRegister/getAllProvinces').subscribe((resp: any) => {
       this.provinces = (resp.data.provinces || []);
       this.customerAddress = {
@@ -159,8 +159,11 @@ export class DeviceOrderAisNewRegisterEbillingAddressPageComponent implements On
   onNext(): void {
     const billingInformation = this.transaction.data.billingInformation || {};
     const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
-    this.transaction.data.billingInformation.billDeliveryAddress = Object.assign(Object.assign({}, customer), this.customerAddressTemp);
     this.transactionService.update(this.transaction);
+    this.transaction.data.billingInformation.billDeliveryAddress = Object.assign(
+      Object.assign({}, customer),
+      this.customerAddressTemp
+    );
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE]);
   }
 

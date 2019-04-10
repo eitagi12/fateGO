@@ -9,7 +9,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { PromotionShelveService } from 'src/app/device-order/services/promotion-shelve.service';
-import { ROUTE_DEVICE_ORDER_AIS_MNP_VERIFY_INSTANT_SIM_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_BY_PATTERN_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_CONFIRM_USER_INFORMATION_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_MNP_VERIFY_INSTANT_SIM_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_BY_PATTERN_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_CONFIRM_USER_INFORMATION_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_PAYMENT_DETAIL_PAGE } from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-mnp-select-package-page',
@@ -56,15 +56,11 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
   }
 
   onBack(): void {
-    if (this.transaction.data.simCard.simSerial) {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_VERIFY_INSTANT_SIM_PAGE]);
-    } else {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_BY_PATTERN_PAGE]);
-    }
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_PAYMENT_DETAIL_PAGE]);
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_CONFIRM_USER_INFORMATION_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE]);
   }
 
   onHome(): void {

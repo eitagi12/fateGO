@@ -1,11 +1,11 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { HomeService, CustomerInfo, ShoppingCart, Utils } from 'mychannel-shared-libs';
+import { HomeService, CustomerInfo, ShoppingCart, Utils, TokenService } from 'mychannel-shared-libs';
 import { ROUTE_DEVICE_ORDER_ASP_BEST_BUY_VALIDATE_CUSTOMER_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_ELIGIBLE_MOBILE_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_VALIDATE_CUSTOMER_REPI_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_PAYMENT_DETAIL_PAGE } from 'src/app/device-order/asp/device-order-asp-existing-best-buy/constants/route-path.constant';
 import { Transaction, Customer, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
+import { WIZARD_DEVICE_ORDER_AIS, WIZARD_DEVICE_ORDER_ASP } from 'src/app/device-order/constants/wizard.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 
 @Component({
@@ -15,7 +15,8 @@ import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart
 })
 export class DeviceOrderAspExistingBestBuyCustomerInfoPageComponent implements OnInit, OnDestroy {
 
-  wizards: any = WIZARD_DEVICE_ORDER_AIS;
+  wizards: any = this.tokenService.isTelewizUser() ? WIZARD_DEVICE_ORDER_ASP : WIZARD_DEVICE_ORDER_AIS;
+  active: number = this.tokenService.isTelewizUser() ? 3 : 2;
 
   transaction: Transaction;
   customerInfo: CustomerInfo;
@@ -25,7 +26,8 @@ export class DeviceOrderAspExistingBestBuyCustomerInfoPageComponent implements O
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
-    private shoppingCartService: ShoppingCartService
+    private shoppingCartService: ShoppingCartService,
+    private tokenService: TokenService
   ) {
     this.transaction = this.transactionService.load();
   }

@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import {
-  HomeService, ShoppingCart, ReceiptInfo, Utils, PaymentDetail, PaymentDetailBank
+  HomeService, ShoppingCart, ReceiptInfo, Utils, PaymentDetail, PaymentDetailBank, TokenService
 } from 'mychannel-shared-libs';
 import {
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VALIDATE_CUSTOMER_PAGE,
@@ -15,6 +15,7 @@ import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-device-order-ais-new-register-payment-detail-page',
@@ -39,9 +40,11 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
   receiptInfoTemp: any;
 
   constructor(
+    private http: HttpClient,
     private utils: Utils,
     private router: Router,
     private homeService: HomeService,
+    private tokenService: TokenService,
     private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,
     private priceOptionService: PriceOptionService
@@ -75,7 +78,15 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
       qrCode: true
     };
 
-    this.banks = trade.banks || [];
+    if (trade.banks && trade.banks.length > 0) {
+      this.banks = trade.banks;
+    } else {
+      this.http.post('/api/salesportal/banks-promotion', {
+        location: this.tokenService.getUser().locationCode
+      }).toPromise().then((resp: any) => {
+        this.banks = resp.data || [];
+      });
+    }
 
     this.receiptInfo = {
       taxId: customer.idCardNo,

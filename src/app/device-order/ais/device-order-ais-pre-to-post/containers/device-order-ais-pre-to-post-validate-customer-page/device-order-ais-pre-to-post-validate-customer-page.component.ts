@@ -1,43 +1,18 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { AbstractControl, ValidationErrors } from '@angular/forms';
+import { Router } from '@angular/router';
 import { HomeService, PageLoadingService, Utils, AlertService, TokenService, ChannelType } from 'mychannel-shared-libs';
-
+import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from 'src/app/buy-product/constants/route-path.constant';
 import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CURRENT_INFO_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE
 } from '../../constants/route-path.constant';
-import { environment } from 'src/environments/environment';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-
-export enum ControlLED {
-  EVENT_LED_ON = 'ControlLED|On',
-  EVENT_LED_OFF = 'ControlLED|Off',
-  EVENT_LED_BLINK = 'ControlLED|Blink',
-}
-
-export enum ControlSimCard {
-  EVENT_CHECK_SIM_INVENTORY = 'GetSIMInventory',
-  EVENT_CHECK_SIM_STATE = 'GetCardState',
-  EVENT_CHECK_BIN_STATE = 'GetBinState',
-  EVENT_LOAD_SIM = 'LoadSIM',
-  EVENT_KEEP_SIM = 'KeepCard',
-  EVENT_RELEASE_SIM = 'ReleaseSIM'
-}
-
-export enum SIMCardStatus {
-  INVENTORY_1_HAVE_CARD = 'Card Stacker 1 is unknown status',
-  INVENTORY_2_HAVE_CARD = 'Card Stacker 2 is unknown status',
-  INVENTORY_1_LESS_CARD = 'Card Stacker 1 is less card',
-  INVENTORY_2_LESS_CARD = 'Card Stacker 2 is less card',
-  INVENTORY_1_EMPTY_CARD = 'Card Stacker 1 is empty',
-  INVENTORY_2_EMPTY_CARD = 'Card Stacker 2 is empty',
-  STATUS_IN_IC = 'Card in IC position',
-  STATUS_NO_CARD = 'No card inside reader unit',
-}
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { AbstractControl, ValidationErrors } from '@angular/forms';
 
 @Component({
   selector: 'app-device-order-ais-pre-to-post-validate-customer-page',
@@ -46,64 +21,29 @@ export enum SIMCardStatus {
 })
 export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnInit, OnDestroy {
 
+  priceOption: PriceOption;
+
   transaction: Transaction;
 
   identityValid: boolean = false;
   identity: string;
-  ws: any;
-  checkCardIntraval: any;
 
   constructor(
     private utils: Utils,
     private router: Router,
-    private http: HttpClient,
     private homeService: HomeService,
+    private http: HttpClient,
     private alertService: AlertService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
+    private priceOptionService: PriceOptionService,
     private tokenService: TokenService,
   ) {
-    this.homeService.callback = () => {
-
-      if (this.checkCardIntraval) {
-        clearInterval(this.checkCardIntraval);
-      }
-      if (this.ws) {
-        this.ws.send(ControlLED.EVENT_LED_OFF);
-        this.ws.close();
-      }
-      window.location.href = '/smart-shop';
-
-    };
+    this.priceOption = this.priceOptionService.load();
   }
 
   ngOnInit(): void {
     this.createTransaction();
-
-    if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {
-      this.checkCardPresent();
-    }
-  }
-
-  checkCardPresent(): void {
-    this.ws = new WebSocket(`${environment.WEB_CONNECT_URL}/VendingAPI`);
-
-    this.ws.onopen = () => {
-      this.ws.send(ControlLED.EVENT_LED_BLINK);
-      this.checkCardIntraval = setInterval(() => {
-        this.ws.send(ControlSimCard.EVENT_CHECK_SIM_STATE);
-      }, 800);
-    };
-
-    this.ws.onmessage = (evt) => {
-      const resultOnmessage = JSON.parse(evt.data);
-      if (resultOnmessage.Result !== SIMCardStatus.STATUS_NO_CARD && resultOnmessage.Result !== 'Success') {
-        clearInterval(this.checkCardIntraval);
-        this.ws.send(ControlLED.EVENT_LED_OFF);
-        this.onReadCard();
-      }
-    };
-
   }
 
   onError(valid: boolean): void {
@@ -119,15 +59,10 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
   }
 
   onBack(): void {
-    this.homeService.goToHome();
-  }
-
-  onHome(): void {
-    this.homeService.goToHome();
+    this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
   }
 
   onNext(): void {
-
     this.pageLoadingService.openLoading();
 
     if (this.utils.isMobileNo(this.identity)) {
@@ -196,6 +131,10 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
       });
   }
 
+  onHome(): void {
+    this.homeService.goToHome();
+  }
+
   customerValidate(control: AbstractControl): ValidationErrors | null {
     const value = control.value;
     const length = control.value.length;
@@ -210,23 +149,54 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
   }
 
   ngOnDestroy(): void {
-    if (this.checkCardIntraval) {
-      clearInterval(this.checkCardIntraval);
-    }
-    if (this.ws) {
-      this.ws.send(ControlLED.EVENT_LED_OFF);
-      this.ws.close();
-    }
-
     this.transactionService.save(this.transaction);
   }
 
   private createTransaction(): void {
     this.transaction = {
       data: {
-        transactionType: TransactionType.ORDER_PRE_TO_POST,
+        transactionType: TransactionType.DEVICE_ORDER_PRE_TO_POST_AIS,
         action: TransactionAction.KEY_IN,
       }
+    };
+    delete this.transaction.data.customer;
+  }
+
+  private mapCustomer(customer: any): void {
+    const fullName = (customer.name || ' ').split(' ');
+    const address = customer.address || {};
+
+    this.transaction.data.customer = {
+      idCardNo: this.identity,
+      idCardType: customer.idCardType,
+      titleName: customer.accntTitle,
+      firstName: fullName[0],
+      lastName: fullName[1],
+      birthdate: customer.birthdate,
+      gender: customer.gender,
+      homeNo: address.homeNo,
+      moo: address.moo,
+      mooBan: address.mooban,
+      buildingName: address.buildingName,
+      floor: address.floor,
+      room: address.room,
+      street: address.street,
+      soi: address.soi,
+      tumbol: address.tumbol,
+      amphur: address.amphur,
+      province: address.province,
+      firstNameEn: '',
+      lastNameEn: '',
+      issueDate: customer.birthdate,
+      expireDate: null,
+      zipCode: address.zipCode,
+      mainMobile: customer.mainMobile,
+      mainPhone: customer.mainPhone,
+      billCycle: customer.billCycle,
+      caNumber: customer.accntNo,
+      imageSignature: '',
+      imageSmartCard: '',
+      imageReadSmartCard: '',
     };
   }
 }

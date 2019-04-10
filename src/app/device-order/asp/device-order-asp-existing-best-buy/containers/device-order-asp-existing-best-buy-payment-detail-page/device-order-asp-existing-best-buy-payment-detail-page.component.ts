@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
-import { HomeService, ShoppingCart, User, TokenService } from 'mychannel-shared-libs';
+import { HomeService, ShoppingCart, User, TokenService, PaymentDetail, PaymentDetailBank, Utils, PageLoadingService } from 'mychannel-shared-libs';
 import {
   ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_DETAIL_PAGE,
   ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_CARE_AVAILABLE_PAGE,
@@ -12,16 +12,13 @@ import {
 } from 'src/app/device-order/asp/device-order-asp-existing-best-buy/constants/route-path.constant';
 import { Transaction, ExistingMobileCare, Customer } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
+import { WIZARD_DEVICE_ORDER_AIS, WIZARD_DEVICE_ORDER_ASP } from 'src/app/device-order/constants/wizard.constant';
 import { ReceiptInfo } from 'mychannel-shared-libs/lib/component/receipt-info/receipt-info.component';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { CreateDeviceOrderBestBuyService } from '../../services/create-device-order-best-buy.service';
+import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 
-export const CASH_PAYMENT = 'CA';
-export const CREDIT_CARD_PAYMENT = 'CC';
-export const CASH_AND_CREDIT_CARD_PAYMENT = 'CC/CA';
 @Component({
   selector: 'app-device-order-asp-existing-best-buy-payment-detail-page',
   templateUrl: './device-order-asp-existing-best-buy-payment-detail-page.component.html',
@@ -29,46 +26,38 @@ export const CASH_AND_CREDIT_CARD_PAYMENT = 'CC/CA';
 })
 export class DeviceOrderAspExistingBestBuyPaymentDetailPageComponent implements OnInit, OnDestroy {
 
-  wizards: any = WIZARD_DEVICE_ORDER_AIS;
+  wizards: any = this.tokenService.isTelewizUser() ? WIZARD_DEVICE_ORDER_ASP : WIZARD_DEVICE_ORDER_AIS;
+  active: number = this.tokenService.isTelewizUser() ? 3 : 2;
 
-  transaction: Transaction;
   shoppingCart: ShoppingCart;
   priceOption: PriceOption;
-  user: User;
+  transaction: Transaction;
+
+  payementDetail: PaymentDetail;
+  banks: PaymentDetailBank[];
+  paymentDetailValid: boolean;
 
   receiptInfo: ReceiptInfo;
-  receiptInfoValid: boolean = true;
+  receiptInfoValid: boolean;
 
-  paymentDetail: any;
-  selectPaymentDetail: any;
-  paymentDetailOption: any;
-
-  paymentMethod: string;
-
-  selectQRCode: any;
-  selectBank: any;
-  // installments: PaymentDetailInstallment[];
-
-  selectQRCodeAdvancePay: any;
-  selectBankAdvancePay: any;
-
-  paymentForm: FormGroup;
-  discountForm: FormGroup;
-
-  formID: string;
-  showQRCode: boolean;
+  paymentDetailTemp: any;
+  receiptInfoTemp: any;
   depositOrDiscount: boolean;
+  user: User;
+
+  discountForm: FormGroup;
 
   constructor(
     private router: Router,
     private homeService: HomeService,
-    private transactionService: TransactionService,
+    private utils: Utils,
     private http: HttpClient,
+    private tokenService: TokenService,
+    private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,
     private priceOptionService: PriceOptionService,
-    private createDeviceOrderBestBuyService: CreateDeviceOrderBestBuyService,
-    private fb: FormBuilder,
-    private tokenService: TokenService,
+    private pageLoadingService: PageLoadingService,
+    private fb: FormBuilder
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -77,73 +66,123 @@ export class DeviceOrderAspExistingBestBuyPaymentDetailPageComponent implements 
 
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-    this.formID = this.getRandomNum(10);
+    const paymentMethod = this.priceOption.trade.payment ? this.priceOption.trade.payment.method : '';
+
     this.depositOrDiscount = this.transaction.data.preBooking
-      && this.transaction.data.preBooking.depositAmt
-      && this.transaction.data.preBooking.preBookingNo ? true : false;
-    // [SORRY Krap]
-    // this.transaction.data.preBooking = {
-    //   depositAmt: '2000',
-    //   preBookingNo: 'BP201903040000001',
-    //   deliveryDt: '25/02/2019 08:00'
-    // };
-    const productDetail = this.priceOption.productDetail;
-    const productInfo = this.priceOption.productStock;
-    if (this.priceOption.trade.payments.length > 0) {
-      this.paymentMethod = this.priceOption.trade.payments.filter(payment => payment.method !== 'PP')[0].method || '';
-    } else {
-      this.paymentMethod = this.priceOption.trade.payments.method || '';
+                && this.transaction.data.preBooking.depositAmt
+                && this.transaction.data.preBooking.preBookingNo ? true : false;
+
+    const showQRCode: boolean = paymentMethod !== 'CC' && this.user.userType !== 'ASP'
+              && this.user.channelType !== 'sff-web' && this.priceOption.productStock.company === 'AWN'
+              && this.user.username.toLowerCase() === 'duangdat';
+
+    const productDetail = this.priceOption.productDetail || {};
+    const productStock = this.priceOption.productStock || {};
+    const customer: any = this.transaction.data.customer || {};
+    const receiptInfo: any = this.transaction.data.receiptInfo || {};
+
+    const trade: any = this.priceOption.trade || {};
+    const advancePay: any = trade.advancePay || {};
+
+    let commercialName = productDetail.name;
+    if (productStock.color) {
+      commercialName += ` สี ${productStock.color}`;
     }
 
-    this.showQRCode = this.paymentMethod !== 'CC' && this.user.userType !== 'ASP'
-      && this.user.channelType !== 'sff-web' && this.priceOption.productStock.company === 'AWN'
-      && this.user.username.toLowerCase() === 'duangdat';
-    // this.showQRCode = true;
-
-    this.onLoadDefaultBankData(this.priceOption.trade.banks).then((banks) => {
-      this.priceOption.trade.banks = banks;
-      // ############################################## payment detail ##############################################
-      this.paymentDetail = {
-        title: 'รูปแบบการชำระเงิน',
-        header: 'ค่าเครื่อง ' + productDetail.name + ' สี ' + productInfo.colorName,
-        price: this.priceOption.trade.promotionPrice,
-        qrCodes: this.getQRCode(),
-        banks: this.groupPrivilegeTradeBankByAbb(this.priceOption.trade.banks)
-      };
-    });
-
-    if (this.transaction.data.payment) {
-      this.selectPaymentDetail = {
-        // [SORRY Krap]
-        /*paymentType: this.transaction.data.payment.type,
-        qrCode: this.transaction.data.payment.qrCode,
-        bank: this.transaction.data.payment.bank,*/
-      };
-      const bank = this.paymentDetail.banks.find(b => b.abb === this.selectPaymentDetail.bank.abb);
-      this.paymentDetail.installments = bank ? bank.installments : [];
-    } else {
-      this.selectPaymentDetail = {
-        paymentType: this.getPaymentType(),
-      };
-    }
-
-    this.paymentDetailOption = {
-      isInstallment: this.isInstallment(),
-      isEnable: this.isEnableForm()
+    this.payementDetail = {
+      commercialName: commercialName,
+      promotionPrice: +(trade.promotionPrice || 0),
+      isFullPayment: this.isFullPayment(),
+      installmentFlag: advancePay.installmentFlag === 'N' && +(advancePay.amount || 0) > 0,
+      advancePay: +(advancePay.amount || 0),
+      qrCode: showQRCode
     };
 
-    this.createForm();
-    // ############################################## receiptInfo ##############################################
+    if (trade.banks && trade.banks.length > 0) {
+      if (!this.isFullPayment()) {
+        this.banks = (this.priceOption.trade.banks || []).map((b: any) => {
+          return b.installmentDatas.map((data: any) => {
+            return {
+              ...b,
+              installment: `${data.installmentPercentage}% ${data.installmentMounth}`
+            };
+          });
+        }).reduce((prev: any, curr: any) => {
+          curr.forEach((element: any) => {
+            prev.push(element);
+          });
+          return prev;
+        }, []);
+      } else {
+        this.banks = trade.banks;
+      }
+    } else {
+      this.http.post('/api/salesportal/banks-promotion', {
+        location: this.tokenService.getUser().locationCode
+      }).toPromise().then((resp: any) => {
+        this.banks = resp.data || [];
+      });
+    }
+
+    console.log(this.banks);
 
     this.receiptInfo = {
-      taxId: this.transaction.data.customer.idCardNo,
+      taxId: customer.idCardNo,
       branch: '',
-      buyer: this.transaction.data.customer.titleName + ' ' +
-        this.transaction.data.customer.firstName + ' ' +
-        this.transaction.data.customer.lastName,
-      buyerAddress: this.getFullAddress(this.transaction.data.customer),
-      telNo: this.transaction.data.receiptInfo ? this.transaction.data.receiptInfo.telNo : ''
+      buyer: `${customer.titleName} ${customer.firstName} ${customer.lastName}`,
+      buyerAddress: this.utils.getCurrentAddress({
+        homeNo: customer.homeNo,
+        moo: customer.moo,
+        mooBan: customer.mooBan,
+        room: customer.room,
+        floor: customer.floor,
+        buildingName: customer.buildingName,
+        soi: customer.soi,
+        street: customer.street,
+        tumbol: customer.tumbol,
+        amphur: customer.amphur,
+        province: customer.province,
+        zipCode: customer.zipCode,
+      }),
+      telNo: receiptInfo.telNo
     };
+
+    if (this.depositOrDiscount) {
+      this.createForm();
+    }
+  }
+
+  onPaymentCompleted(payment: any): void {
+    this.paymentDetailTemp = payment;
+  }
+
+  onPaymentError(valid: boolean): void {
+    this.paymentDetailValid = valid;
+  }
+
+  onReceiptInfoCompleted(receiptInfo: ReceiptInfo): void {
+    this.receiptInfoTemp = receiptInfo;
+  }
+
+  onReceiptInfoError(valid: boolean): void {
+    this.receiptInfoValid = valid;
+  }
+
+  isFullPayment(): boolean {
+    const trade = this.priceOption.trade || {};
+    const payment = (trade.payments || []).find(p => p.method !== 'PP') || {};
+    switch (payment.method) {
+      case 'CC':
+        if (PriceOptionUtils.getInstallmentsFromTrades([trade])) {
+          return false;
+        } else {
+          return true;
+        }
+      case 'CA':
+      case 'CA/CC':
+      default:
+        return true;
+    }
   }
 
   onHome(): void {
@@ -159,280 +198,33 @@ export class DeviceOrderAspExistingBestBuyPaymentDetailPageComponent implements 
     }
   }
 
+  isNext(): boolean {
+    return this.paymentDetailValid;
+  }
+
   onNext(): void {
+    this.pageLoadingService.openLoading();
+    this.transaction.data.payment = this.paymentDetailTemp.payment;
+    this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;
+    this.transaction.data.receiptInfo = this.receiptInfoTemp;
     const mobileNo = this.transaction.data.simCard.mobileNo;
+
     this.http.get(`/api/customerportal/get-existing-mobile-care/${mobileNo}`).toPromise().then((response: any) => {
       const exMobileCare = response.data;
       if (exMobileCare.hasExistingMobileCare) {
         const existingMobileCare: ExistingMobileCare = exMobileCare.existMobileCarePackage;
         existingMobileCare.handSet = exMobileCare.existHandSet;
         this.transaction.data.existingMobileCare = existingMobileCare;
-        // [SORRY Krap]
-        /*this.transaction.data.payment = {
-          method: this.paymentMethod,
-          type: this.selectPaymentDetail.paymentType,
-          qrCode: this.selectPaymentDetail.qrCode,
-          bank: this.selectPaymentDetail.bank
-        };*/
         this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_CARE_AVAILABLE_PAGE]);
       } else {
         this.transaction.data.existingMobileCare = null;
-        // [SORRY Krap]
-        /*this.transaction.data.payment = {
-          method: this.paymentMethod,
-          type: this.selectPaymentDetail.paymentType,
-          qrCode: this.selectPaymentDetail.qrCode,
-          bank: this.selectPaymentDetail.bank
-        };*/
         this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_CARE_PAGE]);
       }
-    });
+    }).then(() => this.pageLoadingService.closeLoading());
   }
 
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
-  }
-
-  onLoadDefaultBankData(banks: any[]): Promise<any> {
-    return new Promise((resolve, reject) => {
-      if (banks && banks.length > 0) {
-        resolve(banks);
-      } else {
-        this.createDeviceOrderBestBuyService.getBanks().then((bankByLocation) => {
-          resolve(bankByLocation);
-        }).catch((err: any) => resolve([]));
-      }
-    });
-  }
-
-  onReceiptInfoCompleted(receiptInfo: ReceiptInfo): void {
-    this.transaction.data.receiptInfo = receiptInfo;
-  }
-
-  onReceiptInfoError(error: boolean): void {
-    this.receiptInfoValid = error;
-  }
-
-  getFullAddress(customer: Customer): string {
-    if (!customer) {
-      return '-';
-    }
-    const fullAddress: string =
-      (customer.homeNo ? customer.homeNo + ' ' : '') +
-      (customer.moo ? 'หมู่ที่ ' + customer.moo + ' ' : '') +
-      (customer.mooBan ? 'หมู่บ้าน ' + customer.mooBan + ' ' : '') +
-      (customer.room ? 'ห้อง ' + customer.room + ' ' : '') +
-      (customer.floor ? 'ชั้น ' + customer.floor + ' ' : '') +
-      (customer.buildingName ? 'อาคาร ' + customer.buildingName + ' ' : '') +
-      (customer.soi ? 'ซอย ' + customer.soi + ' ' : '') +
-      (customer.street ? 'ถนน ' + customer.street + ' ' : '') +
-      (customer.tumbol ? 'ตำบล/แขวง ' + customer.tumbol + ' ' : '') +
-      (customer.amphur ? 'อำเภอ/เขต ' + customer.amphur + ' ' : '') +
-      (customer.province ? 'จังหวัด ' + customer.province + ' ' : '') +
-      (customer.zipCode || '');
-    return fullAddress || '-';
-  }
-
-  onSelectPaymentType(paymentType: string): void {
-    this.selectPaymentDetail.paymentType = paymentType;
-  }
-  onSelectQRCode(qrCode: any): void {
-    this.selectPaymentDetail.qrCode = Object.assign({}, qrCode);
-    // this.selectPaymentDetailAdvancePay.qrCode = Object.assign({}, qrCode);
-  }
-  onSelectBank(bank: any): void {
-    this.selectPaymentDetail.bank = Object.assign({}, bank);
-    this.selectPaymentDetail.bank.installments = undefined;
-    this.paymentDetail.installments = bank.installments; // Object.assign({}, bank.installments);
-  }
-  onSelectInstallment(installment: any[]): void {
-    this.selectPaymentDetail.bank.installments = Object.assign({}, installment);
-  }
-
-  checkPaymentFormValid(): boolean {
-    const paymentType = this.selectPaymentDetail.paymentType;
-
-    if (this.paymentMethod === CASH_PAYMENT) {
-      if (paymentType === 'qrcode' && !this.selectPaymentDetail.qrCode) {
-        return false;
-      }
-    }
-
-    if (this.paymentMethod === CREDIT_CARD_PAYMENT) {
-      if (paymentType === 'credit' && (!this.selectPaymentDetail.bank || !this.selectPaymentDetail.bank.installments)) {
-        return false;
-      }
-    }
-
-    if (this.paymentMethod === CASH_AND_CREDIT_CARD_PAYMENT) {
-      if (paymentType === 'qrcode' && !this.selectPaymentDetail.qrCode) {
-        return false;
-      }
-      if (paymentType === 'credit' && !this.selectPaymentDetail.bank) {
-        return false;
-      }
-    }
-
-    return true;
-  }
-
-  isInstallment(): boolean {
-    if (this.paymentMethod === 'CC' && this.selectPaymentDetail.paymentType === 'credit') {
-      return true;
-    }
-    return false;
-  }
-  isEnableForm(): boolean {
-    if (this.paymentMethod === CASH_PAYMENT) {
-      return true;
-    }
-    if (this.paymentMethod === CREDIT_CARD_PAYMENT) {
-      return false;
-    }
-    if (this.paymentMethod === CASH_AND_CREDIT_CARD_PAYMENT) {
-      return true;
-    }
-    return true;
-  }
-
-  getPaymentType(): string {
-    if (this.paymentMethod === CASH_PAYMENT) {
-      return this.showQRCode ? 'qrcode' : 'debit';
-    }
-    if (this.paymentMethod === CREDIT_CARD_PAYMENT) {
-      return 'credit';
-    }
-    if (this.paymentMethod === CASH_AND_CREDIT_CARD_PAYMENT) {
-      return this.showQRCode ? 'qrcode' : 'debit';
-    }
-    return this.showQRCode ? 'qrcode' : 'debit';
-
-  }
-
-  getPaymentMethod(paymentType: string, qrCode?: any): string {
-    if (paymentType === 'qrcode' && qrCode) {
-      if (qrCode.id === parseInt('002', 8)) { // Rabbit Line Pay
-        return 'RL';
-      }
-      if (qrCode.id === parseInt('003', 8)) { // Thai QR Payment
-        return 'PB';
-      }
-    }
-    if (paymentType === 'debit') {
-      return 'CA';
-    }
-    if (paymentType === 'credit') {
-      return 'CC';
-    }
-    return '';
-  }
-
-  getQRCode(): any {
-    return [
-      {
-        id: 1,
-        name: 'Thai QR Payment',
-        imageUrl: 'assets/images/icon/Thai_Qr_Payment.png',
-        qrType: '003'
-      },
-      {
-        id: 2,
-        name: 'Rabbit Line Pay',
-        imageUrl: 'assets/images/icon/Rabbit_Line_Pay.png',
-        qrType: '002'
-      }
-    ];
-  }
-
-  groupPrivilegeTradeBankByAbb(banks: any[]): any[] {
-
-    const newPrivilegTradeBankByAbbs = new Array<any>();
-    const grouped = this.groupBy(banks, (bank: any) => bank.abb);
-    const groupedKeys = Array.from(grouped.keys());
-    for (const groupedKey of groupedKeys) {
-      const groupBanks: any[] = grouped.get(groupedKey);
-      const privilegTradeBank: any = {
-        abb: groupBanks[0].abb,
-        name: groupBanks[0].name,
-        imageUrl: groupBanks[0].imageUrl,
-        promotion: groupBanks[0].promotion,
-        installments: this.getBanksInstallmentDatas(groupBanks),
-        remark: groupBanks[0].remark
-      };
-      newPrivilegTradeBankByAbbs.push(privilegTradeBank);
-    }
-
-    return newPrivilegTradeBankByAbbs;
-  }
-
-  private groupBy(list: any, keyGetter: any): Map<any, any> {
-    const map = new Map();
-    list.forEach((item) => {
-      const key = keyGetter(item);
-      const collection = map.get(key);
-      if (!collection) {
-        map.set(key, [item]);
-      } else {
-        collection.push(item);
-      }
-    });
-    return map;
-  }
-
-  public getBanksInstallmentDatas(banks: any[]): any[] {
-    const installmentDatas = new Array<any>();
-    banks.forEach((bank: any) => {
-      const installmentPercentage = this.getBankInstallmentPercentage(bank.installment) ?
-        this.getBankInstallmentPercentage(bank.installment) : 0;
-      const installmentMonth = this.getBankInstallmentMonth(bank.installment) ? this.getBankInstallmentMonth(bank.installment) : 0;
-
-      const existInstallments = installmentDatas
-        .filter(
-          installment =>
-            (installment.installmentMonth === installmentMonth) &&
-            (installment.installmentPercentage === installmentPercentage)
-        );
-
-      if (existInstallments.length === 0 && (installmentMonth)) {
-        const installmentData: any = {
-          installmentMonth: installmentMonth,
-          installmentPercentage: installmentPercentage
-        };
-
-        installmentDatas.push(installmentData);
-      } else {
-
-      }
-    });
-    return installmentDatas.sort((a: any, b: any) => {
-      return a.installmentMonth > b.installmentMonth ? -1 : 1;
-    });
-  }
-  public getBankInstallmentMonth(installmentRemark: string): number {
-    const month = this.getInstallmentFormRemark(installmentRemark)['month'];
-    return month !== undefined ? month : 0;
-  }
-
-  public getBankInstallmentPercentage(installmentRemark: string): number {
-    const percentage = this.getInstallmentFormRemark(installmentRemark)['percentage'];
-    return percentage !== undefined ? percentage : 0;
-  }
-
-  private getInstallmentFormRemark(installmentRemark: string): any {
-    const installment = {
-      percentage: 0,
-      month: 0
-    };
-    const monthWord = 'เดือน';
-    if (installmentRemark && installmentRemark !== '' && installmentRemark.includes('%') && installmentRemark.includes(monthWord)) {
-      const trimInstallmentString = installmentRemark.replace(/\s+/g, '');
-      const installmentData = (/^\s?(\d+.?\d*)\s?\%\s?(\d+)/.exec(trimInstallmentString));
-      installment.percentage = +installmentData[1];
-      installment.month = +installmentData[2];
-      return installment;
-    } else {
-      return installment;
-    }
   }
 
   createForm(): void {
@@ -447,28 +239,5 @@ export class DeviceOrderAspExistingBestBuyPaymentDetailPageComponent implements 
     this.discountForm.valueChanges.subscribe(observer => {
       this.transaction.data.discount = { type: observer.paymentType };
     });
-
-    this.paymentForm = this.fb.group({
-      paymentType: [null, Validators.required]
-    });
-    this.paymentForm.valueChanges.subscribe(observer => {
-      this.selectPaymentDetail.paymentType = observer.paymentType;
-    });
-
-    if (this.selectPaymentDetail) {
-      this.paymentForm.patchValue({ paymentType: this.selectPaymentDetail.paymentType });
-    }
-    if (this.paymentDetailOption && this.paymentDetailOption.isEnable) {
-      this.paymentForm.get('paymentType').enable();
-    } else {
-      this.paymentForm.get('paymentType').disable();
-    }
-  }
-
-  getRandomNum(length: number): string {
-    const randomNum =
-      (Math.pow(10, length).toString().slice(length - 1) +
-        Math.floor((Math.random() * Math.pow(10, length)) + 1).toString()).slice(-length);
-    return randomNum;
   }
 }

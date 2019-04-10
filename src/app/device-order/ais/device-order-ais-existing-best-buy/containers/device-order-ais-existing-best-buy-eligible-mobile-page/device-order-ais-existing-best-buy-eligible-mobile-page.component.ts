@@ -10,6 +10,8 @@ import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.c
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { PrivilegeService } from '../../services/privilege.service';
 import { CustomerInfoService } from '../../services/customer-info.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-eligible-mobile-page',
@@ -22,6 +24,7 @@ export class DeviceOrderAisExistingBestBuyEligibleMobilePageComponent implements
 
   identityValid: boolean = false;
   transaction: Transaction;
+  priceOption: PriceOption;
   eligiblePrepaid: any[];
   eligiblePostpaid: any[];
   mobileNo: any;
@@ -36,9 +39,11 @@ export class DeviceOrderAisExistingBestBuyEligibleMobilePageComponent implements
     private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,
     private privilegeService: PrivilegeService,
-    private customerInfoService: CustomerInfoService
+    private customerInfoService: CustomerInfoService,
+    private priceOptionService: PriceOptionService
   ) {
     this.transaction = this.transactionService.load();
+    this.priceOption = this.priceOptionService.load();
   }
 
   ngOnInit(): void {
@@ -60,21 +65,21 @@ export class DeviceOrderAisExistingBestBuyEligibleMobilePageComponent implements
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    const trade = this.transaction.data.mainPromotion.trade;
+    const trade = this.priceOption.trade;
     this.privilegeService.requestUsePrivilege(this.mobileNo.mobileNo, trade.ussdCode, this.mobileNo.privilegeCode).then((privilegeCode) => {
       this.transaction.data.customer.privilegeCode = privilegeCode;
       this.transaction.data.simCard = { mobileNo: this.mobileNo.mobileNo };
       if (this.transaction.data.customer && this.transaction.data.customer.firstName === '-') {
-        this.customerInfoService.getCustomerProfileByMobileNo(this.transaction.data.simCard.mobileNo,
+        return this.customerInfoService.getCustomerProfileByMobileNo(this.transaction.data.simCard.mobileNo,
           this.transaction.data.customer.idCardNo).then((customer: Customer) => {
             this.transaction.data.customer = { ...this.transaction.data.customer, ...customer };
-            this.pageLoadingService.closeLoading();
-            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE]);
+            // this.pageLoadingService.closeLoading();
+            // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE]);
           });
-      } else {
-        this.pageLoadingService.closeLoading();
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE]);
       }
+    }).then(() => {
+      this.pageLoadingService.closeLoading();
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE]);
     });
   }
 
@@ -84,7 +89,7 @@ export class DeviceOrderAisExistingBestBuyEligibleMobilePageComponent implements
 
   getEligibleMobileNo(): void {
     const idCardNo = this.transaction.data.customer.idCardNo;
-    const trade = this.transaction.data.mainPromotion.trade;
+    const trade = this.priceOption.trade;
     this.http.post('/api/customerportal/query-eligible-mobile-list', {
       idCardNo: idCardNo,
       ussdCode: trade.ussdCode,
@@ -94,8 +99,10 @@ export class DeviceOrderAisExistingBestBuyEligibleMobilePageComponent implements
         const eMobileResponse = response.data;
         this.eligiblePostpaid = eMobileResponse.postpaid;
         this.eligiblePrepaid = eMobileResponse.prepaid;
+      }).catch(() => {
+        this.eligiblePostpaid = [];
+        this.eligiblePrepaid = [];
       });
-
   }
 
   onCompleted(mobileNo: any): void {

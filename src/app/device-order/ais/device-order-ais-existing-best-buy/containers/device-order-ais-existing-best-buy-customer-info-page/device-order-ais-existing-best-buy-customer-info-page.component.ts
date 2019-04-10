@@ -62,7 +62,11 @@ export class DeviceOrderAisExistingBestBuyCustomerInfoPageComponent implements O
     if (action === TransactionAction.KEY_IN || action === TransactionAction.READ_CARD) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE]);
     } else {
-      this.transaction.data.action = TransactionAction.READ_CARD;
+      if (TransactionAction.KEY_IN_REPI === action) {
+        this.transaction.data.action = TransactionAction.KEY_IN;
+      } else {
+        this.transaction.data.action = TransactionAction.READ_CARD;
+      }
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE]);
     }
   }

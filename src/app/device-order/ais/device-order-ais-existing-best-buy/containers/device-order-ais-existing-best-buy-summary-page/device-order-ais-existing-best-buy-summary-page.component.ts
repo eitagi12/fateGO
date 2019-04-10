@@ -107,7 +107,7 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
       if (shopCheckSeller.data.condition) {
         this.transaction.data.seller = {
           ...this.seller,
-          employeeId: shopCheckSeller.data.isAscCode
+          sellerNo: this.sellerCode
         };
         this.pageLoadingService.closeLoading();
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CHECK_OUT_PAGE]);

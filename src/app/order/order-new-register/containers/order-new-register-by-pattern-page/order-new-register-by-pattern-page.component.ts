@@ -116,9 +116,6 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
           };
         }).filter((condition: any) => condition.mobileNo.length > 0);
       })
-      .catch((resp: any) => {
-        this.mobileNoConditions = [];
-      })
       .then(() => {
         console.log(this.mobileNoConditions);
 

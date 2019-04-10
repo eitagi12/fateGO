@@ -2,11 +2,13 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { Subscription } from 'rxjs';
-import { ShoppingCart, HomeService, AisNativeService, TokenService, User, ChannelType } from 'mychannel-shared-libs';
+import { ShoppingCart, HomeService, AisNativeService, TokenService, User, ChannelType, AlertService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
-import { ROUTE_DEVICE_ORDER_AIS_MNP_EAPPLICATION_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_FACE_CAPTURE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_PERSO_SIM_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_MNP_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_AGGREGATE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_ECONTACT_PAGE } from '../../constants/route-path.constant';
+import { TranslateService } from '@ngx-translate/core';
+import { AisNativeMnpService } from '../../services/ais-native-mnp-services.service';
 
 @Component({
   selector: 'app-device-order-ais-mnp-agreement-sign-page',
@@ -36,6 +38,10 @@ export class DeviceOrderAisMnpAgreementSignPageComponent implements OnInit, OnDe
     });
   }
 
+  onBack(): void {
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_ECONTACT_PAGE]);
+  }
+
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     if (!this.transaction.data.customer.imageSignature) {
@@ -43,16 +49,8 @@ export class DeviceOrderAisMnpAgreementSignPageComponent implements OnInit, OnDe
     }
   }
 
-  onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_EAPPLICATION_PAGE]);
-  }
-
   onNext(): void {
-    if (this.transaction.data.simCard.simSerial) {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_FACE_CAPTURE_PAGE]);
-    } else {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_PERSO_SIM_PAGE]);
-    }
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_AGGREGATE_PAGE]);
   }
 
   onHome(): void {

@@ -49,13 +49,23 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
     this.priceOption = this.priceOptionService.load();
 
     this.homeService.callback = () => {
-      if (this.validateCustomerIdcard.koiskApiFn) {
-        this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
-      }
-      // Returns stock (sim card, soId) todo...
-      this.returnStock().then(() => {
-        this.homeHandler();
-      });
+
+      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่<br>การยกเลิกระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที')
+        .then((data: any) => {
+          if (!data.value) {
+            return false;
+          }
+          if (this.validateCustomerIdcard.koiskApiFn) {
+            this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+          }
+          // Returns stock (sim card, soId) todo...
+          return this.returnStock().then(() => true);
+        })
+        .then((isNext: boolean) => {
+          if (isNext) {
+            this.homeHandler();
+          }
+        });
     };
 
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
@@ -105,72 +115,59 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
   onNext(): void {
     this.pageLoadingService.openLoading();
     // มี auto next ทำให้ create transaction ช้ากว่า read card
-    this.returnStock().then(() => {
+    // this.returnStock().then(() => {
 
-      this.createTransaction();
-      this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
-        .then((zipCode: string) => {
-          return this.http.get('/api/customerportal/validate-customer-new-register', {
-            params: {
-              identity: this.profile.idCardNo
-            }
-          }).toPromise()
-            .then((resp: any) => {
-              const data = resp.data || {};
-              return {
-                caNumber: data.caNumber,
-                mainMobile: data.mainMobile,
-                billCycle: data.billCycle,
-                zipCode: zipCode
-              };
-            }).catch(() => {
-              return { zipCode: zipCode };
-            });
-        })
-        .then((customer: any) => {
-          // load bill cycle
-          this.transaction.data.customer = Object.assign(this.profile, customer);
-          return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
-            .then((resp: any) => {
-              const data = resp.data || {};
-              // load bill next extreme
-              return this.http.post('/api/customerportal/verify/billingNetExtreme', {
-                businessType: '1',
-                listBillingAccount: data.billingAccountList
-              }).toPromise()
-                .then((respBillingNetExtreme: any) => {
-                  return {
-                    billCycles: data.billingAccountList,
-                    billCyclesNetExtreme: respBillingNetExtreme.data
-                  };
-                })
-                .catch(() => {
-                  return {
-                    billCycles: data.billingAccountList
-                  };
-                });
-            });
-        }).then((billingInformation: any) => {
-          this.transaction.data.billingInformation = billingInformation;
+    this.createTransaction();
+    this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
+      .then((zipCode: string) => {
+        return this.http.get('/api/customerportal/validate-customer-new-register', {
+          params: {
+            identity: this.profile.idCardNo
+          }
+        }).toPromise()
+          .then((resp: any) => {
+            const data = resp.data || {};
+            return {
+              caNumber: data.caNumber,
+              mainMobile: data.mainMobile,
+              billCycle: data.billCycle,
+              zipCode: zipCode
+            };
+          }).catch(() => {
+            return { zipCode: zipCode };
+          });
+      })
+      .then((customer: any) => {
+        // load bill cycle
+        this.transaction.data.customer = Object.assign(this.profile, customer);
+        return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
+          .then((resp: any) => {
+            const data = resp.data || {};
+            return {
+              billCycles: data.billingAccountList
+            };
+          });
+      }).then((billingInformation: any) => {
+        this.transaction.data.billingInformation = billingInformation;
 
-          return this.conditionIdentityValid()
-            .then(() => {
-              return this.http.post(
-                '/api/salesportal/add-device-selling-cart',
-                this.getRequestAddDeviceSellingCart()
-              ).toPromise()
-                .then((resp: any) => resp.data.soId);
-            })
-            .then((soId: string) => {
-              this.transaction.data.order = { soId: soId };
+        return this.conditionIdentityValid()
+          .then(() => {
+            return this.http.post(
+              '/api/salesportal/add-device-selling-cart',
+              this.getRequestAddDeviceSellingCart()
+            ).toPromise()
+              .then((resp: any) => resp.data.soId);
+          })
+          .then((soId: string) => {
+            this.transaction.data.order = { soId: soId };
 
-              return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-            })
-            .then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE]));
+            return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+          })
+          .then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE]));
 
-        }).then(() => this.pageLoadingService.closeLoading());
+      }).then(() => this.pageLoadingService.closeLoading());
 
-    });
+    // });
   }
 
   createTransaction(): void {

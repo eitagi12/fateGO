@@ -51,8 +51,6 @@ export class DeviceOrderAisPreToPostEbillingPageComponent implements OnInit, OnD
       } else {
         this.billCycle = this.transaction.data.billingInformation.billCycle;
       }
-      console.log('this.billCycle', this.billCycle);
-
     });
   }
 
@@ -88,5 +86,4 @@ export class DeviceOrderAisPreToPostEbillingPageComponent implements OnInit, OnD
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }
-
 }

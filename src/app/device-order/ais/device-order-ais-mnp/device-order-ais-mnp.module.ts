@@ -8,7 +8,6 @@ import { DeviceOrderAisMnpAgreementSignPageComponent } from './containers/device
 import { DeviceOrderAisMnpByPatternPageComponent } from './containers/device-order-ais-mnp-by-pattern-page/device-order-ais-mnp-by-pattern-page.component';
 import { DeviceOrderAisMnpConfirmUserInformationPageComponent } from './containers/device-order-ais-mnp-confirm-user-information-page/device-order-ais-mnp-confirm-user-information-page.component';
 import { DeviceOrderAisMnpCustomerInfoPageComponent } from './containers/device-order-ais-mnp-customer-info-page/device-order-ais-mnp-customer-info-page.component';
-import { DeviceOrderAisMnpEapplicationPageComponent } from './containers/device-order-ais-mnp-eapplication-page/device-order-ais-mnp-eapplication-page.component';
 import { DeviceOrderAisMnpEbillingAddressPageComponent } from './containers/device-order-ais-mnp-ebilling-address-page/device-order-ais-mnp-ebilling-address-page.component';
 import { DeviceOrderAisMnpEbillingPageComponent } from './containers/device-order-ais-mnp-ebilling-page/device-order-ais-mnp-ebilling-page.component';
 import { DeviceOrderAisMnpEcontactPageComponent } from './containers/device-order-ais-mnp-econtact-page/device-order-ais-mnp-econtact-page.component';
@@ -17,7 +16,6 @@ import { DeviceOrderAisMnpFaceComparePageComponent } from './containers/device-o
 import { DeviceOrderAisMnpFaceConfirmPageComponent } from './containers/device-order-ais-mnp-face-confirm-page/device-order-ais-mnp-face-confirm-page.component';
 import { DeviceOrderAisMnpMobileCarePageComponent } from './containers/device-order-ais-mnp-mobile-care-page/device-order-ais-mnp-mobile-care-page.component';
 import { DeviceOrderAisMnpPaymentDetailPageComponent } from './containers/device-order-ais-mnp-payment-detail-page/device-order-ais-mnp-payment-detail-page.component';
-import { DeviceOrderAisMnpPersoSimPageComponent } from './containers/device-order-ais-mnp-perso-sim-page/device-order-ais-mnp-perso-sim-page.component';
 import { DeviceOrderAisMnpQrCodeErrorPageComponent } from './containers/device-order-ais-mnp-qr-code-error-page/device-order-ais-mnp-qr-code-error-page.component';
 import { DeviceOrderAisMnpQrCodeGeneratorPageComponent } from './containers/device-order-ais-mnp-qr-code-generator-page/device-order-ais-mnp-qr-code-generator-page.component';
 import { DeviceOrderAisMnpQrCodeQueuePageComponent } from './containers/device-order-ais-mnp-qr-code-queue-page/device-order-ais-mnp-qr-code-queue-page.component';
@@ -34,6 +32,9 @@ import { DeviceOrderAisMnpVerifyInstantSimPageComponent } from './containers/dev
 import { DeviceOrderAisMnpEligibleMobilePageComponent } from './containers/device-order-ais-mnp-eligible-mobile-page/device-order-ais-mnp-eligible-mobile-page.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
+import { DeviceOrderAisMnpMobileDetailPageComponent } from './containers/device-order-ais-mnp-mobile-detail-page/device-order-ais-mnp-mobile-detail-page.component';
+import { DeviceOrderAisMnpEffectiveStartDatePageComponent } from './containers/device-order-ais-mnp-effective-start-date-page/device-order-ais-mnp-effective-start-date-page.component';
+import { DeviceOrderAisMnpMobileCareAvaliblePageComponent } from './containers/device-order-ais-mnp-mobile-care-avalible-page/device-order-ais-mnp-mobile-care-avalible-page.component';
 
 @NgModule({
   imports: [
@@ -50,7 +51,6 @@ import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
     DeviceOrderAisMnpByPatternPageComponent,
     DeviceOrderAisMnpConfirmUserInformationPageComponent,
     DeviceOrderAisMnpCustomerInfoPageComponent,
-    DeviceOrderAisMnpEapplicationPageComponent,
     DeviceOrderAisMnpEbillingAddressPageComponent,
     DeviceOrderAisMnpEbillingPageComponent,
     DeviceOrderAisMnpEcontactPageComponent,
@@ -59,7 +59,6 @@ import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
     DeviceOrderAisMnpFaceConfirmPageComponent,
     DeviceOrderAisMnpMobileCarePageComponent,
     DeviceOrderAisMnpPaymentDetailPageComponent,
-    DeviceOrderAisMnpPersoSimPageComponent,
     DeviceOrderAisMnpQrCodeErrorPageComponent,
     DeviceOrderAisMnpQrCodeGeneratorPageComponent,
     DeviceOrderAisMnpQrCodeQueuePageComponent,
@@ -73,7 +72,10 @@ import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
     DeviceOrderAisMnpValidateCustomerKeyInPageComponent,
     DeviceOrderAisMnpValidateCustomerPageComponent,
     DeviceOrderAisMnpVerifyInstantSimPageComponent,
-    DeviceOrderAisMnpEligibleMobilePageComponent
+    DeviceOrderAisMnpEligibleMobilePageComponent,
+    DeviceOrderAisMnpMobileDetailPageComponent,
+    DeviceOrderAisMnpEffectiveStartDatePageComponent,
+    DeviceOrderAisMnpMobileCareAvaliblePageComponent
   ]
 })
 export class DeviceOrderAisMnpModule { }

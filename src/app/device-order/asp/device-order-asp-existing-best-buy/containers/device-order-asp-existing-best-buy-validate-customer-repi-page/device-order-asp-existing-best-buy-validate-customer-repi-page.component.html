@@ -9,10 +9,51 @@
   </mc-header>
   <div class="mc-flex-wrap bg-white">
     <div class="mb-3 mt-3">
-      <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
-      <mc-validate-customer (completed)="onCompleted($event)" (error)="onError($event)" (readCard)="onReadCard()" [placeholderHeadder]="PLACEHOLDER_HEADDER"
-        [placeholder]="PLACEHOLDER">
-      </mc-validate-customer>
+      <mc-wizard [wizards]="wizards" [active]="active"></mc-wizard>
+
+      <div *ngIf="isTelewiz">
+        <div class="read-card">
+          <div class="col-md-12 read-card-title">ระบุข้อมูลลูกค้า</div>
+          <div class="row col-md-12">
+            <div class="col-sm-5 text-center">
+              <div>
+                <div class="pt-5">เสียบบัตรประชาชน</div>
+                <a (click)="onReadCard()">
+                  <img id="ImgRegNumVerifyScanCardLink" class="idcard-img-pc"
+                    src="assets/images/icon/icon-insert-idcard.png" alt="">
+                </a>
+              </div>
+            </div>
+            <div class="line-center-pc">
+              <span>{{ 'หรือ' }}</span>
+            </div>
+            <div class="col-sm-5 text-center">
+              <div class="pt-5">{{ PLACEHOLDER_HEADDER }}</div>
+              <form [formGroup]="validateCustomerForm">
+                <div class="form-group">
+                  <label for="idcard" class="form-text text-muted">
+                    {{ PLACEHOLDER }}
+                  </label>
+                  <input type="{{ inputType }}" class="form-control text-center" id="idcard"
+                    maxlength="{{ maxlengthInput }}" placeholder="{{ PLACEHOLDER }}" autofocus autocomplete="off"
+                    formControlName="identity"
+                    [ngClass]="{ 'is-invalid' : validateCustomerForm.controls.identity.invalid && validateCustomerForm.controls.identity.touched}">
+                  <small class="invalid-feedback"
+                    *ngIf="validateCustomerForm.controls.identity.touched && validateCustomerForm.controls.identity.errors">
+                    * {{ validateCustomerForm.controls.identity.errors?.message || 'กรุณากรอกรูปแบบให้ถูกต้อง'}}
+                  </small>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div *ngIf="!isTelewiz">
+        <mc-validate-customer (completed)="onCompleted($event)" (error)="onError($event)" (readCard)="onReadCard()"
+          [placeholderHeadder]="PLACEHOLDER_HEADDER" [placeholder]="PLACEHOLDER" [validate]="customerValidate">
+        </mc-validate-customer>
+      </div>
     </div>
   </div>
   <mc-footer>

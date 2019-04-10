@@ -9,7 +9,6 @@ export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE = '/device-
 export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_PAYMENT_DETAIL_PAGE = '/device-order/ais/pre-to-post/payment-detail';
 export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CUSTOMER_INFO_PAGE = '/device-order/ais/pre-to-post/customer-info';
 export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_SELECT_PACKAGE_PAGE = '/device-order/ais/pre-to-post/select-package';
-export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ONE_LOVE_PAGE = '/device-order/ais/pre-to-post/one-love';
 export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ON_TOP_PAGE = '/device-order/ais/pre-to-post/on-top';
 export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_MERGE_BILLING_PAGE = '/device-order/ais/pre-to-post/merge-billing';
 export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CONFIRM_USER_INFORMATION_PAGE = '/device-order/ais/pre-to-post/confirm-user-information';

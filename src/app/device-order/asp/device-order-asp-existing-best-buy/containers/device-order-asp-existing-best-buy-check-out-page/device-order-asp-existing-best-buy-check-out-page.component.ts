@@ -16,7 +16,6 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 })
 export class DeviceOrderAspExistingBestBuyCheckOutPageComponent implements OnInit, OnDestroy {
 
-  identityValid: boolean = true;
   transaction: Transaction;
   deviceSelling: DeviceSelling;
   priceOption: PriceOption;
@@ -43,12 +42,12 @@ export class DeviceOrderAspExistingBestBuyCheckOutPageComponent implements OnIni
   }
 
   onNext(): void {
-    const payment: Payment = this.transaction.data.payment;
-    if (payment.paymentType === 'QR_CODE') {
-      this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_QR_CODE_SUMMARY_PAGE]);
-    } else {
-      this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_QUEUE_PAGE]);
-    }
+    // if (payment.paymentType === 'QR_CODE') {
+    //   this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_QR_CODE_SUMMARY_PAGE]);
+    // } else {
+    //   this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_QUEUE_PAGE]);
+    // }
+    this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_QUEUE_PAGE]);
   }
 
   ngOnDestroy(): void {
@@ -62,6 +61,8 @@ export class DeviceOrderAspExistingBestBuyCheckOutPageComponent implements OnIni
     const trade = this.priceOption.trade;
     const productDetail = this.priceOption.productDetail;
     const productStock = this.priceOption.productStock;
+    const prebooking = this.transaction.data.preBooking;
+    const depositAmt = prebooking && prebooking.depositAmt ? -prebooking.depositAmt : 0;
     this.deviceSelling = {
       fullName: `${customer.firstName} ${customer.lastName}`,
       mobileNo: mobileNo,
@@ -69,9 +70,14 @@ export class DeviceOrderAspExistingBestBuyCheckOutPageComponent implements OnIni
       campaignName: campaign.campaignName,
       brand: productDetail.brand,
       model: productDetail.model,
-      color: productDetail.colorName,
-      price: +trade.promotionPrice
+      color: productDetail.colorName || productStock.colorName,
+      price: +trade.promotionPrice + depositAmt
     };
+  }
+
+  isQrCodePayment(): boolean {
+    const payment: Payment = this.transaction.data.payment;
+    return payment.paymentType === 'QR_CODE';
   }
 
 }

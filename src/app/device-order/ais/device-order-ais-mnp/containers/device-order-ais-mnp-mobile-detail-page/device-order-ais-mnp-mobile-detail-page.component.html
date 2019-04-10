@@ -1,0 +1,78 @@
+<div class="mc-flex">
+  <mc-header title="ลูกค้าย้ายค่าย">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
+    <div class="mt-3 mb-3">
+      <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
+      <div class="container-fluid">
+        <div class="card mb-3">
+          <div class="card-header bg-light-green text-white">ข้อมูลลูกค้า</div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-4 text-grey">
+                <span>เบอร์โทรศัพท์</span>
+              </div>
+              <div class="col-8">
+                <span>{{ mobileNoCurrent | mobileNo }}</span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-4 text-grey">
+                <span>ระบบ</span>
+              </div>
+              <div class="col-8">
+                <span>{{ greetingProfile?.chargeType === 'Post-paid' ? 'รายเดือน' : 'เติมเงิน'}}</span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-4 text-grey">
+                <span>สถานะเบอร์</span>
+              </div>
+              <div class="col-8">
+                <span>{{ greetingProfile?.mobileStatus }}</span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-4 text-grey">
+                <span>Segment</span>
+              </div>
+              <div class="col-8">
+                <span>{{ mobileProfile?.mobileSegment }}</span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-4 text-grey">
+                <span>อายุการใช้งาน</span>
+              </div>
+              <div class="col-8">
+                <span *ngIf="mobileNoUseTime?.month > 0"> {{ mobileNoUseTime?.month }} เดือน</span>
+                <span *ngIf="mobileNoUseTime?.year > 0"> {{ mobileNoUseTime?.year }} ปี </span>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-4 text-grey">
+                <span>แพ็กเกจหลัก</span>
+              </div>
+              <div class="col-8">
+                <span>{{ mainPackageMobileNo?.title }}</span>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer bg-transparent text-right">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <mc-footer>
+    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button class="btn btn-success" (click)="onNext()">NEXT</button>
+  </mc-footer>
+</div>
