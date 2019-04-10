@@ -6,7 +6,7 @@ import { TransactionAction, BillDeliveryAddress } from 'src/app/shared/models/tr
 import { ReadCardService, ReadCardProfile, PageLoadingService, Utils, AlertService } from 'mychannel-shared-libs';
 import { CustomerInformationService } from '../../services/customer-information.service';
 
-declare let window: any;
+declare let $: any;
 export enum ReadCardAisNative {
   EVENT_CHECK_STATUS = 2,
   EVENT_LOAD_PROGRESS = 3,
@@ -31,6 +31,7 @@ export class DeviceOnlyReadCardComponent implements OnInit {
   @ViewChild('progressBarReadSmartCard') progressBarReadSmartCard: ElementRef;
   @ViewChild('listBillingAccountBox')  listBillingAccountBox: ElementRef;
 
+  koiskApiFn: any;
   public ADDRESS_BY_SMART_CARD: string = 'addressBySmartCard';
   public profile: ReadCardProfile;
   public messages: String;
@@ -70,67 +71,33 @@ export class DeviceOnlyReadCardComponent implements OnInit {
     });
   }
   readCardFromAisNative(): void {
+    $('#button-read-smart-card').addClass('disabledbutton');
     let width: number = 1;
-    const data = {
-      progress: 0,
-      profile: null,
-      error: null,
-      eventName: null
-    };
+    this.messages = 'โปรดเสียบบัตรประชาชน';
     this.progressBarArea.nativeElement.style.display = 'none';
     this.progressBarReadSmartCard.nativeElement.style.width = '0%';
-    let cardStatus ;
-
-    const cardPresentedInterval = setInterval(() => {
-      if (data.progress === 0 && cardStatus === 'Presented') {
-        this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้');
-        this.unsubscribe.unsubscribe();
-        clearInterval(cardPresentedInterval);
-      }
-    }, 5000);
-
-    const readCardInterval = setInterval(() => {
-      cardStatus = window.aisNative.sendIccCommand(0, ReadCardAisNative.EVENT_CHECK_STATUS, '');
-      data.profile = null;
-      data.error = null;
-      const loadProgress: string = window.aisNative.sendIccCommand(0, ReadCardAisNative.EVENT_LOAD_PROGRESS, '');
-      data.progress = parseInt(loadProgress, 10);
-      if (data.progress < 100) {
-        return;
-      }
-      const profile = window.aisNative.sendIccCommand(0, ReadCardAisNative.EVENT_CARD_PROFILE, '');
-      const photo = window.aisNative.sendIccCommand(0, ReadCardAisNative.EVENT_CARD_PROFILE_PHOTO, '');
-
-      if (profile && photo) {
-      } else {
-        data.progress = 0;
-        data.error = 'อ่านบัตรประชาชนไม่สมบูรณ์ กรุณาลองใหม่อีกครั้ง';
-      }
-    }, 1000);
-
-    const NocardInterval = setInterval(() => {
-        if (data.progress === 0 && cardStatus === 'Absent') {
-          clearInterval(NocardInterval);
-          clearInterval(readCardInterval);
-          this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้');
-          this.unsubscribe.unsubscribe();
-        }
-    }, 10000);
-
     const promises: any = new Promise((resolve, reject) => {
       this.unsubscribe = this.readCardService.onReadCard().subscribe((readCard: any) =>  {
-        clearInterval(NocardInterval);
+        if (readCard.progress > 0) {
+          this.messages = 'กรุณารอสักครู่';
+        }
+        if (readCard.error ) {
+          this.messages = readCard.error;
+        }
           const customer: String = readCard.profile;
           if (readCard.progress === 100) {
             this.progressBarArea.nativeElement.style.display = 'block';
             const id = setInterval(() => {
               if (width >= 100) {
                 clearInterval(id);
-                clearInterval(cardPresentedInterval);
                 resolve(customer);
                 this.progressBarArea.nativeElement.style.display = 'none';
                 this.progressBarReadSmartCard.nativeElement.style.width = '0%';
                 this.unsubscribe.unsubscribe();
+                $('#button-read-smart-card').removeClass('disabledbutton');
+                if (readCard.progress === 100) {
+                  this.messages = 'ตรวจสอบสำเร็จ ดึงบัตรประชาชนออก';
+                }
               } else {
                 width ++ ;
                 this.progressBarReadSmartCard.nativeElement.style.width = width + '%';
@@ -147,6 +114,8 @@ export class DeviceOnlyReadCardComponent implements OnInit {
   readCardFromWebSocket(): void {
     let width: number = 1;
     this.messages = '';
+    this.messages =  'โปรดเสียบบัตรประชาชน';
+    $('#button-read-smart-card').addClass('disabledbutton');
     const  readCardEvent: any = {
       EVENT_CARD_INITIALIZED: 'OnInitialized',
       EVENT_CARD_INSERTED: 'OnCardInserted',
@@ -169,14 +138,12 @@ export class DeviceOnlyReadCardComponent implements OnInit {
             this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาเสียบบัตรใหม่อีกครั้ง');
             this.progressBarArea.nativeElement.style.display = 'none';
             this.progressBarReadSmartCard.nativeElement.style.width = '0%';
-            this.pageLoadingService.closeLoading();
           }
           if (readCard.eventName === readCardEvent.EVENT_CARD_INITIALIZED) {
             setTimeout(() => {
             if (readCard.eventName !== readCardEvent.EVENT_CARD_INSERTED) {
                 this.messages =  'โปรดเสียบบัตรประชาชน';
                 this.progressBarArea.nativeElement.style.display = 'none';
-                this.pageLoadingService.closeLoading();
             }}, 10);
           }
           if (readCard.eventName === readCardEvent.EVENT_CARD_INSERTED) {
@@ -189,10 +156,11 @@ export class DeviceOnlyReadCardComponent implements OnInit {
               this.progressBarReadSmartCard.nativeElement.style.width = width + '%';
           }
           if (readCard.eventName === readCardEvent.EVENT_CARD_LOAD_COMPLETED) {
-            this.canReadSmartCard = false;
+            this.canReadSmartCard = true;
             const customer: String = readCard.profile;
               if (customer) {
                 resolve(customer);
+                $('#button-read-smart-card').removeClass('disabledbutton');
                 this.progressBarReadSmartCard.nativeElement.style.width = '100%';
                 this.messages =  'ตรวจสอบสำเร็จ โปรดดึงบัตรออก';
               }
@@ -262,7 +230,7 @@ export class DeviceOnlyReadCardComponent implements OnInit {
       });
     }
  public readCard(): void {
-  this.pageLoadingService.openLoading();
+  // this.pageLoadingService.openLoading();
     new Promise((resolve, reject): void => {
       resolve(this.readingCard());
     }).then((customer: any) => {
