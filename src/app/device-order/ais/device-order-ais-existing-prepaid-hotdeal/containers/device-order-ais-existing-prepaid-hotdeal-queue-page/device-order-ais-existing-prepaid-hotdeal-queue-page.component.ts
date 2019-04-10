@@ -63,11 +63,9 @@ export class DeviceOrderAisExistingPrepaidHotdealQueuePageComponent implements O
   getRequestDeviceSellOrder(): any {
     const user = this.tokenService.getUser();
     const productStock = this.priceOption.productStock;
-
     const trade = this.priceOption.trade;
     const data = this.transaction.data;
     const customerGroup = this.priceOption.customerGroup;
-
     const discount = trade.discount;
     const customer = data.customer;
     const simCard = data.simCard;
@@ -75,7 +73,8 @@ export class DeviceOrderAisExistingPrepaidHotdealQueuePageComponent implements O
     const queue = data.queue;
     const payment = data.payment;
     const advancePay = data.advancePayment;
-    const paymentBank = payment.paymentBank;
+    const paymentMethod = payment.paymentMethod;
+    const mobileCare = this.transaction.data.mobileCarePackage;
 
     return {
       userId: user.username,
@@ -92,7 +91,7 @@ export class DeviceOrderAisExistingPrepaidHotdealQueuePageComponent implements O
       tradeNo: trade.tradeNo || '',
       ussdCode: trade.ussdCode || '',
       priceDiscountAmt: Number((+discount.amount || 0)),
-      // grandTotalAmt: this.getGrandTotalAmt(normalPrice, advancePay, discount, depositAmt, useDeposit),
+      grandTotalAmt: Number((+trade.normalPrice || 0)),
       soId: order.soId,
       queueNo: queue.queueNo || '',
       cusNameOrder: `${customer.titleName || ''} ${customer.firstName || ''} ${customer.lastName || ''}`.trim(),
@@ -117,9 +116,9 @@ export class DeviceOrderAisExistingPrepaidHotdealQueuePageComponent implements O
       // cashBackFlg: cashBackFlg,
       matAirTime: trade.matAirtime || '',
       // matCodeFreeGoods: matCodeFreeGoods,
-      paymentRemark: this.getOrderRemark(trade, data),
-      installmentTerm: paymentBank && paymentBank.paymentMethod.month ? paymentBank.paymentMethod.month : 0,
-      installmentRate: paymentBank && paymentBank.paymentMethod.percentage ? paymentBank.paymentMethod.percentage : 0,
+      paymentRemark: this.getOrderRemark(trade, payment, mobileCare, queue.queueNo, this.transaction),
+      installmentTerm: paymentMethod && paymentMethod.month ? paymentMethod.month : 0,
+      installmentRate: paymentMethod && paymentMethod.percentage ? paymentMethod.percentage : 0,
       mobileAisFlg: 'Y',
       paymentMethod: this.getPaymentMethod(trade, advancePay),
       bankCode: this.getBankCode(trade, payment, advancePay),
@@ -157,7 +156,6 @@ export class DeviceOrderAisExistingPrepaidHotdealQueuePageComponent implements O
     if (trade.advancePay.installmentFlag === 'Y') { // ผ่อนรวม
       return bankCode;
     }
-
     if (trade.amount > 0) {
       if (advancePay.paymentType === 'CREDIT') {
         bankCode = payment.paymentBank.abb + '|' + advancePay.paymentBank.abb;
@@ -167,121 +165,102 @@ export class DeviceOrderAisExistingPrepaidHotdealQueuePageComponent implements O
     }
     return bankCode;
   }
-  getOrderRemark(trade: any, data: TransactionData): string {
-    const NEW_LINE = '\n';
 
-    const remark = this.getRemarkCampaignName(data.mainPackage) + NEW_LINE
-      + this.getRemarkAdvancePay(trade, data.advancePayment) + NEW_LINE
-      + this.getRemarkTradeAndInstallment(trade, data.payment) + NEW_LINE
-      + this.getRemarkOtherInfomation(data) + NEW_LINE;
+  getOrderRemark(
+    trade: any,
+    payment: Payment,
+    mobileCare: any,
+    queueNo: string,
+    transaction: Transaction): string {
+    const customer = transaction.data.customer;
+    const newLine = '\n';
+    const comma = ',';
+    const space = ' ';
 
-    return remark;
-  }
-  getRemarkCampaignName(mainPackage: MainPackage): string {
-    const promotionName = '[PM]';
-    return promotionName + ' ' + mainPackage.shortNameThai;
-  }
-  getRemarkAdvancePay(trade: any, advancePay: Payment): string {
-    let airTime = '';
-    if (trade.advancePay.installmentFlag !== 'Y' && +trade.advancePay.amount !== 0) {
-      airTime += '[AT]';
-      if (advancePay.paymentType !== 'CREDIT') {
-        if (advancePay.paymentType === 'QR_CODE') {
-          if (advancePay.paymentQrCodeType === 'THAI_QR') {
-            airTime += '[PB]'; // Thai QRcode
-          } else {
-            airTime += '[RL]'; // Rabbit line pay
-          }
-        } else {
-          airTime += '[CA]';
-        }
+    // campaign REMARK_PROMOTION_NAME'[PM]'
+    let remarkDesc = '[PM]' + space + '' + newLine;
 
-        return airTime;
-      } else {
-        airTime += '[AT]';
-        airTime += '[CC]' + ',' + ' ';
-        airTime += '[B]' + advancePay.paymentBank.abb;
-        return airTime;
-      }
-    } else {
-      return airTime;
-    }
-  }
-  getRemarkTradeAndInstallment(trade: any, payment: Payment): string {
+    // advancePay
+    const advancePay = '';
+    remarkDesc += advancePay + newLine;
 
+    // tradeAndInstallment
     let tradeAndInstallment = '';
-    if (+trade.advancePay.amount !== 0) {
-      if (trade.advancePay.installmentFlag === 'Y') {
-        tradeAndInstallment = '[AD]';
-      } else {
-        tradeAndInstallment = '[DV]';
-        if (payment.paymentType !== 'CREDIT') {
-          if (payment.paymentType === 'QR_CODE') {
-            if (payment.paymentQrCodeType === 'THAI_QR') {
-              tradeAndInstallment += '[PB]' + ',' + ' '; // Thai QRcode
-            } else {
-              tradeAndInstallment += '[RL]' + ',' + ' '; // Rabbit line pay
-            }
-          }
-        }
-      }
-    } else {
+
+    if (trade.advancePay.installmentFlag === 'Y') {
       tradeAndInstallment = '[AD]';
-      if (payment.paymentType !== 'CREDIT') {
-        if (payment.paymentType === 'QR_CODE') {
-          if (payment.paymentQrCodeType === 'THAI_QR') {
-            tradeAndInstallment += '[PB]' + ',' + ' '; // Thai QRcode
-          } else {
-            tradeAndInstallment += '[RL]' + ',' + ' '; // Rabbit line pay
-          }
+    } else {
+      // REMARK_DEVICE
+      tradeAndInstallment = '[DV]';
+    }
+
+    if (payment) {
+      if (payment.paymentType === 'QR_CODE') {
+        if (payment.paymentQrCodeType === 'THAI_QR') {
+          tradeAndInstallment += '[PB]' + comma + space;
+        } else {
+          tradeAndInstallment += '[RL]' + comma + space;
         }
-        tradeAndInstallment += '[CA]' + ',' + ' ';
+      } else if (payment.paymentType === 'CREDIT') {
+        tradeAndInstallment += '[CC]' + comma + space;
+        tradeAndInstallment += '[B]' + payment.paymentBank.abb + comma + space;
+        if (payment.paymentBank.installments && payment.paymentBank.installments.length > 0) {
+          tradeAndInstallment += '[I]' + payment.paymentMethod.percentage +
+            '%' + space + payment.paymentMethod.month + 'เดือน' + comma + space;
+        }
       } else {
-        tradeAndInstallment += '[CC]' + ',' + ' ';
-        tradeAndInstallment += '[B]' + ',' + ' ';
-        if (payment.paymentBank.installmentMonth > 0) {
-          tradeAndInstallment += '[I]' + payment.paymentBank.percentage + '%' + ' ' + payment.paymentBank.month + 'เดือน' + ',' + ' ';
-        }
+        tradeAndInstallment += '[CA]' + comma + space;
       }
     }
     tradeAndInstallment += '[T]' + trade.tradeNo;
-    return tradeAndInstallment;
-  }
-  getRemarkOtherInfomation(data: TransactionData): string {
+    remarkDesc += tradeAndInstallment + newLine;
+
+    // otherInformation
+    const summaryPoint = 0;
+    const summaryDiscount = 0;
     let otherInformation = '';
-    otherInformation += '[SP]' + ' ' + 0 + ',' + ' ';
-    otherInformation += '[SD]' + ' ' + 0 + ',' + ' ';
-    // otherInformation += '[D]' + ' ' + this.getDiscountAmount(remark.discount) + ',' + ' ';
-    // otherInformation += '[RC]' + ' ' + privilegeCode + ',' + ' ';
-    // otherInformation += '[OT]' + ' ' + this.getCustomerType(remark.customerGroupCode) + ',' + ' ';
-    // otherInformation += '[PC]' + ' ' + remark.mainPackageCode + ',' + ' ';
-    // otherInformation += '[MCC]' + ' ' + remark.mobileCare + ',' + ' ';
-    // otherInformation += '[MC]' + ' ' + remark.mobileCareName + ',' + ' ';
-    // otherInformation += '[PN]' + ' ' + remark.privilegeDesc + ',' + ' ';
-    // otherInformation += '[Q]' + ' ' + remark.queueNumber;
-    return otherInformation;
+    otherInformation += '[SP]' + space + summaryPoint + comma + space;
+    otherInformation += '[SD]' + space + summaryDiscount + comma + space;
+    otherInformation += '[D]' + space + (+trade.discount.amount).toFixed(2) + comma + space;
+    otherInformation += '[RC]' + space + customer.privilegeCode + comma + space;
+    otherInformation += '[OT]' + space + 'MC004' + comma + space;
+    if (mobileCare && !mobileCare.reason) {
+      otherInformation += '[PC]' + space + 'remark.mainPackageCode' + comma + space;
+      otherInformation += '[MCC]' + space + mobileCare.customAttributes.promotionCode + comma + space;
+      otherInformation += '[MC]' + space + mobileCare.customAttributes.shortNameThai + comma + space;
+    }
+    otherInformation += '[PN]' + space + 'remark.privilegeDesc' + comma + space;
+    otherInformation += '[Q]' + space + queueNo;
+
+    remarkDesc += otherInformation + newLine;
+
+    return remarkDesc;
+
   }
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    this.http.post('/api/salesportal/device-sell/order', this.getRequestDeviceSellOrder()).toPromise()
-    .then(() => {
-      return this.http.post('/api/salesportal/device-order/transaction/get-queue-qmatic', {
-        mobileNo: this.queueFrom.value.mobileNo
-      }).toPromise()
-        .then((respQueue: any) => {
-          const data = respQueue.data && respQueue.data.result ? respQueue.data.result : {};
-          return data.queueNo;
-        });
+    this.http.post('/api/salesportal/device-order/transaction/get-queue-qmatic', {
+      mobileNo: this.queueFrom.value.mobileNo
+    }).toPromise()
+    .then((respQueue: any) => {
+        const data = respQueue.data && respQueue.data.result ? respQueue.data.result : {};
+        return data.queueNo;
     })
     .then((queueNo: string) => {
-      this.transaction.data.queue = {
+      return  this.transaction.data.queue = {
         queueNo: queueNo
       };
-      // update transaction
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_RESULT_PAGE]);
     })
-    .then(() => this.pageLoadingService.closeLoading());
+    .then(() => {
+      return this.http.post('/api/salesportal/device-sell/order', this.getRequestDeviceSellOrder()).toPromise()
+      .then(() => {
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_RESULT_PAGE]);
+      });
+    })
+    .then(() => {
+      this.pageLoadingService.closeLoading();
+    });
   }
 
   onBack(): void {

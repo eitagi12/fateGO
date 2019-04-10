@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HomeService, ValidateCustomerIdCardComponent, ReadCardProfile, PageLoadingService, TokenService, AlertService, Utils, KioskControls, ChannelType, ChargeType, User } from 'mychannel-shared-libs';
 import { ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_ELIGIBLE_MOBILE_PAGE } from '../../constants/route-path.constant';
@@ -8,13 +8,14 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { HttpClient } from '@angular/common/http';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
+import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from 'src/app/buy-product/constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-prepaid-hotdeal-validate-customer-id-card-page',
   templateUrl: './device-order-ais-existing-prepaid-hotdeal-validate-customer-id-card-page.component.html',
   styleUrls: ['./device-order-ais-existing-prepaid-hotdeal-validate-customer-id-card-page.component.scss']
 })
-export class DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageComponent implements OnInit {
+export class DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageComponent implements OnInit, OnDestroy {
 
   kioskApi: boolean;
 
@@ -76,61 +77,9 @@ export class DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageCompo
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-
-    // this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
-    //   .then((zipCode: string) => {
-    //     return this.http.get('/api/customerportal/validate-customer-prepaid-hotdeal', {
-    //       params: {
-    //         identity: this.profile.idCardNo
-    //       }
-    //     }).toPromise()
-    //       .then((resp: any) => {
-    //         const data = resp.data || {};
-    //         return {
-    //           caNumber: data.caNumber,
-    //           mainMobile: data.mainMobile,
-    //           billCycle: data.billCycle,
-    //           zipCode: zipCode
-    //         };
-    //       }).catch(() => {
-    //         return {
-    //           zipCode: zipCode
-    //         };
-    //       });
-    //   })
-    //   .then((customer: any) => { // load bill cycle
-    //     this.transaction.data.customer = Object.assign(this.profile, customer);
-
-    //     return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
-    //       .then((resp: any) => {
-    //         const data = resp.data || {};
-    //         return this.http.post('/api/customerportal/verify/billingNetExtreme', {
-    //           businessType: '1',
-    //           listBillingAccount: data.billingAccountList
-    //         }).toPromise()
-    //           .then((respBillingNetExtreme: any) => {
-    //             return {
-    //               billCycles: data.billingAccountList,
-    //               billCyclesNetExtreme: respBillingNetExtreme.data
-    //             };
-    //           })
-    //           .catch(() => {
-    //             return {
-    //               billCycles: data.billingAccountList
-    //             };
-    //           });
-    //       });
-    //   })
-    //   .then((billingInformation: any) => {
-    //     this.transaction.data.billingInformation = billingInformation;
-    //     if (this.checkBusinessLogic()) {
-    //       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_ELIGIBLE_MOBILE_PAGE]);
-    //     }
-    //   });
-
-      this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
+    this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
       .then((zipCode: string) => {
-        return this.http.get('/api/customerportal/validate-customer-prepaid-hotdealr', {
+        return this.http.get('/api/customerportal/validate-customer-prepaid-hotdeal', {
           params: {
             identity: this.profile.idCardNo
           }
@@ -255,14 +204,42 @@ export class DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageCompo
   }
 
   onBack(): void {
-    this.homeService.goToHome();
+    this.returnStock().then(() => {
+      this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
+    });
+  }
+
+  returnStock(): Promise<void> {
+    return new Promise(resolve => {
+      const transaction = this.transactionService.load();
+
+      const promiseAll = [];
+      if (transaction.data) {
+        if (transaction.data.simCard && transaction.data.simCard.mobileNo) {
+          const unlockMobile = this.http.post('/api/customerportal/newRegister/selectMobileNumberRandom', {
+            userId: this.user.username,
+            mobileNo: transaction.data.simCard.mobileNo,
+            action: 'Unlock'
+          }).toPromise().catch(() => Promise.resolve());
+          promiseAll.push(unlockMobile);
+        }
+        if (transaction.data.order && transaction.data.order.soId) {
+          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
+            location: this.priceOption.productStock.location,
+            soId: transaction.data.order.soId,
+            transactionId: transaction.transactionId
+          }).toPromise().catch(() => Promise.resolve());
+          promiseAll.push(order);
+        }
+      }
+      Promise.all(promiseAll).then(() => resolve());
+    });
   }
 
   onHome(): void {
     this.homeService.goToHome();
   }
 
-  // tslint:disable-next-line:use-life-cycle-interface
   ngOnDestroy(): void {
     this.transactionService.save(this.transaction);
     this.pageLoadingService.closeLoading();
