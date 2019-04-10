@@ -52,6 +52,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
 
   ngOnInit(): void {
     this.transaction.data.action = TransactionAction.KEY_IN_REPI;
+    console.log('ngOnInit');
   }
 
   onError(valid: boolean): void {
