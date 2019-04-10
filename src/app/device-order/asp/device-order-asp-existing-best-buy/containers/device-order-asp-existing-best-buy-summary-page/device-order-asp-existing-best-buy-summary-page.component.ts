@@ -202,13 +202,13 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
       model: productDetail.model,
       color: productStock.color,
       matCode: '',
-      priceIncAmt: +trade.normalPrice.toFixed(2),
-      priceDiscountAmt: (+trade.discount.amount).toFixed(2),
+      priceIncAmt: (+trade.normalPrice).toFixed(2),
+      priceDiscountAmt: (+trade.discount.amount || 0).toFixed(2),
       grandTotalAmt: this.getGrandTotalAmt(trade, prebooking),
       userId: this.user.username,
       saleCode: seller && seller.sellerNo ? seller.sellerNo : '',
       queueNo: queue.queueNo || '',
-      cusNameOrder: `${customer.titleName || ''}${customer.firstName || ''} ${customer.lastName || ''}`.trim(),
+      cusNameOrder: `${customer.titleName || ''}${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
       taxCardId: customer && customer.idCardNo || '',
       cusMobileNoOrder: simCard && simCard.mobileNo || '',
       customerAddress: this.getCustomerAddress(customer),
@@ -236,16 +236,16 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
       qrAmt: qrAmt
     };
 
-    return Promise.resolve(data);
+    return data;
   }
 
   // private getInstallmentTerm(payment: Payment): any {
-  //   return payment && payment.paymentBank && payment.paymentBank.installment ?
-  //   payment.paymentBank.installment : 0;
+  //   return payment && payment.paymentBank && payment.paymentBank.installments ?
+  //     payment.paymentBank.installments[0].installmentMonth : 0;
   // }
 
   // private getInstallmentRate(payment: Payment): any {
-  //   return payment && payment.paymentBank && payment.paymentBank.installment ?
+  //   return payment && payment.paymentBank && payment.paymentBank.installments ?
   //     payment.paymentBank.installments[0].installmentPercentage : 0;
   // }
 
@@ -254,7 +254,7 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
     const normalPrice: number = trade.normalPrice;
     const advancePay: number = +trade.advancePay.amount;
     const discount: number = +trade.discount.amount || 0;
-    const depositAmt: number = prebooking ? +prebooking.depositAmt : 0;
+    const depositAmt: number = prebooking && prebooking.depositAmt ? +prebooking.depositAmt : 0;
 
     let result: any = normalPrice;
     result += advancePay;
@@ -319,7 +319,7 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
       } else if (payment.paymentType === 'CREDIT' && payment.paymentForm !== 'FULL') {
         tradeAndInstallment += '[CC]' + comma + space;
         tradeAndInstallment += '[B]' + payment.paymentBank.abb + comma + space;
-        if (payment.paymentBank.installments.length > 0) {
+        if (payment.paymentMethod) {
           tradeAndInstallment += '[I]' + payment.paymentMethod.percentage +
             '%' + space + payment.paymentMethod.month + 'เดือน' + comma + space;
         }
@@ -339,7 +339,7 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
     otherInformation += '[D]' + space + (+trade.discount.amount).toFixed(2) + comma + space;
     otherInformation += '[RC]' + space + customer.privilegeCode + comma + space;
     otherInformation += '[OT]' + space + 'MC004' + comma + space;
-    if (mobileCare && !mobileCare.reason) {
+    if (mobileCare && !(typeof mobileCare === 'string' || mobileCare instanceof String)) {
       otherInformation += '[PC]' + space + 'remark.mainPackageCode' + comma + space;
       otherInformation += '[MCC]' + space + mobileCare.customAttributes.promotionCode + comma + space;
       otherInformation += '[MC]' + space + mobileCare.customAttributes.shortNameThai + comma + space;

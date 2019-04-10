@@ -226,7 +226,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
     }
     this.transaction = {
       data: {
-        transactionType: TransactionType.DEVICE_ORDER_EXISTING_AIS,
+        transactionType: TransactionType.DEVICE_ORDER_EXISTING_ASP,
         action: TransactionAction.KEY_IN,
         preBooking: preBooking,
         device: device
