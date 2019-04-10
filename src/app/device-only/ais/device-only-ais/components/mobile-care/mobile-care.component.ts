@@ -1,8 +1,8 @@
 import { Component, OnInit, Input, ViewChild, TemplateRef, Output, EventEmitter } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, ValidatorFn, AbstractControl, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
-import { AlertService, PageLoadingService, BillingSystemType, ShoppingCart} from 'mychannel-shared-libs';
+import { AlertService, PageLoadingService, BillingSystemType } from 'mychannel-shared-libs';
 import { CustomerInformationService } from '../../services/customer-information.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
