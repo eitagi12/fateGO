@@ -103,19 +103,17 @@ export class SharedTransactionService {
       params.data.pre_booking = transaction.data.preBooking;
     }
 
-    if (data.mainPromotion) {
       // เดี๋ยวปรับอีกทีว่าเก็บอะไรบ้าง
-      params.data.main_promotion = {
-        campaign: priceOption.campaign,
-        privilege: priceOption.privilege,
-        trade: priceOption.trade
-      };
-    }
+    params.data.main_promotion = {
+      campaign: priceOption.campaign,
+      privilege: priceOption.privilege,
+      trade: priceOption.trade
+    };
 
     if (data.billingInformation) {
       // หน้า web payment ใช้ show ที่อยู่รับบิล
       params.data.billing_information = {
-        customer: data.billingInformation.billDeliveryAddress
+        customer: { ...data.customer, ...data.billingInformation.billDeliveryAddress }
       };
     }
 

@@ -144,15 +144,6 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
       return;
     } else {
       // KEY-IN ID-Card
-      if (this.transaction.data.order && this.transaction.data.order.soId) {
-        this.pageLoadingService.closeLoading();
-        if (this.transaction.data.customer.caNumber) {
-          this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_INFO_PAGE]);
-        } else {
-          this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_ELIGIBLE_MOBILE_PAGE]);
-        }
-        return;
-      }
       this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customer: Customer) => {
         this.transaction.data.customer = customer;
         this.transaction.data.billingInformation = {};
@@ -170,7 +161,8 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
           tumbol: customer.tumbol,
           zipCode: customer.zipCode
         };
-        return this.http.post('/api/salesportal/add-device-selling-cart',
+        if (!this.transaction.data.order || !this.transaction.data.order.soId) {
+          return this.http.post('/api/salesportal/add-device-selling-cart',
           this.getRequestAddDeviceSellingCart()
         ).toPromise()
           .then((resp: any) => {
@@ -183,6 +175,14 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
               this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_ELIGIBLE_MOBILE_PAGE]);
             }
           });
+        } else {
+            this.pageLoadingService.closeLoading();
+            if (this.transaction.data.customer.caNumber) {
+              this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_INFO_PAGE]);
+            } else {
+              this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_ELIGIBLE_MOBILE_PAGE]);
+            }
+        }
         // this.createDeviceOrderBestBuyService.createAddToCartTrasaction(this.transaction, this.priceOption)
         //   .then((transaction) => {
         //     this.transaction = transaction;
@@ -201,8 +201,11 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
   }
 
   ngOnDestroy(): void {
-    this.transactionService.save(this.transaction);
-    // this.priceOptionService.save(this.priceOption);
+    if (this.transaction.data.order && this.transaction.data.order.soId) {
+      this.transactionService.update(this.transaction);
+    } else {
+      this.transactionService.save(this.transaction);
+    }
   }
 
   private createTransaction(): void {

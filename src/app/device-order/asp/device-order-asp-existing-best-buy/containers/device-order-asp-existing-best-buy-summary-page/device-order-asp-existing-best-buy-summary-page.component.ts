@@ -158,7 +158,8 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
       .then((resp: any) => {
         const queueNo = resp.data.queue;
         this.transaction.data.queue = { queueNo: queueNo };
-        this.http.post('/api/salesportal/device-sell/order', this.getRequestCreateOrder(this.transaction, this.priceOption)).toPromise()
+        this.http.post('/api/salesportal/create-device-selling-order',
+         this.getRequestCreateOrder(this.transaction, this.priceOption)).toPromise()
           .then(() => {
             return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
           }).then(() => {

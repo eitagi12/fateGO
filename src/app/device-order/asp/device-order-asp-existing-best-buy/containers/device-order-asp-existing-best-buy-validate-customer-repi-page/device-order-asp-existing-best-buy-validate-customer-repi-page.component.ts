@@ -87,10 +87,8 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
     this.customerInfoService.verifyPrepaidIdent(this.identity, mobileNo).then((verifySuccess: boolean) => {
       if (verifySuccess) {
         return this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customerInfo: any) => {
-          if (customerInfo.firstName) {
+          if (customerInfo.caNumber) {
             this.transaction.data.customer = { ...this.transaction.data.customer, ...customerInfo };
-          } else {
-            this.transaction.data.customer = customerInfo;
           }
           this.transaction.data.billingInformation = {};
           const addressCustomer = this.transaction.data.customer;
@@ -110,7 +108,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
           };
 
           this.pageLoadingService.closeLoading();
-          if (customerInfo.firstName) {
+          if (customerInfo.caNumber) {
             this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_INFO_PAGE]);
           } else {
             this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_PAYMENT_DETAIL_PAGE]);
@@ -120,10 +118,8 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
         const simCard = this.transaction.data.simCard;
         if (simCard.chargeType === 'Pre-paid') {
           this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customerInfo: any) => {
-            if (customerInfo.firstName) {
+            if (customerInfo.caNumber) {
               this.transaction.data.customer = { ...this.transaction.data.customer, ...customerInfo };
-            } else {
-              this.transaction.data.customer = customerInfo;
             }
             this.transaction.data.billingInformation = {};
             const addressCustomer = this.transaction.data.customer;
