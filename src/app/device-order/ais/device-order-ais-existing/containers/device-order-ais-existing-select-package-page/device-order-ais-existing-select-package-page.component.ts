@@ -6,7 +6,10 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
-import { ROUTE_DEVICE_ORDER_AIS_EXISTING_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_EXISTING_PAYMENT_DETAIL_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE } from '../../constants/route-path.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
@@ -40,6 +43,7 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
+    private alertService: AlertService,
     private shoppingCartService: ShoppingCartService
   ) {
     this.priceOption = this.priceOptionService.load();
@@ -50,13 +54,16 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
       delete this.transaction.data.billingInformation.billCycle;
       delete this.transaction.data.billingInformation.mergeBilling;
     }
-    const advancePay: any = this.priceOption.trade.advancePay && this.priceOption.trade.advancePay.amount || 0;
-    if (this.isNotMathHotDeal && !advancePay) {
+    if (this.isNotMathHotDeal && !this.advancePay) {
       this.showCurrentPackage = true;
     }
     if (this.priceOption.privilege.minimumPackagePrice <= this.transaction.data.currentPackage.priceExclVat) {
       this.showSelectCurrentPackage = true;
     }
+  }
+
+  get advancePay(): any {
+    return this.priceOption.trade.advancePay && this.priceOption.trade.advancePay.amount || 0;
   }
 
   get isNotMathHotDeal(): boolean {
@@ -89,18 +96,27 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
   onNext(): void {
     this.pageLoadingService.openLoading();
     const mobileNo = this.transaction.data.simCard.mobileNo;
-    this.http.get(`/api/customerportal/get-existing-mobile-care/${mobileNo}`).toPromise().then((response: any) => {
-      const exMobileCare = response.data;
-      if (exMobileCare.hasExistingMobileCare) {
-        const existingMobileCare: ExistingMobileCare = exMobileCare.existMobileCarePackage;
-        existingMobileCare.handSet = exMobileCare.existHandSet;
-        this.transaction.data.existingMobileCare = existingMobileCare;
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE]);
-      } else {
-        this.transaction.data.existingMobileCare = null;
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE]);
-      }
-    }).then(() => this.pageLoadingService.closeLoading());
+    const billCycle = this.transaction.data.billingInformation.billCycles.map(resp => resp.mobileNo) || [];
+    if (this.advancePay && billCycle.length > 1) {
+      this.alertService.warning(`ไม่สามารถทำรายการต่อได้`);
+    } else {
+      this.http.get(`/api/customerportal/get-existing-mobile-care/${mobileNo}`).toPromise().then((response: any) => {
+        const exMobileCare = response.data;
+        if (exMobileCare.hasExistingMobileCare) {
+          const existingMobileCare: ExistingMobileCare = exMobileCare.existMobileCarePackage;
+          existingMobileCare.handSet = exMobileCare.existHandSet;
+          this.transaction.data.existingMobileCare = existingMobileCare;
+          if (this.selectCurrentPackage) {
+            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE]);
+          } else {
+            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE]);
+          }
+        } else {
+          this.transaction.data.existingMobileCare = null;
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE]);
+        }
+      }).then(() => this.pageLoadingService.closeLoading());
+    }
   }
 
   onHome(): void {
