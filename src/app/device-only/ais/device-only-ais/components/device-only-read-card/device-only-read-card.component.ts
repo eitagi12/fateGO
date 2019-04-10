@@ -80,13 +80,14 @@ export class DeviceOnlyReadCardComponent implements OnInit {
     this.progressBarArea.nativeElement.style.display = 'none';
     this.progressBarReadSmartCard.nativeElement.style.width = '0%';
     let cardStatus ;
+
     const cardPresentedInterval = setInterval(() => {
       if (data.progress === 0 && cardStatus === 'Presented') {
         this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้');
         this.unsubscribe.unsubscribe();
         clearInterval(cardPresentedInterval);
       }
-    }, 10000);
+    }, 5000);
 
     const readCardInterval = setInterval(() => {
       cardStatus = window.aisNative.sendIccCommand(0, ReadCardAisNative.EVENT_CHECK_STATUS, '');
@@ -107,37 +108,38 @@ export class DeviceOnlyReadCardComponent implements OnInit {
       }
     }, 1000);
 
-      const promises: any = new Promise((resolve, reject) => {
-       this.unsubscribe = this.readCardService.onReadCard().subscribe((readCard: any) =>  {
-            const customer: String = readCard.profile;
-            if (readCard.progress === 100) {
-              this.progressBarArea.nativeElement.style.display = 'block';
-              const id = setInterval(() => {
-                if (width >= 100) {
-                  clearInterval(id);
-                  clearInterval(cardPresentedInterval);
-                  resolve(customer);
-                  this.unsubscribe.unsubscribe();
-                } else {
-                  width ++ ;
-                  this.progressBarReadSmartCard.nativeElement.style.width = width + '%';
-                }
-               }, 10);
-            }
-        });
-      }).catch((err) => {
-        console.log(err);
-        this.pageLoadingService.closeLoading();
-        this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาเสียบบัตรใหม่อีกครั้ง');
-      });
-      setTimeout(() => {
+    const NocardInterval = setInterval(() => {
         if (data.progress === 0 && cardStatus === 'Absent') {
           clearInterval(readCardInterval);
           this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้');
           this.unsubscribe.unsubscribe();
         }
-      }, 30000);
-      return promises;
+    }, 30000);
+
+    const promises: any = new Promise((resolve, reject) => {
+      this.unsubscribe = this.readCardService.onReadCard().subscribe((readCard: any) =>  {
+          const customer: String = readCard.profile;
+          if (readCard.progress === 100) {
+            this.progressBarArea.nativeElement.style.display = 'block';
+            const id = setInterval(() => {
+              if (width >= 100) {
+                clearInterval(id);
+                clearInterval(cardPresentedInterval);
+                clearInterval(NocardInterval);
+                resolve(customer);
+                this.unsubscribe.unsubscribe();
+              } else {
+                width ++ ;
+                this.progressBarReadSmartCard.nativeElement.style.width = width + '%';
+              }
+              }, 10);
+          }
+      });
+    }).catch((err) => {
+      this.pageLoadingService.closeLoading();
+    });
+    return promises;
+
   }
   readCardFromWebSocket(): void {
     let width: number = 1;
