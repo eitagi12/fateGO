@@ -9,7 +9,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { HttpClient } from '../../../../../../../node_modules/@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { TransactionService } from '../../../../../shared/services/transaction.service';
-import { Transaction } from '../../../../../shared/models/transaction.model';
+import { Transaction, MainPackage } from '../../../../../shared/models/transaction.model';
 import { MobileCareService } from '../../services/mobile-care.service';
 import { MOBILE_CARE_PACKAGE_KEY_REF } from '../../constants/cpc.constant';
 
@@ -49,7 +49,8 @@ export class MobileCareComponent implements OnInit {
   public mobileNoPost: string;
   public VAT: number = 1.07;
   public currentPackageMobileCare: any[];
-  billingSystem: any;
+  mainPackage: MainPackage;
+  billingSystem: string;
 
   @Input() mobileCare: MobileCare;
   @Input() normalPrice: number;
@@ -136,6 +137,7 @@ export class MobileCareComponent implements OnInit {
         });
       }
       if (this.mobileCareForm.valid) {
+        this.mainPackage = this.mobileCareForm.value.promotion.value;
         this.promotion.emit(this.mobileCareForm.value.promotion.value);
       }
     });
@@ -183,6 +185,7 @@ export class MobileCareComponent implements OnInit {
       this.customerInformationService.getProfileByMobileNo(mobileNo).then((res) => {
         if (res.data.chargeType === 'Post-paid') {
           this.billingSystem = res.data.billingSystem;
+          this.callService();
           this.checkMobileCare(mobileNo);
         } else {
           this.pageLoadingService.closeLoading();
@@ -201,20 +204,26 @@ export class MobileCareComponent implements OnInit {
   }
 
   private checkMobileCare(mobileNo: string): void {
-    this.customerInformationService.getBillingByMobileNo(mobileNo).then((res: any) => {
-      for (let index = 0; index < res.data.currentPackage.length; index++) {
-        this.pageLoadingService.closeLoading();
-        if (res.data.currentPackage[index].produuctGroup && res.data.currentPackage[index].produuctGroup === 'Mobile Care') {
-          this.currentPackageMobileCare = res.data.currentPackage[index];
-          console.log('Currentpackmobiecare' , this.currentPackageMobileCare);
+    console.log('checkMobileCare');
+    this.customerInformationService.getBillingByMobileNo(mobileNo)
+      .then((res: any) => {
+        let indexExistingMobileCare: any;
+        for (let index = 0; index < res.data.currentPackage.length; index++) {
+          if (res.data.currentPackage[index].produuctGroup && res.data.currentPackage[index].produuctGroup === 'Mobile Care') {
+            indexExistingMobileCare = index;
+          }
+        }
+        if (indexExistingMobileCare) {
+          this.currentPackageMobileCare = res.data.currentPackage[indexExistingMobileCare];
           this.isPrivilegeCustomer = false;
           this.popupMobileCare(this.currentPackageMobileCare);
+          this.pageLoadingService.closeLoading();
         } else {
+          this.pageLoadingService.closeLoading();
           this.currentPackageMobileCare = res.data.currentPackage;
           this.isPrivilegeCustomer = true;
         }
-      }
-    });
+      });
   }
 
   private popupMobileCare(currentPackageMobileCare: any): void {
@@ -237,6 +246,7 @@ export class MobileCareComponent implements OnInit {
       <br> (แพ็กเกจ ${descThai} สิ้นสุด ${endDt}) <br> กรุณาเปลี่ยนเบอร์ใหม่ หรือยืนยันสมัครบริการโมบายแคร์กับ <br>
       เครื่อง iPhone 6S Plus <br> <div class="text-red">*บริการโมบายแคร์กับเครื่องเดิมจะสิ้นสุดทันที</div>`
     }).then((data) => {
+      console.log('popupMobileCare : ', data);
       if (data.value && data.value === true) {
         this.existingMobileCare.emit(this.currentPackageMobileCare);
         this.sendOTP();
@@ -294,10 +304,10 @@ export class MobileCareComponent implements OnInit {
   }
 
   callService(): void {
-    const billingSystem = BillingSystemType.IRB; // || BillingSystemType.IRB
-    const chargeType = BillingSystemType.IRB; // || BillingSystemType.IRB
+    const billingSystem = this.billingSystem !== BillingSystemType.BOS
+                          ? BillingSystemType.IRB : BillingSystemType.BOS;
+    const chargeType = this.mainPackage ? this.mainPackage.customAttributes.billingSystem : 'Post-paid';
     const endUserPrice = +this.priceOption.trade.normalPrice;
-
     this.pageLoadingService.openLoading();
     this.mobileCareService.getMobileCare({
       packageKeyRef: MOBILE_CARE_PACKAGE_KEY_REF,
@@ -306,11 +316,10 @@ export class MobileCareComponent implements OnInit {
       this.mobileCare = {
         promotions: mobileCare
       };
-
       if (this.mobileCare.promotions && this.mobileCare.promotions.length > 0) {
         this.mobileCare.promotions[0].active = true;
       }
-      console.log('kkkkkkk', mobileCare);
-    }).then(() => this.pageLoadingService.closeLoading());
+    })
+    .then(() => this.mainPackage ? null : this.pageLoadingService.closeLoading());
   }
 }
