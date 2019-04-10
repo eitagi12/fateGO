@@ -6,6 +6,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { CreatePreToPostService } from 'src/app/shared/services/create-pre-to-post.service';
 import { ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_QUEUE_PAGE } from '../../constants/route-path.constant';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-device-order-ais-pre-to-post-result-page',
@@ -33,7 +34,11 @@ export class DeviceOrderAisPreToPostResultPageComponent implements OnInit {
   }
 
   onMainMenu(): void {
-    this.homeService.goToHome();
+    if (environment.name === 'LOCAL') {
+      window.location.href = '/main-menu';
+    } else {
+      window.location.href = '/smart-digital/main-menu';
+    }
   }
 
   onBack(): void {

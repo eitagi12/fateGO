@@ -76,12 +76,13 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
       this.onSendSMSQueue(this.mobileNo).then((queue) => {
         if (queue) {
           this.transaction.data.queue = { queueNo: this.queue };
-          this.http.post('/api/salesportal/device-sell/order', this.getRequestCreateOrder(this.transaction, this.priceOption)).toPromise()
+          return this.http.post('/api/salesportal/device-sell/order', this.getRequestCreateOrder(this.transaction, this.priceOption))
+          .toPromise()
             .then(() => {
-              return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
-            }).then(() => {
-              this.pageLoadingService.closeLoading();
-              this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_RESULT_PAGE]);
+              return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
+                this.pageLoadingService.closeLoading();
+                this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_RESULT_PAGE]);
+              });
             });
         } else {
           this.isAutoGenQueue = false;
@@ -131,7 +132,7 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
         }).toPromise()
           .then((response: any) => {
             if (response && response.data && response.data.data && response.data.data.queueNo) {
-              resolve(response.data.queueNo);
+              resolve(response.data.data.queueNo);
             } else {
               reject(null);
             }
@@ -291,7 +292,7 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
       } else if (payment.paymentType === 'CREDIT' && payment.paymentForm !== 'FULL') {
         tradeAndInstallment += '[CC]' + comma + space;
         tradeAndInstallment += '[B]' + payment.paymentBank.abb + comma + space;
-        if (payment.paymentBank.installments.length > 0) {
+        if (payment.paymentMethod) {
           tradeAndInstallment += '[I]' + payment.paymentMethod.percentage +
             '%' + space + payment.paymentMethod.month + 'เดือน' + comma + space;
         }

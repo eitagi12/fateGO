@@ -9,9 +9,9 @@
   </mc-header>
   <div class="mc-flex-wrap bg-white">
     <div class="mb-3 mt-3">
-      <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
+      <mc-wizard [wizards]="wizards" [active]="active"></mc-wizard>
 
-      <div *ngIf="tokenService.isTelewizUser()">
+      <div *ngIf="isTelewiz">
         <div class="read-card">
           <div class="col-md-12 read-card-title">ระบุข้อมูลลูกค้า</div>
           <div class="row col-md-12">
@@ -49,7 +49,7 @@
         </div>
       </div>
 
-      <div *ngIf="!tokenService.isTelewizUser()">
+      <div *ngIf="!isTelewiz">
         <mc-validate-customer (completed)="onCompleted($event)" (error)="onError($event)" (readCard)="onReadCard()"
           [placeholderHeadder]="PLACEHOLDER_HEADDER" [placeholder]="PLACEHOLDER">
         </mc-validate-customer>

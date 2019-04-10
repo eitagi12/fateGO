@@ -167,7 +167,7 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
         }).toPromise()
           .then((response: any) => {
             if (response && response.data && response.data.data && response.data.data.queueNo) {
-              resolve(response.data.queueNo);
+              resolve(response.data.data.queueNo);
             } else {
               reject(null);
             }
@@ -317,7 +317,7 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
       } else if (payment.paymentType === 'CREDIT') {
         tradeAndInstallment += '[CC]' + comma + space;
         tradeAndInstallment += '[B]' + payment.paymentBank.abb + comma + space;
-        if (payment.paymentBank.installments.length > 0) {
+        if (payment.paymentMethod) {
           tradeAndInstallment += '[I]' + payment.paymentMethod.percentage +
             '%' + space + payment.paymentMethod.month + 'เดือน' + comma + space;
         }

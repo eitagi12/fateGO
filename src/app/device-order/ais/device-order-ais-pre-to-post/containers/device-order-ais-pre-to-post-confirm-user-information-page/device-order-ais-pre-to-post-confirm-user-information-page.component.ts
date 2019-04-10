@@ -127,6 +127,12 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
         },
         onDelete: () => {
           delete this.transaction.data.billingInformation.mergeBilling;
+          // delete this.transaction.data.billingInformation.billCycle;
+          delete this.transaction.data.billingInformation.billCycleData;
+          const simCard = this.transaction.data.simCard;
+          // tslint:disable-next-line:no-shadowed-variable
+          const billingInformation = this.transaction.data.billingInformation;
+          const billCycleData: any = billingInformation.billCycleData || {};
 
           this.billingInfo.billingMethod.text = null;
           this.billingInfo.billingMethod.isDelete = false;
@@ -138,9 +144,19 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
           this.billingInfo.billingCycle.isEdit = true;
           this.billingInfo.billingCycle.isDelete = false;
 
-          this.getBllingCycle(customer.billCycle).then((billCycleText: string) => {
+          // this.mailBillingInfo.billChannel = this.getBillChannel();
+          this.mailBillingInfo = {
+            email: billCycleData.email,
+            mobileNo: simCard.mobileNo,
+            address: billCycleData.billAddressText,
+            billChannel: this.getBillChannel()
+          };
+          const bill = billCycle && billCycle.bill ? billCycle.bill : customer.billCycle;
+          this.billingInfo.billingCycle.isDelete = !!(billCycle && billCycle.bill);
+          this.getBllingCycle(bill).then((billCycleText: string) => {
             this.billingInfo.billingCycle.text = billCycleText;
           });
+
         }
       },
       billingAddress: {
@@ -297,7 +313,11 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
 
   getBllingCycle(billCycle: string): Promise<string> {
     if (!billCycle) {
-      return this.http.get('/api/customerportal/newRegister/queryBillCycle')
+      return this.http.get('/api/customerportal/newRegister/queryBillCycle', {
+        params: {
+          coProject: 'Y'
+        }
+      })
         .toPromise()
         .then((resp: any) => {
           const data = resp.data.billCycles || [];
@@ -310,7 +330,7 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
             };
           }).find(bill => bill.billDefault === 'Y');
 
-          this.transaction.data.billingInformation.billCycle = defaultBillCycle.billCycle;
+          this.transaction.data.customer.billCycle = defaultBillCycle.billCycle.bill;
           return defaultBillCycle.text;
         });
     }

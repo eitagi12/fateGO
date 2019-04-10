@@ -5,6 +5,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QUEUE_PAGE } from '../../constants/route-path.constant';
 import { Router } from '@angular/router';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-device-order-ais-new-register-result-page',
@@ -30,7 +31,11 @@ export class DeviceOrderAisNewRegisterResultPageComponent implements OnInit {
   }
 
   onMainMenu(): void {
-    this.homeService.goToHome();
+    if (environment.name === 'LOCAL') {
+      window.location.href = '/main-menu';
+    } else {
+      window.location.href = '/smart-digital/main-menu';
+    }
   }
 
   onBack(): void {
