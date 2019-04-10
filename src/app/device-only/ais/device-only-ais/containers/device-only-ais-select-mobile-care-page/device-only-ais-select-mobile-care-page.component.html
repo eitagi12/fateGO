@@ -13,7 +13,8 @@
     <!-- <mc-mobile-care [mobileCare]="mobileCare" [normalPrice]="priceOption?.trade?.normalPrice" (completed)="onCompleted($event)" ></app-mobile-care> -->
     <app-mobile-care
       [mobileCare]="mobileCare"
-      [normalPrice]="priceOption?.trade?.normalPrice"  
+      [normalPrice]="priceOption?.trade?.normalPrice" 
+      (existingMobileCare)="getCurrentPackMobileCare($event)" 
       (promotion)="onPromotion($event)"
       (isVerifyflag)="onIsVerify($event)"
       (completed)="onCompleted($event)">

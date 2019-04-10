@@ -20,6 +20,7 @@ export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit , OnDe
   shoppingCart: ShoppingCart;
   mobileCare: MobileCare;
   isVerifyflag: boolean = false;
+  existingMobileCare: any;
   public isBuyMobileCare: boolean = false;
   public isReasonNotBuyMobileCare: string;
 
@@ -44,6 +45,11 @@ export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit , OnDe
 
   public isVerifyNext(): boolean {
     return !(this.transaction.data.mobileCarePackage && this.isVerifyflag);
+  }
+  public getCurrentPackMobileCare(existingMobileCare: any): void {
+    if (existingMobileCare) {
+      this.transaction.data.existingMobileCare = this.existingMobileCare;
+    }
   }
   public onHome(): void {
     this.homeService.goToHome();

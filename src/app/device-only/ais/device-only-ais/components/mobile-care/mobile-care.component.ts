@@ -54,6 +54,7 @@ export class MobileCareComponent implements OnInit {
   @Input() mobileCare: MobileCare;
   @Input() normalPrice: number;
 
+  @Output() existingMobileCare: EventEmitter<any> = new EventEmitter<any>();
   @Output() completed: EventEmitter<any> = new EventEmitter<any>();
   @Output() isVerifyflag: EventEmitter<any> = new EventEmitter<any>();
   @Output() promotion: EventEmitter<any> = new EventEmitter<any>();
@@ -156,7 +157,9 @@ export class MobileCareComponent implements OnInit {
         mobileCare: true
       });
     } else {
+      this.isVerifyflag.emit(true);
       this.promotion.emit(this.notBuyMobileCareForm.value.notBuyMobile);
+      this.existingMobileCare.emit(false);
     }
     this.modalRef.hide();
   }
@@ -203,6 +206,7 @@ export class MobileCareComponent implements OnInit {
         this.pageLoadingService.closeLoading();
         if (res.data.currentPackage[index].produuctGroup && res.data.currentPackage[index].produuctGroup === 'Mobile Care') {
           this.currentPackageMobileCare = res.data.currentPackage[index];
+          console.log('Currentpackmobiecare' , this.currentPackageMobileCare);
           this.isPrivilegeCustomer = false;
           this.popupMobileCare(this.currentPackageMobileCare);
         } else {
@@ -217,12 +221,13 @@ export class MobileCareComponent implements OnInit {
     const endDt = currentPackageMobileCare.endDt;
     const descThai = currentPackageMobileCare.descThai;
     const form = this.privilegeCustomerForm.getRawValue();
+    console.log('sssssssssssssss', this.privilegeCustomerForm);
     this.alertService.notify({
       type: 'warning',
       width: '80%',
       cancelButtonText: 'เปลี่ยนเบอร์ใหม่',
       cancelButtonClass: 'btn-secondary btn-lg text-black mr-2',
-      confirmButtonText: 'สมัครกับเครื่องใหม่',
+      confirmButtonText: 'สมัครกับเครื่องใหม่' ,
       confirmButtonClass: 'btn-success btn-lg text-white mr-2',
       showCancelButton: true,
       showConfirmButton: true,
@@ -233,6 +238,7 @@ export class MobileCareComponent implements OnInit {
       เครื่อง iPhone 6S Plus <br> <div class="text-red">*บริการโมบายแคร์กับเครื่องเดิมจะสิ้นสุดทันที</div>`
     }).then((data) => {
       if (data.value && data.value === true) {
+        this.existingMobileCare.emit(this.currentPackageMobileCare);
         this.sendOTP();
         this.isPrivilegeCustomer = true;
       } else {
