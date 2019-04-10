@@ -20,7 +20,7 @@
         </span>
         <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'"> : ชำระเต็มจำนวน</span>
         <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'"> : ผ่อนชำระบัตรเครดิต</span>
-        <span class="pull-right text-lime" id="text-price-summary">
+        <span class="pull-right text-green" id="text-price-summary">
           ฿ {{ priceOption?.trade?.promotionPrice | number }}
         </span>
       </p>
