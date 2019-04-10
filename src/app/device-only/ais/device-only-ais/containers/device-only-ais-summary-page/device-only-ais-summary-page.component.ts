@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE, ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_PAGE } from 'src/app/device-only/ais/device-only-ais/constants/route-path.constant';
 import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
-import { HomeService, AlertService } from 'mychannel-shared-libs';
+import { HomeService, AlertService, TokenService } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction, Seller } from 'src/app/shared/models/transaction.model';
 import { HomeButtonService } from '../../services/home-button.service';
@@ -34,7 +34,8 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit , OnDestroy {
     private priceOptionService: PriceOptionService,
     private homeButtonService: HomeButtonService,
     private alertService: AlertService,
-    private sellerService: SellerService
+    private sellerService: SellerService,
+    private tokenService: TokenService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -55,7 +56,8 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit , OnDestroy {
       if (shopCheckSeller.condition) {
         if (!this.transaction.data.seller) {
           this.transaction.data.seller = {
-            sellerNo: seller.sellerNo
+            sellerNo: seller.sellerNo,
+            locationCode: this.tokenService.getUser().locationCode
           };
         } else {
         this.transaction.data.seller.sellerNo = seller.sellerNo;

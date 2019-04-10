@@ -44,7 +44,7 @@ export class CreateOrderService {
     };
   }
 
-  private getDevice(priceOption: PriceOption): any {
+  getDevice(priceOption: PriceOption): any {
     const product: any = priceOption.productStock;
     const productDetail: any = priceOption.productDetail;
     return {

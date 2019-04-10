@@ -146,6 +146,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
   createAddToCartTrasaction(): void {
     this.createOrderService.createAddToCartTrasaction(this.transaction, this.priceOption).then((transaction) => {
       this.transaction = transaction;
+      this.transaction.data.device = this.createOrderService.getDevice(this.priceOption);
       this.router.navigate([ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE]);
     }).catch((e) => {
       this.alertService.error(e);

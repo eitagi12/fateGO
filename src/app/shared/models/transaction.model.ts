@@ -64,6 +64,7 @@ export interface TransactionData {
   // MPAY
   mpayPayment?: QrCodePrePostMpayModel;
   status?: Status;
+  device?: any;
 }
 export interface Payment {
   paymentQrCodeType: 'THAI_QR' | 'LINE_QR';
