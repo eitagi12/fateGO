@@ -110,14 +110,16 @@ export class DeviceOnlyReadCardComponent implements OnInit {
 
     const NocardInterval = setInterval(() => {
         if (data.progress === 0 && cardStatus === 'Absent') {
+          clearInterval(NocardInterval);
           clearInterval(readCardInterval);
           this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้');
           this.unsubscribe.unsubscribe();
         }
-    }, 30000);
+    }, 10000);
 
     const promises: any = new Promise((resolve, reject) => {
       this.unsubscribe = this.readCardService.onReadCard().subscribe((readCard: any) =>  {
+        clearInterval(NocardInterval);
           const customer: String = readCard.profile;
           if (readCard.progress === 100) {
             this.progressBarArea.nativeElement.style.display = 'block';
@@ -125,8 +127,9 @@ export class DeviceOnlyReadCardComponent implements OnInit {
               if (width >= 100) {
                 clearInterval(id);
                 clearInterval(cardPresentedInterval);
-                clearInterval(NocardInterval);
                 resolve(customer);
+                this.progressBarArea.nativeElement.style.display = 'none';
+                this.progressBarReadSmartCard.nativeElement.style.width = '0%';
                 this.unsubscribe.unsubscribe();
               } else {
                 width ++ ;
