@@ -80,22 +80,22 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
       this.onSendSMSQueue(this.mobileNo).then((queue) => {
         if (queue) {
           this.transaction.data.queue = { queueNo: queue };
-          return this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption)
-          .then(() => {
-            return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
-          }).then(() => {
-              this.pageLoadingService.closeLoading();
-              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE]);
-          });
-          // return this.http.post('/api/salesportal/create-device-selling-order',
-          // this.getRequestCreateOrder(this.transaction, this.priceOption))
-          // .toPromise()
-          //   .then(() => {
-          //     return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
-          //       this.pageLoadingService.closeLoading();
-          //       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE]);
-          //     });
-          //   });
+          // return this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption)
+          // .then(() => {
+          //   return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
+          // }).then(() => {
+          //     this.pageLoadingService.closeLoading();
+          //     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE]);
+          // });
+          return this.http.post('/api/salesportal/create-device-selling-order',
+          this.getRequestCreateOrder(this.transaction, this.priceOption))
+          .toPromise()
+            .then(() => {
+              return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
+                this.pageLoadingService.closeLoading();
+                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE]);
+              });
+            });
         } else {
           this.isAutoGenQueue = false;
           this.pageLoadingService.closeLoading();
@@ -110,12 +110,13 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
       });
     } else {
       this.transaction.data.queue = { queueNo: this.queue };
-      this.http.post('/api/salesportal/device-sell/order', this.getRequestCreateOrder(this.transaction, this.priceOption)).toPromise()
+      this.http.post('/api/salesportal/create-device-selling-order',
+       this.getRequestCreateOrder(this.transaction, this.priceOption)).toPromise()
         .then(() => {
-          return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
-        }).then(() => {
-          this.pageLoadingService.closeLoading();
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE]);
+          return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
+            this.pageLoadingService.closeLoading();
+            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE]);
+          });
         });
       // this.createBestBuyService.createDeviceOrder(this.transaction, this.priceOption).then((response: any) => {
       //   if (response) {

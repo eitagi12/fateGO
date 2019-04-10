@@ -32,15 +32,13 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
   constructor(
     private router: Router,
     private utils: Utils,
-    private http: HttpClient,
     private homeService: HomeService,
     private alertService: AlertService,
     private customerInfoService: CustomerInfoService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
     private pageLoadingService: PageLoadingService,
-    private tokenService: TokenService,
-    private sharedTransactionService: SharedTransactionService
+    private tokenService: TokenService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -49,6 +47,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
 
   ngOnInit(): void {
     this.transaction.data.action = TransactionAction.READ_CARD_REPI;
+    console.log('REPI IDCARD PAGE');
   }
 
   onError(valid: boolean): void {
@@ -104,15 +103,8 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
               if (respPrepaidIdent.data && respPrepaidIdent.data.success) {
                 const expireDate = this.transaction.data.customer.expireDate;
                 if (this.utils.isIdCardExpiredDate(expireDate)) {
-                  return this.http.post('/api/salesportal/add-device-selling-cart',
-                    this.getRequestAddDeviceSellingCart()
-                  ).toPromise()
-                    .then((resp: any) => {
-                      this.transaction.data.order = { soId: resp.data.soId };
-                      return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-                    }).then(() => {
-                      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE]);
-                    });
+                  this.pageLoadingService.closeLoading();
+                  this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE]);
                 } else {
                   const idCardType = this.transaction.data.customer.idCardType;
                   this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ');
@@ -122,15 +114,8 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
                 if (this.utils.isIdCardExpiredDate(expireDate)) {
                   const simCard = this.transaction.data.simCard;
                   if (simCard.chargeType === 'Pre-paid') {
-                    return this.http.post('/api/salesportal/add-device-selling-cart',
-                    this.getRequestAddDeviceSellingCart()
-                  ).toPromise()
-                    .then((resp: any) => {
-                      this.transaction.data.order = { soId: resp.data.soId };
-                      return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-                    }).then(() => {
-                      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
-                    });
+                    this.pageLoadingService.closeLoading();
+                    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
                     // this.createDeviceOrderBestBuyService.createAddToCartTrasaction(this.transaction, this.priceOption)
                     // .then((transaction) => {
                     //   this.transaction = transaction;

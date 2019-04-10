@@ -82,7 +82,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
     this.transaction.data.customer.repi = true;
     this.customerInfoService.verifyPrepaidIdent(this.identity, mobileNo).then((verifySuccess: boolean) => {
       if (verifySuccess) {
-        this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customerInfo: any) => {
+        return this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customerInfo: any) => {
           if (customerInfo.firstName) {
             this.transaction.data.customer = { ...this.transaction.data.customer, ...customerInfo };
           } else {
@@ -104,20 +104,13 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
             tumbol: addressCustomer.tumbol,
             zipCode: addressCustomer.zipCode
           };
-          return this.http.post('/api/salesportal/add-device-selling-cart',
-            this.getRequestAddDeviceSellingCart()
-          ).toPromise()
-            .then((resp: any) => {
-              this.transaction.data.order = { soId: resp.data.soId };
-              return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-            }).then(() => {
-              this.pageLoadingService.closeLoading();
-              if (customerInfo.firstName) {
-                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
-              } else {
-                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE]);
-              }
-            });
+
+          this.pageLoadingService.closeLoading();
+          if (customerInfo.firstName) {
+            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
+          } else {
+            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE]);
+          }
         });
       } else {
         const simCard = this.transaction.data.simCard;
@@ -144,16 +137,9 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
               tumbol: addressCustomer.tumbol,
               zipCode: addressCustomer.zipCode
             };
-            return this.http.post('/api/salesportal/add-device-selling-cart',
-              this.getRequestAddDeviceSellingCart()
-            ).toPromise()
-              .then((resp: any) => {
-                this.transaction.data.order = { soId: resp.data.soId };
-                return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-              }).then(() => {
-                this.pageLoadingService.closeLoading();
-                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
-              });
+
+            this.pageLoadingService.closeLoading();
+            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
           });
         } else {
           // .then(() => this.pageLoadingService.closeLoading());
@@ -198,17 +184,17 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
     const length: number = control.value.length;
 
     if (length === 13) {
-        if (this.utils.isThaiIdCard(value)) {
-          return null;
-        } else {
-          return {
-            message: 'กรุณากรอกเลขบัตรประชาชนให้ถูกต้อง',
-          };
-        }
+      if (this.utils.isThaiIdCard(value)) {
+        return null;
       } else {
         return {
-            message: 'กรุณากรอกรูปแบบให้ถูกต้อง',
-          };
+          message: 'กรุณากรอกเลขบัตรประชาชนให้ถูกต้อง',
+        };
       }
+    } else {
+      return {
+        message: 'กรุณากรอกรูปแบบให้ถูกต้อง',
+      };
+    }
   }
 }

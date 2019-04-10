@@ -86,7 +86,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
     this.transaction.data.customer.repi = true;
     this.customerInfoService.verifyPrepaidIdent(this.identity, mobileNo).then((verifySuccess: boolean) => {
       if (verifySuccess) {
-        this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customerInfo: any) => {
+        return this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customerInfo: any) => {
           if (customerInfo.firstName) {
             this.transaction.data.customer = { ...this.transaction.data.customer, ...customerInfo };
           } else {
@@ -108,20 +108,13 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
             tumbol: addressCustomer.tumbol,
             zipCode: addressCustomer.zipCode
           };
-          return this.http.post('/api/salesportal/add-device-selling-cart',
-            this.getRequestAddDeviceSellingCart()
-          ).toPromise()
-            .then((resp: any) => {
-              this.transaction.data.order = { soId: resp.data.soId };
-              return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-            }).then(() => {
-              this.pageLoadingService.closeLoading();
-              if (customerInfo.firstName) {
-                this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_INFO_PAGE]);
-              } else {
-                this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_PAYMENT_DETAIL_PAGE]);
-              }
-            });
+
+          this.pageLoadingService.closeLoading();
+          if (customerInfo.firstName) {
+            this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_INFO_PAGE]);
+          } else {
+            this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_PAYMENT_DETAIL_PAGE]);
+          }
         });
       } else {
         const simCard = this.transaction.data.simCard;
@@ -148,18 +141,12 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
               tumbol: addressCustomer.tumbol,
               zipCode: addressCustomer.zipCode
             };
-            return this.http.post('/api/salesportal/add-device-selling-cart',
-              this.getRequestAddDeviceSellingCart()
-            ).toPromise()
-              .then((resp: any) => {
-                this.transaction.data.order = { soId: resp.data.soId };
-                return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-              }).then(() => {
-                this.pageLoadingService.closeLoading();
-                this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
-              });
+
+            this.pageLoadingService.closeLoading();
+            this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
           });
         } else {
+          // .then(() => this.pageLoadingService.closeLoading());
           this.pageLoadingService.closeLoading();
           this.alertService.error('ไม่สามารถทำรายการได้ เบอร์รายเดือน ข้อมูลการแสดงตนไม่ถูกต้อง');
         }

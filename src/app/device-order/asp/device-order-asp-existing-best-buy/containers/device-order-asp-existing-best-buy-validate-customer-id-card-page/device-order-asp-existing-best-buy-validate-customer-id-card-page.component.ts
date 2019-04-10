@@ -101,6 +101,10 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardPageComponent im
           tumbol: addressCustomer.tumbol,
           zipCode: addressCustomer.zipCode
         };
+        if (this.transaction.data.order && this.transaction.data.order.soId) {
+          this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_INFO_PAGE]);
+          return;
+        }
         return this.http.post('/api/salesportal/add-device-selling-cart',
           this.getRequestAddDeviceSellingCart()
         ).toPromise()

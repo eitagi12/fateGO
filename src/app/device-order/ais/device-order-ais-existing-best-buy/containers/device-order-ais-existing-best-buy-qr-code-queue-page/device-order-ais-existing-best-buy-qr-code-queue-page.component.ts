@@ -96,7 +96,8 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
       this.onSendSMSQueue(this.mobileNo).then((queue) => {
         if (queue) {
           this.transaction.data.queue = { queueNo: this.queue };
-          this.http.post('/api/salesportal/device-sell/order', this.getRequestCreateOrder(this.transaction, this.priceOption)).toPromise()
+          this.http.post('/api/salesportal/create-device-selling-order',
+           this.getRequestCreateOrder(this.transaction, this.priceOption)).toPromise()
             .then(() => {
               return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
             }).then(() => {
@@ -117,7 +118,8 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
       });
     } else {
       this.transaction.data.queue = { queueNo: this.queue };
-      this.http.post('/api/salesportal/device-sell/order', this.getRequestCreateOrder(this.transaction, this.priceOption)).toPromise()
+      this.http.post('/api/salesportal/create-device-selling-order',
+       this.getRequestCreateOrder(this.transaction, this.priceOption)).toPromise()
         .then(() => {
           return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
         }).then(() => {

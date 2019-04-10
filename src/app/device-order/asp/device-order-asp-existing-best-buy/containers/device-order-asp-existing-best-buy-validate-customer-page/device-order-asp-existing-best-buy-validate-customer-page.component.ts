@@ -70,6 +70,9 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
   }
 
   ngOnInit(): void {
+    if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      return;
+    }
     this.createTransaction();
     if (this.tokenService.isTelewizUser()) {
       this.createForm();
@@ -114,20 +117,42 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
     this.pageLoadingService.openLoading();
     if (this.utils.isMobileNo(this.identity)) {
       // KEY-IN MobileNo
+      if (this.transaction.data.order && this.transaction.data.order.soId) {
+        this.pageLoadingService.closeLoading();
+        this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_DETAIL_PAGE]);
+        return;
+      }
       this.privilegeService.checkAndGetPrivilegeCode(this.identity, this.priceOption.trade.ussdCode).then((privligeCode) => {
-        this.customerInfoService.getCustomerProfileByMobileNo(this.identity).then((customer: Customer) => {
+        return this.customerInfoService.getCustomerProfileByMobileNo(this.identity).then((customer: Customer) => {
           customer.privilegeCode = privligeCode;
           this.transaction.data.customer = customer;
           this.transaction.data.customer.repi = true;
           this.transaction.data.simCard = { mobileNo: this.identity };
           this.transaction.data.action = TransactionAction.KEY_IN_REPI;
-          this.pageLoadingService.closeLoading();
-          this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_DETAIL_PAGE]);
+          return this.http.post('/api/salesportal/add-device-selling-cart',
+            this.getRequestAddDeviceSellingCart()
+          ).toPromise()
+            .then((resp: any) => {
+              this.transaction.data.order = { soId: resp.data.soId };
+              return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+            }).then(() => {
+              this.pageLoadingService.closeLoading();
+              this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_DETAIL_PAGE]);
+            });
         });
       });
       return;
     } else {
       // KEY-IN ID-Card
+      if (this.transaction.data.order && this.transaction.data.order.soId) {
+        this.pageLoadingService.closeLoading();
+        if (this.transaction.data.customer.caNumber) {
+          this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_INFO_PAGE]);
+        } else {
+          this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_ELIGIBLE_MOBILE_PAGE]);
+        }
+        return;
+      }
       this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customer: Customer) => {
         this.transaction.data.customer = customer;
         this.transaction.data.billingInformation = {};
@@ -158,6 +183,19 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
               this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_ELIGIBLE_MOBILE_PAGE]);
             }
           });
+        // this.createDeviceOrderBestBuyService.createAddToCartTrasaction(this.transaction, this.priceOption)
+        //   .then((transaction) => {
+        //     this.transaction = transaction;
+        //     this.pageLoadingService.closeLoading();
+        //     if (this.transaction.data.customer.caNumber) {
+        //       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
+        //     } else {
+        //       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE]);
+        //     }
+        //   }).catch((e) => {
+        //     this.pageLoadingService.closeLoading();
+        //     this.alertService.error(e);
+        //   });
       }).then(() => this.pageLoadingService.closeLoading());
     }
   }
