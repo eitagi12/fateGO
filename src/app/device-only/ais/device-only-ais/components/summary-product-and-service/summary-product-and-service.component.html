@@ -17,7 +17,7 @@
     </p>
     <ng-container *ngIf="transaction?.data?.mobileCarePackage?.title">
       <span class="text-grey" id="text-mobile-priviledge">
-        ( หมายเลขที่รับสิทธิ์ : {{ '0891230440' | mobileNo }} )
+        ( หมายเลขที่รับสิทธิ์ : {{ transaction?.data?.simCard?.mobileNo | mobileNo }} )
       </span>
     </ng-container>
   </div>

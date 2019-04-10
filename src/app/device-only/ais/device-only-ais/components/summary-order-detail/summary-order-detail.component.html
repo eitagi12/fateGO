@@ -15,7 +15,7 @@
     </span>
   </span>
     <span class="pull-right text-green" id="text-model-price">
-      ฿{{ priceOption?.trade?.promotionPrice | number }}
+      ฿ {{ priceOption?.trade?.promotionPrice | number }}
     </span>
   </div>
   <div class="card-footer bg-transparent text-right">
@@ -23,7 +23,7 @@
       รวมยอดชำระ(รวมVAT)
     </span>
     <span class="text-green ml-2" id="text-summary-price">
-      ฿{{ summary([
+      ฿ {{ summary([
         +priceOption?.trade?.promotionPrice,
         +priceOption?.trade?.advancePay?.amount
         ]) | number }}
