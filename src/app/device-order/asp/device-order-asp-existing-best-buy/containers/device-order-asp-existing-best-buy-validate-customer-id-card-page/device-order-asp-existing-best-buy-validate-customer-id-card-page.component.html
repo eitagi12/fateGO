@@ -9,8 +9,96 @@
   </mc-header>
   <div class="mc-flex-wrap bg-white">
     <div class="pt-3 pb-3">
-      <mc-validate-customer-id-card [kioskApi]="kioskApi" (error)="onError($event)" (completed)="onCompleted($event)">
-      </mc-validate-customer-id-card>
+
+      <div *ngIf="isTelewiz">
+
+        <div class="read-card">
+          <div class="col-md-12 read-card-title">
+            ระบุข้อมูลลูกค้า
+          </div>
+          <div class="row col-md-12">
+            <div class="col-sm-4 text-center">
+              <div class="proress-container text-center">
+                <div class="progress-header">
+                  <p>เสียบบัตรประชาชน</p>
+                  <img src="assets/images/icon/icon-insert-idcard.png" width="100" class="float-center">
+                  <div class="font-light-green" *ngIf="progress === 100">ตรวจสอบสำเร็จ</div>
+                  <div id="divRegNumVerifyScanIdCardWording">
+                    {{finishProgress? 'โปรดดึงบัตรประชาชนออก' : 'โปรดเสียบบัตรประชาชน'}}
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-1 float-center">
+              <div class="proress-container">
+                <div class="progress-header">
+                  <div class="show-for-medium">
+                    <div class="line"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-7 text-center float-center" *ngIf="(progress !== 100)" style="margin-top: 80px">
+              <div class="progress">
+                <div class="progress-bar bg-lime !important" role="progressbar" [style.width.%]="readCard?.progress"
+                  aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
+              </div>
+              <span class="waiting" *ngIf="(progress !== 100)">กรุณารอสักครู่...</span>
+            </div>
+            <div class="text-red mb-3" [ngClass]="{ 'invisible': !readCard?.error, 'visible': readCard?.error }">
+              <small>* {{ readCard?.error }}</small>
+            </div>
+            <div class="col-sm-7 text-center float-center" *ngIf="(progress === 100)" style="margin-top: 80px">
+              <div class="text-left">
+                <div class="proress-container">
+                  <div class="progress-header">
+                    <div id="divRegNumVerifyScanIdCardName">{{ profile?.titleName }}
+                      {{ profile?.firstName }}
+                      {{ profile?.lastName }}</div>
+                    <div id="divRegNumVerifyScanIdCardIdCardNo">เลขบัตรประชาชน {{ profile?.idCardNo | idCard }}</div>
+                    <div>
+                      <div>
+                        <span *ngIf="profile?.homeNo" class="mr-1">{{ 'ที่อยู่' }} {{ profile?.homeNo }}</span>
+                        <span *ngIf="profile?.street" class="mr-1">{{ 'ถนน' }} {{ profile?.street }}</span>
+                        <span *ngIf="profile?.moo" class="mr-1">{{ 'หมู่ที่' }} {{ profile?.moo }}</span>
+                      </div>
+                      <div>
+                        <span *ngIf="profile?.province === 'กรุงเทพมหานคร'" class="mr-1">
+                          {{ 'แขวง' }}{{ profile?.tumbol }}
+                          {{ 'เขต' }}{{ profile?.amphur }}
+                        </span>
+                        <span *ngIf="profile?.province !== 'กรุงเทพมหานคร'" class="mr-1">
+                          {{ 'ตำบล' }}{{ profile?.tumbol }}
+                          {{ 'อำเภอ' }}{{ profile?.amphur }}
+                        </span>
+                        {{ profile?.province }}
+                      </div>
+                    </div>
+                    <div id="divRegNumVerifyScanIdCardIssueDate">วันที่ออกบัตร {{ profile?.issueDate }}</div>
+                    <div id="divRegNumVerifyScanIdCardExpDate" *ngIf="false">วันหมดอายุ {{ profile?.expireDate }}</div>
+                    <div class="success-data waiting text-left">
+                      <div class="proress-container">
+                        <div class="progress-header">
+                          <img class="profile img-fluid"
+                            [src]="'data:image/jpeg;base64,' + profile?.imageReadSmartCard">
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+      </div>
+      <div *ngIf="!isTelewiz">
+        <mc-validate-customer-id-card [kioskApi]="kioskApi" (error)="onError($event)" (completed)="onCompleted($event)">
+        </mc-validate-customer-id-card>
+      </div>
+
+
     </div>
   </div>
   <mc-footer>

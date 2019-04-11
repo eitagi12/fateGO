@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { PageLoadingService, HomeService, ReadCardProfile, User, AlertService, ValidateCustomerIdCardComponent, TokenService } from 'mychannel-shared-libs';
+import { PageLoadingService, HomeService, ReadCardProfile, User, AlertService, ValidateCustomerIdCardComponent, TokenService, ReadCardService, ReadCard, ReadCardEvent } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction, Customer, BillDeliveryAddress, Prebooking } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -10,6 +10,8 @@ import { ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_
 import { CustomerInfoService } from '../../services/customer-info.service';
 import { HttpClient } from '@angular/common/http';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
+import { WIZARD_DEVICE_ORDER_ASP, WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-device-order-asp-existing-best-buy-validate-customer-id-card-page',
@@ -19,6 +21,9 @@ import { SharedTransactionService } from 'src/app/shared/services/shared-transac
 export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardPageComponent implements OnInit, OnDestroy {
 
   kioskApi: boolean;
+  isTelewiz: boolean = this.tokenService.isTelewizUser();
+  // wizards: any = this.tokenService.isTelewizUser() ? WIZARD_DEVICE_ORDER_ASP : WIZARD_DEVICE_ORDER_AIS;
+  // active: number = this.isTelewiz ? 2 : 1;
 
   transaction: Transaction;
   profile: ReadCardProfile;
@@ -28,8 +33,16 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardPageComponent im
   user: User;
   billDeliveryAddress: BillDeliveryAddress;
 
+  readCard: ReadCard;
+  readCardSubscription: Subscription;
+
+  showProgress: boolean;
+
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
+
+  progress: number;
+  error: any;
 
   constructor(
     private router: Router,
@@ -41,7 +54,8 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardPageComponent im
     private customerInfoService: CustomerInfoService,
     private priceOptionService: PriceOptionService,
     private sharedTransactionService: SharedTransactionService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private readCardService: ReadCardService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -49,6 +63,9 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardPageComponent im
   }
 
   ngOnInit(): void {
+    if (this.isTelewiz) {
+      this.readCardflowPC();
+    }
   }
 
   onError(valid: boolean): void {
@@ -126,6 +143,9 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardPageComponent im
   }
 
   ngOnDestroy(): void {
+    if (this.readCardSubscription) {
+      this.readCardSubscription.unsubscribe();
+    }
     this.transactionService.update(this.transaction);
   }
 
@@ -176,6 +196,33 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardPageComponent im
           return Promise.reject('ไม่พบรหัสไปรษณีย์');
         }
       });
+  }
+
+  readCardflowPC(): void {
+    this.readCardSubscription = this.readCardService.onReadCard().subscribe((readCard: ReadCard) => {
+      this.readCard = readCard;
+
+      this.progress = readCard.progress;
+      const valid = !!(readCard.progress >= 100 && readCard.profile);
+      if (readCard.error) {
+        this.showProgress = false;
+        this.profile = null;
+      }
+
+      if (readCard.eventName === ReadCardEvent.EVENT_CARD_LOAD_ERROR) {
+        this.error = valid;
+      }
+
+      if (valid) {
+        this.showProgress = true;
+        this.profile = readCard.profile;
+
+        if (!this.kioskApi) {
+          this.profile = readCard.profile;
+        }
+      }
+
+    });
   }
 
 }

@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-import { ReadCardProfile, ValidateCustomerIdCardComponent, Utils, HomeService, AlertService, TokenService, PageLoadingService, User } from 'mychannel-shared-libs';
+import { ReadCardProfile, ValidateCustomerIdCardComponent, Utils, HomeService, AlertService, TokenService, PageLoadingService, User, ReadCard, ReadCardEvent, ReadCardService } from 'mychannel-shared-libs';
 import { Transaction, TransactionAction, Customer, Prebooking } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
@@ -10,6 +10,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { ROUTE_DEVICE_ORDER_ASP_BEST_BUY_VALIDATE_CUSTOMER_REPI_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_PROFILE_PAGE } from '../../constants/route-path.constant';
 import { CustomerInfoService } from '../../services/customer-info.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-device-order-asp-existing-best-buy-validate-customer-id-card-repi-page',
@@ -18,6 +19,8 @@ import { SharedTransactionService } from 'src/app/shared/services/shared-transac
 })
 export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardRepiPageComponent implements OnInit, OnDestroy {
 
+  kioskApi: boolean;
+  isTelewiz: boolean = this.tokenService.isTelewizUser();
   transaction: Transaction;
   profile: ReadCardProfile;
   zipcode: string;
@@ -25,6 +28,13 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardRepiPageComponen
   mobileNo: string;
   priceOption: PriceOption;
   user: User;
+
+  readCard: ReadCard;
+  readCardSubscription: Subscription;
+
+  showProgress: boolean;
+  progress: number;
+  error: any;
 
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
@@ -40,7 +50,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardRepiPageComponen
     private priceOptionService: PriceOptionService,
     private pageLoadingService: PageLoadingService,
     private tokenService: TokenService,
-    private sharedTransactionService: SharedTransactionService
+    private readCardService: ReadCardService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -49,6 +59,9 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardRepiPageComponen
 
   ngOnInit(): void {
     this.transaction.data.action = TransactionAction.READ_CARD_REPI;
+    if (this.isTelewiz) {
+      this.readCardflowPC();
+    }
   }
 
   onError(valid: boolean): void {
@@ -184,5 +197,32 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardRepiPageComponen
       depositAmt: preBooking ? preBooking.depositAmt : '',
       reserveNo: preBooking ? preBooking.reserveNo : ''
     };
+  }
+
+  readCardflowPC(): void {
+    this.readCardSubscription = this.readCardService.onReadCard().subscribe((readCard: ReadCard) => {
+      this.readCard = readCard;
+
+      this.progress = readCard.progress;
+      const valid = !!(readCard.progress >= 100 && readCard.profile);
+      if (readCard.error) {
+        this.showProgress = false;
+        this.profile = null;
+      }
+
+      if (readCard.eventName === ReadCardEvent.EVENT_CARD_LOAD_ERROR) {
+        this.error = valid;
+      }
+
+      if (valid) {
+        this.showProgress = true;
+        this.profile = readCard.profile;
+
+        if (!this.kioskApi) {
+          this.profile = readCard.profile;
+        }
+      }
+
+    });
   }
 }
