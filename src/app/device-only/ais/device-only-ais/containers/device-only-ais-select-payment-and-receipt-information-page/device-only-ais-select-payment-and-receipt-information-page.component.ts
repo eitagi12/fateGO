@@ -123,7 +123,6 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
 
   onNext(): void {
     this.transaction.data.payment = this.paymentDetailTemp.payment;
-    this.customerInformationService.cancelReadCarad();
     this.createAddToCartTrasaction();
   }
 
