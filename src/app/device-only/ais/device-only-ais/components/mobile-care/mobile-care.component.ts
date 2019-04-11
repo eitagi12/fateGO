@@ -218,14 +218,14 @@ export class MobileCareComponent implements OnInit {
             indexExistingMobileCare = index;
           }
         }
-
-        if (indexExistingMobileCare) {
+        if (indexExistingMobileCare >= 0) {
           this.currentPackageMobileCare = res.data.currentPackage[indexExistingMobileCare];
           this.isPrivilegeCustomer = false;
-          this.http.get(`/api/customerportal/get-existing-mobile-care/${mobileNo}`).toPromise().then((response: any) => {
-            this.exMobileCare = response.data;
-            this.popupMobileCare(this.currentPackageMobileCare);
-          });
+          this.http.get(`/api/customerportal/get-existing-mobile-care/${mobileNo}`).toPromise()
+            .then((response: any) => {
+              this.exMobileCare = response.data;
+              this.popupMobileCare(this.currentPackageMobileCare);
+            });
         } else {
           this.pageLoadingService.closeLoading();
           this.currentPackageMobileCare = res.data.currentPackage;
