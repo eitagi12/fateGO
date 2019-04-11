@@ -182,7 +182,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
   createForm(): void {
     // nobileNo use pattern
     this.validateCustomerForm = this.fb.group({
-      identity: ['', [Validators.required, this.customerValidate]],
+      identity: ['', [Validators.required, this.customerValidate.bind(this)]],
     });
 
     this.validateCustomerForm.valueChanges.pipe(debounceTime(750))

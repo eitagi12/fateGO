@@ -63,6 +63,7 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     const customer = this.transaction.data.customer;
+    this.sellerCode = this.user.ascCode;
     this.customerAddress = this.utils.getCurrentAddress({
       homeNo: customer.homeNo,
       moo: customer.moo,
@@ -132,7 +133,7 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
 
   createForm(): void {
     this.checkSellerForm = this.fb.group({
-      checkSeller: ['', Validators.compose([Validators.required, Validators.pattern(/^[0-9]+$/)])]
+      checkSeller: ['', Validators.compose([Validators.pattern(/^[0-9]+$/)])]
     });
 
     this.checkSellerForm.valueChanges.subscribe((value) => {

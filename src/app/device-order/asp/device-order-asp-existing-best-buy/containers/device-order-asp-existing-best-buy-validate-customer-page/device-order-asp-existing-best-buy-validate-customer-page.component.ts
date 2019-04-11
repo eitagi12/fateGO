@@ -24,9 +24,9 @@ import { debounceTime } from 'rxjs/operators';
 })
 export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implements OnInit, OnDestroy {
 
-  isTelewiz: boolean = this.tokenService.isTelewizUser();
-  wizards: any = this.tokenService.isTelewizUser() ? WIZARD_DEVICE_ORDER_ASP : WIZARD_DEVICE_ORDER_AIS;
-  active: number = this.isTelewiz ? 2 : 1;
+  isTelewiz: boolean;
+  wizards: any;
+  active: number;
   readonly PLACEHOLDER: string = '(หมายเลขโทรศัพท์ / เลขบัตรประชาชน)';
   readonly PLACEHOLDER_HEADDER: string = 'กรอกเอกสารแสดงตน';
 
@@ -41,7 +41,6 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
   constructor(
     private router: Router,
     private homeService: HomeService,
-    private utils: Utils,
     private http: HttpClient,
     private alertService: AlertService,
     private pageLoadingService: PageLoadingService,
@@ -70,6 +69,9 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
   }
 
   ngOnInit(): void {
+    this.isTelewiz = this.tokenService.isTelewizUser();
+    this.wizards = this.tokenService.isTelewizUser() ? WIZARD_DEVICE_ORDER_ASP : WIZARD_DEVICE_ORDER_AIS;
+    this.active = this.isTelewiz ? 2 : 1;
     if (this.tokenService.isTelewizUser()) {
       this.createForm();
     }
@@ -115,7 +117,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    if (this.utils.isMobileNo(this.identity)) {
+    if (!!this.identity.match(/^0[6-9]\d{8}$/)) {
       // KEY-IN MobileNo
         this.privilegeService.checkAndGetPrivilegeCode(this.identity, this.priceOption.trade.ussdCode).then((privligeCode) => {
           return this.customerInfoService.getCustomerProfileByMobileNo(this.identity).then((customer: Customer) => {
@@ -208,6 +210,19 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
     }
   }
 
+  isThaiIdCard(idcard: string): boolean {
+    let sum = 0;
+    if (idcard && idcard.length === 13 && Number(idcard)) {
+      for (let i = 0; i < 12; i++) {
+        sum += parseFloat(idcard.charAt(i)) * (13 - i);
+      }
+      if ((11 - (sum % 11)) % 10 === parseFloat(idcard.charAt(12))) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   private createTransaction(): void {
     const mainPromotion: MainPromotion = {
       campaign: this.priceOption.campaign,
@@ -237,13 +252,13 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
     };
   }
 
-  customerValidate(control: AbstractControl): ValidationErrors {
+  customerValidate(control: AbstractControl): ValidationErrors | null {
     const value = control.value;
     const length: number = control.value.length;
 
     if (length >= 10) {
       if (length === 10) {
-        if (this.utils.isMobileNo(value)) {
+        if (!!value.match(/^0[6-9]\d{8}$/)) {
           return null;
         } else {
           return {
@@ -251,7 +266,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
           };
         }
       } else if (length === 13) {
-        if (this.utils.isThaiIdCard(value)) {
+        if (this.isThaiIdCard(value)) {
           return null;
         } else {
           return {
@@ -317,11 +332,12 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
   createForm(): void {
     // nobileNo use pattern
     this.validateCustomerForm = this.fb.group({
-      identity: ['', [Validators.required, this.customerValidate]],
+      identity: ['', [Validators.required, this.customerValidate.bind(this)]],
     });
 
     this.validateCustomerForm.valueChanges.pipe(debounceTime(750))
       .subscribe((value: any) => {
+        console.log(this.validateCustomerForm.valid);
         this.identityValid = this.validateCustomerForm.valid;
         if (this.validateCustomerForm.valid) {
           this.identity = value.identity;
