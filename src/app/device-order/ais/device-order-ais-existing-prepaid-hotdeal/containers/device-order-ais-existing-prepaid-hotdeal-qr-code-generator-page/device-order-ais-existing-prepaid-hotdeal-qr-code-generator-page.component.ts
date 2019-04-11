@@ -376,6 +376,9 @@ export class DeviceOrderAisExistingPrepaidHotdealQrCodeGeneratorPageComponent im
     if (this.subscription$) {
       this.subscription$.unsubscribe();
     }
+    if (this.intravalTimeSubscription$) {
+      this.intravalTimeSubscription$.unsubscribe();
+    }
   }
 
 }

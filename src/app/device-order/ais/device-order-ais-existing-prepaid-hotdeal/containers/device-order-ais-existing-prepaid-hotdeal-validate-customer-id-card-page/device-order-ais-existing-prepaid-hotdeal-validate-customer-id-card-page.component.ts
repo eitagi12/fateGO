@@ -248,7 +248,7 @@ export class DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageCompo
   private createTransaction(): void {
     this.transaction = {
       data: {
-        transactionType: TransactionType.ORDER_NEW_REGISTER,
+        transactionType: TransactionType.DEVICE_ORDER_PREPAID_HOTDEAL_AIS,
         action: TransactionAction.READ_CARD,
       }
     };
