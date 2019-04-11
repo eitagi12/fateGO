@@ -216,7 +216,6 @@ export class MobileCareComponent implements OnInit {
           this.currentPackageMobileCare = res.data.currentPackage[indexExistingMobileCare];
           this.isPrivilegeCustomer = false;
           this.popupMobileCare(this.currentPackageMobileCare);
-          this.pageLoadingService.closeLoading();
         } else {
           this.pageLoadingService.closeLoading();
           this.currentPackageMobileCare = res.data.currentPackage;
@@ -307,16 +306,18 @@ export class MobileCareComponent implements OnInit {
     const endUserPrice = +this.priceOption.trade.normalPrice;
     this.pageLoadingService.openLoading();
     this.mobileCareService.getMobileCare({
-      packageKeyRef: MOBILE_CARE_PACKAGE_KEY_REF,
-      billingSystem: BillingSystemType.IRB
-    }, chargeType, billingSystem, endUserPrice).then((mobileCare: any) => {
-      this.mobileCare = {
-        promotions: mobileCare
-      };
-      if (this.mobileCare.promotions && this.mobileCare.promotions.length > 0) {
-        this.mobileCare.promotions[0].active = true;
-      }
-    })
-    .then(() => this.mainPackage ? null : this.pageLoadingService.closeLoading());
+        packageKeyRef: MOBILE_CARE_PACKAGE_KEY_REF,
+        billingSystem: BillingSystemType.IRB
+      },
+      chargeType,billingSystem, endUserPrice)
+      .then((mobileCare: any) => {
+        this.mobileCare = {
+          promotions: mobileCare
+        };
+        if (this.mobileCare.promotions && this.mobileCare.promotions.length > 0) {
+          this.mobileCare.promotions[0].active = true;
+        }
+      })
+      .then(() => this.mainPackage ? null : this.pageLoadingService.closeLoading());
   }
 }
