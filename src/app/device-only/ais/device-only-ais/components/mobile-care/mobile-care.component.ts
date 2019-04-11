@@ -188,11 +188,12 @@ export class MobileCareComponent implements OnInit {
       this.customerInformationService.getProfileByMobileNo(mobileNo).then((res) => {
         if (res.data.chargeType === 'Post-paid') {
           this.billingSystem = res.data.billingSystem;
-          this.customerInformationService.getCustomerProfile(mobileNo).then(data => {
-            const mobileSegment = data.data.mobileSegment;
-            this.callService(mobileSegment);
-          });
-          this.checkMobileCare(mobileNo);
+          this.checkMobileCare(mobileNo).then(() => {
+            this.customerInformationService.getCustomerProfile(mobileNo).then(data => {
+              const mobileSegment = data.data.mobileSegment;
+              this.callService(mobileSegment);
+            });
+          }).catch(() => {});
         } else {
           this.pageLoadingService.closeLoading();
           this.alertService.warning('เบอร์นี้เป็นระบบเติมเงิน ไม่สามารถทำรายการได้');
@@ -209,8 +210,8 @@ export class MobileCareComponent implements OnInit {
     }
   }
 
-  private checkMobileCare(mobileNo: string): void {
-    this.customerInformationService.getBillingByMobileNo(mobileNo)
+  private checkMobileCare(mobileNo: string): Promise<any> {
+    return this.customerInformationService.getBillingByMobileNo(mobileNo)
       .then((res: any) => {
         let indexExistingMobileCare: any;
         for (let index = 0; index < res.data.currentPackage.length; index++) {
@@ -218,14 +219,14 @@ export class MobileCareComponent implements OnInit {
             indexExistingMobileCare = index;
           }
         }
+
         if (indexExistingMobileCare >= 0) {
           this.currentPackageMobileCare = res.data.currentPackage[indexExistingMobileCare];
           this.isPrivilegeCustomer = false;
-          this.http.get(`/api/customerportal/get-existing-mobile-care/${mobileNo}`).toPromise()
-            .then((response: any) => {
-              this.exMobileCare = response.data;
-              this.popupMobileCare(this.currentPackageMobileCare);
-            });
+          this.http.get(`/api/customerportal/get-existing-mobile-care/${mobileNo}`).toPromise().then((response: any) => {
+            this.exMobileCare = response.data;
+            this.popupMobileCare(this.currentPackageMobileCare);
+          });
         } else {
           this.pageLoadingService.closeLoading();
           this.currentPackageMobileCare = res.data.currentPackage;
@@ -332,6 +333,6 @@ export class MobileCareComponent implements OnInit {
           this.mobileCare.promotions[0].active = true;
         }
       })
-      .then(() => this.mainPackage ? null : this.pageLoadingService.closeLoading());
+      .then(() => mobileSegment ? null : this.pageLoadingService.closeLoading());
   }
 }

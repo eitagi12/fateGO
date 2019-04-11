@@ -9,6 +9,7 @@ import { CreateOrderService } from '../../services/create-order.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { HomeButtonService } from '../../services/home-button.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { SharedTransactionService } from '../../../../../shared/services/shared-transaction.service';
 
 @Component({
   selector: 'app-device-only-ais-key-in-queue-page',
@@ -29,7 +30,8 @@ export class DeviceOnlyAisKeyInQueuePageComponent implements OnInit, OnDestroy {
     private priceOptionService: PriceOptionService,
     private createOrderService: CreateOrderService,
     private alertService: AlertService,
-    private pageLoadingService: PageLoadingService) {
+    private pageLoadingService: PageLoadingService,
+    private sharedTransactionService: SharedTransactionService) {
       this.transaction = this.transactionService.load();
       this.priceOption = this.priceOptionService.load();
      }
@@ -67,14 +69,12 @@ export class DeviceOnlyAisKeyInQueuePageComponent implements OnInit, OnDestroy {
 
   private stepNextQueuePage(): any {
     this.pageLoadingService.openLoading();
-    const status = { code: '002', description: 'Waiting Payment'};
-    this.transaction.data.status = status;
     this.transaction.data.mainPromotion = {
       campaign: this.priceOption.campaign,
       trade: this.priceOption.trade
     };
-    this.createOrderService.updateTransactionDB(this.transaction).then((response) => {
-      if (response === true) {
+    this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then((response) => {
+      if (response.data.isSuccess === true) {
         this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).subscribe(
           (res) => {
           if (res === 'S') {
