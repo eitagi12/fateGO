@@ -42,6 +42,14 @@ export class CustomerInformationService {
     return this.http.get(getBillingAPI).toPromise();
   }
 
+  getCustomerProfile(mobileNo: string): Promise<any> {
+    if (!mobileNo) {
+      return Promise.reject('mobile no not found.');
+    }
+    const getProfileAPI = API.GET_CUSTOMER_PROFILE + `${mobileNo}`;
+    return this.http.get(getProfileAPI).toPromise();
+  }
+
   getProfileByMobileNo(mobileNo: string): Promise<any> {
     const getProfileAPI = `/api/customerportal/asset/${mobileNo}/profile`;
     return this.http.get(getProfileAPI).toPromise();

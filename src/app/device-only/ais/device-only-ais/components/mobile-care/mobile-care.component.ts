@@ -188,7 +188,10 @@ export class MobileCareComponent implements OnInit {
       this.customerInformationService.getProfileByMobileNo(mobileNo).then((res) => {
         if (res.data.chargeType === 'Post-paid') {
           this.billingSystem = res.data.billingSystem;
-          this.callService();
+          this.customerInformationService.getCustomerProfile(mobileNo).then(data => {
+            const mobileSegment = data.data.mobileSegment;
+            this.callService(mobileSegment);
+          });
           this.checkMobileCare(mobileNo);
         } else {
           this.pageLoadingService.closeLoading();
@@ -207,7 +210,6 @@ export class MobileCareComponent implements OnInit {
   }
 
   private checkMobileCare(mobileNo: string): void {
-    console.log('check mobile care');
     this.customerInformationService.getBillingByMobileNo(mobileNo)
       .then((res: any) => {
         let indexExistingMobileCare: any;
@@ -233,7 +235,6 @@ export class MobileCareComponent implements OnInit {
   }
 
   private popupMobileCare(currentPackageMobileCare: any): void {
-    console.log('popup mobile care ');
     const endDt = currentPackageMobileCare.endDt;
     const descThai = currentPackageMobileCare.descThai;
     const form = this.privilegeCustomerForm.getRawValue();
@@ -310,7 +311,7 @@ export class MobileCareComponent implements OnInit {
       });
   }
 
-  callService(): void {
+  callService(mobileSegment?: string): void {
     let billingSystem: string;
     if (this.billingSystem === 'Non BOS') {
       billingSystem = BillingSystemType.IRB;
@@ -322,7 +323,7 @@ export class MobileCareComponent implements OnInit {
     this.mobileCareService.getMobileCare({
         packageKeyRef: MOBILE_CARE_PACKAGE_KEY_REF,
         billingSystem: BillingSystemType.IRB
-      }, chargeType, billingSystem, endUserPrice)
+      }, chargeType, billingSystem, endUserPrice, mobileSegment)
       .then((mobileCare: any) => {
         this.mobileCare = {
           promotions: mobileCare
