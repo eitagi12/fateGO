@@ -78,18 +78,6 @@ export class DeviceOrderAisExistingPrepaidHotdealQueuePageComponent implements O
     });
   }
 
-  onSendSMSQueue(mobileNo: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-        return this.http.post('/api/salesportal/device-order/transaction/get-queue-qmatic', {
-          mobileNo: mobileNo
-        }).toPromise()
-          .then((respQueue: any) => {
-            const data = respQueue.data && respQueue.data.result ? respQueue.data.result : {};
-            resolve(data.queueNo);
-          });
-    });
-  }
-
   getRequestDeviceSellOrder(): any {
     const user = this.tokenService.getUser();
     const productStock = this.priceOption.productStock;
@@ -102,7 +90,6 @@ export class DeviceOrderAisExistingPrepaidHotdealQueuePageComponent implements O
     const order = data.order;
     const queue = data.queue;
     const payment = data.payment;
-    const advancePay = data.advancePayment;
     const paymentMethod = payment.paymentMethod;
     const mobileCare = this.transaction.data.mobileCarePackage;
 
@@ -204,9 +191,9 @@ export class DeviceOrderAisExistingPrepaidHotdealQueuePageComponent implements O
     const information = this.getInformation(transaction, priceOption);
 
     return `
-${this.PROMOTION_NAME}${this.SPACE}${onTopPackage.shortNameThai || ''}${this.NEW_LINE}
-${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW_LINE}
-`;
+    ${this.PROMOTION_NAME}${this.SPACE}${onTopPackage.shortNameThai || ''}${this.NEW_LINE}
+    ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW_LINE}
+    `;
   }
 
   private getAirTime(trade: any): string {
@@ -316,10 +303,6 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
 
   onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_AGGREGATE_PAGE]);
-  }
-
-  onHome(): void {
-    this.homeService.goToHome();
   }
 
   ngOnDestroy(): void {
