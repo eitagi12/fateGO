@@ -90,6 +90,7 @@ export class MobileCareComponent implements OnInit {
   ngOnInit(): void {
     this.createForm();
     this.oncheckValidators();
+    this.pageLoadingService.openLoading();
     this.callService();
   }
 
@@ -300,16 +301,19 @@ export class MobileCareComponent implements OnInit {
   }
 
   callService(): void {
-    const billingSystem = this.billingSystem !== BillingSystemType.BOS
-                          ? BillingSystemType.IRB : BillingSystemType.BOS;
+    let billingSystem: string;
+    if (this.billingSystem === 'Non BOS') {
+      billingSystem = BillingSystemType.IRB;
+    } else {
+      billingSystem = this.billingSystem || BillingSystemType.IRB;
+    }
     const chargeType = this.mainPackage ? this.mainPackage.customAttributes.billingSystem : 'Post-paid';
     const endUserPrice = +this.priceOption.trade.normalPrice;
-    this.pageLoadingService.openLoading();
     this.mobileCareService.getMobileCare({
         packageKeyRef: MOBILE_CARE_PACKAGE_KEY_REF,
         billingSystem: BillingSystemType.IRB
       },
-      chargeType,billingSystem, endUserPrice)
+      chargeType, billingSystem, endUserPrice)
       .then((mobileCare: any) => {
         this.mobileCare = {
           promotions: mobileCare
