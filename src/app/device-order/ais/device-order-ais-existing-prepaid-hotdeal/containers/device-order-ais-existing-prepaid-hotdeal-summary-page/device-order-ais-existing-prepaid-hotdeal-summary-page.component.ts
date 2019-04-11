@@ -105,7 +105,6 @@ export class DeviceOrderAisExistingPrepaidHotdealSummaryPageComponent implements
   }
 
   onNext(): void {
-    // usePrivilege
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_AGGREGATE_PAGE]);
   }
 
