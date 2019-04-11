@@ -5,10 +5,10 @@ import { HttpClient } from '@angular/common/http';
 import { HomeService, PageLoadingService, AlertService, TokenService, User, Utils } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
+import { WIZARD_DEVICE_ORDER_AIS, WIZARD_DEVICE_ORDER_ASP } from 'src/app/device-order/constants/wizard.constant';
 import { Transaction, TransactionAction, Prebooking } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { ROUTE_DEVICE_ORDER_ASP_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_RPI_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_DETAIL_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_PROFILE_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_ASP_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_RPI_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_DETAIL_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_PROFILE_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_PAYMENT_DETAIL_PAGE } from '../../constants/route-path.constant';
 import { CustomerInfoService } from '../../services/customer-info.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
@@ -21,7 +21,9 @@ import { debounceTime } from 'rxjs/operators';
 })
 export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent implements OnInit, OnDestroy {
 
-  wizards: any = WIZARD_DEVICE_ORDER_AIS;
+  isTelewiz: boolean = this.tokenService.isTelewizUser();
+  wizards: any = this.isTelewiz ? WIZARD_DEVICE_ORDER_ASP :  WIZARD_DEVICE_ORDER_AIS;
+  active: number = this.isTelewiz ? 2 : 1;
   readonly PLACEHOLDER: string = '(เลขบัตรประชาชน)';
   readonly PLACEHOLDER_HEADDER: string = 'กรอกเอกสารแสดงตน';
 
@@ -81,13 +83,12 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
   onNext(): void {
     this.pageLoadingService.openLoading();
     const mobileNo = this.transaction.data.simCard.mobileNo;
+    this.transaction.data.customer.repi = true;
     this.customerInfoService.verifyPrepaidIdent(this.identity, mobileNo).then((verifySuccess: boolean) => {
       if (verifySuccess) {
-        this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customerInfo: any) => {
-          if (customerInfo.firstName) {
+        return this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customerInfo: any) => {
+          if (customerInfo.caNumber) {
             this.transaction.data.customer = { ...this.transaction.data.customer, ...customerInfo };
-          } else {
-            this.transaction.data.customer = customerInfo;
           }
           this.transaction.data.billingInformation = {};
           const addressCustomer = this.transaction.data.customer;
@@ -105,25 +106,20 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
             tumbol: addressCustomer.tumbol,
             zipCode: addressCustomer.zipCode
           };
-          return this.http.post('/api/salesportal/add-device-selling-cart',
-            this.getRequestAddDeviceSellingCart()
-          ).toPromise()
-            .then((resp: any) => {
-              this.transaction.data.order = { soId: resp.data.soId };
-              return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-            }).then(() => {
-              this.pageLoadingService.closeLoading();
-              this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_INFO_PAGE]);
-            });
+
+          this.pageLoadingService.closeLoading();
+          if (customerInfo.caNumber) {
+            this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_INFO_PAGE]);
+          } else {
+            this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_PAYMENT_DETAIL_PAGE]);
+          }
         });
       } else {
         const simCard = this.transaction.data.simCard;
         if (simCard.chargeType === 'Pre-paid') {
           this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customerInfo: any) => {
-            if (customerInfo.firstName) {
+            if (customerInfo.caNumber) {
               this.transaction.data.customer = { ...this.transaction.data.customer, ...customerInfo };
-            } else {
-              this.transaction.data.customer = customerInfo;
             }
             this.transaction.data.billingInformation = {};
             const addressCustomer = this.transaction.data.customer;
@@ -141,18 +137,12 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
               tumbol: addressCustomer.tumbol,
               zipCode: addressCustomer.zipCode
             };
-            return this.http.post('/api/salesportal/add-device-selling-cart',
-              this.getRequestAddDeviceSellingCart()
-            ).toPromise()
-              .then((resp: any) => {
-                this.transaction.data.order = { soId: resp.data.soId };
-                return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-              }).then(() => {
-                this.pageLoadingService.closeLoading();
-                this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
-              });
+
+            this.pageLoadingService.closeLoading();
+            this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
           });
         } else {
+          // .then(() => this.pageLoadingService.closeLoading());
           this.pageLoadingService.closeLoading();
           this.alertService.error('ไม่สามารถทำรายการได้ เบอร์รายเดือน ข้อมูลการแสดงตนไม่ถูกต้อง');
         }
@@ -206,7 +196,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
 
   customerValidate(control: AbstractControl): ValidationErrors {
     const value = control.value;
-    const length = control.value.length;
+    const length: number = control.value.length;
 
     if (length === 13) {
         if (this.utils.isThaiIdCard(value)) {

@@ -19,7 +19,8 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 })
 export class DeviceOrderAspExistingBestBuyMobileCareAvailablePageComponent implements OnInit, OnDestroy {
 
-  wizards: any = this.tokenService.isTelewizUser ? WIZARD_DEVICE_ORDER_ASP : WIZARD_DEVICE_ORDER_AIS;
+  wizards: any = this.tokenService.isTelewizUser() ? WIZARD_DEVICE_ORDER_ASP : WIZARD_DEVICE_ORDER_AIS;
+  active: number = this.tokenService.isTelewizUser() ? 4 : 3;
 
   identityValid: boolean = false;
   transaction: Transaction;

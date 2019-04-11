@@ -18,3 +18,4 @@ export const ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_QR_CODE_SUMMARY_PAGE = '/dev
 export const ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_QR_CODE_QUEUE_PAGE = '/device-order/ais/prepaid-hotdeal/qr-code-queue';
 export const ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_QR_CODE_GENERATOR_PAGE = '/device-order/ais/prepaid-hotdeal/qr-code-generator';
 export const ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_QR_CODE_QUEUE_SUMMARY_PAGE = '/device-order/ais/prepaid-hotdeal/qr-code-queue-summary';
+export const ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_QR_CODE_ERROR_PAGE = '/device-order/ais/prepaid-hotdeal/qr-code-queue-summary';

@@ -4,7 +4,8 @@ import { HomeService, ShoppingCart, ProductStock } from 'mychannel-shared-libs';
 import {
   ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_EXISTING_SUMMARY_PAGE
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_SUMMARY_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE
 } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
@@ -24,6 +25,7 @@ export class DeviceOrderAisExistingMobileCareAvailablePageComponent implements O
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   transaction: Transaction;
+  identityValid: boolean;
   shoppingCart: ShoppingCart;
   exMobileCare: ExistingMobileCare;
   productStock: ProductStock;
@@ -51,7 +53,11 @@ export class DeviceOrderAisExistingMobileCareAvailablePageComponent implements O
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE]);
+    if (!this.transaction.data.mainPackage) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE]);
+    }
   }
 
   onNext(): void {
@@ -82,6 +88,7 @@ export class DeviceOrderAisExistingMobileCareAvailablePageComponent implements O
         this.transaction.data.mobileCarePackage = null;
         this.changeMobileCare = false;
       }
+      this.identityValid = true;
     });
   }
 }

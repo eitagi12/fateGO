@@ -2,7 +2,7 @@
     <mc-header title="ลูกค้าปัจจุบัน"></mc-header>
     <div class="mc-flex-wrap bg-white">
       <div class="my-3">
-        <div class="container-fluid">
+        <div class="container-fluid ">
           <mc-result [success]="isSuccess" [mobileNo]="transaction?.data?.simCard?.mobileNo">
             <div>
               <div class="container text-center text-green mb-5 message-status">
@@ -11,7 +11,7 @@
               <div class="text-black">
                 หมายเลขสั่งซื้อในการชำระสินค้าของท่านคือ
               </div>
-              <div class="text-center mb-3">
+              <div class="text-center mb-3 mt-2">
                 <div class="card">
                   <div class="card-body queue-no text-green">
                     {{ transaction?.data?.queue?.queueNo || 'A001' }}

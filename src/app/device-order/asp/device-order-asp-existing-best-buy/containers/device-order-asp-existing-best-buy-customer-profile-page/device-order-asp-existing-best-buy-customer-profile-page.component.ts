@@ -14,7 +14,8 @@ import { ROUTE_DEVICE_ORDER_ASP_BEST_BUY_VALIDATE_CUSTOMER_REPI_PAGE, ROUTE_DEVI
 })
 export class DeviceOrderAspExistingBestBuyCustomerProfilePageComponent implements OnInit, OnDestroy {
 
-  wizards: any = this.tokenService.isTelewizUser ? WIZARD_DEVICE_ORDER_ASP : WIZARD_DEVICE_ORDER_AIS;
+  wizards: any = this.tokenService.isTelewizUser() ? WIZARD_DEVICE_ORDER_ASP : WIZARD_DEVICE_ORDER_AIS;
+  active: number = this.tokenService.isTelewizUser() ? 2 : 1;
   transaction: Transaction;
   titleName: string;
   firstName: string;

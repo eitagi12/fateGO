@@ -107,8 +107,6 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
       province: customer.province,
       zipCode: customer.zipCode
     });
-    console.log('mergebill', !!billCycle);
-    console.log('isDelete', !(!!mergeBilling) && !!billCycle);
     this.billingInfo = {
       // merge bill ไม่เมื่อเลือก package net extrem
       billingMethod: {

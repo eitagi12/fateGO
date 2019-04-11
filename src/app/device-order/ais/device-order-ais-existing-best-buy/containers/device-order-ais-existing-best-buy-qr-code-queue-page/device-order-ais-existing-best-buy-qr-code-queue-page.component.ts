@@ -96,7 +96,8 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
       this.onSendSMSQueue(this.mobileNo).then((queue) => {
         if (queue) {
           this.transaction.data.queue = { queueNo: this.queue };
-          this.http.post('/api/salesportal/device-sell/order', this.getRequestCreateOrder(this.transaction, this.priceOption)).toPromise()
+          this.http.post('/api/salesportal/create-device-selling-order',
+           this.getRequestCreateOrder(this.transaction, this.priceOption)).toPromise()
             .then(() => {
               return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
             }).then(() => {
@@ -117,7 +118,8 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
       });
     } else {
       this.transaction.data.queue = { queueNo: this.queue };
-      this.http.post('/api/salesportal/device-sell/order', this.getRequestCreateOrder(this.transaction, this.priceOption)).toPromise()
+      this.http.post('/api/salesportal/create-device-selling-order',
+       this.getRequestCreateOrder(this.transaction, this.priceOption)).toPromise()
         .then(() => {
           return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
         }).then(() => {
@@ -167,7 +169,7 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
         }).toPromise()
           .then((response: any) => {
             if (response && response.data && response.data.data && response.data.data.queueNo) {
-              resolve(response.data.queueNo);
+              resolve(response.data.data.queueNo);
             } else {
               reject(null);
             }
@@ -210,13 +212,13 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
       model: productDetail.model,
       color: productStock.color,
       matCode: '',
-      priceIncAmt: +trade.normalPrice.toFixed(2),
-      priceDiscountAmt: (+trade.discount.amount).toFixed(2),
+      priceIncAmt: (+trade.normalPrice || 0).toFixed(2),
+      priceDiscountAmt: (+trade.discount.amount || 0).toFixed(2),
       grandTotalAmt: this.getGrandTotalAmt(trade, prebooking),
       userId: this.user.username,
       saleCode: seller && seller.sellerNo ? seller.sellerNo : '',
       queueNo: queue.queueNo || '',
-      cusNameOrder: `${customer.titleName || ''}${customer.firstName || ''} ${customer.lastName || ''}`.trim(),
+      cusNameOrder: `${customer.titleName || ''}${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
       taxCardId: customer && customer.idCardNo || '',
       cusMobileNoOrder: simCard && simCard.mobileNo || '',
       customerAddress: this.getCustomerAddress(customer),
@@ -252,7 +254,7 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
     const normalPrice: number = trade.normalPrice;
     const advancePay: number = +trade.advancePay.amount;
     const discount: number = +trade.discount.amount || 0;
-    const depositAmt: number = prebooking ? +prebooking.depositAmt : 0;
+    const depositAmt: number = prebooking && prebooking.depositAmt ? +prebooking.depositAmt : 0;
 
     let result: any = normalPrice;
     result += advancePay;
@@ -317,7 +319,7 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
       } else if (payment.paymentType === 'CREDIT') {
         tradeAndInstallment += '[CC]' + comma + space;
         tradeAndInstallment += '[B]' + payment.paymentBank.abb + comma + space;
-        if (payment.paymentBank.installments.length > 0) {
+        if (payment.paymentMethod) {
           tradeAndInstallment += '[I]' + payment.paymentMethod.percentage +
             '%' + space + payment.paymentMethod.month + 'เดือน' + comma + space;
         }
@@ -337,7 +339,7 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
     otherInformation += '[D]' + space + (+trade.discount.amount).toFixed(2) + comma + space;
     otherInformation += '[RC]' + space + customer.privilegeCode + comma + space;
     otherInformation += '[OT]' + space + 'MC004' + comma + space;
-    if (mobileCare && !mobileCare.reason) {
+    if (mobileCare && !(typeof mobileCare === 'string' || mobileCare instanceof String)) {
       otherInformation += '[PC]' + space + 'remark.mainPackageCode' + comma + space;
       otherInformation += '[MCC]' + space + mobileCare.customAttributes.promotionCode + comma + space;
       otherInformation += '[MC]' + space + mobileCare.customAttributes.shortNameThai + comma + space;

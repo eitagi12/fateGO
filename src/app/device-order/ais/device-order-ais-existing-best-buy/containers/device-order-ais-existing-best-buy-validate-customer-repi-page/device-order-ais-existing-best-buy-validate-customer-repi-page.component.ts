@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
-import { HomeService, PageLoadingService, AlertService, User, TokenService } from 'mychannel-shared-libs';
+import { HomeService, PageLoadingService, AlertService, User, TokenService, Utils } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
@@ -11,6 +11,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_RPI_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
 import { CustomerInfoService } from '../../services/customer-info.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
+import { AbstractControl, ValidationErrors } from '@angular/forms';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-validate-customer-repi-page',
@@ -41,7 +42,8 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
     private priceOptionService: PriceOptionService,
     private customerInfoService: CustomerInfoService,
     private sharedTransactionService: SharedTransactionService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private utils: Utils
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -50,6 +52,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
 
   ngOnInit(): void {
     this.transaction.data.action = TransactionAction.KEY_IN_REPI;
+    console.log('ngOnInit');
   }
 
   onError(valid: boolean): void {
@@ -76,13 +79,12 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
   onNext(): void {
     this.pageLoadingService.openLoading();
     const mobileNo = this.transaction.data.simCard.mobileNo;
+    this.transaction.data.customer.repi = true;
     this.customerInfoService.verifyPrepaidIdent(this.identity, mobileNo).then((verifySuccess: boolean) => {
       if (verifySuccess) {
-        this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customerInfo: any) => {
-          if (customerInfo.firstName) {
+        return this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customerInfo: any) => {
+          if (customerInfo.caNumber) {
             this.transaction.data.customer = { ...this.transaction.data.customer, ...customerInfo };
-          } else {
-            this.transaction.data.customer = customerInfo;
           }
           this.transaction.data.billingInformation = {};
           const addressCustomer = this.transaction.data.customer;
@@ -100,25 +102,20 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
             tumbol: addressCustomer.tumbol,
             zipCode: addressCustomer.zipCode
           };
-          return this.http.post('/api/salesportal/add-device-selling-cart',
-            this.getRequestAddDeviceSellingCart()
-          ).toPromise()
-            .then((resp: any) => {
-              this.transaction.data.order = { soId: resp.data.soId };
-              return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-            }).then(() => {
-              this.pageLoadingService.closeLoading();
-              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
-            });
+
+          this.pageLoadingService.closeLoading();
+          if (customerInfo.caNumber) {
+            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
+          } else {
+            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE]);
+          }
         });
       } else {
         const simCard = this.transaction.data.simCard;
         if (simCard.chargeType === 'Pre-paid') {
           this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customerInfo: any) => {
-            if (customerInfo.firstName) {
+            if (customerInfo.caNumber) {
               this.transaction.data.customer = { ...this.transaction.data.customer, ...customerInfo };
-            } else {
-              this.transaction.data.customer = customerInfo;
             }
             this.transaction.data.billingInformation = {};
             const addressCustomer = this.transaction.data.customer;
@@ -136,16 +133,9 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
               tumbol: addressCustomer.tumbol,
               zipCode: addressCustomer.zipCode
             };
-            return this.http.post('/api/salesportal/add-device-selling-cart',
-              this.getRequestAddDeviceSellingCart()
-            ).toPromise()
-              .then((resp: any) => {
-                this.transaction.data.order = { soId: resp.data.soId };
-                return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-              }).then(() => {
-                this.pageLoadingService.closeLoading();
-                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
-              });
+
+            this.pageLoadingService.closeLoading();
+            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
           });
         } else {
           // .then(() => this.pageLoadingService.closeLoading());
@@ -183,5 +173,24 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
       depositAmt: preBooking ? preBooking.depositAmt : '',
       reserveNo: preBooking ? preBooking.reserveNo : ''
     };
+  }
+
+  customerValidate(control: AbstractControl): ValidationErrors {
+    const value = control.value;
+    const length: number = control.value.length;
+
+    if (length === 13) {
+      if (this.utils.isThaiIdCard(value)) {
+        return null;
+      } else {
+        return {
+          message: 'กรุณากรอกเลขบัตรประชาชนให้ถูกต้อง',
+        };
+      }
+    } else {
+      return {
+        message: 'กรุณากรอกรูปแบบให้ถูกต้อง',
+      };
+    }
   }
 }

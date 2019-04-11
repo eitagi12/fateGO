@@ -63,6 +63,9 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
   }
 
   ngOnInit(): void {
+    if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      return;
+    }
     this.createTransaction();
   }
 
@@ -84,30 +87,48 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
   }
 
   onBack(): void {
-    this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
-      .then((response: any) => {
-        if (response.value === true) {
-          const queryParams = this.priceOption.queryParams;
-          this.returnStock().then(() => {
-            window.location.href = `/sales-portal/buy-product/brand/${queryParams.brand}/${queryParams.model}`;
-          });
-        }
-      });
+    const queryParams = this.priceOption.queryParams;
+    if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+        .then((response: any) => {
+          if (response.value === true) {
+            this.returnStock().then(() => {
+              window.location.href = `/sales-portal/buy-product/brand/${queryParams.brand}/${queryParams.model}`;
+            });
+          }
+        });
+    } else {
+      this.transactionService.remove();
+      window.location.href = `/sales-portal/buy-product/brand/${queryParams.brand}/${queryParams.model}`;
+    }
   }
 
   onNext(): void {
     this.pageLoadingService.openLoading();
     if (this.utils.isMobileNo(this.identity)) {
       // KEY-IN MobileNo
+      if (this.transaction.data.order && this.transaction.data.order.soId) {
+        this.pageLoadingService.closeLoading();
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE]);
+        return;
+      }
       this.privilegeService.checkAndGetPrivilegeCode(this.identity, this.priceOption.trade.ussdCode).then((privligeCode) => {
-        this.customerInfoService.getCustomerProfileByMobileNo(this.identity).then((customer: Customer) => {
+        return this.customerInfoService.getCustomerProfileByMobileNo(this.identity).then((customer: Customer) => {
           customer.privilegeCode = privligeCode;
           this.transaction.data.customer = customer;
           this.transaction.data.customer.repi = true;
           this.transaction.data.simCard = { mobileNo: this.identity };
           this.transaction.data.action = TransactionAction.KEY_IN_REPI;
-          this.pageLoadingService.closeLoading();
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE]);
+          return this.http.post('/api/salesportal/add-device-selling-cart',
+            this.getRequestAddDeviceSellingCart()
+          ).toPromise()
+            .then((resp: any) => {
+              this.transaction.data.order = { soId: resp.data.soId };
+              return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+            }).then(() => {
+              this.pageLoadingService.closeLoading();
+              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE]);
+            });
         });
       });
       return;
@@ -130,7 +151,8 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
           tumbol: customer.tumbol,
           zipCode: customer.zipCode
         };
-        return this.http.post('/api/salesportal/add-device-selling-cart',
+        if (!this.transaction.data.order || !this.transaction.data.order.soId) {
+          return this.http.post('/api/salesportal/add-device-selling-cart',
           this.getRequestAddDeviceSellingCart()
         ).toPromise()
           .then((resp: any) => {
@@ -143,6 +165,14 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
               this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE]);
             }
           });
+        } else {
+            this.pageLoadingService.closeLoading();
+            if (this.transaction.data.customer.caNumber) {
+              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
+            } else {
+              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE]);
+            }
+        }
         // this.createDeviceOrderBestBuyService.createAddToCartTrasaction(this.transaction, this.priceOption)
         //   .then((transaction) => {
         //     this.transaction = transaction;
@@ -161,7 +191,11 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
   }
 
   ngOnDestroy(): void {
-    this.transactionService.save(this.transaction);
+    if (this.transaction.data.order && this.transaction.data.order.soId) {
+      this.transactionService.update(this.transaction);
+    } else {
+      this.transactionService.save(this.transaction);
+    }
     // this.priceOptionService.save(this.priceOption);
   }
 
@@ -213,8 +247,8 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
         }
       } else {
         return {
-            message: 'กรุณากรอกรูปแบบให้ถูกต้อง',
-          };
+          message: 'กรุณากรอกรูปแบบให้ถูกต้อง',
+        };
       }
     } else {
       return {

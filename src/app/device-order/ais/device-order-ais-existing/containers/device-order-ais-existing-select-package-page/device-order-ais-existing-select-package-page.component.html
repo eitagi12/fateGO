@@ -19,7 +19,7 @@
             </div>
             <div class="bg-white">
               <div class="container-fluid">
-                <div class="card">
+                <div class="card mb-3" *ngIf="showCurrentPackage">
                   <div class="card-header bg-green text-white">
                     แพ็กเกจปัจจุบัน
                   </div>
@@ -27,19 +27,19 @@
                       <div class="pull-left text-green mt-3">
                         {{ transaction?.data?.currentPackage?.title }}
                       </div>
-                    <div *ngIf="showCurrentPackage" class="pull-right">
+                    <div *ngIf="showSelectCurrentPackage" class="pull-right">
                         <input type="radio" id="current-package" name="current-package" [checked]="selectCurrentPackage" (click)="onClickCurrentPackage()">
                     <label for="current-package">
                       ใช้แพ็กเกจเดิม
                     </label>
                     </div>
-                    <div class="d-inline-block">
+                    <div class="d-inline-block mt-3">
                         <p> {{ transaction?.data?.currentPackage?.inStatementThai }}</p>
                         <p> {{ transaction?.data?.currentPackage?.expiredDate }}</p>
                     </div>
                   </div>
                 </div>
-                <div class="card mt-3"> 
+                <div class="card"> 
                   <div class="card-header bg-green text-white mb-2">
                     เลือกแพ็กเกจใหม่ <span>(แพ็กเกจเริ่มต้น {{ priceOption?.privilege?.minimumPackagePrice }} บาท)</span>
                   </div>
@@ -55,8 +55,8 @@
     </div>
     <mc-footer>
       <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-      <button class="btn btn-success" (click)="onNext()" [disabled]="(!(!!transaction?.data?.mainPackage) && showCurrentPackage && !selectCurrentPackage) 
-      || (!(!!transaction?.data?.mainPackage) && !showCurrentPackage && !selectCurrentPackage)">NEXT</button>
+      <button class="btn btn-success" (click)="onNext()" [disabled]="(!(!!transaction?.data?.mainPackage) && showSelectCurrentPackage && !selectCurrentPackage) 
+      || (!(!!transaction?.data?.mainPackage) && !showSelectCurrentPackage && !selectCurrentPackage)">NEXT</button>
     </mc-footer>
   </div>
   

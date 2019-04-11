@@ -29,3 +29,4 @@ export const ROUTE_DEVICE_ORDER_AIS_MNP_QR_CODE_ERROR_PAGE = '/device-order/ais/
 export const ROUTE_DEVICE_ORDER_AIS_MNP_ELIGIBLE_MOBILE_PAGE = '/device-order/ais/mnp/eligible-mobile';
 export const ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_DETAIL_PAGE = '/device-order/ais/mnp/mobile-detail';
 export const ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE = '/device-order/ais/mnp/effective-start-date';
+export const ROUTE_DEVICE_ORDER_AIS_MNP_NEW_BILLING_ACCOUNT_PAGE = '/device-order/ais/mnp/new-billing-account';

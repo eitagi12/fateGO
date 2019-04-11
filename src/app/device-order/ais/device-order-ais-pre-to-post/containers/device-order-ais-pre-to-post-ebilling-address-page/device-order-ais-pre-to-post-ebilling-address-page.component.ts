@@ -48,7 +48,7 @@ export class DeviceOrderAisPreToPostEbillingAddressPageComponent implements OnIn
     this.http.get('/api/customerportal/newRegister/getAllZipcodes').subscribe((resp: any) => {
       this.allZipCodes = resp.data.zipcodes || [];
     });
-
+    customer.province = customer.province.replace(/มหานคร$/, '');
     this.http.get('/api/customerportal/newRegister/getAllProvinces').subscribe((resp: any) => {
       this.provinces = (resp.data.provinces || []);
 
