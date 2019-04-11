@@ -9,7 +9,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { HttpClient } from '../../../../../../../node_modules/@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { TransactionService } from '../../../../../shared/services/transaction.service';
-import { Transaction, MainPackage } from '../../../../../shared/models/transaction.model';
+import { Transaction, MainPackage} from '../../../../../shared/models/transaction.model';
 import { MobileCareService } from '../../services/mobile-care.service';
 import { MOBILE_CARE_PACKAGE_KEY_REF } from '../../constants/cpc.constant';
 
@@ -71,6 +71,7 @@ export class MobileCareComponent implements OnInit {
   priceOption: PriceOption;
   transaction: Transaction;
   transactionID: string;
+  private exMobileCare: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -82,6 +83,7 @@ export class MobileCareComponent implements OnInit {
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private mobileCareService: MobileCareService
+
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -218,7 +220,10 @@ export class MobileCareComponent implements OnInit {
         if (indexExistingMobileCare) {
           this.currentPackageMobileCare = res.data.currentPackage[indexExistingMobileCare];
           this.isPrivilegeCustomer = false;
-          this.popupMobileCare(this.currentPackageMobileCare);
+          this.http.get(`/api/customerportal/get-existing-mobile-care/${mobileNo}`).toPromise().then((response: any) => {
+            this.exMobileCare = response.data;
+            this.popupMobileCare(this.currentPackageMobileCare);
+          });
         } else {
           this.pageLoadingService.closeLoading();
           this.currentPackageMobileCare = res.data.currentPackage;
@@ -243,9 +248,11 @@ export class MobileCareComponent implements OnInit {
       showConfirmButton: true,
       reverseButtons: true,
       allowEscapeKey: false,
-      html: `หมายเลข ${this.mobileCareService.mobileNoPipe(form.mobileNo)}  สมัครบริการโมบายแคร์กับเครื่อง <br> Samsung Note 9 แล้ว
-      <br> (แพ็กเกจ ${descThai} สิ้นสุด ${endDt}) <br> กรุณาเปลี่ยนเบอร์ใหม่ หรือยืนยันสมัครบริการโมบายแคร์กับ <br>
-      เครื่อง iPhone 6S Plus <br> <div class="text-red">*บริการโมบายแคร์กับเครื่องเดิมจะสิ้นสุดทันที</div>`
+      html: `หมายเลข ${this.mobileCareService.mobileNoPipe(form.mobileNo)} <br> สมัครบริการโมบายแคร์กับเครื่อง
+      ${this.exMobileCare.existHandSet.brand} ${this.exMobileCare.existHandSet.model} แล้ว
+      <br> (แพ็กเกจ ${descThai} <br> สิ้นสุด ${endDt}) <br> กรุณาเปลี่ยนเบอร์ใหม่ หรือยืนยันสมัครบริการโมบายแคร์กับ <br>
+      เครื่อง ${this.priceOption.productDetail.brand} ${this.priceOption.productDetail.model} <br>
+      <div class="text-red">*บริการโมบายแคร์กับเครื่องเดิมจะสิ้นสุดทันที</div>`
     }).then((data) => {
       if (data.value && data.value === true) {
         this.existingMobileCare.emit(this.currentPackageMobileCare);
@@ -315,8 +322,7 @@ export class MobileCareComponent implements OnInit {
     this.mobileCareService.getMobileCare({
         packageKeyRef: MOBILE_CARE_PACKAGE_KEY_REF,
         billingSystem: BillingSystemType.IRB
-      },
-      chargeType, billingSystem, endUserPrice)
+      }, chargeType, billingSystem, endUserPrice)
       .then((mobileCare: any) => {
         this.mobileCare = {
           promotions: mobileCare
