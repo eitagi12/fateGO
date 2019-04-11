@@ -1,14 +1,19 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { DeviceOnlyAisSummaryPageComponent } from './device-only-ais-summary-page.component';
 import { Router } from '@angular/router';
-import { HomeService, TokenService } from 'mychannel-shared-libs';
+import { HomeService, TokenService, AlertService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { HttpClient } from '@angular/common/http';
 import { HttpHandler } from '@angular/common/http';
 import { CookiesStorageService } from 'ngx-store';
 import { JwtHelperService } from '@auth0/angular-jwt';
-import { Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform, DebugElement } from '@angular/core';
+import { ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE, ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_PAGE } from '../../constants/route-path.constant';
+import { RouterTestingModule } from '@angular/router/testing';
+import { By } from '@angular/platform-browser';
+import { SellerService } from '../../services/seller.service';
+import { SummarySellerCodeComponent } from '../../components/summary-seller-code/summary-seller-code.component';
 
 @Pipe({name: 'mobileNo'})
 class MockMobileNoPipe implements PipeTransform {
@@ -20,12 +25,23 @@ describe('DeviceOnlyAisSummaryPageComponent', () => {
   let component: DeviceOnlyAisSummaryPageComponent;
   let fixture: ComponentFixture<DeviceOnlyAisSummaryPageComponent>;
 
+  let homeService: HomeService;
+  let router: Router;
+  let nextButton: DebugElement;
+
   setupTestBed({
+    import: [ RouterTestingModule.withRoutes([])],
     declarations: [DeviceOnlyAisSummaryPageComponent, MockMobileNoPipe],
     providers: [
       HttpClient,
       HttpHandler,
       CookiesStorageService,
+      {
+        provide: AlertService,
+        useValue: {
+          warning: jest.fn()
+        }
+      },
       {
         provide: TokenService,
         useValue: {
@@ -47,7 +63,15 @@ describe('DeviceOnlyAisSummaryPageComponent', () => {
       {
         provide: TransactionService,
         useValue: {
-          load: jest.fn()
+          load: jest.fn(() => {
+            return {
+              data: {
+                seller: {}
+              }
+            };
+          }),
+          update: jest.fn(),
+          save: jest.fn()
         }
       },
       {
@@ -63,10 +87,65 @@ describe('DeviceOnlyAisSummaryPageComponent', () => {
     fixture = TestBed.createComponent(DeviceOnlyAisSummaryPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
+    router = TestBed.get(Router);
+    homeService = TestBed.get(HomeService);
+    nextButton = fixture.debugElement.query(By.css('button#button-next'));
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
+  describe('templates', () => {
+    it('should create', () => {
+      expect(component).toBeTruthy();
+    });
+
+    it('should be enable checkout button when checkout', () => {
+      fixture.detectChanges();
+      expect(nextButton.nativeElement.disabled).toBeFalsy();
+    });
+
+    it('should be alert popup "กรุณากรอกข้อมูลให้ถูกต้อง" when call checkSeller with sellerNo is null', () => {
+      component.checkSeller({sellerNo: null});
+      fixture.detectChanges();
+      expect(component.alertService.warning).toHaveBeenCalledWith('กรุณากรอกข้อมูลให้ถูกต้อง');
+    });
+
+    it('should be enable checkout button when checkout', () => {
+      component.checkSeller({sellerNo: '1'});
+      fixture.detectChanges();
+      expect(nextButton.nativeElement.disabled).toBeFalsy();
+      expect(component.transaction.data.seller).toBeTruthy();
+    });
   });
+
+  describe('method', () => {
+
+    it('should be go to home when call onHome', () => {
+      const goHomeSpy = spyOn(homeService, 'goToHome');
+      component.onHome();
+      expect(goHomeSpy).toHaveBeenCalled();
+    });
+
+    it('should be nevigate "/device-only/ais/mobile-care" when call onBack', () => {
+      const navigateSpy = spyOn(router, 'navigate');
+      component.onBack();
+      expect(navigateSpy).toHaveBeenCalledWith([ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE]);
+    });
+
+   xit('should be nevigate "/device-only/ais/checkout-payment" when call onNext', () => {
+      component.onNext();
+      expect(component.checkSeller({})).toBeTruthy();
+    });
+
+    it('should be destroy when call ngOnDestroy', () => {
+      component.checkSeller({sellerNo: '1'});
+
+      component.ngOnDestroy();
+
+      expect(component.transactionService.save).toHaveBeenCalledWith({
+        data: {
+          seller: {}
+        }
+      });
+    });
+});
 
 });

@@ -51,8 +51,7 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit , OnDestroy {
       this.alertService.warning('กรุณากรอกข้อมูลให้ถูกต้อง');
       return;
     }
-    this.sellerService.checkSeller(seller.sellerNo)
-    .then((shopCheckSeller: ShopCheckSeller) => {
+    this.sellerService.checkSeller(seller.sellerNo).then((shopCheckSeller: ShopCheckSeller) => {
       if (shopCheckSeller.condition) {
         if (!this.transaction.data.seller) {
           this.transaction.data.seller = {
