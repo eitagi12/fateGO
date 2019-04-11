@@ -70,13 +70,13 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
   }
 
   ngOnInit(): void {
+    if (this.tokenService.isTelewizUser()) {
+      this.createForm();
+    }
     if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
       return;
     }
     this.createTransaction();
-    if (this.tokenService.isTelewizUser()) {
-      this.createForm();
-    }
   }
 
   onError(valid: boolean): void {
@@ -325,6 +325,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
         this.identityValid = this.validateCustomerForm.valid;
         if (this.validateCustomerForm.valid) {
           this.identity = value.identity;
+          this.identityValid = true;
         }
       });
   }

@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { HomeService, TokenService, ChannelType } from 'mychannel-shared-libs';
+import { ChannelType, TokenService, HomeService } from 'mychannel-shared-libs';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-error-page',
@@ -24,7 +25,11 @@ export class ErrorPageComponent implements OnInit {
     if (ChannelType.SMART_ORDER === channelType) {
       window.location.href = '/smart-shop';
     } else {
-      window.location.href = '/';
+      if (this.tokenService.isTelewizUser()) {
+        window.location.href = environment.CSP_URL;
+      } else {
+        window.location.href = '/';
+      }
     }
   }
 

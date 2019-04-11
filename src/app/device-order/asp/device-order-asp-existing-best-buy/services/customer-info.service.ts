@@ -56,11 +56,11 @@ export class CustomerInfoService {
         const customer: Customer = {
           idCardNo: idCardNo || '',
           idCardType: this.ID_CARD_CONST,
-          titleName: '',
-          firstName: '',
-          lastName: '',
-          birthdate: '',
-          gender: '',
+          titleName: '-',
+          firstName: '-',
+          lastName: '-',
+          birthdate: '-',
+          gender: '-',
           caNumber: null
         };
 

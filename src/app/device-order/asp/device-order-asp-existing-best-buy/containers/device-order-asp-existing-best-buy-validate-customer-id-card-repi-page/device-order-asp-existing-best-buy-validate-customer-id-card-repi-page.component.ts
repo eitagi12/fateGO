@@ -79,7 +79,6 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardRepiPageComponen
 
   onCompleted(profile: ReadCardProfile): void {
     this.profile = profile;
-    this.onNext();
   }
 
   onBack(): void {
