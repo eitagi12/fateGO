@@ -178,6 +178,8 @@ export interface BillingInformation {
   billDeliveryAddress?: BillDeliveryAddress;
   // วันที่มีผลการใช้งาน B: รอบถัดไป D: วันถัดไป I: มีผลทันที
   overRuleStartDate?: string;
+
+  isNewBAFlag?: boolean;
 }
 
 export interface BillCycle {
