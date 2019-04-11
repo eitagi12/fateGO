@@ -42,7 +42,7 @@ export class DeviceOnlyReadCardComponent implements OnInit {
   public addressTextBySmartCard: string;
   public listBillingAccount: Array<any>;
   public isSelect: boolean;
-  public unsubscribe: any;
+  // public unsubscribe: any;
 
   constructor(
     private bsModalService: BsModalService,
@@ -52,7 +52,16 @@ export class DeviceOnlyReadCardComponent implements OnInit {
     private pageLoadingService: PageLoadingService,
     private utils: Utils,
     private alertService: AlertService
-  ) {}
+  ) {
+    this.customerInfoService.cancelreadcard.subscribe((statusRealcare) => {
+      if (statusRealcare === false) {
+        $('#button-read-smart-card').removeClass('disabledbutton');
+        if (this.customerInfoService.unsubscribe.subscribe) {
+          this.customerInfoService.unsubscribe.unsubscribe();
+        }
+      }
+    });
+  }
 
   ngOnInit(): void {
     this.createSelectBillingAddressForm();
@@ -77,25 +86,24 @@ export class DeviceOnlyReadCardComponent implements OnInit {
     this.progressBarArea.nativeElement.style.display = 'none';
     this.progressBarReadSmartCard.nativeElement.style.width = '0%';
     const promises: any = new Promise((resolve, reject) => {
-      this.unsubscribe = this.readCardService.onReadCard().subscribe((readCard: any) =>  {
-        if (readCard.progress > 0) {
-          this.messages = 'กรุณารอสักครู่';
-        }
+      this.customerInfoService.unsubscribe = this.readCardService.onReadCard().subscribe((readCard: any) =>  {
         if (readCard.error ) {
           this.messages = readCard.error;
         }
-          const customer: String = readCard.profile;
-          if (readCard.progress === 100) {
+        const customer: String = readCard.profile;
+          if (readCard.progress === 100 && width < 100) {
             this.progressBarArea.nativeElement.style.display = 'block';
             const id = setInterval(() => {
+              if (readCard.progress >= 0 && width < 100) {
+                this.messages = 'กรุณารอสักครู่';
+              }
               if (width >= 100) {
                 clearInterval(id);
                 resolve(customer);
-                this.progressBarArea.nativeElement.style.display = 'none';
-                this.progressBarReadSmartCard.nativeElement.style.width = '0%';
-                this.unsubscribe.unsubscribe();
-                $('#button-read-smart-card').removeClass('disabledbutton');
-                if (readCard.progress === 100) {
+                this.customerInfoService.cancelReadCarad();
+                if (width === 100 && readCard.progress === 100) {
+                  this.progressBarArea.nativeElement.style.display = 'none';
+                  this.progressBarReadSmartCard.nativeElement.style.width = '0%';
                   this.messages = 'ตรวจสอบสำเร็จ ดึงบัตรประชาชนออก';
                 }
               } else {
@@ -127,7 +135,7 @@ export class DeviceOnlyReadCardComponent implements OnInit {
     this.progressBarArea.nativeElement.style.display = 'none';
     this.progressBarReadSmartCard.nativeElement.style.width = '0%';
       const promises: any = new Promise((resolve, reject) => {
-        this.readCardService.onReadCard().subscribe((readCard: any) =>  {
+      this.customerInfoService.unsubscribe =  this.readCardService.onReadCard().subscribe((readCard: any) =>  {
           if (readCard.eventName === readCardEvent.EVENT_CARD_REMOVED) {
             this.messages =  '';
             width = 0;
