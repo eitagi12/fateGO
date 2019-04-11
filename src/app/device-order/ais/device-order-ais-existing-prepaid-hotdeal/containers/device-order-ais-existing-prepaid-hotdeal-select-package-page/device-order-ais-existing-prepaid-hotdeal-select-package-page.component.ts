@@ -64,6 +64,7 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
     this.pageLoadingService.openLoading();
 
     const trade: any = this.priceOption.trade;
+    const campaign: any = this.priceOption.campaign;
     const privilege: any = this.priceOption.privilege;
     const simcard = this.transaction.data.simCard;
 
@@ -73,7 +74,7 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
         billingSystem: BillingSystemType.IRB,
         chargeType: simcard.chargeType,
         allowNtype: simcard.nType,
-        cpcUserId: trade.packageKeyRef
+        cpcUserId: trade.packageKeyRef || campaign.packageKeyRef
       }
     }).toPromise()
     .then((resp: any) => {
