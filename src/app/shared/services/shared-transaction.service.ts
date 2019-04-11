@@ -83,7 +83,7 @@ export class SharedTransactionService {
         billing_information: {},
         mobile_care_package: {},
         air_time: {},
-        on_top_package: {},
+        on_top_package: transaction.data.onTopPackage || {},
         order: {
           soId: data.order.soId
         },

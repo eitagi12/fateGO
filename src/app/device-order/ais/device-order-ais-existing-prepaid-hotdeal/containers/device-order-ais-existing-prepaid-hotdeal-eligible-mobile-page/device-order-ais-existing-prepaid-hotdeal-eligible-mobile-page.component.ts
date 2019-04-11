@@ -14,6 +14,7 @@ import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
 
 export interface BillingAccount {
   billingName: string;
@@ -55,6 +56,7 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
     private fb: FormBuilder,
     private pageLoadingService: PageLoadingService,
     private alertService: AlertService,
+    private privilegeService: PrivilegeService,
   ) {
     this.transaction = this.transactionService.load();
     this.shoppingCart = Object.assign(this.shoppingCartService.getShoppingCartData(), {
@@ -127,13 +129,17 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
         }
       })
       .then((req: any) => {
+        if (!this.addMobileNo) {
+          verify.isVerify = true;
+          return resolve(verify);
+        }
         this.http.post(`/api/customerportal/check-privilege-by-number`, {
-          mobileNo: this.addMobileNo,
+          mobileNo: mobileNo,
           ussdCode: ussdCode,
           chkMainProFlg: false
         }).toPromise()
         .then((res: any) => {
-          this.http.get(`/api/customerportal/newRegister/verifyPrepaidIdent?idCard=${this.idCardNo}&mobileNo=${this.addMobileNo}`)
+          this.http.get(`/api/customerportal/newRegister/verifyPrepaidIdent?idCard=${this.idCardNo}&mobileNo=${mobileNo}`)
           .toPromise()
           .then((respPrepaid: any) => {
             verify.isVerify = !!(respPrepaid.data && respPrepaid.data.success);
@@ -156,52 +162,33 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
   onNext(): void {
     this.pageLoadingService.openLoading();
     const ussdCode = this.priceOption.trade.ussdCode;
-    if (this.addMobileNo) {
-      this.verifyMobileNo(this.addMobileNo, ussdCode).then((res: any) => {
+    const mobile = this.addMobileNo ? this.addMobileNo : this.selectMobileNo.mobileNo;
+    this.verifyMobileNo(mobile, ussdCode).then((res: any) => {
+      const profile = res.profile;
+      this.transaction.data.simCard = {
+        mobileNo: mobile,
+        persoSim: false,
+        chargeType: profile.chargeType || ChargeType.PRE_PAID,
+        simSerial: profile.simSerialNo,
+        billingSystem: (profile.billingSystem === BillingSystemType.BOS) ? BillingSystemType.BOS : BillingSystemType.IRB,
+        nType: profile.product,
+        mobileNoStatus: 'Active'
+      };
+      return res.isVerify;
+    })
+    .then((isVerify: any) => {
+      const trade = this.priceOption.trade;
+      const privilege = this.selectMobileNo && this.selectMobileNo.privilegeCode ? this.selectMobileNo.privilegeCode : '';
+      this.privilegeService.requestUsePrivilege(mobile, ussdCode, privilege).then((privilegeCode) => {
         this.pageLoadingService.closeLoading();
-        const profile = res.profile;
-        this.transaction.data.simCard = {
-          mobileNo: this.addMobileNo,
-          persoSim: false,
-          chargeType: profile.chargeType || ChargeType.PRE_PAID,
-          simSerial: profile.simSerialNo,
-          billingSystem: (profile.billingSystem === BillingSystemType.BOS) ? BillingSystemType.BOS : BillingSystemType.IRB,
-          nType: profile.product,
-          mobileNoStatus: 'Active'
-        };
-        if (res.isVerify) {
+        this.transaction.data.customer.privilegeCode = privilegeCode;
+        if (isVerify) {
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_CUSTOMER_INFO_PAGE]);
         } else {
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_OTP_PAGE]);
         }
-      }).catch((err: any) => {
-        console.log('err', err);
-        this.pageLoadingService.closeLoading();
-        this.alertService.error(err);
       });
-    } else {
-      this.http.get(`/api/customerportal/asset/${this.selectMobileNo.mobileNo}/profile`).toPromise()
-      .then((resp: any) => {
-        if (resp && resp.data) {
-          const data = resp.data;
-          this.transaction.data.simCard = {
-            mobileNo: this.selectMobileNo.mobileNo,
-            persoSim: false,
-            chargeType: data.chargeType || ChargeType.PRE_PAID,
-            simSerial: data.simSerialNo,
-            billingSystem: (data.billingSystem === BillingSystemType.BOS) ? BillingSystemType.BOS : BillingSystemType.IRB,
-            nType: data.product,
-            mobileNoStatus: this.selectMobileNo.mobileStatus
-          };
-          this.pageLoadingService.closeLoading();
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_CUSTOMER_INFO_PAGE]);
-        } else {
-          this.pageLoadingService.closeLoading();
-        }
-      }).catch(() => {
-        this.pageLoadingService.closeLoading();
-      });
-    }
+    });
   }
 
   onBack(): void {
