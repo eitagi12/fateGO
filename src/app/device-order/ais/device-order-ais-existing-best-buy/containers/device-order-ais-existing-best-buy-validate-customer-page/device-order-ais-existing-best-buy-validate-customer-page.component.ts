@@ -107,11 +107,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     this.pageLoadingService.openLoading();
     if (this.utils.isMobileNo(this.identity)) {
       // KEY-IN MobileNo
-      if (this.transaction.data.order && this.transaction.data.order.soId) {
-        this.pageLoadingService.closeLoading();
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE]);
-        return;
-      }
+
       this.privilegeService.checkAndGetPrivilegeCode(this.identity, this.priceOption.trade.ussdCode).then((privligeCode) => {
         return this.customerInfoService.getCustomerProfileByMobileNo(this.identity).then((customer: Customer) => {
           customer.privilegeCode = privligeCode;
@@ -119,19 +115,24 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
           this.transaction.data.customer.repi = true;
           this.transaction.data.simCard = { mobileNo: this.identity };
           this.transaction.data.action = TransactionAction.KEY_IN_REPI;
-          return this.http.post('/api/salesportal/add-device-selling-cart',
-            this.getRequestAddDeviceSellingCart()
-          ).toPromise()
-            .then((resp: any) => {
-              this.transaction.data.order = { soId: resp.data.soId };
-              return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-            }).then(() => {
-              this.pageLoadingService.closeLoading();
-              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE]);
-            });
+          if (!this.transaction.data.order || !this.transaction.data.order.soId) {
+            return this.http.post('/api/salesportal/add-device-selling-cart',
+              this.getRequestAddDeviceSellingCart()
+            ).toPromise()
+              .then((resp: any) => {
+                this.transaction.data.order = { soId: resp.data.soId };
+                return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+              }).then(() => {
+                this.pageLoadingService.closeLoading();
+                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE]);
+              });
+          } else {
+            this.pageLoadingService.closeLoading();
+            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE]);
+            return;
+          }
         });
       });
-      return;
     } else {
       // KEY-IN ID-Card
       this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customer: Customer) => {
@@ -153,25 +154,25 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
         };
         if (!this.transaction.data.order || !this.transaction.data.order.soId) {
           return this.http.post('/api/salesportal/add-device-selling-cart',
-          this.getRequestAddDeviceSellingCart()
-        ).toPromise()
-          .then((resp: any) => {
-            this.transaction.data.order = { soId: resp.data.soId };
-            return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-          }).then(() => {
-            if (this.transaction.data.customer.caNumber) {
-              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
-            } else {
-              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE]);
-            }
-          });
+            this.getRequestAddDeviceSellingCart()
+          ).toPromise()
+            .then((resp: any) => {
+              this.transaction.data.order = { soId: resp.data.soId };
+              return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+            }).then(() => {
+              if (this.transaction.data.customer.caNumber) {
+                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
+              } else {
+                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE]);
+              }
+            });
         } else {
-            this.pageLoadingService.closeLoading();
-            if (this.transaction.data.customer.caNumber) {
-              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
-            } else {
-              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE]);
-            }
+          this.pageLoadingService.closeLoading();
+          if (this.transaction.data.customer.caNumber) {
+            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
+          } else {
+            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE]);
+          }
         }
         // this.createDeviceOrderBestBuyService.createAddToCartTrasaction(this.transaction, this.priceOption)
         //   .then((transaction) => {
