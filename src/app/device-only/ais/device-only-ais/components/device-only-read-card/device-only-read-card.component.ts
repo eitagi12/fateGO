@@ -52,7 +52,9 @@ export class DeviceOnlyReadCardComponent implements OnInit {
     private pageLoadingService: PageLoadingService,
     private utils: Utils,
     private alertService: AlertService
-  ) {
+  ) {}
+
+  ngOnInit(): void {
     this.customerInfoService.cancelreadcard.subscribe((statusRealcare) => {
       if (statusRealcare === false) {
         $('#button-read-smart-card').removeClass('disabledbutton');
@@ -61,9 +63,6 @@ export class DeviceOnlyReadCardComponent implements OnInit {
         }
       }
     });
-  }
-
-  ngOnInit(): void {
     this.createSelectBillingAddressForm();
     this.progressBarArea.nativeElement.style.display = 'none';
     this.isSelect = false;

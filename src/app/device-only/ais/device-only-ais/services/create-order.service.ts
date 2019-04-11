@@ -6,6 +6,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { User } from 'mychannel-shared-libs';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -14,7 +15,8 @@ export class CreateOrderService {
 
   constructor(
     private http: HttpClient,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private sharedTransactionService: SharedTransactionService
   ) {
     this.user = this.tokenService.getUser();
    }
@@ -83,8 +85,10 @@ export class CreateOrderService {
             transaction.data.order = {
               soId: response.soId
             };
-            this.createTransaction(transaction, priceOption).then((createTrans) => {
-              resolve(createTrans);
+            this.sharedTransactionService.createSharedTransaction(transaction, priceOption).then((res) => {
+              if (res.data.isSuccess === true) {
+                resolve(transaction);
+              }
             }).catch(resolve);
           } else {
             reject('Cannot add item to the cart');

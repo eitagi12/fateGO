@@ -141,7 +141,13 @@ export class SharedTransactionService {
     if (data.queue) {
       params.data.queue = data.queue;
     }
+    if (data.payment) {
+      params.data.payment = data.payment;
+    }
 
+    if (data.existingMobileCare) {
+      params.data.existing_mobile_care_package = data.existingMobileCare;
+    }
     return params;
   }
 

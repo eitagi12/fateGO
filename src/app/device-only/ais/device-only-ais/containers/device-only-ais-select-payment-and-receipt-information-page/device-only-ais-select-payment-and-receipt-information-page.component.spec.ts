@@ -4,7 +4,9 @@ import { FormBuilder } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Type } from '@angular/compiler';
 import { TypeModifier } from '@angular/compiler/src/output/output_ast';
-import { HomeService } from 'mychannel-shared-libs';
+import { HomeService, TokenService } from 'mychannel-shared-libs';
+import { CustomerInformationService } from '../../services/customer-information.service';
+import { HttpClient } from '../../../../../../../node_modules/@angular/common/http';
 
 describe('test device only ais queue page', () => {
   let component: DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent;
@@ -17,6 +19,9 @@ describe('test device only ais queue page', () => {
   const createOrderService: any = {};
   const alertService: any = {};
   const  homeButtonService: any = {};
+  const tokenService: any = {};
+  const http: any = {};
+  const customerInformationService: any = {};
 
   beforeEach(() => {
     transactionService = {
@@ -24,6 +29,9 @@ describe('test device only ais queue page', () => {
     };
     priceOptionService = {
       load: jest.fn()
+    };
+    tokenService = {
+      getUser: jest.fn()
     };
     component = new DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent(
       router,
@@ -33,7 +41,10 @@ describe('test device only ais queue page', () => {
       priceOptionService,
       createOrderService,
       alertService,
-      homeButtonService
+      homeButtonService,
+      customerInformationService,
+      tokenService,
+      http
     );
   });
 

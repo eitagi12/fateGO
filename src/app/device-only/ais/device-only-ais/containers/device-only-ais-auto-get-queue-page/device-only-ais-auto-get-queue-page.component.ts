@@ -11,6 +11,7 @@ import { QueueService } from '../../services/queue.service';
 import { Subscription } from 'rxjs';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE, ROUTE_DEVICE_ONLY_AIS_KEY_IN_QUEUE } from '../../constants/route-path.constant';
+import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 
 @Component({
   selector: 'app-device-only-ais-auto-get-queue-page',
@@ -35,7 +36,8 @@ export class DeviceOnlyAutoGetQueuePageComponent implements OnInit, OnDestroy {
     private queueService: QueueService,
     private pageLoadingService: PageLoadingService,
     private fb: FormBuilder,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private sharedTransactionService: SharedTransactionService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -85,14 +87,12 @@ export class DeviceOnlyAutoGetQueuePageComponent implements OnInit, OnDestroy {
 
   private checkDataLinkPage(data: any): void {
     if (data) {
-      const status = { code: '002', description: 'Waiting Payment'};
-      this.transaction.data.status = status;
       this.transaction.data.mainPromotion = {
         campaign: this.priceOption.campaign,
         trade: this.priceOption.trade
       };
-      this.createOrderService.updateTransactionDB(this.transaction).then((response) => {
-        if (response === true) {
+      this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then((response) => {
+        if (response.data.isSuccess === true) {
           this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).subscribe(
             (res) => {
             if (res === 'S') {

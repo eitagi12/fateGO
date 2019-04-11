@@ -48,7 +48,14 @@ export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit , OnDe
   }
   public getCurrentPackMobileCare(existingMobileCare: any): void {
     if (existingMobileCare) {
-      this.transaction.data.existingMobileCare = this.existingMobileCare;
+      const existingObj = {...existingMobileCare};
+      console.log(existingMobileCare);
+      if (!this.transaction.data.existingMobileCare) {
+        this.transaction.data.existingMobileCare = existingObj;
+        return;
+      }
+      this.transaction.data.existingMobileCare = existingObj;
+
     }
   }
   public onHome(): void {
@@ -69,6 +76,7 @@ export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit , OnDe
     this.transaction.data.simCard = simCard;
   }
   ngOnDestroy(): void {
+    console.log(this.transaction.data.existingMobileCare);
     this.transactionService.update(this.transaction);
   }
 }

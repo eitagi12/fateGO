@@ -10,9 +10,9 @@ import { Product } from 'src/app/device-only/ais/device-only-ais/models/product.
 import { HomeButtonService } from '../../services/home-button.service';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
-import { HomeService, ApiRequestService, AlertService, PaymentDetail } from 'mychannel-shared-libs';
 import { CustomerInformationService } from '../../services/customer-information.service';
-import { from } from 'rxjs';
+import { HomeService, ApiRequestService, AlertService, PaymentDetail, User, TokenService } from 'mychannel-shared-libs';
+import { HttpClient } from '../../../../../../../node_modules/@angular/common/http';
 @Component({
   selector: 'app-device-only-ais-select-payment-and-receipt-information-page',
   templateUrl: './device-only-ais-select-payment-and-receipt-information-page.component.html',
@@ -21,21 +21,19 @@ import { from } from 'rxjs';
 export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implements OnInit, OnDestroy {
 
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
-
   transaction: Transaction;
   public priceOption: PriceOption;
   isReceiptInformationValid: boolean;
   public product: Product;
   isSelectBank: any;
   fullPayment: boolean;
-
   banks: any[];
   paymentDetail: PaymentDetail;
   paymentDetailTemp: any;
   paymentDetailValid: boolean;
   banksPayment: any[];
-
   customerInfoTemp: any;
+  user: User;
 
   constructor(
     private router: Router,
@@ -46,10 +44,13 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
     private createOrderService: CreateOrderService,
     private alertService: AlertService,
     private homeButtonService: HomeButtonService,
-    private customerInformationService: CustomerInformationService
+    private customerInformationService: CustomerInformationService,
+    private tokenService: TokenService,
+    private http: HttpClient
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
+    this.user = this.tokenService.getUser();
   }
 
   ngOnInit(): void {
@@ -122,7 +123,6 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
 
   onNext(): void {
     this.transaction.data.payment = this.paymentDetailTemp.payment;
-    // this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;
     this.customerInformationService.cancelReadCarad();
     this.createAddToCartTrasaction();
   }
@@ -149,12 +149,39 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
 
   createAddToCartTrasaction(): void {
     this.createOrderService.createAddToCartTrasaction(this.transaction, this.priceOption).then((transaction) => {
-      this.transaction = transaction;
+      this.transaction = {...transaction};
       this.transaction.data.device = this.createOrderService.getDevice(this.priceOption);
       this.router.navigate([ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE]);
     }).catch((e) => {
       this.alertService.error(e);
     });
+  }
+
+  getRequestAddDeviceSellingCart(transaction: Transaction, priceOption: PriceOption):  Promise<any> {
+    const productStock = priceOption.productStock;
+    const productDetail = priceOption.productDetail;
+    const customer = transaction.data.customer;
+    const cusNameOrder = customer && customer.firstName && customer.lastName ? `${customer.firstName} ${customer.lastName}` : '-';
+    const requestData: any = {
+      soCompany: productStock.company || 'AWN',
+      locationSource: this.user.locationCode,
+      locationReceipt: this.user.locationCode,
+      productType: productDetail.productType || 'DEVICE',
+      productSubType: productDetail.productSubType || 'HANDSET',
+      brand: productDetail.brand || productStock.brand,
+      model: productDetail.model,
+      color: productStock.color,
+      priceIncAmt: '',
+      priceDiscountAmt: '',
+      grandTotalAmt: '',
+      userId: this.user.username,
+      cusNameOrder: cusNameOrder,
+      preBookingNo: '',
+      depositAmt: '',
+      reserveNo: ''
+    };
+    return this.http.post('/api/salesportal/device-sell/item', requestData).toPromise()
+    .then((res: any) => res.data);
   }
 
   onPaymentDetailCompleted(payment: any): void {

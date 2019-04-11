@@ -205,6 +205,7 @@ export class MobileCareComponent implements OnInit {
   }
 
   private checkMobileCare(mobileNo: string): void {
+    console.log('check mobile care');
     this.customerInformationService.getBillingByMobileNo(mobileNo)
       .then((res: any) => {
         let indexExistingMobileCare: any;
@@ -213,6 +214,7 @@ export class MobileCareComponent implements OnInit {
             indexExistingMobileCare = index;
           }
         }
+
         if (indexExistingMobileCare) {
           this.currentPackageMobileCare = res.data.currentPackage[indexExistingMobileCare];
           this.isPrivilegeCustomer = false;
@@ -226,6 +228,7 @@ export class MobileCareComponent implements OnInit {
   }
 
   private popupMobileCare(currentPackageMobileCare: any): void {
+    console.log('popup mobile care ');
     const endDt = currentPackageMobileCare.endDt;
     const descThai = currentPackageMobileCare.descThai;
     const form = this.privilegeCustomerForm.getRawValue();
