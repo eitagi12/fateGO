@@ -69,9 +69,13 @@ export class DeviceOrderAisMnpMobileCarePageComponent implements OnInit, OnDestr
   }
 
   callService(): void {
-    const billingSystem = this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
+    let billingSystem = this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
     const chargeType = this.transaction.data.mainPackage.customAttributes.billingSystem;
     const endUserPrice = +this.priceOption.trade.normalPrice;
+
+    if (billingSystem === 'RTBS') {
+      billingSystem = BillingSystemType.IRB;
+    }
 
     this.pageLoadingService.openLoading();
     this.mobileCareService.getMobileCare({
