@@ -216,7 +216,6 @@ export class DeviceOnlyReadCardComponent implements OnInit {
           this.progressBarArea.nativeElement.style.display = 'none';
         }
         this.pageLoadingService.closeLoading();
-        this.isSelect = true;
       })
       .catch(() => {
         this.listBillingAccountBox.nativeElement.style.display = 'none';
