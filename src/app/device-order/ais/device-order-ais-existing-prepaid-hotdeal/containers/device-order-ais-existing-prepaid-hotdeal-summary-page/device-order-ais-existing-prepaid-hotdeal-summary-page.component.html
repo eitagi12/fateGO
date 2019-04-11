@@ -34,7 +34,7 @@
                   <i class="fa fa-circle mr-3 text-green"></i>
                   ค่าแพ็กเกจเสริม
                   <span class="pull-right text-green">
-                    ฿ {{ transaction?.data?.mainPackage?.priceIncludeVat | number }}
+                    ฿ {{ transaction?.data?.onTopPackage?.priceIncludeVat | number }}
                   </span>
                 </p>
                 <p *ngIf="transaction?.data?.mobileCarePackage?.customAttributes">
@@ -59,8 +59,8 @@
             <div class="card-body">
               <p>
                 <i class="fa fa-circle mr-3 text-green"></i>
-                  <span > {{ transaction?.data?.mainPackage?.shortNameThai }}</span>
-                  <span class="pull-right" (click)="onOpenDetail(transaction?.data?.mainPackage?.descriptionThai)">
+                  <span > {{ transaction?.data?.onTopPackage?.shortNameThai }}</span>
+                  <span class="pull-right" (click)="onOpenDetail(transaction?.data?.onTopPackage?.descriptionThai)">
                     <img src="assets/images/icon/icon-page.png" class="icon" />
                   </span>
               </p>
@@ -85,10 +85,10 @@
                 <span class="pull-right text-green">฿ {{ priceOption?.trade?.promotionPrice | number }}</span>
               </p>
               <p>ข้อมูลการตัดเงิน Prepaid</p>
-              <p *ngIf="transaction?.data?.mainPackage?.priceIncludeVat">
+              <p *ngIf="transaction?.data?.onTopPackage?.priceIncludeVat">
                 <i class="fa fa-circle mr-3 text-green"></i>
                 ค่าแพ็กเกจเสริม (รวม VAT)
-                <span class="pull-right text-green"> ฿ {{ transaction?.data?.mainPackage?.priceIncludeVat | number }}</span>
+                <span class="pull-right text-green"> ฿ {{ transaction?.data?.onTopPackage?.priceIncludeVat | number }}</span>
               </p>
               <p *ngIf="transaction?.data?.mobileCarePackage?.customAttributes">
                 <i class="fa fa-circle mr-3 text-green"></i>

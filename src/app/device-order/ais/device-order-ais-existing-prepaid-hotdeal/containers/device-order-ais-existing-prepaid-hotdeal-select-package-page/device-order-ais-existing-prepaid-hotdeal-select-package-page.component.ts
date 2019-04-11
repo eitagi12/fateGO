@@ -52,12 +52,12 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
 
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-    delete this.transaction.data.mainPackage;
+    delete this.transaction.data.onTopPackage;
     this.callService();
   }
 
   onCompleted(promotion: any): void {
-    this.transaction.data.mainPackage = promotion;
+    this.transaction.data.onTopPackage = promotion;
   }
 
   callService(): void {

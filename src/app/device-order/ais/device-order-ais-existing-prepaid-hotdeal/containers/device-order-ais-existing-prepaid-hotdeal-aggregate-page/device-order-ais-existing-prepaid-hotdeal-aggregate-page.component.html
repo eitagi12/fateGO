@@ -72,7 +72,7 @@
                       <i class="fa fa-circle mr-3 text-green"></i>
                       ค่าแพ็กเกจเสริม
                       <span class="pull-right text-green">
-                        ฿ {{ transaction?.data?.mainPackage?.priceIncludeVat | number }}
+                        ฿ {{ transaction?.data?.onTopPackage?.priceIncludeVat | number }}
                       </span>
                     </p>
                     <p *ngIf="transaction?.data?.mobileCarePackage?.customAttributes">
@@ -87,7 +87,7 @@
                   <div class="text-right mt-3">
                     Total
                     <span class="total pull-right text-green">
-                      ฿{{ summary([+priceOption?.trade?.promotionPrice, +priceOption?.trade?.advancePay?.amount , +transaction?.data?.mainPackage?.priceIncludeVat, +transaction?.data?.mobileCarePackage?.customAttributes?.priceInclVat]) | number }}</span>
+                      ฿{{ summary([+priceOption?.trade?.promotionPrice, +priceOption?.trade?.advancePay?.amount , +transaction?.data?.onTopPackage?.priceIncludeVat, +transaction?.data?.mobileCarePackage?.customAttributes?.priceInclVat]) | number }}</span>
                   </div>
                 </div>
               </div>

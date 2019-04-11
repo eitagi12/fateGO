@@ -18,7 +18,7 @@
               ข้อมูลแพ็กเกจ
             </div>
           </div>
-          <mc-promotion-shelve [selected]="transaction?.data?.mainPackage" [promotionShelves]="promotionShelves"
+          <mc-promotion-shelve [selected]="transaction?.data?.onTopPackage" [promotionShelves]="promotionShelves"
             (completed)="onCompleted($event)"></mc-promotion-shelve>
         </div>
         <p class="text-center my-5" *ngIf="promotionShelves?.length === 0">ไม่พบแพ็กเกจที่ร่วมรายการ</p>
@@ -26,7 +26,7 @@
     </div>
     <mc-footer>
       <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-      <button class="btn btn-success" (click)="onNext()" [disabled]="!(!!transaction?.data?.mainPackage)">NEXT</button>
+      <button class="btn btn-success" (click)="onNext()" [disabled]="!(!!transaction?.data?.onTopPackage)">NEXT</button>
     </mc-footer>
   </div>
   
