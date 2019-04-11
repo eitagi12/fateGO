@@ -1,20 +1,19 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { HomeService, ReadCardProfile, PageLoadingService, AlertService, ChannelType, TokenService, Utils, ValidateCustomerIdCardComponent, KioskControls, User } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
-import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
-import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
-import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from 'src/app/buy-product/constants/route-path.constant';
-import {
-  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE
-} from '../../constants/route-path.constant';
-import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
-import * as moment from 'moment';
 
-const Moment = moment;
+import {
+  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE
+} from 'src/app/device-order/ais/device-order-ais-pre-to-post/constants/route-path.constant';
+
+import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+
+import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 
 @Component({
   selector: 'app-device-order-ais-pre-to-post-validate-customer-id-card-page',
@@ -49,18 +48,8 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
     private alertService: AlertService,
   ) {
     this.user = this.tokenService.getUser();
+    this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
-
-    this.homeService.callback = () => {
-      if (this.validateCustomerIdcard.koiskApiFn) {
-        this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
-      }
-      // Returns stock (sim card, soId) todo...
-      this.returnStock().then(() => {
-        this.homeHandler();
-      });
-    };
-
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
   }
 
@@ -96,24 +85,22 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
   }
 
   onHome(): void {
+    this.KioskLEDoff();
     this.homeService.goToHome();
   }
 
   onBack(): void {
-    this.returnStock().then(() => {
-      this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
-    });
+    this.KioskLEDoff();
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE]);
   }
 
   onNext(): void {
     this.pageLoadingService.openLoading();
     // มี auto next ทำให้ create transaction ช้ากว่า read card
     this.returnStock().then(() => {
-
-      this.createTransaction();
       this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
         .then((zipCode: string) => {
-          return this.http.get('/api/customerportal/validate-customer-new-register', {
+          return this.http.get('/api/customerportal/validate-customer-pre-to-post', {
             params: {
               identity: this.profile.idCardNo
             }
@@ -169,20 +156,13 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
 
               return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
             })
-            .then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE]));
-
+            .then(() => {
+              this.transaction.data.action = TransactionAction.READ_CARD;
+              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE]);
+            });
         }).then(() => this.pageLoadingService.closeLoading());
 
     });
-  }
-
-  createTransaction(): void {
-    this.transaction = {
-      data: {
-        transactionType: TransactionType.ORDER_PRE_TO_POST,
-        action: TransactionAction.READ_CARD,
-      }
-    };
   }
 
   getZipCode(province: string, amphur: string, tumbol: string): Promise<string> {
@@ -230,11 +210,9 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
     this.transactionService.update(this.transaction);
   }
 
-  homeHandler(): void {
-    if (environment.name === 'LOCAL') {
-      window.location.href = '/main-menu';
-    } else {
-      window.location.href = '/smart-digital/main-menu';
+  KioskLEDoff(): void {
+    if (this.validateCustomerIdcard.koiskApiFn) {
+      this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
     }
   }
 
@@ -244,14 +222,6 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
 
       const promiseAll = [];
       if (transaction.data) {
-        if (transaction.data.simCard && transaction.data.simCard.mobileNo) {
-          const unlockMobile = this.http.post('/api/customerportal/newRegister/selectMobileNumberRandom', {
-            userId: this.user.username,
-            mobileNo: transaction.data.simCard.mobileNo,
-            action: 'Unlock'
-          }).toPromise().catch(() => Promise.resolve());
-          promiseAll.push(unlockMobile);
-        }
         if (transaction.data.order && transaction.data.order.soId) {
           const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
             location: this.priceOption.productStock.location,
