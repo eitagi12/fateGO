@@ -44,7 +44,6 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
     private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,
     private promotionShelveService: PromotionShelveService,
-    private alertService: AlertService,
     private http: HttpClient,
   ) {
     this.priceOption = this.priceOptionService.load();
@@ -97,27 +96,22 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
   onNext(): void {
     this.pageLoadingService.openLoading();
     const mobileNo = this.transaction.data.simCard.mobileNo;
-    const billCycle = this.transaction.data.billingInformation.billCycles.map(resp => resp.mobileNo) || [];
-    if (this.advancePay && billCycle.length > 1) {
-      this.alertService.warning(`ไม่สามารถทำรายการต่อได้`);
-    } else {
-      this.http.get(`/api/customerportal/get-existing-mobile-care/${mobileNo}`).toPromise().then((response: any) => {
-        const exMobileCare = response.data;
-        if (exMobileCare.hasExistingMobileCare) {
-          const existingMobileCare: ExistingMobileCare = exMobileCare.existMobileCarePackage;
-          existingMobileCare.handSet = exMobileCare.existHandSet;
-          this.transaction.data.existingMobileCare = existingMobileCare;
-          if (this.selectCurrentPackage) {
-            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE]);
-          } else {
-            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE]);
-          }
+    this.http.get(`/api/customerportal/get-existing-mobile-care/${mobileNo}`).toPromise().then((response: any) => {
+      const exMobileCare = response.data;
+      if (exMobileCare.hasExistingMobileCare) {
+        const existingMobileCare: ExistingMobileCare = exMobileCare.existMobileCarePackage;
+        existingMobileCare.handSet = exMobileCare.existHandSet;
+        this.transaction.data.existingMobileCare = existingMobileCare;
+        if (this.selectCurrentPackage) {
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE]);
         } else {
-          this.transaction.data.existingMobileCare = null;
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_PAGE]);
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE]);
         }
-      }).then(() => this.pageLoadingService.closeLoading());
-    }
+      } else {
+        this.transaction.data.existingMobileCare = null;
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE]);
+      }
+    }).then(() => this.pageLoadingService.closeLoading());
   }
 
   onHome(): void {

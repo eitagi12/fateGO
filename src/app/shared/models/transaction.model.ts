@@ -179,7 +179,7 @@ export interface BillingInformation {
   billDeliveryAddress?: BillDeliveryAddress;
   // วันที่มีผลการใช้งาน B: รอบถัดไป D: วันถัดไป I: มีผลทันที
   overRuleStartDate?: string;
-
+  // check do createAndChangeBillingAccount Provisioning
   isNewBAFlag?: boolean;
 }
 
