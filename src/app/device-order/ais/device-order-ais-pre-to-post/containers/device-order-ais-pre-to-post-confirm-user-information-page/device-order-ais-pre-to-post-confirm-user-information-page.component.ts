@@ -204,6 +204,9 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
   }
 
   onMailBillingInfoCompleted(mailBillingInfo: any): void {
+    if (!mailBillingInfo) {
+      return;
+    }
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData || {};
 
@@ -247,7 +250,8 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
   }
 
   onNext(): void {
-    if (!this.customerValid()) {
+
+    if (!this.customerValid() && !this.isMergeBilling()) {
       this.alertService.warning('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร');
       return;
     }
