@@ -42,7 +42,6 @@ export class DeviceOnlyReadCardComponent implements OnInit {
   public addressTextBySmartCard: string;
   public listBillingAccount: Array<any>;
   public isSelect: boolean;
-  // public unsubscribe: any;
 
   constructor(
     private bsModalService: BsModalService,

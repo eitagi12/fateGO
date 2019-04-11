@@ -203,7 +203,6 @@ export class ReceiptInformationComponent implements OnInit {
   }
 
   switchKeyInBillingAddress(): void {
-    this.customerInfoService.cancelReadCarad();
     const isShowInput = !this.isShowInputForKeyIn;
     this.billingAddress.setIsKeyInBillingAddress(isShowInput);
     this.isShowInputForKeyIn = isShowInput;
