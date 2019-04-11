@@ -113,8 +113,18 @@ export class SharedTransactionService {
     if (data.billingInformation) {
       // หน้า web payment ใช้ show ที่อยู่รับบิล
       params.data.billing_information = {
-        customer: { ...data.customer, ...data.billingInformation.billDeliveryAddress }
+        customer: { ...data.customer, ...data.billingInformation.billDeliveryAddress },
       };
+
+      // วันที่มีผลการใช้งาน รอบบิลถัดไป/วันถัดไป/มีผลทันที
+      if (data.billingInformation.overRuleStartDate) {
+        params.data.billing_information.overRuleStartDate = data.billingInformation.overRuleStartDate;
+      }
+
+      // isNewBAFlag
+      if (data.billingInformation.isNewBAFlag) {
+        params.data.billing_information.isNewBAFlag = data.billingInformation.isNewBAFlag;
+      }
     }
 
     if (priceOption.trade) {
