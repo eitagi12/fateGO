@@ -2,12 +2,15 @@ import { Injectable } from '@angular/core';
 import { API } from '../constants/api.constant';
 import { HttpClient } from '@angular/common/http';
 import { Customer, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
+import { Subject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class CustomerInformationService {
   private selectedMobileNo: string;
+  public unsubscribe: any;
+  public cancelreadcard: Subject<boolean> = new Subject<boolean>();
   constructor(
     private http: HttpClient
   ) { }
@@ -21,6 +24,9 @@ export class CustomerInformationService {
           `/api/customerportal/newRegister/queryZipcode?provinceId=${provinceId}&amphurName=${amphur}&tumbolName=${tumbol}`;
           return this.http.get(getZipcodeAPI).toPromise();
    });
+  }
+  cancelReadCarad(): void {
+    this.cancelreadcard.next(false);
   }
   getBillingByIdCard(idCardNo: string): Promise<any> {
     const getBillingAccountAPI = `/api/customerportal/newRegister/${idCardNo}/queryBillingAccount`;

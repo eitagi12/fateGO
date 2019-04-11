@@ -11,6 +11,8 @@ import { HomeButtonService } from '../../services/home-button.service';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 import { HomeService, ApiRequestService, AlertService, PaymentDetail } from 'mychannel-shared-libs';
+import { CustomerInformationService } from '../../services/customer-information.service';
+import { from } from 'rxjs';
 @Component({
   selector: 'app-device-only-ais-select-payment-and-receipt-information-page',
   templateUrl: './device-only-ais-select-payment-and-receipt-information-page.component.html',
@@ -43,7 +45,8 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
     private priceOptionService: PriceOptionService,
     private createOrderService: CreateOrderService,
     private alertService: AlertService,
-    private homeButtonService: HomeButtonService
+    private homeButtonService: HomeButtonService,
+    private customerInformationService: CustomerInformationService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -120,6 +123,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
   onNext(): void {
     this.transaction.data.payment = this.paymentDetailTemp.payment;
     // this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;
+    this.customerInformationService.cancelReadCarad();
     this.createAddToCartTrasaction();
   }
 
