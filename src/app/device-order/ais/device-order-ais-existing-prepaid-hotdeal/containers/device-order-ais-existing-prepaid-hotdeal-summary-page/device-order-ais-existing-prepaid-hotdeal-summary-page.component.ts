@@ -61,7 +61,7 @@ export class DeviceOrderAisExistingPrepaidHotdealSummaryPageComponent implements
 
   getBalance(): void {
     const simcard = this.transaction.data.simCard;
-    const mainPackage = this.transaction.data.mainPackage;
+    const onTopPackage = this.transaction.data.onTopPackage;
     const mobileCarePackage = this.transaction.data.mobileCarePackage;
 
     this.pageLoadingService.openLoading();
@@ -73,9 +73,9 @@ export class DeviceOrderAisExistingPrepaidHotdealSummaryPageComponent implements
       const remainingBalance = Number(resp.data.remainingBalance) / 100;
       let money = 0;
       if (typeof (mobileCarePackage) === 'object') {
-        money = Number(mainPackage.priceIncludeVat) + Number(mobileCarePackage.customAttributes.priceInclVat);
+        money = Number(onTopPackage.priceIncludeVat) + Number(mobileCarePackage.customAttributes.priceInclVat);
       } else {
-        money = Number(mainPackage.priceIncludeVat);
+        money = Number(onTopPackage.priceIncludeVat);
       }
       const addMoney = !!((remainingBalance - money) < 0);
       const addMoneyPrice = (remainingBalance - money) >= 0 ? 0 : money - remainingBalance;
@@ -88,7 +88,7 @@ export class DeviceOrderAisExistingPrepaidHotdealSummaryPageComponent implements
   }
 
   getSummaryPrice(): number {
-    const onTopPack = this.transaction.data.mainPackage.priceIncludeVat;
+    const onTopPack = this.transaction.data.onTopPackage.priceIncludeVat;
     const promotion = this.priceOption.trade.promotionPrice;
     const existingMobileCare = this.transaction.data.existingMobileCare;
     const mobileCarePackage = this.transaction.data.mobileCarePackage;

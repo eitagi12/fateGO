@@ -8,6 +8,8 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { QueuePageService } from 'src/app/device-order/services/queue-page.service';
+import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-prepaid-hotdeal-queue-page',
@@ -24,6 +26,32 @@ export class DeviceOrderAisExistingPrepaidHotdealQueuePageComponent implements O
   user: User;
   mobileNo: string;
 
+  private readonly CASH_PAYMENT: string = '[CA]';
+  private readonly CREDIT_CARD_PAYMENT: string = '[CC]';
+  private readonly BANK: string = '[B]';
+  private readonly INSTALLMENT: string = '[I]';
+  private readonly POINT: string = '[P]';
+  private readonly DISCOUNT: string = '[D]';
+  private readonly TRADE_NO: string = '[T]';
+  private readonly REMARK: string = '[RM]';
+  private readonly SUMMARY_POINT: string = '[SP]';
+  private readonly SUMMARY_DISCOUNT: string = '[SD]';
+  private readonly RETURN_CODE: string = '[RC]';
+  private readonly PROMOTION_NAME: string = '[PM]';
+  private readonly MOBILE_CARE_CODE: string = '[MCC]';
+  private readonly MOBILE_CARE: string = '[MC]';
+  private readonly QUEUE_NUMBER: string = '[Q]';
+  private readonly AIR_TIME: string = '[AT]';
+  private readonly DEVICE: string = '[DV]';
+  private readonly AIR_TIME_AND_DEVICE: string = '[AD]';
+  private readonly DEVICE_AND_ADVANCE_PAYMENT: string = '[DP]';
+  private readonly PRMOTION_CODE: string = '[PC]';
+  private readonly PRIVILEGE_DESC: string = '[PN]';
+  private readonly ORDER_TYPE: string = '[OT]';
+  private readonly SPACE: string = ' ';
+  private readonly NEW_LINE: string = '\n';
+  private readonly COMMA: string = ',';
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -32,7 +60,9 @@ export class DeviceOrderAisExistingPrepaidHotdealQueuePageComponent implements O
     private tokenService: TokenService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private priceOptionService: PriceOptionService
+    private priceOptionService: PriceOptionService,
+    private queuePageService: QueuePageService,
+    private sharedTransactionService: SharedTransactionService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -48,18 +78,6 @@ export class DeviceOrderAisExistingPrepaidHotdealQueuePageComponent implements O
     });
   }
 
-  onSendSMSQueue(mobileNo: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-        return this.http.post('/api/salesportal/device-order/transaction/get-queue-qmatic', {
-          mobileNo: mobileNo
-        }).toPromise()
-          .then((respQueue: any) => {
-            const data = respQueue.data && respQueue.data.result ? respQueue.data.result : {};
-            resolve(data.queueNo);
-          });
-    });
-  }
-
   getRequestDeviceSellOrder(): any {
     const user = this.tokenService.getUser();
     const productStock = this.priceOption.productStock;
@@ -72,7 +90,6 @@ export class DeviceOrderAisExistingPrepaidHotdealQueuePageComponent implements O
     const order = data.order;
     const queue = data.queue;
     const payment = data.payment;
-    const advancePay = data.advancePayment;
     const paymentMethod = payment.paymentMethod;
     const mobileCare = this.transaction.data.mobileCarePackage;
 
@@ -116,11 +133,11 @@ export class DeviceOrderAisExistingPrepaidHotdealQueuePageComponent implements O
       // cashBackFlg: cashBackFlg,
       matAirTime: trade.matAirtime || '',
       matCodeFreeGoods: '',
-      paymentRemark: this.getOrderRemark(trade, payment, mobileCare, queue.queueNo, this.transaction),
+      paymentRemark: this.getOrderRemark(this.transaction,  this.priceOption),
       installmentTerm: paymentMethod && paymentMethod.month ? paymentMethod.month : 0,
       installmentRate: paymentMethod && paymentMethod.percentage ? paymentMethod.percentage : 0,
       mobileAisFlg: 'Y',
-      reqMinimumBalance: Number((+data.mainPackage.priceIncludeVat || 0)) + Number((+mobileCare.priceInclVat || 0)),
+      reqMinimumBalance: this.getReqMinimumBalance(data.onTopPackage, mobileCare),
       // paymentMethod: this.getPaymentMethod(trade, advancePay),
       // bankCode: this.getBankCode(trade, payment, advancePay),
       // tradeFreeGoodsId: trade.freeGoods[0] && trade.freeGoods[0].tradeFreegoodsId ? trade.freeGoods[0].tradeFreegoodsId : '',
@@ -131,7 +148,7 @@ export class DeviceOrderAisExistingPrepaidHotdealQueuePageComponent implements O
     };
   }
 
-  getPaymentMethod(trade: any, advancePay: Payment): string {
+  getPaymentMethod(trade: any, advancePay: any): string {
     let paymentMethod;
     if (trade && trade.payments && trade.payments.length > 0) {
       paymentMethod = trade.payments[0].method;
@@ -167,109 +184,125 @@ export class DeviceOrderAisExistingPrepaidHotdealQueuePageComponent implements O
     return bankCode;
   }
 
-  getOrderRemark(
-    trade: any,
-    payment: Payment,
-    mobileCare: any,
-    queueNo: string,
-    transaction: Transaction): string {
-    const customer = transaction.data.customer;
-    const newLine = '\n';
-    const comma = ',';
-    const space = ' ';
+  private getOrderRemark(transaction: Transaction, priceOption: PriceOption): string {
+    const onTopPackage = transaction.data.onTopPackage || {};
+    const airTime: string = this.getAirTime(priceOption.trade);
+    const installment = this.getInstallment(transaction, priceOption);
+    const information = this.getInformation(transaction, priceOption);
 
-    // campaign REMARK_PROMOTION_NAME'[PM]'
-    let remarkDesc = '[PM]' + space + '' + transaction.data.mainPackage.shortNameThai + newLine + newLine + newLine;
+    return `
+    ${this.PROMOTION_NAME}${this.SPACE}${onTopPackage.shortNameThai || ''}${this.NEW_LINE}
+    ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW_LINE}
+    `;
+  }
 
-    // advancePay
-    const advancePay = '';
-    remarkDesc += advancePay + newLine;
+  private getAirTime(trade: any): string {
+    let message = '';
 
-    // tradeAndInstallment
-    let tradeAndInstallment = '';
-
-    if (trade.advancePay.installmentFlag === 'Y') {
-      tradeAndInstallment = '[AD]';
-    } else {
-      // REMARK_DEVICE
-      tradeAndInstallment = '[DV]';
-    }
-
-    if (payment) {
-      if (payment.paymentType === 'QR_CODE') {
-        if (payment.paymentQrCodeType === 'THAI_QR') {
-          tradeAndInstallment += '[PB]' + comma + space;
-        } else {
-          tradeAndInstallment += '[RL]' + comma + space;
-        }
-      } else if (payment.paymentType === 'CREDIT') {
-        tradeAndInstallment += '[CC]' + comma + space;
-        tradeAndInstallment += '[B]' + payment.paymentBank.abb + comma + space;
-        if (payment.paymentBank.installments && payment.paymentBank.installments.length > 0) {
-          tradeAndInstallment += '[I]' + payment.paymentMethod.percentage +
-            '%' + space + payment.paymentMethod.month + 'เดือน' + comma + space;
-        }
-      } else {
-        tradeAndInstallment += '[CA]' + comma + space;
+    if (trade && trade.advancePay) {
+      const advancePay = trade.advancePay;
+      if (advancePay.installmentFlag !== 'Y' && +advancePay.amount > 0) {
+        message = `${this.AIR_TIME}${this.CREDIT_CARD_PAYMENT}`;
       }
     }
-    tradeAndInstallment += '[T]' + trade.tradeNo;
-    remarkDesc += tradeAndInstallment + newLine;
+    return message;
+  }
 
-    // otherInformation
-    const summaryPoint = 0;
-    const summaryDiscount = 0;
-    let otherInformation = '';
-    otherInformation += '[SP]' + space + summaryPoint + comma + space;
-    otherInformation += '[SD]' + space + summaryDiscount + comma + space;
-    otherInformation += '[D]' + space + (+trade.discount.amount).toFixed(2) + comma + space;
-    otherInformation += '[RC]' + space + customer.privilegeCode + comma + space;
-    otherInformation += '[OT]' + space + 'MC004' + comma + space;
-    if (mobileCare && !mobileCare.reason) {
-      otherInformation += '[PC]' + space + 'remark.mainPackageCode' + comma + space;
-      otherInformation += '[MCC]' + space + mobileCare.customAttributes.promotionCode + comma + space;
-      otherInformation += '[MC]' + space + mobileCare.customAttributes.shortNameThai + comma + space;
+  private getInstallment(transaction: Transaction, priceOption: PriceOption): string {
+    let message = '';
+
+    const trade = priceOption.trade;
+    const payment = transaction.data.payment;
+
+    const advancePay = trade.advancePay || {};
+    if (advancePay.installmentFlag === 'Y' && +advancePay.amount > 0) {
+      message += this.AIR_TIME_AND_DEVICE;
+    } else {
+      message += this.DEVICE;
     }
-    otherInformation += '[PN]' + space + 'remark.privilegeDesc' + comma + space;
-    otherInformation += '[Q]' + space + queueNo;
+    if (payment.paymentForm === 'INSTALLMENT') { // ผ่อนชำระ
+      message += this.CREDIT_CARD_PAYMENT + this.COMMA + this.SPACE;
+      message += this.BANK + payment.paymentMethod.abb + this.COMMA + this.SPACE;
+      message += this.INSTALLMENT + payment.paymentMethod.percentage + '%' + this.SPACE + payment.paymentMethod.month;
+    } else { // ชำระเต็มจำนวน
+      message += this.CASH_PAYMENT + this.COMMA + this.SPACE;
+      message += this.BANK + this.COMMA + this.SPACE;
+      message += this.INSTALLMENT + '0%' + this.SPACE + '0';
+    }
+    message += 'เดือน' + this.COMMA + this.SPACE;
+    message += this.TRADE_NO + trade.tradeNo;
+    return message;
+  }
 
-    remarkDesc += otherInformation + newLine;
+  private getInformation(transaction: Transaction, priceOption: PriceOption): string {
+    let message = '';
 
-    return remarkDesc;
+    const customerGroup = priceOption.customerGroup;
+    const privilege = priceOption.privilege;
+    const trade = priceOption.trade;
+    const onTopPackage = transaction.data.onTopPackage || {};
+    const mobileCarePackage = transaction.data.mobileCarePackage || {};
+    const simCard = transaction.data.simCard;
 
+    let customerGroupName = '';
+    if ('MC001' === customerGroup.code) {
+      customerGroupName = 'New Register';
+    } else if ('MC002' === customerGroup.code) {
+      customerGroupName = 'Convert Pre to Post';
+    }
+    const customAttributes = mobileCarePackage.customAttributes || {};
+
+    message += this.SUMMARY_POINT + this.SPACE + 0 + this.COMMA + this.SPACE;
+    message += this.SUMMARY_DISCOUNT + this.SPACE + 0 + this.COMMA + this.SPACE;
+    message += this.DISCOUNT + this.SPACE + (trade.discount ? +trade.discount.amount : 0) + this.COMMA + this.SPACE;
+    message += this.RETURN_CODE + this.SPACE + (simCard.privilegeCode || '') + this.COMMA + this.SPACE;
+    message += this.ORDER_TYPE + this.SPACE + customerGroupName + this.COMMA + this.SPACE;
+    message += this.PRMOTION_CODE + this.SPACE + (onTopPackage.promotionCode || '') + this.COMMA + this.SPACE;
+    message += this.MOBILE_CARE_CODE + this.SPACE + (customAttributes.promotionCode || '') + this.COMMA + this.SPACE;
+    message += this.MOBILE_CARE + this.SPACE + (customAttributes.shortNameThai || '') + this.COMMA + this.SPACE;
+    message += this.PRIVILEGE_DESC + this.SPACE + (privilege.privilegeDesc || '') + this.COMMA + this.SPACE;
+    message += this.QUEUE_NUMBER + this.SPACE + trade.tradeNo;
+    return message;
+  }
+
+  private getReqMinimumBalance(onTopPackage: any, mobileCarePackage: any): number { // Package only
+    let total: number = 0;
+
+    if (onTopPackage) {
+      total += +(onTopPackage.priceIncludeVat || 0);
+    }
+
+    if (mobileCarePackage) {
+      const customAttributes = mobileCarePackage.customAttributes;
+      total += +(customAttributes.priceInclVat || 0);
+    }
+    return total;
   }
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    this.http.post('/api/salesportal/device-order/transaction/get-queue-qmatic', {
-      mobileNo: this.queueFrom.value.mobileNo
-    }).toPromise()
-    .then((respQueue: any) => {
-        const data = respQueue.data && respQueue.data.result ? respQueue.data.result : {};
+    this.queuePageService.getQueueQmatic(this.queueFrom.value.mobileNo)
+      .then((resp: any) => {
+        const data = resp.data && resp.data.result ? resp.data.result : {};
         return data.queueNo;
-    })
-    .then((queueNo: string) => {
-      return  this.transaction.data.queue = {
-        queueNo: queueNo
-      };
-    })
-    .then(() => {
-      return this.http.post('/api/salesportal/device-sell/order', this.getRequestDeviceSellOrder()).toPromise()
+      })
+      .then((queueNo: string) => {
+        this.transaction.data.queue = {
+          queueNo: queueNo
+        };
+        return this.http.post('/api/salesportal/device-sell/order', this.getRequestDeviceSellOrder()).toPromise()
+          .then(() => {
+            return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
+          });
+      })
       .then(() => {
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_RESULT_PAGE]);
-      });
-    })
-    .then(() => {
-      this.pageLoadingService.closeLoading();
-    });
+      })
+      .then(() => this.pageLoadingService.closeLoading());
   }
 
   onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_AGGREGATE_PAGE]);
-  }
-
-  onHome(): void {
-    this.homeService.goToHome();
   }
 
   ngOnDestroy(): void {
