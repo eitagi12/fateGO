@@ -61,11 +61,19 @@ export interface TransactionData {
   mpay_payment?: any;
   preBooking?: Prebooking;
   discount?: Discount;
+  contract?: Condition;
   // MPAY
   mpayPayment?: QrCodePrePostMpayModel;
   status?: Status;
   device?: Device;
 }
+
+export interface Condition {
+  conditionCode: string;
+  conditionName?: string;
+  conditionText?: string;
+}
+
 export interface Payment {
   paymentQrCodeType: 'THAI_QR' | 'LINE_QR';
   paymentType: 'DEBIT' | 'CREDIT' | 'QR_CODE';

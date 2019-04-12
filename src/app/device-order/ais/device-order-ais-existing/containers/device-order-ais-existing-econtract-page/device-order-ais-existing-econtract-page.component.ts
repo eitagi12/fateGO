@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, Condition } from 'src/app/shared/models/transaction.model';
 import { ShoppingCart, HomeService, TokenService, PageLoadingService, IdCardPipe, Utils } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -17,7 +17,7 @@ import { ROUTE_DEVICE_ORDER_AIS_EXISTING_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_EX
   styleUrls: ['./device-order-ais-existing-econtract-page.component.scss'],
   providers: [IdCardPipe, DecimalPipe]
 })
-export class DeviceOrderAisExistingEcontractPageComponent implements OnInit {
+export class DeviceOrderAisExistingEcontractPageComponent implements OnInit, OnDestroy {
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   priceOption: PriceOption;
@@ -41,6 +41,7 @@ export class DeviceOrderAisExistingEcontractPageComponent implements OnInit {
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
+    delete this.transaction.data.contract;
   }
 
   ngOnInit(): void {
@@ -69,7 +70,6 @@ export class DeviceOrderAisExistingEcontractPageComponent implements OnInit {
     const simCard: any = this.transaction.data.simCard || {};
     const mainPackage: any = this.transaction.data.mainPackage || {};
     const mobileCarePackage: any = this.transaction.data.mobileCarePackage || {};
-
     const advancePay: any = trade.advancePay || {};
     this.pageLoadingService.openLoading();
     this.http.post('/api/salesportal/promotion-shelves/promotion/condition', {
@@ -99,14 +99,19 @@ export class DeviceOrderAisExistingEcontractPageComponent implements OnInit {
           airTimeMonth: this.getAirTimeMonth(advancePay.promotions),
           price: this.decimalPipe.transform(+trade.promotionPrice + (+advancePay.amount)),
           signature: '',
-          mobileCarePackageTitle: mobileCarePackage ? `พร้อมใช้บริการ ${mobileCarePackage.detailTH}` : '',
+          mobileCarePackageTitle: mobileCarePackage.detailTH ? `พร้อมใช้บริการ ${mobileCarePackage.detailTH}` : '',
           condition: condition.conditionText,
 
         },
         docType: 'ECONTRACT',
         location: user.locationCode
       };
-
+      if (condition.conditionCode) {
+        this.transaction.data.contract = {
+          conditionCode: condition.conditionCode
+        };
+      }
+      console.log('params', params);
       return this.http.post('/api/salesportal/generate-e-document', params).toPromise().then((eDocResp: any) => {
         return eDocResp.data || '';
       });
@@ -136,6 +141,10 @@ export class DeviceOrderAisExistingEcontractPageComponent implements OnInit {
       return advancePayPromotions[0].month;
     }
     return 0;
+  }
+
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
   }
 
 }

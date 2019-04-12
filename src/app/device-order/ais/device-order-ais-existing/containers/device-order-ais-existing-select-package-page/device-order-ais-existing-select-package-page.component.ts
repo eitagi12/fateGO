@@ -80,7 +80,15 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
   onCompleted(promotion: any): void {
     // รอแก้ไขตัวแปรที่จะเก็บลงใน share transaction
     this.selectCurrentPackage = false;
-    this.transaction.data.mainPackage = promotion;
+    this.transaction.data.mainPackage = {
+      title: promotion.title,
+      detailTH: promotion.detailTH,
+      customAttributes : {
+        promotionCode: promotion.customAttributes.promotionCode,
+        promotionName: promotion.customAttributes.promotionName,
+        chargeType: promotion.customAttributes.chargeType
+      }
+    };
   }
 
   onClickCurrentPackage(): void {

@@ -70,7 +70,7 @@ export class SharedTransactionService {
         transactionType: data.transactionType,
         customer: data.customer || {},
         sim_card: data.simCard || {},
-        main_package: data.mainPackage || {},
+        main_package: {},
         device: {
           amount: 1,
           brand: productStock.brand || productDetail.brand,
@@ -89,6 +89,7 @@ export class SharedTransactionService {
           soId: data.order.soId
         },
         queue: {},
+        contract: {},
         seller: {
           locationCode: !!data.seller ? data.seller.locationCode : productStock.location || '',
           locationName: !!data.seller ? data.seller.locationName : productStock.locationName || '',
@@ -96,9 +97,25 @@ export class SharedTransactionService {
           isAscCode: !this.tokenService.isAisUser(),
           sellerNo: !!data.seller ? data.seller.sellerNo : ''
         },
+        existing_mobile_care_package: [],
         status: data.status || {}
       }
     };
+
+    if (data.mainPackage) {
+      params.data.main_package = {
+        title: data.mainPackage.title,
+        detailTH: data.mainPackage.detailTH,
+        customAttributes : {}
+      };
+      if (data.mainPackage.customAttributes) {
+        params.data.main_package.customAttributes = {
+          promotionCode: data.mainPackage.customAttributes.promotionCode,
+          promotionName: data.mainPackage.customAttributes.promotionName,
+          chargeType: data.mainPackage.customAttributes.chargeType
+        };
+      }
+    }
 
     if (data.preBooking) {
       params.data.pre_booking = transaction.data.preBooking;
@@ -143,7 +160,16 @@ export class SharedTransactionService {
         // ของเดิม เก็บ reason ไว้ใน object
         params.data.mobile_care_package = { reason: data.mobileCarePackage };
       } else {
-        params.data.mobile_care_package = data.mobileCarePackage;
+        params.data.mobile_care_package = {
+          title: data.mobileCarePackage.title,
+          id: data.mobileCarePackage.id,
+          customAttributes: {}
+        };
+        if (data.mobileCarePackage.customAttributes) {
+          params.data.mobile_care_package.customAttributes = {
+            promotionCode : data.mobileCarePackage.customAttributes.promotionCode
+          };
+        }
       }
     }
 
@@ -151,6 +177,10 @@ export class SharedTransactionService {
       params.data.queue = data.queue;
     }
 
+    if (data.contract && data.contract.conditionCode) {
+      params.data.contract.conditionCode = data.contract.conditionCode;
+    }
+    console.log('updateTransaction', params);
     return params;
   }
 

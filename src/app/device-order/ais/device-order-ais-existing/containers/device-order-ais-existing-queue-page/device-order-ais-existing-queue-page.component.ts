@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   ROUTE_DEVICE_ORDER_AIS_EXISTING_RESULT_PAGE,
@@ -18,7 +18,8 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
   templateUrl: './device-order-ais-existing-queue-page.component.html',
   styleUrls: ['./device-order-ais-existing-queue-page.component.scss']
 })
-export class DeviceOrderAisExistingQueuePageComponent implements OnInit {
+
+export class DeviceOrderAisExistingQueuePageComponent implements OnInit, OnDestroy {
 
   transaction: Transaction;
   priceOption: PriceOption;
@@ -82,6 +83,10 @@ export class DeviceOrderAisExistingQueuePageComponent implements OnInit {
 
   validatorMobileNo(): ValidationErrors {
     return this.queueFrom.get('mobileNo').touched && this.queueFrom.get('mobileNo').errors ;
+  }
+
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
   }
 
 }

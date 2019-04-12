@@ -1,9 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { Router } from '@angular/router';
 import { HomeService, User, AisNativeService, TokenService, ChannelType, ShoppingCart } from 'mychannel-shared-libs';
 import {
-  ROUTE_DEVICE_ORDER_AIS_EXISTING_AGREEMENT_PAGE,
   ROUTE_DEVICE_ORDER_AIS_EXISTING_AGGREGATE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_EXISTING_ECONTRACT
 } from '../../constants/route-path.constant';
@@ -17,7 +16,7 @@ import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart
   templateUrl: './device-order-ais-existing-agreement-sign-page.component.html',
   styleUrls: ['./device-order-ais-existing-agreement-sign-page.component.scss']
 })
-export class DeviceOrderAisExistingAgreementSignPageComponent implements OnInit {
+export class DeviceOrderAisExistingAgreementSignPageComponent implements OnInit, OnDestroy {
 
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
