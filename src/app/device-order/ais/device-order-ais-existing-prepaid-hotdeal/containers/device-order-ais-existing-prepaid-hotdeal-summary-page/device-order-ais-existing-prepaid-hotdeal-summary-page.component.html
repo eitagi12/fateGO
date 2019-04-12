@@ -122,7 +122,7 @@
     </div>
     <mc-footer>
       <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-      <button class="btn btn-success" (click)="onNext()">NEXT</button>
+      <button class="btn btn-success" [disabled]="balance?.addMoney" (click)="onNext()">NEXT</button>
     </mc-footer>
   </div>
 
