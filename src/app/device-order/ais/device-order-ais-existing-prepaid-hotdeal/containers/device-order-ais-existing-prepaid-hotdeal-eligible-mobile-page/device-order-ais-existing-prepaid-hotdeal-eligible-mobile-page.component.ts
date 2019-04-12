@@ -15,6 +15,7 @@ import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms'
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
+import { ErrorPageComponent } from 'src/app/containers/error-page/error-page.component';
 
 export interface BillingAccount {
   billingName: string;
@@ -188,7 +189,11 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_OTP_PAGE]);
         }
       });
-    });
+    }).catch((err) => {
+      this.pageLoadingService.closeLoading();
+      this.alertService.error(err);
+    })
+    ;
   }
 
   onBack(): void {
