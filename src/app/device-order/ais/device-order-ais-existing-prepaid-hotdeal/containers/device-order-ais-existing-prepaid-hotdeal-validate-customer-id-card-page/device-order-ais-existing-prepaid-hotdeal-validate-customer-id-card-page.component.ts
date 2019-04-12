@@ -51,12 +51,11 @@ export class DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageCompo
         if (this.validateCustomerIdcard.koiskApiFn) {
           this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
         }
-        // Returns stock (sim card, soId) todo...
         return this.returnStock().then(() => true);
       })
       .then((isNext: boolean) => {
         if (isNext) {
-          this.homeHandler();
+          window.location.href = environment.name === 'LOCAL' ? '/main-menu' : '/smart-digital/main-menu';
         }
       });
     };
@@ -86,14 +85,6 @@ export class DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageCompo
     this.profile = profile;
     // auto next
     this.onNext();
-  }
-
-  homeHandler(): void {
-    if (environment.name === 'LOCAL') {
-      window.location.href = '/main-menu';
-    } else {
-      window.location.href = '/smart-digital/main-menu';
-    }
   }
 
   onNext(): void {
