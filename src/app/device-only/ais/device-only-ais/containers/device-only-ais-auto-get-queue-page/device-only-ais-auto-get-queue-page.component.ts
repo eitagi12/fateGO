@@ -8,7 +8,6 @@ import { HomeButtonService } from '../../services/home-button.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { CreateOrderService } from '../../services/create-order.service';
 import { QueueService } from '../../services/queue.service';
-import { Subscription } from 'rxjs';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE, ROUTE_DEVICE_ONLY_AIS_KEY_IN_QUEUE } from '../../constants/route-path.constant';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
@@ -21,10 +20,8 @@ import { SharedTransactionService } from 'src/app/shared/services/shared-transac
 export class DeviceOnlyAutoGetQueuePageComponent implements OnInit, OnDestroy {
   transaction: Transaction;
   priceOption: PriceOption;
-  queueSubscript: Subscription;
   public mobileForm: FormGroup;
   public queue: string;
-  public queueForm: FormGroup;
 
   constructor(
     public router: Router,
@@ -113,7 +110,6 @@ export class DeviceOnlyAutoGetQueuePageComponent implements OnInit, OnDestroy {
       }).catch((err: any) => {
         this.pageLoadingService.closeLoading();
         this.alertService.error('ระบบไม่สามารถทำรายการได้ในขณะนี้');
-        console.log(err);
       });
     } else {
       this.pageLoadingService.closeLoading();

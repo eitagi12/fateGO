@@ -10,9 +10,8 @@ import { Product } from 'src/app/device-only/ais/device-only-ais/models/product.
 import { HomeButtonService } from '../../services/home-button.service';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
-import { CustomerInformationService } from '../../services/customer-information.service';
 import { HomeService, ApiRequestService, AlertService, PaymentDetail, User, TokenService } from 'mychannel-shared-libs';
-import { HttpClient } from '../../../../../../../node_modules/@angular/common/http';
+
 @Component({
   selector: 'app-device-only-ais-select-payment-and-receipt-information-page',
   templateUrl: './device-only-ais-select-payment-and-receipt-information-page.component.html',
@@ -44,9 +43,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
     private createOrderService: CreateOrderService,
     private alertService: AlertService,
     private homeButtonService: HomeButtonService,
-    private customerInformationService: CustomerInformationService,
     private tokenService: TokenService,
-    private http: HttpClient
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -154,33 +151,6 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
     }).catch((e) => {
       this.alertService.error(e);
     });
-  }
-
-  getRequestAddDeviceSellingCart(transaction: Transaction, priceOption: PriceOption):  Promise<any> {
-    const productStock = priceOption.productStock;
-    const productDetail = priceOption.productDetail;
-    const customer = transaction.data.customer;
-    const cusNameOrder = customer && customer.firstName && customer.lastName ? `${customer.firstName} ${customer.lastName}` : '-';
-    const requestData: any = {
-      soCompany: productStock.company || 'AWN',
-      locationSource: this.user.locationCode,
-      locationReceipt: this.user.locationCode,
-      productType: productDetail.productType || 'DEVICE',
-      productSubType: productDetail.productSubType || 'HANDSET',
-      brand: productDetail.brand || productStock.brand,
-      model: productDetail.model,
-      color: productStock.color,
-      priceIncAmt: '',
-      priceDiscountAmt: '',
-      grandTotalAmt: '',
-      userId: this.user.username,
-      cusNameOrder: cusNameOrder,
-      preBookingNo: '',
-      depositAmt: '',
-      reserveNo: ''
-    };
-    return this.http.post('/api/salesportal/device-sell/item', requestData).toPromise()
-    .then((res: any) => res.data);
   }
 
   onPaymentDetailCompleted(payment: any): void {

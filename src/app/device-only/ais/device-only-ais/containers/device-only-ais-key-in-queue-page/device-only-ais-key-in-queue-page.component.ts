@@ -93,7 +93,7 @@ export class DeviceOnlyAisKeyInQueuePageComponent implements OnInit, OnDestroy {
       }
     }).catch((err) => {
       this.pageLoadingService.closeLoading();
-      this.alertService.warning('ระบบไม่สามารถ update รายการสินค้าได้');
+      this.alertService.warning('ระบบไม่สามารถ update รายการได้ในขณะนี้');
     });
   }
 

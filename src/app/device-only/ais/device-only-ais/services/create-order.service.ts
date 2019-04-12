@@ -104,6 +104,7 @@ export class CreateOrderService {
     const productDetail = priceOption.productDetail;
     const customer = transaction.data.customer;
     const cusNameOrder = customer && customer.firstName && customer.lastName ? `${customer.firstName} ${customer.lastName}` : '-';
+    const color  = productStock.colorName || productStock.color;
     const requestData: any = {
       soCompany: productStock.company || 'AWN',
       locationSource: this.user.locationCode,
@@ -112,7 +113,7 @@ export class CreateOrderService {
       productSubType: productDetail.productSubType || 'HANDSET',
       brand: productDetail.brand || productStock.brand,
       model: productDetail.model,
-      color: productStock.color,
+      color: color,
       priceIncAmt: '',
       priceDiscountAmt: '',
       grandTotalAmt: '',
