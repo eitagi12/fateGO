@@ -153,10 +153,10 @@ export class SharedTransactionService {
       }
 
       if (data.billingInformation.billCycleData) {
-        params.data.billing_information.billMedia = data.billingInformation.billCycleData.billMedia || '';
-        params.data.billing_information.emailAddress = data.billingInformation.billCycleData.billAddressText || '';
-        params.data.billing_information.phoneNumberContact = data.billingInformation.billCycleData.phoneNoContact || '';
-        params.data.billing_information.mobileNumberContact = data.billingInformation.billCycleData.mobileNoContact || '';
+        params.data.billing_information.billMedia = data.billingInformation.billCycleData.billMedia;
+        params.data.billing_information.emailAddress = data.billingInformation.billCycleData.billAddressText;
+        params.data.billing_information.phoneNumberContact = data.billingInformation.billCycleData.phoneNoContact;
+        params.data.billing_information.mobileNumberContact = data.billingInformation.billCycleData.mobileNoContact;
       }
     }
 
