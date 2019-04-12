@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { ApiRequestService, PageLoadingService, HomeService, Utils, AlertService, User, TokenService } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 
-import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress, Customer, MainPromotion, Prebooking, Device } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress, Customer, MainPromotion, Prebooking, Device, Order } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { AbstractControl, ValidationErrors, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { WIZARD_DEVICE_ORDER_AIS, WIZARD_DEVICE_ORDER_ASP } from 'src/app/device-order/constants/wizard.constant';
@@ -24,9 +24,9 @@ import { debounceTime } from 'rxjs/operators';
 })
 export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implements OnInit, OnDestroy {
 
-  isTelewiz: boolean;
-  wizards: any;
-  active: number;
+  isTelewiz: boolean = this.tokenService.isTelewizUser();
+  wizards: any = this.tokenService.isTelewizUser() ? WIZARD_DEVICE_ORDER_ASP : WIZARD_DEVICE_ORDER_AIS;
+  active: number = this.isTelewiz ? 2 : 1;
   readonly PLACEHOLDER: string = '(หมายเลขโทรศัพท์ / เลขบัตรประชาชน)';
   readonly PLACEHOLDER_HEADDER: string = 'กรอกเอกสารแสดงตน';
 
@@ -35,6 +35,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
   identity: string;
   priceOption: PriceOption;
   user: User;
+  order: Order;
 
   validateCustomerForm: FormGroup;
 
@@ -51,7 +52,8 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
     private privilegeService: PrivilegeService,
     private tokenService: TokenService,
     private sharedTransactionService: SharedTransactionService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private utils: Utils
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -69,14 +71,11 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
   }
 
   ngOnInit(): void {
-    this.isTelewiz = this.tokenService.isTelewizUser();
-    this.wizards = this.tokenService.isTelewizUser() ? WIZARD_DEVICE_ORDER_ASP : WIZARD_DEVICE_ORDER_AIS;
-    this.active = this.isTelewiz ? 2 : 1;
-    if (this.tokenService.isTelewizUser()) {
+    if (this.isTelewiz) {
       this.createForm();
     }
     if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
-      return;
+      this.order = this.transaction.data.order;
     }
     this.createTransaction();
   }
@@ -117,7 +116,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    if (!!this.identity.match(/^0[6-9]\d{8}$/)) {
+    if (this.utils.isMobileNo(this.identity)) {
       // KEY-IN MobileNo
         this.privilegeService.checkAndGetPrivilegeCode(this.identity, this.priceOption.trade.ussdCode).then((privligeCode) => {
           return this.customerInfoService.getCustomerProfileByMobileNo(this.identity).then((customer: Customer) => {
@@ -247,7 +246,8 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
         transactionType: TransactionType.DEVICE_ORDER_EXISTING_ASP,
         action: TransactionAction.KEY_IN,
         preBooking: preBooking,
-        device: device
+        device: device,
+        order: this.order
       }
     };
   }
@@ -258,7 +258,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
 
     if (length >= 10) {
       if (length === 10) {
-        if (!!value.match(/^0[6-9]\d{8}$/)) {
+        if (this.utils.isMobileNo(value)) {
           return null;
         } else {
           return {
@@ -266,7 +266,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
           };
         }
       } else if (length === 13) {
-        if (this.isThaiIdCard(value)) {
+        if (this.utils.isThaiIdCard(value)) {
           return null;
         } else {
           return {
@@ -337,7 +337,6 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
 
     this.validateCustomerForm.valueChanges.pipe(debounceTime(750))
       .subscribe((value: any) => {
-        console.log(this.validateCustomerForm.valid);
         this.identityValid = this.validateCustomerForm.valid;
         if (this.validateCustomerForm.valid) {
           this.identity = value.identity;
