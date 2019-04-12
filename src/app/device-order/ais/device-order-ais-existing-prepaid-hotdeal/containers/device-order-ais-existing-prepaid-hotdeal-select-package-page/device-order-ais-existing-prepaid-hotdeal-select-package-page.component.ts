@@ -79,29 +79,34 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
     .then((resp: any) => {
       const data = resp.data.packageList || [];
       const promotionShelves: PromotionShelve[] = data.map((promotionShelve: any) => {
-        return {
+        const promotionData =  {
           title: promotionShelve.title,
-          // replace to class in css
           icon: (promotionShelve.icon || '').replace(/\.jpg$/, '').replace(/_/g, '-'),
           promotions: promotionShelve.subShelves
             .map((subShelve: any) => {
-              // console.log('subShelve', subShelve);
-              return { // group
+              const group = { // group
                 id: subShelve.subShelveId,
                 title: subShelve.title,
                 sanitizedName: subShelve.sanitizedName,
-                items: (subShelve.items || []).map((promotion: any) => {
-                  // console.log('promotion', promotion);
-                  return { // item
-                    id: promotion.itemId,
-                    title: promotion.shortNameThai,
-                    detail: promotion.statementThai,
-                    value: promotion
-                  };
-                })
+                items: (subShelve.items || [])
+                .map((promotion: any) => {
+                  const price = promotion.priceExclVat || 0;
+                  if (price >= trade.minimumPackage && price <= trade.maximumPackage) {
+                    return { // item
+                      id: promotion.itemId,
+                      title: promotion.shortNameThai,
+                      detail: promotion.statementThai,
+                      value: promotion
+                    };
+                  }
+                }).filter((item) => item)
               };
+              return group;
             })
         };
+        if (promotionData.promotions) {
+          return promotionData;
+        }
       });
       return Promise.resolve(promotionShelves);
     }).then((promotionShelves: PromotionShelve[]) => {
