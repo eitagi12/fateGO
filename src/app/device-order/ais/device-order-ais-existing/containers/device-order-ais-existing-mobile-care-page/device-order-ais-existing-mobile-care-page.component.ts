@@ -6,7 +6,6 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction } from 'src/app/shared/models/transaction.model';
-import { HttpClient } from '@angular/common/http';
 import {
   ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_EXISTING_SUMMARY_PAGE,
@@ -51,8 +50,12 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit, On
   }
 
   onBack(): void {
-    if (this.transaction.data.existingMobileCare) {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE]);
+    if (!this.transaction.data.mainPackage) {
+      if (this.transaction.data.existingMobileCare) {
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE]);
+      } else {
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_PAGE]);
+      }
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE]);
     }

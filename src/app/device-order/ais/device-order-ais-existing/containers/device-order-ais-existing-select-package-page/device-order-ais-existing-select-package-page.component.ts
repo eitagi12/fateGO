@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { Transaction, ExistingMobileCare } from 'src/app/shared/models/transaction.model';
-import { PromotionShelve, HomeService, PageLoadingService, AlertService, PromotionShelveItem, PromotionShelveGroup, ShoppingCart } from 'mychannel-shared-libs';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { PromotionShelve, HomeService, PageLoadingService, PromotionShelveGroup, ShoppingCart } from 'mychannel-shared-libs';
+import { BsModalRef } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
@@ -43,7 +43,6 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
-    private alertService: AlertService,
     private shoppingCartService: ShoppingCartService
   ) {
     this.priceOption = this.priceOptionService.load();
@@ -54,20 +53,22 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
       delete this.transaction.data.billingInformation.billCycle;
       delete this.transaction.data.billingInformation.mergeBilling;
     }
-    if (this.isNotMathHotDeal && !this.advancePay) {
+
+    if (!this.mathHotDeal && !this.advancePay) {
       this.showCurrentPackage = true;
     }
+
     if (this.priceOption.privilege.minimumPackagePrice <= this.transaction.data.currentPackage.priceExclVat) {
       this.showSelectCurrentPackage = true;
     }
   }
 
-  get advancePay(): any {
-    return this.priceOption.trade.advancePay && this.priceOption.trade.advancePay.amount || 0;
+  get advancePay(): boolean {
+    return !!((this.priceOption.trade.advancePay && this.priceOption.trade.advancePay.amount || 0) > 0);
   }
 
-  get isNotMathHotDeal(): boolean {
-    return !this.priceOption.campaign.campaignName.match(/\b(\w*Hot\s+Deal\w*)\b/);
+  get mathHotDeal(): boolean {
+    return !!this.priceOption.campaign.campaignName.match(/\b(\w*Hot\s+Deal\w*)\b/);
   }
 
   ngOnInit(): void {
@@ -80,15 +81,7 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
   onCompleted(promotion: any): void {
     // รอแก้ไขตัวแปรที่จะเก็บลงใน share transaction
     this.selectCurrentPackage = false;
-    this.transaction.data.mainPackage = {
-      title: promotion.title,
-      detailTH: promotion.detailTH,
-      customAttributes : {
-        promotionCode: promotion.customAttributes.promotionCode,
-        promotionName: promotion.customAttributes.promotionName,
-        chargeType: promotion.customAttributes.chargeType
-      }
-    };
+    this.transaction.data.mainPackage = promotion;
   }
 
   onClickCurrentPackage(): void {
@@ -110,13 +103,15 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
         const existingMobileCare: ExistingMobileCare = exMobileCare.existMobileCarePackage;
         existingMobileCare.handSet = exMobileCare.existHandSet;
         this.transaction.data.existingMobileCare = existingMobileCare;
-        if (this.selectCurrentPackage) {
+      }
+
+      if (this.selectCurrentPackage) {
+        if (exMobileCare.hasExistingMobileCare) {
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE]);
         } else {
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE]);
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE]);
         }
       } else {
-        this.transaction.data.existingMobileCare = null;
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE]);
       }
     }).then(() => this.pageLoadingService.closeLoading());

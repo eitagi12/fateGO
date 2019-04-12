@@ -97,7 +97,6 @@ export class SharedTransactionService {
           isAscCode: !this.tokenService.isAisUser(),
           sellerNo: !!data.seller ? data.seller.sellerNo : ''
         },
-        existing_mobile_care_package: [],
         status: data.status || {}
       }
     };
@@ -195,7 +194,6 @@ export class SharedTransactionService {
     if (data.contract && data.contract.conditionCode) {
       params.data.contract.conditionCode = data.contract.conditionCode;
     }
-    console.log('updateTransaction', params);
     return params;
   }
 
