@@ -106,7 +106,7 @@ export class SharedTransactionService {
       params.data.main_package = {
         title: data.mainPackage.title,
         detailTH: data.mainPackage.detailTH,
-        customAttributes : {}
+        customAttributes: {}
       };
       if (data.mainPackage.customAttributes) {
         params.data.main_package.customAttributes = {
@@ -121,7 +121,7 @@ export class SharedTransactionService {
       params.data.pre_booking = transaction.data.preBooking;
     }
 
-      // เดี๋ยวปรับอีกทีว่าเก็บอะไรบ้าง
+    // เดี๋ยวปรับอีกทีว่าเก็บอะไรบ้าง
     params.data.main_promotion = {
       campaign: priceOption.campaign,
       privilege: priceOption.privilege,
@@ -142,6 +142,21 @@ export class SharedTransactionService {
       // isNewBAFlag
       if (data.billingInformation.isNewBAFlag) {
         params.data.billing_information.isNewBAFlag = data.billingInformation.isNewBAFlag;
+      }
+
+      if (data.billingInformation.billCycles) {
+        params.data.billing_information.billCycles = data.billingInformation.billCycles;
+      }
+
+      if (data.customer.billCycle) {
+        params.data.billing_information.billCycle = data.customer.billCycle;
+      }
+
+      if (data.billingInformation.billCycleData) {
+        params.data.billing_information.billMedia = data.billingInformation.billCycleData.billMedia;
+        params.data.billing_information.emailAddress = data.billingInformation.billCycleData.billAddressText;
+        params.data.billing_information.phoneNumberContact = data.billingInformation.billCycleData.phoneNoContact;
+        params.data.billing_information.mobileNumberContact = data.billingInformation.billCycleData.mobileNoContact;
       }
     }
 
@@ -167,7 +182,7 @@ export class SharedTransactionService {
         };
         if (data.mobileCarePackage.customAttributes) {
           params.data.mobile_care_package.customAttributes = {
-            promotionCode : data.mobileCarePackage.customAttributes.promotionCode
+            promotionCode: data.mobileCarePackage.customAttributes.promotionCode
           };
         }
       }
