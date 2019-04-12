@@ -52,12 +52,11 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
 
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-    delete this.transaction.data.onTopPackage;
     this.callService();
   }
 
   onCompleted(promotion: any): void {
-    this.transaction.data.onTopPackage = promotion;
+   this.transaction.data.onTopPackage = promotion;
   }
 
   callService(): void {
@@ -86,11 +85,13 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
           icon: (promotionShelve.icon || '').replace(/\.jpg$/, '').replace(/_/g, '-'),
           promotions: promotionShelve.subShelves
             .map((subShelve: any) => {
+              // console.log('subShelve', subShelve);
               return { // group
                 id: subShelve.subShelveId,
                 title: subShelve.title,
                 sanitizedName: subShelve.sanitizedName,
                 items: (subShelve.items || []).map((promotion: any) => {
+                  // console.log('promotion', promotion);
                   return { // item
                     id: promotion.itemId,
                     title: promotion.shortNameThai,
