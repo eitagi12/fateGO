@@ -76,7 +76,7 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
       this.idCardNo = this.transaction.data.customer.idCardNo;
       const ussdCode = this.priceOption.trade.ussdCode;
       this.http.post('/api/customerportal/query-eligible-mobile-list', {
-        idCardNo: '1670300171423',
+        idCardNo: this.idCardNo,
         ussdCode: ussdCode,
         mobileType: `Post-paid`,
         chkMainProFlg: true
