@@ -92,6 +92,8 @@ export class DeviceOrderAisExistingPrepaidHotdealPaymentDetailPageComponent impl
   }
 
   onPaymentCompleted(payment: any): void {
+    console.log('payment', payment);
+    
     this.paymentDetailTemp = payment;
   }
 

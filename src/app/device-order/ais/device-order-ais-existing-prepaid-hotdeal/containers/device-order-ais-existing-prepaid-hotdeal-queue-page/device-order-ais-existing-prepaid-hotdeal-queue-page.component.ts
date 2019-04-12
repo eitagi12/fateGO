@@ -129,7 +129,7 @@ export class DeviceOrderAisExistingPrepaidHotdealQueuePageComponent implements O
         tumbon: customer.tumbol
       },
       cusMobileNoOrder: simCard.mobileNo || '',
-      returnCode: simCard.privilegeCode || '4GEYYY',
+      returnCode: customer.privilegeCode || '4GEYYY',
       // cashBackFlg: cashBackFlg,
       matAirTime: trade.matAirtime || '',
       matCodeFreeGoods: '',
