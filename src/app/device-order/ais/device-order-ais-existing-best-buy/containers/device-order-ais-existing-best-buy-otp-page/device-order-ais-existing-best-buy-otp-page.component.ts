@@ -76,14 +76,14 @@ export class DeviceOrderAisExistingBestBuyOtpPageComponent implements OnInit {
     if (environment.name !== 'PROD') {
       mobile = environment.TEST_OTP_MOBILE;
     }
-    // this.http.post(`/api/customerportal/newRegister/${mobile}/verifyOTP`, { pwd: otp, transactionID: this.transactionID }).toPromise()
-    //   .then((resp: any) => {
-    //     this.navigateNext();
-    //   }).catch((error) => {
-    //     this.pageLoadingService.closeLoading();
-    //     this.alertService.error('รหัส OTP ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง');
-    //   });
-    this.navigateNext();
+    this.http.post(`/api/customerportal/newRegister/${mobile}/verifyOTP`, { pwd: otp, transactionID: this.transactionID }).toPromise()
+      .then((resp: any) => {
+        this.navigateNext();
+      }).catch((error) => {
+        this.pageLoadingService.closeLoading();
+        this.alertService.error('รหัส OTP ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง');
+      });
+    // this.navigateNext();
   }
 
   navigateNext(): void {

@@ -45,6 +45,7 @@ export class DeviceOrderAspExistingBestBuyIdcardCaptureRepiPageComponent impleme
   }
 
   onBack(): void {
+    this.onClearIdCardImage();
     this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_OTP_PAGE]);
   }
 
