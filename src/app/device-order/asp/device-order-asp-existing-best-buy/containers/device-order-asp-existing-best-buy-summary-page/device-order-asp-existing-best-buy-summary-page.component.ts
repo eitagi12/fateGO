@@ -8,7 +8,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { WIZARD_DEVICE_ORDER_AIS, WIZARD_DEVICE_ORDER_ASP } from 'src/app/device-order/constants/wizard.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_CARE_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_CARE_AVAILABLE_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CHECK_OUT_PAGE } from '../../constants/route-path.constant';
@@ -107,24 +107,36 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    this.http.get(`/api/customerportal/checkSeller/${this.sellerCode}`).toPromise()
-      .then((shopCheckSeller: any) => {
-        if (shopCheckSeller.data.condition) {
-          this.transaction.data.seller = this.seller;
-          this.transaction.data.seller.sellerNo = this.sellerCode;
-          if (!this.tokenService.isTelewizUser()) {
-            this.pageLoadingService.closeLoading();
-            this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CHECK_OUT_PAGE]);
+    if (this.sellerCode) {
+      this.http.get(`/api/customerportal/checkSeller/${this.sellerCode}`).toPromise()
+        .then((shopCheckSeller: any) => {
+          if (shopCheckSeller.data.condition) {
+            this.transaction.data.seller = this.seller;
+            this.transaction.data.seller.sellerNo = this.sellerCode;
+            if (!this.tokenService.isTelewizUser()) {
+              this.pageLoadingService.closeLoading();
+              this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CHECK_OUT_PAGE]);
+            } else {
+              this.redirectToFlowWeb();
+            }
           } else {
-            this.redirectToFlowWeb();
+            this.alertService.error(shopCheckSeller.data.message);
           }
-        } else {
-          this.alertService.error(shopCheckSeller.data.message);
-        }
-      }).catch((error: any) => {
+        }).catch((error: any) => {
+          this.pageLoadingService.closeLoading();
+          this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+        });
+    } else {
+      this.transaction.data.seller = this.seller;
+      this.transaction.data.seller.sellerNo = this.sellerCode;
+      if (!this.tokenService.isTelewizUser()) {
         this.pageLoadingService.closeLoading();
-        this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
-      });
+        this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CHECK_OUT_PAGE]);
+      } else {
+        this.redirectToFlowWeb();
+      }
+    }
+
   }
 
   ngOnDestroy(): void {
@@ -133,8 +145,12 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
 
   createForm(): void {
     this.checkSellerForm = this.fb.group({
-      checkSeller: ['', Validators.compose([Validators.pattern(/^[0-9]+$/)])]
+      checkSeller: ['', Validators.compose([Validators.required, Validators.pattern(/^[0-9]+$/)])]
     });
+
+    if (this.user.ascCode) {
+      this.sellerCode = this.user.ascCode;
+    }
 
     this.checkSellerForm.valueChanges.subscribe((value) => {
       if (value.checkSeller) {
@@ -160,7 +176,7 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
         const queueNo = resp.data.queue;
         this.transaction.data.queue = { queueNo: queueNo };
         this.http.post('/api/salesportal/create-device-selling-order',
-         this.getRequestCreateOrder(this.transaction, this.priceOption)).toPromise()
+          this.getRequestCreateOrder(this.transaction, this.priceOption)).toPromise()
           .then(() => {
             return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
           }).then(() => {

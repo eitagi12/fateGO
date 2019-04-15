@@ -57,6 +57,6 @@
 
   <mc-footer>
     <button class="btn btn-success" (click)="onNext()" [disabled]="checkValid()">NEXT</button>
-    <button *ngIf="!isAutoGenQueue" class="btn btn-success" (click)="onSkip()">SKIP</button>
+    <button *ngIf="!isAutoGenQueue" class="btn btn-success" (click)="onSkip()" [disabled]="skipQueue">SKIP</button>
   </mc-footer>
 </div>

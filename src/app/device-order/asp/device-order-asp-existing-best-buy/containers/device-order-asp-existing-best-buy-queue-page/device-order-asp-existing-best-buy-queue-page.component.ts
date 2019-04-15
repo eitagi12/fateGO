@@ -26,6 +26,7 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
   user: User;
   mobileNo: string;
   isAutoGenQueue: boolean;
+  skipQueue: boolean = false;
 
   constructor(
     private router: Router,
@@ -330,6 +331,7 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
       .then((resp: any) => {
         const queueNo = resp.data.queue;
         this.queue = queueNo;
+        this.skipQueue = true;
         this.onNext();
       });
   }

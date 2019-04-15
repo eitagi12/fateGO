@@ -147,7 +147,6 @@
 
               <div class="row">
                 <label class="col-6 col-sm-4 col-form-label">รหัสพนักงานขาย/ASC Code
-                  <span class="text-red">*</span>
                 </label>
                 <div class="col-6 col-sm-8">
                   <input type="text" class="form-control" id="sellerCode" value="" autocomplete="off"
@@ -164,7 +163,7 @@
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()" [disabled]="!sellerCode">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()" >NEXT</button>
   </mc-footer>
 </div>
 

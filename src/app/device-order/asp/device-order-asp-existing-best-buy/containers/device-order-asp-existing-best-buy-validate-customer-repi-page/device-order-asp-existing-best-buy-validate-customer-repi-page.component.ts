@@ -23,7 +23,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
 
   isTelewiz: boolean = this.tokenService.isTelewizUser();
   wizards: any = this.isTelewiz ? WIZARD_DEVICE_ORDER_ASP :  WIZARD_DEVICE_ORDER_AIS;
-  active: number = this.isTelewiz ? 2 : 1;
+  active: number = this.isTelewiz ? 3 : 2;
   readonly PLACEHOLDER: string = '(เลขบัตรประชาชน)';
   readonly PLACEHOLDER_HEADDER: string = 'กรอกเอกสารแสดงตน';
 
@@ -57,6 +57,9 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
 
   ngOnInit(): void {
     this.transaction.data.action = TransactionAction.KEY_IN_REPI;
+    if (this.isTelewiz) {
+      this.createForm();
+    }
   }
 
   onError(valid: boolean): void {
