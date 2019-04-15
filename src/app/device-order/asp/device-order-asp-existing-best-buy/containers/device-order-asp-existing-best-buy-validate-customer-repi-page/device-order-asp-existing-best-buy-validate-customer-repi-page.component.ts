@@ -154,31 +154,6 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
     this.transactionService.update(this.transaction);
   }
 
-  getRequestAddDeviceSellingCart(): any {
-    const productStock = this.priceOption.productStock;
-    const productDetail = this.priceOption.productDetail;
-    const customer = this.transaction.data.customer;
-    const preBooking: Prebooking = this.transaction.data.preBooking;
-    return {
-      soCompany: productStock.company || 'AWN',
-      locationSource: this.user.locationCode,
-      locationReceipt: this.user.locationCode,
-      productType: productDetail.productType || 'DEVICE',
-      productSubType: productDetail.productSubType || 'HANDSET',
-      brand: productDetail.brand,
-      model: productDetail.model,
-      color: productStock.color,
-      priceIncAmt: '',
-      priceDiscountAmt: '',
-      grandTotalAmt: '',
-      userId: this.user.username,
-      cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
-      preBookingNo: preBooking ? preBooking.preBookingNo : '',
-      depositAmt: preBooking ? preBooking.depositAmt : '',
-      reserveNo: preBooking ? preBooking.reserveNo : ''
-    };
-  }
-
   createForm(): void {
     // nobileNo use pattern
     this.validateCustomerForm = this.fb.group({

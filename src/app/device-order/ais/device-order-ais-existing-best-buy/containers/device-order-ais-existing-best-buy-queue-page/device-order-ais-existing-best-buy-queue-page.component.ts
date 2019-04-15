@@ -46,7 +46,7 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
   }
 
   ngOnInit(): void {
-    this.isAutoGenQueue = true;
+    this.isAutoGenQueue = this.user.locationCode === '1100';
     this.createForm();
   }
 
@@ -80,13 +80,6 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
       this.onSendSMSQueue(this.mobileNo).then((queue) => {
         if (queue) {
           this.transaction.data.queue = { queueNo: queue };
-          // return this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption)
-          // .then(() => {
-          //   return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
-          // }).then(() => {
-          //     this.pageLoadingService.closeLoading();
-          //     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE]);
-          // });
           return this.http.post('/api/salesportal/create-device-selling-order',
           this.getRequestCreateOrder(this.transaction, this.priceOption))
           .toPromise()
@@ -118,15 +111,6 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
             this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE]);
           });
         });
-      // this.createBestBuyService.createDeviceOrder(this.transaction, this.priceOption).then((response: any) => {
-      //   if (response) {
-      //     this.pageLoadingService.closeLoading();
-      //     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE]);
-      //   }
-      // }).catch((e) => {
-      //   this.pageLoadingService.closeLoading();
-      //   this.alertService.error(e);
-      // });
     }
   }
 

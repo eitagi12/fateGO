@@ -64,31 +64,38 @@ export class CustomerInfoService {
       });
   }
 
-  getCustomerProfileByMobileNo(mobileNo: string, idcardNo?: string): Promise<Customer> {
-    return this.http.get(`/api/customerportal/customerprofile/${mobileNo}`).toPromise()
-      .then((customer: any) => {
-        const profile = customer.data;
-        const names = profile.name.split(' ');
-        return {
-          idCardNo: idcardNo || profile.idCard || '',
-          idCardType: this.ID_CARD_CONST,
-          titleName: profile.title,
-          firstName: names[0],
-          lastName: names[1],
-          birthdate: profile.birthdate,
-          gender: ''
-        };
-      }).catch((e) => {
-        return {
-          idCardNo: idcardNo || '',
-          idCardType: this.ID_CARD_CONST,
-          titleName: '-',
-          firstName: '-',
-          lastName: '-',
-          birthdate: '-',
-          gender: ''
-        };
-      });
+  getCustomerProfileByMobileNo(mobileNo: string, idcardNo?: string): Promise<any> {
+    return this.http.get(`/api/customerportal/customerprofile/${mobileNo}`).toPromise().then((customer: any) => {
+      const profile = customer.data;
+
+      if (profile.chargeType === 'Pre-paid') {
+        if (profile.mobileStatus !== '000' && profile.mobileStatus !== '378') {
+          return Promise.reject(`ไม่สามารถทำรายการได้ กรุณาตรวจสอบสถานะหมายเลข <br> (staus is : ${profile.mobileStatus})`);
+        }
+      } else {
+        if (profile.mobileStatus !== '000') {
+          return Promise.reject('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาตรวจสอบข้อมูล');
+        }
+      }
+      const names = profile.name.split(' ');
+      const mobileProfile = {
+        idCardNo: idcardNo || profile.idCard || '',
+        idCardType: this.ID_CARD_CONST,
+        titleName: profile.title,
+        firstName: names[0],
+        lastName: names[1],
+        birthdate: profile.birthdate,
+        gender: ''
+      };
+      return Promise.resolve(mobileProfile);
+    }).catch((e) => {
+      console.log(e);
+      if (typeof e === 'string') {
+        return Promise.reject(e);
+      } else {
+        return Promise.reject('ไม่สามารถทำรายการได้ เลขหมายนี้ไม่ใช่ระบบ AIS');
+      }
+    });
   }
 
   verifyPrepaidIdent(idCardNo: string, mobileNo: string): Promise<boolean> {
@@ -119,11 +126,11 @@ export class CustomerInfoService {
     return this.http.get('/api/customerportal/newRegister/getAllProvinces').toPromise()
       .then((resp: any) => {
         const provinceId = (resp.data.provinces.find((prov: any) => prov.name === provinceName) || {}).id;
-          if (provinceId) {
-            return provinceId;
-          } else {
-            return Promise.reject(`ไม่พบจังหวัด ${provinceName}`);
-          }
+        if (provinceId) {
+          return provinceId;
+        } else {
+          return Promise.reject(`ไม่พบจังหวัด ${provinceName}`);
+        }
       });
   }
 

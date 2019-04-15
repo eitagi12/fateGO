@@ -17,7 +17,7 @@ import { CustomerInfoService } from '../../services/customer-info.service';
 export class DeviceOrderAspExistingBestBuyIdcardCaptureRepiPageComponent implements OnInit, OnDestroy {
 
   wizards: any = this.tokenService.isTelewizUser() ? WIZARD_DEVICE_ORDER_ASP : WIZARD_DEVICE_ORDER_AIS;
-  active: number = this.tokenService.isTelewizUser() ? 2 : 1;
+  active: number = this.tokenService.isTelewizUser() ? 3 : 2;
 
   transaction: Transaction;
   captureAndSign: CaptureAndSign;

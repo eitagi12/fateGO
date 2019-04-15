@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { ApiRequestService, PageLoadingService, HomeService, Utils, AlertService, User, TokenService } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
-import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress, Customer, MainPromotion, Prebooking } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress, Customer, MainPromotion, Prebooking, Order } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
@@ -63,9 +63,6 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
   }
 
   ngOnInit(): void {
-    if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
-      return;
-    }
     this.createTransaction();
   }
 
@@ -108,8 +105,8 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     if (this.utils.isMobileNo(this.identity)) {
       // KEY-IN MobileNo
 
-      this.privilegeService.checkAndGetPrivilegeCode(this.identity, this.priceOption.trade.ussdCode).then((privligeCode) => {
-        return this.customerInfoService.getCustomerProfileByMobileNo(this.identity).then((customer: Customer) => {
+      this.customerInfoService.getCustomerProfileByMobileNo(this.identity).then((customer: Customer) => {
+        return this.privilegeService.checkAndGetPrivilegeCode(this.identity, this.priceOption.trade.ussdCode).then((privligeCode) => {
           customer.privilegeCode = privligeCode;
           this.transaction.data.customer = customer;
           this.transaction.data.customer.repi = true;
@@ -132,7 +129,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
             return;
           }
         });
-      });
+      }).catch((error) => this.alertService.error(error));
     } else {
       // KEY-IN ID-Card
       this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customer: Customer) => {
@@ -216,11 +213,20 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     //   deliveryDt: '17/03/2019'
     // };
 
+    let order: Order;
+    let transactionId: string;
+    if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      transactionId = this.transaction.transactionId;
+      order = this.transaction.data.order;
+    }
+
     this.transaction = {
+      transactionId: transactionId,
       data: {
         transactionType: TransactionType.DEVICE_ORDER_EXISTING_AIS,
         action: TransactionAction.KEY_IN,
-        preBooking: preBooking
+        preBooking: preBooking,
+        order: order
       }
     };
   }
@@ -280,6 +286,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
   getRequestAddDeviceSellingCart(): any {
     const productStock = this.priceOption.productStock;
     const productDetail = this.priceOption.productDetail;
+    const trade = this.priceOption.trade;
     const customer = this.transaction.data.customer;
     const preBooking: Prebooking = this.transaction.data.preBooking;
     return {
@@ -290,9 +297,9 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
       productSubType: productDetail.productSubType || 'HANDSET',
       brand: productDetail.brand || productStock.brand,
       model: productDetail.model || productStock.model,
-      color: productStock.color,
-      priceIncAmt: '',
-      priceDiscountAmt: '',
+      color: productStock.color || productStock.colorName,
+      priceIncAmt: '' + trade.normalPrice,
+      priceDiscountAmt: '' + trade.discount.amount,
       grandTotalAmt: '',
       userId: this.user.username,
       cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',

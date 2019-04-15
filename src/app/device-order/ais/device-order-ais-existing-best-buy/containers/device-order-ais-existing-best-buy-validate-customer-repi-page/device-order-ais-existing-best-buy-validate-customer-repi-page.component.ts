@@ -84,6 +84,9 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
         return this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customerInfo: any) => {
           if (customerInfo.caNumber) {
             this.transaction.data.customer = { ...this.transaction.data.customer, ...customerInfo };
+          } else {
+            this.transaction.data.customer = null;
+            this.transaction.data.customer = customerInfo;
           }
           this.transaction.data.billingInformation = {};
           const addressCustomer = this.transaction.data.customer;
@@ -115,6 +118,9 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
           this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customerInfo: any) => {
             if (customerInfo.caNumber) {
               this.transaction.data.customer = { ...this.transaction.data.customer, ...customerInfo };
+            } else {
+              this.transaction.data.customer = null;
+              this.transaction.data.customer = customerInfo;
             }
             this.transaction.data.billingInformation = {};
             const addressCustomer = this.transaction.data.customer;
@@ -147,31 +153,6 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
 
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
-  }
-
-  getRequestAddDeviceSellingCart(): any {
-    const productStock = this.priceOption.productStock;
-    const productDetail = this.priceOption.productDetail;
-    const customer = this.transaction.data.customer;
-    const preBooking: Prebooking = this.transaction.data.preBooking;
-    return {
-      soCompany: productStock.company || 'AWN',
-      locationSource: this.user.locationCode,
-      locationReceipt: this.user.locationCode,
-      productType: productDetail.productType || 'DEVICE',
-      productSubType: productDetail.productSubType || 'HANDSET',
-      brand: productDetail.brand,
-      model: productDetail.model,
-      color: productStock.color,
-      priceIncAmt: '',
-      priceDiscountAmt: '',
-      grandTotalAmt: '',
-      userId: this.user.username,
-      cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
-      preBookingNo: preBooking ? preBooking.preBookingNo : '',
-      depositAmt: preBooking ? preBooking.depositAmt : '',
-      reserveNo: preBooking ? preBooking.reserveNo : ''
-    };
   }
 
   customerValidate(control: AbstractControl): ValidationErrors {
