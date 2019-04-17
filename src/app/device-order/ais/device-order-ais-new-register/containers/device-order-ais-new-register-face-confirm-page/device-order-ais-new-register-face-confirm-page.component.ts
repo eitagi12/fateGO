@@ -10,6 +10,7 @@ import {
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGGREGATE_PAGE,
 } from '../../constants/route-path.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-device-order-ais-new-register-face-confirm-page',
@@ -30,6 +31,7 @@ export class DeviceOrderAisNewRegisterFaceConfirmPageComponent implements OnInit
     private pageLoadingService: PageLoadingService,
     private alertService: AlertService,
     private shoppingCartService: ShoppingCartService,
+    private translation: TranslateService
 
   ) {
   }
@@ -66,7 +68,7 @@ export class DeviceOrderAisNewRegisterFaceConfirmPageComponent implements OnInit
         if (resp && resp.data) {
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGGREGATE_PAGE]);
         } else {
-          return this.alertService.error('ชื่อ/รหัสผ่าน ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง');
+          return this.alertService.error(this.translation.instant('ชื่อ/รหัสผ่าน ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง'));
         }
       })
       .then(() => {

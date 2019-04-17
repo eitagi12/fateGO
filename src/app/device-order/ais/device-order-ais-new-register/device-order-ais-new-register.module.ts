@@ -32,6 +32,7 @@ import { DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent } from './contain
 import { DeviceOrderAisNewRegisterQrCodeQueuePageComponent } from './containers/device-order-ais-new-register-qr-code-queue-page/device-order-ais-new-register-qr-code-queue-page.component';
 import { DeviceOrderAisNewRegisterQrCodeErrorPageComponent } from './containers/device-order-ais-new-register-qr-code-error-page/device-order-ais-new-register-qr-code-error-page.component';
 import { DeviceOrderAisNewRegisterEbillingPageComponent } from './containers/device-order-ais-new-register-ebilling-page/device-order-ais-new-register-ebilling-page.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -39,7 +40,8 @@ import { DeviceOrderAisNewRegisterEbillingPageComponent } from './containers/dev
     FormsModule,
     ReactiveFormsModule,
     MyChannelSharedLibsModule,
-    DeviceOrderAisNewRegisterRoutingModule
+    DeviceOrderAisNewRegisterRoutingModule,
+    TranslateModule
   ],
   declarations: [
     DeviceOrderAisNewRegisterValidateCustomerPageComponent,

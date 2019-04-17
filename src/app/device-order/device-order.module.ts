@@ -11,11 +11,13 @@ import { PrivilegeService } from './services/privilege.service';
 import { CustomerInfoService } from './services/customer-info.service';
 import { IdCardPipe } from 'mychannel-shared-libs';
 import { QueuePageService } from './services/queue-page.service';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
     CommonModule,
     DeviceOrderRoutingModule,
+    TranslateModule
   ],
   providers: [
     PromotionShelveService,

@@ -6,6 +6,9 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
 import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE } from '../../constants/route-path.constant';
+import { Subscription } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-device-order-ais-new-register-ebilling-address-page',
@@ -25,41 +28,61 @@ export class DeviceOrderAisNewRegisterEbillingAddressPageComponent implements On
 
   customerAddressTemp: CustomerAddress;
   billDeliveryAddress: CustomerAddress;
+  translationSubscribe: Subscription;
   ebillingAddressValid: boolean;
 
   constructor(
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
-    private http: HttpClient
+    private http: HttpClient,
+    private translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
   }
 
   ngOnInit(): void {
+
+    this.callService();
+    this.translationSubscribe = this.translation.onLangChange.pipe(debounceTime(750)).subscribe(() => {
+      this.callService();
+      this.amphurs = [];
+      this.tumbols = [];
+      this.zipCodes = [];
+      this.customerAddress.amphur = null;
+      this.customerAddress.tumbol = null;
+      this.customerAddress.province = null;
+    });
+  }
+  callService(): void {
     const billingInformation = this.transaction.data.billingInformation || {};
     const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
     this.http.get('/api/customerportal/newRegister/getAllZipcodes').subscribe((resp: any) => {
       this.allZipCodes = resp.data.zipcodes || [];
     });
-    customer.province = customer.province.replace(/มหานคร$/, '');
-    this.http.get('/api/customerportal/newRegister/getAllProvinces').subscribe((resp: any) => {
-      this.provinces = (resp.data.provinces || []);
-      this.customerAddress = {
-        homeNo: customer.homeNo,
-        moo: customer.moo,
-        mooBan: customer.mooBan,
-        room: customer.room,
-        floor: customer.floor,
-        buildingName: customer.buildingName,
-        soi: customer.soi,
-        street: customer.street,
-        province: customer.province,
-        amphur: customer.amphur,
-        tumbol: customer.tumbol,
-        zipCode: customer.zipCode,
-      };
-    });
+
+    this.http.get('/api/customerportal/newRegister/getAllProvinces'
+      , {
+        params: {
+          provinceSubType: this.translation.currentLang === 'TH' ? 'THA' : 'ENG'
+        }
+      }).subscribe((resp: any) => {
+        this.provinces = (resp.data.provinces || []);
+        this.customerAddress = {
+          homeNo: customer.homeNo,
+          moo: customer.moo,
+          mooBan: customer.mooBan,
+          room: customer.floor,
+          floor: customer.floor,
+          buildingName: customer.buildingName,
+          soi: customer.soi,
+          street: customer.street,
+          province: customer.province,
+          amphur: customer.amphur,
+          tumbol: customer.tumbol,
+          zipCode: customer.zipCode,
+        };
+      });
 
   }
 

@@ -9,6 +9,7 @@ import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.c
 import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-device-order-ais-new-register-customer-info-page',
@@ -28,6 +29,7 @@ export class DeviceOrderAisNewRegisterCustomerInfoPageComponent implements OnIni
     private homeService: HomeService,
     private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,
+    private translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
   }
