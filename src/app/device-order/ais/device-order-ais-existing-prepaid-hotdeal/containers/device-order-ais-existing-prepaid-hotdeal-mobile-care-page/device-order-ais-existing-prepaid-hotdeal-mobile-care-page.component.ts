@@ -44,7 +44,6 @@ export class DeviceOrderAisExistingPrepaidHotdealMobileCarePageComponent impleme
 
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-    delete this.transaction.data.mobileCarePackage;
     this.callService();
   }
 
