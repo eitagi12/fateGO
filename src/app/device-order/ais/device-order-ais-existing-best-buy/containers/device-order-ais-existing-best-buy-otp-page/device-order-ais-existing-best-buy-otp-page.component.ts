@@ -83,6 +83,7 @@ export class DeviceOrderAisExistingBestBuyOtpPageComponent implements OnInit {
         this.pageLoadingService.closeLoading();
         this.alertService.error('รหัส OTP ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง');
       });
+    // this.navigateNext();
   }
 
   navigateNext(): void {

@@ -48,7 +48,7 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
   }
 
   ngOnInit(): void {
-    this.isAutoGenQueue = true;
+    this.isAutoGenQueue = this.user.locationCode === '1100';
     this.deposit = this.transaction.data.preBooking
       && this.transaction.data.preBooking.depositAmt ? -Math.abs(+this.transaction.data.preBooking.depositAmt) : 0;
     this.getTransactionId();

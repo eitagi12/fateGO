@@ -26,6 +26,7 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
   user: User;
   mobileNo: string;
   isAutoGenQueue: boolean;
+  skipQueue: boolean = false;
 
   constructor(
     private router: Router,
@@ -45,7 +46,7 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
   }
 
   ngOnInit(): void {
-    this.isAutoGenQueue = true;
+    this.isAutoGenQueue = this.user.locationCode === '1100';
     this.createForm();
   }
 
@@ -79,22 +80,14 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
         if (queue) {
           this.transaction.data.queue = { queueNo: this.queue };
           return this.http.post('/api/salesportal/create-device-selling-order',
-           this.getRequestCreateOrder(this.transaction, this.priceOption))
-          .toPromise()
+            this.getRequestCreateOrder(this.transaction, this.priceOption))
+            .toPromise()
             .then(() => {
               return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
                 this.pageLoadingService.closeLoading();
                 this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_RESULT_PAGE]);
               });
             });
-          // this.transaction.data.queue = { queueNo: queue };
-          // return this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption)
-          // .then(() => {
-          //   return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
-          // }).then(() => {
-          //     this.pageLoadingService.closeLoading();
-          //     this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_RESULT_PAGE]);
-          // });
         } else {
           this.isAutoGenQueue = false;
           this.pageLoadingService.closeLoading();
@@ -110,12 +103,12 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
     } else {
       this.transaction.data.queue = { queueNo: this.queue };
       this.http.post('/api/salesportal/create-device-selling-order',
-       this.getRequestCreateOrder(this.transaction, this.priceOption)).toPromise()
+        this.getRequestCreateOrder(this.transaction, this.priceOption)).toPromise()
         .then(() => {
-          return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
-        }).then(() => {
-          this.pageLoadingService.closeLoading();
-          this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_RESULT_PAGE]);
+          return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
+            this.pageLoadingService.closeLoading();
+            this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_RESULT_PAGE]);
+          });
         });
     }
   }
@@ -124,32 +117,18 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
     this.transactionService.update(this.transaction);
   }
 
-  isLocationPhuket(): boolean {
-    return this.user.locationCode === '1213' && this.tokenService.isAisUser();
-  }
-
   onSendSMSQueue(mobileNo: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      if (this.isLocationPhuket()) {
-        return this.http.post('/api/salesportal/device-order/transaction/get-queue-qmatic', {
-          mobileNo: mobileNo
-        }).toPromise()
-          .then((respQueue: any) => {
-            const data = respQueue.data && respQueue.data.result ? respQueue.data.result : {};
-            resolve(data.queueNo);
-          });
-      } else {
-        return this.http.post('/api/salesportal/device-order/transaction/auto-gen-queue', {
-          mobileNo: mobileNo
-        }).toPromise()
-          .then((response: any) => {
-            if (response && response.data && response.data.data && response.data.data.queueNo) {
-              resolve(response.data.data.queueNo);
-            } else {
-              reject(null);
-            }
-          });
-      }
+      return this.http.post('/api/salesportal/device-order/transaction/auto-gen-queue', {
+        mobileNo: mobileNo
+      }).toPromise()
+        .then((response: any) => {
+          if (response && response.data && response.data.data && response.data.data.queueNo) {
+            resolve(response.data.data.queueNo);
+          } else {
+            reject(null);
+          }
+        });
     });
   }
 
@@ -187,7 +166,7 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
       model: productDetail.model,
       color: productStock.color,
       matCode: '',
-      priceIncAmt: (+trade.normalPrice || 0).toFixed(2),
+      priceIncAmt: (+trade.normalPrice).toFixed(2),
       priceDiscountAmt: (+trade.discount.amount || 0).toFixed(2),
       grandTotalAmt: this.getGrandTotalAmt(trade, prebooking),
       userId: this.user.username,
@@ -223,16 +202,6 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
 
     return data;
   }
-
-  // private getInstallmentTerm(payment: Payment): any {
-  //   return payment && payment.paymentBank && payment.paymentBank.installments ?
-  //     payment.paymentBank.installments[0].installmentMonth : 0;
-  // }
-
-  // private getInstallmentRate(payment: Payment): any {
-  //   return payment && payment.paymentBank && payment.paymentBank.installments ?
-  //     payment.paymentBank.installments[0].installmentPercentage : 0;
-  // }
 
   private getGrandTotalAmt(trade: any, prebooking: Prebooking): string {
 
@@ -362,10 +331,8 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
       .then((resp: any) => {
         const queueNo = resp.data.queue;
         this.queue = queueNo;
+        this.skipQueue = true;
         this.onNext();
-        // this.transaction.data.queue = Object.assign({}, {
-        //   queueNo: queueNo
-        // });
       });
   }
 

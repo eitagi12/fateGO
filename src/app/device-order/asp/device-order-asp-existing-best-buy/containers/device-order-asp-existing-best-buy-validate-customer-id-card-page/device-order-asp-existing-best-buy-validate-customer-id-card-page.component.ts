@@ -162,7 +162,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardPageComponent im
       productSubType: productDetail.productSubType || 'HANDSET',
       brand: productDetail.brand || productStock.brand,
       model: productDetail.model || productStock.model,
-      color: productStock.color,
+      color: productStock.color  || productStock.colorName,
       priceIncAmt: '',
       priceDiscountAmt: '',
       grandTotalAmt: '',

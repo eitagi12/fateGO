@@ -30,7 +30,7 @@ export class ShoppingCartService {
       commercialName += ` สี ${productStock.color}`;
     }
     return {
-      fullName: customer.titleName + ' ' + customer.firstName + ' ' + customer.lastName,
+      fullName: `${customer.titleName || ''} ${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
       mobileNo: simCard && simCard.mobileNo ? simCard.mobileNo : '',
       campaignName: campaign.campaignName,
       commercialName: commercialName,

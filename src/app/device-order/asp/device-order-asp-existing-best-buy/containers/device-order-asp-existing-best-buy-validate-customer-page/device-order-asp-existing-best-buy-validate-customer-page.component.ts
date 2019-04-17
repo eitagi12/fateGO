@@ -35,7 +35,6 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
   identity: string;
   priceOption: PriceOption;
   user: User;
-  order: Order;
 
   validateCustomerForm: FormGroup;
 
@@ -73,9 +72,6 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
   ngOnInit(): void {
     if (this.isTelewiz) {
       this.createForm();
-    }
-    if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
-      this.order = this.transaction.data.order;
     }
     this.createTransaction();
   }
@@ -118,8 +114,8 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
     this.pageLoadingService.openLoading();
     if (this.utils.isMobileNo(this.identity)) {
       // KEY-IN MobileNo
-        this.privilegeService.checkAndGetPrivilegeCode(this.identity, this.priceOption.trade.ussdCode).then((privligeCode) => {
-          return this.customerInfoService.getCustomerProfileByMobileNo(this.identity).then((customer: Customer) => {
+       this.customerInfoService.getCustomerProfileByMobileNo(this.identity).then((customer: Customer) => {
+        return this.privilegeService.checkAndGetPrivilegeCode(this.identity, this.priceOption.trade.ussdCode).then((privligeCode) => {
             customer.privilegeCode = privligeCode;
             this.transaction.data.customer = customer;
             this.transaction.data.customer.repi = true;
@@ -142,7 +138,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
               return;
             }
           });
-        });
+        }).catch((error) => this.alertService.error(error));
     } else {
       // KEY-IN ID-Card
       this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customer: Customer) => {
@@ -241,13 +237,21 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
     if (this.tokenService.isTelewizUser()) {
       device = this.localStorageService.load('device').value;
     }
+
+    let order: Order;
+    let transactionId: string;
+    if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      transactionId = this.transaction.transactionId;
+      order = this.transaction.data.order;
+    }
     this.transaction = {
+      transactionId: transactionId,
       data: {
         transactionType: TransactionType.DEVICE_ORDER_EXISTING_ASP,
         action: TransactionAction.KEY_IN,
         preBooking: preBooking,
         device: device,
-        order: this.order
+        order: order
       }
     };
   }
@@ -308,6 +312,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
     const productStock = this.priceOption.productStock;
     const productDetail = this.priceOption.productDetail;
     const customer = this.transaction.data.customer;
+    const trade = this.priceOption.trade;
     const preBooking: Prebooking = this.transaction.data.preBooking;
     return {
       soCompany: productStock.company || 'AWN',
@@ -317,9 +322,9 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
       productSubType: productDetail.productSubType || 'HANDSET',
       brand: productDetail.brand || productStock.brand,
       model: productDetail.model || productStock.model,
-      color: productStock.color,
-      priceIncAmt: '',
-      priceDiscountAmt: '',
+      color: productStock.color || productStock.colorName,
+      priceIncAmt: '' + trade.normalPrice,
+      priceDiscountAmt: '' + trade.discount.amount,
       grandTotalAmt: '',
       userId: this.user.username,
       cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',

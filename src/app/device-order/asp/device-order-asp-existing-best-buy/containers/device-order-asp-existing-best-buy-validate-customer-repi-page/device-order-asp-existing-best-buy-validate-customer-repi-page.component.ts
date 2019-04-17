@@ -22,8 +22,8 @@ import { debounceTime } from 'rxjs/operators';
 export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent implements OnInit, OnDestroy {
 
   isTelewiz: boolean = this.tokenService.isTelewizUser();
-  wizards: any = this.isTelewiz ? WIZARD_DEVICE_ORDER_ASP :  WIZARD_DEVICE_ORDER_AIS;
-  active: number = this.isTelewiz ? 2 : 1;
+  wizards: any = this.isTelewiz ? WIZARD_DEVICE_ORDER_ASP : WIZARD_DEVICE_ORDER_AIS;
+  active: number = this.isTelewiz ? 3 : 2;
   readonly PLACEHOLDER: string = '(เลขบัตรประชาชน)';
   readonly PLACEHOLDER_HEADDER: string = 'กรอกเอกสารแสดงตน';
 
@@ -57,6 +57,9 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
 
   ngOnInit(): void {
     this.transaction.data.action = TransactionAction.KEY_IN_REPI;
+    if (this.isTelewiz) {
+      this.createForm();
+    }
   }
 
   onError(valid: boolean): void {
@@ -89,6 +92,13 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
         return this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customerInfo: any) => {
           if (customerInfo.caNumber) {
             this.transaction.data.customer = { ...this.transaction.data.customer, ...customerInfo };
+          } else {
+            const privilege = this.transaction.data.customer.privilegeCode;
+            const repi = this.transaction.data.customer.repi;
+            this.transaction.data.customer = null;
+            this.transaction.data.customer = customerInfo;
+            this.transaction.data.customer.privilegeCode = privilege;
+            this.transaction.data.customer.repi = repi;
           }
           this.transaction.data.billingInformation = {};
           const addressCustomer = this.transaction.data.customer;
@@ -120,6 +130,13 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
           this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customerInfo: any) => {
             if (customerInfo.caNumber) {
               this.transaction.data.customer = { ...this.transaction.data.customer, ...customerInfo };
+            } else {
+              const privilege = this.transaction.data.customer.privilegeCode;
+              const repi = this.transaction.data.customer.repi;
+              this.transaction.data.customer = null;
+              this.transaction.data.customer = customerInfo;
+              this.transaction.data.customer.privilegeCode = privilege;
+              this.transaction.data.customer.repi = repi;
             }
             this.transaction.data.billingInformation = {};
             const addressCustomer = this.transaction.data.customer;
@@ -154,31 +171,6 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
     this.transactionService.update(this.transaction);
   }
 
-  getRequestAddDeviceSellingCart(): any {
-    const productStock = this.priceOption.productStock;
-    const productDetail = this.priceOption.productDetail;
-    const customer = this.transaction.data.customer;
-    const preBooking: Prebooking = this.transaction.data.preBooking;
-    return {
-      soCompany: productStock.company || 'AWN',
-      locationSource: this.user.locationCode,
-      locationReceipt: this.user.locationCode,
-      productType: productDetail.productType || 'DEVICE',
-      productSubType: productDetail.productSubType || 'HANDSET',
-      brand: productDetail.brand,
-      model: productDetail.model,
-      color: productStock.color,
-      priceIncAmt: '',
-      priceDiscountAmt: '',
-      grandTotalAmt: '',
-      userId: this.user.username,
-      cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
-      preBookingNo: preBooking ? preBooking.preBookingNo : '',
-      depositAmt: preBooking ? preBooking.depositAmt : '',
-      reserveNo: preBooking ? preBooking.reserveNo : ''
-    };
-  }
-
   createForm(): void {
     // nobileNo use pattern
     this.validateCustomerForm = this.fb.group({
@@ -199,18 +191,18 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
     const length: number = control.value.length;
 
     if (length === 13) {
-        if (this.utils.isThaiIdCard(value)) {
-          return null;
-        } else {
-          return {
-            message: 'กรุณากรอกเลขบัตรประชาชนให้ถูกต้อง',
-          };
-        }
+      if (this.utils.isThaiIdCard(value)) {
+        return null;
       } else {
         return {
-            message: 'กรุณากรอกรูปแบบให้ถูกต้อง',
-          };
+          message: 'กรุณากรอกเลขบัตรประชาชนให้ถูกต้อง',
+        };
       }
+    } else {
+      return {
+        message: 'กรุณากรอกรูปแบบให้ถูกต้อง',
+      };
+    }
   }
 
 }

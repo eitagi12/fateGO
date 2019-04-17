@@ -38,6 +38,7 @@ export class DeviceOrderAspExistingBestBuyQrCodeSummaryPageComponent implements 
   }
 
   ngOnInit(): void {
+    // QrCode ของ ASP ยังไม่ได้ทำ
     this.deposit = this.transaction.data.preBooking
                     && this.transaction.data.preBooking.depositAmt ? -Math.abs(+this.transaction.data.preBooking.depositAmt) : 0;
   }

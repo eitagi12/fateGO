@@ -157,6 +157,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent im
     const productStock = this.priceOption.productStock;
     const productDetail = this.priceOption.productDetail;
     const customer = this.transaction.data.customer;
+    const trade = this.priceOption.trade;
     const preBooking: Prebooking = this.transaction.data.preBooking;
     return {
       soCompany: productStock.company || 'AWN',
@@ -166,9 +167,9 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent im
       productSubType: productDetail.productSubType || 'HANDSET',
       brand: productDetail.brand || productStock.brand,
       model: productDetail.model || productStock.model,
-      color: productStock.color,
-      priceIncAmt: '',
-      priceDiscountAmt: '',
+      color: productStock.color || productStock.colorName,
+      priceIncAmt: '' + trade.normalPrice,
+      priceDiscountAmt: '' + trade.discount.amount,
       grandTotalAmt: '',
       userId: this.user.username,
       cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',

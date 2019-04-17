@@ -47,7 +47,6 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
 
   ngOnInit(): void {
     this.transaction.data.action = TransactionAction.READ_CARD_REPI;
-    console.log('REPI IDCARD PAGE');
   }
 
   onError(valid: boolean): void {
@@ -65,7 +64,6 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
 
   onCompleted(profile: ReadCardProfile): void {
     this.profile = profile;
-    this.onNext();
   }
 
   onBack(): void {
@@ -158,30 +156,5 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
 
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
-  }
-
-  getRequestAddDeviceSellingCart(): any {
-    const productStock = this.priceOption.productStock;
-    const productDetail = this.priceOption.productDetail;
-    const customer = this.transaction.data.customer;
-    const preBooking: Prebooking = this.transaction.data.preBooking;
-    return {
-      soCompany: productStock.company || 'AWN',
-      locationSource: this.user.locationCode,
-      locationReceipt: this.user.locationCode,
-      productType: productDetail.productType || 'DEVICE',
-      productSubType: productDetail.productSubType || 'HANDSET',
-      brand: productDetail.brand,
-      model: productDetail.model,
-      color: productStock.color,
-      priceIncAmt: '',
-      priceDiscountAmt: '',
-      grandTotalAmt: '',
-      userId: this.user.username,
-      cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
-      preBookingNo: preBooking ? preBooking.preBookingNo : '',
-      depositAmt: preBooking ? preBooking.depositAmt : '',
-      reserveNo: preBooking ? preBooking.reserveNo : ''
-    };
   }
 }

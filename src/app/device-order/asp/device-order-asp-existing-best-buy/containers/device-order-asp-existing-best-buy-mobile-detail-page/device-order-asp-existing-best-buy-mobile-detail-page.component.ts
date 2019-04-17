@@ -35,7 +35,10 @@ export class DeviceOrderAspExistingBestBuyMobileDetailPageComponent implements O
   }
 
   ngOnInit(): void {
-    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
+    if (this.transaction.data.action === TransactionAction.KEY_IN
+      || this.transaction.data.action === TransactionAction.READ_CARD) {
+        this.shoppingCart = this.shoppingCartService.getShoppingCartData();
+    }
     this.getMobileInfo();
   }
 

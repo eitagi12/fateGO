@@ -18,7 +18,7 @@ import { CustomerInfoService } from '../../services/customer-info.service';
 export class DeviceOrderAspExistingBestBuyOtpPageComponent implements OnInit {
 
   wizards: any = this.tokenService.isTelewizUser() ? WIZARD_DEVICE_ORDER_ASP : WIZARD_DEVICE_ORDER_AIS;
-  active: number = this.tokenService.isTelewizUser() ? 2 : 1;
+  active: number = this.tokenService.isTelewizUser() ? 3 : 2;
   otpForm: FormGroup;
   transaction: Transaction;
   registrationData: any;
