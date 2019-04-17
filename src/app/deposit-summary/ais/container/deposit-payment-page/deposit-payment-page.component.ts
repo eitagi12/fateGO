@@ -17,11 +17,16 @@ export const CASH_AND_CREDIT_CARD_PAYMENT = 'CC/CA';
 import { DEPOSIT_QUEUE_PAGE } from 'src/app/deposit-summary/constants/route-path.constant';
 import { CreateDeviceOrderService } from 'src/app/deposit-summary/services/create-device-order.service';
 
+
+export const AIS_CUSTOMER = 'AIS';
+export const ALL_CUSTOMER = 'ALL';
+
 @Component({
   selector: 'app-deposit-payment-page',
   templateUrl: './deposit-payment-page.component.html',
   styleUrls: ['./deposit-payment-page.component.scss']
 })
+
 export class DepositPaymentPageComponent implements OnInit, OnDestroy {
 
   wizards: any = WIZARD_RESERVE_WITH_DEPOSIT;
@@ -46,6 +51,8 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
   locationNameTH: string;
   recipientCustomerAddress: string;
   otherPhoneNumber: string;
+
+
   constructor(private localStorageService: LocalStorageService,
     private apiRequestService: ApiRequestService,
     private transactionServicet: TransactionService,
@@ -67,9 +74,13 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
         action: TransactionAction.KEY_IN
       }
     };
+
+    this.filterTrade();
+
     this.priceOption = {
       trade: this.localStorageService.load('reserveProductInfo').value
     };
+
     this.productImage = this.priceOption.trade.images.thumbnail ? this.priceOption.trade.images.thumbnail
       : 'assets/images/icon/img-placeholder-gray.png';
     const colorCode = this.priceOption.trade.colorCode ? this.priceOption.trade.colorCode
@@ -313,4 +324,75 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
       this.paymentForm.patchValue({ paymentType: this.selectPaymentDetail.paymentType });
     }
   }
+
+  private async filterTrade(){
+    let reserveProductInfo: any = this.localStorageService.load('reserveProductInfo').value;
+    let CustomerFlag: any = this.localStorageService.load('CustomerFlag').value;
+    let tradeResult = [];
+
+    if(CustomerFlag === "Y"){
+      tradeResult = await this.getTradeAIS(reserveProductInfo);
+      if(!tradeResult){
+        tradeResult = await this.getTradeAll(reserveProductInfo);
+      }
+      if(!tradeResult){
+        tradeResult = this.getTradeCriteriasNull(reserveProductInfo);
+      }
+    }else if(CustomerFlag === "N"){
+      tradeResult = await this.getTradeAll(reserveProductInfo);
+      if(!tradeResult){
+        tradeResult = this.getTradeCriteriasNull(reserveProductInfo);
+      }
+    }
+
+    if(tradeResult){
+      reserveProductInfo.tradeReserve.trades = tradeResult;
+      localStorage.setItem('reserveProductInfo', JSON.stringify(reserveProductInfo));
+    }
+
+
+  }
+
+  private getTradeAIS(reserveProductInfo: any){
+    let result = [];
+    for (let trades of reserveProductInfo.tradeReserve.trades) {
+      if(trades.criterias){
+        for(let criterias of trades.criterias) {
+            if(criterias.target){
+              if(criterias.target[0].toString().toUpperCase() === AIS_CUSTOMER){
+                  result.push(trades);
+              }
+            }
+        }
+      }
+    }
+    return result;
+  }
+
+  private getTradeAll(reserveProductInfo: any){
+    let result = [];
+    for (let trades of reserveProductInfo.tradeReserve.trades) {
+      if(trades.criterias){
+        for(let criterias of trades.criterias) {
+            if(criterias.target){
+              if(criterias.target[0].toString().toUpperCase() === ALL_CUSTOMER){
+                  result.push(trades);
+              }
+            }
+        }
+      }
+    }
+    return result;
+  }
+
+  private getTradeCriteriasNull(reserveProductInfo: any){
+    let result = [];
+    for (let trades of reserveProductInfo.tradeReserve.trades) {
+      if(!trades.criterias){
+        result.push(trades);
+      }
+    }
+    return result;
+  }
+
 }
