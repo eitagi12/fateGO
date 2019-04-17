@@ -69,11 +69,12 @@ export class CustomerInfoService {
       const profile = customer.data;
 
       if (profile.chargeType === 'Pre-paid') {
-        if (profile.mobileStatus !== '000' && profile.mobileStatus !== '378') {
+        if (profile.mobileStatus !== '000' && profile.mobileStatus !== 'Active'
+          && profile.mobileStatus !== '378' && profile.mobileStatus !== 'Suspend') {
           return Promise.reject(`ไม่สามารถทำรายการได้ กรุณาตรวจสอบสถานะหมายเลข <br> (staus is : ${profile.mobileStatus})`);
         }
       } else {
-        if (profile.mobileStatus !== '000') {
+        if (profile.mobileStatus !== '000' && profile.mobileStatus !== 'Active') {
           return Promise.reject('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาตรวจสอบข้อมูล');
         }
       }
