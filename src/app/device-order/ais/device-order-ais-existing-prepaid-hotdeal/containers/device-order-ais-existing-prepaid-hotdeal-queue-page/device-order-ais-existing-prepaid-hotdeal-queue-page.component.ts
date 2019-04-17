@@ -243,6 +243,9 @@ export class DeviceOrderAisExistingPrepaidHotdealQueuePageComponent implements O
     const onTopPackage = transaction.data.onTopPackage || {};
     const mobileCarePackage = transaction.data.mobileCarePackage || {};
     const simCard = transaction.data.simCard;
+    const customer = transaction.data.customer;
+    const queue = transaction.data.queue;
+    const campaign = priceOption.campaign;
 
     let customerGroupName = '';
     if ('MC001' === customerGroup.code) {
@@ -251,17 +254,21 @@ export class DeviceOrderAisExistingPrepaidHotdealQueuePageComponent implements O
       customerGroupName = 'Convert Pre to Post';
     }
     const customAttributes = mobileCarePackage.customAttributes || {};
+    // trade.ussdCode || privilege.ussdCode
+    // newPrivilegeDesc = `${priceOption.campaignName} ${customerGroup.name} ${newussdCode}`Hot Deal Prepaid ลูกค้าปัจจุบัน ( *999*022*2# )
+    const privilegeDesc = (campaign.campaignName || '') + this.SPACE +
+    (customerGroup.name || '') + ` ( ${( privilege.ussdCode || trade.ussdCode || '')} )`;
 
     message += this.SUMMARY_POINT + this.SPACE + 0 + this.COMMA + this.SPACE;
     message += this.SUMMARY_DISCOUNT + this.SPACE + 0 + this.COMMA + this.SPACE;
     message += this.DISCOUNT + this.SPACE + (trade.discount ? +trade.discount.amount : 0) + this.COMMA + this.SPACE;
-    message += this.RETURN_CODE + this.SPACE + (simCard.privilegeCode || '') + this.COMMA + this.SPACE;
+    message += this.RETURN_CODE + this.SPACE + (customer.privilegeCode || '') + this.COMMA + this.SPACE;
     message += this.ORDER_TYPE + this.SPACE + customerGroupName + this.COMMA + this.SPACE;
     message += this.PRMOTION_CODE + this.SPACE + (onTopPackage.promotionCode || '') + this.COMMA + this.SPACE;
     message += this.MOBILE_CARE_CODE + this.SPACE + (customAttributes.promotionCode || '') + this.COMMA + this.SPACE;
     message += this.MOBILE_CARE + this.SPACE + (customAttributes.shortNameThai || '') + this.COMMA + this.SPACE;
-    message += this.PRIVILEGE_DESC + this.SPACE + (privilege.privilegeDesc || '') + this.COMMA + this.SPACE;
-    message += this.QUEUE_NUMBER + this.SPACE + trade.tradeNo;
+    message += this.PRIVILEGE_DESC + this.SPACE + privilegeDesc + this.COMMA + this.SPACE;
+    message += this.QUEUE_NUMBER + this.SPACE + queue.queueNo;
     return message;
   }
 
