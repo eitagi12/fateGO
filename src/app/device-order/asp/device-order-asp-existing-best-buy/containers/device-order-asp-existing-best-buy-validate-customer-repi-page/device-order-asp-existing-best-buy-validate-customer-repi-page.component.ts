@@ -92,6 +92,9 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
         return this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customerInfo: any) => {
           if (customerInfo.caNumber) {
             this.transaction.data.customer = { ...this.transaction.data.customer, ...customerInfo };
+          } else {
+            this.transaction.data.customer = null;
+            this.transaction.data.customer = customerInfo;
           }
           this.transaction.data.billingInformation = {};
           const addressCustomer = this.transaction.data.customer;
@@ -123,6 +126,9 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
           this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customerInfo: any) => {
             if (customerInfo.caNumber) {
               this.transaction.data.customer = { ...this.transaction.data.customer, ...customerInfo };
+            } else {
+              this.transaction.data.customer = null;
+              this.transaction.data.customer = customerInfo;
             }
             this.transaction.data.billingInformation = {};
             const addressCustomer = this.transaction.data.customer;
