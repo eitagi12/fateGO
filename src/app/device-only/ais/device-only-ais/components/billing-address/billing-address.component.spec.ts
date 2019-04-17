@@ -2,6 +2,7 @@ import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core
 
 import { BillingAddressComponent, CustomerAddress } from './billing-address.component';
 import { ReactiveFormsModule } from '@angular/forms';
+import { CustomerInformationService } from '../../services/customer-information.service';
 
 describe('BillingAddressComponent', () => {
   let component: BillingAddressComponent;
@@ -9,7 +10,17 @@ describe('BillingAddressComponent', () => {
 
   setupTestBed({
     imports: [ ReactiveFormsModule],
-    declarations: [ BillingAddressComponent]
+    declarations: [ BillingAddressComponent],
+    providers: [
+      {
+        provide : CustomerInformationService,
+        useValue : {
+          load: jest.fn(() => {
+          })
+        }
+      }
+
+    ]
   });
 
   beforeEach(() => {
