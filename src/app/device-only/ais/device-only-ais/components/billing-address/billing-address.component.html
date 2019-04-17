@@ -20,7 +20,7 @@
               <span class="text-red"> *</span>
             </label>
             <input type="text" class="form-control" id="idCardNo" maxlength="{{ idCardMaxLength }}"
-              autocomplete="off" formControlName="idCardNo"
+              autocomplete="off" formControlName="idCardNo" 
               [ngClass]="{ 'is-invalid' : customerAddressForm.controls['idCardNo'].invalid && customerAddressForm.controls['idCardNo'].dirty}">
             <small class="invalid-feedback" *ngIf="customerAddressForm.controls['idCardNo'].dirty && customerAddressForm.controls['idCardNo'].errors">
               * {{ customerAddressForm.controls['idCardNo'].errors?.message || 'กรุณากรอกรูปแบบให้ถูกต้อง'}}

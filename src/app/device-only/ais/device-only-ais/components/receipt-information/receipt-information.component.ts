@@ -159,6 +159,7 @@ export class ReceiptInformationComponent implements OnInit {
     .subscribe((resp) => this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName));
     this.nameText = data.customer.titleName + ' ' + data.customer.firstName + ' ' + data.customer.lastName;
     this.billingAddressText = this.customerInfoService.convertBillingAddressToString(billDeliveryAddress);
+    this.customerInfoService.setDisableReadCard();
   }
   searchCustomerInfo(): void {
     if (this.searchByMobileNoForm.valid) {

@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChange
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { debounceTime, distinct } from 'rxjs/operators';
 import { Utils, CustomerAddress } from 'mychannel-shared-libs';
-
+import { CustomerInformationService} from '../../services/customer-information.service';
 export interface CustomerAddress {
   titleName: string;
   firstName: string;
@@ -90,15 +90,20 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   idCardMaxLength: number = 13;
   debounceTimeInMS: number = 500;
   identityValue: string;
+  disableIdCard: boolean;
 
   constructor(
     public fb: FormBuilder,
-    private utils: Utils
+    private utils: Utils,
+    private customerInformationService: CustomerInformationService
   ) {
   }
 
   ngOnInit(): void {
     this.createForm();
+    if (this.customerInformationService.isReadCard === true) {
+      this.customerAddressForm.controls['idCardNo'].disable();
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -170,6 +175,8 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     });
     this.disableFormAmphurAndTumbol();
     this.completed.emit(this.customerAddressForm.value);
+    this.customerInformationService.unSetDisableReadCard();
+    this.customerAddressForm.controls['idCardNo'].enable();
   }
 
   createForm(): void {

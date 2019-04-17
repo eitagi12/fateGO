@@ -11,10 +11,16 @@ export class CustomerInformationService {
   private selectedMobileNo: string;
   public unsubscribe: any;
   public cancelreadcard: Subject<boolean> = new Subject<boolean>();
+  public isReadCard: boolean = false;
   constructor(
     private http: HttpClient
   ) { }
-
+  setDisableReadCard(): void {
+    this.isReadCard = true;
+  }
+  unSetDisableReadCard(): void {
+    this.isReadCard = false;
+  }
   getZipCode(province: string, amphur: string , tumbol: string): Promise<any> {
     province = province.replace(/มหานคร$/, '');
       return this.http.get('/api/customerportal/newRegister/getAllProvinces').toPromise()
