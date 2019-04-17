@@ -46,7 +46,7 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
   }
 
   ngOnInit(): void {
-    this.isAutoGenQueue = this.user.locationCode === '1100';
+    this.isAutoGenQueue = this.user.locationCode === '1100' || this.user.locationCode === '1213' ;
     this.createForm();
   }
 
