@@ -22,7 +22,7 @@ import { debounceTime } from 'rxjs/operators';
 export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent implements OnInit, OnDestroy {
 
   isTelewiz: boolean = this.tokenService.isTelewizUser();
-  wizards: any = this.isTelewiz ? WIZARD_DEVICE_ORDER_ASP :  WIZARD_DEVICE_ORDER_AIS;
+  wizards: any = this.isTelewiz ? WIZARD_DEVICE_ORDER_ASP : WIZARD_DEVICE_ORDER_AIS;
   active: number = this.isTelewiz ? 3 : 2;
   readonly PLACEHOLDER: string = '(เลขบัตรประชาชน)';
   readonly PLACEHOLDER_HEADDER: string = 'กรอกเอกสารแสดงตน';
@@ -93,8 +93,12 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
           if (customerInfo.caNumber) {
             this.transaction.data.customer = { ...this.transaction.data.customer, ...customerInfo };
           } else {
+            const privilege = this.transaction.data.customer.privilegeCode;
+            const repi = this.transaction.data.customer.repi;
             this.transaction.data.customer = null;
             this.transaction.data.customer = customerInfo;
+            this.transaction.data.customer.privilegeCode = privilege;
+            this.transaction.data.customer.repi = repi;
           }
           this.transaction.data.billingInformation = {};
           const addressCustomer = this.transaction.data.customer;
@@ -127,8 +131,12 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
             if (customerInfo.caNumber) {
               this.transaction.data.customer = { ...this.transaction.data.customer, ...customerInfo };
             } else {
+              const privilege = this.transaction.data.customer.privilegeCode;
+              const repi = this.transaction.data.customer.repi;
               this.transaction.data.customer = null;
               this.transaction.data.customer = customerInfo;
+              this.transaction.data.customer.privilegeCode = privilege;
+              this.transaction.data.customer.repi = repi;
             }
             this.transaction.data.billingInformation = {};
             const addressCustomer = this.transaction.data.customer;
@@ -183,18 +191,18 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
     const length: number = control.value.length;
 
     if (length === 13) {
-        if (this.utils.isThaiIdCard(value)) {
-          return null;
-        } else {
-          return {
-            message: 'กรุณากรอกเลขบัตรประชาชนให้ถูกต้อง',
-          };
-        }
+      if (this.utils.isThaiIdCard(value)) {
+        return null;
       } else {
         return {
-            message: 'กรุณากรอกรูปแบบให้ถูกต้อง',
-          };
+          message: 'กรุณากรอกเลขบัตรประชาชนให้ถูกต้อง',
+        };
       }
+    } else {
+      return {
+        message: 'กรุณากรอกรูปแบบให้ถูกต้อง',
+      };
+    }
   }
 
 }

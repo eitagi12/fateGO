@@ -85,8 +85,12 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
           if (customerInfo.caNumber) {
             this.transaction.data.customer = { ...this.transaction.data.customer, ...customerInfo };
           } else {
+            const privilege = this.transaction.data.customer.privilegeCode;
+            const repi = this.transaction.data.customer.repi;
             this.transaction.data.customer = null;
             this.transaction.data.customer = customerInfo;
+            this.transaction.data.customer.privilegeCode = privilege;
+            this.transaction.data.customer.repi = repi;
           }
           this.transaction.data.billingInformation = {};
           const addressCustomer = this.transaction.data.customer;
@@ -119,8 +123,12 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
             if (customerInfo.caNumber) {
               this.transaction.data.customer = { ...this.transaction.data.customer, ...customerInfo };
             } else {
+              const privilege = this.transaction.data.customer.privilegeCode;
+              const repi = this.transaction.data.customer.repi;
               this.transaction.data.customer = null;
               this.transaction.data.customer = customerInfo;
+              this.transaction.data.customer.privilegeCode = privilege;
+              this.transaction.data.customer.repi = repi;
             }
             this.transaction.data.billingInformation = {};
             const addressCustomer = this.transaction.data.customer;
