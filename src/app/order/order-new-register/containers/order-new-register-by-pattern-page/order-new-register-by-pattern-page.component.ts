@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { MobileNoCondition, HomeService, TokenService, PageLoadingService, User, AlertService } from 'mychannel-shared-libs';
+import { MobileNoCondition, HomeService, TokenService, PageLoadingService, User, AlertService, OnscreenKeyboardService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
@@ -12,6 +12,7 @@ import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.consta
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ReserveMobileService, SelectMobileNumberRandom } from 'src/app/order/order-shared/services/reserve-mobile.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-order-new-register-by-pattern-page',
@@ -39,10 +40,17 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
     private reserveMobileService: ReserveMobileService,
     private alertService: AlertService,
     private http: HttpClient,
-    public fb: FormBuilder
+    public fb: FormBuilder,
+    private translation: TranslateService,
+    private onsKeyboardService: OnscreenKeyboardService
   ) {
     this.transaction = this.transactionService.load();
     this.user = this.tokenService.getUser();
+
+    this.onsKeyboardService.getNextOrPreviousInput().subscribe(event => {
+      console.log('event', event);
+      this.onNextTab(event);
+    });
 
   }
 
@@ -128,9 +136,15 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
     const keyCode: number = (event.which) ? event.which : event.keyCode;
     const target: any = event.target;
     // backspace
-    if (target.value === 'undefined' || event.target.value === '') {
+    if (target.value === 'undefined' || target.value === '') {
       const previousField: any = target.previousElementSibling;
+      // when backspace on keyboard
       if (keyCode === 8) {
+        if (previousField) {
+          console.log('previousField');
+          previousField.focus();
+        }
+      } else { // when backspace on visualkeyboard
         if (previousField) {
           previousField.focus();
         }
@@ -144,7 +158,6 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
       return;
     }
     nextField.focus();
-
   }
 
   onSearchMobileNoByCondition(): void {

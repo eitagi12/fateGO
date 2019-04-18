@@ -19,7 +19,7 @@
         <form [formGroup]="queueFrom">
           <div class="form-group">
             <div class="mt-5 text-center">เบอร์โทรศัพท์รับหมายเลขสั่งซื้อเพื่อชำระสินค้าของท่านคือ</div>
-            <input class="form-control text-center mb-3" id="mobileNo" maxlength="10" autofocus autocomplete="off"
+            <input mcVisualKeyboard type="tel" class="form-control text-center mb-3" id="mobileNo" maxlength="10" autofocus autocomplete="off"
               formControlName="mobileNo" placeholder="ระบุเบอร์โทรศัพท์รับ SMS" [ngClass]="{ 'is-invalid' : queueFrom.controls.mobileNo.invalid && queueFrom.controls.mobileNo.touched && queueFrom.controls.mobileNo.errors }">
             <small class="invalid-feedback" *ngIf="queueFrom.controls.mobileNo.touched && queueFrom.controls.mobileNo.errors">
               **กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง
