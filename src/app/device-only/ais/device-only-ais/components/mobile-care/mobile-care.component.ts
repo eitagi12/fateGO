@@ -93,7 +93,11 @@ export class MobileCareComponent implements OnInit {
     this.createForm();
     this.oncheckValidators();
     this.pageLoadingService.openLoading();
-    this.callService();
+    if (this.privilegeCustomerForm.value.mobileNo) {
+      this.checkChargeType(this.privilegeCustomerForm.value.mobileNo);
+    } else {
+      this.callService();
+    }
   }
 
   public oncheckValidators(): void {
@@ -244,7 +248,7 @@ export class MobileCareComponent implements OnInit {
       width: '80%',
       cancelButtonText: 'เปลี่ยนเบอร์ใหม่',
       cancelButtonClass: 'btn-secondary btn-lg text-black mr-2',
-      confirmButtonText: 'สมัครกับเครื่องใหม่' ,
+      confirmButtonText: 'ยืนยันการสมัคร' ,
       confirmButtonClass: 'btn-success btn-lg text-white mr-2',
       showCancelButton: true,
       showConfirmButton: true,

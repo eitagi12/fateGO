@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { debounceTime, distinct } from 'rxjs/operators';
+import { debounceTime, distinct, delay } from 'rxjs/operators';
 import { Utils, CustomerAddress } from 'mychannel-shared-libs';
 import { CustomerInformationService} from '../../services/customer-information.service';
 export interface CustomerAddress {
@@ -198,14 +198,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       tumbol: ['', [Validators.required]],
       zipCode: ['', [Validators.required, Validators.maxLength(5), this.validateZipCode.bind(this)]],
     });
-
     this.disableFormAmphurAndTumbol();
-    this.customerAddressForm.valueChanges.pipe(debounceTime(750)).subscribe((value: any) => {
-      this.error.emit(this.customerAddressForm.valid);
-      if (this.customerAddressForm.valid) {
-        this.completed.emit(value);
-      }
-    });
     this.customerAddressForm.patchValue(this.customerAddress || {});
     this.titleFormControl();
     this.provinceFormControl();
@@ -219,6 +212,12 @@ export class BillingAddressComponent implements OnInit, OnChanges {
         }
       }
     }
+    this.customerAddressForm.valueChanges.pipe(debounceTime(750)).subscribe((value: any) => {
+      this.error.emit(this.customerAddressForm.valid);
+      if (this.customerAddressForm.valid && this.customerAddressForm.value.idCardNo) {
+        this.completed.emit(value);
+      }
+    });
   }
 
   validateZipCode(control: AbstractControl): ValidationErrors | null {
