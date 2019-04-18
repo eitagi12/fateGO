@@ -166,12 +166,13 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
     const mobile = this.addMobileNo ? this.addMobileNo : this.selectMobileNo.mobileNo;
     this.verifyMobileNo(mobile, ussdCode).then((res: any) => {
       const profile = res.profile;
+      // (profile.billingSystem === BillingSystemType.BOS) ? BillingSystemType.BOS : BillingSystemType.IRB
       this.transaction.data.simCard = {
         mobileNo: mobile,
         persoSim: false,
         chargeType: profile.chargeType || ChargeType.PRE_PAID,
         simSerial: profile.simSerialNo,
-        billingSystem: (profile.billingSystem === BillingSystemType.BOS) ? BillingSystemType.BOS : BillingSystemType.IRB,
+        billingSystem: profile.billingSystem,
         nType: profile.product,
         mobileNoStatus: 'Active'
       };

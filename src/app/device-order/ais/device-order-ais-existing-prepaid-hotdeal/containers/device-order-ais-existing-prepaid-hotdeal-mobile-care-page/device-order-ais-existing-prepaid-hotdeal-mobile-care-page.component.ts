@@ -52,7 +52,8 @@ export class DeviceOrderAisExistingPrepaidHotdealMobileCarePageComponent impleme
   }
 
   callService(): void {
-    const billingSystem = this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
+    let billingSystem = this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
+    billingSystem = billingSystem === BillingSystemType.BOS ? BillingSystemType.BOS : BillingSystemType.IRB;
     const chargeType = this.transaction.data.simCard.chargeType;
     const endUserPrice = +this.priceOption.trade.normalPrice;
     const exMobileCare = this.transaction.data.existingMobileCare;
