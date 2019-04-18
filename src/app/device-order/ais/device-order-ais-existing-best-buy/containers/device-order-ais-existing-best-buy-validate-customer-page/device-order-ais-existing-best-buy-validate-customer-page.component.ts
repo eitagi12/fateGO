@@ -128,7 +128,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
             this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE]);
             return;
           }
-        });
+        }).catch((e) => this.alertService.error(e));
       }).catch((error) => this.alertService.error(error));
     } else {
       // KEY-IN ID-Card
