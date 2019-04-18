@@ -11,6 +11,7 @@ import { HomeButtonService } from '../../services/home-button.service';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 import { HomeService, ApiRequestService, AlertService, PaymentDetail, User, TokenService } from 'mychannel-shared-libs';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-device-only-ais-select-payment-and-receipt-information-page',
@@ -30,12 +31,12 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
   paymentDetail: PaymentDetail;
   paymentDetailTemp: any;
   paymentDetailValid: boolean;
-  banksPayment: any[];
   customerInfoTemp: any;
   user: User;
 
   constructor(
     private router: Router,
+    private http: HttpClient,
     private homeService: HomeService,
     private apiRequestService: ApiRequestService,
     private transactionService: TransactionService,
@@ -54,31 +55,47 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
     this.homeButtonService.initEventButtonHome();
     this.apiRequestService.createRequestId();
 
+    let commercialName = this.priceOption.productDetail.name;
+    if (this.priceOption.productStock.color) {
+      commercialName += ` สี ${this.priceOption.productStock.color}`;
+    }
     // REFACTOR IT'S
     this.paymentDetail = {
-      commercialName: `${this.priceOption.productDetail.brand} ${this.priceOption.productDetail.model}` ,
+      commercialName: commercialName ,
       promotionPrice: +(this.priceOption.trade.promotionPrice || 0),
       isFullPayment: this.isFullPayment(),
       installmentFlag: false,
-      advancePay: 0
+      advancePay: 0,
+      qrCode: true
     };
 
-    if (this.isFullPayment()) {
-      this.banks = this.priceOption.trade.banks || [];
+    // if (this.isFullPayment()) {
+    //   this.banks = this.priceOption.trade.banks || [];
+    // } else {
+    //   this.banks = (this.priceOption.trade.banks || []).map((b: any) => {
+    //     return b.installmentDatas.map((data: any) => {
+    //       return {
+    //         ...b,
+    //         installment: `${data.installmentPercentage}% ${data.installmentMounth}`
+    //       };
+    //     });
+    //   }).reduce((prev: any, curr: any) => {
+    //     curr.forEach((element: any) => {
+    //       prev.push(element);
+    //     });
+    //     return prev;
+    //   }, []);
+    //   console.log('zxczxc', this.banks);
+    // }
+    const trade = this.priceOption.trade || {};
+    if (trade.banks && trade.banks.length > 0) {
+      this.banks = trade.banks;
     } else {
-      this.banks = (this.priceOption.trade.banks || []).map((b: any) => {
-        return b.installmentDatas.map((data: any) => {
-          return {
-            ...b,
-            installment: `${data.installmentPercentage}% ${data.installmentMounth}`
-          };
-        });
-      }).reduce((prev: any, curr: any) => {
-        curr.forEach((element: any) => {
-          prev.push(element);
-        });
-        return prev;
-      }, []);
+      this.http.post('/api/salesportal/banks-promotion', {
+        location: this.tokenService.getUser().locationCode
+      }).toPromise().then((resp: any) => {
+        this.banks = resp.data || [];
+      });
     }
 
     if (!this.transaction.data) {

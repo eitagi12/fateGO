@@ -26,7 +26,13 @@
       </p>
     </ng-container>
 
-    <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'FULL' && transaction?.data?.payment?.paymentType !== 'CREDIT'">
+    <ng-container *ngIf="transaction?.data?.payment?.paymentType === 'QR_CODE'">
+      <span class="text-grey" id="text-cash-summary">
+        (ชำระโดย คิวอาร์โค้ด)
+      </span>
+    </ng-container>
+    
+    <ng-container *ngIf="transaction?.data?.payment?.paymentType === 'DEBIT'">
       <span class="text-grey" id="text-cash-summary">
         (ชำระโดย เงินสด)
       </span>
