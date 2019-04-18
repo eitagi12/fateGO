@@ -259,7 +259,7 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     this.idCardNo = this.transaction.data.customer.idCardNo;
     if (this.idCardNo) {
       this.idCardNo = this.idCardNo.substring(9);
-      this.idCardNo = 'xxxxxxxxx' + this.idCardNo;
+      this.idCardNo = ('XXXXXXXXX' + this.idCardNo).toUpperCase();
     }
     this.selectedMobile = this.transaction.data.customer.selectedMobile;
     this.locationNameTH = this.transaction.data.customer.selectedLocation.locationNameTH;

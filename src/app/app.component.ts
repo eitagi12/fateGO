@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { TokenService, ErrorsService, AlertService, PageActivityService, HomeService } from 'mychannel-shared-libs';
+import { TokenService, ErrorsService, AlertService, PageActivityService, HomeService, ChannelType } from 'mychannel-shared-libs';
 import { setTheme } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
 import { environment } from '../environments/environment';
@@ -32,7 +32,11 @@ export class AppComponent {
     this.initails();
     this.tokenHandler();
     this.errorHandler();
-    this.pageActivityHandler();
+
+    if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {
+      this.pageActivityHandler();
+    }
+
     this.homeService.callback = () => {
       window.location.href = '/smart-shop';
     };
