@@ -62,7 +62,11 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
         .then((response: any) => {
           if (response.value === true) {
             this.returnStock().then(() => {
-              window.location.href = '/';
+              if (this.tokenService.isTelewizUser()) {
+                window.location.href = '/sales-portal/buy-product/scan-imei?customerGroup=MC004';
+              } else {
+                window.location.href = '/';
+              }
             });
           }
         });
@@ -100,13 +104,22 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
         .then((response: any) => {
           if (response.value === true) {
             this.returnStock().then(() => {
-              window.location.href = `/sales-portal/buy-product/brand/${queryParams.brand}/${queryParams.model}`;
+              this.transactionService.remove();
+              if (this.tokenService.isTelewizUser()) {
+                window.location.href = '/sales-portal/buy-product/scan-imei?customerGroup=MC004';
+              } else {
+                window.location.href = `/sales-portal/buy-product/brand/${queryParams.brand}/${queryParams.model}`;
+              }
             });
           }
         });
     } else {
       this.transactionService.remove();
-      window.location.href = `/sales-portal/buy-product/brand/${queryParams.brand}/${queryParams.model}`;
+      if (this.tokenService.isTelewizUser()) {
+        window.location.href = '/sales-portal/buy-product/scan-imei?customerGroup=MC004';
+      } else {
+        window.location.href = `/sales-portal/buy-product/brand/${queryParams.brand}/${queryParams.model}`;
+      }
     }
   }
 
