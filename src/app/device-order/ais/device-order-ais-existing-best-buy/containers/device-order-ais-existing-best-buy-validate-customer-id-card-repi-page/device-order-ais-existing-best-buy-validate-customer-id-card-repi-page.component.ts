@@ -78,10 +78,20 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
     this.customerInfoService.getProvinceId(this.profile.province).then((provinceId: string) => {
       return this.customerInfoService.getZipCode(provinceId, this.profile.amphur, this.profile.tumbol).then((zipCode: string) => {
         return this.customerInfoService.getCustomerInfoByIdCard(this.profile.idCardNo, zipCode).then((customer: Customer) => {
-          this.transaction.data.customer = {...customer, ...this.profile};
+          if (customer.caNumber) {
+            this.transaction.data.customer = { ...this.profile, ...customer };
+          } else {
+            const privilege = this.transaction.data.customer.privilegeCode;
+            const repi = this.transaction.data.customer.repi;
+            this.transaction.data.customer = null;
+            this.transaction.data.customer = this.profile;
+            this.transaction.data.customer.privilegeCode = privilege;
+            this.transaction.data.customer.repi = repi;
+            this.transaction.data.customer.zipCode = zipCode;
+          }
           const addressCustomer = this.transaction.data.customer;
           this.transaction.data.billingInformation = {};
-          this.transaction.data.billingInformation.billDeliveryAddress = addressCustomer;
+          this.transaction.data.billingInformation.billDeliveryAddress = this.transaction.data.customer;
           // verify Prepaid Ident
           return this.customerInfoService.verifyPrepaidIdent(this.profile.idCardNo, mobileNo)
             .then((respPrepaidIdent: any) => {

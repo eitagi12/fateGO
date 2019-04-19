@@ -84,10 +84,17 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent im
           return { zipCode: zipCode };
         });
       }).then((customer: any) => {
-        this.transaction.data.customer = { ...this.profile, ...customer };
+        if (customer.caNumber) {
+          this.transaction.data.customer = { ...this.profile, ...customer };
+        } else {
+          const privilege = this.transaction.data.customer.privilegeCode;
+          this.transaction.data.customer = null;
+          this.transaction.data.customer = this.profile;
+          this.transaction.data.customer.privilegeCode = privilege;
+          this.transaction.data.customer.zipCode = customer.zipCode;
+        }
         this.transaction.data.billingInformation = {};
-        const addressCustomer = this.transaction.data.customer;
-        this.transaction.data.billingInformation.billDeliveryAddress = addressCustomer;
+        this.transaction.data.billingInformation.billDeliveryAddress = this.transaction.data.customer;
         if (this.transaction.data.order && this.transaction.data.order.soId) {
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
           return;
