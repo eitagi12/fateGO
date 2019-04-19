@@ -120,7 +120,7 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
     } else {
       this.transaction.data.queue = { queueNo: this.queue };
       this.http.post('/api/salesportal/create-device-selling-order',
-       this.getRequestCreateOrder(this.transaction, this.priceOption)).toPromise()
+       this.getRequestCreateOrder(this.transaction, this.priceOption, this.transId)).toPromise()
         .then(() => {
           return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
             this.pageLoadingService.closeLoading();

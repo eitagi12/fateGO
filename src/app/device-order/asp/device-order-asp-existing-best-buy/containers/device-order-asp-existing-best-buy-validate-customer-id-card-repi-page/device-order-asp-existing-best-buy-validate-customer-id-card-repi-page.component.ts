@@ -114,7 +114,8 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardRepiPageComponen
           return this.customerInfoService.verifyPrepaidIdent(this.profile.idCardNo, mobileNo)
             .then((respPrepaidIdent: any) => {
               if (respPrepaidIdent) {
-                const expireDate = this.transaction.data.customer.expireDate;
+                console.log(this.profile);
+                const expireDate = this.profile.expireDate;
                 if (this.utils.isIdCardExpiredDate(expireDate)) {
                   this.pageLoadingService.closeLoading();
                   this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_PAYMENT_DETAIL_PAGE]);
@@ -123,7 +124,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardRepiPageComponen
                   this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ');
                 }
               } else {
-                const expireDate = this.transaction.data.customer.expireDate;
+                const expireDate = this.profile.expireDate;
                 if (this.utils.isIdCardExpiredDate(expireDate)) {
                   const simCard = this.transaction.data.simCard;
                   if (simCard.chargeType === 'Pre-paid') {
