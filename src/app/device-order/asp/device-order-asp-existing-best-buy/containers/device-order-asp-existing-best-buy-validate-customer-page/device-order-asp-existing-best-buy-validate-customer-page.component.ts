@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { ApiRequestService, PageLoadingService, HomeService, Utils, AlertService, User, TokenService } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 
-import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress, Customer, MainPromotion, Prebooking, Device, Order } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionType, TransactionAction, Customer, MainPromotion, Prebooking, Device, Order } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { AbstractControl, ValidationErrors, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { WIZARD_DEVICE_ORDER_AIS, WIZARD_DEVICE_ORDER_ASP } from 'src/app/device-order/constants/wizard.constant';
@@ -157,20 +157,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
       this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customer: Customer) => {
         this.transaction.data.customer = customer;
         this.transaction.data.billingInformation = {};
-        this.transaction.data.billingInformation.billDeliveryAddress = {
-          homeNo: customer.homeNo,
-          moo: customer.moo,
-          mooBan: customer.mooBan,
-          room: customer.room,
-          floor: customer.floor,
-          buildingName: customer.buildingName,
-          soi: customer.soi,
-          street: customer.street,
-          province: customer.province,
-          amphur: customer.amphur,
-          tumbol: customer.tumbol,
-          zipCode: customer.zipCode
-        };
+        this.transaction.data.billingInformation.billDeliveryAddress = customer;
         if (!this.transaction.data.order || !this.transaction.data.order.soId) {
           return this.http.post('/api/salesportal/add-device-selling-cart',
             this.getRequestAddDeviceSellingCart()

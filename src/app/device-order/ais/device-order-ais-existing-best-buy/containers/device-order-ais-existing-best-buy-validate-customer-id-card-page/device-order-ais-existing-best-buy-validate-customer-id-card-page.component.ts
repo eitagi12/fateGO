@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { PageLoadingService, HomeService, ReadCardProfile, User, AlertService, ValidateCustomerIdCardComponent, TokenService } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
-import { Transaction, Customer, BillDeliveryAddress, Prebooking } from 'src/app/shared/models/transaction.model';
+import { Transaction, Customer, Prebooking } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { CustomerInfoService } from '../../services/customer-info.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -26,7 +26,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent im
   readCardValid: boolean;
   priceOption: PriceOption;
   user: User;
-  billDeliveryAddress: BillDeliveryAddress;
+  billDeliveryAddress: Customer;
 
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
@@ -87,20 +87,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent im
         this.transaction.data.customer = { ...this.profile, ...customer };
         this.transaction.data.billingInformation = {};
         const addressCustomer = this.transaction.data.customer;
-        this.transaction.data.billingInformation.billDeliveryAddress = {
-          homeNo: addressCustomer.homeNo,
-          moo: addressCustomer.moo,
-          mooBan: addressCustomer.mooBan,
-          room: addressCustomer.room,
-          floor: addressCustomer.floor,
-          buildingName: addressCustomer.buildingName,
-          soi: addressCustomer.soi,
-          street: addressCustomer.street,
-          province: addressCustomer.province,
-          amphur: addressCustomer.amphur,
-          tumbol: addressCustomer.tumbol,
-          zipCode: addressCustomer.zipCode
-        };
+        this.transaction.data.billingInformation.billDeliveryAddress = addressCustomer;
         if (this.transaction.data.order && this.transaction.data.order.soId) {
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
           return;

@@ -96,20 +96,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardRepiPageComponen
           this.transaction.data.customer = Object.assign(this.profile, customer);
           const addressCustomer = this.transaction.data.customer;
           this.transaction.data.billingInformation = {};
-          this.transaction.data.billingInformation.billDeliveryAddress = {
-            homeNo: addressCustomer.homeNo,
-            moo: addressCustomer.moo,
-            mooBan: addressCustomer.mooBan,
-            room: addressCustomer.room,
-            floor: addressCustomer.floor,
-            buildingName: addressCustomer.buildingName,
-            soi: addressCustomer.soi,
-            street: addressCustomer.street,
-            province: addressCustomer.province,
-            amphur: addressCustomer.amphur,
-            tumbol: addressCustomer.tumbol,
-            zipCode: addressCustomer.zipCode
-          };
+          this.transaction.data.billingInformation.billDeliveryAddress = addressCustomer;
           // verify Prepaid Ident
           return this.customerInfoService.verifyPrepaidIdent(this.profile.idCardNo, mobileNo)
             .then((respPrepaidIdent: any) => {

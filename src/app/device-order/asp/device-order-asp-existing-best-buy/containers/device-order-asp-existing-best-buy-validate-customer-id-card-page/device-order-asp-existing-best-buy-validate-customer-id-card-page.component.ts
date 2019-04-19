@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 
 import { PageLoadingService, HomeService, ReadCardProfile, User, AlertService, ValidateCustomerIdCardComponent, TokenService, ReadCardService, ReadCard, ReadCardEvent } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { Transaction, Customer, BillDeliveryAddress, Prebooking } from 'src/app/shared/models/transaction.model';
+import { Transaction, Customer, Prebooking } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_VALIDATE_CUSTOMER_PAGE } from '../../constants/route-path.constant';
@@ -31,7 +31,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardPageComponent im
   readCardValid: boolean;
   priceOption: PriceOption;
   user: User;
-  billDeliveryAddress: BillDeliveryAddress;
+  billDeliveryAddress: Customer;
 
   readCard: ReadCard;
   readCardSubscription: Subscription;
@@ -104,20 +104,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardPageComponent im
         this.transaction.data.customer = { ...this.profile, ...customer };
         this.transaction.data.billingInformation = {};
         const addressCustomer = this.transaction.data.customer;
-        this.transaction.data.billingInformation.billDeliveryAddress = {
-          homeNo: addressCustomer.homeNo,
-          moo: addressCustomer.moo,
-          mooBan: addressCustomer.mooBan,
-          room: addressCustomer.room,
-          floor: addressCustomer.floor,
-          buildingName: addressCustomer.buildingName,
-          soi: addressCustomer.soi,
-          street: addressCustomer.street,
-          province: addressCustomer.province,
-          amphur: addressCustomer.amphur,
-          tumbol: addressCustomer.tumbol,
-          zipCode: addressCustomer.zipCode
-        };
+        this.transaction.data.billingInformation.billDeliveryAddress = addressCustomer;
         if (this.transaction.data.order && this.transaction.data.order.soId) {
           this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_INFO_PAGE]);
           return;

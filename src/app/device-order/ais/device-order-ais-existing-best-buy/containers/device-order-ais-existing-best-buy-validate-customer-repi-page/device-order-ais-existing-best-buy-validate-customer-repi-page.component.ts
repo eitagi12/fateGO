@@ -6,7 +6,7 @@ import { HomeService, PageLoadingService, AlertService, User, TokenService, Util
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
-import { Transaction, BillDeliveryAddress, Customer, TransactionAction, Prebooking } from 'src/app/shared/models/transaction.model';
+import { Transaction, Customer, TransactionAction, Prebooking } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_RPI_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
 import { CustomerInfoService } from '../../services/customer-info.service';
@@ -94,20 +94,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
           }
           this.transaction.data.billingInformation = {};
           const addressCustomer = this.transaction.data.customer;
-          this.transaction.data.billingInformation.billDeliveryAddress = {
-            homeNo: addressCustomer.homeNo,
-            moo: addressCustomer.moo,
-            mooBan: addressCustomer.mooBan,
-            room: addressCustomer.room,
-            floor: addressCustomer.floor,
-            buildingName: addressCustomer.buildingName,
-            soi: addressCustomer.soi,
-            street: addressCustomer.street,
-            province: addressCustomer.province,
-            amphur: addressCustomer.amphur,
-            tumbol: addressCustomer.tumbol,
-            zipCode: addressCustomer.zipCode
-          };
+          this.transaction.data.billingInformation.billDeliveryAddress = addressCustomer;
 
           this.pageLoadingService.closeLoading();
           if (customerInfo.caNumber) {
@@ -132,20 +119,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
             }
             this.transaction.data.billingInformation = {};
             const addressCustomer = this.transaction.data.customer;
-            this.transaction.data.billingInformation.billDeliveryAddress = {
-              homeNo: addressCustomer.homeNo,
-              moo: addressCustomer.moo,
-              mooBan: addressCustomer.mooBan,
-              room: addressCustomer.room,
-              floor: addressCustomer.floor,
-              buildingName: addressCustomer.buildingName,
-              soi: addressCustomer.soi,
-              street: addressCustomer.street,
-              province: addressCustomer.province,
-              amphur: addressCustomer.amphur,
-              tumbol: addressCustomer.tumbol,
-              zipCode: addressCustomer.zipCode
-            };
+            this.transaction.data.billingInformation.billDeliveryAddress = addressCustomer;
 
             this.pageLoadingService.closeLoading();
             this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE]);

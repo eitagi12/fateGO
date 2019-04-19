@@ -102,20 +102,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
           }
           this.transaction.data.billingInformation = {};
           const addressCustomer = this.transaction.data.customer;
-          this.transaction.data.billingInformation.billDeliveryAddress = {
-            homeNo: addressCustomer.homeNo,
-            moo: addressCustomer.moo,
-            mooBan: addressCustomer.mooBan,
-            room: addressCustomer.room,
-            floor: addressCustomer.floor,
-            buildingName: addressCustomer.buildingName,
-            soi: addressCustomer.soi,
-            street: addressCustomer.street,
-            province: addressCustomer.province,
-            amphur: addressCustomer.amphur,
-            tumbol: addressCustomer.tumbol,
-            zipCode: addressCustomer.zipCode
-          };
+          this.transaction.data.billingInformation.billDeliveryAddress = addressCustomer;
 
           this.pageLoadingService.closeLoading();
           if (customerInfo.caNumber) {
@@ -140,20 +127,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
             }
             this.transaction.data.billingInformation = {};
             const addressCustomer = this.transaction.data.customer;
-            this.transaction.data.billingInformation.billDeliveryAddress = {
-              homeNo: addressCustomer.homeNo,
-              moo: addressCustomer.moo,
-              mooBan: addressCustomer.mooBan,
-              room: addressCustomer.room,
-              floor: addressCustomer.floor,
-              buildingName: addressCustomer.buildingName,
-              soi: addressCustomer.soi,
-              street: addressCustomer.street,
-              province: addressCustomer.province,
-              amphur: addressCustomer.amphur,
-              tumbol: addressCustomer.tumbol,
-              zipCode: addressCustomer.zipCode
-            };
+            this.transaction.data.billingInformation.billDeliveryAddress = addressCustomer;
 
             this.pageLoadingService.closeLoading();
             this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_PROFILE_PAGE]);

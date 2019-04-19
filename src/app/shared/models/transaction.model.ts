@@ -54,7 +54,7 @@ export interface TransactionData {
   reasonCode?: string;
   billingInformation?: BillingInformation;
   seller?: Seller;
-  payment?: Payment;
+  payment?: any;
   advancePayment?: Payment;
   receiptInfo?: ReceiptInfo;
   queue?: Queue;
