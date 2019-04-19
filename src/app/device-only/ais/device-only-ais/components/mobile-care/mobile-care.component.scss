@@ -19,7 +19,7 @@ h3{
 .box-search-mobileNo{
     text-align: center;
     border: 1px solid #e9dfdf;
-    width: 50%;
+    width: 45%;
     margin-left: 25%;
     border-radius: 1%;
     float: left;
@@ -28,11 +28,11 @@ h3{
 .box-search-otp{
     text-align: center;
     border: 1px solid #e9dfdf;
-    width: 50%;
+    width: 45%;
     margin-left: 25%;
     border-radius: 1%;
     float: left;
-    padding: 8px 0px 10px
+    padding: 3px 10px 7px 10px;
 }
 
 @media only screen and (min-width: 768px) {
@@ -61,10 +61,10 @@ h3{
     }
 
     .btn-get-otp{
-        width: 10%;
+        width: 16%;
         font-size: 11px;
         margin-left: -10%;
-        padding: 13px;
+        padding: 9px;
         color: white;
         background-color: #5baeee;
         border: none;
@@ -80,7 +80,7 @@ h3{
     
     .mobile-input{
         width: 86%;
-        font-size: 19px;
+        font-size: 16px;
         text-align: center;
         padding: 15px 10px 15px 10px;
         border: none;
@@ -88,7 +88,7 @@ h3{
 
     .otp-input{
         width: 86%;
-        font-size: 19px;
+        font-size: 16px;
         text-align: center;
         padding: 5px 10px 5px 10px;
         border: none;
@@ -97,8 +97,8 @@ h3{
     
     .btn-get-otp{
         width: 10%;
-        font-size: 20px;
-        margin-left: -10%;
+        font-size: 16px;
+        margin-left: -15%;
         padding: 13px;
         color: white;
         background-color: #5baeee;
