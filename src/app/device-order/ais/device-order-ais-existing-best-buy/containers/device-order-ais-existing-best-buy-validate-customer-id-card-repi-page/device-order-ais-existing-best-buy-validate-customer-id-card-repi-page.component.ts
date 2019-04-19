@@ -74,11 +74,11 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
     const mobileNo = this.transaction.data.simCard.mobileNo;
 
     this.pageLoadingService.openLoading();
-
+     console.log(this.profile);
     this.customerInfoService.getProvinceId(this.profile.province).then((provinceId: string) => {
       return this.customerInfoService.getZipCode(provinceId, this.profile.amphur, this.profile.tumbol).then((zipCode: string) => {
         return this.customerInfoService.getCustomerInfoByIdCard(this.profile.idCardNo, zipCode).then((customer: Customer) => {
-          this.transaction.data.customer = Object.assign(this.profile, customer);
+          this.transaction.data.customer = {...customer, ...this.profile};
           const addressCustomer = this.transaction.data.customer;
           this.transaction.data.billingInformation = {};
           this.transaction.data.billingInformation.billDeliveryAddress = {
@@ -99,17 +99,17 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
           return this.customerInfoService.verifyPrepaidIdent(this.profile.idCardNo, mobileNo)
             .then((respPrepaidIdent: any) => {
               if (respPrepaidIdent) {
-                const expireDate = this.transaction.data.customer.expireDate;
-                if (this.utils.isIdCardExpiredDate(expireDate)) {
+                const expireDate = this.profile.expireDate;
+                if (!this.utils.isIdCardExpiredDate(expireDate)) {
                   this.pageLoadingService.closeLoading();
                   this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE]);
                 } else {
                   const idCardType = this.transaction.data.customer.idCardType;
-                  this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ');
+                  this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากบัตรประชาชนหมดอายุ');
                 }
               } else {
-                const expireDate = this.transaction.data.customer.expireDate;
-                if (this.utils.isIdCardExpiredDate(expireDate)) {
+                const expireDate = this.profile.expireDate;
+                if (!this.utils.isIdCardExpiredDate(expireDate)) {
                   const simCard = this.transaction.data.simCard;
                   if (simCard.chargeType === 'Pre-paid') {
                     this.pageLoadingService.closeLoading();
