@@ -140,29 +140,30 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardRepiPageComponen
                   }
                 } else {
                   const idCardType = this.transaction.data.customer.idCardType;
-                  this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ');
+                  this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากบัตรประชาชนหมดอายุ');
                 }
               }
             });
         });
       });
-    }).catch((resp: any) => {
-      const error = resp.error || [];
-      console.log(resp);
+    })ว
+    // .catch((resp: any) => {
+    //   const error = resp.error || [];
+    //   console.log(resp);
 
-      if (error && error.errors.length > 0) {
-        this.alertService.notify({
-          type: 'error',
-          html: error.errors.map((err) => {
-            return '<li class="text-left">' + err + '</li>';
-          }).join('')
-        }).then(() => {
-          this.onBack();
-        });
-      } else {
-        this.alertService.error(error.resultDescription);
-      }
-    }).then(() => this.pageLoadingService.closeLoading());
+    //   if (error && error.errors.length > 0) {
+    //     this.alertService.notify({
+    //       type: 'error',
+    //       html: error.errors.map((err) => {
+    //         return '<li class="text-left">' + err + '</li>';
+    //       }).join('')
+    //     }).then(() => {
+    //       this.onBack();
+    //     });
+    //   } else {
+    //     this.alertService.error(error.resultDescription);
+    //   }
+    // }).then(() => this.pageLoadingService.closeLoading());
   }
 
   onHome(): void {

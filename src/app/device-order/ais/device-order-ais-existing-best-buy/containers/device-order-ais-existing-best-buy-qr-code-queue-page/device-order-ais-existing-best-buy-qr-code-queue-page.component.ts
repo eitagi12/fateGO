@@ -374,9 +374,9 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
 
   checkValid(): boolean {
     if (!this.isAutoGenQueue) {
-      return !this.queueFrom.invalid;
+      return !!this.queueFrom.invalid;
     } else {
-      return !this.mobileFrom.invalid;
+      return !!this.mobileFrom.invalid;
     }
   }
 
