@@ -44,7 +44,7 @@ export class PrivilegeService {
       return this.requestUsePrivilege(mobileNo, ussdCode, privilegeCode).then((msgBarcode) => {
         return msgBarcode;
       }).catch(e => Promise.reject('หมายเลขนี้ ไม่สามารถรับสิทธิ์ได้'));
-    }).catch(e => Promise.reject(e.error.resultDescription));
+    }).catch(e => Promise.reject(`${e.error.resultDescription || ''} ${(e.error.developerMessage) || ''}`.trim()));
   }
 
 }

@@ -93,9 +93,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
             this.transaction.data.customer.repi = repi;
           }
           this.transaction.data.billingInformation = {};
-          const addressCustomer = this.transaction.data.customer;
-          this.transaction.data.billingInformation.billDeliveryAddress = addressCustomer;
-
+          this.transaction.data.billingInformation.billDeliveryAddress = this.transaction.data.customer;
           this.pageLoadingService.closeLoading();
           if (customerInfo.caNumber) {
             this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);

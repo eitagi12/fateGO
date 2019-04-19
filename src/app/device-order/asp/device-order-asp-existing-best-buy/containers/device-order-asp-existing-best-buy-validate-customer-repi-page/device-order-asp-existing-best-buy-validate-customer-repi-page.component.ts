@@ -125,8 +125,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
               this.transaction.data.customer.repi = repi;
             }
             this.transaction.data.billingInformation = {};
-            const addressCustomer = this.transaction.data.customer;
-            this.transaction.data.billingInformation.billDeliveryAddress = addressCustomer;
+            this.transaction.data.billingInformation.billDeliveryAddress = this.transaction.data.customer;
 
             this.pageLoadingService.closeLoading();
             this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
