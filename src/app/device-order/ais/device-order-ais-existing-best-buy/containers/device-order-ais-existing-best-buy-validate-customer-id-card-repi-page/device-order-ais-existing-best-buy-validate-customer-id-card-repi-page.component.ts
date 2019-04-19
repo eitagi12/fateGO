@@ -98,7 +98,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
           // verify Prepaid Ident
           return this.customerInfoService.verifyPrepaidIdent(this.profile.idCardNo, mobileNo)
             .then((respPrepaidIdent: any) => {
-              if (respPrepaidIdent.data && respPrepaidIdent.data.success) {
+              if (respPrepaidIdent) {
                 const expireDate = this.transaction.data.customer.expireDate;
                 if (this.utils.isIdCardExpiredDate(expireDate)) {
                   this.pageLoadingService.closeLoading();
