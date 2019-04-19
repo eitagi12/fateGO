@@ -54,8 +54,8 @@
   <mc-footer>    
       <button class="btn btn-success" (click)="onRefreshQRCode()">REFRESH</button>
       <!-- for develop -->
-      <button [hidden]="!isDeveloperMode" class="btn btn-secondary" (click)="onBack()">BACK</button>
-      <button [hidden]="!isDeveloperMode" class="btn btn-success" (click)="goToMpayQueuePage()">CONFIRM</button>
+      <button [hidden]="!isDeveloperMode()" class="btn btn-secondary" (click)="onBack()">BACK</button>
+      <button [hidden]="!isDeveloperMode()" class="btn btn-success" (click)="goToMpayQueuePage()">CONFIRM</button>
       <!-- for develop -->
   </mc-footer>
 </div>
