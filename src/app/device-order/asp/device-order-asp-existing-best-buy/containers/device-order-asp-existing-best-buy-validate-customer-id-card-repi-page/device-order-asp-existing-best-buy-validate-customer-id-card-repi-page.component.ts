@@ -146,7 +146,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardRepiPageComponen
             });
         });
       });
-    })ว
+    });
     // .catch((resp: any) => {
     //   const error = resp.error || [];
     //   console.log(resp);
