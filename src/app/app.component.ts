@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
-import {
-  TokenService, ErrorsService, AlertService, PageActivityService, HomeService, ChannelType, OnscreenKeyboardService
-} from 'mychannel-shared-libs';
+import { TokenService, ErrorsService, AlertService, PageActivityService, HomeService, ChannelType } from 'mychannel-shared-libs';
 import { setTheme } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
 import { environment } from '../environments/environment';
@@ -31,7 +29,7 @@ export class AppComponent {
     private homeService: HomeService,
     private http: HttpClient,
     private translation: TranslateService,
-    private onscreenKeyboardService: OnscreenKeyboardService
+    // private onscreenKeyboardService: OnscreenKeyboardService
   ) {
     this.version = this.getVersion();
 
@@ -39,16 +37,15 @@ export class AppComponent {
     this.hoemeHandler();
     this.tokenHandler();
     this.errorHandler();
-    // this.checkServerTime();
-
-    // if (this.isDeveloperMode()) {
-    //   this.onscreenKeyboardService.setRunOnKiosk(true);
-    // }
 
     if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {
-      this.onStopPropagation();
       this.pageActivityHandler();
     }
+
+    this.homeService.callback = () => {
+      window.location.href = '/smart-shop';
+    };
+    this.onStopPropagation();
   }
 
   initails(): void {
