@@ -17,7 +17,6 @@ export const CASH_AND_CREDIT_CARD_PAYMENT = 'CC/CA';
 import { DEPOSIT_QUEUE_PAGE } from 'src/app/deposit-summary/constants/route-path.constant';
 import { CreateDeviceOrderService } from 'src/app/deposit-summary/services/create-device-order.service';
 
-
 export const AIS_CUSTOMER = 'AIS';
 export const ALL_CUSTOMER = 'ALL';
 
@@ -51,7 +50,7 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
   locationNameTH: string;
   recipientCustomerAddress: string;
   otherPhoneNumber: string;
-
+  isDisabled: boolean;
 
   constructor(private localStorageService: LocalStorageService,
     private apiRequestService: ApiRequestService,
@@ -157,13 +156,13 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
       allowEscapeKey: false,
       html: 'ต้องการยกเลิกรายการขายหรือไม่ <br> การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที'
     }).then((data) => {
-        if (data.value) {
-          const userId = this.tokenService.getUser().username;
-          const soId = this.localStorageService.load('reserveSoId').value;
-          this.createDeviceOrderService.removeAddCart(soId, userId).then( (res) => {
-            window.location.href = url;
-          });
-        }
+      if (data.value) {
+        const userId = this.tokenService.getUser().username;
+        const soId = this.localStorageService.load('reserveSoId').value;
+        this.createDeviceOrderService.removeAddCart(soId, userId).then((res) => {
+          window.location.href = url;
+        });
+      }
     });
   }
   getRandomNum(length: number): string {
@@ -192,7 +191,7 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
   }
   showPaymentMethod(method: string): boolean {
     const paymentMethod = this.priceOptionPayment.filter(payment => payment.method === method);
-    if (paymentMethod.length > 0)                                              {
+    if (paymentMethod.length > 0) {
       return null;
     } else {
       return true;
@@ -257,16 +256,16 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
   createProductRecipient(): void {
     this.customerFullName = this.transaction.data.customer.titleName + ' ' + this.transaction.data.customer.firstName +
       ' ' + this.transaction.data.customer.lastName;
-     const transactionLocalStorage = this.localStorageService.load('transaction').value;
-    if ( transactionLocalStorage && transactionLocalStorage.data && transactionLocalStorage.data.customer
+    const transactionLocalStorage = this.localStorageService.load('transaction').value;
+    if (transactionLocalStorage && transactionLocalStorage.data && transactionLocalStorage.data.customer
       && transactionLocalStorage.data.customer.shipaddress
       && transactionLocalStorage.data.customer.shipaddress.shipCusAddr
-      && transactionLocalStorage.data.customer.shipaddress.shipCusName === this.customerFullName ) {
-        this.customerFullAddress = transactionLocalStorage.data.customer.shipaddress.shipCusAddr;
+      && transactionLocalStorage.data.customer.shipaddress.shipCusName === this.customerFullName) {
+      this.customerFullAddress = transactionLocalStorage.data.customer.shipaddress.shipCusAddr;
     } else {
       this.customerFullAddress = this.getFullAddress(this.transaction.data.customer);
     }
-    this.recipientCustomerAddress = this.getFullAddress(this.transaction.data.customer);
+    // this.recipientCustomerAddress = this.getFullAddress(this.transaction.data.customer);
     this.idCardNo = this.transaction.data.customer.idCardNo;
     if (this.idCardNo) {
       this.idCardNo = this.idCardNo.substring(9);
@@ -325,74 +324,80 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  private async filterTrade(){
-    let reserveProductInfo: any = this.localStorageService.load('reserveProductInfo').value;
-    let CustomerFlag: any = this.localStorageService.load('CustomerFlag').value;
+  private async filterTrade(): Promise<void> {
+    const reserveProductInfo: any = this.localStorageService.load('reserveProductInfo').value;
+    const CustomerFlag: any = this.localStorageService.load('CustomerFlag').value;
     let tradeResult = [];
 
-    if(CustomerFlag === "Y"){
+    if (CustomerFlag === 'Y') {
       tradeResult = await this.getTradeAIS(reserveProductInfo);
-      if(!tradeResult){
+      if (!tradeResult) {
         tradeResult = await this.getTradeAll(reserveProductInfo);
       }
-      if(!tradeResult){
+      if (!tradeResult) {
         tradeResult = this.getTradeCriteriasNull(reserveProductInfo);
       }
-    }else if(CustomerFlag === "N"){
+    } else if (CustomerFlag === 'N') {
       tradeResult = await this.getTradeAll(reserveProductInfo);
-      if(!tradeResult){
+      if (!tradeResult) {
         tradeResult = this.getTradeCriteriasNull(reserveProductInfo);
       }
     }
 
-    if(tradeResult){
+    if (tradeResult) {
       reserveProductInfo.tradeReserve.trades = tradeResult;
       localStorage.setItem('reserveProductInfo', JSON.stringify(reserveProductInfo));
     }
-
-
   }
 
-  private getTradeAIS(reserveProductInfo: any){
-    let result = [];
-    for (let trades of reserveProductInfo.tradeReserve.trades) {
-      if(trades.criterias){
-        for(let criterias of trades.criterias) {
-            if(criterias.target){
-              if(criterias.target[0].toString().toUpperCase() === AIS_CUSTOMER){
-                  result.push(trades);
-              }
+  private getTradeAIS(reserveProductInfo: any): any [] {
+    const result = [];
+    for (const trades of reserveProductInfo.tradeReserve.trades) {
+      if (trades.criterias) {
+        for (const criterias of trades.criterias) {
+          if (criterias.target) {
+            if (criterias.target[0].toString().toUpperCase() === AIS_CUSTOMER) {
+              result.push(trades);
             }
+          }
         }
       }
     }
     return result;
   }
 
-  private getTradeAll(reserveProductInfo: any){
-    let result = [];
-    for (let trades of reserveProductInfo.tradeReserve.trades) {
-      if(trades.criterias){
-        for(let criterias of trades.criterias) {
-            if(criterias.target){
-              if(criterias.target[0].toString().toUpperCase() === ALL_CUSTOMER){
-                  result.push(trades);
-              }
+  private getTradeAll(reserveProductInfo: any): any[] {
+    const result = [];
+    for (const trades of reserveProductInfo.tradeReserve.trades) {
+      if (trades.criterias) {
+        for (const criterias of trades.criterias) {
+          if (criterias.target) {
+            if (criterias.target[0].toString().toUpperCase() === ALL_CUSTOMER) {
+              result.push(trades);
             }
+          }
         }
       }
     }
     return result;
   }
 
-  private getTradeCriteriasNull(reserveProductInfo: any){
-    let result = [];
-    for (let trades of reserveProductInfo.tradeReserve.trades) {
-      if(!trades.criterias){
+  private getTradeCriteriasNull(reserveProductInfo: any): any[] {
+    const result = [];
+    for (const trades of reserveProductInfo.tradeReserve.trades) {
+      if (!trades.criterias) {
         result.push(trades);
       }
     }
     return result;
   }
 
+  checkCustomerAddress(event: any): void {
+    if (event.target.checked === true) {
+      this.recipientCustomerAddress = this.customerFullAddress;
+      this.isDisabled = event.target.checked;
+    } else {
+      this.isDisabled = null;
+    }
+  }
 }
