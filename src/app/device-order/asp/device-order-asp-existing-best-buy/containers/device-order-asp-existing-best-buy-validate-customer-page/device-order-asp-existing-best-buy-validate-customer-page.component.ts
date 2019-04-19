@@ -157,20 +157,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
       this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customer: Customer) => {
         this.transaction.data.customer = customer;
         this.transaction.data.billingInformation = {};
-        this.transaction.data.billingInformation.billDeliveryAddress = {
-          homeNo: customer.homeNo,
-          moo: customer.moo,
-          mooBan: customer.mooBan,
-          room: customer.room,
-          floor: customer.floor,
-          buildingName: customer.buildingName,
-          soi: customer.soi,
-          street: customer.street,
-          province: customer.province,
-          amphur: customer.amphur,
-          tumbol: customer.tumbol,
-          zipCode: customer.zipCode
-        };
+        this.transaction.data.billingInformation.billDeliveryAddress = this.transaction.data.customer;
         if (!this.transaction.data.order || !this.transaction.data.order.soId) {
           return this.http.post('/api/salesportal/add-device-selling-cart',
             this.getRequestAddDeviceSellingCart()

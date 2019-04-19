@@ -148,7 +148,7 @@ export class CustomerInfoService {
       idCardImage: customer.imageSmartCard,
       firstName: customer.firstName || '-',
       lastName: customer.lastName || '-',
-      birthdate: customer.birthdate || '-',
+      birthdate: customer.birthdate || '01/01/1953',
       homeNo: customer.homeNo || '-',
       moo: customer.moo || '-',
       mooBan: customer.mooBan || '-',
