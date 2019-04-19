@@ -71,6 +71,7 @@ export class OrderPreToPostCustomerInfoPageComponent implements OnInit, OnDestro
 
   onNext(): void {
     const action = this.transaction.data.action;
+
     if (action === TransactionAction.KEY_IN) {
       this.router.navigate([ROUTE_ORDER_PRE_TO_POST_ID_CARD_CAPTURE_PAGE]);
     } else if (action === TransactionAction.KEY_IN_REPI) {

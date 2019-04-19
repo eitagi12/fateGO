@@ -11,7 +11,7 @@
         <mc-result [success]="isSuccess" [mobileNo]="transaction?.data?.simCard?.mobileNo" [mcLoading]="createTransactionService">
           <div *ngIf="isSuccess">
             <div class="text-center text-black"> TRANSACTION ID :
-              <span class="text-grey"> {{ transaction?.data?.order?.orderNo }}</span>
+              <span class="text-light-grey"> {{ transaction?.data?.order?.orderNo }}</span>
             </div>
             <div class="text-grey float-left mt-2"><i class="fa fa fa-circle text-light-green"></i>&nbsp;&nbsp;
               <span translate>ผลการโอนย้ายบริการเสริม</span></div>

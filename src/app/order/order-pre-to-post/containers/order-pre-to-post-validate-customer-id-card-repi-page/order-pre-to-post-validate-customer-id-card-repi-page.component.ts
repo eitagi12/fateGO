@@ -224,4 +224,5 @@ export class OrderPreToPostValidateCustomerIdCardRepiPageComponent implements On
     this.transactionService.update(this.transaction);
     this.pageLoadingService.closeLoading();
   }
+
 }

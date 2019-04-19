@@ -26,7 +26,6 @@ export class OrderNewRegisterValidateCustomerPageComponent implements OnInit, On
     private homeService: HomeService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private apiRequestService: ApiRequestService,
     private http: HttpClient,
   ) { }
 
@@ -109,9 +108,6 @@ export class OrderNewRegisterValidateCustomerPageComponent implements OnInit, On
   }
 
   private createTransaction(): void {
-    // New x-api-request-id
-    this.apiRequestService.createRequestId();
-
     this.transaction = {
       data: {
         transactionType: TransactionType.ORDER_NEW_REGISTER,

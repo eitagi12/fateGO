@@ -14,7 +14,8 @@ export class ReservePageComponent implements OnInit {
     private homeService: HomeService
   ) { }
 
-  ngOnInit(): void { }
+  ngOnInit(): void {
+  }
 
   onBack(): void {
     this.location.back();

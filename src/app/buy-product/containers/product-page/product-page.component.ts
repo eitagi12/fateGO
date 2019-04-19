@@ -3,7 +3,6 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { TokenService, User, ProductStock, ProductStockBrandAndModel, HomeService, SalesService } from 'mychannel-shared-libs';
 import { PRODUCT_TYPE, PRODUCT_SUB_TYPE, SUB_STOCK_DESTINATION, PRODUCT_HANDSET_BUNDLE } from 'src/app/buy-product/constants/products.constants';
 import { ROUTE_BUY_PRODUCT_BRAND_PAGE } from 'src/app/buy-product/constants/route-path.constant';
-import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 
 @Component({
   selector: 'app-product',
@@ -16,6 +15,7 @@ export class ProductPageComponent implements OnInit {
   countRow: number = 0;
   totalRow: number = 0;
 
+  productService: Promise<any>;
   params: Params;
   productStocks: ProductStock[] = [];
 
@@ -24,10 +24,8 @@ export class ProductPageComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private tokenService: TokenService,
     private salesService: SalesService,
-    private homeService: HomeService,
-    private priceOptionService: PriceOptionService
+    private homeService: HomeService
   ) {
-    this.priceOptionService.remove();
     this.activatedRoute.queryParams.subscribe((params: any) => {
       this.params = params;
 
@@ -48,13 +46,12 @@ export class ProductPageComponent implements OnInit {
       location: user.locationCode
     };
 
-    let service;
     if (!!model) {
-      service = this.salesService.productsByBrandModel(Object.assign({ model: model }, req));
+      this.productService = this.salesService.productsByBrandModel(Object.assign({ model: model }, req));
     } else {
-      service = this.salesService.modelsOfProduct(req);
+      this.productService = this.salesService.modelsOfProduct(req);
     }
-    service.then((resp: any) => {
+    this.productService.then((resp: any) => {
       const data = resp.data;
 
       this.countRow += +data.countRow;
@@ -63,7 +60,7 @@ export class ProductPageComponent implements OnInit {
       data.products.map((product: any) => {
         const normalPrice = product.normalPrice || {};
         const promotionPrice = product.promotionPrice || {};
-        const subproducts = product.subProducts || [];
+        let subproducts = product.subProducts || [];
         const ribbonType = (product.itemType || '').toLowerCase();
         const ribbon = ['hot', 'new'].find((rib: string) => rib === ribbonType);
         const productStock: ProductStock = {
@@ -77,6 +74,19 @@ export class ProductPageComponent implements OnInit {
           maxPromotionPrice: this.calMaxPrice(subproducts, 'promotionPrice') || +promotionPrice.max || 0,
           stocks: []
         };
+
+        if (!subproducts.length) {
+          // not sub product
+          subproducts = [{
+            name: `${product.name} ${product.productSubtype === PRODUCT_HANDSET_BUNDLE ? '(แถมชิม)' : ''}`,
+            model: product.model,
+            color: product.color,
+            imageUrl: product.imageUrl,
+            normalPrice: product.normalPrice,
+            promotionPrice: product.promotionPrice
+          }];
+        }
+
         subproducts.forEach((sub: any) => {
           this.salesService.productStock({
             locationCodeSource: user.locationCode,
@@ -109,10 +119,9 @@ export class ProductPageComponent implements OnInit {
               minPromotionPrice: +subPromotionPrice.min || 0,
               maxPromotionPrice: +subPromotionPrice.max || 0
             });
-
           });
-
         });
+
         this.productStocks.push(productStock);
       });
     });

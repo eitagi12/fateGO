@@ -22,7 +22,6 @@ export class OrderPreToPostOtpPageComponent implements OnInit {
   mobileNo: string;
   transactionID: string;
   isOtpValid: boolean;
-
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -41,16 +40,15 @@ export class OrderPreToPostOtpPageComponent implements OnInit {
     this.createForm();
     this.sendOTP();
   }
-
   private createForm(): void {
     this.otpForm = this.fb.group({
       otp: ['', [Validators.required, Validators.maxLength(5)]],
     });
   }
-
   sendOTP(): void {
     this.pageLoadingService.openLoading();
     let mobile = this.registrationData.simCard.mobileNo;
+
     if (environment.name !== 'PROD') {
       mobile = environment.TEST_OTP_MOBILE;
     }
@@ -92,7 +90,6 @@ export class OrderPreToPostOtpPageComponent implements OnInit {
       this.router.navigate([ROUTE_ORDER_PRE_TO_POST_ID_CARD_CAPTURE_REPI_PAGE]);
     }
   }
-
   autoPI(): void {
     this.http.post(`/api/customerportal/newRegister/updatePrepaidIdent`, this.getRequestUpdatePrepaidIdentata()
     ).toPromise()
@@ -103,10 +100,10 @@ export class OrderPreToPostOtpPageComponent implements OnInit {
         } else {
           this.alertService.error('ระบบไม่สามารถแสดงตนได้กรุณาติดต่อเจ้าหน้าที่');
         }
-      }).catch((error: any) => {
+      }).catch((error) => {
         this.pageLoadingService.closeLoading();
         this.alertService.error('รหัส OTP ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง');
-      }).catch((error: any) => {
+      }).catch((error) => {
         this.pageLoadingService.closeLoading();
         this.alertService.error('ระบบไม่สามารถแสดงตนได้กรุณาติดต่อเจ้าหน้าที่');
       });
@@ -126,15 +123,12 @@ export class OrderPreToPostOtpPageComponent implements OnInit {
     }
     this.alertService.error(errMsg);
   }
-
   onBack(): void {
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CUSTOMER_PROFILE_PAGE]);
   }
-
   onHome(): void {
     this.homeService.goToHome();
   }
-
   getRequestUpdatePrepaidIdentata(): void {
     const customer = this.transaction.data.customer;
     const mobileNo = this.transaction.data.simCard.mobileNo;

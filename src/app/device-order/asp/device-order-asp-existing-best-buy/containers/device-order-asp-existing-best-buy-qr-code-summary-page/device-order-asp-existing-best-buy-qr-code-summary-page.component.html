@@ -1,0 +1,117 @@
+<div class="mc-flex">
+  <mc-header title="รายการสินค้า">
+    <!-- <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div> -->
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <div class="my-3">
+      <div class="container-fluid">
+        <div class="row mb-3">
+          <div class="col-6">
+            <div class="ml-5">
+              <img src="assets/images/icon/icon-person.png" class="icon-person" />
+              {{ transaction?.data?.customer?.titleName }}
+              {{ transaction?.data?.customer?.firstName }}
+              {{ transaction?.data?.customer?.lastName }}
+            </div>
+          </div>
+          <div class="col-6 text-right">
+            <div class="mr-5">
+              <img src="assets/images/icon/sales_portal_green_phone.png" class="icon-mobile" />
+              {{ transaction?.data?.simCard?.mobileNo | mobileNo }}
+            </div>
+          </div>
+        </div>
+
+        <div class="card mb-3">
+          <div class="card-header bg-pink text-white">สรุปรายการสั่งชื้อสินค้า</div>
+          <div class="card-body">
+            <p class="text-light-green">{{ priceOption?.campaign?.campaignName }}</p>
+            <div class="text-grey">
+              <p>
+                <i class="fa fa-circle mr-3 text-light-green"></i>
+                {{ priceOption?.productDetail?.name }}
+                <span *ngIf="priceOption?.productStock?.color">
+                  {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.color }}
+                </span>
+                <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
+                  (แถมซิม)
+                </span>
+                <span class="pull-right text-light-green">
+                  ฿ {{ priceOption?.trade?.promotionPrice | number }}
+                </span>
+              </p>
+              <div>
+                <div class="row" *ngIf="!!transaction?.data?.preBooking">
+                  <div class="col-sm-9">
+                    <i class="fa fa-circle mr-3 text-pink"></i>
+                    <span>หักค่ามัดจำสินค้า ({{ transaction?.data?.preBooking?.preBookingNo }})</span>
+                  </div>
+                  <div class="col-sm-3 text-pink text-right">
+                    - ฿ {{ transaction?.data?.preBooking?.depositAmt | number }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="card-footer bg-transparent text-right mr-3 ml-3">
+            รวมยอดชำระ(รวมVAT)
+            <span class="text-light-green">
+              ฿ {{ summary([+priceOption?.trade?.promotionPrice, deposit]) | number }}
+            </span>
+          </div>
+        </div>
+
+        <div class="card mb-3">
+          <div class="card-header bg-pink text-white">
+            รายละเอียดการชำระ
+          </div>
+          <div class="card-body text-grey">
+            <p *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N'">
+              <i class="fa fa-circle mr-3 text-light-green"></i>
+              {{ priceOption?.productDetail?.name }}
+              <span *ngIf="priceOption?.productStock?.color">
+                สี {{ priceOption?.productStock?.color }}
+              </span>
+              <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
+                (แถมซิม)
+              </span>
+              <span class="pull-right text-light-green">฿ {{ summary([
+                +priceOption?.trade?.promotionPrice,
+                deposit ]) | number }}</span>
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <div class="container">
+        <div class="row">
+          <div class="col-8">
+            <img src="assets/images/icon/phone_qrcode.png" />
+            ชำระด้วย QR Code
+            <div class="text-pink"> กรุณาเปิด Application เพื่อสแกน QR Code</div>
+          </div>
+          <div class="col-4 text-right">
+            <img class="img-fluid" [src]="transaction?.data?.payment?.qrCode?.imageUrl" />
+          </div>
+          <div class="col-12 mt-3">
+            <form class="form-inline pull-right">
+              <div class="form-group">
+                <label for="summaryInput" class="text-light-green">ยอดชำระ</label>
+                <input style="text-align: center" type="text" id="summaryInput" readonly
+                  class="form-control ml-3 text-light-green"
+                  value="฿{{ summary([+priceOption?.trade?.promotionPrice, deposit]) | number }}">
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <mc-footer>
+    <button class="btn btn-secondary" (click)="onBack()">CANCEL</button>
+    <button class="btn btn-success" (click)="onNext()">PAY NOW</button>
+  </mc-footer>
+</div>

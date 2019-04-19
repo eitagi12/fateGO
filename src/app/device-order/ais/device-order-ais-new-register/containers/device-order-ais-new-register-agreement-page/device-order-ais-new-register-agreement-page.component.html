@@ -1,5 +1,5 @@
 <div class="mc-flex">
-  <mc-header title="รายการสินค้า">
+  <mc-header title="เครื่องพร้อมเปิดเบอร์ใหม่">
     <div class="header-icon-left">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
@@ -8,32 +8,15 @@
     </div>
   </mc-header>
   <div class="mc-flex-wrap">
-    <div class="mt-3 mb-3">
-      <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
-
-      <div class="container-fluid">
+    <div class="container-fluid">
+      <div class="card my-3">
         <div class="card">
-          <div class="card-header text-center bg-transparent">
-            ข้อตกลงรับสิทธิ์ต่อเนื่อง
-          </div>
+          <div class="card-header bg-transparent text-center">คำขอใช้บริการโทรศัพท์เคลื่อนที่</div>
           <div class="card-body">
-            <p>1) ข้าพเจ้าตกลงใช้บริการโทรศัพท์ที่เลือกซื้อ กับการใช้บริการหมายเลขโทรศัพท์เคลื่อนที่ในระบบ AIS รายเดือน
-              ตามแพ็กเกจค่าบริการรายเดือนข้างต้น
-              โดยใช้บริการต่อเนื่องตามระยะเวลาที่กำหนด และชำระค่าใช้บริการภายในวันที่บริษัทฯ กำหนด
-              นับตั้งแต่วันที่ทำข้อตกลงฉบับนี้
-              หรือนับระยะเวลาต่อเนื่องจากข้อตกลงใช้บริการฉบับอื่นที่ข้าพเจ้าได้ตกลงไว้ก่อนหน้านี้
-              ซึ่งยังคงมีผลใช้บังคับอยู่
-            </p>
-            <p>2) กรณีข้าพเจ้ายกเลิก หรือถูกยกเลิกบริการ ขอเปลี่ยนแปลงหมายเลขโทรศัพท์ ขอย้ายเครือข่ายเลขหมายเดิม
-              ขอโอนเปลี่ยนเจ้าของ
-              หรือขอเปลี่ยนเป็นระบบเติมเงิน ก่อนครบกำหนดเวลาที่ตกลงไว้ ถือว่าข้าพเจ้าผิดข้อตกลงนี้ และยินยอมให้บริษัทฯ
-              มีสิทธิ์ระงับการใช้เครื่องโทรศัพท์ดังกล่าวได้ทันที
-              รวมทั้งตกลงชำระค่าปรับเท่ากับส่วนลดค่าเครื่อง (ก่อน VAT) ตามที่ได้รับให้แก่บริษัท แอดวานซ์ ไวร์เลส
-              เน็ทเวอร์ค
-              จำกัด ในวันที่ยกเลิกบริการ หรือผิดข้อตกลงทันที และไม่ขอรับค่าแพ็กเกจบริการล่วงหน้าที่ชำระในโครงการนี้คืน
-            </p>
+            <div class="img-eapplication">
+              <img class="img-fluid" *ngIf="getDataBase64Eapp" [src]="getDataBase64Eapp" />
+            </div>
           </div>
-          <div class="card-footer bg-transparent"></div>
         </div>
       </div>
     </div>

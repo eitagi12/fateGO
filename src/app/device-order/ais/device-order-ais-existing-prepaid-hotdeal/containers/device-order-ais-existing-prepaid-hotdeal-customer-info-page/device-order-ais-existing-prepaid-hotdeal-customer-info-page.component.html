@@ -1,0 +1,39 @@
+<div class="mc-flex">
+    <mc-header title="ลูกค้าปัจจุบัน">
+      <div class="header-icon-left">
+        <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+      </div>
+      <div class="header-icon-right">
+        <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+      </div>
+    </mc-header>
+    <div class="mc-flex-wrap">
+      <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
+      <div class="my-3">
+          <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
+          <div class="container-fluid">
+            <div class="card mb-3">
+              <h5 class="card-header bg-pink text-white">ข้อมูลลูกค้า</h5>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-5 col-sm-3 card-text text-grey mb-2">เบอร์โทรศัพท์</div>
+                  <div class="col-7 col-sm-9 card-text ">
+                    {{ customerInfo?.mobileNo | mobileNo }}
+                  </div>
+                  <div class="col-5 col-sm-3 card-text text-grey mb-2">ระบบ</div>
+                  <div class="col-7 col-sm-9 card-text ">{{ customerInfo?.chargeType }}</div>
+                  <div class="col-5 col-sm-3 card-text text-grey mb-2">สถานะเบอร์</div>
+                  <div class="col-7 col-sm-9 card-text ">{{ customerInfo?.status }}</div>
+                  <div class="col-5 col-sm-3 card-text text-grey mb-2">ยอดเงินคงเหลือ</div>
+                  <div class="col-7 col-sm-9 card-text ">{{ customerInfo?.balance }} บาท</div>
+                </div>
+              </div>
+            </div>
+          </div>
+      </div>
+    </div>
+    <mc-footer>
+      <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+      <button class="btn btn-success" (click)="onNext()">NEXT</button>
+    </mc-footer>
+  </div>

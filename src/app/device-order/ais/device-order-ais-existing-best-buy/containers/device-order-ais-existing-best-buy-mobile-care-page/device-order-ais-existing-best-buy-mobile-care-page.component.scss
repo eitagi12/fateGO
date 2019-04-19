@@ -1,0 +1,28 @@
+.icon-mobile-care,
+.icon-mobile-care-active {
+    width: 100px;
+}
+
+.nav-item {
+    margin: 0 2px;
+}
+
+.nav-link {
+    background-color: #eff0f1;
+    color: #999999;
+
+    .icon-mobile-care-active {
+        display: none;
+    }
+    
+    &.active {
+        background-color: #ff807d;
+        .icon-mobile-care {
+            display: none;
+        }
+
+        .icon-mobile-care-active {
+            display: inline-block;
+        }
+    }
+}

@@ -191,7 +191,7 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
     }
   }
 
-  startPersoSim(transaction: Transaction | Partial<Transaction>): any {
+  startPersoSim(transaction: Transaction): void {
     this.errorMessage = '';
     this.persoSimSubscription = this.onPersoSim(transaction.data.simCard.mobileNo).subscribe((value) => {
       this.isNext = false;
@@ -515,7 +515,7 @@ export class OrderNewRegisterPersoSimPageComponent implements OnInit, OnDestroy 
     }
   }
 
-  private checkOrderStatusCompleted(referenceNumber: string): Promise<any> {
+  private checkOrderStatusCompleted(referenceNumber: any): Promise<any> {
     return new Promise((resolve) => {
       let nubCount = 0;
       const checkOrder = setInterval(() => {

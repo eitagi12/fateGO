@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { MobileNoCondition, HomeService, TokenService, PageLoadingService, User, AlertService } from 'mychannel-shared-libs';
+import { MobileNoCondition, HomeService, TokenService, PageLoadingService, User, AlertService, OnscreenKeyboardService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
@@ -29,7 +29,7 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
   isSearchAgain: boolean = false;
   mobileNoConditionForm: FormGroup;
   element: any;
-  el: any[] = [];
+  el: any = [];
   user: User;
   constructor(
     private router: Router,
@@ -45,6 +45,11 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
   ) {
     this.transaction = this.transactionService.load();
     this.user = this.tokenService.getUser();
+
+    // this.onsKeyboardService.getNextOrPreviousInput().subscribe(event => {
+    //   console.log('event', event);
+    //   this.onNextTab(event);
+    // });
 
   }
 
@@ -118,9 +123,6 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
           };
         }).filter((condition: any) => condition.mobileNo.length > 0);
       })
-      .catch((resp: any) => {
-        this.mobileNoConditions = [];
-      })
       .then(() => {
         console.log(this.mobileNoConditions);
 
@@ -133,9 +135,15 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
     const keyCode: number = (event.which) ? event.which : event.keyCode;
     const target: any = event.target;
     // backspace
-    if (target.value === 'undefined' || event.target.value === '') {
+    if (target.value === 'undefined' || target.value === '') {
       const previousField: any = target.previousElementSibling;
+      // when backspace on keyboard
       if (keyCode === 8) {
+        if (previousField) {
+          console.log('previousField');
+          previousField.focus();
+        }
+      } else { // when backspace on visualkeyboard
         if (previousField) {
           previousField.focus();
         }
@@ -149,7 +157,6 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
       return;
     }
     nextField.focus();
-
   }
 
   onSearchMobileNoByCondition(): void {

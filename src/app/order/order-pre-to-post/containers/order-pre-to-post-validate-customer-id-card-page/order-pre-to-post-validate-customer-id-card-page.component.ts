@@ -37,7 +37,6 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
     private tokenService: TokenService,
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
-    private apiRequestService: ApiRequestService,
     private utils: Utils,
     private onscreenKeyboardService: OnscreenKeyboardService,
     public translation: TranslateService

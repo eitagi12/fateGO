@@ -17,7 +17,7 @@ import { environment } from '../environments/environment';
 import { AppComponent } from './app.component';
 import { ErrorPageComponent } from './containers/error-page/error-page.component';
 import { SharedModule } from './shared/shared.module';
-import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   declarations: [
@@ -43,7 +43,8 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
       }
     }),
     SharedModule,
-    AppRoutingModule
+    AppRoutingModule,
+    TranslateModule.forRoot()
   ],
   providers: [
     {

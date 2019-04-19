@@ -5,10 +5,9 @@ import { TypeaheadModule } from 'ngx-bootstrap';
 import { TabsModule } from 'ngx-bootstrap';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 /* Service */
-import { AddToCartService } from './services/add-to-cart.service';
+import { FlowService } from './services/flow.service';
 /* Components */
 import { BuyProductRoutingModule } from './buy-product-routing.module';
-import { BuyProductComponent } from './buy-product.component';
 import { BrandPageComponent } from './containers/brand-page/brand-page.component';
 import { CampaignPageComponent } from './containers/campaign-page/campaign-page.component';
 import { ProductPageComponent } from './containers/product-page/product-page.component';
@@ -25,14 +24,13 @@ import { PrivilegeToTradeSliderPipe } from './pipes/privilege-to-trade-slider.pi
     TabsModule.forRoot()
   ],
   declarations: [
-    BuyProductComponent,
     BrandPageComponent,
     CampaignPageComponent,
     ProductPageComponent,
     PrivilegeToTradeSliderPipe,
   ],
   providers: [
-    AddToCartService,
+    FlowService
   ]
 })
 export class BuyProductModule { }

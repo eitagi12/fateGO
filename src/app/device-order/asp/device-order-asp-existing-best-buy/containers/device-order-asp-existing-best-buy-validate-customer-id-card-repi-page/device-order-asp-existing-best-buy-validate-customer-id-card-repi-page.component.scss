@@ -1,0 +1,77 @@
+.read-card{
+    margin: 50px; 
+    border:1px solid #b7b7b7; 
+    border-radius: 4px;
+  }
+
+  .read-card-title {
+    background: #8cc53f; 
+    border-radius: 3px; 
+    width: 100%; 
+    padding: 8px 10px 8px 15px; 
+    color: #fff;
+}
+
+.proress-container{
+    padding: 50px 40px 50px 40px;
+    line-height: 75px;
+    .waiting{
+      color: #989898;
+    }
+}
+
+.progress-header{
+    line-height: 35px;
+    padding-bottom: 10px;
+}
+
+.proress-container{
+    padding: 50px 40px 50px 40px;
+    line-height: 75px;
+  }
+  // .progress{
+  //   display: block;
+  //   margin: 0 auto;
+  //   background-color: #f4f4f4;
+  //   height: 13px;
+  //   border-radius: 15px;
+  //   max-width: 700px;
+  // }
+  // .progress-meter {
+  //   background-color: #cced61;
+  //   border-radius: 15px;
+  // }
+  
+  // for PC
+  .read-card {
+    border:1px solid #b7b7b7; 
+    border-radius: 4px;
+    margin-top: 2%;
+  }
+  .read-card-title {
+    background: #8cc53f; 
+    border-radius: 3px; 
+    width: 100%; 
+    padding: 8px 10px 8px 15px; 
+    color: #fff;
+  }
+  .line {
+    width:6px; 
+    height: 100%; 
+    min-height: 180px; 
+    margin-top: auto; 
+    margin-left: auto; 
+    margin-right: auto; 
+    border-radius: 10px; 
+    background:#ccee62;
+    display:block;
+  }
+
+  .success-txt {
+    color: #8dc63f ;
+}
+
+.profile {
+  width: 80px;
+}
+

@@ -36,6 +36,7 @@ export class OrderPreToPostEbillingPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+
     this.http.get('/api/customerportal/newRegister/queryBillCycle', {
       params: {
         coProject: 'N'
@@ -73,6 +74,7 @@ export class OrderPreToPostEbillingPageComponent implements OnInit, OnDestroy {
 
   onNext(): void {
     this.transaction.data.billingInformation.billCycle = this.billCycle;
+
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CONFIRM_USER_INFORMATION_PAGE]);
   }
 

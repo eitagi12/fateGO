@@ -40,7 +40,6 @@ export class OrderPreToPostIdCardCaptureRepiPageComponent implements OnInit, OnD
       this.apiSigned = 'SignaturePad';
     }
   }
-
   ngOnInit(): void {
     const customer: Customer = this.transaction.data.customer;
     this.captureAndSign = {

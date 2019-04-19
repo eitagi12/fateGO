@@ -37,6 +37,7 @@ export class OrderNewRegisterValidateCustomerKeyInPageComponent implements OnIni
 
   ngOnInit(): void {
     this.activatedRoute.queryParams.subscribe((params: Params) => this.params = params);
+
     this.callService();
   }
 

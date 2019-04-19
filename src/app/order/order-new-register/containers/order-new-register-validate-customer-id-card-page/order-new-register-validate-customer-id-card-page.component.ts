@@ -36,7 +36,6 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
     private homeService: HomeService,
     private tokenService: TokenService,
     private alertService: AlertService,
-    private apiRequestService: ApiRequestService,
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
     private reserveMobileService: ReserveMobileService,

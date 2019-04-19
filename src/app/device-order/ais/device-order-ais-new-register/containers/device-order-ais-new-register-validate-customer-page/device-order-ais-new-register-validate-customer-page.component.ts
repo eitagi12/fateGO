@@ -90,13 +90,13 @@ export class DeviceOrderAisNewRegisterValidateCustomerPageComponent implements O
   }
 
   private createTransaction(): void {
-    // this.transaction = {
-    //   data: {
-    //     transactionType: TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS,
-    //     action: TransactionAction.KEY_IN,
-    //   }
-    // };
-    // delete this.transaction.data.customer;
+    this.transaction = {
+      data: {
+        transactionType: TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS,
+        action: TransactionAction.KEY_IN,
+      }
+    };
+    delete this.transaction.data.customer;
   }
 
   private mapCustomer(customer: any): void {

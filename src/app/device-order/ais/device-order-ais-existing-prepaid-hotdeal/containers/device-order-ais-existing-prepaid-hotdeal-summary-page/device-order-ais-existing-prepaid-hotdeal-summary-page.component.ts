@@ -1,0 +1,128 @@
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Router } from '@angular/router';
+import { HomeService, ShoppingCart, PageLoadingService, AlertService } from 'mychannel-shared-libs';
+import { ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_MOBILE_CARE_PAGE, ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_AGGREGATE_PAGE, ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_MOBILE_CARE_AVAILABLE_PAGE } from '../../constants/route-path.constant';
+import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
+import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
+import { Transaction, Seller } from 'src/app/shared/models/transaction.model';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { FormGroup, FormBuilder } from '@angular/forms';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { HttpClient } from '@angular/common/http';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+
+@Component({
+  selector: 'app-device-order-ais-existing-prepaid-hotdeal-summary-page',
+  templateUrl: './device-order-ais-existing-prepaid-hotdeal-summary-page.component.html',
+  styleUrls: ['./device-order-ais-existing-prepaid-hotdeal-summary-page.component.scss']
+})
+export class DeviceOrderAisExistingPrepaidHotdealSummaryPageComponent implements OnInit, OnDestroy {
+
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
+
+  transaction: Transaction;
+  priceOption: PriceOption;
+  shoppingCart: ShoppingCart;
+  getBalanceSubscription: Promise<any>;
+
+  @ViewChild('detailTemplate')
+  detailTemplate: any;
+  modalRef: BsModalRef;
+  detail: string;
+
+  customerAddress: string;
+  deposit: number;
+  sellerCode: string;
+  checkSellerForm: FormGroup;
+  seller: Seller;
+  balance: any;
+
+  constructor(
+    private router: Router,
+    private homeService: HomeService,
+    private pageLoadingService: PageLoadingService,
+    private transactionService: TransactionService,
+    private http: HttpClient,
+    private priceOptionService: PriceOptionService,
+    public fb: FormBuilder,
+    private alertService: AlertService,
+    private modalService: BsModalService,
+    private shoppingCartService: ShoppingCartService
+  ) {
+    this.transaction = this.transactionService.load();
+    this.priceOption = this.priceOptionService.load();
+    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
+  }
+
+  ngOnInit(): void {
+    this.getBalance();
+  }
+
+  getBalance(): void {
+    const simcard = this.transaction.data.simCard;
+    const onTopPackage = this.transaction.data.onTopPackage;
+    const mobileCarePackage = this.transaction.data.mobileCarePackage;
+
+    this.pageLoadingService.openLoading();
+    this.balance = {  balance: 0, addMoney: true, addMoneyPrice: 0 };
+    this.getBalanceSubscription = this.http.get(`/api/customerportal/newRegister/${simcard.mobileNo}/queryBalance`).toPromise();
+
+    this.getBalanceSubscription.then((resp: any) => {
+      this.pageLoadingService.closeLoading();
+      const remainingBalance = Number(resp.data.remainingBalance) / 100;
+      let money = 0;
+      if (typeof (mobileCarePackage) === 'object') {
+        money = Number(onTopPackage.priceIncludeVat) + Number(mobileCarePackage.customAttributes.priceInclVat);
+      } else {
+        money = Number(onTopPackage.priceIncludeVat);
+      }
+      const addMoney = !!((remainingBalance - money) < 0);
+      const addMoneyPrice = (remainingBalance - money) >= 0 ? 0 : money - remainingBalance;
+      this.balance = {  balance: remainingBalance, addMoney: addMoney, addMoneyPrice: addMoneyPrice };
+    })
+    .catch((err: any) => {
+      this.pageLoadingService.closeLoading();
+      this.alertService.error(err);
+    });
+  }
+
+  getSummaryPrice(): number {
+    const onTopPack = this.transaction.data.onTopPackage.priceIncludeVat;
+    const promotion = this.priceOption.trade.promotionPrice;
+    const existingMobileCare = this.transaction.data.existingMobileCare;
+    const mobileCarePackage = this.transaction.data.mobileCarePackage;
+    if (typeof (mobileCarePackage) === 'object') {
+      return Number(onTopPack) + Number(promotion) + Number(mobileCarePackage.customAttributes.priceInclVat);
+    } else {
+      return Number(onTopPack) + Number(promotion);
+    }
+  }
+
+  onOpenDetail(detail: string): void {
+    this.detail = detail;
+    this.modalRef = this.modalService.show(this.detailTemplate);
+  }
+
+  onNext(): void {
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_AGGREGATE_PAGE]);
+  }
+
+  onBack(): void {
+    const mobileCare = this.transaction.data.mobileCarePackage;
+    if (mobileCare) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_MOBILE_CARE_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_MOBILE_CARE_AVAILABLE_PAGE]);
+    }
+  }
+
+  onHome(): void {
+    this.homeService.goToHome();
+  }
+
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
+  }
+
+}
