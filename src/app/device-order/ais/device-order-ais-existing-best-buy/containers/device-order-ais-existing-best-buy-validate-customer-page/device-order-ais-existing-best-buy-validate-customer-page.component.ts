@@ -90,6 +90,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
         .then((response: any) => {
           if (response.value === true) {
             this.returnStock().then(() => {
+              this.transactionService.remove();
               window.location.href = `/sales-portal/buy-product/brand/${queryParams.brand}/${queryParams.model}`;
             });
           }
