@@ -60,7 +60,7 @@ export class DeviceOrderAisExistingPrepaidHotdealMobileCarePageComponent impleme
     this.pageLoadingService.openLoading();
     this.mobileCareService.getMobileCare({
       packageKeyRef: MOBILE_CARE_PACKAGE_KEY_REF,
-      billingSystem: BillingSystemType.IRB
+      billingSystem: billingSystem
     }, chargeType, billingSystem, endUserPrice).then((mobileCare: any) => {
       this.mobileCare = {
         promotions: mobileCare,
