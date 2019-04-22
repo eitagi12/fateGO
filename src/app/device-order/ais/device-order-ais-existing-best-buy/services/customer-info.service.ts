@@ -71,7 +71,7 @@ export class CustomerInfoService {
       if (profile.chargeType === 'Pre-paid') {
         if (profile.mobileStatus !== '000' && profile.mobileStatus !== 'Active'
           && profile.mobileStatus !== '378' && profile.mobileStatus !== 'Suspend') {
-          return Promise.reject(`ไม่สามารถทำรายการได้ กรุณาตรวจสอบสถานะหมายเลข <br> (staus is : ${profile.mobileStatus})`);
+          return Promise.reject(`ไม่สามารถทำรายการได้ กรุณาตรวจสอบสถานะหมายเลข <br> (status is : ${profile.mobileStatus})`);
         }
       } else {
         if (profile.mobileStatus !== '000' && profile.mobileStatus !== 'Active') {
@@ -148,7 +148,7 @@ export class CustomerInfoService {
       idCardImage: customer.imageSmartCard,
       firstName: customer.firstName || '-',
       lastName: customer.lastName || '-',
-      birthdate: customer.birthdate || '-',
+      birthdate: customer.birthdate || '01/01/1953',
       homeNo: customer.homeNo || '-',
       moo: customer.moo || '-',
       mooBan: customer.mooBan || '-',

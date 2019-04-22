@@ -184,7 +184,7 @@ export interface BillingInformation {
   // change value billing
   billCycleData?: BillingAccountData;
   // send bill devilery address
-  billDeliveryAddress?: BillDeliveryAddress;
+  billDeliveryAddress?: Customer;
   // วันที่มีผลการใช้งาน B: รอบถัดไป D: วันถัดไป I: มีผลทันที
   overRuleStartDate?: string;
   // check do createAndChangeBillingAccount Provisioning

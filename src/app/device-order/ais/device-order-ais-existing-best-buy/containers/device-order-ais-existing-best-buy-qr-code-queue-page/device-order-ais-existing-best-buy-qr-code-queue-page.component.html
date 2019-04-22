@@ -23,7 +23,7 @@
                 </span>
               </p>
               <div>
-                <div class="row" *ngIf="!!transaction?.data?.preBooking">
+                <div class="row" *ngIf="!!transaction?.data?.preBooking && !!transaction?.data?.preBooking?.depositAmt">
                   <div class="col-sm-9">
                     <i class="fa fa-circle mr-3 text-pink"></i>
                     <span>หักค่ามัดจำสินค้า ({{ transaction?.data?.preBooking?.preBookingNo }})</span>

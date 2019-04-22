@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import {
-  TokenService, ErrorsService, AlertService, PageActivityService, HomeService, ChannelType
+  TokenService, ErrorsService, AlertService, PageActivityService, HomeService, ChannelType, OnscreenKeyboardService
 } from 'mychannel-shared-libs';
 import { setTheme } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
@@ -8,6 +8,7 @@ import { environment } from '../environments/environment';
 import { debounceTime } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';
 import * as moment from 'moment';
+import { TranslateService } from '@ngx-translate/core';
 
 const Moment = moment;
 const { version: version } = require('../../package.json');
@@ -28,7 +29,9 @@ export class AppComponent {
     private pageActivityService: PageActivityService,
     private router: Router,
     private homeService: HomeService,
-    private http: HttpClient
+    private http: HttpClient,
+    private translation: TranslateService,
+    private onscreenKeyboardService: OnscreenKeyboardService
   ) {
     this.version = this.getVersion();
 
@@ -37,6 +40,10 @@ export class AppComponent {
     this.tokenHandler();
     this.errorHandler();
     // this.checkServerTime();
+
+    if (this.isDeveloperMode()) {
+      this.onscreenKeyboardService.setRunOnKiosk(true);
+    }
 
     if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {
       this.onStopPropagation();

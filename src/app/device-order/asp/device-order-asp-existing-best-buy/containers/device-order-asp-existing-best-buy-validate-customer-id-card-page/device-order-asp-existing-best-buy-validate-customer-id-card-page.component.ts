@@ -101,23 +101,20 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardPageComponent im
           return { zipCode: zipCode };
         });
       }).then((customer: any) => {
+        if (customer.caNumber) {
+          this.transaction.data.customer = { ...this.profile, ...customer };
+        } else {
+          const privilege = this.transaction.data.customer.privilegeCode;
+          const repi = this.transaction.data.customer.repi;
+          this.transaction.data.customer = null;
+          this.transaction.data.customer = this.profile;
+          this.transaction.data.customer.privilegeCode = privilege;
+          this.transaction.data.customer.repi = repi;
+          this.transaction.data.customer.zipCode = customer.zipCode;
+        }
         this.transaction.data.customer = { ...this.profile, ...customer };
         this.transaction.data.billingInformation = {};
-        const addressCustomer = this.transaction.data.customer;
-        this.transaction.data.billingInformation.billDeliveryAddress = {
-          homeNo: addressCustomer.homeNo,
-          moo: addressCustomer.moo,
-          mooBan: addressCustomer.mooBan,
-          room: addressCustomer.room,
-          floor: addressCustomer.floor,
-          buildingName: addressCustomer.buildingName,
-          soi: addressCustomer.soi,
-          street: addressCustomer.street,
-          province: addressCustomer.province,
-          amphur: addressCustomer.amphur,
-          tumbol: addressCustomer.tumbol,
-          zipCode: addressCustomer.zipCode
-        };
+        this.transaction.data.billingInformation.billDeliveryAddress = this.transaction.data.customer;
         if (this.transaction.data.order && this.transaction.data.order.soId) {
           this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_INFO_PAGE]);
           return;

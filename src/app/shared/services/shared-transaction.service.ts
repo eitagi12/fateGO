@@ -143,19 +143,58 @@ export class SharedTransactionService {
         params.data.billing_information.isNewBAFlag = data.billingInformation.isNewBAFlag;
       }
 
-      if (data.billingInformation.billCycles) {
-        params.data.billing_information.billCycles = data.billingInformation.billCycles;
+      const billCycle: string = data.billingInformation.billCycle ? data.billingInformation.billCycle.bill : data.customer.billCycle;
+
+      let billCycleFrom: string = '0';
+      let billCycleTo: string = '0';
+
+      switch (billCycle) {
+        case '11':
+          billCycleFrom = '4';
+          billCycleTo = '3';
+          break;
+        case '12':
+          billCycleFrom = '8';
+          billCycleTo = '7';
+          break;
+        case '13':
+          billCycleFrom = '12';
+          billCycleTo = '11';
+          break;
+        case '14':
+          billCycleFrom = '16';
+          billCycleTo = '15';
+          break;
+        case '15':
+          billCycleFrom = '20';
+          billCycleTo = '19';
+          break;
+        case '16':
+          billCycleFrom = '24';
+          billCycleTo = '23';
+          break;
+        case '17':
+          billCycleFrom = '28';
+          billCycleTo = '27';
+          break;
+        case '18':
+          billCycleFrom = '1';
+          billCycleTo = 'สิ้นเดือน';
+          break;
       }
 
-      if (data.customer.billCycle) {
-        params.data.billing_information.billCycle = data.customer.billCycle;
-      }
+      params.data.billing_information.billCycle = billCycle;
+      params.data.billing_information.billCycles = [{
+        billNo: billCycle,
+        from: billCycleFrom,
+        to: billCycleTo
+      }];
 
       if (data.billingInformation.billCycleData) {
-        params.data.billing_information.billMedia = data.billingInformation.billCycleData.billMedia;
-        params.data.billing_information.emailAddress = data.billingInformation.billCycleData.billAddressText;
-        params.data.billing_information.phoneNumberContact = data.billingInformation.billCycleData.phoneNoContact;
-        params.data.billing_information.mobileNumberContact = data.billingInformation.billCycleData.mobileNoContact;
+        params.data.billing_information.billMedia = data.billingInformation.billCycleData.billMedia || '';
+        params.data.billing_information.emailAddress = data.billingInformation.billCycleData.email || '';
+        params.data.billing_information.phoneNumberContact = data.billingInformation.billCycleData.phoneNoContact || '';
+        params.data.billing_information.mobileNumberContact = data.billingInformation.billCycleData.mobileNoContact || '';
       }
     }
 
