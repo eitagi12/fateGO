@@ -21,6 +21,7 @@ export class DeviceOrderAspExistingBestBuyMobileCareAvailablePageComponent imple
 
   wizards: any = this.tokenService.isTelewizUser() ? WIZARD_DEVICE_ORDER_ASP : WIZARD_DEVICE_ORDER_AIS;
   active: number = this.tokenService.isTelewizUser() ? 4 : 3;
+  reason: any = 'ยืนยันใช้ Mobile Care กับเครื่องเดิม';
 
   identityValid: boolean = false;
   transaction: Transaction;
@@ -80,7 +81,7 @@ export class DeviceOrderAspExistingBestBuyMobileCareAvailablePageComponent imple
       if (value.changeMobileCare === 'Yes') {
         this.changeMobileCare = true;
       } else {
-        this.transaction.data.mobileCarePackage = null;
+        this.transaction.data.mobileCarePackage = this.reason;
         this.changeMobileCare = false;
       }
       this.identityValid = true;
