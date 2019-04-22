@@ -11,7 +11,7 @@ import {
   ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_PAGE,
   ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_REPI_PAGE
 } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
-import { Transaction, ExistingMobileCare, Customer } from 'src/app/shared/models/transaction.model';
+import { Transaction, ExistingMobileCare, Customer, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { ReceiptInfo } from 'mychannel-shared-libs/lib/component/receipt-info/receipt-info.component';
@@ -205,10 +205,16 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
 
   onNext(): void {
     this.pageLoadingService.openLoading();
+    const action = this.transaction.data.action;
     this.transaction.data.payment = this.paymentDetailTemp.payment;
     this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;
     this.transaction.data.receiptInfo = this.receiptInfoTemp;
     const mobileNo = this.transaction.data.simCard.mobileNo;
+    if (TransactionAction.KEY_IN_REPI === action) {
+      this.transaction.data.action = TransactionAction.KEY_IN;
+    } else {
+      this.transaction.data.action = TransactionAction.READ_CARD;
+    }
 
     this.http.get(`/api/customerportal/get-existing-mobile-care/${mobileNo}`).toPromise().then((response: any) => {
       const exMobileCare = response.data;

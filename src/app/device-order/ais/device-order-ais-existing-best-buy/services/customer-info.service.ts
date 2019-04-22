@@ -58,7 +58,8 @@ export class CustomerInfoService {
           lastName: '',
           birthdate: '',
           gender: '',
-          caNumber: null
+          caNumber: null,
+          zipCode: zipCode || '',
         };
         return Promise.resolve(customer);
       });

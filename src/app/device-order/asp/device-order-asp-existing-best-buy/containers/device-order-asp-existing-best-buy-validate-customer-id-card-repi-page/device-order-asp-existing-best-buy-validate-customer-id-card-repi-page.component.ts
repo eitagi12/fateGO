@@ -94,7 +94,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardRepiPageComponen
       return this.customerInfoService.getZipCode(provinceId, this.profile.amphur, this.profile.tumbol).then((zipCode: string) => {
         return this.customerInfoService.getCustomerInfoByIdCard(this.profile.idCardNo, zipCode).then((customer: Customer) => {
           if (customer.caNumber) {
-            this.transaction.data.customer = { ...this.profile, ...customer };
+            this.transaction.data.customer = { ...this.transaction.data.customer, ...customer, ...this.profile };
           } else {
             const privilege = this.transaction.data.customer.privilegeCode;
             const repi = this.transaction.data.customer.repi;
