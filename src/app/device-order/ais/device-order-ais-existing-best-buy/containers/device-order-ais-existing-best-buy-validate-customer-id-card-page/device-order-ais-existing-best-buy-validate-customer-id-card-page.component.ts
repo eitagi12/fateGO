@@ -71,6 +71,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent im
 
   onNext(): void {
     this.pageLoadingService.openLoading();
+    this.transaction.data.customer = this.profile;
     this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
       .then((zipCode: string) => {
         return this.customerInfoService.getCustomerInfoByIdCard(this.profile.idCardNo).then((customer: Customer) => {
@@ -87,10 +88,6 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent im
         if (customer.caNumber) {
           this.transaction.data.customer = { ...this.profile, ...customer };
         } else {
-          const privilege = this.transaction.data.customer.privilegeCode;
-          this.transaction.data.customer = null;
-          this.transaction.data.customer = this.profile;
-          this.transaction.data.customer.privilegeCode = privilege;
           this.transaction.data.customer.zipCode = customer.zipCode;
         }
         this.transaction.data.billingInformation = {};

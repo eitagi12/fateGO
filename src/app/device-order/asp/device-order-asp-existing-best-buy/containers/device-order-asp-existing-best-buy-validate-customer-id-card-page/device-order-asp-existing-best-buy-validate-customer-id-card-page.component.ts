@@ -88,6 +88,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardPageComponent im
 
   onNext(): void {
     this.pageLoadingService.openLoading();
+    this.transaction.data.customer = this.profile;
     this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
       .then((zipCode: string) => {
         return this.customerInfoService.getCustomerInfoByIdCard(this.profile.idCardNo).then((customer: Customer) => {
@@ -104,12 +105,6 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardPageComponent im
         if (customer.caNumber) {
           this.transaction.data.customer = { ...this.profile, ...customer };
         } else {
-          const privilege = this.transaction.data.customer.privilegeCode;
-          const repi = this.transaction.data.customer.repi;
-          this.transaction.data.customer = null;
-          this.transaction.data.customer = this.profile;
-          this.transaction.data.customer.privilegeCode = privilege;
-          this.transaction.data.customer.repi = repi;
           this.transaction.data.customer.zipCode = customer.zipCode;
         }
         this.transaction.data.billingInformation = {};
