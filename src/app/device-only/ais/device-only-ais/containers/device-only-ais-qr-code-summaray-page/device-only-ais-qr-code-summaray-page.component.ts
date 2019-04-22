@@ -3,10 +3,12 @@ import { ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_QR_CODE_PAGE, ROUTE_DEVICE_ONLY_
 import { Router } from '@angular/router';
 import { HomeService, AlertService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, Payment } from 'src/app/shared/models/transaction.model';
 import { CreateOrderService } from '../../services/create-order.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { HomeButtonService } from '../../services/home-button.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { QRCodePaymentService, ImageBrannerQRCode } from 'src/app/shared/services/qrcode-payment.service';
 
 @Component({
   selector: 'app-device-only-ais-qr-code-summaray-page',
@@ -14,19 +16,40 @@ import { HomeButtonService } from '../../services/home-button.service';
   styleUrls: ['./device-only-ais-qr-code-summaray-page.component.scss']
 })
 export class DeviceOnlyAisQrCodeSummarayPageComponent implements OnInit {
-
   transaction: Transaction;
+  priceOption: PriceOption;
+  deposit: number;
+  brannerImagePaymentQrCode: ImageBrannerQRCode;
+  payment: Payment;
+
   constructor(
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
-    private homeButtonService: HomeButtonService
+    private homeButtonService: HomeButtonService,
+    private priceOptionService: PriceOptionService,
+    private qrcodePaymentService: QRCodePaymentService
     ) {
-      this.transactionService.load();
+      this.transaction = this.transactionService.load();
+      this.priceOption = this.priceOptionService.load();
+      this.payment = this.transaction.data.payment;
+      this.brannerImagePaymentQrCode = this.qrcodePaymentService.getBrannerImagePaymentQrCodeType(this.payment.paymentQrCodeType);
     }
 
     ngOnInit(): void {
       this.homeButtonService.initEventButtonHome();
+      this.calculateSummary(this.deposit);
+    }
+
+    private calculateSummary(deposit: number): void {
+      this.deposit = this.transaction.data.preBooking
+      && this.transaction.data.preBooking.depositAmt ? -Math.abs(+this.transaction.data.preBooking.depositAmt) : 0;
+    }
+
+    summary(amount: number[]): number {
+      return amount.reduce((prev, curr) => {
+        return prev + curr;
+      }, 0);
     }
 
     onBack(): void {
@@ -39,5 +62,6 @@ export class DeviceOnlyAisQrCodeSummarayPageComponent implements OnInit {
 
     onHome(): void {
       this.homeService.goToHome();
-  }
+    }
+
 }

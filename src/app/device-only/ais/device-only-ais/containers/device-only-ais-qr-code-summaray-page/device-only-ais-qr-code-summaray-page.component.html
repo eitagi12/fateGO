@@ -1,5 +1,4 @@
 <div class="mc-flex">
-
   <mc-header title="ซื้อเครื่องเปล่า">
     <div class="header-icon-left">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
@@ -14,11 +13,15 @@
       <div class="row pl-3 pr-3">
         <div class="col-12 col-sm-6">
           <img src="assets/images/icon/icon-person.png" class="icon-img icon-person" />
-          <span id="text-customer-name">นาย ธีระยุทธ เจโตวิมุติพงศ์</span>
+          <span id="text-customer-name">
+              {{ transaction?.data?.customer?.titleName }}
+              {{ transaction?.data?.customer?.firstName }}
+              {{ transaction?.data?.customer?.lastName }}
+          </span>
         </div>
         <div class="col-12 col-sm-6 text-sm-right">
           <img src="assets/images/icon/sales_portal_green_phone.png" class="icon-img icon-phone" />
-          <span id="text-mobile-no">{{ '0889540584' | mobileNo }}</span>
+          <span id="text-mobile-no">{{ transaction?.data?.receiptInfo?.telNo | mobileNo }}</span>
         </div>
       </div>
     </div>
@@ -33,18 +36,27 @@
             </p>
             <div class="text-grey">
               <i class="fa fa-circle mr-3 text-light-green"></i>
-              <span id="text-brand-model">
-                Samsung S10 Plus สี BLACK
+              <span class="text-grey" id="text-brand-model">
+                {{ priceOption?.productDetail?.brand }}
               </span>
+              <span class="text-grey" id="text-brand-model">
+                {{ priceOption?.productDetail?.model }}
+              </span>
+              <span class="text-grey" *ngIf="priceOption?.productStock?.color">
+                {{ priceOption?.productStock?.color? 'สี': '' }} {{ priceOption?.productStock?.color }}
+              </span>  
               <span class="pull-right text-light-green" id="text-normal-price">
-                ฿45,700
+                ฿ {{ priceOption?.trade?.promotionPrice | number }}
               </span>
             </div>
           </div>
           <div class="card-footer bg-transparent text-right">
             รวมยอดชำระ(รวมVAT)
             <span class="text-light-green ml-2" id="text-includ-vat-price">
-              ฿45,700
+              ฿ {{ summary([
+                +priceOption?.trade?.promotionPrice,
+                +priceOption?.trade?.advancePay?.amount
+                ]) | number }}
             </span>
           </div>
         </div>
@@ -57,19 +69,67 @@
           รายละเอียดการชำระ
         </div>
         <div class="card-body text-grey">
-          <p>
-            <i class="fa fa-circle mr-3 text-light-green"></i>
-            <span id="text-brand-model-payment">
-              Samsung S10 Plus สี BLACK: ชำระเต็มจำนวน
-            </span>
-            <span class="pull-right text-light-green" id="text-normal-price-payment">
-              ฿45,700
-            </span>
-          </p>
+          <ng-container>
+            <p>
+              <i class="fa fa-circle mr-3 text-light-green"></i>
+              <span class="text-grey" id="text-brand-payment-summary">
+                {{ priceOption?.productDetail?.brand }}
+              </span>
+              <span class="text-grey" id="text-model-payment-summary">
+                {{ priceOption?.productDetail?.model }}
+              </span>
+              <span class="text-grey" id="text-color-summary" *ngIf="priceOption?.productStock?.color">
+                {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.color }}
+              </span>
+              <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'"> : ชำระเต็มจำนวน</span>
+              <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'"> : ผ่อนชำระบัตรเครดิต</span>
+              <span class="pull-right text-light-green" id="text-normal-price-payment">
+                ฿ {{ priceOption?.trade?.promotionPrice | number }}
+              </span>
+            </p>
+          </ng-container>
+
+          <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">
+            <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType !== 'QR_CODE'">
+              (ชำระโดย เงินสด)
+            </small>
+            <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType === 'QR_CODE'">
+              (
+              ชำระโดย
+              <span *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'THAI_QR'">
+                Thai QR Promptpay
+              </span>
+              <span *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'LINE_QR'">
+                Rabbit Line Pay
+              </span>
+              )
+            </small>
+          </ng-container>
+          <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">
+              <span class="text-grey"  id="text-credit-summary">
+                (
+                ชำระโดย เครดิตธนาคาร
+                {{ transaction?.data?.payment?.paymentMethod?.name }}
+                {{ transaction?.data?.payment?.paymentMethod?.percentage }} %
+                {{ transaction?.data?.payment?.paymentMethod?.month }} เดือน
+                {{ ((+priceOption?.trade?.promotionPrice) + (priceOption?.trade?.advancePay?.installmentFlag === 'N' ? +priceOption?.trade?.advancePay?.amount : 0)) / transaction?.data?.payment?.paymentMethod?.month | number: '1.2-2' }} 
+                บาทต่อเดือน
+                )
+              </span>
+          </ng-container>
+          <ng-container *ngIf="transaction?.data?.payment?.paymentForm !== 'INSTALLMENT' && transaction?.data?.payment?.paymentType === 'CREDIT'">
+              <span class="text-grey"  id="text-credit-summary">
+                (
+                ชำระโดย เครดิตธนาคาร
+                {{ transaction?.data?.payment?.paymentMethod?.name }}
+                {{ transaction?.data?.payment?.paymentBank?.name}}
+                )
+              </span>
+          </ng-container>
         </div>
       </div>
     </div>
-
+    
     <div class="container-fluid mt-3 mb-3">
       <div class="row">
         <div class="col-8">
@@ -80,7 +140,7 @@
           <div class="text-pink" style="margin-left: 32px">กรุณาเปิด Application เพื่อสแกน QR Code</div>
         </div>
         <div class="col-4 text-right">
-          <img class="img-fluid" src="assets/images/icon/Thai_Qr_Payment.png" />
+          <img class="img-fluid" [src]="brannerImagePaymentQrCode.logo" />
         </div>
       </div>
 
@@ -89,7 +149,8 @@
             <div class="form-group">
               <label for="text-total-price" class="text-light-green">ยอดชำระ</label>
               <input style="text-align: center" type="text" id="text-total-price" readonly
-                class="form-control ml-3 text-light-green" value="45,700">
+                class="form-control ml-3 text-light-green" 
+                value="฿{{ summary([+priceOption?.trade?.promotionPrice, deposit]) | number }}">
             </div>
           </form>
         </div>

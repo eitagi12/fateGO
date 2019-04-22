@@ -7,6 +7,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { CreateOrderService } from '../../services/create-order.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { HomeButtonService } from '../../services/home-button.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
 @Component({
   selector: 'app-device-only-ais-checkout-payment-qr-code-page',
   templateUrl: './device-only-ais-checkout-payment-qr-code-page.component.html',
@@ -14,36 +15,44 @@ import { HomeButtonService } from '../../services/home-button.service';
 })
 export class DeviceOnlyAisCheckoutPaymentQrCodePageComponent implements OnInit, OnDestroy {
   transaction: Transaction;
-  price: string = '45,700';
-  color: string = 'BLACK';
-  mobileNo: string = '0889540584';
-  firstName: string = 'ธีระยุทธ ';
-  lastName: string = 'เจโตวิมุติพงศ์';
-  titleName: string = 'นาย';
-  model: string = 'Samsung S10 Plus';
+  priceOption: PriceOption;
   campaignName: string = 'โครงการ ซื้อเครื่องเปล่า';
+
   constructor(
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
+    private priceOptionService: PriceOptionService,
     private homeButtonService: HomeButtonService
   ) {
-    this.transactionService.load();
+    this.transaction = this.transactionService.load();
+    this.priceOption = this.priceOptionService.load();
    }
 
   ngOnInit(): void {
     this.homeButtonService.initEventButtonHome();
   }
+
+  summary(aomunt: number[]): number {
+    return aomunt.reduce((prev, curr) => {
+      return prev + curr;
+    }, 0);
+  }
+
   onBack(): void {
   this.router.navigate([ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE]);
   }
+
   onNext(): void {
     // QR code
     this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_SUMMARY_PAGE]);
   }
+
   onHome(): void {
     this.homeService.goToHome();
   }
+
   ngOnDestroy(): void {
   }
+
 }

@@ -15,8 +15,8 @@
         <span class="text-grey" id="text-model-payment-summary">
           {{ priceOption?.productDetail?.model }}
         </span>
-        <span class="text-grey" id="text-color-summary" *ngIf="priceOption?.productStock?.colorName">
-          {{ priceOption?.productStock?.colorName?'สี': '' }} {{ priceOption?.productStock?.colorName }}
+        <span class="text-grey" id="text-color-summary" *ngIf="priceOption?.productStock?.color">
+          {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.color }}
         </span>
         <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'"> : ชำระเต็มจำนวน</span>
         <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'"> : ผ่อนชำระบัตรเครดิต</span>
@@ -26,19 +26,24 @@
       </p>
     </ng-container>
 
-    <ng-container *ngIf="transaction?.data?.payment?.paymentType === 'QR_CODE'">
-      <span class="text-grey" id="text-cash-summary">
-        (ชำระโดย คิวอาร์โค้ด)
-      </span>
-    </ng-container>
-    
-    <ng-container *ngIf="transaction?.data?.payment?.paymentType === 'DEBIT'">
-      <span class="text-grey" id="text-cash-summary">
+    <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">
+      <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType !== 'QR_CODE'">
         (ชำระโดย เงินสด)
-      </span>
+      </small>
+      <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType === 'QR_CODE'">
+        (
+        ชำระโดย
+        <span *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'THAI_QR'">
+          Thai QR Promptpay
+        </span>
+        <span *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'LINE_QR'">
+          Rabbit Line Pay
+        </span>
+        )
+      </small>
     </ng-container>
 
-    <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">
+    <!-- <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">
       <span class="text-grey"  id="text-credit-summary">
         (
         ชำระโดย เครดิตธนาคาร
@@ -52,14 +57,14 @@
     </ng-container>
 
     <ng-container *ngIf="transaction?.data?.payment?.paymentForm !== 'INSTALLMENT' && transaction?.data?.payment?.paymentType === 'CREDIT'">
-        <span class="text-grey"  id="text-credit-summary">
-          (
-          ชำระโดย เครดิตธนาคาร
-          {{ transaction?.data?.payment?.paymentMethod?.name }}
-          {{ transaction?.data?.payment?.paymentBank?.name}}
-          )
-        </span>
-      </ng-container>
+      <span class="text-grey"  id="text-credit-summary">
+        (
+        ชำระโดย เครดิตธนาคาร
+        {{ transaction?.data?.payment?.paymentMethod?.name }}
+        {{ transaction?.data?.payment?.paymentBank?.name}}
+        )
+      </span>
+    </ng-container> -->
 
   </div>
   <div class="card-footer bg-transparent ">
@@ -79,7 +84,6 @@
           }}
         </p>
       </div>
-
       <div class="col-12 col-sm-4">
         <i class="fa fa-circle mr-3 text-lime"></i>
         <span class="text-grey">
@@ -111,7 +115,6 @@
           <span *ngIf="transaction?.data?.billingInformation?.billDeliveryAddress?.tumbol">
             ตำบล/แขวง{{ transaction?.data?.billingInformation?.billDeliveryAddress?.tumbol }}</span>
           {{ transaction?.data?.billingInformation?.billDeliveryAddress?.zipCode }}
-
         </p>
       </div>
     </div>

@@ -7,6 +7,8 @@ import { CookiesStorageService, LocalStorageService } from 'ngx-store';
 import { JwtHelperService } from '@auth0/angular-jwt/src/jwthelper.service';
 import { Router } from '@angular/router';
 import { TokenService } from 'mychannel-shared-libs';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 
 @Pipe({name: 'mobileNo'})
 class MockMobileNoPipe implements PipeTransform {
@@ -44,6 +46,18 @@ describe('DeviceOnlyAisCheckoutPaymentQrCodePageComponent', () => {
         provide: TokenService,
         useValue: {
           getUser: jest.fn()
+        }
+      },
+      {
+        provide: TransactionService,
+        useValue: {
+          load: jest.fn()
+        }
+      },
+      {
+        provide: PriceOptionService,
+        useValue: {
+          load: jest.fn()
         }
       }
     ]

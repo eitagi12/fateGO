@@ -10,6 +10,9 @@ import { ROUTE_DEVICE_ONLY_AIS_QR_CODE_GENERATE_PAGE, ROUTE_DEVICE_ONLY_AIS_CHEC
 import { TokenService, HomeService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HttpClient, HttpHandler } from '@angular/common/http';
+import { QRCodePaymentService } from 'src/app/shared/services/qrcode-payment.service';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 
 @Pipe({name: 'mobileNo'})
 class MockMobileNoPipe implements PipeTransform {
@@ -41,10 +44,31 @@ describe('DeviceOnlyAisQrCodeSummarayPageComponent', () => {
           useValue: {}
         },
         LocalStorageService,
+        QRCodePaymentService,
         {
           provide: TokenService,
           useValue: {
             getUser: jest.fn()
+          }
+        },
+        {
+          provide: TransactionService,
+          useValue: {
+            load: jest.fn(() => {
+              return {
+                data: {
+                  payment: {
+                    paymentQrCodeType: 'THAI_QR'
+                  }
+                }
+              };
+            })
+          }
+        },
+        {
+          provide: PriceOptionService,
+          useValue: {
+            load: jest.fn()
           }
         }
       ]
