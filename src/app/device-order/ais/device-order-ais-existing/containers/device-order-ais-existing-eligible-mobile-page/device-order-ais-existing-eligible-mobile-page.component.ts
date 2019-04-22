@@ -152,7 +152,6 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
     }).toPromise()
       .then((resp: any) => {
         const data = resp.data || {};
-        data.firstPackage = 899;
         if (data) {
           this.transaction.data.contractFirstPack = data;
         }
