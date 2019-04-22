@@ -8,6 +8,10 @@ import { DeviceOnlyAisQrCodeGeneratePageComponent } from './device-only-ais-qr-c
 import { CookiesStorageService, LocalStorageService } from 'ngx-store';
 import { JwtHelperService } from '@auth0/angular-jwt/src/jwthelper.service';
 import { AlertService } from 'mychannel-shared-libs';
+import { QRCodePaymentService } from 'src/app/shared/services/qrcode-payment.service';
+import { resolve } from 'path';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 
 describe('DeviceOnlyAisQrCodeGeneratePageComponent', () => {
   let component: DeviceOnlyAisQrCodeGeneratePageComponent;
@@ -31,10 +35,37 @@ describe('DeviceOnlyAisQrCodeGeneratePageComponent', () => {
         HttpClient,
         HttpHandler,
         LocalStorageService,
+        QRCodePaymentService,
         {
           provide: AlertService,
           useValue: {
            question: jest.fn()
+          }
+        },
+        {
+          provide: TransactionService,
+          useValue: {
+            load: jest.fn(() => {
+              return {
+                data: {
+                  payment: {
+                    paymentQrCodeType: 'THAI_QR'
+                  }
+                }
+              };
+            })
+          }
+        },
+        {
+          provide: PriceOptionService,
+          useValue: {
+            load: jest.fn(() => {
+              return {
+                trade: {
+                  promotionPrice: 123
+                }
+              };
+            })
           }
         }
       ]
