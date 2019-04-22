@@ -106,7 +106,7 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
 
   verifyMobileNo(mobileNo: string, ussdCode: string): Promise<any> {
     // tslint:disable-next-line:no-shadowed-variable
-    const errMsg = 'ไม่สามารถทำรายการได้ เนื่องจากหมายเลขนี้ยังไม่เปิดใช้บริการในระบบเติมเงิน';
+    const errMsg = 'ไม่สามารถตรวจสอบสิทธิ์ซื้อเครื่องได้ใขณะนี้';
     const errMsgNotPrepaid = 'ไม่สามารถทำรายการได้ เนื่องจากเป็นหมายเลขระบบรายเดือน';
     const verify: any = {
       isVerify: false
