@@ -1,9 +1,10 @@
 <div class="mc-flex">
-  <mc-header title="เครื่องพร้อมเปลี่ยนเป็นรายเดือน">
+    <mc-header title="{{ 'เครื่องพร้อมเปลี่ยนเติมเงินเป็นรายเดือน' | translate }}">
     <div class="header-icon-left">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
-    <div class="header-icon-right">
+    <div class="header-icon-right w-25 text-right">
+        <mc-dropdown-language></mc-dropdown-language>
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
@@ -13,7 +14,7 @@
       <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
       <div class="container-fluid">
         <div class="card mb-3">
-          <div class="card-header bg-pink text-white">สรุปรายการสั่งชื้อสินค้า</div>
+          <div class="card-header bg-pink text-white">{{ 'สรุปรายการสั่งซื้อสินค้า' | translate }}</div>
           <div class="card-body">
             <p class="text-green">{{ priceOption?.campaign?.campaignName }}</p>
             <div class="text-light-grey">
@@ -40,7 +41,7 @@
             </div>
           </div>
           <div class="card-footer bg-transparent text-right">
-            รวมยอดชำระ(รวมVAT)
+              {{ 'รวมยอดชำระ(รวม VAT)' | translate }}
             <span class="text-green ml-2">
               ฿ {{ summary([
               +priceOption?.trade?.promotionPrice,
@@ -51,7 +52,7 @@
         </div>
 
         <div class="card mb-3">
-          <div class="card-header bg-lime text-white">แพ็กเกจใช้บริการ</div>
+          <div class="card-header bg-lime text-white">{{ 'แพ็กเกจใช้บริการ' | translate }}</div>
           <div class="card-body">
             <p>
               <i class="fa fa-circle mr-3 text-green"></i>
@@ -66,12 +67,12 @@
         </div>
 
         <div class="card mb-3">
-          <div class="card-header bg-purple text-white">สินค้าและบริการอื่น</div>
+          <div class="card-header bg-purple text-white">{{ 'สินค้าและบริการอื่น' | translate }}</div>
           <div class="card-body">
             <p>
               <i class="fa fa-circle mr-3 text-green"></i>
               <ng-container *ngIf="!transaction?.data?.mobileCarePackage?.title">
-                <span>ไม่ซื้อบริการโมบายแคร์</span>
+                <span>{{ 'ไม่ซื้อบริการโมบายแคร์' | translate }}</span>
               </ng-container>
               <ng-container *ngIf="transaction?.data?.mobileCarePackage?.title">
                 <span>
@@ -89,11 +90,11 @@
 
         <div class="card mb-3">
           <div class="card-header bg-pink text-white">
-            รายละเอียดการชำระ
+            {{ 'รายละเอียดการชำระ' | translate }}
           </div>
           <div class="card-body">
             <p>
-              ข้อมูลการชำระสินค้า
+               {{ 'ข้อมูลการชำระสินค้า' | translate }}
             </p>
 
             <!-- ชำระค่าเครื่อง (ผ่อนแยก)-->
@@ -108,8 +109,8 @@
                 <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
                   (แถมซิม)
                 </span>
-                <span *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">: ชำระเต็มจำนวน</span>
-                <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">: ผ่อนชำระบัตรเคดิต</span>
+                <span *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">: {{ 'ชำระเต็มจำนวน' | translate }}</span>
+                <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">: {{ 'ผ่อนชำระบัตรเคดิต' | translate }}</span>
                 <span class="pull-right text-green">
                   ฿ {{ priceOption?.trade?.promotionPrice | number }}
                 </span>
@@ -118,7 +119,7 @@
                   <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">
                     <small class="text-muted">
                       (
-                      ชำระโดย บัตรเคดิต
+                        {{ 'ชำระโดย' | translate }} {{ 'บัตรเครดิต' | translate }}
                       {{ transaction?.data?.payment?.paymentMethod?.name }}
                       {{ transaction?.data?.payment?.paymentMethod?.percentage }} %
                       {{ transaction?.data?.payment?.paymentMethod?.month }} เดือน
@@ -133,11 +134,13 @@
                   </ng-container>
                   <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">
                     <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType !== 'QR_CODE'">
-                      (ชำระโดย เงินสด)
+                      (
+                        {{ 'ชำระโดย' | translate }} {{ 'เงินสด' | translate }}
+                        )
                     </small>
                     <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType === 'QR_CODE'">
                       (
-                      ชำระโดย
+                        {{ 'ชำระโดย' | translate }} 
                       <span *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'THAI_QR'">
                         Thai QR Promptpay
                       </span>
@@ -155,17 +158,17 @@
                 *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && (+priceOption?.trade?.advancePay?.amount) > 0">
                 <div>
                   <i class="fa fa-circle mr-3 text-green"></i>
-                  ค่าแพ็กเกจบริการล่วงหน้า : ชำระเต็มจำนวน
+                  {{ 'ค่าแพ็กเกจบริการล่วงหน้า' | translate }} : {{ 'ชำระเต็มจำนวน' | translate }}
                   <span class="pull-right text-green">
                     ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
                   </span>
                 </div>
                 <small class="text-muted" *ngIf="transaction?.data?.advancePayment?.paymentType !== 'QR_CODE'">
-                  (ชำระโดย เงินสด)
+                    ({{ 'ชำระโดย' | translate }} {{ 'เงินสด' | translate }})
                 </small>
                 <small class="text-muted" *ngIf="transaction?.data?.advancePayment?.paymentType === 'QR_CODE'">
                   (
-                  ชำระโดย
+                    {{ 'ชำระโดย' | translate }}
                   <span *ngIf="transaction?.data?.advancePayment?.paymentQrCodeType === 'THAI_QR'">
                     Thai QR Promptpay
                   </span>
@@ -181,9 +184,9 @@
             <ng-container *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'Y'">
               <div>
                 <i class="fa fa-circle mr-3 text-green"></i>
-                ค่าเครื่องและค่าแพ็กเกจล่วงหน้า :
-                <span *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">ชำระเต็มจำนวน</span>
-                <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">ผ่อนชำระบัตรเคดิต</span>
+                {{ 'ค่าเครื่องและค่าแพ็กเกจล่วงหน้า' | translate }} :
+                <span *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">{{ 'ชำระเต็มจำนวน' | translate }}</span>
+                <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">{{ 'ผ่อนชำระบัตรเคดิต' | translate }}</span>
                 <span class="pull-right text-green">฿ {{ summary([
                   +priceOption?.trade?.promotionPrice,
                   +priceOption?.trade?.advancePay?.amount
@@ -192,11 +195,13 @@
               <div class="mt-1">
                 <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">
                   <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType !== 'QR_CODE'">
-                    (ชำระโดย เงินสด)
+                    (
+                      {{ 'ชำระโดย' | translate }} {{ 'เงินสด' | translate }}
+                      )
                   </small>
                   <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType === 'QR_CODE'">
                     (
-                    ชำระโดย
+                      {{ 'ชำระโดย' | translate }}
                     <span *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'THAI_QR'">
                       Thai QR Promptpay
                     </span>
@@ -208,7 +213,7 @@
                 </ng-container>
                 <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">
                   (
-                  ชำระโดย บัตรเคดิต
+                    {{ 'ชำระโดย' | translate }} {{ 'บัตรเครดิต' | translate }}
                   {{ transaction?.data?.payment?.paymentMethod?.name }}
                   {{ transaction?.data?.payment?.paymentMethod?.percentage }} %
                   {{ transaction?.data?.payment?.paymentMethod?.month }} เดือน
@@ -227,12 +232,12 @@
 
           <div class="card-footer bg-transparent ">
             <p>
-              ข้อมูลใบเสร็จรับเงิน
+                {{ 'ข้อมูลใบเสร็จรับเงิน' | translate }}
             </p>
             <div class="row">
               <p class="col-12 col-sm-4">
                 <i class="fa fa-circle mr-3 text-green"></i>
-                ผู้ชื้อ
+                {{ 'ผู้ซื้อ' | translate }}
               </p>
               <p class="col-12 col-sm-8 text-green">
                 {{ transaction?.data?.customer?.titleName }}
@@ -241,7 +246,7 @@
               </p>
               <p class="col-12 col-sm-4">
                 <i class="fa fa-circle mr-3 text-green"></i>
-                ที่อยู่ในใบเสร็จรับเงิน
+                {{ 'ข้อมูลใบเสร็จรับเงิน' | translate }}
               </p>
               <p class="col-12 col-sm-8 text-green">
                 {{ customerAddress }}
@@ -250,11 +255,11 @@
           </div>
           <div class="card-footer bg-transparent">
             <p>
-              ข้อตกลงรับสิทธิ์ต่อเนื่อง
+                {{ 'ข้อตกลงรับสิทธิ์ต่อเนื่อง' | translate }}
             </p>
             <p>
               <i class="fa fa-circle mr-3 text-green"></i>
-              รับสิทธิ์ต่อเนื่องนาน {{ priceOption?.campaign?.maximumContract }} เดือน
+              {{ 'รับสิทธิ์ต่อเนื่องนาน' | translate }} {{ priceOption?.campaign?.maximumContract }}  {{ 'เดือน' | translate }}
             </p>
 
           </div>
