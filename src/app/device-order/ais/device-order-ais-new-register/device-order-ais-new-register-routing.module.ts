@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { DeviceOrderAisNewRegisterValidateCustomerPageComponent } from './containers/device-order-ais-new-register-validate-customer-page/device-order-ais-new-register-validate-customer-page.component';
 import { DeviceOrderAisNewRegisterValidateCustomerKeyInPageComponent } from './containers/device-order-ais-new-register-validate-customer-key-in-page/device-order-ais-new-register-validate-customer-key-in-page.component';
 import { DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent } from './containers/device-order-ais-new-register-validate-customer-id-card-page/device-order-ais-new-register-validate-customer-id-card-page.component';
 import { DeviceOrderAisNewRegisterPaymentDetailPageComponent } from './containers/device-order-ais-new-register-payment-detail-page/device-order-ais-new-register-payment-detail-page.component';
@@ -27,14 +26,9 @@ import { DeviceOrderAisNewRegisterResultPageComponent } from './containers/devic
 import { DeviceOrderAisNewRegisterQrCodeSummaryPageComponent } from './containers/device-order-ais-new-register-qr-code-summary-page/device-order-ais-new-register-qr-code-summary-page.component';
 import { DeviceOrderAisNewRegisterQrCodeQueuePageComponent } from './containers/device-order-ais-new-register-qr-code-queue-page/device-order-ais-new-register-qr-code-queue-page.component';
 import { DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent } from './containers/device-order-ais-new-register-qr-code-generator-page/device-order-ais-new-register-qr-code-generator-page.component';
-import { DeviceOrderAisNewRegisterQrCodeErrorPageComponent } from './containers/device-order-ais-new-register-qr-code-error-page/device-order-ais-new-register-qr-code-error-page.component';
 import { DeviceOrderAisNewRegisterEbillingPageComponent } from './containers/device-order-ais-new-register-ebilling-page/device-order-ais-new-register-ebilling-page.component';
 
 const routes: Routes = [
-  {
-    path: 'validate-customer',
-    component: DeviceOrderAisNewRegisterValidateCustomerPageComponent
-  },
   {
     path: 'validate-customer-key-in',
     component: DeviceOrderAisNewRegisterValidateCustomerKeyInPageComponent
@@ -131,7 +125,6 @@ const routes: Routes = [
     path: 'result',
     component: DeviceOrderAisNewRegisterResultPageComponent
   },
-
   {
     path: 'qr-code-summary',
     component: DeviceOrderAisNewRegisterQrCodeSummaryPageComponent
@@ -144,11 +137,6 @@ const routes: Routes = [
     path: 'qr-code-generator',
     component: DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent
   },
-  {
-    path: 'qr-code-error',
-    component: DeviceOrderAisNewRegisterQrCodeErrorPageComponent
-  },
-
 ];
 
 @NgModule({

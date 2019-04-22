@@ -10,7 +10,6 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { environment } from 'src/environments/environment';
 import { ROUTE_DEVICE_ORDER_ASP_BEST_BUY_QR_CODE_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_QR_CODE_QUEUE_PAGE } from '../../constants/route-path.constant';
-import { QRodePrePostMpayModel } from 'src/app/device-order/ais/device-order-ais-existing/containers/device-order-ais-existing-qr-code-generator-page/device-order-ais-existing-qr-code-generator-page.component';
 import { ImageBrannerQRCode, QRCodePaymentService, QRCodePrePostMpayModel, QRCodeModel } from 'src/app/shared/services/qrcode-payment.service';
 
 @Component({
@@ -35,7 +34,7 @@ export class DeviceOrderAspExistingBestBuyQrCodePaymentGeneratorPageComponent im
   timeCounterRenderer: string;
   textQRCode: string;
   isTimeLowerThanFifthteenSeconds: boolean;
-  qrCodePrePostMpayModel: QRodePrePostMpayModel;
+  qrCodePrePostMpayModel: any;
   refreshCount: number = 1;
   NEW_LINE: string = '\n';
   qrCodeImageSrc: string;
@@ -320,11 +319,11 @@ export class DeviceOrderAspExistingBestBuyQrCodePaymentGeneratorPageComponent im
     qrModel.channel = 'WEB';
 
     if (this.payment.paymentQrCodeType === 'LINE_QR') {
-      qrModel.serviceId = environment.MPAY_QRCODE_SERVICE_ID.RL;
-      qrModel.terminalId = environment.MPAY_QRCODE_TERMINAL_ID.RL;
+      qrModel.serviceId = environment.MPAY_QRCODE.RL_SERVICE_ID;
+      qrModel.terminalId = environment.MPAY_QRCODE.RL_TERMINAL_ID;
     } else if (this.payment.paymentQrCodeType === 'THAI_QR') {
-      qrModel.serviceId = environment.MPAY_QRCODE_SERVICE_ID.PB;
-      qrModel.terminalId = environment.MPAY_QRCODE_TERMINAL_ID.PB;
+      qrModel.serviceId = environment.MPAY_QRCODE.PB_SERVICE_ID;
+      qrModel.terminalId = environment.MPAY_QRCODE.PB_TERMINAL_ID;
     }
     qrModel.locationName = this.tokenService.getUser().locationCode;
     qrModel.amount = this.getSummaryAmount();

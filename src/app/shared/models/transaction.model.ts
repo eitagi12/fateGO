@@ -58,7 +58,6 @@ export interface TransactionData {
   advancePayment?: Payment;
   receiptInfo?: ReceiptInfo;
   queue?: Queue;
-  mpay_payment?: any;
   preBooking?: Prebooking;
   discount?: Discount;
   contract?: Condition;

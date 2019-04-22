@@ -34,6 +34,8 @@ export class QueuePageService {
   private readonly SPACE: string = ' ';
   private readonly NEW_LINE: string = '\n';
   private readonly COMMA: string = ',';
+  private readonly PROMPT_PAY_PAYMENT: string = '[PB]';
+  private readonly RABBIT_LINE_PAY_PAYMENT: string = '[RL]';
 
   constructor(
     private http: HttpClient,
@@ -131,7 +133,7 @@ export class QueuePageService {
 
   private getOrderRemark(transaction: Transaction, priceOption: PriceOption): string {
     const onTopPackage = transaction.data.onTopPackage || {};
-    const airTime: string = this.getAirTime(priceOption.trade);
+    const airTime: string = this.getAirTime(priceOption.trade, transaction);
     const installment = this.getInstallment(transaction, priceOption);
     const information = this.getInformation(transaction, priceOption);
 
@@ -141,13 +143,32 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
 `;
   }
 
-  private getAirTime(trade: any): string {
+  private getAirTime(trade: any, transaction: Transaction): string {
     let message = '';
 
-    if (trade && trade.advancePay) {
-      const advancePay = trade.advancePay;
-      if (advancePay.installmentFlag !== 'Y' && +advancePay.amount > 0) {
-        message = `${this.AIR_TIME}${this.CREDIT_CARD_PAYMENT}`;
+    if (!trade || !trade.advancePay) {
+      return message;
+    }
+
+    const advancePay = trade.advancePay || {};
+    if (advancePay.installmentFlag === 'Y' || +advancePay.amount <= 0) { // ผ่อนรวม
+      return message;
+    }
+
+    message = `${this.AIR_TIME}`;
+    const advancePayment: any = transaction.data.advancePayment || {};
+    if (advancePayment.paymentType === 'QR_CODE') {
+      if (advancePayment.paymentQrCodeType === 'THAI_QR') {
+        message += `${this.PROMPT_PAY_PAYMENT}`;
+      } else {
+        message += `${this.RABBIT_LINE_PAY_PAYMENT}`;
+      }
+    } else {
+      if (advancePayment.paymentType === 'DEBIT') {
+        message += `${this.CASH_PAYMENT}`;
+      } else {
+        message += `${this.CREDIT_CARD_PAYMENT}${this.COMMA}${this.SPACE}`;
+        message += `${this.BANK}${advancePayment.abb || ''}`;
       }
     }
     return message;
@@ -165,17 +186,28 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
     } else {
       message += this.DEVICE;
     }
-    if (payment.paymentForm === 'INSTALLMENT') { // ผ่อนชำระ
-      message += this.CREDIT_CARD_PAYMENT + this.COMMA + this.SPACE;
-      message += this.BANK + payment.paymentMethod.abb + this.COMMA + this.SPACE;
-      message += this.INSTALLMENT + payment.paymentMethod.percentage + '%' + this.SPACE + payment.paymentMethod.month;
-    } else { // ชำระเต็มจำนวน
-      message += this.CASH_PAYMENT + this.COMMA + this.SPACE;
-      message += this.BANK + this.COMMA + this.SPACE;
-      message += this.INSTALLMENT + '0%' + this.SPACE + '0';
+
+    if (payment.paymentType === 'QR_CODE') {
+      if (payment.paymentQrCodeType === 'THAI_QR') {
+        message += `${this.PROMPT_PAY_PAYMENT}`;
+      } else {
+        message += `${this.RABBIT_LINE_PAY_PAYMENT}`;
+      }
+      message += `${this.COMMA}${this.SPACE}`;
+    } else {
+      // ใช้ได้ทั้งบัตร credit, debit
+      if (payment.paymentForm === 'INSTALLMENT') { // ผ่อนชำระ
+        message += `${this.CREDIT_CARD_PAYMENT}${this.COMMA}${this.SPACE}`;
+        message += `${this.BANK}${payment.paymentMethod.abb}${this.COMMA}${this.SPACE}`;
+        message += `${this.INSTALLMENT}${payment.paymentMethod.percentage}%${this.SPACE}${payment.paymentMethod.month}`;
+      } else { // ชำระเต็มจำนวน
+        message += `${this.CASH_PAYMENT}${this.COMMA}${this.SPACE}`;
+        message += `${this.BANK}${this.COMMA}${this.SPACE}`;
+        message += `${this.INSTALLMENT}0%${this.SPACE}0`;
+      }
     }
-    message += 'เดือน' + this.COMMA + this.SPACE;
-    message += this.TRADE_NO + trade.tradeNo;
+    message += `เดือน${this.COMMA}${this.SPACE}`;
+    message += `${this.TRADE_NO}${trade.tradeNo}`;
     return message;
   }
 

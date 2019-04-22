@@ -34,11 +34,13 @@ export class DeviceOrderAisMnpAggregatePageComponent implements OnInit, OnDestro
   }
 
   onNext(): void {
-    const payment = this.transaction.data.payment;
-    if (payment.paymentType === 'CREDIT' || payment.paymentType === 'DEBIT') {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_QUEUE_PAGE]);
-    } else if (payment.paymentType === 'QR_CODE') {
+    const payment: any = this.transaction.data.payment || {};
+    const advancePayment: any = this.transaction.data.advancePayment || {};
+
+    if (payment.paymentType === 'QR_CODE' || advancePayment.paymentType === 'QR_CODE') {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_QR_CODE_SUMMARY_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_QUEUE_PAGE]);
     }
   }
 

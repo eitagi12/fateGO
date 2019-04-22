@@ -23,7 +23,6 @@ import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { DeviceOrderAisExistingQrCodeSummaryPageComponent } from './containers/device-order-ais-existing-qr-code-summary-page/device-order-ais-existing-qr-code-summary-page.component';
 import { DeviceOrderAisExistingQrCodeGeneratorPageComponent } from './containers/device-order-ais-existing-qr-code-generator-page/device-order-ais-existing-qr-code-generator-page.component';
 import { DeviceOrderAisExistingQrCodeQueuePageComponent } from './containers/device-order-ais-existing-qr-code-queue-page/device-order-ais-existing-qr-code-queue-page.component';
-import { DeviceOrderAisExistingQrCodeErrorPageComponent } from './containers/device-order-ais-existing-qr-code-error-page/device-order-ais-existing-qr-code-error-page.component';
 import { DeviceOrderAisExistingOneLovePageComponent } from './containers/device-order-ais-existing-one-love-page/device-order-ais-existing-one-love-page.component';
 import { DeviceOrderAisExistingMergeBillingPageComponent } from './containers/device-order-ais-existing-merge-billing-page/device-order-ais-existing-merge-billing-page.component';
 import { DeviceOrderAisExistingEapplicationPageComponent } from './containers/device-order-ais-existing-eapplication-page/device-order-ais-existing-eapplication-page.component';
@@ -61,7 +60,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     DeviceOrderAisExistingQrCodeSummaryPageComponent,
     DeviceOrderAisExistingQrCodeGeneratorPageComponent,
     DeviceOrderAisExistingQrCodeQueuePageComponent,
-    DeviceOrderAisExistingQrCodeErrorPageComponent,
     DeviceOrderAisExistingOneLovePageComponent,
     DeviceOrderAisExistingMergeBillingPageComponent,
     DeviceOrderAisExistingEapplicationPageComponent,
