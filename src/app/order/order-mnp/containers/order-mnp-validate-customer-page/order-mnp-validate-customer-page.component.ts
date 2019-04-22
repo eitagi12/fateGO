@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Transaction, TransactionAction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
-import { PageLoadingService, HomeService } from 'mychannel-shared-libs';
+import { PageLoadingService, HomeService, OnscreenKeyboardService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 import {
@@ -21,7 +21,7 @@ export class OrderMnpValidateCustomerPageComponent implements OnInit, OnDestroy 
   transaction: Transaction;
   identityValid: boolean = false;
   identity: string;
-  billDeliveryAddress: BillDeliveryAddress;
+  progressReadCard: number;
 
   constructor(
     private router: Router,
@@ -29,6 +29,7 @@ export class OrderMnpValidateCustomerPageComponent implements OnInit, OnDestroy 
     private transactionService: TransactionService,
     private http: HttpClient,
     private homeService: HomeService,
+    private onscreenKeyboardService: OnscreenKeyboardService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -43,6 +44,18 @@ export class OrderMnpValidateCustomerPageComponent implements OnInit, OnDestroy 
 
   onCompleted(identity: string): void {
     this.identity = identity;
+  }
+
+  onProgress(progress: number): void {
+    this.progressReadCard = progress;
+  }
+
+  progressDoing(): boolean {
+    return this.progressReadCard > 0 &&  this.progressReadCard < 100 ? true : false;
+  }
+
+  isRunOnKiosk(): boolean {
+    return this.onscreenKeyboardService.checkRunOnKiosk();
   }
 
   onReadCard(): void {
@@ -67,21 +80,6 @@ export class OrderMnpValidateCustomerPageComponent implements OnInit, OnDestroy 
       .toPromise()
       .then((resp: any) => {
         this.transaction.data.customer = Object.assign(this.transaction.data.customer, resp.data);
-        this.billDeliveryAddress = {
-          homeNo: resp.data.homeNo || '',
-          moo: resp.data.moo || '',
-          mooBan: resp.data.mooBan || '',
-          room: resp.data.room || '',
-          floor: resp.data.floor || '',
-          buildingName: resp.data.buildingName || '',
-          soi: resp.data.soi || '',
-          street: resp.data.street || '',
-          province: resp.data.province || '',
-          amphur: resp.data.amphur || '',
-          tumbol: resp.data.tumbol || '',
-          zipCode: resp.data.zipCode || '',
-        };
-
         return this.http.get(`/api/customerportal/newRegister/${this.identity}/queryBillingAccount`).toPromise()
           .then((res: any) => {
             const data = res.data || {};
@@ -104,7 +102,6 @@ export class OrderMnpValidateCustomerPageComponent implements OnInit, OnDestroy 
       })
       .then((billingInformation: any) => {
         this.transaction.data.billingInformation = billingInformation;
-        this.transaction.data.billingInformation.billDeliveryAddress = this.billDeliveryAddress;
         this.router.navigate([ROUTE_ORDER_MNP_CUSTOMER_INFO_PAGE]);
       }).catch(() => {
         this.router.navigate([ROUTE_ORDER_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE], {
@@ -122,5 +119,4 @@ export class OrderMnpValidateCustomerPageComponent implements OnInit, OnDestroy 
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }
-
 }
