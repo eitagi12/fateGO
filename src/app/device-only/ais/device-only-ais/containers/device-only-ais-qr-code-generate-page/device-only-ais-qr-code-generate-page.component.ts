@@ -79,10 +79,10 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.initialOrderID();
     this.deposit = this.transaction.data.preBooking
     && this.transaction.data.preBooking.depositAmt ? -Math.abs(+this.transaction.data.preBooking.depositAmt) : 0;
     this.homeButtonService.initEventButtonHome();
-    // this.pageActivityHandler();
       if (this.orderID && this.payment.paymentQrCodeType) {
           this.orderID = `${this.orderID}_${this.refreshCount}`;
           this.getQRCode(this.setBodyRequestForGetQRCode());
@@ -142,29 +142,6 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
       return prev + curr;
     }, 0);
   }
-
-  // pageActivityHandler(): void {
-  //   this.pageActivityService.setTimeout((counter) => {
-  //     return counter === 5;
-  //   }).subscribe(() => {
-  //     this.alertService.notify({
-  //       type: 'question',
-  //       cancelButtonText: 'CANCLE',
-  //       confirmButtonText: 'REFRESH',
-  //       showCancelButton: true,
-  //       showConfirmButton: true,
-  //       reverseButtons: true,
-  //       allowEscapeKey: false,
-  //       text: 'สิ้นสุดระยะเวลาชำระเงินกรุณากดปุ่ม "REFRESH" เพื่อทำรายการใหม่'
-  //     }).then((data) => {
-  //       if (data.value) {
-  //         this.onRefresh();
-  //       } else {
-  //         this.goToMpayQueuePage();
-  //       }
-  //     });
-  //   });
-  // }
 
   processQRCode(qrCodeResponse: any): void {
     if (qrCodeResponse && qrCodeResponse.data) {
@@ -259,7 +236,7 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
       timer: 180000
     }).then(btn => {
       if (btn.value) { // refresh
-        this.getQRCode(this.setBodyRequestForGetQRCode());
+        this.onRefreshQRCode();
       } else { // cancel
         this.onBack();
       }
@@ -308,9 +285,7 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
     if (this.intravalTimeSubscription$) {
       this.intravalTimeSubscription$.unsubscribe();
     }
-
     this.currentTimeCounter.next(null);
-
     if (this.orderID && this.payment.paymentQrCodeType) {
       this.inquiryMpay().then((isSuccess: boolean) => {
         if (isSuccess) {
@@ -342,7 +317,6 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
     const orderID: { soID: string, error: string } = this.qrcodePaymentService.getSoID();
     if (orderID.error !== null) {
       // this.alertService.error(orderID.error);
-
       // mock on error อย่าลืมเอาออก
       if (this.isDeveloperMode()) {
         this.orderID = '66343';
@@ -357,7 +331,6 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
     this.checkInquiryCallbackMpaySubscribtion$ = this.qrcodePaymentService.checkInquiryCallbackMpay({ orderId: this.orderID })
       .subscribe(
         (resp: any) => {
-          console.log('checkInquiryCallbackMpay', resp);
           const data = resp.data || {};
           if (data && data.DATA && data.DATA.mpay_payment
             && data.DATA.mpay_payment.status && data.DATA.mpay_payment.status === 'SUCCESS') {
