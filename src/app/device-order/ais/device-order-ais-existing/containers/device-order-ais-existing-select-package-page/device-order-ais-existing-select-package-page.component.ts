@@ -36,6 +36,7 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
   showCurrentPackage: boolean;
   modalRef: BsModalRef;
   shoppingCart: ShoppingCart;
+  isContractFirstPack: number;
 
   constructor(
     private router: Router,
@@ -56,6 +57,8 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
       delete this.transaction.data.billingInformation.mergeBilling;
     }
 
+    const contract = this.transaction.data.contractFirstPack || {};
+    this.isContractFirstPack = Math.max(contract.firstPackage || 0, contract.minPrice || 0, contract.initialPackage || 0);
     if (!this.mathHotDeal && !this.advancePay) {
       this.showCurrentPackage = true;
     }
@@ -75,7 +78,15 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
 
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-    this.callService();
+    if (this.transaction.data.promotionsShelves) {
+      this.promotionShelves = this.promotionShelveService
+      .defaultBySelected(this.transaction.data.promotionsShelves, this.transaction.data.mainPackage);
+      if (this.showCurrentPackage) {
+        this.promotionShelves[0].promotions[0].active = false;
+      }
+    } else {
+      this.callService();
+    }
   }
 
   onTermConditions(event: any): void {}

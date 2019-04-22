@@ -62,6 +62,8 @@ export interface TransactionData {
   preBooking?: Prebooking;
   discount?: Discount;
   contract?: Condition;
+  promotionsShelves?: PromotionsShelves;
+  contractFirstPack?: ContractFirstPack;
   // MPAY
   mpayPayment?: QrCodePrePostMpayModel;
   status?: Status;
@@ -72,6 +74,13 @@ export interface Condition {
   conditionCode: string;
   conditionName?: string;
   conditionText?: string;
+}
+
+export interface ContractFirstPack {
+  firstPackage?: number;
+  inPackage?: string[];
+  initialPackage?: number;
+  minPrice?: number;
 }
 
 export interface Payment {
@@ -147,6 +156,10 @@ export interface MainPackage {
 }
 
 export interface CurrentPackage {
+  [key: string]: any;
+}
+
+export interface PromotionsShelves {
   [key: string]: any;
 }
 

@@ -27,6 +27,7 @@ import { DeviceOrderAisExistingMergeBillingPageComponent } from './containers/de
 import { DeviceOrderAisExistingEapplicationPageComponent } from './containers/device-order-ais-existing-eapplication-page/device-order-ais-existing-eapplication-page.component';
 import { DeviceOrderAisExistingEbillingAddressPageComponent } from './containers/device-order-ais-existing-ebilling-address-page/device-order-ais-existing-ebilling-address-page.component';
 import { DeviceOrderAisExistingEcontractPageComponent } from './containers/device-order-ais-existing-econtract-page/device-order-ais-existing-econtract-page.component';
+import { DeviceOrderAisExistingNonPackagePageComponent } from './containers/device-order-ais-existing-non-package-page/device-order-ais-existing-non-package-page.component';
 
 const routes: Routes = [
   {
@@ -48,6 +49,10 @@ const routes: Routes = [
   {
     path: 'eligible-mobile',
     component: DeviceOrderAisExistingEligibleMobilePageComponent
+  },
+  {
+    path: 'non-package',
+    component: DeviceOrderAisExistingNonPackagePageComponent
   },
   {
     path: 'change-package',
