@@ -58,17 +58,15 @@
                 <p>
                   <i class="fa fa-circle mr-3 text-light-green"></i>
                   <span id="text-summary-brand-model">
-                      {{ priceOption?.productDetail?.brand }}
-                      {{ priceOption?.productDetail?.name }}
-                    <span>
-                    <!-- <span *ngIf="priceOption?.productStock?.color"> -->
-                      <span>
-                        {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.color }}
-                      </span>
-                      <!-- {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.color }} -->
-                    </span>
+                    {{ priceOption?.productDetail?.brand }}
                   </span>
-                  <span class="pull-right text-light-green">
+                  <span id="text-summary-model">
+                    {{ priceOption?.productDetail?.name }}
+                  </span> 
+                  <span *ngIf="priceOption?.productStock?.color">
+                    {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.color }}
+                  </span>
+                  <span class="pull-right">
                     ฿<span id="text-summary-price">
                         {{ summary([+priceOption?.trade?.promotionPrice]) | number }}
                       <!-- ฿{{ summary([+priceOption?.trade?.promotionPrice, +priceOption?.trade?.advancePay?.amount]) | number }} 999999 -->

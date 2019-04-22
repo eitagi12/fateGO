@@ -35,11 +35,12 @@
           <div class="col-xs-12 col-sm-7 mb-3">
             <span id="text-brand-model">
               {{ priceOption?.productDetail?.brand }}
+            </span>
+            <span>
               {{ priceOption?.productDetail?.name }}
-              <span>
-                <!-- <span *ngIf="priceOption?.productStock?.color"> -->
+            </span>  
+            <span *ngIf="priceOption?.productStock?.color">
                 {{ priceOption?.productStock?.color? 'สี': '' }} {{ priceOption?.productStock?.color }}
-              </span>
             </span>
             <p id="text-campaign-name">{{ priceOption?.campaign?.campaignName }} </p>
             <!-- <p>{{ priceOption?.campaign?.campaignName }}</p> -->
@@ -61,8 +62,7 @@
                   <span id="text-summary-brand-model">
                     {{ priceOption?.productDetail?.brand }}
                     {{ priceOption?.productDetail?.name }}
-                    <span>
-                      <!-- <span *ngIf="priceOption?.productStock?.color"> -->
+                    <span *ngIf="priceOption?.productStock?.color">
                       {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.color }}
                     </span>
                   </span>

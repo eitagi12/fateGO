@@ -86,7 +86,7 @@ export class DeviceOnlyReadCardComponent implements OnInit {
     const promises: any = new Promise((resolve, reject) => {
       this.customerInfoService.unsubscribe = this.readCardService.onReadCard().subscribe((readCard: any) =>  {
         if (readCard.error ) {
-          this.messages = readCard.error;
+          // this.messages = readCard.error;
         }
         const customer: String = readCard.profile;
           if (readCard.progress === 100 && width < 100) {
@@ -141,7 +141,6 @@ export class DeviceOnlyReadCardComponent implements OnInit {
             this.progressBarReadSmartCard.nativeElement.style.width = '0%';
           }
           if (readCard.eventName === readCardEvent.EVENT_CARD_LOAD_ERROR) {
-            this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาเสียบบัตรใหม่อีกครั้ง');
             this.progressBarArea.nativeElement.style.display = 'none';
             this.progressBarReadSmartCard.nativeElement.style.width = '0%';
           }

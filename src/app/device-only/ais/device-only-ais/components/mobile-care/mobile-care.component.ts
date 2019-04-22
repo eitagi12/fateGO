@@ -257,7 +257,7 @@ export class MobileCareComponent implements OnInit {
       html: `หมายเลข ${this.mobileCareService.mobileNoPipe(form.mobileNo)} <br> สมัครบริการโมบายแคร์กับเครื่อง
       ${this.exMobileCare.existHandSet.brand} ${this.exMobileCare.existHandSet.model} แล้ว
       <br> (แพ็กเกจ ${descThai} <br> สิ้นสุด ${endDt}) <br> กรุณาเปลี่ยนเบอร์ใหม่ หรือยืนยันสมัครบริการโมบายแคร์กับ <br>
-      เครื่อง ${this.priceOption.productDetail.brand} ${this.priceOption.productDetail.model} <br>
+      เครื่อง ${this.priceOption.productStock.brand} ${this.priceOption.productStock.model} (เครื่องใหม่)<br>
       <div class="text-red">โดยบริการโมบายแคร์กับเครื่องเดิมจะสิ้นสุดทันที</div>`
     }).then((data) => {
       if (data.value && data.value === true) {

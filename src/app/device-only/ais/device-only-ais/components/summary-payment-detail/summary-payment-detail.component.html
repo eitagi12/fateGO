@@ -25,9 +25,32 @@
         </span>
       </p>
     </ng-container>
+    
+    <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">
+      <span class="text-grey"  id="text-credit-summary">
+        (
+          ชำระโดย เครดิตธนาคาร
+          {{ transaction?.data?.payment?.paymentMethod?.name }}
+          {{ transaction?.data?.payment?.paymentMethod?.percentage }} %
+          {{ transaction?.data?.payment?.paymentMethod?.month }} เดือน
+          {{ ((+priceOption?.trade?.promotionPrice) + (priceOption?.trade?.advancePay?.installmentFlag === 'N' ? +priceOption?.trade?.advancePay?.amount : 0)) / transaction?.data?.payment?.paymentMethod?.month | number: '1.2-2' }} 
+          บาทต่อเดือน
+          )
+        </span>
+      </ng-container>
+      <ng-container *ngIf="transaction?.data?.payment?.paymentForm !== 'INSTALLMENT' && transaction?.data?.payment?.paymentType === 'CREDIT'">
+        <span class="text-grey"  id="text-credit-summary">
+          (
+            ชำระโดย เครดิตธนาคาร
+            {{ transaction?.data?.payment?.paymentMethod?.name }}
+            {{ transaction?.data?.payment?.paymentBank?.name}}
+          )
+        </span>
+      </ng-container>
 
     <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">
-      <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType !== 'QR_CODE'">
+      <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType !== 'QR_CODE' && 
+      transaction?.data?.payment?.paymentType !== 'CREDIT'">
         (ชำระโดย เงินสด)
       </small>
       <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType === 'QR_CODE'">
@@ -43,28 +66,7 @@
       </small>
     </ng-container>
 
-    <!-- <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">
-      <span class="text-grey"  id="text-credit-summary">
-        (
-        ชำระโดย เครดิตธนาคาร
-        {{ transaction?.data?.payment?.paymentMethod?.name }}
-        {{ transaction?.data?.payment?.paymentMethod?.percentage }} %
-        {{ transaction?.data?.payment?.paymentMethod?.month }} เดือน
-        {{ ((+priceOption?.trade?.promotionPrice) + (priceOption?.trade?.advancePay?.installmentFlag === 'N' ? +priceOption?.trade?.advancePay?.amount : 0)) / transaction?.data?.payment?.paymentMethod?.month | number: '1.2-2' }} 
-        บาทต่อเดือน
-        )
-      </span>
-    </ng-container>
 
-    <ng-container *ngIf="transaction?.data?.payment?.paymentForm !== 'INSTALLMENT' && transaction?.data?.payment?.paymentType === 'CREDIT'">
-      <span class="text-grey"  id="text-credit-summary">
-        (
-        ชำระโดย เครดิตธนาคาร
-        {{ transaction?.data?.payment?.paymentMethod?.name }}
-        {{ transaction?.data?.payment?.paymentBank?.name}}
-        )
-      </span>
-    </ng-container> -->
 
   </div>
   <div class="card-footer bg-transparent ">
