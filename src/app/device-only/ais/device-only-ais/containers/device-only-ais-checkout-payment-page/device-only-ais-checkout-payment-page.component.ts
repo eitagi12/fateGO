@@ -17,6 +17,7 @@ export class DeviceOnlyAisCheckoutPaymentPageComponent implements OnInit, OnDest
   transaction: Transaction;
   checkout: Aggregate;
   priceOption: PriceOption;
+
   constructor(
     private router: Router,
     private homeService: HomeService,
