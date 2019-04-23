@@ -78,7 +78,7 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
     this.http.post('/api/customerportal/query-eligible-mobile-list', {
       idCardNo: idCardNo,
       ussdCode: ussdCode,
-      mobileType: 'All'
+      mobileType: 'Pre-paid'
     }).toPromise()
       .then((response: any) => {
         const eMobileResponse = response.data;

@@ -70,7 +70,6 @@ export class SharedTransactionService {
         transactionType: data.transactionType,
         customer: data.customer || {},
         sim_card: data.simCard || {},
-        main_package: {},
         device: {
           amount: 1,
           brand: productStock.brand || productDetail.brand,
