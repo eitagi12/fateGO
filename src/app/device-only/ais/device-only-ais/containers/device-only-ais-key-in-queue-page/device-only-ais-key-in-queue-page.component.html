@@ -24,8 +24,11 @@
           <div class="row mb-5">
             <div class="col-6 text-left">
               <i class="fa fa-circle mr-3 text-light-green"></i>
-              <span id="text-brand-model">
+              <span id="text-brand-model"> 
                 {{  priceOption?.productDetail?.name }}
+                <span *ngIf="priceOption?.productStock?.color">
+                  {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.color }}
+                </span>
               </span>
             </div>
             <div class="col-6 text-right">

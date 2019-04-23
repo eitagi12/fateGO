@@ -9,7 +9,9 @@
     <ng-container *ngIf="!priceOption?.trade?.advancePay || priceOption?.trade?.advancePay?.installmentFlag === 'N'">
       <p>
         <i class="fa fa-circle mr-3 text-lime"></i>
+        <span class="text-grey">
           {{ priceOption?.productDetail?.name }}
+        </span>
         <span class="text-grey" *ngIf="priceOption?.productStock?.color">
           {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.color }}
         </span>
