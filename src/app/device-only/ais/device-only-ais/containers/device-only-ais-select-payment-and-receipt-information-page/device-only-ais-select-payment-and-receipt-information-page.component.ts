@@ -69,33 +69,23 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       qrCode: true
     };
 
-    // if (this.isFullPayment()) {
-    //   this.banks = this.priceOption.trade.banks || [];
-    // } else {
-    //   this.banks = (this.priceOption.trade.banks || []).map((b: any) => {
-    //     return b.installmentDatas.map((data: any) => {
-    //       return {
-    //         ...b,
-    //         installment: `${data.installmentPercentage}% ${data.installmentMounth}`
-    //       };
-    //     });
-    //   }).reduce((prev: any, curr: any) => {
-    //     curr.forEach((element: any) => {
-    //       prev.push(element);
-    //     });
-    //     return prev;
-    //   }, []);
-    //   console.log('zxczxc', this.banks);
-    // }
-    const trade = this.priceOption.trade || {};
-    if (trade.banks && trade.banks.length > 0) {
-      this.banks = trade.banks;
+    if (this.isFullPayment()) {
+      this.banks = this.priceOption.trade.banks || [];
     } else {
-      this.http.post('/api/salesportal/banks-promotion', {
-        location: this.tokenService.getUser().locationCode
-      }).toPromise().then((resp: any) => {
-        this.banks = resp.data || [];
-      });
+      this.banks = (this.priceOption.trade.banks || []).map((b: any) => {
+        return b.installmentDatas.map((data: any) => {
+          return {
+            ...b,
+            installment: `${data.installmentPercentage}% ${data.installmentMounth}`
+          };
+        });
+      }).reduce((prev: any, curr: any) => {
+        curr.forEach((element: any) => {
+          prev.push(element);
+        });
+        return prev;
+      }, []);
+      console.log('zxczxc', this.banks);
     }
 
     if (!this.transaction.data) {
