@@ -64,7 +64,7 @@ export class AppComponent {
       if (environment.name === 'LOCAL') {
         window.location.href = '/main-menu';
       } else {
-        window.location.href = '/smart-shop/main-menu';
+        window.location.href = '/smart-digital/main-menu';
       }
     };
   }
