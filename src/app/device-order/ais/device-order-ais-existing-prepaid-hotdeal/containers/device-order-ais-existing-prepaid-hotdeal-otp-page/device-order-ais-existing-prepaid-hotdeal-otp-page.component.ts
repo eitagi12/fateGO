@@ -110,7 +110,6 @@ export class DeviceOrderAisExistingPrepaidHotdealOtpPageComponent implements OnI
       .then((response: any) => {
         this.pageLoadingService.closeLoading();
         if (response && response.data && response.data.success) {
-          this.transaction.data.action = TransactionAction.READ_CARD;
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_CUSTOMER_INFO_PAGE]);
         } else {
           this.alertService.error('ระบบไม่สามารถแสดงตนได้กรุณาติดต่อเจ้าหน้าที่');
