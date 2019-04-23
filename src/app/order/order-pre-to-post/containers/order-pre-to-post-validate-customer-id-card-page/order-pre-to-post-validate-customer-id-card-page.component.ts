@@ -39,7 +39,7 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
     private pageLoadingService: PageLoadingService,
     private utils: Utils,
     public translation: TranslateService,
-    private VisualKeyboardService: VisualKeyboardService
+    private visualKeyboardService: VisualKeyboardService
   ) {
     this.transaction = this.transactionService.load();
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
@@ -77,7 +77,7 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
   }
 
   isRunOnKiosk(): boolean {
-    return this.VisualKeyboardService.checkRunOnKiosk();
+    return this.visualKeyboardService.checkRunOnKiosk();
   }
 
   onBack(): void {

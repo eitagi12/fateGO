@@ -31,7 +31,7 @@ export class AppComponent {
     private homeService: HomeService,
     private http: HttpClient,
     private translation: TranslateService,
-    private VisualKeyboardService: VisualKeyboardService
+    private visualKeyboardService: VisualKeyboardService
   ) {
     this.version = this.getVersion();
 
@@ -42,7 +42,7 @@ export class AppComponent {
     // this.checkServerTime();
 
     if (this.isDeveloperMode()) {
-      this.VisualKeyboardService.setRunOnKiosk(true);
+      this.visualKeyboardService.setRunOnKiosk(true);
     }
 
     if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {

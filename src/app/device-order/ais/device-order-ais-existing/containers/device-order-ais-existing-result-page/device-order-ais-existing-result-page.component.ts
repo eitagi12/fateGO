@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService } from 'mychannel-shared-libs';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -19,7 +18,6 @@ export class DeviceOrderAisExistingResultPageComponent implements OnInit {
   isSuccess: boolean;
 
   constructor(
-    private homeService: HomeService,
     private transactionService: TransactionService,
     private router: Router,
 

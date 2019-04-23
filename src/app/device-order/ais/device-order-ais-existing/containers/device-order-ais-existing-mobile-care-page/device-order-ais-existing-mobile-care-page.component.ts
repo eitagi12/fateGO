@@ -53,9 +53,11 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit, On
     if (!this.transaction.data.mainPackage) {
       if (this.transaction.data.existingMobileCare) {
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE]);
+
       } else {
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_PAGE]);
       }
+
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE]);
     }
@@ -78,25 +80,29 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit, On
   }
 
   callService(): void {
+    this.pageLoadingService.openLoading();
+
     const billingSystem = (this.transaction.data.simCard.billingSystem === 'RTBS')
     ? BillingSystemType.IRB : this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
     const chargeType = this.transaction.data.simCard.chargeType;
     const endUserPrice = +this.priceOption.trade.normalPrice;
     const exMobileCare = this.transaction.data.existingMobileCare;
 
-    this.pageLoadingService.openLoading();
     this.mobileCareService.getMobileCare({
       packageKeyRef: MOBILE_CARE_PACKAGE_KEY_REF,
       billingSystem: billingSystem
     }, chargeType, billingSystem, endUserPrice).then((mobileCare: any) => {
+
       this.mobileCare = {
         promotions: mobileCare,
         existingMobileCare: !!exMobileCare
       };
+
       if (this.mobileCare.promotions && this.mobileCare.promotions.length > 0) {
         this.mobileCare.promotions[0].active = true;
       }
       return;
+
     })
     .then(() => this.pageLoadingService.closeLoading());
   }

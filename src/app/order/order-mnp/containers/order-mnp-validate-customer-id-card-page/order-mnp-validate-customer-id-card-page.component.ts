@@ -37,7 +37,7 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
     private utils: Utils,
     private alertService: AlertService,
     private translateService: TranslateService,
-    private VisualKeyboardService: VisualKeyboardService
+    private visualKeyboardService: VisualKeyboardService
   ) {
     this.transaction = this.transactionService.load();
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
@@ -75,7 +75,7 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
   }
 
   isRunOnKiosk(): boolean {
-    return this.VisualKeyboardService.checkRunOnKiosk();
+    return this.visualKeyboardService.checkRunOnKiosk();
   }
 
   onHome(): void {
