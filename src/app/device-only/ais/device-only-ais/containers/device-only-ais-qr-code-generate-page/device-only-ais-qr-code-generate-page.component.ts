@@ -13,6 +13,7 @@ import { ImageBrannerQRCode, QRCodeModel, QRCodePaymentService, QRCodePrePostMpa
 import { environment } from 'src/environments/environment';
 import { Subscription, BehaviorSubject, Observable } from 'rxjs';
 import { interval } from 'rxjs';
+import { ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_ERROR_PAGE } from 'src/app/device-order/ais/device-order-ais-existing/constants/route-path.constant';
 export class QRodePrePostMpayModel {
   orderId: string;
   tranDtm: string;
@@ -338,7 +339,7 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
             this.isPaid = true;
           } else {
             if (data && !data.DATA) {
-              // this.goToMpayErrorPage();
+              this.goToMpayErrorPage();
               this.alertService.error('ระบบไม่สามารถใช้งานได้ในขณะนี้ กรุณาลองใหม่อีกครั้ง ภายหลัง');
             } else {
               if (data && data.DATA && data.DATA.mpay_payment
@@ -352,5 +353,8 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
           this.alertService.error(error);
         }
       );
+  }
+  goToMpayErrorPage(): void {
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_ERROR_PAGE]);
   }
 }
