@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { Transaction, Condition } from 'src/app/shared/models/transaction.model';
-import { ShoppingCart, HomeService, TokenService, PageLoadingService, IdCardPipe, Utils } from 'mychannel-shared-libs';
+import { Transaction } from 'src/app/shared/models/transaction.model';
+import { ShoppingCart, HomeService, TokenService, PageLoadingService, IdCardPipe } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -36,8 +36,7 @@ export class DeviceOrderAisExistingEcontractPageComponent implements OnInit, OnD
     private pageLoadingService: PageLoadingService,
     private shoppingCartService: ShoppingCartService,
     private idCardPipe: IdCardPipe,
-    private decimalPipe: DecimalPipe,
-    private utils: Utils
+    private decimalPipe: DecimalPipe
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -62,6 +61,7 @@ export class DeviceOrderAisExistingEcontractPageComponent implements OnInit, OnD
   }
 
   callService(): void {
+    this.pageLoadingService.openLoading();
     const user = this.tokenService.getUser();
     const campaign: any = this.priceOption.campaign || {};
     const trade: any = this.priceOption.trade || {};
@@ -71,7 +71,7 @@ export class DeviceOrderAisExistingEcontractPageComponent implements OnInit, OnD
     const mainPackage: any = this.transaction.data.mainPackage || {};
     const mobileCarePackage: any = this.transaction.data.mobileCarePackage || {};
     const advancePay: any = trade.advancePay || {};
-    this.pageLoadingService.openLoading();
+
     this.http.post('/api/salesportal/promotion-shelves/promotion/condition', {
       conditionCode: campaign.conditionCode,
       location: user.locationCode
@@ -106,17 +106,18 @@ export class DeviceOrderAisExistingEcontractPageComponent implements OnInit, OnD
         docType: 'ECONTRACT',
         location: user.locationCode
       };
+
       if (condition.conditionCode) {
         this.transaction.data.contract = {
           conditionCode: condition.conditionCode
         };
       }
-      console.log('params', params);
+
       return this.http.post('/api/salesportal/generate-e-document', params).toPromise().then((eDocResp: any) => {
         return eDocResp.data || '';
       });
-    })
-      .then((eContact: string) => this.eContactSrc = eContact)
+
+    }).then((eContact: string) => this.eContactSrc = eContact)
       .then(() => this.pageLoadingService.closeLoading());
   }
 

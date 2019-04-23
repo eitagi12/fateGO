@@ -67,6 +67,7 @@ export class DeviceOrderAisExistingSummaryPageComponent implements OnInit {
   onBack(): void {
     if (this.transaction.data && this.transaction.data.mobileCarePackage) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE]);
+
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE]);
     }

@@ -78,9 +78,11 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
 
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
+
     if (this.transaction.data.customer) {
       this.idCardNo = this.transaction.data.customer.idCardNo;
       const ussdCode = this.priceOption.trade.ussdCode;
+
       this.http.post('/api/customerportal/query-eligible-mobile-list', {
         idCardNo: this.idCardNo,
         ussdCode: ussdCode,
@@ -91,6 +93,7 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
           const eMobileResponse = response.data;
           this.eligibleMobiles = eMobileResponse.postpaid || [];
         });
+
     } else {
       this.onBack();
     }
@@ -99,14 +102,18 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
   onNext(): void {
     this.pageLoadingService.openLoading();
     this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo, persoSim: false };
+
     this.callService()
       .then(promotionsShelves => {
+
         if (this.havePackages(promotionsShelves) || this.isNotMathCritiriaMainPro()) {
           this.transaction.data.promotionsShelves = promotionsShelves;
           this.routeNavigate();
+
         } else {
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_NON_PACKAGE_PAGE]);
         }
+
       })
       .then(() => this.pageLoadingService.closeLoading());
   }
@@ -121,10 +128,12 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
 
     } else {
       const ussdCode = this.priceOption.trade.ussdCode;
+
       this.privilegeService.requestUsePrivilege(this.selectMobileNo.mobileNo, ussdCode, this.selectMobileNo.privilegeCode)
         .then((privilegeCode) => {
           this.transaction.data.customer.privilegeCode = privilegeCode;
           this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo };
+
           if (this.transaction.data.customer && this.transaction.data.customer.firstName === '-') {
             this.customerInfoService.getCustomerProfileByMobileNo(
               this.transaction.data.simCard.mobileNo,
@@ -133,7 +142,8 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
             .then((customer: Customer) => {
               this.transaction.data.customer = { ...this.transaction.data.customer, ...customer };
             });
-        }
+          }
+
       }).then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_DETAIL_PAGE]));
     }
   }
@@ -152,9 +162,11 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
     }).toPromise()
       .then((resp: any) => {
         const data = resp.data || {};
+
         if (data) {
           this.transaction.data.contractFirstPack = data;
         }
+
         return this.promotionShelveService.getPromotionShelve(
           {
             packageKeyRef: trade.packageKeyRef,

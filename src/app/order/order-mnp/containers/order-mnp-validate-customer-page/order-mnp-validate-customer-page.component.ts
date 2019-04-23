@@ -29,7 +29,7 @@ export class OrderMnpValidateCustomerPageComponent implements OnInit, OnDestroy 
     private transactionService: TransactionService,
     private http: HttpClient,
     private homeService: HomeService,
-    private VisualKeyboardService: VisualKeyboardService
+    private visualKeyboardService: VisualKeyboardService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -55,7 +55,7 @@ export class OrderMnpValidateCustomerPageComponent implements OnInit, OnDestroy 
   }
 
   isRunOnKiosk(): boolean {
-    return this.VisualKeyboardService.checkRunOnKiosk();
+    return this.visualKeyboardService.checkRunOnKiosk();
   }
 
   onReadCard(): void {

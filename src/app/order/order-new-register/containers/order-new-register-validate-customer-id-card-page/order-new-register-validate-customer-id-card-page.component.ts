@@ -40,7 +40,7 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
     private pageLoadingService: PageLoadingService,
     private reserveMobileService: ReserveMobileService,
     private translation: TranslateService,
-    private VisualKeyboardService: VisualKeyboardService
+    private visualKeyboardService: VisualKeyboardService
   ) {
     this.transaction = this.transactionService.load();
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
@@ -80,7 +80,7 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
   }
 
   isRunOnKiosk(): boolean {
-    return this.VisualKeyboardService.checkRunOnKiosk();
+    return this.visualKeyboardService.checkRunOnKiosk();
   }
 
   onHome(): void {
