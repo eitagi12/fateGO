@@ -190,7 +190,7 @@ export class MobileCareComponent implements OnInit {
     if (mobileNo) {
       this.pageLoadingService.openLoading();
       this.customerInformationService.getProfileByMobileNo(mobileNo).then((res) => {
-        if (res.data.chargeType === 'Post-paid') {
+        if (res.data.chargeType === 'Pre-paid' || res.data.chargeType === 'Post-paid') {
           this.billingSystem = res.data.billingSystem;
           this.checkMobileCare(mobileNo).then(() => {
             this.customerInformationService.getCustomerProfile(mobileNo).then(data => {
@@ -199,9 +199,9 @@ export class MobileCareComponent implements OnInit {
             });
           }).catch(() => {});
         } else {
-          this.pageLoadingService.closeLoading();
-          this.alertService.warning('เบอร์นี้เป็นระบบเติมเงิน ไม่สามารถทำรายการได้');
+          // this.alertService.warning('เบอร์นี้เป็นระบบเติมเงิน ไม่สามารถทำรายการได้');
         }
+        this.pageLoadingService.closeLoading();
       });
     } else {
       this.pageLoadingService.closeLoading();
@@ -257,7 +257,7 @@ export class MobileCareComponent implements OnInit {
       html: `หมายเลข ${this.mobileCareService.mobileNoPipe(form.mobileNo)} <br> สมัครบริการโมบายแคร์กับเครื่อง
       ${this.exMobileCare.existHandSet.brand} ${this.exMobileCare.existHandSet.model} แล้ว
       <br> (แพ็กเกจ ${descThai} <br> สิ้นสุด ${endDt}) <br> กรุณาเปลี่ยนเบอร์ใหม่ หรือยืนยันสมัครบริการโมบายแคร์กับ <br>
-      เครื่อง ${this.priceOption.productStock.brand} ${this.priceOption.productStock.model} (เครื่องใหม่)<br>
+      เครื่อง ${this.priceOption.productDetail.brand} ${this.priceOption.productDetail.model} (เครื่องใหม่)<br>
       <div class="text-red">โดยบริการโมบายแคร์กับเครื่องเดิมจะสิ้นสุดทันที</div>`
     }).then((data) => {
       if (data.value && data.value === true) {
