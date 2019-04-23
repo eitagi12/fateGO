@@ -29,7 +29,7 @@ export class AppComponent {
     private homeService: HomeService,
     private http: HttpClient,
     private translation: TranslateService,
-    // private onscreenKeyboardService: OnscreenKeyboardService
+    // private visualKeyboardService: VisualKeyboardService
   ) {
     this.version = this.getVersion();
 

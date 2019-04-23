@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
-import { PageLoadingService, HomeService, OnscreenKeyboardService } from 'mychannel-shared-libs';
+import { PageLoadingService, HomeService, VisualKeyboardService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 import {
@@ -29,7 +29,7 @@ export class OrderMnpValidateCustomerPageComponent implements OnInit, OnDestroy 
     private transactionService: TransactionService,
     private http: HttpClient,
     private homeService: HomeService,
-    private onscreenKeyboardService: OnscreenKeyboardService
+    private visualKeyboardService: VisualKeyboardService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -55,7 +55,7 @@ export class OrderMnpValidateCustomerPageComponent implements OnInit, OnDestroy 
   }
 
   isRunOnKiosk(): boolean {
-    return this.onscreenKeyboardService.checkRunOnKiosk();
+    return this.visualKeyboardService.checkRunOnKiosk();
   }
 
   onReadCard(): void {

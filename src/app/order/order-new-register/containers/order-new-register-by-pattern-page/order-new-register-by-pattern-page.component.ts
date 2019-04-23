@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { MobileNoCondition, HomeService, TokenService, PageLoadingService, User, AlertService, OnscreenKeyboardService } from 'mychannel-shared-libs';
+import { MobileNoCondition, HomeService, TokenService, PageLoadingService, User, AlertService, VisualKeyboardService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
