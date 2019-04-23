@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import {
-  TokenService, ErrorsService, AlertService, PageActivityService, HomeService, ChannelType, OnscreenKeyboardService
+  TokenService, ErrorsService, AlertService, PageActivityService, HomeService, ChannelType, VisualKeyboardService
 } from 'mychannel-shared-libs';
 import { setTheme } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
@@ -31,7 +31,7 @@ export class AppComponent {
     private homeService: HomeService,
     private http: HttpClient,
     private translation: TranslateService,
-    private onscreenKeyboardService: OnscreenKeyboardService
+    private VisualKeyboardService: VisualKeyboardService
   ) {
     this.version = this.getVersion();
 
@@ -42,7 +42,7 @@ export class AppComponent {
     // this.checkServerTime();
 
     if (this.isDeveloperMode()) {
-      this.onscreenKeyboardService.setRunOnKiosk(true);
+      this.VisualKeyboardService.setRunOnKiosk(true);
     }
 
     if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {

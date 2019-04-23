@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { ReadCardProfile, HomeService, PageLoadingService, TokenService, ChannelType, Utils, AlertService, ValidateCustomerIdCardComponent, KioskControls, OnscreenKeyboardService, ApiRequestService, } from 'mychannel-shared-libs';
+import { ReadCardProfile, HomeService, PageLoadingService, TokenService, ChannelType, Utils, AlertService, ValidateCustomerIdCardComponent, KioskControls, VisualKeyboardService, ApiRequestService, } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { Transaction, TransactionAction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -40,7 +40,7 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
     private pageLoadingService: PageLoadingService,
     private reserveMobileService: ReserveMobileService,
     private translation: TranslateService,
-    private onscreenKeyboardService: OnscreenKeyboardService
+    private VisualKeyboardService: VisualKeyboardService
   ) {
     this.transaction = this.transactionService.load();
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
@@ -80,7 +80,7 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
   }
 
   isRunOnKiosk(): boolean {
-    return this.onscreenKeyboardService.checkRunOnKiosk();
+    return this.VisualKeyboardService.checkRunOnKiosk();
   }
 
   onHome(): void {

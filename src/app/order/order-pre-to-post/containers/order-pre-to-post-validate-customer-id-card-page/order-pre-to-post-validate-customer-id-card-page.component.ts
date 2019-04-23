@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, ReadCardProfile, PageLoadingService, ApiRequestService, User, AlertService, ChannelType, TokenService, Utils, ValidateCustomerIdCardComponent, KioskControls, OnscreenKeyboardService } from 'mychannel-shared-libs';
+import { HomeService, ReadCardProfile, PageLoadingService, ApiRequestService, User, AlertService, ChannelType, TokenService, Utils, ValidateCustomerIdCardComponent, KioskControls, VisualKeyboardService } from 'mychannel-shared-libs';
 import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
 import {
   ROUTE_ORDER_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE,
@@ -39,7 +39,7 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
     private pageLoadingService: PageLoadingService,
     private utils: Utils,
     public translation: TranslateService,
-    private onscreenKeyboardService: OnscreenKeyboardService
+    private VisualKeyboardService: VisualKeyboardService
   ) {
     this.transaction = this.transactionService.load();
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
@@ -77,7 +77,7 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
   }
 
   isRunOnKiosk(): boolean {
-    return this.onscreenKeyboardService.checkRunOnKiosk();
+    return this.VisualKeyboardService.checkRunOnKiosk();
   }
 
   onBack(): void {
