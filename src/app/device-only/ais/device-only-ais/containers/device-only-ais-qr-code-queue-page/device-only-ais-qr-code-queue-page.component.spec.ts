@@ -11,12 +11,18 @@ describe('test device only ais queue page', () => {
   const transactionService: any = {
     load: jest.fn()
   };
+  const priceOptionService: any = {
+    load: jest.fn()
+  };
+  const homeButtonService: any = {};
 
   beforeEach(() => {
     component = new DeviceOnlyAisQrCodeQueuePageComponent(
       router,
       homeService,
-      transactionService
+      transactionService,
+      priceOptionService,
+      homeButtonService
     );
   });
 

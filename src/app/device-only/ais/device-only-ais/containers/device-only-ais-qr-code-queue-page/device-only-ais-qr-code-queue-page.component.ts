@@ -7,6 +7,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { CreateOrderService } from '../../services/create-order.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { HomeButtonService } from '../../services/home-button.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
 
 @Component({
   selector: 'app-device-only-ais-qr-code-queue-page',
@@ -14,15 +15,18 @@ import { HomeButtonService } from '../../services/home-button.service';
   styleUrls: ['./device-only-ais-qr-code-queue-page.component.scss']
 })
 export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy {
-
   transaction: Transaction;
+  priceOption: PriceOption;
+
   constructor(
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
+    private priceOptionService: PriceOptionService,
     private homeButtonService: HomeButtonService
     ) {
       this.transaction = this.transactionService.load();
+      this.priceOption = this.priceOptionService.load();
      }
 
   ngOnInit(): void {

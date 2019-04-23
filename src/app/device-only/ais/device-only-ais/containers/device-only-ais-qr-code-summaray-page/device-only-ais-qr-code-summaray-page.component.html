@@ -35,19 +35,16 @@
               โครงการ ซื้อเครื่องเปล่า
             </p>
             <div class="text-grey">
-              <i class="fa fa-circle mr-3 text-light-green"></i>
-              <span class="text-grey" id="text-brand-model">
-                {{ priceOption?.productDetail?.brand }}
-              </span>
-              <span class="text-grey" id="text-brand-model">
-                {{ priceOption?.productDetail?.model }}
-              </span>
-              <span class="text-grey" *ngIf="priceOption?.productStock?.color">
-                {{ priceOption?.productStock?.color? 'สี': '' }} {{ priceOption?.productStock?.color }}
-              </span>  
-              <span class="pull-right text-light-green" id="text-normal-price">
-                ฿ {{ priceOption?.trade?.promotionPrice | number }}
-              </span>
+              <p>
+                <i class="fa fa-circle mr-3 text-light-green"></i>
+                {{ priceOption?.productDetail?.name }}  
+                <span *ngIf="priceOption?.productStock?.color">
+                  {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.color }}
+                </span>
+                <span class="pull-right text-light-green" id="text-normal-price">
+                  ฿ {{ priceOption?.trade?.promotionPrice | number }}
+                </span>
+              </p>  
             </div>
           </div>
           <div class="card-footer bg-transparent text-right">
