@@ -8,7 +8,7 @@ import {
 } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
@@ -164,6 +164,7 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
     this.pageLoadingService.openLoading();
     const ussdCode = this.priceOption.trade.ussdCode;
     const mobile = this.addMobileNo ? this.addMobileNo : this.selectMobileNo.mobileNo;
+    this.transaction.data.action = this.addMobileNo ? TransactionAction.READ_CARD_REPI : TransactionAction.READ_CARD;
     this.verifyMobileNo(mobile, ussdCode).then((res: any) => {
       const profile = res.profile;
       // (profile.billingSystem === BillingSystemType.BOS) ? BillingSystemType.BOS : BillingSystemType.IRB

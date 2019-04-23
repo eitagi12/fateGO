@@ -88,11 +88,20 @@ export class DeviceOrderAisExistingPrepaidHotdealOtpPageComponent implements OnI
     }
     this.http.post(`/api/customerportal/newRegister/${mobile}/verifyOTP`, { pwd: otp, transactionID: this.transactionID }).toPromise()
       .then((resp: any) => {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_CUSTOMER_INFO_PAGE]);
+        this.navigateNext();
       }).catch((error) => {
         this.pageLoadingService.closeLoading();
         this.alertService.error('รหัส OTP ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง');
       });
+  }
+
+  navigateNext(): void {
+    if (this.transaction.data.action === TransactionAction.READ_CARD_REPI) {
+      this.autoPI();
+    } else {
+      this.pageLoadingService.closeLoading();
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_CUSTOMER_INFO_PAGE]);
+    }
   }
 
   autoPI(): void {
