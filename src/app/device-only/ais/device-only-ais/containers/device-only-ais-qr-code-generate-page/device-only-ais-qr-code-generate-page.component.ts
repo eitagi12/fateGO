@@ -359,7 +359,7 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
   }
   // tslint:disable-next-line:use-life-cycle-interface
   ngOnDestroy(): void {
-    // this.transactionService.update(this.transaction);
+    this.transactionService.update(this.transaction);
     if (this.subscription$) {
       this.subscription$.unsubscribe();
     }
