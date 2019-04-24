@@ -69,7 +69,7 @@ export class OrderPreToPostEligibleMobilePageComponent implements OnInit, OnDest
           return ['Submit for Approve', 'Pending', 'Submitted', 'Request',
             'Saveteam', 'QueryBalance', 'Response', 'Notification', 'BAR Processing',
             'BAR', 'Terminating'].find((statusCode: any) => {
-              return statusCode !== order.statusCode;
+              return statusCode !== order.statusCode && order.servicePackageId !== '8';
             });
         });
         this.mapPrepaidMobileNo(mobileList);

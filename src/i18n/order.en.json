@@ -216,6 +216,7 @@
     "สำหรับคนไทยกรุณาใช้บัตรประชาชนทำรายการ": "For Thai citizen, please use your ID card to proceed with a transaction",
     "แสดงตนซ้ำ": "Prepaid identify",
     "กรุณาใส่รหัสที่ได้รับจาก SMS": "Please enter your OTP received via SMS",
-    "ระบบจัดส่ง SMS แจ้ง รายละเอียดการทำรายการข้อตกลงและเงื่อนไขบริการโทรศัพท์เคลื่อนที่ ไปที่": "The system will send the transaction details with the usage terms and conditions via SMS to"
+    "ระบบจัดส่ง SMS แจ้ง รายละเอียดการทำรายการข้อตกลงและเงื่อนไขบริการโทรศัพท์เคลื่อนที่ ไปที่": "The system will send the transaction details with the usage terms and conditions via SMS to",
+    "เบอร์นี้ไม่สามารถเปลี่ยนเติมเงินเป็นรายเดือนได้ กรุณาเปลี่ยนเบอร์ใหม่": "This number cannot be processes. Please enter a new number"
 
 }

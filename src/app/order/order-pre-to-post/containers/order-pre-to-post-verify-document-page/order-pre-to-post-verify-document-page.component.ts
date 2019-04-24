@@ -343,11 +343,16 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
             }
           }).toPromise()
             .then((resp: any) => {
-              this.transaction.data.simCard = { mobileNo: value.identity, persoSim: false };
-              this.transaction.data.action = TransactionAction.KEY_IN_REPI;
-              this.pageLoadingService.closeLoading();
-              this.transactionService.update(this.transaction);
-              this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE]);
+              if (resp.data.networkType === 'CPE') {
+                this.alertService.error(this.translation.instant('เบอร์นี้ไม่สามารถเปลี่ยนเติมเงินเป็นรายเดือนได้ กรุณาเปลี่ยนเบอร์ใหม่'));
+              } else {
+                this.transaction.data.simCard = { mobileNo: value.identity, persoSim: false };
+                this.transaction.data.action = TransactionAction.KEY_IN_REPI;
+                this.pageLoadingService.closeLoading();
+                this.transactionService.update(this.transaction);
+                this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE]);
+              }
+
             })
             .catch((resp: any) => {
               this.pageLoadingService.closeLoading();
