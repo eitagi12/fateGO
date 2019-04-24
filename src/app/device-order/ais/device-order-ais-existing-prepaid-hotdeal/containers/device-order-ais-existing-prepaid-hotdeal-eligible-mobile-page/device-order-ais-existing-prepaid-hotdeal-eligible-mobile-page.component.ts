@@ -11,7 +11,7 @@ import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
-import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
@@ -105,7 +105,6 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
   }
 
   verifyMobileNo(mobileNo: string, ussdCode: string): Promise<any> {
-    // tslint:disable-next-line:no-shadowed-variable
     const errMsg = 'ไม่สามารถตรวจสอบสิทธิ์ซื้อเครื่องได้ใขณะนี้';
     const errMsgNotPrepaid = 'ไม่สามารถทำรายการได้ เนื่องจากเป็นหมายเลขระบบรายเดือน';
     const verify: any = {
@@ -164,10 +163,10 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
     this.pageLoadingService.openLoading();
     const ussdCode = this.priceOption.trade.ussdCode;
     const mobile = this.addMobileNo ? this.addMobileNo : this.selectMobileNo.mobileNo;
+    const privilege = this.selectMobileNo && this.selectMobileNo.privilegeCode ? this.selectMobileNo.privilegeCode : '';
     this.transaction.data.action = this.addMobileNo ? TransactionAction.READ_CARD_REPI : TransactionAction.READ_CARD;
     this.verifyMobileNo(mobile, ussdCode).then((res: any) => {
       const profile = res.profile;
-      // (profile.billingSystem === BillingSystemType.BOS) ? BillingSystemType.BOS : BillingSystemType.IRB
       this.transaction.data.simCard = {
         mobileNo: mobile,
         persoSim: false,
@@ -175,27 +174,25 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
         simSerial: profile.simSerialNo,
         billingSystem: profile.billingSystem,
         nType: profile.product,
-        mobileNoStatus: 'Active'
+        mobileNoStatus: 'Active',
+        privilegeCode: privilege
       };
       return res.isVerify;
     })
     .then((isVerify: any) => {
-      const trade = this.priceOption.trade;
-      const privilege = this.selectMobileNo && this.selectMobileNo.privilegeCode ? this.selectMobileNo.privilegeCode : '';
-      this.privilegeService.requestUsePrivilege(mobile, ussdCode, privilege).then((privilegeCode) => {
-        this.pageLoadingService.closeLoading();
-        this.transaction.data.customer.privilegeCode = privilegeCode;
-        if (isVerify) {
+      if (isVerify) {
+        this.privilegeService.requestUsePrivilege(mobile, ussdCode, privilege).then((privilegeCode) => {
+          this.transaction.data.customer.privilegeCode = privilegeCode;
+          this.pageLoadingService.closeLoading();
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_CUSTOMER_INFO_PAGE]);
-        } else {
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_OTP_PAGE]);
-        }
-      });
+        });
+      } else {
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_OTP_PAGE]);
+      }
     }).catch((err) => {
       this.pageLoadingService.closeLoading();
       this.alertService.error(err);
-    })
-    ;
+    });
   }
 
   onBack(): void {

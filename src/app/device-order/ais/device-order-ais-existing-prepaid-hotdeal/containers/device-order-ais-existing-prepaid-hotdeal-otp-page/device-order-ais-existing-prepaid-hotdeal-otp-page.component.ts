@@ -13,6 +13,9 @@ import { CustomerInfoService } from 'src/app/device-order/services/customer-info
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { environment } from 'src/environments/environment';
+import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-prepaid-hotdeal-otp-page',
@@ -29,6 +32,7 @@ export class DeviceOrderAisExistingPrepaidHotdealOtpPageComponent implements OnI
   mobileNo: string;
   transactionID: string;
   isOtpValid: boolean;
+  priceOption: PriceOption;
 
   constructor(
     private router: Router,
@@ -40,10 +44,13 @@ export class DeviceOrderAisExistingPrepaidHotdealOtpPageComponent implements OnI
     private alertService: AlertService,
     private customerInfoService: CustomerInfoService,
     private transactionService: TransactionService,
+    private privilegeService: PrivilegeService,
+    private priceOptionService: PriceOptionService,
 
   ) {
     this.transaction = this.transactionService.load();
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
+    this.priceOption = this.priceOptionService.load();
   }
 
   ngOnInit(): void {
@@ -139,7 +146,15 @@ export class DeviceOrderAisExistingPrepaidHotdealOtpPageComponent implements OnI
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_CUSTOMER_INFO_PAGE]);
+    const ussdCode = this.priceOption.trade.ussdCode;
+    const privilege =  this.transaction.data.simCard.privilegeCode;
+    const mobile = this.transaction.data.simCard.mobileNo;
+    this.pageLoadingService.openLoading();
+    this.privilegeService.requestUsePrivilege(mobile, ussdCode, privilege).then((privilegeCode) => {
+      this.pageLoadingService.closeLoading();
+      this.transaction.data.customer.privilegeCode = privilegeCode;
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_CUSTOMER_INFO_PAGE]);
+    });
   }
 
   onBack(): void {
