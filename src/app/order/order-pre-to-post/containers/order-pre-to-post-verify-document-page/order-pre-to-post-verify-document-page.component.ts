@@ -332,43 +332,79 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
     this.validateCustomerForm = this.fb.group({
       identity: ['', [Validators.required, this.customValidate.bind(this)]]
     });
-
     this.validateCustomerForm.valueChanges.pipe(debounceTime(750))
       .subscribe((value: any) => {
         if (this.validateCustomerForm.valid) {
           this.pageLoadingService.openLoading();
-          this.http.get('/api/customerportal/validate-customer-mobile-no-pre-to-post', {
+          const subscriberId: string = value.identity;
+          const orderType: string = 'Port - Out';
+          const isProduction: any = environment.name !== 'PROD' && environment.name !== 'SIT' ? true : false;
+          const isStartDt: any = isProduction === true ? 30 : 3;
+          const startDt: string = encodeURIComponent(moment().subtract(isStartDt, 'days').format('YYYYMMDD HH:mm:ss'));
+          const endDt: string = encodeURIComponent(moment().format('YYYYMMDD HH:mm:ss'));
+          this.http.get(`/api/customerportal/newRegister/history-order`, {
             params: {
-              mobileNo: value.identity
+              subscriberId: subscriberId,
+              orderType: orderType,
+              startDt: startDt,
+              endDt: endDt
             }
-          }).toPromise()
+          })
+            .toPromise()
             .then((resp: any) => {
-              if (resp.data.networkType === 'CPE') {
-                this.alertService.error(this.translation.instant('เบอร์นี้ไม่สามารถเปลี่ยนเติมเงินเป็นรายเดือนได้ กรุณาเปลี่ยนเบอร์ใหม่'));
-              } else {
-                this.transaction.data.simCard = { mobileNo: value.identity, persoSim: false };
-                this.transaction.data.action = TransactionAction.KEY_IN_REPI;
-                this.pageLoadingService.closeLoading();
-                this.transactionService.update(this.transaction);
-                this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE]);
+              return (resp.data || []).find((order: any) => {
+                return order.statusCode === 'Submit for Approve'
+                  || order.statusCode === 'Pending'
+                  || order.statusCode === 'Submitted'
+                  || order.statusCode === 'Request'
+                  || order.statusCode === 'Saveteam'
+                  || order.statusCode === 'QueryBalance'
+                  || order.statusCode === 'Response'
+                  || order.statusCode === 'Notification'
+                  || order.statusCode === 'BAR Processing'
+                  || order.statusCode === 'BAR'
+                  || order.statusCode === 'Terminating';
+              });
+            }).then((order: any) => {
+              if (order) {
+                const createDate = moment(order.createDate, 'YYYYMMDD').format('DD/MM/YYYY');
+                return this.alertService.error(`ระบบไม่สามารถทำรายการได้ <br>หมายเลข ${value.identity}
+                อยู่ระหว่างย้ายค่ายไปยังผู้ให้บริการรายอื่น (True, DTAC)(ทำรายการวันที่${createDate})`);
               }
+              return this.checkCustomerProfile(value.identity);
 
             })
-            .catch((resp: any) => {
-              this.pageLoadingService.closeLoading();
-              this.validateCustomerForm.patchValue({ identity: '' });
-
-              const error = resp.error || [];
-              if (error && error.resultDescription) {
-                this.alertService.error(this.translation.instant(error.resultDescription));
-              } else {
-                this.alertService.error(this.translation.instant('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'));
-              }
-            });
+            .catch(() => this.checkCustomerProfile(value.identity));
         }
       });
   }
 
+  checkCustomerProfile(mobileNo: any): void {
+    this.http.get('/api/customerportal/validate-customer-mobile-no-pre-to-post', {
+      params: {
+        mobileNo: mobileNo
+      }
+    }).toPromise()
+      .then((resp: any) => {
+        this.transaction.data.simCard = { mobileNo: mobileNo, persoSim: false };
+        this.transaction.data.action = TransactionAction.KEY_IN_REPI;
+        this.pageLoadingService.closeLoading();
+        this.transactionService.update(this.transaction);
+        this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CURRENT_INFO_PAGE]);
+      })
+      .catch((resp: any) => {
+        this.pageLoadingService.closeLoading();
+        this.validateCustomerForm.patchValue({ identity: '' });
+
+        const error = resp.error || [];
+        if (error && error.resultDescription) {
+          this.alertService.error(this.translation.instant(error.resultDescription));
+        } else {
+          this.alertService.error(this.translation.instant('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'));
+        }
+      });
+
+  }
   onReadPassport(): void {
     this.readPassportSubscription = this.readPassportService.onReadPassport().subscribe((readPassport: ReadPassport) => {
 
