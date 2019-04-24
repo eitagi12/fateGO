@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 
 import { PageLoadingService, HomeService, ReadCardProfile, User, AlertService, ValidateCustomerIdCardComponent, TokenService, ReadCardService, ReadCard, ReadCardEvent } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { Transaction, Customer, BillDeliveryAddress, Prebooking } from 'src/app/shared/models/transaction.model';
+import { Transaction, Customer, Prebooking } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_VALIDATE_CUSTOMER_PAGE } from '../../constants/route-path.constant';
@@ -31,7 +31,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardPageComponent im
   readCardValid: boolean;
   priceOption: PriceOption;
   user: User;
-  billDeliveryAddress: BillDeliveryAddress;
+  billDeliveryAddress: Customer;
 
   readCard: ReadCard;
   readCardSubscription: Subscription;
@@ -88,6 +88,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardPageComponent im
 
   onNext(): void {
     this.pageLoadingService.openLoading();
+    this.transaction.data.customer = this.profile;
     this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
       .then((zipCode: string) => {
         return this.customerInfoService.getCustomerInfoByIdCard(this.profile.idCardNo).then((customer: Customer) => {
@@ -104,15 +105,8 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardPageComponent im
         if (customer.caNumber) {
           this.transaction.data.customer = { ...this.profile, ...customer };
         } else {
-          const privilege = this.transaction.data.customer.privilegeCode;
-          const repi = this.transaction.data.customer.repi;
-          this.transaction.data.customer = null;
-          this.transaction.data.customer = this.profile;
-          this.transaction.data.customer.privilegeCode = privilege;
-          this.transaction.data.customer.repi = repi;
           this.transaction.data.customer.zipCode = customer.zipCode;
         }
-        this.transaction.data.customer = { ...this.profile, ...customer };
         this.transaction.data.billingInformation = {};
         this.transaction.data.billingInformation.billDeliveryAddress = this.transaction.data.customer;
         if (this.transaction.data.order && this.transaction.data.order.soId) {

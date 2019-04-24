@@ -209,7 +209,7 @@ export class DeviceOrderAspExistingBestBuyPaymentDetailPageComponent implements 
     this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;
     this.transaction.data.receiptInfo = this.receiptInfoTemp;
     const mobileNo = this.transaction.data.simCard.mobileNo;
-    if (TransactionAction.KEY_IN_REPI === action) {
+    if (TransactionAction.KEY_IN_REPI === action || TransactionAction.KEY_IN === action) {
       this.transaction.data.action = TransactionAction.KEY_IN;
     } else {
       this.transaction.data.action = TransactionAction.READ_CARD;
