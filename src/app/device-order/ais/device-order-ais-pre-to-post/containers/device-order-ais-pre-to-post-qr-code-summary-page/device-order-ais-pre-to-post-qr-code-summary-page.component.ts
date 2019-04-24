@@ -34,7 +34,7 @@ export class DeviceOrderAisPreToPostQrCodeSummaryPageComponent implements OnInit
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     this.payment = this.transaction.data.payment;
-    this.brannerImagePaymentQrCode = this.qrcodePaymentService.getBrannerImagePaymentQrCodeType(this.payment.paymentQrCodeType);
+    // this.brannerImagePaymentQrCode = this.qrcodePaymentService.getBrannerImagePaymentQrCodeType(this.payment.paymentQrCodeType);
   }
 
   ngOnInit(): void {
