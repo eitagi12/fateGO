@@ -8,7 +8,6 @@ import { ROUTE_DEVICE_ORDER_AIS_MNP_AGGREGATE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_R
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { HttpClient } from '@angular/common/http';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_RESULT_PAGE } from '../../../device-order-ais-new-register/constants/route-path.constant';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 
 @Component({
@@ -145,7 +144,7 @@ export class DeviceOrderAisMnpQueuePageComponent implements OnInit, OnDestroy {
         // update transaction
         this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then((resp) => {
           console.log('updateSharedTransaction', resp);
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_RESULT_PAGE]);
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_RESULT_PAGE]);
         });
       })
       .then(() => this.pageLoadingService.closeLoading());

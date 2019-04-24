@@ -52,17 +52,20 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
     this.transaction = this.transactionService.load();
 
     delete this.transaction.data.mainPackageOneLove;
+
     if (this.transaction.data.billingInformation) {
       delete this.transaction.data.billingInformation.billCycle;
       delete this.transaction.data.billingInformation.mergeBilling;
     }
 
     const contract = this.transaction.data.contractFirstPack || {};
+    const priceExclVat = this.transaction.data.currentPackage && this.transaction.data.currentPackage.priceExclVat || 0;
     this.isContractFirstPack = Math.max(contract.firstPackage || 0, contract.minPrice || 0, contract.initialPackage || 0);
+
     if (!this.mathHotDeal && !this.advancePay) {
       this.showCurrentPackage = true;
     }
-    const priceExclVat = this.transaction.data.currentPackage && this.transaction.data.currentPackage.priceExclVat || 0;
+
     if (this.priceOption.privilege.minimumPackagePrice <= priceExclVat) {
       this.showSelectCurrentPackage = true;
     }
@@ -79,11 +82,14 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     if (this.transaction.data.promotionsShelves) {
+
       this.promotionShelves = this.promotionShelveService
       .defaultBySelected(this.transaction.data.promotionsShelves, this.transaction.data.mainPackage);
+
       if (this.showCurrentPackage) {
         this.promotionShelves[0].promotions[0].active = false;
       }
+
     } else {
       this.callService();
     }
@@ -108,8 +114,10 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
   onNext(): void {
     this.pageLoadingService.openLoading();
     const mobileNo = this.transaction.data.simCard.mobileNo;
+
     this.http.get(`/api/customerportal/get-existing-mobile-care/${mobileNo}`).toPromise().then((response: any) => {
       const exMobileCare = response.data || {};
+
       if (exMobileCare.hasExistingMobileCare) {
         const existingMobileCare: ExistingMobileCare = exMobileCare.existMobileCarePackage;
         existingMobileCare.handSet = exMobileCare.existHandSet;
@@ -125,6 +133,7 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
       } else {
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE]);
       }
+
     }).then(() => this.pageLoadingService.closeLoading());
   }
 
@@ -138,6 +147,7 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
     const privilege: any = this.priceOption.privilege;
     const billingSystem = (this.transaction.data.simCard.billingSystem === 'RTBS')
     ? BillingSystemType.IRB : this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
+
     this.promotionShelveService.getPromotionShelve(
       {
         packageKeyRef: trade.packageKeyRef,

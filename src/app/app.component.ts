@@ -29,8 +29,7 @@ export class AppComponent {
     private pageActivityService: PageActivityService,
     private router: Router,
     private homeService: HomeService,
-    private http: HttpClient,
-    private translation: TranslateService
+    private http: HttpClient
   ) {
     this.version = this.getVersion();
 
@@ -59,7 +58,7 @@ export class AppComponent {
       if (environment.name === 'LOCAL') {
         window.location.href = '/main-menu';
       } else {
-        window.location.href = '/smart-shop/main-menu';
+        window.location.href = '/smart-digital/main-menu';
       }
     };
   }

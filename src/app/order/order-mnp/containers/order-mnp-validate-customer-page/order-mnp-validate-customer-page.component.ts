@@ -50,7 +50,7 @@ export class OrderMnpValidateCustomerPageComponent implements OnInit, OnDestroy 
   }
 
   progressDoing(): boolean {
-    return this.progressReadCard > 0 &&  this.progressReadCard < 100 ? true : false;
+    return this.progressReadCard > 0 && this.progressReadCard < 100 ? true : false;
   }
 
   onReadCard(): void {

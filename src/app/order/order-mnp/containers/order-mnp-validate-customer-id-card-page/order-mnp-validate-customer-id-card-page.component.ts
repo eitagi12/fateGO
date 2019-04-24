@@ -70,7 +70,7 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
   }
 
   progressDoing(): boolean {
-    return this.progressReadCard > 0 &&  this.progressReadCard < 100 ? true : false;
+    return this.progressReadCard > 0 && this.progressReadCard < 100 ? true : false;
   }
 
   onHome(): void {

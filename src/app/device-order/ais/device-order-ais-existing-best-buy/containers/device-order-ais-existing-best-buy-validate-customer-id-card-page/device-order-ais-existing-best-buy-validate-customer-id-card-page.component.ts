@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 import { PageLoadingService, HomeService, ReadCardProfile, User, AlertService, ValidateCustomerIdCardComponent, TokenService } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
-import { Transaction, Customer, BillDeliveryAddress, Prebooking } from 'src/app/shared/models/transaction.model';
+import { Transaction, Customer, Prebooking } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { CustomerInfoService } from '../../services/customer-info.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -26,7 +26,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent im
   readCardValid: boolean;
   priceOption: PriceOption;
   user: User;
-  billDeliveryAddress: BillDeliveryAddress;
+  billDeliveryAddress: Customer;
 
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
@@ -71,6 +71,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent im
 
   onNext(): void {
     this.pageLoadingService.openLoading();
+    this.transaction.data.customer = this.profile;
     this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
       .then((zipCode: string) => {
         return this.customerInfoService.getCustomerInfoByIdCard(this.profile.idCardNo).then((customer: Customer) => {
@@ -87,10 +88,6 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent im
         if (customer.caNumber) {
           this.transaction.data.customer = { ...this.profile, ...customer };
         } else {
-          const privilege = this.transaction.data.customer.privilegeCode;
-          this.transaction.data.customer = null;
-          this.transaction.data.customer = this.profile;
-          this.transaction.data.customer.privilegeCode = privilege;
           this.transaction.data.customer.zipCode = customer.zipCode;
         }
         this.transaction.data.billingInformation = {};

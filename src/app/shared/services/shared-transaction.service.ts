@@ -4,6 +4,8 @@ import { PriceOption } from '../models/price-option.model';
 import { TokenService } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 
+import { CustomerGroup } from 'src/app/buy-product/services/flow.service';
+
 import * as moment from 'moment';
 const Moment = moment;
 
@@ -70,7 +72,6 @@ export class SharedTransactionService {
         transactionType: data.transactionType,
         customer: data.customer || {},
         sim_card: data.simCard || {},
-        main_package: {},
         device: {
           amount: 1,
           brand: productStock.brand || productDetail.brand,
@@ -138,9 +139,10 @@ export class SharedTransactionService {
         params.data.billing_information.overRuleStartDate = data.billingInformation.overRuleStartDate;
       }
 
-      // isNewBAFlag
-      if (data.billingInformation.isNewBAFlag) {
-        params.data.billing_information.isNewBAFlag = data.billingInformation.isNewBAFlag;
+      if (priceOption.customerGroup.code === CustomerGroup.MNP ||
+        priceOption.customerGroup.code === CustomerGroup.EXISTING
+      ) {
+        params.data.billing_information.isNewBAFlag = !!data.billingInformation.isNewBAFlag;
       }
 
       const billCycle: string = data.billingInformation.billCycle ? data.billingInformation.billCycle.bill : data.customer.billCycle;
