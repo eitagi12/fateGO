@@ -16,6 +16,8 @@ export const CREDIT_CARD_PAYMENT = 'CC';
 export const CASH_AND_CREDIT_CARD_PAYMENT = 'CC/CA';
 import { DEPOSIT_QUEUE_PAGE } from 'src/app/deposit-summary/constants/route-path.constant';
 import { CreateDeviceOrderService } from 'src/app/deposit-summary/services/create-device-order.service';
+import { MessageConfigService } from 'src/app/deposit-summary/services/message-config.service';
+import { LANGUAGE, RESERVE_STOCK, ERROR_MESSAGE } from '../../../constants/message-config.constant';
 
 export const AIS_CUSTOMER = 'AIS';
 export const ALL_CUSTOMER = 'ALL';
@@ -62,9 +64,13 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     private createDeviceOrderService: CreateDeviceOrderService,
     private tokenService: TokenService,
     private alertService: AlertService,
-    private fb: FormBuilder) { }
+    private fb: FormBuilder,
+    private messageConfigService: MessageConfigService,
+
+  ) { }
 
   ngOnInit(): void {
+  this.getMessageConfig().then(res => {
     this.formID = this.getRandomNum(10);
     this.transaction = {
       transactionId: this.apiRequestService.getCurrentRequestId(),
@@ -114,6 +120,8 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
 
     this.createForm();
     this.createProductRecipient();
+
+    });
   }
   ngOnDestroy(): void {
     this.transaction.data.payment = {
@@ -354,11 +362,16 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
   private getTradeAIS(reserveProductInfo: any): any [] {
     const result = [];
     for (const trades of reserveProductInfo.tradeReserve.trades) {
-      if (trades.criterias) {
-        for (const criterias of trades.criterias) {
-          if (criterias.target) {
-            if (criterias.target[0].toString().toUpperCase() === AIS_CUSTOMER) {
-              result.push(trades);
+      if (trades.deposit) {
+        if (trades.deposit.depositIncludeVat !== this.messageConfigService.mapMessageConfig(
+          this.messageConfigService.messageConfig, RESERVE_STOCK.MESSAGE_CODE_TH.TH_0002)) {
+          if (trades.criterias) {
+            for (const criterias of trades.criterias) {
+              if (criterias.target) {
+                if (criterias.target[0].toString().toUpperCase() === AIS_CUSTOMER) {
+                  result.push(trades);
+                }
+              }
             }
           }
         }
@@ -370,11 +383,16 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
   private getTradeAll(reserveProductInfo: any): any[] {
     const result = [];
     for (const trades of reserveProductInfo.tradeReserve.trades) {
-      if (trades.criterias) {
-        for (const criterias of trades.criterias) {
-          if (criterias.target) {
-            if (criterias.target[0].toString().toUpperCase() === ALL_CUSTOMER) {
-              result.push(trades);
+      if (trades.deposit) {
+        if (trades.deposit.depositIncludeVat !== this.messageConfigService.mapMessageConfig(
+          this.messageConfigService.messageConfig, RESERVE_STOCK.MESSAGE_CODE_TH.TH_0002)) {
+          if (trades.criterias) {
+            for (const criterias of trades.criterias) {
+              if (criterias.target) {
+                if (criterias.target[0].toString().toUpperCase() === ALL_CUSTOMER) {
+                  result.push(trades);
+                }
+              }
             }
           }
         }
@@ -386,8 +404,13 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
   private getTradeCriteriasNull(reserveProductInfo: any): any[] {
     const result = [];
     for (const trades of reserveProductInfo.tradeReserve.trades) {
-      if (!trades.criterias) {
-        result.push(trades);
+      if (trades.deposit) {
+        if (trades.deposit.depositIncludeVat !== this.messageConfigService.mapMessageConfig(
+          this.messageConfigService.messageConfig, RESERVE_STOCK.MESSAGE_CODE_TH.TH_0002)) {
+          if (!trades.criterias) {
+            result.push(trades);
+          }
+        }
       }
     }
     return result;
@@ -400,5 +423,14 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     } else {
       this.isDisabled = null;
     }
+  }
+
+  private async getMessageConfig(): Promise<void> {
+    await this.messageConfigService.getMsgConfigByModuleName(LANGUAGE.TH, RESERVE_STOCK.MODULE_NAME).then(async(res: any) => {
+      await this.messageConfigService.setMessageConfig(res.data);
+    },
+    (error: any) => {
+      this.alertService.error(ERROR_MESSAGE.DEFAULT);
+    });
   }
 }
