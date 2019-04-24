@@ -30,15 +30,15 @@
             <div>ของผู้ให้บริการ เพื่อชำระค่าสินค้าและบริการ</div>
           </div>
   
-          <div class="qr-code border bg-white mb-3">
-            <img [src]="brannerImagePaymentQrCode.branner" class="d-block w-100" />
-            <div class="mt-2">
-              <img [src]="brannerImagePaymentQrCode.branner_detail" class="d-block w-25 m-auto" />
-            </div>
-            <div id="qr-code">
-              <img [hidden]="!qrCodeImageSrc" [src]="qrCodeImageSrc"
-              class="w-100" />
-            </div>
+          <div [mcLoading]="mcLoadingQrcodePaymentService" class="qr-code border bg-white mb-3">
+              <img [src]="brannerImagePaymentQrCode.branner" class="d-block w-100" />
+              <div class="mt-2">
+                <img [src]="brannerImagePaymentQrCode.branner_detail" class="d-block w-25 m-auto" />
+              </div>
+              <div id="qr-code">
+                <img [hidden]="!qrCodeImageSrc" [src]="qrCodeImageSrc"
+                class="w-100" />
+              </div>
           </div>
   
           <div class="text-center">
