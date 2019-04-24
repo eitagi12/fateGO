@@ -92,4 +92,41 @@ export class DeviceOrderAisExistingSummaryPageComponent implements OnInit {
     }, 0);
   }
 
+  detailPayment(payment: any = {}): string {
+    if (payment.paymentForm === `FULL`) {
+      return this.descriptionPayment(payment);
+
+    } else if (payment.paymentForm === `INSTALLMENT`) {
+      const paymentMethod = payment.paymentMethod || {};
+      const advancePay = this.priceOption.trade.advancePay || {};
+      const price = (((+this.priceOption.trade.promotionPrice || 0)
+      + (advancePay.installmentFlag === `N` ? +advancePay.amount : 0))
+      / (+paymentMethod.month || 1))
+      .toFixed(2);
+
+      return `บัตรเครดิต ${paymentMethod.name} ${paymentMethod.percentage || 0} %
+      \ ${paymentMethod.month || 0} เดือน ${price} บาท`;
+
+    }
+  }
+
+  descriptionPayment(payment: any): string {
+    switch (payment.paymentType) {
+      case `QR_CODE`:
+        if (payment.paymentQrCodeType === `LINE_QR`) {
+          return `Rabbit Line Pay`;
+        } else if (payment.paymentQrCodeType === `THAI_QR`) {
+          return `Thai QR Promptpay`;
+        }
+        break;
+      case `DEBIT`:
+        return `เงินสด`;
+      case `CREDIT`:
+        return `บัตรเครดิต ${payment.paymentBank && payment.paymentBank.name}`;
+
+      default:
+        break;
+    }
+  }
+
 }

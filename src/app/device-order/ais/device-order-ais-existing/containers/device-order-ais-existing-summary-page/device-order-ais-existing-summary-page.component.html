@@ -108,14 +108,17 @@
                   <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
                     (แถมซิม)
                   </span>
-                  <span>: ชำระเต็มจำนวน</span>
+                  <span *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">: ชำระเต็มจำนวน</span>
+                  <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">: ผ่อนชำระบัตรเครดิต</span>
                   <span class="pull-right text-green">
                     ฿ {{ priceOption?.trade?.promotionPrice | number }}
                   </span>
                 </p>
-  
+                <small class="text-muted">
+                  (ชำระโดย {{ detailPayment(transaction?.data?.payment) }})
+                </small>
                 <!-- ค่าแพ็กเกจบริการล่วงหน้า -->
-                <p *ngIf="(+priceOption?.trade?.advancePay?.amount) > 0">
+                <p class="mt-3" *ngIf="(+priceOption?.trade?.advancePay?.amount) > 0">
                   <i class="fa fa-circle mr-3 text-green"></i>
                   ค่าแพ็กเกจบริการล่วงหน้า : ชำระเต็มจำนวน
                   <span class="pull-right text-green">
@@ -130,42 +133,17 @@
                   <i class="fa fa-circle mr-3 text-green"></i>
                   ค่าเครื่องและค่าแพ็กเกจล่วงหน้า :
                   <span *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">ชำระเต็มจำนวน</span>
-                  <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">ผ่อนชำระบัตรเคดิต</span>
+                  <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">ผ่อนชำระบัตรเครดิต</span>
                   <span class="pull-right text-green">฿ {{ summary([
                     +priceOption?.trade?.promotionPrice,
                     +priceOption?.trade?.advancePay?.amount
                     ]) | number }}</span>
                 </p>
               </ng-container>
-  
-              <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">
-                <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType === 'QR_CODE'">
-                  <p *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'LINE_QR'">
-                    (ชำระโดย Rabbit Line Pay)
-                  </p>
-                  <p *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'THAI_QR'">
-                    (ชำระโดย Thai QR Promptpay)
-                  </p>
-                </small>
-                <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType === 'DEBIT'">
-                  (ชำระโดย เงินสด)
-                </small>
-              </ng-container>
-  
-              <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">
+
+              <ng-container>
                 <small class="text-muted">
-                  (
-                  ชำระโดย บัตรเคดิต
-                  {{ transaction?.data?.payment?.paymentMethod?.name }}
-                  {{ transaction?.data?.payment?.paymentMethod?.percentage }} %
-                  {{ transaction?.data?.payment?.paymentMethod?.month }} เดือน
-                  {{ 
-                    (
-                      (+priceOption?.trade?.promotionPrice) 
-                      + (priceOption?.trade?.advancePay?.installmentFlag === 'N' ? +priceOption?.trade?.advancePay?.amount : 0)
-                    ) / transaction?.data?.payment?.paymentMethod?.month | number: '1.2-2'
-                  }} บาทต่อเดือน
-                  )
+                  (ชำระโดย {{ descriptionPayment(transaction?.data?.advancePayment) }})
                 </small>
               </ng-container>
   
