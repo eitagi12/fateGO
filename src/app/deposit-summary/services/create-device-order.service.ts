@@ -123,7 +123,7 @@ export class CreateDeviceOrderService {
       brand: productDetail.brand,
       model: productDetail.model,
       color: productDetail.colorName,
-      matCode: trade.sku[0],
+      matCode: trade.tradeReserve.trades[0].matCode[0],
       priceIncAmt:  '',
       priceDiscountAmt:  '',
       grandTotalAmt: trade ? trade.tradeReserve.trades[0].deposit.depositIncludeVat : '',
