@@ -7,7 +7,7 @@ import { CaptureAndSign, HomeService, PageLoadingService, AlertService, TokenSer
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_OTP_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE } from '../../constants/route-path.constant';
-import { CustomerInfoService } from '../../services/customer-info.service';
+import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-idcard-capture-repi-page',
@@ -75,21 +75,7 @@ export class DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent impleme
   }
 
   onCameraCompleted(image: string): void {
-
-    // const cropOption = {
-    //   sizeWidth: 160,
-    //   sizeHeight: 240,
-    //   startX: 80,
-    //   startY: 0,
-    //   flip: true,
-    //   quality: 1
-    // };
-
-    // new ImageUtils().cropping(image, cropOption).then(res => {
-      // this.transaction.data.customer.imageSmartCard = res;
-    // }).catch(() => {
-      this.transaction.data.customer.imageSmartCard = image;
-    // });
+    this.transaction.data.customer.imageSmartCard = image;
   }
 
   onCameraError(error: string): void {

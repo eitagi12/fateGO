@@ -6,12 +6,11 @@ import { HomeService, PageLoadingService, AlertService, User, TokenService, Util
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
-import { Transaction, Customer, TransactionAction, Prebooking } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_RPI_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
-import { CustomerInfoService } from '../../services/customer-info.service';
-import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
+import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-validate-customer-repi-page',
@@ -41,7 +40,6 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
     private customerInfoService: CustomerInfoService,
-    private sharedTransactionService: SharedTransactionService,
     private tokenService: TokenService,
     private utils: Utils
   ) {
@@ -122,7 +120,6 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerRepiPageComponent impl
             this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
           });
         } else {
-          // .then(() => this.pageLoadingService.closeLoading());
           this.pageLoadingService.closeLoading();
           this.alertService.error('ไม่สามารถทำรายการได้ เบอร์รายเดือน ข้อมูลการแสดงตนไม่ถูกต้อง');
         }

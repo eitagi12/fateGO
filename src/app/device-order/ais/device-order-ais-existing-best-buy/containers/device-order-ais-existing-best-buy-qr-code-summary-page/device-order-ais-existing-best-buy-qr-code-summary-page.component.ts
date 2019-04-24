@@ -20,6 +20,7 @@ export class DeviceOrderAisExistingBestBuyQrCodeSummaryPageComponent implements 
   transaction: Transaction;
   priceOption: PriceOption;
   deposit: number;
+  color: string;
 
   brannerImagePaymentQrCode: ImageBrannerQRCode;
 
@@ -39,6 +40,7 @@ export class DeviceOrderAisExistingBestBuyQrCodeSummaryPageComponent implements 
   }
 
   ngOnInit(): void {
+    this.color = this.priceOption.productStock.color ? this.priceOption.productStock.color : this.priceOption.productStock.colorName || '';
     this.deposit = this.transaction.data.preBooking
                     && this.transaction.data.preBooking.depositAmt ? -Math.abs(+this.transaction.data.preBooking.depositAmt) : 0;
   }
