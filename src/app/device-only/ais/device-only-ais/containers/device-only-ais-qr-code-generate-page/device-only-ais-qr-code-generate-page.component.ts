@@ -357,4 +357,14 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
   goToMpayErrorPage(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_ERROR_PAGE]);
   }
+  // tslint:disable-next-line:use-life-cycle-interface
+  ngOnDestroy(): void {
+    // this.transactionService.update(this.transaction);
+    if (this.subscription$) {
+      this.subscription$.unsubscribe();
+    }
+    if (this.checkInquiryCallbackMpaySubscribtion$) {
+      this.checkInquiryCallbackMpaySubscribtion$.unsubscribe();
+    }
+  }
 }
