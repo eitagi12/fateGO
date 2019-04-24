@@ -31,6 +31,7 @@ import { DeviceOrderAisPreToPostValidateCustomerPageComponent } from './containe
 import { DeviceOrderAisPreToPostValidateCustomerRepiPageComponent } from './containers/device-order-ais-pre-to-post-validate-customer-repi-page/device-order-ais-pre-to-post-validate-customer-repi-page.component';
 import { DeviceOrderAisPreToPostValidateCustomerIdCardRepiPageComponent } from './containers/device-order-ais-pre-to-post-validate-customer-id-card-repi-page/device-order-ais-pre-to-post-validate-customer-id-card-repi-page.component';
 import { DeviceOrderAisPreToPostCustomerProfilePageComponent } from './containers/device-order-ais-pre-to-post-customer-profile-page/device-order-ais-pre-to-post-customer-profile-page.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -38,7 +39,8 @@ import { DeviceOrderAisPreToPostCustomerProfilePageComponent } from './container
     CommonModule,
     ReactiveFormsModule,
     MyChannelSharedLibsModule,
-    DeviceOrderAisPreToPostRoutingModule
+    DeviceOrderAisPreToPostRoutingModule,
+    TranslateModule
   ],
   declarations: [
     DeviceOrderAisPreToPostValidateCustomerPageComponent,

@@ -16,12 +16,11 @@
           <h5 class="card-header bg-lime text-white">ตรวจสอบสิทธิ์</h5>
           <div class="card-body text-center">
             <img class="imagecorrect mb-3" src="assets/images/icon/icon-red-alert-circle.png">
-            <p>เบอร์ {{ transaction?.data?.simCard?.mobileNo }} ใช้แพ็กเกจหลักต่ำกว่า {{priceOption?.privilege?.minimumPackagePrice}} บาท <br>
-              ยืนยันเปลี่ยนแพ็กเกจใหม่ เพื่อรับสิทธิ์ซื้อเครื่องราคาพิเศษ
+            <p>เบอร์ {{ transaction?.data?.simCard?.mobileNo }} ไม่สามารถรับสิทธิ์โครงการนี้ได้ <br>
+              <span>* กรุณาเปลี่ยนเบอร์ใหม่ เพื่อรับสิทธิ์ซื้อเครื่องราคาพิเศษ</span>
             </p>
             <button class="btn btn-secondary btn-lg" (click)="onHome()">CANCEL</button>
-            <button class="btn btn-success btn-lg" (click)="onNext()">CONFIRM</button>
-            <p class="mt-3"><u class="text-green" (click)="onBack()">เปลี่ยนเบอร์ทำรายการ</u></p>
+            <button class="btn btn-success btn-lg" (click)="onBack()">CONFIRM</button>
           </div>
         </div>
       </div>

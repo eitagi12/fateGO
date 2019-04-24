@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
-import { PageLoadingService, AlertService } from 'mychannel-shared-libs';
+import { PageLoadingService, AlertService, HomeService } from 'mychannel-shared-libs';
 
 import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
 import {
@@ -50,7 +50,8 @@ export class DeviceOrderAisPreToPostCurrentInfoPageComponent implements OnInit, 
     private modalService: BsModalService,
     private alertService: AlertService,
     private pageLoadingService: PageLoadingService,
-    private transactionService: TransactionService
+    private transactionService: TransactionService,
+    private homeService: HomeService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -79,6 +80,10 @@ export class DeviceOrderAisPreToPostCurrentInfoPageComponent implements OnInit, 
         this.pageLoadingService.closeLoading();
         this.isLoad = false;
       });
+  }
+
+  onHome(): void {
+    this.homeService.goToHome();
   }
 
   onBack(): void {

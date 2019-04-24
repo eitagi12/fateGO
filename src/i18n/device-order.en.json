@@ -10,8 +10,11 @@
     "ซื้อเครื่องพร้อมเปิดเบอร์ใหม่": "Buy a new device and a new number",
     "เครื่องพร้อมเปิดเบอร์ใหม่": "new device and a new number",
     "ซื้อเครื่องพร้อมเปลี่ยนเติมเงินเป็นรายเดือน": "Buy a new device and switch from Prepaid to Postpaid",
+    "เครื่องพร้อมเปลี่ยนเติมเงินเป็นรายเดือน": "new device and switch from Prepaid to Postpaid",
     "ซื้อเครื่องสำหรับลูกค้าย้ายค่าย": "Port in and buy a new device",
     "ซื้อเครื่องสำหรับลูกค้าปัจจุบัน": "Current customer buying a new device",
+    "เครื่องสำหรับลูกค้าย้ายค่าย": "Port in and buy a new device",
+    "เครื่องสำหรับลูกค้าปัจจุบัน": "Current customer buying a new device",
     "เลือกสี": "Select a color",
     "สินค้าหมดชั่วคราว": "Out of stock",
     "โปรโมชั่นที่ร่วมรายการ": "Current promotion",
@@ -162,7 +165,7 @@
     "หมายเลข": "Phone number",
     "ยอดเงินคงเหลือ": "Balance",
     "ค่าโทรที่ได้รับ": "Call time received",
-    "บริการเสริมตามรายการด้านล่างสิ้นสุดทันทีหลังจากเปลี่ยนเป็นรายเดือน": "The following on-top package(s) will be terminated after switching to postpaid service",
+    "บริการเสริมตามรายการด้านล่าง สิ้นสุดทันทีหลังจากเปลี่ยนเป็นรายเดือน": "The following on-top package(s) will be terminated after switching to postpaid service",
     "เลือกวันที่มีผลการใช้งาน": "Select package starting date",
     "รอบบิลถัดไป": "Next bill cycle",
     "พร้อมใช้งานวันที่": "Effective on",
@@ -188,5 +191,8 @@
     "ชำระเต็มจำนวนด้วยบัตรเครดิต":	"Advance package payment: Pay full amount",
     "คำขอใช้บริการโทรศัพท์เคลื่อนที่": "Postpaid Service Application",
     "ลงชื่อผู้ทำรายการ": "Applicant's signature",
-    "ชื่อ/รหัสผ่าน ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง": "You have entered incorrect user name/ password. Please try again"
+    "ชื่อ/รหัสผ่าน ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง": "You have entered incorrect user name/ password. Please try again",
+    "ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน": "Smartcard reader cannot read information from your ID card. Please contact our staff.",
+    "ดึงบัตรประชาชนออก": "Remove your ID card",
+    "ข้อมูลปัจจุบันของคุณ":	"Customer information"
 }

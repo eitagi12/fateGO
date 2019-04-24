@@ -1,13 +1,14 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
-import { HomeService, ShoppingCart } from 'mychannel-shared-libs';
+import { HomeService, ShoppingCart, PageLoadingService, BillingSystemType } from 'mychannel-shared-libs';
 import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import {
   ROUTE_DEVICE_ORDER_AIS_EXISTING_CUSTOMER_INFO_PAGE,
   ROUTE_DEVICE_ORDER_AIS_EXISTING_CHANGE_PACKAGE_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_DETAIL_PAGE
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_DETAIL_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_NON_PACKAGE_PAGE
 } from '../../constants/route-path.constant';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
@@ -15,6 +16,7 @@ import { HttpClient } from '@angular/common/http';
 import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
 import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
+import { PromotionShelveService } from 'src/app/device-order/services/promotion-shelve.service';
 
 export interface BillingAccount {
   billingName: string;
@@ -41,7 +43,7 @@ interface EligibleMobile {
   templateUrl: './device-order-ais-existing-eligible-mobile-page.component.html',
   styleUrls: ['./device-order-ais-existing-eligible-mobile-page.component.scss']
 })
-export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit {
+export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit, OnDestroy {
 
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
   eligibleMobiles: Array<EligibleMobile>;
@@ -61,13 +63,17 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
     private homeService: HomeService,
     private priceOptionService: PriceOptionService,
     private privilegeService: PrivilegeService,
+    private pageLoadingService: PageLoadingService,
     private customerInfoService: CustomerInfoService,
     private shoppingCartService: ShoppingCartService,
+    private promotionShelveService: PromotionShelveService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
 
     delete this.transaction.data.currentPackage;
+    delete this.transaction.data.promotionsShelves;
+    delete this.transaction.data.contractFirstPack;
   }
 
   ngOnInit(): void {
@@ -90,6 +96,116 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
     }
   }
 
+  onNext(): void {
+    this.pageLoadingService.openLoading();
+    this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo, persoSim: false };
+    this.callService()
+      .then(promotionsShelves => {
+        if (this.havePackages(promotionsShelves) || this.isNotMathCritiriaMainPro()) {
+          this.transaction.data.promotionsShelves = promotionsShelves;
+          this.routeNavigate();
+        } else {
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_NON_PACKAGE_PAGE]);
+        }
+      })
+      .then(() => this.pageLoadingService.closeLoading());
+  }
+
+  routeNavigate(): void {
+    if (this.selectMobileNo.privilegeCode) {
+      this.transaction.data.customer.privilegeCode = this.selectMobileNo.privilegeCode;
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_DETAIL_PAGE]);
+
+    } else if (this.isCritiriaMainPro()) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_CHANGE_PACKAGE_PAGE]);
+
+    } else {
+      const ussdCode = this.priceOption.trade.ussdCode;
+      this.privilegeService.requestUsePrivilege(this.selectMobileNo.mobileNo, ussdCode, this.selectMobileNo.privilegeCode)
+        .then((privilegeCode) => {
+          this.transaction.data.customer.privilegeCode = privilegeCode;
+          this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo };
+          if (this.transaction.data.customer && this.transaction.data.customer.firstName === '-') {
+            this.customerInfoService.getCustomerProfileByMobileNo(
+              this.transaction.data.simCard.mobileNo,
+              this.transaction.data.customer.idCardNo
+            )
+            .then((customer: Customer) => {
+              this.transaction.data.customer = { ...this.transaction.data.customer, ...customer };
+            });
+        }
+      }).then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_DETAIL_PAGE]));
+    }
+  }
+
+  callService(): Promise<any> {
+    const trade: any = this.priceOption.trade;
+    const privilege: any = this.priceOption.privilege;
+    const billingSystem = (this.transaction.data.simCard.billingSystem === 'RTBS')
+      ? BillingSystemType.IRB : this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
+
+    return this.http.post(`/api/salesportal/query/contract-first-pack`, {
+      option: '3',
+      mobileNo: this.selectMobileNo.mobileNo || '',
+      idCardNo: this.transaction.data.customer.idCardNo || '',
+      profileType: 'All'
+    }).toPromise()
+      .then((resp: any) => {
+        const data = resp.data || {};
+        if (data) {
+          this.transaction.data.contractFirstPack = data;
+        }
+        return this.promotionShelveService.getPromotionShelve(
+          {
+            packageKeyRef: trade.packageKeyRef,
+            orderType: `Change Service`,
+            billingSystem: billingSystem
+          },
+          +privilege.minimumPackagePrice, +privilege.maxinumPackagePrice)
+          .then((promotionShelves: any) => {
+            (promotionShelves || []).forEach((promotionShelve: any) => {
+
+              promotionShelve.promotions = (promotionShelve.promotions || []).filter((promotion: any) => {
+                promotion.items = (promotion.items || [])
+                  .filter(contract => {
+                    const contractFirstPack = contract.value.customAttributes.priceExclVat
+                    >= Math.max(data.firstPackage || 0, data.minPrice || 0, data.initialPackage || 0);
+
+                    const inGroup = data.inPackage.length > 0 ? data.inPackage
+                    .some(inPack => inPack === contract.value.customAttributes.productPkg) : true;
+
+                    return contractFirstPack && inGroup;
+                  });
+
+                return promotion.items.length > 0;
+              });
+
+            });
+            return promotionShelves;
+          });
+      });
+  }
+
+  havePackages(promotionsShelves: any): boolean {
+    return (promotionsShelves || []).length > 0 && promotionsShelves.some(promotionsShelve => promotionsShelve.promotions.length > 0);
+  }
+
+  isCritiriaMainPro(): boolean {
+    return !this.mathHotDeal && !this.advancePay && this.selectMobileNo.privilegeMessage === `MT_INVALID_CRITERIA_MAINPRO`;
+  }
+
+  isNotMathCritiriaMainPro(): boolean {
+    return !this.mathHotDeal && !this.advancePay && this.selectMobileNo.privilegeMessage !== `MT_INVALID_CRITERIA_MAINPRO`;
+  }
+
+  get advancePay(): boolean {
+    return !!((this.priceOption.trade.advancePay && this.priceOption.trade.advancePay.amount || 0) > 0);
+  }
+
+  get mathHotDeal(): boolean {
+    return !!this.priceOption.campaign.campaignName.match(/\b(\w*Hot\s+Deal\w*)\b/);
+  }
+
   onComplete(eligibleMobile: EligibleMobile): void {
     this.selectMobileNo = eligibleMobile;
   }
@@ -98,36 +214,10 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_CUSTOMER_INFO_PAGE]);
   }
 
-  onNext(): void {
-    this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo, persoSim: false };
-    if (this.selectMobileNo.privilegeCode) {
-      this.transaction.data.customer.privilegeCode = this.selectMobileNo.privilegeCode;
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_DETAIL_PAGE]);
-
-    } else if (this.selectMobileNo.privilegeMessage === `MT_INVALID_CRITERIA_MAINPRO`) {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_CHANGE_PACKAGE_PAGE]);
-
-    } else {
-      const ussdCode = this.priceOption.trade.ussdCode;
-      this.privilegeService.requestUsePrivilege(this.selectMobileNo.mobileNo, ussdCode, this.selectMobileNo.privilegeCode)
-      .then((privilegeCode) => {
-        this.transaction.data.customer.privilegeCode = privilegeCode;
-        this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo };
-        if (this.transaction.data.customer && this.transaction.data.customer.firstName === '-') {
-          this.customerInfoService.getCustomerProfileByMobileNo(this.transaction.data.simCard.mobileNo,
-            this.transaction.data.customer.idCardNo).then((customer: Customer) => {
-              this.transaction.data.customer = { ...this.transaction.data.customer, ...customer };
-            });
-        }
-      }).then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_DETAIL_PAGE]));
-    }
-  }
-
   onHome(): void {
     this.homeService.goToHome();
   }
 
-// tslint:disable-next-line: use-life-cycle-interface
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }

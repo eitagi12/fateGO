@@ -74,42 +74,39 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
     const mobileNo = this.transaction.data.simCard.mobileNo;
 
     this.pageLoadingService.openLoading();
-
+     console.log(this.profile);
     this.customerInfoService.getProvinceId(this.profile.province).then((provinceId: string) => {
       return this.customerInfoService.getZipCode(provinceId, this.profile.amphur, this.profile.tumbol).then((zipCode: string) => {
         return this.customerInfoService.getCustomerInfoByIdCard(this.profile.idCardNo, zipCode).then((customer: Customer) => {
-          this.transaction.data.customer = Object.assign(this.profile, customer);
+          if (customer.caNumber) {
+            this.transaction.data.customer = { ...this.transaction.data.customer, ...customer, ...this.profile };
+          } else {
+            const privilege = this.transaction.data.customer.privilegeCode;
+            const repi = this.transaction.data.customer.repi;
+            this.transaction.data.customer = null;
+            this.transaction.data.customer = this.profile;
+            this.transaction.data.customer.privilegeCode = privilege;
+            this.transaction.data.customer.repi = repi;
+            this.transaction.data.customer.zipCode = zipCode;
+          }
           const addressCustomer = this.transaction.data.customer;
           this.transaction.data.billingInformation = {};
-          this.transaction.data.billingInformation.billDeliveryAddress = {
-            homeNo: addressCustomer.homeNo,
-            moo: addressCustomer.moo,
-            mooBan: addressCustomer.mooBan,
-            room: addressCustomer.room,
-            floor: addressCustomer.floor,
-            buildingName: addressCustomer.buildingName,
-            soi: addressCustomer.soi,
-            street: addressCustomer.street,
-            province: addressCustomer.province,
-            amphur: addressCustomer.amphur,
-            tumbol: addressCustomer.tumbol,
-            zipCode: addressCustomer.zipCode
-          };
+          this.transaction.data.billingInformation.billDeliveryAddress = this.transaction.data.customer;
           // verify Prepaid Ident
           return this.customerInfoService.verifyPrepaidIdent(this.profile.idCardNo, mobileNo)
             .then((respPrepaidIdent: any) => {
-              if (respPrepaidIdent.data && respPrepaidIdent.data.success) {
-                const expireDate = this.transaction.data.customer.expireDate;
-                if (this.utils.isIdCardExpiredDate(expireDate)) {
+              if (respPrepaidIdent) {
+                const expireDate = this.profile.expireDate;
+                if (!this.utils.isIdCardExpiredDate(expireDate)) {
                   this.pageLoadingService.closeLoading();
                   this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE]);
                 } else {
                   const idCardType = this.transaction.data.customer.idCardType;
-                  this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ');
+                  this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากบัตรประชาชนหมดอายุ');
                 }
               } else {
-                const expireDate = this.transaction.data.customer.expireDate;
-                if (this.utils.isIdCardExpiredDate(expireDate)) {
+                const expireDate = this.profile.expireDate;
+                if (!this.utils.isIdCardExpiredDate(expireDate)) {
                   const simCard = this.transaction.data.simCard;
                   if (simCard.chargeType === 'Pre-paid') {
                     this.pageLoadingService.closeLoading();
@@ -121,33 +118,36 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
                     //   this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
                     // });
                   } else {
+                    this.pageLoadingService.closeLoading();
                     this.alertService.error('ไม่สามารถทำรายการได้ เบอร์รายเดือน ข้อมูลการแสดงตนไม่ถูกต้อง');
                   }
                 } else {
+                  this.pageLoadingService.closeLoading();
                   const idCardType = this.transaction.data.customer.idCardType;
-                  this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ');
+                  this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากบัตรประชาชนหมดอายุ');
                 }
               }
             });
         });
       });
-    }).catch((resp: any) => {
-      const error = resp.error || [];
-      console.log(resp);
+    });
+    // .catch((resp: any) => {
+    //   const error = resp.error || [];
+    //   console.log(resp);
 
-      if (error && error.errors.length > 0) {
-        this.alertService.notify({
-          type: 'error',
-          html: error.errors.map((err) => {
-            return '<li class="text-left">' + err + '</li>';
-          }).join('')
-        }).then(() => {
-          this.onBack();
-        });
-      } else {
-        this.alertService.error(error.resultDescription);
-      }
-    }).then(() => this.pageLoadingService.closeLoading());
+    //   if (error && error.errors.length > 0) {
+    //     this.alertService.notify({
+    //       type: 'error',
+    //       html: error.errors.map((err) => {
+    //         return '<li class="text-left">' + err + '</li>';
+    //       }).join('')
+    //     }).then(() => {
+    //       this.onBack();
+    //     });
+    //   } else {
+    //     this.alertService.error(error.resultDescription);
+    //   }
+    // });
   }
 
   onHome(): void {

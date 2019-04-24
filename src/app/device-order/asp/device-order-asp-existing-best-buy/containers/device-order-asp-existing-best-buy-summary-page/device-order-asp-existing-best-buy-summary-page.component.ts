@@ -178,10 +178,10 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
         this.http.post('/api/salesportal/create-device-selling-order',
           this.getRequestCreateOrder(this.transaction, this.priceOption)).toPromise()
           .then(() => {
-            return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
-          }).then(() => {
-            this.pageLoadingService.closeLoading();
-            window.location.href = `/web/sales-order/pay-advance?transactionId=${this.transaction.transactionId}`;
+            return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
+              this.pageLoadingService.closeLoading();
+              window.location.href = `/web/sales-order/pay-advance?transactionId=${this.transaction.transactionId}`;
+            });
           });
       });
   }

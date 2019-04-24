@@ -299,6 +299,7 @@ export class DeviceOrderAisExistingPrepaidHotdealQueuePageComponent implements O
         };
         return this.http.post('/api/salesportal/device-sell/order', this.getRequestDeviceSellOrder()).toPromise()
           .then(() => {
+            delete this.transaction.data.mainPackage;
             return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
           });
       })

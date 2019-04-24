@@ -61,6 +61,8 @@ export interface TransactionData {
   preBooking?: Prebooking;
   discount?: Discount;
   contract?: Condition;
+  promotionsShelves?: PromotionsShelves;
+  contractFirstPack?: ContractFirstPack;
   // MPAY
   mpayPayment?: QrCodePrePostMpayModel;
   status?: Status;
@@ -71,6 +73,13 @@ export interface Condition {
   conditionCode: string;
   conditionName?: string;
   conditionText?: string;
+}
+
+export interface ContractFirstPack {
+  firstPackage?: number;
+  inPackage?: string[];
+  initialPackage?: number;
+  minPrice?: number;
 }
 
 export interface Payment {
@@ -149,6 +158,10 @@ export interface CurrentPackage {
   [key: string]: any;
 }
 
+export interface PromotionsShelves {
+  [key: string]: any;
+}
+
 export interface OnTopPackage {
   [key: string]: any;
 }
@@ -183,7 +196,7 @@ export interface BillingInformation {
   // change value billing
   billCycleData?: BillingAccountData;
   // send bill devilery address
-  billDeliveryAddress?: BillDeliveryAddress;
+  billDeliveryAddress?: Customer;
   // วันที่มีผลการใช้งาน B: รอบถัดไป D: วันถัดไป I: มีผลทันที
   overRuleStartDate?: string;
   // check do createAndChangeBillingAccount Provisioning

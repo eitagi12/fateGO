@@ -64,7 +64,11 @@ export class DeviceOrderAspExistingBestBuyCustomerInfoPageComponent implements O
     if (action === TransactionAction.KEY_IN || action === TransactionAction.READ_CARD) {
       this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_ELIGIBLE_MOBILE_PAGE]);
     } else {
-      this.transaction.data.action = TransactionAction.READ_CARD;
+      if (TransactionAction.READ_CARD_REPI === action) {
+        this.transaction.data.action = TransactionAction.READ_CARD;
+      } else {
+        this.transaction.data.action = TransactionAction.KEY_IN;
+      }
       this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_PAYMENT_DETAIL_PAGE]);
     }
   }

@@ -41,10 +41,10 @@ export class PrivilegeService {
 
   checkAndGetPrivilegeCode(mobileNo: string, ussdCode: string): Promise<any> {
     return this.checkPrivilegeByNumber(mobileNo, ussdCode, false).then((privilegeCode) => {
-        return this.requestUsePrivilege(mobileNo, ussdCode, privilegeCode).then((msgBarcode) => {
-          return msgBarcode;
-        });
-    });
+      return this.requestUsePrivilege(mobileNo, ussdCode, privilegeCode).then((msgBarcode) => {
+        return msgBarcode;
+      }).catch(e => Promise.reject('หมายเลขนี้ ไม่สามารถรับสิทธิ์ได้'));
+    }).catch(e => Promise.reject(`${e.error.resultDescription || ''} ${(e.error.developerMessage) || ''}`.trim()));
   }
 
 }

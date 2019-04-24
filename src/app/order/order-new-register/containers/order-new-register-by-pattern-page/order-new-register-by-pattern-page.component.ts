@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild, ElementRef } from '@angular/core';
-import { MobileNoCondition, HomeService, TokenService, PageLoadingService, User, AlertService, OnscreenKeyboardService } from 'mychannel-shared-libs';
+import { MobileNoCondition, HomeService, TokenService, PageLoadingService, User, AlertService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
@@ -42,16 +42,9 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
     private http: HttpClient,
     public fb: FormBuilder,
     private translation: TranslateService,
-    private onsKeyboardService: OnscreenKeyboardService
   ) {
     this.transaction = this.transactionService.load();
     this.user = this.tokenService.getUser();
-
-    this.onsKeyboardService.getNextOrPreviousInput().subscribe(event => {
-      console.log('event', event);
-      this.onNextTab(event);
-    });
-
   }
 
   ngOnInit(): void {
