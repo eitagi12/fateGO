@@ -6,6 +6,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { CreateNewRegisterService } from 'src/app/shared/services/create-new-register.service';
 import { Router } from '@angular/router';
 import { ROUTE_DEVICE_ORDER_AIS_MNP_QUEUE_PAGE } from '../../constants/route-path.constant';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-device-order-ais-mnp-result-page',
@@ -33,7 +34,11 @@ export class DeviceOrderAisMnpResultPageComponent implements OnInit {
   }
 
   onMainMenu(): void {
-    this.homeService.goToHome();
+    if (environment.name === 'LOCAL') {
+      window.location.href = '/main-menu';
+    } else {
+      window.location.href = '/smart-digital/main-menu';
+    }
   }
 
   onBack(): void {
