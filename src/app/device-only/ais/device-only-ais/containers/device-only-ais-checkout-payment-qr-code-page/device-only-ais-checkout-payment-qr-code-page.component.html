@@ -31,13 +31,15 @@
             <mc-lazy-load-image [src]=""></mc-lazy-load-image>
           </div>
           <div class="col-xs-12 col-sm-7 mb-3">
-            <i class="fa fa-circle mr-3 text-light-green"></i>
+            <!-- <i class="fa fa-circle mr-3 text-light-green"></i> -->
             <span id="text-brand-model">
+              {{ priceOption?.productDetail?.brand }}
               {{ priceOption?.productDetail?.name }}
-              <span *ngIf="priceOption?.productStock?.color">
-                {{ priceOption?.productStock?.color? 'สี': '' }} {{ priceOption?.productStock?.color }}
+              <span>
+              <!-- <span *ngIf="priceOption?.productStock?.colorName"> -->
+                {{ priceOption?.productStock?.colorName? 'สี': '' }} {{ priceOption?.productStock?.colorName }}
               </span>
-            </span>
+            </span>  
             <p id="text-campaign-name">{{ priceOption?.campaign?.campaignName }}</p>
             <!-- <p>{{ priceOption?.campaign?.campaignName }}</p> -->
             <div id="text-brand-model-price" class="text-light-green">
@@ -61,8 +63,8 @@
                   <span id="text-summary-model">
                     {{ priceOption?.productDetail?.name }}
                   </span> 
-                  <span *ngIf="priceOption?.productStock?.color">
-                    {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.color }}
+                  <span *ngIf="priceOption?.productStock?.colorName">
+                    {{ priceOption?.productStock?.colorName?'สี': '' }} {{ priceOption?.productStock?.colorName }}
                   </span>
                   <span class="pull-right">
                     ฿<span id="text-summary-price">

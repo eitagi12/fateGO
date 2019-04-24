@@ -9,11 +9,14 @@
     <ng-container *ngIf="!priceOption?.trade?.advancePay || priceOption?.trade?.advancePay?.installmentFlag === 'N'">
       <p>
         <i class="fa fa-circle mr-3 text-lime"></i>
-        <span class="text-grey">
-          {{ priceOption?.productDetail?.name }}
+        <span class="text-grey" id="text-brand-payment-summary">
+          {{ priceOption?.productDetail?.brand }}
         </span>
-        <span class="text-grey" *ngIf="priceOption?.productStock?.color">
-          {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.color }}
+        <span class="text-grey" id="text-model-payment-summary">
+          {{ priceOption?.productDetail?.model }}
+        </span>
+        <span class="text-grey" id="text-color-summary" *ngIf="priceOption?.productStock?.colorName">
+          {{ priceOption?.productStock?.colorName?'สี': '' }} {{ priceOption?.productStock?.colorName }}
         </span>
         <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'"> : ชำระเต็มจำนวน</span>
         <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'"> : ผ่อนชำระบัตรเครดิต</span>

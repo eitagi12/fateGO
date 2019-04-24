@@ -10,8 +10,8 @@
     <span class="text-grey" id="text-model-summary">
       {{ priceOption?.productDetail?.model }}
     </span>
-    <span class="text-grey" id="text-color-summary" *ngIf="priceOption?.productStock?.color">
-            {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.color }} 
+    <span class="text-grey" id="text-color-summary" *ngIf="priceOption?.productStock?.colorName">
+            {{ priceOption?.productStock?.colorName?'สี': '' }} {{ priceOption?.productStock?.colorName }} 
     </span>
   </span>
     <span class="pull-right text-green" id="text-model-price">
