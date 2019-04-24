@@ -125,6 +125,9 @@
                     ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
                   </span>
                 </p>
+                <small class="text-muted">
+                  (ชำระโดย {{ descriptionPayment(transaction?.data?.advancePayment) }})
+                </small>
               </ng-container>
   
               <!-- ค่าเครื่องและค่าแพ็กเกจล่วงหน้า -->
@@ -139,11 +142,8 @@
                     +priceOption?.trade?.advancePay?.amount
                     ]) | number }}</span>
                 </p>
-              </ng-container>
-
-              <ng-container>
                 <small class="text-muted">
-                  (ชำระโดย {{ descriptionPayment(transaction?.data?.advancePayment) }})
+                  (ชำระโดย {{ detailPayment(transaction?.data?.payment) }})
                 </small>
               </ng-container>
   
