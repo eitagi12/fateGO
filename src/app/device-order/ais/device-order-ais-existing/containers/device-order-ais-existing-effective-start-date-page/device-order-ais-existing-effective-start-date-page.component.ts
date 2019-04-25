@@ -64,7 +64,7 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
     value: 'B'
   },
   {
-    textBill: 'วัดถัดไป',
+    textBill: 'วันถัดไป',
     textDate: 'พร้อมใช้งานวันที่',
     value: 'D'
   },

@@ -52,7 +52,7 @@ export class DeviceOrderAisMnpEffectiveStartDatePageComponent implements OnInit,
     value: 'B'
   },
   {
-    textBill: 'วัดถัดไป',
+    textBill: 'วันถัดไป',
     textDate: 'พร้อมใช้งานวันที่',
     value: 'D'
   },
