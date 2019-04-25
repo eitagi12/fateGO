@@ -86,7 +86,7 @@
     </div>
   </div>
   <mc-footer>
-    <button class="btn btn-success" (click)="onGenerateQRCode">REFRESH</button>
+    <button class="btn btn-success" (click)="onGenerateQRCode()">REFRESH</button>
     <!-- for develop -->
     <button [hidden]="!isDeveloperMode()" class="btn btn-secondary" (click)="onBack()">BACK</button>
     <button [hidden]="!isDeveloperMode()" class="btn btn-success" (click)="onNext()">CONFIRM</button>
