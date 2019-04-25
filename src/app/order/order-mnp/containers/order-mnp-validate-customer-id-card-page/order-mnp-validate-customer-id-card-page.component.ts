@@ -6,7 +6,7 @@ import {
   ROUTE_ORDER_MNP_SELECT_REASON_PAGE
 } from 'src/app/order/order-mnp/constants/route-path.constant';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
-import { ReadCardProfile, HomeService, TokenService, PageLoadingService, ChannelType, Utils, AlertService, KioskControls, ValidateCustomerIdCardComponent, OnscreenKeyboardService } from 'mychannel-shared-libs';
+import { ReadCardProfile, HomeService, TokenService, PageLoadingService, ChannelType, Utils, AlertService, KioskControls, ValidateCustomerIdCardComponent, VisualKeyboardService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -36,7 +36,7 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
     private tokenService: TokenService,
     private utils: Utils,
     private alertService: AlertService,
-    private onscreenKeyboardService: OnscreenKeyboardService,
+    private visualKeyboardService: VisualKeyboardService,
     private translateService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
@@ -75,7 +75,7 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
   }
 
   isRunOnKiosk(): boolean {
-    return this.onscreenKeyboardService.checkRunOnKiosk();
+    return this.visualKeyboardService.checkRunOnKiosk();
   }
 
   onHome(): void {

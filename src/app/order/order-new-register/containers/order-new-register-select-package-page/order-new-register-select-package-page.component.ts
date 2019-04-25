@@ -73,6 +73,7 @@ export class OrderNewRegisterSelectPackagePageComponent implements OnInit, OnDes
   }
 
   onBack(): void {
+
     const user = this.tokenService.getUser();
 
     if (this.transaction.data.simCard.simSerial) {

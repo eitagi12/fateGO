@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Utils, TokenService } from 'mychannel-shared-libs';
-import { Transaction, TransactionAction } from '../models/transaction.model';
+import { Transaction, TransactionAction, TransactionType } from '../models/transaction.model';
 import { HttpClient } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -35,6 +35,7 @@ export class CreateEapplicationService {
     const billingInformation = transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData;
     const action = transaction.data.action;
+    const transactionType = transaction.data.transactionType;
 
     const data: any = {
       fullNameTH: customer.firstName + ' ' + customer.lastName || '',
@@ -55,8 +56,8 @@ export class CreateEapplicationService {
       }, this.translation.currentLang) || '',
       mobileNumber: transaction.data.simCard.mobileNo || '',
       mainPackage: {
-        name: transaction.data.mainPackage.shortNameThai || '',
-        description: transaction.data.mainPackage.statementThai || ''
+        name: transaction.data.mainPackage.title || '',
+        description: transaction.data.mainPackage.detailTH || ''
       },
       billCycle: billCycleData.billCycleText || '',
       receiveBillMethod: this.translation.instant(billCycleData.receiveBillMethod) || '',

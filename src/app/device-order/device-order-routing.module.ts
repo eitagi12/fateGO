@@ -11,18 +11,26 @@ const routes: Routes = [
         path: 'new-register',
         loadChildren: 'src/app/device-order/ais/device-order-ais-new-register/device-order-ais-new-register.module#DeviceOrderAisNewRegisterModule'
       },
-      /* {
-          path: 'pre-to-post',
-          loadChildren: 'src/app/device-order/ais/device-order-ais-new-pre-to-post.module#DeviceOrderAisPreToPostModule',
-        },
-        {
-          path: 'mnp',
-          loadChildren: 'src/app/device-order/ais/device-order-ais-mnp.module#DeviceOrderAisMnpModule',
-        },
-        {
-          path: 'existing',
-          loadChildren: 'src/app/device-order/ais/device-order-ais-existing.module#DeviceOrderAisExistingModule',
-        }*/
+      {
+        path: 'pre-to-post',
+        loadChildren: 'src/app/device-order/ais/device-order-ais-pre-to-post/device-order-ais-pre-to-post.module#DeviceOrderAisPreToPostModule',
+      },
+      {
+        path: 'mnp',
+        loadChildren: 'src/app/device-order/ais/device-order-ais-mnp/device-order-ais-mnp.module#DeviceOrderAisMnpModule',
+      },
+      {
+        path: 'existing',
+        loadChildren: 'src/app/device-order/ais/device-order-ais-existing/device-order-ais-existing.module#DeviceOrderAisExistingModule',
+      },
+      {
+        path: 'best-buy',
+        loadChildren: 'src/app/device-order/ais/device-order-ais-existing-best-buy/device-order-ais-existing-best-buy.module#DeviceOrderAisExistingBestBuyModule'
+      },
+      {
+        path: 'prepaid-hotdeal',
+        loadChildren: 'src/app/device-order/ais/device-order-ais-existing-prepaid-hotdeal/device-order-ais-existing-prepaid-hotdeal.module#DeviceOrderAisExistingPrepaidHotdealModule'
+      }
     ]
   },
   {
@@ -44,6 +52,10 @@ const routes: Routes = [
       //   path: 'existing',
       //   loadChildren: 'src/app/device-order/asp/device-order-asp-existing.module#DeviceOrderAspExistingModule',
       // }
+      {
+        path: 'best-buy',
+        loadChildren: 'src/app/device-order/asp/device-order-asp-existing-best-buy/device-order-asp-existing-best-buy.module#DeviceOrderAspExistingBestBuyModule'
+      }
     ]
   }
 ];

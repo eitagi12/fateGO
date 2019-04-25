@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Params, Data } from '@angular/router';
+import { ChannelType, TokenService, HomeService } from 'mychannel-shared-libs';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-error-page',
@@ -7,20 +8,29 @@ import { ActivatedRoute, Params, Data } from '@angular/router';
   styleUrls: ['./error-page.component.scss']
 })
 export class ErrorPageComponent implements OnInit {
-
-  routeParams: Params;
-  data: Data;
-
   constructor(
-    private activatedRoute: ActivatedRoute,
+    private homeService: HomeService,
+    private tokenService: TokenService
   ) { }
 
   ngOnInit(): void {
-    this.routeParams = this.activatedRoute.snapshot.queryParams;
-    this.data = this.activatedRoute.snapshot.data;
+  }
+
+  onHome(): void {
+    this.homeService.goToHome();
   }
 
   goToHome(): void {
-    window.location.href = '/smart-shop';
+    const channelType = this.tokenService.getUser().channelType;
+    if (ChannelType.SMART_ORDER === channelType) {
+      window.location.href = '/smart-shop';
+    } else {
+      if (this.tokenService.isTelewizUser()) {
+        window.location.href = environment.CSP_URL;
+      } else {
+        window.location.href = '/';
+      }
+    }
   }
+
 }

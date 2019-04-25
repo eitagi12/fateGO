@@ -1,11 +1,11 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { AuthGuard, I18nService, ApiRequestGuard } from 'mychannel-shared-libs';
+import { AuthGuard, ApiRequestGuard, I18nService } from 'mychannel-shared-libs';
 import { ErrorPageComponent } from './containers/error-page/error-page.component';
 
 const routes: Routes = [
   {
-    path: '', redirectTo: 'dashboard', pathMatch: 'full'
+    path: '', redirectTo: 'main-menu', pathMatch: 'full'
   },
   {
     path: 'dashboard',
@@ -18,17 +18,21 @@ const routes: Routes = [
   {
     path: 'buy-product',
     loadChildren: 'src/app/buy-product/buy-product.module#BuyProductModule',
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard, ApiRequestGuard]
   },
   {
     path: 'stock',
     loadChildren: 'src/app/stock/stock.module#StockModule',
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard, ApiRequestGuard]
   },
   {
     path: 'device-order',
     loadChildren: 'src/app/device-order/device-order.module#DeviceOrderModule',
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard, ApiRequestGuard],
+    resolve: {
+      i18n: I18nService
+    }
+
   },
   {
     path: 'order',

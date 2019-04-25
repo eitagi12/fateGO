@@ -22,6 +22,9 @@ export class BrandPageComponent implements OnInit {
   productSearch: any;
   datasource: Observable<any>;
 
+  bastSellerService: Promise<any>;
+  brandsOfProductService: Promise<any>;
+
   @ViewChild('brandTabs')
   brandTabs: TabsetComponent;
 
@@ -115,17 +118,21 @@ export class BrandPageComponent implements OnInit {
   private callService(): void {
     const locationCode = this.tokenService.getUser().locationCode;
 
-    Promise.all([
-      this.salesService.baseSeller(locationCode),
-      this.salesService.brandsOfProduct(locationCode)
-    ]).then((values: any[]) => {
-      this.bannerSliders = this.mapBannerSliders(values[0].data);
-      this.brands = values[1].data;
+    this.bastSellerService = this.salesService.baseSeller(locationCode);
+    this.bastSellerService.then((resp: any) => {
+      this.bannerSliders = this.mapBannerSliders(resp.data);
+    });
+
+    this.brandsOfProductService = this.salesService.brandsOfProduct(locationCode);
+    this.brandsOfProductService.then((resp: any) => {
+      this.brands = resp.data || [];
     });
   }
 
   private mapBannerSliders(bestSellers: BestSeller[]): BannerSlider[] {
-    return bestSellers.map((bestSeller: BestSeller) => {
+    return bestSellers.sort((a: any, b: any) => {
+      return a.priority - b.priority;
+    }).map((bestSeller: BestSeller) => {
       const ribbonType = (bestSeller.itemType || '').toLowerCase();
       const ribbon = ['hot', 'new'].find((rib: string) => rib === ribbonType);
       return ({

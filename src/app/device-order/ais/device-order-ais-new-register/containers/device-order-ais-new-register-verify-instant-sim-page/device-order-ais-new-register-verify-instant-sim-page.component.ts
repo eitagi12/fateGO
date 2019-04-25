@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { SimSerial, HomeService, AlertService, PageLoadingService } from 'mychannel-shared-libs';
+import { SimSerial, HomeService, AlertService, PageLoadingService, ShoppingCart, SimSerialComponent } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
+
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import {
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_SELECT_NUMBER_PAGE,
@@ -9,7 +10,10 @@ import {
 } from 'src/app/device-order/ais/device-order-ais-new-register/constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
+import { environment } from 'src/environments/environment';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-device-order-ais-new-register-verify-instant-sim-page',
@@ -23,54 +27,74 @@ export class DeviceOrderAisNewRegisterVerifyInstantSimPageComponent implements O
   transaction: Transaction;
   simSerial: SimSerial;
   simSerialValid: boolean;
+  shoppingCart: ShoppingCart;
+  mcSimSerial: SimSerialComponent;
+  translationSubscribe: Subscription;
 
   constructor(
     private router: Router,
     private homeService: HomeService,
-    private alertService: AlertService,
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
+    private alertService: AlertService,
     private http: HttpClient,
-    private translation: TranslateService
+    private shoppingCartService: ShoppingCartService,
+    private translationService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
+    this.translationSubscribe = this.translationService.onLangChange.subscribe(lang => {
+      this.mcSimSerial.focusInput();
+    });
+
   }
 
   ngOnInit(): void {
     delete this.transaction.data.simCard;
+
+    this.shoppingCart = Object.assign(this.shoppingCartService.getShoppingCartData(), {
+      mobileNo: ''
+    });
   }
 
   onCheckSimSerial(serial: string): void {
-    this.pageLoadingService.openLoading();
-    this.http.get(`/api/customerportal/newRegister/${serial}/queryMobileBySim`).toPromise()
-      .then((resp: any) => {
-        const simSerial = resp.data || [];
-
-        if (simSerial.mobileStatus === 'Registered') {
-          this.simSerialValid = false;
-          const noStatus = this.translation.instant('หมายเลข');
-          this.alertService.error( noStatus + serial + this.translation.instant('มีผู้ใช้งานแล้ว กรุณาเลือกหมายเลขใหม่'));
-          return;
-        } else if (simSerial.mobileStatus !== 'Registered' && simSerial.mobileStatus !== 'Reserved') {
-          this.simSerialValid = false;
-          const noStatus = this.translation.instant('หมายเลข');
-          this.alertService.error(noStatus + serial + this.translation.instant('ไม่พร้อมทำรายการ กรุณาเลือกหมายเลขใหม่'));
-          return;
+    let validateVerifyInstantSim;
+    if (environment.name === 'LOCAL' && serial === '9999999999999') {
+      validateVerifyInstantSim = Promise.resolve({
+        data: {
+          mobileNo: '0999999999'
         }
-        this.simSerialValid = true;
-        this.simSerial = {
-          mobileNo: simSerial.mobileNo,
-          simSerial: serial
-        };
-        this.transaction.data.simCard = {
-          mobileNo: this.simSerial.mobileNo,
-          simSerial: this.simSerial.simSerial,
-          persoSim: false
-        };
-      })
-      .then(() => {
-        this.pageLoadingService.closeLoading();
       });
+    } else {
+      validateVerifyInstantSim = this.http.get(`/api/customerportal/validate-verify-instant-sim?serialNo=${serial}`).toPromise();
+    }
+
+    this.pageLoadingService.openLoading();
+    validateVerifyInstantSim.then((resp: any) => {
+      const simSerial = resp.data || {};
+      this.simSerialValid = true;
+      this.simSerial = {
+        mobileNo: simSerial.mobileNo,
+        simSerial: serial
+      };
+      this.transaction.data.simCard = {
+        mobileNo: this.simSerial.mobileNo,
+        simSerial: this.simSerial.simSerial,
+        persoSim: false
+      };
+      this.shoppingCart = Object.assign(this.shoppingCart, {
+        mobileNo: simSerial.mobileNo
+      });
+      this.pageLoadingService.closeLoading();
+    }).catch((resp: any) => {
+      this.simSerialValid = false;
+      this.simSerial = undefined;
+      const error = resp.error || [];
+      this.pageLoadingService.closeLoading();
+      this.alertService.notify({
+        type: 'error',
+        html: this.translationService.instant(error.resultDescription.replace(/<br>/, ' '))
+      });
+    });
   }
 
   onBack(): void {

@@ -8,6 +8,8 @@
     ]
   },
   "exclude": [
+    "setupJest.ts",
+    "setupTestBed.ts",
     "src/test.ts",
     "**/*.spec.ts"
   ]

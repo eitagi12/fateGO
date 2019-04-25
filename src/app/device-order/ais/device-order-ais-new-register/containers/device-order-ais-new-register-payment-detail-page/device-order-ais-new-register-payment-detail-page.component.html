@@ -1,58 +1,27 @@
 <div class="mc-flex">
-  <mc-header title="รายการสินค้า">
-    <div class="header-icon-left">
+  <mc-header title="{{ 'เครื่องพร้อมเปิดเบอร์ใหม่' | translate }}">
+    <div class="header-icon-left  w-25">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
-    <div class="header-icon-right">
+    <div class="header-icon-right w-25 text-right">
+      <mc-dropdown-language></mc-dropdown-language>
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
   <div class="mc-flex-wrap">
-    <div class="mt-3">
+    <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
+
+    <div class="my-3">
       <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
 
-      <div class="container-fluid">
-        <div class="card mb-3">
-          <div class="card-header text-light-green bg-transparent">
-            แพ็กเกจชำระล่วงหน้า
-            <span class="pull-right">฿ {{ 1070 | number: '1.2-2' }}</span>
-          </div>
-          <div class="card-body">
-            <form>
-              <div class="form-group row">
-                <div class="col-12 col-sm-3">
-                  <input class="form-check-input" type="radio" name="pay-advance" id="pay-advance-credit" value="option2">
-                  <label class="form-check-label" for="pay-advance-credit">
-                    ชำระเงินด้วยเงินสด
-                  </label>
-                </div>
-                <div class="col-12 col-sm-9">
-                  <input type="text" readonly class="form-control-plaintext" id="staticEmail" value="เต็มจำนวน">
-                </div>
-              </div>
-              <div class="form-group row">
-                <div class="col-12 col-sm-3">
-                  <input class="form-check-input" type="radio" name="pay-advance" id="pay-advance-debit" value="option2">
-                  <label class="form-check-label" for="pay-advance-debit">
-                    ชำระเงินด้วยบัตรเครดิต
-                  </label>
-                </div>
-                <div class="col-12 col-sm-9">
-                  <select id="inputState" class="form-control" disabled >
-                    <option selected>เต็มจำนวน</option>
-                    <option>ผ่อนชำระ</option>
-                  </select>
-                </div>
-              </div>
-            </form>
-          </div>
-        </div>
-      </div>
-      <mc-receipt-info [receiptInfo]="receiptInfo"></mc-receipt-info>
+      <mc-payment-detail [paymentDetail]="payementDetail" [banks]="banks" (completed)="onPaymentCompleted($event)" (error)="onPaymentError($event)">
+      </mc-payment-detail>
+
+      <mc-receipt-info [receiptInfo]="receiptInfo" (completed)="onReceiptInfoCompleted($event)" (error)="onReceiptInfoError($event)"></mc-receipt-info>
     </div>
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()">NEXT</button>
+    <button class="btn btn-success" [disabled]="!isNext()" (click)="onNext()">NEXT</button>
   </mc-footer>
 </div>

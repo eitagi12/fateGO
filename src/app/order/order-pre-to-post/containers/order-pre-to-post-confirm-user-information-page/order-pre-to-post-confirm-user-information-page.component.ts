@@ -47,6 +47,7 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
     private translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
+
     // pre-to-post profile not found.
     if (!this.transaction.data.billingInformation) {
       this.transaction.data.billingInformation = {};

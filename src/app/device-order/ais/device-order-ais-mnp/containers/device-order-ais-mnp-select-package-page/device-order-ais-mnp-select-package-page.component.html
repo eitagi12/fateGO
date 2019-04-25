@@ -1,0 +1,76 @@
+<div class="mc-flex">
+  <mc-header title="ลูกค้าย้ายค่าย">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
+    <div class="my-3">
+      <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
+      <div [hidden]="promotionShelves?.length === 0">
+        <div class="container-fluid">
+          <div class="bg-white p-3">
+            <img src="assets/images/icon/package-info.png" class="icon-package-info" />
+            ข้อมูลแพ็กเกจ
+          </div>
+          <div class="bg-white">
+            <div class="container-fluid">
+              <div class="card mb-3" *ngIf="showCurrentPackage">
+                <div class="card-header bg-green text-white">
+                  แพ็กเกจปัจจุบัน
+                </div>
+                <div class="card-body">
+                    <div class="pull-left text-green mt-3">
+                      {{ transaction?.data?.currentPackage?.title }}
+                    </div>
+                  <div *ngIf="showSelectCurrentPackage" class="pull-right">
+                      <input type="radio" id="current-package" name="current-package" [checked]="selectCurrentPackage" (click)="onClickCurrentPackage()">
+                  <label for="current-package">
+                    ใช้แพ็กเกจเดิม
+                  </label>
+                  </div>
+                  <div class="d-inline-block mt-3">
+                      <p> {{ transaction?.data?.currentPackage?.inStatementThai }}</p>
+                      <p> {{ transaction?.data?.currentPackage?.expiredDate }}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="card"> 
+                <div class="card-header bg-green text-white mb-2">
+                  เลือกแพ็กเกจใหม่ <span>(แพ็กเกจเริ่มต้น {{ priceOption?.privilege?.minimumPackagePrice }} บาท)</span>
+                </div>
+                <mc-promotion-shelve [selected]="transaction?.data?.mainPackage" [promotionShelves]="promotionShelves"
+                (completed)="onCompleted($event)"></mc-promotion-shelve>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="text-center my-5" *ngIf="promotionShelves?.length === 0">ไม่พบแพ็กเกจที่ร่วมรายการ</p>
+    </div>
+  </div>
+  <mc-footer>
+    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="(!(!!transaction?.data?.mainPackage) && showSelectCurrentPackage && !selectCurrentPackage) 
+    || (!(!!transaction?.data?.mainPackage) && !showSelectCurrentPackage && !selectCurrentPackage)">NEXT</button>
+  </mc-footer>
+</div>
+
+<ng-template #conditionTemplate>
+  <div class="modal-header bg-transparent">
+    <h5 class="modal-title pull-left text-green w-100 text-center">Term & Conditions</h5>
+    <button type="button" class="close pull-right" aria-label="Close" (click)="modalRef.hide()">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+  <div class="modal-body" [innerHTML]="condition?.conditionText"></div>
+  <div class="modal-footer">
+    <div class="w-100 text-center">
+      <button class="btn btn-success px-5" (click)="modalRef.hide()">OK</button>
+    </div>
+  </div>
+</ng-template>

@@ -89,7 +89,7 @@ export class DepositPaymentSummaryComponent implements OnInit {
     if (mobileNo) {
       firstThreeDigitMobileNo = mobileNo.substring(0, 3);
       lastForthDigitMobileNo = mobileNo.substring(6, 10);
-      return result = firstThreeDigitMobileNo + 'XXX' + lastForthDigitMobileNo;
+      return result = (firstThreeDigitMobileNo + 'XXX' + lastForthDigitMobileNo).toUpperCase();
     }
   }
 }

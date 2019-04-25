@@ -154,7 +154,7 @@ export class CreateDeviceOrderService {
       paymentRemark: this.getPaymentRemark(transaction , priceOption),
       // installmentTerm: payment && payment.bank ? payment.bank.installments[0].installmentMonth : 0,
       // installmentRate: payment && payment.bank ? payment.bank.installments[0].installmentPercentage : 0,
-      mobileAisFlg: 'Y',
+      mobileAisFlg: this.localStorageService.load('CustomerFlag').value,
       paymentMethod: payment.paymentMethod,
       // bankCode: this.getBankCode(payment, advancePayment),
       tradeFreeGoodsId: '',

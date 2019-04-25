@@ -1,13 +1,27 @@
 import { Component, OnInit, TemplateRef, ViewChild, OnDestroy } from '@angular/core';
 import { ActivatedRoute, Params, Router } from '@angular/router';
-import { BsModalService, BsModalRef, TabsetComponent } from 'ngx-bootstrap';
-import { forkJoin } from 'rxjs';
-import { SalesService, TokenService, HomeService, User, CampaignSliderInstallment, CampaignSlider } from 'mychannel-shared-libs';
-import { PRODUCT_TYPE, PRODUCT_SUB_TYPE, SUB_STOCK_DESTINATION, PRODUCT_HANDSET_BUNDLE } from 'src/app/buy-product/constants/products.constants';
-import { ROUTE_BUY_PRODUCT_PRODUCT_PAGE } from 'src/app/buy-product/constants/route-path.constant';
-import { AddToCartService } from 'src/app/buy-product/services/add-to-cart.service';
+import { BsModalService, BsModalRef } from 'ngx-bootstrap';
+import { FormBuilder, FormGroup } from '@angular/forms';
+import { forkJoin } from 'rxjs/internal/observable/forkJoin';
+import { debounceTime } from 'rxjs/internal/operators/debounceTime';
+import {
+    SalesService, TokenService, HomeService, User,
+    CampaignSliderInstallment, PromotionShelve,
+    PageLoadingService, BillingSystemType, AlertService
+} from 'mychannel-shared-libs';
+import {
+    PRODUCT_TYPE, PRODUCT_SUB_TYPE,
+    SUB_STOCK_DESTINATION, PRODUCT_HANDSET_BUNDLE
+} from 'src/app/buy-product/constants/products.constants';
+import {
+    ROUTE_BUY_PRODUCT_PRODUCT_PAGE
+} from 'src/app/buy-product/constants/route-path.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { PromotionShelveService } from 'src/app/device-order/services/promotion-shelve.service';
+import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
+import { Transaction } from 'src/app/shared/models/transaction.model';
+import { FlowService, CustomerGroup } from '../../services/flow.service';
 
 @Component({
     selector: 'app-campaign',
@@ -19,46 +33,102 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     @ViewChild('productSpecTemplate')
     productSpecTemplate: TemplateRef<any>;
 
+    @ViewChild('promotionShelveTemplate')
+    promotionShelveTemplate: TemplateRef<any>;
+
+    @ViewChild('installmentTemplate')
+    installmentTemplate: TemplateRef<any>;
+
+    colorForm: FormGroup;
+
+    user: User;
     // local storage name
+    transaction: Transaction;
     priceOption: PriceOption;
+
+    maximumNormalPrice: number;
+    thumbnail: string;
 
     modalRef: BsModalRef;
     params: Params;
     hansetBundle: string;
     productDetail: any;
     productSpec: any;
+    selectCustomerGroup: any;
 
     // campaign
     tabs: any[];
-    campaignSliders: CampaignSlider[];
-    priceOptions: any;
+    // campaignSliders: CampaignSlider[];
+    promotionShelves: PromotionShelve[];
+    installments: CampaignSliderInstallment[];
 
     // trade
+    productDetailService: Promise<any>;
+    priceOptionDetailService: Promise<any>;
+    packageDetailService: Promise<any>;
+    isAdvancePay: boolean;
+
     constructor(
+        private fb: FormBuilder,
         private modalService: BsModalService,
         private router: Router,
         private activatedRoute: ActivatedRoute,
         private salesService: SalesService,
         private tokenService: TokenService,
         private homeService: HomeService,
-        private addToCartService: AddToCartService,
-        private priceOptionService: PriceOptionService
+        private flowService: FlowService,
+        private priceOptionService: PriceOptionService,
+        private pageLoadingService: PageLoadingService,
+        private promotionShelveService: PromotionShelveService,
+        private alertService: AlertService
     ) {
-      this.priceOption = this.priceOptionService.load();
+        this.priceOption = {};
+        this.transaction = {};
+        this.priceOptionService.remove();
+        this.user = this.tokenService.getUser();
     }
 
     ngOnInit(): void {
-      this.activatedRoute.queryParams.subscribe((params: any) => {
-        this.params = params;
-        this.callService(
-          params.brand, params.model,
-          params.productType, params.productSubtype
-        );
-      });
+        this.createForm();
+
+        this.activatedRoute.queryParams.subscribe((params: any) => {
+            this.params = params;
+            this.callService(
+                params.brand, params.model,
+                params.productType, params.productSubtype
+            );
+        });
+    }
+
+    createForm(): void {
+        this.clearPriceOption();
+        this.colorForm = this.fb.group({
+            'stock': []
+        });
+
+        this.colorForm.valueChanges.pipe(debounceTime(1000)).subscribe(obs => {
+            const stock = obs.stock;
+            this.priceOption.productStock = stock;
+
+            const product = (this.priceOption.productDetail.products || []).find((p: any) => {
+                return p.colorName === stock.color;
+            });
+            this.thumbnail = product && product.images ? product.images.thumbnail : '';
+
+            this.clearPriceOption();
+            this.callPriceOptionsService(
+                this.params.brand,
+                this.params.model,
+                stock.color,
+                this.params.productType,
+                this.params.productSubtype
+            );
+        });
     }
 
     onBack(): void {
         if (this.priceOption && this.priceOption.campaign) {
+            this.priceOption.customerGroup = null;
             this.priceOption.campaign = null;
             return;
         }
@@ -80,8 +150,283 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         this.homeService.goToHome();
     }
 
+    onCheckStock($event: any, stock: any): void {
+        if (stock && stock.qty <= 0) {
+            $event.preventDefault();
+        }
+    }
+
+    getProductSpecification(brand: string, model: string): void {
+        const modalOptions = { class: 'modal-lg' };
+        if (this.productSpec) {
+            this.modalRef = this.modalService.show(this.productSpecTemplate, modalOptions);
+            return;
+        }
+
+        const user: User = this.tokenService.getUser();
+        this.pageLoadingService.openLoading();
+        this.salesService.productSpecification({
+            brand: brand || '',
+            model: model || '',
+            location: user.locationCode
+        }).then((resp: any) => {
+            const data: any[] = resp.data || [];
+
+            this.productSpec = data.reduce((previousValue: any, currentValue: any) => {
+                previousValue[currentValue.name] = currentValue.value;
+                return previousValue;
+            }, {});
+
+            this.modalRef = this.modalService.show(this.productSpecTemplate, modalOptions);
+        })
+            .then(() => this.pageLoadingService.closeLoading());
+    }
+
+    onProductStockSelected(product: any): void {
+        if (product && product.stock && product.stock.qty <= 0) {
+            return;
+        }
+        // clear tabs
+        this.tabs = null;
+        // clear data local storage
+        this.clearPriceOption();
+
+        // keep stock
+        this.priceOption.productStock = null;
+
+        // change value form
+        this.colorForm.patchValue({
+            stock: product.stock
+        });
+    }
+
+    clearPriceOption(): void {
+        this.priceOption.customerGroup = null;
+        this.priceOption.campaign = null;
+        this.priceOption.trade = null;
+    }
+
+    /* กรองค่า campaign ให้แสดงตาม tab, user, etc ที่นี้ */
+    filterCampaigns(priceOptions: any[]): any[] {
+        return priceOptions.filter((campaign: any) => {
+            // Filter here ...
+            if (campaign.promotionFlag !== 'Y') {
+                return false;
+            }
+
+            switch (campaign.code) {
+                case 'AISHOTDEAL_PREPAID_LOTUS':
+                // case 'AISHOTDEAL_PREPAID':
+                case 'PREBOOKING':
+                case 'LOTUS':
+                    return false;
+            }
+
+            return true;
+        });
+    }
+
+    /* กรองค่า privilege ใน campaign ที่ถูก filterCampaigns ให้แสดงตาม tab, user, etc ที่นี้ */
+    filterPrivileges(privileges: any[], code: string): any[] {
+        return privileges.filter((privilege: any) => {
+            return privilege.customerGroups.find(customerGroup => {
+                return customerGroup.code === code;
+            });
+        });
+    }
+
+    /* กรองค่า trades ใน privilege ที่ถูก filterPrivileges ให้แสดงตาม tab, user, etc ที่นี้ */
+    filterTrades(trades: any[], code: string): any[] {
+        return trades.filter((trade: any) => {
+            return trade.customerGroups.find(
+                customerGroup => customerGroup.code === code
+            );
+        }).filter((trade: any) => {
+            const payment = (trade.payments || []).find(p => p.method !== 'PP') || {};
+            if (payment.method !== 'CC') {
+                return true;
+            } else { // Trade เป็นผ่อนชำระ ต้องมี installment
+                return (trade.banks || []).find((bank: any) => bank.installment);
+            }
+        });
+    }
+
+    getCampaignSliders(priceOptions: any[], code: string): any[] {
+        return priceOptions
+            .filter((campaign: any) => {
+                let allowCampaign: boolean = !!campaign.customerGroups.find(
+                    group => group.code === code
+                );
+
+                const campaignCode: string = campaign.code;
+
+                // Allow campaing flow existing only
+                if (this.flowService.isCampaignPrepaid(campaignCode)) {
+                    allowCampaign = allowCampaign && CustomerGroup.EXISTING === code;
+                }
+
+                // Not allow prebooking
+                if (this.flowService.isCampaignPrebooking(campaignCode)) {
+                    allowCampaign = false;
+                }
+
+                return allowCampaign;
+            }).map((campaign: any) => {
+                // filter privilege and trades
+                const privileges = this.filterPrivileges(
+                    campaign.privileges, code
+                ).map((privilege: any) => {
+                    privilege.trades = this.filterTrades(privilege.trades, code);
+                    return privilege;
+                }).sort((a, b) =>
+                    // แพคเกจน้อยไปมาก
+                    (+a.minimumPromotionPrice) - (+b.minimumPromotionPrice)
+                );
+
+                const campaignFromFilter = Object.assign(
+                    Object.assign({}, campaign),
+                    { privileges: privileges }
+                );
+
+                const campaignSlider: any = {
+                    thumbnail: campaign.imageUrl,
+                    name: campaign.campaignName,
+                    minPromotionPrice: +campaign.minimumPromotionPrice,
+                    maxPromotionPrice: +campaign.maximumPromotionPrice,
+                    minAdvancePay: +campaign.minimumAdvancePay,
+                    maxAdvancePay: +campaign.maximumAdvancePay,
+                    contract: +campaign.maximumContract,
+                    // ค่าที่จะเก็บจากการเลือก campaign
+                    value: campaignFromFilter
+                };
+
+                campaignSlider.installments = PriceOptionUtils.getInstallmentsFromCampaign(campaignFromFilter);
+
+                campaignSlider.freeGoods = (campaign.freeGoods || []).map(
+                    (freeGood: any) => freeGood.name
+                );
+
+                campaignSlider.discounts = PriceOptionUtils.getDiscountFromCampaign(campaignFromFilter);
+                // Prepaid
+                const isPrepaidFlow = campaign.customerGroups.find(
+                    (customerGroup: any) => customerGroup.flowId === '102'
+                );
+                if (isPrepaidFlow) {
+                    campaignSlider.onTopPackagePrice = +campaign.minimumPackagePrice;
+                } else {
+                    campaignSlider.mainPackagePrice = +campaign.minimumPackagePrice;
+                }
+                return campaignSlider;
+            });
+    }
+
+    getTabsFormPriceOptions(priceOptions: any[]): any[] {
+        const tabs = [];
+        priceOptions.forEach((priceOption: any) => {
+            priceOption.customerGroups.map((customerGroup: any) => {
+                return {
+                    code: customerGroup.code,
+                    name: customerGroup.name,
+                    active: false
+                };
+            }).forEach((group: any) => {
+                if (!tabs.find((tab: any) => tab.code === group.code)) {
+                    tabs.push(group);
+                }
+            });
+        });
+        tabs.sort((a: any, b: any) => {
+            const aCode = +a.code.replace('MC', '');
+            const bCode = +b.code.replace('MC', '');
+            return aCode - bCode;
+        });
+
+        if (tabs.length > 0) {
+            tabs[0].active = true;
+        }
+
+        return tabs;
+    }
+
+    setActiveTabs(tabCode: any): void {
+        this.tabs = this.tabs.map((tabData) => {
+            tabData.active = !!(tabData.code === tabCode);
+            return tabData;
+        });
+    }
+
+    onCampaignSelected(campaign: any, code: string): void {
+        this.priceOption.customerGroup = campaign.customerGroups.find(
+            customerGroup => customerGroup.code === code
+        );
+        this.priceOption.campaign = campaign;
+    }
+
+    onViewPromotionShelve(campaign: any): void {
+        const tabActive = this.tabs.find(tab => tab.active);
+        const params: any = {
+            packageKeyRef: campaign.packageKeyRef,
+            orderType: this.getOrderTypeFromCustomerGroup(this.tabs.find(tab => tab.active))
+        };
+
+        if (tabActive.code === CustomerGroup.NEW_REGISTER) {
+            params.billingSystem = BillingSystemType.IRB;
+        }
+
+        this.pageLoadingService.openLoading();
+        this.promotionShelveService.getPromotionShelve(params).then((promotionShelves: any) => {
+            this.promotionShelves = promotionShelves;
+            this.promotionShelveService.defaultBySelected(this.promotionShelves);
+            this.modalRef = this.modalService.show(this.promotionShelveTemplate, {
+                class: 'modal-lg'
+            });
+        }).then(() => this.pageLoadingService.closeLoading());
+    }
+
+    getOrderTypeFromCustomerGroup(customerGroup: string): string {
+        switch (customerGroup) {
+            case CustomerGroup.NEW_REGISTER:
+                return 'New Registration';
+            case CustomerGroup.PRE_TO_POST:
+                return 'Change Charge Type';
+            case CustomerGroup.MNP:
+                return 'Port - In';
+            case CustomerGroup.EXISTING:
+                return 'Change Service';
+        }
+    }
+
+    onViewInstallments(campaign: any): void {
+        this.installments = PriceOptionUtils.getInstallmentsFromCampaign(campaign);
+        this.modalRef = this.modalService.show(this.installmentTemplate, { class: 'modal-lg' });
+        this.isAdvancePay = this.installments.filter(price => price.advancePay.min > 0 || price.advancePay.max > 0).length > 0;
+    }
+
+    getSummaryPrivilegePrice(privilege: any): number {
+        const advancePay = +(privilege.maximumAdvancePay || privilege.minimumAdvancePay);
+        return (+privilege.maximumPromotionPrice) + advancePay;
+    }
+
+    onViewInstallmentsFormTrede(trade: any): void {
+        this.installments = PriceOptionUtils.getInstallmentsFromTrades([trade]);
+        this.modalRef = this.modalService.show(this.installmentTemplate, { class: 'modal-lg' });
+    }
+
+    onTradeSelected(privilege: any, trade: any): void {
+        this.priceOption.privilege = privilege;
+        this.priceOption.trade = trade;
+
+        this.pageLoadingService.openLoading();
+        this.flowService.nextUrl(this.priceOption)
+            .then((nextUrl: string) => {
+                this.router.navigate([nextUrl]);
+            })
+            .catch((error: string) => this.alertService.error(error))
+            .then(() => this.pageLoadingService.closeLoading());
+    }
+
     /* product stock */
-    private callService(
+    callService(
         brand: string, model: string,
         productType?: string, productSubtype?: string): void {
         const user: User = this.tokenService.getUser();
@@ -90,13 +435,17 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         this.hansetBundle = `${productSubtype === PRODUCT_HANDSET_BUNDLE ? '(แถมชิม)' : ''}`;
         this.productDetail = {};
 
-        this.salesService.productDetail({
+        this.productDetailService = this.salesService.productDetail({
             brand: brand,
             location: user.locationCode,
             model: model,
             productType: productType || PRODUCT_TYPE,
             productSubtype: productSubtype || PRODUCT_SUB_TYPE
-        }).then((resp: any) => {
+        });
+        this.productDetailService.then((resp: any) => {
+
+            // เก็บข้อมูลไว้ไปแสดงหน้าอื่นโดยไม่เปลี่ยนแปลงค่าข้างใน
+            this.priceOption.productDetail = resp.data || {};
 
             const products: any[] = resp.data.products || [];
             forkJoin(products.map((product: any) => {
@@ -132,7 +481,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
                 // default selected
                 let defaultProductSelected;
-
                 if (this.priceOption.productStock && this.priceOption.productStock.colorName) {
                     defaultProductSelected = this.priceOption.productStock;
                 } else {
@@ -150,232 +498,31 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         });
     }
 
-    getProductSpecification(brand: string, model: string): void {
-        const modalOptions = { class: 'modal-lg' };
-        if (this.productSpec) {
-            this.modalRef = this.modalService.show(this.productSpecTemplate, modalOptions);
-            return;
-        }
+    callPriceOptionsService(brand: string, model: string, color: string, productType: string, productSubtype: string): void {
 
-        const user: User = this.tokenService.getUser();
-        this.salesService.productSpecification({
-            brand: brand || '',
-            model: model || '',
-            location: user.locationCode
-        }).then((resp: any) => {
-            const data: any[] = resp.data || [];
-
-            this.productSpec = data.reduce((previousValue: any, currentValue: any) => {
-                previousValue[currentValue.name] = currentValue.value;
-                return previousValue;
-            }, {});
-
-            this.modalRef = this.modalService.show(this.productSpecTemplate, modalOptions);
-        });
-    }
-
-    onProductStockSelected(product: { colorName: string; }): void {
-        if (this.priceOption.productStock &&
-            this.priceOption.productStock.colorName !== product.colorName) {
-            this.priceOption.campaign = null;
-            this.priceOption.trade = null;
-        }
-
-        this.priceOption.productStock = product;
-
-        this.callPriceOptionsService(
-            this.params.brand, this.params.model,
-            product.colorName, this.params.productType,
-            this.params.productSubtype
-        );
-    }
-
-    /* campaign */
-    private callPriceOptionsService(brand: string, model: string, color: string, productType: string, productSubtype: string): void {
-        const user: User = this.tokenService.getUser();
-        this.salesService.priceOptions({
+        this.priceOptionDetailService = this.salesService.priceOptions({
             brand: brand,
             model: model,
             color: color,
             productType: productType,
             productSubtype: productSubtype,
-            location: user.locationCode
-        }).then((resp: any) => {
-            this.priceOptions = this.filterPriceOptions(resp.data.priceOptions || []);
-            // init tab
-            this.initialTabs(this.priceOptions);
+            location: this.user.locationCode
         });
-    }
-
-    private filterPriceOptions(priceOptions: any[]): any {
-        return priceOptions.filter((campaign: any) => {
-            // Filter here ...
-            if (campaign.promotionFlag !== 'Y') {
-                return false;
+        this.priceOptionDetailService.then((resp: any) => {
+            const priceOptions = this.filterCampaigns(resp.data.priceOptions || []);
+            if (priceOptions && priceOptions.length > 0) {
+                this.maximumNormalPrice = priceOptions[0].maximumNormalPrice;
             }
-
-            let allowPriceOption = true;
-            // PREBOOKING === flowId
-            if ('PREBOOKING' === campaign.code) {
-                allowPriceOption = this.params.campaignCode === 'PREBOOKING';
-            }
-
-            if ('LOTUS' === campaign.code) {
-                allowPriceOption = this.params.campaignCode === 'AISHOTDEAL_PREPAID_LOTUS';
-            }
-
-            return allowPriceOption;
-        });
-    }
-
-    private initialTabs(priceOptions: any[]): void {
-        this.tabs = [];
-
-        priceOptions.forEach((priceOption: any) => {
-            priceOption.customerGroups.map((customerGroup: any) => {
-                return {
-                    code: customerGroup.code,
-                    name: customerGroup.name,
-                    active: false
-                };
-            }).forEach((group: any) => {
-                if (!this.tabs.find((tab: any) => tab.code === group.code)) {
-                    this.tabs.push(group);
-                }
+            // generate customer tabs
+            this.tabs = this.getTabsFormPriceOptions(priceOptions);
+            this.tabs.forEach((tab: any) => {
+                tab.campaignSliders = this.getCampaignSliders(priceOptions, tab.code);
             });
-        });
-        // sort by mc001 - mc004
-        this.tabs.sort((a: any, b: any) => {
-            if (a.code === b.code) {
-                return 0;
-            } else if (a.code > b.code) {
-                return 1;
-            } else {
-                return -1;
-            }
-        });
-
-        if (this.tabs.length > 0) {
-            this.onCustomerGroupSelected(this.tabs[0]);
-            setTimeout(() => {
-                this.tabs[0].active = true;
-            }, 250);
-        }
-    }
-
-    private getDiscount(priceOption: any): number {
-        const discounts: number[] = (priceOption.privileges || []).map((privilege: any) => {
-            return (privilege.trades || []).find((trade: any) => {
-                return trade.discount
-                    && trade.discount.specialAmount
-                    && trade.discount.specialType === 'P'
-                    && trade.banks
-                    && trade.banks.length > 0;
-            });
-        }).sort((a, b) => a !== b ? a < b ? -1 : 1 : 0);
-        return discounts ? discounts[0] : 0;
-    }
-
-    private getInstallments(campaign: any): CampaignSliderInstallment[] {
-        const banks: any = [];
-        campaign.privileges.forEach((privilege: any) => {
-            privilege.trades.forEach((trade: any) => {
-                trade.banks.forEach((bank: any) => {
-                    banks.push(bank);
-                });
-            });
-        });
-        const installmentGroups = banks.reduce((previousValue: any, currentValue: any) => {
-            const keys: string[] = (currentValue.installment || '').split(/(%|เดือน)/);
-            const groupKey = `${(keys[0] || '').trim()}-${(keys[2] || '').trim()}`;
-            if (!previousValue[groupKey]) {
-                previousValue[groupKey] = [currentValue];
-            } else {
-                const bankExist = previousValue[groupKey].find((bank: any) => bank.abb === currentValue.abb);
-                if (!bankExist) {
-                    previousValue[groupKey].push(currentValue);
-                }
-            }
-            return previousValue;
-        }, {});
-
-        const installments = [];
-        Object.keys(installmentGroups).forEach((key: string) => {
-            const keys: string[] = key.split('-');
-            // installments.push({
-            //     percentage: +keys[0] || 0,
-            //     month: +keys[1] || 0,
-            //     banks: installmentGroups[key]
-            // });
-        });
-
-        // จ่ายน้อยผ่อนนาน
-        return installments.sort((a: any, b: any) => {
-            return a.month > b.month ? -1 : 1;
-        });
-    }
-
-    onCustomerGroupSelected(customerGroup: any): void {
-        if (!this.priceOptions) {
-            this.campaignSliders = [];
-            return;
-        }
-
-        this.campaignSliders = this.priceOptions
-            .filter((campaign: any) => {
-                // filter campaign by tab
-                return campaign.customerGroups.find((group: any) => group.code === customerGroup.code);
-            }).map((campaign: any) => {
-                // check prepaid flow
-                const prepaid = campaign.customerGroups.find((group: any) => group.flowId === '102');
-
-                const campaignSlider: CampaignSlider = {
-                    thumbnail: campaign.imageUrl,
-                    name: campaign.campaignName,
-                    minPromotionPrice: +campaign.minimumPromotionPrice,
-                    maxPromotionPrice: +campaign.maximumPromotionPrice,
-                    minAdvancePay: +campaign.minimumAdvancePay,
-                    maxAdvancePay: +campaign.maximumAdvancePay,
-                    contract: +campaign.maximumContract,
-                    value: campaign
-                };
-                campaignSlider.installments = this.getInstallments(campaign);
-                campaignSlider.discount = this.getDiscount(campaign);
-                campaignSlider.freeGoods = (campaign.freeGoods || []).map((freeGood: any) => freeGood.name);
-                if (prepaid) {
-                    campaignSlider.onTopPackagePrice = +campaign.minimumPackagePrice;
-                } else {
-                    campaignSlider.mainPackagePrice = +campaign.minimumPackagePrice;
-                }
-
-                return campaignSlider;
-            }).sort((a: any, b: any) => a.price - b.price);
-    }
-
-    onCampaignSelected(campaign: any): void {
-        this.priceOption.campaign = campaign;
-    }
-
-    onPromotionShelve(campaign: any): void {
-        console.log('Selected campaign ', campaign);
-    }
-
-    /* privilege */
-    onTradeSelected(trade: any): void {
-        this.priceOption.trade = trade;
-        this.addToCartService.reserveStock().then((nextUrl) => {
-            console.log('Next url => ', nextUrl);
-            this.router.navigate([nextUrl]);
         });
     }
 
     ngOnDestroy(): void {
-        const queryParams = {};
-        Object.keys(this.params || {}).forEach((key: string) => {
-            queryParams[key] = this.params[key];
-        });
-        this.priceOption.queryParams = queryParams;
-
+        this.priceOption.queryParams = Object.assign({}, this.params);
         this.priceOptionService.save(this.priceOption);
     }
 }

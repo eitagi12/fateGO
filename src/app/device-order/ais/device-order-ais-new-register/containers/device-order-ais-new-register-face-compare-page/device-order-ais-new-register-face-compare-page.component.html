@@ -1,3 +1,51 @@
-<p>
-  device-order-ais-new-register-face-compare-page works!
-</p>
+<div class="mc-flex">
+    <mc-header title="{{ 'เครื่องพร้อมเปิดเบอร์ใหม่' | translate }}">
+    <div class="header-icon-left  w-25">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right w-25 text-right">
+        <mc-dropdown-language></mc-dropdown-language>
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
+    <div class="mb-3 mt-3">
+      <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
+
+      <div class="container-fluid">
+        <div class="row">
+
+          <div class="col-xs-12 col-sm-6 mb-3">
+            <div class="card">
+              <div class="card-header text-center"translate>
+                ข้อมูลใบหน้าจากบัตรประชาชน
+              </div>
+              <div class="card-body">
+                <img [src]="'data:image/png;base64,' + transaction?.data?.customer?.imageReadSmartCard" *ngIf="isReadCard()">
+                <img [src]="'data:image/png;base64,' + transaction?.data?.customer?.imageSmartCard" *ngIf="!isReadCard()">
+              </div>
+            </div>
+          </div>
+
+          <div class="col-xs-12 col-sm-6">
+            <div class="card">
+              <div class="card-header text-center"translate>
+                ข้อมูลใบหน้าจากรูปถ่าย
+              </div>
+              <div class="card-body">
+                <img [src]="'data:image/png;base64,' + transaction?.data?.faceRecognition?.imageFaceUser">
+              </div>
+            </div>
+          </div>
+
+
+        </div>
+      </div>
+    </div>
+  </div>
+  <mc-footer>
+    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button class="btn btn-success" (click)="onNext()">NEXT</button>
+  </mc-footer>
+</div>

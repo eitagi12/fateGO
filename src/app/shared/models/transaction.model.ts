@@ -9,6 +9,7 @@ export enum TransactionType {
   DEVICE_ORDER_MNP_ASP = 'Port-InASP',
   DEVICE_ORDER_EXISTING_AIS = 'ExistingAIS',
   DEVICE_ORDER_EXISTING_ASP = 'ExistingASP',
+  DEVICE_ORDER_PREPAID_HOTDEAL_AIS = 'PrepaidHotDealAIS',
   // pure
   ORDER_NEW_REGISTER = 'NewRegister',
   ORDER_PRE_TO_POST = 'ConvertPreToPost',
@@ -43,22 +44,47 @@ export interface TransactionData {
   customer?: Customer;
   simCard?: SimCard;
   mainPackage?: MainPackage;
+  currentPackage?: CurrentPackage;
   onTopPackage?: OnTopPackage;
   mainPackageOneLove?: any[];
   mobileCarePackage?: MobileCarePackage;
   faceRecognition?: FaceRecognition;
+  existingMobileCare?: ExistingMobileCare;
   order?: Order;
   reasonCode?: string;
   billingInformation?: BillingInformation;
-  queue?: any;
-  payment?: any;
   seller?: Seller;
+  payment?: any;
+  advancePayment?: Payment;
+  receiptInfo?: ReceiptInfo;
+  queue?: Queue;
+  mpay_payment?: any;
+  preBooking?: Prebooking;
+  discount?: Discount;
+  contract?: Condition;
+  // MPAY
+  mpayPayment?: QrCodePrePostMpayModel;
+  status?: Status;
+  device?: Device;
 }
 
+export interface Condition {
+  conditionCode: string;
+  conditionName?: string;
+  conditionText?: string;
+}
+
+export interface Payment {
+  paymentQrCodeType: 'THAI_QR' | 'LINE_QR';
+  paymentType: 'DEBIT' | 'CREDIT' | 'QR_CODE';
+  paymentForm: 'FULL' | 'INSTALLMENT';
+  paymentBank: any;
+  paymentMethod: any;
+}
 export interface MainPromotion {
-  cammapign: any;
   privilege: any;
   trade: any;
+  campaign: any;
 }
 
 // tslint:disable-next-line:no-empty-interface
@@ -88,7 +114,7 @@ export interface Customer {
   firstNameEn?: string;
   lastNameEn?: string;
   issueDate?: string;
-  expireDate: string;
+  expireDate?: string;
   zipCode?: string;
   mainMobile?: string;
   mainPhone?: string;
@@ -108,6 +134,8 @@ export interface Customer {
   otherPhoneNumber?: string;
   shipaddress?: Recipientinformation;
   selectedLocation?: SelectedLocation;
+  privilegeCode?: string;
+  repi?: boolean;
 
 }
 
@@ -130,6 +158,9 @@ export interface SimCard {
   moblieNoTypeA?: string;
   chargeType?: ChargeType;
   persoSim?: boolean;
+  privilegeCode?: string;
+  nType?: string;
+  mobileNoStatus?: 'Active' | 'Suspended';
 }
 
 export interface MainPackage {
@@ -146,6 +177,11 @@ export interface MainPackage {
   shortNameEng?: string;
   statementEng?: string;
   parameters?: any;
+  [key: string]: any;
+}
+
+export interface CurrentPackage {
+  [key: string]: any;
 }
 
 export interface OnTopPackage {
@@ -166,8 +202,9 @@ export interface FaceRecognition {
 }
 
 export interface Order {
-  orderNo: string;
+  orderNo?: string;
   orderDate?: string;
+  soId?: string;
 }
 
 export interface BillingInformation {
@@ -180,8 +217,12 @@ export interface BillingInformation {
   billCyclesNetExtreme?: BillingAccount[];
   // change value billing
   billCycleData?: BillingAccountData;
-  // send bill devilery address ข้อมูลที่อยู่ที่ถูกแก้ไข
+  // send bill devilery address
   billDeliveryAddress?: Customer;
+  // วันที่มีผลการใช้งาน B: รอบถัดไป D: วันถัดไป I: มีผลทันที
+  overRuleStartDate?: string;
+  // check do createAndChangeBillingAccount Provisioning
+  isNewBAFlag?: boolean;
 }
 
 export interface BillCycle {
@@ -240,7 +281,8 @@ export class ProductImage {
 export class BaseView {
   imageUrl: string;
 }
-export class Seller {
+
+export interface Seller {
   sellerName?: string;
   locationName?: string;
   locationCode?: string;
@@ -291,4 +333,80 @@ export interface ShopEmployeeDetail {
   scName?: string;
   scDesc?: string;
   mobileNo?: string;
+  // flow deposit ใช้ ยังลบไม่ได้
+  employeeId?: string;
+}
+
+export interface ReceiptInfo {
+  branch?: string;
+  buyer: string;
+  buyerAddress: string;
+  taxId?: string;
+  telNo?: string;
+}
+
+export interface Queue {
+  queueNo: string;
+}
+
+export interface ExistingMobileCare {
+  promotionName: string;
+  productClass: string;
+  produuctGroup: string;
+  productPkg: string;
+  productCd: string;
+  endDt?: string;
+  shortNameThai?: string;
+  shortNameEng?: string;
+  startDt?: string;
+  descThai?: string;
+  descEng?: string;
+  inStatementThai?: string;
+  inStatementEng?: string;
+  priceType?: string;
+  productSeq?: string;
+  monthlyFee?: string;
+  crmFlg?: string;
+  paymentMode?: string;
+  priceExclVat?: string;
+  integrationName?: string;
+  flagMain?: string;
+  handSet?: HandSetMobileCare;
+}
+
+export interface HandSetMobileCare {
+  brand?: string;
+  model?: string;
+  color?: string;
+  imei?: string;
+}
+
+export interface Prebooking {
+  preBookingNo: string;
+  depositAmt: string;
+  reserveNo?: string;
+  deliveryDt: string;
+}
+
+export interface Status {
+  code: string;
+  description: string;
+}
+export interface Discount {
+  type: string;
+}
+export interface QrCodePrePostMpayModel {
+  orderId: string;
+  tranDtm?: string;
+  tranId?: string;
+  amount?: number;
+  qrType?: string;
+  status?: string;
+  locationCode?: string;
+  offerId?: string;
+  startDtm?: string;
+}
+
+export interface Device {
+  imei?: string;
 }

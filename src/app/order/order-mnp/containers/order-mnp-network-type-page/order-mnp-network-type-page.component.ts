@@ -2,10 +2,9 @@
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
-  HomeService, PageLoadingService, AlertService,
-  ApiRequestService, REGEX_MOBILE, KioskControls, ValidateCustomerIdCardComponent
+  HomeService, PageLoadingService, AlertService, REGEX_MOBILE
 } from 'mychannel-shared-libs';
 import {
   ROUTE_ORDER_MNP_SELECT_REASON_PAGE
@@ -34,7 +33,6 @@ export class OrderMnpNetworkTypePageComponent implements OnInit, OnDestroy {
     private alertService: AlertService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private apiRequestService: ApiRequestService,
   ) {
     this.homeService.callback = () => {
       window.location.href = '/smart-shop';
@@ -126,9 +124,6 @@ export class OrderMnpNetworkTypePageComponent implements OnInit, OnDestroy {
   }
 
   private createTransaction(): void {
-    // New x-api-request-id
-    this.apiRequestService.createRequestId();
-
     this.transaction = {
       data: {
         transactionType: TransactionType.ORDER_MNP,

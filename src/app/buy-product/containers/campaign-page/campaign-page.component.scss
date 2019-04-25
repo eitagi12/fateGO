@@ -1,40 +1,59 @@
+@import '~mychannel-shared-libs/scss/colors';
+
 .icon-dv,
 .icon {
     width: 40px;
 }
 
+.price{
+    height: 74vh;
+}
 
-.circle-qty {
+input[type=radio], input[type=radio] + label {
+    display: block;
+    padding: 5px;
+}
+
+/* Edit the properties below to change the colors of the un-checked radio button */
+.product-color,
+input[type=radio]+label:before {
+    content: '';
+    border: 2px solid $grey;
     display: inline-block;
-    text-decoration: none;
-    width: 40px;
-    height: 40px;
-    line-height: 40px;
-    font-weight: bold;
-    border-radius: 50%;
-    background-color: white;
-    border: 1px solid #ccc;
-    margin: 5px;
-
-    &.active {
-        box-shadow: 0 0 0 2px #9cc965;
-        border: 5px solid #fff;
-        width: 45px;
-        height: 45px;
-        line-height: 37px;
-    }
+    vertical-align: middle;
+    width: 30px;
+    height: 30px;
+    padding: 2px;
+    line-height: 15px;
+    margin-right: 10px;
+    text-align: center;
+}
+/* Edit the properties below to change the colors of the checked radio button */
+input[type=radio]:checked+label:before {
+    background-image: none;    
+    background-size: 18px;
 }
 
-@media only screen and (min-width: 1024px) {
-    .color-picker {
-        position: absolute;
-        bottom: 65px;
-    }
+input[type=radio]:checked+label {
+    border-color: $lime !important;
 }
 
-.select-color {
-    width: 65px;
-    margin-top: 12px;
+input[type=radio]+label.disabled {
+    cursor: initial;
+    background: #D6D6D6;
+}
+
+input[type=radio]:disabled+label:before {
+    content: '';
+    border: 2px solid #CACACA;    
+}
+
+.product-color {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    border-radius: 15px;
+    border-width: 1px;
 }
 
 .bg-spac {
@@ -54,15 +73,16 @@
         color: #614e47;
         height: 47px;
         background-color: white;
-        border-bottom: 6px solid #BFBFBF;
-        &:not(:last-child) {
+        border-bottom: 3px solid #BFBFBF;
+        /*&:not(:last-child) {*/
             border-right: 1px solid #ccc;
             border: none;
-            border-bottom: 6px solid #BFBFBF;
-        }
+            border-bottom: 5px solid #BFBFBF;
+            height: 153px;
+        /*}*/
 
         &.active {
-            border-bottom: 6px solid #8cc53f;
+            border-bottom: 5px solid #BFBFBF;
         }
 
         .nav-link {       
@@ -70,13 +90,17 @@
             padding: 8px;
             white-space: nowrap;
             overflow: hidden;
-            &.active,
+            border-radius: 0;
             &:hover {
-                border-color: white;        
-                &:hover {
-                    border-color: white;
-                }
+                border-color: transparent;
             }
+            &.active{
+                background-color: $lime;
+                border-color: $lime;        
+                &:hover {
+                    border-color: $lime;
+                }
+            }   
         }
     }
 }
@@ -87,8 +111,37 @@
     margin: 0 10px 0 50px;
 }
 
-@media only screen and (max-width: 425px) {
-    .icon-trade {
-        margin-left: 0;
+[class^=MC] {
+    background-repeat: no-repeat;
+    background-size: 140px;
+    padding-top: 105px;
+    background-position: top;
+}
+
+.MC001{
+    background-image : url('/assets/images/icon/MC001.png');
+    &.active {
+        background-image : url('/assets/images/icon/MC001-active.png');
+    }
+}
+
+.MC002{
+    background-image : url('/assets/images/icon/MC002.png');
+    &.active {
+        background-image : url('/assets/images/icon/MC002-active.png');
+    }
+}
+
+.MC003{
+    background-image : url('/assets/images/icon/MC003.png');
+    &.active {
+        background-image : url('/assets/images/icon/MC003-active.png');
+    }
+}
+
+.MC004{
+    background-image : url('/assets/images/icon/MC004.png');
+    &.active {
+        background-image : url('/assets/images/icon/MC004-active.png');
     }
 }

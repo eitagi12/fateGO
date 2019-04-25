@@ -56,6 +56,7 @@ export class OrderPreToPostCurrentInfoPageComponent implements OnInit, OnDestroy
 
   ngOnInit(): void {
     this.mobileNo = this.transaction.data.simCard.mobileNo;
+
     this.pageLoadingService.openLoading();
 
     this.http.get(`/api/customerportal/greeting/${this.mobileNo}/profile`).toPromise()
@@ -89,17 +90,20 @@ export class OrderPreToPostCurrentInfoPageComponent implements OnInit, OnDestroy
   }
 
   onNext(): void {
+
     const action = this.transaction.data.action;
 
     if (action === TransactionAction.KEY_IN || action === TransactionAction.READ_CARD || action === TransactionAction.READ_PASSPORT) {
 
       this.pageLoadingService.openLoading();
+
       this.http.get('/api/customerportal/validate-customer-mobile-no-pre-to-post', {
         params: {
           mobileNo: this.mobileNo
         }
       }).toPromise()
         .then((resp: any) => {
+
           this.transaction.data.simCard = { mobileNo: this.mobileNo, persoSim: false };
           this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CUSTOMER_INFO_PAGE]);
           this.pageLoadingService.closeLoading();

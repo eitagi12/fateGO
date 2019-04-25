@@ -1,0 +1,17 @@
+<div class="mc-flex bg-white">
+  <div class="container">
+    <div class="mt-5 mb-3">
+      <h2 class="text-center m-0">กรุณาเลือกทำรายการ</h2>
+      <img src="assets/svg/ico-line.svg">
+    </div>
+
+    <div class="row">
+      <div class="col-6 text-center mb-5" *ngFor="let menu of menus">
+        <a href="#" [routerLink]="menu?.link" class="text-grey">
+          <img [src]="menu?.icon" class="img-fluid" />
+          <h3>{{ menu?.text }}</h3>
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
