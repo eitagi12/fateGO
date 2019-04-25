@@ -38,21 +38,20 @@
             <div>ของผู้ให้บริการ เพื่อชำระค่าสินค้าและบริการ</div>
           </div>
 
-          <div [mcLoading]="mcLoadingQrcodePaymentService" class="qr-code border bg-white mb-3">
-            <div class="qr-code border bg-white mb-3">
-              <ng-container *ngIf="isQRCode('THAI_QR')">
-                <img src="assets/images/icon/th_qr_code_branner.png" class="d-block w-100" />
-                <div class="mt-2">
-                  <img src="assets/images/icon/prompt-pay.png" class="d-block w-25 m-auto" />
-                </div>
-              </ng-container>
-              <ng-container *ngIf="isQRCode('LINE_QR')">
-                <img src="assets/images/icon/line_qr_code_branner.png" class="d-block w-100" />
-                <div class="mt-2"></div>
-              </ng-container>
-              <div>
-                <img [src]="qrCode" class="w-100 d-block m-auto" alt="QR CODE ERROR" />
+
+          <div class="qr-code border bg-white mb-3">
+            <ng-container *ngIf="isQRCode('THAI_QR')">
+              <img src="assets/images/icon/th_qr_code_branner.png" class="d-block w-100" />
+              <div class="mt-2">
+                <img src="assets/images/icon/prompt-pay.png" class="d-block w-25 m-auto" />
               </div>
+            </ng-container>
+            <ng-container *ngIf="isQRCode('LINE_QR')">
+              <img src="assets/images/icon/line_qr_code_branner.png" class="d-block w-100" />
+              <div class="mt-2"></div>
+            </ng-container>
+            <div>
+              <img [src]="qrCode" class="w-100 d-block m-auto" alt="QR CODE ERROR" />
             </div>
           </div>
           <div class="text-center">

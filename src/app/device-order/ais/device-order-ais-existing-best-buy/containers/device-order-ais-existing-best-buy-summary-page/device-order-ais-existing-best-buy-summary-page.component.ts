@@ -86,14 +86,13 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
         .then((emResponse: any) => {
           if (emResponse && emResponse.data) {
             const emId = emResponse.data.pin;
-            this.seller.sellerNo = emId;
+            this.sellerCode = emId;
           }
         }).catch(() => {
-          this.seller.sellerNo = '';
+          this.sellerCode = '';
         });
-    });
+    }).then(() => this.createForm());
     this.createForm();
-
   }
 
   onHome(): void {
@@ -138,8 +137,9 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
       checkSeller: ['', Validators.compose([Validators.required, Validators.pattern(/^[0-9]+$/)])]
     });
 
-    if (this.seller && this.seller.sellerNo) {
-      this.checkSellerForm.patchValue({ checkSeller : this.seller.sellerNo});
+    console.log(this.seller);
+    if (this.sellerCode) {
+      this.checkSellerForm.patchValue({ checkSeller : this.sellerCode});
     }
 
     this.checkSellerForm.valueChanges.subscribe((value) => {
