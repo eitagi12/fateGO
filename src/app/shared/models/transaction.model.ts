@@ -299,6 +299,7 @@ export interface ExistingMobileCare {
   integrationName?: string;
   flagMain?: string;
   handSet?: HandSetMobileCare;
+  changeMobileCareFlag: boolean;
 }
 
 export interface HandSetMobileCare {
