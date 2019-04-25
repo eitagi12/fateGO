@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TokenService } from 'mychannel-shared-libs';
-import { Transaction, Payment } from 'src/app/shared/models/transaction.model';
+import { Transaction, Payment, Prebooking } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { HttpClient } from '@angular/common/http';
 
@@ -57,6 +57,7 @@ export class QueuePageService {
   private getRequestCreateDeviceSellingOrder(transaction: Transaction, priceOption: PriceOption): any {
     const user = this.tokenService.getUser();
     const productStock = priceOption.productStock;
+    const productDetail = priceOption.productDetail;
     const trade = priceOption.trade;
     const transactionData = transaction.data;
 
@@ -67,7 +68,7 @@ export class QueuePageService {
     const queue: any = transactionData.queue || {};
     const seller = transactionData.seller || {};
     const payment = transactionData.payment;
-    const prebooking = transactionData.preBooking;
+    const prebooking: Prebooking = transactionData.preBooking;
     const mpayPayment: any = transactionData.mpayPayment || {};
 
     const data: any = {
@@ -75,15 +76,15 @@ export class QueuePageService {
       soCompany: productStock.company,
       locationSource: user.locationCode,
       locationReceipt: user.locationCode,
-      productType: productStock.productType,
-      productSubType: productStock.productSubType,
-      brand: productStock.brand,
-      model: productStock.model,
+      productType: productStock.productType || productDetail.productType || 'DEVICE',
+      productSubType: productStock.productSubType || productDetail.productSubtype || 'HANDSET',
+      brand: productStock.brand || productDetail.brand,
+      model: productStock.model || productDetail.model,
       color: productStock.color || productStock.colorName,
       matCode: '',
       priceIncAmt: (+trade.normalPrice || 0).toFixed(2),
       priceDiscountAmt: (+discount.amount || 0).toFixed(2),
-      grandTotalAmt: this.getGrandTotalAmt(trade),
+      grandTotalAmt: this.getGrandTotalAmt(trade, prebooking),
       userId: user.username,
       saleCode: this.tokenService.isAisUser() ? (seller.sellerNo || '') : (seller.sellerNo || user.ascCode),
       queueNo: queue.queueNo || '',
@@ -193,7 +194,7 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
 
   private getPaymentMethod(transaction: Transaction, priceOption: PriceOption): string {
     const payment: Payment = transaction.data.payment;
-    const tradePayment = priceOption.trade.payment[0];
+    const tradePayment = priceOption.trade.payment[0] || priceOption.trade.payments[0];
     if (payment.paymentType === 'QR_CODE') {
       if (payment.paymentQrCodeType === 'THAI_QR') {
         return 'PB';
@@ -201,7 +202,7 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
         return 'RL';
       }
     } else {
-      return tradePayment;
+      return tradePayment.method;
     }
   }
 
@@ -236,8 +237,8 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
         message += `${this.BANK}${this.COMMA}${this.SPACE}`;
         message += `${this.INSTALLMENT}0%${this.SPACE}0`;
       }
+      message += `เดือน${this.COMMA}${this.SPACE}`;
     }
-    message += `เดือน${this.COMMA}${this.SPACE}`;
     message += `${this.TRADE_NO}${trade.tradeNo}`;
     return message;
   }
@@ -273,11 +274,12 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
     return message;
   }
 
-  private getGrandTotalAmt(trade: any): number {
+  private getGrandTotalAmt(trade: any, prebooking?: Prebooking): number {
     const normalPrice = +(+trade.normalPrice || 0).toFixed(2);
     const discount = +(+trade.discount ? (+trade.discount.amount || 0) : 0).toFixed(2);
     const advancePay = +(trade.advancePay ? (+trade.advancePay.amount || 0) : 0).toFixed(2);
-    return ((normalPrice + advancePay) - discount);
+    const depositAmt = +(prebooking && +prebooking.depositAmt ? (+prebooking.depositAmt || 0) : 0).toFixed(2);
+    return (((normalPrice + advancePay) - discount) - depositAmt);
   }
 
   private getReqMinimumBalance(onTopPackage: any, mobileCarePackage: any): number { // Package only

@@ -11,6 +11,7 @@ import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_QR_CODE_QUEUE_SUMMARY_PAGE, ROUTE_DEVIC
 import { HttpClient } from '@angular/common/http';
 import { QRCodePaymentService } from 'src/app/shared/services/qrcode-payment.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
+import { QueuePageService } from 'src/app/device-order/services/queue-page.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-qr-code-queue-page',
@@ -42,7 +43,8 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
     private alertService: AlertService,
     private tokenService: TokenService,
     private qrCodeService: QRCodePaymentService,
-    private sharedTransactionService: SharedTransactionService
+    private sharedTransactionService: SharedTransactionService,
+    private queuePageService: QueuePageService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -101,15 +103,21 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
       this.onSendSMSQueue(this.mobileNo).then((queue) => {
         if (queue) {
           this.transaction.data.queue = { queueNo: queue };
-          return this.http.post('/api/salesportal/create-device-selling-order',
-          this.getRequestCreateOrder(this.transaction, this.priceOption))
-          .toPromise()
-            .then(() => {
-              return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
-                this.pageLoadingService.closeLoading();
-                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE]);
-              });
-            });
+          return this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
+            return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
+                    this.pageLoadingService.closeLoading();
+                    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE]);
+                  });
+          });
+          // return this.http.post('/api/salesportal/create-device-selling-order',
+          // this.getRequestCreateOrder(this.transaction, this.priceOption))
+          // .toPromise()
+          //   .then(() => {
+          //     return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
+          //       this.pageLoadingService.closeLoading();
+          //       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE]);
+          //     });
+          //   });
         } else {
           this.isAutoGenQueue = false;
           this.pageLoadingService.closeLoading();
@@ -124,14 +132,20 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
       });
     } else {
       this.transaction.data.queue = { queueNo: this.queue };
-      this.http.post('/api/salesportal/create-device-selling-order',
-       this.getRequestCreateOrder(this.transaction, this.priceOption, this.transId)).toPromise()
-        .then(() => {
-          return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
-            this.pageLoadingService.closeLoading();
-            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE]);
-          });
+      this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
+        return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
+          this.pageLoadingService.closeLoading();
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE]);
         });
+      });
+      // this.http.post('/api/salesportal/create-device-selling-order',
+      //  this.getRequestCreateOrder(this.transaction, this.priceOption, this.transId)).toPromise()
+      //   .then(() => {
+      //     return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
+      //       this.pageLoadingService.closeLoading();
+      //       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE]);
+      //     });
+      //   });
     }
   }
 

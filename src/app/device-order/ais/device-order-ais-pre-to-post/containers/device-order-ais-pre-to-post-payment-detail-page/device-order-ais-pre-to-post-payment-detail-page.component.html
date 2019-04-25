@@ -3,8 +3,7 @@
     <div class="header-icon-left">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
-    <div class="header-icon-right w-25 text-right">
-        <mc-dropdown-language></mc-dropdown-language>
+    <div class="header-icon-right">
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
@@ -18,7 +17,8 @@
         (error)="onPaymentError($event)">
       </mc-payment-detail>
 
-      <mc-receipt-info [receiptInfo]="receiptInfo" (completed)="onReceiptInfoCompleted($event)" (error)="onReceiptInfoError($event)"></mc-receipt-info>
+      <mc-receipt-info [receiptInfo]="receiptInfo" (completed)="onReceiptInfoCompleted($event)"
+        (error)="onReceiptInfoError($event)"></mc-receipt-info>
     </div>
   </div>
   <mc-footer>
