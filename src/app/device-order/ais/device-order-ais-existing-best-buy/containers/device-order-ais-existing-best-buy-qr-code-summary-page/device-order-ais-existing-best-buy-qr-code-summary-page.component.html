@@ -70,8 +70,8 @@
                 <label class="form-check-label" for="installmentNoAdvancePay">
                   <!-- <i class="fa fa-circle mr-3 text-green"></i> -->
                   {{ priceOption?.productDetail?.name }}
-                  <span *ngIf="priceOption?.productStock?.color">
-                    สี {{ priceOption?.productStock?.color }}
+                  <span *ngIf="color">
+                    สี {{ color }}
                   </span>
                   <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
                     (แถมซิม)

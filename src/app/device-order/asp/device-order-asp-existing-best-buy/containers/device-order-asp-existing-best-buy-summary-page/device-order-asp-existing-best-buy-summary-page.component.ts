@@ -149,6 +149,7 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
     });
 
     if (this.user.ascCode) {
+      this.checkSellerForm.patchValue({ checkSeller : this.user.ascCode});
       this.sellerCode = this.user.ascCode;
     }
 

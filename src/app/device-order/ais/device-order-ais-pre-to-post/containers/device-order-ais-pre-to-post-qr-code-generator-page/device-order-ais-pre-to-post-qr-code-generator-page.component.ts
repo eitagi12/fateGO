@@ -92,7 +92,7 @@ export class DeviceOrderAisPreToPostQrCodeGeneratorPageComponent implements OnIn
       });
     })
       .then((resp: any) => {
-        this.transaction.data.mainPackage = Object.assign({}, params);
+        this.transaction.data.mpayPayment = Object.assign({}, params);
         if (resp === true) { // true inquiry success
           this.onNext();
           return;

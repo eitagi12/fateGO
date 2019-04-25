@@ -7,7 +7,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Transaction, Prebooking, Customer, Payment } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_QR_CODE_QUEUE_SUMMARY_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_QR_CODE_QUEUE_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE } from '../../constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
 import { QRCodePaymentService } from 'src/app/shared/services/qrcode-payment.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
@@ -29,6 +29,8 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
   mobileNo: string;
   isAutoGenQueue: boolean;
   user: User;
+  queueWording: string = 'เบอร์โทรศัพท์รับหมายเลขคิวเพื่อชำระสินค้าของท่านคือ';
+  color: string;
 
   constructor(
     private router: Router,
@@ -48,10 +50,13 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
   }
 
   ngOnInit(): void {
+    this.queueWording = this.isLocationPhuket() ? 'เบอร์โทรศัพท์รับหมายเลขสั่งซื้อเพื่อชำระสินค้าของท่านคือ'
+                      : this.queueWording;
     this.isAutoGenQueue = this.user.locationCode === '1100';
     this.deposit = this.transaction.data.preBooking
       && this.transaction.data.preBooking.depositAmt ? -Math.abs(+this.transaction.data.preBooking.depositAmt) : 0;
-    this.getTransactionId();
+    // this.getTransactionId();
+    this.color = this.priceOption.productStock.color ? this.priceOption.productStock.color : this.priceOption.productStock.colorName || '';
     this.createForm();
   }
 
@@ -102,7 +107,7 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
             .then(() => {
               return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
                 this.pageLoadingService.closeLoading();
-                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_QR_CODE_QUEUE_SUMMARY_PAGE]);
+                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE]);
               });
             });
         } else {
@@ -124,7 +129,7 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
         .then(() => {
           return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
             this.pageLoadingService.closeLoading();
-            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_QR_CODE_QUEUE_SUMMARY_PAGE]);
+            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE]);
           });
         });
     }
@@ -183,13 +188,14 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
     const mobileCare = transaction.data.mobileCarePackage;
     const order = transaction.data.order;
     const paymentTrade = trade.payments[0];
+    const mPayPayment = transaction.data.mpayPayment;
 
     let qrAmt;
-    if (payment.paymentType === 'QR_CODE' && transId) {
+    if (payment.paymentType === 'QR_CODE') {
       qrAmt = this.getQrAmount(trade.normalPrice, trade.discount);
     }
 
-    const paymentMethod = (payment.paymentType === 'QR_CODE' && transId) ?
+    const paymentMethod = (payment.paymentType === 'QR_CODE') ?
       this.replacePaymentMethodForQRCodeWithOutAirtime(payment.paymentQrCodeType) : paymentTrade.method;
 
     const data: any = {
@@ -201,7 +207,7 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
       productSubType: productDetail.productSubtype || 'HANDSET',
       brand: productDetail.brand,
       model: productDetail.model,
-      color: productStock.color,
+      color: productStock.color || productStock.colorName,
       matCode: '',
       priceIncAmt: (+trade.normalPrice).toFixed(2),
       priceDiscountAmt: (+trade.discount.amount || 0).toFixed(2),
@@ -233,7 +239,7 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
       bankAbbr: payment && payment.paymentBank ? payment.paymentBank.abb : '',
       preBookingNo: prebooking ? prebooking.preBookingNo : '',
       depositAmt: prebooking ? prebooking.depositAmt : '',
-      qrTransId: transId ? transId : '',
+      qrTransId: mPayPayment ? mPayPayment.tranId : '',
       qrAmt: qrAmt
     };
 
@@ -371,6 +377,22 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
   getQrAmount(normalPrice: number, discount: any): string {
     const qrAmt: number = normalPrice - discount.amount;
     return qrAmt.toFixed(2);
+  }
+
+  getOutStandingBalance(): number {
+    const trade = this.priceOption.trade;
+    const payment: any = this.transaction.data.payment || {};
+    const advancePayment: any = this.transaction.data.advancePayment || {};
+
+    let summary = 0;
+    if (payment.paymentType !== 'QR_CODE') {
+      summary += +trade.promotionPrice;
+    }
+    if (advancePayment.paymentType !== 'QR_CODE') {
+      const advancePay = trade.advancePay || {};
+      summary += +advancePay.amount;
+    }
+    return summary;
   }
 
   checkValid(): boolean {

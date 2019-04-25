@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TokenService } from 'mychannel-shared-libs';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, Payment } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { HttpClient } from '@angular/common/http';
 
@@ -67,27 +67,29 @@ export class QueuePageService {
     const queue: any = transactionData.queue || {};
     const seller = transactionData.seller || {};
     const payment = transactionData.payment;
+    const prebooking = transactionData.preBooking;
+    const mpayPayment: any = transactionData.mpayPayment || {};
 
     const data: any = {
-      userId: user.username,
+      soId: order.soId,
+      soCompany: productStock.company,
       locationSource: user.locationCode,
       locationReceipt: user.locationCode,
-      soCompany: productStock.company,
       productType: productStock.productType,
       productSubType: productStock.productSubType,
       brand: productStock.brand,
       model: productStock.model,
-      color: productStock.color,
+      color: productStock.color || productStock.colorName,
+      matCode: '',
       priceIncAmt: (+trade.normalPrice || 0).toFixed(2),
-      tradeNo: trade.tradeNo || '',
-      ussdCode: trade.ussdCode || '',
       priceDiscountAmt: (+discount.amount || 0).toFixed(2),
       grandTotalAmt: this.getGrandTotalAmt(trade),
-      soId: order.soId,
+      userId: user.username,
       saleCode: this.tokenService.isAisUser() ? (seller.sellerNo || '') : (seller.sellerNo || user.ascCode),
       queueNo: queue.queueNo || '',
       cusNameOrder: `${customer.titleName || ''} ${customer.firstName || ''} ${customer.lastName || ''}`.trim(),
       taxCardId: customer.idCardNo || '',
+      cusMobileNoOrder: simCard.mobileNo || '',
       customerAddress: {
         addrNo: customer.homeNo,
         amphur: customer.amphur,
@@ -103,23 +105,28 @@ export class QueuePageService {
         streetName: customer.street,
         tumbon: customer.tumbol
       },
-      cusMobileNoOrder: simCard.mobileNo || '',
-      returnCode: simCard.privilegeCode || '4GEYYY',
-      matCode: '',
+      tradeNo: trade.tradeNo || '',
+      ussdCode: trade.ussdCode || '',
+      returnCode: simCard.privilegeCode || customer.privilegeCode || '4GEYYY',
       cashBackFlg: '',
-      matCodeFreeGoods: '',
       matAirTime: trade.advancePay ? trade.advancePay.matAirtime : '',
+      matCodeFreeGoods: '',
       paymentRemark: this.getOrderRemark(transaction, priceOption),
-      installmentTerm: 0,
-      installmentRate: 0,
+      installmentTerm: payment.paymentMethod.month || 0,
+      installmentRate: payment.paymentMethod.percentage || 0,
       mobileAisFlg: 'Y',
-      paymentMethod: '',
-      bankCode: '',
-      tradeFreeGoodsId: '',
+      paymentMethod: this.getPaymentMethod(transaction, priceOption),
+      bankCode: payment && payment.paymentBank ? payment.paymentBank.abb : '',
+      tradeFreeGoodsId: trade.freeGoods[0] ? trade.freeGoods[0].tradeFreegoodsId : '',
       matairtimeId: '',
-      tradeDiscountId: '',
+      tradeDiscountId: trade.discount ? trade.discount.tradeAirtimeId : '',
+      tradeAirtimeId: trade.advancePay ? trade.advancePay.tradeAirtimeId : '',
       focCode: '',
-      bankAbbr: ''
+      bankAbbr: payment && payment.paymentBank ? payment.paymentBank.abb : '',
+      preBookingNo: prebooking ? prebooking.preBookingNo : '',
+      depositAmt: prebooking ? prebooking.depositAmt : '',
+      qrTransId: mpayPayment ? mpayPayment.tranId : '',
+      qrAmt: this.getQRAmt(trade, transaction)
     };
 
     // ผ่อนชำระ
@@ -141,6 +148,16 @@ export class QueuePageService {
 ${this.PROMOTION_NAME}${this.SPACE}${onTopPackage.shortNameThai || ''}${this.NEW_LINE}
 ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW_LINE}
 `;
+  }
+
+  private getQRAmt(trade: any, transaction: Transaction): any {
+    const payment: Payment = transaction.data.payment;
+    if (trade && payment.paymentType === 'QR_CODE') {
+      const qrAmt: number = trade.normalPrice - trade.discount.amount;
+      return qrAmt.toFixed(2);
+    } else {
+      return '';
+    }
   }
 
   private getAirTime(trade: any, transaction: Transaction): string {
@@ -172,6 +189,20 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
       }
     }
     return message;
+  }
+
+  private getPaymentMethod(transaction: Transaction, priceOption: PriceOption): string {
+    const payment: Payment = transaction.data.payment;
+    const tradePayment = priceOption.trade.payment[0];
+    if (payment.paymentType === 'QR_CODE') {
+      if (payment.paymentQrCodeType === 'THAI_QR') {
+        return 'PB';
+      } else {
+        return 'RL';
+      }
+    } else {
+      return tradePayment;
+    }
   }
 
   private getInstallment(transaction: Transaction, priceOption: PriceOption): string {

@@ -82,6 +82,15 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
         locationName: response.data.displayName,
         locationCode: user.locationCode
       };
+      return this.http.get(`/api/customerportal/newRegister/getEmployeeDetail/username/${user.username}`).toPromise()
+        .then((emResponse: any) => {
+          if (emResponse && emResponse.data) {
+            const emId = emResponse.data.pin;
+            this.seller.sellerNo = emId;
+          }
+        }).catch(() => {
+          this.seller.sellerNo = '';
+        });
     });
     this.createForm();
 
@@ -128,6 +137,10 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
     this.checkSellerForm = this.fb.group({
       checkSeller: ['', Validators.compose([Validators.required, Validators.pattern(/^[0-9]+$/)])]
     });
+
+    if (this.seller && this.seller.sellerNo) {
+      this.checkSellerForm.patchValue({ checkSeller : this.seller.sellerNo});
+    }
 
     this.checkSellerForm.valueChanges.subscribe((value) => {
       if (value.checkSeller) {
