@@ -80,13 +80,13 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
     });
 
     if (this.transaction.data.simCard.mobileNo) {
-      this.mobileFrom.controls.mobileNo.setValue(this.transaction.data.simCard.mobileNo);
+      this.mobileFrom.patchValue({mobileNo: this.transaction.data.simCard.mobileNo});
       this.mobileNo = this.transaction.data.simCard.mobileNo;
-    } else {
-      this.mobileFrom.valueChanges.subscribe((value) => {
-        this.mobileNo = value.mobileNo;
-      });
     }
+
+    this.mobileFrom.valueChanges.subscribe((value) => {
+      this.mobileNo = value.mobileNo;
+    });
 
     this.queueFrom = this.fb.group({
       'queue': ['', Validators.compose([Validators.required, Validators.pattern(/([A-Y]{1}[0-9]{3})/)])],

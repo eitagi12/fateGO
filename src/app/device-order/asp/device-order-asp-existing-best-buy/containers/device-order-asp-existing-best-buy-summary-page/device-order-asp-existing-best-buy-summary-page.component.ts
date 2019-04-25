@@ -98,10 +98,11 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
 
   onBack(): void {
     const mobileCare = this.transaction.data.mobileCarePackage;
-    if (mobileCare) {
-      this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_CARE_PAGE]);
-    } else {
+    const existingMobileCare = this.transaction.data.existingMobileCare;
+    if (existingMobileCare && typeof mobileCare === 'string') {
       this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_CARE_AVAILABLE_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_CARE_PAGE]);
     }
   }
 

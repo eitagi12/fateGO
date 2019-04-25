@@ -103,9 +103,9 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
     const mobileCare = this.transaction.data.mobileCarePackage;
     const existingMobileCare = this.transaction.data.existingMobileCare;
     if (existingMobileCare && typeof mobileCare === 'string') {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_CARE_PAGE]);
-    } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_CARE_AVAILABLE_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_CARE_PAGE]);
     }
   }
 

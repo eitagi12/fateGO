@@ -56,9 +56,10 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
     });
 
     if (this.transaction.data.simCard.mobileNo) {
-      this.mobileFrom.controls.mobileNo.setValue(this.transaction.data.simCard.mobileNo);
+      this.mobileFrom.patchValue({mobileNo: this.transaction.data.simCard.mobileNo});
       this.mobileNo = this.transaction.data.simCard.mobileNo;
     }
+
     this.mobileFrom.valueChanges.subscribe((value) => {
       this.mobileNo = value.mobileNo;
     });
