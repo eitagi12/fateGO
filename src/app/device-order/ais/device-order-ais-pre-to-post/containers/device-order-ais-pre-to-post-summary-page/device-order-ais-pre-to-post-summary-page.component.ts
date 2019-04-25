@@ -12,6 +12,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
 
 @Component({
   selector: 'app-device-order-ais-pre-to-post-summary-page',
@@ -39,6 +40,7 @@ export class DeviceOrderAisPreToPostSummaryPageComponent implements OnInit {
     private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,
     private modalService: BsModalService,
+    public summaryPageService: SummaryPageService,
     private utils: Utils
   ) {
     this.priceOption = this.priceOptionService.load();

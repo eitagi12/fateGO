@@ -3,9 +3,7 @@ import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.c
 import { Router } from '@angular/router';
 import { HomeService, ShoppingCart, Utils } from 'mychannel-shared-libs';
 import {
-  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGREEMENT_PAGE,
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_MOBILE_CARE_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_EAPPLICATION_PAGE,
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_ECONTACT_PAGE
 } from 'src/app/device-order/ais/device-order-ais-new-register/constants/route-path.constant';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -14,6 +12,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
 
 @Component({
   selector: 'app-device-order-ais-new-register-summary-page',
@@ -41,6 +40,7 @@ export class DeviceOrderAisNewRegisterSummaryPageComponent implements OnInit {
     private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,
     private modalService: BsModalService,
+    public summaryPageService: SummaryPageService,
     private utils: Utils
   ) {
     this.priceOption = this.priceOptionService.load();

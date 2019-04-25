@@ -13,6 +13,7 @@ import { PrivilegeService } from './services/privilege.service';
 import { CustomerInfoService } from './services/customer-info.service';
 import { QueuePageService } from './services/queue-page.service';
 import { QrCodePageService } from './services/qr-code-page.service';
+import { SummaryPageService } from './services/summary-page.service';
 
 @NgModule({
   imports: [
@@ -29,6 +30,7 @@ import { QrCodePageService } from './services/qr-code-page.service';
     CustomerInfoService,
     QueuePageService,
     QrCodePageService,
+    SummaryPageService,
     IdCardPipe,
     DecimalPipe
   ],
