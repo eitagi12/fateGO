@@ -50,7 +50,7 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
   priceOptionBank: any;
   selectedMobile: string;
   locationNameTH: string;
-  recipientCustomerAddress: string;
+  receiptCustomerAddress: string;
   otherPhoneNumber: string;
   isDisabled: boolean;
 
@@ -138,6 +138,11 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
   }
   onAddrChanges(fullAddress: string): void {
     this.customerFullAddress = fullAddress;
+  }
+
+  onAddrReceiptChanges(fullAddress: string): void {
+    this.receiptCustomerAddress = fullAddress;
+    localStorage.setItem('recipientCustomerAddress', JSON.stringify(this.receiptCustomerAddress));
   }
 
   onchangeOtherPhoneNumber(otherPhoneNumber: string): void {
@@ -274,7 +279,7 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     } else {
       this.customerFullAddress = this.getFullAddress(this.transaction.data.customer);
     }
-    this.recipientCustomerAddress = this.getFullAddress(this.transaction.data.customer);
+    this.receiptCustomerAddress = this.getFullAddress(this.transaction.data.customer);
     this.idCardNo = this.transaction.data.customer.idCardNo;
     if (this.idCardNo) {
       this.idCardNo = this.idCardNo.substring(9);
@@ -418,8 +423,9 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
 
   checkCustomerAddress(event: any): void {
     if (event.target.checked === true) {
-      this.recipientCustomerAddress = this.customerFullAddress;
       this.isDisabled = event.target.checked;
+      this.receiptCustomerAddress = this.customerFullAddress;
+      localStorage.setItem('recipientCustomerAddress', JSON.stringify(this.receiptCustomerAddress));
     } else {
       this.isDisabled = null;
     }

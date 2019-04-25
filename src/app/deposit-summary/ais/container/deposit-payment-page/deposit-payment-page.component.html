@@ -172,7 +172,7 @@
             <div class="col-12 col-sm-4 text-light-gray">ที่อยู่ในใบเสร็จรับเงิน</div>
             <div class="col-12 col-sm-8 text-light-gray">
               <textarea id="txtReceiptAddress" class="form-control" autocomplete="off" cols="40" rows="3"
-                [attr.disabled]="isDisabled" [(ngModel)]="recipientCustomerAddress"></textarea>
+                [attr.disabled]="isDisabled" [(ngModel)]="receiptCustomerAddress" (input)="onAddrReceiptChanges($event.target.value)"></textarea>
               <input class="form-check-input" type="checkbox" id="change-Address"
                 (click)="checkCustomerAddress($event)">
               <label class="form-check-label" for="change-Address">
