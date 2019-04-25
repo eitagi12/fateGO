@@ -12,6 +12,7 @@ export const RESERVE_STOCK = {
   MESSAGE_CODE_TH: {
     TH_0001: '0001',
     TH_0002: '0002',
+    TH_0003: '0003',
   },
   MESSAGE_CODE_EN: {
     EN_0001: '0001'

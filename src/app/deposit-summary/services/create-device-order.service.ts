@@ -5,6 +5,8 @@ import { HttpClient } from '@angular/common/http';
 import { TokenService, User } from 'mychannel-shared-libs';
 import { LocalStorageService } from 'ngx-store';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { MessageConfigService } from './message-config.service';
+import { RESERVE_STOCK, ERROR_MESSAGE } from '../constants/message-config.constant';
 
 export const REMARK_CASH_PAYMENT = '[CA]';
 export const REMARK_CREDIT_CARD_PAYMENT = '[CC]';
@@ -42,7 +44,8 @@ export class CreateDeviceOrderService {
   constructor(
     private http: HttpClient,
     private tokenService: TokenService,
-    private localStorageService: LocalStorageService
+    private localStorageService: LocalStorageService,
+    private messageConfigService: MessageConfigService
   ) {
     this.user = this.tokenService.getUser();
   }
@@ -77,7 +80,6 @@ export class CreateDeviceOrderService {
   }
 
   createDeviceOrderDt(transaction: Transaction, priceOption: PriceOption, transId?: string): Promise<any> {
-    console.log('test');
     return new Promise((resolve, reject) => {
       this.getRequestCreateOrder(transaction, priceOption, transId).then((data) => {
         this.http.post('/api/salesportal/dt/create-order', data).toPromise()
@@ -86,14 +88,23 @@ export class CreateDeviceOrderService {
             if (response.data.resultCode === 'S') {
               resolve(response);
             } else {
-              switch (response.data.resultCode) {
-                case 'F':
-                  reject('เลขที่คิวซ้ำ กรุณาระบุใหม่');
-                  break;
-                default:
-                  reject('Fail to create the order');
+             switch (response.data.resultCode) {
+               case 'F':
+                switch (response.data.resultMessage) {
+                  case 'QueueNo is duplicated':
+                    reject(this.messageConfigService.mapMessageConfig(this.messageConfigService.messageConfig,
+                      RESERVE_STOCK.MESSAGE_CODE_TH.TH_0003));
+                    break;
+                  default:
+                    reject(response.data.resultMessage);
+                }
+                 break;
+               default:
+                 reject(response.data.resultMessage);
               }
             }
+          }).catch((error: any) => {
+            reject(ERROR_MESSAGE.DEFAULT);
           });
       });
     });
