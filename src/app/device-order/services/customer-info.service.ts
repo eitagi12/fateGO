@@ -144,15 +144,14 @@ export class CustomerInfoService {
   }
 
   private mapRequestUpdatePrepaidIdent(customer: Customer, mobileNo: string): any {
-    // TODO
     return {
       mobileNo: mobileNo || '-',
       idCardNo: customer.idCardNo || '-',
-      idCardType: this.isReadIdCard(customer.idCardType) ? '1' : '0',
-      idCardImage: customer.imageSmartCard,
+      idCardType: this.isIdCard(customer.idCardType) ? '1' : '0',
+      idCardImage: customer.imageSmartCard || customer.imageReadSmartCard,
       firstName: customer.firstName || '-',
       lastName: customer.lastName || '-',
-      birthdate: customer.birthdate || '01/01/1953',
+      birthdate: customer.birthdate || '01/01/1900',
       homeNo: customer.homeNo || '-',
       moo: customer.moo || '-',
       mooBan: customer.mooBan || '-',
@@ -162,14 +161,14 @@ export class CustomerInfoService {
       street: customer.street || '-',
       tumbol: customer.tumbol || '-',
       amphur: customer.amphur || '-',
-      province: customer.province || '-',
+      province: customer.province || '',
       zipCode: customer.zipCode || '-',
-      isSmartCard: this.isReadIdCard(customer.idCardType) ? 'Y' : 'N',
-      smartCardVersion: this.isReadIdCard(customer.idCardType) ? '1' : undefined
+      isSmartCard: customer.imageReadSmartCard ? 'Y' : 'N',
+      smartCardVersion: customer.imageReadSmartCard ? '1' : undefined
     };
   }
 
-  isReadIdCard(idCardType: string): boolean {
+  private isIdCard(idCardType: string): boolean {
     return idCardType === this.ID_CARD_CONST;
   }
 }

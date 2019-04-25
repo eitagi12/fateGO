@@ -8,9 +8,8 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { ROUTE_DEVICE_ORDER_ASP_BEST_BUY_VALIDATE_CUSTOMER_REPI_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_PROFILE_PAGE } from '../../constants/route-path.constant';
-import { CustomerInfoService } from '../../services/customer-info.service';
-import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { Subscription } from 'rxjs';
+import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
 
 @Component({
   selector: 'app-device-order-asp-existing-best-buy-validate-customer-id-card-repi-page',

@@ -8,10 +8,10 @@ import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { WIZARD_DEVICE_ORDER_AIS, WIZARD_DEVICE_ORDER_ASP } from 'src/app/device-order/constants/wizard.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
-import { CustomerInfoService } from '../../services/customer-info.service';
-import { PrivilegeService } from '../../services/privilege.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
+import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
 
 @Component({
   selector: 'app-device-order-asp-existing-best-buy-eligible-mobile-page',

@@ -8,7 +8,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_PROFILE_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CAPTURE_REPI_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_PAYMENT_DETAIL_PAGE } from 'src/app/device-order/asp/device-order-asp-existing-best-buy/constants/route-path.constant';
-import { CustomerInfoService } from '../../services/customer-info.service';
+import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
 
 @Component({
   selector: 'app-device-order-asp-existing-best-buy-otp-page',
