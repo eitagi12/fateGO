@@ -379,6 +379,22 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
     return qrAmt.toFixed(2);
   }
 
+  getPaymentBalance(): number {
+    const trade = this.priceOption.trade;
+    const payment: any = this.transaction.data.payment || {};
+    const advancePayment: any = this.transaction.data.advancePayment || {};
+
+    let summary = 0;
+    if (payment.paymentType === 'QR_CODE') {
+      summary += +trade.promotionPrice;
+    }
+    if (advancePayment.paymentType === 'QR_CODE') {
+      const advancePay = trade.advancePay || {};
+      summary += +advancePay.amount;
+    }
+    return summary;
+  }
+
   getOutStandingBalance(): number {
     const trade = this.priceOption.trade;
     const payment: any = this.transaction.data.payment || {};

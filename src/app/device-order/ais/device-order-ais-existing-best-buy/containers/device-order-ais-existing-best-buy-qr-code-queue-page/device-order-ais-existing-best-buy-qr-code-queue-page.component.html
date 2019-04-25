@@ -47,11 +47,24 @@
                 </div>
               </ng-container>
 
+              <ng-container *ngIf="transaction?.data?.pre?.paymentType === 'QR_CODE'">
+                  <div class="text-light-grey"
+                    *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && priceOption?.trade?.advancePay?.amount > 0">
+                    <p>
+                      <i class="fa fa-circle mr-3 text-green"></i>
+                      {{ priceOption?.trade?.advancePay?.description }}
+                      <span class="pull-right text-green">
+                        ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
+                      </span>
+                    </p>
+                  </div>
+                </ng-container>
+
               <div class="mt-1 text-right">
                 <b>
                   <span class="mr-3">รวมยอดชำระ(รวมVAT)</span>
                   <span class="text-green">
-                    $ {{ getQrAmount() | number:'1.0-0' }}
+                    $ {{ getPaymentBalance() | number:'1.0-0' }}
                   </span>
                 </b>
               </div>

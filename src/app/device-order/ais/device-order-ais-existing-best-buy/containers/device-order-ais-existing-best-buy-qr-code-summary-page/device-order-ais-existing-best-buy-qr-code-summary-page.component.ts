@@ -93,4 +93,20 @@ export class DeviceOrderAisExistingBestBuyQrCodeSummaryPageComponent implements 
       Promise.all(promiseAll).then(() => resolve());
     });
   }
+
+  getTotal(): number {
+    const trade = this.priceOption.trade;
+    const payment: any = this.transaction.data.payment || {};
+    const advancePayment: any = this.transaction.data.advancePayment || {};
+
+    let total: number = 0;
+    if (payment.paymentType === 'QR_CODE') {
+      total += +trade.promotionPrice;
+    }
+    if (advancePayment.paymentType === 'QR_CODE') {
+      const advancePay = trade.advancePay || {};
+      total += +advancePay.amount;
+    }
+    return total;
+  }
 }
