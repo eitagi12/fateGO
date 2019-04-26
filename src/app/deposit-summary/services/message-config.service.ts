@@ -30,7 +30,6 @@ export class MessageConfigService {
     if ((messageConfig !== undefined || messageConfig !== '') && (messageCode !== undefined || messageCode !== '')) {
       // tslint:disable-next-line:no-shadowed-variable
       const message = messageConfig.filter((message: any) => message.MESSAGE_CODE === messageCode);
-
       if (message.length > 0) {
         return message[0].MESSAGE;
       } else {

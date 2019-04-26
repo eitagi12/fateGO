@@ -70,7 +70,10 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-  this.getMessageConfig().then(res => {
+    this.getMessageConfig().then((res: any) => {
+      this.filterTrade();
+    });
+
     this.formID = this.getRandomNum(10);
     this.transaction = {
       transactionId: this.apiRequestService.getCurrentRequestId(),
@@ -80,9 +83,6 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
         action: TransactionAction.KEY_IN
       }
     };
-
-    this.filterTrade();
-
     this.priceOption = {
       trade: this.localStorageService.load('reserveProductInfo').value
     };
@@ -120,8 +120,6 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
 
     this.createForm();
     this.createProductRecipient();
-
-    });
   }
   ngOnDestroy(): void {
     this.transaction.data.payment = {
