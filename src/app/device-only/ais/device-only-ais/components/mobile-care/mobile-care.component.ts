@@ -12,6 +12,7 @@ import { TransactionService } from '../../../../../shared/services/transaction.s
 import { Transaction, MainPackage } from '../../../../../shared/models/transaction.model';
 import { MobileCareService } from '../../services/mobile-care.service';
 import { MOBILE_CARE_PACKAGE_KEY_REF } from '../../constants/cpc.constant';
+import { log } from 'util';
 
 export interface MobileCare {
   nextBillEffective?: boolean;
@@ -49,8 +50,15 @@ export class MobileCareComponent implements OnInit {
   public mobileNoPost: string;
   public VAT: number = 1.07;
   public currentPackageMobileCare: any[];
+  public privilegeCustomerForm: FormGroup;
+  private exMobileCare: any;
   mainPackage: MainPackage;
   billingSystem: string;
+  mobileCareForm: FormGroup;
+  notBuyMobileCareForm: FormGroup;
+  priceOption: PriceOption;
+  transaction: Transaction;
+  transactionID: string;
 
   @Input() mobileCare: MobileCare;
   @Input() normalPrice: number;
@@ -62,15 +70,8 @@ export class MobileCareComponent implements OnInit {
   @Output() checkBuyMobileCare: EventEmitter<any> = new EventEmitter<any>();
   @Output() isReasonNotBuyMobileCare: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild('template')
-  public privilegeCustomerForm: FormGroup;
-  private exMobileCare: any;
   template: TemplateRef<any>;
   modalRef: BsModalRef;
-  mobileCareForm: FormGroup;
-  notBuyMobileCareForm: FormGroup;
-  priceOption: PriceOption;
-  transaction: Transaction;
-  transactionID: string;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -181,9 +182,8 @@ export class MobileCareComponent implements OnInit {
         const mobileSegment = res.data.mobileSegment;
         this.callService(mobileSegment);
         this.pageLoadingService.closeLoading();
-      }).catch((err) => {
+      }).catch(() => {
         this.pageLoadingService.closeLoading();
-        this.alertService.error(err);
       });
     } else {
       this.pageLoadingService.closeLoading();
