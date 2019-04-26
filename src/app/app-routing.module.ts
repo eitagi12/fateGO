@@ -43,13 +43,13 @@ const routes: Routes = [
     }
   },
   {
+    path: 'error',
+    component: ErrorPageComponent
+  },
+  {
     path: 'deposit-summary',
     loadChildren: 'src/app/deposit-summary/deposit-summary.module#DepositSummaryModule',
     canActivate: [AuthGuard, ApiRequestGuard]
-  },
-  {
-    path: 'error',
-    component: ErrorPageComponent
   }
 ];
 
