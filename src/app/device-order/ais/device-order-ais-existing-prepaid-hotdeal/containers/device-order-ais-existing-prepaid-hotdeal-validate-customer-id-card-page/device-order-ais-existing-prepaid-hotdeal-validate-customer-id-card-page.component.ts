@@ -89,6 +89,7 @@ export class DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageCompo
 
   onNext(): void {
     this.pageLoadingService.openLoading();
+    let isValidate = false;
     this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
       .then((zipCode: string) => {
         return this.http.get('/api/customerportal/validate-customer-prepaid-hotdeal', {
@@ -98,19 +99,27 @@ export class DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageCompo
         }).toPromise()
           .then((resp: any) => {
             const data = resp.data || {};
+            isValidate = true;
             return {
               caNumber: data.caNumber,
               mainMobile: data.mainMobile,
               billCycle: data.billCycle,
               zipCode: zipCode
             };
-          }).catch(() => {
+          }).catch((err: any) => {
+            this.alertService.notify({
+              type: 'error',
+              html: 'ไม่สามารถซื้อเครื่องราคาพิเศษ/เปิดเบอร์ใหม่ได้ <br> ' + err.error.errors
+            });
             return { zipCode: zipCode };
           });
       })
       .then((customer: any) => {
-        // load bill cycle
         this.transaction.data.customer = Object.assign(this.profile, customer);
+        if (!isValidate) {
+          return;
+        }
+        // load bill cycle
         return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
           .then((resp: any) => {
             const data = resp.data || {};
@@ -119,8 +128,10 @@ export class DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageCompo
             };
           });
       }).then((billingInformation: any) => {
+        if (!isValidate) {
+          return;
+        }
         this.transaction.data.billingInformation = billingInformation;
-
         return this.conditionIdentityValid()
           .then(() => {
             return this.http.post(
@@ -134,9 +145,11 @@ export class DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageCompo
 
             return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
           })
-          .then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_ELIGIBLE_MOBILE_PAGE]));
-
-      }).then(() => this.pageLoadingService.closeLoading());
+          .then(() => {
+            this.pageLoadingService.closeLoading();
+            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_ELIGIBLE_MOBILE_PAGE])
+          });
+      });
   }
 
   conditionIdentityValid(): Promise<string> {
