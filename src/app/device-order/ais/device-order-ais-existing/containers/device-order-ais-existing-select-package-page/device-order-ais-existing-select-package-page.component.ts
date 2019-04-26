@@ -32,11 +32,8 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
   promotionShelves: PromotionShelve[];
   condition: any;
   selectCurrentPackage: boolean;
-  showSelectCurrentPackage: boolean;
-  showCurrentPackage: boolean;
   modalRef: BsModalRef;
   shoppingCart: ShoppingCart;
-  isContractFirstPack: number;
 
   constructor(
     private router: Router,
@@ -58,64 +55,50 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
       delete this.transaction.data.billingInformation.mergeBilling;
     }
 
-    const contract = this.transaction.data.contractFirstPack || {};
-    const priceExclVat = this.transaction.data.currentPackage && this.transaction.data.currentPackage.priceExclVat || 0;
-    this.isContractFirstPack = Math.max(contract.firstPackage || 0, contract.minPrice || 0, contract.initialPackage || 0);
-
-    if (!this.mathHotDeal && !this.advancePay) {
-      this.showCurrentPackage = true;
-    }
-
-    if (this.priceOption.privilege.minimumPackagePrice <= priceExclVat) {
-      this.showSelectCurrentPackage = true;
-    }
-  }
-
-  get advancePay(): boolean {
-    return !!((this.priceOption.trade.advancePay && this.priceOption.trade.advancePay.amount || 0) > 0);
-  }
-
-  get mathHotDeal(): boolean {
-    return !!this.priceOption.campaign.campaignName.match(/\b(\w*Hot\s+Deal\w*)\b/);
   }
 
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-    if (this.transaction.data.promotionsShelves) {
+    this.callService()
+    .then(filterPromotionByFirstPack => {
 
       this.promotionShelves = this.promotionShelveService
-      .defaultBySelected(this.transaction.data.promotionsShelves, this.transaction.data.mainPackage);
+      .defaultBySelected(filterPromotionByFirstPack, this.transaction.data.mainPackage);
 
-      if (this.showCurrentPackage) {
+      if (!this.mathHotDeal && !this.advancePay && this.showSelectCurrentPackage) {
         this.promotionShelves[0].promotions[0].active = false;
       }
 
-    } else {
-      this.callService();
-    }
+    }).then(() => this.pageLoadingService.closeLoading());
   }
 
   onCompleted(promotion: any): void {
     // รอแก้ไขตัวแปรที่จะเก็บลงใน share transaction
     this.selectCurrentPackage = false;
     this.transaction.data.mainPackage = promotion;
+
   }
 
   onClickCurrentPackage(): void {
     this.selectCurrentPackage = true;
     this.transaction.data.mainPackage = null;
     this.promotionShelves[0].promotions.forEach((promotion: any) => promotion.active = false);
+
   }
 
   onBack(): void {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_PAYMENT_DETAIL_PAGE]);
+    delete this.transaction.data.mainPackage;
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_PAYMENT_DETAIL_PAGE]);
+
   }
 
   onNext(): void {
     this.pageLoadingService.openLoading();
     const mobileNo = this.transaction.data.simCard.mobileNo;
 
-    this.http.get(`/api/customerportal/get-existing-mobile-care/${mobileNo}`).toPromise().then((response: any) => {
+    this.http.get(`/api/customerportal/get-existing-mobile-care/${mobileNo}`)
+    .toPromise()
+    .then((response: any) => {
       const exMobileCare = response.data || {};
 
       if (exMobileCare.hasExistingMobileCare) {
@@ -124,31 +107,37 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
         this.transaction.data.existingMobileCare = existingMobileCare;
       }
 
-      if (this.selectCurrentPackage) {
-        if (exMobileCare.hasExistingMobileCare) {
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE]);
-        } else {
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE]);
-        }
-      } else {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE]);
-      }
+      this.router.navigate([this.navigatePath(exMobileCare)]);
 
     }).then(() => this.pageLoadingService.closeLoading());
+  }
+
+  navigatePath(exMobileCare: any = {}): any {
+    if (this.selectCurrentPackage) {
+      if (exMobileCare.hasExistingMobileCare) {
+        return ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE;
+
+      } else {
+        return ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE;
+      }
+
+    } else {
+      return ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE;
+    }
   }
 
   onHome(): void {
     this.homeService.goToHome();
   }
 
-  callService(): void {
+  callService(): Promise<any> {
     this.pageLoadingService.openLoading();
     const trade: any = this.priceOption.trade;
     const privilege: any = this.priceOption.privilege;
     const billingSystem = (this.transaction.data.simCard.billingSystem === 'RTBS')
     ? BillingSystemType.IRB : this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
 
-    this.promotionShelveService.getPromotionShelve(
+    return this.promotionShelveService.getPromotionShelve(
       {
         packageKeyRef: trade.packageKeyRef,
         orderType: `Change Service`,
@@ -156,12 +145,60 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
       },
       +privilege.minimumPackagePrice, +privilege.maxinumPackagePrice)
       .then((promotionShelves: any) => {
-        this.promotionShelves = this.promotionShelveService.defaultBySelected(promotionShelves, this.transaction.data.mainPackage);
-      })
-      .then(() => this.pageLoadingService.closeLoading());
+        const contract = this.transaction.data.contractFirstPack || {};
+
+        return this.filterPromotionByFirstPack(promotionShelves, contract);
+
+      });
+
+  }
+
+  filterPromotionByFirstPack(promotionShelves: any = [], contract: any = {}): any[] {
+    (promotionShelves || []).forEach((promotionShelve: any) => {
+      promotionShelve.promotions = (promotionShelve.promotions || []).filter((promotion: any) => {
+        promotion.items = (promotion.items || [])
+          .filter(item => {
+            const contractFirstPack = item.value.customAttributes.priceExclVat
+              >= Math.max(contract.firstPackage || 0, contract.minPrice || 0, contract.initialPackage || 0);
+
+            const inGroup = contract.inPackage.length > 0 ? contract.inPackage
+              .some(inPack => inPack === item.value.customAttributes.productPkg) : true;
+
+            return contractFirstPack && inGroup;
+
+          });
+        return promotion.items.length > 0;
+
+      });
+    });
+    return promotionShelves;
+
+  }
+
+  get showSelectCurrentPackage(): boolean {
+    const currentPackage = this.transaction.data.currentPackage || {};
+    return this.priceOption.privilege.minimumPackagePrice <= (currentPackage.priceExclVat || 0);
+
+  }
+
+  get isContractFirstPack(): number {
+    const contract = this.transaction.data.contractFirstPack || {};
+    return Math.max(contract.firstPackage || 0, contract.minPrice || 0, contract.initialPackage || 0);
+
+  }
+
+  get advancePay(): boolean {
+    return !!((this.priceOption.trade.advancePay && this.priceOption.trade.advancePay.amount || 0) > 0);
+
+  }
+
+  get mathHotDeal(): boolean {
+    return !!this.priceOption.campaign.campaignName.match(/\b(\w*Hot\s+Deal\w*)\b/);
+
   }
 
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }
+
 }

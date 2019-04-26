@@ -22,6 +22,7 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
   transaction: Transaction;
   mobileInfo: MobileInfo;
   shoppingCart: ShoppingCart;
+  disableNextButton: boolean;
 
   constructor(
     private router: Router,
@@ -64,8 +65,13 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
       this.pageLoadingService.closeLoading();
 
     }).catch(err => {
+      this.disableNextButton = true;
       this.pageLoadingService.closeLoading();
-      this.alertService.error(err.error.resultDescription || `ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้`);
+      const error = err.error || {};
+      const developerMessage = (error.errors || {}).developerMessage;
+      this.alertService.error((developerMessage && error.resultDescription)
+      ? `${developerMessage} ${error.resultDescription}` : `ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้`);
+
     });
   }
 

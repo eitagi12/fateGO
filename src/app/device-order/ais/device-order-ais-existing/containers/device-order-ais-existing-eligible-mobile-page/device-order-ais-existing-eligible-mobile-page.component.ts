@@ -106,9 +106,8 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
     this.callService()
       .then(promotionsShelves => {
 
-        if (this.havePackages(promotionsShelves) || this.isNotMathCritiriaMainPro()) {
-          this.transaction.data.promotionsShelves = promotionsShelves;
-          this.routeNavigate();
+        if (this.havePackages(promotionsShelves) || this.isNotMathCritiriaMainPro) {
+          this.router.navigate([this.setNavigatePathAndRequestPrivilege()]);
 
         } else {
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_NON_PACKAGE_PAGE]);
@@ -118,34 +117,44 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
       .then(() => this.pageLoadingService.closeLoading());
   }
 
-  routeNavigate(): void {
+  setNavigatePathAndRequestPrivilege(): string {
     if (this.selectMobileNo.privilegeCode) {
       this.transaction.data.customer.privilegeCode = this.selectMobileNo.privilegeCode;
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_DETAIL_PAGE]);
+      return ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_DETAIL_PAGE;
 
-    } else if (this.isCritiriaMainPro()) {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_CHANGE_PACKAGE_PAGE]);
+    } else if (this.isCritiriaMainPro) {
+      return ROUTE_DEVICE_ORDER_AIS_EXISTING_CHANGE_PACKAGE_PAGE;
 
     } else {
       const ussdCode = this.priceOption.trade.ussdCode;
+      this.requestPrivilege(ussdCode);
 
-      this.privilegeService.requestUsePrivilege(this.selectMobileNo.mobileNo, ussdCode, this.selectMobileNo.privilegeCode)
-        .then((privilegeCode) => {
-          this.transaction.data.customer.privilegeCode = privilegeCode;
-          this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo };
+    }
+  }
 
-          if (this.transaction.data.customer && this.transaction.data.customer.firstName === '-') {
-            this.customerInfoService.getCustomerProfileByMobileNo(
+  requestPrivilege(ussdCode: any): void {
+    this.privilegeService.requestUsePrivilege
+      (
+        this.selectMobileNo.mobileNo, ussdCode,
+        this.selectMobileNo.privilegeCode
+      )
+      .then((privilegeCode) => {
+        this.transaction.data.customer.privilegeCode = privilegeCode;
+        this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo };
+
+        if (this.transaction.data.customer && this.transaction.data.customer.firstName === '-') {
+
+          this.customerInfoService.getCustomerProfileByMobileNo
+            (
               this.transaction.data.simCard.mobileNo,
               this.transaction.data.customer.idCardNo
             )
             .then((customer: Customer) => {
               this.transaction.data.customer = { ...this.transaction.data.customer, ...customer };
             });
-          }
+        }
 
-      }).then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_DETAIL_PAGE]));
-    }
+      }).then(() => ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_DETAIL_PAGE);
   }
 
   callService(): Promise<any> {
@@ -161,10 +170,10 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
       profileType: 'All'
     }).toPromise()
       .then((resp: any) => {
-        const data = resp.data || {};
+        const contract = resp.data || {};
 
-        if (data) {
-          this.transaction.data.contractFirstPack = data;
+        if (contract) {
+          this.transaction.data.contractFirstPack = contract;
         }
 
         return this.promotionShelveService.getPromotionShelve(
@@ -175,47 +184,61 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
           },
           +privilege.minimumPackagePrice, +privilege.maxinumPackagePrice)
           .then((promotionShelves: any) => {
-            (promotionShelves || []).forEach((promotionShelve: any) => {
+            return this.filterPromotionByFirstPack(promotionShelves, contract);
 
-              promotionShelve.promotions = (promotionShelve.promotions || []).filter((promotion: any) => {
-                promotion.items = (promotion.items || [])
-                  .filter(contract => {
-                    const contractFirstPack = contract.value.customAttributes.priceExclVat
-                    >= Math.max(data.firstPackage || 0, data.minPrice || 0, data.initialPackage || 0);
-
-                    const inGroup = data.inPackage.length > 0 ? data.inPackage
-                    .some(inPack => inPack === contract.value.customAttributes.productPkg) : true;
-
-                    return contractFirstPack && inGroup;
-                  });
-
-                return promotion.items.length > 0;
-              });
-
-            });
-            return promotionShelves;
           });
+
       });
   }
 
+  filterPromotionByFirstPack(promotionShelves: any = [], contract: any = {}): any[] {
+    (promotionShelves || []).forEach((promotionShelve: any) => {
+      promotionShelve.promotions = (promotionShelve.promotions || []).filter((promotion: any) => {
+        promotion.items = (promotion.items || [])
+          .filter(item => {
+            const contractFirstPack = item.value.customAttributes.priceExclVat
+              >= Math.max(contract.firstPackage || 0, contract.minPrice || 0, contract.initialPackage || 0);
+
+            const inGroup = contract.inPackage.length > 0 ? contract.inPackage
+              .some(inPack => inPack === item.value.customAttributes.productPkg) : true;
+
+            return contractFirstPack && inGroup;
+
+          });
+        return promotion.items.length > 0;
+
+      });
+    });
+    return promotionShelves;
+
+  }
+
   havePackages(promotionsShelves: any): boolean {
-    return (promotionsShelves || []).length > 0 && promotionsShelves.some(promotionsShelve => promotionsShelve.promotions.length > 0);
+    return (promotionsShelves || []).length > 0
+      && promotionsShelves.some(promotionsShelve => promotionsShelve.promotions.length > 0);
+
   }
 
-  isCritiriaMainPro(): boolean {
-    return !this.mathHotDeal && !this.advancePay && this.selectMobileNo.privilegeMessage === `MT_INVALID_CRITERIA_MAINPRO`;
+  get isCritiriaMainPro(): boolean {
+    return !this.mathHotDeal && !this.advancePay
+      && this.selectMobileNo.privilegeMessage === `MT_INVALID_CRITERIA_MAINPRO`;
+
   }
 
-  isNotMathCritiriaMainPro(): boolean {
-    return !this.mathHotDeal && !this.advancePay && this.selectMobileNo.privilegeMessage !== `MT_INVALID_CRITERIA_MAINPRO`;
+  get isNotMathCritiriaMainPro(): boolean {
+    return !this.mathHotDeal && !this.advancePay
+      && this.selectMobileNo.privilegeMessage !== `MT_INVALID_CRITERIA_MAINPRO`;
+
   }
 
   get advancePay(): boolean {
     return !!((this.priceOption.trade.advancePay && this.priceOption.trade.advancePay.amount || 0) > 0);
+
   }
 
   get mathHotDeal(): boolean {
     return !!this.priceOption.campaign.campaignName.match(/\b(\w*Hot\s+Deal\w*)\b/);
+
   }
 
   onComplete(eligibleMobile: EligibleMobile): void {
