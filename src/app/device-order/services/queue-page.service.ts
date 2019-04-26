@@ -194,7 +194,9 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
 
   private getPaymentMethod(transaction: Transaction, priceOption: PriceOption): string {
     const payment: Payment = transaction.data.payment;
-    const tradePayment = priceOption.trade.payment[0] || priceOption.trade.payments[0];
+    const priceOptionpayment: any = priceOption.trade && priceOption.trade.payment ? priceOption.trade.payment : '';
+    const priceOptionpayments: any = priceOption.trade && priceOption.trade.payments ? priceOption.trade.payments : '';
+    const tradePayment = (priceOptionpayment && priceOptionpayment[0]) ? priceOptionpayment[0] : priceOptionpayments[0];
     if (payment.paymentType === 'QR_CODE') {
       if (payment.paymentQrCodeType === 'THAI_QR') {
         return 'PB';
