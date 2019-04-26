@@ -92,12 +92,6 @@ export class MobileCareComponent implements OnInit {
   ngOnInit(): void {
     this.createForm();
     this.oncheckValidators();
-    this.pageLoadingService.openLoading();
-    if (this.privilegeCustomerForm.value.mobileNo) {
-      this.checkChargeType(this.privilegeCustomerForm.value.mobileNo);
-    } else {
-      this.callService();
-    }
   }
 
   public oncheckValidators(): void {
@@ -235,6 +229,7 @@ export class MobileCareComponent implements OnInit {
           this.pageLoadingService.closeLoading();
           this.currentPackageMobileCare = res.data.currentPackage;
           this.isPrivilegeCustomer = true;
+          this.sendOTP();
         }
       });
   }
