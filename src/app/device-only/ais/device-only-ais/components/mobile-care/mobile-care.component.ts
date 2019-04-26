@@ -9,7 +9,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { HttpClient } from '../../../../../../../node_modules/@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { TransactionService } from '../../../../../shared/services/transaction.service';
-import { Transaction, MainPackage} from '../../../../../shared/models/transaction.model';
+import { Transaction, MainPackage } from '../../../../../shared/models/transaction.model';
 import { MobileCareService } from '../../services/mobile-care.service';
 import { MOBILE_CARE_PACKAGE_KEY_REF } from '../../constants/cpc.constant';
 
@@ -54,7 +54,6 @@ export class MobileCareComponent implements OnInit {
 
   @Input() mobileCare: MobileCare;
   @Input() normalPrice: number;
-
   @Output() existingMobileCare: EventEmitter<any> = new EventEmitter<any>();
   @Output() completed: EventEmitter<any> = new EventEmitter<any>();
   @Output() isVerifyflag: EventEmitter<any> = new EventEmitter<any>();
@@ -63,15 +62,15 @@ export class MobileCareComponent implements OnInit {
   @Output() checkBuyMobileCare: EventEmitter<any> = new EventEmitter<any>();
   @Output() isReasonNotBuyMobileCare: EventEmitter<any> = new EventEmitter<any>();
   @ViewChild('template')
+  public privilegeCustomerForm: FormGroup;
+  private exMobileCare: any;
   template: TemplateRef<any>;
   modalRef: BsModalRef;
-  public privilegeCustomerForm: FormGroup;
   mobileCareForm: FormGroup;
   notBuyMobileCareForm: FormGroup;
   priceOption: PriceOption;
   transaction: Transaction;
   transactionID: string;
-  private exMobileCare: any;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -92,6 +91,8 @@ export class MobileCareComponent implements OnInit {
   ngOnInit(): void {
     this.createForm();
     this.oncheckValidators();
+    this.checkillingSystem(this.privilegeCustomerForm.value.mobileNo);
+    this.checkPrivilegeMobileCare(this.privilegeCustomerForm.value.mobileNo);
   }
 
   public oncheckValidators(): void {
@@ -167,9 +168,32 @@ export class MobileCareComponent implements OnInit {
     this.modalRef.hide();
   }
 
+  public checkillingSystem(mobileNo: string): void {
+    this.customerInformationService.getProfileByMobileNo(mobileNo).then((res) => {
+      this.billingSystem = res.data.billingSystem;
+    });
+  }
+
+  public checkPrivilegeMobileCare(mobileNo: string): void {
+    this.pageLoadingService.openLoading();
+    if (mobileNo) {
+      this.customerInformationService.getCustomerProfile(mobileNo).then((res) => {
+        const mobileSegment = res.data.mobileSegment;
+        this.callService(mobileSegment);
+        this.pageLoadingService.closeLoading();
+      }).catch((err) => {
+        this.pageLoadingService.closeLoading();
+        this.alertService.error(err);
+      });
+    } else {
+      this.pageLoadingService.closeLoading();
+      this.callService();
+    }
+  }
+
   public searchMobileNo(): void {
     if (this.privilegeCustomerForm.value.mobileNo.length === 10) {
-      this.checkChargeType(this.privilegeCustomerForm.value.mobileNo);
+      this.checkExistingMobileCare(this.privilegeCustomerForm.value.mobileNo);
     } else {
       this.alertService.notify({
         type: 'warning',
@@ -180,21 +204,16 @@ export class MobileCareComponent implements OnInit {
     }
   }
 
-  public checkChargeType(mobileNo: string): void {
+  public checkExistingMobileCare(mobileNo: string): void {
+    this.pageLoadingService.openLoading();
     if (mobileNo) {
-      this.pageLoadingService.openLoading();
-      this.customerInformationService.getProfileByMobileNo(mobileNo).then((res) => {
-        if (res.data.chargeType === 'Pre-paid' || res.data.chargeType === 'Post-paid') {
-          this.billingSystem = res.data.billingSystem;
-          this.checkMobileCare(mobileNo).then(() => {
-            this.customerInformationService.getCustomerProfile(mobileNo).then(data => {
-              const mobileSegment = data.data.mobileSegment;
-              this.callService(mobileSegment);
-            });
-          }).catch(() => {});
-        } else {
-          // this.alertService.warning('เบอร์นี้เป็นระบบเติมเงิน ไม่สามารถทำรายการได้');
-        }
+      this.checkMobileCare(mobileNo).then(() => {
+        this.customerInformationService.getCustomerProfile(mobileNo).then(res => {
+          const mobileSegment = res.data.mobileSegment;
+          this.callService(mobileSegment);
+        });
+        this.pageLoadingService.closeLoading();
+      }).catch(() => {
         this.pageLoadingService.closeLoading();
       });
     } else {
@@ -243,7 +262,7 @@ export class MobileCareComponent implements OnInit {
       width: '80%',
       cancelButtonText: 'เปลี่ยนเบอร์ใหม่',
       cancelButtonClass: 'btn-secondary btn-lg text-black mr-2',
-      confirmButtonText: 'ยืนยันการสมัคร' ,
+      confirmButtonText: 'ยืนยันการสมัคร',
       confirmButtonClass: 'btn-success btn-lg text-white mr-2',
       showCancelButton: true,
       showConfirmButton: true,
@@ -266,7 +285,7 @@ export class MobileCareComponent implements OnInit {
     });
   }
 
-  sendOTP(): void {
+  public sendOTP(): void {
     let mobile = this.customerInformationService.getSelectedMobileNo();
     if (environment.name !== 'PROD') {
       mobile = environment.TEST_OTP_MOBILE;
@@ -284,7 +303,7 @@ export class MobileCareComponent implements OnInit {
       });
   }
 
-  verifyOTP(): void {
+  public verifyOTP(): void {
     const otp = this.privilegeCustomerForm.value.otpNo;
     let mobile = this.customerInformationService.getSelectedMobileNo();
     if (environment.name !== 'PROD') {
@@ -311,7 +330,7 @@ export class MobileCareComponent implements OnInit {
       });
   }
 
-  callService(mobileSegment?: string): void {
+  public callService(mobileSegment?: string): void {
     let billingSystem: string;
     if (this.billingSystem === 'Non BOS') {
       billingSystem = BillingSystemType.IRB;
@@ -321,9 +340,9 @@ export class MobileCareComponent implements OnInit {
     const chargeType = this.mainPackage ? this.mainPackage.customAttributes.billingSystem : 'Post-paid';
     const endUserPrice = +this.priceOption.trade.normalPrice;
     this.mobileCareService.getMobileCare({
-        packageKeyRef: MOBILE_CARE_PACKAGE_KEY_REF,
-        billingSystem: BillingSystemType.IRB
-      }, chargeType, billingSystem, endUserPrice, mobileSegment)
+      packageKeyRef: MOBILE_CARE_PACKAGE_KEY_REF,
+      billingSystem: BillingSystemType.IRB
+    }, chargeType, billingSystem, endUserPrice, mobileSegment)
       .then((mobileCare: any) => {
         this.mobileCare = {
           promotions: mobileCare
