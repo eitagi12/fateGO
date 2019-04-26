@@ -113,12 +113,9 @@ export class QueuePageService {
       matAirTime: trade.advancePay ? trade.advancePay.matAirtime : '',
       matCodeFreeGoods: '',
       paymentRemark: this.getOrderRemark(transaction, priceOption),
-      installmentTerm: payment.paymentMethod.month || 0,
-      installmentRate: payment.paymentMethod.percentage || 0,
       mobileAisFlg: 'Y',
       paymentMethod: this.getPaymentMethod(transaction, priceOption),
       bankCode: payment && payment.paymentBank ? payment.paymentBank.abb : '',
-      tradeFreeGoodsId: trade.freeGoods[0] ? trade.freeGoods[0].tradeFreegoodsId : '',
       matairtimeId: '',
       tradeDiscountId: trade.discount ? trade.discount.tradeAirtimeId : '',
       tradeAirtimeId: trade.advancePay ? trade.advancePay.tradeAirtimeId : '',
@@ -129,6 +126,11 @@ export class QueuePageService {
       qrTransId: mpayPayment ? mpayPayment.tranId : '',
       qrAmt: this.getQRAmt(trade, transaction)
     };
+
+    // freeGoods
+    if (trade.freeGoods && trade.freeGoods.length > 0) {
+      data.tradeFreeGoodsId = trade.freeGoods[0] ? trade.freeGoods[0].tradeFreegoodsId : '';
+    }
 
     // ผ่อนชำระ
     if (payment && payment.paymentMethod) {
@@ -194,9 +196,15 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
 
   private getPaymentMethod(transaction: Transaction, priceOption: PriceOption): string {
     const payment: Payment = transaction.data.payment;
-    const priceOptionpayment: any = priceOption.trade && priceOption.trade.payment ? priceOption.trade.payment : '';
-    const priceOptionpayments: any = priceOption.trade && priceOption.trade.payments ? priceOption.trade.payments : '';
-    const tradePayment = (priceOptionpayment && priceOptionpayment[0]) ? priceOptionpayment[0] : priceOptionpayments[0];
+    const trade: any = priceOption.trade;
+    let tradePayment: any;
+    if ((trade.payment && trade.payment.length > 0)) {
+      tradePayment = priceOption.trade.payment[0];
+    } else if ((trade.payments && trade.payments.length > 0)) {
+      tradePayment = priceOption.trade.payments[0];
+    } else {
+      tradePayment = {};
+    }
     if (payment.paymentType === 'QR_CODE') {
       if (payment.paymentQrCodeType === 'THAI_QR') {
         return 'PB';
