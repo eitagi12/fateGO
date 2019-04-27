@@ -107,6 +107,10 @@ export class DeviceOrderAisExistingBestBuyQrCodeSummaryPageComponent implements 
       const advancePay = trade.advancePay || {};
       total += +advancePay.amount;
     }
+
+    if (this.deposit) {
+      total += this.deposit;
+    }
     return total;
   }
 }

@@ -28,7 +28,7 @@
                       (แถมซิม)
                     </span>
                     <span class="pull-right text-green">
-                      ฿ {{ priceOption?.trade?.promotionPrice | number }}
+                      ฿ {{ (+priceOption?.trade?.promotionPrice) + deposit | number }}
                     </span>
                   </p>
                 </div>

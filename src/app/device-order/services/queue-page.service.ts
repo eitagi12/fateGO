@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TokenService } from 'mychannel-shared-libs';
-import { Transaction, Payment, Prebooking } from 'src/app/shared/models/transaction.model';
+import { Transaction, Payment, Prebooking, Customer, Queue } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { HttpClient } from '@angular/common/http';
 
@@ -84,7 +84,7 @@ export class QueuePageService {
       matCode: '',
       priceIncAmt: (+trade.normalPrice || 0).toFixed(2),
       priceDiscountAmt: (+discount.amount || 0).toFixed(2),
-      grandTotalAmt: this.getGrandTotalAmt(trade, prebooking),
+      grandTotalAmt: (+this.getGrandTotalAmt(trade, prebooking)).toFixed(2),
       userId: user.username,
       saleCode: this.tokenService.isAisUser() ? (seller.sellerNo || '') : (seller.sellerNo || user.ascCode),
       queueNo: queue.queueNo || '',
@@ -93,18 +93,18 @@ export class QueuePageService {
       cusMobileNoOrder: simCard.mobileNo || '',
       customerAddress: {
         addrNo: customer.homeNo,
-        amphur: customer.amphur,
-        buildingName: customer.buildingName,
-        country: 'ประเทศไทย',
-        floor: customer.floor,
-        moo: customer.moo,
-        mooban: customer.mooBan,
-        postCode: customer.zipCode,
-        province: customer.province.replace(/มหานคร$/, ''),
         room: customer.room,
+        buildingName: customer.buildingName,
+        moo: customer.moo,
+        floor: customer.floor,
         soi: customer.soi,
         streetName: customer.street,
-        tumbon: customer.tumbol
+        mooban: customer.mooBan,
+        tumbon: customer.tumbol,
+        amphur: customer.amphur,
+        province: customer.province.replace(/มหานคร$/, ''),
+        country: 'ประเทศไทย',
+        postCode: customer.zipCode
       },
       tradeNo: trade.tradeNo || '',
       ussdCode: trade.ussdCode || '',
@@ -117,7 +117,7 @@ export class QueuePageService {
       paymentMethod: this.getPaymentMethod(transaction, priceOption),
       bankCode: payment && payment.paymentBank ? payment.paymentBank.abb : '',
       matairtimeId: '',
-      tradeDiscountId: trade.discount ? trade.discount.tradeAirtimeId : '',
+      tradeDiscountId: trade.discount ? trade.discount.tradeDiscountId : '',
       tradeAirtimeId: trade.advancePay ? trade.advancePay.tradeAirtimeId : '',
       focCode: '',
       bankAbbr: payment && payment.paymentBank ? payment.paymentBank.abb : '',
@@ -159,7 +159,7 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
       const qrAmt: number = trade.normalPrice - trade.discount.amount;
       return qrAmt.toFixed(2);
     } else {
-      return '';
+      return undefined;
     }
   }
 
@@ -240,14 +240,18 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
       // ใช้ได้ทั้งบัตร credit, debit
       if (payment.paymentForm === 'INSTALLMENT') { // ผ่อนชำระ
         message += `${this.CREDIT_CARD_PAYMENT}${this.COMMA}${this.SPACE}`;
-        message += `${this.BANK}${payment.paymentMethod.abb}${this.COMMA}${this.SPACE}`;
+        message += `${this.BANK}${payment.paymentMethod.abb || payment.paymentBank.abb}${this.COMMA}${this.SPACE}`;
         message += `${this.INSTALLMENT}${payment.paymentMethod.percentage}%${this.SPACE}${payment.paymentMethod.month}`;
+        message += `เดือน${this.COMMA}${this.SPACE}`;
       } else { // ชำระเต็มจำนวน
-        message += `${this.CASH_PAYMENT}${this.COMMA}${this.SPACE}`;
-        message += `${this.BANK}${this.COMMA}${this.SPACE}`;
-        message += `${this.INSTALLMENT}0%${this.SPACE}0`;
+        if (payment.paymentType === 'DEBIT') {
+          message += `${this.CASH_PAYMENT}${this.COMMA}${this.SPACE}`;
+        } else {
+          message += `${this.CREDIT_CARD_PAYMENT}${this.COMMA}${this.SPACE}`;
+          message += `${this.BANK}${payment.paymentMethod.abb || payment.paymentBank.abb}${this.COMMA}${this.SPACE}`;
+          // message += `${this.INSTALLMENT}0%${this.SPACE}0`;
+        }
       }
-      message += `เดือน${this.COMMA}${this.SPACE}`;
     }
     message += `${this.TRADE_NO}${trade.tradeNo}`;
     return message;
@@ -262,6 +266,8 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
     const onTopPackage = transaction.data.onTopPackage || {};
     const mobileCarePackage = transaction.data.mobileCarePackage || {};
     const simCard = transaction.data.simCard;
+    const customer: any = transaction.data.customer || {};
+    const queue: any = transaction.data.queue || {};
 
     let customerGroupName = '';
     if ('MC001' === customerGroup.code) {
@@ -273,23 +279,23 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
 
     message += this.SUMMARY_POINT + this.SPACE + 0 + this.COMMA + this.SPACE;
     message += this.SUMMARY_DISCOUNT + this.SPACE + 0 + this.COMMA + this.SPACE;
-    message += this.DISCOUNT + this.SPACE + (trade.discount ? +trade.discount.amount : 0) + this.COMMA + this.SPACE;
-    message += this.RETURN_CODE + this.SPACE + (simCard.privilegeCode || '') + this.COMMA + this.SPACE;
+    message += this.DISCOUNT + this.SPACE + (trade.discount ? (+trade.discount.amount).toFixed(2) : 0.00) + this.COMMA + this.SPACE;
+    message += this.RETURN_CODE + this.SPACE + (simCard.privilegeCode || customer.privilegeCode || '') + this.COMMA + this.SPACE;
     message += this.ORDER_TYPE + this.SPACE + customerGroupName + this.COMMA + this.SPACE;
     message += this.PRMOTION_CODE + this.SPACE + (onTopPackage.promotionCode || '') + this.COMMA + this.SPACE;
     message += this.MOBILE_CARE_CODE + this.SPACE + (customAttributes.promotionCode || '') + this.COMMA + this.SPACE;
     message += this.MOBILE_CARE + this.SPACE + (customAttributes.shortNameThai || '') + this.COMMA + this.SPACE;
     message += this.PRIVILEGE_DESC + this.SPACE + (privilege.privilegeDesc || '') + this.COMMA + this.SPACE;
-    message += this.QUEUE_NUMBER + this.SPACE + trade.tradeNo;
+    message += this.QUEUE_NUMBER + this.SPACE + queue.queueNo;
     return message;
   }
 
   private getGrandTotalAmt(trade: any, prebooking?: Prebooking): number {
     const normalPrice = +(+trade.normalPrice || 0).toFixed(2);
-    const discount = +(+trade.discount ? (+trade.discount.amount || 0) : 0).toFixed(2);
+    const discount = +(trade.discount ? (+trade.discount.amount || 0) : 0).toFixed(2);
     const advancePay = +(trade.advancePay ? (+trade.advancePay.amount || 0) : 0).toFixed(2);
     const depositAmt = +(prebooking && +prebooking.depositAmt ? (+prebooking.depositAmt || 0) : 0).toFixed(2);
-    return (((normalPrice + advancePay) - discount) - depositAmt);
+    return +(((normalPrice + advancePay) - discount) - depositAmt);
   }
 
   private getReqMinimumBalance(onTopPackage: any, mobileCarePackage: any): number { // Package only

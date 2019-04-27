@@ -19,7 +19,7 @@
           </div>
           <div class="card-header text-light-green bg-transparent">
             <div class="row">
-              <div class="col-12" *ngIf="paymentDetail?.header">
+              <div class="col-12" *ngIf="transaction?.data?.preBooking?.depositAmt">
                 ค่ามัดจำสินค้า {{ priceOption?.productDetail?.name + ' สี ' + priceOption?.productStock?.colorName}}
                 <span class="pull-right text-danger">฿ - {{ transaction?.data?.preBooking.depositAmt | number}}</span>
               </div>
@@ -50,6 +50,21 @@
       <mc-payment-detail [paymentDetail]="payementDetail" [banks]="banks" (completed)="onPaymentCompleted($event)"
         (error)="onPaymentError($event)">
       </mc-payment-detail>
+
+      <div class="container-fluid" *ngIf="transaction?.data?.preBooking?.depositAmt">
+          <div class="card my-3">
+            <div class="row">
+              <div class="col sm-6 text-right"></div>
+              <div class="col sm-6 text-right">
+                <h5 class="m-2">รวมยอดชำระ
+                  <span>
+                    ฿
+                    {{ summary([+priceOption?.trade?.promotionPrice, -transaction?.data?.preBooking?.depositAmt]) | number }}</span>
+                </h5>
+              </div>
+            </div>
+          </div>
+        </div>
 
       <mc-receipt-info [receiptInfo]="receiptInfo"></mc-receipt-info>
     </div>

@@ -42,7 +42,7 @@
               <p *ngIf="!!transaction?.data?.preBooking && !!transaction?.data?.preBooking?.preBookingNo">
                 <i class="fa fa-circle mr-3 text-pink"></i>
                 หักค่ามัดจำสินค้า ({{ transaction?.data?.preBooking?.preBookingNo }})
-                <span class="pull-right text-green">
+                <span class="pull-right text-pink">
                   - ฿ {{ transaction?.data?.preBooking?.depositAmt | number }}
                 </span>
               </p>
@@ -80,7 +80,7 @@
                   <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">: ผ่อนชำระบัตรเคดิต</span>
                 </label>
                 <span class="pull-right text-green">
-                  ฿ {{ priceOption?.trade?.promotionPrice | number }}
+                  ฿ {{ summary([+priceOption?.trade?.promotionPrice, deposit]) | number }}
                 </span>
                 <div class="mt-1">
                   <small class="text-muted">

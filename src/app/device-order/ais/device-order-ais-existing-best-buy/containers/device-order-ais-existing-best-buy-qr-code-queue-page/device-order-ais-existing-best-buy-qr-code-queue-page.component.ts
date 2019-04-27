@@ -406,6 +406,10 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
       const advancePay = trade.advancePay || {};
       summary += +advancePay.amount;
     }
+
+    if (this.deposit) {
+      summary += this.deposit;
+    }
     return summary;
   }
 

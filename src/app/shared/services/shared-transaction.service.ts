@@ -235,6 +235,10 @@ export class SharedTransactionService {
     if (data.contract && data.contract.conditionCode) {
       params.data.contract.conditionCode = data.contract.conditionCode;
     }
+
+    if (data.mpayPayment) {
+      params.data.mpay_payment = data.mpayPayment;
+    }
     return params;
   }
 
