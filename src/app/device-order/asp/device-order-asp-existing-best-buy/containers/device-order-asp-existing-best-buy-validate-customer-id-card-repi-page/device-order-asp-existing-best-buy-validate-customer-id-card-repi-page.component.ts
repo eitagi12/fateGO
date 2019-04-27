@@ -170,30 +170,35 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardRepiPageComponen
     this.transactionService.update(this.transaction);
   }
 
-  getRequestAddDeviceSellingCart(): any {
-    const productStock = this.priceOption.productStock;
-    const productDetail = this.priceOption.productDetail;
-    const customer = this.transaction.data.customer;
-    const preBooking: Prebooking = this.transaction.data.preBooking;
-    return {
-      soCompany: productStock.company || 'AWN',
-      locationSource: this.user.locationCode,
-      locationReceipt: this.user.locationCode,
-      productType: productDetail.productType || 'DEVICE',
-      productSubType: productDetail.productSubType || 'HANDSET',
-      brand: productDetail.brand,
-      model: productDetail.model,
-      color: productStock.color,
-      priceIncAmt: '',
-      priceDiscountAmt: '',
-      grandTotalAmt: '',
-      userId: this.user.username,
-      cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
-      preBookingNo: preBooking ? preBooking.preBookingNo : '',
-      depositAmt: preBooking ? preBooking.depositAmt : '',
-      reserveNo: preBooking ? preBooking.reserveNo : ''
-    };
-  }
+  // getRequestAddDeviceSellingCart(): any {
+  //   const productStock = this.priceOption.productStock;
+  //   const productDetail = this.priceOption.productDetail;
+  //   const customer = this.transaction.data.customer;
+  //   const preBooking: Prebooking = this.transaction.data.preBooking;
+  //   let subStock;
+  //   if (preBooking && preBooking.preBookingNo) {
+  //     subStock = 'PRE';
+  //   }
+  //   return {
+  //     soCompany: productStock.company || 'AWN',
+  //     locationSource: this.user.locationCode,
+  //     locationReceipt: this.user.locationCode,
+  //     productType: productDetail.productType || 'DEVICE',
+  //     productSubType: productDetail.productSubType || 'HANDSET',
+  //     brand: productDetail.brand,
+  //     model: productDetail.model,
+  //     color: productStock.color,
+  //     priceIncAmt: '',
+  //     priceDiscountAmt: '',
+  //     grandTotalAmt: '',
+  //     userId: this.user.username,
+  //     cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
+  //     preBookingNo: preBooking ? preBooking.preBookingNo : '',
+  //     depositAmt: preBooking ? preBooking.depositAmt : '',
+  //     reserveNo: preBooking ? preBooking.reserveNo : '',
+  //     subStockDestination: subStock
+  //   };
+  // }
 
   readCardflowPC(): void {
     this.readCardSubscription = this.readCardService.onReadCard().subscribe((readCard: ReadCard) => {

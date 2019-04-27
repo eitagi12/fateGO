@@ -131,6 +131,10 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent im
     const customer = this.transaction.data.customer;
     const trade = this.priceOption.trade;
     const preBooking: Prebooking = this.transaction.data.preBooking;
+    let subStock;
+    if (preBooking && preBooking.preBookingNo) {
+      subStock = 'PRE';
+    }
     return {
       soCompany: productStock.company || 'AWN',
       locationSource: this.user.locationCode,
@@ -147,7 +151,8 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent im
       cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
       preBookingNo: preBooking ? preBooking.preBookingNo : '',
       depositAmt: preBooking ? preBooking.depositAmt : '',
-      reserveNo: preBooking ? preBooking.reserveNo : ''
+      reserveNo: preBooking ? preBooking.reserveNo : '',
+      subStockDestination: subStock
     };
   }
 }
