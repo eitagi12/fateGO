@@ -88,7 +88,7 @@ export class QueuePageService {
       userId: user.username,
       saleCode: this.tokenService.isAisUser() ? (seller.sellerNo || '') : (seller.sellerNo || user.ascCode),
       queueNo: queue.queueNo || '',
-      cusNameOrder: `${customer.titleName || ''} ${customer.firstName || ''} ${customer.lastName || ''}`.trim(),
+      cusNameOrder: `${customer.titleName || ''} ${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
       taxCardId: customer.idCardNo || '',
       cusMobileNoOrder: simCard.mobileNo || '',
       customerAddress: {
@@ -102,7 +102,7 @@ export class QueuePageService {
         mooban: customer.mooBan,
         tumbon: customer.tumbol,
         amphur: customer.amphur,
-        province: customer.province.replace(/มหานคร$/, ''),
+        province: (customer.province || '').replace(/มหานคร$/, ''),
         country: 'ประเทศไทย',
         postCode: customer.zipCode
       },

@@ -7,7 +7,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Transaction, Prebooking, Customer, Payment } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_QR_CODE_QUEUE_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE } from '../../constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
 import { QRCodePaymentService } from 'src/app/shared/services/qrcode-payment.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
