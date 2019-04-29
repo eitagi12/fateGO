@@ -70,9 +70,7 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.getMessageConfig().then((res: any) => {
-      this.filterTrade();
-    });
+    this.getMessageConfig();
 
     this.formID = this.getRandomNum(10);
     this.transaction = {
