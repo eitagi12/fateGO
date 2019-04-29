@@ -110,6 +110,11 @@ export class DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageCompo
             this.alertService.notify({
               type: 'error',
               html: 'ไม่สามารถซื้อเครื่องราคาพิเศษ/เปิดเบอร์ใหม่ได้ <br> ' + err.error.errors
+            }).then(() => {
+              if (this.validateCustomerIdcard.koiskApiFn) {
+                this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+              }
+              this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
             });
             return { zipCode: zipCode };
           });
