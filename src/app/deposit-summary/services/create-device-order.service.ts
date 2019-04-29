@@ -124,6 +124,7 @@ export class CreateDeviceOrderService {
     const seller = transaction.data.seller;
     // const prebooking = transaction.data.preBooking;
     const order = transaction.data.order || '';
+    const matCode = this.getMatCode(priceOption.trade);
     const data: any = {
       soId: this.localStorageService.load('reserveSoId').value,
       soCompany: trade.company || 'AWN',
@@ -134,7 +135,7 @@ export class CreateDeviceOrderService {
       brand: productDetail.brand,
       model: productDetail.model,
       color: productDetail.colorName,
-      matCode: trade.tradeReserve.trades[0].matCode[0],
+      matCode: matCode,
       priceIncAmt:  '',
       priceDiscountAmt:  '',
       grandTotalAmt: trade ? trade.tradeReserve.trades[0].deposit.depositIncludeVat : '',
@@ -270,5 +271,13 @@ export class CreateDeviceOrderService {
       userId: userId,
       soId: soId
     }).toPromise().then((res: any) => res.data);
+  }
+
+  private getMatCode(trades: any): string {
+      if (trades.tradeReserve.trades[0].matCode.length > 0) {
+        return trades.tradeReserve.trades[0].matCode[0];
+      } else {
+        return trades.sku[0];
+      }
   }
 }

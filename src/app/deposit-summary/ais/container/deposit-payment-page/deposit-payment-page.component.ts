@@ -366,8 +366,8 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     const result = [];
     for (const trades of reserveProductInfo.tradeReserve.trades) {
       if (trades.deposit) {
-        if (trades.deposit.depositIncludeVat !== this.messageConfigService.mapMessageConfig(
-          this.messageConfigService.messageConfig, RESERVE_STOCK.MESSAGE_CODE_TH.TH_0002)) {
+        if (Number(trades.deposit.depositIncludeVat) > Number(this.messageConfigService.mapMessageConfig(
+          this.messageConfigService.messageConfig, RESERVE_STOCK.MESSAGE_CODE_TH.TH_0002))) {
           if (trades.criterias) {
             for (const criterias of trades.criterias) {
               if (criterias.target) {
@@ -387,8 +387,8 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     const result = [];
     for (const trades of reserveProductInfo.tradeReserve.trades) {
       if (trades.deposit) {
-        if (trades.deposit.depositIncludeVat !== this.messageConfigService.mapMessageConfig(
-          this.messageConfigService.messageConfig, RESERVE_STOCK.MESSAGE_CODE_TH.TH_0002)) {
+        if (Number(trades.deposit.depositIncludeVat) > Number(this.messageConfigService.mapMessageConfig(
+          this.messageConfigService.messageConfig, RESERVE_STOCK.MESSAGE_CODE_TH.TH_0002))) {
           if (trades.criterias) {
             for (const criterias of trades.criterias) {
               if (criterias.target) {
@@ -408,8 +408,8 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     const result = [];
     for (const trades of reserveProductInfo.tradeReserve.trades) {
       if (trades.deposit) {
-        if (trades.deposit.depositIncludeVat !== this.messageConfigService.mapMessageConfig(
-          this.messageConfigService.messageConfig, RESERVE_STOCK.MESSAGE_CODE_TH.TH_0002)) {
+        if (Number(trades.deposit.depositIncludeVat) !== Number(this.messageConfigService.mapMessageConfig(
+          this.messageConfigService.messageConfig, RESERVE_STOCK.MESSAGE_CODE_TH.TH_0002))) {
           if (!trades.criterias) {
             result.push(trades);
           }
