@@ -60,7 +60,7 @@ export class DeviceOrderAisNewRegisterEbillingAddressPageComponent implements On
     this.http.get('/api/customerportal/newRegister/getAllZipcodes').subscribe((resp: any) => {
       this.allZipCodes = resp.data.zipcodes || [];
     });
-
+    customer.province = customer.province.replace(/มหานคร$/, '');
     this.http.get('/api/customerportal/newRegister/getAllProvinces'
       , {
         params: {
@@ -72,7 +72,7 @@ export class DeviceOrderAisNewRegisterEbillingAddressPageComponent implements On
           homeNo: customer.homeNo,
           moo: customer.moo,
           mooBan: customer.mooBan,
-          room: customer.floor,
+          room: customer.room,
           floor: customer.floor,
           buildingName: customer.buildingName,
           soi: customer.soi,
