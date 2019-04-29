@@ -8,7 +8,7 @@
           <img src="assets/images/icon/icon-green-check-circle.png" class="icon" />
           <div>หมายเลข {{ transaction?.data?.simCard?.mobileNo | mobileNo }}</div>
           <div>ชำระค่าสินค้าเรียบร้อยแล้ว</div>
-          <!-- <div>หมายเลขอ้างอิง 1129943007</div> -->
+          <div>หมายเลขอ้างอิง {{ transaction?.data?.mpayPayment?.tranId }}</div>
         </div>
 
         <!-- ชำระ -->

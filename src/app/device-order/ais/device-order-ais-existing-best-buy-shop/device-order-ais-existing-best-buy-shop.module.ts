@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { FormsModule,ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { NgModule } from '@angular/core';
 import { TabsModule } from 'ngx-bootstrap';

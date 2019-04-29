@@ -57,21 +57,22 @@ export class DeviceOrderAisExistingBestBuyShopQrCodeQueuePageComponent implement
     this.deposit = this.transaction.data.preBooking
       && this.transaction.data.preBooking.depositAmt ? -Math.abs(+this.transaction.data.preBooking.depositAmt) : 0;
     // this.getTransactionId();
+    this.transId = !!this.transaction.data.mpayPayment ? this.transaction.data.mpayPayment.tranId : '';
     this.color = this.priceOption.productStock.color ? this.priceOption.productStock.color : this.priceOption.productStock.colorName || '';
     this.createForm();
   }
 
-  getTransactionId(): void {
-    const order = this.transaction.data.order || {};
-    this.qrCodeService.getInquiryCallbackMpay({ orderId: order.soId }).then((transId: any) => {
-      if (transId && transId.data && transId.data.DATA && transId.data.DATA.mpay_payment) {
-        this.transId = transId.data.DATA.mpay_payment.tranId;
-        // this.transaction.data.mpayPayment.tranId = this.transId;
-      } else {
-        this.alertService.error('เกิดข้อผิดพลาด ระบบไม่สามารถเรียก orderID(soID) มาใช้งานได้');
-      }
-    });
-  }
+  // getTransactionId(): void {
+  //   const order = this.transaction.data.order || {};
+  //   this.qrCodeService.getInquiryCallbackMpay({ orderId: order.soId }).then((transId: any) => {
+  //     if (transId && transId.data && transId.data.DATA && transId.data.DATA.mpay_payment) {
+  //       this.transId = transId.data.DATA.mpay_payment.tranId;
+  //       // this.transaction.data.mpayPayment.tranId = this.transId;
+  //     } else {
+  //       this.alertService.error('เกิดข้อผิดพลาด ระบบไม่สามารถเรียก orderID(soID) มาใช้งานได้');
+  //     }
+  //   });
+  // }
 
   createForm(): void {
     this.mobileFrom = this.fb.group({
