@@ -126,13 +126,10 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
     this.homeService.goToHome();
   }
 
-  onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_QUEUE_PAGE]);
-  }
-
   goToMpayQueuePage(): void {
     this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_QUEUE_PAGE]);
   }
+
   onRefresh(): void {
     location.reload();
     this.refreshQRCode.emit(true);

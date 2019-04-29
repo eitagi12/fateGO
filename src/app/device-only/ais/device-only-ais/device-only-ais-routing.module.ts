@@ -11,6 +11,7 @@ import { DeviceOnlyAisQrCodeGeneratePageComponent } from './containers/device-on
 import { DeviceOnlyAisCheckoutPaymentQrCodePageComponent } from './containers/device-only-ais-checkout-payment-qr-code-page/device-only-ais-checkout-payment-qr-code-page.component';
 import { DeviceOnlyAisKeyInQueuePageComponent } from './containers/device-only-ais-key-in-queue-page/device-only-ais-key-in-queue-page.component';
 import { DeviceOnlyAutoGetQueuePageComponent } from './containers/device-only-ais-auto-get-queue-page/device-only-ais-auto-get-queue-page.component';
+import { DeviceOnlyAisQrCodeKeyInQueuePageComponent } from './containers/device-only-ais-qr-code-key-in-queue-page/device-only-ais-qr-code-key-in-queue-page.component';
 
 const routes: Routes = [
   {
@@ -28,6 +29,10 @@ const routes: Routes = [
   {
     path: 'qr-code-queue',
     component: DeviceOnlyAisQrCodeQueuePageComponent
+  },
+  {
+    path: 'qr-code-key-in-queue',
+    component: DeviceOnlyAisQrCodeKeyInQueuePageComponent
   },
   {
     path: 'queue',

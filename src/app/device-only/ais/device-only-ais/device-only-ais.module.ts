@@ -30,6 +30,7 @@ import { CustomerInformationService } from './services/customer-information.serv
 import { SellerService } from 'src/app/device-only/ais/device-only-ais/services/seller.service';
 import { ShoppingCartDetailComponent } from './components/shopping-cart-detail/shopping-cart-detail.component';
 import { DeviceOnlyAutoGetQueuePageComponent } from './containers/device-only-ais-auto-get-queue-page/device-only-ais-auto-get-queue-page.component';
+import { DeviceOnlyAisQrCodeKeyInQueuePageComponent } from './containers/device-only-ais-qr-code-key-in-queue-page/device-only-ais-qr-code-key-in-queue-page.component';
 
 @NgModule({
   imports: [
@@ -61,7 +62,8 @@ import { DeviceOnlyAutoGetQueuePageComponent } from './containers/device-only-ai
     SummaryPaymentDetailComponent,
     SummarySellerCodeComponent,
     ShoppingCartDetailComponent,
-    DeviceOnlyAutoGetQueuePageComponent
+    DeviceOnlyAutoGetQueuePageComponent,
+    DeviceOnlyAisQrCodeKeyInQueuePageComponent
   ],
   providers: [
     BillingAddressService,

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HomeService } from 'mychannel-shared-libs';
+import { HomeService, PageLoadingService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { HomeButtonService } from '../../services/home-button.service';
@@ -17,13 +17,15 @@ export class DeviceOnlyAisQueuePageComponent implements OnInit, OnDestroy {
   priceOption: PriceOption;
   constructor(
     private transactionService: TransactionService,
-    private priceOptionService: PriceOptionService
+    private priceOptionService: PriceOptionService,
+    private pageLoadingService: PageLoadingService
     ) {
       this.transaction = this.transactionService.load();
       this.priceOption = this.priceOptionService.load();
     }
 
   ngOnInit(): void {
+    this.pageLoadingService.closeLoading();
   }
 
   onHome(): void {

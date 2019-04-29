@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE, ROUTE_DEVICE_ONLY_AIS_QR_CODE_KEY_IN_QUEUE } from '../../constants/route-path.constant';
 import { HomeService, AlertService, PageLoadingService, REGEX_MOBILE } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
@@ -9,7 +9,6 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { HomeButtonService } from '../../services/home-button.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { FormGroup, FormBuilder, Validators, ValidationErrors, FormControl } from '@angular/forms';
-import { QueuePageService } from 'src/app/device-order/services/queue-page.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { QueueService } from '../../services/queue.service';
 
@@ -18,7 +17,7 @@ import { QueueService } from '../../services/queue.service';
   templateUrl: './device-only-ais-qr-code-queue-page.component.html',
   styleUrls: ['./device-only-ais-qr-code-queue-page.component.scss']
 })
-export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy {
+export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit {
   transaction: Transaction;
   priceOption: PriceOption;
   queueFrom: FormGroup = new FormGroup({
@@ -32,7 +31,6 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy 
     private priceOptionService: PriceOptionService,
     private homeButtonService: HomeButtonService,
     private pageLoadingService: PageLoadingService,
-    private queuePageService: QueuePageService,
     private sharedTransactionService: SharedTransactionService,
     private createOrderService: CreateOrderService,
     private queueService: QueueService
@@ -57,12 +55,6 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy 
   onNext(): void {
     this.pageLoadingService.openLoading();
     this.queueService.autoGetQueue(this.queueFrom.value.mobileNo)
-      .then((resp: any) => {
-        // const data = resp.data && resp.data.result ? resp.data.result : {};
-        // return data.queueNo;
-        const data = resp;
-        return data;
-      })
       .then((queueNo: string) => {
         this.transaction.data.queue = {
           queueNo: queueNo
@@ -74,25 +66,22 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy 
               (res) => {
                 this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE]);
               if (res === 'S') {
-                // this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE]);
+                this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE]);
               } else if (res === 'F') {
-                // this.router.navigate([ROUTE_DEVICE_ONLY_AIS_KEY_IN_QUEUE]);
+                this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_KEY_IN_QUEUE]);
               }
             },
             (err) => {
               this.pageLoadingService.closeLoading();
-              // this.router.navigate([ROUTE_DEVICE_ONLY_AIS_KEY_IN_QUEUE]);
-            },
-            () => {
-              this.pageLoadingService.closeLoading();
+              this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_KEY_IN_QUEUE]);
             }
            );
           }
         });
-      }).then(() => this.pageLoadingService.closeLoading());
-  }
-  ngOnDestroy(): void {
-
+      }).catch((err) => {
+        this.pageLoadingService.closeLoading();
+        this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_KEY_IN_QUEUE]);
+      });
   }
 
 }
