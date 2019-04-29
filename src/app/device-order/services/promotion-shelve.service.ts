@@ -78,7 +78,7 @@ export class PromotionShelveService {
                   return +a.customAttributes.priceInclVat !== +b.customAttributes.priceInclVat ?
                     +a.customAttributes.priceInclVat < +b.customAttributes.priceInclVat ? -1 : 1 : 0;
                 }).map((promotionData: any) => {
-                  const uniqueId = (+promotionData.id) + (+promotion.id);
+                  const uniqueId = `${promotion.id}-${promotionData.id}`;
                   promotionData.uniqueId = uniqueId;
                   return { // item
                     id: uniqueId,
