@@ -20,7 +20,7 @@ export class SummaryPageService {
       const advancePay = trade.advancePay || {};
 
       const price = (((+trade.promotionPrice || 0)
-      + (advancePay.installmentFlag === `N` ? +advancePay.amount : 0))
+      + (advancePay.installmentFlag === `Y` ? +advancePay.amount : 0))
       / (+paymentMethod.month || 1))
       .toFixed(2);
 
