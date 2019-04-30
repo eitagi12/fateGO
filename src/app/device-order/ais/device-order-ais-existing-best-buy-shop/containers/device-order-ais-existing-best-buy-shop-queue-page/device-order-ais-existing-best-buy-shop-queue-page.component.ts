@@ -45,7 +45,9 @@ export class DeviceOrderAisExistingBestBuyShopQueuePageComponent implements OnIn
   }
 
   ngOnInit(): void {
-    this.isAutoGenQueue = this.user.locationCode === '1100' || this.user.locationCode === '1213' ;
+    this.queuePageService.checkQueueLocation().then((isQueueAuto) => {
+      this.isAutoGenQueue = isQueueAuto || this.user.locationCode === '1213';
+    }).then(() => this.createForm());
     this.createForm();
   }
 

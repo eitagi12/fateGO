@@ -53,7 +53,10 @@ export class DeviceOrderAisExistingBestBuyShopQrCodeQueuePageComponent implement
   ngOnInit(): void {
     this.queueWording = this.isLocationPhuket() ? 'เบอร์โทรศัพท์รับหมายเลขสั่งซื้อเพื่อชำระสินค้าของท่านคือ'
                       : this.queueWording;
-    this.isAutoGenQueue = this.user.locationCode === '1100';
+    // this.isAutoGenQueue = this.queuePageService.checkQueueLocation();this.user.locationCode === '1100';
+    this.queuePageService.checkQueueLocation().then((isQueueAuto) => {
+      this.isAutoGenQueue = isQueueAuto;
+    }).then(() => this.createForm());
     this.deposit = this.transaction.data.preBooking
       && this.transaction.data.preBooking.depositAmt ? -Math.abs(+this.transaction.data.preBooking.depositAmt) : 0;
     // this.getTransactionId();
