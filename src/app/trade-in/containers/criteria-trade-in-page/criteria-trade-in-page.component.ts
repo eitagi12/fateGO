@@ -16,7 +16,7 @@ export class CriteriaTradeInPageComponent implements OnInit, OnDestroy {
   valuationlists: any;
   objCriteriatradein: any;
   objTradein: any;
-  btnNextDisabled = true;
+  btnNextDisabled: boolean = true;
   valuationlistForm: FormGroup;
   criteriatradein: any;
   constructor(private router: Router,

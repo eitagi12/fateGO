@@ -24,18 +24,18 @@ export class TradeInTransactionService {
       .setDefaultValue({});
   }
 
-  remove() {
+  remove(): void {
     this.settings.remove();
   }
 
-  save(transaction: TradeInTranscation) {
+  save(transaction: TradeInTranscation): void {
     this.settings.save(Object.assign({
       createDate: Moment().toISOString(),
       createBy: this.user.username
     }, transaction));
   }
 
-  update(transaction: Partial<TradeInTranscation>) {
+  update(transaction: Partial<TradeInTranscation>): void {
     this.remove();
     this.settings.save(Object.assign({
       lastUpdateDate: Moment().toISOString(),

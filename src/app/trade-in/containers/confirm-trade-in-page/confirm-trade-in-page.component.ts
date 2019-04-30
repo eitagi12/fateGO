@@ -16,7 +16,7 @@ export class ConfirmTradeInPageComponent implements OnInit , OnDestroy {
   tradeinPrice: any;
   tradeinGrade: string;
   tradeinNo: string;
-  btnNextDisabled = true;
+  btnNextDisabled: boolean = true;
   constructor(private router: Router,
     private tradeInService: TradeInService,
     private pageLoadingService: PageLoadingService,

@@ -25,7 +25,7 @@ export class VerifyTradeInPageComponent implements OnInit , OnDestroy {
   listModelTradein: any = [];
   defualtListModel: any = [];
   defualtBrand: any = [];
-  isSelectImg = false;
+  isSelectImg: boolean = false;
   keyword: string;
   checkSerial: any;
   barcodeSubscription: Subscription;
@@ -117,7 +117,7 @@ export class VerifyTradeInPageComponent implements OnInit , OnDestroy {
         imei: new FormControl('', [Validators.required, Validators.minLength(15)])
       }, this.checkValueImei);
     }
-    checkValueImei (control: FormGroup): ValidationErrors {
+    checkValueImei(control: FormGroup): ValidationErrors {
       const valImei = control.get('imei');
       const regex: any  = /([0-9]{15})+$/;
       if (regex.test(valImei.value)) {
@@ -157,7 +157,7 @@ export class VerifyTradeInPageComponent implements OnInit , OnDestroy {
         });
     }
 
-    setAutoSelect(objSerial): void {
+    setAutoSelect(objSerial: any): void {
       this.setBrandImg(objSerial);
       this.setBorderImgOnSelect(objSerial.brand);
       const objSelectTradein = {
@@ -173,7 +173,7 @@ export class VerifyTradeInPageComponent implements OnInit , OnDestroy {
       this.keyword = objSerial.model;
       this.isCheckAutoSelect();
     }
-    setBrandImg (objSerial): void {
+    setBrandImg(objSerial: any): void {
       const filterBrand = this.brands.filter(
         (data) => {
           if (data.name === objSerial.brand) {
@@ -183,7 +183,7 @@ export class VerifyTradeInPageComponent implements OnInit , OnDestroy {
         this.brands = filterBrand;
     }
 
-    checkBrandAndModelFromListModelTradein (brand: string, model: string): any {
+    checkBrandAndModelFromListModelTradein(brand: string, model: string): any {
       const indexBrandModelList = this.listModelTradein.findIndex(
         obj => obj.brand === brand && obj.model === model
       );
@@ -214,12 +214,11 @@ export class VerifyTradeInPageComponent implements OnInit , OnDestroy {
       this.isSelectImg = true;
     }
 
-
     private getBrandElementById(brandId: string): any {
       return this.elementRef.nativeElement.querySelector(brandId);
     }
 
-    setBorderImgOnSelect (nameBrandSelect: string): void {
+    setBorderImgOnSelect(nameBrandSelect: string): void {
       const imagesContainerList = this.elementRef.nativeElement.querySelectorAll('.image-container');
       for (const imagesContainer of imagesContainerList) {
         if (imagesContainer.id === nameBrandSelect) {
@@ -253,7 +252,7 @@ export class VerifyTradeInPageComponent implements OnInit , OnDestroy {
         return objFilterModel;
       });
     }
-    onProductSearch(event): void {
+    onProductSearch(event: any): void {
       this.tradeInTransaction.data.tradeIn.brand = event.item.brand;
       this.tradeInTransaction.data.tradeIn.model = event.item.model;
       this.isCheckBtnNext();
