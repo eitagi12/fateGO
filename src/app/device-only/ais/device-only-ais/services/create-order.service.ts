@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { TokenService } from 'mychannel-shared-libs';
-import { Transaction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
+import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { User } from 'mychannel-shared-libs';
 import { map } from 'rxjs/operators';
@@ -223,7 +223,7 @@ export class CreateOrderService {
       // bankCode: ''
     };
   }
-  mapCusAddress(addressCus: BillDeliveryAddress): any {
+  mapCusAddress(addressCus: Customer): any {
     return {
       addrNo: addressCus.homeNo ? addressCus.homeNo : '',
       moo: addressCus.moo ? addressCus.moo : '',

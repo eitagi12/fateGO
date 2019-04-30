@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators, AbstractControl  } from '@angular/f
 import { debounceTime } from 'rxjs/operators';
 import { BillingAddressService } from '../../services/billing-address.service';
 import { AlertService, REGEX_MOBILE, ReceiptInfo, PageLoadingService } from 'mychannel-shared-libs';
-import { TransactionAction, Customer, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
+import { TransactionAction, Customer } from 'src/app/shared/models/transaction.model';
 import { CustomerInformationService } from '../../services/customer-information.service';
 
 @Component({
@@ -137,7 +137,14 @@ export class ReceiptInformationComponent implements OnInit {
       gender: data.customer.gender || '',
       expireDate: data.customer.expireDate || ''
     };
-    const billDeliveryAddress: BillDeliveryAddress = {
+    const billDeliveryAddress: Customer = {
+      idCardNo: customer.idCardNo || '',
+      idCardType: customer.idCardNo || '',
+      titleName: customer.titleName || '',
+      firstName: customer.firstName || '',
+      lastName: customer.lastName || '',
+      birthdate: customer.birthdate || '',
+      gender: customer.gender || '',
       homeNo: data.customer.homeNo,
       moo: data.customer.moo || '',
       mooBan: data.customer.mooBan || '',

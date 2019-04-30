@@ -2,7 +2,7 @@ import { DeviceOnlyReadCardComponent } from './device-only-read-card.component';
 import { BsModalService } from 'ngx-bootstrap';
 import { debounceTime } from 'rxjs/operators';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { TransactionAction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
+import { TransactionAction, Customer } from 'src/app/shared/models/transaction.model';
 import { ReadCardService, ReadCardProfile, PageLoadingService, Utils, AlertService } from 'mychannel-shared-libs';
 import { CustomerInformationService } from '../../services/customer-information.service';
 

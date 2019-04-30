@@ -186,7 +186,8 @@ export interface BillingInformation {
   // change value billing
   billCycleData?: BillingAccountData;
   // send bill devilery address
-  billDeliveryAddress?: BillDeliveryAddress;
+  // billDeliveryAddress?: BillDeliveryAddress;
+  billDeliveryAddress: Customer;
   // วันที่มีผลการใช้งาน B: รอบถัดไป D: วันถัดไป I: มีผลทันที
   overRuleStartDate?: string;
 }
@@ -227,20 +228,20 @@ export interface BillingAccountData {
   billAddressText?: string;
 }
 
-export interface BillDeliveryAddress {
-  homeNo: string;
-  moo?: string;
-  mooBan?: string;
-  room?: string;
-  floor?: string;
-  buildingName?: string;
-  soi?: string;
-  street?: string;
-  province: string;
-  amphur: string;
-  tumbol: string;
-  zipCode: string;
-}
+// export interface BillDeliveryAddress {
+//   homeNo: string;
+//   moo?: string;
+//   mooBan?: string;
+//   room?: string;
+//   floor?: string;
+//   buildingName?: string;
+//   soi?: string;
+//   street?: string;
+//   province: string;
+//   amphur: string;
+//   tumbol: string;
+//   zipCode: string;
+// }
 
 export interface Seller {
   isAscCode?: boolean;

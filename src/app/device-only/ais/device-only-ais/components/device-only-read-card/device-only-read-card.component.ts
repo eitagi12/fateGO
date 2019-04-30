@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, TemplateRef, ElementRef, Output, EventEmi
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { debounceTime } from 'rxjs/operators';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { TransactionAction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
+import { TransactionAction, Customer } from 'src/app/shared/models/transaction.model';
 import { ReadCardService, ReadCardProfile, PageLoadingService, Utils, AlertService } from 'mychannel-shared-libs';
 import { CustomerInformationService } from '../../services/customer-information.service';
 
@@ -192,8 +192,15 @@ export class DeviceOnlyReadCardComponent implements OnInit {
   public getbillingCycle(customer: any): void {
     this.infoBySmartCard = customer;
     this.nameTextBySmartCard = customer.titleName + ' ' + customer.firstName + ' ' + customer.lastName;
-    const billDeliveryAddress: BillDeliveryAddress = {
-      homeNo: customer.homeNo,
+    const billDeliveryAddress: Customer = {
+      idCardNo: customer.idCardNo || '',
+      idCardType: customer.idCardNo || '',
+      titleName: customer.titleName || '',
+      firstName: customer.firstName || '',
+      lastName: customer.lastName || '',
+      birthdate: customer.birthdate || '',
+      gender: customer.gender || '',
+      homeNo: customer.homeNo || '',
       moo: customer.moo || '',
       mooBan: customer.mooBan || '',
       room: customer.room || '',

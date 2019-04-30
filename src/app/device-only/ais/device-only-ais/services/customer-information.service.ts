@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { API } from '../constants/api.constant';
 import { HttpClient } from '@angular/common/http';
-import { Customer, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
+import { Customer } from 'src/app/shared/models/transaction.model';
 import { Subject } from 'rxjs';
 
 @Injectable({
