@@ -37,11 +37,13 @@ export class DeviceOrderAisPreToPostAggregatePageComponent implements OnInit {
   }
 
   onNext(): void {
-    const payment = this.transaction.data.payment;
-    if (payment.paymentType === 'CREDIT' || payment.paymentType === 'DEBIT') {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_QUEUE_PAGE]);
-    } else if (payment.paymentType === 'QR_CODE') {
+    const payment: any = this.transaction.data.payment || {};
+    const advancePayment: any = this.transaction.data.advancePayment || {};
+
+    if (payment.paymentType === 'QR_CODE' || advancePayment.paymentType === 'QR_CODE') {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_QR_CODE_SUMMARY_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_QUEUE_PAGE]);
     }
   }
 

@@ -20,7 +20,6 @@ export class OrderNewRegisterValidateCustomerPageComponent implements OnInit, On
   transaction: Transaction;
   identityValid: boolean = false;
   identity: string;
-  billDeliveryAddress: BillDeliveryAddress;
 
   constructor(
     private router: Router,
@@ -67,20 +66,6 @@ export class OrderNewRegisterValidateCustomerPageComponent implements OnInit, On
         return Promise.resolve(data);
       })
       .then((customer) => { // load bill cycle
-        this.billDeliveryAddress = {
-          homeNo: customer.homeNo || '',
-          moo: customer.moo || '',
-          mooBan: customer.mooBan || '',
-          room: customer.room || '',
-          floor: customer.floor || '',
-          buildingName: customer.buildingName || '',
-          soi: customer.soi || '',
-          street: customer.street || '',
-          province: customer.province || '',
-          amphur: customer.amphur || '',
-          tumbol: customer.tumbol || '',
-          zipCode: customer.zipCode || '',
-        };
         this.transaction.data.customer = customer;
         return this.http.get(`/api/customerportal/newRegister/${this.identity}/queryBillingAccount`).toPromise()
           .then((resp: any) => {
@@ -104,7 +89,6 @@ export class OrderNewRegisterValidateCustomerPageComponent implements OnInit, On
       })
       .then((billingInformation: any) => {
         this.transaction.data.billingInformation = billingInformation;
-        this.transaction.data.billingInformation.billDeliveryAddress = this.billDeliveryAddress;
         this.router.navigate([ROUTE_ORDER_NEW_REGISTER_CUSTOMER_INFO_PAGE]);
       })
       .catch((e) => {

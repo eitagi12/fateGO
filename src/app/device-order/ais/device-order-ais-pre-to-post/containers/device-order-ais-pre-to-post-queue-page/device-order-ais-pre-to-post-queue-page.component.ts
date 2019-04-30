@@ -1,12 +1,15 @@
 import { Router } from '@angular/router';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
   HomeService, PageLoadingService, REGEX_MOBILE
 } from 'mychannel-shared-libs';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_AGGREGATE_PAGE, ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_RESULT_PAGE } from '../../constants/route-path.constant';
+import {
+  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_AGGREGATE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_RESULT_PAGE
+} from '../../constants/route-path.constant';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
@@ -17,9 +20,9 @@ import { QueuePageService } from 'src/app/device-order/services/queue-page.servi
   templateUrl: './device-order-ais-pre-to-post-queue-page.component.html',
   styleUrls: ['./device-order-ais-pre-to-post-queue-page.component.scss']
 })
-export class DeviceOrderAisPreToPostQueuePageComponent implements OnInit {
+export class DeviceOrderAisPreToPostQueuePageComponent implements OnInit, OnDestroy {
 
-   transaction: Transaction;
+  transaction: Transaction;
   priceOption: PriceOption;
   queueFrom: FormGroup;
 
@@ -47,6 +50,8 @@ export class DeviceOrderAisPreToPostQueuePageComponent implements OnInit {
     this.queueFrom = this.fb.group({
       'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])],
     });
+
+    this.queueFrom.controls['mobileNo'].setValue(this.transaction.data.simCard.mobileNo);
   }
 
   onBack(): void {
@@ -79,4 +84,7 @@ export class DeviceOrderAisPreToPostQueuePageComponent implements OnInit {
     this.homeService.goToHome();
   }
 
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
+  }
 }

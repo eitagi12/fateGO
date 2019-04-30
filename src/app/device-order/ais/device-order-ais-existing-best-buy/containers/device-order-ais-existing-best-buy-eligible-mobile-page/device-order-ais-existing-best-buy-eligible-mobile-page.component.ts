@@ -8,10 +8,10 @@ import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
-import { PrivilegeService } from '../../services/privilege.service';
-import { CustomerInfoService } from '../../services/customer-info.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
+import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-eligible-mobile-page',
@@ -69,12 +69,10 @@ export class DeviceOrderAisExistingBestBuyEligibleMobilePageComponent implements
     this.privilegeService.requestUsePrivilege(this.mobileNo.mobileNo, trade.ussdCode, this.mobileNo.privilegeCode).then((privilegeCode) => {
       this.transaction.data.customer.privilegeCode = privilegeCode;
       this.transaction.data.simCard = { mobileNo: this.mobileNo.mobileNo };
-      if (this.transaction.data.customer && this.transaction.data.customer.firstName === '-') {
+      if (this.transaction.data.customer && this.transaction.data.customer.firstName) {
         return this.customerInfoService.getCustomerProfileByMobileNo(this.transaction.data.simCard.mobileNo,
           this.transaction.data.customer.idCardNo).then((customer: Customer) => {
             this.transaction.data.customer = { ...this.transaction.data.customer, ...customer };
-            // this.pageLoadingService.closeLoading();
-            // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE]);
           });
       }
     }).then(() => {

@@ -46,6 +46,7 @@ export class DeviceOrderAisNewRegisterMobileCarePageComponent implements OnInit,
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     delete this.transaction.data.mobileCarePackage;
     this.callService();
+
   }
 
   onBack(): void {

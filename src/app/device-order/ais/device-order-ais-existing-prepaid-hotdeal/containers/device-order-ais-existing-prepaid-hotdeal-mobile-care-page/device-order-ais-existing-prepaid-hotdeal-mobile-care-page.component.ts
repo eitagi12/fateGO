@@ -44,7 +44,6 @@ export class DeviceOrderAisExistingPrepaidHotdealMobileCarePageComponent impleme
 
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-    delete this.transaction.data.mobileCarePackage;
     this.callService();
   }
 
@@ -53,14 +52,15 @@ export class DeviceOrderAisExistingPrepaidHotdealMobileCarePageComponent impleme
   }
 
   callService(): void {
-    const billingSystem = this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
+    let billingSystem = this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
+    billingSystem = billingSystem === BillingSystemType.BOS ? BillingSystemType.BOS : BillingSystemType.IRB;
     const chargeType = this.transaction.data.simCard.chargeType;
     const endUserPrice = +this.priceOption.trade.normalPrice;
     const exMobileCare = this.transaction.data.existingMobileCare;
     this.pageLoadingService.openLoading();
     this.mobileCareService.getMobileCare({
       packageKeyRef: MOBILE_CARE_PACKAGE_KEY_REF,
-      billingSystem: BillingSystemType.IRB
+      billingSystem: billingSystem
     }, chargeType, billingSystem, endUserPrice).then((mobileCare: any) => {
       this.mobileCare = {
         promotions: mobileCare,

@@ -9,6 +9,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_ECONTACT_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE } from '../../constants/route-path.constant';
+import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
 
 @Component({
   selector: 'app-device-order-ais-mnp-summary-page',
@@ -36,6 +37,7 @@ export class DeviceOrderAisMnpSummaryPageComponent implements OnInit {
     private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,
     private modalService: BsModalService,
+    public summaryPageService: SummaryPageService,
     private utils: Utils
   ) {
     this.priceOption = this.priceOptionService.load();

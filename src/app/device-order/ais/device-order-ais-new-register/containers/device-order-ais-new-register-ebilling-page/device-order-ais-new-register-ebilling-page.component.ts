@@ -4,9 +4,9 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
 import { HomeService, Ebilling } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE } from 'src/app/device-order/ais/device-order-ais-new-register/constants/route-path.constant';
+import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 
 @Component({
   selector: 'app-device-order-ais-new-register-ebilling-page',
@@ -15,7 +15,7 @@ import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE } fro
 })
 export class DeviceOrderAisNewRegisterEbillingPageComponent implements OnInit, OnDestroy {
 
-  wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   transaction: Transaction;
 

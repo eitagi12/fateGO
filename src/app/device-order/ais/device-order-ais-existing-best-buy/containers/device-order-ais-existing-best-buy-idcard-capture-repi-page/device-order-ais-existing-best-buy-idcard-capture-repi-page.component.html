@@ -9,7 +9,7 @@
   </mc-header>
   <div class="mc-flex-wrap">
     <div class="mb-3 mt-3">
-      <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
+      <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
 
       <div class="container-fluid">
         <div class="card">
@@ -42,8 +42,14 @@
               <div class="border-right p-3 col-12">
                 <!-- WEB Step -->
                 <div *ngIf="!isAisNative()">
+                  <a href="#" (click)="$event.preventDefault(); onOpenCamera();" class="text-pink"
+                    *ngIf="!transaction?.data?.customer?.imageSmartCard && !openCamera">
+                    <img src="assets/images/icon/icon-camera.png" class="icon-camera">
+                    <br>
+                    <p>กรุณากดปุ่มถ่ายรูป</p>
+                  </a>
                   <a href="#" (click)="$event.preventDefault(); onOpenCamera(); camera.next();" class="text-pink"
-                    *ngIf="!transaction?.data?.customer?.imageSmartCard">
+                    *ngIf="!transaction?.data?.customer?.imageSmartCard && openCamera">
                     <img src="assets/images/icon/icon-camera.png" class="icon-camera">
                     <br>
                     <p>กรุณากดปุ่มถ่ายรูป</p>

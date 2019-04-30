@@ -10,6 +10,9 @@ import {
 
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-device-order-ais-pre-to-post-ebilling-address-page',
@@ -31,17 +34,31 @@ export class DeviceOrderAisPreToPostEbillingAddressPageComponent implements OnIn
   customerAddressTemp: CustomerAddress;
   billDeliveryAddress: CustomerAddress;
   ebillingAddressValid: boolean;
+  translationSubscribe: Subscription;
 
   constructor(
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
-    private http: HttpClient
+    private http: HttpClient,
+    private translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
   }
 
   ngOnInit(): void {
+    this.callService();
+    this.translationSubscribe = this.translation.onLangChange.pipe(debounceTime(750)).subscribe(() => {
+      this.callService();
+      this.amphurs = [];
+      this.tumbols = [];
+      this.zipCodes = [];
+      this.customerAddress.amphur = null;
+      this.customerAddress.tumbol = null;
+      this.customerAddress.province = null;
+    });
+  }
+  callService(): void {
     const billingInformation = this.transaction.data.billingInformation || {};
     const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
 
@@ -49,9 +66,13 @@ export class DeviceOrderAisPreToPostEbillingAddressPageComponent implements OnIn
       this.allZipCodes = resp.data.zipcodes || [];
     });
     customer.province = customer.province.replace(/มหานคร$/, '');
-    this.http.get('/api/customerportal/newRegister/getAllProvinces').subscribe((resp: any) => {
+    this.http.get('/api/customerportal/newRegister/getAllProvinces'
+    , {
+      params: {
+        provinceSubType: this.translation.currentLang === 'TH' ? 'THA' : 'ENG'
+      }
+      }).subscribe((resp: any) => {
       this.provinces = (resp.data.provinces || []);
-
       this.customerAddress = {
         homeNo: customer.homeNo,
         moo: customer.moo,
@@ -167,8 +188,11 @@ export class DeviceOrderAisPreToPostEbillingAddressPageComponent implements OnIn
   onNext(): void {
     const billingInformation = this.transaction.data.billingInformation || {};
     const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
-    this.transaction.data.billingInformation.billDeliveryAddress = Object.assign(Object.assign({}, customer), this.customerAddressTemp);
     this.transactionService.update(this.transaction);
+    this.transaction.data.billingInformation.billDeliveryAddress = Object.assign(
+      Object.assign({}, customer),
+      this.customerAddressTemp
+    );
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CONFIRM_USER_INFORMATION_PAGE]);
   }
 

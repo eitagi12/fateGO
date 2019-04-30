@@ -10,6 +10,7 @@ export enum TransactionType {
   DEVICE_ORDER_EXISTING_AIS = 'ExistingAIS',
   DEVICE_ORDER_EXISTING_ASP = 'ExistingASP',
   DEVICE_ORDER_DEVICE_ONLY = 'DeviceOnlyAIS',
+  DEVICE_ORDER_PREPAID_HOTDEAL_AIS = 'PrepaidHotDealAIS',
   // pure
   ORDER_NEW_REGISTER = 'NewRegister',
   ORDER_PRE_TO_POST = 'ConvertPreToPost',
@@ -59,14 +60,30 @@ export interface TransactionData {
   advancePayment?: Payment;
   receiptInfo?: ReceiptInfo;
   queue?: Queue;
-  mpay_payment?: any;
   preBooking?: Prebooking;
   discount?: Discount;
+  contract?: Condition;
+  promotionsShelves?: PromotionsShelves;
+  contractFirstPack?: ContractFirstPack;
   // MPAY
   mpayPayment?: QrCodePrePostMpayModel;
   status?: Status;
   device?: any;
 }
+
+export interface Condition {
+  conditionCode: string;
+  conditionName?: string;
+  conditionText?: string;
+}
+
+export interface ContractFirstPack {
+  firstPackage?: number;
+  inPackage?: string[];
+  initialPackage?: number;
+  minPrice?: number;
+}
+
 export interface Payment {
   paymentQrCodeType: 'THAI_QR' | 'LINE_QR';
   paymentType: 'DEBIT' | 'CREDIT' | 'QR_CODE';
@@ -152,6 +169,10 @@ export interface CurrentPackage {
   [key: string]: any;
 }
 
+export interface PromotionsShelves {
+  [key: string]: any;
+}
+
 export interface OnTopPackage {
   [key: string]: any;
 }
@@ -186,10 +207,11 @@ export interface BillingInformation {
   // change value billing
   billCycleData?: BillingAccountData;
   // send bill devilery address
-  // billDeliveryAddress?: BillDeliveryAddress;
-  billDeliveryAddress: Customer;
+  billDeliveryAddress?: Customer;
   // วันที่มีผลการใช้งาน B: รอบถัดไป D: วันถัดไป I: มีผลทันที
   overRuleStartDate?: string;
+  // check do createAndChangeBillingAccount Provisioning
+  isNewBAFlag?: boolean;
 }
 
 export interface BillCycle {
@@ -289,6 +311,7 @@ export interface ExistingMobileCare {
   integrationName?: string;
   flagMain?: string;
   handSet?: HandSetMobileCare;
+  changeMobileCareFlag: boolean;
 }
 
 export interface HandSetMobileCare {

@@ -20,7 +20,6 @@ import { DeviceOrderAisExistingPrepaidHotdealQrCodeQueuePageComponent } from './
 import { DeviceOrderAisExistingPrepaidHotdealQrCodeQueueSummaryPageComponent } from './containers/device-order-ais-existing-prepaid-hotdeal-qr-code-queue-summary-page/device-order-ais-existing-prepaid-hotdeal-qr-code-queue-summary-page.component';
 import { DeviceOrderAisExistingPrepaidHotdealQrCodeSummaryPageComponent } from './containers/device-order-ais-existing-prepaid-hotdeal-qr-code-summary-page/device-order-ais-existing-prepaid-hotdeal-qr-code-summary-page.component';
 import { DeviceOrderAisExistingPrepaidHotdealQueuePageComponent } from './containers/device-order-ais-existing-prepaid-hotdeal-queue-page/device-order-ais-existing-prepaid-hotdeal-queue-page.component';
-import { DeviceOrderAisExistingPrepaidHotdealQrCodeErrorPageComponent } from './containers/device-order-ais-existing-prepaid-hotdeal-qr-code-error-page/device-order-ais-existing-prepaid-hotdeal-qr-code-error-page.component';
 
 const routes: Routes = [
   {
@@ -98,10 +97,6 @@ const routes: Routes = [
   {
     path: 'qr-code-summary',
     component: DeviceOrderAisExistingPrepaidHotdealQrCodeSummaryPageComponent
-  },
-  {
-    path: 'qr-code-error',
-    component: DeviceOrderAisExistingPrepaidHotdealQrCodeErrorPageComponent
   },
   {
     path: 'queue',

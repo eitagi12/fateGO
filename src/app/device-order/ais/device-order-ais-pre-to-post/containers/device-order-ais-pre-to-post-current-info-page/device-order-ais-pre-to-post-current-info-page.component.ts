@@ -3,14 +3,14 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
-import { PageLoadingService, AlertService } from 'mychannel-shared-libs';
+import { PageLoadingService, AlertService, HomeService } from 'mychannel-shared-libs';
 
 import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
 import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_PAYMENT_DETAIL_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VERIFY_DOCUMENT_PAGE
+  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE
 } from '../../constants/route-path.constant';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -50,7 +50,8 @@ export class DeviceOrderAisPreToPostCurrentInfoPageComponent implements OnInit, 
     private modalService: BsModalService,
     private alertService: AlertService,
     private pageLoadingService: PageLoadingService,
-    private transactionService: TransactionService
+    private transactionService: TransactionService,
+    private homeService: HomeService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -81,6 +82,10 @@ export class DeviceOrderAisPreToPostCurrentInfoPageComponent implements OnInit, 
       });
   }
 
+  onHome(): void {
+    this.homeService.goToHome();
+  }
+
   onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE]);
 
@@ -88,7 +93,7 @@ export class DeviceOrderAisPreToPostCurrentInfoPageComponent implements OnInit, 
     if (action === TransactionAction.KEY_IN || action === TransactionAction.READ_CARD || action === TransactionAction.READ_PASSPORT) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE]);
     } else {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VERIFY_DOCUMENT_PAGE]);
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE]);
     }
 
   }

@@ -21,7 +21,6 @@ import { DeviceOrderAisExistingBestBuyCustomerProfilePageComponent } from './con
 import { DeviceOrderAisExistingBestBuyOtpPageComponent } from './containers/device-order-ais-existing-best-buy-otp-page/device-order-ais-existing-best-buy-otp-page.component';
 import { DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent } from './containers/device-order-ais-existing-best-buy-idcard-capture-repi-page/device-order-ais-existing-best-buy-idcard-capture-repi-page.component';
 import { DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent } from './containers/device-order-ais-existing-best-buy-qr-code-queue-page/device-order-ais-existing-best-buy-qr-code-queue-page.component';
-import { DeviceOrderAisExistingBestBuyQrCodeQueueSummaryPageComponent } from './containers/device-order-ais-existing-best-buy-qr-code-queue-summary-page/device-order-ais-existing-best-buy-qr-code-queue-summary-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'validate-customer', pathMatch: 'full' },
@@ -44,8 +43,7 @@ const routes: Routes = [
   { path: 'qr-code-queue', component:  DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent },
   { path: 'check-out', component: DeviceOrderAisExistingBestBuyCheckOutPageComponent },
   { path: 'queue', component: DeviceOrderAisExistingBestBuyQueuePageComponent},
-  { path: 'result', component: DeviceOrderAisExistingBestBuyResultPageComponent },
-  { path: 'qr-code-queue-summary', component: DeviceOrderAisExistingBestBuyQrCodeQueueSummaryPageComponent }
+  { path: 'result', component: DeviceOrderAisExistingBestBuyResultPageComponent }
 ];
 
 @NgModule({

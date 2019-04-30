@@ -13,7 +13,7 @@
           </div>
           <form [formGroup]="mobileFrom">
             <div class="form-group">
-              <div class="mt-5 text-center">เบอร์โทรศัพท์รับหมายเลขสั่งซื้อเพื่อชำระสินค้าของท่านคือ</div>
+              <div class="mt-5 text-center">เบอร์โทรศัพท์รับหมายเลขคิวเพื่อชำระสินค้าของท่านคือ</div>
               <input class="form-control text-center mb-3" id="mobileNo" maxlength="10" autofocus autocomplete="off"
                 formControlName="mobileNo" placeholder="ระบุเบอร์โทรศัพท์รับ SMS" value="mobileNo"
                 [ngClass]="{ 'is-invalid' : mobileFrom.controls.mobileNo.invalid && mobileFrom.controls.mobileNo.touched && mobileFrom.controls.mobileNo.errors }">
@@ -57,6 +57,6 @@
 
   <mc-footer>
     <button class="btn btn-success" (click)="onNext()" [disabled]="checkValid()">NEXT</button>
-    <button *ngIf="!isAutoGenQueue" class="btn btn-success" (click)="onSkip()" [disabled]="queueFrom.invalid && mobileFrom.invalid">SKIP</button>
+    <button *ngIf="!isAutoGenQueue" class="btn btn-success" (click)="onSkip()" [disabled]="skipQueue">SKIP</button>
   </mc-footer>
 </div>

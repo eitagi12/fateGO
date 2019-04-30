@@ -20,6 +20,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 export class DeviceOrderAisExistingBestBuyMobileCareAvailablePageComponent implements OnInit, OnDestroy {
 
   wizards: any = WIZARD_DEVICE_ORDER_AIS;
+  reason: any = 'ยืนยันใช้ Mobile Care กับเครื่องเดิม';
 
   identityValid: boolean = false;
   transaction: Transaction;
@@ -58,6 +59,7 @@ export class DeviceOrderAisExistingBestBuyMobileCareAvailablePageComponent imple
   }
 
   onNext(): void {
+    this.transaction.data.existingMobileCare.changeMobileCareFlag = this.changeMobileCare;
     if (this.changeMobileCare) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_CARE_PAGE]);
     } else {
@@ -78,7 +80,7 @@ export class DeviceOrderAisExistingBestBuyMobileCareAvailablePageComponent imple
       if (value.changeMobileCare === 'Yes') {
         this.changeMobileCare = true;
       } else {
-        this.transaction.data.mobileCarePackage = null;
+        this.transaction.data.mobileCarePackage = this.reason;
         this.changeMobileCare = false;
       }
       this.identityValid = true;

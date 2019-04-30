@@ -1,19 +1,25 @@
+import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { LocalStorageService } from 'ngx-store';
 import { Router } from '@angular/router';
 
-import { ApiRequestService, PageLoadingService, HomeService, Utils, AlertService, User, TokenService } from 'mychannel-shared-libs';
+import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
+import { PageLoadingService, HomeService, Utils,
+  AlertService, User, TokenService } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
-import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress, Customer, MainPromotion, Prebooking } from 'src/app/shared/models/transaction.model';
-import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { AbstractControl, ValidationErrors } from '@angular/forms';
-import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
-import { LocalStorageService } from 'ngx-store';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { CustomerInfoService } from '../../services/customer-info.service';
-import { PrivilegeService } from '../../services/privilege.service';
-import { HttpClient } from '@angular/common/http';
+import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
+import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE
+} from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
+import { Transaction, TransactionType, TransactionAction,
+  Customer, MainPromotion, Prebooking, Order } from 'src/app/shared/models/transaction.model';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-validate-customer-page',
@@ -87,13 +93,14 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     const queryParams = this.priceOption.queryParams;
     if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
       this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
-      .then((response: any) => {
-        if (response.value === true) {
-          this.returnStock().then(() => {
-            window.location.href = `/sales-portal/buy-product/brand/${queryParams.brand}/${queryParams.model}`;
-          });
-        }
-      });
+        .then((response: any) => {
+          if (response.value === true) {
+            this.returnStock().then(() => {
+              this.transactionService.remove();
+              window.location.href = `/sales-portal/buy-product/brand/${queryParams.brand}/${queryParams.model}`;
+            });
+          }
+        });
     } else {
       this.transactionService.remove();
       window.location.href = `/sales-portal/buy-product/brand/${queryParams.brand}/${queryParams.model}`;
@@ -104,70 +111,71 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     this.pageLoadingService.openLoading();
     if (this.utils.isMobileNo(this.identity)) {
       // KEY-IN MobileNo
-      this.privilegeService.checkAndGetPrivilegeCode(this.identity, this.priceOption.trade.ussdCode).then((privligeCode) => {
-        this.customerInfoService.getCustomerProfileByMobileNo(this.identity).then((customer: Customer) => {
+
+      this.customerInfoService.getCustomerProfileByMobileNo(this.identity).then((customer: Customer) => {
+        return this.privilegeService.checkAndGetPrivilegeCode(this.identity, this.priceOption.trade.ussdCode).then((privligeCode) => {
           customer.privilegeCode = privligeCode;
           this.transaction.data.customer = customer;
           this.transaction.data.customer.repi = true;
           this.transaction.data.simCard = { mobileNo: this.identity };
           this.transaction.data.action = TransactionAction.KEY_IN_REPI;
-          this.pageLoadingService.closeLoading();
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE]);
-        });
-      });
-      return;
+          if (!this.transaction.data.order || !this.transaction.data.order.soId) {
+            return this.http.post('/api/salesportal/add-device-selling-cart',
+              this.getRequestAddDeviceSellingCart()
+            ).toPromise()
+              .then((resp: any) => {
+                this.transaction.data.order = { soId: resp.data.soId };
+                return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+              }).then(() => {
+                this.pageLoadingService.closeLoading();
+                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE]);
+              });
+          } else {
+            this.pageLoadingService.closeLoading();
+            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE]);
+            return;
+          }
+        }).catch((e) => this.alertService.error(e));
+      }).catch((error) => this.alertService.error(error));
     } else {
       // KEY-IN ID-Card
       this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customer: Customer) => {
         this.transaction.data.customer = customer;
         this.transaction.data.billingInformation = {};
-        this.transaction.data.billingInformation.billDeliveryAddress = {
-          homeNo: customer.homeNo,
-          moo: customer.moo,
-          mooBan: customer.mooBan,
-          room: customer.room,
-          floor: customer.floor,
-          buildingName: customer.buildingName,
-          soi: customer.soi,
-          street: customer.street,
-          province: customer.province,
-          amphur: customer.amphur,
-          tumbol: customer.tumbol,
-          zipCode: customer.zipCode
-        };
-        return this.http.post('/api/salesportal/add-device-selling-cart',
-          this.getRequestAddDeviceSellingCart()
-        ).toPromise()
-          .then((resp: any) => {
-            this.transaction.data.order = { soId: resp.data.soId };
-            return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-          }).then(() => {
-            if (this.transaction.data.customer.caNumber) {
-              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
-            } else {
-              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE]);
-            }
-          });
-        // this.createDeviceOrderBestBuyService.createAddToCartTrasaction(this.transaction, this.priceOption)
-        //   .then((transaction) => {
-        //     this.transaction = transaction;
-        //     this.pageLoadingService.closeLoading();
-        //     if (this.transaction.data.customer.caNumber) {
-        //       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
-        //     } else {
-        //       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE]);
-        //     }
-        //   }).catch((e) => {
-        //     this.pageLoadingService.closeLoading();
-        //     this.alertService.error(e);
-        //   });
+        this.transaction.data.billingInformation.billDeliveryAddress = this.transaction.data.customer;
+        if (!this.transaction.data.order || !this.transaction.data.order.soId) {
+          return this.http.post('/api/salesportal/add-device-selling-cart',
+            this.getRequestAddDeviceSellingCart()
+          ).toPromise()
+            .then((resp: any) => {
+              this.transaction.data.order = { soId: resp.data.soId };
+              return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+            }).then(() => {
+              this.transaction.data.action = TransactionAction.KEY_IN;
+              if (this.transaction.data.customer.caNumber) {
+                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
+              } else {
+                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE]);
+              }
+            });
+        } else {
+          this.pageLoadingService.closeLoading();
+          if (this.transaction.data.customer.caNumber) {
+            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
+          } else {
+            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE]);
+          }
+        }
       }).then(() => this.pageLoadingService.closeLoading());
     }
   }
 
   ngOnDestroy(): void {
-    this.transactionService.save(this.transaction);
-    // this.priceOptionService.save(this.priceOption);
+    if (this.transaction.data.order && this.transaction.data.order.soId) {
+      this.transactionService.update(this.transaction);
+    } else {
+      this.transactionService.save(this.transaction);
+    }
   }
 
   private createTransaction(): void {
@@ -186,11 +194,20 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     //   deliveryDt: '17/03/2019'
     // };
 
+    let order: Order;
+    let transactionId: string;
+    if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      transactionId = this.transaction.transactionId;
+      order = this.transaction.data.order;
+    }
+
     this.transaction = {
+      transactionId: transactionId,
       data: {
         transactionType: TransactionType.DEVICE_ORDER_EXISTING_AIS,
         action: TransactionAction.KEY_IN,
-        preBooking: preBooking
+        preBooking: preBooking,
+        order: order
       }
     };
   }
@@ -218,8 +235,8 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
         }
       } else {
         return {
-            message: 'กรุณากรอกรูปแบบให้ถูกต้อง',
-          };
+          message: 'กรุณากรอกรูปแบบให้ถูกต้อง',
+        };
       }
     } else {
       return {
@@ -250,8 +267,13 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
   getRequestAddDeviceSellingCart(): any {
     const productStock = this.priceOption.productStock;
     const productDetail = this.priceOption.productDetail;
+    const trade = this.priceOption.trade;
     const customer = this.transaction.data.customer;
     const preBooking: Prebooking = this.transaction.data.preBooking;
+    let subStock;
+    if (preBooking && preBooking.preBookingNo) {
+      subStock = 'PRE';
+    }
     return {
       soCompany: productStock.company || 'AWN',
       locationSource: this.user.locationCode,
@@ -260,15 +282,16 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
       productSubType: productDetail.productSubType || 'HANDSET',
       brand: productDetail.brand || productStock.brand,
       model: productDetail.model || productStock.model,
-      color: productStock.color,
-      priceIncAmt: '',
-      priceDiscountAmt: '',
+      color: productStock.color || productStock.colorName,
+      priceIncAmt: '' + trade.normalPrice,
+      priceDiscountAmt: '' + trade.discount.amount,
       grandTotalAmt: '',
       userId: this.user.username,
       cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
       preBookingNo: preBooking ? preBooking.preBookingNo : '',
       depositAmt: preBooking ? preBooking.depositAmt : '',
-      reserveNo: preBooking ? preBooking.reserveNo : ''
+      reserveNo: preBooking ? preBooking.reserveNo : '',
+      subStockDestination: subStock
     };
   }
 }

@@ -78,8 +78,10 @@ export class PromotionShelveService {
                   return +a.customAttributes.priceInclVat !== +b.customAttributes.priceInclVat ?
                     +a.customAttributes.priceInclVat < +b.customAttributes.priceInclVat ? -1 : 1 : 0;
                 }).map((promotionData: any) => {
+                  const uniqueId = `${promotion.id}-${promotionData.id}`;
+                  promotionData.uniqueId = uniqueId;
                   return { // item
-                    id: promotionData.id + Math.floor(Math.random() * 100) + 1,
+                    id: uniqueId,
                     title: promotionData.title,
                     detail: promotionData.detailTH,
                     value: promotionData
@@ -103,40 +105,31 @@ export class PromotionShelveService {
       });
   }
 
-  defaultBySelected(promotionShelves: any, promotionShelveSelected?: any): any[] {
+  defaultBySelected(promotionShelves: any = [], promotionShelveSelected?: any): any[] {
     if (!promotionShelves || promotionShelves.length <= 0) {
       return;
     }
 
     if (promotionShelveSelected) {
-      let promotionShelveIndex = 0, promotionShelveGroupIndex = 0;
-      for (let i = 0; i < promotionShelves.length; i++) {
-        const promotions = promotionShelves[i].promotions || [];
+      promotionShelves.forEach(promotionShelve => {
+        promotionShelve.promotions.forEach(promotion => {
 
-        let itemActive = false;
-        for (let ii = 0; ii < promotions.length; ii++) {
-          const active = (promotions[ii].items || []).find((promotionShelveItem: any) => {
-            return promotionShelveItem.id === + promotionShelveSelected.id;
+          (promotion.items || []).forEach((promotionShelveItem: any) => {
+            if (promotionShelveItem.value.uniqueId === promotionShelveSelected.uniqueId) {
+              promotionShelve.active = true;
+              promotion.active = true;
+            }
           });
-          if (!!active) {
-            itemActive = true;
-            promotionShelveIndex = i;
-            promotionShelveGroupIndex = ii;
-            continue;
-          }
-        }
-        if (!itemActive) {
-          promotions[0].active = true;
-        }
-      }
 
-      promotionShelves[promotionShelveIndex].active = true;
-      promotionShelves[promotionShelveIndex].promotions[promotionShelveGroupIndex].active = true;
+        });
+      });
+
     } else {
       promotionShelves[0].active = true;
       promotionShelves.forEach((promotionShelve: any) => {
         if (promotionShelve.promotions && promotionShelve.promotions.length > 0) {
           promotionShelve.promotions[0].active = true;
+
         }
       });
     }

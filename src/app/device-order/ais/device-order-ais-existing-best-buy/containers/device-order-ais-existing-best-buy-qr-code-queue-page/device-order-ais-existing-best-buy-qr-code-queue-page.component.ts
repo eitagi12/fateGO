@@ -7,10 +7,11 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Transaction, Prebooking, Customer, Payment } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_QR_CODE_QUEUE_SUMMARY_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE } from '../../constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
 import { QRCodePaymentService } from 'src/app/shared/services/qrcode-payment.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
+import { QueuePageService } from 'src/app/device-order/services/queue-page.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-qr-code-queue-page',
@@ -29,6 +30,8 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
   mobileNo: string;
   isAutoGenQueue: boolean;
   user: User;
+  queueWording: string = 'เบอร์โทรศัพท์รับหมายเลขคิวเพื่อชำระสินค้าของท่านคือ';
+  color: string;
 
   constructor(
     private router: Router,
@@ -40,7 +43,8 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
     private alertService: AlertService,
     private tokenService: TokenService,
     private qrCodeService: QRCodePaymentService,
-    private sharedTransactionService: SharedTransactionService
+    private sharedTransactionService: SharedTransactionService,
+    private queuePageService: QueuePageService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -48,10 +52,13 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
   }
 
   ngOnInit(): void {
-    this.isAutoGenQueue = true;
+    this.queueWording = this.isLocationPhuket() ? 'เบอร์โทรศัพท์รับหมายเลขสั่งซื้อเพื่อชำระสินค้าของท่านคือ'
+                      : this.queueWording;
+    this.isAutoGenQueue = this.user.locationCode === '1100';
     this.deposit = this.transaction.data.preBooking
       && this.transaction.data.preBooking.depositAmt ? -Math.abs(+this.transaction.data.preBooking.depositAmt) : 0;
-    this.getTransactionId();
+    // this.getTransactionId();
+    this.color = this.priceOption.productStock.color ? this.priceOption.productStock.color : this.priceOption.productStock.colorName || '';
     this.createForm();
   }
 
@@ -73,13 +80,13 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
     });
 
     if (this.transaction.data.simCard.mobileNo) {
-      this.mobileFrom.controls.mobileNo.setValue(this.transaction.data.simCard.mobileNo);
+      this.mobileFrom.patchValue({mobileNo: this.transaction.data.simCard.mobileNo});
       this.mobileNo = this.transaction.data.simCard.mobileNo;
-    } else {
-      this.mobileFrom.valueChanges.subscribe((value) => {
-        this.mobileNo = value.mobileNo;
-      });
     }
+
+    this.mobileFrom.valueChanges.subscribe((value) => {
+      this.mobileNo = value.mobileNo;
+    });
 
     this.queueFrom = this.fb.group({
       'queue': ['', Validators.compose([Validators.required, Validators.pattern(/([A-Y]{1}[0-9]{3})/)])],
@@ -95,14 +102,22 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
     if (this.isAutoGenQueue) {
       this.onSendSMSQueue(this.mobileNo).then((queue) => {
         if (queue) {
-          this.transaction.data.queue = { queueNo: this.queue };
-          this.http.post('/api/salesportal/device-sell/order', this.getRequestCreateOrder(this.transaction, this.priceOption)).toPromise()
-            .then(() => {
-              return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
-            }).then(() => {
-              this.pageLoadingService.closeLoading();
-              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_QR_CODE_QUEUE_SUMMARY_PAGE]);
-            });
+          this.transaction.data.queue = { queueNo: queue };
+          return this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
+            return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
+                    this.pageLoadingService.closeLoading();
+                    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE]);
+                  });
+          });
+          // return this.http.post('/api/salesportal/create-device-selling-order',
+          // this.getRequestCreateOrder(this.transaction, this.priceOption))
+          // .toPromise()
+          //   .then(() => {
+          //     return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
+          //       this.pageLoadingService.closeLoading();
+          //       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE]);
+          //     });
+          //   });
         } else {
           this.isAutoGenQueue = false;
           this.pageLoadingService.closeLoading();
@@ -117,24 +132,21 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
       });
     } else {
       this.transaction.data.queue = { queueNo: this.queue };
-      this.http.post('/api/salesportal/device-sell/order', this.getRequestCreateOrder(this.transaction, this.priceOption)).toPromise()
-        .then(() => {
-          return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
-        }).then(() => {
+      this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
+        return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
           this.pageLoadingService.closeLoading();
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_QR_CODE_QUEUE_SUMMARY_PAGE]);
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE]);
         });
+      });
+      // this.http.post('/api/salesportal/create-device-selling-order',
+      //  this.getRequestCreateOrder(this.transaction, this.priceOption, this.transId)).toPromise()
+      //   .then(() => {
+      //     return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
+      //       this.pageLoadingService.closeLoading();
+      //       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE]);
+      //     });
+      //   });
     }
-    // this.transaction.data.queue = { queueNo: this.queue };
-    // this.createBestBuyService.createDeviceOrder(this.transaction, this.priceOption, this.transId).then((response: any) => {
-    //   if (response) {
-    //     this.pageLoadingService.closeLoading();
-    //     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_QR_CODE_QUEUE_SUMMARY_PAGE]);
-    //   }
-    // }).catch((e) => {
-    //   this.pageLoadingService.closeLoading();
-    //   this.alertService.error(e);
-    // });
   }
 
   summary(amount: number[]): number {
@@ -190,13 +202,14 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
     const mobileCare = transaction.data.mobileCarePackage;
     const order = transaction.data.order;
     const paymentTrade = trade.payments[0];
+    const mPayPayment = transaction.data.mpayPayment;
 
     let qrAmt;
-    if (payment.paymentType === 'QR_CODE' && transId) {
+    if (payment.paymentType === 'QR_CODE') {
       qrAmt = this.getQrAmount(trade.normalPrice, trade.discount);
     }
 
-    const paymentMethod = (payment.paymentType === 'QR_CODE' && transId) ?
+    const paymentMethod = (payment.paymentType === 'QR_CODE') ?
       this.replacePaymentMethodForQRCodeWithOutAirtime(payment.paymentQrCodeType) : paymentTrade.method;
 
     const data: any = {
@@ -208,15 +221,15 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
       productSubType: productDetail.productSubtype || 'HANDSET',
       brand: productDetail.brand,
       model: productDetail.model,
-      color: productStock.color,
+      color: productStock.color || productStock.colorName,
       matCode: '',
-      priceIncAmt: +trade.normalPrice.toFixed(2),
-      priceDiscountAmt: (+trade.discount.amount).toFixed(2),
+      priceIncAmt: (+trade.normalPrice).toFixed(2),
+      priceDiscountAmt: (+trade.discount.amount || 0).toFixed(2),
       grandTotalAmt: this.getGrandTotalAmt(trade, prebooking),
       userId: this.user.username,
       saleCode: seller && seller.sellerNo ? seller.sellerNo : '',
       queueNo: queue.queueNo || '',
-      cusNameOrder: `${customer.titleName || ''}${customer.firstName || ''} ${customer.lastName || ''}`.trim(),
+      cusNameOrder: `${customer.titleName || ''}${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
       taxCardId: customer && customer.idCardNo || '',
       cusMobileNoOrder: simCard && simCard.mobileNo || '',
       customerAddress: this.getCustomerAddress(customer),
@@ -227,8 +240,8 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
       matAirTime: '',
       matCodeFreeGoods: '',
       paymentRemark: this.getOrderRemark(trade, payment, mobileCare, queue.queueNo, transaction),
-      installmentTerm: payment.paymentMethod.month,
-      installmentRate: payment.paymentMethod.percentage,
+      installmentTerm: payment.paymentMethod.month, // this.getInstallmentTerm(payment),
+      installmentRate: payment.paymentMethod.percentage, // this.getInstallmentRate(payment),
       mobileAisFlg: 'Y',
       paymentMethod: paymentMethod,
       bankCode: payment && payment.paymentBank ? payment.paymentBank.abb : '',
@@ -240,19 +253,29 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
       bankAbbr: payment && payment.paymentBank ? payment.paymentBank.abb : '',
       preBookingNo: prebooking ? prebooking.preBookingNo : '',
       depositAmt: prebooking ? prebooking.depositAmt : '',
-      qrTransId: transId ? transId : '',
+      qrTransId: mPayPayment ? mPayPayment.tranId : '',
       qrAmt: qrAmt
     };
 
-    return Promise.resolve(data);
+    return data;
   }
+
+  // private getInstallmentTerm(payment: Payment): any {
+  //   return payment && payment.paymentBank && payment.paymentBank.installments ?
+  //     payment.paymentBank.installments[0].installmentMonth : 0;
+  // }
+
+  // private getInstallmentRate(payment: Payment): any {
+  //   return payment && payment.paymentBank && payment.paymentBank.installments ?
+  //     payment.paymentBank.installments[0].installmentPercentage : 0;
+  // }
 
   private getGrandTotalAmt(trade: any, prebooking: Prebooking): string {
 
     const normalPrice: number = trade.normalPrice;
     const advancePay: number = +trade.advancePay.amount;
     const discount: number = +trade.discount.amount || 0;
-    const depositAmt: number = prebooking ? +prebooking.depositAmt : 0;
+    const depositAmt: number = prebooking && prebooking.depositAmt ? +prebooking.depositAmt : 0;
 
     let result: any = normalPrice;
     result += advancePay;
@@ -314,7 +337,7 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
         } else {
           tradeAndInstallment += '[RL]' + comma + space;
         }
-      } else if (payment.paymentType === 'CREDIT') {
+      } else if (payment.paymentType === 'CREDIT' && payment.paymentForm !== 'FULL') {
         tradeAndInstallment += '[CC]' + comma + space;
         tradeAndInstallment += '[B]' + payment.paymentBank.abb + comma + space;
         if (payment.paymentMethod) {
@@ -337,7 +360,7 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
     otherInformation += '[D]' + space + (+trade.discount.amount).toFixed(2) + comma + space;
     otherInformation += '[RC]' + space + customer.privilegeCode + comma + space;
     otherInformation += '[OT]' + space + 'MC004' + comma + space;
-    if (mobileCare && !mobileCare.reason) {
+    if (mobileCare && !(typeof mobileCare === 'string' || mobileCare instanceof String)) {
       otherInformation += '[PC]' + space + 'remark.mainPackageCode' + comma + space;
       otherInformation += '[MCC]' + space + mobileCare.customAttributes.promotionCode + comma + space;
       otherInformation += '[MC]' + space + mobileCare.customAttributes.shortNameThai + comma + space;
@@ -370,11 +393,47 @@ export class DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent implements On
     return qrAmt.toFixed(2);
   }
 
+  getPaymentBalance(): number {
+    const trade = this.priceOption.trade;
+    const payment: any = this.transaction.data.payment || {};
+    const advancePayment: any = this.transaction.data.advancePayment || {};
+
+    let summary = 0;
+    if (payment.paymentType === 'QR_CODE') {
+      summary += +trade.promotionPrice;
+    }
+    if (advancePayment.paymentType === 'QR_CODE') {
+      const advancePay = trade.advancePay || {};
+      summary += +advancePay.amount;
+    }
+
+    if (this.deposit) {
+      summary += this.deposit;
+    }
+    return summary;
+  }
+
+  getOutStandingBalance(): number {
+    const trade = this.priceOption.trade;
+    const payment: any = this.transaction.data.payment || {};
+    const advancePayment: any = this.transaction.data.advancePayment || {};
+
+    let summary = 0;
+    if (payment.paymentType !== 'QR_CODE') {
+      summary += +trade.promotionPrice;
+    }
+    if (advancePayment.paymentType !== 'QR_CODE') {
+      const advancePay = trade.advancePay || {};
+      summary += +advancePay.amount;
+    }
+    return summary;
+  }
+
   checkValid(): boolean {
     if (!this.isAutoGenQueue) {
-      return !this.queueFrom.invalid;
+      return !!this.queueFrom.invalid;
     } else {
-      return !this.mobileFrom.invalid;
+      return !!this.mobileFrom.invalid;
     }
   }
 

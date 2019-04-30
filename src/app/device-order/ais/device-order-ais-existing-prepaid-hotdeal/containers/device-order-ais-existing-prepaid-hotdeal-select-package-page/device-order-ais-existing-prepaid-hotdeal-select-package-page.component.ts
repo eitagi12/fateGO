@@ -52,18 +52,18 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
 
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-    delete this.transaction.data.mainPackage;
     this.callService();
   }
 
   onCompleted(promotion: any): void {
-    this.transaction.data.mainPackage = promotion;
+   this.transaction.data.onTopPackage = promotion;
   }
 
   callService(): void {
     this.pageLoadingService.openLoading();
 
     const trade: any = this.priceOption.trade;
+    const campaign: any = this.priceOption.campaign;
     const privilege: any = this.priceOption.privilege;
     const simcard = this.transaction.data.simCard;
 
@@ -73,33 +73,42 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
         billingSystem: BillingSystemType.IRB,
         chargeType: simcard.chargeType,
         allowNtype: simcard.nType,
-        cpcUserId: trade.packageKeyRef
+        cpcUserId: trade.packageKeyRef || campaign.packageKeyRef
       }
     }).toPromise()
     .then((resp: any) => {
       const data = resp.data.packageList || [];
       const promotionShelves: PromotionShelve[] = data.map((promotionShelve: any) => {
-        return {
+        const promotionData =  {
           title: promotionShelve.title,
-          // replace to class in css
           icon: (promotionShelve.icon || '').replace(/\.jpg$/, '').replace(/_/g, '-'),
           promotions: promotionShelve.subShelves
             .map((subShelve: any) => {
-              return { // group
+              const group = { // group
                 id: subShelve.subShelveId,
                 title: subShelve.title,
                 sanitizedName: subShelve.sanitizedName,
-                items: (subShelve.items || []).map((promotion: any) => {
-                  return { // item
-                    id: promotion.itemId,
-                    title: promotion.shortNameThai,
-                    detail: promotion.statementThai,
-                    value: promotion
-                  };
-                })
+                items: (subShelve.items || [])
+                .map((promotion: any) => {
+                  const price = promotion.priceExclVat || 0;
+                  const minimumPackage = trade.minimumPackage || campaign.minimumPackagePrice;
+                  const maximumPackage = trade.maximumPackage || campaign.maximumPackagePrice;
+                  if (price >= minimumPackage && price <= maximumPackage) {
+                    return { // item
+                      id: promotion.itemId,
+                      title: promotion.shortNameThai,
+                      detail: promotion.statementThai,
+                      value: promotion
+                    };
+                  }
+                }).filter((item) => item)
               };
+              return group;
             })
         };
+        if (promotionData.promotions) {
+          return promotionData;
+        }
       });
       return Promise.resolve(promotionShelves);
     }).then((promotionShelves: PromotionShelve[]) => {

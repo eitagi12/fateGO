@@ -8,7 +8,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { MobileCareService } from 'src/app/device-order/services/mobile-care.service';
-import { ROUTE_DEVICE_ORDER_AIS_MNP_CONFIRM_USER_INFORMATION_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_MNP_CONFIRM_USER_INFORMATION_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_SELECT_PACKAGE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE } from '../../constants/route-path.constant';
 import { MOBILE_CARE_PACKAGE_KEY_REF } from 'src/app/device-order/constants/cpc.constant';
 
 @Component({
@@ -45,7 +45,11 @@ export class DeviceOrderAisMnpMobileCarePageComponent implements OnInit, OnDestr
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE]);
+    if (this.transaction.data.existingMobileCare) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE]);
+    }
   }
 
   onNext(): void {
@@ -65,22 +69,26 @@ export class DeviceOrderAisMnpMobileCarePageComponent implements OnInit, OnDestr
   }
 
   callService(): void {
-    const billingSystem = this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
-    const chargeType = this.transaction.data.mainPackage.customAttributes.billingSystem;
+    const billingSystem = (this.transaction.data.simCard.billingSystem === 'RTBS')
+    ? BillingSystemType.IRB : this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
+    const chargeType = this.transaction.data.simCard.chargeType;
     const endUserPrice = +this.priceOption.trade.normalPrice;
+    const exMobileCare = this.transaction.data.existingMobileCare;
 
     this.pageLoadingService.openLoading();
     this.mobileCareService.getMobileCare({
       packageKeyRef: MOBILE_CARE_PACKAGE_KEY_REF,
-      billingSystem: BillingSystemType.IRB
+      billingSystem: billingSystem
     }, chargeType, billingSystem, endUserPrice).then((mobileCare: any) => {
       this.mobileCare = {
-        promotions: mobileCare
+        promotions: mobileCare,
+        existingMobileCare: !!exMobileCare
       };
       if (this.mobileCare.promotions && this.mobileCare.promotions.length > 0) {
         this.mobileCare.promotions[0].active = true;
       }
+      return;
     })
-      .then(() => this.pageLoadingService.closeLoading());
+    .then(() => this.pageLoadingService.closeLoading());
   }
 }

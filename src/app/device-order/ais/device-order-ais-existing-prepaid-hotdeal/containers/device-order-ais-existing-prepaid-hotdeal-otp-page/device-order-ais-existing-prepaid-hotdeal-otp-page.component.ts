@@ -13,6 +13,9 @@ import { CustomerInfoService } from 'src/app/device-order/services/customer-info
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { environment } from 'src/environments/environment';
+import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-prepaid-hotdeal-otp-page',
@@ -29,6 +32,7 @@ export class DeviceOrderAisExistingPrepaidHotdealOtpPageComponent implements OnI
   mobileNo: string;
   transactionID: string;
   isOtpValid: boolean;
+  priceOption: PriceOption;
 
   constructor(
     private router: Router,
@@ -40,10 +44,13 @@ export class DeviceOrderAisExistingPrepaidHotdealOtpPageComponent implements OnI
     private alertService: AlertService,
     private customerInfoService: CustomerInfoService,
     private transactionService: TransactionService,
+    private privilegeService: PrivilegeService,
+    private priceOptionService: PriceOptionService,
 
   ) {
     this.transaction = this.transactionService.load();
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
+    this.priceOption = this.priceOptionService.load();
   }
 
   ngOnInit(): void {
@@ -88,11 +95,20 @@ export class DeviceOrderAisExistingPrepaidHotdealOtpPageComponent implements OnI
     }
     this.http.post(`/api/customerportal/newRegister/${mobile}/verifyOTP`, { pwd: otp, transactionID: this.transactionID }).toPromise()
       .then((resp: any) => {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_CUSTOMER_INFO_PAGE]);
+        this.navigateNext();
       }).catch((error) => {
         this.pageLoadingService.closeLoading();
         this.alertService.error('รหัส OTP ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง');
       });
+  }
+
+  navigateNext(): void {
+    if (this.transaction.data.action === TransactionAction.READ_CARD_REPI) {
+      this.autoPI();
+    } else {
+      this.pageLoadingService.closeLoading();
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_CUSTOMER_INFO_PAGE]);
+    }
   }
 
   autoPI(): void {
@@ -101,7 +117,6 @@ export class DeviceOrderAisExistingPrepaidHotdealOtpPageComponent implements OnI
       .then((response: any) => {
         this.pageLoadingService.closeLoading();
         if (response && response.data && response.data.success) {
-          this.transaction.data.action = TransactionAction.READ_CARD;
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_CUSTOMER_INFO_PAGE]);
         } else {
           this.alertService.error('ระบบไม่สามารถแสดงตนได้กรุณาติดต่อเจ้าหน้าที่');
@@ -131,7 +146,15 @@ export class DeviceOrderAisExistingPrepaidHotdealOtpPageComponent implements OnI
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_CUSTOMER_INFO_PAGE]);
+    const ussdCode = this.priceOption.trade.ussdCode;
+    const privilege =  this.transaction.data.simCard.privilegeCode;
+    const mobile = this.transaction.data.simCard.mobileNo;
+    this.pageLoadingService.openLoading();
+    this.privilegeService.requestUsePrivilege(mobile, ussdCode, privilege).then((privilegeCode) => {
+      this.pageLoadingService.closeLoading();
+      this.transaction.data.customer.privilegeCode = privilegeCode;
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_CUSTOMER_INFO_PAGE]);
+    });
   }
 
   onBack(): void {

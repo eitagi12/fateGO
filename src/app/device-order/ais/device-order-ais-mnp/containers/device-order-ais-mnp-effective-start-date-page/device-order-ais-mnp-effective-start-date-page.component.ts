@@ -11,30 +11,9 @@ import { MobileCareService } from 'src/app/device-order/services/mobile-care.ser
 import { AsyncAction } from 'rxjs/internal/scheduler/AsyncAction';
 import { Observable, of } from 'rxjs';
 import * as moment from 'moment';
-import { ROUTE_DEVICE_ORDER_AIS_MNP_SELECT_PACKAGE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_MNP_SELECT_PACKAGE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_PAGE } from '../../constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-
-export interface Handset {
-  productGroup?: string;
-  paymentMode?: string;
-  productPkg?: string;
-  priceType?: string;
-  integrationName?: string;
-  productCd?: string;
-  promotionName?: string;
-  startDt?: string;
-  attributeList?: Array<any>;
-  brand?: string;
-  model?: string;
-  color?: string;
-  enrollType?: string;
-  imei?: string;
-  price?: string;
-  receipt_dt?: string;
-  replaceFee?: string;
-  swapFee?: string;
-}
 
 export interface BillCycleText {
   textBill?: string;
@@ -73,7 +52,7 @@ export class DeviceOrderAisMnpEffectiveStartDatePageComponent implements OnInit,
     value: 'B'
   },
   {
-    textBill: 'วัดถัดไป',
+    textBill: 'วันถัดไป',
     textDate: 'พร้อมใช้งานวันที่',
     value: 'D'
   },
@@ -119,7 +98,6 @@ export class DeviceOrderAisMnpEffectiveStartDatePageComponent implements OnInit,
   ngOnInit(): void {
     this.createForm();
     this.getBillingAccountProcess();
-    this.getMobileCare(this.mobileNoSelect);
   }
 
   onBack(): void {
@@ -127,7 +105,11 @@ export class DeviceOrderAisMnpEffectiveStartDatePageComponent implements OnInit,
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE]);
+    if (this.transaction.data.existingMobileCare) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_PAGE]);
+    }
   }
 
   ngOnDestroy(): void {
@@ -210,58 +192,4 @@ export class DeviceOrderAisMnpEffectiveStartDatePageComponent implements OnInit,
     }
   }
 
-  getMobileCare(mobileNo: string): void {
-    let handsetList: any;
-    let packageList: any;
-    let filerOnlyMobileCareList = [];
-    let filterOnlyHandsetMobileCareList = [];
-    this.http.get(`/api/customerportal/personalinfo-mobile-care-handset/${mobileNo}`).toPromise()
-      .then((servicesList: any) => {
-        if (servicesList && servicesList.data) {
-          packageList = servicesList.data.mobileCareList;
-          handsetList = servicesList.data.handsetList;
-          if (packageList && packageList.length > 0) {
-            filerOnlyMobileCareList = packageList
-              .filter(aisPackage => {
-                if (aisPackage.produuctGroup) {
-                  return /mobilecare/.test(aisPackage.produuctGroup.toLowerCase().replace(/\s+/gi, ''));
-                } else {
-                  return false;
-                }
-              });
-          }
-
-          if (handsetList && handsetList.length > 0) {
-            filterOnlyHandsetMobileCareList = handsetList
-              .filter(handset => handset.productPkg ? /mobilecare/.test(handset.productPkg.toLowerCase().replace(/\s+/gi, '')) : false)
-              .map(data => this.mappingHandSet(data));
-          }
-        }
-
-        if (filerOnlyMobileCareList.length > 0 && filterOnlyHandsetMobileCareList.length > 0) {
-          const handSetFillter: Handset = filterOnlyHandsetMobileCareList.find(obj => obj);
-          const existingMobileCareFillter = filerOnlyMobileCareList.find(obj => obj);
-          this.transaction.data.existingMobileCare = Object.assign(existingMobileCareFillter, { handSet: handSetFillter});
-        }
-      });
-
-  }
-
-  mappingHandSet(handsetData: any): Handset {
-    if (!handsetData && !handsetData.attributeList) {
-      return;
-    }
-    const brand = handsetData.attributeList.filter((handSet: any) => handSet.fName === 'Brand').map(data => data.fValue)[0];
-    const model = handsetData.attributeList.filter((handSet: any) => handSet.fName === 'Model').map(data => data.fValue)[0];
-    const color = handsetData.attributeList.filter((handSet: any) => handSet.fName === 'Color').map(data => data.fValue)[0];
-    const imei = handsetData.attributeList.filter((handSet: any) => handSet.fName === 'IMEI').map(data => data.fValue)[0];
-    const handset: Handset = {
-      brand: brand,
-      model: model,
-      color: color,
-      imei: imei
-    };
-
-    return handset;
-  }
 }

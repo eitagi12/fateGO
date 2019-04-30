@@ -16,7 +16,6 @@ import { DeviceOrderAisMnpFaceComparePageComponent } from './containers/device-o
 import { DeviceOrderAisMnpFaceConfirmPageComponent } from './containers/device-order-ais-mnp-face-confirm-page/device-order-ais-mnp-face-confirm-page.component';
 import { DeviceOrderAisMnpMobileCarePageComponent } from './containers/device-order-ais-mnp-mobile-care-page/device-order-ais-mnp-mobile-care-page.component';
 import { DeviceOrderAisMnpPaymentDetailPageComponent } from './containers/device-order-ais-mnp-payment-detail-page/device-order-ais-mnp-payment-detail-page.component';
-import { DeviceOrderAisMnpQrCodeErrorPageComponent } from './containers/device-order-ais-mnp-qr-code-error-page/device-order-ais-mnp-qr-code-error-page.component';
 import { DeviceOrderAisMnpQrCodeGeneratorPageComponent } from './containers/device-order-ais-mnp-qr-code-generator-page/device-order-ais-mnp-qr-code-generator-page.component';
 import { DeviceOrderAisMnpQrCodeQueuePageComponent } from './containers/device-order-ais-mnp-qr-code-queue-page/device-order-ais-mnp-qr-code-queue-page.component';
 import { DeviceOrderAisMnpQrCodeSummaryPageComponent } from './containers/device-order-ais-mnp-qr-code-summary-page/device-order-ais-mnp-qr-code-summary-page.component';
@@ -59,7 +58,6 @@ import { DeviceOrderAisMnpMobileCareAvaliblePageComponent } from './containers/d
     DeviceOrderAisMnpFaceConfirmPageComponent,
     DeviceOrderAisMnpMobileCarePageComponent,
     DeviceOrderAisMnpPaymentDetailPageComponent,
-    DeviceOrderAisMnpQrCodeErrorPageComponent,
     DeviceOrderAisMnpQrCodeGeneratorPageComponent,
     DeviceOrderAisMnpQrCodeQueuePageComponent,
     DeviceOrderAisMnpQrCodeSummaryPageComponent,

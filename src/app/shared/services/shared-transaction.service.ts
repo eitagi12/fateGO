@@ -4,6 +4,8 @@ import { PriceOption } from '../models/price-option.model';
 import { TokenService } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 
+import { CustomerGroup } from 'src/app/buy-product/services/flow.service';
+
 import * as moment from 'moment';
 const Moment = moment;
 
@@ -83,11 +85,12 @@ export class SharedTransactionService {
         billing_information: {},
         mobile_care_package: {},
         air_time: {},
-        on_top_package: {},
+        on_top_package: transaction.data.onTopPackage || {},
         order: {
           soId: data.order.soId
         },
         queue: {},
+        contract: {},
         seller: {
           locationCode: !!data.seller ? data.seller.locationCode : productStock.location || '',
           locationName: !!data.seller ? data.seller.locationName : productStock.locationName || '',
@@ -99,24 +102,102 @@ export class SharedTransactionService {
       }
     };
 
+    if (data.mainPackage) {
+      params.data.main_package = {
+        title: data.mainPackage.title,
+        detailTH: data.mainPackage.detailTH,
+        customAttributes: {}
+      };
+      if (data.mainPackage.customAttributes) {
+        params.data.main_package.customAttributes = {
+          promotionCode: data.mainPackage.customAttributes.promotionCode,
+          promotionName: data.mainPackage.customAttributes.promotionName,
+          chargeType: data.mainPackage.customAttributes.chargeType
+        };
+      }
+    }
+
     if (data.preBooking) {
       params.data.pre_booking = transaction.data.preBooking;
     }
 
-    if (data.mainPromotion) {
-      // เดี๋ยวปรับอีกทีว่าเก็บอะไรบ้าง
-      params.data.main_promotion = {
-        campaign: priceOption.campaign,
-        privilege: priceOption.privilege,
-        trade: priceOption.trade
-      };
-    }
+    // เดี๋ยวปรับอีกทีว่าเก็บอะไรบ้าง
+    params.data.main_promotion = {
+      campaign: priceOption.campaign,
+      privilege: priceOption.privilege,
+      trade: priceOption.trade
+    };
 
     if (data.billingInformation) {
       // หน้า web payment ใช้ show ที่อยู่รับบิล
       params.data.billing_information = {
-        customer: data.billingInformation.billDeliveryAddress
+        customer: { ...data.customer, ...data.billingInformation.billDeliveryAddress },
       };
+
+      // วันที่มีผลการใช้งาน รอบบิลถัดไป/วันถัดไป/มีผลทันที
+      if (data.billingInformation.overRuleStartDate) {
+        params.data.billing_information.overRuleStartDate = data.billingInformation.overRuleStartDate;
+      }
+
+      if (priceOption.customerGroup.code === CustomerGroup.MNP ||
+        priceOption.customerGroup.code === CustomerGroup.EXISTING
+      ) {
+        params.data.billing_information.isNewBAFlag = !!data.billingInformation.isNewBAFlag;
+      }
+
+      const billCycle: string = data.billingInformation.billCycle ? data.billingInformation.billCycle.bill : data.customer.billCycle;
+
+      let billCycleFrom: string = '0';
+      let billCycleTo: string = '0';
+
+      switch (billCycle) {
+        case '11':
+          billCycleFrom = '4';
+          billCycleTo = '3';
+          break;
+        case '12':
+          billCycleFrom = '8';
+          billCycleTo = '7';
+          break;
+        case '13':
+          billCycleFrom = '12';
+          billCycleTo = '11';
+          break;
+        case '14':
+          billCycleFrom = '16';
+          billCycleTo = '15';
+          break;
+        case '15':
+          billCycleFrom = '20';
+          billCycleTo = '19';
+          break;
+        case '16':
+          billCycleFrom = '24';
+          billCycleTo = '23';
+          break;
+        case '17':
+          billCycleFrom = '28';
+          billCycleTo = '27';
+          break;
+        case '18':
+          billCycleFrom = '1';
+          billCycleTo = 'สิ้นเดือน';
+          break;
+      }
+
+      params.data.billing_information.billCycle = billCycle;
+      params.data.billing_information.billCycles = [{
+        billNo: billCycle,
+        from: billCycleFrom,
+        to: billCycleTo
+      }];
+
+      if (data.billingInformation.billCycleData) {
+        params.data.billing_information.billMedia = data.billingInformation.billCycleData.billMedia || '';
+        params.data.billing_information.emailAddress = data.billingInformation.billCycleData.email || '';
+        params.data.billing_information.phoneNumberContact = data.billingInformation.billCycleData.phoneNoContact || '';
+        params.data.billing_information.mobileNumberContact = data.billingInformation.billCycleData.mobileNoContact || '';
+      }
     }
 
     if (priceOption.trade) {
@@ -134,7 +215,16 @@ export class SharedTransactionService {
         // ของเดิม เก็บ reason ไว้ใน object
         params.data.mobile_care_package = { reason: data.mobileCarePackage };
       } else {
-        params.data.mobile_care_package = data.mobileCarePackage;
+        params.data.mobile_care_package = {
+          title: data.mobileCarePackage.title,
+          id: data.mobileCarePackage.id,
+          customAttributes: {}
+        };
+        if (data.mobileCarePackage.customAttributes) {
+          params.data.mobile_care_package.customAttributes = {
+            promotionCode: data.mobileCarePackage.customAttributes.promotionCode
+          };
+        }
       }
     }
 
@@ -145,6 +235,13 @@ export class SharedTransactionService {
       params.data.payment = data.payment;
     }
 
+    if (data.contract && data.contract.conditionCode) {
+      params.data.contract.conditionCode = data.contract.conditionCode;
+    }
+
+    if (data.mpayPayment) {
+      params.data.mpay_payment = data.mpayPayment;
+    }
     return params;
   }
 

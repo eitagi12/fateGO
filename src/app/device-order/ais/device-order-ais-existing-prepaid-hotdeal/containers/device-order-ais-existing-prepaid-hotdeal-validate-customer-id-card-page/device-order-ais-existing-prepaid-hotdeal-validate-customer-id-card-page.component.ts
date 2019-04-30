@@ -9,6 +9,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { HttpClient } from '@angular/common/http';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from 'src/app/buy-product/constants/route-path.constant';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-device-order-ais-existing-prepaid-hotdeal-validate-customer-id-card-page',
@@ -42,10 +43,21 @@ export class DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageCompo
     private sharedTransactionService: SharedTransactionService,
   ) {
     this.homeService.callback = () => {
-      if (this.validateCustomerIdcard.koiskApiFn) {
-        this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
-      }
-      window.location.href = '';
+      this.alertService.question('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่')
+      .then((data: any) => {
+        if (!data.value) {
+          return false;
+        }
+        if (this.validateCustomerIdcard.koiskApiFn) {
+          this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+        }
+        return this.returnStock().then(() => true);
+      })
+      .then((isNext: boolean) => {
+        if (isNext) {
+          window.location.href = environment.name === 'LOCAL' ? '/main-menu' : '/smart-digital/main-menu';
+        }
+      });
     };
     this.user = this.tokenService.getUser();
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
@@ -77,6 +89,7 @@ export class DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageCompo
 
   onNext(): void {
     this.pageLoadingService.openLoading();
+    let isValidate = false;
     this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
       .then((zipCode: string) => {
         return this.http.get('/api/customerportal/validate-customer-prepaid-hotdeal', {
@@ -86,19 +99,32 @@ export class DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageCompo
         }).toPromise()
           .then((resp: any) => {
             const data = resp.data || {};
+            isValidate = true;
             return {
               caNumber: data.caNumber,
               mainMobile: data.mainMobile,
               billCycle: data.billCycle,
               zipCode: zipCode
             };
-          }).catch(() => {
+          }).catch((err: any) => {
+            this.alertService.notify({
+              type: 'error',
+              html: 'ไม่สามารถซื้อเครื่องราคาพิเศษ/เปิดเบอร์ใหม่ได้ <br> ' + err.error.errors
+            }).then(() => {
+              if (this.validateCustomerIdcard.koiskApiFn) {
+                this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+              }
+              this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
+            });
             return { zipCode: zipCode };
           });
       })
       .then((customer: any) => {
-        // load bill cycle
         this.transaction.data.customer = Object.assign(this.profile, customer);
+        if (!isValidate) {
+          return;
+        }
+        // load bill cycle
         return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
           .then((resp: any) => {
             const data = resp.data || {};
@@ -107,8 +133,10 @@ export class DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageCompo
             };
           });
       }).then((billingInformation: any) => {
+        if (!isValidate) {
+          return;
+        }
         this.transaction.data.billingInformation = billingInformation;
-
         return this.conditionIdentityValid()
           .then(() => {
             return this.http.post(
@@ -122,9 +150,11 @@ export class DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageCompo
 
             return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
           })
-          .then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_ELIGIBLE_MOBILE_PAGE]));
-
-      }).then(() => this.pageLoadingService.closeLoading());
+          .then(() => {
+            this.pageLoadingService.closeLoading();
+            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_ELIGIBLE_MOBILE_PAGE]);
+          });
+      });
   }
 
   conditionIdentityValid(): Promise<string> {
@@ -204,8 +234,21 @@ export class DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageCompo
   }
 
   onBack(): void {
-    this.returnStock().then(() => {
-      this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
+    this.alertService.question('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่')
+    .then((data: any) => {
+      if (!data.value) {
+        return false;
+      }
+      if (this.validateCustomerIdcard.koiskApiFn) {
+        this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+      }
+      // Returns stock (sim card, soId) todo...
+      return this.returnStock().then(() => true);
+    })
+    .then((isNext: boolean) => {
+      if (isNext) {
+        this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
+      }
     });
   }
 
@@ -248,7 +291,7 @@ export class DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageCompo
   private createTransaction(): void {
     this.transaction = {
       data: {
-        transactionType: TransactionType.ORDER_NEW_REGISTER,
+        transactionType: TransactionType.DEVICE_ORDER_PREPAID_HOTDEAL_AIS,
         action: TransactionAction.READ_CARD,
       }
     };

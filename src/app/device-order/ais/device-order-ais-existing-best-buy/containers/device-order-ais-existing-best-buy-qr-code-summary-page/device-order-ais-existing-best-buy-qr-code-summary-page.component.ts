@@ -20,6 +20,7 @@ export class DeviceOrderAisExistingBestBuyQrCodeSummaryPageComponent implements 
   transaction: Transaction;
   priceOption: PriceOption;
   deposit: number;
+  color: string;
 
   brannerImagePaymentQrCode: ImageBrannerQRCode;
 
@@ -39,6 +40,7 @@ export class DeviceOrderAisExistingBestBuyQrCodeSummaryPageComponent implements 
   }
 
   ngOnInit(): void {
+    this.color = this.priceOption.productStock.color ? this.priceOption.productStock.color : this.priceOption.productStock.colorName || '';
     this.deposit = this.transaction.data.preBooking
                     && this.transaction.data.preBooking.depositAmt ? -Math.abs(+this.transaction.data.preBooking.depositAmt) : 0;
   }
@@ -90,5 +92,25 @@ export class DeviceOrderAisExistingBestBuyQrCodeSummaryPageComponent implements 
       }
       Promise.all(promiseAll).then(() => resolve());
     });
+  }
+
+  getTotal(): number {
+    const trade = this.priceOption.trade;
+    const payment: any = this.transaction.data.payment || {};
+    const advancePayment: any = this.transaction.data.advancePayment || {};
+
+    let total: number = 0;
+    if (payment.paymentType === 'QR_CODE') {
+      total += +trade.promotionPrice;
+    }
+    if (advancePayment.paymentType === 'QR_CODE') {
+      const advancePay = trade.advancePay || {};
+      total += +advancePay.amount;
+    }
+
+    if (this.deposit) {
+      total += this.deposit;
+    }
+    return total;
   }
 }

@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-import { ApiRequestService, PageLoadingService, HomeService, MobileInfo, ShoppingCart, TokenService } from 'mychannel-shared-libs';
+import { ApiRequestService, PageLoadingService, HomeService, MobileInfo, ShoppingCart, TokenService, BillingSystemType } from 'mychannel-shared-libs';
 import { ROUTE_DEVICE_ORDER_ASP_BEST_BUY_ELIGIBLE_MOBILE_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_VALIDATE_CUSTOMER_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_VALIDATE_CUSTOMER_REPI_PAGE } from 'src/app/device-order/asp/device-order-asp-existing-best-buy/constants/route-path.constant';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -35,7 +35,10 @@ export class DeviceOrderAspExistingBestBuyMobileDetailPageComponent implements O
   }
 
   ngOnInit(): void {
-    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
+    if (this.transaction.data.action === TransactionAction.KEY_IN
+      || this.transaction.data.action === TransactionAction.READ_CARD) {
+        this.shoppingCart = this.shoppingCartService.getShoppingCartData();
+    }
     this.getMobileInfo();
   }
 
@@ -81,7 +84,7 @@ export class DeviceOrderAspExistingBestBuyMobileDetailPageComponent implements O
       };
 
       this.transaction.data.simCard.chargeType = mobileDetail.chargeType;
-      this.transaction.data.simCard.billingSystem = mobileDetail.billingSystem;
+      this.transaction.data.simCard.billingSystem = this.mapBillingSystem(mobileDetail.billingSystem, mobileDetail.chargeType);
       this.pageLoadingService.closeLoading();
     });
   }
@@ -97,18 +100,28 @@ export class DeviceOrderAspExistingBestBuyMobileDetailPageComponent implements O
   serviceYearWording(year: string, month: string, day: string): string {
     let serviceYearWording = '';
     if (year) {
-      serviceYearWording = `${year || ''} ปี `;
+      serviceYearWording = `${year || ''} ปี`;
     }
 
     if (month) {
-      serviceYearWording += `${month} เดือน`;
+      serviceYearWording += ` ${month} เดือน`;
     }
 
     if (day) {
-      serviceYearWording += `${day} วัน`;
+      serviceYearWording += ` ${day} วัน`;
     }
 
-    return serviceYearWording;
+    return serviceYearWording.trim();
+  }
+
+  mapBillingSystem(billingSystem: string, chargeType: string): string {
+    if ((billingSystem === 'RTBS' && chargeType === 'Post-paid')) {
+      return BillingSystemType.IRB;
+    } else if (billingSystem === 'IRB' && chargeType === 'Pre-paid') {
+      return 'RTBS';
+    } else {
+      return billingSystem;
+    }
   }
 
 }

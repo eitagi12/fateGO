@@ -82,9 +82,17 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
         locationName: response.data.displayName,
         locationCode: user.locationCode
       };
-    });
+      return this.http.get(`/api/customerportal/newRegister/getEmployeeDetail/username/${user.username}`).toPromise()
+        .then((emResponse: any) => {
+          if (emResponse && emResponse.data) {
+            const emId = emResponse.data.pin;
+            this.sellerCode = emId;
+          }
+        }).catch(() => {
+          this.sellerCode = '';
+        });
+    }).then(() => this.createForm());
     this.createForm();
-
   }
 
   onHome(): void {
@@ -92,8 +100,8 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
   }
 
   onBack(): void {
-    const mobileCare = this.transaction.data.mobileCarePackage;
-    if (mobileCare) {
+    const changeMobileCareFlag = this.transaction.data.existingMobileCare.changeMobileCareFlag;
+    if (changeMobileCareFlag) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_CARE_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_CARE_AVAILABLE_PAGE]);
@@ -128,6 +136,11 @@ export class DeviceOrderAisExistingBestBuySummaryPageComponent implements OnInit
     this.checkSellerForm = this.fb.group({
       checkSeller: ['', Validators.compose([Validators.required, Validators.pattern(/^[0-9]+$/)])]
     });
+
+    console.log(this.seller);
+    if (this.sellerCode) {
+      this.checkSellerForm.patchValue({ checkSeller : this.sellerCode});
+    }
 
     this.checkSellerForm.valueChanges.subscribe((value) => {
       if (value.checkSeller) {

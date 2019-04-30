@@ -8,7 +8,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { WIZARD_DEVICE_ORDER_AIS, WIZARD_DEVICE_ORDER_ASP } from 'src/app/device-order/constants/wizard.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_CARE_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_CARE_AVAILABLE_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CHECK_OUT_PAGE } from '../../constants/route-path.constant';
@@ -63,6 +63,7 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     const customer = this.transaction.data.customer;
+    this.sellerCode = this.user.ascCode;
     this.customerAddress = this.utils.getCurrentAddress({
       homeNo: customer.homeNo,
       moo: customer.moo,
@@ -96,8 +97,8 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
   }
 
   onBack(): void {
-    const mobileCare = this.transaction.data.mobileCarePackage;
-    if (mobileCare) {
+    const changeMobileCareFlag = this.transaction.data.existingMobileCare.changeMobileCareFlag;
+    if (changeMobileCareFlag) {
       this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_CARE_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_CARE_AVAILABLE_PAGE]);
@@ -106,24 +107,36 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    this.http.get(`/api/customerportal/checkSeller/${this.sellerCode}`).toPromise()
-      .then((shopCheckSeller: any) => {
-        if (shopCheckSeller.data.condition) {
-          this.transaction.data.seller = this.seller;
-          this.transaction.data.seller.sellerNo = this.sellerCode;
-          if (!this.tokenService.isTelewizUser()) {
-            this.pageLoadingService.closeLoading();
-            this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CHECK_OUT_PAGE]);
+    if (this.sellerCode) {
+      this.http.get(`/api/customerportal/checkSeller/${this.sellerCode}`).toPromise()
+        .then((shopCheckSeller: any) => {
+          if (shopCheckSeller.data.condition) {
+            this.transaction.data.seller = this.seller;
+            this.transaction.data.seller.sellerNo = this.sellerCode;
+            if (!this.tokenService.isTelewizUser()) {
+              this.pageLoadingService.closeLoading();
+              this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CHECK_OUT_PAGE]);
+            } else {
+              this.redirectToFlowWeb();
+            }
           } else {
-            this.redirectToFlowWeb();
+            this.alertService.error(shopCheckSeller.data.message);
           }
-        } else {
-          this.alertService.error(shopCheckSeller.data.message);
-        }
-      }).catch((error: any) => {
+        }).catch((error: any) => {
+          this.pageLoadingService.closeLoading();
+          this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+        });
+    } else {
+      this.transaction.data.seller = this.seller;
+      this.transaction.data.seller.sellerNo = this.sellerCode;
+      if (!this.tokenService.isTelewizUser()) {
         this.pageLoadingService.closeLoading();
-        this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
-      });
+        this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CHECK_OUT_PAGE]);
+      } else {
+        this.redirectToFlowWeb();
+      }
+    }
+
   }
 
   ngOnDestroy(): void {
@@ -134,6 +147,11 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
     this.checkSellerForm = this.fb.group({
       checkSeller: ['', Validators.compose([Validators.required, Validators.pattern(/^[0-9]+$/)])]
     });
+
+    if (this.user.ascCode) {
+      this.checkSellerForm.patchValue({ checkSeller : this.user.ascCode});
+      this.sellerCode = this.user.ascCode;
+    }
 
     this.checkSellerForm.valueChanges.subscribe((value) => {
       if (value.checkSeller) {
@@ -158,12 +176,13 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
       .then((resp: any) => {
         const queueNo = resp.data.queue;
         this.transaction.data.queue = { queueNo: queueNo };
-        this.http.post('/api/salesportal/device-sell/order', this.getRequestCreateOrder(this.transaction, this.priceOption)).toPromise()
+        this.http.post('/api/salesportal/create-device-selling-order',
+          this.getRequestCreateOrder(this.transaction, this.priceOption)).toPromise()
           .then(() => {
-            return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
-          }).then(() => {
-            this.pageLoadingService.closeLoading();
-            window.location.href = `/web/sales-order/pay-advance?transactionId=${this.transaction.transactionId}`;
+            return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
+              this.pageLoadingService.closeLoading();
+              window.location.href = `/web/sales-order/pay-advance?transactionId=${this.transaction.transactionId}`;
+            });
           });
       });
   }
@@ -202,13 +221,13 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
       model: productDetail.model,
       color: productStock.color,
       matCode: '',
-      priceIncAmt: +trade.normalPrice.toFixed(2),
-      priceDiscountAmt: (+trade.discount.amount).toFixed(2),
+      priceIncAmt: (+trade.normalPrice).toFixed(2),
+      priceDiscountAmt: (+trade.discount.amount || 0).toFixed(2),
       grandTotalAmt: this.getGrandTotalAmt(trade, prebooking),
       userId: this.user.username,
       saleCode: seller && seller.sellerNo ? seller.sellerNo : '',
       queueNo: queue.queueNo || '',
-      cusNameOrder: `${customer.titleName || ''}${customer.firstName || ''} ${customer.lastName || ''}`.trim(),
+      cusNameOrder: `${customer.titleName || ''}${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
       taxCardId: customer && customer.idCardNo || '',
       cusMobileNoOrder: simCard && simCard.mobileNo || '',
       customerAddress: this.getCustomerAddress(customer),
@@ -236,16 +255,16 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
       qrAmt: qrAmt
     };
 
-    return Promise.resolve(data);
+    return data;
   }
 
   // private getInstallmentTerm(payment: Payment): any {
-  //   return payment && payment.paymentBank && payment.paymentBank.installment ?
-  //   payment.paymentBank.installment : 0;
+  //   return payment && payment.paymentBank && payment.paymentBank.installments ?
+  //     payment.paymentBank.installments[0].installmentMonth : 0;
   // }
 
   // private getInstallmentRate(payment: Payment): any {
-  //   return payment && payment.paymentBank && payment.paymentBank.installment ?
+  //   return payment && payment.paymentBank && payment.paymentBank.installments ?
   //     payment.paymentBank.installments[0].installmentPercentage : 0;
   // }
 
@@ -254,7 +273,7 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
     const normalPrice: number = trade.normalPrice;
     const advancePay: number = +trade.advancePay.amount;
     const discount: number = +trade.discount.amount || 0;
-    const depositAmt: number = prebooking ? +prebooking.depositAmt : 0;
+    const depositAmt: number = prebooking && prebooking.depositAmt ? +prebooking.depositAmt : 0;
 
     let result: any = normalPrice;
     result += advancePay;
@@ -319,7 +338,7 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
       } else if (payment.paymentType === 'CREDIT' && payment.paymentForm !== 'FULL') {
         tradeAndInstallment += '[CC]' + comma + space;
         tradeAndInstallment += '[B]' + payment.paymentBank.abb + comma + space;
-        if (payment.paymentBank.installments.length > 0) {
+        if (payment.paymentMethod) {
           tradeAndInstallment += '[I]' + payment.paymentMethod.percentage +
             '%' + space + payment.paymentMethod.month + 'เดือน' + comma + space;
         }
@@ -339,7 +358,7 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
     otherInformation += '[D]' + space + (+trade.discount.amount).toFixed(2) + comma + space;
     otherInformation += '[RC]' + space + customer.privilegeCode + comma + space;
     otherInformation += '[OT]' + space + 'MC004' + comma + space;
-    if (mobileCare && !mobileCare.reason) {
+    if (mobileCare && !(typeof mobileCare === 'string' || mobileCare instanceof String)) {
       otherInformation += '[PC]' + space + 'remark.mainPackageCode' + comma + space;
       otherInformation += '[MCC]' + space + mobileCare.customAttributes.promotionCode + comma + space;
       otherInformation += '[MC]' + space + mobileCare.customAttributes.shortNameThai + comma + space;

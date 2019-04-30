@@ -87,7 +87,7 @@
     </div>
     <!-- campaigns -->
     <div [mcLoading]="priceOptionDetailService" [hidden]="priceOption?.campaign">
-      <div class="bg-white price" [hidden]="tabs?.length <= 0">
+      <div class="bg-white" [hidden]="tabs?.length <= 0">
         <tabset [justified]="true">
           <tab *ngFor="let tab of tabs" [active]="tab.active">
             <ng-template tabHeading>
@@ -193,6 +193,9 @@
     </div>
     <!---------------------->
   </div>
+  <mc-footer>
+    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+  </mc-footer>
 </div>
 
 <ng-template #productSpecTemplate>

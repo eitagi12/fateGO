@@ -23,7 +23,6 @@ import { DeviceOrderAisPreToPostSummaryPageComponent } from './containers/device
 import { DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent } from './containers/device-order-ais-pre-to-post-validate-customer-id-card-page/device-order-ais-pre-to-post-validate-customer-id-card-page.component';
 import { DeviceOrderAisPreToPostMobileCarePageComponent } from './containers/device-order-ais-pre-to-post-mobile-care-page/device-order-ais-pre-to-post-mobile-care-page.component';
 import { DeviceOrderAisPreToPostEcontractPageComponent } from './containers/device-order-ais-pre-to-post-econtract-page/device-order-ais-pre-to-post-econtract-page.component';
-import { DeviceOrderAisPreToPostQrCodeErrorPageComponent } from './containers/device-order-ais-pre-to-post-qr-code-error-page/device-order-ais-pre-to-post-qr-code-error-page.component';
 import { DeviceOrderAisPreToPostQrCodeGeneratorPageComponent } from './containers/device-order-ais-pre-to-post-qr-code-generator-page/device-order-ais-pre-to-post-qr-code-generator-page.component';
 import { DeviceOrderAisPreToPostQrCodeQueuePageComponent } from './containers/device-order-ais-pre-to-post-qr-code-queue-page/device-order-ais-pre-to-post-qr-code-queue-page.component';
 import { DeviceOrderAisPreToPostQrCodeSummaryPageComponent } from './containers/device-order-ais-pre-to-post-qr-code-summary-page/device-order-ais-pre-to-post-qr-code-summary-page.component';
@@ -32,6 +31,7 @@ import { DeviceOrderAisPreToPostValidateCustomerPageComponent } from './containe
 import { DeviceOrderAisPreToPostValidateCustomerRepiPageComponent } from './containers/device-order-ais-pre-to-post-validate-customer-repi-page/device-order-ais-pre-to-post-validate-customer-repi-page.component';
 import { DeviceOrderAisPreToPostValidateCustomerIdCardRepiPageComponent } from './containers/device-order-ais-pre-to-post-validate-customer-id-card-repi-page/device-order-ais-pre-to-post-validate-customer-id-card-repi-page.component';
 import { DeviceOrderAisPreToPostCustomerProfilePageComponent } from './containers/device-order-ais-pre-to-post-customer-profile-page/device-order-ais-pre-to-post-customer-profile-page.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -39,7 +39,8 @@ import { DeviceOrderAisPreToPostCustomerProfilePageComponent } from './container
     CommonModule,
     ReactiveFormsModule,
     MyChannelSharedLibsModule,
-    DeviceOrderAisPreToPostRoutingModule
+    DeviceOrderAisPreToPostRoutingModule,
+    TranslateModule
   ],
   declarations: [
     DeviceOrderAisPreToPostValidateCustomerPageComponent,
@@ -64,13 +65,11 @@ import { DeviceOrderAisPreToPostCustomerProfilePageComponent } from './container
     DeviceOrderAisPreToPostSummaryPageComponent,
     DeviceOrderAisPreToPostMobileCarePageComponent,
     DeviceOrderAisPreToPostEcontractPageComponent,
-    DeviceOrderAisPreToPostQrCodeErrorPageComponent,
     DeviceOrderAisPreToPostQrCodeGeneratorPageComponent,
     DeviceOrderAisPreToPostQrCodeQueuePageComponent,
     DeviceOrderAisPreToPostQrCodeSummaryPageComponent,
     DeviceOrderAisPreToPostQueuePageComponent,
     DeviceOrderAisPreToPostCustomerProfilePageComponent,
-    DeviceOrderAisPreToPostQrCodeErrorPageComponent,
     DeviceOrderAisPreToPostQrCodeGeneratorPageComponent,
     DeviceOrderAisPreToPostQrCodeSummaryPageComponent,
     DeviceOrderAisPreToPostQrCodeQueuePageComponent

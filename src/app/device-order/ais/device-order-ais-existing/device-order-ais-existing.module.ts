@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 
 import { DeviceOrderAisExistingRoutingModule } from './device-order-ais-existing-routing.module';
 import { DeviceOrderAisExistingValidateCustomerPageComponent } from './containers/device-order-ais-existing-validate-customer-page/device-order-ais-existing-validate-customer-page.component';
@@ -19,18 +21,16 @@ import { DeviceOrderAisExistingAgreementSignPageComponent } from './containers/d
 import { DeviceOrderAisExistingAggregatePageComponent } from './containers/device-order-ais-existing-aggregate-page/device-order-ais-existing-aggregate-page.component';
 import { DeviceOrderAisExistingQueuePageComponent } from './containers/device-order-ais-existing-queue-page/device-order-ais-existing-queue-page.component';
 import { DeviceOrderAisExistingResultPageComponent } from './containers/device-order-ais-existing-result-page/device-order-ais-existing-result-page.component';
-import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { DeviceOrderAisExistingQrCodeSummaryPageComponent } from './containers/device-order-ais-existing-qr-code-summary-page/device-order-ais-existing-qr-code-summary-page.component';
 import { DeviceOrderAisExistingQrCodeGeneratorPageComponent } from './containers/device-order-ais-existing-qr-code-generator-page/device-order-ais-existing-qr-code-generator-page.component';
 import { DeviceOrderAisExistingQrCodeQueuePageComponent } from './containers/device-order-ais-existing-qr-code-queue-page/device-order-ais-existing-qr-code-queue-page.component';
-import { DeviceOrderAisExistingQrCodeErrorPageComponent } from './containers/device-order-ais-existing-qr-code-error-page/device-order-ais-existing-qr-code-error-page.component';
 import { DeviceOrderAisExistingOneLovePageComponent } from './containers/device-order-ais-existing-one-love-page/device-order-ais-existing-one-love-page.component';
 import { DeviceOrderAisExistingMergeBillingPageComponent } from './containers/device-order-ais-existing-merge-billing-page/device-order-ais-existing-merge-billing-page.component';
 import { DeviceOrderAisExistingEapplicationPageComponent } from './containers/device-order-ais-existing-eapplication-page/device-order-ais-existing-eapplication-page.component';
 import { DeviceOrderAisExistingEbillingAddressPageComponent } from './containers/device-order-ais-existing-ebilling-address-page/device-order-ais-existing-ebilling-address-page.component';
 import { DeviceOrderAisExistingMobileCareAvailablePageComponent } from './containers/device-order-ais-existing-mobile-care-available-page/device-order-ais-existing-mobile-care-available-page.component';
 import { DeviceOrderAisExistingEcontractPageComponent } from './containers/device-order-ais-existing-econtract-page/device-order-ais-existing-econtract-page.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DeviceOrderAisExistingNonPackagePageComponent } from './containers/device-order-ais-existing-non-package-page/device-order-ais-existing-non-package-page.component';
 
 @NgModule({
   imports: [
@@ -61,13 +61,13 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
     DeviceOrderAisExistingQrCodeSummaryPageComponent,
     DeviceOrderAisExistingQrCodeGeneratorPageComponent,
     DeviceOrderAisExistingQrCodeQueuePageComponent,
-    DeviceOrderAisExistingQrCodeErrorPageComponent,
     DeviceOrderAisExistingOneLovePageComponent,
     DeviceOrderAisExistingMergeBillingPageComponent,
     DeviceOrderAisExistingEapplicationPageComponent,
     DeviceOrderAisExistingEbillingAddressPageComponent,
     DeviceOrderAisExistingMobileCareAvailablePageComponent,
-    DeviceOrderAisExistingEcontractPageComponent
+    DeviceOrderAisExistingEcontractPageComponent,
+    DeviceOrderAisExistingNonPackagePageComponent
   ]
 })
 export class DeviceOrderAisExistingModule { }

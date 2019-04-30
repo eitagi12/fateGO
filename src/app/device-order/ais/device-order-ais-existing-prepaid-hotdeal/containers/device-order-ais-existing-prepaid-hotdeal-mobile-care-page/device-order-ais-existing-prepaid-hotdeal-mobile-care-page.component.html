@@ -11,7 +11,9 @@
       <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
       <div class="my-3">
           <mc-wizard [wizards]="wizards" active="3"></mc-wizard>
-          <mc-mobile-care [mobileCare]="mobileCare" [normalPrice]="priceOption?.trade?.normalPrice" (completed)="onCompleted($event)"></mc-mobile-care>
+          <mc-mobile-care [mobileCare]="mobileCare" 
+          [selected]="transaction?.data?.mobileCarePackage"
+          [normalPrice]="priceOption?.trade?.normalPrice" (completed)="onCompleted($event)"></mc-mobile-care>
       </div>
     </div>
     <mc-footer>

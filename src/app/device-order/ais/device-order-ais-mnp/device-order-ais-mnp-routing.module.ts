@@ -26,12 +26,10 @@ import { DeviceOrderAisMnpResultPageComponent } from './containers/device-order-
 import { DeviceOrderAisMnpQrCodeSummaryPageComponent } from './containers/device-order-ais-mnp-qr-code-summary-page/device-order-ais-mnp-qr-code-summary-page.component';
 import { DeviceOrderAisMnpQrCodeQueuePageComponent } from './containers/device-order-ais-mnp-qr-code-queue-page/device-order-ais-mnp-qr-code-queue-page.component';
 import { DeviceOrderAisMnpQrCodeGeneratorPageComponent } from './containers/device-order-ais-mnp-qr-code-generator-page/device-order-ais-mnp-qr-code-generator-page.component';
-import { DeviceOrderAisMnpQrCodeErrorPageComponent } from './containers/device-order-ais-mnp-qr-code-error-page/device-order-ais-mnp-qr-code-error-page.component';
 import { DeviceOrderAisMnpEligibleMobilePageComponent } from './containers/device-order-ais-mnp-eligible-mobile-page/device-order-ais-mnp-eligible-mobile-page.component';
 import { DeviceOrderAisMnpMobileDetailPageComponent } from './containers/device-order-ais-mnp-mobile-detail-page/device-order-ais-mnp-mobile-detail-page.component';
 import { DeviceOrderAisMnpEffectiveStartDatePageComponent } from './containers/device-order-ais-mnp-effective-start-date-page/device-order-ais-mnp-effective-start-date-page.component';
 import { DeviceOrderAisMnpMobileCareAvaliblePageComponent } from './containers/device-order-ais-mnp-mobile-care-avalible-page/device-order-ais-mnp-mobile-care-avalible-page.component';
-
 const routes: Routes = [
   { path: 'validate-customer', component: DeviceOrderAisMnpValidateCustomerPageComponent },
   { path: 'validate-customer-key-in', component: DeviceOrderAisMnpValidateCustomerKeyInPageComponent },
@@ -60,7 +58,6 @@ const routes: Routes = [
   { path: 'qr-code-summary', component: DeviceOrderAisMnpQrCodeSummaryPageComponent },
   { path: 'qr-code-queue', component: DeviceOrderAisMnpQrCodeQueuePageComponent },
   { path: 'qr-code-generator', component: DeviceOrderAisMnpQrCodeGeneratorPageComponent },
-  { path: 'qr-code-error', component: DeviceOrderAisMnpQrCodeErrorPageComponent },
   { path: 'eligible-mobile', component: DeviceOrderAisMnpEligibleMobilePageComponent },
   { path: 'mobile-detail', component: DeviceOrderAisMnpMobileDetailPageComponent },
   { path: 'effective-start-date', component: DeviceOrderAisMnpEffectiveStartDatePageComponent },

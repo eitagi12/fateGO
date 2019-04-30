@@ -1,8 +1,12 @@
 <div class="mc-flex">
-  <mc-header title="เครื่องพร้อมเปลี่ยนเป็นรายเดือน">
-    <div class="header-icon-left">
+  <mc-header title="{{ 'เครื่องพร้อมเปลี่ยนเติมเงินเป็นรายเดือน' | translate }}">
+    <div class="header-icon-left w-25">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
+    <!-- <div class="header-icon-right w-25 text-right">
+      <mc-dropdown-language></mc-dropdown-language>
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div> -->
   </mc-header>
 
   <div class="mc-flex-wrap">
@@ -10,16 +14,16 @@
       <div class="container-fluid">
         <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
         <div class="container-fluid bg-white pt-3 pb-2 mb-3" *ngIf="balance && serviceChange && serviceAfterChanged">
-          <div class="text-center">ข้อมูลปัจจุบันของคุณ</div>
+          <div class="text-center" translate>ข้อมูลปัจจุบันของคุณ</div>
           <hr>
           <div class="row mt-3 mb-3">
-            <div class="col-4 text-green">
+            <div class="col-4 text-green" translate>
               หมายเลข
             </div>
             <div class="col-8">
               {{ mobileNo | mobileNo }}
             </div>
-            <div class="col-4 text-green">
+            <div class="col-4 text-green" translate>
               ยอดเงินคงเหลือ
             </div>
             <div class="col-8">
@@ -28,11 +32,13 @@
             <div class="col-4 text-green">
 
             </div>
-            <div class="col-8">
+            <div class="col-8" translate>
               * ยอดเงินคงเหลือจะถูกโอนเป็นค่าโทร ที่ระบบรายเดือนให้โดยอัตโนมัติ
-              <a class="float-right text-green" (click)="openModal(template)"><u>MORE</u></a>
+              <a class="float-right text-green" (click)="openModal(template)">
+                <u>MORE</u>
+              </a>
             </div>
-            <div class="col-4 text-green">
+            <div class="col-4 text-green" translate>
               ค่าโทรที่ได้รับ
             </div>
             <div class="col-8">
@@ -48,12 +54,13 @@
               <div class="row mb-3">
                 <div class="col-sm-12 text-left">
                   <i class="fa fa-circle text-green mr-3"></i>
-                  บริการเสริมตามรายการด้านล่าง จะถูกโอนย้ายโดยอัตโนมัติ
+                    {{ 'บริการเสริมตามรายการด้านล่าง จะถูกโอนย้ายโดยอัตโนมัติ' | translate}}
                 </div>
               </div>
               <div class="row" *ngFor="let service of serviceChange">
                 <ul>
-                  <li class="text-light-grey d-inline"><i class="fa fa-check text-green mr-3"></i>
+                  <li class="text-light-grey d-inline">
+                    <i class="fa fa-check text-green mr-3"></i>
                     {{ service?.serviceName }}
                   </li>
                 </ul>
@@ -66,12 +73,13 @@
               <div class="row mb-3">
                 <div class="col-sm-12 text-left">
                   <i class="fa fa-circle text-green mr-3"></i>
-                  บริการเสริมตามรายการด้านล่าง สิ้นสุดทันทีหลังจากเปลี่ยนเป็นรายเดือน
+                  {{ 'บริการเสริมตามรายการด้านล่าง สิ้นสุดทันทีหลังจากเปลี่ยนเป็นรายเดือน' | translate}}
                 </div>
               </div>
               <div class="row" *ngFor="let service of serviceAfterChanged">
                 <ul>
-                  <li class="text-light-grey d-inline"><i class="fa fa-times text-pink mr-3"></i>
+                  <li class="text-light-grey d-inline">
+                    <i class="fa fa-times text-pink mr-3"></i>
                     {{ service?.serviceName }}
                   </li>
                 </ul>
@@ -100,7 +108,8 @@
           </div>
         </div> -->
 
-        <div class="container-fluid bg-white mt-3 p-3 text-center" *ngIf="!balance && !serviceChange && !serviceAfterChanged && !isLoad">
+        <div class="container-fluid bg-white mt-3 p-3 text-center" *ngIf="!balance && !serviceChange && !serviceAfterChanged && !isLoad"
+          translate>
           ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้
         </div>
 
@@ -119,24 +128,24 @@
       <span aria-hidden="true">&times;</span>
     </button>
     <br>
-    <h5 class="text-green">เงื่อนไขการโอนเงินอัตโนมัติใช้สิทธิ์ค่าโทร</h5>
-    <ol class="text-light-grey">
-      <li>สามารถใช้สิทธิ์ค่าโทรได้ ภายใน 3 วัน (ทำการ)</li>
-      <li>เฉพาะสิทธิ์การโทรภายในประเทศเท่านั้น</li>
-      <li>คิดค่าโทรที่ได้รับหลังหักโปรโมชั่นหลัก</li>
-      <li>รายละเอียดโอนเงินอัตโนมัติ ดังนี้</li>
+    <h5 class="text-green" translate>เงื่อนไขการโอนเงินอัตโนมัติใช้สิทธิ์ค่าโทร</h5>
+    <ol class="text-light-grey" translate>
+      <li translate>สามารถใช้สิทธิ์ค่าโทรได้ ภายใน 3 วัน (ทำการ)</li>
+      <li translate>เฉพาะสิทธิ์การโทรภายในประเทศเท่านั้น</li>
+      <li translate>คิดค่าโทรที่ได้รับหลังหักโปรโมชั่นหลัก</li>
+      <li translate>รายละเอียดโอนเงินอัตโนมัติ ดังนี้</li>
     </ol>
   </div>
   <table class="w-100">
     <thead align="center">
       <tr class="bg-lime text-white">
-        <td class="align-middle  p-2" width="50%">
+        <td class="align-middle  p-2" width="50%" translate>
           จำนวนเงินคงเหลือ (บาท)
         </td>
         <td class="align-middle " width="1px">
           |
         </td>
-        <td class="align-middle" width="50%">
+        <td class="align-middle" width="50%" translate>
           ค่าโทรที่ได้รับ (บาท)
         </td>
       </tr>
@@ -198,9 +207,9 @@
     </tbody>
 
   </table>
-  <div class="container mt-3 mb-3 text-light-grey">
-    *ยอดเงินคงเหลือในกระเป๋า 1 ของคุณ จะถูกโอนเป็นค่าโทรที่ รับรายเดือนให้อัตโนมัติ ส่วนเงินคงเหลือในกระเป๋า 2
-    ไม่สามารถโอนได้ ควรใช้ให้หมดก่อนทำรายการ
+  <div class="container mt-3 mb-3 text-light-grey" translate>
+    *ยอดเงินคงเหลือในกระเป๋า 1 ของคุณ จะถูกโอนเป็นค่าโทรที่ รับรายเดือนให้อัตโนมัติ ส่วนเงินคงเหลือในกระเป๋า 2 ไม่สามารถโอนได้
+    ควรใช้ให้หมดก่อนทำรายการ
   </div>
 
 </ng-template>

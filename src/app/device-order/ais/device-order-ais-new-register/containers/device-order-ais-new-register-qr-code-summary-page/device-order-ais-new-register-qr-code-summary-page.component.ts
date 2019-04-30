@@ -9,7 +9,6 @@ import { Router } from '@angular/router';
 import { HomeService } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { QRCodePaymentService, ImageBrannerQRCode } from 'src/app/shared/services/qrcode-payment.service';
 
 @Component({
   selector: 'app-device-order-ais-new-register-qr-code-summary-page',
@@ -20,21 +19,15 @@ export class DeviceOrderAisNewRegisterQrCodeSummaryPageComponent implements OnIn
 
   transaction: Transaction;
   priceOption: PriceOption;
-  payment: Payment;
-
-  brannerImagePaymentQrCode: ImageBrannerQRCode;
 
   constructor(
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
-    private priceOptionService: PriceOptionService,
-    private qrcodePaymentService: QRCodePaymentService
+    private priceOptionService: PriceOptionService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
-    this.payment = this.transaction.data.payment;
-    this.brannerImagePaymentQrCode = this.qrcodePaymentService.getBrannerImagePaymentQrCodeType(this.payment.paymentQrCodeType);
   }
 
   ngOnInit(): void {
@@ -52,10 +45,26 @@ export class DeviceOrderAisNewRegisterQrCodeSummaryPageComponent implements OnIn
     this.homeService.goToHome();
   }
 
-  summary(amount: number[]): any {
+  summary(amount: number[]): number {
     return amount.reduce((prev, curr) => {
       return prev + curr;
     }, 0);
+  }
+
+  getTotal(): number {
+    const trade = this.priceOption.trade;
+    const payment: any = this.transaction.data.payment || {};
+    const advancePayment: any = this.transaction.data.advancePayment || {};
+
+    let total: number = 0;
+    if (payment.paymentType === 'QR_CODE') {
+      total += +trade.promotionPrice;
+    }
+    if (advancePayment.paymentType === 'QR_CODE') {
+      const advancePay = trade.advancePay || {};
+      total += +advancePay.amount;
+    }
+    return total;
   }
 
 }

@@ -165,7 +165,7 @@ export class QRCodePaymentService {
   updateMpayObjectInTransaction(data: any): void {
     const transaction: Transaction = this.transactionService.load();
 
-    transaction.data.mpay_payment = data;
+    // transaction.data.mpay_payment = data;
     this.transactionService.update(transaction);
   }
 

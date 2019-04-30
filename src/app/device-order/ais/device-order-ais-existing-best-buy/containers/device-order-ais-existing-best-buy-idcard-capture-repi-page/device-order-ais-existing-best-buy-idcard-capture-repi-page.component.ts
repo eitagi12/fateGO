@@ -7,7 +7,7 @@ import { CaptureAndSign, HomeService, PageLoadingService, AlertService, TokenSer
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_OTP_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE } from '../../constants/route-path.constant';
-import { CustomerInfoService } from '../../services/customer-info.service';
+import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-idcard-capture-repi-page',
@@ -43,6 +43,7 @@ export class DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent impleme
   }
 
   onBack(): void {
+    this.onClearIdCardImage();
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_OTP_PAGE]);
   }
 
@@ -51,7 +52,7 @@ export class DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent impleme
     this.customerInfoService.callUpdatePrepaidIdentify(this.transaction.data.customer, this.transaction.data.simCard.mobileNo)
       .then((response: any) => {
         if (response && response.data && response.data.success) {
-          this.transaction.data.action = TransactionAction.READ_CARD;
+          this.transaction.data.action = TransactionAction.KEY_IN;
           this.pageLoadingService.closeLoading();
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE]);
         } else {
@@ -74,21 +75,7 @@ export class DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent impleme
   }
 
   onCameraCompleted(image: string): void {
-
-    // const cropOption = {
-    //   sizeWidth: 160,
-    //   sizeHeight: 240,
-    //   startX: 80,
-    //   startY: 0,
-    //   flip: true,
-    //   quality: 1
-    // };
-
-    // new ImageUtils().cropping(image, cropOption).then(res => {
-      // this.transaction.data.customer.imageSmartCard = res;
-    // }).catch(() => {
-      this.transaction.data.customer.imageSmartCard = image;
-    // });
+    this.transaction.data.customer.imageSmartCard = image;
   }
 
   onCameraError(error: string): void {

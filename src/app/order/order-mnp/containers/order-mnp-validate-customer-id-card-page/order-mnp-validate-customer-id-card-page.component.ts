@@ -8,6 +8,7 @@ import {
 import { Transaction, TransactionAction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
 import { ReadCardProfile, HomeService, TokenService, PageLoadingService, ChannelType, Utils, AlertService, KioskControls, ValidateCustomerIdCardComponent } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-order-mnp-validate-customer-id-card-page',
@@ -24,7 +25,7 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
   readCardValid: boolean;
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
-  billDeliveryAddress: BillDeliveryAddress;
+  progressReadCard: number;
 
   constructor(
     private router: Router,
@@ -35,14 +36,9 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
     private tokenService: TokenService,
     private utils: Utils,
     private alertService: AlertService,
+    private translateService: TranslateService,
   ) {
     this.transaction = this.transactionService.load();
-    this.homeService.callback = () => {
-      if (this.validateCustomerIdcard.koiskApiFn) {
-        this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
-      }
-      window.location.href = '/smart-shop';
-    };
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
   }
 
@@ -53,7 +49,7 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
   onError(valid: boolean): void {
     this.readCardValid = valid;
     if (!this.profile) {
-      this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
+      this.alertService.error(this.translateService.instant('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน'));
       this.validateCustomerIdcard.koiskApiFn.removedState().subscribe((removed: boolean) => {
         if (removed) {
           this.validateCustomerIdcard.ngOnDestroy();
@@ -69,12 +65,25 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
     this.onNext();
   }
 
+  onProgress(progress: number): void {
+    this.progressReadCard = progress;
+  }
+
+  progressDoing(): boolean {
+    return this.progressReadCard > 0 && this.progressReadCard < 100 ? true : false;
+  }
+
   onHome(): void {
-    this.homeService.goToHome();
+    if (this.validateCustomerIdcard && this.validateCustomerIdcard.koiskApiFn) {
+      this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+    }
+    setTimeout(() => {  // รอ web connect ทำงานให้เสร็จก่อน
+      this.homeService.goToHome();
+    }, 750);
   }
 
   onBack(): void {
-    if (this.validateCustomerIdcard.koiskApiFn) {
+    if (this.validateCustomerIdcard && this.validateCustomerIdcard.koiskApiFn) {
       this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
     }
     this.router.navigate([ROUTE_ORDER_MNP_SELECT_REASON_PAGE]);
@@ -87,26 +96,12 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
       .then((zipCode: string) => {
         return this.http.get('/api/customerportal/validate-customer-mnp', {
           params: {
-            identity: this.profile.idCardNo
+            identity: this.profile.idCardNo,
+            idCardType: this.profile.idCardType,
           }
         }).toPromise()
           .then((resp: any) => {
             const data = resp.data || {};
-            this.billDeliveryAddress = {
-              homeNo: data.homeNo || '',
-              moo: data.moo || '',
-              mooBan: data.mooBan || '',
-              room: data.room || '',
-              floor: data.floor || '',
-              buildingName: data.buildingName || '',
-              soi: data.soi || '',
-              street: data.street || '',
-              province: data.province || '',
-              amphur: data.amphur || '',
-              tumbol: data.tumbol || '',
-              zipCode: data.zipCode || '',
-            };
-
             return {
               caNumber: data.caNumber,
               mainMobile: data.mainMobile,
@@ -140,26 +135,25 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
       })
       .then((billingInformation: any) => {
         this.transaction.data.billingInformation = billingInformation;
-        this.transaction.data.billingInformation.billDeliveryAddress = this.billDeliveryAddress;
         if (this.checkBusinessLogic()) {
           this.router.navigate([ROUTE_ORDER_MNP_CUSTOMER_INFO_PAGE]);
         }
       })
       .catch((resp: any) => {
         const error = resp.error || [];
-        console.log(resp);
-
-        if (error && error.errors.length > 0) {
+        if (error && error.errors && error.errors.length > 0) {
           this.alertService.notify({
             type: 'error',
             html: error.errors.map((err) => {
-              return '<li class="text-left">' + err + '</li>';
+              return '<li class="text-left">' + this.translateService.instant(err) + '</li>';
             }).join('')
           }).then(() => {
             this.onBack();
           });
+        } else if (error.resultDescription) {
+          this.alertService.error(this.translateService.instant(error.resultDescription));
         } else {
-          this.alertService.error(error.resultDescription);
+          this.alertService.error(this.translateService.instant('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'));
         }
       });
   }
@@ -169,15 +163,13 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
     const idCardType = this.transaction.data.customer.idCardType;
 
     if (this.utils.isLowerAge17Year(birthdate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี').then(() => {
+      this.alertService.error(this.translateService.instant('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี')).then(() => {
         this.onBack();
       });
       return false;
     }
     if (this.utils.isIdCardExpiredDate(expireDate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ').then(() => {
-        this.onBack();
-      });
+      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ');
       return false;
     }
     return true;
@@ -203,6 +195,12 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
   }
 
   ngOnDestroy(): void {
+    setTimeout(() => {  // รอ web connect ทำงานให้เสร็จก่อน
+      if (this.validateCustomerIdcard.koiskApiFn) {
+        this.validateCustomerIdcard.koiskApiFn.close();
+      }
+    }, 750);
+
     this.transactionService.update(this.transaction);
     this.pageLoadingService.closeLoading();
   }

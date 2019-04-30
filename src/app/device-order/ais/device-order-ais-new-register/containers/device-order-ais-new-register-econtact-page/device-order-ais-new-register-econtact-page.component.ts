@@ -101,13 +101,19 @@ export class DeviceOrderAisNewRegisterEcontactPageComponent implements OnInit {
           airTimeMonth: this.getAirTimeMonth(advancePay.promotions),
           price: this.decimalPipe.transform(+trade.promotionPrice + (+advancePay.amount)),
           signature: '',
-          mobileCarePackageTitle: mobileCarePackage ? `พร้อมใช้บริการ ${mobileCarePackage.detailTH}` : '',
+          mobileCarePackageTitle: mobileCarePackage.detailTH ? `พร้อมใช้บริการ ${mobileCarePackage.detailTH}` : '',
           condition: condition.conditionText,
 
         },
         docType: 'ECONTRACT',
         location: user.locationCode
       };
+
+      if (condition.conditionCode) {
+        this.transaction.data.contract = {
+          conditionCode: condition.conditionCode
+        };
+      }
 
       return this.http.post('/api/salesportal/generate-e-document', params).toPromise().then((eDocResp: any) => {
         this.eContactSrc = eDocResp.data || '';

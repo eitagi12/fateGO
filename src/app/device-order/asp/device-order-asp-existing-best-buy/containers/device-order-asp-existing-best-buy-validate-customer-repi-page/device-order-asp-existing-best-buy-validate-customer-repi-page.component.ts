@@ -8,11 +8,11 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { WIZARD_DEVICE_ORDER_AIS, WIZARD_DEVICE_ORDER_ASP } from 'src/app/device-order/constants/wizard.constant';
 import { Transaction, TransactionAction, Prebooking } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { ROUTE_DEVICE_ORDER_ASP_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_RPI_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_DETAIL_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_PROFILE_PAGE } from '../../constants/route-path.constant';
-import { CustomerInfoService } from '../../services/customer-info.service';
+import { ROUTE_DEVICE_ORDER_ASP_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_RPI_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_DETAIL_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_PROFILE_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_PAYMENT_DETAIL_PAGE } from '../../constants/route-path.constant';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
+import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
 
 @Component({
   selector: 'app-device-order-asp-existing-best-buy-validate-customer-repi-page',
@@ -22,8 +22,8 @@ import { debounceTime } from 'rxjs/operators';
 export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent implements OnInit, OnDestroy {
 
   isTelewiz: boolean = this.tokenService.isTelewizUser();
-  wizards: any = this.isTelewiz ? WIZARD_DEVICE_ORDER_ASP :  WIZARD_DEVICE_ORDER_AIS;
-  active: number = this.isTelewiz ? 2 : 1;
+  wizards: any = this.isTelewiz ? WIZARD_DEVICE_ORDER_ASP : WIZARD_DEVICE_ORDER_AIS;
+  active: number = this.isTelewiz ? 3 : 2;
   readonly PLACEHOLDER: string = '(เลขบัตรประชาชน)';
   readonly PLACEHOLDER_HEADDER: string = 'กรอกเอกสารแสดงตน';
 
@@ -57,6 +57,9 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
 
   ngOnInit(): void {
     this.transaction.data.action = TransactionAction.KEY_IN_REPI;
+    if (this.isTelewiz) {
+      this.createForm();
+    }
   }
 
   onError(valid: boolean): void {
@@ -83,78 +86,52 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
   onNext(): void {
     this.pageLoadingService.openLoading();
     const mobileNo = this.transaction.data.simCard.mobileNo;
+    this.transaction.data.customer.repi = true;
     this.customerInfoService.verifyPrepaidIdent(this.identity, mobileNo).then((verifySuccess: boolean) => {
       if (verifySuccess) {
-        this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customerInfo: any) => {
-          if (customerInfo.firstName) {
+        return this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customerInfo: any) => {
+          if (customerInfo.caNumber) {
             this.transaction.data.customer = { ...this.transaction.data.customer, ...customerInfo };
           } else {
+            const privilege = this.transaction.data.customer.privilegeCode;
+            const repi = this.transaction.data.customer.repi;
+            this.transaction.data.customer = null;
             this.transaction.data.customer = customerInfo;
+            this.transaction.data.customer.privilegeCode = privilege;
+            this.transaction.data.customer.repi = repi;
           }
           this.transaction.data.billingInformation = {};
-          const addressCustomer = this.transaction.data.customer;
-          this.transaction.data.billingInformation.billDeliveryAddress = {
-            homeNo: addressCustomer.homeNo,
-            moo: addressCustomer.moo,
-            mooBan: addressCustomer.mooBan,
-            room: addressCustomer.room,
-            floor: addressCustomer.floor,
-            buildingName: addressCustomer.buildingName,
-            soi: addressCustomer.soi,
-            street: addressCustomer.street,
-            province: addressCustomer.province,
-            amphur: addressCustomer.amphur,
-            tumbol: addressCustomer.tumbol,
-            zipCode: addressCustomer.zipCode
-          };
-          return this.http.post('/api/salesportal/add-device-selling-cart',
-            this.getRequestAddDeviceSellingCart()
-          ).toPromise()
-            .then((resp: any) => {
-              this.transaction.data.order = { soId: resp.data.soId };
-              return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-            }).then(() => {
-              this.pageLoadingService.closeLoading();
-              this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_INFO_PAGE]);
-            });
+          this.transaction.data.billingInformation.billDeliveryAddress = this.transaction.data.customer;
+
+          this.pageLoadingService.closeLoading();
+          if (customerInfo.caNumber) {
+            this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_INFO_PAGE]);
+          } else {
+            this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_PAYMENT_DETAIL_PAGE]);
+          }
         });
       } else {
         const simCard = this.transaction.data.simCard;
         if (simCard.chargeType === 'Pre-paid') {
           this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customerInfo: any) => {
-            if (customerInfo.firstName) {
+            if (customerInfo.caNumber) {
               this.transaction.data.customer = { ...this.transaction.data.customer, ...customerInfo };
             } else {
+              const privilege = this.transaction.data.customer.privilegeCode;
+              const repi = this.transaction.data.customer.repi;
+              this.transaction.data.customer = null;
               this.transaction.data.customer = customerInfo;
+              this.transaction.data.customer.privilegeCode = privilege;
+              this.transaction.data.customer.repi = repi;
             }
             this.transaction.data.billingInformation = {};
-            const addressCustomer = this.transaction.data.customer;
-            this.transaction.data.billingInformation.billDeliveryAddress = {
-              homeNo: addressCustomer.homeNo,
-              moo: addressCustomer.moo,
-              mooBan: addressCustomer.mooBan,
-              room: addressCustomer.room,
-              floor: addressCustomer.floor,
-              buildingName: addressCustomer.buildingName,
-              soi: addressCustomer.soi,
-              street: addressCustomer.street,
-              province: addressCustomer.province,
-              amphur: addressCustomer.amphur,
-              tumbol: addressCustomer.tumbol,
-              zipCode: addressCustomer.zipCode
-            };
-            return this.http.post('/api/salesportal/add-device-selling-cart',
-              this.getRequestAddDeviceSellingCart()
-            ).toPromise()
-              .then((resp: any) => {
-                this.transaction.data.order = { soId: resp.data.soId };
-                return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-              }).then(() => {
-                this.pageLoadingService.closeLoading();
-                this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
-              });
+            this.transaction.data.billingInformation.billDeliveryAddress = this.transaction.data.customer;
+
+            this.pageLoadingService.closeLoading();
+            this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
           });
         } else {
+          // .then(() => this.pageLoadingService.closeLoading());
           this.pageLoadingService.closeLoading();
           this.alertService.error('ไม่สามารถทำรายการได้ เบอร์รายเดือน ข้อมูลการแสดงตนไม่ถูกต้อง');
         }
@@ -166,35 +143,10 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
     this.transactionService.update(this.transaction);
   }
 
-  getRequestAddDeviceSellingCart(): any {
-    const productStock = this.priceOption.productStock;
-    const productDetail = this.priceOption.productDetail;
-    const customer = this.transaction.data.customer;
-    const preBooking: Prebooking = this.transaction.data.preBooking;
-    return {
-      soCompany: productStock.company || 'AWN',
-      locationSource: this.user.locationCode,
-      locationReceipt: this.user.locationCode,
-      productType: productDetail.productType || 'DEVICE',
-      productSubType: productDetail.productSubType || 'HANDSET',
-      brand: productDetail.brand,
-      model: productDetail.model,
-      color: productStock.color,
-      priceIncAmt: '',
-      priceDiscountAmt: '',
-      grandTotalAmt: '',
-      userId: this.user.username,
-      cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
-      preBookingNo: preBooking ? preBooking.preBookingNo : '',
-      depositAmt: preBooking ? preBooking.depositAmt : '',
-      reserveNo: preBooking ? preBooking.reserveNo : ''
-    };
-  }
-
   createForm(): void {
     // nobileNo use pattern
     this.validateCustomerForm = this.fb.group({
-      identity: ['', [Validators.required, this.customerValidate]],
+      identity: ['', [Validators.required, this.customerValidate.bind(this)]],
     });
 
     this.validateCustomerForm.valueChanges.pipe(debounceTime(750))
@@ -211,18 +163,18 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerRepiPageComponent impl
     const length: number = control.value.length;
 
     if (length === 13) {
-        if (this.utils.isThaiIdCard(value)) {
-          return null;
-        } else {
-          return {
-            message: 'กรุณากรอกเลขบัตรประชาชนให้ถูกต้อง',
-          };
-        }
+      if (this.utils.isThaiIdCard(value)) {
+        return null;
       } else {
         return {
-            message: 'กรุณากรอกรูปแบบให้ถูกต้อง',
-          };
+          message: 'กรุณากรอกเลขบัตรประชาชนให้ถูกต้อง',
+        };
       }
+    } else {
+      return {
+        message: 'กรุณากรอกรูปแบบให้ถูกต้อง',
+      };
+    }
   }
 
 }

@@ -42,12 +42,12 @@ export class DeviceOrderAisExistingPrepaidHotdealMobileCareAvailablePageComponen
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
+    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
   }
 
   ngOnInit(): void {
     this.exMobileCare = this.transaction.data.existingMobileCare;
     this.productStock = this.priceOption.productStock;
-    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.createForm();
   }
 
@@ -60,7 +60,7 @@ export class DeviceOrderAisExistingPrepaidHotdealMobileCareAvailablePageComponen
       if (value.changeMobileCare === 'Yes') {
         this.changeMobileCare = true;
       } else {
-        this.transaction.data.mobileCarePackage = null;
+        this.transaction.data.mobileCarePackage = undefined;
         this.changeMobileCare = false;
       }
       this.identityValid = true;

@@ -172,7 +172,7 @@ export class DeviceOrderAisMnpValidateCustomerIdCardPageComponent implements OnI
   createTransaction(): void {
     this.transaction = {
       data: {
-        transactionType: TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS,
+        transactionType: TransactionType.DEVICE_ORDER_MNP_AIS,
         action: TransactionAction.READ_CARD,
       }
     };

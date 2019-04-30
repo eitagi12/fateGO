@@ -1,9 +1,10 @@
 <div class="mc-flex">
-  <mc-header title="เครื่องพร้อมเปิดเบอร์ใหม่">
-    <div class="header-icon-left">
+  <mc-header title="{{ 'เครื่องพร้อมเปิดเบอร์ใหม่' | translate }}">
+    <div class="header-icon-left  w-25">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
-    <div class="header-icon-right">
+    <div class="header-icon-right w-25 text-right">
+      <mc-dropdown-language></mc-dropdown-language>
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
@@ -14,12 +15,10 @@
       <div [hidden]="promotionShelves?.length === 0">
         <div class="container-fluid">
           <div class="bg-white p-3">
-            <img src="assets/images/icon/package-info.png" class="icon-package-info" />
-            ข้อมูลแพ็กเกจ
+            <img src="assets/images/icon/package-info.png" class="icon-package-info" /> ข้อมูลแพ็กเกจ
           </div>
         </div>
-        <mc-promotion-shelve [selected]="transaction?.data?.mainPackage" [promotionShelves]="promotionShelves"
-          (completed)="onCompleted($event)"></mc-promotion-shelve>
+        <mc-promotion-shelve [selected]="transaction?.data?.mainPackage" [promotionShelves]="promotionShelves" (completed)="onCompleted($event)"></mc-promotion-shelve>
       </div>
       <p class="text-center my-5" *ngIf="promotionShelves?.length === 0">ไม่พบแพ็กเกจที่ร่วมรายการ</p>
     </div>

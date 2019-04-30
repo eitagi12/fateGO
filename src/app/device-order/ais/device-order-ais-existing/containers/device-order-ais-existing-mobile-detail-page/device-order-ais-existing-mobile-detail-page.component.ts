@@ -22,6 +22,7 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
   transaction: Transaction;
   mobileInfo: MobileInfo;
   shoppingCart: ShoppingCart;
+  disableNextButton: boolean;
 
   constructor(
     private router: Router,
@@ -43,10 +44,12 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
   getMobileInfo(): void {
     this.pageLoadingService.openLoading();
     const mobileNo = this.transaction.data.simCard.mobileNo;
+
     this.http.get(`/api/customerportal/mobile-detail/${mobileNo}`).toPromise()
     .then((response: any) => {
       const mobileDetail = response.data || {};
       const serviceYear = mobileDetail.serviceYear;
+
       this.mobileInfo = {
         mobileNo: mobileNo,
         chargeType: this.mapChargeType(mobileDetail.chargeType),
@@ -55,13 +58,20 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
         serviceYear: this.serviceYearWording(serviceYear.year, serviceYear.month, serviceYear.day),
         mainPackage: mobileDetail.packageTitle
       };
+
       this.transaction.data.simCard.chargeType = mobileDetail.chargeType;
       this.transaction.data.simCard.billingSystem = mobileDetail.billingSystem;
       this.transaction.data.currentPackage = mobileDetail.package;
       this.pageLoadingService.closeLoading();
+
     }).catch(err => {
+      this.disableNextButton = true;
       this.pageLoadingService.closeLoading();
-      this.alertService.error(err.error.resultDescription || `ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้`);
+      const error = err.error || {};
+      const developerMessage = (error.errors || {}).developerMessage;
+      this.alertService.error((developerMessage && error.resultDescription)
+      ? `${developerMessage} ${error.resultDescription}` : `ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้`);
+
     });
   }
 

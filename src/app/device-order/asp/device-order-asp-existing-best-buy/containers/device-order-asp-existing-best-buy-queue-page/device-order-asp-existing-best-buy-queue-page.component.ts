@@ -10,6 +10,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { ROUTE_DEVICE_ORDER_ASP_BEST_BUY_RESULT_PAGE } from '../../constants/route-path.constant';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
+import { QueuePageService } from 'src/app/device-order/services/queue-page.service';
 @Component({
   selector: 'app-device-order-asp-existing-best-buy-queue-page',
   templateUrl: './device-order-asp-existing-best-buy-queue-page.component.html',
@@ -25,6 +26,7 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
   user: User;
   mobileNo: string;
   isAutoGenQueue: boolean;
+  skipQueue: boolean = false;
 
   constructor(
     private router: Router,
@@ -35,7 +37,8 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
     private priceOptionService: PriceOptionService,
     private pageLoadingService: PageLoadingService,
     private tokenService: TokenService,
-    private sharedTransactionService: SharedTransactionService
+    private sharedTransactionService: SharedTransactionService,
+    private queuePageService: QueuePageService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -43,7 +46,10 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
   }
 
   ngOnInit(): void {
-    this.isAutoGenQueue = true;
+    // this.isAutoGenQueue = this.user.locationCode === '1100';
+    this.queuePageService.checkQueueLocation().then((isQueueAuto) => {
+      this.isAutoGenQueue = isQueueAuto;
+    }).then(() => this.createForm());
     this.createForm();
   }
 
@@ -53,9 +59,10 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
     });
 
     if (this.transaction.data.simCard.mobileNo) {
-      this.mobileFrom.controls.mobileNo.setValue(this.transaction.data.simCard.mobileNo);
+      this.mobileFrom.patchValue({mobileNo: this.transaction.data.simCard.mobileNo});
       this.mobileNo = this.transaction.data.simCard.mobileNo;
     }
+
     this.mobileFrom.valueChanges.subscribe((value) => {
       this.mobileNo = value.mobileNo;
     });
@@ -75,9 +82,10 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
     if (this.isAutoGenQueue) {
       this.onSendSMSQueue(this.mobileNo).then((queue) => {
         if (queue) {
-          this.transaction.data.queue = { queueNo: this.queue };
-          return this.http.post('/api/salesportal/device-sell/order', this.getRequestCreateOrder(this.transaction, this.priceOption))
-          .toPromise()
+          this.transaction.data.queue = { queueNo: queue };
+          return this.http.post('/api/salesportal/create-device-selling-order',
+            this.getRequestCreateOrder(this.transaction, this.priceOption))
+            .toPromise()
             .then(() => {
               return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
                 this.pageLoadingService.closeLoading();
@@ -98,12 +106,13 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
       });
     } else {
       this.transaction.data.queue = { queueNo: this.queue };
-      this.http.post('/api/salesportal/device-sell/order', this.getRequestCreateOrder(this.transaction, this.priceOption)).toPromise()
+      this.http.post('/api/salesportal/create-device-selling-order',
+        this.getRequestCreateOrder(this.transaction, this.priceOption)).toPromise()
         .then(() => {
-          return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
-        }).then(() => {
-          this.pageLoadingService.closeLoading();
-          this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_RESULT_PAGE]);
+          return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
+            this.pageLoadingService.closeLoading();
+            this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_RESULT_PAGE]);
+          });
         });
     }
   }
@@ -112,32 +121,18 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
     this.transactionService.update(this.transaction);
   }
 
-  isLocationPhuket(): boolean {
-    return this.user.locationCode === '1213' && this.tokenService.isAisUser();
-  }
-
   onSendSMSQueue(mobileNo: string): Promise<any> {
     return new Promise((resolve, reject) => {
-      if (this.isLocationPhuket()) {
-        return this.http.post('/api/salesportal/device-order/transaction/get-queue-qmatic', {
-          mobileNo: mobileNo
-        }).toPromise()
-          .then((respQueue: any) => {
-            const data = respQueue.data && respQueue.data.result ? respQueue.data.result : {};
-            resolve(data.queueNo);
-          });
-      } else {
-        return this.http.post('/api/salesportal/device-order/transaction/auto-gen-queue', {
-          mobileNo: mobileNo
-        }).toPromise()
-          .then((response: any) => {
-            if (response && response.data && response.data.data && response.data.data.queueNo) {
-              resolve(response.data.data.queueNo);
-            } else {
-              reject(null);
-            }
-          });
-      }
+      return this.http.post('/api/salesportal/device-order/transaction/auto-gen-queue', {
+        mobileNo: mobileNo
+      }).toPromise()
+        .then((response: any) => {
+          if (response && response.data && response.data.data && response.data.data.queueNo) {
+            resolve(response.data.data.queueNo);
+          } else {
+            reject(null);
+          }
+        });
     });
   }
 
@@ -175,13 +170,13 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
       model: productDetail.model,
       color: productStock.color,
       matCode: '',
-      priceIncAmt: +trade.normalPrice.toFixed(2),
-      priceDiscountAmt: (+trade.discount.amount).toFixed(2),
+      priceIncAmt: (+trade.normalPrice).toFixed(2),
+      priceDiscountAmt: (+trade.discount.amount || 0).toFixed(2),
       grandTotalAmt: this.getGrandTotalAmt(trade, prebooking),
       userId: this.user.username,
       saleCode: seller && seller.sellerNo ? seller.sellerNo : '',
       queueNo: queue.queueNo || '',
-      cusNameOrder: `${customer.titleName || ''}${customer.firstName || ''} ${customer.lastName || ''}`.trim(),
+      cusNameOrder: `${customer.titleName || ''}${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
       taxCardId: customer && customer.idCardNo || '',
       cusMobileNoOrder: simCard && simCard.mobileNo || '',
       customerAddress: this.getCustomerAddress(customer),
@@ -209,25 +204,15 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
       qrAmt: qrAmt
     };
 
-    return Promise.resolve(data);
+    return data;
   }
-
-  // private getInstallmentTerm(payment: Payment): any {
-  //   return payment && payment.paymentBank && payment.paymentBank.installments ?
-  //     payment.paymentBank.installments[0].installmentMonth : 0;
-  // }
-
-  // private getInstallmentRate(payment: Payment): any {
-  //   return payment && payment.paymentBank && payment.paymentBank.installments ?
-  //     payment.paymentBank.installments[0].installmentPercentage : 0;
-  // }
 
   private getGrandTotalAmt(trade: any, prebooking: Prebooking): string {
 
     const normalPrice: number = trade.normalPrice;
     const advancePay: number = +trade.advancePay.amount;
     const discount: number = +trade.discount.amount || 0;
-    const depositAmt: number = prebooking ? +prebooking.depositAmt : 0;
+    const depositAmt: number = prebooking && prebooking.depositAmt ? +prebooking.depositAmt : 0;
 
     let result: any = normalPrice;
     result += advancePay;
@@ -312,7 +297,7 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
     otherInformation += '[D]' + space + (+trade.discount.amount).toFixed(2) + comma + space;
     otherInformation += '[RC]' + space + customer.privilegeCode + comma + space;
     otherInformation += '[OT]' + space + 'MC004' + comma + space;
-    if (mobileCare && !mobileCare.reason) {
+    if (mobileCare && !(typeof mobileCare === 'string' || mobileCare instanceof String)) {
       otherInformation += '[PC]' + space + 'remark.mainPackageCode' + comma + space;
       otherInformation += '[MCC]' + space + mobileCare.customAttributes.promotionCode + comma + space;
       otherInformation += '[MC]' + space + mobileCare.customAttributes.shortNameThai + comma + space;
@@ -350,10 +335,8 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
       .then((resp: any) => {
         const queueNo = resp.data.queue;
         this.queue = queueNo;
+        this.skipQueue = true;
         this.onNext();
-        // this.transaction.data.queue = Object.assign({}, {
-        //   queueNo: queueNo
-        // });
       });
   }
 

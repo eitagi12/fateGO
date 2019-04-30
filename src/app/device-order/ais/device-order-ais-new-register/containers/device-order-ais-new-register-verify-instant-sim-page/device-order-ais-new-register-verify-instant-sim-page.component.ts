@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { SimSerial, HomeService, AlertService, PageLoadingService, ShoppingCart } from 'mychannel-shared-libs';
+import { SimSerial, HomeService, AlertService, PageLoadingService, ShoppingCart, SimSerialComponent } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
@@ -12,6 +12,8 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { environment } from 'src/environments/environment';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-device-order-ais-new-register-verify-instant-sim-page',
@@ -26,6 +28,8 @@ export class DeviceOrderAisNewRegisterVerifyInstantSimPageComponent implements O
   simSerial: SimSerial;
   simSerialValid: boolean;
   shoppingCart: ShoppingCart;
+  mcSimSerial: SimSerialComponent;
+  translationSubscribe: Subscription;
 
   constructor(
     private router: Router,
@@ -35,8 +39,13 @@ export class DeviceOrderAisNewRegisterVerifyInstantSimPageComponent implements O
     private alertService: AlertService,
     private http: HttpClient,
     private shoppingCartService: ShoppingCartService,
+    private translationService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
+    this.translationSubscribe = this.translationService.onLangChange.subscribe(lang => {
+      this.mcSimSerial.focusInput();
+    });
+
   }
 
   ngOnInit(): void {
@@ -75,9 +84,17 @@ export class DeviceOrderAisNewRegisterVerifyInstantSimPageComponent implements O
       this.shoppingCart = Object.assign(this.shoppingCart, {
         mobileNo: simSerial.mobileNo
       });
-
-    }).then(() => this.pageLoadingService.closeLoading());
-
+      this.pageLoadingService.closeLoading();
+    }).catch((resp: any) => {
+      this.simSerialValid = false;
+      this.simSerial = undefined;
+      const error = resp.error || [];
+      this.pageLoadingService.closeLoading();
+      this.alertService.notify({
+        type: 'error',
+        html: this.translationService.instant(error.resultDescription.replace(/<br>/, ' '))
+      });
+    });
   }
 
   onBack(): void {

@@ -114,9 +114,8 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    // มี auto next ทำให้ create transaction ช้ากว่า read card
-    // this.returnStock().then(() => {
-
+    this.returnStock().then(() => {
+      // มี auto next ทำให้ create transaction ช้ากว่า read card
     this.createTransaction();
     this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
       .then((zipCode: string) => {
@@ -167,7 +166,7 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
 
       }).then(() => this.pageLoadingService.closeLoading());
 
-    // });
+    });
   }
 
   createTransaction(): void {

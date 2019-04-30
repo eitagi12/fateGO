@@ -130,8 +130,6 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
           // delete this.transaction.data.billingInformation.billCycle;
           delete this.transaction.data.billingInformation.billCycleData;
           const simCard = this.transaction.data.simCard;
-          // tslint:disable-next-line:no-shadowed-variable
-          const billingInformation = this.transaction.data.billingInformation;
           const billCycleData: any = billingInformation.billCycleData || {};
 
           this.billingInfo.billingMethod.text = null;
@@ -204,6 +202,9 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
   }
 
   onMailBillingInfoCompleted(mailBillingInfo: any): void {
+    if (!mailBillingInfo) {
+      return;
+    }
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData || {};
 
@@ -247,7 +248,8 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
   }
 
   onNext(): void {
-    if (!this.customerValid()) {
+
+    if (!this.customerValid() && !this.isMergeBilling()) {
       this.alertService.warning('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร');
       return;
     }

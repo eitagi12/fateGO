@@ -108,6 +108,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
         this.colorForm.valueChanges.pipe(debounceTime(1000)).subscribe(obs => {
             const stock = obs.stock;
+            this.priceOption.productStock = stock;
 
             const product = (this.priceOption.productDetail.products || []).find((p: any) => {
                 return p.colorName === stock.color;
@@ -192,7 +193,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
         // keep stock
         this.priceOption.productStock = null;
-        this.priceOption.productStock = product.stock;
 
         // change value form
         this.colorForm.patchValue({
@@ -482,7 +482,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
                 // default selected
                 let defaultProductSelected;
-
                 if (this.priceOption.productStock && this.priceOption.productStock.colorName) {
                     defaultProductSelected = this.priceOption.productStock;
                 } else {

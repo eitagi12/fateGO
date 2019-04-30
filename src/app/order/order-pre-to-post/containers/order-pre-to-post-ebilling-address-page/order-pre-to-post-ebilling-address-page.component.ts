@@ -1,11 +1,15 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
 import { Router } from '@angular/router';
-import { HomeService, CustomerAddress } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
+import { HomeService, CustomerAddress } from 'mychannel-shared-libs';
+
+import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ROUTE_ORDER_PRE_TO_POST_CONFIRM_USER_INFORMATION_PAGE } from 'src/app/order/order-pre-to-post/constants/route-path.constant';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-order-pre-to-post-ebilling-address-page',
@@ -26,59 +30,65 @@ export class OrderPreToPostEbillingAddressPageComponent implements OnInit, OnDes
 
   customerAddressTemp: CustomerAddress;
   billDeliveryAddress: CustomerAddress;
+  translationSubscribe: Subscription;
+
   ebillingAddressValid: boolean;
 
   constructor(
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
-    private http: HttpClient
+    private http: HttpClient,
+    private translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
   }
 
   ngOnInit(): void {
-    const customer = this.transaction.data.customer;
-    const billDeliveryAddress = this.transaction.data.billingInformation.billDeliveryAddress;
+    this.callService();
+    this.translationSubscribe = this.translation.onLangChange.pipe(debounceTime(750)).subscribe(() => {
+      this.callService();
+      this.amphurs = [];
+      this.tumbols = [];
+      this.zipCodes = [];
+      this.customerAddress.amphur = null;
+      this.customerAddress.tumbol = null;
+      this.customerAddress.province = null;
+    });
 
+  }
+
+  callService(): void {
+    const billingInformation = this.transaction.data.billingInformation || {};
+    const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
     this.http.get('/api/customerportal/newRegister/getAllZipcodes').subscribe((resp: any) => {
       this.allZipCodes = resp.data.zipcodes || [];
     });
 
-    this.http.get('/api/customerportal/newRegister/getAllProvinces').subscribe((resp: any) => {
-      this.provinces = (resp.data.provinces || []);
+    this.http.get('/api/customerportal/newRegister/getAllProvinces',
+      {
+        params: {
+          provinceSubType: this.translation.currentLang === 'TH' ? 'THA' : 'ENG'
+        }
+      }).subscribe((resp: any) => {
+        this.provinces = (resp.data.provinces || []);
 
-      // this.customerAddress = {
-      //   homeNo: customer.homeNo,
-      //   moo: customer.moo,
-      //   mooBan: customer.mooBan,
-      //   room: customer.room,
-      //   floor: customer.floor,
-      //   buildingName: customer.buildingName,
-      //   soi: customer.soi,
-      //   street: customer.street,
-      //   province: customer.province,
-      //   amphur: customer.amphur,
-      //   tumbol: customer.tumbol,
-      //   zipCode: customer.zipCode,
-      // };
+        this.customerAddress = {
+          homeNo: customer.homeNo,
+          moo: customer.moo,
+          mooBan: customer.mooBan,
+          room: customer.room,
+          floor: customer.floor,
+          buildingName: customer.buildingName,
+          soi: customer.soi,
+          street: customer.street,
+          province: customer.province,
+          amphur: customer.amphur,
+          tumbol: customer.tumbol,
+          zipCode: customer.zipCode,
+        };
 
-      this.billDeliveryAddress = {
-        homeNo: billDeliveryAddress.homeNo,
-        moo: billDeliveryAddress.moo,
-        mooBan: billDeliveryAddress.mooBan,
-        room: billDeliveryAddress.room,
-        floor: billDeliveryAddress.floor,
-        buildingName: billDeliveryAddress.buildingName,
-        soi: billDeliveryAddress.soi,
-        street: billDeliveryAddress.street,
-        province: billDeliveryAddress.province,
-        amphur: billDeliveryAddress.amphur,
-        tumbol: billDeliveryAddress.tumbol,
-        zipCode: billDeliveryAddress.zipCode,
-      };
-
-    });
+      });
 
   }
 
@@ -95,12 +105,12 @@ export class OrderPreToPostEbillingAddressPageComponent implements OnInit, OnDes
   onProvinceSelected(params: any): void {
     const province = this.getProvinceByName(params.provinceName);
     const req = {
-      provinceId: province.id,
-      zipcode: params.zipCode
+      provinceId: province.id
+      // zipcode: params.zipCode
     };
-    if (!params.zipCode) {
-      delete req.zipcode;
-    }
+    // if (!params.zipCode) {
+    //   delete req.zipcode;
+    // }
 
     this.http.get('/api/customerportal/newRegister/queryAmphur', {
       params: req
@@ -115,12 +125,12 @@ export class OrderPreToPostEbillingAddressPageComponent implements OnInit, OnDes
     const province = this.getProvinceByName(params.provinceName);
     const req = {
       provinceId: province.id,
-      amphurName: params.amphurName,
-      zipcode: params.zipCode
+      amphurName: params.amphurName
+      // zipcode: params.zipCode
     };
-    if (!params.zipCode) {
-      delete req.zipcode;
-    }
+    // if (!params.zipCode) {
+    //   delete req.zipcode;
+    // }
 
     this.http.get('/api/customerportal/newRegister/queryTumbol', {
       params: req
@@ -176,8 +186,13 @@ export class OrderPreToPostEbillingAddressPageComponent implements OnInit, OnDes
   }
 
   onNext(): void {
-    this.transaction.data.billingInformation.billDeliveryAddress = this.customerAddressTemp || this.customerAddress;
+    const billingInformation = this.transaction.data.billingInformation || {};
+    const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
 
+    this.transaction.data.billingInformation.billDeliveryAddress = Object.assign(
+      Object.assign({}, customer),
+      this.customerAddressTemp
+    );
     this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
@@ -186,6 +201,7 @@ export class OrderPreToPostEbillingAddressPageComponent implements OnInit, OnDes
   }
 
   ngOnDestroy(): void {
+    this.translationSubscribe.unsubscribe();
     this.transactionService.update(this.transaction);
   }
 }
