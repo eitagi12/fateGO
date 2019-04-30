@@ -42,7 +42,7 @@ export class VerifyTradeInPageComponent implements OnInit , OnDestroy {
     private aisNativeService: AisNativeService,
     private apiRequestService: ApiRequestService) { }
 
-    ngOnInit () {
+    ngOnInit(): void {
       this.setFormImei();
       this.callService();
       this.createDataSource();
@@ -51,7 +51,7 @@ export class VerifyTradeInPageComponent implements OnInit , OnDestroy {
       this.createTransactionTradeIn();
     }
 
-    createTransactionTradeIn () {
+    createTransactionTradeIn(): void {
       this.tradeInTransaction = {
         data : {
           transactionType: TransactionType.TRADE_IN,
@@ -65,18 +65,18 @@ export class VerifyTradeInPageComponent implements OnInit , OnDestroy {
         }
       };
     }
-    onHome () {
+    onHome(): void {
       window.location.href = '/sales-portal/dashboard';
     }
 
-    onBack () {
+    onBack(): void {
       window.location.href = '/sales-portal/dashboard';
     }
-    btnNextFn () {
+    btnNextFn(): void {
       this.router.navigate(['trade-in/criteria-trade-in']);
     }
 
-    private callService () {
+    private callService(): void {
       this.pageLoadingService.openLoading();
       const locationCode = this.tokenService.getUser().locationCode;
       Promise.all([this.tradeInService.getListModelTradeIn(), this.salesService.brandsOfProduct(locationCode)]).then(
@@ -96,10 +96,10 @@ export class VerifyTradeInPageComponent implements OnInit , OnDestroy {
           this.brands = objFilterBrand;
         });
     }
-    scanBarcode () {
+    scanBarcode(): void {
       this.aisNativeService.scanBarcode();
     }
-    subscribeBarcode() {
+    subscribeBarcode(): void {
         this.barcodeSubscription = this.aisNativeService.getBarcode().subscribe(
             (barcode: any) => {
               const regex: any  = /([0-9]{15})+$/;
@@ -112,7 +112,7 @@ export class VerifyTradeInPageComponent implements OnInit , OnDestroy {
               }
           });
     }
-    setFormImei () {
+    setFormImei(): void {
       this.imeiForm = new FormGroup({
         imei: new FormControl('', [Validators.required, Validators.minLength(15)])
       }, this.checkValueImei);
@@ -126,7 +126,7 @@ export class VerifyTradeInPageComponent implements OnInit , OnDestroy {
       return {valid: true};
     }
 
-    checkImei () {
+    checkImei(): void {
       this.pageLoadingService.openLoading();
       const imei = this.imeiForm.value.imei;
       this.tradeInTransaction.data.tradeIn.serialNo = imei;
@@ -157,7 +157,7 @@ export class VerifyTradeInPageComponent implements OnInit , OnDestroy {
         });
     }
 
-    setAutoSelect (objSerial) {
+    setAutoSelect(objSerial): void {
       this.setBrandImg(objSerial);
       this.setBorderImgOnSelect(objSerial.brand);
       const objSelectTradein = {
@@ -173,7 +173,7 @@ export class VerifyTradeInPageComponent implements OnInit , OnDestroy {
       this.keyword = objSerial.model;
       this.isCheckAutoSelect();
     }
-    setBrandImg (objSerial) {
+    setBrandImg (objSerial): void {
       const filterBrand = this.brands.filter(
         (data) => {
           if (data.name === objSerial.brand) {
@@ -183,7 +183,7 @@ export class VerifyTradeInPageComponent implements OnInit , OnDestroy {
         this.brands = filterBrand;
     }
 
-    checkBrandAndModelFromListModelTradein (brand: string, model: string) {
+    checkBrandAndModelFromListModelTradein (brand: string, model: string): any {
       const indexBrandModelList = this.listModelTradein.findIndex(
         obj => obj.brand === brand && obj.model === model
       );
@@ -194,7 +194,7 @@ export class VerifyTradeInPageComponent implements OnInit , OnDestroy {
         return;
       }
     }
-    selectImg($event: any) {
+    selectImg($event: any): void {
       this.listModelTradein = this.defualtListModel;
       const srcSelect = $event.target.src;
       const nameSelect = this.brands.filter(
@@ -215,11 +215,11 @@ export class VerifyTradeInPageComponent implements OnInit , OnDestroy {
     }
 
 
-    private getBrandElementById(brandId: string) {
+    private getBrandElementById(brandId: string): any {
       return this.elementRef.nativeElement.querySelector(brandId);
     }
 
-    setBorderImgOnSelect (nameBrandSelect: string) {
+    setBorderImgOnSelect (nameBrandSelect: string): void {
       const imagesContainerList = this.elementRef.nativeElement.querySelectorAll('.image-container');
       for (const imagesContainer of imagesContainerList) {
         if (imagesContainer.id === nameBrandSelect) {
@@ -229,7 +229,7 @@ export class VerifyTradeInPageComponent implements OnInit , OnDestroy {
         }
       }
     }
-    private createDataSource() {
+    private createDataSource(): void {
       this.datasource = Observable.create((observer: any) => {
         observer.next(this.keyword);
       }).pipe(
@@ -253,13 +253,13 @@ export class VerifyTradeInPageComponent implements OnInit , OnDestroy {
         return objFilterModel;
       });
     }
-    onProductSearch (event) {
+    onProductSearch(event): void {
       this.tradeInTransaction.data.tradeIn.brand = event.item.brand;
       this.tradeInTransaction.data.tradeIn.model = event.item.model;
       this.isCheckBtnNext();
     }
 
-    isCheckBtnNext (): boolean {
+    isCheckBtnNext(): boolean {
       const data = this.tradeInTransaction.data.tradeIn;
       if (data.brand && data.model && data.serialNo) {
         return false;
@@ -274,7 +274,7 @@ export class VerifyTradeInPageComponent implements OnInit , OnDestroy {
       return false;
     }
 
-    cancelSelected () {
+    cancelSelected(): void {
       if (!this.imeiForm.value) {
         this.imeiForm.reset();
       }

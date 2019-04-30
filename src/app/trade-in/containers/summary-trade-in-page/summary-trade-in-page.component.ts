@@ -27,11 +27,11 @@ export class SummaryTradeInPageComponent implements OnInit {
     this.tradeInTransaction = this.tradeInTransactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.summaryTradein();
   }
 
-  summaryTradein() {
+  summaryTradein(): void {
     const tradeInTransaction = this.tradeInTransaction.data.tradeIn;
     this.tradeinNo = tradeInTransaction.tradeInNo;
     this.brand = tradeInTransaction.brand;
@@ -43,11 +43,11 @@ export class SummaryTradeInPageComponent implements OnInit {
     this.platform = this.brand === 'APPLE' ? 'iCloud' : 'Google Play';
   }
 
-  gotoMainMenu() {
+  gotoMainMenu(): void {
     window.location.href = '/sales-portal/dashboard';
   }
 
-  gotoPrintSummary() {
+  gotoPrintSummary(): void {
     const price: any = +this.tradeinPrice;
     const tradePrint = {
       tradeinNo: this.tradeinNo || '-',

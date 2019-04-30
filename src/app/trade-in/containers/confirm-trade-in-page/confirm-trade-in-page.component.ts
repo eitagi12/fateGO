@@ -25,11 +25,11 @@ export class ConfirmTradeInPageComponent implements OnInit , OnDestroy {
 
      }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.getEstimateTradein();
   }
 
-  getEstimateTradein() {
+  getEstimateTradein(): void {
     this.pageLoadingService.openLoading();
     if (this.tradeInTransaction.data.tradeIn.matCode) {
       this.aisFlg = 'Y';
@@ -64,18 +64,18 @@ export class ConfirmTradeInPageComponent implements OnInit , OnDestroy {
       });
   }
 
-  onHome() {
+  onHome(): void {
     window.location.href = '/sales-portal/dashboard';
   }
 
-  onBack() {
+  onBack(): void {
     this.tradeInTransaction.data.tradeIn.tradeInNo = null;
     this.tradeInTransaction.data.tradeIn.tradeInGrade = null;
     this.tradeInTransaction.data.tradeIn.tradeInPrice = null;
     this.router.navigate(['trade-in/criteria-trade-in']);
   }
 
-  btnCancelFn() {
+  btnCancelFn(): void {
     this.tradeInTransaction.data.tradeIn.listValuation = null;
     this.tradeInTransaction.data.tradeIn.tradeInNo = null;
     this.tradeInTransaction.data.tradeIn.tradeInGrade = null;
@@ -83,14 +83,14 @@ export class ConfirmTradeInPageComponent implements OnInit , OnDestroy {
     this.router.navigate(['trade-in/criteria-trade-in']);
   }
 
-  nextDisabled() {
+  nextDisabled(): void {
     if (this.tradeinPrice > 0) {
       this.btnNextDisabled = false;
     } else if (this.tradeinPrice === 0) {
       this.btnNextDisabled = true;
     }
   }
-  onNext () {
+  onNext(): void {
     this.tradeInTransaction.data.tradeIn.tradeInNo = this.tradeinNo;
     this.tradeInTransaction.data.tradeIn.tradeInGrade = this.tradeinGrade;
     this.tradeInTransaction.data.tradeIn.tradeInPrice = this.tradeinPrice;

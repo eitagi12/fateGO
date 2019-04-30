@@ -13,7 +13,7 @@ export class HeaderTradeInPageComponent implements OnInit {
     constructor(private tradeInTransactionService: TradeInTransactionService) {
       this.tradeInTransaction = this.tradeInTransactionService.load();
      }
-  ngOnInit() {
+  ngOnInit(): void {
   }
 
 }

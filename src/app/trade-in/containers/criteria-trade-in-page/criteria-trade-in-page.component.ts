@@ -28,12 +28,12 @@ export class CriteriaTradeInPageComponent implements OnInit, OnDestroy {
     this.tradeInTransaction = this.tradeInTransactionService.load();
   }
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.setFormValuation();
     this.ListValuationTradein();
   }
 
-  ListValuationTradein() {
+  ListValuationTradein(): void {
     if (this.tradeInTransaction.data.tradeIn.listValuation) {
       this.valuationlists = this.tradeInTransaction.data.tradeIn.listValuation;
       this.btnNextDisabled = false;
@@ -56,7 +56,7 @@ export class CriteriaTradeInPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  selectValuationlistFn(val: any, checked: any) {
+  selectValuationlistFn(val: any, checked: any): void {
     if (checked.target.checked === true) {
       val.valChecked = 'Y';
     } else if (checked.target.checked === false) {
@@ -65,7 +65,7 @@ export class CriteriaTradeInPageComponent implements OnInit, OnDestroy {
     this.onDeleteChk();
   }
 
-  onDeleteChk() {
+  onDeleteChk(): void {
     let iChk = 0;
     for (const itemCount of this.valuationlists) {
       if (itemCount.valChecked === 'Y') {
@@ -79,23 +79,23 @@ export class CriteriaTradeInPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  setFormValuation() {
+  setFormValuation(): void {
     this.valuationlistForm = this.fb.group({
       listVuation: ['', Validators.required]
     });
   }
 
-  onHome() {
+  onHome(): void {
     this.tradeInTransactionService.remove();
     window.location.href = '/sales-portal/dashboard';
   }
 
-  onBack() {
+  onBack(): void {
     this.tradeInTransactionService.remove();
     this.router.navigate(['trade-in/verify-trade-in']);
   }
 
-  onCancel() {
+  onCancel(): void {
     this.valuationlistForm.reset();
     for (const item of this.valuationlists) {
       item.valChecked = 'N';
@@ -103,7 +103,7 @@ export class CriteriaTradeInPageComponent implements OnInit, OnDestroy {
     this.btnNextDisabled = true;
   }
 
-  onNext() {
+  onNext(): void {
     this.tradeInTransaction.data.tradeIn.listValuation = this.valuationlists;
     this.router.navigate(['trade-in/confirm-trade-in']);
   }
