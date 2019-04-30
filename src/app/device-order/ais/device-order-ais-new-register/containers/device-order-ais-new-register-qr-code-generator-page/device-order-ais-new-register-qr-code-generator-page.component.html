@@ -10,10 +10,13 @@
   <div class="mc-flex-wrap">
     <div class="my-3">
       <div class="container-fluid">
-
         <div class="card mb-5">
           <div class="card-header bg-lime text-white">ข้อมูลการชำระ</div>
           <div class="card-body text-light-grey">
+            <div class=" mb-3" *ngIf="priceOption?.productStock?.company">
+              ผู้ให้บริการ
+              <span class="pull-right"> {{ priceOption?.productStock?.company }} </span>
+            </div>
             <div class="border-bottom mb-3">
               ชำระโดย
               <span class="pull-right">
