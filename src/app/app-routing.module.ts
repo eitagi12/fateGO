@@ -50,6 +50,11 @@ const routes: Routes = [
   {
     path: 'error',
     component: ErrorPageComponent
+  },
+  {
+    path: 'trade-in',
+    loadChildren: 'src/app/trade-in/trade-in.module#TradeInModule',
+    canActivate: [AuthGuard]
   }
 ];
 

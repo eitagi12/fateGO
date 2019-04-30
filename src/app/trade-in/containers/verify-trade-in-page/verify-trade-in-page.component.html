@@ -1,0 +1,103 @@
+<div class="mc-flex">
+  <mc-header title="Trade IN">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  
+  <div class="mc-flex-wrap">
+    <div class="container-fluid mt-3">
+      <div class="card mb-3">
+        <div class="card-header bg-blue text-white shadow-sm">
+            ระบุหมายเลข IMEI
+        </div>
+        <div class="card-body">
+          <form [formGroup]="imeiForm" (ngSubmit)="checkImei()">
+            <div class="form-row">
+              <div class="col-9 col-sm-10">
+                <input type="text" formControlName="imei" maxlength="15" placeholder="ใส่เลขimei 15 หลัก" class="form-control">
+              </div>
+              <div class="col-3 col-sm-2">
+                  <button class="btn btn-light-blue text-white btn-block" [disabled]="imeiForm.invalid" type="submit">
+                      ตรวจสอบ</button>
+              </div>
+              <small class="form-text text-danger" *ngIf="imeiForm.controls.imei.touched && imeiForm.controls.imei.errors">
+                  * กรุณาระบุเลข IMEI ให้ถูกต้อง
+              </small>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div>
+      <p class="text-center text-black">หรือ</p>
+    </div>
+    <div class="container-fluid mt-3">
+      <div class="card mb-3">
+        <div class="card-header bg-blue text-white shadow-sm">
+          สแกน IMEI
+        </div>
+        <div class="card-body">
+          <div class="row">
+              <div class="col-sm-12">
+                <div class="text-center">
+                    <button class="btn btn-light-blue text-white col-3 mx-2" (click)="scanBarcode()">สแกน Barcode IMEI</button>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div  class="container-fluid">
+      <div class="card mb-3">
+        <div class="card-header bg-blue text-white shadow-sm">
+            ยี่ห้อและรุ่นโทรศัพท์
+        </div>
+        <div class="card-body">
+            <div class="row">
+              <p class="text-grey">ยี่ห้อโทรศัพท์ : </p>
+                <div class="col-5 col-sm-5 col-md-2 col-lg-1 mb-3"  *ngFor="let brand of brands">
+                  <div class="image-container" [id]="brand.name">
+                      <div class="select-Img" (click)="selectImg($event)">
+                          <mc-lazy-load-image  [src]="brand?.imageUrl"></mc-lazy-load-image>
+                    </div>
+                  </div>
+                </div>
+            </div>
+          <div *ngIf="isSelectImg">
+            <div class="row">
+              <p class="text-grey text-left">รุ่นโทรศัพท์ : </p>
+              <div class="col-3 col-sm-4 mx-4">
+                  <input type="text" 
+                          class="form-control" id="keyword" autocomplete="off" 
+                          maxlength="100" [(ngModel)]="keyword"
+                          [typeahead]="datasource"  typeaheadOptionField="datasource.commercialName" 
+                          [typeaheadScrollable]="true" [disabled]='isCheckAutoSelect()'
+                          (typeaheadOnSelect)="onProductSearch($event)" 
+                          [typeaheadItemTemplate]="searchTemplate">
+              </div>
+            </div>
+          </div>  
+        </div>
+      </div>
+    </div>
+    <div class="container-fluid mt-3">
+
+        <div class="row">
+          <div class="col-sm-12">
+            <div class="text-center">
+              <button class="btn btn-secondary text-white col-2 mx-2" (click)="cancelSelected()">ยกเลิก</button>
+              <button class="btn btn-success text-white col-2 mx-2" (click)="btnNextFn()" [disabled]='isCheckBtnNext()'>ต่อไป</button>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
+
+<ng-template #searchTemplate let-model="item">
+  <li class="p2">{{ model.commercialName }}</li>
+</ng-template>
