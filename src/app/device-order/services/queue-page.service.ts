@@ -263,7 +263,7 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
     const customerGroup = priceOption.customerGroup;
     const privilege = priceOption.privilege;
     const trade = priceOption.trade;
-    const onTopPackage = transaction.data.onTopPackage || {};
+    const mainPackage = transaction.data.mainPackage && transaction.data.mainPackage.customAttributes || {};
     const mobileCarePackage = transaction.data.mobileCarePackage || {};
     const simCard = transaction.data.simCard;
     const customer: any = transaction.data.customer || {};
@@ -282,7 +282,7 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
     message += this.DISCOUNT + this.SPACE + (trade.discount ? (+trade.discount.amount).toFixed(2) : 0.00) + this.COMMA + this.SPACE;
     message += this.RETURN_CODE + this.SPACE + (simCard.privilegeCode || customer.privilegeCode || '') + this.COMMA + this.SPACE;
     message += this.ORDER_TYPE + this.SPACE + customerGroupName + this.COMMA + this.SPACE;
-    message += this.PRMOTION_CODE + this.SPACE + (onTopPackage.promotionCode || '') + this.COMMA + this.SPACE;
+    message += this.PRMOTION_CODE + this.SPACE + (mainPackage.promotionCode || '') + this.COMMA + this.SPACE;
     message += this.MOBILE_CARE_CODE + this.SPACE + (customAttributes.promotionCode || '') + this.COMMA + this.SPACE;
     message += this.MOBILE_CARE + this.SPACE + (customAttributes.shortNameThai || '') + this.COMMA + this.SPACE;
     message += this.PRIVILEGE_DESC + this.SPACE + (privilege.privilegeDesc || '') + this.COMMA + this.SPACE;
