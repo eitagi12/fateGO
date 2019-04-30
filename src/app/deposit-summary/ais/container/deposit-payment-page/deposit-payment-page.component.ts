@@ -53,6 +53,7 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
   receiptCustomerAddress: string;
   otherPhoneNumber: string;
   isDisabled: boolean;
+  customerFlag: string;
 
   constructor(
     private localStorageService: LocalStorageService,
@@ -71,7 +72,7 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getMessageConfig();
-
+    this.customerFlag = this.localStorageService.load('CustomerFlag').value;
     this.formID = this.getRandomNum(10);
     this.transaction = {
       transactionId: this.apiRequestService.getCurrentRequestId(),

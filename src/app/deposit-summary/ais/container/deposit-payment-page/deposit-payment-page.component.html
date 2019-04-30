@@ -166,7 +166,16 @@
               {{ customerFullName }}
             </div>
           </div>
-          <div class="form-group row">
+          <div class="form-group row" *ngIf="customerFlag === 'Y'">
+            <div class="col-12 col-sm-4">
+              <label class="form-check-label text-light-gray">ที่อยู่ในใบเสร็จรับเงิน</label>
+            </div>
+            <div class="col-12 col-sm-8 text-light-gray">
+              {{ receiptCustomerAddress }}
+            </div>
+          </div>
+          
+          <div class="form-group row" *ngIf="customerFlag === 'N'">
             <div class="col-12 col-sm-4 text-light-gray">ที่อยู่ในใบเสร็จรับเงิน</div>
             <div class="col-12 col-sm-8 text-light-gray">
               <textarea id="txtReceiptAddress" class="form-control" autocomplete="off" cols="40" rows="3"
@@ -177,7 +186,6 @@
                 ที่อยู่เดียวกับผู้รับสินค้า
               </label>
             </div>
-
           </div>
           <div class="form-group row">
             <div class="col-12 col-sm-4 text-light-gray">Tax ID</div>
