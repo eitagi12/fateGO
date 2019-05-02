@@ -15,15 +15,11 @@ import { environment } from 'src/environments/environment';
 })
 export class DeviceOrderAisMnpResultPageComponent implements OnInit {
 
-  wizards: string[] = WIZARD_ORDER_MNP;
   transaction: Transaction;
   isSuccess: boolean;
 
   constructor(
-    private transactionService: TransactionService,
-    private createNewRegisterService: CreateNewRegisterService,
-    private pageLoadingService: PageLoadingService,
-    private router: Router,
+    private transactionService: TransactionService
   ) {
     this.transaction = this.transactionService.load();
   }
