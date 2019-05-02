@@ -55,13 +55,17 @@ export class DeviceOrderAisNewRegisterQrCodeSummaryPageComponent implements OnIn
     const trade = this.priceOption.trade;
     const payment: any = this.transaction.data.payment || {};
     const advancePayment: any = this.transaction.data.advancePayment || {};
-
     let total: number = 0;
+    const advancePay = trade.advancePay || {};
+
+    if (trade.advancePay.installmentFlag === 'Y') {
+      return this.summary([+trade.promotionPrice, +advancePay.amount]);
+    }
+
     if (payment.paymentType === 'QR_CODE') {
       total += +trade.promotionPrice;
     }
     if (advancePayment.paymentType === 'QR_CODE') {
-      const advancePay = trade.advancePay || {};
       total += +advancePay.amount;
     }
     return total;

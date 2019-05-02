@@ -13,6 +13,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { environment } from 'src/environments/environment';
 import { Subscription } from 'rxjs/internal/Subscription';
 import * as moment from 'moment';
+import { StringifyOptions } from 'querystring';
 
 @Component({
   selector: 'app-device-order-ais-new-register-qr-code-generator-page',
@@ -80,12 +81,19 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
         return true;
       }
 
+      let serviceId = isThaiQRCode ? MPAY_QRCODE.PB_SERVICE_ID : MPAY_QRCODE.RL_SERVICE_ID;
+      let terminalId = isThaiQRCode ? MPAY_QRCODE.PB_TERMINAL_ID : MPAY_QRCODE.RL_TERMINAL_ID;
+      if (this.priceOption.productStock.company === 'WDS') {
+        serviceId = isThaiQRCode ? MPAY_QRCODE.PB_WDS_SERVICE_ID : MPAY_QRCODE.RL_WDS_SERVICE_ID;
+        terminalId = isThaiQRCode ? MPAY_QRCODE.PB_WDS_TERMINAL_ID : MPAY_QRCODE.RL_WDS_TERMINAL_ID;
+      }
+
       return this.qrCodePageService.mpayInsert(params).then(() => {
         return this.qrCodePageService.generateQRCode({
           orderId: orderId,
           channel: 'WEB',
-          serviceId: isThaiQRCode ? MPAY_QRCODE.PB_SERVICE_ID : MPAY_QRCODE.RL_SERVICE_ID,
-          terminalId: isThaiQRCode ? MPAY_QRCODE.PB_TERMINAL_ID : MPAY_QRCODE.RL_TERMINAL_ID,
+          serviceId: serviceId,
+          terminalId: terminalId,
           qrType: isThaiQRCode ? MPAY_QRCODE.PB_TYPE : MPAY_QRCODE.RB_TYPE,
           locationName: user.locationCode,
           amount: totalAmount
@@ -107,13 +115,16 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
     const trade = this.priceOption.trade;
     const payment: any = this.transaction.data.payment || {};
     const advancePayment: any = this.transaction.data.advancePayment || {};
-
     let total: number = 0;
+    const advancePay = trade.advancePay || {};
+
+    if (trade.advancePay.installmentFlag === 'Y') {
+      return +trade.promotionPrice +  +advancePay.amount;
+    }
     if (payment.paymentType === 'QR_CODE') {
       total += +trade.promotionPrice;
     }
     if (advancePayment.paymentType === 'QR_CODE') {
-      const advancePay = trade.advancePay || {};
       total += +advancePay.amount;
     }
     return total;
