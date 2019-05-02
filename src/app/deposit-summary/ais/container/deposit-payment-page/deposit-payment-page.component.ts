@@ -53,7 +53,7 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
   receiptCustomerAddress: string;
   otherPhoneNumber: string;
   isDisabled: boolean;
-  customerFlag: string;
+  // customerFlag: string;
 
   constructor(
     private localStorageService: LocalStorageService,
@@ -72,7 +72,7 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.getMessageConfig();
-    this.customerFlag = this.localStorageService.load('CustomerFlag').value;
+    // this.customerFlag = this.localStorageService.load('CustomerFlag').value;
     this.formID = this.getRandomNum(10);
     this.transaction = {
       transactionId: this.apiRequestService.getCurrentRequestId(),
@@ -137,10 +137,10 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     this.customerFullAddress = fullAddress;
   }
 
-  onAddrReceiptChanges(fullAddress: string): void {
-    this.receiptCustomerAddress = fullAddress;
-    localStorage.setItem('recipientCustomerAddress', JSON.stringify(this.receiptCustomerAddress));
-  }
+  // onAddrReceiptChanges(fullAddress: string): void {
+  //   this.receiptCustomerAddress = fullAddress;
+  //   localStorage.setItem('recipientCustomerAddress', JSON.stringify(this.receiptCustomerAddress));
+  // }
 
   onchangeOtherPhoneNumber(otherPhoneNumber: string): void {
     this.otherPhoneNumber = otherPhoneNumber;
@@ -418,15 +418,15 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     return result;
   }
 
-  checkCustomerAddress(event: any): void {
-    if (event.target.checked === true) {
-      this.isDisabled = event.target.checked;
-      this.receiptCustomerAddress = this.customerFullAddress;
-      localStorage.setItem('recipientCustomerAddress', JSON.stringify(this.receiptCustomerAddress));
-    } else {
-      this.isDisabled = null;
-    }
-  }
+  // checkCustomerAddress(event: any): void {
+  //   if (event.target.checked === true) {
+  //     this.isDisabled = event.target.checked;
+  //     this.receiptCustomerAddress = this.customerFullAddress;
+  //     localStorage.setItem('recipientCustomerAddress', JSON.stringify(this.receiptCustomerAddress));
+  //   } else {
+  //     this.isDisabled = null;
+  //   }
+  // }
 
   private async getMessageConfig(): Promise<void> {
     await this.messageConfigService.getMsgConfigByModuleName(LANGUAGE.TH, RESERVE_STOCK.MODULE_NAME).then(async(res: any) => {

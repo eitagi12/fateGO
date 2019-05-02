@@ -26,8 +26,8 @@ export class DepositPaymentSummaryComponent implements OnInit {
   public tradeReserve: any;
   public summaryPrice: number;
   public paymentType: string;
-  // public customerReceiptAddress: string;
-  public recipientCustomerAddress: string;
+  public customerReceiptAddress: string;
+  // public recipientCustomerAddress: string;
 
   constructor(
     private transactionService: TransactionService,
@@ -44,8 +44,8 @@ export class DepositPaymentSummaryComponent implements OnInit {
     this.customerFullAddress = this.transaction.data.customer.shipaddress.shipCusAddr;
     this.customerIdCardNo = customer.idCardNo;
     this.mobileNo = this.getMobileFormat(customer.selectedMobile);
-    // this.customerReceiptAddress = this.transaction.data.customer.shipaddress.shipCusAddr;
-    this.recipientCustomerAddress =  JSON.parse(localStorage.getItem('recipientCustomerAddress'));
+    this.customerReceiptAddress = this.getFullAddress(customer);
+    // this.recipientCustomerAddress =  JSON.parse(localStorage.getItem('recipientCustomerAddress'));
     this.brand = reserveProductInfo.brand;
     this.colorName = reserveProductInfo.colorName;
     this.model = reserveProductInfo.model;
