@@ -10,10 +10,12 @@ const routes: Routes = [
   {
     path: 'dashboard',
     loadChildren: 'src/app/dashboard/dashboard.module#DashboardModule',
-    canActivate: [AuthGuard],
-    resolve: {
-      i18n: I18nService
-    }
+    canActivate: [AuthGuard, ApiRequestGuard]
+  },
+  {
+    path: 'main-menu',
+    loadChildren: 'src/app/main-menu/main-menu.module#MainMenuModule',
+    canActivate: [AuthGuard, ApiRequestGuard]
   },
   {
     path: 'buy-product',
@@ -43,13 +45,18 @@ const routes: Routes = [
     }
   },
   {
+    path: 'error',
+    component: ErrorPageComponent
+  },
+  {
     path: 'deposit-summary',
     loadChildren: 'src/app/deposit-summary/deposit-summary.module#DepositSummaryModule',
     canActivate: [AuthGuard, ApiRequestGuard]
   },
   {
-    path: 'error',
-    component: ErrorPageComponent
+    path: 'trade-in',
+    loadChildren: 'src/app/trade-in/trade-in.module#TradeInModule',
+    canActivate: [AuthGuard]
   }
 ];
 
