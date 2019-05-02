@@ -95,7 +95,7 @@ export class CustomerInformationService {
     return customer;
   }
 
-  convertBillingAddressToString(billDeliveryAddress: BillDeliveryAddress): string {
+  convertBillingAddressToString(billDeliveryAddress: Customer): string {
     let str: string = '';
     for (const item in billDeliveryAddress) {
       if (billDeliveryAddress.hasOwnProperty(item)) {

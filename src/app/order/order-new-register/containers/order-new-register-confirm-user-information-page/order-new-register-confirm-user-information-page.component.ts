@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Transaction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 import { ConfirmCustomerInfo, BillingInfo, BillingSystemType, MailBillingInfo, TelNoBillingInfo, Utils, AlertService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HomeService } from 'mychannel-shared-libs';

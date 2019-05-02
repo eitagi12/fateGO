@@ -179,11 +179,11 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
     qrModel.orderId = this.orderID;
     qrModel.channel = 'WEB';
     if (this.payment.paymentQrCodeType === 'LINE_QR') {
-      qrModel.serviceId = environment.MPAY_QRCODE_SERVICE_ID.RL;
-      qrModel.terminalId = environment.MPAY_QRCODE_TERMINAL_ID.RL;
+      qrModel.serviceId = environment.MPAY_QRCODE.RL_SERVICE_ID;
+      qrModel.terminalId = environment.MPAY_QRCODE.RL_TERMINAL_ID;
     } else if (this.payment.paymentQrCodeType === 'THAI_QR') {
-      qrModel.serviceId = environment.MPAY_QRCODE_SERVICE_ID.PB;
-      qrModel.terminalId = environment.MPAY_QRCODE_TERMINAL_ID.PB;
+      qrModel.serviceId = environment.MPAY_QRCODE.PB_SERVICE_ID;
+      qrModel.terminalId = environment.MPAY_QRCODE.PB_TERMINAL_ID;
     }
     qrModel.locationName = this.tokenService.getUser().locationCode;
     qrModel.amount = this.getSummaryAmount();

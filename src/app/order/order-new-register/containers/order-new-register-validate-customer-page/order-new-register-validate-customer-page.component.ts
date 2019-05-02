@@ -6,7 +6,7 @@ import {
 } from 'src/app/order/order-new-register/constants/route-path.constant';
 import { Router } from '@angular/router';
 import { HomeService, PageLoadingService } from 'mychannel-shared-libs';
-import { Transaction, TransactionType, TransactionAction, BillDeliveryAddress } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 
