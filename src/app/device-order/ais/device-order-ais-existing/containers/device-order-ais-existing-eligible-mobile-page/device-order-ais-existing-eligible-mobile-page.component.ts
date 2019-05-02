@@ -182,7 +182,7 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
             orderType: `Change Service`,
             billingSystem: billingSystem
           },
-          +privilege.minimumPackagePrice, +privilege.maxinumPackagePrice)
+          +privilege.minimumPackagePrice, +privilege.maximumPackagePrice)
           .then((promotionShelves: any) => {
             return this.filterPromotionByFirstPack(promotionShelves, contract);
 

@@ -89,7 +89,7 @@ export class DeviceOrderAisNewRegisterSelectPackagePageComponent implements OnIn
         orderType: 'New Registration',
         billingSystem: BillingSystemType.IRB
       },
-      +privilege.minimumPackagePrice, +privilege.maxinumPackagePrice)
+      +privilege.minimumPackagePrice, +privilege.maximumPackagePrice)
       .then((promotionShelves: any) => {
         this.promotionShelves = this.promotionShelveService.defaultBySelected(promotionShelves, this.transaction.data.mainPackage);
       })
