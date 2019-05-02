@@ -1,8 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TokenService, ChannelType, I18nService } from 'mychannel-shared-libs';
 import { environment } from 'src/environments/environment';
-import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
+import { LocalStorageService } from 'ngx-store';
 
 @Component({
   selector: 'app-main-menu-page',
@@ -42,9 +41,11 @@ export class MainMenuPageComponent implements OnInit, OnDestroy {
 
   constructor(
     private tokenService: TokenService,
-    private translationService: TranslateService
+    private localStorageService: LocalStorageService
   ) {
-    this.currentLanguage = this.translationService.currentLang || 'TH';
+    if (this.localStorageService.get('lang')) {
+      this.currentLanguage = this.localStorageService.get('lang');
+    }
   }
 
   ngOnInit(): void {
@@ -66,10 +67,11 @@ export class MainMenuPageComponent implements OnInit, OnDestroy {
 
   switchLanguage(): void {
     this.currentLanguage = this.currentLanguage === 'TH' ? 'EN' : 'TH';
+    this.localStorageService.set('lang', this.currentLanguage);
   }
 
   ngOnDestroy(): void {
-    this.translationService.use(this.currentLanguage);
+    this.localStorageService.set('lang', this.currentLanguage);
   }
 
 }

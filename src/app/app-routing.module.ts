@@ -45,6 +45,11 @@ const routes: Routes = [
     }
   },
   {
+    path: 'device-only',
+    loadChildren: 'src/app/device-only/device-only.module#DeviceOnlyModule',
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'error',
     component: ErrorPageComponent
   },
