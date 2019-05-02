@@ -78,7 +78,7 @@
                 id="input-mobile-no" placeholder="ระบุเบอร์มือถือ AIS รับสิทธิสมัครบริการโมบายแคร์" class="mobile-input"
                 maxlength="10">
             </div>
-            <button class="btn-get-otp" id="button-get-otp" (click)="searchMobileNo()">ยืนยันเพื่อรับ OTP</button>
+            <button class="btn-get-otp" id="button-get-otp" (click)="searchMobileNo()" [disabled]="!privilegeCustomerForm.controls.mobileNo.valid">ยืนยันเพื่อรับ OTP</button>
           </div>
           <br>
           <div *ngIf="isPrivilegeCustomer">

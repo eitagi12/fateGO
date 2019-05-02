@@ -83,7 +83,6 @@ export class MobileCareComponent implements OnInit {
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private mobileCareService: MobileCareService
-
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -91,12 +90,11 @@ export class MobileCareComponent implements OnInit {
 
   ngOnInit(): void {
     this.createForm();
-    this.oncheckValidators();
-    this.checkillingSystem(this.privilegeCustomerForm.value.mobileNo);
-    this.checkPrivilegeMobileCare(this.privilegeCustomerForm.value.mobileNo);
+    this.onCheckValidators();
+    this.checkPrivilegeMobileCare();
   }
 
-  public oncheckValidators(): void {
+  public onCheckValidators(): void {
     let mobileNoDefault = this.customerInformationService.getSelectedMobileNo();
     mobileNoDefault = mobileNoDefault ? mobileNoDefault : '';
     this.privilegeCustomerForm = new FormGroup({
@@ -169,20 +167,18 @@ export class MobileCareComponent implements OnInit {
     this.modalRef.hide();
   }
 
-  public checkillingSystem(mobileNo: string): void {
-    this.customerInformationService.getProfileByMobileNo(mobileNo).then((res) => {
-      this.billingSystem = res.data.billingSystem;
-    });
-  }
-
-  public checkPrivilegeMobileCare(mobileNo: string): void {
+  public checkPrivilegeMobileCare(): void {
+    const mobileNo = this.privilegeCustomerForm.value.mobileNo;
     this.pageLoadingService.openLoading();
     if (mobileNo) {
+      // check billingSystem
+      this.customerInformationService.getProfileByMobileNo(mobileNo).then((res) => {
+        this.billingSystem = res.data.billingSystem;
+      });
+      // check package mobile care serenade
       this.customerInformationService.getCustomerProfile(mobileNo).then((res) => {
         const mobileSegment = res.data.mobileSegment;
         this.callService(mobileSegment);
-        this.pageLoadingService.closeLoading();
-      }).catch(() => {
         this.pageLoadingService.closeLoading();
       });
     } else {
@@ -193,7 +189,7 @@ export class MobileCareComponent implements OnInit {
 
   public searchMobileNo(): void {
     if (this.privilegeCustomerForm.value.mobileNo.length === 10) {
-      this.checkExistingMobileCare(this.privilegeCustomerForm.value.mobileNo);
+      this.checkExistingMobileCare();
     } else {
       this.alertService.notify({
         type: 'warning',
@@ -201,20 +197,40 @@ export class MobileCareComponent implements OnInit {
         showConfirmButton: true,
         text: 'กรุณาระบุเบอร์ให้ครบ 10 หลัก'
       });
+      this.privilegeCustomerForm.controls['mobileNo'].setValue('');
     }
   }
 
-  public checkExistingMobileCare(mobileNo: string): void {
+  public checkExistingMobileCare(): void {
+    const mobileNo = this.privilegeCustomerForm.value.mobileNo;
     this.pageLoadingService.openLoading();
     if (mobileNo) {
-      this.checkMobileCare(mobileNo).then(() => {
-        this.customerInformationService.getCustomerProfile(mobileNo).then(res => {
-          const mobileSegment = res.data.mobileSegment;
-          this.callService(mobileSegment);
+      this.customerInformationService.getBillingByMobileNo(mobileNo).then((res) => {
+        if (res && res.data && res.data.billingAddress) {
+          this.checkMobileCare(mobileNo).then(() => {
+            this.customerInformationService.getCustomerProfile(mobileNo).then(response => {
+              const mobileSegment = response.data.mobileSegment;
+              this.callService(mobileSegment);
+            });
+          });
+        } else {
+          this.alertService.notify({
+            type: 'error',
+            confirmButtonText: 'OK',
+            showConfirmButton: true,
+            text: 'เบอร์นี้ไม่ใช่ระบบ AIS กรุณาเปลี่ยนเบอร์ใหม่'
+          });
+          this.privilegeCustomerForm.controls['mobileNo'].setValue('');
+        }
+      }).catch((err) => {
+        this.pageLoadingService.closeLoading();
+        this.alertService.notify({
+          type: 'error',
+          confirmButtonText: 'OK',
+          showConfirmButton: true,
+          text: 'เบอร์นี้ไม่ใช่ระบบ AIS กรุณาเปลี่ยนเบอร์ใหม่'
         });
-        this.pageLoadingService.closeLoading();
-      }).catch(() => {
-        this.pageLoadingService.closeLoading();
+        this.privilegeCustomerForm.controls['mobileNo'].setValue('');
       });
     } else {
       this.pageLoadingService.closeLoading();
@@ -224,6 +240,7 @@ export class MobileCareComponent implements OnInit {
         showConfirmButton: true,
         text: 'เบอร์ไม่ถูกต้อง'
       });
+      this.privilegeCustomerForm.controls['mobileNo'].setValue('');
     }
   }
 
@@ -280,7 +297,7 @@ export class MobileCareComponent implements OnInit {
         this.isPrivilegeCustomer = true;
       } else {
         this.isPrivilegeCustomer = false;
-        this.privilegeCustomerForm.get('mobileNo').setValue('');
+        this.privilegeCustomerForm.controls['mobileNo'].setValue('');
       }
     });
   }

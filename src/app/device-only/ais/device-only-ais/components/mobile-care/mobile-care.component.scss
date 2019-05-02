@@ -35,6 +35,11 @@ h3{
     padding: 3px 10px 7px 10px;
 }
 
+.btn-get-otp:disabled,
+.btn-get-otp[disabled]{
+    opacity: 0.5;
+} 
+
 @media only screen and (min-width: 768px) {
     .search-btn{
         background-color: white;
