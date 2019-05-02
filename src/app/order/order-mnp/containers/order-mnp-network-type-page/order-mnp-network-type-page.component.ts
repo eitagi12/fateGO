@@ -80,7 +80,7 @@ export class OrderMnpNetworkTypePageComponent implements OnInit, OnDestroy {
             || order.statusCode === 'Submitted'
             || order.statusCode === 'Await'
             || order.statusCode === 'Accept'
-            || order.statusCode === 'Approve';
+             || order.statusCode === 'Approve';
         });
         if (historyOrder) {
           this.pageLoadingService.closeLoading();
