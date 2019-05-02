@@ -1,15 +1,15 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { EligibleMobile, HomeService, ShoppingCart } from 'mychannel-shared-libs';
+import { EligibleMobile, HomeService, ShoppingCart, PageLoadingService } from 'mychannel-shared-libs';
 import { Transaction, BillingAccount } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { EligibleMobileService } from 'src/app/device-order/services/eligible-mobile.service';
-import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { ROUTE_DEVICE_ORDER_AIS_MNP_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_DETAIL_PAGE } from '../../constants/route-path.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
+import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
 
 @Component({
   selector: 'app-device-order-ais-mnp-eligible-mobile-page',
@@ -27,15 +27,16 @@ export class DeviceOrderAisMnpEligibleMobilePageComponent implements OnInit, OnD
   billingAccountList: Array<BillingAccount>;
   billingNetExtremeList: Array<BillingAccount>;
   shoppingCart: ShoppingCart;
-  idCardNo: string;
 
   constructor(
     private router: Router,
-    private transactionService: TransactionService,
+    private http: HttpClient,
     private homeService: HomeService,
+    private privilegeService: PrivilegeService,
+    private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
-    private eligibleMobileService: EligibleMobileService,
     private shoppingCartService: ShoppingCartService,
+    private pageLoadingService: PageLoadingService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -43,11 +44,21 @@ export class DeviceOrderAisMnpEligibleMobilePageComponent implements OnInit, OnD
 
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
+    delete this.shoppingCart.mobileNo;
     if (this.transaction.data.customer) {
-      this.idCardNo = this.transaction.data.customer.idCardNo;
+      const idCardNo = this.transaction.data.customer.idCardNo;
       const ussdCode = this.priceOption.trade.ussdCode;
-      this.eligibleMobileService.getMobileList(this.idCardNo, ussdCode, `POSTPAID`)
-      .then(mobiles =>  this.eligibleMobiles = mobiles);
+
+      this.http.post('/api/customerportal/query-eligible-mobile-list', {
+        idCardNo: idCardNo,
+        ussdCode: ussdCode,
+        mobileType: `Post-paid`
+      }).toPromise()
+        .then((response: any) => {
+          const eMobileResponse = response.data;
+          this.eligibleMobiles = eMobileResponse.postpaid || [];
+        });
+
     } else {
       this.onBack();
     }
@@ -62,8 +73,33 @@ export class DeviceOrderAisMnpEligibleMobilePageComponent implements OnInit, OnD
   }
 
   onNext(): void {
+    this.pageLoadingService.openLoading();
     this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo, persoSim: false };
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_DETAIL_PAGE]);
+
+    if (this.selectMobileNo.privilegeCode) {
+      this.transaction.data.customer.privilegeCode = this.selectMobileNo.privilegeCode;
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_DETAIL_PAGE]);
+
+    } else {
+      const ussdCode = this.priceOption.trade.ussdCode;
+      this.requestPrivilege(ussdCode);
+
+    }
+    this.pageLoadingService.closeLoading();
+
+  }
+
+  requestPrivilege(ussdCode: any): void {
+    this.privilegeService.requestUsePrivilege
+      (
+        this.selectMobileNo.mobileNo, ussdCode,
+        this.selectMobileNo.privilegeCode
+      )
+      .then((privilegeCode) => {
+        this.transaction.data.customer.privilegeCode = privilegeCode;
+        this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo };
+      })
+      .then(() =>  this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_DETAIL_PAGE]));
   }
 
   onHome(): void {
