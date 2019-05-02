@@ -62,6 +62,8 @@
           <div class="card-header bg-pink text-white"> รายละเอียดการชำระ </div>
           <div class="card-body text-light-grey">
 
+            <!-- ชำระค่าเครื่อง AWN ------------------------------------------------------------------------------------->
+            <div *ngIf="priceOption?.productStock?.company !== 'WDS'">
               <!-- ชำระค่าเครื่อง (ผ่อนแยก)-->
               <ng-container
                 *ngIf="!priceOption?.trade?.advancePay || priceOption?.trade?.advancePay?.installmentFlag === 'N'">
@@ -136,6 +138,62 @@
                   </small>
                 </div>
               </ng-container>
+            </div>
+
+
+            <!-- ชำระค่าเครื่อง WDS ------------------------------------------------------------------------------------------------>
+            <div *ngIf="priceOption?.productStock?.company === 'WDS'">
+
+              <!-- ค่าเครื่องและค่าแพ็กเกจล่วงหน้า (ผ่อนรวม) สำหรับ WDS -->
+              <ng-container *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'Y'">
+                <div>
+                  <input class="form-check-input" type="radio" id="installmentAdvancePay" disabled="" checked="true">
+                  <label class="form-check-label" for="installmentAdvancePay">
+                    {{ priceOption?.productDetail?.name }} :
+                    <span *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">ชำระเต็มจำนวน</span>
+                    <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">ผ่อนชำระบัตรเคดิต</span>
+                  </label>
+                  <span class="pull-right text-green">
+                      ฿ {{ priceOption?.trade?.promotionPrice | number }}</span>
+                </div>
+                <div class="mt-1">
+                  <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType !== 'QR_CODE'">
+                    (ชำระโดย เงินสด)
+                  </small>
+                  <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType === 'QR_CODE'">
+                    ( ชำระโดย
+                    <span *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'THAI_QR'"> Thai QR Promptpay </span>
+                    <span *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'LINE_QR'"> Rabbit Line Pay </span>
+                    )
+                  </small>
+                  <span class="text-pink">( รอชำระ )</span>
+                </div>
+                <div>
+                    <input class="form-check-input" type="radio" id="installmentAdvancePay" disabled="" >
+                    <label class="form-check-label" for="installmentAdvancePay">
+                      ค่าแพ็กเกจชำระล่วงหน้า :
+                      <span *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">ชำระเต็มจำนวน</span>
+                      <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">ผ่อนชำระบัตรเคดิต</span>
+                    </label>
+                    <span class="pull-right text-green">
+                        ฿ {{ priceOption?.trade?.advancePay?.amount | number }}</span>
+                  </div>
+                  <div class="mt-1">
+                    <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType !== 'QR_CODE'">
+                      (ชำระโดย เงินสด)
+                    </small>
+                    <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType === 'QR_CODE'">
+                      ( ชำระโดย
+                      <span *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'THAI_QR'"> Thai QR Promptpay </span>
+                      <span *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'LINE_QR'"> Rabbit Line Pay </span>
+                      )
+                    </small>
+                    <span class="text-pink">( รอชำระ )</span>
+                  </div> 
+              </ng-container>
+            </div>
+
+
 
 
           </div>
