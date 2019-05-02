@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { HomeService, ShoppingCart, PageLoadingService, BillingSystemType } from 'mychannel-shared-libs';
-import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import {
@@ -14,7 +14,6 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { HttpClient } from '@angular/common/http';
 import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
-import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { PromotionShelveService } from 'src/app/device-order/services/promotion-shelve.service';
 
@@ -54,8 +53,6 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
   billingNetExtremeList: Array<BillingAccount>;
   shoppingCart: ShoppingCart;
 
-  idCardNo: string;
-
   constructor(
     private router: Router,
     private http: HttpClient,
@@ -64,7 +61,6 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
     private priceOptionService: PriceOptionService,
     private privilegeService: PrivilegeService,
     private pageLoadingService: PageLoadingService,
-    private customerInfoService: CustomerInfoService,
     private shoppingCartService: ShoppingCartService,
     private promotionShelveService: PromotionShelveService
   ) {
@@ -78,13 +74,13 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
 
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-
+    delete this.shoppingCart.mobileNo;
     if (this.transaction.data.customer) {
-      this.idCardNo = this.transaction.data.customer.idCardNo;
+      const idCardNo = this.transaction.data.customer.idCardNo;
       const ussdCode = this.priceOption.trade.ussdCode;
 
       this.http.post('/api/customerportal/query-eligible-mobile-list', {
-        idCardNo: this.idCardNo,
+        idCardNo: idCardNo,
         ussdCode: ussdCode,
         mobileType: `Post-paid`,
         chkMainProFlg: true
@@ -107,7 +103,18 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
       .then(promotionsShelves => {
 
         if (this.havePackages(promotionsShelves) || this.isNotMathCritiriaMainPro) {
-          this.router.navigate([this.setNavigatePathAndRequestPrivilege()]);
+
+          if (this.selectMobileNo.privilegeCode) {
+            this.transaction.data.customer.privilegeCode = this.selectMobileNo.privilegeCode;
+            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_DETAIL_PAGE]);
+
+          } else if (this.isCritiriaMainPro) {
+            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_CHANGE_PACKAGE_PAGE]);
+
+          } else {
+            const ussdCode = this.priceOption.trade.ussdCode;
+            this.requestPrivilege(ussdCode);
+          }
 
         } else {
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_NON_PACKAGE_PAGE]);
@@ -115,21 +122,6 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
 
       })
       .then(() => this.pageLoadingService.closeLoading());
-  }
-
-  setNavigatePathAndRequestPrivilege(): string {
-    if (this.selectMobileNo.privilegeCode) {
-      this.transaction.data.customer.privilegeCode = this.selectMobileNo.privilegeCode;
-      return ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_DETAIL_PAGE;
-
-    } else if (this.isCritiriaMainPro) {
-      return ROUTE_DEVICE_ORDER_AIS_EXISTING_CHANGE_PACKAGE_PAGE;
-
-    } else {
-      const ussdCode = this.priceOption.trade.ussdCode;
-      this.requestPrivilege(ussdCode);
-
-    }
   }
 
   requestPrivilege(ussdCode: any): void {
@@ -141,20 +133,9 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
       .then((privilegeCode) => {
         this.transaction.data.customer.privilegeCode = privilegeCode;
         this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo };
+      })
+      .then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_DETAIL_PAGE]));
 
-        if (this.transaction.data.customer && this.transaction.data.customer.firstName === '-') {
-
-          this.customerInfoService.getCustomerProfileByMobileNo
-            (
-              this.transaction.data.simCard.mobileNo,
-              this.transaction.data.customer.idCardNo
-            )
-            .then((customer: Customer) => {
-              this.transaction.data.customer = { ...this.transaction.data.customer, ...customer };
-            });
-        }
-
-      }).then(() => ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_DETAIL_PAGE);
   }
 
   callService(): Promise<any> {
