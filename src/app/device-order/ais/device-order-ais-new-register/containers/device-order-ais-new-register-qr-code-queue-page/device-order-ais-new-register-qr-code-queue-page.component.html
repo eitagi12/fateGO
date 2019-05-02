@@ -33,9 +33,9 @@
               </div>
             </ng-container>
 
-            <ng-container *ngIf="transaction?.data?.advancePayment?.paymentType === 'QR_CODE'">
+            <ng-container *ngIf="transaction?.data?.advancePayment?.paymentType === 'QR_CODE' || priceOption?.trade?.advancePay?.installmentFlag === 'Y'">
               <div class="text-light-grey"
-                *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && priceOption?.trade?.advancePay?.amount > 0">
+                *ngIf="(priceOption?.trade?.advancePay?.installmentFlag === 'N' && priceOption?.trade?.advancePay?.amount > 0) || priceOption?.trade?.advancePay?.installmentFlag === 'Y'">
                 <p>
                   <i class="fa fa-circle mr-3 text-green"></i>
                   {{ priceOption?.trade?.advancePay?.description }}
