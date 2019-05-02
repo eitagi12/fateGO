@@ -93,7 +93,6 @@ export class OrderMnpNetworkTypePageComponent implements OnInit, OnDestroy {
         }
       }).catch(() => this.checkCustomerProfile());
   }
-
   checkCustomerProfile(): void {
     this.http.post(`/api/customerportal/newRegister/getCCCustInfo/${this.mnpForm.value.mobileNo}`, {
     }).toPromise()
@@ -152,7 +151,6 @@ export class OrderMnpNetworkTypePageComponent implements OnInit, OnDestroy {
       });
 
   }
-
   onHome(): void {
     this.homeService.goToHome();
   }
