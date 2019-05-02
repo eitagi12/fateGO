@@ -20,7 +20,6 @@ export class DeviceOrderAisMnpResultPageComponent implements OnInit {
   isSuccess: boolean;
 
   constructor(
-    private homeService: HomeService,
     private transactionService: TransactionService,
     private createNewRegisterService: CreateNewRegisterService,
     private pageLoadingService: PageLoadingService,
@@ -39,10 +38,6 @@ export class DeviceOrderAisMnpResultPageComponent implements OnInit {
     } else {
       window.location.href = '/smart-digital/main-menu';
     }
-  }
-
-  onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_QUEUE_PAGE]);
   }
 
 }

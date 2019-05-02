@@ -19,7 +19,6 @@ export class DeviceOrderAisPreToPostResultPageComponent implements OnInit {
   isSuccess: boolean;
 
   constructor(
-    private homeService: HomeService,
     private transactionService: TransactionService,
     private router: Router,
   ) {
