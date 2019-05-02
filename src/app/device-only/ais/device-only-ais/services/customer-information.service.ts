@@ -40,18 +40,19 @@ export class CustomerInformationService {
   }
 
   getBillingByMobileNo(mobileNo: string): Promise<any> {
-    if (!mobileNo) {
+    if (mobileNo) {
+      const getBillingAPI = API.GET_BILLING + `${mobileNo}`;
+      return this.http.get(getBillingAPI).toPromise();
+    } else {
       return Promise.reject('mobile no not found.');
     }
-    this.setSelectedMobileNo(mobileNo);
-    const getBillingAPI = API.GET_BILLING + `${mobileNo}`;
-    return this.http.get(getBillingAPI).toPromise();
   }
 
   getCustomerProfile(mobileNo: string): Promise<any> {
     if (!mobileNo) {
       return Promise.reject('mobile no not found.');
     }
+    this.setSelectedMobileNo(mobileNo);
     const getProfileAPI = API.GET_CUSTOMER_PROFILE + `${mobileNo}`;
     return this.http.get(getProfileAPI).toPromise();
   }
@@ -63,6 +64,7 @@ export class CustomerInformationService {
 
   setSelectedMobileNo(mobileNo: string): void {
     this.selectedMobileNo = mobileNo;
+    console.log('set mobileNo => : ', this.selectedMobileNo);
   }
 
   getSelectedMobileNo(): string {
