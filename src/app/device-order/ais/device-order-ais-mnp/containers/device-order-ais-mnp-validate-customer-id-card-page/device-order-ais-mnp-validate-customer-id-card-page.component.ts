@@ -132,8 +132,6 @@ export class DeviceOrderAisMnpValidateCustomerIdCardPageComponent implements OnI
               billCycle: data.billCycle,
               zipCode: zipCode
             };
-          }).catch(() => {
-            return { zipCode: zipCode };
           });
       })
       .then((customer: any) => {

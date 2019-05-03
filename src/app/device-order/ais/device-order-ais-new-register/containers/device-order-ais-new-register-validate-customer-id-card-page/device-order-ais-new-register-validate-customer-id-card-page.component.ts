@@ -132,8 +132,6 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
                 billCycle: data.billCycle,
                 zipCode: zipCode
               };
-            }).catch(() => {
-              return { zipCode: zipCode };
             });
         })
         .then((customer: any) => {

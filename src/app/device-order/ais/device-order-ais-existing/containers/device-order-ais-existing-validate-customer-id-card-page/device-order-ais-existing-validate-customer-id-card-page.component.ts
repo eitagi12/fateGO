@@ -117,10 +117,6 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
               billCycle: data.billCycle,
               zipCode: zipCode
             };
-          }).catch(() => {
-            return {
-              zipCode: zipCode
-            };
           });
       })
       .then((customer: any) => { // load bill cycle
