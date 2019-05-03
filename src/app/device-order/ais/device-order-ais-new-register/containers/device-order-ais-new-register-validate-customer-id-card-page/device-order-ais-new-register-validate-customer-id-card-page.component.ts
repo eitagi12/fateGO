@@ -98,7 +98,6 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
   // Read card success
   onCompleted(profile: ReadCardProfile): void {
     this.profile = profile;
-    this.profile.idCardNo = '1320600131071';
     // auto next
     this.onNext();
   }
