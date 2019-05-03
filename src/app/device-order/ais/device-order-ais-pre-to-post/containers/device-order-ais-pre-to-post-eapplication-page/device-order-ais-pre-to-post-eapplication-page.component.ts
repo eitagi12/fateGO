@@ -11,6 +11,8 @@ import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_AGREEMENT_SIGN_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ECONTRACT_PAGE
 } from '../../constants/route-path.constant';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-device-order-ais-pre-to-post-eapplication-page',
@@ -24,6 +26,7 @@ export class DeviceOrderAisPreToPostEapplicationPageComponent implements OnInit,
   transaction: Transaction;
   shoppingCart: ShoppingCart;
   eApplicationSrc: string;
+  translationSubscribe: Subscription;
 
   constructor(
     private router: Router,
@@ -31,6 +34,7 @@ export class DeviceOrderAisPreToPostEapplicationPageComponent implements OnInit,
     private transactionService: TransactionService,
     private homeService: HomeService,
     private pageLoadingService: PageLoadingService,
+    private translateService: TranslateService,
     private shoppingCartService: ShoppingCartService, ) {
     this.transaction = this.transactionService.load();
   }
@@ -38,9 +42,16 @@ export class DeviceOrderAisPreToPostEapplicationPageComponent implements OnInit,
   ngOnInit(): void {
     this.pageLoadingService.openLoading();
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-    this.createEapplicationService.createEapplication(this.transaction)
-      .then((resp: any) => this.eApplicationSrc = resp.data)
-      .then(() => this.pageLoadingService.closeLoading());
+    this.callService(this.transaction, this.translateService.currentLang);
+    this.translationSubscribe = this.translateService.onLangChange.subscribe(language => {
+      this.callService(this.transaction, language.lang);
+    });
+  }
+
+  callService(transaction: Transaction, language: string): void {
+    this.createEapplicationService.createEapplicationV2(transaction, language)
+    .then((resp: any) => this.eApplicationSrc = resp.data)
+    .then(() => this.pageLoadingService.closeLoading());
   }
 
   onBack(): void {
@@ -56,6 +67,9 @@ export class DeviceOrderAisPreToPostEapplicationPageComponent implements OnInit,
   }
 
   ngOnDestroy(): void {
+    if (this.translationSubscribe) {
+      this.translationSubscribe.unsubscribe();
+    }
     this.transactionService.update(this.transaction);
   }
 }

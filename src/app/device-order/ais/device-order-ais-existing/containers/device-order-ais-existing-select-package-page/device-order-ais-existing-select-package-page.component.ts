@@ -143,7 +143,7 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
         orderType: `Change Service`,
         billingSystem: billingSystem
       },
-      +privilege.minimumPackagePrice, +privilege.maxinumPackagePrice)
+      +privilege.minimumPackagePrice, +privilege.maximumPackagePrice)
       .then((promotionShelves: any) => {
         const contract = this.transaction.data.contractFirstPack || {};
 

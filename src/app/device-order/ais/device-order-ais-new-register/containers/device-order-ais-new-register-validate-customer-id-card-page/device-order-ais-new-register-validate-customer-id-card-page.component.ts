@@ -115,6 +115,7 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
 
   onNext(): void {
     this.pageLoadingService.openLoading();
+
     this.returnStock().then(() => {
       // มี auto next ทำให้ create transaction ช้ากว่า read card
       this.createTransaction();

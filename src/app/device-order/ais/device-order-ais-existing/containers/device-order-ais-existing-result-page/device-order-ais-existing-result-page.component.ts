@@ -13,13 +13,11 @@ import { environment } from 'src/environments/environment';
 })
 export class DeviceOrderAisExistingResultPageComponent implements OnInit {
 
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
   transaction: Transaction;
   isSuccess: boolean;
 
   constructor(
-    private transactionService: TransactionService,
-    private router: Router,
+    private transactionService: TransactionService
 
   ) {
     this.transaction = this.transactionService.load();
@@ -36,10 +34,6 @@ export class DeviceOrderAisExistingResultPageComponent implements OnInit {
       window.location.href = '/smart-digital/main-menu';
     }
 
-  }
-
-  onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_RESULT_PAGE]);
   }
 
 }

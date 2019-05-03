@@ -135,6 +135,10 @@ export interface Customer {
   customerPinCode?: string;
   privilegeCode?: string;
   repi?: boolean;
+  // passport
+  issuingCountry?: string;
+  nationality?: string;
+  imageReadPassport?: string;
 }
 
 export interface SimCard {
@@ -236,6 +240,7 @@ export interface BillingAccountData {
 
   billingMethodText?: string;
   billCycleText?: string;
+  billCycleTextEng?: string;
   billAddressText?: string;
 }
 

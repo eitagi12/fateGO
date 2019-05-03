@@ -151,7 +151,7 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
         orderType: `Change Service`,
         billingSystem: billingSystem
       },
-      +privilege.minimumPackagePrice, +privilege.maxinumPackagePrice)
+      +privilege.minimumPackagePrice, +privilege.maximumPackagePrice)
       .then((promotionShelves: any) => {
         this.promotionShelves = this.promotionShelveService.defaultBySelected(promotionShelves, this.transaction.data.mainPackage);
       })
