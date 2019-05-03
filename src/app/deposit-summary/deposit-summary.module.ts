@@ -11,6 +11,7 @@ import { DepositQueueComponent } from './ais/container/deposit-queue/deposit-que
 import { DepositResultComponent } from './ais/container/deposit-result/deposit-result.component';
 import { CreateDeviceOrderService } from './services/create-device-order.service';
 import { MessageConfigService } from './services/message-config.service';
+import { DepositPaymentKeyInPageComponent } from './ais/container/deposit-payment-key-in-page/deposit-payment-key-in-page.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -19,8 +20,14 @@ import { MessageConfigService } from './services/message-config.service';
     FormsModule,
     ReactiveFormsModule
   ],
-  declarations: [DepositSummaryComponent, DepositPaymentPageComponent,
-    DepositPaymentSummaryPageComponent, DepositQueueComponent, DepositResultComponent, DepositPaymentSummaryComponent],
+  declarations: [
+    DepositSummaryComponent,
+    DepositPaymentPageComponent,
+    DepositPaymentSummaryPageComponent,
+    DepositQueueComponent,
+    DepositResultComponent,
+    DepositPaymentSummaryComponent,
+    DepositPaymentKeyInPageComponent],
     providers : [
       CreateDeviceOrderService,
       MessageConfigService
