@@ -68,7 +68,7 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
         });
     };
 
-    this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
+    this.kioskApi = !(environment.name === 'LOCAL' || this.tokenService.getUser().channelType === ChannelType.SMART_ORDER);
   }
 
   ngOnInit(): void {
@@ -114,7 +114,6 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    let isValidate = true;
 
     this.returnStock().then(() => {
       // มี auto next ทำให้ create transaction ช้ากว่า read card
@@ -134,14 +133,6 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
                 billCycle: data.billCycle,
                 zipCode: zipCode
               };
-            }).catch((exception: any) => {
-              if (exception && exception.error && exception.error.errors) {
-                const errors = exception.error.errors;
-                this.alertService.error(errors[0] + '<br>' + errors[1]);
-                isValidate = false;
-                return;
-              }
-              return { zipCode: zipCode };
             });
         })
         .then((customer: any) => {
@@ -155,30 +146,25 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
               };
             });
         }).then((billingInformation: any) => {
+          this.transaction.data.billingInformation = billingInformation;
 
-          if (!isValidate) {
-            return;
-          } else {
-            this.transaction.data.billingInformation = billingInformation;
-            return this.conditionIdentityValid()
-              .then(() => {
-                return this.http.post(
-                  '/api/salesportal/add-device-selling-cart',
-                  this.getRequestAddDeviceSellingCart()
-                ).toPromise()
-                  .then((resp: any) => resp.data.soId);
-              })
-              .then((soId: string) => {
-                this.transaction.data.order = { soId: soId };
+          return this.conditionIdentityValid()
+            .then(() => {
+              return this.http.post(
+                '/api/salesportal/add-device-selling-cart',
+                this.getRequestAddDeviceSellingCart()
+              ).toPromise()
+                .then((resp: any) => resp.data.soId);
+            })
+            .then((soId: string) => {
+              this.transaction.data.order = { soId: soId };
 
-                return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-              })
-              .then(() => {
-                this.pageLoadingService.closeLoading();
-                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE]);
-              });
-          }
-        });
+              return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+            })
+            .then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE]));
+
+        }).then(() => this.pageLoadingService.closeLoading());
+
     });
   }
 
@@ -293,6 +279,10 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
       depositAmt: '',
       reserveNo: ''
     };
+  }
+
+  isDevelopMode(): boolean {
+    return environment.name === 'LOCAL';
   }
 
 }
