@@ -97,7 +97,8 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
   }
 
   onBack(): void {
-    const changeMobileCareFlag = this.transaction.data.existingMobileCare.changeMobileCareFlag;
+    const changeMobileCareFlag = this.transaction.data.existingMobileCare && this.transaction.data.existingMobileCare.changeMobileCareFlag
+    ? this.transaction.data.existingMobileCare.changeMobileCareFlag : true;
     if (changeMobileCareFlag) {
       this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_CARE_PAGE]);
     } else {

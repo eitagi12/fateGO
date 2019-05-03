@@ -99,7 +99,8 @@ export class DeviceOrderAisExistingBestBuyShopSummaryPageComponent implements On
   }
 
   onBack(): void {
-    const changeMobileCareFlag = this.transaction.data.existingMobileCare.changeMobileCareFlag;
+    const changeMobileCareFlag = this.transaction.data.existingMobileCare && this.transaction.data.existingMobileCare.changeMobileCareFlag
+    ? this.transaction.data.existingMobileCare.changeMobileCareFlag : true;
     if (changeMobileCareFlag) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_MOBILE_CARE_PAGE]);
     } else {
