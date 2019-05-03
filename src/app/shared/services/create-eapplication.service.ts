@@ -113,7 +113,7 @@ export class CreateEapplicationService {
       fullNameEN: `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}`,
       issueDate: customer.issueDate || '',
       expireDate: customer.expireDate || '',
-      signature: customer.imageSignature || '',
+     // signature: customer.imageSignature || '',
       language: language || '',
     };
     if (language === 'EN') {
@@ -130,9 +130,9 @@ export class CreateEapplicationService {
       };
     }
     if (action === TransactionAction.READ_CARD || action === TransactionAction.READ_CARD_REPI) {
-      data.customerImg = 'data:image/jpeg;base64,' + customer.imageReadSmartCard;
+      data.customerImg = customer.imageReadSmartCard;
     } else {
-      data.customerImgKeyIn = 'data:image/jpeg;base64,' + customer.imageSmartCard || customer.imageReadPassport;
+      data.customerImgKeyIn = customer.imageSmartCard || customer.imageReadPassport;
     }
 
     return data;
