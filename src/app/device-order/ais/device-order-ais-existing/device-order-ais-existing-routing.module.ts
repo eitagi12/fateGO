@@ -23,6 +23,7 @@ import { DeviceOrderAisExistingOneLovePageComponent } from './containers/device-
 import { DeviceOrderAisExistingMergeBillingPageComponent } from './containers/device-order-ais-existing-merge-billing-page/device-order-ais-existing-merge-billing-page.component';
 import { DeviceOrderAisExistingEcontractPageComponent } from './containers/device-order-ais-existing-econtract-page/device-order-ais-existing-econtract-page.component';
 import { DeviceOrderAisExistingNonPackagePageComponent } from './containers/device-order-ais-existing-non-package-page/device-order-ais-existing-non-package-page.component';
+import { DeviceOrderAisExistingAggregatePageComponent } from './containers/device-order-ais-existing-aggregate-page/device-order-ais-existing-aggregate-page.component';
 
 const routes: Routes = [
   {
@@ -117,6 +118,10 @@ const routes: Routes = [
     path: 'merge-billing',
     component: DeviceOrderAisExistingMergeBillingPageComponent
   },
+  {
+    path: 'aggregate',
+    component: DeviceOrderAisExistingAggregatePageComponent
+  }
 ];
 
 @NgModule({

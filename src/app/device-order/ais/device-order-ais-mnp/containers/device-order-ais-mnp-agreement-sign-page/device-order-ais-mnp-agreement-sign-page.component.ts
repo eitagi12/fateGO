@@ -59,6 +59,7 @@ export class DeviceOrderAisMnpAgreementSignPageComponent implements OnInit, OnDe
 
   onSigned(): void {
     const user: User = this.tokenService.getUser();
+    console.log('user', user);
     this.signedOpenSubscription = this.aisNativeService.openSigned(
       ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'SignaturePad'
     ).subscribe();
