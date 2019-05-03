@@ -35,14 +35,13 @@ export class DeviceOrderAisExistingAggregatePageComponent implements OnInit {
   }
 
   onNext(): void {
-    const payment = this.transaction.data.payment;
-    switch (payment.paymentType) {
-      case 'QR_CODE':
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_SUMMARY_PAGE]);
-        break;
-      default:
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_QUEUE_PAGE]);
-        break;
+    const payment: any = this.transaction.data.payment || {};
+    const advancePayment: any = this.transaction.data.advancePayment || {};
+
+    if (payment.paymentType === 'QR_CODE' || advancePayment.paymentType === 'QR_CODE') {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_SUMMARY_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_QUEUE_PAGE]);
     }
   }
 

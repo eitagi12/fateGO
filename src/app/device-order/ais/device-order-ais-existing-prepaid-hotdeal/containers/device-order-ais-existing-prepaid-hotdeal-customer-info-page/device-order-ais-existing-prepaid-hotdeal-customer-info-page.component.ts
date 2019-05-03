@@ -4,7 +4,7 @@ import { HomeService, ShoppingCart, CustomerInfo, ChargeType, PageLoadingService
 import {
   ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_ELIGIBLE_MOBILE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_PAYMENT_DETAIL_PAGE
- } from '../../constants/route-path.constant';
+} from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { Customer, Transaction, SimCard } from 'src/app/shared/models/transaction.model';
@@ -50,13 +50,13 @@ export class DeviceOrderAisExistingPrepaidHotdealCustomerInfoPageComponent imple
   getBalance(mobileNo: string) {
     this.pageLoadingService.openLoading();
     this.http.get(`/api/customerportal/newRegister/${mobileNo}/queryBalance`).toPromise()
-    .then((resp: any) => {
-      this.pageLoadingService.closeLoading();
-      this.customerInfo.balance = Number(resp.data.remainingBalance) / 100;
-    })
-    .catch(() => {
-      this.pageLoadingService.closeLoading();
-    });
+      .then((resp: any) => {
+        this.pageLoadingService.closeLoading();
+        this.customerInfo.balance = Number(resp.data.remainingBalance) / 100;
+      })
+      .catch(() => {
+        this.pageLoadingService.closeLoading();
+      });
 
   }
 

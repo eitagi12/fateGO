@@ -19,32 +19,38 @@
             </div>
             <div class="bg-white">
               <div class="container-fluid">
-                <div class="card mb-3" *ngIf="showCurrentPackage">
+
+               <div *ngIf="isContractFirstPack" class="text-align p-4">
+                  <img class ="icon-red-alert-circle" src="assets/images/icon/icon-red-alert-circle.png"/>
+                  <span class="text-red ml-3">ท่านมีสัญญาข้อตกลงการใช้แพ็กเกจค่าบริการรายเดือนขั้นต่ำเดือนละ {{isContractFirstPack}} บาท</span>
+              </div>
+
+                <div class="card mb-3" *ngIf="!this.mathHotDeal && !this.advancePay">
                   <div class="card-header bg-green text-white">
                     แพ็กเกจปัจจุบัน
                   </div>
                   <div class="card-body">
-                      <div class="pull-left text-green mt-3">
+                      <div class="text-green">
                         {{ transaction?.data?.currentPackage?.title }}
                       </div>
-                    <div *ngIf="showSelectCurrentPackage" class="pull-right">
+                    <div *ngIf="showSelectCurrentPackage">
                         <input type="radio" id="current-package" name="current-package" [checked]="selectCurrentPackage" (click)="onClickCurrentPackage()">
                     <label for="current-package">
                       ใช้แพ็กเกจเดิม
                     </label>
                     </div>
                     <div class="d-inline-block mt-3">
-                        <p> {{ transaction?.data?.currentPackage?.inStatementThai }}</p>
-                        <p> {{ transaction?.data?.currentPackage?.expiredDate }}</p>
+                      <p> {{ transaction?.data?.currentPackage?.inStatementThai }}</p>
+                      <span>{{ transaction?.data?.currentPackage?.expiredDate }}</span>
                     </div>
                   </div>
                 </div>
                 <div class="card"> 
                   <div class="card-header bg-green text-white mb-2">
-                    เลือกแพ็กเกจใหม่ <span>(แพ็กเกจเริ่มต้น {{ priceOption?.privilege?.minimumPackagePrice }} บาท)</span>
+                    เลือกแพ็กเกจใหม่ <span class="minimum-package">(แพ็กเกจเริ่มต้น {{ priceOption?.privilege?.minimumPackagePrice }} บาท)</span>
                   </div>
                   <mc-promotion-shelve [selected]="transaction?.data?.mainPackage" [promotionShelves]="promotionShelves"
-                  (completed)="onCompleted($event)" (condition)="onTermConditions($event)"></mc-promotion-shelve>
+                  (completed)="onCompleted($event)"></mc-promotion-shelve>
                 </div>
               </div>
             </div>

@@ -6,6 +6,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { CreateNewRegisterService } from 'src/app/shared/services/create-new-register.service';
 import { Router } from '@angular/router';
 import { ROUTE_DEVICE_ORDER_AIS_MNP_QUEUE_PAGE } from '../../constants/route-path.constant';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-device-order-ais-mnp-result-page',
@@ -14,16 +15,11 @@ import { ROUTE_DEVICE_ORDER_AIS_MNP_QUEUE_PAGE } from '../../constants/route-pat
 })
 export class DeviceOrderAisMnpResultPageComponent implements OnInit {
 
-  wizards: string[] = WIZARD_ORDER_MNP;
   transaction: Transaction;
   isSuccess: boolean;
 
   constructor(
-    private homeService: HomeService,
-    private transactionService: TransactionService,
-    private createNewRegisterService: CreateNewRegisterService,
-    private pageLoadingService: PageLoadingService,
-    private router: Router,
+    private transactionService: TransactionService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -33,11 +29,11 @@ export class DeviceOrderAisMnpResultPageComponent implements OnInit {
   }
 
   onMainMenu(): void {
-    this.homeService.goToHome();
-  }
-
-  onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_QUEUE_PAGE]);
+    if (environment.name === 'LOCAL') {
+      window.location.href = '/main-menu';
+    } else {
+      window.location.href = '/smart-digital/main-menu';
+    }
   }
 
 }

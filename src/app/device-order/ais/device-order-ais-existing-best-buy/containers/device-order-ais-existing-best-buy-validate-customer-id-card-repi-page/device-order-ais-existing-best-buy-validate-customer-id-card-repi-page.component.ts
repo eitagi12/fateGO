@@ -6,10 +6,9 @@ import { ReadCardProfile, ValidateCustomerIdCardComponent, Utils, HomeService, A
 import { Transaction, TransactionAction, Customer, Prebooking } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_REPI_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE } from '../../constants/route-path.constant';
-import { CustomerInfoService } from '../../services/customer-info.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
+import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-validate-customer-id-card-repi-page',
@@ -74,12 +73,12 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
     const mobileNo = this.transaction.data.simCard.mobileNo;
 
     this.pageLoadingService.openLoading();
-     console.log(this.profile);
     this.customerInfoService.getProvinceId(this.profile.province).then((provinceId: string) => {
       return this.customerInfoService.getZipCode(provinceId, this.profile.amphur, this.profile.tumbol).then((zipCode: string) => {
         return this.customerInfoService.getCustomerInfoByIdCard(this.profile.idCardNo, zipCode).then((customer: Customer) => {
           if (customer.caNumber) {
             this.transaction.data.customer = { ...this.transaction.data.customer, ...customer, ...this.profile };
+            this.transaction.data.customer.zipCode = zipCode;
           } else {
             const privilege = this.transaction.data.customer.privilegeCode;
             const repi = this.transaction.data.customer.repi;
@@ -89,7 +88,6 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
             this.transaction.data.customer.repi = repi;
             this.transaction.data.customer.zipCode = zipCode;
           }
-          const addressCustomer = this.transaction.data.customer;
           this.transaction.data.billingInformation = {};
           this.transaction.data.billingInformation.billDeliveryAddress = this.transaction.data.customer;
           // verify Prepaid Ident
@@ -101,7 +99,6 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
                   this.pageLoadingService.closeLoading();
                   this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_PAYMENT_DETAIL_PAGE]);
                 } else {
-                  const idCardType = this.transaction.data.customer.idCardType;
                   this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากบัตรประชาชนหมดอายุ');
                 }
               } else {
@@ -111,43 +108,20 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
                   if (simCard.chargeType === 'Pre-paid') {
                     this.pageLoadingService.closeLoading();
                     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
-                    // this.createDeviceOrderBestBuyService.createAddToCartTrasaction(this.transaction, this.priceOption)
-                    // .then((transaction) => {
-                    //   this.transaction = transaction;
-                    //   this.pageLoadingService.closeLoading();
-                    //   this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_PROFILE_PAGE]);
-                    // });
                   } else {
                     this.pageLoadingService.closeLoading();
                     this.alertService.error('ไม่สามารถทำรายการได้ เบอร์รายเดือน ข้อมูลการแสดงตนไม่ถูกต้อง');
                   }
                 } else {
                   this.pageLoadingService.closeLoading();
-                  const idCardType = this.transaction.data.customer.idCardType;
                   this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากบัตรประชาชนหมดอายุ');
                 }
               }
             });
-        });
-      });
-    });
-    // .catch((resp: any) => {
-    //   const error = resp.error || [];
-    //   console.log(resp);
-
-    //   if (error && error.errors.length > 0) {
-    //     this.alertService.notify({
-    //       type: 'error',
-    //       html: error.errors.map((err) => {
-    //         return '<li class="text-left">' + err + '</li>';
-    //       }).join('')
-    //     }).then(() => {
-    //       this.onBack();
-    //     });
-    //   } else {
-    //     this.alertService.error(error.resultDescription);
-    //   }
-    // });
+        }).catch((e) => this.alertService.error(e));
+      }).catch((e) => this.alertService.error(e));
+    }).catch((e) => this.alertService.error(e))
+    .then(() => this.pageLoadingService.closeLoading());
   }
 
   onHome(): void {

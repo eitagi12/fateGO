@@ -1,14 +1,13 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { ReadCardProfile, HomeService, PageLoadingService, TokenService, ChannelType, Utils, AlertService, ValidateCustomerIdCardComponent, KioskControls, VisualKeyboardService, ApiRequestService, } from 'mychannel-shared-libs';
+import { ReadCardProfile, HomeService, PageLoadingService, TokenService, ChannelType, Utils, AlertService, ValidateCustomerIdCardComponent, KioskControls, ApiRequestService, } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
-import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import {
   ROUTE_ORDER_NEW_REGISTER_FACE_CAPTURE_PAGE, ROUTE_ORDER_NEW_REGISTER_VERIFY_DOCUMENT_PAGE,
 } from 'src/app/order/order-new-register/constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
-import { ReserveMobileService, SelectMobileNumberRandom } from 'src/app/order/order-shared/services/reserve-mobile.service';
-import { request } from 'https';
+import { ReserveMobileService } from 'src/app/order/order-shared/services/reserve-mobile.service';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
@@ -39,8 +38,7 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
     private reserveMobileService: ReserveMobileService,
-    private visualKeyboardService: VisualKeyboardService,
-    private translation: TranslateService
+    private translation: TranslateService,
   ) {
     this.transaction = this.transactionService.load();
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
@@ -78,10 +76,6 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
     return this.progressReadCard > 0 && this.progressReadCard < 100 ? true : false;
   }
 
-  isRunOnKiosk(): boolean {
-    return this.visualKeyboardService.checkRunOnKiosk();
-  }
-
   onHome(): void {
     if (this.validateCustomerIdcard && this.validateCustomerIdcard.koiskApiFn) {
       this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
@@ -97,8 +91,8 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
   }
 
   onNext(): void {
+    this.transaction.data.action = TransactionAction.READ_CARD;
     this.pageLoadingService.openLoading();
-
     this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
       .then((zipCode: string) => {
         return this.http.get('/api/customerportal/validate-customer-new-register', {

@@ -113,7 +113,9 @@
                   ฿ {{ priceOption?.trade?.promotionPrice | number }}
                 </span>
               </p>
-
+              <small class="text-muted">
+                (ชำระโดย {{ summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) }})
+              </small>
               <!-- ค่าแพ็กเกจบริการล่วงหน้า -->
               <p *ngIf="(+priceOption?.trade?.advancePay?.amount) > 0">
                 <i class="fa fa-circle mr-3 text-light-green"></i>
@@ -122,6 +124,9 @@
                   ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
                 </span>
               </p>
+              <small class="text-muted" *ngIf="(+priceOption?.trade?.advancePay?.amount) > 0">
+                (ชำระโดย {{ summaryPageService.descriptionPayment(transaction?.data?.advancePayment) }})
+              </small>
             </ng-container>
 
             <!-- ค่าเครื่องและค่าแพ็กเกจล่วงหน้า -->
@@ -136,6 +141,9 @@
                   +priceOption?.trade?.advancePay?.amount
                   ]) | number }}</span>
               </p>
+              <small class="text-muted">
+                (ชำระโดย {{ summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) }})
+              </small>
             </ng-container>
 
             <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">

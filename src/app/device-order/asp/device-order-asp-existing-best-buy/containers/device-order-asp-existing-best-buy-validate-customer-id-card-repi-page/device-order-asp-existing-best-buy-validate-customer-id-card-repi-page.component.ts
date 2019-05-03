@@ -8,9 +8,8 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { ROUTE_DEVICE_ORDER_ASP_BEST_BUY_VALIDATE_CUSTOMER_REPI_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_PROFILE_PAGE } from '../../constants/route-path.constant';
-import { CustomerInfoService } from '../../services/customer-info.service';
-import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { Subscription } from 'rxjs';
+import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
 
 @Component({
   selector: 'app-device-order-asp-existing-best-buy-validate-customer-id-card-repi-page',
@@ -171,30 +170,35 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardRepiPageComponen
     this.transactionService.update(this.transaction);
   }
 
-  getRequestAddDeviceSellingCart(): any {
-    const productStock = this.priceOption.productStock;
-    const productDetail = this.priceOption.productDetail;
-    const customer = this.transaction.data.customer;
-    const preBooking: Prebooking = this.transaction.data.preBooking;
-    return {
-      soCompany: productStock.company || 'AWN',
-      locationSource: this.user.locationCode,
-      locationReceipt: this.user.locationCode,
-      productType: productDetail.productType || 'DEVICE',
-      productSubType: productDetail.productSubType || 'HANDSET',
-      brand: productDetail.brand,
-      model: productDetail.model,
-      color: productStock.color,
-      priceIncAmt: '',
-      priceDiscountAmt: '',
-      grandTotalAmt: '',
-      userId: this.user.username,
-      cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
-      preBookingNo: preBooking ? preBooking.preBookingNo : '',
-      depositAmt: preBooking ? preBooking.depositAmt : '',
-      reserveNo: preBooking ? preBooking.reserveNo : ''
-    };
-  }
+  // getRequestAddDeviceSellingCart(): any {
+  //   const productStock = this.priceOption.productStock;
+  //   const productDetail = this.priceOption.productDetail;
+  //   const customer = this.transaction.data.customer;
+  //   const preBooking: Prebooking = this.transaction.data.preBooking;
+  //   let subStock;
+  //   if (preBooking && preBooking.preBookingNo) {
+  //     subStock = 'PRE';
+  //   }
+  //   return {
+  //     soCompany: productStock.company || 'AWN',
+  //     locationSource: this.user.locationCode,
+  //     locationReceipt: this.user.locationCode,
+  //     productType: productDetail.productType || 'DEVICE',
+  //     productSubType: productDetail.productSubType || 'HANDSET',
+  //     brand: productDetail.brand,
+  //     model: productDetail.model,
+  //     color: productStock.color,
+  //     priceIncAmt: '',
+  //     priceDiscountAmt: '',
+  //     grandTotalAmt: '',
+  //     userId: this.user.username,
+  //     cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
+  //     preBookingNo: preBooking ? preBooking.preBookingNo : '',
+  //     depositAmt: preBooking ? preBooking.depositAmt : '',
+  //     reserveNo: preBooking ? preBooking.reserveNo : '',
+  //     subStockDestination: subStock
+  //   };
+  // }
 
   readCardflowPC(): void {
     this.readCardSubscription = this.readCardService.onReadCard().subscribe((readCard: ReadCard) => {

@@ -130,8 +130,6 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
           // delete this.transaction.data.billingInformation.billCycle;
           delete this.transaction.data.billingInformation.billCycleData;
           const simCard = this.transaction.data.simCard;
-          // tslint:disable-next-line:no-shadowed-variable
-          const billingInformation = this.transaction.data.billingInformation;
           const billCycleData: any = billingInformation.billCycleData || {};
 
           this.billingInfo.billingMethod.text = null;

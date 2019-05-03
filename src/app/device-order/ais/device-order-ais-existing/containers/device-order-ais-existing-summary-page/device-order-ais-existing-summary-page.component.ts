@@ -12,6 +12,7 @@ import { ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_EXISTING_ECONTRACT,
   ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE
 } from 'src/app/device-order/ais/device-order-ais-existing/constants/route-path.constant';
+import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-summary-page',
@@ -39,6 +40,7 @@ export class DeviceOrderAisExistingSummaryPageComponent implements OnInit {
     private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,
     private modalService: BsModalService,
+    public summaryPageService: SummaryPageService,
     private utils: Utils
   ) {
     this.priceOption = this.priceOptionService.load();
@@ -67,6 +69,7 @@ export class DeviceOrderAisExistingSummaryPageComponent implements OnInit {
   onBack(): void {
     if (this.transaction.data && this.transaction.data.mobileCarePackage) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE]);
+
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE]);
     }
@@ -90,5 +93,4 @@ export class DeviceOrderAisExistingSummaryPageComponent implements OnInit {
       return prev + curr;
     }, 0);
   }
-
 }

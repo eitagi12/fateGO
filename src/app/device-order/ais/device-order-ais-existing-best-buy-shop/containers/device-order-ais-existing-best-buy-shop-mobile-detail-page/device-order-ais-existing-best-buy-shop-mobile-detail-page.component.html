@@ -1,0 +1,24 @@
+<div class="mc-flex">
+  <mc-header title="รายการสินค้า">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <div class="mb-3 mt-3">
+      <mc-shopping-cart *ngIf="shoppingCart" [shoppingCart]=shoppingCart></mc-shopping-cart>
+      <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
+      <div class="container-fluid">
+        <mc-mobile-info title="ข้อมูลลูกค้า" [mobileInfo]=mobileInfo></mc-mobile-info>
+      </div>
+    </div>
+  </div>
+
+  <mc-footer>
+    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button class="btn btn-success" (click)="onNext()">NEXT</button>
+  </mc-footer>
+</div>

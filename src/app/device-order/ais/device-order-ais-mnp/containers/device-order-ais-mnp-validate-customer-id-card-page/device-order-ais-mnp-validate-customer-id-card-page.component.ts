@@ -115,7 +115,7 @@ export class DeviceOrderAisMnpValidateCustomerIdCardPageComponent implements OnI
     this.pageLoadingService.openLoading();
     // มี auto next ทำให้ create transaction ช้ากว่า read card
     // this.returnStock().then(() => {
-
+    let isValidate = true;
     this.createTransaction();
     this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
       .then((zipCode: string) => {
@@ -132,7 +132,13 @@ export class DeviceOrderAisMnpValidateCustomerIdCardPageComponent implements OnI
               billCycle: data.billCycle,
               zipCode: zipCode
             };
-          }).catch(() => {
+          }).catch((exception: any) => {
+            if (exception && exception.error && exception.error.errors) {
+              const errors = exception.error.errors;
+              this.alertService.error(errors[0] + '<br>' + errors[1]);
+              isValidate = false;
+              return;
+            }
             return { zipCode: zipCode };
           });
       })
@@ -147,24 +153,29 @@ export class DeviceOrderAisMnpValidateCustomerIdCardPageComponent implements OnI
             };
           });
       }).then((billingInformation: any) => {
-        this.transaction.data.billingInformation = billingInformation;
+        if (!isValidate) {
+          return;
+        } else {
+          this.transaction.data.billingInformation = billingInformation;
+          return this.conditionIdentityValid()
+            .then(() => {
+              return this.http.post(
+                '/api/salesportal/add-device-selling-cart',
+                this.getRequestAddDeviceSellingCart()
+              ).toPromise()
+                .then((resp: any) => resp.data.soId);
+            })
+            .then((soId: string) => {
+              this.transaction.data.order = { soId: soId };
 
-        return this.conditionIdentityValid()
-          .then(() => {
-            return this.http.post(
-              '/api/salesportal/add-device-selling-cart',
-              this.getRequestAddDeviceSellingCart()
-            ).toPromise()
-              .then((resp: any) => resp.data.soId);
-          })
-          .then((soId: string) => {
-            this.transaction.data.order = { soId: soId };
-
-            return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-          })
-          .then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_CUSTOMER_INFO_PAGE]));
-
-      }).then(() => this.pageLoadingService.closeLoading());
+              return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+            })
+            .then(() => {
+              this.pageLoadingService.closeLoading();
+              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_CUSTOMER_INFO_PAGE]);
+            });
+        }
+      });
 
     // });
   }

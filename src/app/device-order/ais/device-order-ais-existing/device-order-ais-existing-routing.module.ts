@@ -20,13 +20,13 @@ import { DeviceOrderAisExistingAggregatePageComponent } from './containers/devic
 import { DeviceOrderAisExistingQueuePageComponent } from './containers/device-order-ais-existing-queue-page/device-order-ais-existing-queue-page.component';
 import { DeviceOrderAisExistingQrCodeSummaryPageComponent } from './containers/device-order-ais-existing-qr-code-summary-page/device-order-ais-existing-qr-code-summary-page.component';
 import { DeviceOrderAisExistingQrCodeGeneratorPageComponent } from './containers/device-order-ais-existing-qr-code-generator-page/device-order-ais-existing-qr-code-generator-page.component';
-import { DeviceOrderAisExistingQrCodeErrorPageComponent } from './containers/device-order-ais-existing-qr-code-error-page/device-order-ais-existing-qr-code-error-page.component';
 import { DeviceOrderAisExistingQrCodeQueuePageComponent } from './containers/device-order-ais-existing-qr-code-queue-page/device-order-ais-existing-qr-code-queue-page.component';
 import { DeviceOrderAisExistingOneLovePageComponent } from './containers/device-order-ais-existing-one-love-page/device-order-ais-existing-one-love-page.component';
 import { DeviceOrderAisExistingMergeBillingPageComponent } from './containers/device-order-ais-existing-merge-billing-page/device-order-ais-existing-merge-billing-page.component';
 import { DeviceOrderAisExistingEapplicationPageComponent } from './containers/device-order-ais-existing-eapplication-page/device-order-ais-existing-eapplication-page.component';
 import { DeviceOrderAisExistingEbillingAddressPageComponent } from './containers/device-order-ais-existing-ebilling-address-page/device-order-ais-existing-ebilling-address-page.component';
 import { DeviceOrderAisExistingEcontractPageComponent } from './containers/device-order-ais-existing-econtract-page/device-order-ais-existing-econtract-page.component';
+import { DeviceOrderAisExistingNonPackagePageComponent } from './containers/device-order-ais-existing-non-package-page/device-order-ais-existing-non-package-page.component';
 
 const routes: Routes = [
   {
@@ -48,6 +48,10 @@ const routes: Routes = [
   {
     path: 'eligible-mobile',
     component: DeviceOrderAisExistingEligibleMobilePageComponent
+  },
+  {
+    path: 'non-package',
+    component: DeviceOrderAisExistingNonPackagePageComponent
   },
   {
     path: 'change-package',
@@ -112,10 +116,6 @@ const routes: Routes = [
   {
     path: 'qr-code-queue',
     component: DeviceOrderAisExistingQrCodeQueuePageComponent
-  },
-  {
-    path: 'qr-code-error',
-    component: DeviceOrderAisExistingQrCodeErrorPageComponent
   },
   {
     path: 'one-love',

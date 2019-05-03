@@ -51,11 +51,7 @@ export class OrderMnpValidateCustomerPageComponent implements OnInit, OnDestroy 
   }
 
   progressDoing(): boolean {
-    return this.progressReadCard > 0 &&  this.progressReadCard < 100 ? true : false;
-  }
-
-  isRunOnKiosk(): boolean {
-    return this.visualKeyboardService.checkRunOnKiosk();
+    return this.progressReadCard > 0 && this.progressReadCard < 100 ? true : false;
   }
 
   onReadCard(): void {
@@ -119,5 +115,4 @@ export class OrderMnpValidateCustomerPageComponent implements OnInit, OnDestroy 
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }
-
 }

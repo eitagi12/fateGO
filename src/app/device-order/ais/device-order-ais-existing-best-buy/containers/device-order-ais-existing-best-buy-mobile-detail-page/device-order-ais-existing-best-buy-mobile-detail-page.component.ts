@@ -98,18 +98,18 @@ export class DeviceOrderAisExistingBestBuyMobileDetailPageComponent implements O
   serviceYearWording(year: string, month: string, day: string): string {
     let serviceYearWording = '';
     if (year) {
-      serviceYearWording = `${year || ''} ปี `;
+      serviceYearWording = `${year || ''} ปี`;
     }
 
     if (month) {
-      serviceYearWording += `${month} เดือน`;
+      serviceYearWording += ` ${month} เดือน`;
     }
 
     if (day) {
-      serviceYearWording += `${day} วัน`;
+      serviceYearWording += ` ${day} วัน`;
     }
 
-    return serviceYearWording;
+    return serviceYearWording.trim();
   }
 
   mapBillingSystem(billingSystem: string, chargeType: string): string {

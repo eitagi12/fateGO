@@ -58,10 +58,11 @@ export interface TransactionData {
   advancePayment?: Payment;
   receiptInfo?: ReceiptInfo;
   queue?: Queue;
-  mpay_payment?: any;
   preBooking?: Prebooking;
   discount?: Discount;
   contract?: Condition;
+  promotionsShelves?: PromotionsShelves;
+  contractFirstPack?: ContractFirstPack;
   // MPAY
   mpayPayment?: QrCodePrePostMpayModel;
   status?: Status;
@@ -72,6 +73,13 @@ export interface Condition {
   conditionCode: string;
   conditionName?: string;
   conditionText?: string;
+}
+
+export interface ContractFirstPack {
+  firstPackage?: number;
+  inPackage?: string[];
+  initialPackage?: number;
+  minPrice?: number;
 }
 
 export interface Payment {
@@ -181,6 +189,10 @@ export interface MainPackage {
 }
 
 export interface CurrentPackage {
+  [key: string]: any;
+}
+
+export interface PromotionsShelves {
   [key: string]: any;
 }
 
@@ -372,6 +384,7 @@ export interface ExistingMobileCare {
   integrationName?: string;
   flagMain?: string;
   handSet?: HandSetMobileCare;
+  changeMobileCareFlag: boolean;
 }
 
 export interface HandSetMobileCare {

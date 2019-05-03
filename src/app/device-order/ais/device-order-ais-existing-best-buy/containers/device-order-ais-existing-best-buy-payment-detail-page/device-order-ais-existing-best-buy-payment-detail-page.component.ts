@@ -248,4 +248,10 @@ export class DeviceOrderAisExistingBestBuyPaymentDetailPageComponent implements 
     });
   }
 
+  summary(amount: number[]): number {
+    return amount.reduce((prev, curr) => {
+      return prev + curr;
+    }, 0);
+  }
+
 }

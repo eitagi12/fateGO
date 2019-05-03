@@ -246,4 +246,10 @@ export class DeviceOrderAspExistingBestBuyPaymentDetailPageComponent implements 
       this.transaction.data.discount = { type: observer.paymentType };
     });
   }
+
+  summary(amount: number[]): number {
+    return amount.reduce((prev, curr) => {
+      return prev + curr;
+    }, 0);
+  }
 }

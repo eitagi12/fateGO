@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, ReadCardProfile, PageLoadingService, ApiRequestService, User, AlertService, ChannelType, TokenService, Utils, ValidateCustomerIdCardComponent, KioskControls, VisualKeyboardService } from 'mychannel-shared-libs';
+import { HomeService, ReadCardProfile, PageLoadingService, ApiRequestService, User, AlertService, ChannelType, TokenService, Utils, ValidateCustomerIdCardComponent, KioskControls } from 'mychannel-shared-libs';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import {
   ROUTE_ORDER_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE,
@@ -38,22 +38,13 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
     private utils: Utils,
-    private visualKeyboardService: VisualKeyboardService,
-    public translation: TranslateService
+    public translation: TranslateService,
   ) {
     this.transaction = this.transactionService.load();
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
-
-    this.homeService.callback = () => {
-      if (this.validateCustomerIdcard && this.validateCustomerIdcard.koiskApiFn) {
-        this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
-      }
-      window.location.href = '/smart-shop';
-    };
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void { }
 
   onError(valid: boolean): void {
     this.readCardValid = valid;
@@ -81,22 +72,15 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
   }
 
   progressDoing(): boolean {
-    return this.progressReadCard > 0 &&  this.progressReadCard < 100 ? true : false;
-  }
-
-  isRunOnKiosk(): boolean {
-    return this.visualKeyboardService.checkRunOnKiosk();
+    return this.progressReadCard > 0 && this.progressReadCard < 100 ? true : false;
   }
 
   onBack(): void {
-    if (this.validateCustomerIdcard.koiskApiFn) {
-      this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
-    }
-    this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE]);
+    this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_PAGE]);
   }
 
   onNext(): void {
-    this.transaction.data.action =  TransactionAction.READ_CARD;
+    this.transaction.data.action = TransactionAction.READ_CARD;
     this.pageLoadingService.openLoading();
     this.http.get('/api/customerportal/validate-customer-pre-to-post', {
       params: {
@@ -147,7 +131,6 @@ export class OrderPreToPostValidateCustomerIdCardPageComponent implements OnInit
       })
       .catch((resp: any) => {
         const error = resp.error || [];
-
         if (error && error.errors && error.errors.length > 0) {
           this.alertService.notify({
             type: 'error',

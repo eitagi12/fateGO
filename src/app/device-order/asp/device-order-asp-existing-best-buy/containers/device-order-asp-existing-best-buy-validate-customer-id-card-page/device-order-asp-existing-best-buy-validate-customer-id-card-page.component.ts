@@ -7,11 +7,10 @@ import { Transaction, Customer, Prebooking } from 'src/app/shared/models/transac
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_VALIDATE_CUSTOMER_PAGE } from '../../constants/route-path.constant';
-import { CustomerInfoService } from '../../services/customer-info.service';
 import { HttpClient } from '@angular/common/http';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
-import { WIZARD_DEVICE_ORDER_ASP, WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { Subscription } from 'rxjs';
+import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
 
 @Component({
   selector: 'app-device-order-asp-existing-best-buy-validate-customer-id-card-page',
@@ -145,6 +144,10 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardPageComponent im
     const productDetail = this.priceOption.productDetail;
     const customer = this.transaction.data.customer;
     const preBooking: Prebooking = this.transaction.data.preBooking;
+    let subStock;
+    if (preBooking && preBooking.preBookingNo) {
+      subStock = 'PRE';
+    }
     return {
       soCompany: productStock.company || 'AWN',
       locationSource: this.user.locationCode,
@@ -161,7 +164,8 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerIdCardPageComponent im
       cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
       preBookingNo: preBooking ? preBooking.preBookingNo : '',
       depositAmt: preBooking ? preBooking.depositAmt : '',
-      reserveNo: preBooking ? preBooking.reserveNo : ''
+      reserveNo: preBooking ? preBooking.reserveNo : '',
+      subStockDestination: subStock
     };
   }
 

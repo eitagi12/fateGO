@@ -11,11 +11,11 @@ import { WIZARD_DEVICE_ORDER_AIS, WIZARD_DEVICE_ORDER_ASP } from 'src/app/device
 import { LocalStorageService } from 'ngx-store';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { ROUTE_DEVICE_ORDER_ASP_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_DETAIL_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_ASP_BEST_BUY_ELIGIBLE_MOBILE_PAGE } from '../../constants/route-path.constant';
-import { CustomerInfoService } from '../../services/customer-info.service';
-import { PrivilegeService } from '../../services/privilege.service';
 import { HttpClient } from '@angular/common/http';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { debounceTime } from 'rxjs/operators';
+import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
+import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
 
 @Component({
   selector: 'app-device-order-asp-existing-best-buy-validate-customer-page',
@@ -315,6 +315,10 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
     const customer = this.transaction.data.customer;
     const trade = this.priceOption.trade;
     const preBooking: Prebooking = this.transaction.data.preBooking;
+    let subStock;
+    if (preBooking && preBooking.preBookingNo) {
+      subStock = 'PRE';
+    }
     return {
       soCompany: productStock.company || 'AWN',
       locationSource: this.user.locationCode,
@@ -331,7 +335,8 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
       cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
       preBookingNo: preBooking ? preBooking.preBookingNo : '',
       depositAmt: preBooking ? preBooking.depositAmt : '',
-      reserveNo: preBooking ? preBooking.reserveNo : ''
+      reserveNo: preBooking ? preBooking.reserveNo : '',
+      subStockDestination: subStock
     };
   }
 

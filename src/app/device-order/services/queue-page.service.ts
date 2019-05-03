@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TokenService } from 'mychannel-shared-libs';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, Payment, Prebooking, Customer, Queue } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { HttpClient } from '@angular/common/http';
 
@@ -34,6 +34,8 @@ export class QueuePageService {
   private readonly SPACE: string = ' ';
   private readonly NEW_LINE: string = '\n';
   private readonly COMMA: string = ',';
+  private readonly PROMPT_PAY_PAYMENT: string = '[PB]';
+  private readonly RABBIT_LINE_PAY_PAYMENT: string = '[RL]';
 
   constructor(
     private http: HttpClient,
@@ -55,6 +57,7 @@ export class QueuePageService {
   private getRequestCreateDeviceSellingOrder(transaction: Transaction, priceOption: PriceOption): any {
     const user = this.tokenService.getUser();
     const productStock = priceOption.productStock;
+    const productDetail = priceOption.productDetail;
     const trade = priceOption.trade;
     const transactionData = transaction.data;
 
@@ -65,60 +68,69 @@ export class QueuePageService {
     const queue: any = transactionData.queue || {};
     const seller = transactionData.seller || {};
     const payment = transactionData.payment;
+    const prebooking: Prebooking = transactionData.preBooking;
+    const mpayPayment: any = transactionData.mpayPayment || {};
 
     const data: any = {
-      userId: user.username,
+      soId: order.soId,
+      soCompany: productStock.company,
       locationSource: user.locationCode,
       locationReceipt: user.locationCode,
-      soCompany: productStock.company,
-      productType: productStock.productType,
-      productSubType: productStock.productSubType,
-      brand: productStock.brand,
-      model: productStock.model,
-      color: productStock.color,
+      productType: productStock.productType || productDetail.productType || 'DEVICE',
+      productSubType: productStock.productSubType || productDetail.productSubtype || 'HANDSET',
+      brand: productStock.brand || productDetail.brand,
+      model: productStock.model || productDetail.model,
+      color: productStock.color || productStock.colorName,
+      matCode: '',
       priceIncAmt: (+trade.normalPrice || 0).toFixed(2),
-      tradeNo: trade.tradeNo || '',
-      ussdCode: trade.ussdCode || '',
       priceDiscountAmt: (+discount.amount || 0).toFixed(2),
-      grandTotalAmt: this.getGrandTotalAmt(trade),
-      soId: order.soId,
+      grandTotalAmt: (+this.getGrandTotalAmt(trade, prebooking)).toFixed(2),
+      userId: user.username,
       saleCode: this.tokenService.isAisUser() ? (seller.sellerNo || '') : (seller.sellerNo || user.ascCode),
       queueNo: queue.queueNo || '',
-      cusNameOrder: `${customer.titleName || ''} ${customer.firstName || ''} ${customer.lastName || ''}`.trim(),
+      cusNameOrder: `${customer.titleName || ''} ${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
       taxCardId: customer.idCardNo || '',
+      cusMobileNoOrder: simCard.mobileNo || '',
       customerAddress: {
         addrNo: customer.homeNo,
-        amphur: customer.amphur,
-        buildingName: customer.buildingName,
-        country: 'ประเทศไทย',
-        floor: customer.floor,
-        moo: customer.moo,
-        mooban: customer.mooBan,
-        postCode: customer.zipCode,
-        province: customer.province.replace(/มหานคร$/, ''),
         room: customer.room,
+        buildingName: customer.buildingName,
+        moo: customer.moo,
+        floor: customer.floor,
         soi: customer.soi,
         streetName: customer.street,
-        tumbon: customer.tumbol
+        mooban: customer.mooBan,
+        tumbon: customer.tumbol,
+        amphur: customer.amphur,
+        province: (customer.province || '').replace(/มหานคร$/, ''),
+        country: 'ประเทศไทย',
+        postCode: customer.zipCode
       },
-      cusMobileNoOrder: simCard.mobileNo || '',
-      returnCode: simCard.privilegeCode || '4GEYYY',
-      matCode: '',
+      tradeNo: trade.tradeNo || '',
+      ussdCode: trade.ussdCode || '',
+      returnCode: simCard.privilegeCode || customer.privilegeCode || '4GEYYY',
       cashBackFlg: '',
-      matCodeFreeGoods: '',
       matAirTime: trade.advancePay ? trade.advancePay.matAirtime : '',
+      matCodeFreeGoods: '',
       paymentRemark: this.getOrderRemark(transaction, priceOption),
-      installmentTerm: 0,
-      installmentRate: 0,
       mobileAisFlg: 'Y',
-      paymentMethod: '',
-      bankCode: '',
-      tradeFreeGoodsId: '',
+      paymentMethod: this.getPaymentMethod(transaction, priceOption),
+      bankCode: payment && payment.paymentBank ? payment.paymentBank.abb : '',
       matairtimeId: '',
-      tradeDiscountId: '',
+      tradeDiscountId: trade.discount ? trade.discount.tradeDiscountId : '',
+      tradeAirtimeId: trade.advancePay ? trade.advancePay.tradeAirtimeId : '',
       focCode: '',
-      bankAbbr: ''
+      bankAbbr: payment && payment.paymentBank ? payment.paymentBank.abb : '',
+      preBookingNo: prebooking ? prebooking.preBookingNo : '',
+      depositAmt: prebooking ? prebooking.depositAmt : '',
+      qrTransId: mpayPayment ? mpayPayment.tranId : '',
+      qrAmt: this.getQRAmt(trade, transaction)
     };
+
+    // freeGoods
+    if (trade.freeGoods && trade.freeGoods.length > 0) {
+      data.tradeFreeGoodsId = trade.freeGoods[0] ? trade.freeGoods[0].tradeFreegoodsId : '';
+    }
 
     // ผ่อนชำระ
     if (payment && payment.paymentMethod) {
@@ -131,7 +143,7 @@ export class QueuePageService {
 
   private getOrderRemark(transaction: Transaction, priceOption: PriceOption): string {
     const onTopPackage = transaction.data.onTopPackage || {};
-    const airTime: string = this.getAirTime(priceOption.trade);
+    const airTime: string = this.getAirTime(priceOption.trade, transaction);
     const installment = this.getInstallment(transaction, priceOption);
     const information = this.getInformation(transaction, priceOption);
 
@@ -141,16 +153,67 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
 `;
   }
 
-  private getAirTime(trade: any): string {
+  private getQRAmt(trade: any, transaction: Transaction): any {
+    const payment: Payment = transaction.data.payment;
+    if (trade && payment.paymentType === 'QR_CODE') {
+      const qrAmt: number = trade.normalPrice - trade.discount.amount;
+      return qrAmt.toFixed(2);
+    } else {
+      return undefined;
+    }
+  }
+
+  private getAirTime(trade: any, transaction: Transaction): string {
     let message = '';
 
-    if (trade && trade.advancePay) {
-      const advancePay = trade.advancePay;
-      if (advancePay.installmentFlag !== 'Y' && +advancePay.amount > 0) {
-        message = `${this.AIR_TIME}${this.CREDIT_CARD_PAYMENT}`;
+    if (!trade || !trade.advancePay) {
+      return message;
+    }
+
+    const advancePay = trade.advancePay || {};
+    if (advancePay.installmentFlag === 'Y' || +advancePay.amount <= 0) { // ผ่อนรวม
+      return message;
+    }
+
+    message = `${this.AIR_TIME}`;
+    const advancePayment: any = transaction.data.advancePayment || {};
+    if (advancePayment.paymentType === 'QR_CODE') {
+      if (advancePayment.paymentQrCodeType === 'THAI_QR') {
+        message += `${this.PROMPT_PAY_PAYMENT}`;
+      } else {
+        message += `${this.RABBIT_LINE_PAY_PAYMENT}`;
+      }
+    } else {
+      if (advancePayment.paymentType === 'DEBIT') {
+        message += `${this.CASH_PAYMENT}`;
+      } else {
+        message += `${this.CREDIT_CARD_PAYMENT}${this.COMMA}${this.SPACE}`;
+        message += `${this.BANK}${advancePayment.abb || ''}`;
       }
     }
     return message;
+  }
+
+  private getPaymentMethod(transaction: Transaction, priceOption: PriceOption): string {
+    const payment: Payment = transaction.data.payment;
+    const trade: any = priceOption.trade;
+    let tradePayment: any;
+    if ((trade.payment && trade.payment.length > 0)) {
+      tradePayment = priceOption.trade.payment[0];
+    } else if ((trade.payments && trade.payments.length > 0)) {
+      tradePayment = priceOption.trade.payments[0];
+    } else {
+      tradePayment = {};
+    }
+    if (payment.paymentType === 'QR_CODE') {
+      if (payment.paymentQrCodeType === 'THAI_QR') {
+        return 'PB';
+      } else {
+        return 'RL';
+      }
+    } else {
+      return tradePayment.method;
+    }
   }
 
   private getInstallment(transaction: Transaction, priceOption: PriceOption): string {
@@ -165,17 +228,32 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
     } else {
       message += this.DEVICE;
     }
-    if (payment.paymentForm === 'INSTALLMENT') { // ผ่อนชำระ
-      message += this.CREDIT_CARD_PAYMENT + this.COMMA + this.SPACE;
-      message += this.BANK + payment.paymentMethod.abb + this.COMMA + this.SPACE;
-      message += this.INSTALLMENT + payment.paymentMethod.percentage + '%' + this.SPACE + payment.paymentMethod.month;
-    } else { // ชำระเต็มจำนวน
-      message += this.CASH_PAYMENT + this.COMMA + this.SPACE;
-      message += this.BANK + this.COMMA + this.SPACE;
-      message += this.INSTALLMENT + '0%' + this.SPACE + '0';
+
+    if (payment.paymentType === 'QR_CODE') {
+      if (payment.paymentQrCodeType === 'THAI_QR') {
+        message += `${this.PROMPT_PAY_PAYMENT}`;
+      } else {
+        message += `${this.RABBIT_LINE_PAY_PAYMENT}`;
+      }
+      message += `${this.COMMA}${this.SPACE}`;
+    } else {
+      // ใช้ได้ทั้งบัตร credit, debit
+      if (payment.paymentForm === 'INSTALLMENT') { // ผ่อนชำระ
+        message += `${this.CREDIT_CARD_PAYMENT}${this.COMMA}${this.SPACE}`;
+        message += `${this.BANK}${payment.paymentMethod.abb || payment.paymentBank.abb}${this.COMMA}${this.SPACE}`;
+        message += `${this.INSTALLMENT}${payment.paymentMethod.percentage}%${this.SPACE}${payment.paymentMethod.month}`;
+        message += `เดือน${this.COMMA}${this.SPACE}`;
+      } else { // ชำระเต็มจำนวน
+        if (payment.paymentType === 'DEBIT') {
+          message += `${this.CASH_PAYMENT}${this.COMMA}${this.SPACE}`;
+        } else {
+          message += `${this.CREDIT_CARD_PAYMENT}${this.COMMA}${this.SPACE}`;
+          message += `${this.BANK}${payment.paymentMethod.abb || payment.paymentBank.abb}${this.COMMA}${this.SPACE}`;
+          // message += `${this.INSTALLMENT}0%${this.SPACE}0`;
+        }
+      }
     }
-    message += 'เดือน' + this.COMMA + this.SPACE;
-    message += this.TRADE_NO + trade.tradeNo;
+    message += `${this.TRADE_NO}${trade.tradeNo}`;
     return message;
   }
 
@@ -185,9 +263,11 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
     const customerGroup = priceOption.customerGroup;
     const privilege = priceOption.privilege;
     const trade = priceOption.trade;
-    const onTopPackage = transaction.data.onTopPackage || {};
+    const mainPackage = transaction.data.mainPackage && transaction.data.mainPackage.customAttributes || {};
     const mobileCarePackage = transaction.data.mobileCarePackage || {};
     const simCard = transaction.data.simCard;
+    const customer: any = transaction.data.customer || {};
+    const queue: any = transaction.data.queue || {};
 
     let customerGroupName = '';
     if ('MC001' === customerGroup.code) {
@@ -199,22 +279,23 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
 
     message += this.SUMMARY_POINT + this.SPACE + 0 + this.COMMA + this.SPACE;
     message += this.SUMMARY_DISCOUNT + this.SPACE + 0 + this.COMMA + this.SPACE;
-    message += this.DISCOUNT + this.SPACE + (trade.discount ? +trade.discount.amount : 0) + this.COMMA + this.SPACE;
-    message += this.RETURN_CODE + this.SPACE + (simCard.privilegeCode || '') + this.COMMA + this.SPACE;
+    message += this.DISCOUNT + this.SPACE + (trade.discount ? (+trade.discount.amount).toFixed(2) : 0.00) + this.COMMA + this.SPACE;
+    message += this.RETURN_CODE + this.SPACE + (simCard.privilegeCode || customer.privilegeCode || '') + this.COMMA + this.SPACE;
     message += this.ORDER_TYPE + this.SPACE + customerGroupName + this.COMMA + this.SPACE;
-    message += this.PRMOTION_CODE + this.SPACE + (onTopPackage.promotionCode || '') + this.COMMA + this.SPACE;
+    message += this.PRMOTION_CODE + this.SPACE + (mainPackage.promotionCode || '') + this.COMMA + this.SPACE;
     message += this.MOBILE_CARE_CODE + this.SPACE + (customAttributes.promotionCode || '') + this.COMMA + this.SPACE;
     message += this.MOBILE_CARE + this.SPACE + (customAttributes.shortNameThai || '') + this.COMMA + this.SPACE;
     message += this.PRIVILEGE_DESC + this.SPACE + (privilege.privilegeDesc || '') + this.COMMA + this.SPACE;
-    message += this.QUEUE_NUMBER + this.SPACE + trade.tradeNo;
+    message += this.QUEUE_NUMBER + this.SPACE + queue.queueNo;
     return message;
   }
 
-  private getGrandTotalAmt(trade: any): number {
+  private getGrandTotalAmt(trade: any, prebooking?: Prebooking): number {
     const normalPrice = +(+trade.normalPrice || 0).toFixed(2);
-    const discount = +(+trade.discount ? (+trade.discount.amount || 0) : 0).toFixed(2);
+    const discount = +(trade.discount ? (+trade.discount.amount || 0) : 0).toFixed(2);
     const advancePay = +(trade.advancePay ? (+trade.advancePay.amount || 0) : 0).toFixed(2);
-    return ((normalPrice + advancePay) - discount);
+    const depositAmt = +(prebooking && +prebooking.depositAmt ? (+prebooking.depositAmt || 0) : 0).toFixed(2);
+    return +(((normalPrice + advancePay) - discount) - depositAmt);
   }
 
   private getReqMinimumBalance(onTopPackage: any, mobileCarePackage: any): number { // Package only
@@ -229,5 +310,11 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
       total += +(customAttributes.priceInclVat || 0);
     }
     return total;
+  }
+
+  public checkQueueLocation(): Promise<any> {
+    return this.http.get('/api/salesportal/check-queue-location').toPromise().then((response: any) => {
+      return response && response.data ? response.data.isQueueAuto : false;
+    }).catch((e) => false);
   }
 }

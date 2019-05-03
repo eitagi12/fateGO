@@ -1,0 +1,22 @@
+export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_VALIDATE_CUSTOMER_PAGE = '/device-order/ais/best-buy-shop/validate-customer';
+export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_VALIDATE_CUSTOMER_ID_CARD_PAGE = '/device-order/ais/best-buy-shop/validate-customer-id-card';
+export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_VALIDATE_CUSTOMER_KEY_IN_PAGE = '/device-order/ais/best-buy-shop/validate-customer-key-in';
+export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_VALIDATE_CUSTOMER_REPI_PAGE = '/device-order/ais/best-buy-shop/validate-customer-repi';
+export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_VALIDATE_CUSTOMER_ID_CARD_RPI_PAGE = '/device-order/ais/best-buy-shop/validate-customer-id-card-repi';
+export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_CUSTOMER_PROFILE_PAGE = '/device-order/ais/best-buy-shop/customer-profile';
+export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_OTP_PAGE = '/device-order/ais/best-buy-shop/otp';
+export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_CAPTURE_REPI_PAGE = '/device-order/ais/best-buy-shop/id-card-capture-repi';
+export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_CUSTOMER_INFO_PAGE = '/device-order/ais/best-buy-shop/customer-info';
+export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_MOBILE_DETAIL_PAGE = '/device-order/ais/best-buy-shop/mobile-detail';
+export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_ELIGIBLE_MOBILE_PAGE = '/device-order/ais/best-buy-shop/eligible-mobile';
+export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_PAYMENT_DETAIL_PAGE = '/device-order/ais/best-buy-shop/payment-detail';
+export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_MOBILE_CARE_AVAILABLE_PAGE = '/device-order/ais/best-buy-shop/mobile-care-available';
+export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_MOBILE_CARE_PAGE = '/device-order/ais/best-buy-shop/mobile-care';
+export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_SUMMARY_PAGE = '/device-order/ais/best-buy-shop/summary';
+export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_CHECK_OUT_PAGE = '/device-order/ais/best-buy-shop/check-out';
+export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_QUEUE_PAGE = '/device-order/ais/best-buy-shop/queue';
+export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_RESULT_PAGE = '/device-order/ais/best-buy-shop/result';
+
+export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_QR_CODE_SUMMARY_PAGE = '/device-order/ais/best-buy-shop/qr-code-summary';
+export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_QR_CODE_QUEUE_PAGE = '/device-order/ais/best-buy-shop/qr-code-queue';
+export const ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_QR_CODE_GENERATOR_PAGE = '/device-order/ais/best-buy-shop/qr-code-generator';

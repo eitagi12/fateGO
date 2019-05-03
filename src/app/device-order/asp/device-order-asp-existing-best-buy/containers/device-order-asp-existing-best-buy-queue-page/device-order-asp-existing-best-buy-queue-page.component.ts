@@ -46,7 +46,10 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
   }
 
   ngOnInit(): void {
-    this.isAutoGenQueue = this.user.locationCode === '1100';
+    // this.isAutoGenQueue = this.user.locationCode === '1100';
+    this.queuePageService.checkQueueLocation().then((isQueueAuto) => {
+      this.isAutoGenQueue = isQueueAuto;
+    }).then(() => this.createForm());
     this.createForm();
   }
 
@@ -56,9 +59,10 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
     });
 
     if (this.transaction.data.simCard.mobileNo) {
-      this.mobileFrom.controls.mobileNo.setValue(this.transaction.data.simCard.mobileNo);
+      this.mobileFrom.patchValue({mobileNo: this.transaction.data.simCard.mobileNo});
       this.mobileNo = this.transaction.data.simCard.mobileNo;
     }
+
     this.mobileFrom.valueChanges.subscribe((value) => {
       this.mobileNo = value.mobileNo;
     });
@@ -78,7 +82,7 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
     if (this.isAutoGenQueue) {
       this.onSendSMSQueue(this.mobileNo).then((queue) => {
         if (queue) {
-          this.transaction.data.queue = { queueNo: this.queue };
+          this.transaction.data.queue = { queueNo: queue };
           return this.http.post('/api/salesportal/create-device-selling-order',
             this.getRequestCreateOrder(this.transaction, this.priceOption))
             .toPromise()

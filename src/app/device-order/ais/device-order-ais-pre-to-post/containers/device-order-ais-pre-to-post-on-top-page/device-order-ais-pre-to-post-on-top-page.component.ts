@@ -96,8 +96,6 @@ export class DeviceOrderAisPreToPostOnTopPageComponent implements OnInit, OnDest
     this.transactionService.update(this.transaction);
   }
 
-  onTermConditions(): void { }
-
   onBack(): void {
     if (this.transaction.data.mainPackageOneLove) {
       // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ONE_LOVE_PAGE]);

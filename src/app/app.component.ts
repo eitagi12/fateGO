@@ -61,7 +61,7 @@ export class AppComponent {
       if (environment.name === 'LOCAL') {
         window.location.href = '/main-menu';
       } else {
-        window.location.href = '/smart-shop/main-menu';
+        window.location.href = '/smart-digital/main-menu';
       }
     };
   }
@@ -70,7 +70,7 @@ export class AppComponent {
     let devAccessToken = '';
     if (this.isDeveloperMode()) {
       // tslint:disable-next-line:max-line-length
-      devAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik9LU1RFU1QwMSIsInRpbWVzdGFtcCI6IjIwMTkwNDA5MDkxMSIsImxvY2F0aW9uQ29kZSI6IjEyMTMiLCJpYXQiOjE1NTQ3OTQzNjIsImV4cCI6MTg1NDc5Nzk2Mn0.ZX4T9qwZz2py-5ipa2W76bDeyzZgka1iEiUfam6nAQw';
+      devAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkRVQU5HREFUIiwidGltZXN0YW1wIjoiMjAxOTA0MDkwOTExIiwibG9jYXRpb25Db2RlIjoiMTEwMCIsImlhdCI6MTU1NDc5NDM2MiwiZXhwIjoxODU0Nzk3OTYyfQ.TcIpUtBCZgVfB5PMmR2Vao7O7NRj-Xa3ZKeljZaQ-O8';
     }
     this.tokenService.checkTokenExpired(devAccessToken);
   }

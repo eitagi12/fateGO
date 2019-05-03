@@ -59,6 +59,7 @@ export class DeviceOrderAisExistingBestBuyMobileCareAvailablePageComponent imple
   }
 
   onNext(): void {
+    this.transaction.data.existingMobileCare.changeMobileCareFlag = this.changeMobileCare;
     if (this.changeMobileCare) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_CARE_PAGE]);
     } else {

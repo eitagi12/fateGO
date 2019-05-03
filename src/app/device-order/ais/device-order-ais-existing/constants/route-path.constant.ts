@@ -21,6 +21,7 @@ export const ROUTE_DEVICE_ORDER_AIS_EXISTING_ONE_LOVE_PAGE = '/device-order/ais/
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_MERGE_BILLING_PAGE = '/device-order/ais/existing/merge-billing';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_EAPPLICATION_PAGE = '/device-order/ais/existing/eapplication';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_EBILLING_ADDRESS_PAGE = '/device-order/ais/existing/ebilling-address';
+export const ROUTE_DEVICE_ORDER_AIS_EXISTING_NON_PACKAGE_PAGE = '/device-order/ais/existing/non-package';
 
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_SUMMARY_PAGE = '/device-order/ais/existing/qr-code-summary';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_QUEUE_PAGE = '/device-order/ais/existing/qr-code-queue';

@@ -36,8 +36,7 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
     private tokenService: TokenService,
     private utils: Utils,
     private alertService: AlertService,
-    private visualKeyboardService: VisualKeyboardService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
   ) {
     this.transaction = this.transactionService.load();
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
@@ -71,11 +70,7 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
   }
 
   progressDoing(): boolean {
-    return this.progressReadCard > 0 &&  this.progressReadCard < 100 ? true : false;
-  }
-
-  isRunOnKiosk(): boolean {
-    return this.visualKeyboardService.checkRunOnKiosk();
+    return this.progressReadCard > 0 && this.progressReadCard < 100 ? true : false;
   }
 
   onHome(): void {
@@ -174,9 +169,7 @@ export class OrderMnpValidateCustomerIdCardPageComponent implements OnInit, OnDe
       return false;
     }
     if (this.utils.isIdCardExpiredDate(expireDate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ').then(() => {
-        this.onBack();
-      });
+      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ');
       return false;
     }
     return true;

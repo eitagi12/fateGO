@@ -61,38 +61,45 @@ export class CustomerInfoService {
           lastName: '',
           birthdate: '',
           gender: '',
-          caNumber: null
+          caNumber: null,
+          zipCode: zipCode || '',
         };
-
         return Promise.resolve(customer);
       });
   }
 
-  getCustomerProfileByMobileNo(mobileNo: string, idcardNo?: string): Promise<Customer> {
-    return this.http.get(`/api/customerportal/customerprofile/${mobileNo}`).toPromise()
-      .then((customer: any) => {
-        const profile = customer.data;
-        const names = profile.name.split(' ');
-        return {
-          idCardNo: idcardNo || profile.idCard || '',
-          idCardType: this.ID_CARD_CONST,
-          titleName: profile.title,
-          firstName: names[0],
-          lastName: names[1],
-          birthdate: profile.birthdate,
-          gender: ''
-        };
-      }).catch((e) => {
-        return {
-          idCardNo: idcardNo || '',
-          idCardType: this.ID_CARD_CONST,
-          titleName: '-',
-          firstName: '-',
-          lastName: '-',
-          birthdate: '-',
-          gender: ''
-        };
-      });
+  getCustomerProfileByMobileNo(mobileNo: string, idcardNo?: string): Promise<any> {
+    return this.http.get(`/api/customerportal/customerprofile/${mobileNo}`).toPromise().then((customer: any) => {
+      const profile = customer.data;
+
+      if (profile.chargeType === 'Pre-paid') {
+        if (profile.mobileStatus !== '000' && profile.mobileStatus !== 'Active'
+          && profile.mobileStatus !== '378' && profile.mobileStatus !== 'Suspend') {
+          return Promise.reject(`ไม่สามารถทำรายการได้ กรุณาตรวจสอบสถานะหมายเลข <br> (status is : ${profile.mobileStatus})`);
+        }
+      } else {
+        if (profile.mobileStatus !== '000' && profile.mobileStatus !== 'Active') {
+          return Promise.reject('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาตรวจสอบข้อมูล');
+        }
+      }
+      const names = profile.name.split(' ');
+      const mobileProfile = {
+        idCardNo: idcardNo || profile.idCard || '',
+        idCardType: this.ID_CARD_CONST,
+        titleName: profile.title,
+        firstName: names[0],
+        lastName: names[1],
+        birthdate: profile.birthdate,
+        gender: ''
+      };
+      return Promise.resolve(mobileProfile);
+    }).catch((e) => {
+      if (typeof e === 'string') {
+        return Promise.reject(e);
+      } else {
+        return Promise.reject('ไม่สามารถทำรายการได้ เลขหมายนี้ไม่ใช่ระบบ AIS');
+      }
+    });
   }
 
   verifyPrepaidIdent(idCardNo: string, mobileNo: string): Promise<boolean> {
@@ -123,11 +130,11 @@ export class CustomerInfoService {
     return this.http.get('/api/customerportal/newRegister/getAllProvinces').toPromise()
       .then((resp: any) => {
         const provinceId = (resp.data.provinces.find((prov: any) => prov.name === provinceName) || {}).id;
-          if (provinceId) {
-            return provinceId;
-          } else {
-            return Promise.reject(`ไม่พบจังหวัด ${provinceName}`);
-          }
+        if (provinceId) {
+          return provinceId;
+        } else {
+          return Promise.reject(`ไม่พบจังหวัด ${provinceName}`);
+        }
       });
   }
 
@@ -138,30 +145,30 @@ export class CustomerInfoService {
 
   private mapRequestUpdatePrepaidIdent(customer: Customer, mobileNo: string): any {
     return {
-      mobileNo: mobileNo,
-      idCardNo: customer.idCardNo,
-      idCardType: this.isReadIdCard(customer.idCardType) ? '1' : '0',
-      idCardImage: customer.imageSmartCard,
-      firstName: customer.firstName,
-      lastName: customer.lastName,
-      birthdate: customer.birthdate,
-      homeNo: customer.homeNo,
-      moo: customer.moo,
-      mooBan: customer.mooBan,
-      floor: customer.floor,
-      buildingName: customer.buildingName,
-      soi: customer.soi,
-      street: customer.street,
-      tumbol: customer.tumbol,
-      amphur: customer.amphur,
-      province: customer.province,
-      zipCode: customer.zipCode,
-      isSmartCard: this.isReadIdCard(customer.idCardType) ? 'Y' : 'N',
-      smartCardVersion: this.isReadIdCard(customer.idCardType) ? '1' : undefined
+      mobileNo: mobileNo || '-',
+      idCardNo: customer.idCardNo || '-',
+      idCardType: this.isIdCard(customer.idCardType) ? '1' : '0',
+      idCardImage: customer.imageSmartCard || customer.imageReadSmartCard,
+      firstName: customer.firstName || '-',
+      lastName: customer.lastName || '-',
+      birthdate: customer.birthdate || '01/01/1900',
+      homeNo: customer.homeNo || '-',
+      moo: customer.moo || '-',
+      mooBan: customer.mooBan || '-',
+      floor: customer.floor || '-',
+      buildingName: customer.buildingName || '-',
+      soi: customer.soi || '-',
+      street: customer.street || '-',
+      tumbol: customer.tumbol || '-',
+      amphur: customer.amphur || '-',
+      province: customer.province || '',
+      zipCode: customer.zipCode || '-',
+      isSmartCard: customer.imageReadSmartCard ? 'Y' : 'N',
+      smartCardVersion: customer.imageReadSmartCard ? '1' : undefined
     };
   }
 
-  isReadIdCard(idCardType: string): boolean {
+  private isIdCard(idCardType: string): boolean {
     return idCardType === this.ID_CARD_CONST;
   }
 }

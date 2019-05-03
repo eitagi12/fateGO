@@ -8,7 +8,6 @@ import {
 import { HttpClient } from '@angular/common/http';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { load } from '@angular/core/src/render3/instructions';
 import { NgxResource, LocalStorageService } from 'ngx-store';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
@@ -67,8 +66,8 @@ export class OrderNewRegisterEbillingAddressPageComponent implements OnInit, OnD
       this.allZipCodes = resp.data.zipcodes || [];
     });
 
-    this.http.get('/api/customerportal/newRegister/getAllProvinces'
-      , {
+    this.http.get('/api/customerportal/newRegister/getAllProvinces',
+      {
         params: {
           provinceSubType: this.translation.currentLang === 'TH' ? 'THA' : 'ENG'
         }
@@ -78,7 +77,7 @@ export class OrderNewRegisterEbillingAddressPageComponent implements OnInit, OnD
           homeNo: customer.homeNo,
           moo: customer.moo,
           mooBan: customer.mooBan,
-          room: customer.floor,
+          room: customer.room,
           floor: customer.floor,
           buildingName: customer.buildingName,
           soi: customer.soi,

@@ -69,26 +69,26 @@ export class DeviceOrderAisMnpMobileCarePageComponent implements OnInit, OnDestr
   }
 
   callService(): void {
-    let billingSystem = this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
-    const chargeType = this.transaction.data.mainPackage.customAttributes.billingSystem;
+    const billingSystem = (this.transaction.data.simCard.billingSystem === 'RTBS')
+    ? BillingSystemType.IRB : this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
+    const chargeType = this.transaction.data.simCard.chargeType;
     const endUserPrice = +this.priceOption.trade.normalPrice;
-
-    if (billingSystem === 'RTBS') {
-      billingSystem = BillingSystemType.IRB;
-    }
+    const exMobileCare = this.transaction.data.existingMobileCare;
 
     this.pageLoadingService.openLoading();
     this.mobileCareService.getMobileCare({
       packageKeyRef: MOBILE_CARE_PACKAGE_KEY_REF,
-      billingSystem: BillingSystemType.IRB
+      billingSystem: billingSystem
     }, chargeType, billingSystem, endUserPrice).then((mobileCare: any) => {
       this.mobileCare = {
-        promotions: mobileCare
+        promotions: mobileCare,
+        existingMobileCare: !!exMobileCare
       };
       if (this.mobileCare.promotions && this.mobileCare.promotions.length > 0) {
         this.mobileCare.promotions[0].active = true;
       }
+      return;
     })
-      .then(() => this.pageLoadingService.closeLoading());
+    .then(() => this.pageLoadingService.closeLoading());
   }
 }

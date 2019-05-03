@@ -1,19 +1,25 @@
+import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { Component, OnInit, OnDestroy } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { LocalStorageService } from 'ngx-store';
 import { Router } from '@angular/router';
 
-import { ApiRequestService, PageLoadingService, HomeService, Utils, AlertService, User, TokenService } from 'mychannel-shared-libs';
+import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
+import { PageLoadingService, HomeService, Utils,
+  AlertService, User, TokenService } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
-import { Transaction, TransactionType, TransactionAction, Customer, MainPromotion, Prebooking, Order } from 'src/app/shared/models/transaction.model';
-import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { AbstractControl, ValidationErrors } from '@angular/forms';
-import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
-import { LocalStorageService } from 'ngx-store';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { CustomerInfoService } from '../../services/customer-info.service';
-import { PrivilegeService } from '../../services/privilege.service';
-import { HttpClient } from '@angular/common/http';
+import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
+import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE
+} from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
+import { Transaction, TransactionType, TransactionAction,
+  Customer, MainPromotion, Prebooking, Order } from 'src/app/shared/models/transaction.model';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-validate-customer-page',
@@ -160,19 +166,6 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
             this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE]);
           }
         }
-        // this.createDeviceOrderBestBuyService.createAddToCartTrasaction(this.transaction, this.priceOption)
-        //   .then((transaction) => {
-        //     this.transaction = transaction;
-        //     this.pageLoadingService.closeLoading();
-        //     if (this.transaction.data.customer.caNumber) {
-        //       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE]);
-        //     } else {
-        //       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE]);
-        //     }
-        //   }).catch((e) => {
-        //     this.pageLoadingService.closeLoading();
-        //     this.alertService.error(e);
-        //   });
       }).then(() => this.pageLoadingService.closeLoading());
     }
   }
@@ -183,7 +176,6 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     } else {
       this.transactionService.save(this.transaction);
     }
-    // this.priceOptionService.save(this.priceOption);
   }
 
   private createTransaction(): void {
@@ -278,6 +270,10 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     const trade = this.priceOption.trade;
     const customer = this.transaction.data.customer;
     const preBooking: Prebooking = this.transaction.data.preBooking;
+    let subStock;
+    if (preBooking && preBooking.preBookingNo) {
+      subStock = 'PRE';
+    }
     return {
       soCompany: productStock.company || 'AWN',
       locationSource: this.user.locationCode,
@@ -294,7 +290,8 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
       cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
       preBookingNo: preBooking ? preBooking.preBookingNo : '',
       depositAmt: preBooking ? preBooking.depositAmt : '',
-      reserveNo: preBooking ? preBooking.reserveNo : ''
+      reserveNo: preBooking ? preBooking.reserveNo : '',
+      subStockDestination: subStock
     };
   }
 }

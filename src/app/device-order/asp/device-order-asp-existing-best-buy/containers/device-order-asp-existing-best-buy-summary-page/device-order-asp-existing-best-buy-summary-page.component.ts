@@ -97,8 +97,9 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
   }
 
   onBack(): void {
-    const mobileCare = this.transaction.data.mobileCarePackage;
-    if (mobileCare) {
+    const changeMobileCareFlag = this.transaction.data.existingMobileCare && this.transaction.data.existingMobileCare.changeMobileCareFlag
+    ? this.transaction.data.existingMobileCare.changeMobileCareFlag : true;
+    if (changeMobileCareFlag) {
       this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_CARE_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_CARE_AVAILABLE_PAGE]);
@@ -149,6 +150,7 @@ export class DeviceOrderAspExistingBestBuySummaryPageComponent implements OnInit
     });
 
     if (this.user.ascCode) {
+      this.checkSellerForm.patchValue({ checkSeller : this.user.ascCode});
       this.sellerCode = this.user.ascCode;
     }
 

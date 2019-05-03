@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DeviceOrderAisNewRegisterRoutingModule } from './device-order-ais-new-register-routing.module';
-import { DeviceOrderAisNewRegisterValidateCustomerPageComponent } from './containers/device-order-ais-new-register-validate-customer-page/device-order-ais-new-register-validate-customer-page.component';
 import { DeviceOrderAisNewRegisterValidateCustomerKeyInPageComponent } from './containers/device-order-ais-new-register-validate-customer-key-in-page/device-order-ais-new-register-validate-customer-key-in-page.component';
 import { DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent } from './containers/device-order-ais-new-register-validate-customer-id-card-page/device-order-ais-new-register-validate-customer-id-card-page.component';
 import { DeviceOrderAisNewRegisterPaymentDetailPageComponent } from './containers/device-order-ais-new-register-payment-detail-page/device-order-ais-new-register-payment-detail-page.component';
@@ -30,7 +29,6 @@ import { DeviceOrderAisNewRegisterResultPageComponent } from './containers/devic
 import { DeviceOrderAisNewRegisterQrCodeSummaryPageComponent } from './containers/device-order-ais-new-register-qr-code-summary-page/device-order-ais-new-register-qr-code-summary-page.component';
 import { DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent } from './containers/device-order-ais-new-register-qr-code-generator-page/device-order-ais-new-register-qr-code-generator-page.component';
 import { DeviceOrderAisNewRegisterQrCodeQueuePageComponent } from './containers/device-order-ais-new-register-qr-code-queue-page/device-order-ais-new-register-qr-code-queue-page.component';
-import { DeviceOrderAisNewRegisterQrCodeErrorPageComponent } from './containers/device-order-ais-new-register-qr-code-error-page/device-order-ais-new-register-qr-code-error-page.component';
 import { DeviceOrderAisNewRegisterEbillingPageComponent } from './containers/device-order-ais-new-register-ebilling-page/device-order-ais-new-register-ebilling-page.component';
 import { TranslateModule } from '@ngx-translate/core';
 
@@ -44,7 +42,6 @@ import { TranslateModule } from '@ngx-translate/core';
     TranslateModule
   ],
   declarations: [
-    DeviceOrderAisNewRegisterValidateCustomerPageComponent,
     DeviceOrderAisNewRegisterValidateCustomerKeyInPageComponent,
     DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent,
     DeviceOrderAisNewRegisterPaymentDetailPageComponent,
@@ -71,7 +68,6 @@ import { TranslateModule } from '@ngx-translate/core';
     DeviceOrderAisNewRegisterQrCodeSummaryPageComponent,
     DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent,
     DeviceOrderAisNewRegisterQrCodeQueuePageComponent,
-    DeviceOrderAisNewRegisterQrCodeErrorPageComponent,
     DeviceOrderAisNewRegisterEcontactPageComponent,
     DeviceOrderAisNewRegisterEbillingPageComponent,
   ]
