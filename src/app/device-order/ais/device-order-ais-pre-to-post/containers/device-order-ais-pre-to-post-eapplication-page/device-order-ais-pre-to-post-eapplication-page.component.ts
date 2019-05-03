@@ -67,6 +67,9 @@ export class DeviceOrderAisPreToPostEapplicationPageComponent implements OnInit,
   }
 
   ngOnDestroy(): void {
+    if (this.translationSubscribe) {
+      this.translationSubscribe.unsubscribe();
+    }
     this.transactionService.update(this.transaction);
   }
 }
