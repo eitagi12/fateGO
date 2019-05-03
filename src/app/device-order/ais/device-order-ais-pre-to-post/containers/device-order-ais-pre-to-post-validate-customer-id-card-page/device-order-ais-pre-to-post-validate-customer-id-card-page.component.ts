@@ -8,7 +8,7 @@ import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE
 } from 'src/app/device-order/ais/device-order-ais-pre-to-post/constants/route-path.constant';
 
-import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionAction, TransactionType } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -103,7 +103,9 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
         .then((zipCode: string) => {
           return this.http.get('/api/customerportal/validate-customer-pre-to-post', {
             params: {
-              identity: this.profile.idCardNo
+              identity: this.profile.idCardNo,
+              idCardType: this.profile.idCardType,
+              transactionType: TransactionType.DEVICE_ORDER_PRE_TO_POST_AIS
             }
           }).toPromise()
             .then((resp: any) => {
@@ -153,23 +155,23 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
             return;
           } else {
             return this.conditionIdentityValid()
-            .then(() => {
-              return this.http.post(
-                '/api/salesportal/add-device-selling-cart',
-                this.getRequestAddDeviceSellingCart()
-              ).toPromise()
-                .then((resp: any) => resp.data.soId);
-            })
-            .then((soId: string) => {
-              this.transaction.data.order = { soId: soId };
+              .then(() => {
+                return this.http.post(
+                  '/api/salesportal/add-device-selling-cart',
+                  this.getRequestAddDeviceSellingCart()
+                ).toPromise()
+                  .then((resp: any) => resp.data.soId);
+              })
+              .then((soId: string) => {
+                this.transaction.data.order = { soId: soId };
 
-              return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-            })
-            .then(() => {
-              this.pageLoadingService.closeLoading();
-              this.transaction.data.action = TransactionAction.READ_CARD;
-              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE]);
-            });
+                return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+              })
+              .then(() => {
+                this.pageLoadingService.closeLoading();
+                this.transaction.data.action = TransactionAction.READ_CARD;
+                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE]);
+              });
           }
         });
     });

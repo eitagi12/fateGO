@@ -123,7 +123,9 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
         .then((zipCode: string) => {
           return this.http.get('/api/customerportal/validate-customer-new-register', {
             params: {
-              identity: this.profile.idCardNo
+              identity: this.profile.idCardNo,
+              idCardType: this.profile.idCardType,
+              transactionType: TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS
             }
           }).toPromise()
             .then((resp: any) => {

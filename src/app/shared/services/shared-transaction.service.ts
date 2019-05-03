@@ -110,6 +110,7 @@ export class SharedTransactionService {
       };
       if (data.mainPackage.customAttributes) {
         params.data.main_package.customAttributes = {
+          billingSystem: data.mainPackage.customAttributes.billingSystem,
           promotionCode: data.mainPackage.customAttributes.promotionCode,
           promotionName: data.mainPackage.customAttributes.promotionName,
           chargeType: data.mainPackage.customAttributes.chargeType
@@ -202,7 +203,16 @@ export class SharedTransactionService {
 
     if (priceOption.trade) {
       // ใช้ check airtime
-      params.data.air_time = priceOption.trade.advancePay;
+      const advancePay = priceOption.trade.advancePay || {};
+      params.data.air_time = advancePay;
+
+      if (advancePay.promotions) {
+        const mainPackage = data.mainPackage && data.mainPackage.customAttributes || {};
+        const findPromotionByMainPackage = advancePay.promotions
+        .find(promotion => (promotion && promotion.billingSystem) === mainPackage.billingSystem);
+        params.data.air_time.promotions = [findPromotionByMainPackage] || advancePay.promotions;
+      }
+
     }
 
     if (data.existingMobileCare) {

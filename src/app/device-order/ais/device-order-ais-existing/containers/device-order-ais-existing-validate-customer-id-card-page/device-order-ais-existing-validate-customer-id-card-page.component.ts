@@ -104,9 +104,11 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
       this.createTransaction();
       this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
       .then((zipCode: string) => {
-        return this.http.get('/api/customerportal/validate-customer-new-register', {
+        return this.http.get('/api/customerportal/validate-customer-existing', {
           params: {
-            identity: this.profile.idCardNo
+            identity: this.profile.idCardNo,
+            idCardType: this.profile.idCardType,
+            transactionType: TransactionType.DEVICE_ORDER_EXISTING_AIS
           }
         }).toPromise()
           .then((resp: any) => {
