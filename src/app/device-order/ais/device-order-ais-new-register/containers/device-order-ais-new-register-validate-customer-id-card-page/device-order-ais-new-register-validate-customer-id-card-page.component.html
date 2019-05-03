@@ -10,12 +10,12 @@
   </mc-header>
   <div class="mc-flex-wrap bg-white">
     <div class="pt-3 pb-3">
-      <mc-validate-customer-id-card [kioskApi]="kioskApi" (error)="onError($event)" (completed)="onCompleted($event)">
+      <mc-validate-customer-id-card (error)="onError($event)" (completed)="onCompleted($event)">
       </mc-validate-customer-id-card>
     </div>
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" [hidden]="kioskApi" (click)="onNext()" [disabled]="!(!!profile)">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!(!!profile)">NEXT</button>
   </mc-footer>
 </div>
