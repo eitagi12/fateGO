@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { TokenService, ChannelType } from 'mychannel-shared-libs';
+import { TokenService, ChannelType, HomeService } from 'mychannel-shared-libs';
 import { environment } from 'src/environments/environment';
 
 @Component({
@@ -17,10 +17,19 @@ export class MainMenuPageComponent implements OnInit {
   ];
 
   constructor(
+    private homeService: HomeService,
     private tokenService: TokenService
   ) { }
 
   ngOnInit(): void {
+    this.homeService.callback = () => {
+      if (environment.name === 'LOCAL') {
+        window.location.href = '/main-menu';
+      } else {
+        window.location.href = '/smart-digital/main-menu';
+      }
+    };
+
     if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {
       this.keepCard(); // กรณีบัตรค้างในเครื่อง
     }

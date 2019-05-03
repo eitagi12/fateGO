@@ -2,10 +2,11 @@ import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 import { AuthGuard, ApiRequestGuard, I18nService } from 'mychannel-shared-libs';
 import { ErrorPageComponent } from './containers/error-page/error-page.component';
+import { MainMenuGuard } from './shared/guards/main-menu.guard';
 
 const routes: Routes = [
   {
-    path: '', redirectTo: 'main-menu', pathMatch: 'full'
+    path: '', redirectTo: 'dashboard', pathMatch: 'full'
   },
   {
     path: 'dashboard',
@@ -15,7 +16,7 @@ const routes: Routes = [
   {
     path: 'main-menu',
     loadChildren: 'src/app/main-menu/main-menu.module#MainMenuModule',
-    canActivate: [AuthGuard, ApiRequestGuard]
+    canActivate: [AuthGuard, MainMenuGuard, ApiRequestGuard]
   },
   {
     path: 'buy-product',

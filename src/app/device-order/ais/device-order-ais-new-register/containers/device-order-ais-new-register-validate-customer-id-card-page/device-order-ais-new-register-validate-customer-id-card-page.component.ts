@@ -68,7 +68,7 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
         });
     };
 
-    this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
+    this.kioskApi = !(environment.name === 'LOCAL' || this.tokenService.getUser().channelType === ChannelType.SMART_ORDER);
   }
 
   ngOnInit(): void {
@@ -116,55 +116,55 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
     this.pageLoadingService.openLoading();
     this.returnStock().then(() => {
       // มี auto next ทำให้ create transaction ช้ากว่า read card
-    this.createTransaction();
-    this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
-      .then((zipCode: string) => {
-        return this.http.get('/api/customerportal/validate-customer-new-register', {
-          params: {
-            identity: this.profile.idCardNo
-          }
-        }).toPromise()
-          .then((resp: any) => {
-            const data = resp.data || {};
-            return {
-              caNumber: data.caNumber,
-              mainMobile: data.mainMobile,
-              billCycle: data.billCycle,
-              zipCode: zipCode
-            };
-          }).catch(() => {
-            return { zipCode: zipCode };
-          });
-      })
-      .then((customer: any) => {
-        // load bill cycle
-        this.transaction.data.customer = Object.assign(this.profile, customer);
-        return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
-          .then((resp: any) => {
-            const data = resp.data || {};
-            return {
-              billCycles: data.billingAccountList
-            };
-          });
-      }).then((billingInformation: any) => {
-        this.transaction.data.billingInformation = billingInformation;
+      this.createTransaction();
+      this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
+        .then((zipCode: string) => {
+          return this.http.get('/api/customerportal/validate-customer-new-register', {
+            params: {
+              identity: this.profile.idCardNo
+            }
+          }).toPromise()
+            .then((resp: any) => {
+              const data = resp.data || {};
+              return {
+                caNumber: data.caNumber,
+                mainMobile: data.mainMobile,
+                billCycle: data.billCycle,
+                zipCode: zipCode
+              };
+            }).catch(() => {
+              return { zipCode: zipCode };
+            });
+        })
+        .then((customer: any) => {
+          // load bill cycle
+          this.transaction.data.customer = Object.assign(this.profile, customer);
+          return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
+            .then((resp: any) => {
+              const data = resp.data || {};
+              return {
+                billCycles: data.billingAccountList
+              };
+            });
+        }).then((billingInformation: any) => {
+          this.transaction.data.billingInformation = billingInformation;
 
-        return this.conditionIdentityValid()
-          .then(() => {
-            return this.http.post(
-              '/api/salesportal/add-device-selling-cart',
-              this.getRequestAddDeviceSellingCart()
-            ).toPromise()
-              .then((resp: any) => resp.data.soId);
-          })
-          .then((soId: string) => {
-            this.transaction.data.order = { soId: soId };
+          return this.conditionIdentityValid()
+            .then(() => {
+              return this.http.post(
+                '/api/salesportal/add-device-selling-cart',
+                this.getRequestAddDeviceSellingCart()
+              ).toPromise()
+                .then((resp: any) => resp.data.soId);
+            })
+            .then((soId: string) => {
+              this.transaction.data.order = { soId: soId };
 
-            return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-          })
-          .then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE]));
+              return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+            })
+            .then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE]));
 
-      }).then(() => this.pageLoadingService.closeLoading());
+        }).then(() => this.pageLoadingService.closeLoading());
 
     });
   }
@@ -280,6 +280,10 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
       depositAmt: '',
       reserveNo: ''
     };
+  }
+
+  isDevelopMode(): boolean {
+    return environment.name === 'LOCAL';
   }
 
 }
