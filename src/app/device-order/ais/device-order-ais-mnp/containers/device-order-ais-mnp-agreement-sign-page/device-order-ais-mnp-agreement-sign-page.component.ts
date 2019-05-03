@@ -9,6 +9,7 @@ import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart
 import { ROUTE_DEVICE_ORDER_AIS_MNP_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_AGGREGATE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_ECONTACT_PAGE } from '../../constants/route-path.constant';
 import { TranslateService } from '@ngx-translate/core';
 import { AisNativeMnpService } from '../../services/ais-native-mnp-services.service';
+import { AisNativeDeviceService } from 'src/app/shared/services/ais-native-device.service';
 
 @Component({
   selector: 'app-device-order-ais-mnp-agreement-sign-page',
@@ -24,17 +25,33 @@ export class DeviceOrderAisMnpAgreementSignPageComponent implements OnInit, OnDe
   signedOpenSubscription: Subscription;
   shoppingCart: ShoppingCart;
 
+  // signature
+  signatureImage: string;
+  commandSigned: any;
+  openSignedCommand: any;
+  isOpenSign: boolean;
   constructor(
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
-    private aisNativeService: AisNativeService,
+    private aisNativeDeviceService: AisNativeDeviceService,
     private tokenService: TokenService,
     private shoppingCartService: ShoppingCartService,
+    private alertService: AlertService
   ) {
     this.transaction = this.transactionService.load();
-    this.signedSignatureSubscription = this.aisNativeService.getSigned().subscribe((signature: string) => {
-      this.transaction.data.customer.imageSignature = signature;
+    this.signedSignatureSubscription = this.aisNativeDeviceService.getSigned().subscribe((signature: string) => {
+      this.isOpenSign = false;
+      if (signature) {
+        this.isOpenSign = false;
+        this.transaction.data.customer.imageSignature = signature;
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_AGGREGATE_PAGE]);
+      } else {
+        this.alertService.warning('กรุณาเซ็นลายเซ็น').then(() => {
+          this.onSigned();
+        });
+        return;
+      }
     });
   }
 
@@ -49,8 +66,18 @@ export class DeviceOrderAisMnpAgreementSignPageComponent implements OnInit, OnDe
     }
   }
 
+  checkLogicNext(): boolean {
+    return this.isOpenSign || this.transaction.data.customer.imageSignature ? true : false;
+  }
+
   onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_AGGREGATE_PAGE]);
+    if (this.openSignedCommand && !this.openSignedCommand.error) {
+      this.openSignedCommand.ws.send('CaptureImage');
+    } else {
+      if (this.transaction.data.customer.imageSignature) {
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_AGGREGATE_PAGE]);
+      }
+    }
   }
 
   onHome(): void {
@@ -58,11 +85,17 @@ export class DeviceOrderAisMnpAgreementSignPageComponent implements OnInit, OnDe
   }
 
   onSigned(): void {
+    this.isOpenSign = true;
     const user: User = this.tokenService.getUser();
-    console.log('user', user);
-    this.signedOpenSubscription = this.aisNativeService.openSigned(
-      ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'SignaturePad'
-    ).subscribe();
+    this.signedOpenSubscription = this.aisNativeDeviceService.openSigned(
+      ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'OnscreenSignpad', `{x:100,y:280}`
+    ).subscribe((command: any) => {
+      this.openSignedCommand = command;
+    });
+  }
+
+  getOnMessageWs(): void {
+    this.commandSigned.ws.send('CaptureImage');
   }
 
   ngOnDestroy(): void {

@@ -11,8 +11,7 @@
         <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
       <div class="mb-3 mt-3">
         <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
-  
-        <div class="container-fluid margin-top">
+        <div *ngIf="!isOpenSign" class="container-fluid margin-top">
           <div class="card">
             <div class="card-header bg-transparent text-center">ลงชื่อผู้ทำรายการ</div>
             <div class="card-body">
