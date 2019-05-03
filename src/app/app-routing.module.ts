@@ -6,7 +6,7 @@ import { MainMenuGuard } from './shared/guards/main-menu.guard';
 
 const routes: Routes = [
   {
-    path: '', redirectTo: 'main-menu', pathMatch: 'full'
+    path: '', redirectTo: 'dashboard', pathMatch: 'full'
   },
   {
     path: 'dashboard',
