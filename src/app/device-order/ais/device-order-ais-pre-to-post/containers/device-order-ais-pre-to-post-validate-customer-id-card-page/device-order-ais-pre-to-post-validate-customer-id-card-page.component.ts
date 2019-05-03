@@ -95,6 +95,7 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
   }
 
   onNext(): void {
+    let isValidate = true;
     this.pageLoadingService.openLoading();
     // มี auto next ทำให้ create transaction ช้ากว่า read card
     this.returnStock().then(() => {
@@ -113,7 +114,13 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
                 billCycle: data.billCycle,
                 zipCode: zipCode
               };
-            }).catch(() => {
+            }).catch((exception: any) => {
+              if (exception && exception.error && exception.error.errors) {
+                const errors = exception.error.errors;
+                this.alertService.error(errors[0] + '<br>' + errors[1]);
+                isValidate = false;
+                return;
+              }
               return { zipCode: zipCode };
             });
         })
@@ -142,8 +149,10 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
             });
         }).then((billingInformation: any) => {
           this.transaction.data.billingInformation = billingInformation;
-
-          return this.conditionIdentityValid()
+          if (!isValidate) {
+            return;
+          } else {
+            return this.conditionIdentityValid()
             .then(() => {
               return this.http.post(
                 '/api/salesportal/add-device-selling-cart',
@@ -157,11 +166,12 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
               return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
             })
             .then(() => {
+              this.pageLoadingService.closeLoading();
               this.transaction.data.action = TransactionAction.READ_CARD;
               this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE]);
             });
-        }).then(() => this.pageLoadingService.closeLoading());
-
+          }
+        });
     });
   }
 

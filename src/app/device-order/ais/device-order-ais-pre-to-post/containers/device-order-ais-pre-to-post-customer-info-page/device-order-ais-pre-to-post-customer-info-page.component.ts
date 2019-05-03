@@ -38,6 +38,8 @@ export class DeviceOrderAisPreToPostCustomerInfoPageComponent implements OnInit,
   ngOnInit(): void {
     const customer: Customer = this.transaction.data.customer;
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
+    delete this.shoppingCart.mobileNo;
+
     this.customerInfo = {
       titleName: customer.titleName,
       firstName: customer.firstName,
