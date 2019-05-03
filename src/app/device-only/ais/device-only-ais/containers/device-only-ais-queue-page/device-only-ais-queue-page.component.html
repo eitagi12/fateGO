@@ -29,9 +29,9 @@
                  <div class="col-6 text-left">
                     <i class="fa fa-circle mr-3 text-green"></i>
                     <span id="text-brand-model"> 
+                      {{ priceOption?.productDetail?.brand }}
                       {{  priceOption?.productDetail?.name }}
-                      <span>
-                        <!-- <span *ngIf="priceOption?.productStock?.colorName"> -->
+                      <span *ngIf="priceOption?.productStock?.colorName">
                         {{ priceOption?.productStock?.colorName?'สี': '' }} {{ priceOption?.productStock?.colorName }}
                       </span>
                     </span>
