@@ -96,7 +96,8 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
           terminalId: terminalId,
           qrType: isThaiQRCode ? MPAY_QRCODE.PB_TYPE : MPAY_QRCODE.RB_TYPE,
           locationName: user.locationCode,
-          amount: totalAmount
+          amount: totalAmount,
+          company: this.priceOption.productStock.company
         });
       });
     })
