@@ -11,7 +11,7 @@
     <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
     <div class="mb-3 mt-3">
       <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
-      <div class="container-fluid margin-top">
+      <div *ngIf="!isOpenSign" class="container-fluid margin-top">
         <div class="card">
           <div class="card-header bg-transparent text-center">ลงชื่อผู้ทำรายการ</div>
           <div class="card-body">
@@ -35,6 +35,6 @@
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()" [disabled]="!transaction?.data?.customer?.imageSignature">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!checkLogicNext()">NEXT</button>
   </mc-footer>
 </div>

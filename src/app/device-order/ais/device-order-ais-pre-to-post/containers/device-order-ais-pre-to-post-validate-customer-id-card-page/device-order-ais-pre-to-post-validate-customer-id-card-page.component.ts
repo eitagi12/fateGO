@@ -14,7 +14,6 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
-
 @Component({
   selector: 'app-device-order-ais-pre-to-post-validate-customer-id-card-page',
   templateUrl: './device-order-ais-pre-to-post-validate-customer-id-card-page.component.html',
