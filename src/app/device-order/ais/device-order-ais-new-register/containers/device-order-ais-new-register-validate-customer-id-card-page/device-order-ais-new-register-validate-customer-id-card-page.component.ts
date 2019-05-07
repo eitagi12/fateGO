@@ -68,7 +68,7 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
         });
     };
 
-    this.kioskApi = !(environment.name === 'LOCAL' || this.tokenService.getUser().channelType === ChannelType.SMART_ORDER);
+    this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
   }
 
   ngOnInit(): void {

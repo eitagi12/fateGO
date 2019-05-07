@@ -68,7 +68,7 @@ export class DeviceOrderAisExistingBestBuyShopEligibleMobilePageComponent implem
     this.privilegeService.requestUsePrivilege(this.mobileNo.mobileNo, trade.ussdCode, this.mobileNo.privilegeCode).then((privilegeCode) => {
       this.transaction.data.customer.privilegeCode = privilegeCode;
       this.transaction.data.simCard = { mobileNo: this.mobileNo.mobileNo };
-      if (this.transaction.data.customer && this.transaction.data.customer.firstName) {
+      if (!this.transaction.data.customer || !this.transaction.data.customer.firstName) {
         return this.customerInfoService.getCustomerProfileByMobileNo(this.transaction.data.simCard.mobileNo,
           this.transaction.data.customer.idCardNo).then((customer: Customer) => {
             this.transaction.data.customer = { ...this.transaction.data.customer, ...customer };

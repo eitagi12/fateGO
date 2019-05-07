@@ -97,7 +97,6 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardRepiPageComponent impl
     this.pageLoadingService.openLoading();
     // มี auto next ทำให้ create transaction ช้ากว่า read card
     this.returnStock().then(() => {
-
       this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
         .then((zipCode: string) => {
           return this.http.get('/api/customerportal/validate-customer-pre-to-post', {
@@ -115,8 +114,6 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardRepiPageComponent impl
                 billCycle: data.billCycle,
                 zipCode: zipCode
               };
-            }).catch(() => {
-              return { zipCode: zipCode };
             });
         })
         .then((customer: any) => {
@@ -178,7 +175,6 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardRepiPageComponent impl
                 });
             });
         }).then(() => this.pageLoadingService.closeLoading());
-
     });
   }
 
