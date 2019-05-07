@@ -119,14 +119,14 @@ export class CreateEapplicationService {
     if (language === 'EN') {
       data.billCycle = billCycleData.billCycleTextEng;
       data.mainPackage = {
-        name: transaction.data.mainPackage.shortNameEng || '',
-        description: transaction.data.mainPackage.statementEng || ''
+        name: transaction.data.mainPackage.shortNameEng || transaction.data.mainPackage.title || '',
+        description: transaction.data.mainPackage.statementEng || transaction.data.mainPackage.detailEN || ''
       };
     } else {
       data.billCycle = billCycleData.billCycleText;
       data.mainPackage = {
-        name: transaction.data.mainPackage.shortNameThai || '',
-        description: transaction.data.mainPackage.statementThai || ''
+        name: transaction.data.mainPackage.shortNameThai || transaction.data.mainPackage.title || '',
+        description: transaction.data.mainPackage.statementThai || transaction.data.mainPackage.detailTH || ''
       };
     }
     if (action === TransactionAction.READ_CARD || action === TransactionAction.READ_CARD_REPI) {
