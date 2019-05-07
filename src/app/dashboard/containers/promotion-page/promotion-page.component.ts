@@ -128,6 +128,9 @@ export class PromotionPageComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.homeService.callback = () => {
+      window.location.href = '/';
+    };
     this.defaultTab();
     this.callService();
   }

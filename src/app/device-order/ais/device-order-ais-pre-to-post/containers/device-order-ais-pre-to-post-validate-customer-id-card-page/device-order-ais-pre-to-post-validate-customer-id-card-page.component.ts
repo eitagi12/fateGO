@@ -8,13 +8,12 @@ import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE
 } from 'src/app/device-order/ais/device-order-ais-pre-to-post/constants/route-path.constant';
 
-import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionAction, TransactionType } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
-
 @Component({
   selector: 'app-device-order-ais-pre-to-post-validate-customer-id-card-page',
   templateUrl: './device-order-ais-pre-to-post-validate-customer-id-card-page.component.html',
@@ -95,7 +94,6 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
   }
 
   onNext(): void {
-    let isValidate = true;
     this.pageLoadingService.openLoading();
     // มี auto next ทำให้ create transaction ช้ากว่า read card
     this.returnStock().then(() => {
@@ -103,7 +101,9 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
         .then((zipCode: string) => {
           return this.http.get('/api/customerportal/validate-customer-pre-to-post', {
             params: {
-              identity: this.profile.idCardNo
+              identity: this.profile.idCardNo,
+              idCardType: this.profile.idCardType,
+              transactionType: TransactionType.DEVICE_ORDER_PRE_TO_POST_AIS
             }
           }).toPromise()
             .then((resp: any) => {
@@ -114,14 +114,6 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
                 billCycle: data.billCycle,
                 zipCode: zipCode
               };
-            }).catch((exception: any) => {
-              if (exception && exception.error && exception.error.errors) {
-                const errors = exception.error.errors;
-                this.alertService.error(errors[0] + '<br>' + errors[1]);
-                isValidate = false;
-                return;
-              }
-              return { zipCode: zipCode };
             });
         })
         .then((customer: any) => {
@@ -149,10 +141,8 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
             });
         }).then((billingInformation: any) => {
           this.transaction.data.billingInformation = billingInformation;
-          if (!isValidate) {
-            return;
-          } else {
-            return this.conditionIdentityValid()
+
+          return this.conditionIdentityValid()
             .then(() => {
               return this.http.post(
                 '/api/salesportal/add-device-selling-cart',
@@ -170,7 +160,6 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
               this.transaction.data.action = TransactionAction.READ_CARD;
               this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE]);
             });
-          }
         });
     });
   }

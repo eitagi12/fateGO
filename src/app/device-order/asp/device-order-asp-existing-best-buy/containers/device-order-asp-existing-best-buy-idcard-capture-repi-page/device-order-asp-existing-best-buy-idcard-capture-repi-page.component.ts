@@ -54,7 +54,6 @@ export class DeviceOrderAspExistingBestBuyIdcardCaptureRepiPageComponent impleme
     this.customerInfoService.callUpdatePrepaidIdentify(this.transaction.data.customer, this.transaction.data.simCard.mobileNo)
       .then((response: any) => {
         if (response && response.data && response.data.success) {
-          this.transaction.data.action = TransactionAction.READ_CARD;
           this.pageLoadingService.closeLoading();
           this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_PAYMENT_DETAIL_PAGE]);
         } else {

@@ -8,7 +8,7 @@ import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CUSTOMER_PROFILE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CURRENT_INFO_PAGE
 } from '../../constants/route-path.constant';
-import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionAction, TransactionType } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -97,12 +97,13 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardRepiPageComponent impl
     this.pageLoadingService.openLoading();
     // มี auto next ทำให้ create transaction ช้ากว่า read card
     this.returnStock().then(() => {
-
       this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
         .then((zipCode: string) => {
           return this.http.get('/api/customerportal/validate-customer-pre-to-post', {
             params: {
-              identity: this.profile.idCardNo
+              identity: this.profile.idCardNo,
+              idCardType: this.profile.idCardType,
+              transactionType: TransactionType.DEVICE_ORDER_PRE_TO_POST_AIS
             }
           }).toPromise()
             .then((resp: any) => {
@@ -113,8 +114,6 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardRepiPageComponent impl
                 billCycle: data.billCycle,
                 zipCode: zipCode
               };
-            }).catch(() => {
-              return { zipCode: zipCode };
             });
         })
         .then((customer: any) => {
@@ -176,7 +175,6 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardRepiPageComponent impl
                 });
             });
         }).then(() => this.pageLoadingService.closeLoading());
-
     });
   }
 

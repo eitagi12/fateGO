@@ -5,7 +5,7 @@ import { ErrorPageComponent } from './containers/error-page/error-page.component
 
 const routes: Routes = [
   {
-    path: '', redirectTo: 'main-menu', pathMatch: 'full'
+    path: '', redirectTo: 'dashboard', pathMatch: 'full'
   },
   {
     path: 'dashboard',

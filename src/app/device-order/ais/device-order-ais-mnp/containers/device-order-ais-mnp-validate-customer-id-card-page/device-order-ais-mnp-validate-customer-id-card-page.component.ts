@@ -114,48 +114,39 @@ export class DeviceOrderAisMnpValidateCustomerIdCardPageComponent implements OnI
   onNext(): void {
     this.pageLoadingService.openLoading();
     // มี auto next ทำให้ create transaction ช้ากว่า read card
-    // this.returnStock().then(() => {
-    let isValidate = true;
-    this.createTransaction();
-    this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
-      .then((zipCode: string) => {
-        return this.http.get('/api/customerportal/validate-customer-new-register', {
-          params: {
-            identity: this.profile.idCardNo
-          }
-        }).toPromise()
-          .then((resp: any) => {
-            const data = resp.data || {};
-            return {
-              caNumber: data.caNumber,
-              mainMobile: data.mainMobile,
-              billCycle: data.billCycle,
-              zipCode: zipCode
-            };
-          }).catch((exception: any) => {
-            if (exception && exception.error && exception.error.errors) {
-              const errors = exception.error.errors;
-              this.alertService.error(errors[0] + '<br>' + errors[1]);
-              isValidate = false;
-              return;
+    this.returnStock().then(() => {
+      this.createTransaction();
+      this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
+        .then((zipCode: string) => {
+          return this.http.get('/api/customerportal/validate-customer-mnp', {
+            params: {
+              identity: this.profile.idCardNo,
+              idCardType: this.profile.idCardType,
+              transactionType: TransactionType.DEVICE_ORDER_MNP_AIS
             }
-            return { zipCode: zipCode };
-          });
-      })
-      .then((customer: any) => {
-        // load bill cycle
-        this.transaction.data.customer = Object.assign(this.profile, customer);
-        return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
-          .then((resp: any) => {
-            const data = resp.data || {};
-            return {
-              billCycles: data.billingAccountList
-            };
-          });
-      }).then((billingInformation: any) => {
-        if (!isValidate) {
-          return;
-        } else {
+          }).toPromise()
+            .then((resp: any) => {
+              const data = resp.data || {};
+              return {
+                caNumber: data.caNumber,
+                mainMobile: data.mainMobile,
+                billCycle: data.billCycle,
+                zipCode: zipCode
+              };
+            });
+        })
+        .then((customer: any) => {
+          // load bill cycle
+          this.transaction.data.customer = Object.assign(this.profile, customer);
+          return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
+            .then((resp: any) => {
+              const data = resp.data || {};
+              return {
+                billCycles: data.billingAccountList
+              };
+            });
+        }).then((billingInformation: any) => {
+
           this.transaction.data.billingInformation = billingInformation;
           return this.conditionIdentityValid()
             .then(() => {
@@ -174,10 +165,9 @@ export class DeviceOrderAisMnpValidateCustomerIdCardPageComponent implements OnI
               this.pageLoadingService.closeLoading();
               this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_CUSTOMER_INFO_PAGE]);
             });
-        }
-      });
+        });
 
-    // });
+    });
   }
 
   createTransaction(): void {

@@ -41,7 +41,7 @@ export class DeviceOrderAisPreToPostCurrentInfoPageComponent implements OnInit, 
   mobileNo: string;
   transaction: Transaction;
   priceOption: PriceOption;
-  shoppingCart: ShoppingCart;
+  // shoppingCart: ShoppingCart;
 
   modalRef: BsModalRef;
   balance: Balance;
@@ -64,7 +64,7 @@ export class DeviceOrderAisPreToPostCurrentInfoPageComponent implements OnInit, 
 
   ngOnInit(): void {
     this.mobileNo = this.transaction.data.simCard.mobileNo;
-    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
+    // this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.pageLoadingService.openLoading();
 
     this.http.get(`/api/customerportal/greeting/${this.mobileNo}/profile`).toPromise()
