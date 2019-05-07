@@ -51,7 +51,7 @@ export class DeviceOrderAisNewRegisterEbillingPageComponent implements OnInit, O
       this.billCycles = data.billCycles || [];
 
       this.billCycle = this.billCycles.find(billing => {
-        return billCycle.bill === billing.bill || customer.billCycle === billing.bill;
+        return billCycle.bill ? billCycle.bill === billing.bill : customer.billCycle === billing.bill;
       });
 
       if (!this.billCycle) {
@@ -59,7 +59,6 @@ export class DeviceOrderAisNewRegisterEbillingPageComponent implements OnInit, O
           return bill.billDefault === 'Y';
         });
       }
-
     });
   }
 
