@@ -85,7 +85,7 @@ export class CreateEapplicationService {
 
     const data: any = {
       fullNameTH: customer.firstName + ' ' + customer.lastName || '',
-      idCard: customer.idCardNo || '',
+      idCard: this.privateIdcard(customer.idCardNo) || '',
       idCardType: customer.idCardType || '',
       birthDate: customer.birthdate || '',
       customerAddress: this.utils.getCurrentAddress({
@@ -136,5 +136,9 @@ export class CreateEapplicationService {
     }
 
     return data;
+  }
+
+  private privateIdcard(idcardNo: string): string {
+    return idcardNo.replace(/^[0-9]{9}/, 'XXXXXXXXX');
   }
 }
