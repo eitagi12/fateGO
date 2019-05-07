@@ -67,7 +67,8 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
 
       this.transaction.data.simCard.chargeType = mobileDetail.chargeType;
       this.transaction.data.simCard.billingSystem = mobileDetail.billingSystem;
-      this.transaction.data.currentPackage = mobileDetail.package;     
+      this.transaction.data.currentPackage = mobileDetail.package;
+
       return this.http.get(`/api/customerportal/newRegister/${idCardNo}/queryBillingAccount`).toPromise();
     }).then((resp: any) => {
       this.pageLoadingService.closeLoading();
