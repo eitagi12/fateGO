@@ -10,6 +10,7 @@ import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/
 import { DEPOSIT_PAYMENT_DETAIL_RECEIPT } from '../../constants/route-path.constant';
 import { Router } from '@angular/router';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+
 export interface CustomerAddress {
   titleName: string;
   firstName: string;
@@ -36,57 +37,22 @@ export interface CustomerAddress {
 export class BillingAddressComponent implements OnInit, OnChanges {
 
   @Input() keyInCustomerAddressTemp: any;
-
-  @Input()
-  titleNames: string[];
-
-  @Input()
-  firstName: string[];
-
-  @Input()
-  lastName: string[];
-
-  @Input()
-  customerAddress: CustomerAddress;
-
-  @Input()
-  idCardNo: string[];
-
-  @Input()
-  allZipCodes: string[];
-
-  @Input()
-  provinces: string[];
-
-  @Input()
-  amphurs: string[];
-
-  @Input()
-  tumbols: string[];
-
-  @Input()
-  zipCodes: string[];
-
-  @Input()
-  titleNameSelected: EventEmitter<any> = new EventEmitter<any>();
-
-  @Output()
-  provinceSelected: EventEmitter<any> = new EventEmitter<any>();
-
-  @Output()
-  amphurSelected: EventEmitter<any> = new EventEmitter<any>();
-
-  @Output()
-  tumbolSelected: EventEmitter<any> = new EventEmitter<any>();
-
-  @Output()
-  zipCodeSelected: EventEmitter<any> = new EventEmitter<any>();
-
-  @Output()
-  completed: EventEmitter<any> = new EventEmitter<any>();
-
-  @Output()
-  error: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Input() titleNames: string[]; @Input() firstName: string[];
+  @Input() lastName: string[];
+  @Input() customerAddress: CustomerAddress;
+  @Input() idCardNo: string[];
+  @Input() allZipCodes: string[];
+  @Input() provinces: string[];
+  @Input() amphurs: string[];
+  @Input() tumbols: string[];
+  @Input() zipCodes: string[];
+  @Input() titleNameSelected: EventEmitter<any> = new EventEmitter<any>();
+  @Output() provinceSelected: EventEmitter<any> = new EventEmitter<any>();
+  @Output() amphurSelected: EventEmitter<any> = new EventEmitter<any>();
+  @Output() tumbolSelected: EventEmitter<any> = new EventEmitter<any>();
+  @Output() zipCodeSelected: EventEmitter<any> = new EventEmitter<any>();
+  @Output() completed: EventEmitter<any> = new EventEmitter<any>();
+  @Output() error: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   @Input()
   payment: any;
@@ -98,11 +64,6 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   priceOption: any;
 
   customerAddressForm: FormGroup;
-  private valueFn: any = Validators.nullValidator;
-  private formErrors: { idCardNo: string; } = {
-    idCardNo: ''
-  };
-
   idCardMaxLength: number = 13;
   debounceTimeInMS: number = 500;
   identityValue: string;
@@ -141,18 +102,6 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     }
   }
 
-  clearCustomerAddressForm(event: any): void {
-    event.preventDefault();
-    this.customerAddressForm.reset();
-    this.customerAddressForm.patchValue({
-      amphur: '',
-    });
-    this.disableFormAmphurAndTumbol();
-    this.completed.emit(this.customerAddressForm.value);
-    this.customerInformationService.unSetDisableReadCard();
-    this.customerAddressForm.controls['idCardNo'].enable();
-  }
-
   createForm(): void {
     const customerProfile = JSON.parse(localStorage.getItem('CustomerProfile'));
 
@@ -178,7 +127,6 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     this.disabledForm();
     this.disableFormAmphurAndTumbol();
     this.customerAddressForm.patchValue(this.customerAddress || {});
-    // this.titleFormControl();
     this.provinceFormControl();
     this.amphurFormControl();
     this.tumbolFormControl();

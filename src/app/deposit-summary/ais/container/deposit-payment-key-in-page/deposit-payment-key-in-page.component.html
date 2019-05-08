@@ -53,7 +53,7 @@
 
     <div class="container-fluid">
       <div class="card mb-3">
-        <div class="card-header text-white rounded-top p-3" style="background-color:#ffab40">
+        <div class="card-header text-white rounded-top p-3 bg-deep-orange">
           รูปแบบชำระเงิน
         </div>
         <div class="card-header bg-transparent">
@@ -110,31 +110,42 @@
         </div>
       </div>
     </div>
-<div>
-  <app-billing-address
-  [titleNames]="titleName"
-  [customerAddress]="customerAddress"
-  [allZipCodes]="allZipCodes"
-  [provinces]="getProvinces()"
-  [amphurs]="amphurs"
-  [tumbols]="tumbols"
-  [zipCodes]="zipCode"
-  (provinceSelected)="onProvinceSelected($event)"
-  (amphurSelected)="onAmphurSelected($event)"
-  (tumbolSelected)="onTumbolSelected($event)"
-  (zipCodeSelected)="onZipCodeSelected($event)"
-  (completed)="onCompleted($event)"
-  (error)="onError($event)"
-  [keyInCustomerAddressTemp]="keyInCustomerAddressTemp"
-  [payment]="paymentMethod"
-  [paymentDetail]="selectPaymentDetail"
-  [priceOption]="priceOption"
-  ></app-billing-address>
-</div>
+    <div class="container-fluid">
+      <div class="card mb-3">
+        <div class="card-header bg-blue text-white">
+          ข้อมูลผู้รับสินค้า
+        </div>
+        <div class="col-4 text-right">
+          <a href="#" (click)="clearCustomerAddressForm($event)" class="text-white" id="linkClearCustomerAddressForm">
+            <u>CLEAR</u>
+          </a>
+        </div>
+        <app-billing-address
+          [titleNames]="titleName"
+          [customerAddress]="customerAddress"
+          [allZipCodes]="allZipCodes"
+          [provinces]="getProvinces()"
+          [amphurs]="amphurs"
+          [tumbols]="tumbols"
+          [zipCodes]="zipCode"
+          (provinceSelected)="onProvinceSelected($event)"
+          (amphurSelected)="onAmphurSelected($event)"
+          (tumbolSelected)="onTumbolSelected($event)"
+          (zipCodeSelected)="onZipCodeSelected($event)"
+          (completed)="onCompleted($event)"
+          (error)="onError($event)"
+          [keyInCustomerAddressTemp]="keyInCustomerAddressTemp"
+          [payment]="paymentMethod"
+          [paymentDetail]="selectPaymentDetail"
+          [priceOption]="priceOption"
+          >
+        </app-billing-address>
+      </div>
+    </div>
 
-<!-- <mc-footer>
-  <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-  <button class="btn btn-success" (click)="onNext()">NEXT</button>
-</mc-footer> -->
-</div>
+    <mc-footer>
+      <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+      <button class="btn btn-success" (click)="onNext()" [disabled]="isNotFormValid()">NEXT</button>
+    </mc-footer>
+  </div>
 </div>

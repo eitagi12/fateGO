@@ -1,10 +1,14 @@
 import { Component, OnInit, SimpleChanges, Input, Output, EventEmitter } from '@angular/core';
-import { TransactionType, TransactionAction, Transaction } from 'src/app/shared/models/transaction.model';
+import { TransactionType, TransactionAction, Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { User, ApiRequestService, TokenService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { CreateDeviceOrderService } from 'src/app/deposit-summary/services/create-device-order.service';
+import { Router } from '@angular/router';
+import { DEPOSIT_PAYMENT_SUMMARY_PAGE, DEPOSIT_PAYMENT_DETAIL_KEY_IN } from 'src/app/deposit-summary/constants/route-path.constant';
+import { WIZARD_RESERVE_WITH_DEPOSIT } from 'src/app/deposit-summary/constants/wizard.constant';
+import { FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-deposit-payment-receipt-page',
@@ -13,17 +17,39 @@ import { CreateDeviceOrderService } from 'src/app/deposit-summary/services/creat
 })
 export class DepositPaymentReceiptPageComponent implements OnInit {
 
+  wizards: any = WIZARD_RESERVE_WITH_DEPOSIT;
   transaction: Transaction;
   priceOption: PriceOption;
   user: User;
-  isReceiptInformationValid: boolean;
   customerInfoTemp: any;
+  productImage: String;
+  formID: String;
+  paymentDetail: any;
+  selectPaymentDetail: any;
+  paymentDetailOption: any;
+  paymentForm: FormGroup;
+  discountForm: FormGroup;
+  paymentMethod: string;
+  customer: Customer;
+  customerFullName: string;
+  customerFullAddress: string;
+  idCardNo: string;
+  colorCodeStyle: any;
+  priceOptionPayment: any;
+  priceOptionBank: any;
+  selectedMobile: string;
+  locationNameTH: string;
+  receiptCustomerAddress: string;
+  otherPhoneNumber: string;
+  isDisabled: boolean;
+  isReceiptInformationValid: boolean;
 
   constructor(
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
     private createDeviceOrderService: CreateDeviceOrderService,
     private apiRequestService: ApiRequestService,
+    private router: Router,
     private tokenService: TokenService
   ) {
     this.transaction = this.transactionService.load();
@@ -70,6 +96,21 @@ export class DepositPaymentReceiptPageComponent implements OnInit {
     }
   }
 
+  onHome(): void {
+    const url = '/';
+  }
+
+  onBack(): void {
+    this.router.navigate([DEPOSIT_PAYMENT_DETAIL_KEY_IN]);
+  }
+
+  onNext(): void {
+    this.router.navigate([DEPOSIT_PAYMENT_SUMMARY_PAGE]);
+  }
+
+  isNotFormValid(): boolean {
+    return !(this.isReceiptInformationValid);
+  }
   OnDestroy(): void {
     this.transactionService.save(this.transaction);
   }

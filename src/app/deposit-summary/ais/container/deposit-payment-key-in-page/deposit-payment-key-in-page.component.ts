@@ -3,22 +3,18 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Transaction, TransactionAction, TransactionType, Customer } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { User, TokenService, ApiRequestService, AlertService, PageLoadingService, ReceiptInfo, REGEX_MOBILE, PaymentDetail, HomeService } from 'mychannel-shared-libs';
+import { TokenService, ApiRequestService, AlertService, PageLoadingService, ReceiptInfo, REGEX_MOBILE, PaymentDetail, HomeService } from 'mychannel-shared-libs';
 import { CreateDeviceOrderService } from 'src/app/deposit-summary/services/create-device-order.service';
 import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators, AbstractControl } from '@angular/forms';
 import { BillingAddressService } from 'src/app/deposit-summary/services/billing-address.service';
-import { CustomerInformationService } from 'src/app/deposit-summary/services/customer-information.service';
-import { debounceTime } from 'rxjs/operators';
-import { LocalStorageService } from 'ngx-store';
-import { CreateOrderService } from 'src/app/deposit-summary/services/create-order.service';
-import { HttpClient } from '@angular/common/http';
-import { DEPOSIT_PAYMENT_RECEIPT } from 'src/app/deposit-summary/constants/route-path.constant';
+import { DEPOSIT_PAYMENT_DETAIL_RECEIPT } from 'src/app/deposit-summary/constants/route-path.constant';
 import { WIZARD_RESERVE_WITH_DEPOSIT } from 'src/app/deposit-summary/constants/wizard.constant';
 import { DepositSummaryServicesService } from 'src/app/deposit-summary/services/deposit-summary-services.service';
 import { MessageConfigService } from 'src/app/deposit-summary/services/message-config.service';
 import { CREDIT_CARD_PAYMENT, CASH_AND_CREDIT_CARD_PAYMENT, CASH_PAYMENT } from '../deposit-payment-page/deposit-payment-page.component';
 import { LANGUAGE, RESERVE_STOCK, ERROR_MESSAGE } from 'src/app/deposit-summary/constants/message-config.constant';
+import { LocalStorageService } from 'ngx-store';
 
 @Component({
   selector: 'app-deposit-payment-key-in-page',
@@ -27,17 +23,11 @@ import { LANGUAGE, RESERVE_STOCK, ERROR_MESSAGE } from 'src/app/deposit-summary/
 })
 export class DepositPaymentKeyInPageComponent implements OnInit {
 
-  @Input()
-  customerInfoTemp: any;
-
-  @Output()
-  completed: EventEmitter<any> = new EventEmitter<any>();
-
-  @Output()
-  error: EventEmitter<boolean> = new EventEmitter<boolean>();
-
-  @Output()
-  action: EventEmitter<string> = new EventEmitter<string>();
+  @Input() customerInfoTemp: any;
+  @Output() completed: EventEmitter<any> = new EventEmitter<any>();
+  @Output() error: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() action: EventEmitter<string> = new EventEmitter<string>();
+  @Input() clearCustomerAddressForm: any;
 
   customerInfo: any;
   searchByMobileNoForm: FormGroup;
@@ -77,6 +67,7 @@ export class DepositPaymentKeyInPageComponent implements OnInit {
   receiptCustomerAddress: string;
   otherPhoneNumber: string;
   isDisabled: boolean;
+  isReceiptInformationValid: boolean;
 
   constructor(
     private localStorageService: LocalStorageService,
@@ -87,7 +78,10 @@ export class DepositPaymentKeyInPageComponent implements OnInit {
     private apiRequestService: ApiRequestService,
     private messageConfigService: MessageConfigService,
     private fb: FormBuilder,
-    private alertService: AlertService
+    private router: Router,
+    private alertService: AlertService,
+    private createDeviceOrderService: CreateDeviceOrderService,
+    private tokenService: TokenService
   ) {
     this.billingAddress.getTitleName().then(this.responseTitleNames());
     this.billingAddress.getProvinces().then(this.responseProvinces());
@@ -143,6 +137,8 @@ export class DepositPaymentKeyInPageComponent implements OnInit {
       paymentType: this.getPaymentType()
     };
     this.createForm();
+    this.selectedMobile = this.transaction.data.customer.selectedMobile;
+    // this.locationNameTH = this.transaction.data.customer.selectedLocation.locationNameTH;
   }
 
   OnDestroy(): void {
@@ -246,23 +242,6 @@ export class DepositPaymentKeyInPageComponent implements OnInit {
     return map;
   }
 
-  private setDataFromCustomerInfoTemp(): void {
-    const customer = this.customerInfoTemp.customer;
-    const billDeliveryAddress = this.customerInfoTemp.billDeliveryAddress;
-    const receiptInfo = this.customerInfoTemp.receiptInfo;
-    this.setCustomerInfo({
-      customer: { ...customer, ...billDeliveryAddress, ...receiptInfo },
-      action: this.customerInfoTemp.action
-    });
-    if (this.isShowInputForKeyIn) {
-      this.keyInCustomerAddressTemp = { ...customer, ...billDeliveryAddress };
-    }
-    for (const item in receiptInfo) {
-      if (receiptInfo.hasOwnProperty(item)) {
-        this.receiptInfoForm.controls[item].setValue(receiptInfo[item]);
-      }
-    }
-  }
   checkPaymentFormValid(): boolean {
     const paymentType = this.selectPaymentDetail.paymentType;
     if (this.paymentMethod === CREDIT_CARD_PAYMENT) {
@@ -336,13 +315,39 @@ export class DepositPaymentKeyInPageComponent implements OnInit {
     };
   }
 
+  onHome(): void {
+    const url = '/';
+    this.alertRemoveAddCart(url);
+  }
+
   onBack(): void {
+    const url = '/sales-portal/reserve-stock/reserve-deposit-non-ais';
+    this.alertRemoveAddCart(url);
+  }
+
+  alertRemoveAddCart(url: string): void {
+    this.alertService.notify({
+      type: 'question',
+      showConfirmButton: true,
+      confirmButtonText: 'CONFIRM',
+      cancelButtonText: 'CANCEL',
+      showCancelButton: true,
+      reverseButtons: true,
+      allowEscapeKey: false,
+      html: 'ต้องการยกเลิกรายการขายหรือไม่ <br> การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที'
+    }).then((data) => {
+      if (data.value) {
+        const userId = this.tokenService.getUser().username;
+        const soId = this.localStorageService.load('reserveSoId').value;
+        this.createDeviceOrderService.removeAddCart(soId, userId).then((res) => {
+          window.location.href = url;
+        });
+      }
+    });
   }
 
   onNext(): void {
-  }
-
-  onHome(): void {
+    this.router.navigate([DEPOSIT_PAYMENT_DETAIL_RECEIPT]);
   }
 
   onProvinceSelected(params: any): void {
@@ -396,10 +401,13 @@ export class DepositPaymentKeyInPageComponent implements OnInit {
     this.receiptInfoForm.controls['taxId'].setValue(value.idCardNo);
   }
 
-  onError(valid: boolean): void {
-    this.error.emit(valid);
+  onError(error: boolean): void {
+    this.isReceiptInformationValid = error;
   }
 
+  isNotFormValid(): boolean {
+    return !(this.isReceiptInformationValid);
+  }
   private assignProvinceAndZipCode(province: any, zipCode: string): void {
     this.customerAddress = Object.assign(Object.assign({}, this.customerAddress), {
       province: province.name,
