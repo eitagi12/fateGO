@@ -91,7 +91,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   debounceTimeInMS: number = 500;
   identityValue: string;
   disableIdCard: boolean;
-
+  customerProfile: any = JSON.parse(localStorage.getItem('CustomerProfile'));
   constructor(
     public fb: FormBuilder,
     private utils: Utils,
@@ -130,10 +130,14 @@ export class BillingAddressComponent implements OnInit, OnChanges {
 
   createForm(): void {
     this.customerAddressForm = this.fb.group({
-      idCardNo: ['', [Validators.required, Validators.pattern(/^[1-8]\d{12}$/), this.validateIdCard.bind(this)]],
-      titleName: ['', [Validators.required]],
-      firstName: ['', [Validators.required, this.validateCharacter()]],
-      lastName: ['', [Validators.required, this.validateCharacter()]],
+      // idCardNo: ['', [Validators.required, Validators.pattern(/^[1-8]\d{12}$/), this.validateIdCard.bind(this)]],
+      // titleName: ['', [Validators.required]],
+      // firstName: ['', [Validators.required, this.validateCharacter()]],
+      // lastName: ['', [Validators.required, this.validateCharacter()]],
+      idCardNo: [{ value: this.customerProfile.idCardNo, disabled: true }],
+      titleName: [{ value: this.customerProfile.titleName, disabled: true }],
+      firstName: [{ value: this.customerProfile.firstName, disabled: true }],
+      lastName: [{ value: this.customerProfile.lastName, disabled: true }],
       homeNo: ['', [Validators.required, Validators.pattern(/^[0-9^/]*$/)]],
       moo: [''],
       mooBan: [''],
@@ -146,6 +150,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       amphur: ['', [Validators.required]],
       tumbol: ['', [Validators.required]],
       zipCode: ['', [Validators.required, Validators.maxLength(5), this.validateZipCode.bind(this)]],
+      telNo: [{ value: localStorage.customerMobile, disabled: true }],
     });
     this.disableFormAmphurAndTumbol();
     this.customerAddressForm.patchValue(this.customerAddress || {});
@@ -299,5 +304,4 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   private amphurForm(): AbstractControl {
     return this.customerAddressForm.controls['amphur'];
   }
-
 }

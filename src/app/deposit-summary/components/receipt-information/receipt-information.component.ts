@@ -168,64 +168,6 @@ export class ReceiptInformationComponent implements OnInit {
     this.billingAddressText = this.customerInfoService.convertBillingAddressToString(billDeliveryAddress);
     this.customerInfoService.setDisableReadCard();
   }
-  // searchCustomerInfo(): void {
-  //   if (this.searchByMobileNoForm.valid) {
-  //     this.pageLoadingService.openLoading();
-  //     const mobileNo = this.searchByMobileNoForm.value.mobileNo;
-  //     this.customerInfoService.getBillingByMobileNo(mobileNo)
-  //       .then((res) => {
-  //         if (res && res.data && res.data.billingAddress) {
-  //           this.setCustomerInfo({
-  //             customer: this.customerInfoService.mapAttributeFromGetBill(res.data.billingAddress),
-  //             action: TransactionAction.KEY_IN
-  //           });
-  //           this.customerInfoService.setSelectedMobileNo(mobileNo);
-  //           this.pageLoadingService.closeLoading();
-  //         } else {
-  //           this.alertService.notify({
-  //             type: 'error',
-  //             confirmButtonText: 'OK',
-  //             showConfirmButton: true,
-  //             text: 'เบอร์นี้ไม่ใช่ระบบ AIS กรุณาเปลี่ยนเบอร์ใหม่'
-  //           });
-  //         }
-  //     })
-  //     .catch((err) => {
-  //       this.pageLoadingService.closeLoading();
-  //       this.alertService.notify({
-  //         type: 'error',
-  //         confirmButtonText: 'OK',
-  //         showConfirmButton: true,
-  //         text: 'เบอร์นี้ไม่ใช่ระบบ AIS กรุณาเปลี่ยนเบอร์ใหม่'
-  //       });
-  //       this.searchByMobileNoForm.controls['mobileNo'].setValue('');
-  //       this.nameText = '';
-  //       this.billingAddressText = '';
-  //       this.receiptInfoForm.controls['taxId'].setValue('');
-  //       this.receiptInfoForm.controls['branch'].setValue('');
-  //     });
-  //   } else {
-  //     this.alertService.notify({
-  //       type: 'warning',
-  //       confirmButtonText: 'OK',
-  //       showConfirmButton: true,
-  //       text: 'กรุณาระบุเบอร์ให้ครบ 10 หลัก'
-  //     });
-  //     this.nameText = '';
-  //     this.billingAddressText = '';
-  //     this.receiptInfoForm.controls['taxId'].setValue('');
-  //     this.receiptInfoForm.controls['branch'].setValue('');
-  //   }
-  // }
-
-  // switchKeyInBillingAddress(): void {
-  //   const isShowInput = !this.isShowInputForKeyIn;
-  //   this.billingAddress.setIsKeyInBillingAddress(isShowInput);
-  //   this.isShowInputForKeyIn = isShowInput;
-  //   if (this.receiptInfoForm.valid) {
-  //     this.onError(true);
-  //   }
-  // }
 
   onProvinceSelected(params: any): void {
     const province = this.findProvinceByName(params.provinceName);
