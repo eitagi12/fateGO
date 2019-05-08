@@ -98,10 +98,27 @@ export class CustomerInformationService {
   }
 
   convertBillingAddressToString(billDeliveryAddress: Customer): string {
+    console.log('billDeliveryAddress: ', billDeliveryAddress);
+    const addressCus: any = {
+      homeNo: billDeliveryAddress.homeNo,
+      moo: billDeliveryAddress.moo ? 'หมู่ ' + billDeliveryAddress.moo : '',
+      mooBan: billDeliveryAddress.mooBan,
+      room: billDeliveryAddress.room || '',
+      floor: billDeliveryAddress.floor,
+      buildingName: billDeliveryAddress.buildingName,
+      soi: billDeliveryAddress.soi ,
+      street: billDeliveryAddress.street,
+      province: billDeliveryAddress.province,
+      amphur: billDeliveryAddress.amphur,
+      tumbol: billDeliveryAddress.tumbol,
+      zipCode: billDeliveryAddress.zipCode,
+    } ;
+    console.log('addressCus: ', addressCus);
+
     let str: string = '';
-    for (const item in billDeliveryAddress) {
-      if (billDeliveryAddress.hasOwnProperty(item)) {
-        str += ' ' + billDeliveryAddress[item];
+    for (const item in addressCus) {
+      if (addressCus.hasOwnProperty(item)) {
+        str += ' ' + addressCus[item];
       }
     }
     return str;
