@@ -80,8 +80,6 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    console.log('dssssssssssssssssssssssssssssss');
-
     this.initialOrderID();
     this.deposit = this.transaction.data.preBooking
     && this.transaction.data.preBooking.depositAmt ? -Math.abs(+this.transaction.data.preBooking.depositAmt) : 0;
@@ -206,7 +204,6 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
       this.isTimeLowerThanFifthteenSeconds = this.isTimeLowerThanFifthteenSecondsFn(x);
       const times: number = this.qrcodePaymentService.convertTimeToMinutes(x);
       this.timeLowerThanOrEqualToZero = times < 0;
-      console.log('thistimeLowerThanOrEqualToZero', this.timeLowerThanOrEqualToZero);
       if (this.timeLowerThanOrEqualToZero) {
         this.inquiryMpay().then((isSuccess: boolean) => {
           if (isSuccess) {
@@ -219,7 +216,6 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
         });
       } else if (this.isPaid) {
         this.qrcodePaymentService.updateMpayObjectInTransaction(this.qrCodePrePostMpayModel);
-        console.log('qrCodePrePostMpayModel', this.qrCodePrePostMpayModel);
         this.goToMpayQueuePage();
       }
     });
