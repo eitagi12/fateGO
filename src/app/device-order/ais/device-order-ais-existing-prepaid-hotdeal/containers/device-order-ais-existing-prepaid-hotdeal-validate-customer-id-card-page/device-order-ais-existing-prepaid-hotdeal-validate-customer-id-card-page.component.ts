@@ -26,6 +26,7 @@ export class DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageCompo
   readCardValid: boolean;
   priceOption: PriceOption;
   user: User;
+  progressReadCard: number;
 
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
@@ -66,6 +67,14 @@ export class DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageCompo
 
   ngOnInit(): void {
     this.createTransaction();
+  }
+
+  onProgress(progress: number): void {
+    this.progressReadCard = progress;
+  }
+
+  progressDoing(): boolean {
+    return this.progressReadCard > 0 && this.progressReadCard < 100 ? true : false;
   }
 
   onError(valid: boolean): void {
