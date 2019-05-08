@@ -144,7 +144,6 @@ export class MobileCareComponent implements OnInit {
     });
   }
 
-//คำนวน Mobile Care
   public getServiceChange(percentage: number): number {
     return ((this.priceOption.trade.normalPrice || 0) * (percentage / 100) + (this.priceOption.trade.normalPrice || 0) * (this.VAT / 100));
   }
@@ -245,8 +244,7 @@ export class MobileCareComponent implements OnInit {
       this.privilegeCustomerForm.controls['mobileNo'].setValue('');
     }
   }
-  
-  // check mobile care เดิม
+
   private checkMobileCare(mobileNo: string): Promise<any> {
     return this.customerInformationService.getBillingByMobileNo(mobileNo)
       .then(() => {
