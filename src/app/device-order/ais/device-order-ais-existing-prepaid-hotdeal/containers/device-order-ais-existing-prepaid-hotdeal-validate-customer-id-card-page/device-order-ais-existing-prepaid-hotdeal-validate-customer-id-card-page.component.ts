@@ -93,7 +93,7 @@ export class DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageCompo
   onCompleted(profile: ReadCardProfile): void {
     this.profile = profile;
     // auto next
-    // this.onNext();
+    this.onNext();
   }
 
   onNext(): void {

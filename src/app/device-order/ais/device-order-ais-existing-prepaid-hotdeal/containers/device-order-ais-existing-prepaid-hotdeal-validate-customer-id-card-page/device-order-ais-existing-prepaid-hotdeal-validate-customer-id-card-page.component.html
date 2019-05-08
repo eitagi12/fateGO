@@ -12,7 +12,7 @@
     </mc-validate-customer-id-card>
   </div>
   <mc-footer>
-    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button class="btn btn-secondary" (click)="onBack()" *ngIf="!progressDoing()">BACK</button>
     <button class="btn btn-success" *ngIf="!kioskApi && !progressDoing()" (click)="onNext()" [disabled]="!(!!profile)">NEXT</button>
   </mc-footer>
 </div>
