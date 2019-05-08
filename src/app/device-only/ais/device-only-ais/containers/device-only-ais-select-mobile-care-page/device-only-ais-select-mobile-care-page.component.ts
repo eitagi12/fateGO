@@ -8,6 +8,7 @@ import { HomeButtonService } from '../../services/home-button.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { MobileCare } from '../../components/mobile-care/mobile-care.component';
+import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
 @Component({
   selector: 'app-device-only-ais-select-mobile-care-page',
   templateUrl: './device-only-ais-select-mobile-care-page.component.html',
@@ -15,6 +16,7 @@ import { MobileCare } from '../../components/mobile-care/mobile-care.component';
 })
 
 export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit , OnDestroy {
+  wizards: string[] = WIZARD_DEVICE_ONLY_AIS;
   transaction: Transaction;
   priceOption: PriceOption;
   shoppingCart: ShoppingCart;

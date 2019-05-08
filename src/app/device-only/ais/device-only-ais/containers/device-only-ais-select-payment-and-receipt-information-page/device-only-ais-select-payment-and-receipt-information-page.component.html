@@ -7,9 +7,14 @@
       <mc-header-icon src="assets/images/icon/icon-home.png" id="button-home" (click)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
-  <div class="mc-flex-wrap pt-3">
-    <mc-payment-detail [paymentDetail]="paymentDetail" [banks]="banks" (completed)="onPaymentDetailCompleted($event)" (error)="onPaymentDetailError($event)"></mc-payment-detail>
-
+  <div class="mc-flex-wrap">
+    <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
+    <mc-payment-detail 
+      [paymentDetail]="paymentDetail" 
+      [banks]="banks" 
+      (completed)="onPaymentDetailCompleted($event)" 
+      (error)="onPaymentDetailError($event)">
+    </mc-payment-detail>
     <div class="my-3">
       <app-receipt-information
         (completed)="onComplete($event)"

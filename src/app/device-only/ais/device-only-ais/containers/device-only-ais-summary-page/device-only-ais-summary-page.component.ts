@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE, ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_PAGE, ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_QR_CODE_PAGE } from 'src/app/device-only/ais/device-only-ais/constants/route-path.constant';
 import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
-import { HomeService, AlertService, TokenService } from 'mychannel-shared-libs';
+import { HomeService, AlertService, TokenService, ShoppingCart } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction, Seller } from 'src/app/shared/models/transaction.model';
 import { HomeButtonService } from '../../services/home-button.service';
@@ -22,6 +22,7 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit , OnDestroy {
   @ViewChild(SummarySellerCodeComponent) summarySellerCode: SummarySellerCodeComponent;
 
   wizards: string[] = WIZARD_DEVICE_ONLY_AIS;
+  shoppingCart: ShoppingCart;
   priceOption: PriceOption;
   transaction: Transaction;
   isReasonNotBuyMobileCare: boolean;

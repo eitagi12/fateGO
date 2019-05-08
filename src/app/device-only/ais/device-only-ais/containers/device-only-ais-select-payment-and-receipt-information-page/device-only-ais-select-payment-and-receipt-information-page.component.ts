@@ -8,10 +8,10 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Product } from 'src/app/device-only/ais/device-only-ais/models/product.model';
 import { HomeButtonService } from '../../services/home-button.service';
-import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 import { HomeService, ApiRequestService, AlertService, PaymentDetail, User, TokenService } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
+import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
 
 @Component({
   selector: 'app-device-only-ais-select-payment-and-receipt-information-page',
@@ -19,8 +19,7 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./device-only-ais-select-payment-and-receipt-information-page.component.scss']
 })
 export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implements OnInit, OnDestroy {
-
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ONLY_AIS;
   transaction: Transaction;
   public priceOption: PriceOption;
   isReceiptInformationValid: boolean;
