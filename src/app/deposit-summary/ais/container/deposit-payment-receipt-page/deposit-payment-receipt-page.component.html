@@ -1,0 +1,8 @@
+<div class="my-3">
+  <app-receipt-information
+    (completed)="onComplete($event)"
+    (error)="onError($event)"
+    (action)="checkAction($event)"
+    [customerInfoTemp]="customerInfoTemp"
+  ></app-receipt-information>
+</div>

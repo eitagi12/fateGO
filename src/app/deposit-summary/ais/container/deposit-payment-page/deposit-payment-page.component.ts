@@ -418,16 +418,6 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     return result;
   }
 
-  // checkCustomerAddress(event: any): void {
-  //   if (event.target.checked === true) {
-  //     this.isDisabled = event.target.checked;
-  //     this.receiptCustomerAddress = this.customerFullAddress;
-  //     localStorage.setItem('recipientCustomerAddress', JSON.stringify(this.receiptCustomerAddress));
-  //   } else {
-  //     this.isDisabled = null;
-  //   }
-  // }
-
   private async getMessageConfig(): Promise<void> {
     await this.messageConfigService.getMsgConfigByModuleName(LANGUAGE.TH, RESERVE_STOCK.MODULE_NAME).then(async(res: any) => {
       await this.messageConfigService.setMessageConfig(res.data);

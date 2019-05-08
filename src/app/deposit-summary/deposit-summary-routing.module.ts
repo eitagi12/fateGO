@@ -5,6 +5,7 @@ import { DepositPaymentSummaryPageComponent } from './ais/container/deposit-paym
 import { DepositQueueComponent } from './ais/container/deposit-queue/deposit-queue.component';
 import { DepositResultComponent } from './ais/container/deposit-result/deposit-result.component';
 import { DepositPaymentKeyInPageComponent } from './ais/container/deposit-payment-key-in-page/deposit-payment-key-in-page.component';
+import { DepositPaymentReceiptPageComponent } from './ais/container/deposit-payment-receipt-page/deposit-payment-receipt-page.component';
 
 const routes: Routes = [
   {
@@ -24,6 +25,9 @@ const routes: Routes = [
   },
   {
     path: 'payment-detail-key-in', component: DepositPaymentKeyInPageComponent
+  },
+  {
+    path: 'payment-detail-receipt', component: DepositPaymentReceiptPageComponent
   }
 ];
 
