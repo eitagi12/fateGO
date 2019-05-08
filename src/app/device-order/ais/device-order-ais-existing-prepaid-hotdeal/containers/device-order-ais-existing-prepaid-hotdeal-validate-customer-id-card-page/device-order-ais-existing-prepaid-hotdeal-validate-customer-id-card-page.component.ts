@@ -26,6 +26,7 @@ export class DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageCompo
   readCardValid: boolean;
   priceOption: PriceOption;
   user: User;
+  progressReadCard: number;
 
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
@@ -68,6 +69,14 @@ export class DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageCompo
     this.createTransaction();
   }
 
+  onProgress(progress: number): void {
+    this.progressReadCard = progress;
+  }
+
+  progressDoing(): boolean {
+    return this.progressReadCard > 0 && this.progressReadCard < 100 ? true : false;
+  }
+
   onError(valid: boolean): void {
     this.readCardValid = valid;
     if (!this.profile) {
@@ -84,7 +93,7 @@ export class DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageCompo
   onCompleted(profile: ReadCardProfile): void {
     this.profile = profile;
     // auto next
-    this.onNext();
+    // this.onNext();
   }
 
   onNext(): void {

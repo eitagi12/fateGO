@@ -24,6 +24,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
   mobileNo: string;
   priceOption: PriceOption;
   user: User;
+  progressReadCard: number;
 
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
@@ -46,6 +47,14 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponen
 
   ngOnInit(): void {
     this.transaction.data.action = TransactionAction.READ_CARD_REPI;
+  }
+
+  onProgress(progress: number): void {
+    this.progressReadCard = progress;
+  }
+
+  progressDoing(): boolean {
+    return this.progressReadCard > 0 && this.progressReadCard < 100 ? true : false;
   }
 
   onError(valid: boolean): void {
