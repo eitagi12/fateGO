@@ -255,12 +255,7 @@ export class MobileCareComponent implements OnInit {
             this.sendOTP();
           } else if (res && res.data && res.data.chargeType === 'Post-paid') {
             let indexExistingMobileCare: any;
-            for (let index = 0; index < res.data.currentPackage.length; index++) {
-              if (res.data.currentPackage[index].produuctGroup && res.data.currentPackage[index].produuctGroup === 'Mobile Care') {
-                indexExistingMobileCare = index;
-              }
-            }
-
+            indexExistingMobileCare = this.checkCurrentPackage(res, indexExistingMobileCare);
             if (indexExistingMobileCare >= 0) {
               this.currentPackageMobileCare = res.data.currentPackage[indexExistingMobileCare];
               this.isPrivilegeCustomer = false;
@@ -277,6 +272,17 @@ export class MobileCareComponent implements OnInit {
           }
         });
       });
+  }
+
+  private checkCurrentPackage(res: any, indexExistingMobileCare: any): any {
+    if (res && res.data && res.data.currentPackage) {
+      for (let index = 0; index < res.data.currentPackage.length; index++) {
+        if (res.data.currentPackage[index].produuctGroup && res.data.currentPackage[index].produuctGroup === 'Mobile Care') {
+          indexExistingMobileCare = index;
+        }
+      }
+    }
+    return indexExistingMobileCare;
   }
 
   private checkchargeType(mobileNo: string): void {
