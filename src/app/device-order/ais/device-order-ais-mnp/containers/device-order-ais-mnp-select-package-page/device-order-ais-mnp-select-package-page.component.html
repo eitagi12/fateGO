@@ -49,8 +49,8 @@
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()" [disabled]="(!(!!transaction?.data?.mainPackage) && !selectCurrentPackage) 
-    || (!(!!transaction?.data?.mainPackage) && !selectCurrentPackage)">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="(!(!!transaction?.data?.mainPackage) && showSelectCurrentPackage) 
+    || (!(!!transaction?.data?.mainPackage) && !showSelectCurrentPackage)">NEXT</button>
   </mc-footer>
 </div>
 
