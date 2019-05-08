@@ -49,7 +49,7 @@ export class DeviceOrderAisMnpEbillingPageComponent implements OnInit, OnDestroy
       this.billCycles = data.billCycles || [];
 
       this.billCycle = this.billCycles.find(billing => {
-        return billCycle.bill === billing.bill || customer.billCycle === billing.bill;
+        return billCycle.bill ? billCycle.bill === billing.bill : customer.billCycle === billing.bill;
       });
 
       if (!this.billCycle) {
