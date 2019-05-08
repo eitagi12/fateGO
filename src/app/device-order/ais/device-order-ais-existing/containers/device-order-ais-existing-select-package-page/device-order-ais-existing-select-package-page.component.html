@@ -30,14 +30,12 @@
                     แพ็กเกจปัจจุบัน
                   </div>
                   <div class="card-body">
-                      <div class="text-green">
-                        {{ transaction?.data?.currentPackage?.title }}
-                      </div>
-                    <div *ngIf="showSelectCurrentPackage">
-                        <input type="radio" id="current-package" name="current-package" [checked]="selectCurrentPackage" (click)="onClickCurrentPackage()">
-                    <label for="current-package">
-                      ใช้แพ็กเกจเดิม
-                    </label>
+                    <div class="text-green">
+                      <span class="pull-left pt-2">{{ transaction?.data?.currentPackage?.title }}</span>
+                      <input type="radio" id="current-package" name="current-package" [checked]="selectCurrentPackage" (click)="onClickCurrentPackage()">
+                      <label class="pull-right" for="current-package">
+                        ใช้แพ็กเกจเดิม
+                      </label>
                     </div>
                     <div class="d-inline-block mt-3">
                       <p> {{ transaction?.data?.currentPackage?.inStatementThai }}</p>
