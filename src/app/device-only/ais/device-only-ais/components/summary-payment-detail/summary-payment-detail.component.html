@@ -92,31 +92,37 @@
       </div>
       <div class="col-12 col-sm-8">
         <p class="text-green" id="text-receipt-billing-address">
-          {{ transaction?.data?.billingInformation?.billDeliveryAddress?.homeNo }}
-          <span *ngIf="transaction?.data?.billingInformation?.billDeliveryAddress?.moo">
-            หมู่{{ transaction?.data?.billingInformation?.billDeliveryAddress?.moo }}
+          {{ transaction?.data?.customer?.homeNo }}
+          <span *ngIf="transaction?.data?.customer?.moo">
+            หมู่ {{ transaction?.data?.customer?.moo }}
           </span>
-          <span *ngIf="transaction?.data?.billingInformation?.billDeliveryAddress?.mooBan">
-            หมู่บ้าน{{ transaction?.data?.billingInformation?.billDeliveryAddress?.mooBan }}</span>
-          <span *ngIf="transaction?.data?.billingInformation?.billDeliveryAddress?.room">
-            ห้อง{{ transaction?.data?.billingInformation?.billDeliveryAddress?.room }}</span>
-          <span *ngIf="transaction?.data?.billingInformation?.billDeliveryAddress?.floor">
-            ชั้น {{ transaction?.data?.billingInformation?.billDeliveryAddress?.floor }}</span>
-          <span *ngIf="transaction?.data?.billingInformation?.billDeliveryAddress?.buildingName">
-            อาคาร{{ transaction?.data?.billingInformation?.billDeliveryAddress?.buildingName }}</span>
-          <span *ngIf="transaction?.data?.billingInformation?.billDeliveryAddress?.soi">
-            ซอย {{ transaction?.data?.billingInformation?.billDeliveryAddress?.soi }}</span>
-          <span *ngIf="transaction?.data?.billingInformation?.billDeliveryAddress?.street">
-            ถนน{{ transaction?.data?.billingInformation?.billDeliveryAddress?.street }}</span>
-          <span *ngIf="transaction?.data?.billingInformation?.billDeliveryAddress?.province">
-            จังหวัด {{ transaction?.data?.billingInformation?.billDeliveryAddress?.province }}</span>
-          <span *ngIf="transaction?.data?.billingInformation?.billDeliveryAddress?.amphur">
-            อำเภอ{{ transaction?.data?.billingInformation?.billDeliveryAddress?.amphur }}</span>
-          <span *ngIf="transaction?.data?.billingInformation?.billDeliveryAddress?.tumbol">
-            ตำบล/แขวง{{ transaction?.data?.billingInformation?.billDeliveryAddress?.tumbol }}</span>
-          {{ transaction?.data?.billingInformation?.billDeliveryAddress?.zipCode }}
+          <span *ngIf="transaction?.data?.customer?.mooBan">
+            หมู่บ้าน{{ transaction?.data?.customer?.mooBan }}</span>
+          <span *ngIf="transaction?.data?.customer?.room">
+            ห้อง{{ transaction?.data?.customer?.room }}</span>
+          <span *ngIf="transaction?.data?.customer?.floor">
+            ชั้น {{ transaction?.data?.customer?.floor }}</span>
+          <span *ngIf="transaction?.data?.customer?.buildingName">
+            อาคาร{{ transaction?.data?.customer?.buildingName }}</span>
+          <span *ngIf="transaction?.data?.customer?.soi">
+            ซอย {{ transaction?.data?.customer?.soi }}</span>
+          <span *ngIf="transaction?.data?.customer?.street">
+            ถนน{{ transaction?.data?.customer?.street }}</span>
+          <span *ngIf="transaction?.data?.customer?.province">
+            จังหวัด {{ transaction?.data?.customer?.province }}</span>
+          <span *ngIf="transaction?.data?.customer?.amphur">
+            อำเภอ{{ transaction?.data?.customer?.amphur }}</span>
+          <span *ngIf="transaction?.data?.customer?.tumbol">
+            ตำบล/แขวง{{ transaction?.data?.customer?.tumbol }}</span>
+          {{ transaction?.data?.customer?.zipCode }}
         </p>
       </div>
     </div>
   </div>
 </div>
+<!--สร้าง component Querybalance-->
+<!-- <div class="card mb-3">
+  <div class="card-header text-black" style="background: white;">
+    ยอดเงินคงเหลือ {{ balance }} บาท
+  </div>
+</div> -->
