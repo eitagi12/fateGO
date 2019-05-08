@@ -64,7 +64,6 @@ export class CustomerInformationService {
 
   setSelectedMobileNo(mobileNo: string): void {
     this.selectedMobileNo = mobileNo;
-    console.log('set mobileNo => : ', this.selectedMobileNo);
   }
 
   getSelectedMobileNo(): string {
@@ -84,36 +83,34 @@ export class CustomerInformationService {
       homeNo: billingAddress.houseNumber,
       moo: billingAddress.moo,
       mooBan: billingAddress.mooban,
-      room: billingAddress.room || '',
-      floor: billingAddress.floor,
       buildingName: billingAddress.buildingName,
-      soi: billingAddress.soi,
+      floor: billingAddress.floor,
+      room: billingAddress.room || '',
       street: billingAddress.streetName,
-      province: billingAddress.provinceName,
-      amphur: billingAddress.amphur,
+      soi: billingAddress.soi,
       tumbol: billingAddress.tumbol,
+      amphur: billingAddress.amphur,
+      province: billingAddress.provinceName,
       zipCode: billingAddress.portalCode,
     };
     return customer;
   }
 
   convertBillingAddressToString(billDeliveryAddress: Customer): string {
-    console.log('billDeliveryAddress: ', billDeliveryAddress);
     const addressCus: any = {
       homeNo: billDeliveryAddress.homeNo,
       moo: billDeliveryAddress.moo ? 'หมู่ ' + billDeliveryAddress.moo : '',
-      mooBan: billDeliveryAddress.mooBan,
-      room: billDeliveryAddress.room || '',
-      floor: billDeliveryAddress.floor,
+      mooBan: billDeliveryAddress.mooBan ? 'หมู่บ้าน' + billDeliveryAddress.mooBan : '',
       buildingName: billDeliveryAddress.buildingName,
-      soi: billDeliveryAddress.soi ,
+      floor: billDeliveryAddress.floor,
+      room: billDeliveryAddress.room || '',
       street: billDeliveryAddress.street,
+      soi: billDeliveryAddress.soi ? 'ซอย ' + billDeliveryAddress.soi : '',
+      tumbol: billDeliveryAddress.tumbol ? 'ตำบล' + billDeliveryAddress.tumbol : '',
+      amphur: billDeliveryAddress.amphur ? 'อำเภอ' + billDeliveryAddress.amphur : '',
       province: billDeliveryAddress.province,
-      amphur: billDeliveryAddress.amphur,
-      tumbol: billDeliveryAddress.tumbol,
       zipCode: billDeliveryAddress.zipCode,
     } ;
-    console.log('addressCus: ', addressCus);
 
     let str: string = '';
     for (const item in addressCus) {
