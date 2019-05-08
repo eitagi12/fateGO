@@ -111,7 +111,7 @@
       </div>
     </div>
 <div>
-  <app-billing-address 
+  <app-billing-address
   [titleNames]="titleName"
   [customerAddress]="customerAddress"
   [allZipCodes]="allZipCodes"
@@ -126,12 +126,15 @@
   (completed)="onCompleted($event)"
   (error)="onError($event)"
   [keyInCustomerAddressTemp]="keyInCustomerAddressTemp"
+  [payment]="paymentMethod"
+  [paymentDetail]="selectPaymentDetail"
+  [priceOption]="priceOption"
   ></app-billing-address>
 </div>
 
-<mc-footer>
+<!-- <mc-footer>
   <button class="btn btn-secondary" (click)="onBack()">BACK</button>
   <button class="btn btn-success" (click)="onNext()">NEXT</button>
-</mc-footer>
+</mc-footer> -->
 </div>
 </div>

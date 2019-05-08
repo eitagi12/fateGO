@@ -1,8 +1,15 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { debounceTime, distinct, delay } from 'rxjs/operators';
-import { Utils, CustomerAddress } from 'mychannel-shared-libs';
+import { Utils, CustomerAddress, TokenService, ApiRequestService } from 'mychannel-shared-libs';
 import { CustomerInformationService} from '../../services/customer-information.service';
+import { LocalStorageService } from 'ngx-store';
+import { CreateDeviceOrderService } from '../../services/create-device-order.service';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { DEPOSIT_PAYMENT_DETAIL_RECEIPT } from '../../constants/route-path.constant';
+import { Router } from '@angular/router';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 export interface CustomerAddress {
   titleName: string;
   firstName: string;
@@ -81,6 +88,15 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   @Output()
   error: EventEmitter<boolean> = new EventEmitter<boolean>();
 
+  @Input()
+  payment: any;
+
+  @Input()
+  paymentDetail: any;
+
+  @Input()
+  priceOption: any;
+
   customerAddressForm: FormGroup;
   private valueFn: any = Validators.nullValidator;
   private formErrors: { idCardNo: string; } = {
@@ -91,19 +107,28 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   debounceTimeInMS: number = 500;
   identityValue: string;
   disableIdCard: boolean;
-  customerProfile: any = JSON.parse(localStorage.getItem('CustomerProfile'));
+  transaction: Transaction;
+
   constructor(
     public fb: FormBuilder,
     private utils: Utils,
-    private customerInformationService: CustomerInformationService
+    private customerInformationService: CustomerInformationService,
+    private localStorageService: LocalStorageService,
+    private tokenService: TokenService,
+    private createDeviceOrderService: CreateDeviceOrderService,
+    private transactionService: TransactionService,
+    private router: Router,
+    private priceOptionService: PriceOptionService,
+    private apiRequestService: ApiRequestService,
   ) {
+    this.transaction = this.transactionService.load();
   }
 
   ngOnInit(): void {
     this.createForm();
-    if (this.customerInformationService.isReadCard === true) {
-      this.customerAddressForm.controls['idCardNo'].disable();
-    }
+    // if (this.customerInformationService.isReadCard === true) {
+    //   this.customerAddressForm.controls['idCardNo'].disable();
+    // }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -129,15 +154,13 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   }
 
   createForm(): void {
+    const customerProfile = JSON.parse(localStorage.getItem('CustomerProfile'));
+
     this.customerAddressForm = this.fb.group({
-      // idCardNo: ['', [Validators.required, Validators.pattern(/^[1-8]\d{12}$/), this.validateIdCard.bind(this)]],
-      // titleName: ['', [Validators.required]],
-      // firstName: ['', [Validators.required, this.validateCharacter()]],
-      // lastName: ['', [Validators.required, this.validateCharacter()]],
-      idCardNo: [{ value: this.customerProfile.idCardNo, disabled: true }],
-      titleName: [{ value: this.customerProfile.titleName, disabled: true }],
-      firstName: [{ value: this.customerProfile.firstName, disabled: true }],
-      lastName: [{ value: this.customerProfile.lastName, disabled: true }],
+      idCardNo: [customerProfile.idCardNo, [Validators.required, Validators.pattern(/^[1-8]\d{12}$/), this.validateIdCard.bind(this)]],
+      titleName: [customerProfile.titleName, [Validators.required]],
+      firstName: [customerProfile.firstName, [Validators.required, this.validateCharacter()]],
+      lastName: [customerProfile.lastName, [Validators.required, this.validateCharacter()]],
       homeNo: ['', [Validators.required, Validators.pattern(/^[0-9^/]*$/)]],
       moo: [''],
       mooBan: [''],
@@ -150,8 +173,9 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       amphur: ['', [Validators.required]],
       tumbol: ['', [Validators.required]],
       zipCode: ['', [Validators.required, Validators.maxLength(5), this.validateZipCode.bind(this)]],
-      telNo: [{ value: localStorage.customerMobile, disabled: true }],
+      telNo: [customerProfile.selectedMobile, [Validators.required]]
     });
+    this.disabledForm();
     this.disableFormAmphurAndTumbol();
     this.customerAddressForm.patchValue(this.customerAddress || {});
     // this.titleFormControl();
@@ -304,4 +328,96 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   private amphurForm(): AbstractControl {
     return this.customerAddressForm.controls['amphur'];
   }
+
+  private disabledForm(): void {
+    this.customerAddressForm.controls['idCardNo'].disable();
+    this.customerAddressForm.controls['titleName'].disable();
+    this.customerAddressForm.controls['firstName'].disable();
+    this.customerAddressForm.controls['lastName'].disable();
+    this.customerAddressForm.controls['telNo'].disable();
+  }
+  private onNext(): void {
+   this.getCustomerProfile();
+   this.saveTransaction();
+   this.router.navigate([DEPOSIT_PAYMENT_DETAIL_RECEIPT]);
+  }
+
+  private getCustomerProfile(): void {
+    const customerProfile = JSON.parse(localStorage.getItem('CustomerProfile'));
+    customerProfile.homeNo = this.customerAddressForm.controls['homeNo'].value;
+    customerProfile.buildingName = this.customerAddressForm.controls['buildingName'].value;
+    customerProfile.floor = this.customerAddressForm.controls['floor'].value;
+    customerProfile.room = this.customerAddressForm.controls['room'].value;
+    customerProfile.moo = this.customerAddressForm.controls['moo'].value;
+    customerProfile.mooban = this.customerAddressForm.controls['mooBan'].value;
+    customerProfile.street = this.customerAddressForm.controls['street'].value;
+    customerProfile.soi = this.customerAddressForm.controls['soi'].value;
+    customerProfile.tumbol = this.customerAddressForm.controls['tumbol'].value;
+    customerProfile.amphur = this.customerAddressForm.controls['amphur'].value;
+    customerProfile.province = this.customerAddressForm.controls['province'].value;
+    customerProfile.zipCode = this.customerAddressForm.controls['zipCode'].value;
+    customerProfile.country = 'Thailand';
+
+    localStorage.setItem('CustomerProfile', JSON.stringify(customerProfile));
+  }
+
+  private saveTransaction(): void {
+
+    this.transaction = {
+      transactionId: this.apiRequestService.getCurrentRequestId(),
+      data: {
+        transactionType: TransactionType.RESERVE_WITH_DEPOSIT,
+        customer: this.localStorageService.load('CustomerProfile').value,
+        action: TransactionAction.KEY_IN
+      }
+    };
+
+    this.transaction.data.payment = {
+      paymentMethod: this.payment,
+      selectPaymentDetail: this.paymentDetail
+    };
+
+    this.transaction.data.customer.shipaddress = {
+      shipCusAddr: this.getFullAddress(this.transaction.data.customer),
+      shipCusName: this.transaction.data.customer.titleName + ' ' + this.transaction.data.customer.firstName +
+      ' ' + this.transaction.data.customer.lastName
+    };
+    console.log('transaction', this.transaction);
+     this.transactionService.save(this.transaction);
+     this.priceOptionService.save(this.priceOption);
+  }
+
+  getFullAddress(customer: any): string {
+    if (!customer) {
+      return '-';
+    }
+    const fullAddress =
+      (customer.homeNo ? customer.homeNo + ' ' : '') +
+      (customer.moo ? 'หมู่ที่ ' + customer.moo + ' ' : '') +
+      (customer.mooBan ? 'หมู่บ้าน ' + customer.mooBan + ' ' : '') +
+      (customer.room ? 'ห้อง ' + customer.room + ' ' : '') +
+      (customer.floor ? 'ชั้น ' + customer.floor + ' ' : '') +
+      (customer.buildingName ? 'อาคาร ' + customer.buildingName + ' ' : '') +
+      (customer.soi ? 'ซอย ' + customer.soi + ' ' : '') +
+      (customer.street ? 'ถนน ' + customer.street + ' ' : '') +
+      (customer.tumbol ? 'ตำบล/แขวง ' + customer.tumbol + ' ' : '') +
+      (customer.amphur ? 'อำเภอ/เขต ' + customer.amphur + ' ' : '') +
+      (customer.province ? 'จังหวัด ' + customer.province + ' ' : '') +
+      (customer.zipCode || '');
+    return fullAddress || '-';
+  }
+
+  onBack(): void {
+    const url = '/sales-portal/reserve-stock/reserve-deposit-non-ais';
+   this.removeItem(url);
+  }
+
+  removeItem(url: string): void {
+    const userId = this.tokenService.getUser().username;
+    const soId = this.localStorageService.load('reserveSoId').value;
+    this.createDeviceOrderService.removeAddCart(soId, userId).then((res) => {
+      window.location.href = url;
+    });
+  }
+
 }
