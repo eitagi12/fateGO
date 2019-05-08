@@ -28,11 +28,8 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
   priceOption: PriceOption;
   promotionShelves: PromotionShelve[];
   condition: any;
-  showSelectCurrentPackage: boolean;
-  showCurrentPackage: boolean;
   modalRef: BsModalRef;
   shoppingCart: ShoppingCart;
-  isContractFirstPack: number;
 
   constructor(
     private router: Router,
@@ -53,18 +50,6 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
       delete this.transaction.data.billingInformation.billCycle;
       delete this.transaction.data.billingInformation.mergeBilling;
     }
-
-    const contract = this.transaction.data.contractFirstPack || {};
-    const priceExclVat = this.transaction.data.currentPackage && this.transaction.data.currentPackage.priceExclVat || 0;
-    this.isContractFirstPack = Math.max(contract.firstPackage || 0, contract.minPrice || 0, contract.initialPackage || 0);
-
-    if (!this.mathHotDeal && !this.advancePay) {
-      this.showCurrentPackage = true;
-    }
-
-    if (this.priceOption.privilege.minimumPackagePrice <= priceExclVat) {
-      this.showSelectCurrentPackage = true;
-    }
   }
 
   get advancePay(): boolean {
@@ -81,11 +66,6 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
 
       this.promotionShelves = this.promotionShelveService
         .defaultBySelected(this.transaction.data.promotionsShelves, this.transaction.data.mainPackage);
-
-      if (this.showCurrentPackage) {
-        this.promotionShelves[0].promotions[0].active = false;
-      }
-
     } else {
       this.callService();
     }
@@ -104,15 +84,17 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
     this.pageLoadingService.openLoading();
     const mobileNo = this.transaction.data.simCard.mobileNo;
 
+    // call เช็ค mobile care เดิม
     this.http.get(`/api/customerportal/get-existing-mobile-care/${mobileNo}`).toPromise().then((response: any) => {
       const exMobileCare = response.data || {};
-
       if (exMobileCare.hasExistingMobileCare) {
         const existingMobileCare: ExistingMobileCare = exMobileCare.existMobileCarePackage;
         existingMobileCare.handSet = exMobileCare.existHandSet;
         this.transaction.data.existingMobileCare = existingMobileCare;
       }
 
+      // ถ้ามี mobileCare เดิม จะไปหน้า เลือกว่าจะเปลี่ยน mobileCare หรือ ไม่
+      // ถ้าไม่มี mobileCare เดิม จะไปหน้าเลือกวันที่มีผลรอบบิล
       if (exMobileCare.hasExistingMobileCare) {
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE]);
       } else {

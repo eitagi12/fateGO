@@ -19,26 +19,12 @@
           </div>
           <div class="bg-white">
             <div class="container-fluid">
-              <div class="card mb-3" *ngIf="showCurrentPackage">
-                <div class="card-header bg-green text-white">
-                  แพ็กเกจปัจจุบัน
-                </div>
-                <div class="card-body">
-                  <div class="pull-left text-green mt-3">
-                    {{ transaction?.data?.currentPackage?.title }}
-                  </div>
-                  <div class="d-inline-block mt-3">
-                    <p> {{ transaction?.data?.currentPackage?.inStatementThai }}</p>
-                    <p> {{ transaction?.data?.currentPackage?.expiredDate }}</p>
-                  </div>
-                </div>
-              </div>
               <div class="card">
                 <div class="card-header bg-green text-white mb-2">
                   เลือกแพ็กเกจใหม่ <span>(แพ็กเกจเริ่มต้น {{ priceOption?.privilege?.minimumPackagePrice }} บาท)</span>
                 </div>
                 <mc-promotion-shelve [selected]="transaction?.data?.mainPackage" [promotionShelves]="promotionShelves"
-                  (completed)="onCompleted($event)"></mc-promotion-shelve>
+                (completed)="onCompleted($event)"></mc-promotion-shelve>
               </div>
             </div>
           </div>
@@ -49,8 +35,7 @@
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()" [disabled]="(!(!!transaction?.data?.mainPackage) && !selectCurrentPackage) 
-    || (!(!!transaction?.data?.mainPackage) && !selectCurrentPackage)">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!(!!transaction?.data?.mainPackage)">NEXT</button>
   </mc-footer>
 </div>
 
