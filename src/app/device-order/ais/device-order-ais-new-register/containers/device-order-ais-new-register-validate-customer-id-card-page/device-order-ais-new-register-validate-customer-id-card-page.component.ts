@@ -29,6 +29,7 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
   zipcode: string;
   readCardValid: boolean;
   user: User;
+  progressReadCard: number;
 
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
@@ -73,6 +74,14 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
 
   ngOnInit(): void {
     this.onRemoveCardState();
+  }
+
+  onProgress(progress: number): void {
+    this.progressReadCard = progress;
+  }
+
+  progressDoing(): boolean {
+    return this.progressReadCard > 0 && this.progressReadCard < 100 ? true : false;
   }
 
   onRemoveCardState(): void {

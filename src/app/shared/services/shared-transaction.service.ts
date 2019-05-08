@@ -60,6 +60,8 @@ export class SharedTransactionService {
     const productDetail = priceOption.productDetail;
     const productStock = priceOption.productStock;
 
+    data.customer.province = (data.customer.province || '').replace(/มหานคร$/, '');
+
     const params: any = {
       transactionId: transaction.transactionId,
       createBy: transaction.createBy,
@@ -130,6 +132,12 @@ export class SharedTransactionService {
     };
 
     if (data.billingInformation) {
+
+      if (data.billingInformation.billDeliveryAddress) {
+        // tslint:disable-next-line:max-line-length
+        data.billingInformation.billDeliveryAddress.province = (data.billingInformation.billDeliveryAddress.province || '').replace(/มหานคร$/, '');
+      }
+
       // หน้า web payment ใช้ show ที่อยู่รับบิล
       params.data.billing_information = {
         customer: { ...data.customer, ...data.billingInformation.billDeliveryAddress },
@@ -209,7 +217,7 @@ export class SharedTransactionService {
       if (advancePay.promotions) {
         const mainPackage = data.mainPackage && data.mainPackage.customAttributes || {};
         const findPromotionByMainPackage = advancePay.promotions
-        .find(promotion => (promotion && promotion.billingSystem) === mainPackage.billingSystem);
+          .find(promotion => (promotion && promotion.billingSystem) === mainPackage.billingSystem);
         params.data.air_time.promotions = [findPromotionByMainPackage] || advancePay.promotions;
       }
 

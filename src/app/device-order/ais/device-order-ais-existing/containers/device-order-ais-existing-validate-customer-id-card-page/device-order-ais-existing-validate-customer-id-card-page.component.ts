@@ -26,6 +26,7 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
   readCardValid: boolean;
   priceOption: PriceOption;
   user: User;
+  progressReadCard: number;
 
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
@@ -60,6 +61,14 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
 
   ngOnInit(): void {
     this.onRemoveCardState();
+  }
+
+  onProgress(progress: number): void {
+    this.progressReadCard = progress;
+  }
+
+  progressDoing(): boolean {
+    return this.progressReadCard > 0 && this.progressReadCard < 100 ? true : false;
   }
 
   onRemoveCardState(): void {
