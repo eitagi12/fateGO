@@ -13,7 +13,6 @@ export const ROUTE_DEVICE_ORDER_AIS_MNP_EBILLING_PAGE = '/device-order/ais/mnp/e
 export const ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_PAGE = '/device-order/ais/mnp/mobile-care';
 export const ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE = '/device-order/ais/mnp/mobile-care-avalible';
 export const ROUTE_DEVICE_ORDER_AIS_MNP_SUMMARY_PAGE = '/device-order/ais/mnp/summary';
-export const ROUTE_DEVICE_ORDER_AIS_MNP_AGREEMENT_PAGE = '/device-order/ais/mnp/agreement';
 export const ROUTE_DEVICE_ORDER_AIS_MNP_AGREEMENT_SIGN_PAGE = '/device-order/ais/mnp/agreement-sign';
 export const ROUTE_DEVICE_ORDER_AIS_MNP_ECONTACT_PAGE = '/device-order/ais/mnp/econtact';
 export const ROUTE_DEVICE_ORDER_AIS_MNP_FACE_CAPTURE_PAGE = '/device-order/ais/mnp/face-capture';

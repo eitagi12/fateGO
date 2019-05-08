@@ -28,7 +28,6 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
   priceOption: PriceOption;
   promotionShelves: PromotionShelve[];
   condition: any;
-  selectCurrentPackage: boolean;
   showSelectCurrentPackage: boolean;
   showCurrentPackage: boolean;
   modalRef: BsModalRef;
@@ -81,7 +80,7 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
     if (this.transaction.data.promotionsShelves) {
 
       this.promotionShelves = this.promotionShelveService
-      .defaultBySelected(this.transaction.data.promotionsShelves, this.transaction.data.mainPackage);
+        .defaultBySelected(this.transaction.data.promotionsShelves, this.transaction.data.mainPackage);
 
       if (this.showCurrentPackage) {
         this.promotionShelves[0].promotions[0].active = false;
@@ -94,18 +93,11 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
 
   onCompleted(promotion: any): void {
     // รอแก้ไขตัวแปรที่จะเก็บลงใน share transaction
-    this.selectCurrentPackage = false;
     this.transaction.data.mainPackage = promotion;
   }
 
-  onClickCurrentPackage(): void {
-    this.selectCurrentPackage = true;
-    this.transaction.data.mainPackage = null;
-    this.promotionShelves[0].promotions.forEach((promotion: any) => promotion.active = false);
-  }
-
   onBack(): void {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_PAYMENT_DETAIL_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_PAYMENT_DETAIL_PAGE]);
   }
 
   onNext(): void {
@@ -121,12 +113,8 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
         this.transaction.data.existingMobileCare = existingMobileCare;
       }
 
-      if (this.selectCurrentPackage) {
-        if (exMobileCare.hasExistingMobileCare) {
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE]);
-        } else {
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE]);
-        }
+      if (exMobileCare.hasExistingMobileCare) {
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE]);
       } else {
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE]);
       }
@@ -143,7 +131,7 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
     const trade: any = this.priceOption.trade;
     const privilege: any = this.priceOption.privilege;
     const billingSystem = (this.transaction.data.simCard.billingSystem === 'RTBS')
-    ? BillingSystemType.IRB : this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
+      ? BillingSystemType.IRB : this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
 
     this.promotionShelveService.getPromotionShelve(
       {
