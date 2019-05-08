@@ -33,7 +33,11 @@ export class TransactionService {
   }
 
   update(transaction: Partial<Transaction>): void {
+    console.log('remove', transaction);
+
     this.remove();
+    console.log('updateTran', transaction);
+
     this.settings.update(transaction);
   }
 

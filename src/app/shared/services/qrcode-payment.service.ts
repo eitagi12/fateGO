@@ -62,6 +62,8 @@ export class QRCodePaymentService {
 
   checkInquiryCallbackMpayRes: BehaviorSubject<any> = new BehaviorSubject(null);
 
+  private updateTransaction: any;
+
   constructor(private http: HttpClient,
     private transactionService: TransactionService) { }
 
@@ -164,9 +166,12 @@ export class QRCodePaymentService {
 
   updateMpayObjectInTransaction(data: any): void {
     const transaction: Transaction = this.transactionService.load();
-
+    this.updateTransaction = transaction;
+    this.updateTransaction.data.mpayPayment = data;
     // transaction.data.mpay_payment = data;
-    this.transactionService.update(transaction);
+    console.log('updateTransaction', this.updateTransaction);
+
+    this.transactionService.update(this.updateTransaction);
   }
 
 }

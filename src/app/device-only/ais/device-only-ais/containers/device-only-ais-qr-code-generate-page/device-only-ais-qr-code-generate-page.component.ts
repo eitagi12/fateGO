@@ -80,6 +80,8 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    console.log('dssssssssssssssssssssssssssssss');
+
     this.initialOrderID();
     this.deposit = this.transaction.data.preBooking
     && this.transaction.data.preBooking.depositAmt ? -Math.abs(+this.transaction.data.preBooking.depositAmt) : 0;
@@ -204,6 +206,7 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
       this.isTimeLowerThanFifthteenSeconds = this.isTimeLowerThanFifthteenSecondsFn(x);
       const times: number = this.qrcodePaymentService.convertTimeToMinutes(x);
       this.timeLowerThanOrEqualToZero = times < 0;
+      console.log('thistimeLowerThanOrEqualToZero', this.timeLowerThanOrEqualToZero);
       if (this.timeLowerThanOrEqualToZero) {
         this.inquiryMpay().then((isSuccess: boolean) => {
           if (isSuccess) {
@@ -216,6 +219,7 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
         });
       } else if (this.isPaid) {
         this.qrcodePaymentService.updateMpayObjectInTransaction(this.qrCodePrePostMpayModel);
+        console.log('qrCodePrePostMpayModel', this.qrCodePrePostMpayModel);
         this.goToMpayQueuePage();
       }
     });
@@ -253,6 +257,8 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
   }
   inquiryMpay(): Promise<boolean> {
     return this.qrcodePaymentService.getInquiryMpay({ orderId: this.orderID }).then((res: any) => {
+      console.log('res', res);
+
       if (res && res.data && res.data.status && res.data.status === 'SUCCESS') {
         this.qrCodePrePostMpayModel.status = res.data.status;
         this.qrCodePrePostMpayModel.tranId = res.data.tranId;
@@ -262,8 +268,10 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
         // set transactionId
         this.transaction.transactionId = res.data.tranId;
         return true;
+      } else {
+
+        return false;
       }
-      return false;
     });
   }
   updateMpayDataStatus(): void {
@@ -356,7 +364,7 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
   }
   // tslint:disable-next-line:use-life-cycle-interface
   ngOnDestroy(): void {
-    this.transactionService.update(this.transaction);
+    // this.transactionService.update(this.transaction);
     if (this.subscription$) {
       this.subscription$.unsubscribe();
     }
