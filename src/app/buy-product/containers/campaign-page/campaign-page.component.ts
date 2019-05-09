@@ -254,14 +254,15 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     mapTrades(trades: any[]): any[] {
         const setPayment = { cardType: '', method: 'CC/CA', installmentId: '' };
         return trades.map((trade: any) => {
-            // console.log('trade', trade);
             if (trade.payments && trade.payments.length > 0 && trade.payments[0].installId === null) {
+                console.log('trade', trade);
                 if (trade.payments[0].method === 'CC') {
+                    // console.log('trade', trade);
                     trade.payments = [setPayment];
                     trade.advancePay.installmentFlag = 'N';
+                } else if (trade.payments[0].method === 'CA') {
+
                 }
-            } else if (trade.payments[0].method === 'CA') {
-                // MergeTradePay
             } else {
                 // Trade for TDM --> payments is []
                 trade.payments = [setPayment];
@@ -296,7 +297,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                     campaign.privileges, code
                 ).map((privilege: any) => {
                     privilege.trades = this.filterTrades(privilege.trades, code);
-                    privilege.trades = this.mapTrades(privilege.trades);
+                    // privilege.trades = this.mapTrades(privilege.trades);
                     return privilege;
                 }).sort((a, b) =>
                     // แพคเกจน้อยไปมาก
