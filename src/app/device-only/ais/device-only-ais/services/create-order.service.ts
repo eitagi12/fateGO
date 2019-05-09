@@ -350,6 +350,10 @@ ${this.PROMOTION_NAME}${this.SPACE}${this.NEW_LINE}${installment}${this.NEW_LINE
       } else {
         return 'RL';
       }
+    } else if (payment.paymentType === 'CREDIT') {
+      return 'CC';
+    } else if (payment.paymentType === 'DEBIT') {
+      return 'CA';
     } else {
       return tradePayment.method;
     }

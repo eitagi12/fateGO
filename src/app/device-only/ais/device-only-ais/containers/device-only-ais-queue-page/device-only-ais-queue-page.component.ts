@@ -13,6 +13,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 })
 export class DeviceOnlyAisQueuePageComponent implements OnInit, OnDestroy {
 
+  paymentQr: any;
   transaction: Transaction;
   priceOption: PriceOption;
   constructor(
@@ -25,11 +26,20 @@ export class DeviceOnlyAisQueuePageComponent implements OnInit, OnDestroy {
     }
 
   ngOnInit(): void {
+    this.checkPaymentType();
     this.pageLoadingService.closeLoading();
   }
 
   onHome(): void {
     window.location.href = '/';
+  }
+
+  checkPaymentType(): void {
+    if (this.transaction.data.payment.paymentType === 'QR_CODE') {
+      this.paymentQr = 'รวดยอดชำระ';
+    } else {
+      this.paymentQr = 'ยอดค้างชำระ';
+    }
   }
 
   mainMenu(): void {
