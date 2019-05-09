@@ -1,11 +1,12 @@
 <div class="mc-flex">
-  <mc-header title="ลูกค้าย้ายค่าย">
-    <div class="header-icon-left">
+  <mc-header title="{{ 'ลูกค้าย้ายค่าย' | translate}}">
+    <div class="header-icon-left w-25">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
-    <div class="header-icon-right">
-      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
-    </div>
+    <div class="header-icon-right w-25 text-right">
+      <mc-dropdown-language></mc-dropdown-language>
+    <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+  </div>
   </mc-header>
   <div class="mc-flex-wrap">
     <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
@@ -15,13 +16,13 @@
         <div class="container-fluid">
           <div class="bg-white p-3">
             <img src="assets/images/icon/package-info.png" class="icon-package-info" />
-            ข้อมูลแพ็กเกจ
+            {{'ข้อมูลแพ็กเกจ' | translate}}
           </div>
           <div class="bg-white">
             <div class="container-fluid">
               <div class="card">
                 <div class="card-header bg-green text-white mb-2">
-                  เลือกแพ็กเกจใหม่ <span>(แพ็กเกจเริ่มต้น {{ priceOption?.privilege?.minimumPackagePrice }} บาท)</span>
+                  {{'เลือกแพ็กเกจใหม่' | translate}} <span>({{'แพ็กเกจเริ่มต้น' | translate}} {{ priceOption?.privilege?.minimumPackagePrice }} บาท)</span>
                 </div>
                 <mc-promotion-shelve [selected]="transaction?.data?.mainPackage" [promotionShelves]="promotionShelves"
                 (completed)="onCompleted($event)"></mc-promotion-shelve>
@@ -30,7 +31,7 @@
           </div>
         </div>
       </div>
-      <p class="text-center my-5" *ngIf="promotionShelves?.length === 0">ไม่พบแพ็กเกจที่ร่วมรายการ</p>
+      <p class="text-center my-5" *ngIf="promotionShelves?.length === 0" translate>ไม่พบแพ็กเกจที่ร่วมรายการ</p>
     </div>
   </div>
   <mc-footer>
