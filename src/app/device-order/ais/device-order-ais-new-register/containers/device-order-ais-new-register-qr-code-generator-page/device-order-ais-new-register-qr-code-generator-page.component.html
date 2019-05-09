@@ -13,7 +13,7 @@
         <div class="card mb-5">
           <div class="card-header bg-lime text-white">ข้อมูลการชำระ</div>
           <div class="card-body text-light-grey">
-            <div class=" mb-3" *ngIf="priceOption?.productStock?.company">
+            <div class=" mb-3" *ngIf="priceOption?.productStock?.company && transaction?.data?.payment?.paymentType === 'QR_CODE'">
               ผู้ให้บริการ
               <span class="pull-right"> {{ priceOption?.productStock?.company }} </span>
             </div>

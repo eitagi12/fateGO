@@ -82,13 +82,14 @@
                   <span class="pull-right text-green">
                     ฿ {{ priceOption?.trade?.promotionPrice | number }}
                   </span>
-                  <div class="mt-1">
+                  <div class="mt-1" *ngIf="transaction?.data?.payment?.paymentForm !== 'INSTALLMENT'">
                     <small class="text-muted">
                       ( ชำระโดย
                       <span *ngIf="transaction?.data?.advancePayment?.paymentQrCodeType === 'THAI_QR'"> Thai QR Promptpay </span>
                       <span *ngIf="transaction?.data?.advancePayment?.paymentQrCodeType === 'LINE_QR'"> Rabbit Line Pay </span>
                       )
                     </small>
+                    <span class="text-pink">( รอชำระ )</span>
                   </div>
                 </div>
 
@@ -102,6 +103,7 @@
                     <span class="pull-right text-green">
                       ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
                     </span>
+                    <br>
                   <small class="text-muted">
                     ( ชำระโดย
                     <span *ngIf="transaction?.data?.advancePayment?.paymentQrCodeType === 'THAI_QR'"> Thai QR Promptpay </span>
