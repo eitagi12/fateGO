@@ -252,20 +252,20 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     }
 
     mapTrades(trades: any[]): any[] {
-        const setPayment = { cardType: '', method: 'CC/CA', installmentId: '' };
         return trades.map((trade: any) => {
-            if (trade.payments && trade.payments.length > 0 && trade.payments[0].installId === null) {
-                console.log('trade', trade);
-                if (trade.payments[0].method === 'CC') {
-                    // console.log('trade', trade);
-                    trade.payments = [setPayment];
-                    trade.advancePay.installmentFlag = 'N';
-                } else if (trade.payments[0].method === 'CA') {
-
-                }
-            } else {
+            if (!trade.payments || trade.payments.length === 0) {
                 // Trade for TDM --> payments is []
-                trade.payments = [setPayment];
+                trade.payments = [{ cardType: '', method: 'CC/CA', installmentId: '' }];
+            } else {
+                if (trade.payments[0].installId === null) {
+                    // console.log('trade', trade);
+                    if (trade.payments[0].method === 'CC') {
+                        trade.payments = [{ cardType: '', method: 'CC/CA', installmentId: '' }];
+                        trade.advancePay.installmentFlag = 'N';
+                    } else if (trade.payments[0].method === 'CA') {
+                        trade.advancePay.installmentFlag = 'N';
+                    }
+                }
             }
             return trade;
         });
@@ -297,7 +297,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                     campaign.privileges, code
                 ).map((privilege: any) => {
                     privilege.trades = this.filterTrades(privilege.trades, code);
-                    // privilege.trades = this.mapTrades(privilege.trades);
+                   privilege.trades = this.mapTrades(privilege.trades);
                     return privilege;
                 }).sort((a, b) =>
                     // แพคเกจน้อยไปมาก
@@ -380,6 +380,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         this.priceOption.customerGroup = campaign.customerGroups.find(
             customerGroup => customerGroup.code === code
         );
+        campaign.privileges = this.mapTrades(campaign.privileges);
         this.priceOption.campaign = campaign;
     }
 
@@ -436,7 +437,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     onTradeSelected(privilege: any, trade: any): void {
         this.priceOption.privilege = privilege;
         this.priceOption.trade = trade;
-
         this.pageLoadingService.openLoading();
         this.flowService.nextUrl(this.priceOption)
             .then((nextUrl: string) => {
