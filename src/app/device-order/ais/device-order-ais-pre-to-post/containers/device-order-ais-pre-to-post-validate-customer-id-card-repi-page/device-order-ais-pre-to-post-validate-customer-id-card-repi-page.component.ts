@@ -127,6 +127,10 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardRepiPageComponent impl
         })
         .then((customer: any) => {
           // load bill cycle
+          if (this.hasPrivilegeCode()) {
+            customer.privilegeCode = this.transaction.data.simCard.privilegeCode;
+          }
+
           this.transaction.data.customer = Object.assign(this.profile, customer);
           return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
             .then((resp: any) => {
@@ -185,6 +189,10 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardRepiPageComponent impl
             });
         }).then(() => this.pageLoadingService.closeLoading());
     });
+  }
+
+  hasPrivilegeCode(): boolean {
+    return !!(this.transaction.data.simCard && this.transaction.data.simCard.privilegeCode);
   }
 
   getZipCode(province: string, amphur: string, tumbol: string): Promise<string> {

@@ -65,7 +65,7 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
       this.promotionShelves = this.promotionShelveService
       .defaultBySelected(filterPromotionByFirstPack, this.transaction.data.mainPackage);
 
-      if (!this.mathHotDeal && !this.advancePay && this.showSelectCurrentPackage) {
+      if (!this.advancePay && this.showSelectCurrentPackage) {
         this.promotionShelves[0].promotions[0].active = false;
       }
 
@@ -189,11 +189,6 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
 
   get advancePay(): boolean {
     return !!((this.priceOption.trade.advancePay && this.priceOption.trade.advancePay.amount || 0) > 0);
-
-  }
-
-  get mathHotDeal(): boolean {
-    return !!this.priceOption.campaign.campaignName.match(/\b(\w*Hot\s+Deal\w*)\b/);
 
   }
 

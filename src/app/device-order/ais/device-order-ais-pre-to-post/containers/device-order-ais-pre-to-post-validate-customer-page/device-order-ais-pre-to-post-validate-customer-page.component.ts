@@ -16,6 +16,7 @@ import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/
 
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
 
 @Component({
   selector: 'app-device-order-ais-pre-to-post-validate-customer-page',
@@ -39,6 +40,7 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
     private http: HttpClient,
     private alertService: AlertService,
     private tokenService: TokenService,
+    private privilegeService: PrivilegeService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
@@ -95,11 +97,15 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
           mobileNo: this.identity
         }
       }).toPromise()
-        .then((resp: any) => {
-          this.transaction.data.simCard = { mobileNo: this.identity, persoSim: false };
-          this.transaction.data.action = TransactionAction.KEY_IN_REPI;
-          this.pageLoadingService.closeLoading();
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CURRENT_INFO_PAGE]);
+        .then(() => {
+          return this.privilegeService.checkAndGetPrivilegeCode(this.identity, this.priceOption.trade.ussdCode)
+          .then((respPrivilegeCode) => {
+            this.transaction.data.simCard = { mobileNo: this.identity, persoSim: false, privilegeCode: respPrivilegeCode };
+            this.transaction.data.action = TransactionAction.KEY_IN_REPI;
+            this.pageLoadingService.closeLoading();
+
+          }).then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CURRENT_INFO_PAGE]));
+
         })
         .catch((resp: any) => {
           this.alertService.error(resp.error.developerMessage);
