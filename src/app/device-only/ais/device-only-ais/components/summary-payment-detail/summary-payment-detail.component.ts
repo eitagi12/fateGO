@@ -17,7 +17,7 @@ export class SummaryPaymentDetailComponent implements OnInit {
   priceOption: PriceOption;
   transaction: Transaction;
   customerAddress: string;
-  // paymentDesc: string;
+  price: string;
 
   constructor(
     private priceOptionService: PriceOptionService,
@@ -30,9 +30,11 @@ export class SummaryPaymentDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // const payment: any = this.transaction.data.payment.type;
-    // this.paymentDesc = `( ชำระโดย ${payment} )`;
+    this.price = this.priceOption.trade.priceType === 'NORMAL' ? this.priceOption.trade.normalPrice : this.priceOption.trade.promotionPrice;
+    this.getDataCustomer();
+  }
 
+  getDataCustomer(): void {
     const customer = this.transaction.data.customer;
     if (customer) {
       this.customerAddress = this.utils.getCurrentAddress({

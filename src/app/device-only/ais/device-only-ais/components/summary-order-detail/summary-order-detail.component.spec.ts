@@ -20,7 +20,15 @@ describe('SummaryOrderDetailComponent', () => {
       {
         provide: PriceOptionService,
         useValue: {
-          load: jest.fn()
+          load: jest.fn(() => {
+            return {
+              trade: {
+                priceType: 'NORMAL',
+                normalPrice: '22590',
+                promotionPrice: '18500'
+              }
+            };
+          })
         }
       }
     ]

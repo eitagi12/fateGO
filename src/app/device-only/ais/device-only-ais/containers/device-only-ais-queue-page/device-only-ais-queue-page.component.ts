@@ -16,6 +16,8 @@ export class DeviceOnlyAisQueuePageComponent implements OnInit, OnDestroy {
   paymentQr: any;
   transaction: Transaction;
   priceOption: PriceOption;
+  price: string;
+
   constructor(
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
@@ -27,6 +29,7 @@ export class DeviceOnlyAisQueuePageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.checkPaymentType();
+    this.price = this.priceOption.trade.priceType === 'NORMAL' ? this.priceOption.trade.normalPrice : this.priceOption.trade.promotionPrice;
     this.pageLoadingService.closeLoading();
   }
 

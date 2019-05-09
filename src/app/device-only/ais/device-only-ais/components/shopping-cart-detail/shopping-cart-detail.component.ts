@@ -13,6 +13,7 @@ export class ShoppingCartDetailComponent implements OnInit {
 
   priceOption: PriceOption;
   transaction: Transaction;
+  price: string;
 
   constructor(
     private transactionService: TransactionService,
@@ -20,10 +21,10 @@ export class ShoppingCartDetailComponent implements OnInit {
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
-   }
+  }
 
   ngOnInit(): void {
-
+    this.price = this.priceOption.trade.priceType === 'NORMAL' ? this.priceOption.trade.normalPrice : this.priceOption.trade.promotionPrice;
   }
 
 }

@@ -21,6 +21,7 @@ export class DeviceOnlyAisQrCodeKeyInQueuePageComponent implements OnInit, OnDes
   transaction: Transaction;
   priceOption: PriceOption;
   queue: string;
+  price: string;
 
   constructor(
     public router: Router,
@@ -38,6 +39,7 @@ export class DeviceOnlyAisQrCodeKeyInQueuePageComponent implements OnInit, OnDes
      }
 
   ngOnInit(): void {
+    this.price = this.priceOption.trade.priceType === 'NORMAL' ? this.priceOption.trade.normalPrice : this.priceOption.trade.promotionPrice;
     this.homeButtonService.initEventButtonHome();
     this.createQueueForm();
   }

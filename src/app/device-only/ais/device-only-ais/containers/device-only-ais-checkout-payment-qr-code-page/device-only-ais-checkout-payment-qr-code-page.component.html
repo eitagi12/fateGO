@@ -31,22 +31,18 @@
             <mc-lazy-load-image [src]=""></mc-lazy-load-image>
           </div>
           <div class="col-xs-12 col-sm-7 mb-3">
-            <!-- <i class="fa fa-circle mr-3 text-light-green"></i> -->
             <span id="text-brand-model">
               {{ priceOption?.productDetail?.brand }}
               {{ priceOption?.productDetail?.name }}
               <span>
-              <!-- <span *ngIf="priceOption?.productStock?.colorName"> -->
                 {{ priceOption?.productStock?.colorName? 'สี': '' }} {{ priceOption?.productStock?.colorName }}
               </span>
             </span>  
             <p id="text-campaign-name">{{ priceOption?.campaign?.campaignName }}</p>
-            <!-- <p>{{ priceOption?.campaign?.campaignName }}</p> -->
             <div id="text-brand-model-price" class="text-light-green">
                ฿<span id="text-brand-model-price">
-                  {{ summary([+priceOption?.trade?.promotionPrice]) | number }}
+                  {{ summary([+price]) | number }}
                 </span>
-              <!-- ฿{{ summary([+priceOption?.trade?.promotionPrice, +priceOption?.trade?.advancePay?.amount]) | number }} 999999 -->
             </div>
           </div>
         </div>
@@ -68,8 +64,7 @@
                   </span>
                   <span class="pull-right">
                     ฿<span id="text-summary-price">
-                        {{ summary([+priceOption?.trade?.promotionPrice]) | number }}
-                      <!-- ฿{{ summary([+priceOption?.trade?.promotionPrice, +priceOption?.trade?.advancePay?.amount]) | number }} 999999 -->
+                        {{ summary([+price]) | number }}
                     </span>
                   </span>
                 </p>
@@ -78,7 +73,7 @@
               <div class="text-right mt-3">
                 Total
                 <span class="total pull-right text-green">฿<span id="text-total-price">
-                    {{ summary([+priceOption?.trade?.promotionPrice]) | number }}</span></span>
+                    {{ summary([+price]) | number }}</span></span>
               </div>
             </div>
           </div>

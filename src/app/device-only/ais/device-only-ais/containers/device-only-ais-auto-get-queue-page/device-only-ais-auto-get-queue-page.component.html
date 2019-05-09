@@ -33,11 +33,11 @@
               </span> 
             </div>
             <div class="col-6 text-right">
-              <p class="text-green" id="text-normal-price">฿ {{ priceOption?.trade?.promotionPrice | number}} </p>
+              <p class="text-green" id="text-normal-price">฿ {{ price | number}} </p>
             </div>
             <div class="col-12 text-right">
               ยอดค้างชำระ(รวมVAT)
-              <span class="text-green" id="text-include-vat-price">฿ {{ priceOption?.trade?.promotionPrice | number}} </span>
+              <span class="text-green" id="text-include-vat-price">฿ {{ price | number}} </span>
             </div>
           </div>
           <div class="row mt-5" [formGroup]="mobileForm">

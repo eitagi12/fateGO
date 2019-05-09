@@ -22,6 +22,7 @@ export class DeviceOnlyAutoGetQueuePageComponent implements OnInit, OnDestroy {
   priceOption: PriceOption;
   public mobileForm: FormGroup;
   public queue: string;
+  price: string;
 
   constructor(
     public router: Router,
@@ -41,6 +42,7 @@ export class DeviceOnlyAutoGetQueuePageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.price = this.priceOption.trade.priceType === 'NORMAL' ? this.priceOption.trade.normalPrice : this.priceOption.trade.promotionPrice;
     this.homeButtonService.initEventButtonHome();
     this.createForm();
   }

@@ -60,8 +60,9 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
     }
     // REFACTOR IT'S
     this.paymentDetail = {
-      commercialName: commercialName ,
-      promotionPrice: +(this.priceOption.trade.promotionPrice || 0),
+      commercialName: commercialName,
+      // tslint:disable-next-line:max-line-length
+      promotionPrice: this.priceOption.trade.priceType === 'NORMAL' ? +(this.priceOption.trade.normalPrice) : +(this.priceOption.trade.promotionPrice),
       isFullPayment: this.isFullPayment(),
       installmentFlag: false,
       advancePay: 0,

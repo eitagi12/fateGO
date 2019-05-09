@@ -9,43 +9,50 @@ describe('SummaryPaymentDetailComponent', () => {
   let component: SummaryPaymentDetailComponent;
   let fixture: ComponentFixture<SummaryPaymentDetailComponent>;
 
-    setupTestBed({
-      declarations: [SummaryPaymentDetailComponent],
-        providers: [
-          HttpClient,
-          HttpHandler,
-        {
-          provide: PriceOptionService,
-          useValue: {
-            load: jest.fn()
-           }
-        },
-        {
-          provide: TransactionService,
-          useValue: {
-            load: jest.fn(() => {
-              return {
-                data: {
-                  customer: {
-                    homeNo: '',
-                    moo: '',
-                    room: '',
-                    floor: '',
-                    buildingName: '',
-                    soi: '',
-                    street: '',
-                    tumbol: '',
-                    amphur: '',
-                    province: '',
-                    zipCode: ''
-                  }
-                }
-              };
-            }),
-           }
+  setupTestBed({
+    declarations: [SummaryPaymentDetailComponent],
+    providers: [
+      HttpClient,
+      HttpHandler,
+      {
+        provide: PriceOptionService,
+        useValue: {
+          load: jest.fn(() => {
+            return {
+              trade: {
+                priceType: 'NORMAL',
+                normalPrice: '22590',
+                promotionPrice: '18500'
+              }
+            };
+          })
         }
-      ]
-    });
+      }, {
+        provide: TransactionService,
+        useValue: {
+          load: jest.fn(() => {
+            return {
+              data: {
+                customer: {
+                  homeNo: '',
+                  moo: '',
+                  room: '',
+                  floor: '',
+                  buildingName: '',
+                  soi: '',
+                  street: '',
+                  tumbol: '',
+                  amphur: '',
+                  province: '',
+                  zipCode: ''
+                }
+              }
+            };
+          }),
+        }
+      }
+    ]
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(SummaryPaymentDetailComponent);

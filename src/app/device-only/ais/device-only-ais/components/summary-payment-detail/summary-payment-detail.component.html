@@ -21,7 +21,7 @@
         <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'"> : ชำระเต็มจำนวน</span>
         <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'"> : ผ่อนชำระบัตรเครดิต</span>
         <span class="pull-right text-green" id="text-price-summary">
-          ฿ {{ priceOption?.trade?.promotionPrice | number }}
+          ฿ {{ price | number }}
         </span>
       </p>
     </ng-container>
@@ -33,7 +33,7 @@
           {{ transaction?.data?.payment?.paymentMethod?.name }}
           {{ transaction?.data?.payment?.paymentMethod?.percentage }} %
           {{ transaction?.data?.payment?.paymentMethod?.month }} เดือน
-          {{ ((+priceOption?.trade?.promotionPrice) + (priceOption?.trade?.advancePay?.installmentFlag === 'N' ? +priceOption?.trade?.advancePay?.amount : 0)) / transaction?.data?.payment?.paymentMethod?.month | number: '1.2-2' }} 
+          {{ ((+price) + (priceOption?.trade?.advancePay?.installmentFlag === 'N' ? +priceOption?.trade?.advancePay?.amount : 0)) / transaction?.data?.payment?.paymentMethod?.month | number: '1.2-2' }} 
           บาทต่อเดือน
           )
         </span>

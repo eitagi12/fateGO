@@ -17,6 +17,7 @@ export class DeviceOnlyAisCheckoutPaymentQrCodePageComponent implements OnInit, 
   transaction: Transaction;
   priceOption: PriceOption;
   campaignName: string = 'โครงการ ซื้อเครื่องเปล่า';
+  price: any;
 
   constructor(
     private router: Router,
@@ -30,6 +31,7 @@ export class DeviceOnlyAisCheckoutPaymentQrCodePageComponent implements OnInit, 
    }
 
   ngOnInit(): void {
+    this.price = this.priceOption.trade.priceType === 'NORMAL' ? this.priceOption.trade.normalPrice : this.priceOption.trade.promotionPrice;
     this.homeButtonService.initEventButtonHome();
   }
 

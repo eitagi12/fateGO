@@ -7,6 +7,7 @@ import { HomeService, TokenService } from 'mychannel-shared-libs';
 import { HttpClientModule } from '@angular/common/http';
 import { LocalStorageService } from 'ngx-store';
 import { Pipe, PipeTransform } from '@angular/core';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 
 @Pipe({name: 'mobileNo'})
 class MockMobileNoPipe implements PipeTransform {
@@ -39,6 +40,20 @@ describe('DeviceOnlyAisKeyInQueuePageComponent', () => {
         provide: TransactionService,
         useValue: {
           load: jest.fn()
+        }
+      },
+      {
+        provide: PriceOptionService,
+        useValue: {
+          load: jest.fn(() => {
+            return {
+              trade : {
+                priceType: 'NORMAL',
+                normalPrice: '22590',
+                promotionPrice: '18500'
+              }
+            };
+          })
         }
       },
       {

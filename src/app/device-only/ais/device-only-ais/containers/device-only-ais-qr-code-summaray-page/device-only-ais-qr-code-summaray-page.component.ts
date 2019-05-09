@@ -21,6 +21,7 @@ export class DeviceOnlyAisQrCodeSummarayPageComponent implements OnInit {
   deposit: number;
   brannerImagePaymentQrCode: ImageBrannerQRCode;
   payment: Payment;
+  price: any;
 
   constructor(
     private router: Router,
@@ -37,6 +38,8 @@ export class DeviceOnlyAisQrCodeSummarayPageComponent implements OnInit {
     }
 
     ngOnInit(): void {
+      // tslint:disable-next-line:max-line-length
+      this.price = this.priceOption.trade.priceType === 'NORMAL' ? this.priceOption.trade.normalPrice : this.priceOption.trade.promotionPrice;
       this.homeButtonService.initEventButtonHome();
       this.calculateSummary(this.deposit);
     }

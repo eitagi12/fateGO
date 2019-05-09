@@ -23,6 +23,8 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit {
   queueFrom: FormGroup = new FormGroup({
     mobileNo: new FormControl()
   });
+  price: string;
+
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -40,8 +42,10 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit {
      }
 
   ngOnInit(): void {
+    this.price = this.priceOption.trade.priceType === 'NORMAL' ? this.priceOption.trade.normalPrice : this.priceOption.trade.promotionPrice;
     this.homeButtonService.initEventButtonHome();
   }
+
   createForm(): void {
     this.queueFrom = this.fb.group({
       'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])],

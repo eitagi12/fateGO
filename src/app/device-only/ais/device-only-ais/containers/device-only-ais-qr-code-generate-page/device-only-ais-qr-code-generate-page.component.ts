@@ -60,6 +60,8 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
   isPaid: boolean = false;
   deposit: number;
   refreshCount: number = 1;
+  price: String;
+
   constructor(
     private router: Router,
     private transactionService: TransactionService,
@@ -80,6 +82,7 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.price = this.priceOption.trade.priceType === 'NORMAL' ? this.priceOption.trade.normalPrice : this.priceOption.trade.promotionPrice;
     this.initialOrderID();
     this.deposit = this.transaction.data.preBooking
     && this.transaction.data.preBooking.depositAmt ? -Math.abs(+this.transaction.data.preBooking.depositAmt) : 0;
@@ -192,8 +195,9 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
   }
 
   getSummaryAmount(): number {
-    return this.summary([+this.priceOption.trade.promotionPrice + this.deposit]);
+    return this.summary([+this.price + this.deposit]);
   }
+
   isDeveloperMode(): boolean {
     return 'LOCAL' === environment.name;
   }

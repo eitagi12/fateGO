@@ -51,7 +51,7 @@
             รวมยอดชำระ(รวมVAT)
             <span class="text-light-green ml-2" id="text-includ-vat-price">
               ฿ {{ summary([
-                +priceOption?.trade?.promotionPrice,
+                +price,
                 +priceOption?.trade?.advancePay?.amount
                 ]) | number }}
             </span>
@@ -81,7 +81,7 @@
               <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'"> : ชำระเต็มจำนวน</span>
               <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'"> : ผ่อนชำระบัตรเครดิต</span>
               <span class="pull-right text-light-green" id="text-normal-price-payment">
-                ฿ {{ priceOption?.trade?.promotionPrice | number }}
+                ฿ {{ price | number }}
               </span>
             </p>
           </ng-container>
@@ -109,7 +109,7 @@
                 {{ transaction?.data?.payment?.paymentMethod?.name }}
                 {{ transaction?.data?.payment?.paymentMethod?.percentage }} %
                 {{ transaction?.data?.payment?.paymentMethod?.month }} เดือน
-                {{ ((+priceOption?.trade?.promotionPrice) + (priceOption?.trade?.advancePay?.installmentFlag === 'N' ? +priceOption?.trade?.advancePay?.amount : 0)) / transaction?.data?.payment?.paymentMethod?.month | number: '1.2-2' }} 
+                {{ ((+price) + (priceOption?.trade?.advancePay?.installmentFlag === 'N' ? +priceOption?.trade?.advancePay?.amount : 0)) / transaction?.data?.payment?.paymentMethod?.month | number: '1.2-2' }} 
                 บาทต่อเดือน
                 )
               </span>
@@ -147,7 +147,7 @@
               <label for="text-total-price" class="text-light-green">ยอดชำระ</label>
               <input style="text-align: center" type="text" id="text-total-price" readonly
                 class="form-control ml-3 text-light-green" 
-                value="฿{{ summary([+priceOption?.trade?.promotionPrice, deposit]) | number }}">
+                value="฿{{ summary([+price, deposit]) | number }}">
             </div>
           </form>
         </div>

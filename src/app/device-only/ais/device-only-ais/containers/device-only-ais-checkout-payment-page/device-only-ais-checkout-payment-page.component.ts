@@ -17,6 +17,7 @@ export class DeviceOnlyAisCheckoutPaymentPageComponent implements OnInit, OnDest
   transaction: Transaction;
   checkout: Aggregate;
   priceOption: PriceOption;
+  price: any;
 
   constructor(
     private router: Router,
@@ -29,20 +30,25 @@ export class DeviceOnlyAisCheckoutPaymentPageComponent implements OnInit, OnDest
   }
 
   ngOnInit(): void {
+    this.price = this.priceOption.trade.priceType === 'NORMAL' ? this.priceOption.trade.normalPrice : this.priceOption.trade.promotionPrice;
     this.homeButtonService.initEventButtonHome();
   }
 
   onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE]);
   }
+
   onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ONLY_AIS_AUTO_GET_QUEUE_PAGE]);
   }
+
   onHome(): void {
     this.homeService.goToHome();
   }
+
   ngOnDestroy(): void {
   }
+
   summary(aomunt: number[]): number {
     return aomunt.reduce((prev, curr) => {
       return prev + curr;
