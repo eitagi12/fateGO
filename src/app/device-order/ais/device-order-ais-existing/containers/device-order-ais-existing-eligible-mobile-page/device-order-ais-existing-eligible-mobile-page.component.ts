@@ -102,7 +102,7 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
     this.callService()
       .then(promotionsShelves => {
 
-        if (this.havePackages(promotionsShelves) || this.isNotMathCritiriaMainPro) {
+        if (this.havePackages(promotionsShelves) || !this.isCritiriaMainPro) {
 
           if (this.selectMobileNo.privilegeCode) {
             this.transaction.data.customer.privilegeCode = this.selectMobileNo.privilegeCode;
@@ -201,24 +201,12 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
   }
 
   get isCritiriaMainPro(): boolean {
-    return !this.mathHotDeal && !this.advancePay
-      && this.selectMobileNo.privilegeMessage === `MT_INVALID_CRITERIA_MAINPRO`;
-
-  }
-
-  get isNotMathCritiriaMainPro(): boolean {
-    return !this.mathHotDeal && !this.advancePay
-      && this.selectMobileNo.privilegeMessage !== `MT_INVALID_CRITERIA_MAINPRO`;
+    return !this.advancePay && this.selectMobileNo.privilegeMessage === `MT_INVALID_CRITERIA_MAINPRO`;
 
   }
 
   get advancePay(): boolean {
     return !!((this.priceOption.trade.advancePay && this.priceOption.trade.advancePay.amount || 0) > 0);
-
-  }
-
-  get mathHotDeal(): boolean {
-    return !!this.priceOption.campaign.campaignName.match(/\b(\w*Hot\s+Deal\w*)\b/);
 
   }
 
