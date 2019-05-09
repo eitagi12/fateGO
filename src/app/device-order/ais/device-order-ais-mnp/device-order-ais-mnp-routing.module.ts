@@ -14,7 +14,6 @@ import { DeviceOrderAisMnpEbillingAddressPageComponent } from './containers/devi
 import { DeviceOrderAisMnpEbillingPageComponent } from './containers/device-order-ais-mnp-ebilling-page/device-order-ais-mnp-ebilling-page.component';
 import { DeviceOrderAisMnpMobileCarePageComponent } from './containers/device-order-ais-mnp-mobile-care-page/device-order-ais-mnp-mobile-care-page.component';
 import { DeviceOrderAisMnpSummaryPageComponent } from './containers/device-order-ais-mnp-summary-page/device-order-ais-mnp-summary-page.component';
-import { DeviceOrderAisMnpAgreementPageComponent } from './containers/device-order-ais-mnp-agreement-page/device-order-ais-mnp-agreement-page.component';
 import { DeviceOrderAisMnpEcontactPageComponent } from './containers/device-order-ais-mnp-econtact-page/device-order-ais-mnp-econtact-page.component';
 import { DeviceOrderAisMnpAgreementSignPageComponent } from './containers/device-order-ais-mnp-agreement-sign-page/device-order-ais-mnp-agreement-sign-page.component';
 import { DeviceOrderAisMnpFaceCapturePageComponent } from './containers/device-order-ais-mnp-face-capture-page/device-order-ais-mnp-face-capture-page.component';
@@ -46,7 +45,6 @@ const routes: Routes = [
   { path: 'mobile-care', component: DeviceOrderAisMnpMobileCarePageComponent },
   { path: 'mobile-care-avalible', component: DeviceOrderAisMnpMobileCareAvaliblePageComponent },
   { path: 'summary', component: DeviceOrderAisMnpSummaryPageComponent },
-  { path: 'agreement', component: DeviceOrderAisMnpAgreementPageComponent },
   { path: 'econtact', component: DeviceOrderAisMnpEcontactPageComponent },
   { path: 'agreement-sign', component: DeviceOrderAisMnpAgreementSignPageComponent },
   { path: 'face-capture', component: DeviceOrderAisMnpFaceCapturePageComponent },

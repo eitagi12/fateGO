@@ -36,6 +36,8 @@ export class CreateDeviceOrderAisExistingPrepaidHotdealService {
   private readonly SPACE: string = ' ';
   private readonly NEW_LINE: string = '\n';
   private readonly COMMA: string = ',';
+  private readonly PROMPT_PAY_PAYMENT: string = '[PB]';
+  private readonly RABBIT_LINE_PAY_PAYMENT: string = '[RL]';
 
   constructor(
     private tokenService: TokenService,
@@ -47,18 +49,19 @@ export class CreateDeviceOrderAisExistingPrepaidHotdealService {
     const user = this.tokenService.getUser();
     const productStock = this.priceOption.productStock;
     const trade = this.priceOption.trade;
-    const data = this.transaction.data;
+    const transactionData = this.transaction.data;
     const customerGroup = this.priceOption.customerGroup;
     const discount = trade.discount;
-    const customer = data.customer;
-    const simCard = data.simCard;
-    const order = data.order;
-    const queue = data.queue;
-    const payment = data.payment;
+    const customer = transactionData.customer;
+    const simCard = transactionData.simCard;
+    const order = transactionData.order;
+    const queue = transactionData.queue;
+    const payment = transactionData.payment;
     const paymentMethod = payment.paymentMethod;
     const mobileCare = this.transaction.data.mobileCarePackage;
+    const mpayPayment: any = transactionData.mpayPayment || {};
 
-    return {
+    const data: any = {
       userId: user.username,
       locationSource: user.locationCode,
       locationReceipt: user.locationCode,
@@ -102,34 +105,50 @@ export class CreateDeviceOrderAisExistingPrepaidHotdealService {
       installmentTerm: paymentMethod && paymentMethod.month ? paymentMethod.month : 0,
       installmentRate: paymentMethod && paymentMethod.percentage ? paymentMethod.percentage : 0,
       mobileAisFlg: 'Y',
-      reqMinimumBalance: this.getReqMinimumBalance(data.onTopPackage, mobileCare),
-      // paymentMethod: this.getPaymentMethod(trade, advancePay),
+      reqMinimumBalance: this.getReqMinimumBalance(transactionData.onTopPackage, mobileCare),
+      paymentMethod: this.getPaymentMethod(transaction, priceOption),
       // bankCode: this.getBankCode(trade, payment, advancePay),
       // tradeFreeGoodsId: trade.freeGoods[0] && trade.freeGoods[0].tradeFreegoodsId ? trade.freeGoods[0].tradeFreegoodsId : '',
       // tradeDiscountId: trade.discount.tradeDiscountId || '',
       // tradeAirtimeId: trade.advancePay.tradeAirtimeId || '',
       // bankAbbr: this.getBankCode(trade, payment, advancePay),
-      convertToNetwotkType: customerGroup.code === 'MC002' ? '3G POSTPAID' : undefined
+      convertToNetwotkType: customerGroup.code === 'MC002' ? '3G POSTPAID' : undefined,
+      qrTransId: mpayPayment ? mpayPayment.tranId : '',
+      qrAmt: this.getQRAmt(trade, transaction)
     };
+    return data;
   }
 
-  private getPaymentMethod(trade: any, advancePay: any): string {
-    let paymentMethod;
-    if (trade && trade.payments && trade.payments.length > 0) {
-      paymentMethod = trade.payments[0].method;
-
-      if (trade.advancePay.installmentFlag === 'Y') {
-        return paymentMethod;
-      }
-
-      if (trade.amount > 0) {
-        if (advancePay.paymentType !== 'CREDIT') {
-          paymentMethod = paymentMethod + '|CA';
-        }
-      }
-
+  private getQRAmt(trade: any, transaction: Transaction): any {
+    const payment: Payment = transaction.data.payment;
+    if (trade && payment.paymentType === 'QR_CODE') {
+      const qrAmt: number = trade.normalPrice - trade.discount.amount;
+      return qrAmt.toFixed(2);
+    } else {
+      return undefined;
     }
-    return paymentMethod;
+  }
+
+  private getPaymentMethod(transaction: Transaction, priceOption: PriceOption): string {
+    const payment: Payment = transaction.data.payment;
+    const trade: any = priceOption.trade;
+    let tradePayment: any;
+    if ((trade.payment && trade.payment.length > 0)) {
+      tradePayment = priceOption.trade.payment[0];
+    } else if ((trade.payments && trade.payments.length > 0)) {
+      tradePayment = priceOption.trade.payments[0];
+    } else {
+      tradePayment = {};
+    }
+    if (payment.paymentType === 'QR_CODE') {
+      if (payment.paymentQrCodeType === 'THAI_QR') {
+        return 'PB';
+      } else {
+        return 'RL';
+      }
+    } else {
+      return tradePayment.method;
+    }
   }
 
   private getBankCode(trade: any, payment: Payment, advancePay: Payment): string {
@@ -151,7 +170,7 @@ export class CreateDeviceOrderAisExistingPrepaidHotdealService {
 
   private getOrderRemark(transaction: Transaction, priceOption: PriceOption): string {
     const onTopPackage = transaction.data.onTopPackage || {};
-    const airTime: string = this.getAirTime(priceOption.trade);
+    const airTime: string = this.getAirTime(priceOption.trade, transaction);
     const installment = this.getInstallment(transaction, priceOption);
     const information = this.getInformation(transaction, priceOption);
 
@@ -161,13 +180,32 @@ export class CreateDeviceOrderAisExistingPrepaidHotdealService {
     `;
   }
 
-  private getAirTime(trade: any): string {
+  private getAirTime(trade: any, transaction: Transaction): string {
     let message = '';
 
-    if (trade && trade.advancePay) {
-      const advancePay = trade.advancePay;
-      if (advancePay.installmentFlag !== 'Y' && +advancePay.amount > 0) {
-        message = `${this.AIR_TIME}${this.CREDIT_CARD_PAYMENT}`;
+    if (!trade || !trade.advancePay) {
+      return message;
+    }
+
+    const advancePay = trade.advancePay || {};
+    if (advancePay.installmentFlag === 'Y' || +advancePay.amount <= 0) { // ผ่อนรวม
+      return message;
+    }
+
+    message = `${this.AIR_TIME}`;
+    const advancePayment: any = transaction.data.advancePayment || {};
+    if (advancePayment.paymentType === 'QR_CODE') {
+      if (advancePayment.paymentQrCodeType === 'THAI_QR') {
+        message += `${this.PROMPT_PAY_PAYMENT}`;
+      } else {
+        message += `${this.RABBIT_LINE_PAY_PAYMENT}`;
+      }
+    } else {
+      if (advancePayment.paymentType === 'DEBIT') {
+        message += `${this.CASH_PAYMENT}`;
+      } else {
+        message += `${this.CREDIT_CARD_PAYMENT}${this.COMMA}${this.SPACE}`;
+        message += `${this.BANK}${advancePayment.abb || ''}`;
       }
     }
     return message;
@@ -185,17 +223,32 @@ export class CreateDeviceOrderAisExistingPrepaidHotdealService {
     } else {
       message += this.DEVICE;
     }
-    if (payment.paymentForm === 'INSTALLMENT') { // ผ่อนชำระ
-      message += this.CREDIT_CARD_PAYMENT + this.COMMA + this.SPACE;
-      message += this.BANK + payment.paymentMethod.abb + this.COMMA + this.SPACE;
-      message += this.INSTALLMENT + payment.paymentMethod.percentage + '%' + this.SPACE + payment.paymentMethod.month;
-    } else { // ชำระเต็มจำนวน
-      message += this.CASH_PAYMENT + this.COMMA + this.SPACE;
-      message += this.BANK + this.COMMA + this.SPACE;
-      message += this.INSTALLMENT + '0%' + this.SPACE + '0';
+
+    if (payment.paymentType === 'QR_CODE') {
+      if (payment.paymentQrCodeType === 'THAI_QR') {
+        message += `${this.PROMPT_PAY_PAYMENT}`;
+      } else {
+        message += `${this.RABBIT_LINE_PAY_PAYMENT}`;
+      }
+      message += `${this.COMMA}${this.SPACE}`;
+    } else {
+      // ใช้ได้ทั้งบัตร credit, debit
+      if (payment.paymentForm === 'INSTALLMENT') { // ผ่อนชำระ
+        message += `${this.CREDIT_CARD_PAYMENT}${this.COMMA}${this.SPACE}`;
+        message += `${this.BANK}${payment.paymentMethod.abb || payment.paymentBank.abb}${this.COMMA}${this.SPACE}`;
+        message += `${this.INSTALLMENT}${payment.paymentMethod.percentage}%${this.SPACE}${payment.paymentMethod.month}`;
+        message += `เดือน${this.COMMA}${this.SPACE}`;
+      } else { // ชำระเต็มจำนวน
+        if (payment.paymentType === 'DEBIT') {
+          message += `${this.CASH_PAYMENT}${this.COMMA}${this.SPACE}`;
+        } else {
+          message += `${this.CREDIT_CARD_PAYMENT}${this.COMMA}${this.SPACE}`;
+          message += `${this.BANK}${payment.paymentMethod.abb || payment.paymentBank.abb}${this.COMMA}${this.SPACE}`;
+          // message += `${this.INSTALLMENT}0%${this.SPACE}0`;
+        }
+      }
     }
-    message += 'เดือน' + this.COMMA + this.SPACE;
-    message += this.TRADE_NO + trade.tradeNo;
+    message += `${this.TRADE_NO}${trade.tradeNo}`;
     return message;
   }
 
