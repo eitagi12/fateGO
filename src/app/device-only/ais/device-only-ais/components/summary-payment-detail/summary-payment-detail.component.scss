@@ -1,7 +1,16 @@
+.box-balance {
+    padding-top: 15px;
+    padding-bottom: 15px;
+    background-color: white;
+}
+
 .icon-page {
-    padding-right: 10px;
     max-width: 35px;
     margin-left: 10px;
+}
+
+.enoughBalanceText{
+    font-size: 1.2em;
 }
 
 .notEnoughBalanceText{
@@ -14,6 +23,7 @@
 }
 
 .checkBalanceBtn{
+    width: 240px;
     padding: 15px 20px;
     border: 3px solid #ffffff;
     border-radius: 5px;
@@ -21,8 +31,4 @@
     color: #87b231;
     cursor: pointer;
     font-family: 'db_helvethaicaais_x55_regular';
-}
-.checkBalanceBtnArea{
-    padding-left: 2%;
-    display: inline-block;
 }

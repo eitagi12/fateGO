@@ -14,7 +14,7 @@ import { CustomerInformationService } from '../../services/customer-information.
 export class SummaryPaymentDetailComponent implements OnInit {
   private mobileNo: string;
   private balance: number;
-  private enoughBalance: boolean;
+  public enoughBalance: boolean;
   private mobileCare: number;
   priceOption: PriceOption;
   transaction: Transaction;
@@ -35,7 +35,8 @@ export class SummaryPaymentDetailComponent implements OnInit {
   ngOnInit(): void {
     this.price = this.priceOption.trade.priceType === 'NORMAL' ? this.priceOption.trade.normalPrice : this.priceOption.trade.promotionPrice;
     this.getDataCustomer();
-    this.getQueryBalance();
+    this.getMobileNoBalance();
+    this.getQueryBalance(this.mobileNo);
   }
 
   getDataCustomer(): void {
@@ -59,8 +60,12 @@ export class SummaryPaymentDetailComponent implements OnInit {
     }
   }
 
-  private getQueryBalance(mobileNo?: string): void {
-    mobileNo = '0935880793';
+  private getMobileNoBalance(): string {
+    this.mobileNo = this.customerInformationService.getSelectedMobileNo();
+    return this.mobileNo;
+  }
+
+  private getQueryBalance(mobileNo: string): void {
     this.http.get(`/api/customerportal/newRegister/${mobileNo}/queryBalance`).toPromise()
       .then((response: any) => {
         this.mobileCare = +this.transaction.data.mobileCarePackage.customAttributes.priceInclVat;
@@ -70,7 +75,7 @@ export class SummaryPaymentDetailComponent implements OnInit {
   }
 
   onLoadBalance(): void {
-    console.log('ฝากด้วย นะน้ำ');
+
   }
 
 }
