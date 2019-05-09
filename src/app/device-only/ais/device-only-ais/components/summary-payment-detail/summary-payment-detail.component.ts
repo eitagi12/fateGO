@@ -5,15 +5,17 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Utils } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
+import { CustomerInformationService } from '../../services/customer-information.service';
 @Component({
   selector: 'app-summary-payment-detail',
   templateUrl: './summary-payment-detail.component.html',
   styleUrls: ['./summary-payment-detail.component.scss']
 })
 export class SummaryPaymentDetailComponent implements OnInit {
-  mobileNo: string = '0935880795';
-  balance: any;
-
+  private mobileNo: string;
+  private balance: number;
+  private enoughBalance: boolean;
+  private mobileCare: number;
   priceOption: PriceOption;
   transaction: Transaction;
   customerAddress: string;
@@ -23,8 +25,9 @@ export class SummaryPaymentDetailComponent implements OnInit {
     private priceOptionService: PriceOptionService,
     private transactionService: TransactionService,
     private utils: Utils,
-    private http: HttpClient
-    ) {
+    private http: HttpClient,
+    private customerInformationService: CustomerInformationService
+  ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
   }
@@ -32,6 +35,7 @@ export class SummaryPaymentDetailComponent implements OnInit {
   ngOnInit(): void {
     this.price = this.priceOption.trade.priceType === 'NORMAL' ? this.priceOption.trade.normalPrice : this.priceOption.trade.promotionPrice;
     this.getDataCustomer();
+    this.getQueryBalance();
   }
 
   getDataCustomer(): void {
@@ -53,13 +57,20 @@ export class SummaryPaymentDetailComponent implements OnInit {
     } else {
       this.customerAddress = '';
     }
-    this.getQueryBalance(this.mobileNo);
   }
 
-  private getQueryBalance(mobileNo: string): void {
-    this.http.get(`/api/customerportal/newRegister/${mobileNo}/queryBalance`).toPromise().then((response: any) => {
-      this.balance = response.data.remainingBalance;
-      console.log('Balance => : ', this.balance);
-    });
+  private getQueryBalance(mobileNo?: string): void {
+    mobileNo = '0935880793';
+    this.http.get(`/api/customerportal/newRegister/${mobileNo}/queryBalance`).toPromise()
+      .then((response: any) => {
+        this.mobileCare = +this.transaction.data.mobileCarePackage.customAttributes.priceInclVat;
+        this.balance = +(response.data.remainingBalance) / 100;
+        this.enoughBalance = (this.balance >= this.mobileCare) ? true : false;
+      });
   }
+
+  onLoadBalance(): void {
+    console.log('ฝากด้วย นะน้ำ');
+  }
+
 }
