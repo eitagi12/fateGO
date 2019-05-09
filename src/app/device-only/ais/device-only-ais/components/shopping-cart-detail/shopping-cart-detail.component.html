@@ -18,8 +18,7 @@
     <div class="row pl-3 pr-3">
         <div class="col-8 col-sm-10 text-left text-brown">
             <p class="text-green" id="text-campaign-name">{{ priceOption?.campaign?.campaignName }}</p>
-            <span id="text-brand"> {{ priceOption?.productDetail?.brand }} </span>
-            <span id="text-model"> {{ priceOption?.productDetail?.name }} </span>
+            <span id="text-name"> {{ priceOption?.productDetail?.name }} </span>
             <span id="text-color" *ngIf="priceOption?.productStock?.colorName"> สี {{ priceOption?.productStock?.colorName }}</span>
             <span id="text-amount"> จำนวน 1 เครื่อง</span>
           </div>

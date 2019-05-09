@@ -35,17 +35,14 @@
               โครงการ ซื้อเครื่องเปล่า
             </p>
             <div class="text-grey">
-              <i class="fa fa-circle mr-3 text-light-green"></i>
-              <span class="text-grey" id="text-brand-model">
-                {{ priceOption?.productDetail?.brand }}
-              </span>
-              <span class="text-grey" id="text-brand-model">
-                {{ priceOption?.productDetail?.name }}
-              </span>
-              <span class="text-grey" *ngIf="priceOption?.productStock?.colorName">
-                {{ priceOption?.productStock?.colorName? 'สี': '' }} {{ priceOption?.productStock?.colorName }}
-              </span>
-            </div>
+                <i class="fa fa-circle mr-3 text-light-green"></i>
+                <span class="text-grey" id="text-name-model">
+                  {{ priceOption?.productDetail?.name }}
+                </span>
+                <span class="text-grey" *ngIf="priceOption?.productStock?.colorName">
+                  {{ priceOption?.productStock?.colorName? 'สี': '' }} {{ priceOption?.productStock?.colorName }}
+                </span>
+              </div>  
           </div>
           <div class="card-footer bg-transparent text-right">
             รวมยอดชำระ(รวมVAT)
@@ -69,10 +66,7 @@
           <ng-container>
             <p>
               <i class="fa fa-circle mr-3 text-light-green"></i>
-              <span class="text-grey" id="text-brand-payment-summary">
-                {{ priceOption?.productDetail?.brand }}
-              </span>
-              <span class="text-grey" id="text-model-payment-summary">
+              <span class="text-grey" id="text-name-payment-summary">
                 {{ priceOption?.productDetail?.name }}
               </span>
               <span class="text-grey" id="text-color-summary" *ngIf="priceOption?.productStock?.colorName">
