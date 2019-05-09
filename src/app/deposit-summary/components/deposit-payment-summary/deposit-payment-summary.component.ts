@@ -40,12 +40,10 @@ export class DepositPaymentSummaryComponent implements OnInit {
     const customer = this.transaction.data.customer;
     const reserveProductInfo = this.priceOption.trade;
     this.customerFullName = customer.firstName + ' ' + customer.lastName;
-    // this.customerFullAddress = this.getFullAddress(customer);
     this.customerFullAddress = this.transaction.data.customer.shipaddress.shipCusAddr;
     this.customerIdCardNo = customer.idCardNo;
     this.mobileNo = this.getMobileFormat(customer.selectedMobile);
     this.customerReceiptAddress = this.getFullAddress(customer);
-    // this.recipientCustomerAddress =  JSON.parse(localStorage.getItem('recipientCustomerAddress'));
     this.brand = reserveProductInfo.brand;
     this.colorName = reserveProductInfo.colorName;
     this.model = reserveProductInfo.model;

@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChange
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { debounceTime, distinct, delay } from 'rxjs/operators';
 import { Utils, CustomerAddress, TokenService, ApiRequestService } from 'mychannel-shared-libs';
-import { CustomerInformationService} from '../../services/customer-information.service';
+import { CustomerInformationService } from '../../services/customer-information.service';
 import { LocalStorageService } from 'ngx-store';
 import { CreateDeviceOrderService } from '../../services/create-device-order.service';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -37,7 +37,8 @@ export interface CustomerAddress {
 export class BillingAddressComponent implements OnInit, OnChanges {
 
   @Input() keyInCustomerAddressTemp: any;
-  @Input() titleNames: string[]; @Input() firstName: string[];
+  @Input() titleNames: string[];
+  @Input() firstName: string[];
   @Input() lastName: string[];
   @Input() customerAddress: CustomerAddress;
   @Input() idCardNo: string[];
@@ -87,9 +88,8 @@ export class BillingAddressComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.createForm();
-    // if (this.customerInformationService.isReadCard === true) {
-    //   this.customerAddressForm.controls['idCardNo'].disable();
-    // }
+    console.log('เจ้าคืออะไร', this.provinces);
+
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -285,9 +285,9 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     this.customerAddressForm.controls['telNo'].disable();
   }
   private onNext(): void {
-   this.getCustomerProfile();
-   this.saveTransaction();
-   this.router.navigate([DEPOSIT_PAYMENT_DETAIL_RECEIPT]);
+    this.getCustomerProfile();
+    this.saveTransaction();
+    this.router.navigate([DEPOSIT_PAYMENT_DETAIL_RECEIPT]);
   }
 
   private getCustomerProfile(): void {
@@ -328,11 +328,11 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     this.transaction.data.customer.shipaddress = {
       shipCusAddr: this.getFullAddress(this.transaction.data.customer),
       shipCusName: this.transaction.data.customer.titleName + ' ' + this.transaction.data.customer.firstName +
-      ' ' + this.transaction.data.customer.lastName
+        ' ' + this.transaction.data.customer.lastName
     };
     console.log('transaction', this.transaction);
-     this.transactionService.save(this.transaction);
-     this.priceOptionService.save(this.priceOption);
+    this.transactionService.save(this.transaction);
+    this.priceOptionService.save(this.priceOption);
   }
 
   getFullAddress(customer: any): string {
@@ -357,7 +357,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
 
   onBack(): void {
     const url = '/sales-portal/reserve-stock/reserve-deposit-non-ais';
-   this.removeItem(url);
+    this.removeItem(url);
   }
 
   removeItem(url: string): void {

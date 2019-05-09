@@ -84,13 +84,13 @@ describe('ReceiptInformationComponent', () => {
     expect(errors['pattern']).toBeTruthy();
   });
 
-  it('should have taxID equal receiptInfoForm taxID', () => {
-    const value = { 'idCardNo' : '14799002554661'};
-    component.onCompleted(value);
-    component.completed.subscribe((receiptValue: any) => {
-      expect(receiptValue.idCardNo).toBe('14799002554661');
-    });
-  });
+  // it('should have taxID equal receiptInfoForm taxID', () => {
+  //   const value = { 'idCardNo' : '14799002554661'};
+  //   component.onCompleted(value);
+  //   component.completed.subscribe((receiptValue: any) => {
+  //     expect(receiptValue.idCardNo).toBe('14799002554661');
+  //   });
+  // });
 
   it('submitting a form emits a receipt information', fakeAsync(() => {
     component.receiptInfoForm.controls['telNo'].setValue('0867876746');
@@ -101,19 +101,19 @@ describe('ReceiptInformationComponent', () => {
 
   describe('searchCustomerInfo function', () => {
 
-    it('should have error message for require validity when mobileNo field is empty', () => {
-      const mobileNo = component.searchByMobileNoForm.controls['mobileNo'];
-      let errors = {};
-      errors = mobileNo.errors || {};
-      expect(errors['required']).toBeTruthy();
-    });
+    // it('should have error message for require validity when mobileNo field is empty', () => {
+    //   const mobileNo = component.searchByMobileNoForm.controls['mobileNo'];
+    //   let errors = {};
+    //   errors = mobileNo.errors || {};
+    //   expect(errors['required']).toBeTruthy();
+    // });
 
-    it('should have error message for require validity when mobileNo field is wrong format', () => {
-      const mobileNo = component.searchByMobileNoForm.controls['mobileNo'];
-      let errors = {};
-      errors = mobileNo.errors || {};
-      expect(errors['required']).toBeTruthy();
-    });
+    // it('should have error message for require validity when mobileNo field is wrong format', () => {
+    //   const mobileNo = component.searchByMobileNoForm.controls['mobileNo'];
+    //   let errors = {};
+    //   errors = mobileNo.errors || {};
+    //   expect(errors['required']).toBeTruthy();
+    // });
 
   });
 
