@@ -61,20 +61,20 @@ export class DeviceOnlyAutoGetQueuePageComponent implements OnInit, OnDestroy {
   get f(): any { return this.mobileForm.controls; }
 
   onNext(): void {
-      this.autoGetQueue();
+    this.autoGetQueue();
   }
 
   private autoGetQueue(): void {
     this.pageLoadingService.openLoading();
     const mobile = this.mobileForm.value.mobileNo;
     this.queueService.autoGetQueue(mobile).then((data) => {
-        const queue = {
-          queueNo: data
-        };
-        this.transaction.data = {
-          ...this.transaction.data,
-          queue: queue
-        };
+      const queue = {
+        queueNo: data
+      };
+      this.transaction.data = {
+        ...this.transaction.data,
+        queue: queue
+      };
       this.checkDataLinkPage(data);
     }).catch((error: any) => {
       this.pageLoadingService.closeLoading();
@@ -92,32 +92,27 @@ export class DeviceOnlyAutoGetQueuePageComponent implements OnInit, OnDestroy {
         if (response.data.isSuccess === true) {
           this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).subscribe(
             (res) => {
-            if (res === 'S') {
-              this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE]);
-            } else if (res === 'F') {
+              if (res === 'S') {
+                this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE]);
+              } else if (res === 'F') {
+                this.router.navigate([ROUTE_DEVICE_ONLY_AIS_KEY_IN_QUEUE]);
+              }
+            },
+            (err) => {
+              this.pageLoadingService.closeLoading();
               this.router.navigate([ROUTE_DEVICE_ONLY_AIS_KEY_IN_QUEUE]);
             }
-          },
-          (err) => {
-            this.pageLoadingService.closeLoading();
-            this.router.navigate([ROUTE_DEVICE_ONLY_AIS_KEY_IN_QUEUE]);
-          },
-          () => {
-            this.pageLoadingService.closeLoading();
-          }
-         );
+          );
         }
-      }).catch((err: any) => {
-        this.pageLoadingService.closeLoading();
-        this.alertService.error('ระบบไม่สามารถทำรายการได้ในขณะนี้');
-      });
-    } else {
+    }).catch ((err) => {
       this.pageLoadingService.closeLoading();
       this.router.navigate([ROUTE_DEVICE_ONLY_AIS_KEY_IN_QUEUE]);
-    }
+    });
   }
+}
 
-  ngOnDestroy(): void {
-    this.transactionService.save(this.transaction);
-  }
+      ngOnDestroy(): void {
+        this.transactionService.save(this.transaction);
+      }
+
 }

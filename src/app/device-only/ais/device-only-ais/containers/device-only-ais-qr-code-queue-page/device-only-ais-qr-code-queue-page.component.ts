@@ -64,7 +64,6 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit {
           if (response.data.isSuccess === true) {
             this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).subscribe(
               (res) => {
-                this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE]);
               if (res === 'S') {
                 this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE]);
               } else if (res === 'F') {

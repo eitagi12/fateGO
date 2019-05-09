@@ -209,8 +209,8 @@ export class CreateOrderService {
                               ? transaction.data.payment.paymentMethod.percentage : 0;
     const mapBankAbb = transaction.data.payment.paymentBank.abb ? transaction.data.payment.paymentBank.abb : '';
     const mapBankCode = transaction.data.payment.paymentBank.abb ? transaction.data.payment.paymentBank.abb : '';
-    const mapQrTran = transaction.data.mpayPayment.tranId;
-    const mapPaymentMethod = this.mapPaymentType(transaction.data.payment.paymentType);
+    const mapQrTran = transaction.data.mpayPayment ? transaction.data.mpayPayment.tranId : '';
+    // const mapPaymentMethod = this.mapPaymentType(transaction.data.payment.paymentType);
     return {
       soId: transaction.data.order.soId,
       soCompany: priceOption.productStock.company,
@@ -231,7 +231,7 @@ export class CreateOrderService {
       cusNameOrder: transaction.data.customer.firstName + ' ' + transaction.data.customer.lastName,
       taxCardId: transaction.data.customer.idCardNo,
       cusMobileNoOrder: transaction.data.receiptInfo.telNo,
-      customerAddress: this.mapCusAddress(transaction.data.billingInformation.billDeliveryAddress),
+      customerAddress: this.mapCusAddress(transaction.data.customer),
       tradeNo: priceOption.trade.tradeNo,
       // ussdCode: priceOption.trade.ussdCode,
       // returnCode: '4GEYYY',
@@ -256,18 +256,18 @@ export class CreateOrderService {
   }
   mapCusAddress(addressCus: Customer): any {
     return {
-      addrNo: addressCus.homeNo ? addressCus.homeNo : '',
-      moo: addressCus.moo ? addressCus.moo : '',
-      mooban: addressCus.mooBan ? addressCus.mooBan : '',
-      buildingName: addressCus.buildingName ? addressCus.buildingName : '',
-      floor: addressCus.floor ? addressCus.floor : '',
-      room: addressCus.room ? addressCus.room : '',
-      soi: addressCus.soi ? addressCus.soi : '',
-      streetName: addressCus.street ? addressCus.street : '',
-      tumbon: addressCus.tumbol ? addressCus.tumbol : '',
-      amphur: addressCus.amphur ? addressCus.amphur : '',
-      province: addressCus.province ? addressCus.province : '',
-      postCode: addressCus.zipCode ? addressCus.zipCode : '',
+      addrNo: addressCus ? addressCus.homeNo : '',
+      moo: addressCus ? addressCus.moo : '',
+      mooban: addressCus ? addressCus.mooBan : '',
+      buildingName: addressCus ? addressCus.buildingName : '',
+      floor: addressCus ? addressCus.floor : '',
+      room: addressCus ? addressCus.room : '',
+      soi: addressCus ? addressCus.soi : '',
+      streetName: addressCus ? addressCus.street : '',
+      tumbon: addressCus ? addressCus.tumbol : '',
+      amphur: addressCus ? addressCus.amphur : '',
+      province: addressCus ? addressCus.province : '',
+      postCode: addressCus ? addressCus.zipCode : '',
       country: 'THA'
     };
   }
@@ -365,7 +365,7 @@ ${this.PROMOTION_NAME}${this.SPACE}${this.NEW_LINE}${installment}${this.NEW_LINE
     // if (advancePay.installmentFlag === 'Y' && +advancePay.amount > 0) {
     //   message += this.AIR_TIME_AND_DEVICE;
     // } else {
-    //   message += this.DEVICE;
+      message += this.DEVICE;
     // }
 
     if (payment.paymentType === 'QR_CODE') {
@@ -427,6 +427,7 @@ ${this.PROMOTION_NAME}${this.SPACE}${this.NEW_LINE}${installment}${this.NEW_LINE
     message += this.MOBILE_CARE_CODE + this.SPACE + (customAttributes.promotionCode || '') + this.COMMA + this.SPACE;
     message += this.MOBILE_CARE + this.SPACE + (customAttributes.shortNameThai || '') + this.COMMA + this.SPACE;
     // message += this.PRIVILEGE_DESC + this.SPACE + (privilege.privilegeDesc || '') + this.COMMA + this.SPACE;
+    message += this.PRIVILEGE_DESC + this.SPACE + (trade.tradeDesc || '') + this.COMMA + this.SPACE;
     message += this.QUEUE_NUMBER + this.SPACE + queue.queueNo;
     return message;
   }
