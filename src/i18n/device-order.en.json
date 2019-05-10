@@ -207,5 +207,8 @@
     "เดือน": "month",
     "ลูกค้าปัจจุบัน": "Existing",
     "เงินสด": "Debit",
-    "บัตรเครดิต" : "Credit card"
+    "บัตรเครดิต" : "Credit card",
+    "หลังจากได้รับ SMS ยืนยัน": "After receiving confirmation SMS",
+    "ข้อมูลแพ็กเกจ": "Package Details",
+    "เลือกแพ็กเกจใหม่": "Select new package"
 }
