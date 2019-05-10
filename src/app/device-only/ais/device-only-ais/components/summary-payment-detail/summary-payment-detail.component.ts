@@ -36,7 +36,7 @@ export class SummaryPaymentDetailComponent implements OnInit {
     this.price = this.priceOption.trade.priceType === 'NORMAL' ? this.priceOption.trade.normalPrice : this.priceOption.trade.promotionPrice;
     this.getDataCustomer();
     this.getMobileNoBalance();
-    this.getQueryBalance(this.mobileNo);
+    // this.getQueryBalance(this.mobileNo);
   }
 
   getDataCustomer(): void {
@@ -66,12 +66,12 @@ export class SummaryPaymentDetailComponent implements OnInit {
   }
 
   private getQueryBalance(mobileNo: string): void {
-    this.http.get(`/api/customerportal/newRegister/${mobileNo}/queryBalance`).toPromise()
-      .then((response: any) => {
-        this.mobileCare = +this.transaction.data.mobileCarePackage.customAttributes.priceInclVat;
-        this.balance = +(response.data.remainingBalance) / 100;
-        this.enoughBalance = (this.balance >= this.mobileCare) ? true : false;
-      });
+    // this.http.get(`/api/customerportal/newRegister/${mobileNo}/queryBalance`).toPromise()
+    //   .then((response: any) => {
+    //     this.mobileCare = +this.transaction.data.mobileCarePackage.customAttributes.priceInclVat;
+    //     this.balance = +(response.data.remainingBalance) / 100;
+    //     this.enoughBalance = (this.balance >= this.mobileCare) ? true : false;
+    //   });
   }
 
   onLoadBalance(): void {
