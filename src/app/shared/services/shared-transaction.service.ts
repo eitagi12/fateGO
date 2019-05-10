@@ -105,19 +105,7 @@ export class SharedTransactionService {
     };
 
     if (data.mainPackage) {
-      params.data.main_package = {
-        title: data.mainPackage.title,
-        detailTH: data.mainPackage.detailTH,
-        customAttributes: {}
-      };
-      if (data.mainPackage.customAttributes) {
-        params.data.main_package.customAttributes = {
-          billingSystem: data.mainPackage.customAttributes.billingSystem,
-          promotionCode: data.mainPackage.customAttributes.promotionCode,
-          promotionName: data.mainPackage.customAttributes.promotionName,
-          chargeType: data.mainPackage.customAttributes.chargeType
-        };
-      }
+      params.data.main_package = data.mainPackage;
     }
 
     if (data.preBooking) {
@@ -233,16 +221,7 @@ export class SharedTransactionService {
         // ของเดิม เก็บ reason ไว้ใน object
         params.data.mobile_care_package = { reason: data.mobileCarePackage };
       } else {
-        params.data.mobile_care_package = {
-          title: data.mobileCarePackage.title,
-          id: data.mobileCarePackage.id,
-          customAttributes: {}
-        };
-        if (data.mobileCarePackage.customAttributes) {
-          params.data.mobile_care_package.customAttributes = {
-            promotionCode: data.mobileCarePackage.customAttributes.promotionCode
-          };
-        }
+        params.data.mobile_care_package = data.mobileCarePackage;
       }
     }
 
