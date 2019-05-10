@@ -111,6 +111,9 @@ export class DeviceOrderAisMnpEffectiveStartDatePageComponent implements OnInit,
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_PAGE]);
     }
   }
+  onHome(): void {
+    this.homeService.goToHome();
+  }
 
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
