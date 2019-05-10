@@ -63,7 +63,7 @@
                 || (transaction?.data?.advancePayment?.paymentType !== 'QR_CODE' 
                 && priceOption?.trade?.advancePay?.installmentFlag === 'N')">
           <div class="card-body border-top">
-            <p><b class="text-light-grey" translate>รายการสินค้าค้างชำระ</b></p>
+            <p><b class="text-light-grey" translate>รายการสินค้า (รอชำระ)</b></p>
 
             <ng-container *ngIf="transaction?.data?.payment?.paymentType !== 'QR_CODE'">
               <div class="text-light-grey">
