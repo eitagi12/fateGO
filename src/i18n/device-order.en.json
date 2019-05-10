@@ -157,7 +157,7 @@
     "กรุณชำระเงินภายในเวลาที่กำหนด": "Please complete the payment within the time limit.",
     "ชำระค่าสินค้าเรียบร้อยแล้ว": "Payment complete",
     "หมายเลขอ้าอิง": "Reference No.",
-    "รายการสินค้า(รอชำระ)": "Item list (payment pending)",
+    "รายการสินค้า (รอชำระ)": "Item list (payment pending)",
     "เบอร์โทรศัพท์รับหมายเลขสั่งซื้อเพื่อชำระและรับสินค้าของท่านคือ": "Your phone number, to receive the order number to pay for the product is:",
     "รายการสั่งซื้อ": "Purchase ID",
     "สินค้าของคุณพร้อมแล้วที่จุดรับสินค้า": "Your product is ready at the collection counter",
@@ -184,6 +184,7 @@
     "ท่านต้องการเปลี่ยนบริการโมบายแคร์กับเครื่องใหม่หรือไม่ ?": "Would you like to change your Mobile Care service for the new Brand model ?",
     "ใช่": "Yes",
     "ไม่ใช่": "No",
+    "ใช้ หรือ ไม่": "Yes Or No",
     "ระบบ": "Payment system",
     "สถานะเบอร์": "Mobile number status",
     "อายุการใช้งาน": "Service year",
@@ -203,5 +204,8 @@
     "ที่อยู่ใบเสร็จรับเงิน": "Receipt address",
     "กรุณาเลือกรูปแบบการชำระเงิน": "Please select Payment type",
     "ปี": "year",
-    "เดือน": "month"
+    "เดือน": "month",
+    "ลูกค้าปัจจุบัน": "Existing",
+    "เงินสด": "Debit",
+    "บัตรเครดิต" : "Credit card"
 }
