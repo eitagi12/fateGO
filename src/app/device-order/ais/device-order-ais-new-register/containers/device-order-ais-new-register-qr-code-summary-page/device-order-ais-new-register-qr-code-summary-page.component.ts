@@ -62,7 +62,8 @@ export class DeviceOrderAisNewRegisterQrCodeSummaryPageComponent implements OnIn
         amountAirTime: amountAirTime,
         amountTotal: String(this.getTotal()),
         statusDevice: amountDevice ? 'WAITING' : 'SUCCESS',
-        statusAirTime: amountAirTime ? 'WAITING' : 'SUCCESS'
+        statusAirTime: amountAirTime ? 'WAITING' : 'SUCCESS',
+        installmentFlag: advancePay.installmentFlag
       }
     };
   }

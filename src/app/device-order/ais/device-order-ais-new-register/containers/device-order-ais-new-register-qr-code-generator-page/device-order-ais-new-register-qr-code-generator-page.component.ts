@@ -31,6 +31,7 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
   qrCode: string;
   countdown: string;
   refreshCount: number = 0;
+  totalAmount: number;
 
   constructor(
     private router: Router,
@@ -47,18 +48,33 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
   }
 
   ngOnInit(): void {
-    this.onGenerateQRCode();
+    const mpayPayment = this.transaction.data.mpayPayment;
+    if (mpayPayment.companyStock === 'WDS') {
+      this.onGenerateQRCodeWDS();
+    } else {
+      this.onGenerateQRCode();
+    }
   }
 
-  onGenerateQRCode(): void {
+  onGenerateQRCodeWDS(): void {
     this.refreshCount++;
     const MPAY_QRCODE = environment.MPAY_QRCODE;
     const isThaiQRCode = this.isQRCode('THAI_QR');
     const user = this.tokenService.getUser();
     const order = this.transaction.data.order;
+    const mpayPayment = this.transaction.data.mpayPayment;
+    const mpayStatus = this.transaction.data.mpayPayment.mpayStatus;
 
     const orderId = `${order.soId}_${this.refreshCount}`;
-    const totalAmount = this.getTotalAmount();
+    let totalAmount = 0;
+
+    if (mpayStatus.installmentFlag === 'N') {
+      totalAmount = mpayStatus.statusDevice === 'WAITING' ? +mpayStatus.amountDevice : +mpayStatus.amountAirTime;
+    } else {
+      totalAmount = this.getTotalAmount();
+    }
+
+    this.totalAmount = totalAmount;
 
     const params: any = {
       orderId: orderId,
@@ -94,6 +110,61 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
           channel: 'WEB',
           serviceId: serviceId,
           terminalId: terminalId,
+          qrType: isThaiQRCode ? MPAY_QRCODE.PB_TYPE : MPAY_QRCODE.RB_TYPE,
+          locationName: user.locationCode,
+          amount: totalAmount,
+          company: this.priceOption.productStock.company
+        });
+      });
+    })
+      .then((resp: any) => {
+        this.transaction.data.mainPackage = Object.assign({}, params);
+        if (resp === true) { // true inquiry success
+          this.onNext();
+          return;
+        }
+        const data = resp.data || {};
+        this.handlerQRCodeMpay(orderId, data.qrCodeStr);
+      }).then(() => this.pageLoadingService.closeLoading());
+  }
+
+  onGenerateQRCode(): void {
+    this.refreshCount++;
+    const MPAY_QRCODE = environment.MPAY_QRCODE;
+    const isThaiQRCode = this.isQRCode('THAI_QR');
+    const user = this.tokenService.getUser();
+    const order = this.transaction.data.order;
+
+    const orderId = `${order.soId}_${this.refreshCount}`;
+    const totalAmount = this.getTotalAmount();
+
+    const params: any = {
+      orderId: orderId,
+      amount: totalAmount,
+      qrType: isThaiQRCode ? MPAY_QRCODE.PB_TYPE : MPAY_QRCODE.RB_TYPE,
+      status: 'WAITING',
+      locationCode: user.locationCode
+    };
+
+    this.pageLoadingService.openLoading();
+    this.qrCodePageService.mpayInquiry({
+      orderId: orderId
+    }).then((resp: any) => {
+      const data = resp.data || {};
+      if (data.status === 'SUCCESS') {
+        const fields = ['status', 'tranId', 'tranDtm', 'amount', 'qrType'];
+        fields.forEach(field => {
+          params[field] = data[field];
+        });
+        return true;
+      }
+
+      return this.qrCodePageService.mpayInsert(params).then(() => {
+        return this.qrCodePageService.generateQRCode({
+          orderId: orderId,
+          channel: 'WEB',
+          serviceId: isThaiQRCode ? MPAY_QRCODE.PB_SERVICE_ID : MPAY_QRCODE.RL_SERVICE_ID,
+          terminalId: isThaiQRCode ? MPAY_QRCODE.PB_TERMINAL_ID : MPAY_QRCODE.RL_TERMINAL_ID,
           qrType: isThaiQRCode ? MPAY_QRCODE.PB_TYPE : MPAY_QRCODE.RB_TYPE,
           locationName: user.locationCode,
           amount: totalAmount,

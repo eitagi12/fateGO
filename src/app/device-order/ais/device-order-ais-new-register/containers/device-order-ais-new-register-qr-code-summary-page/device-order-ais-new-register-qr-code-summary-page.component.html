@@ -89,8 +89,8 @@
                       <span *ngIf="transaction?.data?.advancePayment?.paymentQrCodeType === 'LINE_QR'"> Rabbit Line Pay </span>
                       )
                     </small>
-                    <span class="text-pink">( รอชำระ )</span>
-                    <span class="text-green">( ชำระแล้ว )</span>
+                    <span class="text-pink" *ngIf="transaction?.data?.mpayPayment?.mpayStatus.statusDevice === 'WAITING'">( รอชำระ )</span>
+                    <span class="text-green" *ngIf="transaction?.data?.mpayPayment?.mpayStatus.statusDevice === 'SUCCESS'">( ชำระแล้ว )</span>
                     
                   </div>
                 </div>
@@ -98,7 +98,7 @@
                 <!-- ค่าแพ็กเกจบริการล่วงหน้า -->
                 <div *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && (+priceOption?.trade?.advancePay?.amount) > 0">
                     <input class="form-check-input" type="radio" id="advancePay" disabled=""
-                      [checked]="transaction?.data?.advancePayment?.paymentQrCodeType">
+                      [checked]="transaction?.data?.advancePayment?.paymentQrCodeType && transaction?.data?.mpayPayment?.mpayStatus.statusDevice === 'SUCCESS'">
                     <label class="form-check-label" for="advancePay">
                       ค่าแพ็กเกจบริการล่วงหน้า : ชำระเต็มจำนวน
                     </label>

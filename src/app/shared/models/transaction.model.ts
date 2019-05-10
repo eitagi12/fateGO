@@ -348,6 +348,9 @@ export interface MPayStatus {
   amountTotal: string;
   statusDevice: 'SUCCESS' | 'WAITING';
   statusAirTime: 'SUCCESS' | 'WAITING';
+  installmentFlag: 'Y' | 'N';
+  orderIdDevice?: string;
+  orderIdAirTime?: string;
 }
 
 export interface Device {
