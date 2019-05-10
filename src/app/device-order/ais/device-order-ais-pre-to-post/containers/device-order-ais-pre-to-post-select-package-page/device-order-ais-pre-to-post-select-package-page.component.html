@@ -22,7 +22,7 @@
           <div class="container-fluid bg-white">
             <div class="card">
               <div class="card-header bg-green text-white mb-2">
-                เลือกแพ็กเกจใหม่ <span class="minimum-package">(แพ็กเกจเริ่มต้น {{
+                {{'เลือกแพ็กเกจใหม่' | translate}} <span class="minimum-package">(แพ็กเกจเริ่มต้น {{
                   priceOption?.privilege?.minimumPackagePrice }} บาท)</span>
               </div>
               <mc-promotion-shelve [selected]="transaction?.data?.mainPackage" [promotionShelves]="promotionShelves"
