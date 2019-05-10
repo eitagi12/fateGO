@@ -90,15 +90,7 @@
                 </span>
                 <div class="mt-1">
                   <small class="text-muted">
-                    (
-                    ชำระโดย
-                    <span *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'THAI_QR'">
-                      Thai QR Promptpay
-                    </span>
-                    <span *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'LINE_QR'">
-                      Rabbit Line Pay
-                    </span>
-                    )
+                    (ชำระโดย {{ summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) }})
                   </small>
                 </div>
               </div>
@@ -117,17 +109,11 @@
                     ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
                   </span>
                 </div>
-                <small class="text-muted">
-                  (
-                  ชำระโดย
-                  <span *ngIf="transaction?.data?.advancePayment?.paymentQrCodeType === 'THAI_QR'">
-                    Thai QR Promptpay
-                  </span>
-                  <span *ngIf="transaction?.data?.advancePayment?.paymentQrCodeType === 'LINE_QR'">
-                    Rabbit Line Pay
-                  </span>
-                  )
-                </small>
+                <div class="mt-1">
+                  <small class="text-muted" *ngIf="(+priceOption?.trade?.advancePay?.amount) > 0">
+                    (ชำระโดย {{ summaryPageService.descriptionPayment(transaction?.data?.advancePayment) }})
+                  </small>
+                </div>
               </div>
             </ng-container>
 
@@ -147,19 +133,8 @@
             ]) | number:'1.0-0' }}</span>
               </div>
               <div class="mt-1">
-                <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType !== 'QR_CODE'">
-                  (ชำระโดย เงินสด)
-                </small>
-                <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType === 'QR_CODE'">
-                  (
-                  ชำระโดย
-                  <span *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'THAI_QR'">
-                    Thai QR Promptpay
-                  </span>
-                  <span *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'LINE_QR'">
-                    Rabbit Line Pay
-                  </span>
-                  )
+                <small class="text-muted">
+                  (ชำระโดย {{ summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) }})
                 </small>
               </div>
             </ng-container>

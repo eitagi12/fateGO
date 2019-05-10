@@ -153,23 +153,6 @@
               </small>
             </ng-container>
 
-            <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">
-              <small class="text-muted">
-                (
-                {{ 'ชำระโดย' | translate}} {{ 'บัตรเคดิต' | translate}}
-                {{ transaction?.data?.payment?.paymentMethod?.name }}
-                {{ transaction?.data?.payment?.paymentMethod?.percentage }} %
-                {{ transaction?.data?.payment?.paymentMethod?.month }} {{ 'เดือน' | translate}}
-                {{ 
-                  (
-                    (+priceOption?.trade?.promotionPrice) 
-                    + (priceOption?.trade?.advancePay?.installmentFlag === 'N' ? +priceOption?.trade?.advancePay?.amount : 0)
-                  ) / transaction?.data?.payment?.paymentMethod?.month | number: '1.2-2'
-                }} {{ 'บาทต่อเดือน' | translate}}
-                )
-              </small>
-            </ng-container>
-
           </div>
           <div class="card-footer bg-transparent ">
             <p translate>
