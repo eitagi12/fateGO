@@ -1,5 +1,5 @@
 <div class="mc-flex">
-  <mc-header title="ลูกค้าย้ายค่าย">
+  <mc-header title="{{ 'ลูกค้าย้ายค่าย' | translate}}">
     <div class="header-icon-left">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
@@ -16,7 +16,7 @@
       <div class="container-fluid">
         <div class="card mb-3">
           <div class="card-header bg-light-blue text-white">
-            <div class="mt-2">
+            <div class="mt-2" translate>
               เลือกวันที่มีผลการใช้งาน
             </div>
           </div>
@@ -37,7 +37,7 @@
                           class="text-bill-cycle text-grey">{{  billCycle?.textDate }} <span class="text-green">
                             {{ billCycleNextDay$  | async }} </span></span>
                         <span *ngIf="billCycle?.value === 'I'"
-                          class="text-bill-cycle text-grey">{{  billCycle?.textDate }} <span class="text-green">
+                          class="text-bill-cycle text-grey">{{  billCycle?.textDate }} <span class="text-green" translate>
                             หลังจากได้รับ SMS ยืนยัน</span> </span>
                       </div>
                       <hr>

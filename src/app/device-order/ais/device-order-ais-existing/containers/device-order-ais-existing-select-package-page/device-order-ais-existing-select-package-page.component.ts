@@ -177,18 +177,18 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
 
   get showSelectCurrentPackage(): boolean {
     const currentPackage = this.transaction.data.currentPackage || {};
-    return this.priceOption.privilege.minimumPackagePrice <= (currentPackage.priceExclVat || 0);
+    return (+currentPackage.priceExclVat || 0) >= +this.priceOption.privilege.minimumPackagePrice;
 
   }
 
   get isContractFirstPack(): number {
     const contract = this.transaction.data.contractFirstPack || {};
-    return Math.max(contract.firstPackage || 0, contract.minPrice || 0, contract.initialPackage || 0);
+    return Math.max(+contract.firstPackage || 0, +contract.minPrice || 0, +contract.initialPackage || 0);
 
   }
 
   get advancePay(): boolean {
-    return !!((this.priceOption.trade.advancePay && this.priceOption.trade.advancePay.amount || 0) > 0);
+    return !!(+(this.priceOption.trade.advancePay && this.priceOption.trade.advancePay.amount || 0) > 0);
 
   }
 

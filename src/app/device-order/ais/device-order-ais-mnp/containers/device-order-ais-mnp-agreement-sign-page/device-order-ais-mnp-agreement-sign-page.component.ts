@@ -30,6 +30,10 @@ export class DeviceOrderAisMnpAgreementSignPageComponent implements OnInit, OnDe
   commandSigned: any;
   openSignedCommand: any;
   isOpenSign: boolean;
+
+  translationSubscribe: Subscription;
+  currentLang: string;
+
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -37,7 +41,8 @@ export class DeviceOrderAisMnpAgreementSignPageComponent implements OnInit, OnDe
     private aisNativeDeviceService: AisNativeDeviceService,
     private tokenService: TokenService,
     private shoppingCartService: ShoppingCartService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private translationService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
     this.signedSignatureSubscription = this.aisNativeDeviceService.getSigned().subscribe((signature: string) => {
@@ -53,6 +58,18 @@ export class DeviceOrderAisMnpAgreementSignPageComponent implements OnInit, OnDe
         return;
       }
     });
+
+    this.currentLang = this.translationService.currentLang || 'TH';
+    this.translationSubscribe = this.translationService.onLangChange.subscribe(lang => {
+      if (this.signedOpenSubscription) {
+        this.signedOpenSubscription.unsubscribe();
+      }
+      this.currentLang = typeof (lang) === 'object' ? lang.lang : lang;
+      if (this.isOpenSign) {
+        this.onSigned();
+      }
+    });
+
   }
 
   onBack(): void {
@@ -88,14 +105,11 @@ export class DeviceOrderAisMnpAgreementSignPageComponent implements OnInit, OnDe
     this.isOpenSign = true;
     const user: User = this.tokenService.getUser();
     this.signedOpenSubscription = this.aisNativeDeviceService.openSigned(
-      ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'OnscreenSignpad', `{x:100,y:280}`
+      ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'OnscreenSignpad', `{x:100,y:280,Language: ${this.currentLang}}`
     ).subscribe((command: any) => {
       this.openSignedCommand = command;
     });
-  }
 
-  getOnMessageWs(): void {
-    this.commandSigned.ws.send('CaptureImage');
   }
 
   ngOnDestroy(): void {

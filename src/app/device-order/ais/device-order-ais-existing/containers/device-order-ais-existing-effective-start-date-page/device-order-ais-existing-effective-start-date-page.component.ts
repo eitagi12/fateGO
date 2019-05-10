@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
+import { Component, OnInit, OnChanges, OnDestroy, SimpleChanges, AfterViewInit } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { Router } from '@angular/router';
 import { HomeService, ShoppingCart } from 'mychannel-shared-libs';
@@ -144,6 +144,13 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
       this.transaction.data.billingInformation.overRuleStartDate = observer.bill.value;
     });
 
+    if (this.checkOverRuleStartDate()) {
+      const value = this.billCycleText.find(this.mathBillValueByTransaction());
+      this.billingCycleForm.controls['bill'].setValue(value);
+
+    } else {
+      this.billingCycleForm.controls['bill'].setValue(this.billCycleText[0]);
+    }
   }
 
   getBillingAccountProcess(): void {
@@ -264,5 +271,13 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
     };
 
     return handset;
+  }
+
+  mathBillValueByTransaction(): (bill: BillCycleText) => boolean {
+    return bill => bill.value === this.transaction.data.billingInformation.overRuleStartDate;
+  }
+
+  checkOverRuleStartDate(): boolean {
+    return !!(this.transaction.data.billingInformation && this.transaction.data.billingInformation.overRuleStartDate);
   }
 }

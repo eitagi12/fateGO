@@ -1,9 +1,10 @@
 <div class="mc-flex">
-  <mc-header title="ลูกค้าปัจจุบัน">
+  <mc-header title="{{'ลูกค้าปัจจุบัน'| translate}}">
     <div class="header-icon-left">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
     <div class="header-icon-right">
+      <mc-dropdown-language></mc-dropdown-language>
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
@@ -15,10 +16,10 @@
 
       <div class="container-fluid mt-3 mb-3">
         <div class="card mb-5">
-          <h5 class="card-header bg-teal text-white">{{ 'บริการโมบายแคร์' }}</h5>
+          <h5 class="card-header bg-teal text-white" translate>บริการโมบายแคร์</h5>
           <div class="card-body">
             <div class="row">
-              <div class="col-6 col-sm-6 card-text text-black mb-4">{{ 'แพ็กเกจปัจจุบัน' }}</div>
+              <div class="col-6 col-sm-6 card-text text-black mb-4" translate>แพ็กเกจปัจจุบัน</div>
               <div class="col-6 col-sm-6 card-text text-right">{{ exMobileCare?.handSet?.model }}</div>
             </div>
             <div class="row bg-blue-light-grey mr-0 ml-0">
@@ -35,14 +36,14 @@
             <div class="card-body">
               <div class="row">
                 <div class="col-12 col-sm-12 card-text text-black mb-4">
-                  ท่านต้องการเปลี่ยนบริการโมบายแคร์กับเครื่องใหม่ {{priceOption?.productDetail?.name}} {{priceOption?.productDetail?.productSubtype === 'HANDSET BUNDLE'? '(แถมซิม)':'' }} ใช่ หรือ ไม่?
+                  {{'ท่านต้องการเปลี่ยนบริการโมบายแคร์กับเครื่องใหม่'| translate}} {{priceOption?.productDetail?.name}} {{(priceOption?.productDetail?.productSubtype === 'HANDSET BUNDLE'? '(แถมซิม)':'')| translate }} {{'ใช่ หรือ ไม่'| translate}}?
                 </div>
               </div>
               <div class="row">
                 <input class="form-check-input" type="radio" id="change-mobile-care" value="Yes" formControlName="changeMobileCare">
-                <label class="form-check-label col-6 col-sm-6" for="change-mobile-care">{{ 'ใช่' }}</label>
+                <label class="form-check-label col-6 col-sm-6" for="change-mobile-care" translate>ใช่</label>
                 <input class="form-check-input" type="radio" id="unchange-mobile-care" value="No" formControlName="changeMobileCare">
-                <label class="form-check-label" for="unchange-mobile-care">{{ 'ไม่ใช่' }}</label>
+                <label class="form-check-label" for="unchange-mobile-care" translate>ไม่ใช่</label>
               </div>
             </div>
           </div>

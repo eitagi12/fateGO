@@ -11,6 +11,7 @@ import { Subscription } from 'rxjs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { AisNativeDeviceService } from 'src/app/shared/services/ais-native-device.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-device-order-ais-existing-agreement-sign-page',
@@ -32,6 +33,8 @@ export class DeviceOrderAisExistingAgreementSignPageComponent implements OnInit,
   openSignedCommand: any;
   isOpenSign: boolean;
 
+  translationSubscribe: Subscription;
+  currentLang: string;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -40,6 +43,7 @@ export class DeviceOrderAisExistingAgreementSignPageComponent implements OnInit,
     private tokenService: TokenService,
     private shoppingCartService: ShoppingCartService,
     private alertService: AlertService,
+    private translationService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
     this.signedSignatureSubscription = this.aisNativeDeviceService.getSigned().subscribe((signature: string) => {
@@ -53,6 +57,17 @@ export class DeviceOrderAisExistingAgreementSignPageComponent implements OnInit,
           this.onSigned();
         });
         return;
+      }
+    });
+
+    this.currentLang = this.translationService.currentLang || 'TH';
+    this.translationSubscribe = this.translationService.onLangChange.subscribe(lang => {
+      if (this.signedOpenSubscription) {
+        this.signedOpenSubscription.unsubscribe();
+      }
+      this.currentLang = typeof (lang) === 'object' ? lang.lang : lang;
+      if (this.isOpenSign) {
+        this.onSigned();
       }
     });
   }
@@ -90,7 +105,7 @@ export class DeviceOrderAisExistingAgreementSignPageComponent implements OnInit,
     this.isOpenSign = true;
     const user: User = this.tokenService.getUser();
     this.signedOpenSubscription = this.aisNativeDeviceService.openSigned(
-      ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'OnscreenSignpad', `{x:100,y:280}`
+      ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'SignaturePad', `{x:100,y:280}`
     ).subscribe((command: any) => {
       this.openSignedCommand = command;
     });
