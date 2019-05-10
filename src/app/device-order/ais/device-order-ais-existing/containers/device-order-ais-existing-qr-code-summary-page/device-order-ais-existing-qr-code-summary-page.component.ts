@@ -6,6 +6,7 @@ import { HomeService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { ROUTE_DEVICE_ORDER_AIS_EXISTING_AGGREGATE_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_GENERATOR_PAGE } from '../../constants/route-path.constant';
+import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-qr-code-summary-page',
@@ -19,8 +20,9 @@ export class DeviceOrderAisExistingQrCodeSummaryPageComponent implements OnInit 
   constructor(
     private router: Router,
     private homeService: HomeService,
+    public summaryPageService: SummaryPageService,
     private transactionService: TransactionService,
-    private priceOptionService: PriceOptionService
+    private priceOptionService: PriceOptionService,
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();

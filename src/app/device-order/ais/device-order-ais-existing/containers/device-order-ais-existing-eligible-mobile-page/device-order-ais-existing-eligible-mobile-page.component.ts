@@ -206,7 +206,7 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
   }
 
   get advancePay(): boolean {
-    return !!((this.priceOption.trade.advancePay && this.priceOption.trade.advancePay.amount || 0) > 0);
+    return !!(+(this.priceOption.trade.advancePay && this.priceOption.trade.advancePay.amount || 0) > 0);
 
   }
 

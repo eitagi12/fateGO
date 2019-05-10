@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 
@@ -33,6 +34,7 @@ import { DeviceOrderAisExistingAggregatePageComponent } from './containers/devic
   imports: [
     CommonModule,
     FormsModule,
+    TranslateModule,
     ReactiveFormsModule,
     MyChannelSharedLibsModule,
     DeviceOrderAisExistingRoutingModule
