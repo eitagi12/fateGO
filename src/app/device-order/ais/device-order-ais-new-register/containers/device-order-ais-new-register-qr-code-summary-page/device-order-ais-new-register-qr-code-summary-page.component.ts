@@ -31,10 +31,8 @@ export class DeviceOrderAisNewRegisterQrCodeSummaryPageComponent implements OnIn
   }
 
   ngOnInit(): void {
-    delete this.transaction.data.mpayPayment;
-    this.createMpayStatus();
-    if (this.transaction.data.mpayPayment && !this.transaction.data.mpayPayment.mpayStatus) {
-      // this.createMpayStatus();
+    if (!this.transaction.data.mpayPayment) {
+        this.createMpayStatus();
     }
   }
 

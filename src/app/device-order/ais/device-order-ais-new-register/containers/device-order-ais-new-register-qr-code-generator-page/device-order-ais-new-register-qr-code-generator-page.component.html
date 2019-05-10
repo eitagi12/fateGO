@@ -4,7 +4,7 @@
       <!-- <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon> -->
     </div>
     <div class="header-icon-right">
-      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()" [hidden]="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'SUCCESS'"></mc-header-icon>
     </div>
   </mc-header>
   <div class="mc-flex-wrap">
@@ -13,9 +13,9 @@
         <div class="card mb-5">
           <div class="card-header bg-lime text-white">ข้อมูลการชำระ</div>
           <div class="card-body text-light-grey">
-            <div class=" mb-3" *ngIf="priceOption?.productStock?.company && transaction?.data?.payment?.paymentType === 'QR_CODE'">
+            <div class=" mb-3" >
               ผู้ให้บริการ
-              <span class="pull-right"> {{ transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'WAITING' ? priceOption?.productStock?.company : '' }} </span>
+              <span class="pull-right"> {{ transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'WAITING' ? priceOption?.productStock?.company : 'AWN' }} </span>
             </div>
             <div class="border-bottom mb-3">
               ชำระโดย
@@ -65,7 +65,7 @@
     </div>
   </div>
   <mc-footer>
-    <button class="btn btn-secondary" (click)="onHome()">CANCLE</button>
+    <button class="btn btn-secondary" (click)="onHome()" [hidden]="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'SUCCESS'">CANCLE</button>
     <button class="btn btn-success" (click)="onGenerateQRCode()">REFRESH</button>
     <!-- <button class="btn btn-success" *ngIf="isDeveloperMode()" (click)="onNext()">NEXT</button> -->
   </mc-footer>

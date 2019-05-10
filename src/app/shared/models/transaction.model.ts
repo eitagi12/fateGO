@@ -351,6 +351,8 @@ export interface MPayStatus {
   installmentFlag: 'Y' | 'N';
   orderIdDevice?: string;
   orderIdAirTime?: string;
+  tranIdDevice?: string;
+  tranIdAirTime?: string;
 }
 
 export interface Device {

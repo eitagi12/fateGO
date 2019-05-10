@@ -48,15 +48,10 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
   }
 
   ngOnInit(): void {
-    const mpayPayment = this.transaction.data.mpayPayment;
-    if (mpayPayment.companyStock === 'WDS') {
-      this.onGenerateQRCodeWDS();
-    } else {
-      this.onGenerateQRCode();
-    }
+    this.onGenerateQRCode();
   }
 
-  onGenerateQRCodeWDS(): void {
+  onGenerateQRCode(): void {
     this.refreshCount++;
     const MPAY_QRCODE = environment.MPAY_QRCODE;
     const isThaiQRCode = this.isQRCode('THAI_QR');
@@ -65,16 +60,23 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
     const mpayPayment = this.transaction.data.mpayPayment;
     const mpayStatus = this.transaction.data.mpayPayment.mpayStatus;
 
-    const orderId = `${order.soId}_${this.refreshCount}`;
     let totalAmount = 0;
 
-    if (mpayStatus.installmentFlag === 'N') {
-      totalAmount = mpayStatus.statusDevice === 'WAITING' ? +mpayStatus.amountDevice : +mpayStatus.amountAirTime;
+    if (mpayPayment.companyStock === 'WDS') {
+      if (this.getStatusPay() === 'DEVICE') {
+        totalAmount = +mpayStatus.amountDevice;
+      } else if (this.getStatusPay() === 'AIRTIME') {
+        totalAmount = +mpayStatus.amountAirTime;
+        const qrid = mpayStatus.orderIdDevice.split('_');
+        this.refreshCount = +qrid[1] + 1;
+      } else {
+        totalAmount = this.getTotalAmount();
+      }
     } else {
       totalAmount = this.getTotalAmount();
     }
-
     this.totalAmount = totalAmount;
+    const orderId = `${order.soId}_${this.refreshCount}`;
 
     const params: any = {
       orderId: orderId,
@@ -128,59 +130,17 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
       }).then(() => this.pageLoadingService.closeLoading());
   }
 
-  onGenerateQRCode(): void {
-    this.refreshCount++;
-    const MPAY_QRCODE = environment.MPAY_QRCODE;
-    const isThaiQRCode = this.isQRCode('THAI_QR');
-    const user = this.tokenService.getUser();
-    const order = this.transaction.data.order;
-
-    const orderId = `${order.soId}_${this.refreshCount}`;
-    const totalAmount = this.getTotalAmount();
-
-    const params: any = {
-      orderId: orderId,
-      amount: totalAmount,
-      qrType: isThaiQRCode ? MPAY_QRCODE.PB_TYPE : MPAY_QRCODE.RB_TYPE,
-      status: 'WAITING',
-      locationCode: user.locationCode
-    };
-
-    this.pageLoadingService.openLoading();
-    this.qrCodePageService.mpayInquiry({
-      orderId: orderId
-    }).then((resp: any) => {
-      const data = resp.data || {};
-      if (data.status === 'SUCCESS') {
-        const fields = ['status', 'tranId', 'tranDtm', 'amount', 'qrType'];
-        fields.forEach(field => {
-          params[field] = data[field];
-        });
-        return true;
+  getStatusPay(): string {
+    const mpayPayment = this.transaction.data.mpayPayment;
+    if (mpayPayment.companyStock === 'AWN') {
+      return 'DEVICE&AIRTIME';
+    } else {
+      if (mpayPayment.mpayStatus.statusDevice === 'WAITING') {
+        return 'DEVICE';
+      } else {
+        return 'AIRTIME';
       }
-
-      return this.qrCodePageService.mpayInsert(params).then(() => {
-        return this.qrCodePageService.generateQRCode({
-          orderId: orderId,
-          channel: 'WEB',
-          serviceId: isThaiQRCode ? MPAY_QRCODE.PB_SERVICE_ID : MPAY_QRCODE.RL_SERVICE_ID,
-          terminalId: isThaiQRCode ? MPAY_QRCODE.PB_TERMINAL_ID : MPAY_QRCODE.RL_TERMINAL_ID,
-          qrType: isThaiQRCode ? MPAY_QRCODE.PB_TYPE : MPAY_QRCODE.RB_TYPE,
-          locationName: user.locationCode,
-          amount: totalAmount,
-          company: this.priceOption.productStock.company
-        });
-      });
-    })
-      .then((resp: any) => {
-        this.transaction.data.mainPackage = Object.assign({}, params);
-        if (resp === true) { // true inquiry success
-          this.onNext();
-          return;
-        }
-        const data = resp.data || {};
-        this.handlerQRCodeMpay(orderId, data.qrCodeStr);
-      }).then(() => this.pageLoadingService.closeLoading());
+    }
   }
 
   getTotalAmount(): number {
@@ -216,8 +176,22 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
         }
 
         this.checkResponseMpaySubscription = this.qrCodePageService.checkPaymentResponseMpayStatus(orderId)
-          .subscribe(obs => {
-            this.transaction.data.mpayPayment = obs;
+          .subscribe((obs: any) => {
+            console.log('obs', obs);
+            this.transaction.data.mpayPayment = Object.assign(this.transaction.data.mpayPayment, obs);
+            if (this.transaction.data.mpayPayment.companyStock === 'WDS') {
+              const status = this.getStatusPay();
+              if (status === 'DEVICE') {
+                this.transaction.data.mpayPayment.mpayStatus.orderIdDevice =  obs.orderId;
+                this.transaction.data.mpayPayment.mpayStatus.tranIdDevice =  obs.tranId;
+                this.transaction.data.mpayPayment.mpayStatus.statusDevice =  'SUCCESS';
+              }
+              if (status === 'AIRTIME') {
+                this.transaction.data.mpayPayment.mpayStatus.orderIdAirTime =  obs.orderId;
+                this.transaction.data.mpayPayment.mpayStatus.tranIdAirTime =  obs.tranId;
+                this.transaction.data.mpayPayment.mpayStatus.statusAirTime =  'SUCCESS';
+              }
+            }
             this.onNext();
           });
 
@@ -259,7 +233,18 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_QUEUE_PAGE]);
+    const mpayPayment = this.transaction.data.mpayPayment;
+    const mpayStatus = this.transaction.data.mpayPayment.mpayStatus;
+    if (mpayPayment.companyStock === 'AWN') {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_QUEUE_PAGE]);
+    } else {
+      if (mpayStatus.statusDevice === 'SUCCESS' && mpayStatus.statusAirTime === 'SUCCESS') {
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_QUEUE_PAGE]);
+      } else {
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_SUMMARY_PAGE]);
+      }
+
+      }
   }
 
   onHome(): void {
