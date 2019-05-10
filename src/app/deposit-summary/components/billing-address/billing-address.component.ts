@@ -284,7 +284,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     this.customerAddressForm.controls['lastName'].disable();
     this.customerAddressForm.controls['telNo'].disable();
   }
-  private onNext(): void {
+ onNext(): void {
     this.getCustomerProfile();
     this.saveTransaction();
     this.router.navigate([DEPOSIT_PAYMENT_DETAIL_RECEIPT]);
@@ -353,6 +353,9 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       (customer.province ? 'จังหวัด ' + customer.province + ' ' : '') +
       (customer.zipCode || '');
     return fullAddress || '-';
+  }
+  onHome(): void {
+    const url = '/';
   }
 
   onBack(): void {

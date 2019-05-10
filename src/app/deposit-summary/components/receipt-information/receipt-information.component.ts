@@ -368,7 +368,7 @@ export class ReceiptInformationComponent implements OnInit {
     this.customerAddressForm.controls['lastName'].disable();
     // this.customerAddressForm.controls['telNo'].disable();
   }
-  private onNext(): void {
+  onNext(): void {
     this.getCustomerProfile();
     this.saveTransaction();
     this.router.navigate([DEPOSIT_PAYMENT_SUMMARY_PAGE]);
