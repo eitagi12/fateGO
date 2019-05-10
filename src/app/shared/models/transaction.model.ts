@@ -329,7 +329,7 @@ export interface Discount {
   type: string;
 }
 export interface QrCodePrePostMpayModel {
-  orderId: string;
+  orderId?: string;
   tranDtm?: string;
   tranId?: string;
   amount?: number;
@@ -338,6 +338,16 @@ export interface QrCodePrePostMpayModel {
   locationCode?: string;
   offerId?: string;
   startDtm?: string;
+  companyStock?: 'AWN' | 'WDS';
+  mpayStatus?: MPayStatus;
+}
+
+export interface MPayStatus {
+  amountDevice: string;
+  amountAirTime: string;
+  amountTotal: string;
+  statusDevice: 'SUCCESS' | 'WAITING';
+  statusAirTime: 'SUCCESS' | 'WAITING';
 }
 
 export interface Device {
