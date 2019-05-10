@@ -29,7 +29,8 @@ export class AppComponent {
     private pageActivityService: PageActivityService,
     private router: Router,
     private homeService: HomeService,
-    private http: HttpClient
+    private http: HttpClient,
+    private translation: TranslateService
   ) {
     this.version = this.getVersion();
 
