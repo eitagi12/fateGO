@@ -153,9 +153,18 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     this.router.navigate([DEPOSIT_PAYMENT_SUMMARY_PAGE]);
   }
   onBack(): void {
-    const url = '/sales-portal/reserve-stock/list-mobile-no';
-    this.alertRemoveAddCart(url);
+    const VerifyFlag = this.localStorageService.load('VerifyFlag').value;
+    const CustomerFlag = this.localStorageService.load('CustomerFlag').value;
+
+    if (CustomerFlag === 'Y') {
+      const url = '/sales-portal/reserve-stock/list-mobile-no';
+      this.alertRemoveAddCart(url);
+    } else if (CustomerFlag === 'N') {
+      const url = '/sales-portal/reserve-stock/reserve-deposit-non-ais';
+      this.alertRemoveAddCart(url);
+    }
   }
+
   alertRemoveAddCart(url: string): void {
     this.alertService.notify({
       type: 'question',
