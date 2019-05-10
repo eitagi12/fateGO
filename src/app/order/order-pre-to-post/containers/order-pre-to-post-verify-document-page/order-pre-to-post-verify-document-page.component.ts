@@ -369,7 +369,9 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
               if (order) {
                 const createDate = moment(order.createDate, 'YYYYMMDD').format('DD/MM/YYYY');
                 return this.alertService.error(`ระบบไม่สามารถทำรายการได้ <br>หมายเลข ${value.identity}
-                อยู่ระหว่างย้ายค่ายไปยังผู้ให้บริการรายอื่น (True, DTAC)(ทำรายการวันที่${createDate})`);
+                อยู่ระหว่างย้ายค่ายไปยังผู้ให้บริการรายอื่น (True, DTAC) (ทำรายการวันที่${createDate})`).then(() => {
+                  this.validateCustomerForm.controls['identity'].setValue('');
+                  });
               }
               return this.checkCustomerProfile(value.identity);
 
