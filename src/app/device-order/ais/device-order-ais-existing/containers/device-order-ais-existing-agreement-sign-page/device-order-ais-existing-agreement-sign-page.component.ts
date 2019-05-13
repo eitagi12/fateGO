@@ -46,30 +46,45 @@ export class DeviceOrderAisExistingAgreementSignPageComponent implements OnInit,
     private translationService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
-    this.signedSignatureSubscription = this.aisNativeDeviceService.getSigned().subscribe((signature: string) => {
-      this.isOpenSign = false;
-      if (signature) {
-        this.isOpenSign = false;
-        this.transaction.data.customer.imageSignature = signature;
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_AGGREGATE_PAGE]);
-      } else {
-        this.alertService.warning('กรุณาเซ็นลายเซ็น').then(() => {
-          this.onSigned();
-        });
-        return;
-      }
-    });
+    this.signedSignatureSubscription = this.aisNativeDeviceService.getSigned().subscribe(this.respGetSigned());
 
     this.currentLang = this.translationService.currentLang || 'TH';
-    this.translationSubscribe = this.translationService.onLangChange.subscribe(lang => {
-      if (this.signedOpenSubscription) {
-        this.signedOpenSubscription.unsubscribe();
-      }
-      this.currentLang = typeof (lang) === 'object' ? lang.lang : lang;
-      if (this.isOpenSign) {
+    this.translationSubscribe = this.translationService.onLangChange.subscribe(this.respOnLangeChange());
+  }
+
+  respOnLangeChange(): any {
+    return (lang: any) => {
+      this.checkLanguage(lang);
+    };
+  }
+
+  respGetSigned(): (value: string) => void {
+    return (signature: string) => {
+      this.isOpenSign = false;
+      this.checkSignature(signature);
+    };
+  }
+
+  checkLanguage(lang: any): void {
+    if (this.signedOpenSubscription) {
+      this.signedOpenSubscription.unsubscribe();
+    }
+    this.currentLang = typeof (lang) === 'object' ? lang.lang : lang;
+    if (this.isOpenSign) {
+      this.onSigned();
+    }
+  }
+
+  checkSignature(signature: string): void {
+    if (signature) {
+      this.isOpenSign = false;
+      this.transaction.data.customer.imageSignature = signature;
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_AGGREGATE_PAGE]);
+    } else {
+      this.alertService.warning('กรุณาเซ็นลายเซ็น').then(() => {
         this.onSigned();
-      }
-    });
+      });
+    }
   }
 
   ngOnInit(): void {

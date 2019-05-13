@@ -80,15 +80,20 @@ export class DeviceOrderAisExistingMobileCareAvailablePageComponent implements O
     this.exMobileCareForm = this.fb.group({
       changeMobileCare: ['', Validators.required]
     });
+    this.exMobileCareForm.valueChanges.subscribe(this.respExMobileCareForm());
+  }
 
-    this.exMobileCareForm.valueChanges.subscribe((value) => {
-      if (value.changeMobileCare === 'Yes') {
-        this.changeMobileCare = true;
-      } else {
-        this.transaction.data.mobileCarePackage = null;
-        this.changeMobileCare = false;
-      }
-      this.identityValid = true;
-    });
+  respExMobileCareForm(): (value: any) => void {
+    return (value) => this.checkChangeMobileCare(value);
+  }
+
+  checkChangeMobileCare(value: any): void {
+    if (value.changeMobileCare === 'Yes') {
+      this.changeMobileCare = true;
+    } else {
+      this.transaction.data.mobileCarePackage = null;
+      this.changeMobileCare = false;
+    }
+    this.identityValid = true;
   }
 }
