@@ -59,10 +59,10 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
     const order = this.transaction.data.order;
     const mpayPayment = this.transaction.data.mpayPayment;
     const mpayStatus = this.transaction.data.mpayPayment.mpayStatus;
-
+    const company = this.priceOption.productStock.company;
     let totalAmount = 0;
 
-    if (mpayPayment.companyStock === 'WDS') {
+    if (company === 'WDS') {
       if (this.getStatusPay() === 'DEVICE') {
         totalAmount = +mpayStatus.amountDevice;
       } else if (this.getStatusPay() === 'AIRTIME' && mpayStatus.statusAirTime && mpayStatus.statusDevice) {
@@ -101,10 +101,11 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
 
       let serviceId = isThaiQRCode ? MPAY_QRCODE.PB_SERVICE_ID : MPAY_QRCODE.RL_SERVICE_ID;
       let terminalId = isThaiQRCode ? MPAY_QRCODE.PB_TERMINAL_ID : MPAY_QRCODE.RL_TERMINAL_ID;
-      let company = 'AWN';
+      // tslint:disable-next-line:no-shadowed-variable
+      let company = this.priceOption.productStock.company;
       if (this.getStatusPay() === 'DEVICE') {
         if (this.priceOption.productStock.company === 'WDS' && this.transaction.data.payment.paymentType === 'QR_CODE') {
-          company = 'WDS';
+          company = this.priceOption.productStock.company;
           serviceId = isThaiQRCode ? MPAY_QRCODE.PB_WDS_SERVICE_ID : MPAY_QRCODE.RL_WDS_SERVICE_ID;
           terminalId = isThaiQRCode ? MPAY_QRCODE.PB_WDS_TERMINAL_ID : MPAY_QRCODE.RL_WDS_TERMINAL_ID;
         }
@@ -231,6 +232,21 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
             });
       })
       .catch(error => this.alertService.error(error));
+  }
+
+  warningTimeOut(): boolean {
+    if (this.countdown) {
+      const time = this.countdown.split(' : ');
+      const min = time[0];
+      const sec = time[1];
+      if ( +min === 0 && +sec <= 15 ) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return true;
+    }
   }
 
   isQRCode(qrCodeType: 'THAI_QR' | 'LINE_QR'): boolean {

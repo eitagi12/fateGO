@@ -69,8 +69,9 @@ export class DeviceOrderAisNewRegisterQrCodeSummaryPageComponent implements OnIn
   }
 
   getStatusPay(): string {
+    const company = this.priceOption.productStock.company;
     const mpayPayment = this.transaction.data.mpayPayment;
-    if (mpayPayment.companyStock === 'AWN') {
+    if (company === 'AWN') {
       if (mpayPayment.mpayStatus.statusDevice && mpayPayment.mpayStatus.statusAirTime) {
         return 'DEVICE&AIRTIME';
       } else {
@@ -78,11 +79,6 @@ export class DeviceOrderAisNewRegisterQrCodeSummaryPageComponent implements OnIn
       }
     } else {
       return mpayPayment.mpayStatus.statusDevice === 'WAITING' ? 'DEVICE' : 'AIRTIME';
-      // if (mpayPayment.mpayStatus.statusDevice === 'WAITING') {
-      //   return 'DEVICE';
-      // } else {
-      //   return 'AIRTIME';
-      // }
     }
   }
 

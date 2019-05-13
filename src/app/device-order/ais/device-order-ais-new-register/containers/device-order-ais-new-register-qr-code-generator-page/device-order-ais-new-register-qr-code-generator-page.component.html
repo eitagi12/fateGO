@@ -8,8 +8,8 @@
     </div>
   </mc-header>
   <div class="mc-flex-wrap">
-    <div class="my-3">
-      <div class="container-fluid">
+    <div class="my-3 mt-5">
+      <div class="container">
         <div class="card mb-5">
           <div class="card-header bg-lime text-white">ข้อมูลการชำระ</div>
           <div class="card-body text-light-grey">
@@ -28,9 +28,9 @@
                 </ng-container>
               </span>
             </div>
-            <div class="text-right">
+            <div class="text-right h5 text-green">
               ยอดชำระ
-              <span class="total pull-right text-green">฿ {{ totalAmount | number }}</span>
+              <span class="total pull-right ">฿ {{ totalAmount | number }}</span>
             </div>
           </div>
         </div>
@@ -56,7 +56,7 @@
             </div>
           </div>
           <div class="text-center">
-            <h4 [ngClass]="{ 'text-pink': !countdown }">{{ countdown || '00 : 00' }}</h4>
+            <h3 [ngClass]="{ 'text-pink': warningTimeOut() }">{{ countdown || '00 : 00' }}</h3>
             <div>" กรุณาชำระเงินภายในเวลาที่กำหนด "</div>
           </div>
         </ng-container>
@@ -65,7 +65,7 @@
     </div>
   </div>
   <mc-footer>
-    <button class="btn btn-secondary" (click)="onHome()" [hidden]="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'SUCCESS'">CANCLE</button>
+    <!-- <button class="btn btn-secondary" (click)="onHome()" [hidden]="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'SUCCESS'">CANCLE</button> -->
     <button class="btn btn-success" (click)="onGenerateQRCode()">REFRESH</button>
     <!-- <button class="btn btn-success" *ngIf="isDeveloperMode()" (click)="onNext()">NEXT</button> -->
   </mc-footer>
