@@ -83,7 +83,7 @@ export class DepositPaymentReceiptPageComponent implements OnInit {
     private tokenService: TokenService
   ) {
     this.billingAddress.getTitleName().then(this.responseTitleNames());
-    this.billingAddress.getProvinces().then(this.responseProvinces());
+   // this.billingAddress.getProvinces().then(this.responseProvinces());
     this.billingAddress.getZipCodes().then(this.responseZipCodes());
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();

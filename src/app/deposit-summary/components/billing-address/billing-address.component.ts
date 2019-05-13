@@ -88,8 +88,6 @@ export class BillingAddressComponent implements OnInit, OnChanges {
 
   ngOnInit(): void {
     this.createForm();
-    console.log('เจ้าคืออะไร', this.provinces);
-
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -283,6 +281,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     this.customerAddressForm.controls['firstName'].disable();
     this.customerAddressForm.controls['lastName'].disable();
     this.customerAddressForm.controls['telNo'].disable();
+    this.customerAddressForm.controls['zipCode'].disable();
   }
  onNext(): void {
     this.getCustomerProfile();
@@ -330,7 +329,6 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       shipCusName: this.transaction.data.customer.titleName + ' ' + this.transaction.data.customer.firstName +
         ' ' + this.transaction.data.customer.lastName
     };
-    console.log('transaction', this.transaction);
     this.transactionService.save(this.transaction);
     this.priceOptionService.save(this.priceOption);
   }

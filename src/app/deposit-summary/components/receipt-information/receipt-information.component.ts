@@ -7,7 +7,7 @@ import { LocalStorageService } from 'ngx-store';
 import { CreateDeviceOrderService } from '../../services/create-device-order.service';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
-import { DEPOSIT_PAYMENT_DETAIL_RECEIPT, DEPOSIT_PAYMENT_SUMMARY_PAGE } from '../../constants/route-path.constant';
+import { DEPOSIT_PAYMENT_DETAIL_RECEIPT, DEPOSIT_PAYMENT_SUMMARY_PAGE, DEPOSIT_PAYMENT_DETAIL_KEY_IN } from '../../constants/route-path.constant';
 import { Router } from '@angular/router';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { BillingAddressService } from '../../services/billing-address.service';
@@ -73,7 +73,7 @@ export class ReceiptInformationComponent implements OnInit {
   customerInfo: any;
   isShowInputForKeyIn: boolean;
   titleName: any;
-  zipCode: any;
+  zipCodeNo: any;
   nameText: string;
   billingAddressText: string;
   provinces: any;
@@ -100,7 +100,13 @@ export class ReceiptInformationComponent implements OnInit {
 
   ngOnInit(): void {
     this.createForm();
-    console.log('เจ้าคืออะไร1', this.provinces);
+    this.billingAddress.getProvinces().then((res: any) => {
+      this.provinces = res;
+// tslint:disable-next-line: no-unused-expression
+      this.provinces.sort((a: {name: number; }, b: { name: number; }) =>
+       (a.name < b.name) ? -1 : (a.name > b.name) ? 1 : 0) || [];
+     this.setCustomerValue();
+    });
   }
 
   OnChanges(changes: SimpleChanges): void {
@@ -115,8 +121,6 @@ export class ReceiptInformationComponent implements OnInit {
 
   createForm(): void {
     const customerProfile = JSON.parse(localStorage.getItem('CustomerProfile'));
-    // console.log('data >>>> :', customerProfile.province);
-    // this.provinces = customerProfile.province;
     this.customerAddressForm = this.fb.group({
       idCardNo: [customerProfile.idCardNo, [Validators.required, Validators.pattern(/^[1-8]\d{12}$/), this.validateIdCard.bind(this)]],
       titleName: [customerProfile.titleName, [Validators.required]],
@@ -124,19 +128,18 @@ export class ReceiptInformationComponent implements OnInit {
       lastName: [customerProfile.lastName, [Validators.required, this.validateCharacter()]],
       homeNo: [customerProfile.homeNo, [Validators.required, Validators.pattern(/^[0-9^/]*$/)]],
       moo: [customerProfile.moo, [Validators.required]],
-      mooBan: [customerProfile.mooBan, [Validators.required]],
+      mooBan: [customerProfile.mooban, [Validators.required]],
       room: [customerProfile.room, [Validators.required]],
       floor: [customerProfile.floor, [Validators.required]],
       buildingName: [customerProfile.buildingName, [Validators.required]],
       soi: [customerProfile.soi, [Validators.required]],
       street: [customerProfile.street, [Validators.required]],
-      province: [customerProfile.province, [Validators.required]],
-      amphur: [customerProfile.amphur, [Validators.required]],
-      tumbol: [customerProfile.tumbol, [Validators.required]],
-      zipCode: [customerProfile.zipCode, [Validators.required, Validators.maxLength(5), this.validateZipCode.bind(this)]],
+      province: ['', [Validators.required]],
+      amphur: ['', [Validators.required]],
+      tumbol: ['', [Validators.required]],
+      zipCode: ['', [Validators.required, Validators.maxLength(5), this.validateZipCode.bind(this)]],
       // telNo: [customerProfile.selectedMobile, [Validators.required]]
     });
-    console.log('LOGGGGGGGG', this.customerAddressForm.value.province);
 
     this.disabledForm();
     this.disableFormAmphurAndTumbol();
@@ -213,11 +216,8 @@ export class ReceiptInformationComponent implements OnInit {
       this.amphurForm().enable();
       this.tumbolForm().disable();
       if (provinceName) {
-        const controlsZipCode = this.zipCodeForm();
-        this.provinceSelected.emit({
-          provinceName: provinceName,
-          zipCode: controlsZipCode.invalid ? controlsZipCode.value : null
-        });
+        this.onProvinceSelected(provinceName, null);
+        this.customerAddressForm.controls['zipCode'].setValue('');
       }
     });
   }
@@ -229,12 +229,9 @@ export class ReceiptInformationComponent implements OnInit {
       });
       this.tumbolForm().enable();
       if (amphurName) {
-        const controlsZipCode = this.zipCodeForm();
-        this.amphurSelected.emit({
-          provinceName: this.customerAddressForm.value.province || '',
-          amphurName: amphurName,
-          zipCode: controlsZipCode.invalid ? controlsZipCode.value : null
-        });
+        const provinceName = this.customerAddressForm.value.province || '';
+        this.onAmphurSelected(provinceName, amphurName, null);
+        this.customerAddressForm.controls['zipCode'].setValue('');
       }
     });
   }
@@ -243,12 +240,9 @@ export class ReceiptInformationComponent implements OnInit {
     this.tumbolForm().valueChanges.subscribe((tumbolName: any) => {
       if (tumbolName) {
         const controlsZipCode = this.zipCodeForm();
-        this.tumbolSelected.emit({
-          provinceName: this.customerAddressForm.value.province || '',
-          amphurName: this.customerAddressForm.value.amphur || '',
-          tumbolName: tumbolName,
-          zipCode: controlsZipCode.invalid ? controlsZipCode.value : null
-        });
+        const provinceName: string = this.customerAddressForm.value.province;
+        const amphurName: string = this.customerAddressForm.value.amphur;
+        this.onTumbolSelected(provinceName, amphurName, tumbolName);
       }
     });
   }
@@ -308,41 +302,42 @@ export class ReceiptInformationComponent implements OnInit {
   }
 
   private responseZipCode(): (value: any) => any {
-    return (resp: any) => this.zipCode = resp;
+    return (resp: any) => this.zipCodeNo = resp;
   }
 
-  onProvinceSelected(params: any): void {
-    const province = this.findProvinceByName(params.provinceName);
+  onProvinceSelected(provinceName: string, zipcode: any): void {
+    const province = this.findProvinceByName(provinceName);
     const req = {
       provinceId: province.id,
-      zipcode: params.zipCode
+      zipcode: zipcode
     };
-    if (!params.zipCode) {
+    if (!zipcode) {
       delete req.zipcode;
     }
     this.billingAddress.getAmphurs(req).then(this.responseAmphur());
   }
 
-  onAmphurSelected(params: any): void {
-    const province = this.findProvinceByName(params.provinceName);
+  onAmphurSelected(provinceName: string, aumphur: string, zipcode: any): void {
+    const province = this.findProvinceByName(provinceName);
     const req = {
       provinceId: province.id,
-      amphurName: params.amphurName,
-      zipcode: params.zipCode
+      amphurName: aumphur,
+      zipcode: zipcode
     };
-    if (!params.zipCode) {
+    if (!zipcode) {
       delete req.zipcode;
     }
     this.billingAddress.getTumbols(req).then(this.responseTumbols());
   }
 
-  onTumbolSelected(params: any): void {
-    const province = this.findProvinceByName(params.provinceName);
+  onTumbolSelected(provinceName: string, amphurName: string, tumbolName: string): void {
+    const province = this.findProvinceByName(provinceName);
     const req  = {
       provinceId: province.id,
-      amphurName: params.amphurName,
-      tumbolName: params.tumbolName
+      amphurName: amphurName,
+      tumbolName: tumbolName
     };
+
     this.billingAddress.queryZipCode(req).then(this.responseZipCode());
   }
 
@@ -366,10 +361,10 @@ export class ReceiptInformationComponent implements OnInit {
     this.customerAddressForm.controls['titleName'].disable();
     this.customerAddressForm.controls['firstName'].disable();
     this.customerAddressForm.controls['lastName'].disable();
+    this.customerAddressForm.controls['zipCode'].disable();
     // this.customerAddressForm.controls['telNo'].disable();
   }
   onNext(): void {
-    this.getCustomerProfile();
     this.saveTransaction();
     this.router.navigate([DEPOSIT_PAYMENT_SUMMARY_PAGE]);
   }
@@ -394,55 +389,43 @@ export class ReceiptInformationComponent implements OnInit {
   }
 
   private saveTransaction(): void {
-
-    this.transaction = {
-      transactionId: this.apiRequestService.getCurrentRequestId(),
-      data: {
-        transactionType: TransactionType.RESERVE_WITH_DEPOSIT,
-        customer: this.localStorageService.load('CustomerProfile').value,
-        action: TransactionAction.KEY_IN
-      }
-    };
-
-    this.transaction.data.payment = {
-      paymentMethod: this.payment,
-      selectPaymentDetail: this.paymentDetail
-    };
-
     this.transaction.data.customer.shipaddress = {
-      shipCusAddr: this.getFullAddress(this.transaction.data.customer),
+      shipCusAddr: this.getFullAddress(),
       shipCusName: this.transaction.data.customer.titleName + ' ' + this.transaction.data.customer.firstName +
         ' ' + this.transaction.data.customer.lastName
     };
-    console.log('transaction', this.transaction);
     this.transactionService.save(this.transaction);
-    this.priceOptionService.save(this.priceOption);
   }
 
-  getFullAddress(customer: any): string {
-    if (!customer) {
-      return '-';
-    }
+  getFullAddress(): string {
     const fullAddress =
-      (customer.homeNo ? customer.homeNo + ' ' : '') +
-      (customer.moo ? 'หมู่ที่ ' + customer.moo + ' ' : '') +
-      (customer.mooBan ? 'หมู่บ้าน ' + customer.mooBan + ' ' : '') +
-      (customer.room ? 'ห้อง ' + customer.room + ' ' : '') +
-      (customer.floor ? 'ชั้น ' + customer.floor + ' ' : '') +
-      (customer.buildingName ? 'อาคาร ' + customer.buildingName + ' ' : '') +
-      (customer.soi ? 'ซอย ' + customer.soi + ' ' : '') +
-      (customer.street ? 'ถนน ' + customer.street + ' ' : '') +
-      (customer.tumbol ? 'ตำบล/แขวง ' + customer.tumbol + ' ' : '') +
-      (customer.amphur ? 'อำเภอ/เขต ' + customer.amphur + ' ' : '') +
-      (customer.province ? 'จังหวัด ' + customer.province + ' ' : '') +
-      (customer.zipCode || '');
+      (this.customerAddressForm.value.homeNo.length > 0 ? this.customerAddressForm.value.homeNo + ' ' : '') +
+      (this.customerAddressForm.value.moo.length > 0 ? 'หมู่ที่ ' + this.customerAddressForm.value.moo + ' ' : '') +
+      (this.customerAddressForm.value.mooBan.length > 0 ? 'หมู่บ้าน ' + this.customerAddressForm.value.mooBan + ' ' : '') +
+      (this.customerAddressForm.value.room.length > 0 ? 'ห้อง ' + this.customerAddressForm.value.room + ' ' : '') +
+      (this.customerAddressForm.value.floor.length > 0 ? 'ชั้น ' + this.customerAddressForm.value.floor + ' ' : '') +
+      (this.customerAddressForm.value.buildingName.length > 0 ? 'อาคาร ' + this.customerAddressForm.value.buildingName + ' ' : '') +
+      (this.customerAddressForm.value.soi.length > 0 ? 'ซอย ' + this.customerAddressForm.value.soi + ' ' : '') +
+      (this.customerAddressForm.value.street.length > 0 ? 'ถนน ' + this.customerAddressForm.value.street + ' ' : '') +
+      (this.customerAddressForm.value.tumbol.length > 0 ? 'ตำบล/แขวง ' + this.customerAddressForm.value.tumbol + ' ' : '') +
+      (this.customerAddressForm.value.amphur.length > 0 ? 'อำเภอ/เขต ' + this.customerAddressForm.value.amphur + ' ' : '') +
+      (this.customerAddressForm.value.province.length > 0 ? 'จังหวัด ' + this.customerAddressForm.value.province + ' ' : '') +
+      (this.zipCodeNo);
     return fullAddress || '-';
   }
 
   onBack(): void {
-    // const url = '/sales-portal/reserve-stock/reserve-deposit-non-ais';
-    this.router.navigate([DEPOSIT_PAYMENT_DETAIL_RECEIPT]);
-    //  this.removeItem(url);
+    this.router.navigate([DEPOSIT_PAYMENT_DETAIL_KEY_IN]);
   }
 
+  private responseProvinces(): (value: any) => any {
+    return (resp: string[]) => this.provinces = resp;
+  }
+
+  private setCustomerValue(): void {
+    const customerProfile = JSON.parse(localStorage.getItem('CustomerProfile'));
+    this.customerAddressForm.controls['province'].setValue(customerProfile.province);
+    this.customerAddressForm.controls['amphur'].setValue(customerProfile.amphur);
+    this.customerAddressForm.controls['tumbol'].setValue(customerProfile.tumbol);
+  }
 }
