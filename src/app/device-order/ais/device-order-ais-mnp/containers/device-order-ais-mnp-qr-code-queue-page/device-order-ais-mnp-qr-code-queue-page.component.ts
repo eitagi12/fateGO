@@ -102,6 +102,9 @@ export class DeviceOrderAisMnpQrCodeQueuePageComponent implements OnInit, OnDest
     this.queueFrom = this.fb.group({
       'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])],
     });
+
+    // set default input mobileNo
+    this.queueFrom.controls['mobileNo'].setValue(this.transaction.data.simCard.mobileNo);
   }
 
   ngOnDestroy(): void {
