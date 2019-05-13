@@ -181,9 +181,7 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
 
         this.checkResponseMpaySubscription = this.qrCodePageService.checkPaymentResponseMpayStatus(orderId)
           .subscribe((obs: any) => {
-            console.log('obs', obs);
             const status = this.getStatusPay();
-            console.log('status', status);
             const mpay = {
               locationCode: obs.locationCode,
               qrType: obs.qrType,
@@ -206,7 +204,6 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
               } else {
                 this.transaction.data.mpayPayment = Object.assign(this.transaction.data.mpayPayment , obs);
               }
-            
             this.onNext();
           });
 
@@ -250,8 +247,6 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
   onNext(): void {
     const mpayPayment = this.transaction.data.mpayPayment;
     const mpayStatus = this.transaction.data.mpayPayment.mpayStatus;
-    console.log('mpayPayment', mpayPayment);
-    
     if (mpayPayment.companyStock === 'AWN') {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_QUEUE_PAGE]);
     } else {
