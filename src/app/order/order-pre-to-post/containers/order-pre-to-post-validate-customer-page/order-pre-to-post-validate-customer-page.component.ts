@@ -11,6 +11,7 @@ import {
 } from 'src/app/order/order-pre-to-post/constants/route-path.constant';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { environment } from 'src/environments/environment';
+import * as moment from 'moment';
 
 export enum ControlLED {
   EVENT_LED_ON = 'ControlLED|On',
@@ -126,6 +127,48 @@ export class OrderPreToPostValidateCustomerPageComponent implements OnInit, OnDe
   }
 
   onNext(): void {
+    this.pageLoadingService.openLoading();
+    const subscriberId: string = this.identity;
+    const orderType: string = 'Port - Out';
+    const isProduction: any = environment.name !== 'PROD' && environment.name !== 'SIT' ? true : false;
+    const isStartDt: any = isProduction === true ? 30 : 3;
+    const startDt: string = encodeURIComponent(moment().subtract(isStartDt, 'days').format('YYYYMMDD HH:mm:ss'));
+    const endDt: string = encodeURIComponent(moment().format('YYYYMMDD HH:mm:ss'));
+    this.http.get(`/api/customerportal/newRegister/history-order`, {
+      params: {
+        subscriberId: subscriberId,
+        orderType: orderType,
+        startDt: startDt,
+        endDt: endDt
+      }
+    })
+      .toPromise()
+      .then((resp: any) => {
+        const historyOrder = (resp.data || []).find((order: any) => {
+          return order.statusCode === 'Submit for Approve'
+            || order.statusCode === 'Pending'
+            || order.statusCode === 'Submitted'
+            || order.statusCode === 'Request'
+            || order.statusCode === 'Saveteam'
+            || order.statusCode === 'QueryBalance'
+            || order.statusCode === 'Response'
+            || order.statusCode === 'Notification'
+            || order.statusCode === 'BAR Processing'
+            || order.statusCode === 'BAR'
+            || order.statusCode === 'Terminating';
+        });
+        if (historyOrder) {
+          this.pageLoadingService.closeLoading();
+          const createDate = moment(historyOrder.createDate, 'YYYYMMDD').format('DD/MM/YYYY');
+          this.alertService.error(`ระบบไม่สามารถทำรายการได้ <br>หมายเลข ${this.identity}
+          อยู่ระหว่างย้ายค่ายไปยังผู้ให้บริการรายอื่น (True, DTAC)(ทำรายการวันที่${createDate})`);
+        } else {
+          this.checkCustomerProfile();
+        }
+      }).catch(() => this.checkCustomerProfile());
+  }
+
+  checkCustomerProfile(): void {
 
     this.pageLoadingService.openLoading();
 
