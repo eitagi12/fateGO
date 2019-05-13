@@ -115,7 +115,6 @@ export class QueuePageService {
       paymentRemark: this.getOrderRemark(transaction, priceOption),
       mobileAisFlg: 'Y',
       paymentMethod: this.getPaymentMethod(transaction, priceOption),
-      // paymentMethod: 'CA|PB',  qr จ่ายค่า air time อย่างเดียว ต้องส่งแบบนี้
       bankCode: payment && payment.paymentBank ? payment.paymentBank.abb : '',
       matairtimeId: '',
       tradeDiscountId: trade.discount ? trade.discount.tradeDiscountId : '',
@@ -210,42 +209,28 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
       tradePayment = {};
     }
 
-    if (trade.advancePay.installmentFlag === 'Y' || priceOption.productStock.company === 'AWN') {
-      // จ่ายรวม
+    if (trade.advancePay.installmentFlag === 'Y') {
       if (payment.paymentType === 'QR_CODE') {
-        if (payment.paymentQrCodeType === 'THAI_QR') {
-          return 'PB';
-        } else {
-          return 'RL';
-        }
+        return payment.paymentQrCodeType === 'THAI_QR' ? 'PB' : 'RL';
       }
       if (advancePayment.paymentType === 'QR_CODE') {
-        if (advancePayment.paymentQrCodeType === 'THAI_QR') {
-          return 'PB';
-        } else {
-          return 'RL';
-        }
+        return advancePayment.paymentQrCodeType === 'THAI_QR' ? 'PB' : 'RL';
       }
     } else {
-      // จ่ายแยก
-      const pipe = priceOption.productStock.company === 'WDS' ? '|' : '';
       let paymentMethod = '';
+      // สำหรับ AWN จ่ายรวม
+      if (priceOption.productStock.company === 'AWN'
+      && payment.paymentType === 'QR_CODE' && advancePayment.paymentType === 'QR_CODE') {
+        return payment.paymentQrCodeType === 'THAI_QR' ? 'PB' : 'RL';
+      }
+      // AWN หรือ WDS จ่ายแยก
       if (payment.paymentType === 'QR_CODE') {
-        if (payment.paymentQrCodeType === 'THAI_QR') {
-          paymentMethod += 'PB|';
-        } else {
-          paymentMethod += 'RL|';
-        }
+        paymentMethod += payment.paymentQrCodeType === 'THAI_QR' ? 'PB|' : 'RL|';
       } else {
         paymentMethod += tradePayment.method + '|';
       }
-
       if (advancePayment.paymentType === 'QR_CODE') {
-        if (advancePayment.paymentQrCodeType === 'THAI_QR') {
-          paymentMethod += 'PB';
-        } else {
-          paymentMethod += 'RL';
-        }
+        paymentMethod += advancePayment.paymentQrCodeType === 'THAI_QR' ? 'PB' : 'RL';
       } else {
         paymentMethod += tradePayment.method;
       }

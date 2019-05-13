@@ -71,13 +71,18 @@ export class DeviceOrderAisNewRegisterQrCodeSummaryPageComponent implements OnIn
   getStatusPay(): string {
     const mpayPayment = this.transaction.data.mpayPayment;
     if (mpayPayment.companyStock === 'AWN') {
-      return 'DEVICE&AIRTIME';
-    } else {
-      if (mpayPayment.mpayStatus.statusDevice === 'WAITING') {
-        return 'DEVICE';
+      if (mpayPayment.mpayStatus.statusDevice && mpayPayment.mpayStatus.statusAirTime) {
+        return 'DEVICE&AIRTIME';
       } else {
-        return 'AIRTIME';
+        return mpayPayment.mpayStatus.statusDevice === 'WAITING' ? 'DEVICE' : 'AIRTIME';
       }
+    } else {
+      return mpayPayment.mpayStatus.statusDevice === 'WAITING' ? 'DEVICE' : 'AIRTIME';
+      // if (mpayPayment.mpayStatus.statusDevice === 'WAITING') {
+      //   return 'DEVICE';
+      // } else {
+      //   return 'AIRTIME';
+      // }
     }
   }
 

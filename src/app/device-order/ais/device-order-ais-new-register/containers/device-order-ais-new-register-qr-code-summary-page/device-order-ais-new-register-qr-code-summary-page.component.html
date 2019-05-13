@@ -82,18 +82,18 @@
                     </small>
                     <span class="text-pink" *ngIf="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'WAITING'">( รอชำระ )</span>
                     <span class="text-green" *ngIf="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'SUCCESS'">
-                      ( ชำระแล้ว Transaction ID: {{transaction?.data?.mpayPayment?.mpayStatus?.tranIdDevice}} )
+                      ( ชำระแล้ว TX: {{transaction?.data?.mpayPayment?.tranId}} )
                     </span>
                     
                   </div>
                 </div>
-
                 <!-- ค่าแพ็กเกจบริการล่วงหน้า -->
                 <div *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && (+priceOption?.trade?.advancePay?.amount) > 0">
                     <input class="form-check-input" type="radio" id="advancePay" disabled=""
-                      [checked]="getStatusPay() === 'AIRTIME' && transaction?.data?.advancePayment?.paymentQrCodeType || transaction?.data?.mpayPayment?.mpayStatus.statusDevice === 'SUCCESS'">
+                      [checked]="(getStatusPay() === 'AIRTIME' && transaction?.data?.advancePayment?.paymentQrCodeType) || transaction?.data?.mpayPayment?.mpayStatus.statusDevice !== 'WAITING'
+                      || priceOption?.productStock?.company === 'AWN'">
                     <label class="form-check-label" for="advancePay">
-                      ค่าแพ็กเกจบริการล่วงหน้า : ชำระเต็มจำนวน
+                      ค่าแพ็กเกจบริการล่วงหน้า : ชำระเต็มจำนวน {{ getStatusPay()}}
                     </label>
                     <span class="pull-right text-green">
                       ฿ {{ priceOption?.trade?.advancePay?.amount | number }}

@@ -181,7 +181,6 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
 
         this.checkResponseMpaySubscription = this.qrCodePageService.checkPaymentResponseMpayStatus(orderId)
           .subscribe((obs: any) => {
-            const status = this.getStatusPay();
             const mpay = {
               locationCode: obs.locationCode,
               qrType: obs.qrType,
@@ -190,12 +189,13 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
               tranDtm: obs.status
             };
             this.transaction.data.mpayPayment = Object.assign(this.transaction.data.mpayPayment , mpay);
+            const status = this.getStatusPay();
               if (status === 'DEVICE') {
                 this.transaction.data.mpayPayment.mpayStatus.orderIdDevice =  obs.orderId;
-                this.transaction.data.mpayPayment.mpayStatus.statusAirTime =  'SUCCESS';
+                this.transaction.data.mpayPayment.mpayStatus.statusDevice =  'SUCCESS';
                 this.transaction.data.mpayPayment.tranId = obs.tranId;
                 this.transaction.data.mpayPayment.amount = obs.amount;
-                this.transaction.data.mpayPayment.mpayStatus.statusDevice =  'SUCCESS';
+
               } else if (status === 'AIRTIME') {
                 this.transaction.data.mpayPayment.mpayStatus.orderIdAirTime =  obs.orderId;
                 this.transaction.data.mpayPayment.mpayStatus.statusAirTime =  'SUCCESS';
