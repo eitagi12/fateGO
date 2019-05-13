@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { TokenService, ErrorsService, AlertService, PageActivityService, HomeService, ChannelType } from 'mychannel-shared-libs';
+import { TokenService, ErrorsService, AlertService, PageActivityService, HomeService, ChannelType, VirtualKeyboardService } from 'mychannel-shared-libs';
 import { setTheme } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
 import { environment } from '../environments/environment';
@@ -29,7 +29,7 @@ export class AppComponent {
     private homeService: HomeService,
     private http: HttpClient,
     private translation: TranslateService,
-    // private visualKeyboardService: VisualKeyboardService
+    private virtualKeyboardService: VirtualKeyboardService
   ) {
     this.version = this.getVersion();
 
@@ -40,6 +40,7 @@ export class AppComponent {
 
     if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {
       this.pageActivityHandler();
+      this.virtualKeyboardService.setAllowKeyboard(true);
     }
 
     this.homeService.callback = () => {
@@ -70,7 +71,7 @@ export class AppComponent {
     let devAccessToken = '';
     if (this.isDeveloperMode()) {
       // tslint:disable-next-line:max-line-length
-      devAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik9LU1RFU1QwMSIsInRpbWVzdGFtcCI6IjIwMTgwNzEzMTQ1MiIsImxvY2F0aW9uQ29kZSI6IjEyMTMiLCJjaGFubmVsVHlwZSI6InNtYXJ0LW9yZGVyIiwiaWF0IjoxNTMxNDY4MTkwLCJleHAiOjI1MzQwNjAxOTB9.8qXmfcNwOre7d9adFIeaEYphoqVzPX-oRcGiSjxnLe8';
+      devAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik9LU1RFU1QwMSIsInRpbWVzdGFtcCI6IjIwMTgwNzEzMTQ1MiIsImxvY2F0aW9uQ29kZSI6IjEyMTMiLCJjaGFubmVsVHlwZSI6IiIsImlhdCI6MTUzMTQ2ODE5MCwiZXhwIjoyNTM0MDYwMTkwfQ.SSvRQCjoKcah2YUiijsbxuLWwXU31HdV8DB7CD2jCF8';
     }
     this.tokenService.checkTokenExpired(devAccessToken);
   }
