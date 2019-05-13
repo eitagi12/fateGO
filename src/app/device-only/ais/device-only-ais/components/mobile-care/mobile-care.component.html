@@ -177,16 +177,13 @@
         </label>
       </div>
       <div>
-        <input class="form-check-input" type="radio" id="not-buy-mobile-care-n5" value="ยังไม่ตัดสินใจ"
-          formControlName="notBuyMobile">
+        <input class="form-check-input" type="radio" id="not-buy-mobile-care-n5" value="ยังไม่ตัดสินใจ" formControlName="notBuyMobile">
         <label class="form-check-label" for="not-buy-mobile-care-n5">{{ 'ยังไม่ตัดสินใจ' | translate }}</label>
       </div>
     </form>
   </div>
   <div class="modal-footer d-flex justify-content-center">
-    <button type="button" class="btn btn-secondary btn-not-buy-mobile-care"
-      (click)="onNotBuyMobileCare(true)">CLOSE</button>
-    <button type="button" class="btn btn-success btn-not-buy-mobile-care"
-      (click)="onNotBuyMobileCare(false)">NEXT</button>
+    <button type="button" class="btn btn-secondary btn-not-buy-mobile-care" (click)="onNotBuyMobileCare(true)">CLOSE</button>
+    <button type="button" class="btn btn-success btn-not-buy-mobile-care" (click)="onNotBuyMobileCare(false)">NEXT</button>
   </div>
 </ng-template>

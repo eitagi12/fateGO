@@ -139,7 +139,7 @@ export class MobileCareComponent implements OnInit {
       }
       if (this.mobileCareForm.valid) {
         this.mainPackage = this.mobileCareForm.value.promotion.value;
-        this.promotion.emit(this.mobileCareForm.value.promotion.value);
+        this.completed.emit(this.mobileCareForm.value.promotion.value);
       }
     });
   }
@@ -161,7 +161,7 @@ export class MobileCareComponent implements OnInit {
       });
     } else {
       this.isVerifyflag.emit(true);
-      this.promotion.emit(this.notBuyMobileCareForm.value.notBuyMobile);
+      this.completed.emit(this.notBuyMobileCareForm.value.notBuyMobile);
       this.existingMobileCare.emit(false);
     }
     this.modalRef.hide();
@@ -204,7 +204,6 @@ export class MobileCareComponent implements OnInit {
 
   public checkExistingMobileCare(): void {
     const mobileNo = this.privilegeCustomerForm.value.mobileNo;
-    this.pageLoadingService.openLoading();
     if (mobileNo) {
       this.customerInformationService.getBillingByMobileNo(mobileNo).then((res) => {
         if (res && res.data && res.data.billingAddress) {
@@ -247,30 +246,26 @@ export class MobileCareComponent implements OnInit {
 
   private checkMobileCare(mobileNo: string): Promise<any> {
     return this.customerInformationService.getBillingByMobileNo(mobileNo)
-      .then(() => {
-        this.customerInformationService.getProfileByMobileNo(mobileNo).then((res) => {
-          if (res && res.data && res.data.chargeType === 'Pre-paid') {
-            this.pageLoadingService.closeLoading();
-            this.isPrivilegeCustomer = true;
-            this.sendOTP();
-          } else if (res && res.data && res.data.chargeType === 'Post-paid') {
-            let indexExistingMobileCare: any;
-            indexExistingMobileCare = this.checkCurrentPackage(res, indexExistingMobileCare);
-            if (indexExistingMobileCare >= 0) {
-              this.currentPackageMobileCare = res.data.currentPackage[indexExistingMobileCare];
-              this.isPrivilegeCustomer = false;
-              this.http.get(`/api/customerportal/get-existing-mobile-care/${mobileNo}`).toPromise().then((response: any) => {
-                this.exMobileCare = response.data;
-                this.popupMobileCare(this.currentPackageMobileCare);
-              });
-            } else {
-              this.pageLoadingService.closeLoading();
-              this.currentPackageMobileCare = res.data.currentPackage;
-              this.isPrivilegeCustomer = true;
-              this.sendOTP();
-            }
+      .then((res: any) => {
+        let indexExistingMobileCare: any;
+        for (let index = 0; index < res.data.currentPackage.length; index++) {
+          if (res.data.currentPackage[index].produuctGroup && res.data.currentPackage[index].produuctGroup === 'Mobile Care') {
+            indexExistingMobileCare = index;
           }
-        });
+        }
+
+        if (indexExistingMobileCare >= 0) {
+          this.currentPackageMobileCare = res.data.currentPackage[indexExistingMobileCare];
+          this.isPrivilegeCustomer = false;
+          this.http.get(`/api/customerportal/get-existing-mobile-care/${mobileNo}`).toPromise().then((response: any) => {
+            this.exMobileCare = response.data;
+            this.popupMobileCare(this.currentPackageMobileCare);
+          });
+        } else {
+          this.currentPackageMobileCare = res.data.currentPackage;
+          this.isPrivilegeCustomer = true;
+          this.sendOTP();
+        }
       });
   }
 
