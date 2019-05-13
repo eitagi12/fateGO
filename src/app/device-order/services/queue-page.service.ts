@@ -210,7 +210,7 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
       tradePayment = {};
     }
 
-    if (trade.advancePay.installmentFlag === 'Y') {
+    if (trade.advancePay.installmentFlag === 'Y' || priceOption.productStock.company === 'AWN') {
       // จ่ายรวม
       if (payment.paymentType === 'QR_CODE') {
         if (payment.paymentQrCodeType === 'THAI_QR') {
@@ -218,8 +218,13 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
         } else {
           return 'RL';
         }
-      } else {
-        return tradePayment.method;
+      }
+      if (advancePayment.paymentType === 'QR_CODE') {
+        if (advancePayment.paymentQrCodeType === 'THAI_QR') {
+          return 'PB';
+        } else {
+          return 'RL';
+        }
       }
     } else {
       // จ่ายแยก
@@ -227,16 +232,12 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
       let paymentMethod = '';
       if (payment.paymentType === 'QR_CODE') {
         if (payment.paymentQrCodeType === 'THAI_QR') {
-          paymentMethod += 'PB' + pipe;
+          paymentMethod += 'PB|';
         } else {
-          paymentMethod += 'RL' + pipe;
+          paymentMethod += 'RL|';
         }
       } else {
-        paymentMethod += tradePayment.method + pipe;
-      }
-
-      if (priceOption.productStock.company === 'AWN') {
-        return paymentMethod;
+        paymentMethod += tradePayment.method + '|';
       }
 
       if (advancePayment.paymentType === 'QR_CODE') {

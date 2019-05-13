@@ -9,11 +9,12 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { MobileCareService } from 'src/app/device-order/services/mobile-care.service';
 import { AsyncAction } from 'rxjs/internal/scheduler/AsyncAction';
-import { Observable, of } from 'rxjs';
+import { Observable, of, Subscription } from 'rxjs';
 import * as moment from 'moment';
 import { ROUTE_DEVICE_ORDER_AIS_MNP_SELECT_PACKAGE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_PAGE } from '../../constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { TranslateService } from '@ngx-translate/core';
 
 export interface BillCycleText {
   textBill?: string;
@@ -46,21 +47,10 @@ export class DeviceOrderAisMnpEffectiveStartDatePageComponent implements OnInit,
   priceOption: PriceOption;
   transaction: Transaction;
 
-  billCycleText: BillCycleText[] = [{
-    textBill: 'รอบบิลถัดไป',
-    textDate: 'พร้อมใช้งานวันที่',
-    value: 'B'
-  },
-  {
-    textBill: 'วันถัดไป',
-    textDate: 'พร้อมใช้งานวันที่',
-    value: 'D'
-  },
-  {
-    textBill: 'มีผลทันที',
-    textDate: 'พร้อมใช้งานได้ทันที',
-    value: 'I'
-  }];
+  currentLang: string = 'TH';
+  translationSubscribe: Subscription;
+
+  billCycleText: BillCycleText[] = [];
 
   billCycleMap: any = [
     { billNo: '11', from: '4', to: '3' },
@@ -87,12 +77,37 @@ export class DeviceOrderAisMnpEffectiveStartDatePageComponent implements OnInit,
     private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,
     private http: HttpClient,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private translationService: TranslateService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.mobileNoSelect = this.shoppingCart.mobileNo;
+
+    this.currentLang = this.translationService.currentLang || 'TH';
+    this.setBillingCycleTranslate();
+    this.translationSubscribe = this.translationService.onLangChange.subscribe(lang => {
+      this.currentLang = typeof (lang) === 'object' ? lang.lang : lang;
+      this.setBillingCycleTranslate();
+    });
+
+  }
+
+  setBillingCycleTranslate(): void {
+    this.billCycleText = [{
+      textBill: this.currentLang === 'TH' ? 'รอบบิลถัดไป' : 'Next Bill',
+      textDate: this.currentLang === 'TH' ? 'พร้อมใช้งานวันที่' : 'Ready to use date',
+      value: 'B'
+    }, {
+      textBill: this.currentLang === 'TH' ? 'วันถัดไป' : 'Next Day',
+      textDate: this.currentLang === 'TH' ? 'พร้อมใช้งานวันที่' : 'Ready to use date',
+      value: 'D'
+    }, {
+      textBill: this.currentLang === 'TH' ? 'มีผลทันที' : 'Immediate effect',
+      textDate: this.currentLang === 'TH' ? 'พร้อมใช้งานได้ทันที' : 'Ready to use immediately',
+      value: 'I'
+    }];
   }
 
   ngOnInit(): void {
@@ -110,6 +125,9 @@ export class DeviceOrderAisMnpEffectiveStartDatePageComponent implements OnInit,
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_PAGE]);
     }
+  }
+  onHome(): void {
+    this.homeService.goToHome();
   }
 
   ngOnDestroy(): void {
@@ -157,7 +175,7 @@ export class DeviceOrderAisMnpEffectiveStartDatePageComponent implements OnInit,
       } else {
         return false;
       }
-    } );
+    });
   }
 
   convertDateToStarngDDMMMYYYY(date: Date): any {
@@ -177,16 +195,20 @@ export class DeviceOrderAisMnpEffectiveStartDatePageComponent implements OnInit,
   checked(value: string): boolean {
     if (this.transaction && this.transaction.data && this.transaction.data.billingInformation &&
       this.transaction.data.billingInformation.overRuleStartDate) {
-        return JSON.stringify(value) === JSON.stringify(this.transaction.data.billingInformation.overRuleStartDate);
+      return JSON.stringify(value) === JSON.stringify(this.transaction.data.billingInformation.overRuleStartDate);
     } else {
       return false;
     }
   }
 
+  checkedDefault(billCycleValue: any): boolean {
+    return JSON.stringify(this.billCycleText[0].value) === JSON.stringify(billCycleValue);
+  }
+
   checkFormValid(): boolean {
     if (this.transaction && this.transaction.data && this.transaction.data.billingInformation &&
       this.transaction.data.billingInformation.overRuleStartDate) {
-        return true;
+      return true;
     } else {
       return this.billingCycleForm.valid;
     }

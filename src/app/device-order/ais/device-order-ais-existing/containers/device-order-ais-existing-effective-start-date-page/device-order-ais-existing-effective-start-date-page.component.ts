@@ -1,11 +1,12 @@
-import { Component, OnInit, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
+import { Component, OnInit, OnChanges, OnDestroy, SimpleChanges, AfterViewInit } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { Router } from '@angular/router';
 import { HomeService, ShoppingCart } from 'mychannel-shared-libs';
 import {
   ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_ONTOP_PAGE
 } from '../../constants/route-path.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { BillingAccount, Transaction } from 'src/app/shared/models/transaction.model';
@@ -118,11 +119,12 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
   }
 
   onNext(): void {
-    if (this.transaction.data.existingMobileCare) {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE]);
-    } else {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE]);
-    }
+    // if (this.transaction.data.existingMobileCare) {
+    //   this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE]);
+    // } else {
+    //   this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE]);
+    // }
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_ONTOP_PAGE]);
   }
 
   onHome(): void {
@@ -142,6 +144,13 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
       this.transaction.data.billingInformation.overRuleStartDate = observer.bill.value;
     });
 
+    if (this.checkOverRuleStartDate()) {
+      const value = this.billCycleText.find(this.mathBillValueByTransaction());
+      this.billingCycleForm.controls['bill'].setValue(value);
+
+    } else {
+      this.billingCycleForm.controls['bill'].setValue(this.billCycleText[0]);
+    }
   }
 
   getBillingAccountProcess(): void {
@@ -262,5 +271,13 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
     };
 
     return handset;
+  }
+
+  mathBillValueByTransaction(): (bill: BillCycleText) => boolean {
+    return bill => bill.value === this.transaction.data.billingInformation.overRuleStartDate;
+  }
+
+  checkOverRuleStartDate(): boolean {
+    return !!(this.transaction.data.billingInformation && this.transaction.data.billingInformation.overRuleStartDate);
   }
 }

@@ -6,6 +6,7 @@ import { HomeService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { ROUTE_DEVICE_ORDER_AIS_MNP_AGGREGATE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_QR_CODE_GENERATOR_PAGE } from '../../constants/route-path.constant';
+import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
 
 @Component({
   selector: 'app-device-order-ais-mnp-qr-code-summary-page',
@@ -19,6 +20,7 @@ export class DeviceOrderAisMnpQrCodeSummaryPageComponent implements OnInit {
   constructor(
     private router: Router,
     private homeService: HomeService,
+    public summaryPageService: SummaryPageService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService
   ) {

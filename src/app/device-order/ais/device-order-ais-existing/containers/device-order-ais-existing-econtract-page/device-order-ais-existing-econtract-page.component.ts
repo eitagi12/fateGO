@@ -69,6 +69,7 @@ export class DeviceOrderAisExistingEcontractPageComponent implements OnInit, OnD
     const customer: any = this.transaction.data.customer || {};
     const simCard: any = this.transaction.data.simCard || {};
     const mainPackage: any = this.transaction.data.mainPackage || {};
+    const currentPackage: any = this.transaction.data.currentPackage || {};
     const mobileCarePackage: any = this.transaction.data.mobileCarePackage || {};
     const advancePay: any = trade.advancePay || {};
 
@@ -94,7 +95,7 @@ export class DeviceOrderAisExistingEcontractPageComponent implements OnInit, OnD
           netPrice: this.decimalPipe.transform(trade.promotionPrice),
           advancePay: this.decimalPipe.transform(advancePay.amount),
           contract: trade.durationContract,
-          packageDetail: mainPackage.detailTH,
+          packageDetail: mainPackage.detailTH || currentPackage.detail,
           airTimeDiscount: this.getAirTimeDiscount(advancePay.amount, advancePay.promotions),
           airTimeMonth: this.getAirTimeMonth(advancePay.promotions),
           price: this.decimalPipe.transform(+trade.promotionPrice + (+advancePay.amount)),

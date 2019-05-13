@@ -36,11 +36,11 @@ export class DeviceOrderAisExistingSummaryPageComponent implements OnInit {
   constructor(
     private router: Router,
     private homeService: HomeService,
+    private modalService: BsModalService,
+    public summaryPageService: SummaryPageService,
     private priceOptionService: PriceOptionService,
     private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,
-    private modalService: BsModalService,
-    public summaryPageService: SummaryPageService,
     private utils: Utils
   ) {
     this.priceOption = this.priceOptionService.load();

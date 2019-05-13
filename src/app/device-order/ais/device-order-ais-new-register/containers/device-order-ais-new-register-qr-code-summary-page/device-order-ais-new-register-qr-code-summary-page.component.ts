@@ -9,6 +9,7 @@ import { Router } from '@angular/router';
 import { HomeService } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
 
 @Component({
   selector: 'app-device-order-ais-new-register-qr-code-summary-page',
@@ -23,6 +24,7 @@ export class DeviceOrderAisNewRegisterQrCodeSummaryPageComponent implements OnIn
   constructor(
     private router: Router,
     private homeService: HomeService,
+    public summaryPageService: SummaryPageService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService
   ) {
