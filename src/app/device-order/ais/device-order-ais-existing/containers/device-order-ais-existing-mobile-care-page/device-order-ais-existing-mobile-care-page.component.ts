@@ -96,14 +96,8 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit, On
       packageKeyRef: MOBILE_CARE_PACKAGE_KEY_REF,
       billingSystem: billingSystem
     }, chargeType, billingSystem, endUserPrice)
-      .then(this.respGetMobileCare(exMobileCare))
+      .then((mobileCare: any) => this.haveMobileCarePromotions(mobileCare, exMobileCare))
       .then(() => this.pageLoadingService.closeLoading());
-  }
-
-  respGetMobileCare(exMobileCare: ExistingMobileCare): (value: any) => void | PromiseLike<void> {
-    return (mobileCare: any) => {
-      return this.haveMobileCarePromotions(mobileCare, exMobileCare);
-    };
   }
 
   haveMobileCarePromotions(mobileCare: any, exMobileCare: ExistingMobileCare): void {

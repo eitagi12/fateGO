@@ -100,16 +100,18 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
     .toPromise()
     .then((response: any) => {
       const exMobileCare = response.data || {};
-
-      if (exMobileCare.hasExistingMobileCare) {
-        const existingMobileCare: ExistingMobileCare = exMobileCare.existMobileCarePackage;
-        existingMobileCare.handSet = exMobileCare.existHandSet;
-        this.transaction.data.existingMobileCare = existingMobileCare;
-      }
-
+      this.mappingExistingMobileCare(exMobileCare);
       this.router.navigate([this.navigatePath(exMobileCare)]);
+    })
+    .then(() => this.pageLoadingService.closeLoading());
+  }
 
-    }).then(() => this.pageLoadingService.closeLoading());
+  mappingExistingMobileCare(exMobileCare: any): void {
+    if (exMobileCare.hasExistingMobileCare) {
+      const existingMobileCare: ExistingMobileCare = exMobileCare.existMobileCarePackage;
+      existingMobileCare.handSet = exMobileCare.existHandSet;
+      this.transaction.data.existingMobileCare = existingMobileCare;
+    }
   }
 
   navigatePath(exMobileCare: any = {}): any {
@@ -137,42 +139,51 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
     const billingSystem = (this.transaction.data.simCard.billingSystem === 'RTBS')
     ? BillingSystemType.IRB : this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
 
-    return this.promotionShelveService.getPromotionShelve(
-      {
-        packageKeyRef: trade.packageKeyRef,
-        orderType: `Change Service`,
-        billingSystem: billingSystem
-      },
-      +privilege.minimumPackagePrice, +privilege.maximumPackagePrice)
-      .then((promotionShelves: any) => {
-        const contract = this.transaction.data.contractFirstPack || {};
-
-        return this.filterPromotionByFirstPack(promotionShelves, contract);
-
-      });
+    return this.callGetPromotionShelveService(trade, billingSystem, privilege);
 
   }
 
-  filterPromotionByFirstPack(promotionShelves: any = [], contract: any = {}): any[] {
+  callGetPromotionShelveService(trade: any, billingSystem: string, privilege: any): Promise<any> {
+    return this.promotionShelveService.getPromotionShelve({
+      packageKeyRef: trade.packageKeyRef,
+      orderType: `Change Service`,
+      billingSystem: billingSystem
+    }, +privilege.minimumPackagePrice, +privilege.maximumPackagePrice)
+    .then((promotionShelves: any) => {
+      const contract = this.transaction.data.contractFirstPack || {};
+
+      return this.filterPromotions(promotionShelves, contract);
+    });
+  }
+
+  filterPromotions(promotionShelves: any = [], contract: any = {}): any[] {
     (promotionShelves || []).forEach((promotionShelve: any) => {
       promotionShelve.promotions = (promotionShelve.promotions || []).filter((promotion: any) => {
-        promotion.items = (promotion.items || [])
-          .filter(item => {
-            const contractFirstPack = item.value.customAttributes.priceExclVat
-              >= Math.max(contract.firstPackage || 0, contract.minPrice || 0, contract.initialPackage || 0);
-
-            const inGroup = contract.inPackage.length > 0 ? contract.inPackage
-              .some(inPack => inPack === item.value.customAttributes.productPkg) : true;
-
-            return contractFirstPack && inGroup;
-
-          });
+        promotion.items = this.filterItemsByFirstPackageAndInGroup(promotion, contract);
         return promotion.items.length > 0;
 
       });
     });
     return promotionShelves;
 
+  }
+
+  filterItemsByFirstPackageAndInGroup(promotion: any, contract: any): any {
+    return (promotion.items || [])
+      .filter((item: {
+        value: {
+          customAttributes: {
+            priceExclVat: number;
+            productPkg: any;
+          };
+        };
+      }) => {
+        const contractFirstPack = item.value.customAttributes.priceExclVat
+          >= Math.max(contract.firstPackage || 0, contract.minPrice || 0, contract.initialPackage || 0);
+        const inGroup = contract.inPackage.length > 0 ? contract.inPackage
+          .some((inPack: any) => inPack === item.value.customAttributes.productPkg) : true;
+        return contractFirstPack && inGroup;
+      });
   }
 
   get showSelectCurrentPackage(): boolean {
