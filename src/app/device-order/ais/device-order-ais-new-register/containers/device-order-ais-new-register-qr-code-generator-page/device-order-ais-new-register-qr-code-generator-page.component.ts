@@ -102,7 +102,7 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
       let serviceId = isThaiQRCode ? MPAY_QRCODE.PB_SERVICE_ID : MPAY_QRCODE.RL_SERVICE_ID;
       let terminalId = isThaiQRCode ? MPAY_QRCODE.PB_TERMINAL_ID : MPAY_QRCODE.RL_TERMINAL_ID;
       // tslint:disable-next-line:no-shadowed-variable
-      let company = this.priceOption.productStock.company;
+      let company = 'AWN';
       if (this.getStatusPay() === 'DEVICE') {
         if (this.priceOption.productStock.company === 'WDS' && this.transaction.data.payment.paymentType === 'QR_CODE') {
           company = this.priceOption.productStock.company;
