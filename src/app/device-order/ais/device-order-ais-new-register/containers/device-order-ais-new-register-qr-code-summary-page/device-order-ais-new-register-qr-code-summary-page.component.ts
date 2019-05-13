@@ -59,11 +59,24 @@ export class DeviceOrderAisNewRegisterQrCodeSummaryPageComponent implements OnIn
         amountDevice: amountDevice,
         amountAirTime: amountAirTime,
         amountTotal: String(this.getTotal()),
-        statusDevice: amountDevice ? 'WAITING' : 'SUCCESS',
-        statusAirTime: amountAirTime ? 'WAITING' : 'SUCCESS',
+        statusDevice: amountDevice ? 'WAITING' : null,
+        statusAirTime: amountAirTime ? 'WAITING' : null,
         installmentFlag: advancePay.installmentFlag
       }
     };
+  }
+
+  getStatusPay(): string {
+    const mpayPayment = this.transaction.data.mpayPayment;
+    if (mpayPayment.companyStock === 'AWN') {
+      return 'DEVICE&AIRTIME';
+    } else {
+      if (mpayPayment.mpayStatus.statusDevice === 'WAITING') {
+        return 'DEVICE';
+      } else {
+        return 'AIRTIME';
+      }
+    }
   }
 
   onBack(): void {

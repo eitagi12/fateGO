@@ -76,7 +76,7 @@
                   <span class="pull-right text-green">
                     ฿ {{ priceOption?.trade?.promotionPrice | number }}
                   </span>
-                  <div class="mt-1" *ngIf="transaction?.data?.payment?.paymentForm !== 'INSTALLMENT'">
+                  <div class="mt-1" *ngIf="transaction?.data?.payment?.paymentForm !== 'INSTALLMENT' && transaction?.data?.payment?.paymentType === 'QR_CODE'">
                     <small class="text-muted">
                       ( ชำระโดย
                       <span *ngIf="transaction?.data?.advancePayment?.paymentQrCodeType === 'THAI_QR'"> Thai QR Promptpay </span>
@@ -94,7 +94,7 @@
                 <!-- ค่าแพ็กเกจบริการล่วงหน้า -->
                 <div *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && (+priceOption?.trade?.advancePay?.amount) > 0">
                     <input class="form-check-input" type="radio" id="advancePay" disabled=""
-                      [checked]="transaction?.data?.advancePayment?.paymentQrCodeType && transaction?.data?.mpayPayment?.mpayStatus.statusDevice === 'SUCCESS'">
+                      [checked]="getStatusPay() === 'AIRTIME' && transaction?.data?.advancePayment?.paymentQrCodeType || transaction?.data?.mpayPayment?.mpayStatus.statusDevice === 'SUCCESS'">
                     <label class="form-check-label" for="advancePay">
                       ค่าแพ็กเกจบริการล่วงหน้า : ชำระเต็มจำนวน
                     </label>

@@ -115,6 +115,7 @@ export class QueuePageService {
       paymentRemark: this.getOrderRemark(transaction, priceOption),
       mobileAisFlg: 'Y',
       paymentMethod: this.getPaymentMethod(transaction, priceOption),
+      // paymentMethod: 'CA|PB',  qr จ่ายค่า air time อย่างเดียว ต้องส่งแบบนี้
       bankCode: payment && payment.paymentBank ? payment.paymentBank.abb : '',
       matairtimeId: '',
       tradeDiscountId: trade.discount ? trade.discount.tradeDiscountId : '',
@@ -123,8 +124,10 @@ export class QueuePageService {
       bankAbbr: payment && payment.paymentBank ? payment.paymentBank.abb : '',
       preBookingNo: prebooking ? prebooking.preBookingNo : '',
       depositAmt: prebooking ? prebooking.depositAmt : '',
-      qrTransId: mpayPayment ? mpayPayment.tranId : '',
-      qrAmt: this.getQRAmt(trade, transaction)
+      qrTransId: mpayPayment.tranId,
+      qrAmt: this.getQRAmt(trade, transaction),
+      qrAirtimeTransId: mpayPayment.qrAirtimeTransId || null,
+      qrAirtimeAmt: mpayPayment.qrAirtimeAmt ? (+mpayPayment.qrAirtimeAmt).toFixed(2) : null
     };
 
     // freeGoods
@@ -148,7 +151,7 @@ export class QueuePageService {
     const information = this.getInformation(transaction, priceOption);
 
     return `
-${this.PROMOTION_NAME}${this.SPACE}${onTopPackage.shortNameThai || ''}${this.NEW_LINE}
+${this.PROMOTION_NAME}${this.SPACE}${onTopPackage.shortNameThai || ''}
 ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW_LINE}
 `;
   }
@@ -197,6 +200,7 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
   private getPaymentMethod(transaction: Transaction, priceOption: PriceOption): string {
     const payment: Payment = transaction.data.payment;
     const trade: any = priceOption.trade;
+    const advancePayment: any = transaction.data.advancePayment || {};
     let tradePayment: any;
     if ((trade.payment && trade.payment.length > 0)) {
       tradePayment = priceOption.trade.payment[0];
@@ -205,14 +209,46 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
     } else {
       tradePayment = {};
     }
-    if (payment.paymentType === 'QR_CODE') {
-      if (payment.paymentQrCodeType === 'THAI_QR') {
-        return 'PB';
+
+    if (trade.advancePay.installmentFlag === 'Y') {
+      // จ่ายรวม
+      if (payment.paymentType === 'QR_CODE') {
+        if (payment.paymentQrCodeType === 'THAI_QR') {
+          return 'PB';
+        } else {
+          return 'RL';
+        }
       } else {
-        return 'RL';
+        return tradePayment.method;
       }
     } else {
-      return tradePayment.method;
+      // จ่ายแยก
+      const pipe = priceOption.productStock.company === 'WDS' ? '|' : '';
+      let paymentMethod = '';
+      if (payment.paymentType === 'QR_CODE') {
+        if (payment.paymentQrCodeType === 'THAI_QR') {
+          paymentMethod += 'PB' + pipe;
+        } else {
+          paymentMethod += 'RL' + pipe;
+        }
+      } else {
+        paymentMethod += tradePayment.method + pipe;
+      }
+
+      if (priceOption.productStock.company === 'AWN') {
+        return paymentMethod;
+      }
+
+      if (advancePayment.paymentType === 'QR_CODE') {
+        if (advancePayment.paymentQrCodeType === 'THAI_QR') {
+          paymentMethod += 'PB';
+        } else {
+          paymentMethod += 'RL';
+        }
+      } else {
+        paymentMethod += tradePayment.method;
+      }
+      return paymentMethod;
     }
   }
 

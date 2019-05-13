@@ -338,16 +338,19 @@ export interface QrCodePrePostMpayModel {
   locationCode?: string;
   offerId?: string;
   startDtm?: string;
+  // QR Code AirTime
   companyStock?: 'AWN' | 'WDS';
   mpayStatus?: MPayStatus;
+  qrAirtimeTransId?: string;
+  qrAirtimeAmt?: string;
 }
 
 export interface MPayStatus {
   amountDevice: string;
   amountAirTime: string;
   amountTotal: string;
-  statusDevice: 'SUCCESS' | 'WAITING';
-  statusAirTime: 'SUCCESS' | 'WAITING';
+  statusDevice: 'SUCCESS' | 'WAITING' | null;
+  statusAirTime: 'SUCCESS' | 'WAITING' | null;
   installmentFlag: 'Y' | 'N';
   orderIdDevice?: string;
   orderIdAirTime?: string;
