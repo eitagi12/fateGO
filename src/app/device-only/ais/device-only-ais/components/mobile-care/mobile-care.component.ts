@@ -13,6 +13,7 @@ import { Transaction, MainPackage } from '../../../../../shared/models/transacti
 import { MobileCareService } from '../../services/mobile-care.service';
 import { MOBILE_CARE_PACKAGE_KEY_REF } from '../../constants/cpc.constant';
 import { log } from 'util';
+import { debounceTime } from 'rxjs/operators';
 
 export interface MobileCare {
   nextBillEffective?: boolean;
@@ -59,6 +60,7 @@ export class MobileCareComponent implements OnInit {
   priceOption: PriceOption;
   transaction: Transaction;
   transactionID: string;
+  isSelect: boolean;
 
   @Input() mobileCare: MobileCare;
   @Input() normalPrice: number;
@@ -92,6 +94,8 @@ export class MobileCareComponent implements OnInit {
     this.createForm();
     this.onCheckValidators();
     this.checkPrivilegeMobileCare();
+    this.isSelect = false;
+
   }
 
   public onCheckValidators(): void {
@@ -130,6 +134,8 @@ export class MobileCareComponent implements OnInit {
     });
 
     this.mobileCareForm.valueChanges.subscribe((value: any) => {
+      this.isSelect = false;
+
       if (!value.mobileCare) {
         return this.onOpenNotBuyMobileCare();
       } else {
@@ -152,6 +158,15 @@ export class MobileCareComponent implements OnInit {
     this.modalRef = this.modalService.show(this.template, {
       ignoreBackdropClick: true
     });
+
+    this.notBuyMobileCareForm.valueChanges.subscribe((value: any) => {
+      if (this.notBuyMobileCareForm.value.notBuyMobile !== '') {
+        this.isSelect = true;
+      } else {
+        this.isSelect = false;
+      }
+    });
+
   }
 
   public onNotBuyMobileCare(dismiss: boolean): void {
@@ -161,7 +176,7 @@ export class MobileCareComponent implements OnInit {
       });
     } else {
       this.isVerifyflag.emit(true);
-      this.completed.emit(this.notBuyMobileCareForm.value.notBuyMobile);
+      this.isReasonNotBuyMobileCare.emit(this.notBuyMobileCareForm.value.notBuyMobile);
       this.existingMobileCare.emit(false);
     }
     this.modalRef.hide();

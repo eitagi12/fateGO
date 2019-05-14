@@ -16,7 +16,7 @@
                     <span id="text-mobile-no">{{ transaction?.data?.receiptInfo?.telNo | mobileNo }}</span></p> 
                   <p>ชำระค้าสินค้าเรียบร้อยแล้ว</p>
                   <p>หมายเลขอ้างอิง 
-                  <span id="text-transaction-no">2019031111009</span></p>
+                  <span id="text-transaction-no">{{ transaction.data.mpayPayment.tranId }}</span></p>
                 </div>
             </div>
           </div>

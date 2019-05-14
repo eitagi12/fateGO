@@ -39,6 +39,7 @@ export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit , OnDe
 
   ngOnInit(): void {
     this.homeButtonService.initEventButtonHome();
+    console.log('emit', this.isVerifyflag);
   }
 
   public onBack(): void {
@@ -48,6 +49,7 @@ export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit , OnDe
   public isVerifyNext(): boolean {
     return !(this.transaction.data.mobileCarePackage && this.isVerifyflag);
   }
+
   public getCurrentPackMobileCare(existingMobileCare: any): void {
     if (existingMobileCare) {
       const existingObj = {...existingMobileCare};
@@ -76,6 +78,11 @@ export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit , OnDe
   onCompleted(simCard: any): void {
     this.transaction.data.simCard = simCard;
   }
+
+  onReason(reason: any): void {
+    this.transaction.data.reasonCode = reason;
+  }
+
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }
