@@ -1,4 +1,33 @@
 <div class="container-fluid">
+  <div class="card mb-3" [hidden]="notBuyMobileCareForm.value.notBuyMobile">
+    <div class="card-header bg-white text-center text-teal">
+      <h3>ระบุเบอร์รับสิทธิ์โมบายแคร์</h3>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="privilegeCustomerForm">
+        <div class="form-group row">
+          <div class="col-6 col-sm-8">
+            <input class="input form-control text-center pull-right" id="input-mobile-no" type="text" autocomplete="off" formControlName="mobileNo"
+              (keypress)="keyPress($event)" placeholder="ระบุเบอร์มือถือ AIS" maxlength="10">
+          </div>
+          <div class="col-6 col-sm-4 ">
+            <button class="btn-otp bg-teal text-white" id="button-get-otp" (click)="searchMobileNo()" [disabled]="!privilegeCustomerForm.controls.mobileNo.valid">ยืนยันเพื่อรับ OTP</button>
+          </div>
+        </div>
+
+        <div class="form-group row" *ngIf="isPrivilegeCustomer">
+          <div class="col-6 col-sm-8">
+            <input class="input form-control text-center pull-right" id="input-otp" type="text" autocomplete="off" formControlName="otpNo"
+              (keypress)="keyPress($event)" placeholder="ระบุ OTP" maxlength="5">
+          </div>
+          <div class="col-6 col-sm-4">
+            <button class="btn-otp bg-teal text-white" id="button-verify" (click)="verifyOTP()">Verify</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <form [formGroup]="mobileCareForm">
     <div class="card mb-3">
       <div class="card-header bg-teal text-white">
@@ -19,25 +48,21 @@
           <div class="pb-3" [hidden]="notBuyMobileCareForm.value.notBuyMobile">
             <tabset [justified]="true">
               <tab *ngFor="let promotion of mobileCare?.promotions" [active]="promotion.active">
-
                 <!-- serenade -->
                 <div class="py-3 pl-3 pr-3 mobile-care-bottom" *ngIf="promotion?.itemsSerenade?.length > 0">
                   <h6 class="text-pink">{{ 'สิทธิพิเศษสำหรับลูกค้า Serenade' | translate }}</h6>
                   <div *ngFor="let item of promotion?.itemsSerenade">
-                    <input class="form-check-input" type="radio" id="mobile-care-package-{{ item?.id }}" [value]="item"
-                      formControlName="promotion">
+                    <input class="form-check-input" type="radio" id="mobile-care-package-{{ item?.id }}" [value]="item" formControlName="promotion">
                     <label class="form-check-label" for="mobile-care-package-{{ item?.id }}">
                       {{ item?.title }}
                     </label>
                     <span class="pull-right text-light-green">฿ {{ item?.priceExclVat | number:'1.2-2' }}</span>
                   </div>
                 </div>
-
                 <!-- normal -->
                 <div class="py-3 pl-3 pr-3 mobile-care-bottom" *ngIf="promotion?.items?.length > 0">
                   <div *ngFor="let item of promotion?.items">
-                    <input class="form-check-input" type="radio" id="mobile-care-package-{{ item?.id }}" [value]="item"
-                      formControlName="promotion">
+                    <input class="form-check-input" type="radio" id="mobile-care-package-{{ item?.id }}" [value]="item" formControlName="promotion">
                     <label class="form-check-label" for="mobile-care-package-{{ item?.id }}">
                       {{ item?.title }}
                     </label>
@@ -46,52 +71,20 @@
                 </div>
               </tab>
             </tabset>
-
           </div>
-
         </div>
         <div>
-          <input class="form-check-input" type="radio" id="ignore-mobile-care" [value]="false"
-            formControlName="mobileCare">
-          <label class="form-check-label"
-            for="ignore-mobile-care">{{ 'ไม่สนใจชื้อบริการโมบายแคร์' | translate }}</label>
-          <label class="text-light-green" [hidden]="!notBuyMobileCareForm.value.notBuyMobile">({{
-              notBuyMobileCareForm.value.notBuyMobile }})</label>
+          <input class="form-check-input" type="radio" id="ignore-mobile-care" [value]="false" formControlName="mobileCare">
+          <label class="form-check-label" for="ignore-mobile-care">{{ 'ไม่สนใจชื้อบริการโมบายแคร์' | translate }}</label>
+          <label class="text-light-green" [hidden]="!notBuyMobileCareForm.value.notBuyMobile">({{ notBuyMobileCareForm.value.notBuyMobile }})</label>
         </div>
         <div *ngIf="mobileCare?.existingMobileCare">
-          <small class="text-red">{{ 'หมายเหตุ : กรณีมีการสมัคร Mobile care ที่เครื่องใหม่
-              การรับประกันที่เครื่องเดิมจะสิ้นสุด' | translate }}</small>
+          <small class="text-red">{{ 'หมายเหตุ : กรณีมีการสมัคร Mobile care ที่เครื่องใหม่ การรับประกันที่เครื่องเดิมจะสิ้นสุด' | translate }}</small>
         </div>
       </div>
     </div>
   </form>
-  <div class="card" style="margin-bottom: 20px;" [hidden]="notBuyMobileCareForm.value.notBuyMobile">
-    <div class="card-header" style="background-color: white;">
-      <h3>ยืนยันการรับสิทธิ์</h3>
-    </div>
-    <div class="card-body">
-      <form [formGroup]="privilegeCustomerForm">
-        <div style="text-align: center;">
-          <div>
-            <div class="box-search-mobileNo">
-              <input autocomplete="off" formControlName="mobileNo" type="text" (keypress)="keyPress($event)"
-                id="input-mobile-no" placeholder="ระบุเบอร์มือถือ AIS รับสิทธิสมัครบริการโมบายแคร์" class="mobile-input"
-                maxlength="10">
-            </div>
-            <button class="btn-get-otp" id="button-get-otp" (click)="searchMobileNo()" [disabled]="!privilegeCustomerForm.controls.mobileNo.valid">ยืนยันเพื่อรับ OTP</button>
-          </div>
-          <br>
-          <div *ngIf="isPrivilegeCustomer">
-            <div class="box-search-otp">
-              <input autocomplete="off" type="text" formControlName="otpNo" (keypress)="keyPress($event)" id="input-otp"
-                placeholder="ระบุ OTP" class="otp-input" maxlength="5">
-            </div>
-            <button class="btn-get-otp" id="button-verify" (click)="verifyOTP()">Verify</button>
-          </div>
-        </div>
-      </form>
-    </div>
-  </div>
+
   <div class="card mb-3" [hidden]="notBuyMobileCareForm.value.notBuyMobile">
     <div class="card-header bg-transparent">{{ 'อัตราค่าบริการ (รวม VAT)' | translate }}</div>
     <div class="card-body">
@@ -117,10 +110,7 @@
       </p>
     </div>
     <div class="card-footer bg-transparent text-red">
-      <!-- 
-          - เลือก mobile care
-          - 'BOS', 'IRB', 'INS'
-        -->
+      <!-- เลือก mobile care 'BOS', 'IRB', 'INS' -->
       <div>
         <small *ngIf="mobileCare?.nextBillEffective">
           {{ '*ค่าแพ็กเกจจะเรียกเก็บในรอบบิลถัดไป' | translate }}
@@ -129,8 +119,8 @@
 
       <div>
         <small>
-          {{ '*ค่าบริการเปลี่ยนเครื่อง/รับเครื่องทดแทน ขึ้นอยู่กับราคาเครื่องตามประกาศของบริษัท ฯ ณ วันที่ซื้อเครื่อง
-            ไม่รวมราคาโปรโมชั่น' | translate }}
+          {{ '*ค่าบริการเปลี่ยนเครื่อง/รับเครื่องทดแทน ขึ้นอยู่กับราคาเครื่องตามประกาศของบริษัท ฯ ณ วันที่ซื้อเครื่อง ไม่รวมราคาโปรโมชั่น'
+          | translate }}
         </small>
       </div>
     </div>
@@ -149,29 +139,25 @@
   <div class="modal-body">
     <form [formGroup]="notBuyMobileCareForm">
       <div>
-        <input class="form-check-input" type="radio" id="not-buy-mobile-care-n1" value="ราคาเครื่องถูกอยู่แล้ว"
-          formControlName="notBuyMobile">
+        <input class="form-check-input" type="radio" id="not-buy-mobile-care-n1" value="ราคาเครื่องถูกอยู่แล้ว" formControlName="notBuyMobile">
         <label class="form-check-label" for="not-buy-mobile-care-n1">
           {{ 'ราคาเครื่องถูกอยู่แล้ว' | translate }}
         </label>
       </div>
       <div>
-        <input class="form-check-input" type="radio" id="not-buy-mobile-care-n2" value="รักษาเครื่องดีอยู่แล้ว"
-          formControlName="notBuyMobile">
+        <input class="form-check-input" type="radio" id="not-buy-mobile-care-n2" value="รักษาเครื่องดีอยู่แล้ว" formControlName="notBuyMobile">
         <label class="form-check-label" for="not-buy-mobile-care-n2">
           {{ 'รักษาเครื่องดีอยู่แล้ว' | translate }}
         </label>
       </div>
       <div>
-        <input class="form-check-input" type="radio" id="not-buy-mobile-care-n3" value="เปลี่ยนเครื่องบ่อย"
-          formControlName="notBuyMobile">
+        <input class="form-check-input" type="radio" id="not-buy-mobile-care-n3" value="เปลี่ยนเครื่องบ่อย" formControlName="notBuyMobile">
         <label class="form-check-label" for="not-buy-mobile-care-n3">
           {{ 'เปลี่ยนเครื่องบ่อย' | translate }}
         </label>
       </div>
       <div>
-        <input class="form-check-input" type="radio" id="not-buy-mobile-care-n4" value="ค่าบริการสูงเกินไป"
-          formControlName="notBuyMobile">
+        <input class="form-check-input" type="radio" id="not-buy-mobile-care-n4" value="ค่าบริการสูงเกินไป" formControlName="notBuyMobile">
         <label class="form-check-label" for="not-buy-mobile-care-n4">
           {{ 'ค่าบริการสูงเกินไป' | translate }}
         </label>
