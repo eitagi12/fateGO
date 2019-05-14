@@ -26,7 +26,7 @@
                   <span class="text-red ml-3">{{'ท่านมีสัญญาข้อตกลงการใช้แพ็กเกจค่าบริการรายเดือนขั้นต่ำเดือนละ'| translate}} {{isContractFirstPack}} {{'บาท'| translate}}</span>
               </div>
 
-                <div class="card mb-3" *ngIf="!this.advancePay">
+                <div class="card mb-3" *ngIf="!this.advancePay && transaction?.data?.currentPackage">
                   <div class="card-header bg-green text-white" translate>
                     แพ็กเกจปัจจุบัน
                   </div>

@@ -37,7 +37,11 @@ export class DeviceOrderAisExistingCustomerInfoPageComponent implements OnInit {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     delete this.shoppingCart.mobileNo;
 
-    this.customerInfo = {
+    this.customerInfo = this.mappingCustomerInfo(customer);
+  }
+
+  mappingCustomerInfo(customer: Customer): CustomerInfo {
+    return {
       titleName: customer.titleName,
       firstName: customer.firstName,
       lastName: customer.lastName,

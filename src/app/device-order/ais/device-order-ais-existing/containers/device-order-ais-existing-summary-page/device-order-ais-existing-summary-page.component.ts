@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { Router } from '@angular/router';
 import { HomeService, ShoppingCart, Utils } from 'mychannel-shared-libs';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
@@ -51,7 +51,11 @@ export class DeviceOrderAisExistingSummaryPageComponent implements OnInit {
     const customer = this.transaction.data.customer;
 
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-    this.customerAddress = this.utils.getCurrentAddress({
+    this.customerAddress = this.utils.getCurrentAddress(this.mappingCustomer(customer));
+  }
+
+   mappingCustomer(customer: Customer): any {
+    return {
       homeNo: customer.homeNo,
       moo: customer.moo,
       room: customer.room,
@@ -63,7 +67,7 @@ export class DeviceOrderAisExistingSummaryPageComponent implements OnInit {
       amphur: customer.amphur,
       province: customer.province,
       zipCode: customer.zipCode
-    });
+    };
   }
 
   onBack(): void {

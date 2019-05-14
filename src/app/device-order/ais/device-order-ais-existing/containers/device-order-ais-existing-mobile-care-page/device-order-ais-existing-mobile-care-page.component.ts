@@ -5,7 +5,7 @@ import { HomeService, MobileCare, PageLoadingService, ShoppingCart, BillingSyste
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, ExistingMobileCare } from 'src/app/shared/models/transaction.model';
 import {
   ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_EXISTING_SUMMARY_PAGE,
@@ -88,22 +88,30 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit, On
     const endUserPrice = +this.priceOption.trade.normalPrice;
     const exMobileCare = this.transaction.data.existingMobileCare;
 
+    this.callGetMobileCare(billingSystem, chargeType, endUserPrice, exMobileCare);
+  }
+
+  callGetMobileCare(billingSystem: string, chargeType: any, endUserPrice: number, exMobileCare: ExistingMobileCare): void {
     this.mobileCareService.getMobileCare({
       packageKeyRef: MOBILE_CARE_PACKAGE_KEY_REF,
       billingSystem: billingSystem
-    }, chargeType, billingSystem, endUserPrice).then((mobileCare: any) => {
+    }, chargeType, billingSystem, endUserPrice)
+      .then((mobileCare: any) => this.haveMobileCarePromotions(mobileCare, exMobileCare))
+      .then(() => this.pageLoadingService.closeLoading());
+  }
 
-      this.mobileCare = {
-        promotions: mobileCare,
-        existingMobileCare: !!exMobileCare
-      };
+  haveMobileCarePromotions(mobileCare: any, exMobileCare: ExistingMobileCare): void {
+    this.mobileCare = this.mappingMobileCare(mobileCare, exMobileCare);
+    if (this.mobileCare.promotions && this.mobileCare.promotions.length > 0) {
+      this.mobileCare.promotions[0].active = true;
+    }
+    return;
+  }
 
-      if (this.mobileCare.promotions && this.mobileCare.promotions.length > 0) {
-        this.mobileCare.promotions[0].active = true;
-      }
-      return;
-
-    })
-    .then(() => this.pageLoadingService.closeLoading());
+  mappingMobileCare(mobileCare: any, exMobileCare: ExistingMobileCare): MobileCare {
+    return {
+      promotions: mobileCare,
+      existingMobileCare: !!exMobileCare
+    };
   }
 }
