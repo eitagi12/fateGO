@@ -55,20 +55,28 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
     const mobileNo = '0910011560';
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     delete this.shoppingCart.mobileNo;
+    this.callService(mobileNo);
+  }
+
+  callService(mobileNo: string): void {
     this.pageLoadingService.openLoading();
     this.http.get(`/api/customerportal/mobile-detail/${mobileNo}`).toPromise()
-      .then((resp: any) => {
-        const data = resp.data.packageOntop || {};
-        console.log('data', data);
-        this.packageOntopList = data;
-        this.pageLoadingService.closeLoading();
-      }).catch(err => {
-        this.pageLoadingService.closeLoading();
-        const error = err.error || {};
-        const developerMessage = (error.errors || {}).developerMessage;
-        this.alertService.error((developerMessage && error.resultDescription)
-          ? `${developerMessage} ${error.resultDescription}` : `ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้`);
-      });
+      .then((resp: any) => this.mappingPackageOnTop(resp))
+      .catch(err => this.handleError(err));
+  }
+
+  mappingPackageOnTop(resp: any): void {
+    const data = resp.data.packageOntop || {};
+    this.packageOntopList = data;
+    this.pageLoadingService.closeLoading();
+  }
+
+  handleError(err: any): void {
+    this.pageLoadingService.closeLoading();
+    const error = err.error || {};
+    const developerMessage = (error.errors || {}).developerMessage;
+    this.alertService.error((developerMessage && error.resultDescription)
+      ? `${developerMessage} ${error.resultDescription}` : `ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้`);
   }
 
   onBack(): void {
@@ -76,10 +84,14 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
   }
 
   onNext(): void {
+    this.router.navigate([this.checkRouteByExistingMobileCare()]);
+  }
+
+  checkRouteByExistingMobileCare(): string {
     if (this.transaction.data.existingMobileCare) {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE]);
+      return ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE;
     } else {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE]);
+      return ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE;
     }
   }
 
@@ -92,7 +104,6 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
     this.modalRef = this.modalService.show(this.template, { class: 'pt-5 mt-5' });
   }
 
-  // tslint:disable-next-line: use-life-cycle-interface
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }

@@ -50,16 +50,22 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit, On
   }
 
   onBack(): void {
+    this.router.navigate([this.checkRouteNavigate()]);
+  }
+
+  checkRouteNavigate(): string {
     if (!this.transaction.data.mainPackage) {
-      if (this.transaction.data.existingMobileCare) {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE]);
-
-      } else {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_PAGE]);
-      }
-
+      return this.checkRouteByExistingMobileCare();
     } else {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE]);
+      return ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE;
+    }
+  }
+
+  checkRouteByExistingMobileCare(): string {
+    if (this.transaction.data.existingMobileCare) {
+      return ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE;
+    } else {
+      return ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_PAGE;
     }
   }
 
@@ -88,10 +94,10 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit, On
     const endUserPrice = +this.priceOption.trade.normalPrice;
     const exMobileCare = this.transaction.data.existingMobileCare;
 
-    this.callGetMobileCare(billingSystem, chargeType, endUserPrice, exMobileCare);
+    this.callGetMobileCareService(billingSystem, chargeType, endUserPrice, exMobileCare);
   }
 
-  callGetMobileCare(billingSystem: string, chargeType: any, endUserPrice: number, exMobileCare: ExistingMobileCare): void {
+  callGetMobileCareService(billingSystem: string, chargeType: any, endUserPrice: number, exMobileCare: ExistingMobileCare): void {
     this.mobileCareService.getMobileCare({
       packageKeyRef: MOBILE_CARE_PACKAGE_KEY_REF,
       billingSystem: billingSystem

@@ -53,18 +53,26 @@ export class DeviceOrderAisExistingMobileCareAvailablePageComponent implements O
   }
 
   onBack(): void {
-    if (!this.transaction.data.mainPackage) {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE]);
-    } else {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE]);
-    }
+    this.router.navigate([this.checkRouteByMainPackage()]);
   }
 
   onNext(): void {
-    if (this.changeMobileCare) {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE]);
+    this.router.navigate([this.checkRouteByChangeMobileCare()]);
+  }
+
+  checkRouteByMainPackage(): string {
+    if (!this.transaction.data.mainPackage) {
+      return ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE;
     } else {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_SUMMARY_PAGE]);
+      return ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE;
+    }
+  }
+
+  checkRouteByChangeMobileCare(): string {
+    if (this.changeMobileCare) {
+      return ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE;
+    } else {
+      return ROUTE_DEVICE_ORDER_AIS_EXISTING_SUMMARY_PAGE;
     }
   }
 
