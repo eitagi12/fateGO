@@ -29,3 +29,4 @@ export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_QR_CODE_SUMMARY_PAGE = '/device-
 export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_QR_CODE_QUEUE_PAGE = '/device-order/ais/pre-to-post/qr-code-queue';
 export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_QR_CODE_GENERATOR_PAGE = '/device-order/ais/pre-to-post/qr-code-generator';
 export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_QR_CODE_ERROR_PAGE = '/device-order/ais/pre-to-post/qr-code-error';
+export const ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_QR_CODE_RESULT_PAGE = '/device-order/ais/pre-to-post/qr-code-result';

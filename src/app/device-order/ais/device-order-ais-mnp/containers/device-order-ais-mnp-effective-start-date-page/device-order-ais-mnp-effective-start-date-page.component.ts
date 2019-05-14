@@ -143,6 +143,14 @@ export class DeviceOrderAisMnpEffectiveStartDatePageComponent implements OnInit,
       this.transaction.data.billingInformation.overRuleStartDate = observer.bill.value;
     });
 
+    // check set default
+    if (this.checkOverRuleStartDate()) {
+      const value = this.billCycleText.find(this.mathBillValueByTransaction());
+      this.billingCycleForm.controls['bill'].setValue(value);
+
+    } else {
+      this.billingCycleForm.controls['bill'].setValue(this.billCycleText[0]);
+    }
   }
 
   getBillingAccountProcess(): void {
@@ -201,10 +209,6 @@ export class DeviceOrderAisMnpEffectiveStartDatePageComponent implements OnInit,
     }
   }
 
-  checkedDefault(billCycleValue: any): boolean {
-    return JSON.stringify(this.billCycleText[0].value) === JSON.stringify(billCycleValue);
-  }
-
   checkFormValid(): boolean {
     if (this.transaction && this.transaction.data && this.transaction.data.billingInformation &&
       this.transaction.data.billingInformation.overRuleStartDate) {
@@ -214,4 +218,11 @@ export class DeviceOrderAisMnpEffectiveStartDatePageComponent implements OnInit,
     }
   }
 
+  mathBillValueByTransaction(): (bill: BillCycleText) => boolean {
+    return bill => bill.value === this.transaction.data.billingInformation.overRuleStartDate;
+  }
+
+  checkOverRuleStartDate(): boolean {
+    return !!(this.transaction.data.billingInformation && this.transaction.data.billingInformation.overRuleStartDate);
+  }
 }

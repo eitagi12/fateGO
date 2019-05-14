@@ -32,6 +32,7 @@ import { DeviceOrderAisPreToPostValidateCustomerRepiPageComponent } from './cont
 import { DeviceOrderAisPreToPostValidateCustomerIdCardRepiPageComponent } from './containers/device-order-ais-pre-to-post-validate-customer-id-card-repi-page/device-order-ais-pre-to-post-validate-customer-id-card-repi-page.component';
 import { DeviceOrderAisPreToPostCustomerProfilePageComponent } from './containers/device-order-ais-pre-to-post-customer-profile-page/device-order-ais-pre-to-post-customer-profile-page.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { DeviceOrderAisPreToPostQrCodeResultPageComponent } from './containers/device-order-ais-pre-to-post-qr-code-result-page/device-order-ais-pre-to-post-qr-code-result-page.component';
 
 @NgModule({
   imports: [
@@ -72,7 +73,8 @@ import { TranslateModule } from '@ngx-translate/core';
     DeviceOrderAisPreToPostCustomerProfilePageComponent,
     DeviceOrderAisPreToPostQrCodeGeneratorPageComponent,
     DeviceOrderAisPreToPostQrCodeSummaryPageComponent,
-    DeviceOrderAisPreToPostQrCodeQueuePageComponent
+    DeviceOrderAisPreToPostQrCodeQueuePageComponent,
+    DeviceOrderAisPreToPostQrCodeResultPageComponent
   ]
 })
 export class DeviceOrderAisPreToPostModule { }

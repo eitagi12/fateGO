@@ -31,7 +31,7 @@
                   <div class="row pb-2">
                     <div class="col-12">
                       <input type="radio" autocomplete="off" id="bill_{{ i+1 }}" [value]="billCycle"
-                        [checked]="transaction?.data?.billingInformation?.overRuleStartDate ? checked(billCycle?.value) : checkedDefault(billCycle?.value)" formControlName="bill">
+                        [checked]="checked(billCycle?.value)" formControlName="bill">
                       <label for="bill_{{ i+1 }}">{{  billCycle?.textBill }}</label>
                       <div>
                         <span *ngIf="billCycle?.value === 'B'"

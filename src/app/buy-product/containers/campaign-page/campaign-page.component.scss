@@ -1,147 +1,155 @@
-@import '~mychannel-shared-libs/scss/colors';
+@import "~mychannel-shared-libs/scss/colors";
 
 .icon-dv,
 .icon {
-    width: 40px;
+  width: 40px;
 }
 
-.price{
-    height: 74vh;
+.price {
+  height: 74vh;
 }
 
-input[type=radio], input[type=radio] + label {
-    display: block;
-    padding: 5px;
+input[type="radio"],
+input[type="radio"] + label {
+  display: block;
+  padding: 5px;
 }
 
 /* Edit the properties below to change the colors of the un-checked radio button */
 .product-color,
-input[type=radio]+label:before {
-    content: '';
-    border: 2px solid $grey;
-    display: inline-block;
-    vertical-align: middle;
-    width: 30px;
-    height: 30px;
-    padding: 2px;
-    line-height: 15px;
-    margin-right: 10px;
-    text-align: center;
+input[type="radio"] + label:before {
+  content: "";
+  border: 2px solid $grey;
+  display: inline-block;
+  vertical-align: middle;
+  width: 30px;
+  height: 30px;
+  padding: 2px;
+  line-height: 15px;
+  margin-right: 10px;
+  text-align: center;
 }
 /* Edit the properties below to change the colors of the checked radio button */
-input[type=radio]:checked+label:before {
-    background-image: none;    
-    background-size: 18px;
+input[type="radio"]:checked + label:before {
+  background-image: none;
+  background-size: 18px;
 }
 
-input[type=radio]:checked+label {
-    border-color: $lime !important;
+input[type="radio"]:checked + label {
+  border-color: $lime !important;
 }
 
-input[type=radio]+label.disabled {
-    cursor: initial;
-    background: #D6D6D6;
+input[type="radio"] + label.disabled {
+  cursor: initial;
+  background: #d6d6d6;
 }
 
-input[type=radio]:disabled+label:before {
-    content: '';
-    border: 2px solid #CACACA;    
+input[type="radio"]:disabled + label:before {
+  content: "";
+  border: 2px solid #cacaca;
 }
 
 .product-color {
-    position: absolute;
-    top: 12px;
-    left: 12px;
-    border-radius: 15px;
-    border-width: 1px;
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  border-radius: 15px;
+  border-width: 1px;
 }
 
 .bg-spac {
-    background-color: #f2f2f2;
+  background-color: #f2f2f2;
 }
 
 /* campaign */
 .not-found {
-    text-align: center;
-    margin: 0 auto;
-    padding: 100px 0;
+  text-align: center;
+  margin: 0 auto;
+  padding: 100px 0;
 }
 
 :host /deep/ .nav-tabs {
+  border: none;
+  .nav-item {
+    color: #614e47;
+    height: 47px;
+    background-color: white;
+    border-bottom: 3px solid #bfbfbf;
+    /*&:not(:last-child) {*/
+    border-right: 1px solid #ccc;
     border: none;
-    .nav-item {
-        color: #614e47;
-        height: 47px;
-        background-color: white;
-        border-bottom: 3px solid #BFBFBF;
-        /*&:not(:last-child) {*/
-            border-right: 1px solid #ccc;
-            border: none;
-            border-bottom: 5px solid #BFBFBF;
-            height: 153px;
-        /*}*/
+    border-bottom: 5px solid #bfbfbf;
+    height: 153px;
+    /*}*/
 
-        &.active {
-            border-bottom: 5px solid #BFBFBF;
-        }
-
-        .nav-link {       
-            color: inherit;     
-            padding: 8px;
-            white-space: nowrap;
-            overflow: hidden;
-            border-radius: 0;
-            &:hover {
-                border-color: transparent;
-            }
-            &.active{
-                background-color: $lime;
-                border-color: $lime;        
-                &:hover {
-                    border-color: $lime;
-                }
-            }   
-        }
+    &.active {
+      border-bottom: 5px solid #bfbfbf;
     }
+
+    .nav-link {
+      color: inherit;
+      padding: 8px;
+      white-space: nowrap;
+      overflow: hidden;
+      border-radius: 0;
+      &:hover {
+        border-color: transparent;
+      }
+      &.active {
+        background-color: $lime;
+        border-color: $lime;
+        &:hover {
+          border-color: $lime;
+        }
+      }
+    }
+  }
 }
 
 /* trades */
 .icon-trade {
-    width: 16px;
-    margin: 0 10px 0 50px;
+  width: 16px;
+  margin: 0 10px 0 50px;
 }
 
-[class^=MC] {
-    background-repeat: no-repeat;
-    background-size: 140px;
-    padding-top: 105px;
-    background-position: top;
+[class^="MC"] {
+  background-repeat: no-repeat;
+  background-size: 140px;
+  padding-top: 105px;
+  background-position: top;
 }
 
-.MC001{
-    background-image : url('/assets/images/icon/MC001.png');
-    &.active {
-        background-image : url('/assets/images/icon/MC001-active.png');
-    }
+.MC001 {
+  background-image: url("/assets/images/icon/MC001.png");
+  &.active {
+    background-image: url("/assets/images/icon/MC001-active.png");
+  }
 }
 
-.MC002{
-    background-image : url('/assets/images/icon/MC002.png');
-    &.active {
-        background-image : url('/assets/images/icon/MC002-active.png');
-    }
+.MC002 {
+  background-image: url("/assets/images/icon/MC002.png");
+  &.active {
+    background-image: url("/assets/images/icon/MC002-active.png");
+  }
 }
 
-.MC003{
-    background-image : url('/assets/images/icon/MC003.png');
-    &.active {
-        background-image : url('/assets/images/icon/MC003-active.png');
-    }
+.MC003 {
+  background-image: url("/assets/images/icon/MC003.png");
+  &.active {
+    background-image: url("/assets/images/icon/MC003-active.png");
+  }
 }
 
-.MC004{
-    background-image : url('/assets/images/icon/MC004.png');
-    &.active {
-        background-image : url('/assets/images/icon/MC004-active.png');
-    }
+.MC004 {
+  background-image: url("/assets/images/icon/MC004.png");
+  &.active {
+    background-image: url("/assets/images/icon/MC004-active.png");
+  }
+}
+
+.MC005 {
+  background-image: url("/assets/images/icon/MC005.png");
+  &.active {
+    background-image: url("/assets/images/icon/MC005-active.png");
+  }
 }
