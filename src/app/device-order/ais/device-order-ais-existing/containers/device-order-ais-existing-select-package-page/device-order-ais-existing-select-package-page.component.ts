@@ -101,7 +101,7 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
     .then((response: any) => {
       const exMobileCare = response.data || {};
       this.mappingExistingMobileCare(exMobileCare);
-      this.router.navigate([this.navigatePath(exMobileCare)]);
+      this.router.navigate([this.checkRouteNavigate(exMobileCare)]);
     })
     .then(() => this.pageLoadingService.closeLoading());
   }
@@ -114,17 +114,21 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
     }
   }
 
-  navigatePath(exMobileCare: any = {}): any {
+  checkRouteNavigate(exMobileCare: any = {}): string {
     if (this.selectCurrentPackage) {
-      if (exMobileCare.hasExistingMobileCare) {
-        return ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE;
-
-      } else {
-        return ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE;
-      }
+      return this.checkRouteByExistingMobileCare(exMobileCare);
 
     } else {
       return ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE;
+    }
+  }
+
+  checkRouteByExistingMobileCare(exMobileCare: any = {}): string {
+    if (exMobileCare.hasExistingMobileCare) {
+      return ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE;
+
+    } else {
+      return ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE;
     }
   }
 

@@ -54,7 +54,7 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
     this.http.get(`/api/customerportal/mobile-detail/${mobileNo}`).toPromise()
     .then(this.mappingMobileDetailAndCallQueryBillingAccountService(mobileNo, idCardNo))
     .then(this.mappingMobileBillAccountAndIsAirtimeAndCheckWarning(mobileNo))
-    .catch(this.respErrorMessage());
+    .catch(this.ErrorMessage());
   }
 
   mappingMobileBillAccountAndIsAirtimeAndCheckWarning(mobileNo: string): (value: Object) => void | PromiseLike<void> {
@@ -78,9 +78,9 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
     };
   }
 
-  respErrorMessage(): (reason: any) => void | PromiseLike<void> {
+  ErrorMessage(): (reason: any) => void | PromiseLike<void> {
     return (err: any) => {
-      this.mappingErrorMessage(err);
+      this.handleErrorMessage(err);
     };
   }
 
@@ -105,7 +105,7 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
     };
   }
 
-  mappingErrorMessage(err: any): void {
+  handleErrorMessage(err: any): void {
     this.disableNextButton = true;
     this.pageLoadingService.closeLoading();
     const error = err.error || {};

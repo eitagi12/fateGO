@@ -161,6 +161,21 @@ export class DeviceOrderAisExistingPrepaidHotdealQrCodeGeneratorPageComponent im
       .catch(error => this.alertService.error(error));
   }
 
+  warningTimeOut(): boolean {
+    if (this.countdown) {
+      const time = this.countdown.split(' : ');
+      const min = time[0];
+      const sec = time[1];
+      if ( +min === 0 && +sec <= 15 ) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return true;
+    }
+  }
+
   isQRCode(qrCodeType: 'THAI_QR' | 'LINE_QR'): boolean {
     const payment: any = this.transaction.data.payment || {};
     const advancePayment: any = this.transaction.data.advancePayment || {};
@@ -169,7 +184,7 @@ export class DeviceOrderAisExistingPrepaidHotdealQrCodeGeneratorPageComponent im
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_QR_CODE_QUEUE_SUMMARY_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_QR_CODE_SUMMARY_PAGE]);
   }
 
   onNext(): void {

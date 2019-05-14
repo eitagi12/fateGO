@@ -106,7 +106,7 @@ export class DeviceOrderAisExistingPrepaidHotdealQrCodeQueuePageComponent implem
 
   createForm(): void {
     this.queueFrom = this.fb.group({
-      'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])],
+      'mobileNo': [this.transaction.data.simCard.mobileNo, Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])],
     });
   }
 

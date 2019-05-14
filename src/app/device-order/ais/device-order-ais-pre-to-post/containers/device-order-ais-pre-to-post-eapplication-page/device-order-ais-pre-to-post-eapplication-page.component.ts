@@ -49,7 +49,7 @@ export class DeviceOrderAisPreToPostEapplicationPageComponent implements OnInit,
   }
 
   callService(transaction: Transaction, language: string): void {
-    this.createEapplicationService.createEapplicationV2(transaction, language)
+    this.createEapplicationService.createEapplication(transaction)
     .then((resp: any) => this.eApplicationSrc = resp.data)
     .then(() => this.pageLoadingService.closeLoading());
   }
