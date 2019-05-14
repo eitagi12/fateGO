@@ -60,16 +60,16 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.callService()
-    .then(filterPromotionByFirstPack => {
+    .then(filterPromotionByContractFirstPack => this.defualtSelected(filterPromotionByContractFirstPack))
+    .then(() => this.pageLoadingService.closeLoading());
+  }
 
-      this.promotionShelves = this.promotionShelveService
-      .defaultBySelected(filterPromotionByFirstPack, this.transaction.data.mainPackage);
-
-      if (!this.advancePay && this.showSelectCurrentPackage) {
-        this.promotionShelves[0].promotions[0].active = false;
-      }
-
-    }).then(() => this.pageLoadingService.closeLoading());
+  defualtSelected(promotion: any): void {
+    this.promotionShelves = this.promotionShelveService
+      .defaultBySelected(promotion, this.transaction.data.mainPackage);
+    if (!this.advancePay && this.showSelectCurrentPackage) {
+      this.promotionShelves[0].promotions[0].active = false;
+    }
   }
 
   onCompleted(promotion: any): void {
