@@ -95,7 +95,6 @@ export class MobileCareComponent implements OnInit {
     this.onCheckValidators();
     this.checkPrivilegeMobileCare();
     this.isSelect = false;
-
   }
 
   public onCheckValidators(): void {
@@ -134,14 +133,14 @@ export class MobileCareComponent implements OnInit {
     });
 
     this.mobileCareForm.valueChanges.subscribe((value: any) => {
-      this.isSelect = false;
-
       if (!value.mobileCare) {
         return this.onOpenNotBuyMobileCare();
       } else {
         this.notBuyMobileCareForm.patchValue({
           notBuyMobile: ''
         });
+        // check Verify to Pass & check selectPackage Mobilecare
+        this.isVerifyflag.emit(false);
       }
       if (this.mobileCareForm.valid) {
         this.mainPackage = this.mobileCareForm.value.promotion.value;
@@ -159,6 +158,10 @@ export class MobileCareComponent implements OnInit {
       ignoreBackdropClick: true
     });
 
+    this.SelectReasonNotBuyMobileCare();
+  }
+
+  private SelectReasonNotBuyMobileCare(): void {
     this.notBuyMobileCareForm.valueChanges.subscribe((value: any) => {
       if (this.notBuyMobileCareForm.value.notBuyMobile !== '') {
         this.isSelect = true;
@@ -166,7 +169,6 @@ export class MobileCareComponent implements OnInit {
         this.isSelect = false;
       }
     });
-
   }
 
   public onNotBuyMobileCare(dismiss: boolean): void {

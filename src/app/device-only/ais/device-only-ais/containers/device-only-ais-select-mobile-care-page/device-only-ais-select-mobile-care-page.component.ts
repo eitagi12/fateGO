@@ -47,7 +47,7 @@ export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit , OnDe
   }
 
   public isVerifyNext(): boolean {
-    return !(this.transaction.data.mobileCarePackage && this.isVerifyflag);
+    return !(this.transaction.data.mobileCarePackage || this.isVerifyflag);
   }
 
   public getCurrentPackMobileCare(existingMobileCare: any): void {
