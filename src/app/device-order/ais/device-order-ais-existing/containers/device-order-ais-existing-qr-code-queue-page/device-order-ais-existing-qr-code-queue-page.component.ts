@@ -40,6 +40,10 @@ export class DeviceOrderAisExistingQrCodeQueuePageComponent implements OnInit, O
 
   onNext(): void {
     this.pageLoadingService.openLoading();
+    this.callServices();
+  }
+
+  callServices(): void {
     this.queuePageService.getQueueQmatic(this.queueFrom.value.mobileNo)
       .then((resp: any) => {
         const data = resp.data && resp.data.result ? resp.data.result : {};
@@ -49,15 +53,17 @@ export class DeviceOrderAisExistingQrCodeQueuePageComponent implements OnInit, O
         this.transaction.data.queue = {
           queueNo: queueNo
         };
-        return this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption)
-          .then(() => {
-            return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
-          });
+        return this.callServiceCreateDeviceSellingOrderAndUpdateShareTransaction();
       })
-      .then(() => {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_RESULT_PAGE]);
-      })
+      .then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_RESULT_PAGE]))
       .then(() => this.pageLoadingService.closeLoading());
+  }
+
+  callServiceCreateDeviceSellingOrderAndUpdateShareTransaction(): any {
+    return this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption)
+      .then(() => {
+        return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
+      });
   }
 
   getPaymentBalance(): number {

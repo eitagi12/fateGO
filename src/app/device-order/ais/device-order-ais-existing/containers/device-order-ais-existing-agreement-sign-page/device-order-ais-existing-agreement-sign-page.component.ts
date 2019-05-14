@@ -46,23 +46,16 @@ export class DeviceOrderAisExistingAgreementSignPageComponent implements OnInit,
     private translationService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
-    this.signedSignatureSubscription = this.aisNativeDeviceService.getSigned().subscribe(this.respGetSigned());
-
-    this.currentLang = this.translationService.currentLang || 'TH';
-    this.translationSubscribe = this.translationService.onLangChange.subscribe(this.respOnLangeChange());
-  }
-
-  respOnLangeChange(): any {
-    return (lang: any) => {
-      this.checkLanguage(lang);
-    };
-  }
-
-  respGetSigned(): (value: string) => void {
-    return (signature: string) => {
+    this.signedSignatureSubscription = this.aisNativeDeviceService.getSigned()
+    .subscribe((signature: string) => {
       this.isOpenSign = false;
       this.checkSignature(signature);
-    };
+    });
+
+    this.currentLang = this.translationService.currentLang || 'TH';
+    this.translationSubscribe = this.translationService.onLangChange.subscribe((lang: any) => {
+      this.checkLanguage(lang);
+    });
   }
 
   checkLanguage(lang: any): void {
