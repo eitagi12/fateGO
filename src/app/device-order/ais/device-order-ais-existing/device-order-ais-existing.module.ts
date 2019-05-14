@@ -30,6 +30,7 @@ import { DeviceOrderAisExistingEcontractPageComponent } from './containers/devic
 import { DeviceOrderAisExistingNonPackagePageComponent } from './containers/device-order-ais-existing-non-package-page/device-order-ais-existing-non-package-page.component';
 import { DeviceOrderAisExistingAggregatePageComponent } from './containers/device-order-ais-existing-aggregate-page/device-order-ais-existing-aggregate-page.component';
 import { DeviceOrderAisExistingSelectPackageOntopPageComponent } from './containers/device-order-ais-existing-select-package-ontop-page/device-order-ais-existing-select-package-ontop-page.component';
+import { DeviceOrderAisExistingQrCodeResultPageComponent } from './containers/device-order-ais-existing-qr-code-result-page/device-order-ais-existing-qr-code-result-page.component';
 @NgModule({
   imports: [
     CommonModule,
@@ -64,7 +65,8 @@ import { DeviceOrderAisExistingSelectPackageOntopPageComponent } from './contain
     DeviceOrderAisExistingEcontractPageComponent,
     DeviceOrderAisExistingNonPackagePageComponent,
     DeviceOrderAisExistingAggregatePageComponent,
-    DeviceOrderAisExistingSelectPackageOntopPageComponent
+    DeviceOrderAisExistingSelectPackageOntopPageComponent,
+    DeviceOrderAisExistingQrCodeResultPageComponent
   ]
 })
 export class DeviceOrderAisExistingModule { }
