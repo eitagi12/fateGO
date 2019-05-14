@@ -128,6 +128,15 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       zipCode: ['', [Validators.required, Validators.maxLength(5), this.validateZipCode.bind(this)]],
       telNo: [customerProfile.selectedMobile, [Validators.required]]
     });
+    this.customerAddressForm.valueChanges.pipe(debounceTime(750)).subscribe(event => {
+      this.error.emit(this.customerAddressForm.valid);
+
+      if (this.customerAddressForm.value.homeNo !== '' && this.customerAddressForm.valid) {
+        this.activateButton = true;
+      } else {
+        this.activateButton = false;
+      }
+    });
     this.disabledForm();
     this.disableFormAmphurAndTumbol();
     this.customerAddressForm.patchValue(this.customerAddress || {});

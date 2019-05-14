@@ -110,16 +110,7 @@
         </div>
       </div>
     </div>
-    <div class="container-fluid">
-      <div class="card mb-3">
-        <div class="card-header bg-blue text-white">
-          ข้อมูลที่อยู่ใบเสร็จรับเงิน
-        </div>
-        <div class="col-4 text-right">
-          <a href="#" (click)="clearCustomerAddressForm($event)" class="text-white" id="linkClearCustomerAddressForm">
-            <u>CLEAR</u>
-          </a>
-        </div>
+    <div class="my-3">
         <app-billing-address
           [titleNames]="titleName"
           [customerAddress]="customerAddress"
@@ -140,12 +131,6 @@
           [priceOption]="priceOption"
           >
         </app-billing-address>
-      </div>
     </div>
-
-    <!-- <mc-footer>
-      <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-      <button class="btn btn-success" (click)="onNext()" [disabled]="isNotFormValid()">NEXT</button>
-    </mc-footer> -->
   </div>
 </div>
