@@ -8,7 +8,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { QueuePageService } from 'src/app/device-order/services/queue-page.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
-import { ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_RESULT_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_RESULT_PAGE, ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_QR_CODE_RESULT_PAGE } from '../../constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
 import { CreateDeviceOrderAisExistingPrepaidHotdealService } from '../../service/create-device-order-ais-existing-prepaid-hotdeal.service';
 
@@ -61,7 +61,7 @@ export class DeviceOrderAisExistingPrepaidHotdealQrCodeQueuePageComponent implem
           });
       })
       .then(() => {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_RESULT_PAGE]);
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_QR_CODE_RESULT_PAGE]);
       })
       .then(() => this.pageLoadingService.closeLoading());
   }
