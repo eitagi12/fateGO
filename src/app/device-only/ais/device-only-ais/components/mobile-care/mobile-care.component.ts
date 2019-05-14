@@ -392,6 +392,7 @@ export class MobileCareComponent implements OnInit {
       billingSystem: BillingSystemType.IRB
     }, chargeType, billingSystem, endUserPrice, mobileSegment)
       .then((mobileCare: any) => {
+        // console.log('mobileCare: ',mobileCare);
         this.mobileCare = {
           promotions: mobileCare
         };
