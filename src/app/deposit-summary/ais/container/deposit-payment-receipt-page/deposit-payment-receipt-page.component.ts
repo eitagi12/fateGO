@@ -119,7 +119,6 @@ export class DepositPaymentReceiptPageComponent implements OnInit {
       shipCusAddr: this.customerFullAddress,
       shipCusName: this.customerFullName
     };
-    this.transaction.data.customer.otherPhoneNumber = this.otherPhoneNumber;
     this.transactionService.save(this.transaction);
     this.priceOptionService.save(this.priceOption);
   }
@@ -245,10 +244,6 @@ export class DepositPaymentReceiptPageComponent implements OnInit {
 
   onBack(): void {
     this.router.navigate([DEPOSIT_PAYMENT_DETAIL_KEY_IN]);
-  }
-
-  onNext(): void {
-    this.router.navigate([DEPOSIT_PAYMENT_SUMMARY_PAGE]);
   }
 
   onHome(): void {

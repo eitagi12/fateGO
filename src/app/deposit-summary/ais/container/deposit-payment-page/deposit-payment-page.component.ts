@@ -137,14 +137,10 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     this.customerFullAddress = fullAddress;
   }
 
-  // onAddrReceiptChanges(fullAddress: string): void {
-  //   this.receiptCustomerAddress = fullAddress;
-  //   localStorage.setItem('recipientCustomerAddress', JSON.stringify(this.receiptCustomerAddress));
-  // }
-
   onchangeOtherPhoneNumber(otherPhoneNumber: string): void {
     this.otherPhoneNumber = otherPhoneNumber;
   }
+
   onHome(): void {
     const url = '/';
     this.alertRemoveAddCart(url);

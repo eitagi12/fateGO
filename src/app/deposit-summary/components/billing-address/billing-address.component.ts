@@ -70,6 +70,10 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   identityValue: string;
   disableIdCard: boolean;
   transaction: Transaction;
+  customerReceiptAddress: string;
+  isSummit: boolean = false;
+  activateButton: boolean;
+  customerProfile: string;
 
   constructor(
     public fb: FormBuilder,
@@ -87,6 +91,8 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   }
 
   ngOnInit(): void {
+      // this.customerProfile = this.localStorageService.load('CustomerProfile').value;
+    this.activateButton = false;
     this.createForm();
   }
 
@@ -247,6 +253,11 @@ export class BillingAddressComponent implements OnInit, OnChanges {
           && this.customerAddress.zipCode !== zipCode) {
           this.zipCodeSelected.emit(controls.value);
         }
+        if (this.customerAddressForm.value.zipCode !== '') {
+          this.activateButton = true;
+        } else {
+          this.activateButton = false;
+        }
       });
   }
 
@@ -283,7 +294,8 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     this.customerAddressForm.controls['telNo'].disable();
     this.customerAddressForm.controls['zipCode'].disable();
   }
- onNext(): void {
+  onNext(): void {
+    this.onSummitKeyin();
     this.getCustomerProfile();
     this.saveTransaction();
     this.router.navigate([DEPOSIT_PAYMENT_DETAIL_RECEIPT]);
@@ -369,4 +381,12 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     });
   }
 
+  onSummitKeyin(): void {
+    if (this.customerAddressForm.valid) {
+      this.isSummit = false;
+
+    } else {
+      this.isSummit = true;
+    }
+  }
 }
