@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
-import { PageLoadingService, HomeService, VisualKeyboardService } from 'mychannel-shared-libs';
+import { PageLoadingService, HomeService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 import {
@@ -28,8 +28,7 @@ export class OrderMnpValidateCustomerPageComponent implements OnInit, OnDestroy 
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private http: HttpClient,
-    private homeService: HomeService,
-    private visualKeyboardService: VisualKeyboardService
+    private homeService: HomeService
   ) {
     this.transaction = this.transactionService.load();
   }
