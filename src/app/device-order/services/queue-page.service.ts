@@ -125,8 +125,10 @@ export class QueuePageService {
       depositAmt: prebooking ? prebooking.depositAmt : '',
       qrTransId: mpayPayment.tranId,
       qrAmt: this.getQRAmt(trade, transaction),
-      qrAirtimeTransId: mpayPayment.qrAirtimeTransId || null,
-      qrAirtimeAmt: mpayPayment.qrAirtimeAmt ? (+mpayPayment.qrAirtimeAmt).toFixed(2) : null
+      // qrAirtimeTransId: mpayPayment.qrAirtimeTransId || null,
+      // qrAirtimeAmt: mpayPayment.qrAirtimeAmt ? (+mpayPayment.qrAirtimeAmt).toFixed(2) : null
+      qrAirtimeTransId: mpayPayment.qrAirtimeTransId || mpayPayment.tranId || null,
+      qrAirtimeAmt: this.getQRAmt(trade, transaction)
     };
 
     // freeGoods
@@ -157,12 +159,15 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
 
   private getQRAmt(trade: any, transaction: Transaction): any {
     const payment: Payment = transaction.data.payment;
+    let cost = 0;
     if (trade && payment.paymentType === 'QR_CODE') {
       const qrAmt: number = trade.normalPrice - trade.discount.amount;
-      return qrAmt.toFixed(2);
-    } else {
-      return undefined;
+      cost += +qrAmt;
     }
+    if (trade && transaction.data.advancePayment.paymentType === 'QR_CODE') {
+      cost += +trade.advancePay.amount;
+    }
+    return cost ? cost.toFixed(2) : undefined;
   }
 
   private getAirTime(trade: any, transaction: Transaction): string {
@@ -218,11 +223,6 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
       }
     } else {
       let paymentMethod = '';
-      // สำหรับ AWN จ่ายรวม
-      if (priceOption.productStock.company === 'AWN'
-      && payment.paymentType === 'QR_CODE' && advancePayment.paymentType === 'QR_CODE') {
-        return payment.paymentQrCodeType === 'THAI_QR' ? 'PB' : 'RL';
-      }
       // AWN หรือ WDS จ่ายแยก
       if (payment.paymentType === 'QR_CODE') {
         paymentMethod += payment.paymentQrCodeType === 'THAI_QR' ? 'PB|' : 'RL|';
