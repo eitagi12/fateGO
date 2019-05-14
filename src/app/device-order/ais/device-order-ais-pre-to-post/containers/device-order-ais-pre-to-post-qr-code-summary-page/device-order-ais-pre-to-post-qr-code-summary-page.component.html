@@ -7,30 +7,27 @@
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
-  <div class="mc-flex-wrap">
+  <div class="mc-flex-wrap bg-white">
     <div class="my-3">
-      <div class="container-fluid">
-        <div class="row mb-3">
+      <div class="ml-5 mr-5">
+        <div class="pt-3 pb-4  row">
           <div class="col-6">
-            <div class="ml-5">
-              <img src="assets/images/icon/icon-person.png" class="icon-person" />
-              {{ transaction?.data?.customer?.titleName }}
-              {{ transaction?.data?.customer?.firstName }}
-              {{ transaction?.data?.customer?.lastName }}
-            </div>
+            <img src="assets/images/icon/icon-person.png" class="icon-person" />
+            {{ transaction?.data?.customer?.titleName }}
+            {{ transaction?.data?.customer?.firstName }}
+            {{ transaction?.data?.customer?.lastName }}
           </div>
           <div class="col-6 text-right">
-            <div class="mr-5">
-              <img src="assets/images/icon/sales_portal_green_phone.png" class="icon-mobile" />
-              {{ transaction?.data?.simCard?.mobileNo | mobileNo }}
-            </div>
+
+            <img src="assets/images/icon/sales_portal_green_phone.png" class="icon-mobile" />
+            {{ transaction?.data?.simCard?.mobileNo | mobileNo }}
           </div>
         </div>
 
         <div class="card mb-3">
           <div class="card-header bg-pink text-white">สรุปรายการสั่งชื้อสินค้า</div>
           <div class="card-body">
-            <p class="text-green">{{ priceOption?.campaign?.campaignName }}</p>
+            <p class="text-green h5">{{ priceOption?.campaign?.campaignName }}</p>
             <div class="text-light-grey">
               <p>
                 <i class="fa fa-circle mr-3 text-green"></i>
@@ -55,8 +52,8 @@
             </div>
           </div>
           <div class="card-footer bg-transparent text-right">
-            รวมยอดชำระ(รวมVAT)
-            <span class="text-green ml-2">
+            รวมยอดชำระ ( รวมVAT )
+            <span class="text-green ml-2 h5">
               ฿ {{ summary([+priceOption?.trade?.promotionPrice, +priceOption?.trade?.advancePay?.amount]) | number }}
             </span>
           </div>
@@ -143,24 +140,24 @@
         </div>
       </div>
 
-      <div class="container">
+      <div class="ml-5 mr-5">
         <div class="row">
           <div class="col-8">
-            <img src="assets/images/icon/phone_qrcode.png" class="mr-2" />
+            <img src="assets/images/icon/phone_qrcode.png" class="mr-2 float-left" width="30" />
             ชำระด้วย QR Code
-            <div class="text-pink">กรุณาเปิด Application เพื่อสแกน QR Code</div>
+            <div class="text-pink mt-2">กรุณาเปิด Application เพื่อสแกน QR Code</div>
           </div>
           <div class="col-4 text-right">
             <div
               *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'THAI_QR' || transaction?.data?.advancePayment?.paymentQrCodeType === 'THAI_QR'">
-              <img class="img-fluid w-100" src="assets/images/icon/Thai_Qr_Payment.png" />
+              <img class="img-fluid w-75" src="assets/images/icon/Thai_Qr_Payment.png" />
             </div>
             <div
               *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'LINE_QR' || transaction?.data?.advancePayment?.paymentQrCodeType === 'LINE_QR'">
-              <img class="img-fluid w-100" src="assets/images/icon/Rabbit_Line_Pay.png" />
+              <img class="img-fluid w-75" src="assets/images/icon/Rabbit_Line_Pay.png" />
             </div>
           </div>
-          <div class="col-12 mt-3">
+          <div class="col-12 mt-5">
             <form class="form-inline pull-right">
               <div class="form-group">
                 <label for="summaryInput" class="text-green">ยอดชำระ</label>
@@ -170,12 +167,17 @@
             </form>
           </div>
         </div>
+      
       </div>
-
+      <div class="text-center mt-5">
+        <button class="btn btn-secondary btn-lg mr-3 pl-5 pr-5" (click)="onBack()"
+          [hidden]="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'SUCCESS'">BACK</button>
+        <button class="btn btn-success btn-lg pl-5 pr-5" (click)="onNext()">PAY NOW</button>
+      </div>
     </div>
   </div>
-  <mc-footer>
+  <!-- <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
     <button class="btn btn-success" (click)="onNext()">PAY NOW</button>
-  </mc-footer>
+  </mc-footer> -->
 </div>

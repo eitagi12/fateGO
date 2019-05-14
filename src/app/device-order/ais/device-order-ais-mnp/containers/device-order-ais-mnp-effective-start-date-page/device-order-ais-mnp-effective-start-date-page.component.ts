@@ -143,7 +143,7 @@ export class DeviceOrderAisMnpEffectiveStartDatePageComponent implements OnInit,
       this.transaction.data.billingInformation.overRuleStartDate = observer.bill.value;
     });
 
-    // check set default 
+    // check set default
     if (this.checkOverRuleStartDate()) {
       const value = this.billCycleText.find(this.mathBillValueByTransaction());
       this.billingCycleForm.controls['bill'].setValue(value);

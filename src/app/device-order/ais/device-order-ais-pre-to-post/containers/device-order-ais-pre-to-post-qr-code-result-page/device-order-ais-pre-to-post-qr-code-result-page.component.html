@@ -110,23 +110,22 @@
       </div>
       <!-- card -->
       <div class="card-body  border-right border-bottom border-left text-center text-light-grey bg-white">
-        <form [formGroup]="queueFrom">
-          <div class="form-group">
-            <b class="mt-5 text-center">เบอร์โทรศัพท์รับหมายเลขสั่งซื้อ <br>เพื่อชำระสินค้าของท่านคือ</b>
-            <input mcVisualKeyboard type="tel" class="form-control text-center mb-3 mt-3" id="mobileNo" maxlength="10"
-              autofocus autocomplete="off" formControlName="mobileNo" placeholder="ระบุเบอร์โทรศัพท์รับ SMS"
-              [ngClass]="{ 'is-invalid' : queueFrom.controls.mobileNo.invalid && queueFrom.controls.mobileNo.touched && queueFrom.controls.mobileNo.errors }">
-            <small class="invalid-feedback"
-              *ngIf="queueFrom.controls.mobileNo.touched && queueFrom.controls.mobileNo.errors">
-              **กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง
-            </small>
+        <div class="text-center mb-3">
+          <h5 class="pt-2">รายการสั่งซื้อ</h5>
+          <div class="mt-4">
+            <div class="card pl-5 pr-5 pt-2 pb-2" style="display: inline-block;">
+              <div class="card-body queue-no text-green h1">
+                {{ transaction?.data?.queue?.queueNo || 'A001' }}
+              </div>
+            </div>
           </div>
-        </form>
+          <h5 class="pt-4">สินค้าของคุณพร้อมแล้วที่จุดรับสินค้า</h5>
+        </div>
       </div>
 
     </div>
   </div>
   <mc-footer>
-    <button class="btn btn-success" (click)="onNext()">NEXT</button>
+    <button class="btn btn-success" (click)="onMainMenu()">MAIN MENU</button>
   </mc-footer>
 </div>

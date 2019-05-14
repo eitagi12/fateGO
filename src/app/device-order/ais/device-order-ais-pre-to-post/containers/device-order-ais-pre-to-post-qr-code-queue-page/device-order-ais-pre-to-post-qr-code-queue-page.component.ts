@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_RESULT_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_RESULT_PAGE, ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_QR_CODE_RESULT_PAGE } from '../../constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -55,7 +55,7 @@ export class DeviceOrderAisPreToPostQrCodeQueuePageComponent implements OnInit, 
           });
       })
       .then(() => {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_RESULT_PAGE]);
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_QR_CODE_RESULT_PAGE]);
       })
       .then(() => this.pageLoadingService.closeLoading());
   }
