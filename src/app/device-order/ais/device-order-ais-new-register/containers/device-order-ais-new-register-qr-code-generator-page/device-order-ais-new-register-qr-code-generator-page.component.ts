@@ -266,7 +266,7 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
     if (mpayPayment.companyStock === 'AWN') {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_QUEUE_PAGE]);
     } else {
-      if (mpayStatus.statusAirTime === 'SUCCESS') {
+      if (mpayStatus.statusAirTime !== 'WAITING') {
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_QUEUE_PAGE]);
       } else {
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_SUMMARY_PAGE]);
