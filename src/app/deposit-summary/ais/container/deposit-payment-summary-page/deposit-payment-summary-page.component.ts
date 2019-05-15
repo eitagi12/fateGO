@@ -37,6 +37,7 @@ export class DepositPaymentSummaryPageComponent implements OnInit, OnDestroy {
   checkSellerForm: FormGroup;
   seller: Seller = {};
   VerifyFlag: string;
+  CustomerFlag: string;
 
   constructor(
     private router: Router,
@@ -69,6 +70,7 @@ export class DepositPaymentSummaryPageComponent implements OnInit, OnDestroy {
     });
     this.createForm();
     this.VerifyFlag = this.localStorageService.load('VerifyFlag').value;
+    this.CustomerFlag = this.localStorageService.load('CustomerFlag').value;
   }
 
   createForm(): void {
@@ -93,7 +95,8 @@ export class DepositPaymentSummaryPageComponent implements OnInit, OnDestroy {
 
   onBack(): void {
     localStorage.setItem('VerifyFlag', JSON.stringify(this.VerifyFlag));
-    if (this.VerifyFlag === 'keyIn') {
+    localStorage.setItem('CustomerFlag', JSON.stringify(this.CustomerFlag));
+    if (this.VerifyFlag === 'keyIn' && this.CustomerFlag === 'N') {
       this.router.navigate([DEPOSIT_PAYMENT_DETAIL_RECEIPT]);
     } else {
       this.router.navigate([DEPOSIT_PAYMENT_PAGE]);
