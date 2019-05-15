@@ -334,7 +334,7 @@ export class DepositPaymentKeyInPageComponent implements OnInit {
       showCancelButton: true,
       reverseButtons: true,
       allowEscapeKey: false,
-      html: 'ต้องการยกเลิกรายการขายหรือไม่ <br> การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที'
+      html: 'ต้องการยกเลิกรายการขายหรือไม่ <br> การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคทันที'
     }).then((data) => {
       if (data.value) {
         const userId = this.tokenService.getUser().username;
