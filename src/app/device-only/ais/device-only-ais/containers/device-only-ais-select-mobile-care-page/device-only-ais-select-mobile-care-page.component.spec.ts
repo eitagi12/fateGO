@@ -105,9 +105,8 @@ describe('DeviceOnlyAisSelectMobileCarePageComponent', () => {
     });
 
     it('should be save simCard in transaction object when call onCompleted', () => {
-      component.onCompleted({id: 1, title: 'Mobile Care Mock'});
+      component.onMobile({title: 'Mobile Care Mock'});
 
-      expect(component.transaction.data.simCard['id']).toBe(1);
       expect(component.transaction.data.simCard['title']).toBe('Mobile Care Mock');
     });
 
