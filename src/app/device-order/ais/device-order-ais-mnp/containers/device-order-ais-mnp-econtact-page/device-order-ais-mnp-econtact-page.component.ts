@@ -112,7 +112,7 @@ export class DeviceOrderAisMnpEcontactPageComponent implements OnInit {
           airTimeMonth: this.getAirTimeMonth(advancePay.promotions),
           price: this.decimalPipe.transform(+trade.promotionPrice + (+advancePay.amount)),
           signature: '',
-          mobileCarePackageTitle: mobileCarePackage.detailTH ? `พร้อมใช้บริการ ${mobileCarePackage.detailTH}` : '',
+          mobileCarePackageTitle: mobileCarePackage.title ? `พร้อมใช้บริการ ${mobileCarePackage.title}` : '',
           condition: condition.conditionText,
           // language: this.currentLang
         },

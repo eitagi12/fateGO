@@ -100,7 +100,7 @@ export class DeviceOrderAisExistingEcontractPageComponent implements OnInit, OnD
           airTimeMonth: this.getAirTimeMonth(advancePay.promotions),
           price: this.decimalPipe.transform(+trade.promotionPrice + (+advancePay.amount)),
           signature: '',
-          mobileCarePackageTitle: mobileCarePackage.detailTH ? `พร้อมใช้บริการ ${mobileCarePackage.detailTH}` : '',
+          mobileCarePackageTitle: mobileCarePackage.title ? `พร้อมใช้บริการ ${mobileCarePackage.title}` : '',
           condition: condition.conditionText,
 
         },
@@ -128,9 +128,9 @@ export class DeviceOrderAisExistingEcontractPageComponent implements OnInit, OnD
     }
 
     if (Array.isArray(advancePayPromotions)) {
-      return advancePayPromotions.length > 0 ? amount / advancePayPromotions[0].month : 0;
+      return (advancePayPromotions.length > 0 ? (+amount / +(advancePayPromotions[0].month || 1)) : 0);
     } else {
-      return amount / advancePayPromotions.month;
+      return (+amount / +(advancePayPromotions.month || 1)) || 0;
     }
   }
 
@@ -140,7 +140,7 @@ export class DeviceOrderAisExistingEcontractPageComponent implements OnInit, OnD
     }
 
     if (Array.isArray(advancePayPromotions) && advancePayPromotions.length > 0) {
-      return advancePayPromotions[0].month;
+      return advancePayPromotions[0].month || 0;
     }
     return 0;
   }
