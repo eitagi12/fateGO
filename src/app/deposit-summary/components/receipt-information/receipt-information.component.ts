@@ -153,14 +153,7 @@ export class ReceiptInformationComponent implements OnInit {
     });
     this.receiptInfoForm.valueChanges.pipe(debounceTime(750)).subscribe(event => {
       this.error.emit(this.receiptInfoForm.valid);
-
-      if (this.receiptInfoForm.value.telNo !== '' && this.receiptInfoForm.valid) {
-        this.activateButton = true;
-      } else {
-        this.activateButton = false;
-      }
     });
-
     this.receiptInfoForm.controls['taxId'].setValue(this.transaction.data.customer.idCardNo);
     this.billingAddress.getLocationName()
       .subscribe((resp) => this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName));
@@ -271,11 +264,11 @@ export class ReceiptInformationComponent implements OnInit {
           && this.customerAddress.zipCode !== zipCode) {
           this.zipCodeSelected.emit(controls.value);
         }
-        // if (this.customerAddressForm.value.zipCode !== '') {
-        //   this.activateButton = true;
-        // } else {
-        //   this.activateButton = false;
-        // }
+        if (this.customerAddressForm.value.zipCode !== '') {
+          this.activateButton = true;
+        } else {
+          this.activateButton = false;
+        }
       });
   }
 
@@ -413,9 +406,6 @@ export class ReceiptInformationComponent implements OnInit {
       shipCusName: this.transaction.data.customer.titleName + ' ' + this.transaction.data.customer.firstName +
         ' ' + this.transaction.data.customer.lastName
     };
-    // const customer = this.transaction.data.customer;
-    // this.customerReceiptAddress = this.getFullAddress(customer);
-
     this.transactionService.save(this.transaction);
   }
 
