@@ -83,7 +83,9 @@
       </div>
       <div class="text-center mt-4">
         <button class="btn btn-secondary btn-lg mr-3 pl-5 pr-5" (click)="onBack()">BACK</button>
-        <button class="btn btn-success btn-lg pl-5 pr-5" (click)="onNext()">PAYMENT</button>
+        <button class="btn btn-success btn-lg pl-5 pr-5" (click)="onNext()">
+            {{ transaction?.data?.payment?.paymentType === 'QR_CODE' || transaction?.data?.advancePayment?.paymentType === 'QR_CODE' ? 'PAYMENT' : 'CHECK OUT'}}
+        </button>
       </div>
     </div>
   </div>
