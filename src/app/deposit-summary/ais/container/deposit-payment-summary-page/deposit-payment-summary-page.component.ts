@@ -93,6 +93,7 @@ export class DepositPaymentSummaryPageComponent implements OnInit, OnDestroy {
 
   onBack(): void {
     localStorage.setItem('VerifyFlag', JSON.stringify(this.VerifyFlag));
+    localStorage.setItem('backSummaryPage', JSON.stringify('true'));
     if (this.VerifyFlag === 'keyIn') {
       this.router.navigate([DEPOSIT_PAYMENT_DETAIL_RECEIPT]);
     } else {

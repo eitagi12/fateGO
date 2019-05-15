@@ -93,14 +93,14 @@ export class DepositPaymentReceiptPageComponent implements OnInit {
     this.getMessageConfig();
     // this.customerFlag = this.localStorageService.load('CustomerFlag').value;
     // this.formID = this.getRandomNum(10);
-    this.transaction = {
-      transactionId: this.apiRequestService.getCurrentRequestId(),
-      data: {
-        transactionType: TransactionType.RESERVE_WITH_DEPOSIT,
-        customer: this.localStorageService.load('CustomerProfile').value,
-        action: TransactionAction.KEY_IN
-      }
-    };
+    // this.transaction = {
+    //   transactionId: this.apiRequestService.getCurrentRequestId(),
+    //   data: {
+    //     transactionType: TransactionType.RESERVE_WITH_DEPOSIT,
+    //     customer: this.localStorageService.load('CustomerProfile').value,
+    //     action: TransactionAction.KEY_IN
+    //   }
+    // };
     this.priceOption = {
       trade: this.localStorageService.load('reserveProductInfo').value
     };

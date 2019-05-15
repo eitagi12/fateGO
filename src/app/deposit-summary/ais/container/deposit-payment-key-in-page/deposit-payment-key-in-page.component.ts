@@ -84,7 +84,7 @@ export class DepositPaymentKeyInPageComponent implements OnInit {
     private tokenService: TokenService
   ) {
     this.billingAddress.getTitleName().then(this.responseTitleNames());
-    this.billingAddress.getProvinces().then(this.responseProvinces());
+   // this.billingAddress.getProvinces().then(this.responseProvinces());
     this.billingAddress.getZipCodes().then(this.responseZipCodes());
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -94,14 +94,7 @@ export class DepositPaymentKeyInPageComponent implements OnInit {
     this.getMessageConfig();
     // this.customerFlag = this.localStorageService.load('CustomerFlag').value;
     this.formID = this.getRandomNum(10);
-    this.transaction = {
-      transactionId: this.apiRequestService.getCurrentRequestId(),
-      data: {
-        transactionType: TransactionType.RESERVE_WITH_DEPOSIT,
-        customer: this.localStorageService.load('CustomerProfile').value,
-        action: TransactionAction.KEY_IN
-      }
-    };
+    this.setTransaction();
     this.priceOption = {
       trade: this.localStorageService.load('reserveProductInfo').value
     };
@@ -449,5 +442,21 @@ export class DepositPaymentKeyInPageComponent implements OnInit {
 
   private responseProvinces(): (value: any) => any {
     return (resp: string[]) => this.provinces = resp;
+  }
+
+  private setTransaction(): void {
+    const backKeyInPage = JSON.parse(localStorage.getItem('backKeyInPage'));
+    console.log('backKeyInPage ', backKeyInPage);
+
+    if (backKeyInPage !== 'true') {
+      this.transaction = {
+        transactionId: this.apiRequestService.getCurrentRequestId(),
+        data: {
+          transactionType: TransactionType.RESERVE_WITH_DEPOSIT,
+          customer: this.localStorageService.load('CustomerProfile').value,
+          action: TransactionAction.KEY_IN
+        }
+      };
+    }
   }
 }

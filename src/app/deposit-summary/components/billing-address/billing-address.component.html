@@ -131,7 +131,7 @@
               <select class="form-control" title="กรุณาเลือกจังหวัด" id="selectProvince" formControlName="province"
                 [ngClass]="{'is-invalid': !customerAddressForm.controls['province'].invalid && isSummit }">
                 <option disabled value="">กรุณาเลือกจังหวัด</option>
-                <option *ngFor="let province of provinces" [value]="province">{{ province }}</option>
+                <option *ngFor="let province of provinces" [value]="province.name">{{ province.name }}</option>
               </select>
             </div>
           </div>
@@ -174,7 +174,7 @@
             </label>
             <div class="col-12 col-sm-9">
               <input type="text" id="selectZipCode" maxlength="5" autocomplete="off" formControlName="zipCode"
-                placeholder="กรุณาเลือกรหัสไปรษณีย์" class="form-control"
+                placeholder="กรุณาเลือกรหัสไปรษณีย์" class="form-control" [value]="zipCodeNo"
                 [ngClass]="{'is-invalid': !customerAddressForm.controls['zipCode'].invalid && customerAddressForm.controls['zipCode'].dirty }">
               <!-- <div class="icon-remove-zipconde" *ngIf="!customerAddressForm.controls['zipCode'].value" (click)="onRemoveZipCode()">
                 <i class="fa fa-times" aria-hidden="true"></i></div> -->

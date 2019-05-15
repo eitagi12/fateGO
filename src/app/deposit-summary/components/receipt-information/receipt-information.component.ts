@@ -110,6 +110,7 @@ export class ReceiptInformationComponent implements OnInit {
       this.provinces.sort((a: { name: number; }, b: { name: number; }) =>
         (a.name < b.name) ? -1 : (a.name > b.name) ? 1 : 0) || [];
       this.setCustomerValue();
+      this.setBackValue();
     });
   }
 
@@ -378,6 +379,8 @@ export class ReceiptInformationComponent implements OnInit {
   onNext(): void {
     this.onSummitKeyin();
     this.saveTransaction();
+    localStorage.setItem('backSummaryPage', JSON.stringify(''));
+    this.setCustomerTemp();
     this.router.navigate([DEPOSIT_PAYMENT_SUMMARY_PAGE]);
   }
 
@@ -427,6 +430,7 @@ export class ReceiptInformationComponent implements OnInit {
   }
 
   onBack(): void {
+    localStorage.setItem('backKeyInPage', JSON.stringify('true'));
     this.router.navigate([DEPOSIT_PAYMENT_DETAIL_KEY_IN]);
   }
 
@@ -448,5 +452,44 @@ export class ReceiptInformationComponent implements OnInit {
     } else {
       this.isSummit = true;
     }
+  }
+
+  private setBackValue(): void {
+    const backSummaryPage = JSON.parse(localStorage.getItem('backSummaryPage'));
+
+    if (backSummaryPage === 'true') {
+      const customerProfile = JSON.parse(localStorage.getItem('customerTemp'));
+      this.customerAddressForm.controls['homeNo'].setValue(customerProfile.homeNo);
+      this.customerAddressForm.controls['buildingName'].setValue( customerProfile.buildingName);
+      this.customerAddressForm.controls['floor'].setValue(customerProfile.floor);
+      this.customerAddressForm.controls['room'].setValue(customerProfile.room);
+      this.customerAddressForm.controls['moo'].setValue(customerProfile.moo);
+      this.customerAddressForm.controls['mooBan'].setValue(customerProfile.mooban);
+      this.customerAddressForm.controls['street'].setValue(customerProfile.street);
+      this.customerAddressForm.controls['soi'].setValue(customerProfile.soi);
+      this.customerAddressForm.controls['province'].setValue(customerProfile.province);
+      this.customerAddressForm.controls['amphur'].setValue(customerProfile.amphur);
+      this.customerAddressForm.controls['tumbol'].setValue(customerProfile.tumbol);
+      this.customerAddressForm.controls['zipCode'].setValue(customerProfile.zipCode);
+    }
+  }
+
+  private setCustomerTemp(): void {
+    const customerTemp: any = {
+      homeNo: this.customerAddressForm.value.homeNo,
+      buildingName: this.customerAddressForm.value.buildingName,
+      floor: this.customerAddressForm.value.floor,
+      room: this.customerAddressForm.value.room,
+      moo: this.customerAddressForm.value.moo,
+      mooBan: this.customerAddressForm.value.mooBan,
+      street: this.customerAddressForm.value.street,
+      soi: this.customerAddressForm.value.soi,
+      province: this.customerAddressForm.value.province,
+      amphur: this.customerAddressForm.value.amphur,
+      tumbol: this.customerAddressForm.value.tumbol,
+      zipCode: this.zipCodeNo
+    };
+
+    localStorage.setItem('customerTemp', JSON.stringify(customerTemp));
   }
 }

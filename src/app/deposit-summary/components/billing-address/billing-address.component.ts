@@ -10,6 +10,7 @@ import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/
 import { DEPOSIT_PAYMENT_DETAIL_RECEIPT } from '../../constants/route-path.constant';
 import { Router } from '@angular/router';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { BillingAddressService } from '../../services/billing-address.service';
 
 export interface CustomerAddress {
   titleName: string;
@@ -43,9 +44,9 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   @Input() customerAddress: CustomerAddress;
   @Input() idCardNo: string[];
   @Input() allZipCodes: string[];
-  @Input() provinces: string[];
-  @Input() amphurs: string[];
-  @Input() tumbols: string[];
+ // @Input() provinces: string[];
+  // @Input() amphurs: string[];
+  // @Input() tumbols: string[];
   @Input() zipCodes: string[];
   @Input() titleNameSelected: EventEmitter<any> = new EventEmitter<any>();
   @Output() provinceSelected: EventEmitter<any> = new EventEmitter<any>();
@@ -74,6 +75,10 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   isSummit: boolean = false;
   activateButton: boolean;
   customerProfile: string;
+  provinces: any;
+  amphurs: any;
+  tumbols: any;
+  zipCodeNo: any = '';
 
   constructor(
     public fb: FormBuilder,
@@ -86,6 +91,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     private router: Router,
     private priceOptionService: PriceOptionService,
     private apiRequestService: ApiRequestService,
+    private billingAddress: BillingAddressService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -94,6 +100,13 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       // this.customerProfile = this.localStorageService.load('CustomerProfile').value;
     this.activateButton = false;
     this.createForm();
+    this.billingAddress.getProvinces().then((res: any) => {
+      this.provinces = res;
+      // tslint:disable-next-line: no-unused-expression
+      this.provinces.sort((a: { name: number; }, b: { name: number; }) =>
+        (a.name < b.name) ? -1 : (a.name > b.name) ? 1 : 0) || [];
+      this.setBackValue();
+    });
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -211,11 +224,8 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       this.amphurForm().enable();
       this.tumbolForm().disable();
       if (provinceName) {
-        const controlsZipCode = this.zipCodeForm();
-        this.provinceSelected.emit({
-          provinceName: provinceName,
-          zipCode: controlsZipCode.invalid ? controlsZipCode.value : null
-        });
+         this.onProvinceSelected(provinceName, null);
+        this.customerAddressForm.controls['zipCode'].setValue('');
       }
     });
   }
@@ -227,12 +237,9 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       });
       this.tumbolForm().enable();
       if (amphurName) {
-        const controlsZipCode = this.zipCodeForm();
-        this.amphurSelected.emit({
-          provinceName: this.customerAddressForm.value.province || '',
-          amphurName: amphurName,
-          zipCode: controlsZipCode.invalid ? controlsZipCode.value : null
-        });
+        const provinceName = this.customerAddressForm.value.province || '';
+        this.onAmphurSelected(provinceName, amphurName, null);
+        this.customerAddressForm.controls['zipCode'].setValue('');
       }
     });
   }
@@ -240,13 +247,9 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   private tumbolFormControl(): void {
     this.tumbolForm().valueChanges.subscribe((tumbolName: any) => {
       if (tumbolName) {
-        const controlsZipCode = this.zipCodeForm();
-        this.tumbolSelected.emit({
-          provinceName: this.customerAddressForm.value.province || '',
-          amphurName: this.customerAddressForm.value.amphur || '',
-          tumbolName: tumbolName,
-          zipCode: controlsZipCode.invalid ? controlsZipCode.value : null
-        });
+        const provinceName: string = this.customerAddressForm.value.province;
+        const amphurName: string = this.customerAddressForm.value.amphur;
+        this.onTumbolSelected(provinceName, amphurName, tumbolName);
       }
     });
   }
@@ -307,6 +310,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     this.onSummitKeyin();
     this.getCustomerProfile();
     this.saveTransaction();
+    localStorage.setItem('backKeyInPage', JSON.stringify(''));
     this.router.navigate([DEPOSIT_PAYMENT_DETAIL_RECEIPT]);
   }
 
@@ -323,7 +327,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     customerProfile.tumbol = this.customerAddressForm.controls['tumbol'].value;
     customerProfile.amphur = this.customerAddressForm.controls['amphur'].value;
     customerProfile.province = this.customerAddressForm.controls['province'].value;
-    customerProfile.zipCode = this.customerAddressForm.controls['zipCode'].value;
+    customerProfile.zipCode = this.zipCodeNo[0];
     customerProfile.country = 'Thailand';
 
     localStorage.setItem('CustomerProfile', JSON.stringify(customerProfile));
@@ -355,24 +359,22 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   }
 
   getFullAddress(customer: any): string {
-    if (!customer) {
-      return '-';
-    }
     const fullAddress =
-      (customer.homeNo ? customer.homeNo + ' ' : '') +
-      (customer.moo ? 'หมู่ที่ ' + customer.moo + ' ' : '') +
-      (customer.mooBan ? 'หมู่บ้าน ' + customer.mooBan + ' ' : '') +
-      (customer.room ? 'ห้อง ' + customer.room + ' ' : '') +
-      (customer.floor ? 'ชั้น ' + customer.floor + ' ' : '') +
-      (customer.buildingName ? 'อาคาร ' + customer.buildingName + ' ' : '') +
-      (customer.soi ? 'ซอย ' + customer.soi + ' ' : '') +
-      (customer.street ? 'ถนน ' + customer.street + ' ' : '') +
-      (customer.tumbol ? 'ตำบล/แขวง ' + customer.tumbol + ' ' : '') +
-      (customer.amphur ? 'อำเภอ/เขต ' + customer.amphur + ' ' : '') +
-      (customer.province ? 'จังหวัด ' + customer.province + ' ' : '') +
-      (customer.zipCode || '');
+      (this.customerAddressForm.value.homeNo.length > 0 ? this.customerAddressForm.value.homeNo + ' ' : '') +
+      (this.customerAddressForm.value.moo.length > 0 ? 'หมู่ที่ ' + this.customerAddressForm.value.moo + ' ' : '') +
+      (this.customerAddressForm.value.mooBan.length > 0 ? 'หมู่บ้าน ' + this.customerAddressForm.value.mooBan + ' ' : '') +
+      (this.customerAddressForm.value.room.length > 0 ? 'ห้อง ' + this.customerAddressForm.value.room + ' ' : '') +
+      (this.customerAddressForm.value.floor.length > 0 ? 'ชั้น ' + this.customerAddressForm.value.floor + ' ' : '') +
+      (this.customerAddressForm.value.buildingName.length > 0 ? 'อาคาร ' + this.customerAddressForm.value.buildingName + ' ' : '') +
+      (this.customerAddressForm.value.soi.length > 0 ? 'ซอย ' + this.customerAddressForm.value.soi + ' ' : '') +
+      (this.customerAddressForm.value.street.length > 0 ? 'ถนน ' + this.customerAddressForm.value.street + ' ' : '') +
+      (this.customerAddressForm.value.tumbol.length > 0 ? 'ตำบล/แขวง ' + this.customerAddressForm.value.tumbol + ' ' : '') +
+      (this.customerAddressForm.value.amphur.length > 0 ? 'อำเภอ/เขต ' + this.customerAddressForm.value.amphur + ' ' : '') +
+      (this.customerAddressForm.value.province.length > 0 ? 'จังหวัด ' + this.customerAddressForm.value.province + ' ' : '') +
+      (this.zipCodeNo);
     return fullAddress || '-';
   }
+
   onHome(): void {
     const url = '/';
   }
@@ -396,6 +398,78 @@ export class BillingAddressComponent implements OnInit, OnChanges {
 
     } else {
       this.isSummit = true;
+    }
+  }
+
+  onProvinceSelected(provinceName: string, zipcode: any): void {
+    const province = this.findProvinceByName(provinceName);
+    const req = {
+      provinceId: province.id,
+      zipcode: zipcode
+    };
+    if (!zipcode) {
+      delete req.zipcode;
+    }
+    this.billingAddress.getAmphurs(req).then(this.responseAmphur());
+  }
+
+  private findProvinceByName(provinceName: string): any {
+    return (this.provinces || []).find((prov: any) => prov.name === provinceName) || {};
+  }
+
+  private responseAmphur(): (value: any) => any {
+    return (resp: string[]) => this.amphurs = resp;
+  }
+
+  onAmphurSelected(provinceName: string, aumphur: string, zipcode: any): void {
+    const province = this.findProvinceByName(provinceName);
+    const req = {
+      provinceId: province.id,
+      amphurName: aumphur,
+      zipcode: zipcode
+    };
+    if (!zipcode) {
+      delete req.zipcode;
+    }
+    this.billingAddress.getTumbols(req).then(this.responseTumbols());
+  }
+
+  private responseTumbols(): (value: any) => any {
+    return (resp: string[]) => this.tumbols = resp;
+  }
+
+  onTumbolSelected(provinceName: string, amphurName: string, tumbolName: string): void {
+    const province = this.findProvinceByName(provinceName);
+    const req = {
+      provinceId: province.id,
+      amphurName: amphurName,
+      tumbolName: tumbolName
+    };
+
+    this.billingAddress.queryZipCode(req).then(this.responseZipCode());
+  }
+
+  private responseZipCode(): (value: any) => any {
+    return (resp: any) => this.zipCodeNo = resp;
+  }
+
+  private setBackValue(): void {
+    const backKeyInPage = JSON.parse(localStorage.getItem('backKeyInPage'));
+
+    if (backKeyInPage === 'true') {
+      const customerProfile = JSON.parse(localStorage.getItem('CustomerProfile'));
+      this.customerAddressForm.controls['homeNo'].setValue(customerProfile.homeNo);
+      this.customerAddressForm.controls['buildingName'].setValue( customerProfile.buildingName);
+      this.customerAddressForm.controls['floor'].setValue(customerProfile.floor);
+      this.customerAddressForm.controls['room'].setValue(customerProfile.room);
+      this.customerAddressForm.controls['moo'].setValue(customerProfile.moo);
+      this.customerAddressForm.controls['mooBan'].setValue(customerProfile.mooban);
+      this.customerAddressForm.controls['street'].setValue(customerProfile.street);
+      this.customerAddressForm.controls['soi'].setValue(customerProfile.soi);
+      this.customerAddressForm.controls['province'].setValue(customerProfile.province);
+      this.customerAddressForm.controls['amphur'].setValue(customerProfile.amphur);
+      this.customerAddressForm.controls['tumbol'].setValue(customerProfile.tumbol);
+      this.customerAddressForm.controls['zipCode'].setValue(customerProfile.zipCode);
     }
   }
 }
