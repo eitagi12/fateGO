@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { debounceTime, distinct, delay } from 'rxjs/operators';
-import { Utils, CustomerAddress, TokenService, ApiRequestService } from 'mychannel-shared-libs';
+import { Utils, CustomerAddress, TokenService, ApiRequestService, AlertService } from 'mychannel-shared-libs';
 import { CustomerInformationService } from '../../services/customer-information.service';
 import { LocalStorageService } from 'ngx-store';
 import { CreateDeviceOrderService } from '../../services/create-device-order.service';
@@ -89,6 +89,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     private createDeviceOrderService: CreateDeviceOrderService,
     private transactionService: TransactionService,
     private router: Router,
+    private alertService: AlertService,
     private priceOptionService: PriceOptionService,
     private apiRequestService: ApiRequestService,
     private billingAddress: BillingAddressService
@@ -378,18 +379,32 @@ export class BillingAddressComponent implements OnInit, OnChanges {
 
   onHome(): void {
     const url = '/';
+    this.alertRemoveAddCart(url);
   }
 
   onBack(): void {
     const url = '/sales-portal/reserve-stock/reserve-deposit-non-ais';
-    this.removeItem(url);
+    this.alertRemoveAddCart(url);
   }
 
-  removeItem(url: string): void {
-    const userId = this.tokenService.getUser().username;
-    const soId = this.localStorageService.load('reserveSoId').value;
-    this.createDeviceOrderService.removeAddCart(soId, userId).then((res) => {
-      window.location.href = url;
+  alertRemoveAddCart(url: string): void {
+    this.alertService.notify({
+      type: 'question',
+      showConfirmButton: true,
+      confirmButtonText: 'CONFIRM',
+      cancelButtonText: 'CANCEL',
+      showCancelButton: true,
+      reverseButtons: true,
+      allowEscapeKey: false,
+      html: 'ต้องการยกเลิกรายการจองหรือไม่ <br> การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคทันที'
+    }).then((data) => {
+      if (data.value) {
+        const userId = this.tokenService.getUser().username;
+        const soId = this.localStorageService.load('reserveSoId').value;
+        this.createDeviceOrderService.removeAddCart(soId, userId).then((res) => {
+          window.location.href = url;
+        });
+      }
     });
   }
 

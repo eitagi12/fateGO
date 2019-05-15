@@ -26,11 +26,8 @@
               <span class="text-red"> *</span>
             </label>
             <div class="col-12 col-sm-9">
-              <select class="form-control" title="คำนำหน้าชื่อ" id="selectTitleName" formControlName="titleName"
-                [ngClass]="{'is-invalid': customerAddressForm.controls['titleName'].invalid && customerAddressForm.controls['titleName'].dirty }">
-                <option disabled value="">คำนำหน้าชื่อ</option>
-                <option *ngFor="let titleName of titleNames" [value]="titleName">{{ titleName }}</option>
-              </select>
+              <input type="text" autocomplete="off" class="form-control"id="selectTitleName" formControlName="titleName"
+              [ngClass]="{'is-invalid': customerAddressForm.controls['titleName'].invalid && customerAddressForm.controls['titleName'].dirty }">
             </div>
           </div>
 
