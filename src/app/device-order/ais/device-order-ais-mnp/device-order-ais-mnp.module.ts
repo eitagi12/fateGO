@@ -34,6 +34,7 @@ import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { DeviceOrderAisMnpMobileDetailPageComponent } from './containers/device-order-ais-mnp-mobile-detail-page/device-order-ais-mnp-mobile-detail-page.component';
 import { DeviceOrderAisMnpEffectiveStartDatePageComponent } from './containers/device-order-ais-mnp-effective-start-date-page/device-order-ais-mnp-effective-start-date-page.component';
 import { DeviceOrderAisMnpMobileCareAvaliblePageComponent } from './containers/device-order-ais-mnp-mobile-care-avalible-page/device-order-ais-mnp-mobile-care-avalible-page.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -41,7 +42,8 @@ import { DeviceOrderAisMnpMobileCareAvaliblePageComponent } from './containers/d
     FormsModule,
     ReactiveFormsModule,
     MyChannelSharedLibsModule,
-    DeviceOrderAisMnpRoutingModule
+    DeviceOrderAisMnpRoutingModule,
+    TranslateModule
   ],
   declarations: [
     DeviceOrderAisMnpAggregatePageComponent,

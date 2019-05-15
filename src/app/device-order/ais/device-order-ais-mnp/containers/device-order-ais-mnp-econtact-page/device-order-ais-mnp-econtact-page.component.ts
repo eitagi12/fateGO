@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction } from 'src/app/shared/models/transaction.model';
@@ -10,7 +10,9 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { ROUTE_DEVICE_ORDER_AIS_MNP_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_AGREEMENT_SIGN_PAGE } from '../../constants/route-path.constant';
 import { DecimalPipe } from '@angular/common';
-import { CreateContractService } from 'src/app/shared/services/create-econtract.service';
+import { CreateEcontractService } from 'src/app/shared/services/create-econtract.service';
+import { Subscription } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-device-order-ais-mnp-econtact-page',
@@ -18,7 +20,7 @@ import { CreateContractService } from 'src/app/shared/services/create-econtract.
   styleUrls: ['./device-order-ais-mnp-econtact-page.component.scss'],
   providers: [IdCardPipe, DecimalPipe]
 })
-export class DeviceOrderAisMnpEcontactPageComponent implements OnInit {
+export class DeviceOrderAisMnpEcontactPageComponent implements OnInit, OnDestroy {
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   priceOption: PriceOption;
@@ -26,6 +28,9 @@ export class DeviceOrderAisMnpEcontactPageComponent implements OnInit {
   shoppingCart: ShoppingCart;
   eContactSrc: string;
   agreement: boolean;
+
+  translationSubscribe: Subscription;
+  currentLang: string;
 
   constructor(
     private router: Router,
@@ -36,10 +41,18 @@ export class DeviceOrderAisMnpEcontactPageComponent implements OnInit {
     private tokenService: TokenService,
     private pageLoadingService: PageLoadingService,
     private shoppingCartService: ShoppingCartService,
-    private createContractService: CreateContractService
+    private createContractService: CreateEcontractService,
+    private translationService: TranslateService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
+
+    this.currentLang = this.translationService.currentLang || 'TH';
+    this.translationSubscribe = this.translationService.onLangChange.subscribe(lang => {
+      this.currentLang = typeof (lang) === 'object' ? lang.lang : lang;
+      this.callService();
+    });
+
   }
 
   ngOnInit(): void {
@@ -70,12 +83,17 @@ export class DeviceOrderAisMnpEcontactPageComponent implements OnInit {
       location: user.locationCode
     }).toPromise().then((resp: any) => {
       const condition = resp.data ? resp.data.data || {} : {};
-      return this.createContractService.createEContractV2(this.transaction, this.priceOption, condition, 'TH').then((eDocResp: any) => {
+      return this.createContractService.createEContractV2(this.transaction, this.priceOption, condition, this.currentLang)
+      .then((eDocResp: any) => {
         return eDocResp.data || '';
       });
     })
       .then((eContact: string) => this.eContactSrc = eContact)
       .then(() => this.pageLoadingService.closeLoading());
+  }
+
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
   }
 
 }

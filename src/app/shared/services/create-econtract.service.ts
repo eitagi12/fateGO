@@ -7,7 +7,7 @@ import { DecimalPipe } from '@angular/common';
 @Injectable({
   providedIn: 'root'
 })
-export class CreateContractService {
+export class CreateEcontractService {
 
   constructor(
     private http: HttpClient,

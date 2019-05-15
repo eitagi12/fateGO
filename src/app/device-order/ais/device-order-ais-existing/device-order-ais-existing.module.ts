@@ -28,6 +28,7 @@ import { DeviceOrderAisExistingMobileCareAvailablePageComponent } from './contai
 import { DeviceOrderAisExistingEcontractPageComponent } from './containers/device-order-ais-existing-econtract-page/device-order-ais-existing-econtract-page.component';
 import { DeviceOrderAisExistingNonPackagePageComponent } from './containers/device-order-ais-existing-non-package-page/device-order-ais-existing-non-package-page.component';
 import { DeviceOrderAisExistingAggregatePageComponent } from './containers/device-order-ais-existing-aggregate-page/device-order-ais-existing-aggregate-page.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -35,7 +36,8 @@ import { DeviceOrderAisExistingAggregatePageComponent } from './containers/devic
     FormsModule,
     ReactiveFormsModule,
     MyChannelSharedLibsModule,
-    DeviceOrderAisExistingRoutingModule
+    DeviceOrderAisExistingRoutingModule,
+    TranslateModule
   ],
   declarations: [
     DeviceOrderAisExistingValidateCustomerPageComponent,

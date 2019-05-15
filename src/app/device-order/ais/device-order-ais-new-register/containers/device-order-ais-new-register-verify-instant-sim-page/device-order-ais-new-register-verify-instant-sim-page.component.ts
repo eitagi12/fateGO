@@ -42,10 +42,6 @@ export class DeviceOrderAisNewRegisterVerifyInstantSimPageComponent implements O
     private translationService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
-    this.translationSubscribe = this.translationService.onLangChange.subscribe(lang => {
-      this.mcSimSerial.focusInput();
-    });
-
   }
 
   ngOnInit(): void {
