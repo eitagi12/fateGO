@@ -183,124 +183,127 @@ export class MobileCareComponent implements OnInit {
     }
     this.modalRef.hide();
   }
-
+  // เช็คเบอร์ตอนเข้าหน้า mobile
   public checkPrivilegeMobileCare(): void {
     const mobileNo = this.privilegeCustomerForm.value.mobileNo;
     this.pageLoadingService.openLoading();
     if (mobileNo) {
-      // check billingSystem
+      // check billingSystem post paid
       this.customerInformationService.getProfileByMobileNo(mobileNo).then((res) => {
         this.billingSystem = res.data.billingSystem;
       });
-      // check package mobile care serenade
+      // check package mobile care serenade เอา mobileSegment(ขั้น serenade) ไปยิง callService
       this.customerInformationService.getCustomerProfile(mobileNo).then((res) => {
         const mobileSegment = res.data.mobileSegment;
-        this.callService(mobileSegment);
+        this.callService(mobileSegment, res.data.chargeType);
         this.pageLoadingService.closeLoading();
       });
     } else {
-      this.pageLoadingService.closeLoading();
       this.callService();
     }
   }
 
   public searchMobileNo(): void {
-    this.checkchargeType(this.privilegeCustomerForm.value.mobileNo);
-    if (this.privilegeCustomerForm.value.mobileNo.length === 10) {
-      this.checkExistingMobileCare();
-    } else {
-      this.alertService.notify({
-        type: 'warning',
-        confirmButtonText: 'OK',
-        showConfirmButton: true,
-        text: 'กรุณาระบุเบอร์ให้ครบ 10 หลัก'
-      });
-      this.privilegeCustomerForm.controls['mobileNo'].setValue('');
-    }
+    this.pageLoadingService.openLoading();
+    this.checkExistingMobileCare();
   }
 
   public checkExistingMobileCare(): void {
     const mobileNo = this.privilegeCustomerForm.value.mobileNo;
-    if (mobileNo) {
-      this.customerInformationService.getBillingByMobileNo(mobileNo).then((res) => {
-        if (res && res.data && res.data.billingAddress) {
-          this.checkMobileCare(mobileNo).then(() => {
-            this.customerInformationService.getCustomerProfile(mobileNo).then(response => {
-              const mobileSegment = response.data.mobileSegment;
-              this.callService(mobileSegment);
+    this.customerInformationService.getProfileByMobileNo(mobileNo)
+      .then((res) => {
+        switch (res.data.chargeType) {
+          case 'Pre-paid':
+            this.customerInformationService.getCustomerProfile(mobileNo).then((resp) => {
+              const mobileSegment = resp.data.mobileSegment;
+              this.callService(mobileSegment, res.data.chargeType);
+              this.http.get(`/api/customerportal/get-existing-mobile-care/${mobileNo}`).toPromise()
+                .then((result: any) => {
+                  if (result.data.hasExistingMobileCare) {
+                    this.exMobileCare = result.data;
+                    this.popupMobileCare(result.data.existMobileCarePackage);
+                  } else {
+                    this.currentPackageMobileCare = result.data.existMobileCarePackage;
+                    this.isPrivilegeCustomer = true;
+                    this.sendOTP();
+                  }
+                });
             });
-          });
-        } else {
-          this.alertService.notify({
-            type: 'error',
-            confirmButtonText: 'OK',
-            showConfirmButton: true,
-            text: 'เบอร์นี้ไม่ใช่ระบบ AIS กรุณาเปลี่ยนเบอร์ใหม่'
-          });
-          this.privilegeCustomerForm.controls['mobileNo'].setValue('');
+
+            break;
+          case 'Post-paid':
+            this.customerInformationService.getBillingByMobileNo(mobileNo)
+              .then((result) => {
+                if (result && result.data && result.data.billingAddress) {
+                  this.checkMobileCare(mobileNo, result);
+                  //
+                  this.customerInformationService.getCustomerProfile(mobileNo)
+                    .then((response) => {
+                      const mobileSegment = response.data.mobileSegment;
+                      this.callService(mobileSegment, res.data.chargeType);
+                    })
+                    .catch(() => {
+                      this.alertService.notify({
+                        type: 'error',
+                        confirmButtonText: 'OK',
+                        showConfirmButton: true,
+                        text: 'เบอร์นี้ไม่ใช่ระบบ AIS กรุณาเปลี่ยนเบอร์ใหม่'
+                      });
+                      this.privilegeCustomerForm.controls['mobileNo'].setValue('');
+                    });
+                } else {
+                  this.alertService.notify({
+                    type: 'error',
+                    confirmButtonText: 'OK',
+                    showConfirmButton: true,
+                    text: 'เบอร์นี้ไม่ใช่ระบบ AIS กรุณาเปลี่ยนเบอร์ใหม่'
+                  });
+                  this.privilegeCustomerForm.controls['mobileNo'].setValue('');
+                }
+              }).catch(() => {
+                this.alertService.notify({
+                  type: 'error',
+                  confirmButtonText: 'OK',
+                  showConfirmButton: true,
+                  text: 'เบอร์นี้ไม่ใช่ระบบ AIS กรุณาเปลี่ยนเบอร์ใหม่'
+                });
+                this.privilegeCustomerForm.controls['mobileNo'].setValue('');
+              });
+            break;
         }
-      }).catch((err) => {
-        this.pageLoadingService.closeLoading();
+      })
+      .catch(() => {
         this.alertService.notify({
           type: 'error',
           confirmButtonText: 'OK',
           showConfirmButton: true,
-          text: 'เบอร์นี้ไม่ใช่ระบบ AIS กรุณาเปลี่ยนเบอร์ใหม่'
+          text: 'เบอร์ไม่ถูกต้อง'
         });
         this.privilegeCustomerForm.controls['mobileNo'].setValue('');
       });
-    } else {
-      this.pageLoadingService.closeLoading();
-      this.alertService.notify({
-        type: 'error',
-        confirmButtonText: 'OK',
-        showConfirmButton: true,
-        text: 'เบอร์ไม่ถูกต้อง'
-      });
-      this.privilegeCustomerForm.controls['mobileNo'].setValue('');
-    }
   }
 
-  private checkMobileCare(mobileNo: string): Promise<any> {
-    return this.customerInformationService.getBillingByMobileNo(mobileNo)
-      .then((res: any) => {
-        let indexExistingMobileCare: any;
-        for (let index = 0; index < res.data.currentPackage.length; index++) {
-          if (res.data.currentPackage[index].produuctGroup && res.data.currentPackage[index].produuctGroup === 'Mobile Care') {
-            indexExistingMobileCare = index;
-          }
-        }
-
-        if (indexExistingMobileCare >= 0) {
-          this.currentPackageMobileCare = res.data.currentPackage[indexExistingMobileCare];
-          this.isPrivilegeCustomer = false;
-          this.http.get(`/api/customerportal/get-existing-mobile-care/${mobileNo}`).toPromise().then((response: any) => {
-            this.exMobileCare = response.data;
-            this.popupMobileCare(this.currentPackageMobileCare);
-          });
-        } else {
-          this.currentPackageMobileCare = res.data.currentPackage;
-          this.isPrivilegeCustomer = true;
-          this.sendOTP();
-        }
-      });
-  }
-
-  private checkCurrentPackage(res: any, indexExistingMobileCare: any): any {
-    if (res && res.data && res.data.currentPackage) {
-      for (let index = 0; index < res.data.currentPackage.length; index++) {
-        if (res.data.currentPackage[index].produuctGroup && res.data.currentPackage[index].produuctGroup === 'Mobile Care') {
+  private checkMobileCare(mobileNo: string, response: any): void {
+    let indexExistingMobileCare: any;
+    if (response.data.currentPackage) {
+      for (let index = 0; index < response.data.currentPackage.length; index++) {
+        if (response.data.currentPackage[index].produuctGroup && response.data.currentPackage[index].produuctGroup === 'Mobile Care') {
           indexExistingMobileCare = index;
         }
       }
     }
-    return indexExistingMobileCare;
-  }
-
-  private checkchargeType(mobileNo: string): void {
-    this.customerInformationService.getProfileByMobileNo(mobileNo).then((res) => {
-      console.log(res.data.chargeType);
-    });
+    if (indexExistingMobileCare >= 0) {
+      this.currentPackageMobileCare = response.data.currentPackage[indexExistingMobileCare];
+      this.isPrivilegeCustomer = false;
+      this.http.get(`/api/customerportal/get-existing-mobile-care/${mobileNo}`).toPromise().then((respons: any) => {
+        this.exMobileCare = respons.data;
+        this.popupMobileCare(this.currentPackageMobileCare);
+      });
+    } else {
+      this.currentPackageMobileCare = response.data.currentPackage;
+      this.isPrivilegeCustomer = true;
+      this.sendOTP();
+    }
   }
 
   private popupMobileCare(currentPackageMobileCare: any): void {
@@ -336,6 +339,8 @@ export class MobileCareComponent implements OnInit {
   }
 
   public sendOTP(): void {
+    console.log('sent');
+
     let mobile = this.customerInformationService.getSelectedMobileNo();
     if (environment.name !== 'PROD') {
       mobile = environment.TEST_OTP_MOBILE;
@@ -343,6 +348,8 @@ export class MobileCareComponent implements OnInit {
     this.pageLoadingService.openLoading();
     this.http.post(`/api/customerportal/newRegister/${mobile}/sendOTP`, { digits: '5' }).toPromise()
       .then((resp: any) => {
+        console.log(resp);
+
         if (resp && resp.data) {
           this.transactionID = resp.data.transactionID;
           this.pageLoadingService.closeLoading();
@@ -380,21 +387,22 @@ export class MobileCareComponent implements OnInit {
       });
   }
 
-  public callService(mobileSegment?: string): void {
+  public callService(mobileSegment?: string, chargeTypes?: any): void {
     let billingSystem: string;
     if (this.billingSystem === 'Non BOS') {
       billingSystem = BillingSystemType.IRB;
     } else {
       billingSystem = this.billingSystem || BillingSystemType.IRB;
     }
-    const chargeType = this.mainPackage ? this.mainPackage.customAttributes.billingSystem : 'Post-paid';
+    console.log('billingSystem: ', billingSystem);
+    const chargeType = chargeTypes ? chargeTypes : 'Post-paid';
+    console.log(chargeType);
     const endUserPrice = +this.priceOption.trade.normalPrice;
     this.mobileCareService.getMobileCare({
       packageKeyRef: MOBILE_CARE_PACKAGE_KEY_REF,
       billingSystem: BillingSystemType.IRB
     }, chargeType, billingSystem, endUserPrice, mobileSegment)
       .then((mobileCare: any) => {
-        // console.log('mobileCare: ',mobileCare);
         this.mobileCare = {
           promotions: mobileCare
         };
