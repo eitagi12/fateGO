@@ -4,7 +4,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { ROUTE_DEVICE_ORDER_AIS_EXISTING_RESULT_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_EXISTING_RESULT_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_RESULT_PAGE } from '../../constants/route-path.constant';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { PageLoadingService, REGEX_MOBILE } from 'mychannel-shared-libs';
 import { QueuePageService } from 'src/app/device-order/services/queue-page.service';
@@ -55,7 +55,7 @@ export class DeviceOrderAisExistingQrCodeQueuePageComponent implements OnInit, O
         };
         return this.callServiceCreateDeviceSellingOrderAndUpdateShareTransaction();
       })
-      .then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_RESULT_PAGE]))
+      .then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_RESULT_PAGE]))
       .then(() => this.pageLoadingService.closeLoading());
   }
 

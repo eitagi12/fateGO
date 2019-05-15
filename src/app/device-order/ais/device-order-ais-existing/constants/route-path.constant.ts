@@ -27,4 +27,5 @@ export const ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_SUMMARY_PAGE = '/device-ord
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_QUEUE_PAGE = '/device-order/ais/existing/qr-code-queue';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_GENERATOR_PAGE = '/device-order/ais/existing/qr-code-generator';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_ERROR_PAGE = '/device-order/ais/existing/qr-code-error';
+export const ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_RESULT_PAGE = '/device-order/ais/existing/qr-code-result';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_ONTOP_PAGE = '/device-order/ais/existing/select-package-ontop';
