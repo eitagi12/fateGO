@@ -108,7 +108,7 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
   }
 
   checkRouteNavigate(promotionsShelves: any): void {
-    if (this.havePackages(promotionsShelves) || !this.isCritiriaMainPro) {
+    if (this.havePackages(promotionsShelves) || this.notMathCritiriaMainPro()) {
       if (this.selectMobileNo.privilegeCode) {
         this.transaction.data.customer.privilegeCode = this.selectMobileNo.privilegeCode;
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_DETAIL_PAGE]);
@@ -175,8 +175,10 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
   }
 
   filterPromotions(promotionShelves: any = [], contract: any = {}): any[] {
-    (promotionShelves || []).forEach((promotionShelve: any) => {
-      promotionShelve.promotions = (promotionShelve.promotions || []).filter((promotion: any) => {
+    (promotionShelves || [])
+    .forEach((promotionShelve: any) => {
+      promotionShelve.promotions = (promotionShelve.promotions || [])
+      .filter((promotion: any) => {
         promotion.items = this.filterItemsByFirstPackageAndInGroup(promotion, contract);
         return promotion.items.length > 0;
       });
@@ -207,6 +209,10 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
     return (promotionsShelves || []).length > 0
       && promotionsShelves.some(promotionsShelve => promotionsShelve.promotions.length > 0);
 
+  }
+
+  notMathCritiriaMainPro(): boolean {
+    return !this.advancePay && !(this.selectMobileNo.privilegeMessage === `MT_INVALID_CRITERIA_MAINPRO`);
   }
 
   get isCritiriaMainPro(): boolean {

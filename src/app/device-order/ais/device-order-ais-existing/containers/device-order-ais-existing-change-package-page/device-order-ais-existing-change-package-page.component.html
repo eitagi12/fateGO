@@ -21,10 +21,14 @@
             <p>{{'เบอร์'| translate}} {{ transaction?.data?.simCard?.mobileNo }} {{'ใช้แพ็กเกจหลักต่ำกว่า'| translate}} {{priceOption?.privilege?.minimumPackagePrice}} {{'บาท'| translate}} <br>
               *{{'ยืนยันเปลี่ยนแพ็กเกจใหม่ เพื่อรับสิทธิ์ซื้อเครื่องราคาพิเศษ' | translate}}
             </p>
+          </div>
+
+        <div class="text-center pb-4">
             <button class="btn btn-secondary btn-lg" (click)="onHome()">CANCEL</button>
             <button class="btn btn-success btn-lg" (click)="onNext()">CONFIRM</button>
             <p class="mt-3"><u class="text-green" (click)="onBack()">{{'เปลี่ยนเบอร์ทำรายการ'| translate}}</u></p>
-          </div>
+        </div>
+          
         </div>
       </div>
     </div>

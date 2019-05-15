@@ -21,9 +21,13 @@
             <p>{{'เบอร์'| translate}} {{ transaction?.data?.simCard?.mobileNo }} {{'ไม่สามารถรับสิทธิ์โครงการนี้ได้'| translate}} <br>
               <span>* {{'กรุณาเปลี่ยนเบอร์ใหม่ เพื่อรับสิทธิ์ซื้อเครื่องราคาพิเศษ'| translate}}</span>
             </p>
+          </div>
+
+          <div class="text-center pb-4">
             <button class="btn btn-secondary btn-lg" (click)="onHome()">CANCEL</button>
             <button class="btn btn-success btn-lg" (click)="onBack()">CONFIRM</button>
           </div>
+          
         </div>
       </div>
     </div>
