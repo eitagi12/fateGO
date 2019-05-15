@@ -464,7 +464,7 @@ export class ReceiptInformationComponent implements OnInit {
       this.customerAddressForm.controls['floor'].setValue(customerProfile.floor);
       this.customerAddressForm.controls['room'].setValue(customerProfile.room);
       this.customerAddressForm.controls['moo'].setValue(customerProfile.moo);
-      this.customerAddressForm.controls['mooBan'].setValue(customerProfile.mooban);
+      this.customerAddressForm.controls['mooBan'].setValue(customerProfile.mooBan);
       this.customerAddressForm.controls['street'].setValue(customerProfile.street);
       this.customerAddressForm.controls['soi'].setValue(customerProfile.soi);
       this.customerAddressForm.controls['province'].setValue(customerProfile.province);
@@ -487,7 +487,7 @@ export class ReceiptInformationComponent implements OnInit {
       province: this.customerAddressForm.value.province,
       amphur: this.customerAddressForm.value.amphur,
       tumbol: this.customerAddressForm.value.tumbol,
-      zipCode: this.zipCodeNo
+      zipCode: this.zipCodeNo[0]
     };
 
     localStorage.setItem('customerTemp', JSON.stringify(customerTemp));

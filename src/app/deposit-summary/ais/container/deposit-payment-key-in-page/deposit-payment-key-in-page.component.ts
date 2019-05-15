@@ -446,8 +446,6 @@ export class DepositPaymentKeyInPageComponent implements OnInit {
 
   private setTransaction(): void {
     const backKeyInPage = JSON.parse(localStorage.getItem('backKeyInPage'));
-    console.log('backKeyInPage ', backKeyInPage);
-
     if (backKeyInPage !== 'true') {
       this.transaction = {
         transactionId: this.apiRequestService.getCurrentRequestId(),

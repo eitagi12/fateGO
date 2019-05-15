@@ -311,6 +311,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     this.getCustomerProfile();
     this.saveTransaction();
     localStorage.setItem('backKeyInPage', JSON.stringify(''));
+    localStorage.setItem('backSummaryPage', JSON.stringify(''));
     this.router.navigate([DEPOSIT_PAYMENT_DETAIL_RECEIPT]);
   }
 
