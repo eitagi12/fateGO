@@ -124,16 +124,21 @@ export class QueuePageService {
       preBookingNo: prebooking ? prebooking.preBookingNo : '',
       depositAmt: prebooking ? prebooking.depositAmt : '',
       qrTransId: mpayPayment.tranId,
-      qrAmt: this.getQRAmt(trade, transaction),
+      qrAmt: mpayPayment.tranId ? this.getQRAmt(trade, transaction) : null,
       // qrAirtimeTransId: mpayPayment.qrAirtimeTransId || null,
       // qrAirtimeAmt: mpayPayment.qrAirtimeAmt ? (+mpayPayment.qrAirtimeAmt).toFixed(2) : null
-      qrAirtimeTransId: mpayPayment.qrAirtimeTransId || mpayPayment.tranId || null,
-      qrAirtimeAmt: this.getQRAmt(trade, transaction)
+      // qrAirtimeTransId: mpayPayment.qrAirtimeTransId || mpayPayment.tranId || null,
+      // qrAirtimeAmt:  this.getQRAmt(trade, transaction)
     };
 
     // freeGoods
     if (trade.freeGoods && trade.freeGoods.length > 0) {
       data.tradeFreeGoodsId = trade.freeGoods[0] ? trade.freeGoods[0].tradeFreegoodsId : '';
+    }
+
+    if (mpayPayment.mpayStatus.statusAirTime) {
+      data.qrAirtimeTransId = mpayPayment.qrAirtimeTransId || mpayPayment.tranId || null;
+      data.qrAirtimeAmt =  this.getQRAmt(trade, transaction);
     }
 
     // ผ่อนชำระ
