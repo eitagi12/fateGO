@@ -314,7 +314,7 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
 
   public checkQueueLocation(): Promise<any> {
     return this.http.get('/api/salesportal/check-queue-location').toPromise().then((response: any) => {
-      return response && response.data ? response.data.isQueueAuto : false;
+      return response && response.data && response.data.queueType ? response.data.queueType : undefined;
     }).catch((e) => false);
   }
 }
