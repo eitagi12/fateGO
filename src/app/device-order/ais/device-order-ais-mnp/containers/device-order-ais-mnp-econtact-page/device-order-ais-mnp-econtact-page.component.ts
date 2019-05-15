@@ -140,9 +140,9 @@ export class DeviceOrderAisMnpEcontactPageComponent implements OnInit {
     }
 
     if (Array.isArray(advancePayPromotions)) {
-      return advancePayPromotions.length > 0 ? amount / advancePayPromotions[0] : 0;
+      return advancePayPromotions.length > 0 ? amount / advancePayPromotions[0].month : 0;
     } else {
-      return amount / advancePayPromotions;
+      return amount / advancePayPromotions.month;
     }
   }
 
