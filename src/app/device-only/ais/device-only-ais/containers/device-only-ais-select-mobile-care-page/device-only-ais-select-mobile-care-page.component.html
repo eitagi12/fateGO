@@ -17,11 +17,11 @@
       (promotion)="onPromotion($event)"
       (isVerifyflag)="onIsVerify($event)"
       (completed)="onCompleted($event)"
-      (isReasonNotBuyMobileCare)="onReason($event)">
+      (mobileNoEmit)="onMobile($event)">
     </app-mobile-care>
   </div>
   <mc-footer>
     <button class="btn btn-secondary" id="button-back" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" id="button-next" (click)="onNext()" [disabled]="isVerifyNext()">NEXT</button>
+    <button class="btn btn-success" id="button-next" (click)="onNext()" [disabled]="!isVerifyflag">NEXT</button>
   </mc-footer>
 </div>

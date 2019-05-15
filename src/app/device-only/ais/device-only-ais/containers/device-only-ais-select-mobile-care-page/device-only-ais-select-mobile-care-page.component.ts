@@ -25,6 +25,7 @@ export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit , OnDe
   existingMobileCare: any;
   public isBuyMobileCare: boolean = false;
   public isReasonNotBuyMobileCare: string;
+  isVerifyButtonNext: boolean;
 
   constructor(
     private router: Router,
@@ -40,6 +41,7 @@ export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit , OnDe
   ngOnInit(): void {
     this.homeButtonService.initEventButtonHome();
     console.log('emit', this.isVerifyflag);
+    this.isVerifyflag = false;
   }
 
   public onBack(): void {
@@ -49,6 +51,10 @@ export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit , OnDe
   public isVerifyNext(): boolean {
     return !(this.transaction.data.mobileCarePackage || this.isVerifyflag);
   }
+
+  // public disableNext() {
+
+  // }
 
   public getCurrentPackMobileCare(existingMobileCare: any): void {
     if (existingMobileCare) {
@@ -75,12 +81,14 @@ export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit , OnDe
   onIsVerify(isVerifyflag: any): void {
     this.isVerifyflag = isVerifyflag;
   }
-  onCompleted(simCard: any): void {
-    this.transaction.data.simCard = simCard;
+
+  onCompleted(mobileCare: any): void {
+    this.transaction.data.mobileCarePackage = mobileCare;
+    // this.transaction.data.simCard.mobileNo = mobileCare;
   }
 
-  onReason(reason: any): void {
-    this.transaction.data.reasonCode = reason;
+  onMobile(mobileNo: any): void {
+    this.transaction.data.simCard = mobileNo;
   }
 
   ngOnDestroy(): void {

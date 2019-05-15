@@ -64,8 +64,10 @@ export class MobileCareComponent implements OnInit {
 
   @Input() mobileCare: MobileCare;
   @Input() normalPrice: number;
+  @Input() selected: any;
   @Output() existingMobileCare: EventEmitter<any> = new EventEmitter<any>();
   @Output() completed: EventEmitter<any> = new EventEmitter<any>();
+  @Output() mobileNoEmit: EventEmitter<any> = new EventEmitter<any>();
   @Output() isVerifyflag: EventEmitter<any> = new EventEmitter<any>();
   @Output() promotion: EventEmitter<any> = new EventEmitter<any>();
   @Output() verifyOtp: EventEmitter<any> = new EventEmitter<any>();
@@ -123,13 +125,23 @@ export class MobileCareComponent implements OnInit {
   }
 
   public createForm(): void {
+
+    let mobileCare = '';
+    let notMobileCare = '';
+    if (this.selected && typeof this.selected === 'object') {
+      mobileCare = this.selected;
+    }
+
+    if (this.selected && typeof this.selected === 'string') {
+      notMobileCare = this.selected;
+    }
     this.mobileCareForm = this.formBuilder.group({
       'mobileCare': [true, Validators.required],
-      'promotion': ['', Validators.required]
+      'promotion': [mobileCare, Validators.required]
     });
 
     this.notBuyMobileCareForm = this.formBuilder.group({
-      'notBuyMobile': [''],
+      'notBuyMobile': [notMobileCare],
     });
 
     this.mobileCareForm.valueChanges.subscribe((value: any) => {
@@ -140,7 +152,6 @@ export class MobileCareComponent implements OnInit {
           notBuyMobile: ''
         });
         // check Verify to Pass & check selectPackage Mobilecare
-        this.isVerifyflag.emit(false);
       }
       if (this.mobileCareForm.valid) {
         this.mainPackage = this.mobileCareForm.value.promotion.value;
@@ -173,13 +184,15 @@ export class MobileCareComponent implements OnInit {
 
   public onNotBuyMobileCare(dismiss: boolean): void {
     if (dismiss) {
+      this.isVerifyflag.emit(false);
+
       this.mobileCareForm.patchValue({
         mobileCare: true
       });
     } else {
       this.isVerifyflag.emit(true);
-      this.isReasonNotBuyMobileCare.emit(this.notBuyMobileCareForm.value.notBuyMobile);
-      this.existingMobileCare.emit(false);
+      this.completed.emit(this.notBuyMobileCareForm.value.notBuyMobile);
+      // this.existingMobileCare.emit(false);
     }
     this.modalRef.hide();
   }
@@ -191,6 +204,8 @@ export class MobileCareComponent implements OnInit {
       // check billingSystem post paid
       this.customerInformationService.getProfileByMobileNo(mobileNo).then((res) => {
         this.billingSystem = res.data.billingSystem;
+        console.log('transactionType', this.billingSystem);
+
       });
       // check package mobile care serenade เอา mobileSegment(ขั้น serenade) ไปยิง callService
       this.customerInformationService.getCustomerProfile(mobileNo).then((res) => {
@@ -371,7 +386,7 @@ export class MobileCareComponent implements OnInit {
       .then((resp: any) => {
         if (resp && resp.data) {
           this.pageLoadingService.closeLoading();
-          this.completed.emit({
+          this.mobileNoEmit.emit({
             mobileNo: this.privilegeCustomerForm.value.mobileNo,
             billingSystem: this.billingSystem
           });
@@ -394,9 +409,9 @@ export class MobileCareComponent implements OnInit {
     } else {
       billingSystem = this.billingSystem || BillingSystemType.IRB;
     }
-    console.log('billingSystem: ', billingSystem);
+    // console.log('billingSystem: ', billingSystem);
     const chargeType = chargeTypes ? chargeTypes : 'Post-paid';
-    console.log(chargeType);
+    // console.log(chargeType);
     const endUserPrice = +this.priceOption.trade.normalPrice;
     this.mobileCareService.getMobileCare({
       packageKeyRef: MOBILE_CARE_PACKAGE_KEY_REF,
