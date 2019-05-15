@@ -223,6 +223,7 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
       if (advancePayment.paymentType === 'QR_CODE') {
         return advancePayment.paymentQrCodeType === 'THAI_QR' ? 'PB' : 'RL';
       }
+      return tradePayment.method;
     } else {
       let paymentMethod = '';
       // AWN หรือ WDS จ่ายแยก
