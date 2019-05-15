@@ -125,10 +125,6 @@ export class QueuePageService {
       depositAmt: prebooking ? prebooking.depositAmt : '',
       qrTransId: mpayPayment.tranId,
       qrAmt: mpayPayment.tranId ? this.getQRAmt(trade, transaction) : null,
-      // qrAirtimeTransId: mpayPayment.qrAirtimeTransId || null,
-      // qrAirtimeAmt: mpayPayment.qrAirtimeAmt ? (+mpayPayment.qrAirtimeAmt).toFixed(2) : null
-      // qrAirtimeTransId: mpayPayment.qrAirtimeTransId || mpayPayment.tranId || null,
-      // qrAirtimeAmt:  this.getQRAmt(trade, transaction)
     };
 
     // freeGoods
@@ -136,7 +132,8 @@ export class QueuePageService {
       data.tradeFreeGoodsId = trade.freeGoods[0] ? trade.freeGoods[0].tradeFreegoodsId : '';
     }
 
-    if (mpayPayment.mpayStatus.statusAirTime) {
+    // QR code for airtime
+    if (transactionData.advancePayment && transactionData.advancePayment.paymentType === 'QR_CODE' ) {
       data.qrAirtimeTransId = mpayPayment.qrAirtimeTransId || mpayPayment.tranId || null;
       data.qrAirtimeAmt =  this.getQRAmt(trade, transaction);
     }
@@ -169,7 +166,7 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
       const qrAmt: number = trade.normalPrice - trade.discount.amount;
       cost += +qrAmt;
     }
-    if (trade && transaction.data.advancePayment.paymentType === 'QR_CODE') {
+    if (trade && transaction.data.advancePayment && transaction.data.advancePayment.paymentType === 'QR_CODE') {
       cost += +trade.advancePay.amount;
     }
     return cost ? cost.toFixed(2) : undefined;

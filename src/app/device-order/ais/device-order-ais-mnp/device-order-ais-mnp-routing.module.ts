@@ -29,6 +29,7 @@ import { DeviceOrderAisMnpEligibleMobilePageComponent } from './containers/devic
 import { DeviceOrderAisMnpMobileDetailPageComponent } from './containers/device-order-ais-mnp-mobile-detail-page/device-order-ais-mnp-mobile-detail-page.component';
 import { DeviceOrderAisMnpEffectiveStartDatePageComponent } from './containers/device-order-ais-mnp-effective-start-date-page/device-order-ais-mnp-effective-start-date-page.component';
 import { DeviceOrderAisMnpMobileCareAvaliblePageComponent } from './containers/device-order-ais-mnp-mobile-care-avalible-page/device-order-ais-mnp-mobile-care-avalible-page.component';
+import { DeviceOrderAisMnpQrCodeResultPageComponent } from './containers/device-order-ais-mnp-qr-code-result-page/device-order-ais-mnp-qr-code-result-page.component';
 const routes: Routes = [
   { path: 'validate-customer', component: DeviceOrderAisMnpValidateCustomerPageComponent },
   { path: 'validate-customer-key-in', component: DeviceOrderAisMnpValidateCustomerKeyInPageComponent },
@@ -56,6 +57,7 @@ const routes: Routes = [
   { path: 'qr-code-summary', component: DeviceOrderAisMnpQrCodeSummaryPageComponent },
   { path: 'qr-code-queue', component: DeviceOrderAisMnpQrCodeQueuePageComponent },
   { path: 'qr-code-generator', component: DeviceOrderAisMnpQrCodeGeneratorPageComponent },
+  { path: 'qr-code-result', component: DeviceOrderAisMnpQrCodeResultPageComponent },
   { path: 'eligible-mobile', component: DeviceOrderAisMnpEligibleMobilePageComponent },
   { path: 'mobile-detail', component: DeviceOrderAisMnpMobileDetailPageComponent },
   { path: 'effective-start-date', component: DeviceOrderAisMnpEffectiveStartDatePageComponent },
