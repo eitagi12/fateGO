@@ -107,7 +107,7 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
   verifyMobileNo(mobileNo: string, ussdCode: string): Promise<any> {
     const errMsg = 'ไม่สามารถตรวจสอบสิทธิ์ซื้อเครื่องได้ใขณะนี้';
     const errMsgNotPrepaid = 'ไม่สามารถทำรายการได้ เนื่องจากเป็นหมายเลขระบบรายเดือน';
-    const errMsgAvatar = 'เบอร์นี้ไม่สามารถเปลี่ยนเติมเงินเป็นรายเดือนได้ กรุณาเปลี่ยนเบอร์ใหม่ ';
+    const errMsgAvatar = 'เบอร์นี้ไม่สามารถเข้าร่วมโครงการได้ กรุณาเปลี่ยนเบอร์ใหม่ ';
     const verify: any = {
       isVerify: false
     };
