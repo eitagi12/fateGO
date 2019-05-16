@@ -1,11 +1,12 @@
 <div class="mc-flex">
-  <mc-header title="ลูกค้าย้ายค่าย">
-    <div class="header-icon-left">
+  <mc-header title="{{ 'ลูกค้าย้ายค่าย' | translate}}">
+    <div class="header-icon-left w-25">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
-    <div class="header-icon-right">
-      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
-    </div>
+    <div class="header-icon-right w-25 text-right">
+      <!-- <mc-dropdown-language></mc-dropdown-language> -->
+    <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+  </div>
   </mc-header>
   <div class="mc-flex-wrap">
     <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
@@ -14,7 +15,7 @@
     </div>
 
     <div class="container-fluid">
-      <p class=" text-center">เลือกเบอร์โทรในแบบของคุณ</p>
+      <p class=" text-center" translate>เลือกเบอร์โทรในแบบของคุณ</p>
       <hr>
       <a class="btn btn-block bg-white text-brown text-left mb-3" (click)="onVerifyInstantSim()">
         <img src="assets/images/icon/icon-sim.png" class="icon" />

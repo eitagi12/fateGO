@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 
@@ -28,14 +29,16 @@ import { DeviceOrderAisExistingMobileCareAvailablePageComponent } from './contai
 import { DeviceOrderAisExistingEcontractPageComponent } from './containers/device-order-ais-existing-econtract-page/device-order-ais-existing-econtract-page.component';
 import { DeviceOrderAisExistingNonPackagePageComponent } from './containers/device-order-ais-existing-non-package-page/device-order-ais-existing-non-package-page.component';
 import { DeviceOrderAisExistingAggregatePageComponent } from './containers/device-order-ais-existing-aggregate-page/device-order-ais-existing-aggregate-page.component';
-
+import { DeviceOrderAisExistingSelectPackageOntopPageComponent } from './containers/device-order-ais-existing-select-package-ontop-page/device-order-ais-existing-select-package-ontop-page.component';
+import { DeviceOrderAisExistingQrCodeResultPageComponent } from './containers/device-order-ais-existing-qr-code-result-page/device-order-ais-existing-qr-code-result-page.component';
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
     MyChannelSharedLibsModule,
-    DeviceOrderAisExistingRoutingModule
+    DeviceOrderAisExistingRoutingModule,
+    TranslateModule
   ],
   declarations: [
     DeviceOrderAisExistingValidateCustomerPageComponent,
@@ -61,7 +64,9 @@ import { DeviceOrderAisExistingAggregatePageComponent } from './containers/devic
     DeviceOrderAisExistingMobileCareAvailablePageComponent,
     DeviceOrderAisExistingEcontractPageComponent,
     DeviceOrderAisExistingNonPackagePageComponent,
-    DeviceOrderAisExistingAggregatePageComponent
+    DeviceOrderAisExistingAggregatePageComponent,
+    DeviceOrderAisExistingSelectPackageOntopPageComponent,
+    DeviceOrderAisExistingQrCodeResultPageComponent
   ]
 })
 export class DeviceOrderAisExistingModule { }

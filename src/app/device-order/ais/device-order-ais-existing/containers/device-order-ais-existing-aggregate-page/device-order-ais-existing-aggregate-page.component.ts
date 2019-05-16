@@ -38,10 +38,14 @@ export class DeviceOrderAisExistingAggregatePageComponent implements OnInit, OnD
     const payment: any = this.transaction.data.payment || {};
     const advancePayment: any = this.transaction.data.advancePayment || {};
 
+    this.router.navigate([this.checkRouteNavigate(payment, advancePayment)]);
+  }
+
+  checkRouteNavigate(payment: any, advancePayment: any): string {
     if (payment.paymentType === 'QR_CODE' || advancePayment.paymentType === 'QR_CODE') {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_SUMMARY_PAGE]);
+      return ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_SUMMARY_PAGE;
     } else {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_QUEUE_PAGE]);
+      return ROUTE_DEVICE_ORDER_AIS_EXISTING_QUEUE_PAGE;
     }
   }
 

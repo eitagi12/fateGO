@@ -30,6 +30,7 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardRepiPageComponent impl
   zipcode: string;
   readCardValid: boolean;
   user: User;
+  progressReadCard: number;
 
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
@@ -54,6 +55,14 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardRepiPageComponent impl
 
   ngOnInit(): void {
     this.onRemoveCardState();
+  }
+
+  onProgress(progress: number): void {
+    this.progressReadCard = progress;
+  }
+
+  progressDoing(): boolean {
+    return this.progressReadCard > 0 && this.progressReadCard < 100 ? true : false;
   }
 
   onRemoveCardState(): void {
@@ -118,6 +127,10 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardRepiPageComponent impl
         })
         .then((customer: any) => {
           // load bill cycle
+          if (this.hasPrivilegeCode()) {
+            customer.privilegeCode = this.transaction.data.simCard.privilegeCode;
+          }
+
           this.transaction.data.customer = Object.assign(this.profile, customer);
           return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
             .then((resp: any) => {
@@ -176,6 +189,10 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardRepiPageComponent impl
             });
         }).then(() => this.pageLoadingService.closeLoading());
     });
+  }
+
+  hasPrivilegeCode(): boolean {
+    return !!(this.transaction.data.simCard && this.transaction.data.simCard.privilegeCode);
   }
 
   getZipCode(province: string, amphur: string, tumbol: string): Promise<string> {

@@ -85,7 +85,7 @@ export class CreateEapplicationService {
 
     const data: any = {
       fullNameTH: customer.firstName + ' ' + customer.lastName || '',
-      idCard: customer.idCardNo || '',
+      idCard: this.privateIdcard(customer.idCardNo) || '',
       idCardType: customer.idCardType || '',
       birthDate: customer.birthdate || '',
       customerAddress: this.utils.getCurrentAddress({
@@ -119,14 +119,14 @@ export class CreateEapplicationService {
     if (language === 'EN') {
       data.billCycle = billCycleData.billCycleTextEng;
       data.mainPackage = {
-        name: transaction.data.mainPackage.shortNameEng || '',
-        description: transaction.data.mainPackage.statementEng || ''
+        name: transaction.data.mainPackage.shortNameEng || transaction.data.mainPackage.title || '',
+        description: transaction.data.mainPackage.statementEng || transaction.data.mainPackage.detailEN || ''
       };
     } else {
       data.billCycle = billCycleData.billCycleText;
       data.mainPackage = {
-        name: transaction.data.mainPackage.shortNameThai || '',
-        description: transaction.data.mainPackage.statementThai || ''
+        name: transaction.data.mainPackage.shortNameThai || transaction.data.mainPackage.title || '',
+        description: transaction.data.mainPackage.statementThai || transaction.data.mainPackage.detailTH || ''
       };
     }
     if (action === TransactionAction.READ_CARD || action === TransactionAction.READ_CARD_REPI) {
@@ -136,5 +136,9 @@ export class CreateEapplicationService {
     }
 
     return data;
+  }
+
+  private privateIdcard(idcardNo: string): string {
+    return idcardNo.replace(/^[0-9]{9}/, 'XXXXXXXXX');
   }
 }

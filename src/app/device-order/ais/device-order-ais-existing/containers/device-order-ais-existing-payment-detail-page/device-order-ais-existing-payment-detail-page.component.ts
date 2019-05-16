@@ -62,18 +62,14 @@ export class DeviceOrderAisExistingPaymentDetailPageComponent implements OnInit,
       commercialName += ` สี ${productStock.color}`;
     }
 
-    this.payementDetail = {
-      commercialName: commercialName,
-      promotionPrice: +(trade.promotionPrice || 0),
-      isFullPayment: this.isFullPayment(),
-      installmentFlag: advancePay.installmentFlag === 'N' && +(advancePay.amount || 0) > 0,
-      advancePay: +(advancePay.amount || 0),
-      qrCode: true
-    };
-
+    this.payementDetail = this.mappingPatmentDetail(commercialName, trade, advancePay);
     this.banks = trade.banks || [];
+    this.receiptInfo = this.mappingReceiptInfo(customer, receiptInfo);
 
-    this.receiptInfo = {
+  }
+
+  mappingReceiptInfo(customer: any, receiptInfo: any): ReceiptInfo {
+    return {
       taxId: customer.idCardNo,
       branch: '',
       buyer: `${customer.titleName} ${customer.firstName} ${customer.lastName}`,
@@ -93,7 +89,17 @@ export class DeviceOrderAisExistingPaymentDetailPageComponent implements OnInit,
       }),
       telNo: receiptInfo.telNo
     };
+  }
 
+  mappingPatmentDetail(commercialName: any, trade: any, advancePay: any): PaymentDetail {
+    return {
+      commercialName: commercialName,
+      promotionPrice: +(trade.promotionPrice || 0),
+      isFullPayment: this.isFullPayment(),
+      installmentFlag: advancePay.installmentFlag === 'N' && +(advancePay.amount || 0) > 0,
+      advancePay: +(advancePay.amount || 0),
+      qrCode: true
+    };
   }
 
   onPaymentCompleted(payment: any): void {

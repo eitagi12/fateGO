@@ -1,20 +1,20 @@
 <div class="mc-flex">
   <mc-header title="เครื่องพร้อมเปลี่ยนเป็นรายเดือน"></mc-header>
   <div class="mc-flex-wrap">
-    <div class="container-fluid my-3">
+    <div class="m-5">
 
-      <div class="card mb-3">
-        <div class="card-body pt-5 text-center text-green">
-          <img src="assets/images/icon/icon-green-check-circle.png" class="icon" />
-          <div>หมายเลข {{ transaction?.data?.simCard?.mobileNo | mobileNo }}</div>
-          <div>ชำระค่าสินค้าเรียบร้อยแล้ว</div>
-          <div>หมายเลขอ้างอิง {{ transaction?.data?.mpayPayment?.tranId }}</div>
+      <div class="card">
+        <div class="card-body pt-3 text-center ">
+          <img src="assets/images/icon/icon-green-check-circle.png" class="icon" /> <br>
+          <b>หมายเลข <span class="text-green">{{ transaction?.data?.simCard?.mobileNo | mobileNo }}</span></b> <br>
+          <b>ชำระค่าสินค้าเรียบร้อยแล้ว</b> <br>
+          <b>หมายเลขอ้างอิง {{ transaction?.data?.mpayPayment?.tranId }}</b>
         </div>
 
         <!-- ชำระ -->
         <ng-container>
           <div class="card-body border-top">
-            <p><b class="text-light-grey">สรุปรายการสั่งชื้อสินค้า</b></p>
+            <p><b class="text-light-grey">รายการสินค้า (ที่ชำระแล้ว)</b></p>
             <ng-container *ngIf="transaction?.data?.payment?.paymentType === 'QR_CODE'">
               <div class="text-light-grey">
                 <p>
@@ -63,7 +63,7 @@
                   || (transaction?.data?.advancePayment?.paymentType !== 'QR_CODE' 
                   && priceOption?.trade?.advancePay?.installmentFlag === 'N')">
           <div class="card-body border-top">
-            <p><b class="text-light-grey">รายการสินค้าค้างชำระ</b></p>
+            <p><b class="text-light-grey">รายการสินค้า (รอชำระ)</b></p>
 
             <ng-container *ngIf="transaction?.data?.payment?.paymentType !== 'QR_CODE'">
               <div class="text-light-grey">
@@ -109,15 +109,11 @@
         </ng-container>
       </div>
       <!-- card -->
-      <div class="card-body pt-5 text-center text-light-grey">
-        <div class="my-3 text-center text-green">
-          <p>หมายเลข {{ transaction?.data?.simCard?.mobileNo | mobileNo }}</p>
-          <p>หมายเลขรายการสั่งชื้อของท่านได้เข้าสู่ระบบเรียบร้อยแล้ว</p>
-        </div>
+      <div class="card-body  border-right border-bottom border-left text-center text-light-grey bg-white">
         <form [formGroup]="queueFrom">
           <div class="form-group">
-            <div class="mt-5 text-center">เบอร์โทรศัพท์รับหมายเลขสั่งซื้อเพื่อชำระสินค้าของท่านคือ</div>
-            <input mcVisualKeyboard type="tel" class="form-control text-center mb-3" id="mobileNo" maxlength="10"
+            <b class="mt-5 text-center">เบอร์โทรศัพท์รับหมายเลขสั่งซื้อ <br>เพื่อชำระสินค้าของท่านคือ</b>
+            <input mcVisualKeyboard type="tel" class="form-control text-center mb-3 mt-3" id="mobileNo" maxlength="10"
               autofocus autocomplete="off" formControlName="mobileNo" placeholder="ระบุเบอร์โทรศัพท์รับ SMS"
               [ngClass]="{ 'is-invalid' : queueFrom.controls.mobileNo.invalid && queueFrom.controls.mobileNo.touched && queueFrom.controls.mobileNo.errors }">
             <small class="invalid-feedback"

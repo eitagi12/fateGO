@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_RESULT_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_RESULT_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_RESULT_PAGE } from '../../constants/route-path.constant';
 import { Transaction, Payment } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -55,7 +55,7 @@ export class DeviceOrderAisNewRegisterQrCodeQueuePageComponent implements OnInit
           });
       })
       .then(() => {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_RESULT_PAGE]);
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_RESULT_PAGE]);
       })
       .then(() => this.pageLoadingService.closeLoading());
   }
@@ -64,13 +64,16 @@ export class DeviceOrderAisNewRegisterQrCodeQueuePageComponent implements OnInit
     const trade = this.priceOption.trade;
     const payment: any = this.transaction.data.payment || {};
     const advancePayment: any = this.transaction.data.advancePayment || {};
-
     let summary = 0;
+    const advancePay = trade.advancePay || {};
+    if (trade.advancePay.installmentFlag === 'Y') {
+      return this.summary([+trade.promotionPrice, +advancePay.amount]);
+    }
+
     if (payment.paymentType === 'QR_CODE') {
       summary += +trade.promotionPrice;
     }
     if (advancePayment.paymentType === 'QR_CODE') {
-      const advancePay = trade.advancePay || {};
       summary += +advancePay.amount;
     }
     return summary;
@@ -80,13 +83,17 @@ export class DeviceOrderAisNewRegisterQrCodeQueuePageComponent implements OnInit
     const trade = this.priceOption.trade;
     const payment: any = this.transaction.data.payment || {};
     const advancePayment: any = this.transaction.data.advancePayment || {};
-
     let summary = 0;
+    const advancePay = trade.advancePay || {};
+
+    if (trade.advancePay.installmentFlag === 'Y') {
+      return this.summary([+trade.promotionPrice, +advancePay.amount]);
+    }
+
     if (payment.paymentType !== 'QR_CODE') {
       summary += +trade.promotionPrice;
     }
     if (advancePayment.paymentType !== 'QR_CODE') {
-      const advancePay = trade.advancePay || {};
       summary += +advancePay.amount;
     }
     return summary;

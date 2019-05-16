@@ -28,6 +28,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent im
   priceOption: PriceOption;
   user: User;
   billDeliveryAddress: Customer;
+  progressReadCard: number;
 
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
@@ -50,6 +51,14 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent im
   }
 
   ngOnInit(): void {
+  }
+
+  onProgress(progress: number): void {
+    this.progressReadCard = progress;
+  }
+
+  progressDoing(): boolean {
+    return this.progressReadCard > 0 && this.progressReadCard < 100 ? true : false;
   }
 
   onError(valid: boolean): void {

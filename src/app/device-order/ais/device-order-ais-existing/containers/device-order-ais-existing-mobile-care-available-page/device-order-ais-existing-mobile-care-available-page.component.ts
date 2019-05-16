@@ -53,18 +53,26 @@ export class DeviceOrderAisExistingMobileCareAvailablePageComponent implements O
   }
 
   onBack(): void {
-    if (!this.transaction.data.mainPackage) {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE]);
-    } else {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE]);
-    }
+    this.router.navigate([this.checkRouteByMainPackage()]);
   }
 
   onNext(): void {
-    if (this.changeMobileCare) {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE]);
+    this.router.navigate([this.checkRouteByChangeMobileCare()]);
+  }
+
+  checkRouteByMainPackage(): string {
+    if (!this.transaction.data.mainPackage) {
+      return ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE;
     } else {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_SUMMARY_PAGE]);
+      return ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE;
+    }
+  }
+
+  checkRouteByChangeMobileCare(): string {
+    if (this.changeMobileCare) {
+      return ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE;
+    } else {
+      return ROUTE_DEVICE_ORDER_AIS_EXISTING_SUMMARY_PAGE;
     }
   }
 
@@ -80,15 +88,16 @@ export class DeviceOrderAisExistingMobileCareAvailablePageComponent implements O
     this.exMobileCareForm = this.fb.group({
       changeMobileCare: ['', Validators.required]
     });
+    this.exMobileCareForm.valueChanges.subscribe((value) => this.checkChangeMobileCare(value));
+  }
 
-    this.exMobileCareForm.valueChanges.subscribe((value) => {
-      if (value.changeMobileCare === 'Yes') {
-        this.changeMobileCare = true;
-      } else {
-        this.transaction.data.mobileCarePackage = null;
-        this.changeMobileCare = false;
-      }
-      this.identityValid = true;
-    });
+  checkChangeMobileCare(value: any): void {
+    if (value.changeMobileCare === 'Yes') {
+      this.changeMobileCare = true;
+    } else {
+      this.transaction.data.mobileCarePackage = null;
+      this.changeMobileCare = false;
+    }
+    this.identityValid = true;
   }
 }

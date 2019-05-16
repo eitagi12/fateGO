@@ -3,7 +3,6 @@ import { CommonModule } from '@angular/common';
 
 import { DeviceOrderAisMnpRoutingModule } from './device-order-ais-mnp-routing.module';
 import { DeviceOrderAisMnpAggregatePageComponent } from './containers/device-order-ais-mnp-aggregate-page/device-order-ais-mnp-aggregate-page.component';
-import { DeviceOrderAisMnpAgreementPageComponent } from './containers/device-order-ais-mnp-agreement-page/device-order-ais-mnp-agreement-page.component';
 import { DeviceOrderAisMnpAgreementSignPageComponent } from './containers/device-order-ais-mnp-agreement-sign-page/device-order-ais-mnp-agreement-sign-page.component';
 import { DeviceOrderAisMnpByPatternPageComponent } from './containers/device-order-ais-mnp-by-pattern-page/device-order-ais-mnp-by-pattern-page.component';
 import { DeviceOrderAisMnpConfirmUserInformationPageComponent } from './containers/device-order-ais-mnp-confirm-user-information-page/device-order-ais-mnp-confirm-user-information-page.component';
@@ -34,6 +33,8 @@ import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { DeviceOrderAisMnpMobileDetailPageComponent } from './containers/device-order-ais-mnp-mobile-detail-page/device-order-ais-mnp-mobile-detail-page.component';
 import { DeviceOrderAisMnpEffectiveStartDatePageComponent } from './containers/device-order-ais-mnp-effective-start-date-page/device-order-ais-mnp-effective-start-date-page.component';
 import { DeviceOrderAisMnpMobileCareAvaliblePageComponent } from './containers/device-order-ais-mnp-mobile-care-avalible-page/device-order-ais-mnp-mobile-care-avalible-page.component';
+import { TranslateModule } from '@ngx-translate/core';
+import { DeviceOrderAisMnpQrCodeResultPageComponent } from './containers/device-order-ais-mnp-qr-code-result-page/device-order-ais-mnp-qr-code-result-page.component';
 
 @NgModule({
   imports: [
@@ -41,11 +42,11 @@ import { DeviceOrderAisMnpMobileCareAvaliblePageComponent } from './containers/d
     FormsModule,
     ReactiveFormsModule,
     MyChannelSharedLibsModule,
-    DeviceOrderAisMnpRoutingModule
+    DeviceOrderAisMnpRoutingModule,
+    TranslateModule
   ],
   declarations: [
     DeviceOrderAisMnpAggregatePageComponent,
-    DeviceOrderAisMnpAgreementPageComponent,
     DeviceOrderAisMnpAgreementSignPageComponent,
     DeviceOrderAisMnpByPatternPageComponent,
     DeviceOrderAisMnpConfirmUserInformationPageComponent,
@@ -73,7 +74,8 @@ import { DeviceOrderAisMnpMobileCareAvaliblePageComponent } from './containers/d
     DeviceOrderAisMnpEligibleMobilePageComponent,
     DeviceOrderAisMnpMobileDetailPageComponent,
     DeviceOrderAisMnpEffectiveStartDatePageComponent,
-    DeviceOrderAisMnpMobileCareAvaliblePageComponent
+    DeviceOrderAisMnpMobileCareAvaliblePageComponent,
+    DeviceOrderAisMnpQrCodeResultPageComponent
   ]
 })
 export class DeviceOrderAisMnpModule { }

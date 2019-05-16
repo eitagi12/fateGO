@@ -27,6 +27,7 @@ import { DeviceOrderAisPreToPostCustomerProfilePageComponent } from './container
 import { DeviceOrderAisPreToPostQrCodeSummaryPageComponent } from './containers/device-order-ais-pre-to-post-qr-code-summary-page/device-order-ais-pre-to-post-qr-code-summary-page.component';
 import { DeviceOrderAisPreToPostQrCodeQueuePageComponent } from './containers/device-order-ais-pre-to-post-qr-code-queue-page/device-order-ais-pre-to-post-qr-code-queue-page.component';
 import { DeviceOrderAisPreToPostQrCodeGeneratorPageComponent } from './containers/device-order-ais-pre-to-post-qr-code-generator-page/device-order-ais-pre-to-post-qr-code-generator-page.component';
+import { DeviceOrderAisPreToPostQrCodeResultPageComponent } from './containers/device-order-ais-pre-to-post-qr-code-result-page/device-order-ais-pre-to-post-qr-code-result-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'validate-customer', pathMatch: 'full' },
@@ -57,6 +58,7 @@ const routes: Routes = [
   { path: 'qr-code-summary', component: DeviceOrderAisPreToPostQrCodeSummaryPageComponent },
   { path: 'qr-code-queue', component: DeviceOrderAisPreToPostQrCodeQueuePageComponent },
   { path: 'qr-code-generator', component: DeviceOrderAisPreToPostQrCodeGeneratorPageComponent },
+  { path: 'qr-code-result', component: DeviceOrderAisPreToPostQrCodeResultPageComponent },
 ];
 
 @NgModule({

@@ -1,11 +1,12 @@
-import { Component, OnInit, OnChanges, OnDestroy, SimpleChanges } from '@angular/core';
+import { Component, OnInit, OnChanges, OnDestroy, SimpleChanges, AfterViewInit } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { Router } from '@angular/router';
 import { HomeService, ShoppingCart } from 'mychannel-shared-libs';
 import {
   ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_ONTOP_PAGE
 } from '../../constants/route-path.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { BillingAccount, Transaction } from 'src/app/shared/models/transaction.model';
@@ -123,6 +124,7 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE]);
     }
+    // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_ONTOP_PAGE]);
   }
 
   onHome(): void {
@@ -142,39 +144,58 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
       this.transaction.data.billingInformation.overRuleStartDate = observer.bill.value;
     });
 
+    this.setControlBillingCycleForm();
+  }
+
+  setControlBillingCycleForm(): void {
+    if (this.checkOverRuleStartDate()) {
+      const value = this.billCycleText.find(this.mathBillValueByTransaction());
+      this.billingCycleForm.controls['bill'].setValue(value);
+    } else {
+      this.billingCycleForm.controls['bill'].setValue(this.billCycleText[0]);
+    }
   }
 
   getBillingAccountProcess(): void {
     const mobileNo = this.mobileNoSelect;
-
     // filter หา billing account ของ mobile number ที่ระบุ
     const billingAccountList: any = this.transaction.data.billingInformation.billCycles;
+
     billingAccountList.find((ba: any) => {
       if (ba.mobileNo.includes(mobileNo)) {
-        this.billcycleNo = ba.bill;
-        // let day; let mouth; let year;
-        const nextD = new Date();
-        nextD.setDate(nextD.getDate() + 1);
-        nextD.setMonth(nextD.getMonth());
-        const nextBill = new Date();
-        for (let i: number = 0; i < this.billCycleMap.length; i++) {
-          if (this.billCycleMap[i].billNo === this.billcycleNo) {
-            if (nextBill.getDate() <= +this.billCycleMap[i].from) {
-              nextBill.setDate(this.billCycleMap[i].from);
-              nextBill.setMonth(nextBill.getMonth());
-            } else {
-              nextBill.setDate(this.billCycleMap[i].from);
-              nextBill.setMonth(nextBill.getMonth() + 1);
-            }
-            this.billCycleNextBill$ = of(this.convertDateToStarngDDMMMYYYY(nextBill));
-            this.billCycleNextDay$ = of(this.convertDateToStarngDDMMMYYYY(nextD));
-          }
-        }
-        return true;
+        return this.mappingBillCycleNextBillAndBillCycleNextDay(ba);
       } else {
         return false;
       }
     } );
+  }
+
+  mappingBillCycleNextBillAndBillCycleNextDay(ba: any): boolean {
+    this.billcycleNo = ba.bill;
+    // let day; let mouth; let year;
+    const nextD = new Date();
+    nextD.setDate(nextD.getDate() + 1);
+    nextD.setMonth(nextD.getMonth());
+    const nextBill = new Date();
+
+    return this.setDateAndMonthNextBill(nextBill, nextD);
+  }
+
+  setDateAndMonthNextBill(nextBill: Date, nextD: Date): boolean {
+    for (let i: number = 0; i < this.billCycleMap.length; i++) {
+      if (this.billCycleMap[i].billNo === this.billcycleNo) {
+        if (nextBill.getDate() <= +this.billCycleMap[i].from) {
+          nextBill.setDate(this.billCycleMap[i].from);
+          nextBill.setMonth(nextBill.getMonth());
+        } else {
+          nextBill.setDate(this.billCycleMap[i].from);
+          nextBill.setMonth(nextBill.getMonth() + 1);
+        }
+        this.billCycleNextBill$ = of(this.convertDateToStarngDDMMMYYYY(nextBill));
+        this.billCycleNextDay$ = of(this.convertDateToStarngDDMMMYYYY(nextD));
+      }
+    }
+    return true;
   }
 
   convertDateToStarngDDMMMYYYY(date: Date): any {
@@ -219,15 +240,9 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
         if (servicesList && servicesList.data) {
           packageList = servicesList.data.mobileCareList;
           handsetList = servicesList.data.handsetList;
+
           if (packageList && packageList.length > 0) {
-            filerOnlyMobileCareList = packageList
-              .filter(aisPackage => {
-                if (aisPackage.produuctGroup) {
-                  return /mobilecare/.test(aisPackage.produuctGroup.toLowerCase().replace(/\s+/gi, ''));
-                } else {
-                  return false;
-                }
-              });
+            filerOnlyMobileCareList = this.filterOnlyMobileList(packageList);
           }
 
           if (handsetList && handsetList.length > 0) {
@@ -246,6 +261,17 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
 
   }
 
+  filterOnlyMobileList(packageList: any): any[] {
+    return packageList
+      .filter(aisPackage => {
+        if (aisPackage.produuctGroup) {
+          return /mobilecare/.test(aisPackage.produuctGroup.toLowerCase().replace(/\s+/gi, ''));
+        } else {
+          return false;
+        }
+      });
+  }
+
   mappingHandSet(handsetData: any): Handset {
     if (!handsetData && !handsetData.attributeList) {
       return;
@@ -262,5 +288,13 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
     };
 
     return handset;
+  }
+
+  mathBillValueByTransaction(): (bill: BillCycleText) => boolean {
+    return bill => bill.value === this.transaction.data.billingInformation.overRuleStartDate;
+  }
+
+  checkOverRuleStartDate(): boolean {
+    return !!(this.transaction.data.billingInformation && this.transaction.data.billingInformation.overRuleStartDate);
   }
 }
