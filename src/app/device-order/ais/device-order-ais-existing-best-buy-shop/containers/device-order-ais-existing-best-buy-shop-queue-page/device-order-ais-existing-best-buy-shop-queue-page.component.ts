@@ -25,7 +25,6 @@ export class DeviceOrderAisExistingBestBuyShopQueuePageComponent implements OnIn
   queue: string;
   user: User;
   mobileNo: string;
-  isAutoGenQueue: boolean;
   queueType: string;
   inputType: string;
   errorQueue: boolean = false;
