@@ -69,9 +69,9 @@ export class CreateEapplicationService {
     };
 
     if (action === TransactionAction.READ_CARD || action === TransactionAction.READ_CARD_REPI) {
-      data.customerImg = customer.imageReadSmartCard;
+      data.customerImg = 'data:image/jpeg;base64,' + customer.imageReadSmartCard;
     } else {
-      data.customerImgKeyIn = customer.imageSmartCard || customer.imageReadPassport;
+      data.customerImgKeyIn = 'data:image/jpeg;base64,' + customer.imageSmartCard || customer.imageReadPassport;
     }
 
     return data;
