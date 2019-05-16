@@ -28,6 +28,8 @@ export class DeviceOrderAisExistingBestBuyShopQueuePageComponent implements OnIn
   isAutoGenQueue: boolean;
   queueType: string;
   inputType: string;
+  errorQueue: boolean = false;
+  skipQueue: boolean = false;
 
   constructor(
     private router: Router,
@@ -47,11 +49,11 @@ export class DeviceOrderAisExistingBestBuyShopQueuePageComponent implements OnIn
   }
 
   ngOnInit(): void {
-    this.setValueQueueType();
+    this.setQueueType();
     this.createForm();
   }
 
-  setValueQueueType(): void {
+  setQueueType(): void {
     this.queuePageService.checkQueueLocation().then((queueType) => {
       this.queueType = queueType;
     }).then(() => this.createForm());
@@ -68,16 +70,12 @@ export class DeviceOrderAisExistingBestBuyShopQueuePageComponent implements OnIn
 
   createForm(): void {
     this.mobileFrom = this.fb.group({
-      'mobileNo': ['', Validators.compose([Validators.pattern(/^0[6-9]{1}[0-9]{8}/)])],
+      'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(/^0[6-9]{1}[0-9]{8}/)])],
     });
 
     if (this.transaction.data.simCard.mobileNo && this.queueType === 'SMART_SHOP') {
       this.mobileFrom.patchValue({ mobileNo: this.transaction.data.simCard.mobileNo });
       this.mobileNo = this.transaction.data.simCard.mobileNo;
-    }
-
-    if (this.queueType === 'SMART_SHOP') {
-      this.mobileFrom.controls.mobileNo.setValidators(Validators.compose([Validators.required, Validators.pattern(/^0[6-9]{1}[0-9]{8}/)]));
     }
 
     this.mobileFrom.valueChanges.subscribe((value) => {
@@ -93,9 +91,24 @@ export class DeviceOrderAisExistingBestBuyShopQueuePageComponent implements OnIn
     });
   }
 
+  onSkip(): void {
+    this.http.get('/api/salesportal/device-sell/gen-queue', { params: { locationCode: this.user.locationCode } }).toPromise()
+      .then((resp: any) => {
+        const queueNo = resp.data.queue;
+        this.skipQueue = true;
+        this.transaction.data.queue = { queueNo: queueNo };
+        this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
+          return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
+            this.pageLoadingService.closeLoading();
+            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_RESULT_PAGE]);
+          });
+        });
+      });
+  }
+
   onNext(): void {
     this.pageLoadingService.openLoading();
-    if (this.queueType === 'MANUAL' || this.inputType === 'queue') {
+    if (!this.queueType || this.queueType === 'MANUAL' || this.inputType === 'queue') {
       this.transaction.data.queue = { queueNo: this.queue };
       this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
         return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
@@ -114,15 +127,15 @@ export class DeviceOrderAisExistingBestBuyShopQueuePageComponent implements OnIn
             });
           });
         } else {
-          this.queueType = '';
+          this.queueType = 'MANUAL';
+          this.errorQueue = true;
           this.pageLoadingService.closeLoading();
-          this.alertService.error('ขออภัยค่ะ ระบบไม่สามารถ กดรับบัตรคิวอัตโนมัติได้ \n กรุณาระบุหมายเลขคิว');
           return;
         }
       }).catch(() => {
-        this.queueType = '';
+        this.queueType = 'MANUAL';
+        this.errorQueue = true;
         this.pageLoadingService.closeLoading();
-        this.alertService.error('ขออภัยค่ะ ระบบไม่สามารถ กดรับบัตรคิวอัตโนมัติได้ \n กรุณาระบุหมายเลขคิว');
         return;
       });
     }
@@ -145,6 +158,8 @@ export class DeviceOrderAisExistingBestBuyShopQueuePageComponent implements OnIn
           .then((respQueue: any) => {
             const data = respQueue.data && respQueue.data.result ? respQueue.data.result : {};
             resolve(data.queueNo);
+          }).catch((error) => {
+            reject(null);
           });
       } else {
         return this.http.post('/api/salesportal/device-order/transaction/auto-gen-queue', {
@@ -156,6 +171,8 @@ export class DeviceOrderAisExistingBestBuyShopQueuePageComponent implements OnIn
             } else {
               reject(null);
             }
+          }).catch((error) => {
+            reject(null);
           });
       }
     });
@@ -169,6 +186,10 @@ export class DeviceOrderAisExistingBestBuyShopQueuePageComponent implements OnIn
     } else {
       return this.queueFrom.invalid;
     }
+  }
+
+  checkSkip(): boolean {
+    return this.mobileFrom.value['mobileNo'] ? true : false;
   }
 
 }
