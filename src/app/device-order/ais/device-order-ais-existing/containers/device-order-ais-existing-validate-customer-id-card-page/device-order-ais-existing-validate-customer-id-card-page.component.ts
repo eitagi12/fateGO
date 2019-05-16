@@ -1,15 +1,18 @@
-import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, Injector } from '@angular/core';
 import { ValidateCustomerIdCardComponent, HomeService, PageLoadingService, ReadCardProfile, TokenService, Utils, AlertService, KioskControls, ChannelType, User } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from 'src/app/buy-product/constants/route-path.constant';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ROUTE_DEVICE_ORDER_AIS_EXISTING_CUSTOMER_INFO_PAGE } from '../../constants/route-path.constant';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
+import { ApiRequestService } from 'mychannel-shared-libs';
+
+declare var swal: any;
 
 @Component({
   selector: 'app-device-order-ais-existing-validate-customer-id-card-page',
@@ -42,6 +45,7 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
     private sharedTransactionService: SharedTransactionService,
+    private injector: Injector
   ) {
     this.user = this.tokenService.getUser();
     this.priceOption = this.priceOptionService.load();
@@ -108,71 +112,150 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
 
   onNext(): void {
     this.pageLoadingService.openLoading();
+    let isValidate = true;
     this.returnStock().then(() => {
 
       this.createTransaction();
       this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
-      .then((zipCode: string) => {
-        return this.http.get('/api/customerportal/validate-customer-existing', {
-          params: {
-            identity: this.profile.idCardNo,
-            idCardType: this.profile.idCardType,
-            transactionType: TransactionType.DEVICE_ORDER_EXISTING_AIS
-          }
-        }).toPromise()
-          .then((resp: any) => {
-            const data = resp.data || {};
-            return {
-              caNumber: data.caNumber,
-              mainMobile: data.mainMobile,
-              billCycle: data.billCycle,
-              zipCode: zipCode
-            };
-          });
-      })
-      .then((customer: any) => { // load bill cycle
-        this.transaction.data.customer = Object.assign(this.profile, customer);
-
-        return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
-          .then((resp: any) => {
-            const data = resp.data || {};
-            return this.http.post('/api/customerportal/verify/billingNetExtreme', {
-              businessType: '1',
-              listBillingAccount: data.billingAccountList
-            }).toPromise()
-              .then((respBillingNetExtreme: any) => {
-                return {
-                  billCycles: data.billingAccountList,
-                  billCyclesNetExtreme: respBillingNetExtreme.data
-                };
-              })
-              .catch(() => {
-                return {
-                  billCycles: data.billingAccountList
-                };
+        .then((zipCode: string) => {
+          return this.http.get('/api/customerportal/validate-customer-existing', {
+            params: {
+              identity: this.profile.idCardNo,
+              idCardType: this.profile.idCardType,
+              transactionType: TransactionType.DEVICE_ORDER_EXISTING_AIS
+            }
+          }).toPromise()
+            .then((resp: any) => {
+              const data = resp.data || {};
+              return {
+                caNumber: data.caNumber,
+                mainMobile: data.mainMobile,
+                billCycle: data.billCycle,
+                zipCode: zipCode
+              };
+            }).catch((error: any) => {
+              isValidate = false;
+              this.alertService.notify({
+                type: 'error',
+                onBeforeOpen: () => {
+                  const content = swal.getContent();
+                  const $ = content.querySelector.bind(content);
+                  const errorDetail = $('#error-detail');
+                  const errorDetailDisplay = $('#error-detail-display');
+                  errorDetail.addEventListener('click', (evt) => {
+                    errorDetail.classList.add('d-none');
+                    errorDetailDisplay.classList.remove('d-none');
+                  });
+                },
+                html: this.getTemplateServerError(error)
+              }).then(() => {
+                this.onBack();
               });
-          });
-      }).then((billingInformation: any) => {
-        this.transaction.data.billingInformation = billingInformation;
+            });
+        })
+        .then((customer: any) => { // load bill cycle
+          this.transaction.data.customer = Object.assign(this.profile, customer);
 
-        return this.conditionIdentityValid()
-          .then(() => {
-            return this.http.post(
-              '/api/salesportal/add-device-selling-cart',
-              this.getRequestAddDeviceSellingCart()
-            ).toPromise()
-              .then((resp: any) => resp.data.soId);
-          })
-          .then((soId: string) => {
-            this.transaction.data.order = { soId: soId };
+          return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
+            .then((resp: any) => {
+              const data = resp.data || {};
+              return this.http.post('/api/customerportal/verify/billingNetExtreme', {
+                businessType: '1',
+                listBillingAccount: data.billingAccountList
+              }).toPromise()
+                .then((respBillingNetExtreme: any) => {
+                  return {
+                    billCycles: data.billingAccountList,
+                    billCyclesNetExtreme: respBillingNetExtreme.data
+                  };
+                })
+                .catch(() => {
+                  return {
+                    billCycles: data.billingAccountList
+                  };
+                });
+            });
+        }).then((billingInformation: any) => {
+          this.transaction.data.billingInformation = billingInformation;
 
-            return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-          })
-          .then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_CUSTOMER_INFO_PAGE]));
+          return this.conditionIdentityValid()
+            .then(() => {
+              return this.http.post(
+                '/api/salesportal/add-device-selling-cart',
+                this.getRequestAddDeviceSellingCart()
+              ).toPromise()
+                .then((resp: any) => resp.data.soId);
+            })
+            .then((soId: string) => {
+              this.transaction.data.order = { soId: soId };
 
-      }).then(() => this.pageLoadingService.closeLoading());
+              return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+            })
+            .then(() => {
+              if (isValidate) {
+                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_CUSTOMER_INFO_PAGE]);
+              }
+            });
+
+        }).then(() => {
+          if (isValidate) {
+            this.pageLoadingService.closeLoading();
+          }
+        });
 
     });
+  }
+
+  private getTemplateServerError(error: HttpErrorResponse): string {
+    const apiRequestService = this.injector.get(ApiRequestService);
+    const mcError = error.error;
+
+    if (mcError && mcError.resultDescription) {
+      let message = '';
+      if (mcError.errors) {
+        if (Array.isArray(mcError.errors)) {
+          mcError.errors.forEach(e => {
+            message += `<li>${this.htmlEntities(e.message || e)}</li>`;
+          });
+        } else {
+          message += this.htmlEntities(JSON.stringify(mcError.errors));
+        }
+        return `
+            <div class="text-left mb-2 mx-3">${message}</div>
+            <div class="text-right" id="error-detail">
+                <i class="fa fa-angle-double-right"></i>
+                <small>รายละเอียด</small>
+            </div>
+            <div class="py-2 text-left d-none" id="error-detail-display">
+                <div>REF: ${apiRequestService.getCurrentRequestId() || '-'}</div>
+                <div>URL: ${error.url || '-'} - [${error.status}]</div>
+            </div>
+            `;
+      } else {
+        return `
+            <div class="text-center mb-2"><b>${mcError.resultDescription || 'ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'}</b></div>
+            <div class="text-right" id="error-detail">
+                <i class="fa fa-angle-double-right"></i>
+                <small>รายละเอียด</small>
+            </div>
+            <div class="py-2 text-left d-none" id="error-detail-display">
+                <div class="mb-2 mx-3">${message}</div>
+                <div>REF: ${apiRequestService.getCurrentRequestId() || '-'}</div>
+                <div>URL: ${error.url || '-'} - [${error.status}]</div>
+            </div>
+            `;
+      }
+    } else {
+      return `
+        <div class="text-center mb-2"><b>ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้<b></div>
+        <div class="mb-2">${error.status} - ${error.statusText}</div>
+        <div>${error.message}</div>
+        `;
+    }
+  }
+
+  htmlEntities(str: any): any {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
   conditionIdentityValid(): Promise<string> {
