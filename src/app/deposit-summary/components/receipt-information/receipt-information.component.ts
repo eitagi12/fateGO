@@ -85,6 +85,7 @@ export class ReceiptInformationComponent implements OnInit {
   customerReceiptAddress: string;
   isSummit: boolean = false;
   activateButton: boolean;
+  otherPhoneNumber: string;
 
   constructor(
     public fb: FormBuilder,
@@ -150,10 +151,7 @@ export class ReceiptInformationComponent implements OnInit {
       branch: ['', []],
       buyer: ['', []],
       buyerAddress: ['', []],
-      telNo: ['', [Validators.pattern(/^0[6-9]\d{8}$/), Validators.required]],
-    });
-    this.receiptInfoForm.valueChanges.pipe(debounceTime(750)).subscribe(event => {
-      this.error.emit(this.receiptInfoForm.valid);
+      telNo: ['', [Validators.pattern(/^0[6-9]\d{8}$/)]],
     });
     this.receiptInfoForm.controls['taxId'].setValue(this.transaction.data.customer.idCardNo);
     this.billingAddress.getLocationName()
@@ -409,6 +407,7 @@ export class ReceiptInformationComponent implements OnInit {
       shipCusName: this.transaction.data.customer.titleName + ' ' + this.transaction.data.customer.firstName +
         ' ' + this.transaction.data.customer.lastName
     };
+    this.transaction.data.customer.otherPhoneNumber = this.otherPhoneNumber;
     this.transactionService.save(this.transaction);
   }
 
@@ -491,5 +490,9 @@ export class ReceiptInformationComponent implements OnInit {
     };
 
     localStorage.setItem('customerTemp', JSON.stringify(customerTemp));
+  }
+
+  onchangeOtherPhoneNumber(otherPhoneNumber: string): void {
+    this.otherPhoneNumber = otherPhoneNumber;
   }
 }
