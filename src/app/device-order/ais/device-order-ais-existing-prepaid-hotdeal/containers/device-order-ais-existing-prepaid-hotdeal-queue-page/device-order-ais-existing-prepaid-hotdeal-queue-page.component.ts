@@ -35,6 +35,7 @@ export class DeviceOrderAisExistingPrepaidHotdealQueuePageComponent implements O
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
     private queuePageService: QueuePageService,
+    private homeService: HomeService,
     private sharedTransactionService: SharedTransactionService,
     private createDeviceOrderPrepaidHotdealService: CreateDeviceOrderAisExistingPrepaidHotdealService
   ) {
@@ -50,6 +51,10 @@ export class DeviceOrderAisExistingPrepaidHotdealQueuePageComponent implements O
     this.queueFrom = this.fb.group({
       'mobileNo': [this.transaction.data.simCard.mobileNo, Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])],
     });
+  }
+
+  onHome(): void {
+    this.homeService.goToHome();
   }
 
   onNext(): void {
