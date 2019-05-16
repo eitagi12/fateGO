@@ -12,6 +12,7 @@ import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.c
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { HttpClient } from '@angular/common/http';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 export interface IPackage {
   title: string;
   detail: string;
@@ -35,6 +36,7 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
   customerInfo: CustomerInfo;
   shoppingCart: ShoppingCart;
   packageOntopList: IPackage[];
+  packageOntopForm: FormGroup;
 
   constructor(
     private router: Router,
@@ -44,7 +46,8 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
     private alertService: AlertService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private modalService: BsModalService
+    private modalService: BsModalService,
+    private fb: FormBuilder
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -57,7 +60,6 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
     delete this.shoppingCart.mobileNo;
     this.callService(mobileNo);
   }
-
   callService(mobileNo: string): void {
     this.pageLoadingService.openLoading();
     this.http.get(`/api/customerportal/mobile-detail/${mobileNo}`).toPromise()
@@ -67,7 +69,14 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
 
   mappingPackageOnTop(resp: any): void {
     const data = resp.data.packageOntop || {};
-    this.packageOntopList = data;
+    const packageOntop = data.filter((packageOntopList: any) => {
+      // tslint:disable-next-line:typedef
+      return /On-Top/.test(packageOntopList.productClass)
+        && packageOntopList.priceType === 'Recurring'
+        && packageOntopList.priceExclVat > 0;
+    });
+    this.packageOntopList = packageOntop;
+    console.log('packageOntopList', this.packageOntopList);
     this.pageLoadingService.closeLoading();
   }
 
