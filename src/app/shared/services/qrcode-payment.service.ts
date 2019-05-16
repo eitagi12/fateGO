@@ -14,6 +14,7 @@ export class QRCodeModel {
   public amount: number;
   public qrType: string;
   public macAddress: string;
+  public company: string;
 }
 
 export class QRCode {

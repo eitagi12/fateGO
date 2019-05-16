@@ -177,17 +177,29 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
     });
   }
 
+  isQRCode(qrCodeType: 'THAI_QR' | 'LINE_QR'): boolean {
+    const payment: any = this.transaction.data.payment || {};
+    return payment.paymentQrCodeType === qrCodeType;
+  }
+
   setBodyRequestForGetQRCode(): QRCodeModel {
     const qrModel: QRCodeModel = new QRCodeModel();
+    const MPAY_QRCODE = environment.MPAY_QRCODE;
+    const isThaiQRCode = this.isQRCode('THAI_QR');
+
     qrModel.orderId = this.orderID;
     qrModel.channel = 'WEB';
-    if (this.payment.paymentQrCodeType === 'LINE_QR') {
-      qrModel.serviceId = environment.MPAY_QRCODE.RL_SERVICE_ID;
-      qrModel.terminalId = environment.MPAY_QRCODE.RL_TERMINAL_ID;
-    } else if (this.payment.paymentQrCodeType === 'THAI_QR') {
-      qrModel.serviceId = environment.MPAY_QRCODE.PB_SERVICE_ID;
-      qrModel.terminalId = environment.MPAY_QRCODE.PB_TERMINAL_ID;
-    }
+    qrModel.company = this.priceOption.productStock.company;
+
+        if (this.priceOption.productStock.company === 'WDS' && this.transaction.data.payment.paymentType === 'QR_CODE') {
+          qrModel.company = this.priceOption.productStock.company;
+          qrModel.serviceId = isThaiQRCode ? MPAY_QRCODE.PB_WDS_SERVICE_ID : MPAY_QRCODE.RL_WDS_SERVICE_ID;
+          qrModel.terminalId = isThaiQRCode ? MPAY_QRCODE.PB_WDS_TERMINAL_ID : MPAY_QRCODE.RL_WDS_TERMINAL_ID;
+      } else {
+          qrModel.company = this.priceOption.productStock.company;
+          qrModel.serviceId = isThaiQRCode ? MPAY_QRCODE.PB_SERVICE_ID : MPAY_QRCODE.RL_SERVICE_ID;
+          qrModel.terminalId = isThaiQRCode ? MPAY_QRCODE.PB_TERMINAL_ID : MPAY_QRCODE.RL_TERMINAL_ID;
+      }
     qrModel.locationName = this.tokenService.getUser().locationCode;
     qrModel.amount = this.getSummaryAmount();
     qrModel.qrType = this.brannerImagePaymentQrCode.code;
@@ -257,7 +269,6 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
   }
   inquiryMpay(): Promise<boolean> {
     return this.qrcodePaymentService.getInquiryMpay({ orderId: this.orderID }).then((res: any) => {
-      console.log('res', res);
 
       if (res && res.data && res.data.status && res.data.status === 'SUCCESS') {
         this.qrCodePrePostMpayModel.status = res.data.status;

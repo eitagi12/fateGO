@@ -17,7 +17,7 @@ import { QueueService } from '../../services/queue.service';
   templateUrl: './device-only-ais-qr-code-queue-page.component.html',
   styleUrls: ['./device-only-ais-qr-code-queue-page.component.scss']
 })
-export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit {
+export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy {
   transaction: Transaction;
   priceOption: PriceOption;
   queueFrom: FormGroup = new FormGroup({
@@ -36,10 +36,10 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit {
     private sharedTransactionService: SharedTransactionService,
     private createOrderService: CreateOrderService,
     private queueService: QueueService
-    ) {
-      this.transaction = this.transactionService.load();
-      this.priceOption = this.priceOptionService.load();
-     }
+  ) {
+    this.transaction = this.transactionService.load();
+    this.priceOption = this.priceOptionService.load();
+  }
 
   ngOnInit(): void {
     this.price = this.priceOption.trade.priceType === 'NORMAL' ? this.priceOption.trade.normalPrice : this.priceOption.trade.promotionPrice;
@@ -57,17 +57,37 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit {
   }
 
   onNext(): void {
+    this.autoGetQueue();
+  }
+
+  private autoGetQueue(): void {
     this.pageLoadingService.openLoading();
-    this.queueService.autoGetQueue(this.queueFrom.value.mobileNo)
-      .then((queueNo: string) => {
-        this.transaction.data.queue = {
-          queueNo: queueNo
-        };
-        this.transactionService.update(this.transaction);
-        this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then((response) => {
-          if (response.data.isSuccess === true) {
-            this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).subscribe(
-              (res) => {
+    const mobile = this.queueFrom.value.mobileNo;
+    this.queueService.autoGetQueue(mobile).then((data) => {
+      const queue = {
+        queueNo: data
+      };
+      this.transaction.data = {
+        ...this.transaction.data,
+        queue: queue
+      };
+      this.checkDataLinkPage(data);
+    }).catch((error: any) => {
+      this.pageLoadingService.closeLoading();
+      this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_KEY_IN_QUEUE]);
+    });
+  }
+
+  private checkDataLinkPage(data: any): void {
+    if (data) {
+      this.transaction.data.mainPromotion = {
+        campaign: this.priceOption.campaign,
+        trade: this.priceOption.trade
+      };
+      this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then((response) => {
+        if (response.data.isSuccess === true) {
+          this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).subscribe(
+            (res) => {
               if (res === 'S') {
                 this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE]);
               } else if (res === 'F') {
@@ -78,13 +98,17 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit {
               this.pageLoadingService.closeLoading();
               this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_KEY_IN_QUEUE]);
             }
-           );
-          }
-        });
+          );
+        }
       }).catch((err) => {
         this.pageLoadingService.closeLoading();
         this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_KEY_IN_QUEUE]);
       });
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.transactionService.save(this.transaction);
   }
 
 }
