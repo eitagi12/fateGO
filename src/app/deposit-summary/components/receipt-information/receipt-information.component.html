@@ -1,0 +1,222 @@
+<div class="container-fluid">
+  <div class="card mb-3">
+    <div class="card-header bg-light-blue text-white">
+      ข้อมูลผู้รับสินค้า
+    </div>
+    <div class="card-body">
+      <div class="pt-1 bg-white">
+        <form (ngSubmit)="onSummitKeyin()" [formGroup]="customerAddressForm">
+          <div class="form-group row">
+            <label for="idCardNo" id="txtIdCardNo" class="col-12 col-sm-3 col-form-label">บัตรประชาชน
+              <span class="text-red"> *</span>
+            </label>
+            <div class="col-12 col-sm-9">
+              <input type="text" class="form-control" id="idCardNo" maxlength="{{ idCardMaxLength }}" autocomplete="off"
+                formControlName="idCardNo"
+                [ngClass]="{ 'is-invalid' : customerAddressForm.controls['idCardNo'].invalid && customerAddressForm.controls['idCardNo'].dirty}">
+              <small class="invalid-feedback"
+                *ngIf="customerAddressForm.controls['idCardNo'].dirty && customerAddressForm.controls['idCardNo'].errors">
+                * {{ customerAddressForm.controls['idCardNo'].errors?.message || 'กรุณากรอกรูปแบบให้ถูกต้อง'}}
+              </small>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="titleName" id="txtTitleName" class="col-12 col-sm-3 col-form-label">คำนำหน้าชื่อ
+              <span class="text-red"> *</span>
+            </label>
+            <div class="col-12 col-sm-9">
+              <input type="text" autocomplete="off" class="form-control" id="inputTitleName" maxlength="50"
+                formControlName="titleName"
+                [ngClass]="{'is-invalid': !customerAddressForm.controls['titleName'].valid && customerAddressForm.controls['titleName'].dirty }">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="firstName" id="textFirstName" class="col-12 col-sm-3 col-form-label">ชื่อ
+              <span class="text-red"> *</span>
+            </label>
+            <div class="col-12 col-sm-9">
+              <input type="text" autocomplete="off" class="form-control" id="inputfirstName" maxlength="50"
+                formControlName="firstName"
+                [ngClass]="{'is-invalid': !customerAddressForm.controls['firstName'].valid && customerAddressForm.controls['firstName'].dirty }">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="lastName" id="textLastName" class="col-12 col-sm-3 col-form-label">นามสกุล
+              <span class="text-red"> *</span>
+            </label>
+            <div class="col-12 col-sm-9">
+              <input type="text" autocomplete="off" class="form-control" id="inputlastName" maxlength="50"
+                formControlName="lastName"
+                [ngClass]="{'is-invalid': !customerAddressForm.controls['lastName'].valid && customerAddressForm.controls['lastName'].dirty }">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="homeNo" id="txtHomeNo" class="col-12 col-sm-3 col-form-label">บ้านเลขที่
+              <span class="text-red"> *</span>
+            </label>
+            <div class="col-12 col-sm-9">
+              <input type="text" autocomplete="off" class="form-control" id="inputHomeNo" maxlength="10"
+                formControlName="homeNo"
+                [ngClass]="{'is-invalid': !customerAddressForm.controls['homeNo'].valid && isSummit }">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="moo" id="txtMoo" class="col-12 col-sm-3 col-form-label">หมู่ที่</label>
+            <div class="col-12 col-sm-9">
+              <input type="text" autocomplete="off" class="form-control" id="inputMoo" maxlength="30"
+                formControlName="moo">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="mooBan" id="txtMooBan" class="col-12 col-sm-3 col-form-label">หมู่บ้าน</label>
+            <div class="col-12 col-sm-9">
+              <input type="text" autocomplete="off" class="form-control" id="inputMooBan" maxlength="50"
+                formControlName="mooBan">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="room" id="txtRoom" class="col-12 col-sm-3 col-form-label">ห้อง</label>
+            <div class="col-12 col-sm-9">
+              <input type="text" autocomplete="off" class="form-control" id="inputRoom" maxlength="30"
+                formControlName="room">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="floor" id="txtFloor" class="col-12 col-sm-3 col-form-label">ชั้น</label>
+            <div class="col-12 col-sm-9">
+              <input type="text" autocomplete="off" class="form-control" id="inputFloor" maxlength="30"
+                formControlName="floor">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="buildingName" id="txtBuildingName" class="col-12 col-sm-3 col-form-label">ตึก</label>
+            <div class="col-12 col-sm-9">
+              <input type="text" autocomplete="off" class="form-control" id="InputBuildingName" maxlength="80"
+                formControlName="buildingName">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="soi" id="txtSoi" class="col-12 col-sm-3 col-form-label">ซอย</label>
+            <div class="col-12 col-sm-9">
+              <input type="text" autocomplete="off" class="form-control" id="inputSoi" maxlength="50"
+                formControlName="soi">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="street" id="txtStreetName" class="col-12 col-sm-3 col-form-label">ถนน</label>
+            <div class="col-12 col-sm-9">
+
+              <input type="text" autocomplete="off" class="form-control" id="inputStreet" maxlength="80"
+                formControlName="street">
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="province" id="txtProvince" class="col-12 col-sm-3 col-form-label">จังหวัด
+              <span class="text-red"> *</span>
+            </label>
+            <div class="col-12 col-sm-9">
+              <select class="form-control" title="กรุณาเลือกจังหวัด" id="selectProvince" formControlName="province"
+                [ngClass]="{'is-invalid': !customerAddressForm.controls['province'].invalid && isSummit }">
+                <option disabled value="">กรุณาเลือกจังหวัด</option>
+                <option *ngFor="let province of provinces" [value]="province.name">{{ province.name }}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="amphur" class="col-form-label" id="txtAmphur" class="col-12 col-sm-3 col-form-label">อำเภอ/เขต
+              <span class="text-red"> *</span>
+            </label>
+            <div class="col-12 col-sm-9">
+              <select class="form-control" title="กรุณาเลือกอำเภอ/เขต" id="selectAmphur" formControlName="amphur"
+                [ngClass]="{'is-invalid': !customerAddressForm.controls['amphur'].invalid && isSummit }">
+                <option disabled value="">กรุณาเลือกอำเภอ/เขต</option>
+                <option *ngIf="this.keyInCustomerAddressTemp?.amphur" [value]="this.keyInCustomerAddressTemp.amphur">
+                  {{this.keyInCustomerAddressTemp.amphur}}
+                </option>
+                <option *ngFor="let amphur of amphurs" [value]="amphur">{{amphur}}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group row">
+            <label for="tumbol" class="col-form-label" id="txtTumbol" class="col-12 col-sm-3 col-form-label">ตำบล/แขวง
+              <span class="text-red"> *</span>
+            </label>
+            <div class="col-12 col-sm-9">
+              <select class="form-control" title="กรุณาเลือกตำบล/แขวง" id="selectTumbol" formControlName="tumbol"
+                [ngClass]="{'is-invalid': !customerAddressForm.controls['tumbol'].invalid  && isSummit}">
+                <option disabled value="">กรุณาเลือกตำบล/แขวง</option>
+                <option *ngIf="this.keyInCustomerAddressTemp?.tumbol" [value]="this.keyInCustomerAddressTemp.tumbol">
+                  {{this.keyInCustomerAddressTemp.tumbol}}
+                </option>
+                <option *ngFor="let tumbol of tumbols;" [value]="tumbol">{{tumbol}}</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-group position-relative row">
+            <label for="zipCodes" class="col-form-label" id="txtZipCode"
+              class="col-12 col-sm-3 col-form-label">รหัสไปรษณีย์
+              <span class="text-red"> *</span>
+            </label>
+            <div class="col-12 col-sm-9">
+              <input type="text" id="selectZipCode" maxlength="5" autocomplete="off" formControlName="zipCode"
+                placeholder="กรุณาเลือกรหัสไปรษณีย์" class="form-control" [value]="zipCodeNo"
+                [ngClass]="{'is-invalid': !customerAddressForm.controls['zipCode'].invalid && customerAddressForm.controls['zipCode'].dirty }">
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="card-footer ">
+      <div class="pt-1 bg-transparent">
+      <!-- <div class="card-footer bg-transparent"> -->
+        <form [formGroup]="receiptInfoForm">
+          <div class="form-group row">
+            <label for="taxId" class="col-12 col-sm-3 col-form-label" id="txtTaxID">Tax Id </label>
+            <div class="col-12 col-sm-9">
+              <input type="text" class="form-control" id="taxId" formControlName="taxId"
+                [value]="receiptInfoForm.get('taxId').value | idCard" readonly />
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="branch" class="col-12 col-sm-3 col-form-label" id="txtBranch">สาขาที่</label>
+            <div class="col-12 col-sm-9">
+              <input type="text" class="form-control" id="branch" formControlName="branch" readonly />
+            </div>
+          </div>
+          <div class="form-group row">
+            <label for="telNo" class="col-12 col-sm-3 col-form-label" id="txtTelNo">
+              เบอร์ติดต่ออื่น
+            </label>
+            <div class="col-12 col-sm-9">
+              <input type="text" maxlength="10" class="form-control" id="telNo" formControlName="telNo"
+                [ngClass]="{ 'is-invalid' : receiptInfoForm.controls.telNo.invalid && receiptInfoForm.controls.telNo.touched }" />
+              <small class="form-text invalid-feedback"
+                *ngIf="receiptInfoForm.controls.telNo.touched && receiptInfoForm.controls.telNo.errors">
+                * กรุณากรอกเบอร์ติดต่อให้ถูกต้อง
+              </small>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <mc-footer>
+      <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+      <button type="submit" class="btn btn-success" (click)="onNext()" [disabled]="!activateButton">NEXT</button>
+    </mc-footer>
+  </div>
+</div>

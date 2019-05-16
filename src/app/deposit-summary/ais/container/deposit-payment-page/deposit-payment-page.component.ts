@@ -16,12 +16,18 @@ export const CREDIT_CARD_PAYMENT = 'CC';
 export const CASH_AND_CREDIT_CARD_PAYMENT = 'CC/CA';
 import { DEPOSIT_QUEUE_PAGE } from 'src/app/deposit-summary/constants/route-path.constant';
 import { CreateDeviceOrderService } from 'src/app/deposit-summary/services/create-device-order.service';
+import { MessageConfigService } from 'src/app/deposit-summary/services/message-config.service';
+import { LANGUAGE, RESERVE_STOCK, ERROR_MESSAGE } from '../../../constants/message-config.constant';
+
+export const AIS_CUSTOMER = 'AIS';
+export const ALL_CUSTOMER = 'ALL';
 
 @Component({
   selector: 'app-deposit-payment-page',
   templateUrl: './deposit-payment-page.component.html',
   styleUrls: ['./deposit-payment-page.component.scss']
 })
+
 export class DepositPaymentPageComponent implements OnInit, OnDestroy {
 
   wizards: any = WIZARD_RESERVE_WITH_DEPOSIT;
@@ -44,9 +50,13 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
   priceOptionBank: any;
   selectedMobile: string;
   locationNameTH: string;
-  recipientCustomerAddress: string;
+  receiptCustomerAddress: string;
   otherPhoneNumber: string;
-  constructor(private localStorageService: LocalStorageService,
+  isDisabled: boolean;
+  // customerFlag: string;
+
+  constructor(
+    private localStorageService: LocalStorageService,
     private apiRequestService: ApiRequestService,
     private transactionServicet: TransactionService,
     private priceOptionService: PriceOptionService,
@@ -55,9 +65,14 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     private createDeviceOrderService: CreateDeviceOrderService,
     private tokenService: TokenService,
     private alertService: AlertService,
-    private fb: FormBuilder) { }
+    private fb: FormBuilder,
+    private messageConfigService: MessageConfigService,
+
+  ) { }
 
   ngOnInit(): void {
+    this.getMessageConfig();
+    // this.customerFlag = this.localStorageService.load('CustomerFlag').value;
     this.formID = this.getRandomNum(10);
     this.transaction = {
       transactionId: this.apiRequestService.getCurrentRequestId(),
@@ -70,6 +85,7 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     this.priceOption = {
       trade: this.localStorageService.load('reserveProductInfo').value
     };
+
     this.productImage = this.priceOption.trade.images.thumbnail ? this.priceOption.trade.images.thumbnail
       : 'assets/images/icon/img-placeholder-gray.png';
     const colorCode = this.priceOption.trade.colorCode ? this.priceOption.trade.colorCode
@@ -124,6 +140,7 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
   onchangeOtherPhoneNumber(otherPhoneNumber: string): void {
     this.otherPhoneNumber = otherPhoneNumber;
   }
+
   onHome(): void {
     const url = '/';
     this.alertRemoveAddCart(url);
@@ -132,9 +149,18 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     this.router.navigate([DEPOSIT_PAYMENT_SUMMARY_PAGE]);
   }
   onBack(): void {
-    const url = '/sales-portal/reserve-stock/list-mobile-no';
-    this.alertRemoveAddCart(url);
+    const VerifyFlag = this.localStorageService.load('VerifyFlag').value;
+    const CustomerFlag = this.localStorageService.load('CustomerFlag').value;
+
+    if (CustomerFlag === 'Y') {
+      const url = '/sales-portal/reserve-stock/list-mobile-no';
+      this.alertRemoveAddCart(url);
+    } else if (CustomerFlag === 'N') {
+      const url = '/sales-portal/reserve-stock/reserve-deposit-non-ais';
+      this.alertRemoveAddCart(url);
+    }
   }
+
   alertRemoveAddCart(url: string): void {
     this.alertService.notify({
       type: 'question',
@@ -144,15 +170,15 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
       showCancelButton: true,
       reverseButtons: true,
       allowEscapeKey: false,
-      html: 'ต้องการยกเลิกรายการขายหรือไม่ <br> การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที'
+      html: 'ต้องการยกเลิกรายการจองหรือไม่ <br> การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคทันที'
     }).then((data) => {
-        if (data.value) {
-          const userId = this.tokenService.getUser().username;
-          const soId = this.localStorageService.load('reserveSoId').value;
-          this.createDeviceOrderService.removeAddCart(soId, userId).then( (res) => {
-            window.location.href = url;
-          });
-        }
+      if (data.value) {
+        const userId = this.tokenService.getUser().username;
+        const soId = this.localStorageService.load('reserveSoId').value;
+        this.createDeviceOrderService.removeAddCart(soId, userId).then((res) => {
+          window.location.href = url;
+        });
+      }
     });
   }
   getRandomNum(length: number): string {
@@ -181,7 +207,7 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
   }
   showPaymentMethod(method: string): boolean {
     const paymentMethod = this.priceOptionPayment.filter(payment => payment.method === method);
-    if (paymentMethod.length > 0)                                              {
+    if (paymentMethod.length > 0) {
       return null;
     } else {
       return true;
@@ -246,16 +272,16 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
   createProductRecipient(): void {
     this.customerFullName = this.transaction.data.customer.titleName + ' ' + this.transaction.data.customer.firstName +
       ' ' + this.transaction.data.customer.lastName;
-     const transactionLocalStorage = this.localStorageService.load('transaction').value;
-    if ( transactionLocalStorage && transactionLocalStorage.data && transactionLocalStorage.data.customer
+    const transactionLocalStorage = this.localStorageService.load('transaction').value;
+    if (transactionLocalStorage && transactionLocalStorage.data && transactionLocalStorage.data.customer
       && transactionLocalStorage.data.customer.shipaddress
       && transactionLocalStorage.data.customer.shipaddress.shipCusAddr
-      && transactionLocalStorage.data.customer.shipaddress.shipCusName === this.customerFullName ) {
-        this.customerFullAddress = transactionLocalStorage.data.customer.shipaddress.shipCusAddr;
+      && transactionLocalStorage.data.customer.shipaddress.shipCusName === this.customerFullName) {
+      this.customerFullAddress = transactionLocalStorage.data.customer.shipaddress.shipCusAddr;
     } else {
       this.customerFullAddress = this.getFullAddress(this.transaction.data.customer);
     }
-    this.recipientCustomerAddress = this.getFullAddress(this.transaction.data.customer);
+    this.receiptCustomerAddress = this.getFullAddress(this.transaction.data.customer);
     this.idCardNo = this.transaction.data.customer.idCardNo;
     if (this.idCardNo) {
       this.idCardNo = this.idCardNo.substring(9);
@@ -312,5 +338,97 @@ export class DepositPaymentPageComponent implements OnInit, OnDestroy {
     if (this.selectPaymentDetail) {
       this.paymentForm.patchValue({ paymentType: this.selectPaymentDetail.paymentType });
     }
+  }
+
+  private async filterTrade(): Promise<void> {
+    const reserveProductInfo: any = this.localStorageService.load('reserveProductInfo').value;
+    const CustomerFlag: any = this.localStorageService.load('CustomerFlag').value;
+    let tradeResult = [];
+
+    if (CustomerFlag === 'Y') {
+      tradeResult = await this.getTradeAIS(reserveProductInfo);
+      if (!tradeResult) {
+        tradeResult = await this.getTradeAll(reserveProductInfo);
+      }
+      if (!tradeResult) {
+        tradeResult = this.getTradeCriteriasNull(reserveProductInfo);
+      }
+    } else if (CustomerFlag === 'N') {
+      tradeResult = await this.getTradeAll(reserveProductInfo);
+      if (!tradeResult) {
+        tradeResult = this.getTradeCriteriasNull(reserveProductInfo);
+      }
+    }
+
+    if (tradeResult) {
+      reserveProductInfo.tradeReserve.trades = tradeResult;
+      localStorage.setItem('reserveProductInfo', JSON.stringify(reserveProductInfo));
+    }
+  }
+
+  private getTradeAIS(reserveProductInfo: any): any [] {
+    const result = [];
+    for (const trades of reserveProductInfo.tradeReserve.trades) {
+      if (trades.deposit) {
+        if (Number(trades.deposit.depositIncludeVat) > Number(this.messageConfigService.mapMessageConfig(
+          this.messageConfigService.messageConfig, RESERVE_STOCK.MESSAGE_CODE_TH.TH_0002))) {
+          if (trades.criterias) {
+            for (const criterias of trades.criterias) {
+              if (criterias.target) {
+                if (criterias.target[0].toString().toUpperCase() === AIS_CUSTOMER) {
+                  result.push(trades);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return result;
+  }
+
+  private getTradeAll(reserveProductInfo: any): any[] {
+    const result = [];
+    for (const trades of reserveProductInfo.tradeReserve.trades) {
+      if (trades.deposit) {
+        if (Number(trades.deposit.depositIncludeVat) > Number(this.messageConfigService.mapMessageConfig(
+          this.messageConfigService.messageConfig, RESERVE_STOCK.MESSAGE_CODE_TH.TH_0002))) {
+          if (trades.criterias) {
+            for (const criterias of trades.criterias) {
+              if (criterias.target) {
+                if (criterias.target[0].toString().toUpperCase() === ALL_CUSTOMER) {
+                  result.push(trades);
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+    return result;
+  }
+
+  private getTradeCriteriasNull(reserveProductInfo: any): any[] {
+    const result = [];
+    for (const trades of reserveProductInfo.tradeReserve.trades) {
+      if (trades.deposit) {
+        if (Number(trades.deposit.depositIncludeVat) !== Number(this.messageConfigService.mapMessageConfig(
+          this.messageConfigService.messageConfig, RESERVE_STOCK.MESSAGE_CODE_TH.TH_0002))) {
+          if (!trades.criterias) {
+            result.push(trades);
+          }
+        }
+      }
+    }
+    return result;
+  }
+
+  private async getMessageConfig(): Promise<void> {
+    await this.messageConfigService.getMsgConfigByModuleName(LANGUAGE.TH, RESERVE_STOCK.MODULE_NAME).then(async(res: any) => {
+      await this.messageConfigService.setMessageConfig(res.data);
+    },
+    (error: any) => {
+      this.alertService.error(ERROR_MESSAGE.DEFAULT);
+    });
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy} from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Observable } from 'rxjs/internal/Observable';
 import { PageLoadingService, AlertService, TokenService, Utils } from 'mychannel-shared-libs';
 import { Seller, Transaction } from 'src/app/shared/models/transaction.model';
@@ -9,7 +9,7 @@ import { HttpClient } from '@angular/common/http';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { DEPOSIT_PAYMENT_SUMMARY_PAGE, DEPOSIT_QUEUE_PAGE, DEPOSIT_PAYMENT_PAGE } from 'src/app/deposit-summary/constants/route-path.constant';
+import { DEPOSIT_PAYMENT_SUMMARY_PAGE, DEPOSIT_QUEUE_PAGE, DEPOSIT_PAYMENT_PAGE, DEPOSIT_PAYMENT_DETAIL_RECEIPT } from 'src/app/deposit-summary/constants/route-path.constant';
 import { WIZARD_RESERVE_WITH_DEPOSIT } from 'src/app/deposit-summary/constants/wizard.constant';
 import { LocalStorageService } from 'ngx-store';
 import { CreateDeviceOrderService } from 'src/app/deposit-summary/services/create-device-order.service';
@@ -36,6 +36,8 @@ export class DepositPaymentSummaryPageComponent implements OnInit, OnDestroy {
   sellerCode: string;
   checkSellerForm: FormGroup;
   seller: Seller = {};
+  VerifyFlag: string;
+  CustomerFlag: string;
 
   constructor(
     private router: Router,
@@ -67,6 +69,8 @@ export class DepositPaymentSummaryPageComponent implements OnInit, OnDestroy {
       this.seller.sellerNo = response.data.pin;
     });
     this.createForm();
+    this.VerifyFlag = this.localStorageService.load('VerifyFlag').value;
+    this.CustomerFlag = this.localStorageService.load('CustomerFlag').value;
   }
 
   createForm(): void {
@@ -90,19 +94,24 @@ export class DepositPaymentSummaryPageComponent implements OnInit, OnDestroy {
   }
 
   onBack(): void {
-    this.router.navigate([DEPOSIT_PAYMENT_PAGE]);
+    localStorage.setItem('backSummaryPage', JSON.stringify('true'));
+    if (this.VerifyFlag === 'keyIn' && this.CustomerFlag === 'N') {
+      this.router.navigate([DEPOSIT_PAYMENT_DETAIL_RECEIPT]);
+    } else {
+      this.router.navigate([DEPOSIT_PAYMENT_PAGE]);
+    }
   }
   onNext(): void {
     this.pageLoadingService.openLoading();
     this.http.get(`/api/customerportal/checkSeller/${this.seller.sellerNo}`).toPromise()
-    .then((shopCheckSeller: any) => {
-      if (shopCheckSeller.data.condition) {
-        this.transaction.data.seller = {
-          ...this.seller,
-          employeeId: shopCheckSeller.data.isAscCode
-        };
-        this.pageLoadingService.closeLoading();
-        this.router.navigate([DEPOSIT_QUEUE_PAGE]);
+      .then((shopCheckSeller: any) => {
+        if (shopCheckSeller.data.condition) {
+          this.transaction.data.seller = {
+            ...this.seller,
+            employeeId: shopCheckSeller.data.isAscCode
+          };
+          this.pageLoadingService.closeLoading();
+          this.router.navigate([DEPOSIT_QUEUE_PAGE]);
         } else {
           this.alertService.error(shopCheckSeller.data.message.replace('<br/> ', ' '));
         }
@@ -123,15 +132,15 @@ export class DepositPaymentSummaryPageComponent implements OnInit, OnDestroy {
       showCancelButton: true,
       reverseButtons: true,
       allowEscapeKey: false,
-      html: 'ต้องการยกเลิกรายการขายหรือไม่ <br> การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที'
+      html: 'ต้องการยกเลิกรายการจองหรือไม่ <br> การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคทันที'
     }).then((data) => {
-        if (data.value) {
-          const userId = this.tokenService.getUser().username;
-          const soId = this.localStorageService.load('reserveSoId').value;
-          this.createDeviceOrderService.removeAddCart(soId, userId).then( (res) => {
-            window.location.href = url;
-          });
-        }
+      if (data.value) {
+        const userId = this.tokenService.getUser().username;
+        const soId = this.localStorageService.load('reserveSoId').value;
+        this.createDeviceOrderService.removeAddCart(soId, userId).then((res) => {
+          window.location.href = url;
+        });
+      }
     });
   }
   summary(amount: number[]): number {

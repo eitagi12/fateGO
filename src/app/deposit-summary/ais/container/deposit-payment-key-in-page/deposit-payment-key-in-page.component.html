@@ -53,7 +53,7 @@
 
     <div class="container-fluid">
       <div class="card mb-3">
-        <div class="card-header text-white rounded-top p-3" style="background-color:#ffab40">
+        <div class="card-header text-white rounded-top p-3 bg-deep-orange">
           รูปแบบชำระเงิน
         </div>
         <div class="card-header bg-transparent">
@@ -110,95 +110,22 @@
         </div>
       </div>
     </div>
-
-
-    <div class="container-fluid">
-      <div class="card mb-3">
-        <div class="card-header text-white bg-sky">
-          ข้อมูลผู้รับสินค้า
-        </div>
-        <div class="card-body">
-            <div class="form-group row">
-              <div class="col-sm-4">
-                <label class="form-check-label text-light-gray">
-                  ผู้ซื้อ
-                </label>
-              </div>
-              <div class="col-12 col-sm-8 text-left text-light-gray">
-                {{ customerFullName }}
-              </div>
-            </div>
-            <div class="form-group row">
-              <div class="col-12 col-sm-4">
-                <label class="form-check-label text-light-gray">
-                  ที่อยู่
-                </label>
-              </div>
-              <div class="col-12 col-sm-8">
-                <!-- <input type="text" class="form-control" autocomplete="off" maxlength="100" value="{{customerFullAddress}}" (input)="onAddrChanges($event.target.value)"> -->
-                <textarea id="txtFullAddress" class="form-control" autocomplete="off" cols="40" rows="3"
-                  (input)="onAddrChanges($event.target.value)">{{ customerFullAddress }}</textarea>
-              </div>
-            </div>
-            <div class="form-group row">
-              <div class="col-12 col-sm-4">
-                <label class="form-check-label text-light-gray">
-                  หมายเลขโทรศัพท์
-                </label>
-              </div>
-              <div class="col-12 col-sm-4 text-left text-light-gray">
-                {{ selectedMobile }}
-              </div>
-            </div>
-        </div>
-      </div>
+    <div class="my-3">
+        <app-billing-address
+          [titleNames]="titleName"
+          [customerAddress]="customerAddress"
+          [allZipCodes]="allZipCodes"
+          (amphurSelected)="onAmphurSelected($event)"
+          (tumbolSelected)="onTumbolSelected($event)"
+          (zipCodeSelected)="onZipCodeSelected($event)"
+          (completed)="onCompleted($event)"
+          (error)="onError($event)"
+          [keyInCustomerAddressTemp]="keyInCustomerAddressTemp"
+          [payment]="paymentMethod"
+          [paymentDetail]="selectPaymentDetail"
+          [priceOption]="priceOption"
+          >
+        </app-billing-address>
     </div>
-
-    <div class="container-fluid">
-      <div class="card mb-3">
-        <div class="card-header bg-blue text-white">
-          ข้อมูลใบเสร็จรับเงิน
-        </div>
-        <div class="card-body">
-          <div class="form-group row">
-            <div class="col-12 col-sm-4 text-light-gray">ชื่อ</div>
-            <div class="col-12 col-sm-8 text-light-gray">
-              {{ customerFullName }}
-            </div>
-          </div>
-          <div class="form-group row">
-            <div class="col-12 col-sm-4">
-              <label class="form-check-label text-light-gray">ที่อยู่ในใบเสร็จรับเงิน</label>
-            </div>
-            <div class="col-12 col-sm-8 text-light-gray">
-              {{ receiptCustomerAddress }}
-            </div>
-          </div>
-          <div class="form-group row">
-            <div class="col-12 col-sm-4 text-light-gray">Tax ID</div>
-            <div class="col-12 col-sm-8">
-              <input type="text" class="form-control" autocomplete="off" maxlength="16" value="{{idCardNo}}" disabled>
-            </div>
-          </div>
-          <div class="form-group row">
-            <div class="col-12 col-sm-4 text-light-gray">สาขาที่</div>
-            <div class="col-12 col-sm-8">
-              <input type="text" class="form-control" autocomplete="off" maxlength="12" disabled>
-            </div>
-          </div>
-          <div class="form-group row">
-            <div class="col-12 col-sm-4 text-light-gray">เบอร์ติดต่ออื่น</div>
-            <div class="col-12 col-sm-8">
-              <input type="tel" class="form-control " autocomplete="off" maxlength="10" value="{{otherPhoneNumber}}"
-                (input)="onchangeOtherPhoneNumber($event.target.value)">
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <mc-footer>
-      <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-      <button class="btn btn-success" (click)="onNext()" [disabled]="!(checkPaymentFormValid())">NEXT</button>
-    </mc-footer>
   </div>
 </div>
