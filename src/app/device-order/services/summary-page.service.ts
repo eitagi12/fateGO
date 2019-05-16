@@ -21,7 +21,7 @@ export class SummaryPageService {
 
       const price = (((+trade.promotionPrice || 0)
       + (advancePay.installmentFlag === `Y` ? +advancePay.amount : 0))
-      / (+paymentMethod.month || 1));
+      / (+paymentMethod.month || 1)).toFixed(0);
 
       return `${this.translateService.instant(`บัตรเครดิต`)} ${paymentMethod.name} ${paymentMethod.percentage || 0} %
       \ ${paymentMethod.month || 0} ${this.translateService.instant(`เดือน`)}
