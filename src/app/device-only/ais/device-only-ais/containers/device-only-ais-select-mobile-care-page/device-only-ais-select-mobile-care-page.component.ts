@@ -15,7 +15,7 @@ import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
   styleUrls: ['./device-only-ais-select-mobile-care-page.component.scss']
 })
 
-export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit , OnDestroy {
+export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit, OnDestroy {
   wizards: string[] = WIZARD_DEVICE_ONLY_AIS;
   transaction: Transaction;
   priceOption: PriceOption;
@@ -40,7 +40,6 @@ export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit , OnDe
 
   ngOnInit(): void {
     this.homeButtonService.initEventButtonHome();
-    console.log('emit', this.isVerifyflag);
     this.isVerifyflag = false;
   }
 
@@ -49,16 +48,16 @@ export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit , OnDe
   }
 
   public isVerifyNext(): boolean {
-    return !(this.transaction.data.mobileCarePackage || this.isVerifyflag);
+    if (this.isVerifyflag && this.transaction.data.mobileCarePackage) {
+      return true;
+    } else if (typeof(this.transaction.data.mobileCarePackage) === 'string') {
+      return true;
+    }
   }
-
-  // public disableNext() {
-
-  // }
 
   public getCurrentPackMobileCare(existingMobileCare: any): void {
     if (existingMobileCare) {
-      const existingObj = {...existingMobileCare};
+      const existingObj = { ...existingMobileCare };
       if (!this.transaction.data.existingMobileCare) {
         this.transaction.data.existingMobileCare = existingObj;
         return;

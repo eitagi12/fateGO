@@ -151,6 +151,7 @@ export class MobileCareComponent implements OnInit {
         this.notBuyMobileCareForm.patchValue({
           notBuyMobile: ''
         });
+        this.promotion.emit(this.mobileCareForm.value.promotion.value);
         // check Verify to Pass & check selectPackage Mobilecare
       }
       if (this.mobileCareForm.valid) {
@@ -190,7 +191,7 @@ export class MobileCareComponent implements OnInit {
         mobileCare: true
       });
     } else {
-      this.isVerifyflag.emit(true);
+      // this.isVerifyflag.emit(true);
       this.completed.emit(this.notBuyMobileCareForm.value.notBuyMobile);
       // this.existingMobileCare.emit(false);
     }
@@ -204,8 +205,6 @@ export class MobileCareComponent implements OnInit {
       // check billingSystem post paid
       this.customerInformationService.getProfileByMobileNo(mobileNo).then((res) => {
         this.billingSystem = res.data.billingSystem;
-        console.log('transactionType', this.billingSystem);
-
       });
       // check package mobile care serenade เอา mobileSegment(ขั้น serenade) ไปยิง callService
       this.customerInformationService.getCustomerProfile(mobileNo).then((res) => {
@@ -354,8 +353,7 @@ export class MobileCareComponent implements OnInit {
   }
 
   public sendOTP(): void {
-    console.log('sent');
-
+    this.promotion.emit(undefined);
     let mobile = this.customerInformationService.getSelectedMobileNo();
     if (environment.name !== 'PROD') {
       mobile = environment.TEST_OTP_MOBILE;
@@ -363,8 +361,6 @@ export class MobileCareComponent implements OnInit {
     this.pageLoadingService.openLoading();
     this.http.post(`/api/customerportal/newRegister/${mobile}/sendOTP`, { digits: '5' }).toPromise()
       .then((resp: any) => {
-        console.log(resp);
-
         if (resp && resp.data) {
           this.transactionID = resp.data.transactionID;
           this.pageLoadingService.closeLoading();
@@ -409,9 +405,7 @@ export class MobileCareComponent implements OnInit {
     } else {
       billingSystem = this.billingSystem || BillingSystemType.IRB;
     }
-    // console.log('billingSystem: ', billingSystem);
     const chargeType = chargeTypes ? chargeTypes : 'Post-paid';
-    // console.log(chargeType);
     const endUserPrice = +this.priceOption.trade.normalPrice;
     this.mobileCareService.getMobileCare({
       packageKeyRef: MOBILE_CARE_PACKAGE_KEY_REF,
