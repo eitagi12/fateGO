@@ -45,6 +45,9 @@ describe('SummaryPaymentDetailComponent', () => {
                   amphur: '',
                   province: '',
                   zipCode: ''
+                },
+                mobileCarePackage: {
+                  customAttributes: ''
                 }
               }
             };

@@ -53,6 +53,7 @@ export class MobileCareComponent implements OnInit {
   public currentPackageMobileCare: any[];
   public privilegeCustomerForm: FormGroup;
   private exMobileCare: any;
+  private chargeType: string;
   mainPackage: MainPackage;
   billingSystem: string;
   mobileCareForm: FormGroup;
@@ -125,7 +126,6 @@ export class MobileCareComponent implements OnInit {
   }
 
   public createForm(): void {
-
     let mobileCare = '';
     let notMobileCare = '';
     if (this.selected && typeof this.selected === 'object') {
@@ -191,9 +191,7 @@ export class MobileCareComponent implements OnInit {
         mobileCare: true
       });
     } else {
-      // this.isVerifyflag.emit(true);
       this.completed.emit(this.notBuyMobileCareForm.value.notBuyMobile);
-      // this.existingMobileCare.emit(false);
     }
     this.modalRef.hide();
   }
@@ -226,6 +224,7 @@ export class MobileCareComponent implements OnInit {
     const mobileNo = this.privilegeCustomerForm.value.mobileNo;
     this.customerInformationService.getProfileByMobileNo(mobileNo)
       .then((res) => {
+        this.chargeType = res.data.chargeType;
         switch (res.data.chargeType) {
           case 'Pre-paid':
             this.customerInformationService.getCustomerProfile(mobileNo).then((resp) => {
@@ -384,7 +383,8 @@ export class MobileCareComponent implements OnInit {
           this.pageLoadingService.closeLoading();
           this.mobileNoEmit.emit({
             mobileNo: this.privilegeCustomerForm.value.mobileNo,
-            billingSystem: this.billingSystem
+            billingSystem: this.billingSystem,
+            chargeType: this.chargeType || ''
           });
           this.isVerifyflag.emit(true);
         } else {

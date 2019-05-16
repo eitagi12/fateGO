@@ -120,20 +120,25 @@
   </div>
 </div>
 
-<!-- <div class="card mb-3">
+<div class="card mb-3" *ngIf="checkOpenningPrepaidMobileCare()">
   <div class="card-body box-balance">
     <div *ngIf='enoughBalance'>
       <img class="icon-page" src="assets/images/icon/icon_pouch.png" alt="เป่าตังค์">
       <span class="enoughBalanceText"> ยอดเงินคงเหลือ {{ balance | number}} บาท</span>
     </div>
 
-    <div *ngIf='!enoughBalance'>
-      <img class="icon-page" src="assets/images/icon/icon-red-alert-circle.png" alt="เป่าตังค์">
-      <span class="notEnoughBalanceText"> ยอดเงินคงเหลือ {{ balance | number }} บาท กรุณาเติมเงินเพิ่ม {{ ( mobileCare - balance) | number }} บาท เพื่อสมัครแพ็กเกจ</span>
+    <div *ngIf='!enoughBalance' class="row">
+      <div class="col-sm-1">
+        <img class="icon-page" src="assets/images/icon/icon-red-alert-circle.png" alt="เป่าตังค์">
+      </div>
+      <div class="col-sm-11">
+        <span class="notEnoughBalanceText"> ยอดเงินคงเหลือ {{ balance | number }} บาท กรุณาเติมเงินเพิ่ม
+          {{ ( mobileCare - balance) | number }} บาท เพื่อสมัครแพ็กเกจ<br>*เมื่อเติมเงินเรียบร้อยแล้ว
+          กรุณากดปุ่มเพื่ออัพเดทยอดเงินคงเหลือ </span>
+      </div>
       <div>
-        <span class="notEnoughBalanceText warningText">*เมื่อเติมเงินเรียบร้อยแล้ว กรุณากดปุ่มเพื่ออัพเดทยอดเงินคงเหลือ </span>
         <button class="checkBalanceBtn" (click)="onLoadBalance()">อัพเดตยอดเงิน</button>
       </div>
     </div>
   </div>
-</div> -->
+</div>

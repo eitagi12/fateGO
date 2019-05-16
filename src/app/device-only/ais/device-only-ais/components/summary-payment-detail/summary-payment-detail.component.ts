@@ -1,9 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, EventEmitter, Output } from '@angular/core';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { Utils } from 'mychannel-shared-libs';
+import { Utils, PageLoadingService } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { CustomerInformationService } from '../../services/customer-information.service';
 @Component({
@@ -16,17 +16,20 @@ export class SummaryPaymentDetailComponent implements OnInit {
   private balance: number;
   public enoughBalance: boolean;
   private mobileCare: number;
+  private buyMobileCare: boolean = false;
   priceOption: PriceOption;
   transaction: Transaction;
   customerAddress: string;
   price: string;
+  @Output() conditionNext: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(
     private priceOptionService: PriceOptionService,
     private transactionService: TransactionService,
     private utils: Utils,
     private http: HttpClient,
-    private customerInformationService: CustomerInformationService
+    private customerInformationService: CustomerInformationService,
+    private pageLoadingService: PageLoadingService,
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -35,8 +38,24 @@ export class SummaryPaymentDetailComponent implements OnInit {
   ngOnInit(): void {
     this.price = this.priceOption.trade.priceType === 'NORMAL' ? this.priceOption.trade.normalPrice : this.priceOption.trade.promotionPrice;
     this.getDataCustomer();
-    this.getMobileNoBalance();
-    // this.getQueryBalance(this.mobileNo);
+    this.checkExMobileCare();
+  }
+
+  private checkExMobileCare(): void {
+    if (this.transaction.data.mobileCarePackage.customAttributes) {
+      this.buyMobileCare = true;
+      if (this.transaction.data.simCard.chargeType === 'Pre-paid') {
+        this.getQueryBalance(this.transaction.data.simCard.mobileNo);
+      } else {
+        this.conditionNext.emit(true);
+      }
+    } else {
+      this.conditionNext.emit(true);
+    }
+  }
+
+  public checkOpenningPrepaidMobileCare(): boolean {
+    return (this.buyMobileCare && (this.transaction.data.simCard.chargeType === 'Pre-paid')) ? true : false;
   }
 
   getDataCustomer(): void {
@@ -60,22 +79,29 @@ export class SummaryPaymentDetailComponent implements OnInit {
     }
   }
 
-  private getMobileNoBalance(): string {
-    this.mobileNo = this.customerInformationService.getSelectedMobileNo();
-    return this.mobileNo;
-  }
-
   private getQueryBalance(mobileNo: string): void {
-    // this.http.get(`/api/customerportal/newRegister/${mobileNo}/queryBalance`).toPromise()
-    //   .then((response: any) => {
-    //     this.mobileCare = +this.transaction.data.mobileCarePackage.customAttributes.priceInclVat;
-    //     this.balance = +(response.data.remainingBalance) / 100;
-    //     this.enoughBalance = (this.balance >= this.mobileCare) ? true : false;
-    //   });
+    this.http.get(`/api/customerportal/newRegister/${mobileNo}/queryBalance`).toPromise()
+      .then((response: any) => {
+        this.mobileCare = +this.transaction.data.mobileCarePackage.customAttributes.priceInclVat;
+        this.balance = +(response.data.remainingBalance) / 100;
+        this.enoughBalance = (this.balance >= this.mobileCare) ? true : false;
+        this.pageLoadingService.closeLoading();
+        if (!this.enoughBalance) {
+          this.conditionNext.emit(false);
+        } else {
+          this.conditionNext.emit(true);
+        }
+      })
+      .catch((err) => {
+        this.pageLoadingService.closeLoading();
+        console.log(err);
+      });
   }
 
   onLoadBalance(): void {
-
+    this.pageLoadingService.openLoading();
+    const mobileNoRefesh: string = this.transaction.data.simCard.mobileNo;
+    this.getQueryBalance(mobileNoRefesh);
   }
 
 }
