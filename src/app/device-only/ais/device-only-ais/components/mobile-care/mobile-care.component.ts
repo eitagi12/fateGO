@@ -152,7 +152,6 @@ export class MobileCareComponent implements OnInit {
           notBuyMobile: ''
         });
         this.promotion.emit(this.mobileCareForm.value.promotion.value);
-        // check Verify to Pass & check selectPackage Mobilecare
       }
       if (this.mobileCareForm.valid) {
         this.mainPackage = this.mobileCareForm.value.promotion.value;
@@ -185,8 +184,6 @@ export class MobileCareComponent implements OnInit {
 
   public onNotBuyMobileCare(dismiss: boolean): void {
     if (dismiss) {
-      this.isVerifyflag.emit(false);
-
       this.mobileCareForm.patchValue({
         mobileCare: true
       });
@@ -218,6 +215,8 @@ export class MobileCareComponent implements OnInit {
   public searchMobileNo(): void {
     this.pageLoadingService.openLoading();
     this.checkExistingMobileCare();
+    this.isVerifyflag.emit(false);
+    this.privilegeCustomerForm.controls['otpNo'].setValue('');
   }
 
   public checkExistingMobileCare(): void {
@@ -249,7 +248,6 @@ export class MobileCareComponent implements OnInit {
               .then((result) => {
                 if (result && result.data && result.data.billingAddress) {
                   this.checkMobileCare(mobileNo, result);
-                  //
                   this.customerInformationService.getCustomerProfile(mobileNo)
                     .then((response) => {
                       const mobileSegment = response.data.mobileSegment;

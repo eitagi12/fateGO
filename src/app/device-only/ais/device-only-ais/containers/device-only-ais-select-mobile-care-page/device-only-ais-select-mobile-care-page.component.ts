@@ -21,7 +21,7 @@ export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit, OnDes
   priceOption: PriceOption;
   shoppingCart: ShoppingCart;
   mobileCare: MobileCare;
-  isVerifyflag: boolean = false;
+  isVerifyflag: boolean;
   existingMobileCare: any;
   public isBuyMobileCare: boolean = false;
   public isReasonNotBuyMobileCare: string;
@@ -40,7 +40,6 @@ export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit, OnDes
 
   ngOnInit(): void {
     this.homeButtonService.initEventButtonHome();
-    this.isVerifyflag = false;
   }
 
   public onBack(): void {
@@ -63,7 +62,6 @@ export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit, OnDes
         return;
       }
       this.transaction.data.existingMobileCare = existingObj;
-
     }
   }
   public onHome(): void {
