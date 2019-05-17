@@ -109,7 +109,6 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    let isValidate = true;
     // มี auto next ทำให้ create transaction ช้ากว่า read card
     this.returnStock().then(() => {
       this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
@@ -129,24 +128,6 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
                 billCycle: data.billCycle,
                 zipCode: zipCode
               };
-            }).catch((error: any) => {
-              isValidate = false;
-              this.alertService.notify({
-                type: 'error',
-                onBeforeOpen: () => {
-                  const content = swal.getContent();
-                  const $ = content.querySelector.bind(content);
-                  const errorDetail = $('#error-detail');
-                  const errorDetailDisplay = $('#error-detail-display');
-                  errorDetail.addEventListener('click', (evt) => {
-                    errorDetail.classList.add('d-none');
-                    errorDetailDisplay.classList.remove('d-none');
-                  });
-                },
-                html: this.getTemplateServerError(error)
-              }).then(() => {
-                this.onBack();
-              });
             });
         })
         .then((customer: any) => {
@@ -176,79 +157,24 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
           this.transaction.data.billingInformation = billingInformation;
 
           return this.conditionIdentityValid()
-            .then(() => {
+            .catch((msg: string) => {
+              return this.alertService.error(msg).then(() => true);
+            })
+            .then((isError: boolean) => {
+              if (isError) {
+                return;
+              }
               return this.http.post(
                 '/api/salesportal/add-device-selling-cart',
                 this.getRequestAddDeviceSellingCart()
               ).toPromise()
-                .then((resp: any) => resp.data.soId);
-            })
-            .then((soId: string) => {
-              this.transaction.data.order = { soId: soId };
-
-              return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-            })
-            .then(() => {
-              if (isValidate) {
-                this.pageLoadingService.closeLoading();
-                this.transaction.data.action = TransactionAction.READ_CARD;
-                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE]);
-              }
+                .then((resp: any) => {
+                  this.transaction.data.order = { soId: resp.data.soId };
+                  return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+                }).then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE]));
             });
-        });
+        }).then(() => this.pageLoadingService.closeLoading());
     });
-  }
-
-  private getTemplateServerError(error: HttpErrorResponse): string {
-    const apiRequestService = this.injector.get(ApiRequestService);
-    const mcError = error.error;
-
-    if (mcError && mcError.resultDescription) {
-      let message = '';
-      if (mcError.errors) {
-        if (Array.isArray(mcError.errors)) {
-          mcError.errors.forEach(e => {
-            message += `<li>${this.htmlEntities(e.message || e)}</li>`;
-          });
-        } else {
-          message += this.htmlEntities(JSON.stringify(mcError.errors));
-        }
-        return `
-            <div class="text-left mb-2 mx-3">${message}</div>
-            <div class="text-right" id="error-detail">
-                <i class="fa fa-angle-double-right"></i>
-                <small>รายละเอียด</small>
-            </div>
-            <div class="py-2 text-left d-none" id="error-detail-display">
-                <div>REF: ${apiRequestService.getCurrentRequestId() || '-'}</div>
-                <div>URL: ${error.url || '-'} - [${error.status}]</div>
-            </div>
-            `;
-      } else {
-        return `
-            <div class="text-center mb-2"><b>${mcError.resultDescription || 'ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'}</b></div>
-            <div class="text-right" id="error-detail">
-                <i class="fa fa-angle-double-right"></i>
-                <small>รายละเอียด</small>
-            </div>
-            <div class="py-2 text-left d-none" id="error-detail-display">
-                <div class="mb-2 mx-3">${message}</div>
-                <div>REF: ${apiRequestService.getCurrentRequestId() || '-'}</div>
-                <div>URL: ${error.url || '-'} - [${error.status}]</div>
-            </div>
-            `;
-      }
-    } else {
-      return `
-        <div class="text-center mb-2"><b>ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้<b></div>
-        <div class="mb-2">${error.status} - ${error.statusText}</div>
-        <div>${error.message}</div>
-        `;
-    }
-  }
-
-  htmlEntities(str: any): any {
-    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
   getZipCode(province: string, amphur: string, tumbol: string): Promise<string> {
