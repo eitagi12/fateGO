@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { TokenService, ChannelType, I18nService, HomeService, VirtualKeyboardService } from 'mychannel-shared-libs';
+import { TokenService, ChannelType, HomeService, I18nService, VirtualKeyboardService } from 'mychannel-shared-libs';
 import { environment } from 'src/environments/environment';
 import { LocalStorageService } from 'ngx-store';
 import { Router } from '@angular/router';
@@ -17,25 +17,25 @@ export class MainMenuPageComponent implements OnInit, OnDestroy {
       icon: 'assets/svg/ico-device.svg',
       text_th: 'ซื้อเครื่อง',
       text_en: 'Device Purchasing'
-   },
-   {
+    },
+    {
       link: '/order/new-register',
       icon: 'assets/svg/ico-new-register-1.svg',
       text_th: 'เปิดเบอร์ใหม่',
       text_en: 'Register new number'
-   },
-   {
+    },
+    {
       link: '/order/mnp',
       icon: 'assets/svg/ico-mpn.svg',
       text_th: 'ย้ายค่ายมาใช้ AIS',
       text_en: 'Move to AIS'
-   },
-   {
+    },
+    {
       link: '/order/pre-to-post',
       icon: 'assets/svg/ico-pre-to-post.svg',
       text_th: 'เปลี่ยนเติมเงินเป็นรายเดือน',
       text_en: 'Switch to Postpaid'
-   }
+    }
   ];
 
   currentLanguage: string = 'TH';
@@ -72,6 +72,7 @@ export class MainMenuPageComponent implements OnInit, OnDestroy {
     // } else {
       // this.virtualKeyboardService.setAllowKeyboard(false);
     // }
+    this.currentLanguage = menu.text !== 'เปิดเบอร์ใหม่' ? 'TH' : this.currentLanguage;
     this.router.navigate([menu.link]);
   }
 
