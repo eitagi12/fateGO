@@ -1,22 +1,19 @@
-import { Component, OnInit, OnDestroy, ViewChild, Injector } from '@angular/core';
-import { HomeService, ReadCardProfile, PageLoadingService, AlertService, ChannelType, TokenService, Utils, ValidateCustomerIdCardComponent, KioskControls, User } from 'mychannel-shared-libs';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { HomeService, ReadCardProfile, PageLoadingService, AlertService, ChannelType, TokenService, Utils, ValidateCustomerIdCardComponent, KioskControls, User, ErrorsService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 
 import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE
 } from 'src/app/device-order/ais/device-order-ais-pre-to-post/constants/route-path.constant';
 
-import { Transaction, TransactionAction, TransactionType } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionType } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
-import { ApiRequestService } from 'mychannel-shared-libs';
-
-declare var swal: any;
 
 @Component({
   selector: 'app-device-order-ais-pre-to-post-validate-customer-id-card-page',
@@ -50,12 +47,13 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
     private tokenService: TokenService,
     private utils: Utils,
     private alertService: AlertService,
-    private injector: Injector
+    private errorsService: ErrorsService
   ) {
     this.user = this.tokenService.getUser();
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
+    this.errorsService.callback = () => this.onBack();
   }
 
   ngOnInit(): void {
@@ -86,7 +84,7 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
   onError(valid: boolean): void {
     this.readCardValid = valid;
     if (!this.profile) {
-      this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
+      this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน').then(() => this.onBack());
     }
   }
 
@@ -162,6 +160,7 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
             })
             .then((isError: boolean) => {
               if (isError) {
+                this.onBack();
                 return;
               }
               return this.http.post(
@@ -173,7 +172,10 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
                   return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
                 }).then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE]));
             });
-        }).then(() => this.pageLoadingService.closeLoading());
+        }).then(() => {
+          this.errorsService.callback = () => { };
+          this.pageLoadingService.closeLoading();
+        });
     });
   }
 

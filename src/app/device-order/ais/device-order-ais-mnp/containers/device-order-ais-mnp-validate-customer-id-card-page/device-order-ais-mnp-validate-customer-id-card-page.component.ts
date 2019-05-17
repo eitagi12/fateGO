@@ -1,18 +1,15 @@
-import { Component, OnInit, OnDestroy, ViewChild, Injector } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
-import { ReadCardProfile, HomeService, TokenService, PageLoadingService, User, ValidateCustomerIdCardComponent, Utils, AlertService, KioskControls, ChannelType } from 'mychannel-shared-libs';
+import { ReadCardProfile, HomeService, TokenService, PageLoadingService, User, ValidateCustomerIdCardComponent, Utils, AlertService, KioskControls, ChannelType, ErrorsService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ROUTE_DEVICE_ORDER_AIS_MNP_CUSTOMER_INFO_PAGE } from '../../constants/route-path.constant';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { TranslateService } from '@ngx-translate/core';
 import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from 'src/app/buy-product/constants/route-path.constant';
 import { environment } from 'src/environments/environment';
-import * as moment from 'moment';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
-import { ApiRequestService } from 'mychannel-shared-libs';
 
 declare var swal: any;
 @Component({
@@ -46,11 +43,12 @@ export class DeviceOrderAisMnpValidateCustomerIdCardPageComponent implements OnI
     private tokenService: TokenService,
     private utils: Utils,
     private alertService: AlertService,
-    private injector: Injector
+    private errorsService: ErrorsService
   ) {
     this.user = this.tokenService.getUser();
     this.priceOption = this.priceOptionService.load();
 
+    this.errorsService.callback = () => this.onBack();
     this.homeService.callback = () => {
 
       this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่<br>การยกเลิกระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที')
@@ -102,7 +100,7 @@ export class DeviceOrderAisMnpValidateCustomerIdCardPageComponent implements OnI
   onError(valid: boolean): void {
     this.readCardValid = valid;
     if (!this.profile) {
-      this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
+      this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน').then(() => this.onBack());
     }
   }
 
@@ -166,6 +164,7 @@ export class DeviceOrderAisMnpValidateCustomerIdCardPageComponent implements OnI
             })
             .then((isError: boolean) => {
               if (isError) {
+                this.onBack();
                 return;
               }
               return this.http.post(
@@ -177,7 +176,10 @@ export class DeviceOrderAisMnpValidateCustomerIdCardPageComponent implements OnI
                   return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
                 }).then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_CUSTOMER_INFO_PAGE]));
             });
-        }).then(() => this.pageLoadingService.closeLoading());
+        }).then(() => {
+          this.errorsService.callback = () => { };
+          this.pageLoadingService.closeLoading();
+        });
 
     });
   }

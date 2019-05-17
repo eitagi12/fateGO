@@ -1,16 +1,15 @@
-import { Component, OnInit, OnDestroy, ViewChild, Injector } from '@angular/core';
-import { ReadCardProfile, HomeService, PageLoadingService, TokenService, ChannelType, Utils, AlertService, ValidateCustomerIdCardComponent, KioskControls, User, } from 'mychannel-shared-libs';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { ReadCardProfile, HomeService, PageLoadingService, TokenService, ChannelType, Utils, AlertService, ValidateCustomerIdCardComponent, KioskControls, User, ErrorsService, } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from 'src/app/buy-product/constants/route-path.constant';
 import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE } from '../../constants/route-path.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
-import { ApiRequestService } from 'mychannel-shared-libs';
 
 declare var swal: any;
 
@@ -45,11 +44,11 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
     private tokenService: TokenService,
     private utils: Utils,
     private alertService: AlertService,
-    private injector: Injector
+    private errorsService: ErrorsService
   ) {
     this.user = this.tokenService.getUser();
     this.priceOption = this.priceOptionService.load();
-
+    this.errorsService.callback = () => this.onBack();
     this.homeService.callback = () => {
 
       this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่<br>การยกเลิกระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที')
@@ -101,7 +100,7 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
   onError(valid: boolean): void {
     this.readCardValid = valid;
     if (!this.profile) {
-      this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
+      this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน').then(() => this.onBack());
     }
   }
 
@@ -163,6 +162,7 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
             })
             .then((isError: boolean) => {
               if (isError) {
+                this.onBack();
                 return;
               }
               return this.http.post(
@@ -174,7 +174,10 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
                   return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
                 }).then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE]));
             });
-        }).then(() => this.pageLoadingService.closeLoading());
+        }).then(() => {
+          this.errorsService.callback = () => { };
+          this.pageLoadingService.closeLoading();
+        });
     });
   }
 

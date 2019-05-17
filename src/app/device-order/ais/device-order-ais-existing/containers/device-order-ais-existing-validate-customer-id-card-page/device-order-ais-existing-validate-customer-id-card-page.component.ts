@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, OnDestroy, Injector } from '@angular/core';
-import { ValidateCustomerIdCardComponent, HomeService, PageLoadingService, ReadCardProfile, TokenService, Utils, AlertService, KioskControls, ChannelType, User } from 'mychannel-shared-libs';
+import { ValidateCustomerIdCardComponent, HomeService, PageLoadingService, ReadCardProfile, TokenService, Utils, AlertService, KioskControls, ChannelType, User, ErrorsService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
@@ -45,11 +45,12 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
     private sharedTransactionService: SharedTransactionService,
-    private injector: Injector
+    private errorsService: ErrorsService
   ) {
     this.user = this.tokenService.getUser();
     this.priceOption = this.priceOptionService.load();
 
+    this.errorsService.callback = () => this.onBack();
     this.homeService.callback = () => {
       if (this.validateCustomerIdcard.koiskApiFn) {
         this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
@@ -90,7 +91,7 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
   onError(valid: boolean): void {
     this.readCardValid = valid;
     if (!this.profile) {
-      this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
+      this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน').then(() => this.onBack());
     }
   }
 
@@ -160,21 +161,27 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
           this.transaction.data.billingInformation = billingInformation;
 
           return this.conditionIdentityValid()
-            .then(() => {
+            .catch((msg: string) => {
+              return this.alertService.error(msg).then(() => true);
+            })
+            .then((isError: boolean) => {
+              if (isError) {
+                this.onBack();
+                return;
+              }
               return this.http.post(
                 '/api/salesportal/add-device-selling-cart',
                 this.getRequestAddDeviceSellingCart()
               ).toPromise()
-                .then((resp: any) => resp.data.soId);
-            })
-            .then((soId: string) => {
-              this.transaction.data.order = { soId: soId };
-
-              return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-            })
-            .then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_CUSTOMER_INFO_PAGE]));
-
-        }).then(() => this.pageLoadingService.closeLoading());
+                .then((resp: any) => {
+                  this.transaction.data.order = { soId: resp.data.soId };
+                  return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+                }).then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_CUSTOMER_INFO_PAGE]));
+            });
+        }).then(() => {
+          this.errorsService.callback = () => { };
+          this.pageLoadingService.closeLoading();
+        });
     });
   }
 
