@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { TokenService, ChannelType, I18nService } from 'mychannel-shared-libs';
+import { TokenService, ChannelType, HomeService, I18nService, VirtualKeyboardService } from 'mychannel-shared-libs';
 import { environment } from 'src/environments/environment';
 import { LocalStorageService } from 'ngx-store';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-main-menu-page',
@@ -40,6 +41,9 @@ export class MainMenuPageComponent implements OnInit, OnDestroy {
   currentLanguage: string = 'TH';
 
   constructor(
+    private router: Router,
+    private virtualKeyboardService: VirtualKeyboardService,
+    private homeService: HomeService,
     private tokenService: TokenService,
     private localStorageService: LocalStorageService
   ) {
@@ -49,9 +53,27 @@ export class MainMenuPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.homeService.callback = () => {
+      if (environment.name === 'LOCAL') {
+        window.location.href = '/main-menu';
+      } else {
+        window.location.href = '/smart-digital/main-menu';
+      }
+    };
+
     if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {
       this.keepCard(); // กรณีบัตรค้างในเครื่อง
     }
+  }
+
+  onClick(menu: any): void {
+    if (menu.text_th === 'เปิดเบอร์ใหม่') {
+      this.virtualKeyboardService.setAllowKeyboard(true);
+    } else {
+      this.currentLanguage = 'TH';
+      this.virtualKeyboardService.setAllowKeyboard(false);
+    }
+    this.router.navigate([menu.link]);
   }
 
   keepCard(): void {
@@ -68,12 +90,6 @@ export class MainMenuPageComponent implements OnInit, OnDestroy {
   switchLanguage(): void {
     this.currentLanguage = this.currentLanguage === 'TH' ? 'EN' : 'TH';
     this.localStorageService.set('lang', this.currentLanguage);
-  }
-
-  defaultLang(flow: string): void {
-    if (flow.includes('buy-product')) {
-      this.currentLanguage = 'TH';
-    }
   }
 
   ngOnDestroy(): void {
