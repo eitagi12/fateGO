@@ -216,7 +216,7 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
       tradePayment = {};
     }
 
-    if (trade.advancePay.installmentFlag === 'Y' || !payment || !advancePayment) {
+    if (trade.advancePay.installmentFlag === 'Y' || !payment || !advancePayment.paymentType) {
         //  tread no pay  จะเข้าอันนี้
       if (payment.paymentType === 'QR_CODE') {
         return payment.paymentQrCodeType === 'THAI_QR' ? 'PB' : 'RL';
