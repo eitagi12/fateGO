@@ -39,11 +39,11 @@ export class MainMenuPageComponent implements OnInit {
   }
 
   onClick(menu: any): void {
-    if (menu.text === 'เปิดเบอร์ใหม่') {
-      this.virtualKeyboardService.setAllowKeyboard(true);
-    } else {
-      this.virtualKeyboardService.setAllowKeyboard(false);
-    }
+    // if (menu.text === 'เปิดเบอร์ใหม่') {
+      // this.virtualKeyboardService.setAllowKeyboard(true);
+    // } else {
+      // this.virtualKeyboardService.setAllowKeyboard(false);
+    // }
     this.router.navigate([menu.link]);
   }
 
