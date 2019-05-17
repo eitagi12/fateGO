@@ -176,11 +176,7 @@ export class DeviceOrderAisMnpValidateCustomerIdCardPageComponent implements OnI
                   return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
                 }).then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_CUSTOMER_INFO_PAGE]));
             });
-        }).then(() => {
-          this.errorsService.callback = () => { };
-          this.pageLoadingService.closeLoading();
-        });
-
+        }).then(() => this.pageLoadingService.closeLoading());
     });
   }
 
@@ -235,6 +231,7 @@ export class DeviceOrderAisMnpValidateCustomerIdCardPageComponent implements OnI
   }
 
   ngOnDestroy(): void {
+    this.errorsService.callback = () => { };
     this.transactionService.update(this.transaction);
   }
 

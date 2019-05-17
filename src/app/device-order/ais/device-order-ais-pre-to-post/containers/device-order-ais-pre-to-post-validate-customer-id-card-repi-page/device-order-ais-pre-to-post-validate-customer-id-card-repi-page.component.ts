@@ -193,10 +193,7 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardRepiPageComponent impl
                     });
                 });
             });
-        }).then(() => {
-          this.errorsService.callback = () => { };
-          this.pageLoadingService.closeLoading();
-        });
+        }).then(() => this.pageLoadingService.closeLoading());
     });
   }
 
@@ -246,6 +243,7 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardRepiPageComponent impl
   }
 
   ngOnDestroy(): void {
+    this.errorsService.callback = () => { };
     this.transactionService.update(this.transaction);
   }
 

@@ -130,7 +130,9 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
         .then((zipCode: string) => {
           return this.http.get('/api/customerportal/validate-customer-new-register', {
             params: {
-              identity: this.profile.idCardNo
+              identity: this.profile.idCardNo,
+              idCardType: this.profile.idCardType,
+              transactionType: TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS
             }
           }).toPromise()
             .then((resp: any) => {
@@ -174,10 +176,7 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
                   return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
                 }).then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE]));
             });
-        }).then(() => {
-          this.errorsService.callback = () => { };
-          this.pageLoadingService.closeLoading();
-        });
+        }).then(() => this.pageLoadingService.closeLoading());
     });
   }
 
@@ -232,6 +231,7 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
   }
 
   ngOnDestroy(): void {
+    this.errorsService.callback = () => { };
     this.transactionService.update(this.transaction);
   }
 

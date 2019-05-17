@@ -178,10 +178,7 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
                   return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
                 }).then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_CUSTOMER_INFO_PAGE]));
             });
-        }).then(() => {
-          this.errorsService.callback = () => { };
-          this.pageLoadingService.closeLoading();
-        });
+        }).then(() => this.pageLoadingService.closeLoading());
     });
   }
 
@@ -297,6 +294,7 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
   }
 
   ngOnDestroy(): void {
+    this.errorsService.callback = () => { };
     this.transactionService.save(this.transaction);
     this.pageLoadingService.closeLoading();
   }
