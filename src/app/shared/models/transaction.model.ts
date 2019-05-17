@@ -46,6 +46,7 @@ export interface TransactionData {
   mainPackage?: MainPackage;
   currentPackage?: CurrentPackage;
   onTopPackage?: OnTopPackage;
+  deleteOntopPackage?: DeleteOntopPackage[];
   mainPackageOneLove?: any[];
   mobileCarePackage?: MobileCarePackage;
   faceRecognition?: FaceRecognition;
@@ -193,6 +194,9 @@ export interface CurrentPackage {
 }
 
 export interface PromotionsShelves {
+  [key: string]: any;
+}
+export interface DeleteOntopPackage {
   [key: string]: any;
 }
 

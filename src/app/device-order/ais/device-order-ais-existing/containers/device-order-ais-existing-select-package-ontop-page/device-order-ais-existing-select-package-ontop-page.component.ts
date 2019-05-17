@@ -12,7 +12,7 @@ import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.c
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { HttpClient } from '@angular/common/http';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
-import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
+import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
 export interface IPackage {
   title: string;
   detail: string;
@@ -59,12 +59,34 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     delete this.shoppingCart.mobileNo;
     this.callService(mobileNo);
+    this.createForm();
+  }
+
+  createForm(): void {
+    this.packageOntopForm = this.fb.group({
+      'package': ['', Validators.required],
+      'package1': ['', Validators.required],
+      'package2': ['', Validators.required],
+    });
+
+    setTimeout(() => {
+      console.log('this.packageOntopForm', this.packageOntopForm);
+    }, 10000);
+    // this.packageOntopForm.valueChanges.subscribe((observer: any) => {
+    //   console.log('observer', observer);
+    // });
+
+    // this.packageOntopForm.controls['package'].setValue(this.transaction.data.simCard.mobileNo);
   }
   callService(mobileNo: string): void {
     this.pageLoadingService.openLoading();
     this.http.get(`/api/customerportal/mobile-detail/${mobileNo}`).toPromise()
       .then((resp: any) => this.mappingPackageOnTop(resp))
       .catch(err => this.handleError(err));
+  }
+
+  onSummit(): void {
+    console.log('this.packageOntopForm ', this.packageOntopForm);
   }
 
   mappingPackageOnTop(resp: any): void {
