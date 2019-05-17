@@ -95,12 +95,7 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
 
       // ถ้ามี mobileCare เดิม จะไปหน้า เลือกว่าจะเปลี่ยน mobileCare หรือ ไม่
       // ถ้าไม่มี mobileCare เดิม จะไปหน้าเลือกวันที่มีผลรอบบิล
-      if (exMobileCare.hasExistingMobileCare) {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE]);
-      } else {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE]);
-      }
-
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE]);
     }).then(() => this.pageLoadingService.closeLoading());
   }
 
