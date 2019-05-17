@@ -123,8 +123,8 @@ export class QueuePageService {
       bankAbbr: payment && payment.paymentBank ? payment.paymentBank.abb : '',
       preBookingNo: prebooking ? prebooking.preBookingNo : '',
       depositAmt: prebooking ? prebooking.depositAmt : '',
-      qrTransId: mpayPayment.tranId,
-      qrAmt: mpayPayment.tranId ? this.getQRAmt(trade, transaction) : null,
+      qrTransId: payment.paymentType === 'QR_CODE' ? mpayPayment.tranId : null,
+      qrAmt: payment.paymentType === 'QR_CODE' && mpayPayment.tranId ? this.getQRAmt(trade, transaction) : null,
     };
 
     // freeGoods
@@ -216,7 +216,8 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
       tradePayment = {};
     }
 
-    if (trade.advancePay.installmentFlag === 'Y') {
+    if (trade.advancePay.installmentFlag === 'Y' || !payment || !advancePayment.paymentType) {
+        //  tread no pay  จะเข้าอันนี้
       if (payment.paymentType === 'QR_CODE') {
         return payment.paymentQrCodeType === 'THAI_QR' ? 'PB' : 'RL';
       }
