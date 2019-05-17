@@ -8,7 +8,7 @@ import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE
 } from 'src/app/device-order/ais/device-order-ais-pre-to-post/constants/route-path.constant';
 
-import { Transaction, TransactionType } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -170,7 +170,10 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
                 .then((resp: any) => {
                   this.transaction.data.order = { soId: resp.data.soId };
                   return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-                }).then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE]));
+                }).then(() => {
+                  this.transaction.data.action = TransactionAction.READ_CARD;
+                  this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE]);
+                });
             });
         }).then(() => {
           this.errorsService.callback = () => { };
