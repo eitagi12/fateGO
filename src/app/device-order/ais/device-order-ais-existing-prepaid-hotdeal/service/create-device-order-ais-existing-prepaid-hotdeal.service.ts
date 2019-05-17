@@ -107,11 +107,11 @@ export class CreateDeviceOrderAisExistingPrepaidHotdealService {
       mobileAisFlg: 'Y',
       reqMinimumBalance: this.getReqMinimumBalance(transactionData.onTopPackage, mobileCare),
       paymentMethod: this.getPaymentMethod(transaction, priceOption),
-      // bankCode: this.getBankCode(trade, payment, advancePay),
+      ankCode: payment && payment.paymentBank ? payment.paymentBank.abb : '',
       // tradeFreeGoodsId: trade.freeGoods[0] && trade.freeGoods[0].tradeFreegoodsId ? trade.freeGoods[0].tradeFreegoodsId : '',
       // tradeDiscountId: trade.discount.tradeDiscountId || '',
       // tradeAirtimeId: trade.advancePay.tradeAirtimeId || '',
-      // bankAbbr: this.getBankCode(trade, payment, advancePay),
+      bankAbbr: payment && payment.paymentBank ? payment.paymentBank.abb : '',
       convertToNetwotkType: customerGroup.code === 'MC002' ? '3G POSTPAID' : undefined,
       qrTransId: mpayPayment ? mpayPayment.tranId : '',
       qrAmt: this.getQRAmt(trade, transaction)
