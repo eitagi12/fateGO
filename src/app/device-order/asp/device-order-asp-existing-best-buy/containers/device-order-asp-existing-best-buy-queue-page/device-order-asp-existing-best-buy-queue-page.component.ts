@@ -27,6 +27,9 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
   mobileNo: string;
   isAutoGenQueue: boolean;
   skipQueue: boolean = false;
+  queueType: string;
+  errorQueue: boolean = true;
+  inputType: string;
 
   constructor(
     private router: Router,
@@ -46,22 +49,20 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
   }
 
   ngOnInit(): void {
-    // this.isAutoGenQueue = this.user.locationCode === '1100';
-    this.queuePageService.checkQueueLocation().then((isQueueAuto) => {
-      this.isAutoGenQueue = isQueueAuto;
-    }).then(() => this.createForm());
+    this.setValueQueueType();
     this.createForm();
+  }
+
+  setValueQueueType(): void {
+    this.queuePageService.checkQueueLocation().then((queueType) => {
+      this.queueType = queueType;
+    }).then(() => this.createForm());
   }
 
   createForm(): void {
     this.mobileFrom = this.fb.group({
       'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(/^0[6-9]{1}[0-9]{8}/)])],
     });
-
-    if (this.transaction.data.simCard.mobileNo) {
-      this.mobileFrom.patchValue({mobileNo: this.transaction.data.simCard.mobileNo});
-      this.mobileNo = this.transaction.data.simCard.mobileNo;
-    }
 
     this.mobileFrom.valueChanges.subscribe((value) => {
       this.mobileNo = value.mobileNo;
@@ -73,38 +74,21 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
 
     this.queueFrom.valueChanges.subscribe((value) => {
       this.queue = value.queue;
-      this.isAutoGenQueue = false;
     });
+  }
+
+  checkInput(event: any, type: string): void {
+    this.inputType = type;
+    if (type === 'mobileNo') {
+      this.queueFrom.reset();
+    } else {
+      this.mobileFrom.reset();
+    }
   }
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    if (this.isAutoGenQueue) {
-      this.onSendSMSQueue(this.mobileNo).then((queue) => {
-        if (queue) {
-          this.transaction.data.queue = { queueNo: queue };
-          return this.http.post('/api/salesportal/create-device-selling-order',
-            this.getRequestCreateOrder(this.transaction, this.priceOption))
-            .toPromise()
-            .then(() => {
-              return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
-                this.pageLoadingService.closeLoading();
-                this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_RESULT_PAGE]);
-              });
-            });
-        } else {
-          this.isAutoGenQueue = false;
-          this.pageLoadingService.closeLoading();
-          this.alertService.error('ขออภัยค่ะ ระบบไม่สามารถ กดรับบัตรคิวอัตโนมัติได้ \n กรุณาระบุหมายเลขคิว');
-          return;
-        }
-      }).catch(() => {
-        this.isAutoGenQueue = false;
-        this.pageLoadingService.closeLoading();
-        this.alertService.error('ขออภัยค่ะ ระบบไม่สามารถ กดรับบัตรคิวอัตโนมัติได้ \n กรุณาระบุหมายเลขคิว');
-        return;
-      });
-    } else {
+    if (this.queueType === 'MANUAL' || this.inputType === 'queue') {
       this.transaction.data.queue = { queueNo: this.queue };
       this.http.post('/api/salesportal/create-device-selling-order',
         this.getRequestCreateOrder(this.transaction, this.priceOption)).toPromise()
@@ -114,6 +98,35 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
             this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_RESULT_PAGE]);
           });
         });
+    } else {
+      this.onSendSMSQueue(this.mobileNo).then((queue) => {
+        if (queue) {
+          this.transaction.data.queue = { queueNo: queue };
+          return this.http.post('/api/salesportal/create-device-selling-order',
+            this.getRequestCreateOrder(this.transaction, this.priceOption))
+            .toPromise()
+            .then((res) => {
+              return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
+                this.pageLoadingService.closeLoading();
+                this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_RESULT_PAGE]);
+              });
+            });
+        } else {
+          this.pageLoadingService.closeLoading();
+          this.queueType = 'MANUAL';
+          this.errorQueue = true;
+          this.clearInput();
+          this.alertService.error('ขออภัยค่ะ ระบบไม่สามารถ กดรับบัตรคิวอัตโนมัติได้ \n กรุณาระบุหมายเลขคิว');
+          return;
+        }
+      }).catch(() => {
+        this.pageLoadingService.closeLoading();
+        this.queueType = 'MANUAL';
+        this.errorQueue = true;
+        this.clearInput();
+        this.alertService.error('ขออภัยค่ะ ระบบไม่สามารถ กดรับบัตรคิวอัตโนมัติได้ \n กรุณาระบุหมายเลขคิว');
+        return;
+      });
     }
   }
 
@@ -132,7 +145,11 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
           } else {
             reject(null);
           }
+        }).catch((error: any) => {
+          reject(null);
         });
+    }).catch((error: any) => {
+      return;
     });
   }
 
@@ -341,11 +358,21 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
   }
 
   checkValid(): boolean {
-    if (!this.isAutoGenQueue) {
-      return !!this.queueFrom.invalid;
+    if (this.queueType === 'AUTO_GEN_Q') {
+      return this.mobileFrom.invalid && this.queueFrom.invalid;
+    } else if (this.queueType === 'SMART_SHOP') {
+      return this.mobileFrom.invalid;
     } else {
-      return !!this.mobileFrom.invalid;
+      return this.queueFrom.invalid;
     }
   }
 
+  checkSkip(): boolean {
+    return !this.queueFrom.value['queue'] && !this.mobileFrom.value['mobileNo'] ? false : true;
+  }
+
+  clearInput(): any {
+    this.queueFrom.value['queue'] = null;
+    this.mobileFrom.value['mobileNo'] = null;
+  }
 }
