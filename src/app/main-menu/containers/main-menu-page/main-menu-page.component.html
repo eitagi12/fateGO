@@ -13,7 +13,7 @@
 
     <div class="row">
       <div class="col-6 text-center mb-5" *ngFor="let menu of menus">
-        <a href="#" [routerLink]="menu?.link" class="text-grey">
+        <a href="#" (click)="defaultLang(menu?.link);" [routerLink]="menu?.link" class="text-grey">
           <img [src]="menu?.icon" class="img-fluid" />
           <h3>{{ currentLanguage ==='TH' ? menu?.text_th : menu?.text_en }}</h3>
         </a>
