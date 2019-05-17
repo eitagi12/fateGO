@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { HomeService, ReadCardProfile, PageLoadingService, AlertService, TokenService, ChannelType, ValidateCustomerIdCardComponent, KioskControls, Utils, User } from 'mychannel-shared-libs';
+import { HomeService, ReadCardProfile, PageLoadingService, AlertService, TokenService, ChannelType, ValidateCustomerIdCardComponent, KioskControls, Utils, User, ErrorsService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
@@ -46,11 +46,13 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardRepiPageComponent impl
     private tokenService: TokenService,
     private utils: Utils,
     private alertService: AlertService,
+    private errorsService: ErrorsService
   ) {
     this.user = this.tokenService.getUser();
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
+    this.errorsService.callback = () => this.onBack();
   }
 
   ngOnInit(): void {
@@ -81,7 +83,7 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardRepiPageComponent impl
   onError(valid: boolean): void {
     this.readCardValid = valid;
     if (!this.profile) {
-      this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
+      this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน').then(() => this.onBack());
     }
   }
 
@@ -156,38 +158,45 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardRepiPageComponent impl
           this.transaction.data.billingInformation = billingInformation;
 
           return this.conditionIdentityValid()
-            .then(() => {
+            .catch((msg: string) => {
+              return this.alertService.error(msg).then(() => true);
+            })
+            .then((isError: boolean) => {
+              if (isError) {
+                this.onBack();
+                return;
+              }
               return this.http.post(
                 '/api/salesportal/add-device-selling-cart',
                 this.getRequestAddDeviceSellingCart()
               ).toPromise()
-                .then((resp: any) => resp.data.soId);
-            })
-            .then((soId: string) => {
-              this.transaction.data.order = { soId: soId };
+                .then((resp: any) => {
+                  this.transaction.data.order = { soId: resp.data.soIdId };
+                  return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+                }).then(() => {// verify Prepaid Ident
 
-              return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-            })
-            .then(() => {// verify Prepaid Ident
-
-              return this.http.get('/api/customerportal/newRegister/verifyPrepaidIdent', {
-                params: {
-                  idCard: this.profile.idCardNo,
-                  mobileNo: this.transaction.data.simCard.mobileNo
-                }
-              })
-                .toPromise()
-                .then((respPrepaidIdent: any) => {
-                  if (respPrepaidIdent.data && respPrepaidIdent.data.success) {
-                    this.transaction.data.action = TransactionAction.READ_CARD;
-                    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CUSTOMER_INFO_PAGE]);
-                  } else {
-                    this.transaction.data.action = TransactionAction.READ_CARD_REPI;
-                    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CUSTOMER_PROFILE_PAGE]);
-                  }
+                  return this.http.get('/api/customerportal/newRegister/verifyPrepaidIdent', {
+                    params: {
+                      idCard: this.profile.idCardNo,
+                      mobileNo: this.transaction.data.simCard.mobileNo
+                    }
+                  })
+                    .toPromise()
+                    .then((respPrepaidIdent: any) => {
+                      if (respPrepaidIdent.data && respPrepaidIdent.data.success) {
+                        this.transaction.data.action = TransactionAction.READ_CARD;
+                        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CUSTOMER_INFO_PAGE]);
+                      } else {
+                        this.transaction.data.action = TransactionAction.READ_CARD_REPI;
+                        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CUSTOMER_PROFILE_PAGE]);
+                      }
+                    });
                 });
             });
-        }).then(() => this.pageLoadingService.closeLoading());
+        }).then(() => {
+          this.errorsService.callback = () => { };
+          this.pageLoadingService.closeLoading();
+        });
     });
   }
 

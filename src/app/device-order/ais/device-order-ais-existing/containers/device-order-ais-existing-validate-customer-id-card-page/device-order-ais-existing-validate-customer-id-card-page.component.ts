@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, OnDestroy, Injector } from '@angular/core';
-import { ValidateCustomerIdCardComponent, HomeService, PageLoadingService, ReadCardProfile, TokenService, Utils, AlertService, KioskControls, ChannelType, User } from 'mychannel-shared-libs';
+import { ValidateCustomerIdCardComponent, HomeService, PageLoadingService, ReadCardProfile, TokenService, Utils, AlertService, KioskControls, ChannelType, User, ErrorsService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
@@ -45,11 +45,12 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
     private sharedTransactionService: SharedTransactionService,
-    private injector: Injector
+    private errorsService: ErrorsService
   ) {
     this.user = this.tokenService.getUser();
     this.priceOption = this.priceOptionService.load();
 
+    this.errorsService.callback = () => this.onBack();
     this.homeService.callback = () => {
       if (this.validateCustomerIdcard.koiskApiFn) {
         this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
@@ -90,7 +91,7 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
   onError(valid: boolean): void {
     this.readCardValid = valid;
     if (!this.profile) {
-      this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
+      this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน').then(() => this.onBack());
     }
   }
 
@@ -112,7 +113,6 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    let isValidate = true;
     this.returnStock().then(() => {
 
       this.createTransaction();
@@ -133,24 +133,6 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
                 billCycle: data.billCycle,
                 zipCode: zipCode
               };
-            }).catch((error: any) => {
-              isValidate = false;
-              this.alertService.notify({
-                type: 'error',
-                onBeforeOpen: () => {
-                  const content = swal.getContent();
-                  const $ = content.querySelector.bind(content);
-                  const errorDetail = $('#error-detail');
-                  const errorDetailDisplay = $('#error-detail-display');
-                  errorDetail.addEventListener('click', (evt) => {
-                    errorDetail.classList.add('d-none');
-                    errorDetailDisplay.classList.remove('d-none');
-                  });
-                },
-                html: this.getTemplateServerError(error)
-              }).then(() => {
-                this.onBack();
-              });
             });
         })
         .then((customer: any) => { // load bill cycle
@@ -179,83 +161,28 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
           this.transaction.data.billingInformation = billingInformation;
 
           return this.conditionIdentityValid()
-            .then(() => {
+            .catch((msg: string) => {
+              return this.alertService.error(msg).then(() => true);
+            })
+            .then((isError: boolean) => {
+              if (isError) {
+                this.onBack();
+                return;
+              }
               return this.http.post(
                 '/api/salesportal/add-device-selling-cart',
                 this.getRequestAddDeviceSellingCart()
               ).toPromise()
-                .then((resp: any) => resp.data.soId);
-            })
-            .then((soId: string) => {
-              this.transaction.data.order = { soId: soId };
-
-              return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-            })
-            .then(() => {
-              if (isValidate) {
-                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_CUSTOMER_INFO_PAGE]);
-              }
+                .then((resp: any) => {
+                  this.transaction.data.order = { soId: resp.data.soId };
+                  return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+                }).then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_CUSTOMER_INFO_PAGE]));
             });
-
         }).then(() => {
-          if (isValidate) {
-            this.pageLoadingService.closeLoading();
-          }
+          this.errorsService.callback = () => { };
+          this.pageLoadingService.closeLoading();
         });
-
     });
-  }
-
-  private getTemplateServerError(error: HttpErrorResponse): string {
-    const apiRequestService = this.injector.get(ApiRequestService);
-    const mcError = error.error;
-
-    if (mcError && mcError.resultDescription) {
-      let message = '';
-      if (mcError.errors) {
-        if (Array.isArray(mcError.errors)) {
-          mcError.errors.forEach(e => {
-            message += `<li>${this.htmlEntities(e.message || e)}</li>`;
-          });
-        } else {
-          message += this.htmlEntities(JSON.stringify(mcError.errors));
-        }
-        return `
-            <div class="text-left mb-2 mx-3">${message}</div>
-            <div class="text-right" id="error-detail">
-                <i class="fa fa-angle-double-right"></i>
-                <small>รายละเอียด</small>
-            </div>
-            <div class="py-2 text-left d-none" id="error-detail-display">
-                <div>REF: ${apiRequestService.getCurrentRequestId() || '-'}</div>
-                <div>URL: ${error.url || '-'} - [${error.status}]</div>
-            </div>
-            `;
-      } else {
-        return `
-            <div class="text-center mb-2"><b>${mcError.resultDescription || 'ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'}</b></div>
-            <div class="text-right" id="error-detail">
-                <i class="fa fa-angle-double-right"></i>
-                <small>รายละเอียด</small>
-            </div>
-            <div class="py-2 text-left d-none" id="error-detail-display">
-                <div class="mb-2 mx-3">${message}</div>
-                <div>REF: ${apiRequestService.getCurrentRequestId() || '-'}</div>
-                <div>URL: ${error.url || '-'} - [${error.status}]</div>
-            </div>
-            `;
-      }
-    } else {
-      return `
-        <div class="text-center mb-2"><b>ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้<b></div>
-        <div class="mb-2">${error.status} - ${error.statusText}</div>
-        <div>${error.message}</div>
-        `;
-    }
-  }
-
-  htmlEntities(str: any): any {
-    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
   conditionIdentityValid(): Promise<string> {
