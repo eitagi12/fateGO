@@ -61,10 +61,6 @@ export class DeviceOrderAisPreToPostEligibleMobilePageComponent implements OnIni
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
-    this.homeService.callback = () => {
-      window.location.href = '/smart-shop';
-    };
-
   }
 
   ngOnInit(): void {
