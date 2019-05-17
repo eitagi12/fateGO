@@ -124,7 +124,6 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    let isValidate = true;
     this.returnStock().then(() => {
       // มี auto next ทำให้ create transaction ช้ากว่า read card
       this.createTransaction();
@@ -143,24 +142,6 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
                 billCycle: data.billCycle,
                 zipCode: zipCode
               };
-            }).catch((error: any) => {
-              isValidate = false;
-              this.alertService.notify({
-                type: 'error',
-                onBeforeOpen: () => {
-                  const content = swal.getContent();
-                  const $ = content.querySelector.bind(content);
-                  const errorDetail = $('#error-detail');
-                  const errorDetailDisplay = $('#error-detail-display');
-                  errorDetail.addEventListener('click', (evt) => {
-                    errorDetail.classList.add('d-none');
-                    errorDetailDisplay.classList.remove('d-none');
-                  });
-                },
-                html: this.getTemplateServerError(error)
-              }).then(() => {
-                this.onBack();
-              });
             });
         })
         .then((customer: any) => {
@@ -193,65 +174,8 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
                   return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
                 }).then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE]));
             });
-        }).then(() => {
-          if (isValidate) {
-            this.pageLoadingService.closeLoading();
-          }
-        });
-
+        }).then(() => this.pageLoadingService.closeLoading());
     });
-  }
-
-  private getTemplateServerError(error: HttpErrorResponse): string {
-    const apiRequestService = this.injector.get(ApiRequestService);
-    const mcError = error.error;
-
-    if (mcError && mcError.resultDescription) {
-      let message = '';
-      if (mcError.errors) {
-        if (Array.isArray(mcError.errors)) {
-          mcError.errors.forEach(e => {
-            message += `<li>${this.htmlEntities(e.message || e)}</li>`;
-          });
-        } else {
-          message += this.htmlEntities(JSON.stringify(mcError.errors));
-        }
-        return `
-            <div class="text-left mb-2 mx-3">${message}</div>
-            <div class="text-right" id="error-detail">
-                <i class="fa fa-angle-double-right"></i>
-                <small>รายละเอียด</small>
-            </div>
-            <div class="py-2 text-left d-none" id="error-detail-display">
-                <div>REF: ${apiRequestService.getCurrentRequestId() || '-'}</div>
-                <div>URL: ${error.url || '-'} - [${error.status}]</div>
-            </div>
-            `;
-      } else {
-        return `
-            <div class="text-center mb-2"><b>${mcError.resultDescription || 'ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'}</b></div>
-            <div class="text-right" id="error-detail">
-                <i class="fa fa-angle-double-right"></i>
-                <small>รายละเอียด</small>
-            </div>
-            <div class="py-2 text-left d-none" id="error-detail-display">
-                <div class="mb-2 mx-3">${message}</div>
-                <div>REF: ${apiRequestService.getCurrentRequestId() || '-'}</div>
-                <div>URL: ${error.url || '-'} - [${error.status}]</div>
-            </div>
-            `;
-      }
-    } else {
-      return `
-        <div class="text-center mb-2"><b>ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้<b></div>
-        <div class="mb-2">${error.status} - ${error.statusText}</div>
-        <div>${error.message}</div>
-        `;
-    }
-  }
-
-  htmlEntities(str: any): any {
-    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
   }
 
   createTransaction(): void {
