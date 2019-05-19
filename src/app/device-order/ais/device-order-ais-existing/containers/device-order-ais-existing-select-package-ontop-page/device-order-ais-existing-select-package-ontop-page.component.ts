@@ -62,6 +62,7 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent
   }
 
   ngOnInit(): void {
+    // test
     // const idCardNo = this.transaction.data.customer.idCardNo;
     // const mobileNo = this.transaction.data.simCard.mobileNo;
     const mobileNo = '0910011560';
