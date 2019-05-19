@@ -1,10 +1,10 @@
-<!-- <div class="mc-flex">
+<div class="mc-flex">
   <mc-header title="{{ 'ลูกค้าปัจจุบัน' | translate }}">
     <div class="header-icon-left w-25">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
     <div class="header-icon-right w-25 text-right">
-      <mc-dropdown-language></mc-dropdown-language>
+      <!-- <mc-dropdown-language></mc-dropdown-language> -->
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
@@ -39,10 +39,13 @@
                   </div>
               <div *ngIf="packageOntopList?.length < 1 " class="text-center p-3"></div>
               <form (ngSubmit)="onSummit()"[formGroup]="packageOntopForm">
-                <div *ngFor=" let packageOntop of packageOntopList; let i = index" class="p-3">
+                <div *ngFor="let packageOntop of packageOntopList; let i = index" class="p-3">
                   <div class="row pb-2">
                     <div class="col-8 col-sm-9 ">
-                      <input type="checkbox" id="{{ packageOntop.promotionCode }}" name="{{ packageOntop.promotionCode }}" value="packageOntop" formControlName="package">
+                      <input type="checkbox" (change)="onClick(packageOntop, $event)" 
+                      id="{{ packageOntop.promotionCode }}" 
+                      name="{{ packageOntop.promotionCode }}" 
+                      value="packageOntop" formControlName="package">
                       <label for="{{packageOntop.promotionCode  }}">{{ packageOntop.title}}</label>
                       <div class="endDt"> สิ้นสุดวันที่: {{ packageOntop.endDt }}</div>
                     </div>
@@ -64,10 +67,6 @@
       <button class="btn btn-secondary" (click)="onBack()">BACK</button>
       <button type="submit" class="btn btn-success" (click)="onNext()">NEXT</button>
     </mc-footer>
-  </div> -->
+  </div>
 
-  <form [formGroup]="packageOntopForm">
-    <input type="radio" id="xxx" value="aaa" formControlName="package"><label for="xxx">xxx</label>
-    <input type="radio" id="yyy" value="bbb" formControlName="package1"><label for="yyy">yyy</label>
-    <input type="radio" id="zzz" value="ccc" formControlName="package2"><label for="zzz">zzz</label>
-  </form>
+ 

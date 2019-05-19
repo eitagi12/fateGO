@@ -6,13 +6,14 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import {
   ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_VALIDATE_CUSTOMER_KEY_IN_PAGE
 } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { HttpClient } from '@angular/common/http';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
-import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, FormControl, Validators } from '@angular/forms';
 export interface IPackage {
   title: string;
   detail: string;
@@ -22,21 +23,29 @@ export interface IPackage {
 
 @Component({
   selector: 'app-device-order-ais-existing-select-package-ontop-page',
-  templateUrl: './device-order-ais-existing-select-package-ontop-page.component.html',
-  styleUrls: ['./device-order-ais-existing-select-package-ontop-page.component.scss']
+  templateUrl:
+    './device-order-ais-existing-select-package-ontop-page.component.html',
+  styleUrls: [
+    './device-order-ais-existing-select-package-ontop-page.component.scss'
+  ]
 })
-export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements OnInit, OnDestroy {
+export class DeviceOrderAisExistingSelectPackageOntopPageComponent
+  implements OnInit, OnDestroy {
   @ViewChild('template')
   template: TemplateRef<any>;
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
   modalRef: BsModalRef;
   detail: string;
 
+  arrCheckBox: Array<Object> = [];
+
   transaction: Transaction;
   customerInfo: CustomerInfo;
   shoppingCart: ShoppingCart;
   packageOntopList: IPackage[];
   packageOntopForm: FormGroup;
+
+  testFrom: FormGroup;
 
   constructor(
     private router: Router,
@@ -53,49 +62,66 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
   }
 
   ngOnInit(): void {
-    const idCardNo = this.transaction.data.customer.idCardNo;
+    // const idCardNo = this.transaction.data.customer.idCardNo;
     // const mobileNo = this.transaction.data.simCard.mobileNo;
     const mobileNo = '0910011560';
-    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-    delete this.shoppingCart.mobileNo;
+    // this.shoppingCart = this.shoppingCartService.getShoppingCartData();
+    // delete this.shoppingCart.mobileNo;
     this.callService(mobileNo);
     this.createForm();
   }
-
+  onClick(value: any, event: Event): void {
+    // this.arrCheckBox = [...this.arrCheckBox, value]
+    const checkbox = event.target as HTMLInputElement;
+    if (checkbox.checked) {
+      this.arrCheckBox.push(value);
+      // this.arrCheckBox = this.unique(this.arrCheckBox, "title")
+    } else {
+      this.arrCheckBox.splice(this.arrCheckBox.length - 1, 1);
+    }
+    console.log(this.arrCheckBox); // [17, 35]
+    // console.log(JSON.stringify(value));
+  }
   createForm(): void {
-    this.packageOntopForm = this.fb.group({
-      'package': ['', Validators.required],
-      'package1': ['', Validators.required],
-      'package2': ['', Validators.required],
+    // const formControls = this.packageOntopList.map(control => new FormControl(false))
+    // console.log(formControls)
+
+    this.packageOntopForm = new FormGroup({
+      package: new FormControl()
     });
-
-    setTimeout(() => {
-      console.log('this.packageOntopForm', this.packageOntopForm);
-    }, 10000);
-    // this.packageOntopForm.valueChanges.subscribe((observer: any) => {
-    //   console.log('observer', observer);
+    // this.packageOntopForm = this.fb.group({
+    //   package: new FormControl(),
     // });
-
-    // this.packageOntopForm.controls['package'].setValue(this.transaction.data.simCard.mobileNo);
   }
   callService(mobileNo: string): void {
     this.pageLoadingService.openLoading();
-    this.http.get(`/api/customerportal/mobile-detail/${mobileNo}`).toPromise()
+    this.http
+      .get(`/api/customerportal/mobile-detail/${mobileNo}`)
+      .toPromise()
       .then((resp: any) => this.mappingPackageOnTop(resp))
       .catch(err => this.handleError(err));
   }
 
   onSummit(): void {
-    console.log('this.packageOntopForm ', this.packageOntopForm);
+    // Filter out the unselected ids
+    const selectedPreferences = this.packageOntopForm;
+    console.log(selectedPreferences);
+    // .map((checked, index) => checked ? this.musicPreferences[index].id : null)
+    // .filter(value => value !== null);
+    // Do something with the result
+    // ...
+    // console.log('this.packageOntopForm ', this.packageOntopForm);
   }
 
   mappingPackageOnTop(resp: any): void {
     const data = resp.data.packageOntop || {};
     const packageOntop = data.filter((packageOntopList: any) => {
       // tslint:disable-next-line:typedef
-      return /On-Top/.test(packageOntopList.productClass)
-        && packageOntopList.priceType === 'Recurring'
-        && packageOntopList.priceExclVat > 0;
+      return (
+        /On-Top/.test(packageOntopList.productClass) &&
+        packageOntopList.priceType === 'Recurring' &&
+        packageOntopList.priceExclVat > 0
+      );
     });
     this.packageOntopList = packageOntop;
     console.log('packageOntopList', this.packageOntopList);
@@ -106,16 +132,25 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
     this.pageLoadingService.closeLoading();
     const error = err.error || {};
     const developerMessage = (error.errors || {}).developerMessage;
-    this.alertService.error((developerMessage && error.resultDescription)
-      ? `${developerMessage} ${error.resultDescription}` : `ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้`);
+    this.alertService.error(
+      developerMessage && error.resultDescription
+        ? `${developerMessage} ${error.resultDescription}`
+        : `ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้`
+    );
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE]);
+    this.router.navigate([
+      ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE
+    ]);
   }
 
   onNext(): void {
-    this.router.navigate([this.checkRouteByExistingMobileCare()]);
+    console.log(this.arrCheckBox);
+    // this.transaction.data.deleteOntopPackage = this.arrCheckBox;
+    this.router.navigate([
+      ROUTE_DEVICE_ORDER_AIS_EXISTING_VALIDATE_CUSTOMER_KEY_IN_PAGE
+    ]);
   }
 
   checkRouteByExistingMobileCare(): string {
@@ -132,7 +167,9 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
 
   onOpenModal(detail: string): void {
     this.detail = detail || '';
-    this.modalRef = this.modalService.show(this.template, { class: 'pt-5 mt-5' });
+    this.modalRef = this.modalService.show(this.template, {
+      class: 'pt-5 mt-5'
+    });
   }
 
   ngOnDestroy(): void {
