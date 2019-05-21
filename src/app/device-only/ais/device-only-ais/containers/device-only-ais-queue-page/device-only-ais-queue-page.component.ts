@@ -39,7 +39,7 @@ export class DeviceOnlyAisQueuePageComponent implements OnInit, OnDestroy {
 
   checkPaymentType(): void {
     if (this.transaction.data.payment.paymentType === 'QR_CODE') {
-      this.paymentQr = 'รวดยอดชำระ';
+      this.paymentQr = 'รวมยอดชำระ';
     } else {
       this.paymentQr = 'ยอดค้างชำระ';
     }
