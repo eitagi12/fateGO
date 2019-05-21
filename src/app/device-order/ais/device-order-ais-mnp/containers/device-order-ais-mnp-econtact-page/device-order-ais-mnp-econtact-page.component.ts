@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction } from 'src/app/shared/models/transaction.model';
@@ -19,7 +19,7 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./device-order-ais-mnp-econtact-page.component.scss'],
   providers: [IdCardPipe, DecimalPipe]
 })
-export class DeviceOrderAisMnpEcontactPageComponent implements OnInit {
+export class DeviceOrderAisMnpEcontactPageComponent implements OnInit, OnDestroy {
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   priceOption: PriceOption;
@@ -155,6 +155,10 @@ export class DeviceOrderAisMnpEcontactPageComponent implements OnInit {
       return advancePayPromotions[0].month;
     }
     return 0;
+  }
+
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
   }
 
 }
