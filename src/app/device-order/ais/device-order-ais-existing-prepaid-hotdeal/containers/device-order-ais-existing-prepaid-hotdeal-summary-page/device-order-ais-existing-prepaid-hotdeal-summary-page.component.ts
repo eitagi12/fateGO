@@ -113,7 +113,18 @@ export class DeviceOrderAisExistingPrepaidHotdealSummaryPageComponent implements
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_AGGREGATE_PAGE]);
+    this.pageLoadingService.openLoading();
+    const saveIdCardImageRequest: any = {
+      mobileNo: this.transaction.data.simCard.mobileNo || '',
+      idCardNo: this.transaction.data.customer.idCardNo,
+      imageReadSmartCard:  this.transaction.data.customer.imageReadSmartCard.replace('data:image/jpg;base64,', '') || '',
+      imageTakePhoto: '' // flow prepaid ไม่มีถ่ายรูป
+    };
+    this.http.post('/api/customerportal/saveIdcardImage' , saveIdCardImageRequest).toPromise()
+    .then(() => {
+      this.pageLoadingService.closeLoading();
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_AGGREGATE_PAGE]);
+    });
   }
 
   onBack(): void {
