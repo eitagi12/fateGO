@@ -65,7 +65,7 @@ export class CreateEapplicationService {
       fullNameEN: `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}`,
       issueDate: customer.issueDate || '',
       expireDate: customer.expireDate || '',
-      signature: customer.imageSignature || '',
+      signature: '',
     };
 
     if (action === TransactionAction.READ_CARD || action === TransactionAction.READ_CARD_REPI) {
