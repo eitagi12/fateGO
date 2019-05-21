@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { ReadCardProfile, HomeService, PageLoadingService, TokenService, ChannelType, Utils, AlertService, ValidateCustomerIdCardComponent, KioskControls, User, ErrorsService, } from 'mychannel-shared-libs';
+import { ReadCardProfile, HomeService, PageLoadingService, TokenService, ChannelType, Utils, AlertService, ValidateCustomerIdCardComponent, KioskControls, User } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -43,12 +43,10 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
     private http: HttpClient,
     private tokenService: TokenService,
     private utils: Utils,
-    private alertService: AlertService,
-    private errorsService: ErrorsService
+    private alertService: AlertService
   ) {
     this.user = this.tokenService.getUser();
     this.priceOption = this.priceOptionService.load();
-    this.errorsService.callback = () => this.onBack();
     this.homeService.callback = () => {
 
       this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่<br>การยกเลิกระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที')
@@ -231,7 +229,6 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
   }
 
   ngOnDestroy(): void {
-    this.errorsService.callback = () => { };
     this.transactionService.update(this.transaction);
   }
 
