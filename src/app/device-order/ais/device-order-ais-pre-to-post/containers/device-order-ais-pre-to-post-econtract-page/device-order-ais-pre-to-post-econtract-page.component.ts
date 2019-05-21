@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { HomeService, ShoppingCart, PageLoadingService, TokenService, IdCardPipe, Utils } from 'mychannel-shared-libs';
@@ -19,7 +19,7 @@ import {
   templateUrl: './device-order-ais-pre-to-post-econtract-page.component.html',
   styleUrls: ['./device-order-ais-pre-to-post-econtract-page.component.scss']
 })
-export class DeviceOrderAisPreToPostEcontractPageComponent implements OnInit {
+export class DeviceOrderAisPreToPostEcontractPageComponent implements OnInit, OnDestroy {
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   priceOption: PriceOption;
@@ -144,6 +144,10 @@ export class DeviceOrderAisPreToPostEcontractPageComponent implements OnInit {
       return advancePayPromotions[0].month;
     }
     return 0;
+  }
+
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
   }
 
 }
