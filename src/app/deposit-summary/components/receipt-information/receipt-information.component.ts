@@ -154,8 +154,8 @@ export class ReceiptInformationComponent implements OnInit {
       telNo: ['', [Validators.pattern(/^0[6-9]\d{8}$/)]],
     });
     this.receiptInfoForm.controls['taxId'].setValue(this.transaction.data.customer.idCardNo);
-    this.billingAddress.getLocationName()
-      .subscribe((resp) => this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName));
+    // this.billingAddress.getLocationName()
+    //   .subscribe((resp) => this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName));
     this.disabledForm();
     this.disableFormAmphurAndTumbol();
     this.customerAddressForm.patchValue(this.customerAddress || {});
