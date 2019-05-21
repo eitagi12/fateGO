@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, OnDestroy, Injector } from '@angular/core';
-import { ValidateCustomerIdCardComponent, HomeService, PageLoadingService, ReadCardProfile, TokenService, Utils, AlertService, KioskControls, ChannelType, User, ErrorsService } from 'mychannel-shared-libs';
+import { ValidateCustomerIdCardComponent, HomeService, PageLoadingService, ReadCardProfile, TokenService, Utils, AlertService, KioskControls, ChannelType, User } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
@@ -44,13 +44,11 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
     private priceOptionService: PriceOptionService,
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
-    private sharedTransactionService: SharedTransactionService,
-    private errorsService: ErrorsService
+    private sharedTransactionService: SharedTransactionService
   ) {
     this.user = this.tokenService.getUser();
     this.priceOption = this.priceOptionService.load();
 
-    this.errorsService.callback = () => this.onBack();
     this.homeService.callback = () => {
       if (this.validateCustomerIdcard.koiskApiFn) {
         this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
@@ -294,7 +292,6 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
   }
 
   ngOnDestroy(): void {
-    this.errorsService.callback = () => { };
     this.transactionService.save(this.transaction);
     this.pageLoadingService.closeLoading();
   }

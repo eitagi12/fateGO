@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { HomeService, ReadCardProfile, PageLoadingService, AlertService, TokenService, ChannelType, ValidateCustomerIdCardComponent, KioskControls, Utils, User, ErrorsService } from 'mychannel-shared-libs';
+import { HomeService, ReadCardProfile, PageLoadingService, AlertService, TokenService, ChannelType, ValidateCustomerIdCardComponent, KioskControls, Utils, User } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 
@@ -45,14 +45,12 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardRepiPageComponent impl
     private http: HttpClient,
     private tokenService: TokenService,
     private utils: Utils,
-    private alertService: AlertService,
-    private errorsService: ErrorsService
+    private alertService: AlertService
   ) {
     this.user = this.tokenService.getUser();
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
-    this.errorsService.callback = () => this.onBack();
   }
 
   ngOnInit(): void {
@@ -243,7 +241,6 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardRepiPageComponent impl
   }
 
   ngOnDestroy(): void {
-    this.errorsService.callback = () => { };
     this.transactionService.update(this.transaction);
   }
 

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
-import { ReadCardProfile, HomeService, TokenService, PageLoadingService, User, ValidateCustomerIdCardComponent, Utils, AlertService, KioskControls, ChannelType, ErrorsService } from 'mychannel-shared-libs';
+import { ReadCardProfile, HomeService, TokenService, PageLoadingService, User, ValidateCustomerIdCardComponent, Utils, AlertService, KioskControls, ChannelType } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ROUTE_DEVICE_ORDER_AIS_MNP_CUSTOMER_INFO_PAGE } from '../../constants/route-path.constant';
@@ -42,13 +42,11 @@ export class DeviceOrderAisMnpValidateCustomerIdCardPageComponent implements OnI
     private http: HttpClient,
     private tokenService: TokenService,
     private utils: Utils,
-    private alertService: AlertService,
-    private errorsService: ErrorsService
+    private alertService: AlertService
   ) {
     this.user = this.tokenService.getUser();
     this.priceOption = this.priceOptionService.load();
 
-    this.errorsService.callback = () => this.onBack();
     this.homeService.callback = () => {
 
       this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่<br>การยกเลิกระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที')
@@ -231,7 +229,6 @@ export class DeviceOrderAisMnpValidateCustomerIdCardPageComponent implements OnI
   }
 
   ngOnDestroy(): void {
-    this.errorsService.callback = () => { };
     this.transactionService.update(this.transaction);
   }
 
