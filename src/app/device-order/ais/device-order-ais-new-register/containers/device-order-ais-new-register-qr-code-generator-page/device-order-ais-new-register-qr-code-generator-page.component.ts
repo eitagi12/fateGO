@@ -142,7 +142,8 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
     if (tread.advancePay.installmentFlag === 'Y') {
       return 'DEVICE&AIRTIME';
     } else {
-      // if(payment.paymentType === 'QR_CODE' && advancePayment.paymentType === 'QR_CODE' && this.priceOption.productStock.company !== 'WDS') {
+      // if(payment.paymentType === 'QR_CODE' && advancePayment.paymentType === 'QR_CODE'
+      // && this.priceOption.productStock.company !== 'WDS') {
       //   return 'DEVICE&AIRTIME';
       // }
       if (mpayPayment.mpayStatus && mpayPayment.mpayStatus.statusDevice && mpayPayment.mpayStatus.statusDevice === 'WAITING') {
