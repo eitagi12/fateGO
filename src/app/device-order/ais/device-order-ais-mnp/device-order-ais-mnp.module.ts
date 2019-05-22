@@ -4,7 +4,6 @@ import { CommonModule } from '@angular/common';
 import { DeviceOrderAisMnpRoutingModule } from './device-order-ais-mnp-routing.module';
 import { DeviceOrderAisMnpAggregatePageComponent } from './containers/device-order-ais-mnp-aggregate-page/device-order-ais-mnp-aggregate-page.component';
 import { DeviceOrderAisMnpAgreementSignPageComponent } from './containers/device-order-ais-mnp-agreement-sign-page/device-order-ais-mnp-agreement-sign-page.component';
-import { DeviceOrderAisMnpByPatternPageComponent } from './containers/device-order-ais-mnp-by-pattern-page/device-order-ais-mnp-by-pattern-page.component';
 import { DeviceOrderAisMnpConfirmUserInformationPageComponent } from './containers/device-order-ais-mnp-confirm-user-information-page/device-order-ais-mnp-confirm-user-information-page.component';
 import { DeviceOrderAisMnpCustomerInfoPageComponent } from './containers/device-order-ais-mnp-customer-info-page/device-order-ais-mnp-customer-info-page.component';
 import { DeviceOrderAisMnpEbillingAddressPageComponent } from './containers/device-order-ais-mnp-ebilling-address-page/device-order-ais-mnp-ebilling-address-page.component';
@@ -20,13 +19,11 @@ import { DeviceOrderAisMnpQrCodeQueuePageComponent } from './containers/device-o
 import { DeviceOrderAisMnpQrCodeSummaryPageComponent } from './containers/device-order-ais-mnp-qr-code-summary-page/device-order-ais-mnp-qr-code-summary-page.component';
 import { DeviceOrderAisMnpQueuePageComponent } from './containers/device-order-ais-mnp-queue-page/device-order-ais-mnp-queue-page.component';
 import { DeviceOrderAisMnpResultPageComponent } from './containers/device-order-ais-mnp-result-page/device-order-ais-mnp-result-page.component';
-import { DeviceOrderAisMnpSelectNumberPageComponent } from './containers/device-order-ais-mnp-select-number-page/device-order-ais-mnp-select-number-page.component';
 import { DeviceOrderAisMnpSelectPackagePageComponent } from './containers/device-order-ais-mnp-select-package-page/device-order-ais-mnp-select-package-page.component';
 import { DeviceOrderAisMnpSummaryPageComponent } from './containers/device-order-ais-mnp-summary-page/device-order-ais-mnp-summary-page.component';
 import { DeviceOrderAisMnpValidateCustomerIdCardPageComponent } from './containers/device-order-ais-mnp-validate-customer-id-card-page/device-order-ais-mnp-validate-customer-id-card-page.component';
 import { DeviceOrderAisMnpValidateCustomerKeyInPageComponent } from './containers/device-order-ais-mnp-validate-customer-key-in-page/device-order-ais-mnp-validate-customer-key-in-page.component';
 import { DeviceOrderAisMnpValidateCustomerPageComponent } from './containers/device-order-ais-mnp-validate-customer-page/device-order-ais-mnp-validate-customer-page.component';
-import { DeviceOrderAisMnpVerifyInstantSimPageComponent } from './containers/device-order-ais-mnp-verify-instant-sim-page/device-order-ais-mnp-verify-instant-sim-page.component';
 import { DeviceOrderAisMnpEligibleMobilePageComponent } from './containers/device-order-ais-mnp-eligible-mobile-page/device-order-ais-mnp-eligible-mobile-page.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
@@ -48,7 +45,6 @@ import { DeviceOrderAisMnpQrCodeResultPageComponent } from './containers/device-
   declarations: [
     DeviceOrderAisMnpAggregatePageComponent,
     DeviceOrderAisMnpAgreementSignPageComponent,
-    DeviceOrderAisMnpByPatternPageComponent,
     DeviceOrderAisMnpConfirmUserInformationPageComponent,
     DeviceOrderAisMnpCustomerInfoPageComponent,
     DeviceOrderAisMnpEbillingAddressPageComponent,
@@ -64,13 +60,11 @@ import { DeviceOrderAisMnpQrCodeResultPageComponent } from './containers/device-
     DeviceOrderAisMnpQrCodeSummaryPageComponent,
     DeviceOrderAisMnpQueuePageComponent,
     DeviceOrderAisMnpResultPageComponent,
-    DeviceOrderAisMnpSelectNumberPageComponent,
     DeviceOrderAisMnpSelectPackagePageComponent,
     DeviceOrderAisMnpSummaryPageComponent,
     DeviceOrderAisMnpValidateCustomerIdCardPageComponent,
     DeviceOrderAisMnpValidateCustomerKeyInPageComponent,
     DeviceOrderAisMnpValidateCustomerPageComponent,
-    DeviceOrderAisMnpVerifyInstantSimPageComponent,
     DeviceOrderAisMnpEligibleMobilePageComponent,
     DeviceOrderAisMnpMobileDetailPageComponent,
     DeviceOrderAisMnpEffectiveStartDatePageComponent,

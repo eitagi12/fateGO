@@ -5,9 +5,6 @@ import { DeviceOrderAisMnpValidateCustomerKeyInPageComponent } from './container
 import { DeviceOrderAisMnpValidateCustomerIdCardPageComponent } from './containers/device-order-ais-mnp-validate-customer-id-card-page/device-order-ais-mnp-validate-customer-id-card-page.component';
 import { DeviceOrderAisMnpPaymentDetailPageComponent } from './containers/device-order-ais-mnp-payment-detail-page/device-order-ais-mnp-payment-detail-page.component';
 import { DeviceOrderAisMnpCustomerInfoPageComponent } from './containers/device-order-ais-mnp-customer-info-page/device-order-ais-mnp-customer-info-page.component';
-import { DeviceOrderAisMnpSelectNumberPageComponent } from './containers/device-order-ais-mnp-select-number-page/device-order-ais-mnp-select-number-page.component';
-import { DeviceOrderAisMnpVerifyInstantSimPageComponent } from './containers/device-order-ais-mnp-verify-instant-sim-page/device-order-ais-mnp-verify-instant-sim-page.component';
-import { DeviceOrderAisMnpByPatternPageComponent } from './containers/device-order-ais-mnp-by-pattern-page/device-order-ais-mnp-by-pattern-page.component';
 import { DeviceOrderAisMnpSelectPackagePageComponent } from './containers/device-order-ais-mnp-select-package-page/device-order-ais-mnp-select-package-page.component';
 import { DeviceOrderAisMnpConfirmUserInformationPageComponent } from './containers/device-order-ais-mnp-confirm-user-information-page/device-order-ais-mnp-confirm-user-information-page.component';
 import { DeviceOrderAisMnpEbillingAddressPageComponent } from './containers/device-order-ais-mnp-ebilling-address-page/device-order-ais-mnp-ebilling-address-page.component';
@@ -36,9 +33,6 @@ const routes: Routes = [
   { path: 'validate-customer-id-card', component: DeviceOrderAisMnpValidateCustomerIdCardPageComponent },
   { path: 'payment-detail', component: DeviceOrderAisMnpPaymentDetailPageComponent },
   { path: 'customer-info', component: DeviceOrderAisMnpCustomerInfoPageComponent },
-  { path: 'select-number', component: DeviceOrderAisMnpSelectNumberPageComponent },
-  { path: 'verify-instant-sim', component: DeviceOrderAisMnpVerifyInstantSimPageComponent },
-  { path: 'by-pattern', component: DeviceOrderAisMnpByPatternPageComponent },
   { path: 'select-package', component: DeviceOrderAisMnpSelectPackagePageComponent },
   { path: 'confirm-user-information', component: DeviceOrderAisMnpConfirmUserInformationPageComponent },
   { path: 'ebilling-address', component: DeviceOrderAisMnpEbillingAddressPageComponent },
