@@ -57,6 +57,8 @@ export class MainMenuPageComponent implements OnInit, OnDestroy {
       if (environment.name === 'LOCAL') {
         window.location.href = '/main-menu';
       } else {
+        localStorage.removeItem('transaction');
+        localStorage.removeItem('priceOption');
         window.location.href = '/smart-digital/main-menu';
       }
     };
