@@ -100,7 +100,7 @@
               <!-- ค่าแพ็กเกจบริการล่วงหน้า -->
               <div
                 *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && (+priceOption?.trade?.advancePay?.amount) > 0">
-                <input class="form-check-input" type="radio" id="advancePay" disabled="" [checked]="(getStatusPay() === 'AIRTIME' && transaction?.data?.advancePayment?.paymentQrCodeType) || transaction?.data?.mpayPayment?.mpayStatus.statusDevice !== 'WAITING'
+                <input class="form-check-input" type="radio" id="advancePay" disabled="" [checked]="(getStatusPay() === 'AIRTIME' && transaction?.data?.advancePayment?.paymentQrCodeType) || transaction?.data?.mpayPayment?.mpayStatus?.statusDevice !== 'WAITING'
                       || priceOption?.productStock?.company === 'AWN'">
                 <label class="form-check-label" for="advancePay">
                   ค่าแพ็กเกจบริการล่วงหน้า : ชำระเต็มจำนวน
@@ -126,7 +126,7 @@
                   <span *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">ชำระเต็มจำนวน</span>
                   <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">ผ่อนชำระบัตรเคดิต</span>
                 </label>
-                <span class="pull-right text-green">฿ {{ summary([ +priceOption?.trade?.promotionPrice, 
+                <span class="pull-right text-green">฿ {{ summary([ +priceOption?.trade?.promotionPrice,
                     +priceOption?.trade?.advancePay?.amount
                     ]) | number:'1.0-0' }}</span>
               </div>
