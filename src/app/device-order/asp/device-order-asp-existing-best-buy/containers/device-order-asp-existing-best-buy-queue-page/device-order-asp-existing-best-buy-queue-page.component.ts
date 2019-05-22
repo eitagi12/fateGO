@@ -88,7 +88,7 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    if (this.queueType === 'MANUAL' || this.inputType === 'queue' || this.queue) {
+    if (!this.queueType || this.queueType === 'MANUAL' || this.inputType === 'queue' || this.queue) {
       this.transaction.data.queue = { queueNo: this.queue };
       this.http.post('/api/salesportal/create-device-selling-order',
         this.getRequestCreateOrder(this.transaction, this.priceOption)).toPromise()
