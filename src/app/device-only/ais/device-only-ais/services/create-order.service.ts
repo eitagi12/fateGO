@@ -245,7 +245,8 @@ export class CreateOrderService {
       bankCode: mapBankCode,
       qrTransId: mapQrTran,
       bankAbbr: mapBankAbb,
-      qrAmt: this.getQRAmt(priceOption, transaction) // add
+      qrAmt: this.getQRAmt(priceOption, transaction), // add
+      reqMinimumBalance: this.getReqMinimumBalance(transaction.data.onTopPackage, transaction.data.mobileCarePackage),
       // tradeFreeGoodsId: '',
       // matairtimeId: '',
       // tradeDiscountId: '',
@@ -436,4 +437,17 @@ ${this.PROMOTION_NAME}${this.SPACE}${this.NEW_LINE}${installment}${this.NEW_LINE
     return message;
   }
 
+  private getReqMinimumBalance(onTopPackage: any, mobileCarePackage: any): number { // Package only
+    let total: number = 0;
+
+    if (onTopPackage) {
+      total += +(onTopPackage.priceIncludeVat || 0);
+    }
+
+    if (mobileCarePackage && mobileCarePackage.customAttributes ) {
+      const customAttributes = mobileCarePackage.customAttributes;
+      total += +(customAttributes.priceInclVat || 0);
+    }
+    return total;
+  }
 }

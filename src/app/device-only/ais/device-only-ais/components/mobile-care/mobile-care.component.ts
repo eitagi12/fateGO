@@ -233,7 +233,8 @@ export class MobileCareComponent implements OnInit {
                 .then((result: any) => {
                   if (result.data.hasExistingMobileCare) {
                     this.exMobileCare = result.data;
-                    this.popupMobileCare(result.data.existMobileCarePackage);
+                    this.currentPackageMobileCare = result.data.existMobileCarePackage;
+                    this.popupMobileCare(this.currentPackageMobileCare);
                   } else {
                     this.currentPackageMobileCare = result.data.existMobileCarePackage;
                     this.isPrivilegeCustomer = true;
