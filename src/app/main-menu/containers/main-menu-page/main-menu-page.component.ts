@@ -26,11 +26,14 @@ export class MainMenuPageComponent implements OnInit {
       if (environment.name === 'LOCAL') {
         window.location.href = '/main-menu';
       } else {
-        localStorage.removeItem('transaction');
-        localStorage.removeItem('priceOption');
         window.location.href = '/smart-digital/main-menu';
       }
     };
+
+    if (environment.name !== 'LOCAL') {
+      localStorage.removeItem('transaction');
+      localStorage.removeItem('priceOption');
+    }
 
     if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {
       this.keepCard(); // กรณีบัตรค้างในเครื่อง
