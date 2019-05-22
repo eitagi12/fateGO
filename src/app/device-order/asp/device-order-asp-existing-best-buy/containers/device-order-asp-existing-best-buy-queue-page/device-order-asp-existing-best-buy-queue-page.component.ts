@@ -28,7 +28,7 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
   isAutoGenQueue: boolean;
   skipQueue: boolean = false;
   queueType: string;
-  errorQueue: boolean = true;
+  errorQueue: boolean = false;
   inputType: string;
 
   constructor(
