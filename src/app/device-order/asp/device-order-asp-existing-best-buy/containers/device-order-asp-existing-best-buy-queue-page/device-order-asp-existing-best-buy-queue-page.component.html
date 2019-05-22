@@ -117,7 +117,7 @@
         <div *ngSwitchDefault>
           <div class="container pt-3">
 
-            <div *ngIf='errorQueue'>
+            <div *ngIf='!errorQueue'>
               <img src="assets/images/icon/icon-red-alert-circle.png" class="d-block m-auto icon">
               <div class="my-3 text-center text-red">
                 <p>ทำรายการไม่สำเร็จ</p>
@@ -125,7 +125,7 @@
               </div>
             </div>
 
-            <div *ngIf='!errorQueue'>
+            <div *ngIf='errorQueue'>
               <img src="assets/images/icon/sales_portal_white_check.png" class="d-block m-auto icon">
               <div class="my-3 text-center text-green">
                 <p>หมายเลข {{ transaction?.data?.simCard?.mobileNo | mobileNo }}</p>
