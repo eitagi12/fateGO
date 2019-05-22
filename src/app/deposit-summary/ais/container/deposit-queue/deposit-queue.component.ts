@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-import { AlertService, User, TokenService } from 'mychannel-shared-libs';
+import { AlertService, User, TokenService, PageLoadingService } from 'mychannel-shared-libs';
 import { DEPOSIT_RESULT_PAGE, DEPOSIT_PAYMENT_SUMMARY_PAGE} from '../../../constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -39,6 +39,7 @@ export class DepositQueueComponent implements OnInit, OnDestroy {
     private createOrderService: CreateDeviceOrderService,
     private alertService: AlertService,
     private priceOptionService: PriceOptionService,
+    private pageLoadingService: PageLoadingService,
     private tokenService: TokenService,
     private queuePageService: QueuePageService
   ) {
@@ -82,17 +83,46 @@ export class DepositQueueComponent implements OnInit, OnDestroy {
   }
 
   onNext(): void {
-    this.transaction.data.queue = { queueNo: this.queue };
-    this.createOrderService.createDeviceOrderDt(this.transaction, this.priceOption).then((response: any) => {
-      if (response.data.resultCode === 'S') {
-        this.transaction.data.payment.reserveNo = response.data.reserveNo;
-        this.router.navigate([DEPOSIT_RESULT_PAGE]);
-      } else {
-        this.alertService.error('ระบบขัดข้อง');
-      }
-    }).catch((err) => {
-      this.alertService.error(err);
-    });
+    this.pageLoadingService.openLoading();
+    if (!this.queueType || this.queueType === 'MANUAL' || this.inputType === 'queue') {
+      this.transaction.data.queue = { queueNo: this.queue };
+      this.createOrderService.createDeviceOrderDt(this.transaction, this.priceOption).then((response: any) => {
+        if (response.data.resultCode === 'S') {
+          this.transaction.data.payment.reserveNo = response.data.reserveNo;
+          this.router.navigate([DEPOSIT_RESULT_PAGE]);
+        } else {
+          this.alertService.error('ระบบขัดข้อง');
+        }
+      }).catch((err) => {
+        this.alertService.error(err);
+      });
+    } else {
+      this.onSendSMSQueue(this.mobileNo).then((queue) => {
+        if (queue) {
+          this.transaction.data.queue = { queueNo: queue };
+          this.createOrderService.createDeviceOrderDt(this.transaction, this.priceOption).then((response: any) => {
+            if (response.data.resultCode === 'S') {
+              this.transaction.data.payment.reserveNo = response.data.reserveNo;
+              this.router.navigate([DEPOSIT_RESULT_PAGE]);
+            } else {
+              this.alertService.error('ระบบขัดข้อง');
+            }
+          }).catch((err) => {
+            this.alertService.error(err);
+          });
+        } else {
+          this.queueType = 'MANUAL';
+          this.errorQueue = true;
+          this.pageLoadingService.closeLoading();
+          return;
+        }
+      }).catch(() => {
+        this.queueType = 'MANUAL';
+        this.errorQueue = true;
+        this.pageLoadingService.closeLoading();
+        return;
+      });
+    }
   }
 
   ngOnDestroy(): void {
