@@ -121,7 +121,6 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    this.returnStock().then(() => {
       // มี auto next ทำให้ create transaction ช้ากว่า read card
       this.createTransaction();
       this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
@@ -175,7 +174,6 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
                 }).then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE]));
             });
         }).then(() => this.pageLoadingService.closeLoading());
-    });
   }
 
   createTransaction(): void {

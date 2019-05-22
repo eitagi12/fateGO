@@ -111,7 +111,6 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    this.returnStock().then(() => {
 
       this.createTransaction();
       this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
@@ -177,7 +176,6 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
                 }).then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_CUSTOMER_INFO_PAGE]));
             });
         }).then(() => this.pageLoadingService.closeLoading());
-    });
   }
 
   conditionIdentityValid(): Promise<string> {

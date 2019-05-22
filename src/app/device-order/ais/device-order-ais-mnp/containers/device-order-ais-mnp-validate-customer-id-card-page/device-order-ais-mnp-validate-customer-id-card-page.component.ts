@@ -122,7 +122,6 @@ export class DeviceOrderAisMnpValidateCustomerIdCardPageComponent implements OnI
   onNext(): void {
     this.pageLoadingService.openLoading();
     // มี auto next ทำให้ create transaction ช้ากว่า read card
-    this.returnStock().then(() => {
       this.createTransaction();
       this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
         .then((zipCode: string) => {
@@ -175,7 +174,6 @@ export class DeviceOrderAisMnpValidateCustomerIdCardPageComponent implements OnI
                 }).then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_CUSTOMER_INFO_PAGE]));
             });
         }).then(() => this.pageLoadingService.closeLoading());
-    });
   }
 
   createTransaction(): void {

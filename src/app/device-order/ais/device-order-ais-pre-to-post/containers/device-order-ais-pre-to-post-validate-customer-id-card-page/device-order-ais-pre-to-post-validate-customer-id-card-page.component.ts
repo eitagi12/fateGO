@@ -14,6 +14,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-device-order-ais-pre-to-post-validate-customer-id-card-page',
@@ -48,6 +49,23 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
     private utils: Utils,
     private alertService: AlertService
   ) {
+    this.homeService.callback = () => {
+      this.alertService.question('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่')
+      .then((data: any) => {
+        if (!data.value) {
+          return false;
+        }
+        if (this.validateCustomerIdcard.koiskApiFn) {
+          this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+        }
+        return this.returnStock().then(() => true);
+      })
+      .then((isNext: boolean) => {
+        if (isNext) {
+          window.location.href = environment.name === 'LOCAL' ? '/main-menu' : '/smart-digital/main-menu';
+        }
+      });
+    };
     this.user = this.tokenService.getUser();
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -94,19 +112,16 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
   }
 
   onHome(): void {
-    this.KioskLEDoff();
     this.homeService.goToHome();
   }
 
   onBack(): void {
-    this.KioskLEDoff();
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE]);
   }
 
   onNext(): void {
     this.pageLoadingService.openLoading();
     // มี auto next ทำให้ create transaction ช้ากว่า read card
-    this.returnStock().then(() => {
       this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
         .then((zipCode: string) => {
           return this.http.get('/api/customerportal/validate-customer-pre-to-post', {
@@ -174,7 +189,6 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
                 });
             });
         }).then(() => this.pageLoadingService.closeLoading());
-    });
   }
 
   getZipCode(province: string, amphur: string, tumbol: string): Promise<string> {
@@ -220,12 +234,6 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
 
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
-  }
-
-  KioskLEDoff(): void {
-    if (this.validateCustomerIdcard.koiskApiFn) {
-      this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
-    }
   }
 
   returnStock(): Promise<void> {
