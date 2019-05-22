@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
-import { PageLoadingService, AlertService, User, TokenService } from 'mychannel-shared-libs';
+import { AlertService, User, TokenService } from 'mychannel-shared-libs';
 import { DEPOSIT_RESULT_PAGE, DEPOSIT_PAYMENT_SUMMARY_PAGE} from '../../../constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -10,9 +10,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CreateDeviceOrderService } from '../../../services/create-device-order.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { WIZARD_RESERVE_WITH_DEPOSIT } from '../../../constants/wizard.constant';
-import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
-import { QueuePageService } from 'src/app/device-order/services/queue-page.service';
+import { QueuePageService } from 'src/app/deposit-summary/services/queue-page.service';
 
 @Component({
   selector: 'app-deposit-queue',
@@ -26,7 +24,6 @@ export class DepositQueueComponent implements OnInit, OnDestroy {
   mobileFrom: FormGroup;
   queueFrom: FormGroup;
   queue: string;
-  wizards: any = WIZARD_RESERVE_WITH_DEPOSIT;
   user: User;
   mobileNo: string;
   queueType: string;
@@ -42,9 +39,7 @@ export class DepositQueueComponent implements OnInit, OnDestroy {
     private createOrderService: CreateDeviceOrderService,
     private alertService: AlertService,
     private priceOptionService: PriceOptionService,
-    private pageLoadingService: PageLoadingService,
     private tokenService: TokenService,
-    private sharedTransactionService: SharedTransactionService,
     private queuePageService: QueuePageService
   ) {
     this.transaction = this.transactionService.load();
@@ -95,26 +90,9 @@ export class DepositQueueComponent implements OnInit, OnDestroy {
     });
   }
 
-  onSkip(): void {
-    this.http.get('/api/salesportal/device-sell/gen-queue', { params: { locationCode: this.user.locationCode } }).toPromise()
-      .then((resp: any) => {
-        const queueNo = resp.data.queue;
-        this.skipQueue = true;
-        this.transaction.data.queue = { queueNo: queueNo };
-        this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
-          return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
-            this.pageLoadingService.closeLoading();
-            // chang path
-            this.router.navigate([DEPOSIT_RESULT_PAGE]);
-          });
-        });
-      });
-  }
-
   onNext(): void {
     this.transaction.data.queue = { queueNo: this.queue };
     this.createOrderService.createDeviceOrderDt(this.transaction, this.priceOption).then((response: any) => {
-      console.log('response.data.resultCode :', response.data.resultCode);
       if (response.data.resultCode === 'S') {
         this.transaction.data.payment.reserveNo = response.data.reserveNo;
         this.router.navigate([DEPOSIT_RESULT_PAGE]);
