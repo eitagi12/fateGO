@@ -88,7 +88,7 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    if (this.queueType === 'MANUAL' || this.inputType === 'queue') {
+    if (!this.queueType || this.queueType === 'MANUAL' || this.inputType === 'queue' || this.queue) {
       this.transaction.data.queue = { queueNo: this.queue };
       this.http.post('/api/salesportal/create-device-selling-order',
         this.getRequestCreateOrder(this.transaction, this.priceOption)).toPromise()
@@ -96,7 +96,13 @@ export class DeviceOrderAspExistingBestBuyQueuePageComponent implements OnInit, 
           return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
             this.pageLoadingService.closeLoading();
             this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_RESULT_PAGE]);
+          }).catch((error: any) => {
+            // this.pageLoadingService.closeLoading();
+            console.log('Error updateSharedTransaction: ', error);
           });
+        }).catch((error: any) => {
+          // this.pageLoadingService.closeLoading();
+          console.log('Error getRequestCreateOrder: ', error);
         });
     } else {
       this.onSendSMSQueue(this.mobileNo).then((queue) => {
