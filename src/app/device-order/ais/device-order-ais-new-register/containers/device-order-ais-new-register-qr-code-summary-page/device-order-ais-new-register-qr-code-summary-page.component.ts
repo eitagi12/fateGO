@@ -71,8 +71,10 @@ export class DeviceOrderAisNewRegisterQrCodeSummaryPageComponent implements OnIn
   getStatusPay(): string {
     const company = this.priceOption.productStock.company;
     const mpayPayment = this.transaction.data.mpayPayment;
+    const payment: any = this.transaction.data.payment || {};
+    const advancePayment: any = this.transaction.data.advancePayment || {};
     if (company === 'AWN') {
-      if (mpayPayment.mpayStatus.statusDevice && mpayPayment.mpayStatus.statusAirTime) {
+      if (payment.paymentType === 'QR_CODE' && advancePayment.paymentType === 'QR_CODE') {
         return 'DEVICE&AIRTIME';
       } else {
         return mpayPayment.mpayStatus.statusDevice === 'WAITING' ? 'DEVICE' : 'AIRTIME';
