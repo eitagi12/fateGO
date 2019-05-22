@@ -72,15 +72,6 @@ export class DepositQueueComponent implements OnInit, OnDestroy {
       'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(/^0[6-9]{1}[0-9]{8}/)])],
     });
 
-    if (this.transaction.data.simCard.mobileNo && this.queueType === 'SMART_SHOP') {
-      this.mobileFrom.patchValue({ mobileNo: this.transaction.data.simCard.mobileNo });
-      this.mobileNo = this.transaction.data.simCard.mobileNo;
-    }
-
-    this.mobileFrom.valueChanges.subscribe((value) => {
-      this.mobileNo = value.mobileNo;
-    });
-
     this.queueFrom = this.fb.group({
       'queue': ['', Validators.compose([Validators.required, Validators.pattern(/([A-Y]{1}[0-9]{3})/)])],
     });
