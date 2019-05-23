@@ -73,6 +73,10 @@ export class DepositQueueComponent implements OnInit, OnDestroy {
       'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(/^0[6-9]{1}[0-9]{8}/)])],
     });
 
+    this.mobileFrom.valueChanges.subscribe((value) => {
+      this.mobileNo = value.mobileNo;
+    });
+
     this.queueFrom = this.fb.group({
       'queue': ['', Validators.compose([Validators.required, Validators.pattern(/([A-Y]{1}[0-9]{3})/)])],
     });
@@ -89,6 +93,7 @@ export class DepositQueueComponent implements OnInit, OnDestroy {
       this.createOrderService.createDeviceOrderDt(this.transaction, this.priceOption).then((response: any) => {
         if (response.data.resultCode === 'S') {
           this.transaction.data.payment.reserveNo = response.data.reserveNo;
+          this.pageLoadingService.closeLoading();
           this.router.navigate([DEPOSIT_RESULT_PAGE]);
         } else {
           this.alertService.error('ระบบขัดข้อง');
@@ -103,6 +108,7 @@ export class DepositQueueComponent implements OnInit, OnDestroy {
           this.createOrderService.createDeviceOrderDt(this.transaction, this.priceOption).then((response: any) => {
             if (response.data.resultCode === 'S') {
               this.transaction.data.payment.reserveNo = response.data.reserveNo;
+              this.pageLoadingService.closeLoading();
               this.router.navigate([DEPOSIT_RESULT_PAGE]);
             } else {
               this.alertService.error('ระบบขัดข้อง');
