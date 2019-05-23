@@ -237,6 +237,7 @@ export interface BillingInformation {
   billDeliveryAddress?: Customer;
   // วันที่มีผลการใช้งาน B: รอบถัดไป D: วันถัดไป I: มีผลทันที
   overRuleStartDate?: string;
+  effectiveDate?: string;
   // check do createAndChangeBillingAccount Provisioning
   isNewBAFlag?: boolean;
 }

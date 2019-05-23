@@ -10,7 +10,8 @@ import {
   ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_EXISTING_SUMMARY_PAGE,
   ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_ONTOP_PAGE
 } from '../../constants/route-path.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { MobileCareService } from 'src/app/device-order/services/mobile-care.service';
@@ -44,6 +45,8 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit, On
   }
 
   ngOnInit(): void {
+    const packageOntop = this.transaction.data.deleteOntopPackage;
+    console.log('packageOntop', packageOntop);
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     delete this.transaction.data.mobileCarePackage;
     this.callService();
@@ -57,7 +60,7 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit, On
     if (!this.transaction.data.mainPackage) {
       return this.checkRouteByExistingMobileCare();
     } else {
-      return ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE;
+      return ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_ONTOP_PAGE;
     }
   }
 
@@ -89,7 +92,7 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit, On
     this.pageLoadingService.openLoading();
 
     const billingSystem = (this.transaction.data.simCard.billingSystem === 'RTBS')
-    ? BillingSystemType.IRB : this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
+      ? BillingSystemType.IRB : this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
     const chargeType = this.transaction.data.simCard.chargeType;
     const endUserPrice = +this.priceOption.trade.normalPrice;
     const exMobileCare = this.transaction.data.existingMobileCare;

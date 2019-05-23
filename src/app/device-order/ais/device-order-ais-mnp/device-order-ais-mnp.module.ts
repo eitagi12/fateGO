@@ -35,6 +35,7 @@ import { DeviceOrderAisMnpEffectiveStartDatePageComponent } from './containers/d
 import { DeviceOrderAisMnpMobileCareAvaliblePageComponent } from './containers/device-order-ais-mnp-mobile-care-avalible-page/device-order-ais-mnp-mobile-care-avalible-page.component';
 import { TranslateModule } from '@ngx-translate/core';
 import { DeviceOrderAisMnpQrCodeResultPageComponent } from './containers/device-order-ais-mnp-qr-code-result-page/device-order-ais-mnp-qr-code-result-page.component';
+import { DeviceOrderAisMnpSelectPackageOntopPageComponent } from './containers/device-order-ais-mnp-select-package-ontop-page/device-order-ais-mnp-select-package-ontop-page.component';
 
 @NgModule({
   imports: [
@@ -75,7 +76,8 @@ import { DeviceOrderAisMnpQrCodeResultPageComponent } from './containers/device-
     DeviceOrderAisMnpMobileDetailPageComponent,
     DeviceOrderAisMnpEffectiveStartDatePageComponent,
     DeviceOrderAisMnpMobileCareAvaliblePageComponent,
-    DeviceOrderAisMnpQrCodeResultPageComponent
+    DeviceOrderAisMnpQrCodeResultPageComponent,
+    DeviceOrderAisMnpSelectPackageOntopPageComponent
   ]
 })
 export class DeviceOrderAisMnpModule { }

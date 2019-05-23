@@ -17,6 +17,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 import * as moment from 'moment';
+import { elementStyleProp } from '@angular/core/src/render3/instructions';
 
 interface BillCycleText {
   textBill?: string;
@@ -167,7 +168,7 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
       } else {
         return false;
       }
-    } );
+    });
   }
 
   mappingBillCycleNextBillAndBillCycleNextDay(ba: any): boolean {
@@ -193,6 +194,9 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
         }
         this.billCycleNextBill$ = of(this.convertDateToStarngDDMMMYYYY(nextBill));
         this.billCycleNextDay$ = of(this.convertDateToStarngDDMMMYYYY(nextD));
+        this.billCycleNextBill$.subscribe((res) => {
+          this.transaction.data.billingInformation.effectiveDate = res;
+        });
       }
     }
     return true;
@@ -215,7 +219,7 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
   checked(value: string): boolean {
     if (this.transaction && this.transaction.data && this.transaction.data.billingInformation &&
       this.transaction.data.billingInformation.overRuleStartDate) {
-        return JSON.stringify(value) === JSON.stringify(this.transaction.data.billingInformation.overRuleStartDate);
+      return JSON.stringify(value) === JSON.stringify(this.transaction.data.billingInformation.overRuleStartDate);
     } else {
       return false;
     }
@@ -224,7 +228,7 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
   checkFormValid(): boolean {
     if (this.transaction && this.transaction.data && this.transaction.data.billingInformation &&
       this.transaction.data.billingInformation.overRuleStartDate) {
-        return true;
+      return true;
     } else {
       return this.billingCycleForm.valid;
     }
@@ -255,7 +259,7 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
         if (filerOnlyMobileCareList.length > 0 && filterOnlyHandsetMobileCareList.length > 0) {
           const handSetFillter: Handset = filterOnlyHandsetMobileCareList.find(obj => obj);
           const existingMobileCareFillter = filerOnlyMobileCareList.find(obj => obj);
-          this.transaction.data.existingMobileCare = Object.assign(existingMobileCareFillter, { handSet: handSetFillter});
+          this.transaction.data.existingMobileCare = Object.assign(existingMobileCareFillter, { handSet: handSetFillter });
         }
       });
 

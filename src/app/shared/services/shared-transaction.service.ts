@@ -111,6 +111,10 @@ export class SharedTransactionService {
     if (data.preBooking) {
       params.data.pre_booking = transaction.data.preBooking;
     }
+    // delete ontop
+    if (data.deleteOntopPackage) {
+      params.data.deleteOntopPackage = transaction.data.deleteOntopPackage;
+    }
 
     // เดี๋ยวปรับอีกทีว่าเก็บอะไรบ้าง
     params.data.main_promotion = {
@@ -236,6 +240,7 @@ export class SharedTransactionService {
     if (data.mpayPayment) {
       params.data.mpay_payment = data.mpayPayment;
     }
+    console.log('params', params);
     return params;
   }
 
