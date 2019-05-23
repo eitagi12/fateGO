@@ -124,7 +124,7 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
       });
     })
       .then((resp: any) => {
-        this.transaction.data.mpayPayment = Object.assign({}, params);
+        // this.transaction.data.mpayPayment = Object.assign({}, params);
         if (resp === true) { // true inquiry success
           this.onNext();
           return;
