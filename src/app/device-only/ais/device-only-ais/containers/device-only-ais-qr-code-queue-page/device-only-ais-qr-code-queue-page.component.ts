@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE, ROUTE_DEVICE_ONLY_AIS_QR_CODE_KEY_IN_QUEUE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ONLY_AIS_RESULT_QUEUE_PAGE } from '../../constants/route-path.constant';
 import { HomeService, AlertService, PageLoadingService, REGEX_MOBILE } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
@@ -72,10 +72,12 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy 
         queue: queue
       };
       this.checkDataLinkPage(data);
-    }).catch((error: any) => {
-      this.pageLoadingService.closeLoading();
-      this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_KEY_IN_QUEUE]);
     });
+    // key in queue
+    // .catch((error: any) => {
+    //   this.pageLoadingService.closeLoading();
+    //   this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_KEY_IN_QUEUE]);
+    // });
   }
 
   private checkDataLinkPage(data: any): void {
@@ -89,20 +91,24 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy 
           this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).subscribe(
             (res) => {
               if (res === 'S') {
-                this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE]);
-              } else if (res === 'F') {
-                this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_KEY_IN_QUEUE]);
+                this.router.navigate([ROUTE_DEVICE_ONLY_AIS_RESULT_QUEUE_PAGE]);
               }
-            },
-            (err) => {
-              this.pageLoadingService.closeLoading();
-              this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_KEY_IN_QUEUE]);
+              // key in queue
+              // else if (res === 'F') {
+              //   this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_KEY_IN_QUEUE]);
+              // }
             }
+            // key in queue
+            // (err) => {
+            //   this.pageLoadingService.closeLoading();
+            //   this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_KEY_IN_QUEUE]);
+            // }
           );
         }
       }).catch((err) => {
         this.pageLoadingService.closeLoading();
-        this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_KEY_IN_QUEUE]);
+        // key in queue
+        // this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_KEY_IN_QUEUE]);
       });
     }
   }

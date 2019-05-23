@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ONLY_AIS_RESULT_QUEUE_PAGE } from '../../constants/route-path.constant';
 import { Router } from '@angular/router';
 import { HomeService, AlertService, PageLoadingService } from 'mychannel-shared-libs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
@@ -81,7 +81,7 @@ export class DeviceOnlyAisQrCodeKeyInQueuePageComponent implements OnInit, OnDes
         this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).subscribe(
           (res) => {
           if (res === 'S') {
-            this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE]);
+            this.router.navigate([ROUTE_DEVICE_ONLY_AIS_RESULT_QUEUE_PAGE]);
           } else {
             this.alertService.warning('ระบบไม่สามารถทำรายการได้');
           }

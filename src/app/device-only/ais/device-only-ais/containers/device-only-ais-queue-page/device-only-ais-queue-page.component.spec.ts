@@ -1,23 +1,25 @@
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+
 import { DeviceOnlyAisQueuePageComponent } from './device-only-ais-queue-page.component';
-describe('test device only ais queue page', () => {
+
+describe('DeviceOnlyAisQueuePageComponent', () => {
   let component: DeviceOnlyAisQueuePageComponent;
-  const homeService: any = {};
-  const transactionService: any = {
-    load: jest.fn()
-  };
-  const homeButtonService: any = {};
-  const priceOptionService: any = {
-    load: jest.fn()
-  };
+  let fixture: ComponentFixture<DeviceOnlyAisQueuePageComponent>;
+
+  beforeEach(async(() => {
+    TestBed.configureTestingModule({
+      declarations: [ DeviceOnlyAisQueuePageComponent ]
+    })
+    .compileComponents();
+  }));
+
   beforeEach(() => {
-    component = new DeviceOnlyAisQueuePageComponent(
-      transactionService,
-      priceOptionService
-    );
+    fixture = TestBed.createComponent(DeviceOnlyAisQueuePageComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
-
 });

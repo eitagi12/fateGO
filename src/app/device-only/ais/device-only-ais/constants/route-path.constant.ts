@@ -1,9 +1,9 @@
 export const ROUTE_DEVICE_ONLY_AIS_SELECT_PAYMENT_AND_RECEIPT_INFORMATION_PAGE = '/device-only/ais/select-payment';
 export const ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE = '/device-only/ais/mobile-care';
 export const ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_PAGE = '/device-only/ais/checkout-payment';
-export const ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE = '/device-only/ais/queue';
-export const ROUTE_DEVICE_ONLY_AIS_KEY_IN_QUEUE = '/device-only/ais/key-in-queue';
-export const ROUTE_DEVICE_ONLY_AIS_QR_CODE_KEY_IN_QUEUE = '/device-only/ais/qr-code-key-in-queue';
+export const ROUTE_DEVICE_ONLY_AIS_RESULT_QUEUE_PAGE = '/device-only/ais/result-queue';
+// export const ROUTE_DEVICE_ONLY_AIS_KEY_IN_QUEUE = '/device-only/ais/key-in-queue';
+// export const ROUTE_DEVICE_ONLY_AIS_QR_CODE_KEY_IN_QUEUE = '/device-only/ais/qr-code-key-in-queue';
 export const ROUTE_DEVICE_ONLY_AIS_QR_CODE_QUEUE_PAGE = '/device-only/ais/qr-code-queue';
 export const ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE = '/device-only/ais/summary';
 export const ROUTE_DEVICE_ONLY_AIS_MOBILE_CARE_AVALIABLE_PAGE = '/device-only/ais/mobile-care-avaliable';
