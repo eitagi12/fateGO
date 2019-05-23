@@ -88,10 +88,10 @@ export class DeviceOrderAisNewRegisterByPatternPageComponent implements OnInit, 
         this.pageLoadingService.closeLoading();
       }).catch((error: any) => {
         this.pageLoadingService.closeLoading();
-        if (error && error.error && error.error.resultDescription)  {
+        if (error && error.error && error.error.errors && error.error.resultDescription && error.error.errors.returnCode === '004') {
           this.alertService.warning(error.error.resultDescription);
         } else {
-          this.alertService.error(error);
+          return Promise.reject(error);
         }
       });
 
