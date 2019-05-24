@@ -12,6 +12,7 @@ import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 import { HomeService, ApiRequestService, AlertService, PaymentDetail, User, TokenService } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
+import { map } from 'rxjs/operators';
 
 @Component({
   selector: 'app-device-only-ais-select-payment-and-receipt-information-page',
@@ -32,6 +33,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
   paymentDetailValid: boolean;
   customerInfoTemp: any;
   user: User;
+  localtion: any;
 
   constructor(
     private router: Router,
@@ -68,24 +70,30 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       advancePay: 0,
       qrCode: true
     };
-
-    if (this.isFullPayment()) {
-      this.banks = this.priceOption.trade.banks || [];
+    if (!this.priceOption.trade.banks) {
+      if (this.isFullPayment()) {
+        this.banks = this.priceOption.trade.banks || [];
+      } else {
+        this.banks = (this.priceOption.trade.banks || []).map((b: any) => {
+          return b.installmentDatas.map((data: any) => {
+            return {
+              ...b,
+              installment: `${data.installmentPercentage}% ${data.installmentMounth}`
+            };
+          });
+        }).reduce((prev: any, curr: any) => {
+          curr.forEach((element: any) => {
+            prev.push(element);
+          });
+          return prev;
+        }, []);
+      }
     } else {
-      this.banks = (this.priceOption.trade.banks || []).map((b: any) => {
-        return b.installmentDatas.map((data: any) => {
-          return {
-            ...b,
-            installment: `${data.installmentPercentage}% ${data.installmentMounth}`
-          };
-        });
-      }).reduce((prev: any, curr: any) => {
-        curr.forEach((element: any) => {
-          prev.push(element);
-        });
-        return prev;
-      }, []);
-      console.log('zxczxc', this.banks);
+      // this.localtion = this.tokenService.getUser();
+      this.localtion = this.user.locationCode;
+      this.http.post('/api/salesportal/banks-promotion', {
+        localtion: this.localtion
+      }).toPromise().then((response: any) => this.banks = response.data  || '');
     }
 
     if (!this.transaction.data) {
@@ -152,7 +160,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
 
   createAddToCartTrasaction(): void {
     this.createOrderService.createAddToCartTrasaction(this.transaction, this.priceOption).then((transaction) => {
-      this.transaction = {...transaction};
+      this.transaction = { ...transaction };
       this.transaction.data.device = this.createOrderService.getDevice(this.priceOption);
       this.router.navigate([ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE]);
     }).catch((e) => {
