@@ -52,14 +52,18 @@ export class DeviceOnlyAisQueuePageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.price = this.priceOption.trade.priceType === 'NORMAL' ? this.priceOption.trade.normalPrice : this.priceOption.trade.promotionPrice;
     this.homeButtonService.initEventButtonHome();
-    this.setQueueType();
     this.createForm();
+    this.setQueueType();
   }
 
   setQueueType(): void {
     this.queueService.checkQueueLocation().then((queueType) => {
       this.queueType = queueType;
-    }).then(() => this.createForm());
+      if (this.transaction.data.simCard && this.transaction.data.simCard.mobileNo && this.queueType === 'SMART_SHOP') {
+        this.mobileFrom.patchValue({ mobileNo: this.transaction.data.simCard.mobileNo });
+        this.mobileNo = this.transaction.data.simCard.mobileNo;
+      }
+    });
   }
 
   checkInput(event: any, type: string): void {
@@ -75,11 +79,6 @@ export class DeviceOnlyAisQueuePageComponent implements OnInit, OnDestroy {
     this.mobileFrom = this.fb.group({
       'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(/^0[6-9]{1}[0-9]{8}/)])],
     });
-
-    if (this.transaction.data.simCard.mobileNo && this.queueType === 'SMART_SHOP') {
-      this.mobileFrom.patchValue({ mobileNo: this.transaction.data.simCard.mobileNo });
-      this.mobileNo = this.transaction.data.simCard.mobileNo;
-    }
 
     this.mobileFrom.valueChanges.subscribe((value) => {
       this.mobileNo = value.mobileNo;

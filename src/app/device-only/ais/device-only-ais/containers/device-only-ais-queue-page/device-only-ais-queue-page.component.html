@@ -11,7 +11,7 @@
           <div class="container pt-3">
             <img src="assets/images/icon/sales_portal_white_check.png" class="d-block m-auto icon">
             <div class="my-3 text-center text-green">
-              <p>หมายเลข {{ transaction?.data?.simCard?.mobileNo | mobileNo }}</p>
+              <p>หมายเลข {{ transaction?.data?.receiptInfo?.telNo || transaction?.data?.simCard?.mobileNo | mobileNo }}</p>
               <p>หมายเลขรายการสั่งชื้อของท่านได้เข้าสู่ระบบเรียบร้อยแล้ว</p>
             </div>
             <form [formGroup]="mobileFrom">
@@ -31,7 +31,7 @@
           <div class="container pt-3">
             <img src="assets/images/icon/sales_portal_white_check.png" class="d-block m-auto icon">
             <div class="my-3 text-center text-green">
-              <p>หมายเลข {{ transaction?.data?.simCard?.mobileNo }}</p>
+              <p>หมายเลข {{ transaction?.data?.receiptInfo?.telNo || transaction?.data?.simCard?.mobileNo | mobileNo }}</p>
               <p>หมายเลขรายการสั่งชื้อของท่านได้เข้าสู่ระบบเรียบร้อยแล้ว</p>
             </div>
             <form [formGroup]="mobileFrom">
@@ -73,7 +73,7 @@
             <div *ngIf='!errorQueue'>
               <img src="assets/images/icon/sales_portal_white_check.png" class="d-block m-auto icon">
               <div class="my-3 text-center text-green">
-                <p>หมายเลข {{ transaction?.data?.simCard?.mobileNo }}</p>
+                <p>หมายเลข {{ transaction?.data?.receiptInfo?.telNo || transaction?.data?.simCard?.mobileNo | mobileNo }}</p>
                 <p>หมายเลขรายการสั่งชื้อของท่านได้เข้าสู่ระบบเรียบร้อยแล้ว</p>
               </div>
             </div>

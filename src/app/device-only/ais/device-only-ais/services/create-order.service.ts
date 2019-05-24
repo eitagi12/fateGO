@@ -198,9 +198,7 @@ export class CreateOrderService {
 
   createOrderDeviceOnly(transaction: Transaction, priceOption: PriceOption): Promise<any> {
     const order = this.mapCreateOrder(transaction, priceOption);
-    return this.http.post('/api/salesportal/device-sell/order', order).pipe(
-      map((response: any) => response.data.resultCode)
-    ).toPromise();
+    return this.http.post('/api/salesportal/device-sell/order', order).toPromise();
   }
 
   mapCreateOrder(transaction: Transaction, priceOption: PriceOption): any {
