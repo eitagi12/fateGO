@@ -64,7 +64,6 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
     } else {
       this.effectiveDate = 'หลังจากได้รับ SMS ยืนยัน';
     }
-    // const mobileNo = '0910011560';
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     delete this.shoppingCart.mobileNo;
     this.callService(mobileNo);
