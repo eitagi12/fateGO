@@ -223,7 +223,7 @@ export class CreateOrderService {
       matCode: priceOption.productStock.colorCode,
       priceIncAmt: (+priceOption.trade.normalPrice).toFixed(2),
       priceDiscountAmt: (+priceOption.trade.priceDiscount).toFixed(2),
-      grandTotalAmt: priceOption.trade.promotionPrice,
+      grandTotalAmt: (+priceOption.trade.normalPrice - +priceOption.trade.priceDiscount).toFixed(2),
       userId: this.user.username,
       saleCode: sellerNo,
       queueNo: transaction.data.queue.queueNo,
