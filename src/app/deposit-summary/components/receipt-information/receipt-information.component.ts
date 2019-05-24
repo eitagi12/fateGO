@@ -109,14 +109,14 @@ export class ReceiptInformationComponent implements OnInit {
   }
 
   OnChanges(changes: SimpleChanges): void {
-    if (changes.zipCodes
-      && changes.zipCodes.currentValue
-      && changes.zipCodes.currentValue.length === 1) {
-      this.customerAddressForm.patchValue({
-        // zipCode: changes.zipCodes.currentValue[0]
-        zipCode: this.customerAddressForm.controls['zipCode']
-      });
-    }
+    // if (changes.zipCodes
+    //   && changes.zipCodes.currentValue
+    //   && changes.zipCodes.currentValue.length === 1) {
+    //   this.customerAddressForm.patchValue({
+    //     // zipCode: changes.zipCodes.currentValue[0]
+    //     zipCode: this.customerAddressForm.controls['zipCode']
+    //   });
+    // }
   }
 
   createForm(): void {
@@ -311,7 +311,7 @@ export class ReceiptInformationComponent implements OnInit {
   }
 
   private responseZipCode(): (value: any) => any {
-    return (resp: any) => this.zipCodeNo = resp;
+    return (resp: any) => this.zipCodes = resp;
   }
 
   onProvinceSelected(provinceName: string, zipcode: any): void {

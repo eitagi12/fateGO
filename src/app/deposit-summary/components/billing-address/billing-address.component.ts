@@ -109,13 +109,13 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    if (changes.zipCodes
-      && changes.zipCodes.currentValue
-      && changes.zipCodes.currentValue.length === 1) {
-      this.customerAddressForm.patchValue({
-        zipCode: changes.zipCodes.currentValue[0]
-      });
-    }
+    // if (changes.zipCodes
+    //   && changes.zipCodes.currentValue
+    //   && changes.zipCodes.currentValue.length === 1) {
+    //   this.customerAddressForm.patchValue({
+    //     zipCode: changes.zipCodes.currentValue[0]
+    //   });
+    // }
   }
 
   createForm(): void {
@@ -467,7 +467,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   }
 
   private responseZipCode(): (value: any) => any {
-    return (resp: any) => this.zipCodeNo = resp;
+    return (resp: any) => this.zipCodes = resp;
   }
 
   private setBackValue(): void {

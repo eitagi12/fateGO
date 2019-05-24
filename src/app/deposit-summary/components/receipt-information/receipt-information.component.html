@@ -173,9 +173,14 @@
               <span class="text-red"> *</span>
             </label>
             <div class="col-12 col-sm-9">
-              <input type="text" id="selectZipCode" maxlength="5" autocomplete="off" formControlName="zipCode"
+                <select class="form-control" title="กรุณาเลือกรหัสไปรษณีย์" id="selectTumbol" formControlName="zipCode"
+                [ngClass]="{'is-invalid': !customerAddressForm.controls['zipCode'].invalid && isSummit }">
+                <option disabled value="">กรุณาเลือกรหัสไปรษณีย์</option>
+                <option *ngFor="let zipCode of zipCodes;" [value]="zipCode">{{zipCode}}</option>
+              </select>
+              <!-- <input type="text" id="selectZipCode" maxlength="5" autocomplete="off" formControlName="zipCode"
               placeholder="กรุณาเลือกรหัสไปรษณีย์" class="form-control" [value]="zipCodeNo"
-              [ngClass]="{'is-invalid': !customerAddressForm.controls['zipCode'].invalid && customerAddressForm.controls['zipCode'].dirty }">
+              [ngClass]="{'is-invalid': !customerAddressForm.controls['zipCode'].invalid && customerAddressForm.controls['zipCode'].dirty }"> -->
             </div>
           </div>
         </form>
