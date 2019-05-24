@@ -34,13 +34,11 @@
                   </div>
               <div *ngIf="packageOntopList?.length < 1 " class="text-center p-3"></div>
               <form [formGroup]="packageOntopForm">
-                <div *ngFor="let packageOntop of packageOntopList; let i = index" class="p-3">
+                <div *ngFor="let packageOntop of packageOntopList" class="p-3">
                   <div class="row pb-2">
                     <div class="col-8 col-sm-9 ">
-                      <input type="checkbox" (change)="onClick(packageOntop, $event)"
-                      id="{{ packageOntop?.promotionCode }}" 
-                      name="{{ packageOntop?.promotionCode }}" 
-                      value="packageOntop" formControlName="package">
+                      <input type="checkbox"
+                      id="{{ packageOntop?.promotionCode }}" formControlName="{{ packageOntop?.promotionCode }}">
                       <label for="{{packageOntop?.promotionCode  }}">{{ packageOntop.title}}</label>
                       <div class="endDt"> สิ้นสุดวันที่: {{ packageOntop.endDt }}</div>
                     </div>
@@ -60,7 +58,7 @@
 
     <mc-footer>
       <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-      <button type="submit" class="btn btn-success" (click)="onNext()">NEXT</button>
+      <button type="submit" class="btn btn-success" (click)="onNext()"[disabled]="">NEXT</button>
     </mc-footer>
   </div>
 

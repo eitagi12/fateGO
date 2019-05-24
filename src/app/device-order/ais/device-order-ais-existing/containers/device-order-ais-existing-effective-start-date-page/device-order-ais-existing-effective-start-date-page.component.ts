@@ -107,6 +107,9 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
     this.transaction = this.transactionService.load();
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.mobileNoSelect = this.shoppingCart.mobileNo;
+    if (this.transaction.data.deleteOntopPackage) {
+      delete this.transaction.data.deleteOntopPackage;
+    }
   }
 
   ngOnInit(): void {

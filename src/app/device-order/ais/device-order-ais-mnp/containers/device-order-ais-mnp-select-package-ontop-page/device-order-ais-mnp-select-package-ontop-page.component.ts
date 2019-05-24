@@ -10,12 +10,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import * as moment from 'moment';
 import { ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE } from 'src/app/device-order/ais/device-order-ais-mnp/constants/route-path.constant';
-export interface IPackage {
-  title: string;
-  detail: string;
-  priceExclVat: string;
-  endDt: string;
-}
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-device-order-ais-mnp-select-package-ontop-page',
@@ -35,9 +30,9 @@ export class DeviceOrderAisMnpSelectPackageOntopPageComponent implements OnInit,
   transaction: Transaction;
   customerInfo: CustomerInfo;
   shoppingCart: ShoppingCart;
-  packageOntopList: IPackage[];
+  packageOntopList: any[] = [];
   packageOntopForm: FormGroup;
-
+  checkFormValid: any;
   testFrom: FormGroup;
 
   constructor(
@@ -45,13 +40,13 @@ export class DeviceOrderAisMnpSelectPackageOntopPageComponent implements OnInit,
     private homeService: HomeService,
     private shoppingCartService: ShoppingCartService,
     private http: HttpClient,
-    private alertService: AlertService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private modalService: BsModalService,
     private fb: FormBuilder
   ) {
     this.transaction = this.transactionService.load();
+    this.createForm();
   }
 
   ngOnInit(): void {
@@ -68,71 +63,56 @@ export class DeviceOrderAisMnpSelectPackageOntopPageComponent implements OnInit,
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     delete this.shoppingCart.mobileNo;
     this.callService(mobileNo);
-    this.createForm();
-  }
-  onClick(value: any, event: Event): void {
-    const checkbox = event.target as HTMLInputElement;
-    if (checkbox.checked) {
-      this.arrCheckBox.push(value);
-    } else {
-      this.arrCheckBox.splice(this.arrCheckBox.length - 1, 1);
-    }
-    this.transaction.data.deleteOntopPackage = this.arrCheckBox;
-    console.log('checkbox', this.transaction.data.deleteOntopPackage);
-  }
-  // checked(promotionCode: string): boolean {
-  //   const deleteOntopPackage = this.transaction && this.transaction.data && this.transaction.data.deleteOntopPackage;
-  //   return !!(deleteOntopPackage || []).find(ontop => ontop.promotionCode === promotionCode);
-  // }
-
-  createForm(): void {
-    // const formControls = this.packageOntopList.map(control => new FormControl(false))
-    // console.log(formControls)
-
-    this.packageOntopForm = new FormGroup({
-      package: new FormControl()
-    });
-    // this.packageOntopForm = this.fb.group({
-    //   package: new FormControl(),
-    // });
   }
   callService(mobileNo: string): void {
     this.pageLoadingService.openLoading();
     this.http
       .get(`/api/customerportal/mobile-detail/${mobileNo}`)
       .toPromise()
-      .then((resp: any) => this.mappingPackageOnTop(resp))
-      .then(() => this.pageLoadingService.closeLoading());
+      .then((resp: any) => {
+        const data = resp.data.packageOntop || {};
+
+        const packageOntop = data.filter((packageOntopList: any) => {
+          // tslint:disable-next-line:typedef
+          const isexpiredDate = moment().isBefore(moment(packageOntopList.endDt, 'DD-MM-YYYY'));
+          return (
+            /On-Top/.test(packageOntopList.productClass) && packageOntopList.priceType === 'Recurring' &&
+            packageOntopList.priceExclVat > 0 && isexpiredDate
+          );
+        }).sort((a: any, b: any) => a.priceExclVat - b.priceExclVat);
+        this.packageOntopList = packageOntop;
+
+        this.packageOntopList.forEach((ontop: any) => {
+          const checked = !!(this.transaction.data.deleteOntopPackage || []).find(ontopDelete => {
+            return ontop.promotionCode === ontopDelete.promotionCode;
+          });
+          this.packageOntopForm.setControl(ontop.promotionCode, this.fb.control(checked));
+        });
+      }).then(() => this.pageLoadingService.closeLoading());
   }
+  createForm(): void {
+    this.packageOntopForm = this.fb.group({});
 
-  mappingPackageOnTop(resp: any): void {
-    const data = resp.data.packageOntop || {};
-
-    const packageOntop = data.filter((packageOntopList: any) => {
-      // tslint:disable-next-line:typedef
-      const isexpiredDate = moment().isBefore(moment(packageOntopList.endDt, 'DD-MM-YYYY'));
-      return (
-        /On-Top/.test(packageOntopList.productClass) && packageOntopList.priceType === 'Recurring' &&
-        packageOntopList.priceExclVat > 0 && isexpiredDate
-      );
-    }).sort((a: any, b: any) => a.priceExclVat - b.priceExclVat);
-    this.packageOntopList = packageOntop;
+    this.packageOntopForm.valueChanges.pipe(debounceTime(100)).subscribe((controls: any[]) => {
+      const keys = Object.keys(controls);
+      const promotionCodeList = keys.filter((key) => {
+        return controls[key];
+      });
+      const packageOntopList = this.packageOntopList.filter((ontop) => {
+        return !!(promotionCodeList || []).find(promotionCode => ontop.promotionCode === promotionCode);
+      });
+      this.transaction.data.deleteOntopPackage = packageOntopList;
+    });
   }
-
   onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE]);
   }
 
   onNext(): void {
-    console.log('this.arrCheckBox', this.arrCheckBox);
-    this.router.navigate([this.checkRouteByExistingMobileCare()]);
-  }
-
-  checkRouteByExistingMobileCare(): string {
     if (this.transaction.data.existingMobileCare) {
-      return ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE;
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE]);
     } else {
-      return ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_PAGE;
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_PAGE]);
     }
   }
 

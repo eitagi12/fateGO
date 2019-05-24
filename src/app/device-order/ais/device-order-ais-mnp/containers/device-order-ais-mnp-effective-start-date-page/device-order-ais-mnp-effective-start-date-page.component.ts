@@ -92,6 +92,10 @@ export class DeviceOrderAisMnpEffectiveStartDatePageComponent implements OnInit,
       this.setBillingCycleTranslate();
     });
 
+    if (this.transaction.data.deleteOntopPackage) {
+      delete this.transaction.data.deleteOntopPackage;
+    }
+
   }
 
   setBillingCycleTranslate(): void {
