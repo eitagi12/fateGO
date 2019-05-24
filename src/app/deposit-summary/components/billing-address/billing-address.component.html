@@ -175,11 +175,6 @@
                 <option disabled value="">กรุณาเลือกรหัสไปรษณีย์</option>
                 <option *ngFor="let zipCode of zipCodes;" [value]="zipCode">{{zipCode}}</option>
               </select>
-              <!-- <input type="text" id="selectZipCode" maxlength="5" autocomplete="off" formControlName="zipCode"
-                placeholder="กรุณาเลือกรหัสไปรษณีย์" class="form-control" [value]="zipCodeNo"
-                [ngClass]="{'is-invalid': !customerAddressForm.controls['zipCode'].invalid && customerAddressForm.controls['zipCode'].dirty }"> -->
-              <!-- <div class="icon-remove-zipconde" *ngIf="!customerAddressForm.controls['zipCode'].value" (click)="onRemoveZipCode()">
-                <i class="fa fa-times" aria-hidden="true"></i></div> -->
             </div>
           </div>
 

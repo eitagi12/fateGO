@@ -1,15 +1,11 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { debounceTime, distinct, delay } from 'rxjs/operators';
-import { Utils, CustomerAddress, TokenService, ApiRequestService, ReceiptInfo } from 'mychannel-shared-libs';
-import { CustomerInformationService } from '../../services/customer-information.service';
-import { LocalStorageService } from 'ngx-store';
-import { CreateDeviceOrderService } from '../../services/create-device-order.service';
+import { debounceTime } from 'rxjs/operators';
+import { Utils, CustomerAddress } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
-import { DEPOSIT_PAYMENT_DETAIL_RECEIPT, DEPOSIT_PAYMENT_SUMMARY_PAGE, DEPOSIT_PAYMENT_DETAIL_KEY_IN } from '../../constants/route-path.constant';
+import { Transaction } from 'src/app/shared/models/transaction.model';
+import { DEPOSIT_PAYMENT_SUMMARY_PAGE, DEPOSIT_PAYMENT_DETAIL_KEY_IN } from '../../constants/route-path.constant';
 import { Router } from '@angular/router';
-import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { BillingAddressService } from '../../services/billing-address.service';
 
 export interface CustomerAddress {
@@ -83,14 +79,8 @@ export class ReceiptInformationComponent implements OnInit {
   constructor(
     public fb: FormBuilder,
     private utils: Utils,
-    private customerInformationService: CustomerInformationService,
-    private localStorageService: LocalStorageService,
-    private tokenService: TokenService,
-    private createDeviceOrderService: CreateDeviceOrderService,
     private transactionService: TransactionService,
     private router: Router,
-    private priceOptionService: PriceOptionService,
-    private apiRequestService: ApiRequestService,
     private billingAddress: BillingAddressService,
   ) {
     this.transaction = this.transactionService.load();
@@ -106,17 +96,6 @@ export class ReceiptInformationComponent implements OnInit {
       this.setCustomerValue();
       this.setBackValue();
     });
-  }
-
-  OnChanges(changes: SimpleChanges): void {
-    // if (changes.zipCodes
-    //   && changes.zipCodes.currentValue
-    //   && changes.zipCodes.currentValue.length === 1) {
-    //   this.customerAddressForm.patchValue({
-    //     // zipCode: changes.zipCodes.currentValue[0]
-    //     zipCode: this.customerAddressForm.controls['zipCode']
-    //   });
-    // }
   }
 
   createForm(): void {
@@ -138,7 +117,6 @@ export class ReceiptInformationComponent implements OnInit {
       amphur: ['', [Validators.required]],
       tumbol: ['', [Validators.required]],
       zipCode: [customerProfile.zipCode, [Validators.required, Validators.maxLength(5), this.validateZipCode.bind(this)]],
-      // telNo: [customerProfile.selectedMobile, [Validators.required]]
     });
     this.receiptInfoForm = this.fb.group({
       taxId: ['', [Validators.required]],
@@ -148,13 +126,10 @@ export class ReceiptInformationComponent implements OnInit {
       telNo: ['', [Validators.pattern(/^0[6-9]\d{8}$/)]],
     });
     this.receiptInfoForm.controls['taxId'].setValue(this.transaction.data.customer.idCardNo);
-    // this.billingAddress.getLocationName()
-    //   .subscribe((resp) => this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName));
     this.disabledForm();
     this.disableFormAmphurAndTumbol();
     this.customerAddressForm.patchValue(this.customerAddress || {});
     this.provinceFormControl();
-    // this.titleFormControl();
     this.amphurFormControl();
     this.tumbolFormControl();
     this.zipCodeFormControl();
@@ -171,8 +146,6 @@ export class ReceiptInformationComponent implements OnInit {
         this.completed.emit(value);
       }
     });
-
-    console.log('11111111111');
   }
 
   validateZipCode(control: AbstractControl): ValidationErrors | null {
@@ -264,9 +237,6 @@ export class ReceiptInformationComponent implements OnInit {
         } else {
           this.activateButton = false;
         }
-
-        console.log('KKKKKKKKKK', zipCode);
-
       });
   }
 
@@ -396,9 +366,6 @@ export class ReceiptInformationComponent implements OnInit {
     customerProfile.country = 'Thailand';
 
     localStorage.setItem('CustomerProfile', JSON.stringify(customerProfile));
-    console.log('444444444');
-    console.log('JJJJJ', customerProfile.zipCode);
-
   }
 
   private saveTransaction(): void {
@@ -424,8 +391,7 @@ export class ReceiptInformationComponent implements OnInit {
       (this.customerAddressForm.value.tumbol.length > 0 ? 'ตำบล/แขวง ' + this.customerAddressForm.value.tumbol + ' ' : '') +
       (this.customerAddressForm.value.amphur.length > 0 ? 'อำเภอ/เขต ' + this.customerAddressForm.value.amphur + ' ' : '') +
       (this.customerAddressForm.value.province.length > 0 ? 'จังหวัด ' + this.customerAddressForm.value.province + ' ' : '') +
-      // (this.zipCodeNo);
-      (this.customerAddressForm.value.province.length > 0 ? 'รหัสไปรษณีย์ ' + this.customerAddressForm.value.zipCode + ' ' : '');
+      (this.customerAddressForm.value.zipCode.length > 0 ? 'รหัสไปรษณีย์ ' + this.customerAddressForm.value.zipCode + ' ' : '');
     return fullAddress || '-';
   }
 
@@ -434,19 +400,12 @@ export class ReceiptInformationComponent implements OnInit {
     this.router.navigate([DEPOSIT_PAYMENT_DETAIL_KEY_IN]);
   }
 
-  private responseProvinces(): (value: any) => any {
-    return (resp: string[]) => this.provinces = resp;
-  }
-
   private setCustomerValue(): void {
     const customerProfile = JSON.parse(localStorage.getItem('CustomerProfile'));
     this.customerAddressForm.controls['province'].setValue(customerProfile.province);
     this.customerAddressForm.controls['amphur'].setValue(customerProfile.amphur);
     this.customerAddressForm.controls['tumbol'].setValue(customerProfile.tumbol);
     this.customerAddressForm.controls['zipCode'].setValue(customerProfile.zipCode);
-
-    console.log('222222222');
-    console.log('222222222HHHHHHH', customerProfile.zipCode);
   }
 
   onSummitKeyin(): void {
@@ -476,7 +435,6 @@ export class ReceiptInformationComponent implements OnInit {
       this.customerAddressForm.controls['tumbol'].setValue(customerProfile.tumbol);
       this.customerAddressForm.controls['zipCode'].setValue(customerProfile.zipCode);
     }
-    console.log('33333333333');
   }
 
   private setCustomerTemp(): void {
@@ -492,7 +450,6 @@ export class ReceiptInformationComponent implements OnInit {
       province: this.customerAddressForm.value.province,
       amphur: this.customerAddressForm.value.amphur,
       tumbol: this.customerAddressForm.value.tumbol,
-      // zipCode: this.zipCodeNo[0]
       zipCode: this.customerAddressForm.value.zipCode
     };
 

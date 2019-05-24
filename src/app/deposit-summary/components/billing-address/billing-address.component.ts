@@ -1,8 +1,7 @@
-import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
-import { debounceTime, distinct, delay } from 'rxjs/operators';
+import { debounceTime } from 'rxjs/operators';
 import { Utils, CustomerAddress, TokenService, ApiRequestService, AlertService } from 'mychannel-shared-libs';
-import { CustomerInformationService } from '../../services/customer-information.service';
 import { LocalStorageService } from 'ngx-store';
 import { CreateDeviceOrderService } from '../../services/create-device-order.service';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -11,7 +10,6 @@ import { DEPOSIT_PAYMENT_DETAIL_RECEIPT } from '../../constants/route-path.const
 import { Router } from '@angular/router';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { BillingAddressService } from '../../services/billing-address.service';
-import { HttpClient } from '@angular/common/http';
 
 export interface CustomerAddress {
   titleName: string;
@@ -36,7 +34,7 @@ export interface CustomerAddress {
   templateUrl: './billing-address.component.html',
   styleUrls: ['./billing-address.component.scss']
 })
-export class BillingAddressComponent implements OnInit, OnChanges {
+export class BillingAddressComponent implements OnInit {
 
   @Input() keyInCustomerAddressTemp: any;
   @Input() titleNames: string[];
@@ -81,7 +79,6 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   constructor(
     public fb: FormBuilder,
     private utils: Utils,
-    private customerInformationService: CustomerInformationService,
     private localStorageService: LocalStorageService,
     private tokenService: TokenService,
     private createDeviceOrderService: CreateDeviceOrderService,
@@ -90,7 +87,6 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     private alertService: AlertService,
     private priceOptionService: PriceOptionService,
     private apiRequestService: ApiRequestService,
-    private http: HttpClient,
     private billingAddress: BillingAddressService
   ) {
     this.transaction = this.transactionService.load();
@@ -106,16 +102,6 @@ export class BillingAddressComponent implements OnInit, OnChanges {
         (a.name < b.name) ? -1 : (a.name > b.name) ? 1 : 0) || [];
       this.setBackValue();
     });
-  }
-
-  ngOnChanges(changes: SimpleChanges): void {
-    // if (changes.zipCodes
-    //   && changes.zipCodes.currentValue
-    //   && changes.zipCodes.currentValue.length === 1) {
-    //   this.customerAddressForm.patchValue({
-    //     zipCode: changes.zipCodes.currentValue[0]
-    //   });
-    // }
   }
 
   createForm(): void {
@@ -179,16 +165,6 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     return {
       field: 'zipCode'
     };
-  }
-
-  private titleFormControl(): void {
-    this.titleNameForm().value.Changes.subscribe((titleName: any) => {
-      if (titleName) {
-        this.titleNameSelected.emit({
-          titleName: titleName
-        });
-      }
-    });
   }
 
   validateCharacter(): ValidatorFn {
@@ -303,7 +279,6 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     this.customerAddressForm.controls['firstName'].disable();
     this.customerAddressForm.controls['lastName'].disable();
     this.customerAddressForm.controls['telNo'].disable();
-    // this.customerAddressForm.controls['zipCode'].disable();
   }
   onNext(): void {
     this.onSummitKeyin();
@@ -327,9 +302,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     customerProfile.tumbol = this.customerAddressForm.controls['tumbol'].value;
     customerProfile.amphur = this.customerAddressForm.controls['amphur'].value;
     customerProfile.province = this.customerAddressForm.controls['province'].value;
-    // customerProfile.zipCode = this.zipCodeNo[0];
     customerProfile.zipCode = this.customerAddressForm.controls['zipCode'].value;
-    console.log('ZIPPP',  customerProfile.zipCode);
     customerProfile.country = 'Thailand';
 
     localStorage.setItem('CustomerProfile', JSON.stringify(customerProfile));
@@ -373,7 +346,6 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       (this.customerAddressForm.value.tumbol.length > 0 ? 'ตำบล/แขวง ' + this.customerAddressForm.value.tumbol + ' ' : '') +
       (this.customerAddressForm.value.amphur.length > 0 ? 'อำเภอ/เขต ' + this.customerAddressForm.value.amphur + ' ' : '') +
       (this.customerAddressForm.value.province.length > 0 ? 'จังหวัด ' + this.customerAddressForm.value.province + ' ' : '') +
-      // (this.zipCodeNo);
       (this.customerAddressForm.value.zipCode.length > 0 ? 'รหัสไปรษณีย์ ' + this.customerAddressForm.value.zipCode + ' ' : '');
     return fullAddress || '-';
   }
