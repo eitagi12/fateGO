@@ -37,14 +37,7 @@ export interface CustomerAddress {
 export class ReceiptInformationComponent implements OnInit {
 
   @Input() keyInCustomerAddressTemp: any;
-  // @Input() titleNames: string[]; @Input() firstName: string[];
-  // @Input() lastName: string[];
   @Input() customerAddress: CustomerAddress;
-  // @Input() idCardNo: string[];
-  // @Input() allZipCodes: string[];
-  // @Input() provinces: string[];
-  // @Input() amphurs: string[];
-  // @Input() tumbols: string[];
   @Input() zipCodes: string[];
   @Input() titleNameSelected: EventEmitter<any> = new EventEmitter<any>();
   @Output() provinceSelected: EventEmitter<any> = new EventEmitter<any>();
@@ -120,7 +113,8 @@ export class ReceiptInformationComponent implements OnInit {
       && changes.zipCodes.currentValue
       && changes.zipCodes.currentValue.length === 1) {
       this.customerAddressForm.patchValue({
-        zipCode: changes.zipCodes.currentValue[0]
+        // zipCode: changes.zipCodes.currentValue[0]
+        zipCode: this.customerAddressForm.controls['zipCode']
       });
     }
   }
@@ -143,7 +137,7 @@ export class ReceiptInformationComponent implements OnInit {
       province: ['', [Validators.required]],
       amphur: ['', [Validators.required]],
       tumbol: ['', [Validators.required]],
-      zipCode: ['', [Validators.required, Validators.maxLength(5), this.validateZipCode.bind(this)]],
+      zipCode: [customerProfile.zipCode, [Validators.required, Validators.maxLength(5), this.validateZipCode.bind(this)]],
       // telNo: [customerProfile.selectedMobile, [Validators.required]]
     });
     this.receiptInfoForm = this.fb.group({
@@ -177,6 +171,8 @@ export class ReceiptInformationComponent implements OnInit {
         this.completed.emit(value);
       }
     });
+
+    console.log('11111111111');
   }
 
   validateZipCode(control: AbstractControl): ValidationErrors | null {
@@ -268,6 +264,9 @@ export class ReceiptInformationComponent implements OnInit {
         } else {
           this.activateButton = false;
         }
+
+        console.log('KKKKKKKKKK', zipCode);
+
       });
   }
 
@@ -371,8 +370,6 @@ export class ReceiptInformationComponent implements OnInit {
     this.customerAddressForm.controls['titleName'].disable();
     this.customerAddressForm.controls['firstName'].disable();
     this.customerAddressForm.controls['lastName'].disable();
-    this.customerAddressForm.controls['zipCode'].disable();
-    // this.customerAddressForm.controls['telNo'].disable();
   }
   onNext(): void {
     this.onSummitKeyin();
@@ -399,6 +396,9 @@ export class ReceiptInformationComponent implements OnInit {
     customerProfile.country = 'Thailand';
 
     localStorage.setItem('CustomerProfile', JSON.stringify(customerProfile));
+    console.log('444444444');
+    console.log('JJJJJ', customerProfile.zipCode);
+
   }
 
   private saveTransaction(): void {
@@ -424,7 +424,8 @@ export class ReceiptInformationComponent implements OnInit {
       (this.customerAddressForm.value.tumbol.length > 0 ? 'ตำบล/แขวง ' + this.customerAddressForm.value.tumbol + ' ' : '') +
       (this.customerAddressForm.value.amphur.length > 0 ? 'อำเภอ/เขต ' + this.customerAddressForm.value.amphur + ' ' : '') +
       (this.customerAddressForm.value.province.length > 0 ? 'จังหวัด ' + this.customerAddressForm.value.province + ' ' : '') +
-      (this.zipCodeNo);
+      // (this.zipCodeNo);
+      (this.customerAddressForm.value.province.length > 0 ? 'รหัสไปรษณีย์ ' + this.customerAddressForm.value.zipCode + ' ' : '');
     return fullAddress || '-';
   }
 
@@ -442,6 +443,10 @@ export class ReceiptInformationComponent implements OnInit {
     this.customerAddressForm.controls['province'].setValue(customerProfile.province);
     this.customerAddressForm.controls['amphur'].setValue(customerProfile.amphur);
     this.customerAddressForm.controls['tumbol'].setValue(customerProfile.tumbol);
+    this.customerAddressForm.controls['zipCode'].setValue(customerProfile.zipCode);
+
+    console.log('222222222');
+    console.log('222222222HHHHHHH', customerProfile.zipCode);
   }
 
   onSummitKeyin(): void {
@@ -459,7 +464,7 @@ export class ReceiptInformationComponent implements OnInit {
     if (backSummaryPage === 'true') {
       const customerProfile = JSON.parse(localStorage.getItem('customerTemp'));
       this.customerAddressForm.controls['homeNo'].setValue(customerProfile.homeNo);
-      this.customerAddressForm.controls['buildingName'].setValue( customerProfile.buildingName);
+      this.customerAddressForm.controls['buildingName'].setValue(customerProfile.buildingName);
       this.customerAddressForm.controls['floor'].setValue(customerProfile.floor);
       this.customerAddressForm.controls['room'].setValue(customerProfile.room);
       this.customerAddressForm.controls['moo'].setValue(customerProfile.moo);
@@ -471,6 +476,7 @@ export class ReceiptInformationComponent implements OnInit {
       this.customerAddressForm.controls['tumbol'].setValue(customerProfile.tumbol);
       this.customerAddressForm.controls['zipCode'].setValue(customerProfile.zipCode);
     }
+    console.log('33333333333');
   }
 
   private setCustomerTemp(): void {
@@ -486,7 +492,8 @@ export class ReceiptInformationComponent implements OnInit {
       province: this.customerAddressForm.value.province,
       amphur: this.customerAddressForm.value.amphur,
       tumbol: this.customerAddressForm.value.tumbol,
-      zipCode: this.zipCodeNo[0]
+      // zipCode: this.zipCodeNo[0]
+      zipCode: this.customerAddressForm.value.zipCode
     };
 
     localStorage.setItem('customerTemp', JSON.stringify(customerTemp));

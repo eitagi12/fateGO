@@ -11,6 +11,7 @@ import { DEPOSIT_PAYMENT_DETAIL_RECEIPT } from '../../constants/route-path.const
 import { Router } from '@angular/router';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { BillingAddressService } from '../../services/billing-address.service';
+import { HttpClient } from '@angular/common/http';
 
 export interface CustomerAddress {
   titleName: string;
@@ -44,9 +45,6 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   @Input() customerAddress: CustomerAddress;
   @Input() idCardNo: string[];
   @Input() allZipCodes: string[];
- // @Input() provinces: string[];
-  // @Input() amphurs: string[];
-  // @Input() tumbols: string[];
   @Input() zipCodes: string[];
   @Input() titleNameSelected: EventEmitter<any> = new EventEmitter<any>();
   @Output() provinceSelected: EventEmitter<any> = new EventEmitter<any>();
@@ -92,13 +90,13 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     private alertService: AlertService,
     private priceOptionService: PriceOptionService,
     private apiRequestService: ApiRequestService,
+    private http: HttpClient,
     private billingAddress: BillingAddressService
   ) {
     this.transaction = this.transactionService.load();
   }
 
   ngOnInit(): void {
-      // this.customerProfile = this.localStorageService.load('CustomerProfile').value;
     this.activateButton = false;
     this.createForm();
     this.billingAddress.getProvinces().then((res: any) => {
@@ -139,7 +137,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       province: ['', [Validators.required]],
       amphur: ['', [Validators.required]],
       tumbol: ['', [Validators.required]],
-      zipCode: ['', [Validators.required, Validators.maxLength(5), this.validateZipCode.bind(this)]],
+      zipCode: ['', [Validators.required, Validators.maxLength(5)]],
       telNo: [customerProfile.selectedMobile, [Validators.required]]
     });
     this.customerAddressForm.valueChanges.pipe(debounceTime(750)).subscribe(event => {
@@ -305,7 +303,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     this.customerAddressForm.controls['firstName'].disable();
     this.customerAddressForm.controls['lastName'].disable();
     this.customerAddressForm.controls['telNo'].disable();
-    this.customerAddressForm.controls['zipCode'].disable();
+    // this.customerAddressForm.controls['zipCode'].disable();
   }
   onNext(): void {
     this.onSummitKeyin();
@@ -329,7 +327,9 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     customerProfile.tumbol = this.customerAddressForm.controls['tumbol'].value;
     customerProfile.amphur = this.customerAddressForm.controls['amphur'].value;
     customerProfile.province = this.customerAddressForm.controls['province'].value;
-    customerProfile.zipCode = this.zipCodeNo[0];
+    // customerProfile.zipCode = this.zipCodeNo[0];
+    customerProfile.zipCode = this.customerAddressForm.controls['zipCode'].value;
+    console.log('ZIPPP',  customerProfile.zipCode);
     customerProfile.country = 'Thailand';
 
     localStorage.setItem('CustomerProfile', JSON.stringify(customerProfile));
@@ -373,7 +373,8 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       (this.customerAddressForm.value.tumbol.length > 0 ? 'ตำบล/แขวง ' + this.customerAddressForm.value.tumbol + ' ' : '') +
       (this.customerAddressForm.value.amphur.length > 0 ? 'อำเภอ/เขต ' + this.customerAddressForm.value.amphur + ' ' : '') +
       (this.customerAddressForm.value.province.length > 0 ? 'จังหวัด ' + this.customerAddressForm.value.province + ' ' : '') +
-      (this.zipCodeNo);
+      // (this.zipCodeNo);
+      (this.customerAddressForm.value.zipCode.length > 0 ? 'รหัสไปรษณีย์ ' + this.customerAddressForm.value.zipCode + ' ' : '');
     return fullAddress || '-';
   }
 
