@@ -88,8 +88,8 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy 
       };
       this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then((response) => {
         if (response.data.isSuccess === true) {
-          this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).subscribe(
-            (res) => {
+          this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption)
+          .then((res) => {
               if (res === 'S') {
                 this.router.navigate([ROUTE_DEVICE_ONLY_AIS_RESULT_QUEUE_PAGE]);
               }
