@@ -60,8 +60,8 @@ const routes: Routes = [
     component: DeviceOnlyAisCheckoutPaymentQrCodePageComponent
   },
   {
-    path: 'auto-get-queue',
-    component: DeviceOnlyAutoGetQueuePageComponent
+    path: 'queue',
+    component: DeviceOnlyAisQueuePageComponent
   }
 ];
 

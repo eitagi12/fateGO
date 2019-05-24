@@ -15,7 +15,24 @@ export class QueueService {
       mobileNo: mobileNo
     };
     return this.http.post('/api/salesportal/device-order/transaction/auto-gen-queue', intercepterOption).pipe(
-      map((response: any) => response.data.data.queueNo || '')
+      map((response: any) => response.data && response.data.data && response.data.data.queueNo || '')
     ).toPromise();
   }
+
+  checkQueueLocation(): Promise<any> {
+    return this.http.get('/api/salesportal/check-queue-location').toPromise().then((response: any) => {
+      return response && response.data && response.data.queueType ? response.data.queueType : undefined;
+    }).catch((e) => false);
+  }
+
+  getQueueZ(locationCode: any): Promise<any> {
+    return this.http.get('/api/salesportal/device-sell/gen-queue', { params: { locationCode: locationCode } }).toPromise();
+  }
+
+  getQueueNewMatic(mobileNo: any): Promise<any> {
+    return this.http.post('/api/salesportal/device-order/transaction/get-queue-qmatic', {
+      mobileNo: mobileNo
+    }).toPromise();
+  }
+
 }
