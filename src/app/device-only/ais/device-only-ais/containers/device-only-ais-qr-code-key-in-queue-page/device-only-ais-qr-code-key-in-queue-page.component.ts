@@ -77,23 +77,23 @@ export class DeviceOnlyAisQrCodeKeyInQueuePageComponent implements OnInit, OnDes
       trade: this.priceOption.trade
     };
     this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then((response) => {
-      if (response.data.isSuccess === true) {
-        this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).subscribe(
-          (res) => {
-          if (res === 'S') {
-            this.router.navigate([ROUTE_DEVICE_ONLY_AIS_RESULT_QUEUE_PAGE]);
-          } else {
-            this.alertService.warning('ระบบไม่สามารถทำรายการได้');
-          }
-        },
-        (err) => {
-          this.pageLoadingService.closeLoading();
-          this.alertService.warning('ระบบไม่สามารถทำรายการได้');
-        },
-        () => {
-          this.pageLoadingService.closeLoading();
-        });
-      }
+      // if (response.data.isSuccess === true) {
+      //   this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).subscribe(
+      //     (res) => {
+      //     if (res === 'S') {
+      //       this.router.navigate([ROUTE_DEVICE_ONLY_AIS_RESULT_QUEUE_PAGE]);
+      //     } else {
+      //       this.alertService.warning('ระบบไม่สามารถทำรายการได้');
+      //     }
+      //   },
+      //   (err) => {
+      //     this.pageLoadingService.closeLoading();
+      //     this.alertService.warning('ระบบไม่สามารถทำรายการได้');
+      //   },
+      //   () => {
+      //     this.pageLoadingService.closeLoading();
+      //   });
+      // }
     }).catch((err) => {
       this.pageLoadingService.closeLoading();
       this.alertService.warning('ระบบไม่สามารถ update รายการได้ในขณะนี้');

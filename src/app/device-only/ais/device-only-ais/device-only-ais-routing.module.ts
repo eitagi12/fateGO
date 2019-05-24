@@ -9,8 +9,6 @@ import { DeviceOnlyAisSummaryPageComponent } from 'src/app/device-only/ais/devic
 import { DeviceOnlyAisQrCodeSummarayPageComponent } from './containers/device-only-ais-qr-code-summaray-page/device-only-ais-qr-code-summaray-page.component';
 import { DeviceOnlyAisQrCodeGeneratePageComponent } from './containers/device-only-ais-qr-code-generate-page/device-only-ais-qr-code-generate-page.component';
 import { DeviceOnlyAisCheckoutPaymentQrCodePageComponent } from './containers/device-only-ais-checkout-payment-qr-code-page/device-only-ais-checkout-payment-qr-code-page.component';
-import { DeviceOnlyAisKeyInQueuePageComponent } from './containers/device-only-ais-key-in-queue-page/device-only-ais-key-in-queue-page.component';
-import { DeviceOnlyAutoGetQueuePageComponent } from './containers/device-only-ais-auto-get-queue-page/device-only-ais-auto-get-queue-page.component';
 import { DeviceOnlyAisQrCodeKeyInQueuePageComponent } from './containers/device-only-ais-qr-code-key-in-queue-page/device-only-ais-qr-code-key-in-queue-page.component';
 import { DeviceOnlyAisResultQueuePageComponent } from './containers/device-only-ais-result-queue-page/device-only-ais-result-queue-page.component';
 
@@ -22,22 +20,6 @@ const routes: Routes = [
   {
     path: 'select-payment',
     component: DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent
-  },
-  {
-    path: 'key-in-queue',
-    component: DeviceOnlyAisKeyInQueuePageComponent
-  },
-  {
-    path: 'qr-code-queue',
-    component: DeviceOnlyAisQrCodeQueuePageComponent
-  },
-  {
-    path: 'qr-code-key-in-queue',
-    component: DeviceOnlyAisQrCodeKeyInQueuePageComponent
-  },
-  {
-    path: 'result-queue',
-    component: DeviceOnlyAisResultQueuePageComponent
   },
   {
     path: 'qr-code-summary',
@@ -62,6 +44,18 @@ const routes: Routes = [
   {
     path: 'queue',
     component: DeviceOnlyAisQueuePageComponent
+  },
+  {
+    path: 'qr-code-queue',
+    component: DeviceOnlyAisQrCodeQueuePageComponent
+  },
+  {
+    path: 'qr-code-key-in-queue',
+    component: DeviceOnlyAisQrCodeKeyInQueuePageComponent
+  },
+  {
+    path: 'result-queue',
+    component: DeviceOnlyAisResultQueuePageComponent
   }
 ];
 

@@ -46,7 +46,7 @@ export class CreateOrderService {
     private sharedTransactionService: SharedTransactionService
   ) {
     this.user = this.tokenService.getUser();
-   }
+  }
 
   createTransaction(transaction: Transaction, priceOption: PriceOption): Promise<any> {
     return this.http.post('/api/salesportal/device-order/create-transaction', this.mapCreateTransactionDb(transaction, priceOption))
@@ -131,7 +131,7 @@ export class CreateOrderService {
     const productDetail = priceOption.productDetail;
     const customer = transaction.data.customer;
     const cusNameOrder = customer && customer.firstName && customer.lastName ? `${customer.firstName} ${customer.lastName}` : '-';
-    const color  = productStock.colorName || productStock.color;
+    const color = productStock.colorName || productStock.color;
     const requestData: any = {
       soCompany: productStock.company || 'AWN',
       locationSource: this.user.locationCode,
@@ -163,9 +163,9 @@ export class CreateOrderService {
         && transaction.data.order
         && transaction.data.order.soId) {
         this.clearAddToCart(transaction.transactionId, transaction.data.order.soId)
-        .then((res: any) => {
-          resolve(res.isSuccess);
-        });
+          .then((res: any) => {
+            resolve(res.isSuccess);
+          });
       } else {
         resolve(false);
       }
@@ -187,10 +187,12 @@ export class CreateOrderService {
   }
 
   updateTransactionDB(transaction: Transaction): Promise<any> {
-    const updateTransaction = {...transaction,
-      issueBy: this.user.username};
-      return this.http.post('/api/salesportal/device-order/update-transaction', updateTransaction).pipe(
-        map((res: any) => res.data.isSuccess)
+    const updateTransaction = {
+      ...transaction,
+      issueBy: this.user.username
+    };
+    return this.http.post('/api/salesportal/device-order/update-transaction', updateTransaction).pipe(
+      map((res: any) => res.data.isSuccess)
     ).toPromise();
   }
 
@@ -202,15 +204,14 @@ export class CreateOrderService {
   }
 
   mapCreateOrder(transaction: Transaction, priceOption: PriceOption): any {
-    const sellerNo = (transaction.data.seller && transaction.data.seller.sellerNo)  ? transaction.data.seller.sellerNo : '';
+    const sellerNo = (transaction.data.seller && transaction.data.seller.sellerNo) ? transaction.data.seller.sellerNo : '';
     const mapInstallmentTerm = transaction.data.payment.paymentMethod.month
-                              ? transaction.data.payment.paymentMethod.month : 0;
+      ? transaction.data.payment.paymentMethod.month : 0;
     const mapInstallmentRate = transaction.data.payment.paymentMethod.percentage
-                              ? transaction.data.payment.paymentMethod.percentage : 0;
+      ? transaction.data.payment.paymentMethod.percentage : 0;
     const mapBankAbb = transaction.data.payment.paymentBank.abb ? transaction.data.payment.paymentBank.abb : '';
     const mapBankCode = transaction.data.payment.paymentBank.abb ? transaction.data.payment.paymentBank.abb : '';
     const mapQrTran = transaction.data.mpayPayment ? transaction.data.mpayPayment.tranId : '';
-    // const mapPaymentMethod = this.mapPaymentType(transaction.data.payment.paymentType);
     return {
       soId: transaction.data.order.soId,
       soCompany: priceOption.productStock.company,
@@ -233,26 +234,15 @@ export class CreateOrderService {
       cusMobileNoOrder: transaction.data.receiptInfo.telNo,
       customerAddress: this.mapCusAddress(transaction.data.customer),
       tradeNo: priceOption.trade.tradeNo,
-      // ussdCode: priceOption.trade.ussdCode,
-      // returnCode: '4GEYYY',
-      // matAirTime: '',
-      // matCodeFreeGoods: '',
       paymentRemark: this.getOrderRemark(transaction, priceOption),
       installmentTerm: mapInstallmentTerm,
       installmentRate: mapInstallmentRate,
-      // mobileAisFlg: '',
       paymentMethod: this.getPaymentMethod(transaction, priceOption),
       bankCode: mapBankCode,
       qrTransId: mapQrTran,
       bankAbbr: mapBankAbb,
       qrAmt: this.getQRAmt(priceOption, transaction), // add
       reqMinimumBalance: this.getReqMinimumBalance(transaction.data.onTopPackage, transaction.data.mobileCarePackage),
-      // tradeFreeGoodsId: '',
-      // matairtimeId: '',
-      // tradeDiscountId: '',
-      // focCode: '',
-      // preBookingNo: '',
-      // depositAmt: '',
     };
   }
   mapCusAddress(addressCus: Customer): any {
@@ -274,22 +264,18 @@ export class CreateOrderService {
   }
 
   mapPaymentType(paymentType: string): string {
-      if (paymentType === 'CREDIT') {
-        return 'CC';
-      }
-      if (paymentType === 'DEBIT') {
-        return 'CA';
-      }
+    if (paymentType === 'CREDIT') {
+      return 'CC';
+    }
+    if (paymentType === 'DEBIT') {
+      return 'CA';
+    }
   }
 
   private getOrderRemark(transaction: Transaction, priceOption: PriceOption): string {
-    // const onTopPackage = transaction.data.onTopPackage || {};
     const installment = this.getInstallment(transaction, priceOption);
     const information = this.getInformation(transaction, priceOption);
-
-    return `
-${this.PROMOTION_NAME}${this.SPACE}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW_LINE}
-`;
+    return `${this.PROMOTION_NAME}${this.SPACE}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW_LINE}`;
   }
 
   private getQRAmt(priceOption: PriceOption, transaction: Transaction): any {
@@ -302,37 +288,6 @@ ${this.PROMOTION_NAME}${this.SPACE}${this.NEW_LINE}${installment}${this.NEW_LINE
       return undefined;
     }
   }
-
-  // private getAirTime(trade: any, transaction: Transaction): string {
-  //   let message = '';
-
-  //   if (!trade || !trade.advancePay) {
-  //     return message;
-  //   }
-
-  //   const advancePay = trade.advancePay || {};
-  //   if (advancePay.installmentFlag === 'Y' || +advancePay.amount <= 0) { // ผ่อนรวม
-  //     return message;
-  //   }
-
-  //   message = `${this.AIR_TIME}`;
-  //   const advancePayment: any = transaction.data.advancePayment || {};
-  //   if (advancePayment.paymentType === 'QR_CODE') {
-  //     if (advancePayment.paymentQrCodeType === 'THAI_QR') {
-  //       message += `${this.PROMPT_PAY_PAYMENT}`;
-  //     } else {
-  //       message += `${this.RABBIT_LINE_PAY_PAYMENT}`;
-  //     }
-  //   } else {
-  //     if (advancePayment.paymentType === 'DEBIT') {
-  //       message += `${this.CASH_PAYMENT}`;
-  //     } else {
-  //       message += `${this.CREDIT_CARD_PAYMENT}${this.COMMA}${this.SPACE}`;
-  //       message += `${this.BANK}${advancePayment.abb || ''}`;
-  //     }
-  //   }
-  //   return message;
-  // }
 
   private getPaymentMethod(transaction: Transaction, priceOption: PriceOption): string {
     const payment: Payment = transaction.data.payment;
@@ -362,17 +317,9 @@ ${this.PROMOTION_NAME}${this.SPACE}${this.NEW_LINE}${installment}${this.NEW_LINE
 
   private getInstallment(transaction: Transaction, priceOption: PriceOption): string {
     let message = '';
-
     const trade = priceOption.trade;
     const payment = transaction.data.payment;
-
-    // const advancePay = trade.advancePay || {};
-    // if (advancePay.installmentFlag === 'Y' && +advancePay.amount > 0) {
-    //   message += this.AIR_TIME_AND_DEVICE;
-    // } else {
-      message += this.DEVICE;
-    // }
-
+    message += this.DEVICE;
     if (payment.paymentType === 'QR_CODE') {
       if (payment.paymentQrCodeType === 'THAI_QR') {
         message += `${this.PROMPT_PAY_PAYMENT}`;
@@ -381,19 +328,17 @@ ${this.PROMOTION_NAME}${this.SPACE}${this.NEW_LINE}${installment}${this.NEW_LINE
       }
       message += `${this.COMMA}${this.SPACE}`;
     } else {
-      // ใช้ได้ทั้งบัตร credit, debit
-      if (payment.paymentForm === 'INSTALLMENT') { // ผ่อนชำระ
+      if (payment.paymentForm === 'INSTALLMENT') {
         message += `${this.CREDIT_CARD_PAYMENT}${this.COMMA}${this.SPACE}`;
         message += `${this.BANK}${payment.paymentMethod.abb || payment.paymentBank.abb}${this.COMMA}${this.SPACE}`;
         message += `${this.INSTALLMENT}${payment.paymentMethod.percentage}%${this.SPACE}${payment.paymentMethod.month}`;
         message += `เดือน${this.COMMA}${this.SPACE}`;
-      } else { // ชำระเต็มจำนวน
+      } else {
         if (payment.paymentType === 'DEBIT') {
           message += `${this.CASH_PAYMENT}${this.COMMA}${this.SPACE}`;
         } else {
           message += `${this.CREDIT_CARD_PAYMENT}${this.COMMA}${this.SPACE}`;
           message += `${this.BANK}${payment.paymentMethod.abb || payment.paymentBank.abb}${this.COMMA}${this.SPACE}`;
-          // message += `${this.INSTALLMENT}0%${this.SPACE}0`;
         }
       }
     }
@@ -407,9 +352,7 @@ ${this.PROMOTION_NAME}${this.SPACE}${this.NEW_LINE}${installment}${this.NEW_LINE
     const customerGroup = priceOption.customerGroup;
     const privilege = priceOption.privilege;
     const trade = priceOption.trade;
-    // const mainPackage = transaction.data.mainPackage && transaction.data.mainPackage.customAttributes || {};
     const mobileCarePackage = transaction.data.mobileCarePackage || {};
-    // const simCard = transaction.data.simCard;
     const customer: any = transaction.data.customer || {};
     const queue: any = transaction.data.queue || {};
 
@@ -422,29 +365,21 @@ ${this.PROMOTION_NAME}${this.SPACE}${this.NEW_LINE}${installment}${this.NEW_LINE
       customerGroupName = 'Device Only';
     }
     const customAttributes = mobileCarePackage.customAttributes || {};
-
-    // message += this.SUMMARY_POINT + this.SPACE + 0 + this.COMMA + this.SPACE;
-    // message += this.SUMMARY_DISCOUNT + this.SPACE + 0 + this.COMMA + this.SPACE;
     message += this.DISCOUNT + this.SPACE + (trade.priceDiscount ? (+trade.discount.amount).toFixed(2) : 0.00) + this.COMMA + this.SPACE;
-    // message += this.RETURN_CODE + this.SPACE + (simCard.privilegeCode || customer.privilegeCode || '') + this.COMMA + this.SPACE;
     message += this.ORDER_TYPE + this.SPACE + customerGroupName + this.COMMA + this.SPACE;
-    // message += this.PRMOTION_CODE + this.SPACE + (mainPackage.promotionCode || '') + this.COMMA + this.SPACE;
     message += this.MOBILE_CARE_CODE + this.SPACE + (customAttributes.promotionCode || '') + this.COMMA + this.SPACE;
     message += this.MOBILE_CARE + this.SPACE + (customAttributes.shortNameThai || '') + this.COMMA + this.SPACE;
-    // message += this.PRIVILEGE_DESC + this.SPACE + (privilege.privilegeDesc || '') + this.COMMA + this.SPACE;
     message += this.PRIVILEGE_DESC + this.SPACE + (trade.tradeDesc || '') + this.COMMA + this.SPACE;
     message += this.QUEUE_NUMBER + this.SPACE + queue.queueNo;
     return message;
   }
 
-  private getReqMinimumBalance(onTopPackage: any, mobileCarePackage: any): number { // Package only
+  private getReqMinimumBalance(onTopPackage: any, mobileCarePackage: any): number {
     let total: number = 0;
-
     if (onTopPackage) {
       total += +(onTopPackage.priceIncludeVat || 0);
     }
-
-    if (mobileCarePackage && mobileCarePackage.customAttributes ) {
+    if (mobileCarePackage && mobileCarePackage.customAttributes) {
       const customAttributes = mobileCarePackage.customAttributes;
       total += +(customAttributes.priceInclVat || 0);
     }
