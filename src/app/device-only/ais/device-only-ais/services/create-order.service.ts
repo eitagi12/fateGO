@@ -240,7 +240,13 @@ export class CreateOrderService {
       qrTransId: mapQrTran,
       bankAbbr: mapBankAbb,
       qrAmt: this.getQRAmt(priceOption, transaction), // add
-      reqMinimumBalance: this.getReqMinimumBalance(transaction.data.onTopPackage, transaction.data.mobileCarePackage),
+      reqMinimumBalance: this.getReqMinimumBalance(transaction.data.mobileCarePackage),
+      // tradeFreeGoodsId: '',
+      // matairtimeId: '',
+      // tradeDiscountId: '',
+      // focCode: '',
+      // preBookingNo: '',
+      // depositAmt: '',
     };
   }
   mapCusAddress(addressCus: Customer): any {
@@ -372,12 +378,14 @@ export class CreateOrderService {
     return message;
   }
 
-  private getReqMinimumBalance(onTopPackage: any, mobileCarePackage: any): number {
+  private getReqMinimumBalance( mobileCarePackage: any): number { // Package only
     let total: number = 0;
-    if (onTopPackage) {
-      total += +(onTopPackage.priceIncludeVat || 0);
-    }
-    if (mobileCarePackage && mobileCarePackage.customAttributes) {
+
+    // if (onTopPackage) {
+    //   total += +(onTopPackage.priceIncludeVat || 0);
+    // }
+
+    if (mobileCarePackage && mobileCarePackage.customAttributes ) {
       const customAttributes = mobileCarePackage.customAttributes;
       total += +(customAttributes.priceInclVat || 0);
     }
