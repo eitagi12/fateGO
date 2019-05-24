@@ -60,8 +60,8 @@ export class DeviceOnlyAisQueuePageComponent implements OnInit, OnDestroy {
     this.queueService.checkQueueLocation().then((queueType) => {
       this.queueType = queueType;
       if (this.transaction.data.simCard && this.transaction.data.simCard.mobileNo && this.queueType === 'SMART_SHOP') {
-        this.mobileFrom.patchValue({ mobileNo: this.transaction.data.simCard.mobileNo });
-        this.mobileNo = this.transaction.data.simCard.mobileNo;
+        this.mobileFrom.patchValue({ mobileNo: this.transaction.data.simCard.mobileNo || this.transaction.data.receiptInfo.telNo});
+        this.mobileNo = this.transaction.data.simCard.mobileNo || this.transaction.data.receiptInfo.telNo;
       }
     });
   }
