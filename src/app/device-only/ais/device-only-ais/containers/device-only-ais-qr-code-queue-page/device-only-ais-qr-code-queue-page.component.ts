@@ -20,16 +20,20 @@ import { QueueService } from '../../services/queue.service';
 export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy {
   transaction: Transaction;
   priceOption: PriceOption;
+  price: string;
+
   queueFrom: FormGroup = new FormGroup({
+    queue: new FormControl()
+  });
+  mobileFrom: FormGroup = new FormGroup({
     mobileNo: new FormControl()
   });
-  price: string;
-  // mobileFrom: FormGroup;
-  // mobileNo: string;
-  // queue: string;
-  // queueType: string;
-  // errorQueue: boolean;
 
+  mobileNo: string;
+  queue: string;
+  queueType: string;
+  errorQueue: boolean;
+  inputType: string;
   constructor(
     private fb: FormBuilder,
     private router: Router,
@@ -49,41 +53,56 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy 
   ngOnInit(): void {
     this.price = this.priceOption.trade.priceType === 'NORMAL' ? this.priceOption.trade.normalPrice : this.priceOption.trade.promotionPrice;
     this.homeButtonService.initEventButtonHome();
-    // this.createForm();
-    // this.setQueueType();
+    this.createForm();
+    this.setQueueType();
   }
-  createForm(): void {
-    this.queueFrom = this.fb.group({
-      'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])],
+
+  setQueueType(): void {
+    this.queueService.checkQueueLocation().then((queueType) => {
+      this.queueType = queueType;
+      if (this.transaction.data.simCard && this.transaction.data.simCard.mobileNo && this.queueType === 'SMART_SHOP') {
+        this.mobileFrom.patchValue({ mobileNo: this.transaction.data.simCard.mobileNo || this.transaction.data.receiptInfo.telNo });
+        this.mobileNo = this.transaction.data.simCard.mobileNo || this.transaction.data.receiptInfo.telNo;
+      }
     });
   }
-  // setQueueType(): void {
-  //   this.queueService.checkQueueLocation().then((queueType) => {
-  //     this.queueType = 'SMART_SHOP';
-  //     if (this.transaction.data.simCard && this.transaction.data.simCard.mobileNo && this.queueType === 'SMART_SHOP') {
-  //       this.mobileFrom.patchValue({ mobileNo: this.transaction.data.simCard.mobileNo || this.transaction.data.receiptInfo.telNo });
-  //       this.mobileNo = this.transaction.data.simCard.mobileNo || this.transaction.data.receiptInfo.telNo;
-  //     }
-  //   });
-  // }
 
-  // createForm(): void {
-  //   this.mobileFrom = this.fb.group({
-  //     'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(/^0[6-9]{1}[0-9]{8}/)])],
-  //   });
+  createForm(): void {
+    this.mobileFrom = this.fb.group({
+      'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(/^0[6-9]{1}[0-9]{8}/)])],
+    });
 
-  //   this.mobileFrom.valueChanges.subscribe((value) => {
-  //     this.mobileNo = value.mobileNo;
-  //   });
+    this.mobileFrom.valueChanges.subscribe((value) => {
+      this.mobileNo = value.mobileNo;
+    });
 
-  //   this.queueFrom = this.fb.group({
-  //     'queue': ['', Validators.compose([Validators.required, Validators.pattern(/([A-Y]{1}[0-9]{3})/)])],
-  //   });
+    this.queueFrom = this.fb.group({
+      'queue': ['', Validators.compose([Validators.required, Validators.pattern(/([A-Y]{1}[0-9]{3})/)])],
+    });
 
-  //   this.queueFrom.valueChanges.subscribe((value) => {
-  //     this.queue = value.queue;
-  //   });
-  // }
+    this.queueFrom.valueChanges.subscribe((value) => {
+      this.queue = value.queue;
+    });
+  }
+
+  checkValid(): boolean {
+    if (this.queueType === 'AUTO_GEN_Q') {
+      return this.mobileFrom.invalid && this.queueFrom.invalid;
+    } else if (this.queueType === 'SMART_SHOP') {
+      return this.mobileFrom.invalid;
+    } else {
+      return this.queueFrom.invalid;
+    }
+  }
+
+  checkInput(event: any, type: string): void {
+    this.inputType = type;
+    if (type === 'mobileNo') {
+      this.queueFrom.reset();
+    } else {
+      this.mobileFrom.reset();
+    }
+  }
 
   onHome(): void {
     this.homeService.goToHome();
