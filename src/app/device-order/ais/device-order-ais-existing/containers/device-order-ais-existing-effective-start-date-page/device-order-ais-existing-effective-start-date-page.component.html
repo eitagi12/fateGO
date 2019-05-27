@@ -32,7 +32,7 @@
                     <div class="col-12">
                       <input type="radio" autocomplete="off" id="bill_{{ i+1 }}" [value]="billCycle"
                         [checked]="checked(billCycle?.value)" formControlName="bill">
-                      <label for="bill_{{ i+1 }}">{{  billCycle?.textBill }}</label>
+                      <label for="bill_{{ i+1 }}">{{  billCycle?.textBill | translate}}</label>
                       <div>
                         <span *ngIf="billCycle?.value === 'B'"
                           class="text-bill-cycle text-grey">{{  billCycle?.textDate }} <span class="text-green">

@@ -209,6 +209,7 @@
     "เงินสด": "Debit",
     "บัตรเครดิต" : "Credit card",
     "หลังจากได้รับ SMS ยืนยัน": "After receiving confirmation SMS",
-    "ข้อมูลแพ็กเกจ": "Package Details",
-    "เลือกแพ็กเกจใหม่": "Select new package"
+    "ข้อมูลแพ็กเกจ": "Package details",
+    "เลือกแพ็กเกจใหม่": "Select new package",
+    "ค่าแพ็กเกจบริการล่วงหน้า": "Advance package payment"
 }

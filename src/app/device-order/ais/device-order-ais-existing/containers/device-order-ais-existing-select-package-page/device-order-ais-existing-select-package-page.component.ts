@@ -67,7 +67,7 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
   defualtSelected(promotion: any): void {
     this.promotionShelves = this.promotionShelveService
       .defaultBySelected(promotion, this.transaction.data.mainPackage);
-    if (!this.advancePay && this.showSelectCurrentPackage) {
+    if (!this.advancePay && this.showSelectCurrentPackage && this.havePromotions) {
       this.promotionShelves[0].promotions[0].active = false;
     }
   }
@@ -205,6 +205,10 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
   get advancePay(): boolean {
     return !!(+(this.priceOption.trade.advancePay && this.priceOption.trade.advancePay.amount || 0) > 0);
 
+  }
+
+  get havePromotions(): boolean {
+    return this.promotionShelves && this.promotionShelves.some(arr => (arr && arr.promotions.length) > 0);
   }
 
   ngOnDestroy(): void {
