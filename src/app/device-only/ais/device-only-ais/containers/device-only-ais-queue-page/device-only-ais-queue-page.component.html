@@ -14,6 +14,7 @@
               <p>หมายเลข {{ transaction?.data?.receiptInfo?.telNo || transaction?.data?.simCard?.mobileNo | mobileNo }}</p>
               <p>หมายเลขรายการสั่งชื้อของท่านได้เข้าสู่ระบบเรียบร้อยแล้ว</p>
             </div>
+
             <form [formGroup]="mobileFrom">
               <div class="form-group">
                 <div class="mt-5 text-center">เบอร์โทรศัพท์รับหมายเลขสั่งซื้อเพื่อชำระสินค้าของท่านคือ</div>
@@ -24,6 +25,7 @@
                 </small>
               </div>
             </form>
+          
           </div>
         </ng-container>
 
@@ -90,6 +92,7 @@
             </form>
           </div>
         </ng-container>
+      
       </ng-container>
     </div>
   </div>

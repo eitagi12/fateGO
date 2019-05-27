@@ -24,6 +24,11 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy 
     mobileNo: new FormControl()
   });
   price: string;
+  // mobileFrom: FormGroup;
+  // mobileNo: string;
+  // queue: string;
+  // queueType: string;
+  // errorQueue: boolean;
 
   constructor(
     private fb: FormBuilder,
@@ -44,13 +49,41 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy 
   ngOnInit(): void {
     this.price = this.priceOption.trade.priceType === 'NORMAL' ? this.priceOption.trade.normalPrice : this.priceOption.trade.promotionPrice;
     this.homeButtonService.initEventButtonHome();
+    // this.createForm();
+    // this.setQueueType();
   }
-
   createForm(): void {
     this.queueFrom = this.fb.group({
       'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])],
     });
   }
+  // setQueueType(): void {
+  //   this.queueService.checkQueueLocation().then((queueType) => {
+  //     this.queueType = 'SMART_SHOP';
+  //     if (this.transaction.data.simCard && this.transaction.data.simCard.mobileNo && this.queueType === 'SMART_SHOP') {
+  //       this.mobileFrom.patchValue({ mobileNo: this.transaction.data.simCard.mobileNo || this.transaction.data.receiptInfo.telNo });
+  //       this.mobileNo = this.transaction.data.simCard.mobileNo || this.transaction.data.receiptInfo.telNo;
+  //     }
+  //   });
+  // }
+
+  // createForm(): void {
+  //   this.mobileFrom = this.fb.group({
+  //     'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(/^0[6-9]{1}[0-9]{8}/)])],
+  //   });
+
+  //   this.mobileFrom.valueChanges.subscribe((value) => {
+  //     this.mobileNo = value.mobileNo;
+  //   });
+
+  //   this.queueFrom = this.fb.group({
+  //     'queue': ['', Validators.compose([Validators.required, Validators.pattern(/([A-Y]{1}[0-9]{3})/)])],
+  //   });
+
+  //   this.queueFrom.valueChanges.subscribe((value) => {
+  //     this.queue = value.queue;
+  //   });
+  // }
 
   onHome(): void {
     this.homeService.goToHome();
@@ -89,7 +122,7 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy 
       this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then((response) => {
         if (response.data.isSuccess === true) {
           this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption)
-          .then((res) => {
+            .then((res) => {
               if (res === 'S') {
                 this.router.navigate([ROUTE_DEVICE_ONLY_AIS_RESULT_QUEUE_PAGE]);
               }
@@ -98,12 +131,12 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy 
               //   this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_KEY_IN_QUEUE]);
               // }
             }
-            // key in queue
-            // (err) => {
-            //   this.pageLoadingService.closeLoading();
-            //   this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_KEY_IN_QUEUE]);
-            // }
-          );
+              // key in queue
+              // (err) => {
+              //   this.pageLoadingService.closeLoading();
+              //   this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QR_CODE_KEY_IN_QUEUE]);
+              // }
+            );
         }
       }).catch((err) => {
         this.pageLoadingService.closeLoading();
