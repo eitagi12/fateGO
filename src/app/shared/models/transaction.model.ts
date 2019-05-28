@@ -67,6 +67,7 @@ export interface TransactionData {
   mpayPayment?: QrCodePrePostMpayModel;
   status?: Status;
   device?: Device;
+  knoxguard?: KnoxGuard;
 }
 
 export interface Condition {
@@ -440,4 +441,15 @@ export interface MPayStatus {
 
 export interface Device {
   imei?: string;
+}
+
+export interface KnoxGuard {
+  orderType?: string;
+  serviceCode?: string;
+  action?: string;
+  startDate?: string;
+  endDate?: string;
+  duration?: string;
+  orderReason?: string;
+  userName?: string;
 }

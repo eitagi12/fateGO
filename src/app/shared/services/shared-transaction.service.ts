@@ -85,6 +85,7 @@ export class SharedTransactionService {
           imei: !!data.device ? data.device.imei : ''
         },
         billing_information: {},
+        knoxguard: {},
         mobile_care_package: {},
         air_time: {},
         on_top_package: transaction.data.onTopPackage || {},
@@ -214,6 +215,21 @@ export class SharedTransactionService {
     if (data.existingMobileCare) {
       // ของเดิม เก็บเป็น list TODO
       params.data.existing_mobile_care_package = [data.existingMobileCare];
+    }
+
+    if (priceOption.trade && priceOption.trade.serviceLockHs === 'KG') {
+      const startDate: string = Moment().format('DD/MM/YYYY');
+      const endDate: string = Moment().add(priceOption.trade.durationContract, 'month').format('DD/MM/YYYY');
+      params.data.knoxguard = {
+        orderType: 'Change Service',
+        orderReason: '109',
+        userName: 'SFFBATCH',
+        action: 'Add',
+        serviceCode: 'P19020073',
+        startDate: startDate,
+        endDate: endDate,
+        duration: priceOption.trade.durationContract
+      };
     }
 
     if (data.mobileCarePackage) {
