@@ -289,7 +289,7 @@ export class MobileCareComponent implements OnInit {
           type: 'error',
           confirmButtonText: 'OK',
           showConfirmButton: true,
-          text: 'เบอร์ไม่ถูกต้อง'
+          text: 'เบอร์นี้ไม่ใช่ระบบ AIS กรุณาเปลี่ยนเบอร์ใหม่'
         });
         this.privilegeCustomerForm.controls['mobileNo'].setValue('');
       });
