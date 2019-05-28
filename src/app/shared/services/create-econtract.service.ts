@@ -53,11 +53,24 @@ export class CreateEcontractService {
       airTimeMonth: this.getAirTimeMonth(promotionByMainPackage ? promotionByMainPackage : advancePay.promotions),
       price: this.transformDecimalPipe(+trade.promotionPrice + (+advancePay.amount)),
       signature: '',
-      mobileCarePackageTitle: mobileCarePackage.title ? `พร้อมใช้บริการ ${mobileCarePackage.title}` : '',
-      condition: condition.conditionText,
+      mobileCarePackageTitle: this.getMobileCarePackageTitle(mobileCarePackage, language),
+      isPayAdvance: this.isAdvancePay(trade),
       language: language
     };
     return data;
+  }
+
+  getMobileCarePackageTitle(mobileCarePackage: any, langCurrent: any): string {
+    if (langCurrent === 'TH') {
+      return mobileCarePackage.title ? `พร้อมใช้บริการ ${mobileCarePackage.title}` : '';
+    } else {
+      return mobileCarePackage.title ? `Ready to use ${mobileCarePackage.title}` : '';
+    }
+  }
+
+  isAdvancePay(trade: any): boolean {
+    const advancePay = trade.advancePay || {};
+    return (advancePay && advancePay.amount > 0);
   }
 
   findPromotionByMainPackage(transaction: Transaction, priceOption: PriceOption): any {
