@@ -50,13 +50,23 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
     this.priceOption = this.priceOptionService.load();
 
     this.homeService.callback = () => {
-      if (this.validateCustomerIdcard.koiskApiFn) {
-        this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
-      }
-      // Returns stock (sim card, soId) todo...
-      this.returnStock().then(() => {
-        this.homeHandler();
-      });
+
+      this.alertService.question('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่')
+        .then((data: any) => {
+          if (!data.value) {
+            return false;
+          }
+          if (this.validateCustomerIdcard.koiskApiFn) {
+            this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+          }
+          // Returns stock (sim card, soId) todo...
+          return this.returnStock().then(() => true);
+        })
+        .then((isNext: boolean) => {
+          if (isNext) {
+            this.homeHandler();
+          }
+        });
     };
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
     this.priceOption = this.priceOptionService.load();
@@ -104,14 +114,27 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
   }
 
   onBack(): void {
-    this.returnStock().then(() => {
-      this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
-    });
+    this.alertService.question('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่')
+      .then((data: any) => {
+        if (!data.value) {
+          return false;
+        }
+        if (this.validateCustomerIdcard.koiskApiFn) {
+          this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+        }
+        // Returns stock (sim card, soId) todo...
+        return this.returnStock().then(() => true);
+      })
+      .then((isNext: boolean) => {
+        if (isNext) {
+          this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
+        }
+      });
   }
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-
+    this.returnStock().then(() => {
       this.createTransaction();
       this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
         .then((zipCode: string) => {
@@ -176,6 +199,7 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
                 }).then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_CUSTOMER_INFO_PAGE]));
             });
         }).then(() => this.pageLoadingService.closeLoading());
+    });
   }
 
   conditionIdentityValid(): Promise<string> {

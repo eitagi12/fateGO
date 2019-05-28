@@ -111,10 +111,15 @@ export class OrderPreToPostCurrentInfoPageComponent implements OnInit, OnDestroy
         })
         .catch((resp: any) => {
           this.pageLoadingService.closeLoading();
-          this.alertService.notify({
-            type: 'error',
-            html: resp.error.resultDescription
-          });
+          const error = resp.error || [];
+          if (error && error.errors && typeof error.errors === 'string') {
+            this.alertService.notify({
+              type: 'error',
+              html: error.errors
+            });
+          } else {
+            Promise.reject(error);
+          }
         });
     } else {
       this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_REPI_PAGE]);

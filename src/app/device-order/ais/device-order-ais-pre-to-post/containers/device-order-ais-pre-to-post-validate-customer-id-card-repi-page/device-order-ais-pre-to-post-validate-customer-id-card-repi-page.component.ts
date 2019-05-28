@@ -98,8 +98,10 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardRepiPageComponent impl
   }
 
   onBack(): void {
-    this.KioskLEDoff();
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CURRENT_INFO_PAGE]);
+    this.returnStock().then(() => {
+      this.KioskLEDoff();
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CURRENT_INFO_PAGE]);
+    });
   }
 
   onNext(): void {
