@@ -155,7 +155,7 @@ ngOnDestroy(): void {
 }
 
 homeHandler(): void {
-  if(environment.name === 'LOCAL') {
+  if (environment.name === 'LOCAL') {
   window.location.href = '/main-menu';
 } else {
   window.location.href = '/smart-digital/main-menu';
