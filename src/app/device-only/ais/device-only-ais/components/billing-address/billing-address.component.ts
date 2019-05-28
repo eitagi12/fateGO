@@ -171,7 +171,21 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     event.preventDefault();
     this.customerAddressForm.reset();
     this.customerAddressForm.patchValue({
+      titleName: '',
+      firstName: '',
+      lastName: '',
+      homeNo: '',
+      moo: '',
+      mooBan: '',
+      room: '',
+      floor: '',
+      buildingName: '',
+      soi: '',
+      street: '',
+      province: '',
       amphur: '',
+      tumbol: '',
+      zipCode: ''
     });
     this.disableFormAmphurAndTumbol();
     this.completed.emit(this.customerAddressForm.value);

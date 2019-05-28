@@ -29,8 +29,6 @@ describe('test device only ais queue page', () => {
   const pageLoadingService: any = {
     openLoading: jest.fn()
   };
-  const queuePageService: any = {
-  };
   const sharedTransactionService: any = {};
   const createOrderService: any = {};
 
@@ -43,6 +41,9 @@ describe('test device only ais queue page', () => {
       // resolve(data,'to')
     })
   };
+  const tokenService: any = {
+    getUser: jest.fn()
+  };
 
   beforeEach(() => {
     component = new DeviceOnlyAisQrCodeQueuePageComponent(
@@ -53,10 +54,10 @@ describe('test device only ais queue page', () => {
       priceOptionService,
       homeButtonService,
       pageLoadingService,
-      queuePageService,
       sharedTransactionService,
       createOrderService,
-      queueService
+      queueService,
+      tokenService
     );
   });
 

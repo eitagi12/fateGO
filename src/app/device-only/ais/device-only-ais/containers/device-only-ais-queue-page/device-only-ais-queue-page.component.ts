@@ -31,7 +31,8 @@ export class DeviceOnlyAisQueuePageComponent implements OnInit, OnDestroy {
   errorQueue: boolean = false;
   skipQueue: boolean = false;
 
-  constructor(public router: Router,
+  constructor(
+    public router: Router,
     private transactionService: TransactionService,
     private homeService: HomeService,
     private homeButtonService: HomeButtonService,
