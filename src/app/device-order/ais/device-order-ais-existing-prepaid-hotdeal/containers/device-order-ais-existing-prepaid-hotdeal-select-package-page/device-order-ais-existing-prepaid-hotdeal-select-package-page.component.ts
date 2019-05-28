@@ -56,7 +56,7 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
   }
 
   onCompleted(promotion: any): void {
-   this.transaction.data.onTopPackage = promotion;
+    this.transaction.data.onTopPackage = promotion;
   }
 
   callService(): void {
@@ -76,52 +76,57 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
         cpcUserId: trade.packageKeyRef || campaign.packageKeyRef
       }
     }).toPromise()
-    .then((resp: any) => {
-      const data = resp.data.packageList || [];
-      const promotionShelves: PromotionShelve[] = data.map((promotionShelve: any) => {
-        const promotionData =  {
-          title: promotionShelve.title,
-          icon: (promotionShelve.icon || '').replace(/\.jpg$/, '').replace(/_/g, '-'),
-          promotions: promotionShelve.subShelves
-            .map((subShelve: any) => {
-              const group = { // group
-                id: subShelve.subShelveId,
-                title: subShelve.title,
-                sanitizedName: subShelve.sanitizedName,
-                items: (subShelve.items || [])
-                .map((promotion: any) => {
-                  const price = promotion.priceExclVat || 0;
-                  const minimumPackage = trade.minimumPackage || campaign.minimumPackagePrice;
-                  const maximumPackage = trade.maximumPackage || campaign.maximumPackagePrice;
-                  if (price >= minimumPackage && price <= maximumPackage) {
-                    return { // item
-                      id: promotion.itemId,
-                      title: promotion.shortNameThai,
-                      detail: promotion.statementThai,
-                      value: promotion
-                    };
-                  }
-                }).filter((item) => item)
-              };
-              return group;
-            })
-        };
-        if (promotionData.promotions) {
-          return promotionData;
+      .then((resp: any) => {
+        const data = resp.data.packageList || [];
+        const promotionShelves: PromotionShelve[] = data.map((promotionShelve: any) => {
+          const promotionData = {
+            title: promotionShelve.title,
+            icon: (promotionShelve.icon || '').replace(/\.jpg$/, '').replace(/_/g, '-'),
+            promotions: promotionShelve.subShelves
+              .map((subShelve: any) => {
+                const group = { // group
+                  id: subShelve.subShelveId,
+                  title: subShelve.title,
+                  sanitizedName: subShelve.sanitizedName,
+                  items: (subShelve.items || [])
+                    .map((promotion: any) => {
+                      const price: number = +promotion.priceExclVat || 0;
+                      const minimumPackage: number = +trade.minimumPackage || +campaign.minimumPackagePrice;
+                      const maximumPackage: number = +trade.maximumPackage || +campaign.maximumPackagePrice;
+                      if (price >= minimumPackage && price <= maximumPackage) {
+                        return { // item
+                          id: promotion.itemId,
+                          title: promotion.shortNameThai,
+                          detail: promotion.statementThai,
+                          value: promotion
+                        };
+                      }
+                    }).filter((item) => item)
+                };
+                console.log('group', group);
+                return group;
+              })
+          };
+          console.log('promotionData', promotionData);
+
+          if (promotionData.promotions) {
+            return promotionData;
+          }
+        });
+        console.log('promotionShelves', promotionShelves);
+
+        return Promise.resolve(promotionShelves);
+      }).then((promotionShelves: PromotionShelve[]) => {
+        this.promotionShelves = promotionShelves;
+        if (this.promotionShelves && this.promotionShelves.length > 0) {
+          this.promotionShelves[0].active = true;
+          if (this.promotionShelves[0].promotions && this.promotionShelves[0].promotions.length > 0) {
+            this.promotionShelves[0].promotions[0].active = true;
+          }
         }
+      }).then(() => {
+        this.pageLoadingService.closeLoading();
       });
-      return Promise.resolve(promotionShelves);
-    }).then((promotionShelves: PromotionShelve[]) => {
-      this.promotionShelves = promotionShelves;
-      if (this.promotionShelves && this.promotionShelves.length > 0) {
-        this.promotionShelves[0].active = true;
-        if (this.promotionShelves[0].promotions && this.promotionShelves[0].promotions.length > 0) {
-          this.promotionShelves[0].promotions[0].active = true;
-        }
-      }
-    }).then(() => {
-      this.pageLoadingService.closeLoading();
-    });
   }
 
   ngOnDestroy(): void {
@@ -144,11 +149,11 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_MOBILE_CARE_PAGE]);
       }
     })
-    .catch(() => {
-      this.pageLoadingService.closeLoading();
-      this.transaction.data.existingMobileCare = null;
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_MOBILE_CARE_PAGE]);
-    });
+      .catch(() => {
+        this.pageLoadingService.closeLoading();
+        this.transaction.data.existingMobileCare = null;
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_MOBILE_CARE_PAGE]);
+      });
   }
 
   onBack(): void {
