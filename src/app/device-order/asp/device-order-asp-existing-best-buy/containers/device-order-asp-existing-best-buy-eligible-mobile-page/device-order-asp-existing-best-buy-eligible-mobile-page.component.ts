@@ -81,7 +81,6 @@ export class DeviceOrderAspExistingBestBuyEligibleMobilePageComponent implements
           });
       }
     }).then(() => {
-      this.pageLoadingService.closeLoading();
       this.checkKnoxGuard();
     });
   }
@@ -126,6 +125,7 @@ export class DeviceOrderAspExistingBestBuyEligibleMobilePageComponent implements
         this.alertService.error(resp);
       });
     } else {
+      this.pageLoadingService.closeLoading();
       this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_DETAIL_PAGE]);
     }
   }
