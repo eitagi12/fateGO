@@ -36,7 +36,7 @@
             <div class="card-body">
               <div class="row">
                 <div class="col-12 col-sm-12 card-text text-black mb-4">
-                  {{'ท่านต้องการเปลี่ยนบริการโมบายแคร์กับเครื่องใหม่'| translate}} {{priceOption?.productDetail?.name}} {{(priceOption?.productDetail?.productSubtype === 'HANDSET BUNDLE'? '(แถมซิม)':'')| translate }} {{'ใช่ หรือ ไม่'| translate}}?
+                  {{ changeMobileCareText(priceOption?.productDetail) | translate}}
                 </div>
               </div>
               <div class="row">

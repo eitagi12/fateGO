@@ -10,6 +10,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-device-order-ais-existing-payment-detail-page',
@@ -24,7 +25,7 @@ export class DeviceOrderAisExistingPaymentDetailPageComponent implements OnInit,
   priceOption: PriceOption;
   transaction: Transaction;
 
-  payementDetail: PaymentDetail;
+  paymentDetail: PaymentDetail;
   banks: PaymentDetailBank[];
   paymentDetailValid: boolean;
 
@@ -40,7 +41,8 @@ export class DeviceOrderAisExistingPaymentDetailPageComponent implements OnInit,
     private homeService: HomeService,
     private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,
-    private priceOptionService: PriceOptionService
+    private priceOptionService: PriceOptionService,
+    private translateService: TranslateService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -57,15 +59,18 @@ export class DeviceOrderAisExistingPaymentDetailPageComponent implements OnInit,
     const trade: any = this.priceOption.trade || {};
     const advancePay: any = trade.advancePay || {};
 
-    let commercialName = productDetail.name;
-    if (productStock.color) {
-      commercialName += ` สี ${productStock.color}`;
-    }
-
-    this.payementDetail = this.mappingPatmentDetail(commercialName, trade, advancePay);
+    this.paymentDetail = this.mappingPaymentDetail(productDetail, productStock, trade, advancePay);
     this.banks = trade.banks || [];
     this.receiptInfo = this.mappingReceiptInfo(customer, receiptInfo);
 
+    this.translateService.onLangChange.subscribe(onChange => {
+      this.paymentDetail.commercialName = this.changeCommercialName(onChange.lang, productDetail.name, productStock.color);
+    });
+
+  }
+
+  changeCommercialName(language: string, name: string, color: string): string {
+    return (!color) ? name : (language === 'TH') ? `${name} สี ${color}` : `${name} Color: ${color}`;
   }
 
   mappingReceiptInfo(customer: any, receiptInfo: any): ReceiptInfo {
@@ -91,9 +96,9 @@ export class DeviceOrderAisExistingPaymentDetailPageComponent implements OnInit,
     };
   }
 
-  mappingPatmentDetail(commercialName: any, trade: any, advancePay: any): PaymentDetail {
+  mappingPaymentDetail(productDetail: any, productStock: any, trade: any, advancePay: any): PaymentDetail {
     return {
-      commercialName: commercialName,
+      commercialName: this.changeCommercialName((this.translateService.currentLang || 'TH'), productDetail.name, productStock.color),
       promotionPrice: +(trade.promotionPrice || 0),
       isFullPayment: this.isFullPayment(),
       installmentFlag: advancePay.installmentFlag === 'N' && +(advancePay.amount || 0) > 0,

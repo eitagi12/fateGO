@@ -14,7 +14,7 @@
       <div class="my-3">
         <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
   
-        <mc-payment-detail [paymentDetail]="payementDetail" [banks]="banks" (completed)="onPaymentCompleted($event)"
+        <mc-payment-detail [paymentDetail]="paymentDetail" [banks]="banks" (completed)="onPaymentCompleted($event)"
           (error)="onPaymentError($event)">
         </mc-payment-detail>
   
