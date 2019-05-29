@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
-import { HomeService, ShoppingCart, PageLoadingService, BillingSystemType } from 'mychannel-shared-libs';
+import { HomeService, ShoppingCart, PageLoadingService, BillingSystemType, AlertService } from 'mychannel-shared-libs';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -16,6 +16,7 @@ import { HttpClient } from '@angular/common/http';
 import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { PromotionShelveService } from 'src/app/device-order/services/promotion-shelve.service';
+import { CheckChangeServiceService } from 'src/app/device-order/services/check-change-service.service';
 
 export interface BillingAccount {
   billingName: string;
@@ -62,7 +63,9 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
     private privilegeService: PrivilegeService,
     private pageLoadingService: PageLoadingService,
     private shoppingCartService: ShoppingCartService,
-    private promotionShelveService: PromotionShelveService
+    private promotionShelveService: PromotionShelveService,
+    private alertService: AlertService,
+    private checkChangeService: CheckChangeServiceService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -111,7 +114,7 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
     if (this.havePackages(promotionsShelves) || this.notMathCritiriaMainPro()) {
       if (this.selectMobileNo.privilegeCode) {
         this.transaction.data.customer.privilegeCode = this.selectMobileNo.privilegeCode;
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_DETAIL_PAGE]);
+        this.checkKnoxGuard();
 
       } else if (this.isCritiriaMainPro) {
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_CHANGE_PACKAGE_PAGE]);
@@ -136,7 +139,7 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
         this.transaction.data.customer.privilegeCode = privilegeCode;
         this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo };
       })
-      .then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_DETAIL_PAGE]));
+      .then(() => this.checkKnoxGuard());
 
   }
 
@@ -239,5 +242,20 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
 
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
+  }
+
+  checkKnoxGuard(): void {
+    const isKnoxGuard: boolean = (this.priceOption.trade && this.priceOption.trade.serviceLockHs &&
+      this.priceOption.trade.serviceLockHs === 'KG');
+    if (isKnoxGuard) {
+      this.checkChangeService.CheckServiceKnoxGuard(this.selectMobileNo.mobileNo).then(() => {
+        this.pageLoadingService.closeLoading();
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_DETAIL_PAGE]);
+      }).catch((resp) => {
+        this.alertService.error(resp);
+      });
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_DETAIL_PAGE]);
+    }
   }
 }
