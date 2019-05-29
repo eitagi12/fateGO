@@ -113,6 +113,7 @@ export class DeviceOrderAisMnpEligibleMobilePageComponent implements OnInit, OnD
         this.alertService.error(resp);
       });
     } else {
+      this.pageLoadingService.closeLoading();
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_DETAIL_PAGE]);
     }
   }
