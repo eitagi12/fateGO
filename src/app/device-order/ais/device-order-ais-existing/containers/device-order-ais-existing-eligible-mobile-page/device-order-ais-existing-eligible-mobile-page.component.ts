@@ -255,6 +255,7 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
         this.alertService.error(resp);
       });
     } else {
+      this.pageLoadingService.closeLoading();
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_DETAIL_PAGE]);
     }
   }
