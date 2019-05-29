@@ -70,7 +70,8 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       advancePay: 0,
       qrCode: true
     };
-    if (!this.priceOption.trade.banks) {
+
+    if (this.priceOption.trade.banks && this.priceOption.trade.banks.length > 0) {
       if (this.isFullPayment()) {
         this.banks = this.priceOption.trade.banks || [];
       } else {
