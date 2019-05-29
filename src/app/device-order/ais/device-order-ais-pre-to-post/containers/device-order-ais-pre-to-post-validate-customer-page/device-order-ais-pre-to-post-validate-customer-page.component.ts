@@ -17,7 +17,6 @@ import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
-import { CheckChangeServiceService } from 'src/app/device-order/services/check-change-service.service';
 
 @Component({
   selector: 'app-device-order-ais-pre-to-post-validate-customer-page',
@@ -45,7 +44,6 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
-    private checkChangeService: CheckChangeServiceService
   ) {
     this.user = this.tokenService.getUser();
     this.priceOption = this.priceOptionService.load();
@@ -106,87 +104,77 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
               this.transaction.data.action = TransactionAction.KEY_IN_REPI;
               this.pageLoadingService.closeLoading();
             }).then(() => {
-              if (this.priceOption.trade && this.priceOption.trade.serviceLockHs === 'KG') {
-                this.checkChangeService.CheckKnoxGuard(this.identity).then(() => {
-                  this.pageLoadingService.closeLoading();
-                  this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CURRENT_INFO_PAGE]);
-                }).catch((resp) => {
-                  this.alertService.error(resp);
-                });
-              } else {
-                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CURRENT_INFO_PAGE]);
-              }
+              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CURRENT_INFO_PAGE]);
             });
-    })
-        .catch ((resp: any) => {
-      this.alertService.error(resp.error.developerMessage);
-    });
-    return;
+        }).catch((resp: any) => {
+          this.alertService.error(resp.error.developerMessage);
+        });
+      return;
+    }
   }
-}
 
-onHome(): void {
-  this.homeService.goToHome();
-}
-
-customerValidate(control: AbstractControl): ValidationErrors | null {
-  const value = control.value;
-  if (this.utils.isMobileNo(value)) {
-    return null;
-  } else {
-    return {
-      message: 'กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง',
-    };
+  onHome(): void {
+    this.homeService.goToHome();
   }
-}
 
-ngOnDestroy(): void {
-  this.transactionService.save(this.transaction);
-}
+  customerValidate(control: AbstractControl): ValidationErrors | null {
+    const value = control.value;
+    if (this.utils.isMobileNo(value)) {
+      return null;
+    } else {
+      return {
+        message: 'กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง',
+      };
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.transactionService.save(this.transaction);
+  }
 
   private createTransaction(): void {
-  this.transaction = {
-    data: {
-      transactionType: TransactionType.DEVICE_ORDER_PRE_TO_POST_AIS,
-      action: TransactionAction.KEY_IN,
-    }
-  };
-  delete this.transaction.data.customer;
-}
-
-homeHandler(): void {
-  if (environment.name === 'LOCAL') {
-  window.location.href = '/main-menu';
-} else {
-  window.location.href = '/smart-digital/main-menu';
-}
+    this.transaction = {
+      data: {
+        transactionType: TransactionType.DEVICE_ORDER_PRE_TO_POST_AIS,
+        action: TransactionAction.KEY_IN,
+      }
+    };
+    delete this.transaction.data.customer;
   }
 
-returnStock(): Promise < void> {
-  return new Promise(resolve => {
-    const transaction = this.transactionService.load();
-
-    const promiseAll = [];
-    if (transaction.data) {
-      if (transaction.data.simCard && transaction.data.simCard.mobileNo) {
-        const unlockMobile = this.http.post('/api/customerportal/newRegister/selectMobileNumberRandom', {
-          userId: this.user.username,
-          mobileNo: transaction.data.simCard.mobileNo,
-          action: 'Unlock'
-        }).toPromise().catch(() => Promise.resolve());
-        promiseAll.push(unlockMobile);
-      }
-      if (transaction.data.order && transaction.data.order.soId) {
-        const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
-          location: this.priceOption.productStock.location,
-          soId: transaction.data.order.soId,
-          transactionId: transaction.transactionId
-        }).toPromise().catch(() => Promise.resolve());
-        promiseAll.push(order);
-      }
+  homeHandler(): void {
+    if (environment.name === 'LOCAL') {
+      window.location.href = '/main-menu';
+    } else {
+      window.location.href = '/smart-digital/main-menu';
     }
-    Promise.all(promiseAll).then(() => resolve());
-  });
-}
+  }
+
+  returnStock(): Promise<void> {
+    return new Promise(resolve => {
+      const transaction = this.transactionService.load();
+
+      const promiseAll = [];
+      if (transaction.data) {
+        if (transaction.data.simCard && transaction.data.simCard.mobileNo) {
+          const unlockMobile = this.http.post('/api/customerportal/newRegister/selectMobileNumberRandom', {
+            userId: this.user.username,
+            mobileNo: transaction.data.simCard.mobileNo,
+            action: 'Unlock'
+          }).toPromise().catch(() => Promise.resolve());
+          promiseAll.push(unlockMobile);
+        }
+        if (transaction.data.order && transaction.data.order.soId) {
+          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
+            location: this.priceOption.productStock.location,
+            soId: transaction.data.order.soId,
+            transactionId: transaction.transactionId
+          }).toPromise().catch(() => Promise.resolve());
+          promiseAll.push(order);
+        }
+      }
+      Promise.all(promiseAll).then(() => resolve());
+    });
+  }
 
 }
