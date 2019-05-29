@@ -130,7 +130,7 @@ export class DeviceOrderAisPreToPostCurrentInfoPageComponent implements OnInit, 
               html: error.errors
             });
           } else {
-            Promise.reject(error);
+            Promise.reject(resp);
           }
         });
     } else {

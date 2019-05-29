@@ -133,7 +133,7 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
               html: error.errors
             });
           } else {
-            Promise.reject(error);
+            Promise.reject(resp);
           }
         });
     }
