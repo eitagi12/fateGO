@@ -48,7 +48,7 @@ export class CreateEcontractService {
       netPrice: this.transformDecimalPipe(trade.promotionPrice),
       advancePay: this.transformDecimalPipe(advancePay.amount),
       contract: trade.durationContract,
-      packageDetail: mainPackage.detailTH,
+      packageDetail: language === 'TH' ? mainPackage.detailTH : mainPackage.detailEN,
       airTimeDiscount: this.getAirTimeDiscount(advancePay.amount, promotionByMainPackage ? promotionByMainPackage : advancePay.promotions),
       airTimeMonth: this.getAirTimeMonth(promotionByMainPackage ? promotionByMainPackage : advancePay.promotions),
       price: this.transformDecimalPipe(+trade.promotionPrice + (+advancePay.amount)),
