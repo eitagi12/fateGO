@@ -10,7 +10,7 @@ export class CheckChangeServiceService {
     private http: HttpClient,
   ) { }
 
-  CheckKnoxGuard(mobileNo: string): Promise<any> {
+  CheckServiceKnoxGuard(mobileNo: string): Promise<any> {
     return new Promise((resolve, reject) => {
       this.http.post('/api/customerportal/checkChangeService', {
         mobileNo: mobileNo
@@ -18,9 +18,10 @@ export class CheckChangeServiceService {
         if (response.data.returnCode === '001') {
           resolve(true);
         } else {
-          reject(response.data.description);
+          const message: string = response.data.description || 'มี Service Samsung Knox Guard อยู่แล้ว';
+          reject(message);
         }
-      });
+      }).catch((err) => reject(err));
     });
   }
 }

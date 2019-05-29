@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { EligibleMobile, HomeService, ShoppingCart, PageLoadingService } from 'mychannel-shared-libs';
+import { EligibleMobile, HomeService, ShoppingCart, PageLoadingService, AlertService } from 'mychannel-shared-libs';
 import { Transaction, BillingAccount } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
@@ -10,6 +10,7 @@ import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { CheckChangeServiceService } from 'src/app/device-order/services/check-change-service.service';
 
 @Component({
   selector: 'app-device-order-ais-mnp-eligible-mobile-page',
@@ -36,7 +37,9 @@ export class DeviceOrderAisMnpEligibleMobilePageComponent implements OnInit, OnD
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
     private shoppingCartService: ShoppingCartService,
-    private pageLoadingService: PageLoadingService
+    private pageLoadingService: PageLoadingService,
+    private alertService: AlertService,
+    private checkChangeService: CheckChangeServiceService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -78,28 +81,40 @@ export class DeviceOrderAisMnpEligibleMobilePageComponent implements OnInit, OnD
 
     if (this.selectMobileNo.privilegeCode) {
       this.transaction.data.customer.privilegeCode = this.selectMobileNo.privilegeCode;
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_DETAIL_PAGE]);
-
+      this.checkKnoxGuard();
     } else {
       const ussdCode = this.priceOption.trade.ussdCode;
       this.requestPrivilege(ussdCode);
-
     }
     this.pageLoadingService.closeLoading();
-
   }
 
   requestPrivilege(ussdCode: any): void {
     this.privilegeService.requestUsePrivilege
       (
-        this.selectMobileNo.mobileNo, ussdCode,
-        this.selectMobileNo.privilegeCode
+      this.selectMobileNo.mobileNo, ussdCode,
+      this.selectMobileNo.privilegeCode
       )
       .then((privilegeCode) => {
         this.transaction.data.customer.privilegeCode = privilegeCode;
         this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo };
       })
-      .then(() =>  this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_DETAIL_PAGE]));
+      .then(() => this.checkKnoxGuard());
+  }
+
+  checkKnoxGuard(): void {
+    const isKnoxGuard: boolean = (this.priceOption.trade && this.priceOption.trade.serviceLockHs &&
+      this.priceOption.trade.serviceLockHs === 'KG');
+    if (isKnoxGuard) {
+      this.checkChangeService.CheckServiceKnoxGuard(this.selectMobileNo.mobileNo).then(() => {
+        this.pageLoadingService.closeLoading();
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_DETAIL_PAGE]);
+      }).catch((resp) => {
+        this.alertService.error(resp);
+      });
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_DETAIL_PAGE]);
+    }
   }
 
   onHome(): void {
