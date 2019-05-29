@@ -12,6 +12,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
 import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
+import { CheckChangeServiceService } from 'src/app/device-order/services/check-change-service.service';
 
 @Component({
   selector: 'app-device-order-asp-existing-best-buy-eligible-mobile-page',
@@ -42,7 +43,9 @@ export class DeviceOrderAspExistingBestBuyEligibleMobilePageComponent implements
     private privilegeService: PrivilegeService,
     private customerInfoService: CustomerInfoService,
     private priceOptionService: PriceOptionService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private alertService: AlertService,
+    private checkChangeService: CheckChangeServiceService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -79,7 +82,7 @@ export class DeviceOrderAspExistingBestBuyEligibleMobilePageComponent implements
       }
     }).then(() => {
       this.pageLoadingService.closeLoading();
-      this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_DETAIL_PAGE]);
+      this.checkKnoxGuard();
     });
   }
 
@@ -112,4 +115,18 @@ export class DeviceOrderAspExistingBestBuyEligibleMobilePageComponent implements
     }
   }
 
+  checkKnoxGuard(): void {
+    const isKnoxGuard: boolean = (this.priceOption.trade && this.priceOption.trade.serviceLockHs &&
+      this.priceOption.trade.serviceLockHs === 'KG');
+    if (isKnoxGuard) {
+      this.checkChangeService.CheckServiceKnoxGuard(this.transaction.data.simCard.mobileNo).then(() => {
+        this.pageLoadingService.closeLoading();
+        this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_DETAIL_PAGE]);
+      }).catch((resp) => {
+        this.alertService.error(resp);
+      });
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_DETAIL_PAGE]);
+    }
+  }
 }
