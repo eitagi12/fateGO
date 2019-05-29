@@ -18,9 +18,14 @@ describe('DeviceOnlyAisSelectMobileCarePageComponent', () => {
   let nextButton: DebugElement;
   let router: Router;
   let homeService: HomeService;
+
   setupTestBed({
-    imports: [ RouterTestingModule.withRoutes([]) ],
-    declarations: [ DeviceOnlyAisSelectMobileCarePageComponent ],
+    imports: [
+      RouterTestingModule.withRoutes([])
+    ],
+    declarations: [
+      DeviceOnlyAisSelectMobileCarePageComponent
+    ],
     providers: [
       CookiesStorageService,
       {
@@ -64,21 +69,14 @@ describe('DeviceOnlyAisSelectMobileCarePageComponent', () => {
     it('should create', () => {
       expect(component).toBeTruthy();
     });
+  });
 
+  describe('methods', () => {
     it('should be disable next button when component initial', () => {
       fixture.detectChanges();
       expect(nextButton.nativeElement.disabled).toBeTruthy();
     });
 
-    // it('should be enable next button when choose mobile care package', () => {
-    //   component.onPromotion({id: 1, title: 'Mobile Care Mock'});
-    //   fixture.detectChanges();
-    //   expect(nextButton.nativeElement.disabled).toBeFalsy();
-    //   expect(component.transaction.data.mobileCarePackage).toBeTruthy();
-    // });
-  });
-
-  describe('methods', () => {
     it('should be navigate to "/device-only/ais/select-payment" when call onBack', () => {
       const navigateSpy = spyOn(router, 'navigate');
       component.onBack();
@@ -98,23 +96,19 @@ describe('DeviceOnlyAisSelectMobileCarePageComponent', () => {
     });
 
     it('should be update mobileCarePackage in transaction object when call onPromotion', () => {
-      component.onPromotion({id: 1, title: 'Mobile Care Mock'});
-
+      component.onPromotion({ id: 1, title: 'Mobile Care Mock' });
       expect(component.transaction.data.mobileCarePackage['id']).toBe(1);
       expect(component.transaction.data.mobileCarePackage['title']).toBe('Mobile Care Mock');
     });
 
     it('should be save simCard in transaction object when call onCompleted', () => {
-      component.onMobile({title: 'Mobile Care Mock'});
-
+      component.onMobile({ title: 'Mobile Care Mock' });
       expect(component.transaction.data.simCard['title']).toBe('Mobile Care Mock');
     });
 
     it('should be destroy when call ngOnDestroy', () => {
-      component.onPromotion({id: 1, title: 'Mobile Care Mock'});
-
+      component.onPromotion({ id: 1, title: 'Mobile Care Mock' });
       component.ngOnDestroy();
-
       expect(component.transactionService.update).toHaveBeenCalledWith({
         data: {
           ...component.transaction.data,

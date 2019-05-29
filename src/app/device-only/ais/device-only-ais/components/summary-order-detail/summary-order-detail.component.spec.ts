@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SummaryOrderDetailComponent } from './summary-order-detail.component';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -43,4 +42,5 @@ describe('SummaryOrderDetailComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
 });

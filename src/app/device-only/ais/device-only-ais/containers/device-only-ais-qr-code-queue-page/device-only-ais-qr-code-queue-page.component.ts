@@ -17,6 +17,7 @@ import { QueueService } from '../../services/queue.service';
   templateUrl: './device-only-ais-qr-code-queue-page.component.html',
   styleUrls: ['./device-only-ais-qr-code-queue-page.component.scss']
 })
+
 export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy {
   transaction: Transaction;
   priceOption: PriceOption;

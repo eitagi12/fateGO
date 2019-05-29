@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SummaryPaymentDetailComponent } from './summary-payment-detail.component';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -27,7 +26,8 @@ describe('SummaryPaymentDetailComponent', () => {
             };
           })
         }
-      }, {
+      },
+      {
         provide: TransactionService,
         useValue: {
           load: jest.fn(() => {
@@ -66,4 +66,5 @@ describe('SummaryPaymentDetailComponent', () => {
   it('should create ', () => {
     expect(component).toBeTruthy();
   });
+
 });

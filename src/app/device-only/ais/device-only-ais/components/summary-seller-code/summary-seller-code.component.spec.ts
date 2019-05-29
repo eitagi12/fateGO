@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { SummarySellerCodeComponent } from './summary-seller-code.component';
 import { FormsModule } from '@angular/forms';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -10,7 +9,12 @@ describe('SummarySellerCodeComponent', () => {
   let fixture: ComponentFixture<SummarySellerCodeComponent>;
 
   setupTestBed({
-    declarations: [SummarySellerCodeComponent],
+    imports: [
+      FormsModule
+    ],
+    declarations: [
+      SummarySellerCodeComponent
+    ],
     providers: [
       {
         provide: TransactionService,
@@ -30,12 +34,13 @@ describe('SummarySellerCodeComponent', () => {
         provide: TokenService,
         useValue: {
           getUser: jest.fn(() => {
-            return { username: 'MC'};
+            return {
+              username: 'MC'
+            };
           })
         }
       }
-    ],
-    imports: [FormsModule]
+    ]
   });
 
   beforeEach(() => {
@@ -47,4 +52,5 @@ describe('SummarySellerCodeComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
 });

@@ -15,23 +15,28 @@ import { By } from '@angular/platform-browser';
 import { SellerService } from '../../services/seller.service';
 import { SummarySellerCodeComponent } from '../../components/summary-seller-code/summary-seller-code.component';
 
-@Pipe({name: 'mobileNo'})
+@Pipe({ name: 'mobileNo' })
 class MockMobileNoPipe implements PipeTransform {
   transform(value: string): string {
-      return value;
+    return value;
   }
 }
+
 describe('DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent', () => {
   let component: DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent;
   let fixture: ComponentFixture<DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent>;
-
   let homeService: HomeService;
   let router: Router;
   let nextButton: DebugElement;
 
   setupTestBed({
-    import: [ RouterTestingModule.withRoutes([])],
-    declarations: [DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent, MockMobileNoPipe],
+    import: [
+      RouterTestingModule.withRoutes([])
+    ],
+    declarations: [
+      DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent,
+      MockMobileNoPipe
+    ],
     providers: [
       HttpClient,
       HttpHandler,
@@ -118,7 +123,6 @@ describe('DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent', () => {
     it('should create', () => {
       expect(component).toBeTruthy();
     });
-
   });
 
 });

@@ -169,13 +169,6 @@ export class ReceiptInformationComponent implements OnInit {
           case 'Pre-paid':
             this.customerInfoService.setSelectedMobileNo(mobileNo);
             this.action.emit(TransactionAction.KEY_IN);
-            // this.customerInfoService.getCustomerProfile(mobileNo)
-            // .then((ress) => {
-            //   console.log('res: ',ress);
-            // })
-            // .catch((err) => {
-            //   console.log(err);
-            // });
             this.pageLoadingService.closeLoading();
             break;
           case 'Post-paid':

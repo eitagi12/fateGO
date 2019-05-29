@@ -5,16 +5,16 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { Pipe } from '@angular/core';
 import { PipeTransform } from '@angular/core';
 
+@Pipe({name: 'mobileNo'})
+class MockMobileNoPipe implements PipeTransform {
+  transform(value: string): string {
+      return value;
+  }
+}
+
 describe('SummaryProductAndServiceComponent', () => {
   let component: SummaryProductAndServiceComponent;
   let fixture: ComponentFixture<SummaryProductAndServiceComponent>;
-
-  @Pipe({name: 'mobileNo'})
-  class MockMobileNoPipe implements PipeTransform {
-    transform(value: string): string {
-        return value;
-    }
-  }
 
   setupTestBed({
     declarations: [
@@ -46,4 +46,5 @@ describe('SummaryProductAndServiceComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
 });

@@ -19,6 +19,7 @@ export enum ReadCardAisNative {
   templateUrl: './device-only-read-card.component.html',
   styleUrls: ['./device-only-read-card.component.scss']
 })
+
 export class DeviceOnlyReadCardComponent implements OnInit {
 
   @Output() customerInfo: EventEmitter<Object> = new EventEmitter<Object>();

@@ -1,9 +1,7 @@
+import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { By } from '@angular/platform-browser';
-
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
-
 import { DeviceOnlyAisQrCodeSummarayPageComponent } from './device-only-ais-qr-code-summaray-page.component';
 import { LocalStorageService } from 'ngx-store';
 import { ROUTE_DEVICE_ONLY_AIS_QR_CODE_GENERATE_PAGE, ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_QR_CODE_PAGE } from '../../constants/route-path.constant';
@@ -26,6 +24,7 @@ describe('DeviceOnlyAisQrCodeSummarayPageComponent', () => {
   let fixture: ComponentFixture<DeviceOnlyAisQrCodeSummarayPageComponent>;
   let router: Router;
   let navigateMock: any;
+
   beforeEach(async(() => {
     TestBed.configureTestingModule({
       imports: [

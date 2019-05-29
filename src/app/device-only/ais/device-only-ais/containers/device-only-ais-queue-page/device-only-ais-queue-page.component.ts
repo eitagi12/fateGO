@@ -17,6 +17,7 @@ import { SharedTransactionService } from 'src/app/shared/services/shared-transac
   templateUrl: './device-only-ais-queue-page.component.html',
   styleUrls: ['./device-only-ais-queue-page.component.scss']
 })
+
 export class DeviceOnlyAisQueuePageComponent implements OnInit, OnDestroy {
   transaction: Transaction;
   priceOption: PriceOption;
@@ -40,8 +41,7 @@ export class DeviceOnlyAisQueuePageComponent implements OnInit, OnDestroy {
     private createOrderService: CreateOrderService,
     private queueService: QueueService,
     private pageLoadingService: PageLoadingService,
-    private fb: FormBuilder,
-    private alertService: AlertService,
+    private formBuilder: FormBuilder,
     private sharedTransactionService: SharedTransactionService,
     private tokenService: TokenService
   ) {
@@ -77,7 +77,7 @@ export class DeviceOnlyAisQueuePageComponent implements OnInit, OnDestroy {
   }
 
   createForm(): void {
-    this.mobileFrom = this.fb.group({
+    this.mobileFrom = this.formBuilder.group({
       'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(/^0[6-9]{1}[0-9]{8}/)])],
     });
 
@@ -85,7 +85,7 @@ export class DeviceOnlyAisQueuePageComponent implements OnInit, OnDestroy {
       this.mobileNo = value.mobileNo;
     });
 
-    this.queueFrom = this.fb.group({
+    this.queueFrom = this.formBuilder.group({
       'queue': ['', Validators.compose([Validators.required, Validators.pattern(/([A-Y]{1}[0-9]{3})/)])],
     });
 

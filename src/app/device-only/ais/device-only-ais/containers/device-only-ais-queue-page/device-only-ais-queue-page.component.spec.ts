@@ -1,60 +1,124 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform  } from '@angular/core';
 import { DeviceOnlyAisQueuePageComponent } from './device-only-ais-queue-page.component';
 import { RouterTestingModule } from '@angular/router/testing';
+import { Pipe, PipeTransform } from '@angular/core';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { HomeService, PageLoadingService, TokenService } from 'mychannel-shared-libs';
+import { HomeButtonService } from 'src/app/device-only/ais/device-only-ais/services/home-button.service';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { CreateOrderService } from 'src/app/device-only/ais/device-only-ais/services/create-order.service';
+import { QueueService } from 'src/app/device-only/ais/device-only-ais/services/queue.service';
 import { FormBuilder } from '@angular/forms';
+import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
+import { Router } from '@angular/router';
+import { ReactiveFormsModule } from '@angular/forms';
 
-@Pipe({name: 'mobileNo'})
+@Pipe({ name: 'mobileNo' })
 class MockMobileNoPipe implements PipeTransform {
   transform(value: string): string {
-      return value;
+    return value;
   }
 }
 
 describe('DeviceOnlyAisQueuePageComponent', () => {
   let component: DeviceOnlyAisQueuePageComponent;
+  let fixture: ComponentFixture<DeviceOnlyAisQueuePageComponent>;
+  let homeService: HomeService;
+  let router: Router;
 
-  const router: any = {
-    navigate: jest.fn()
-  };
-  const transactionService: any = {
-    load: jest.fn()
-  };
-  const homeService: any = {};
-  const homeButtonService: any = {};
-  const priceOptionService: any = {
-    load: jest.fn()
-  };
-  const createOrderService: any = {};
-  const queueService: any = {};
-  const pageLoadingService: any = {
-    load: jest.fn()
-  };
-  const fb: any = {};
-  const alertService: any = {};
-  const sharedTransactionService: any = {};
-  const tokenService: any = {
-      getUser: jest.fn()
-  };
+  setupTestBed({
+    imports: [
+      ReactiveFormsModule,
+      RouterTestingModule
+    ],
+    declarations: [
+      DeviceOnlyAisQueuePageComponent,
+      MockMobileNoPipe
+    ],
+    providers: [
+      {
+        provide: Router,
+        useValue: {
+          navigate: jest.fn()
+        }
+      },
+      {
+        provide: TransactionService,
+        useValue: {
+          load: jest.fn()
+        }
+      },
+      {
+        provide: HomeService,
+        useValue: {
+          goToHome: jest.fn()
+        }
+      },
+      {
+        provide: HomeButtonService,
+        useValue: {
+          initEventButtonHome: jest.fn()
+        }
+      },
+      {
+        provide: PriceOptionService,
+        useValue: {
+          load: jest.fn(() => {
+            return {
+              trade: {
+                priceType: 'NORMAL',
+                normalPrice: '22590',
+                promotionPrice: '18500'
+              }
+            };
+          })
+        }
+      },
+      {
+        provide: CreateOrderService,
+        useValue: {
+          createOrderDeviceOnly: jest.fn()
+        }
+      },
+      {
+        provide: QueueService,
+        useValue: {
+          checkQueueLocation: jest.fn(() => {
+            return Promise.resolve();
+          })
+        }
+      },
+      {
+        provide: PageLoadingService,
+        useValue: {
+          closeLoading: jest.fn()
+        }
+      },
+      {
+        provide: SharedTransactionService,
+        useValue: {
+          updateSharedTransaction: jest.fn()
+        }
+      },
+      {
+        provide: TokenService,
+        useValue: {
+          getUser: jest.fn()
+        }
+      }
+    ]
+  });
 
   beforeEach(() => {
-    component = new DeviceOnlyAisQueuePageComponent(
-      router,
-      transactionService,
-      homeService,
-      homeButtonService,
-      priceOptionService,
-      createOrderService,
-      queueService,
-      pageLoadingService,
-      fb,
-      alertService,
-      sharedTransactionService,
-      tokenService
-    );
+    fixture = TestBed.createComponent(DeviceOnlyAisQueuePageComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+    router = TestBed.get(Router);
+    homeService = TestBed.get(HomeService);
   });
 
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
 });

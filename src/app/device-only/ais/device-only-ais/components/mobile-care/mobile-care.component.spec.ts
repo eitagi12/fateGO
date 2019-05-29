@@ -1,6 +1,6 @@
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Pipe, PipeTransform } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
-import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { MobileCareComponent } from './mobile-care.component';
 import { BsModalService, ComponentLoaderFactory, PositioningService } from 'ngx-bootstrap';
@@ -9,11 +9,11 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { TokenService, PageLoadingService } from '../../../../../../../node_modules/mychannel-shared-libs';
 import { LocalStorageService } from '../../../../../../../node_modules/ngx-store';
 
-@Pipe({name: 'translate'})
+@Pipe({ name: 'translate' })
 class MockPipe implements PipeTransform {
-    transform(value: number): number {
-        return value;
-    }
+  transform(value: number): number {
+    return value;
+  }
 }
 
 describe('MobileCareComponent', () => {
@@ -21,7 +21,10 @@ describe('MobileCareComponent', () => {
   let fixture: ComponentFixture<MobileCareComponent>;
 
   setupTestBed({
-    imports: [ ReactiveFormsModule, RouterTestingModule ],
+    imports: [
+      ReactiveFormsModule,
+      RouterTestingModule
+    ],
     declarations: [
       MobileCareComponent,
       MockPipe
@@ -34,8 +37,8 @@ describe('MobileCareComponent', () => {
       ComponentLoaderFactory,
       LocalStorageService,
       {
-        provide : PriceOptionService,
-        useValue : {
+        provide: PriceOptionService,
+        useValue: {
           load: jest.fn(() => {
             return {
               trade: {
@@ -52,8 +55,8 @@ describe('MobileCareComponent', () => {
         }
       },
       {
-        provide : PageLoadingService,
-        useValue : {
+        provide: PageLoadingService,
+        useValue: {
           openLoading: jest.fn(),
           closeLoading: jest.fn()
         }
@@ -70,4 +73,5 @@ describe('MobileCareComponent', () => {
   it('should create', () => {
     expect(component).toBeTruthy();
   });
+
 });

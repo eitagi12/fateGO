@@ -24,7 +24,8 @@ export class DeviceOnlyAisCheckoutPaymentPageComponent implements OnInit, OnDest
     private homeService: HomeService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
-    private homeButtonService: HomeButtonService) {
+    private homeButtonService: HomeButtonService
+  ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
   }
