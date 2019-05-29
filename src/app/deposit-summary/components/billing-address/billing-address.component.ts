@@ -123,8 +123,8 @@ export class BillingAddressComponent implements OnInit {
       province: ['', [Validators.required]],
       amphur: ['', [Validators.required]],
       tumbol: ['', [Validators.required]],
-      zipCode: ['', [Validators.required, Validators.maxLength(5)]],
-      telNo: [customerProfile.selectedMobile, [Validators.required]]
+      zipCode: ['', [Validators.required]],
+      telNo: [customerProfile.selectedMobile]
     });
     this.customerAddressForm.valueChanges.pipe(debounceTime(750)).subscribe(event => {
       this.error.emit(this.customerAddressForm.valid);
@@ -199,7 +199,7 @@ export class BillingAddressComponent implements OnInit {
       this.amphurForm().enable();
       this.tumbolForm().disable();
       if (provinceName) {
-         this.onProvinceSelected(provinceName, null);
+        this.onProvinceSelected(provinceName, null);
         this.customerAddressForm.controls['zipCode'].setValue('');
       }
     });
@@ -438,8 +438,17 @@ export class BillingAddressComponent implements OnInit {
     this.billingAddress.queryZipCode(req).then(this.responseZipCode());
   }
 
+  private autoSelectedZipcode(resp: any): void {
+    if (resp.length === 1) {
+      this.zipCodeForm().setValue(resp[0]);
+    }
+  }
+
   private responseZipCode(): (value: any) => any {
-    return (resp: any) => this.zipCodes = resp;
+    return (resp: any) => {
+      this.autoSelectedZipcode(resp);
+      this.zipCodes = resp;
+    };
   }
 
   private setBackValue(): void {
@@ -448,7 +457,7 @@ export class BillingAddressComponent implements OnInit {
     if (backKeyInPage === 'true') {
       const customerProfile = JSON.parse(localStorage.getItem('CustomerProfile'));
       this.customerAddressForm.controls['homeNo'].setValue(customerProfile.homeNo);
-      this.customerAddressForm.controls['buildingName'].setValue( customerProfile.buildingName);
+      this.customerAddressForm.controls['buildingName'].setValue(customerProfile.buildingName);
       this.customerAddressForm.controls['floor'].setValue(customerProfile.floor);
       this.customerAddressForm.controls['room'].setValue(customerProfile.room);
       this.customerAddressForm.controls['moo'].setValue(customerProfile.moo);
