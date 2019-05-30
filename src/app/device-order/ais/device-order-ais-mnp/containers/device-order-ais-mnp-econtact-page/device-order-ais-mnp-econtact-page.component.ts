@@ -158,6 +158,9 @@ export class DeviceOrderAisMnpEcontactPageComponent implements OnInit, OnDestroy
   }
 
   ngOnDestroy(): void {
+    if (this.translationSubscribe) {
+      this.translationSubscribe.unsubscribe();
+    }
     this.transactionService.update(this.transaction);
   }
 

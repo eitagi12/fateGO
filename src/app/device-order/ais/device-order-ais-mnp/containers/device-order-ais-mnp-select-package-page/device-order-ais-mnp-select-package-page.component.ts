@@ -82,7 +82,7 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    const mobileNo = this.transaction.data.simCard.mobileNo;
+    const mobileNo = '0815485989';
 
     // call เช็ค mobile care เดิม
     this.http.get(`/api/customerportal/get-existing-mobile-care/${mobileNo}`).toPromise().then((response: any) => {

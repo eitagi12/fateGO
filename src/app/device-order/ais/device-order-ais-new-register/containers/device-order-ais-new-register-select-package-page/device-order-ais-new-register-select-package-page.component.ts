@@ -92,6 +92,7 @@ export class DeviceOrderAisNewRegisterSelectPackagePageComponent implements OnIn
       +privilege.minimumPackagePrice, +privilege.maximumPackagePrice)
       .then((promotionShelves: any) => {
         this.promotionShelves = this.promotionShelveService.defaultBySelected(promotionShelves, this.transaction.data.mainPackage);
+        console.log(this.promotionShelves);
       })
       .then(() => this.pageLoadingService.closeLoading());
   }

@@ -114,7 +114,7 @@
           <div class="form-group">
             <b class="mt-5 text-center">เบอร์โทรศัพท์รับหมายเลขสั่งซื้อ <br>เพื่อชำระสินค้าของท่านคือ</b>
             <input mcVisualKeyboard type="tel" class="form-control text-center mb-3 mt-3" id="mobileNo" maxlength="10"
-              autofocus autocomplete="off" formControlName="mobileNo" placeholder="ระบุเบอร์โทรศัพท์รับ SMS"
+              autofocus autocomplete="off" formControlName="mobileNo" placeholder="{{'ระบุเบอร์โทรศัพท์รับ SMS' | translate}}"
               [ngClass]="{ 'is-invalid' : queueFrom.controls.mobileNo.invalid && queueFrom.controls.mobileNo.touched && queueFrom.controls.mobileNo.errors }">
             <small class="invalid-feedback"
               *ngIf="queueFrom.controls.mobileNo.touched && queueFrom.controls.mobileNo.errors">

@@ -10,6 +10,7 @@ import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart
 import { MobileCareService } from 'src/app/device-order/services/mobile-care.service';
 import { ROUTE_DEVICE_ORDER_AIS_MNP_CONFIRM_USER_INFORMATION_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_SELECT_PACKAGE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE } from '../../constants/route-path.constant';
 import { MOBILE_CARE_PACKAGE_KEY_REF } from 'src/app/device-order/constants/cpc.constant';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-device-order-ais-mnp-mobile-care-page',
@@ -32,7 +33,8 @@ export class DeviceOrderAisMnpMobileCarePageComponent implements OnInit, OnDestr
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
     private shoppingCartService: ShoppingCartService,
-    private mobileCareService: MobileCareService
+    private mobileCareService: MobileCareService,
+    private translateService: TranslateService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -70,7 +72,7 @@ export class DeviceOrderAisMnpMobileCarePageComponent implements OnInit, OnDestr
 
   callService(): void {
     const billingSystem = (this.transaction.data.simCard.billingSystem === 'RTBS')
-    ? BillingSystemType.IRB : this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
+      ? BillingSystemType.IRB : this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
     const chargeType = this.transaction.data.simCard.chargeType;
     const endUserPrice = +this.priceOption.trade.normalPrice;
     const exMobileCare = this.transaction.data.existingMobileCare;
@@ -84,11 +86,16 @@ export class DeviceOrderAisMnpMobileCarePageComponent implements OnInit, OnDestr
         promotions: mobileCare,
         existingMobileCare: !!exMobileCare
       };
+      this.mobileCare.promotions.filter(data => data.items.map(dt => {
+        const KEY_TH = dt.value.customAttributes.shortNameThai;
+        const VAL = dt.value.customAttributes.shortNameEng;
+        this.translateService.setTranslation('EN', { KEY_TH: KEY_TH });
+      }));
       if (this.mobileCare.promotions && this.mobileCare.promotions.length > 0) {
         this.mobileCare.promotions[0].active = true;
       }
       return;
     })
-    .then(() => this.pageLoadingService.closeLoading());
+      .then(() => this.pageLoadingService.closeLoading());
   }
 }

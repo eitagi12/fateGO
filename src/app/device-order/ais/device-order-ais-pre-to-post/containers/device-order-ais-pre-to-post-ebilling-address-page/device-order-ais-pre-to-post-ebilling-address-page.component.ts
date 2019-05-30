@@ -201,6 +201,9 @@ export class DeviceOrderAisPreToPostEbillingAddressPageComponent implements OnIn
   }
 
   ngOnDestroy(): void {
+    if (this.translationSubscribe) {
+      this.translationSubscribe.unsubscribe();
+    }
     this.transactionService.update(this.transaction);
   }
 }

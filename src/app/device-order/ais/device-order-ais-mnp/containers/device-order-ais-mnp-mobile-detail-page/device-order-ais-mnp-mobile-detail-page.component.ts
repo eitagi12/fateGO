@@ -83,13 +83,17 @@ export class DeviceOrderAisMnpMobileDetailPageComponent implements OnInit, OnDes
   }
 
   ngOnDestroy(): void {
+    if (this.translationSubscribe) {
+      this.translationSubscribe.unsubscribe();
+    }
     this.transactionService.update(this.transaction);
   }
 
   getMobileProfile(): void {
     this.pageLoadingService.openLoading();
     const idCardNo = this.transaction.data.customer.idCardNo;
-    const mobileNoCurrent = this.transaction.data.simCard.mobileNo;
+    // const mobileNoCurrent = this.transaction.data.simCard.mobileNo;
+    const mobileNoCurrent = '0815485989';
 
     this.http.get(`/api/customerportal/mobile-detail/${mobileNoCurrent}`).toPromise().then((response: any) => {
       const mobileDetail = response.data || {};

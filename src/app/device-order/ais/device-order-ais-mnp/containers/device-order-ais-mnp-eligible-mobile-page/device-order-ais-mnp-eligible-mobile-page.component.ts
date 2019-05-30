@@ -73,19 +73,20 @@ export class DeviceOrderAisMnpEligibleMobilePageComponent implements OnInit, OnD
   }
 
   onNext(): void {
-    this.pageLoadingService.openLoading();
-    this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo, persoSim: false };
+    // this.selectMobileNo.mobileNo = '0815485989';
+    // this.pageLoadingService.openLoading();
+    // this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo, persoSim: false };
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_DETAIL_PAGE]);
+    // if (this.selectMobileNo.privilegeCode) {
+    //   this.transaction.data.customer.privilegeCode = this.selectMobileNo.privilegeCode;
+    //   this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_DETAIL_PAGE]);
 
-    if (this.selectMobileNo.privilegeCode) {
-      this.transaction.data.customer.privilegeCode = this.selectMobileNo.privilegeCode;
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_DETAIL_PAGE]);
+    // } else {
+    //   const ussdCode = this.priceOption.trade.ussdCode;
+    //   this.requestPrivilege(ussdCode);
 
-    } else {
-      const ussdCode = this.priceOption.trade.ussdCode;
-      this.requestPrivilege(ussdCode);
-
-    }
-    this.pageLoadingService.closeLoading();
+    // }
+    // this.pageLoadingService.closeLoading();
 
   }
 
