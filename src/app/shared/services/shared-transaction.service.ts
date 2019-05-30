@@ -217,20 +217,22 @@ export class SharedTransactionService {
       params.data.existing_mobile_care_package = [data.existingMobileCare];
     }
 
-    if (priceOption.trade && priceOption.trade.serviceLockHs === 'KG') {
-      const startDate: string = Moment().format('DD/MM/YYYY');
-      const endDate: string = Moment().add(priceOption.trade.durationContract, 'month').format('DD/MM/YYYY');
-      params.data.knoxguard = {
-        orderType: 'Change Service',
-        orderReason: '109',
-        userName: 'SFFBATCH',
-        action: 'Add',
-        serviceCode: 'P19020073',
-        startDate: startDate,
-        endDate: endDate,
-        duration: priceOption.trade.durationContract
-      };
-    }
+    const startDate: string = Moment().format('DD/MM/YYYY');
+    const endDate: string = Moment().add(priceOption.trade.durationContract, 'month').format('DD/MM/YYYY');
+    const knoxguard: object = {
+      orderType: 'Change Service',
+      orderReason: '109',
+      userName: 'SFFBATCH',
+      action: 'Add',
+      serviceCode: 'P19020073',
+      serviceName: 'Samsung Knox',
+      startDate: startDate,
+      endDate: endDate,
+      duration: priceOption.trade.durationContract,
+      isKnoxGuard: true
+    };
+
+      params.data.knoxguard = priceOption.trade && priceOption.trade.serviceLockHs === 'KG' ? knoxguard : {isKnoxGuard: false};
 
     if (data.mobileCarePackage) {
       if (typeof data.mobileCarePackage === 'string' || data.mobileCarePackage instanceof String) {
