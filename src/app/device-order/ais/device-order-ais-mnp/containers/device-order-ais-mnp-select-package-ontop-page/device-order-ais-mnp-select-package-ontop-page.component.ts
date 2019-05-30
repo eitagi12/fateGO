@@ -79,13 +79,21 @@ export class DeviceOrderAisMnpSelectPackageOntopPageComponent implements OnInit,
             packageOntopList.priceExclVat > 0 && isexpiredDate
           );
         }).sort((a: any, b: any) => a.priceExclVat - b.priceExclVat);
-        this.packageOntopList = packageOntop;
-
-        this.packageOntopList.forEach((ontop: any) => {
-          const checked = !!(this.transaction.data.deleteOntopPackage || []).find(ontopDelete => {
-            return ontop.promotionCode === ontopDelete.promotionCode;
+        (packageOntop || []).forEach((ontop: any) => {
+          this.http.post('api/customerportal/checkChangePromotion', {
+            mobileNo: mobileNo,
+            promotionCd: ontop.promotionCode
+          }).toPromise().then((responesOntop: any) => {
+            if (responesOntop.data) {
+              this.packageOntopList = packageOntop;
+              this.packageOntopList.forEach((ontopList: any) => {
+                const checked = !!(this.transaction.data.deleteOntopPackage || []).find(ontopDelete => {
+                  return ontopList.promotionCode === ontopDelete.promotionCode;
+                });
+                this.packageOntopForm.setControl(ontopList.promotionCode, this.fb.control(checked));
+              });
+            }
           });
-          this.packageOntopForm.setControl(ontop.promotionCode, this.fb.control(checked));
         });
       }).then(() => this.pageLoadingService.closeLoading());
   }
