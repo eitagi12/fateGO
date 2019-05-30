@@ -22,6 +22,7 @@ import { PromotionShelveService } from 'src/app/device-order/services/promotion-
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { FlowService, CustomerGroup } from '../../services/flow.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
     selector: 'app-campaign',
@@ -80,7 +81,8 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         private priceOptionService: PriceOptionService,
         private pageLoadingService: PageLoadingService,
         private promotionShelveService: PromotionShelveService,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private translateService: TranslateService
     ) {
         this.priceOption = {};
         this.transaction = {};
@@ -339,6 +341,13 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                 }
                 return campaignSlider;
             });
+    }
+
+    serviceContract(maximumContract: any): string {
+        if (this.translateService.currentLang === 'TH') {
+            return `ข้อตกลงรับสิทธ์ิต่อเนื่อง ${maximumContract} เดือน`;
+        }
+        return `${maximumContract} months service contract`;
     }
 
     getTabsFormPriceOptions(priceOptions: any[]): any[] {

@@ -10,7 +10,7 @@
   </mc-header>
   <div class="mc-flex-wrap bg-white">
     <mc-validate-customer (completed)="onCompleted($event)" (error)="onError($event)" (readCard)="onReadCard()"
-      placeholder="หมายเลขโทรศัพท์" placeholderHeadder=" " [validate]="customerValidate" [maxlengthInput]="10"
+      placeholder="{{'หมายเลขโทรศัพท์' | translate}}" placeholderHeadder=" " [validate]="customerValidate" [maxlengthInput]="10"
       [inputType]="'tel'"></mc-validate-customer>
   </div>
   <mc-footer>

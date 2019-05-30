@@ -4,6 +4,7 @@
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
     <div class="header-icon-right">
+      <mc-dropdown-language></mc-dropdown-language>
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
@@ -12,7 +13,7 @@
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb bg-white shadow-sm mb-2">
         <li class="breadcrumb-item">
-          <a href="#" routerLink="/buy-product/brand">เครื่อง</a>
+          <a href="#" routerLink="/buy-product/brand">{{'เครื่อง' | translate}}</a>
         </li>
         <li class="breadcrumb-item">
           <a href="#" routerLink="/buy-product/product" [queryParams]="{ brand: params?.brand }">{{ params?.brand }}</a>
@@ -45,13 +46,13 @@
               </a>
             </div> -->
             <div class="col-12 text-right text-light-grey mb-2" *ngIf="maximumNormalPrice">
-              ราคาเครื่องเปล่า ฿ {{ maximumNormalPrice | number}}
+              {{'ราคาเครื่องเปล่า' | translate}} ฿ {{ maximumNormalPrice | number}}
             </div>
             <!-- color -->
             <div class="col-12">
               <div class="row d-flex">
                 <div class="col-3 col-sm-2 text-light-grey align-self-center">
-                  เลือกสี :
+                  {{'เลือกสี' | translate}} :
                 </div>
                 <div class="col-9 col-sm-10">
 
@@ -70,7 +71,7 @@
                           </label>
                           <div class="product-color" [ngStyle]="{ 'background-color': '#' + product?.colorCode }"></div>
                           <small class="d-block text-center text-pink"
-                            [ngClass]="{ 'invisible': product?.stock?.qty > 0}">สินค้าหมดชั่วคราว</small>
+                            [ngClass]="{ 'invisible': product?.stock?.qty > 0}">{{'สินค้าหมดชั่วคราว' | translate}}</small>
                         </div>
                       </ng-container>
                     </div>
@@ -92,14 +93,14 @@
           <tab *ngFor="let tab of tabs" [active]="tab.active">
             <ng-template tabHeading>
               <div class="{{tab.code}}" [ngClass]="{ 'active' : tab.active }" (click)="setActiveTabs(tab.code)">
-                <b>{{ tab.name }}</b></div>
+                <b>{{ tab.name | translate }}</b></div>
             </ng-template>
 
             <div class="bg-white pb-3">
               <div class="p-3">
                 <img class="icon" src="assets/images/icon/sale_portal_pink_circle_megaphone.png">
                 <span class="pl-3">
-                  โปรโมชั่นที่เข้าร่วมรายการ
+                  {{'โปรโมชั่นที่เข้าร่วมรายการ' | translate}}
                   <span class="text-green">({{ tab?.campaignSliders?.length || 0 }})</span>
                 </span>
               </div>
@@ -112,7 +113,7 @@
         </tabset>
       </div>
       <h3 class="not-found text-light-grey" *ngIf="(priceOptionDetailService | async) && tabs?.length <= 0">
-        ไม่พบข้อมูลโครงการที่ท่านเลือก
+        {{'ไม่พบข้อมูลโครงการที่ท่านเลือก' | translate}}
       </h3>
     </div>
 
@@ -134,7 +135,7 @@
             <div class="card-body">
               <h6 class="text-black m-0">
                 {{ priceOption?.campaign?.campaignName || priceOption?.campaign?.campaignDesc }}
-                {{ priceOption?.customerGroup?.name }} ({{ privilege?.ussdCode }})
+                {{ priceOption?.customerGroup?.name | translate}} ({{ privilege?.ussdCode }})
               </h6>
               <!-- price, advance pay -->
               <div class="row mb-2">
@@ -145,7 +146,7 @@
                     </span>
                   </ng-container>
                   <ng-container *ngIf="+privilege?.minimumAdvancePay > 0 || +privilege?.maximumAdvancePay > 0">
-                    (ค่าแพ็กเกจชำระล่วงหน้า
+                    ({{'ค่าแพ็กเกจชำระล่วงหน้า'| translate}}
                     <span *ngIf="privilege?.minimumAdvancePay">
                       ฿{{ privilege?.minimumAdvancePay | number }}
                     </span>
@@ -159,7 +160,7 @@
                 </div>
                 <div class="col-4">
                   <div class="text-right text-pink">
-                    {{ getSummaryPrivilegePrice(privilege) | number }} (รวม VAT)
+                    {{ getSummaryPrivilegePrice(privilege) | number }} ({{'รวม VAT' | translate}})
                   </div>
                 </div>
               </div>
@@ -168,17 +169,15 @@
               <div class="row my-3">
                 <div class="col-6 text-center">
                   <img src="assets/images/icon/sales_portal_green_alert_person.png" width="25" />
-                  <span class="text-light-grey border-bottom">
-                    ข้อตกลงรับสิทธ์ิต่อเนื่อง {{ privilege?.maximumContract | number }} เดือน
-                  </span>
+                  <span class="text-light-grey border-bottom" translate="{{serviceContract(privilege?.maximumContract | number)}}"></span>
                 </div>
                 <div class="col-6 text-center" *ngIf="privilege?.minimumPackagePrice > 0">
                   <img src="assets/images/icon/sales_portal_green_phone.png" width="15" />
                   <span *ngIf="priceOptoin?.customerGroup?.flowId !== '102'" class="text-light-grey border-bottom">
-                    แพ็กเกจเริ่มต้น {{ privilege?.minimumPackagePrice | number }} บาท/เดือน
+                    {{'แพ็กเกจเริ่มต้น' | translate}} {{ privilege?.minimumPackagePrice | number }} {{'บาท/เดือน' | translate}}
                   </span>
                   <span *ngIf="priceOptoin?.customerGroup?.flowId === '102'" class="text-light-grey border-bottom">
-                    แพ็กเกจเสริม {{ (+privilege?.minimumPackagePrice * 1.07) | number }} บาท ( รวมVAT )</span>
+                    {{'แพ็กเกจเสริม' | translate}} {{ (+privilege?.minimumPackagePrice * 1.07) | number }} {{'บาท ( รวมVAT )' | translate}}</span>
                 </div>
               </div>
               <!-- slider trade -->
