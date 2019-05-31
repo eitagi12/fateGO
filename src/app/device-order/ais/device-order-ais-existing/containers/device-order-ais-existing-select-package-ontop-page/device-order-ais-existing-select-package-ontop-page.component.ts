@@ -56,8 +56,7 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
 
   ngOnInit(): void {
     // const idCardNo = this.transaction.data.customer.idCardNo;
-    const mobileNo = '0910011560';
-    // const mobileNo = this.transaction.data.simCard.mobileNo;
+    const mobileNo = this.transaction.data.simCard.mobileNo;
     if (this.transaction.data.billingInformation.overRuleStartDate === 'B') {
       this.effectiveDate = this.transaction.data.billingInformation.effectiveDate;
     } else if (this.transaction.data.billingInformation.overRuleStartDate === 'D') {

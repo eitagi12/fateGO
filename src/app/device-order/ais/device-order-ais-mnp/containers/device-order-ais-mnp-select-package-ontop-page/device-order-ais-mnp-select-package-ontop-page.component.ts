@@ -50,8 +50,7 @@ export class DeviceOrderAisMnpSelectPackageOntopPageComponent implements OnInit,
   }
 
   ngOnInit(): void {
-    // const idCardNo = this.transaction.data.customer.idCardNo;
-    const mobileNo = this.transaction.data.simCard.mobileNo;
+    const mobileNo = this.transaction.data.customer.idCardNo;
     if (this.transaction.data.billingInformation.overRuleStartDate === 'B') {
       this.effectiveDate = this.transaction.data.billingInformation.effectiveDate;
     } else if (this.transaction.data.billingInformation.overRuleStartDate === 'D') {
