@@ -4,14 +4,13 @@ import { ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE, ROUTE_DEVICE_ONLY_AIS_CH
 import { HomeService, AlertService, TokenService, ShoppingCart } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction, Seller } from 'src/app/shared/models/transaction.model';
-
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { ShopCheckSeller } from 'src/app/device-only/ais/device-only-ais/models/shopCheckSeller.model';
 import { SummarySellerCodeComponent } from 'src/app/device-only/components/summary-seller-code/summary-seller-code.component';
 import { WIZARD_DEVICE_ONLY_AIS } from 'src/app/device-only/constants/wizard.constant';
 import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
 import { SellerService } from 'src/app/device-only/services/seller.service';
+import { ShopCheckSeller } from 'src/app/device-only/models/shopCheckSeller.model';
 
 @Component({
   selector: 'app-device-only-ais-summary-page',
