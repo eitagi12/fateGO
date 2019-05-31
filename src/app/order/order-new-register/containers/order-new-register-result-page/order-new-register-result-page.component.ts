@@ -50,7 +50,7 @@ export class OrderNewRegisterResultPageComponent implements OnInit {
 
   onMainMenu(): void {
     // bug gotohome จะ unlock เบอร์ ทำให้ออก orderไม่สำเร็จ
-    window.location.href = '/smart-shop';
+    window.location.href = '/main-menu';
     // this.homeService.goToHome();
   }
 }
