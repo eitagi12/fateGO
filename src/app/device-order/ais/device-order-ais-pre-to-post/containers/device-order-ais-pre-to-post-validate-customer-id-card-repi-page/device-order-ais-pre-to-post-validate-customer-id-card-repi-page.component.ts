@@ -171,7 +171,7 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardRepiPageComponent impl
                 this.getRequestAddDeviceSellingCart()
               ).toPromise()
                 .then((resp: any) => {
-                  this.transaction.data.order = { soId: resp.data.soIdId };
+                  this.transaction.data.order = { soId: resp.data.soId };
                   return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
                 }).then(() => {// verify Prepaid Ident
 
