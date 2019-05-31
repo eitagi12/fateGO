@@ -11,8 +11,8 @@ import { HomeButtonService } from '../../services/home-button.service';
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 import { HomeService, ApiRequestService, AlertService, PaymentDetail, User, TokenService } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
-import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
 import { map } from 'rxjs/operators';
+import { WIZARD_DEVICE_ONLY_AIS } from 'src/app/device-only/constants/wizard.constant';
 
 @Component({
   selector: 'app-device-only-ais-select-payment-and-receipt-information-page',
@@ -140,6 +140,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
   }
 
   onComplete(customerInfo: any): void {
+    console.log('customerInfo', customerInfo);
     this.transaction.data.customer = customerInfo.customer;
     this.transaction.data.billingInformation = {
       billDeliveryAddress: customerInfo.billDeliveryAddress

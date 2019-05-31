@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { API } from '../constants/api.constant';
 import { HttpClient } from '@angular/common/http';
 import { Customer } from 'src/app/shared/models/transaction.model';
 import { Subject } from 'rxjs';
+import { API } from 'src/app/device-only/constants/api.constant';
 
 @Injectable({
   providedIn: 'root'
@@ -39,6 +39,11 @@ export class CustomerInformationService {
     return this.http.get(getBillingAccountAPI).toPromise();
   }
 
+  getQueryCustomerInfo(idCardNo: string): Promise<any> {
+    const getQueryCustomerInfoAPI = `/api/customerportal/customerprofile/${idCardNo}/queryCustomerInfo`;
+    return this.http.get(getQueryCustomerInfoAPI).toPromise();
+  }
+
   getBillingByMobileNo(mobileNo: string): Promise<any> {
     if (mobileNo) {
       const getBillingAPI = API.GET_BILLING + `${mobileNo}`;
@@ -72,6 +77,8 @@ export class CustomerInformationService {
 
   mapAttributeFromGetBill(billingAddress: any): Customer {
     const customer: Customer = {
+      accountId: '',
+      mainMobile: '',
       idCardNo: billingAddress.idCardNo,
       idCardType: billingAddress.idCardType,
       titleName: billingAddress.titleName,

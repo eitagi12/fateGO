@@ -1,7 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE, ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_PAGE, ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_QR_CODE_PAGE } from 'src/app/device-only/ais/device-only-ais/constants/route-path.constant';
-import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
 import { HomeService, AlertService, TokenService, ShoppingCart } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction, Seller } from 'src/app/shared/models/transaction.model';
@@ -11,6 +10,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { SellerService } from 'src/app/device-only/ais/device-only-ais/services/seller.service';
 import { ShopCheckSeller } from 'src/app/device-only/ais/device-only-ais/models/shopCheckSeller.model';
 import { SummarySellerCodeComponent } from 'src/app/device-only/components/summary-seller-code/summary-seller-code.component';
+import { WIZARD_DEVICE_ONLY_AIS } from 'src/app/device-only/constants/wizard.constant';
 
 @Component({
   selector: 'app-device-only-ais-summary-page',

@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Subscription, Observable } from 'rxjs';
-import { API } from '../constants/api.constant';
 import { TokenService } from 'mychannel-shared-libs';
+import { API } from 'src/app/device-only/constants/api.constant';
 
 @Injectable({
   providedIn: 'root'
