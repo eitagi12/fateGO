@@ -303,13 +303,13 @@ export class OrderNewRegisterVerifyDocumentPageComponent implements OnInit, OnDe
         };
         this.reserveMobileService.selectMobileNumberRandom(dataRequest)
           .then(() => {
-            window.location.href = '/main-menu';
+            window.location.href = '/smart-digital/main-menu';
           })
           .catch(() => {
-            window.location.href = '/main-menu';
+            window.location.href = '/smart-digital/main-menu';
           });
       } else {
-        window.location.href = '/main-menu';
+        window.location.href = '/smart-digital/main-menu';
       }
     };
 

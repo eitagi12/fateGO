@@ -62,7 +62,7 @@ export class OrderPreToPostResultPageComponent implements OnInit {
 
   onMainMenu(): void {
      // bug gotohome จะ unlock เบอร์ ทำให้ออก orderไม่สำเร็จ
-     window.location.href = '//main-menu';
+     window.location.href = '/smart-digital/main-menu';
      // this.homeService.goToHome();
   }
 

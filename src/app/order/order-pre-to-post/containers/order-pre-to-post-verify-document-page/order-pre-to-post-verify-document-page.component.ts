@@ -297,7 +297,7 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
   ) {
     this.isProduction = environment.production;
     this.homeService.callback = () => {
-      window.location.href = '/main-menu';
+      window.location.href = '/smart-digital/main-menu';
     };
   }
 
