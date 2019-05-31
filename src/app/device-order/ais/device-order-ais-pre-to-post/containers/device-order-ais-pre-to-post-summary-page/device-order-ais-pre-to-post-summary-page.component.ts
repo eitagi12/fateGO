@@ -13,6 +13,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-device-order-ais-pre-to-post-summary-page',
@@ -32,7 +33,7 @@ export class DeviceOrderAisPreToPostSummaryPageComponent implements OnInit {
   transaction: Transaction;
   shoppingCart: ShoppingCart;
   customerAddress: string;
-
+  currentLang: string;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -41,10 +42,16 @@ export class DeviceOrderAisPreToPostSummaryPageComponent implements OnInit {
     private shoppingCartService: ShoppingCartService,
     private modalService: BsModalService,
     public summaryPageService: SummaryPageService,
-    private utils: Utils
+    private utils: Utils,
+    private translationService: TranslateService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
+
+    this.currentLang = this.translationService.currentLang || 'TH';
+    this.translationService.onLangChange.subscribe(lang => {
+      this.currentLang = typeof (lang) === 'object' ? lang.lang : lang;
+    });
   }
 
   ngOnInit(): void {

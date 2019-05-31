@@ -16,13 +16,13 @@
       <div class="card mb-3">
         <div class="card-header bg-pink text-white">{{ 'สรุปรายการสั่งซื้อสินค้า' | translate }}</div>
         <div class="card-body">
-          <p class="text-green">{{ priceOption?.campaign?.campaignName }}</p>
+          <p class="text-green">{{ priceOption?.campaign?.campaignName | translate }}</p>
           <div class="text-light-grey">
             <p>
               <i class="fa fa-circle mr-3 text-green"></i>
-              {{ priceOption?.productDetail?.name }}
+              {{ priceOption?.productDetail?.name | translate }}
               <span *ngIf="priceOption?.productStock?.color">
-                สี {{ priceOption?.productStock?.color }}
+                {{ 'สี' | translate }} {{ priceOption?.productStock?.color }}
               </span>
               <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
                 (แถมซิม)
@@ -56,8 +56,9 @@
         <div class="card-body">
           <p>
             <i class="fa fa-circle mr-3 text-green"></i>
-            {{ transaction?.data?.mainPackage?.title }}
-            <span class="pull-right" (click)="onOpenDetail(transaction?.data?.mainPackage?.detailTH)">
+            {{ transaction?.data?.mainPackage?.title | translate }}
+            <br>{{ transaction?.data?.mainPackage?.title | translate }}
+            <span class="pull-right" (click)="onOpenDetail(currentLang==='TH' ? transaction?.data?.mainPackage?.detailTH : transaction?.data?.mainPackage?.detailEN)">
               <img src="assets/images/icon/icon-page.png" class="icon" />
             </span>
           </p>
@@ -76,9 +77,9 @@
             </ng-container>
             <ng-container *ngIf="transaction?.data?.mobileCarePackage?.title">
               <span>
-                {{ transaction?.data?.mobileCarePackage?.title }}
+               {{ transaction?.data?.mobileCarePackage?.title | translate }}
               </span>
-              <span class="pull-right" (click)="onOpenDetail(transaction?.data?.mobileCarePackage?.detailTH)">
+              <span class="pull-right" (click)="onOpenDetail(currentLang==='TH' ? transaction?.data?.mobileCarePackage?.detailTH : transaction?.data?.mobileCarePackage?.detailEN)">
                 <img src="assets/images/icon/icon-page.png" class="icon" />
               </span>
             </ng-container>
@@ -103,7 +104,7 @@
             *ngIf="!priceOption?.trade?.advancePay || priceOption?.trade?.advancePay?.installmentFlag === 'N'">
             <p>
               <i class="fa fa-circle mr-3 text-green"></i>
-              {{ priceOption?.productDetail?.name }}
+              {{ priceOption?.productDetail?.name | translate }}
               <span *ngIf="priceOption?.productStock?.color">
                 {{ 'สี' | translate }} {{ priceOption?.productStock?.color }}
               </span>

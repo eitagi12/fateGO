@@ -14,6 +14,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { MobileCareService } from 'src/app/device-order/services/mobile-care.service';
 import { MOBILE_CARE_PACKAGE_KEY_REF } from 'src/app/device-order/constants/cpc.constant';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-device-order-ais-new-register-mobile-care-page',
@@ -28,6 +29,7 @@ export class DeviceOrderAisNewRegisterMobileCarePageComponent implements OnInit,
   transaction: Transaction;
   mobileCare: MobileCare;
   shoppingCart: ShoppingCart;
+  TranslateKey: any = {};
 
   constructor(
     private router: Router,
@@ -36,10 +38,16 @@ export class DeviceOrderAisNewRegisterMobileCarePageComponent implements OnInit,
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
     private shoppingCartService: ShoppingCartService,
-    private mobileCareService: MobileCareService
+    private mobileCareService: MobileCareService,
+    private translateService: TranslateService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
+    this.translateService.onLangChange.subscribe((lang: any) => {
+      if (lang = typeof (lang) === 'object' ? lang.lang : lang === 'TH') {
+        this.translateService.setTranslation('TH', this.TranslateKey);
+      }
+    });
   }
 
   ngOnInit(): void {
@@ -79,6 +87,7 @@ export class DeviceOrderAisNewRegisterMobileCarePageComponent implements OnInit,
       packageKeyRef: MOBILE_CARE_PACKAGE_KEY_REF,
       billingSystem: BillingSystemType.IRB
     }, chargeType, billingSystem, endUserPrice).then((mobileCare: any) => {
+      this.mapKeyTranslate(mobileCare);
       this.mobileCare = {
         promotions: mobileCare
       };
@@ -87,5 +96,15 @@ export class DeviceOrderAisNewRegisterMobileCarePageComponent implements OnInit,
       }
     })
       .then(() => this.pageLoadingService.closeLoading());
+  }
+
+  mapKeyTranslate(mobileCare: any): void {
+    const map = new Map();
+    mobileCare.map(key => key.items.map(item => {
+      map.set([item.title], item.value.customAttributes.shortNameEng);
+    }));
+    map.forEach((value: any, key: any) => {
+      this.TranslateKey[key] = value;
+    });
   }
 }

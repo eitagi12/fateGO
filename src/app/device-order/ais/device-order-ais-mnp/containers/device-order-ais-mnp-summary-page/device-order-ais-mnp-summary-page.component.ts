@@ -10,6 +10,8 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_ECONTACT_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE } from '../../constants/route-path.constant';
 import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
+import { Subscription } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-device-order-ais-mnp-summary-page',
@@ -30,6 +32,7 @@ export class DeviceOrderAisMnpSummaryPageComponent implements OnInit {
   shoppingCart: ShoppingCart;
   customerAddress: string;
 
+  currentLang: string;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -38,10 +41,16 @@ export class DeviceOrderAisMnpSummaryPageComponent implements OnInit {
     private shoppingCartService: ShoppingCartService,
     private modalService: BsModalService,
     public summaryPageService: SummaryPageService,
-    private utils: Utils
+    private utils: Utils,
+    private translationService: TranslateService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
+
+    this.currentLang = this.translationService.currentLang || 'TH';
+    this.translationService.onLangChange.subscribe(lang => {
+      this.currentLang = typeof (lang) === 'object' ? lang.lang : lang;
+    });
   }
 
   ngOnInit(): void {

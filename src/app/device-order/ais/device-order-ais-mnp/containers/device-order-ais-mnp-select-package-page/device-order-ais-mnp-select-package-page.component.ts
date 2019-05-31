@@ -11,6 +11,12 @@ import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart
 import { PromotionShelveService } from 'src/app/device-order/services/promotion-shelve.service';
 import { HttpClient } from '@angular/common/http';
 import { ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_NEW_BILLING_ACCOUNT_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE } from '../../constants/route-path.constant';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
+import { promise } from 'protractor';
+import { resolve } from 'path';
+import { reject } from 'q';
+import { LocalStorageService } from 'ngx-store';
 
 @Component({
   selector: 'app-device-order-ais-mnp-select-package-page',
@@ -31,6 +37,8 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
   modalRef: BsModalRef;
   shoppingCart: ShoppingCart;
 
+  translateSubscription: Subscription;
+
   constructor(
     private router: Router,
     private http: HttpClient,
@@ -39,7 +47,9 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
     private shoppingCartService: ShoppingCartService,
-    private promotionShelveService: PromotionShelveService
+    private promotionShelveService: PromotionShelveService,
+    private translateService: TranslateService,
+    private localStorageService: LocalStorageService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -50,6 +60,10 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
       delete this.transaction.data.billingInformation.billCycle;
       delete this.transaction.data.billingInformation.mergeBilling;
     }
+
+    this.translateSubscription = this.translateService.onLangChange.subscribe((lang: any) => {
+      this.checkTranslateLang(lang);
+    });
   }
 
   get advancePay(): boolean {
@@ -82,7 +96,7 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    const mobileNo = '0815485989';
+    const mobileNo = this.transaction.data.simCard.mobileNo;
 
     // call เช็ค mobile care เดิม
     this.http.get(`/api/customerportal/get-existing-mobile-care/${mobileNo}`).toPromise().then((response: any) => {
@@ -119,11 +133,51 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
       +privilege.minimumPackagePrice, +privilege.maximumPackagePrice)
       .then((promotionShelves: any) => {
         this.promotionShelves = this.promotionShelveService.defaultBySelected(promotionShelves, this.transaction.data.mainPackage);
+        this.checkTranslateLang(this.translateService.getBrowserLang());
       })
       .then(() => this.pageLoadingService.closeLoading());
   }
 
+  checkTranslateLang(lang: any): void {
+    this.mapKeyTranslateSelectPackageTitle(this.promotionShelves).then(translateKey => {
+      if (lang === 'EN' || lang.lang === 'EN' || lang === 'en' || lang.lang === 'en') {
+        if (translateKey && lang && lang.translations) {
+          const merge = { ...translateKey, ...lang.translations } || {};
+          this.translateService.setTranslation('EN', merge);
+        } else {
+          this.translateService.setTranslation('EN', translateKey);
+        }
+      }
+    });
+
+  }
+
+    mapKeyTranslateSelectPackageTitle(promotionShelves: PromotionShelve[]): Promise<any> {
+    const map = new Map();
+    const TranslateKey = {};
+    promotionShelves.filter(promotionShelve => {
+      promotionShelve.promotions.map(key => key.items.map(item => {
+        let replaceTitle = item.title.replace('บ.', '฿');
+        replaceTitle = replaceTitle.replace('บาท', '฿');
+        replaceTitle = replaceTitle.replace('แพ็กเกจ', 'Package');
+        map.set([item.title.trim()], replaceTitle.trim() || item.title.trim());
+      }));
+    });
+    map.forEach((value: any, key: any) => {
+      TranslateKey[key] = value;
+    });
+    if (TranslateKey) {
+      return Promise.resolve(TranslateKey);
+    } else {
+      return Promise.resolve(null);
+    }
+
+  }
+
   ngOnDestroy(): void {
+    if (this.translateSubscription) {
+      this.translateSubscription.unsubscribe();
+    }
     this.transactionService.update(this.transaction);
   }
 }

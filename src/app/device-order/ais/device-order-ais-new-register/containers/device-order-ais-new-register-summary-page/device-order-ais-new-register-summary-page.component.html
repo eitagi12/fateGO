@@ -57,7 +57,7 @@
             <p>
               <i class="fa fa-circle mr-3 text-green"></i>
               {{ transaction?.data?.mainPackage?.title }}
-              <span class="pull-right" (click)="onOpenDetail(transaction?.data?.mainPackage?.detailTH)">
+              <span class="pull-right" (click)="onOpenDetail(currentLang==='TH' ? transaction?.data?.mainPackage?.detailTH : transaction?.data?.mainPackage?.detailEN)">
                 <img src="assets/images/icon/icon-page.png" class="icon" />
               </span>
             </p>
@@ -78,7 +78,7 @@
                 <span>
                   {{ transaction?.data?.mobileCarePackage?.title }}
                 </span>
-                <span class="pull-right" (click)="onOpenDetail(transaction?.data?.mobileCarePackage?.detailTH)">
+                <span class="pull-right" (click)="onOpenDetail(currentLang==='TH' ? transaction?.data?.mobileCarePackage?.detailTH : transaction?.data?.mobileCarePackage?.detailEN)">
                   <img src="assets/images/icon/icon-page.png" class="icon" />
                 </span>
               </ng-container>

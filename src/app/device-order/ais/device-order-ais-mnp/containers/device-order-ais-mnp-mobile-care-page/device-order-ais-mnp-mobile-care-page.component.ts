@@ -11,6 +11,7 @@ import { MobileCareService } from 'src/app/device-order/services/mobile-care.ser
 import { ROUTE_DEVICE_ORDER_AIS_MNP_CONFIRM_USER_INFORMATION_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_SELECT_PACKAGE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE } from '../../constants/route-path.constant';
 import { MOBILE_CARE_PACKAGE_KEY_REF } from 'src/app/device-order/constants/cpc.constant';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-device-order-ais-mnp-mobile-care-page',
@@ -25,6 +26,8 @@ export class DeviceOrderAisMnpMobileCarePageComponent implements OnInit, OnDestr
   transaction: Transaction;
   mobileCare: MobileCare;
   shoppingCart: ShoppingCart;
+  TranslateKey: any = {};
+  translateSubscription: Subscription;
 
   constructor(
     private router: Router,
@@ -38,6 +41,9 @@ export class DeviceOrderAisMnpMobileCarePageComponent implements OnInit, OnDestr
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
+    this.translateSubscription = this.translateService.onLangChange.subscribe((lang: any) => {
+      this.checkTranslateLang(lang);
+    });
   }
 
   ngOnInit(): void {
@@ -67,6 +73,9 @@ export class DeviceOrderAisMnpMobileCarePageComponent implements OnInit, OnDestr
   }
 
   ngOnDestroy(): void {
+    if (this.translateSubscription) {
+      this.translateSubscription.unsubscribe();
+    }
     this.transactionService.update(this.transaction);
   }
 
@@ -86,16 +95,43 @@ export class DeviceOrderAisMnpMobileCarePageComponent implements OnInit, OnDestr
         promotions: mobileCare,
         existingMobileCare: !!exMobileCare
       };
-      this.mobileCare.promotions.filter(data => data.items.map(dt => {
-        const KEY_TH = dt.value.customAttributes.shortNameThai;
-        const VAL = dt.value.customAttributes.shortNameEng;
-        this.translateService.setTranslation('EN', { KEY_TH: KEY_TH });
-      }));
+      this.checkTranslateLang(this.translateService.getBrowserLang());
       if (this.mobileCare.promotions && this.mobileCare.promotions.length > 0) {
         this.mobileCare.promotions[0].active = true;
       }
       return;
     })
       .then(() => this.pageLoadingService.closeLoading());
+  }
+
+  checkTranslateLang(lang: any): void {
+    this.mapKeyTranslateMobileCareTitle(this.mobileCare.promotions).then(translateKey => {
+      if (lang === 'EN' || lang.lang === 'EN' || lang === 'en' || lang.lang === 'en') {
+        if (translateKey && lang && lang.translations) {
+          const merge = { ...translateKey, ...lang.translations } || {};
+          this.translateService.setTranslation('EN', merge);
+        } else {
+          this.translateService.setTranslation('EN', translateKey);
+        }
+      }
+    });
+
+  }
+
+  mapKeyTranslateMobileCareTitle(mobileCare: any): Promise<any> {
+    const map = new Map();
+    const TranslateKey = {};
+    mobileCare.map(key => key.items.map(item => {
+      map.set([item.title.trim()], item.value.customAttributes.shortNameEng.trim());
+    }));
+    map.forEach((value: any, key: any) => {
+      TranslateKey[key] = value;
+    });
+    if (TranslateKey) {
+      return Promise.resolve(TranslateKey);
+    } else {
+      return Promise.resolve(null);
+    }
+
   }
 }

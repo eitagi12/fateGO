@@ -92,8 +92,7 @@ export class DeviceOrderAisMnpMobileDetailPageComponent implements OnInit, OnDes
   getMobileProfile(): void {
     this.pageLoadingService.openLoading();
     const idCardNo = this.transaction.data.customer.idCardNo;
-    // const mobileNoCurrent = this.transaction.data.simCard.mobileNo;
-    const mobileNoCurrent = '0815485989';
+    const mobileNoCurrent = this.transaction.data.simCard.mobileNo;
 
     this.http.get(`/api/customerportal/mobile-detail/${mobileNoCurrent}`).toPromise().then((response: any) => {
       const mobileDetail = response.data || {};
