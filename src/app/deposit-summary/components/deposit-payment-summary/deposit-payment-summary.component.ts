@@ -76,7 +76,7 @@ export class DepositPaymentSummaryComponent implements OnInit {
       (customer.tumbol ? 'ตำบล/แขวง ' + customer.tumbol + ' ' : '') +
       (customer.amphur ? 'อำเภอ/เขต ' + customer.amphur + ' ' : '') +
       (customer.province ? 'จังหวัด ' + customer.province + ' ' : '') +
-      (customer.zipCode ? 'รหัสไปรษณีย์ ' + customer.zipCode + ' ' : '');
+      (customer.zipCode ? ' ' + customer.zipCode + ' ' : '');
     return fullAddress || '-';
   }
 
