@@ -280,10 +280,6 @@ export class ReceiptInformationComponent implements OnInit {
     return (resp: string[]) => this.tumbols = resp;
   }
 
-  private responseZipCode(): (value: any) => any {
-    return (resp: any) => this.zipCodes = resp;
-  }
-
   onProvinceSelected(provinceName: string, zipcode: any): void {
     const province = this.findProvinceByName(provinceName);
     const req = {
@@ -318,6 +314,19 @@ export class ReceiptInformationComponent implements OnInit {
     };
 
     this.billingAddress.queryZipCode(req).then(this.responseZipCode());
+  }
+
+  private autoSelectedZipcode(resp: any): void {
+    if (resp.length === 1) {
+      this.zipCodeForm().setValue(resp[0]);
+    }
+  }
+
+  private responseZipCode(): (value: any) => any {
+    return (resp: any) => {
+      this.autoSelectedZipcode(resp);
+      this.zipCodes = resp;
+    };
   }
 
   private assignProvinceAndZipCode(province: any, zipCode: string): void {
