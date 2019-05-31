@@ -4,6 +4,7 @@
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
     <div class="header-icon-right">
+      <mc-dropdown-language></mc-dropdown-language>
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
@@ -12,7 +13,7 @@
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb bg-white shadow-sm mb-2">
         <li class="breadcrumb-item">
-          <a href="#" routerLink="/buy-product/brand">เครื่อง</a>
+          <a href="#" routerLink="/buy-product/brand">{{'เครื่อง' | translate}}</a>
         </li>
         <!-- Brand && Best seller -->
         <ng-container *ngIf="!params?.commercialName">
@@ -21,10 +22,10 @@
         <!-- Search -->
         <ng-container *ngIf="params?.commercialName">
           <li class="breadcrumb-item">
-            <a href="#" routerLink="/buy-product/brand" [queryParams]="{ tab: 'search' }">ค้นหา</a>
+            <a href="#" routerLink="/buy-product/brand" [queryParams]="{ tab: 'search' }">{{'ค้นหา' | translate}}</a>
           </li>
           <li class="breadcrumb-item active">
-            ผลการค้นหาสำหรับ {{ params?.commercialName }}
+            {{'ผลการค้นหาสำหรับ' | translate}} {{ params?.commercialName }}
           </li>
         </ng-container>
       </ol>
