@@ -85,7 +85,7 @@ export class DeviceOrderAisMnpSelectPackageOntopPageComponent implements OnInit,
           })
             .catch(() => false);
         });
-        Promise.all(checkChangPromotions).then((respones: any[]) => {
+        return Promise.all(checkChangPromotions).then((respones: any[]) => {
           this.packageOntopList = packageOntop.filter((ontop , index) => {
             return respones[index];
           });
