@@ -4,10 +4,9 @@ import { HomeService, AlertService } from 'mychannel-shared-libs';
 import { ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE, ROUTE_DEVICE_ONLY_AIS_QR_CODE_SUMMARY_PAGE } from '../../constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { CreateOrderService } from '../../services/create-order.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { HomeButtonService } from '../../services/home-button.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
 @Component({
   selector: 'app-device-only-ais-checkout-payment-qr-code-page',
   templateUrl: './device-only-ais-checkout-payment-qr-code-page.component.html',

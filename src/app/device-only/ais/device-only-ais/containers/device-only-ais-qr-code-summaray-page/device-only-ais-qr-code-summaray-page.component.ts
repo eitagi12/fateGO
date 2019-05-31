@@ -4,11 +4,10 @@ import { Router } from '@angular/router';
 import { HomeService, AlertService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, Payment } from 'src/app/shared/models/transaction.model';
-import { CreateOrderService } from '../../services/create-order.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { HomeButtonService } from '../../services/home-button.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { QRCodePaymentService, ImageBrannerQRCode } from 'src/app/shared/services/qrcode-payment.service';
+import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
 
 @Component({
   selector: 'app-device-only-ais-qr-code-summaray-page',

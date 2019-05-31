@@ -17,16 +17,12 @@ import { MobileCareComponent } from '../../components/mobile-care/mobile-care.co
 import { TabsModule} from 'ngx-bootstrap';
 import { TranslateModule } from '@ngx-translate/core';
 import { ReceiptInformationComponent } from '../../components/receipt-information/receipt-information.component';
-import { BillingAddressService } from './services/billing-address.service';
 import { BillingAddressComponent } from '../../components/billing-address/billing-address.component';
 
 import { SummaryOrderDetailComponent } from '../../components/summary-order-detail/summary-order-detail.component';
 import { SummaryProductAndServiceComponent } from '../../components/summary-product-and-service/summary-product-and-service.component';
 import { SummaryPaymentDetailComponent } from '../../components/summary-payment-detail/summary-payment-detail.component';
 import { SummarySellerCodeComponent } from '../../components/summary-seller-code/summary-seller-code.component';
-import { CreateOrderService } from './services/create-order.service';
-import { CustomerInformationService } from './services/customer-information.service';
-import { SellerService } from 'src/app/device-only/ais/device-only-ais/services/seller.service';
 import { ShoppingCartDetailComponent } from '../../components/shopping-cart-detail/shopping-cart-detail.component';
 import { DeviceOnlyAisQrCodeKeyInQueuePageComponent } from './containers/device-only-ais-qr-code-key-in-queue-page/device-only-ais-qr-code-key-in-queue-page.component';
 import { DeviceOnlyAisResultQueuePageComponent } from './containers/device-only-ais-result-queue-page/device-only-ais-result-queue-page.component';
@@ -64,10 +60,6 @@ import { DeviceOnlyAisResultQueuePageComponent } from './containers/device-only-
     DeviceOnlyAisResultQueuePageComponent,
   ],
   providers: [
-    BillingAddressService,
-    CreateOrderService,
-    CustomerInformationService,
-    SellerService
   ]
 })
 export class DeviceOnlyAisModule { }

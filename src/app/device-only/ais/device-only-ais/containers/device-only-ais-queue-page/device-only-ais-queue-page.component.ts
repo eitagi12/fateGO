@@ -4,13 +4,13 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HomeService, PageLoadingService, REGEX_MOBILE, AlertService, User, TokenService } from 'mychannel-shared-libs';
-import { HomeButtonService } from '../../services/home-button.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { CreateOrderService } from '../../services/create-order.service';
-import { QueueService } from '../../services/queue.service';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { ROUTE_DEVICE_ONLY_AIS_RESULT_QUEUE_PAGE } from '../../constants/route-path.constant';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
+import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
+import { CreateOrderService } from 'src/app/device-only/services/create-order.service';
+import { QueueService } from 'src/app/device-only/services/queue.service';
 
 @Component({
   selector: 'app-device-only-ais-queue-page',

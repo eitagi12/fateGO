@@ -4,7 +4,7 @@ import { debounceTime } from 'rxjs/operators';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { TransactionAction, Customer } from 'src/app/shared/models/transaction.model';
 import { ReadCardService, ReadCardProfile, PageLoadingService, Utils, AlertService } from 'mychannel-shared-libs';
-import { CustomerInformationService } from '../../ais/device-only-ais/services/customer-information.service';
+import { CustomerInformationService } from 'src/app/device-only/services/customer-information.service';
 
 declare let $: any;
 export enum ReadCardAisNative {

@@ -2,7 +2,8 @@ import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChange
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { debounceTime, distinct, delay } from 'rxjs/operators';
 import { Utils, CustomerAddress } from 'mychannel-shared-libs';
-import { CustomerInformationService} from '../../ais/device-only-ais/services/customer-information.service';
+import { CustomerInformationService } from 'src/app/device-only/services/customer-information.service';
+
 export interface CustomerAddress {
   titleName: string;
   firstName: string;
@@ -96,8 +97,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     public fb: FormBuilder,
     private utils: Utils,
     private customerInformationService: CustomerInformationService
-  ) {
-  }
+  ) {}
 
   ngOnInit(): void {
     this.createForm();

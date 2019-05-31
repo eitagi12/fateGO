@@ -6,14 +6,13 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { Transaction, Payment } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ROUTE_DEVICE_ONLY_AIS_QR_CODE_SUMMARY_PAGE, ROUTE_DEVICE_ONLY_AIS_QR_CODE_QUEUE_PAGE } from '../../constants/route-path.constant';
-import { CreateOrderService } from '../../services/create-order.service';
-import { HomeButtonService } from '../../services/home-button.service';
 import { toDataURL } from 'qrcode';
 import { ImageBrannerQRCode, QRCodeModel, QRCodePaymentService, QRCodePrePostMpayModel } from 'src/app/shared/services/qrcode-payment.service';
 import { environment } from 'src/environments/environment';
 import { Subscription, BehaviorSubject, Observable } from 'rxjs';
 import { interval } from 'rxjs';
 import { ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_ERROR_PAGE } from 'src/app/device-order/ais/device-order-ais-existing/constants/route-path.constant';
+import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
 export class QRodePrePostMpayModel {
   orderId: string;
   tranDtm: string;

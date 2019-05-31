@@ -1,10 +1,10 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
-import { BillingAddressService } from '../../ais/device-only-ais/services/billing-address.service';
 import { AlertService, REGEX_MOBILE, ReceiptInfo, PageLoadingService } from 'mychannel-shared-libs';
 import { TransactionAction, Customer } from 'src/app/shared/models/transaction.model';
-import { CustomerInformationService } from '../../ais/device-only-ais/services/customer-information.service';
+import { BillingAddressService } from 'src/app/device-only/services/billing-address.service';
+import { CustomerInformationService } from 'src/app/device-only/services/customer-information.service';
 
 @Component({
   selector: 'app-receipt-information',

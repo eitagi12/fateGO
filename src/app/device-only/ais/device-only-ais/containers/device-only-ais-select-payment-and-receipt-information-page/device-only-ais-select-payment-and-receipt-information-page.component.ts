@@ -3,16 +3,16 @@ import { Router } from '../../../../../../../node_modules/@angular/router';
 import { ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE } from '../../constants/route-path.constant';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { CreateOrderService } from '../../services/create-order.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Product } from 'src/app/device-only/ais/device-only-ais/models/product.model';
-import { HomeButtonService } from '../../services/home-button.service';
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 import { HomeService, ApiRequestService, AlertService, PaymentDetail, User, TokenService } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
 import { WIZARD_DEVICE_ONLY_AIS } from 'src/app/device-only/constants/wizard.constant';
+import { CreateOrderService } from 'src/app/device-only/services/create-order.service';
+import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
 
 @Component({
   selector: 'app-device-only-ais-select-payment-and-receipt-information-page',

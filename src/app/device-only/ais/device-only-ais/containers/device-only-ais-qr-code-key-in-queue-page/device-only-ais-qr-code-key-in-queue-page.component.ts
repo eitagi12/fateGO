@@ -5,11 +5,11 @@ import { HomeService, AlertService, PageLoadingService } from 'mychannel-shared-
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { CreateOrderService } from '../../services/create-order.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { HomeButtonService } from '../../services/home-button.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { SharedTransactionService } from '../../../../../shared/services/shared-transaction.service';
+import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
+import { CreateOrderService } from 'src/app/device-only/services/create-order.service';
 
 @Component({
   selector: 'app-device-only-ais-qr-code-key-in-queue-page',

@@ -4,11 +4,11 @@ import { Router } from '../../../../../../../node_modules/@angular/router';
 import { HomeService, ShoppingCart } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
-import { HomeButtonService } from '../../services/home-button.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { MobileCare } from '../../components/mobile-care/mobile-care.component';
 import { WIZARD_DEVICE_ONLY_AIS } from 'src/app/device-only/constants/wizard.constant';
+import { MobileCare } from '../../../../components/mobile-care/mobile-care.component';
+import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
 @Component({
   selector: 'app-device-only-ais-select-mobile-care-page',
   templateUrl: './device-only-ais-select-mobile-care-page.component.html',
