@@ -10,7 +10,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { SellerService } from 'src/app/device-only/ais/device-only-ais/services/seller.service';
 import { ShopCheckSeller } from 'src/app/device-only/ais/device-only-ais/models/shopCheckSeller.model';
-import { SummarySellerCodeComponent } from 'src/app/device-only/ais/device-only-ais/components/summary-seller-code/summary-seller-code.component';
+import { SummarySellerCodeComponent } from 'src/app/device-only/components/summary-seller-code/summary-seller-code.component';
 
 @Component({
   selector: 'app-device-only-ais-summary-page',

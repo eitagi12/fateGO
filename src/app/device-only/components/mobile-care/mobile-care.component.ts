@@ -1,17 +1,17 @@
 import { Component, OnInit, Input, ViewChild, TemplateRef, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
-import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
+import { WIZARD_DEVICE_ONLY_AIS } from '../../ais/device-only-ais/constants/wizard.constant';
 import { AlertService, PageLoadingService, BillingSystemType } from 'mychannel-shared-libs';
-import { CustomerInformationService } from '../../services/customer-information.service';
+import { CustomerInformationService } from '../../ais/device-only-ais/services/customer-information.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { HttpClient } from '../../../../../../../node_modules/@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
-import { TransactionService } from '../../../../../shared/services/transaction.service';
-import { Transaction, MainPackage } from '../../../../../shared/models/transaction.model';
-import { MobileCareService } from '../../services/mobile-care.service';
-import { MOBILE_CARE_PACKAGE_KEY_REF } from '../../constants/cpc.constant';
+import { TransactionService } from '../../../shared/services/transaction.service';
+import { Transaction, MainPackage } from '../../../shared/models/transaction.model';
+import { MobileCareService } from '../../ais/device-only-ais/services/mobile-care.service';
+import { MOBILE_CARE_PACKAGE_KEY_REF } from '../../ais/device-only-ais/constants/cpc.constant';
 import { log } from 'util';
 import { debounceTime } from 'rxjs/operators';
 

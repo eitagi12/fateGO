@@ -11,23 +11,23 @@ import { DeviceOnlyAisSummaryPageComponent } from './containers/device-only-ais-
 import { DeviceOnlyAisQrCodeSummarayPageComponent } from './containers/device-only-ais-qr-code-summaray-page/device-only-ais-qr-code-summaray-page.component';
 import { DeviceOnlyAisQrCodeGeneratePageComponent } from './containers/device-only-ais-qr-code-generate-page/device-only-ais-qr-code-generate-page.component';
 import { DeviceOnlyAisCheckoutPaymentQrCodePageComponent } from './containers/device-only-ais-checkout-payment-qr-code-page/device-only-ais-checkout-payment-qr-code-page.component';
-import { DeviceOnlyReadCardComponent } from './components/device-only-read-card/device-only-read-card.component';
+import { DeviceOnlyReadCardComponent } from '../../components/device-only-read-card/device-only-read-card.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
-import { MobileCareComponent } from './components/mobile-care/mobile-care.component';
+import { MobileCareComponent } from '../../components/mobile-care/mobile-care.component';
 import { TabsModule} from 'ngx-bootstrap';
 import { TranslateModule } from '@ngx-translate/core';
-import { ReceiptInformationComponent } from './components/receipt-information/receipt-information.component';
+import { ReceiptInformationComponent } from '../../components/receipt-information/receipt-information.component';
 import { BillingAddressService } from './services/billing-address.service';
-import { BillingAddressComponent } from './components/billing-address/billing-address.component';
+import { BillingAddressComponent } from '../../components/billing-address/billing-address.component';
 
-import { SummaryOrderDetailComponent } from './components/summary-order-detail/summary-order-detail.component';
-import { SummaryProductAndServiceComponent } from './components/summary-product-and-service/summary-product-and-service.component';
-import { SummaryPaymentDetailComponent } from './components/summary-payment-detail/summary-payment-detail.component';
-import { SummarySellerCodeComponent } from './components/summary-seller-code/summary-seller-code.component';
+import { SummaryOrderDetailComponent } from '../../components/summary-order-detail/summary-order-detail.component';
+import { SummaryProductAndServiceComponent } from '../../components/summary-product-and-service/summary-product-and-service.component';
+import { SummaryPaymentDetailComponent } from '../../components/summary-payment-detail/summary-payment-detail.component';
+import { SummarySellerCodeComponent } from '../../components/summary-seller-code/summary-seller-code.component';
 import { CreateOrderService } from './services/create-order.service';
 import { CustomerInformationService } from './services/customer-information.service';
 import { SellerService } from 'src/app/device-only/ais/device-only-ais/services/seller.service';
-import { ShoppingCartDetailComponent } from './components/shopping-cart-detail/shopping-cart-detail.component';
+import { ShoppingCartDetailComponent } from '../../components/shopping-cart-detail/shopping-cart-detail.component';
 import { DeviceOnlyAisQrCodeKeyInQueuePageComponent } from './containers/device-only-ais-qr-code-key-in-queue-page/device-only-ais-qr-code-key-in-queue-page.component';
 import { DeviceOnlyAisResultQueuePageComponent } from './containers/device-only-ais-result-queue-page/device-only-ais-result-queue-page.component';
 

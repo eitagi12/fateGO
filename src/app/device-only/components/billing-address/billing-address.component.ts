@@ -2,7 +2,7 @@ import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChange
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { debounceTime, distinct, delay } from 'rxjs/operators';
 import { Utils, CustomerAddress } from 'mychannel-shared-libs';
-import { CustomerInformationService} from '../../services/customer-information.service';
+import { CustomerInformationService} from '../../ais/device-only-ais/services/customer-information.service';
 export interface CustomerAddress {
   titleName: string;
   firstName: string;

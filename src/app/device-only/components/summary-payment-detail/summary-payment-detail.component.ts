@@ -5,7 +5,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Utils, PageLoadingService } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
-import { CustomerInformationService } from '../../services/customer-information.service';
+import { CustomerInformationService } from '../../ais/device-only-ais/services/customer-information.service';
 @Component({
   selector: 'app-summary-payment-detail',
   templateUrl: './summary-payment-detail.component.html',

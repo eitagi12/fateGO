@@ -6,8 +6,8 @@ import { MobileCareComponent } from './mobile-care.component';
 import { BsModalService, ComponentLoaderFactory, PositioningService } from 'ngx-bootstrap';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { TokenService, PageLoadingService } from '../../../../../../../node_modules/mychannel-shared-libs';
-import { LocalStorageService } from '../../../../../../../node_modules/ngx-store';
+import { TokenService, PageLoadingService } from 'mychannel-shared-libs';
+import { LocalStorageService } from 'ngx-store';
 
 @Pipe({ name: 'translate' })
 class MockPipe implements PipeTransform {
