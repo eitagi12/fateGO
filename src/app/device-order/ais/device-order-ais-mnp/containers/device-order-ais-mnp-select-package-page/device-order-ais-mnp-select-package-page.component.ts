@@ -126,7 +126,7 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
 
     this.promotionShelveService.getPromotionShelve(
       {
-        packageKeyRef: trade.packageKeyRef,
+        packageKeyRef: trade.packageKeyRef || privilege.packageKeyRef,
         orderType: `Change Service`,
         billingSystem: billingSystem
       },

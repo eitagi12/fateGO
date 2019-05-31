@@ -76,7 +76,7 @@
               </ng-container>
               <ng-container *ngIf="transaction?.data?.mobileCarePackage?.title">
                 <span>
-                  {{ transaction?.data?.mobileCarePackage?.title }}
+                  {{mainPackageTitle(transaction?.data?.mobileCarePackage?.customAttributes)| translate}}
                 </span>
                 <span class="pull-right" (click)="onOpenDetail(currentLang==='TH' ? transaction?.data?.mobileCarePackage?.detailTH : transaction?.data?.mobileCarePackage?.detailEN)">
                   <img src="assets/images/icon/icon-page.png" class="icon" />
@@ -93,9 +93,7 @@
             {{ 'รายละเอียดการชำระ' | translate }}
           </div>
           <div class="card-body">
-            <p>
-              ข้อมูลการชำระสินค้า
-            </p>
+            <p translate>ข้อมูลการชำระสินค้า</p>
 
             <!-- ชำระเต็มจำนวน -->
             <ng-container

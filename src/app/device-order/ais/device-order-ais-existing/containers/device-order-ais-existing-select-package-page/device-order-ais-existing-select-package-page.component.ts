@@ -149,7 +149,7 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
 
   callGetPromotionShelveService(trade: any, billingSystem: string, privilege: any): Promise<any> {
     return this.promotionShelveService.getPromotionShelve({
-      packageKeyRef: trade.packageKeyRef,
+      packageKeyRef: trade.packageKeyRef || privilege.packageKeyRef,
       orderType: `Change Service`,
       billingSystem: billingSystem
     }, +privilege.minimumPackagePrice, +privilege.maximumPackagePrice)

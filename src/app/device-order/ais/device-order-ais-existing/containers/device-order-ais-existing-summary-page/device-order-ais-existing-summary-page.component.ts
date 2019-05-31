@@ -13,6 +13,7 @@ import { ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE
 } from 'src/app/device-order/ais/device-order-ais-existing/constants/route-path.constant';
 import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-device-order-ais-existing-summary-page',
@@ -41,6 +42,7 @@ export class DeviceOrderAisExistingSummaryPageComponent implements OnInit {
     private priceOptionService: PriceOptionService,
     private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,
+    private translateService: TranslateService,
     private utils: Utils
   ) {
     this.priceOption = this.priceOptionService.load();
@@ -87,9 +89,13 @@ export class DeviceOrderAisExistingSummaryPageComponent implements OnInit {
     this.homeService.goToHome();
   }
 
-  onOpenDetail(detail: string): void {
-    this.detail = detail;
+  onOpenDetail(detail: any): void {
+    this.detail = (this.translateService.currentLang === 'EN') ? detail.detailEN : detail.detailTH;
     this.modalRef = this.modalService.show(this.detailTemplate);
+  }
+
+  mainPackageTitle(detail: any): string {
+    return (this.translateService.currentLang === 'EN') ? detail.shortNameEng : detail.shortNameThai;
   }
 
   summary(amount: number[]): number {

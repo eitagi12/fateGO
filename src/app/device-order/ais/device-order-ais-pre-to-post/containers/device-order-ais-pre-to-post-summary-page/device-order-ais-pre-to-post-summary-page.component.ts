@@ -11,7 +11,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService, OnChange } from 'ngx-bootstrap';
 import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -85,9 +85,13 @@ export class DeviceOrderAisPreToPostSummaryPageComponent implements OnInit {
     this.homeService.goToHome();
   }
 
-  onOpenDetail(detail: string): void {
-    this.detail = detail;
+  onOpenDetail(detail: any): void {
+    this.detail = (this.translationService.currentLang === 'EN') ? detail.detailEN : detail.detailTH;
     this.modalRef = this.modalService.show(this.detailTemplate);
+  }
+
+  mainPackageTitle(detail: any): string {
+    return (this.translationService.currentLang === 'EN') ? detail.shortNameEng : detail.shortNameThai;
   }
 
   summary(amount: number[]): number {

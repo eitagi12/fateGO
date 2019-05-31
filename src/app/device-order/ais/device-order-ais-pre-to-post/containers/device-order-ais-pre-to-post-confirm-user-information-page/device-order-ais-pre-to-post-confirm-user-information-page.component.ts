@@ -17,6 +17,7 @@ import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_SELECT_PACKAGE_PAGE
 } from '../../constants/route-path.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-device-order-ais-pre-to-post-confirm-user-information-page',
@@ -45,6 +46,7 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
     private utils: Utils,
     private http: HttpClient,
     private shoppingCartService: ShoppingCartService,
+    private translateService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
 
@@ -64,16 +66,18 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
 
     this.eBill = !(mainPackage.billingSystem === BillingSystemType.BOS);
 
-    this.confirmCustomerInfo = {
-      titleName: customer.titleName,
-      firstName: customer.firstName,
-      lastName: customer.lastName,
-      idCardNo: customer.idCardNo,
-      mobileNo: simCard.mobileNo,
-      mainPackage: mainPackage.title,
-      onTopPackage: '',
-      packageDetail: mainPackage.detailTH
-    };
+    this.translateService.onLangChange.subscribe(onChange => {
+      this.confirmCustomerInfo = {
+        titleName: customer.titleName,
+        firstName: customer.firstName,
+        lastName: customer.lastName,
+        idCardNo: customer.idCardNo,
+        mobileNo: simCard.mobileNo,
+        mainPackage: (onChange.lang === 'TH') ? mainPackage.title : (mainPackage.customAttributes || {}).shortNameEng,
+        onTopPackage: '',
+        packageDetail: (onChange.lang === 'TH') ? mainPackage.detailTH : mainPackage.detailEN
+      };
+    });
 
     this.mailBillingInfo = {
       email: billCycleData.email,
