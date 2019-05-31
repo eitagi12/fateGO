@@ -6,7 +6,8 @@ import { Router } from '@angular/router';
 import { HomeService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { HomeButtonService } from 'src/app/device-only/ais/device-only-ais/services/home-button.service';
+import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
+
 @Pipe({ name: 'mobileNo' })
 class MockMobileNoPipe implements PipeTransform {
   transform(value: string): string {

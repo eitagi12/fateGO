@@ -12,7 +12,6 @@ import { Pipe, PipeTransform, DebugElement } from '@angular/core';
 import { ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE, ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_PAGE } from '../../constants/route-path.constant';
 import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
-import { SellerService } from '../../services/seller.service';
 import { SummarySellerCodeComponent } from '../../../../components/summary-seller-code/summary-seller-code.component';
 
 @Pipe({ name: 'mobileNo' })

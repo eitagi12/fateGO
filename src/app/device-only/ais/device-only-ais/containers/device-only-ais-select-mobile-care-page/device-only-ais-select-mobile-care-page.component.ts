@@ -30,7 +30,7 @@ export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit, OnDes
   constructor(
     private router: Router,
     private homeService: HomeService,
-    private transactionService: TransactionService,
+    public transactionService: TransactionService,
     private homeButtonService: HomeButtonService,
     private priceOptionSevice: PriceOptionService
   ) {

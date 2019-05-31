@@ -31,10 +31,10 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit , OnDestroy {
   constructor(
     private router: Router,
     private homeService: HomeService,
-    private transactionService: TransactionService,
+    public transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
     private homeButtonService: HomeButtonService,
-    private alertService: AlertService,
+    public alertService: AlertService,
     private sellerService: SellerService,
     private tokenService: TokenService
   ) {

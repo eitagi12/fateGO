@@ -1,5 +1,4 @@
 import { CUSTOM_ELEMENTS_SCHEMA, DebugElement } from '@angular/core';
-
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CookiesStorageService, LocalStorageService } from 'ngx-store';
 import { DeviceOnlyAisSelectMobileCarePageComponent } from './device-only-ais-select-mobile-care-page.component';
