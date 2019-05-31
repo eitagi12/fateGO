@@ -3,10 +3,10 @@ import { DeviceOnlyReadCardComponent } from './device-only-read-card.component';
 import { BsModalService, ComponentLoaderFactory, PositioningService } from 'ngx-bootstrap';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ReadCardService, PageLoadingService, Utils, AlertService } from 'mychannel-shared-libs';
-import { CustomerInformationService } from 'src/app/device-only/ais/device-only-ais/services/customer-information.service';
 import { Pipe, PipeTransform } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { HttpHandler } from '@angular/common/http';
+import { CustomerInformationService } from 'src/app/device-only/services/customer-information.service';
 
 @Pipe({ name: 'translate' })
 class MockPipeTranslate implements PipeTransform {

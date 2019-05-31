@@ -1,9 +1,9 @@
 import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { BillingAddressComponent, CustomerAddress } from './billing-address.component';
 import { ReactiveFormsModule } from '@angular/forms';
-import { CustomerInformationService } from '../../ais/device-only-ais/services/customer-information.service';
 import { HttpClient } from '@angular/common/http';
 import { HttpHandler } from '@angular/common/http';
+import { CustomerInformationService } from 'src/app/device-only/services/customer-information.service';
 
 describe('BillingAddressComponent', () => {
   let component: BillingAddressComponent;

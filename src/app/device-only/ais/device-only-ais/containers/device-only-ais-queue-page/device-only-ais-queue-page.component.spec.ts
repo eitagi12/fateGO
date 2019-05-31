@@ -4,14 +4,14 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { Pipe, PipeTransform } from '@angular/core';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HomeService, PageLoadingService, TokenService } from 'mychannel-shared-libs';
-import { HomeButtonService } from 'src/app/device-only/ais/device-only-ais/services/home-button.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { CreateOrderService } from 'src/app/device-only/ais/device-only-ais/services/create-order.service';
-import { QueueService } from 'src/app/device-only/ais/device-only-ais/services/queue.service';
 import { FormBuilder } from '@angular/forms';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { Router } from '@angular/router';
 import { ReactiveFormsModule } from '@angular/forms';
+import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
+import { CreateOrderService } from 'src/app/device-only/services/create-order.service';
+import { QueueService } from 'src/app/device-only/services/queue.service';
 
 @Pipe({ name: 'mobileNo' })
 class MockMobileNoPipe implements PipeTransform {
