@@ -23,7 +23,7 @@ export class ErrorPageComponent implements OnInit {
   goToHome(): void {
     const channelType = this.tokenService.getUser().channelType;
     if (ChannelType.SMART_ORDER === channelType) {
-      window.location.href = '/smart-shop';
+      window.location.href = '/main-menu';
     } else {
       if (this.tokenService.isTelewizUser()) {
         window.location.href = environment.CSP_URL;

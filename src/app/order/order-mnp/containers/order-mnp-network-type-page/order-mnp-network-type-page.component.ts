@@ -37,7 +37,7 @@ export class OrderMnpNetworkTypePageComponent implements OnInit, OnDestroy {
     private transactionService: TransactionService,
   ) {
     this.homeService.callback = () => {
-      window.location.href = '/smart-shop';
+      window.location.href = '/main-menu';
     };
   }
 
