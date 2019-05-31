@@ -55,10 +55,11 @@ export class DeviceOrderAisMnpMobileCareAvaliblePageComponent implements OnInit,
   }
 
   onBack(): void {
-    if (!this.transaction.data.mainPackage) {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE]);
-    } else {
+    const deleteOntopPackage = this.transaction.data.deleteOntopPackage;
+    if (deleteOntopPackage && deleteOntopPackage.length > 0) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_SELECT_PACKAGE_ONTOP_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE]);
     }
   }
 

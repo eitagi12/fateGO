@@ -28,11 +28,10 @@
             </div>
           </div>
           <div class="text-center text-red">แพ็กเกจเสริมที่ได้ทำการลบออกมีผลสิ้นสุดวันที่  {{effectiveDate}}</div>
-          <div class="mt-2">
+          <div class="mt-2" *ngIf="packageOntopList">
                 <div class="card-header bg-green text-white" translate>
                     แพ็กเกจเสริม
-                  </div>
-              <div *ngIf="packageOntopList" class="text-center p-3"></div>
+                </div>
               <form [formGroup]="packageOntopForm">
                 <div *ngFor="let packageOntop of packageOntopList" class="p-3">
                   <div class="row pb-2">
@@ -62,4 +61,11 @@
     </mc-footer>
   </div>
 
- 
+  <ng-template #detailTemplate>
+      <div class="modal-body" [innerHTML]="detail"></div>
+      <div class="modal-footer">
+        <div class="w-100 text-center">
+          <button class="btn btn-success px-5" (click)="modalRef.hide()">{{ 'ปิด' | translate }}</button>
+        </div>
+      </div>
+    </ng-template>

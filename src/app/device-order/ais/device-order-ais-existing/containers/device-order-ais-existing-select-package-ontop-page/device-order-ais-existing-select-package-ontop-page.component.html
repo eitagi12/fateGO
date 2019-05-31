@@ -32,7 +32,7 @@
                 <div class="card-header bg-green text-white" translate>
                     แพ็กเกจเสริม
                   </div>
-              <div *ngIf="packageOntopList" class="text-center p-3"></div>
+              <div *ngIf="packageOntopList" class="text-center"></div>
               <form [formGroup]="packageOntopForm">
                 <div *ngFor="let packageOntop of packageOntopList" class="p-3">
                   <div class="row pb-2">
@@ -55,11 +55,18 @@
       </div>
     </div>
 
-
     <mc-footer>
       <button class="btn btn-secondary" (click)="onBack()">BACK</button>
       <button type="submit" class="btn btn-success" (click)="onNext()">NEXT</button>
     </mc-footer>
   </div>
 
+  <ng-template #detailTemplate>
+      <div class="modal-body" [innerHTML]="detail"></div>
+      <div class="modal-footer">
+        <div class="w-100 text-center">
+          <button class="btn btn-success px-5" (click)="modalRef.hide()">{{ 'ปิด' | translate }}</button>
+        </div>
+      </div>
+    </ng-template>
  

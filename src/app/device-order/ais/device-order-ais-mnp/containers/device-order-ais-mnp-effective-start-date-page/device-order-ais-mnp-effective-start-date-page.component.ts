@@ -69,6 +69,7 @@ export class DeviceOrderAisMnpEffectiveStartDatePageComponent implements OnInit,
   billCycleNextBill$: Observable<string>;
   billCycleNextDay$: Observable<string>;
   billcycleNo: string;
+  packageOntopList: any[] = [];
 
   constructor(
     private router: Router,
@@ -78,7 +79,8 @@ export class DeviceOrderAisMnpEffectiveStartDatePageComponent implements OnInit,
     private shoppingCartService: ShoppingCartService,
     private http: HttpClient,
     private fb: FormBuilder,
-    private translationService: TranslateService
+    private translationService: TranslateService,
+    private pageLoadingService: PageLoadingService,
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -115,22 +117,58 @@ export class DeviceOrderAisMnpEffectiveStartDatePageComponent implements OnInit,
   }
 
   ngOnInit(): void {
+    const mobileNo = this.transaction.data.simCard.mobileNo;
     this.createForm();
     this.getBillingAccountProcess();
+    this.callService(mobileNo);
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_SELECT_PACKAGE_ONTOP_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_SELECT_PACKAGE_PAGE]);
   }
 
   onNext(): void {
-    // if (this.transaction.data.existingMobileCare) {
-    //   this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE]);
-    // } else {
-    //   this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_PAGE]);
-    // }
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_SELECT_PACKAGE_ONTOP_PAGE]);
+    if (this.packageOntopList && this.packageOntopList.length > 0) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_SELECT_PACKAGE_ONTOP_PAGE]);
+    } else if (this.transaction.data.existingMobileCare) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_PAGE]);
+    }
   }
+  callService(mobileNo: string): void {
+    this.pageLoadingService.openLoading();
+    this.http
+      .get(`/api/customerportal/mobile-detail/${mobileNo}`)
+      .toPromise()
+      .then((resp: any) => {
+        const data = resp.data.packageOntop || {};
+
+        const packageOntop = data.filter((packageOntopList: any) => {
+          // tslint:disable-next-line:typedef
+          const isexpiredDate = moment().isBefore(moment(packageOntopList.endDt, 'DD-MM-YYYY'));
+          return (
+            /On-Top/.test(packageOntopList.productClass) && packageOntopList.priceType === 'Recurring' &&
+            packageOntopList.priceExclVat > 0 && isexpiredDate
+          );
+        }).sort((a: any, b: any) => a.priceExclVat - b.priceExclVat);
+        const checkChangPromotions = (packageOntop || []).map((ontop: any) => {
+          return this.http.post('api/customerportal/checkChangePromotion', {
+            mobileNo: mobileNo,
+            promotionCd: ontop.promotionCode
+          }).toPromise().then((responesOntop: any) => {
+            return responesOntop.data;
+          })
+            .catch(() => false);
+        });
+        return Promise.all(checkChangPromotions).then((respones: any[]) => {
+          this.packageOntopList = packageOntop.filter((ontop, index) => {
+            return respones[index];
+          });
+        });
+      }).then(() => this.pageLoadingService.closeLoading());
+  }
+
   onHome(): void {
     this.homeService.goToHome();
   }

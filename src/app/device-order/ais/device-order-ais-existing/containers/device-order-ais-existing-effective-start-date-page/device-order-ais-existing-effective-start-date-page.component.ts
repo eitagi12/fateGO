@@ -1,7 +1,7 @@
 import { Component, OnInit, OnChanges, OnDestroy, SimpleChanges, AfterViewInit } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { Router } from '@angular/router';
-import { HomeService, ShoppingCart } from 'mychannel-shared-libs';
+import { HomeService, ShoppingCart, AlertService, PageLoadingService } from 'mychannel-shared-libs';
 import {
   ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE,
@@ -17,8 +17,6 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 import * as moment from 'moment';
-import { elementStyleProp } from '@angular/core/src/render3/instructions';
-
 interface BillCycleText {
   textBill?: string;
   textDate?: string;
@@ -93,6 +91,8 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
   billCycleNextBill$: Observable<string>;
   billCycleNextDay$: Observable<string>;
   billcycleNo: string;
+  packageOntopList: any[] = [];
+  checkPackageOntop: any[] = [];
 
   constructor(
     private router: Router,
@@ -101,7 +101,8 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
     private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,
     private http: HttpClient,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private pageLoadingService: PageLoadingService,
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -113,9 +114,12 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
   }
 
   ngOnInit(): void {
+    const mobileNo = this.transaction.data.simCard.mobileNo;
     this.createForm();
     this.getBillingAccountProcess();
     this.getMobileCare(this.mobileNoSelect);
+    this.callService(mobileNo);
+    console.log('this.packageOntopList1', this.packageOntopList);
   }
 
   onBack(): void {
@@ -123,12 +127,46 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
   }
 
   onNext(): void {
-    // if (this.transaction.data.existingMobileCare) {
-    //   this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE]);
-    // } else {
-    //   this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE]);
-    // }
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_ONTOP_PAGE]);
+    if (this.packageOntopList && this.packageOntopList.length > 0) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_ONTOP_PAGE]);
+    } else if (this.transaction.data.existingMobileCare) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE]);
+    }
+  }
+
+  callService(mobileNo: string): void {
+    this.pageLoadingService.openLoading();
+    this.http
+      .get(`/api/customerportal/mobile-detail/${mobileNo}`)
+      .toPromise()
+      .then((resp: any) => {
+        const data = resp.data.packageOntop || {};
+
+        const packageOntop = data.filter((packageOntopList: any) => {
+          // tslint:disable-next-line:typedef
+          const isexpiredDate = moment().isBefore(moment(packageOntopList.endDt, 'DD-MM-YYYY'));
+          return (
+            /On-Top/.test(packageOntopList.productClass) && packageOntopList.priceType === 'Recurring' &&
+            packageOntopList.priceExclVat > 0 && isexpiredDate
+          );
+        }).sort((a: any, b: any) => a.priceExclVat - b.priceExclVat);
+        const checkChangPromotions = (packageOntop || []).map((ontop: any) => {
+          return this.http.post('api/customerportal/checkChangePromotion', {
+            mobileNo: mobileNo,
+            promotionCd: ontop.promotionCode
+          }).toPromise().then((responesOntop: any) => {
+            return responesOntop.data;
+          })
+            .catch(() => false);
+        });
+        return Promise.all(checkChangPromotions).then((respones: any[]) => {
+          this.packageOntopList = packageOntop.filter((ontop, index) => {
+            return respones[index];
+          });
+        });
+      }).then(() => this.pageLoadingService.closeLoading());
   }
 
   onHome(): void {

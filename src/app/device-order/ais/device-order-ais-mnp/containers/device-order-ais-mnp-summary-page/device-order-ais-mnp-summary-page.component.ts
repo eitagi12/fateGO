@@ -29,6 +29,7 @@ export class DeviceOrderAisMnpSummaryPageComponent implements OnInit {
   transaction: Transaction;
   shoppingCart: ShoppingCart;
   customerAddress: string;
+  packageOntopList: any[] = [];
 
   constructor(
     private router: Router,
@@ -46,7 +47,7 @@ export class DeviceOrderAisMnpSummaryPageComponent implements OnInit {
 
   ngOnInit(): void {
     const customer = this.transaction.data.customer;
-
+    this.packageOntopList = this.transaction.data.deleteOntopPackage;
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.customerAddress = this.utils.getCurrentAddress({
       homeNo: customer.homeNo,

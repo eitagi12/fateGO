@@ -18,8 +18,8 @@ import { debounceTime } from 'rxjs/operators';
   styleUrls: ['./device-order-ais-mnp-select-package-ontop-page.component.scss']
 })
 export class DeviceOrderAisMnpSelectPackageOntopPageComponent implements OnInit, OnDestroy {
-  @ViewChild('template')
-  template: TemplateRef<any>;
+  @ViewChild('detailTemplate')
+  detailTemplate: any;
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
   modalRef: BsModalRef;
   detail: string;
@@ -32,8 +32,6 @@ export class DeviceOrderAisMnpSelectPackageOntopPageComponent implements OnInit,
   shoppingCart: ShoppingCart;
   packageOntopList: any[] = [];
   packageOntopForm: FormGroup;
-  checkFormValid: any;
-  testFrom: FormGroup;
 
   constructor(
     private router: Router,
@@ -50,7 +48,7 @@ export class DeviceOrderAisMnpSelectPackageOntopPageComponent implements OnInit,
   }
 
   ngOnInit(): void {
-    const mobileNo = this.transaction.data.customer.idCardNo;
+    const mobileNo = this.transaction.data.simCard.mobileNo;
     if (this.transaction.data.billingInformation.overRuleStartDate === 'B') {
       this.effectiveDate = this.transaction.data.billingInformation.effectiveDate;
     } else if (this.transaction.data.billingInformation.overRuleStartDate === 'D') {
@@ -78,22 +76,27 @@ export class DeviceOrderAisMnpSelectPackageOntopPageComponent implements OnInit,
             packageOntopList.priceExclVat > 0 && isexpiredDate
           );
         }).sort((a: any, b: any) => a.priceExclVat - b.priceExclVat);
-        (packageOntop || []).forEach((ontop: any) => {
-          this.http.post('api/customerportal/checkChangePromotion', {
+        const checkChangPromotions = (packageOntop || []).map((ontop: any) => {
+          return this.http.post('api/customerportal/checkChangePromotion', {
             mobileNo: mobileNo,
             promotionCd: ontop.promotionCode
           }).toPromise().then((responesOntop: any) => {
-            if (responesOntop.data) {
-              this.packageOntopList = packageOntop;
-              this.packageOntopList.forEach((ontopList: any) => {
-                const checked = !!(this.transaction.data.deleteOntopPackage || []).find(ontopDelete => {
-                  return ontopList.promotionCode === ontopDelete.promotionCode;
-                });
-                this.packageOntopForm.setControl(ontopList.promotionCode, this.fb.control(checked));
-              });
-            }
+            return responesOntop.data;
+          })
+            .catch(() => false);
+        });
+        Promise.all(checkChangPromotions).then((respones: any[]) => {
+          this.packageOntopList = packageOntop.filter((ontop , index) => {
+            return respones[index];
+          });
+          this.packageOntopList.forEach((ontopList: any) => {
+            const checked = !!(this.transaction.data.deleteOntopPackage || []).find(ontopDelete => {
+              return ontopList.promotionCode === ontopDelete.promotionCode;
+            });
+            this.packageOntopForm.setControl(ontopList.promotionCode, this.fb.control(checked));
           });
         });
+
       }).then(() => this.pageLoadingService.closeLoading());
   }
   createForm(): void {
@@ -104,10 +107,11 @@ export class DeviceOrderAisMnpSelectPackageOntopPageComponent implements OnInit,
       const promotionCodeList = keys.filter((key) => {
         return controls[key];
       });
-      const packageOntopList = this.packageOntopList.filter((ontop) => {
+      const packageOntop = this.packageOntopList.filter((ontop) => {
         return !!(promotionCodeList || []).find(promotionCode => ontop.promotionCode === promotionCode);
       });
-      this.transaction.data.deleteOntopPackage = packageOntopList;
+      this.transaction.data.deleteOntopPackage = packageOntop;
+      this.transactionService.update(this.transaction);
     });
   }
   onBack(): void {
@@ -128,7 +132,7 @@ export class DeviceOrderAisMnpSelectPackageOntopPageComponent implements OnInit,
 
   onOpenModal(detail: string): void {
     this.detail = detail || '';
-    this.modalRef = this.modalService.show(this.template, {
+    this.modalRef = this.modalService.show(this.detailTemplate, {
       class: 'pt-5 mt-5'
     });
   }

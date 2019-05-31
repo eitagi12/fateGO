@@ -22,8 +22,8 @@ import { debounceTime } from 'rxjs/operators';
   styleUrls: ['./device-order-ais-existing-select-package-ontop-page.component.scss']
 })
 export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements OnInit, OnDestroy {
-  @ViewChild('template')
-  template: TemplateRef<any>;
+  @ViewChild('detailTemplate')
+  detailTemplate: any;
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
   modalRef: BsModalRef;
   detail: string;
@@ -55,8 +55,8 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
   }
 
   ngOnInit(): void {
-    // const idCardNo = this.transaction.data.customer.idCardNo;
-    const mobileNo = this.transaction.data.simCard.mobileNo;
+    // const mobileNo = this.transaction.data.simCard.mobileNo;
+    const mobileNo = '0910011560';
     if (this.transaction.data.billingInformation.overRuleStartDate === 'B') {
       this.effectiveDate = this.transaction.data.billingInformation.effectiveDate;
     } else if (this.transaction.data.billingInformation.overRuleStartDate === 'D') {
@@ -85,20 +85,24 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
           );
         }).sort((a: any, b: any) => a.priceExclVat - b.priceExclVat);
         // this.packageOntopList = packageOntop;
-        (packageOntop || []).forEach((ontop: any) => {
-          this.http.post('api/customerportal/checkChangePromotion', {
+        const checkChangPromotions = (packageOntop || []).map((ontop: any) => {
+          return this.http.post('api/customerportal/checkChangePromotion', {
             mobileNo: mobileNo,
             promotionCd: ontop.promotionCode
           }).toPromise().then((responesOntop: any) => {
-            if (responesOntop.data) {
-              this.packageOntopList = packageOntop;
-              this.packageOntopList.forEach((ontopList: any) => {
-                const checked = !!(this.transaction.data.deleteOntopPackage || []).find(ontopDelete => {
-                  return ontopList.promotionCode === ontopDelete.promotionCode;
-                });
-                this.packageOntopForm.setControl(ontopList.promotionCode, this.fb.control(checked));
-              });
-            }
+            return responesOntop.data;
+          })
+            .catch(() => false);
+        });
+        return Promise.all(checkChangPromotions).then((respones: any[]) => {
+          this.packageOntopList = packageOntop.filter((ontop, index) => {
+            return !respones[index];
+          });
+          this.packageOntopList.forEach((ontopList: any) => {
+            const checked = !!(this.transaction.data.deleteOntopPackage || []).find(ontopDelete => {
+              return ontopList.promotionCode === ontopDelete.promotionCode;
+            });
+            this.packageOntopForm.setControl(ontopList.promotionCode, this.fb.control(checked));
           });
         });
 
@@ -112,10 +116,11 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
       const promotionCodeList = keys.filter((key) => {
         return controls[key];
       });
-      const packageOntopList = this.packageOntopList.filter((ontop) => {
+      const packageOntop = this.packageOntopList.filter((ontop) => {
         return !!(promotionCodeList || []).find(promotionCode => ontop.promotionCode === promotionCode);
       });
-      this.transaction.data.deleteOntopPackage = packageOntopList;
+      this.transaction.data.deleteOntopPackage = packageOntop;
+      this.transactionService.update(this.transaction);
     });
   }
 
@@ -136,12 +141,12 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
   }
 
   onOpenModal(detail: string): void {
-    this.detail = detail || '';
-    this.modalRef = this.modalService.show(this.template, {
+    this.detail = detail;
+    console.log('this.detail', this.detail);
+    this.modalRef = this.modalService.show(this.detailTemplate, {
       class: 'pt-5 mt-5'
     });
   }
-
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }
