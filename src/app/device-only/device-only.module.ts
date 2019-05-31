@@ -15,8 +15,7 @@ import { SellerService } from 'src/app/device-only/services/seller.service';
     CommonModule,
     DeviceOnlyRoutingModule
   ],
-  declarations: [
-  ],
+  declarations: [],
   providers: [
     BillingAddressService,
     CreateOrderService,
