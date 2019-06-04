@@ -423,6 +423,7 @@ export interface QrCodePrePostMpayModel {
   mpayStatus?: MPayStatus;
   qrAirtimeTransId?: string;
   qrAirtimeAmt?: string;
+  qrOrderId?: string;
 }
 
 export interface MPayStatus {

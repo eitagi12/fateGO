@@ -125,6 +125,7 @@ export class QueuePageService {
       depositAmt: prebooking ? prebooking.depositAmt : '',
       qrTransId: payment.paymentType === 'QR_CODE' ? mpayPayment.tranId : null,
       qrAmt: payment.paymentType === 'QR_CODE' && mpayPayment.tranId ? this.getQRAmt(trade, transaction) : null,
+      qrOrderId: payment.paymentType === 'QR_CODE' ? mpayPayment.mpayStatus.orderId : null,
     };
 
     // freeGoods
