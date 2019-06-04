@@ -207,7 +207,7 @@ export class CreateOrderService {
     const mapBankAbb = transaction.data.payment.paymentBank.abb ? transaction.data.payment.paymentBank.abb : '';
     const mapBankCode = transaction.data.payment.paymentBank.abb ? transaction.data.payment.paymentBank.abb : '';
     const mapQrTran = transaction.data.mpayPayment ? transaction.data.mpayPayment.tranId : '';
-    const mapQrOrderId = transaction.data.mpayPayment ? transaction.data.mpayPayment.orderId: '';
+    const mapQrOrderId = transaction.data.mpayPayment ? transaction.data.mpayPayment.orderId : '';
     return {
       soId: transaction.data.order.soId,
       soCompany: priceOption.productStock.company,
