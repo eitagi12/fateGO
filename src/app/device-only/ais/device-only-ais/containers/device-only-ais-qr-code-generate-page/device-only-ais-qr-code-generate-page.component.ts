@@ -88,6 +88,7 @@ export class DeviceOnlyAisQrCodeGeneratePageComponent implements OnInit {
     this.homeButtonService.initEventButtonHome();
       if (this.orderID && this.payment.paymentQrCodeType) {
           this.orderID = `${this.orderID}_${this.refreshCount}`;
+          this.transaction.data.mpayPayment.orderId = this.orderID;
           this.getQRCode(this.setBodyRequestForGetQRCode());
           this.setBodyRequestForPreMpay();
           this.qrcodePaymentService.insertPreMpay(this.qrCodePrePostMpayModel).then(
