@@ -78,7 +78,7 @@
                         ({{'แถมซิม'| translate}})
                       </span>
                       <span *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">: {{'ชำระเต็มจำนวน'| translate}}</span>
-                      <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">: {{'ผ่อนชำระบัตรเคดิต'| translate}}</span>
+                      <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">: {{'ผ่อนชำระบัตรเครดิต'| translate}}</span>
                     </label>
                     <span class="pull-right text-green">
                       ฿ {{ priceOption?.trade?.promotionPrice | number }}
@@ -115,7 +115,7 @@
                     <label class="form-check-label" for="installmentAdvancePay">
                       {{'ค่าเครื่องและค่าแพ็กเกจล่วงหน้า'| translate}} :
                       <span *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">{{'ชำระเต็มจำนวน'| translate}}</span>
-                      <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">{{'ผ่อนชำระบัตรเคดิต'| translate}}</span>
+                      <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">{{'ผ่อนชำระบัตรเครดิต'| translate}}</span>
                     </label>
                     <span class="pull-right text-green">฿ {{ summary([ +priceOption?.trade?.promotionPrice, 
                       +priceOption?.trade?.advancePay?.amount

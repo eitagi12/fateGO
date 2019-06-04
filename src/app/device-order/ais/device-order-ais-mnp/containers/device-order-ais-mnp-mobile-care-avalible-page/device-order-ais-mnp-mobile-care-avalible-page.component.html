@@ -46,8 +46,8 @@
               <div class="row pb-2">
                 <div class="col-12">
                   <span>
-                    ท่านต้องการเปลี่ยนบริการโมบายแคร์กับเครื่องใหม่ {{ shoppingCart?.commercialName.split('สี')[0] }}
-                    ใช่ หรือ ไม่?
+                    {{'ท่านต้องการเปลี่ยนบริการโมบายแคร์กับเครื่องใหม่'| translate}} {{ shoppingCart?.commercialName.split('สี')[0] }}
+                    {{'ใช่ หรือ ไม่'| translate}}?
                   </span>
                 </div>
               </div>
@@ -62,7 +62,7 @@
               </form>
               <div *ngIf="selectedChanged">
                 <span class="text-pink" style="margin-left:20px;">
-                  หมายเหตุ : กรณีมีการสมัคร โมบายแคร์ ที่เครื่องใหม่ การรับประกันที่เครื่องเดิมจะสิ้นสุด
+                  หมายเหตุ : กรณีมีการสมัคร Mobile care ที่เครื่องใหม่ การรับประกันที่เครื่องเดิมจะสิ้นสุด
                 </span>
               </div>
               <hr>
