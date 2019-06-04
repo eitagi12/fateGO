@@ -89,13 +89,13 @@ export class DeviceOrderAisExistingSummaryPageComponent implements OnInit {
     this.homeService.goToHome();
   }
 
-  onOpenDetail(detail: any): void {
-    this.detail = (this.translateService.currentLang === 'EN') ? detail.detailEN : detail.detailTH;
+  onOpenDetail(value: any = {}): void {
+    this.detail = (this.translateService.currentLang === 'EN') ? (value.detailEN || value.detailEng) : (value.detailTH || value.detail);
     this.modalRef = this.modalService.show(this.detailTemplate);
   }
 
-  mainPackageTitle(detail: any): string {
-    return (this.translateService.currentLang === 'EN') ? detail.shortNameEng : detail.shortNameThai;
+  mainPackageTitle(detail: any = {}): string {
+    return (this.translateService.currentLang === 'EN') ? (detail.shortNameEng || detail.titleEng) : (detail.shortNameThai || detail.title);
   }
 
   summary(amount: number[]): number {

@@ -22,7 +22,7 @@
             <div class="container-fluid">
               <div class="card">
                 <div class="card-header bg-green text-white mb-2">
-                  {{'เลือกแพ็กเกจใหม่' | translate}} <span>({{'แพ็กเกจเริ่มต้น' | translate}} {{ priceOption?.privilege?.minimumPackagePrice }} บาท)</span>
+                  {{'เลือกแพ็กเกจใหม่' | translate}} <span>({{'แพ็กเกจเริ่มต้น' | translate}} {{ priceOption?.privilege?.minimumPackagePrice }} {{'บาท'| translate}})</span>
                 </div>
                 <mc-promotion-shelve [selected]="transaction?.data?.mainPackage" [promotionShelves]="promotionShelves"
                 (completed)="onCompleted($event)"></mc-promotion-shelve>

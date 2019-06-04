@@ -14,6 +14,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { PromotionShelveService } from 'src/app/device-order/services/promotion-shelve.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-device-order-ais-existing-select-package-page',
@@ -43,7 +44,8 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
     private shoppingCartService: ShoppingCartService,
-    private promotionShelveService: PromotionShelveService
+    private promotionShelveService: PromotionShelveService,
+    private translateService: TranslateService,
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -55,6 +57,14 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
       delete this.transaction.data.billingInformation.mergeBilling;
     }
 
+  }
+
+  changePackageTitleLanguage(currentPackage: any = {}): string {
+    return (this.translateService.currentLang === 'EN') ? currentPackage.titleEng : currentPackage.title;
+  }
+
+  changePackageDetailLanguage(currentPackage: any = {}): string {
+    return (this.translateService.currentLang === 'EN') ? currentPackage.inStatementEng : currentPackage.inStatementThai;
   }
 
   ngOnInit(): void {

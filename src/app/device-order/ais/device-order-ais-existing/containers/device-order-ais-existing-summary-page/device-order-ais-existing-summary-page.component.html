@@ -56,7 +56,7 @@
             <div class="card-body">
               <p>
                 <i class="fa fa-circle mr-3 text-green"></i>
-                {{mainPackageTitle(transaction?.data?.mainPackage?.customAttributes || transaction?.data?.currentPackage?.customAttributes)| translate}}
+                {{mainPackageTitle(transaction?.data?.mainPackage?.customAttributes || transaction?.data?.currentPackage)| translate}}
                 <span class="pull-right" (click)="onOpenDetail(transaction?.data?.mainPackage || transaction?.data?.currentPackage)">
                   <img src="assets/images/icon/icon-page.png" class="icon" />
                 </span>
