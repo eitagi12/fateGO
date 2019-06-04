@@ -216,6 +216,7 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
               this.transaction.data.mpayPayment = Object.assign(this.transaction.data.mpayPayment , obs);
             } else {
               const status = this.getStatusPay();
+              this.transaction.data.mpayPayment.orderId = obs.orderId;
               if (status === 'DEVICE') {
                 this.transaction.data.mpayPayment.mpayStatus.orderIdDevice =  obs.orderId;
                 this.transaction.data.mpayPayment.mpayStatus.statusDevice =  'SUCCESS';
