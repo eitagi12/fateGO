@@ -167,9 +167,9 @@ export class ReceiptInformationComponent implements OnInit {
         const chargeType: string = resp.data.chargeType;
         switch (chargeType) {
           case 'Pre-paid':
+            this.alertService.warning('กรุณาระบุเบอร์ AIS รายเดือนเท่านั้น');
             this.customerInfoService.setSelectedMobileNo(mobileNo);
             this.action.emit(TransactionAction.KEY_IN);
-            this.pageLoadingService.closeLoading();
             break;
           case 'Post-paid':
             this.customerInfoService.getBillingByMobileNo(mobileNo)
@@ -186,6 +186,7 @@ export class ReceiptInformationComponent implements OnInit {
                 }
               })
               .catch(() => {
+                this.alertService.warning('กรุณาระบุเบอร์ AIS รายเดือนเท่านั้น');
                 this.pageLoadingService.closeLoading();
                 this.errorNotAisMobileNo();
                 this.clearData();
