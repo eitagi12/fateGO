@@ -221,8 +221,6 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
                 this.transaction.data.mpayPayment.mpayStatus.statusDevice =  'SUCCESS';
                 this.transaction.data.mpayPayment.tranId = obs.tranId;
                 this.transaction.data.mpayPayment.amount = obs.amount;
-
-
               } else if (status === 'AIRTIME') {
                 this.transaction.data.mpayPayment.mpayStatus.orderIdAirTime =  obs.orderId;
                 this.transaction.data.mpayPayment.mpayStatus.statusAirTime =  'SUCCESS';
