@@ -49,7 +49,7 @@ export class DeviceOrderAisMnpValidateCustomerIdCardPageComponent implements OnI
 
     this.homeService.callback = () => {
 
-      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่<br>การยกเลิกระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที')
+      this.alertService.question('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่')
         .then((data: any) => {
           if (!data.value) {
             return false;
@@ -114,14 +114,28 @@ export class DeviceOrderAisMnpValidateCustomerIdCardPageComponent implements OnI
   }
 
   onBack(): void {
-    this.returnStock().then(() => {
-      this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
-    });
+    this.alertService.question('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่')
+      .then((data: any) => {
+        if (!data.value) {
+          return false;
+        }
+        if (this.validateCustomerIdcard.koiskApiFn) {
+          this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+        }
+        // Returns stock (sim card, soId) todo...
+        return this.returnStock().then(() => true);
+      })
+      .then((isNext: boolean) => {
+        if (isNext) {
+          this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
+        }
+      });
   }
 
   onNext(): void {
     this.pageLoadingService.openLoading();
     // มี auto next ทำให้ create transaction ช้ากว่า read card
+    this.returnStock().then(() => {
       this.createTransaction();
       this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
         .then((zipCode: string) => {
@@ -174,6 +188,7 @@ export class DeviceOrderAisMnpValidateCustomerIdCardPageComponent implements OnI
                 }).then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_CUSTOMER_INFO_PAGE]));
             });
         }).then(() => this.pageLoadingService.closeLoading());
+    });
   }
 
   createTransaction(): void {

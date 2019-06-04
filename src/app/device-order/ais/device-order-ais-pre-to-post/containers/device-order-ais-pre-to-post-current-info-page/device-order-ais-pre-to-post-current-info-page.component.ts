@@ -117,18 +117,21 @@ export class DeviceOrderAisPreToPostCurrentInfoPageComponent implements OnInit, 
         }
       }).toPromise()
         .then((resp: any) => {
-
           this.transaction.data.simCard = { mobileNo: this.mobileNo, persoSim: false };
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_PAYMENT_DETAIL_PAGE]);
           this.pageLoadingService.closeLoading();
-
         })
         .catch((resp: any) => {
           this.pageLoadingService.closeLoading();
-          this.alertService.notify({
-            type: 'error',
-            html: resp.error.resultDescription
-          });
+          const error = resp.error || [];
+          if (error && error.errors && typeof error.errors === 'string') {
+            this.alertService.notify({
+              type: 'error',
+              html: error.errors
+            });
+          } else {
+            Promise.reject(resp);
+          }
         });
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE]);

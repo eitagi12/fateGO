@@ -297,7 +297,7 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
   ) {
     this.isProduction = environment.production;
     this.homeService.callback = () => {
-      window.location.href = '/smart-shop';
+      window.location.href = '/smart-digital/main-menu';
     };
   }
 
@@ -399,8 +399,8 @@ export class OrderPreToPostVerifyDocumentPageComponent implements OnInit, OnDest
         this.validateCustomerForm.patchValue({ identity: '' });
 
         const error = resp.error || [];
-        if (error && error.resultDescription) {
-          this.alertService.error(this.translation.instant(error.resultDescription));
+        if (error && error.errors && typeof error.errors === 'string') {
+          this.alertService.error(this.translation.instant(error.errors));
         } else {
           this.alertService.error(this.translation.instant('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'));
         }

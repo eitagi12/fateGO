@@ -72,7 +72,7 @@ export class OrderPreToPostValidateCustomerPageComponent implements OnInit, OnDe
         this.ws.send(ControlLED.EVENT_LED_OFF);
         this.ws.close();
       }
-      window.location.href = '/smart-shop';
+      window.location.href = '/smart-digital/main-menu';
 
     };
   }

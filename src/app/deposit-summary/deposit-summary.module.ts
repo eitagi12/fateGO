@@ -15,6 +15,7 @@ import { DepositPaymentKeyInPageComponent } from './ais/container/deposit-paymen
 import { BillingAddressComponent } from './components/billing-address/billing-address.component';
 import { ReceiptInformationComponent } from './components/receipt-information/receipt-information.component';
 import { DepositPaymentReceiptPageComponent } from './ais/container/deposit-payment-receipt-page/deposit-payment-receipt-page.component';
+import { QueuePageService } from './services/queue-page.service';
 @NgModule({
   imports: [
     CommonModule,
@@ -34,9 +35,10 @@ import { DepositPaymentReceiptPageComponent } from './ais/container/deposit-paym
     BillingAddressComponent,
     ReceiptInformationComponent,
     DepositPaymentReceiptPageComponent],
-    providers : [
-      CreateDeviceOrderService,
-      MessageConfigService
-    ]
+  providers : [
+    CreateDeviceOrderService,
+    MessageConfigService,
+    QueuePageService
+  ]
 })
 export class DepositSummaryModule { }

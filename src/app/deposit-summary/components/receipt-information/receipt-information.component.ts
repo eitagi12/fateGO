@@ -280,10 +280,6 @@ export class ReceiptInformationComponent implements OnInit {
     return (resp: string[]) => this.tumbols = resp;
   }
 
-  private responseZipCode(): (value: any) => any {
-    return (resp: any) => this.zipCodes = resp;
-  }
-
   onProvinceSelected(provinceName: string, zipcode: any): void {
     const province = this.findProvinceByName(provinceName);
     const req = {
@@ -318,6 +314,19 @@ export class ReceiptInformationComponent implements OnInit {
     };
 
     this.billingAddress.queryZipCode(req).then(this.responseZipCode());
+  }
+
+  private autoSelectedZipcode(resp: any): void {
+    if (resp.length === 1) {
+      this.zipCodeForm().setValue(resp[0]);
+    }
+  }
+
+  private responseZipCode(): (value: any) => any {
+    return (resp: any) => {
+      this.autoSelectedZipcode(resp);
+      this.zipCodes = resp;
+    };
   }
 
   private assignProvinceAndZipCode(province: any, zipCode: string): void {
@@ -391,7 +400,7 @@ export class ReceiptInformationComponent implements OnInit {
       (this.customerAddressForm.value.tumbol.length > 0 ? 'ตำบล/แขวง ' + this.customerAddressForm.value.tumbol + ' ' : '') +
       (this.customerAddressForm.value.amphur.length > 0 ? 'อำเภอ/เขต ' + this.customerAddressForm.value.amphur + ' ' : '') +
       (this.customerAddressForm.value.province.length > 0 ? 'จังหวัด ' + this.customerAddressForm.value.province + ' ' : '') +
-      (this.customerAddressForm.value.zipCode.length > 0 ? 'รหัสไปรษณีย์ ' + this.customerAddressForm.value.zipCode + ' ' : '');
+      (this.customerAddressForm.value.zipCode.length > 0 ? ' ' + this.customerAddressForm.value.zipCode + ' ' : '');
     return fullAddress || '-';
   }
 

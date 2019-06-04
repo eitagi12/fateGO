@@ -42,7 +42,7 @@ export class AppComponent {
     }
 
     this.homeService.callback = () => {
-      window.location.href = '/smart-shop';
+      window.location.href = '/main-menu';
     };
     this.onStopPropagation();
   }

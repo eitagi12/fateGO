@@ -37,6 +37,7 @@ export class VerifyTradeInPageComponent implements OnInit , OnDestroy {
     private salesService: SalesService,
     private tokenService: TokenService,
     private elementRef: ElementRef,
+// tslint:disable-next-line: deprecation
     private renderer: Renderer,
     private tradeInTransactionService: TradeInTransactionService,
     private aisNativeService: AisNativeService,
