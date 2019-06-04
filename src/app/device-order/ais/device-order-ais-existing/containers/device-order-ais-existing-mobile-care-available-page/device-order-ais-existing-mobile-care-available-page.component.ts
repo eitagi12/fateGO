@@ -44,7 +44,7 @@ export class DeviceOrderAisExistingMobileCareAvailablePageComponent implements O
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
-   }
+  }
 
   ngOnInit(): void {
     this.exMobileCare = this.transaction.data.existingMobileCare;
@@ -57,14 +57,10 @@ export class DeviceOrderAisExistingMobileCareAvailablePageComponent implements O
     const deleteOntopPackage = this.transaction.data.deleteOntopPackage;
     if (deleteOntopPackage && deleteOntopPackage.length > 0) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_ONTOP_PAGE]);
-    }
-    if (!this.transaction.data.mainPackage) {
-      if (this.transaction.data.existingMobileCare) {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE]);
-      } else {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_ONTOP_PAGE]);
-      }
-
+    } else if (!this.transaction.data.mainPackage) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE]);
     }
   }
 

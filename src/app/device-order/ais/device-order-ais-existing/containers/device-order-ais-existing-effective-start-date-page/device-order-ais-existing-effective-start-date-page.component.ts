@@ -233,11 +233,10 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
           nextBill.setDate(this.billCycleMap[i].from);
           nextBill.setMonth(nextBill.getMonth() + 1);
         }
-        this.billCycleNextBill$ = of(this.convertDateToStarngDDMMMYYYY(nextBill));
         this.billCycleNextDay$ = of(this.convertDateToStarngDDMMMYYYY(nextD));
-        this.billCycleNextBill$.subscribe((res) => {
-          this.transaction.data.billingInformation.effectiveDate = res;
-        });
+        const textNextBill = this.convertDateToStarngDDMMMYYYY(nextBill);
+        this.billCycleNextBill$ = of(textNextBill);
+        this.transaction.data.billingInformation.effectiveDate = textNextBill;
       }
     }
     return true;
