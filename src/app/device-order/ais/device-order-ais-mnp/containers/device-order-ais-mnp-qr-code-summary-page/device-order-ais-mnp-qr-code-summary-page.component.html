@@ -5,7 +5,7 @@
     </div>
     <div class="header-icon-right w-25 text-right">
       <!-- <mc-dropdown-language></mc-dropdown-language> -->
-    <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()" [hidden]="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'SUCCESS'"></mc-header-icon>
   </div>
   </mc-header>
   <div class="mc-flex-wrap bg-white">
@@ -87,31 +87,37 @@
                 <span class="pull-right text-green">
                   ฿ {{ priceOption?.trade?.promotionPrice | number }}
                 </span>
-                <div class="mt-1">
+                <div class="mt-1"
+                  *ngIf="transaction?.data?.payment?.paymentForm !== 'INSTALLMENT' && transaction?.data?.payment?.paymentType === 'QR_CODE'">
                   <small class="text-muted">
                     (ชำระโดย {{ summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) }})
                   </small>
+                  <span class="text-pink"
+                    *ngIf="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'WAITING'">( รอชำระ )</span>
+                  <span class="text-green"
+                    *ngIf="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'SUCCESS'">
+                    ( ชำระแล้ว TX: {{transaction?.data?.mpayPayment?.tranId}} )
+                  </span>
+
                 </div>
               </div>
 
               <!-- ค่าแพ็กเกจบริการล่วงหน้า -->
               <div
                 *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && (+priceOption?.trade?.advancePay?.amount) > 0">
-                <div>
-                  <input class="form-check-input" type="radio" id="advancePay" disabled=""
-                    [checked]="transaction?.data?.advancePayment?.paymentQrCodeType">
-                  <label class="form-check-label" for="advancePay">
-                    <!-- <i class="fa fa-circle mr-3 text-green"></i> -->
-                    {{'ค่าแพ็กเกจบริการล่วงหน้า' | translate }} : {{'ชำระเต็มจำนวน' | translate}}
-                  </label>
-                  <span class="pull-right text-green">
-                    ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
-                  </span>
-                </div>
+                <input class="form-check-input" type="radio" id="advancePay" disabled="" [checked]="(getStatusPay() === 'AIRTIME' && transaction?.data?.advancePayment?.paymentQrCodeType) || transaction?.data?.mpayPayment?.mpayStatus?.statusDevice !== 'WAITING'
+                      || priceOption?.productStock?.company === 'AWN'">
+                <label class="form-check-label" for="advancePay">
+                  ค่าแพ็กเกจบริการล่วงหน้า : ชำระเต็มจำนวน
+                </label>
+                <span class="pull-right text-green">
+                  ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
+                </span>
                 <div class="mt-1">
                   <small class="text-muted" *ngIf="(+priceOption?.trade?.advancePay?.amount) > 0">
                     (ชำระโดย {{ summaryPageService.descriptionPayment(transaction?.data?.advancePayment) }})
                   </small>
+                  <span class="text-pink">( รอชำระ )</span>
                 </div>
               </div>
             </ng-container>
@@ -136,6 +142,7 @@
                 <small class="text-muted">
                   (ชำระโดย {{ summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) }})
                 </small>
+                <span class="text-pink">( รอชำระ )</span>
               </div>
             </ng-container>
 
@@ -178,8 +185,4 @@
       </div>
     </div>
   </div>
-  <!-- <mc-footer>
-    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()">PAY NOW</button>
-  </mc-footer> -->
 </div>
