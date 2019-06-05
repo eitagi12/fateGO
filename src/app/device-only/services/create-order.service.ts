@@ -238,7 +238,7 @@ export class CreateOrderService {
       qrTransId: mapQrTran,
       bankAbbr: mapBankAbb,
       qrAmt: this.getQRAmt(priceOption, transaction), // add
-      reqMinimumBalance: this.getReqMinimumBalance(transaction.data.mobileCarePackage),
+      reqMinimumBalance: this.getReqMinimumBalance(transaction, transaction.data.mobileCarePackage),
       qrOrderId: mapQrOrderId
     };
   }
@@ -371,13 +371,15 @@ export class CreateOrderService {
     return message;
   }
 
-  private getReqMinimumBalance(mobileCarePackage: any): number { // Package only
+  private getReqMinimumBalance(transaction: Transaction, mobileCarePackage: any): number { // Package only
+    if (transaction.data.simCard.chargeType === 'Pre-paid') {
     let total: number = 0;
     if (mobileCarePackage && mobileCarePackage.customAttributes) {
       const customAttributes = mobileCarePackage.customAttributes;
       total += +(customAttributes.priceInclVat || 0);
-    }
+      }
     return total;
+    }
   }
 
 }
