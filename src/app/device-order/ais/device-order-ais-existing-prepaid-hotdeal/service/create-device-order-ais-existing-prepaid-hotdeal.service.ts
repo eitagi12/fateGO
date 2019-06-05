@@ -116,6 +116,9 @@ export class CreateDeviceOrderAisExistingPrepaidHotdealService {
       qrTransId: mpayPayment ? mpayPayment.tranId : '',
       qrAmt: this.getQRAmt(trade, transaction)
     };
+    if (payment.paymentType === 'QR_CODE') {
+      data.qrOrderId =  mpayPayment.orderId || null;
+    }
     return data;
   }
 

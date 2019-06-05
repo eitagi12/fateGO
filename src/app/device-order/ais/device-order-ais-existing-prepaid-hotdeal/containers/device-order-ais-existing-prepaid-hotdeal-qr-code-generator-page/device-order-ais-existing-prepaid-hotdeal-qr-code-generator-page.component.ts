@@ -52,6 +52,7 @@ export class DeviceOrderAisExistingPrepaidHotdealQrCodeGeneratorPageComponent im
     const isThaiQRCode = this.isQRCode('THAI_QR');
     const user = this.tokenService.getUser();
     const order = this.transaction.data.order;
+    const company = this.priceOption.productStock.company || 'AWN';
 
     const orderId = `${order.soId}_${this.refreshCount}`;
     const totalAmount = this.getTotalAmount();
@@ -81,11 +82,12 @@ export class DeviceOrderAisExistingPrepaidHotdealQrCodeGeneratorPageComponent im
         return this.qrCodePageService.generateQRCode({
           orderId: orderId,
           channel: 'WEB',
-          serviceId: isThaiQRCode ? MPAY_QRCODE.PB_SERVICE_ID : MPAY_QRCODE.RL_SERVICE_ID,
-          terminalId: isThaiQRCode ? MPAY_QRCODE.PB_TERMINAL_ID : MPAY_QRCODE.RL_TERMINAL_ID,
+          serviceId: this.getServiceID(company, isThaiQRCode),
+          terminalId: this.getTerminalID(company, isThaiQRCode),
           qrType: isThaiQRCode ? MPAY_QRCODE.PB_TYPE : MPAY_QRCODE.RB_TYPE,
           locationName: user.locationCode,
-          amount: totalAmount
+          amount: totalAmount,
+          company: company
         });
       });
     })
@@ -98,6 +100,24 @@ export class DeviceOrderAisExistingPrepaidHotdealQrCodeGeneratorPageComponent im
         const data = resp.data || {};
         this.handlerQRCodeMpay(orderId, data.qrCodeStr);
       }).then(() => this.pageLoadingService.closeLoading());
+  }
+
+  getServiceID(company: string, isThaiQRCode: boolean): string {
+    const MPAY_QRCODE = environment.MPAY_QRCODE;
+    if (company === 'WDS') {
+      return isThaiQRCode ? MPAY_QRCODE.PB_WDS_SERVICE_ID : MPAY_QRCODE.RL_WDS_SERVICE_ID;
+    } else {
+      return isThaiQRCode ? MPAY_QRCODE.PB_SERVICE_ID : MPAY_QRCODE.RL_SERVICE_ID;
+    }
+  }
+
+  getTerminalID(company: string, isThaiQRCode: boolean): number {
+    const MPAY_QRCODE = environment.MPAY_QRCODE;
+    if (company === 'WDS') {
+      return isThaiQRCode ? MPAY_QRCODE.PB_WDS_TERMINAL_ID : MPAY_QRCODE.RL_WDS_TERMINAL_ID;
+    } else {
+      return isThaiQRCode ? MPAY_QRCODE.PB_TERMINAL_ID : MPAY_QRCODE.RL_TERMINAL_ID;
+    }
   }
 
   getTotalAmount(): number {
