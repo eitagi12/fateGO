@@ -70,6 +70,7 @@ export class QueuePageService {
     const payment = transactionData.payment;
     const prebooking: Prebooking = transactionData.preBooking;
     const mpayPayment: any = transactionData.mpayPayment || {};
+    const advancePayment = transactionData.advancePayment;
 
     const data: any = {
       soId: order.soId,
@@ -124,8 +125,7 @@ export class QueuePageService {
       preBookingNo: prebooking ? prebooking.preBookingNo : '',
       depositAmt: prebooking ? prebooking.depositAmt : '',
       qrTransId: payment.paymentType === 'QR_CODE' ? mpayPayment.tranId : null,
-      qrAmt: payment.paymentType === 'QR_CODE' && mpayPayment.tranId ? this.getQRAmt(trade, transaction) : null,
-      qrOrderId: payment.paymentType === 'QR_CODE' ? transactionData.mpayPayment.mpayStatus.orderIdDevice : null,
+      qrAmt: payment.paymentType === 'QR_CODE' && mpayPayment.tranId ? this.getQRAmt(trade, transaction) : null
     };
 
     // freeGoods
@@ -133,8 +133,12 @@ export class QueuePageService {
       data.tradeFreeGoodsId = trade.freeGoods[0] ? trade.freeGoods[0].tradeFreegoodsId : '';
     }
 
+    if (payment.paymentType === 'QR_CODE' || (advancePayment && advancePayment.paymentType === 'QR_CODE')) {
+      data.qrOrderId =  mpayPayment.mpayStatus.orderIdDevice || mpayPayment.orderId || null;
+    }
+
     // QR code for airtime
-    if (transactionData.advancePayment && transactionData.advancePayment.paymentType === 'QR_CODE' ) {
+    if (advancePayment && advancePayment.paymentType === 'QR_CODE' ) {
       data.qrAirtimeTransId = mpayPayment.qrAirtimeTransId || mpayPayment.tranId || null;
       data.qrAirtimeAmt =  this.getQRAmt(trade, transaction);
     }
