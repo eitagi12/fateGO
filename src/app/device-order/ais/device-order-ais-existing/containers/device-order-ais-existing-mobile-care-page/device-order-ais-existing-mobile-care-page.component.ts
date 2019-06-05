@@ -78,6 +78,7 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit, On
   }
 
   onCompleted(mobileCare: any): void {
+    console.log('mobileCare', mobileCare);
     this.transaction.data.mobileCarePackage = mobileCare;
   }
 

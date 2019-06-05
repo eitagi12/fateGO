@@ -43,13 +43,13 @@ export class DeviceOrderAisPreToPostSummaryPageComponent implements OnInit {
     private modalService: BsModalService,
     public summaryPageService: SummaryPageService,
     private utils: Utils,
-    private translationService: TranslateService
+    private translateService: TranslateService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
 
-    this.currentLang = this.translationService.currentLang || 'TH';
-    this.translationService.onLangChange.subscribe(lang => {
+    this.currentLang = this.translateService.currentLang || 'TH';
+    this.translateService.onLangChange.subscribe(lang => {
       this.currentLang = typeof (lang) === 'object' ? lang.lang : lang;
     });
   }
@@ -86,12 +86,12 @@ export class DeviceOrderAisPreToPostSummaryPageComponent implements OnInit {
   }
 
   onOpenDetail(detail: any): void {
-    this.detail = (this.translationService.currentLang === 'EN') ? detail.detailEN : detail.detailTH;
+    this.detail = (this.translateService.currentLang === 'EN') ? detail.detailEN : detail.detailTH;
     this.modalRef = this.modalService.show(this.detailTemplate);
   }
 
   mainPackageTitle(detail: any): string {
-    return (this.translationService.currentLang === 'EN') ? detail.shortNameEng : detail.shortNameThai;
+    return (this.translateService.currentLang === 'EN') ? detail.shortNameEng : detail.shortNameThai;
   }
 
   summary(amount: number[]): number {

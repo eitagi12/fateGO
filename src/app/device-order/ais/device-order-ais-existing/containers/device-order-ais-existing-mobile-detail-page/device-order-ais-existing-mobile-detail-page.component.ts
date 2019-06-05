@@ -12,6 +12,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { Transaction, BillingAccount } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-device-order-ais-existing-mobile-detail-page',
@@ -36,6 +37,7 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
     private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,
     private priceOptionService: PriceOptionService,
+    private translateService: TranslateService
   ) {
       this.priceOption = this.priceOptionService.load();
       this.transaction = this.transactionService.load();
@@ -92,6 +94,10 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
     this.transaction.data.simCard.chargeType = mobileDetail.chargeType;
     this.transaction.data.simCard.billingSystem = mobileDetail.billingSystem;
     this.transaction.data.currentPackage = mobileDetail.package;
+
+    this.translateService.onLangChange.subscribe(onChange => {
+      return this.mobileInfo.mainPackage = this.changeMainPackageLangauge(mobileDetail.package);
+    });
   }
 
   mappingMobileInfo(mobileNo: string, mobileDetail: any, serviceYear: any): MobileInfo {
@@ -101,8 +107,12 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
       status: mobileDetail.mobileStatus,
       sagment: mobileDetail.mobileSegment,
       serviceYear: this.serviceYearWording(serviceYear.year, serviceYear.month, serviceYear.day),
-      mainPackage: mobileDetail.packageTitle
+      mainPackage: this.changeMainPackageLangauge(mobileDetail.package)
     };
+  }
+
+  changeMainPackageLangauge(mobileDetail: any = {}): string {
+    return (this.translateService.currentLang === 'EN') ? mobileDetail.titleEng : mobileDetail.title;
   }
 
   handleErrorMessage(err: any): void {

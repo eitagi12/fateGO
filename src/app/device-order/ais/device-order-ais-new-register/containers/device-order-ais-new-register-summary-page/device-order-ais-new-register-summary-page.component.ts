@@ -46,13 +46,13 @@ export class DeviceOrderAisNewRegisterSummaryPageComponent implements OnInit, On
     private modalService: BsModalService,
     public summaryPageService: SummaryPageService,
     private utils: Utils,
-    private translationService: TranslateService
+    private translateService: TranslateService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
 
-    this.currentLang = this.translationService.currentLang || 'TH';
-    this.translateSubscription = this.translationService.onLangChange.subscribe(lang => {
+    this.currentLang = this.translateService.currentLang || 'TH';
+    this.translateSubscription = this.translateService.onLangChange.subscribe(lang => {
       this.currentLang = typeof (lang) === 'object' ? lang.lang : lang;
     });
   }
@@ -88,9 +88,13 @@ export class DeviceOrderAisNewRegisterSummaryPageComponent implements OnInit, On
     this.homeService.goToHome();
   }
 
-  onOpenDetail(detail: string): void {
+  onOpenDetail(detail: any): void {
     this.detail = detail;
     this.modalRef = this.modalService.show(this.detailTemplate);
+  }
+
+  mainPackageTitle(detail: any): string {
+    return (this.translateService.currentLang === 'EN') ? detail.shortNameEng : detail.shortNameThai;
   }
 
   summary(amount: number[]): number {

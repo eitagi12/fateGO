@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, MainPackage } from 'src/app/shared/models/transaction.model';
 import { ConfirmCustomerInfo, BillingInfo, BillingSystemType, MailBillingInfo, TelNoBillingInfo, Utils, AlertService, ShoppingCart } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HomeService } from 'mychannel-shared-libs';
@@ -66,17 +66,20 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
 
     this.eBill = !(mainPackage.billingSystem === BillingSystemType.BOS);
 
-    this.translateService.onLangChange.subscribe(onChange => {
-      this.confirmCustomerInfo = {
-        titleName: customer.titleName,
-        firstName: customer.firstName,
-        lastName: customer.lastName,
-        idCardNo: customer.idCardNo,
-        mobileNo: simCard.mobileNo,
-        mainPackage: (onChange.lang === 'TH') ? mainPackage.title : (mainPackage.customAttributes || {}).shortNameEng,
-        onTopPackage: '',
-        packageDetail: (onChange.lang === 'TH') ? mainPackage.detailTH : mainPackage.detailEN
-      };
+    this.confirmCustomerInfo = {
+      titleName: customer.titleName,
+      firstName: customer.firstName,
+      lastName: customer.lastName,
+      idCardNo: customer.idCardNo,
+      mobileNo: simCard.mobileNo,
+      mainPackage: this.changeMainPackageLanguage(mainPackage),
+      onTopPackage: '',
+      packageDetail: this.changePackageDetailLanguage(mainPackage)
+    };
+
+    this.translateService.onLangChange.subscribe(() => {
+      this.confirmCustomerInfo.mainPackage = this.changeMainPackageLanguage(mainPackage);
+      this.confirmCustomerInfo.packageDetail = this.changePackageDetailLanguage(mainPackage);
     });
 
     this.mailBillingInfo = {
@@ -92,6 +95,14 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
     };
 
     this.initBillingInfo();
+  }
+
+  changePackageDetailLanguage(mainPackage: MainPackage): string {
+    return (this.translateService.currentLang === 'TH') ? mainPackage.detailTH : mainPackage.detailEN;
+  }
+
+  changeMainPackageLanguage(mainPackage: MainPackage): string {
+    return (this.translateService.currentLang === 'TH') ? mainPackage.title : (mainPackage.customAttributes || {}).shortNameEng;
   }
 
   initBillingInfo(): void {
