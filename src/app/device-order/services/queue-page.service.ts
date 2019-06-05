@@ -134,7 +134,11 @@ export class QueuePageService {
     }
 
     if (payment.paymentType === 'QR_CODE' || (advancePayment && advancePayment.paymentType === 'QR_CODE')) {
-      data.qrOrderId =  mpayPayment.mpayStatus.orderIdDevice || mpayPayment.orderId || null;
+      if (mpayPayment && mpayPayment.mpayStatus && mpayPayment.mpayStatus.orderIdDevice) {
+          data.qrOrderId =  mpayPayment.mpayStatus.orderIdDevice;
+      } else {
+        data.qrOrderId = mpayPayment && mpayPayment.orderId ? mpayPayment.orderId : null;
+      }
     }
 
     // QR code for airtime
