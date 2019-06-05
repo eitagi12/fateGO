@@ -153,7 +153,7 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
           );
         }).sort((a: any, b: any) => a.priceExclVat - b.priceExclVat);
         const checkChangPromotions = (packageOntop || []).map((ontop: any) => {
-          return this.http.post('api/customerportal/checkChangePromotion', {
+          return this.http.post(`api/customerportal/checkChangePromotion`, {
             mobileNo: mobileNo,
             promotionCd: ontop.promotionCode
           }).toPromise().then((responesOntop: any) => {
