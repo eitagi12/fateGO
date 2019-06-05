@@ -52,7 +52,6 @@ export class DeviceOrderAisExistingSummaryPageComponent implements OnInit {
   ngOnInit(): void {
     const customer = this.transaction.data.customer;
     this.packageOntopList = this.transaction.data.deleteOntopPackage;
-    console.log('this.packageOntopList', this.packageOntopList);
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.customerAddress = this.utils.getCurrentAddress(this.mappingCustomer(customer));
   }
