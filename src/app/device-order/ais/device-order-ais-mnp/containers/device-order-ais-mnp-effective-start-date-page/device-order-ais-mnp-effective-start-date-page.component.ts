@@ -117,7 +117,8 @@ export class DeviceOrderAisMnpEffectiveStartDatePageComponent implements OnInit,
   }
 
   ngOnInit(): void {
-    const mobileNo = this.transaction.data.simCard.mobileNo;
+    // const mobileNo = this.transaction.data.simCard.mobileNo;
+    const mobileNo = '0910011560';
     this.createForm();
     this.getBillingAccountProcess();
     this.callService(mobileNo);
@@ -137,38 +138,35 @@ export class DeviceOrderAisMnpEffectiveStartDatePageComponent implements OnInit,
     }
   }
   callService(mobileNo: string): void {
+    console.log('mobileNo', mobileNo);
     this.pageLoadingService.openLoading();
-    this.http
-      .get(`/api/customerportal/mobile-detail/${mobileNo}`)
-      .toPromise()
-      .then((resp: any) => {
-        const data = resp.data.packageOntop || {};
-
-        const packageOntop = data.filter((packageOntopList: any) => {
-          // tslint:disable-next-line:typedef
-          const isexpiredDate = moment().isBefore(moment(packageOntopList.endDt, 'DD-MM-YYYY'));
-          return (
-            /On-Top/.test(packageOntopList.productClass) && packageOntopList.priceType === 'Recurring' &&
-            packageOntopList.priceExclVat > 0 && isexpiredDate
-          );
-        }).sort((a: any, b: any) => a.priceExclVat - b.priceExclVat);
-        const checkChangPromotions = (packageOntop || []).map((ontop: any) => {
-          return this.http.post('api/customerportal/checkChangePromotion', {
-            mobileNo: mobileNo,
-            promotionCd: ontop.promotionCode
-          }).toPromise().then((responesOntop: any) => {
-            return responesOntop.data;
-          })
-            .catch(() => false);
+    this.http.get(`/api/customerportal/mobile-detail/${mobileNo}`).toPromise().then((resp: any) => {
+      const data: any = resp.data.packageOntop || {};
+      const packageOntop: any = data.filter((packageOntopList: any) => {
+        const isexpiredDate: any = moment().isBefore(moment(packageOntopList.endDt, 'DD-MM-YYYY'));
+        return (
+          /On-Top/.test(packageOntopList.productClass) && packageOntopList.priceType === 'Recurring' &&
+          packageOntopList.priceExclVat > 0 && isexpiredDate
+        );
+      }).sort((a: any, b: any) => a.priceExclVat - b.priceExclVat);
+      const checkChangPromotions: any = (packageOntop || []).map((ontop: any) => {
+        return this.http.post('api/customerportal/checkChangePromotion', {
+          mobileNo: mobileNo,
+          promotionCd: ontop.promotionCode
+        }).toPromise().then((responesOntop: any) => {
+          return responesOntop.data;
+        })
+          .catch(() => false);
+      });
+      return Promise.all(checkChangPromotions).then((respones: any[]) => {
+        this.packageOntopList = packageOntop.filter((ontop: any, index: any) => {
+          return respones[index];
         });
-        return Promise.all(checkChangPromotions).then((respones: any[]) => {
-          this.packageOntopList = packageOntop.filter((ontop, index) => {
-            return respones[index];
-          });
-        });
-      }).then(() => this.pageLoadingService.closeLoading());
+      });
+    }).then(() => {
+      this.pageLoadingService.closeLoading();
+    });
   }
-
   onHome(): void {
     this.homeService.goToHome();
   }
