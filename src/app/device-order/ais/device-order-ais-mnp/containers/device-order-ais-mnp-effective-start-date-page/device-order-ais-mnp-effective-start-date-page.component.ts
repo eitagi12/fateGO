@@ -117,8 +117,7 @@ export class DeviceOrderAisMnpEffectiveStartDatePageComponent implements OnInit,
   }
 
   ngOnInit(): void {
-    // const mobileNo = this.transaction.data.simCard.mobileNo;
-    const mobileNo = '0910011560';
+    const mobileNo = this.transaction.data.simCard.mobileNo;
     this.createForm();
     this.getBillingAccountProcess();
     this.callService(mobileNo);
@@ -138,7 +137,6 @@ export class DeviceOrderAisMnpEffectiveStartDatePageComponent implements OnInit,
     }
   }
   callService(mobileNo: string): void {
-    console.log('mobileNo', mobileNo);
     this.pageLoadingService.openLoading();
     this.http.get(`/api/customerportal/mobile-detail/${mobileNo}`).toPromise().then((resp: any) => {
       const data: any = resp.data.packageOntop || {};

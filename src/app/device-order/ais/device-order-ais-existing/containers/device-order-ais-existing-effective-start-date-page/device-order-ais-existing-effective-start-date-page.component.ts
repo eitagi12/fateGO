@@ -114,8 +114,7 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
   }
 
   ngOnInit(): void {
-    // const mobileNo = this.transaction.data.simCard.mobileNo;
-    const mobileNo = '0910011560';
+    const mobileNo = this.transaction.data.simCard.mobileNo;
     this.createForm();
     this.getBillingAccountProcess();
     this.getMobileCare(this.mobileNoSelect);
