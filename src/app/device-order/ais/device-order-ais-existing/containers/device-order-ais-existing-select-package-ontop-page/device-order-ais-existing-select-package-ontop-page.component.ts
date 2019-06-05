@@ -55,8 +55,7 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
   }
 
   ngOnInit(): void {
-    // const mobileNo = this.transaction.data.simCard.mobileNo;
-    const mobileNo = '0910011560';
+    const mobileNo = this.transaction.data.simCard.mobileNo;
     if (this.transaction.data.billingInformation.overRuleStartDate === 'B') {
       this.effectiveDate = this.transaction.data.billingInformation.effectiveDate;
     } else if (this.transaction.data.billingInformation.overRuleStartDate === 'D') {
@@ -96,7 +95,7 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
         });
         return Promise.all(checkChangPromotions).then((respones: any[]) => {
           this.packageOntopList = packageOntop.filter((ontop, index) => {
-            return !respones[index];
+            return respones[index];
           });
           this.packageOntopList.forEach((ontopList: any) => {
             const checked = !!(this.transaction.data.deleteOntopPackage || []).find(ontopDelete => {
