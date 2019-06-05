@@ -106,7 +106,7 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
           qrType: isThaiQRCode ? MPAY_QRCODE.PB_TYPE : MPAY_QRCODE.RB_TYPE,
           locationName: user.locationCode,
           amount: totalAmount,
-          company: company
+          company: this.getStatusPay() === 'DEVICE' ? company : 'AWN'
         });
       });
     }).then((resp: any) => {
