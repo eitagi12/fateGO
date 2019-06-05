@@ -33,17 +33,13 @@ export class AppComponent {
     this.version = this.getVersion();
 
     this.initails();
-    // this.hoemeHandler();
+    this.homeHandler();
     this.tokenHandler();
     this.errorHandler();
 
     if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {
       this.pageActivityHandler();
     }
-
-    this.homeService.callback = () => {
-      window.location.href = '/main-menu';
-    };
     this.onStopPropagation();
   }
 
@@ -55,8 +51,12 @@ export class AppComponent {
     return (environment.production ? '' : `[${environment.name}] `) + version;
   }
 
-  hoemeHandler(): void {
+  homeHandler(): void {
     this.homeService.callback = () => {
+      if (this.tokenService.getUser().channelType !== ChannelType.SMART_ORDER) {
+        window.location.href = '/';
+        return ;
+      }
       if (environment.name === 'LOCAL') {
         window.location.href = '/main-menu';
       } else {
