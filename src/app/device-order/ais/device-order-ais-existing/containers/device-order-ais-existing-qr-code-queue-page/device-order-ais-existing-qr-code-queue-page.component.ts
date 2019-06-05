@@ -70,13 +70,16 @@ export class DeviceOrderAisExistingQrCodeQueuePageComponent implements OnInit, O
     const trade = this.priceOption.trade;
     const payment: any = this.transaction.data.payment || {};
     const advancePayment: any = this.transaction.data.advancePayment || {};
-
     let summary = 0;
+    const advancePay = trade.advancePay || {};
+    if (trade.advancePay.installmentFlag === 'Y') {
+      return this.summary([+trade.promotionPrice, +advancePay.amount]);
+    }
+
     if (payment.paymentType === 'QR_CODE') {
       summary += +trade.promotionPrice;
     }
     if (advancePayment.paymentType === 'QR_CODE') {
-      const advancePay = trade.advancePay || {};
       summary += +advancePay.amount;
     }
     return summary;
@@ -86,13 +89,17 @@ export class DeviceOrderAisExistingQrCodeQueuePageComponent implements OnInit, O
     const trade = this.priceOption.trade;
     const payment: any = this.transaction.data.payment || {};
     const advancePayment: any = this.transaction.data.advancePayment || {};
-
     let summary = 0;
+    const advancePay = trade.advancePay || {};
+
+    if (trade.advancePay.installmentFlag === 'Y') {
+      return this.summary([+trade.promotionPrice, +advancePay.amount]);
+    }
+
     if (payment.paymentType !== 'QR_CODE') {
       summary += +trade.promotionPrice;
     }
     if (advancePayment.paymentType !== 'QR_CODE') {
-      const advancePay = trade.advancePay || {};
       summary += +advancePay.amount;
     }
     return summary;
