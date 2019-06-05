@@ -168,7 +168,7 @@ export class ReceiptInformationComponent implements OnInit {
         switch (chargeType) {
           case 'Pre-paid':
             this.alertService.warning('กรุณาระบุเบอร์ AIS รายเดือนเท่านั้น');
-            this.customerInfoService.setSelectedMobileNo(mobileNo);
+            this.searchByMobileNoForm.controls['mobileNo'].setValue('');
             this.action.emit(TransactionAction.KEY_IN);
             break;
           case 'Post-paid':
@@ -186,7 +186,6 @@ export class ReceiptInformationComponent implements OnInit {
                 }
               })
               .catch(() => {
-                this.alertService.warning('กรุณาระบุเบอร์ AIS รายเดือนเท่านั้น');
                 this.pageLoadingService.closeLoading();
                 this.errorNotAisMobileNo();
                 this.clearData();
