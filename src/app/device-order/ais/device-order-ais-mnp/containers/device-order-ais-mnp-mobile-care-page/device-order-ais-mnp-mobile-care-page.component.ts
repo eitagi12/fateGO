@@ -12,6 +12,7 @@ import { ROUTE_DEVICE_ORDER_AIS_MNP_CONFIRM_USER_INFORMATION_PAGE, ROUTE_DEVICE_
 import { MOBILE_CARE_PACKAGE_KEY_REF } from 'src/app/device-order/constants/cpc.constant';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-device-order-ais-mnp-mobile-care-page',
@@ -37,7 +38,8 @@ export class DeviceOrderAisMnpMobileCarePageComponent implements OnInit, OnDestr
     private pageLoadingService: PageLoadingService,
     private shoppingCartService: ShoppingCartService,
     private mobileCareService: MobileCareService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private http: HttpClient
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -95,13 +97,14 @@ export class DeviceOrderAisMnpMobileCarePageComponent implements OnInit, OnDestr
         promotions: mobileCare,
         existingMobileCare: !!exMobileCare
       };
-      this.checkTranslateLang(this.translateService.getBrowserLang());
+      if (this.mobileCare) {
+        this.checkTranslateLang(this.translateService.currentLang);
+      }
       if (this.mobileCare.promotions && this.mobileCare.promotions.length > 0) {
         this.mobileCare.promotions[0].active = true;
       }
       return;
-    })
-      .then(() => this.pageLoadingService.closeLoading());
+    }).then(() => this.pageLoadingService.closeLoading());
   }
 
   checkTranslateLang(lang: any): void {
@@ -111,7 +114,10 @@ export class DeviceOrderAisMnpMobileCarePageComponent implements OnInit, OnDestr
           const merge = { ...translateKey, ...lang.translations } || {};
           this.translateService.setTranslation('EN', merge);
         } else {
-          this.translateService.setTranslation('EN', translateKey);
+          this.getTranslateLoader('device-order', 'EN').then(resp => {
+            const merge = { ...translateKey, ...resp } || {};
+            this.translateService.setTranslation('EN', merge);
+          });
         }
       }
     });
@@ -134,4 +140,13 @@ export class DeviceOrderAisMnpMobileCarePageComponent implements OnInit, OnDestr
     }
 
   }
+
+  getTranslateLoader(moduleName: string, lang: string): Promise<any> {
+    if (!moduleName || !lang) {
+      return;
+    }
+    const fileLang = `i18n/${moduleName}.${lang}.json`.toLowerCase();
+    return this.http.get(fileLang).toPromise();
+  }
+
 }

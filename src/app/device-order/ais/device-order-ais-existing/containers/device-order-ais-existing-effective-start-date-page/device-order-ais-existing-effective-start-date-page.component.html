@@ -41,7 +41,7 @@
                           class="text-bill-cycle text-grey">{{  billCycle?.textDate | translate}} <span class="text-green">
                             {{ billCycleNextDay$  | async }} </span></span>
                         <span *ngIf="billCycle?.value === 'I'"
-                          class="text-bill-cycle text-grey">{{  billCycle?.textDate }}<span class="text-green">
+                          class="text-bill-cycle text-grey">{{  billCycle?.textDate | translate}}<span class="text-green">
                             {{'หลังจากได้รับ SMS ยืนยัน'| translate}}</span> </span>
                       </div>
                       <hr>
