@@ -228,11 +228,10 @@ export class SharedTransactionService {
       serviceName: 'Samsung Knox',
       startDate: startDate,
       endDate: endDate,
-      duration: priceOption.trade.durationContract,
-      isKnoxGuard: true
+      duration: priceOption.trade.durationContract
     };
 
-      params.data.knoxguard = priceOption.trade && priceOption.trade.serviceLockHs === 'KG' ? knoxguard : {isKnoxGuard: false};
+      params.data.knoxguard = priceOption.trade && priceOption.trade.serviceLockHs === 'KG' ? knoxguard : {};
 
     if (data.mobileCarePackage) {
       if (typeof data.mobileCarePackage === 'string' || data.mobileCarePackage instanceof String) {
