@@ -23,7 +23,9 @@ export class SummaryPageService {
       + (advancePay.installmentFlag === `Y` ? +advancePay.amount : 0))
       / (+paymentMethod.month || 1));
 
-      return `${this.translateService.instant(`บัตรเครดิต`)} ${paymentMethod.name} ${paymentMethod.percentage || 0} %
+      console.log('paymentMethod.name', paymentMethod.name);
+      return `${this.translateService.instant(`บัตรเครดิต`)} ${this.translateService.instant(paymentMethod.name)}
+       ${paymentMethod.percentage || 0} %
       \ ${paymentMethod.month || 0} ${this.translateService.instant(`เดือน`)}
       \ ${Math.ceil(price)} ${this.translateService.instant(`บาท`)}`;
 
