@@ -268,15 +268,14 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
   }
 
   onNext(): void {
-    const mpayPayment = this.transaction.data.mpayPayment;
     const mpayStatus = this.transaction.data.mpayPayment.mpayStatus;
     if (this.priceOption.productStock.company === 'AWN') {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_QUEUE_PAGE]);
     } else {
-      if (mpayStatus && mpayStatus.statusAirTime && mpayStatus.statusAirTime !== 'WAITING') {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_QUEUE_PAGE]);
+      if (mpayStatus && mpayStatus.statusAirTime && mpayStatus.statusAirTime === 'WAITING') {
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_SUMMARY_PAGE]);
       } else {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_SUMMARY_PAGE]);
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_QUEUE_PAGE]);
       }
 
       }
