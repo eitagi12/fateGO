@@ -25,7 +25,7 @@ export class SummaryPageService {
 
       return `${this.translateService.instant(`บัตรเครดิต`)} ${paymentMethod.name} ${paymentMethod.percentage || 0} %
       \ ${paymentMethod.month || 0} ${this.translateService.instant(`เดือน`)}
-      \ ${Math.ceil(price)} ${this.translateService.instant(`บาท`)}`;
+      \ (${Math.ceil(price)} ${this.translateService.instant(`บาท`)}/${this.translateService.instant(`เดือน`)})`;
 
     }
   }

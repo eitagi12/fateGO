@@ -56,8 +56,7 @@
         <div class="card-body">
           <p>
             <i class="fa fa-circle mr-3 text-green"></i>
-            {{ transaction?.data?.mainPackage?.title | translate }}
-            <br>{{ transaction?.data?.mainPackage?.title | translate }}
+            {{mainPackageTitle(transaction?.data?.mainPackage?.customAttributes)}}
             <span class="pull-right" (click)="onOpenDetail(currentLang==='TH' ? transaction?.data?.mainPackage?.detailTH : transaction?.data?.mainPackage?.detailEN)">
               <img src="assets/images/icon/icon-page.png" class="icon" />
             </span>
@@ -77,7 +76,7 @@
             </ng-container>
             <ng-container *ngIf="transaction?.data?.mobileCarePackage?.title">
               <span>
-               {{ transaction?.data?.mobileCarePackage?.title | translate }}
+                {{mainPackageTitle(transaction?.data?.mobileCarePackage?.customAttributes)| translate}}
               </span>
               <span class="pull-right" (click)="onOpenDetail(currentLang==='TH' ? transaction?.data?.mobileCarePackage?.detailTH : transaction?.data?.mobileCarePackage?.detailEN)">
                 <img src="assets/images/icon/icon-page.png" class="icon" />
