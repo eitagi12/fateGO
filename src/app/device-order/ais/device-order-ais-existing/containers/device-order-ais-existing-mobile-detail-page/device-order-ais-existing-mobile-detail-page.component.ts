@@ -59,6 +59,12 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
     .catch(this.ErrorMessage());
   }
 
+  ErrorMessage(): (reason: any) => void | PromiseLike<void> {
+    return (err: any) => {
+      this.handleErrorMessage(err);
+    };
+  }
+
   mappingMobileBillAccountAndIsAirtimeAndCheckWarning(mobileNo: string): (value: Object) => void | PromiseLike<void> {
     return (resp: any) => {
       this.pageLoadingService.closeLoading();
@@ -80,12 +86,6 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
     };
   }
 
-  ErrorMessage(): (reason: any) => void | PromiseLike<void> {
-    return (err: any) => {
-      this.handleErrorMessage(err);
-    };
-  }
-
   mappingMobileDetail(response: any, mobileNo: string): void {
     const mobileDetail = response.data || {};
     const serviceYear = mobileDetail.serviceYear;
@@ -95,12 +95,10 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
     this.transaction.data.simCard.billingSystem = mobileDetail.billingSystem;
     this.transaction.data.currentPackage = mobileDetail.package;
 
-    this.translateService.onLangChange.subscribe(onChange => {
-      return this.mobileInfo.mainPackage = this.changeMainPackageLangauge(mobileDetail.package);
-    });
+    this.translateService.onLangChange.subscribe(() => this.mobileInfo = this.mappingMobileInfo(mobileNo, mobileDetail, serviceYear));
   }
 
-  mappingMobileInfo(mobileNo: string, mobileDetail: any, serviceYear: any): MobileInfo {
+  mappingMobileInfo(mobileNo: string, mobileDetail: any, serviceYear: any): any {
     return {
       mobileNo: mobileNo,
       chargeType: this.mapChargeType(mobileDetail.chargeType),
@@ -157,29 +155,33 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
     }
   }
 
-  mapChargeType(chargeType: string): 'รายเดือน' | 'เติมเงิน' {
+  mapChargeType(chargeType: string): any {
     if ('Post-paid' === chargeType) {
-      return 'รายเดือน';
+      return this.isEngLanguage() ? 'Postpaid' : 'รายเดือน';
     } else {
-      return 'เติมเงิน';
+      return this.isEngLanguage() ? 'Prepaid' : 'เติมเงิน';
     }
   }
 
   serviceYearWording(year: string, month: string, day: string): string {
     let serviceYearWording = '';
     if (year) {
-      serviceYearWording = `${year || ''} ปี `;
+      serviceYearWording = this.isEngLanguage() ? `${year || ''} year ` : `${year || ''} ปี `;
     }
 
     if (month) {
-      serviceYearWording += `${month} เดือน `;
+      serviceYearWording += this.isEngLanguage() ? `${month} month ` : `${month} เดือน `;
     }
 
     if (day) {
-      serviceYearWording += `${day} วัน`;
+      serviceYearWording += this.isEngLanguage() ? `${day} day` : `${month} วัน`;
     }
 
     return serviceYearWording;
+  }
+
+  isEngLanguage(): boolean {
+    return this.translateService.currentLang === 'EN';
   }
 
   onBack(): void {
