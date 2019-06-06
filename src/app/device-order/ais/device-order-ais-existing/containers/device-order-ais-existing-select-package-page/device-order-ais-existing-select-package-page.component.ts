@@ -15,6 +15,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { PromotionShelveService } from 'src/app/device-order/services/promotion-shelve.service';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-device-order-ais-existing-select-package-page',
@@ -35,6 +36,8 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
   selectCurrentPackage: boolean;
   modalRef: BsModalRef;
   shoppingCart: ShoppingCart;
+
+  translateSubscription: Subscription;
 
   constructor(
     private router: Router,
@@ -57,6 +60,11 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
       delete this.transaction.data.billingInformation.mergeBilling;
     }
 
+    this.translateSubscription = this.translateService.onLangChange.subscribe((lang: any) => {
+      if (this.promotionShelves) {
+        this.checkTranslateLang(lang);
+      }
+    });
   }
 
   changePackageTitleLanguage(currentPackage: any = {}): string {
@@ -79,6 +87,9 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
       .defaultBySelected(promotion, this.transaction.data.mainPackage);
     if (!this.advancePay && this.showSelectCurrentPackage && this.havePromotions) {
       this.promotionShelves[0].promotions[0].active = false;
+    }
+    if (this.promotionShelves) {
+      this.checkTranslateLang(this.translateService.currentLang);
     }
   }
 
@@ -221,7 +232,56 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
     return this.promotionShelves && this.promotionShelves.some(arr => (arr && arr.promotions.length) > 0);
   }
 
+  checkTranslateLang(lang: any): void {
+    this.mapKeyTranslateSelectPackageTitle(this.promotionShelves).then(translateKey => {
+      if (lang === 'EN' || lang.lang === 'EN' || lang === 'en' || lang.lang === 'en') {
+        if (translateKey && lang && lang.translations) {
+          const merge = { ...translateKey, ...lang.translations } || {};
+          this.translateService.setTranslation('EN', merge);
+        } else {
+          this.getTranslateLoader('device-order', 'EN').then(resp => {
+            const merge = { ...translateKey, ...resp } || {};
+            this.translateService.setTranslation('EN', merge);
+          });
+        }
+      }
+    });
+
+  }
+
+  mapKeyTranslateSelectPackageTitle(promotionShelves: PromotionShelve[]): Promise<any> {
+    const map = new Map();
+    const TranslateKey = {};
+    promotionShelves.filter(promotionShelve => {
+      promotionShelve.promotions.map(key => key.items.map(item => {
+        let replaceTitle = item.title.replace('บ.', '฿');
+        replaceTitle = replaceTitle.replace('บาท', '฿');
+        replaceTitle = replaceTitle.replace('แพ็กเกจ', 'Package');
+        map.set([item.title.trim()], replaceTitle.trim() || item.title.trim());
+      }));
+    });
+    map.forEach((value: any, key: any) => {
+      TranslateKey[key] = value;
+    });
+    if (TranslateKey) {
+      return Promise.resolve(TranslateKey);
+    } else {
+      return Promise.resolve(null);
+    }
+  }
+
+  getTranslateLoader(moduleName: string, lang: string): Promise<any> {
+    if (!moduleName || !lang) {
+      return;
+    }
+    const fileLang = `i18n/${moduleName}.${lang}.json`.toLowerCase();
+    return this.http.get(fileLang).toPromise();
+  }
+
   ngOnDestroy(): void {
+    if (this.translateSubscription) {
+      this.translateSubscription.unsubscribe();
+    }
     this.transactionService.update(this.transaction);
   }
 
