@@ -105,6 +105,7 @@ export class DeviceOrderAisMnpMobileDetailPageComponent implements OnInit, OnDes
         serviceYear: this.serviceYearWording(serviceYear.year, serviceYear.month, serviceYear.day),
         mainPackage: mobileDetail.packageTitle
       };
+      console.log('mobileInfo', this.mobileInfo);
       // translate
       this.mapTranslateLanguage();
 
