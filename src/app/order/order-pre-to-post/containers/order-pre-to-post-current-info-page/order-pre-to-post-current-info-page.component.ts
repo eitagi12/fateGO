@@ -65,8 +65,15 @@ export class OrderPreToPostCurrentInfoPageComponent implements OnInit, OnDestroy
         return this.http.get(`/api/customerportal/newRegister/${this.mobileNo}/queryBalance`).toPromise();
       }).then((resp: any) => {
         this.balance = resp.data || [];
-        return this.http.get(`/api/customerportal/newRegister/${this.mobileNo}/queryCurrentServices`).toPromise();
-      }).then((resp: any) => {
+        return this.checkQueryCurrentServices(this.mobileNo);
+      }).catch((error: any) => {
+        return this.checkQueryCurrentServices(this.mobileNo);
+      });
+  }
+
+  checkQueryCurrentServices(mobileNo: string): void {
+    this.http.get(`/api/customerportal/newRegister/${mobileNo}/queryCurrentServices`).toPromise()
+      .then((resp: any) => {
         const currentServices = resp.data || [];
 
         this.serviceChange = currentServices.services.filter(service => service.canTransfer);
@@ -74,10 +81,11 @@ export class OrderPreToPostCurrentInfoPageComponent implements OnInit, OnDestroy
 
         this.pageLoadingService.closeLoading();
         this.isLoad = false;
-      }).catch((error: any) => {
+      }).catch(() => {
         this.pageLoadingService.closeLoading();
         this.isLoad = false;
       });
+
   }
 
   onBack(): void {
