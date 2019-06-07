@@ -147,15 +147,15 @@ export class QueuePageService {
       data.qrAirtimeAmt =  this.getQRAmt(trade, transaction);
     }
 
-    if (productStock.company && productStock.company === 'WDS') {
-      // ถ้าเครื่องเป็นของ WDS => ค่าเครื่องและ airtime ต้องแยกกัน
-      if (data.qrAirtimeAmt) {
-        data.qrAirtimeAmt = mpayPayment.mpayStatus.amountAirTime;
-      }
-      if (data.qrAmt) {
-        data.qrAmt = mpayPayment.mpayStatus.amountDevice;
-      }
-    }
+    // if (productStock.company && productStock.company === 'WDS') {
+    //   // ถ้าเครื่องเป็นของ WDS => ค่าเครื่องและ airtime ต้องแยกกัน
+    //   if (data.qrAirtimeAmt) {
+    //     data.qrAirtimeAmt = mpayPayment.mpayStatus.amountAirTime;
+    //   }
+    //   if (data.qrAmt) {
+    //     data.qrAmt = mpayPayment.mpayStatus.amountDevice;
+    //   }
+    // }
 
     // ผ่อนชำระ
     if (payment && payment.paymentMethod) {
