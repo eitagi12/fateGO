@@ -270,9 +270,9 @@ export class DeviceOrderAisExistingQrCodeGeneratorPageComponent implements OnIni
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_QUEUE_PAGE]);
     } else {
       if (mpayStatus && mpayStatus.statusAirTime && mpayStatus.statusAirTime === 'WAITING') {
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_QUEUE_PAGE]);
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_SUMMARY_PAGE]);
       } else {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_SUMMARY_PAGE]);
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_QUEUE_PAGE]);
       }
 
       }
