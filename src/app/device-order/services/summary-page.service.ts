@@ -23,7 +23,6 @@ export class SummaryPageService {
       + (advancePay.installmentFlag === `Y` ? +advancePay.amount : 0))
       / (+paymentMethod.month || 1));
 
-      console.log('paymentMethod.name', paymentMethod.name);
       return `${this.translateService.instant(`บัตรเครดิต`)} ${this.translateService.instant(paymentMethod.name)}
        ${paymentMethod.percentage || 0} %
       \ ${paymentMethod.month || 0} ${this.translateService.instant(`เดือน`)}
