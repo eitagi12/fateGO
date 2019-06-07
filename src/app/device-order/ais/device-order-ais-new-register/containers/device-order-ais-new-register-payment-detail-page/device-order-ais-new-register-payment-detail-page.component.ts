@@ -75,7 +75,7 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
       isFullPayment: this.isFullPayment(),
       installmentFlag: advancePay.installmentFlag === 'N' && +(advancePay.amount || 0) > 0,
       advancePay: +(advancePay.amount || 0),
-      qrCode: true
+      qrCode: !!(productStock.company && productStock.company !== 'WDS')
     };
 
     if (trade.banks && trade.banks.length > 0) {

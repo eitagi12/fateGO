@@ -92,13 +92,14 @@ export class DeviceOrderAisExistingPaymentDetailPageComponent implements OnInit,
   }
 
   mappingPatmentDetail(commercialName: any, trade: any, advancePay: any): PaymentDetail {
+    const productStock = this.priceOption.productStock || {};
     return {
       commercialName: commercialName,
       promotionPrice: +(trade.promotionPrice || 0),
       isFullPayment: this.isFullPayment(),
       installmentFlag: advancePay.installmentFlag === 'N' && +(advancePay.amount || 0) > 0,
       advancePay: +(advancePay.amount || 0),
-      qrCode: true
+      qrCode: !!(productStock.company && productStock.company !== 'WDS')
     };
   }
 
