@@ -29,7 +29,7 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
   isSearchAgain: boolean = false;
   mobileNoConditionForm: FormGroup;
   element: any;
-  el: any = [];
+  el: any[] = [];
   user: User;
   constructor(
     private router: Router,
@@ -212,5 +212,4 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }
-
 }

@@ -14,6 +14,7 @@ export class QRCodeModel {
   public amount: number;
   public qrType: string;
   public macAddress: string;
+  public company: string;
 }
 
 export class QRCode {
@@ -164,7 +165,7 @@ export class QRCodePaymentService {
 
   updateMpayObjectInTransaction(data: any): void {
     const transaction: Transaction = this.transactionService.load();
-
+    transaction.data.mpayPayment = data;
     // transaction.data.mpay_payment = data;
     this.transactionService.update(transaction);
   }

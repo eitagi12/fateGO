@@ -353,5 +353,4 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
     const billingInformation = this.transaction.data.billingInformation;
     return billingInformation ? (!!billingInformation.mergeBilling) : false;
   }
-
 }

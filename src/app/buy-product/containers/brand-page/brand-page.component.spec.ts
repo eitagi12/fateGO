@@ -1,17 +1,32 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { BrandPageComponent } from './brand-page.component';
+import { RouterTestingModule } from '@angular/router/testing';
+import { HttpClientModule } from '@angular/common/http';
+import { TokenService } from 'mychannel-shared-libs';
 
 describe('BrandPageComponent', () => {
   let component: BrandPageComponent;
   let fixture: ComponentFixture<BrandPageComponent>;
-
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ BrandPageComponent ]
-    })
-    .compileComponents();
-  }));
+  const mockTokenService: any = {
+    provide: TokenService,
+    useValue: {
+      getUser: () => {
+        return { locationCode: '' };
+      }
+    }
+  };
+  setupTestBed({
+    imports: [
+      RouterTestingModule,
+      HttpClientModule
+    ],
+    declarations: [
+      BrandPageComponent
+    ],
+    providers: [
+      mockTokenService
+    ]
+  });
 
   beforeEach(() => {
     fixture = TestBed.createComponent(BrandPageComponent);

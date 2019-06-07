@@ -25,7 +25,6 @@ import { HttpClient } from '@angular/common/http';
 export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnInit, OnDestroy {
 
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
-
   shoppingCart: ShoppingCart;
   priceOption: PriceOption;
   transaction: Transaction;

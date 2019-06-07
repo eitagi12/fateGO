@@ -228,6 +228,9 @@ export class SharedTransactionService {
     if (data.queue) {
       params.data.queue = data.queue;
     }
+    if (data.payment) {
+      params.data.payment = data.payment;
+    }
 
     if (data.contract && data.contract.conditionCode) {
       params.data.contract.conditionCode = data.contract.conditionCode;

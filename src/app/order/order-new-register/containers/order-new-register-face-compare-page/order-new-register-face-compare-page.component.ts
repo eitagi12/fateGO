@@ -28,8 +28,7 @@ export class OrderNewRegisterFaceComparePageComponent implements OnInit, OnDestr
     private transactionService: TransactionService,
     private http: HttpClient,
     private pageLoadingService: PageLoadingService,
-    private tokenService: TokenService,
-
+    private tokenService: TokenService
   ) {
     this.transaction = this.transactionService.load();
   }

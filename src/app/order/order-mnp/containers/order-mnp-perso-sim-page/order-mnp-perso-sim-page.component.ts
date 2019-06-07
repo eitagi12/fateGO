@@ -197,7 +197,7 @@ export class OrderMnpPersoSimPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  startPersoSim(transaction: any): void {
+  startPersoSim(transaction: Transaction | Partial<Transaction>): void {
     this.errorMessage = '';
     this.persoSimSubscription = this.onPersoSim(transaction.data.simCard.mobileNo).subscribe((value) => {
       this.isNext = false;
@@ -417,7 +417,7 @@ export class OrderMnpPersoSimPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  private checkCardOutted(): any {
+  private checkCardOutted(): Promise<any> {
     return new Promise((resolve) => {
       const checkCard = setInterval(() => {
         this.controlSim(ControlSimCard.EVENT_CHECK_SIM_STATE).then((res: ControlSimResult) => {
@@ -431,7 +431,7 @@ export class OrderMnpPersoSimPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  private errrorPersoSim(errrorCase: string, messages?: string): any {
+  private errrorPersoSim(errrorCase: string, messages?: string): Promise<any> {
     return new Promise((resolve) => {
       let errNext = {
         progress: 0,
@@ -519,7 +519,7 @@ export class OrderMnpPersoSimPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  private checkOrderStatusCompleted(referenceNumber: any): any {
+  private checkOrderStatusCompleted(referenceNumber: string): Promise<any> {
     return new Promise((resolve) => {
       let nubCount = 0;
       const checkOrder = setInterval(() => {
@@ -545,7 +545,7 @@ export class OrderMnpPersoSimPageComponent implements OnInit, OnDestroy {
     });
   }
 
-  private controlSim(event: string): any {
+  private controlSim(event: string): Promise<any> {
     return new Promise((resolve) => {
       const result: ControlSimResult = {
         data: null,

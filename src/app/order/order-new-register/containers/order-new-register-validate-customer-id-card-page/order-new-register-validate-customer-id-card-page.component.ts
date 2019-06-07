@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { ReadCardProfile, HomeService, PageLoadingService, TokenService, ChannelType, Utils, AlertService, ValidateCustomerIdCardComponent, KioskControls, ApiRequestService, } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
-import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionAction, Customer } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import {
   ROUTE_ORDER_NEW_REGISTER_FACE_CAPTURE_PAGE, ROUTE_ORDER_NEW_REGISTER_VERIFY_DOCUMENT_PAGE,
@@ -24,6 +24,7 @@ export class OrderNewRegisterValidateCustomerIdCardPageComponent implements OnIn
   zipcode: string;
   readCardValid: boolean;
   progressReadCard: number;
+  billDeliveryAddress: Customer;
 
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;

@@ -1,0 +1,29 @@
+<div class="card mb-3">
+  <div class="card-header bg-pink text-white">สรุปรายการสั่งชื้อสินค้า</div>
+  <div class="card-body">
+    <p class="text-green" id="text-campaign-name-summary">{{ priceOption?.campaign?.campaignName }} </p>
+    <i class="fa fa-circle mr-3 text-lime"></i>
+    <span>
+    <span class="text-grey" id="text-name-summary">
+      {{ priceOption?.productDetail?.name }}
+    </span>
+    <span class="text-grey" id="text-color-summary" *ngIf="priceOption?.productStock?.colorName">
+            {{ priceOption?.productStock?.colorName?'สี': '' }} {{ priceOption?.productStock?.colorName }} 
+    </span>
+  </span>
+    <span class="pull-right text-green" id="text-model-price">
+      ฿ {{ price | number }}
+    </span>
+  </div>
+  <div class="card-footer bg-transparent text-right">
+    <span>
+      รวมยอดชำระ(รวมVAT)
+    </span>
+    <span class="text-green ml-2" id="text-summary-price">
+      ฿ {{ summary([
+        +price,
+        +priceOption?.trade?.advancePay?.amount
+        ]) | number }}
+    </span>
+  </div>
+</div>

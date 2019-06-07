@@ -21,7 +21,7 @@ export class PromotionPageComponent implements OnInit {
 
   campaigns: any[];
 
-  menus: any = [
+  menus: any[] = [
     {
       icon: 'assets/images/icon/bottom_menu_icon_device.png',
       label: 'เครื่อง',

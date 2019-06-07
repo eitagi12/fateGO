@@ -17,7 +17,7 @@ import {
 })
 export class OrderMnpMergeBillingPageComponent implements OnInit, OnDestroy {
 
-  readonly REGEX_NET_EXTREME: any = /[Nn]et[Ee]xtreme/;
+  readonly REGEX_NET_EXTREME: RegExp = /[Nn]et[Ee]xtreme/;
   wizards: string[] = WIZARD_ORDER_MNP;
 
   transaction: Transaction;

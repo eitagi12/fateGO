@@ -182,7 +182,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             .then(() => this.pageLoadingService.closeLoading());
     }
 
-    onProductStockSelected(product: any): void {
+    onProductStockSelected(product: { stock: { qty: number; }; }): void {
         if (product && product.stock && product.stock.qty <= 0) {
             return;
         }
@@ -463,7 +463,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             productType: productType || PRODUCT_TYPE,
             productSubtype: productSubtype || PRODUCT_SUB_TYPE
         });
-        this.productDetailService.then((resp: any) => {
+      this.productDetailService.then((resp: any) => {
 
             // เก็บข้อมูลไว้ไปแสดงหน้าอื่นโดยไม่เปลี่ยนแปลงค่าข้างใน
             this.priceOption.productDetail = resp.data || {};
@@ -495,6 +495,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                     });
 
                 this.productDetail.products = products.map((product: any) => {
+                    // tslint:disable-next-line:max-line-length
                     const stock = productStocks.find((productStock: any) => productStock.color === product.colorName) || { qty: 0 };
                     product.stock = stock;
                     return product;
@@ -529,8 +530,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             productSubtype: productSubtype,
             location: this.user.locationCode
         });
-        this.priceOptionDetailService.then((resp: any) => {
-
+      this.priceOptionDetailService.then((resp: any) => {
             const priceOptions = this.filterCampaigns(resp.data.priceOptions || []);
             if (priceOptions && priceOptions.length > 0) {
                 this.maximumNormalPrice = priceOptions[0].maximumNormalPrice;

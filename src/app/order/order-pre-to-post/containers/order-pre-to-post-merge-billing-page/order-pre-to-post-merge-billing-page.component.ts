@@ -17,7 +17,7 @@ import { Transaction, BillingAccount } from 'src/app/shared/models/transaction.m
   styleUrls: ['./order-pre-to-post-merge-billing-page.component.scss']
 })
 export class OrderPreToPostMergeBillingPageComponent implements OnInit, OnDestroy {
-  readonly REGEX_NET_EXTREME: any = /[Nn]et[Ee]xtreme/;
+  readonly REGEX_NET_EXTREME: RegExp = /[Nn]et[Ee]xtreme/;
   wizards: string[] = WIZARD_ORDER_PRE_TO_POST;
 
   transaction: Transaction;

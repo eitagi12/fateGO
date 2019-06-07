@@ -212,7 +212,6 @@ export class OrderNewRegisterConfirmUserInformationPageComponent implements OnIn
     ).then((billCycleText: string) => {
       this.billingInfo.billingCycle.text = billCycleText;
     });
-
   }
 
   onMailBillingInfoCompleted(mailBillingInfo: any): void {

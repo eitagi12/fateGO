@@ -36,7 +36,7 @@ export class DeviceOrderAisNewRegisterPersoSimPageComponent implements OnInit, O
 
   transaction: Transaction;
   option: OptionPersoSim;
-  persoSimConfig: PersoSimConfig;
+  persoSimConfig: any;
   shoppingCart: ShoppingCart;
 
   koiskApiFn: any;
@@ -165,99 +165,99 @@ export class DeviceOrderAisNewRegisterPersoSimPageComponent implements OnInit, O
       }).toPromise();
     }
     };
-}
-
- kioskApi(): any {
-  if (!WebSocket) {
-    return {};
   }
 
-  let ws: any;
+  kioskApi(): any {
+    if (!WebSocket) {
+      return {};
+    }
 
-  return {
-    connect: (): Promise<any> => {
-      return new Promise((resolve, reject) => {
-        ws = new WebSocket(`${environment.WEB_CONNECT_URL}/VendingAPI`);
-        ws.onopen = () => {
-          resolve('Success');
-        };
-        ws.onerror = () => {
-          reject(PersoSimError.ERROR_WEB_SOCKET);
-        };
-      });
-    },
-    controls: (commandName: string): Promise<any> => {
-      return new Promise((resolve, reject) => {
-        ws.send(commandName);
-         ws.onmessage = (event: any) => {
-           const message = JSON.parse(event.data);
-            resolve(message);
-        };
-      });
-    },
-    removedState: (): Observable<boolean> => {
-      return new Observable((obs) => {
-        const cardStateInterval = setInterval(() => {
-          ws.send(KioskControlsPersoSim.GET_CARD_STATE);
-          let isNoCardInside;
+    let ws: any;
+
+    return {
+      connect: (): Promise<any> => {
+        return new Promise((resolve, reject) => {
+          ws = new WebSocket(`${environment.WEB_CONNECT_URL}/VendingAPI`);
+          ws.onopen = () => {
+            resolve('Success');
+          };
+          ws.onerror = () => {
+            reject(PersoSimError.ERROR_WEB_SOCKET);
+          };
+        });
+      },
+      controls: (commandName: string): Promise<any> => {
+        return new Promise((resolve, reject) => {
+          ws.send(commandName);
           ws.onmessage = (event: any) => {
-            const msg = JSON.parse(event.data);
-            isNoCardInside = msg && msg.Result === 'No card inside reader unit';
+            const message = JSON.parse(event.data);
+              resolve(message);
+          };
+        });
+      },
+      removedState: (): Observable<boolean> => {
+        return new Observable((obs) => {
+          const cardStateInterval = setInterval(() => {
+            ws.send(KioskControlsPersoSim.GET_CARD_STATE);
+            let isNoCardInside;
+            ws.onmessage = (event: any) => {
+              const msg = JSON.parse(event.data);
+              isNoCardInside = msg && msg.Result === 'No card inside reader unit';
+              if (isNoCardInside) {
+                clearInterval(cardStateInterval);
+              }
+              obs.next(isNoCardInside);
+            };
             if (isNoCardInside) {
+              obs.complete();
               clearInterval(cardStateInterval);
             }
-            obs.next(isNoCardInside);
-          };
-          if (isNoCardInside) {
-            obs.complete();
-            clearInterval(cardStateInterval);
-          }
-        }, 1000);
-      });
-    },
-    loadSim: () => {
-      return new Promise((resolve, reject) => {
-        ws.send(KioskControlsPersoSim.CHECK_SIM_INVENTORY);
+          }, 1000);
+        });
+      },
+      loadSim: () => {
+        return new Promise((resolve, reject) => {
+          ws.send(KioskControlsPersoSim.CHECK_SIM_INVENTORY);
+          ws.onmessage = (event: any) => {
+            const msg = JSON.parse(event.data);
+            switch (msg.Command) {
+              case KioskControlsPersoSim.CHECK_SIM_INVENTORY:
+                  const isSimInventory = msg
+                  && msg.Result !== 'Card Stacker 1 is empty | Card Stacker 2 is empty';
+                  if (isSimInventory) {
+                    ws.send(KioskControlsPersoSim.GET_CARD_STATE);
+                  } else {
+                    reject(PersoSimError.EVENT_CONNECT_SIM_EMTRY);
+                  }
+              break;
+              case KioskControlsPersoSim.GET_CARD_STATE:
+                  const isCardNotInIC = msg && msg.Result === 'No card inside reader unit';
+                  if (isCardNotInIC) {
+                    ws.send(KioskControlsPersoSim.LOAD_SIM);
+                  } else {
+                    resolve(msg.Result);
+                  }
+              break;
+              case KioskControlsPersoSim.LOAD_SIM:
+                  if (msg.Result === 'Success') {
+                    resolve(msg.Result);
+                  } else {
+                    reject(PersoSimError.ERROR_CARD_DISPENSER);
+                  }
+              break;
+            }
+        };
+        });
+      },
+      close: () => {
+        ws.send(KioskControlsPersoSim.LED_OFF);
+        ws.send(KioskControlsPersoSim.KEEP_SIM);
         ws.onmessage = (event: any) => {
-          const msg = JSON.parse(event.data);
-          switch (msg.Command) {
-            case KioskControlsPersoSim.CHECK_SIM_INVENTORY:
-                const isSimInventory = msg
-                && msg.Result !== 'Card Stacker 1 is empty | Card Stacker 2 is empty';
-                if (isSimInventory) {
-                  ws.send(KioskControlsPersoSim.GET_CARD_STATE);
-                } else {
-                  reject(PersoSimError.EVENT_CONNECT_SIM_EMTRY);
-                }
-            break;
-            case KioskControlsPersoSim.GET_CARD_STATE:
-                const isCardNotInIC = msg && msg.Result === 'No card inside reader unit';
-                if (isCardNotInIC) {
-                  ws.send(KioskControlsPersoSim.LOAD_SIM);
-                } else {
-                  resolve(msg.Result);
-                }
-            break;
-            case KioskControlsPersoSim.LOAD_SIM:
-                if (msg.Result === 'Success') {
-                  resolve(msg.Result);
-                } else {
-                  reject(PersoSimError.ERROR_CARD_DISPENSER);
-                }
-            break;
-          }
-       };
-      });
-    },
-    close: () => {
-      ws.send(KioskControlsPersoSim.LED_OFF);
-      ws.send(KioskControlsPersoSim.KEEP_SIM);
-      ws.onmessage = (event: any) => {
-        ws.close();
-      };
-    }
-  };
-}
+          ws.close();
+        };
+      }
+    };
+  }
 
   onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGREEMENT_SIGN_PAGE]);

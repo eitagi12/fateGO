@@ -26,8 +26,7 @@ export class DeviceOrderAisNewRegisterFaceComparePageComponent implements OnInit
     private transactionService: TransactionService,
     private http: HttpClient,
     private pageLoadingService: PageLoadingService,
-    private shoppingCartService: ShoppingCartService,
-
+    private shoppingCartService: ShoppingCartService
   ) {
     this.transaction = this.transactionService.load();
   }

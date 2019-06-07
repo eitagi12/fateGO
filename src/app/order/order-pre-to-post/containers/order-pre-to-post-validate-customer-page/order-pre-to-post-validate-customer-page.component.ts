@@ -47,7 +47,6 @@ export enum SIMCardStatus {
 export class OrderPreToPostValidateCustomerPageComponent implements OnInit, OnDestroy {
 
   transaction: Transaction;
-
   identityValid: boolean = false;
   identity: string;
   ws: any;

@@ -9,6 +9,7 @@ export enum TransactionType {
   DEVICE_ORDER_MNP_ASP = 'Port-InASP',
   DEVICE_ORDER_EXISTING_AIS = 'ExistingAIS',
   DEVICE_ORDER_EXISTING_ASP = 'ExistingASP',
+  DEVICE_ORDER_DEVICE_ONLY = 'DeviceOnlyAIS',
   DEVICE_ORDER_PREPAID_HOTDEAL_AIS = 'PrepaidHotDealAIS',
   // pure
   ORDER_NEW_REGISTER = 'NewRegister',
@@ -34,6 +35,7 @@ export interface Transaction {
   lastUpdateDate?: string;
   lastUpdateBy?: string;
   data?: TransactionData;
+  issueBy?: any;
 }
 
 export interface TransactionData {
@@ -66,7 +68,7 @@ export interface TransactionData {
   // MPAY
   mpayPayment?: QrCodePrePostMpayModel;
   status?: Status;
-  device?: Device;
+  device?: any;
 }
 
 export interface Condition {
@@ -88,18 +90,27 @@ export interface Payment {
   paymentForm: 'FULL' | 'INSTALLMENT';
   paymentBank: any;
   paymentMethod: any;
+  qrCode?: any;
+  type?: any;
 }
 export interface MainPromotion {
-  privilege: any;
-  trade: any;
-  campaign: any;
+  campaign?: any;
+  privilege?: any;
+  trade?: any;
 }
 
 // tslint:disable-next-line:no-empty-interface
 export interface AirTime {
   [key: string]: any;
 }
-
+export interface Receipt {
+  taxId: string;
+  branch: string;
+  buyer: string;
+  buyerAddress: string;
+  telNo: string;
+  locationName: string;
+}
 export interface Customer {
   idCardNo: string;
   idCardType: string;
@@ -295,12 +306,12 @@ export class BaseView {
 }
 
 export interface Seller {
+  isAscCode?: boolean;
   sellerName?: string;
   locationName?: string;
   locationCode?: string;
   sellerNo?: string;
   shareUser?: string;
-  isAscCode?: boolean;
   employeeId?: string;
   ascCode?: string;
 
@@ -440,4 +451,12 @@ export interface MPayStatus {
 
 export interface Device {
   imei?: string;
+  model?: string;
+  brand?: string;
+  amount?: string;
+  name?: string;
+  colorName?: string;
+  colorCode?: string;
+  productType?: string;
+  productSubtype?: string;
 }

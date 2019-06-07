@@ -63,7 +63,6 @@ export class DeviceOrderAisNewRegisterEcontactPageComponent implements OnInit, O
 
   callService(): void {
     // http://10.137.16.46:8080/api/salesportal/promotion-shelves/promotion/condition
-
     const user = this.tokenService.getUser();
     const campaign: any = this.priceOption.campaign || {};
     const trade: any = this.priceOption.trade || {};

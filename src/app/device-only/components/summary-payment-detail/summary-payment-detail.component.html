@@ -1,0 +1,144 @@
+<div class="card mb-3">
+  <div class="card-header text-white" style="background: #FF80AB;">
+    รายละเอียดการชำระ
+  </div>
+  <div class="card-body">
+    <p>
+      ข้อมูลการชำระสินค้า
+    </p>
+    <ng-container *ngIf="!priceOption?.trade?.advancePay || priceOption?.trade?.advancePay?.installmentFlag === 'N'">
+      <p>
+        <i class="fa fa-circle mr-3 text-lime"></i>
+        <span class="text-grey" id="text-name-payment-summary">
+          {{ priceOption?.productDetail?.name }}
+        </span>
+        <span class="text-grey" id="text-color-summary" *ngIf="priceOption?.productStock?.colorName">
+          {{ priceOption?.productStock?.colorName?'สี': '' }} {{ priceOption?.productStock?.colorName }}
+        </span>
+        <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'"> : ชำระเต็มจำนวน</span>
+        <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'"> :
+          ผ่อนชำระบัตรเครดิต</span>
+        <span class="pull-right text-green" id="text-price-summary">
+          ฿ {{ price | number }}
+        </span>
+      </p>
+    </ng-container>
+
+    <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">
+      <span class="text-grey" id="text-credit-summary">
+        (
+        ชำระโดย เครดิตธนาคาร
+        {{ transaction?.data?.payment?.paymentMethod?.name }}
+        {{ transaction?.data?.payment?.paymentMethod?.percentage }} %
+        {{ transaction?.data?.payment?.paymentMethod?.month }} เดือน
+        {{ ((+price) + (priceOption?.trade?.advancePay?.installmentFlag === 'N' ? +priceOption?.trade?.advancePay?.amount : 0)) / transaction?.data?.payment?.paymentMethod?.month | number: '1.2-2' }}
+        บาทต่อเดือน
+        )
+      </span>
+    </ng-container>
+    <ng-container
+      *ngIf="transaction?.data?.payment?.paymentForm !== 'INSTALLMENT' && transaction?.data?.payment?.paymentType === 'CREDIT'">
+      <span class="text-grey" id="text-credit-summary">
+        (
+        ชำระโดย เครดิตธนาคาร
+        {{ transaction?.data?.payment?.paymentMethod?.name }}
+        {{ transaction?.data?.payment?.paymentBank?.name}}
+        )
+      </span>
+    </ng-container>
+
+    <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">
+      <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType !== 'QR_CODE' && 
+      transaction?.data?.payment?.paymentType !== 'CREDIT'">
+        (ชำระโดย เงินสด)
+      </small>
+      <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType === 'QR_CODE'">
+        (
+        ชำระโดย
+        <span *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'THAI_QR'">
+          Thai QR Promptpay
+        </span>
+        <span *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'LINE_QR'">
+          Rabbit Line Pay
+        </span>
+        )
+      </small>
+    </ng-container>
+
+  </div>
+  <div class="card-footer bg-transparent ">
+    <p>
+      ข้อมูลใบเสร็จรับเงิน
+    </p>
+    <div class="row">
+      <div class="col-12 col-sm-4">
+        <i class="fa fa-circle mr-3 text-lime"></i>
+        <span class="text-grey">
+          ผู้ชื้อ
+        </span>
+      </div>
+      <div class="col-12 col-sm-8">
+        <p class="text-green" id="text-receipt-customer-name">
+          {{ transaction?.data?.customer?.titleName }} {{ transaction?.data?.customer?.firstName }} {{ transaction?.data?.customer?.lastName
+          }}
+        </p>
+      </div>
+      <div class="col-12 col-sm-4">
+        <i class="fa fa-circle mr-3 text-lime"></i>
+        <span class="text-grey">
+          ที่อยู่ในใบเสร็จรับเงิน
+        </span>
+      </div>
+      <div class="col-12 col-sm-8">
+        <p class="text-green" id="text-receipt-billing-address">
+          {{ transaction?.data?.customer?.homeNo }}
+          <span *ngIf="transaction?.data?.customer?.moo">
+            หมู่ {{ transaction?.data?.customer?.moo }}
+          </span>
+          <span *ngIf="transaction?.data?.customer?.mooBan">
+            หมู่บ้าน{{ transaction?.data?.customer?.mooBan }}</span>
+          <span *ngIf="transaction?.data?.customer?.room">
+            ห้อง{{ transaction?.data?.customer?.room }}</span>
+          <span *ngIf="transaction?.data?.customer?.floor">
+            ชั้น {{ transaction?.data?.customer?.floor }}</span>
+          <span *ngIf="transaction?.data?.customer?.buildingName">
+            อาคาร{{ transaction?.data?.customer?.buildingName }}</span>
+          <span *ngIf="transaction?.data?.customer?.soi">
+            ซอย {{ transaction?.data?.customer?.soi }}</span>
+          <span *ngIf="transaction?.data?.customer?.street">
+            ถนน{{ transaction?.data?.customer?.street }}</span>
+          <span *ngIf="transaction?.data?.customer?.province">
+            จังหวัด {{ transaction?.data?.customer?.province }}</span>
+          <span *ngIf="transaction?.data?.customer?.amphur">
+            อำเภอ{{ transaction?.data?.customer?.amphur }}</span>
+          <span *ngIf="transaction?.data?.customer?.tumbol">
+            ตำบล/แขวง{{ transaction?.data?.customer?.tumbol }}</span>
+          {{ transaction?.data?.customer?.zipCode }}
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="card mb-3" *ngIf="checkOpenningPrepaidMobileCare()">
+  <div class="card-body box-balance">
+    <div *ngIf='enoughBalance'>
+      <img class="icon-page" src="assets/images/icon/icon_pouch.png" alt="เป่าตังค์">
+      <span class="enoughBalanceText"> ยอดเงินคงเหลือ {{ balance | number}} บาท</span>
+    </div>
+
+    <div *ngIf='!enoughBalance' class="row">
+      <div class="col-sm-1">
+        <img class="icon-page" src="assets/images/icon/icon-red-alert-circle.png" alt="เป่าตังค์">
+      </div>
+      <div class="col-sm-11">
+        <span class="notEnoughBalanceText"> ยอดเงินคงเหลือ {{ balance | number }} บาท กรุณาเติมเงินเพิ่ม
+          {{ ( mobileCare - balance) | number }} บาท เพื่อสมัครแพ็กเกจ<br>*เมื่อเติมเงินเรียบร้อยแล้ว
+          กรุณากดปุ่มเพื่ออัพเดทยอดเงินคงเหลือ </span>
+      </div>
+      <div>
+        <button class="checkBalanceBtn" (click)="onLoadBalance()">อัพเดตยอดเงิน</button>
+      </div>
+    </div>
+  </div>
+</div>

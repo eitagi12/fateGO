@@ -1,10 +1,11 @@
 import { TestBed, inject } from '@angular/core/testing';
-
+import { HttpClientModule } from '@angular/common/http';
 import { FlowService } from './flow.service';
 
 describe('FlowService', () => {
   beforeEach(() => {
     TestBed.configureTestingModule({
+      imports: [HttpClientModule],
       providers: [FlowService]
     });
   });

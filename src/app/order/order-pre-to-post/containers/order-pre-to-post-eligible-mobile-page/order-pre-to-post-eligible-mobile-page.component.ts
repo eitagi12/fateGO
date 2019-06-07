@@ -79,7 +79,7 @@ export class OrderPreToPostEligibleMobilePageComponent implements OnInit, OnDest
       });
   }
 
-  mapPrepaidMobileNo(mobileList: any): void {
+  mapPrepaidMobileNo(mobileList: { forEach: (arg0: (element: any) => void) => void; }): void {
     const mobiles: Array<EligibleMobile> = new Array<EligibleMobile>();
     mobileList.forEach(element => {
       mobiles.push({ mobileNo: element.mobileNo, mobileStatus: element.status });

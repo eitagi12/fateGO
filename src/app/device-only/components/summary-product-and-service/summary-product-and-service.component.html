@@ -1,0 +1,33 @@
+<div class="card mb-3">
+  <div class="card-header bg-purple text-white">สินค้าและบริการอื่น</div>
+  <div class="card-body">
+    <p>
+      <i class="fa fa-circle mr-3 text-lime"></i>
+      <ng-container *ngIf="!transaction?.data?.mobileCarePackage?.title">
+        <span class="text-grey" id="text-not-mobile-care">ไม่ซื้อบริการโมบายแคร์</span>
+      </ng-container>
+      <ng-container *ngIf="transaction?.data?.mobileCarePackage?.title">
+        <span class="text-grey" id="text-mobile-care">
+          {{ transaction?.data?.mobileCarePackage?.title }}
+        </span>
+        <span class="pull-right" (click)="onOpenDetail(transaction?.data?.mobileCarePackage?.detailTH)">
+          <img src="assets/images/icon/icon-page.png" class="icon" />
+        </span>
+      </ng-container>
+    </p>
+    <ng-container *ngIf="transaction?.data?.mobileCarePackage?.title">
+      <span class="text-grey" id="text-mobile-priviledge">
+        ( หมายเลขที่รับสิทธิ์ : {{ transaction?.data?.simCard?.mobileNo | mobileNo }} )
+      </span>
+    </ng-container>
+  </div>
+</div>
+
+<ng-template #detailTemplate>
+  <div class="modal-body" [innerHTML]="detail"></div>
+  <div class="modal-footer">
+    <div class="w-100 text-center">
+      <button class="btn btn-success px-5" (click)="modalRef.hide()">ปิด</button>
+    </div>
+  </div>
+</ng-template>

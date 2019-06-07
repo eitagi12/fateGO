@@ -53,16 +53,15 @@ export class ProductPageComponent implements OnInit {
     }
     this.productService.then((resp: any) => {
       const data = resp.data;
-
       this.countRow += +data.countRow;
       this.totalRow = +data.totalRow;
-
       data.products.map((product: any) => {
         const normalPrice = product.normalPrice || {};
         const promotionPrice = product.promotionPrice || {};
         let subproducts = product.subProducts || [];
         const ribbonType = (product.itemType || '').toLowerCase();
         const ribbon = ['hot', 'new'].find((rib: string) => rib === ribbonType);
+
         const productStock: ProductStock = {
           ribbon: ribbon,
           thumbnail: product.imageUrl,
@@ -125,7 +124,6 @@ export class ProductPageComponent implements OnInit {
         this.productStocks.push(productStock);
       });
     });
-
   }
 
   calMinPrice(products: any[], key: string): number {

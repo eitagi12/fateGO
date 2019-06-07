@@ -45,6 +45,7 @@ export class DeviceOrderAisPreToPostOtpPageComponent implements OnInit {
     this.createForm();
     this.sendOTP();
   }
+
   private createForm(): void {
     this.otpForm = this.fb.group({
       otp: ['', [Validators.required, Validators.maxLength(5)]],
@@ -110,7 +111,7 @@ export class DeviceOrderAisPreToPostOtpPageComponent implements OnInit {
       });
   }
 
-  alertError(error: any): void {
+  alertError(error: { json: () => void; }): void {
     let errObj: any;
     let errMsg: any;
     let errDetail: any;

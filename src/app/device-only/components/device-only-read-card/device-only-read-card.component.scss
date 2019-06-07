@@ -1,0 +1,24 @@
+.device-only-read-card-btn {
+    width: 300px;
+    padding: 5px;
+    font-size: 1.2rem;
+}
+
+.device-only-read-card-progress {
+    margin: 15px;
+    padding: 0 20px;
+    .progress-bg {
+        border: 1px solid #ced4da;
+        height: 15px;
+        width: auto;
+        .progress-precent {
+            background-color: #8dc63f;
+            height: 15px;
+            width: 1%;
+        }
+    }
+}
+.disabledbutton {
+    pointer-events: none;
+    opacity: 0.4;
+}

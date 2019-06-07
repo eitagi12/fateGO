@@ -1,0 +1,61 @@
+<div style="padding: 20px 0 0"> 
+  <div class="m-auto bg-light-green device-only-read-card-btn" id="button-read-smart-card" >
+    <div class="row m-auto" (click)="readCard()" >
+      <img class="col-3" src="assets/images/icon/device_only_read_card_icon.png" />
+      <label class="col-9 m-auto" > Read Smart Card </label>
+    </div>
+  </div>
+  <div class="m-auto  device-only-read-card-btn" style="text-align: center;" id="button-read-smart-card">
+    <span *ngIf="this.messages" class="col-12 m-auto text-center "   [innerHTML]="messages"></span>
+  </div>
+ 
+  <div class="device-only-read-card-progress" #progressBarArea>
+    <div class="progress-bg">
+      <div class="progress-precent" id="progress-bar-read-smart-card" #progressBarReadSmartCard></div>
+      <div>
+    </div>
+  </div>
+ 
+</div>
+
+<ng-template #select_billing_address>
+  <h5 class="modal-header bg-light-blue text-white">
+      {{ 'เลือกที่อยู่ในใบเสร็จรับเงิน' | translate }}
+  </h5>
+  <div class="card-header bg-transparent">
+    <label style="margin-top:10px;">ผู้ซื้อ
+      &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label id="modal-text-customer-name">{{ nameTextBySmartCard }}</label>
+    </label>
+  </div>
+  <div class="card-body">
+    <form [formGroup]="selectBillingAddressForm">
+      <h5>ที่อยู่ตามบัตรประชาชน</h5>
+      <div>
+        <input class="form-check-input" type="radio" value="{{ADDRESS_BY_SMART_CARD}}"
+          formControlName="billingAddress" id="modal-text-customer-id-card-address">
+        <label class="form-check-label" class="col-11" for="modal-text-customer-id-card-address">
+          {{ 'ที่อยู่: ' + addressTextBySmartCard }}
+        </label>
+      </div>
+      <br/>
+      <h5>ที่อยู่ตามใบแจ้งค่าใช้บริการเบอร์ AIS ของท่าน</h5>
+      
+      <div *ngFor="let itemBA of listBillingAccount; let i = index" #istBillingAccountBox>
+        <input class="form-check-input" type="radio" value="{{i}}"
+          formControlName="billingAddress" id="modal-text-billing-address-{{i+1}}">
+        <label class="form-check-label" class="col-9" for="modal-text-billing-address-{{i+1}}">{{ itemBA.mobileNo[0] }}</label>
+        <label class="form-check-label" class="col-2" for="modal-text-billing-address-{{i+1}}">{{ itemBA.status }}</label>
+        <label class="col-1"></label>
+        <label class="form-check-label" class="col-11" for="modal-text-billing-address-{{i+1}}">
+          &nbsp;&nbsp;{{ itemBA.billingAddr }}
+        </label>
+      </div>
+    </form>
+  </div>
+  <div class="modal-body d-flex justify-content-center">
+    <button type="button" class="btn btn-secondary" id="modal-button-close"
+      (click)="closeModalSelectAddress()">CLOSE</button>
+    <button type="button" class="btn btn-success text-white" id="modal-button-select"
+      (click)="selectBillingAddress()" [disabled]="!isSelect">SELECT</button>
+  </div>
+</ng-template>

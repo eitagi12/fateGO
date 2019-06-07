@@ -66,7 +66,11 @@
   "jest": {
     "preset": "jest-preset-angular",
     "testMatch": [
-      "<rootDir>/src/app/dashboard/**/*.spec.ts"
+      "<rootDir>/src/app/dashboard/**/*.spec.ts",
+      "<rootDir>/src/app/buy-product/**/*.spec.ts",
+      "<rootDir>/src/app/containers/**/*.spec.ts",
+      "<rootDir>/src/app/main-menu/**/*.spec.ts",
+      "<rootDir>/src/app/device-only/**/*.spec.ts"
     ],
     "setupTestFrameworkScriptFile": "<rootDir>/src/setupJest.ts",
     "coverageReporters": [
