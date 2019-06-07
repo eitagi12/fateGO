@@ -42,6 +42,7 @@ export class OrderPreToPostEapplicationPageComponent implements OnInit, OnDestro
   }
 
   callService(transaction: Transaction, language: string): void {
+    console.log('transaction', transaction);
     this.createEapplicationService.createEapplicationV2(transaction, language).then(res => {
       this.getDataBase64Eapp = 'data:image/jpeg;base64,' + res.data;
     }).then(() => {

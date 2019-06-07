@@ -22,7 +22,7 @@
             </div>
             <div class="row">
               <div class="col-sm-6 text-left text-green" translate>ค่าโทรที่ได้รับ</div>
-              <div class="col-sm-6 text-left">{{ balance?.transferBalance | number }} <span translate>บาท</span></div>
+              {{balance ? (balance?.transferBalance | number:'1.2-2' ) : '-'}}<span translate>{{balance?.transferBalance ? 'บาท' : ''}}</span> 
             </div>
           </div>
         </div>
