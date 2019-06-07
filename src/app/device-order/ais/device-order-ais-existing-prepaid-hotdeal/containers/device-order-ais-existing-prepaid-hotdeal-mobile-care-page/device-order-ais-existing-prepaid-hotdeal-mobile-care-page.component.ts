@@ -58,7 +58,7 @@ export class DeviceOrderAisExistingPrepaidHotdealMobileCarePageComponent impleme
     const endUserPrice = +this.priceOption.trade.normalPrice;
     const exMobileCare = this.transaction.data.existingMobileCare;
     this.pageLoadingService.openLoading();
-    this.mobileCareService.getMobileCare({
+    this.mobileCareService.getMobileCarePrePaid({
       packageKeyRef: MOBILE_CARE_PACKAGE_KEY_REF,
       billingSystem: billingSystem
     }, chargeType, billingSystem, endUserPrice).then((mobileCare: any) => {
