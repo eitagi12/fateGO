@@ -398,17 +398,19 @@ export class MobileCareComponent implements OnInit {
   }
 
   public callService(mobileSegment?: string, chargeTypes?: any): void {
+    const chargeType = chargeTypes ? chargeTypes : 'Post-paid';
+    const endUserPrice = +this.priceOption.trade.normalPrice;
     let billingSystem: string;
+
     if (this.billingSystem === 'Non BOS') {
       billingSystem = BillingSystemType.IRB;
     } else {
       billingSystem = this.billingSystem || BillingSystemType.IRB;
     }
-    const chargeType = chargeTypes ? chargeTypes : 'Post-paid';
-    const endUserPrice = +this.priceOption.trade.normalPrice;
+
     this.mobileCareService.getMobileCare({
       packageKeyRef: MOBILE_CARE_PACKAGE_KEY_REF,
-      billingSystem: BillingSystemType.IRB
+      billingSystem,
     }, chargeType, billingSystem, endUserPrice, mobileSegment)
       .then((mobileCare: any) => {
         this.mobileCare = {

@@ -26,9 +26,7 @@ export class MobileCareService {
     endUserPrice: number,
     mobileSegment?: string): Promise<any> {
 
-    return this.http.post('/api/salesportal/promotion-shelves', {
-      userId: mobileCareInfo.packageKeyRef
-    }).toPromise()
+    return this.http.post('/api/salesportal/promotion-shelves', { userId: mobileCareInfo.packageKeyRef }).toPromise()
       .then((resp: any) => {
         const data = resp.data.data || [];
 
@@ -59,6 +57,7 @@ export class MobileCareService {
               const data = resp.data.data || [];
               const promotionData = data.filter((promotion: any) => {
                 const customAttributes: any = promotion.customAttributes;
+                const isbillingSystem: any = customAttributes.billingSystem.includes(billingSystem);
 
                 // filter bundle pack
                 if ((/^Bundle/i).test(customAttributes.offerType)
@@ -66,7 +65,7 @@ export class MobileCareService {
                   return false;
                 }
 
-                return (customAttributes.billingSystem === billingSystem
+                return (isbillingSystem
                   && +customAttributes.startDevicePrice <= endUserPrice
                   && +customAttributes.endDevicePrice >= endUserPrice);
               })
