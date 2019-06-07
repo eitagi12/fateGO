@@ -22,7 +22,7 @@
             </div>
             <div class="col-4 text-green" translate>ยอดเงินคงเหลือ</div>
             <div class="col-8">
-                {{balance ? (balance?.remainingBalance | number:'1.2-2' ) : '-'}}<span translate>{{balance?.remainingBalance ? 'บาท' : ''}}</span> 
+                {{balance ? (balance?.remainingBalance | number:'1.2-2' ) : '-'}}<span translate>{{balance?.remainingBalance ? 'บาท' : '-'}}</span> 
             </div>
             <div class="col-4 text-green">
 
@@ -33,7 +33,7 @@
             </div>
             <div class="col-4 text-green" translate>ค่าโทรที่ได้รับ</div>
             <div class="col-8">
-              {{balance ? (balance?.transferBalance | number:'1.2-2' ) : '-'}}<span translate>{{balance?.transferBalance ? 'บาท' : ''}}</span> 
+              {{balance ? (balance?.transferBalance | number:'1.2-2' ) : '-'}}<span translate>{{balance?.transferBalance ? 'บาท' : '-'}}</span> 
             </div>
 
           </div>

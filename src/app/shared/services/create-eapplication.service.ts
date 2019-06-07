@@ -9,6 +9,8 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class CreateEapplicationService {
 
+  titlePackage: any;
+
   constructor(
     private http: HttpClient,
     private utils: Utils,
@@ -83,6 +85,24 @@ export class CreateEapplicationService {
     const billCycleData = billingInformation.billCycleData;
     const action = transaction.data.action;
 
+    if (language === 'EN') {
+      if (transaction && transaction.data && transaction.data.mainPackage && transaction.data.mainPackage.shortNameEng) {
+        this.titlePackage = transaction.data.mainPackage.shortNameEng;
+      } else if (transaction && transaction.data && transaction.data.mainPackage && transaction.data.mainPackage.title) {
+        this.titlePackage = transaction.data.mainPackage.title;
+      } else {
+        this.titlePackage = '';
+      }
+    } else {
+      if (transaction && transaction.data && transaction.data.mainPackage && transaction.data.mainPackage.shortNameThai) {
+        this.titlePackage = transaction.data.mainPackage.shortNameThai;
+      } else if (transaction && transaction.data && transaction.data.mainPackage && transaction.data.mainPackage.title) {
+        this.titlePackage = transaction.data.mainPackage.title;
+      } else {
+        this.titlePackage = '';
+      }
+    }
+
     const data: any = {
       fullNameTH: customer.firstName + ' ' + customer.lastName || '',
       idCard: this.privateIdcard(customer.idCardNo) || '',
@@ -119,13 +139,13 @@ export class CreateEapplicationService {
     if (language === 'EN') {
       data.billCycle = billCycleData.billCycleTextEng;
       data.mainPackage = {
-        name: transaction.data.mainPackage.shortNameEng || transaction.data.mainPackage.title || '',
+        name: this.titlePackage,
         description: transaction.data.mainPackage.statementEng || transaction.data.mainPackage.detailEN || ''
       };
     } else {
       data.billCycle = billCycleData.billCycleText;
       data.mainPackage = {
-        name: transaction.data.mainPackage.shortNameThai || transaction.data.mainPackage.title || '',
+        name: this.titlePackage,
         description: transaction.data.mainPackage.statementThai || transaction.data.mainPackage.detailTH || ''
       };
     }
