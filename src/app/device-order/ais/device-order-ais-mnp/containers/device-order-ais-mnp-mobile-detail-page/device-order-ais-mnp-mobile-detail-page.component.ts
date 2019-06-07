@@ -103,11 +103,8 @@ export class DeviceOrderAisMnpMobileDetailPageComponent implements OnInit, OnDes
         status: mobileDetail.mobileStatus,
         sagment: mobileDetail.mobileSegment,
         serviceYear: this.serviceYearWording(serviceYear.year, serviceYear.month, serviceYear.day),
-        mainPackage: mobileDetail.packageTitle
+        mainPackage: this.changeMainPackageLangauge(mobileDetail.package)
       };
-      console.log('mobileInfo', this.mobileInfo);
-      // translate
-      this.mapTranslateLanguage();
 
       this.transaction.data.simCard.chargeType = mobileDetail.chargeType;
       this.transaction.data.simCard.billingSystem = mobileDetail.billingSystem;
@@ -144,39 +141,34 @@ export class DeviceOrderAisMnpMobileDetailPageComponent implements OnInit, OnDes
     });
   }
 
-  mapTranslateLanguage(): void {
-    if (this.mobileInfo) {
-      if (this.currentLang === 'EN') {
-        const prepaidReplace: any = this.mobileInfo.chargeType.replace('เติมเงิน', 'Prepaid');
-        const postpaidReplace: any = this.mobileInfo.chargeType.replace('รายเดือน', 'Postpaid');
-        this.mobileInfo.serviceYear = this.mobileInfo.serviceYear.replace('วัน', 'day');
-        this.mobileInfo.serviceYear = this.mobileInfo.serviceYear.replace('ปี', 'year');
-        this.mobileInfo.serviceYear = this.mobileInfo.serviceYear.replace('เดือน', 'month');
-        this.mobileInfo.chargeType = prepaidReplace === 'Prepaid' ? prepaidReplace : postpaidReplace;
-      }
+  changeMainPackageLangauge(mobileDetail: any = {}): string {
+    return this.isEngLanguage() ? mobileDetail.titleEng : mobileDetail.title;
+  }
+
+  mapChargeType(chargeType: string): any {
+    if ('Post-paid' === chargeType) {
+      return this.isEngLanguage() ? 'Postpaid' : 'รายเดือน';
+    } else {
+      return this.isEngLanguage() ? 'Prepaid' : 'เติมเงิน';
     }
   }
 
-  mapChargeType(chargeType: string): 'รายเดือน' | 'เติมเงิน' {
-    if ('Post-paid' === chargeType) {
-      return 'รายเดือน';
-    } else {
-      return 'เติมเงิน';
-    }
+  isEngLanguage(): boolean {
+    return this.translationService.currentLang === 'EN';
   }
 
   serviceYearWording(year: string, month: string, day: string): string {
     let serviceYearWording = '';
     if (year) {
-      serviceYearWording = `${year || ''} ปี `;
+      serviceYearWording = this.isEngLanguage() ? `${year || ''} year ` : `${year || ''} ปี `;
     }
 
     if (month) {
-      serviceYearWording += `${month} เดือน `;
+      serviceYearWording += this.isEngLanguage() ? `${month} month ` : `${month} เดือน `;
     }
 
     if (day) {
-      serviceYearWording += `${day} วัน`;
+      serviceYearWording += this.isEngLanguage() ? `${day} day` : `${month} วัน`;
     }
 
     return serviceYearWording;
