@@ -1,5 +1,5 @@
 <div class="mc-flex">
-  <mc-header title="เครื่อง">
+  <mc-header title="{{'เครื่อง'| translate}}">
     <div class="header-icon-left">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
@@ -301,7 +301,7 @@
 
 <ng-template #installmentTemplate>
   <div class="modal-header bg-primary" style="border-bottom: none;">
-    <h6 class="modal-title text-white w-100 text-center">บัตรที่ร่วมรายการผ่อนชำระ</h6>
+    <h6 class="modal-title text-white w-100 text-center">{{'บัตรที่ร่วมรายการผ่อนชำระ'| translate}}</h6>
     <button type="button" class="close pull-right" (click)="modalRef.hide()">
       <span aria-hidden="true">&times;</span>
     </button>
@@ -311,11 +311,11 @@
       <div class="col-5 pr-0"></div>
       <div class="col-7 pl-0">
         <div class="row pr-3">
-          <div class="p-0" [ngClass]="{'col-6': isAdvancePay,'col-12': !isAdvancePay}">
-            ผ่อนชำระค่าเครื่อง (บาท / เดือน)
+          <div class="p-0 text-center" [ngClass]="{'col-6': isAdvancePay,'col-12': !isAdvancePay}">
+            {{'ผ่อนชำระค่าเครื่อง'| translate}} ({{'บาท'| translate}} / {{'เดือน'| translate}})
           </div>
           <div class="p-0" [ngClass]="{'col-6': isAdvancePay}" *ngIf="isAdvancePay">
-            ผ่อนชำระค่าเครื่องพร้อมค่าแพ็กเกจล่วงหน้า (บาท / เดือน)
+            {{'ผ่อนชำระค่าเครื่องและแพ็กเกจค่าบริการล่วงหน้า'| translate}} ({{'บาท'| translate}} / {{'เดือน'| translate}})
           </div>
         </div>
       </div>
@@ -325,7 +325,7 @@
     <div *ngFor="let installment of installments">
       <div class="row border-bottom py-3">
         <div class="col-5 pr-0">
-          <h6 class="text-center">{{ installment?.percentage }} % {{ installment?.month }} เดือน</h6>
+          <h6 class="text-center">{{ installment?.percentage }} % {{ installment?.month }} {{'เดือน'| translate}}</h6>
           <div *ngFor="let bank of installment.banks" class="pull-left m-2" style="width: 40px; height: 40px;">
             <img [src]="bank?.imageUrl" class="m-auto d-block w-100 img-thumbnail" />
           </div>

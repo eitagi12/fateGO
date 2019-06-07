@@ -7,11 +7,12 @@
     "สินค้าหมดชั่วคราว": "Out of stock",
     "ราคาโครงการ": "Promotional price",
     "เลือก": "Select",
-    "เครื่องพร้อมเปิดเบอร์ใหม่": "Buy a new device and a new number",
-    "เครื่องพร้อมเปลี่ยนเป็นรายเดือน": "Buy a new device and switch from Prepaid to Postpaid",
-    "ลูกค้าย้ายค่าย": "Port in and buy a new device",
+    "เครื่องพร้อมเปิดเบอร์ใหม่": "For new registration ",
+    "เครื่องพร้อมเปลี่ยนเป็นรายเดือน": "For switch from prepaid to postpaid customer",
+    "ลูกค้าย้ายค่าย": "For port in to AIS network customer",
+    "ลูกค้าปัจจุบัน": "For existing customer",
+    "ย้ายค่ายเบอร์เดิม": "Port your number to AIS",
     "เปลี่ยนเติมเงินเป็นรายเดือน": "Switch from Prepaid to Postpaid",
-    "ลูกค้าปัจจุบัน": "Current customer buying a new device",
     "สัญญาการใช้บริการสูงสุด": "Service contract up to",
     "ผ่อนชำระค่าเครื่องและแพ็กเกจค่าบริการล่วงหน้า": "Device and pay advance airtime installment plan",
     "เดือน": "months",
@@ -21,5 +22,10 @@
     "รวม VAT": "VAT Included",
     "บาท/เดือน": "Baht/month",
     "ผ่อนชำระค่าเครื่อง": "Device installment plan",
-    "ชำระเต็มจำนวน": "Pay full amount"
+    "ชำระเต็มจำนวน": "Pay full amount",
+    "รายละเอียดรุ่น": "Model details",
+    "ลูกค้าซื้อเครื่องเปล่า": "For new Device only",
+    "ราคาเครื่องเปล่า": "ราคาเครื่องเปล่า",
+    "เครื่องเปล่า ราคาปกติ": "เครื่องเปล่า ราคาปกติ"
+
 }

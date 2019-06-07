@@ -32,14 +32,14 @@
                   </div>
                   <div class="card-body">
                     <div class="text-green">
-                      <span class="pull-left pt-2">{{ transaction?.data?.currentPackage?.title }}</span>
+                      <span class="pull-left pt-2">{{ changePackageTitleLanguage(transaction?.data?.currentPackage) }}</span>
                       <input *ngIf="showSelectCurrentPackage" type="radio" id="current-package" name="current-package" [checked]="selectCurrentPackage" (click)="onClickCurrentPackage()">
                       <label *ngIf="showSelectCurrentPackage" class="pull-right" for="current-package">
                         {{'ใช้แพ็กเกจเดิม' | translate}}
                       </label>
                     </div>
                     <div class="d-inline-block mt-3">
-                      <p> {{ transaction?.data?.currentPackage?.inStatementThai }}</p>
+                      <p> {{ changePackageDetailLanguage(transaction?.data?.currentPackage) }}</p>
                       <span>{{ transaction?.data?.currentPackage?.expiredDate }}</span>
                     </div>
                   </div>

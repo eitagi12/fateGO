@@ -15,7 +15,7 @@
       <div class="container-fluid">
         <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
         <div class="container-fluid bg-white pt-3 pb-2 mb-3" *ngIf="balance && serviceChange && serviceAfterChanged">
-          <div class="text-center" translate>ข้อมูลปัจจุบันของคุณ</div>
+          <div class="text-center" translate>{{'ข้อมูลปัจจุบันของคุณ'| translate}}</div>
           <hr>
           <div class="row mt-3 mb-3">
             <div class="col-4 text-green" translate>
@@ -33,8 +33,8 @@
             <div class="col-4 text-green">
 
             </div>
-            <div class="col-8" translate>
-              * ยอดเงินคงเหลือจะถูกโอนเป็นค่าโทร ที่ระบบรายเดือนให้โดยอัตโนมัติ
+            <div class="col-8">
+              * {{'ยอดเงินคงเหลือจะถูกโอนเป็นค่าโทร ที่ระบบรายเดือนให้โดยอัตโนมัติ'| translate}}
               <a class="float-right text-green" (click)="openModal(template)">
                 <u>MORE</u>
               </a>
@@ -201,16 +201,15 @@
         <td class="align-middle">2,000</td>
       </tr>
       <tr class="">
-        <td class="align-middle  p-2" colspan="2">2,000 ขึ้นไป</td>
+        <td class="align-middle  p-2" colspan="2">2,000 {{'ขึ้นไป'| translate}}</td>
         <td class="align-middle">2,000</td>
       </tr>
 
     </tbody>
 
   </table>
-  <div class="container mt-3 mb-3 text-light-grey" translate>
-    *ยอดเงินคงเหลือในกระเป๋า 1 ของคุณ จะถูกโอนเป็นค่าโทรที่ รับรายเดือนให้อัตโนมัติ ส่วนเงินคงเหลือในกระเป๋า 2 ไม่สามารถโอนได้
-    ควรใช้ให้หมดก่อนทำรายการ
+  <div class="container mt-3 mb-3 text-light-grey">
+    *{{'ยอดเงินคงเหลือในกระเป๋า 1 ของคุณจะถูกโอนเป็นค่าโทรที่ระบบรายเดือนให้อัตโนมัติ ส่วนเงินคงเหลือในกระเป๋า 2 ไมสามารถโอนได้ ควรใช้ให้หมดก่อนทำรายการ'| translate}}
   </div>
 
 </ng-template>

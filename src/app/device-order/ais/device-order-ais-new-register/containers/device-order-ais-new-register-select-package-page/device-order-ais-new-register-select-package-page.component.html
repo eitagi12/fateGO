@@ -22,7 +22,7 @@
             <div class="card">
               <div class="card-header bg-green text-white mb-2">
                 {{'เลือกแพ็กเกจใหม่' | translate}} <span class="minimum-package">({{'แพ็กเกจเริ่มต้น' | translate}} {{
-                  priceOption?.privilege?.minimumPackagePrice }} บาท)</span>
+                  priceOption?.privilege?.minimumPackagePrice }} {{'บาท'| translate}})</span>
               </div>
               <mc-promotion-shelve [selected]="transaction?.data?.mainPackage" [promotionShelves]="promotionShelves"
                 (completed)="onCompleted($event)"></mc-promotion-shelve>
@@ -30,7 +30,7 @@
           </div>
         </div>
       </div>
-      <p class="text-center my-5" *ngIf="promotionShelves?.length === 0">ไม่พบแพ็กเกจที่ร่วมรายการ</p>
+      <p class="text-center my-5" *ngIf="promotionShelves?.length === 0" translate>ไม่พบแพ็กเกจที่ร่วมรายการ</p>
     </div>
   </div>
   <mc-footer>

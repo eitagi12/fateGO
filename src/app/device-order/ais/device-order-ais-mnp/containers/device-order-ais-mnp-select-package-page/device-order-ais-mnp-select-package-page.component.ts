@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction, ExistingMobileCare } from 'src/app/shared/models/transaction.model';
-import { PromotionShelve, ShoppingCart, HomeService, PageLoadingService, BillingSystemType, AlertService, PromotionShelveGroup } from 'mychannel-shared-libs';
+import { PromotionShelve, ShoppingCart, HomeService, PageLoadingService, BillingSystemType, AlertService, PromotionShelveGroup, I18nService } from 'mychannel-shared-libs';
 import { BsModalRef } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -48,8 +48,7 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
     private priceOptionService: PriceOptionService,
     private shoppingCartService: ShoppingCartService,
     private promotionShelveService: PromotionShelveService,
-    private translateService: TranslateService,
-    private localStorageService: LocalStorageService
+    private translateService: TranslateService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -62,7 +61,9 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
     }
 
     this.translateSubscription = this.translateService.onLangChange.subscribe((lang: any) => {
-      this.checkTranslateLang(lang);
+      if (this.promotionShelves) {
+        this.checkTranslateLang(lang);
+      }
     });
   }
 
@@ -88,6 +89,10 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
   onCompleted(promotion: any): void {
     // รอแก้ไขตัวแปรที่จะเก็บลงใน share transaction
     this.transaction.data.mainPackage = promotion;
+  }
+
+  onCondition(con: any): void {
+    console.log('condition55', con);
   }
 
   onBack(): void {
@@ -126,14 +131,17 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
 
     this.promotionShelveService.getPromotionShelve(
       {
-        packageKeyRef: trade.packageKeyRef,
+        packageKeyRef: trade.packageKeyRef || privilege.packageKeyRef,
         orderType: `Change Service`,
         billingSystem: billingSystem
       },
       +privilege.minimumPackagePrice, +privilege.maximumPackagePrice)
       .then((promotionShelves: any) => {
         this.promotionShelves = this.promotionShelveService.defaultBySelected(promotionShelves, this.transaction.data.mainPackage);
-        this.checkTranslateLang(this.translateService.getBrowserLang());
+        console.log('promotionShelves', promotionShelves);
+        if (this.promotionShelves) {
+          this.checkTranslateLang(this.translateService.currentLang);
+        }
       })
       .then(() => this.pageLoadingService.closeLoading());
   }
@@ -145,14 +153,17 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
           const merge = { ...translateKey, ...lang.translations } || {};
           this.translateService.setTranslation('EN', merge);
         } else {
-          this.translateService.setTranslation('EN', translateKey);
+          this.getTranslateLoader('device-order', 'EN').then(resp => {
+            const merge = { ...translateKey, ...resp } || {};
+            this.translateService.setTranslation('EN', merge);
+          });
         }
       }
     });
 
   }
 
-    mapKeyTranslateSelectPackageTitle(promotionShelves: PromotionShelve[]): Promise<any> {
+  mapKeyTranslateSelectPackageTitle(promotionShelves: PromotionShelve[]): Promise<any> {
     const map = new Map();
     const TranslateKey = {};
     promotionShelves.filter(promotionShelve => {
@@ -171,7 +182,14 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
     } else {
       return Promise.resolve(null);
     }
+  }
 
+  getTranslateLoader(moduleName: string, lang: string): Promise<any> {
+    if (!moduleName || !lang) {
+      return;
+    }
+    const fileLang = `i18n/${moduleName}.${lang}.json`.toLowerCase();
+    return this.http.get(fileLang).toPromise();
   }
 
   ngOnDestroy(): void {
@@ -179,5 +197,6 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
       this.translateSubscription.unsubscribe();
     }
     this.transactionService.update(this.transaction);
+    console.log('condition', this.condition);
   }
 }

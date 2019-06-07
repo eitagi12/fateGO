@@ -14,7 +14,7 @@
         <img src="assets/images/icon/sales_portal_white_check.png" class="d-block m-auto icon">
         <div class="my-3 text-center text-green">
           <p>{{'หมายเลข' | translate}} {{ transaction?.data?.simCard?.mobileNo | mobileNo }}</p>
-          <p translate>หมายเลขรายการสั่งชื้อของท่านได้เข้าสู่ระบบเรียบร้อยแล้ว</p>
+          <p translate>หมายเลขรายการสั่งซื้อของท่านได้เข้าสู่ระบบเรียบร้อยแล้ว</p>
         </div>
         <form [formGroup]="queueFrom">
           <div class="form-group">
@@ -22,7 +22,7 @@
             <input type="tel" class="form-control text-center mb-3" id="mobileNo" maxlength="10" autofocus autocomplete="off"
               formControlName="mobileNo" placeholder="ระบุเบอร์โทรศัพท์รับ SMS" [ngClass]="{ 'is-invalid' : queueFrom.controls.mobileNo.invalid && queueFrom.controls.mobileNo.touched && queueFrom.controls.mobileNo.errors }">
             <small class="invalid-feedback" *ngIf="queueFrom.controls.mobileNo.touched && queueFrom.controls.mobileNo.errors">
-              **กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง
+              **{{'กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง'| translate}}
             </small>
           </div>
         </form>

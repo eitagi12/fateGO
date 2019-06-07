@@ -29,7 +29,7 @@ export class DeviceOrderAisNewRegisterCustomerInfoPageComponent implements OnIni
     private homeService: HomeService,
     private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,
-    private translation: TranslateService
+    private translateService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -38,16 +38,25 @@ export class DeviceOrderAisNewRegisterCustomerInfoPageComponent implements OnIni
     const customer: Customer = this.transaction.data.customer;
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     delete this.shoppingCart.mobileNo;
+    this.customerInfo = this.mappingCustomerInfo(customer);
 
-    this.customerInfo = {
+    this.translateService.onLangChange.subscribe(() => this.customerInfo.idCardType = this.isEngLanguage() ? 'ID Card' : 'บัตรประชาชน');
+  }
+
+  mappingCustomerInfo(customer: Customer): CustomerInfo {
+    return {
       titleName: customer.titleName,
       firstName: customer.firstName,
       lastName: customer.lastName,
       idCardNo: customer.idCardNo,
-      idCardType: 'บัตรประชาชน',
+      idCardType: this.isEngLanguage() ? 'ID Card' : 'บัตรประชาชน',
       birthdate: customer.birthdate,
       mobileNo: customer.mainMobile,
     };
+  }
+
+  isEngLanguage(): boolean {
+    return this.translateService.currentLang === 'EN';
   }
 
   onBack(): void {

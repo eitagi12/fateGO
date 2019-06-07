@@ -84,7 +84,8 @@ export class CreateEapplicationService {
     const action = transaction.data.action;
 
     const data: any = {
-      fullNameTH: customer.firstName + ' ' + customer.lastName || '',
+      fullNameTH: language === 'EN' ? `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}` :
+      customer.firstName + ' ' + customer.lastName || '' ,
       idCard: this.privateIdcard(customer.idCardNo) || '',
       idCardType: customer.idCardType || '',
       birthDate: customer.birthdate || '',
@@ -119,14 +120,14 @@ export class CreateEapplicationService {
     if (language === 'EN') {
       data.billCycle = billCycleData.billCycleTextEng;
       data.mainPackage = {
-        name: transaction.data.mainPackage.shortNameEng || transaction.data.mainPackage.title || '',
-        description: transaction.data.mainPackage.statementEng || transaction.data.mainPackage.detailEN || ''
+        name: transaction.data.mainPackage.customAttributes.shortNameEng || transaction.data.mainPackage.title || '',
+        description: transaction.data.mainPackage.customAttributes.descriptionEng || transaction.data.mainPackage.detailEN || ''
       };
     } else {
       data.billCycle = billCycleData.billCycleText;
       data.mainPackage = {
-        name: transaction.data.mainPackage.shortNameThai || transaction.data.mainPackage.title || '',
-        description: transaction.data.mainPackage.statementThai || transaction.data.mainPackage.detailTH || ''
+        name: transaction.data.mainPackage.customAttributes.shortNameThai || transaction.data.mainPackage.title || '',
+        description: transaction.data.mainPackage.customAttributes.descriptionThai  || transaction.data.mainPackage.detailTH || ''
       };
     }
     if (action === TransactionAction.READ_CARD || action === TransactionAction.READ_CARD_REPI) {

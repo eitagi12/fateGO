@@ -1,5 +1,5 @@
 <div class="mc-flex">
-  <mc-header title="เครื่องพร้อมเปลี่ยนเป็นรายเดือน">
+  <mc-header title="{{'เครื่องพร้อมเปลี่ยนเป็นรายเดือน'| translate}}">
     <div class="header-icon-left">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
@@ -14,7 +14,7 @@
         <div class="card">
           <div class="card-body text-center">
 
-            <p>ระบุรหัส OTP ที่ได้รับ</p>
+            <p>{{'ระบุรหัส OTP ที่ได้รับ'| translate}}</p>
             <hr>
             <form [formGroup]="otpForm">
               <div class="form-group">
@@ -22,12 +22,12 @@
                   autocomplete="off" formControlName="otp">
               </div>
               <div class="text-light-grey mt-4 pb-5">
-                <div>รหัส OTP มีอายุใช้งาน 15 นาที</div>
-                <div>หากไม่ได้รับรหัส กรุณาตรวจสอบหมายเลขโทรศัพท์อีกครั้ง</div>
+                <div>{{'รหัส OTP มีอายุใช้งาน 15 นาที'| translate}}</div>
+                <div>{{'หากไม่ได้รับรหัส กรุณาตรวจสอบหมายเลขโทรศัพท์อีกครั้ง'| translate}}</div>
               </div>
               <div class="row">
                 <div class="col-6 col-sm-6 text-center">
-                  <a (click)="sendOTP()"><u>ขอรับรหัสใหม่</u></a>
+                  <a (click)="sendOTP()"><u>{{'ขอรับรหัสใหม่'| translate}}</u></a>
                 </div>
                 <div class="col-6 col-sm-6 text-center">
                   <button [disabled]="!otpForm.valid" type="submit" id="btnOtp" class="btn btn-success btn-lg" (click)="verifyOTP()">ตกลง

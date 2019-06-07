@@ -42,13 +42,13 @@ export class DeviceOrderAisMnpSummaryPageComponent implements OnInit {
     private modalService: BsModalService,
     public summaryPageService: SummaryPageService,
     private utils: Utils,
-    private translationService: TranslateService
+    private translateService: TranslateService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
 
-    this.currentLang = this.translationService.currentLang || 'TH';
-    this.translationService.onLangChange.subscribe(lang => {
+    this.currentLang = this.translateService.currentLang || 'TH';
+    this.translateService.onLangChange.subscribe(lang => {
       this.currentLang = typeof (lang) === 'object' ? lang.lang : lang;
     });
   }
@@ -91,6 +91,10 @@ export class DeviceOrderAisMnpSummaryPageComponent implements OnInit {
   onOpenDetail(detail: string): void {
     this.detail = detail;
     this.modalRef = this.modalService.show(this.detailTemplate);
+  }
+
+  mainPackageTitle(detail: any): string {
+    return (this.translateService.currentLang === 'EN') ? detail.shortNameEng : detail.shortNameThai;
   }
 
   summary(amount: number[]): number {

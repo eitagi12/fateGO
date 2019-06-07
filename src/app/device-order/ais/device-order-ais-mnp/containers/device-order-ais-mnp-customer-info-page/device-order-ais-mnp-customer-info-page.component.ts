@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { ROUTE_DEVICE_ORDER_AIS_MNP_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_ELIGIBLE_MOBILE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE } from '../../constants/route-path.constant';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-device-order-ais-mnp-customer-info-page',
@@ -25,6 +26,7 @@ export class DeviceOrderAisMnpCustomerInfoPageComponent implements OnInit, OnDes
     private homeService: HomeService,
     private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,
+    private translateService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -33,16 +35,25 @@ export class DeviceOrderAisMnpCustomerInfoPageComponent implements OnInit, OnDes
     const customer: Customer = this.transaction.data.customer;
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     delete this.shoppingCart.mobileNo;
+    this.customerInfo = this.mappingCustomerInfo(customer);
 
-    this.customerInfo = {
+    this.translateService.onLangChange.subscribe(() => this.customerInfo.idCardType = this.isEngLanguage() ? 'ID Card' : 'บัตรประชาชน');
+  }
+
+  mappingCustomerInfo(customer: Customer): CustomerInfo {
+    return {
       titleName: customer.titleName,
       firstName: customer.firstName,
       lastName: customer.lastName,
       idCardNo: customer.idCardNo,
-      idCardType: 'บัตรประชาชน',
+      idCardType: this.isEngLanguage() ? 'ID Card' : 'บัตรประชาชน',
       birthdate: customer.birthdate,
       mobileNo: customer.mainMobile,
     };
+  }
+
+  isEngLanguage(): boolean {
+    return this.translateService.currentLang === 'EN';
   }
 
   onBack(): void {
