@@ -91,6 +91,10 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
     this.transaction.data.mainPackage = promotion;
   }
 
+  onCondition(con: any): void {
+    console.log('condition55', con);
+  }
+
   onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_PAYMENT_DETAIL_PAGE]);
   }
@@ -134,6 +138,7 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
       +privilege.minimumPackagePrice, +privilege.maximumPackagePrice)
       .then((promotionShelves: any) => {
         this.promotionShelves = this.promotionShelveService.defaultBySelected(promotionShelves, this.transaction.data.mainPackage);
+        console.log('promotionShelves', promotionShelves);
         if (this.promotionShelves) {
           this.checkTranslateLang(this.translateService.currentLang);
         }
@@ -192,5 +197,6 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
       this.translateSubscription.unsubscribe();
     }
     this.transactionService.update(this.transaction);
+    console.log('condition', this.condition);
   }
 }
