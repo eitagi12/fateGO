@@ -9,13 +9,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent } from './containers/device-only-asp-select-payment-and-receipt-information-page/device-only-asp-select-payment-and-receipt-information-page.component';
 import { DeviceOnlyAspSelectMobileCarePageComponent } from './containers/device-only-asp-select-mobile-care-page/device-only-asp-select-mobile-care-page.component';
 import { DeviceOnlyAspQueuePageComponent } from './containers/device-only-asp-queue-page/device-only-asp-queue-page.component';
-import { DeviceOnlyAspQrCodeQueuePageComponent } from './containers/device-only-asp-qr-code-queue-page/device-only-asp-qr-code-queue-page.component';
 import { DeviceOnlyAspCheckoutPaymentPageComponent } from './containers/device-only-asp-checkout-payment-page/device-only-asp-checkout-payment-page.component';
 import { DeviceOnlyAspSummaryPageComponent } from './containers/device-only-asp-summary-page/device-only-asp-summary-page.component';
-import { DeviceOnlyAspQrCodeSummaryPageComponent } from './containers/device-only-asp-qr-code-summary-page/device-only-asp-qr-code-summary-page.component';
-import { DeviceOnlyAspQrCodeGeneratePageComponent } from './containers/device-only-asp-qr-code-generate-page/device-only-asp-qr-code-generate-page.component';
-import { DeviceOnlyAspCheckoutPaymentQrCodePageComponent } from './containers/device-only-asp-checkout-payment-qr-code-page/device-only-asp-checkout-payment-qr-code-page.component';
-import { DeviceOnlyAspQrCodeKeyInQueuePageComponent } from './containers/device-only-asp-qr-code-key-in-queue-page/device-only-asp-qr-code-key-in-queue-page.component';
 import { DeviceOnlyAspResultQueuePageComponent } from './containers/device-only-asp-result-queue-page/device-only-asp-result-queue-page.component';
 // component
 import { BillingAddressComponent } from '../../components/billing-address/billing-address.component';
@@ -42,13 +37,8 @@ import { MobileCareComponent } from '../../components/mobile-care/mobile-care.co
     DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent,
     DeviceOnlyAspSelectMobileCarePageComponent,
     DeviceOnlyAspQueuePageComponent,
-    DeviceOnlyAspQrCodeQueuePageComponent,
     DeviceOnlyAspCheckoutPaymentPageComponent,
     DeviceOnlyAspSummaryPageComponent,
-    DeviceOnlyAspQrCodeSummaryPageComponent,
-    DeviceOnlyAspQrCodeGeneratePageComponent,
-    DeviceOnlyAspCheckoutPaymentQrCodePageComponent,
-    DeviceOnlyAspQrCodeKeyInQueuePageComponent,
     DeviceOnlyAspResultQueuePageComponent,
 
     BillingAddressComponent,
