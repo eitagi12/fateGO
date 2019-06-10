@@ -212,9 +212,6 @@ export class CreateOrderService {
     const mapBankCode = transaction.data.payment.paymentBank.abb ? transaction.data.payment.paymentBank.abb : '';
     const mapQrTran = transaction.data.mpayPayment ? transaction.data.mpayPayment.tranId : '';
     const mapQrOrderId = transaction.data.mpayPayment ? transaction.data.mpayPayment.orderId : '';
-    this.mapQrcodePayment(priceOption, transaction);
-    console.log('qrModel.serviceId', this.serviceId);
-    console.log('qrModel.terminalId', this.terminalId);
     return {
       soId: transaction.data.order.soId,
       soCompany: priceOption.productStock.company,
@@ -247,35 +244,7 @@ export class CreateOrderService {
       qrAmt: this.getQRAmt(priceOption, transaction), // add
       reqMinimumBalance: transaction.data.simCard ? this.getReqMinimumBalance(transaction, transaction.data.mobileCarePackage) : '',
       qrOrderId: mapQrOrderId,
-      serviceId: this.serviceId || '',
-      terminalId: this.terminalId || ''
     };
-  }
-
-  isQRCode(qrCodeType: 'THAI_QR' | 'LINE_QR', transaction: Transaction): boolean {
-    const payment: any = transaction.data.payment || {};
-    return payment.paymentQrCodeType === qrCodeType;
-  }
-
-  mapQrcodePayment(priceOption: PriceOption, transaction: Transaction): any {
-
-    const qrModel: QRCodeModel = new QRCodeModel();
-    const MPAY_QRCODE = environment.MPAY_QRCODE;
-    const isThaiQRCode = this.isQRCode('THAI_QR', transaction);
-
-    if (priceOption.productStock.company === 'WDS' && transaction.data.payment.paymentType === 'QR_CODE') {
-      qrModel.company = priceOption.productStock.company;
-      qrModel.serviceId = isThaiQRCode ? MPAY_QRCODE.PB_WDS_SERVICE_ID : MPAY_QRCODE.RL_WDS_SERVICE_ID;
-      qrModel.terminalId = isThaiQRCode ? MPAY_QRCODE.PB_WDS_TERMINAL_ID : MPAY_QRCODE.RL_WDS_TERMINAL_ID;
-    } else {
-      qrModel.company = priceOption.productStock.company;
-      qrModel.serviceId = isThaiQRCode ? MPAY_QRCODE.PB_SERVICE_ID : MPAY_QRCODE.RL_SERVICE_ID;
-      qrModel.terminalId = isThaiQRCode ? MPAY_QRCODE.PB_TERMINAL_ID : MPAY_QRCODE.RL_TERMINAL_ID;
-    }
-
-    this.serviceId = qrModel.serviceId;
-    this.terminalId = qrModel.terminalId;
-
   }
 
   mapCusAddress(addressCus: Customer): any {
