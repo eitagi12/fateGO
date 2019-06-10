@@ -50,6 +50,11 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
 
     this.homeService.callback = () => {
 
+      const url = this.router.url;
+      if (url.indexOf('result') !== -1) {
+        this.homeHandler();
+      }
+
       this.alertService.question('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่')
         .then((data: any) => {
           if (!data.value) {
