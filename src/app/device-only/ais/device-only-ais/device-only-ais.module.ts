@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DeviceOnlyAisRoutingModule } from './device-only-ais-routing.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
@@ -17,7 +17,7 @@ import { DeviceOnlyAisResultQueuePageComponent } from './containers/device-only-
 import { DeviceOnlyAisSelectMobileCarePageComponent } from './containers/device-only-ais-select-mobile-care-page/device-only-ais-select-mobile-care-page.component';
 import { DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent } from './containers/device-only-ais-select-payment-and-receipt-information-page/device-only-ais-select-payment-and-receipt-information-page.component';
 import { DeviceOnlyAisSummaryPageComponent } from './containers/device-only-ais-summary-page/device-only-ais-summary-page.component';
-// components
+// component
 import { BillingAddressComponent } from '../../components/billing-address/billing-address.component';
 import { DeviceOnlyReadCardComponent } from '../../components/device-only-read-card/device-only-read-card.component';
 import { MobileCareComponent } from '../../components/mobile-care/mobile-care.component';
@@ -34,9 +34,9 @@ import { SummarySellerCodeComponent } from '../../components/summary-seller-code
     DeviceOnlyAisRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    MyChannelSharedLibsModule,
     TabsModule.forRoot(),
-    TranslateModule
+    TranslateModule,
+    MyChannelSharedLibsModule
   ],
   declarations: [
     DeviceOnlyAisCheckoutPaymentPageComponent,
@@ -50,6 +50,7 @@ import { SummarySellerCodeComponent } from '../../components/summary-seller-code
     DeviceOnlyAisSelectMobileCarePageComponent,
     DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent,
     DeviceOnlyAisSummaryPageComponent,
+
     BillingAddressComponent,
     DeviceOnlyReadCardComponent,
     MobileCareComponent,
@@ -58,7 +59,7 @@ import { SummarySellerCodeComponent } from '../../components/summary-seller-code
     SummaryOrderDetailComponent,
     SummaryPaymentDetailComponent,
     SummaryProductAndServiceComponent,
-    SummarySellerCodeComponent,
+    SummarySellerCodeComponent
   ],
   providers: []
 })

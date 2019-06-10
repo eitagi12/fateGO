@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors, ValidatorFn, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinct, delay } from 'rxjs/operators';
 import { Utils, CustomerAddress } from 'mychannel-shared-libs';
 import { CustomerInformationService } from 'src/app/device-only/services/customer-information.service';
