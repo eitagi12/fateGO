@@ -78,6 +78,17 @@ export class DeviceOrderAisPreToPostEligibleMobilePageComponent implements OnIni
         .then((response: any) => {
           const eMobileResponse = response.data;
           this.eligibleMobiles = eMobileResponse.prepaid || [];
+
+        //   const prepaidMobileList: any = res.data.prepaidMobileList || [];
+        //   mobileList = prepaidMobileList.filter((order: any) => {
+
+        //     // tslint:disable-next-line:typedef
+        //     return ['Submit for Approve', 'Pending', 'Submitted', 'Request',
+        //       'Saveteam', 'QueryBalance', 'Response', 'Notification', 'BAR Processing',
+        //       'BAR', 'Terminating'].find((statusCode: any) => {
+        //         return statusCode !== order.statusCode;
+        //       });
+        //   });
         });
 
     } else {

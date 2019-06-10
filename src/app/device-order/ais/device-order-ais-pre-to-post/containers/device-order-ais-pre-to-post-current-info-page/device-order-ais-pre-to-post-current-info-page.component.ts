@@ -64,28 +64,28 @@ export class DeviceOrderAisPreToPostCurrentInfoPageComponent implements OnInit, 
 
   ngOnInit(): void {
     this.mobileNo = this.transaction.data.simCard.mobileNo;
-    // this.shoppingCart = this.shoppingCartService.getShoppingCartData();
+
     this.pageLoadingService.openLoading();
 
-    this.http.get(`/api/customerportal/greeting/${this.mobileNo}/profile`).toPromise()
-      .then((resp: any) => {
-        const profile = resp.data || [];
-        return this.http.get(`/api/customerportal/newRegister/${this.mobileNo}/queryBalance`).toPromise();
-      }).then((resp: any) => {
-        this.balance = resp.data || [];
-        return this.http.get(`/api/customerportal/newRegister/${this.mobileNo}/queryCurrentServices`).toPromise();
-      }).then((resp: any) => {
-        const currentServices = resp.data || [];
-
-        this.serviceChange = currentServices.services.filter(service => service.canTransfer);
-        this.serviceAfterChanged = currentServices.services.filter(service => !service.canTransfer);
-
-        this.pageLoadingService.closeLoading();
-        this.isLoad = false;
-      }).catch((error: any) => {
-        this.pageLoadingService.closeLoading();
-        this.isLoad = false;
+    const queryBalancePromise = this.http.get(`/api/customerportal/newRegister/${this.mobileNo}/queryBalance`)
+      .toPromise().catch(() => {
+        return {};
       });
+    const queryCurrentServicesPromise = this.http.get(`/api/customerportal/newRegister/${this.mobileNo}/queryCurrentServices`)
+      .toPromise().catch(() => {
+        return {};
+      });
+    Promise.all([queryBalancePromise, queryCurrentServicesPromise]).then((res: any[]) => {
+      this.balance = res[0].data || {};
+      const currentServices = res[1].data || [];
+      this.serviceChange = currentServices.services.filter(service => service.canTransfer);
+      this.serviceAfterChanged = currentServices.services.filter(service => !service.canTransfer);
+      this.pageLoadingService.closeLoading();
+      this.isLoad = false;
+    }).catch(() => {
+      this.pageLoadingService.closeLoading();
+      this.isLoad = false;
+    });
   }
 
   onHome(): void {

@@ -12,7 +12,7 @@
   <div class="mc-flex-wrap">
     <div class="mt-3 mb-3">
       <div class="container-fluid">
-        <div class="container-fluid bg-white pt-3 pb-2 mb-3" *ngIf="balance && serviceChange && serviceAfterChanged">
+        <div class="container-fluid bg-white pt-3 pb-2 mb-3">
           <div class="text-center" translate>ข้อมูลปัจจุบันของคุณ</div>
           <hr>
           <div class="row mt-3 mb-3">
@@ -22,24 +22,24 @@
             </div>
             <div class="col-4 text-green" translate>ยอดเงินคงเหลือ</div>
             <div class="col-8">
-              {{ balance?.remainingBalance / 100 | number:'1.2-2' }} <span translate>บาท</span>
+                {{balance?.remainingBalance ? (balance?.remainingBalance | number:'1.2-2' ) : '-'}}<span translate>{{balance?.remainingBalance ? 'บาท' : ''}}</span> 
             </div>
             <div class="col-4 text-green">
 
             </div>
             <div class="col-8">
-              <span translate>* ยอดเงินคงเหลือจะถูกโอนเป็นค่าโทร ที่ระบบรายเดือนให้โดยอัตโนมัติ</span>
+              <span translate>กรุณาตรวจสอบยอดเงินคงเหลือผ่าน *121# โทรออก โดยยอดเงินคงเหลือของท่านจะถูกโอนเป็นค่าโทรที่ระบบรายเดือนให้โดยอัตโนมัติ</span>
               <a class="float-right text-green" (click)="openModal(template)"><u>MORE</u></a>
             </div>
             <div class="col-4 text-green" translate>ค่าโทรที่ได้รับ</div>
             <div class="col-8">
-              {{ balance?.transferBalance | number }} <span translate>บาท</span>
+              {{balance?.transferBalance ? (balance?.transferBalance | number:'1.2-2' ) : '-'}}<span translate>{{balance?.transferBalance ? 'บาท' : ''}}</span> 
             </div>
 
           </div>
         </div>
 
-        <div *ngIf="balance && serviceChange && serviceAfterChanged">
+        <div *ngIf="serviceChange && serviceAfterChanged">
           <div class="card mb-3" *ngIf="serviceChange?.length > 0">
             <div class="card-body text-center">
               <div class="row mb-3">
@@ -97,9 +97,9 @@
           </div>
         </div> -->
 
-        <div class="container-fluid bg-white mt-3 p-3 text-center" *ngIf="!balance && !serviceChange && !serviceAfterChanged && !isLoad">
+        <!-- <div class="container-fluid bg-white mt-3 p-3 text-center" *ngIf="!balance && !serviceChange && !serviceAfterChanged && !isLoad">
           <span translate>ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้</span>
-        </div>
+        </div> -->
 
       </div>
     </div>

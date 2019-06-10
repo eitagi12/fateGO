@@ -28,13 +28,13 @@
               ยอดเงินคงเหลือ
             </div>
             <div class="col-8">
-              {{ balance?.remainingBalance / 100 | number:'1.2-2' }} บาท
+              {{balance?.remainingBalance ? (balance?.remainingBalance | number:'1.2-2' ) : '-'}}<span translate>{{balance?.remainingBalance ? 'บาท' : ''}}</span> 
             </div>
             <div class="col-4 text-green">
 
             </div>
             <div class="col-8" translate>
-              * ยอดเงินคงเหลือจะถูกโอนเป็นค่าโทร ที่ระบบรายเดือนให้โดยอัตโนมัติ
+              กรุณาตรวจสอบยอดเงินคงเหลือผ่าน *121# โทรออก โดยยอดเงินคงเหลือของท่านจะถูกโอนเป็นค่าโทรที่ระบบรายเดือนให้โดยอัตโนมัติ 
               <a class="float-right text-green" (click)="openModal(template)">
                 <u>MORE</u>
               </a>
@@ -43,13 +43,13 @@
               ค่าโทรที่ได้รับ
             </div>
             <div class="col-8">
-              {{ balance?.transferBalance | number }} บาท
+              {{balance?.transferBalance ? (balance?.transferBalance | number:'1.2-2' ) : '-'}}<span translate>{{balance?.transferBalance ? 'บาท' : ''}}</span> 
             </div>
 
           </div>
         </div>
 
-        <div *ngIf="balance && serviceChange && serviceAfterChanged">
+        <div *ngIf="serviceChange && serviceAfterChanged">
           <div class="card mb-3" *ngIf="serviceChange?.length > 0">
             <div class="card-body text-center">
               <div class="row mb-3">
@@ -109,10 +109,10 @@
           </div>
         </div> -->
 
-        <div class="container-fluid bg-white mt-3 p-3 text-center" *ngIf="!balance && !serviceChange && !serviceAfterChanged && !isLoad"
+        <!-- <div class="container-fluid bg-white mt-3 p-3 text-center" *ngIf="!balance && !serviceChange && !serviceAfterChanged && !isLoad"
           translate>
           ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้
-        </div>
+        </div> -->
 
       </div>
     </div>

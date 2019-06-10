@@ -17,7 +17,8 @@ import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
-
+import * as moment from 'moment';
+const Moment = moment;
 @Component({
   selector: 'app-device-order-ais-pre-to-post-validate-customer-page',
   templateUrl: './device-order-ais-pre-to-post-validate-customer-page.component.html',
@@ -100,7 +101,48 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
 
   onNext(): void {
     this.pageLoadingService.openLoading();
+    const subscriberId: string = this.identity;
+    const orderType: string = 'Port - Out';
+    const isProduction: any = environment.name !== 'PROD' && environment.name !== 'SIT' ? true : false;
+    const isStartDt: any = isProduction === true ? 30 : 3;
+    const startDt: string = encodeURIComponent(moment().subtract(isStartDt, 'days').format('YYYYMMDD HH:mm:ss'));
+    const endDt: string = encodeURIComponent(moment().format('YYYYMMDD HH:mm:ss'));
+    this.http.get(`/api/customerportal/newRegister/history-order`, {
+      params: {
+        subscriberId: subscriberId,
+        orderType: orderType,
+        startDt: startDt,
+        endDt: endDt
+      }
+    })
+      .toPromise()
+      .then((resp: any) => {
+        return (resp.data || []).find((order: any) => {
+          return order.statusCode === 'Submit for Approve'
+            || order.statusCode === 'Pending'
+            || order.statusCode === 'Submitted'
+            || order.statusCode === 'Request'
+            || order.statusCode === 'Saveteam'
+            || order.statusCode === 'QueryBalance'
+            || order.statusCode === 'Response'
+            || order.statusCode === 'Notification'
+            || order.statusCode === 'BAR Processing'
+            || order.statusCode === 'BAR'
+            || order.statusCode === 'Terminating';
+        });
+      }).then((order: any) => {
+        if (order) {
+          const createDate = moment(order.createDate, 'YYYYMMDD').format('DD/MM/YYYY');
+          return this.alertService.error(`ระบบไม่สามารถทำรายการได้ <br>หมายเลข ${this.identity}
+          อยู่ระหว่างย้ายค่ายไปยังผู้ให้บริการรายอื่น (True, DTAC) (ทำรายการวันที่${createDate})`);
+        }
+        return this.checkCustomerProfile(this.identity);
 
+      })
+      .catch(() => this.checkCustomerProfile(this.identity));
+
+  }
+  checkCustomerProfile(mobileNo: any): void {
     if (this.utils.isMobileNo(this.identity)) {
       this.http.get('/api/customerportal/validate-customer-mobile-no-pre-to-post', {
         params: {
