@@ -42,9 +42,9 @@
             <i class="fa fa-circle mr-3 text-green"></i>
             {{ priceOption?.productDetail?.name }}
             <span *ngIf="priceOption?.productStock?.color">
-              {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.color }}
+              {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.ccolor }}
             </span>
-            <p>{{ priceOption?.campaign?.campaignName }}</p>
+            <p>{{ priceOption?.campaign?.campaignName | translate}}</p>
             <h2 class="text-green">
               ฿{{ summary([+priceOption?.trade?.promotionPrice, +priceOption?.trade?.advancePay?.amount]) | number : '1.2-2' }}
             </h2>

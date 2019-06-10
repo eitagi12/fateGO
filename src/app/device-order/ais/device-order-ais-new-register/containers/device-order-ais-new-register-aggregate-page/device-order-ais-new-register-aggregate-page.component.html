@@ -39,7 +39,7 @@
             <span *ngIf="priceOption?.productStock?.color">
               {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.color }}
             </span>
-            <p>{{ priceOption?.campaign?.campaignName }}</p>
+            <p>{{ priceOption?.campaign?.campaignName | translate }}</p>
             <h2 class="text-green">
               ฿{{ summary([+priceOption?.trade?.promotionPrice, +priceOption?.trade?.advancePay?.amount]) | number : '1.2-2' }}
             </h2>
