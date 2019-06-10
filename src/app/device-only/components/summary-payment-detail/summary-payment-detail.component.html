@@ -1,10 +1,10 @@
 <div class="card mb-3">
   <div class="card-header text-white" style="background: #FF80AB;">
-    รายละเอียดการชำระ
+    {{ 'รายละเอียดการชำระ' | translate }}
   </div>
   <div class="card-body">
     <p>
-      ข้อมูลการชำระสินค้า
+    {{ 'ข้อมูลการชำระสินค้า' | translate }}
     </p>
     <ng-container *ngIf="!priceOption?.trade?.advancePay || priceOption?.trade?.advancePay?.installmentFlag === 'N'">
       <p>
@@ -15,9 +15,9 @@
         <span class="text-grey" id="text-color-summary" *ngIf="priceOption?.productStock?.colorName">
           {{ priceOption?.productStock?.colorName?'สี': '' }} {{ priceOption?.productStock?.colorName }}
         </span>
-        <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'"> : ชำระเต็มจำนวน</span>
+        <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'"> : {{ 'ข้อมูลการชำระสินค้า' | translate }}</span>
         <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'"> :
-          ผ่อนชำระบัตรเครดิต</span>
+           {{ 'ผ่อนชำระบัตรเครดิต' | translate }}</span>
         <span class="pull-right text-green" id="text-price-summary">
           ฿ {{ price | number }}
         </span>
@@ -26,8 +26,8 @@
 
     <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">
       <span class="text-grey" id="text-credit-summary">
-        (
-        ชำระโดย เครดิตธนาคาร
+        ( 
+         {{ 'ชำระโดย เครดิตธนาคาร' | translate }}
         {{ transaction?.data?.payment?.paymentMethod?.name }}
         {{ transaction?.data?.payment?.paymentMethod?.percentage }} %
         {{ transaction?.data?.payment?.paymentMethod?.month }} เดือน
@@ -50,7 +50,7 @@
     <ng-container *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">
       <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType !== 'QR_CODE' && 
       transaction?.data?.payment?.paymentType !== 'CREDIT'">
-        (ชำระโดย เงินสด)
+         ({{ 'ชำระโดย' | translate }} {{ 'เงินสด' | translate }})
       </small>
       <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType === 'QR_CODE'">
         (
