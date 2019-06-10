@@ -47,7 +47,12 @@ export class DeviceOrderAisMnpValidateCustomerIdCardPageComponent implements OnI
     this.user = this.tokenService.getUser();
     this.priceOption = this.priceOptionService.load();
 
-    this.homeService.callback = () => {
+    this.homeService.callback = (e: any) => {
+
+      const url = this.router.url;
+      if (url.indexOf('result') !== -1) {
+        this.homeHandler();
+      }
 
       this.alertService.question('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่')
         .then((data: any) => {
