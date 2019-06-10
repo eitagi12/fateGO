@@ -7,12 +7,16 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { User } from 'mychannel-shared-libs';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { QRCodeModel } from 'src/app/shared/services/qrcode-payment.service';
+import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class CreateOrderService {
 
   user: User;
+  terminalId: any;
+  serviceId: any;
   private readonly CASH_PAYMENT: string = '[CA]';
   private readonly CREDIT_CARD_PAYMENT: string = '[CC]';
   private readonly BANK: string = '[B]';
@@ -208,6 +212,9 @@ export class CreateOrderService {
     const mapBankCode = transaction.data.payment.paymentBank.abb ? transaction.data.payment.paymentBank.abb : '';
     const mapQrTran = transaction.data.mpayPayment ? transaction.data.mpayPayment.tranId : '';
     const mapQrOrderId = transaction.data.mpayPayment ? transaction.data.mpayPayment.orderId : '';
+    this.mapQrcodePayment(priceOption, transaction);
+    console.log('qrModel.serviceId', this.serviceId);
+    console.log('qrModel.terminalId', this.terminalId);
     return {
       soId: transaction.data.order.soId,
       soCompany: priceOption.productStock.company,
@@ -239,8 +246,36 @@ export class CreateOrderService {
       bankAbbr: mapBankAbb,
       qrAmt: this.getQRAmt(priceOption, transaction), // add
       reqMinimumBalance: transaction.data.simCard ? this.getReqMinimumBalance(transaction, transaction.data.mobileCarePackage) : '',
-      qrOrderId: mapQrOrderId
+      qrOrderId: mapQrOrderId,
+      serviceId: this.serviceId || '',
+      terminalId: this.terminalId || ''
     };
+  }
+
+  isQRCode(qrCodeType: 'THAI_QR' | 'LINE_QR', transaction: Transaction): boolean {
+    const payment: any = transaction.data.payment || {};
+    return payment.paymentQrCodeType === qrCodeType;
+  }
+
+  mapQrcodePayment(priceOption: PriceOption, transaction: Transaction): any {
+
+    const qrModel: QRCodeModel = new QRCodeModel();
+    const MPAY_QRCODE = environment.MPAY_QRCODE;
+    const isThaiQRCode = this.isQRCode('THAI_QR', transaction);
+
+    if (priceOption.productStock.company === 'WDS' && transaction.data.payment.paymentType === 'QR_CODE') {
+      qrModel.company = priceOption.productStock.company;
+      qrModel.serviceId = isThaiQRCode ? MPAY_QRCODE.PB_WDS_SERVICE_ID : MPAY_QRCODE.RL_WDS_SERVICE_ID;
+      qrModel.terminalId = isThaiQRCode ? MPAY_QRCODE.PB_WDS_TERMINAL_ID : MPAY_QRCODE.RL_WDS_TERMINAL_ID;
+    } else {
+      qrModel.company = priceOption.productStock.company;
+      qrModel.serviceId = isThaiQRCode ? MPAY_QRCODE.PB_SERVICE_ID : MPAY_QRCODE.RL_SERVICE_ID;
+      qrModel.terminalId = isThaiQRCode ? MPAY_QRCODE.PB_TERMINAL_ID : MPAY_QRCODE.RL_TERMINAL_ID;
+    }
+
+    this.serviceId = qrModel.serviceId;
+    this.terminalId = qrModel.terminalId;
+
   }
 
   mapCusAddress(addressCus: Customer): any {
@@ -373,12 +408,12 @@ export class CreateOrderService {
 
   private getReqMinimumBalance(transaction: Transaction, mobileCarePackage: any): number { // Package only
     if (transaction.data.simCard.chargeType === 'Pre-paid') {
-    let total: number = 0;
-    if (mobileCarePackage && mobileCarePackage.customAttributes) {
-      const customAttributes = mobileCarePackage.customAttributes;
-      total += +(customAttributes.priceInclVat || 0);
+      let total: number = 0;
+      if (mobileCarePackage && mobileCarePackage.customAttributes) {
+        const customAttributes = mobileCarePackage.customAttributes;
+        total += +(customAttributes.priceInclVat || 0);
       }
-    return total;
+      return total;
     }
   }
 
