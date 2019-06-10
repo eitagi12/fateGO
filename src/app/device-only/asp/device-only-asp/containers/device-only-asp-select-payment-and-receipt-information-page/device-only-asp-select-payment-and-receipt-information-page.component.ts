@@ -74,7 +74,7 @@ export class DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent implem
       isFullPayment: this.isFullPayment(),
       installmentFlag: false,
       advancePay: 0,
-      qrCode: true
+      qrCode: false
     };
   }
 

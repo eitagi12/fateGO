@@ -68,11 +68,11 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
   }
 
   private checkRoutePaymentType(): void {
-    if (this.transaction.data.payment.paymentType === 'QR_CODE') {
-      this.router.navigate([ROUTE_DEVICE_ONLY_ASP_CHECKOUT_PAYMENT_QR_CODE_PAGE]);
-    } else {
+    // if (this.transaction.data.payment.paymentType === 'QR_CODE') {
+    //   this.router.navigate([ROUTE_DEVICE_ONLY_ASP_CHECKOUT_PAYMENT_QR_CODE_PAGE]);
+    // } else {
       this.router.navigate([ROUTE_DEVICE_ONLY_ASP_CHECKOUT_PAYMENT_PAGE]);
-    }
+    // }
   }
 
   private conditionNext(canNext: boolean): void {
