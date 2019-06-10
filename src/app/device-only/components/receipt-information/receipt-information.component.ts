@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, FormControl } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
 import { AlertService, REGEX_MOBILE, ReceiptInfo, PageLoadingService } from 'mychannel-shared-libs';
 import { TransactionAction, Customer } from 'src/app/shared/models/transaction.model';
@@ -122,9 +122,20 @@ export class ReceiptInformationComponent implements OnInit {
   }
 
   private createSearchByMobileNoForm(): void {
-    this.searchByMobileNoForm = this.fb.group({
-      mobileNo: ['', Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])]
+    this.searchByMobileNoForm = new FormGroup({
+      'mobileNo': new FormControl('', [
+        Validators.maxLength(10),
+        Validators.minLength(10),
+        Validators.pattern('^(0)(6|8|9)[0-9]*$|^((88)(6|8|9)[0-9]*)$'),
+        Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])
+      ])
     });
+  }
+
+  keyPress(event: any): void {
+    if (event.key === ' ' || event.key === 'Spacebar' || event.keyCode === 32 || (event.keyCode < 48 || event.keyCode > 57)) {
+      event.preventDefault();
+    }
   }
 
   setCustomerInfo(data: any): void {

@@ -3,30 +3,30 @@
     <div class="card-header bg-light-blue text-white">
       ข้อมูลใบเสร็จรับเงิน
     </div>
-    <div class="card-footer bg-transparent">
+    <div class="card-body bg-transparent">
       <div class="row">
-        <label class="col-12 col-sm-7 col-form-label" for="input-mobile-number" >
+        <label class="col-12 col-sm-8 col-form-label" for="input-mobile-number">
           ออกใบเสร็จตามใบแจ้งค่าใช้บริการเบอร์ AIS
         </label>
-        <div class="col-12 col-sm-5" [formGroup]="searchByMobileNoForm">
-          <div class="row search-box m-auto">
-            <div class="col-12 col-sm-9">
-              <input type="text" placeholder="ระบุเบอร์ AIS" id="input-mobile-number"
-                class="search-input" maxlength="10" formControlName="mobileNo" />
+        <div class="col-12 col-sm-4">
+          <form [formGroup]="searchByMobileNoForm">
+            <div class="form-group search-box">
+              <div class="input-group">
+                <input type="tel" class="form-control text-center" placeholder="ระบุเบอร์ AIS" id="input-mobile-number" formControlName="mobileNo"
+                  maxlength="10" aria-describedby="basic-addon2" (keypress)="keyPress($event)">
+                <div class="input-group-append">
+                  <button class="btn-outline" type="button" id="button-search-by-mobile-number" (click)="searchCustomerInfo()">
+                    <img class="img-search" src="assets/images/icon/device_only_search_icon.png" />
+                  </button>
+                </div>
+              </div>
             </div>
-            <div class="col-12 col-sm-3">
-              <button class="search-btn" id="button-search-by-mobile-number" (click)="searchCustomerInfo()">
-                <img src="assets/images/icon/device_only_search_icon.png" />
-              </button>
-            </div>
-          </div>
+          </form>
         </div>
       </div>
       <div class="row">
         <div class="col-12">
-          <app-device-only-read-card
-            (customerInfo) = "setCustomerInfo($event)" 
-          ></app-device-only-read-card>
+          <app-device-only-read-card (customerInfo)="setCustomerInfo($event)"></app-device-only-read-card>
         </div>
       </div>
     </div>
@@ -34,23 +34,23 @@
       <div class="text-right" (click)="switchKeyInBillingAddress()">
         <label style="cursor: pointer" class="text-lime">ระบุที่อยู่ใบเสร็จรับเงิน</label>
       </div>
-      <div *ngIf="isShowInputForKeyIn;else customerDetail" >
+      <div *ngIf="isShowInputForKeyIn;else customerDetail">
         <app-billing-address 
-        [titleNames]="titleName"
-        [customerAddress]="customerAddress"
-        [allZipCodes]="allZipCodes"
-        [provinces]="getProvinces()"
-        [amphurs]="amphurs"
-        [tumbols]="tumbols"
-        [zipCodes]="zipCode"
-        (provinceSelected)="onProvinceSelected($event)"
-        (amphurSelected)="onAmphurSelected($event)"
-        (tumbolSelected)="onTumbolSelected($event)"
-        (zipCodeSelected)="onZipCodeSelected($event)"
-        (completed)="onCompleted($event)"
-        (error)="onError($event)"
-        [keyInCustomerAddressTemp]="keyInCustomerAddressTemp"
-        ></app-billing-address>
+          [titleNames]="titleName" 
+          [customerAddress]="customerAddress" 
+          [allZipCodes]="allZipCodes" 
+          [provinces]="getProvinces()"
+          [amphurs]="amphurs" 
+          [tumbols]="tumbols" 
+          [zipCodes]="zipCode" 
+          (provinceSelected)="onProvinceSelected($event)" 
+          (amphurSelected)="onAmphurSelected($event)"
+          (tumbolSelected)="onTumbolSelected($event)" 
+          (zipCodeSelected)="onZipCodeSelected($event)" 
+          (completed)="onCompleted($event)"
+          (error)="onError($event)" 
+          [keyInCustomerAddressTemp]="keyInCustomerAddressTemp">
+        </app-billing-address>
       </div>
       <ng-template #customerDetail>
         <div>
@@ -66,7 +66,8 @@
         <div class="form-group row">
           <label for="taxId" class="col-12 col-sm-3 col-form-label" id="txtTaxID">Tax Id </label>
           <div class="col-12 col-sm-9">
-            <input type="text" class="form-control" id="taxId" formControlName="taxId" [value]= "receiptInfoForm.get('taxId').value | idCard"     readonly/>
+            <input type="text" class="form-control" id="taxId" formControlName="taxId" [value]="receiptInfoForm.get('taxId').value | idCard"
+              readonly/>
           </div>
         </div>
         <div class="form-group row">
@@ -81,7 +82,8 @@
             <span class="text-red"> *</span>
           </label>
           <div class="col-12 col-sm-9">
-            <input type="text" maxlength="10" class="form-control" id="telNo" formControlName="telNo" [ngClass]="{ 'is-invalid' : receiptInfoForm.controls.telNo.invalid && receiptInfoForm.controls.telNo.touched }" />
+            <input type="text" maxlength="10" class="form-control" id="telNo" formControlName="telNo" [ngClass]="{ 'is-invalid' : receiptInfoForm.controls.telNo.invalid && receiptInfoForm.controls.telNo.touched }"
+            />
             <small class="form-text invalid-feedback" *ngIf="receiptInfoForm.controls.telNo.touched && receiptInfoForm.controls.telNo.errors">
               * กรุณากรอกเบอร์ติดต่อให้ถูกต้อง
             </small>
