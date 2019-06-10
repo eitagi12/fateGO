@@ -5,7 +5,7 @@
       </div>
       <div class="header-icon-right">
         <!-- <mc-dropdown-language></mc-dropdown-language> -->
-        <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+        <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()" [hidden]="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'SUCCESS'"></mc-header-icon>
       </div>
     </mc-header>
     <div class="mc-flex-wrap bg-white">
@@ -23,9 +23,9 @@
               {{ transaction?.data?.simCard?.mobileNo | mobileNo }}
             </div>
           </div>
-  
+
           <div class="card mb-3">
-            <div class="card-header bg-orange text-white">สรุปรายการสั่งชื้อสินค้า</div>
+            <div class="card-header bg-orange text-white">รายการสินค้า</div>
             <div class="card-body">
               <p class="text-green">{{ priceOption?.campaign?.campaignName }}</p>
               <div class="text-light-grey">
@@ -58,11 +58,11 @@
               </span>
             </div>
           </div>
-  
+
           <div class="card mb-3 mt-4">
             <div class="card-header bg-pink text-white"> รายละเอียดการชำระ </div>
             <div class="card-body text-light-grey">
-  
+
                 <!-- ชำระค่าเครื่อง (ผ่อนแยก)-->
                 <ng-container
                   *ngIf="!priceOption?.trade?.advancePay || priceOption?.trade?.advancePay?.installmentFlag === 'N'">
@@ -83,31 +83,41 @@
                     <span class="pull-right text-green">
                       ฿ {{ priceOption?.trade?.promotionPrice | number }}
                     </span>
-                    <div class="mt-1">
-                      <small class="text-muted">
-                        (ชำระโดย {{ summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) }})
-                      </small>
-                    </div>
+                    <div class="mt-1"
+                    *ngIf="transaction?.data?.payment?.paymentForm !== 'INSTALLMENT' && transaction?.data?.payment?.paymentType === 'QR_CODE'">
+                    <small class="text-muted">
+                      (ชำระโดย {{ summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) }})
+                    </small>
+                    <span class="text-pink"
+                      *ngIf="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'WAITING'">( รอชำระ )</span>
+                    <span class="text-green"
+                      *ngIf="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'SUCCESS'">
+                      ( ชำระแล้ว TX: {{transaction?.data?.mpayPayment?.tranId}} )
+                    </span>
+
                   </div>
-  
+                  </div>
+
                   <!-- ค่าแพ็กเกจบริการล่วงหน้า -->
-                  <div *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && (+priceOption?.trade?.advancePay?.amount) > 0">
-                      <input class="form-check-input" type="radio" id="advancePay" disabled=""
-                        [checked]="transaction?.data?.advancePayment?.paymentQrCodeType">
-                      <label class="form-check-label" for="advancePay">
-                        ค่าแพ็กเกจบริการล่วงหน้า : ชำระเต็มจำนวน
-                      </label>
-                      <span class="pull-right text-green">
-                        ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
-                      </span>
-                    <div class="mt-1">
-                      <small class="text-muted" *ngIf="(+priceOption?.trade?.advancePay?.amount) > 0">
-                        (ชำระโดย {{ summaryPageService.descriptionPayment(transaction?.data?.advancePayment) }})
-                      </small>
-                    </div>
+                  <div
+                  *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && (+priceOption?.trade?.advancePay?.amount) > 0">
+                  <input class="form-check-input" type="radio" id="advancePay" disabled="" [checked]="(getStatusPay() === 'AIRTIME' && transaction?.data?.advancePayment?.paymentQrCodeType) || transaction?.data?.mpayPayment?.mpayStatus?.statusDevice !== 'WAITING'
+                        || priceOption?.productStock?.company === 'AWN'">
+                  <label class="form-check-label" for="advancePay">
+                    ค่าแพ็กเกจบริการล่วงหน้า : ชำระเต็มจำนวน
+                  </label>
+                  <span class="pull-right text-green">
+                    ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
+                  </span>
+                  <div class="mt-1">
+                    <small class="text-muted" *ngIf="(+priceOption?.trade?.advancePay?.amount) > 0">
+                      (ชำระโดย {{ summaryPageService.descriptionPayment(transaction?.data?.advancePayment) }})
+                    </small>
+                    <span class="text-pink">( รอชำระ )</span>
                   </div>
+                </div>
                 </ng-container>
-  
+
                 <!-- ค่าเครื่องและค่าแพ็กเกจล่วงหน้า (ผ่อนรวม) -->
                 <ng-container *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'Y'">
                   <div>
@@ -117,7 +127,7 @@
                       <span *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">ชำระเต็มจำนวน</span>
                       <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">ผ่อนชำระบัตรเคดิต</span>
                     </label>
-                    <span class="pull-right text-green">฿ {{ summary([ +priceOption?.trade?.promotionPrice, 
+                    <span class="pull-right text-green">฿ {{ summary([ +priceOption?.trade?.promotionPrice,
                       +priceOption?.trade?.advancePay?.amount
                       ]) | number:'1.0-0' }}</span>
                   </div>
@@ -125,14 +135,15 @@
                     <small class="text-muted">
                       (ชำระโดย {{ summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) }})
                     </small>
+                    <span class="text-pink">( รอชำระ )</span>
                   </div>
                 </ng-container>
-  
-  
+
+
             </div>
           </div>
         </div>
-  
+
         <div class="ml-5 mr-5">
           <div class="row">
             <div class="col-8">

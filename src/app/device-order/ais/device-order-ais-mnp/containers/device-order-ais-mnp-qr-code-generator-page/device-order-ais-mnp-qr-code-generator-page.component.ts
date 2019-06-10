@@ -26,6 +26,7 @@ export class DeviceOrderAisMnpQrCodeGeneratorPageComponent implements OnInit, On
   qrCode: string;
   countdown: string;
   refreshCount: number = 0;
+  totalAmount: number;
 
   constructor(
     private router: Router,
@@ -51,9 +52,25 @@ export class DeviceOrderAisMnpQrCodeGeneratorPageComponent implements OnInit, On
     const isThaiQRCode = this.isQRCode('THAI_QR');
     const user = this.tokenService.getUser();
     const order = this.transaction.data.order;
+    const mpayStatus = this.transaction.data.mpayPayment.mpayStatus;
+    const company = this.priceOption.productStock.company || 'AWN';
+    let totalAmount = 0;
 
+    totalAmount = this.getTotalAmount();
+
+    if (company === 'WDS') {
+      if (this.getStatusPay() === 'DEVICE') {
+        totalAmount = +mpayStatus.amountDevice;
+      }
+      if (this.getStatusPay() === 'AIRTIME' && mpayStatus.statusAirTime && mpayStatus.statusDevice) {
+        totalAmount = +mpayStatus.amountAirTime;
+        const qrid = mpayStatus.orderIdDevice.split('_');
+        this.refreshCount = +qrid[1] + 1;
+      }
+    }
+
+    this.totalAmount = totalAmount;
     const orderId = `${order.soId}_${this.refreshCount}`;
-    const totalAmount = this.getTotalAmount();
 
     const params: any = {
       orderId: orderId,
@@ -80,16 +97,16 @@ export class DeviceOrderAisMnpQrCodeGeneratorPageComponent implements OnInit, On
         return this.qrCodePageService.generateQRCode({
           orderId: orderId,
           channel: 'WEB',
-          serviceId: isThaiQRCode ? MPAY_QRCODE.PB_SERVICE_ID : MPAY_QRCODE.RL_SERVICE_ID,
-          terminalId: isThaiQRCode ? MPAY_QRCODE.PB_TERMINAL_ID : MPAY_QRCODE.RL_TERMINAL_ID,
+          serviceId: this.getServiceID(company, isThaiQRCode),
+          terminalId: this.getTerminalID(company, isThaiQRCode),
           qrType: isThaiQRCode ? MPAY_QRCODE.PB_TYPE : MPAY_QRCODE.RB_TYPE,
           locationName: user.locationCode,
-          amount: totalAmount
+          amount: totalAmount,
+          company: this.getStatusPay() === 'DEVICE' ? company : 'AWN'
         });
       });
     })
       .then((resp: any) => {
-        this.transaction.data.mpayPayment = Object.assign({}, params);
         if (resp === true) { // true inquiry success
           this.onNext();
           return;
@@ -99,17 +116,52 @@ export class DeviceOrderAisMnpQrCodeGeneratorPageComponent implements OnInit, On
       }).then(() => this.pageLoadingService.closeLoading());
   }
 
+  getServiceID(company: string, isThaiQRCode: boolean): string {
+    const MPAY_QRCODE = environment.MPAY_QRCODE;
+    if (this.getStatusPay() === 'DEVICE' && company === 'WDS' && this.transaction.data.payment.paymentType === 'QR_CODE') {
+      return isThaiQRCode ? MPAY_QRCODE.PB_WDS_SERVICE_ID : MPAY_QRCODE.RL_WDS_SERVICE_ID;
+    } else {
+      return isThaiQRCode ? MPAY_QRCODE.PB_SERVICE_ID : MPAY_QRCODE.RL_SERVICE_ID;
+    }
+  }
+
+  getTerminalID(company: string, isThaiQRCode: boolean): number {
+    const MPAY_QRCODE = environment.MPAY_QRCODE;
+    if (this.getStatusPay() === 'DEVICE' && company === 'WDS' && this.transaction.data.payment.paymentType === 'QR_CODE') {
+      return isThaiQRCode ? MPAY_QRCODE.PB_WDS_TERMINAL_ID : MPAY_QRCODE.RL_WDS_TERMINAL_ID;
+    } else {
+      return isThaiQRCode ? MPAY_QRCODE.PB_TERMINAL_ID : MPAY_QRCODE.RL_TERMINAL_ID;
+    }
+  }
+
+  getStatusPay(): string {
+    const mpayPayment = this.transaction.data.mpayPayment;
+    const tread = this.priceOption.trade;
+    if (tread.advancePay.installmentFlag === 'Y') {
+      return 'DEVICE&AIRTIME';
+    } else {
+      if (mpayPayment.mpayStatus && mpayPayment.mpayStatus.statusDevice && mpayPayment.mpayStatus.statusDevice === 'WAITING') {
+        return 'DEVICE';
+      } else {
+        return 'AIRTIME';
+      }
+    }
+  }
+
   getTotalAmount(): number {
     const trade = this.priceOption.trade;
     const payment: any = this.transaction.data.payment || {};
     const advancePayment: any = this.transaction.data.advancePayment || {};
-
     let total: number = 0;
+    const advancePay = trade.advancePay || {};
+
+    if (trade.advancePay.installmentFlag === 'Y') {
+      return +trade.promotionPrice +  +advancePay.amount;
+    }
     if (payment.paymentType === 'QR_CODE') {
       total += +trade.promotionPrice;
     }
     if (advancePayment.paymentType === 'QR_CODE') {
-      const advancePay = trade.advancePay || {};
       total += +advancePay.amount;
     }
     return total;
@@ -130,7 +182,33 @@ export class DeviceOrderAisMnpQrCodeGeneratorPageComponent implements OnInit, On
 
         this.checkResponseMpaySubscription = this.qrCodePageService.checkPaymentResponseMpayStatus(orderId)
           .subscribe(obs => {
-            this.transaction.data.mpayPayment = obs;
+            const mpay = {
+              locationCode: obs.locationCode,
+              qrType: obs.qrType,
+              startDtm: obs.startDtm,
+              status: obs.status,
+              tranDtm: obs.status
+            };
+            this.transaction.data.mpayPayment = Object.assign(this.transaction.data.mpayPayment , mpay);
+            if (this.priceOption.productStock.company === 'AWN') {
+              this.transaction.data.mpayPayment = Object.assign(this.transaction.data.mpayPayment , obs);
+            } else {
+              const status = this.getStatusPay();
+              this.transaction.data.mpayPayment.orderId = obs.orderId;
+              if (status === 'DEVICE') {
+                this.transaction.data.mpayPayment.mpayStatus.orderIdDevice =  obs.orderId;
+                this.transaction.data.mpayPayment.mpayStatus.statusDevice =  'SUCCESS';
+                this.transaction.data.mpayPayment.tranId = obs.tranId;
+                this.transaction.data.mpayPayment.amount = obs.amount;
+              } else if (status === 'AIRTIME') {
+                this.transaction.data.mpayPayment.mpayStatus.orderIdAirTime =  obs.orderId;
+                this.transaction.data.mpayPayment.mpayStatus.statusAirTime =  'SUCCESS';
+                this.transaction.data.mpayPayment.qrAirtimeTransId = obs.tranId;
+                this.transaction.data.mpayPayment.qrAirtimeAmt = obs.amount;
+              } else {
+                this.transaction.data.mpayPayment = Object.assign(this.transaction.data.mpayPayment , obs);
+              }
+            }
             this.onNext();
           });
 
@@ -188,7 +266,17 @@ export class DeviceOrderAisMnpQrCodeGeneratorPageComponent implements OnInit, On
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_QR_CODE_QUEUE_PAGE]);
+    const mpayStatus = this.transaction.data.mpayPayment.mpayStatus;
+    if (this.priceOption.productStock.company === 'AWN') {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_QR_CODE_QUEUE_PAGE]);
+    } else {
+      if (mpayStatus && mpayStatus.statusAirTime && mpayStatus.statusAirTime === 'WAITING') {
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_QR_CODE_SUMMARY_PAGE]);
+      } else {
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_QR_CODE_QUEUE_PAGE]);
+      }
+
+      }
   }
 
   onHome(): void {

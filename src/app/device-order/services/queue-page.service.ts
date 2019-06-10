@@ -70,6 +70,7 @@ export class QueuePageService {
     const payment = transactionData.payment;
     const prebooking: Prebooking = transactionData.preBooking;
     const mpayPayment: any = transactionData.mpayPayment || {};
+    const advancePayment = transactionData.advancePayment;
 
     const data: any = {
       soId: order.soId,
@@ -124,7 +125,7 @@ export class QueuePageService {
       preBookingNo: prebooking ? prebooking.preBookingNo : '',
       depositAmt: prebooking ? prebooking.depositAmt : '',
       qrTransId: payment.paymentType === 'QR_CODE' ? mpayPayment.tranId : null,
-      qrAmt: payment.paymentType === 'QR_CODE' && mpayPayment.tranId ? this.getQRAmt(trade, transaction) : null,
+      qrAmt: payment.paymentType === 'QR_CODE' && mpayPayment.tranId ? this.getQRAmt(trade, transaction) : null
     };
 
     // freeGoods
@@ -132,11 +133,29 @@ export class QueuePageService {
       data.tradeFreeGoodsId = trade.freeGoods[0] ? trade.freeGoods[0].tradeFreegoodsId : '';
     }
 
+    if (payment.paymentType === 'QR_CODE' || (advancePayment && advancePayment.paymentType === 'QR_CODE')) {
+      if (mpayPayment && mpayPayment.mpayStatus && mpayPayment.mpayStatus.orderIdDevice) {
+          data.qrOrderId =  mpayPayment.mpayStatus.orderIdDevice;
+      } else {
+        data.qrOrderId = mpayPayment && mpayPayment.orderId ? mpayPayment.orderId : null;
+      }
+    }
+
     // QR code for airtime
-    if (transactionData.advancePayment && transactionData.advancePayment.paymentType === 'QR_CODE' ) {
+    if (advancePayment && advancePayment.paymentType === 'QR_CODE' ) {
       data.qrAirtimeTransId = mpayPayment.qrAirtimeTransId || mpayPayment.tranId || null;
       data.qrAirtimeAmt =  this.getQRAmt(trade, transaction);
     }
+
+    // if (productStock.company && productStock.company === 'WDS') {
+    //   // ถ้าเครื่องเป็นของ WDS => ค่าเครื่องและ airtime ต้องแยกกัน
+    //   if (data.qrAirtimeAmt) {
+    //     data.qrAirtimeAmt = mpayPayment.mpayStatus.amountAirTime;
+    //   }
+    //   if (data.qrAmt) {
+    //     data.qrAmt = mpayPayment.mpayStatus.amountDevice;
+    //   }
+    // }
 
     // ผ่อนชำระ
     if (payment && payment.paymentMethod) {
