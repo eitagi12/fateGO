@@ -68,10 +68,10 @@ export class MobileCareService {
                   return false;
                 }
                 // check Pre-paid hotdeal billingSystem = 'IRB,CBS'
-                const isbillingSystem: any = chargeType.toUpperCase() === 'PRE-PAID' ?
-                  customAttributes.billingSystem.includes(billingSystem) : customAttributes.billingSystem === billingSystem;
+                // const isbillingSystem: any = chargeType.toUpperCase() === 'PRE-PAID' ?
+                //   customAttributes.billingSystem.includes(billingSystem) : customAttributes.billingSystem === billingSystem;
 
-                return (isbillingSystem
+                return (customAttributes.billingSystem.includes(billingSystem)
                   && +customAttributes.startDevicePrice <= endUserPrice
                   && +customAttributes.endDevicePrice >= endUserPrice);
               })
