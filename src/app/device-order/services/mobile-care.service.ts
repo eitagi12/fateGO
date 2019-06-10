@@ -25,6 +25,8 @@ export class MobileCareService {
     endUserPrice: number,
     mobileSegment?: string): Promise<any> {
 
+    console.log('chargeType : ', chargeType);
+
     return this.http.post('/api/salesportal/promotion-shelves', {
       userId: mobileCareInfo.packageKeyRef
     }).toPromise()
@@ -65,8 +67,11 @@ export class MobileCareService {
                   || !(customAttributes.chargeType === 'All' || customAttributes.chargeType === chargeType)) {
                   return false;
                 }
+                // check Pre-paid hotdeal billingSystem = 'IRB,CBS'
+                // const isbillingSystem: any = chargeType.toUpperCase() === 'PRE-PAID' ?
+                //   customAttributes.billingSystem.includes(billingSystem) : customAttributes.billingSystem === billingSystem;
 
-                return (customAttributes.billingSystem === billingSystem
+                return (customAttributes.billingSystem.includes(billingSystem)
                   && +customAttributes.startDevicePrice <= endUserPrice
                   && +customAttributes.endDevicePrice >= endUserPrice);
               })
