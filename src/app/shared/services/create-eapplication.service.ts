@@ -80,27 +80,16 @@ export class CreateEapplicationService {
   }
 
   getRequestEapplicationV2(transaction: Transaction, language: any): any {
-    const customer = transaction.data.customer;
-    const billingInformation = transaction.data.billingInformation;
-    const billCycleData = billingInformation.billCycleData;
-    const action = transaction.data.action;
-
+    const customer: any = transaction.data.customer || {};
+    const billingInformation: any = transaction.data.billingInformation || {};
+    const billCycleData: any = billingInformation.billCycleData || {};
+    const action: any = transaction.data.action;
+    const mainPackage: any = transaction.data.mainPackage || {};
+    const simCard: any = transaction.data.simCard || {};
     if (language === 'EN') {
-      if (transaction && transaction.data && transaction.data.mainPackage && transaction.data.mainPackage.shortNameEng) {
-        this.titlePackage = transaction.data.mainPackage.shortNameEng;
-      } else if (transaction && transaction.data && transaction.data.mainPackage && transaction.data.mainPackage.title) {
-        this.titlePackage = transaction.data.mainPackage.title;
-      } else {
-        this.titlePackage = '';
-      }
+      this.titlePackage = mainPackage.shortNameEng || mainPackage.title || '';
     } else {
-      if (transaction && transaction.data && transaction.data.mainPackage && transaction.data.mainPackage.shortNameThai) {
-        this.titlePackage = transaction.data.mainPackage.shortNameThai;
-      } else if (transaction && transaction.data && transaction.data.mainPackage && transaction.data.mainPackage.title) {
-        this.titlePackage = transaction.data.mainPackage.title;
-      } else {
-        this.titlePackage = '';
-      }
+      this.titlePackage = mainPackage.shortNameThai || mainPackage.title || '';
     }
 
     const data: any = {
@@ -121,11 +110,11 @@ export class CreateEapplicationService {
         province: customer.province || '',
         zipCode: customer.zipCode || ''
       }, this.translation.currentLang) || '',
-      mobileNumber: transaction.data.simCard.mobileNo || '',
+      mobileNumber: simCard.mobileNo || '',
 
       mainPackage: {
-        name: transaction.data.mainPackage.shortNameThai || '',
-        description: transaction.data.mainPackage.statementThai || ''
+        name: mainPackage.shortNameThai || '',
+        description: mainPackage.statementThai || ''
       },
       billCycle: billCycleData.billCycleText || '',
       receiveBillMethod: this.translation.instant(billCycleData.receiveBillMethod) || '',
@@ -140,13 +129,13 @@ export class CreateEapplicationService {
       data.billCycle = billCycleData.billCycleTextEng;
       data.mainPackage = {
         name: this.titlePackage,
-        description: transaction.data.mainPackage.statementEng || transaction.data.mainPackage.detailEN || ''
+        description: mainPackage.statementEng || mainPackage.detailEN || ''
       };
     } else {
       data.billCycle = billCycleData.billCycleText;
       data.mainPackage = {
         name: this.titlePackage,
-        description: transaction.data.mainPackage.statementThai || transaction.data.mainPackage.detailTH || ''
+        description: mainPackage.statementThai || mainPackage.detailTH || ''
       };
     }
     if (action === TransactionAction.READ_CARD || action === TransactionAction.READ_CARD_REPI) {
