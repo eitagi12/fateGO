@@ -44,21 +44,27 @@ export class DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageCompo
     private sharedTransactionService: SharedTransactionService,
   ) {
     this.homeService.callback = () => {
-      this.alertService.question('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่')
-        .then((data: any) => {
-          if (!data.value) {
-            return false;
-          }
-          if (this.validateCustomerIdcard.koiskApiFn) {
-            this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
-          }
-          return this.returnStock().then(() => true);
-        })
-        .then((isNext: boolean) => {
-          if (isNext) {
-            window.location.href = environment.name === 'LOCAL' ? '/main-menu' : '/smart-digital/main-menu';
-          }
-        });
+
+      const url = this.router.url;
+      if (url.indexOf('result') !== -1) {
+        this.homeHandler();
+      } else {
+        this.alertService.question('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่')
+          .then((data: any) => {
+            if (!data.value) {
+              return false;
+            }
+            if (this.validateCustomerIdcard.koiskApiFn) {
+              this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+            }
+            return this.returnStock().then(() => true);
+          })
+          .then((isNext: boolean) => {
+            if (isNext) {
+              this.homeHandler();
+            }
+          });
+      }
     };
     this.user = this.tokenService.getUser();
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
@@ -245,6 +251,14 @@ export class DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageCompo
           this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
         }
       });
+  }
+
+  homeHandler(): void {
+    if (environment.name === 'LOCAL') {
+      window.location.href = '/main-menu';
+    } else {
+      window.location.href = '/smart-digital/main-menu';
+    }
   }
 
   returnStock(): Promise<void> {
