@@ -52,24 +52,24 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
       const url = this.router.url;
       if (url.indexOf('result') !== -1) {
         this.homeHandler();
+      } else {
+        this.alertService.question('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่')
+          .then((data: any) => {
+            if (!data.value) {
+              return false;
+            }
+            if (this.validateCustomerIdcard.koiskApiFn) {
+              this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+            }
+            // Returns stock (sim card, soId) todo...
+            return this.returnStock().then(() => true);
+          })
+          .then((isNext: boolean) => {
+            if (isNext) {
+              this.homeHandler();
+            }
+          });
       }
-
-      this.alertService.question('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่')
-        .then((data: any) => {
-          if (!data.value) {
-            return false;
-          }
-          if (this.validateCustomerIdcard.koiskApiFn) {
-            this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
-          }
-          // Returns stock (sim card, soId) todo...
-          return this.returnStock().then(() => true);
-        })
-        .then((isNext: boolean) => {
-          if (isNext) {
-            this.homeHandler();
-          }
-        });
     };
 
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
