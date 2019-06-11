@@ -5,7 +5,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { TabsModule} from 'ngx-bootstrap';
 import { TranslateModule } from '@ngx-translate/core';
-import { SharedModule } from '../../shared/shared.module';
+import { DeviceOnlySharedModule } from '../../shared/shared.module';
 // containers
 import { DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent } from './containers/device-only-asp-select-payment-and-receipt-information-page/device-only-asp-select-payment-and-receipt-information-page.component';
 import { DeviceOnlyAspSelectMobileCarePageComponent } from './containers/device-only-asp-select-mobile-care-page/device-only-asp-select-mobile-care-page.component';
@@ -22,7 +22,7 @@ import { DeviceOnlyAspResultQueuePageComponent } from './containers/device-only-
     TranslateModule,
     DeviceOnlyAspRoutingModule,
     MyChannelSharedLibsModule,
-    SharedModule
+    DeviceOnlySharedModule
   ],
   declarations: [
     DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent,

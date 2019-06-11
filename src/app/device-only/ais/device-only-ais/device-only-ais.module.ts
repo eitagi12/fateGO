@@ -5,7 +5,7 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { TabsModule} from 'ngx-bootstrap';
 import { TranslateModule } from '@ngx-translate/core';
-import { SharedModule } from '../../shared/shared.module';
+import { DeviceOnlySharedModule } from '../../shared/shared.module';
 // containers
 import { DeviceOnlyAisCheckoutPaymentPageComponent } from './containers/device-only-ais-checkout-payment-page/device-only-ais-checkout-payment-page.component';
 import { DeviceOnlyAisCheckoutPaymentQrCodePageComponent } from './containers/device-only-ais-checkout-payment-qr-code-page/device-only-ais-checkout-payment-qr-code-page.component';
@@ -27,7 +27,7 @@ import { DeviceOnlyAisSummaryPageComponent } from './containers/device-only-ais-
     TranslateModule,
     DeviceOnlyAisRoutingModule,
     MyChannelSharedLibsModule,
-    SharedModule
+    DeviceOnlySharedModule
   ],
   declarations: [
     DeviceOnlyAisCheckoutPaymentPageComponent,

@@ -48,4 +48,4 @@ import { MobileCareComponent } from '../components/mobile-care/mobile-care.compo
   ],
   providers: []
 })
-export class SharedModule { }
+export class DeviceOnlySharedModule { }
