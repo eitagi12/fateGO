@@ -9,8 +9,6 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class CreateEapplicationService {
 
-  titlePackage: any;
-
   constructor(
     private http: HttpClient,
     private utils: Utils,
@@ -86,11 +84,6 @@ export class CreateEapplicationService {
     const action: any = transaction.data.action;
     const mainPackage: any = transaction.data.mainPackage || {};
     const simCard: any = transaction.data.simCard || {};
-    if (language === 'EN') {
-      this.titlePackage = mainPackage.shortNameEng || mainPackage.title || '';
-    } else {
-      this.titlePackage = mainPackage.shortNameThai || mainPackage.title || '';
-    }
 
     const data: any = {
       fullNameTH: customer.firstName + ' ' + customer.lastName || '',
@@ -128,13 +121,13 @@ export class CreateEapplicationService {
     if (language === 'EN') {
       data.billCycle = billCycleData.billCycleTextEng;
       data.mainPackage = {
-        name: this.titlePackage,
+        name: mainPackage.shortNameEng || mainPackage.title || '',
         description: mainPackage.statementEng || mainPackage.detailEN || ''
       };
     } else {
       data.billCycle = billCycleData.billCycleText;
       data.mainPackage = {
-        name: this.titlePackage,
+        name: mainPackage.shortNameThai || mainPackage.title || '',
         description: mainPackage.statementThai || mainPackage.detailTH || ''
       };
     }
