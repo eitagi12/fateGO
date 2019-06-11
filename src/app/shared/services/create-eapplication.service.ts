@@ -9,8 +9,6 @@ import { TranslateService } from '@ngx-translate/core';
 })
 export class CreateEapplicationService {
 
-  titlePackage: any;
-
   constructor(
     private http: HttpClient,
     private utils: Utils,
@@ -80,28 +78,12 @@ export class CreateEapplicationService {
   }
 
   getRequestEapplicationV2(transaction: Transaction, language: any): any {
-    const customer = transaction.data.customer;
-    const billingInformation = transaction.data.billingInformation;
-    const billCycleData = billingInformation.billCycleData;
-    const action = transaction.data.action;
-
-    if (language === 'EN') {
-      if (transaction && transaction.data && transaction.data.mainPackage && transaction.data.mainPackage.shortNameEng) {
-        this.titlePackage = transaction.data.mainPackage.shortNameEng;
-      } else if (transaction && transaction.data && transaction.data.mainPackage && transaction.data.mainPackage.title) {
-        this.titlePackage = transaction.data.mainPackage.title;
-      } else {
-        this.titlePackage = '';
-      }
-    } else {
-      if (transaction && transaction.data && transaction.data.mainPackage && transaction.data.mainPackage.shortNameThai) {
-        this.titlePackage = transaction.data.mainPackage.shortNameThai;
-      } else if (transaction && transaction.data && transaction.data.mainPackage && transaction.data.mainPackage.title) {
-        this.titlePackage = transaction.data.mainPackage.title;
-      } else {
-        this.titlePackage = '';
-      }
-    }
+    const customer: any = transaction.data.customer || {};
+    const billingInformation: any = transaction.data.billingInformation || {};
+    const billCycleData: any = billingInformation.billCycleData || {};
+    const action: any = transaction.data.action;
+    const mainPackage: any = transaction.data.mainPackage || {};
+    const simCard: any = transaction.data.simCard || {};
 
     const data: any = {
       fullNameTH: customer.firstName + ' ' + customer.lastName || '',
@@ -121,11 +103,11 @@ export class CreateEapplicationService {
         province: customer.province || '',
         zipCode: customer.zipCode || ''
       }, this.translation.currentLang) || '',
-      mobileNumber: transaction.data.simCard.mobileNo || '',
+      mobileNumber: simCard.mobileNo || '',
 
       mainPackage: {
-        name: transaction.data.mainPackage.shortNameThai || '',
-        description: transaction.data.mainPackage.statementThai || ''
+        name: mainPackage.shortNameThai || '',
+        description: mainPackage.statementThai || ''
       },
       billCycle: billCycleData.billCycleText || '',
       receiveBillMethod: this.translation.instant(billCycleData.receiveBillMethod) || '',
@@ -139,14 +121,14 @@ export class CreateEapplicationService {
     if (language === 'EN') {
       data.billCycle = billCycleData.billCycleTextEng;
       data.mainPackage = {
-        name: this.titlePackage,
-        description: transaction.data.mainPackage.statementEng || transaction.data.mainPackage.detailEN || ''
+        name: mainPackage.shortNameEng || mainPackage.title || '',
+        description: mainPackage.statementEng || mainPackage.detailEN || ''
       };
     } else {
       data.billCycle = billCycleData.billCycleText;
       data.mainPackage = {
-        name: this.titlePackage,
-        description: transaction.data.mainPackage.statementThai || transaction.data.mainPackage.detailTH || ''
+        name: mainPackage.shortNameThai || mainPackage.title || '',
+        description: mainPackage.statementThai || mainPackage.detailTH || ''
       };
     }
     if (action === TransactionAction.READ_CARD || action === TransactionAction.READ_CARD_REPI) {
