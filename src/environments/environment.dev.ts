@@ -13,4 +13,5 @@ export const environment = {
     PB_WDS_TERMINAL_ID: 10017, RL_WDS_TERMINAL_ID: 1000607,
     PB_TYPE: '003', RB_TYPE: '002'
   }
+
 };

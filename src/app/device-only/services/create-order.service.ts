@@ -7,12 +7,16 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { User } from 'mychannel-shared-libs';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { QRCodeModel } from 'src/app/shared/services/qrcode-payment.service';
+import { environment } from 'src/environments/environment';
 @Injectable({
   providedIn: 'root'
 })
 export class CreateOrderService {
 
   user: User;
+  terminalId: any;
+  serviceId: any;
   private readonly CASH_PAYMENT: string = '[CA]';
   private readonly CREDIT_CARD_PAYMENT: string = '[CC]';
   private readonly BANK: string = '[B]';
@@ -239,7 +243,7 @@ export class CreateOrderService {
       bankAbbr: mapBankAbb,
       qrAmt: this.getQRAmt(priceOption, transaction), // add
       reqMinimumBalance: transaction.data.simCard ? this.getReqMinimumBalance(transaction, transaction.data.mobileCarePackage) : '',
-      qrOrderId: mapQrOrderId
+      qrOrderId: mapQrOrderId,
     };
   }
 
@@ -373,12 +377,12 @@ export class CreateOrderService {
 
   private getReqMinimumBalance(transaction: Transaction, mobileCarePackage: any): number { // Package only
     if (transaction.data.simCard.chargeType === 'Pre-paid') {
-    let total: number = 0;
-    if (mobileCarePackage && mobileCarePackage.customAttributes) {
-      const customAttributes = mobileCarePackage.customAttributes;
-      total += +(customAttributes.priceInclVat || 0);
+      let total: number = 0;
+      if (mobileCarePackage && mobileCarePackage.customAttributes) {
+        const customAttributes = mobileCarePackage.customAttributes;
+        total += +(customAttributes.priceInclVat || 0);
       }
-    return total;
+      return total;
     }
   }
 
