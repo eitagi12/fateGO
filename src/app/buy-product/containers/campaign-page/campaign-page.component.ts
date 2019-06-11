@@ -537,6 +537,9 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             }
             // generate customer tabs
             this.tabs = this.getTabsFormPriceOptions(priceOptions);
+
+            this.tabs = this.tabs.filter(customerGroup => customerGroup.code !== 'MC005');
+
             this.tabs.forEach((tab: any) => {
                 tab.campaignSliders = this.getCampaignSliders(priceOptions, tab.code);
             });
