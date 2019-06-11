@@ -14,9 +14,9 @@ import { HomeButtonService } from 'src/app/device-only/services/home-button.serv
   styleUrls: ['./device-only-asp-checkout-payment-page.component.scss']
 })
 export class DeviceOnlyAspCheckoutPaymentPageComponent implements OnInit, OnDestroy {
-  private  transaction: Transaction;
-  private  priceOption: PriceOption;
-  private price: any;
+  public transaction: Transaction;
+  public priceOption: PriceOption;
+  public price: any;
 
   constructor(
     private router: Router,
@@ -38,7 +38,7 @@ export class DeviceOnlyAspCheckoutPaymentPageComponent implements OnInit, OnDest
     this.price = this.priceOption.trade.priceType === 'NORMAL' ? this.priceOption.trade.normalPrice : this.priceOption.trade.promotionPrice;
   }
 
-  private summary(aomunt: number[]): number {
+  public summary(aomunt: number[]): number {
     return aomunt.reduce((prev, curr) => {
       return prev + curr;
     }, 0);

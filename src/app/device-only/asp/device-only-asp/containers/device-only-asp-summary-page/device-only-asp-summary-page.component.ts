@@ -11,6 +11,7 @@ import { HomeButtonService } from 'src/app/device-only/services/home-button.serv
 import { HttpClient } from '@angular/common/http';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { WIZARD_DEVICE_ONLY_AIS } from 'src/app/device-only/constants/wizard.constant';
 
 @Component({
   selector: 'app-device-only-asp-summary-page',
@@ -19,7 +20,8 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 })
 export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
   @ViewChild(SummarySellerCodeComponent) summarySellerCode: SummarySellerCodeComponent;
-  private isNext: boolean;
+  public wizards: string[] = WIZARD_DEVICE_ONLY_AIS;
+  public isNext: boolean;
   private transaction: Transaction;
   private priceOption: PriceOption;
 
@@ -75,7 +77,7 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
     // }
   }
 
-  private conditionNext(canNext: boolean): void {
+  public conditionNext(canNext: boolean): void {
     this.isNext = canNext;
   }
 

@@ -25,9 +25,9 @@ export class DeviceOnlyAspQueuePageComponent implements OnInit, OnDestroy {
   private queueFrom: FormGroup;
   private mobileNo: string;
   private queue: string;
-  private queueType: string;
+  public queueType: string;
   private inputType: string;
-  private user: User;
+  public user: User;
   private skipQueue: boolean = false;
   private errorQueue: boolean = false;
 
@@ -128,7 +128,7 @@ export class DeviceOnlyAspQueuePageComponent implements OnInit, OnDestroy {
     return this.mobileFrom.value['mobileNo'] ? true : false;
   }
 
-  private checkValid(): boolean {
+  public checkValid(): boolean {
     if (this.queueType === 'AUTO_GEN_Q') {
       return this.mobileFrom.invalid && this.queueFrom.invalid;
     } else if (this.queueType === 'SMART_SHOP') {

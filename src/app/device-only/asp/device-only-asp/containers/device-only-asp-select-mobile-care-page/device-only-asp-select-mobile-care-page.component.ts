@@ -17,11 +17,11 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
   styleUrls: ['./device-only-asp-select-mobile-care-page.component.scss']
 })
 export class DeviceOnlyAspSelectMobileCarePageComponent implements OnInit, OnDestroy {
-  private wizards: string[] = WIZARD_DEVICE_ONLY_AIS;
+  public wizards: string[] = WIZARD_DEVICE_ONLY_AIS;
   private shoppingCart: ShoppingCart;
-  private mobileCare: MobileCare;
+  public mobileCare: MobileCare;
   private transaction: Transaction;
-  private priceOption: PriceOption;
+  public priceOption: PriceOption;
   private isVerifyflag: boolean;
 
   constructor(
@@ -40,7 +40,7 @@ export class DeviceOnlyAspSelectMobileCarePageComponent implements OnInit, OnDes
     this.homeButtonService.initEventButtonHome();
   }
 
-  private getCurrentPackMobileCare(existingMobileCare: any): void {
+  public getCurrentPackMobileCare(existingMobileCare: any): void {
     if (existingMobileCare) {
       const existingObj = { ...existingMobileCare };
       if (!this.transaction.data.existingMobileCare) {
@@ -51,23 +51,23 @@ export class DeviceOnlyAspSelectMobileCarePageComponent implements OnInit, OnDes
     }
   }
 
-  private onPromotion(mobileCare: any): void {
+  public onPromotion(mobileCare: any): void {
     this.transaction.data.mobileCarePackage = mobileCare;
   }
 
-  private onIsVerify(isVerifyflag: any): void {
+  public onIsVerify(isVerifyflag: any): void {
     this.isVerifyflag = isVerifyflag;
   }
 
-  private onCompleted(mobileCare: any): void {
+  public onCompleted(mobileCare: any): void {
     this.transaction.data.mobileCarePackage = mobileCare;
   }
 
-  private onMobile(mobileNo: any): void {
+  public onMobile(mobileNo: any): void {
     this.transaction.data.simCard = mobileNo;
   }
 
-  private isVerifyNext(): boolean {
+  public isVerifyNext(): boolean {
     if (this.isVerifyflag && this.transaction.data.mobileCarePackage) {
       return true;
     } else if (typeof(this.transaction.data.mobileCarePackage) === 'string') {

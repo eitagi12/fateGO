@@ -11,10 +11,10 @@ import { PageLoadingService } from 'mychannel-shared-libs';
   styleUrls: ['./device-only-asp-result-queue-page.component.scss']
 })
 export class DeviceOnlyAspResultQueuePageComponent implements OnInit, OnDestroy {
-  private transaction: Transaction;
-  private priceOption: PriceOption;
-  private price: any;
-  private paymentQr: any;
+  public transaction: Transaction;
+  public priceOption: PriceOption;
+  public price: any;
+  public paymentQr: any;
 
   constructor(
     private pageLoadingService: PageLoadingService,
@@ -47,7 +47,7 @@ export class DeviceOnlyAspResultQueuePageComponent implements OnInit, OnDestroy 
     window.location.href = '/';
   }
 
-  private mainMenu(): void {
+  public mainMenu(): void {
     window.location.href = '/';
   }
 

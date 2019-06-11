@@ -19,9 +19,9 @@ import { Product } from 'src/app/device-only/models/product.model';
   styleUrls: ['./device-only-asp-select-payment-and-receipt-information-page.component.scss']
 })
 export class DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent implements OnInit {
-  private wizards: string[] = WIZARD_DEVICE_ONLY_AIS;
-  private banks: any[];
-  private paymentDetail: PaymentDetail;
+  public wizards: string[] = WIZARD_DEVICE_ONLY_AIS;
+  public banks: any[];
+  public paymentDetail: PaymentDetail;
   private priceOption: PriceOption;
   private transaction: Transaction;
   private user: User;
@@ -30,7 +30,7 @@ export class DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent implem
   private localtion: any;
   private isReceiptInformationValid: boolean;
   private paymentDetailValid: boolean;
-  private customerInfoTemp: any;
+  public customerInfoTemp: any;
   private paymentDetailTemp: any;
 
   constructor(
@@ -141,7 +141,7 @@ export class DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent implem
     }
   }
 
-  private onComplete(customerInfo: any): void {
+  public onComplete(customerInfo: any): void {
     this.transaction.data.customer = customerInfo.customer;
     this.transaction.data.billingInformation = {
       billDeliveryAddress: customerInfo.billDeliveryAddress
@@ -149,7 +149,7 @@ export class DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent implem
     this.transaction.data.receiptInfo = customerInfo.receiptInfo;
   }
 
-  private checkAction(action: string): void {
+  public checkAction(action: string): void {
     if (action === 'READ_CARD') {
       this.transaction.data.action = TransactionAction.READ_CARD;
     } else {
@@ -167,15 +167,15 @@ export class DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent implem
     });
   }
 
-  private onPaymentDetailCompleted(payment: any): void {
+  public onPaymentDetailCompleted(payment: any): void {
     this.paymentDetailTemp = payment;
   }
 
-  private onPaymentDetailError(valid: boolean): void {
+  public onPaymentDetailError(valid: boolean): void {
     this.paymentDetailValid = valid;
   }
 
-  private onError(error: boolean): void {
+  public onError(error: boolean): void {
     this.isReceiptInformationValid = error;
   }
 
@@ -203,7 +203,7 @@ export class DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent implem
     this.createAddToCartTrasaction();
   }
 
-  private isNotFormValid(): boolean {
+  public isNotFormValid(): boolean {
     return !(this.isReceiptInformationValid && this.paymentDetailValid);
   }
 
