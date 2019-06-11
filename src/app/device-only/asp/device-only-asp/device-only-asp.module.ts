@@ -1,10 +1,11 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DeviceOnlyAspRoutingModule } from './device-only-asp-routing.module';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { TabsModule} from 'ngx-bootstrap';
 import { TranslateModule } from '@ngx-translate/core';
+import { SharedModule } from '../../shared/shared.module';
 // containers
 import { DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent } from './containers/device-only-asp-select-payment-and-receipt-information-page/device-only-asp-select-payment-and-receipt-information-page.component';
 import { DeviceOnlyAspSelectMobileCarePageComponent } from './containers/device-only-asp-select-mobile-care-page/device-only-asp-select-mobile-care-page.component';
@@ -12,26 +13,16 @@ import { DeviceOnlyAspQueuePageComponent } from './containers/device-only-asp-qu
 import { DeviceOnlyAspCheckoutPaymentPageComponent } from './containers/device-only-asp-checkout-payment-page/device-only-asp-checkout-payment-page.component';
 import { DeviceOnlyAspSummaryPageComponent } from './containers/device-only-asp-summary-page/device-only-asp-summary-page.component';
 import { DeviceOnlyAspResultQueuePageComponent } from './containers/device-only-asp-result-queue-page/device-only-asp-result-queue-page.component';
-// component
-import { BillingAddressComponent } from '../../components/billing-address/billing-address.component';
-import { DeviceOnlyReadCardComponent } from '../../components/device-only-read-card/device-only-read-card.component';
-import { ReceiptInformationComponent } from '../../components/receipt-information/receipt-information.component';
-import { ShoppingCartDetailComponent } from '../../components/shopping-cart-detail/shopping-cart-detail.component';
-import { SummaryOrderDetailComponent } from '../../components/summary-order-detail/summary-order-detail.component';
-import { SummaryPaymentDetailComponent } from '../../components/summary-payment-detail/summary-payment-detail.component';
-import { SummaryProductAndServiceComponent } from '../../components/summary-product-and-service/summary-product-and-service.component';
-import { SummarySellerCodeComponent } from '../../components/summary-seller-code/summary-seller-code.component';
-import { MobileCareComponent } from '../../components/mobile-care/mobile-care.component';
-
 @NgModule({
   imports: [
     CommonModule,
-    DeviceOnlyAspRoutingModule,
     FormsModule,
     ReactiveFormsModule,
     TabsModule.forRoot(),
     TranslateModule,
-    MyChannelSharedLibsModule
+    DeviceOnlyAspRoutingModule,
+    MyChannelSharedLibsModule,
+    SharedModule
   ],
   declarations: [
     DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent,
@@ -39,17 +30,7 @@ import { MobileCareComponent } from '../../components/mobile-care/mobile-care.co
     DeviceOnlyAspQueuePageComponent,
     DeviceOnlyAspCheckoutPaymentPageComponent,
     DeviceOnlyAspSummaryPageComponent,
-    DeviceOnlyAspResultQueuePageComponent,
-
-    BillingAddressComponent,
-    DeviceOnlyReadCardComponent,
-    MobileCareComponent,
-    ReceiptInformationComponent,
-    ShoppingCartDetailComponent,
-    SummaryOrderDetailComponent,
-    SummaryPaymentDetailComponent,
-    SummaryProductAndServiceComponent,
-    SummarySellerCodeComponent
+    DeviceOnlyAspResultQueuePageComponent
   ],
   providers: []
 })
