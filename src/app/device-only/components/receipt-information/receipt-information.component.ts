@@ -133,7 +133,8 @@ export class ReceiptInformationComponent implements OnInit {
   }
 
   keyPress(event: any): void {
-    if (event.key === 'Spacebar' || event.keyCode === 32 || (event.keyCode < 48 || event.keyCode > 57)) {
+    const charCode: number = (event.which) ? event.which : event.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
       event.preventDefault();
     }
   }

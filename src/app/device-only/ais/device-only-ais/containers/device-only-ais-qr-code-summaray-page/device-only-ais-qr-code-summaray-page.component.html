@@ -135,20 +135,16 @@
         </div>
       </div>
 
-        <div class="col-12 mt-4">
-          <form class="form-inline pull-right">
-            <div class="form-group">
-              <label for="text-total-price" class="text-green">ยอดชำระ</label>
-              <input style="text-align: center" type="text" id="text-total-price" readonly
-                class="form-control ml-3 text-green" 
-                value="฿{{ summary([+price, deposit]) | number }}">
-            </div>
-          </form>
+      <div class="row mt-3">
+        <div class="col-8">
+          <span class="text-green pull-right" for="text-total-price">ยอดชำระ</span>
         </div>
+        <div class="col-4">
+          <input class="form-control text-green text-center pull-right " type="text" id="text-total-price" value="฿{{ summary([+price, deposit]) | number }}" readonly>
+        </div>
+      </div>
     </div>
-
   </div>
-
 
   <mc-footer>
     <button class="btn btn-secondary" id="button-back" (click)="onBack()">CANCEL</button>
