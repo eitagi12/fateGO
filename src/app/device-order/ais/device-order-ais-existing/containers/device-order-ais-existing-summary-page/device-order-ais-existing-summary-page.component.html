@@ -1,221 +1,214 @@
 <div class="mc-flex">
-    <mc-header title="{{ 'ลูกค้าปัจจุบัน' | translate}}">
-      <div class="header-icon-left">
-        <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
-      </div>
-      <div class="header-icon-right">
-        <!-- <mc-dropdown-language></mc-dropdown-language> -->
-        <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
-      </div>
-    </mc-header>
-    <div class="mc-flex-wrap">
-      <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
-      <div class="mt-3 mb-3">
-        <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
-        <div class="container-fluid">
-          <div class="card mb-3">
-            <div class="card-header bg-pink text-white" translate>สรุปรายการสั่งซื้อสินค้า</div>
-            <div class="card-body">
-              <p class="text-green">{{ priceOption?.campaign?.campaignName }}</p>
-              <div class="text-light-grey">
-                <p>
-                  <i class="fa fa-circle mr-3 text-green"></i>
-                  {{ priceOption?.productDetail?.name }}
-                  <span *ngIf="priceOption?.productStock?.color">
-                    สี {{ priceOption?.productStock?.color }}
-                  </span>
-                  <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
-                    (แถมซิม)
-                  </span>
-                  <span class="pull-right text-green">
-                    ฿ {{ priceOption?.trade?.promotionPrice | number }}
-                  </span>
-                </p>
-                <p *ngIf="priceOption?.trade?.advancePay?.amount > 0">
-                  <i class="fa fa-circle mr-3 text-green"></i>
-                  {{ priceOption?.trade?.advancePay?.description }}
-                  <span class="pull-right text-green">
-                    ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
-                  </span>
-                </p>
-              </div>
-            </div>
-            <div class="card-footer bg-transparent text-right" translate>
-              รวมยอดชำระ(รวม VAT)
-              <span class="text-green ml-2">
-                ฿ {{ summary([
-                +priceOption?.trade?.promotionPrice,
-                +priceOption?.trade?.advancePay?.amount
-                ]) | number }}
-              </span>
-            </div>
-          </div>
-  
-          <div class="card mb-3">
-            <div class="card-header bg-lime text-white" translate>แพ็กเกจใช้บริการ</div>
-            <div class="card-body">
+  <mc-header title="{{ 'ลูกค้าปัจจุบัน' | translate}}">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right">
+      <!-- <mc-dropdown-language></mc-dropdown-language> -->
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
+    <div class="mt-3 mb-3">
+      <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
+      <div class="container-fluid">
+        <div class="card mb-3">
+          <div class="card-header bg-pink text-white" translate>สรุปรายการสั่งซื้อสินค้า</div>
+          <div class="card-body">
+            <p class="text-green">{{ priceOption?.campaign?.campaignName }}</p>
+            <div class="text-light-grey">
               <p>
                 <i class="fa fa-circle mr-3 text-green"></i>
-                {{ transaction?.data?.mainPackage?.title || transaction?.data?.currentPackage?.title}}
-                <span class="pull-right" (click)="onOpenDetail(transaction?.data?.mainPackage?.detailTH || transaction?.data?.currentPackage?.detail)">
-                  <img src="assets/images/icon/icon-page.png" class="icon" />
+                {{ priceOption?.productDetail?.name }}
+                <span *ngIf="priceOption?.productStock?.color">
+                  สี {{ priceOption?.productStock?.color }}
+                </span>
+                <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
+                  (แถมซิม)
+                </span>
+                <span class="pull-right text-green">
+                  ฿ {{ priceOption?.trade?.promotionPrice | number }}
+                </span>
+              </p>
+              <p *ngIf="priceOption?.trade?.advancePay?.amount > 0">
+                <i class="fa fa-circle mr-3 text-green"></i>
+                {{ priceOption?.trade?.advancePay?.description }}
+                <span class="pull-right text-green">
+                  ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
                 </span>
               </p>
             </div>
-            <div class="card-footer bg-transparent text-right">
-            </div>
           </div>
-  
-          <div class="card mb-3">
-            <div class="card-header bg-purple text-white" translate>สินค้าและบริการอื่น</div>
-            <div class="card-body">
-              <p>
-                <i class="fa fa-circle mr-3 text-green"></i>
-                <ng-container *ngIf="!transaction?.data?.mobileCarePackage?.title">
-                  <span translate>ไม่ซื้อบริการโมบายแคร์</span>
-                </ng-container>
-                <ng-container *ngIf="transaction?.data?.mobileCarePackage?.title">
-                  <span>
-                    {{ transaction?.data?.mobileCarePackage?.title }}
-                  </span>
-                  <span class="pull-right" (click)="onOpenDetail(transaction?.data?.mobileCarePackage?.detailTH)">
+          <div class="card-footer bg-transparent text-right" translate>
+            รวมยอดชำระ(รวม VAT)
+            <span class="text-green ml-2">
+              ฿ {{ summary([ +priceOption?.trade?.promotionPrice, +priceOption?.trade?.advancePay?.amount ]) | number }}
+            </span>
+          </div>
+        </div>
+
+        <div class="card mb-3">
+          <div class="card-header bg-lime text-white" translate>แพ็กเกจใช้บริการ</div>
+          <div class="card-body">
+            <p>
+              <i class="fa fa-circle mr-3 text-green"></i>
+              {{ transaction?.data?.mainPackage?.title || transaction?.data?.currentPackage?.title}}
+              <span class="pull-right" (click)="onOpenDetail(transaction?.data?.mainPackage?.detailTH || transaction?.data?.currentPackage?.detail)">
+                <img src="assets/images/icon/icon-page.png" class="icon" />
+              </span>
+            </p>
+          </div>
+          <div class="card-footer bg-transparent text-right">
+          </div>
+        </div>
+
+        <div class="card mb-3">
+          <div class="card-header bg-purple text-white" translate>สินค้าและบริการอื่น</div>
+          <div class="card-body">
+            <p>
+              <i class="fa fa-circle mr-3 text-green"></i>
+              <ng-container *ngIf="!transaction?.data?.mobileCarePackage?.title">
+                <span translate>ไม่ซื้อบริการโมบายแคร์</span>
+              </ng-container>
+              <ng-container *ngIf="transaction?.data?.mobileCarePackage?.title">
+                <span>
+                  {{ transaction?.data?.mobileCarePackage?.title }}
+                </span>
+                <span class="pull-right" (click)="onOpenDetail(transaction?.data?.mobileCarePackage?.detailTH)">
+                  <img src="assets/images/icon/icon-page.png" class="icon" />
+                </span>
+              </ng-container>
+            </p>
+          </div>
+          <div class="card-body" *ngIf="packageOntopList?.length > 0">
+            <div class="card-header bg-purple text-white">
+              {{ 'แพ็กเกจเสริม' | translate }}
+            </div>
+            <span class="text-pink px-2">{{ 'ยกเลิกแพ็กเกจ' | translate }}</span>
+            <p>
+              <ng-container *ngIf="packageOntopList">
+                <div *ngFor="let packageOntop of packageOntopList" class="p-3">
+                  <i class="fa fa-circle mr-3 text-green"></i>
+                  <span> {{ packageOntop.title}} </span>
+                  <span class="pull-right" (click)="onOpenDetail(packageOntop?.detail)">
                     <img src="assets/images/icon/icon-page.png" class="icon" />
                   </span>
-                </ng-container>
-              </p>
-            </div>
-            <div class="card-body"  *ngIf="packageOntopList?.length > 0">
-                <div class="card-header bg-purple text-white">
-              แพ็กเกจเสริม
-            </div>
-              <p>
-                <ng-container *ngIf="packageOntopList">
-                  <div *ngFor="let packageOntop of packageOntopList" class="p-3">
-                    <i class="fa fa-circle mr-3 text-green"></i>
-                    <span> {{ packageOntop.title}} </span>
-                    <span class="pull-right" (click)="onOpenDetail(packageOntop?.detail)">
-                        <img src="assets/images/icon/icon-page.png" class="icon" />
-                      </span>
-                  </div>
-                </ng-container>
-              </p>
-            </div>
-            <div class="card-footer bg-transparent text-right">
-            </div>
-          </div>
-  
-          <div class="card mb-3">
-            <div class="card-header bg-pink text-white" translate>
-              รายละเอียดการชำระ
-            </div>
-            <div class="card-body">
-              <p translate>
-                ข้อมูลการชำระสินค้า
-              </p>
-  
-              <!-- ชำระเต็มจำนวน -->
-              <ng-container
-                *ngIf="!priceOption?.trade?.advancePay || priceOption?.trade?.advancePay?.installmentFlag === 'N'">
-                <p>
-                  <i class="fa fa-circle mr-3 text-green"></i>
-                  {{ priceOption?.productDetail?.name }}
-                  <span *ngIf="priceOption?.productStock?.color">
-                    สี {{ priceOption?.productStock?.color }}
-                  </span>
-                  <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
-                    (แถมซิม)
-                  </span>
-                  <span *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">: {{'ชำระเต็มจำนวน'| translate}}</span>
-                  <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">: {{'ผ่อนชำระบัตรเครดิต'| translate}}</span>
-                  <span class="pull-right text-green">
-                    ฿ {{ priceOption?.trade?.promotionPrice | number }}
-                  </span>
-                </p>
-                <small class="text-muted">
-                  ({{'ชำระโดย' | translate}} {{ summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) }})
-                </small>
-                <!-- ค่าแพ็กเกจบริการล่วงหน้า -->
-                <p class="mt-3" *ngIf="(+priceOption?.trade?.advancePay?.amount) > 0">
-                  <i class="fa fa-circle mr-3 text-green"></i>
-                  {{'ค่าแพ็กเกจบริการล่วงหน้า'| translate}} : {{'ชำระเต็มจำนวน'| translate}}
-                  <span class="pull-right text-green">
-                    ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
-                  </span>
-                </p>
-                <small class="text-muted" *ngIf="(+priceOption?.trade?.advancePay?.amount) > 0">
-                  ({{'ชำระโดย' | translate}}  {{ summaryPageService.descriptionPayment(transaction?.data?.advancePayment) }})
-                </small>
+                </div>
               </ng-container>
-  
-              <!-- ค่าเครื่องและค่าแพ็กเกจล่วงหน้า -->
-              <ng-container *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'Y'">
-                <p>
-                  <i class="fa fa-circle mr-3 text-green"></i>
-                  {{'ค่าเครื่องและค่าแพ็กเกจล่วงหน้า'| translate}} :
-                  <span *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">{{'ชำระเต็มจำนวน'| translate}}</span>
-                  <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">{{'ผ่อนชำระบัตรเครดิต'| translate}}</span>
-                  <span class="pull-right text-green">฿ {{ summary([
-                    +priceOption?.trade?.promotionPrice,
-                    +priceOption?.trade?.advancePay?.amount
-                    ]) | number }}</span>
-                </p>
-                <small class="text-muted">
-                  ({{'ชำระโดย' | translate}} {{ summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) }})
-                </small>
-              </ng-container>
-  
-            </div>
-            <div class="card-footer bg-transparent ">
-              <p translate>
-                ข้อมูลใบเสร็จรับเงิน
-              </p>
-              <div class="row">
-                <p class="col-12 col-sm-4" translate>
-                  <i class="fa fa-circle mr-3 text-green"></i>
-                  {{'ผู้ซื้อ' | translate}}
-                </p>
-                <p class="col-12 col-sm-8 text-green">
-                  {{ transaction?.data?.customer?.titleName }}
-                  {{ transaction?.data?.customer?.firstName }}
-                  {{ transaction?.data?.customer?.lastName }}
-                </p>
-                <p class="col-12 col-sm-4" translate>
-                  <i class="fa fa-circle mr-3 text-green"></i>
-                  ที่อยู่ในใบเสร็จรับเงิน
-                </p>
-                <p class="col-12 col-sm-8 text-green">
-                  {{ customerAddress }}
-                </p>
-              </div>
-            </div>
-            <div class="card-footer bg-transparent">
-              <p translate>
-                ข้อตกลงรับสิทธิ์ต่อเนื่อง
-              </p>
-              <p translate>
-                <i class="fa fa-circle mr-3 text-green"></i>
-                รับสิทธิ์ต่อเนื่องนาน {{ priceOption?.campaign?.maximumContract }} เดือน
-              </p>
-  
-            </div>
-            <div class="card-footer bg-transparent text-right">
-            </div>
+            </p>
           </div>
-  
+          <div class="card-footer bg-transparent text-right">
+          </div>
         </div>
+
+        <div class="card mb-3">
+          <div class="card-header bg-pink text-white" translate>
+            รายละเอียดการชำระ
+          </div>
+          <div class="card-body">
+            <p translate>
+              ข้อมูลการชำระสินค้า
+            </p>
+
+            <!-- ชำระเต็มจำนวน -->
+            <ng-container *ngIf="!priceOption?.trade?.advancePay || priceOption?.trade?.advancePay?.installmentFlag === 'N'">
+              <p>
+                <i class="fa fa-circle mr-3 text-green"></i>
+                {{ priceOption?.productDetail?.name }}
+                <span *ngIf="priceOption?.productStock?.color">
+                  สี {{ priceOption?.productStock?.color }}
+                </span>
+                <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
+                  (แถมซิม)
+                </span>
+                <span *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">: {{'ชำระเต็มจำนวน'| translate}}</span>
+                <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">: {{'ผ่อนชำระบัตรเครดิต'| translate}}</span>
+                <span class="pull-right text-green">
+                  ฿ {{ priceOption?.trade?.promotionPrice | number }}
+                </span>
+              </p>
+              <small class="text-muted">
+                ({{'ชำระโดย' | translate}} {{ summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) }})
+              </small>
+              <!-- ค่าแพ็กเกจบริการล่วงหน้า -->
+              <p class="mt-3" *ngIf="(+priceOption?.trade?.advancePay?.amount) > 0">
+                <i class="fa fa-circle mr-3 text-green"></i>
+                {{'ค่าแพ็กเกจบริการล่วงหน้า'| translate}} : {{'ชำระเต็มจำนวน'| translate}}
+                <span class="pull-right text-green">
+                  ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
+                </span>
+              </p>
+              <small class="text-muted" *ngIf="(+priceOption?.trade?.advancePay?.amount) > 0">
+                ({{'ชำระโดย' | translate}} {{ summaryPageService.descriptionPayment(transaction?.data?.advancePayment) }})
+              </small>
+            </ng-container>
+
+            <!-- ค่าเครื่องและค่าแพ็กเกจล่วงหน้า -->
+            <ng-container *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'Y'">
+              <p>
+                <i class="fa fa-circle mr-3 text-green"></i>
+                {{'ค่าเครื่องและค่าแพ็กเกจล่วงหน้า'| translate}} :
+                <span *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">{{'ชำระเต็มจำนวน'| translate}}</span>
+                <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">{{'ผ่อนชำระบัตรเครดิต'| translate}}</span>
+                <span class="pull-right text-green">฿ {{ summary([ +priceOption?.trade?.promotionPrice, +priceOption?.trade?.advancePay?.amount ]) | number }}</span>
+              </p>
+              <small class="text-muted">
+                ({{'ชำระโดย' | translate}} {{ summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) }})
+              </small>
+            </ng-container>
+
+          </div>
+          <div class="card-footer bg-transparent ">
+            <p translate>
+              ข้อมูลใบเสร็จรับเงิน
+            </p>
+            <div class="row">
+              <p class="col-12 col-sm-4" translate>
+                <i class="fa fa-circle mr-3 text-green"></i>
+                {{'ผู้ซื้อ' | translate}}
+              </p>
+              <p class="col-12 col-sm-8 text-green">
+                {{ transaction?.data?.customer?.titleName }} {{ transaction?.data?.customer?.firstName }} {{ transaction?.data?.customer?.lastName
+                }}
+              </p>
+              <p class="col-12 col-sm-4" translate>
+                <i class="fa fa-circle mr-3 text-green"></i>
+                ที่อยู่ในใบเสร็จรับเงิน
+              </p>
+              <p class="col-12 col-sm-8 text-green">
+                {{ customerAddress }}
+              </p>
+            </div>
+          </div>
+          <div class="card-footer bg-transparent">
+            <p translate>
+              ข้อตกลงรับสิทธิ์ต่อเนื่อง
+            </p>
+            <p translate>
+              <i class="fa fa-circle mr-3 text-green"></i>
+              รับสิทธิ์ต่อเนื่องนาน {{ priceOption?.campaign?.maximumContract }} เดือน
+            </p>
+
+          </div>
+          <div class="card-footer bg-transparent text-right">
+          </div>
+        </div>
+
       </div>
     </div>
-    <mc-footer>
-      <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-      <button class="btn btn-success" (click)="onNext()">NEXT</button>
-    </mc-footer>
   </div>
-  
-  <ng-template #detailTemplate>
-    <div class="modal-body" [innerHTML]="detail"></div>
-    <div class="modal-footer">
-      <div class="w-100 text-center">
-        <button class="btn btn-success px-5" (click)="modalRef.hide()">{{'ปิด'| translate}}</button>
-      </div>
+  <mc-footer>
+    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button class="btn btn-success" (click)="onNext()">NEXT</button>
+  </mc-footer>
+</div>
+
+<ng-template #detailTemplate>
+  <div class="modal-body" [innerHTML]="detail"></div>
+  <div class="modal-footer">
+    <div class="w-100 text-center">
+      <button class="btn btn-success px-5" (click)="modalRef.hide()">{{'ปิด'| translate}}</button>
     </div>
-  </ng-template>
+  </div>
+</ng-template>

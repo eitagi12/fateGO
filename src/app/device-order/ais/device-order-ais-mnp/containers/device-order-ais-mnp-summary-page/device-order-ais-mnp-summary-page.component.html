@@ -82,17 +82,18 @@
             </p>
           </div>
           <div class="card-body" *ngIf="packageOntopList?.length > 0">
-              <div class="card-header bg-purple text-white">
-            แพ็กเกจเสริม
-          </div>
+            <div class="card-header bg-purple text-white">
+              {{ 'แพ็กเกจเสริม' | translate }}
+            </div>
+            <span class="text-pink px-2">{{ 'ยกเลิกแพ็กเกจ' | translate }}</span>
             <p>
               <ng-container *ngIf="packageOntopList">
                 <div *ngFor="let packageOntop of packageOntopList" class="p-3">
                   <i class="fa fa-circle mr-3 text-green"></i>
                   <span> {{ packageOntop.title}} </span>
                   <span class="pull-right" (click)="onOpenDetail(packageOntop?.detail)">
-                      <img src="assets/images/icon/icon-page.png" class="icon" />
-                    </span>
+                    <img src="assets/images/icon/icon-page.png" class="icon" />
+                  </span>
                 </div>
               </ng-container>
             </p>
