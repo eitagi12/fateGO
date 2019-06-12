@@ -48,9 +48,7 @@ export class DeviceOnlyAspResultQueuePageComponent implements OnInit, OnDestroy 
   }
 
   public mainMenu(): void {
-    const baseMyChannelWebURL: any = 'http://10.137.16.46:8080/web';
-    window.location.href = baseMyChannelWebURL + '/' + 'sales-order/save-sales-order?transactionId=' + this.transaction.transactionId;
-    // window.location.href = '/';
+    window.location.href = '/';
   }
 
   ngOnDestroy(): void {
