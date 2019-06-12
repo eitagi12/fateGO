@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ONLY_AIS } from 'src/app/device-only/constants/wizard.constant';
 import { PaymentDetail, User, TokenService, HomeService, ApiRequestService, AlertService } from 'mychannel-shared-libs';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -18,7 +18,7 @@ import { Product } from 'src/app/device-only/models/product.model';
   templateUrl: './device-only-asp-select-payment-and-receipt-information-page.component.html',
   styleUrls: ['./device-only-asp-select-payment-and-receipt-information-page.component.scss']
 })
-export class DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent implements OnInit {
+export class DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent implements OnInit, OnDestroy {
   public wizards: string[] = WIZARD_DEVICE_ONLY_AIS;
   public banks: any[];
   public paymentDetail: PaymentDetail;
@@ -205,6 +205,10 @@ export class DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent implem
 
   public isNotFormValid(): boolean {
     return !(this.isReceiptInformationValid && this.paymentDetailValid);
+  }
+
+  ngOnDestroy(): void {
+    this.transactionService.save(this.transaction);
   }
 
 }
