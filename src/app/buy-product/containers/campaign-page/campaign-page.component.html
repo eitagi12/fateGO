@@ -125,7 +125,7 @@
         <div class="row bg-white shadow-sm py-3 mb-2">
           <div class="col-12">
             <img src="assets/images/icon/sales_portal_orange_circle_tag.png" class="icon" />
-            <span class="ml-2">{{ priceOption?.campaign?.campaignName }}</span>
+            <span class="ml-2">{{ priceOption?.campaign?.campaignName | translate}}</span>
             <!-- <span class="pull-right text-green pt-2">รายละเอียดโครงการ</span> -->
           </div>
         </div>
@@ -134,7 +134,7 @@
           <div class="card mb-2" *ngIf="privilege?.trades">
             <div class="card-body">
               <h6 class="text-black m-0">
-                {{ priceOption?.campaign?.campaignName || priceOption?.campaign?.campaignDesc }}
+                {{ (priceOption?.campaign?.campaignName || priceOption?.campaign?.campaignDesc | translate) }}
                 {{ priceOption?.customerGroup?.name | translate}} ({{ privilege?.ussdCode }})
               </h6>
               <!-- price, advance pay -->
