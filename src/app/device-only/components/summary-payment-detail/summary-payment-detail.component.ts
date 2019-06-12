@@ -22,7 +22,7 @@ export class SummaryPaymentDetailComponent implements OnInit {
   transaction: Transaction;
   customerAddress: string;
   price: string;
-  private isShowReceiptTnfomation: boolean = false;
+  public isShowReceiptTnfomation: boolean = false;
   user: User;
   @Output() conditionNext: EventEmitter<any> = new EventEmitter<any>();
 
@@ -41,7 +41,6 @@ export class SummaryPaymentDetailComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.isShowReceiptTnfomation = true;
     this.checkUserType();
     this.price = this.priceOption.trade.priceType === 'NORMAL' ? this.priceOption.trade.normalPrice : this.priceOption.trade.promotionPrice;
     this.getDataCustomer();
@@ -49,7 +48,7 @@ export class SummaryPaymentDetailComponent implements OnInit {
   }
 
   private checkUserType(): boolean {
-    return this.isShowReceiptTnfomation = (this.user.userType === 'ASP') ? false : true;
+    return this.isShowReceiptTnfomation = this.user.userType === 'ASP' ? false : true;
   }
 
   private checkExMobileCare(): void {
