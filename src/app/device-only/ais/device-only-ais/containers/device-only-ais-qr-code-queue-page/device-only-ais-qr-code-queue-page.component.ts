@@ -49,7 +49,8 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy 
     private sharedTransactionService: SharedTransactionService,
     private createOrderService: CreateOrderService,
     private queueService: QueueService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private alertService: AlertService
 
   ) {
     this.transaction = this.transactionService.load();
@@ -124,6 +125,14 @@ export class DeviceOnlyAisQrCodeQueuePageComponent implements OnInit, OnDestroy 
         return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
           this.pageLoadingService.closeLoading();
           this.router.navigate([ROUTE_DEVICE_ONLY_AIS_RESULT_QUEUE_PAGE]);
+        });
+      }).catch((err: any) => {
+        this.pageLoadingService.closeLoading();
+        this.alertService.notify({
+          type: 'error',
+          confirmButtonText: 'OK',
+          showConfirmButton: true,
+          text: err.error.developerMessage
         });
       });
     } else {
