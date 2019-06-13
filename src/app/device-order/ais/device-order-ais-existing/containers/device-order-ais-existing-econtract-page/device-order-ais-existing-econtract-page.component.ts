@@ -29,7 +29,7 @@ export class DeviceOrderAisExistingEcontractPageComponent implements OnInit, OnD
   eContactSrc: string;
   agreement: boolean;
 
-  translationSubscribe: Subscription;
+  translateSubscription: Subscription;
   currentLang: string;
 
   constructor(
@@ -51,7 +51,7 @@ export class DeviceOrderAisExistingEcontractPageComponent implements OnInit, OnD
     delete this.transaction.data.contract;
 
     this.currentLang = this.translationService.currentLang || 'TH';
-    this.translationSubscribe = this.translationService.onLangChange.subscribe(lang => {
+    this.translateSubscription = this.translationService.onLangChange.subscribe(lang => {
       this.currentLang = typeof (lang) === 'object' ? lang.lang : lang;
       this.callService();
     });
@@ -96,6 +96,9 @@ export class DeviceOrderAisExistingEcontractPageComponent implements OnInit, OnD
   }
 
   ngOnDestroy(): void {
+    if (this.translateSubscription) {
+      this.translateSubscription.unsubscribe();
+    }
     this.transactionService.update(this.transaction);
   }
 

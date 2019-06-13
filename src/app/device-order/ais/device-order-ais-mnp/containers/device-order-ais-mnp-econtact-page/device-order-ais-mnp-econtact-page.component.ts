@@ -29,7 +29,7 @@ export class DeviceOrderAisMnpEcontactPageComponent implements OnInit, OnDestroy
   eContactSrc: string;
   agreement: boolean;
 
-  translationSubscribe: Subscription;
+  translationSubcription: Subscription;
   currentLang: string;
 
   constructor(
@@ -48,7 +48,7 @@ export class DeviceOrderAisMnpEcontactPageComponent implements OnInit, OnDestroy
     this.transaction = this.transactionService.load();
 
     this.currentLang = this.translationService.currentLang || 'TH';
-    this.translationSubscribe = this.translationService.onLangChange.subscribe(lang => {
+    this.translationSubcription = this.translationService.onLangChange.subscribe(lang => {
       this.currentLang = typeof (lang) === 'object' ? lang.lang : lang;
       this.callService();
     });
@@ -93,6 +93,9 @@ export class DeviceOrderAisMnpEcontactPageComponent implements OnInit, OnDestroy
   }
 
   ngOnDestroy(): void {
+    if (this.translationSubcription) {
+      this.translationSubcription.unsubscribe();
+    }
     this.transactionService.update(this.transaction);
   }
 

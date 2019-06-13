@@ -31,7 +31,7 @@ export class DeviceOrderAisNewRegisterEcontactPageComponent implements OnInit, O
   eContactSrc: string;
   agreement: boolean;
 
-  translationSubscribe: Subscription;
+  translateSubscription: Subscription;
   currentLang: string;
 
   constructor(
@@ -52,7 +52,7 @@ export class DeviceOrderAisNewRegisterEcontactPageComponent implements OnInit, O
     this.transaction = this.transactionService.load();
 
     this.currentLang = this.translationService.currentLang || 'TH';
-    this.translationSubscribe = this.translationService.onLangChange.subscribe(lang => {
+    this.translateSubscription = this.translationService.onLangChange.subscribe(lang => {
       this.currentLang = typeof (lang) === 'object' ? lang.lang : lang;
       this.callService();
     });
@@ -96,6 +96,9 @@ export class DeviceOrderAisNewRegisterEcontactPageComponent implements OnInit, O
   }
 
   ngOnDestroy(): void {
+    if (this.translateSubscription) {
+      this.translateSubscription.unsubscribe();
+    }
     this.transactionService.update(this.transaction);
   }
 

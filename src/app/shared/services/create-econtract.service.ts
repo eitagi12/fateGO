@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
-import { Transaction } from '../models/transaction.model';
+import { Transaction, SimCard } from '../models/transaction.model';
 import { HttpClient } from '@angular/common/http';
 import { PriceOption } from '../models/price-option.model';
 import { DecimalPipe } from '@angular/common';
+import { BillingSystemType } from 'mychannel-shared-libs';
 
 @Injectable({
   providedIn: 'root'
@@ -27,10 +28,10 @@ export class CreateEcontractService {
     const productStock: any = priceOption.productStock || {};
     const customer: any = transaction.data.customer || {};
     const simCard: any = transaction.data.simCard || {};
-    const mainPackage: any = transaction.data.mainPackage || {};
+    const mainPackage: any = (transaction.data.mainPackage || transaction.data.currentPackage) || {};
     const mobileCarePackage: any = transaction.data.mobileCarePackage || {};
     const advancePay: any = trade.advancePay || {};
-    const promotionByMainPackage = this.findPromotionByMainPackage(transaction, priceOption);
+    const promotionByMainPackage = this.findPromotionByMainPackage(mainPackage.customAttributes, simCard, priceOption);
 
     const data: any = {
       campaignName: campaign.campaignName,
@@ -48,7 +49,7 @@ export class CreateEcontractService {
       netPrice: this.transformDecimalPipe(trade.promotionPrice),
       advancePay: this.transformDecimalPipe(advancePay.amount),
       contract: trade.durationContract,
-      packageDetail: language === 'TH' ? mainPackage.detailTH : mainPackage.detailEN,
+      packageDetail: language === 'EN' ? (mainPackage.detailEN || mainPackage.detailEng) : (mainPackage.detailTH || mainPackage.detail),
       airTimeDiscount: this.getAirTimeDiscount(advancePay.amount, promotionByMainPackage ? promotionByMainPackage : advancePay.promotions),
       airTimeMonth: this.getAirTimeMonth(promotionByMainPackage ? promotionByMainPackage : advancePay.promotions),
       price: this.transformDecimalPipe(+trade.promotionPrice + (+advancePay.amount)),
@@ -73,15 +74,16 @@ export class CreateEcontractService {
     return (advancePay && advancePay.amount > 0);
   }
 
-  findPromotionByMainPackage(transaction: Transaction, priceOption: PriceOption): any {
+  findPromotionByMainPackage(mainPackageCustomAttributes: any, simCard: SimCard, priceOption: PriceOption): any {
     if (priceOption.trade) {
       // check mainPackage กับเบอร์ที่ทำรายการให้ตรงกับ billingSystem ของเบอร์ที่ทำรายการ
       const advancePay = priceOption.trade.advancePay || {};
+      const billingSystem = (simCard.billingSystem === 'RTBS')
+      ? BillingSystemType.IRB : simCard.billingSystem || BillingSystemType.IRB;
       if (advancePay.promotions) {
-        const mainPackage = transaction.data.mainPackage && transaction.data.mainPackage.customAttributes || {};
         return advancePay.promotions
         .find(promotion =>
-          (promotion && promotion.billingSystem) === mainPackage.billingSystem);
+          (promotion && promotion.billingSystem) === (mainPackageCustomAttributes || billingSystem));
       } else {
         return null;
       }
