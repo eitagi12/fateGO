@@ -195,20 +195,19 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
 
   filterItemsByFirstPackageAndInGroup(promotion: any, contract: any): any {
     return (promotion.items || [])
-      .filter((item: {
-        value: {
-          customAttributes: {
-            priceExclVat: number;
-            productPkg: any;
-          };
-        };
-      }) => {
+      .filter((item: any) => {
         const contractFirstPack = item.value.customAttributes.priceExclVat
           >= Math.max(contract.firstPackage || 0, contract.minPrice || 0, contract.initialPackage || 0);
         const inGroup = contract.inPackage.length > 0 ? contract.inPackage
           .some((inPack: any) => inPack === item.value.customAttributes.productPkg) : true;
-        return contractFirstPack && inGroup;
+        return contractFirstPack && inGroup && !this.mathCurrentPackage(item);
       });
+  }
+
+  mathCurrentPackage(item: any): boolean {
+    return !this.advancePay
+    && this.transaction.data.currentPackage
+    && this.transaction.data.currentPackage.promotionCode === item.value.customAttributes.promotionCode;
   }
 
   get showSelectCurrentPackage(): boolean {
