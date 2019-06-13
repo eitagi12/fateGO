@@ -11,6 +11,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-device-order-ais-existing-payment-detail-page',
@@ -24,6 +25,7 @@ export class DeviceOrderAisExistingPaymentDetailPageComponent implements OnInit,
   shoppingCart: ShoppingCart;
   priceOption: PriceOption;
   transaction: Transaction;
+  translateSubscription: Subscription;
 
   paymentDetail: PaymentDetail;
   banks: PaymentDetailBank[];
@@ -63,7 +65,7 @@ export class DeviceOrderAisExistingPaymentDetailPageComponent implements OnInit,
     this.banks = trade.banks || [];
     this.receiptInfo = this.mappingReceiptInfo(customer, receiptInfo);
 
-    this.translateService.onLangChange.subscribe(onChange => {
+    this.translateSubscription = this.translateService.onLangChange.subscribe(onChange => {
       this.paymentDetail.commercialName = this.changeCommercialName(onChange.lang, productDetail.name, productStock.color);
     });
 
@@ -161,6 +163,9 @@ export class DeviceOrderAisExistingPaymentDetailPageComponent implements OnInit,
   }
 
   ngOnDestroy(): void {
+    if (this.translateSubscription) {
+      this.translateSubscription.unsubscribe();
+    }
     this.transactionService.update(this.transaction);
   }
 

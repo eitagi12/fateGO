@@ -10,6 +10,7 @@ import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-device-order-ais-new-register-customer-info-page',
@@ -23,6 +24,7 @@ export class DeviceOrderAisNewRegisterCustomerInfoPageComponent implements OnIni
   transaction: Transaction;
   customerInfo: CustomerInfo;
   shoppingCart: ShoppingCart;
+  translateSubscription: Subscription;
 
   constructor(
     private router: Router,
@@ -40,7 +42,8 @@ export class DeviceOrderAisNewRegisterCustomerInfoPageComponent implements OnIni
     delete this.shoppingCart.mobileNo;
     this.customerInfo = this.mappingCustomerInfo(customer);
 
-    this.translateService.onLangChange.subscribe(() => this.customerInfo.idCardType = this.isEngLanguage() ? 'ID Card' : 'บัตรประชาชน');
+    this.translateSubscription = this.translateService.onLangChange
+    .subscribe(() => this.customerInfo.idCardType = this.isEngLanguage() ? 'ID Card' : 'บัตรประชาชน');
   }
 
   mappingCustomerInfo(customer: Customer): CustomerInfo {
@@ -72,6 +75,9 @@ export class DeviceOrderAisNewRegisterCustomerInfoPageComponent implements OnIni
   }
 
   ngOnDestroy(): void {
+    if (this.translateSubscription) {
+      this.translateSubscription.unsubscribe();
+    }
     this.transactionService.update(this.transaction);
   }
 

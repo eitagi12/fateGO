@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
@@ -18,7 +18,7 @@ import { TranslateService } from '@ngx-translate/core';
   templateUrl: './device-order-ais-mnp-summary-page.component.html',
   styleUrls: ['./device-order-ais-mnp-summary-page.component.scss']
 })
-export class DeviceOrderAisMnpSummaryPageComponent implements OnInit {
+export class DeviceOrderAisMnpSummaryPageComponent implements OnInit, OnDestroy {
 
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
@@ -31,6 +31,7 @@ export class DeviceOrderAisMnpSummaryPageComponent implements OnInit {
   transaction: Transaction;
   shoppingCart: ShoppingCart;
   customerAddress: string;
+  translateSubscription: Subscription;
 
   currentLang: string;
   constructor(
@@ -48,7 +49,7 @@ export class DeviceOrderAisMnpSummaryPageComponent implements OnInit {
     this.transaction = this.transactionService.load();
 
     this.currentLang = this.translateService.currentLang || 'TH';
-    this.translateService.onLangChange.subscribe(lang => {
+    this.translateSubscription = this.translateService.onLangChange.subscribe(lang => {
       this.currentLang = typeof (lang) === 'object' ? lang.lang : lang;
     });
   }
@@ -101,5 +102,11 @@ export class DeviceOrderAisMnpSummaryPageComponent implements OnInit {
     return amount.reduce((prev, curr) => {
       return prev + curr;
     }, 0);
+  }
+
+  ngOnDestroy(): void {
+    if (this.translateSubscription) {
+      this.translateSubscription.unsubscribe();
+    }
   }
 }

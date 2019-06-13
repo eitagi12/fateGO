@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Transaction } from '../models/transaction.model';
 import { PriceOption } from '../models/price-option.model';
-import { TokenService } from 'mychannel-shared-libs';
+import { TokenService, BillingSystemType } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 
 import { CustomerGroup } from 'src/app/buy-product/services/flow.service';
@@ -204,8 +204,10 @@ export class SharedTransactionService {
 
       if (advancePay.promotions) {
         const mainPackage = data.mainPackage && data.mainPackage.customAttributes || {};
+        const billingSystem = (data.simCard.billingSystem === 'RTBS')
+        ? BillingSystemType.IRB : data.simCard.billingSystem || BillingSystemType.IRB;
         const findPromotionByMainPackage = advancePay.promotions
-          .find(promotion => (promotion && promotion.billingSystem) === mainPackage.billingSystem);
+          .find(promotion => (promotion && promotion.billingSystem) === (mainPackage.billingSystem || billingSystem));
         params.data.air_time.promotions = [findPromotionByMainPackage] || advancePay.promotions;
       }
 

@@ -14,6 +14,7 @@ import {
 } from '../../constants/route-path.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-device-order-ais-new-register-confirm-user-information-page',
@@ -29,6 +30,7 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
   mailBillingInfo: MailBillingInfo;
   telNoBillingInfo: TelNoBillingInfo;
   shoppingCart: ShoppingCart;
+  translateSubscription: Subscription;
 
   eBill: boolean;
   isTelNoBillingValid: boolean;
@@ -73,7 +75,7 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
       packageDetail: this.changePackageDetailLanguage(mainPackage)
     };
 
-    this.translateService.onLangChange.subscribe(() => {
+    this.translateSubscription = this.translateService.onLangChange.subscribe(() => {
       this.confirmCustomerInfo.mainPackage = this.changeMainPackageLanguage(mainPackage);
       this.confirmCustomerInfo.packageDetail = this.changePackageDetailLanguage(mainPackage);
     });
@@ -286,6 +288,9 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
   }
 
   ngOnDestroy(): void {
+    if (this.translateSubscription) {
+      this.translateSubscription.unsubscribe();
+    }
     this.transactionService.save(this.transaction);
   }
 

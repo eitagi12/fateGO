@@ -13,6 +13,7 @@ import { Transaction, BillingAccount } from 'src/app/shared/models/transaction.m
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-device-order-ais-existing-mobile-detail-page',
@@ -27,6 +28,7 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
   shoppingCart: ShoppingCart;
   disableNextButton: boolean;
   priceOption: PriceOption;
+  translateSubscription: Subscription;
 
   constructor(
     private router: Router,
@@ -95,7 +97,8 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
     this.transaction.data.simCard.billingSystem = mobileDetail.billingSystem;
     this.transaction.data.currentPackage = mobileDetail.package;
 
-    this.translateService.onLangChange.subscribe(() => this.mobileInfo = this.mappingMobileInfo(mobileNo, mobileDetail, serviceYear));
+    this.translateSubscription = this.translateService.onLangChange
+    .subscribe(() => this.mobileInfo = this.mappingMobileInfo(mobileNo, mobileDetail, serviceYear));
   }
 
   mappingMobileInfo(mobileNo: string, mobileDetail: any, serviceYear: any): any {
@@ -197,6 +200,9 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
   }
 
   ngOnDestroy(): void {
+    if (this.translateSubscription) {
+      this.translateSubscription.unsubscribe();
+    }
     this.transactionService.update(this.transaction);
   }
 

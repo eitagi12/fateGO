@@ -10,6 +10,7 @@ import {
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-device-order-ais-existing-customer-info-page',
@@ -23,6 +24,7 @@ export class DeviceOrderAisExistingCustomerInfoPageComponent implements OnInit {
   transaction: Transaction;
   customerInfo: CustomerInfo;
   shoppingCart: ShoppingCart;
+  translateSubscription: Subscription;
 
   constructor(
     private router: Router,
@@ -40,7 +42,8 @@ export class DeviceOrderAisExistingCustomerInfoPageComponent implements OnInit {
     delete this.shoppingCart.mobileNo;
     this.customerInfo = this.mappingCustomerInfo(customer);
 
-    this.translateService.onLangChange.subscribe(() => this.customerInfo.idCardType = this.isEngLanguage() ? 'ID Card' : 'บัตรประชาชน');
+    this.translateSubscription = this.translateService.onLangChange
+    .subscribe(() => this.customerInfo.idCardType = this.isEngLanguage() ? 'ID Card' : 'บัตรประชาชน');
   }
 
   mappingCustomerInfo(customer: Customer): CustomerInfo {
@@ -73,6 +76,9 @@ export class DeviceOrderAisExistingCustomerInfoPageComponent implements OnInit {
 
 // tslint:disable-next-line: use-life-cycle-interface
   ngOnDestroy(): void {
+    if (this.translateSubscription) {
+      this.translateSubscription.unsubscribe();
+    }
     this.transactionService.update(this.transaction);
   }
 

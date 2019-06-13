@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { Router } from '@angular/router';
 import { HomeService, ShoppingCart, Utils } from 'mychannel-shared-libs';
@@ -14,13 +14,14 @@ import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart
 import { BsModalRef, BsModalService, OnChange } from 'ngx-bootstrap';
 import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-device-order-ais-pre-to-post-summary-page',
   templateUrl: './device-order-ais-pre-to-post-summary-page.component.html',
   styleUrls: ['./device-order-ais-pre-to-post-summary-page.component.scss']
 })
-export class DeviceOrderAisPreToPostSummaryPageComponent implements OnInit {
+export class DeviceOrderAisPreToPostSummaryPageComponent implements OnInit, OnDestroy {
 
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
@@ -34,6 +35,8 @@ export class DeviceOrderAisPreToPostSummaryPageComponent implements OnInit {
   shoppingCart: ShoppingCart;
   customerAddress: string;
   currentLang: string;
+  translateSubscription: Subscription;
+
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -49,7 +52,7 @@ export class DeviceOrderAisPreToPostSummaryPageComponent implements OnInit {
     this.transaction = this.transactionService.load();
 
     this.currentLang = this.translateService.currentLang || 'TH';
-    this.translateService.onLangChange.subscribe(lang => {
+    this.translateSubscription = this.translateService.onLangChange.subscribe(lang => {
       this.currentLang = typeof (lang) === 'object' ? lang.lang : lang;
     });
   }
@@ -98,5 +101,11 @@ export class DeviceOrderAisPreToPostSummaryPageComponent implements OnInit {
     return amount.reduce((prev, curr) => {
       return prev + curr;
     }, 0);
+  }
+
+  ngOnDestroy(): void {
+    if (this.translateSubscription) {
+      this.translateSubscription.unsubscribe();
+    }
   }
 }

@@ -13,6 +13,7 @@ import { Transaction, TransactionAction, Customer } from 'src/app/shared/models/
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-device-order-ais-pre-to-post-customer-info-page',
@@ -26,6 +27,7 @@ export class DeviceOrderAisPreToPostCustomerInfoPageComponent implements OnInit,
   transaction: Transaction;
   customerInfo: CustomerInfo;
   shoppingCart: ShoppingCart;
+  translateSubscription: Subscription;
 
   constructor(
     private router: Router,
@@ -43,7 +45,8 @@ export class DeviceOrderAisPreToPostCustomerInfoPageComponent implements OnInit,
     delete this.shoppingCart.mobileNo;
     this.customerInfo = this.mappingCustomerInfo(customer);
 
-    this.translateService.onLangChange.subscribe(() => this.customerInfo.idCardType = this.isEngLanguage() ? 'ID Card' : 'บัตรประชาชน');
+    this.translateSubscription = this.translateService.onLangChange
+    .subscribe(() => this.customerInfo.idCardType = this.isEngLanguage() ? 'ID Card' : 'บัตรประชาชน');
   }
 
   mappingCustomerInfo(customer: Customer): CustomerInfo {
@@ -85,6 +88,9 @@ export class DeviceOrderAisPreToPostCustomerInfoPageComponent implements OnInit,
   }
 
   ngOnDestroy(): void {
+    if (this.translateSubscription) {
+      this.translateSubscription.unsubscribe();
+    }
     this.transactionService.update(this.transaction);
   }
 }
