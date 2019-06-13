@@ -201,14 +201,20 @@ export class SharedTransactionService {
       // ใช้ check airtime
       const advancePay = priceOption.trade.advancePay || {};
       params.data.air_time = advancePay;
+      if (advancePay.promotions.length > 0) {
+        if (data.mainPackage) {
+          const mainPackage = data.mainPackage.customAttributes || {};
+          const findPromotionByMainPackage = this.findPromotions(advancePay, mainPackage.billingSystem);
 
-      if (advancePay.promotions) {
-        const mainPackage = data.mainPackage && data.mainPackage.customAttributes || {};
-        const billingSystem = (data.simCard.billingSystem === 'RTBS')
-        ? BillingSystemType.IRB : data.simCard.billingSystem || BillingSystemType.IRB;
-        const findPromotionByMainPackage = advancePay.promotions
-          .find(promotion => (promotion && promotion.billingSystem) === (mainPackage.billingSystem || billingSystem));
-        params.data.air_time.promotions = [findPromotionByMainPackage] || advancePay.promotions;
+          params.data.air_time.promotions = [findPromotionByMainPackage] || advancePay.promotions;
+
+        } else if (!data.mainPackage && data.currentPackage) {
+          const billingSystem = ((data.simCard && data.simCard.billingSystem === 'RTBS')
+            ? BillingSystemType.IRB : data.simCard.billingSystem ) || BillingSystemType.IRB;
+          const findPromotionByMainPackage = this.findPromotions(advancePay, billingSystem);
+
+          params.data.air_time.promotions = [findPromotionByMainPackage] || advancePay.promotions;
+        }
       }
 
     }
@@ -239,6 +245,11 @@ export class SharedTransactionService {
       params.data.mpay_payment = data.mpayPayment;
     }
     return params;
+  }
+
+  findPromotions(advancePay: any, billingSystem: string): any {
+    return advancePay.promotions
+      .find(promotion => (promotion && promotion.billingSystem) === billingSystem);
   }
 
   private getTransactionId(): string {
