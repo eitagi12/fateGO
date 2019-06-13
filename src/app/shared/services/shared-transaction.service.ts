@@ -202,7 +202,7 @@ export class SharedTransactionService {
       const advancePay = priceOption.trade.advancePay || {};
       params.data.air_time = advancePay;
 
-      if (advancePay.promotions) {
+      if (Array.isArray(advancePay.promotions) && advancePay.promotions.length > 0) {
         const mainPackage = data.mainPackage && data.mainPackage.customAttributes || {};
         const findPromotionByMainPackage = advancePay.promotions
           .find(promotion => (promotion && promotion.billingSystem) === mainPackage.billingSystem);
