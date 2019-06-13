@@ -201,7 +201,7 @@ export class SharedTransactionService {
       // ใช้ check airtime
       const advancePay = priceOption.trade.advancePay || {};
       params.data.air_time = advancePay;
-      if (advancePay.promotions.length > 0) {
+      if (Array.isArray(advancePay.promotions) && advancePay.promotions.length > 0) {
         if (data.mainPackage) {
           const mainPackage = data.mainPackage.customAttributes || {};
           const findPromotionByMainPackage = this.findPromotions(advancePay, mainPackage.billingSystem);
