@@ -415,6 +415,8 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                 return 'Port - In';
             case CustomerGroup.EXISTING:
                 return 'Change Service';
+            case CustomerGroup.DEVICE_ONLY:
+                return 'Device Only';
         }
     }
 
