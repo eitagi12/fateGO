@@ -16,12 +16,15 @@
       (error)="onPaymentDetailError($event)">
     </mc-payment-detail>
     <div class="my-3">
-      <app-receipt-information
-        (completed)="onComplete($event)"
-        (error)="onError($event)"
-        (action)="checkAction($event)"
-        [customerInfoTemp]="customerInfoTemp"
-      ></app-receipt-information>
+      <div class="my-3">
+        <app-receipt-information-device-only 
+          (completed)="onComplete($event)" 
+          (error)="onError($event)" 
+          (action)="checkAction($event)" 
+          [customerInfoTemp]="customerInfoTemp">
+        </app-receipt-information-device-only>
+    </div>
+
     </div>
   </div>
   <mc-footer>

@@ -24,9 +24,7 @@
       </div>
       <div class="row">
         <div class="col-12">
-          <app-device-only-read-card
-            (customerInfo) = "setCustomerInfo($event)" 
-          ></app-device-only-read-card>
+            <app-read-card (customerInfo)="setCustomerInfo($event)"></app-read-card>
         </div>
       </div>
     </div>

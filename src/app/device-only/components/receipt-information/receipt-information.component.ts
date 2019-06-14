@@ -7,7 +7,7 @@ import { BillingAddressService } from 'src/app/device-only/services/billing-addr
 import { CustomerInformationService } from 'src/app/device-only/services/customer-information.service';
 
 @Component({
-  selector: 'app-receipt-information',
+  selector: 'app-receipt-information-device-only',
   templateUrl: './receipt-information.component.html',
   styleUrls: ['./receipt-information.component.scss']
 })

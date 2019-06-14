@@ -2,13 +2,23 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { SummaryOrderDetailComponent } from './summary-order-detail.component';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { Pipe, PipeTransform } from '@angular/core';
+@Pipe({ name: 'translate' })
+class MockPipe implements PipeTransform {
+  transform(value: number): number {
+    return value;
+  }
+}
 
 describe('SummaryOrderDetailComponent', () => {
   let component: SummaryOrderDetailComponent;
   let fixture: ComponentFixture<SummaryOrderDetailComponent>;
 
   setupTestBed({
-    declarations: [SummaryOrderDetailComponent],
+    declarations: [
+      SummaryOrderDetailComponent,
+      MockPipe
+    ],
     providers: [
       {
         provide: TransactionService,
