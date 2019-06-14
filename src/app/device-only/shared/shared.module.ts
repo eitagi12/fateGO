@@ -6,7 +6,7 @@ import { TranslateModule } from '@ngx-translate/core';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 // component
 import { BillingAddressComponent } from '../components/billing-address/billing-address.component';
-import { ReadCardComponent } from '../components/device-only-read-card/device-only-read-card.component';
+import { ReadCardComponent } from '../components/read-card/read-card.component';
 import { ReceiptInformationComponent } from '../components/receipt-information/receipt-information.component';
 import { ShoppingCartDetailComponent } from '../components/shopping-cart-detail/shopping-cart-detail.component';
 import { SummaryOrderDetailComponent } from '../components/summary-order-detail/summary-order-detail.component';
