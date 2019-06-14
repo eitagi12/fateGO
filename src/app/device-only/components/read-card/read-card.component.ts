@@ -14,12 +14,12 @@ export enum ReadCardAisNative {
   EVENT_CARD_PROFILE_PHOTO = 5
 }
 @Component({
-  selector: 'app-device-only-read-card',
-  templateUrl: './device-only-read-card.component.html',
-  styleUrls: ['./device-only-read-card.component.scss']
+  selector: 'app-read-card',
+  templateUrl: './read-card.component.html',
+  styleUrls: ['./read-card.component.scss']
 })
 
-export class DeviceOnlyReadCardComponent implements OnInit {
+export class ReadCardComponent implements OnInit {
   @Output() customerInfo: EventEmitter<Object> = new EventEmitter<Object>();
   @ViewChild('select_billing_address')
   selectBillingAddressTemplate: TemplateRef<any>;
