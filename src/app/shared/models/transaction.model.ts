@@ -9,15 +9,19 @@ export enum TransactionType {
   DEVICE_ORDER_MNP_ASP = 'Port-InASP',
   DEVICE_ORDER_EXISTING_AIS = 'ExistingAIS',
   DEVICE_ORDER_EXISTING_ASP = 'ExistingASP',
-  DEVICE_ORDER_DEVICE_ONLY = 'DeviceOnlyAIS',
-  DEVICE_ORDER_DEVICE_ONLY_ASP = 'DeviceOnlyASP',
   DEVICE_ORDER_PREPAID_HOTDEAL_AIS = 'PrepaidHotDealAIS',
   // pure
   ORDER_NEW_REGISTER = 'NewRegister',
   ORDER_PRE_TO_POST = 'ConvertPreToPost',
   ORDER_MNP = 'Port-In',
   ORDER_EXISTING = 'Existing',
-  RESERVE_WITH_DEPOSIT = 'ReserveWithDeposit'
+  RESERVE_WITH_DEPOSIT = 'ReserveWithDeposit',
+
+  // device only
+  DEVICE_ONLY_AIS = 'DeviceOnlyAIS',
+  DEVICE_ONLY_ASP = 'DeviceOnlyASP',
+  DEVICE_ONLY_WEB = 'DeviceOnlyWEB',
+  DEVICE_ONLY_KIOSK = 'DeviceOnlyKiosk'
 }
 
 export enum TransactionAction {
@@ -49,6 +53,7 @@ export interface TransactionData {
   mainPackage?: MainPackage;
   currentPackage?: CurrentPackage;
   onTopPackage?: OnTopPackage;
+  deleteOntopPackage?: DeleteOntopPackage[];
   mainPackageOneLove?: any[];
   mobileCarePackage?: MobileCarePackage;
   faceRecognition?: FaceRecognition;
@@ -69,7 +74,8 @@ export interface TransactionData {
   // MPAY
   mpayPayment?: QrCodePrePostMpayModel;
   status?: Status;
-  device?: any;
+  device?: Device;
+  knoxguard?: KnoxGuard;
 }
 
 export interface Condition {
@@ -168,6 +174,10 @@ export interface SelectedLocation {
   locationCode?: string;
   locationNameEN?: string;
   locationNameTH?: string;
+  // passport
+  issuingCountry?: string;
+  nationality?: string;
+  imageReadPassport?: string;
 }
 
 export interface SimCard {
@@ -205,6 +215,9 @@ export interface CurrentPackage {
 }
 
 export interface PromotionsShelves {
+  [key: string]: any;
+}
+export interface DeleteOntopPackage {
   [key: string]: any;
 }
 
@@ -245,6 +258,7 @@ export interface BillingInformation {
   billDeliveryAddress?: Customer;
   // วันที่มีผลการใช้งาน B: รอบถัดไป D: วันถัดไป I: มีผลทันที
   overRuleStartDate?: string;
+  effectiveDate?: string;
   // check do createAndChangeBillingAccount Provisioning
   isNewBAFlag?: boolean;
 }
@@ -304,6 +318,21 @@ export class ProductImage {
 }
 export class BaseView {
   imageUrl: string;
+}
+
+export interface BillDeliveryAddress {
+  homeNo: string;
+  moo?: string;
+  mooBan?: string;
+  room?: string;
+  floor?: string;
+  buildingName?: string;
+  soi?: string;
+  street?: string;
+  province: string;
+  amphur: string;
+  tumbol: string;
+  zipCode: string;
 }
 
 export interface Seller {
@@ -435,6 +464,7 @@ export interface QrCodePrePostMpayModel {
   mpayStatus?: MPayStatus;
   qrAirtimeTransId?: string;
   qrAirtimeAmt?: string;
+  qrOrderId?: string;
 }
 
 export interface MPayStatus {
@@ -460,4 +490,15 @@ export interface Device {
   colorCode?: string;
   productType?: string;
   productSubtype?: string;
+}
+
+export interface KnoxGuard {
+  orderType?: string;
+  serviceCode?: string;
+  action?: string;
+  startDate?: string;
+  endDate?: string;
+  duration?: string;
+  orderReason?: string;
+  userName?: string;
 }

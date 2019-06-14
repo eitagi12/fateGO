@@ -127,7 +127,7 @@ export class DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent implem
       this.transaction = {
         data: {
           action: TransactionAction.KEY_IN,
-          transactionType: TransactionType.DEVICE_ORDER_DEVICE_ONLY_ASP
+          transactionType: TransactionType.DEVICE_ONLY_ASP
         },
         transactionId: this.createOrderService.generateTransactionId(this.apiRequestService.getCurrentRequestId())
       };
