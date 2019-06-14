@@ -6,7 +6,6 @@ import { DeviceOnlyKioskSelectMobileCarePageComponent } from './containers/devic
 import { DeviceOnlyKioskSummaryPageComponent } from './containers/device-only-kiosk-summary-page/device-only-kiosk-summary-page.component';
 import { DeviceOnlyKioskCheckoutPaymentQrCodePageComponent } from './containers/device-only-kiosk-checkout-payment-qr-code-page/device-only-kiosk-checkout-payment-qr-code-page.component';
 import { DeviceOnlyKioskQrCodeQueuePageComponent } from './containers/device-only-kiosk-qr-code-queue-page/device-only-kiosk-qr-code-queue-page.component';
-import { DeviceOnlyKioskQrCodeKeyInQueuePageComponent } from './containers/device-only-kiosk-qr-code-key-in-queue-page/device-only-kiosk-qr-code-key-in-queue-page.component';
 import { DeviceOnlyKioskQrCodeGenaratePageComponent } from './containers/device-only-kiosk-qr-code-genarate-page/device-only-kiosk-qr-code-genarate-page.component';
 import { DeviceOnlyKioskQrCodeSummaryPageComponent } from './containers/device-only-kiosk-qr-code-summary-page/device-only-kiosk-qr-code-summary-page.component';
 import { DeviceOnlyKioskQueuePageComponent } from './containers/device-only-kiosk-queue-page/device-only-kiosk-queue-page.component';
@@ -48,10 +47,6 @@ const routes: Routes = [
   {
     path: 'qr-code-queue',
     component: DeviceOnlyKioskQrCodeQueuePageComponent
-  },
-  {
-    path: 'qr-code-key-in-queue',
-    component: DeviceOnlyKioskQrCodeKeyInQueuePageComponent
   },
   {
     path: 'result-queue',

@@ -99,7 +99,7 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
       this.transaction = {
         data: {
           action: TransactionAction.KEY_IN,
-          transactionType: TransactionType.DEVICE_ORDER_DEVICE_ONLY
+          transactionType: TransactionType.DEVICE_ONLY_AIS
         },
         transactionId: this.createOrderService.generateTransactionId(this.apiRequestService.getCurrentRequestId())
       };

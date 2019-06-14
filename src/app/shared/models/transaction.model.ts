@@ -9,14 +9,19 @@ export enum TransactionType {
   DEVICE_ORDER_MNP_ASP = 'Port-InASP',
   DEVICE_ORDER_EXISTING_AIS = 'ExistingAIS',
   DEVICE_ORDER_EXISTING_ASP = 'ExistingASP',
-  DEVICE_ORDER_DEVICE_ONLY = 'DeviceOnlyAIS',
   DEVICE_ORDER_PREPAID_HOTDEAL_AIS = 'PrepaidHotDealAIS',
   // pure
   ORDER_NEW_REGISTER = 'NewRegister',
   ORDER_PRE_TO_POST = 'ConvertPreToPost',
   ORDER_MNP = 'Port-In',
   ORDER_EXISTING = 'Existing',
-  RESERVE_WITH_DEPOSIT = 'ReserveWithDeposit'
+  RESERVE_WITH_DEPOSIT = 'ReserveWithDeposit',
+
+  // device only
+  DEVICE_ONLY_AIS = 'DeviceOnlyAIS',
+  DEVICE_ONLY_ASP = 'DeviceOnlyASP',
+  DEVICE_ONLY_WEB = 'DeviceOnlyWEB',
+  DEVICE_ONLY_KIOSK = 'DeviceOnlyKiosk'
 }
 
 export enum TransactionAction {
