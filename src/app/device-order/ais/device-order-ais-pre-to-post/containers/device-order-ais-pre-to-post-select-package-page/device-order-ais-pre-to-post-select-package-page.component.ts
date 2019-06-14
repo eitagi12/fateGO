@@ -81,7 +81,7 @@ export class DeviceOrderAisPreToPostSelectPackagePageComponent implements OnInit
 
     this.promotionShelveService.getPromotionShelve(
       {
-        packageKeyRef: trade.packageKeyRef,
+        packageKeyRef: trade.packageKeyRef || privilege.packageKeyRef,
         orderType: 'Change Charge Type',
         billingSystem: BillingSystemType.IRB
       },
