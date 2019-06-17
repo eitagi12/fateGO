@@ -123,9 +123,6 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
           if (data.chargeType !== 'Pre-paid') {
             return reject(errMsgNotPrepaid);
           }
-          if (data.product === 'CPE') {
-            return reject(errMsgAvatar);
-          }
           if (status === '000' || status === '378' || status === 'Active' || status === 'Suspended') {
             return data;
           } else {
