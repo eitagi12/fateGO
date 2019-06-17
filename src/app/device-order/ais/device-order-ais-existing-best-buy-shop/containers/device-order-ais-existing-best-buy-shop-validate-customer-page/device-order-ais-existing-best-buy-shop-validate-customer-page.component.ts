@@ -13,6 +13,7 @@ import { PrivilegeService } from 'src/app/device-order/services/privilege.servic
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_MOBILE_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_ELIGIBLE_MOBILE_PAGE } from '../../constants/route-path.constant';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
+import { CheckChangeServiceService } from 'src/app/device-order/services/check-change-service.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-shop-validate-customer-page',
@@ -44,7 +45,8 @@ export class DeviceOrderAisExistingBestBuyShopValidateCustomerPageComponent impl
     private customerInfoService: CustomerInfoService,
     private privilegeService: PrivilegeService,
     private tokenService: TokenService,
-    private sharedTransactionService: SharedTransactionService
+    private sharedTransactionService: SharedTransactionService,
+    private checkChangeService: CheckChangeServiceService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -120,12 +122,10 @@ export class DeviceOrderAisExistingBestBuyShopValidateCustomerPageComponent impl
                 this.transaction.data.order = { soId: resp.data.soId };
                 return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
               }).then(() => {
-                this.pageLoadingService.closeLoading();
-                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_MOBILE_DETAIL_PAGE]);
+                this.checkKnoxGuard();
               });
           } else {
-            this.pageLoadingService.closeLoading();
-            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_MOBILE_DETAIL_PAGE]);
+            this.checkKnoxGuard();
             return;
           }
         }).catch((e) => this.alertService.error(e));
@@ -288,4 +288,19 @@ export class DeviceOrderAisExistingBestBuyShopValidateCustomerPageComponent impl
     };
   }
 
+  checkKnoxGuard(): void {
+    const isKnoxGuard: boolean = (this.priceOption.trade && this.priceOption.trade.serviceLockHs &&
+      this.priceOption.trade.serviceLockHs === 'KG');
+    if (isKnoxGuard) {
+      this.checkChangeService.CheckServiceKnoxGuard(this.identity).then(() => {
+        this.pageLoadingService.closeLoading();
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_MOBILE_DETAIL_PAGE]);
+      }).catch((resp) => {
+        this.alertService.error(resp);
+      });
+    } else {
+      this.pageLoadingService.closeLoading();
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_MOBILE_DETAIL_PAGE]);
+    }
+  }
 }

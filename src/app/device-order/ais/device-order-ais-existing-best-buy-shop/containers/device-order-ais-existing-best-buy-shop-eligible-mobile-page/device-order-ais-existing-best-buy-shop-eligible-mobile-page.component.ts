@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { ShoppingCart, HomeService, PageLoadingService } from 'mychannel-shared-libs';
+import { ShoppingCart, HomeService, PageLoadingService, AlertService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -11,6 +11,7 @@ import { PrivilegeService } from 'src/app/device-order/services/privilege.servic
 import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_VALIDATE_CUSTOMER_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_MOBILE_DETAIL_PAGE } from '../../constants/route-path.constant';
+import { CheckChangeServiceService } from 'src/app/device-order/services/check-change-service.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-best-buy-shop-eligible-mobile-page',
@@ -39,7 +40,9 @@ export class DeviceOrderAisExistingBestBuyShopEligibleMobilePageComponent implem
     private shoppingCartService: ShoppingCartService,
     private privilegeService: PrivilegeService,
     private customerInfoService: CustomerInfoService,
-    private priceOptionService: PriceOptionService
+    private priceOptionService: PriceOptionService,
+    private alertService: AlertService,
+    private checkChangeService: CheckChangeServiceService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -75,8 +78,7 @@ export class DeviceOrderAisExistingBestBuyShopEligibleMobilePageComponent implem
           });
       }
     }).then(() => {
-      this.pageLoadingService.closeLoading();
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_MOBILE_DETAIL_PAGE]);
+      this.checkKnoxGuard();
     });
   }
 
@@ -109,4 +111,19 @@ export class DeviceOrderAisExistingBestBuyShopEligibleMobilePageComponent implem
     }
   }
 
+  checkKnoxGuard(): void {
+    const isKnoxGuard: boolean = (this.priceOption.trade && this.priceOption.trade.serviceLockHs &&
+      this.priceOption.trade.serviceLockHs === 'KG');
+    if (isKnoxGuard) {
+      this.checkChangeService.CheckServiceKnoxGuard(this.mobileNo.mobileNo).then(() => {
+        this.pageLoadingService.closeLoading();
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_MOBILE_DETAIL_PAGE]);
+      }).catch((resp) => {
+        this.alertService.error(resp);
+      });
+    } else {
+      this.pageLoadingService.closeLoading();
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_MOBILE_DETAIL_PAGE]);
+    }
+  }
 }
