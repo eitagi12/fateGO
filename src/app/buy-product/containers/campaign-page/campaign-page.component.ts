@@ -466,7 +466,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             productSubtype: productSubtype || PRODUCT_SUB_TYPE
         });
       this.productDetailService.then((resp: any) => {
-
             // เก็บข้อมูลไว้ไปแสดงหน้าอื่นโดยไม่เปลี่ยนแปลงค่าข้างใน
             this.priceOption.productDetail = resp.data || {};
 
