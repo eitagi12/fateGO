@@ -76,6 +76,7 @@ export interface TransactionData {
   status?: Status;
   device?: Device;
   knoxguard?: KnoxGuard;
+  tradeType?: string;
 }
 
 export interface Condition {
