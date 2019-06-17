@@ -167,13 +167,13 @@ export class QueuePageService {
   }
 
   private getOrderRemark(transaction: Transaction, priceOption: PriceOption): string {
-    const onTopPackage = transaction.data.onTopPackage || {};
+    const mainPackage = transaction.data.mainPackage && transaction.data.mainPackage.customAttributes || {};
     const airTime: string = this.getAirTime(priceOption.trade, transaction);
     const installment = this.getInstallment(transaction, priceOption);
     const information = this.getInformation(transaction, priceOption);
 
     return `
-${this.PROMOTION_NAME}${this.SPACE}${onTopPackage.shortNameThai || ''}
+${this.PROMOTION_NAME}${this.SPACE}${mainPackage.shortNameThai || ''}
 ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW_LINE}
 `;
   }
