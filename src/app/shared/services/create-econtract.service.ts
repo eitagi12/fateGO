@@ -50,8 +50,9 @@ export class CreateEcontractService {
       advancePay: this.transformDecimalPipe(advancePay.amount),
       contract: trade.durationContract,
       packageDetail: language === 'EN' ? (mainPackage.detailEN || mainPackage.detailEng) : (mainPackage.detailTH || mainPackage.detail),
-      airTimeDiscount: this.getAirTimeDiscount(advancePay.amount, promotionByMainPackage ? promotionByMainPackage : advancePay.promotions),
-      airTimeMonth: this.getAirTimeMonth(promotionByMainPackage ? promotionByMainPackage : advancePay.promotions),
+      airTimeDiscount: this.getAirTimeDiscount(advancePay.amount, promotionByMainPackage
+        ? promotionByMainPackage : advancePay.promotions) || 0,
+      airTimeMonth: this.getAirTimeMonth(promotionByMainPackage ? promotionByMainPackage : advancePay.promotions) || 0,
       price: this.transformDecimalPipe(+trade.promotionPrice + (+advancePay.amount)),
       signature: '',
       mobileCarePackageTitle: this.getMobileCarePackageTitle(mobileCarePackage, language),
