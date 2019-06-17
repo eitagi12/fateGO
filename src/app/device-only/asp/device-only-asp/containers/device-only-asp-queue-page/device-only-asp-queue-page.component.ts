@@ -149,6 +149,14 @@ export class DeviceOnlyAspQueuePageComponent implements OnInit, OnDestroy {
       const queueNo = resp.data.queue;
       this.skipQueue = true;
       this.transaction.data.queue = { queueNo: queueNo };
+      if (this.transaction.data.mainPromotion
+        && this.transaction.data.mainPromotion.trade
+        && this.transaction.data.mainPromotion.trade.tradeNo !== '0'
+        || this.transaction.data.mainPromotion.trade.tradeNo === null) {
+        this.transaction.data.transactionTypeTrade = 'Handset Trading';
+      } else {
+        this.transaction.data.transactionTypeTrade = 'EUP';
+      }
       this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).then(() => {
         return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
           this.pageLoadingService.closeLoading();
@@ -162,6 +170,14 @@ export class DeviceOnlyAspQueuePageComponent implements OnInit, OnDestroy {
     this.pageLoadingService.openLoading();
     if (!this.queueType || this.queueType === 'MANUAL' || this.inputType === 'queue') {
       this.transaction.data.queue = { queueNo: this.queue };
+      if (this.transaction.data.mainPromotion
+        && this.transaction.data.mainPromotion.trade
+        && this.transaction.data.mainPromotion.trade.tradeNo !== '0'
+        || this.transaction.data.mainPromotion.trade.tradeNo === null) {
+        this.transaction.data.transactionTypeTrade = 'Handset Trading';
+      } else {
+        this.transaction.data.transactionTypeTrade = 'EUP';
+      }
       this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).then(() => {
         return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
           this.pageLoadingService.closeLoading();
@@ -173,10 +189,10 @@ export class DeviceOnlyAspQueuePageComponent implements OnInit, OnDestroy {
         if (queue) {
           this.transaction.data.queue = { queueNo: queue };
           if (this.transaction.data.mainPromotion
-              && this.transaction.data.mainPromotion.trade
-              && this.transaction.data.mainPromotion.trade.tradeNo !== '0'
-              || this.transaction.data.mainPromotion.trade.tradeNo === null) {
-              this.transaction.data.transactionTypeTrade = 'Handset Trading';
+            && this.transaction.data.mainPromotion.trade
+            && this.transaction.data.mainPromotion.trade.tradeNo !== '0'
+            || this.transaction.data.mainPromotion.trade.tradeNo === null) {
+            this.transaction.data.transactionTypeTrade = 'Handset Trading';
           } else {
             this.transaction.data.transactionTypeTrade = 'EUP';
           }
