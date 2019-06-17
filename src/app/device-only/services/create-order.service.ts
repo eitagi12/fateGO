@@ -165,7 +165,7 @@ export class CreateOrderService {
         && transaction.data
         && transaction.data.order
         && transaction.data.order.soId) {
-        this.clearAddToCart(transaction.transactionId, transaction.data.order.soId)
+        return this.clearAddToCart(transaction.transactionId, transaction.data.order.soId)
           .then((res: any) => {
             resolve(res.isSuccess);
           });
