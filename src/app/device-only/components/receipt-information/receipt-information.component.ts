@@ -86,8 +86,9 @@ export class ReceiptInformationComponent implements OnInit {
     const customer = this.customerInfoTemp.customer;
     const billDeliveryAddress = this.customerInfoTemp.billDeliveryAddress;
     const receiptInfo = this.customerInfoTemp.receiptInfo;
+    const mobileNo = this.customerInfoTemp.mobileNo;
     this.setCustomerInfo({
-      customer: { ...customer, ...billDeliveryAddress, ...receiptInfo },
+      customer: { ...customer, ...billDeliveryAddress, ...receiptInfo, ...mobileNo },
       action: this.customerInfoTemp.action
     });
     if (this.isShowInputForKeyIn) {
@@ -148,7 +149,8 @@ export class ReceiptInformationComponent implements OnInit {
       province: data.customer.province,
       amphur: data.customer.amphur,
       tumbol: data.customer.tumbol,
-      zipCode: data.customer.zipCode
+      zipCode: data.customer.zipCode,
+      mobileNo: data.mobileNo
     };
     this.action.emit(data.action);
     this.customerInfo = { customer };

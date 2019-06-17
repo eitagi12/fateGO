@@ -164,7 +164,7 @@ export interface Customer {
   selectedLocation?: SelectedLocation;
   privilegeCode?: string;
   repi?: boolean;
-
+  mobileNo?: string;
 }
 
 export interface Recipientinformation {
