@@ -137,7 +137,7 @@ export class CreateOrderService {
       locationSource: this.user.locationCode,
       locationReceipt: this.user.locationCode,
       productType: productDetail.productType || 'DEVICE',
-      productSubType: productDetail.productSubType || 'HANDSET',
+      productSubType: productDetail.productSubtype || 'HANDSET',
       brand: productDetail.brand || productStock.brand,
       model: productDetail.model,
       color: color,
