@@ -30,6 +30,7 @@ export class DeviceOnlyAspQueuePageComponent implements OnInit, OnDestroy {
   public user: User;
   private skipQueue: boolean = false;
   private errorQueue: boolean = false;
+  private transactionTypeTrade: any;
 
   constructor(
     private router: Router,
@@ -171,6 +172,14 @@ export class DeviceOnlyAspQueuePageComponent implements OnInit, OnDestroy {
       this.onSendSMSQueue(this.mobileNo).then((queue) => {
         if (queue) {
           this.transaction.data.queue = { queueNo: queue };
+          if (this.transaction.data.mainPromotion
+              && this.transaction.data.mainPromotion.trade
+              && this.transaction.data.mainPromotion.trade.tradeNo !== '0'
+              || this.transaction.data.mainPromotion.trade.tradeNo === null) {
+              this.transaction.data.transactionTypeTrade = 'Handset Trading';
+          } else {
+            this.transaction.data.transactionTypeTrade = 'EUP';
+          }
           return this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).then(() => {
             return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
               this.pageLoadingService.closeLoading();
