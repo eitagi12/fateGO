@@ -72,6 +72,7 @@ export class SharedTransactionService {
       data: {
         action: data.action,
         transactionType: data.transactionType,
+        tradeType: data.tradeType || '',
         customer: data.customer || {},
         sim_card: data.simCard || {},
         device: {
@@ -85,6 +86,9 @@ export class SharedTransactionService {
           imei: !!data.device ? data.device.imei : ''
         },
         billing_information: {},
+        receipt_information: {
+          telNo: data.receiptInfo.telNo || ''
+        },
         mobile_care_package: {},
         air_time: {},
         on_top_package: transaction.data.onTopPackage || {},

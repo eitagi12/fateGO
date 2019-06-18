@@ -91,7 +91,7 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
 
   public onNext(): void {
     const tradeType = this.priceOption.trade.tradeNo;
-    this.transaction.data.tradeType = ((tradeType === 0) || (tradeType === null)) ? 'EUP' : 'Hand Set';
+    this.transaction.data.tradeType = ((tradeType === '0') || (tradeType === null)) ? 'EUP' : 'Hand Set';
     const seller: Seller = this.summarySellerCode.getSeller();
     this.checkSeller(seller);
   }
