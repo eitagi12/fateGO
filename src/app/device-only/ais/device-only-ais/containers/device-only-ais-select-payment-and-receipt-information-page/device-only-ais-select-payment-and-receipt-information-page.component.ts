@@ -120,19 +120,21 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
   }
 
   onBack(): void {
-    this.transactionService.remove();
+    if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      this.homeService.goToHome();
+      return;
+    }
     this.product = this.priceOption.queryParams;
-
     const brand: string = encodeURIComponent(this.product.brand ? this.product.brand : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
     const model: string = encodeURIComponent(this.product.model ? this.product.model : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
     // replace '%28 %29' for() case url refresh error
     const url: string = `/sales-portal/buy-product/brand/${brand}/${model}`;
     const queryParams: string =
       '?modelColor=' + this.product.color +
-      '&productTyp=' + this.product.productType +
-      '&productSubType=' + this.product.productSubtype;
+      '&productType=' + this.product.productType +
+      '&productSubtype=' + this.product.productSubtype;
+      window.location.href = url + queryParams;
 
-    window.location.href = url + queryParams;
   }
 
   onNext(): void {
@@ -141,7 +143,6 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
   }
 
   onComplete(customerInfo: any): void {
-    console.log('customerInfo', customerInfo);
     this.transaction.data.customer = customerInfo.customer;
     this.transaction.data.billingInformation = {
       billDeliveryAddress: customerInfo.billDeliveryAddress
