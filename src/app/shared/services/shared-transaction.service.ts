@@ -87,7 +87,7 @@ export class SharedTransactionService {
         },
         billing_information: {},
         receipt_information: {
-          telNo: data.receiptInfo.telNo || ''
+          telNo: !!data.receiptInfo ? data.receiptInfo.telNo : ''
         },
         mobile_care_package: {},
         air_time: {},
