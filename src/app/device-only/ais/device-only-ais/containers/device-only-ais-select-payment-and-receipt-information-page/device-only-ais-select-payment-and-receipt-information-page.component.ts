@@ -131,8 +131,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       productType: this.product.productType,
       productSubType: this.product.productSubtype
     };
-
-    window.location.href = url + ';' + queryParams;
+    window.location.href = url + ';' + 'queryParams=' + queryParams;
   }
 
   onNext(): void {
