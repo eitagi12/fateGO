@@ -354,7 +354,7 @@ export class MobileCareComponent implements OnInit {
     this.promotion.emit(undefined);
     let mobile = this.customerInformationService.getSelectedMobileNo();
     if (environment.name !== 'PROD') {
-      mobile = environment.TEST_OTP_MOBILE;
+      mobile = this.chargeType === 'Pre-paid' ? environment.TEST_OTP_MOBILE : environment.TEST_OTP_MOBILE_POSTPAID;
     }
     this.pageLoadingService.openLoading();
     this.http.post(`/api/customerportal/newRegister/${mobile}/sendOTP`, { digits: '5' }).toPromise()
@@ -373,7 +373,7 @@ export class MobileCareComponent implements OnInit {
     const otp = this.privilegeCustomerForm.value.otpNo;
     let mobile = this.customerInformationService.getSelectedMobileNo();
     if (environment.name !== 'PROD') {
-      mobile = environment.TEST_OTP_MOBILE;
+      mobile = this.chargeType === 'Pre-paid' ? environment.TEST_OTP_MOBILE : environment.TEST_OTP_MOBILE_POSTPAID;
     }
     this.pageLoadingService.openLoading();
     this.http.post(`/api/customerportal/newRegister/${mobile}/verifyOTP`, { pwd: otp, transactionID: this.transactionID }).toPromise()

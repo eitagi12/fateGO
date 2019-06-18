@@ -141,7 +141,7 @@ export class CreateOrderService {
       locationSource: this.user.locationCode,
       locationReceipt: this.user.locationCode,
       productType: productDetail.productType || 'DEVICE',
-      productSubType: productDetail.productSubType || 'HANDSET',
+      productSubType: productDetail.productSubtype || 'HANDSET',
       brand: productDetail.brand || productStock.brand,
       model: productDetail.model,
       color: color,
@@ -165,7 +165,7 @@ export class CreateOrderService {
         && transaction.data
         && transaction.data.order
         && transaction.data.order.soId) {
-        this.clearAddToCart(transaction.transactionId, transaction.data.order.soId)
+        return this.clearAddToCart(transaction.transactionId, transaction.data.order.soId)
           .then((res: any) => {
             resolve(res.isSuccess);
           });
