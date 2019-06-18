@@ -126,12 +126,12 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
     const model: string = encodeURIComponent(this.product.model ? this.product.model : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
     // replace '%28 %29' for() case url refresh error
     const url: string = `/sales-portal/buy-product/brand/${brand}/${model}`;
-    const queryParams: any = {
-      modelColor: this.product.color,
-      productType: this.product.productType,
-      productSubType: this.product.productSubtype
-    };
-    window.location.href = url + ';' + 'queryParams=' + queryParams;
+    const queryParams: any =
+      '?modelColor=' + this.product.color +
+      '&productType=' + this.product.productType +
+      '&productSubtype=' + this.product.productSubtype;
+
+    window.location.href = url + queryParams;
   }
 
   onNext(): void {
