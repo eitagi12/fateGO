@@ -69,7 +69,7 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
           this.transaction.data.seller.sellerNo = seller.sellerNo;
         }
         if (!this.tokenService.isTelewizUser()) {
-        this.checkRoutePaymentType();
+          this.checkRoutePaymentType();
         } else {
           this.redirectToFlowWeb();
         }
@@ -110,6 +110,8 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
       .then((resp: any) => {
         const queueNo = resp.data.queue;
         this.transaction.data.queue = { queueNo: queueNo };
+        const device = JSON.parse(localStorage.getItem('device'));
+        this.transaction.data.device.imei = device.imei;
         this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).then(() => {
           return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
             this.pageLoadingService.closeLoading();
