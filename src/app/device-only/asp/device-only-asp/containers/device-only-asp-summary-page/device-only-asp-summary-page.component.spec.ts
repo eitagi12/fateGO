@@ -8,6 +8,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { LocalStorageService } from 'ngx-store';
 import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 
 describe('DeviceOnlyAspSummaryPageComponent', () => {
   let component: DeviceOnlyAspSummaryPageComponent;
@@ -57,7 +58,25 @@ describe('DeviceOnlyAspSummaryPageComponent', () => {
       {
         provide: TransactionService,
         useValue: {
-          load: jest.fn()
+          load: jest.fn(() => {
+            return {
+              data: {
+                tradeType: '',
+              }
+            };
+          })
+        }
+      },
+      {
+        provide: PriceOptionService,
+        useValue: {
+          load: jest.fn(() => {
+            return {
+              trade: {
+                tradeNo: '',
+              }
+            };
+          })
         }
       },
       {
