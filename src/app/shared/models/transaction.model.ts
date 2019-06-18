@@ -71,7 +71,6 @@ export interface TransactionData {
   contract?: Condition;
   promotionsShelves?: PromotionsShelves;
   contractFirstPack?: ContractFirstPack;
-  transactionTypeTrade?: string;
   // MPAY
   mpayPayment?: QrCodePrePostMpayModel;
   status?: Status;
