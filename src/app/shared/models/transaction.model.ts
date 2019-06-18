@@ -9,13 +9,14 @@ export enum TransactionType {
   DEVICE_ORDER_MNP_ASP = 'Port-InASP',
   DEVICE_ORDER_EXISTING_AIS = 'ExistingAIS',
   DEVICE_ORDER_EXISTING_ASP = 'ExistingASP',
-  DEVICE_ORDER_DEVICE_ONLY = 'DeviceOnlyAIS',
   DEVICE_ORDER_PREPAID_HOTDEAL_AIS = 'PrepaidHotDealAIS',
   // pure
   ORDER_NEW_REGISTER = 'NewRegister',
   ORDER_PRE_TO_POST = 'ConvertPreToPost',
   ORDER_MNP = 'Port-In',
-  ORDER_EXISTING = 'Existing'
+  ORDER_EXISTING = 'Existing',
+
+  DEVICE_ONLY_AIS = 'DeviceOnlyAIS'
 }
 
 export enum TransactionAction {
