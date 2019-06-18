@@ -267,7 +267,7 @@ export class DeviceOrderAisPreToPostConfirmUserInformationPageComponent implemen
   onNext(): void {
 
     if (!this.customerValid() && !this.isMergeBilling()) {
-      this.alertService.warning('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร');
+      this.alertService.warning(this.translateService.instant('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร'));
       return;
     }
 

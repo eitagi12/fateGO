@@ -10,6 +10,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from 'src/app/buy-product/constants/route-path.constant';
 import { environment } from 'src/environments/environment';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
+import { TranslateService } from '@ngx-translate/core';
 
 declare var swal: any;
 @Component({
@@ -42,14 +43,16 @@ export class DeviceOrderAisMnpValidateCustomerIdCardPageComponent implements OnI
     private http: HttpClient,
     private tokenService: TokenService,
     private utils: Utils,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private translateService: TranslateService
   ) {
     this.user = this.tokenService.getUser();
     this.priceOption = this.priceOptionService.load();
 
     this.homeService.callback = () => {
 
-      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่<br>การยกเลิกระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที')
+      this.alertService
+      .question(this.translateService.instant('ต้องการยกเลิกรายการขายหรือไม่<br>การยกเลิกระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที'))
         .then((data: any) => {
           if (!data.value) {
             return false;
@@ -157,7 +160,7 @@ export class DeviceOrderAisMnpValidateCustomerIdCardPageComponent implements OnI
           this.transaction.data.billingInformation = billingInformation;
           return this.conditionIdentityValid()
             .catch((msg: string) => {
-              return this.alertService.error(msg).then(() => true);
+              return this.alertService.error(this.translateService.instant(msg)).then(() => true);
             })
             .then((isError: boolean) => {
               if (isError) {

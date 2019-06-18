@@ -153,7 +153,7 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
 
   checkWarningBillingAccountMessage(mobileBillAccount: string[], isAirtime: boolean): void {
     if (mobileBillAccount && mobileBillAccount.length > 1 && isAirtime) {
-      this.alertService.warning('หมายเลขนี้มีการรวมบิล ไม่สามารถทำรายการได้')
+      this.alertService.warning(this.translateService.instant('หมายเลขนี้มีการรวมบิล ไม่สามารถทำรายการได้'))
       .then(() => this.onBack());
     }
   }

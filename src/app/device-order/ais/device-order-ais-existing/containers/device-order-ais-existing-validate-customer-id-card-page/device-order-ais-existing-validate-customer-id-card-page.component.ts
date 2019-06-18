@@ -11,6 +11,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ROUTE_DEVICE_ORDER_AIS_EXISTING_CUSTOMER_INFO_PAGE } from '../../constants/route-path.constant';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { ApiRequestService } from 'mychannel-shared-libs';
+import { TranslateService } from '@ngx-translate/core';
 
 declare var swal: any;
 
@@ -44,7 +45,8 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
     private priceOptionService: PriceOptionService,
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
-    private sharedTransactionService: SharedTransactionService
+    private sharedTransactionService: SharedTransactionService,
+    private translateService: TranslateService
   ) {
     this.user = this.tokenService.getUser();
     this.priceOption = this.priceOptionService.load();
@@ -89,7 +91,8 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
   onError(valid: boolean): void {
     this.readCardValid = valid;
     if (!this.profile) {
-      this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน').then(() => this.onBack());
+      this.alertService.error(this.translateService.instant('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน'))
+      .then(() => this.onBack());
     }
   }
 
@@ -159,7 +162,7 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
 
           return this.conditionIdentityValid()
             .catch((msg: string) => {
-              return this.alertService.error(msg).then(() => true);
+              return this.alertService.error(this.translateService.instant(msg)).then(() => true);
             })
             .then((isError: boolean) => {
               if (isError) {

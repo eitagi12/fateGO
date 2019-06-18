@@ -7,6 +7,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { ROUTE_DEVICE_ORDER_AIS_MNP_EDIT_BILLING_ADDRESS_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_EBILLING_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_SELECT_PACKAGE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_PAGE } from '../../constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-device-order-ais-mnp-confirm-user-information-page',
@@ -35,6 +36,7 @@ export class DeviceOrderAisMnpConfirmUserInformationPageComponent implements OnI
     private utils: Utils,
     private http: HttpClient,
     private shoppingCartService: ShoppingCartService,
+    private translateService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
 
@@ -222,7 +224,7 @@ export class DeviceOrderAisMnpConfirmUserInformationPageComponent implements OnI
 
   onNext(): void {
     if (!this.customerValid()) {
-      this.alertService.warning('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร');
+      this.alertService.warning(this.translateService.instant('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร'));
       return;
     }
 

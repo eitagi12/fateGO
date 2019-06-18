@@ -247,7 +247,7 @@ export class DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent implements On
               // timeout order id
               this.checkResponseMpaySubscription.unsubscribe();
               // Refresh generate qrcode
-              this.alertService.question('สิ้นสุดระยะเวลาชำระเงิน กรุณากดปุ่ม "REFRESH"<br> เพื่อทำรายการใหม่', 'Refresh')
+              this.alertService.question('สิ้นสุดระยะเวลาชำระเงิน กรุณากดปุ่ม REFRESH<br> เพื่อทำรายการใหม่', 'Refresh')
                 .then((data: any) => {
                   if (data.value) {
                     this.onGenerateQRCode();

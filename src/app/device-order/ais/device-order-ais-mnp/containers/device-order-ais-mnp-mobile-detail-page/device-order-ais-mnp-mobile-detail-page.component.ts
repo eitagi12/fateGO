@@ -133,7 +133,8 @@ export class DeviceOrderAisMnpMobileDetailPageComponent implements OnInit, OnDes
       this.transaction.data.billingInformation.isNewBAFlag = mobileBillAccount.length > 1 ? true : false;
 
       if (mobileBillAccount && mobileBillAccount.length > 1 && isAirtime) {
-        this.alertService.warning('หมายเลขนี้มีการรวมบิล ไม่สามารถทำรายการได้').then(() => {
+        this.alertService.warning(this.translationService.instant('หมายเลขนี้มีการรวมบิล ไม่สามารถทำรายการได้'))
+        .then(() => {
           this.onBack();
         });
         return;
