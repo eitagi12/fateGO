@@ -128,6 +128,13 @@ export class ReceiptInformationComponent implements OnInit {
     });
   }
 
+  keyPress(event: any): void {
+    const charCode: number = (event.which) ? event.which : event.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+      event.preventDefault();
+    }
+  }
+
   setCustomerInfo(data: any): void {
     const customer: Customer = {
       idCardNo: data.customer.idCardNo,
