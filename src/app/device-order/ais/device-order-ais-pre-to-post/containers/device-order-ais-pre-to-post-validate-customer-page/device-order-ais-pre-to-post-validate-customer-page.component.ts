@@ -173,6 +173,7 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
         })
         .catch((resp: any) => {
           this.pageLoadingService.closeLoading();
+          this.alertService.error(resp.error.developerMessage);
           const error = resp.error || [];
           if (error && error.errors && typeof error.errors === 'string') {
             this.alertService.notify({

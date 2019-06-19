@@ -30,7 +30,7 @@ export class PromotionShelveService {
         return data.map((promotionShelve: any) => {
           return {
             title: promotionShelve.title,
-            icon: promotionShelve.icon,
+            icon: (promotionShelve.icon ||  '').replace(/\.jpg$/, ''),
             promotions: promotionShelve.subShelves
               .sort((a, b) => a.priority !== b.priority ? a.priority < b.priority ? -1 : 1 : 0)
               .map((subShelve: any) => {

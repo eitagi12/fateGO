@@ -17,7 +17,9 @@ export class HomeButtonService {
     private createOrderService: CreateOrderService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService
-  ) { }
+  ) {
+    this.transaction = this.transactionService.load();
+  }
 
   initEventButtonHome(): void {
     this.homeService.callback = () => {
@@ -30,7 +32,7 @@ export class HomeButtonService {
               window.location.href = '/';
             });
           }
-        }).catch(() => {
+        }).catch((err: any) => {
           this.transactionService.remove();
           this.priceOptionService.remove();
           window.location.href = '/';

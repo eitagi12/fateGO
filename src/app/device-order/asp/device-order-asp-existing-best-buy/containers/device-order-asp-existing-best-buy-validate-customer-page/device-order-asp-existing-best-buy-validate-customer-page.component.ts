@@ -16,6 +16,7 @@ import { SharedTransactionService } from 'src/app/shared/services/shared-transac
 import { debounceTime } from 'rxjs/operators';
 import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
 import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
+import { CheckChangeServiceService } from 'src/app/device-order/services/check-change-service.service';
 
 @Component({
   selector: 'app-device-order-asp-existing-best-buy-validate-customer-page',
@@ -52,7 +53,8 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
     private tokenService: TokenService,
     private sharedTransactionService: SharedTransactionService,
     private fb: FormBuilder,
-    private utils: Utils
+    private utils: Utils,
+    private checkChangeService: CheckChangeServiceService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -127,31 +129,29 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
     this.pageLoadingService.openLoading();
     if (this.utils.isMobileNo(this.identity)) {
       // KEY-IN MobileNo
-       this.customerInfoService.getCustomerProfileByMobileNo(this.identity).then((customer: Customer) => {
+      this.customerInfoService.getCustomerProfileByMobileNo(this.identity).then((customer: Customer) => {
         return this.privilegeService.checkAndGetPrivilegeCode(this.identity, this.priceOption.trade.ussdCode).then((privligeCode) => {
-            customer.privilegeCode = privligeCode;
-            this.transaction.data.customer = customer;
-            this.transaction.data.customer.repi = true;
-            this.transaction.data.simCard = { mobileNo: this.identity };
-            this.transaction.data.action = TransactionAction.KEY_IN_REPI;
-            if (!this.transaction.data.order || !this.transaction.data.order.soId) {
-              return this.http.post('/api/salesportal/add-device-selling-cart',
-                this.getRequestAddDeviceSellingCart()
-              ).toPromise()
-                .then((resp: any) => {
-                  this.transaction.data.order = { soId: resp.data.soId };
-                  return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-                }).then(() => {
-                  this.pageLoadingService.closeLoading();
-                  this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_DETAIL_PAGE]);
-                });
-            } else {
-              this.pageLoadingService.closeLoading();
-              this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_DETAIL_PAGE]);
-              return;
-            }
-          }).catch((e) => this.alertService.error(e));
-        }).catch((error) => this.alertService.error(error));
+          customer.privilegeCode = privligeCode;
+          this.transaction.data.customer = customer;
+          this.transaction.data.customer.repi = true;
+          this.transaction.data.simCard = { mobileNo: this.identity };
+          this.transaction.data.action = TransactionAction.KEY_IN_REPI;
+          if (!this.transaction.data.order || !this.transaction.data.order.soId) {
+            return this.http.post('/api/salesportal/add-device-selling-cart',
+              this.getRequestAddDeviceSellingCart()
+            ).toPromise()
+              .then((resp: any) => {
+                this.transaction.data.order = { soId: resp.data.soId };
+                return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+              }).then(() => {
+                this.checkKnoxguard();
+              });
+          } else {
+            this.checkKnoxguard();
+          }
+
+        }).catch((e) => this.alertService.error(e));
+      }).catch((error) => this.alertService.error(error));
     } else {
       // KEY-IN ID-Card
       this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customer: Customer) => {
@@ -198,6 +198,21 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
     }
   }
 
+  checkKnoxguard(): any {
+    const isKnoxGuard: boolean = (this.priceOption.trade && this.priceOption.trade.serviceLockHs &&
+      this.priceOption.trade.serviceLockHs === 'KG');
+    if (isKnoxGuard) {
+      this.checkChangeService.CheckServiceKnoxGuard(this.identity).then(() => {
+        this.pageLoadingService.closeLoading();
+        this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_DETAIL_PAGE]);
+      }).catch((resp) => {
+        this.alertService.error(resp);
+      });
+    } else {
+      this.pageLoadingService.closeLoading();
+      this.router.navigate([ROUTE_DEVICE_ORDER_ASP_BEST_BUY_MOBILE_DETAIL_PAGE]);
+    }
+  }
   ngOnDestroy(): void {
     if (this.transaction.data.order && this.transaction.data.order.soId) {
       this.transactionService.update(this.transaction);

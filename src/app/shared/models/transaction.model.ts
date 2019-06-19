@@ -9,14 +9,15 @@ export enum TransactionType {
   DEVICE_ORDER_MNP_ASP = 'Port-InASP',
   DEVICE_ORDER_EXISTING_AIS = 'ExistingAIS',
   DEVICE_ORDER_EXISTING_ASP = 'ExistingASP',
-  DEVICE_ORDER_DEVICE_ONLY = 'DeviceOnlyAIS',
   DEVICE_ORDER_PREPAID_HOTDEAL_AIS = 'PrepaidHotDealAIS',
   // pure
   ORDER_NEW_REGISTER = 'NewRegister',
   ORDER_PRE_TO_POST = 'ConvertPreToPost',
   ORDER_MNP = 'Port-In',
   ORDER_EXISTING = 'Existing',
-  RESERVE_WITH_DEPOSIT = 'ReserveWithDeposit'
+  RESERVE_WITH_DEPOSIT = 'ReserveWithDeposit',
+
+  DEVICE_ONLY_AIS = 'DeviceOnlyAIS'
 }
 
 export enum TransactionAction {
@@ -68,7 +69,8 @@ export interface TransactionData {
   // MPAY
   mpayPayment?: QrCodePrePostMpayModel;
   status?: Status;
-  device?: any;
+  device?: Device;
+  knoxguard?: KnoxGuard;
 }
 
 export interface Condition {
@@ -460,4 +462,15 @@ export interface Device {
   colorCode?: string;
   productType?: string;
   productSubtype?: string;
+}
+
+export interface KnoxGuard {
+  orderType?: string;
+  serviceCode?: string;
+  action?: string;
+  startDate?: string;
+  endDate?: string;
+  duration?: string;
+  orderReason?: string;
+  userName?: string;
 }

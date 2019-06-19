@@ -85,7 +85,7 @@ export class DeviceOrderAisNewRegisterSelectPackagePageComponent implements OnIn
 
     this.promotionShelveService.getPromotionShelve(
       {
-        packageKeyRef: trade.packageKeyRef,
+        packageKeyRef: trade.packageKeyRef || privilege.packageKeyRef,
         orderType: 'New Registration',
         billingSystem: BillingSystemType.IRB
       },

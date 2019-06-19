@@ -354,7 +354,7 @@ export class MobileCareComponent implements OnInit {
     this.promotion.emit(undefined);
     let mobile = this.customerInformationService.getSelectedMobileNo();
     if (environment.name !== 'PROD') {
-      mobile = environment.TEST_OTP_MOBILE;
+      mobile =  environment.TEST_OTP_MOBILE;
     }
     this.pageLoadingService.openLoading();
     this.http.post(`/api/customerportal/newRegister/${mobile}/sendOTP`, { digits: '5' }).toPromise()
