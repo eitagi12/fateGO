@@ -64,7 +64,7 @@
                     {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.color }}
                   </span>
                   <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
-                    (แถมซิม)
+                    ({{'แถมซิม'| translate}})
                   </span>
                   <span class="pull-right text-green">
                     ฿{{ summary([+priceOption?.trade?.promotionPrice, +priceOption?.trade?.advancePay?.amount]) | number : '1.2-2' }}

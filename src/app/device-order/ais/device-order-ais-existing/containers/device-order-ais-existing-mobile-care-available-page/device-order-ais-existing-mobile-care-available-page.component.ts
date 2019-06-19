@@ -61,7 +61,7 @@ export class DeviceOrderAisExistingMobileCareAvailablePageComponent implements O
       \ ${(productDetail.productSubtype === 'HANDSET BUNDLE') ? '(แถมซิม)' : ''} ใช่ หรือ ไม่ ?`;
     }
     return `Would you like to change your Mobile Care service for the new ${productDetail.name}
-    \ ${(productDetail.productSubtype === 'HANDSET BUNDLE') ? '(แถมซิม)' : ''} ?`;
+    \ ${(productDetail.productSubtype === 'HANDSET BUNDLE') ? '(Free SIM Card)' : ''} ?`;
   }
 
   onBack(): void {

@@ -25,7 +25,7 @@
                     สี {{ priceOption?.productStock?.color }}
                   </span>
                   <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
-                    (แถมซิม)
+                    ({{'แถมซิม' | translate}})
                   </span>
                   <span class="pull-right text-green">
                     ฿ {{ priceOption?.trade?.promotionPrice | number }}
@@ -107,7 +107,7 @@
                     สี {{ priceOption?.productStock?.color }}
                   </span>
                   <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
-                    (แถมซิม)
+                    ({{'แถมซิม'| translate}})
                   </span>
                   <span *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">: {{'ชำระเต็มจำนวน'| translate}}</span>
                   <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">: {{'ผ่อนชำระบัตรเครดิต'| translate}}</span>
