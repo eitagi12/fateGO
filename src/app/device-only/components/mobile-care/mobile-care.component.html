@@ -56,7 +56,7 @@
                     <label class="form-check-label" for="mobile-care-package-{{ item?.id }}">
                       {{ item?.title }}
                     </label>
-                    <span class="pull-right text-light-green">฿ {{ item?.priceExclVat | number:'1.2-2' }}</span>
+                    <span class="pull-right text-green">฿ {{ item?.priceExclVat | number:'1.2-2' }}</span>
                   </div>
                 </div>
                 <!-- normal -->
@@ -66,7 +66,7 @@
                     <label class="form-check-label" for="mobile-care-package-{{ item?.id }}">
                       {{ item?.title }}
                     </label>
-                    <span class="pull-right text-light-green">฿ {{ item?.priceExclVat | number:'1.2-2' }}</span>
+                    <span class="pull-right text-green">฿ {{ item?.priceExclVat | number:'1.2-2' }}</span>
                   </div>
                 </div>
               </tab>
@@ -76,7 +76,7 @@
         <div>
           <input class="form-check-input" type="radio" id="ignore-mobile-care" [value]="false" formControlName="mobileCare">
           <label class="form-check-label" for="ignore-mobile-care">{{ 'ไม่สนใจชื้อบริการโมบายแคร์' | translate }}</label>
-          <label class="text-light-green" [hidden]="!notBuyMobileCareForm.value.notBuyMobile">({{ notBuyMobileCareForm.value.notBuyMobile }})</label>
+          <label class="text-green" [hidden]="!notBuyMobileCareForm.value.notBuyMobile">({{ notBuyMobileCareForm.value.notBuyMobile }})</label>
         </div>
         <div *ngIf="mobileCare?.existingMobileCare">
           <small class="text-red">{{ 'หมายเหตุ : กรณีมีการสมัคร Mobile care ที่เครื่องใหม่ การรับประกันที่เครื่องเดิมจะสิ้นสุด' | translate }}</small>
@@ -89,24 +89,24 @@
     <div class="card-header bg-transparent">{{ 'อัตราค่าบริการ (รวม VAT)' | translate }}</div>
     <div class="card-body">
       <p>
-        <i class="fa fa-circle mr-3 text-light-green"></i>
+        <i class="fa fa-circle mr-3 text-green"></i>
         {{ 'เปลี่ยนเครื่องในราคา 25% จากราคาปกติ' | translate }}
-        <span class="pull-right text-light-green">฿ {{ getServiceChange(25) | number:'1.2-2' }}</span>
+        <span class="pull-right text-green">฿ {{ getServiceChange(25) | number:'1.2-2' }}</span>
       </p>
       <p>
-        <i class="fa fa-circle mr-3 text-light-green"></i>
+        <i class="fa fa-circle mr-3 text-green"></i>
         {{ 'รับเครื่องทดแทนปีที่ 1 ในราคา 45% จากราคาปกติ' | translate }}
-        <span class="pull-right text-light-green">฿ {{ getServiceChange(45) | number:'1.2-2' }}</span>
+        <span class="pull-right text-green">฿ {{ getServiceChange(45) | number:'1.2-2' }}</span>
       </p>
       <p>
-        <i class="fa fa-circle mr-3 text-light-green"></i>
+        <i class="fa fa-circle mr-3 text-green"></i>
         {{ 'รับเครื่องทดแทนปีที่ 2 ในราคา 40% จากราคาปกติ' | translate }}
-        <span class="pull-right text-light-green">฿ {{ getServiceChange(40) | number:'1.2-2' }}</span>
+        <span class="pull-right text-green">฿ {{ getServiceChange(40) | number:'1.2-2' }}</span>
       </p>
       <p>
-        <i class="fa fa-circle mr-3 text-light-green"></i>
+        <i class="fa fa-circle mr-3 text-green"></i>
         {{ 'รับเครื่องทดแทนปีที่ 3 และปีที่ 4 ในราคา 30% จากราคาปกติ' | translate }}
-        <span class="pull-right text-light-green">฿ {{ getServiceChange(30) | number:'1.2-2' }}</span>
+        <span class="pull-right text-green">฿ {{ getServiceChange(30) | number:'1.2-2' }}</span>
       </p>
     </div>
     <div class="card-footer bg-transparent text-red">
