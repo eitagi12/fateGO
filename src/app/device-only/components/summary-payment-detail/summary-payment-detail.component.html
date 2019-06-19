@@ -15,7 +15,7 @@
         <span class="text-grey" id="text-color-summary" *ngIf="priceOption?.productStock?.colorName">
           {{ priceOption?.productStock?.colorName?'สี': '' }} {{ priceOption?.productStock?.colorName }}
         </span>
-        <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'"> : {{ 'ข้อมูลการชำระสินค้า' | translate }}</span>
+        <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'"> : ชำระเต็มจำนวน</span>
         <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'"> :
            {{ 'ผ่อนชำระบัตรเครดิต' | translate }}</span>
         <span class="pull-right text-green" id="text-price-summary">
