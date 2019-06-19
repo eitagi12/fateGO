@@ -44,7 +44,7 @@ export class SummaryPageService {
         return `${this.translateService.instant(`เงินสด`)}`;
       case `CREDIT`:
         return `${this.translateService.instant(`บัตรเครดิต`)}
-        \ ${payment.paymentBank && payment.paymentBank.name}`;
+        \ ${payment.paymentBank && this.translateService.instant(payment.paymentBank.name)}`;
 
       default:
         break;
