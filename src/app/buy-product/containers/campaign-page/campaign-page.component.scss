@@ -79,7 +79,7 @@ input[type="radio"]:disabled + label:before {
     border-right: 1px solid #ccc;
     border: none;
     border-bottom: 5px solid #bfbfbf;
-    height: 153px;
+    height: var(--heightNavItem);
     /*}*/
 
     &.active {
@@ -89,7 +89,7 @@ input[type="radio"]:disabled + label:before {
     .nav-link {
       color: inherit;
       padding: 8px;
-      white-space: nowrap;
+      white-space: var(--whiteSpaceNavLink);
       overflow: hidden;
       border-radius: 0;
       &:hover {
@@ -101,6 +101,7 @@ input[type="radio"]:disabled + label:before {
         &:hover {
           border-color: $lime;
         }
+        min-height: 100%;
       }
     }
   }

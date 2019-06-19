@@ -102,6 +102,18 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                 params.productType, params.productSubtype
             );
         });
+        this.changeCSSLanguaue(this.translateService.currentLang);
+        this.translateService.onLangChange.subscribe(onChange => this.changeCSSLanguaue(onChange.lang));
+    }
+
+    changeCSSLanguaue(currentLang: string): void {
+        if (currentLang === 'EN') {
+            document.documentElement.style.setProperty('--heightNavItem', '190px');
+            document.documentElement.style.setProperty('--whiteSpaceNavLink', 'pre-line');
+        } else {
+            document.documentElement.style.setProperty('--heightNavItem', '155px');
+            document.documentElement.style.setProperty('--whiteSpaceNavLink', 'nowrap');
+        }
     }
 
     createForm(): void {
