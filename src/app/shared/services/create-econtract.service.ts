@@ -55,18 +55,18 @@ export class CreateEcontractService {
       airTimeMonth: this.getAirTimeMonth(promotionByMainPackage ? promotionByMainPackage : advancePay.promotions) || 0,
       price: this.transformDecimalPipe(+trade.promotionPrice + (+advancePay.amount)),
       signature: '',
-      mobileCarePackageTitle: this.getMobileCarePackageTitle(mobileCarePackage, language),
+      mobileCarePackageTitle: this.getMobileCarePackageTitle(mobileCarePackage.customAttributes, language) || '',
       isPayAdvance: this.isAdvancePay(trade),
       language: language
     };
     return data;
   }
 
-  getMobileCarePackageTitle(mobileCarePackage: any, langCurrent: any): string {
+  getMobileCarePackageTitle(mobileCarePackage: any = {}, langCurrent: any): string {
     if (langCurrent === 'TH') {
-      return mobileCarePackage.title ? `พร้อมใช้บริการ ${mobileCarePackage.title}` : '';
+      return mobileCarePackage.shortNameThai ? `พร้อมใช้บริการ ${mobileCarePackage.shortNameThai}` : '';
     } else {
-      return mobileCarePackage.title ? `Ready to use ${mobileCarePackage.title}` : '';
+      return mobileCarePackage.shortNameEng ? `Ready to use ${mobileCarePackage.shortNameEng}` : '';
     }
   }
 
