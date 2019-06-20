@@ -59,7 +59,7 @@ export class OrderPreToPostCurrentInfoPageComponent implements OnInit, OnDestroy
 
     this.pageLoadingService.openLoading();
 
-    const queryBalancePromise = this.http.get(`/api/customerportal/newRegister/${this.mobileNo}/queryBalance`)
+    const getBalancePromise = this.http.get(`/api/customerportal/newRegister/${this.mobileNo}/getBalance`)
       .toPromise().catch(() => {
         return {};
       });
@@ -67,7 +67,7 @@ export class OrderPreToPostCurrentInfoPageComponent implements OnInit, OnDestroy
       .toPromise().catch(() => {
         return {};
       });
-    Promise.all([queryBalancePromise, queryCurrentServicesPromise]).then((res: any[]) => {
+    Promise.all([getBalancePromise, queryCurrentServicesPromise]).then((res: any[]) => {
       this.balance = res[0].data || {};
       const currentServices = res[1].data || [];
       this.serviceChange = currentServices.services.filter(service => service.canTransfer);

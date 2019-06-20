@@ -76,19 +76,17 @@ export class DeviceOrderAisPreToPostEligibleMobilePageComponent implements OnIni
         mobileType: `Pre-paid`
       }).toPromise()
         .then((response: any) => {
-          const eMobileResponse = response.data;
-          this.eligibleMobiles = eMobileResponse.prepaid || [];
+          const eMobileResponse = response.data.prepaid || [];
+          const mobileList = eMobileResponse.filter((order: any) => {
 
-        //   const prepaidMobileList: any = res.data.prepaidMobileList || [];
-        //   mobileList = prepaidMobileList.filter((order: any) => {
-
-        //     // tslint:disable-next-line:typedef
-        //     return ['Submit for Approve', 'Pending', 'Submitted', 'Request',
-        //       'Saveteam', 'QueryBalance', 'Response', 'Notification', 'BAR Processing',
-        //       'BAR', 'Terminating'].find((statusCode: any) => {
-        //         return statusCode !== order.statusCode;
-        //       });
-        //   });
+            // tslint:disable-next-line:typedef
+            return ['Submit for Approve', 'Pending', 'Submitted', 'Request',
+              'Saveteam', 'QueryBalance', 'Response', 'Notification', 'BAR Processing',
+              'BAR', 'Terminating'].find((statusCode: any) => {
+                return statusCode !== order.statusCode;
+              });
+          });
+          this.eligibleMobiles = mobileList;
         });
 
     } else {

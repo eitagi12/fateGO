@@ -49,7 +49,7 @@ export class DeviceOrderAisExistingPrepaidHotdealCustomerInfoPageComponent imple
   // tslint:disable-next-line:typedef
   getBalance(mobileNo: string) {
     this.pageLoadingService.openLoading();
-    this.http.get(`/api/customerportal/newRegister/${mobileNo}/queryBalance`).toPromise()
+    this.http.get(`/api/customerportal/newRegister/${mobileNo}/getBalance`).toPromise()
       .then((resp: any) => {
         this.pageLoadingService.closeLoading();
         this.customerInfo.balance = Number(resp.data.remainingBalance) / 100;
