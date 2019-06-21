@@ -167,14 +167,14 @@ export class DeviceOnlyAspQueuePageComponent implements OnInit, OnDestroy {
         return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
           this.pageLoadingService.closeLoading();
           this.router.navigate([ROUTE_DEVICE_ONLY_ASP_RESULT_QUEUE_PAGE]);
-        }).catch((err: any) => {
-          this.pageLoadingService.closeLoading();
-          this.alertService.notify({
-            type: 'error',
-            confirmButtonText: 'OK',
-            showConfirmButton: true,
-            text: err.error.developerMessage
-          });
+        });
+      }).catch((err: any) => {
+        this.pageLoadingService.closeLoading();
+        this.alertService.notify({
+          type: 'error',
+          confirmButtonText: 'OK',
+          showConfirmButton: true,
+          text: err.error.developerMessage
         });
       });
     } else {
