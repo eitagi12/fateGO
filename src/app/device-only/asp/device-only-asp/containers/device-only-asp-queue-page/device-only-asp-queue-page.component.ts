@@ -5,7 +5,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { QueueService } from 'src/app/device-only/services/queue.service';
-import { TokenService, User, HomeService, PageLoadingService } from 'mychannel-shared-libs';
+import { TokenService, User, HomeService, PageLoadingService, AlertService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { ROUTE_DEVICE_ONLY_ASP_RESULT_QUEUE_PAGE } from '../../constants/route-path.constant';
 import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
@@ -41,6 +41,7 @@ export class DeviceOnlyAspQueuePageComponent implements OnInit, OnDestroy {
     private queueService: QueueService,
     private sharedTransactionService: SharedTransactionService,
     private createOrderService: CreateOrderService,
+    private alertService: AlertService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
     private tokenService: TokenService,
@@ -162,10 +163,18 @@ export class DeviceOnlyAspQueuePageComponent implements OnInit, OnDestroy {
     this.pageLoadingService.openLoading();
     if (!this.queueType || this.queueType === 'MANUAL' || this.inputType === 'queue') {
       this.transaction.data.queue = { queueNo: this.queue };
-      this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).then(() => {
+      this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).then((res: any) => {
         return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
           this.pageLoadingService.closeLoading();
           this.router.navigate([ROUTE_DEVICE_ONLY_ASP_RESULT_QUEUE_PAGE]);
+        }).catch((err: any) => {
+          this.pageLoadingService.closeLoading();
+          this.alertService.notify({
+            type: 'error',
+            confirmButtonText: 'OK',
+            showConfirmButton: true,
+            text: err.error.developerMessage
+          });
         });
       });
     } else {

@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { QueueService } from 'src/app/device-only/services/queue.service';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { TokenService, HomeService, PageLoadingService } from 'mychannel-shared-libs';
+import { TokenService, HomeService, PageLoadingService, AlertService } from 'mychannel-shared-libs';
 import { Pipe, PipeTransform } from '@angular/core';
 import { FormBuilder } from '@angular/forms';
 import { HttpClient, HttpHandler } from '@angular/common/http';
@@ -69,6 +69,12 @@ describe('DeviceOnlyAspQueuePageComponent', () => {
         provide: CreateOrderService,
         useValue: {
           createOrderDeviceOnly: jest.fn()
+        }
+      },
+      {
+        provide: AlertService,
+        useValue: {
+          notify:  jest.fn()
         }
       },
       {
