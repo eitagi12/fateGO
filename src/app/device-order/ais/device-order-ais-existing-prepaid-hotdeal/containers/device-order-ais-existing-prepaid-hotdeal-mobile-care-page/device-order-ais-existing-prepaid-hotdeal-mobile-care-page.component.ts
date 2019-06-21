@@ -11,8 +11,10 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { MobileCareService } from 'src/app/device-order/services/mobile-care.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, ExistingMobileCare } from 'src/app/shared/models/transaction.model';
 import { MOBILE_CARE_PACKAGE_KEY_REF } from 'src/app/device-order/constants/cpc.constant';
+import { TranslateService } from '@ngx-translate/core';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-device-order-ais-existing-prepaid-hotdeal-mobile-care-page',
@@ -31,11 +33,13 @@ export class DeviceOrderAisExistingPrepaidHotdealMobileCarePageComponent impleme
   constructor(
     private router: Router,
     private homeService: HomeService,
+    private http: HttpClient,
     private priceOptionService: PriceOptionService,
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
     private shoppingCartService: ShoppingCartService,
-    private mobileCareService: MobileCareService
+    private mobileCareService: MobileCareService,
+    private translateService: TranslateService
   ) {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.transaction = this.transactionService.load();
@@ -57,21 +61,78 @@ export class DeviceOrderAisExistingPrepaidHotdealMobileCarePageComponent impleme
     const chargeType = this.transaction.data.simCard.chargeType;
     const endUserPrice = +this.priceOption.trade.normalPrice;
     const exMobileCare = this.transaction.data.existingMobileCare;
+
     this.pageLoadingService.openLoading();
+    this.callGetMobileCareService(billingSystem, chargeType, endUserPrice, exMobileCare);
+  }
+
+  callGetMobileCareService(billingSystem: string, chargeType: any, endUserPrice: number, exMobileCare: ExistingMobileCare): void {
     this.mobileCareService.getMobileCare({
       packageKeyRef: MOBILE_CARE_PACKAGE_KEY_REF,
       billingSystem: billingSystem
-    }, chargeType, billingSystem, endUserPrice).then((mobileCare: any) => {
-      this.mobileCare = {
-        promotions: mobileCare,
-        existingMobileCare: !!exMobileCare
-      };
-      if (this.mobileCare.promotions && this.mobileCare.promotions.length > 0) {
-        this.mobileCare.promotions[0].active = true;
-      }
-      return;
-    })
+    }, chargeType, billingSystem, endUserPrice)
+      .then((mobileCare: any) => this.haveMobileCarePromotions(mobileCare, exMobileCare))
       .then(() => this.pageLoadingService.closeLoading());
+  }
+
+  haveMobileCarePromotions(mobileCare: any, exMobileCare: ExistingMobileCare): void {
+    this.mobileCare = this.mappingMobileCare(mobileCare, exMobileCare);
+    if (this.mobileCare) {
+      this.checkTranslateLang(this.translateService.currentLang);
+    }
+    if (this.mobileCare.promotions && this.mobileCare.promotions.length > 0) {
+      this.mobileCare.promotions[0].active = true;
+    }
+    return;
+  }
+
+  mappingMobileCare(mobileCare: any, exMobileCare: ExistingMobileCare): MobileCare {
+    return {
+      promotions: mobileCare,
+      existingMobileCare: !!exMobileCare
+    };
+  }
+
+  checkTranslateLang(lang: any): void {
+    this.mapKeyTranslateMobileCareTitle(this.mobileCare.promotions).then(translateKey => {
+      if (lang === 'EN' || lang.lang === 'EN' || lang === 'en' || lang.lang === 'en') {
+        if (translateKey && lang && lang.translations) {
+          const merge = { ...translateKey, ...lang.translations } || {};
+          this.translateService.setTranslation('EN', merge);
+        } else {
+          this.getTranslateLoader('device-order', 'EN').then(resp => {
+            const merge = { ...translateKey, ...resp } || {};
+            this.translateService.setTranslation('EN', merge);
+          });
+        }
+      }
+    });
+
+  }
+
+  mapKeyTranslateMobileCareTitle(mobileCare: any): Promise<any> {
+    const map = new Map();
+    const TranslateKey = {};
+    mobileCare.map(key => key.items.map(item => {
+      map.set([item.title.trim()], item.value.customAttributes.shortNameEng.trim());
+    }));
+    map.forEach((value: any, key: any) => {
+      TranslateKey[key] = value;
+    });
+    if (TranslateKey) {
+      return Promise.resolve(TranslateKey);
+    } else {
+      return Promise.resolve(null);
+    }
+
+  }
+
+  getTranslateLoader(moduleName: string, lang: string): Promise<any> {
+    if (!moduleName || !lang) {
+      return;
+    }
+    const fileLang = `i18n/${moduleName}.${lang}.json`.toLowerCase();
+    return this.http.get(fileLang).toPromise();
   }
 
   onNext(): void {
