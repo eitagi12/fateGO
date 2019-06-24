@@ -85,7 +85,6 @@ export class DeviceOrderAisExistingPrepaidHotdealSummaryPageComponent implements
     })
     .catch((err: any) => {
       this.pageLoadingService.closeLoading();
-      this.alertService.error(err);
     });
   }
 
