@@ -192,7 +192,6 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
         }
       }).catch((err) => {
         this.pageLoadingService.closeLoading();
-        this.alertService.error(err);
       });
   }
 
