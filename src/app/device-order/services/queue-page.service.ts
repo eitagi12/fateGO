@@ -250,12 +250,12 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
       if (payment.paymentType === 'QR_CODE') {
         paymentMethod += payment.paymentQrCodeType === 'THAI_QR' ? 'PB|' : 'RL|';
       } else {
-        paymentMethod += tradePayment.method + '|';
+        paymentMethod += tradePayment.method && tradePayment.method === 'CC/CA' ? 'CA|' : tradePayment.method + '|';
       }
       if (advancePayment.paymentType === 'QR_CODE') {
         paymentMethod += advancePayment.paymentQrCodeType === 'THAI_QR' ? 'PB' : 'RL';
       } else {
-        paymentMethod += tradePayment.method;
+        paymentMethod += tradePayment.method && tradePayment.method === 'CC/CA' ? 'CA' : tradePayment.method;
       }
       return paymentMethod;
     }
