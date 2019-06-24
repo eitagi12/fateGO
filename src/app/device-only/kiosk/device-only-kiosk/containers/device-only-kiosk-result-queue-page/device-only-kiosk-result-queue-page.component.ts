@@ -35,7 +35,7 @@ export class DeviceOnlyKioskResultQueuePageComponent implements OnInit , OnDestr
   }
 
   onHome(): void {
-    window.location.href = '/';
+    window.location.href = '/smart-digital/main-menu';
   }
 
   checkPaymentType(): void {
@@ -47,7 +47,7 @@ export class DeviceOnlyKioskResultQueuePageComponent implements OnInit , OnDestr
   }
 
   mainMenu(): void {
-    window.location.href = '/';
+    window.location.href = '/smart-digital/main-menu';
   }
 
   ngOnDestroy(): void {

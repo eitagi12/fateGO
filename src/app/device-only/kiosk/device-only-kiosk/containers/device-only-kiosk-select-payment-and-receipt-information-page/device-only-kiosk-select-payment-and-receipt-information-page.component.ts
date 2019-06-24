@@ -62,33 +62,34 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
     // REFACTOR IT'S
     this.paymentDetail = {
       commercialName: commercialName,
-      // tslint:disable-next-line:max-line-length
-      promotionPrice: this.priceOption.trade.priceType === 'NORMAL' ? +(this.priceOption.trade.normalPrice) : +(this.priceOption.trade.promotionPrice),
+      promotionPrice: this.priceOption.trade.priceType === 'NORMAL' ? +(this.priceOption.trade.normalPrice)
+      : +(this.priceOption.trade.promotionPrice),
       isFullPayment: this.isFullPayment(),
       installmentFlag: false,
       advancePay: 0,
       qrCode: true
     };
     if (this.priceOption.trade.banks && this.priceOption.trade.banks.length > 0) {
-      if (this.isFullPayment()) {
-        this.banks = this.priceOption.trade.banks || [];
-      } else {
-        this.banks = (this.priceOption.trade.banks || []).map((b: any) => {
-          return b.installmentDatas.map((data: any) => {
-            return {
-              ...b,
-              installment: `${data.installmentPercentage}% ${data.installmentMounth}`
-            };
-          });
-        }).reduce((prev: any, curr: any) => {
-          curr.forEach((element: any) => {
-            prev.push(element);
-          });
-          return prev;
-        }, []);
-      }
+      // if (this.isFullPayment()) {
+      //   this.banks = this.priceOption.trade.banks || [];
+      // } else {
+        this.banks = (this.priceOption.trade.banks || []);
+              // .map((b: any) => {
+      //     return b.installmentDatas.map((data: any) => {
+      //       return {
+      //         ...b,
+      //         installment: `${data.installmentPercentage}% ${data.installmentMounth}`
+      //       };
+      //     });
+      //   }).reduce((prev: any, curr: any) => {
+      //     curr.forEach((element: any) => {
+      //       prev.push(element);
+      //     });
+      //     return prev;
+        // }, []);
+      // }
     } else {
-      // this.localtion = this.tokenService.getUser();
+      this.localtion = this.tokenService.getUser();
       this.localtion = this.user.locationCode;
       this.http.post('/api/salesportal/banks-promotion', {
         localtion: this.localtion
@@ -127,7 +128,7 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
     const brand: string = encodeURIComponent(this.product.brand ? this.product.brand : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
     const model: string = encodeURIComponent(this.product.model ? this.product.model : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
     // replace '%28 %29' for() case url refresh error
-    const url: string = `/sales-portal/buy-product/brand/${brand}/${model}`;
+    const url: string = `/smart-digital/buy-product/brand/${brand}/${model}`;
     const queryParams: string =
       '?modelColor=' + this.product.color +
       '&productType=' + this.product.productType +
