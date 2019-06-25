@@ -62,6 +62,11 @@ const routes: Routes = [
     path: 'trade-in',
     loadChildren: 'src/app/trade-in/trade-in.module#TradeInModule',
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'buy-accessories',
+    loadChildren: 'src/app/buy-accessories/buy-accessories.module#BuyAccessoriesModule',
+    canActivate: [AuthGuard, ApiRequestGuard]
   }
 ];
 
