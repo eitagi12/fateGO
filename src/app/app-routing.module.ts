@@ -64,8 +64,8 @@ const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
-    path: 'buy-accessories',
-    loadChildren: 'src/app/buy-accessories/buy-accessories.module#BuyAccessoriesModule',
+    path: 'buy-gadget',
+    loadChildren: 'src/app/buy-gadget/buy-gadget.module#BuyGadgetModule',
     canActivate: [AuthGuard, ApiRequestGuard]
   }
 ];

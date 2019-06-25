@@ -4,22 +4,23 @@ import { FormGroup, FormBuilder } from '@angular/forms';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { debounceTime } from 'rxjs/internal/operators/debounceTime';
 import { forkJoin } from 'rxjs/internal/observable/forkJoin';
-
+import { FlowService, CustomerGroup } from '../../services/flow.service';
 import {
   SalesService, TokenService, HomeService, User,
   CampaignSliderInstallment, PromotionShelve,
-  PageLoadingService, BillingSystemType, AlertService
+  PageLoadingService, AlertService
 } from 'mychannel-shared-libs';
 
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 
-import { FlowService, CustomerGroup } from 'src/app/buy-product/services/flow.service';
+
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PromotionShelveService } from 'src/app/device-order/services/promotion-shelve.service';
 
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
-import { PRODUCT_TYPE, PRODUCT_SUB_TYPE, SUB_STOCK_DESTINATION } from 'src/app/buy-accessories/constants/accessories.constant';
+import { PRODUCT_TYPE, PRODUCT_SUB_TYPE, SUB_STOCK_DESTINATION } from '../../constants/gadget.constant';
+
 @Component({
   selector: 'app-campaign-page',
   templateUrl: './campaign-page.component.html',
