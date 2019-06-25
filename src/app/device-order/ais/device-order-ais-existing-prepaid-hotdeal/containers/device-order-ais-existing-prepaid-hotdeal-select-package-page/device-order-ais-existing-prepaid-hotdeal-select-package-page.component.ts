@@ -66,13 +66,12 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
     const campaign: any = this.priceOption.campaign;
     const privilege: any = this.priceOption.privilege;
     const simcard = this.transaction.data.simCard;
-
     this.http.get('/api/customerportal/newRegister/queryOnTopPackage', {
       params: {
         orderType: 'Change Promotion',
         billingSystem: BillingSystemType.IRB,
         chargeType: simcard.chargeType,
-        allowNtype: simcard.nType,
+        allowNtype: simcard.nType === 'CPE' ? 'CBS' : simcard.nType,
         cpcUserId: trade.packageKeyRef || campaign.packageKeyRef
       }
     }).toPromise()

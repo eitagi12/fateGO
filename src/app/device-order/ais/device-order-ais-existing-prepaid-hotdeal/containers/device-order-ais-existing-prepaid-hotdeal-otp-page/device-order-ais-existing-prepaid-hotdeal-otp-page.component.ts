@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HomeService, ShoppingCart, PageLoadingService, AlertService } from 'mychannel-shared-libs';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
@@ -22,7 +22,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
   templateUrl: './device-order-ais-existing-prepaid-hotdeal-otp-page.component.html',
   styleUrls: ['./device-order-ais-existing-prepaid-hotdeal-otp-page.component.scss']
 })
-export class DeviceOrderAisExistingPrepaidHotdealOtpPageComponent implements OnInit {
+export class DeviceOrderAisExistingPrepaidHotdealOtpPageComponent implements OnInit, OnDestroy {
 
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
   shoppingCart: ShoppingCart;
@@ -107,7 +107,7 @@ export class DeviceOrderAisExistingPrepaidHotdealOtpPageComponent implements OnI
       this.autoPI();
     } else {
       this.pageLoadingService.closeLoading();
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_CUSTOMER_INFO_PAGE]);
+      this.onNext();
     }
   }
 
@@ -117,7 +117,7 @@ export class DeviceOrderAisExistingPrepaidHotdealOtpPageComponent implements OnI
       .then((response: any) => {
         this.pageLoadingService.closeLoading();
         if (response && response.data && response.data.success) {
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_CUSTOMER_INFO_PAGE]);
+          this.onNext();
         } else {
           this.alertService.error('ระบบไม่สามารถแสดงตนได้กรุณาติดต่อเจ้าหน้าที่');
         }
@@ -163,5 +163,9 @@ export class DeviceOrderAisExistingPrepaidHotdealOtpPageComponent implements OnI
 
   onHome(): void {
     this.homeService.goToHome();
+  }
+
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
   }
 }

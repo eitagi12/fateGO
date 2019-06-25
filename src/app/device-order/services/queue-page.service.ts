@@ -167,13 +167,13 @@ export class QueuePageService {
   }
 
   private getOrderRemark(transaction: Transaction, priceOption: PriceOption): string {
-    const onTopPackage = transaction.data.onTopPackage || {};
+    const mainPackage = transaction.data.mainPackage && transaction.data.mainPackage.customAttributes || {};
     const airTime: string = this.getAirTime(priceOption.trade, transaction);
     const installment = this.getInstallment(transaction, priceOption);
     const information = this.getInformation(transaction, priceOption);
 
     return `
-${this.PROMOTION_NAME}${this.SPACE}${onTopPackage.shortNameThai || ''}
+${this.PROMOTION_NAME}${this.SPACE}${mainPackage.shortNameThai || ''}
 ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW_LINE}
 `;
   }
@@ -250,12 +250,12 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
       if (payment.paymentType === 'QR_CODE') {
         paymentMethod += payment.paymentQrCodeType === 'THAI_QR' ? 'PB|' : 'RL|';
       } else {
-        paymentMethod += tradePayment.method + '|';
+        paymentMethod += tradePayment.method && tradePayment.method === 'CC/CA' ? 'CA|' : tradePayment.method + '|';
       }
       if (advancePayment.paymentType === 'QR_CODE') {
         paymentMethod += advancePayment.paymentQrCodeType === 'THAI_QR' ? 'PB' : 'RL';
       } else {
-        paymentMethod += tradePayment.method;
+        paymentMethod += tradePayment.method && tradePayment.method === 'CC/CA' ? 'CA' : tradePayment.method;
       }
       return paymentMethod;
     }
@@ -305,9 +305,10 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
   private getInformation(transaction: Transaction, priceOption: PriceOption): string {
     let message = '';
 
-    const customerGroup = priceOption.customerGroup;
-    const privilege = priceOption.privilege;
+    const customerGroup = priceOption.customerGroup || {};
+    const privilege = priceOption.privilege || {};
     const trade = priceOption.trade;
+    const campaign = priceOption.campaign || {};
     const mainPackage = transaction.data.mainPackage && transaction.data.mainPackage.customAttributes || {};
     const mobileCarePackage = transaction.data.mobileCarePackage || {};
     const simCard = transaction.data.simCard;
@@ -321,6 +322,7 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
       customerGroupName = 'Convert Pre to Post';
     }
     const customAttributes = mobileCarePackage.customAttributes || {};
+    const privilegeDesc = `${campaign.campaignName} ${customerGroup.name || ''} ${privilege.ussdCode || ''}`;
 
     message += this.SUMMARY_POINT + this.SPACE + 0 + this.COMMA + this.SPACE;
     message += this.SUMMARY_DISCOUNT + this.SPACE + 0 + this.COMMA + this.SPACE;
@@ -330,7 +332,7 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
     message += this.PRMOTION_CODE + this.SPACE + (mainPackage.promotionCode || '') + this.COMMA + this.SPACE;
     message += this.MOBILE_CARE_CODE + this.SPACE + (customAttributes.promotionCode || '') + this.COMMA + this.SPACE;
     message += this.MOBILE_CARE + this.SPACE + (customAttributes.shortNameThai || '') + this.COMMA + this.SPACE;
-    message += this.PRIVILEGE_DESC + this.SPACE + (privilege.privilegeDesc || '') + this.COMMA + this.SPACE;
+    message += this.PRIVILEGE_DESC + this.SPACE + (privilegeDesc || '') + this.COMMA + this.SPACE;
     message += this.QUEUE_NUMBER + this.SPACE + queue.queueNo;
     return message;
   }

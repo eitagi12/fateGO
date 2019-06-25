@@ -56,7 +56,7 @@ export class OrderPreToPostAggregatePageComponent implements OnInit, OnDestroy {
 
     this.pageLoadingService.openLoading();
 
-    this.http.get(`/api/customerportal/newRegister/${this.mobileNo}/queryBalance`).toPromise()
+    this.http.get(`/api/customerportal/newRegister/${this.mobileNo}/getBalance`).toPromise()
       .then((resp: any) => {
 
         this.balance = resp.data || [];

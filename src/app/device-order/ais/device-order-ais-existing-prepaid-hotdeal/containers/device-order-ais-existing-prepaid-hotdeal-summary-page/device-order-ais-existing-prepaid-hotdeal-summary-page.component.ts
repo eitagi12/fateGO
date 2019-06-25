@@ -68,7 +68,7 @@ export class DeviceOrderAisExistingPrepaidHotdealSummaryPageComponent implements
 
     this.pageLoadingService.openLoading();
     this.balance = {  balance: 0, addMoney: true, addMoneyPrice: 0 };
-    this.getBalanceSubscription = this.http.get(`/api/customerportal/newRegister/${simcard.mobileNo}/queryBalance`).toPromise();
+    this.getBalanceSubscription = this.http.get(`/api/customerportal/newRegister/${simcard.mobileNo}/getBalance`).toPromise();
 
     this.getBalanceSubscription.then((resp: any) => {
       this.pageLoadingService.closeLoading();
@@ -85,7 +85,6 @@ export class DeviceOrderAisExistingPrepaidHotdealSummaryPageComponent implements
     })
     .catch((err: any) => {
       this.pageLoadingService.closeLoading();
-      this.alertService.error(err);
     });
   }
 
