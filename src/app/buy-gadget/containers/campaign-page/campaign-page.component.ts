@@ -14,7 +14,6 @@ import {
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 
-
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PromotionShelveService } from 'src/app/device-order/services/promotion-shelve.service';
 
