@@ -21,7 +21,7 @@
                   <i class="fa fa-circle mr-3 text-green"></i>
                   {{ priceOption?.productDetail?.name }}
                   <span *ngIf="priceOption?.productStock?.color">
-                    {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.color }}
+                    {{ priceOption?.productStock?.color?'สี': '' | translate }} {{ priceOption?.productStock?.color }}
                   </span>
                   <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
                     (แถมซิม)

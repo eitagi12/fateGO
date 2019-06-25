@@ -33,10 +33,10 @@
                 <i class="fa fa-circle mr-3 text-green"></i>
                 {{ priceOption?.productDetail?.name }}
                 <span *ngIf="priceOption?.productStock?.color">
-                  {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.color }}
+                  {{ priceOption?.productStock?.color?'สี': '' | translate}} {{ priceOption?.productStock?.color }}
                 </span>
                 <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
-                  (แถมซิม)
+                  ({{'แถมซิม' | translate}})
                 </span>
                 <span class="pull-right text-green">
                   ฿ {{ priceOption?.trade?.promotionPrice | number }}
@@ -72,7 +72,7 @@
                 <label class="form-check-label" for="installmentNoAdvancePay">
                   {{ priceOption?.productDetail?.name }}
                   <span *ngIf="priceOption?.productStock?.color">
-                    สี {{ priceOption?.productStock?.color }}
+                    {{'สี' | translate}} {{ priceOption?.productStock?.color }}
                   </span>
                   <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
                     ({{'แถมซิม'}| translate})
@@ -86,13 +86,13 @@
                 <div class="mt-1"
                   *ngIf="transaction?.data?.payment?.paymentForm !== 'INSTALLMENT' && transaction?.data?.payment?.paymentType === 'QR_CODE'">
                   <small class="text-muted">
-                    (ชำระโดย {{ summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) }})
+                    ({{'ชำระโดย' | translate}} {{ summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) }})
                   </small>
                   <span class="text-pink"
                     *ngIf="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'WAITING'">( {{'รอชำระ'| translate}} )</span>
                   <span class="text-green"
                     *ngIf="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'SUCCESS'">
-                    ( ชำระแล้ว TX: {{transaction?.data?.mpayPayment?.tranId}} )
+                    ( {{'ชำระแล้ว'| translate}} TX: {{transaction?.data?.mpayPayment?.tranId}} )
                   </span>
 
                 </div>
