@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, ShoppingCart, PaymentDetail, PaymentDetailBank, ReceiptInfo, Utils, TokenService, PageLoadingService, REGEX_MOBILE, AlertService } from 'mychannel-shared-libs';
+import { HomeService, ShoppingCart, PaymentDetail, PaymentDetailBank, ReceiptInfo, Utils, TokenService, PageLoadingService, REGEX_MOBILE, AlertService, ReadCard, ReadCardService, ReadCardProfile, ReadCardEvent } from 'mychannel-shared-libs';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction } from 'src/app/shared/models/transaction.model';
@@ -11,6 +11,7 @@ import { HttpClient } from '@angular/common/http';
 import { WIZARD_DEVICE_ODER_AIS_DEVICE } from 'src/app/device-order/constants/wizard.constant';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE, ROUTE_DEVICE_AIS_DEVICE_SUMMARY_PAGE } from 'src/app/device-order/ais/device-order-ais-device/constants/route-path.constant';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-device-order-ais-device-payment-page',
   templateUrl: './device-order-ais-device-payment-page.component.html',
@@ -34,6 +35,15 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
   nameText: string;
   billingAddressText: string;
   keyInCustomerAddressTemp: any;
+
+  readCardSubscription: Subscription;
+  readCard: ReadCard;
+  profile: ReadCardProfile;
+  progressReadCard: number;
+  dataReadIdCard: any;
+  isReadCardError: boolean;
+
+  cardStatus: string;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -46,13 +56,14 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     private pageLoadingService: PageLoadingService,
     private fb: FormBuilder,
     private alertService: AlertService,
+    private readCardService: ReadCardService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
   }
 
   ngOnInit(): void {
-    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
+    // this.shoppingCart = this.shoppingCartService.getShoppingCartData();
 
     const productDetail = this.priceOption.productDetail || {};
     const productStock = this.priceOption.productStock || {};
@@ -60,60 +71,60 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     const receiptInfo: any = this.transaction.data.receiptInfo || {};
     this.createForm();
     this.createSearchByMobileNoForm();
-    const trade: any = this.priceOption.trade || {};
-    const advancePay: any = trade.advancePay || {};
+    // const trade: any = this.priceOption.trade || {};
+    // const advancePay: any = trade.advancePay || {};
 
     let commercialName = productDetail.name;
     if (productStock.color) {
       commercialName += ` สี ${productStock.color}`;
     }
 
-    this.payementDetail = {
-      commercialName: commercialName,
-      promotionPrice: +(trade.promotionPrice || 0),
-      isFullPayment: this.isFullPayment(),
-      installmentFlag: advancePay.installmentFlag === 'N' && +(advancePay.amount || 0) > 0,
-      advancePay: +(advancePay.amount || 0),
-    };
+    // this.payementDetail = {
+    //   commercialName: commercialName,
+    //   promotionPrice: +(trade.promotionPrice || 0),
+    //   isFullPayment: this.isFullPayment(),
+    //   installmentFlag: advancePay.installmentFlag === 'N' && +(advancePay.amount || 0) > 0,
+    //   advancePay: +(advancePay.amount || 0),
+    // };
 
-    this.banks = trade.banks || [];
+    // this.banks = trade.banks || [];
 
-    if (!this.banks.length) {
-      // ถ้าไม่มี bank ให้ get bank จาก location ร้าน
-      this.pageLoadingService.openLoading();
-      this.http.post(`/api/salesportal/banks-promotion`, {
-        location: this.tokenService.getUser().locationCode
-      }).toPromise()
-        .then((resp: any) => {
-          this.pageLoadingService.closeLoading();
-          this.banks = resp.data;
-          this.priceOption.trade.banks = resp.data;
-        })
-        .catch(() => {
-          this.pageLoadingService.closeLoading();
-        })
-        ;
-    }
-    this.receiptInfo = {
-      taxId: customer.idCardNo,
-      branch: '',
-      buyer: `${customer.titleName} ${customer.firstName} ${customer.lastName}`,
-      buyerAddress: this.utils.getCurrentAddress({
-        homeNo: customer.homeNo,
-        moo: customer.moo,
-        mooBan: customer.mooBan,
-        room: customer.room,
-        floor: customer.floor,
-        buildingName: customer.buildingName,
-        soi: customer.soi,
-        street: customer.street,
-        tumbol: customer.tumbol,
-        amphur: customer.amphur,
-        province: customer.province,
-        zipCode: customer.zipCode,
-      }),
-      telNo: receiptInfo.telNo
-    };
+    // if (!this.banks.length) {
+    //   // ถ้าไม่มี bank ให้ get bank จาก location ร้าน
+    //   this.pageLoadingService.openLoading();
+    //   this.http.post(`/api/salesportal/banks-promotion`, {
+    //     location: this.tokenService.getUser().locationCode
+    //   }).toPromise()
+    //     .then((resp: any) => {
+    //       this.pageLoadingService.closeLoading();
+    //       this.banks = resp.data;
+    //       this.priceOption.trade.banks = resp.data;
+    //     })
+    //     .catch(() => {
+    //       this.pageLoadingService.closeLoading();
+    //     })
+    //     ;
+    // }
+    // this.receiptInfo = {
+    //   taxId: customer.idCardNo,
+    //   branch: '',
+    //   buyer: `${customer.titleName} ${customer.firstName} ${customer.lastName}`,
+    //   buyerAddress: this.utils.getCurrentAddress({
+    //     homeNo: customer.homeNo,
+    //     moo: customer.moo,
+    //     mooBan: customer.mooBan,
+    //     room: customer.room,
+    //     floor: customer.floor,
+    //     buildingName: customer.buildingName,
+    //     soi: customer.soi,
+    //     street: customer.street,
+    //     tumbol: customer.tumbol,
+    //     amphur: customer.amphur,
+    //     province: customer.province,
+    //     zipCode: customer.zipCode,
+    //   }),
+    //   telNo: receiptInfo.telNo
+    // };
 
   }
   createForm(): void {
@@ -196,27 +207,31 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     //     this.clearData();
     //   });
   }
-  // readCard(): void {
-  //   // this.pageLoadingService.openLoading();
-  //     new Promise((resolve, reject): void => {
-  //       resolve(this.readingCard());
-  //     }).then((customer: any) => {
-  //     this.zipcode(customer).then((res) => {
-  //         customer.zipCode = res;
-  //         this.getbillingCycle(customer);
-  //     });
-  //     }).catch((err) => {
-  //       console.log(err);
-  //       this.pageLoadingService.closeLoading();
-  //     });
-  // }
-  //   readingCard(): any {
-  //     if (this.utils.isAisNative()) {
-  //       return this.readCardFromAisNative();
-  //     } else {
-  //       return this.readCardFromWebSocket();
-  //     }
-  // }
+
+  readCardProcess(): void {
+    delete this.dataReadIdCard;
+    this.readCardSubscription = this.readCardService.onReadCard().subscribe((readCard: ReadCard) => {
+      this.readCard = readCard;
+      this.progressReadCard = readCard.progress;
+      const valid = !!(readCard.progress >= 100 && readCard.profile);
+      if (readCard.error) {
+        this.profile = null;
+      }
+
+      if (readCard.eventName === ReadCardEvent.EVENT_CARD_LOAD_ERROR) {
+        this.isReadCardError = valid;
+      }
+
+      if (valid && !this.dataReadIdCard) {
+        this.profile = readCard.profile;
+        this.dataReadIdCard = readCard.profile;
+        console.log('this.dataReadIdCard', this.dataReadIdCard);
+        alert(JSON.stringify(this.dataReadIdCard));
+      }
+
+    });
+  }
+
   onPaymentCompleted(payment: any): void {
     this.paymentDetailTemp = payment;
   }
@@ -266,6 +281,9 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
 
   // tslint:disable-next-line:use-life-cycle-interface
   ngOnDestroy(): void {
+    if (this.readCardSubscription) {
+      this.readCardSubscription.unsubscribe();
+    }
     this.priceOptionService.update(this.priceOption);
     this.transactionService.update(this.transaction);
   }
