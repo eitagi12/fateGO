@@ -6,12 +6,29 @@ import { PrivilegeToTradeSliderPipe } from './pipes/privilege-to-trade-slider.pi
 import { BrandPageComponent } from './containers/brand-page/brand-page.component';
 import { CampaignPageComponent } from './containers/campaign-page/campaign-page.component';
 import { ProductPageComponent } from './containers/product-page/product-page.component';
+import { FlowService } from 'src/app/buy-accessories/services/flow.service';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
+import { TypeaheadModule, TabsModule } from 'ngx-bootstrap';
 
 @NgModule({
   imports: [
     CommonModule,
-    BuyAccessoriesRoutingModule
+    BuyAccessoriesRoutingModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MyChannelSharedLibsModule,
+    TypeaheadModule.forRoot(),
+    TabsModule.forRoot()
   ],
-  declarations: [PrivilegeToTradeSliderPipe, BrandPageComponent, CampaignPageComponent, ProductPageComponent]
+  declarations: [
+    PrivilegeToTradeSliderPipe,
+    BrandPageComponent,
+    CampaignPageComponent,
+    ProductPageComponent
+  ],
+  providers: [
+    FlowService
+  ]
 })
 export class BuyAccessoriesModule { }
