@@ -35,6 +35,10 @@ const routes: Routes = [
         path: 'best-buy-shop',
         loadChildren: 'src/app/device-order/ais/device-order-ais-existing-best-buy-shop/device-order-ais-existing-best-buy-shop.module#DeviceOrderAisExistingBestBuyShopModule'
       },
+      {
+        path: 'device',
+        loadChildren: 'src/app/device-order/ais/device-order-ais-device/device-order-ais-device.module#DeviceOrderAisDeviceModule'
+      },
     ]
   },
   {

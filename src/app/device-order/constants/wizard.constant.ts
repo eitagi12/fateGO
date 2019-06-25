@@ -6,3 +6,7 @@ export const WIZARD_DEVICE_ORDER_ASP = [
 export const WIZARD_DEVICE_ORDER_AIS = [
     'ข้อมูลชำระเงิน', 'เลือกเบอร์และแพ็กเกจ', 'สินค้าและบริการอื่น', 'สรุปรายการ'
 ];
+
+export const WIZARD_DEVICE_ODER_AIS_DEVICE = [
+    'ข้อมูลชำระเงิน', 'สินค้าและบริการอื่น', 'สรุปรายการ'
+];

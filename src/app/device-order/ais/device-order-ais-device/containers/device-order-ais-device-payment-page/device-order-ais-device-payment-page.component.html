@@ -1,0 +1,112 @@
+<div class="mc-flex">
+  <mc-header title="ซื้อเครื่องเปล่า">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <div class="my-3">
+      <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
+
+      <mc-payment-detail [paymentDetail]="payementDetail" [banks]="banks" (completed)="onPaymentCompleted($event)"
+        (error)="onPaymentError($event)">
+      </mc-payment-detail>
+      <div class="container-fluid">
+        <div class="card mb-3">
+            <div class="card-header bg-light-blue text-white">
+               {{ 'ข้อมูลใบเสร็จรับเงิน' | translate }}
+            </div>
+            <div class="card-body">
+                <div class="card-body bg-transparent">
+                    <div class="row">
+                      <label class="col-12 col-sm-8 col-form-label" for="input-mobile-number">
+                        ออกใบเสร็จตามใบแจ้งค่าใช้บริการเบอร์ AIS/FBB/Non AIS
+                      </label>
+                      <div class="col-12 col-sm-4">
+                        <form [formGroup]="searchByMobileNoForm">
+                          <div class="form-group search-box">
+                            <div class="input-group">
+                              <input type="tel" class="form-control text-center" placeholder="ระบุเบอร์ AIS" id="input-mobile-number" formControlName="mobileNo"
+                                maxlength="10" aria-describedby="basic-addon2" (keypress)="keyPress($event)">
+                              <div class="input-group-append">
+                                <button class="btn-outline" type="button" id="button-search-by-mobile-number" (click)="searchCustomerInfo()">
+                                  <img class="img-search" src="assets/images/icon/device_only_search_icon.png" />
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </form>
+                      </div>
+                    </div>
+                    <div class="row">
+                      <div class="col-12">
+                          <div class="m-auto bg-light-green device-only-read-card-btn" id="button-read-smart-card" >
+                              <div class="row m-auto" (click)="readCard()" >
+                                <img class="col-3" src="assets/images/icon/device_only_read_card_icon.png" />
+                                <label class="col-9 m-auto" > Read Smart Card </label>
+                              </div>
+                            </div>
+                            <div class="m-auto  device-only-read-card-btn" style="text-align: center;" id="button-read-smart-card">
+                              <span *ngIf="this.messages" class="col-12 m-auto text-center "   [innerHTML]="messages"></span>
+                            </div>
+                           
+                            <div class="device-only-read-card-progress" #progressBarArea>
+                              <div class="progress-bg">
+                                <div class="progress-precent" id="progress-bar-read-smart-card" #progressBarReadSmartCard></div>
+                                <div>
+                              </div>
+                            </div>
+                           
+                          </div>
+                      </div>
+                    </div>
+                  </div>
+                <div class="text-right" (click)="editAddress()">
+                    <label style="cursor: pointer" class="text-lime">ระบุที่อยู่ใบเสร็จรับเงิน</label>
+                  </div>
+                <div>
+                    <label class="text-grey">{{ 'ผู้ซื้อ' | translate }} </label> {{ receiptInfo?.buyer || '-' }}
+                </div>
+                <div>
+                    <label class="text-grey">{{ 'ที่อยู่ใบเสร็จรับเงิน' | translate }} </label> {{ receiptInfo?.buyerAddress || '-' }}
+                </div>
+                <form [formGroup]="receiptInfoForm" class="pt-2">
+                    <div class="form-group row">
+                        <label for="taxId" class="col-12 col-sm-3 col-form-label">Tax Id</label>
+                        <div class="col-12 col-sm-9">
+                            <input mcVirtualKeyboard type="text" class="form-control" id="taxId" [ngModel]="receiptInfo.taxId | idCard"
+                                formControlName="taxId" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="branch" class="col-12 col-sm-3 col-form-label">{{ 'สาขาที่' | translate }}</label>
+                        <div class="col-12 col-sm-9">
+                            <input mcVirtualKeyboard type="text" class="form-control" id="branch" formControlName="branch" readonly />
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="telNo" class="col-12 col-sm-3 col-form-label">{{ 'เบอร์ติดต่อ' | translate }}</label>
+                        <div class="col-12 col-sm-9">
+                            <input mcVirtualKeyboard autocomplete="off" type="text" maxlength="10" class="form-control" id="inputTelNo" formControlName="telNo"
+                                [ngClass]="{ 'is-invalid' : receiptInfoForm.controls.telNo.invalid && receiptInfoForm.controls.telNo.touched }" />
+                            <small class="form-text invalid-feedback" *ngIf="receiptInfoForm.controls.telNo.touched && receiptInfoForm.controls.telNo.errors">
+                                {{ '* กรุณากรอกเบอร์ติดต่อให้ถูกต้อง' | translate }}
+                            </small>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+    </div>
+  </div>
+  <mc-footer>
+    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button class="btn btn-success" [disabled]="!isNext()" (click)="onNext()">NEXT</button>
+  </mc-footer>
+</div>
