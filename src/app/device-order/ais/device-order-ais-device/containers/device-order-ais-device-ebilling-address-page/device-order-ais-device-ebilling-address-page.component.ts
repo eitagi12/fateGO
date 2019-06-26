@@ -1,14 +1,19 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, CustomerAddress } from 'mychannel-shared-libs';
+import { HomeService, CustomerAddress, CustomerService } from 'mychannel-shared-libs';
+import {
+  ROUTE_ORDER_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE
+} from 'src/app/order/order-new-register/constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { Subscription } from 'rxjs';
+import { NgxResource, LocalStorageService } from 'ngx-store';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { WIZARD_DEVICE_ODER_AIS_DEVICE } from 'src/app/device-order/constants/wizard.constant';
 import { ROUTE_DEVICE_AIS_DEVICE_PAYMENT_PAGE } from 'src/app/device-order/ais/device-order-ais-device/constants/route-path.constant';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-device-order-ais-device-ebilling-address-page',
@@ -16,6 +21,7 @@ import { ROUTE_DEVICE_AIS_DEVICE_PAYMENT_PAGE } from 'src/app/device-order/ais/d
   styleUrls: ['./device-order-ais-device-ebilling-address-page.component.scss']
 })
 export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit, OnDestroy {
+
   wizards: string[] = WIZARD_DEVICE_ODER_AIS_DEVICE;
 
   transaction: Transaction;
@@ -25,25 +31,33 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
   amphurs: string[];
   tumbols: string[];
   zipCodes: string[];
+  prefixes: string[] = [];
 
   customerAddressTemp: CustomerAddress;
   billDeliveryAddress: CustomerAddress;
   translationSubscribe: Subscription;
+
   ebillingAddressValid: boolean;
+  validateCustomerKeyInForm: FormGroup;
+  customerInfo: any;
 
   constructor(
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
     private http: HttpClient,
-    private translation: TranslateService
+    private localStorageService: LocalStorageService,
+    private translation: TranslateService,
+    private customerService: CustomerService,
+    public fb: FormBuilder,
   ) {
     this.transaction = this.transactionService.load();
   }
 
   ngOnInit(): void {
-
     this.callService();
+    this.createForm();
+    const customer = this.transaction.data.customer;
     this.translationSubscribe = this.translation.onLangChange.pipe(debounceTime(750)).subscribe(() => {
       this.callService();
       this.amphurs = [];
@@ -53,6 +67,12 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
       this.customerAddress.tumbol = null;
       this.customerAddress.province = null;
     });
+    this.customerInfo = {
+      firstName: customer.firstName,
+      lastName: customer.lastName,
+      idCardNo: customer.idCardNo,
+      prefix: customer.titleName,
+    };
   }
   callService(): void {
     const billingInformation = this.transaction.data.billingInformation || {};
@@ -60,9 +80,9 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
     this.http.get('/api/customerportal/newRegister/getAllZipcodes').subscribe((resp: any) => {
       this.allZipCodes = resp.data.zipcodes || [];
     });
-    customer.province = customer.province.replace(/มหานคร$/, '');
-    this.http.get('/api/customerportal/newRegister/getAllProvinces'
-      , {
+
+    this.http.get('/api/customerportal/newRegister/getAllProvinces',
+      {
         params: {
           provinceSubType: this.translation.currentLang === 'TH' ? 'THA' : 'ENG'
         }
@@ -83,7 +103,26 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
           zipCode: customer.zipCode,
         };
       });
+    this.customerService.queryTitleName().then((resp: any) => {
+      this.prefixes = (resp.data.titleNames || []).map((prefix: any) => prefix);
+    });
+  }
 
+  createForm(): void {
+    const customer = this.transaction.data.customer;
+    this.validateCustomerKeyInForm = this.fb.group({
+      idCardNo: ['', [Validators.required]],
+      prefix: ['', [Validators.required]],
+      firstName: ['', [Validators.required]],
+      lastName: ['', [Validators.required]],
+    });
+    this.validateCustomerKeyInForm.patchValue({
+      idCardNo: customer.idCardNo,
+      prefix: customer.titleName,
+      firstName: customer.firstName,
+      lastName: customer.lastName,
+    });
+    console.log(' this.validateCustomerKeyInForm', this.validateCustomerKeyInForm.value.prefix);
   }
 
   getProvinces(): string[] {
@@ -100,11 +139,11 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
     const province = this.getProvinceByName(params.provinceName);
     const req = {
       provinceId: province.id,
-      zipcode: params.zipCode
+      // zipcode: params.zipCode
     };
-    if (!params.zipCode) {
-      delete req.zipcode;
-    }
+    // if (!params.zipCode) {
+    //   delete req.zipcode;
+    // }
 
     this.http.get('/api/customerportal/newRegister/queryAmphur', {
       params: req
@@ -120,11 +159,11 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
     const req = {
       provinceId: province.id,
       amphurName: params.amphurName,
-      zipcode: params.zipCode
+      // zipcode: params.zipCode
     };
-    if (!params.zipCode) {
-      delete req.zipcode;
-    }
+    // if (!params.zipCode) {
+    //   delete req.zipcode;
+    // }
 
     this.http.get('/api/customerportal/newRegister/queryTumbol', {
       params: req
@@ -183,10 +222,14 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
     const billingInformation = this.transaction.data.billingInformation || {};
     const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
     this.transactionService.update(this.transaction);
-    this.transaction.data.billingInformation.billDeliveryAddress = Object.assign(
+    this.transaction.data.customer = Object.assign(
       Object.assign({}, customer),
       this.customerAddressTemp
     );
+    this.transaction.data.customer.titleName = this.validateCustomerKeyInForm.value.prefix;
+    this.transaction.data.customer.firstName = this.validateCustomerKeyInForm.value.firstName;
+    this.transaction.data.customer.lastName = this.validateCustomerKeyInForm.value.lastName;
+    this.transaction.data.customer.idCardNo = this.validateCustomerKeyInForm.value.idCardNo;
     this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_PAYMENT_PAGE]);
   }
 
@@ -195,6 +238,7 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
   }
 
   ngOnDestroy(): void {
+    this.translationSubscribe.unsubscribe();
     this.transactionService.update(this.transaction);
   }
 }

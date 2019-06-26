@@ -1,36 +1,89 @@
 <div class="mc-flex">
-    <mc-header title="{{ 'ซื้อเครื่องเปล่า' | translate }}">
+  <mc-header title="{{ 'ซื้อเครื่องเปล่า' | translate }}">
     <div class="header-icon-left">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
     <div class="header-icon-right">
-        <!-- <mc-dropdown-language></mc-dropdown-language> -->
+      <!-- <mc-dropdown-language></mc-dropdown-language> -->
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
   <div class="mc-flex-wrap">
     <div class="mb-3 mt-3">
       <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
+      <div class="container-fluid">
+        <form [formGroup]="validateCustomerKeyInForm">
+          <div class="card mb-3">
+            <div class="card-header bg-pink text-white">{{ 'ระบุข้อมูลลูกค้า' | translate }}</div>
+            <div class="card-body">
+              <div class="form-group row">
+                <div class="col-12 col-sm-12">
+                  <label class="col-form-label">{{ 'บัตรประชาชน' | translate }}
+                    <span class="text-danger">*</span>
+                  </label>
+                </div>
+                <div class="col-12  col-sm-12">
+                  <input type="text" class="form-control" maxlength="13"  [ngClass]="{'is-invalid': !validateCustomerKeyInForm.controls['idCardNo'].valid && validateCustomerKeyInForm.controls['idCardNo'].dirty}"
+                  [value]="customerInfo?.idCardNo" id="txtidCardNo"
+                    formControlName="idCardNo">
+                    <small class="invalid-feedback text-red" *ngIf="validateCustomerKeyInForm.controls.idCardNo.touched && validateCustomerKeyInForm.controls.idCardNo.errors">
+                        * กรุณากรอกรูปแบบให้ถูกต้อง
+                      </small>
+                </div>
+              </div>
 
-      <mc-customer-address 
-      [customerAddress]="customerAddress"
-      [allZipCodes]="allZipCodes"
-      [provinces]="getProvinces()"
-      [amphurs]="amphurs"
-      [tumbols]="tumbols"
-      [zipCodes]="zipCodes"
-      (provinceSelected)="onProvinceSelected($event)"
-      (amphurSelected)="onAmphurSelected($event)"
-      (tumbolSelected)="onTumbolSelected($event)"
-      (zipCodeSelected)="onZipCodeSelected($event)"
-      (completed)="onCompleted($event)"
-      (error)="onError($event)"
-      ></mc-customer-address>
-      
+              <div class="form-group row">
+                <div class="col-12 col-sm-12">
+                  <label class="col-form-label">{{ 'คำนำหน้าชื่อ' | translate }}
+                    <span class="text-danger">*</span>
+                  </label>
+                </div>
+                <div class="col-12  col-sm-12">
+                  <select class="form-control" [ngClass]="{'is-invalid': !validateCustomerKeyInForm.controls['prefix'].valid && validateCustomerKeyInForm.controls['prefix'].dirty}"
+                    id="ddlprefix" formControlName="prefix">
+                    <option value="" disabled selected>{{ 'คำนำหน้าชื่อ' | translate }}</option>
+                    <option *ngFor="let prefix of prefixes" [value]="prefix">{{prefix}}</option>
+                  </select>
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-12 col-sm-12">
+                  <label class="col-form-label">{{ 'ชื่อ' | translate }}
+                    <span class="text-danger">*</span>
+                  </label>
+                </div>
+                <div class="col-12  col-sm-12">
+                  <input type="text" class="form-control" [ngClass]="{'is-invalid': !validateCustomerKeyInForm.controls['firstName'].valid && validateCustomerKeyInForm.controls['firstName'].dirty}"
+                  [value]="customerInfo?.firstName"  id="txtfirstName" formControlName="firstName" maxlength="50" autocomplete="off">
+                </div>
+              </div>
+              <div class="form-group row">
+                <div class="col-12 col-sm-12">
+                  <label class="col-form-label">{{ 'นามสกุล' | translate }}
+                    <span class="text-danger">*</span>
+                  </label>
+                </div>
+                <div class="col-12 col-sm-12">
+                  <input type="text" class="form-control" [ngClass]="{'is-invalid': !validateCustomerKeyInForm.controls['lastName'].valid && validateCustomerKeyInForm.controls['lastName'].dirty}"
+                  [value]="customerInfo?.lastName" id="txtlastName" formControlName="lastName" maxlength="50" autocomplete="off">
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <mc-customer-address [customerAddress]="customerAddress" [allZipCodes]="allZipCodes" [provinces]="getProvinces()" [amphurs]="amphurs"
+        [tumbols]="tumbols" [zipCodes]="zipCodes" (provinceSelected)="onProvinceSelected($event)" (amphurSelected)="onAmphurSelected($event)"
+        (tumbolSelected)="onTumbolSelected($event)" (zipCodeSelected)="onZipCodeSelected($event)" (completed)="onCompleted($event)"
+        (error)="onError($event)"></mc-customer-address>
+
     </div>
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()" [disabled]="!ebillingAddressValid">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!(ebillingAddressValid && validateCustomerKeyInForm.valid)">NEXT</button>
   </mc-footer>
 </div>
+
