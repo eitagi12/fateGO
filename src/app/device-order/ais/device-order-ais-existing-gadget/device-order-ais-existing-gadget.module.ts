@@ -7,6 +7,7 @@ import { TabsModule } from 'ngx-bootstrap';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { DeviceOrderAisExistingGadgetMobileDetailPageComponent } from './containers/device-order-ais-existing-gadget-mobile-detail-page/device-order-ais-existing-gadget-mobile-detail-page.component';
 import { DeviceOrderAisExistingGadgetValidateCustomerPageComponent } from './containers/device-order-ais-existing-gadget-validate-customer-page/device-order-ais-existing-gadget-validate-customer-page.component';
+import { DeviceOrderAisExistingGadgetPaymentDetailPageComponent } from './containers/device-order-ais-existing-gadget-payment-detail-page/device-order-ais-existing-gadget-payment-detail-page.component';
 
 @NgModule({
   imports: [
@@ -19,7 +20,8 @@ import { DeviceOrderAisExistingGadgetValidateCustomerPageComponent } from './con
   ],
   declarations: [
     DeviceOrderAisExistingGadgetMobileDetailPageComponent,
-    DeviceOrderAisExistingGadgetValidateCustomerPageComponent
+    DeviceOrderAisExistingGadgetValidateCustomerPageComponent,
+    DeviceOrderAisExistingGadgetPaymentDetailPageComponent
   ]
 })
 export class DeviceOrderAisExistingGadgetModule { }
