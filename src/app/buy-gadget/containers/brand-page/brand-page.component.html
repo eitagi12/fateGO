@@ -23,7 +23,7 @@
         <div class="container-fluid mt-3" *ngIf="brands">
           <div class="row">
             <div class="col-4 col-sm-3 col-md-3 col-lg-2 mb-3" *ngFor="let brand of brands">
-              <a href="#" routerLink="/buy-product/product" [queryParams]="{ brand: brand.name }" class="brands bg-white">
+              <a href="#" routerLink="/buy-gadget/product" [queryParams]="{ brand: brand.name }" class="brands bg-white">
                 <mc-lazy-load-image [src]="brand?.imageUrl"></mc-lazy-load-image>
               </a>
             </div>
