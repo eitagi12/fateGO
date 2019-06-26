@@ -465,25 +465,26 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
   }
 
   callPriceOptionsService(brand: string, model: string, color: string, productType: string, productSubtype: string): void {
-    this.priceOptionDetailService = this.salesService.priceOptions({
-      brand: brand,
-      model: model,
-      color: color,
-      productType: productType,
-      productSubtype: productSubtype,
-      location: this.user.locationCode
+    // this.priceOptionDetailService = this.salesService.priceOptions({
+    //   brand: brand,
+    //   model: model,
+    //   color: color,
+    //   productType: productType,
+    //   productSubtype: productSubtype,
+    //   location: this.user.locationCode
+    // });
+    // this.priceOptionDetailService.then((resp: any) => {
+    // const priceOptions = this.filterCampaigns(resp.data.priceOptions || []);
+    const priceOptions = this.filterCampaigns(this.dataMock());
+    if (priceOptions && priceOptions.length > 0) {
+      this.maximumNormalPrice = priceOptions[0].maximumNormalPrice;
+    }
+    // generate customer tabs
+    this.tabs = this.getTabsFormPriceOptions(priceOptions);
+    this.tabs.forEach((tab: any) => {
+      tab.campaignSliders = this.getCampaignSliders(priceOptions, tab.code);
     });
-    this.priceOptionDetailService.then((resp: any) => {
-      const priceOptions = this.filterCampaigns(resp.data.priceOptions || []);
-      if (priceOptions && priceOptions.length > 0) {
-        this.maximumNormalPrice = priceOptions[0].maximumNormalPrice;
-      }
-      // generate customer tabs
-      this.tabs = this.getTabsFormPriceOptions(priceOptions);
-      this.tabs.forEach((tab: any) => {
-        tab.campaignSliders = this.getCampaignSliders(priceOptions, tab.code);
-      });
-    });
+    // });
   }
 
   onBack(): void {
@@ -507,4 +508,903 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     this.priceOptionService.save(this.priceOption);
   }
 
+  dataMock(): any {
+    return [
+      {
+        'campaignId': '1090383',
+        'campaignName': 'APPLE TV',
+        'campaignDesc': 'APPLE TV',
+        'imageUrl': null,
+        'channels': [
+          'ASP',
+          'AIS'
+        ],
+        'minimumPackagePrice': '0',
+        'maximumPackagePrice': '99999',
+        'packageKeyRef': null,
+        'conditionCode': null,
+        'promotionFlag': 'Y',
+        'publish': true,
+        'allowedAddToCart': true,
+        'code': 'APPLE_TV',
+        'priceType': 'PROMOTION',
+        'maximumContract': '0',
+        'price': '41750',
+        'freeGoods': [],
+        'customerGroups': [
+          {
+            'code': 'MC004',
+            'flowId': '000',
+            'name': 'ลูกค้าปัจจุบัน'
+          }
+        ],
+        'minimumPromotionPrice': '41750',
+        'maximumPromotionPrice': '41750',
+        'minimumNormalPrice': '41750',
+        'maximumNormalPrice': '41750',
+        'minimumAdvancePay': '0',
+        'maximumAdvancePay': '0',
+        'privileges': [
+          {
+            'privilegeId': 'OTHER',
+            'privilegeName': 'Apple Tv TP19041848__ - ',
+            'privilegeDesc': 'Apple Tv TP19041848__ - ',
+            'ussdCode': null,
+            'packageKeyRef': null,
+            'minimumPackagePrice': null,
+            'maximumPackagePrice': null,
+            'channels': [
+              'ASP',
+              'AIS'
+            ],
+            'customerGroups': [
+              {
+                'code': 'MC004',
+                'flowId': '000',
+                'name': 'ลูกค้าปัจจุบัน'
+              }
+            ],
+            'minimumNormalPrice': '41750',
+            'maximumNormalPrice': '41750',
+            'minimumPromotionPrice': '41750',
+            'maximumPromotionPrice': '41750',
+            'minimumAdvancePay': '0',
+            'maximumAdvancePay': '0',
+            'maximumContract': '0',
+            'trades': [
+              {
+                'tradeNo': 'TP19041848',
+                'tradeName': '[MC] Handset Trading Installment + Discount + Free Goods',
+                'tradeDesc': 'Handset Trading Installment + Discount + Free Goods',
+                'normalPrice': '41750',
+                'promotionPrice': '39250',
+                'durationContract': '0',
+                'advancePay': {
+                  'tradeAirtimeId': null,
+                  'amount': '0',
+                  'installmentFlag': 'N',
+                  'matAirtime': null,
+                  'description': null,
+                  'promotions': []
+                },
+                'priceType': 'PROMOTION',
+                'ussdCode': null,
+                'packageKeyRef': null,
+                'priceDiscount': '2500',
+                'focCode': '0',
+                'productType': 'DEVICE',
+                'productSubtype': 'HANDSET',
+                'maximumPackage': null,
+                'minimumPackage': null,
+                'serviceLockHs': null,
+                'priceGroups': [
+                  {
+                    'priceType': 'EUP',
+                    'price': '41750'
+                  },
+                  {
+                    'priceType': 'TUP',
+                    'price': '45900'
+                  }
+                ],
+                'discount': {
+                  'tradeDiscountId': '128777',
+                  'type': 'B',
+                  'value': '7',
+                  'amount': '2500.0',
+                  'specialType': null,
+                  'specialAmount': '0'
+                },
+                'payments': [
+                  {
+                    'cardType': 'MASTER',
+                    'method': 'CC',
+                    'installId': 421
+                  },
+                  {
+                    'cardType': 'OTHER',
+                    'method': 'CC',
+                    'installId': 421
+                  },
+                  {
+                    'cardType': 'VISA',
+                    'method': 'CC',
+                    'installId': 421
+                  },
+                  {
+                    'cardType': 'MASTER',
+                    'method': 'CC',
+                    'installId': 26
+                  },
+                  {
+                    'cardType': 'MASTER',
+                    'method': 'CC',
+                    'installId': 96
+                  },
+                  {
+                    'cardType': 'MASTER',
+                    'method': 'CC',
+                    'installId': 278
+                  },
+                  {
+                    'cardType': 'MASTER',
+                    'method': 'CC',
+                    'installId': 321
+                  },
+                  {
+                    'cardType': 'MASTER',
+                    'method': 'CC',
+                    'installId': 327
+                  },
+                  {
+                    'cardType': 'MASTER',
+                    'method': 'CC',
+                    'installId': 411
+                  },
+                  {
+                    'cardType': 'OTHER',
+                    'method': 'CC',
+                    'installId': 26
+                  },
+                  {
+                    'cardType': 'OTHER',
+                    'method': 'CC',
+                    'installId': 96
+                  },
+                  {
+                    'cardType': 'OTHER',
+                    'method': 'CC',
+                    'installId': 278
+                  },
+                  {
+                    'cardType': 'OTHER',
+                    'method': 'CC',
+                    'installId': 321
+                  },
+                  {
+                    'cardType': 'OTHER',
+                    'method': 'CC',
+                    'installId': 327
+                  },
+                  {
+                    'cardType': 'OTHER',
+                    'method': 'CC',
+                    'installId': 411
+                  },
+                  {
+                    'cardType': 'VISA',
+                    'method': 'CC',
+                    'installId': 26
+                  },
+                  {
+                    'cardType': 'VISA',
+                    'method': 'CC',
+                    'installId': 96
+                  },
+                  {
+                    'cardType': 'VISA',
+                    'method': 'CC',
+                    'installId': 278
+                  },
+                  {
+                    'cardType': 'VISA',
+                    'method': 'CC',
+                    'installId': 321
+                  },
+                  {
+                    'cardType': 'VISA',
+                    'method': 'CC',
+                    'installId': 327
+                  },
+                  {
+                    'cardType': 'VISA',
+                    'method': 'CC',
+                    'installId': 411
+                  }
+                ],
+                'banks': [
+                  {
+                    'name': 'ไทยพาณิชย์ จำกัด (มหาชน)',
+                    'abb': 'SCB',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/SCB_SCB02.png',
+                    'installment': '0% 10 เดือน (10 M)',
+                    'remark': null
+                  },
+                  {
+                    'name': 'ไทยพาณิชย์ จำกัด (มหาชน)',
+                    'abb': 'SCB',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/SCB_SCB02.png',
+                    'installment': '0% 12 เดือน (12 M)',
+                    'remark': null
+                  },
+                  {
+                    'name': 'ไทยพาณิชย์ จำกัด (มหาชน)',
+                    'abb': 'SCB',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/SCB_SCB02.png',
+                    'installment': '0% 15 เดือน (15 M)',
+                    'remark': null
+                  },
+                  {
+                    'name': 'กสิกรไทย จำกัด (มหาชน)',
+                    'abb': 'KBNK',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/KBNK_kBank02.png',
+                    'installment': '0% 12 เดือน (12 M)',
+                    'remark': null
+                  },
+                  {
+                    'name': 'กสิกรไทย จำกัด (มหาชน)',
+                    'abb': 'KBNK',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/KBNK_kBank02.png',
+                    'installment': '0% 15 เดือน (15 M)',
+                    'remark': null
+                  },
+                  {
+                    'name': 'กสิกรไทย จำกัด (มหาชน)',
+                    'abb': 'KBNK',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/KBNK_kBank02.png',
+                    'installment': '0% 10 เดือน (10 M)',
+                    'remark': null
+                  },
+                  {
+                    'name': 'กรุงไทย จำกัด (มหาชน)',
+                    'abb': 'KTB',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/KTB_KTB.png',
+                    'installment': '0% 10 เดือน (10 M)',
+                    'remark': null
+                  }
+                ],
+                'freeGoods': [],
+                'matCode': 'undefined',
+                'channels': [
+                  'ASP',
+                  'AIS'
+                ],
+                'tradeChannels': [
+                  {
+                    'partnerCode': null,
+                    'locationCode': null,
+                    'locationCodePartner': null,
+                    'region': null,
+                    'locType': null,
+                    'locSubtype': null,
+                    'province': 'ALL'
+                  }
+                ],
+                'customerGroups': [
+                  {
+                    'code': 'MC004',
+                    'flowId': '000',
+                    'name': 'ลูกค้าปัจจุบัน'
+                  }
+                ]
+              },
+              {
+                'tradeNo': 'TP19041848',
+                'tradeName': '[MC] Handset Trading Installment + Discount + Free Goods',
+                'tradeDesc': 'Handset Trading Installment + Discount + Free Goods',
+                'normalPrice': '41750',
+                'promotionPrice': '39250',
+                'durationContract': '0',
+                'advancePay': {
+                  'tradeAirtimeId': null,
+                  'amount': '0',
+                  'installmentFlag': 'N',
+                  'matAirtime': null,
+                  'description': null,
+                  'promotions': []
+                },
+                'priceType': 'PROMOTION',
+                'ussdCode': null,
+                'packageKeyRef': null,
+                'priceDiscount': '2500',
+                'focCode': '0',
+                'productType': 'DEVICE',
+                'productSubtype': 'HANDSET',
+                'maximumPackage': null,
+                'minimumPackage': null,
+                'serviceLockHs': null,
+                'priceGroups': [
+                  {
+                    'priceType': 'EUP',
+                    'price': '41750'
+                  },
+                  {
+                    'priceType': 'TUP',
+                    'price': '45900'
+                  }
+                ],
+                'discount': {
+                  'tradeDiscountId': '128777',
+                  'type': 'B',
+                  'value': '7',
+                  'amount': '2500.0',
+                  'specialType': null,
+                  'specialAmount': '0'
+                },
+                'payments': [
+                  {
+                    'cardType': 'OTHER',
+                    'method': 'CC',
+                    'installId': null
+                  }
+                ],
+                'banks': [
+                  {
+                    'name': 'อยุธยาคาร์ด เซอร์วิสเซส',
+                    'abb': 'ACS',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/ACS_ACS_BAY03.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'บริษัทอิออนธนสินทรัพย์ (ไทยแลนด์) จำกัด (มหาชน)',
+                    'abb': 'AEON',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/AEON_AEON-logo.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'กรุงศรีอยุธยา จำกัด (มหาชน)',
+                    'abb': 'BAY',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/BAY_BAY.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'กรุงเทพ จำกัด (มหาชน)',
+                    'abb': 'BBL',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/BBL_BBL.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'แห่งประเทศจีน',
+                    'abb': 'BOC',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/BOC_BOC.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'ซีไอเอ็มบี ไทย จำกัด (มหาชน)',
+                    'abb': 'CIMB',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/CIMB_CIMB.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'ซิตี้แบงก์',
+                    'abb': 'CITI',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/CITI_CITI.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'ซิตี้แบงก์ เรดดี้เครดิต',
+                    'abb': 'CITIREADY',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/CITIREADY_citibank02.jpg',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'แคปปิตอล โอเค',
+                    'abb': 'COK',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/COK_capOK.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'เซ็นทรัล',
+                    'abb': 'CT',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/CT_centralThe1.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'บริษัท เซทเทเลม (ประเทศไทย) จำกัด',
+                    'abb': 'CTM',
+                    'imageUrl': null,
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'Dominion Bank Canada',
+                    'abb': 'DBC',
+                    'imageUrl': null,
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'บัตรเครดิต เฟิร์สช้อยส์',
+                    'abb': 'FCC',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/FCC_FCC.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'Foreign Bank',
+                    'abb': 'FRB',
+                    'imageUrl': null,
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'ออมสิน',
+                    'abb': 'GSB',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/GSB_GSB.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'ฮ่องกงแอนด์เซี่ยงไฮ้',
+                    'abb': 'HKSH',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/HKSH_HSBC.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'ธนาคารไอซีบีซี จำกัด (มหาชน)',
+                    'abb': 'ICBC',
+                    'imageUrl': null,
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'ธนาคารอิสลามแห่งประเทศไทย',
+                    'abb': 'ISBT',
+                    'imageUrl': null,
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'กสิกรไทย จำกัด (มหาชน)',
+                    'abb': 'KBNK',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/KBNK_kBank02.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'กรุงไทย จำกัด (มหาชน)',
+                    'abb': 'KTB',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/KTB_KTB.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'ธนชาต จำกัด(มหาชน)',
+                    'abb': 'NBNK',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/NBNK_NBNK.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'OMC CARD, INC.',
+                    'abb': 'OMC',
+                    'imageUrl': null,
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'Other Bank',
+                    'abb': 'OTB',
+                    'imageUrl': null,
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'เพย์เมนท์ โซลูชั่น',
+                    'abb': 'PMS',
+                    'imageUrl': null,
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'ไทยพาณิชย์ จำกัด (มหาชน)',
+                    'abb': 'SCB',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/SCB_SCB02.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'SCB Speedy Cash',
+                    'abb': 'SCBSPEEDY',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/SCBSPEEDY_SCB Speedy.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'สแตนดาร์ดชาร์เตอร์ด (ไทย) จำกัด (มหาชน)',
+                    'abb': 'SCN',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/SCN_scn-logo.jpg',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'SUMITOMO',
+                    'abb': 'SUMI',
+                    'imageUrl': null,
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'บัตรเครดิต เทสโก้ โลตัส วีซ่า',
+                    'abb': 'TCS',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/TCS_TescoLotus-CreditCard.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'ทหารไทย จำกัด (มหาชน)',
+                    'abb': 'TMB',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/TMB_TMB02.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'ยูโอบี จำกัด (มหาชน)',
+                    'abb': 'UOB',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/UOB_UOB-bank.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'UOB Cash Plus',
+                    'abb': 'UOBCASHP',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/UOBCASHP_UOB CashPlus.png',
+                    'installment': null,
+                    'remark': null
+                  }
+                ],
+                'freeGoods': [],
+                'matCode': 'undefined',
+                'channels': [
+                  'ASP',
+                  'AIS'
+                ],
+                'tradeChannels': [
+                  {
+                    'partnerCode': null,
+                    'locationCode': null,
+                    'locationCodePartner': null,
+                    'region': null,
+                    'locType': null,
+                    'locSubtype': null,
+                    'province': 'ALL'
+                  }
+                ],
+                'customerGroups': [
+                  {
+                    'code': 'MC004',
+                    'flowId': '000',
+                    'name': 'ลูกค้าปัจจุบัน'
+                  }
+                ]
+              },
+              {
+                'tradeNo': 'TP19041848',
+                'tradeName': '[MC] Handset Trading Installment + Discount + Free Goods',
+                'tradeDesc': 'Handset Trading Installment + Discount + Free Goods',
+                'normalPrice': '41750',
+                'promotionPrice': '39250',
+                'durationContract': '0',
+                'advancePay': {
+                  'tradeAirtimeId': null,
+                  'amount': '0',
+                  'installmentFlag': 'N',
+                  'matAirtime': null,
+                  'description': null,
+                  'promotions': []
+                },
+                'priceType': 'PROMOTION',
+                'ussdCode': null,
+                'packageKeyRef': null,
+                'priceDiscount': '2500',
+                'focCode': '0',
+                'productType': 'DEVICE',
+                'productSubtype': 'HANDSET',
+                'maximumPackage': null,
+                'minimumPackage': null,
+                'serviceLockHs': null,
+                'priceGroups': [
+                  {
+                    'priceType': 'EUP',
+                    'price': '41750'
+                  },
+                  {
+                    'priceType': 'TUP',
+                    'price': '45900'
+                  }
+                ],
+                'discount': {
+                  'tradeDiscountId': '128777',
+                  'type': 'B',
+                  'value': '7',
+                  'amount': '2500.0',
+                  'specialType': null,
+                  'specialAmount': '0'
+                },
+                'payments': [
+                  {
+                    'cardType': 'OTHER',
+                    'method': 'CA',
+                    'installId': null
+                  }
+                ],
+                'banks': [
+                  {
+                    'name': 'อยุธยาคาร์ด เซอร์วิสเซส',
+                    'abb': 'ACS',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/ACS_ACS_BAY03.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'บริษัทอิออนธนสินทรัพย์ (ไทยแลนด์) จำกัด (มหาชน)',
+                    'abb': 'AEON',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/AEON_AEON-logo.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'กรุงศรีอยุธยา จำกัด (มหาชน)',
+                    'abb': 'BAY',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/BAY_BAY.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'กรุงเทพ จำกัด (มหาชน)',
+                    'abb': 'BBL',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/BBL_BBL.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'แห่งประเทศจีน',
+                    'abb': 'BOC',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/BOC_BOC.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'ซีไอเอ็มบี ไทย จำกัด (มหาชน)',
+                    'abb': 'CIMB',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/CIMB_CIMB.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'ซิตี้แบงก์',
+                    'abb': 'CITI',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/CITI_CITI.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'ซิตี้แบงก์ เรดดี้เครดิต',
+                    'abb': 'CITIREADY',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/CITIREADY_citibank02.jpg',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'แคปปิตอล โอเค',
+                    'abb': 'COK',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/COK_capOK.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'เซ็นทรัล',
+                    'abb': 'CT',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/CT_centralThe1.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'บริษัท เซทเทเลม (ประเทศไทย) จำกัด',
+                    'abb': 'CTM',
+                    'imageUrl': null,
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'Dominion Bank Canada',
+                    'abb': 'DBC',
+                    'imageUrl': null,
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'บัตรเครดิต เฟิร์สช้อยส์',
+                    'abb': 'FCC',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/FCC_FCC.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'Foreign Bank',
+                    'abb': 'FRB',
+                    'imageUrl': null,
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'ออมสิน',
+                    'abb': 'GSB',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/GSB_GSB.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'ฮ่องกงแอนด์เซี่ยงไฮ้',
+                    'abb': 'HKSH',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/HKSH_HSBC.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'ธนาคารไอซีบีซี จำกัด (มหาชน)',
+                    'abb': 'ICBC',
+                    'imageUrl': null,
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'ธนาคารอิสลามแห่งประเทศไทย',
+                    'abb': 'ISBT',
+                    'imageUrl': null,
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'กสิกรไทย จำกัด (มหาชน)',
+                    'abb': 'KBNK',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/KBNK_kBank02.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'กรุงไทย จำกัด (มหาชน)',
+                    'abb': 'KTB',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/KTB_KTB.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'ธนชาต จำกัด(มหาชน)',
+                    'abb': 'NBNK',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/NBNK_NBNK.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'OMC CARD, INC.',
+                    'abb': 'OMC',
+                    'imageUrl': null,
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'Other Bank',
+                    'abb': 'OTB',
+                    'imageUrl': null,
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'เพย์เมนท์ โซลูชั่น',
+                    'abb': 'PMS',
+                    'imageUrl': null,
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'ไทยพาณิชย์ จำกัด (มหาชน)',
+                    'abb': 'SCB',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/SCB_SCB02.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'SCB Speedy Cash',
+                    'abb': 'SCBSPEEDY',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/SCBSPEEDY_SCB Speedy.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'สแตนดาร์ดชาร์เตอร์ด (ไทย) จำกัด (มหาชน)',
+                    'abb': 'SCN',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/SCN_scn-logo.jpg',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'SUMITOMO',
+                    'abb': 'SUMI',
+                    'imageUrl': null,
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'บัตรเครดิต เทสโก้ โลตัส วีซ่า',
+                    'abb': 'TCS',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/TCS_TescoLotus-CreditCard.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'ทหารไทย จำกัด (มหาชน)',
+                    'abb': 'TMB',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/TMB_TMB02.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'ยูโอบี จำกัด (มหาชน)',
+                    'abb': 'UOB',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/UOB_UOB-bank.png',
+                    'installment': null,
+                    'remark': null
+                  },
+                  {
+                    'name': 'UOB Cash Plus',
+                    'abb': 'UOBCASHP',
+                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/UOBCASHP_UOB CashPlus.png',
+                    'installment': null,
+                    'remark': null
+                  }
+                ],
+                'freeGoods': [],
+                'matCode': 'undefined',
+                'channels': [
+                  'ASP',
+                  'AIS'
+                ],
+                'tradeChannels': [
+                  {
+                    'partnerCode': null,
+                    'locationCode': null,
+                    'locationCodePartner': null,
+                    'region': null,
+                    'locType': null,
+                    'locSubtype': null,
+                    'province': 'ALL'
+                  }
+                ],
+                'customerGroups': [
+                  {
+                    'code': 'MC004',
+                    'flowId': '000',
+                    'name': 'ลูกค้าปัจจุบัน'
+                  }
+                ]
+              }
+            ],
+            'freeGoods': []
+          }
+        ]
+      },
+    ];
+  }
 }
