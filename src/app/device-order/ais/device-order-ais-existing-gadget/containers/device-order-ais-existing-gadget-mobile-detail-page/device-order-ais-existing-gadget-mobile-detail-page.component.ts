@@ -46,10 +46,7 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
   }
 
   ngOnInit(): void {
-    if (this.transaction.data.action === TransactionAction.KEY_IN
-      || this.transaction.data.action === TransactionAction.READ_CARD) {
-        // this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-    }
+    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.mobileNo = this.transaction.data.simCard.mobileNo;
     this.getFbbInfo();
   }
@@ -157,9 +154,9 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
   checkRouteNavigate(promotionsShelves: any): void {
     const action = this.transaction.data.action;
     if (action === TransactionAction.KEY_IN_FBB) {
-      // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_PI_PAGE]);
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_PI_PAGE]);
     } else {
-      // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_PAYMENT_DETAIL_PAGE]);
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_PAYMENT_DETAIL_PAGE]);
     }
   }
 }

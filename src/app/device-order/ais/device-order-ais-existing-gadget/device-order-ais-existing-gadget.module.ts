@@ -5,8 +5,9 @@ import { DeviceOrderAisExistingGadgetRoutingModule } from './device-order-ais-ex
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TabsModule } from 'ngx-bootstrap';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
-import { DeviceOrderAisExistingGadgetMobileDetailPageComponent } from './containers/device-order-ais-existing-gadget-mobile-detail-page/device-order-ais-existing-gadget-mobile-detail-page.component';
 import { DeviceOrderAisExistingGadgetValidateCustomerPageComponent } from './containers/device-order-ais-existing-gadget-validate-customer-page/device-order-ais-existing-gadget-validate-customer-page.component';
+import { DeviceOrderAisExistingGadgetCustomerInfoPageComponent } from './containers/device-order-ais-existing-gadget-customer-info-page/device-order-ais-existing-gadget-customer-info-page.component';
+import { DeviceOrderAisExistingGadgetMobileDetailPageComponent } from './containers/device-order-ais-existing-gadget-mobile-detail-page/device-order-ais-existing-gadget-mobile-detail-page.component';
 import { DeviceOrderAisExistingGadgetPaymentDetailPageComponent } from './containers/device-order-ais-existing-gadget-payment-detail-page/device-order-ais-existing-gadget-payment-detail-page.component';
 
 @NgModule({
@@ -21,7 +22,8 @@ import { DeviceOrderAisExistingGadgetPaymentDetailPageComponent } from './contai
   declarations: [
     DeviceOrderAisExistingGadgetMobileDetailPageComponent,
     DeviceOrderAisExistingGadgetValidateCustomerPageComponent,
-    DeviceOrderAisExistingGadgetPaymentDetailPageComponent
+    DeviceOrderAisExistingGadgetPaymentDetailPageComponent,
+    DeviceOrderAisExistingGadgetCustomerInfoPageComponent
   ]
 })
 export class DeviceOrderAisExistingGadgetModule { }
