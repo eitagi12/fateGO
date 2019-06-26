@@ -165,7 +165,6 @@ export class BillingAddressComponent implements OnInit, OnChanges {
         zipCode: changes.zipCodes.currentValue[0]
       });
     }
-    
   }
 
   clearCustomerAddressForm(event: any): void {
@@ -193,7 +192,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     this.customerInformationService.unSetDisableReadCard();
     this.customerAddressForm.controls['idCardNo'].enable();
     if (this.zipCodes) {
-      this.zipCodes.splice(0,1)
+      this.zipCodes.splice(0, 1);
     }
   }
 

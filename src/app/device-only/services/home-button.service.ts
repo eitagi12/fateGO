@@ -17,7 +17,9 @@ export class HomeButtonService {
     private createOrderService: CreateOrderService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService
-  ) { }
+  ) {
+    this.transaction = this.transactionService.load();
+   }
 
   initEventButtonHome(): void {
     this.homeService.callback = () => {
