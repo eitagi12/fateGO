@@ -1,5 +1,4 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-
 import { BrandPageComponent } from './brand-page.component';
 
 describe('BrandPageComponent', () => {
@@ -21,5 +20,12 @@ describe('BrandPageComponent', () => {
 
   it('should create', () => {
     expect(component).toBeTruthy();
+  });
+
+  describe('callService', () => {
+    it('getBrandOfProduct should be called', () => {
+      component.callService();
+      expect(component.brandsOfProductService).toHaveBeenCalledWith(location);
+    });
   });
 });

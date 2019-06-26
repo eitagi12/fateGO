@@ -35,13 +35,15 @@ describe('HomeButtonService', () => {
         {
           provide: TransactionService,
           useValue: {
-            remove: jest.fn()
+            remove: jest.fn(),
+            load: jest.fn()
           }
         },
         {
           provide: PriceOptionService,
           useValue: {
-            remove: jest.fn()
+            remove: jest.fn(),
+            load: jest.fn()
           }
         }
       ]
