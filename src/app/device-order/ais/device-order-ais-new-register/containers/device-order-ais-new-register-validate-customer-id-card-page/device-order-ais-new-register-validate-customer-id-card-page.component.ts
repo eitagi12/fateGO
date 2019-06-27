@@ -160,7 +160,7 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
 
           return this.conditionIdentityValid()
             .catch((msg: string) => {
-              return this.alertService.error(msg).then(() => true);
+              return this.alertService.error(this.translateService.instant(msg)).then(() => true);
             })
             .then((isError: boolean) => {
               if (isError) {

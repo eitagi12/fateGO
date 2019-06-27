@@ -33,7 +33,7 @@
             </p>
             <p *ngIf="priceOption?.trade?.advancePay?.amount > 0">
               <i class="fa fa-circle mr-3 text-green"></i>
-              {{ priceOption?.trade?.advancePay?.description }}
+              {{ summaryPageService.advanpayDescription(priceOption?.trade?.advancePay?.description) }}
               <span class="pull-right text-green">
                 ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
               </span>

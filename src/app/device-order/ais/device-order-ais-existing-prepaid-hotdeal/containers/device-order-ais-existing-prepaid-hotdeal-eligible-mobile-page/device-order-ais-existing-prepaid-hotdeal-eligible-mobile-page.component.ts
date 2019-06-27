@@ -157,7 +157,7 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
             .catch((err: any) => {
               const error = err.error;
               const msg = (error && error.resultDescription) ? error.resultDescription : 'ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้';
-              reject(msg);
+              reject(this.translateService.instant(msg));
             });
         })
         .catch((err) => {

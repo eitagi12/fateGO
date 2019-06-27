@@ -11,6 +11,16 @@ export class SummaryPageService {
     private translateService: TranslateService
   ) { }
 
+   advanpayDescription(value: string): string {
+    const regex = /^(\W+\s+)(\d+,\d+|\d+)(\W+\w+\W+)(\d,\d+|\d+)(\W+)([0-9]+)(\W+)$/;
+    const result = value ? value.replace(regex,
+`${this.translateService.instant('แพ็กเกจค่าบริการรายเดือน')}$2\
+ ${this.translateService.instant('บาท (ไม่รวมVAT) รับส่วนลด')}$4\
+ ${this.translateService.instant('บาท นาน')}$6\
+ ${this.translateService.instant('เดือน')}`) : '';
+    return result;
+  }
+
   detailPayment(payment: Payment, trade: any = {}): string {
     if (payment && payment.paymentForm === `FULL`) {
       return this.descriptionPayment(payment);
