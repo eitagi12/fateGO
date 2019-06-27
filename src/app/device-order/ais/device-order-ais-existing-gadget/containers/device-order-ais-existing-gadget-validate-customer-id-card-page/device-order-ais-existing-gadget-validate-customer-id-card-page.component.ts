@@ -105,17 +105,23 @@ export class DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent imp
             this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
             return;
           }
-          return this.http.post('/api/salesportal/add-device-selling-cart',
-            this.getRequestAddDeviceSellingCart()
-          ).toPromise().then((resp: any) => {
-            this.transaction.data.order = { soId: resp.data.soId };
-            return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-          }).then(() => {
+          if (!this.transaction.data.order || !this.transaction.data.order.soId) {
+            return this.http.post('/api/salesportal/add-device-selling-cart',
+              this.getRequestAddDeviceSellingCart()
+            ).toPromise().then((resp: any) => {
+              this.transaction.data.order = { soId: resp.data.soId };
+              return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+            }).then(() => {
+              this.pageLoadingService.closeLoading();
+              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
+            });
+          } else {
+            this.pageLoadingService.closeLoading();
             this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
-          });
+          }
         });
     }).catch((e) => this.alertService.error(e))
-    .then(() => this.pageLoadingService.closeLoading());
+      .then(() => this.pageLoadingService.closeLoading());
   }
 
   onHome(): void {

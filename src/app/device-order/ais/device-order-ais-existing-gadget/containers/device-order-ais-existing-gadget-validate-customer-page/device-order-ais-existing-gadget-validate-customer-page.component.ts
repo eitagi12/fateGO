@@ -116,6 +116,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
       };
       this.customerInfoService.queryFbbInfo(body).then((response: any) => {
         this.profileFbb = response;
+        const fullName = (this.profileFbb.billingProfiles[0].caName || '').split(' ');
         this.transaction.data.action = TransactionAction.KEY_IN_FBB;
         return this.privilegeService.checkAndGetPrivilegeCode(this.identity, '*999*04#').then((privilegeCode) => {
           this.transaction = {
@@ -124,7 +125,11 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
               ...this.transaction.data,
               customer: {
                 ...this.transaction.data.customer,
-                privilegeCode: privilegeCode
+                privilegeCode: privilegeCode,
+                titleName: 'คุณ',
+                firstName: fullName[0],
+                lastName: fullName[1],
+                caNumber: this.profileFbb.billingProfiles[0].caNo
               },
               simCard: {
                 ...this.transaction.data.simCard,
@@ -144,11 +149,11 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
     } else if (this.utils.isMobileNo(this.identity)) {
       // KEY-IN MobileNo
       this.customerInfoService.getCustomerProfileByMobileNo(this.identity).then((customer: Customer) => {
+        this.transaction.data.simCard = { mobileNo: this.identity };
         this.transaction.data.action = TransactionAction.KEY_IN_PI;
       }).then(() => {
         this.checkRoutePath();
       });
-
     } else {
       // KEY-IN ID-Card
       this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customer: Customer) => {
