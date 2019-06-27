@@ -11,7 +11,7 @@ import { HttpClient } from '@angular/common/http';
 import { WIZARD_DEVICE_ODER_AIS_DEVICE } from 'src/app/device-order/constants/wizard.constant';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE, ROUTE_DEVICE_AIS_DEVICE_SUMMARY_PAGE } from 'src/app/device-order/ais/device-order-ais-device/constants/route-path.constant';
-import { Subscription } from 'rxjs';
+import { Subscription, zip } from 'rxjs';
 import { BsModalService, BsModalRef, isArray } from 'ngx-bootstrap';
 import { BillingAccount } from '../../../device-order-ais-mnp/containers/device-order-ais-mnp-effective-start-date-page/device-order-ais-mnp-effective-start-date-page.component';
 @Component({
@@ -132,51 +132,61 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
 
   checkBillFormChanged(): void {
     this.selectBillingAddressForm.valueChanges.subscribe((form: any) => {
+      console.log(form);
       this.selectBillingAddrVal = form.billingAddress;
     });
   }
 
   selectBillingAddress(): void {
-    const isnum: boolean = /^\d+$/.test(this.selectBillingAddrVal);
-    if (isnum) {
-      const billingAccount: BillingAccount = this.billingAccountList[this.selectBillingAddrVal] || {};
-      this.pageLoadingService.openLoading();
-      this.getBillingMobileNo(billingAccount.mobileNo[0]).then((resp: any) => {
-        const data = resp.data;
-        const billingAddress = data.billingAddress || {};
-        const customer: Customer = {
-          idCardNo: billingAddress.idCardNo || '',
-          birthdate: '',
-          gender: '',
-          idCardType: billingAddress.idCardType || '',
-          titleName: billingAddress.titleName || '',
-          firstName: billingAddress.firstName || '',
-          lastName: billingAddress.lastName || '',
-          homeNo: billingAddress.houseNumber || '',
-          moo: billingAddress.moo || '',
-          mooBan: billingAddress.mooban || '',
-          floor: billingAddress.floor || '',
-          buildingName: billingAddress.buildingName || '',
-          soi: billingAddress.soi || '',
-          tumbol: billingAddress.tumbol,
-          amphur: billingAddress.amphur || '',
-          province: billingAddress.provinceName || '',
-          zipCode: billingAddress.portalCode || '',
-          street: billingAddress.streetName || ''
-        };
-        this.receiptInfo.buyerAddress = this.getCustomerAddressStr(customer) || '';
-        this.receiptInfo.buyer = `${customer.titleName} ${customer.firstName} ${customer.lastName}`;
-        this.pageLoadingService.closeLoading();
+    if (this.selectBillingAddrVal) {
+      console.log('IF');
+      const isnum: boolean = /^\d+$/.test(this.selectBillingAddrVal) || false;
+      if (isnum) {
+        const billingAccount: BillingAccount = this.billingAccountList[this.selectBillingAddrVal] || {};
+        this.pageLoadingService.openLoading();
+        const mobileNo = billingAccount.mobileNo[0] || '';
+        console.log('mobileNo', mobileNo);
+        this.getBillingMobileNo(mobileNo).then((resp: any) => {
+          const data = resp.data;
+          const billingAddress = data.billingAddress || {};
+          const customer: Customer = {
+            idCardNo: billingAddress.idCardNo || '',
+            birthdate: '',
+            gender: '',
+            idCardType: billingAddress.idCardType || '',
+            titleName: billingAddress.titleName || '',
+            firstName: billingAddress.firstName || '',
+            lastName: billingAddress.lastName || '',
+            homeNo: billingAddress.houseNumber || '',
+            moo: billingAddress.moo || '',
+            mooBan: billingAddress.mooban || '',
+            floor: billingAddress.floor || '',
+            buildingName: billingAddress.buildingName || '',
+            soi: billingAddress.soi || '',
+            tumbol: billingAddress.tumbol,
+            amphur: billingAddress.amphur || '',
+            province: billingAddress.provinceName || '',
+            zipCode: billingAddress.portalCode || '',
+            street: billingAddress.streetName || ''
+          };
+          this.receiptInfo.buyerAddress = this.getCustomerAddressStr(customer) || '';
+          this.receiptInfo.buyer = `${customer.titleName} ${customer.firstName} ${customer.lastName}`;
+          this.pageLoadingService.closeLoading();
+          this.modalRef.hide();
+        }).catch((err: any) => {
+          this.alertService.error(err);
+          this.pageLoadingService.closeLoading();
+          this.modalRef.hide();
+        });
+      } else {
+        this.receiptInfo.buyerAddress = this.selectBillingAddrVal || '';
         this.modalRef.hide();
-      }).catch((err: any) => {
-        this.alertService.error(err);
-        this.pageLoadingService.closeLoading();
-        this.modalRef.hide();
-      });
+      }
     } else {
-      this.receiptInfo.buyerAddress = this.selectBillingAddrVal || '';
-      this.modalRef.hide();
+      console.log('ELSE');
+      console.log(this.selectBillingAddrVal);
     }
+
   }
 
   private getBillingMobileNo(mobileNo: string): Promise<any> {
@@ -301,15 +311,15 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
           && response.data
           && response.data.billingProfiles[0]
           && response.data.billingProfiles[0] ? response.data.billingProfiles[0] : {};
-          console.log('mobileFbb', mobileFbb);
-          return this.http.get(`/api/customerportal/newRegister/${mobileFbb.caNo}/queryCustomerInfoAccount`)
+        console.log('mobileFbb', mobileFbb);
+        return this.http.get(`/api/customerportal/newRegister/${mobileFbb.caNo}/queryCustomerInfoAccount`)
           .toPromise().then((profile: any) => {
             const customerprofile = profile && profile.data && profile.data ? profile.data : {};
             const billing = customerprofile.address ? customerprofile.address : {};
             console.log('profile', customerprofile.address);
             this.transaction.data.customer = billing;
             this.receiptInfo.buyer = customerprofile.accntTitle + ' ' + customerprofile.name;
-            this.receiptInfo.taxId =  mobileFbb.baNo;
+            this.receiptInfo.taxId = mobileFbb.baNo;
             this.receiptInfoForm.controls['taxId'].setValue(this.receiptInfo.taxId);
             const customerAddr: Customer = {
               idCardNo: billing.idCardNo || '',
@@ -332,7 +342,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
               street: billing.streetName || ''
             };
             const buyerAddress = this.getCustomerAddressStr(customerAddr);
-             this.receiptInfo.buyerAddress = buyerAddress;
+            this.receiptInfo.buyerAddress = buyerAddress;
           });
         // console.log('response', mobileFbb);
         // this.receiptInfo.buyer = mobileFbb.caName;
@@ -388,7 +398,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
         }).then((resp: any) => {
           this.pageLoadingService.closeLoading();
           const data = resp.data;
-          const zipCode = data.zipcodes;
+          const zipCode = data.zipcodes ? data.zipcodes[0] : '';
           this.idCardCustomerAddress = this.getCustomerAddressStr(this.customerProfile, zipCode);
           this.dataReadIdCard = readCard.profile.idCardNo;
           this.http.get(`/api/customerportal/newRegister/${this.dataReadIdCard}/queryBillingAccount`).toPromise()
@@ -409,20 +419,20 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     });
   }
 
-  private getCustomerAddressStr(customer: any, zipcode?: any): string {
+  private getCustomerAddressStr(customer: any, zipcode?: string): string {
     return this.utils.getCurrentAddress({
-      homeNo: customer.homeNo,
-      moo: customer.moo,
-      mooBan: customer.mooBan,
-      room: customer.room,
-      floor: customer.floor,
-      buildingName: customer.buildingName,
-      soi: customer.soi,
-      street: customer.street,
-      tumbol: customer.tumbol,
-      amphur: customer.amphur,
-      province: customer.province,
-      zipCode: customer.zipCode ? customer.zipCode : zipcode[0]
+      homeNo: customer.homeNo || '',
+      moo: customer.moo || '',
+      mooBan: customer.mooBan || '',
+      room: customer.room || '',
+      floor: customer.floor || '',
+      buildingName: customer.buildingName || '',
+      soi: customer.soi || '',
+      street: customer.street || '',
+      tumbol: customer.tumbol || '',
+      amphur: customer.amphur || '',
+      province: customer.province || '',
+      zipCode: customer.zipCode ? customer.zipCode : zipcode
     });
   }
 
