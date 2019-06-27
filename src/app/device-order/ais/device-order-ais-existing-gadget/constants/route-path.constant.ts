@@ -1,6 +1,6 @@
 export const ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_PAGE = '/device-order/ais/existing-gadget/validate-customer';
 export const ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_PI_PAGE = '/device-order/ais/existing-gadget/validate-customer-pi';
-export const ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_ID_CARD_PAGE = '/device-order/ais/existing-gadgetvalidate-customer-id-card';
+export const ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_ID_CARD_PAGE = '/device-order/ais/existing-gadget/validate-customer-id-card';
 export const ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_ID_CARD_PI_PAGE = '/device-order/ais/existing-gadget/validate-customer-id-card-pi';
 export const ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE = '/device-order/ais/existing-gadget/customer-info';
 export const ROUTE_DEVICE_ORDER_AIS_GADGET_MOBILE_DETAIL_PAGE = '/device-order/ais/existing-gadget/mobile-detail';
