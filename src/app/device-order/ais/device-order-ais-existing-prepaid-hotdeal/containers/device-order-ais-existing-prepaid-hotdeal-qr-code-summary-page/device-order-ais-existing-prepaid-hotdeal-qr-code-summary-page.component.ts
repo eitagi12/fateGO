@@ -8,6 +8,7 @@ import { HomeService, AlertService } from 'mychannel-shared-libs';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_AGGREGATE_PAGE, ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_QR_CODE_GENERATOR_PAGE } from '../../constants/route-path.constant';
+import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-prepaid-hotdeal-qr-code-summary-page',
@@ -29,7 +30,8 @@ export class DeviceOrderAisExistingPrepaidHotdealQrCodeSummaryPageComponent impl
     private alertService: AlertService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
-    private qrcodePaymentService: QRCodePaymentService
+    private qrcodePaymentService: QRCodePaymentService,
+    public summaryPageService: SummaryPageService,
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();

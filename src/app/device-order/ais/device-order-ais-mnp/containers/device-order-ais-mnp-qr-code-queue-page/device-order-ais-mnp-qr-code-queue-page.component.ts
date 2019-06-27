@@ -9,6 +9,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { PageLoadingService, REGEX_MOBILE } from 'mychannel-shared-libs';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { QueuePageService } from 'src/app/device-order/services/queue-page.service';
+import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
 
 @Component({
   selector: 'app-device-order-ais-mnp-qr-code-queue-page',
@@ -28,6 +29,7 @@ export class DeviceOrderAisMnpQrCodeQueuePageComponent implements OnInit, OnDest
     private priceOptionService: PriceOptionService,
     private pageLoadingService: PageLoadingService,
     private queuePageService: QueuePageService,
+    public summaryPageService: SummaryPageService,
     private sharedTransactionService: SharedTransactionService
   ) {
     this.transaction = this.transactionService.load();

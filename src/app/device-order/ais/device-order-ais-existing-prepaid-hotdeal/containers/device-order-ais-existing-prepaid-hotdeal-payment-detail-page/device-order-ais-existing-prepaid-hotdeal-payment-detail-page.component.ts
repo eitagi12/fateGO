@@ -62,7 +62,7 @@ export class DeviceOrderAisExistingPrepaidHotdealPaymentDetailPageComponent impl
 
     let commercialName = productDetail.name;
     if (productStock.color) {
-      commercialName += ` สี ${productStock.color}`;
+      commercialName += ` ${this.translateService.instant('สี')} ${productStock.color}`;
     }
 
     this.paymentDetail = this.mappingPaymentDetail(productDetail, productStock, trade, advancePay);

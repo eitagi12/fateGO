@@ -21,7 +21,7 @@
                   <i class="fa fa-circle mr-3 text-green"></i>
                   {{ priceOption?.productDetail?.name }}
                   <span *ngIf="priceOption?.productStock?.color">
-                    {{ priceOption?.productStock?.color?'สี': '' | translate }} {{ priceOption?.productStock?.color }}
+                    {{ priceOption?.productStock?.color? ('สี'| translate) : '' }} {{ priceOption?.productStock?.color }}
                   </span>
                   <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
                     ({{'แถมซิม'| translate}})
@@ -38,7 +38,7 @@
                 *ngIf="(priceOption?.trade?.advancePay?.installmentFlag === 'N' && priceOption?.trade?.advancePay?.amount > 0) || priceOption?.trade?.advancePay?.installmentFlag === 'Y'">
                 <p>
                   <i class="fa fa-circle mr-3 text-green"></i>
-                  {{ priceOption?.trade?.advancePay?.description }}
+                  {{ summaryPageService.advanpayDescription(priceOption?.trade?.advancePay?.description) }}
                   <span class="pull-right text-green">
                     ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
                   </span>
@@ -71,7 +71,7 @@
                   <i class="fa fa-circle mr-3 text-green"></i>
                   {{ priceOption?.productDetail?.name }}
                   <span *ngIf="priceOption?.productStock?.color">
-                    {{ priceOption?.productStock?.color?'สี': '' | translate }} {{ priceOption?.productStock?.color }}
+                    {{ priceOption?.productStock?.color? ('สี'| translate) : '' }} {{ priceOption?.productStock?.color }}
                   </span>
                   <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
                     ({{'แถมซิม' | translate}})
@@ -89,7 +89,7 @@
                 <p
                   *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && priceOption?.trade?.advancePay?.amount > 0">
                   <i class="fa fa-circle mr-3 text-green"></i>
-                  {{ priceOption?.trade?.advancePay?.description }}
+                  {{ summaryPageService.advanpayDescription(priceOption?.trade?.advancePay?.description) }}
                   <span class="pull-right text-green">
                     ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
                   </span>
