@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { DeviceOrderAisExistingGadgetRoutingModule } from './device-order-ais-existing-gadget-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -10,6 +11,7 @@ import { DeviceOrderAisExistingGadgetCustomerInfoPageComponent } from './contain
 import { DeviceOrderAisExistingGadgetMobileDetailPageComponent } from './containers/device-order-ais-existing-gadget-mobile-detail-page/device-order-ais-existing-gadget-mobile-detail-page.component';
 import { DeviceOrderAisExistingGadgetPaymentDetailPageComponent } from './containers/device-order-ais-existing-gadget-payment-detail-page/device-order-ais-existing-gadget-payment-detail-page.component';
 import { DeviceOrderAisExistingGadgetValidateCustomerPiPageComponent } from './containers/device-order-ais-existing-gadget-validate-customer-pi-page/device-order-ais-existing-gadget-validate-customer-pi-page.component';
+import { DeviceOrderAisExistingGadgetEligibleMobilePageComponent } from './containers/device-order-ais-existing-gadget-eligible-mobile-page/device-order-ais-existing-gadget-eligible-mobile-page.component';
 
 @NgModule({
   imports: [
@@ -18,14 +20,16 @@ import { DeviceOrderAisExistingGadgetValidateCustomerPiPageComponent } from './c
     FormsModule,
     ReactiveFormsModule,
     MyChannelSharedLibsModule,
-    TabsModule.forRoot()
+    TabsModule.forRoot(),
+    TranslateModule
   ],
   declarations: [
     DeviceOrderAisExistingGadgetMobileDetailPageComponent,
     DeviceOrderAisExistingGadgetValidateCustomerPageComponent,
     DeviceOrderAisExistingGadgetPaymentDetailPageComponent,
     DeviceOrderAisExistingGadgetCustomerInfoPageComponent,
-    DeviceOrderAisExistingGadgetValidateCustomerPiPageComponent
+    DeviceOrderAisExistingGadgetValidateCustomerPiPageComponent,
+    DeviceOrderAisExistingGadgetEligibleMobilePageComponent
   ]
 })
 export class DeviceOrderAisExistingGadgetModule { }
