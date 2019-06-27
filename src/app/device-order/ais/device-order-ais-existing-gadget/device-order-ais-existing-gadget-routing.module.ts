@@ -10,11 +10,13 @@ import { DeviceOrderAisExistingGadgetQueuePageComponent } from './containers/dev
 import { DeviceOrderAisExistingGadgetResultPageComponent } from './containers/device-order-ais-existing-gadget-result-page/device-order-ais-existing-gadget-result-page.component';
 import { DeviceOrderAisExistingGadgetEligibleMobilePageComponent } from './containers/device-order-ais-existing-gadget-eligible-mobile-page/device-order-ais-existing-gadget-eligible-mobile-page.component';
 import { DeviceOrderAisExistingGadgetValidateCustomerPiPageComponent } from './containers/device-order-ais-existing-gadget-validate-customer-pi-page/device-order-ais-existing-gadget-validate-customer-pi-page.component';
+import { DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent } from './containers/device-order-ais-existing-gadget-validate-customer-id-card-page/device-order-ais-existing-gadget-validate-customer-id-card-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'validate-customer', pathMatch: 'full' },
   { path: 'validate-customer', component: DeviceOrderAisExistingGadgetValidateCustomerPageComponent },
   { path: 'validate-customer-pi', component: DeviceOrderAisExistingGadgetValidateCustomerPiPageComponent },
+  { path: 'validate-customer-id-card', component: DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent },
   { path: 'customer-info', component: DeviceOrderAisExistingGadgetCustomerInfoPageComponent },
   { path: 'eligible-mobile', component: DeviceOrderAisExistingGadgetEligibleMobilePageComponent },
   { path: 'mobile-detail', component: DeviceOrderAisExistingGadgetMobileDetailPageComponent },
