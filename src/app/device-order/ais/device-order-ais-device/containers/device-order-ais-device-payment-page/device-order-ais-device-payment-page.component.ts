@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { HomeService, ShoppingCart, PaymentDetail, PaymentDetailBank, ReceiptInfo, Utils, TokenService, PageLoadingService, REGEX_MOBILE, AlertService, ReadCard, ReadCardService, ReadCardProfile, ReadCardEvent } from 'mychannel-shared-libs';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -12,15 +12,21 @@ import { WIZARD_DEVICE_ODER_AIS_DEVICE } from 'src/app/device-order/constants/wi
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE, ROUTE_DEVICE_AIS_DEVICE_SUMMARY_PAGE } from 'src/app/device-order/ais/device-order-ais-device/constants/route-path.constant';
 import { Subscription } from 'rxjs';
-import { BsModalService, BsModalRef } from 'ngx-bootstrap';
+import { BsModalService, BsModalRef, isArray } from 'ngx-bootstrap';
+import { BillingAccount } from '../../../device-order-ais-mnp/containers/device-order-ais-mnp-effective-start-date-page/device-order-ais-mnp-effective-start-date-page.component';
 @Component({
   selector: 'app-device-order-ais-device-payment-page',
   templateUrl: './device-order-ais-device-payment-page.component.html',
   styleUrls: ['./device-order-ais-device-payment-page.component.scss']
 })
 export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestroy {
-  @ViewChild('detailTemplate')
-  detailTemplate: any;
+  @ViewChild('selectBillAddTemplate')
+  selectBillAddTemplate: any;
+  modalRef: BsModalRef;
+
+  selectBillingAddressForm: FormGroup;
+  selectBillingAddrVal: string;
+
   shoppingCart: ShoppingCart;
   priceOption: PriceOption;
   transaction: Transaction;
@@ -37,17 +43,17 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
   receiptInfoValid: boolean;
   nameText: string;
   billingAddressText: string;
-  keyInCustomerAddressTemp: any;
+  idCardCustomerAddress: string;
 
   readCardSubscription: Subscription;
   readCard: ReadCard;
-  profile: ReadCardProfile;
+  customerProfile: ReadCardProfile;
   progressReadCard: number;
   dataReadIdCard: any;
   isReadCardError: boolean;
   billingAddress: string;
-  modalRef: BsModalRef;
   location: string;
+  billingAccountList: BillingAccount;
 
   cardStatus: string;
   constructor(
@@ -69,13 +75,14 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
   }
 
   ngOnInit(): void {
+    this.createForm();
+    this.createSearchByMobileNoForm();
+    this.createSelectBillAddForm();
+    this.checkLocation();
+
     const productDetail = this.priceOption.productDetail || {};
     const productStock = this.priceOption.productStock || {};
     const customer: any = this.transaction.data.customer || {};
-    const receiptInfo: any = this.transaction.data.receiptInfo || {};
-    this.createForm();
-    this.createSearchByMobileNoForm();
-    this.checkLocation();
     const trade: any = this.priceOption.trade || {};
     const advancePay: any = trade.advancePay || {};
     let commercialName = productDetail.name;
@@ -108,36 +115,76 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
         })
         ;
     }
+    this.createReceiptInfo(customer);
+    this.checkBillFormChanged();
+  }
+
+  createReceiptInfo(customer: Customer): void {
+    const receiptInfo: any = this.transaction.data.receiptInfo || {};
     this.receiptInfo = {
       taxId: customer.idCardNo,
       branch: '',
       buyer: `${customer.titleName} ${customer.firstName} ${customer.lastName}`,
-      buyerAddress: this.utils.getCurrentAddress({
-        homeNo: customer.homeNo,
-        moo: customer.moo,
-        mooBan: customer.mooBan,
-        room: customer.room,
-        floor: customer.floor,
-        buildingName: customer.buildingName,
-        soi: customer.soi,
-        street: customer.street,
-        tumbol: customer.tumbol,
-        amphur: customer.amphur,
-        province: customer.province,
-        zipCode: customer.zipCode,
-      }),
+      buyerAddress: this.getCustomerAddressStr(customer),
       telNo: receiptInfo.telNo
     };
-    console.log('this.receiptInfo', this.receiptInfo.buyerAddress);
+  }
 
+  checkBillFormChanged(): void {
+    this.selectBillingAddressForm.valueChanges.subscribe((form: any) => {
+      this.selectBillingAddrVal = form.billingAddress;
+    });
+  }
+
+  selectBillingAddress(): void {
+    const isnum: boolean = /^\d+$/.test(this.selectBillingAddrVal);
+    if (isnum) {
+      const billingAccount: BillingAccount = this.billingAccountList[this.selectBillingAddrVal] || {};
+      this.pageLoadingService.openLoading();
+      this.getBillingMobileNo(billingAccount.mobileNo[0]).then((resp: any) => {
+        const data = resp.data;
+        const billingAddress = data.billingAddress || {};
+        const customer: Customer = {
+          idCardNo: billingAddress.idCardNo || '',
+          birthdate: '',
+          gender: '',
+          idCardType: billingAddress.idCardType || '',
+          titleName: billingAddress.titleName || '',
+          firstName: billingAddress.firstName || '',
+          lastName: billingAddress.lastName || '',
+          homeNo: billingAddress.houseNumber || '',
+          moo: billingAddress.moo || '',
+          mooBan: billingAddress.mooban || '',
+          floor: billingAddress.floor || '',
+          buildingName: billingAddress.buildingName || '',
+          soi: billingAddress.soi || '',
+          tumbol: billingAddress.tumbol,
+          amphur: billingAddress.amphur || '',
+          province: billingAddress.provinceName || '',
+          zipCode: billingAddress.portalCode || '',
+          street: billingAddress.streetName || ''
+        };
+        this.receiptInfo.buyerAddress = this.getCustomerAddressStr(customer) || '';
+        this.receiptInfo.buyer = `${customer.titleName} ${customer.firstName} ${customer.lastName}`;
+        this.pageLoadingService.closeLoading();
+        this.modalRef.hide();
+      }).catch((err: any) => {
+        this.alertService.error(err);
+        this.pageLoadingService.closeLoading();
+        this.modalRef.hide();
+      });
+    } else {
+      this.receiptInfo.buyerAddress = this.selectBillingAddrVal || '';
+      this.modalRef.hide();
+    }
+  }
+
+  private getBillingMobileNo(mobileNo: string): Promise<any> {
+    return this.http.get(`api/customerportal/billing/${mobileNo}`).toPromise();
   }
   // component payment
   onPaymentCompleted(payment: any): void {
     this.paymentDetailTemp = payment;
-  }
-
-  onPaymentError(valid: boolean): void {
-    this.paymentDetailValid = valid;
   }
 
   isFullPayment(): boolean {
@@ -157,8 +204,13 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     }
   }
 
+  createSelectBillAddForm(): void {
+    this.selectBillingAddressForm = this.fb.group({
+      billingAddress: ['', []]
+    });
+  }
+
   createForm(): void {
-    const customer: any = this.transaction.data.customer || {};
     this.receiptInfoForm = this.fb.group({
       taxId: ['', []],
       branch: ['', []],
@@ -167,6 +219,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
       telNo: ['', [Validators.pattern(REGEX_MOBILE)]]
     });
   }
+
   createSearchByMobileNoForm(): void {
     this.searchByMobileNoForm = this.fb.group({
       'mobileNo': ['', Validators.compose([Validators.required, Validators.maxLength(10)])],
@@ -207,29 +260,36 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
             this.receiptInfo.buyer = billing.titleName + ' ' + billing.firstName + ' ' + billing.lastName;
             this.receiptInfo.taxId = billing.idCardNo;
             this.receiptInfoForm.controls['taxId'].setValue(this.receiptInfo.taxId);
-            const buyerAddress = this.utils.getCurrentAddress({
-              homeNo: billing.homeNo,
-              moo: billing.moo,
-              mooBan: billing.mooBan,
-              room: billing.room,
-              floor: billing.floor,
-              buildingName: billing.buildingName,
-              soi: billing.soi,
-              street: billing.street,
+            const customerAddr: Customer = {
+              idCardNo: billing.idCardNo || '',
+              birthdate: '',
+              gender: '',
+              idCardType: billing.idCardType || '',
+              titleName: billing.titleName || '',
+              firstName: billing.firstName || '',
+              lastName: billing.lastName || '',
+              homeNo: billing.houseNumber || '',
+              moo: billing.moo || '',
+              mooBan: billing.mooban || '',
+              floor: billing.floor || '',
+              buildingName: billing.buildingName || '',
+              soi: billing.soi || '',
               tumbol: billing.tumbol,
-              amphur: billing.amphur,
-              province: billing.provinceName,
-              zipCode: billing.portalCode,
-            });
-             this.receiptInfo.buyerAddress = buyerAddress;
+              amphur: billing.amphur || '',
+              province: billing.provinceName || '',
+              zipCode: billing.portalCode || '',
+              street: billing.streetName || ''
+            };
+            const buyerAddress = this.getCustomerAddressStr(customerAddr);
+            this.receiptInfo.buyerAddress = buyerAddress;
           });
         }
       }).then(() => {
         this.pageLoadingService.closeLoading();
       });
   }
+
   checkMobileFbb(mobileNo: string): Promise<any> {
-    const customer: any = this.transaction.data.customer || {};
     this.pageLoadingService.openLoading();
     console.log('fbb', mobileNo);
     return this.http.post(`/api/customerportal/query-fbb-info`, {
@@ -251,20 +311,27 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
             this.receiptInfo.buyer = customerprofile.accntTitle + ' ' + customerprofile.name;
             this.receiptInfo.taxId =  mobileFbb.baNo;
             this.receiptInfoForm.controls['taxId'].setValue(this.receiptInfo.taxId);
-            const buyerAddress = this.utils.getCurrentAddress({
-              homeNo: billing.homeNo,
-              moo: billing.moo,
-              mooBan: billing.mooBan,
-              room: billing.room,
-              floor: billing.floor,
-              buildingName: billing.buildingName,
-              soi: billing.soi,
-              street: billing.street,
+            const customerAddr: Customer = {
+              idCardNo: billing.idCardNo || '',
+              birthdate: '',
+              gender: '',
+              idCardType: billing.idCardType || '',
+              titleName: billing.titleName || '',
+              firstName: billing.firstName || '',
+              lastName: billing.lastName || '',
+              homeNo: billing.houseNumber || '',
+              moo: billing.moo || '',
+              mooBan: billing.mooban || '',
+              floor: billing.floor || '',
+              buildingName: billing.buildingName || '',
+              soi: billing.soi || '',
               tumbol: billing.tumbol,
-              amphur: billing.amphur,
-              province: billing.provinceName,
-              zipCode: billing.zipCode,
-            });
+              amphur: billing.amphur || '',
+              province: billing.provinceName || '',
+              zipCode: billing.portalCode || '',
+              street: billing.streetName || ''
+            };
+            const buyerAddress = this.getCustomerAddressStr(customerAddr);
              this.receiptInfo.buyerAddress = buyerAddress;
           });
         // console.log('response', mobileFbb);
@@ -278,6 +345,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
         this.pageLoadingService.closeLoading();
       });
   }
+
   checkLocation(): void {
     const user = this.tokenService.getUser();
     this.http.get(`/api/salesportal/location-by-code?code=${user.locationCode}`).toPromise().then((code: any) => {
@@ -285,6 +353,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
       this.receiptInfoForm.controls['branch'].setValue(displayName);
     });
   }
+
   readCardProcess(): void {
     delete this.dataReadIdCard;
     this.readCardSubscription = this.readCardService.onReadCard().subscribe((readCard: ReadCard) => {
@@ -292,7 +361,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
       this.progressReadCard = readCard.progress;
       const valid = !!(readCard.progress >= 100 && readCard.profile);
       if (readCard.error) {
-        this.profile = null;
+        this.customerProfile = null;
       }
 
       if (readCard.eventName === ReadCardEvent.EVENT_CARD_LOAD_ERROR) {
@@ -300,19 +369,73 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
       }
 
       if (valid && !this.dataReadIdCard) {
-        this.profile = readCard.profile;
-        this.dataReadIdCard = readCard.profile.idCardNo;
-        this.http.get(`/api/customerportal/newRegister/${this.dataReadIdCard}/queryBillingAccount`).toPromise()
-          .then((resp: any) => {
-            const data = resp.data && resp.data.billingAccountList || {};
-            const billingAccountList = data.filter((billing: any) => {
-              return billing.mobileNo && billing.mobileNo[0];
+        this.customerProfile = readCard.profile;
+        this.pageLoadingService.openLoading();
+        this.getAllProvince().then((resp: any) => {
+          const data = resp.data;
+          let provinces = [];
+          provinces = provinces ? data.provinces : [];
+          return provinces;
+        }).then((provinces: any) => {
+          const provinceMap = provinces.find((province: any) => province.name === this.customerProfile.province);
+          return this.http.get('api/customerportal/newRegister/queryZipcode', {
+            params: {
+              provinceId: provinceMap ? provinceMap.id : '',
+              amphurName: this.customerProfile.amphur,
+              tumbolName: this.customerProfile.tumbol
+            }
+          }).toPromise();
+        }).then((resp: any) => {
+          this.pageLoadingService.closeLoading();
+          const data = resp.data;
+          const zipCode = data.zipcodes;
+          this.idCardCustomerAddress = this.getCustomerAddressStr(this.customerProfile, zipCode);
+          this.dataReadIdCard = readCard.profile.idCardNo;
+          this.http.get(`/api/customerportal/newRegister/${this.dataReadIdCard}/queryBillingAccount`).toPromise()
+            .then((resps: any) => {
+              const billList = resps.data && resps.data.billingAccountList || {};
+              this.billingAccountList = billList.filter((bill: any) => {
+                return bill.mobileNo[0] && bill.mobileNo;
+              });
+              this.onOpenModal();
             });
-            console.log('billingAccountList', billingAccountList);
-          });
+        }).catch((err: any) => {
+          this.pageLoadingService.closeLoading();
+          this.alertService.error(err);
+        });
+
       }
 
     });
+  }
+
+  private getCustomerAddressStr(customer: any, zipcode?: any): string {
+    return this.utils.getCurrentAddress({
+      homeNo: customer.homeNo,
+      moo: customer.moo,
+      mooBan: customer.mooBan,
+      room: customer.room,
+      floor: customer.floor,
+      buildingName: customer.buildingName,
+      soi: customer.soi,
+      street: customer.street,
+      tumbol: customer.tumbol,
+      amphur: customer.amphur,
+      province: customer.province,
+      zipCode: customer.zipCode ? customer.zipCode : zipcode[0]
+    });
+  }
+
+  private getAllProvince(): Promise<any> {
+    return this.http.get('/api/customerportal/newRegister/getAllProvinces').toPromise();
+  }
+
+  get onReadCardProgress(): boolean {
+    return this.readCard ? this.readCard.progress > 0 && this.readCard.progress < 100 : false;
+  }
+
+  onPaymentError(valid: boolean): void {
+    this.paymentDetailValid = valid;
   }
 
   isNext(): boolean {
@@ -337,11 +460,12 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     this.homeService.goToHome();
   }
 
-  onOpenModal(detail: string): void {
-    this.detailTemplate = detail || '';
-    this.modalRef = this.modalService.show(this.detailTemplate, {
-      class: 'pt-5 mt-5'
-    });
+  onOpenModal(): void {
+    this.modalRef = this.modalService.show(this.selectBillAddTemplate, { class: 'pt-5 mt-5' });
+  }
+
+  closeModalSelectAddress(): void {
+    this.modalRef.hide();
   }
   // tslint:disable-next-line:use-life-cycle-interface
   ngOnDestroy(): void {
