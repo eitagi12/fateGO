@@ -196,6 +196,8 @@ export class DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent implem
     const url: string = `/sales-portal/buy-product/brand/${brand}/${model}`;
     const queryParams: string =
       '?modelColor=' + this.product.color +
+      '&productType=' + this.product.productType +
+      '&productSubtype=' + this.product.productSubtype +
       '&imei=' + imei.imei +
       '&customerGroup=' + this.priceOption.customerGroup.code
       ;
