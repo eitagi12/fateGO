@@ -1,4 +1,5 @@
 export interface ProfileFbb {
-    billingProfile?: any;
+    billingProfiles?: any;
     products?: any;
+    mobileLists?: any;
 }

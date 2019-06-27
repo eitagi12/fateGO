@@ -172,7 +172,6 @@ export class CustomerInfoService {
   }
 
   public queryFbbInfo(request: any): Promise<any> {
-
     let body: {
       inOption: string;
       inIDCardNo?: string;
@@ -194,11 +193,11 @@ export class CustomerInfoService {
         };
         break;
     }
-
-    return this.http.post('/api/customerportal/query-fbb-info', body).toPromise().then((ress: any) => {
-      return ress;
-    }).catch((error: any) => error);
-
+    return this.http.post('/api/customerportal/query-fbb-info', body).toPromise().then((response: any) => {
+      return response && response.data ? response.data : '';
+    }).catch((error: any) => {
+      return Promise.reject(error);
+    });
   }
 
 }
