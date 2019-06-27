@@ -145,7 +145,6 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
         const billingAccount: BillingAccount = this.billingAccountList[this.selectBillingAddrVal] || {};
         this.pageLoadingService.openLoading();
         const mobileNo = billingAccount.mobileNo[0] || '';
-        console.log('mobileNo', mobileNo);
         this.getBillingMobileNo(mobileNo).then((resp: any) => {
           const data = resp.data;
           const billingAddress = data.billingAddress || {};
@@ -179,6 +178,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
           this.modalRef.hide();
         });
       } else {
+        this.receiptInfo.buyer = `${this.customerProfile.titleName} ${this.customerProfile.firstName} ${this.customerProfile.lastName}`;
         this.receiptInfo.buyerAddress = this.selectBillingAddrVal || '';
         this.modalRef.hide();
       }
