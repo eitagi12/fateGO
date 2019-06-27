@@ -27,7 +27,7 @@ export interface CustomerAddress {
   templateUrl: './billing-address.component.html',
   styleUrls: ['./billing-address.component.scss']
 })
-export class BillingAddressComponent implements OnInit, OnChanges {
+export class BillingAddressComponent implements OnInit {
 
   @Input() keyInCustomerAddressTemp: any;
 
@@ -107,7 +107,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     this.checkProvinceAndAmphur();
   }
 
-  ngOnChanges(changes: SimpleChanges): void {
+  // ngOnChanges(changes: SimpleChanges): void {
     // if (!this.customerAddressForm) {
     //   return;
     // }
@@ -159,14 +159,14 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     //   });
     // }
 
-    if (changes.zipCodes
-      && changes.zipCodes.currentValue
-      && changes.zipCodes.currentValue.length === 1) {
-      this.customerAddressForm.patchValue({
-        zipCode: changes.zipCodes.currentValue[0]
-      });
-    }
-  }
+    // if (changes.zipCodes
+    //   && changes.zipCodes.currentValue
+    //   && changes.zipCodes.currentValue.length === 1) {
+    //   this.customerAddressForm.patchValue({
+    //     zipCode: changes.zipCodes.currentValue[0]
+    //   });
+    // }
+  // }
 
   checkProvinceAndAmphur(): void {
     if (this.provinceForm().invalid) {
