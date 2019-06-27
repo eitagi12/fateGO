@@ -116,9 +116,8 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
       };
       this.customerInfoService.queryFbbInfo(body).then((response: any) => {
         this.profileFbb = response;
-        this.transaction.data.action = TransactionAction.KEY_IN_PI;
+        this.transaction.data.action = TransactionAction.KEY_IN_FBB;
         return this.privilegeService.checkAndGetPrivilegeCode(this.identity, '*999*04#').then((privilegeCode) => {
-          console.log('privligeCode', privilegeCode);
           this.transaction = {
             ...this.transaction,
             data: {
@@ -126,10 +125,13 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
               customer: {
                 ...this.transaction.data.customer,
                 privilegeCode: privilegeCode
+              },
+              simCard: {
+                ...this.transaction.data.simCard,
+                mobileNo: this.identity
               }
             }
           };
-          this.transaction.data.simCard = { mobileNo: this.identity };
           this.checkRoutePath();
         }).catch((e) => {
           this.pageLoadingService.closeLoading();
