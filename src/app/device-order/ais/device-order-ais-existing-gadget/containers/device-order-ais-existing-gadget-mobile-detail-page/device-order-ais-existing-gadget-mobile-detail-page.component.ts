@@ -53,7 +53,6 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
 
   getFbbInfo(): void {
     this.pageLoadingService.openLoading();
-
       this.mobileInfo = {
         mobileNo: '8812345554',
         chargeType: 'รายเดือน',
