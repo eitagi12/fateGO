@@ -11,6 +11,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ROUTE_DEVICE_ORDER_AIS_EXISTING_CUSTOMER_INFO_PAGE } from '../../constants/route-path.constant';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { ApiRequestService } from 'mychannel-shared-libs';
+import { TranslateService } from '@ngx-translate/core';
 
 declare var swal: any;
 
@@ -44,6 +45,7 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
     private priceOptionService: PriceOptionService,
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
+    private translateService: TranslateService,
     private sharedTransactionService: SharedTransactionService
   ) {
     this.user = this.tokenService.getUser();
@@ -55,7 +57,7 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
       if (url.indexOf('result') !== -1) {
         this.homeHandler();
       } else {
-        this.alertService.question('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่')
+        this.alertService.question(this.translateService.instant('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่'))
           .then((data: any) => {
             if (!data.value) {
               return false;
@@ -119,7 +121,7 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
   }
 
   onBack(): void {
-    this.alertService.question('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่')
+    this.alertService.question(this.translateService.instant('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่'))
       .then((data: any) => {
         if (!data.value) {
           return false;
