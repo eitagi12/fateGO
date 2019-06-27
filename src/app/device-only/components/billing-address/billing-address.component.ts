@@ -104,6 +104,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     if (this.customerInformationService.isReadCard === true) {
       this.customerAddressForm.controls['idCardNo'].disable();
     }
+    this.checkProvinceAndAmphur();
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -164,6 +165,19 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       this.customerAddressForm.patchValue({
         zipCode: changes.zipCodes.currentValue[0]
       });
+    }
+  }
+
+  checkProvinceAndAmphur(): void {
+    if (this.provinceForm().invalid) {
+      this.amphurForm().disable();
+      this.amphurForm().setValue('');
+      console.log('1');
+    }
+    if (this.amphurForm().value !== '') {
+      this.tumbolForm().disable();
+      this.tumbolForm().setValue('');
+      console.log('2');
     }
   }
 

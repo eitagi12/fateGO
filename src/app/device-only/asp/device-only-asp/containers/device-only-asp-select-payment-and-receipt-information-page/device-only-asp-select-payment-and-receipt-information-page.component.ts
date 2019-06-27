@@ -43,7 +43,7 @@ export class DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent implem
     private createOrderService: CreateOrderService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
-    private tokenService: TokenService,
+    private tokenService: TokenService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -57,6 +57,7 @@ export class DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent implem
     this.getPaymentDetail();
     this.getBanks();
     this.createTransaction();
+
   }
 
   private getProductStock(): void {
@@ -188,12 +189,18 @@ export class DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent implem
     this.product = this.priceOption.queryParams;
     const brand: string = encodeURIComponent(this.product.brand ? this.product.brand : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
     const model: string = encodeURIComponent(this.product.model ? this.product.model : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
+    const imei: any = JSON.parse(localStorage.getItem('device'));
+
+    console.log('imei', imei.imei);
     // replace '%28 %29' for() case url refresh error
     const url: string = `/sales-portal/buy-product/brand/${brand}/${model}`;
     const queryParams: string =
       '?modelColor=' + this.product.color +
-      '&productType' + this.product.productType +
-      '&productSubType' + this.product.productSubtype;
+      '&imei=' + imei.imei +
+      '&customerGroup=' + this.priceOption.customerGroup.code
+      ;
+
+      console.log('url + queryParams', url + queryParams);
 
     window.location.href = url + queryParams;
   }
