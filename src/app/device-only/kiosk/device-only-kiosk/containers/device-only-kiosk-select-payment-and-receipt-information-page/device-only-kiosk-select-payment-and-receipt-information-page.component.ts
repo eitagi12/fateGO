@@ -135,7 +135,6 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
       '&productSubtype=' + this.product.productSubtype;
       window.location.href = url + queryParams;
 
-    window.location.href = url + queryParams;
   }
 
   onNext(): void {
