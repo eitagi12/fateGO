@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { DeviceOrderAisExistingGadgetRoutingModule } from './device-order-ais-existing-gadget-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -14,6 +15,7 @@ import { DeviceOrderAisExistingGadgetSummaryPageComponent } from './containers/d
 import { DeviceOrderAisExistingGadgetCheckOutPageComponent } from './containers/device-order-ais-existing-gadget-check-out-page/device-order-ais-existing-gadget-check-out-page.component';
 import { DeviceOrderAisExistingGadgetQueuePageComponent } from './containers/device-order-ais-existing-gadget-queue-page/device-order-ais-existing-gadget-queue-page.component';
 import { DeviceOrderAisExistingGadgetResultPageComponent } from './containers/device-order-ais-existing-gadget-result-page/device-order-ais-existing-gadget-result-page.component';
+import { DeviceOrderAisExistingGadgetEligibleMobilePageComponent } from './containers/device-order-ais-existing-gadget-eligible-mobile-page/device-order-ais-existing-gadget-eligible-mobile-page.component';
 
 @NgModule({
   imports: [
@@ -22,7 +24,8 @@ import { DeviceOrderAisExistingGadgetResultPageComponent } from './containers/de
     FormsModule,
     ReactiveFormsModule,
     MyChannelSharedLibsModule,
-    TabsModule.forRoot()
+    TabsModule.forRoot(),
+    TranslateModule
   ],
   declarations: [
     DeviceOrderAisExistingGadgetMobileDetailPageComponent,
@@ -33,7 +36,8 @@ import { DeviceOrderAisExistingGadgetResultPageComponent } from './containers/de
     DeviceOrderAisExistingGadgetSummaryPageComponent,
     DeviceOrderAisExistingGadgetCheckOutPageComponent,
     DeviceOrderAisExistingGadgetQueuePageComponent,
-    DeviceOrderAisExistingGadgetResultPageComponent
+    DeviceOrderAisExistingGadgetResultPageComponent,
+    DeviceOrderAisExistingGadgetEligibleMobilePageComponent
   ]
 })
 export class DeviceOrderAisExistingGadgetModule { }

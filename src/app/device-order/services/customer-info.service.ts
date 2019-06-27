@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Customer } from 'src/app/shared/models/transaction.model';
-import { Utils } from 'mychannel-shared-libs';
 
 @Injectable({
   providedIn: 'root'
@@ -172,19 +171,34 @@ export class CustomerInfoService {
     return idCardType === this.ID_CARD_CONST;
   }
 
-  public queryFbbInfo(request: any): any {
+  public queryFbbInfo(request: any): Promise<any> {
 
-    const body: any = {
-      inOption: request.option,
-      inIDCardNo: request.idCardNo || '',
-      inIDCardType: request.idCardType || '',
-      inMobileNo: request.mobileNo || ''
+    let body: {
+      inOption: string;
+      inIDCardNo?: string;
+      inIDCardType?: string;
+      inMobileNo?: string;
     };
+    switch (request.option) {
+      case '1':
+        body = {
+          inOption: request.option,
+          inIDCardNo: request.idCardNo,
+          inIDCardType: request.idCardType,
+        };
+        break;
+      case '3':
+        body = {
+          inOption: request.option,
+          inMobileNo: request.mobileNo,
+        };
+        break;
+    }
 
-    this.http.post('/api/queryFbbInfo', body).toPromise().then((response: any) => {
-        console.log('response', response);
-        return response;
-      }).catch((error: any) => error);
+    return this.http.post('/api/customerportal/query-fbb-info', body).toPromise().then((ress: any) => {
+      return ress;
+    }).catch((error: any) => error);
+
   }
 
 }
