@@ -22,9 +22,11 @@ export enum TransactionType {
 
 export enum TransactionAction {
   READ_CARD = 'READ_CARD',
+  READ_CARD_PI = 'READ_CARD_PI',
   READ_CARD_REPI = 'READ_CARD_REPI',
   KEY_IN = 'KEY_IN',
   KEY_IN_FBB = 'KEY_IN_FBB',
+  KEY_IN_PI = 'KEY_IN_PI',
   KEY_IN_REPI = 'KEY_IN_REPI',
   READ_PASSPORT = 'READ_PASSPORT',
   READ_PASSPORT_REPI = 'READ_PASSPORT_REPI'

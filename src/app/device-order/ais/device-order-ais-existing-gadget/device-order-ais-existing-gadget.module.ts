@@ -9,6 +9,7 @@ import { DeviceOrderAisExistingGadgetValidateCustomerPageComponent } from './con
 import { DeviceOrderAisExistingGadgetCustomerInfoPageComponent } from './containers/device-order-ais-existing-gadget-customer-info-page/device-order-ais-existing-gadget-customer-info-page.component';
 import { DeviceOrderAisExistingGadgetMobileDetailPageComponent } from './containers/device-order-ais-existing-gadget-mobile-detail-page/device-order-ais-existing-gadget-mobile-detail-page.component';
 import { DeviceOrderAisExistingGadgetPaymentDetailPageComponent } from './containers/device-order-ais-existing-gadget-payment-detail-page/device-order-ais-existing-gadget-payment-detail-page.component';
+import { DeviceOrderAisExistingGadgetValidateCustomerPiPageComponent } from './containers/device-order-ais-existing-gadget-validate-customer-pi-page/device-order-ais-existing-gadget-validate-customer-pi-page.component';
 
 @NgModule({
   imports: [
@@ -23,7 +24,8 @@ import { DeviceOrderAisExistingGadgetPaymentDetailPageComponent } from './contai
     DeviceOrderAisExistingGadgetMobileDetailPageComponent,
     DeviceOrderAisExistingGadgetValidateCustomerPageComponent,
     DeviceOrderAisExistingGadgetPaymentDetailPageComponent,
-    DeviceOrderAisExistingGadgetCustomerInfoPageComponent
+    DeviceOrderAisExistingGadgetCustomerInfoPageComponent,
+    DeviceOrderAisExistingGadgetValidateCustomerPiPageComponent
   ]
 })
 export class DeviceOrderAisExistingGadgetModule { }
