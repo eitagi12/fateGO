@@ -171,4 +171,20 @@ export class CustomerInfoService {
   private isIdCard(idCardType: string): boolean {
     return idCardType === this.ID_CARD_CONST;
   }
+
+  public queryFbbInfo(request: any): any {
+
+    const body: any = {
+      inOption: request.option,
+      inIDCardNo: request.idCardNo || '',
+      inIDCardType: request.idCardType || '',
+      inMobileNo: request.mobileNo || ''
+    };
+
+    this.http.post('/api/queryFbbInfo', body).toPromise().then((response: any) => {
+        console.log('response', response);
+        return response;
+      }).catch((error: any) => error);
+  }
+
 }
