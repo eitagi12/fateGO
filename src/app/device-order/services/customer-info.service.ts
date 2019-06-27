@@ -200,4 +200,15 @@ export class CustomerInfoService {
     });
   }
 
+  public getCustomerProfileByFbb(mobileNo: string): Promise<any> {
+    return this.http.get(`/api/customerportal/customerprofile/${mobileNo}`).toPromise().then((profile: any) => {
+      return Promise.resolve(profile);
+    }).catch((e) => {
+      if (typeof e === 'string') {
+        return Promise.reject(e);
+      } else {
+        return Promise.reject(`ไม่สามารถทำรายการได้ กรุณาตรวจสอบสถานะหมายเลข ${mobileNo})`);
+      }
+    });
+  }
 }
