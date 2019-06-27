@@ -194,7 +194,12 @@ export class CustomerInfoService {
         break;
     }
     return this.http.post('/api/customerportal/query-fbb-info', body).toPromise().then((response: any) => {
-      return response && response.data ? response.data : '';
+      if (response.data.billingProfiles[0].status === 'Disconnect - Customer Request') {
+        const status: string = response.data.billingProfiles[0].status;
+        return Promise.reject(`ไม่สามารถทำรายการได้ กรุณาตรวจสอบสถานะหมายเลข <br> (status is : ${status})`);
+      } else {
+        return response && response.data ? response.data : '';
+      }
     }).catch((error: any) => {
       return Promise.reject(error);
     });

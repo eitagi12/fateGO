@@ -9,6 +9,8 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
 import { User, HomeService, AlertService, PageLoadingService, TokenService, Utils } from 'mychannel-shared-libs';
+import { ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_ID_CARD_PAGE } from '../../constants/route-path.constant';
+import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-gadget-validate-customer-pi-page',
@@ -38,7 +40,8 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPiPageComponent impleme
     private priceOptionService: PriceOptionService,
     private customerInfoService: CustomerInfoService,
     private tokenService: TokenService,
-    private utils: Utils
+    private utils: Utils,
+    private sharedTransactionService: SharedTransactionService,
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -58,7 +61,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPiPageComponent impleme
 
   onReadCard(): void {
     this.transaction.data.action = TransactionAction.READ_CARD_PI;
-    this.router.navigate([]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
   }
 
   onHome(): void {
@@ -85,11 +88,22 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPiPageComponent impleme
           }
           this.transaction.data.billingInformation = {};
           this.transaction.data.billingInformation.billDeliveryAddress = this.transaction.data.customer;
-          this.pageLoadingService.closeLoading();
-          if (customerInfo.caNumber) {
-            this.router.navigate([]);
+
+          if (!this.transaction.data.order || !this.transaction.data.order.soId) {
+            return this.http.post('/api/salesportal/add-device-selling-cart',
+              this.getRequestAddDeviceSellingCart()
+            ).toPromise()
+              .then((resp: any) => {
+                this.transaction.data.order = { soId: resp.data.soId };
+                return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+              }).then(() => {
+                this.transaction.data.action = TransactionAction.KEY_IN;
+                this.pageLoadingService.closeLoading();
+                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
+              });
           } else {
-            this.router.navigate([]);
+            this.pageLoadingService.closeLoading();
+            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
           }
         });
       } else {
@@ -97,6 +111,29 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPiPageComponent impleme
         this.alertService.error('ไม่สามารถทำรายการได้ ข้อมูลการแสดงตนไม่ถูกต้อง');
       }
     }).catch(() => this.alertService.error('ไม่สามารถทำรายการได้ ข้อมูลการแสดงตนไม่ถูกต้อง'));
+  }
+
+  getRequestAddDeviceSellingCart(): any {
+    const productStock = this.priceOption.productStock;
+    const productDetail = this.priceOption.productDetail;
+    const trade = this.priceOption.trade;
+    const customer = this.transaction.data.customer;
+
+    return {
+      soCompany: productStock.company || 'AWN',
+      locationSource: this.user.locationCode,
+      locationReceipt: this.user.locationCode,
+      productType: productDetail.productType || ' -*',
+      productSubType: productDetail.productSubType || 'N/A',
+      brand: productDetail.brand || productStock.brand,
+      model: productDetail.model || productStock.model,
+      color: productStock.color || productStock.colorName,
+      priceIncAmt: '' + trade.normalPrice,
+      priceDiscountAmt: '' + trade.discount.amount,
+      grandTotalAmt: '',
+      userId: this.user.username,
+      cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
+    };
   }
 
   ngOnDestroy(): void {
