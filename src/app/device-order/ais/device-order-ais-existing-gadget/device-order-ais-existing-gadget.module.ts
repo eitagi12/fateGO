@@ -10,6 +10,10 @@ import { DeviceOrderAisExistingGadgetCustomerInfoPageComponent } from './contain
 import { DeviceOrderAisExistingGadgetMobileDetailPageComponent } from './containers/device-order-ais-existing-gadget-mobile-detail-page/device-order-ais-existing-gadget-mobile-detail-page.component';
 import { DeviceOrderAisExistingGadgetPaymentDetailPageComponent } from './containers/device-order-ais-existing-gadget-payment-detail-page/device-order-ais-existing-gadget-payment-detail-page.component';
 import { DeviceOrderAisExistingGadgetValidateCustomerPiPageComponent } from './containers/device-order-ais-existing-gadget-validate-customer-pi-page/device-order-ais-existing-gadget-validate-customer-pi-page.component';
+import { DeviceOrderAisExistingGadgetSummaryPageComponent } from './containers/device-order-ais-existing-gadget-summary-page/device-order-ais-existing-gadget-summary-page.component';
+import { DeviceOrderAisExistingGadgetCheckOutPageComponent } from './containers/device-order-ais-existing-gadget-check-out-page/device-order-ais-existing-gadget-check-out-page.component';
+import { DeviceOrderAisExistingGadgetQueuePageComponent } from './containers/device-order-ais-existing-gadget-queue-page/device-order-ais-existing-gadget-queue-page.component';
+import { DeviceOrderAisExistingGadgetResultPageComponent } from './containers/device-order-ais-existing-gadget-result-page/device-order-ais-existing-gadget-result-page.component';
 
 @NgModule({
   imports: [
@@ -25,7 +29,11 @@ import { DeviceOrderAisExistingGadgetValidateCustomerPiPageComponent } from './c
     DeviceOrderAisExistingGadgetValidateCustomerPageComponent,
     DeviceOrderAisExistingGadgetPaymentDetailPageComponent,
     DeviceOrderAisExistingGadgetCustomerInfoPageComponent,
-    DeviceOrderAisExistingGadgetValidateCustomerPiPageComponent
+    DeviceOrderAisExistingGadgetValidateCustomerPiPageComponent,
+    DeviceOrderAisExistingGadgetSummaryPageComponent,
+    DeviceOrderAisExistingGadgetCheckOutPageComponent,
+    DeviceOrderAisExistingGadgetQueuePageComponent,
+    DeviceOrderAisExistingGadgetResultPageComponent
   ]
 })
 export class DeviceOrderAisExistingGadgetModule { }
