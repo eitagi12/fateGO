@@ -21,7 +21,7 @@ const routes: Routes = [
   { path: 'eligible-mobile', component: DeviceOrderAisExistingGadgetEligibleMobilePageComponent },
   { path: 'mobile-detail', component: DeviceOrderAisExistingGadgetMobileDetailPageComponent },
   { path: 'payment-detail', component: DeviceOrderAisExistingGadgetPaymentDetailPageComponent },
-  { path: 'summaryl', component: DeviceOrderAisExistingGadgetSummaryPageComponent },
+  { path: 'summary', component: DeviceOrderAisExistingGadgetSummaryPageComponent },
   { path: 'check-out', component: DeviceOrderAisExistingGadgetCheckOutPageComponent },
   { path: 'queue', component: DeviceOrderAisExistingGadgetQueuePageComponent },
   { path: 'result', component: DeviceOrderAisExistingGadgetResultPageComponent }
