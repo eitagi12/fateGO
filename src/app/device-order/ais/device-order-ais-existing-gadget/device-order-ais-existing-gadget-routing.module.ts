@@ -9,6 +9,8 @@ import { DeviceOrderAisExistingGadgetCheckOutPageComponent } from './containers/
 import { DeviceOrderAisExistingGadgetQueuePageComponent } from './containers/device-order-ais-existing-gadget-queue-page/device-order-ais-existing-gadget-queue-page.component';
 import { DeviceOrderAisExistingGadgetResultPageComponent } from './containers/device-order-ais-existing-gadget-result-page/device-order-ais-existing-gadget-result-page.component';
 import { DeviceOrderAisExistingGadgetEligibleMobilePageComponent } from './containers/device-order-ais-existing-gadget-eligible-mobile-page/device-order-ais-existing-gadget-eligible-mobile-page.component';
+import { DeviceOrderAisExistingGadgetAgreementSignPageComponent } from './containers/device-order-ais-existing-gadget-agreement-sign-page/device-order-ais-existing-gadget-agreement-sign-page.component';
+import { DeviceOrderAisExistingGadgetEcontractPageComponent } from './containers/device-order-ais-existing-gadget-econtract-page/device-order-ais-existing-gadget-econtract-page.component';
 
 const routes: Routes = [
     { path: '', redirectTo: 'validate-customer', pathMatch: 'full' },
@@ -17,8 +19,10 @@ const routes: Routes = [
     { path: 'eligible-mobile', component: DeviceOrderAisExistingGadgetEligibleMobilePageComponent },
     { path: 'mobile-detail', component: DeviceOrderAisExistingGadgetMobileDetailPageComponent },
     { path: 'payment-detail', component: DeviceOrderAisExistingGadgetPaymentDetailPageComponent },
-    { path: 'summaryl', component: DeviceOrderAisExistingGadgetSummaryPageComponent },
+    { path: 'summary', component: DeviceOrderAisExistingGadgetSummaryPageComponent },
+    { path: 'agreement-sign', component: DeviceOrderAisExistingGadgetAgreementSignPageComponent },
     { path: 'check-out', component: DeviceOrderAisExistingGadgetCheckOutPageComponent },
+    { path: 'check-out', component: DeviceOrderAisExistingGadgetEcontractPageComponent},
     { path: 'queue', component: DeviceOrderAisExistingGadgetQueuePageComponent },
     { path: 'result', component: DeviceOrderAisExistingGadgetResultPageComponent }
 
