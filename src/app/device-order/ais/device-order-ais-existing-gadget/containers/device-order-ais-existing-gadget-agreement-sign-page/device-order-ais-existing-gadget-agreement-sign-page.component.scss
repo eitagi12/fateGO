@@ -1,0 +1,27 @@
+.signed {  
+    height: 270px;
+  
+    img {
+      height: 100%;
+      width: auto;
+      max-width: 700px;
+      display: block;
+      margin: 0 auto;
+    }
+  }
+  
+  .card-footer{
+    background-color: white;
+  }
+  
+  .container-fluid {
+    width: 89.8%;
+  }
+  
+  .vertical-center {
+    min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
+    min-height: 78vh; /* These two lines are counted as one :-)       */
+    display: flex;
+    align-items: center;
+  }
+  
