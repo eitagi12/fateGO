@@ -442,7 +442,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     return this.http.get('/api/customerportal/newRegister/getAllProvinces').toPromise();
   }
 
-  onReadCardProgress(): boolean {
+  get onReadCardProgress(): boolean {
     return this.readCard ? this.readCard.progress > 0 && this.readCard.progress < 100 : false;
   }
 
