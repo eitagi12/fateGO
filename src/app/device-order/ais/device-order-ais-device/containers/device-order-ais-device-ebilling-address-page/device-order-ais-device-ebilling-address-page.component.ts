@@ -76,6 +76,8 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
   }
   callService(): void {
     const billingInformation = this.transaction.data.billingInformation || {};
+    console.log('cus', this.transaction.data.customer.province);
+    console.log('bill', this.transaction.data.billingInformation);
     const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
     this.http.get('/api/customerportal/newRegister/getAllZipcodes').subscribe((resp: any) => {
       this.allZipCodes = resp.data.zipcodes || [];
@@ -88,6 +90,7 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
         }
       }).subscribe((resp: any) => {
         this.provinces = (resp.data.provinces || []);
+        console.log('this.provinces', this.provinces);
         this.customerAddress = {
           homeNo: customer.homeNo,
           moo: customer.moo,
@@ -106,6 +109,7 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
     this.customerService.queryTitleName().then((resp: any) => {
       this.prefixes = (resp.data.titleNames || []).map((prefix: any) => prefix);
     });
+    console.log('address', this.customerAddress);
   }
 
   createForm(): void {
@@ -117,10 +121,10 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
       lastName: ['', [Validators.required]],
     });
     this.validateCustomerKeyInForm.patchValue({
-      idCardNo: customer.idCardNo,
-      prefix: customer.titleName,
-      firstName: customer.firstName,
-      lastName: customer.lastName,
+      idCardNo: customer.idCardNo || '',
+      prefix: customer.titleName || '',
+      firstName: customer.firstName || '',
+      lastName: customer.lastName || '',
     });
     console.log(' this.validateCustomerKeyInForm', this.validateCustomerKeyInForm.value.prefix);
   }
