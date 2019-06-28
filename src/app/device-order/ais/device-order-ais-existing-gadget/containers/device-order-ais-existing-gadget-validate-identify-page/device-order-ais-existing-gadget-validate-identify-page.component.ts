@@ -1,23 +1,23 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { AbstractControl, ValidationErrors } from '@angular/forms';
+import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { User, HomeService, AlertService, PageLoadingService, TokenService, Utils } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
-import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
-import { User, HomeService, AlertService, PageLoadingService, TokenService, Utils } from 'mychannel-shared-libs';
-import { ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_ID_CARD_PAGE } from '../../constants/route-path.constant';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
+import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
+import { AbstractControl, ValidationErrors } from '@angular/forms';
 
 @Component({
-  selector: 'app-device-order-ais-existing-gadget-validate-customer-pi-page',
-  templateUrl: './device-order-ais-existing-gadget-validate-customer-pi-page.component.html',
-  styleUrls: ['./device-order-ais-existing-gadget-validate-customer-pi-page.component.scss']
+  selector: 'app-device-order-ais-existing-gadget-validate-identify-page',
+  templateUrl: './device-order-ais-existing-gadget-validate-identify-page.component.html',
+  styleUrls: ['./device-order-ais-existing-gadget-validate-identify-page.component.scss']
 })
-export class DeviceOrderAisExistingGadgetValidateCustomerPiPageComponent implements OnInit, OnDestroy {
+export class DeviceOrderAisExistingGadgetValidateIdentifyPageComponent implements OnInit, OnDestroy {
 
   wizards: any = WIZARD_DEVICE_ORDER_AIS;
   readonly PLACEHOLDER: string = '(เลขบัตรประชาชน)';
@@ -158,4 +158,5 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPiPageComponent impleme
       };
     }
   }
+
 }
