@@ -50,8 +50,6 @@ export class DeviceOrderAisExistingGadgetCheckOutPageComponent implements OnInit
     const trade = this.priceOption.trade;
     const productDetail = this.priceOption.productDetail;
     const productStock = this.priceOption.productStock;
-    const prebooking = this.transaction.data.preBooking;
-    const depositAmt = prebooking && prebooking.depositAmt ? -prebooking.depositAmt : 0;
     let thumbnail = null;
     if ((!productStock.images && !productStock.images.thumbnail) && productDetail.products && productDetail.products.length > 0) {
       const productFilter = productDetail.products.filter((product) => product.colorName === productStock.colorName
@@ -66,7 +64,7 @@ export class DeviceOrderAisExistingGadgetCheckOutPageComponent implements OnInit
       brand: productDetail.brand,
       model: productDetail.model,
       color: productDetail.colorName || productStock.colorName || productStock.color,
-      price: +trade.promotionPrice + depositAmt
+      price: +trade.promotionPrice
     };
   }
 }
