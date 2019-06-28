@@ -174,12 +174,10 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     if (this.provinceForm().invalid) {
       this.amphurForm().disable();
       this.amphurForm().setValue('');
-      console.log('1');
     }
-    if (this.amphurForm().value !== '') {
+    if (this.amphurForm().value === '') {
       this.tumbolForm().disable();
       this.tumbolForm().setValue('');
-      console.log('2');
     }
   }
 
