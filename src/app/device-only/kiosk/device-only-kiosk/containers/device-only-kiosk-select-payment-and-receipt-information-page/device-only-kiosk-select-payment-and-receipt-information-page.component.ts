@@ -12,6 +12,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 import { CreateOrderService } from 'src/app/device-only/services/create-order.service';
 import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
+import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from 'src/app/buy-product/constants/route-path.constant';
 
 @Component({
   selector: 'app-device-only-kiosk-select-payment-and-receipt-information-page',
@@ -124,17 +125,8 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
       this.homeService.goToHome();
       return;
     }
-    this.product = this.priceOption.queryParams;
-    const brand: string = encodeURIComponent(this.product.brand ? this.product.brand : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
-    const model: string = encodeURIComponent(this.product.model ? this.product.model : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
-    // replace '%28 %29' for() case url refresh error
-    const url: string = `/smart-digital/buy-product/brand/${brand}/${model}`;
-    const queryParams: string =
-      '?modelColor=' + this.product.color +
-      '&productType=' + this.product.productType +
-      '&productSubtype=' + this.product.productSubtype;
-      window.location.href = url + queryParams;
 
+    this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
   }
 
   onNext(): void {
