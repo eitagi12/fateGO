@@ -261,7 +261,7 @@ export class ReadCardComponent implements OnInit {
   public selectBillingAddress(): void {
     const billingAddressSelected = this.selectBillingAddressForm.value.billingAddress;
     if (billingAddressSelected === this.ADDRESS_BY_SMART_CARD) {
-      this.isSelect = false;
+      this.isSelect = true;
       this.modalBillAddress.hide();
       this.canReadSmartCard = true;
       this.customerInfo.emit({

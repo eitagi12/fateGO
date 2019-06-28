@@ -191,7 +191,6 @@ export class DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent implem
     const model: string = encodeURIComponent(this.product.model ? this.product.model : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
     const imei: any = JSON.parse(localStorage.getItem('device'));
 
-    console.log('imei', imei.imei);
     // replace '%28 %29' for() case url refresh error
     const url: string = `/sales-portal/buy-product/brand/${brand}/${model}`;
     const queryParams: string =
@@ -199,10 +198,7 @@ export class DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent implem
       '&productType=' + this.product.productType +
       '&productSubtype=' + this.product.productSubtype +
       '&imei=' + imei.imei +
-      '&customerGroup=' + this.priceOption.customerGroup.code
-      ;
-
-      console.log('url + queryParams', url + queryParams);
+      '&customerGroup=' + this.priceOption.customerGroup.code;
 
     window.location.href = url + queryParams;
   }
