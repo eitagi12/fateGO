@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { TokenService, User, HomeService, AlertService, Utils, PageLoadingService } from 'mychannel-shared-libs';
@@ -12,13 +12,15 @@ import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
 import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
+import { ProfileFbbService } from 'src/app/shared/services/profile-fbb.service';
+import { ProfileFbb } from 'src/app/shared/models/profile-fbb.model';
 
 @Component({
   selector: 'app-device-order-ais-existing-gadget-validate-customer-page',
   templateUrl: './device-order-ais-existing-gadget-validate-customer-page.component.html',
   styleUrls: ['./device-order-ais-existing-gadget-validate-customer-page.component.scss']
 })
-export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implements OnInit {
+export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implements OnInit, OnDestroy {
 
   wizards: any = WIZARD_DEVICE_ORDER_AIS_EXISTING_GADGET;
   readonly PLACEHOLDER: string = '(หมายเลขโทรศัพท์ / เลขบัตรประชาชน)';
@@ -26,6 +28,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
 
   transaction: Transaction;
   priceOption: PriceOption;
+  profileFbb: ProfileFbb;
   user: User;
   identityValid: boolean = false;
   identity: string;
@@ -44,9 +47,12 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
     private customerInfoService: CustomerInfoService,
     private privilegeService: PrivilegeService,
     private sharedTransactionService: SharedTransactionService,
+    private profileFbbService: ProfileFbbService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
+    this.profileFbb = this.profileFbbService.load();
+    this.profileFbbService.remove();
     this.user = this.tokenService.getUser();
     this.homeService.callback = () => {
       this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
@@ -104,11 +110,38 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
     this.pageLoadingService.openLoading();
     if (this.checkFbbNo(this.identity)) {
       // KEY-IN FbbNo
-      const body = { option: '3', mobileNo: this.identity };
+      const body = {
+        option: '3',
+        mobileNo: this.identity
+      };
       this.customerInfoService.queryFbbInfo(body).then((response: any) => {
-        this.transaction.data.action = TransactionAction.KEY_IN_PI;
-        this.setFbbInfoDetail(response);
-        this.checkAndGetPrivilageCode();
+        this.profileFbb = response;
+        const fullName = (this.profileFbb.billingProfiles[0].caName || '').split(' ');
+        this.transaction.data.action = TransactionAction.KEY_IN_FBB;
+        return this.privilegeService.checkAndGetPrivilegeCode(this.identity, '*999*04#').then((privilegeCode) => {
+          this.transaction = {
+            ...this.transaction,
+            data: {
+              ...this.transaction.data,
+              customer: {
+                ...this.transaction.data.customer,
+                privilegeCode: privilegeCode,
+                titleName: 'คุณ',
+                firstName: fullName[0],
+                lastName: fullName[1],
+                caNumber: this.profileFbb.billingProfiles[0].caNo
+              },
+              simCard: {
+                ...this.transaction.data.simCard,
+                mobileNo: this.identity
+              }
+            }
+          };
+          this.checkRoutePath();
+        }).catch((e) => {
+          this.pageLoadingService.closeLoading();
+          this.alertService.error(e);
+        });
       }).catch((error: any) => {
         this.pageLoadingService.closeLoading();
         this.alertService.error(error);
@@ -116,12 +149,10 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
     } else if (this.utils.isMobileNo(this.identity)) {
       // KEY-IN MobileNo
       this.customerInfoService.getCustomerProfileByMobileNo(this.identity).then((customer: Customer) => {
-        this.transaction.data.action = TransactionAction.KEY_IN_REPI;
-        this.transaction.data.customer = customer;
-        this.checkAndGetPrivilageCode();
-      }).catch((error) => {
-        this.pageLoadingService.closeLoading();
-        this.alertService.error(error);
+        this.transaction.data.simCard = { mobileNo: this.identity };
+        this.transaction.data.action = TransactionAction.KEY_IN_PI;
+      }).then(() => {
+        this.checkRoutePath();
       });
     } else {
       // KEY-IN ID-Card
@@ -129,43 +160,22 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
         this.transaction.data.customer = customer;
         this.transaction.data.billingInformation = {};
         this.transaction.data.billingInformation.billDeliveryAddress = this.transaction.data.customer;
-        this.transaction.data.action = TransactionAction.KEY_IN;
         if (!this.transaction.data.order || !this.transaction.data.order.soId) {
-          this.addDeviceSellingCard();
+          return this.http.post('/api/salesportal/add-device-selling-cart',
+            this.getRequestAddDeviceSellingCart()
+          ).toPromise()
+            .then((resp: any) => {
+              this.transaction.data.order = { soId: resp.data.soId };
+              return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+            }).then(() => {
+              this.transaction.data.action = TransactionAction.KEY_IN;
+              this.checkRoutePath();
+            });
         } else {
           this.checkRoutePath();
         }
-      }).catch((error) => this.alertService.error(error));
+      }).then(() => this.pageLoadingService.closeLoading());
     }
-
-  }
-
-  private checkAndGetPrivilageCode(): any {
-    return this.privilegeService.checkAndGetPrivilegeCode(this.identity, '*999*04#').then((privligeCode) => {
-      this.transaction.data.customer.privilegeCode = privligeCode;
-      this.transaction.data.simCard = { mobileNo: this.identity };
-      if (!this.transaction.data.order || !this.transaction.data.order.soId) {
-        return this.addDeviceSellingCard();
-      } else {
-        this.checkRoutePath();
-      }
-    }).catch((error) => {
-      this.pageLoadingService.closeLoading();
-      this.alertService.error(error);
-    });
-  }
-
-  private addDeviceSellingCard(): void | PromiseLike<void> {
-    return this.http.post('/api/salesportal/add-device-selling-cart', this.getRequestAddDeviceSellingCart()).toPromise()
-      .then((resp: any) => {
-        this.transaction.data.order = { soId: resp.data.soId };
-        return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-      }).then(() => {
-        this.checkRoutePath();
-      }).catch((error) => {
-        this.pageLoadingService.closeLoading();
-        this.alertService.error(error);
-      });
   }
 
   private checkRoutePath(): void {
@@ -179,13 +189,6 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
     } else {
       // KEY IN IDCARD
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
-    }
-  }
-
-  private setFbbInfoDetail(response: any): any {
-    if (response && response.data && response.data.billingProfiles && response.data.products) {
-      localStorage.setItem('fbbBillingProfiles', JSON.stringify(response.data.billingProfiles));
-      localStorage.setItem('fbbProducts', JSON.stringify(response.data.products));
     }
   }
 
@@ -277,13 +280,18 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
           if (response.value === true) {
             this.returnStock().then(() => {
               this.transactionService.remove();
-              // window.location.href = `/sales-portal/buy-product/brand/${queryParams.brand}/${queryParams.model}`;
+              window.location.href = `/ales-portal/buy-product/brand/${queryParams.brand}/${queryParams.model}`;
             });
           }
         });
     } else {
       this.transactionService.remove();
-      // window.location.href = `/sales-portal/buy-product/brand/${queryParams.brand}/${queryParams.model}`;
+      window.location.href = `/sales-portal/buy-product/brand/${queryParams.brand}/${queryParams.model}`;
     }
+  }
+
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
+    this.profileFbbService.save(this.profileFbb);
   }
 }

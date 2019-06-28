@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
-import { ShoppingCart, EligibleMobile, HomeService, PageLoadingService } from 'mychannel-shared-libs';
+import { ShoppingCart, EligibleMobile, HomeService, PageLoadingService, AlertService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { HttpClient } from '@angular/common/http';
@@ -36,7 +36,8 @@ export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements 
     private transactionService: TransactionService,
     private privilegeService: PrivilegeService,
     private customerInfoService: CustomerInfoService,
-    private priceOptionService: PriceOptionService
+    private priceOptionService: PriceOptionService,
+    private alertService: AlertService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -58,9 +59,25 @@ export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements 
       inIDCardType: IN_ID_CARD_TYPE
     }).toPromise()
       .then((response: any) => {
-        const fbbListResponse = response.data.mobileLists;
-        this.eligibleMobiles = fbbListResponse || [];
+        const fbbListResponse: any = response.data.mobileLists.filter((responseLists: any) => {
+          return responseLists.status === 'Active';
+        }).map((resp: any) => {
+          const eligibleMobiles: any = {
+            mobileNo: resp.mobileNo,
+            mobileStatus: this.checkMobileStatus(resp.status) === true ? 'Active' : 'Suspended'
+          } || [];
+          return eligibleMobiles;
+        });
+        this.eligibleMobiles = fbbListResponse;
       });
+  }
+
+  checkMobileStatus(status: string): boolean {
+    if (status === 'Active') {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   onCompleted(mobileNo: any): void {
@@ -73,20 +90,37 @@ export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements 
   onNext(): void {
     this.pageLoadingService.openLoading();
     const trade = this.priceOption.trade;
-    this.privilegeService.requestUsePrivilege(this.mobileNo.mobileNo, trade.ussdCode,
-      this.mobileNo.privilegeCode).then((privilegeCode) => {
-        this.transaction.data.customer.privilegeCode = privilegeCode;
-        this.transaction.data.simCard = { mobileNo: this.mobileNo.mobileNo };
-        if (this.transaction.data.customer && this.transaction.data.customer.firstName) {
-          return this.customerInfoService.getCustomerProfileByMobileNo(this.transaction.data.simCard.mobileNo,
-            this.transaction.data.customer.idCardNo).then((customer: Customer) => {
-              this.transaction.data.customer = { ...this.transaction.data.customer, ...customer };
-            });
-        }
-      }).then(() => {
-        this.pageLoadingService.closeLoading();
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_MOBILE_DETAIL_PAGE]);
-      });
+    const ussdCode = '*999*04#';
+    console.log(trade.ussdCode);
+    this.privilegeService.checkPrivilegeByNumber(this.mobileNo.mobileNo, ussdCode, false).then((privilegeCode) => {
+      this.transaction.data.customer = {
+        ...this.transaction.data.customer,
+        privilegeCode: privilegeCode
+      };
+      this.transaction.data.simCard = { mobileNo: this.mobileNo.mobileNo };
+      this.requestUsePrivilege(ussdCode);
+    }).catch((e) => {
+      this.pageLoadingService.closeLoading();
+      this.alertService.error(e);
+    });
+  }
+
+  private requestUsePrivilege(ussdCode: any): void {
+    this.privilegeService.requestUsePrivilege(this.mobileNo.mobileNo, ussdCode, this.mobileNo.privilegeCode).then((privilegeCode) => {
+      this.transaction.data.customer.privilegeCode = privilegeCode;
+      this.transaction.data.simCard = { mobileNo: this.mobileNo.mobileNo };
+      if (this.transaction.data.customer && this.transaction.data.customer.firstName) {
+        this.customerInfoService.getCustomerProfileByMobileNo(
+          this.transaction.data.simCard.mobileNo,
+          this.transaction.data.customer.idCardNo)
+          .then((customer: Customer) => {
+            this.transaction.data.customer = { ...this.transaction.data.customer, ...customer };
+          });
+      }
+    }).then(() => {
+      this.pageLoadingService.closeLoading();
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_MOBILE_DETAIL_PAGE]);
+    });
   }
 
   onBack(): void {

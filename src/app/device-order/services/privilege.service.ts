@@ -18,6 +18,8 @@ export class PrivilegeService {
     }).toPromise().then((checkPrivilege: any) => {
       const privilegeInfo = checkPrivilege.data;
       return privilegeInfo.privilegeCode;
+    }).catch((e) => {
+      Promise.reject(e);
     });
   }
 
@@ -37,6 +39,8 @@ export class PrivilegeService {
           reject(privilege);
         });
       }
+    }).catch((e) => {
+      Promise.reject(e);
     });
   }
 
@@ -44,7 +48,11 @@ export class PrivilegeService {
     return this.checkPrivilegeByNumber(mobileNo, ussdCode, false).then((privilegeCode) => {
       return this.requestUsePrivilege(mobileNo, ussdCode, privilegeCode).then((msgBarcode) => {
         return msgBarcode;
-      }).catch(e => Promise.reject('หมายเลขนี้ ไม่สามารถรับสิทธิ์ได้'));
-    }).catch(e => Promise.reject(`${e.error.resultDescription || ''} ${(e.error.developerMessage) || ''}`.trim()));
+      }).catch(e => {
+        Promise.reject('หมายเลขนี้ ไม่สามารถรับสิทธิ์ได้');
+      });
+    }).catch(e => {
+      Promise.reject(`${e.error.resultDescription || ''} ${(e.error.developerMessage) || ''}`.trim());
+    });
   }
 }

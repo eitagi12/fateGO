@@ -172,7 +172,6 @@ export class CustomerInfoService {
   }
 
   public queryFbbInfo(request: any): Promise<any> {
-
     let body: {
       inOption: string;
       inIDCardNo?: string;
@@ -194,11 +193,27 @@ export class CustomerInfoService {
         };
         break;
     }
-
-    return this.http.post('/api/customerportal/query-fbb-info', body).toPromise().then((ress: any) => {
-      return ress;
-    }).catch((error: any) => error);
-
+    return this.http.post('/api/customerportal/query-fbb-info', body).toPromise().then((response: any) => {
+      if (response.data.billingProfiles[0].status === 'Disconnect - Customer Request') {
+        const status: string = response.data.billingProfiles[0].status;
+        return Promise.reject(`ไม่สามารถทำรายการได้ กรุณาตรวจสอบสถานะหมายเลข <br> (status is : ${status})`);
+      } else {
+        return response && response.data ? response.data : '';
+      }
+    }).catch((error: any) => {
+      return Promise.reject(error);
+    });
   }
 
+  public getCustomerProfileByFbb(mobileNo: string): Promise<any> {
+    return this.http.get(`/api/customerportal/customerprofile/${mobileNo}`).toPromise().then((profile: any) => {
+      return Promise.resolve(profile);
+    }).catch((e) => {
+      if (typeof e === 'string') {
+        return Promise.reject(e);
+      } else {
+        return Promise.reject(`ไม่สามารถทำรายการได้ กรุณาตรวจสอบสถานะหมายเลข ${mobileNo})`);
+      }
+    });
+  }
 }
