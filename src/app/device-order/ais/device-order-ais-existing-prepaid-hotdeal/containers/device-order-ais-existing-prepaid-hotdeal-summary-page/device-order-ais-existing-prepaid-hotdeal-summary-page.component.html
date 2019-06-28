@@ -14,7 +14,7 @@
       <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
       <div class="container-fluid">
         <div class="card mb-3">
-          <div class="card-header bg-pink text-white" translate>สรุปรายการสั่งชื้อสินค้า</div>
+          <div class="card-header bg-pink text-white" translate>สรุปรายการสั่งซื้อสินค้า</div>
           <div class="card-body">
             <p class="text-green">{{ priceOption?.campaign?.campaignName | translate}}</p>
             <div class="text-light-grey">
@@ -60,8 +60,8 @@
           <div class="card-body">
             <p>
               <i class="fa fa-circle mr-3 text-green"></i>
-              <span> {{ transaction?.data?.onTopPackage?.shortNameThai }}</span>
-              <span class="pull-right" (click)="onOpenDetail(transaction?.data?.onTopPackage?.descriptionThai)">
+              <span> {{ packageTitle(transaction?.data?.onTopPackage) }}</span>
+              <span class="pull-right" (click)="onOpenDetail(transaction?.data?.onTopPackage)">
                 <img src="assets/images/icon/icon-page.png" class="icon" />
               </span>
             </p>
@@ -78,9 +78,9 @@
               </ng-container>
               <ng-container *ngIf="transaction?.data?.mobileCarePackage?.title">
                 <span>
-                  {{ transaction?.data?.mobileCarePackage?.title }}
+                  {{ packageTitle(transaction?.data?.mobileCarePackage?.customAttributes) }}
                 </span>
-                <span class="pull-right" (click)="onOpenDetail(transaction?.data?.mobileCarePackage?.detailTH)">
+                <span class="pull-right" (click)="onOpenDetail(transaction?.data?.mobileCarePackage)">
                   <img src="assets/images/icon/icon-page.png" class="icon" />
                 </span>
               </ng-container>
@@ -184,8 +184,8 @@
               <p>{{'ยอดเงินคงเหลือ' | translate}} {{ balance?.balance | number }} {{'บาท' | translate}}
               <p>{{'กรุณาเติมเงินเพิ่ม' | translate}} {{ balance?.addMoneyPrice | number }} {{'บาท' | translate}}</p>
               <p>{{'เพื่อสมัครแพ็กเกจ' | translate}}</p>
-              <p> * {{'เมื่อเติมเงินเรียบร้อยแล้ว กรุณากดปุ่ม Refresh' | translate}}</p>
-            </div>
+              <p> * {{'เมื่อเติมเงินเรียบร้อยแล้ว กรุณากดปุ่ม REFRESH' | translate}}</p>
+          </div>
             <div *ngIf="!balance?.addMoney">
               <img class="icon-warning mb-3" src="assets/images/icon/icon_pouch.png">
               <p class="text-green">{{'ยอดเงินคงเหลือ' | translate}} {{ balance?.balance | number}} {{'บาท' | translate}}</p>

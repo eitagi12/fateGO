@@ -12,6 +12,7 @@ import { HttpClient } from '@angular/common/http';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-device-order-ais-existing-prepaid-hotdeal-summary-page',
@@ -51,6 +52,7 @@ export class DeviceOrderAisExistingPrepaidHotdealSummaryPageComponent implements
     private modalService: BsModalService,
     private shoppingCartService: ShoppingCartService,
     public summaryPageService: SummaryPageService,
+    private translateService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -107,9 +109,15 @@ export class DeviceOrderAisExistingPrepaidHotdealSummaryPageComponent implements
     }, 0);
   }
 
-  onOpenDetail(detail: string): void {
-    this.detail = detail;
+  onOpenDetail(detail: any = {}): void {
+    this.detail = this.translateService.currentLang === 'EN'
+    ? (detail.descriptionEng || detail.detailEN) : (detail.descriptionThai || detail.detailTH) || '';
     this.modalRef = this.modalService.show(this.detailTemplate);
+  }
+
+  packageTitle(detail: any = {}): string {
+    return (this.translateService.currentLang === 'EN')
+    ? (detail.shortNameEng || detail.titleEng) : (detail.shortNameThai || detail.title) || '';
   }
 
   onNext(): void {

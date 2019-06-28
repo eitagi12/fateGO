@@ -66,7 +66,7 @@ export class MobileCareService {
                   return false;
                 }
 
-                return (customAttributes.billingSystem === billingSystem
+                return (customAttributes.billingSystem.includes(billingSystem)
                   && +customAttributes.startDevicePrice <= endUserPrice
                   && +customAttributes.endDevicePrice >= endUserPrice);
               })
