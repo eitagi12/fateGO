@@ -121,13 +121,13 @@ export class CreateEapplicationService {
     if (language === 'EN') {
       data.billCycle = billCycleData.billCycleTextEng;
       data.mainPackage = {
-        name: mainPackage.shortNameEng || mainPackage.title || '',
+        name: (mainPackage.customAttributes || {}).shortNameEng || mainPackage.title || '',
         description: mainPackage.statementEng || mainPackage.detailEN || ''
       };
     } else {
       data.billCycle = billCycleData.billCycleText;
       data.mainPackage = {
-        name: mainPackage.shortNameThai || mainPackage.title || '',
+        name: (mainPackage.customAttributes || {}).shortNameThai || mainPackage.title || '',
         description: mainPackage.statementThai || mainPackage.detailTH || ''
       };
     }
