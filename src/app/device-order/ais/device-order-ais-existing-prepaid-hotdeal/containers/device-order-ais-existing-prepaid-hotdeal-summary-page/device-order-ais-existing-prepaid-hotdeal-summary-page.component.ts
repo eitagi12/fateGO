@@ -91,6 +91,18 @@ export class DeviceOrderAisExistingPrepaidHotdealSummaryPageComponent implements
     });
   }
 
+  addMoneyPriceText(value: any = {}): string {
+    if (this.translateService.currentLang === 'EN') {
+      return `The remaining balance is ${+value.balance.toFixed(2)} THB
+      please top up the amount ${+value.addMoneyPrice.toFixed(2)} THB to purchase a package
+      then press "Refresh" after topping up`;
+    } else {
+      return `ยอดเงินคงเหลือ ${+value.balance.toFixed(2)} บาท
+      กรุณาเติมเงินเพิ่ม ${+value.addMoneyPrice.toFixed(2)} บาท เพื่อสมัครแพ็คเกจ
+      * เมื่อเติมเงินเรียบร้อยแล้ว กรุณากดปุ่ม "Refresh"`;
+    }
+  }
+
   getSummaryPrice(): number {
     const onTopPack = this.transaction.data.onTopPackage.priceIncludeVat;
     const promotion = this.priceOption.trade.promotionPrice;

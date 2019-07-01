@@ -181,10 +181,7 @@
           <div class="p-3 text-pink text-center" [mcLoading]="getBalanceSubscription">
             <div *ngIf="balance?.addMoney">
               <img class="icon-warning mb-3" src="assets/images/icon/icon-red-alert-circle.png">
-              <p>{{'ยอดเงินคงเหลือ' | translate}} {{ balance?.balance | number }} {{'บาท' | translate}}
-              <p>{{'กรุณาเติมเงินเพิ่ม' | translate}} {{ balance?.addMoneyPrice | number }} {{'บาท' | translate}}</p>
-              <p>{{'เพื่อสมัครแพ็กเกจ' | translate}}</p>
-              <p> * {{'เมื่อเติมเงินเรียบร้อยแล้ว กรุณากดปุ่ม REFRESH' | translate}}</p>
+              <p class="p-addMoneyPrice">{{ addMoneyPriceText(this.balance) }}</p>
           </div>
             <div *ngIf="!balance?.addMoney">
               <img class="icon-warning mb-3" src="assets/images/icon/icon_pouch.png">

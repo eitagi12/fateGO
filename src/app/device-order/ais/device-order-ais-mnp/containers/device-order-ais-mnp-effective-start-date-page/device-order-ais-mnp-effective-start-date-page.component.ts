@@ -96,16 +96,16 @@ export class DeviceOrderAisMnpEffectiveStartDatePageComponent implements OnInit,
 
   setBillingCycleTranslate(): void {
     this.billCycleText = [{
-      textBill: this.currentLang === 'TH' ? 'รอบบิลถัดไป' : 'Next Bill',
-      textDate: this.currentLang === 'TH' ? 'พร้อมใช้งานวันที่' : 'Ready to use date',
+      textBill: this.currentLang === 'TH' ? 'รอบบิลถัดไป' : 'Next bill cycle',
+      textDate: this.currentLang === 'TH' ? 'พร้อมใช้งานวันที่' : 'Effective on',
       value: 'B'
     }, {
       textBill: this.currentLang === 'TH' ? 'วันถัดไป' : 'Next Day',
-      textDate: this.currentLang === 'TH' ? 'พร้อมใช้งานวันที่' : 'Ready to use date',
+      textDate: this.currentLang === 'TH' ? 'พร้อมใช้งานวันที่' : 'Effective on',
       value: 'D'
     }, {
-      textBill: this.currentLang === 'TH' ? 'มีผลทันที' : 'Immediate effect',
-      textDate: this.currentLang === 'TH' ? 'พร้อมใช้งานได้ทันที' : 'Ready to use immediately',
+      textBill: this.currentLang === 'TH' ? 'มีผลทันที' : 'Immediately',
+      textDate: this.currentLang === 'TH' ? 'พร้อมใช้งานได้ทันที' : 'Effective once',
       value: 'I'
     }];
   }
