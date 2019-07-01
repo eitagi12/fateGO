@@ -89,7 +89,7 @@
                       (ชำระโดย {{ summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) }})
                     </small>
                     <span class="text-pink"
-                      *ngIf="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'WAITING'">( รอชำระ )</span>
+                      *ngIf="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'WAITING'">( {{'รอชำระ' | translate}} )</span>
                     <span class="text-green"
                       *ngIf="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'SUCCESS'">
                       ( ชำระแล้ว TX: {{transaction?.data?.mpayPayment?.tranId}} )
@@ -113,7 +113,7 @@
                     <small class="text-muted" *ngIf="(+priceOption?.trade?.advancePay?.amount) > 0">
                       (ชำระโดย {{ summaryPageService.descriptionPayment(transaction?.data?.advancePayment) }})
                     </small>
-                    <span class="text-pink">( รอชำระ )</span>
+                    <span class="text-pink">( {{'รอชำระ' | translate}} )</span>
                   </div>
                 </div>
                 </ng-container>
@@ -135,7 +135,7 @@
                     <small class="text-muted">
                       (ชำระโดย {{ summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) }})
                     </small>
-                    <span class="text-pink">( รอชำระ )</span>
+                    <span class="text-pink">( {{'รอชำระ' | translate}} )</span>
                   </div>
                 </ng-container>
 
