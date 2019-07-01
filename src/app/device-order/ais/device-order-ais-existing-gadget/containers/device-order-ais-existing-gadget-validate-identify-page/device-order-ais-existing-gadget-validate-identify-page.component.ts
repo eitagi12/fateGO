@@ -9,7 +9,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
-import { ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_MOBILE_DETAIL_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_MOBILE_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_IDENTIFY_ID_CARD_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 
 @Component({
@@ -49,7 +49,6 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyPageComponent implement
   }
 
   ngOnInit(): void {
-    console.log(this.transaction.data.action, 'this.transaction.data.action');
   }
 
   onError(valid: boolean): void {
@@ -62,7 +61,7 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyPageComponent implement
 
   onReadCard(): void {
     this.transaction.data.action = TransactionAction.READ_CARD_PI;
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_IDENTIFY_ID_CARD_PAGE]);
   }
 
   onHome(): void {

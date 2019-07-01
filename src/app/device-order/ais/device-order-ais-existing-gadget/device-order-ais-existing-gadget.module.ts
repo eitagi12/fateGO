@@ -19,6 +19,7 @@ import { DeviceOrderAisExistingGadgetEligibleMobilePageComponent } from './conta
 import { DeviceOrderAisExistingGadgetAgreementSignPageComponent } from './containers/device-order-ais-existing-gadget-agreement-sign-page/device-order-ais-existing-gadget-agreement-sign-page.component';
 import { DeviceOrderAisExistingGadgetEcontractPageComponent } from './containers/device-order-ais-existing-gadget-econtract-page/device-order-ais-existing-gadget-econtract-page.component';
 import { DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent } from './containers/device-order-ais-existing-gadget-validate-customer-id-card-page/device-order-ais-existing-gadget-validate-customer-id-card-page.component';
+import { DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent } from './containers/device-order-ais-existing-gadget-validate-identify-id-card-page/device-order-ais-existing-gadget-validate-identify-id-card-page.component';
 
 @NgModule({
   imports: [
@@ -43,7 +44,8 @@ import { DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent } from 
     DeviceOrderAisExistingGadgetEligibleMobilePageComponent,
     DeviceOrderAisExistingGadgetAgreementSignPageComponent,
     DeviceOrderAisExistingGadgetEcontractPageComponent,
-    DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent
+    DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent,
+    DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent
   ]
 })
 export class DeviceOrderAisExistingGadgetModule { }
