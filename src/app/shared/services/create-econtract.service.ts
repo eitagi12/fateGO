@@ -4,6 +4,7 @@ import { HttpClient } from '@angular/common/http';
 import { PriceOption } from '../models/price-option.model';
 import { DecimalPipe } from '@angular/common';
 import { BillingSystemType } from 'mychannel-shared-libs';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,8 @@ export class CreateEcontractService {
 
   constructor(
     private http: HttpClient,
-    private decimalPipe: DecimalPipe
+    private decimalPipe: DecimalPipe,
+    private translateService: TranslateService
   ) { }
 
   createEContractV2(transaction: Transaction, priceOption: PriceOption, condition: any, language: any): Promise<any> {
@@ -35,7 +37,7 @@ export class CreateEcontractService {
 
     const data: any = {
       campaignName: campaign.campaignName,
-      locationName: productStock.locationName || '',
+      locationName: this.translateService.instant(productStock.locationName) || '',
       customerType: '',
       idCard: this.transformIDcard(customer.idCardNo), // this.transformIDcard(customer.idCardNo),
       fullName: `${customer.firstName || ''} ${customer.lastName || ''}`,

@@ -194,5 +194,6 @@
     "ชื่อ/รหัสผ่าน ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง": "You have entered incorrect user name/ password. Please try again",
     "ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน": "Smartcard reader cannot read information from your ID card. Please contact our staff.",
     "ดึงบัตรประชาชนออก": "Remove your ID card",
-    "ข้อมูลปัจจุบันของคุณ":	"Customer information"
+    "ข้อมูลปัจจุบันของคุณ":	"Customer information",
+    "สาขาเซ็นทรัล ภูเก็ต ฟลอเรสต้า" : "Central Phuket Floresta Branch"
 }
