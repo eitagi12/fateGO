@@ -56,6 +56,7 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.mobileNo = this.transaction.data.simCard.mobileNo;
+    console.log(this.transaction.data.action, 'this.transaction.data.action');
     this.getFbbInfo();
     // this.callServiceCustomerProfile();
   }
