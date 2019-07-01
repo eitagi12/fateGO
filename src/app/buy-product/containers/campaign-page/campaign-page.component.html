@@ -132,9 +132,13 @@
         <ng-container *ngFor="let privilege of priceOption?.campaign?.privileges">
           <div class="card mb-2" *ngIf="privilege?.trades">
             <div class="card-body">
-              <h6 class="text-black m-0">
+              <h6 class="text-black m-0" *ngIf="customerGroupCode !== 'MC005'">
                 {{ priceOption?.campaign?.campaignName || priceOption?.campaign?.campaignDesc }}
                 {{ priceOption?.customerGroup?.name }} ({{ privilege?.ussdCode }})
+              </h6>
+              <h6 class="text-black m-0" *ngIf="customerGroupCode === 'MC005'">
+                {{ priceOption?.campaign?.campaignName || priceOption?.campaign?.campaignDesc }}
+                {{ priceOption?.customerGroup?.name }}
               </h6>
               <!-- price, advance pay -->
               <div class="row mb-2">

@@ -48,13 +48,14 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
     maximumNormalPrice: number;
     thumbnail: string;
-
+    public isDeviceOnly: boolean;
     modalRef: BsModalRef;
     params: Params;
     hansetBundle: string;
     productDetail: any;
     productSpec: any;
     selectCustomerGroup: any;
+    customerGroupCode: any;
 
     // campaign
     tabs: any[];
@@ -90,7 +91,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
     ngOnInit(): void {
         this.createForm();
-
         this.activatedRoute.queryParams.subscribe((params: any) => {
             this.params = params;
             this.callService(
@@ -377,6 +377,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     }
 
     onCampaignSelected(campaign: any, code: string): void {
+        this.customerGroupCode = code;
         this.priceOption.customerGroup = campaign.customerGroups.find(
             customerGroup => customerGroup.code === code
         );
@@ -465,7 +466,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             productType: productType || PRODUCT_TYPE,
             productSubtype: productSubtype || PRODUCT_SUB_TYPE
         });
-      this.productDetailService.then((resp: any) => {
+        this.productDetailService.then((resp: any) => {
             // เก็บข้อมูลไว้ไปแสดงหน้าอื่นโดยไม่เปลี่ยนแปลงค่าข้างใน
             this.priceOption.productDetail = resp.data || {};
 
@@ -531,7 +532,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             productSubtype: productSubtype,
             location: this.user.locationCode
         });
-      this.priceOptionDetailService.then((resp: any) => {
+        this.priceOptionDetailService.then((resp: any) => {
             const priceOptions = this.filterCampaigns(resp.data.priceOptions || []);
             if (priceOptions && priceOptions.length > 0) {
                 this.maximumNormalPrice = priceOptions[0].maximumNormalPrice;
