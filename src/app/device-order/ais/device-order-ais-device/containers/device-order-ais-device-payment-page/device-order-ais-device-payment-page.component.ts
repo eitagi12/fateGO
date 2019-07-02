@@ -1,19 +1,19 @@
 import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, ShoppingCart, PaymentDetail, PaymentDetailBank, ReceiptInfo, Utils, TokenService, PageLoadingService, REGEX_MOBILE, AlertService, ReadCard, ReadCardService, ReadCardProfile, ReadCardEvent } from 'mychannel-shared-libs';
-import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
+import { HomeService, ShoppingCart, PaymentDetail, PaymentDetailBank, ReceiptInfo, Utils, TokenService, PageLoadingService, REGEX_MOBILE, AlertService, ReadCard, ReadCardService, ReadCardProfile, ReadCardEvent, User } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
+import { Transaction, Customer, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { HttpClient } from '@angular/common/http';
 import { WIZARD_DEVICE_ODER_AIS_DEVICE } from 'src/app/device-order/constants/wizard.constant';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE, ROUTE_DEVICE_AIS_DEVICE_SUMMARY_PAGE } from 'src/app/device-order/ais/device-order-ais-device/constants/route-path.constant';
+import { ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE, ROUTE_DEVICE_AIS_DEVICE_SUMMARY_PAGE, ROUTE_DEVICE_AIS_DEVICE_OTP_PAGE } from 'src/app/device-order/ais/device-order-ais-device/constants/route-path.constant';
 import { Subscription, zip } from 'rxjs';
 import { BsModalService, BsModalRef, isArray } from 'ngx-bootstrap';
 import { BillingAccount } from '../../../device-order-ais-mnp/containers/device-order-ais-mnp-effective-start-date-page/device-order-ais-mnp-effective-start-date-page.component';
+import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 @Component({
   selector: 'app-device-order-ais-device-payment-page',
   templateUrl: './device-order-ais-device-payment-page.component.html',
@@ -54,8 +54,9 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
   billingAddress: string;
   location: string;
   billingAccountList: BillingAccount;
-
+  mobileNo: any;
   cardStatus: string;
+  user: User;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -69,9 +70,22 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     private alertService: AlertService,
     private readCardService: ReadCardService,
     private modalService: BsModalService,
+    private sharedTransactionService: SharedTransactionService,
   ) {
+    this.user = this.tokenService.getUser();
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
+    this.homeService.callback = () => {
+      this.alertService.question('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่')
+        .then((data: any) => {
+          if (!data.value) {
+            return false;
+          }
+
+          // Returns stock (sim card, soId) todo...
+          return this.returnStock().then(() => true);
+        });
+    };
   }
 
   ngOnInit(): void {
@@ -268,10 +282,11 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
             const buyerAddress = this.getCustomerAddressStr(customerAddr);
             this.receiptInfo.buyerAddress = buyerAddress;
           }).catch(() => {
-            this.alertService.error('CATCH');
+            this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_OTP_PAGE]);
           });
         }
       }).then(() => {
+        this.mobileNo = mobileNo;
         this.pageLoadingService.closeLoading();
       });
   }
@@ -293,26 +308,21 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
           .toPromise().then((profile: any) => {
             const customerprofile = profile && profile.data && profile.data ? profile.data : {};
             const billing = customerprofile.address ? customerprofile.address : {};
-            console.log('profile', customerprofile.address);
-            this.transaction.data.customer.amphur = billing.amphur;
-            this.transaction.data.customer.buildingName = billing.buildingName;
-            this.transaction.data.customer.firstName = mobileFbb.caName;
-            this.transaction.data.customer.floor = billing.floor;
+            const customerName = mobileFbb.caName.split(' ');
+            this.transaction.data.customer = billing;
+          // data ที่ return ไม่เหมือนกับ transaction
+            this.transaction.data.customer.idCardNo = mobileFbb.baNo;
+            this.transaction.data.customer.firstName = customerName[0];
+            this.transaction.data.customer.lastName = customerName[1];
             this.transaction.data.customer.homeNo = billing.houseNo;
-            this.transaction.data.customer.lastName = mobileFbb.caName;
-            this.transaction.data.customer.moo = billing.moo;
-            this.transaction.data.customer.mooBan = billing.mooban;
-            this.transaction.data.customer.zipCode = billing.zipCode;
             this.transaction.data.customer.province = billing.provinceName;
-            this.transaction.data.customer.soi = billing.soi;
             this.transaction.data.customer.street = billing.streetName;
             this.transaction.data.customer.titleName = customerprofile.accntTitle;
-            this.transaction.data.customer.tumbol = billing.tumbol;
             this.receiptInfo.buyer = customerprofile.accntTitle + ' ' + customerprofile.name;
             this.receiptInfo.taxId = mobileFbb.baNo;
             this.receiptInfoForm.controls['taxId'].setValue(this.receiptInfo.taxId);
             const customerAddr: Customer = {
-              idCardNo: billing.idCardNo || '',
+              idCardNo: mobileFbb.baNo || '',
               birthdate: '',
               gender: '',
               idCardType: billing.idCardType || '',
@@ -331,10 +341,11 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
               zipCode: billing.zipCode || '',
               street: billing.streetName || ''
             };
+            console.log('cusFbb', customerAddr);
             const buyerAddress = this.getCustomerAddressStr(customerAddr);
             this.receiptInfo.buyerAddress = buyerAddress;
           }).catch(() => {
-            this.alertService.error('CATCH');
+            this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_OTP_PAGE]);
           });
         // console.log('response', mobileFbb);
         // this.receiptInfo.buyer = mobileFbb.caName;
@@ -344,6 +355,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
         // console.log('mobileFbb', this.receiptInfo.buyer);
         // console.log('mobileFbb', this.receiptInfo.buyerAddress);
       }).then(() => {
+        this.mobileNo = mobileNo;
         this.pageLoadingService.closeLoading();
       });
   }
@@ -394,7 +406,6 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
             });
         }).catch((err: any) => {
           this.pageLoadingService.closeLoading();
-          this.alertService.error(err);
         });
 
       }
@@ -412,22 +423,8 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
         this.http.get(`api/customerportal/billing/${mobileNo}`).toPromise().then((resp: any) => {
           const data = resp.data;
           const billingAddress = data.billingAddress || {};
-          this.transaction.data.customer.amphur = billingAddress.amphur;
-          this.transaction.data.customer.buildingName = billingAddress.buildingName;
-          this.transaction.data.customer.firstName = billingAddress.firstName;
-          this.transaction.data.customer.floor = billingAddress.floor;
-          this.transaction.data.customer.homeNo = billingAddress.houseNumber;
-          this.transaction.data.customer.lastName = billingAddress.lastName;
-          this.transaction.data.customer.moo = billingAddress.moo;
-          this.transaction.data.customer.mooBan = billingAddress.mooban;
-          this.transaction.data.customer.zipCode = billingAddress.zipCode;
-          this.transaction.data.customer.province = billingAddress.provinceName;
-          this.transaction.data.customer.soi = billingAddress.soi;
-          this.transaction.data.customer.street = billingAddress.streetName;
-          this.transaction.data.customer.titleName = billingAddress.titleName;
-          this.transaction.data.customer.tumbol = billingAddress.tumbol;
-          this.transaction.data.customer.idCardNo = billingAddress.idCardNo;
-          this.receiptInfo.buyer = billingAddress.accntTitle + ' ' + billingAddress.name;
+          this.transaction.data.customer = billingAddress;
+           this.transaction.data.customer.province = billingAddress.provinceName;
           this.receiptInfo.taxId = billingAddress.baNo;
           this.receiptInfoForm.controls['taxId'].setValue(billingAddress.idCardNo);
           const customer: Customer = {
@@ -452,10 +449,12 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
           };
           this.receiptInfo.buyerAddress = this.getCustomerAddressStr(customer) || '';
           this.receiptInfo.buyer = `${customer.titleName} ${customer.firstName} ${customer.lastName}`;
+          this.mobileNo = mobileNo;
           this.pageLoadingService.closeLoading();
           this.modalRef.hide();
         }).catch((err: any) => {
-          this.alertService.error('CATCH');
+          this.mobileNo = mobileNo;
+          this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_OTP_PAGE]);
           this.pageLoadingService.closeLoading();
           this.modalRef.hide();
         });
@@ -499,10 +498,48 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
   }
 
   onNext(): void {
+    this.pageLoadingService.openLoading();
     this.transaction.data.payment = this.paymentDetailTemp.payment;
     this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;
     this.transaction.data.receiptInfo = this.receiptInfo;
+    this.transaction.data.simCard = {
+      mobileNo: this.mobileNo
+    };
+    // this.returnStock().then(() => {
+    //   this.http.post(
+    //     '/api/salesportal/add-device-selling-cart',
+    //     this.getRequestAddDeviceSellingCart()
+    //   ).toPromise()
+    //     .then((resp: any) => {
+    //       this.transaction.data.order = { soId: resp.data.soId };
+    //       return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+    //     }).then(() => this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_SUMMARY_PAGE]))
+    //     .then(() => this.pageLoadingService.closeLoading());
+    // });
     this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_SUMMARY_PAGE]);
+  }
+  getRequestAddDeviceSellingCart(): any {
+    const productStock = this.priceOption.productStock;
+    const productDetail = this.priceOption.productDetail;
+    const customer = this.transaction.data.customer;
+    return {
+      soCompany: productStock.company || 'AWN',
+      locationSource: this.user.locationCode,
+      locationReceipt: this.user.locationCode,
+      productType: productDetail.productType || 'DEVICE',
+      productSubType: productDetail.productSubType || 'HANDSET',
+      brand: productStock.brand,
+      model: productDetail.model,
+      color: productStock.color,
+      priceIncAmt: '',
+      priceDiscountAmt: '',
+      grandTotalAmt: '',
+      userId: this.user.username,
+      cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim(),
+      preBookingNo: '',
+      depositAmt: '',
+      reserveNo: ''
+    };
   }
 
   onBack(): void {
@@ -520,6 +557,23 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
   closeModalSelectAddress(): void {
     this.modalRef.hide();
   }
+  returnStock(): Promise<void> {
+    return new Promise(resolve => {
+      const transaction = this.transactionService.load();
+      const promiseAll = [];
+      if (transaction.data) {
+        if (transaction.data.order && transaction.data.order.soId) {
+          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
+            location: this.priceOption.productStock.location,
+            soId: transaction.data.order.soId,
+            transactionId: transaction.transactionId
+          }).toPromise().catch(() => Promise.resolve());
+          promiseAll.push(order);
+        }
+      }
+      Promise.all(promiseAll).then(() => resolve());
+    });
+  }
   // tslint:disable-next-line:use-life-cycle-interface
   ngOnDestroy(): void {
     if (this.readCardSubscription) {
@@ -528,13 +582,13 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     this.priceOptionService.update(this.priceOption);
     this.transactionService.update(this.transaction);
   }
+  createTransaction(): void {
+    this.transaction = {
+      data: {
+        transactionType: TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS,
+        action: TransactionAction.READ_CARD,
+      }
+    };
+  }
 
-  // private createTransaction(): void {
-  //   this.transaction = {
-  //     data: {
-  //       transactionType: TransactionType.ORDER_MNP,
-  //       action: null,
-  //     }
-  //   };
-  // }
 }

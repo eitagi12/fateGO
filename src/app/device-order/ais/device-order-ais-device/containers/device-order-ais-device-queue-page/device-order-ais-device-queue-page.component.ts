@@ -55,6 +55,8 @@ export class DeviceOrderAisDeviceQueuePageComponent implements OnInit, OnDestroy
 
   onNext(): void {
     this.pageLoadingService.openLoading();
+    console.log('this.transaction', this.transaction);
+    console.log('this.priceOption', this.priceOption);
     this.queuePageService.getQueueQmatic(this.queueFrom.value.mobileNo)
       .then((resp: any) => {
         const data = resp.data && resp.data.result ? resp.data.result : {};

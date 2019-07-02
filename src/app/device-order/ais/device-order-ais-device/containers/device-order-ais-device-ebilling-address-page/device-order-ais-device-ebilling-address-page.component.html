@@ -23,7 +23,7 @@
                   </label>
                 </div>
                 <div class="col-12  col-sm-12">
-                  <input type="text" class="form-control" maxlength="13"  [ngClass]="{'is-invalid': !validateCustomerKeyInForm.controls['idCardNo'].valid && validateCustomerKeyInForm.controls['idCardNo'].dirty}"
+                  <input type="text" class="form-control" maxlength="14"  [ngClass]="{'is-invalid': !validateCustomerKeyInForm.controls['idCardNo'].valid && validateCustomerKeyInForm.controls['idCardNo'].dirty}"
                   [value]="customerInfo?.idCardNo" id="txtidCardNo"
                     formControlName="idCardNo">
                     <small class="invalid-feedback text-red" *ngIf="validateCustomerKeyInForm.controls.idCardNo.touched && validateCustomerKeyInForm.controls.idCardNo.errors">

@@ -10,6 +10,7 @@ import { DeviceOrderAisDeviceAggregatePageComponent } from './containers/device-
 import { DeviceOrderAisDeviceQueuePageComponent } from './containers/device-order-ais-device-queue-page/device-order-ais-device-queue-page.component';
 import { DeviceOrderAisDeviceResultPageComponent } from './containers/device-order-ais-device-result-page/device-order-ais-device-result-page.component';
 import { DeviceOrderAisDeviceEbillingAddressPageComponent } from './containers/device-order-ais-device-ebilling-address-page/device-order-ais-device-ebilling-address-page.component';
+import { DeviceOrderAisDeviceOtpPageComponent } from './containers/device-order-ais-device-otp-page/device-order-ais-device-otp-page.component';
 
 @NgModule({
   imports: [
@@ -26,6 +27,7 @@ import { DeviceOrderAisDeviceEbillingAddressPageComponent } from './containers/d
   DeviceOrderAisDeviceAggregatePageComponent,
   DeviceOrderAisDeviceQueuePageComponent,
   DeviceOrderAisDeviceResultPageComponent,
-  DeviceOrderAisDeviceEbillingAddressPageComponent]
+  DeviceOrderAisDeviceEbillingAddressPageComponent,
+  DeviceOrderAisDeviceOtpPageComponent]
 })
 export class DeviceOrderAisDeviceModule { }
