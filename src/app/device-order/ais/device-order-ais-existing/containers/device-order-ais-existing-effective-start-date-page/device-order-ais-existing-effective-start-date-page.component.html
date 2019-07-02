@@ -14,7 +14,7 @@
     <div class="container-fluid">
       <div class="container-fluid">
         <div class="card-header bg-white col-12">
-          <h5> Package: <span class="text-green"> {{ transaction?.data?.mainPackage?.title | translate }}</span></h5>
+          <h5> Package: <span class="text-green" > {{ mainPackageTitle(transaction?.data?.mainPackage?.customAttributes) }}</span></h5>
         </div>
       </div>
       <div class="container-fluid">

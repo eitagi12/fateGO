@@ -137,6 +137,10 @@ export class DeviceOrderAisMnpEffectiveStartDatePageComponent implements OnInit,
     this.transactionService.update(this.transaction);
   }
 
+  mainPackageTitle(value: any = {}): string {
+    return this.translationService.currentLang === 'EN' ? value.shortNameEng : value.shortNameThai;
+  }
+
   createForm(): void {
     this.billingCycleForm = this.fb.group({
       bill: [null, Validators.required]
