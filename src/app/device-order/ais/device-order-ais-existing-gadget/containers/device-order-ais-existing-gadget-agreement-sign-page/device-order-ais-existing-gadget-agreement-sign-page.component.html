@@ -9,32 +9,16 @@
     </div>
   </mc-header>
   <div class="mc-flex-wrap">
-      <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
+    <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
     <div class="mb-3 mt-3">
       <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
-      <div *ngIf="!isOpenSign" class="container-fluid margin-top">
-        <div class="card">
-          <div class="card-header bg-transparent text-center" translate>ลงชื่อผู้ทำรายการ</div>
-          <div class="card-body">
-            <div *ngIf="!transaction?.data?.customer?.imageSignature" class="signed">
-              <img src="assets/images/icon/pen.png" (click)="$event.preventDefault(); onSigned()" *ngIf="signatureText !== 'แก้ไขลายเซ็น'" />
-            </div>
-            <div *ngIf="transaction?.data?.customer?.imageSignature" class="signed">
-              <img [src]="'data:image/jpeg;base64,' + transaction?.data?.customer?.imageSignature" *ngIf="signatureText !== 'แก้ไขลายเซ็น'">
-            </div>
-          </div>
-          <div class="card-footer text-center">
-            <a href="#" (click)="$event.preventDefault(); onSigned()" class="text-pink">
-              <span *ngIf="!transaction?.data?.customer?.imageSignature" translate>เซ็นลายเซ็น</span>
-              <span *ngIf="transaction?.data?.customer?.imageSignature" translate>แก้ไขลายเซ็น</span>
-            </a>
-          </div>
-        </div>
-      </div>
+      <mc-capture-and-sign [captureAndSign]="captureAndSign" (completed)="onCompleted($event)"
+        (error)="onError($event)">
+      </mc-capture-and-sign>
     </div>
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()" [disabled]="!checkLogicNext()">NEXT</button> 
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!idCardValid">NEXT</button> 
   </mc-footer>
 </div>

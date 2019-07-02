@@ -1,14 +1,14 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { Subscription } from 'rxjs';
-import { ShoppingCart, HomeService, TokenService, AlertService, User, ChannelType } from 'mychannel-shared-libs';
+import { ShoppingCart, HomeService, TokenService, AlertService, User, ChannelType, CaptureAndSign } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { AisNativeDeviceService } from 'src/app/shared/services/ais-native-device.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { TranslateService } from '@ngx-translate/core';
-import { ROUTE_DEVICE_ORDER_AIS_GADGET_CHECK_OUT_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_GADGET_CHECK_OUT_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_ECONTRACT_PAGE } from '../../constants/route-path.constant';
 import { DeviceOrderAisExistingGadgetEcontractPageComponent } from '../device-order-ais-existing-gadget-econtract-page/device-order-ais-existing-gadget-econtract-page.component';
 
 @Component({
@@ -23,7 +23,12 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
   transaction: Transaction;
   signedSignatureSubscription: Subscription;
   signedOpenSubscription: Subscription;
+
+  // captureAndSign
   shoppingCart: ShoppingCart;
+  captureAndSign: CaptureAndSign;
+  apiSigned: string;
+  idCardValid: boolean;
 
   // signature
   signatureImage: string;
@@ -38,92 +43,62 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
-    private aisNativeDeviceService: AisNativeDeviceService,
     private tokenService: TokenService,
     private shoppingCartService: ShoppingCartService,
     private alertService: AlertService,
     private translationService: TranslateService) {
     this.transaction = this.transactionService.load();
-    this.signedSignatureSubscription = this.aisNativeDeviceService.getSigned()
-      .subscribe((signature: string) => {
-        this.isOpenSign = false;
-        this.checkSignature(signature);
-      });
-    this.currentLang = this.translationService.currentLang || 'TH';
-    this.translationSubscribe = this.translationService.onLangChange.subscribe((lang: any) => {
-      this.checkLanguage(lang);
-    });
+    if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {
+      this.apiSigned = 'OnscreenSignpad';
+    } else {
+      this.apiSigned = 'SignaturePad';
+    }
   }
 
   ngOnInit(): void {
-    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-    if (!this.transaction.data.customer.imageSignature) {
-      this.onSigned();
-    }
+    this.checkCaptureAndSign();
   }
 
-  checkLanguage(lang: any): void {
-    if (this.signedOpenSubscription) {
-      this.signedOpenSubscription.unsubscribe();
-    }
-    this.currentLang = typeof (lang) === 'object' ? lang.lang : lang;
-    if (this.isOpenSign) {
-      this.onSigned();
-    }
-  }
-
-  checkSignature(signature: string): void {
-    if (signature) {
-      this.isOpenSign = false;
-      this.transaction.data.customer.imageSignature = signature;
-      this.router.navigate([DeviceOrderAisExistingGadgetEcontractPageComponent]);
+  checkCaptureAndSign(): void {
+    const customer: Customer = this.transaction.data.customer;
+    if (this.transaction.data.action === 'READ_CARD') {
+      this.captureAndSign = {
+        allowCapture: false,
+        imageSmartCard: customer.imageSmartCard,
+        imageSignature: customer.imageSignatureSmartCard
+      };
     } else {
-      this.alertService.warning('กรุณาเซ็นลายเซ็น').then(() => {
-        this.onSigned();
-      });
+      this.captureAndSign = {
+        allowCapture: true,
+        imageSmartCard: customer.imageSmartCard,
+        imageSignature: customer.imageSignatureSmartCard
+      };
     }
   }
+
+  onCompleted(captureAndSign: CaptureAndSign): void {
+    const customer: Customer = this.transaction.data.customer;
+    customer.imageSignatureSmartCard = captureAndSign.imageSignature;
+    customer.imageSmartCard = captureAndSign.imageSmartCard;
+  }
+
+  onError(valid: boolean): void {
+    this.idCardValid = valid;
+  }
+
   onBack(): void {
-    this.router.navigate([DeviceOrderAisExistingGadgetEcontractPageComponent]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_ECONTRACT_PAGE]);
   }
 
   onNext(): void {
-    if (this.openSignedCommand && !this.openSignedCommand.error) {
-      this.openSignedCommand.ws.send('CaptureImage');
-    } else {
-      if (this.transaction.data.customer.imageSignature) {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CHECK_OUT_PAGE]);
-      }
-    }
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CHECK_OUT_PAGE]);
   }
 
   onHome(): void {
     this.homeService.goToHome();
   }
 
-  checkLogicNext(): boolean {
-    return this.isOpenSign || this.transaction.data.customer.imageSignature ? true : false;
-  }
-
-  onSigned(): void {
-    this.isOpenSign = true;
-    const user: User = this.tokenService.getUser();
-    this.signedOpenSubscription = this.aisNativeDeviceService.openSigned(
-      ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'SignaturePad', `{x:100,y:280}`
-    ).subscribe((command: any) => {
-      this.openSignedCommand = command;
-    });
-  }
-
-  getOnMessageWs(): void {
-    this.commandSigned.ws.send('CaptureImage');
-  }
-
   ngOnDestroy(): void {
-    this.signedSignatureSubscription.unsubscribe();
-    if (this.signedOpenSubscription) {
-      this.signedOpenSubscription.unsubscribe();
-    }
     this.transactionService.update(this.transaction);
   }
 }

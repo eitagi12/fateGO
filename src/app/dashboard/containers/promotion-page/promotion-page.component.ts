@@ -32,7 +32,7 @@ export class PromotionPageComponent implements OnInit {
       }
     },
     {
-      icon: 'assets/images/icon/bottom_menu_icon_device_2.png',
+      icon: 'assets/images/icon/bottom_menu_icon_accessories.png',
       label: 'Accessories & Gadget',
       disabled: true,
       click: () => {
