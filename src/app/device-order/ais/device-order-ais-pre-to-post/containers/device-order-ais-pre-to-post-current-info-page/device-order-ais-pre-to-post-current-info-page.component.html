@@ -28,7 +28,7 @@
               ยอดเงินคงเหลือ
             </div>
             <div class="col-8">
-              {{ balance?.remainingBalance / 100 | number:'1.2-2' }} บาท
+              {{ balance?.remainingBalance / 100 | number:'1.2-2' }} {{'บาท' | translate}}
             </div>
             <div class="col-4 text-green">
 
@@ -43,7 +43,7 @@
               ค่าโทรที่ได้รับ
             </div>
             <div class="col-8">
-              {{ balance?.transferBalance | number }} บาท
+              {{ balance?.transferBalance | number }} {{'บาท' | translate}}
             </div>
 
           </div>

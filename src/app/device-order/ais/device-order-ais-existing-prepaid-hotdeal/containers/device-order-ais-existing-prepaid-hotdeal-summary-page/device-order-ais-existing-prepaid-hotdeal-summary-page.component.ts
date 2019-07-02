@@ -98,7 +98,7 @@ export class DeviceOrderAisExistingPrepaidHotdealSummaryPageComponent implements
       then press "Refresh" after topping up`;
     } else {
       return `ยอดเงินคงเหลือ ${+value.balance.toFixed(2)} บาท
-      กรุณาเติมเงินเพิ่ม ${+value.addMoneyPrice.toFixed(2)} บาท เพื่อสมัครแพ็คเกจ
+      กรุณาเติมเงินเพิ่ม ${+value.addMoneyPrice.toFixed(2)} บาท เพื่อสมัครแพ็กเกจ
       * เมื่อเติมเงินเรียบร้อยแล้ว กรุณากดปุ่ม "Refresh"`;
     }
   }
