@@ -207,6 +207,8 @@
     "ระบบ": "Payment system",
     "สถานะเบอร์": "Mobile number status",
     "อายุการใช้งาน": "Service year",
+    "คุณไม่ได้ทำรายการภายในเวลาที่กำหนด ต้องการทำรายการต่อหรือไม่?": "Your sessing is about to expire Do you wish to continue with this transaction?",
+    "ทำรายการต่อ": "CONTINUE",
     "ชำระเต็มจำนวนด้วยบัตรเครดิต": "Advance package payment: Pay full amount",
     "คำขอใช้บริการโทรศัพท์เคลื่อนที่": "Postpaid Service Application",
     "ลงชื่อผู้ทำรายการ": "Applicant's signature",
