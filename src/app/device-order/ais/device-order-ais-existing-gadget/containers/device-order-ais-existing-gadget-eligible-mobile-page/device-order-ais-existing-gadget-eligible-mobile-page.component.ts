@@ -23,7 +23,7 @@ export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements 
 
   shoppingCart: ShoppingCart;
   transaction: Transaction;
-  eligibleMobiles: Array<EligibleMobile>;
+  eligibleMobiles: Array<EligibleMobile> = [];
   mobileNo: any;
   priceOption: PriceOption;
 
@@ -49,35 +49,29 @@ export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements 
   }
 
   queryFbbListService(): void {
-    const idCardNo = this.transaction.data.customer.idCardNo;
-    const IN_OPTION = '1';
-    const IN_ID_CARD_TYPE = 'บัตรประชาชน';
-
-    this.http.post('/api/customerportal/query-fbb-info', {
-      inOption: IN_OPTION,
-      inIDCardNo: idCardNo,
-      inIDCardType: IN_ID_CARD_TYPE
-    }).toPromise()
-      .then((response: any) => {
-        const fbbListResponse: any = response.data.mobileLists.filter((responseLists: any) => {
-          return responseLists.status === 'Active';
-        }).map((resp: any) => {
-          const eligibleMobiles: any = {
-            mobileNo: resp.mobileNo,
-            mobileStatus: this.checkMobileStatus(resp.status) === true ? 'Active' : 'Suspended'
-          } || [];
-          return eligibleMobiles;
-        });
-        this.eligibleMobiles = fbbListResponse;
+    const request = {
+      option: '1',
+      idCardNo: this.transaction.data.customer.idCardNo,
+      idCardType: 'บัตรประชาชน'
+    };
+    this.customerInfoService.queryFbbInfo(request).then((resp) => {
+      this.pageLoadingService.openLoading();
+      resp.mobileLists.filter((mobileList: any) => {
+        return mobileList.status === 'Active';
+      }).map((ActiveMobile: any) => {
+        this.privilegeService
+          .checkPrivilegeByNumber(ActiveMobile.mobileNo, this.priceOption.trade.ussdCode, false)
+          .then((privilegeCode: string) => {
+            const setEligibleMobiles: any = {
+              mobileNo: ActiveMobile.mobileNo,
+              mobileStatus: 'Active',
+              privilegeCode: privilegeCode
+            } || [];
+            this.eligibleMobiles.push(setEligibleMobiles);
+            this.pageLoadingService.closeLoading();
+          });
       });
-  }
-
-  checkMobileStatus(status: string): boolean {
-    if (status === 'Active') {
-      return true;
-    } else {
-      return false;
-    }
+    });
   }
 
   onCompleted(mobileNo: any): void {
@@ -90,19 +84,7 @@ export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements 
   onNext(): void {
     this.pageLoadingService.openLoading();
     const trade = this.priceOption.trade;
-    const ussdCode = '*999*04#';
-    console.log(trade.ussdCode);
-    this.privilegeService.checkPrivilegeByNumber(this.mobileNo.mobileNo, ussdCode, false).then((privilegeCode) => {
-      this.transaction.data.customer = {
-        ...this.transaction.data.customer,
-        privilegeCode: privilegeCode
-      };
-      this.transaction.data.simCard = { mobileNo: this.mobileNo.mobileNo };
-      this.requestUsePrivilege(ussdCode);
-    }).catch((e) => {
-      this.pageLoadingService.closeLoading();
-      this.alertService.error(e);
-    });
+    this.requestUsePrivilege(trade.ussdCode);
   }
 
   private requestUsePrivilege(ussdCode: any): void {
