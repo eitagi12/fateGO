@@ -57,8 +57,8 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
     this.apiRequestService.createRequestId();
 
     let commercialName = this.priceOption.productDetail.name;
-    if (this.priceOption.productStock.color) {
-      commercialName += ` สี ${this.priceOption.productStock.color}`;
+    if (this.priceOption.productStock.colorName) {
+      commercialName += ` สี ${this.priceOption.productStock.colorName}`;
     }
     // REFACTOR IT'S
     this.paymentDetail = {
