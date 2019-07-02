@@ -60,7 +60,7 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyPageComponent implement
   }
 
   onReadCard(): void {
-    this.transaction.data.action = TransactionAction.READ_CARD_PI;
+    // this.transaction.data.action = TransactionAction.READ_CARD_PI;
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_IDENTIFY_ID_CARD_PAGE]);
   }
 
@@ -101,7 +101,7 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyPageComponent implement
                 this.transaction.data.order = { soId: resp.data.soId };
                 return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
               }).then(() => {
-                this.transaction.data.action = TransactionAction.KEY_IN;
+                // this.transaction.data.action = TransactionAction.KEY_IN;
                 this.pageLoadingService.closeLoading();
                 this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
               });

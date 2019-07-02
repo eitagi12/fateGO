@@ -150,7 +150,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
       // KEY-IN MobileNo
       this.customerInfoService.getCustomerProfileByMobileNo(this.identity).then((customer: Customer) => {
         this.transaction.data.simCard = { mobileNo: this.identity };
-        this.transaction.data.action = TransactionAction.KEY_IN_PI;
+        this.transaction.data.action = TransactionAction.KEY_IN_MOBILE_NO;
       }).then(() => {
         this.checkRoutePath();
       });
