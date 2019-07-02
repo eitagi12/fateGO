@@ -65,7 +65,6 @@ export class DeviceOrderAisPreToPostSelectPackagePageComponent implements OnInit
 
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-    delete this.transaction.data.mainPackage;
     this.callService();
   }
 
@@ -75,6 +74,7 @@ export class DeviceOrderAisPreToPostSelectPackagePageComponent implements OnInit
   }
 
   onBack(): void {
+    delete this.transaction.data.mainPackage;
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_PAYMENT_DETAIL_PAGE]);
   }
 

@@ -96,6 +96,7 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
   }
 
   onBack(): void {
+    delete this.transaction.data.mainPackage;
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_PAYMENT_DETAIL_PAGE]);
   }
 

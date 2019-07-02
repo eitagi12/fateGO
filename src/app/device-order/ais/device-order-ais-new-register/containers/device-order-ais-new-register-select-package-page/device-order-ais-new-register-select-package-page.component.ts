@@ -65,7 +65,6 @@ export class DeviceOrderAisNewRegisterSelectPackagePageComponent implements OnIn
 
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-    delete this.transaction.data.mainPackage;
     this.callService();
   }
 
@@ -75,6 +74,7 @@ export class DeviceOrderAisNewRegisterSelectPackagePageComponent implements OnIn
   }
 
   onBack(): void {
+    delete this.transaction.data.mainPackage;
     if (this.transaction.data.simCard.simSerial) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VERIFY_INSTANT_SIM_PAGE]);
     } else {
