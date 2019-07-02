@@ -32,6 +32,7 @@ export class DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent implem
   private paymentDetailValid: boolean;
   public customerInfoTemp: any;
   private paymentDetailTemp: any;
+  private addessValid: boolean;
 
   constructor(
     private router: Router,
@@ -180,6 +181,10 @@ export class DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent implem
     this.isReceiptInformationValid = error;
   }
 
+  public onErrorAddessValid(err: boolean): void {
+    this.addessValid = err;
+  }
+
   public onHome(): void {
     this.homeService.goToHome();
   }
@@ -209,7 +214,7 @@ export class DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent implem
   }
 
   public isNotFormValid(): boolean {
-    return !(this.isReceiptInformationValid && this.paymentDetailValid);
+    return !(this.isReceiptInformationValid && this.paymentDetailValid && this.addessValid);
   }
 
   ngOnDestroy(): void {

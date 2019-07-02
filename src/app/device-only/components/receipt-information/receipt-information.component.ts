@@ -23,6 +23,9 @@ export class ReceiptInformationComponent implements OnInit {
   error: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   @Output()
+  errorAddessValid: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+  @Output()
   action: EventEmitter<string> = new EventEmitter<string>();
 
   customerInfo: any;
@@ -306,7 +309,7 @@ export class ReceiptInformationComponent implements OnInit {
   }
 
   onError(valid: boolean): void {
-    this.error.emit(valid);
+    this.errorAddessValid.emit(valid);
   }
 
   private assignProvinceAndZipCode(province: any, zipCode: string): void {
