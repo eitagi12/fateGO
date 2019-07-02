@@ -63,8 +63,8 @@ export class DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent implem
 
   private getProductStock(): void {
     this.commercialName = this.priceOption.productDetail.name;
-    if (this.priceOption.productStock.color) {
-      this.commercialName += ` สี ${this.priceOption.productStock.color}`;
+    if (this.priceOption.productStock.colorName) {
+      this.commercialName += ` สี ${this.priceOption.productStock.colorName}`;
     }
   }
 
