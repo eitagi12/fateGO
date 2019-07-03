@@ -141,7 +141,7 @@ export class DeviceOrderAisMnpEffectiveStartDatePageComponent implements OnInit,
     this.http.get(`/api/customerportal/mobile-detail/${mobileNo}`).toPromise().then((resp: any) => {
       const data: any = resp.data.packageOntop || {};
       const packageOntop: any = data.filter((packageOntopList: any) => {
-        const isexpiredDate: any = moment().isBefore(moment(packageOntopList.endDt, 'DD-MM-YYYY'));
+        const isexpiredDate: any = moment().isBefore(moment(packageOntopList.expiredDate, 'DD-MM-YYYY'));
         return (
           /On-Top/.test(packageOntopList.productClass) && packageOntopList.priceType === 'Recurring' &&
           packageOntopList.priceExclVat > 0 && isexpiredDate

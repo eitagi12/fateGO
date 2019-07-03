@@ -77,7 +77,7 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
 
         const packageOntop = data.filter((packageOntopList: any) => {
           // tslint:disable-next-line:typedef
-          const isexpiredDate = moment().isBefore(moment(packageOntopList.endDt, 'DD-MM-YYYY'));
+          const isexpiredDate = moment().isBefore(moment(packageOntopList.expiredDate, 'DD-MM-YYYY'));
           return (
             /On-Top/.test(packageOntopList.productClass) && packageOntopList.priceType === 'Recurring' &&
             packageOntopList.priceExclVat > 0 && isexpiredDate
