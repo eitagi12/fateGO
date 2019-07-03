@@ -11,6 +11,7 @@ import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import * as moment from 'moment';
 import { ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE } from 'src/app/device-order/ais/device-order-ais-mnp/constants/route-path.constant';
 import { debounceTime } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-device-order-ais-mnp-select-package-ontop-page',
@@ -41,7 +42,8 @@ export class DeviceOrderAisMnpSelectPackageOntopPageComponent implements OnInit,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private modalService: BsModalService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private translateService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
     this.createForm();
@@ -130,8 +132,16 @@ export class DeviceOrderAisMnpSelectPackageOntopPageComponent implements OnInit,
     this.homeService.goToHome();
   }
 
-  onOpenModal(detail: string): void {
-    this.detail = detail || '';
+  packageTitle(value: any = {}): string {
+    return this.translateService.currentLang === 'EN' ? value.titleEng : value.title || '';
+  }
+
+  currentPackageInStatement(value: any = {}): string {
+    return this.translateService.currentLang === 'EN' ? value.inStatementEng : value.inStatementThai || '';
+  }
+
+  onOpenModal(value: any = {}): void {
+    this.detail = this.translateService.currentLang === 'EN' ? value.detailEng : value.detail || '';
     this.modalRef = this.modalService.show(this.detailTemplate, {
       class: 'pt-5 mt-5'
     });

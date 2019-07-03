@@ -15,6 +15,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import * as moment from 'moment';
 import { debounceTime } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-device-order-ais-existing-select-package-ontop-page',
@@ -48,7 +49,8 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private modalService: BsModalService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private translateService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
     this.createForm();
@@ -139,8 +141,16 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
     this.homeService.goToHome();
   }
 
-  onOpenModal(detail: string): void {
-    this.detail = detail;
+  packageTitle(value: any = {}): string {
+    return this.translateService.currentLang === 'EN' ? value.titleEng : value.title || '';
+  }
+
+  currentPackageInStatement(value: any = {}): string {
+    return this.translateService.currentLang === 'EN' ? value.inStatementEng : value.inStatementThai || '';
+  }
+
+  onOpenModal(value: any = {}): void {
+    this.detail = this.translateService.currentLang === 'EN' ? value.detailEng : value.detail || '';
     console.log('this.detail', this.detail);
     this.modalRef = this.modalService.show(this.detailTemplate, {
       class: 'pt-5 mt-5'
