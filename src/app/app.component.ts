@@ -111,6 +111,9 @@ export class AppComponent {
       if (url.indexOf('validate-customer-id-card') !== -1) {
         return counter === 120;
       }
+      if (url.indexOf('device-only/kiosk/select-payment') !== -1) {
+        return counter === 120;
+      }
       return counter === 60;
 
     }).subscribe(() => {
