@@ -13,6 +13,9 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { DecimalPipe } from '@angular/common';
+import { Subscription } from 'rxjs';
+import { CreateEcontractService } from 'src/app/shared/services/create-econtract.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-device-order-ais-new-register-econtact-page',
@@ -28,6 +31,9 @@ export class DeviceOrderAisNewRegisterEcontactPageComponent implements OnInit, O
   eContactSrc: string;
   agreement: boolean;
 
+  translateSubscription: Subscription;
+  currentLang: string;
+
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -39,9 +45,17 @@ export class DeviceOrderAisNewRegisterEcontactPageComponent implements OnInit, O
     private shoppingCartService: ShoppingCartService,
     private idCardPipe: IdCardPipe,
     private decimalPipe: DecimalPipe,
+    private createContractService: CreateEcontractService,
+    private translationService: TranslateService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
+
+    this.currentLang = this.translationService.currentLang || 'TH';
+    this.translateSubscription = this.translationService.onLangChange.subscribe(lang => {
+      this.currentLang = typeof (lang) === 'object' ? lang.lang : lang;
+      this.callService();
+    });
   }
 
   ngOnInit(): void {
@@ -66,86 +80,25 @@ export class DeviceOrderAisNewRegisterEcontactPageComponent implements OnInit, O
     const user = this.tokenService.getUser();
     const campaign: any = this.priceOption.campaign || {};
     const trade: any = this.priceOption.trade || {};
-    const productStock: any = this.priceOption.productStock || {};
-    const customer: any = this.transaction.data.customer || {};
-    const simCard: any = this.transaction.data.simCard || {};
-    const mainPackage: any = this.transaction.data.mainPackage || {};
-    const mobileCarePackage: any = this.transaction.data.mobileCarePackage || {};
-
-    const advancePay: any = trade.advancePay || {};
     this.pageLoadingService.openLoading();
     this.http.post('/api/salesportal/promotion-shelves/promotion/condition', {
       conditionCode: campaign.conditionCode,
       location: user.locationCode
     }).toPromise().then((resp: any) => {
       const condition = resp.data ? resp.data.data || {} : {};
-      const params = {
-        data: {
-          campaignName: campaign.campaignName,
-          locationName: productStock.locationName || '',
-          customerType: '',
-          idCard: this.idCardPipe.transform(customer.idCardNo), // this.transformIDcard(customer.idCardNo),
-          fullName: `${customer.firstName || ''} ${customer.lastName || ''}`,
-          mobileNumber: simCard.mobileNo,
-          imei: simCard.imei || '',
-          brand: productStock.brand,
-          model: productStock.model,
-          color: productStock.color,
-          priceIncludeVat: this.decimalPipe.transform(trade.normalPrice),
-          priceDiscount: this.decimalPipe.transform(trade.discount ? trade.discount.amount : 0),
-          netPrice: this.decimalPipe.transform(trade.promotionPrice),
-          advancePay: this.decimalPipe.transform(advancePay.amount),
-          contract: trade.durationContract,
-          packageDetail: mainPackage.detailTH,
-          airTimeDiscount: this.getAirTimeDiscount(advancePay.amount, advancePay.promotions),
-          airTimeMonth: this.getAirTimeMonth(advancePay.promotions),
-          price: this.decimalPipe.transform(+trade.promotionPrice + (+advancePay.amount)),
-          signature: '',
-          mobileCarePackageTitle: mobileCarePackage.title ? `พร้อมใช้บริการ ${mobileCarePackage.title}` : '',
-          condition: condition.conditionText,
-
-        },
-        docType: 'ECONTRACT',
-        location: user.locationCode
-      };
-
-      if (condition.conditionCode) {
-        this.transaction.data.contract = {
-          conditionCode: condition.conditionCode
-        };
-      }
-
-      return this.http.post('/api/salesportal/generate-e-document', params).toPromise().then((eDocResp: any) => {
-        this.eContactSrc = eDocResp.data || '';
+      return this.createContractService.createEContractV2(this.transaction, this.priceOption, condition, this.currentLang)
+      .then((eDocResp: any) => {
+        return eDocResp.data || '';
       });
     })
+      .then((eContact: string) => this.eContactSrc = eContact)
       .then(() => this.pageLoadingService.closeLoading());
   }
 
-  getAirTimeDiscount(amount: number, advancePayPromotions: any): number {
-    if (!advancePayPromotions) {
-      return 0;
-    }
-
-    if (Array.isArray(advancePayPromotions)) {
-      return advancePayPromotions.length > 0 ? amount / advancePayPromotions[0].month : 0;
-    } else {
-      return amount / advancePayPromotions.month;
-    }
-  }
-
-  getAirTimeMonth(advancePayPromotions: any): number {
-    if (!advancePayPromotions) {
-      return 0;
-    }
-
-    if (Array.isArray(advancePayPromotions) && advancePayPromotions.length > 0) {
-      return advancePayPromotions[0].month;
-    }
-    return 0;
-  }
-
   ngOnDestroy(): void {
+    if (this.translateSubscription) {
+      this.translateSubscription.unsubscribe();
+    }
     this.transactionService.update(this.transaction);
   }
 

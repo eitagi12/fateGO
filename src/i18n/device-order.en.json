@@ -217,7 +217,6 @@
     "ชื่อ/รหัสผ่าน ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง": "You have entered incorrect user name/ password. Please try again",
     "ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน": "Smartcard reader cannot read information from your ID card. Please contact our staff.",
     "ดึงบัตรประชาชนออก": "Remove your ID card",
-    "ข้อมูลปัจจุบันของคุณ": "Customer information",
     "ลูกค้าย้ายค่าย": "Port in",
     "จำนวน": "Amount",
     "เบอร์": "number(s)",
@@ -356,5 +355,7 @@
     "มีลูกค้าท่านอื่นจองไว้แล้ว กรุณาเลือกเบอร์ใหม่": "มีลูกค้าท่านอื่นจองไว้แล้ว กรุณาเลือกเบอร์ใหม่",
     "ไม่สามารถเซ็นลายเซ็นได้ กรุณาติดต่อ 02-029-6303": "ไม่สามารถเซ็นลายเซ็นได้ กรุณาติดต่อ 02-029-6303",
     "หมายเหตุ : กรณีมีการสมัคร Mobile care ที่เครื่องใหม่ การรับประกันที่เครื่องเดิมจะสิ้นสุด": "หมายเหตุ : กรณีมีการสมัคร Mobile care ที่เครื่องใหม่ การรับประกันที่เครื่องเดิมจะสิ้นสุด_ZZ",
-    "กรุณาตรวจสอบยอดเงินคงเหลือผ่าน *121# โทรออก โดยยอดเงินคงเหลือของท่านจะถูกโอนเป็นค่าโทรที่ระบบรายเดือนให้โดยอัตโนมัติ": "Please check your balance by press *121# dial. The balance from your 1st  wallet will be transferred to your postpaid account automatically; However, the remaining balance of your 2nd  wallet cannot be transferred, please use it before starting this transaction."
+    "กรุณาตรวจสอบยอดเงินคงเหลือผ่าน *121# โทรออก โดยยอดเงินคงเหลือของท่านจะถูกโอนเป็นค่าโทรที่ระบบรายเดือนให้โดยอัตโนมัติ": "Please check your balance by press *121# dial. The balance from your 1st  wallet will be transferred to your postpaid account automatically; However, the remaining balance of your 2nd  wallet cannot be transferred, please use it before starting this transaction.",
+    "ข้อมูลปัจจุบันของคุณ":	"Customer information",
+    "สาขาเซ็นทรัล ภูเก็ต ฟลอเรสต้า" : "Central Phuket Floresta Branch"
 }

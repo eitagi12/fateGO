@@ -31,6 +31,8 @@ import { DeviceOrderAisExistingNonPackagePageComponent } from './containers/devi
 import { DeviceOrderAisExistingAggregatePageComponent } from './containers/device-order-ais-existing-aggregate-page/device-order-ais-existing-aggregate-page.component';
 import { DeviceOrderAisExistingSelectPackageOntopPageComponent } from './containers/device-order-ais-existing-select-package-ontop-page/device-order-ais-existing-select-package-ontop-page.component';
 import { DeviceOrderAisExistingQrCodeResultPageComponent } from './containers/device-order-ais-existing-qr-code-result-page/device-order-ais-existing-qr-code-result-page.component';
+import { TranslateModule } from '@ngx-translate/core';
+
 @NgModule({
   imports: [
     CommonModule,
