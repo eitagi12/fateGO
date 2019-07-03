@@ -218,10 +218,12 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
       const idCardType = this.transaction.data.customer.idCardType;
 
       if (this.utils.isLowerAge17Year(birthdate)) {
-        return reject(`ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี`);
+        return reject(this.translateService.instant(`ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี`));
       }
       if (this.utils.isIdCardExpiredDate(expireDate)) {
-        return reject(`ไม่สามารถทำรายการได้ เนื่องจาก ${idCardType} หมดอายุ`);
+        return reject(
+          `${this.translateService.instant('ไม่สามารถทำรายการได้ เนื่องจาก')} ${idCardType} ${this.translateService.instant('หมดอายุ')}`
+          );
       }
       resovle(null);
     });
@@ -292,11 +294,13 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
     const idCardType = this.transaction.data.customer.idCardType;
 
     if (this.utils.isLowerAge17Year(birthdate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
+      this.alertService.error(this.translateService.instant('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี'));
       return false;
     }
     if (this.utils.isIdCardExpiredDate(expireDate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ');
+      this.alertService.error(
+        this.translateService.instant('ไม่สามารถทำรายการได้ เนื่องจาก') + idCardType + this.translateService.instant('หมดอายุ')
+        );
       return false;
     }
     return true;
