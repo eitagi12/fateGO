@@ -201,7 +201,7 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
         if (resp.data.zipcodes && resp.data.zipcodes.length > 0) {
           return resp.data.zipcodes[0];
         } else {
-          return Promise.reject('ไม่พบรหัสไปรษณีย์');
+          return Promise.reject(this.translateService.instant('ไม่พบรหัสไปรษณีย์'));
         }
       });
   }
@@ -214,10 +214,12 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
       const idCardType = this.transaction.data.customer.idCardType;
 
       if (this.utils.isLowerAge17Year(birthdate)) {
-        return reject(`ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี`);
+        return reject(this.translateService.instant(`ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี`));
       }
       if (this.utils.isIdCardExpiredDate(expireDate)) {
-        return reject(`ไม่สามารถทำรายการได้ เนื่องจาก ${idCardType} หมดอายุ`);
+        return reject(
+          `${this.translateService.instant('ไม่สามารถทำรายการได้ เนื่องจาก')} ${idCardType} ${this.translateService.instant('หมดอายุ')}`
+          );
       }
       resovle(null);
     });

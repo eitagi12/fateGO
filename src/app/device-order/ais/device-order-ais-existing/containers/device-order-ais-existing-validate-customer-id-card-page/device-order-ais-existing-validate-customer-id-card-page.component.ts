@@ -57,7 +57,7 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
       if (url.indexOf('result') !== -1) {
         this.homeHandler();
       } else {
-        this.alertService.question('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่')
+        this.alertService.question(this.translateService.instant('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่'))
           .then((data: any) => {
             if (!data.value) {
               return false;
@@ -122,7 +122,7 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
   }
 
   onBack(): void {
-    this.alertService.question('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่')
+    this.alertService.question(this.translateService.instant('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่'))
       .then((data: any) => {
         if (!data.value) {
           return false;

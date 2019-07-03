@@ -40,11 +40,11 @@ export class DeviceOrderAisMnpValidateCustomerIdCardPageComponent implements OnI
     private transactionService: TransactionService,
     private sharedTransactionService: SharedTransactionService,
     private pageLoadingService: PageLoadingService,
+    private translateService: TranslateService,
     private http: HttpClient,
     private tokenService: TokenService,
     private utils: Utils,
-    private alertService: AlertService,
-    private translateService: TranslateService
+    private alertService: AlertService
   ) {
     this.user = this.tokenService.getUser();
     this.priceOption = this.priceOptionService.load();
@@ -105,7 +105,8 @@ export class DeviceOrderAisMnpValidateCustomerIdCardPageComponent implements OnI
   onError(valid: boolean): void {
     this.readCardValid = valid;
     if (!this.profile) {
-      this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน').then(() => this.onBack());
+      this.alertService.error(this.translateService.instant('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน'))
+      .then(() => this.onBack());
     }
   }
 
@@ -121,7 +122,7 @@ export class DeviceOrderAisMnpValidateCustomerIdCardPageComponent implements OnI
   }
 
   onBack(): void {
-    this.alertService.question('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่')
+    this.alertService.question(this.translateService.instant('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่'))
       .then((data: any) => {
         if (!data.value) {
           return false;
@@ -226,7 +227,7 @@ export class DeviceOrderAisMnpValidateCustomerIdCardPageComponent implements OnI
         if (resp.data.zipcodes && resp.data.zipcodes.length > 0) {
           return resp.data.zipcodes[0];
         } else {
-          return Promise.reject('ไม่พบรหัสไปรษณีย์');
+          return Promise.reject(this.translateService.instant('ไม่พบรหัสไปรษณีย์'));
         }
       });
   }
@@ -239,10 +240,12 @@ export class DeviceOrderAisMnpValidateCustomerIdCardPageComponent implements OnI
       const idCardType = this.transaction.data.customer.idCardType;
 
       if (this.utils.isLowerAge17Year(birthdate)) {
-        return reject(`ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี`);
+        return reject(this.translateService.instant(`ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี`));
       }
       if (this.utils.isIdCardExpiredDate(expireDate)) {
-        return reject(`ไม่สามารถทำรายการได้ เนื่องจาก ${idCardType} หมดอายุ`);
+        return reject(
+          `${this.translateService.instant('ไม่สามารถทำรายการได้ เนื่องจาก')} ${idCardType} ${this.translateService.instant('หมดอายุ')}`
+          );
       }
       resovle(null);
     });

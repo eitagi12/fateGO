@@ -31,6 +31,8 @@
     "แพ็กเกจเริ่มต้น": "Package starts from",
     "ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี": "Transaction can not be processed, This service is valid for customer age  17 years old and above.",
     "ไม่สามารถทำรายการได้ เนื่องจากบัตรประชาชนหมดอายุ": "Transaction can not be processed, this ID Card is expired.",
+    "ไม่สามารถทำรายการได้ เนื่องจาก": "Transaction can not be processed, this",
+    "หมดอายุ": "is expired.",
     "บาท": "Baht",
     "สัญญาการใช้บริการสูงสุด": "Service contract up to",
     "รายละเอียดโครงการ": "Promotion detail",
@@ -355,6 +357,7 @@
     "กรุณาเปลี่ยนเบอร์ใหม่ เพื่อรับสิทธิ์ซื้อเครื่องราคาพิเศษ": "กรุณาเปลี่ยนเบอร์ใหม่ เพื่อรับสิทธิ์ซื้อเครื่องราคาพิเศษ",
     "มีลูกค้าท่านอื่นจองไว้แล้ว กรุณาเลือกเบอร์ใหม่": "มีลูกค้าท่านอื่นจองไว้แล้ว กรุณาเลือกเบอร์ใหม่",
     "ไม่สามารถเซ็นลายเซ็นได้ กรุณาติดต่อ 02-029-6303": "ไม่สามารถเซ็นลายเซ็นได้ กรุณาติดต่อ 02-029-6303",
+    "ไม่พบรหัสไปรษณีย์": "ไม่พบรหัสไปรษณีย์",
     "หมายเหตุ : กรณีมีการสมัคร Mobile care ที่เครื่องใหม่ การรับประกันที่เครื่องเดิมจะสิ้นสุด": "หมายเหตุ : กรณีมีการสมัคร Mobile care ที่เครื่องใหม่ การรับประกันที่เครื่องเดิมจะสิ้นสุด_ZZ",
     "กรุณาตรวจสอบยอดเงินคงเหลือผ่าน *121# โทรออก โดยยอดเงินคงเหลือของท่านจะถูกโอนเป็นค่าโทรที่ระบบรายเดือนให้โดยอัตโนมัติ": "Please check your balance by press *121# dial. The balance from your 1st  wallet will be transferred to your postpaid account automatically; However, the remaining balance of your 2nd  wallet cannot be transferred, please use it before starting this transaction."
 }
