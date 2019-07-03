@@ -4,7 +4,7 @@
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
     <div class="header-icon-right">
-      <!-- <mc-dropdown-language></mc-dropdown-language> -->
+      <mc-dropdown-language></mc-dropdown-language>
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
@@ -14,7 +14,7 @@
     <div class="container-fluid">
       <div class="container-fluid">
         <div class="card-header bg-white col-12">
-          <h5> Package: <span class="text-green"> {{ transaction?.data?.mainPackage?.title }}</span></h5>
+          <h5> Package: <span class="text-green" > {{ mainPackageTitle(transaction?.data?.mainPackage?.customAttributes) }}</span></h5>
         </div>
       </div>
       <div class="container-fluid">
@@ -32,16 +32,16 @@
                     <div class="col-12">
                       <input type="radio" autocomplete="off" id="bill_{{ i+1 }}" [value]="billCycle"
                         [checked]="checked(billCycle?.value)" formControlName="bill">
-                      <label for="bill_{{ i+1 }}">{{  billCycle?.textBill }}</label>
+                      <label for="bill_{{ i+1 }}">{{  billCycle?.textBill | translate}}</label>
                       <div>
                         <span *ngIf="billCycle?.value === 'B'"
-                          class="text-bill-cycle text-grey">{{  billCycle?.textDate }} <span class="text-green">
+                          class="text-bill-cycle text-grey">{{  billCycle?.textDate | translate}} <span class="text-green">
                             {{ billCycleNextBill$  | async }} </span></span>
                         <span *ngIf="billCycle?.value === 'D'"
-                          class="text-bill-cycle text-grey">{{  billCycle?.textDate }} <span class="text-green">
+                          class="text-bill-cycle text-grey">{{  billCycle?.textDate | translate}} <span class="text-green">
                             {{ billCycleNextDay$  | async }} </span></span>
                         <span *ngIf="billCycle?.value === 'I'"
-                          class="text-bill-cycle text-grey">{{  billCycle?.textDate }} <span class="text-green">
+                          class="text-bill-cycle text-grey">{{  billCycle?.textDate | translate}}<span class="text-green">
                             {{'หลังจากได้รับ SMS ยืนยัน'| translate}}</span> </span>
                       </div>
                       <hr>

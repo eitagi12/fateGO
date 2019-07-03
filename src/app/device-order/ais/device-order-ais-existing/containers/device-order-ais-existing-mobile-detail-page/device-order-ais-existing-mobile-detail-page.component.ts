@@ -12,6 +12,8 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { Transaction, BillingAccount } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-device-order-ais-existing-mobile-detail-page',
@@ -26,6 +28,7 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
   shoppingCart: ShoppingCart;
   disableNextButton: boolean;
   priceOption: PriceOption;
+  translateSubscription: Subscription;
 
   constructor(
     private router: Router,
@@ -36,6 +39,7 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
     private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,
     private priceOptionService: PriceOptionService,
+    private translateService: TranslateService
   ) {
       this.priceOption = this.priceOptionService.load();
       this.transaction = this.transactionService.load();
@@ -55,6 +59,12 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
     .then(this.mappingMobileDetailAndCallQueryBillingAccountService(mobileNo, idCardNo))
     .then(this.mappingMobileBillAccountAndIsAirtimeAndCheckWarning(mobileNo))
     .catch(this.ErrorMessage());
+  }
+
+  ErrorMessage(): (reason: any) => void | PromiseLike<void> {
+    return (err: any) => {
+      this.handleErrorMessage(err);
+    };
   }
 
   mappingMobileBillAccountAndIsAirtimeAndCheckWarning(mobileNo: string): (value: Object) => void | PromiseLike<void> {
@@ -78,12 +88,6 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
     };
   }
 
-  ErrorMessage(): (reason: any) => void | PromiseLike<void> {
-    return (err: any) => {
-      this.handleErrorMessage(err);
-    };
-  }
-
   mappingMobileDetail(response: any, mobileNo: string): void {
     const mobileDetail = response.data || {};
     const serviceYear = mobileDetail.serviceYear;
@@ -92,17 +96,24 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
     this.transaction.data.simCard.chargeType = mobileDetail.chargeType;
     this.transaction.data.simCard.billingSystem = mobileDetail.billingSystem;
     this.transaction.data.currentPackage = mobileDetail.package;
+
+    this.translateSubscription = this.translateService.onLangChange
+    .subscribe(() => this.mobileInfo = this.mappingMobileInfo(mobileNo, mobileDetail, serviceYear));
   }
 
-  mappingMobileInfo(mobileNo: string, mobileDetail: any, serviceYear: any): MobileInfo {
+  mappingMobileInfo(mobileNo: string, mobileDetail: any, serviceYear: any): any {
     return {
       mobileNo: mobileNo,
       chargeType: this.mapChargeType(mobileDetail.chargeType),
       status: mobileDetail.mobileStatus,
       sagment: mobileDetail.mobileSegment,
       serviceYear: this.serviceYearWording(serviceYear.year, serviceYear.month, serviceYear.day),
-      mainPackage: mobileDetail.packageTitle
+      mainPackage: this.changeMainPackageLangauge(mobileDetail.package)
     };
+  }
+
+  changeMainPackageLangauge(mobileDetail: any = {}): string {
+    return (this.translateService.currentLang === 'EN') ? mobileDetail.titleEng : mobileDetail.title;
   }
 
   handleErrorMessage(err: any): void {
@@ -142,34 +153,38 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
 
   checkWarningBillingAccountMessage(mobileBillAccount: string[], isAirtime: boolean): void {
     if (mobileBillAccount && mobileBillAccount.length > 1 && isAirtime) {
-      this.alertService.warning('หมายเลขนี้มีการรวมบิล ไม่สามารถทำรายการได้')
+      this.alertService.warning(this.translateService.instant('หมายเลขนี้มีการรวมบิล ไม่สามารถทำรายการได้'))
       .then(() => this.onBack());
     }
   }
 
-  mapChargeType(chargeType: string): 'รายเดือน' | 'เติมเงิน' {
+  mapChargeType(chargeType: string): any {
     if ('Post-paid' === chargeType) {
-      return 'รายเดือน';
+      return this.isEngLanguage() ? 'Postpaid' : 'รายเดือน';
     } else {
-      return 'เติมเงิน';
+      return this.isEngLanguage() ? 'Prepaid' : 'เติมเงิน';
     }
   }
 
   serviceYearWording(year: string, month: string, day: string): string {
     let serviceYearWording = '';
     if (year) {
-      serviceYearWording = `${year || ''} ปี `;
+      serviceYearWording = this.isEngLanguage() ? `${year || ''} year ` : `${year || ''} ปี `;
     }
 
     if (month) {
-      serviceYearWording += `${month} เดือน `;
+      serviceYearWording += this.isEngLanguage() ? `${month} month ` : `${month} เดือน `;
     }
 
     if (day) {
-      serviceYearWording += `${day} วัน`;
+      serviceYearWording += this.isEngLanguage() ? `${day} day` : `${month} วัน`;
     }
 
     return serviceYearWording;
+  }
+
+  isEngLanguage(): boolean {
+    return this.translateService.currentLang === 'EN';
   }
 
   onBack(): void {
@@ -185,6 +200,9 @@ export class DeviceOrderAisExistingMobileDetailPageComponent implements OnInit, 
   }
 
   ngOnDestroy(): void {
+    if (this.translateSubscription) {
+      this.translateSubscription.unsubscribe();
+    }
     this.transactionService.update(this.transaction);
   }
 

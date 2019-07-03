@@ -5,6 +5,7 @@ import { FormGroup } from '@angular/forms';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { environment } from 'src/environments/environment';
+import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
 
 @Component({
   selector: 'app-device-order-ais-new-register-qr-code-result-page',
@@ -20,6 +21,7 @@ export class DeviceOrderAisNewRegisterQrCodeResultPageComponent implements OnIni
   constructor(
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
+    public summaryPageService: SummaryPageService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();

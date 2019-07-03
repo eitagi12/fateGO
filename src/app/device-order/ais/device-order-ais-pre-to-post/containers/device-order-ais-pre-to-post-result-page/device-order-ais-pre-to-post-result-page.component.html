@@ -1,14 +1,14 @@
 <div class="mc-flex">
-  <mc-header title="เครื่องพร้อมเปลี่ยนเป็นรายเดือน"></mc-header>
+  <mc-header title="{{'เครื่องพร้อมเปลี่ยนเป็นรายเดือน' | translate}}"></mc-header>
   <div class="mc-flex-wrap bg-white">
     <div class="my-3">
       <div class="container-fluid">
         <mc-result [success]="isSuccess" [mobileNo]="transaction?.data?.simCard?.mobileNo">
           <div>
-            <div class="container text-center text-green mb-5 message-status">
+            <div class="container text-center text-green mb-5 message-status" translate>
               รายการสั่งซื้อของท่านได้เข้าสู่ระบบเรียบร้อยแล้ว
             </div>
-            <div class="text-black">
+            <div class="text-black" translate>
               หมายเลขสั่งซื้อในการชำระสินค้าของท่านคือ
             </div>
             <div class="text-center mb-3">

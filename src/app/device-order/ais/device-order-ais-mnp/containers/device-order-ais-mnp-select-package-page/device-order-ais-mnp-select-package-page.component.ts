@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction, ExistingMobileCare } from 'src/app/shared/models/transaction.model';
-import { PromotionShelve, ShoppingCart, HomeService, PageLoadingService, BillingSystemType, AlertService, PromotionShelveGroup } from 'mychannel-shared-libs';
+import { PromotionShelve, ShoppingCart, HomeService, PageLoadingService, BillingSystemType, AlertService, PromotionShelveGroup, I18nService } from 'mychannel-shared-libs';
 import { BsModalRef } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -11,6 +11,12 @@ import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart
 import { PromotionShelveService } from 'src/app/device-order/services/promotion-shelve.service';
 import { HttpClient } from '@angular/common/http';
 import { ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_NEW_BILLING_ACCOUNT_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE } from '../../constants/route-path.constant';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
+import { promise } from 'protractor';
+import { resolve } from 'path';
+import { reject } from 'q';
+import { LocalStorageService } from 'ngx-store';
 
 @Component({
   selector: 'app-device-order-ais-mnp-select-package-page',
@@ -31,6 +37,8 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
   modalRef: BsModalRef;
   shoppingCart: ShoppingCart;
 
+  translateSubscription: Subscription;
+
   constructor(
     private router: Router,
     private http: HttpClient,
@@ -39,7 +47,8 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
     private shoppingCartService: ShoppingCartService,
-    private promotionShelveService: PromotionShelveService
+    private promotionShelveService: PromotionShelveService,
+    private translateService: TranslateService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -50,6 +59,12 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
       delete this.transaction.data.billingInformation.billCycle;
       delete this.transaction.data.billingInformation.mergeBilling;
     }
+
+    this.translateSubscription = this.translateService.onLangChange.subscribe((lang: any) => {
+      if (this.promotionShelves) {
+        this.checkTranslateLang(lang);
+      }
+    });
   }
 
   get advancePay(): boolean {
@@ -76,7 +91,12 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
     this.transaction.data.mainPackage = promotion;
   }
 
+  onCondition(con: any): void {
+    console.log('condition55', con);
+  }
+
   onBack(): void {
+    delete this.transaction.data.mainPackage;
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_PAYMENT_DETAIL_PAGE]);
   }
 
@@ -119,11 +139,65 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
       +privilege.minimumPackagePrice, +privilege.maximumPackagePrice)
       .then((promotionShelves: any) => {
         this.promotionShelves = this.promotionShelveService.defaultBySelected(promotionShelves, this.transaction.data.mainPackage);
+        console.log('promotionShelves', promotionShelves);
+        if (this.promotionShelves) {
+          this.checkTranslateLang(this.translateService.currentLang);
+        }
       })
       .then(() => this.pageLoadingService.closeLoading());
   }
 
+  checkTranslateLang(lang: any): void {
+    this.mapKeyTranslateSelectPackageTitle(this.promotionShelves).then(translateKey => {
+      if (lang === 'EN' || lang.lang === 'EN' || lang === 'en' || lang.lang === 'en') {
+        if (translateKey && lang && lang.translations) {
+          const merge = { ...translateKey, ...lang.translations } || {};
+          this.translateService.setTranslation('EN', merge);
+        } else {
+          this.getTranslateLoader('device-order', 'EN').then(resp => {
+            const merge = { ...translateKey, ...resp } || {};
+            this.translateService.setTranslation('EN', merge);
+          });
+        }
+      }
+    });
+
+  }
+
+  mapKeyTranslateSelectPackageTitle(promotionShelves: PromotionShelve[]): Promise<any> {
+    const map = new Map();
+    const TranslateKey = {};
+    promotionShelves.filter(promotionShelve => {
+      promotionShelve.promotions.map(key => key.items.map(item => {
+        let replaceTitle = item.title.replace('บ.', '฿');
+        replaceTitle = replaceTitle.replace('บาท', '฿');
+        replaceTitle = replaceTitle.replace('แพ็กเกจ', 'Package');
+        map.set([item.title.trim()], replaceTitle.trim() || item.title.trim());
+      }));
+    });
+    map.forEach((value: any, key: any) => {
+      TranslateKey[key] = value;
+    });
+    if (TranslateKey) {
+      return Promise.resolve(TranslateKey);
+    } else {
+      return Promise.resolve(null);
+    }
+  }
+
+  getTranslateLoader(moduleName: string, lang: string): Promise<any> {
+    if (!moduleName || !lang) {
+      return;
+    }
+    const fileLang = `i18n/${moduleName}.${lang}.json`.toLowerCase();
+    return this.http.get(fileLang).toPromise();
+  }
+
   ngOnDestroy(): void {
+    if (this.translateSubscription) {
+      this.translateSubscription.unsubscribe();
+    }
     this.transactionService.update(this.transaction);
+    console.log('condition', this.condition);
   }
 }

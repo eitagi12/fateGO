@@ -8,6 +8,7 @@ import { BestSeller } from 'mychannel-shared-libs/lib/service/models/best-seller
 import { BrandsOfProduct } from 'mychannel-shared-libs/lib/service/models/brands-of-product';
 import { ROUTE_DEASHBOARD_PROMOTION_PAGE } from 'src/app/dashboard/constants/route-path.constant';
 import { ROUTE_BUY_PRODUCT_PRODUCT_PAGE } from 'src/app/buy-product/constants/route-path.constant';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-brand',
@@ -34,7 +35,8 @@ export class BrandPageComponent implements OnInit {
     private salesService: SalesService,
     private tokenService: TokenService,
     private alertService: AlertService,
-    private homeService: HomeService
+    private homeService: HomeService,
+    private translateService: TranslateService
   ) { }
 
   ngOnInit(): void {
@@ -84,7 +86,7 @@ export class BrandPageComponent implements OnInit {
 
   onSearch(): void {
     if (!this.productSearch) {
-      this.alertService.warning('ไม่มีข้อมูลที่ต้องการค้นหา');
+      this.alertService.warning(this.translateService.instant('ไม่มีข้อมูลที่ต้องการค้นหา'));
       return;
     }
 

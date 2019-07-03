@@ -11,6 +11,7 @@ import { SharedTransactionService } from 'src/app/shared/services/shared-transac
 import { ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_RESULT_PAGE, ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_QR_CODE_RESULT_PAGE } from '../../constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
 import { CreateDeviceOrderAisExistingPrepaidHotdealService } from '../../service/create-device-order-ais-existing-prepaid-hotdeal.service';
+import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-prepaid-hotdeal-qr-code-queue-page',
@@ -32,6 +33,7 @@ export class DeviceOrderAisExistingPrepaidHotdealQrCodeQueuePageComponent implem
     private http: HttpClient,
     private queuePageService: QueuePageService,
     private sharedTransactionService: SharedTransactionService,
+    public summaryPageService: SummaryPageService,
     private createDeviceOrderPrepaidHotdealService: CreateDeviceOrderAisExistingPrepaidHotdealService
   ) {
     this.transaction = this.transactionService.load();

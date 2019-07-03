@@ -195,6 +195,9 @@ export class DeviceOrderAisNewRegisterEbillingAddressPageComponent implements On
   }
 
   ngOnDestroy(): void {
+    if (this.translationSubscribe) {
+      this.translationSubscribe.unsubscribe();
+    }
     this.transactionService.update(this.transaction);
   }
 

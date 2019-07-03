@@ -10,6 +10,7 @@ import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from 'src/app/buy-product/constants/r
 import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE } from '../../constants/route-path.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
+import { TranslateService } from '@ngx-translate/core';
 
 declare var swal: any;
 
@@ -43,7 +44,8 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
     private http: HttpClient,
     private tokenService: TokenService,
     private utils: Utils,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private translateService: TranslateService
   ) {
     this.user = this.tokenService.getUser();
     this.priceOption = this.priceOptionService.load();
@@ -53,7 +55,7 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
       if (url.indexOf('result') !== -1) {
         this.homeHandler();
       } else {
-        this.alertService.question('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่')
+        this.alertService.question(this.translateService.instant('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่'))
           .then((data: any) => {
             if (!data.value) {
               return false;
@@ -176,7 +178,7 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
 
           return this.conditionIdentityValid()
             .catch((msg: string) => {
-              return this.alertService.error(msg).then(() => true);
+              return this.alertService.error(this.translateService.instant(msg)).then(() => true);
             })
             .then((isError: boolean) => {
               if (isError) {

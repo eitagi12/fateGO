@@ -12,6 +12,7 @@ import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.c
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { HttpClient } from '@angular/common/http';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { TranslateService } from '@ngx-translate/core';
 export interface IPackage {
   title: string;
   detail: string;
@@ -44,7 +45,8 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
     private alertService: AlertService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private modalService: BsModalService
+    private modalService: BsModalService,
+    private translateService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -76,7 +78,7 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
     const error = err.error || {};
     const developerMessage = (error.errors || {}).developerMessage;
     this.alertService.error((developerMessage && error.resultDescription)
-      ? `${developerMessage} ${error.resultDescription}` : `ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้`);
+      ? `${developerMessage} ${error.resultDescription}` : this.translateService.instant(`ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้`));
   }
 
   onBack(): void {

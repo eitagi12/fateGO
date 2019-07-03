@@ -110,7 +110,9 @@ export class DeviceOrderAisNewRegisterVerifyInstantSimPageComponent implements O
   }
 
   ngOnDestroy(): void {
-    this.translationSubscribe.unsubscribe();
+    if (this.translationSubscribe) {
+      this.translationSubscribe.unsubscribe();
+    }
     this.transactionService.update(this.transaction);
   }
 }

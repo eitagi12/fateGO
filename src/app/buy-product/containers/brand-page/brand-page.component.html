@@ -1,9 +1,10 @@
 <div class="mc-flex">
-  <mc-header title="เครื่อง">
+  <mc-header title="{{'เครื่อง'| translate}}">
     <div class="header-icon-left">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
     <div class="header-icon-right">
+      <mc-dropdown-language></mc-dropdown-language>
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
@@ -11,7 +12,7 @@
     <tabset [justified]="true" #brandTabs>
       <tab (select)="onTabSelected('brand')">
         <ng-template tabHeading>
-          <span>ยี่ห้อ</span>
+          <span>{{'ยี่ห้อ' | translate}}</span>
         </ng-template>
 
         <!-- banner slide -->
@@ -33,7 +34,7 @@
 
       <tab (select)="onTabSelected('search')">
         <ng-template tabHeading>
-          <span>ค้นหา</span>
+          <span>{{'ค้นหา' | translate}}</span>
         </ng-template>
 
         <div class="container mt-3">
@@ -46,9 +47,9 @@
 
           <div class="text-center">
             <button (click)="onClearSearch()" class="ml-2 mr-2 pl-5 pr-5 btn btn-secondary">
-              ยกเลิก</button>
+              {{'ยกเลิก' | translate}}</button>
             <button (click)="onSearch()" class="ml-2 mr-2 pl-5 pr-5 btn bg-success">
-              <i class="fa fa-search"></i> ค้นหา</button>
+              <i class="fa fa-search"></i> {{'ค้นหา' | translate}}</button>
           </div>
         </div>
       </tab>

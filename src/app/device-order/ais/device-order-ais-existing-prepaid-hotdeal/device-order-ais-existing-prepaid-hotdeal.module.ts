@@ -25,6 +25,7 @@ import { DeviceOrderAisExistingPrepaidHotdealQrCodeGeneratorPageComponent } from
 import { DeviceOrderAisExistingPrepaidHotdealQrCodeQueueSummaryPageComponent } from './containers/device-order-ais-existing-prepaid-hotdeal-qr-code-queue-summary-page/device-order-ais-existing-prepaid-hotdeal-qr-code-queue-summary-page.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { DeviceOrderAisExistingPrepaidHotdealQrCodeResultPageComponent } from './containers/device-order-ais-existing-prepaid-hotdeal-qr-code-result-page/device-order-ais-existing-prepaid-hotdeal-qr-code-result-page.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -32,7 +33,8 @@ import { DeviceOrderAisExistingPrepaidHotdealQrCodeResultPageComponent } from '.
     DeviceOrderAisExistingPrepaidHotdealRoutingModule,
     MyChannelSharedLibsModule,
     FormsModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    TranslateModule
   ],
   declarations: [
     DeviceOrderAisExistingPrepaidHotdealValidateCustomerIdCardPageComponent,

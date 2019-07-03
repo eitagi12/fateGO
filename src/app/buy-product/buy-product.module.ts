@@ -12,6 +12,7 @@ import { BrandPageComponent } from './containers/brand-page/brand-page.component
 import { CampaignPageComponent } from './containers/campaign-page/campaign-page.component';
 import { ProductPageComponent } from './containers/product-page/product-page.component';
 import { PrivilegeToTradeSliderPipe } from './pipes/privilege-to-trade-slider.pipe';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -21,7 +22,8 @@ import { PrivilegeToTradeSliderPipe } from './pipes/privilege-to-trade-slider.pi
     MyChannelSharedLibsModule,
     BuyProductRoutingModule,
     TypeaheadModule.forRoot(),
-    TabsModule.forRoot()
+    TabsModule.forRoot(),
+    TranslateModule,
   ],
   declarations: [
     BrandPageComponent,

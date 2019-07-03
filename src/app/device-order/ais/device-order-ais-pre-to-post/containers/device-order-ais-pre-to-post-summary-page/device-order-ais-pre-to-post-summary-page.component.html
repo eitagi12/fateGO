@@ -4,7 +4,7 @@
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
     <div class="header-icon-right">
-      <!-- <mc-dropdown-language></mc-dropdown-language> -->
+      <mc-dropdown-language></mc-dropdown-language>
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
@@ -22,10 +22,10 @@
                 <i class="fa fa-circle mr-3 text-green"></i>
                 {{ priceOption?.productDetail?.name }}
                 <span *ngIf="priceOption?.productStock?.color">
-                  สี {{ priceOption?.productStock?.color }}
+                  {{'สี' | translate}} {{ priceOption?.productStock?.color }}
                 </span>
                 <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
-                  (แถมซิม)
+                  ({{'แถมซิม' | translate}})
                 </span>
                 <span class="pull-right text-green">
                   ฿ {{ priceOption?.trade?.promotionPrice | number }}
@@ -33,7 +33,7 @@
               </p>
               <p *ngIf="priceOption?.trade?.advancePay?.amount > 0">
                 <i class="fa fa-circle mr-3 text-green"></i>
-                {{ priceOption?.trade?.advancePay?.description }}
+                {{ summaryPageService.advanpayDescription(priceOption?.trade?.advancePay?.description) }}
                 <span class="pull-right text-green">
                   ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
                 </span>
@@ -41,7 +41,7 @@
             </div>
           </div>
           <div class="card-footer bg-transparent text-right">
-              {{ 'รวมยอดชำระ(รวม VAT)' | translate }}
+              {{ 'รวมยอดชำระ (รวม VAT)' | translate }}
             <span class="text-green ml-2">
               ฿ {{ summary([
               +priceOption?.trade?.promotionPrice,
@@ -56,8 +56,8 @@
           <div class="card-body">
             <p>
               <i class="fa fa-circle mr-3 text-green"></i>
-              {{ transaction?.data?.mainPackage?.title }}
-              <span class="pull-right" (click)="onOpenDetail(transaction?.data?.mainPackage?.detailTH)">
+              {{mainPackageTitle(transaction?.data?.mainPackage?.customAttributes)}}
+              <span class="pull-right" (click)="onOpenDetail(transaction?.data?.mainPackage)">
                 <img src="assets/images/icon/icon-page.png" class="icon" />
               </span>
             </p>
@@ -76,9 +76,9 @@
               </ng-container>
               <ng-container *ngIf="transaction?.data?.mobileCarePackage?.title">
                 <span>
-                  {{ transaction?.data?.mobileCarePackage?.title }}
+                  {{mainPackageTitle(transaction?.data?.mobileCarePackage?.customAttributes)| translate}}
                 </span>
-                <span class="pull-right" (click)="onOpenDetail(transaction?.data?.mobileCarePackage?.detailTH)">
+                <span class="pull-right" (click)="onOpenDetail(transaction?.data?.mobileCarePackage)">
                   <img src="assets/images/icon/icon-page.png" class="icon" />
                 </span>
               </ng-container>
@@ -93,9 +93,7 @@
             {{ 'รายละเอียดการชำระ' | translate }}
           </div>
           <div class="card-body">
-            <p>
-              ข้อมูลการชำระสินค้า
-            </p>
+            <p translate>ข้อมูลการชำระสินค้า</p>
 
             <!-- ชำระเต็มจำนวน -->
             <ng-container
@@ -164,7 +162,7 @@
               </p>
               <p class="col-12 col-sm-4">
                 <i class="fa fa-circle mr-3 text-green"></i>
-                {{ 'ข้อมูลใบเสร็จรับเงิน' | translate }}
+                {{ 'ที่อยู่ใบเสร็จรับเงิน' | translate }}
               </p>
               <p class="col-12 col-sm-8 text-green">
                 {{ customerAddress }}
@@ -198,7 +196,7 @@
   <div class="modal-body" [innerHTML]="detail"></div>
   <div class="modal-footer">
     <div class="w-100 text-center">
-      <button class="btn btn-success px-5" (click)="modalRef.hide()">ปิด</button>
+      <button class="btn btn-success px-5" (click)="modalRef.hide()">{{'ปิด'| translate}}</button>
     </div>
   </div>
 </ng-template>

@@ -9,6 +9,8 @@ import {
 } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-device-order-ais-existing-customer-info-page',
@@ -22,12 +24,14 @@ export class DeviceOrderAisExistingCustomerInfoPageComponent implements OnInit {
   transaction: Transaction;
   customerInfo: CustomerInfo;
   shoppingCart: ShoppingCart;
+  translateSubscription: Subscription;
 
   constructor(
     private router: Router,
     private homeService: HomeService,
     private shoppingCartService: ShoppingCartService,
-    private transactionService: TransactionService
+    private transactionService: TransactionService,
+    private translateService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -36,8 +40,10 @@ export class DeviceOrderAisExistingCustomerInfoPageComponent implements OnInit {
     const customer: Customer = this.transaction.data.customer;
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     delete this.shoppingCart.mobileNo;
-
     this.customerInfo = this.mappingCustomerInfo(customer);
+
+    this.translateSubscription = this.translateService.onLangChange
+    .subscribe(() => this.customerInfo.idCardType = this.isEngLanguage() ? 'ID Card' : 'บัตรประชาชน');
   }
 
   mappingCustomerInfo(customer: Customer): CustomerInfo {
@@ -46,10 +52,14 @@ export class DeviceOrderAisExistingCustomerInfoPageComponent implements OnInit {
       firstName: customer.firstName,
       lastName: customer.lastName,
       idCardNo: customer.idCardNo,
-      idCardType: 'บัตรประชาชน',
+      idCardType: this.isEngLanguage() ? 'ID Card' : 'บัตรประชาชน',
       birthdate: customer.birthdate,
       mobileNo: customer.mainMobile,
     };
+  }
+
+  isEngLanguage(): boolean {
+    return this.translateService.currentLang === 'EN';
   }
 
   onBack(): void {
@@ -66,6 +76,9 @@ export class DeviceOrderAisExistingCustomerInfoPageComponent implements OnInit {
 
 // tslint:disable-next-line: use-life-cycle-interface
   ngOnDestroy(): void {
+    if (this.translateSubscription) {
+      this.translateSubscription.unsubscribe();
+    }
     this.transactionService.update(this.transaction);
   }
 

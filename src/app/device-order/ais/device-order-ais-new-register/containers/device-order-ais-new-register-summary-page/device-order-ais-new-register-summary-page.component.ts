@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { Router } from '@angular/router';
 import { HomeService, ShoppingCart, Utils } from 'mychannel-shared-libs';
@@ -13,13 +13,15 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
+import { Subscription } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-device-order-ais-new-register-summary-page',
   templateUrl: './device-order-ais-new-register-summary-page.component.html',
   styleUrls: ['./device-order-ais-new-register-summary-page.component.scss']
 })
-export class DeviceOrderAisNewRegisterSummaryPageComponent implements OnInit {
+export class DeviceOrderAisNewRegisterSummaryPageComponent implements OnInit, OnDestroy {
 
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
@@ -32,7 +34,9 @@ export class DeviceOrderAisNewRegisterSummaryPageComponent implements OnInit {
   transaction: Transaction;
   shoppingCart: ShoppingCart;
   customerAddress: string;
+  translateSubscription: Subscription;
 
+  currentLang: string;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -41,10 +45,16 @@ export class DeviceOrderAisNewRegisterSummaryPageComponent implements OnInit {
     private shoppingCartService: ShoppingCartService,
     private modalService: BsModalService,
     public summaryPageService: SummaryPageService,
-    private utils: Utils
+    private utils: Utils,
+    private translateService: TranslateService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
+
+    this.currentLang = this.translateService.currentLang || 'TH';
+    this.translateSubscription = this.translateService.onLangChange.subscribe(lang => {
+      this.currentLang = typeof (lang) === 'object' ? lang.lang : lang;
+    });
   }
 
   ngOnInit(): void {
@@ -78,14 +88,25 @@ export class DeviceOrderAisNewRegisterSummaryPageComponent implements OnInit {
     this.homeService.goToHome();
   }
 
-  onOpenDetail(detail: string): void {
+  onOpenDetail(detail: any): void {
     this.detail = detail;
     this.modalRef = this.modalService.show(this.detailTemplate);
+  }
+
+  mainPackageTitle(detail: any): string {
+    return (this.translateService.currentLang === 'EN') ? detail.shortNameEng : detail.shortNameThai;
   }
 
   summary(amount: number[]): number {
     return amount.reduce((prev, curr) => {
       return prev + curr;
     }, 0);
+  }
+
+  ngOnDestroy(): void {
+    if (this.translateSubscription) {
+      this.translateSubscription.unsubscribe();
+    }
+    this.transactionService.update(this.transaction);
   }
 }

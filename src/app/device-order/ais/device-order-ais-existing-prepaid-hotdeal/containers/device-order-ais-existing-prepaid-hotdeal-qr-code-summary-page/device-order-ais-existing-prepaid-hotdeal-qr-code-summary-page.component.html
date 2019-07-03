@@ -1,9 +1,10 @@
 <div class="mc-flex">
-  <mc-header title="เครื่องพร้อมเปิดเบอร์ใหม่">
+  <mc-header title="{{'ลูกค้าปัจจุบัน' | translate}}">
     <div class="header-icon-left">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
     <div class="header-icon-right">
+      <mc-dropdown-language></mc-dropdown-language>
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
@@ -23,7 +24,7 @@
           </div>
         </div>
           <div class="card mb-3">
-            <div class="card-header bg-orange text-white">รายการสินค้า</div>
+            <div class="card-header bg-orange text-white">{{'รายการสินค้า' | translate}}</div>
             <div class="card-body">
               <p class="text-green  h5">{{ priceOption?.campaign?.campaignName }}</p>
               <div class="text-light-grey">
@@ -31,10 +32,10 @@
                   <i class="fa fa-circle mr-3 text-green"></i>
                   {{ priceOption?.productDetail?.name }}
                   <span *ngIf="priceOption?.productStock?.color">
-                    {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.color }}
+                    {{ priceOption?.productStock?.color? ('สี'| translate) : '' }} {{ priceOption?.productStock?.color }}
                   </span>
                   <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
-                    (แถมซิม)
+                    ({{'แถมซิม' | translate}})
                   </span>
                   <span class="pull-right text-green">
                     ฿ {{ priceOption?.trade?.promotionPrice | number }}
@@ -42,7 +43,7 @@
                 </p>
                 <p *ngIf="priceOption?.trade?.advancePay?.amount > 0">
                   <i class="fa fa-circle mr-3 text-green"></i>
-                  {{ priceOption?.trade?.advancePay?.description }}
+                  {{ summaryPageService.advanpayDescription(priceOption?.trade?.advancePay?.description) }}
                   <span class="pull-right text-green">
                     ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
                   </span>
@@ -50,7 +51,7 @@
               </div>
             </div>
             <div class="card-footer bg-transparent text-right text-light-grey">
-              รวมยอดชำระ(รวมVAT)
+              {{'รวมยอดชำระ (รวม VAT)' | translate}}
               <span class="text-green ml-2 h5">
                 ฿ {{ summary([+priceOption?.trade?.promotionPrice, +priceOption?.trade?.advancePay?.amount]) | number }}
               </span>
@@ -60,17 +61,17 @@
 
         <div class="card mb-3 mt-4">
           <div class="card-header bg-pink text-white">
-            รายละเอียดการชำระ
+            {{'รายละเอียดการชำระ' | translate}}
           </div>
           <div class="card-body text-light-grey">
             <p *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N'">
               <i class="fa fa-circle mr-3 text-green"></i>
               {{ priceOption?.productDetail?.name }}
               <span *ngIf="priceOption?.productStock?.color">
-                สี {{ priceOption?.productStock?.color }}
+                {{'สี' | translate}} {{ priceOption?.productStock?.color }}
               </span>
               <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
-                (แถมซิม)
+                ({{'แถมซิม' | translate}})
               </span>
               <span class="pull-right text-green">฿ {{ priceOption?.trade?.promotionPrice | number }}</span>
             </p>
@@ -88,8 +89,8 @@
         <div class="row">
           <div class="col-8">
             <img src="assets/images/icon/phone_qrcode.png" class="mr-2 float-left" width="30" />
-            ชำระด้วย QR Code
-            <div class="text-pink mt-2">กรุณาเปิด Application เพื่อสแกน QR Code</div>
+            {{'ชำระด้วย QR Code' | translate}}
+            <div class="text-pink mt-2" translate>กรุณาเปิด Application เพื่อสแกน QR Code</div>
           </div>
           <div class="col-4 text-right">
             <img class="img-fluid  w-75" [src]="brannerImagePaymentQrCode.logo" />
@@ -97,7 +98,7 @@
           <div class="col-12 mt-5">
             <form class="form-inline pull-right">
             <div class="form-group ">
-              <label for="summaryInput" class="text-green">ยอดชำระ</label>
+              <label for="summaryInput" class="text-green" translate>ยอดชำระ</label>
               <input style="text-align: center;" type="text" id="summaryInput" readonly
                 class="form-control ml-3 text-green"
                 value="฿{{ summary([+priceOption?.trade?.promotionPrice, +priceOption?.trade?.advancePay?.amount]) | number }}">

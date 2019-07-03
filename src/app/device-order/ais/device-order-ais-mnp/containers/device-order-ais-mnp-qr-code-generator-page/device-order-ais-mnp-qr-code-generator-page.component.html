@@ -4,7 +4,7 @@
       <!-- <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon> -->
     </div>
     <div class="header-icon-right w-25 text-right">
-      <!-- <mc-dropdown-language></mc-dropdown-language> -->
+    <mc-dropdown-language></mc-dropdown-language>
     <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()" [hidden]="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'SUCCESS'"></mc-header-icon>
   </div>
   </mc-header>
@@ -58,7 +58,7 @@
           </div>
           <div class="text-center">
             <h3 [ngClass]="{ 'text-pink': warningTimeOut() }">{{ countdown || '00 : 00' }}</h3>
-            <div translate>" กรุณาชำระเงินภายในเวลาที่กำหนด "</div>
+            <div translate>" {{'กรุณาชำระเงินภายในเวลาที่กำหนด'| translate}} "</div>
           </div>
         </ng-container>
 

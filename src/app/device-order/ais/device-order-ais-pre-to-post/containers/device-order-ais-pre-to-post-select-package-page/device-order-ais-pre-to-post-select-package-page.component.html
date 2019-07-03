@@ -4,7 +4,7 @@
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
     <div class="header-icon-right">
-      <!-- <mc-dropdown-language></mc-dropdown-language> -->
+      <mc-dropdown-language></mc-dropdown-language>
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
@@ -22,7 +22,7 @@
           <div class="container-fluid bg-white">
             <div class="card">
               <div class="card-header bg-green text-white mb-2">
-                {{'เลือกแพ็กเกจใหม่' | translate}} <span class="minimum-package">(แพ็กเกจเริ่มต้น {{
+                {{'เลือกแพ็กเกจใหม่' | translate}} <span class="minimum-package">({{'แพ็กเกจเริ่มต้น'| translate}} {{
                   priceOption?.privilege?.minimumPackagePrice }} บาท)</span>
               </div>
               <mc-promotion-shelve [selected]="transaction?.data?.mainPackage" [promotionShelves]="promotionShelves"

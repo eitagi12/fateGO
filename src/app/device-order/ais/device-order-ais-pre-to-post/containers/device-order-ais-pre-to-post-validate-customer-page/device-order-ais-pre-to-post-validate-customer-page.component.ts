@@ -18,6 +18,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
 import * as moment from 'moment';
+import { TranslateService } from '@ngx-translate/core';
 const Moment = moment;
 @Component({
   selector: 'app-device-order-ais-pre-to-post-validate-customer-page',
@@ -45,6 +46,7 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
+    private translateService: TranslateService
   ) {
     this.user = this.tokenService.getUser();
     this.priceOption = this.priceOptionService.load();
@@ -55,7 +57,7 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
       if (url.indexOf('result') !== -1) {
         this.homeHandler();
       } else {
-        this.alertService.question('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่')
+        this.alertService.question(this.translateService.instant('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่'))
           .then((data: any) => {
             if (!data.value) {
               return false;

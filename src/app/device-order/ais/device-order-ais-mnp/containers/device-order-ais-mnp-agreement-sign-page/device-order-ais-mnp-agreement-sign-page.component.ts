@@ -52,7 +52,7 @@ export class DeviceOrderAisMnpAgreementSignPageComponent implements OnInit, OnDe
         this.transaction.data.customer.imageSignature = signature;
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_AGGREGATE_PAGE]);
       } else {
-        this.alertService.warning('กรุณาเซ็นลายเซ็น').then(() => {
+        this.alertService.warning(this.currentLang === 'TH' ? 'กรุณาเซ็นลายเซ็น' : 'Please Sign').then(() => {
           this.onSigned();
         });
         return;
@@ -113,6 +113,9 @@ export class DeviceOrderAisMnpAgreementSignPageComponent implements OnInit, OnDe
   }
 
   ngOnDestroy(): void {
+    if (this.translationSubscribe) {
+      this.translationSubscribe.unsubscribe();
+    }
     this.signedSignatureSubscription.unsubscribe();
     if (this.signedOpenSubscription) {
       this.signedOpenSubscription.unsubscribe();

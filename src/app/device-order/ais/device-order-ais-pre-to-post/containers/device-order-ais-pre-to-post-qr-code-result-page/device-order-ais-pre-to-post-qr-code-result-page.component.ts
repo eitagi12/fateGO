@@ -5,6 +5,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { Router } from '@angular/router';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { environment } from 'src/environments/environment';
+import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
 
 @Component({
   selector: 'app-device-order-ais-pre-to-post-qr-code-result-page',
@@ -20,6 +21,7 @@ export class DeviceOrderAisPreToPostQrCodeResultPageComponent implements OnInit 
     private router: Router,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
+    public summaryPageService: SummaryPageService,
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();

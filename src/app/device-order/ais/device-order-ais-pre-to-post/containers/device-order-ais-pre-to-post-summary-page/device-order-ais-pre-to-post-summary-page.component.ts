@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { Router } from '@angular/router';
 import { HomeService, ShoppingCart, Utils } from 'mychannel-shared-libs';
@@ -11,15 +11,17 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
-import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { BsModalRef, BsModalService, OnChange } from 'ngx-bootstrap';
 import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-device-order-ais-pre-to-post-summary-page',
   templateUrl: './device-order-ais-pre-to-post-summary-page.component.html',
   styleUrls: ['./device-order-ais-pre-to-post-summary-page.component.scss']
 })
-export class DeviceOrderAisPreToPostSummaryPageComponent implements OnInit {
+export class DeviceOrderAisPreToPostSummaryPageComponent implements OnInit, OnDestroy {
 
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
@@ -32,6 +34,8 @@ export class DeviceOrderAisPreToPostSummaryPageComponent implements OnInit {
   transaction: Transaction;
   shoppingCart: ShoppingCart;
   customerAddress: string;
+  currentLang: string;
+  translateSubscription: Subscription;
 
   constructor(
     private router: Router,
@@ -41,10 +45,16 @@ export class DeviceOrderAisPreToPostSummaryPageComponent implements OnInit {
     private shoppingCartService: ShoppingCartService,
     private modalService: BsModalService,
     public summaryPageService: SummaryPageService,
-    private utils: Utils
+    private utils: Utils,
+    private translateService: TranslateService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
+
+    this.currentLang = this.translateService.currentLang || 'TH';
+    this.translateSubscription = this.translateService.onLangChange.subscribe(lang => {
+      this.currentLang = typeof (lang) === 'object' ? lang.lang : lang;
+    });
   }
 
   ngOnInit(): void {
@@ -78,14 +88,24 @@ export class DeviceOrderAisPreToPostSummaryPageComponent implements OnInit {
     this.homeService.goToHome();
   }
 
-  onOpenDetail(detail: string): void {
-    this.detail = detail;
+  onOpenDetail(detail: any): void {
+    this.detail = (this.translateService.currentLang === 'EN') ? detail.detailEN : detail.detailTH;
     this.modalRef = this.modalService.show(this.detailTemplate);
+  }
+
+  mainPackageTitle(detail: any): string {
+    return (this.translateService.currentLang === 'EN') ? detail.shortNameEng : detail.shortNameThai;
   }
 
   summary(amount: number[]): number {
     return amount.reduce((prev, curr) => {
       return prev + curr;
     }, 0);
+  }
+
+  ngOnDestroy(): void {
+    if (this.translateSubscription) {
+      this.translateSubscription.unsubscribe();
+    }
   }
 }
