@@ -164,7 +164,8 @@ export class ReceiptInformationComponent implements OnInit {
     };
     this.action.emit(data.action);
     this.customerInfo = { customer };
-    this.receiptInfoForm.controls['taxId'].setValue(customer.idCardNo ? (`XXXXXXXXX${(data.customer.idCardNo.substring(9))}`) : '');
+// tslint:disable-next-line: max-line-length
+    this.receiptInfoForm.controls['taxId'].setValue(customer.idCardNo ? (`XXXXXXXXX${(data.customer.idCardNo.substring(9))}`) : (`XXXXXXXXX${(data.customer.value.substring(9))}`));
     this.keyInCustomerAddressTemp = customer;
     this.billingAddress.getLocationName()
       .subscribe((resp) => this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName));
@@ -305,7 +306,6 @@ export class ReceiptInformationComponent implements OnInit {
       customer: value,
       action: TransactionAction.KEY_IN
     });
-    this.receiptInfoForm.controls['taxId'].setValue(value.idCardNo ? (`XXXXXXXXX${(value.idCardNo.substring(9))}`) : '');
   }
 
   onError(valid: boolean): void {
