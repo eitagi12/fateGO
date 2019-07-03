@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild} from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { HomeService, TelNoBillingInfo, TokenService, PageLoadingService, AlertService, ShoppingCart, Utils } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -88,16 +88,13 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit {
         locationName: response.data.displayName,
         locationCode: user.locationCode
       };
-      if (this.seller) {
-        if (this.ascCodeToken) {
-          this.employeeDetailForm.patchValue({ascCode: this.ascCodeToken});
-        }
-      }
+
       return this.http.get(`/api/customerportal/newRegister/getEmployeeDetail/username/${user.username}`).toPromise()
         .then((emResponse: any) => {
           if (emResponse && emResponse.data) {
             const emId = emResponse.data.pin;
             this.sellerCode = emId;
+            this.employeeDetailForm.patchValue({ ascCode: this.sellerCode });
           }
         }).catch(() => {
           this.sellerCode = '';
@@ -114,7 +111,7 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit {
   }
 
   get ascCodeToken(): string {
-    return this.seller ? this.seller.locationCode : '';
+    return this.seller ? this.sellerCode : '';
   }
 
   get sellerName(): string {
@@ -130,7 +127,25 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit {
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_AGGREGATE_PAGE]);
+    this.pageLoadingService.openLoading();
+    const ascCode = this.employeeDetailForm.controls['ascCode'].value || '';
+    this.http.get(`/api/customerportal/checkSeller/${ascCode}`).toPromise().then((resp: any) => {
+      const checkSeller: any = resp && resp.data ? resp.data : {};
+      console.log('condition', resp.data.condition);
+      console.log('data', checkSeller);
+      if (checkSeller.condition) {
+        this.transaction.data.seller = {
+          sellerNo: this.sellerCode
+        };
+        this.pageLoadingService.closeLoading();
+        this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_AGGREGATE_PAGE]);
+      } else {
+        this.alertService.warning(checkSeller.message);
+      }
+    }).catch((err: any) => {
+      this.alertService.error(err.message);
+      this.pageLoadingService.closeLoading();
+    });
   }
 
   onHome(): void {

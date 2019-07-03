@@ -90,7 +90,7 @@
                 <label for="telNo" class="col-12 col-sm-3 col-form-label">{{ 'เบอร์ติดต่อ' | translate }}</label>
                 <div class="col-12 col-sm-9">
                   <input type="text" class="form-control" id="telNo" formControlName="telNo"
-                    [value]="" readonly />
+                    [value]="" maxlength="10">
                   <small class="form-text invalid-feedback"
                     *ngIf="receiptInfoForm.controls.telNo.touched && receiptInfoForm.controls.telNo.errors">
                     {{ '* กรุณากรอกเบอร์ติดต่อให้ถูกต้อง' | translate }}

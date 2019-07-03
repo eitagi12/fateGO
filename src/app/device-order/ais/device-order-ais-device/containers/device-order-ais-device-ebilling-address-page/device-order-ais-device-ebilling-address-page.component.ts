@@ -5,7 +5,7 @@ import {
   ROUTE_ORDER_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE
 } from 'src/app/order/order-new-register/constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { NgxResource, LocalStorageService } from 'ngx-store';
 import { TranslateService } from '@ngx-translate/core';
@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { WIZARD_DEVICE_ODER_AIS_DEVICE } from 'src/app/device-order/constants/wizard.constant';
 import { ROUTE_DEVICE_AIS_DEVICE_PAYMENT_PAGE } from 'src/app/device-order/ais/device-order-ais-device/constants/route-path.constant';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
 
 @Component({
   selector: 'app-device-order-ais-device-ebilling-address-page',
@@ -58,6 +58,8 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
     this.callService();
     this.createForm();
     const customer = this.transaction.data.customer;
+    console.log('action', this.transaction.data.action);
+    console.log('idcardNo', !!this.transaction.data.customer.idCardNo);
     this.translationSubscribe = this.translation.onLangChange.pipe(debounceTime(750)).subscribe(() => {
       this.callService();
       this.amphurs = [];
@@ -114,8 +116,9 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
 
   createForm(): void {
     const customer = this.transaction.data.customer;
+    const customValidate = this.defaultValidate;
     this.validateCustomerKeyInForm = this.fb.group({
-      idCardNo: ['', [Validators.required]],
+      idCardNo: [{ value: '', disabled: this.checkIdCardNo() }, customValidate.bind(this)],
       prefix: ['', [Validators.required]],
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
@@ -126,7 +129,22 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
       firstName: customer.firstName || '',
       lastName: customer.lastName || '',
     });
-    console.log(' this.validateCustomerKeyInForm', this.validateCustomerKeyInForm.value.prefix);
+    console.log(' this.validateCustomerKeyInForm', this.validateCustomerKeyInForm.value.idCardNo);
+  }
+  checkIdCardNo(): boolean {
+    if (!!this.transaction.data.customer.idCardNo) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  defaultValidate(): ValidationErrors | null {
+    const customer = this.transaction.data.customer;
+    if (!!!this.transaction.data.customer.idCardNo) {
+      return {
+        message: 'กรุณากรอกรูปแบบให้ถูกต้อง'
+      };
+    }
   }
 
   getProvinces(): string[] {
@@ -226,14 +244,14 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
     const billingInformation = this.transaction.data.billingInformation || {};
     const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
     this.transactionService.update(this.transaction);
-    this.transaction.data.customer = Object.assign(
+    this.transaction.data.billingInformation.billDeliveryAddress = Object.assign(
       Object.assign({}, customer),
       this.customerAddressTemp
     );
     this.transaction.data.customer.titleName = this.validateCustomerKeyInForm.value.prefix;
     this.transaction.data.customer.firstName = this.validateCustomerKeyInForm.value.firstName;
     this.transaction.data.customer.lastName = this.validateCustomerKeyInForm.value.lastName;
-    this.transaction.data.customer.idCardNo = this.validateCustomerKeyInForm.value.idCardNo;
+    this.transaction.data.customer.idCardNo = this.validateCustomerKeyInForm.value.idCardNo || customer.idCardNo;
     this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_PAYMENT_PAGE]);
   }
 
