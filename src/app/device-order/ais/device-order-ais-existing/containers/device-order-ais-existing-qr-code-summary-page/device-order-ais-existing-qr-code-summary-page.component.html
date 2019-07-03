@@ -89,7 +89,7 @@
                       ({{'ชำระโดย'| translate}} {{ summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) }})
                     </small>
                     <span class="text-pink"
-                      *ngIf="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'WAITING'">( รอชำระ )</span>
+                      *ngIf="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'WAITING'">( {{'รอชำระ' | translate}} )</span>
                     <span class="text-green"
                       *ngIf="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'SUCCESS'">
                       ( {{'ชำระแล้ว' | translate}} TX: {{transaction?.data?.mpayPayment?.tranId}} )
@@ -104,7 +104,7 @@
                   <input class="form-check-input" type="radio" id="advancePay" disabled="" [checked]="(getStatusPay() === 'AIRTIME' && transaction?.data?.advancePayment?.paymentQrCodeType) || transaction?.data?.mpayPayment?.mpayStatus?.statusDevice !== 'WAITING'
                         || priceOption?.productStock?.company === 'AWN'">
                   <label class="form-check-label" for="advancePay">
-                    {{'ค่าแพ็กเกจบริการล่วงหน้า' | translate}} : {{'ชำระเต็มจำนวน' | translate}}
+                    {{'ค่าแพ็กเกจบริการล่วงหน้า' | translate }} : {{'ชำระเต็มจำนวน' | translate}}
                   </label>
                   <span class="pull-right text-green">
                     ฿ {{ priceOption?.trade?.advancePay?.amount | number }}

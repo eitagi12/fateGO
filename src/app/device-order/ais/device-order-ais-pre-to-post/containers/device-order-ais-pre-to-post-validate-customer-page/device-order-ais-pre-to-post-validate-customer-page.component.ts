@@ -42,11 +42,11 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
     private http: HttpClient,
     private alertService: AlertService,
     private tokenService: TokenService,
+    private translateService: TranslateService,
     private privilegeService: PrivilegeService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private priceOptionService: PriceOptionService,
-    private translateService: TranslateService
+    private priceOptionService: PriceOptionService
   ) {
     this.user = this.tokenService.getUser();
     this.priceOption = this.priceOptionService.load();
@@ -91,7 +91,7 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
   }
 
   onBack(): void {
-    this.alertService.question('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่')
+    this.alertService.question(this.translateService.instant('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่'))
       .then((data: any) => {
         if (!data.value) {
           return false;
