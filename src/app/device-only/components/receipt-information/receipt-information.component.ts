@@ -58,7 +58,6 @@ export class ReceiptInformationComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.isShowInputForKeyIn = false;
     this.customerAddress = {
       idCardNo: '',
       titleName: '',
