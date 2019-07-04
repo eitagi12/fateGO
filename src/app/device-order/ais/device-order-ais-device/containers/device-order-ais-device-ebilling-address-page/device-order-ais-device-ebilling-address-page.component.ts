@@ -57,9 +57,7 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
   ngOnInit(): void {
     this.callService();
     this.createForm();
-    const customer = this.transaction.data.customer;
-    console.log('action', this.transaction.data.action);
-    console.log('idcardNo', !!this.transaction.data.customer.idCardNo);
+    const customer: any = this.transaction.data && this.transaction.data.customer ? this.transaction.data.customer : {};
     this.translationSubscribe = this.translation.onLangChange.pipe(debounceTime(750)).subscribe(() => {
       this.callService();
       this.amphurs = [];
@@ -77,10 +75,10 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
     };
   }
   callService(): void {
-    const billingInformation = this.transaction.data.billingInformation || {};
-    console.log('cus', this.transaction.data.customer.province);
-    console.log('bill', this.transaction.data.billingInformation);
-    const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
+    const billingInformation = this.transaction.data &&
+      this.transaction.data.billingInformation ? this.transaction.data.billingInformation : {};
+    const customerProfile: any = this.transaction.data && this.transaction.data.customer ? this.transaction.data.customer : {};
+    const customer = billingInformation.billDeliveryAddress || customerProfile;
     this.http.get('/api/customerportal/newRegister/getAllZipcodes').subscribe((resp: any) => {
       this.allZipCodes = resp.data.zipcodes || [];
     });
@@ -92,7 +90,6 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
         }
       }).subscribe((resp: any) => {
         this.provinces = (resp.data.provinces || []);
-        console.log('this.provinces', this.provinces);
         this.customerAddress = {
           homeNo: customer.homeNo,
           moo: customer.moo,
@@ -115,7 +112,7 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
   }
 
   createForm(): void {
-    const customer = this.transaction.data.customer;
+    const customer: any = this.transaction.data && this.transaction.data.customer ? this.transaction.data.customer : {};
     const customValidate = this.defaultValidate;
     this.validateCustomerKeyInForm = this.fb.group({
       idCardNo: [{ value: '', disabled: this.checkIdCardNo() }, customValidate.bind(this)],
@@ -132,15 +129,23 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
     console.log(' this.validateCustomerKeyInForm', this.validateCustomerKeyInForm.value.idCardNo);
   }
   checkIdCardNo(): boolean {
-    if (!!this.transaction.data.customer.idCardNo) {
+    const customer = this.transaction.data
+      && this.transaction.data.customer
+      && this.transaction.data.customer.idCardNo ? this.transaction.data.customer.idCardNo : {};
+    console.log('checkIdCardNo', !!customer);
+    if (customer) {
+      console.log('true');
       return true;
     } else {
       return false;
     }
   }
   defaultValidate(): ValidationErrors | null {
-    const customer = this.transaction.data.customer;
-    if (!!!this.transaction.data.customer.idCardNo) {
+    const customer = this.transaction.data
+      && this.transaction.data.customer
+      && this.transaction.data.customer.idCardNo ? this.transaction.data.customer.idCardNo : {};
+    console.log('defaultValidate', !customer);
+    if (!customer) {
       return {
         message: 'กรุณากรอกรูปแบบให้ถูกต้อง'
       };
@@ -241,8 +246,10 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
   }
 
   onNext(): void {
-    const billingInformation = this.transaction.data.billingInformation || {};
-    const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
+    this.transaction.data.billingInformation = this.transaction.data.billingInformation || {};
+    console.log('billingInformation', JSON.stringify(this.transaction.data.billingInformation));
+    const customer = this.transaction.data.billingInformation .billDeliveryAddress || this.transaction.data.customer;
+    console.log('customer', customer);
     this.transactionService.update(this.transaction);
     this.transaction.data.billingInformation.billDeliveryAddress = Object.assign(
       Object.assign({}, customer),

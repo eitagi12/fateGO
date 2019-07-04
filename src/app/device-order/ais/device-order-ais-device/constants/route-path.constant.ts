@@ -4,4 +4,3 @@ export const ROUTE_DEVICE_AIS_DEVICE_SUMMARY_PAGE = '/device-order/ais/device/su
 export const ROUTE_DEVICE_AIS_DEVICE_QUEUE_PAGE = '/device-order/ais/device/queue';
 export const ROUTE_DEVICE_AIS_DEVICE_RESULT_PAGE = '/device-order/ais/device/result';
 export const ROUTE_DEVICE_AIS_DEVICE_AGGREGATE_PAGE = '/device-order/ais/device/aggregate';
-export const ROUTE_DEVICE_AIS_DEVICE_OTP_PAGE = '/device-order/ais/device/otp';

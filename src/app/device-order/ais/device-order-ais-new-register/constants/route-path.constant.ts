@@ -29,3 +29,6 @@ export const ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_QUEUE_PAGE = '/device-o
 export const ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_GENERATOR_PAGE = '/device-order/ais/new-register/qr-code-generator';
 export const ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_ERROR_PAGE = '/device-order/ais/new-register/qr-code-error';
 export const ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_RESULT_PAGE = '/device-order/ais/new-register/qr-code-result';
+
+// test
+export const ROUTE_DEVICE_ORDER_AIS_DEVICE_PAYMENT_DETAIL_PAGE = '/device-order/ais/device/payment';

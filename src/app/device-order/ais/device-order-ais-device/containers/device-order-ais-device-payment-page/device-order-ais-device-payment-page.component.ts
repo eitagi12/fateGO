@@ -9,11 +9,12 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { HttpClient } from '@angular/common/http';
 import { WIZARD_DEVICE_ODER_AIS_DEVICE } from 'src/app/device-order/constants/wizard.constant';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE, ROUTE_DEVICE_AIS_DEVICE_SUMMARY_PAGE, ROUTE_DEVICE_AIS_DEVICE_OTP_PAGE } from 'src/app/device-order/ais/device-order-ais-device/constants/route-path.constant';
+import { ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE, ROUTE_DEVICE_AIS_DEVICE_SUMMARY_PAGE } from 'src/app/device-order/ais/device-order-ais-device/constants/route-path.constant';
 import { Subscription, zip } from 'rxjs';
 import { BsModalService, BsModalRef, isArray } from 'ngx-bootstrap';
 import { BillingAccount } from '../../../device-order-ais-mnp/containers/device-order-ais-mnp-effective-start-date-page/device-order-ais-mnp-effective-start-date-page.component';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
+import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from 'src/app/buy-product/constants/route-path.constant';
 @Component({
   selector: 'app-device-order-ais-device-payment-page',
   templateUrl: './device-order-ais-device-payment-page.component.html',
@@ -57,6 +58,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
   mobileNo: any;
   cardStatus: string;
   user: User;
+  zipCode: string;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -89,6 +91,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
   }
 
   ngOnInit(): void {
+    this.createTransaction();
     this.createForm();
     this.createSearchByMobileNoForm();
     this.createSelectBillAddForm();
@@ -96,7 +99,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
 
     const productDetail = this.priceOption.productDetail || {};
     const productStock = this.priceOption.productStock || {};
-    const customer: any = this.transaction.data.customer || {};
+    const customer: any = this.transaction.data && this.transaction.data.customer ? this.transaction.data.customer : {};
     const trade: any = this.priceOption.trade || {};
     const advancePay: any = trade.advancePay || {};
     let commercialName = productDetail.name;
@@ -132,6 +135,22 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     this.createReceiptInfo(customer);
     this.checkBillFormChanged();
   }
+  createForm(): void {
+    const customer: any = this.transaction.data && this.transaction.data.receiptInfo ? this.transaction.data.receiptInfo : {};
+    this.receiptInfoForm = this.fb.group({
+      taxId: ['', []],
+      branch: ['', []],
+      buyer: ['', []],
+      buyerAddress: ['', []],
+      telNo: ['', [Validators.pattern(REGEX_MOBILE)]]
+    });
+    this.receiptInfoForm.patchValue({
+      taxId: customer.taxId || '',
+      telNo: customer.telNo || ''
+    });
+    console.log('customer', customer);
+    console.log('this.receiptInfoForm', this.receiptInfoForm.value);
+  }
   checkLocation(): void {
     const user = this.tokenService.getUser();
     this.http.get(`/api/salesportal/location-by-code?code=${user.locationCode}`).toPromise().then((code: any) => {
@@ -146,6 +165,8 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
   isFullPayment(): boolean {
     const trade = this.priceOption.trade || {};
     const payment = (trade.payments || []).find(p => p.method !== 'PP') || {};
+    console.log('trade', trade);
+    console.log('payment', payment);
     switch (payment.method) {
       case 'CC':
         if (PriceOptionUtils.getInstallmentsFromTrades([trade])) {
@@ -167,9 +188,11 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     return this.paymentDetailValid;
   }
   createReceiptInfo(customer: Customer): void {
-    const billingInformation = this.transaction.data.billingInformation || {};
-    const customerAddress: any = billingInformation.billDeliveryAddress || this.transaction.data.customer;
-    const receiptInfo: any = this.transaction.data.receiptInfo || {};
+    const billingInformation = this.transaction.data &&
+      this.transaction.data.billingInformation ? this.transaction.data.billingInformation : {};
+    const customerProfile: any = this.transaction.data && this.transaction.data.customer ? this.transaction.data.customer : {};
+    const customerAddress: any = billingInformation.billDeliveryAddress || customerProfile;
+    const receiptInfo: any = this.transaction.data && this.transaction.data.receiptInfo ? this.transaction.data.receiptInfo : {};
     this.receiptInfo = {
       taxId: customer.idCardNo,
       branch: '',
@@ -205,22 +228,6 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     });
   }
 
-  createForm(): void {
-    const customer: any = this.transaction.data.receiptInfo || {};
-    this.receiptInfoForm = this.fb.group({
-      taxId: ['', []],
-      branch: ['', []],
-      buyer: ['', []],
-      buyerAddress: ['', []],
-      telNo: ['', [Validators.pattern(REGEX_MOBILE)]]
-    });
-    this.receiptInfoForm.patchValue({
-      taxId: customer.taxId || '',
-      telNo: customer.telNo || ''
-    });
-    console.log('validateCustomerKeyInForm', this.receiptInfoForm.controls['telNo'].valid);
-  }
-
   createSearchByMobileNoForm(): void {
     this.searchByMobileNoForm = this.fb.group({
       'mobileNo': ['', Validators.compose([Validators.required, Validators.maxLength(10)])],
@@ -254,37 +261,42 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
         const mobileStatus = res && res.data && res.data.mobileStatus ? res.data.mobileStatus : {};
         console.log('mobileStatus', mobileStatus);
         if (mobileStatus === 'Active') {
-          return this.http.get(`/api/customerportal/billing/${mobileNo}`).toPromise().then((bill: any) => {
-            const billing = bill && bill.data && bill.data.billingAddress ? bill.data.billingAddress : {};
-            console.log('billing', billing);
-            this.transaction.data.customer = billing;
-            this.transaction.data.billingInformation.billDeliveryAddress = billing;
-            this.transaction.data.customer.homeNo = billing.houseNumber;
-            this.transaction.data.customer.zipCode = billing.portalCode;
-            this.transaction.data.customer.province = billing.provinceName;
-            this.transaction.data.customer.street = billing.streetName;
-            this.receiptInfo.buyer = billing.titleName + ' ' + billing.firstName + ' ' + billing.lastName;
-            this.receiptInfo.taxId = billing.idCardNo;
-            this.receiptInfoForm.controls['taxId'].setValue(this.receiptInfo.taxId);
-            this.receiptInfo.buyerAddress = this.utils.getCurrentAddress({
-              homeNo: billing.houseNumber || '',
-              moo: billing.moo || '',
-              mooBan: billing.mooban || '',
-              room: billing.room,
-              floor: billing.floor || '',
-              buildingName: billing.buildingName || '',
-              soi: billing.soi || '',
-              street: billing.streetName || '',
-              tumbol: billing.tumbol,
-              amphur: billing.amphur || '',
-              province: billing.provinceName || '',
-              zipCode: billing.portalCode || '',
+          return this.http.get(`/api/customerportal/billing/${mobileNo}`).toPromise()
+            .then((bill: any) => {
+              const billing = bill && bill.data && bill.data.billingAddress ? bill.data.billingAddress : {};
+              console.log('billing', billing);
+              this.transaction.data.customer = billing;
+              this.transaction.data.customer.homeNo = billing.houseNumber;
+              this.transaction.data.customer.zipCode = billing.portalCode;
+              this.transaction.data.customer.province = billing.provinceName;
+              this.transaction.data.customer.street = billing.streetName;
+              this.receiptInfo.buyer = billing.titleName + ' ' + billing.firstName + ' ' + billing.lastName;
+              this.receiptInfo.taxId = billing.idCardNo;
+              this.receiptInfo.buyerAddress = this.utils.getCurrentAddress({
+                homeNo: billing.houseNumber || '',
+                moo: billing.moo || '',
+                mooBan: billing.mooban || '',
+                room: billing.room,
+                floor: billing.floor || '',
+                buildingName: billing.buildingName || '',
+                soi: billing.soi || '',
+                street: billing.streetName || '',
+                tumbol: billing.tumbol,
+                amphur: billing.amphur || '',
+                province: billing.provinceName || '',
+                zipCode: billing.portalCode || '',
+              });
+              this.receiptInfoForm.controls['taxId'].setValue(this.receiptInfo.taxId);
+              console.log('this.receiptInfo.buyerAddress ', this.receiptInfo.buyerAddress);
+              this.transaction.data.receiptInfo = this.receiptInfo;
+              this.transaction.data.action = TransactionAction.SEARCH;
+            }).catch(() => {
+              console.log('catch mobile');
+              // this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE]);
             });
-            this.transaction.data.action = TransactionAction.SEARCH;
-          }).catch(() => {
-            this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_OTP_PAGE]);
-          });
         }
+      }).catch(() => {
+        // this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE]);
       }).then(() => {
         this.transactionService.save(this.transaction);
         this.mobileNo = mobileNo;
@@ -311,7 +323,6 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
             const billing = customerprofile.address ? customerprofile.address : {};
             const customerName = mobileFbb.caName.split(' ');
             this.transaction.data.customer = billing;
-            this.transaction.data.billingInformation.billDeliveryAddress = billing;
             // data ที่ return ไม่เหมือนกับ transaction
             this.transaction.data.customer.idCardNo = mobileFbb.baNo;
             this.transaction.data.customer.firstName = customerName[0];
@@ -322,7 +333,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
             this.transaction.data.customer.titleName = customerprofile.accntTitle;
             this.receiptInfo.taxId = mobileFbb.baNo;
             this.receiptInfo.buyer = customerprofile.accntTitle + ' ' + customerprofile.name;
-            this.receiptInfoForm.controls['taxId'].setValue(this.receiptInfo.taxId);
+            // this.receiptInfoForm.controls['taxId'].setValue(this.receiptInfo.taxId);
             this.receiptInfo.buyerAddress = this.utils.getCurrentAddress({
               homeNo: billing.houseNumber || '',
               moo: billing.moo || '',
@@ -338,8 +349,6 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
               zipCode: billing.portalCode || '',
             });
             this.transaction.data.action = TransactionAction.SEARCH;
-          }).catch(() => {
-            this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_OTP_PAGE]);
           });
       }).then(() => {
         this.mobileNo = mobileNo;
@@ -380,9 +389,11 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
         }).then((resp: any) => {
           this.pageLoadingService.closeLoading();
           const data = resp.data;
-          const zipCode = data.zipcodes ? data.zipcodes[0] : '';
-          this.idCardCustomerAddress = this.getCustomerAddressStr(this.customerProfile, zipCode);
-          this.dataReadIdCard = readCard.profile.idCardNo;
+          this.zipCode = data.zipcodes ? data.zipcodes[0] : '';
+          console.log('cus', this.customerProfile);
+          console.log('zipCode', this.zipCode);
+          this.idCardCustomerAddress = this.getCustomerAddressStr(this.customerProfile, this.zipCode);
+          this.dataReadIdCard = null;
           this.http.get(`/api/customerportal/newRegister/${this.dataReadIdCard}/queryBillingAccount`).toPromise()
             .then((resps: any) => {
               const billList = resps.data && resps.data.billingAccountList || {};
@@ -404,6 +415,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
       console.log('IF');
       const isnum: boolean = /^\d+$/.test(this.selectBillingAddrVal) || false;
       if (isnum) {
+        console.log('isnum');
         const billingAccount: BillingAccount = this.billingAccountList[this.selectBillingAddrVal] || {};
         this.pageLoadingService.openLoading();
         const mobileNo = billingAccount.mobileNo[0] || '';
@@ -411,11 +423,10 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
           const data = resp.data;
           const billingAddress = data.billingAddress || {};
           this.transaction.data.customer = billingAddress;
-          this.transaction.data.billingInformation.billDeliveryAddress = billingAddress;
           this.transaction.data.customer.province = billingAddress.provinceName;
           this.receiptInfo.taxId = billingAddress.baNo;
           this.receiptInfo.buyer = `${billingAddress.titleName} ${billingAddress.firstName} ${billingAddress.lastName}`;
-          this.receiptInfoForm.controls['taxId'].setValue(billingAddress.idCardNo);
+          // this.receiptInfoForm.controls['taxId'].setValue(billingAddress.idCardNo);
           this.receiptInfo.buyerAddress = this.utils.getCurrentAddress({
             homeNo: billingAddress.houseNumber || '',
             moo: billingAddress.moo || '',
@@ -436,11 +447,14 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
           this.modalRef.hide();
         }).catch((err: any) => {
           this.mobileNo = mobileNo;
-          this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_OTP_PAGE]);
+          this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE]);
           this.pageLoadingService.closeLoading();
           this.modalRef.hide();
         });
       } else {
+        console.log('ไม่มีเบอร์ AIS');
+        this.transaction.data.customer = this.customerProfile;
+        this.transaction.data.customer.zipCode = this.zipCode;
         this.receiptInfo.buyer = `${this.customerProfile.titleName} ${this.customerProfile.firstName} ${this.customerProfile.lastName}`;
         this.receiptInfo.buyerAddress = this.selectBillingAddrVal || '';
         this.modalRef.hide();
@@ -527,7 +541,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
   }
 
   onBack(): void {
-    // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_CUSTOMER_INFO_PAGE]);
+    this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE]);
   }
 
   onHome(): void {
@@ -563,7 +577,6 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     if (this.readCardSubscription) {
       this.readCardSubscription.unsubscribe();
     }
-    console.log('this.transaction.data.customer', this.transaction.data.customer);
     this.priceOptionService.update(this.priceOption);
     this.transactionService.save(this.transaction);
   }
@@ -571,7 +584,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     this.transaction = {
       data: {
         transactionType: TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS,
-        action: TransactionAction.READ_CARD,
+        action: null,
       }
     };
   }

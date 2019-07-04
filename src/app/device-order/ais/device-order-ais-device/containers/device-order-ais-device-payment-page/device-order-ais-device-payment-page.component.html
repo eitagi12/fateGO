@@ -77,7 +77,7 @@
                 <label for="taxId" class="col-12 col-sm-3 col-form-label">Tax Id</label>
                 <div class="col-12 col-sm-9">
                   <input type="text" class="form-control" id="taxId" formControlName="taxId"
-                    [value]="receiptInfoForm.get('taxId').value | idCard" readonly />
+                  [value]="receiptInfoForm?.get('taxId').value | idCard"readonly />
                 </div>
               </div>
               <div class="form-group row">
@@ -92,7 +92,7 @@
                   <input type="text" class="form-control" id="telNo" formControlName="telNo"
                     [value]="" maxlength="10">
                   <small class="form-text invalid-feedback"
-                    *ngIf="receiptInfoForm.controls.telNo.touched && receiptInfoForm.controls.telNo.errors">
+                    *ngIf="receiptInfoForm?.controls?.telNo?.touched && receiptInfoForm?.controls?.telNo?.errors">
                     {{ '* กรุณากรอกเบอร์ติดต่อให้ถูกต้อง' | translate }}
                   </small>
                 </div>

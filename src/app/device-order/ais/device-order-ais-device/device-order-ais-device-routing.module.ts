@@ -6,7 +6,6 @@ import { DeviceOrderAisDeviceSummaryPageComponent } from './containers/device-or
 import { DeviceOrderAisDeviceAggregatePageComponent } from './containers/device-order-ais-device-aggregate-page/device-order-ais-device-aggregate-page.component';
 import { DeviceOrderAisDeviceQueuePageComponent } from './containers/device-order-ais-device-queue-page/device-order-ais-device-queue-page.component';
 import { DeviceOrderAisDeviceResultPageComponent } from './containers/device-order-ais-device-result-page/device-order-ais-device-result-page.component';
-import { DeviceOrderAisDeviceOtpPageComponent } from './containers/device-order-ais-device-otp-page/device-order-ais-device-otp-page.component';
 const routes: Routes = [
   { path: '', redirectTo: 'payment', pathMatch: 'full' },
   {
@@ -32,11 +31,7 @@ const routes: Routes = [
   {
     path: 'result',
     component: DeviceOrderAisDeviceResultPageComponent
-  },
-  {
-    path: 'otp',
-    component: DeviceOrderAisDeviceOtpPageComponent
-  },
+  }
 ];
 
 @NgModule({
