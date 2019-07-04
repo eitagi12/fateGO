@@ -118,13 +118,6 @@ export class ReceiptInformationComponent implements OnInit {
       if (this.receiptInfoForm.valid) {
         const receiptInfo: ReceiptInfo = this.receiptInfoForm.value;
         this.completed.emit({ ...this.customerInfo, receiptInfo });
-<<<<<<< Updated upstream
-=======
-        // if (this.isShowInputForKeyIn) {
-        //   this.nameText = '';
-        //   this.billingAddressText = '';
-        // }
->>>>>>> Stashed changes
       }
     });
   }
