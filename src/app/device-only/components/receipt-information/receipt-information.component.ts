@@ -117,10 +117,6 @@ export class ReceiptInformationComponent implements OnInit {
       if (this.receiptInfoForm.valid) {
         const receiptInfo: ReceiptInfo = this.receiptInfoForm.value;
         this.completed.emit({ ...this.customerInfo, receiptInfo });
-        if (this.isShowInputForKeyIn) {
-          this.nameText = '';
-          this.billingAddressText = '';
-        }
       }
     });
   }
@@ -253,7 +249,7 @@ export class ReceiptInformationComponent implements OnInit {
 
   switchKeyInBillingAddress(): void {
     this.isShowInputForKeyIn = !this.isShowInputForKeyIn;
-    this.billingAddress.setIsKeyInBillingAddress(!this.isShowInputForKeyIn);
+    this.billingAddress.setIsKeyInBillingAddress(this.isShowInputForKeyIn);
     if (this.receiptInfoForm.valid) {
       this.onError(true);
     }

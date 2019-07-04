@@ -213,7 +213,6 @@ export class ReadCardComponent implements OnInit {
     this.addressTextBySmartCard = this.customerInfoService.convertBillingAddressToString(billDeliveryAddress);
     this.customerInfoService.getBillingByIdCard(customer.idCardNo)
       .then((res) => {
-        // console.log('getBillingByIdCard : res ==>> ', res);
         if (res && res.data && res.data.billingAccountList) {
           this.listBillingAccount = res.data.billingAccountList.filter((item) => {
             if (item.mobileNo && item.mobileNo[0].length > 0) {
@@ -245,11 +244,8 @@ export class ReadCardComponent implements OnInit {
       this.zipcode(customer).then((res: any) => {
         customer.zipCode = res;
         this.getbillingCycle(customer);
-        console.log('res : ', res);
       });
-      console.log('customer : ', customer);
     }).catch((err) => {
-      console.log(err);
       this.pageLoadingService.closeLoading();
     });
   }
