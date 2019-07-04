@@ -190,7 +190,6 @@ export class DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent implem
   }
 
   public onBack(): void {
-      this.alertService.info(this.user.channelType);
     if (this.user.channelType === 'sff-web') {
       if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
         this.homeService.goToHome();
@@ -211,7 +210,6 @@ export class DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent implem
         '&imei=' + imei.imei +
         '&customerGroup=' + this.priceOption.customerGroup.code;
       window.location.href = url + queryParams;
-      this.alertService.warning(url + queryParams);
 
     } else {
       if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
