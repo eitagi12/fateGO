@@ -190,6 +190,10 @@ export class DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent implem
   }
 
   public onBack(): void {
+    if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      this.homeService.goToHome();
+      return;
+    }
     this.transactionService.remove();
     this.product = this.priceOption.queryParams;
     const brand: string = encodeURIComponent(this.product.brand ? this.product.brand : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
@@ -204,7 +208,7 @@ export class DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent implem
       '&productSubtype=' + this.product.productSubtype +
       '&imei=' + imei.imei +
       '&customerGroup=' + this.priceOption.customerGroup.code;
-
+    this.alertService.warning(url + queryParams);
     window.location.href = url + queryParams;
   }
 
