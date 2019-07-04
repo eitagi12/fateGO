@@ -67,7 +67,7 @@
             <span class="text-red"> *</span>
           </label>
                     <div class="col-12 col-sm-9">
-                        <input type="tel" maxlength="10" class="form-control" id="telNo" formControlName="telNo" [ngClass]="{ 'is-invalid' : receiptInfoForm.controls.telNo.invalid && receiptInfoForm.controls.telNo.touched }" (keypress)="keyPress($event)">
+                        <input type="tel" maxlength="10" class="form-control" id="telNo" formControlName="telNo" [ngClass]="{ 'is-invalid' : receiptInfoForm.controls.telNo.invalid && receiptInfoForm.controls.telNo.touched }" (keypress)="keyPress($event)" autocomplete="off">
                         <small class="form-text invalid-feedback" *ngIf="receiptInfoForm.controls.telNo.touched && receiptInfoForm.controls.telNo.errors">
               * กรุณากรอกเบอร์ติดต่อให้ถูกต้อง
             </small>

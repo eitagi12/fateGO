@@ -214,7 +214,8 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     this.customerAddressForm.valueChanges.pipe(debounceTime(750)).subscribe((value: any) => {
       this.error.emit(this.customerAddressForm.valid);
       if (this.customerAddressForm.valid && this.customerAddressForm.controls.idCardNo.value) {
-        this.completed.emit({...value, ...this.customerAddressForm.controls.idCardNo});
+        const idCardNo = this.customerAddressForm.controls.idCardNo;
+        this.completed.emit({...value, ...idCardNo});
       }
     });
   }

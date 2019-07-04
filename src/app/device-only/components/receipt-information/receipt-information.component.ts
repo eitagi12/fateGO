@@ -58,6 +58,7 @@ export class ReceiptInformationComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.isShowInputForKeyIn = false;
     this.customerAddress = {
       idCardNo: '',
       titleName: '',
@@ -117,6 +118,13 @@ export class ReceiptInformationComponent implements OnInit {
       if (this.receiptInfoForm.valid) {
         const receiptInfo: ReceiptInfo = this.receiptInfoForm.value;
         this.completed.emit({ ...this.customerInfo, receiptInfo });
+<<<<<<< Updated upstream
+=======
+        // if (this.isShowInputForKeyIn) {
+        //   this.nameText = '';
+        //   this.billingAddressText = '';
+        // }
+>>>>>>> Stashed changes
       }
     });
   }
@@ -162,7 +170,7 @@ export class ReceiptInformationComponent implements OnInit {
     this.customerInfo = { customer };
     if (data.customer.idCardNo) {
       // tslint:disable-next-line: max-line-length
-      this.receiptInfoForm.controls['taxId'].setValue(customer.idCardNo ? (`XXXXXXXXX${(data.customer.idCardNo.substring(9))}`) : (`XXXXXXXXX${(data.customer.value.substring(9))}`));
+      this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(data.customer.idCardNo.substring(9))}`));
     }
     this.keyInCustomerAddressTemp = customer;
     this.billingAddress.getLocationName()
@@ -303,6 +311,9 @@ export class ReceiptInformationComponent implements OnInit {
       customer: value,
       action: TransactionAction.KEY_IN
     });
+    if (!value.idCardNo) {
+      this.receiptInfoForm.controls['taxId'].setValue('');
+    }
   }
 
   onError(valid: boolean): void {
