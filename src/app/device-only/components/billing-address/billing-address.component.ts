@@ -3,6 +3,8 @@ import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors, 
 import { debounceTime, distinct, delay } from 'rxjs/operators';
 import { Utils, CustomerAddress } from 'mychannel-shared-libs';
 import { CustomerInformationService } from 'src/app/device-only/services/customer-information.service';
+import { TransactionAction, Transaction } from 'src/app/shared/models/transaction.model';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
 
 export interface CustomerAddress {
   titleName: string;
@@ -92,19 +94,33 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   debounceTimeInMS: number = 500;
   identityValue: string;
   disableIdCard: boolean;
+  transaction: Transaction;
 
   constructor(
     public fb: FormBuilder,
     private utils: Utils,
-    private customerInformationService: CustomerInformationService
-  ) {}
+    private customerInformationService: CustomerInformationService,
+    private transactionService: TransactionService
+  ) {
+    this.transaction = this.transactionService.load();
+  }
 
   ngOnInit(): void {
     this.createForm();
-    if (this.customerInformationService.isReadCard === true) {
-      this.customerAddressForm.controls['idCardNo'].disable();
-    }
     this.checkProvinceAndAmphur();
+    this.checkAction();
+  }
+
+  checkAction(): void {
+    if (!this.transaction.data) {
+      this.customerAddressForm.controls['idCardNo'].enable();
+    } else {
+      if (this.transaction.data.action === TransactionAction.READ_CARD) {
+        this.customerAddressForm.controls['idCardNo'].disable();
+      } else {
+        this.customerAddressForm.controls['idCardNo'].enable();
+      }
+    }
   }
 
   ngOnChanges(changes: SimpleChanges): void {

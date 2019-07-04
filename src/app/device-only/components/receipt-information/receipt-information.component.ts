@@ -249,9 +249,8 @@ export class ReceiptInformationComponent implements OnInit {
   }
 
   switchKeyInBillingAddress(): void {
-    const isShowInput = !this.isShowInputForKeyIn;
-    this.billingAddress.setIsKeyInBillingAddress(isShowInput);
-    this.isShowInputForKeyIn = isShowInput;
+    this.isShowInputForKeyIn = !this.isShowInputForKeyIn;
+    this.billingAddress.setIsKeyInBillingAddress(!this.isShowInputForKeyIn);
     if (this.receiptInfoForm.valid) {
       this.onError(true);
     }
