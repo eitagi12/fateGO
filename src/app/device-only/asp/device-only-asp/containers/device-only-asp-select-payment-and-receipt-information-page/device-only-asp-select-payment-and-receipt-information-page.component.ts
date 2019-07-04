@@ -49,7 +49,7 @@ export class DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent implem
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     this.user = this.tokenService.getUser();
-   }
+  }
 
   ngOnInit(): void {
     this.homeButtonService.initEventButtonHome();
@@ -120,7 +120,7 @@ export class DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent implem
       this.localtion = this.user.locationCode;
       this.http.post('/api/salesportal/banks-promotion', {
         localtion: this.localtion
-      }).toPromise().then((response: any) => this.banks = response.data  || '');
+      }).toPromise().then((response: any) => this.banks = response.data || '');
     }
   }
 
@@ -190,26 +190,48 @@ export class DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent implem
   }
 
   public onBack(): void {
-    if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
-      this.homeService.goToHome();
-      return;
-    }
-    this.transactionService.remove();
-    this.product = this.priceOption.queryParams;
-    const brand: string = encodeURIComponent(this.product.brand ? this.product.brand : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
-    const model: string = encodeURIComponent(this.product.model ? this.product.model : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
-    const imei: any = JSON.parse(localStorage.getItem('device'));
+      this.alertService.info(this.user.channelType);
+    if (this.user.channelType === 'sff-web') {
+      if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+        this.homeService.goToHome();
+        return;
+      }
+      this.transactionService.remove();
+      this.product = this.priceOption.queryParams;
+      const brand: string = encodeURIComponent(this.product.brand ? this.product.brand : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
+      const model: string = encodeURIComponent(this.product.model ? this.product.model : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
+      const imei: any = JSON.parse(localStorage.getItem('device'));
 
-    // replace '%28 %29' for() case url refresh error
-    const url: string = `/sales-portal/buy-product/brand/${brand}/${model}`;
-    const queryParams: string =
-      '?modelColor=' + this.product.color +
-      '&productType=' + this.product.productType +
-      '&productSubtype=' + this.product.productSubtype +
-      '&imei=' + imei.imei +
-      '&customerGroup=' + this.priceOption.customerGroup.code;
-    this.alertService.warning(url + queryParams);
-    window.location.href = url + queryParams;
+      // replace '%28 %29' for() case url refresh error
+      const url: string = `/sales-portal/buy-product/brand/${brand}/${model}`;
+      const queryParams: string =
+        '?modelColor=' + this.product.color +
+        '&productType=' + this.product.productType +
+        '&productSubtype=' + this.product.productSubtype +
+        '&imei=' + imei.imei +
+        '&customerGroup=' + this.priceOption.customerGroup.code;
+      window.location.href = url + queryParams;
+      this.alertService.warning(url + queryParams);
+
+    } else {
+      if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+        this.homeService.goToHome();
+        return;
+      }
+      this.transactionService.remove();
+      this.product = this.priceOption.queryParams;
+      const brand: string = encodeURIComponent(this.product.brand ? this.product.brand : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
+      const model: string = encodeURIComponent(this.product.model ? this.product.model : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
+      // replace '%28 %29' for() case url refresh error
+      const url: string = `/sales-portal/buy-product/brand/${brand}/${model}`;
+      const queryParams: string =
+        '?modelColor=' + this.product.color +
+        '&productType=' + this.product.productType +
+        '&productSubtype=' + this.product.productSubtype;
+      window.location.href = url + queryParams;
+      this.alertService.warning(url + queryParams);
+    }
+
   }
 
   public onNext(): void {
