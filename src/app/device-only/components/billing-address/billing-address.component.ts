@@ -32,6 +32,7 @@ export interface CustomerAddress {
 export class BillingAddressComponent implements OnInit, OnChanges {
 
   @Input() keyInCustomerAddressTemp: any;
+  @Input() actionType: string;
 
   @Input()
   titleNames: string[];
@@ -114,6 +115,9 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   checkAction(): void {
     if (!this.transaction.data) {
       this.customerAddressForm.controls['idCardNo'].enable();
+      if (this.actionType === TransactionAction.READ_CARD){
+        this.customerAddressForm.controls['idCardNo'].disable();
+      }
     } else {
       if (this.transaction.data.action === TransactionAction.READ_CARD) {
         this.customerAddressForm.controls['idCardNo'].disable();
@@ -214,8 +218,8 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     this.customerAddressForm.valueChanges.pipe(debounceTime(750)).subscribe((value: any) => {
       this.error.emit(this.customerAddressForm.valid);
       if (this.customerAddressForm.valid && this.customerAddressForm.controls.idCardNo.value) {
-        const idCardNo = this.customerAddressForm.controls.idCardNo;
-        this.completed.emit({...value, ...idCardNo});
+        const idCardNo = this.customerAddressForm.controls.idCardNo.value;
+        this.completed.emit({...value, idCardNo});
       }
     });
   }

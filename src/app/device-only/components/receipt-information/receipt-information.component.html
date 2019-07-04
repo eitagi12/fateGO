@@ -35,7 +35,7 @@
             </div>
             <div *ngIf="isShowInputForKeyIn;else customerDetail">
                 <app-billing-address [titleNames]="titleName" [customerAddress]="customerAddress" [allZipCodes]="allZipCodes" [provinces]="getProvinces()" [amphurs]="amphurs" [tumbols]="tumbols" [zipCodes]="zipCode" (provinceSelected)="onProvinceSelected($event)" (amphurSelected)="onAmphurSelected($event)"
-                    (tumbolSelected)="onTumbolSelected($event)" (zipCodeSelected)="onZipCodeSelected($event)" (completed)="onCompleted($event)" (error)="onError($event)" [keyInCustomerAddressTemp]="keyInCustomerAddressTemp">
+                    (tumbolSelected)="onTumbolSelected($event)" (zipCodeSelected)="onZipCodeSelected($event)" (completed)="onCompleted($event)" (error)="onError($event)" [keyInCustomerAddressTemp]="keyInCustomerAddressTemp" [actionType]="actionType">
                 </app-billing-address>
             </div>
             <ng-template #customerDetail>

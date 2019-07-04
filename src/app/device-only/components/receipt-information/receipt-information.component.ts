@@ -43,6 +43,7 @@ export class ReceiptInformationComponent implements OnInit {
   nameText: string;
   billingAddressText: string;
   keyInCustomerAddressTemp: any;
+  actionType: string;
 
   constructor(
     private fb: FormBuilder,
@@ -156,7 +157,7 @@ export class ReceiptInformationComponent implements OnInit {
       amphur: data.customer.amphur,
       tumbol: data.customer.tumbol,
       zipCode: data.customer.zipCode,
-      mobileNo: data.mobileNo
+      mobileNo: data.mobileNo,
     };
     this.action.emit(data.action);
     this.customerInfo = { customer };
@@ -165,6 +166,7 @@ export class ReceiptInformationComponent implements OnInit {
       this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(data.customer.idCardNo.substring(9))}`));
     }
     this.keyInCustomerAddressTemp = customer;
+    this.actionType = data.action;
     this.billingAddress.getLocationName()
       .subscribe((resp) => this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName));
     this.nameText = data.customer.titleName + ' ' + data.customer.firstName + ' ' + data.customer.lastName;
@@ -180,7 +182,6 @@ export class ReceiptInformationComponent implements OnInit {
           case 'Pre-paid':
             this.alertService.warning('กรุณาระบุเบอร์ AIS รายเดือนเท่านั้น');
             this.searchByMobileNoForm.controls['mobileNo'].setValue('');
-            this.action.emit(TransactionAction.KEY_IN);
             break;
           case 'Post-paid':
             this.customerInfoService.getBillingByMobileNo(mobileNo)
