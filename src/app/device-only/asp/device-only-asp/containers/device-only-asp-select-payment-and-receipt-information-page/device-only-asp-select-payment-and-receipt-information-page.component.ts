@@ -191,10 +191,6 @@ export class DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent implem
 
   public onBack(): void {
     if (this.user.channelType === 'sff-web') {
-      if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
-        this.homeService.goToHome();
-        return;
-      }
       this.transactionService.remove();
       this.product = this.priceOption.queryParams;
       const brand: string = encodeURIComponent(this.product.brand ? this.product.brand : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
