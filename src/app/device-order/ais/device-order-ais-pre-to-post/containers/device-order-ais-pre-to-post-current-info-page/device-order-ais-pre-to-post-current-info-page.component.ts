@@ -17,6 +17,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
+import { TranslateService } from '@ngx-translate/core';
 
 export interface Balance {
   remainingBalance: number;
@@ -57,7 +58,8 @@ export class DeviceOrderAisPreToPostCurrentInfoPageComponent implements OnInit, 
     private homeService: HomeService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private shoppingCartService: ShoppingCartService
+    private shoppingCartService: ShoppingCartService,
+    private translateService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -127,7 +129,7 @@ export class DeviceOrderAisPreToPostCurrentInfoPageComponent implements OnInit, 
           if (error && error.errors && typeof error.errors === 'string') {
             this.alertService.notify({
               type: 'error',
-              html: error.errors
+              html: this.translateService.instant(error.errors)
             });
           } else {
             Promise.reject(resp);

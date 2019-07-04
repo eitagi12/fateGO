@@ -163,7 +163,7 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
               this.transaction.data.action = TransactionAction.KEY_IN_REPI;
             })
             .catch((msg: string) => {
-              return this.alertService.error(msg).then(() => true);
+              return this.alertService.error(this.translateService.instant(msg)).then(() => true);
             });
         })
         .then((isError: boolean) => {
@@ -180,7 +180,7 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
           if (error && error.errors && typeof error.errors === 'string') {
             this.alertService.notify({
               type: 'error',
-              html: error.errors
+              html: this.translateService.instant(error.errors)
             });
           } else {
             Promise.reject(resp);
