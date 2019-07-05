@@ -326,9 +326,9 @@ export class MobileCareComponent implements OnInit {
       type: 'warning',
       width: '80%',
       cancelButtonText: 'เปลี่ยนเบอร์ใหม่',
-      cancelButtonClass: 'btn-secondary btn-lg text-black mr-2',
+      cancelButtonClass: 'btn-secondary btn-lg mr-2',
       confirmButtonText: 'ยืนยันการสมัคร',
-      confirmButtonClass: 'btn-success btn-lg text-white mr-2',
+      confirmButtonClass: 'btn-success btn-lg mr-2',
       showCancelButton: true,
       showConfirmButton: true,
       reverseButtons: true,
@@ -336,7 +336,7 @@ export class MobileCareComponent implements OnInit {
       html: `หมายเลข ${this.mobileCareService.mobileNoPipe(form.mobileNo)} <br> สมัครบริการโมบายแคร์กับเครื่อง
       ${this.exMobileCare.existHandSet.brand} ${this.exMobileCare.existHandSet.model} แล้ว
       <br> (แพ็กเกจ ${descThai} <br> สิ้นสุด ${endDt}) <br> กรุณาเปลี่ยนเบอร์ใหม่ หรือยืนยันสมัครบริการโมบายแคร์กับ <br>
-      เครื่อง ${this.priceOption.productDetail.brand} ${this.priceOption.productDetail.model} (เครื่องใหม่)<br>
+      เครื่อง ${this.priceOption.productStock.brand} ${this.priceOption.productStock.model} (เครื่องใหม่)<br>
       <div class="text-red">โดยบริการโมบายแคร์กับเครื่องเดิมจะสิ้นสุดทันที</div>`
     }).then((data) => {
       if (data.value && data.value === true) {
