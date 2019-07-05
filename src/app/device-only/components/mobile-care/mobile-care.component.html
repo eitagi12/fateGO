@@ -76,7 +76,7 @@
         <div>
           <input class="form-check-input" type="radio" id="ignore-mobile-care" [value]="false" formControlName="mobileCare">
           <label class="form-check-label" for="ignore-mobile-care">{{ 'ไม่สนใจชื้อบริการโมบายแคร์' | translate }}</label>
-          <label class="text-green" [hidden]="!notBuyMobileCareForm.value.notBuyMobile">({{ notBuyMobileCareForm.value.notBuyMobile }})</label>
+          <label class="text-green" [hidden]="!notBuyMobileCareForm.value.notBuyMobile">{{ notBuyMobileCareForm.value.notBuyMobile | translate }}</label>
         </div>
         <div *ngIf="mobileCare?.existingMobileCare">
           <small class="text-red">{{ 'หมายเหตุ : กรณีมีการสมัคร Mobile care ที่เครื่องใหม่ การรับประกันที่เครื่องเดิมจะสิ้นสุด' | translate }}</small>

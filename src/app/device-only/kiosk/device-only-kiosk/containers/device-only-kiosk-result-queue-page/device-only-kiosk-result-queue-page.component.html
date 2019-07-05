@@ -1,6 +1,7 @@
 <div class="mc-flex">
-  <mc-header title="ซื้อเครื่องเปล่า">
+  <mc-header title="{{ 'ซื้อเครื่องเปล่า' | translate }}">
     <div class="header-icon-right">
+        <mc-dropdown-language></mc-dropdown-language>
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
@@ -12,9 +13,9 @@
               <img src="assets/images/icon/icon-green-check-circle.png" class="d-block m-auto icon">
                 <div class="my-3 text-center">
                 <!-- <p>หมายเลข {{ transaction?.data?.simCard?.mobileNo | mobileNo }}</p> -->
-                  <p class="text-green">หมายเลข  
+                  <p class="text-green">{{ 'หมายเลขของท่าน' | translate }}  
                     <span id="text-mobile-no">{{ transaction?.data?.receiptInfo?.telNo | mobileNo }}</span></p>
-                  <p class="text-green">รายการสั่งซื้อของท่านได้เข้าสู่ระบบเรียบร้อยแล้ว</p> 
+                  <p class="text-green">{{ 'รายการสั่งซื้อของท่านได้เข้าสู่ระบบเรียบร้อยแล้ว' | translate }}</p> 
                   <!-- กรณี จ่ายด้วย Rabbit -->
                   <!-- <p>หมายเลขอ้างอิง -->
                   <!-- <span id="text-transaction-no">{{ transaction?.data?.}}</span></p> -->
@@ -23,7 +24,7 @@
           </div>
           <div class="card-body bg-white">
             <div class="text-left">
-              <p>รายการสินค้า</p>
+              <p>{{ 'รายการสินค้า' | translate }} </p>
             </div>
             <div class="row mb-2">
                <div class="col-6 text-left">
@@ -39,7 +40,7 @@
                   <p class="text-green" id="text-normal-price">฿ {{ price | number}} </p>
                </div>
                <div class="col-12 text-right">
-                {{ paymentQr }}(รวมVAT)
+                {{ paymentQr | translate }}{{ '(รวมVAT)' | translate }}
                 <span class="text-green" id="text-include-vat-price">฿ {{ price | number}} </span>
                </div>
             </div>
@@ -49,7 +50,7 @@
       <div class="container-fluid mt-5">
         <div class="text-center my-2 pt-5">
           <div>
-            <h2>หมายเลขคิวในการชำระสินค้าของท่านคือ</h2>
+            <h2>{{ 'หมายเลขคิวในการชำระสินค้าของท่านคือ' | translate }} </h2>
           </div>
           <div class="row">
             <div class="m-auto text-center col-4 mt-4">

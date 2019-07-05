@@ -15,7 +15,7 @@
         <span class="text-grey" id="text-color-summary" *ngIf="priceOption?.productStock?.colorName">
           {{ priceOption?.productStock?.colorName?'สี': '' }} {{ priceOption?.productStock?.colorName }}
         </span>
-        <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'"> : ชำระเต็มจำนวน</span>
+        <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'"> : {{ 'ชำระเต็มจำนวน' | translate }}</span>
         <span class="text-grey" *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'"> :
            {{ 'ผ่อนชำระบัตรเครดิต' | translate }}</span>
         <span class="pull-right text-green" id="text-price-summary">
@@ -40,7 +40,7 @@
       *ngIf="transaction?.data?.payment?.paymentForm !== 'INSTALLMENT' && transaction?.data?.payment?.paymentType === 'CREDIT'">
       <span class="text-grey" id="text-credit-summary">
         (
-        ชำระโดย เครดิตธนาคาร
+        {{ 'ชำระโดย เครดิตธนาคาร' | translate }}
         {{ transaction?.data?.payment?.paymentMethod?.name }}
         {{ transaction?.data?.payment?.paymentBank?.name}}
         )
@@ -54,7 +54,7 @@
       </small>
       <small class="text-muted" *ngIf="transaction?.data?.payment?.paymentType === 'QR_CODE'">
         (
-        ชำระโดย
+        {{ 'ชำระโดย' | translate }}
         <span *ngIf="transaction?.data?.payment?.paymentQrCodeType === 'THAI_QR'">
           Thai QR Promptpay
         </span>
@@ -68,13 +68,13 @@
   </div>
   <div class="card-footer bg-transparent ">
     <p>
-      ข้อมูลใบเสร็จรับเงิน
+      {{ 'ข้อมูลใบเสร็จรับเงิน' | translate }}
     </p>
     <div class="row">
       <div class="col-12 col-sm-4">
         <i class="fa fa-circle mr-3 text-lime"></i>
         <span class="text-grey">
-          ผู้ชื้อ
+          {{ 'ผู้ซื้อ' | translate }}
         </span>
       </div>
       <div class="col-12 col-sm-8">
@@ -86,7 +86,7 @@
       <div class="col-12 col-sm-4">
         <i class="fa fa-circle mr-3 text-lime"></i>
         <span class="text-grey">
-          ที่อยู่ในใบเสร็จรับเงิน
+          {{ 'ที่อยู่ในใบเสร็จรับเงิน' | translate }}
         </span>
       </div>
       <div class="col-12 col-sm-8">
@@ -124,7 +124,7 @@
   <div class="card-body box-balance">
     <div *ngIf='enoughBalance'>
       <img class="icon-page" src="assets/images/icon/icon_pouch.png" alt="เป่าตังค์">
-      <span class="enoughBalanceText"> ยอดเงินคงเหลือ {{ balance | number}} บาท</span>
+      <span class="enoughBalanceText">  {{ 'ยอดเงินคงเหลือ' | translate }} {{ balance | number}} {{ 'บาท' | translate }}</span>
     </div>
 
     <div *ngIf='!enoughBalance' class="row">
@@ -132,9 +132,8 @@
         <img class="icon-page" src="assets/images/icon/icon-red-alert-circle.png" alt="เป่าตังค์">
       </div>
       <div class="col-sm-11">
-        <span class="notEnoughBalanceText"> ยอดเงินคงเหลือ {{ balance | number }} บาท กรุณาเติมเงินเพิ่ม
-          {{ ( mobileCare - balance) | number }} บาท เพื่อสมัครแพ็กเกจ<br>*เมื่อเติมเงินเรียบร้อยแล้ว
-          กรุณากดปุ่มเพื่ออัพเดทยอดเงินคงเหลือ </span>
+        <span class="notEnoughBalanceText"> {{ 'ยอดเงินคงเหลือ' | translate }} {{ balance | number}} {{ 'บาท' | translate }} {{ 'กรุณาเติมเงินเพิ่ม' | translate }}
+          {{ ( mobileCare - balance) | number }} {{ 'บาท' | translate }} {{ 'เพื่อสมัครแพ็กเกจ' | translate }}<br>*{{ 'เมื่อเติมเงินเรียบร้อยแล้ว กรุณากดปุ่มเพื่ออัพเดทยอดเงินคงเหลือ' | translate }} </span>
       </div>
       <div>
         <button class="checkBalanceBtn" (click)="onLoadBalance()">อัพเดตยอดเงิน</button>
