@@ -140,8 +140,7 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
       }).then((order: any) => {
         if (order) {
           const createDate = moment(order.createDate, 'YYYYMMDD').format('DD/MM/YYYY');
-          return this.alertService.error(`ระบบไม่สามารถทำรายการได้ <br>หมายเลข ${this.identity}
-          อยู่ระหว่างย้ายค่ายไปยังผู้ให้บริการรายอื่น (True, DTAC) (ทำรายการวันที่${createDate})`);
+          return this.alertService.error(this.errorMessage(createDate));
         }
         return this.checkCustomerProfile(this.identity);
 
@@ -149,6 +148,15 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
       .catch(() => this.checkCustomerProfile(this.identity));
 
   }
+
+  errorMessage(createDate: string): string {
+    return this.translateService.currentLang === 'EN'
+    ? `The transaction cannot be completed. <br>Number ${this.identity}
+    between the move the camp to the other service providers (True, DTAC).<br> (Transaction Date${createDate})`
+    : `ระบบไม่สามารถทำรายการได้ <br>หมายเลข ${this.identity}
+    อยู่ระหว่างย้ายค่ายไปยังผู้ให้บริการรายอื่น (True, DTAC) (ทำรายการวันที่${createDate})`;
+  }
+
   checkCustomerProfile(mobileNo: any): void {
     if (this.utils.isMobileNo(this.identity)) {
       this.http.get('/api/customerportal/validate-customer-mobile-no-pre-to-post', {
