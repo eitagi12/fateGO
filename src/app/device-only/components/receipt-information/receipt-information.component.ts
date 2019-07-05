@@ -53,7 +53,7 @@ export class ReceiptInformationComponent implements OnInit {
     private alertService: AlertService,
     private pageLoadingService: PageLoadingService
   ) {
-    this.isShowInputForKeyIn = this.billingAddress.getIsKeyInBillingAddress();
+    this.isShowInputForKeyIn = false;
     this.billingAddress.getTitleName().then(this.responseTitleNames());
     this.billingAddress.getProvinces().then(this.responseProvinces());
     this.billingAddress.getZipCodes().then(this.responseZipCodes());
