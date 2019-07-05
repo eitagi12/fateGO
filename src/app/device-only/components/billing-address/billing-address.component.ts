@@ -97,17 +97,10 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   }
 
   checkAction(): void {
-    if (!this.transaction.data) {
-      this.customerAddressForm.controls['idCardNo'].enable();
-      if (this.actionType === TransactionAction.READ_CARD) {
-        this.customerAddressForm.controls['idCardNo'].disable();
-      }
+    if (this.actionType === TransactionAction.READ_CARD) {
+      this.customerAddressForm.controls['idCardNo'].disable();
     } else {
-      if (this.actionType === TransactionAction.READ_CARD) {
-        this.customerAddressForm.controls['idCardNo'].disable();
-      } else {
-        this.customerAddressForm.controls['idCardNo'].enable();
-      }
+      this.customerAddressForm.controls['idCardNo'].enable();
     }
   }
 

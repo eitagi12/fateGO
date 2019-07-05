@@ -45,6 +45,7 @@ export class ReceiptInformationComponent implements OnInit {
   keyInCustomerAddressTemp: any;
   actionType: string;
   customerReadCardTemp: any;
+
   constructor(
     private fb: FormBuilder,
     private billingAddress: BillingAddressService,
@@ -164,19 +165,19 @@ export class ReceiptInformationComponent implements OnInit {
     if (!this.customerReadCardTemp && data.action === TransactionAction.READ_CARD) {
       this.customerReadCardTemp = customer;
     }
-    if (data.action === TransactionAction.READ_CARD) {
-      this.errorAddessValid.emit(true);
-    }
+
     if (data.customer.idCardNo) {
       // tslint:disable-next-line: max-line-length
       this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(data.customer.idCardNo.substring(9))}`));
     }
     this.keyInCustomerAddressTemp = customer;
     this.actionType = data.action;
-    this.billingAddress.getLocationName()
-      .subscribe((resp) => this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName));
+    this.billingAddress.getLocationName().subscribe((resp) => this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName));
     this.nameText = data.customer.titleName + ' ' + data.customer.firstName + ' ' + data.customer.lastName;
     this.billingAddressText = this.customerInfoService.convertBillingAddressToString(customer);
+    if (data.action === TransactionAction.READ_CARD || this.billingAddressText) {
+      this.errorAddessValid.emit(true);
+    }
     this.customerInfoService.setDisableReadCard();
   }
 
@@ -197,6 +198,7 @@ export class ReceiptInformationComponent implements OnInit {
                     customer: this.customerInfoService.mapAttributeFromGetBill(res.data.billingAddress),
                     action: TransactionAction.KEY_IN
                   });
+                  this.errorAddessValid.emit(true);
                   this.customerInfoService.setSelectedMobileNo(mobileNo);
                   this.pageLoadingService.closeLoading();
                 } else {
