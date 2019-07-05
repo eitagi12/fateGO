@@ -223,7 +223,6 @@ export class DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent implem
         '&productType=' + this.product.productType +
         '&productSubtype=' + this.product.productSubtype;
       window.location.href = url + queryParams;
-      this.alertService.warning(url + queryParams);
     }
 
   }
