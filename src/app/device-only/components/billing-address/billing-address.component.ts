@@ -32,58 +32,42 @@ export interface CustomerAddress {
 export class BillingAddressComponent implements OnInit, OnChanges {
 
   @Input() keyInCustomerAddressTemp: any;
+
   @Input() actionType: string;
 
-  @Input()
-  titleNames: string[];
+  @Input() titleNames: string[];
 
-  @Input()
-  firstName: string[];
+  @Input() firstName: string[];
 
-  @Input()
-  lastName: string[];
+  @Input() lastName: string[];
 
-  @Input()
-  customerAddress: CustomerAddress;
+  @Input() customerAddress: CustomerAddress;
 
-  @Input()
-  idCardNo: string[];
+  @Input() idCardNo: string[];
 
-  @Input()
-  allZipCodes: string[];
+  @Input() allZipCodes: string[];
 
-  @Input()
-  provinces: string[];
+  @Input() provinces: string[];
 
-  @Input()
-  amphurs: string[];
+  @Input() amphurs: string[];
 
-  @Input()
-  tumbols: string[];
+  @Input() tumbols: string[];
 
-  @Input()
-  zipCodes: string[];
+  @Input() zipCodes: string[];
 
-  @Input()
-  titleNameSelected: EventEmitter<any> = new EventEmitter<any>();
+  @Input() titleNameSelected: EventEmitter<any> = new EventEmitter<any>();
 
-  @Output()
-  provinceSelected: EventEmitter<any> = new EventEmitter<any>();
+  @Output() provinceSelected: EventEmitter<any> = new EventEmitter<any>();
 
-  @Output()
-  amphurSelected: EventEmitter<any> = new EventEmitter<any>();
+  @Output() amphurSelected: EventEmitter<any> = new EventEmitter<any>();
 
-  @Output()
-  tumbolSelected: EventEmitter<any> = new EventEmitter<any>();
+  @Output() tumbolSelected: EventEmitter<any> = new EventEmitter<any>();
 
-  @Output()
-  zipCodeSelected: EventEmitter<any> = new EventEmitter<any>();
+  @Output() zipCodeSelected: EventEmitter<any> = new EventEmitter<any>();
 
-  @Output()
-  completed: EventEmitter<any> = new EventEmitter<any>();
+  @Output() completed: EventEmitter<any> = new EventEmitter<any>();
 
-  @Output()
-  error: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() error: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   customerAddressForm: FormGroup;
   private valueFn: any = Validators.nullValidator;
@@ -119,7 +103,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
         this.customerAddressForm.controls['idCardNo'].disable();
       }
     } else {
-      if (this.transaction.data.action === TransactionAction.READ_CARD) {
+      if (this.actionType === TransactionAction.READ_CARD) {
         this.customerAddressForm.controls['idCardNo'].disable();
       } else {
         this.customerAddressForm.controls['idCardNo'].enable();
