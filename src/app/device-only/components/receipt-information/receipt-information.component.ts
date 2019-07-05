@@ -44,7 +44,7 @@ export class ReceiptInformationComponent implements OnInit {
   billingAddressText: string;
   keyInCustomerAddressTemp: any;
   actionType: string;
-
+  customerReadCardTemp: any;
   constructor(
     private fb: FormBuilder,
     private billingAddress: BillingAddressService,
@@ -161,6 +161,12 @@ export class ReceiptInformationComponent implements OnInit {
     };
     this.action.emit(data.action);
     this.customerInfo = { customer };
+    if (!this.customerReadCardTemp && data.action === TransactionAction.READ_CARD) {
+      this.customerReadCardTemp = customer;
+    }
+    if (data.action === TransactionAction.READ_CARD) {
+      this.errorAddessValid.emit(true);
+    }
     if (data.customer.idCardNo) {
       // tslint:disable-next-line: max-line-length
       this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(data.customer.idCardNo.substring(9))}`));
@@ -300,13 +306,43 @@ export class ReceiptInformationComponent implements OnInit {
   }
 
   onCompleted(value: any): void {
+    let action = TransactionAction.KEY_IN;
+    if (!value.dirty && !value.touched && this.actionType === TransactionAction.READ_CARD) {
+      action = TransactionAction.READ_CARD;
+    }
+
     this.setCustomerInfo({
       customer: value,
-      action: TransactionAction.KEY_IN
+      action: action
     });
     if (!value.idCardNo) {
       this.receiptInfoForm.controls['taxId'].setValue('');
     }
+  }
+
+  isDirtyCustomerInfoReadCard(value: any): any {
+    const fields = ['amphur',
+    'buildingName',
+    'firstName',
+    'floor',
+    'homeNo',
+    'idCardNo',
+    'lastName',
+    'moo',
+    'mooBan',
+    'province',
+    'room',
+    'soi',
+    'street',
+    'titleName',
+    'tumbol',
+    'zipCode'];
+    fields.forEach((i) => {
+       if (this.customerReadCardTemp && this.customerReadCardTemp[i] !== value[i]) {
+        return false;
+       }
+    });
+    return true;
   }
 
   onError(valid: boolean): void {

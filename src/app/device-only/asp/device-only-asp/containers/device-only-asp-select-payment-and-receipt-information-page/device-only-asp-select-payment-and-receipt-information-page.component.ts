@@ -32,7 +32,7 @@ export class DeviceOnlyAspSelectPaymentAndReceiptInformationPageComponent implem
   private paymentDetailValid: boolean;
   public customerInfoTemp: any;
   private paymentDetailTemp: any;
-  private addessValid: boolean = true;
+  private addessValid: boolean;
 
   constructor(
     private router: Router,

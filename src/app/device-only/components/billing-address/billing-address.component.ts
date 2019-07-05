@@ -171,7 +171,12 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       zipCode: ''
     });
     this.disableFormAmphurAndTumbol();
-    this.completed.emit(this.customerAddressForm.value);
+    this.customerAddressForm.markAsTouched();
+    this.completed.emit({
+      ...this.customerAddressForm.value,
+      dirty: this.customerAddressForm.dirty,
+      touched: this.customerAddressForm.touched,
+    });
     this.customerInformationService.unSetDisableReadCard();
     this.customerAddressForm.controls['idCardNo'].enable();
     if (this.zipCodes) {
@@ -219,7 +224,7 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       this.error.emit(this.customerAddressForm.valid);
       if (this.customerAddressForm.valid && this.customerAddressForm.controls.idCardNo.value) {
         const idCardNo = this.customerAddressForm.controls.idCardNo.value;
-        this.completed.emit({...value, idCardNo});
+        this.completed.emit({...value, idCardNo, dirty: this.customerAddressForm.dirty, touched: this.customerAddressForm.touched });
       }
     });
   }
