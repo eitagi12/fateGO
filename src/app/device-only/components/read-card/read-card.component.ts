@@ -14,7 +14,7 @@ import { Subscription } from 'rxjs';
 
 })
 
-export class ReadCardComponent implements OnInit, OnDestroy {
+export class ReadCardComponent implements OnInit {
 
   @Output() customerInfo: EventEmitter<Object> = new EventEmitter<Object>();
 
@@ -225,11 +225,11 @@ export class ReadCardComponent implements OnInit, OnDestroy {
     }
   }
 
-  ngOnDestroy(): void {
-    if (this.kioskApi) {
-      this.koiskApiFn.close();
-    }
-  }
+  // ngOnDestroy(): void {
+  //   if (this.kioskApi) {
+  //     this.koiskApiFn.close();
+  //   }
+  // }
 }
 
 // declare let $: any;
