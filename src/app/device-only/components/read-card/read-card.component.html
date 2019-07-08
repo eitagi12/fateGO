@@ -19,7 +19,7 @@
   </div>
 </div>
 
-<ng-template #select_billing_address>
+<ng-template #select_billing_address style="overflow-y: hidden;">
   <h5 class="modal-header bg-light-blue text-white">
       {{ 'เลือกที่อยู่ในใบเสร็จรับเงิน' | translate }}
   </h5>
@@ -28,7 +28,7 @@
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label id="modal-text-customer-name">{{ nameTextBySmartCard }}</label>
     </label>
   </div>
-  <div class="card-body">
+  <div class="card-body" style="height: 500px; overflow-y: scroll; ">
     <form [formGroup]="selectBillingAddressForm">
       <h5>{{ 'ที่อยู่ตามบัตรประชาชน' | translate }}</h5>
       <div>

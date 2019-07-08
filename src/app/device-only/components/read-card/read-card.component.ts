@@ -183,8 +183,9 @@ export class ReadCardComponent implements OnInit {
               return item;
             }
           });
-          this.modalBillAddress = this.bsModalService.show(this.selectBillingAddressTemplate);
-        }
+          this.modalBillAddress = this.bsModalService.show(this.selectBillingAddressTemplate,
+             {backdrop: 'static'});
+            }
         this.pageLoadingService.closeLoading();
       });
   }
