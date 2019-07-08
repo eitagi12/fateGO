@@ -132,7 +132,7 @@ export class QueuePageService {
       qrAmt: payment.paymentType === 'QR_CODE' && mpayPayment.tranId ? this.getQRAmt(trade, transaction) : null
     };
 
-    if (this.checkAddCurrentPackAmt(priceOption, trade, contract, currentPackage, mainPackage)) {
+    if (priceOption.customerGroup.code === CustomerGroup.EXISTING && this.isContractFirstPack(contract) === 0) {
       data.currentPackAmt = (mainPackage.priceExclVat || 0);
     }
 
@@ -366,23 +366,8 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
     return total;
   }
 
-  checkAddCurrentPackAmt(priceOption: PriceOption, trade: any, contract: any, currentPackage: any, mainPackage: any): boolean {
-    return priceOption.customerGroup.code === CustomerGroup.EXISTING
-    && !this.advancePay(trade)
-    && this.isContractFirstPack(contract) === 0
-    && this.moreSelectPackage(currentPackage, mainPackage);
-  }
-
-  advancePay(trade: any = {}): boolean {
-    return !!(+(trade.advancePay && +trade.advancePay.amount || 0) > 0);
-  }
-
   isContractFirstPack(contract: any = {}): number {
     return Math.max(+contract.firstPackage || 0, +contract.minPrice || 0, +contract.initialPackage || 0);
-  }
-
-  moreSelectPackage(currentPackage: any = {}, mainPackage: any = {}): boolean {
-    return (+currentPackage.priceExclVat || 0) > (+mainPackage.priceExclVat || 0);
   }
 
   public checkQueueLocation(): Promise<any> {
