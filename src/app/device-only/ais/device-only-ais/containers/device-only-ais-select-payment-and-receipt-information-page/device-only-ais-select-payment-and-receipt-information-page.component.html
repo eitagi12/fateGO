@@ -12,7 +12,7 @@
         <mc-payment-detail [paymentDetail]="paymentDetail" [banks]="banks" (completed)="onPaymentDetailCompleted($event)" (error)="onPaymentDetailError($event)">
         </mc-payment-detail>
         <div class="my-3">
-            <app-receipt-information (completed)="onComplete($event)" (error)="onError($event)" (action)="checkAction($event)" (errorAddessValid)="onErrorAddessValid($event)" [customerInfoTemp]="customerInfoTemp"></app-receipt-information>
+            <app-receipt-information-device-only (completed)="onComplete($event)" (error)="onError($event)" (action)="checkAction($event)" (errorAddessValid)="onErrorAddessValid($event)" [customerInfoTemp]="customerInfoTemp"></app-receipt-information-device-only>
         </div>
     </div>
     <mc-footer>
