@@ -34,6 +34,7 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
   customerInfoTemp: any;
   user: User;
   localtion: any;
+  addessValid: boolean;
 
   constructor(
     private router: Router,
@@ -146,6 +147,10 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
     this.isReceiptInformationValid = error;
   }
 
+  public onErrorAddessValid(err: boolean): void {
+    this.addessValid = err;
+  }
+
   checkAction(action: string): void {
     if (action === 'READ_CARD') {
       this.transaction.data.action = TransactionAction.READ_CARD;
@@ -190,7 +195,7 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
   }
 
   isNotFormValid(): boolean {
-    return !(this.isReceiptInformationValid && this.paymentDetailValid);
+    return !(this.isReceiptInformationValid && this.paymentDetailValid && this.addessValid);
   }
 
   ngOnDestroy(): void {
