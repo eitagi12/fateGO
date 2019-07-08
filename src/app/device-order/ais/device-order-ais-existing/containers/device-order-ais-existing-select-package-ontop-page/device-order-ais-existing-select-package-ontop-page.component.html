@@ -1,4 +1,4 @@
-<div class="mc-flex">
+g<div class="mc-flex">
     <mc-header title="{{'ลูกค้าปัจจุบัน' | translate}}">
       <div class="header-icon-left">
         <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
@@ -19,10 +19,10 @@
             </div>
             <div class="card-body">
               <div class="text-green">
-                <span class="pull-left pt-2">{{ transaction?.data?.mainPackage?.customAttributes?.shortNameThai }}</span>
+                <span class="pull-left pt-2">{{ packageTitle(transaction?.data?.mainPackage?.customAttributes) }}</span>
               </div>
               <div class="d-inline-block mt-3">
-                <p>{{ transaction?.data?.mainPackage?.customAttributes?.inStatementThai }}</p>
+                <p>{{ packageInStatement(transaction?.data?.mainPackage?.customAttributes) }}</p>
               </div>
             </div>
             <div class="mt-2">
@@ -40,7 +40,7 @@
                       <div class="col-8 col-sm-9 ">
                         <input type="checkbox"
                         id="{{ packageOntop?.promotionCode }}" formControlName="{{ packageOntop?.promotionCode }}">
-                        <label for="{{packageOntop?.promotionCode  }}">{{ packageTitle(packageOntop) }}</label>
+                        <label for="{{packageOntop?.promotionCode }}">{{ packageTitle(packageOntop) }}</label>
                         <div class="endDt"> {{'สิ้นสุดวันที่' | translate}}: {{ packageOntop.expiredDate }}</div>
                       </div>
                       <div class="col-4 col-sm-3 text-center pt-2">

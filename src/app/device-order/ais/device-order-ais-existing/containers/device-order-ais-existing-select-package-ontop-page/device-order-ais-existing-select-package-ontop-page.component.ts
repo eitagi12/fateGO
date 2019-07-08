@@ -131,10 +131,10 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
   }
 
   packageTitle(value: any = {}): string {
-    return this.translateService.currentLang === 'EN' ? value.titleEng : value.title || '';
+    return this.translateService.currentLang === 'EN' ? (value.shortNameEng || value.titleEng) : (value.shortNameThai ||  value.title);
   }
 
-  currentPackageInStatement(value: any = {}): string {
+  packageInStatement(value: any = {}): string {
     return this.translateService.currentLang === 'EN' ? value.inStatementEng : value.inStatementThai || '';
   }
 

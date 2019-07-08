@@ -19,10 +19,10 @@
             </div>
             <div class="card-body">
               <div class="text-green">
-                <span class="pull-left pt-2">{{ transaction?.data?.mainPackage?.customAttributes?.shortNameThai}}</span>
+                <span class="pull-left pt-2">{{ packageTitle(transaction?.data?.mainPackage?.customAttributes) }}</span>
               </div>
               <div class="d-inline-block mt-3">
-                <p>{{ transaction?.data?.mainPackage?.customAttributes?.inStatementThai }}</p>
+                <p>{{ packageInStatement(transaction?.data?.mainPackage?.customAttributes) }}</p>
               </div>
             </div>
             <div class="mt-2">
