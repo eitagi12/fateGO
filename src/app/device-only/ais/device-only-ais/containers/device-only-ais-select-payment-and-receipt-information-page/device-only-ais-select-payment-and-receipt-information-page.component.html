@@ -1,31 +1,22 @@
 <div class="mc-flex">
-  <mc-header title="ซื้อเครื่องเปล่า">
-    <div class="header-icon-left">
-      <mc-header-icon src="assets/images/icon/icon-back.png" id="button-upper-back" (click)="onBack()"></mc-header-icon>
+    <mc-header title="ซื้อเครื่องเปล่า">
+        <div class="header-icon-left">
+            <mc-header-icon src="assets/images/icon/icon-back.png" id="button-upper-back" (click)="onBack()"></mc-header-icon>
+        </div>
+        <div class="header-icon-right">
+            <mc-header-icon src="assets/images/icon/icon-home.png" id="button-home" (click)="onHome()"></mc-header-icon>
+        </div>
+    </mc-header>
+    <div class="mc-flex-wrap">
+        <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
+        <mc-payment-detail [paymentDetail]="paymentDetail" [banks]="banks" (completed)="onPaymentDetailCompleted($event)" (error)="onPaymentDetailError($event)">
+        </mc-payment-detail>
+        <div class="my-3">
+            <app-receipt-information (completed)="onComplete($event)" (error)="onError($event)" (action)="checkAction($event)" (errorAddessValid)="onErrorAddessValid($event)" [customerInfoTemp]="customerInfoTemp"></app-receipt-information>
+        </div>
     </div>
-    <div class="header-icon-right">
-      <mc-header-icon src="assets/images/icon/icon-home.png" id="button-home" (click)="onHome()"></mc-header-icon>
-    </div>
-  </mc-header>
-  <div class="mc-flex-wrap">
-    <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
-    <mc-payment-detail 
-      [paymentDetail]="paymentDetail" 
-      [banks]="banks" 
-      (completed)="onPaymentDetailCompleted($event)" 
-      (error)="onPaymentDetailError($event)">
-    </mc-payment-detail>
-    <div class="my-3">
-      <app-receipt-information
-        (completed)="onComplete($event)"
-        (error)="onError($event)"
-        (action)="checkAction($event)"
-        [customerInfoTemp]="customerInfoTemp"
-      ></app-receipt-information>
-    </div>
-  </div>
-  <mc-footer>
-    <button class="btn btn-secondary" id="button-back" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" id="button-next" (click)="onNext()" [disabled]="isNotFormValid()">NEXT</button>
-  </mc-footer>
+    <mc-footer>
+        <button class="btn btn-secondary" id="button-back" (click)="onBack()">BACK</button>
+        <button class="btn btn-success" id="button-next" (click)="onNext()" [disabled]="isNotFormValid()">NEXT</button>
+    </mc-footer>
 </div>
