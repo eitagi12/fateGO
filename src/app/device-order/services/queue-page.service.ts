@@ -133,7 +133,7 @@ export class QueuePageService {
     };
 
     if (this.checkAddCurrentPackAmt(priceOption, trade, contract)) {
-      data.currentPackAmt = (mainPackage.priceExclVat || 0);
+      data.currentPackAmt = (mainPackage.priceExclVat || '0');
     }
 
     // freeGoods
