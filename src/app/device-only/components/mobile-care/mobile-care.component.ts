@@ -1,7 +1,7 @@
 import { Component, OnInit, Input, ViewChild, TemplateRef, Output, EventEmitter } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
-import { AlertService, PageLoadingService, BillingSystemType } from 'mychannel-shared-libs';
+import { AlertService, PageLoadingService, BillingSystemType, TokenService } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { HttpClient } from '@angular/common/http';
@@ -62,6 +62,7 @@ export class MobileCareComponent implements OnInit {
   transaction: Transaction;
   transactionID: string;
   isSelect: boolean;
+  public isKiosk: boolean = false;
 
   @Input() mobileCare: MobileCare;
   @Input() normalPrice: number;
@@ -87,17 +88,25 @@ export class MobileCareComponent implements OnInit {
     private http: HttpClient,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private mobileCareService: MobileCareService
+    private mobileCareService: MobileCareService,
+    private tokenService: TokenService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
   }
 
   ngOnInit(): void {
+    console.log('channel', this.tokenService.getUser());
+    if (this.tokenService.getUser().channelType === 'smart-order') {
+      this.isKiosk = true;
+    } else {
+      this.isKiosk = false;
+    }
     this.createForm();
     this.onCheckValidators();
     this.checkPrivilegeMobileCare();
     this.isSelect = false;
+
   }
 
   public onCheckValidators(): void {
@@ -114,6 +123,13 @@ export class MobileCareComponent implements OnInit {
         Validators.maxLength(5),
         Validators.required
       ]),
+    });
+    this.privilegeCustomerForm.valueChanges.subscribe((res: any) => {
+      if (this.isKiosk) {
+        if (res.otpNo.length === 5) {
+          this.verifyOTP();
+        }
+      }
     });
   }
 

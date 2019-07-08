@@ -21,7 +21,7 @@
               (keypress)="keyPress($event)" placeholder="ระบุ OTP" maxlength="5">
           </div>
           <div class="col-6 col-sm-4">
-            <button class="btn-otp bg-teal text-white" id="button-verify" (click)="verifyOTP()">Verify</button>
+            <button class="btn-otp bg-teal text-white" id="button-verify" (click)="verifyOTP()" *ngIf="!isKiosk">Verify</button>
           </div>
         </div>
       </form>

@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter, Input } from '@angular/core';
-import { FormBuilder, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, AbstractControl, FormControl } from '@angular/forms';
 import { debounceTime } from 'rxjs/operators';
 import { AlertService, REGEX_MOBILE, ReceiptInfo, PageLoadingService } from 'mychannel-shared-libs';
 import { TransactionAction, Customer } from 'src/app/shared/models/transaction.model';
@@ -23,6 +23,9 @@ export class ReceiptInformationComponent implements OnInit {
   error: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   @Output()
+  errorAddessValid: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+  @Output()
   action: EventEmitter<string> = new EventEmitter<string>();
 
   customerInfo: any;
@@ -40,6 +43,8 @@ export class ReceiptInformationComponent implements OnInit {
   nameText: string;
   billingAddressText: string;
   keyInCustomerAddressTemp: any;
+  actionType: string;
+  customerReadCardTemp: any;
 
   constructor(
     private fb: FormBuilder,
@@ -86,8 +91,9 @@ export class ReceiptInformationComponent implements OnInit {
     const customer = this.customerInfoTemp.customer;
     const billDeliveryAddress = this.customerInfoTemp.billDeliveryAddress;
     const receiptInfo = this.customerInfoTemp.receiptInfo;
+    const mobileNo = this.customerInfoTemp.mobileNo;
     this.setCustomerInfo({
-      customer: { ...customer, ...billDeliveryAddress, ...receiptInfo },
+      customer: { ...customer, ...billDeliveryAddress, ...receiptInfo, ...mobileNo },
       action: this.customerInfoTemp.action
     });
     if (this.isShowInputForKeyIn) {
@@ -113,18 +119,26 @@ export class ReceiptInformationComponent implements OnInit {
       if (this.receiptInfoForm.valid) {
         const receiptInfo: ReceiptInfo = this.receiptInfoForm.value;
         this.completed.emit({ ...this.customerInfo, receiptInfo });
-        if (this.isShowInputForKeyIn) {
-          this.nameText = '';
-          this.billingAddressText = '';
-        }
       }
     });
   }
 
   private createSearchByMobileNoForm(): void {
-    this.searchByMobileNoForm = this.fb.group({
-      mobileNo: ['', Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])]
+    this.searchByMobileNoForm = new FormGroup({
+      'mobileNo': new FormControl('', [
+        Validators.maxLength(10),
+        Validators.minLength(10),
+        Validators.pattern('^(0)(6|8|9)[0-9]*$|^((88)(6|8|9)[0-9]*)$'),
+        Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])
+      ])
     });
+  }
+
+  keyPress(event: any): void {
+    const charCode: number = (event.which) ? event.which : event.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+      event.preventDefault();
+    }
   }
 
   setCustomerInfo(data: any): void {
@@ -148,16 +162,27 @@ export class ReceiptInformationComponent implements OnInit {
       province: data.customer.province,
       amphur: data.customer.amphur,
       tumbol: data.customer.tumbol,
-      zipCode: data.customer.zipCode
+      zipCode: data.customer.zipCode,
+      // mobileNo: data.mobileNo,
     };
     this.action.emit(data.action);
     this.customerInfo = { customer };
-    this.receiptInfoForm.controls['taxId'].setValue(data.customer.idCardNo);
+    if (!this.customerReadCardTemp && data.action === TransactionAction.READ_CARD) {
+      this.customerReadCardTemp = customer;
+    }
+
+    if (data.customer.idCardNo) {
+      // tslint:disable-next-line: max-line-length
+      this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(data.customer.idCardNo.substring(9))}`));
+    }
     this.keyInCustomerAddressTemp = customer;
-    this.billingAddress.getLocationName()
-      .subscribe((resp) => this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName));
+    this.actionType = data.action;
+    this.billingAddress.getLocationName().subscribe((resp) => this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName));
     this.nameText = data.customer.titleName + ' ' + data.customer.firstName + ' ' + data.customer.lastName;
     this.billingAddressText = this.customerInfoService.convertBillingAddressToString(customer);
+    if (data.action === TransactionAction.READ_CARD || this.billingAddressText) {
+      this.errorAddessValid.emit(true);
+    }
     this.customerInfoService.setDisableReadCard();
   }
 
@@ -169,7 +194,6 @@ export class ReceiptInformationComponent implements OnInit {
           case 'Pre-paid':
             this.alertService.warning('กรุณาระบุเบอร์ AIS รายเดือนเท่านั้น');
             this.searchByMobileNoForm.controls['mobileNo'].setValue('');
-            this.action.emit(TransactionAction.KEY_IN);
             break;
           case 'Post-paid':
             this.customerInfoService.getBillingByMobileNo(mobileNo)
@@ -179,6 +203,7 @@ export class ReceiptInformationComponent implements OnInit {
                     customer: this.customerInfoService.mapAttributeFromGetBill(res.data.billingAddress),
                     action: TransactionAction.KEY_IN
                   });
+                  this.errorAddessValid.emit(true);
                   this.customerInfoService.setSelectedMobileNo(mobileNo);
                   this.pageLoadingService.closeLoading();
                 } else {
@@ -237,9 +262,8 @@ export class ReceiptInformationComponent implements OnInit {
   }
 
   switchKeyInBillingAddress(): void {
-    const isShowInput = !this.isShowInputForKeyIn;
-    this.billingAddress.setIsKeyInBillingAddress(isShowInput);
-    this.isShowInputForKeyIn = isShowInput;
+    this.isShowInputForKeyIn = !this.isShowInputForKeyIn;
+    this.billingAddress.setIsKeyInBillingAddress(this.isShowInputForKeyIn);
     if (this.receiptInfoForm.valid) {
       this.onError(true);
     }
@@ -289,15 +313,47 @@ export class ReceiptInformationComponent implements OnInit {
   }
 
   onCompleted(value: any): void {
+    let action = TransactionAction.KEY_IN;
+    if (!value.dirty && !value.touched && this.actionType === TransactionAction.READ_CARD) {
+      action = TransactionAction.READ_CARD;
+    }
+
     this.setCustomerInfo({
       customer: value,
-      action: TransactionAction.KEY_IN
+      action: action
     });
-    this.receiptInfoForm.controls['taxId'].setValue(value.idCardNo);
+    if (!value.idCardNo) {
+      this.receiptInfoForm.controls['taxId'].setValue('');
+    }
+  }
+
+  isDirtyCustomerInfoReadCard(value: any): any {
+    const fields = ['amphur',
+    'buildingName',
+    'firstName',
+    'floor',
+    'homeNo',
+    'idCardNo',
+    'lastName',
+    'moo',
+    'mooBan',
+    'province',
+    'room',
+    'soi',
+    'street',
+    'titleName',
+    'tumbol',
+    'zipCode'];
+    fields.forEach((i) => {
+       if (this.customerReadCardTemp && this.customerReadCardTemp[i] !== value[i]) {
+        return false;
+       }
+    });
+    return true;
   }
 
   onError(valid: boolean): void {
-    this.error.emit(valid);
+    this.errorAddessValid.emit(valid);
   }
 
   private assignProvinceAndZipCode(province: any, zipCode: string): void {
