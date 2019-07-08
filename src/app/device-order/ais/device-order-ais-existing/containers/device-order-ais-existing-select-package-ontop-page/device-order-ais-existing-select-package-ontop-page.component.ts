@@ -28,10 +28,6 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
   modalRef: BsModalRef;
   detail: string;
-  effectiveDate: string;
-
-  arrCheckBox: Array<Object> = [];
-  isCheckbox: boolean;
   transaction: Transaction;
   customerInfo: CustomerInfo;
   shoppingCart: ShoppingCart;
@@ -58,13 +54,6 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
 
   ngOnInit(): void {
     const mobileNo = this.transaction.data.simCard.mobileNo;
-    if (this.transaction.data.billingInformation.overRuleStartDate === 'B') {
-      this.effectiveDate = this.transaction.data.billingInformation.effectiveDate;
-    } else if (this.transaction.data.billingInformation.overRuleStartDate === 'D') {
-      this.effectiveDate = moment().add(1, 'days').format('DD/MM/YYYY');
-    } else {
-      this.effectiveDate = 'หลังจากได้รับ SMS ยืนยัน';
-    }
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     delete this.shoppingCart.mobileNo;
     this.callService(mobileNo);
@@ -151,7 +140,6 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
 
   onOpenModal(value: any = {}): void {
     this.detail = this.translateService.currentLang === 'EN' ? value.detailEng : value.detail || '';
-    console.log('this.detail', this.detail);
     this.modalRef = this.modalService.show(this.detailTemplate, {
       class: 'pt-5 mt-5'
     });

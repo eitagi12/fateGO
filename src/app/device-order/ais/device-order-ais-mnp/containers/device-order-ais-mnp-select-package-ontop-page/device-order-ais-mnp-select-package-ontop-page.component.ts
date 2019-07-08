@@ -24,10 +24,6 @@ export class DeviceOrderAisMnpSelectPackageOntopPageComponent implements OnInit,
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
   modalRef: BsModalRef;
   detail: string;
-  effectiveDate: string;
-
-  arrCheckBox: Array<Object> = [];
-  isCheckbox: boolean;
   transaction: Transaction;
   customerInfo: CustomerInfo;
   shoppingCart: ShoppingCart;
@@ -51,13 +47,6 @@ export class DeviceOrderAisMnpSelectPackageOntopPageComponent implements OnInit,
 
   ngOnInit(): void {
     const mobileNo = this.transaction.data.simCard.mobileNo;
-    if (this.transaction.data.billingInformation.overRuleStartDate === 'B') {
-      this.effectiveDate = this.transaction.data.billingInformation.effectiveDate;
-    } else if (this.transaction.data.billingInformation.overRuleStartDate === 'D') {
-      this.effectiveDate = moment().add(1, 'days').format('DD/MM/YYYY');
-    } else {
-      this.effectiveDate = 'หลังจากได้รับ SMS ยืนยัน';
-    }
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     delete this.shoppingCart.mobileNo;
     this.callService(mobileNo);
