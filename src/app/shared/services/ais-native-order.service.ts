@@ -72,7 +72,7 @@ export class AisNativeOrderService {
 
             ws.onerror = (error) => {
                 if (this.environment.production) {
-                    this.alertService.error('ไม่สามารถเซ็นลายเซ็นได้ กรุณาติดต่อ 02-029-6303');
+                    this.alertService.error('ไม่สามารถทำรายการได้กรุณาติดต่อพนักงานเพื่อดำเนินการ');
                     return;
                 }
                 this.alertService.question('ไม่พบ Signpad library *(จำลองลายเซ็นเฉพาะเทสเท่านั้น)')

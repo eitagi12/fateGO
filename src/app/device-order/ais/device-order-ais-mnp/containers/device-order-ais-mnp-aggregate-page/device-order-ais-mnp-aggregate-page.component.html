@@ -1,12 +1,12 @@
 <div class="mc-flex">
-  <mc-header title="{{'ลูกค้าย้ายค่าย' | translate}}">
+  <mc-header title="{{'รายการสินค้า' | translate}}">
     <div class="header-icon-left w-25">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
     <div class="header-icon-right w-25 text-right">
-     <!-- <mc-dropdown-language></mc-dropdown-language> -->
-    <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
-  </div>
+      <mc-dropdown-language></mc-dropdown-language>
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
   </mc-header>
   <div class="mc-flex-wrap bg-white">
     <div class="my-3">
@@ -37,9 +37,9 @@
           <div class="col-xs-12 col-sm-7 mb-3">
             {{ priceOption?.productDetail?.name }}
             <span *ngIf="priceOption?.productStock?.color">
-              {{ priceOption?.productStock?.color? ('สี' | translate) : '' }} {{ priceOption?.productStock?.color }}
+              {{ priceOption?.productStock?.color? ('สี'| translate) : '' }} {{ priceOption?.productStock?.color }}
             </span>
-            <p>{{ priceOption?.campaign?.campaignName }}</p>
+            <p>{{ priceOption?.campaign?.campaignName | translate }}</p>
             <h2 class="text-green">
               ฿{{ summary([+priceOption?.trade?.promotionPrice, +priceOption?.trade?.advancePay?.amount]) | number : '1.2-2' }}
             </h2>
@@ -55,10 +55,11 @@
                   <i class="fa fa-circle mr-3 text-green"></i>
                   {{ priceOption?.productDetail?.name }}
                   <span *ngIf="priceOption?.productStock?.color">
-                    {{ priceOption?.productStock?.color?'สี': '' }} {{ priceOption?.productStock?.color }}
+                    {{ priceOption?.productStock?.color? ('สี'| translate) : '' }}
+                    {{ priceOption?.productStock?.color }}
                   </span>
-                  <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'" translate>
-                    (แถมซิม)
+                  <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
+                    ({{'แถมซิม' | translate}})
                   </span>
                   <span class="pull-right text-green">
                     ฿{{ summary([+priceOption?.trade?.promotionPrice, +priceOption?.trade?.advancePay?.amount]) | number : '1.2-2' }}
@@ -79,7 +80,7 @@
       <div class="text-center mt-4">
         <button class="btn btn-secondary btn-lg mr-3 pl-5 pr-5" (click)="onBack()">BACK</button>
         <button class="btn btn-success btn-lg pl-5 pr-5" (click)="onNext()">
-            {{ transaction?.data?.payment?.paymentType === 'QR_CODE' || transaction?.data?.advancePayment?.paymentType === 'QR_CODE' ? 'PAYMENT' : 'CHECK OUT'}}
+          {{ transaction?.data?.payment?.paymentType === 'QR_CODE' || transaction?.data?.advancePayment?.paymentType === 'QR_CODE' ? 'PAYMENT' : 'CHECK OUT'}}
         </button>
       </div>
     </div>

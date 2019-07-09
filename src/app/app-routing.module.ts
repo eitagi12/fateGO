@@ -20,7 +20,10 @@ const routes: Routes = [
   {
     path: 'buy-product',
     loadChildren: 'src/app/buy-product/buy-product.module#BuyProductModule',
-    canActivate: [AuthGuard, ApiRequestGuard]
+    canActivate: [AuthGuard, ApiRequestGuard],
+    resolve: {
+      i18n: I18nService
+    }
   },
   {
     path: 'stock',

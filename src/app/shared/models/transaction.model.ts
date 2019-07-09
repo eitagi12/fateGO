@@ -49,6 +49,7 @@ export interface TransactionData {
   mainPackage?: MainPackage;
   currentPackage?: CurrentPackage;
   onTopPackage?: OnTopPackage;
+  deleteOntopPackage?: DeleteOntopPackage[];
   mainPackageOneLove?: any[];
   mobileCarePackage?: MobileCarePackage;
   faceRecognition?: FaceRecognition;
@@ -71,6 +72,7 @@ export interface TransactionData {
   status?: Status;
   device?: Device;
   knoxguard?: KnoxGuard;
+  tradeType?: string;
 }
 
 export interface Condition {
@@ -157,7 +159,7 @@ export interface Customer {
   selectedLocation?: SelectedLocation;
   privilegeCode?: string;
   repi?: boolean;
-
+  mobileNo?: string;
 }
 
 export interface Recipientinformation {
@@ -169,6 +171,10 @@ export interface SelectedLocation {
   locationCode?: string;
   locationNameEN?: string;
   locationNameTH?: string;
+  // passport
+  issuingCountry?: string;
+  nationality?: string;
+  imageReadPassport?: string;
 }
 
 export interface SimCard {
@@ -206,6 +212,9 @@ export interface CurrentPackage {
 }
 
 export interface PromotionsShelves {
+  [key: string]: any;
+}
+export interface DeleteOntopPackage {
   [key: string]: any;
 }
 
@@ -246,6 +255,7 @@ export interface BillingInformation {
   billDeliveryAddress?: Customer;
   // วันที่มีผลการใช้งาน B: รอบถัดไป D: วันถัดไป I: มีผลทันที
   overRuleStartDate?: string;
+  effectiveDate?: string;
   // check do createAndChangeBillingAccount Provisioning
   isNewBAFlag?: boolean;
 }
@@ -305,6 +315,21 @@ export class ProductImage {
 }
 export class BaseView {
   imageUrl: string;
+}
+
+export interface BillDeliveryAddress {
+  homeNo: string;
+  moo?: string;
+  mooBan?: string;
+  room?: string;
+  floor?: string;
+  buildingName?: string;
+  soi?: string;
+  street?: string;
+  province: string;
+  amphur: string;
+  tumbol: string;
+  zipCode: string;
 }
 
 export interface Seller {

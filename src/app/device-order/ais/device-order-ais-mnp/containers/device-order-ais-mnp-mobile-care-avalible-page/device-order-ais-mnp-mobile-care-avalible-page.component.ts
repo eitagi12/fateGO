@@ -58,6 +58,10 @@ export class DeviceOrderAisMnpMobileCareAvaliblePageComponent implements OnInit,
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE]);
   }
 
+  onHome(): void {
+    this.homeService.goToHome();
+  }
+
   onNext(): void {
     if (this.selectedChanged) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_PAGE]);

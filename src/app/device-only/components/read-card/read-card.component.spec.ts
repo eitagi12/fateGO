@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { DeviceOnlyReadCardComponent } from './device-only-read-card.component';
+import { ReadCardComponent } from './read-card.component';
 import { BsModalService, ComponentLoaderFactory, PositioningService } from 'ngx-bootstrap';
 import { ReactiveFormsModule } from '@angular/forms';
 import { ReadCardService, PageLoadingService, Utils, AlertService } from 'mychannel-shared-libs';
@@ -15,16 +15,16 @@ class MockPipeTranslate implements PipeTransform {
   }
 }
 
-describe('DeviceOnlyReadCardComponent', () => {
-  let component: DeviceOnlyReadCardComponent;
-  let fixture: ComponentFixture<DeviceOnlyReadCardComponent>;
+describe('ReadCardComponent', () => {
+  let component: ReadCardComponent;
+  let fixture: ComponentFixture<ReadCardComponent>;
 
   setupTestBed({
     imports: [
       ReactiveFormsModule
     ],
     declarations: [
-      DeviceOnlyReadCardComponent,
+      ReadCardComponent,
       MockPipeTranslate
     ],
     providers: [
@@ -57,7 +57,7 @@ describe('DeviceOnlyReadCardComponent', () => {
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DeviceOnlyReadCardComponent);
+    fixture = TestBed.createComponent(ReadCardComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

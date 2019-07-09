@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Injectable({
   providedIn: 'root'
@@ -9,8 +10,8 @@ export class ShoppingCartService {
 
   constructor(
     private transactionService: TransactionService,
-    private priceOptionService: PriceOptionService
-
+    private priceOptionService: PriceOptionService,
+    private translateService: TranslateService
   ) { }
 
   getShoppingCartData(): any {
@@ -24,12 +25,11 @@ export class ShoppingCartService {
     const productStock = priceOption.productStock || {};
 
     const advancePay = +trade.advancePay.amount || 0;
-
     let commercialName = productDetail.name;
     if (productStock.color) {
       commercialName += ` สี ${productStock.color}`;
     }
-    return {
+    const shoppingCartData = {
       fullName: `${customer.titleName || ''} ${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
       mobileNo: simCard && simCard.mobileNo ? simCard.mobileNo : '',
       campaignName: campaign.campaignName,
@@ -37,5 +37,7 @@ export class ShoppingCartService {
       qty: 1,
       price: +trade.promotionPrice + advancePay
     };
+    this.translateService.stream(campaign.campaignName).subscribe(campaignName => shoppingCartData.campaignName = campaignName);
+    return shoppingCartData;
   }
 }

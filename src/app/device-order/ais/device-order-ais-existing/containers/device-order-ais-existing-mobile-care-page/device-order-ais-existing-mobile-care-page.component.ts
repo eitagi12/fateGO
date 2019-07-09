@@ -15,6 +15,8 @@ import {
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { MobileCareService } from 'src/app/device-order/services/mobile-care.service';
 import { MOBILE_CARE_PACKAGE_KEY_REF } from 'src/app/device-order/constants/cpc.constant';
+import { TranslateService } from '@ngx-translate/core';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-device-order-ais-existing-mobile-care-page',
@@ -37,7 +39,9 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit, On
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
     private shoppingCartService: ShoppingCartService,
-    private mobileCareService: MobileCareService
+    private mobileCareService: MobileCareService,
+    private translateService: TranslateService,
+    private http: HttpClient
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -89,7 +93,7 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit, On
     this.pageLoadingService.openLoading();
 
     const billingSystem = (this.transaction.data.simCard.billingSystem === 'RTBS')
-    ? BillingSystemType.IRB : this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
+      ? BillingSystemType.IRB : this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
     const chargeType = this.transaction.data.simCard.chargeType;
     const endUserPrice = +this.priceOption.trade.normalPrice;
     const exMobileCare = this.transaction.data.existingMobileCare;
@@ -108,6 +112,9 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit, On
 
   haveMobileCarePromotions(mobileCare: any, exMobileCare: ExistingMobileCare): void {
     this.mobileCare = this.mappingMobileCare(mobileCare, exMobileCare);
+    if (this.mobileCare) {
+      this.checkTranslateLang(this.translateService.currentLang);
+    }
     if (this.mobileCare.promotions && this.mobileCare.promotions.length > 0) {
       this.mobileCare.promotions[0].active = true;
     }
@@ -119,5 +126,47 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit, On
       promotions: mobileCare,
       existingMobileCare: !!exMobileCare
     };
+  }
+
+  checkTranslateLang(lang: any): void {
+    this.mapKeyTranslateMobileCareTitle(this.mobileCare.promotions).then(translateKey => {
+      if (lang === 'EN' || lang.lang === 'EN' || lang === 'en' || lang.lang === 'en') {
+        if (translateKey && lang && lang.translations) {
+          const merge = { ...translateKey, ...lang.translations } || {};
+          this.translateService.setTranslation('EN', merge);
+        } else {
+          this.getTranslateLoader('device-order', 'EN').then(resp => {
+            const merge = { ...translateKey, ...resp } || {};
+            this.translateService.setTranslation('EN', merge);
+          });
+        }
+      }
+    });
+
+  }
+
+  mapKeyTranslateMobileCareTitle(mobileCare: any): Promise<any> {
+    const map = new Map();
+    const TranslateKey = {};
+    mobileCare.map(key => key.items.map(item => {
+      map.set([item.title.trim()], item.value.customAttributes.shortNameEng.trim());
+    }));
+    map.forEach((value: any, key: any) => {
+      TranslateKey[key] = value;
+    });
+    if (TranslateKey) {
+      return Promise.resolve(TranslateKey);
+    } else {
+      return Promise.resolve(null);
+    }
+
+  }
+
+  getTranslateLoader(moduleName: string, lang: string): Promise<any> {
+    if (!moduleName || !lang) {
+      return;
+    }
+    const fileLang = `i18n/${moduleName}.${lang}.json`.toLowerCase();
+    return this.http.get(fileLang).toPromise();
   }
 }

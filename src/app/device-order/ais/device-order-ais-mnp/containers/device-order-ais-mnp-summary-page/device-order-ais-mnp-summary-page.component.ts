@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
@@ -10,13 +10,15 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_ECONTACT_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE } from '../../constants/route-path.constant';
 import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
+import { Subscription } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-device-order-ais-mnp-summary-page',
   templateUrl: './device-order-ais-mnp-summary-page.component.html',
   styleUrls: ['./device-order-ais-mnp-summary-page.component.scss']
 })
-export class DeviceOrderAisMnpSummaryPageComponent implements OnInit {
+export class DeviceOrderAisMnpSummaryPageComponent implements OnInit, OnDestroy {
 
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
@@ -29,7 +31,9 @@ export class DeviceOrderAisMnpSummaryPageComponent implements OnInit {
   transaction: Transaction;
   shoppingCart: ShoppingCart;
   customerAddress: string;
+  translateSubscription: Subscription;
 
+  currentLang: string;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -38,10 +42,16 @@ export class DeviceOrderAisMnpSummaryPageComponent implements OnInit {
     private shoppingCartService: ShoppingCartService,
     private modalService: BsModalService,
     public summaryPageService: SummaryPageService,
-    private utils: Utils
+    private utils: Utils,
+    private translateService: TranslateService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
+
+    this.currentLang = this.translateService.currentLang || 'TH';
+    this.translateSubscription = this.translateService.onLangChange.subscribe(lang => {
+      this.currentLang = typeof (lang) === 'object' ? lang.lang : lang;
+    });
   }
 
   ngOnInit(): void {
@@ -84,9 +94,19 @@ export class DeviceOrderAisMnpSummaryPageComponent implements OnInit {
     this.modalRef = this.modalService.show(this.detailTemplate);
   }
 
+  mainPackageTitle(detail: any): string {
+    return (this.translateService.currentLang === 'EN') ? detail.shortNameEng : detail.shortNameThai;
+  }
+
   summary(amount: number[]): number {
     return amount.reduce((prev, curr) => {
       return prev + curr;
     }, 0);
+  }
+
+  ngOnDestroy(): void {
+    if (this.translateSubscription) {
+      this.translateSubscription.unsubscribe();
+    }
   }
 }

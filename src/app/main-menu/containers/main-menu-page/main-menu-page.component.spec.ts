@@ -3,6 +3,7 @@ import { ComponentFixture, TestBed, async } from '@angular/core/testing';
 import { MainMenuPageComponent } from './main-menu-page.component';
 import { RouterTestingModule } from '@angular/router/testing';
 import { TokenService } from 'mychannel-shared-libs';
+import { LocalStorageService } from 'ngx-store';
 
 describe('MainMenuPageComponent', () => {
   let component: MainMenuPageComponent;
@@ -24,7 +25,8 @@ describe('MainMenuPageComponent', () => {
       MainMenuPageComponent
     ],
     providers: [
-      mockTokenService
+      mockTokenService,
+      LocalStorageService
     ]
   });
 

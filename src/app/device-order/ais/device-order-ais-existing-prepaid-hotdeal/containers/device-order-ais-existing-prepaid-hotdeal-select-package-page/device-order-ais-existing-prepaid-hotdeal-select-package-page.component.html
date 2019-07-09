@@ -1,9 +1,10 @@
 <div class="mc-flex">
-    <mc-header title="ลูกค้าปัจจุบัน">
+    <mc-header title="{{'ลูกค้าปัจจุบัน' | translate}}">
       <div class="header-icon-left">
         <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
       </div>
       <div class="header-icon-right">
+        <mc-dropdown-language></mc-dropdown-language>
         <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
       </div>
     </mc-header>
@@ -15,13 +16,13 @@
           <div class="container-fluid package">
             <div class="bg-white p-3 h5">
               <img src="assets/images/icon/package-info.png" class="icon-package-info" />
-              ข้อมูลแพ็กเกจ
+              {{'ข้อมูลแพ็กเกจ' | translate}}
             </div>
           </div>
           <mc-promotion-shelve [selected]="transaction?.data?.onTopPackage" [promotionShelves]="promotionShelves"
             (completed)="onCompleted($event)"></mc-promotion-shelve>
         </div>
-        <p class="text-center my-5" *ngIf="promotionShelves?.length === 0">ไม่พบแพ็กเกจที่ร่วมรายการ</p>
+        <p class="text-center my-5" *ngIf="promotionShelves?.length === 0" translate>ไม่พบแพ็กเกจที่ร่วมรายการ</p>
       </div>
     </div>
     <mc-footer>

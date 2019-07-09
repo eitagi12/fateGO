@@ -4,6 +4,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { environment } from 'src/environments/environment';
+import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-qr-code-result-page',
@@ -18,6 +19,7 @@ export class DeviceOrderAisExistingQrCodeResultPageComponent implements OnInit {
   constructor(
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
+    public summaryPageService: SummaryPageService,
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();

@@ -26,6 +26,7 @@ export class SummarySellerCodeComponent implements OnInit {
       this.seller = {};
     }
   }
+
   setSeller(seller: Seller): void {
     this.seller = seller;
   }
@@ -34,6 +35,13 @@ export class SummarySellerCodeComponent implements OnInit {
     return Object.assign(this.seller, {
       sellerNo: this.seller.sellerNo || ''
     });
+  }
+
+  keyPress(event: any): void {
+    const charCode: number = (event.which) ? event.which : event.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+      event.preventDefault();
+    }
   }
 
 }

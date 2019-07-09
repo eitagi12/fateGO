@@ -7,6 +7,7 @@ import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart
 import { environment } from 'src/environments/environment';
 import { ROUTE_DEVICE_ORDER_AIS_MNP_FACE_COMPARE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_AGGREGATE_PAGE } from '../../constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-device-order-ais-mnp-face-confirm-page',
@@ -27,7 +28,7 @@ export class DeviceOrderAisMnpFaceConfirmPageComponent implements OnInit {
     private pageLoadingService: PageLoadingService,
     private alertService: AlertService,
     private shoppingCartService: ShoppingCartService,
-
+    private translateService: TranslateService
   ) {
   }
 
@@ -63,7 +64,7 @@ export class DeviceOrderAisMnpFaceConfirmPageComponent implements OnInit {
         if (resp && resp.data) {
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_AGGREGATE_PAGE]);
         } else {
-          return this.alertService.error('ชื่อ/รหัสผ่าน ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง');
+          return this.alertService.error(this.translateService.instant('ชื่อ/รหัสผ่าน ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง'));
         }
       })
       .then(() => {

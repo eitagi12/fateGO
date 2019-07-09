@@ -160,26 +160,20 @@ export class CreateOrderService {
   }
 
   cancelOrder(transaction: Transaction): Promise<any> {
-    return new Promise((resolve, reject) => {
-      if (transaction
-        && transaction.data
-        && transaction.data.order
-        && transaction.data.order.soId) {
-        return this.clearAddToCart(transaction.transactionId, transaction.data.order.soId)
-          .then((res: any) => {
-            resolve(res.isSuccess);
-          });
-      } else {
-        resolve(false);
+    return new Promise(resolve => {
+      const promiseAll = [];
+      if (transaction.data) {
+        if (transaction.data.order && transaction.data.order.soId) {
+          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
+            location: this.user.locationCode,
+            soId: transaction.data.order.soId,
+            transactionId: transaction.transactionId
+          }).toPromise().catch(() => Promise.resolve());
+          promiseAll.push(order);
+        }
       }
+      Promise.all(promiseAll).then(() => resolve());
     });
-  }
-
-  clearAddToCart(transactionId: string, soId: string): Promise<any> {
-    return this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
-      transactionId: transactionId,
-      soId: soId
-    }).toPromise().then((res: any) => res.data);
   }
 
   cancelTrasaction(transactionId: string): Promise<any> {
@@ -244,6 +238,7 @@ export class CreateOrderService {
       qrAmt: this.getQRAmt(priceOption, transaction), // add
       reqMinimumBalance: transaction.data.simCard ? this.getReqMinimumBalance(transaction, transaction.data.mobileCarePackage) : '',
       qrOrderId: mapQrOrderId,
+      tradeType: transaction.data.tradeType
     };
   }
 

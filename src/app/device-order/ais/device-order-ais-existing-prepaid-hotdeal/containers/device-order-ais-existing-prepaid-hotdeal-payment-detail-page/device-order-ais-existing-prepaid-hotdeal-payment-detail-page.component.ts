@@ -10,6 +10,8 @@ import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { HttpClient } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-device-order-ais-existing-prepaid-hotdeal-payment-detail-page',
@@ -23,12 +25,13 @@ export class DeviceOrderAisExistingPrepaidHotdealPaymentDetailPageComponent impl
   priceOption: PriceOption;
   transaction: Transaction;
 
-  payementDetail: PaymentDetail;
+  paymentDetail: PaymentDetail;
   banks: PaymentDetailBank[];
   paymentDetailValid: boolean;
 
   paymentDetailTemp: any;
   receiptInfoTemp: any;
+  translateSubscription: Subscription;
 
   constructor(
     private router: Router,
@@ -40,6 +43,7 @@ export class DeviceOrderAisExistingPrepaidHotdealPaymentDetailPageComponent impl
     private http: HttpClient,
     private tokenService: TokenService,
     private pageLoadingService: PageLoadingService,
+    private translateService: TranslateService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -58,17 +62,10 @@ export class DeviceOrderAisExistingPrepaidHotdealPaymentDetailPageComponent impl
 
     let commercialName = productDetail.name;
     if (productStock.color) {
-      commercialName += ` สี ${productStock.color}`;
+      commercialName += ` ${this.translateService.instant('สี')} ${productStock.color}`;
     }
 
-    this.payementDetail = {
-      commercialName: commercialName,
-      promotionPrice: +(trade.promotionPrice || 0),
-      isFullPayment: this.isFullPayment(),
-      installmentFlag: advancePay.installmentFlag === 'N' && +(advancePay.amount || 0) > 0,
-      advancePay: +(advancePay.amount || 0),
-      qrCode: !!(productStock.company && productStock.company !== 'WDS')
-    };
+    this.paymentDetail = this.mappingPaymentDetail(productDetail, productStock, trade, advancePay);
 
     this.banks = trade.banks || [];
 
@@ -89,6 +86,25 @@ export class DeviceOrderAisExistingPrepaidHotdealPaymentDetailPageComponent impl
       ;
     }
 
+    this.translateSubscription = this.translateService.onLangChange.subscribe(onChange => {
+      this.paymentDetail.commercialName = this.changeCommercialName(onChange.lang, productDetail.name, productStock.color);
+    });
+
+  }
+
+  mappingPaymentDetail(productDetail: any, productStock: any, trade: any, advancePay: any): PaymentDetail {
+    return {
+      commercialName:  this.changeCommercialName((this.translateService.currentLang || 'TH'), productDetail.name, productStock.color),
+      promotionPrice: +(trade.promotionPrice || 0),
+      isFullPayment: this.isFullPayment(),
+      installmentFlag: advancePay.installmentFlag === 'N' && +(advancePay.amount || 0) > 0,
+      advancePay: +(advancePay.amount || 0),
+      qrCode: true
+    };
+  }
+
+  changeCommercialName(language: string, name: string, color: string): string {
+    return (!color) ? name : (language === 'TH') ? `${name} สี ${color}` : `${name} Color: ${color}`;
   }
 
   onPaymentCompleted(payment: any): void {
@@ -137,6 +153,9 @@ export class DeviceOrderAisExistingPrepaidHotdealPaymentDetailPageComponent impl
 
   // tslint:disable-next-line:use-life-cycle-interface
   ngOnDestroy(): void {
+    if (this.translateSubscription) {
+      this.translateSubscription.unsubscribe();
+    }
     this.priceOptionService.update(this.priceOption);
     this.transactionService.update(this.transaction);
   }

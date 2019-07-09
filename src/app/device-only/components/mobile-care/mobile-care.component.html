@@ -7,7 +7,7 @@
       <form [formGroup]="privilegeCustomerForm">
         <div class="form-group row">
           <div class="col-6 col-sm-8">
-            <input class="input form-control text-center pull-right" id="input-mobile-no" type="text" autocomplete="off" formControlName="mobileNo"
+            <input class="input form-control text-center pull-right" id="input-mobile-no" type="tel" autocomplete="off" formControlName="mobileNo"
               (keypress)="keyPress($event)" placeholder="ระบุเบอร์มือถือ AIS" maxlength="10">
           </div>
           <div class="col-6 col-sm-4 ">
@@ -17,7 +17,7 @@
 
         <div class="form-group row" *ngIf="isPrivilegeCustomer">
           <div class="col-6 col-sm-8">
-            <input class="input form-control text-center pull-right" id="input-otp" type="text" autocomplete="off" formControlName="otpNo"
+            <input class="input form-control text-center pull-right" id="input-otp" type="tel" autocomplete="off" formControlName="otpNo"
               (keypress)="keyPress($event)" placeholder="ระบุ OTP" maxlength="5">
           </div>
           <div class="col-6 col-sm-4">

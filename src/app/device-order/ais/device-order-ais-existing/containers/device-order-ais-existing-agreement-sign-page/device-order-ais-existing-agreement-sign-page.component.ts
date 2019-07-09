@@ -74,7 +74,7 @@ export class DeviceOrderAisExistingAgreementSignPageComponent implements OnInit,
       this.transaction.data.customer.imageSignature = signature;
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_AGGREGATE_PAGE]);
     } else {
-      this.alertService.warning('กรุณาเซ็นลายเซ็น').then(() => {
+      this.alertService.warning(this.currentLang === 'TH' ? 'กรุณาเซ็นลายเซ็น' : 'Please Sign').then(() => {
         this.onSigned();
       });
     }
@@ -125,6 +125,9 @@ export class DeviceOrderAisExistingAgreementSignPageComponent implements OnInit,
 
   // tslint:disable-next-line: use-life-cycle-interface
   ngOnDestroy(): void {
+    if (this.translationSubscribe) {
+      this.translationSubscribe.unsubscribe();
+    }
     this.signedSignatureSubscription.unsubscribe();
     if (this.signedOpenSubscription) {
       this.signedOpenSubscription.unsubscribe();

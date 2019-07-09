@@ -4,7 +4,7 @@
     <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
   </div>
   <div class="header-icon-right w-25 text-right">
-      <!-- <mc-dropdown-language></mc-dropdown-language> -->
+      <mc-dropdown-language></mc-dropdown-language>
     <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
   </div>
 </mc-header>
@@ -16,16 +16,16 @@
       <div class="card mb-3">
         <div class="card-header bg-pink text-white">{{ 'สรุปรายการสั่งซื้อสินค้า' | translate }}</div>
         <div class="card-body">
-          <p class="text-green">{{ priceOption?.campaign?.campaignName }}</p>
+          <p class="text-green">{{ priceOption?.campaign?.campaignName | translate }}</p>
           <div class="text-light-grey">
             <p>
               <i class="fa fa-circle mr-3 text-green"></i>
-              {{ priceOption?.productDetail?.name }}
+              {{ priceOption?.productDetail?.name | translate }}
               <span *ngIf="priceOption?.productStock?.color">
-                สี {{ priceOption?.productStock?.color }}
+                {{ 'สี' | translate }} {{ priceOption?.productStock?.color }}
               </span>
               <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
-                (แถมซิม)
+                ({{'แถมซิม'| translate}})
               </span>
               <span class="pull-right text-green">
                 ฿ {{ priceOption?.trade?.promotionPrice | number }}
@@ -33,7 +33,7 @@
             </p>
             <p *ngIf="priceOption?.trade?.advancePay?.amount > 0">
               <i class="fa fa-circle mr-3 text-green"></i>
-              {{ priceOption?.trade?.advancePay?.description }}
+              {{ summaryPageService.advanpayDescription(priceOption?.trade?.advancePay?.description) }}
               <span class="pull-right text-green">
                 ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
               </span>
@@ -41,7 +41,7 @@
           </div>
         </div>
         <div class="card-footer bg-transparent text-right">
-         {{ 'รวมยอดชำระ(รวม VAT)' | translate }}
+         {{ 'รวมยอดชำระ (รวม VAT)' | translate }}
           <span class="text-green ml-2">
             ฿ {{ summary([
             +priceOption?.trade?.promotionPrice,
@@ -56,8 +56,8 @@
         <div class="card-body">
           <p>
             <i class="fa fa-circle mr-3 text-green"></i>
-            {{ transaction?.data?.mainPackage?.title }}
-            <span class="pull-right" (click)="onOpenDetail(transaction?.data?.mainPackage?.detailTH)">
+            {{mainPackageTitle(transaction?.data?.mainPackage?.customAttributes)}}
+            <span class="pull-right" (click)="onOpenDetail(currentLang==='TH' ? transaction?.data?.mainPackage?.detailTH : transaction?.data?.mainPackage?.detailEN)">
               <img src="assets/images/icon/icon-page.png" class="icon" />
             </span>
           </p>
@@ -76,9 +76,9 @@
             </ng-container>
             <ng-container *ngIf="transaction?.data?.mobileCarePackage?.title">
               <span>
-                {{ transaction?.data?.mobileCarePackage?.title }}
+                {{mainPackageTitle(transaction?.data?.mobileCarePackage?.customAttributes)| translate}}
               </span>
-              <span class="pull-right" (click)="onOpenDetail(transaction?.data?.mobileCarePackage?.detailTH)">
+              <span class="pull-right" (click)="onOpenDetail(currentLang==='TH' ? transaction?.data?.mobileCarePackage?.detailTH : transaction?.data?.mobileCarePackage?.detailEN)">
                 <img src="assets/images/icon/icon-page.png" class="icon" />
               </span>
             </ng-container>
@@ -103,7 +103,7 @@
             *ngIf="!priceOption?.trade?.advancePay || priceOption?.trade?.advancePay?.installmentFlag === 'N'">
             <p>
               <i class="fa fa-circle mr-3 text-green"></i>
-              {{ priceOption?.productDetail?.name }}
+              {{ priceOption?.productDetail?.name | translate }}
               <span *ngIf="priceOption?.productStock?.color">
                 {{ 'สี' | translate }} {{ priceOption?.productStock?.color }}
               </span>
@@ -166,7 +166,7 @@
             </p>
             <p class="col-12 col-sm-4">
               <i class="fa fa-circle mr-3 text-green"></i>
-              {{ 'ข้อมูลใบเสร็จรับเงิน' | translate }}
+              {{ 'ที่อยู่ใบเสร็จรับเงิน' | translate }}
             </p>
             <p class="col-12 col-sm-8 text-green">
               {{ customerAddress }}

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Transaction } from '../models/transaction.model';
 import { PriceOption } from '../models/price-option.model';
-import { TokenService } from 'mychannel-shared-libs';
+import { TokenService, BillingSystemType } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 
 import { CustomerGroup } from 'src/app/buy-product/services/flow.service';
@@ -72,6 +72,7 @@ export class SharedTransactionService {
       data: {
         action: data.action,
         transactionType: data.transactionType,
+        tradeType: data.tradeType || '',
         customer: data.customer || {},
         sim_card: data.simCard || {},
         device: {
@@ -86,6 +87,9 @@ export class SharedTransactionService {
         },
         billing_information: {},
         knoxguard: {},
+        receipt_information: {
+          telNo: !!data.receiptInfo ? data.receiptInfo.telNo : ''
+        },
         mobile_care_package: {},
         air_time: {},
         on_top_package: transaction.data.onTopPackage || {},
@@ -202,12 +206,20 @@ export class SharedTransactionService {
       // ใช้ check airtime
       const advancePay = priceOption.trade.advancePay || {};
       params.data.air_time = advancePay;
-
       if (Array.isArray(advancePay.promotions) && advancePay.promotions.length > 0) {
-        const mainPackage = data.mainPackage && data.mainPackage.customAttributes || {};
-        const findPromotionByMainPackage = advancePay.promotions
-          .find(promotion => (promotion && promotion.billingSystem) === mainPackage.billingSystem);
-        params.data.air_time.promotions = [findPromotionByMainPackage] || advancePay.promotions;
+        if (data.mainPackage) {
+          const mainPackage = data.mainPackage.customAttributes || {};
+          const findPromotionByMainPackage = this.findPromotions(advancePay, mainPackage.billingSystem);
+
+          params.data.air_time.promotions = [findPromotionByMainPackage] || advancePay.promotions;
+
+        } else if (!data.mainPackage && data.currentPackage) {
+          const billingSystem = ((data.simCard && data.simCard.billingSystem === 'RTBS')
+            ? BillingSystemType.IRB : data.simCard.billingSystem ) || BillingSystemType.IRB;
+          const findPromotionByMainPackage = this.findPromotions(advancePay, billingSystem);
+
+          params.data.air_time.promotions = [findPromotionByMainPackage] || advancePay.promotions;
+        }
       }
 
     }
@@ -257,6 +269,11 @@ export class SharedTransactionService {
       params.data.mpay_payment = data.mpayPayment;
     }
     return params;
+  }
+
+  findPromotions(advancePay: any, billingSystem: string): any {
+    return advancePay.promotions
+      .find(promotion => (promotion && promotion.billingSystem) === billingSystem);
   }
 
   private getTransactionId(): string {

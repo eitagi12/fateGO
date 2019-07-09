@@ -15,6 +15,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { environment } from 'src/environments/environment';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-device-order-ais-pre-to-post-validate-customer-id-card-page',
@@ -47,7 +48,8 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
     private http: HttpClient,
     private tokenService: TokenService,
     private utils: Utils,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private translateService: TranslateService
   ) {
     this.user = this.tokenService.getUser();
     this.transaction = this.transactionService.load();
@@ -83,7 +85,7 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
   onError(valid: boolean): void {
     this.readCardValid = valid;
     if (!this.profile) {
-      this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน').then(() => this.onBack());
+      this.alertService.error(this.translateService.instant('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน')).then(() => this.onBack());
     }
   }
 
@@ -157,7 +159,7 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
 
           return this.conditionIdentityValid()
             .catch((msg: string) => {
-              return this.alertService.error(msg).then(() => true);
+              return this.alertService.error(this.translateService.instant(msg)).then(() => true);
             })
             .then((isError: boolean) => {
               if (isError) {
@@ -199,7 +201,7 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
         if (resp.data.zipcodes && resp.data.zipcodes.length > 0) {
           return resp.data.zipcodes[0];
         } else {
-          return Promise.reject('ไม่พบรหัสไปรษณีย์');
+          return Promise.reject(this.translateService.instant('ไม่พบรหัสไปรษณีย์'));
         }
       });
   }
@@ -212,10 +214,12 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
       const idCardType = this.transaction.data.customer.idCardType;
 
       if (this.utils.isLowerAge17Year(birthdate)) {
-        return reject(`ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี`);
+        return reject(this.translateService.instant(`ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี`));
       }
       if (this.utils.isIdCardExpiredDate(expireDate)) {
-        return reject(`ไม่สามารถทำรายการได้ เนื่องจาก ${idCardType} หมดอายุ`);
+        return reject(
+          `${this.translateService.instant('ไม่สามารถทำรายการได้ เนื่องจาก')} ${idCardType} ${this.translateService.instant('หมดอายุ')}`
+          );
       }
       resovle(null);
     });

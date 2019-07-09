@@ -17,6 +17,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 import * as moment from 'moment';
+import { TranslateService } from '@ngx-translate/core';
 
 interface BillCycleText {
   textBill?: string;
@@ -99,6 +100,7 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
     private priceOptionService: PriceOptionService,
     private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,
+    private translateService: TranslateService,
     private http: HttpClient,
     private fb: FormBuilder
   ) {
@@ -133,6 +135,10 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
 
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
+  }
+
+  mainPackageTitle(value: any = {}): string {
+    return this.translateService.currentLang === 'EN' ? value.shortNameEng : value.shortNameThai;
   }
 
   createForm(): void {

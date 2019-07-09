@@ -7,7 +7,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 @Component({
   selector: 'app-shopping-cart-detail',
   templateUrl: './shopping-cart-detail.component.html',
-  styleUrls: ['./shopping-cart-detail.component.scss']
+  styleUrls: ['./shopping-cart-detail.component.scss'],
 })
 export class ShoppingCartDetailComponent implements OnInit {
 

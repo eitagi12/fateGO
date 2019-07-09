@@ -18,6 +18,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
 import * as moment from 'moment';
+import { TranslateService } from '@ngx-translate/core';
 const Moment = moment;
 @Component({
   selector: 'app-device-order-ais-pre-to-post-validate-customer-page',
@@ -41,10 +42,11 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
     private http: HttpClient,
     private alertService: AlertService,
     private tokenService: TokenService,
+    private translateService: TranslateService,
     private privilegeService: PrivilegeService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private priceOptionService: PriceOptionService,
+    private priceOptionService: PriceOptionService
   ) {
     this.user = this.tokenService.getUser();
     this.priceOption = this.priceOptionService.load();
@@ -55,7 +57,7 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
       if (url.indexOf('result') !== -1) {
         this.homeHandler();
       } else {
-        this.alertService.question('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่')
+        this.alertService.question(this.translateService.instant('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่'))
           .then((data: any) => {
             if (!data.value) {
               return false;
@@ -89,7 +91,7 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
   }
 
   onBack(): void {
-    this.alertService.question('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่')
+    this.alertService.question(this.translateService.instant('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่'))
       .then((data: any) => {
         if (!data.value) {
           return false;
@@ -138,8 +140,7 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
       }).then((order: any) => {
         if (order) {
           const createDate = moment(order.createDate, 'YYYYMMDD').format('DD/MM/YYYY');
-          return this.alertService.error(`ระบบไม่สามารถทำรายการได้ <br>หมายเลข ${this.identity}
-          อยู่ระหว่างย้ายค่ายไปยังผู้ให้บริการรายอื่น (True, DTAC) (ทำรายการวันที่${createDate})`);
+          return this.alertService.error(this.errorMessage(createDate));
         }
         return this.checkCustomerProfile(this.identity);
 
@@ -147,6 +148,15 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
       .catch(() => this.checkCustomerProfile(this.identity));
 
   }
+
+  errorMessage(createDate: string): string {
+    return this.translateService.currentLang === 'EN'
+    ? `The transaction cannot be completed. <br>Number ${this.identity}
+    between the move the camp to the other service providers (True, DTAC).<br> (Transaction Date${createDate})`
+    : `ระบบไม่สามารถทำรายการได้ <br>หมายเลข ${this.identity}
+    อยู่ระหว่างย้ายค่ายไปยังผู้ให้บริการรายอื่น (True, DTAC) (ทำรายการวันที่${createDate})`;
+  }
+
   checkCustomerProfile(mobileNo: any): void {
     if (this.utils.isMobileNo(this.identity)) {
       this.http.get('/api/customerportal/validate-customer-mobile-no-pre-to-post', {
@@ -161,7 +171,7 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
               this.transaction.data.action = TransactionAction.KEY_IN_REPI;
             })
             .catch((msg: string) => {
-              return this.alertService.error(msg).then(() => true);
+              return this.alertService.error(this.translateService.instant(msg)).then(() => true);
             });
         })
         .then((isError: boolean) => {
@@ -178,7 +188,7 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
           if (error && error.errors && typeof error.errors === 'string') {
             this.alertService.notify({
               type: 'error',
-              html: error.errors
+              html: this.translateService.instant(error.errors)
             });
           } else {
             Promise.reject(resp);

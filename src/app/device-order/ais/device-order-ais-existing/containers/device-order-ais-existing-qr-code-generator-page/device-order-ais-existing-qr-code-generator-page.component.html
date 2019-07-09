@@ -4,7 +4,7 @@
       <!-- <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon> -->
     </div>
     <div class="header-icon-right">
-      <!-- <mc-dropdown-language></mc-dropdown-language> -->
+      <mc-dropdown-language></mc-dropdown-language>
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()" [hidden]="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'SUCCESS'"></mc-header-icon>
     </div>
   </mc-header>
@@ -15,7 +15,7 @@
         <div class="card mb-5">
           <div class="card-header bg-lime text-white" translate>{{'ข้อมูลการชำระ'| translate}}</div>
           <div class="card-body text-light-grey">
-            <div class=" mb-3" >
+            <div class=" mb-3" translate>
                 ผู้ให้บริการ
                 <span class="pull-right"> {{ transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'WAITING' ? priceOption?.productStock?.company : 'AWN' }} </span>
              </div>
