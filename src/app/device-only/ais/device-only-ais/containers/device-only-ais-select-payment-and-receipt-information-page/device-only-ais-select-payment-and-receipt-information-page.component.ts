@@ -120,7 +120,25 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
     this.homeService.goToHome();
   }
 
+  clearstock(): void {
+    this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+    .then((response: any) => {
+      if (response.value === true) {
+        this.createOrderService.cancelOrder(this.transaction).then((isSuccess: any) => {
+          this.transactionService.remove();
+          this.priceOptionService.remove();
+        });
+      }
+    }).catch((err: any) => {
+      this.transactionService.remove();
+      this.priceOptionService.remove();
+    });
+  }
+
   onBack(): void {
+    if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      this.clearstock();
+    }
     this.transactionService.remove();
     this.product = this.priceOption.queryParams;
     const brand: string = encodeURIComponent(this.product.brand ? this.product.brand : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
@@ -133,7 +151,6 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       '&productSubType' + this.product.productSubtype;
     window.location.href = url + queryParams;
   }
-
 
   onNext(): void {
     this.transaction.data.payment = this.paymentDetailTemp.payment;
