@@ -133,7 +133,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
     });
   }
 
-  onBack(): void {
+  async onBack(): Promise<any> {
     this.transactionService.remove();
     this.product = this.priceOption.queryParams;
     const brand: string = encodeURIComponent(this.product.brand ? this.product.brand : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
@@ -146,9 +146,8 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       '&productSubType' + this.product.productSubtype;
 
       if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
-        this.clearstock().then((res: any) => {
-          window.location.href = url + queryParams;
-        });
+        await this.clearstock();
+        window.location.href = await url + queryParams;
       }
   }
 
