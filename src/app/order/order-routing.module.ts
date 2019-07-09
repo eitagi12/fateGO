@@ -15,7 +15,12 @@ const routes: Routes = [
   {
     path: 'mnp',
     loadChildren: 'src/app/order/order-mnp/order-mnp.module#OrderMnpModule',
-  }];
+  },
+  {
+    path: 'block-chain',
+    loadChildren: 'src/app/order/order-blcok-chain/order-blcok-chain.module#OrderBlcokChainModule',
+  }
+];
 
 @NgModule({
   imports: [RouterModule.forChild(routes)],
