@@ -8,13 +8,14 @@
         <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
       </div>
     </mc-header>
-<div class="mc-flex-wrap">
-  <div class="mb-3 mt-3">
-
-  </div>
-</div>
+    <div class="mc-flex-wrap bg-white">
+      <div class="pt-3 pb-3">
+        <mc-validate-customer-id-card [kioskApi]="kioskApi" (error)="onError($event)" (completed)="onCompleted($event)" (progress)="onProgress($event)">
+        </mc-validate-customer-id-card>
+      </div>
+    </div>
 <mc-footer>
   <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-  <button class="btn btn-success" (click)="onNext()">NEXT</button>
+  <button class="btn btn-success" [disabled]="!validLogic" (click)="onNext()">NEXT</button>
 </mc-footer>
 </div>
