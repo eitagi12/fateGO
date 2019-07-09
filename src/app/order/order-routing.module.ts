@@ -18,7 +18,7 @@ const routes: Routes = [
   },
   {
     path: 'block-chain',
-    loadChildren: 'src/app/order/order-blcok-chain/order-blcok-chain.module#OrderBlcokChainModule',
+    loadChildren: 'src/app/order/order-blcok-chain/order-blcok-chain.module#OrderBlockChainModule',
   }
 ];
 

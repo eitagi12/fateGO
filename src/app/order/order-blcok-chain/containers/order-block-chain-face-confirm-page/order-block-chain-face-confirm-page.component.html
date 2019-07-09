@@ -10,11 +10,33 @@
     </mc-header>
 <div class="mc-flex-wrap">
   <div class="mb-3 mt-3">
+    <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
+
+    <div class="container-fluid">
+
+      <div class="card mb-3">
+        <div class="card-body">
+          <div class="text-center text-green">
+            <p translate>แจ้งผลการลงทะเบียน</p>
+            <p translate>ตรวจสอบอัตลักษณ์ไม่ผ่าน</p>
+            <p translate>xxxxxxxxxxxxxxxxxxxxxxxxxxxx</p>
+          <form [formGroup]="confirmForm">
+          <div class="form-row">
+            <div class="col-6 col-sm-6" style="margin-top:10px">
+              <input  type="password" id="password" class="form-control text-center"
+                formControlName="password" />
+            </div>
+          </div>
+        </form>
+          </div>
+        </div>
+      </div>
+    </div>
 
   </div>
 </div>
 <mc-footer>
   <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-  <button class="btn btn-success" (click)="onNext()">NEXT</button>
+  <button class="btn btn-success" (click)="onNext()" [disabled]="confirmForm.invalid">NEXT</button>
 </mc-footer>
 </div>

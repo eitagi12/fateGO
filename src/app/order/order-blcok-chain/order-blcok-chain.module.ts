@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-import { OrderBlcokChainRoutingModule } from './order-blcok-chain-routing.module';
+import { OrderBlockChainRoutingModule } from 'src/app/order/order-blcok-chain/order-block-chain-routing.module';
 import { OrderBlockChainValidateCustomerIdCardPageComponent } from './containers/order-block-chain-validate-customer-id-card-page/order-block-chain-validate-customer-id-card-page.component';
 import { OrderBlockChainEligibleMobilePageComponent } from './containers/order-block-chain-eligible-mobile-page/order-block-chain-eligible-mobile-page.component';
 import { OrderBlockChainAgreementSignPageComponent } from './containers/order-block-chain-agreement-sign-page/order-block-chain-agreement-sign-page.component';
@@ -15,7 +15,7 @@ import { OrderBlockChainResultPageComponent } from './containers/order-block-cha
 @NgModule({
   imports: [
     CommonModule,
-    OrderBlcokChainRoutingModule,
+    OrderBlockChainRoutingModule,
     FormsModule,
     ReactiveFormsModule,
     MyChannelSharedLibsModule,
@@ -30,4 +30,4 @@ import { OrderBlockChainResultPageComponent } from './containers/order-block-cha
     OrderBlockChainFaceConfirmPageComponent,
     OrderBlockChainResultPageComponent]
 })
-export class OrderBlcokChainModule { }
+export class OrderBlockChainModule { }

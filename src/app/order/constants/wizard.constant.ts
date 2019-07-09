@@ -9,3 +9,7 @@ export const WIZARD_ORDER_PRE_TO_POST = [
 export const WIZARD_ORDER_MNP = [
     'ข้อมูลลูกค้า', 'เลือกแพ็กเกจ', 'ยืนยันและรับSIM'
 ];
+
+export const WIZARD_ORDER_BLOCK_CHAIN = [
+    'ข้อมูลลูกค้า', 'ยืนยัน', 'ถ่ายรูปผู้ลงทะเบียน', 'ตรวจใบหน้า'
+];

@@ -1,21 +1,39 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit, EventEmitter, OnDestroy } from '@angular/core';
+import { WIZARD_ORDER_BLOCK_CHAIN } from 'src/app/order/constants/wizard.constant';
 import { Router } from '@angular/router';
-import { HomeService } from 'mychannel-shared-libs';
-import { ROUTE_ORDER_BLOCK_CHAIN_AGREEMENT_SIGN_PAGE, ROUTE_ORDER_BLOCK_CHAIN_FACE_COMPARE_PAGE } from 'src/app/order/order-blcok-chain/constants/route-path.constant';
+import { HomeService, Utils, AlertService, ImageUtils } from 'mychannel-shared-libs';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { Transaction,  } from 'src/app/shared/models/transaction.model';
+import { TranslateService } from '@ngx-translate/core';
+import { ROUTE_ORDER_BLOCK_CHAIN_AGREEMENT_SIGN_PAGE, ROUTE_ORDER_BLOCK_CHAIN_FACE_COMPARE_PAGE } from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-order-block-chain-face-capture-page',
   templateUrl: './order-block-chain-face-capture-page.component.html',
   styleUrls: ['./order-block-chain-face-capture-page.component.scss']
 })
-export class OrderBlockChainFaceCapturePageComponent implements OnInit {
+export class OrderBlockChainFaceCapturePageComponent implements OnInit, OnDestroy {
+  wizards: string[] = WIZARD_ORDER_BLOCK_CHAIN;
+
+  openCamera: boolean;
+  transaction: Transaction;
+  camera: EventEmitter<void> = new EventEmitter<void>();
+
   constructor(
     private router: Router,
     private homeService: HomeService,
-  ) { }
+    private transactionService: TransactionService,
+    private alertService: AlertService,
+    private utils: Utils,
+    private translation: TranslateService
+  ) {
+    this.transaction = this.transactionService.load();
+  }
 
   ngOnInit(): void {
+    this.openCamera = !!(this.transaction.data.faceRecognition && this.transaction.data.faceRecognition.imageFaceUser);
   }
+
   onBack(): void {
     this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_AGREEMENT_SIGN_PAGE]);
   }
@@ -23,7 +41,54 @@ export class OrderBlockChainFaceCapturePageComponent implements OnInit {
   onNext(): void {
     this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_FACE_COMPARE_PAGE]);
   }
+
   onHome(): void {
     this.homeService.goToHome();
+  }
+
+  onOpenCamera(): void {
+    this.openCamera = true;
+  }
+
+  switchLanguage(lang: string): void {
+    // this.i18nService.setLang(lang);
+  }
+
+  onCameraCompleted(image: string): void {
+
+    const cropOption = {
+      sizeWidth: 160,
+      sizeHeight: 240,
+      startX: 80,
+      startY: 0,
+      flip: true,
+      quality: 1
+    };
+
+    new ImageUtils().cropping(image, cropOption).then(res => {
+      this.transaction.data.faceRecognition = {
+        imageFaceUser: res
+      };
+    }).catch(() => {
+      this.transaction.data.faceRecognition = {
+        imageFaceUser: image
+      };
+    });
+  }
+
+  onCameraError(error: string): void {
+    this.alertService.error(this.translation.instant(error));
+  }
+
+  onClearIdCardImage(): void {
+    this.transaction.data.faceRecognition.imageFaceUser = null;
+  }
+
+  isAisNative(): boolean {
+    return this.utils.isAisNative();
+  }
+
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
   }
 }

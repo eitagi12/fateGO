@@ -22,4 +22,4 @@ const routes: Routes = [
   imports: [RouterModule.forChild(routes)],
   exports: [RouterModule]
 })
-export class OrderBlcokChainRoutingModule { }
+export class OrderBlockChainRoutingModule { }
