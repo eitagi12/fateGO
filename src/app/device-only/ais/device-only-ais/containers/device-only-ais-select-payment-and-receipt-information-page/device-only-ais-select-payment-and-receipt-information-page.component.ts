@@ -148,6 +148,8 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
         await this.clearstock();
         window.location.href = await url + queryParams;
+      } else {
+        window.location.href = await url + queryParams;
       }
   }
 
