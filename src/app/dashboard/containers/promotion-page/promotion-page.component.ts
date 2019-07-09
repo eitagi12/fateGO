@@ -201,6 +201,9 @@ export class PromotionPageComponent implements OnInit {
     }
 
     const isAspUser = this.tokenService.isAspUser();
+    const isPhuket = this.tokenService.getUser().locationCode === '1213';
+    console.log('location ==>', this.tokenService.getUser().locationCode);
+    
 
     saleMenus.menus.forEach((menu: any) => {
       const current: any = this.menus.find(m => m.label === menu.name) || {};
@@ -216,6 +219,9 @@ export class PromotionPageComponent implements OnInit {
     });
 
     this.menus = this.menus.filter((menu: any) => !menu.disabled);
+    if (isPhuket) {
+      this.menus = this.menus.filter(res => !(res.label === 'Accessories & Gadget') && isPhuket);
+    }
   }
 
   private goToURL(url: string): void {

@@ -5,11 +5,7 @@ import { Subscription } from 'rxjs';
 import { ShoppingCart, HomeService, TokenService, AlertService, User, ChannelType, CaptureAndSign } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { AisNativeDeviceService } from 'src/app/shared/services/ais-native-device.service';
-import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
-import { TranslateService } from '@ngx-translate/core';
 import { ROUTE_DEVICE_ORDER_AIS_GADGET_CHECK_OUT_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_ECONTRACT_PAGE } from '../../constants/route-path.constant';
-import { DeviceOrderAisExistingGadgetEcontractPageComponent } from '../device-order-ais-existing-gadget-econtract-page/device-order-ais-existing-gadget-econtract-page.component';
 
 @Component({
   selector: 'app-device-order-ais-existing-gadget-agreement-sign-page',
@@ -43,10 +39,7 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
-    private tokenService: TokenService,
-    private shoppingCartService: ShoppingCartService,
-    private alertService: AlertService,
-    private translationService: TranslateService) {
+    private tokenService: TokenService) {
     this.transaction = this.transactionService.load();
     if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {
       this.apiSigned = 'OnscreenSignpad';
@@ -64,7 +57,7 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
     if (this.transaction.data.action === 'READ_CARD') {
       this.captureAndSign = {
         allowCapture: false,
-        imageSmartCard: customer.imageSmartCard,
+        imageSmartCard: customer.imageReadSmartCard,
         imageSignature: customer.imageSignatureSmartCard
       };
     } else {
