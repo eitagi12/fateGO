@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HomeService, ReadCardProfile, ValidateCustomerIdCardComponent, Utils, TokenService, AlertService, PageLoadingService, ChannelType, KioskControls } from 'mychannel-shared-libs';
 import { ROUTE_ORDER_BLOCK_CHAIN_ELIGIBLE_MOBILE_PAGE } from 'src/app/order/order-blcok-chain/constants/route-path.constant';
@@ -13,7 +13,7 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './order-block-chain-validate-customer-id-card-page.component.html',
   styleUrls: ['./order-block-chain-validate-customer-id-card-page.component.scss']
 })
-export class OrderBlockChainValidateCustomerIdCardPageComponent implements OnInit {
+export class OrderBlockChainValidateCustomerIdCardPageComponent implements OnInit, OnDestroy {
 
   kioskApi: boolean;
 
@@ -137,7 +137,7 @@ export class OrderBlockChainValidateCustomerIdCardPageComponent implements OnIni
   checkBusinessLogic(): boolean {
     const expireDate = this.transaction.data.customer.expireDate;
     const idCardType = this.transaction.data.customer.idCardType;
-    // block chain ไม่มีการตรวจสอบบัตรอายุต่ำกว่า 17 ปี เด็กสามารถทำรายการได้ แต่จะมีสิทธิ์จำกัด ตอนใช้งานธุรกรรมต่าง ๆ 
+
     if (this.utils.isIdCardExpiredDate(expireDate)) {
       this.alertService.error(this.translation.instant('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ')).then(() => {
         this.onBack();
