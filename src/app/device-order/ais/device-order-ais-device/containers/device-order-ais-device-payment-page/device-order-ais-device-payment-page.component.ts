@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { HomeService, ShoppingCart, PaymentDetail, PaymentDetailBank, ReceiptInfo, Utils, TokenService, PageLoadingService, REGEX_MOBILE, AlertService, ReadCard, ReadCardService, ReadCardProfile, ReadCardEvent, User } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction, Customer, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
@@ -73,6 +73,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     private readCardService: ReadCardService,
     private modalService: BsModalService,
     private sharedTransactionService: SharedTransactionService,
+    private route: ActivatedRoute
   ) {
     this.user = this.tokenService.getUser();
     this.priceOption = this.priceOptionService.load();
@@ -91,7 +92,13 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
   }
 
   ngOnInit(): void {
-    this.createTransaction();
+    this.route.queryParams.subscribe(params => {
+      console.log('params', params.ebilling); // {order: "popular"}
+      if (!params.ebilling) {
+        console.log('create');
+        this.createTransaction();
+      }
+    });
     this.createForm();
     this.createSearchByMobileNoForm();
     this.createSelectBillAddForm();
@@ -99,7 +106,11 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
 
     const productDetail = this.priceOption.productDetail || {};
     const productStock = this.priceOption.productStock || {};
-    const customer: any = this.transaction.data && this.transaction.data.customer ? this.transaction.data.customer : {};
+    // tslint:disable-next-line:max-line-length
+    const billingInformation: any = this.transaction.data && this.transaction.data.billingInformation ? this.transaction.data.billingInformation : {};
+    const customerProfile: any = this.transaction.data && this.transaction.data.customer ? this.transaction.data.customer : {};
+    const customer: any = billingInformation.billDeliveryAddress || customerProfile;
+    console.log('customer ngOnInit', customer);
     const trade: any = this.priceOption.trade || {};
     const advancePay: any = trade.advancePay || {};
     let commercialName = productDetail.name;
@@ -136,7 +147,11 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     this.checkBillFormChanged();
   }
   createForm(): void {
-    const customer: any = this.transaction.data && this.transaction.data.receiptInfo ? this.transaction.data.receiptInfo : {};
+    // tslint:disable-next-line:max-line-length
+    const billingInformation: any = this.transaction.data && this.transaction.data.billingInformation ? this.transaction.data.billingInformation : {};
+    const customerProfile: any = this.transaction.data && this.transaction.data.customer ? this.transaction.data.customer : {};
+    const customer: any = billingInformation.billDeliveryAddress || customerProfile;
+    console.log('create cus', customer);
     this.receiptInfoForm = this.fb.group({
       taxId: ['', []],
       branch: ['', []],
@@ -145,11 +160,27 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
       telNo: ['', [Validators.pattern(REGEX_MOBILE)]]
     });
     this.receiptInfoForm.patchValue({
-      taxId: customer.taxId || '',
-      telNo: customer.telNo || ''
+      taxId: customer.idCardNo || '',
+      telNo: customer.telNo || '',
+      // tslint:disable-next-line:max-line-length
+      buyer: customer.titleName + ' ' + customer.firstName + ' ' + customer.lastName || '',
+      buyerAddress: this.utils.getCurrentAddress({
+        homeNo: customer.homeNo,
+        moo: customer.moo,
+        mooBan: customer.mooBan,
+        room: customer.room,
+        floor: customer.floor,
+        buildingName: customer.buildingName,
+        soi: customer.soi,
+        street: customer.street,
+        tumbol: customer.tumbol,
+        amphur: customer.amphur,
+        province: customer.province,
+        zipCode: customer.zipCode,
+      }),
     });
-    console.log('customer', customer);
-    console.log('this.receiptInfoForm', this.receiptInfoForm.value);
+    console.log('this.transaction.data.receiptInfo', this.transaction.data.receiptInfo);
+    console.log('this.receiptInfoForm', this.receiptInfoForm.value.buyer);
   }
   checkLocation(): void {
     const user = this.tokenService.getUser();
@@ -193,10 +224,13 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     const customerProfile: any = this.transaction.data && this.transaction.data.customer ? this.transaction.data.customer : {};
     const customerAddress: any = billingInformation.billDeliveryAddress || customerProfile;
     const receiptInfo: any = this.transaction.data && this.transaction.data.receiptInfo ? this.transaction.data.receiptInfo : {};
+    console.log('customerAddress', customerAddress);
     this.receiptInfo = {
-      taxId: customer.idCardNo,
+      taxId: customerAddress.idCardNo,
       branch: '',
-      buyer: `${customer.titleName} ${customer.firstName} ${customer.lastName}`,
+      buyer:  customerAddress.titleName
+              ? customerAddress.titleName + ' ' + customerAddress.firstName + ' ' + customerAddress.lastName || ''
+              : null,
       buyerAddress: this.utils.getCurrentAddress({
         homeNo: customerAddress.homeNo,
         moo: customerAddress.moo,
@@ -213,6 +247,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
       }),
       telNo: receiptInfo.telNo
     };
+    console.log('receiptInfo', this.receiptInfo);
   }
 
   checkBillFormChanged(): void {
@@ -270,6 +305,19 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
               this.transaction.data.customer.zipCode = billing.portalCode;
               this.transaction.data.customer.province = billing.provinceName;
               this.transaction.data.customer.street = billing.streetName;
+              this.transaction.data.customer.amphur = billing.amphur;
+              this.transaction.data.customer.buildingName = billing.buildingName;
+              this.transaction.data.customer.firstName = billing.firstName;
+              this.transaction.data.customer.floor = billing.floor;
+              this.transaction.data.customer.idCardNo = billing.idCardNo;
+              this.transaction.data.customer.idCardType = billing.idCardType;
+              this.transaction.data.customer.lastName = billing.lastName;
+              this.transaction.data.customer.moo = billing.moo;
+              this.transaction.data.customer.mooBan = billing.mooban;
+              this.transaction.data.customer.soi = billing.soi;
+              this.transaction.data.customer.street = billing.street;
+              this.transaction.data.customer.titleName = billing.titleName;
+              this.transaction.data.customer.tumbol = billing.tumbol;
               this.receiptInfo.buyer = billing.titleName + ' ' + billing.firstName + ' ' + billing.lastName;
               this.receiptInfo.taxId = billing.idCardNo;
               this.receiptInfo.buyerAddress = this.utils.getCurrentAddress({
@@ -581,6 +629,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     this.transactionService.save(this.transaction);
   }
   createTransaction(): void {
+    console.log('createTransaction');
     this.transaction = {
       data: {
         transactionType: TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS,
