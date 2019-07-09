@@ -19,16 +19,22 @@
           <div class="text-center text-green">
             <p translate>แจ้งผลการลงทะเบียน</p>
             <p translate>ตรวจสอบอัตลักษณ์ไม่ผ่าน</p>
-            <p translate>xxxxxxxxxxxxxxxxxxxxxxxxxxxx</p>
+          </div>  
+          <div class="text-center text-black  mt-5">
+            <p translate>การลงทะเบียนระบบอัตลักษณ์ยังไม่สมบรูณ์</p>
+            <p translate>หากท่านประสงค์จะลงทะเบียนให้ผู้ซื้อซิมการ์ดต่อไป</p>
+            <p translate>ท่านจะต้องยืนยันและรับรองความถูกต้อง</p>
+            <p translate>ในตัวบุคคลผู้ซื้อซิมการ์ด</p>
+          </div>
           <form [formGroup]="confirmForm">
-          <div class="form-row mt-3">
+          <div class="form-row mt-5">
             <div class="col-12 text-center" style="text-align: center;">
               <input  type="password" id="password" class="w-50 d-inline text-center form-control"
                 formControlName="password" />
             </div>
           </div>
         </form>
-          </div>
+          
         </div>
       </div>
     </div>
@@ -36,7 +42,7 @@
   </div>
 </div>
 <mc-footer>
-  <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-  <button class="btn btn-success" (click)="onNext()" [disabled]="confirmForm.invalid">NEXT</button>
+  <button class="btn btn-secondary" (click)="onBack()">ย้อนกลับ</button>
+  <button class="btn btn-success" (click)="onNext()" [disabled]="confirmForm.invalid">ยืนยันยอมรับ</button>
 </mc-footer>
 </div>
