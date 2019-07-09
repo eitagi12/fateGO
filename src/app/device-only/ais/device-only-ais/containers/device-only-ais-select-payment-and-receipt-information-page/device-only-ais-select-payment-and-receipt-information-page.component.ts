@@ -126,17 +126,14 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       if (response.value === true) {
         this.createOrderService.cancelOrder(this.transaction).then((isSuccess: any) => {
           this.transactionService.remove();
-          this.priceOptionService.remove();
         });
       }
     }).catch((err: any) => {
       this.transactionService.remove();
-      this.priceOptionService.remove();
     });
   }
 
   onBack(): void {
-
     this.transactionService.remove();
     this.product = this.priceOption.queryParams;
     const brand: string = encodeURIComponent(this.product.brand ? this.product.brand : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
@@ -151,7 +148,6 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
         this.clearstock().then((res: any) => {
           window.location.href = url + queryParams;
-
         });
       }
   }
