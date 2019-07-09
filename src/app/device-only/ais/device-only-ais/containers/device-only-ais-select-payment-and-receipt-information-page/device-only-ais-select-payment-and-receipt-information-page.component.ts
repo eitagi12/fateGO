@@ -8,7 +8,6 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 import { HomeService, ApiRequestService, AlertService, PaymentDetail, User, TokenService } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators';
 import { WIZARD_DEVICE_ONLY_AIS } from 'src/app/device-only/constants/wizard.constant';
 import { CreateOrderService } from 'src/app/device-only/services/create-order.service';
 import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
@@ -126,6 +125,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       if (response.value === true) {
         this.createOrderService.cancelOrder(this.transaction).then((isSuccess: any) => {
           this.transactionService.remove();
+          window.location.href = this.setPath();
         });
       }
     }).catch((err: any) => {
@@ -133,8 +133,16 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
     });
   }
 
-  async onBack(): Promise<any> {
+  onBack(): any {
     this.transactionService.remove();
+      if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+        this.clearstock();
+      } else {
+        window.location.href = this.setPath();
+      }
+  }
+
+  setPath(): any {
     this.product = this.priceOption.queryParams;
     const brand: string = encodeURIComponent(this.product.brand ? this.product.brand : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
     const model: string = encodeURIComponent(this.product.model ? this.product.model : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
@@ -144,13 +152,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       '?modelColor=' + this.product.color +
       '&productType' + this.product.productType +
       '&productSubType' + this.product.productSubtype;
-
-      if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
-        await this.clearstock();
-        window.location.href = await url + queryParams;
-      } else {
-        window.location.href = await url + queryParams;
-      }
+      return url + queryParams;
   }
 
   onNext(): void {
