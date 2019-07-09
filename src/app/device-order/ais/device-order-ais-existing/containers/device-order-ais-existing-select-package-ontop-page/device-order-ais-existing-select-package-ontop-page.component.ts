@@ -33,9 +33,7 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
   shoppingCart: ShoppingCart;
   packageOntopList: any[] = [];
   packageOntopForm: FormGroup;
-
-  testFrom: FormGroup;
-
+  effectiveEndDt: any;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -57,6 +55,12 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     delete this.shoppingCart.mobileNo;
     this.callService(mobileNo);
+    const mainPackEndDt: any = this.transaction.data
+      && this.transaction.data.mainPackage
+      && this.transaction.data.mainPackage.customAttributes
+      && this.transaction.data.mainPackage.customAttributes.effectiveEndDt
+      ? this.transaction.data.mainPackage.customAttributes.effectiveEndDt : '-';
+    this.effectiveEndDt = moment(mainPackEndDt).format('DD/MM/YYYY');
   }
   callService(mobileNo: string): void {
     this.pageLoadingService.openLoading();
@@ -131,7 +135,7 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
   }
 
   packageTitle(value: any = {}): string {
-    return this.translateService.currentLang === 'EN' ? (value.shortNameEng || value.titleEng) : (value.shortNameThai ||  value.title);
+    return this.translateService.currentLang === 'EN' ? (value.shortNameEng || value.titleEng) : (value.shortNameThai || value.title);
   }
 
   packageInStatement(value: any = {}): string {
