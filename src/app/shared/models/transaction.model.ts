@@ -17,7 +17,7 @@ export enum TransactionType {
   ORDER_EXISTING = 'Existing',
 
   RESERVE_WITH_DEPOSIT = 'ReserveWithDeposit',
-  
+
   // device only
   DEVICE_ONLY_AIS = 'DeviceOnlyAIS',
   DEVICE_ONLY_ASP = 'DeviceOnlyASP',
