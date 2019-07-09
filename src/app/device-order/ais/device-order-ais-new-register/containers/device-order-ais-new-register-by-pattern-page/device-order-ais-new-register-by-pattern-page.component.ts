@@ -86,6 +86,13 @@ export class DeviceOrderAisNewRegisterByPatternPageComponent implements OnInit, 
       })
       .then(() => {
         this.pageLoadingService.closeLoading();
+      }).catch((error: any) => {
+        this.pageLoadingService.closeLoading();
+        if (error && error.error && error.error.errors && error.error.resultDescription && error.error.errors.returnCode === '004') {
+          this.alertService.warning(error.error.resultDescription);
+        } else {
+          return Promise.reject(error);
+        }
       });
 
   }

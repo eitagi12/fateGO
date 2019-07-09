@@ -1,28 +1,39 @@
 <div class="mc-flex">
-  <mc-header title="เปิดเบอร์ใหม่"></mc-header>
+  <mc-header title="{{'เปลี่ยนเติมเงินเป็นรายเดือน' | translate}}">
+    <div class="header-icon-right w-25 text-right mr-5">
+      <mc-dropdown-language></mc-dropdown-language>
+    </div>
+  </mc-header>
   <div class="mc-flex-wrap">
     <div class="mt-3 mb-3">
       <mc-wizard [wizards]="wizards" active="3"></mc-wizard>
       <div class="container-fluid">
-        <mc-result [success]="isSuccess" [mobileNo]="transaction?.data?.simCard?.mobileNo">
+        <mc-result [success]="isSuccess" [mobileNo]="transaction?.data?.simCard?.mobileNo" [mcLoading]="createTransactionService">
           <div *ngIf="isSuccess">
             <div class="text-center text-black"> TRANSACTION ID :
               <span class="text-light-grey"> {{ transaction?.data?.order?.orderNo }}</span>
             </div>
-              <div class="text-light-grey float-left"><i class="fa fa fa-circle text-green"></i>&nbsp;&nbsp;
-                ผลการโอนย้ายบริการเสริม</div>
-              <div class="text-light-grey float-right">ทั้งหมด {{ serviceChange?.length }} บริการ</div>
-              <div class="row" *ngFor="let service of serviceChange">
-                <ul>
-                  <li class="text-light-grey d-inline"><i class="fa fa-times text-pink mr-3"></i>
-                    {{ service?.serviceName }}
-                  </li>
-                </ul>
-              </div>
-              <div class="message-result text-center mt-5 text-black">
-                ระบบจัดส่ง SMS แจ้ง "รายละเอียดการทำรายการข้อตกลงและเงื่อนไขบริการโทรศัพท์เคลื่อนที่" ไปที่
-                <br> เบอร์ {{ transaction?.data?.simCard?.mobileNo | mobileNo }}
-              </div>
+            <div class="text-grey float-left mt-2"><i class="fa fa fa-circle text-light-green"></i>&nbsp;&nbsp;
+              <span translate>ผลการโอนย้ายบริการเสริม</span></div>
+            <div class="text-grey float-right">
+                <div *ngIf="translationService.currentLang === 'EN'">
+                    {{ serviceChange?.length }} package(s)
+                </div>
+                <div *ngIf="translationService.currentLang === 'TH'">
+                    ทั้งหมด {{ serviceChange?.length }} บริการ
+                </div>
+            </div>
+            <div class="row" *ngFor="let service of serviceChange">
+              <ul>
+                <li class="text-grey d-inline"><i class="fa fa-times text-pink mr-3"></i>
+                  {{ service?.serviceName }}
+                </li>
+              </ul>
+            </div>
+            <div class="message-result text-center mt-5 text-black">
+              <span translate>ระบบจัดส่ง SMS แจ้ง รายละเอียดการทำรายการข้อตกลงและเงื่อนไขบริการโทรศัพท์เคลื่อนที่ ไปที่</span>
+              <br> <span translate>เบอร์</span> {{ transaction?.data?.simCard?.mobileNo | mobileNo }}
+            </div>
           </div>
 
         </mc-result>

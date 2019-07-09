@@ -15,6 +15,7 @@ export class OrderNewRegisterResultPageComponent implements OnInit {
   wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
   transaction: Transaction;
   isSuccess: boolean;
+  createTransactionService: Promise<any>;
   constructor(
     private homeService: HomeService,
     private transactionService: TransactionService,
@@ -26,27 +27,30 @@ export class OrderNewRegisterResultPageComponent implements OnInit {
 
   ngOnInit(): void {
     this.pageLoadingService.openLoading();
-    this.createNewRegisterService.createNewRegister(this.transaction).then((resp: any) => {
-      const data = resp.data || {};
-      this.transaction.data.order = {
-        orderNo: data.orderNo,
-        orderDate: data.orderDate
-      };
-      this.transactionService.update(this.transaction);
-      if (this.transaction.data.order.orderNo) {
-        this.isSuccess = true;
-      } else {
+    this.createTransactionService = this.createNewRegisterService.createNewRegister(this.transaction)
+      .then((resp: any) => {
+        const data = resp.data || {};
+        this.transaction.data.order = {
+          orderNo: data.orderNo,
+          orderDate: data.orderDate
+        };
+        this.transactionService.update(this.transaction);
+        if (this.transaction.data.order.orderNo) {
+          this.isSuccess = true;
+        } else {
+          this.isSuccess = false;
+        }
+        this.pageLoadingService.closeLoading();
+
+      }).catch(() => {
         this.isSuccess = false;
-      }
-      this.pageLoadingService.closeLoading();
-    }).catch(() => {
-      this.isSuccess = false;
-      this.pageLoadingService.closeLoading();
-    });
+        this.pageLoadingService.closeLoading();
+      });
   }
 
   onMainMenu(): void {
-    this.homeService.goToHome();
+    // bug gotohome จะ unlock เบอร์ ทำให้ออก orderไม่สำเร็จ
+    window.location.href = '/smart-digital/main-menu';
+    // this.homeService.goToHome();
   }
-
 }

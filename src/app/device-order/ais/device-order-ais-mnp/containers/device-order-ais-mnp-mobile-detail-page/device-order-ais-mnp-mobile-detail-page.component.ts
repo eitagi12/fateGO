@@ -8,9 +8,11 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { MobileCareService } from 'src/app/device-order/services/mobile-care.service';
-import { ROUTE_DEVICE_ORDER_AIS_MNP_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_ELIGIBLE_MOBILE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_SELECT_NUMBER_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_SELECT_PACKAGE_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_MNP_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_ELIGIBLE_MOBILE_PAGE } from '../../constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
 import { Profile } from 'selenium-webdriver/firefox';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscribable, Subscription } from 'rxjs';
 
 export interface MobileNoUseTime {
   month: string;
@@ -33,6 +35,8 @@ export class DeviceOrderAisMnpMobileDetailPageComponent implements OnInit, OnDes
   mcLoadingService: Promise<any>;
 
   mobileInfo: MobileInfo;
+  translationSubscribe: Subscription;
+  currentLang: string = 'TH';
 
   constructor(
     private router: Router,
@@ -43,10 +47,17 @@ export class DeviceOrderAisMnpMobileDetailPageComponent implements OnInit, OnDes
     private shoppingCartService: ShoppingCartService,
     private mobileCareService: MobileCareService,
     private alertService: AlertService,
-    private http: HttpClient
+    private http: HttpClient,
+    private translationService: TranslateService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
+
+    this.currentLang = this.translationService.currentLang || 'TH';
+    this.translationSubscribe = this.translationService.onLangChange.subscribe(lang => {
+      this.currentLang = typeof (lang) === 'object' ? lang.lang : lang;
+      this.getMobileProfile();
+    });
   }
 
   ngOnInit(): void {
@@ -91,6 +102,9 @@ export class DeviceOrderAisMnpMobileDetailPageComponent implements OnInit, OnDes
         serviceYear: this.serviceYearWording(serviceYear.year, serviceYear.month, serviceYear.day),
         mainPackage: mobileDetail.packageTitle
       };
+      // translate
+      this.mapTranslateLanguage();
+
       this.transaction.data.simCard.chargeType = mobileDetail.chargeType;
       this.transaction.data.simCard.billingSystem = mobileDetail.billingSystem;
       this.transaction.data.currentPackage = mobileDetail.package;
@@ -124,6 +138,19 @@ export class DeviceOrderAisMnpMobileDetailPageComponent implements OnInit, OnDes
         return;
       }
     });
+  }
+
+  mapTranslateLanguage(): void {
+    if (this.mobileInfo) {
+      if (this.currentLang === 'EN') {
+        const prepaidReplace: any = this.mobileInfo.chargeType.replace('เติมเงิน', 'Prepaid');
+        const postpaidReplace: any = this.mobileInfo.chargeType.replace('รายเดือน', 'Postpaid');
+        this.mobileInfo.serviceYear = this.mobileInfo.serviceYear.replace('วัน', 'day');
+        this.mobileInfo.serviceYear = this.mobileInfo.serviceYear.replace('ปี', 'year');
+        this.mobileInfo.serviceYear = this.mobileInfo.serviceYear.replace('เดือน', 'month');
+        this.mobileInfo.chargeType = prepaidReplace === 'Prepaid' ? prepaidReplace : postpaidReplace;
+      }
+    }
   }
 
   mapChargeType(chargeType: string): 'รายเดือน' | 'เติมเงิน' {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { HomeService, ShoppingCart, PageLoadingService, TokenService, IdCardPipe, Utils } from 'mychannel-shared-libs';
@@ -19,7 +19,7 @@ import { DecimalPipe } from '@angular/common';
   templateUrl: './device-order-ais-new-register-econtact-page.component.html',
   styleUrls: ['./device-order-ais-new-register-econtact-page.component.scss']
 })
-export class DeviceOrderAisNewRegisterEcontactPageComponent implements OnInit {
+export class DeviceOrderAisNewRegisterEcontactPageComponent implements OnInit, OnDestroy {
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   priceOption: PriceOption;
@@ -101,7 +101,7 @@ export class DeviceOrderAisNewRegisterEcontactPageComponent implements OnInit {
           airTimeMonth: this.getAirTimeMonth(advancePay.promotions),
           price: this.decimalPipe.transform(+trade.promotionPrice + (+advancePay.amount)),
           signature: '',
-          mobileCarePackageTitle: mobileCarePackage.detailTH ? `พร้อมใช้บริการ ${mobileCarePackage.detailTH}` : '',
+          mobileCarePackageTitle: mobileCarePackage.title ? `พร้อมใช้บริการ ${mobileCarePackage.title}` : '',
           condition: condition.conditionText,
 
         },
@@ -128,9 +128,9 @@ export class DeviceOrderAisNewRegisterEcontactPageComponent implements OnInit {
     }
 
     if (Array.isArray(advancePayPromotions)) {
-      return advancePayPromotions.length > 0 ? amount / advancePayPromotions[0] : 0;
+      return advancePayPromotions.length > 0 ? amount / advancePayPromotions[0].month : 0;
     } else {
-      return amount / advancePayPromotions;
+      return amount / advancePayPromotions.month;
     }
   }
 
@@ -143,6 +143,10 @@ export class DeviceOrderAisNewRegisterEcontactPageComponent implements OnInit {
       return advancePayPromotions[0].month;
     }
     return 0;
+  }
+
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
   }
 
 }

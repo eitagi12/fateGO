@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { ShoppingCartDetailComponent } from './shopping-cart-detail.component';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { Pipe, PipeTransform } from '@angular/core';
+import { Pipe, PipeTransform, CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 
 @Pipe({ name: 'mobileNo' })
 class MockMobileNoPipe implements PipeTransform {

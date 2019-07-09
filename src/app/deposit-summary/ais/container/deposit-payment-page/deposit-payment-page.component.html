@@ -1,0 +1,205 @@
+<div class="mc-flex">
+  <mc-header title="การจองสินค้า">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <div class="mt-3">
+      <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
+    </div>
+    <div class="container-fluid">
+      <div class="card mb-3">
+        <div class="card-body text-right ">
+          <div class="row">
+            <div id="product" class="col-12 col-sm-3">
+              <mc-lazy-load-image [src]="productImage"></mc-lazy-load-image>
+            </div>
+            <div class="col-sm-9 mt-0">
+              <div class="row">
+                <div class="col-12 col-sm-2 text-secondary">
+                  Model :
+                </div>
+                <div class="col-12 col-sm-7 text-left">
+                  {{ priceOption?.trade?.model }}
+                </div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="col-12 col-sm-2 text-secondary">
+                  สี :
+                </div>
+                <div>
+                  <a class="circle-qty " [ngStyle]="colorCodeStyle"></a>
+                </div>
+                <div class="col-12 col-sm-7 text-left"> {{ priceOption?.trade?.colorName }}</div>
+              </div>
+              <br>
+              <div class="row">
+                <div class="col-12 col-sm-2 text-secondary">
+                  จำนวน :
+                </div>
+                <div class="col-12 col-sm-7 text-left">
+                  1
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="card mb-3">
+        <div class="card-header text-white rounded-top p-3" style="background-color:#ffab40">
+          รูปแบบชำระเงิน
+        </div>
+        <div class="card-header bg-transparent">
+          <div class="row">
+            <div class="col-12">
+              ค่ามัดจำเครื่อง {{ priceOption?.trade?.model + ' สี ' + priceOption?.trade?.colorName }}
+              <span class="pull-right">฿
+                {{ priceOption?.trade?.tradeReserve?.trades[0]?.deposit?.depositIncludeVat | number}}</span>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="paymentForm">
+            <div class="form-group row">
+              <div class="col-12 col-sm-4">
+                <input class="form-check-input" type="radio" id="payment-debit-{{formID}}" value="debit"
+                  formControlName="paymentType" (click)="onSelectPaymentType('debit')"
+                  [attr.disabled]="showPaymentMethod('CA')">
+                <label class="form-check-label text-secondary" for="payment-debit-{{formID}}">
+                  {{ 'ชำระเงินด้วยเงินสด' }}
+                </label>
+              </div>
+              <div class="col-12 col-sm-8">
+                <input type="text" readonly class="form-control" id="full-payment-cash" value="{{ 'เต็มจำนวน' }}">
+              </div>
+            </div>
+            <hr>
+            <div class="form-group row">
+              <div class="col-12 col-sm-4">
+                <input class="form-check-input" type="radio" id="payment-credit-{{formID}}" value="credit"
+                  formControlName="paymentType" (click)="onSelectPaymentType('credit')"
+                  [attr.disabled]="showPaymentMethod('CC')">
+                <label class="form-check-label text-secondary" for="payment-credit-{{formID}}">
+                  {{ 'ชำระเงินด้วยบัตรเครดิต' }}
+                </label>
+              </div>
+              <div class="col-12 col-sm-8">
+                <input type="text" readonly class="form-control" id="full-payment-credit" value="{{ 'เต็มจำนวน' }}">
+              </div>
+            </div>
+            <div class="form-group row" *ngIf="paymentForm.controls['paymentType'].value === 'credit'">
+
+              <div class="col-4 col-sm-2 mb-3" *ngFor="let bank of paymentDetail?.banks; let i = index"
+                (click)="onSelectBank(bank)">
+                <div class="bank-lazy-load-image" [ngClass]="{'active': bank?.abb === selectPaymentDetail.bank?.abb}">
+                  <mc-lazy-load-image [src]="bank?.imageUrl"></mc-lazy-load-image>
+                </div>
+              </div>
+              <div class="col-12 text-left mb-3">
+                <span class="text-pink">{{ '*กรุณาเลือกธนาคาร' }}</span>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="container-fluid">
+      <div class="card mb-3">
+        <div class="card-header text-white bg-sky">
+          ข้อมูลผู้รับสินค้า
+        </div>
+        <div class="card-body">
+            <div class="form-group row">
+              <div class="col-sm-4">
+                <label class="form-check-label text-light-gray">
+                  ผู้ซื้อ
+                </label>
+              </div>
+              <div class="col-12 col-sm-8 text-left text-light-gray">
+                {{ customerFullName }}
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-12 col-sm-4">
+                <label class="form-check-label text-light-gray">
+                  ที่อยู่
+                </label>
+              </div>
+              <div class="col-12 col-sm-8">
+                <!-- <input type="text" class="form-control" autocomplete="off" maxlength="100" value="{{customerFullAddress}}" (input)="onAddrChanges($event.target.value)"> -->
+                <textarea id="txtFullAddress" class="form-control" autocomplete="off" cols="40" rows="3"
+                  (input)="onAddrChanges($event.target.value)">{{ customerFullAddress }}</textarea>
+              </div>
+            </div>
+            <div class="form-group row">
+              <div class="col-12 col-sm-4">
+                <label class="form-check-label text-light-gray">
+                  หมายเลขโทรศัพท์
+                </label>
+              </div>
+              <div class="col-12 col-sm-4 text-left text-light-gray">
+                {{ selectedMobile }}
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="container-fluid">
+      <div class="card mb-3">
+        <div class="card-header bg-blue text-white">
+          ข้อมูลใบเสร็จรับเงิน
+        </div>
+        <div class="card-body">
+          <div class="form-group row">
+            <div class="col-12 col-sm-4 text-light-gray">ชื่อ</div>
+            <div class="col-12 col-sm-8 text-light-gray">
+              {{ customerFullName }}
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-12 col-sm-4">
+              <label class="form-check-label text-light-gray">ที่อยู่ในใบเสร็จรับเงิน</label>
+            </div>
+            <div class="col-12 col-sm-8 text-light-gray">
+              {{ receiptCustomerAddress }}
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-12 col-sm-4 text-light-gray">Tax ID</div>
+            <div class="col-12 col-sm-8">
+              <input type="text" class="form-control" autocomplete="off" maxlength="16" value="{{idCardNo}}" disabled>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-12 col-sm-4 text-light-gray">สาขาที่</div>
+            <div class="col-12 col-sm-8">
+              <input type="text" class="form-control" autocomplete="off" maxlength="12" disabled>
+            </div>
+          </div>
+          <div class="form-group row">
+            <div class="col-12 col-sm-4 text-light-gray">เบอร์ติดต่ออื่น</div>
+            <div class="col-12 col-sm-8">
+              <input type="tel" class="form-control " autocomplete="off" maxlength="10" value="{{otherPhoneNumber}}"
+                (input)="onchangeOtherPhoneNumber($event.target.value)">
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <mc-footer>
+      <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+      <button class="btn btn-success" (click)="onNext()" [disabled]="!(checkPaymentFormValid())">NEXT</button>
+    </mc-footer>
+  </div>
+</div>

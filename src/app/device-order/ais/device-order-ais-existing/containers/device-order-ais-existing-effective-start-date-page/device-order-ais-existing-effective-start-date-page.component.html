@@ -1,9 +1,10 @@
 <div class="mc-flex">
-  <mc-header title="ลูกค้าปัจจุบัน">
+  <mc-header title="{{'ลูกค้าปัจจุบัน' | translate}}">
     <div class="header-icon-left">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
     <div class="header-icon-right">
+      <!-- <mc-dropdown-language></mc-dropdown-language> -->
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
@@ -20,7 +21,7 @@
         <div class="card mb-3">
           <div class="card-header bg-light-blue text-white">
             <div class="mt-2">
-              เลือกวันที่มีผลการใช้งาน
+              {{'เลือกวันที่มีผลการใช้งาน' | translate }}
             </div>
           </div>
           <div class="mt-2">
@@ -41,7 +42,7 @@
                             {{ billCycleNextDay$  | async }} </span></span>
                         <span *ngIf="billCycle?.value === 'I'"
                           class="text-bill-cycle text-grey">{{  billCycle?.textDate }} <span class="text-green">
-                            หลังจากได้รับ SMS ยืนยัน</span> </span>
+                            {{'หลังจากได้รับ SMS ยืนยัน'| translate}}</span> </span>
                       </div>
                       <hr>
                     </div>

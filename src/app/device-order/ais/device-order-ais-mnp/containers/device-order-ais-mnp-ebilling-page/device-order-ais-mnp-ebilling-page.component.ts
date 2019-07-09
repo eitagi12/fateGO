@@ -36,28 +36,29 @@ export class DeviceOrderAisMnpEbillingPageComponent implements OnInit, OnDestroy
   }
 
   ngOnInit(): void {
+    const customer: any = this.transaction.data.customer || {};
+    const billingInformation: any = this.transaction.data.billingInformation || {};
+    const billCycle = billingInformation.billCycle || {};
 
     this.http.get('/api/customerportal/newRegister/queryBillCycle', {
       params: {
-        coProject: 'N'
+        coProject: 'ํY'
       }
     }).toPromise().then((resp: any) => {
       const data = resp.data || {};
       this.billCycles = data.billCycles || [];
-      if (!this.transaction.data.billingInformation.billCycle) {
-        this.setBillingDefault(data.billCycles || []);
-      } else {
-        this.billCycle = this.transaction.data.billingInformation.billCycle;
-      }
-    });
-  }
 
-  setBillingDefault(ebilling: Ebilling[]): void {
-    for (const ebill of ebilling) {
-      if (ebill.bill === this.transaction.data.customer.billCycle) {
-        this.billCycle = ebill;
+      this.billCycle = this.billCycles.find(billing => {
+        return billCycle.bill ? billCycle.bill === billing.bill : customer.billCycle === billing.bill;
+      });
+
+      if (!this.billCycle) {
+        this.billCycle = this.billCycles.find(bill => {
+          return bill.billDefault === 'Y';
+        });
       }
-    }
+
+    });
   }
 
   onCompleted(billCycle: any): void {

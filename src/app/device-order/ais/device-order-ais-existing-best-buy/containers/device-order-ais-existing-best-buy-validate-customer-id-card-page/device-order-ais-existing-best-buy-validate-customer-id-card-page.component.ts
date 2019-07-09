@@ -5,9 +5,7 @@ import { Router } from '@angular/router';
 import { PageLoadingService, HomeService, ReadCardProfile,
   User, AlertService, ValidateCustomerIdCardComponent, TokenService } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_PAGE
-} from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
 import { Transaction, Customer, Prebooking } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -30,6 +28,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent im
   priceOption: PriceOption;
   user: User;
   billDeliveryAddress: Customer;
+  progressReadCard: number;
 
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
@@ -52,6 +51,14 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerIdCardPageComponent im
   }
 
   ngOnInit(): void {
+  }
+
+  onProgress(progress: number): void {
+    this.progressReadCard = progress;
+  }
+
+  progressDoing(): boolean {
+    return this.progressReadCard > 0 && this.progressReadCard < 100 ? true : false;
   }
 
   onError(valid: boolean): void {

@@ -5,7 +5,7 @@ import { ErrorPageComponent } from './containers/error-page/error-page.component
 
 const routes: Routes = [
   {
-    path: '', redirectTo: 'main-menu', pathMatch: 'full'
+    path: '', redirectTo: 'dashboard', pathMatch: 'full'
   },
   {
     path: 'dashboard',
@@ -39,7 +39,10 @@ const routes: Routes = [
   {
     path: 'order',
     loadChildren: 'src/app/order/order.module#OrderModule',
-    canActivate: [AuthGuard, ApiRequestGuard]
+    canActivate: [AuthGuard],
+    resolve: {
+      i18n: I18nService
+    }
   },
   {
     path: 'device-only',
@@ -49,6 +52,16 @@ const routes: Routes = [
   {
     path: 'error',
     component: ErrorPageComponent
+  },
+  {
+    path: 'deposit-summary',
+    loadChildren: 'src/app/deposit-summary/deposit-summary.module#DepositSummaryModule',
+    canActivate: [AuthGuard, ApiRequestGuard]
+  },
+  {
+    path: 'trade-in',
+    loadChildren: 'src/app/trade-in/trade-in.module#TradeInModule',
+    canActivate: [AuthGuard]
   }
 ];
 

@@ -4,7 +4,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { ROUTE_DEVICE_ORDER_AIS_MNP_RESULT_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_MNP_RESULT_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_QR_CODE_RESULT_PAGE } from '../../constants/route-path.constant';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { PageLoadingService, REGEX_MOBILE } from 'mychannel-shared-libs';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
@@ -55,7 +55,7 @@ export class DeviceOrderAisMnpQrCodeQueuePageComponent implements OnInit, OnDest
           });
       })
       .then(() => {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_RESULT_PAGE]);
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_QR_CODE_RESULT_PAGE]);
       })
       .then(() => this.pageLoadingService.closeLoading());
   }
@@ -102,6 +102,9 @@ export class DeviceOrderAisMnpQrCodeQueuePageComponent implements OnInit, OnDest
     this.queueFrom = this.fb.group({
       'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])],
     });
+
+    // set default input mobileNo
+    this.queueFrom.controls['mobileNo'].setValue(this.transaction.data.simCard.mobileNo);
   }
 
   ngOnDestroy(): void {

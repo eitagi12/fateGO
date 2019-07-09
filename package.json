@@ -65,11 +65,10 @@
   },
   "jest": {
     "preset": "jest-preset-angular",
-    "transformIgnorePatterns": [],
     "testMatch": [
+      "<rootDir>/src/app/dashboard/**/*.spec.ts",
       "<rootDir>/src/app/buy-product/**/*.spec.ts",
       "<rootDir>/src/app/containers/**/*.spec.ts",
-      "<rootDir>/src/app/dashboard/**/*.spec.ts",
       "<rootDir>/src/app/main-menu/**/*.spec.ts",
       "<rootDir>/src/app/device-only/**/*.spec.ts"
     ],
@@ -78,6 +77,9 @@
       "text",
       "cobertura",
       "html"
+    ],
+    "transformIgnorePatterns": [
+      "<rootDir>/node_modules/(?!mychannel-shared-libs|@auth0/angular-jwt)"
     ]
   }
 }

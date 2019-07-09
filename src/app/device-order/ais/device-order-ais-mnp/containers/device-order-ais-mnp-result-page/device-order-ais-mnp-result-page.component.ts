@@ -15,16 +15,11 @@ import { environment } from 'src/environments/environment';
 })
 export class DeviceOrderAisMnpResultPageComponent implements OnInit {
 
-  wizards: string[] = WIZARD_ORDER_MNP;
   transaction: Transaction;
   isSuccess: boolean;
 
   constructor(
-    private homeService: HomeService,
-    private transactionService: TransactionService,
-    private createNewRegisterService: CreateNewRegisterService,
-    private pageLoadingService: PageLoadingService,
-    private router: Router,
+    private transactionService: TransactionService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -39,10 +34,6 @@ export class DeviceOrderAisMnpResultPageComponent implements OnInit {
     } else {
       window.location.href = '/smart-digital/main-menu';
     }
-  }
-
-  onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_QUEUE_PAGE]);
   }
 
 }

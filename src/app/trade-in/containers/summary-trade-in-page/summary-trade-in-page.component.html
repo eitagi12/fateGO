@@ -1,0 +1,37 @@
+<div class="mc-flex">
+  <mc-header title="Trade IN">
+  </mc-header>
+  <div class="mc-flex-wrap">
+
+    <div class="container-fluid text-center mt-3 mb-3">
+      <div class="card mb-3">
+        <div class="card-body">
+          <div>
+            <img src="assets/images/icon/icon-green-check-circle.png  " width="50" />
+            <br>
+            <span>ทำรายการสำเร็จ</span>
+          </div>
+          <hr>
+          <div class="text-box-center">
+            <span>
+              Trade IN No. : {{tradeinNo}}<br>
+              IMEI : {{imeiTradein}}<br>
+              ยี่ห้อ : {{brand}}<br>
+              รุ่น : {{modelTradein}}<br>
+              เกรด : {{tradeinGrade}}<br>
+              ราคาประเมิน : {{tradeinPrice | number}} บาท (รวมVAT)
+            </span>
+          </div>
+          <div>
+            <span class="text-danger remark">หมายเหตุ ปลดล็อค {{ platform }} และ Reset เครื่องก่อนทำรายการ Trade In ทุกครั้ง</span>
+          </div>
+          <hr>
+          <div>
+            <span>พิมพ์ใบประเมินราคา</span><br><br>
+            <img src="assets/images/icon/icon-printer.png  " (click)="gotoPrintSummary()" width="50" /><br><br><br>
+            <button class="btn btn-light-green text-white" (click)="gotoMainMenu()">กลับสู่หน้าหลัก</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

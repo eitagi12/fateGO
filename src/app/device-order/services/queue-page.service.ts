@@ -123,13 +123,19 @@ export class QueuePageService {
       bankAbbr: payment && payment.paymentBank ? payment.paymentBank.abb : '',
       preBookingNo: prebooking ? prebooking.preBookingNo : '',
       depositAmt: prebooking ? prebooking.depositAmt : '',
-      qrTransId: mpayPayment ? mpayPayment.tranId : '',
-      qrAmt: this.getQRAmt(trade, transaction)
+      qrTransId: payment.paymentType === 'QR_CODE' ? mpayPayment.tranId : null,
+      qrAmt: payment.paymentType === 'QR_CODE' && mpayPayment.tranId ? this.getQRAmt(trade, transaction) : null,
     };
 
     // freeGoods
     if (trade.freeGoods && trade.freeGoods.length > 0) {
       data.tradeFreeGoodsId = trade.freeGoods[0] ? trade.freeGoods[0].tradeFreegoodsId : '';
+    }
+
+    // QR code for airtime
+    if (transactionData.advancePayment && transactionData.advancePayment.paymentType === 'QR_CODE' ) {
+      data.qrAirtimeTransId = mpayPayment.qrAirtimeTransId || mpayPayment.tranId || null;
+      data.qrAirtimeAmt =  this.getQRAmt(trade, transaction);
     }
 
     // ผ่อนชำระ
@@ -148,19 +154,22 @@ export class QueuePageService {
     const information = this.getInformation(transaction, priceOption);
 
     return `
-${this.PROMOTION_NAME}${this.SPACE}${onTopPackage.shortNameThai || ''}${this.NEW_LINE}
+${this.PROMOTION_NAME}${this.SPACE}${onTopPackage.shortNameThai || ''}
 ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW_LINE}
 `;
   }
 
   private getQRAmt(trade: any, transaction: Transaction): any {
     const payment: Payment = transaction.data.payment;
+    let cost = 0;
     if (trade && payment.paymentType === 'QR_CODE') {
       const qrAmt: number = trade.normalPrice - trade.discount.amount;
-      return qrAmt.toFixed(2);
-    } else {
-      return undefined;
+      cost += +qrAmt;
     }
+    if (trade && transaction.data.advancePayment && transaction.data.advancePayment.paymentType === 'QR_CODE') {
+      cost += +trade.advancePay.amount;
+    }
+    return cost ? cost.toFixed(2) : undefined;
   }
 
   private getAirTime(trade: any, transaction: Transaction): string {
@@ -197,6 +206,7 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
   private getPaymentMethod(transaction: Transaction, priceOption: PriceOption): string {
     const payment: Payment = transaction.data.payment;
     const trade: any = priceOption.trade;
+    const advancePayment: any = transaction.data.advancePayment || {};
     let tradePayment: any;
     if ((trade.payment && trade.payment.length > 0)) {
       tradePayment = priceOption.trade.payment[0];
@@ -205,14 +215,30 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
     } else {
       tradePayment = {};
     }
-    if (payment.paymentType === 'QR_CODE') {
-      if (payment.paymentQrCodeType === 'THAI_QR') {
-        return 'PB';
-      } else {
-        return 'RL';
+
+    if (trade.advancePay.installmentFlag === 'Y' || !payment || !advancePayment.paymentType) {
+        //  tread no pay  จะเข้าอันนี้
+      if (payment.paymentType === 'QR_CODE') {
+        return payment.paymentQrCodeType === 'THAI_QR' ? 'PB' : 'RL';
       }
-    } else {
+      if (advancePayment.paymentType === 'QR_CODE') {
+        return advancePayment.paymentQrCodeType === 'THAI_QR' ? 'PB' : 'RL';
+      }
       return tradePayment.method;
+    } else {
+      let paymentMethod = '';
+      // AWN หรือ WDS จ่ายแยก
+      if (payment.paymentType === 'QR_CODE') {
+        paymentMethod += payment.paymentQrCodeType === 'THAI_QR' ? 'PB|' : 'RL|';
+      } else {
+        paymentMethod += tradePayment.method + '|';
+      }
+      if (advancePayment.paymentType === 'QR_CODE') {
+        paymentMethod += advancePayment.paymentQrCodeType === 'THAI_QR' ? 'PB' : 'RL';
+      } else {
+        paymentMethod += tradePayment.method;
+      }
+      return paymentMethod;
     }
   }
 
@@ -314,7 +340,7 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
 
   public checkQueueLocation(): Promise<any> {
     return this.http.get('/api/salesportal/check-queue-location').toPromise().then((response: any) => {
-      return response && response.data ? response.data.isQueueAuto : false;
+      return response && response.data && response.data.queueType ? response.data.queueType : undefined;
     }).catch((e) => false);
   }
 }

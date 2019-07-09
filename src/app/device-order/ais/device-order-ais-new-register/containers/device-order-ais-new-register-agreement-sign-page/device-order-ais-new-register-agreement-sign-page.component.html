@@ -1,10 +1,10 @@
 <div class="mc-flex">
     <mc-header title="{{ 'เครื่องพร้อมเปิดเบอร์ใหม่' | translate }}">
-    <div class="header-icon-left w-25">
+    <div class="header-icon-left">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
-    <div class="header-icon-right w-25 text-right">
-        <mc-dropdown-language></mc-dropdown-language>
+    <div class="header-icon-right">
+        <!-- <mc-dropdown-language></mc-dropdown-language> -->
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
@@ -12,7 +12,7 @@
     <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
     <div class="mb-3 mt-3">
       <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
-      <div class="container-fluid margin-top">
+      <div *ngIf="!isOpenSign" class="container-fluid margin-top">
         <div class="card">
           <div class="card-header bg-transparent text-center"translate>ลงชื่อผู้ทำรายการ</div>
           <div class="card-body">
@@ -36,6 +36,6 @@
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()" [disabled]="!transaction?.data?.customer?.imageSignature">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!checkLogicNext()">NEXT</button>
   </mc-footer>
 </div>

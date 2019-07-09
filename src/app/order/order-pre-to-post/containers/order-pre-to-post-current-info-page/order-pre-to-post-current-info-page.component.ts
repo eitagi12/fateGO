@@ -3,14 +3,13 @@ import { Router, Params, ActivatedRoute } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
-import { PageLoadingService, AlertService } from 'mychannel-shared-libs';
+import { PageLoadingService, AlertService, HomeService } from 'mychannel-shared-libs';
 
 import {
   ROUTE_ORDER_PRE_TO_POST_CUSTOMER_INFO_PAGE,
   ROUTE_ORDER_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE,
-  ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_REPI_PAGE,
-  ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE,
-  ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE
+  ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_REPI_PAGE,
+  ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_PAGE,
 } from '../../constants/route-path.constant';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -46,6 +45,7 @@ export class OrderPreToPostCurrentInfoPageComponent implements OnInit, OnDestroy
   constructor(
     private router: Router,
     private http: HttpClient,
+    private homeService: HomeService,
     private modalService: BsModalService,
     private alertService: AlertService,
     private pageLoadingService: PageLoadingService,
@@ -82,10 +82,10 @@ export class OrderPreToPostCurrentInfoPageComponent implements OnInit, OnDestroy
 
   onBack(): void {
     const action = this.transaction.data.action;
-    if (action === TransactionAction.KEY_IN || action === TransactionAction.READ_CARD) {
+    if (action === TransactionAction.KEY_IN || action === TransactionAction.READ_CARD || action === TransactionAction.READ_PASSPORT) {
       this.router.navigate([ROUTE_ORDER_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE]);
     } else {
-      this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE]);
+      this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_PAGE]);
     }
   }
 
@@ -93,7 +93,7 @@ export class OrderPreToPostCurrentInfoPageComponent implements OnInit, OnDestroy
 
     const action = this.transaction.data.action;
 
-    if (action === TransactionAction.KEY_IN || action === TransactionAction.READ_CARD) {
+    if (action === TransactionAction.KEY_IN || action === TransactionAction.READ_CARD || action === TransactionAction.READ_PASSPORT) {
 
       this.pageLoadingService.openLoading();
 
@@ -111,18 +111,27 @@ export class OrderPreToPostCurrentInfoPageComponent implements OnInit, OnDestroy
         })
         .catch((resp: any) => {
           this.pageLoadingService.closeLoading();
-          this.alertService.notify({
-            type: 'error',
-            html: resp.error.resultDescription
-          });
+          const error = resp.error || [];
+          if (error && error.errors && typeof error.errors === 'string') {
+            this.alertService.notify({
+              type: 'error',
+              html: error.errors
+            });
+          } else {
+            Promise.reject(resp);
+          }
         });
     } else {
-      this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE]);
+      this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_REPI_PAGE]);
     }
   }
 
   openModal(template: any): void {
     this.modalRef = this.modalService.show(template);
+  }
+
+  onHome(): void {
+    this.homeService.goToHome();
   }
 
   ngOnDestroy(): void {

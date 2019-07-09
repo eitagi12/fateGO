@@ -7,13 +7,17 @@ import {
   ROUTE_ORDER_PRE_TO_POST_ON_TOP_PAGE,
   ROUTE_ORDER_PRE_TO_POST_CUSTOMER_INFO_PAGE,
   ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE,
-  ROUTE_ORDER_PRE_TO_POST_ONE_LOVE_PAGE
+  ROUTE_ORDER_PRE_TO_POST_ONE_LOVE_PAGE,
+  ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_PAGE,
+  ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_REPI_PAGE
 } from 'src/app/order/order-pre-to-post/constants/route-path.constant';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 import * as moment from 'moment';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-order-pre-to-post-select-package-page',
@@ -21,7 +25,7 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap';
   styleUrls: ['./order-pre-to-post-select-package-page.component.scss']
 })
 export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestroy {
-
+  readonly MAX_PROMOTION_PRICE: number = 500;
   @ViewChild('conditionTemplate')
   conditionTemplate: any;
 
@@ -31,6 +35,7 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
   promotionShelves: PromotionShelve[];
   condition: any;
   modalRef: BsModalRef;
+  translateSubscribe: Subscription;
 
   constructor(
     private router: Router,
@@ -39,7 +44,8 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
     private modalService: BsModalService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private http: HttpClient
+    private http: HttpClient,
+    private translateService: TranslateService,
   ) {
     this.transaction = this.transactionService.load();
 
@@ -51,17 +57,20 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
   }
 
   ngOnInit(): void {
-    this.callService();
+    this.callService(this.translateService.currentLang);
+    this.translateSubscribe = this.translateService.onLangChange.subscribe(language => {
+      this.callService(language.lang);
+    });
   }
 
   onBack(): void {
     const action = this.transaction.data.action;
-    if (action === TransactionAction.READ_CARD_REPI) {
-      this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE]);
-    } else if (action === TransactionAction.READ_CARD) {
+    if (action === TransactionAction.READ_CARD_REPI || action === TransactionAction.READ_PASSPORT_REPI) {
+      this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_REPI_PAGE]);
+    } else if (action === TransactionAction.READ_CARD || action === TransactionAction.READ_PASSPORT) {
       this.router.navigate([ROUTE_ORDER_PRE_TO_POST_CUSTOMER_INFO_PAGE]);
     } else if (action === TransactionAction.KEY_IN_REPI) {
-      this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE]);
+      this.router.navigate([ROUTE_ORDER_PRE_TO_POST_VERIFY_DOCUMENT_PAGE]);
     } else {
       this.router.navigate([ROUTE_ORDER_PRE_TO_POST_ID_CARD_CAPTURE_PAGE]);
     }
@@ -80,6 +89,7 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
   }
 
   ngOnDestroy(): void {
+    this.translateSubscribe.unsubscribe();
     this.transactionService.update(this.transaction);
   }
 
@@ -87,11 +97,17 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
     this.transaction.data.mainPackage = promotion;
   }
 
-  callService(): void {
-
+  callService(language: string): void {
     this.pageLoadingService.openLoading();
     const billingInformation = this.transaction.data.billingInformation;
     const mobileNo = this.transaction.data.simCard.mobileNo;
+    const params: any = {
+      orderType: 'Change Charge Type',
+    };
+    if (this.transaction.data.action === TransactionAction.READ_PASSPORT
+      || this.transaction.data.action === TransactionAction.READ_PASSPORT_REPI) {
+      params.maxPromotionPrice = this.MAX_PROMOTION_PRICE;
+    }
 
     this.http.get(`/api/customerportal/greeting/${mobileNo}/profile`).toPromise()
       .then((greeting: any) => {
@@ -114,15 +130,15 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
           && billingInformation.billCyclesNetExtreme
           && billingInformation.billCyclesNetExtreme.length > 0 ? 'true' : 'false';
         return this.http.get('/api/customerportal/newRegister/queryMainPackage', {
-          params: {
-            orderType: 'Change Charge Type',
+          params: Object.assign({
             registerDate: regisDate,
-            isNetExtreme: isNetExtreme
-          }
+            isNetExtreme: isNetExtreme,
+            language: language
+          }, params)
         }).toPromise()
+
           .then((resp: any) => {
             const data = resp.data.packageList || [];
-
             const promotionShelves: PromotionShelve[] = data.map((promotionShelve: any) => {
               return {
                 title: promotionShelve.title,
@@ -138,8 +154,8 @@ export class OrderPreToPostSelectPackagePageComponent implements OnInit, OnDestr
                       items: (subShelve.items || []).map((promotion: any) => {
                         return { // item
                           id: promotion.itemId,
-                          title: promotion.shortNameThai,
-                          detail: promotion.statementThai,
+                          title: language === 'EN' ? promotion.shortNameEng : promotion.shortNameThai,
+                          detail: language === 'EN' ? promotion.statementEng : promotion.shortNameThai,
                           condition: subShelve.conditionCode,
                           value: promotion
                         };

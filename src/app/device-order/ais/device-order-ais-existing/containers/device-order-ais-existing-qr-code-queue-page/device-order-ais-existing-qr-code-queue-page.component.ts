@@ -4,7 +4,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { ROUTE_DEVICE_ORDER_AIS_EXISTING_RESULT_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_EXISTING_RESULT_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_RESULT_PAGE } from '../../constants/route-path.constant';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { PageLoadingService, REGEX_MOBILE } from 'mychannel-shared-libs';
 import { QueuePageService } from 'src/app/device-order/services/queue-page.service';
@@ -40,6 +40,10 @@ export class DeviceOrderAisExistingQrCodeQueuePageComponent implements OnInit, O
 
   onNext(): void {
     this.pageLoadingService.openLoading();
+    this.callServices();
+  }
+
+  callServices(): void {
     this.queuePageService.getQueueQmatic(this.queueFrom.value.mobileNo)
       .then((resp: any) => {
         const data = resp.data && resp.data.result ? resp.data.result : {};
@@ -49,15 +53,17 @@ export class DeviceOrderAisExistingQrCodeQueuePageComponent implements OnInit, O
         this.transaction.data.queue = {
           queueNo: queueNo
         };
-        return this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption)
-          .then(() => {
-            return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
-          });
+        return this.callServiceCreateDeviceSellingOrderAndUpdateShareTransaction();
       })
-      .then(() => {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_RESULT_PAGE]);
-      })
+      .then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_RESULT_PAGE]))
       .then(() => this.pageLoadingService.closeLoading());
+  }
+
+  callServiceCreateDeviceSellingOrderAndUpdateShareTransaction(): any {
+    return this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption)
+      .then(() => {
+        return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
+      });
   }
 
   getPaymentBalance(): number {
@@ -102,6 +108,9 @@ export class DeviceOrderAisExistingQrCodeQueuePageComponent implements OnInit, O
     this.queueFrom = this.fb.group({
       'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])],
     });
+
+    // set default input mobileNo
+    this.queueFrom.controls['mobileNo'].setValue(this.transaction.data.simCard.mobileNo);
   }
 
   ngOnDestroy(): void {

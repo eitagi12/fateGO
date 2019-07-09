@@ -16,7 +16,13 @@ export enum TransactionType {
   ORDER_MNP = 'Port-In',
   ORDER_EXISTING = 'Existing',
 
-  DEVICE_ONLY_AIS = 'DeviceOnlyAIS'
+  RESERVE_WITH_DEPOSIT = 'ReserveWithDeposit',
+  
+  // device only
+  DEVICE_ONLY_AIS = 'DeviceOnlyAIS',
+  DEVICE_ONLY_ASP = 'DeviceOnlyASP',
+  DEVICE_ONLY_WEB = 'DeviceOnlyWEB',
+  DEVICE_ONLY_KIOSK = 'DeviceOnlyKiosk'
 }
 
 export enum TransactionAction {
@@ -26,7 +32,6 @@ export enum TransactionAction {
   KEY_IN_REPI = 'KEY_IN_REPI',
   READ_PASSPORT = 'READ_PASSPORT',
   READ_PASSPORT_REPI = 'READ_PASSPORT_REPI'
-
 }
 
 export interface Transaction {
@@ -49,6 +54,7 @@ export interface TransactionData {
   mainPackage?: MainPackage;
   currentPackage?: CurrentPackage;
   onTopPackage?: OnTopPackage;
+  deleteOntopPackage?: DeleteOntopPackage[];
   mainPackageOneLove?: any[];
   mobileCarePackage?: MobileCarePackage;
   faceRecognition?: FaceRecognition;
@@ -57,7 +63,7 @@ export interface TransactionData {
   reasonCode?: string;
   billingInformation?: BillingInformation;
   seller?: Seller;
-  payment?: Payment;
+  payment?: any;
   advancePayment?: Payment;
   receiptInfo?: ReceiptInfo;
   queue?: Queue;
@@ -69,7 +75,9 @@ export interface TransactionData {
   // MPAY
   mpayPayment?: QrCodePrePostMpayModel;
   status?: Status;
-  device?: any;
+  device?: Device;
+  knoxguard?: KnoxGuard;
+  tradeType?: string;
 }
 
 export interface Condition {
@@ -145,8 +153,33 @@ export interface Customer {
   imageSmartCard?: string;
   imageReadSmartCard?: string;
   customerPinCode?: string;
+    // passport
+  issuingCountry?: string;
+  nationality?: string;
+  imageReadPassport?: string;
+
+  selectedMobile?: string;
+  otherPhoneNumber?: string;
+  shipaddress?: Recipientinformation;
+  selectedLocation?: SelectedLocation;
   privilegeCode?: string;
   repi?: boolean;
+  mobileNo?: string;
+}
+
+export interface Recipientinformation {
+  shipCusName?: string;
+  shipCusAddr?: string;
+}
+
+export interface SelectedLocation {
+  locationCode?: string;
+  locationNameEN?: string;
+  locationNameTH?: string;
+  // passport
+  issuingCountry?: string;
+  nationality?: string;
+  imageReadPassport?: string;
 }
 
 export interface SimCard {
@@ -163,6 +196,19 @@ export interface SimCard {
 }
 
 export interface MainPackage {
+  billingSystem?: string;
+  duration?: string;
+  itemId: string;
+  itemsPriority?: string;
+  numberOfMobile?: string;
+  packageType?: string;
+  productPkg?: string;
+  promotionPackage?: string;
+  shortNameThai: string;
+  statementThai?: string;
+  shortNameEng?: string;
+  statementEng?: string;
+  parameters?: any;
   [key: string]: any;
 }
 
@@ -171,6 +217,9 @@ export interface CurrentPackage {
 }
 
 export interface PromotionsShelves {
+  [key: string]: any;
+}
+export interface DeleteOntopPackage {
   [key: string]: any;
 }
 
@@ -211,6 +260,7 @@ export interface BillingInformation {
   billDeliveryAddress?: Customer;
   // วันที่มีผลการใช้งาน B: รอบถัดไป D: วันถัดไป I: มีผลทันที
   overRuleStartDate?: string;
+  effectiveDate?: string;
   // check do createAndChangeBillingAccount Provisioning
   isNewBAFlag?: boolean;
 }
@@ -248,23 +298,44 @@ export interface BillingAccountData {
 
   billingMethodText?: string;
   billCycleText?: string;
+  billCycleTextEng?: string;
   billAddressText?: string;
 }
 
-// export interface BillDeliveryAddress {
-//   homeNo: string;
-//   moo?: string;
-//   mooBan?: string;
-//   room?: string;
-//   floor?: string;
-//   buildingName?: string;
-//   soi?: string;
-//   street?: string;
-//   province: string;
-//   amphur: string;
-//   tumbol: string;
-//   zipCode: string;
-// }
+export interface ProductInfo {
+  sku: any;
+  colorCode: string;
+  colorName: string;
+  images: ProductImage;
+  qty?: number;
+  company?: string;
+  qtyWH?: number;
+  brand?: string;
+  model?: string;
+  tradeReserve?: any;
+}
+export class ProductImage {
+  thumbnail: string;
+  baseView: BaseView[];
+}
+export class BaseView {
+  imageUrl: string;
+}
+
+export interface BillDeliveryAddress {
+  homeNo: string;
+  moo?: string;
+  mooBan?: string;
+  room?: string;
+  floor?: string;
+  buildingName?: string;
+  soi?: string;
+  street?: string;
+  province: string;
+  amphur: string;
+  tumbol: string;
+  zipCode: string;
+}
 
 export interface Seller {
   isAscCode?: boolean;
@@ -273,6 +344,50 @@ export interface Seller {
   locationCode?: string;
   sellerNo?: string;
   shareUser?: string;
+  employeeId?: string;
+  ascCode?: string;
+
+}
+export interface ShopLocation {
+  id?: string;
+  code?: string;
+  displayName?: string;
+  regions?: string;
+  province?: string;
+  distinct?: string;
+  subDistinct?: string;
+  locationType?: string;
+  regionCode?: string;
+}
+export interface ShopEmployeeDetail {
+  pin?: string;
+  username?: string;
+  thPrefix?: string;
+  thFirstName?: string;
+  thLastName?: string;
+  enPrefix?: string;
+  enFirstName?: string;
+  enLastName?: string;
+  email?: string;
+  employeeType?: string;
+  employeeGroup?: string;
+  positionId?: string;
+  positionCode?: string;
+  positionDesc?: string;
+  telNo?: string;
+  orgCode?: string;
+  orgName?: string;
+  orgDesc?: string;
+  companyCode?: string;
+  coName?: string;
+  nickName?: string;
+  dpCode?: string;
+  dpName?: string;
+  dpDesc?: string;
+  scCode?: string;
+  scName?: string;
+  scDesc?: string;
+  mobileNo?: string;
   // flow deposit ใช้ ยังลบไม่ได้
   employeeId?: string;
 }
@@ -337,7 +452,7 @@ export interface Discount {
   type: string;
 }
 export interface QrCodePrePostMpayModel {
-  orderId: string;
+  orderId?: string;
   tranDtm?: string;
   tranId?: string;
   amount?: number;
@@ -346,6 +461,25 @@ export interface QrCodePrePostMpayModel {
   locationCode?: string;
   offerId?: string;
   startDtm?: string;
+  // QR Code AirTime
+  companyStock?: 'AWN' | 'WDS';
+  mpayStatus?: MPayStatus;
+  qrAirtimeTransId?: string;
+  qrAirtimeAmt?: string;
+  qrOrderId?: string;
+}
+
+export interface MPayStatus {
+  amountDevice: string;
+  amountAirTime: string;
+  amountTotal: string;
+  statusDevice: 'SUCCESS' | 'WAITING' | null;
+  statusAirTime: 'SUCCESS' | 'WAITING' | null;
+  installmentFlag: 'Y' | 'N';
+  orderIdDevice?: string;
+  orderIdAirTime?: string;
+  tranIdDevice?: string;
+  tranIdAirTime?: string;
 }
 
 export interface Device {
@@ -358,4 +492,15 @@ export interface Device {
   colorCode?: string;
   productType?: string;
   productSubtype?: string;
+}
+
+export interface KnoxGuard {
+  orderType?: string;
+  serviceCode?: string;
+  action?: string;
+  startDate?: string;
+  endDate?: string;
+  duration?: string;
+  orderReason?: string;
+  userName?: string;
 }

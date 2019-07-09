@@ -23,9 +23,10 @@ import { OrderNewRegisterAgreementSignPageComponent } from './containers/order-n
 import { OrderNewRegisterPersoSimPageComponent } from './containers/order-new-register-perso-sim-page/order-new-register-perso-sim-page.component';
 import { OrderNewRegisterResultPageComponent } from './containers/order-new-register-result-page/order-new-register-result-page.component';
 import { OrderNewRegisterEapplicationPageComponent } from './containers/order-new-register-eapplication-page/order-new-register-eapplication-page.component';
-
+import { OrderNewRegisterVerifyDocumentPageComponent } from './containers/order-new-register-verify-document-page/order-new-register-verify-document-page.component';
+import { OrderNewRegisterPassportInfoPageComponent } from 'src/app/order/order-new-register/containers/order-new-register-passport-info-page/order-new-register-passport-info-page.component';
 const routes: Routes = [
-  { path: '', redirectTo: 'validate-customer-id-card', pathMatch: 'full' },
+  { path: '', redirectTo: 'verify-document', pathMatch: 'full' },
   { path: 'validate-customer', component: OrderNewRegisterValidateCustomerPageComponent },
   { path: 'validate-customer-id-card', component: OrderNewRegisterValidateCustomerIdCardPageComponent },
   { path: 'validate-customer-key-in', component: OrderNewRegisterValidateCustomerKeyInPageComponent },
@@ -49,6 +50,8 @@ const routes: Routes = [
   { path: 'perso-sim', component: OrderNewRegisterPersoSimPageComponent },
   { path: 'result', component: OrderNewRegisterResultPageComponent },
   { path: 'eapplication', component: OrderNewRegisterEapplicationPageComponent },
+  { path: 'verify-document', component: OrderNewRegisterVerifyDocumentPageComponent},
+  { path: 'passport-info', component: OrderNewRegisterPassportInfoPageComponent}
 ];
 
 @NgModule({

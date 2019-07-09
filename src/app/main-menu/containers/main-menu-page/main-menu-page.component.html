@@ -1,15 +1,21 @@
 <div class="mc-flex bg-white">
   <div class="container">
+    <div class="selcet-lan" (click)="switchLanguage()">
+      <div *ngIf="currentLanguage === 'TH'"><span>select</span> &nbsp;EN <img src="assets/images/icon/svg/ico-03.svg"
+          alt="01.png"></div>
+      <div *ngIf="currentLanguage === 'EN'"><span>เลือกภาษา</span> &nbsp;TH <img src="assets/images/icon/svg/ico-04.svg"
+          alt="01.png"></div>
+    </div>
     <div class="mt-5 mb-3">
-      <h2 class="text-center m-0">กรุณาเลือกทำรายการ</h2>
+      <h2 class="text-center m-0"> {{ currentLanguage === 'TH' ? 'กรุณาเลือกทำรายการ' : 'Main Menu' }}</h2>
       <img src="assets/svg/ico-line.svg">
     </div>
 
     <div class="row">
       <div class="col-6 text-center mb-5" *ngFor="let menu of menus">
-        <a href="#" [routerLink]="menu?.link" class="text-grey">
+        <a href="#" (click)="$event.preventDefault(); onClick(menu)" class="text-grey">
           <img [src]="menu?.icon" class="img-fluid" />
-          <h3>{{ menu?.text }}</h3>
+          <h3>{{ currentLanguage ==='TH' ? menu?.text_th : menu?.text_en }}</h3>
         </a>
       </div>
     </div>

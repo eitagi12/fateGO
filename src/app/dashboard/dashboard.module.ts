@@ -5,6 +5,7 @@ import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 /* Components */
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { PromotionPageComponent } from './containers/promotion-page/promotion-page.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -13,6 +14,7 @@ import { PromotionPageComponent } from './containers/promotion-page/promotion-pa
     TabsModule.forRoot(),
     MyChannelSharedLibsModule,
     DashboardRoutingModule,
+    TranslateModule
   ],
   declarations: [
     PromotionPageComponent,

@@ -16,6 +16,8 @@ export class OrderMnpResultPageComponent implements OnInit {
   wizards: string[] = WIZARD_ORDER_MNP;
   transaction: Transaction;
   isSuccess: boolean;
+  createTransactionService: Promise<any>;
+  checkOrderService: boolean;
 
   constructor(private router: Router,
     private homeService: HomeService,
@@ -27,33 +29,36 @@ export class OrderMnpResultPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    // this.pageLoadingService.openLoading();
-    // this.createMnpService.createMnp(this.transaction).then((resp: any) => {
-    //   const data = resp.data || {};
-    //   this.transaction.data.order = {
-    //     orderNo: data.orderNo,
-    //     orderDate: data.orderDate
-    //   };
-    //   this.transactionService.update(this.transaction);
-    //   if (this.transaction.data.order.orderNo) {
-    //     this.isSuccess = true;
-    //   } else {
-    //     this.isSuccess = false;
-    //   }
-    //   this.pageLoadingService.closeLoading();
-    // }).catch(() => {
-    //   this.isSuccess = false;
-    //   this.pageLoadingService.closeLoading();
-    // });
-    this.isSuccess = false;
+    this.pageLoadingService.openLoading();
+    setTimeout(() => {
+      this.createTransactionService = this.createMnpService.createMnp(this.transaction).then((resp: any) => {
+        this.checkOrderService = true;
+        const data = resp.data || {};
+        this.transaction.data.order = {
+          orderNo: data.orderNo,
+          orderDate: data.orderDate
+        };
+        this.transactionService.update(this.transaction);
+        if (this.transaction.data.order.orderNo) {
+          this.isSuccess = true;
+        } else {
+          this.isSuccess = false;
+        }
+        this.pageLoadingService.closeLoading();
+      }).catch(() => {
+        this.checkOrderService = true;
+        this.isSuccess = false;
+        this.pageLoadingService.closeLoading();
+      });
+      this.isSuccess = false;
+    }, 3000);
+
   }
 
   onMainMenu(): void {
-    this.homeService.goToHome();
-  }
-
-  onHome(): void {
-    this.homeService.goToHome();
+     // bug gotohome จะ unlock เบอร์ ทำให้ออก orderไม่สำเร็จ
+     window.location.href = '/smart-digital/main-menu';
+     // this.homeService.goToHome();
   }
 
 }

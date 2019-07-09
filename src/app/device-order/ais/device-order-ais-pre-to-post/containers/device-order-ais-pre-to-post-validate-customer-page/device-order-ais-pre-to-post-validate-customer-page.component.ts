@@ -16,6 +16,7 @@ import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/
 
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
 
 @Component({
   selector: 'app-device-order-ais-pre-to-post-validate-customer-page',
@@ -39,6 +40,7 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
     private http: HttpClient,
     private alertService: AlertService,
     private tokenService: TokenService,
+    private privilegeService: PrivilegeService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
@@ -48,7 +50,7 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
 
     this.homeService.callback = () => {
 
-      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่<br>การยกเลิกระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที')
+      this.alertService.question('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่')
         .then((data: any) => {
           if (!data.value) {
             return false;
@@ -81,9 +83,19 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
   }
 
   onBack(): void {
-    this.returnStock().then(() => {
-      this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
-    });
+    this.alertService.question('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่')
+      .then((data: any) => {
+        if (!data.value) {
+          return false;
+        }
+        // Returns stock (sim card, soId) todo...
+        return this.returnStock().then(() => true);
+      })
+      .then((isNext: boolean) => {
+        if (isNext) {
+          this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
+        }
+      });
   }
 
   onNext(): void {
@@ -95,16 +107,35 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
           mobileNo: this.identity
         }
       }).toPromise()
-        .then((resp: any) => {
-          this.transaction.data.simCard = { mobileNo: this.identity, persoSim: false };
-          this.transaction.data.action = TransactionAction.KEY_IN_REPI;
+        .then(() => {
+          return this.privilegeService.checkAndGetPrivilegeCode(this.identity, this.priceOption.trade.ussdCode)
+            .then((respPrivilegeCode) => {
+              this.transaction.data.simCard = { mobileNo: this.identity, persoSim: false, privilegeCode: respPrivilegeCode };
+              this.transaction.data.action = TransactionAction.KEY_IN_REPI;
+            })
+            .catch((msg: string) => {
+              return this.alertService.error(msg).then(() => true);
+            });
+        })
+        .then((isError: boolean) => {
+          if (isError) {
+            return;
+          }
           this.pageLoadingService.closeLoading();
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CURRENT_INFO_PAGE]);
         })
         .catch((resp: any) => {
-          this.alertService.error(resp.error.developerMessage);
+          this.pageLoadingService.closeLoading();
+          const error = resp.error || [];
+          if (error && error.errors && typeof error.errors === 'string') {
+            this.alertService.notify({
+              type: 'error',
+              html: error.errors
+            });
+          } else {
+            Promise.reject(resp);
+          }
         });
-      return;
     }
   }
 
@@ -151,14 +182,6 @@ export class DeviceOrderAisPreToPostValidateCustomerPageComponent implements OnI
 
       const promiseAll = [];
       if (transaction.data) {
-        if (transaction.data.simCard && transaction.data.simCard.mobileNo) {
-          const unlockMobile = this.http.post('/api/customerportal/newRegister/selectMobileNumberRandom', {
-            userId: this.user.username,
-            mobileNo: transaction.data.simCard.mobileNo,
-            action: 'Unlock'
-          }).toPromise().catch(() => Promise.resolve());
-          promiseAll.push(unlockMobile);
-        }
         if (transaction.data.order && transaction.data.order.soId) {
           const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
             location: this.priceOption.productStock.location,

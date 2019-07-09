@@ -20,7 +20,7 @@ export class PromotionShelveService {
   getPromotionShelve(
     promotionShelveInfo: PromotionShelveInfo,
     minimumPackagePrice: number = 0,
-    maxinumPackagePrice: number = 0): Promise<any> {
+    maximumPackagePrice: number = 0): Promise<any> {
     return this.http.post('/api/salesportal/promotion-shelves', {
       userId: promotionShelveInfo.packageKeyRef
     }).toPromise()
@@ -73,7 +73,7 @@ export class PromotionShelveService {
                 promotion.items = data.filter((promotionData: any) => {
                   return promotionData.customAttributes.chargeType === ChargeType.POST_PAID &&
                     minimumPackagePrice <= +promotionData.customAttributes.priceExclVat &&
-                    (maxinumPackagePrice > 0 ? maxinumPackagePrice >= +promotionData.customAttributes.priceExclVat : true);
+                    (maximumPackagePrice > 0 ? maximumPackagePrice >= +promotionData.customAttributes.priceExclVat : true);
                 }).sort((a, b) => {
                   return +a.customAttributes.priceInclVat !== +b.customAttributes.priceInclVat ?
                     +a.customAttributes.priceInclVat < +b.customAttributes.priceInclVat ? -1 : 1 : 0;

@@ -91,7 +91,7 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
       mobileAdd: ['', [Validators.pattern(REGEX_MOBILE)]]
     });
     this.eligibleAddMobile.valueChanges.subscribe((value) => {
-      if (this.eligibleAddMobile.valid ) {
+      if (this.eligibleAddMobile.valid) {
         this.addMobileNo = value.mobileAdd;
       } else {
         this.addMobileNo = '';
@@ -107,55 +107,59 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
   verifyMobileNo(mobileNo: string, ussdCode: string): Promise<any> {
     const errMsg = 'ไม่สามารถตรวจสอบสิทธิ์ซื้อเครื่องได้ใขณะนี้';
     const errMsgNotPrepaid = 'ไม่สามารถทำรายการได้ เนื่องจากเป็นหมายเลขระบบรายเดือน';
+    const errMsgAvatar = 'เบอร์นี้ไม่สามารถเข้าร่วมโครงการได้ กรุณาเปลี่ยนเบอร์ใหม่ ';
     const verify: any = {
       isVerify: false
     };
     return new Promise((resolve, reject) => {
       this.http.get(`/api/customerportal/asset/${mobileNo}/profile`).toPromise()
-      .then((resp: any) => {
-        if (!resp) {
-          return reject(errMsg);
-        }
-        const data = resp.data;
-        verify.profile = data;
-        const status = data.mobileStatus;
-        if (data.chargeType !== 'Pre-paid') {
-          return reject(errMsgNotPrepaid);
-        }
-        if (status === '000' || status === '378' || status === 'Active' || status === 'Suspended') {
-          return data;
-        } else {
-          return reject(errMsg);
-        }
-      })
-      .then((req: any) => {
-        if (!this.addMobileNo) {
-          verify.isVerify = true;
-          return resolve(verify);
-        }
-        this.http.post(`/api/customerportal/check-privilege-by-number`, {
-          mobileNo: mobileNo,
-          ussdCode: ussdCode,
-          chkMainProFlg: false
-        }).toPromise()
-        .then((res: any) => {
-          this.http.get(`/api/customerportal/newRegister/verifyPrepaidIdent?idCard=${this.idCardNo}&mobileNo=${mobileNo}`)
-          .toPromise()
-          .then((respPrepaid: any) => {
-            verify.isVerify = !!(respPrepaid.data && respPrepaid.data.success);
-            resolve(verify);
-          })
-          .catch(() => { resolve(verify); });
+        .then((resp: any) => {
+          if (!resp) {
+            return reject(errMsg);
+          }
+          const data = resp.data;
+          verify.profile = data;
+          const status = data.mobileStatus;
+          if (data.chargeType !== 'Pre-paid') {
+            return reject(errMsgNotPrepaid);
+          }
+          if (data.product === 'CPE') {
+            return reject(errMsgAvatar);
+          }
+          if (status === '000' || status === '378' || status === 'Active' || status === 'Suspended') {
+            return data;
+          } else {
+            return reject(errMsg);
+          }
         })
-        .catch((err: any) => {
-          const error = err.error;
-          const msg = (error && error.resultDescription) ? error.resultDescription : 'ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้';
-          reject(msg);
+        .then((req: any) => {
+          if (!this.addMobileNo) {
+            verify.isVerify = true;
+            return resolve(verify);
+          }
+          this.http.post(`/api/customerportal/check-privilege-by-number`, {
+            mobileNo: mobileNo,
+            ussdCode: ussdCode,
+            chkMainProFlg: false
+          }).toPromise()
+            .then((res: any) => {
+              this.http.get(`/api/customerportal/newRegister/verifyPrepaidIdent?idCard=${this.idCardNo}&mobileNo=${mobileNo}`)
+                .toPromise()
+                .then((respPrepaid: any) => {
+                  verify.isVerify = !!(respPrepaid.data && respPrepaid.data.success);
+                  resolve(verify);
+                })
+                .catch(() => { resolve(verify); });
+            })
+            .catch((err: any) => {
+              const error = err.error;
+              const msg = (error && error.resultDescription) ? error.resultDescription : 'ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้';
+              reject(msg);
+            });
+        })
+        .catch((err) => {
+          return reject(errMsg);
         });
-      })
-      .catch((err) => {
-        return reject(errMsg);
-      });
     });
   }
 
@@ -179,20 +183,20 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
       };
       return res.isVerify;
     })
-    .then((isVerify: any) => {
-      if (isVerify) {
-        this.privilegeService.requestUsePrivilege(mobile, ussdCode, privilege).then((privilegeCode) => {
-          this.transaction.data.customer.privilegeCode = privilegeCode;
-          this.pageLoadingService.closeLoading();
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_CUSTOMER_INFO_PAGE]);
-        });
-      } else {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_OTP_PAGE]);
-      }
-    }).catch((err) => {
-      this.pageLoadingService.closeLoading();
-      this.alertService.error(err);
-    });
+      .then((isVerify: any) => {
+        if (isVerify) {
+          this.privilegeService.requestUsePrivilege(mobile, ussdCode, privilege).then((privilegeCode) => {
+            this.transaction.data.customer.privilegeCode = privilegeCode;
+            this.pageLoadingService.closeLoading();
+            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_CUSTOMER_INFO_PAGE]);
+          });
+        } else {
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_OTP_PAGE]);
+        }
+      }).catch((err) => {
+        this.pageLoadingService.closeLoading();
+        this.alertService.error(err);
+      });
   }
 
   onBack(): void {

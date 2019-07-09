@@ -31,10 +31,18 @@ module.exports = {
       "^@example-app/(.*)": "<rootDir>/src/app/$1"
     },
     "transformIgnorePatterns": [
-      "node_modules/(?!mychannel-shared-libs)"
+      "node_modules/(?!mychannel-shared-libs|@angular/core|rxjs|@auth0/angular-jwt)"
     ],
     "modulePathIgnorePatterns": [
       "dist"
+    ],
+    "testMatch": [
+      "<rootDir>/src/app/dashboard/**/*.spec.ts"
+    ],
+    "setupTestFrameworkScriptFile": "<rootDir>/src/setupJest.ts",
+    "coverageReporters": [
+      "text",
+      "cobertura",
+      "html"
     ]
   };
-  

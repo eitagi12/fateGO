@@ -99,8 +99,14 @@ export class DeviceOrderAisExistingBestBuyShopSummaryPageComponent implements On
   }
 
   onBack(): void {
-    const changeMobileCareFlag = this.transaction.data.existingMobileCare.changeMobileCareFlag;
-    if (changeMobileCareFlag) {
+    let changeMobileCareFlag = false;
+    if (this.transaction.data.existingMobileCare) {
+      changeMobileCareFlag = this.transaction.data.existingMobileCare.changeMobileCareFlag;
+    }
+    const mobileCarePackage: any = this.transaction.data.mobileCarePackage;
+
+    if ((!this.transaction.data.existingMobileCare)
+    || (changeMobileCareFlag && mobileCarePackage !== 'ยืนยันใช้ Mobile Care กับเครื่องเดิม')) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_MOBILE_CARE_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_MOBILE_CARE_AVAILABLE_PAGE]);

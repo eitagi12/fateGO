@@ -1,7 +1,5 @@
 import { Component } from '@angular/core';
-import {
-  TokenService, ErrorsService, AlertService, PageActivityService, HomeService, ChannelType
-} from 'mychannel-shared-libs';
+import { TokenService, ErrorsService, AlertService, PageActivityService, HomeService, ChannelType } from 'mychannel-shared-libs';
 import { setTheme } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
 import { environment } from '../environments/environment';
@@ -29,20 +27,20 @@ export class AppComponent {
     private pageActivityService: PageActivityService,
     private router: Router,
     private homeService: HomeService,
-    private http: HttpClient
+    private http: HttpClient,
+    private translation: TranslateService
   ) {
     this.version = this.getVersion();
 
     this.initails();
-    this.hoemeHandler();
+    this.homeHandler();
     this.tokenHandler();
     this.errorHandler();
-    // this.checkServerTime();
 
     if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {
-      this.onStopPropagation();
       this.pageActivityHandler();
     }
+    this.onStopPropagation();
   }
 
   initails(): void {
@@ -53,8 +51,12 @@ export class AppComponent {
     return (environment.production ? '' : `[${environment.name}] `) + version;
   }
 
-  hoemeHandler(): void {
+  homeHandler(): void {
     this.homeService.callback = () => {
+      if (this.tokenService.getUser().channelType !== ChannelType.SMART_ORDER) {
+        window.location.href = '/';
+        return ;
+      }
       if (environment.name === 'LOCAL') {
         window.location.href = '/main-menu';
       } else {
@@ -67,7 +69,7 @@ export class AppComponent {
     let devAccessToken = '';
     if (this.isDeveloperMode()) {
       // tslint:disable-next-line:max-line-length
-      devAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkRVQU5HREFUIiwidGltZXN0YW1wIjoiMjAxOTA0MDkwOTExIiwibG9jYXRpb25Db2RlIjoiMTEwMCIsImlhdCI6MTU1NDc5NDM2MiwiZXhwIjoxODU0Nzk3OTYyfQ.TcIpUtBCZgVfB5PMmR2Vao7O7NRj-Xa3ZKeljZaQ-O8';
+      devAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik9LU1RFU1QwMSIsInRpbWVzdGFtcCI6IjIwMTgwNzEzMTQ1MiIsImxvY2F0aW9uQ29kZSI6IjExMDAiLCJjaGFubmVsLVR5cGUiOiJzbWFydC1vcmRlciIsImlhdCI6MTUzMTQ2ODE5MCwiZXhwIjoyNTM0MDYwMTkwfQ.nK3JU4PwBGZqHtyu5of3saPANibimmudTFr2UXzTL-Q';
     }
     this.tokenService.checkTokenExpired(devAccessToken);
   }
@@ -77,8 +79,9 @@ export class AppComponent {
       this.alertService.error('Unauthorized: Access is denied due to invalid credentials.');
     });
 
-    this.errorsService.getErrorContextInfo().pipe(debounceTime(1000)).subscribe((observer) => {
-      let redirectTo = '/error?';
+    const ONE_SECOND = 1000;
+    this.errorsService.getErrorContextInfo().pipe(debounceTime(ONE_SECOND)).subscribe((observer) => {
+      let redirectTo = 'error?';
       Object.keys(observer).forEach((key: string, index: number) => {
         if (index > 0) {
           redirectTo += '&';
@@ -114,12 +117,12 @@ export class AppComponent {
       this.alertService.notify({
         type: 'question',
         showConfirmButton: true,
-        confirmButtonText: 'ทำรายการต่อ',
-        cancelButtonText: 'ยกเลิก',
+        confirmButtonText: this.translation.instant('ทำรายการต่อ'),
+        cancelButtonText: this.translation.instant('ยกเลิก'),
         showCancelButton: true,
         reverseButtons: true,
         allowEscapeKey: false,
-        text: 'คุณไม่ได้ทำรายการภายในเวลาที่กำหนด ต้องการทำรายการต่อหรือไม่?',
+        text: this.translation.instant('คุณไม่ได้ทำรายการภายในเวลาที่กำหนด ต้องการทำรายการต่อหรือไม่?'),
         timer: 180000
       }).then((data) => {
         if (!data.value) {

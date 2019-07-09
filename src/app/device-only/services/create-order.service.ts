@@ -238,6 +238,7 @@ export class CreateOrderService {
       qrAmt: this.getQRAmt(priceOption, transaction), // add
       reqMinimumBalance: transaction.data.simCard ? this.getReqMinimumBalance(transaction, transaction.data.mobileCarePackage) : '',
       qrOrderId: mapQrOrderId,
+      tradeType: transaction.data.tradeType
     };
   }
 

@@ -1,12 +1,21 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { WIZARD_ORDER_PRE_TO_POST } from 'src/app/order/constants/wizard.constant';
-import { ROUTE_ORDER_PRE_TO_POST_SUMMARY_PAGE, ROUTE_ORDER_PRE_TO_POST_EBILLING_ADDRESS_PAGE, ROUTE_ORDER_PRE_TO_POST_MERGE_BILLING_PAGE, ROUTE_ORDER_PRE_TO_POST_ON_TOP_PAGE, ROUTE_ORDER_PRE_TO_POST_EBILLING_PAGE, ROUTE_ORDER_PRE_TO_POST_SELECT_PACKAGE_PAGE } from 'src/app/order/order-pre-to-post/constants/route-path.constant';
-import { HomeService, ConfirmCustomerInfo, BillingInfo, MailBillingInfo, TelNoBillingInfo, BillingSystemType, Utils, AlertService } from 'mychannel-shared-libs';
-import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { Transaction, TransactionType, TransactionAction, Customer, MainPackage } from 'src/app/shared/models/transaction.model';
-import { ROUTE_ORDER_NEW_REGISTER_ON_TOP_PAGE } from 'src/app/order/order-new-register/constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
+import { HomeService, ConfirmCustomerInfo, BillingInfo, MailBillingInfo, TelNoBillingInfo, BillingSystemType, Utils, AlertService } from 'mychannel-shared-libs';
+
+import { WIZARD_ORDER_PRE_TO_POST } from 'src/app/order/constants/wizard.constant';
+import {
+  ROUTE_ORDER_PRE_TO_POST_SUMMARY_PAGE,
+  ROUTE_ORDER_PRE_TO_POST_EBILLING_ADDRESS_PAGE,
+  ROUTE_ORDER_PRE_TO_POST_MERGE_BILLING_PAGE,
+  ROUTE_ORDER_PRE_TO_POST_ON_TOP_PAGE,
+  ROUTE_ORDER_PRE_TO_POST_EBILLING_PAGE,
+  ROUTE_ORDER_PRE_TO_POST_SELECT_PACKAGE_PAGE
+} from 'src/app/order/order-pre-to-post/constants/route-path.constant';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-order-pre-to-post-confirm-user-information-page',
@@ -26,6 +35,8 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
   isTelNoBillingValid: boolean;
   isMailBillingInfoValid: boolean;
 
+  translationSubscribe: Subscription;
+
   constructor(
     private router: Router,
     private utils: Utils,
@@ -33,6 +44,7 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
     private homeService: HomeService,
     private transactionService: TransactionService,
     private alertService: AlertService,
+    private translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
 
@@ -40,6 +52,9 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
     if (!this.transaction.data.billingInformation) {
       this.transaction.data.billingInformation = {};
     }
+    this.translationSubscribe = this.translation.onLangChange.subscribe(lang => {
+      this.mapCustomerInfoByLang(lang.lang);
+    });
   }
 
   ngOnInit(): void {
@@ -59,7 +74,8 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
       mobileNo: simCard.mobileNo,
       mainPackage: mainPackage.shortNameThai,
       onTopPackage: '',
-      packageDetail: mainPackage.statementThai
+      packageDetail: mainPackage.statementThai,
+      idCardType: customer.idCardType
     };
 
     this.mailBillingInfo = {
@@ -75,50 +91,49 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
     };
 
     this.initBillingInfo();
+    this.mapCustomerInfoByLang(this.translation.currentLang);
+  }
+
+  mapCustomerInfoByLang(lang: string): void {
+    if (lang === 'EN') {
+      this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameEng;
+      this.confirmCustomerInfo.packageDetail = this.transaction.data.mainPackage.statementEng;
+    } else {
+      this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameThai;
+      this.confirmCustomerInfo.packageDetail = this.transaction.data.mainPackage.statementThai;
+    }
   }
 
   initBillingInfo(): void {
-    const customer = this.transaction.data.customer;
-    const billingInformation = this.transaction.data.billingInformation;
+
+    const billingInformation = this.transaction.data.billingInformation || {};
     const mergeBilling = billingInformation.mergeBilling;
     const billCycle = billingInformation.billCycle;
-    const customerbillDeliveryAddress = billingInformation.billDeliveryAddress;
+    const billCycles = [] = billingInformation.billCycles;
+    const customer: any = billingInformation.billDeliveryAddress || this.transaction.data.customer;
+    const engFlag = customer.province && !!customer.province.match(/[a-z]/i) ? 'Y' : 'N';
 
-    // const customerAddress = this.utils.getCurrentAddress({
-    //   homeNo: customer.homeNo,
-    //   moo: customer.moo,
-    //   room: customer.room,
-    //   floor: customer.floor,
-    //   buildingName: customer.buildingName,
-    //   soi: customer.soi,
-    //   street: customer.street,
-    //   tumbol: customer.tumbol,
-    //   amphur: customer.amphur,
-    //   province: customer.province,
-    //   zipCode: customer.zipCode
-    // });
-
-    const billDeliveryAddress =  this.utils.getCurrentAddress({
-      homeNo: customerbillDeliveryAddress.homeNo || customer.homeNo,
-      moo: customerbillDeliveryAddress.moo || customer.moo,
-      mooBan: customerbillDeliveryAddress.mooBan || customer.mooBan,
-      room: customerbillDeliveryAddress.room || customer.room,
-      floor: customerbillDeliveryAddress.floor || customer.floor,
-      buildingName: customerbillDeliveryAddress.buildingName || customer.buildingName,
-      soi: customerbillDeliveryAddress.soi || customer.soi,
-      street: customerbillDeliveryAddress.street || customer.street,
-      tumbol: customerbillDeliveryAddress.tumbol || customer.tumbol,
-      amphur: customerbillDeliveryAddress.amphur || customer.amphur,
-      province: customerbillDeliveryAddress.province || customer.province,
-      zipCode: customerbillDeliveryAddress.zipCode || customer.zipCode
-    });
+    const customerAddress = this.utils.getCurrentAddress({
+      homeNo: customer.homeNo,
+      moo: customer.moo,
+      mooBan: customer.mooBan,
+      room: customer.room,
+      floor: customer.floor,
+      buildingName: customer.buildingName,
+      soi: customer.soi,
+      street: customer.street,
+      tumbol: customer.tumbol,
+      amphur: customer.amphur,
+      province: customer.province,
+      zipCode: customer.zipCode
+    }, engFlag);
 
     this.billingInfo = {
       // merge bill ไม่เมื่อเลือก package net extream
       billingMethod: {
         text: this.isMergeBilling() ? `${billingInformation.mergeBilling.mobileNo[0]}` : null,
         // net extrem แก้ไขไม่ได้, โปรไฟล์ใหม่แก้ไขไม่ได้
-        isEdit: !!customer.billCycle,
+        isEdit: !!(customer.caNumber && customer.billCycle && billCycles && billCycles.length > 0),
         // isEdit: false,
         // net extrem ลบไม่ได้, มีบิลใหม่ลบได้แล้วแสดงบิลเก่า
         isDelete: !!mergeBilling,
@@ -128,24 +143,37 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
         },
         onDelete: () => {
           delete this.transaction.data.billingInformation.mergeBilling;
+          delete this.transaction.data.billingInformation.billCycleData;
+          const simCard = this.transaction.data.simCard;
+          // tslint:disable-next-line:no-shadowed-variable
+          const billingInformation = this.transaction.data.billingInformation;
+          const billCycleData: any = billingInformation.billCycleData || {};
 
           this.billingInfo.billingMethod.text = null;
           this.billingInfo.billingMethod.isDelete = false;
 
           // enable config
           this.billingInfo.billingAddress.isEdit = true;
-          this.billingInfo.billingAddress.text = billDeliveryAddress;
+          this.billingInfo.billingAddress.text = customerAddress;
 
           this.billingInfo.billingCycle.isEdit = true;
           this.billingInfo.billingCycle.isDelete = false;
 
-          this.getBllingCycle(customer.billCycle).then((billCycleText: string) => {
+          this.mailBillingInfo = {
+            email: billCycleData.email,
+            mobileNo: simCard.mobileNo,
+            address: billCycleData.billAddressText,
+            billChannel: this.getBillChannel()
+          };
+          const bill = billCycle && billCycle.bill ? billCycle.bill : customer.billCycle;
+          this.billingInfo.billingCycle.isDelete = !!(billCycle && billCycle.bill);
+          this.getBllingCycle(bill).then((billCycleText: string) => {
             this.billingInfo.billingCycle.text = billCycleText;
           });
         }
       },
       billingAddress: {
-        text: (this.isMergeBilling() ? mergeBilling.billingAddr : null) || billDeliveryAddress || '-',
+        text: (this.isMergeBilling() ? mergeBilling.billingAddr : null) || customerAddress || '-',
         isEdit: !(!!mergeBilling),
         // isEdit: !(isMergeBilling || isPackageNetExtream),
         onEdit: () => {
@@ -188,6 +216,9 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
   }
 
   onMailBillingInfoCompleted(mailBillingInfo: any): void {
+    if (!mailBillingInfo) {
+      return;
+    }
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData || {};
 
@@ -217,6 +248,11 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
     this.isTelNoBillingValid = valid;
   }
 
+  isNext(): boolean {
+    // !(isTelNoBillingValid &&(isMailBillingInfoValid || isMergeBilling()))
+    return this.isTelNoBillingValid && this.isMailBillingInfoValid;
+  }
+
   onBack(): void {
     if (this.isPackageNetExtreme()) {
       this.router.navigate([ROUTE_ORDER_PRE_TO_POST_MERGE_BILLING_PAGE]);
@@ -230,8 +266,8 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
   }
 
   onNext(): void {
-    if (!this.customerValid()) {
-      this.alertService.warning('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร');
+    if (!this.customerValid() && !this.isMergeBilling()) {
+      this.alertService.warning(this.translation.instant('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร'));
       return;
     }
 
@@ -264,6 +300,11 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
       }
     }
 
+    // ขา back หลังกลับมาจากหน้า summary
+    if (billingInformation && billingInformation.billCycleData) {
+      return billingInformation.billCycleData.billChannel;
+    }
+
     // เลือกบิลตามแพจเกจ
     const billingSystem = mainPackage.billingSystem;
     if (billingSystem && billingSystem === BillingSystemType.BOS) {
@@ -278,12 +319,14 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
   }
 
   ngOnDestroy(): void {
+    this.translationSubscribe.unsubscribe();
     this.transactionService.update(this.transaction);
   }
 
   customerValid(): boolean {
-    const customer = this.transaction.data.customer;
-
+    const billingInformation = this.transaction.data.billingInformation || {};
+    // ถ้าเป็น Newca จะไม่มี data.customer เลยต้องเช็คจากที่อยู่ว่า มีที่อยู่(billDeliveryAddress)ไหม
+    const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
     return !!(customer.homeNo
       && customer.province
       && customer.amphur
@@ -310,7 +353,7 @@ export class OrderPreToPostConfirmUserInformationPageComponent implements OnInit
             };
           }).find(bill => bill.billDefault === 'Y');
 
-          this.transaction.data.billingInformation.billCycle = defaultBillCycle.billCycle;
+          this.transaction.data.customer.billCycle = defaultBillCycle.billCycle.bill;
           return defaultBillCycle.text;
         });
     }

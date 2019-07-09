@@ -8,12 +8,13 @@ import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE
 } from 'src/app/device-order/ais/device-order-ais-pre-to-post/constants/route-path.constant';
 
-import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-device-order-ais-pre-to-post-validate-customer-id-card-page',
@@ -31,6 +32,7 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
   zipcode: string;
   readCardValid: boolean;
   user: User;
+  progressReadCard: number;
 
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
@@ -45,7 +47,7 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
     private http: HttpClient,
     private tokenService: TokenService,
     private utils: Utils,
-    private alertService: AlertService,
+    private alertService: AlertService
   ) {
     this.user = this.tokenService.getUser();
     this.transaction = this.transactionService.load();
@@ -55,6 +57,14 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
 
   ngOnInit(): void {
     this.onRemoveCardState();
+  }
+
+  onProgress(progress: number): void {
+    this.progressReadCard = progress;
+  }
+
+  progressDoing(): boolean {
+    return this.progressReadCard > 0 && this.progressReadCard < 100 ? true : false;
   }
 
   onRemoveCardState(): void {
@@ -73,7 +83,7 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
   onError(valid: boolean): void {
     this.readCardValid = valid;
     if (!this.profile) {
-      this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
+      this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน').then(() => this.onBack());
     }
   }
 
@@ -90,8 +100,10 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
   }
 
   onBack(): void {
-    this.KioskLEDoff();
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE]);
+    this.returnStock().then(() => {
+      this.KioskLEDoff();
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE]);
+    });
   }
 
   onNext(): void {
@@ -102,7 +114,9 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
         .then((zipCode: string) => {
           return this.http.get('/api/customerportal/validate-customer-pre-to-post', {
             params: {
-              identity: this.profile.idCardNo
+              identity: this.profile.idCardNo,
+              idCardType: this.profile.idCardType,
+              transactionType: TransactionType.DEVICE_ORDER_PRE_TO_POST_AIS
             }
           }).toPromise()
             .then((resp: any) => {
@@ -113,8 +127,6 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
                 billCycle: data.billCycle,
                 zipCode: zipCode
               };
-            }).catch(() => {
-              return { zipCode: zipCode };
             });
         })
         .then((customer: any) => {
@@ -144,24 +156,27 @@ export class DeviceOrderAisPreToPostValidateCustomerIdCardPageComponent implemen
           this.transaction.data.billingInformation = billingInformation;
 
           return this.conditionIdentityValid()
-            .then(() => {
+            .catch((msg: string) => {
+              return this.alertService.error(msg).then(() => true);
+            })
+            .then((isError: boolean) => {
+              if (isError) {
+                this.onBack();
+                return;
+              }
               return this.http.post(
                 '/api/salesportal/add-device-selling-cart',
                 this.getRequestAddDeviceSellingCart()
               ).toPromise()
-                .then((resp: any) => resp.data.soId);
-            })
-            .then((soId: string) => {
-              this.transaction.data.order = { soId: soId };
-
-              return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-            })
-            .then(() => {
-              this.transaction.data.action = TransactionAction.READ_CARD;
-              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE]);
+                .then((resp: any) => {
+                  this.transaction.data.order = { soId: resp.data.soId };
+                  return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+                }).then(() => {
+                  this.transaction.data.action = TransactionAction.READ_CARD;
+                  this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_ELIGIBLE_MOBILE_PAGE]);
+                });
             });
         }).then(() => this.pageLoadingService.closeLoading());
-
     });
   }
 

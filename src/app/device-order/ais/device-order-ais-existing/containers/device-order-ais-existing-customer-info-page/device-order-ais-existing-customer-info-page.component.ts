@@ -8,6 +8,7 @@ import {
   ROUTE_DEVICE_ORDER_AIS_EXISTING_ELIGIBLE_MOBILE_PAGE
 } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
+import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-customer-info-page',
@@ -25,6 +26,7 @@ export class DeviceOrderAisExistingCustomerInfoPageComponent implements OnInit {
   constructor(
     private router: Router,
     private homeService: HomeService,
+    private shoppingCartService: ShoppingCartService,
     private transactionService: TransactionService
   ) {
     this.transaction = this.transactionService.load();
@@ -32,7 +34,14 @@ export class DeviceOrderAisExistingCustomerInfoPageComponent implements OnInit {
 
   ngOnInit(): void {
     const customer: Customer = this.transaction.data.customer;
-    this.customerInfo = {
+    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
+    delete this.shoppingCart.mobileNo;
+
+    this.customerInfo = this.mappingCustomerInfo(customer);
+  }
+
+  mappingCustomerInfo(customer: Customer): CustomerInfo {
+    return {
       titleName: customer.titleName,
       firstName: customer.firstName,
       lastName: customer.lastName,

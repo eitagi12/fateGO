@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
-import { ReadCardProfile, HomeService, PageLoadingService, TokenService, ChannelType, Utils, AlertService, ValidateCustomerIdCardComponent, KioskControls, User, } from 'mychannel-shared-libs';
+import { ReadCardProfile, HomeService, PageLoadingService, TokenService, ChannelType, Utils, AlertService, ValidateCustomerIdCardComponent, KioskControls, User } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -10,9 +10,8 @@ import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from 'src/app/buy-product/constants/r
 import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE } from '../../constants/route-path.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
-import * as moment from 'moment';
 
-const Moment = moment;
+declare var swal: any;
 
 @Component({
   selector: 'app-device-order-ais-new-register-validate-customer-id-card-page',
@@ -29,6 +28,7 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
   zipcode: string;
   readCardValid: boolean;
   user: User;
+  progressReadCard: number;
 
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
@@ -43,14 +43,13 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
     private http: HttpClient,
     private tokenService: TokenService,
     private utils: Utils,
-    private alertService: AlertService,
+    private alertService: AlertService
   ) {
     this.user = this.tokenService.getUser();
     this.priceOption = this.priceOptionService.load();
-
     this.homeService.callback = () => {
 
-      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่<br>การยกเลิกระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที')
+      this.alertService.question('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่')
         .then((data: any) => {
           if (!data.value) {
             return false;
@@ -75,6 +74,14 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
     this.onRemoveCardState();
   }
 
+  onProgress(progress: number): void {
+    this.progressReadCard = progress;
+  }
+
+  progressDoing(): boolean {
+    return this.progressReadCard > 0 && this.progressReadCard < 100 ? true : false;
+  }
+
   onRemoveCardState(): void {
     // ปัญหาเกิดจาก ais webconnect เมื่ออ่านบัตรรอบแรกแล้วอ่านรอบ 2 ไม่ได้
     if (this.validateCustomerIdcard && this.validateCustomerIdcard.koiskApiFn) {
@@ -91,7 +98,7 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
   onError(valid: boolean): void {
     this.readCardValid = valid;
     if (!this.profile) {
-      this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน');
+      this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน').then(() => this.onBack());
     }
   }
 
@@ -107,65 +114,80 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
   }
 
   onBack(): void {
-    this.returnStock().then(() => {
-      this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
-    });
+    this.alertService.question('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่')
+      .then((data: any) => {
+        if (!data.value) {
+          return false;
+        }
+        if (this.validateCustomerIdcard.koiskApiFn) {
+          this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+        }
+        // Returns stock (sim card, soId) todo...
+        return this.returnStock().then(() => true);
+      })
+      .then((isNext: boolean) => {
+        if (isNext) {
+          this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
+        }
+      });
   }
 
   onNext(): void {
     this.pageLoadingService.openLoading();
+    // มี auto next ทำให้ create transaction ช้ากว่า read card
     this.returnStock().then(() => {
-      // มี auto next ทำให้ create transaction ช้ากว่า read card
-    this.createTransaction();
-    this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
-      .then((zipCode: string) => {
-        return this.http.get('/api/customerportal/validate-customer-new-register', {
-          params: {
-            identity: this.profile.idCardNo
-          }
-        }).toPromise()
-          .then((resp: any) => {
-            const data = resp.data || {};
-            return {
-              caNumber: data.caNumber,
-              mainMobile: data.mainMobile,
-              billCycle: data.billCycle,
-              zipCode: zipCode
-            };
-          }).catch(() => {
-            return { zipCode: zipCode };
-          });
-      })
-      .then((customer: any) => {
-        // load bill cycle
-        this.transaction.data.customer = Object.assign(this.profile, customer);
-        return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
-          .then((resp: any) => {
-            const data = resp.data || {};
-            return {
-              billCycles: data.billingAccountList
-            };
-          });
-      }).then((billingInformation: any) => {
-        this.transaction.data.billingInformation = billingInformation;
+      this.createTransaction();
+      this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
+        .then((zipCode: string) => {
+          return this.http.get('/api/customerportal/validate-customer-new-register', {
+            params: {
+              identity: this.profile.idCardNo,
+              idCardType: this.profile.idCardType,
+              transactionType: TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS
+            }
+          }).toPromise()
+            .then((resp: any) => {
+              const data = resp.data || {};
+              return {
+                caNumber: data.caNumber,
+                mainMobile: data.mainMobile,
+                billCycle: data.billCycle,
+                zipCode: zipCode
+              };
+            });
+        })
+        .then((customer: any) => {
+          // load bill cycle
+          this.transaction.data.customer = Object.assign(this.profile, customer);
+          return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
+            .then((resp: any) => {
+              const data = resp.data || {};
+              return {
+                billCycles: data.billingAccountList
+              };
+            });
+        }).then((billingInformation: any) => {
+          this.transaction.data.billingInformation = billingInformation;
 
-        return this.conditionIdentityValid()
-          .then(() => {
-            return this.http.post(
-              '/api/salesportal/add-device-selling-cart',
-              this.getRequestAddDeviceSellingCart()
-            ).toPromise()
-              .then((resp: any) => resp.data.soId);
-          })
-          .then((soId: string) => {
-            this.transaction.data.order = { soId: soId };
-
-            return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-          })
-          .then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE]));
-
-      }).then(() => this.pageLoadingService.closeLoading());
-
+          return this.conditionIdentityValid()
+            .catch((msg: string) => {
+              return this.alertService.error(msg).then(() => true);
+            })
+            .then((isError: boolean) => {
+              if (isError) {
+                this.onBack();
+                return;
+              }
+              return this.http.post(
+                '/api/salesportal/add-device-selling-cart',
+                this.getRequestAddDeviceSellingCart()
+              ).toPromise()
+                .then((resp: any) => {
+                  this.transaction.data.order = { soId: resp.data.soId };
+                  return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+                }).then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_PAYMENT_DETAIL_PAGE]));
+            });
+        }).then(() => this.pageLoadingService.closeLoading());
     });
   }
 
@@ -280,6 +302,10 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
       depositAmt: '',
       reserveNo: ''
     };
+  }
+
+  isDevelopMode(): boolean {
+    return environment.name === 'LOCAL';
   }
 
 }

@@ -60,6 +60,8 @@ export class SharedTransactionService {
     const productDetail = priceOption.productDetail;
     const productStock = priceOption.productStock;
 
+    data.customer.province = (data.customer.province || '').replace(/มหานคร$/, '');
+
     const params: any = {
       transactionId: transaction.transactionId,
       createBy: transaction.createBy,
@@ -70,6 +72,7 @@ export class SharedTransactionService {
       data: {
         action: data.action,
         transactionType: data.transactionType,
+        tradeType: data.tradeType || '',
         customer: data.customer || {},
         sim_card: data.simCard || {},
         device: {
@@ -83,6 +86,9 @@ export class SharedTransactionService {
           imei: !!data.device ? data.device.imei : ''
         },
         billing_information: {},
+        receipt_information: {
+          telNo: !!data.receiptInfo ? data.receiptInfo.telNo : ''
+        },
         mobile_care_package: {},
         air_time: {},
         on_top_package: transaction.data.onTopPackage || {},
@@ -103,18 +109,7 @@ export class SharedTransactionService {
     };
 
     if (data.mainPackage) {
-      params.data.main_package = {
-        title: data.mainPackage.title,
-        detailTH: data.mainPackage.detailTH,
-        customAttributes: {}
-      };
-      if (data.mainPackage.customAttributes) {
-        params.data.main_package.customAttributes = {
-          promotionCode: data.mainPackage.customAttributes.promotionCode,
-          promotionName: data.mainPackage.customAttributes.promotionName,
-          chargeType: data.mainPackage.customAttributes.chargeType
-        };
-      }
+      params.data.main_package = data.mainPackage;
     }
 
     if (data.preBooking) {
@@ -129,6 +124,12 @@ export class SharedTransactionService {
     };
 
     if (data.billingInformation) {
+
+      if (data.billingInformation.billDeliveryAddress) {
+        // tslint:disable-next-line:max-line-length
+        data.billingInformation.billDeliveryAddress.province = (data.billingInformation.billDeliveryAddress.province || '').replace(/มหานคร$/, '');
+      }
+
       // หน้า web payment ใช้ show ที่อยู่รับบิล
       params.data.billing_information = {
         customer: { ...data.customer, ...data.billingInformation.billDeliveryAddress },
@@ -202,7 +203,16 @@ export class SharedTransactionService {
 
     if (priceOption.trade) {
       // ใช้ check airtime
-      params.data.air_time = priceOption.trade.advancePay;
+      const advancePay = priceOption.trade.advancePay || {};
+      params.data.air_time = advancePay;
+
+      if (advancePay.promotions) {
+        const mainPackage = data.mainPackage && data.mainPackage.customAttributes || {};
+        const findPromotionByMainPackage = advancePay.promotions
+          .find(promotion => (promotion && promotion.billingSystem) === mainPackage.billingSystem);
+        params.data.air_time.promotions = [findPromotionByMainPackage] || advancePay.promotions;
+      }
+
     }
 
     if (data.existingMobileCare) {
@@ -215,16 +225,7 @@ export class SharedTransactionService {
         // ของเดิม เก็บ reason ไว้ใน object
         params.data.mobile_care_package = { reason: data.mobileCarePackage };
       } else {
-        params.data.mobile_care_package = {
-          title: data.mobileCarePackage.title,
-          id: data.mobileCarePackage.id,
-          customAttributes: {}
-        };
-        if (data.mobileCarePackage.customAttributes) {
-          params.data.mobile_care_package.customAttributes = {
-            promotionCode: data.mobileCarePackage.customAttributes.promotionCode
-          };
-        }
+        params.data.mobile_care_package = data.mobileCarePackage;
       }
     }
 

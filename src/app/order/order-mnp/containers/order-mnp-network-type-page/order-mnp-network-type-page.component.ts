@@ -12,6 +12,8 @@ import {
 import { WIZARD_ORDER_MNP } from 'src/app/order/constants/wizard.constant';
 import { Transaction, TransactionType } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
+import * as moment from 'moment';
+import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-order-mnp-network-type-page',
@@ -34,10 +36,13 @@ export class OrderMnpNetworkTypePageComponent implements OnInit, OnDestroy {
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
   ) {
-    this.createTransaction();
+    this.homeService.callback = () => {
+      window.location.href = '/smart-digital/main-menu';
+    };
   }
 
   ngOnInit(): void {
+    this.createTransaction();
     this.createForm();
   }
 
@@ -51,12 +56,48 @@ export class OrderMnpNetworkTypePageComponent implements OnInit, OnDestroy {
   onBack(): void {
     this.homeService.goToHome();
   }
-
   onNext(): void {
     this.pageLoadingService.openLoading();
+    const subscriberId: string = this.mnpForm.value.mobileNo;
+    const orderType: string = 'Port - In';
+    const isProduction: any = environment.name !== 'PROD' && environment.name !== 'SIT' ? true : false;
+    const isStartDt: any = isProduction === true ? 30 : 3;
+    const startDt: string = encodeURIComponent(moment().subtract(isStartDt, 'days').format('YYYYMMDD HH:mm:ss'));
+    const endDt: string = encodeURIComponent(moment().format('YYYYMMDD HH:mm:ss'));
+    this.http.get(`/api/customerportal/newRegister/history-order`, {
+      params: {
+        subscriberId: subscriberId,
+        orderType: orderType,
+        startDt: startDt,
+        endDt: endDt
+      }
+    })
+      .toPromise()
+      .then((resp: any) => {
+        const historyOrder = (resp.data || []).find((order: any) => {
+          return order.statusCode === 'Submit for Approve'
+            || order.statusCode === 'Pending'
+            || order.statusCode === 'Submitted'
+            || order.statusCode === 'Await'
+            || order.statusCode === 'Accept'
+             || order.statusCode === 'Approve';
+        });
+        if (historyOrder) {
+          this.pageLoadingService.closeLoading();
+          const createDate = moment(historyOrder.createDate, 'YYYYMMDD').format('DD/MM/YYYY');
+          this.alertService.error(`ระบบไม่สามารถทำรายการได้ <br>หมายเลข ${this.mnpForm.value.mobileNo}
+          อยู่ระหว่างรอการอนุมัติย้ายค่ายมาใช้บริการกับ AIS ระบบรายเดือน/เติมเงิน
+          (ทำรายการวันที่ ${createDate})`);
+        } else {
+          this.checkCustomerProfile();
+        }
+      }).catch(() => this.checkCustomerProfile());
+  }
+  checkCustomerProfile(): void {
     this.http.post(`/api/customerportal/newRegister/getCCCustInfo/${this.mnpForm.value.mobileNo}`, {
     }).toPromise()
       .then((resp: any) => {
+        this.pageLoadingService.closeLoading();
         const outbuf = resp.data
           && resp.data.data
           && resp.data.data.A_GetCCCustInfoResponse
@@ -76,7 +117,7 @@ export class OrderMnpNetworkTypePageComponent implements OnInit, OnDestroy {
             customerPinCode: this.mnpForm.value.pinCode,
             birthdate: '',
             idCardNo: '',
-            idCardType: '',
+            idCardType: 'บัตรประชาชน',
             titleName: '',
             expireDate: '',
             firstName: '',
@@ -87,13 +128,29 @@ export class OrderMnpNetworkTypePageComponent implements OnInit, OnDestroy {
         } else {
           return this.alertService.error(`หมายเลข ${this.mnpForm.value.mobileNo} เป็นเบอร์ AIS`);
         }
+      }).catch(() => {
+        this.pageLoadingService.closeLoading();
+        this.transaction.data.simCard = {
+          mobileNo: this.mnpForm.value.mobileNo
+        };
+        this.transaction.data.customer = {
+          customerPinCode: this.mnpForm.value.pinCode,
+          birthdate: '',
+          idCardNo: '',
+          idCardType: 'บัตรประชาชน',
+          titleName: '',
+          expireDate: '',
+          firstName: '',
+          gender: '',
+          lastName: ''
+        };
+        this.router.navigate([ROUTE_ORDER_MNP_SELECT_REASON_PAGE]);
       })
       .then(() => {
         this.pageLoadingService.closeLoading();
       });
 
   }
-
   onHome(): void {
     this.homeService.goToHome();
   }

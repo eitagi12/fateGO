@@ -3,10 +3,12 @@ import { CommonModule } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { JwtModule, JWT_OPTIONS } from '@auth0/angular-jwt';
+
 import {
   jwtOptionsFactory,
   ErrorsHandler,
   MyChannelSharedLibsModule,
+  I18nService,
 } from 'mychannel-shared-libs';
 import { AppRoutingModule } from './app-routing.module';
 import { CookiesStorageService } from 'ngx-store';
@@ -26,6 +28,7 @@ import { TranslateModule } from '@ngx-translate/core';
     CommonModule,
     BrowserModule,
     HttpClientModule, // ต้อง import แค่ครั้งเดียว
+    TranslateModule.forRoot(),
     MyChannelSharedLibsModule.forRoot({
       production: environment.production,
       NAME: environment.name,

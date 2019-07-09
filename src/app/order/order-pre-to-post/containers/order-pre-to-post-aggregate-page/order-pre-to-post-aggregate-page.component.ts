@@ -11,6 +11,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { Subscription } from 'rxjs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
 
 export interface Balance {
   remainingBalance: number;
@@ -44,7 +45,8 @@ export class OrderPreToPostAggregatePageComponent implements OnInit, OnDestroy {
     private http: HttpClient,
     private transactionService: TransactionService,
     private homeService: HomeService,
-    private pageLoadingService: PageLoadingService
+    private pageLoadingService: PageLoadingService,
+    public translationService: TranslateService,
   ) {
     this.transaction = this.transactionService.load();
   }

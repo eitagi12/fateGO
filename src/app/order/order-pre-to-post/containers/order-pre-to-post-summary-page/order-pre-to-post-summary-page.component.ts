@@ -9,7 +9,10 @@ import { HomeService, ConfirmCustomerInfo, BillingInfo, MailBillingInfo, TelNoBi
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 import { Transaction } from 'src/app/shared/models/transaction.model';
-
+import * as moment from 'moment';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
+const Moment = moment;
 @Component({
   selector: 'app-order-pre-to-post-summary-page',
   templateUrl: './order-pre-to-post-summary-page.component.html',
@@ -24,10 +27,13 @@ export class OrderPreToPostSummaryPageComponent implements OnInit {
   mailBillingInfo: MailBillingInfo;
   telNoBillingInfo: TelNoBillingInfo;
 
+  translationSubscribe: Subscription;
+
   constructor(
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
+    private translateService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -47,7 +53,7 @@ export class OrderPreToPostSummaryPageComponent implements OnInit {
       mobileNo: simCard.mobileNo,
       mainPackage: mainPackage.shortNameThai,
       onTopPackage: '',
-      packageDetail: mainPackage.statementThai
+      packageDetail: mainPackage.statementThai,
     };
 
     this.billingInfo = {
@@ -73,6 +79,32 @@ export class OrderPreToPostSummaryPageComponent implements OnInit {
       mobileNo: billCycleData.mobileNoContact,
       phoneNo: billCycleData.phoneNoContact,
     };
+
+    this.mapCustomerInfoByLang(this.translateService.currentLang);
+    this.translationSubscribe = this.translateService.onLangChange.subscribe(lang => {
+      this.mapCustomerInfoByLang(lang.lang);
+    });
+  }
+
+  mapCustomerInfoByLang(lang: string): void {
+    const billingInformation = this.transaction.data.billingInformation;
+    const billCycleData = billingInformation.billCycleData;
+    const bills = billCycleData.billCycleText.split(' ');
+    let billCycleTextEng = '-';
+    if (lang === 'EN') {
+      this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameEng;
+      this.confirmCustomerInfo.packageDetail = this.transaction.data.mainPackage.statementEng;
+    } else {
+      this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameThai;
+      this.confirmCustomerInfo.packageDetail = this.transaction.data.mainPackage.statementThai;
+    }
+
+    if (bills[3] === 'สิ้นเดือน') {
+      billCycleTextEng = `From the ${Moment([0, 0, bills[1]]).format('Do')} to the end of every month`;
+    } else {
+      billCycleTextEng = `From the ${Moment([0, 0, bills[1]]).format('Do')} to the ${Moment([0, 0, bills[3]]).format('Do')} of every month`;
+    }
+    this.transaction.data.billingInformation.billCycleData.billCycleTextEng = billCycleTextEng;
   }
 
   onBack(): void {

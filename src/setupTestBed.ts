@@ -1,4 +1,4 @@
-import { TestBed, async, TestModuleMetadata, getTestBed, ComponentFixture } from '@angular/core/testing';
+import { TestBed, async, TestModuleMetadata } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA, NO_ERRORS_SCHEMA } from '@angular/core';
 
 const resetTestingModule = TestBed.resetTestingModule;

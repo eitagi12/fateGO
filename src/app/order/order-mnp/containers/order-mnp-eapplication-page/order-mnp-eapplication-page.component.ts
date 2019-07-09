@@ -7,8 +7,9 @@ import { CreateNewRegisterService } from 'src/app/shared/services/create-new-reg
 import { HomeService, PageLoadingService } from 'mychannel-shared-libs';
 import {
   ROUTE_ORDER_MNP_AGREEMENT_SIGN_PAGE,
-  ROUTE_ORDER_MNP_RESULT_PAGE,
   ROUTE_ORDER_MNP_PERSO_SIM_PAGE } from '../../constants/route-path.constant';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-order-mnp-eapplication-page',
   templateUrl: './order-mnp-eapplication-page.component.html',
@@ -18,21 +19,30 @@ export class OrderMnpEapplicationPageComponent implements OnInit, OnDestroy {
 
   transaction: Transaction;
   getDataBase64Eapp: string;
+  translationSubscribe: Subscription;
 
   constructor(
     private router: Router,
     private createEapplicationService: CreateEapplicationService,
     private transactionService: TransactionService,
     private homeService: HomeService,
-    private pageLoadingService: PageLoadingService) { }
+    private pageLoadingService: PageLoadingService,
+    private translateService: TranslateService
+    ) { }
 
   ngOnInit(): void {
     this.pageLoadingService.openLoading();
     this.transaction = this.transactionService.load();
-    this.createEapplicationService.createEapplication(this.transaction).then(res => {
+    this.callService(this.transaction, this.translateService.currentLang);
+    this.translationSubscribe = this.translateService.onLangChange.subscribe(language => {
+      this.callService(this.transaction, language.lang);
+    });
+  }
+
+  callService(transaction: Transaction, language: string): void {
+    this.createEapplicationService.createEapplicationV2(transaction, language).then(res => {
       this.getDataBase64Eapp = 'data:image/jpeg;base64,' + res.data;
-      this.pageLoadingService.closeLoading();
-    }).catch(() => {
+    }).then(() => {
       this.pageLoadingService.closeLoading();
     });
   }

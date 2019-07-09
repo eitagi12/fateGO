@@ -28,7 +28,7 @@ export class OrderMnpValidateCustomerPageComponent implements OnInit, OnDestroy 
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private http: HttpClient,
-    private homeService: HomeService,
+    private homeService: HomeService
   ) {
     this.transaction = this.transactionService.load();
   }

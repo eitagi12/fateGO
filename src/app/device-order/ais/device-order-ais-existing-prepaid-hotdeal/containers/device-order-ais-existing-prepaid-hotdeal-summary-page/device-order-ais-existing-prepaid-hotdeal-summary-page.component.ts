@@ -11,6 +11,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { HttpClient } from '@angular/common/http';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-prepaid-hotdeal-summary-page',
@@ -48,7 +49,8 @@ export class DeviceOrderAisExistingPrepaidHotdealSummaryPageComponent implements
     public fb: FormBuilder,
     private alertService: AlertService,
     private modalService: BsModalService,
-    private shoppingCartService: ShoppingCartService
+    private shoppingCartService: ShoppingCartService,
+    public summaryPageService: SummaryPageService,
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -99,13 +101,30 @@ export class DeviceOrderAisExistingPrepaidHotdealSummaryPageComponent implements
     }
   }
 
+  summary(amount: number[]): number {
+    return amount.reduce((prev, curr) => {
+      return prev + curr;
+    }, 0);
+  }
+
   onOpenDetail(detail: string): void {
     this.detail = detail;
     this.modalRef = this.modalService.show(this.detailTemplate);
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_AGGREGATE_PAGE]);
+    this.pageLoadingService.openLoading();
+    const saveIdCardImageRequest: any = {
+      mobileNo: this.transaction.data.simCard.mobileNo || '',
+      idCardNo: this.transaction.data.customer.idCardNo,
+      imageReadSmartCard:  this.transaction.data.customer.imageReadSmartCard.replace('data:image/jpg;base64,', '') || '',
+      imageTakePhoto: '' // flow prepaid ไม่มีถ่ายรูป
+    };
+    this.http.post('/api/customerportal/saveIdcardImage' , saveIdCardImageRequest).toPromise()
+    .then(() => {
+      this.pageLoadingService.closeLoading();
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_AGGREGATE_PAGE]);
+    });
   }
 
   onBack(): void {

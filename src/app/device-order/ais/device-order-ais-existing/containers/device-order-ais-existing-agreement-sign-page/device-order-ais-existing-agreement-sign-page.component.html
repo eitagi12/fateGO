@@ -1,9 +1,10 @@
 <div class="mc-flex">
-    <mc-header title="ลูกค้าปัจจุบัน">
+    <mc-header title="{{'ลูกค้าปัจจุบัน'| translate}}">
       <div class="header-icon-left">
         <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
       </div>
       <div class="header-icon-right">
+        <!-- <mc-dropdown-language></mc-dropdown-language> -->
         <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
       </div>
     </mc-header>
@@ -11,10 +12,9 @@
         <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
       <div class="mb-3 mt-3">
         <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
-  
-        <div class="container-fluid margin-top">
+        <div *ngIf="!isOpenSign" class="container-fluid margin-top">
           <div class="card">
-            <div class="card-header bg-transparent text-center">ลงชื่อผู้ทำรายการ</div>
+            <div class="card-header bg-transparent text-center" translate>ลงชื่อผู้ทำรายการ</div>
             <div class="card-body">
               <div *ngIf="!transaction?.data?.customer?.imageSignature" class="signed">
                 <img src="assets/images/icon/pen.png" (click)="$event.preventDefault(); onSigned()" *ngIf="signatureText !== 'แก้ไขลายเซ็น'" />
@@ -25,8 +25,8 @@
             </div>
             <div class="card-footer text-center">
               <a href="#" (click)="$event.preventDefault(); onSigned()" class="text-pink">
-                <span *ngIf="!transaction?.data?.customer?.imageSignature">เซ็นลายเซ็น</span>
-                <span *ngIf="transaction?.data?.customer?.imageSignature">แก้ไขลายเซ็น</span>
+                <span *ngIf="!transaction?.data?.customer?.imageSignature" translate>เซ็นลายเซ็น</span>
+                <span *ngIf="transaction?.data?.customer?.imageSignature" translate>แก้ไขลายเซ็น</span>
               </a>
             </div>
           </div>
@@ -36,6 +36,6 @@
     </div>
     <mc-footer>
       <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-      <button class="btn btn-success" (click)="onNext()">NEXT</button>
+      <button class="btn btn-success" (click)="onNext()" [disabled]="!checkLogicNext()">NEXT</button> 
     </mc-footer>
   </div>

@@ -90,9 +90,9 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
                 sanitizedName: subShelve.sanitizedName,
                 items: (subShelve.items || [])
                 .map((promotion: any) => {
-                  const price = promotion.priceExclVat || 0;
-                  const minimumPackage = trade.minimumPackage || campaign.minimumPackagePrice;
-                  const maximumPackage = trade.maximumPackage || campaign.maximumPackagePrice;
+                  const price: number = +promotion.priceExclVat || 0;
+                  const minimumPackage: number = +trade.minimumPackage || +campaign.minimumPackagePrice;
+                  const maximumPackage: number = +trade.maximumPackage || +campaign.maximumPackagePrice;
                   if (price >= minimumPackage && price <= maximumPackage) {
                     return { // item
                       id: promotion.itemId,

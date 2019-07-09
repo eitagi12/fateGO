@@ -38,6 +38,10 @@ export class DeviceOrderAisNewRegisterEbillingPageComponent implements OnInit, O
 
   ngOnInit(): void {
 
+    const customer: any = this.transaction.data.customer || {};
+    const billingInformation: any = this.transaction.data.billingInformation || {};
+    const billCycle = billingInformation.billCycle || {};
+
     this.http.get('/api/customerportal/newRegister/queryBillCycle', {
       params: {
         coProject: 'ํY'
@@ -45,10 +49,15 @@ export class DeviceOrderAisNewRegisterEbillingPageComponent implements OnInit, O
     }).toPromise().then((resp: any) => {
       const data = resp.data || {};
       this.billCycles = data.billCycles || [];
-      if (!this.transaction.data.billingInformation.billCycle) {
-        this.setBillingDefault(data.billCycles || []);
-      } else {
-        this.billCycle = this.transaction.data.billingInformation.billCycle;
+
+      this.billCycle = this.billCycles.find(billing => {
+        return billCycle.bill ? billCycle.bill === billing.bill : customer.billCycle === billing.bill;
+      });
+
+      if (!this.billCycle) {
+        this.billCycle = this.billCycles.find(bill => {
+          return bill.billDefault === 'Y';
+        });
       }
     });
   }

@@ -1,16 +1,18 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, AisNativeService, User, TokenService, ChannelType, ShoppingCart } from 'mychannel-shared-libs';
+import { HomeService, AisNativeService, User, TokenService, ChannelType, ShoppingCart, AlertService } from 'mychannel-shared-libs';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Subscription } from 'rxjs';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
-
-import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
+import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_AGGREGATE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_EAPPLICATION_PAGE
 } from '../../constants/route-path.constant';
+import { AisNativeDeviceService } from 'src/app/shared/services/ais-native-device.service';
+import { TranslateService } from '@ngx-translate/core';
+
 @Component({
   selector: 'app-device-order-ais-pre-to-post-agreement-sign-page',
   templateUrl: './device-order-ais-pre-to-post-agreement-sign-page.component.html',
@@ -25,17 +27,48 @@ export class DeviceOrderAisPreToPostAgreementSignPageComponent implements OnInit
   signedOpenSubscription: Subscription;
   shoppingCart: ShoppingCart;
 
+  // signature
+  signatureImage: string;
+  commandSigned: any;
+  openSignedCommand: any;
+  isOpenSign: boolean;
+
+  translationSubscribe: Subscription;
+  currentLang: string;
   constructor(
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
-    private aisNativeService: AisNativeService,
+    private aisNativeDeviceService: AisNativeDeviceService,
     private tokenService: TokenService,
     private shoppingCartService: ShoppingCartService,
+    private alertService: AlertService,
+    private translationService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
-    this.signedSignatureSubscription = this.aisNativeService.getSigned().subscribe((signature: string) => {
-      this.transaction.data.customer.imageSignature = signature;
+    this.signedSignatureSubscription = this.aisNativeDeviceService.getSigned().subscribe((signature: string) => {
+      this.isOpenSign = false;
+      if (signature) {
+        this.isOpenSign = false;
+        this.transaction.data.customer.imageSignature = signature;
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_AGGREGATE_PAGE]);
+      } else {
+        this.alertService.warning('กรุณาเซ็นลายเซ็น').then(() => {
+          this.onSigned();
+        });
+        return;
+      }
+    });
+
+    this.currentLang = this.translationService.currentLang || 'TH';
+    this.translationSubscribe = this.translationService.onLangChange.subscribe(lang => {
+      if (this.signedOpenSubscription) {
+        this.signedOpenSubscription.unsubscribe();
+      }
+      this.currentLang = typeof (lang) === 'object' ? lang.lang : lang;
+      if (this.isOpenSign) {
+        this.onSigned();
+      }
     });
   }
 
@@ -46,12 +79,22 @@ export class DeviceOrderAisPreToPostAgreementSignPageComponent implements OnInit
     }
   }
 
+  checkLogicNext(): boolean {
+    return this.isOpenSign || this.transaction.data.customer.imageSignature ? true : false;
+  }
+
   onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_EAPPLICATION_PAGE]);
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_AGGREGATE_PAGE]);
+    if (this.openSignedCommand && !this.openSignedCommand.error) {
+      this.openSignedCommand.ws.send('CaptureImage');
+    } else {
+      if (this.transaction.data.customer.imageSignature) {
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_AGGREGATE_PAGE]);
+      }
+    }
   }
 
   onHome(): void {
@@ -59,10 +102,13 @@ export class DeviceOrderAisPreToPostAgreementSignPageComponent implements OnInit
   }
 
   onSigned(): void {
+    this.isOpenSign = true;
     const user: User = this.tokenService.getUser();
-    this.signedOpenSubscription = this.aisNativeService.openSigned(
-      ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'SignaturePad'
-    ).subscribe();
+    this.signedOpenSubscription = this.aisNativeDeviceService.openSigned(
+      ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'SignaturePad', `{x:100,y:280,Language: ${this.currentLang}}`
+    ).subscribe((command: any) => {
+      this.openSignedCommand = command;
+    });
   }
 
   ngOnDestroy(): void {
@@ -72,4 +118,5 @@ export class DeviceOrderAisPreToPostAgreementSignPageComponent implements OnInit
     }
     this.transactionService.update(this.transaction);
   }
+
 }

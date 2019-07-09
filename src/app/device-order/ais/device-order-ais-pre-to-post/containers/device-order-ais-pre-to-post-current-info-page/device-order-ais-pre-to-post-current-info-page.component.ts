@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { BsModalService } from 'ngx-bootstrap/modal';
 import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
-import { PageLoadingService, AlertService, HomeService } from 'mychannel-shared-libs';
+import { PageLoadingService, AlertService, HomeService, ShoppingCart } from 'mychannel-shared-libs';
 
 import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
 import {
@@ -14,6 +14,9 @@ import {
 } from '../../constants/route-path.constant';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 
 export interface Balance {
   remainingBalance: number;
@@ -37,6 +40,8 @@ export class DeviceOrderAisPreToPostCurrentInfoPageComponent implements OnInit, 
   isLoad: boolean = true;
   mobileNo: string;
   transaction: Transaction;
+  priceOption: PriceOption;
+  // shoppingCart: ShoppingCart;
 
   modalRef: BsModalRef;
   balance: Balance;
@@ -49,16 +54,17 @@ export class DeviceOrderAisPreToPostCurrentInfoPageComponent implements OnInit, 
     private http: HttpClient,
     private modalService: BsModalService,
     private alertService: AlertService,
+    private homeService: HomeService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private homeService: HomeService
+    private shoppingCartService: ShoppingCartService
   ) {
     this.transaction = this.transactionService.load();
   }
 
   ngOnInit(): void {
     this.mobileNo = this.transaction.data.simCard.mobileNo;
-
+    // this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.pageLoadingService.openLoading();
 
     this.http.get(`/api/customerportal/greeting/${this.mobileNo}/profile`).toPromise()
@@ -111,18 +117,21 @@ export class DeviceOrderAisPreToPostCurrentInfoPageComponent implements OnInit, 
         }
       }).toPromise()
         .then((resp: any) => {
-
           this.transaction.data.simCard = { mobileNo: this.mobileNo, persoSim: false };
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_PAYMENT_DETAIL_PAGE]);
           this.pageLoadingService.closeLoading();
-
         })
         .catch((resp: any) => {
           this.pageLoadingService.closeLoading();
-          this.alertService.notify({
-            type: 'error',
-            html: resp.error.resultDescription
-          });
+          const error = resp.error || [];
+          if (error && error.errors && typeof error.errors === 'string') {
+            this.alertService.notify({
+              type: 'error',
+              html: error.errors
+            });
+          } else {
+            Promise.reject(resp);
+          }
         });
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_ID_CARD_REPI_PAGE]);

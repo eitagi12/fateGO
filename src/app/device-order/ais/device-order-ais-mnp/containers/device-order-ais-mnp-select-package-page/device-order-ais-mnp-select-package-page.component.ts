@@ -28,12 +28,8 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
   priceOption: PriceOption;
   promotionShelves: PromotionShelve[];
   condition: any;
-  selectCurrentPackage: boolean;
-  showSelectCurrentPackage: boolean;
-  showCurrentPackage: boolean;
   modalRef: BsModalRef;
   shoppingCart: ShoppingCart;
-  isContractFirstPack: number;
 
   constructor(
     private router: Router,
@@ -54,18 +50,6 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
       delete this.transaction.data.billingInformation.billCycle;
       delete this.transaction.data.billingInformation.mergeBilling;
     }
-
-    const contract = this.transaction.data.contractFirstPack || {};
-    const priceExclVat = this.transaction.data.currentPackage && this.transaction.data.currentPackage.priceExclVat || 0;
-    this.isContractFirstPack = Math.max(contract.firstPackage || 0, contract.minPrice || 0, contract.initialPackage || 0);
-
-    if (!this.mathHotDeal && !this.advancePay) {
-      this.showCurrentPackage = true;
-    }
-
-    if (this.priceOption.privilege.minimumPackagePrice <= priceExclVat) {
-      this.showSelectCurrentPackage = true;
-    }
   }
 
   get advancePay(): boolean {
@@ -81,12 +65,7 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
     if (this.transaction.data.promotionsShelves) {
 
       this.promotionShelves = this.promotionShelveService
-      .defaultBySelected(this.transaction.data.promotionsShelves, this.transaction.data.mainPackage);
-
-      if (this.showCurrentPackage) {
-        this.promotionShelves[0].promotions[0].active = false;
-      }
-
+        .defaultBySelected(this.transaction.data.promotionsShelves, this.transaction.data.mainPackage);
     } else {
       this.callService();
     }
@@ -94,43 +73,29 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
 
   onCompleted(promotion: any): void {
     // รอแก้ไขตัวแปรที่จะเก็บลงใน share transaction
-    this.selectCurrentPackage = false;
     this.transaction.data.mainPackage = promotion;
   }
 
-  onClickCurrentPackage(): void {
-    this.selectCurrentPackage = true;
-    this.transaction.data.mainPackage = null;
-    this.promotionShelves[0].promotions.forEach((promotion: any) => promotion.active = false);
-  }
-
   onBack(): void {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_PAYMENT_DETAIL_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_PAYMENT_DETAIL_PAGE]);
   }
 
   onNext(): void {
     this.pageLoadingService.openLoading();
     const mobileNo = this.transaction.data.simCard.mobileNo;
 
+    // call เช็ค mobile care เดิม
     this.http.get(`/api/customerportal/get-existing-mobile-care/${mobileNo}`).toPromise().then((response: any) => {
       const exMobileCare = response.data || {};
-
       if (exMobileCare.hasExistingMobileCare) {
         const existingMobileCare: ExistingMobileCare = exMobileCare.existMobileCarePackage;
         existingMobileCare.handSet = exMobileCare.existHandSet;
         this.transaction.data.existingMobileCare = existingMobileCare;
       }
 
-      if (this.selectCurrentPackage) {
-        if (exMobileCare.hasExistingMobileCare) {
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE]);
-        } else {
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE]);
-        }
-      } else {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE]);
-      }
-
+      // ถ้ามี mobileCare เดิม จะไปหน้า เลือกว่าจะเปลี่ยน mobileCare หรือ ไม่
+      // ถ้าไม่มี mobileCare เดิม จะไปหน้าเลือกวันที่มีผลรอบบิล
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE]);
     }).then(() => this.pageLoadingService.closeLoading());
   }
 
@@ -143,7 +108,7 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
     const trade: any = this.priceOption.trade;
     const privilege: any = this.priceOption.privilege;
     const billingSystem = (this.transaction.data.simCard.billingSystem === 'RTBS')
-    ? BillingSystemType.IRB : this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
+      ? BillingSystemType.IRB : this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
 
     this.promotionShelveService.getPromotionShelve(
       {
@@ -151,7 +116,7 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
         orderType: `Change Service`,
         billingSystem: billingSystem
       },
-      +privilege.minimumPackagePrice, +privilege.maxinumPackagePrice)
+      +privilege.minimumPackagePrice, +privilege.maximumPackagePrice)
       .then((promotionShelves: any) => {
         this.promotionShelves = this.promotionShelveService.defaultBySelected(promotionShelves, this.transaction.data.mainPackage);
       })

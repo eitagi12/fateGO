@@ -1,0 +1,38 @@
+.checkbox-circle {
+    position: relative; 
+    width:calc(100% - 40px); 
+    margin: 20px; 
+    display: inline-block;
+}
+.checkbox-circle input {
+    display: none;
+}
+.checkbox-circle label  {
+    float: left; 
+    line-height: 1.4;
+    padding-bottom: 15px;
+    font-size: 20px;
+}
+.checkbox-circle label::before{
+  line-height: 0;
+  width:30px;
+  height:30px; 
+  border-radius: 100px;
+  float: left;
+  cursor: pointer;
+}
+.checkbox-circle input[type=checkbox]:checked + label::after {
+    display: block;
+}
+.checkbox-circle label::after {
+  display: none;
+  top: 0px;
+  left: 15px;
+  color: #fff;
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+  

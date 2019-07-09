@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { EligibleMobile, HomeService } from 'mychannel-shared-libs';
+import { EligibleMobile, HomeService, ShoppingCart, PageLoadingService } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 
 import { WIZARD_DEVICE_ORDER_AIS } from '../../../../constants/wizard.constant';
@@ -13,6 +13,10 @@ import {
 
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
 
 export interface BillingAccount {
   billingName: string;
@@ -38,48 +42,47 @@ export class DeviceOrderAisPreToPostEligibleMobilePageComponent implements OnIni
   eligibleMobiles: Array<EligibleMobile>;
   selectMobileNo: EligibleMobile;
   transaction: Transaction;
+  priceOption: PriceOption;
   billingAccountList: Array<BillingAccount>;
   billingNetExtremeList: Array<BillingAccount>;
+  shoppingCart: ShoppingCart;
 
   idCardNo: string;
 
   constructor(
     private router: Router,
     private http: HttpClient,
+    private homeService: HomeService,
+    private privilegeService: PrivilegeService,
     private transactionService: TransactionService,
-    private homeService: HomeService
+    private priceOptionService: PriceOptionService,
+    private shoppingCartService: ShoppingCartService,
+    private pageLoadingService: PageLoadingService,
   ) {
     this.transaction = this.transactionService.load();
-    this.homeService.callback = () => {
-      window.location.href = '/smart-shop';
-    };
+    this.priceOption = this.priceOptionService.load();
   }
 
   ngOnInit(): void {
+    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
+    delete this.shoppingCart.mobileNo;
     if (this.transaction.data.customer) {
-      this.idCardNo = this.transaction.data.customer.idCardNo;
-      this.getMobileList();
+      const idCardNo = this.transaction.data.customer.idCardNo;
+      const ussdCode = this.priceOption.trade.ussdCode;
+
+      this.http.post('/api/customerportal/query-eligible-mobile-list', {
+        idCardNo: idCardNo,
+        ussdCode: ussdCode,
+        mobileType: `Pre-paid`
+      }).toPromise()
+        .then((response: any) => {
+          const eMobileResponse = response.data;
+          this.eligibleMobiles = eMobileResponse.prepaid || [];
+        });
+
     } else {
       this.onBack();
     }
-  }
-
-  getMobileList(): void {
-    this.http.get(`/api/customerportal/newRegister/${this.idCardNo}/queryPrepaidMobileList`).toPromise()
-      .then((resp: any) => {
-        const prepaidMobileList = resp.data.prepaidMobileList || [];
-        this.mapPrepaidMobileNo(prepaidMobileList);
-      })
-      .catch(() => {
-      });
-  }
-
-  mapPrepaidMobileNo(mobileList: any): void {
-    const mobiles: Array<EligibleMobile> = new Array<EligibleMobile>();
-    mobileList.forEach(element => {
-      mobiles.push({ mobileNo: element.mobileNo, mobileStatus: element.status });
-    });
-    this.eligibleMobiles = mobiles;
   }
 
   onComplete(eligibleMobile: EligibleMobile): void {
@@ -96,8 +99,36 @@ export class DeviceOrderAisPreToPostEligibleMobilePageComponent implements OnIni
   }
 
   onNext(): void {
+    this.pageLoadingService.openLoading();
     this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo, persoSim: false };
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CURRENT_INFO_PAGE]);
+
+    if (this.selectMobileNo.privilegeCode) {
+      this.transaction.data.customer.privilegeCode = this.selectMobileNo.privilegeCode;
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CURRENT_INFO_PAGE]);
+
+    } else {
+      const ussdCode = this.priceOption.trade.ussdCode;
+      this.requestPrivilege(ussdCode);
+
+    }
+    this.pageLoadingService.closeLoading();
+  }
+
+  requestPrivilege(ussdCode: any): void {
+    this.privilegeService.requestUsePrivilege
+      (
+        this.selectMobileNo.mobileNo, ussdCode,
+        this.selectMobileNo.privilegeCode
+      )
+      .then((privilegeCode) => {
+        this.transaction.data.customer.privilegeCode = privilegeCode;
+        this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo };
+      })
+      .then(() =>  this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CURRENT_INFO_PAGE]));
+  }
+
+  onHome(): void {
+    this.homeService.goToHome();
   }
 
   ngOnDestroy(): void {

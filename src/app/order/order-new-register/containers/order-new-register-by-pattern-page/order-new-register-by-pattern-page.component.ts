@@ -199,7 +199,10 @@ export class OrderNewRegisterByPatternPageComponent implements OnInit, OnDestroy
         if (data.returnCode === '008') {
           this.router.navigate([ROUTE_ORDER_NEW_REGISTER_SELECT_PACKAGE_PAGE]);
         } else if (data.returnCode === '002') {
-          this.alertService.error('เบอร์ ' + this.transaction.data.simCard.mobileNo + ' มีลูกค้าท่านอื่นจองไว้แล้ว กรุณาเลือกเบอร์ใหม่');
+          this.alertService.error(
+            this.translation.instant('เบอร์') +
+            this.transaction.data.simCard.mobileNo +
+            this.translation.instant('มีลูกค้าท่านอื่นจองไว้แล้ว กรุณาเลือกเบอร์ใหม่'));
         } else {
           this.alertService.error(data.returnCode + ' ' + data.returnMessage);
         }

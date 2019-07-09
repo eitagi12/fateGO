@@ -21,12 +21,11 @@ export class SummaryPageService {
 
       const price = (((+trade.promotionPrice || 0)
       + (advancePay.installmentFlag === `Y` ? +advancePay.amount : 0))
-      / (+paymentMethod.month || 1))
-      .toFixed(2);
+      / (+paymentMethod.month || 1));
 
-      return `${this.translateService.instant(`บัตรเครดิต`) || `บัตรเครดิต`} ${paymentMethod.name} ${paymentMethod.percentage || 0} %
-      \ ${paymentMethod.month || 0} ${this.translateService.instant(`เดือน`) || `เดือน`}
-      \ ${price} ${this.translateService.instant(`บาท`) || `บาท`}`;
+      return `${this.translateService.instant(`บัตรเครดิต`)} ${paymentMethod.name} ${paymentMethod.percentage || 0} %
+      \ ${paymentMethod.month || 0} ${this.translateService.instant(`เดือน`)}
+      \ ${Math.ceil(price)} ${this.translateService.instant(`บาท`)}`;
 
     }
   }
@@ -41,9 +40,9 @@ export class SummaryPageService {
         }
         break;
       case `DEBIT`:
-        return `${this.translateService.instant(`เงินสด`) || `เงินสด`}`;
+        return `${this.translateService.instant(`เงินสด`)}`;
       case `CREDIT`:
-        return `${this.translateService.instant(`บัตรเครดิต`) || `บัตรเครดิต`}
+        return `${this.translateService.instant(`บัตรเครดิต`)}
         \ ${payment.paymentBank && payment.paymentBank.name}`;
 
       default:
