@@ -2,11 +2,11 @@ import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HomeService, ReadCardProfile, ValidateCustomerIdCardComponent, Utils, TokenService, AlertService, PageLoadingService, ChannelType, KioskControls } from 'mychannel-shared-libs';
 import { ROUTE_ORDER_BLOCK_CHAIN_ELIGIBLE_MOBILE_PAGE } from 'src/app/order/order-blcok-chain/constants/route-path.constant';
-import { TransactionAction, Transaction, Customer } from 'src/app/shared/models/transaction.model';
-import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ReserveMobileService } from 'src/app/order/order-shared/services/reserve-mobile.service';
 import { TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
+import { Transaction, Customer, TransactionAction, TransactionType } from 'src/app/shared/models/transaction.model';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
 
 @Component({
   selector: 'app-order-block-chain-validate-customer-id-card-page',
@@ -28,6 +28,7 @@ export class OrderBlockChainValidateCustomerIdCardPageComponent implements OnIni
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
 
   validNext: boolean = false;
+  isNext: boolean = false;
 
   constructor(
     private utils: Utils,
@@ -45,6 +46,7 @@ export class OrderBlockChainValidateCustomerIdCardPageComponent implements OnIni
   }
 
   ngOnInit(): void {
+    this.createTransaction();
   }
 
   onError(valid: boolean): void {
@@ -65,12 +67,28 @@ export class OrderBlockChainValidateCustomerIdCardPageComponent implements OnIni
 
   onCompleted(profile: ReadCardProfile): void {
     this.profile = profile;
+    this.isNext = false;
     // auto next
-    this.callService();
+    if (!this.isAisNative) {
+      this.callService();
+    }
+
+  }
+
+  get checkIsNextAisNative(): boolean {
+    return !!(this.isAisNative && this.profile && !this.isNext);
+  }
+
+  get isAisNative(): boolean {
+    return this.utils.isAisNative();
   }
 
   onProgress(progress: number): void {
     this.progressReadCard = progress;
+
+    if (progress === 0 && this.checkIsNextAisNative) {
+      this.callService();
+    }
   }
 
   progressDoing(): boolean {
@@ -86,7 +104,7 @@ export class OrderBlockChainValidateCustomerIdCardPageComponent implements OnIni
   }
 
   callService(): void {
-    this.transaction.data.action = TransactionAction.READ_CARD;
+    this.isNext = true;
     this.pageLoadingService.openLoading();
     this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
       .then((zipCode: string) => {
@@ -112,22 +130,26 @@ export class OrderBlockChainValidateCustomerIdCardPageComponent implements OnIni
         this.validNext = true;
       }).catch((resp: any) => {
         this.pageLoadingService.closeLoading();
-        const error = resp.error || [];
-        if (error && error.errors && error.errors.length > 0) {
-          this.alertService.notify({
-            type: 'error',
-            html: error.errors.map((err) => {
-              return '<li class="text-left">' + this.translation.instant(err) + '</li>';
-            }).join('')
-          }).then(() => {
-            this.onBack();
-          });
-        } else if (error.resultDescription) {
-          this.alertService.error(this.translation.instant(error.resultDescription));
-        } else {
-          this.alertService.error(this.translation.instant('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'));
-        }
+        this.mapErrorMessage(resp);
       });
+  }
+
+  mapErrorMessage(resp: any): void {
+    const error = resp.error || [];
+    if (error && error.errors && error.errors.length > 0) {
+      this.alertService.notify({
+        type: 'error',
+        html: error.errors.map((err) => {
+          return '<li class="text-left">' + this.translation.instant(err) + '</li>';
+        }).join('')
+      }).then(() => {
+        this.onBack();
+      });
+    } else if (error.resultDescription) {
+      this.alertService.error(this.translation.instant(error.resultDescription));
+    } else {
+      this.alertService.error(this.translation.instant('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'));
+    }
   }
 
   get validLogic(): boolean {
@@ -137,7 +159,7 @@ export class OrderBlockChainValidateCustomerIdCardPageComponent implements OnIni
   checkBusinessLogic(): boolean {
     const expireDate = this.transaction.data.customer.expireDate;
     const idCardType = this.transaction.data.customer.idCardType;
-
+    // block chain ไม่มีการตรวจสอบบัตรอายุต่ำกว่า 17 ปี เด็กสามารถทำรายการได้ แต่จะมีสิทธิ์จำกัด ตอนใช้งานธุรกรรมต่าง ๆ
     if (this.utils.isIdCardExpiredDate(expireDate)) {
       this.alertService.error(this.translation.instant('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ')).then(() => {
         this.onBack();
@@ -164,6 +186,16 @@ export class OrderBlockChainValidateCustomerIdCardPageComponent implements OnIni
           return Promise.reject('ไม่พบรหัสไปรษณีย์');
         }
       });
+  }
+
+  private createTransaction(): void {
+    this.transaction = {
+      data: {
+        transactionType: TransactionType.ORDER_NEW_REGISTER,
+        action: TransactionAction.READ_CARD,
+      }
+    };
+    this.transactionService.save(this.transaction);
   }
 
   ngOnDestroy(): void {
