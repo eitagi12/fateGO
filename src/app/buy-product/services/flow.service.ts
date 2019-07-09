@@ -67,13 +67,13 @@ export class FlowService {
   private getRouterPostPaid(priceOption: any): string {
     switch (priceOption.customerGroup.code) {
       case CustomerGroup.NEW_REGISTER:
-        return ROUTE_DEVICE_AIS_DEVICE_PAYMENT_PAGE;
+        return ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_VALIDATE_CUSTOMER_ID_CARD_PAGE;
       case CustomerGroup.PRE_TO_POST:
-        return ROUTE_DEVICE_AIS_DEVICE_PAYMENT_PAGE;
+        return ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_VALIDATE_CUSTOMER_PAGE;
       case CustomerGroup.MNP:
-        return ROUTE_DEVICE_AIS_DEVICE_PAYMENT_PAGE;
+        return ROUTE_DEVICE_ORDER_AIS_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE;
       case CustomerGroup.EXISTING:
-        return ROUTE_DEVICE_AIS_DEVICE_PAYMENT_PAGE;
+        return ROUTE_DEVICE_ORDER_AIS_EXISTING_VALIDATE_CUSTOMER_ID_CARD_PAGE;
       default:
         return '/';
     }
