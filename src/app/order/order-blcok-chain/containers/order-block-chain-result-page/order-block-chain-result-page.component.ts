@@ -9,6 +9,9 @@ import { ROUTE_ORDER_BLOCK_CHAIN_FACE_CONFIRM_PAGE } from 'src/app/order/order-b
   styleUrls: ['./order-block-chain-result-page.component.scss']
 })
 export class OrderBlockChainResultPageComponent implements OnInit {
+
+  isSuccess: boolean = true;
+
   constructor(
     private router: Router,
     private homeService: HomeService,
