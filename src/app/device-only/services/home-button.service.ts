@@ -5,7 +5,6 @@ import { CreateOrderService } from './create-order.service';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Router } from '@angular/router';
-import { async } from '@angular/core/testing';
 @Injectable({
   providedIn: 'root'
 })
@@ -27,17 +26,17 @@ export class HomeButtonService {
   initEventButtonHome(): void {
     this.homeService.callback = () => {
       this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
-        .then(async(response: any) => {
+        .then((response: any) => {
           if (response.value === true) {
-            await this.createOrderService.cancelOrder(this.transaction).then(async(isSuccess: any) => {
-              await this.transactionService.remove();
-              await this.priceOptionService.remove();
+             this.createOrderService.cancelOrder(this.transaction).then(async(isSuccess: any) => {
+               this.transactionService.remove();
+               this.priceOptionService.remove();
               window.location.href = '/';
             });
           }
         }).catch(async(err: any) => {
-          await this.transactionService.remove();
-          await this.priceOptionService.remove();
+           this.transactionService.remove();
+           this.priceOptionService.remove();
           window.location.href = '/';
         });
     };
