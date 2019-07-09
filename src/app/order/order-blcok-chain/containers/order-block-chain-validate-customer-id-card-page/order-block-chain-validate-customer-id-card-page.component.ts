@@ -85,7 +85,7 @@ export class OrderBlockChainValidateCustomerIdCardPageComponent implements OnIni
 
   onProgress(progress: number): void {
     this.progressReadCard = progress;
-
+    this.validNext = false;
     if (progress === 0 && this.checkIsNextAisNative) {
       this.callService();
     }

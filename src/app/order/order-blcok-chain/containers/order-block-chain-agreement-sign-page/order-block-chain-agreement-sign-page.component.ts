@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, TokenService, AlertService, ChannelType, User } from 'mychannel-shared-libs';
+import { HomeService, TokenService, AlertService, ChannelType, User, Utils } from 'mychannel-shared-libs';
 import * as Moment from 'moment';
 import { ROUTE_ORDER_BLOCK_CHAIN_ELIGIBLE_MOBILE_PAGE, ROUTE_ORDER_BLOCK_CHAIN_FACE_CAPTURE_PAGE } from 'src/app/order/order-blcok-chain/constants/route-path.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -40,7 +40,8 @@ export class OrderBlockChainAgreementSignPageComponent implements OnInit, OnDest
     private aisNativeOrderService: AisNativeOrderService,
     private tokenService: TokenService,
     private alertService: AlertService,
-    private translationService: TranslateService
+    private translationService: TranslateService,
+    private utils: Utils
   ) {
     this.transaction = this.transactionService.load();
     this.signedSignatureSubscription = this.aisNativeOrderService.getSigned().subscribe((signature: string) => {
@@ -48,7 +49,9 @@ export class OrderBlockChainAgreementSignPageComponent implements OnInit, OnDest
       if (signature) {
         this.isOpenSign = false;
         this.transaction.data.customer.imageSignature = signature;
-        this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_FACE_CAPTURE_PAGE]);
+        if (!this.isAisNative) {
+          this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_FACE_CAPTURE_PAGE]);
+        }
       } else {
         this.alertService.warning('กรุณาเซ็นลายเซ็น').then(() => {
           this.onSigned();
@@ -88,8 +91,12 @@ export class OrderBlockChainAgreementSignPageComponent implements OnInit, OnDest
         this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_FACE_CAPTURE_PAGE]);
       }
     }
-
   }
+
+  get isAisNative(): boolean {
+    return this.utils.isAisNative();
+  }
+
   onHome(): void {
     this.homeService.goToHome();
   }
