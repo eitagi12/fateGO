@@ -120,7 +120,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
     this.homeService.goToHome();
   }
 
-  clearstock(): void {
+  clearstock(): any {
     this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
     .then((response: any) => {
       if (response.value === true) {
@@ -136,9 +136,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
   }
 
   onBack(): void {
-    if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
-      this.clearstock();
-    }
+
     this.transactionService.remove();
     this.product = this.priceOption.queryParams;
     const brand: string = encodeURIComponent(this.product.brand ? this.product.brand : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
@@ -149,7 +147,13 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       '?modelColor=' + this.product.color +
       '&productType' + this.product.productType +
       '&productSubType' + this.product.productSubtype;
-    window.location.href = url + queryParams;
+
+      if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+        this.clearstock().then((res: any) => {
+          window.location.href = url + queryParams;
+
+        });
+      }
   }
 
   onNext(): void {
