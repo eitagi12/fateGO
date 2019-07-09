@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { ROUTE_DEVICE_ONLY_KIOSK_RESULT_QUEUE_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ONLY_KIOSK_RESULT_QUEUE_PAGE, ROUTE_DEVICE_ONLY_KIOSK_CHECKOUT_PAYMENT_PAGE } from '../../constants/route-path.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -110,6 +110,10 @@ export class DeviceOnlyKioskQueuePageComponent implements OnInit, OnDestroy {
           });
         });
       });
+  }
+
+  onBack(): void {
+    this.router.navigate([ROUTE_DEVICE_ONLY_KIOSK_CHECKOUT_PAYMENT_PAGE]);
   }
 
   onNext(): void {
