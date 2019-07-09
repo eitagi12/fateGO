@@ -4,6 +4,7 @@ import { HomeService, AlertService } from 'mychannel-shared-libs';
 import { CreateOrderService } from './create-order.service';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'
 })
@@ -16,7 +17,8 @@ export class HomeButtonService {
     private alertService: AlertService,
     private createOrderService: CreateOrderService,
     private transactionService: TransactionService,
-    private priceOptionService: PriceOptionService
+    private priceOptionService: PriceOptionService,
+    private router: Router
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -26,15 +28,15 @@ export class HomeButtonService {
       this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
         .then((response: any) => {
           if (response.value === true) {
-            this.createOrderService.cancelOrder(this.transaction).then((isSuccess: any) => {
-              this.transactionService.remove();
-              this.priceOptionService.remove();
+             this.createOrderService.cancelOrder(this.transaction).then(async(isSuccess: any) => {
+               this.transactionService.remove();
+               this.priceOptionService.remove();
               window.location.href = '/';
             });
           }
-        }).catch((err: any) => {
-          this.transactionService.remove();
-          this.priceOptionService.remove();
+        }).catch(async(err: any) => {
+           this.transactionService.remove();
+           this.priceOptionService.remove();
           window.location.href = '/';
         });
     };
