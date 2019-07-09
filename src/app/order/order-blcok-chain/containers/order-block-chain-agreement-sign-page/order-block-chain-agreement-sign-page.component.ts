@@ -24,9 +24,9 @@ export class OrderBlockChainAgreementSignPageComponent implements OnInit, OnDest
 
   transaction: Transaction;
   signedSignatureSubscription: Subscription;
-  signedOpenSubscription: Subscription;
+  signedOpen: Subscription;
+
   openSignedCommand: any;
-  isOpenSign: boolean;
 
   translationSubscribe: Subscription;
   currentLang: string;
@@ -39,35 +39,17 @@ export class OrderBlockChainAgreementSignPageComponent implements OnInit, OnDest
     private transactionService: TransactionService,
     private aisNativeOrderService: AisNativeOrderService,
     private tokenService: TokenService,
-    private alertService: AlertService,
-    private translationService: TranslateService,
-    private utils: Utils
+    private alertService: AlertService
   ) {
     this.transaction = this.transactionService.load();
     this.signedSignatureSubscription = this.aisNativeOrderService.getSigned().subscribe((signature: string) => {
-      this.isOpenSign = false;
       if (signature) {
-        this.isOpenSign = false;
         this.transaction.data.customer.imageSignature = signature;
-        if (!this.isAisNative) {
-          this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_FACE_CAPTURE_PAGE]);
-        }
       } else {
         this.alertService.warning('กรุณาเซ็นลายเซ็น').then(() => {
           this.onSigned();
         });
         return;
-      }
-    });
-
-    this.currentLang = this.translationService.currentLang || 'TH';
-    this.translationSubscribe = this.translationService.onLangChange.subscribe(lang => {
-      if (this.signedOpenSubscription) {
-        this.signedOpenSubscription.unsubscribe();
-      }
-      this.currentLang = typeof (lang) === 'object' ? lang.lang : lang;
-      if (this.isOpenSign) {
-        this.onSigned();
       }
     });
   }
@@ -84,17 +66,7 @@ export class OrderBlockChainAgreementSignPageComponent implements OnInit, OnDest
   }
 
   onNext(): void {
-    if (this.openSignedCommand && !this.openSignedCommand.error) {
-      this.openSignedCommand.ws.send('CaptureImage');
-    } else {
-      if (this.transaction.data.customer.imageSignature) {
-        this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_FACE_CAPTURE_PAGE]);
-      }
-    }
-  }
-
-  get isAisNative(): boolean {
-    return this.utils.isAisNative();
+    this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_FACE_CAPTURE_PAGE]);
   }
 
   onHome(): void {
@@ -102,7 +74,7 @@ export class OrderBlockChainAgreementSignPageComponent implements OnInit, OnDest
   }
 
   checkLogicNext(): boolean {
-    if (this.isOpenSign || this.transaction.data.customer.imageSignature) {
+    if (this.transaction.data.customer.imageSignature) {
       return true;
     } else {
       return false;
@@ -110,26 +82,18 @@ export class OrderBlockChainAgreementSignPageComponent implements OnInit, OnDest
   }
 
   onSigned(): void {
-    this.isOpenSign = true;
+    delete this.transaction.data.customer.imageSignature;
     const user: User = this.tokenService.getUser();
-    this.signedOpenSubscription = this.aisNativeOrderService.openSigned(
+    this.signedOpen = this.aisNativeOrderService.openSigned(
       ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'OnscreenSignpad', `{x:100,y:280,Language: ${this.currentLang}}`
-    ).subscribe((command: any) => {
-      this.openSignedCommand = command;
-    });
-
-  }
-
-  getOnMessageWs(): void {
-    this.commandSigned.ws.send('CaptureImage');
+    ).subscribe();
   }
 
   ngOnDestroy(): void {
     this.signedSignatureSubscription.unsubscribe();
-    if (this.signedOpenSubscription) {
-      this.signedOpenSubscription.unsubscribe();
+    if (this.signedOpen) {
+      this.signedOpen.unsubscribe();
     }
-
     if (this.translationSubscribe) {
       this.translationSubscribe.unsubscribe();
     }
