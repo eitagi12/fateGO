@@ -3,7 +3,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { Utils, PageLoadingService } from 'mychannel-shared-libs';
+import { Utils, PageLoadingService, TokenService, User } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { CustomerInformationService } from 'src/app/device-only/services/customer-information.service';
 
@@ -22,6 +22,8 @@ export class SummaryPaymentDetailComponent implements OnInit {
   transaction: Transaction;
   customerAddress: string;
   price: string;
+  public isShowReceiptTnfomation: boolean = false;
+  user: User;
   @Output() conditionNext: EventEmitter<any> = new EventEmitter<any>();
 
   constructor(
@@ -31,15 +33,22 @@ export class SummaryPaymentDetailComponent implements OnInit {
     private http: HttpClient,
     private customerInformationService: CustomerInformationService,
     private pageLoadingService: PageLoadingService,
+    private tokenService: TokenService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
+    this.user = this.tokenService.getUser();
   }
 
   ngOnInit(): void {
+    this.checkUserType();
     this.price = this.priceOption.trade.priceType === 'NORMAL' ? this.priceOption.trade.normalPrice : this.priceOption.trade.promotionPrice;
     this.getDataCustomer();
     this.checkExMobileCare();
+  }
+
+  private checkUserType(): boolean {
+    return this.isShowReceiptTnfomation = this.user.userType === 'ASP' ? false : true;
   }
 
   private checkExMobileCare(): void {

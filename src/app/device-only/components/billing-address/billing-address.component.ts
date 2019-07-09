@@ -1,8 +1,10 @@
 import { Component, OnInit, Input, Output, EventEmitter, OnChanges, SimpleChanges } from '@angular/core';
-import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors, ValidatorFn, ReactiveFormsModule } from '@angular/forms';
 import { debounceTime, distinct, delay } from 'rxjs/operators';
 import { Utils, CustomerAddress } from 'mychannel-shared-libs';
 import { CustomerInformationService } from 'src/app/device-only/services/customer-information.service';
+import { TransactionAction, Transaction } from 'src/app/shared/models/transaction.model';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
 
 export interface CustomerAddress {
   titleName: string;
@@ -31,56 +33,41 @@ export class BillingAddressComponent implements OnInit, OnChanges {
 
   @Input() keyInCustomerAddressTemp: any;
 
-  @Input()
-  titleNames: string[];
+  @Input() actionType: string;
 
-  @Input()
-  firstName: string[];
+  @Input() titleNames: string[];
 
-  @Input()
-  lastName: string[];
+  @Input() firstName: string[];
 
-  @Input()
-  customerAddress: CustomerAddress;
+  @Input() lastName: string[];
 
-  @Input()
-  idCardNo: string[];
+  @Input() customerAddress: CustomerAddress;
 
-  @Input()
-  allZipCodes: string[];
+  @Input() idCardNo: string[];
 
-  @Input()
-  provinces: string[];
+  @Input() allZipCodes: string[];
 
-  @Input()
-  amphurs: string[];
+  @Input() provinces: string[];
 
-  @Input()
-  tumbols: string[];
+  @Input() amphurs: string[];
 
-  @Input()
-  zipCodes: string[];
+  @Input() tumbols: string[];
 
-  @Input()
-  titleNameSelected: EventEmitter<any> = new EventEmitter<any>();
+  @Input() zipCodes: string[];
 
-  @Output()
-  provinceSelected: EventEmitter<any> = new EventEmitter<any>();
+  @Input() titleNameSelected: EventEmitter<any> = new EventEmitter<any>();
 
-  @Output()
-  amphurSelected: EventEmitter<any> = new EventEmitter<any>();
+  @Output() provinceSelected: EventEmitter<any> = new EventEmitter<any>();
 
-  @Output()
-  tumbolSelected: EventEmitter<any> = new EventEmitter<any>();
+  @Output() amphurSelected: EventEmitter<any> = new EventEmitter<any>();
 
-  @Output()
-  zipCodeSelected: EventEmitter<any> = new EventEmitter<any>();
+  @Output() tumbolSelected: EventEmitter<any> = new EventEmitter<any>();
 
-  @Output()
-  completed: EventEmitter<any> = new EventEmitter<any>();
+  @Output() zipCodeSelected: EventEmitter<any> = new EventEmitter<any>();
 
-  @Output()
-  error: EventEmitter<boolean> = new EventEmitter<boolean>();
+  @Output() completed: EventEmitter<any> = new EventEmitter<any>();
+
+  @Output() error: EventEmitter<boolean> = new EventEmitter<boolean>();
 
   customerAddressForm: FormGroup;
   private valueFn: any = Validators.nullValidator;
@@ -92,78 +79,51 @@ export class BillingAddressComponent implements OnInit, OnChanges {
   debounceTimeInMS: number = 500;
   identityValue: string;
   disableIdCard: boolean;
+  transaction: Transaction;
 
   constructor(
     public fb: FormBuilder,
     private utils: Utils,
-    private customerInformationService: CustomerInformationService
-  ) {}
+    private customerInformationService: CustomerInformationService,
+    private transactionService: TransactionService
+  ) {
+    this.transaction = this.transactionService.load();
+  }
 
   ngOnInit(): void {
     this.createForm();
-    if (this.customerInformationService.isReadCard === true) {
+    this.checkProvinceAndAmphur();
+    this.checkAction();
+  }
+
+  checkAction(): void {
+    if (this.actionType === TransactionAction.READ_CARD) {
       this.customerAddressForm.controls['idCardNo'].disable();
+    } else {
+      this.customerAddressForm.controls['idCardNo'].enable();
     }
   }
 
   ngOnChanges(changes: SimpleChanges): void {
-    // if (!this.customerAddressForm) {
-    //   return;
-    // }
-
-    // if (changes.firstName) {
-    //   const change = changes['validateCharacter'];
-    //   if (change) {
-    //     this.valueFn = this.validateCharacter();
-    //   } else {
-    //     this.valueFn = Validators.nullValidator;
-    //   }
-    // }
-
-    // if (changes.lastName) {
-    //   const change = changes['validateCharacter'];
-    //   if (change) {
-    //     this.valueFn = this.validateCharacter();
-    //   } else {
-    //     this.valueFn = Validators.nullValidator;
-    //   }
-    // }
-
-    // if (changes.customerAddress) {
-    //   const currentValue: any = changes.customerAddress.currentValue;
-    //   const previousValue: any = changes.customerAddress.previousValue;
-    //   if (previousValue && currentValue.province === previousValue.province) {
-    //     this.customerAddressForm.patchValue({
-    //       province: currentValue.province,
-    //       zipCode: currentValue.zipCode
-    //     });
-    //   } else {
-    //     this.customerAddressForm.patchValue(currentValue || {});
-    //   }
-    // }
-
-    // if (changes.amphurs
-    //   && changes.amphurs.currentValue
-    //   && changes.amphurs.currentValue.length === 1) {
-    //   this.customerAddressForm.patchValue({
-    //     amphur: changes.amphurs.currentValue[0]
-    //   });
-    // }
-
-    // if (changes.tumbols
-    //   && changes.tumbols.currentValue
-    //   && changes.tumbols.currentValue.length === 1) {
-    //   this.customerAddressForm.patchValue({
-    //     tumbol: changes.tumbols.currentValue[0]
-    //   });
-    // }
-
     if (changes.zipCodes
       && changes.zipCodes.currentValue
       && changes.zipCodes.currentValue.length === 1) {
-      this.customerAddressForm.patchValue({
-        zipCode: changes.zipCodes.currentValue[0]
-      });
+        if (this.customerAddressForm) {
+          this.customerAddressForm.patchValue({
+            zipCode: changes.zipCodes.currentValue[0]
+          });
+        }
+    }
+  }
+
+  checkProvinceAndAmphur(): void {
+    if (this.provinceForm().invalid) {
+      this.amphurForm().disable();
+      this.amphurForm().setValue('');
+    }
+    if (this.amphurForm().value === '') {
+      this.tumbolForm().disable();
+      this.tumbolForm().setValue('');
     }
   }
 
@@ -188,9 +148,17 @@ export class BillingAddressComponent implements OnInit, OnChanges {
       zipCode: ''
     });
     this.disableFormAmphurAndTumbol();
-    this.completed.emit(this.customerAddressForm.value);
+    this.customerAddressForm.markAsTouched();
+    this.completed.emit({
+      ...this.customerAddressForm.value,
+      dirty: this.customerAddressForm.dirty,
+      touched: this.customerAddressForm.touched,
+    });
     this.customerInformationService.unSetDisableReadCard();
     this.customerAddressForm.controls['idCardNo'].enable();
+    if (this.zipCodes) {
+      this.zipCodes.splice(0, 1);
+    }
   }
 
   createForm(): void {
@@ -220,6 +188,9 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     this.tumbolFormControl();
     this.zipCodeFormControl();
     if (this.keyInCustomerAddressTemp) {
+      if (this.keyInCustomerAddressTemp.titleName === 'น.ส.') {
+        this.keyInCustomerAddressTemp.titleName = 'นางสาว';
+      }
       for (const item in this.keyInCustomerAddressTemp) {
         if (this.keyInCustomerAddressTemp.hasOwnProperty(item) && this.customerAddressForm.value.hasOwnProperty(item)) {
           this.customerAddressForm.controls[item].setValue(this.keyInCustomerAddressTemp[item]);
@@ -228,8 +199,9 @@ export class BillingAddressComponent implements OnInit, OnChanges {
     }
     this.customerAddressForm.valueChanges.pipe(debounceTime(750)).subscribe((value: any) => {
       this.error.emit(this.customerAddressForm.valid);
-      if (this.customerAddressForm.valid && this.customerAddressForm.value.idCardNo) {
-        this.completed.emit(value);
+      if (this.customerAddressForm.valid && this.customerAddressForm.controls.idCardNo.value) {
+        const idCardNo = this.customerAddressForm.controls.idCardNo.value;
+        this.completed.emit({...value, idCardNo, dirty: this.customerAddressForm.dirty, touched: this.customerAddressForm.touched });
       }
     });
   }

@@ -3,6 +3,7 @@ import { SummaryPaymentDetailComponent } from './summary-payment-detail.componen
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient, HttpHandler } from '@angular/common/http';
+import { TokenService } from 'mychannel-shared-libs';
 
 describe('SummaryPaymentDetailComponent', () => {
   let component: SummaryPaymentDetailComponent;
@@ -52,6 +53,18 @@ describe('SummaryPaymentDetailComponent', () => {
               }
             };
           }),
+        }
+      },
+      {
+        provide: TokenService,
+        useValue: {
+          getUser: jest.fn(() => {
+            return {
+              data: {
+                userType: 'ASP'
+              }
+            };
+          })
         }
       }
     ]

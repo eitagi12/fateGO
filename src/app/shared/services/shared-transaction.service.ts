@@ -72,6 +72,7 @@ export class SharedTransactionService {
       data: {
         action: data.action,
         transactionType: data.transactionType,
+        tradeType: data.tradeType || '',
         customer: data.customer || {},
         sim_card: data.simCard || {},
         device: {
@@ -86,6 +87,9 @@ export class SharedTransactionService {
         },
         billing_information: {},
         knoxguard: {},
+        receipt_information: {
+          telNo: !!data.receiptInfo ? data.receiptInfo.telNo : ''
+        },
         mobile_care_package: {},
         air_time: {},
         on_top_package: transaction.data.onTopPackage || {},

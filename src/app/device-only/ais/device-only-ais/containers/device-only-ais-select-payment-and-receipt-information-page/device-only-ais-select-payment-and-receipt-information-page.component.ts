@@ -34,6 +34,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
   customerInfoTemp: any;
   user: User;
   localtion: any;
+  addessValid: boolean;
 
   constructor(
     private router: Router,
@@ -57,8 +58,8 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
     this.apiRequestService.createRequestId();
 
     let commercialName = this.priceOption.productDetail.name;
-    if (this.priceOption.productStock.color) {
-      commercialName += ` สี ${this.priceOption.productStock.color}`;
+    if (this.priceOption.productStock.colorName) {
+      commercialName += ` สี ${this.priceOption.productStock.colorName}`;
     }
     // REFACTOR IT'S
     this.paymentDetail = {
@@ -154,6 +155,10 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
     this.isReceiptInformationValid = error;
   }
 
+  public onErrorAddessValid(err: boolean): void {
+    this.addessValid = err;
+  }
+
   checkAction(action: string): void {
     if (action === 'READ_CARD') {
       this.transaction.data.action = TransactionAction.READ_CARD;
@@ -198,7 +203,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
   }
 
   isNotFormValid(): boolean {
-    return !(this.isReceiptInformationValid && this.paymentDetailValid);
+    return !(this.isReceiptInformationValid && this.paymentDetailValid && this.addessValid);
   }
 
   ngOnDestroy(): void {
