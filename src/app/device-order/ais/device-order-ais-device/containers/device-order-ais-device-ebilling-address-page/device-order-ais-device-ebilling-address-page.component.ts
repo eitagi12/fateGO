@@ -246,7 +246,7 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_PAYMENT_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_PAYMENT_PAGE], { queryParams: { ebilling : true} });
   }
 
   onNext(): void {

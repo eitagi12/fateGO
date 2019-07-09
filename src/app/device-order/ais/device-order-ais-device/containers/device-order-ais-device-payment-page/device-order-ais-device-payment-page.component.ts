@@ -97,13 +97,12 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
       if (!params.ebilling) {
         console.log('create');
         this.createTransaction();
+         this.checkLocation();
       }
     });
     this.createForm();
     this.createSearchByMobileNoForm();
     this.createSelectBillAddForm();
-    this.checkLocation();
-
     const productDetail = this.priceOption.productDetail || {};
     const productStock = this.priceOption.productStock || {};
     // tslint:disable-next-line:max-line-length
