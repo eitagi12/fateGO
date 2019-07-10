@@ -120,14 +120,27 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
     this.homeService.goToHome();
   }
 
-  onBack(): void {
+  clearstock(): any {
+    this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+      .then((response: any) => {
+        if (response.value === true) {
+          this.createOrderService.cancelOrder(this.transaction).then((isSuccess: any) => {
+            this.transactionService.remove();
+            this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
+          });
+        }
+      }).catch((err: any) => {
+        this.transactionService.remove();
+      });
+  }
+
+  onBack(): any {
     this.transactionService.remove();
     if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
-      this.homeService.goToHome();
-      return;
+      this.clearstock();
+    } else {
+      this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
     }
-
-    this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
   }
 
   onNext(): void {
