@@ -4,6 +4,7 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { HttpHandler } from '@angular/common/http';
 import { CustomerInformationService } from 'src/app/device-only/services/customer-information.service';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
 
 describe('BillingAddressComponent', () => {
   let component: BillingAddressComponent;
@@ -19,7 +20,13 @@ describe('BillingAddressComponent', () => {
     providers: [
       HttpClient,
       HttpHandler,
-      CustomerInformationService
+      CustomerInformationService,
+      {
+        provide: TransactionService,
+        useValue: {
+          load: jest.fn(),
+        }
+      }
     ]
   });
 
