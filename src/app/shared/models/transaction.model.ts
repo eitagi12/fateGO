@@ -73,6 +73,13 @@ export interface TransactionData {
   device?: Device;
   knoxguard?: KnoxGuard;
   tradeType?: string;
+
+  dopa?: Dopa;
+}
+
+export interface Dopa {
+  stCode: string;
+  stDesc: string;
 }
 
 export interface Condition {

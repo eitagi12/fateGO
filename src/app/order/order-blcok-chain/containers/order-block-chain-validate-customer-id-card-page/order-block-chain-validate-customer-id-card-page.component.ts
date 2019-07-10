@@ -5,7 +5,7 @@ import { ROUTE_ORDER_BLOCK_CHAIN_ELIGIBLE_MOBILE_PAGE } from 'src/app/order/orde
 import { ReserveMobileService } from 'src/app/order/order-shared/services/reserve-mobile.service';
 import { TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
-import { Transaction, Customer, TransactionAction, TransactionType } from 'src/app/shared/models/transaction.model';
+import { Transaction, Customer, TransactionAction, TransactionType, Dopa } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 
 @Component({
@@ -106,32 +106,47 @@ export class OrderBlockChainValidateCustomerIdCardPageComponent implements OnIni
   callService(): void {
     this.isNext = true;
     this.pageLoadingService.openLoading();
-    this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
-      .then((zipCode: string) => {
-        return this.http.get('/api/customerportal/validate-customer-new-register', {
-          params: {
-            identity: this.profile.idCardNo,
-            idCardType: this.profile.idCardType
-          }
-        }).toPromise()
-          .then((resp: any) => {
-            const data = resp.data || {};
-            return {
-              caNumber: data.caNumber,
-              mainMobile: data.mainMobile,
-              billCycle: data.billCycle,
-              zipCode: zipCode
-            };
-          });
-      })
-      .then((customer: any) => { // load bill cycle
-        this.pageLoadingService.closeLoading();
-        this.transaction.data.customer = Object.assign(this.profile, customer);
-        this.validNext = true;
-      }).catch((resp: any) => {
-        this.pageLoadingService.closeLoading();
-        this.mapErrorMessage(resp);
-      });
+    this.checkCardCid(this.profile.idCardNo, this.profile.chipID, this.profile.requestNo).then((respd: any) => {
+      const datad = respd.data;
+      const result = datad.result || {};
+      const dopaData: Dopa = result.dataInfo || {};
+      this.transaction.data.dopa = dopaData;
+      this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
+        .then((zipCode: string) => {
+          return this.http.get('/api/customerportal/validate-customer-new-register', {
+            params: {
+              identity: this.profile.idCardNo,
+              idCardType: this.profile.idCardType
+            }
+          }).toPromise()
+            .then((resp: any) => {
+              const data = resp.data || {};
+              return {
+                caNumber: data.caNumber,
+                mainMobile: data.mainMobile,
+                billCycle: data.billCycle,
+                zipCode: zipCode
+              };
+            });
+        })
+        .then((customer: any) => { // load bill cycle
+          this.pageLoadingService.closeLoading();
+          this.transaction.data.customer = Object.assign(this.profile, customer);
+          this.validNext = true;
+        }).catch((resp: any) => {
+          this.pageLoadingService.closeLoading();
+          this.mapErrorMessage(resp);
+        });
+    });
+
+  }
+
+  checkCardCid(idCardNo: string, chipNo: string, bp1no: string): Promise<any> {
+    return this.http.post('/api/customerportal/checkcard-cid', {
+      pid: idCardNo,
+      chipNo: chipNo,
+      bp1no: bp1no.split('/')[0] || ''
+    }).toPromise();
   }
 
   mapErrorMessage(resp: any): void {
