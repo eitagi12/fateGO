@@ -160,6 +160,9 @@ export interface Customer {
   privilegeCode?: string;
   repi?: boolean;
   mobileNo?: string;
+
+  chipID?: string;
+  requestNo?: string;
 }
 
 export interface Recipientinformation {
