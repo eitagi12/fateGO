@@ -12,7 +12,7 @@
       <div class="mt-3 mb-3">
         <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
         <div class="container-fluid">
-          <mc-eligible-mobile (completed)="onComplete($event)" errorMessage="{{'ไม่พบหมายเลขเติมเงินที่แสดงตนตาม ID No ที่ระบุ' | translate}}"
+          <mc-eligible-mobile title="Block Chain" (completed)="onComplete($event)" errorMessage="{{'ไม่พบหมายเลขเติมเงินที่แสดงตนตาม ID No ที่ระบุ' | translate}}"
             [eligibleMobiles]="eligibleMobiles"></mc-eligible-mobile>
         </div>
       </div>
