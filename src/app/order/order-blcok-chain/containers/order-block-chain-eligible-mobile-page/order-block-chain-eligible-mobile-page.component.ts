@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { HomeService, EligibleMobile } from 'mychannel-shared-libs';
 import { ROUTE_ORDER_BLOCK_CHAIN_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_ORDER_BLOCK_CHAIN_AGREEMENT_SIGN_PAGE } from 'src/app/order/order-blcok-chain/constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
-import { WIZARD_ORDER_PRE_TO_POST } from 'src/app/order/constants/wizard.constant';
+import { WIZARD_ORDER_BLOCK_CHAIN } from 'src/app/order/constants/wizard.constant';
 import { Transaction, BillingAccount } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 
@@ -14,7 +14,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 })
 export class OrderBlockChainEligibleMobilePageComponent implements OnInit, OnDestroy {
 
-  wizards: string[] = WIZARD_ORDER_PRE_TO_POST;
+  wizards: string[] = WIZARD_ORDER_BLOCK_CHAIN;
   eligibleMobiles: Array<EligibleMobile>;
   selectMobileNo: EligibleMobile;
   transaction: Transaction;

@@ -6,7 +6,7 @@ import { ROUTE_ORDER_BLOCK_CHAIN_ELIGIBLE_MOBILE_PAGE, ROUTE_ORDER_BLOCK_CHAIN_F
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { AisNativeOrderService } from 'src/app/shared/services/ais-native-order.service';
 import { TranslateService } from '@ngx-translate/core';
-import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
+import { WIZARD_ORDER_BLOCK_CHAIN } from 'src/app/order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { Subscription } from 'rxjs';
 
@@ -17,7 +17,7 @@ import { Subscription } from 'rxjs';
 })
 export class OrderBlockChainAgreementSignPageComponent implements OnInit, OnDestroy {
 
-  wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
+  wizards: string[] = WIZARD_ORDER_BLOCK_CHAIN;
 
   localTime: any;
   TIME_DIFF_FORMAT: string = 'DD/MM/YYYY';
