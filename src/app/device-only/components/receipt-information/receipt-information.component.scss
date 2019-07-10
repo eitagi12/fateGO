@@ -1,17 +1,7 @@
-.search-box {
-    text-align: center;
-    border: 1px solid #ced4da;
-    .search-input {
-        padding-left: 15%;
-        text-align: center;
-        height: 100%;
-        font-size: 1rem;
-        border: none;
-        &:focus { outline: none; }
-        &::placeholder { color: #ced4da; }
-    }
-    .search-btn {
-        background: none;
-        border: none;
-    }
+::placeholder {
+    color: gray;
+}
+
+.img-search {
+    width: 35px;
 }
