@@ -6,6 +6,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { mergeMap } from 'rxjs/internal/operators/mergeMap';
 import { TabsetComponent } from 'ngx-bootstrap';
 import { Observable } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-brand-page',
@@ -25,28 +26,15 @@ export class BrandPageComponent implements OnInit {
   brandTabs: TabsetComponent;
   constructor(
     private router: Router,
-    private activatedRoute: ActivatedRoute,
     private salesService: SalesService,
     private tokenService: TokenService,
-    private homeService: HomeService
+    private homeService: HomeService,
+    private http: HttpClient
   ) { }
 
   ngOnInit(): void {
     this.callService();
-    this.defaultTab();
     this.createDataSource();
-  }
-
-  defaultTab(): void {
-    this.activatedRoute.queryParams.subscribe((params: Params) => {
-      if (!!params['tab']) {
-        this.brandTabs.tabs[0].active = false;
-        this.brandTabs.tabs[1].active = true;
-      } else {
-        this.brandTabs.tabs[0].active = true;
-        this.brandTabs.tabs[1].active = false;
-      }
-    });
   }
 
   onBack(): void {
@@ -80,10 +68,21 @@ export class BrandPageComponent implements OnInit {
   }
 
   callService(): void {
-    const locationCode = this.tokenService.getUser().locationCode;
-    this.brandsOfProductService = this.salesService.brandsOfProduct(locationCode);
-    this.brandsOfProductService.then((resp: any) => {
-      this.brands = resp.data || [];
+    const param = {
+       location : this.tokenService.getUser().locationCode,
+       productType : 'GADGET/IOT',
+       productSubType : 'N/A'
+    };
+    this.http.post('api/salesportal/brands-of-product',
+      param
+    ).toPromise().then((res: any) => {
+      this.brands = res.data || [];
+      console.log('output', this.brands);
+      console.log('response', res);
     });
+    // this.brandsOfProductService = this.salesService.brandsOfProduct(locationCode);
+    // this.brandsOfProductService.then((resp: any) => {
+    //   this.brands = resp.data || [];
+    // });
   }
 }

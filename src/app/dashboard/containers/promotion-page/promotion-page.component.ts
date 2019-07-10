@@ -203,8 +203,6 @@ export class PromotionPageComponent implements OnInit {
     const isAspUser = this.tokenService.isAspUser();
     const isPhuket = this.tokenService.getUser().locationCode === '1213';
     console.log('location ==>', this.tokenService.getUser().locationCode);
-    
-
     saleMenus.menus.forEach((menu: any) => {
       const current: any = this.menus.find(m => m.label === menu.name) || {};
       current.disabled = !!(current.roles || []).find(role => {

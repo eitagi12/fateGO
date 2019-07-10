@@ -14,11 +14,6 @@
           <span>ยี่ห้อ</span>
         </ng-template>
 
-        <!-- banner slide -->
-        <div class="mt-3 mb-3" [mcLoading]="bastSellerService">
-          <mc-banner-slider [bannerSliders]="bannerSliders" (selected)="onBannerSliderSelected($event)"></mc-banner-slider>
-        </div>
-
         <!-- brand -->
         <div class="container-fluid mt-3" *ngIf="brands">
           <div class="row">
