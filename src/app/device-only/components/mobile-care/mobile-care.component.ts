@@ -124,9 +124,9 @@ export class MobileCareComponent implements OnInit {
         Validators.required
       ]),
     });
-    this.privilegeCustomerForm.valueChanges.subscribe((res: any) => {
+    this.privilegeCustomerForm.controls.otpNo.valueChanges.subscribe((res: any) => {
       if (this.isKiosk) {
-        if (res.otpNo.length === 5) {
+        if (this.privilegeCustomerForm.controls.otpNo.value.length === 5) {
           this.verifyOTP();
         }
       }
@@ -338,6 +338,12 @@ export class MobileCareComponent implements OnInit {
     const endDt = currentPackageMobileCare.endDt;
     const descThai = currentPackageMobileCare.descThai;
     const form = this.privilegeCustomerForm.getRawValue();
+    if (!this.priceOption.productDetail.brand) {
+      this.priceOption.productDetail = {
+        ...this.priceOption.productDetail,
+        brand: this.priceOption.productStock.brand
+      };
+    }
     this.alertService.notify({
       type: 'warning',
       width: '80%',
@@ -386,7 +392,7 @@ export class MobileCareComponent implements OnInit {
   }
 
   public verifyOTP(): void {
-    const otp = this.privilegeCustomerForm.value.otpNo;
+    const otp = this.privilegeCustomerForm.controls.otpNo.value;
     let mobile = this.customerInformationService.getSelectedMobileNo();
     if (environment.name !== 'PROD') {
       mobile = environment.TEST_OTP_MOBILE;
