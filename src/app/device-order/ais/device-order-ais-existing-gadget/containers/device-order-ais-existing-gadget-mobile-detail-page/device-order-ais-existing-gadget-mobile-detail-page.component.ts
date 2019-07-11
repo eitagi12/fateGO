@@ -37,6 +37,8 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
   mobileNo: string;
   disableNextButton: boolean;
   action: string;
+  isNext: boolean;
+  alertWording: string;
 
   constructor(
     private router: Router,
@@ -49,7 +51,6 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
     private http: HttpClient,
     private shoppingCartService: ShoppingCartService,
     private promotionShelveService: PromotionShelveService,
-    private customerInfoService: CustomerInfoService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -57,6 +58,7 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
   }
 
   ngOnInit(): void {
+    this.pageLoadingService.openLoading();
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.mobileNo = this.transaction.data.simCard.mobileNo;
     this.action = this.transaction.data.action;
@@ -65,14 +67,23 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
 
   callServiceMobileDetail(): void {
     this.http.get(`/api/customerportal/mobile-detail/${this.mobileNo}`).toPromise()
-      .then(mobileDetail => this.mappingMobileDetailAndPromotion(mobileDetail))
+      .then((mobileDetail: any) => {
+        this.mappingMobileDetailAndPromotion(mobileDetail);
+        this.mappingMobileDetail(mobileDetail);
+      })
       .catch(this.ErrorMessage());
   }
 
   mappingMobileDetailAndPromotion(mobileDetail: any): void {
     this.callQueryContractFirstPackAndGetPromotionShelveServices()
       .then(promotionsShelves => this.filterPromotionshelveAndMobileDetail(mobileDetail, promotionsShelves))
-      .then(() => this.pageLoadingService.closeLoading())
+      .then((response: boolean) => {
+        this.pageLoadingService.closeLoading();
+        this.isNext = response;
+        if (this.alertWording) {
+          this.alertService.warning(this.alertWording);
+        }
+      })
       .catch(this.ErrorMessage());
   }
 
@@ -134,19 +145,53 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
       });
   }
 
-  filterPromotionshelveAndMobileDetail(mobileDetail: any, promotionsShelves: any): void {
+  filterPromotionshelveAndMobileDetail(mobileDetail: any, promotionsShelves: any): boolean {
+    // tslint:disable-next-line: max-line-length
+    const { promotionCodeFuturePackage, promotionCodeCurrentPackage, promotionCode }: { promotionCodeFuturePackage: string; promotionCodeCurrentPackage: string; promotionCode: string[]; } = this.setPromotionCode(mobileDetail, promotionsShelves);
+    let isNext: boolean = false;
+    let havePackages: any;
+    console.log('promotionCode of promotionsShelves', promotionCode);
     if (this.havePackages(promotionsShelves)) {
-      /*รอ confirm api*/
-      this.mappingMobileDetail(mobileDetail);
+      if (promotionCodeFuturePackage) {
+        havePackages = promotionCode.filter((code: string) => {
+          return code === promotionCodeFuturePackage;
+        });
+        isNext = havePackages[0] ? true : false;
+        this.alertWording = isNext ? '' : 'แพ็กเกจหลักไม่ร่วมโครงการ \n กรุณาเปลี่ยนแพ็กเกจ';
+        console.log(isNext ? '' : '(มีFuturePackage) แต่ไม่มี FuturePackage ที่เหมือนกับ package');
+      } else {
+        havePackages = promotionCode.filter((code: string) => {
+          return code === promotionCodeCurrentPackage;
+        });
+        isNext = havePackages[0] ? true : false;
+        this.alertWording = isNext ? '' : 'แพ็กเกจหลักไม่ร่วมโครงการ \n กรุณาเปลี่ยนแพ็กเกจ';
+        console.log(isNext ? '' : '(ไม่มีFuturePackage) และไม่มี CurrentPackage ที่เหมือนกับ package');
+      }
     } else {
       this.disableNextButton = true;
-      this.alertService.warning(`เบอร์ ${this.mobileNo} ไม่สามารถรับสิทธิ์โครงการนี้ได้
-      \n กรุณาเปลี่ยนเบอร์ใหม่ เพื่อรับสิทธิ์ซื้อเครื่องราคาพิเศษ`);
+      this.alertWording = `เบอร์ ${this.mobileNo} ไม่สามารถรับสิทธิ์โครงการนี้ได้
+      \n กรุณาเปลี่ยนเบอร์ใหม่ เพื่อรับสิทธิ์ซื้อเครื่องราคาพิเศษ`;
     }
+    return isNext;
   }
 
-  mappingMobileDetail(mobileDetail: any): void {
-    const serviceYear = mobileDetail.serviceYear;
+  private setPromotionCode(mobileDetail: any, promotionsShelves: any): any {
+    // tslint:disable-next-line: max-line-length
+    const promotionCodeFuturePackage: string = mobileDetail.data.futurePackage.promotionCode ? mobileDetail.data.futurePackage.promotionCode : '';
+    const promotionCodeCurrentPackage: string = mobileDetail.data.package.promotionCode ? mobileDetail.data.package.promotionCode : '';
+    const promotionCode: Array<string> = [];
+    promotionsShelves.map((promotionsshelves) => {
+      promotionsshelves.promotions.map((promotion) => {
+        promotion.items.map((items) => {
+          promotionCode.push(items.value.feedItemId);
+        });
+      });
+    });
+    return { promotionCodeFuturePackage, promotionCodeCurrentPackage, promotionCode };
+  }
+
+  mappingMobileDetail(mobileDetail: any): any {
+    const serviceYear = mobileDetail.data.serviceYear;
     this.mobileInfo = this.mappingMobileInfo(mobileDetail, serviceYear);
     this.transaction.data.simCard.chargeType = mobileDetail.chargeType;
     this.transaction.data.simCard.billingSystem = mobileDetail.billingSystem;
@@ -155,37 +200,26 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
 
   mappingMobileInfo(mobileDetail: any, serviceYear: any): MobileInfo {
     return {
-      mobileNo: this.mobileNo,
-      chargeType: this.mapChargeType(mobileDetail.chargeType),
-      status: mobileDetail.mobileStatus,
-      sagment: mobileDetail.mobileSegment,
-      serviceYear: this.serviceYearWording(serviceYear.year, serviceYear.month, serviceYear.day),
-      mainPackage: mobileDetail.packageTitle
+      mobileNo: this.mobileNo || mobileDetail.data.mobileNo,
+      chargeType: mobileDetail.data.chargeType === 'Post-paid' ? 'รายเดือน' : 'เติมเงิน',
+      status: mobileDetail.data.mobileStatus,
+      sagment: mobileDetail.data.mobileSegment,
+      serviceYear: this.serviceYearWording(serviceYear),
+      mainPackage: mobileDetail.data.packageTitle
     };
   }
 
-  mapChargeType(chargeType: string): 'รายเดือน' | 'เติมเงิน' {
-    if ('Post-paid' === chargeType) {
-      return 'รายเดือน';
-    } else {
-      return 'เติมเงิน';
-    }
-  }
-
-  serviceYearWording(year: string, month: string, day: string): string {
+  serviceYearWording(serviceYear: any): string {
     let serviceYearWording = '';
-    if (year) {
-      serviceYearWording = `${year || ''} ปี `;
+    if (serviceYear.year) {
+      serviceYearWording = `${serviceYear.year || ''} ปี `;
     }
-
-    if (month) {
-      serviceYearWording += `${month} เดือน `;
+    if (serviceYear.month) {
+      serviceYearWording += `${serviceYear.month} เดือน `;
     }
-
-    if (day) {
-      serviceYearWording += `${day} วัน`;
+    if (serviceYear.day) {
+      serviceYearWording += `${serviceYear.day} วัน`;
     }
-
     return serviceYearWording;
   }
 
