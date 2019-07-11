@@ -63,6 +63,7 @@ export class MobileCareComponent implements OnInit {
   transactionID: string;
   isSelect: boolean;
   public isKiosk: boolean = false;
+  unsubscribeform: any;
 
   @Input() mobileCare: MobileCare;
   @Input() normalPrice: number;
@@ -124,10 +125,12 @@ export class MobileCareComponent implements OnInit {
         Validators.required
       ]),
     });
-    this.privilegeCustomerForm.controls.otpNo.valueChanges.subscribe((res: any) => {
+    this.unsubscribeform = this.privilegeCustomerForm.controls.otpNo.valueChanges.subscribe((res: any) => {
+      console.log('this.privilegeCustomerForm.controls.otpNo', this.privilegeCustomerForm.value.otpNo);
       if (this.isKiosk) {
         if (this.privilegeCustomerForm.controls.otpNo.value.length === 5) {
           this.verifyOTP();
+          console.log('length', this.privilegeCustomerForm.controls.otpNo.value.length);
         }
       }
     });
@@ -401,6 +404,8 @@ export class MobileCareComponent implements OnInit {
     this.http.post(`/api/customerportal/newRegister/${mobile}/verifyOTP`, { pwd: otp, transactionID: this.transactionID }).toPromise()
       .then((resp: any) => {
         if (resp && resp.data) {
+          console.log(resp);
+
           this.pageLoadingService.closeLoading();
           this.mobileNoEmit.emit({
             mobileNo: this.privilegeCustomerForm.value.mobileNo,
@@ -408,14 +413,18 @@ export class MobileCareComponent implements OnInit {
             chargeType: this.chargeType || ''
           });
           this.isVerifyflag.emit(true);
+          this.unsubscribeform.unsubscribe();
         } else {
           this.pageLoadingService.closeLoading();
           this.alertService.error('รหัส OTP ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง');
+          this.privilegeCustomerForm.controls['otpNo'].setValue('');
           this.isVerifyflag.emit(false);
+          console.log('length : ', this.privilegeCustomerForm.controls.otpNo.value.length);
         }
       }).catch((error) => {
         this.pageLoadingService.closeLoading();
         this.alertService.error('รหัส OTP ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง');
+        this.privilegeCustomerForm.controls['otpNo'].setValue('');
       });
   }
 
