@@ -166,10 +166,8 @@ export class OrderBlockChainValidateCustomerIdCardPageComponent implements OnIni
       this.alertService.notify({
         type: 'error',
         html: error.errors.map((err) => {
-          return '<li class="text-left">' + this.translation.instant(err) + '</li>';
+          return '<li class="text-left">' + this.translation.instant(err ? err.message : err) + '</li>';
         }).join('')
-      }).then(() => {
-        this.onBack();
       });
     } else if (error.resultDescription) {
       this.alertService.error(this.translation.instant(error.resultDescription));
