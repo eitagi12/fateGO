@@ -8,7 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { Transaction, Customer, TransactionAction, TransactionType } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 export interface Dopa {
-  stCode: number;
+  stCode: string;
   stDesc: string;
 }
 @Component({
@@ -114,7 +114,7 @@ export class OrderBlockChainValidateCustomerIdCardPageComponent implements OnIni
       const result = datad.result || {};
       const dopaData: Dopa = result.dataInfo || {};
 
-      if (dopaData && dopaData.stCode !== 0 || !dopaData.stCode) {
+      if (dopaData && dopaData.stCode !== '0') {
         this.alertService.error('ไม่สามารถทำรายการได้ <br> [Message] ' + dopaData.stDesc);
         return;
       }
