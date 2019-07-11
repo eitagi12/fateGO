@@ -5,7 +5,9 @@ import {
   ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_EXISTING_SUMMARY_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_PAGE
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_ONTOP_PAGE
 } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
@@ -45,7 +47,7 @@ export class DeviceOrderAisExistingMobileCareAvailablePageComponent implements O
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
-   }
+  }
 
   ngOnInit(): void {
     this.exMobileCare = this.transaction.data.existingMobileCare;
@@ -64,7 +66,14 @@ export class DeviceOrderAisExistingMobileCareAvailablePageComponent implements O
   }
 
   onBack(): void {
-    this.router.navigate([this.checkRouteByMainPackage()]);
+    const deleteOntopPackage = this.transaction.data.deleteOntopPackage;
+    if (deleteOntopPackage && deleteOntopPackage.length > 0) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_ONTOP_PAGE]);
+    } else if (!this.transaction.data.mainPackage) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE]);
+    }
   }
 
   onNext(): void {

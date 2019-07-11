@@ -1,7 +1,7 @@
 import { Component, OnInit, OnChanges, OnDestroy, SimpleChanges, AfterViewInit } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { Router } from '@angular/router';
-import { HomeService, ShoppingCart } from 'mychannel-shared-libs';
+import { HomeService, ShoppingCart, AlertService, PageLoadingService } from 'mychannel-shared-libs';
 import {
   ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE,
@@ -93,6 +93,8 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
   billCycleNextBill$: Observable<string>;
   billCycleNextDay$: Observable<string>;
   billcycleNo: string;
+  packageOntopList: any[] = [];
+  checkPackageOntop: any[] = [];
 
   constructor(
     private router: Router,
@@ -102,18 +104,24 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
     private shoppingCartService: ShoppingCartService,
     private translateService: TranslateService,
     private http: HttpClient,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private pageLoadingService: PageLoadingService,
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.mobileNoSelect = this.shoppingCart.mobileNo;
+    if (this.transaction.data.deleteOntopPackage) {
+      delete this.transaction.data.deleteOntopPackage;
+    }
   }
 
   ngOnInit(): void {
+    const mobileNo = this.transaction.data.simCard.mobileNo;
     this.createForm();
     this.getBillingAccountProcess();
     this.getMobileCare(this.mobileNoSelect);
+    this.callService(mobileNo);
   }
 
   onBack(): void {
@@ -121,12 +129,46 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
   }
 
   onNext(): void {
-    if (this.transaction.data.existingMobileCare) {
+    if (this.packageOntopList && this.packageOntopList.length > 0) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_ONTOP_PAGE]);
+    } else if (this.transaction.data.existingMobileCare) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE]);
     }
-    // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_ONTOP_PAGE]);
+  }
+
+  callService(mobileNo: string): void {
+    this.pageLoadingService.openLoading();
+    this.http
+      .get(`/api/customerportal/mobile-detail/${mobileNo}`)
+      .toPromise()
+      .then((resp: any) => {
+        const data = resp.data.packageOntop || {};
+
+        const packageOntop = data.filter((packageOntopList: any) => {
+          // tslint:disable-next-line:typedef
+          const isexpiredDate = moment().isBefore(moment(packageOntopList.expiredDate, 'DD-MM-YYYY'));
+          return (
+            /On-Top/.test(packageOntopList.productClass) && packageOntopList.priceType === 'Recurring' &&
+            packageOntopList.priceExclVat > 0 && isexpiredDate
+          );
+        }).sort((a: any, b: any) => a.priceExclVat - b.priceExclVat);
+        const checkChangPromotions = (packageOntop || []).map((ontop: any) => {
+          return this.http.post(`/api/customerportal/checkChangePromotion`, {
+            mobileNo: mobileNo,
+            promotionCd: ontop.promotionCode
+          }).toPromise().then((responesOntop: any) => {
+            return responesOntop.data;
+          })
+            .catch(() => false);
+        });
+        return Promise.all(checkChangPromotions).then((respones: any[]) => {
+          this.packageOntopList = packageOntop.filter((ontop, index) => {
+            return respones[index];
+          });
+        });
+      }).then(() => this.pageLoadingService.closeLoading());
   }
 
   onHome(): void {
@@ -173,7 +215,7 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
       } else {
         return false;
       }
-    } );
+    });
   }
 
   mappingBillCycleNextBillAndBillCycleNextDay(ba: any): boolean {
@@ -197,8 +239,10 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
           nextBill.setDate(this.billCycleMap[i].from);
           nextBill.setMonth(nextBill.getMonth() + 1);
         }
-        this.billCycleNextBill$ = of(this.convertDateToStarngDDMMMYYYY(nextBill));
         this.billCycleNextDay$ = of(this.convertDateToStarngDDMMMYYYY(nextD));
+        const textNextBill = this.convertDateToStarngDDMMMYYYY(nextBill);
+        this.billCycleNextBill$ = of(textNextBill);
+        this.transaction.data.billingInformation.effectiveDate = textNextBill;
       }
     }
     return true;
@@ -221,7 +265,7 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
   checked(value: string): boolean {
     if (this.transaction && this.transaction.data && this.transaction.data.billingInformation &&
       this.transaction.data.billingInformation.overRuleStartDate) {
-        return JSON.stringify(value) === JSON.stringify(this.transaction.data.billingInformation.overRuleStartDate);
+      return JSON.stringify(value) === JSON.stringify(this.transaction.data.billingInformation.overRuleStartDate);
     } else {
       return false;
     }
@@ -230,7 +274,7 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
   checkFormValid(): boolean {
     if (this.transaction && this.transaction.data && this.transaction.data.billingInformation &&
       this.transaction.data.billingInformation.overRuleStartDate) {
-        return true;
+      return true;
     } else {
       return this.billingCycleForm.valid;
     }
@@ -261,7 +305,7 @@ export class DeviceOrderAisExistingEffectiveStartDatePageComponent implements On
         if (filerOnlyMobileCareList.length > 0 && filterOnlyHandsetMobileCareList.length > 0) {
           const handSetFillter: Handset = filterOnlyHandsetMobileCareList.find(obj => obj);
           const existingMobileCareFillter = filerOnlyMobileCareList.find(obj => obj);
-          this.transaction.data.existingMobileCare = Object.assign(existingMobileCareFillter, { handSet: handSetFillter});
+          this.transaction.data.existingMobileCare = Object.assign(existingMobileCareFillter, { handSet: handSetFillter });
         }
       });
 

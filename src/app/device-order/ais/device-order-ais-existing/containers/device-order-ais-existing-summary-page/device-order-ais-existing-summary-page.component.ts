@@ -8,7 +8,8 @@ import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
-import { ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE,
+import {
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_EXISTING_ECONTRACT,
   ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE
 } from 'src/app/device-order/ais/device-order-ais-existing/constants/route-path.constant';
@@ -33,6 +34,7 @@ export class DeviceOrderAisExistingSummaryPageComponent implements OnInit {
   transaction: Transaction;
   shoppingCart: ShoppingCart;
   customerAddress: string;
+  packageOntopList: any[] = [];
 
   constructor(
     private router: Router,
@@ -51,12 +53,12 @@ export class DeviceOrderAisExistingSummaryPageComponent implements OnInit {
 
   ngOnInit(): void {
     const customer = this.transaction.data.customer;
-
+    this.packageOntopList = this.transaction.data.deleteOntopPackage;
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.customerAddress = this.utils.getCurrentAddress(this.mappingCustomer(customer));
   }
 
-   mappingCustomer(customer: Customer): any {
+  mappingCustomer(customer: Customer): any {
     return {
       homeNo: customer.homeNo,
       moo: customer.moo,
