@@ -288,7 +288,7 @@ export class DeviceOrderAisMnpConfirmUserInformationPageComponent implements OnI
   }
 
   getBllingCycle(billCycle: string): Promise<string> {
-    if (!billCycle) {
+    if (billCycle) {
       return this.http.get('/api/customerportal/newRegister/queryBillCycle')
         .toPromise()
         .then((resp: any) => {
