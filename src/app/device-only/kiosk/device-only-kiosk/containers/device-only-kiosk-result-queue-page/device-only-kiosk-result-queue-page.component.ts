@@ -42,7 +42,7 @@ export class DeviceOnlyKioskResultQueuePageComponent implements OnInit , OnDestr
     if (this.transaction.data.payment.paymentType === 'QR_CODE') {
       this.paymentQr = 'รวมยอดชำระ';
     } else {
-      this.paymentQr = 'ยอดค้างชำระ';
+      this.paymentQr = 'ยอดชำระ';
     }
   }
 
