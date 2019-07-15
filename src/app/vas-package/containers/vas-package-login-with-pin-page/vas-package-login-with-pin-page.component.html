@@ -11,25 +11,29 @@
   <div class="mc-flex-wrap">
     <div class="mb-3 mt-3">
       <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
-      <div class="card mt-3 content">
-        <div class="card-header bg-green">{{'ช่องทางการชำระ'| translate}}</div>
-        <div class="card-body">
-          <input class="chargeType" type="radio" value="topUp" [checked]="true">
-          <label class="form-check-label" for="chargeType">{{ 'AIS Online Top Up' }} </label>
-        </div>
-      </div>
-      <form [formGroup]="loginForm">
-        <div class="content">
-          <div class="card-login">
-            <p class="text text-center">กรุณากรอกข้อมูล</p>
-            <hr>
-            <input type="tel" id="mobileNoAgent" name="mobileNoAgent" class="mc-input"
-              placeholder="ระบุเบอร์ ROM Agent" maxlength="10" formControlName="mobileNo">
-            <input type="tel" id="pinAgent" name="pinAgent" class="mc-input" placeholder="กรุณากรอก PIN 4 หลัก"
-              maxlength="4" formControlName="pin">
+      <div class="m-3">
+        <div class="card mt-3 content">
+          <div class="card-header bg-green">{{'ช่องทางการชำระ'| translate}}</div>
+          <div class="card-body">
+            <input class="chargeType" type="radio" value="topUp" [checked]="true">
+            <label class="form-check-label" for="chargeType">{{ 'AIS Online Top Up' }} </label>
           </div>
         </div>
-      </form>
+        <form [formGroup]="loginForm">
+          <div class="card text-center mb-3 mt-3">
+            <div class="card-login">
+              <p class="text text-center text-green pt-3">กรุณากรอกข้อมูล</p>
+              <hr>
+              <div class="card-body">
+                <input type="tel" id="mobileNoAgent" name="mobileNoAgent" class="form-control mb-3"
+                  placeholder="ระบุเบอร์ ROM Agent" maxlength="10" formControlName="mobileNo">
+                <input type="tel" id="pinAgent" name="pinAgent" class="form-control" placeholder="กรุณากรอก PIN 4 หลัก"
+                  maxlength="4" formControlName="pin">
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
 
     </div>
   </div>
