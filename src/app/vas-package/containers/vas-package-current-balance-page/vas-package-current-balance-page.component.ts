@@ -50,7 +50,6 @@ export class VasPackageCurrentBalancePageComponent implements OnInit {
   callService(): void {
     this.pageLoadingService.openLoading();
     const token = this.tokenService.getAccessToken();
-    console.log('token', token);
     this.http.post('api/customerportal/rom/get-main', {
       transactionid: this.transaction.transactionId,
       agent_id: '6240014',
@@ -70,28 +69,29 @@ export class VasPackageCurrentBalancePageComponent implements OnInit {
   }
 
   onNext(): void {
-    // this.pageLoadingService.openLoading();
-    // const token = this.tokenService.getAccessToken();
-    // console.log('token', token);
-    // this.http.post('api/customerportal/rom/vas-package', {
-    //   ssid: '',
-    //   msisdn: 0927095833,
-    //   imsi: 1476666666666,
-    //   vlr: '',
-    //   shortcode: '',
-    //   serviceNumber: '',
-    //   menuLevel: '',
-    //   spName: '',
-    //   brandId: '',
-    //   language: '',
-    //   mobileLocation: '',
-    //   customerState: '',
-    //   servicePackageId: '',
-    // }).toPromise().then((data: any) => {
+    this.pageLoadingService.openLoading();
+    const token = this.tokenService.getAccessToken();
+    const mobileNO = '0927095833';
+    this.http.post('api/customerportal/rom/vas-package', {
+      ssid: this.transaction.transactionId,
+      msisdn: `66${mobileNO.substring(1, mobileNO.length)}`,
+      imsi: '520036001697648',
+      vlr: '66923011104',
+      shortcode: '*226',
+      serviceNumber: '*226',
+      menuLevel: '7337',
+      cos: '600001',
+      spName: 'awn',
+      brandId: '4',
+      language: '1',
+      mobileLocation: '3OCCB502',
+      customerState: '1',
+      servicePackageId: '6',
+    }).toPromise().then((data: any) => {
 
-    // }).then(() => {
-    //   this.pageLoadingService.closeLoading();
-    // });
+    }).then(() => {
+      this.pageLoadingService.closeLoading();
+    });
     this.router.navigate([ROUTE_VAS_PACKAGE_RESULT_PAGE]);
   }
 

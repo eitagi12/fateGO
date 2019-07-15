@@ -65,6 +65,7 @@ export class VasPackageOtpPageComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.buildForm();
+    this.getOTP();
 
   }
   onBack(): void {
