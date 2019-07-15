@@ -33,9 +33,7 @@ export class VasPackageMenuVasRomPageComponent implements OnInit {
 
   onNext(): void {
     console.log('this.vasPackageFrom.controls.vasPackageRom.value', this.vasPackageFrom.controls.vasPackageRom.value);
-    if (this.vasPackageFrom.controls.vasPackageRom.value === '2') {
       this.router.navigate([ROUTE_VAS_PACKAGE_SELECT_PACKAGE_PAGE]);
-    }
 
   }
 
