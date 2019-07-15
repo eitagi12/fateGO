@@ -1,22 +1,40 @@
 <div class="mc-flex">
   <mc-header title="{{ 'ขายแพ็กเกจเสริม' | translate }}">
-      <div class="header-icon-left w-25">
-        <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
-      </div>
-      <div class="header-icon-right w-25 text-right">
+    <div class="header-icon-left w-25">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right w-25 text-right">
       <!-- <mc-dropdown-language></mc-dropdown-language> -->
-        <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <div class="mb-3 mt-3">
+      <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
+      <div class="card mt-3 content">
+        <div class="card-header bg-green">{{'ช่องทางการชำระ'| translate}}</div>
+        <div class="card-body">
+          <input class="chargeType" type="radio" value="topUp" [checked]="true">
+          <label class="form-check-label" for="chargeType">{{ 'AIS Online Top Up' }} </label>
+        </div>
       </div>
-    </mc-header>
-<div class="mc-flex-wrap">
-  <div class="mb-3 mt-3">
-    <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
+      <form [formGroup]="loginForm">
+        <div class="content">
+          <div class="card-login">
+            <p class="text text-center">กรุณากรอกข้อมูล</p>
+            <hr>
+            <input type="tel" id="mobileNoAgent" name="mobileNoAgent" class="mc-input"
+              placeholder="ระบุเบอร์ ROM Agent" maxlength="10" formControlName="mobileNo">
+            <input type="tel" id="pinAgent" name="pinAgent" class="mc-input" placeholder="กรุณากรอก PIN 4 หลัก"
+              maxlength="4" formControlName="pin">
+          </div>
+        </div>
+      </form>
 
-
+    </div>
   </div>
-</div>
-<mc-footer>
-  <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-  <button class="btn btn-success" (click)="onNext()">NEXT</button>
-</mc-footer>
+  <mc-footer>
+    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]=!loginForm.valid>NEXT</button>
+  </mc-footer>
 </div>
