@@ -5,6 +5,8 @@ import { ROUTE_VAS_PACKAGE_SELECT_PACKAGE_PAGE } from 'src/app/vas-package/const
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
+import * as moment from 'moment';
+const Moment = moment;
 @Component({
   selector: 'app-vas-package-menu-vas-rom-page',
   templateUrl: './vas-package-menu-vas-rom-page.component.html',
@@ -54,7 +56,8 @@ export class VasPackageMenuVasRomPageComponent implements OnInit, OnDestroy {
       data: {
         transactionType: TransactionType.VAS_PACKAGE_ROM,
         action: TransactionAction.KEY_IN,
-      }
+      },
+      transactionId: moment().format('YYYYMMDDHHmmss'),
     };
   }
 

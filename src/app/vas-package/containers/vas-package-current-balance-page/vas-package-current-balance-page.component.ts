@@ -52,7 +52,7 @@ export class VasPackageCurrentBalancePageComponent implements OnInit {
     const token = this.tokenService.getAccessToken();
     console.log('token', token);
     this.http.post('api/customerportal/rom/get-main', {
-      transactionid: moment().format('YYYYMMDDHHmmss'),
+      transactionid: this.transaction.transactionId,
       agent_id: '6240014',
       mobile_no: '0927095833',
       // tslint:disable-next-line:max-line-length
