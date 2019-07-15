@@ -1,22 +1,77 @@
 <div class="mc-flex">
   <mc-header title="{{ 'ขายแพ็กเกจเสริม' | translate }}">
-      <div class="header-icon-left w-25">
-        <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
-      </div>
-      <div class="header-icon-right w-25 text-right">
+    <div class="header-icon-left w-25">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right w-25 text-right">
       <!-- <mc-dropdown-language></mc-dropdown-language> -->
-        <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <div class="mb-3 mt-3">
+      <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
+      <div class="container-fluid">
+
+        <div class="card text-center">
+          <div class="card-header p-0">
+            <div class="row">
+              <div class="col-12 text-center">
+                <ul class="nav nav-pills">
+                  <li class="nav-item p-0 col-6">
+                    <a class="nav-link active" href="#menu1" data-toggle="pill">เน้นคุย</a>
+                  </li>
+                  <li class="nav-item p-0 col-6">
+                    <a class="nav-link" href="#menu2" data-toggle="pill">เล่นเน็ต</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="tab-content">
+            <div class="card-body p-0 tab-pane active" id="menu1">
+              <div class="card-header bg-lime text-center text-white">
+                เหมา เหมา
+              </div>
+              <div class="card-body">
+                <div class="row">
+                  <div class="col-3">ค่าบริการ บ.</div>
+                  <div class="col-5">เน็ตรวม</div>
+                  <div class="col-2">จำนวนวัน</div>
+                  <div class="col-2"></div>
+                </div>
+                <div class="row">
+                  <div class="col-3">
+                    <select class="form-control">
+                      <option value="" disabled selected>{{ 'ค่าบริการ' | translate }}</option>
+                      <option>9.00</option>
+                      <option>20.00</option>
+                      <option>39.00</option>
+                    </select>
+                  </div>
+                  <div class="col-5">
+                    <input type="text" class="form-control text-center" value="-" readonly>
+                  </div>
+                  <div class="col-2">
+                    <input type="text" class="form-control text-center" value="-" readonly>
+                  </div>
+                  <div class="col-2">
+                    <button class="btn btn-success">ขายเลย</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
       </div>
-    </mc-header>
-<div class="mc-flex-wrap">
-  <div class="mb-3 mt-3">
-    <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
-
-
+    </div>
   </div>
-</div>
-<mc-footer>
-  <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-  <button class="btn btn-success" (click)="onNext()">NEXT</button>
-</mc-footer>
+  <mc-footer>
+    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button class="btn btn-success" (click)="onNext()">NEXT</button>
+  </mc-footer>
 </div>
