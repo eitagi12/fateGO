@@ -1,22 +1,50 @@
 <div class="mc-flex">
   <mc-header title="{{ 'ขายแพ็กเกจเสริม' | translate }}">
-      <div class="header-icon-left w-25">
-        <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
-      </div>
-      <div class="header-icon-right w-25 text-right">
+    <div class="header-icon-left w-25">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right w-25 text-right">
       <!-- <mc-dropdown-language></mc-dropdown-language> -->
-        <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <div class="mb-3 mt-3">
+      <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
+      <div class="container-fluid">
+        <div class="card mb-3">
+          <div class="card-body">
+
+            <div class="text-center text-black result mt-3">ทำรายการเรียบร้อยแล้ว</div>
+            <div class="text-center mt-3">ไม่สามารถทำรายการได้ กรุณาติดต่อ CallCenter 020789123 ค่ะ</div>
+
+          </div>
+          <div class="card-footer bg-transparent">
+            <div class="row">
+                <div class="col-4 col-sm-4">
+                    <div class="text-center mt-5">
+                        <img src="assets/images/icon/icon-red-alert-circle.png" class="icon">
+                    </div>
+                </div>
+                <div class="col-8 col-sm-8 text-left">
+                    <div>
+                        <div class="text-black mt-3">เน็ตและโทร</div>
+                        <div class="text-green mt-3">โทรฟรีในเครือข่าย ตี5-5โมงเย็น</div>
+                        <div class="text-green">Internet ไม่จำกัด ความเร็ว สูงสุด 512 kbps</div>
+                        <div class="text-black mt-3">
+                          <span>26.11 บาท</span>
+                          <span style="padding-left: 30px;">1 วัน</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
       </div>
-    </mc-header>
-<div class="mc-flex-wrap">
-  <div class="mb-3 mt-3">
-    <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
-
-
+    </div>
   </div>
-</div>
-<mc-footer>
-  <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-  <button class="btn btn-success" (click)="onNext()">NEXT</button>
-</mc-footer>
+  <mc-footer>
+    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button class="btn btn-success" (click)="onNext()">NEXT</button>
+  </mc-footer>
 </div>

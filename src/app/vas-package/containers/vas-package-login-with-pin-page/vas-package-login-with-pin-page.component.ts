@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService} from 'mychannel-shared-libs';
-import { ROUTE_VAS_PACKAGE_OTP_PAGE, ROUTE_VAS_PACKAGE_LOGIN_WITH_PIN_PAGE } from 'src/app/vas-package/constants/route-path.constant';
+import { HomeService } from 'mychannel-shared-libs';
+import { ROUTE_VAS_PACKAGE_OTP_PAGE, ROUTE_VAS_PACKAGE_SELECT_PACKAGE_PAGE } from 'src/app/vas-package/constants/route-path.constant';
 
 @Component({
   selector: 'app-vas-package-login-with-pin-page',
@@ -18,7 +18,7 @@ export class VasPackageLoginWithPinPageComponent implements OnInit {
   ngOnInit(): void {
   }
   onBack(): void {
-    this.router.navigate([ROUTE_VAS_PACKAGE_LOGIN_WITH_PIN_PAGE]);
+    this.router.navigate([ROUTE_VAS_PACKAGE_SELECT_PACKAGE_PAGE]);
   }
 
   onNext(): void {
