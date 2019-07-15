@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService} from 'mychannel-shared-libs';
-import { ROUTE_VAS_PACKAGE_CURRENT_BALANCE_PAGE } from 'src/app/vas-package/constants/route-path.constant';
+import { HomeService } from 'mychannel-shared-libs';
+import { ROUTE_VAS_PACKAGE_CURRENT_BALANCE_PAGE, ROUTE_VAS_PACKAGE_SELECT_PACKAGE_PAGE } from 'src/app/vas-package/constants/route-path.constant';
 
 @Component({
   selector: 'app-vas-package-result-page',
@@ -17,15 +17,21 @@ export class VasPackageResultPageComponent implements OnInit {
 
   ngOnInit(): void {
   }
+
+  onHome(): void {
+    this.homeService.goToHome();
+  }
   onBack(): void {
     this.router.navigate([ROUTE_VAS_PACKAGE_CURRENT_BALANCE_PAGE]);
   }
 
-  onNext(): void {
-    // this.router.navigate([ROUTE_VAS_PACKAGE_SELECT_PACKAGE_PAGE]);
+  onMainMenu(): void {
+    window.location.href = '/sales-portal/easyapp/new-vas/packlist';
   }
-
-  onHome(): void {
-    this.homeService.goToHome();
+  onToup(): void {
+    window.location.href = '/sales-portal/easyapp/new-vas/packlist';
+  }
+  onSelectPackage(): void {
+    this.router.navigate([ROUTE_VAS_PACKAGE_SELECT_PACKAGE_PAGE]);
   }
 }
