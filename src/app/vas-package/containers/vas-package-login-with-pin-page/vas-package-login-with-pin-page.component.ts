@@ -5,6 +5,7 @@ import { ROUTE_VAS_PACKAGE_OTP_PAGE, ROUTE_VAS_PACKAGE_SELECT_PACKAGE_PAGE, ROUT
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-vas-package-login-with-pin-page',
@@ -57,9 +58,13 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
     this.router.navigate([ROUTE_VAS_PACKAGE_SELECT_PACKAGE_PAGE]);
   }
 
+  public genTransactionId(): any {
+    return moment().format('YYYYMMDDHHmmssSSS');
+  }
+
   onNext(): void {
     const data = {
-      transactionid: this.transaction.transactionid,
+      transactionid: this.genTransactionId(),
       mobile_no_agent: this.loginForm.value.mobileNo,
       // tslint:disable-next-line: max-line-length
       device_id: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJST00gTW9iaWxlIGFwaSIsImF1ZCI6Imh 0dHBzOi8vbXlyb20uYWlzLmNvLnRoL0FQSS9W MS9zaWdpbiIsInN1YiI6IjA0Ni1iNTc2Mjc4ZC1j MTY4LTQ5YjMtOWYxZi1jODVhYTc4YjgwYzAiL CJtc2lzZG4iOiIwNjIyNDM0MjA4IiwiYWdlbnRpZ CI6IjYyMzgxNDciLCJpYXQiOjE1Mzc0MzE3NjAsI mV4cCI6MTUzNzQzMjY2MH0.kY85wPWDSxy1ll rpejMRJrtKC_PE6F_7fuTMg5y-ZS0'
@@ -71,7 +76,7 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
             agentId: res.data.agentId,
           };
           const customerData: any = {
-            transactionid: this.transaction.transactionid,
+            transactionid: this.genTransactionId(),
             deviceos: 'Android',
             deviceversion: '5.1.1',
             mobile_no_agent: this.loginForm.value.mobileNo,
@@ -97,7 +102,7 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
             })
             .catch(err => console.log('err: ', err.data.message));
         } else {
-          this.alertService.error(res.data.message);
+          // this.alertService.error(res.data.message);
         }
       })
       .catch(error => console.log('error => ', error.data.message));
