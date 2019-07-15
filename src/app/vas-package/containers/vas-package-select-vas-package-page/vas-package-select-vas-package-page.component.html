@@ -13,6 +13,17 @@
       <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
       <div class="container-fluid">
 
+
+
+
+
+
+
+        
+
+        <div class="text-center">
+          <h5>แพ็กเกจตาม Life Style</h5>
+        </div>
         <div class="card text-center">
           <div class="card-header p-0">
             <div class="row">
@@ -43,9 +54,9 @@
                 </div>
                 <div class="row">
                   <div class="col-3">
-                    <select class="form-control">
+                    <select class="form-control" disabled="false">
                       <option value="" disabled selected>{{ 'ค่าบริการ' | translate }}</option>
-                      <option>9.00</option>
+                      <option selected>9.00</option>
                       <option>20.00</option>
                       <option>39.00</option>
                     </select>
@@ -57,21 +68,21 @@
                     <input type="text" class="form-control text-center" value="-" readonly>
                   </div>
                   <div class="col-2">
-                    <button class="btn btn-success">ขายเลย</button>
+                    <button class="btn btn-success" (click)="onSelectPackage()">ขายเลย</button>
                   </div>
                 </div>
               </div>
             </div>
-
           </div>
-
         </div>
-
+        <div class="text-center text-grey">
+          *ราคาแพ็กเกจนี้ยังไม่รวมภาษีมูลค่าเพิ่ม
+        </div>
       </div>
     </div>
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()">NEXT</button>
+    <!-- <button class="btn btn-success" (click)="onNext()">NEXT</button> -->
   </mc-footer>
 </div>

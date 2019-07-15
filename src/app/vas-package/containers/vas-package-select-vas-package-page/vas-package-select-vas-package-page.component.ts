@@ -31,6 +31,9 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit {
     this.homeService.goToHome();
   }
 
+  onSelectPackage(): void {
+    this.onNext();
+  }
   getPackageProducts(): void {
     const userId = 'bMfAlzjKaZSSKY3s6c3farMxbUaEsFnIIAgbjsXKA3cOhnKfvawKb60MITINd04Os73YJBQ5aWypkxFk';
     this.packageProductsService.getPackageProducts(userId);
