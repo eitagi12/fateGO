@@ -55,7 +55,7 @@ export class VasPackageMenuVasRomPageComponent implements OnInit, OnDestroy {
     this.transaction = {
       data: {
         transactionType: TransactionType.VAS_PACKAGE_ROM,
-        action: TransactionAction.KEY_IN,
+        action: TransactionAction.VAS_PACKAGE_ROM,
       },
       transactionId: moment().format('YYYYMMDDHHmmss'),
     };

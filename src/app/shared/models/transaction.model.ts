@@ -18,7 +18,8 @@ export enum TransactionType {
   RESERVE_WITH_DEPOSIT = 'ReserveWithDeposit',
 
   DEVICE_ONLY_AIS = 'DeviceOnlyAIS',
-  VAS_PACKAGE_ROM = 'VaspackageRom'
+  VAS_PACKAGE_ROM = 'VaspackageRom',
+  VAS_PACKAGE_ROM_OTP = 'VaspackageRomOTP'
 }
 
 export enum TransactionAction {
@@ -27,7 +28,9 @@ export enum TransactionAction {
   KEY_IN = 'KEY_IN',
   KEY_IN_REPI = 'KEY_IN_REPI',
   READ_PASSPORT = 'READ_PASSPORT',
-  READ_PASSPORT_REPI = 'READ_PASSPORT_REPI'
+  READ_PASSPORT_REPI = 'READ_PASSPORT_REPI',
+  VAS_PACKAGE_ROM = 'VaspackageRom',
+  VAS_PACKAGE_ROM_OTP = 'VaspackageRomOTP'
 }
 
 export interface Transaction {
