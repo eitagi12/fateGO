@@ -17,7 +17,8 @@ export enum TransactionType {
   ORDER_EXISTING = 'Existing',
   RESERVE_WITH_DEPOSIT = 'ReserveWithDeposit',
 
-  DEVICE_ONLY_AIS = 'DeviceOnlyAIS'
+  DEVICE_ONLY_AIS = 'DeviceOnlyAIS',
+  VAS_PACKAGE_ROM = 'VaspackageRom'
 }
 
 export enum TransactionAction {
