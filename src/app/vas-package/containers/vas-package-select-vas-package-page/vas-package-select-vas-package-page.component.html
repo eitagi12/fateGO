@@ -9,11 +9,26 @@
     </div>
   </mc-header>
   <div class="mc-flex-wrap">
-    <div class="mb-3 mt-3">
-      <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
+    <div class="mb-1">
       <div class="container-fluid">
-
-
+          <div class="mc-flex-wrap">
+              <form [formGroup]="mobileForm">
+                <div class="form-group">
+                  <div class="mt-1 text-center">หมายเลขโทรศัพท์ลูกค้า</div>
+                  <input class="form-control text-center mb-3 pl-3 pr-3" type="tel" id="mobileNo" maxlength="10"
+                    formControlName="mobileNo" placeholder="ระบุหมายเลขโทรศัพท์ลูกค้า" value="">
+                  <!-- [ngClass]="{ 'is-invalid' : mobileFrom.controls.mobileNo.invalid && mobileFrom.controls.mobileNo.touched && mobileFrom.controls.mobileNo.errors }"> -->
+                  <!-- <small class="invalid-feedback"
+                    *ngIf="mobileFrom.controls.mobileNo.touched && mobileFrom.controls.mobileNo.errors">
+                    **กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง
+                  </small> -->
+                </div>
+              </form>
+            </div>
+      
+            <div class="mc-flex-wrap">
+              <div class="mt-3 text-center">แพ็กเกจขายดี</div>
+            </div>
         <div class="bg-white pb-3">
           <div class="owl-carousel owl-theme" #campaignSlider>
             <div class="mr-2 ml-2 shadow-sm">
@@ -57,7 +72,7 @@
 
 
         <div class="text-center">
-          <h5>แพ็กเกจตาม Life Style</h5>
+          แพ็กเกจตาม Life Style
         </div>
         <div class="card text-center">
           <div class="card-header p-0">
@@ -74,45 +89,45 @@
               </div>
             </div>
           </div>
+        </div>
 
-          <div class="tab-content">
-            <div class="card-body p-0 tab-pane active" id="menu1">
-              <div class="card-header bg-lime text-center text-white">
-                เหมา เหมา
+        <div class="tab-content">
+          <div class="card-body p-0 tab-pane active" id="menu1">
+            <div class="card-header bg-lime text-center text-white">
+              เหมา เหมา
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <div class="col-3">ค่าบริการ บ.</div>
+                <div class="col-5">เน็ตรวม</div>
+                <div class="col-2">จำนวนวัน</div>
+                <div class="col-2"></div>
               </div>
-              <div class="card-body">
-                <div class="row">
-                  <div class="col-3">ค่าบริการ บ.</div>
-                  <div class="col-5">เน็ตรวม</div>
-                  <div class="col-2">จำนวนวัน</div>
-                  <div class="col-2"></div>
+              <div class="row">
+                <div class="col-3">
+                  <select class="form-control" disabled="false">
+                    <option value="" disabled selected>{{ 'ค่าบริการ' | translate }}</option>
+                    <option selected>9.00</option>
+                    <option>20.00</option>
+                    <option>39.00</option>
+                  </select>
                 </div>
-                <div class="row">
-                  <div class="col-3">
-                    <select class="form-control" disabled="false">
-                      <option value="" disabled selected>{{ 'ค่าบริการ' | translate }}</option>
-                      <option selected>9.00</option>
-                      <option>20.00</option>
-                      <option>39.00</option>
-                    </select>
-                  </div>
-                  <div class="col-5">
-                    <input type="text" class="form-control text-center" value="-" readonly>
-                  </div>
-                  <div class="col-2">
-                    <input type="text" class="form-control text-center" value="-" readonly>
-                  </div>
-                  <div class="col-2">
-                    <button class="btn btn-success" (click)="onSelectPackage()">ขายเลย</button>
-                  </div>
+                <div class="col-5">
+                  <input type="text" class="form-control text-center" value="-" readonly>
+                </div>
+                <div class="col-2">
+                  <input type="text" class="form-control text-center" value="-" readonly>
+                </div>
+                <div class="col-2">
+                  <button class="btn btn-success" (click)="onSelectPackage()">ขายเลย</button>
                 </div>
               </div>
             </div>
           </div>
         </div>
-        <div class="text-center text-grey">
-          *ราคาแพ็กเกจนี้ยังไม่รวมภาษีมูลค่าเพิ่ม
-        </div>
+      </div>
+      <div class="text-center text-grey">
+        *ราคาแพ็กเกจนี้ยังไม่รวมภาษีมูลค่าเพิ่ม
       </div>
     </div>
   </div>
