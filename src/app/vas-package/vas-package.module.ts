@@ -4,13 +4,13 @@ import { CommonModule } from '@angular/common';
 import { VasPackageRoutingModule } from './vas-package-routing.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
-import { MenuVasRomPageComponent } from './containers/menu-vas-rom-page/menu-vas-rom-page.component';
-import { SelectVasPackagePageComponent } from './containers/select-vas-package-page/select-vas-package-page.component';
-import { LoginWithPinPageComponent } from './containers/login-with-pin-page/login-with-pin-page.component';
-import { OtpPageComponent } from './containers/otp-page/otp-page.component';
-import { CurrentBalancePageComponent } from './containers/current-balance-page/current-balance-page.component';
-import { ResultPageComponent } from './containers/result-page/result-page.component';
 import { TranslateModule } from '@ngx-translate/core';
+import { VasPackageMenuVasRomPageComponent } from './containers/vas-package-menu-vas-rom-page/vas-package-menu-vas-rom-page.component';
+import { VasPackageSelectVasPackagePageComponent } from './containers/vas-package-select-vas-package-page/vas-package-select-vas-package-page.component';
+import { VasPackageCurrentBalancePageComponent } from './containers/vas-package-current-balance-page/vas-package-current-balance-page.component';
+import { VasPackageLoginWithPinPageComponent } from './containers/vas-package-login-with-pin-page/vas-package-login-with-pin-page.component';
+import { VasPackageOtpPageComponent } from './containers/vas-package-otp-page/vas-package-otp-page.component';
+import { VasPackageResultPageComponent } from './containers/vas-package-result-page/vas-package-result-page.component';
 
 @NgModule({
   imports: [
@@ -22,11 +22,12 @@ import { TranslateModule } from '@ngx-translate/core';
     TranslateModule
   ],
   declarations: [
-    MenuVasRomPageComponent,
-    SelectVasPackagePageComponent,
-    LoginWithPinPageComponent,
-    OtpPageComponent,
-    CurrentBalancePageComponent,
-    ResultPageComponent]
+    VasPackageMenuVasRomPageComponent,
+    VasPackageSelectVasPackagePageComponent,
+    VasPackageCurrentBalancePageComponent,
+    VasPackageLoginWithPinPageComponent,
+    VasPackageOtpPageComponent,
+    VasPackageResultPageComponent
+  ]
 })
 export class VasPackageModule { }

@@ -1,20 +1,19 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { MenuVasRomPageComponent } from './containers/menu-vas-rom-page/menu-vas-rom-page.component';
-import { SelectVasPackagePageComponent } from './containers/select-vas-package-page/select-vas-package-page.component';
-import { LoginWithPinPageComponent } from './containers/login-with-pin-page/login-with-pin-page.component';
-import { OtpPageComponent } from './containers/otp-page/otp-page.component';
-import { CurrentBalancePageComponent } from './containers/current-balance-page/current-balance-page.component';
-import { ResultPageComponent } from './containers/result-page/result-page.component';
+import { VasPackageMenuVasRomPageComponent } from './containers/vas-package-menu-vas-rom-page/vas-package-menu-vas-rom-page.component';
+import { VasPackageSelectVasPackagePageComponent } from './containers/vas-package-select-vas-package-page/vas-package-select-vas-package-page.component';
+import { VasPackageLoginWithPinPageComponent } from './containers/vas-package-login-with-pin-page/vas-package-login-with-pin-page.component';
+import { VasPackageOtpPageComponent } from './containers/vas-package-otp-page/vas-package-otp-page.component';
+import { VasPackageCurrentBalancePageComponent } from './containers/vas-package-current-balance-page/vas-package-current-balance-page.component';
+import { VasPackageResultPageComponent } from './containers/vas-package-result-page/vas-package-result-page.component';
 const routes: Routes = [
   { path: '', redirectTo: 'menu-vas-rom', pathMatch: 'full' },
-  { path: 'menu-vas-rom', component: MenuVasRomPageComponent },
-  { path: 'select-vas-package', component: SelectVasPackagePageComponent },
-  { path: 'login-with-pin', component: LoginWithPinPageComponent },
-  { path: 'select-vas-package', component: SelectVasPackagePageComponent },
-  { path: 'otp', component: OtpPageComponent },
-  { path: 'current-balance', component: CurrentBalancePageComponent },
-  { path: 'result', component: ResultPageComponent },
+  { path: 'menu-vas-rom', component: VasPackageMenuVasRomPageComponent },
+  { path: 'select-vas-package', component: VasPackageSelectVasPackagePageComponent },
+  { path: 'login-with-pin', component: VasPackageLoginWithPinPageComponent },
+  { path: 'otp', component: VasPackageOtpPageComponent },
+  { path: 'current-balance', component: VasPackageCurrentBalancePageComponent },
+  { path: 'result', component: VasPackageResultPageComponent },
 ];
 
 @NgModule({

@@ -4,11 +4,11 @@ import { HomeService} from 'mychannel-shared-libs';
 import { ROUTE_VAS_PACKAGE_CURRENT_BALANCE_PAGE } from 'src/app/vas-package/constants/route-path.constant';
 
 @Component({
-  selector: 'app-result-page',
-  templateUrl: './result-page.component.html',
-  styleUrls: ['./result-page.component.scss']
+  selector: 'app-vas-package-result-page',
+  templateUrl: './vas-package-result-page.component.html',
+  styleUrls: ['./vas-package-result-page.component.scss']
 })
-export class ResultPageComponent implements OnInit {
+export class VasPackageResultPageComponent implements OnInit {
 
   constructor(
     private router: Router,

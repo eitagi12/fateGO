@@ -4,11 +4,11 @@ import { HomeService} from 'mychannel-shared-libs';
 import { ROUTE_VAS_PACKAGE_OTP_PAGE, ROUTE_VAS_PACKAGE_LOGIN_WITH_PIN_PAGE } from 'src/app/vas-package/constants/route-path.constant';
 
 @Component({
-  selector: 'app-login-with-pin-page',
-  templateUrl: './login-with-pin-page.component.html',
-  styleUrls: ['./login-with-pin-page.component.scss']
+  selector: 'app-vas-package-login-with-pin-page',
+  templateUrl: './vas-package-login-with-pin-page.component.html',
+  styleUrls: ['./vas-package-login-with-pin-page.component.scss']
 })
-export class LoginWithPinPageComponent implements OnInit {
+export class VasPackageLoginWithPinPageComponent implements OnInit {
 
   constructor(
     private router: Router,

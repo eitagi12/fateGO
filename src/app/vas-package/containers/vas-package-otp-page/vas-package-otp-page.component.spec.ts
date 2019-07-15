@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ResultPageComponent } from './result-page.component';
+import { VasPackageOtpPageComponent } from './vas-package-otp-page.component';
 
-describe('ResultPageComponent', () => {
-  let component: ResultPageComponent;
-  let fixture: ComponentFixture<ResultPageComponent>;
+describe('VasPackageOtpPageComponent', () => {
+  let component: VasPackageOtpPageComponent;
+  let fixture: ComponentFixture<VasPackageOtpPageComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ ResultPageComponent ]
+      declarations: [ VasPackageOtpPageComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ResultPageComponent);
+    fixture = TestBed.createComponent(VasPackageOtpPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

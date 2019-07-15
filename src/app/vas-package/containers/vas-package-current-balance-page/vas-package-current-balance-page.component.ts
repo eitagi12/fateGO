@@ -4,11 +4,11 @@ import { HomeService} from 'mychannel-shared-libs';
 import { ROUTE_VAS_PACKAGE_OTP_PAGE, ROUTE_VAS_PACKAGE_RESULT_PAGE } from 'src/app/vas-package/constants/route-path.constant';
 
 @Component({
-  selector: 'app-current-balance-page',
-  templateUrl: './current-balance-page.component.html',
-  styleUrls: ['./current-balance-page.component.scss']
+  selector: 'app-vas-package-current-balance-page',
+  templateUrl: './vas-package-current-balance-page.component.html',
+  styleUrls: ['./vas-package-current-balance-page.component.scss']
 })
-export class CurrentBalancePageComponent implements OnInit {
+export class VasPackageCurrentBalancePageComponent implements OnInit {
 
   constructor(
     private router: Router,
@@ -28,4 +28,5 @@ export class CurrentBalancePageComponent implements OnInit {
   onHome(): void {
     this.homeService.goToHome();
   }
+
 }
