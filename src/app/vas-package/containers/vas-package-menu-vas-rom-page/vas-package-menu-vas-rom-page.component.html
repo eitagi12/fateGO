@@ -16,7 +16,7 @@
               <div class="card-body">
                   <div class="input-group mb-3">
                       <div class="input-group">
-                        <input type="radio" id="vasPackageRom" formControlName="vasPackageRom" value="1">
+                        <input type="radio" id="vasPackageRom" formControlName="vasPackageRom" value="1" (change)="onCompleted('RomAgent')">
                         <label for="vasPackageRom">ตัดกระเป๋าเงินคนขาย</label>
                       </div>
                   </div>
@@ -26,7 +26,7 @@
                 <div class="card-body">
                     <div class="input-group mb-3">
                         <div class="input-group">
-                          <input type="radio" id="vasPackageEndUser" formControlName="vasPackageRom" value="2">
+                          <input type="radio" id="vasPackageEndUser" formControlName="vasPackageRom" value="2" (change)="onCompleted('Customer')">
                           <label for="vasPackageEndUser">ตัดกระเป๋าเงินลูกค้า</label>
                         </div>
                     </div>

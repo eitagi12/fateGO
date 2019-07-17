@@ -18,8 +18,8 @@ export enum TransactionType {
   RESERVE_WITH_DEPOSIT = 'ReserveWithDeposit',
 
   DEVICE_ONLY_AIS = 'DeviceOnlyAIS',
-  VAS_PACKAGE_ROM = 'VaspackageRom',
-  VAS_PACKAGE_ROM_OTP = 'VaspackageRomOTP'
+  VAS_PACKAGE_ROM = 'RomAgent',
+  VAS_PACKAGE_CUSTOMER = 'Customer'
 }
 
 export enum TransactionAction {

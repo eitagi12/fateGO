@@ -24,13 +24,17 @@ export class VasPackageMenuVasRomPageComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
-    this.createTransaction();
     this.createForm();
   }
   createForm(): void {
     this.vasPackageFrom = this.fb.group({
       'vasPackageRom': ['1'],
     });
+
+  }
+
+  onCompleted(transactionType: any): void {
+    console.log(transactionType);
 
   }
 
