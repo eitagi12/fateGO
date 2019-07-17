@@ -162,7 +162,7 @@ export class VasPackageOtpPageComponent implements OnInit, OnDestroy {
         this.router.navigate([ROUTE_VAS_PACKAGE_CURRENT_BALANCE_PAGE]);
         this.transaction = {
           data: {
-            transactionType: TransactionType.VAS_PACKAGE_ROM_OTP,
+            ...this.transaction.data,
             action: TransactionAction.VAS_PACKAGE_ROM_OTP,
           },
           transactionId: moment().format('YYYYMMDDHHmmss'),

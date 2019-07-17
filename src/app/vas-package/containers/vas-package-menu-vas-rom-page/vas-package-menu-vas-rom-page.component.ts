@@ -27,11 +27,12 @@ export class VasPackageMenuVasRomPageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.createForm();
   }
+
   createForm(): void {
     this.vasPackageFrom = this.fb.group({
       'vasPackageRom': ['1'],
     });
-
+    this.onSelectTransactionType = 'RomAgent';
   }
 
   onCompleted(transactionType: any): void {
@@ -54,10 +55,12 @@ export class VasPackageMenuVasRomPageComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.transactionService.save(this.transaction);
   }
+
   private createTransaction(): void {
     this.transaction = {
       data: {
-        transactionType: this.onSelectTransactionType,
+        transactionType: this.onSelectTransactionType === 'Customer' ?
+          TransactionType.VAS_PACKAGE_CUSTOMER : TransactionType.VAS_PACKAGE_ROM,
         action: TransactionAction.VAS_PACKAGE_ROM
       },
       transactionId: moment().format('YYYYMMDDHHmmss'),
