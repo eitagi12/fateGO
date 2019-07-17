@@ -13,8 +13,8 @@
       <div class="content">
         <div class="card-content">
           <div class="text-center" style="margin-bottom: 2%" *ngIf="!isRomAgent">
-              <div class="text-center mobile">หมายเลขโทรศัพท์ </div>
-              <div class="text-center mobile"> 0618269265 </div>
+              <div class="text-center mobile">หมายเลขโทรศัพท์ลูกค้า </div>
+              <div class="text-center mobile"> {{ transaction?.data?.simCard?.mobileNo | mobileNo }}</div>
           </div>
           <p class="text-center">กรุณาใส่รหัส OTP ที่ได้รับจาก SMS</p>
           <hr>

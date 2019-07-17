@@ -1,8 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { HomeService } from 'mychannel-shared-libs';
-import { ROUTE_VAS_PACKAGE_CURRENT_BALANCE_PAGE, ROUTE_VAS_PACKAGE_SELECT_PACKAGE_PAGE } from 'src/app/vas-package/constants/route-path.constant';
-
+import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { ROUTE_VAS_PACKAGE_CURRENT_BALANCE_PAGE, ROUTE_VAS_PACKAGE_SELECT_PACKAGE_PAGE, ROUTE_VAS_PACKAGE_MENU_VAS_ROM_PAGE } from 'src/app/vas-package/constants/route-path.constant';
+import { Transaction } from 'src/app/shared/models/transaction.model';
+declare let window: any;
 @Component({
   selector: 'app-vas-package-result-page',
   templateUrl: './vas-package-result-page.component.html',
@@ -10,10 +12,17 @@ import { ROUTE_VAS_PACKAGE_CURRENT_BALANCE_PAGE, ROUTE_VAS_PACKAGE_SELECT_PACKAG
 })
 export class VasPackageResultPageComponent implements OnInit {
 
+  public transaction: Transaction;
+  public mobileNo: any;
+
   constructor(
     private router: Router,
     private homeService: HomeService,
-  ) { }
+    private transactionService: TransactionService
+  ) {
+    this.transaction = this.transactionService.load();
+    this.mobileNo = this.transaction.data.simCard.mobileNo;
+   }
 
   ngOnInit(): void {
   }
@@ -21,17 +30,20 @@ export class VasPackageResultPageComponent implements OnInit {
   onHome(): void {
     this.homeService.goToHome();
   }
-  onBack(): void {
-    this.router.navigate([ROUTE_VAS_PACKAGE_CURRENT_BALANCE_PAGE]);
-  }
 
   onMainMenu(): void {
-    window.location.href = '/sales-portal/easyapp/new-vas/packlist';
+    if (window.aisNative) {
+      window.aisNative.onAppBack();
+    } else {
+      window.webkit.messageHandlers.onAppBack.postMessage('');
+    }
   }
-  onToup(): void {
-    window.location.href = '/sales-portal/easyapp/new-vas/packlist';
+
+  onTopUp(): void {
+    window.location.href = `/easy-app/top-up-vas?mobileNo=${this.mobileNo}`;
   }
+
   onSelectPackage(): void {
-    this.router.navigate([ROUTE_VAS_PACKAGE_SELECT_PACKAGE_PAGE]);
+    this.router.navigate([ROUTE_VAS_PACKAGE_MENU_VAS_ROM_PAGE], { queryParams: this.mobileNo });
   }
 }

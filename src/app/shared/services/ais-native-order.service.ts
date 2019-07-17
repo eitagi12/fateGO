@@ -143,9 +143,9 @@ export class AisNativeOrderService {
     }
 
     getNativeMobileNo(): void {
-        if(window.aisNative) {
+        if (window.aisNative) {
             window.aisNative.getMobileNo();
-        } else if(window.webkit && window.webkit.messageHandlers) {
+        } else if (window.webkit && window.webkit.messageHandlers) {
             window.webkit.messageHandlers.getMobileNo.postMessage('');
         } else {
             // TODO
@@ -166,7 +166,7 @@ export class AisNativeOrderService {
         window.onCropPhotoCallback = this.cameraCallback.bind(this);
         window.onCameraCallback = this.cameraCallback.bind(this);
         window.onSignatureCallback = this.signatureCallback.bind(this);
-        window.onMobilNoCallback  = this.onMobilNoCallback.bind(this);
+        window.onMobilNoCallback  = this.onMobileNoCallback.bind(this);
     }
 
     private barcodeCallback(barcode: any): void {
@@ -198,7 +198,7 @@ export class AisNativeOrderService {
         });
     }
 
-    private onMobilNoCallback(mobileNo: any) {
+    private onMobileNoCallback(mobileNo: any): void {
         if (mobileNo && mobileNo.length > 0) {
             this._ngZone.run(() => {
                 this.mobileNo.next(mobileNo);

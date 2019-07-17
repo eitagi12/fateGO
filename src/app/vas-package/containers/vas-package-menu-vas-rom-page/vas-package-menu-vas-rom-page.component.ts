@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute, Params } from '@angular/router';
 import { HomeService } from 'mychannel-shared-libs';
 import { ROUTE_VAS_PACKAGE_SELECT_PACKAGE_PAGE } from 'src/app/vas-package/constants/route-path.constant';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -8,6 +8,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import * as moment from 'moment';
 import { AisNativeOrderService } from 'src/app/shared/services/ais-native-order.service';
 const Moment = moment;
+declare let window: any;
 @Component({
   selector: 'app-vas-package-menu-vas-rom-page',
   templateUrl: './vas-package-menu-vas-rom-page.component.html',
@@ -18,17 +19,22 @@ export class VasPackageMenuVasRomPageComponent implements OnInit, OnDestroy {
   selected: any;
   transaction: Transaction;
   onSelectTransactionType: any;
+  params: Params;
+
   constructor(
     private router: Router,
     private homeService: HomeService,
     private fb: FormBuilder,
     private transactionService: TransactionService,
-    private aisNativeService: AisNativeOrderService
+    private aisNativeService: AisNativeOrderService,
+    private activatedRoute: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
-    this.aisNativeService.getNativeMobileNo();
     this.createForm();
+    this.activatedRoute.queryParams.subscribe((params: any) => {
+      this.params = params;
+  });
   }
 
   createForm(): void {
@@ -43,7 +49,11 @@ export class VasPackageMenuVasRomPageComponent implements OnInit, OnDestroy {
   }
 
   onBack(): void {
-    // this.router.navigate([ROUTE_VAS_PACKAGE_SELECT_PACKAGE_PAGE]);
+    if (window.aisNative) {
+      window.aisNative.onAppBack();
+    } else {
+      window.webkit.messageHandlers.onAppBack.postMessage('');
+    }
   }
 
   onNext(): void {
@@ -60,14 +70,13 @@ export class VasPackageMenuVasRomPageComponent implements OnInit, OnDestroy {
   }
 
   private createTransaction(): void {
-    const mobileNo: any = this.aisNativeService.getMobileNo();
     this.transaction = {
       data: {
         transactionType: this.onSelectTransactionType === 'Customer' ?
           TransactionType.VAS_PACKAGE_CUSTOMER : TransactionType.VAS_PACKAGE_ROM,
         action: TransactionAction.VAS_PACKAGE_ROM,
         simCard: {
-          mobileNo: mobileNo
+          mobileNo: this.params ? this.params.mobileNo : ''
         }
       },
       transactionId: moment().format('YYYYMMDDHHmmss'),
