@@ -28,11 +28,11 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnChange
    data: Object;
 
    policies: any [] = [
-    {id: 0, name: "policy001"},
-    {id: 2, name: "policy002"},
-    {id: 3, name: "policy003"},
-    {id: 4, name: "policy004"},
-    {id: 5, name: "policy005"}
+    {id: 0, name: 'policy001'},
+    {id: 2, name: 'policy002'},
+    {id: 3, name: 'policy003'},
+    {id: 4, name: 'policy004'},
+    {id: 5, name: 'policy005'}
   ];
 
   constructor(
@@ -49,7 +49,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnChange
     this.callService();
     this.createForm();
   }
-  
+
   ngOnChanges(): void {
     this.slider.nativeElement.style.display = 'none';
     setTimeout(() => {
@@ -115,7 +115,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnChange
 
   callService(): any {
     const userId = 'bMfAlzjKaZSSKY3s6c3farMxbUaEsFnIIAgbjsXKA3cOhnKfvawKb60MITINd04Os73YJBQ5aWypkxFk';
-    this.http.post('/api/salesportal/promotion-vas',{userId}).toPromise()
+    this.http.post('/api/salesportal/promotion-vas', {userId}).toPromise()
     .then((response) => {
       console.log('res', response);
       console.log('titel', response);

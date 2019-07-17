@@ -16,6 +16,7 @@ export class VasPackageMenuVasRomPageComponent implements OnInit, OnDestroy {
   vasPackageFrom: FormGroup;
   selected: any;
   transaction: Transaction;
+  onSelectTransactionType: string;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -34,8 +35,7 @@ export class VasPackageMenuVasRomPageComponent implements OnInit, OnDestroy {
   }
 
   onCompleted(transactionType: any): void {
-    console.log(transactionType);
-
+    this.onSelectTransactionType = transactionType;
   }
 
   onBack(): void {
@@ -43,9 +43,8 @@ export class VasPackageMenuVasRomPageComponent implements OnInit, OnDestroy {
   }
 
   onNext(): void {
-    console.log('this.vasPackageFrom.controls.vasPackageRom.value', this.vasPackageFrom.controls.vasPackageRom.value);
-      this.router.navigate([ROUTE_VAS_PACKAGE_SELECT_PACKAGE_PAGE]);
-
+    this.createTransaction();
+    this.router.navigate([ROUTE_VAS_PACKAGE_SELECT_PACKAGE_PAGE]);
   }
 
   onHome(): void {
@@ -58,8 +57,8 @@ export class VasPackageMenuVasRomPageComponent implements OnInit, OnDestroy {
   private createTransaction(): void {
     this.transaction = {
       data: {
-        transactionType: TransactionType.VAS_PACKAGE_ROM,
-        action: TransactionAction.VAS_PACKAGE_ROM,
+        transactionType: this.onSelectTransactionType,
+        action: TransactionAction.VAS_PACKAGE_ROM
       },
       transactionId: moment().format('YYYYMMDDHHmmss'),
     };
