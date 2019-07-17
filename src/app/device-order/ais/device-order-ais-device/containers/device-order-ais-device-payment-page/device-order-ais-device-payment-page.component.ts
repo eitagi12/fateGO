@@ -333,6 +333,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
                 province: billing.provinceName || '',
                 zipCode: billing.portalCode || '',
               });
+              delete this.transaction.data.billingInformation.billDeliveryAddress;
               this.receiptInfoForm.controls['taxId'].setValue(this.receiptInfo.taxId);
               console.log('this.receiptInfo.buyerAddress ', this.receiptInfo.buyerAddress);
               this.transaction.data.receiptInfo = this.receiptInfo;
