@@ -28,7 +28,7 @@
         <div class="mc-flex-wrap">
           <div class="text-center">แพ็กเกจขายดี</div>
         </div>
-        
+
         <app-vas-package-slider [packages]='packageBestSaller'></app-vas-package-slider>
 
         <div class="text-center">
@@ -79,7 +79,7 @@
                   <input type="text" class="form-control text-center" value="-" readonly>
                 </div>
                 <div class="col-2">
-                  <button class="btn btn-success" (click)="onSelectPackage()">ขายเลย</button>
+                  <button class="btn btn-success" [disabled]="!mobileNo" (click)="onSelectPackage()">ขายเลย</button>
                 </div>
               </div>
             </div>
