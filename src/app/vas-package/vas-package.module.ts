@@ -11,6 +11,7 @@ import { VasPackageCurrentBalancePageComponent } from './containers/vas-package-
 import { VasPackageLoginWithPinPageComponent } from './containers/vas-package-login-with-pin-page/vas-package-login-with-pin-page.component';
 import { VasPackageOtpPageComponent } from './containers/vas-package-otp-page/vas-package-otp-page.component';
 import { VasPackageResultPageComponent } from './containers/vas-package-result-page/vas-package-result-page.component';
+import { VasPackageSliderComponent } from './containers/vas-package-select-vas-package-page/vas-package-slider/vas-package-slider.component';
 
 @NgModule({
   imports: [
@@ -27,7 +28,8 @@ import { VasPackageResultPageComponent } from './containers/vas-package-result-p
     VasPackageCurrentBalancePageComponent,
     VasPackageLoginWithPinPageComponent,
     VasPackageOtpPageComponent,
-    VasPackageResultPageComponent
+    VasPackageResultPageComponent,
+    VasPackageSliderComponent
   ]
 })
 export class VasPackageModule { }

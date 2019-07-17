@@ -1,0 +1,28 @@
+<div class="owl-carousel owl-theme" #slider>
+  <div *ngFor="let package of packages">
+    <div class="mr-2 ml-2 shadow-sm">
+      <div class="card">
+        <div class="card-body">
+          <div class="row d-flex">
+            <div class="col-12 align-self-center text-center">
+              <img class=" icon-sales mr-2 " src="{{package?.icon}}">
+              {{package.mainTitle}}
+            </div>
+            <div class="col-12 text-center">
+              <div class="text-lime ">
+                {{package.customAttributes.sub_category}}
+              </div>
+              <div class="small">
+                {{package.customAttributes.regular_price}} บาท
+                <span>{{package.customAttributes.package_period}}</span>
+              </div>
+              <div class="small">
+                <button class="btn btn-success">ขายเลย</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

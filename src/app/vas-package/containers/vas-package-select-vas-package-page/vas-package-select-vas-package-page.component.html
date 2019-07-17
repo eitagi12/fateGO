@@ -29,51 +29,23 @@
           <div class="text-center">แพ็กเกจขายดี</div>
         </div>
         
-        <div class="owl-carousel owl-theme" #slider>
-          <div *ngFor="let i of policies">
-            <div class="mr-2 ml-2 shadow-sm">
-              <div class="card">
-                <div class="card-body">
-                  <div class="row d-flex">
-                    <div class="col-12 align-self-center text-center">
-                      <img class=" icon-sales mr-2 "
-                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABsAAAAtCAMAAABoKeDXAAAAM1BMVEUAAAB0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ25Zr8AAAAEHRSTlMAkBBwgNEwiPTesFJIEpc9LEzSRQAAAGVJREFUOMvt1LsSgCAMRNFF0fBm//9rdWiJsXLGgtPeAposgCJuJgW3RF0CPIPbZy7QIzJDkxlBVmgqCXKDZhvt0I32CGQ/Nd16b7XVft/Ea+T1HprTtG/+ad27tRPWvli7ZO3ZBeGQE1v36RJMAAAAAElFTkSuQmCC">
-                      เล่นเน็ต
-                    </div>
-                    <div class="col-12 text-center">
-                      <div class="text-lime ">
-                        Internet Package 512 Kbps
-                      </div>
-                      <div class="small">
-                        19.00 บาท
-                        <span>1 วัน</span>
-                      </div>
-                      <div class="small">
-                        <button class="btn btn-success">ขายเลย</button>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
+        <app-vas-package-slider [packages]='packageBestSaller'></app-vas-package-slider>
 
         <div class="text-center">
           แพ็กเกจตาม Life Style
         </div>
+
         <div class="card text-center">
           <div class="card-header p-0">
             <div class="row">
               <div class="col-12 text-center">
                 <ul class="nav nav-pills">
-                  <li class="nav-item p-0 col-6">
-                    <a class="nav-link active" href="#menu1" data-toggle="pill"></a>
-                  </li>
-                  <li class="nav-item p-0 col-6">
-                    <a class="nav-link" href="#menu2" data-toggle="pill">เล่นเน็ต</a>
-                  </li>
-                </ul>
+                  <div *ngFor="let i of shelves">
+                    <li class="nav-item p-0 col-6">
+                      <a class="nav-link active" href="#menu1" data-toggle="pill">{{shelves.title}}</a>
+                    </li>
+                  </div>
+                  </ul>
               </div>
             </div>
           </div>
@@ -113,9 +85,6 @@
             </div>
           </div>
         </div>
-      </div>
-      <div class="text-center text-grey">
-        *ราคาแพ็กเกจนี้ยังไม่รวมภาษีมูลค่าเพิ่ม
       </div>
     </div>
   </div>

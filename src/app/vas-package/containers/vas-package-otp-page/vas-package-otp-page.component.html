@@ -12,7 +12,7 @@
     <form [formGroup]="formOTP">
       <div class="content">
         <div class="card-content">
-          <div class="text-center" style="margin-bottom: 2%">
+          <div class="text-center" style="margin-bottom: 2%" *ngIf="!isRomAgent">
               <div class="text-center mobile">หมายเลขโทรศัพท์ </div>
               <div class="text-center mobile"> 0618269265 </div>
           </div>

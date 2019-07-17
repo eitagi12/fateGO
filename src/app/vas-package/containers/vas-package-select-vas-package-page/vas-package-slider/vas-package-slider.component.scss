@@ -1,0 +1,42 @@
+.icon-sales {
+  width: 15px !important;
+  margin-left: 15px;
+  display: inline-block !important;
+}
+
+:host /deep/ .nav-link.active {
+  background-color: #8bc34a;
+  padding: 12px 20px;
+}
+
+:host /deep/ .nav-link {
+  padding: 12px 20px;
+}
+
+.owl-theme {
+  font-size: small;
+}
+
+:host /deep/ .owl-stage {
+  position: relative;
+  width: 100%;
+  z-index: 1;
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-transition-property: -webkit-transform;
+  transition-property: -webkit-transform;
+  -o-transition-property: transform;
+  transition-property: transform;
+  transition-property: transform, -webkit-transform;
+  -webkit-box-sizing: content-box;
+  box-sizing: content-box;
+  -webkit-transform: translate3d(0px, 0, 0);
+  transform: translate3d(0px, 0, 0);
+
+  .owl-item {
+    width: 0px;
+    overflow: hidden;
+  }
+}

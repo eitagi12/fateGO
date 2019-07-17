@@ -16,7 +16,7 @@ export class VasPackageMenuVasRomPageComponent implements OnInit, OnDestroy {
   vasPackageFrom: FormGroup;
   selected: any;
   transaction: Transaction;
-  onSelectTransactionType: string;
+  onSelectTransactionType: any;
   constructor(
     private router: Router,
     private homeService: HomeService,

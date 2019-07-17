@@ -102,7 +102,7 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
             })
             .catch(err => console.log('err: ', err.data.message));
         } else {
-          // this.alertService.error(res.data.message);
+          this.alertService.error(res.data.message);
         }
       })
       .catch(error => console.log('error => ', error.data.message));
