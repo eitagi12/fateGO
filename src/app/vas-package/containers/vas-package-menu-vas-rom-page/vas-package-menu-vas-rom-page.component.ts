@@ -6,6 +6,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import * as moment from 'moment';
+import { AisNativeOrderService } from 'src/app/shared/services/ais-native-order.service';
 const Moment = moment;
 @Component({
   selector: 'app-vas-package-menu-vas-rom-page',
@@ -22,9 +23,11 @@ export class VasPackageMenuVasRomPageComponent implements OnInit, OnDestroy {
     private homeService: HomeService,
     private fb: FormBuilder,
     private transactionService: TransactionService,
+    private aisNativeService: AisNativeOrderService
   ) { }
 
   ngOnInit(): void {
+    this.aisNativeService.getNativeMobileNo();
     this.createForm();
   }
 
@@ -57,11 +60,15 @@ export class VasPackageMenuVasRomPageComponent implements OnInit, OnDestroy {
   }
 
   private createTransaction(): void {
+    const mobileNo: any = this.aisNativeService.getMobileNo();
     this.transaction = {
       data: {
         transactionType: this.onSelectTransactionType === 'Customer' ?
           TransactionType.VAS_PACKAGE_CUSTOMER : TransactionType.VAS_PACKAGE_ROM,
-        action: TransactionAction.VAS_PACKAGE_ROM
+        action: TransactionAction.VAS_PACKAGE_ROM,
+        simCard: {
+          mobileNo: mobileNo
+        }
       },
       transactionId: moment().format('YYYYMMDDHHmmss'),
     };

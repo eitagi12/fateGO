@@ -17,6 +17,7 @@ export class AisNativeOrderService {
    private barcode: Subject<string> = new Subject<string>();
     private camera: Subject<string> = new Subject<string>();
     private signature: Subject<string> = new Subject<string>();
+    private mobileNo: Subject<string> = new Subject<string>();
 
     readonly ERROR_BROWSER_NOT_SUPPORTED: string = 'เว็บเบราว์เซอร์นี้ไม่รองรับการเซ็นลายเซ็น';
 
@@ -141,6 +142,20 @@ export class AisNativeOrderService {
         return this.barcode;
     }
 
+    getNativeMobileNo(): void {
+        if(window.aisNative) {
+            window.aisNative.getMobileNo();
+        } else if(window.webkit && window.webkit.messageHandlers) {
+            window.webkit.messageHandlers.getMobileNo.postMessage('');
+        } else {
+            // TODO
+        }
+    }
+
+    getMobileNo(): Observable<string> {
+        return this.mobileNo;
+    }
+
     printThermalTradeIn(data: string): void {
         window.aisNative.printThermalTradeIn(data);
     }
@@ -151,7 +166,7 @@ export class AisNativeOrderService {
         window.onCropPhotoCallback = this.cameraCallback.bind(this);
         window.onCameraCallback = this.cameraCallback.bind(this);
         window.onSignatureCallback = this.signatureCallback.bind(this);
-
+        window.onMobilNoCallback  = this.onMobilNoCallback.bind(this);
     }
 
     private barcodeCallback(barcode: any): void {
@@ -181,5 +196,13 @@ export class AisNativeOrderService {
             const images = xmlDoc.getElementsByTagName('signature')[0].firstChild.nodeValue;
             this.signature.next(images);
         });
+    }
+
+    private onMobilNoCallback(mobileNo: any) {
+        if (mobileNo && mobileNo.length > 0) {
+            this._ngZone.run(() => {
+                this.mobileNo.next(mobileNo);
+            });
+        }
     }
 }
