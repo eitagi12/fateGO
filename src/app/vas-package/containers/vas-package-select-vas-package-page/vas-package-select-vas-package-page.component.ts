@@ -8,6 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { filter } from 'minimatch';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { TransactionType, Transaction } from 'src/app/shared/models/transaction.model';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-vas-package-select-vas-package-page',
@@ -86,7 +87,8 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
 
     const selectedPackage = {
       customer_price: '39',
-      allow_ntype: '3PE'
+      allow_ntype: '3PE',
+      days_of_service_year: '30'
     };
     switch (this.transaction.data.transactionType) {
       case TransactionType.VAS_PACKAGE_CUSTOMER: {
@@ -151,33 +153,43 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
           })
           .then((profile) => {
             this.http.get(`/api/customerportal/greeting/${this.mobileNo}/profile`).toPromise()
-            .then((greeting) => {
-              console.log(greeting);
-            });
-
-            const isPrepaid: boolean = profile.data.chargeType === 'Pre-paid';
-            if (isPrepaid) {
-              this.http.get(`/api/customerportal/newRegister/${this.mobileNo}/queryBalance`).toPromise()
-                .then((resBalance: any) => {
-                  if (profile && profile.resultCode !== '20000') {
-                    this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
-                    this.pageLoadingService.closeLoading();
-                    return;
-                  }
-
-                  const isEnough: any = +(resBalance.data.remainingBalance) > +(selectedPackage.customer_price);
-                  if (+isEnough) {
-                    this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
-                    this.pageLoadingService.closeLoading();
-                    return;
-                  }
-                })
-                .catch(() => {
+              .then((greeting: any) => {
+                const registerDate = moment()
+                  .subtract(+greeting.data.serviceYear.year, 'years')
+                  .subtract(+greeting.data.serviceYear.month, 'months')
+                  .subtract(+greeting.data.serviceYear.day, 'days');
+                const packageDate = moment().subtract(+selectedPackage.days_of_service_year, 'days');
+                const isBefore = registerDate.isBefore(packageDate);
+                if (!isBefore) {
+                  this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่อง service years ไม่ถึง');
                   this.pageLoadingService.closeLoading();
-                });
-            } else {
-              this.pageLoadingService.closeLoading();
-            }
+                  return;
+                }
+
+                const isPrepaid: boolean = profile.chargeType === 'Pre-paid';
+                if (isPrepaid) {
+                  this.http.get(`/api/customerportal/newRegister/${this.mobileNo}/queryBalance`).toPromise()
+                    .then((resBalance: any) => {
+                      if (profile && profile.resultCode !== '20000') {
+                        this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+                        this.pageLoadingService.closeLoading();
+                        return;
+                      }
+
+                      const isEnough: any = +(resBalance.data.remainingBalance) > +(selectedPackage.customer_price);
+                      if (+isEnough) {
+                        this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+                        this.pageLoadingService.closeLoading();
+                        return;
+                      }
+                    })
+                    .catch(() => {
+                      this.pageLoadingService.closeLoading();
+                    });
+                } else {
+                  this.pageLoadingService.closeLoading();
+                }
+              });
           });
         break;
       }
