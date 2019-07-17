@@ -48,6 +48,7 @@ export class VasPackageOtpPageComponent implements OnInit, OnDestroy {
   public otp: string;
   transaction: Transaction;
   public mobile: any = '0618269265';
+  public isRomAgent: boolean;
 
   constructor(
     private router: Router,
@@ -64,6 +65,7 @@ export class VasPackageOtpPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.checkTransactionType();
     this.buildForm();
     this.getOTP();
 
@@ -171,6 +173,14 @@ export class VasPackageOtpPageComponent implements OnInit, OnDestroy {
         this.alertService.error('ระบบไม่สามารถใช้งานได้ในขณะนี้');
       }
     });
+  }
+
+  checkTransactionType(): any {
+    if (this.transaction.data.transactionType === 'RomAgent') {
+      this.isRomAgent = true;
+    } else {
+      this.isRomAgent = false;
+    }
   }
 
   ngOnDestroy(): void {
