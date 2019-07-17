@@ -10,7 +10,8 @@ import {
   ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_EXISTING_SUMMARY_PAGE,
   ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_ONTOP_PAGE
 } from '../../constants/route-path.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { MobileCareService } from 'src/app/device-order/services/mobile-care.service';
@@ -48,23 +49,28 @@ export class DeviceOrderAisExistingMobileCarePageComponent implements OnInit, On
   }
 
   ngOnInit(): void {
+    const packageOntop = this.transaction.data.deleteOntopPackage;
+    console.log('packageOntop', packageOntop);
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     delete this.transaction.data.mobileCarePackage;
     this.callService();
   }
 
   onBack(): void {
-    this.router.navigate([this.checkRouteNavigate()]);
-  }
-
-  checkRouteNavigate(): string {
-    if (!this.transaction.data.mainPackage) {
-      return this.checkRouteByExistingMobileCare();
+    const deleteOntopPackage = this.transaction.data.deleteOntopPackage;
+    if (deleteOntopPackage && deleteOntopPackage.length > 0) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_ONTOP_PAGE]);
+    } else if (this.transaction.data.mainPackage) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE]);
     } else {
-      return ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE;
+      if (this.transaction.data.existingMobileCare) {
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE]);
+      } else {
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_PAGE]);
+      }
+
     }
   }
-
   checkRouteByExistingMobileCare(): string {
     if (this.transaction.data.existingMobileCare) {
       return ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE;

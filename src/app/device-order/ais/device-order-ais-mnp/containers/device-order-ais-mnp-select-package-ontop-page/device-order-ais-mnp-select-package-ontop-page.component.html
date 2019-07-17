@@ -1,21 +1,21 @@
 <div class="mc-flex">
-  <mc-header title="{{ 'ลูกค้าปัจจุบัน' | translate }}">
-    <div class="header-icon-left w-25">
-      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
-    </div>
-    <div class="header-icon-right w-25 text-right">
-      <mc-dropdown-language></mc-dropdown-language>
-      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
-    </div>
-  </mc-header>
-  <div class="mc-flex-wrap">
+    <mc-header title="{{'ลูกค้าปัจจุบัน' | translate}}">
+      <div class="header-icon-left">
+        <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+      </div>
+      <div class="header-icon-right">
+        <mc-dropdown-language></mc-dropdown-language>
+        <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+      </div>
+    </mc-header>
+    <div class="mc-flex-wrap">
       <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
       <div class="mt-3 mb-3">
         <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
         <div class="container-fluid">
           <div class="card mb-3">
             <div class="card-header bg-green text-white" translate>
-                แพ็กเกจหลัก
+              แพ็กเกจหลัก
             </div>
             <div class="card-body">
               <div class="text-green">
@@ -28,12 +28,12 @@
             </div>
             <div class="mt-2">
                   <div class="card-header bg-green text-white" translate>
-                      แพ็กเกจเสริม
+                      แพ็กเกจเสริม (ปัจจุบัน)
                     </div>
-                    <div class="text-center text-red mt-3">{{'* หากต้องการยกเลิกกรุณาเลือก' | translate}}
-                        <img src="assets/images/icon/sales_portal_green_check_rectangle.png" class="icon"> 
-                    </div>
-                    <div class="text-center text-red">{{'โดยการยกเลิกมีผลสิ้นสุดวันที่' | translate}}  {{transaction?.data?.billingInformation?.effectiveDate}}</div>
+                <div class="text-center text-red mt-3">{{'* หากต้องการยกเลิกกรุณาเลือก' | translate}}
+                    <img src="assets/images/icon/sales_portal_green_check_rectangle.png" class="icon"> 
+                </div>
+                <div class="text-center text-red">{{'โดยการยกเลิกมีผลสิ้นสุดวันที่' | translate}}  {{transaction?.data?.billingInformation?.effectiveDate}}</div>
                 <div *ngIf="packageOntopList" class="text-center"></div>
                 <form [formGroup]="packageOntopForm">
                   <div *ngFor="let packageOntop of packageOntopList" class="p-3">
@@ -41,7 +41,7 @@
                       <div class="col-8 col-sm-9 ">
                         <input type="checkbox"
                         id="{{ packageOntop?.promotionCode }}" formControlName="{{ packageOntop?.promotionCode }}">
-                        <label for="{{packageOntop?.promotionCode }}">{{ packageTitle(packageOntop) }}</label>
+                        <label for="{{packageOntop?.promotionCode  }}">{{ packageTitle(packageOntop) }}</label>
                         <div class="endDt"> {{'สิ้นสุดวันที่' | translate}}: {{ packageOntop.expiredDate }}</div>
                       </div>
                       <div class="col-4 col-sm-3 text-center pt-2">

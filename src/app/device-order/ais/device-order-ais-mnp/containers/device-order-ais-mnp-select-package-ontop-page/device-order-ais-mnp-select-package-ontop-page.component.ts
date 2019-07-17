@@ -3,26 +3,22 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { CustomerInfo, HomeService, ShoppingCart, PageLoadingService, AlertService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import {
-  ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE,
-} from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { HttpClient } from '@angular/common/http';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { FormBuilder, FormGroup, FormControl } from '@angular/forms';
 import * as moment from 'moment';
+import { ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE } from 'src/app/device-order/ais/device-order-ais-mnp/constants/route-path.constant';
 import { debounceTime } from 'rxjs/operators';
 import { TranslateService } from '@ngx-translate/core';
 
 @Component({
-  selector: 'app-device-order-ais-existing-select-package-ontop-page',
-  templateUrl: './device-order-ais-existing-select-package-ontop-page.component.html',
-  styleUrls: ['./device-order-ais-existing-select-package-ontop-page.component.scss']
+  selector: 'app-device-order-ais-mnp-select-package-ontop-page',
+  templateUrl: './device-order-ais-mnp-select-package-ontop-page.component.html',
+  styleUrls: ['./device-order-ais-mnp-select-package-ontop-page.component.scss']
 })
-export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements OnInit, OnDestroy {
+export class DeviceOrderAisMnpSelectPackageOntopPageComponent implements OnInit, OnDestroy {
   @ViewChild('detailTemplate')
   detailTemplate: any;
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
@@ -34,12 +30,12 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
   packageOntopList: any[] = [];
   packageOntopForm: FormGroup;
   effectiveEndDt: any;
+
   constructor(
     private router: Router,
     private homeService: HomeService,
     private shoppingCartService: ShoppingCartService,
     private http: HttpClient,
-    private alertService: AlertService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private modalService: BsModalService,
@@ -78,7 +74,6 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
             packageOntopList.priceExclVat > 0 && isexpiredDate
           );
         }).sort((a: any, b: any) => a.priceExclVat - b.priceExclVat);
-        // this.packageOntopList = packageOntop;
         const checkChangPromotions = (packageOntop || []).map((ontop: any) => {
           return this.http.post('/api/customerportal/checkChangePromotion', {
             mobileNo: mobileNo,
@@ -117,24 +112,15 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
       this.transactionService.update(this.transaction);
     });
   }
-
-  handleError(err: any): void {
-    this.pageLoadingService.closeLoading();
-    const error = err.error || {};
-    const developerMessage = (error.errors || {}).developerMessage;
-    this.alertService.error((developerMessage && error.resultDescription)
-      ? `${developerMessage} ${error.resultDescription}` : this.translateService.instant(`ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้`));
-  }
-
   onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE]);
   }
 
   onNext(): void {
     if (this.transaction.data.existingMobileCare) {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE]);
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE]);
     } else {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE]);
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_PAGE]);
     }
   }
 
@@ -156,6 +142,7 @@ export class DeviceOrderAisExistingSelectPackageOntopPageComponent implements On
       class: 'pt-5 mt-5'
     });
   }
+
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }
