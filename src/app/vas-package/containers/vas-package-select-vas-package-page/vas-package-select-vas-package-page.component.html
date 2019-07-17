@@ -11,65 +11,53 @@
   <div class="mc-flex-wrap">
     <div class="mb-1">
       <div class="container-fluid">
-          <div class="mc-flex-wrap">
-              <form [formGroup]="mobileForm">
-                <div class="form-group">
-                  <div class="mt-1 text-center">หมายเลขโทรศัพท์ลูกค้า</div>
-                  <input class="form-control text-center mb-3 pl-3 pr-3" type="tel" id="mobileNo" maxlength="10"
-                    formControlName="mobileNo" placeholder="ระบุหมายเลขโทรศัพท์ลูกค้า" value="">
-                  <!-- [ngClass]="{ 'is-invalid' : mobileFrom.controls.mobileNo.invalid && mobileFrom.controls.mobileNo.touched && mobileFrom.controls.mobileNo.errors }"> -->
-                  <!-- <small class="invalid-feedback"
+        <div class="mc-flex-wrap">
+          <form [formGroup]="mobileForm">
+            <div class="form-group">
+              <div class="text-center">หมายเลขโทรศัพท์ลูกค้า</div>
+              <input class="form-control text-center" type="tel" id="mobileNo" maxlength="10" formControlName="mobileNo"
+                placeholder="ระบุหมายเลขโทรศัพท์ลูกค้า" value="">
+              <!-- [ngClass]="{ 'is-invalid' : mobileFrom.controls.mobileNo.invalid && mobileFrom.controls.mobileNo.touched && mobileFrom.controls.mobileNo.errors }"> -->
+              <!-- <small class="invalid-feedback"
                     *ngIf="mobileFrom.controls.mobileNo.touched && mobileFrom.controls.mobileNo.errors">
                     **กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง
                   </small> -->
-                </div>
-              </form>
             </div>
-      
-            <div class="mc-flex-wrap">
-              <div class="mt-3 text-center">แพ็กเกจขายดี</div>
-            </div>
-        <div class="bg-white pb-3">
-          <div class="owl-carousel owl-theme" #campaignSlider>
+          </form>
+        </div>
+        <div class="mc-flex-wrap">
+          <div class="text-center">แพ็กเกจขายดี</div>
+        </div>
+        
+        <div class="owl-carousel owl-theme" #slider>
+          <div *ngFor="let i of policies">
             <div class="mr-2 ml-2 shadow-sm">
               <div class="card">
                 <div class="card-body">
                   <div class="row d-flex">
-                    aaaaaaaaaaaaaa
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="mr-2 ml-2 shadow-sm">
-              <div class="card">
-                <div class="card-body">
-                  <div class="row d-flex">
-                    bbbbbbbbbbbbbbbb
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="mr-2 ml-2 shadow-sm">
-              <div class="card">
-                <div class="card-body">
-                  <div class="row d-flex">
-                    cccccccccccccccccccc
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div class="mr-2 ml-2 shadow-sm">
-              <div class="card">
-                <div class="card-body">
-                  <div class="row d-flex">
-                    dddddddddddddddddddd
+                    <div class="col-12 align-self-center text-center">
+                      <img class=" icon-sales mr-2 "
+                        src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABsAAAAtCAMAAABoKeDXAAAAM1BMVEUAAAB0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ0oyJ25Zr8AAAAEHRSTlMAkBBwgNEwiPTesFJIEpc9LEzSRQAAAGVJREFUOMvt1LsSgCAMRNFF0fBm//9rdWiJsXLGgtPeAposgCJuJgW3RF0CPIPbZy7QIzJDkxlBVmgqCXKDZhvt0I32CGQ/Nd16b7XVft/Ea+T1HprTtG/+ad27tRPWvli7ZO3ZBeGQE1v36RJMAAAAAElFTkSuQmCC">
+                      เล่นเน็ต
+                    </div>
+                    <div class="col-12 text-center">
+                      <div class="text-lime ">
+                        Internet Package 512 Kbps
+                      </div>
+                      <div class="small">
+                        19.00 บาท
+                        <span>1 วัน</span>
+                      </div>
+                      <div class="small">
+                        <button class="btn btn-success">ขายเลย</button>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           </div>
         </div>
-
 
         <div class="text-center">
           แพ็กเกจตาม Life Style
@@ -80,7 +68,7 @@
               <div class="col-12 text-center">
                 <ul class="nav nav-pills">
                   <li class="nav-item p-0 col-6">
-                    <a class="nav-link active" href="#menu1" data-toggle="pill">เน้นคุย</a>
+                    <a class="nav-link active" href="#menu1" data-toggle="pill"></a>
                   </li>
                   <li class="nav-item p-0 col-6">
                     <a class="nav-link" href="#menu2" data-toggle="pill">เล่นเน็ต</a>
