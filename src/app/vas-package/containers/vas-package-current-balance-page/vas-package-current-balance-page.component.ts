@@ -70,7 +70,6 @@ export class VasPackageCurrentBalancePageComponent implements OnInit {
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    const token = this.tokenService.getAccessToken();
     const mobileNO = '0927095833';
     this.http.post('api/customerportal/rom/vas-package', {
       ssid: this.transaction.transactionId,
@@ -79,7 +78,7 @@ export class VasPackageCurrentBalancePageComponent implements OnInit {
       vlr: '66923011104',
       shortcode: '*226',
       serviceNumber: '*226',
-      menuLevel: '7337',
+      menuLevel: '*1689*0964220452*260',
       cos: '600001',
       spName: 'awn',
       brandId: '4',
