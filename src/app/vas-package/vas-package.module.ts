@@ -12,6 +12,8 @@ import { VasPackageLoginWithPinPageComponent } from './containers/vas-package-lo
 import { VasPackageOtpPageComponent } from './containers/vas-package-otp-page/vas-package-otp-page.component';
 import { VasPackageResultPageComponent } from './containers/vas-package-result-page/vas-package-result-page.component';
 import { VasPackageSliderComponent } from './containers/vas-package-select-vas-package-page/vas-package-slider/vas-package-slider.component';
+import { TabsModule } from 'ngx-bootstrap';
+import { VasPackageTabComponent } from './containers/vas-package-select-vas-package-page/vas-package-tab/vas-package-tab.component';
 
 @NgModule({
   imports: [
@@ -20,7 +22,8 @@ import { VasPackageSliderComponent } from './containers/vas-package-select-vas-p
     FormsModule,
     ReactiveFormsModule,
     MyChannelSharedLibsModule,
-    TranslateModule
+    TranslateModule,
+    TabsModule.forRoot()
   ],
   declarations: [
     VasPackageMenuVasRomPageComponent,
@@ -29,7 +32,8 @@ import { VasPackageSliderComponent } from './containers/vas-package-select-vas-p
     VasPackageLoginWithPinPageComponent,
     VasPackageOtpPageComponent,
     VasPackageResultPageComponent,
-    VasPackageSliderComponent
+    VasPackageSliderComponent,
+    VasPackageTabComponent
   ]
 })
 export class VasPackageModule { }

@@ -28,15 +28,15 @@
           <div class="pl-3 pr-3 pb-1">
             <form [formGroup]="romAgentForm">
               <div class="form-group">
-                <label for="mobileNo">หมายเลข ROM Agent</label>
-                <input type="tel" class="form-control" id="mobileNo" formControlName="mobileNo" maxlength="10">
+                <label for="mobileNoAgent">หมายเลข ROM Agent</label>
+                <input type="tel" class="form-control" id="mobileNoAgent" formControlName="mobileNoAgent" maxlength="10">
               </div>
               <div class="form-group">
                 <label for="amount">ยอดคงเหลือในกระเป๋า ROM Agent</label>
                 <input type="text" class="form-control" id="amount"  formControlName="amount" value="{{this.balance}}">
               </div>
               <small class="text-pink">ยอดคงเหลือในกระเป๋าของคุณไม่พอ กรุณาทำการเติมเงิน
-                <U class="text-secondary" (click)="callService()">กดรีเฟรช</U></small>
+                <U class="text-secondary" (click)="getBalanceRomAgent()">กดรีเฟรช</U></small>
             </form>
           </div>
         </div>

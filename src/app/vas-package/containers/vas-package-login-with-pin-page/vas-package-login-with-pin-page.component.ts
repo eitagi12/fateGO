@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, TokenService, AlertService } from 'mychannel-shared-libs';
+import { HomeService, TokenService, AlertService, REGEX_MOBILE } from 'mychannel-shared-libs';
 import { ROUTE_VAS_PACKAGE_OTP_PAGE, ROUTE_VAS_PACKAGE_SELECT_PACKAGE_PAGE, ROUTE_VAS_PACKAGE_CURRENT_BALANCE_PAGE } from 'src/app/vas-package/constants/route-path.constant';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -13,11 +13,10 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
   templateUrl: './vas-package-login-with-pin-page.component.html',
   styleUrls: ['./vas-package-login-with-pin-page.component.scss']
 })
-
 export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
   loginForm: FormGroup;
   transaction: Transaction;
-  mobileNo: string;
+  mobileNoAgent: string;
   isRom: boolean;
 
   constructor(
@@ -49,11 +48,11 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
     const username = this.tokenService.getUser().username;
     this.http.get(`/api/easyapp/get-rom-by-user?username=${username}`).toPromise()
       .then((res: any) => {
-        if (res && res.data.mobileNo) {
-          this.mobileNo = res.data.mobileNo;
+        if (res && res.data.mobileNo !== '') {
+          this.mobileNoAgent = res.data.mobileNo;
           this.isRom = true;
         } else {
-          this.mobileNo = '';
+          this.mobileNoAgent = '';
           this.isRom = false;
         }
       });
@@ -61,10 +60,14 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
 
   private createForm(): void {
     this.loginForm = this.fb.group({
-      mobileNo: [
-        this.mobileNo, [Validators.required]],
-      pin: [
-        '', [Validators.required]]
+      'mobileNoAgent': [
+        { value: this.mobileNoAgent },
+        Validators.required
+      ],
+      'pinAgent': [
+        '',
+        Validators.required
+      ]
     });
   }
 
@@ -79,21 +82,14 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
   getProfile(): void {
     const requestGetProfile = {
       transactionid: this.genTransactionId(),
-      mobile_no_agent: this.loginForm.value.mobileNo,
+      mobile_no_agent: this.loginForm.value.mobileNoAgent,
       // tslint:disable-next-line: max-line-length
       device_id: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJST00gTW9iaWxlIGFwaSIsImF1ZCI6Imh 0dHBzOi8vbXlyb20uYWlzLmNvLnRoL0FQSS9W MS9zaWdpbiIsInN1YiI6IjA0Ni1iNTc2Mjc4ZC1j MTY4LTQ5YjMtOWYxZi1jODVhYTc4YjgwYzAiL CJtc2lzZG4iOiIwNjIyNDM0MjA4IiwiYWdlbnRpZ CI6IjYyMzgxNDciLCJpYXQiOjE1Mzc0MzE3NjAsI mV4cCI6MTUzNzQzMjY2MH0.kY85wPWDSxy1ll rpejMRJrtKC_PE6F_7fuTMg5y-ZS0'
     };
     this.http.post(`/api/customerportal/rom/get-profile`, requestGetProfile).toPromise()
       .then((res: any) => {
         if (res && res.data.status === 'success') {
-          this.transaction.data = {
-            ...this.transaction.data,
-            romAgent: {
-              mobileNoAgent: this.loginForm.value.mobileNo,
-              agentId: res.data.agent_id
-            }
-          };
-          this.signIn();
+          this.signIn(res.data.agent_id);
         } else {
           this.alertService.error(res.data.message);
         }
@@ -103,19 +99,28 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
       });
   }
 
-  signIn(): void {
+  signIn(agentId: any): void {
     const requestSignIn = {
       transactionid: this.genTransactionId(),
       deviceos: 'Android',
       deviceversion: '5.1.1',
-      mobile_no_agent: this.loginForm.value.mobileNo,
+      mobile_no_agent: this.loginForm.value.mobileNoAgent,
       // tslint:disable-next-line:max-line-length
       deviceid: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJST00gTW9iaWxlIGFwaSIsImF1ZCI6Imh 0dHBzOi8vbXlyb20uYWlzLmNvLnRoL0FQSS9W MS9zaWdpbiIsInN1YiI6IjA0Ni1iNTc2Mjc4ZC1j MTY4LTQ5YjMtOWYxZi1jODVhYTc4YjgwYzAiL CJtc2lzZG4iOiIwNjIyNDM0MjA4IiwiYWdlbnRpZ CI6IjYyMzgxNDciLCJpYXQiOjE1Mzc0MzE3NjAsI mV4cCI6MTUzNzQzMjY2MH0.kY85wPWDSxy1ll rpejMRJrtKC_PE6F_7fuTMg5y-ZS0 ',
-      pin: this.loginForm.value.pin
+      pin: this.loginForm.value.pinAgent
     };
     this.http.post(`/api/customerportal/rom/sign-in`, requestSignIn).toPromise()
       .then((res: any) => {
         if (res && res.data.status === 'success') {
+          this.transaction.data = {
+            ...this.transaction.data,
+            romAgent: {
+              mobileNoAgent: this.loginForm.value.mobileNoAgent,
+              agentId: agentId,
+              tokenType: res.data.token_type,
+              accessToken: res.data.access_token
+            }
+          };
           // check Rom Agent ที่มีข้อมูลแล้ว
           if (this.isRom === true) {
             this.router.navigate([ROUTE_VAS_PACKAGE_CURRENT_BALANCE_PAGE]);

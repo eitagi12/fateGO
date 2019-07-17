@@ -26,9 +26,9 @@
             <form [formGroup]="loginForm">
               <div class="card-body">
                 <input type="tel" id="mobileNoAgent" name="mobileNoAgent" class="form-control mb-3"
-                  placeholder="ระบุเบอร์ ROM Agent" maxlength="10" formControlName="mobileNo">
+                  placeholder="ระบุเบอร์ ROM Agent" maxlength="10" formControlName="mobileNoAgent" value="{{this.mobileNoAgent}}">
                 <input type="password" id="pinAgent" name="pinAgent" class="form-control"
-                  placeholder="กรุณากรอก PIN 4 หลัก" maxlength="4" formControlName="pin">
+                  placeholder="กรุณากรอก PIN 4 หลัก" maxlength="4" formControlName="pinAgent">
               </div>
             </form>
           </div>
