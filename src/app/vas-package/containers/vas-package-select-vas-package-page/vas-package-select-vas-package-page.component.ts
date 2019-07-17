@@ -9,6 +9,7 @@ import { filter } from 'minimatch';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { TransactionType, Transaction } from 'src/app/shared/models/transaction.model';
 import * as moment from 'moment';
+import { isNgTemplate } from '@angular/compiler';
 
 @Component({
   selector: 'app-vas-package-select-vas-package-page',
@@ -26,6 +27,8 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
   shelves: any;
   packageBestSaller: Array<any> = [];
   transaction: Transaction;
+  packageCat: Array<any> = [];
+  tabs: Array<any> = [];
 
   constructor(
     private router: Router,
@@ -44,6 +47,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
     // this.getPackageProducts();
     this.callService();
     this.createForm();
+    //  this.callPriceOptionsService(this.packageBestSaller);
   }
 
   onBack(): void {
@@ -259,7 +263,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
           data.subShelves.map((subShelves: any) => {
             subShelves.items.map((item: any) => {
               if (+item.customAttributes.best_seller_priority > 0) {
-                console.log('item ', item);
+                // console.log('item ', item);
                 item.mainTitle = data.title;
                 if (data.title === 'เน็ตและโทร') {
                   item.icon = 'assets/images/icon/Phone_net.png';
@@ -269,17 +273,58 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
                   item.icon = 'assets/images/icon/Net.png';
                 }
                 this.packageBestSaller.push(item);
+              } else {
+                this.packageCat.push(item);
               }
 
             }).sort((a: any, b: any) => (+a.customAttributes.best_seller_priority) - (b.customAttributes.best_seller_priority));
           });
         });
       }).then(() => {
-        console.log('res', this.packageBestSaller);
+        this.tabs = this.getTabsFormPriceOptions(this.packageCat);
       });
   }
-
   ngOnDestroy(): void {
     this.transactionService.save(this.transaction);
   }
+  getTabsFormPriceOptions(packageCat: any[]): any[] {
+    const tabs = [];
+    const categorys: any = [];
+    packageCat.forEach((ca: any) => {
+      if (!categorys.find((tab: any) => tab.name === ca.customAttributes.category)) {
+        categorys.push({
+          name: ca.customAttributes.category,
+          active: false,
+          packages: []
+        });
+      }
+    });
+    categorys.forEach((cate: any) => {
+      const setPack: any = [];
+      packageCat.forEach((pack: any) => {
+        if (cate.name === pack.customAttributes.category) {
+          setPack.push(pack);
+        }
+      });
+      tabs.push({
+        name: cate.name,
+        active: false,
+        packages: setPack
+      });
+    });
+
+    if (tabs.length > 0) {
+      tabs[0].active = true;
+    }
+    console.log(tabs);
+    return tabs;
+  }
+
+  setActiveTabs(tabCode: any): void {
+    this.tabs = this.tabs.map((tabData) => {
+      tabData.active = !!(tabData.name === tabCode);
+      return tabData;
+    });
+  }
+
 }

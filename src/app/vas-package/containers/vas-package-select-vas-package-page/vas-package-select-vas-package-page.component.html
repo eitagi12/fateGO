@@ -29,10 +29,8 @@
           <div class="text-center">แพ็กเกจขายดี</div>
         </div>
 
-        <app-vas-package-slider
-          [packages]='packageBestSaller'
-          (selectedBestSellerPackage)="onSelectedBestSellerPackage($event)"
-        ></app-vas-package-slider>
+        <app-vas-package-slider [packages]='packageBestSaller'
+          (selectedBestSellerPackage)="onSelectedBestSellerPackage($event)"></app-vas-package-slider>
 
         <div class="text-center">
           แพ็กเกจตาม Life Style
@@ -42,17 +40,30 @@
           <div class="card-header p-0">
             <div class="row">
               <div class="col-12 text-center">
-                <ul class="nav nav-pills">
-                  <div *ngFor="let i of shelves">
+                <!-- <ul class="nav nav-pills">
                     <li class="nav-item p-0 col-6">
-                      <a class="nav-link active" href="#menu1" data-toggle="pill">{{shelves.title}}</a>
+                      <a class="nav-link active" href="#menu1" data-toggle="pill">tit</a>
                     </li>
-                  </div>
-                  </ul>
+                    <li class="nav-item p-0 col-6">
+                      <a class="nav-link active" href="#menu1" data-toggle="pill">asda</a>
+                    </li>
+                  </ul> -->
+                <div class="bg-white" [hidden]="tabs?.length <= 0">
+                  <tabset [justified]="true">
+                    <tab *ngFor="let tab of tabs" [active]="tab.active">
+                      <ng-template tabHeading>
+                        <div class="{{tab.name}}" [ngClass]="{ 'active' : tab.active }"
+                          (click)="setActiveTabs(tab.name)">
+                          <b>{{ tab.name }}</b></div>
+                      </ng-template>
+                    </tab>
+                  </tabset>
+                </div>
               </div>
             </div>
           </div>
         </div>
+        <app-vas-package-tab [categoryTab]="tabs"></app-vas-package-tab>
 
         <div class="tab-content">
           <div class="card-body p-0 tab-pane active" id="menu1">
