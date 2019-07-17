@@ -19,22 +19,21 @@
             <label class="form-check-label" for="chargeType">{{ 'AIS Online Top Up' }} </label>
           </div>
         </div>
-        <form [formGroup]="loginForm">
-          <div class="card text-center mb-3 mt-3">
-            <div class="card-login">
-              <p class="text text-center text-green pt-3">กรุณากรอกข้อมูล</p>
-              <hr>
+        <div class="bg-white mt-2 shadow-sm">
+          <p class="text-center text-green pt-3">กรุณากรอกข้อมูล</p>
+          <hr class="ml-3 mr-3">
+          <div class="pl-3 pr-3 pb-1">
+            <form [formGroup]="loginForm">
               <div class="card-body">
                 <input type="tel" id="mobileNoAgent" name="mobileNoAgent" class="form-control mb-3"
                   placeholder="ระบุเบอร์ ROM Agent" maxlength="10" formControlName="mobileNo">
-                <input type="tel" id="pinAgent" name="pinAgent" class="form-control" placeholder="กรุณากรอก PIN 4 หลัก"
-                  maxlength="4" formControlName="pin">
+                <input type="password" id="pinAgent" name="pinAgent" class="form-control"
+                  placeholder="กรุณากรอก PIN 4 หลัก" maxlength="4" formControlName="pin">
               </div>
-            </div>
+            </form>
           </div>
-        </form>
+        </div>
       </div>
-
     </div>
   </div>
   <mc-footer>

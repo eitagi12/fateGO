@@ -77,6 +77,8 @@ export interface TransactionData {
   device?: Device;
   knoxguard?: KnoxGuard;
   tradeType?: string;
+  // Rom Agent
+  romAgent?: RomAgent;
 }
 
 export interface Condition {
@@ -505,4 +507,9 @@ export interface KnoxGuard {
   duration?: string;
   orderReason?: string;
   userName?: string;
+}
+
+export interface RomAgent {
+  mobileNoAgent?: any;
+  agentId?: any;
 }
