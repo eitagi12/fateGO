@@ -144,12 +144,16 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
   }
 
   callService(): Promise<any> {
-    const trade: any = this.priceOption.trade;
+    const trade: any = this.priceOption.trade || {};
     const privilege: any = this.priceOption.privilege;
     const billingSystem = (this.transaction.data.simCard.billingSystem === 'RTBS')
       ? BillingSystemType.IRB : this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
 
-    return this.callQueryContractFirstPackAndGetPromotionShelveServices(trade, billingSystem, privilege);
+    if (+trade.durationContract === 0) {
+      return this.callGetPromotionShelveService(trade, billingSystem, privilege, {});
+    } else {
+      return this.callQueryContractFirstPackAndGetPromotionShelveServices(trade, billingSystem, privilege);
+    }
   }
 
   callQueryContractFirstPackAndGetPromotionShelveServices(trade: any, billingSystem: string, privilege: any): Promise<any> {
@@ -168,13 +172,19 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
       });
   }
 
-  callGetPromotionShelveService(trade: any, billingSystem: string, privilege: any, contract: any): any[] | PromiseLike<any[]> {
+  callGetPromotionShelveService(trade: any, billingSystem: string, privilege: any, contract?: any): Promise<any> {
     return this.promotionShelveService.getPromotionShelve({
       packageKeyRef: trade.packageKeyRef,
       orderType: `Change Service`,
       billingSystem: billingSystem
     }, +privilege.minimumPackagePrice, +privilege.maximumPackagePrice)
-      .then((promotionShelves: any) => this.filterPromotions(promotionShelves, contract));
+      .then((promotionShelves: any) => {
+        if (+trade.durationContract === 0) {
+          return promotionShelves;
+        } else {
+          return this.filterPromotions(promotionShelves, contract);
+        }
+      });
   }
 
   filterPromotions(promotionShelves: any = [], contract: any = {}): any[] {
@@ -190,7 +200,7 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
 
   }
 
-  filterItemsByFirstPackageAndInGroup(promotion: any, contract: any): any {
+  filterItemsByFirstPackageAndInGroup(promotion: any, contract: any = {}): any {
     return (promotion.items || [])
       .filter((item: {
         value: {
@@ -202,7 +212,7 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
       }) => {
         const contractFirstPack = item.value.customAttributes.priceExclVat
           >= Math.max(contract.firstPackage || 0, contract.minPrice || 0, contract.initialPackage || 0);
-        const inGroup = contract.inPackage.length > 0 ? contract.inPackage
+        const inGroup = (contract.inPackage || []).length > 0 ? contract.inPackage
           .some((inPack: any) => inPack === item.value.customAttributes.productPkg) : true;
         return contractFirstPack && inGroup;
       });

@@ -162,7 +162,7 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
 
   callService(): Promise<any> {
     this.pageLoadingService.openLoading();
-    const trade: any = this.priceOption.trade;
+    const trade: any = this.priceOption.trade || {};
     const privilege: any = this.priceOption.privilege;
     const billingSystem = (this.transaction.data.simCard.billingSystem === 'RTBS')
     ? BillingSystemType.IRB : this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
@@ -179,8 +179,11 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
     }, +privilege.minimumPackagePrice, +privilege.maximumPackagePrice)
     .then((promotionShelves: any) => {
       const contract = this.transaction.data.contractFirstPack || {};
-
-      return this.filterPromotions(promotionShelves, contract);
+      if (+trade.durationContract === 0) {
+        return promotionShelves;
+      } else {
+        return this.filterPromotions(promotionShelves, contract);
+      }
     });
   }
 
@@ -202,7 +205,7 @@ export class DeviceOrderAisExistingSelectPackagePageComponent implements OnInit,
         const customAttributes: any = item && (item.value || {}).customAttributes || {};
         const contractFirstPack = customAttributes.priceExclVat
           >= Math.max(contract.firstPackage || 0, contract.minPrice || 0, contract.initialPackage || 0);
-        const inGroup = contract.inPackage.length > 0 ? contract.inPackage
+        const inGroup = (contract.inPackage || []).length > 0 ? contract.inPackage
           .some((inPack: any) => inPack === customAttributes.productPkg) : true;
         return contractFirstPack && inGroup && !this.mathCurrentPackage(customAttributes);
       });
