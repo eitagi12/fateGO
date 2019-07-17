@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, OnChanges, Input } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnChanges, Input, EventEmitter, Output } from '@angular/core';
 declare var $: any;
 
 @Component({
@@ -8,6 +8,7 @@ declare var $: any;
 })
 export class VasPackageSliderComponent implements OnInit, OnChanges {
   @Input() packages: any;
+  @Output() selectedBestSellerPackage: EventEmitter<any> = new EventEmitter<any>();
 
   @ViewChild('slider')
   slider: ElementRef;
@@ -28,6 +29,10 @@ export class VasPackageSliderComponent implements OnInit, OnChanges {
         .remove();
       this.createSlider();
     }, 50);
+  }
+
+  onSelectedPackage(value: any): void {
+    this.selectedBestSellerPackage.emit(value);
   }
 
   private createSlider(): void {
