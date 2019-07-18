@@ -56,7 +56,7 @@ export class VasPackageResultPageComponent implements OnInit {
     };
     this.http.post(`/api/customerportal/changepromotion/changepro`, requestCreateVasPack).toPromise()
       .then((resp: any) => {
-        if (resp.data.status === 'SUCCESS') {
+        if (resp.data.STATUS === 'OK') {
           this.success = true;
           this.pageLoadingService.closeLoading();
         } else {
