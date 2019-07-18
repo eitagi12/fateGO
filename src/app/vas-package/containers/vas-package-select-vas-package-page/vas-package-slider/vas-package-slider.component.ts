@@ -1,4 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef, OnChanges, Input, EventEmitter, Output } from '@angular/core';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 declare var $: any;
 
 @Component({
@@ -11,12 +12,19 @@ export class VasPackageSliderComponent implements OnInit, OnChanges {
   @ViewChild('slider')
   slider: ElementRef;
 
+  @ViewChild('detailTemplate')
+  detailTemplate: any;
+  modalRef: BsModalRef;
+  detail: string;
+
   @Input() packages: any;
   @Output() selectedBestSellerPackage: EventEmitter<any> = new EventEmitter<any>();
 
   private $owl: any;
 
-  constructor() { }
+  constructor(
+    private modalService: BsModalService,
+  ) { }
 
   ngOnInit(): void {
     this.createSlider();
@@ -55,5 +63,10 @@ export class VasPackageSliderComponent implements OnInit, OnChanges {
       }
     });
     this.slider.nativeElement.style.display = 'block';
+  }
+
+  onOpenDetail(detail: any): void {
+    this.detail = detail;
+    this.modalRef = this.modalService.show(this.detailTemplate);
   }
 }

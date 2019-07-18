@@ -20,7 +20,9 @@
                 <button class="btn btn-success" (click)="onSelectedPackage(package)">ขายเลย</button>
               </div>
               <div>
-                <img class="icon-sales" src="assets/images/icon/EasyP1_23072561-17.png">
+                <span  (click)="onOpenDetail(package.customAttributes?.description_th)">
+                    <img class="icon-sales" src="assets/images/icon/EasyP1_23072561-17.png" class="icon-sales" >
+                  </span>
               </div>
             </div>
           </div>
@@ -29,3 +31,12 @@
     </div>
   </div>
 </div>
+
+<ng-template #detailTemplate>
+    <div class="modal-body" [innerHTML]="detail"></div>
+    <div class="modal-footer">
+      <div class="w-100 text-center">
+        <button class="btn btn-success px-5" (click)="modalRef.hide()" translate>ปิด</button>
+      </div>
+    </div>
+  </ng-template>
