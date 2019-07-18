@@ -9,6 +9,7 @@ export class VasPackageTabComponent implements OnInit, OnChanges {
   @Input() categoryTab: any;
   @Input() index: any;
   @Input() transactionType: string;
+  @Input() nType: string;
   @Output() selectedPackage: EventEmitter<any> = new EventEmitter<any>();
 
   tabs: Array<any> = [];
@@ -23,9 +24,11 @@ export class VasPackageTabComponent implements OnInit, OnChanges {
   constructor() { }
 
   ngOnInit(): void {
+    console.log('nType =>>> ', this.nType);
   }
 
   ngOnChanges(): void {
+    console.log('nType =>>> ', this.nType);
     console.log('categoryTab', this.categoryTab);
     this.tabs = this.getTabsFormPriceOptions(this.categoryTab || []);
     this.selectedTab = this.tabs[0];

@@ -53,6 +53,7 @@
             [index]="selectedTab?.index"
             [categoryTab]="selectedTab?.packages"
             [transactionType]="transaction.data.transactionType"
+            [nType]="nType"
             (selectedPackage)="onSelectPackage($event)">
           </app-vas-package-tab>
         </div>

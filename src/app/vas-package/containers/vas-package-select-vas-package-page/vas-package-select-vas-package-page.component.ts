@@ -33,6 +33,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
   selectedTab: any;
   tabSorted: Array<any> = [];
   keySort: Array<string> = ['', '', '', ''];
+  nType: string;
 
   constructor(
     private router: Router,
@@ -231,10 +232,18 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
 
     if (this.mobileNo) {
       this.mobileForm.controls.mobileNo.setValue(this.mobileNo);
+      this.getNTypeMobileNo(this.mobileNo).then((nType) => {
+        this.nType = nType;
+      });
     }
 
     this.mobileForm.valueChanges.subscribe((value) => {
       this.mobileNo = value.mobileNo;
+      if (this.mobileForm.controls.mobileNo.valid) {
+        this.getNTypeMobileNo(this.mobileNo).then((nType) => {
+            this.nType = nType;
+        });
+      }
     });
   }
 
@@ -317,7 +326,6 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
       });
       newTabs[0].active = true;
     }
-    console.log(newTabs);
     return newTabs;
   }
 
@@ -339,6 +347,18 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
       return tabData;
     });
     this.selectedTab = this.tabs.filter(tabData => tabData.name === tabCode)[0];
+  }
+
+  getNTypeMobileNo(mobileNo: string): any {
+    // if (this.mobileNo) {
+    //   this.getNTypeMobileNo(this.mobileNo).then((nType) => {
+    //     console.log(nType);
+    //     this.nType = nType;
+    //   });
+    // }
+    return this.http.get(`/api/customerportal/asset/${mobileNo}/profile`).toPromise().then((resProfile: any) => {
+      return resProfile.data.product;
+    });
   }
 
 }
