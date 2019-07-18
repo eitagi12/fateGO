@@ -37,9 +37,7 @@
               </div>
               <div class="col-3 speed-block m-0 mr-1 py-2">{{package.customAttributes.internet_valume}}</div>
               <div class="col-3 period-block m-0 mr-1 py-2">{{package.customAttributes.package_period}}</div>
-              <div class="col-2 btn-block m-auto">
-                <button class="btn btn-success" (click)="onSelectedPackage(package)">ขายเลย</button>
-              </div>
+              <button class="col-2 btn-block m-auto btn btn-success" (click)="onSelectedPackage(package)">ขายเลย</button>
             </div>
           </div>
           <div *ngIf="filedPrograms[index] && filedPrograms[index].length === 4">
