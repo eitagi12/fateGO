@@ -88,4 +88,15 @@ export class VasPackageTabComponent implements OnInit, OnChanges {
       }
     }
   }
+
+  togglePackageDetail(pack: any): void {
+    this.selectedTab.packages.map(p => {
+      if (p.id === pack.id) {
+        p.showDetail = !p.showDetail;
+      } else {
+        p.showDetail = false;
+      }
+      return p;
+    });
+  }
 }
