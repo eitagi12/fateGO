@@ -254,7 +254,8 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
           data.subShelves.map((subShelves: any) => {
             const listPackage = this.filterRomPackage(subShelves.items);
             listPackage.map((item: any) => {
-              item.idCategory = data.id; // data.priority;
+              item.idCategory = data.priority;
+              // console.log(item.idCategory);
               if (+item.customAttributes.best_seller_priority > 0) {
                 // console.log('item ', item);
                 item.mainTitle = data.title;
@@ -324,6 +325,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
       });
       newTabs[0].active = true;
     }
+    console.log(newTabs);
     return newTabs;
   }
 
