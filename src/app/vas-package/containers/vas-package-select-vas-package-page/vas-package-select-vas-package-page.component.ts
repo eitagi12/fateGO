@@ -232,15 +232,16 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
       this.mobileForm.controls.mobileNo.setValue(this.mobileNo);
       this.getNTypeMobileNo(this.mobileNo).then((nType) => {
         this.nType = nType;
-      });
+      }).then(() => this.pageLoadingService.openLoading());
     }
 
     this.mobileForm.valueChanges.subscribe((value) => {
       this.mobileNo = value.mobileNo;
       if (this.mobileForm.controls.mobileNo.valid) {
+        this.pageLoadingService.openLoading();
         this.getNTypeMobileNo(this.mobileNo).then((nType) => {
             this.nType = nType;
-        });
+        }).then(() => this.pageLoadingService.openLoading());
       }
     });
   }

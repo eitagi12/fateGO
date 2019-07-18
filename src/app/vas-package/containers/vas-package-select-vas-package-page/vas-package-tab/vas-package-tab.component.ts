@@ -37,9 +37,11 @@ export class VasPackageTabComponent implements OnInit, OnChanges {
     const tabs = [];
     const categorys: any = [];
     if (this.nType) {
-      packageCat.filter((pack) => [...pack.customAttributes.allow_ntype.split(',')].includes(this.nType));
+      packageCat = packageCat.filter((pack) => {
+        return [...pack.customAttributes.allow_ntype.split(',')].includes(this.nType);
+      });
     }
-    console.log('index', this.index);
+    // console.log('packageCat', packageCat);
     packageCat.forEach((ca: any) => {
       if (!categorys.find((tab: any) => tab.name === ca.customAttributes.sub_category)) {
         categorys.push({
