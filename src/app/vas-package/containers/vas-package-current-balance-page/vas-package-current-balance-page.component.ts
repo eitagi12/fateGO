@@ -100,8 +100,9 @@ export class VasPackageCurrentBalancePageComponent implements OnInit {
   }
 
   checkBalanceRomWithPricePackage(balanceRomAgent: string): void {
-    const regularPrice = '399';
-    if (+balanceRomAgent >= +regularPrice) {
+    const regularPrice = this.transaction.data.onTopPackage.customAttributes.regular_price;
+    const priceRomPackage = regularPrice ? regularPrice : '';
+    if (+balanceRomAgent >= +priceRomPackage) {
       this.balanceBuyPackage = true;
     } else {
       this.balanceBuyPackage = false;

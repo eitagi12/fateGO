@@ -63,8 +63,8 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
       .then((res: any) => {
         if (res && res.data.mobileNo !== '') {
           this.mobileNoAgent = res.data.mobileNo;
-          this.isRom = true;
           this.loginForm.controls.mobileNoAgent.setValue(this.mobileNoAgent);
+          this.isRom = true;
         } else {
           this.mobileNoAgent = '';
           this.isRom = false;
@@ -75,10 +75,7 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
   private createForm(): void {
     this.loginForm = this.fb.group({
       'mobileNoAgent': ['', Validators.compose([Validators.required, Validators.pattern(/^0[6-9]{1}[0-9]{8}/)])],
-      'pinAgent': [
-        '',
-        Validators.required
-      ]
+      'pinAgent': ['', Validators.required]
     });
 
     this.loginForm.valueChanges.subscribe((value) => {
@@ -99,11 +96,11 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
     const requestGetProfile = {
       transactionid: this.genTransactionId(),
       mobile_no_agent: this.loginForm.controls.mobileNoAgent.value,
-      // device_id: deviceInfo.udid
+      device_id: deviceInfo.udid
 
       // mock data for PC
       // tslint:disable-next-line:max-line-length
-      device_id: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJST00gTW9iaWxlIGFwaSIsImF1ZCI6Imh 0dHBzOi8vbXlyb20uYWlzLmNvLnRoL0FQSS9W MS9zaWdpbiIsInN1YiI6IjA0Ni1iNTc2Mjc4ZC1j MTY4LTQ5YjMtOWYxZi1jODVhYTc4YjgwYzAiL CJtc2lzZG4iOiIwNjIyNDM0MjA4IiwiYWdlbnRpZ CI6IjYyMzgxNDciLCJpYXQiOjE1Mzc0MzE3NjAsI mV4cCI6MTUzNzQzMjY2MH0.kY85wPWDSxy1ll rpejMRJrtKC_PE6F_7fuTMg5y-ZS0'
+      // device_id: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJST00gTW9iaWxlIGFwaSIsImF1ZCI6Imh 0dHBzOi8vbXlyb20uYWlzLmNvLnRoL0FQSS9W MS9zaWdpbiIsInN1YiI6IjA0Ni1iNTc2Mjc4ZC1j MTY4LTQ5YjMtOWYxZi1jODVhYTc4YjgwYzAiL CJtc2lzZG4iOiIwNjIyNDM0MjA4IiwiYWdlbnRpZ CI6IjYyMzgxNDciLCJpYXQiOjE1Mzc0MzE3NjAsI mV4cCI6MTUzNzQzMjY2MH0.kY85wPWDSxy1ll rpejMRJrtKC_PE6F_7fuTMg5y-ZS0'
     };
     this.http.post(`/api/customerportal/rom/get-profile`, requestGetProfile).toPromise()
       .then((res: any) => {
@@ -121,17 +118,17 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
   signIn(agentId: any, deviceInfo: any): void {
     const requestSignIn = {
       transactionid: this.genTransactionId(),
-      // deviceos: deviceInfo.device_os,
-      // deviceversion: deviceInfo.device_version,
+      deviceos: deviceInfo.device_os,
+      deviceversion: deviceInfo.device_version,
       mobile_no_agent: this.loginForm.controls.mobileNoAgent.value,
-      // deviceid: deviceInfo.udid,
+      deviceid: deviceInfo.udid,
       pin: this.loginForm.value.pinAgent,
 
       // mock data for PC
-      deviceos: 'Android',
-      deviceversion: '5.1.1',
+      // deviceos: 'Android',
+      // deviceversion: '5.1.1',
       // tslint:disable-next-line:max-line-length
-      deviceid: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJST00gTW9iaWxlIGFwaSIsImF1ZCI6Imh 0dHBzOi8vbXlyb20uYWlzLmNvLnRoL0FQSS9W MS9zaWdpbiIsInN1YiI6IjA0Ni1iNTc2Mjc4ZC1j MTY4LTQ5YjMtOWYxZi1jODVhYTc4YjgwYzAiL CJtc2lzZG4iOiIwNjIyNDM0MjA4IiwiYWdlbnRpZ CI6IjYyMzgxNDciLCJpYXQiOjE1Mzc0MzE3NjAsI mV4cCI6MTUzNzQzMjY2MH0.kY85wPWDSxy1ll rpejMRJrtKC_PE6F_7fuTMg5y-ZS0 ',
+      // deviceid: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJST00gTW9iaWxlIGFwaSIsImF1ZCI6Imh 0dHBzOi8vbXlyb20uYWlzLmNvLnRoL0FQSS9W MS9zaWdpbiIsInN1YiI6IjA0Ni1iNTc2Mjc4ZC1j MTY4LTQ5YjMtOWYxZi1jODVhYTc4YjgwYzAiL CJtc2lzZG4iOiIwNjIyNDM0MjA4IiwiYWdlbnRpZ CI6IjYyMzgxNDciLCJpYXQiOjE1Mzc0MzE3NjAsI mV4cCI6MTUzNzQzMjY2MH0.kY85wPWDSxy1ll rpejMRJrtKC_PE6F_7fuTMg5y-ZS0 ',
     };
     this.http.post(`/api/customerportal/rom/sign-in`, requestSignIn).toPromise()
       .then((res: any) => {
@@ -147,7 +144,8 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
             }
           };
           // check Rom Agent ที่มีข้อมูลแล้ว
-          if (this.isRom === true) {
+          const mobileNoAgentCurrent = this.loginForm.controls.mobileNoAgent.value;
+          if (this.isRom === true && mobileNoAgentCurrent === this.mobileNoAgent) {
             this.router.navigate([ROUTE_VAS_PACKAGE_CURRENT_BALANCE_PAGE]);
           } else {
             this.router.navigate([ROUTE_VAS_PACKAGE_OTP_PAGE]);
