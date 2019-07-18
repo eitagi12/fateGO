@@ -50,6 +50,7 @@ export class VasPackageOtpPageComponent implements OnInit, OnDestroy {
   public mobileNo: any;
   public isRomAgent: boolean;
   public transactionid: string;
+  public mobileNoAgent: string;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -63,6 +64,8 @@ export class VasPackageOtpPageComponent implements OnInit, OnDestroy {
   ) {
     this.transaction = this.transactionService.load();
     this.mobileNo = this.transaction.data.simCard.mobileNo;
+    this.mobileNoAgent = this.transaction && this.transaction.data && this.transaction.data.romAgent
+      && this.transaction.data.romAgent.mobileNoAgent ? this.transaction.data.romAgent.mobileNoAgent : '';
   }
 
   ngOnInit(): void {
@@ -109,7 +112,7 @@ export class VasPackageOtpPageComponent implements OnInit, OnDestroy {
   public getRomOTP(): void {
     const requestGetOTP: IRequestGetOTP = {
       transactionid: this.genTransactionId(),
-      mobile_no_agent: this.mobileNo
+      mobile_no_agent: this.mobileNoAgent
     };
     this.http.post(`/api/customerportal/rom/get-otp`, requestGetOTP).toPromise().then((res: any) => {
       const responseGetOTP: IResponseGetOTP = res.data;
@@ -130,13 +133,11 @@ export class VasPackageOtpPageComponent implements OnInit, OnDestroy {
 
   public getCustomerOTP(): void {
     this.http.post(`/api/customerportal/newRegister/${this.mobileNo}/sendOTP`, { digits: '5' }).toPromise().then((resp: any) => {
-      console.log('resp =>', resp);
       if (resp && resp.data) {
         this.transactionid = resp.data.transactionID;
         this.pageLoadingService.closeLoading();
       }
     }).catch((error) => {
-      console.log('error =>', error);
       this.pageLoadingService.closeLoading();
       this.alertError(error);
     });
@@ -150,7 +151,7 @@ export class VasPackageOtpPageComponent implements OnInit, OnDestroy {
   public verifyRomOTP(): void {
     const requestVerifyOTP: IRequestVerifyOTP = {
       transactionid: this.transactionid,
-      mobile_no_agent: this.mobileNo,
+      mobile_no_agent: this.mobileNoAgent,
       otp: this.formOTP.controls.verifyOTP.value
     };
     this.http.post(`/api/customerportal/rom/verify-otp`, requestVerifyOTP).toPromise().then((res: any) => {
@@ -175,29 +176,7 @@ export class VasPackageOtpPageComponent implements OnInit, OnDestroy {
     };
     this.http.post(`/api/customerportal/newRegister/${this.mobileNo}/verifyOTP`, requestVerifyOTP).toPromise()
       .then((res: any) => {
-        const requestCreateVasPack: any = {
-          msisdn: this.mobileNo,
-          accessNum: '',
-          packId: '',
-          ascCode: '',
-          startDate: '',
-          destinationServer: '',
-          refNo: ''
-        };
-        this.http.post(`/api/salesportal/changepromotion/changepro`, requestCreateVasPack).toPromise()
-          .then((resp: any) => {
-            if (resp.data.status === 'SUCCESS') {
-              this.pageLoadingService.closeLoading();
-              this.router.navigate([ROUTE_VAS_PACKAGE_RESULT_PAGE]);
-            } else {
-              this.pageLoadingService.closeLoading();
-              this.alertService.error('ไม่สามารถทำรายการได้ กรุณาติดต่อ CallCenter 020789123 ค่ะ');
-            }
-          })
-          .catch((error) => {
-            this.pageLoadingService.closeLoading();
-            this.alertService.error('ไม่สามารถทำรายการได้ กรุณาติดต่อ CallCenter 020789123 ค่ะ');
-          });
+        this.router.navigate([ROUTE_VAS_PACKAGE_RESULT_PAGE]);
       })
       .catch((error: any) => {
         this.pageLoadingService.closeLoading();
@@ -207,7 +186,7 @@ export class VasPackageOtpPageComponent implements OnInit, OnDestroy {
 
   public saveROM(): void {
     const requestSaveROM = {
-      mobileNo: this.mobileNo,
+      mobileNo: this.mobileNoAgent,
       username: this.tokenService.getUser().username
     };
     this.http.post(`/api/easyapp/save-rom-number`, requestSaveROM).toPromise().then((res: any) => {

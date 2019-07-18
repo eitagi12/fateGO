@@ -93,33 +93,4 @@ export class VasPackageCurrentBalancePageComponent implements OnInit {
     this.router.navigate([ROUTE_VAS_PACKAGE_RESULT_PAGE]);
   }
 
-  // addVasPackageByRomAgent(): void {
-  //   this.mobileNoAgent = this.transaction.data.romAgent.mobileNoAgent;
-  //   const requestVasPackage = {
-  //     ssid: this.genTransactionId(),
-  //     msisdn: `66${this.mobileNoAgent.substring(1, this.mobileNoAgent.length)}`,
-  //     imsi: '520036001697648',
-  //     vlr: '66923011104',
-  //     shortcode: '*226',
-  //     serviceNumber: '*226',
-  //     menuLevel: '*1689*0964220452*260',
-  //     cos: '600001',
-  //     spName: 'awn',
-  //     brandId: '4',
-  //     language: '1',
-  //     mobileLocation: '3OCCB502',
-  //     customerState: '1',
-  //     servicePackageId: '6',
-  //   };
-  //   this.pageLoadingService.openLoading();
-  //   this.http.post('api/customerportal/rom/vas-package', requestVasPackage).toPromise()
-  //     .then((res: any) => {
-  //       this.pageLoadingService.closeLoading();
-  //     })
-  //     .catch((err) => {
-  //       this.alertService.error(err);
-  //       this.pageLoadingService.closeLoading();
-  //     });
-  // }
-
 }
