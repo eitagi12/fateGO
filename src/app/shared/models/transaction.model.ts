@@ -119,7 +119,7 @@ export interface Customer {
   idCardNo: string;
   idCardType: string;
   titleName: string;
-  titleNameEN: string;
+  titleNameEN?: string;
   firstName: string;
   lastName: string;
   birthdate: string;
