@@ -4,11 +4,11 @@
       <div class="card">
         <div class="card-body">
           <div class="row d-flex">
-            <div class="col-12 align-self-center text-center">
+            <div class="col-1 text-center">
               <img class="icon-sales mr-2" src="{{package?.icon}}">
-              {{package.mainTitle}}
             </div>
-            <div class="col-12 text-center">
+            <div class="col-10 text-center">
+                {{package.mainTitle}}
               <div class="text-lime ">
                 {{package.customAttributes.sub_category}}
               </div>
@@ -19,12 +19,12 @@
               <div class="small">
                 <button class="btn btn-success" (click)="onSelectedPackage(package)">ขายเลย</button>
               </div>
-              <div>
-                <span  (click)="onOpenDetail(package.customAttributes?.description_th)">
-                    <img class="icon-sales" src="assets/images/icon/EasyP1_23072561-17.png" class="icon-sales" >
-                  </span>
-              </div>
             </div>
+                <div class="col-1 text-center">
+                  <span  (click)="onOpenDetail(package.customAttributes?.description_th)">
+                      <img class="icon-s" src="assets/images/icon/EasyP1_23072561-17.png" >
+                    </span>
+                </div>
           </div>
         </div>
       </div>

@@ -16,7 +16,7 @@ import { isNgTemplate } from '@angular/compiler';
   templateUrl: './vas-package-select-vas-package-page.component.html',
   styleUrls: ['./vas-package-select-vas-package-page.component.scss']
 })
-export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestroy {
+export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestroy, OnChanges {
 
   mobileForm: FormGroup;
   mobileNo: string;
@@ -52,6 +52,10 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
   ngOnInit(): void {
     this.callService();
     this.createForm();
+  }
+
+  ngOnChanges(): void {
+    this.filterPackageByNType();
   }
 
   onBack(): void {
@@ -340,6 +344,14 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
       }
     } catch (error) {
       return listPackage;
+    }
+  }
+
+  filterPackageByNType(): any {
+    if (this.nType) {
+      this.packagesBestSellerItem = this.packagesBestSellerItem.filter((pack) => {
+        return [...pack.customAttributes.allow_ntype.split(',')].includes(this.nType);
+      });
     }
   }
 
