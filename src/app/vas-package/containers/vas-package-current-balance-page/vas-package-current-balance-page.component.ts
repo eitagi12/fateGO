@@ -7,7 +7,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { HttpClient } from '@angular/common/http';
 import * as moment from 'moment';
-const Moment = moment;
+declare let window: any;
 @Component({
   selector: 'app-vas-package-current-balance-page',
   templateUrl: './vas-package-current-balance-page.component.html',
@@ -46,7 +46,11 @@ export class VasPackageCurrentBalancePageComponent implements OnInit {
   }
 
   onBack(): void {
-    window.location.href = '/sales-portal/easyapp/new-vas/packlist';
+    if (window.aisNative) {
+      window.aisNative.onAppBack();
+    } else {
+      window.webkit.messageHandlers.onAppBack.postMessage('');
+    }
   }
 
   onHome(): void {
