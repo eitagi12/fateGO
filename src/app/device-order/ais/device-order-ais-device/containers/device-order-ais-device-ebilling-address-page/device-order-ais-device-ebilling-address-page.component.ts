@@ -133,11 +133,7 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
     console.log(' this.validateCustomerKeyInForm', this.validateCustomerKeyInForm.value);
   }
   checkIdCardNo(): boolean {
-    const customer = this.transaction.data
-      && this.transaction.data.customer
-      && this.transaction.data.customer.idCardNo ? this.transaction.data.customer.idCardNo : {};
-    console.log('checkIdCardNo', !!customer);
-    if (customer) {
+    if (this.transaction.data && this.transaction.data.customer &&  this.transaction.data.customer.idCardNo) {
       console.log('true');
       return true;
     } else {

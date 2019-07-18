@@ -59,7 +59,9 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    const customer = this.transaction.data.customer;
+    // tslint:disable-next-line:max-line-length
+    const customer = this.transaction.data && this.transaction.data.billingInformation && this.transaction.data.billingInformation.billDeliveryAddress ?
+      this.transaction.data.billingInformation.billDeliveryAddress : this.transaction.data.customer;
 
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.customerAddress = this.utils.getCurrentAddress({
@@ -123,7 +125,7 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit {
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_PAYMENT_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_PAYMENT_PAGE], { queryParams: { ebilling: true } });
   }
 
   onNext(): void {
