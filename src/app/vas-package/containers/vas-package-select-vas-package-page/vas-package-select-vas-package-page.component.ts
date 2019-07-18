@@ -45,7 +45,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
     private pageLoadingService: PageLoadingService
   ) {
     this.transaction = this.transactionService.load();
-    this.mobileNo = this.transaction.data.simCard.mobileNo;
+    this.mobileNo = this.transaction.data.simCard ? this.transaction.data.simCard.mobileNo : '';
   }
 
   ngOnInit(): void {
@@ -247,7 +247,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
           data.subShelves.map((subShelves: any) => {
             const listPackage = this.filterRomPackage(subShelves.items);
             listPackage.map((item: any) => {
-              item.idCategory = data.id;
+              item.idCategory = data.priority;
               if (+item.customAttributes.best_seller_priority > 0) {
                 // console.log('item ', item);
                 item.mainTitle = data.title;
