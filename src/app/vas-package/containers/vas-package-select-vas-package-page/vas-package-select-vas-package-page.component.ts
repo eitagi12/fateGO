@@ -229,6 +229,10 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
       'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(/^0[6-9]{1}[0-9]{8}/)])],
     });
 
+    if (this.mobileNo) {
+      this.mobileForm.controls.mobileNo.setValue(this.mobileNo);
+    }
+
     this.mobileForm.valueChanges.subscribe((value) => {
       this.mobileNo = value.mobileNo;
     });
