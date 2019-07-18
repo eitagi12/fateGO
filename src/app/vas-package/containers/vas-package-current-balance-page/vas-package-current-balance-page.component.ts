@@ -22,6 +22,7 @@ export class VasPackageCurrentBalancePageComponent implements OnInit {
   agentId: string;
   tokenType: string;
   accessToken: string;
+  balanceBuyPackage: boolean;
 
   constructor(
     private router: Router,
@@ -53,7 +54,6 @@ export class VasPackageCurrentBalancePageComponent implements OnInit {
   }
 
   createForm(): void {
-    this.mobileNoAgent = this.transaction.data.romAgent.mobileNoAgent;
     this.romAgentForm = this.fb.group({
       'mobileNoAgent': [
         { value: this.mobileNoAgent, disabled: true },
@@ -82,6 +82,7 @@ export class VasPackageCurrentBalancePageComponent implements OnInit {
       .then((res: any) => {
         if (res && res.data.status === 'success') {
           this.balance = res.data.balance ? res.data.balance : '';
+          this.checkBalanceRomWithPricePackage(this.balance);
           this.pageLoadingService.closeLoading();
         } else {
           this.balance = 'ไม่สามารถแสดงยอดเงินได้';
@@ -92,6 +93,15 @@ export class VasPackageCurrentBalancePageComponent implements OnInit {
         this.balance = 'ไม่สามารถแสดงยอดเงินได้';
         this.pageLoadingService.closeLoading();
       });
+  }
+
+  checkBalanceRomWithPricePackage(balanceRomAgent: string): void {
+    const regularPrice = '399';
+    if (+balanceRomAgent >= +regularPrice) {
+      this.balanceBuyPackage = true;
+    } else {
+      this.balanceBuyPackage = false;
+    }
   }
 
   onNext(): void {
