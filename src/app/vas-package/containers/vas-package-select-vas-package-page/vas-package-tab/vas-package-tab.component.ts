@@ -93,7 +93,7 @@ export class VasPackageTabComponent implements OnInit, OnChanges {
     }
   }
 
-  showDetailColumn(name: string, customAttributes: any): boolean {
+  showDetailColumn(name: string, customAttributes: any): string {
     if (name === 'บันเทิงจัดเต็ม') {
       return customAttributes.content;
     } else if (name === 'เน้นคุย') {

@@ -36,7 +36,7 @@
               <div class="col-3 price-block m-0 py-2" [ngClass]="{'price-block-rotate': package?.showDetail}" (click)="togglePackageDetail(package)">
                 {{package.customAttributes.regular_price? package.customAttributes.regular_price : package.customAttributes.customer_price}}
               </div>
-              <div class="col-3 speed-block m-0 py-2">{{package.customAttributes.internet_valume}}</div>
+              <div class="col-3 speed-block m-0 py-2">{{showDetailColumn(categoryTab.name, package.customAttributes)}}</div>
               <div class="col-3 period-block m-0 py-2">{{package.customAttributes.package_period}}</div>
               <div class="col-3 btn-block m-0 py-2" (click)="onSelectedPackage(package)">ขายเลย</div>
               <div *ngIf="package?.showDetail" class="col-12 m-0 mr-1 py-2">{{package.customAttributes.description_th}}</div>
