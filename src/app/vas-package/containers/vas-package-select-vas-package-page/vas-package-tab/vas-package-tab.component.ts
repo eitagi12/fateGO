@@ -7,7 +7,6 @@ import { Component, OnInit, Input, OnChanges, EventEmitter, Output } from '@angu
 })
 export class VasPackageTabComponent implements OnInit, OnChanges {
   @Input() categoryTab: any;
-  @Input() index: any;
   @Input() transactionType: string;
   @Input() nType: string;
   @Output() selectedPackage: EventEmitter<any> = new EventEmitter<any>();
@@ -20,24 +19,24 @@ export class VasPackageTabComponent implements OnInit, OnChanges {
     ['ค่าบริการ บ.', 'เน็ตรวม', 'โทร', 'จำนวนวัน']
   ];
   selectedTab: any;
+  // @Input()
+  index: number = 0;
 
   constructor() { }
 
   ngOnInit(): void {
-    console.log('nType =>>> ', this.nType);
   }
 
   ngOnChanges(): void {
-    console.log('nType =>>> ', this.nType);
-    console.log('categoryTab', this.categoryTab);
-    this.tabs = this.getTabsFormPriceOptions(this.categoryTab || []);
+    this.index = this.categoryTab ? this.categoryTab.index || 0 : 0;
+    const catePackages = this.categoryTab ? this.categoryTab.packages || [] : [];
+    this.tabs = this.getTabsFormPriceOptions(catePackages);
     this.selectedTab = this.tabs[0];
   }
 
   getTabsFormPriceOptions(packageCat: any[]): any[] {
     const tabs = [];
     const categorys: any = [];
-    console.log('index', this.index);
     packageCat.forEach((ca: any) => {
       if (!categorys.find((tab: any) => tab.name === ca.customAttributes.sub_category)) {
         categorys.push({
@@ -73,7 +72,7 @@ export class VasPackageTabComponent implements OnInit, OnChanges {
       return tabData;
     });
     this.selectedTab = this.tabs.filter(tabData => tabData.name === tabCode)[0];
-    console.log('package', this.selectedTab.packages);
+    // console.log('package', this.selectedTab.packages);
   }
   onSelectedPackage(value: any): void {
     this.selectedPackage.emit(value);
@@ -86,6 +85,16 @@ export class VasPackageTabComponent implements OnInit, OnChanges {
       } else {
         return customAttributes.customer_price;
       }
+    }
+  }
+
+  showDetailColumn(name: string, customAttributes: any): boolean {
+    if (name === 'บันเทิงจัดเต็ม') {
+      return customAttributes.content;
+    } else if (name === 'เน้นคุย') {
+      return customAttributes.call_minute;
+    } else {
+      return customAttributes.internet_valume;
     }
   }
 }

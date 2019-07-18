@@ -256,7 +256,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
           data.subShelves.map((subShelves: any) => {
             const listPackage = this.filterRomPackage(subShelves.items);
             listPackage.map((item: any) => {
-              item.idCategory = data.priority;
+              item.idCategory = data.id; // data.priority;
               if (+item.customAttributes.best_seller_priority > 0) {
                 // console.log('item ', item);
                 item.mainTitle = data.title;

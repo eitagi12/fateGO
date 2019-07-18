@@ -30,19 +30,19 @@
               {{filedProgram}}
             </div>
           </div>
-          <div *ngIf="filedPrograms[index] && filedPrograms[index].length === 3">
+          <div *ngIf="filedPrograms[index] && filedPrograms[index].length === 3 && selectedTab && selectedTab.packages">
             <div class="row m-0 mt-1" *ngFor="let package of selectedTab.packages">
               <div class="col-3 price-block m-0 mr-1 py-2">
                 {{package.customAttributes.regular_price? package.customAttributes.regular_price : package.customAttributes.customer_price}}
               </div>
-              <div class="col-3 speed-block m-0 mr-1 py-2">{{package.customAttributes.internet_valume}}</div>
+              <div class="col-3 speed-block m-0 mr-1 py-2">{{showDetailColumn(categoryTab.name, package.customAttributes)}}</div>
               <div class="col-3 period-block m-0 mr-1 py-2">{{package.customAttributes.package_period}}</div>
               <div class="col-2 btn-block m-auto">
                 <button class="btn btn-success" (click)="onSelectedPackage(package)">ขายเลย</button>
               </div>
             </div>
           </div>
-          <div *ngIf="filedPrograms[index] && filedPrograms[index].length === 4">
+          <div *ngIf="filedPrograms[index] && filedPrograms[index].length === 4 && selectedTab && selectedTab.packages">
             <div class="row m-0 mt-1" *ngFor="let package of selectedTab.packages">
               <div class="col-2 price-block m-0 mr-1 py-2">
                 {{package.customAttributes.regular_price? package.customAttributes.regular_price : package.customAttributes.customer_price}}
@@ -74,7 +74,7 @@
                <td>
                  {{package.customAttributes.regular_price? package.customAttributes.regular_price : package.customAttributes.customer_price}}
                </td>
-               <td>{{package.customAttributes.internet_valume}}</td>
+               <td>{{ isEntertain(categoryTab.name)? package.customAttributes.content : package.customAttributes.internet_valume}}</td>
                <td>{{package.customAttributes.package_period}}</td>
                <td><button class="btn btn-success" (click)="onSelectedPackage(package)">ขายเลย</button></td>
              </tr>

@@ -50,8 +50,7 @@
         </div>
         <div class="tab-content">
           <app-vas-package-tab
-            [index]="selectedTab?.index"
-            [categoryTab]="selectedTab?.packages"
+            [categoryTab]="selectedTab"
             [transactionType]="transaction.data.transactionType"
             [nType]="nType"
             (selectedPackage)="onSelectPackage($event)">
