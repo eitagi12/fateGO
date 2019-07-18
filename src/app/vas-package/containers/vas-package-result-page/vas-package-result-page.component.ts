@@ -102,10 +102,6 @@ export class VasPackageResultPageComponent implements OnInit {
       });
   }
 
-  onHome(): void {
-    this.homeService.goToHome();
-  }
-
   onMainMenu(): void {
     if (window.aisNative) {
       window.aisNative.onAppBack();

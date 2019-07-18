@@ -1,11 +1,5 @@
 <div class="mc-flex">
   <mc-header title="{{ 'ขายแพ็กเกจเสริม' | translate }}">
-    <div class="header-icon-left w-25">
-      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
-    </div>
-    <div class="header-icon-right w-25 text-right">
-      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
-    </div>
   </mc-header>
   <div class="mc-flex-wrap">
     <div class="mb-3 mt-3">
@@ -25,12 +19,12 @@
                 </div>
                 <div class="col-9 col-sm-9 text-left">
                     <div>
-                        <div class="text-black mt-3">เน็ตและโทร</div>
-                        <div class="text-green mt-3">โทรฟรีในเครือข่าย ตี5-5โมงเย็น</div>
-                        <div class="text-green">Internet ไม่จำกัด ความเร็ว สูงสุด 512 kbps</div>
+                        <div class="text-black mt-3">{{ transaction?.data?.onTopPackage?.customAttributes?.category }}</div>
+                        <div class="text-green mt-3">{{ transaction?.data?.onTopPackage?.title }}</div>
                         <div class="text-black mt-3">
-                          <span>26.11 บาท</span>
-                          <span style="padding-left: 30px;">1 วัน</span>
+                          <span *ngIf="checkTransactionType()">{{ transaction?.data?.onTopPackage?.customAttributes?.regular_price }} บาท</span>
+                          <span *ngIf="!checkTransactionType()">{{ transaction?.data?.onTopPackage?.customAttributes?.customer_price }} บาท</span>
+                          <span style="padding-left: 30px;">{{ transaction?.data?.onTopPackage?.customAttributes?.package_period }}</span>
                         </div>
                     </div>
                 </div>
@@ -41,10 +35,10 @@
     </div>
   </div>
   <mc-footer>
-    <button class="btn btn-secondary" (click)="onTopUp()">เติมเงินเพิ่ม</button>
+    <button class="btn btn-success" (click)="onTopUp()">เติมเงินเพิ่ม</button>
     <button class="btn btn-success" (click)="onSelectPackage()">เลือกแพ็กเกจเพิ่ม</button>
   </mc-footer>
   <mc-footer>
-  <button class="btn btn-success" (click)="onMainMenu()">กลับสู่เมนูหลับ</button>
+  <button class="btn btn-success" (click)="onMainMenu()">กลับสู่เมนูหลัก</button>
 </mc-footer>
 </div>
