@@ -91,11 +91,11 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
               return;
             }
 
-            if (resProfile.data.chargeType !== selectedPackage.customAttributes.charge_type) {
-              this.pageLoadingService.closeLoading();
-              this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจาก Network type ไม่ตรง');
-              return;
-            }
+            // if (resProfile.data.chargeType !== selectedPackage.customAttributes.charge_type) {
+            //   this.pageLoadingService.closeLoading();
+            //   this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจาก Network type ไม่ตรง');
+            //   return;
+            // }
             const isPrepaid: boolean = resProfile.data.chargeType === 'Pre-paid';
             if (isPrepaid) {
               this.http.get(`/api/customerportal/newRegister/${this.mobileNo}/queryBalance`).toPromise()
@@ -143,24 +143,24 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
               return;
             }
 
-            if (resProfile.data.chargeType !== selectedPackage.customAttributes.charge_type) {
-              this.pageLoadingService.closeLoading();
-              this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจาก Network type ไม่ตรง');
-              return;
-            }
+            // if (resProfile.data.chargeType !== selectedPackage.customAttributes.charge_type) {
+            //   this.pageLoadingService.closeLoading();
+            //   this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจาก Network type ไม่ตรง');
+            //   return;
+            // }
 
-            this.http.get(`/api/customerportal/greeting/${this.mobileNo}/profile`).toPromise()
-              .then((greeting: any) => {
-                if (greeting && greeting.resultCode !== '20000') {
+            this.http.get(`/api/customerportal/mobile-detail/${this.mobileNo}`).toPromise()
+              .then((mobileDetail: any) => {
+                if (mobileDetail && mobileDetail.resultCode !== '20000') {
                   this.pageLoadingService.closeLoading();
                   this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
                   return;
                 }
 
                 const registerDate = moment()
-                  .subtract(+greeting.data.serviceYear.year, 'years')
-                  .subtract(+greeting.data.serviceYear.month, 'months')
-                  .subtract(+greeting.data.serviceYear.day, 'days');
+                  .subtract(+mobileDetail.data.serviceYear.year, 'years')
+                  .subtract(+mobileDetail.data.serviceYear.month, 'months')
+                  .subtract(+mobileDetail.data.serviceYear.day, 'days');
                 const packageDate = moment().subtract(+selectedPackage.days_of_service_year, 'days');
                 const isBefore = registerDate.isBefore(packageDate);
                 if (!isBefore) {
