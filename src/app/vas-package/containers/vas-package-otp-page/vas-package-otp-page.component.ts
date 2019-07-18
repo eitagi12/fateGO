@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import * as moment from 'moment';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { environment } from 'src/environments/environment';
 
 export interface IRequestGetOTP {
   transactionid: string;
@@ -132,7 +133,10 @@ export class VasPackageOtpPageComponent implements OnInit, OnDestroy {
   }
 
   public getCustomerOTP(): void {
-    this.http.post(`/api/customerportal/newRegister/${this.mobileNo}/sendOTP`, { digits: '5' }).toPromise().then((resp: any) => {
+    if (environment.name !== 'PROD') {
+      this.mobileNo = environment.TEST_OTP_MOBILE;
+    }
+    this.http.post(`/api/customerportal/newRegister/${this.mobileNo}/sendOTP`, { digits: '4' }).toPromise().then((resp: any) => {
       if (resp && resp.data) {
         this.transactionid = resp.data.transactionID;
         this.pageLoadingService.closeLoading();

@@ -31,7 +31,7 @@ export class VasPackageResultPageComponent implements OnInit {
     this.mobileNo = this.transaction.data.simCard.mobileNo;
     this.mobileNoAgent = this.transaction && this.transaction.data && this.transaction.data.romAgent
       && this.transaction.data.romAgent.mobileNoAgent ? this.transaction.data.romAgent.mobileNoAgent : '';
-   }
+  }
 
   ngOnInit(): void {
     this.checkTransactionType() ? this.createPackRomAgent() : this.createPackCustomer();
@@ -92,8 +92,13 @@ export class VasPackageResultPageComponent implements OnInit {
     };
     this.http.post('api/customerportal/rom/vas-package', requestVasPackage).toPromise()
       .then((res: any) => {
-        this.success = true;
-        this.pageLoadingService.closeLoading();
+        if (res.data.status === '0000001') {
+          this.success = true;
+          this.pageLoadingService.closeLoading();
+        } else {
+          this.success = false;
+          this.pageLoadingService.closeLoading();
+        }
       })
       .catch((err) => {
         this.success = false;

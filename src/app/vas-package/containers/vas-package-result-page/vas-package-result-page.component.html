@@ -20,7 +20,7 @@
                 <div class="col-9 col-sm-9 text-left">
                     <div>
                         <div class="text-black mt-3">{{ transaction?.data?.onTopPackage?.customAttributes?.category }}</div>
-                        <div class="text-green mt-3">{{ transaction?.data?.onTopPackage?.title }}</div>
+                        <div class="text-green mt-3">{{ transaction?.data?.onTopPackage?.detailTH }}</div>
                         <div class="text-black mt-3">
                           <span *ngIf="checkTransactionType()">{{ transaction?.data?.onTopPackage?.customAttributes?.regular_price }} บาท</span>
                           <span *ngIf="!checkTransactionType()">{{ transaction?.data?.onTopPackage?.customAttributes?.customer_price }} บาท</span>
