@@ -67,31 +67,6 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
     this.homeService.goToHome();
   }
 
-  /**
-   *  @Customer
-   *    ให้เช็ค Network type ของเบอร์ และ pack ว่า allow หรือไม่
-   *    1.Call get-profile-type เพื่อเอา network type เบอร์ (eg. 3PE or3PO)
-   *        ** ต้องเรียก (/api/customerportal/asset/:mobileNo/profile)
-   *    2. เอา network type ของเบอร์มาเช็คกับ Pack ที่เลือกจากค่า  allow_ntype (eg. 3PE or3PO)
-   *    3. ถ้าไม่ตรงให้ แจ้ง error message “ไม่สามารถสมัครแพ๊กเกจได้เนื่อง Network type ไม่ตรง”
-   *      3.1 เช็ค balance (/api/newRegister/{mobileNo}/queryBalance) ลูกค้าว่า พอหรือไม่
-   *        ถ้าไม่พอ ให้ แจ้ง error message แล้ว พาไป remain Balance
-   *    4. ส่ง OTP : /api/customerportal/newRegister/0951000001/sendOTP
-   *
-   *  @ROM
-   *    A.ให้เช็ค Network type ของเบอร์ และ pack ว่า allow หรือไม่
-   *      1.Call get-profile-type เพื่อเอา networkType เบอร์(eg.3PE ,3PO)
-   *          ** หรือเรียก (/api/customerportal/asset/:mobileNo/profile)
-   *      2. เอา network type ของเบอร์มาเช็คกับ Pack ที่เลือกจากค่า
-   *          allow_ntype (eg. 3PE or3PO)
-   *      3. ถ้าไม่ตรงให้ แจ้ง error message
-   *    B.ให้ช็ค ServiceYear ของเบอร์ลูกค้า กับ Pack ที่เลือกฟิลใน CPC  “days_of_service_year”
-   *      1. call (api/customerportal/greeting/${mobileNo}/profile)
-   *          เพื่อเอา serviceYear
-   *      2. “day”  > “day_of_service_year” ถึงจะ allow ให้ซื้อ
-   *      3. ถ้าไม่เข้าเงื่อนไขให้แจ้ง error message
-   *
-   **/
   onSelectPackage(selectedPackage: any): void {
     if (!this.mobileNo) {
       this.alertService.error('กรุณาระบุหมายเลขโทรศัพท์');
@@ -237,7 +212,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
       simCard: {
         mobileNo: mobileNo
       },
-      mainPackage: selectPackage
+      onTopPackage: selectPackage
     };
   }
   onSelectedBestSellerPackage(event: any): void {

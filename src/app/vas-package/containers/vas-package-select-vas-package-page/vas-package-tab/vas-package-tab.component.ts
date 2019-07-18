@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnChanges } from '@angular/core';
+import { Component, OnInit, Input, OnChanges, EventEmitter, Output } from '@angular/core';
 
 @Component({
   selector: 'app-vas-package-tab',
@@ -8,6 +8,9 @@ import { Component, OnInit, Input, OnChanges } from '@angular/core';
 export class VasPackageTabComponent implements OnInit, OnChanges {
   @Input() categoryTab: any;
   @Input() index: any;
+  @Input() transactionType: string;
+  @Output() selectedPackage: EventEmitter<any> = new EventEmitter<any>();
+
   tabs: Array<any> = [];
   filedPrograms: Array<any> = [
     ['ค่าบริการ บ.', 'เน็ตรวม', 'จำนวนวัน'],
@@ -33,13 +36,13 @@ export class VasPackageTabComponent implements OnInit, OnChanges {
     const categorys: any = [];
     console.log('index', this.index);
     packageCat.forEach((ca: any) => {
-            if (!categorys.find((tab: any) => tab.name === ca.customAttributes.sub_category)) {
-              categorys.push({
-                name: ca.customAttributes.sub_category,
-                active: false,
-                packages: []
-              });
-            }
+      if (!categorys.find((tab: any) => tab.name === ca.customAttributes.sub_category)) {
+        categorys.push({
+          name: ca.customAttributes.sub_category,
+          active: false,
+          packages: []
+        });
+      }
     });
     categorys.forEach((cate: any) => {
       const setPack: any = [];
@@ -56,17 +59,30 @@ export class VasPackageTabComponent implements OnInit, OnChanges {
     });
 
     if (tabs.length > 0) {
-        tabs[0].active = true;
+      tabs[0].active = true;
     }
     return tabs;
-}
+  }
 
-setActiveTabs(tabCode: any): void {
-  this.tabs = this.tabs.map((tabData) => {
+  setActiveTabs(tabCode: any): void {
+    this.tabs = this.tabs.map((tabData) => {
       tabData.active = !!(tabData.code === tabCode);
       return tabData;
-  });
-  this.selectedTab = this.tabs.filter(tabData => tabData.name === tabCode)[0];
-  console.log('package', this.selectedTab.packages);
-}
+    });
+    this.selectedTab = this.tabs.filter(tabData => tabData.name === tabCode)[0];
+    console.log('package', this.selectedTab.packages);
+  }
+  onSelectedPackage(value: any): void {
+    this.selectedPackage.emit(value);
+  }
+
+  getPrice(customAttributes: any): any {
+    if (customAttributes) {
+      if (this.transactionType === 'RomAgent') {
+        return customAttributes.regular_price;
+      } else {
+        return customAttributes.customer_price;
+      }
+    }
+  }
 }

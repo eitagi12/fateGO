@@ -63,10 +63,11 @@
             </div>
           </div>
         </div>
-        
+
 
         <div class="tab-content">
-            <app-vas-package-tab [categoryTab]="selectedTab?.packages" [index]="selectedTab?.index"></app-vas-package-tab>
+          <app-vas-package-tab [categoryTab]="selectedTab?.packages" [index]="selectedTab?.index"
+            (selectedPackage)="onSelectPackage($event)" [transactionType]="transaction.data.transactionType"></app-vas-package-tab>
           <div class="card-body p-0 tab-pane active" id="menu1">
 
             <!-- <div class="card-header bg-lime text-center text-white">
