@@ -30,6 +30,9 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
   transaction: Transaction;
   packageCat: Array<any> = [];
   tabs: Array<any> = [];
+  selectedTab: any;
+  tabSorted: Array<any> = [];
+  keySort: Array<string> = ['', '', '', ''];
 
   constructor(
     private router: Router,
@@ -42,6 +45,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
     private pageLoadingService: PageLoadingService
   ) {
     this.transaction = this.transactionService.load();
+    this.mobileNo = this.transaction.data.simCard.mobileNo;
   }
 
   ngOnInit(): void {
@@ -262,7 +266,9 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
         // console.log('best_seller_priority', .items[0].customAttributes.best_seller_priority);
         response.data.data.map((data: any) => {
           data.subShelves.map((subShelves: any) => {
-            subShelves.items.map((item: any) => {
+            const listPackage = this.filterRomPackage(subShelves.items);
+            listPackage.map((item: any) => {
+              item.idCategory = data.id;
               if (+item.customAttributes.best_seller_priority > 0) {
                 // console.log('item ', item);
                 item.mainTitle = data.title;
@@ -284,6 +290,8 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
       }).then(() => {
         this.packagesBestSellers = this.packagesBestSellerItem;
         this.tabs = this.getTabsFormPriceOptions(this.packageCat);
+        this.selectedTab = this.tabs[0];
+        console.log('selectTap', this.selectedTab);
       });
   }
   ngOnDestroy(): void {
@@ -295,6 +303,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
     packageCat.forEach((ca: any) => {
       if (!categorys.find((tab: any) => tab.name === ca.customAttributes.category)) {
         categorys.push({
+          id: ca.idCategory,
           name: ca.customAttributes.category,
           active: false,
           packages: []
@@ -309,17 +318,40 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
         }
       });
       tabs.push({
+        id: cate.id,
         name: cate.name,
         active: false,
         packages: setPack
       });
     });
 
+    const newTabs: any[] = [];
     if (tabs.length > 0) {
-      tabs[0].active = true;
+      tabs.sort((a, b) => {
+        return a.id - b.id;
+      });
+      tabs.forEach((data, index) => {
+        newTabs.push({
+          ...data,
+          index: index
+        });
+      });
+      newTabs[0].active = true;
     }
-    console.log(tabs);
-    return tabs;
+    console.log(newTabs);
+    return newTabs;
+  }
+
+  filterRomPackage(listPackage: any): any {
+    try {
+      if (this.transaction.data.transactionType === 'RomAgent') {
+        return listPackage.filter(p => p.customAttributes.destination_server === 'ROM');
+      } else {
+        return listPackage.filter(p => p.customAttributes.destination_server !== 'ROM');
+      }
+    } catch (error) {
+      return listPackage;
+    }
   }
 
   setActiveTabs(tabCode: any): void {
@@ -327,6 +359,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
       tabData.active = !!(tabData.name === tabCode);
       return tabData;
     });
+    this.selectedTab = this.tabs.filter(tabData => tabData.name === tabCode)[0];
   }
 
 }

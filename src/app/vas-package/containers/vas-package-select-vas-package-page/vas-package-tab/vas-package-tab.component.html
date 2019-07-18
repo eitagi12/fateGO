@@ -1,8 +1,8 @@
  <div class="card text-center">
-          <div class="card-header p-0">
-            <div class="row">
-              <div class="col-12 text-center">
-                <!-- <ul class="nav nav-pills">
+   <div class="card-header p-0">
+     <div class="row">
+       <div class="col-12 text-center">
+         <!-- <ul class="nav nav-pills">
                     <li class="nav-item p-0 col-6">
                       <a class="nav-link active" href="#menu1" data-toggle="pill">tit</a>
                     </li>
@@ -10,17 +10,101 @@
                       <a class="nav-link active" href="#menu1" data-toggle="pill">asda</a>
                     </li>
                   </ul> -->
-                  <div class="bg-white" [hidden]="tabs?.length <= 0">
-                      <tabset [justified]="true">
-                        <tab *ngFor="let tab of tabs" [active]="tab.active">
-                          <ng-template tabHeading>
-                            <div class="{{tab.code}}" [ngClass]="{ 'active' : tab.active }" (click)="setActiveTabs(tab.code)">
-                              <b>{{ tab.name }}</b></div>
-                          </ng-template>
-                        </tab>
-                      </tabset>
-                    </div>
-              </div>
-            </div>
-          </div>
+         <div class="bg-white" [hidden]="tabs?.length <= 0">
+           <tabset [justified]="true">
+             <tab *ngFor="let tab of tabs" [active]="tab.active">
+               <ng-template tabHeading>
+                 <div [ngClass]="{ 'active' : tab.active }" (click)="setActiveTabs(tab.name)">
+                   <b>{{ tab.name }}</b></div>
+               </ng-template>
+             </tab>
+           </tabset>
+         </div>
+       </div>
+     </div>
+   </div>
+
+   <div class="tab-content">
+      
+    <div class="card-body p-0 tab-pane active" id="menu1">
+
+      <!-- <div class="card-header bg-lime text-center text-white">
+        เหมา เหมา
+      </div> -->
+      <div class="card-body">
+          <table class="table" >
+              <thead>
+                <tr>
+                  
+                  <th *ngFor="let filedProgram of filedPrograms[index]" scope="col">{{filedProgram}}</th>
+                  
+                </tr>
+              </thead>
+              <tbody *ngIf="filedPrograms[index].length === 3">
+                <tr *ngFor="let packege of selectedTab.packages">
+                  <th scope="row">{{packege.customAttributes.customer_price}}</th>
+                  <td>{{packege.customAttributes.internet_valume}}</td>
+                  <td>{{packege.customAttributes.package_period}}</td>
+                  <td><button class="btn btn-success" (click)="onSelectPackage()">ขายเลย</button></td>
+                </tr>
+              </tbody>
+              <tbody *ngIf="filedPrograms[index].length===4">
+                <tr *ngFor="let packege of selectedTab.packages">
+                  <th scope="row">{{packege.customAttributes.customer_price}}</th>
+                  <td>{{packege.customAttributes.internet_valume}}</td>
+                  <td>{{packege.customAttributes.call_minute}}</td>
+                  <td>{{packege.customAttributes.package_period}}</td>
+                  <td><button class="btn btn-success" (click)="onSelectPackage()">ขายเลย</button></td>
+                </tr>
+              </tbody>
+                    <!-- <div *ngIf="filedPrograms[index].length===3">
+                  <tr *ngFor="let packege of selectedTab.packages">
+
+                    <th scope="row">1</th>
+                    <td>2</td>
+                    <td>3</td>
+                    <td>button</td>
+                  </tr>
+                </div>
+                <div *ngIf="filedPrograms[index].length===4">
+                  <tr *ngFor="let packege of selectedTab.packages">
+
+                    <td>1</td>
+                    <td>2</td>
+                    <td>3</td>
+                    <td>button</td>
+                  </tr>
+                </div> -->
+                
+                <!-- <td>Otto</td>
+                  <td>@mdo</td> -->
+            </table>
+        <!-- <div class="row">
+          <div class="col-3">ค่าบริการ บ.</div>
+          <div class="col-5">เน็ตรวม</div>
+          <div class="col-2">จำนวนวัน</div>
+          <div class="col-2"></div>
         </div>
+        <div class="row">
+          <div class="col-3">
+            <select class="form-control" disabled="false">
+              <option value="" disabled selected>{{ 'ค่าบริการ' | translate }}</option>
+              <option selected>9.00</option>
+              <option>20.00</option>
+              <option>39.00</option>
+            </select>
+          </div>
+          <div class="col-5">
+            <input type="text" class="form-control text-center" value="-" readonly>
+          </div>
+          <div class="col-2">
+            <input type="text" class="form-control text-center" value="-" readonly>
+          </div>
+          <div class="col-2">
+            <button class="btn btn-success" (click)="onSelectPackage()">ขายเลย</button>
+          </div>
+        </div> -->
+      </div>
+    </div>
+  </div>
+ </div>

@@ -63,13 +63,15 @@
             </div>
           </div>
         </div>
-        <app-vas-package-tab [categoryTab]="tabs"></app-vas-package-tab>
+        
 
         <div class="tab-content">
+            <app-vas-package-tab [categoryTab]="selectedTab?.packages" [index]="selectedTab?.index"></app-vas-package-tab>
           <div class="card-body p-0 tab-pane active" id="menu1">
-            <div class="card-header bg-lime text-center text-white">
+
+            <!-- <div class="card-header bg-lime text-center text-white">
               เหมา เหมา
-            </div>
+            </div> -->
             <div class="card-body">
               <div class="row">
                 <div class="col-3">ค่าบริการ บ.</div>
