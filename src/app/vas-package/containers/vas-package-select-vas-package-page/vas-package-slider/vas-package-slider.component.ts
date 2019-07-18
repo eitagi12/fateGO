@@ -7,11 +7,12 @@ declare var $: any;
   styleUrls: ['./vas-package-slider.component.scss']
 })
 export class VasPackageSliderComponent implements OnInit, OnChanges {
-  @Input() packages: any;
-  @Output() selectedBestSellerPackage: EventEmitter<any> = new EventEmitter<any>();
 
   @ViewChild('slider')
   slider: ElementRef;
+
+  @Input() packages: any;
+  @Output() selectedBestSellerPackage: EventEmitter<any> = new EventEmitter<any>();
 
   private $owl: any;
 
