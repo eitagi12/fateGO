@@ -23,10 +23,10 @@
             <div
               class="text-column"
               [ngClass]="{
-                'col-3': filedPrograms[index].length === 3,
+                'col-3': filedPrograms[index].length === 3 || filedPrograms[index].length === 4 && (i === 1 || i === 2),
                 'col-2': filedPrograms[index].length === 4
               }"
-             *ngFor="let filedProgram of filedPrograms[index]">
+             *ngFor="let filedProgram of filedPrograms[index]; let i = index">
               {{filedProgram}}
             </div>
           </div>
