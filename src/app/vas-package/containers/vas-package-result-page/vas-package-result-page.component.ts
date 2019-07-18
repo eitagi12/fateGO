@@ -54,7 +54,7 @@ export class VasPackageResultPageComponent implements OnInit {
       ascCode: this.tokenService.getUser().ascCode || '',
       destinationServer: this.transaction.data.onTopPackage.customAttributes.destination_server,
     };
-    this.http.post(`/api/salesportal/changepromotion/changepro`, requestCreateVasPack).toPromise()
+    this.http.post(`/api/customerportal/changepromotion/changepro`, requestCreateVasPack).toPromise()
       .then((resp: any) => {
         if (resp.data.status === 'SUCCESS') {
           this.success = true;
