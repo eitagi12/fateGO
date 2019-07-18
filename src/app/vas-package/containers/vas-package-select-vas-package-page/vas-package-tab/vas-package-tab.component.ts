@@ -19,7 +19,6 @@ export class VasPackageTabComponent implements OnInit, OnChanges {
     ['ค่าบริการ บ.', 'เน็ตรวม', 'โทร', 'จำนวนวัน']
   ];
   selectedTab: any;
-  // @Input()
   index: number = 0;
 
   constructor() { }
@@ -30,13 +29,17 @@ export class VasPackageTabComponent implements OnInit, OnChanges {
   ngOnChanges(): void {
     this.index = this.categoryTab ? this.categoryTab.index || 0 : 0;
     const catePackages = this.categoryTab ? this.categoryTab.packages || [] : [];
-    this.tabs = this.getTabsFormPriceOptions(catePackages);
+    this.tabs = this.getTabs(catePackages);
     this.selectedTab = this.tabs[0];
   }
 
-  getTabsFormPriceOptions(packageCat: any[]): any[] {
+  getTabs(packageCat: any[]): any[] {
     const tabs = [];
     const categorys: any = [];
+    if (this.nType) {
+      packageCat.filter((pack) => [...pack.customAttributes.allow_ntype.split(',')].includes(this.nType));
+    }
+    console.log('index', this.index);
     packageCat.forEach((ca: any) => {
       if (!categorys.find((tab: any) => tab.name === ca.customAttributes.sub_category)) {
         categorys.push({
@@ -96,5 +99,16 @@ export class VasPackageTabComponent implements OnInit, OnChanges {
     } else {
       return customAttributes.internet_valume;
     }
+  }
+
+  togglePackageDetail(pack: any): void {
+    this.selectedTab.packages.map(p => {
+      if (p.id === pack.id) {
+        p.showDetail = !p.showDetail;
+      } else {
+        p.showDetail = false;
+      }
+      return p;
+    });
   }
 }
