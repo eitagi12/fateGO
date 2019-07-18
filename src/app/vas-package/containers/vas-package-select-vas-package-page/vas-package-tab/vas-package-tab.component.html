@@ -15,47 +15,38 @@
        </div>
      </div>
    </div>
-
    <div class="tab-content">
-
      <div class="card-body p-0 tab-pane active" id="menu1">
-
-       <!-- <div class="card-header bg-lime text-center text-white">
-        เหมา เหมา
-      </div> -->
-       <div class="card-body">
+       <div class="card-body p-0">
          <table class="table">
            <thead>
              <tr>
-
                <th *ngFor="let filedProgram of filedPrograms[index]" scope="col">{{filedProgram}}</th>
-
+               <th scope="col"></th>
              </tr>
            </thead>
            <tbody *ngIf="filedPrograms[index] && filedPrograms[index].length === 3">
-             <tr *ngFor="let packege of selectedTab.packages">
+             <tr *ngFor="let package of selectedTab.packages">
                <td>
-                 {{packege.customAttributes.regular_price? packege.customAttributes.regular_price : packege.customAttributes.customer_price}}
+                 {{package.customAttributes.regular_price? package.customAttributes.regular_price : package.customAttributes.customer_price}}
                </td>
-               <td>{{packege.customAttributes.internet_valume}}</td>
-               <td>{{packege.customAttributes.package_period}}</td>
+               <td>{{package.customAttributes.internet_valume}}</td>
+               <td>{{package.customAttributes.package_period}}</td>
                <td><button class="btn btn-success" (click)="onSelectedPackage(package)">ขายเลย</button></td>
              </tr>
            </tbody>
            <tbody *ngIf="filedPrograms[index] && filedPrograms[index].length === 4">
-             <tr *ngFor="let packege of selectedTab.packages">
+             <tr *ngFor="let package of selectedTab.packages">
                <td>
-                 {{packege.customAttributes.regular_price? packege.customAttributes.regular_price : packege.customAttributes.customer_price}}
+                 {{package.customAttributes.regular_price? package.customAttributes.regular_price : package.customAttributes.customer_price}}
                </td>
-               <td>{{packege.customAttributes.internet_valume}}</td>
-               <td>{{packege.customAttributes.call_minute}}</td>
-               <td>{{packege.customAttributes.package_period}}</td>
+               <td>{{package.customAttributes.internet_valume}}</td>
+               <td>{{package.customAttributes.call_minute}}</td>
+               <td>{{package.customAttributes.package_period}}</td>
                <td><button class="btn btn-success" (click)="onSelectedPackage(package)">ขายเลย</button></td>
              </tr>
            </tbody>
-
          </table>
-
        </div>
      </div>
    </div>

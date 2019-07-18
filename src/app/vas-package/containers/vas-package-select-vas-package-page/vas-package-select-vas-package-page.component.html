@@ -4,7 +4,6 @@
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
     <div class="header-icon-right w-25 text-right">
-      <!-- <mc-dropdown-language></mc-dropdown-language> -->
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
@@ -17,37 +16,23 @@
               <div class="text-center">หมายเลขโทรศัพท์ลูกค้า</div>
               <input class="form-control text-center" type="tel" id="mobileNo" maxlength="10" formControlName="mobileNo"
                 placeholder="ระบุหมายเลขโทรศัพท์ลูกค้า" value="">
-              <!-- [ngClass]="{ 'is-invalid' : mobileFrom.controls.mobileNo.invalid && mobileFrom.controls.mobileNo.touched && mobileFrom.controls.mobileNo.errors }"> -->
-              <!-- <small class="invalid-feedback"
-                    *ngIf="mobileFrom.controls.mobileNo.touched && mobileFrom.controls.mobileNo.errors">
-                    **กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง
-                  </small> -->
             </div>
           </form>
         </div>
         <div class="mc-flex-wrap">
           <div class="text-center">แพ็กเกจขายดี</div>
         </div>
-
-        <app-vas-package-slider [packages]='packagesBestSellers'
-          (selectedBestSellerPackage)="onSelectedBestSellerPackage($event)"></app-vas-package-slider>
-
+        <app-vas-package-slider
+          [packages]='packagesBestSellers'
+          (selectedBestSellerPackage)="onSelectedBestSellerPackage($event)">
+        </app-vas-package-slider>
         <div class="text-center">
           แพ็กเกจตาม Life Style
         </div>
-
         <div class="card text-center">
           <div class="card-header p-0">
             <div class="row">
               <div class="col-12 text-center">
-                <!-- <ul class="nav nav-pills">
-                    <li class="nav-item p-0 col-6">
-                      <a class="nav-link active" href="#menu1" data-toggle="pill">tit</a>
-                    </li>
-                    <li class="nav-item p-0 col-6">
-                      <a class="nav-link active" href="#menu1" data-toggle="pill">asda</a>
-                    </li>
-                  </ul> -->
                 <div class="bg-white" [hidden]="tabs?.length <= 0">
                   <tabset [justified]="true">
                     <tab *ngFor="let tab of tabs" [active]="tab.active">
@@ -63,50 +48,18 @@
             </div>
           </div>
         </div>
-
-
         <div class="tab-content">
-          <app-vas-package-tab [categoryTab]="selectedTab?.packages" [index]="selectedTab?.index"
-            (selectedPackage)="onSelectPackage($event)" [transactionType]="transaction.data.transactionType"></app-vas-package-tab>
-          <div class="card-body p-0 tab-pane active" id="menu1">
-
-            <!-- <div class="card-header bg-lime text-center text-white">
-              เหมา เหมา
-            </div> -->
-            <div class="card-body">
-              <div class="row">
-                <div class="col-3">ค่าบริการ บ.</div>
-                <div class="col-5">เน็ตรวม</div>
-                <div class="col-2">จำนวนวัน</div>
-                <div class="col-2"></div>
-              </div>
-              <div class="row">
-                <div class="col-3">
-                  <select class="form-control" disabled="false">
-                    <option value="" disabled selected>{{ 'ค่าบริการ' | translate }}</option>
-                    <option selected>9.00</option>
-                    <option>20.00</option>
-                    <option>39.00</option>
-                  </select>
-                </div>
-                <div class="col-5">
-                  <input type="text" class="form-control text-center" value="-" readonly>
-                </div>
-                <div class="col-2">
-                  <input type="text" class="form-control text-center" value="-" readonly>
-                </div>
-                <div class="col-2">
-                  <button class="btn btn-success" (click)="onSelectPackage()">ขายเลย</button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <app-vas-package-tab
+            [index]="selectedTab?.index"
+            [categoryTab]="selectedTab?.packages"
+            [transactionType]="transaction.data.transactionType"
+            (selectedPackage)="onSelectPackage($event)">
+          </app-vas-package-tab>
         </div>
       </div>
     </div>
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <!-- <button class="btn btn-success" (click)="onNext()">NEXT</button> -->
   </mc-footer>
 </div>
