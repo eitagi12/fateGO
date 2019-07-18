@@ -119,6 +119,7 @@ export interface Customer {
   idCardNo: string;
   idCardType: string;
   titleName: string;
+  titleNameEN?: string;
   firstName: string;
   lastName: string;
   birthdate: string;
@@ -163,6 +164,7 @@ export interface Customer {
 
   chipID?: string;
   requestNo?: string;
+  laserCode?: string;
 }
 
 export interface Recipientinformation {
