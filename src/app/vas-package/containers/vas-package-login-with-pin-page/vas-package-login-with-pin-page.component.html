@@ -25,10 +25,10 @@
           <div class="pl-3 pr-3 pb-1">
             <form [formGroup]="loginForm">
               <div class="card-body">
-                <input type="tel" id="mobileNoAgent" name="mobileNoAgent" class="form-control mb-3"
-                  placeholder="ระบุเบอร์ ROM Agent" maxlength="10" formControlName="mobileNoAgent" value="{{this.mobileNoAgent}}">
-                <input type="password" id="pinAgent" name="pinAgent" class="form-control"
-                  placeholder="กรุณากรอก PIN 4 หลัก" maxlength="4" formControlName="pinAgent">
+                <div class="form-group">
+                  <input type="tel" id="mobileNoAgent" class="form-control mb-3" placeholder="ระบุเบอร์ ROM Agent" maxlength="10" formControlName="mobileNoAgent" value="{{this.mobileNoAgent}}">
+                  <input type="password" id="pinAgent" class="form-control" placeholder="กรุณากรอก PIN 4 หลัก" maxlength="4" formControlName="pinAgent">
+                </div>
               </div>
             </form>
           </div>

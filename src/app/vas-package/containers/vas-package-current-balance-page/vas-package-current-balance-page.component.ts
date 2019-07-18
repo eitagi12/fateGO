@@ -19,6 +19,9 @@ export class VasPackageCurrentBalancePageComponent implements OnInit {
   transaction: Transaction;
   balance: string;
   mobileNoAgent: string;
+  agentId: string;
+  tokenType: string;
+  accessToken: string;
 
   constructor(
     private router: Router,
@@ -30,6 +33,10 @@ export class VasPackageCurrentBalancePageComponent implements OnInit {
     private alertService: AlertService
   ) {
     this.transaction = this.transactionService.load();
+    this.mobileNoAgent = this.transaction.data.romAgent.mobileNoAgent ? this.transaction.data.romAgent.mobileNoAgent : '';
+    this.agentId = this.transaction.data.romAgent.agentId ? this.transaction.data.romAgent.agentId : '';
+    this.tokenType = this.transaction.data.romAgent.tokenType ? this.transaction.data.romAgent.tokenType : '';
+    this.accessToken = this.transaction.data.romAgent.accessToken ? this.transaction.data.romAgent.accessToken : '';
   }
 
   ngOnInit(): void {
@@ -64,13 +71,11 @@ export class VasPackageCurrentBalancePageComponent implements OnInit {
   }
 
   getBalanceRomAgent(): void {
-    const tokenType = this.transaction.data.romAgent.tokenType;
-    const accessToken = this.transaction.data.romAgent.accessToken;
     const requestGetMain = {
       transactionid: this.genTransactionId(),
-      agent_id: this.transaction.data.romAgent.agentId,
-      mobile_no: this.transaction.data.romAgent.mobileNoAgent,
-      header: tokenType + ' ' + accessToken
+      agent_id: this.agentId,
+      mobile_no: this.mobileNoAgent,
+      header: this.tokenType + ' ' + this.accessToken
     };
     this.pageLoadingService.openLoading();
     this.http.post('api/customerportal/rom/get-main', requestGetMain).toPromise()

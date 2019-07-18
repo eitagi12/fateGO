@@ -511,6 +511,7 @@ export interface KnoxGuard {
 
 export interface RomAgent {
   mobileNoAgent?: string;
+  pinAgent?: string;
   agentId?: string;
   tokenType?: string;
   accessToken?: string;

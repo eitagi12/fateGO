@@ -14,6 +14,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
   styleUrls: ['./vas-package-login-with-pin-page.component.scss']
 })
 export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
+
   loginForm: FormGroup;
   transaction: Transaction;
   mobileNoAgent: string;
@@ -91,7 +92,7 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
         if (res && res.data.status === 'success') {
           this.signIn(res.data.agent_id);
         } else {
-          this.alertService.error(res.data.message);
+          this.alertService.error('เบอร์โทรศัพท์นี้ไม่ใช่ ROM Agent กรุณาทำรายการใหม่อีกครั้ง');
         }
       })
       .catch(() => {
@@ -116,6 +117,7 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
             ...this.transaction.data,
             romAgent: {
               mobileNoAgent: this.loginForm.value.mobileNoAgent,
+              pinAgent: this.loginForm.value.pinAgent,
               agentId: agentId,
               tokenType: res.data.token_type,
               accessToken: res.data.access_token
