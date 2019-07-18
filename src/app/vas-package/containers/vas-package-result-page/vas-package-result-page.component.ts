@@ -111,7 +111,7 @@ export class VasPackageResultPageComponent implements OnInit {
   }
 
   onTopUp(): void {
-    window.location.href = `/easy-app/top-up-vas?mobileNo=${this.mobileNo}`;
+    window.location.href = `/easyapp/top-up?mobileNo=${this.mobileNo}`;
   }
 
   onSelectPackage(): void {
