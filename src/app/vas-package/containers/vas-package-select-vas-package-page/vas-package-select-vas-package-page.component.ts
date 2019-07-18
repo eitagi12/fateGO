@@ -25,7 +25,8 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
   salesService: SalesService;
   user: User;
   shelves: any;
-  packageBestSaller: Array<any> = [];
+  packagesBestSellerItem: Array<any> = [];
+  packagesBestSellers: Array<any> = [];
   transaction: Transaction;
   packageCat: Array<any> = [];
   tabs: Array<any> = [];
@@ -272,7 +273,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
                 } else {
                   item.icon = 'assets/images/icon/Net.png';
                 }
-                this.packageBestSaller.push(item);
+                this.packagesBestSellerItem.push(item);
               } else {
                 this.packageCat.push(item);
               }
@@ -281,6 +282,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
           });
         });
       }).then(() => {
+        this.packagesBestSellers = this.packagesBestSellerItem;
         this.tabs = this.getTabsFormPriceOptions(this.packageCat);
       });
   }
