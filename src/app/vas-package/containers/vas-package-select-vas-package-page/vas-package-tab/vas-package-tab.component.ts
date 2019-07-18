@@ -30,13 +30,16 @@ export class VasPackageTabComponent implements OnInit, OnChanges {
   ngOnChanges(): void {
     console.log('nType =>>> ', this.nType);
     console.log('categoryTab', this.categoryTab);
-    this.tabs = this.getTabsFormPriceOptions(this.categoryTab || []);
+    this.tabs = this.getTabs(this.categoryTab || []);
     this.selectedTab = this.tabs[0];
   }
 
-  getTabsFormPriceOptions(packageCat: any[]): any[] {
+  getTabs(packageCat: any[]): any[] {
     const tabs = [];
     const categorys: any = [];
+    if (this.nType) {
+      packageCat.filter((pack) => [...pack.customAttributes.allow_ntype.split(',')].includes(this.nType));
+    }
     console.log('index', this.index);
     packageCat.forEach((ca: any) => {
       if (!categorys.find((tab: any) => tab.name === ca.customAttributes.sub_category)) {

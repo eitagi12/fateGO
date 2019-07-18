@@ -50,10 +50,8 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
   }
 
   ngOnInit(): void {
-    // this.getPackageProducts();
     this.callService();
     this.createForm();
-    //  this.callPriceOptionsService(this.packageBestSaller);
   }
 
   onBack(): void {
