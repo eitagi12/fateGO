@@ -230,9 +230,10 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
 
     if (this.mobileNo) {
       this.mobileForm.controls.mobileNo.setValue(this.mobileNo);
+      this.pageLoadingService.openLoading();
       this.getNTypeMobileNo(this.mobileNo).then((nType) => {
         this.nType = nType;
-      }).then(() => this.pageLoadingService.openLoading());
+      }).then(() => this.pageLoadingService.closeLoading());
     }
 
     this.mobileForm.valueChanges.subscribe((value) => {
@@ -241,7 +242,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
         this.pageLoadingService.openLoading();
         this.getNTypeMobileNo(this.mobileNo).then((nType) => {
             this.nType = nType;
-        }).then(() => this.pageLoadingService.openLoading());
+        }).then(() => this.pageLoadingService.closeLoading());
       }
     });
   }
