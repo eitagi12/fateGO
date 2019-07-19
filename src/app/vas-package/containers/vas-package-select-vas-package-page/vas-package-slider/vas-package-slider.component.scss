@@ -1,8 +1,22 @@
+.box {
+  text-align: center;
+  display: block;
+  padding: 2rem;
+  height: auto;
+}
+
+.icon-xl {
+  width: 4rem !important;
+  display: inline-block !important;
+  display: block;
+}
+
 .icon-m {
   width: 20px !important;
   margin-left: 5px;
   display: inline-block !important;
 }
+
 .icon-s {
   width: 15px !important;
   margin-right: 5px;
@@ -21,6 +35,7 @@
 .owl-theme {
   font-size: small;
 }
+
 .card-body {
   padding: 0.25rem
 }
@@ -48,7 +63,18 @@
     overflow: hidden;
   }
 }
+
 .btn-success {
   font-size: 0.75rem;
   padding: 0.2rem 2rem;
+}
+
+.btn-success-info {
+  font-size: 1rem;
+  background-color: #cced61;
+  padding: 0.2rem 2rem;
+}
+
+.text-info {
+  font-size: 1.25rem;
 }
