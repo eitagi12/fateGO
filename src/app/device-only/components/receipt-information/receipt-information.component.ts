@@ -249,7 +249,6 @@ export class ReceiptInformationComponent implements OnInit {
       this.checkChargeType(mobileNo);
     } else {
       if (this.searchByMobileNoForm.controls.mobileNo.value.length === 10) {
-        console.log('เท่าจ้า');
         this.alertService.notify({
           type: 'warning',
           confirmButtonText: 'OK',
@@ -257,7 +256,6 @@ export class ReceiptInformationComponent implements OnInit {
           text: 'กรุณาระบุเบอร์ให้ถูกต้อง'
         });
       } else {
-        console.log(' งง');
         this.alertService.notify({
           type: 'warning',
           confirmButtonText: 'OK',
