@@ -87,7 +87,7 @@ export class VasPackageResultPageComponent implements OnInit {
       customerState: '1',
       servicePackageId: '6',
     };
-    this.createPack = this.http.post('api/customerportal/rom/vas-package', requestVasPackage).toPromise();
+    this.createPack = this.http.post('/api/customerportal/rom/vas-package', requestVasPackage).toPromise();
     this.createPack.then((res: any) => {
       if (res.data.status === '0000001') {
         this.message = 'ทำรายการเรียบร้อยแล้ว';
