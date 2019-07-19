@@ -13,6 +13,7 @@ export class VasPackageTabComponent implements OnInit, OnChanges {
 
   tabs: Array<any> = [];
   filedPrograms: Array<any> = [
+    ['ค่าบริการ บ.', 'เน็ตรวม', 'โทร', 'content', 'จำนวนวัน'],
     ['ค่าบริการ บ.', 'เน็ตรวม', 'จำนวนวัน'],
     ['ค่าบริการ บ.', 'content', 'จำนวนวัน'],
     ['ค่าบริการ บ.', 'โทร', 'จำนวนวัน'],

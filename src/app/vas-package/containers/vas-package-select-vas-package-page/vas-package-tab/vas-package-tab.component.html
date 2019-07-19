@@ -11,15 +11,35 @@
         <div class="p-0">
           <div class="m-auto">
             <div class="row m-0">
-              <div class="px-0 py-2 header-column" [ngClass]="{
+              <!-- <div class="px-0 py-2 header-column" [ngClass]="{
                 'col-3': filedPrograms[index].length === 3 || filedPrograms[index].length === 4 && (i === 1 || i === 2),
                 'col-2': filedPrograms[index].length === 4
               }" *ngFor="let filedProgram of filedPrograms[index]; let i = index">
+                {{filedProgram}}
+              </div> -->
+              <div class="col-2 px-0 py-2 header-column" *ngFor="let filedProgram of filedPrograms[0]; let i = index">
                 {{filedProgram}}
               </div>
             </div>
 
             <div class="m-auto"
+              *ngIf="selectedTab && selectedTab.packages">
+              <div class="row m-0 mb-1" *ngFor="let package of selectedTab.packages">
+                <div class="col-2 price-block m-0 py-2" [ngClass]="{'price-block-rotate': package?.showDetail}"
+                  (click)="togglePackageDetail(package)">
+                  {{package.customAttributes.regular_price? package?.customAttributes?.regular_price : package?.customAttributes?.customer_price}}
+                </div>
+                <div class="col-2 speed-block m-0 py-2">{{package?.customAttributes?.internet_valume}}</div>
+                <div class="col-2 speed-block m-0 py-2">{{package?.customAttributes?.call_minute}}</div>
+                <div class="col-2 speed-block m-0 py-2">{{package?.customAttributes?.content || '-'}}</div>
+                <div class="col-2 period-block m-0 py-2">{{package?.customAttributes?.package_period}}</div>
+                <div class="col-2 btn-block m-0 py-2" (click)="onSelectedPackage(package)">ขายเลย</div>
+                <div *ngIf="package?.showDetail" class="col-12 m-0 mr-1 py-2">
+                  {{package?.customAttributes?.description_th}}</div>
+              </div>
+            </div>
+
+            <!-- <div class="m-auto"
               *ngIf="selectedTab && selectedTab.packages && filedPrograms[index] && filedPrograms[index].length === 3">
               <div class="row m-0 mb-1" *ngFor="let package of selectedTab.packages">
                 <div class="col-3 price-block m-0 py-2" [ngClass]="{'price-block-rotate': package?.showDetail}"
@@ -48,7 +68,7 @@
                 <div *ngIf="package?.showDetail" class="col-12 m-0 mr-1 py-2">
                   {{package.customAttributes.description_th}}</div>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
       </div>
