@@ -15,9 +15,9 @@ export class VasPackageResultPageComponent implements OnInit {
 
   public transaction: Transaction;
   public mobileNo: any;
-  public success: boolean;
   public isRomAgent: boolean;
   public mobileNoAgent: string;
+  public message: string = '';
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -57,15 +57,15 @@ export class VasPackageResultPageComponent implements OnInit {
     this.http.post(`/api/customerportal/changepromotion/changepro`, requestCreateVasPack).toPromise()
       .then((resp: any) => {
         if (resp.data.STATUS === 'OK') {
-          this.success = true;
+          this.message = 'ทำรายการเรียบร้อยแล้ว';
           this.pageLoadingService.closeLoading();
         } else {
-          this.success = false;
+          this.message = 'ไม่สามารถทำรายการได้ กรุณาติดต่อ CallCenter 020789123 ค่ะ';
           this.pageLoadingService.closeLoading();
         }
       })
       .catch((error) => {
-        this.success = false;
+        this.message = 'ไม่สามารถทำรายการได้ กรุณาติดต่อ CallCenter 020789123 ค่ะ';
         this.pageLoadingService.closeLoading();
       });
   }
@@ -93,15 +93,15 @@ export class VasPackageResultPageComponent implements OnInit {
     this.http.post('api/customerportal/rom/vas-package', requestVasPackage).toPromise()
       .then((res: any) => {
         if (res.data.status === '0000001') {
-          this.success = true;
+          this.message = 'ทำรายการเรียบร้อยแล้ว';
           this.pageLoadingService.closeLoading();
         } else {
-          this.success = false;
+          this.message = 'ไม่สามารถทำรายการได้ กรุณาติดต่อ CallCenter 020789123 ค่ะ';
           this.pageLoadingService.closeLoading();
         }
       })
       .catch((err) => {
-        this.success = false;
+        this.message = 'ไม่สามารถทำรายการได้ กรุณาติดต่อ CallCenter 020789123 ค่ะ';
         this.alertService.error(err);
         this.pageLoadingService.closeLoading();
       });

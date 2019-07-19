@@ -8,6 +8,7 @@ import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { TransactionType, Transaction } from 'src/app/shared/models/transaction.model';
 import * as moment from 'moment';
+import { resolve } from 'dns';
 
 @Component({
   selector: 'app-vas-package-select-vas-package-page',
@@ -19,7 +20,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
   mobileForm: FormGroup;
   mobileNo: string;
   bannerSliders: BannerSlider[];
-  priceOptionDetailService: Promise<any>;
+  packageVasService: Promise<any>;
   salesService: SalesService;
   user: User;
   shelves: any;
@@ -208,8 +209,8 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
   callService(): any {
     const userId = 'bMfAlzjKaZSSKY3s6c3farMxbUaEsFnIIAgbjsXKA3cOhnKfvawKb60MITINd04Os73YJBQ5aWypkxFk';
     this.packLoading = true;
-    this.http.post('/api/salesportal/promotion-vas', { userId }).toPromise()
-    .then((response: any) => {
+    this.packageVasService = this.http.post('/api/salesportal/promotion-vas', { userId }).toPromise();
+    this.packageVasService.then((response: any) => {
         const bestSellerItem = [];
         const packageCat = [];
         response.data.data.map((data: any) => {
@@ -238,12 +239,12 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
         pack: packageCat
       };
     }).then(({ best, pack }) => {
-        this.packageCat = pack;
-        this.packagesBestSellers = best;
-        this.tabs = this.getTabsFormPriceOptions(pack);
-        this.selectedTab = this.tabs[0];
-        this.packLoading = false;
-      });
+      this.packageCat = pack;
+      this.packagesBestSellers = best;
+      this.tabs = this.getTabsFormPriceOptions(pack);
+      this.selectedTab = this.tabs[0];
+      this.packLoading = false;
+    });
   }
 
   ngOnDestroy(): void {

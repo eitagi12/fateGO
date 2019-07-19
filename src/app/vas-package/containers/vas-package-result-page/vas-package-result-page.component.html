@@ -6,8 +6,7 @@
       <div class="container-fluid">
         <div class="card mb-3">
           <div class="card-body">
-            <div *ngIf="success" class="text-center text-black result mt-3">ทำรายการเรียบร้อยแล้ว</div>
-            <div *ngIf="!success" class="text-center mt-3">ไม่สามารถทำรายการได้ กรุณาติดต่อ CallCenter 020789123 ค่ะ</div>
+            <div class="text-center text-black result mt-3">{{ message }}</div>
           </div>
           <div class="card-footer bg-transparent">
             <div class="row">

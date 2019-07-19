@@ -28,10 +28,9 @@
       <div class="mc-flex-wrap">
         <div class="text-center">แพ็กเกจขายดี</div>
       </div>
+      <div [mcLoading]="packageVasService" [hidden]="packLoading"></div>
       <div *ngIf="!packLoading">
-        <div *ngIf="packagesBestSellers">
-          <app-vas-package-slider [packages]="packagesBestSellers" (selectedBestSellerPackage)="onSelectedBestSellerPackage($event)"></app-vas-package-slider>
-        </div>
+        <app-vas-package-slider [packages]="packagesBestSellers" (selectedBestSellerPackage)="onSelectedBestSellerPackage($event)"></app-vas-package-slider>
         <div class="text-center">
           แพ็กเกจตาม Life Style
         </div>
