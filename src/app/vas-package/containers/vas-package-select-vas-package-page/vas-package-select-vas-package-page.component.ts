@@ -103,33 +103,9 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
               this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจาก service years ไม่ถึง');
               return;
             }
-
-            const isPrepaid: boolean = resProfile.data.chargeType === 'Pre-paid';
-            if (isPrepaid) {
-              this.http.get(`/api/customerportal/newRegister/${this.mobileNo}/queryBalance`).toPromise()
-                .then((resBalance: any) => {
-                  if (resBalance && resBalance.resultCode !== '20000') {
-                    this.pageLoadingService.closeLoading();
-                    this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
-                    return;
-                  }
-
-                  const isEnough: any = +(resBalance.data.remainingBalance) >= +(selectedPackage.customAttributes.regular_price);
-                  if (!isEnough) {
-                    this.pageLoadingService.closeLoading();
-                    this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจากยอดเงินคงเหลือไม่เพียงพอสำหรับแพ็กเกจนี้ ยอดเงินคงเหลือ: '
-                      + (+resBalance.data.remainingBalance) + ' บาท');
-                    return;
-                  }
-                  this.pageLoadingService.closeLoading();
-                  this.savePackage(this.mobileNo, selectedPackage);
-                  this.router.navigate([ROUTE_VAS_PACKAGE_LOGIN_WITH_PIN_PAGE]);
-                });
-            } else {
               this.router.navigate([ROUTE_VAS_PACKAGE_LOGIN_WITH_PIN_PAGE]);
               this.savePackage(this.mobileNo, selectedPackage);
               this.pageLoadingService.closeLoading();
-            }
           });
       } else {
         const isPrepaid: boolean = resProfile.data.chargeType === 'Pre-paid';
