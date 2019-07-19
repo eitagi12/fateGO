@@ -192,7 +192,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
       this.pageLoadingService.openLoading();
       this.mobileProfile = null;
       this.getNTypeMobileNo(this.mobileNo).then((profile) => {
-          if (profile.data.mobileStatus !== '000' || profile.mobileStatus.toLowerCase() !== 'active') {
+          if (profile && profile.mobileStatus && (profile.data.mobileStatus !== '000' || profile.mobileStatus.toLowerCase() !== 'active')) {
             this.pageLoadingService.closeLoading();
             this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
             return;
@@ -210,7 +210,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
         this.pageLoadingService.openLoading();
         this.mobileProfile = null;
         this.getNTypeMobileNo(this.mobileNo).then((profile) => {
-            if (profile.data.mobileStatus !== '000' || profile.mobileStatus.toLowerCase() !== 'active') {
+            if (profile && profile.data && (profile.data.mobileStatus !== '000' || profile.mobileStatus.toLowerCase() !== 'active')) {
               this.pageLoadingService.closeLoading();
               this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
               return;
