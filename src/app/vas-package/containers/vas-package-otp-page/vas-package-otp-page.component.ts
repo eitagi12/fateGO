@@ -192,7 +192,7 @@ export class VasPackageOtpPageComponent implements OnInit, OnDestroy {
   public saveROM(): void {
     const requestSaveROM = {
       mobileNo: this.mobileNoAgent,
-      username: this.tokenService.getUser().username
+      username: this.transaction.data.romAgent.usernameRomAgent
     };
     this.http.post(`/api/easyapp/save-rom-number`, requestSaveROM).toPromise().then((res: any) => {
       if (res.data.isSuccess) {

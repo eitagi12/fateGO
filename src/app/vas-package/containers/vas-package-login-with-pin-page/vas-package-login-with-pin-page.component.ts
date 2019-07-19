@@ -66,6 +66,10 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
     this.aisNativeOrderService.getNativeUsername();
     this.usernameSub = this.aisNativeOrderService.getUsername().subscribe((username: string) => {
       this.usernameRom = username;
+      this.transaction.data.romAgent = {
+        ...this.transaction.data.romAgent,
+        usernameRomAgent: this.transaction.data.romAgent.usernameRomAgent
+      };
       this.http.get(`/api/easyapp/get-rom-by-user?username=${this.usernameRom}`).toPromise()
         .then((res: any) => {
           if (res && res.data.mobileNo !== '') {
@@ -137,15 +141,13 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
     this.http.post(`/api/customerportal/rom/sign-in`, requestSignIn).toPromise()
       .then((res: any) => {
         if (res && res.data.status === 'success') {
-          this.transaction.data = {
-            ...this.transaction.data,
-            romAgent: {
+          this.transaction.data.romAgent = {
+            ...this.transaction.data.romAgent,
               mobileNoAgent: this.loginForm.controls.mobileNoAgent.value,
               pinAgent: this.loginForm.value.pinAgent,
               agentId: agentId,
               tokenType: res.data.token_type,
               accessToken: res.data.access_token
-            }
           };
           // check Rom Agent ที่มีข้อมูลแล้ว
           const mobileNoAgentCurrent = this.loginForm.controls.mobileNoAgent.value;
