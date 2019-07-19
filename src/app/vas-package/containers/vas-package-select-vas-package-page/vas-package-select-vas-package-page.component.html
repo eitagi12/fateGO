@@ -24,9 +24,10 @@
             />
           </div>
         </form>
+        <input type="hidden" id='packageInput' #packageInput />
       </div>
       <div class="mc-flex-wrap">
-        <div class="text-center" #packageTitle>แพ็กเกจขายดี</div>
+        <div class="text-center">แพ็กเกจขายดี</div>
       </div>
       <div [mcLoading]="packageVasService" [hidden]="packLoading"></div>
       <div *ngIf="!packLoading">

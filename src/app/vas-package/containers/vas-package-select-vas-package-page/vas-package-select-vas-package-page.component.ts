@@ -34,7 +34,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
   nType: string;
   mobileProfile: any;
   packLoading: any = false;
-  @ViewChild('packageTitle') packageTitle: any;
+  @ViewChild('packageInput') packageInput: any;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -190,11 +190,12 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
     if (this.mobileNo) {
       this.mobileForm.controls.mobileNo.setValue(this.mobileNo);
       this.pageLoadingService.openLoading();
+      this.mobileProfile = null;
       this.getNTypeMobileNo(this.mobileNo).then((profile) => {
         this.nType = profile.data.product;
       }).then(() => {
-        this.packageTitle.nativeElement.focus();
         this.pageLoadingService.closeLoading();
+        this.packageInput.nativeElement.focus();
       });
     }
 
@@ -202,11 +203,12 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
       this.mobileNo = value.mobileNo;
       if (this.mobileForm.controls.mobileNo.valid) {
         this.pageLoadingService.openLoading();
+        this.mobileProfile = null;
         this.getNTypeMobileNo(this.mobileNo).then((profile) => {
           this.nType = profile.data.product;
         }).then(() => {
-          this.packageTitle.nativeElement.focus();
           this.pageLoadingService.closeLoading();
+          this.packageInput.nativeElement.focus();
         });
       }
     });
