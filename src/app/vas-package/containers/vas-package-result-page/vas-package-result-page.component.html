@@ -1,0 +1,43 @@
+<div class="mc-flex">
+  <mc-header title="{{ 'ขายแพ็กเกจเสริม' | translate }}">
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <div class="mb-3 mt-3">
+      <div class="container-fluid">
+        <div class="card mb-3">
+          <div class="card-body">
+            <div *ngIf="success" class="text-center text-black result mt-3">ทำรายการเรียบร้อยแล้ว</div>
+            <div *ngIf="!success" class="text-center mt-3">ไม่สามารถทำรายการได้ กรุณาติดต่อ CallCenter 020789123 ค่ะ</div>
+          </div>
+          <div class="card-footer bg-transparent">
+            <div class="row">
+                <div class="col-3 col-sm-3">
+                    <div class="text-center mt-4">
+                        <img src="assets/images/icon/icon-network.png" class="icon" style="width: 50px">
+                    </div>
+                </div>
+                <div class="col-9 col-sm-9 text-left">
+                    <div>
+                        <div class="text-black mt-3">{{ transaction?.data?.onTopPackage?.customAttributes?.category }}</div>
+                        <div class="text-green mt-3">{{ transaction?.data?.onTopPackage?.detailTH }}</div>
+                        <div class="text-black mt-3">
+                          <span *ngIf="checkTransactionType()">{{ transaction?.data?.onTopPackage?.customAttributes?.regular_price }} บาท</span>
+                          <span *ngIf="!checkTransactionType()">{{ transaction?.data?.onTopPackage?.customAttributes?.customer_price }} บาท</span>
+                          <span style="padding-left: 30px;">{{ transaction?.data?.onTopPackage?.customAttributes?.package_period }}</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <mc-footer>
+    <button class="btn btn-success" (click)="onTopUp()">เติมเงินเพิ่ม</button>
+    <button class="btn btn-success" (click)="onSelectPackage()">เลือกแพ็กเกจเพิ่ม</button>
+  </mc-footer>
+  <mc-footer>
+  <button class="btn btn-success" (click)="onMainMenu()">กลับสู่เมนูหลัก</button>
+</mc-footer>
+</div>

@@ -65,6 +65,11 @@ const routes: Routes = [
     path: 'trade-in',
     loadChildren: 'src/app/trade-in/trade-in.module#TradeInModule',
     canActivate: [AuthGuard]
+  },
+  {
+    path: 'vas-package',
+    loadChildren: 'src/app/vas-package/vas-package.module#VasPackageModule',
+    canActivate: [AuthGuard]
   }
 ];
 

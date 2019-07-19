@@ -1,0 +1,14 @@
+.result {
+    font-size: 1.2rem;
+}
+
+.icon {
+    width: 120px;
+    display: block;
+    margin: 0 auto 30px;
+}
+@media (max-width: 576px) {
+    .header-icon-left,.header-icon-right{
+        width: 10% !important;
+    }
+}
