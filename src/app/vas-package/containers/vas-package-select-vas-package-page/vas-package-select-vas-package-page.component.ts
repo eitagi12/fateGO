@@ -203,6 +203,13 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
       }).then(() => {
         this.pageLoadingService.closeLoading();
         setTimeout(() => document.body.focus(), 1);
+      }).catch((e) => {
+        this.pageLoadingService.closeLoading();
+        if (typeof e === 'string') {
+          this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
+        } else {
+          this.alertService.error('ไม่สามารถทำรายการได้ เลขหมายนี้ไม่ใช่ระบบ AIS');
+        }
       });
     }
 
@@ -223,6 +230,13 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
         }).then(() => {
           this.pageLoadingService.closeLoading();
           this.readonly = true;
+        }).catch((e) => {
+          this.pageLoadingService.closeLoading();
+          if (typeof e === 'string') {
+            this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
+          } else {
+            this.alertService.error('ไม่สามารถทำรายการได้ เลขหมายนี้ไม่ใช่ระบบ AIS');
+          }
         });
       }
     });
@@ -351,13 +365,6 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
       return this.http.get(`/api/customerportal/asset/${mobileNo}/profile`).toPromise().then((resProfile: any) => {
         this.mobileProfile = resProfile;
         return resProfile;
-      }).catch((e) => {
-        this.pageLoadingService.closeLoading();
-        if (typeof e === 'string') {
-          this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
-        } else {
-          this.alertService.error('ไม่สามารถทำรายการได้ เลขหมายนี้ไม่ใช่ระบบ AIS');
-        }
       });
     } else {
       return Promise.resolve(this.mobileProfile);
@@ -367,5 +374,4 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
   onSellBestSellerPackage(value: any): void {
     this.onSelectPackage(value);
   }
-
 }
