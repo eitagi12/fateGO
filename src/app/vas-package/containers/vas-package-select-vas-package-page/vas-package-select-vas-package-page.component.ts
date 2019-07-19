@@ -360,4 +360,8 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
     }
   }
 
+  onSellBestSellerPackage(value: any): void {
+    this.onSelectPackage(value);
+  }
+
 }

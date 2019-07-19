@@ -22,7 +22,7 @@
               </div>
               <span class="pull-right">
                 <img class="icon-s" src="assets/images/icon/EasyP1_23072561-17.png"
-                  (click)="onOpenDetail(package.customAttributes?.description_th)">
+                  (click)="onOpenDetail(package, package.customAttributes?.description_th)">
               </span>
             </div>
           </div>
@@ -37,6 +37,7 @@
   <div class="modal-footer">
     <div class="w-100 text-center">
       <button class="btn btn-success px-5" (click)="modalRef.hide()" translate>ปิด</button>
+      <button class="btn btn-success px-5" (click)="onSell()" translate>ขายเลย</button>
     </div>
   </div>
 </ng-template>
