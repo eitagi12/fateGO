@@ -33,6 +33,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
   keySort: Array<string> = ['', '', '', ''];
   nType: string;
   mobileProfile: any;
+  packLoading: any = false;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -206,8 +207,11 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
 
   callService(): any {
     const userId = 'bMfAlzjKaZSSKY3s6c3farMxbUaEsFnIIAgbjsXKA3cOhnKfvawKb60MITINd04Os73YJBQ5aWypkxFk';
+    this.packLoading = true;
     this.http.post('/api/salesportal/promotion-vas', { userId }).toPromise()
-      .then((response: any) => {
+    .then((response: any) => {
+        const bestSellerItem = [];
+        const packageCat = [];
         response.data.data.map((data: any) => {
           data.subShelves.map((subShelves: any) => {
             const listPackage = this.filterRomPackage(subShelves.items);
@@ -222,17 +226,23 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
                 } else {
                   item.icon = 'assets/images/icon/Net.png';
                 }
-                this.packagesBestSellerItem.push(item);
+                bestSellerItem.push(item);
               } else {
-                this.packageCat.push(item);
+                packageCat.push(item);
               }
             }).sort((a: any, b: any) => (+a.customAttributes.best_seller_priority) - (b.customAttributes.best_seller_priority));
           });
         });
-      }).then(() => {
-        this.packagesBestSellers = this.packagesBestSellerItem;
-        this.tabs = this.getTabsFormPriceOptions(this.packageCat);
+      return {
+        best: bestSellerItem,
+        pack: packageCat
+      };
+    }).then(({ best, pack }) => {
+        this.packageCat = pack;
+        this.packagesBestSellers = best;
+        this.tabs = this.getTabsFormPriceOptions(pack);
         this.selectedTab = this.tabs[0];
+        this.packLoading = false;
       });
   }
 

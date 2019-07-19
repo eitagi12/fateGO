@@ -8,64 +8,45 @@
     </div>
   </mc-header>
   <div class="mc-flex-wrap">
-      <div class="container-fluid">
-        <div class="mc-flex-wrap">
-          <form [formGroup]="mobileForm">
-            <div class="form-group">
-              <div class="text-center">หมายเลขโทรศัพท์ลูกค้า</div>
-              <input class="form-control text-center" type="tel" id="mobileNo" maxlength="10" formControlName="mobileNo"
-                placeholder="ระบุหมายเลขโทรศัพท์ลูกค้า" value="">
-            </div>
-          </form>
+    <div class="container-fluid">
+      <div class="mc-flex-wrap">
+        <form [formGroup]="mobileForm">
+          <div class="form-group">
+            <div class="text-center">หมายเลขโทรศัพท์ลูกค้า</div>
+            <input
+              class="form-control text-center"
+              type="tel"
+              id="mobileNo"
+              maxlength="10"
+              formControlName="mobileNo"
+              placeholder="ระบุหมายเลขโทรศัพท์ลูกค้า"
+              value=""
+            />
+          </div>
+        </form>
+      </div>
+      <div class="mc-flex-wrap">
+        <div class="text-center">แพ็กเกจขายดี</div>
+      </div>
+      <div *ngIf="!packLoading">
+        <div *ngIf="packagesBestSellers">
+          <app-vas-package-slider [packages]="packagesBestSellers" (selectedBestSellerPackage)="onSelectedBestSellerPackage($event)"></app-vas-package-slider>
         </div>
-        <div class="mc-flex-wrap">
-          <div class="text-center">แพ็กเกจขายดี</div>
-        </div>
-        <app-vas-package-slider
-          [packages]='packagesBestSellers'
-          (selectedBestSellerPackage)="onSelectedBestSellerPackage($event)">
-        </app-vas-package-slider>
         <div class="text-center">
           แพ็กเกจตาม Life Style
         </div>
-        <div class="row m-0">
-          <div *ngFor="let tab of tabs"
-              class="col-{{ 12 / tabs.length }} main-tab px-0 mx-0 py-3"
-              [ngClass]="{ 'active' : tab?.active }"
-              (click)="toggleActiveTabs(tab.name)">
-              {{ tab.name }}
+          <div class="row m-0">
+          <div *ngFor="let tab of tabs" class="col-{{ 12 / tabs.length }} main-tab px-0 mx-0 py-3" [ngClass]="{ active: tab?.active }" (click)="toggleActiveTabs(tab.name)">
+            {{ tab.name }}
           </div>
         </div>
-        <!-- <div class="card text-center">
-          <div class="card-header p-0">
-            <div class="row">
-              <div class="col-12 text-center">
-                <div class="bg-white" [hidden]="tabs?.length <= 0">
-                  <tabset [justified]="true">
-                    <tab *ngFor="let tab of tabs" [active]="tab.active">
-                      <ng-template tabHeading>
-                        <div class="{{tab.name}}" [ngClass]="{ 'active' : tab.active }"
-                          (click)="setActiveTabs(tab.name)">
-                          <b>{{ tab.name }}</b></div>
-                      </ng-template>
-                    </tab>
-                  </tabset>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div> -->
         <div class="tab-content">
-          <app-vas-package-tab
-            [categoryTab]="selectedTab"
-            [transactionType]="transaction.data.transactionType"
-            [nType]="nType"
-            (selectedPackage)="onSelectPackage($event)">
-          </app-vas-package-tab>
-        </div>
-        <div class="text-center text-grey">
-          *ราคาแพ็กเกจนี้รวมภาษีมูลค่าเพิ่มแล้ว
+          <app-vas-package-tab [categoryTab]="selectedTab" [transactionType]="transaction.data.transactionType" [nType]="nType" (selectedPackage)="onSelectPackage($event)"></app-vas-package-tab>
         </div>
       </div>
+      <div class="text-center text-grey">
+        *ราคาแพ็กเกจนี้รวมภาษีมูลค่าเพิ่มแล้ว
+      </div>
+    </div>
   </div>
 </div>
