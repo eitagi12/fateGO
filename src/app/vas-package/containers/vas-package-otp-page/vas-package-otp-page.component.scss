@@ -1,87 +1,99 @@
 .Responsive {
-    background-color: #ededed;
-    min-height: 100vh;
-    height: 100%;
-  }
-  
-  .content {
-    margin: 1em;
-  }
-  
+  background-color: #ededed;
+  min-height: 100vh;
+  height: 100%;
+}
+
+.content {
+  margin: 1em;
+}
+
 .mobile {
     font-size: 1rem;
     display: inline;
     padding: 20px;
 }
 
-  .card-content {
-    padding: 4rem;
-    margin: auto;
-    background-color: #ffffff;
-    width: 100%;
-    border-radius: 5px;
-  }
-  
-  .text {
+.card-content {
+  padding: 4rem;
+  margin: auto;
+  background-color: #ffffff;
+  width: 100%;
+  border-radius: 5px;
+}
+
+.text {
+  margin-top: 2rem;
+}
+
+hr {
+  border-bottom: 2px solid #808080;
+}
+
+input.mc-input {
+  height: 60px;
+  width: 100%;
+  border-radius: 5px;
+  margin-top: 1rem;
+  color: inherit;
+  border: 2px solid #cbcbcb;
+  padding-left: 2em;
+}
+
+.footers {
+  margin: 3%;
+}
+
+.mc-btn-otp {
+  text-decoration: underline;
+  cursor: pointer;
+  padding-top: 11px;
+}
+
+.mc-btn {
+  height: 60px;
+  border: 3px solid #dddada;
+  border-radius: 5px;
+  background-color: #b2d235;
+  cursor: pointer;
+  font-family: 'Eng';
+  width: 100%;
+  text-align: center;
+}
+
+.mc-btn:disabled,
+.mc-btn[disabled] {
+  height: 60px;
+  border: 3px solid #dddada;
+  border-radius: 5px;
+  background-color: #CACBCD;
+  color: #7A7B7C;
+  cursor: pointer;
+  font-family: 'Eng';
+  width: 100%;
+  text-align: center;
+}
+
+@media screen and (max-width: 768px) {
+  .text-otp {
     margin-top: 2rem;
+    font-size: 16px;
   }
-  
-  hr {
-    border-bottom: 2px solid #808080;
+}
+
+@media (max-width: 576px) {
+
+  .header-icon-left,
+  .header-icon-right {
+    width: 10% !important;
   }
-  
-  input.mc-input{
-    height: 60px;
-    width: 100%;
-    border-radius: 5px;
-    margin-top: 1rem;
-    color: inherit;
-    border: 2px solid #cbcbcb;
-    padding-left: 2em;
-  }
-  
-  .footers {
-    margin: 3%;
-  }
-  
-  .mc-btn-otp {
-    text-decoration: underline;
-    cursor: pointer;
-    padding-top: 11px;
-  }
-  
-  .mc-btn {
-    height: 60px;
-    border: 3px solid #dddada;
-    border-radius: 5px;
-    background-color: #b2d235;
-    cursor: pointer;
-    font-family: 'Eng';
-    width: 100%;
-    text-align: center;
-  }
-  
-  .mc-btn:disabled,
-  .mc-btn[disabled]{
-    height: 60px;
-    border: 3px solid #dddada;
-    border-radius: 5px;
-    background-color: #CACBCD;
-    color: #7A7B7C;
-    cursor: pointer;
-    font-family: 'Eng';
-    width: 100%;
-    text-align: center;
-  }
-  
-  @media screen and (max-width: 768px) { 
-    .text-otp {
-      margin-top: 2rem;
-      font-size: 16px;
-    }
-  }
-  @media (max-width: 576px) {
-    .header-icon-left,.header-icon-right{
-        width: 10% !important;
-    }
+}
+
+.navbar-brand {
+  margin: 0 auto
+}
+
+.bg-ais {
+  color: black;
+  background-color: #cced61;
 }

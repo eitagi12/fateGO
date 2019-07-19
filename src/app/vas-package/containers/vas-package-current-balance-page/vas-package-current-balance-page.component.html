@@ -1,13 +1,14 @@
 <div class="mc-flex">
-  <mc-header title="{{ 'ขายแพ็กเกจเสริม' | translate }}">
-    <div class="header-icon-left w-25">
-      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+
+  <nav class="navbar fixed-top bg-ais text-white shadow-sm fix-position">
+    <div class="col-2 navbar-brand">
+      <img class="w-25" src="assets/images/icon/icon-black-back.png" (click)="onBack()">
     </div>
-    <div class="header-icon-right w-25 text-right">
-      <!-- <mc-dropdown-language></mc-dropdown-language> -->
-      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    <div class="col-8 navbar-brand text-center text-black">{{ 'ขายแพ็กเกจเสริม' | translate }}</div>
+    <div class="col-2 navbar-brand">
     </div>
-  </mc-header>
+  </nav>
+
   <div class="mc-flex-wrap">
     <div class="mb-3 mt-3">
       <div class="container-fluid">
@@ -29,11 +30,12 @@
             <form [formGroup]="romAgentForm">
               <div class="form-group">
                 <label for="mobileNoAgent">หมายเลข ROM Agent</label>
-                <input type="tel" class="form-control" id="mobileNoAgent" formControlName="mobileNoAgent" maxlength="10">
+                <input type="tel" class="form-control" id="mobileNoAgent" formControlName="mobileNoAgent"
+                  maxlength="10">
               </div>
               <div class="form-group">
                 <label for="amount">ยอดคงเหลือในกระเป๋า ROM Agent</label>
-                <input type="text" class="form-control" id="amount"  formControlName="amount" value="{{this.balance}}">
+                <input type="text" class="form-control" id="amount" formControlName="amount" value="{{this.balance}}">
               </div>
               <small class="text-pink" *ngIf="!balanceBuyPackage">ยอดคงเหลือในกระเป๋าของคุณไม่พอ กรุณาทำการเติมเงิน
                 <U class="text-secondary" (click)="getBalanceRomAgent()">กดรีเฟรช</U></small>

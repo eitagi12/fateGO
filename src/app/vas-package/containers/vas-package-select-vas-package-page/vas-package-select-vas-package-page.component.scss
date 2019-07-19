@@ -1,7 +1,9 @@
 @media (max-width: 576px) {
-    .header-icon-left,.header-icon-right{
-        width: 10% !important;
-    }
+
+  .header-icon-left,
+  .header-icon-right {
+    width: 10% !important;
+  }
 }
 
 .main-tab {
@@ -12,11 +14,26 @@
   width: 100%;
   font-size: 12px;
   border: 1px solid white;
-  &.active{
+
+  &.active {
     font-weight: bold;
     background-color: #82af05;
   }
 }
+
 .mc-flex-wrap {
-    margin-top: 2.5rem
+  margin-top: 2.5rem
+}
+
+navbar-brand {
+  margin: 0 auto
+}
+
+.bg-ais {
+  color: black;
+  background-color: #cced61;
+}
+
+.navbar-brand {
+  margin: 0 auto
 }
