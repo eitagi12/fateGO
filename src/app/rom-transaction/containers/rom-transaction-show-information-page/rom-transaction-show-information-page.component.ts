@@ -3,7 +3,7 @@ import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { CustomerInfo, HomeService, AlertService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { 
+import {
   ROUTE_ROM_TRANSACTION_RESULT_PAGE,
   ROUTE_ROM_TRANSACTION_LIST_MOBILE_PAGE
  } from 'src/app/rom-transaction/constants/route-path.constant';
