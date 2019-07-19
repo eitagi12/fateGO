@@ -1,35 +1,22 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HomeService, TokenService, PageLoadingService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { ROUTE_ROM_TRANSACTION_SHOW_INFORMATION_PAGE } from 'src/app/rom-transaction/constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
 import * as moment from 'moment';
-
-export interface RomData {
-  createDate: string;
-  cusMobileNo: string;
-  locationcode: string;
-  packId: string;
-  price: string;
-  romNo: string;
-  ssid: string;
-  status: string;
-  transactionId: string;
-  transactionType: 'VAS' | 'TOPUP';
-  username: string;
-  time?: string;
-  _id: string;
-}
+import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 
 @Component({
   selector: 'app-rom-transaction-list-mobile-page',
   templateUrl: './rom-transaction-list-mobile-page.component.html',
   styleUrls: ['./rom-transaction-list-mobile-page.component.scss']
 })
-export class RomTransactionListMobilePageComponent implements OnInit {
+export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy {
 
   username: string;
-  romData: RomData[] = [];
+  transaction: Transaction;
+  romData: any = [];
   currenDate: string = '';
   constructor(
     private router: Router,
@@ -37,6 +24,7 @@ export class RomTransactionListMobilePageComponent implements OnInit {
     private tokenService: TokenService,
     private pageLoadingService: PageLoadingService,
     private http: HttpClient,
+    private transactionService: TransactionService,
   ) {
     this.username = this.tokenService.getUser().username;
   }
@@ -54,12 +42,15 @@ export class RomTransactionListMobilePageComponent implements OnInit {
     .then((res: any) => {
       const data = res.data || [];
       this.pageLoadingService.closeLoading();
-      this.romData = data.map((roms: RomData) => {
+      return this.romData = data.map((roms: any) => {
         const createMoment = moment(roms.createDate);
         roms.time = createMoment.format('HH.mm');
         return roms;
       })
       .sort((val1, val2) => val2.time - val1.time);
+    })
+    .then(() => {
+      this.createTransaction(this.romData);
     });
   }
 
@@ -74,15 +65,33 @@ export class RomTransactionListMobilePageComponent implements OnInit {
     return day + ' ' + monthList[+mount - 1] + ' ' + (+year + 543);
   }
 
-  onSelect(): void {
+  createTransaction(romData: any): void {
+    this.transaction = {
+      data: {
+        transactionType: null,
+        action: null,
+        romTransaction: {
+          username: this.username,
+          romData: romData
+        }
+      }
+    };
+  }
+
+  onSelect(rom: any): void {
+    this.transaction.data.romTransaction.romTransaction = rom;
     this.router.navigate([ROUTE_ROM_TRANSACTION_SHOW_INFORMATION_PAGE]);
   }
 
-  onNext(): void {
-    this.router.navigate([ROUTE_ROM_TRANSACTION_SHOW_INFORMATION_PAGE]);
-  }
+  // onNext(): void {
+  //   this.router.navigate([ROUTE_ROM_TRANSACTION_SHOW_INFORMATION_PAGE]);
+  // }
 
   onHome(): void {
     this.homeService.goToHome();
+  }
+
+  ngOnDestroy(): void {
+    this.transactionService.save(this.transaction);
   }
 }

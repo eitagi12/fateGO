@@ -73,6 +73,7 @@ export interface TransactionData {
   device?: Device;
   knoxguard?: KnoxGuard;
   tradeType?: string;
+  romTransaction?: RomTransaction;
 }
 
 export interface Condition {
@@ -502,4 +503,26 @@ export interface KnoxGuard {
   duration?: string;
   orderReason?: string;
   userName?: string;
+}
+
+export interface RomTransaction {
+  romData?: RomData[];
+  romTransaction?: RomData;
+  username?: string;
+}
+
+export interface RomData {
+  createDate?: string;
+  cusMobileNo?: string;
+  locationcode?: string;
+  packId?: string;
+  price?: string;
+  romNo?: string;
+  ssid?: string;
+  status?: string;
+  transactionId?: string;
+  transactionType?: 'VAS' | 'TOPUP';
+  username?: string;
+  time?: string;
+  _id?: string;
 }
