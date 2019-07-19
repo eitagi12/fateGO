@@ -65,7 +65,7 @@ const routes: Routes = [
     path: 'trade-in',
     loadChildren: 'src/app/trade-in/trade-in.module#TradeInModule',
     canActivate: [AuthGuard]
-  }
+  },
   {
     path: 'rom-transaction',
     loadChildren: 'src/app/rom-transaction/rom-transaction.module#RomTransactionModule',

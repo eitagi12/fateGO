@@ -1,0 +1,13 @@
+.mobile-detail{
+    color: grey;
+    margin-top: -5px;
+    display: block;
+    &.del{
+        text-decoration: line-through;
+        text-decoration-color:red;
+    }
+    &.detail-header{
+        color: black;
+        margin-bottom: 5px;
+    }
+}

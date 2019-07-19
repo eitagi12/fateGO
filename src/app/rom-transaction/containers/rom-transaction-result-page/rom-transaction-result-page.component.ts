@@ -24,7 +24,7 @@ export class RomTransactionResultPageComponent implements OnInit {
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_ROM_TRANSACTION_SHOW_INFORMATION_PAGE);
+    this.router.navigate([ROUTE_ROM_TRANSACTION_SHOW_INFORMATION_PAGE]);
   }
 
   onNext(): void {
