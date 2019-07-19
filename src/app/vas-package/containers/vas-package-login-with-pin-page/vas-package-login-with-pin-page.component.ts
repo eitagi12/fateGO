@@ -62,7 +62,8 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
 
   private getRomByUser(): any {
     // const username = this.tokenService.getUser().username;
-    this.aisNativeOrderService.getUsername().subscribe((res: string) => {
+      this.aisNativeOrderService.getNativeUsername();
+      this.aisNativeOrderService.getUsername().subscribe((res: string) => {
       this.alertService.error('username : ' + res);
     });
     // this.http.get(`/api/easyapp/get-rom-by-user?username=${username}`).toPromise()
