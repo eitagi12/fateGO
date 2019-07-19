@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnChanges, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_VAS_PACKAGE_LOGIN_WITH_PIN_PAGE, ROUTE_VAS_PACKAGE_MENU_VAS_ROM_PAGE, ROUTE_VAS_PACKAGE_OTP_PAGE } from '../../constants/route-path.constant';
 import { PackageProductsService } from '../../services/package-products.service';
@@ -8,7 +8,6 @@ import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { TransactionType, Transaction } from 'src/app/shared/models/transaction.model';
 import * as moment from 'moment';
-import { resolve } from 'dns';
 
 @Component({
   selector: 'app-vas-package-select-vas-package-page',
@@ -35,6 +34,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
   nType: string;
   mobileProfile: any;
   packLoading: any = false;
+  @ViewChild('packageTitle') packageTitle: any;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -77,90 +77,90 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
     }
     this.pageLoadingService.openLoading();
     this.getNTypeMobileNo(this.mobileNo).then((resProfile: any) => {
-        const matchNType: any = [...selectedPackage.customAttributes.allow_ntype.split(',')].includes(resProfile.data.product);
-        if (!matchNType) {
-          this.pageLoadingService.closeLoading();
-          this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจาก Network type ไม่ตรง');
-          return;
-        }
-        if (this.transaction.data.transactionType === TransactionType.VAS_PACKAGE_ROM) {
-          this.http.get(`/api/customerportal/mobile-detail/${this.mobileNo}`).toPromise()
-            .then((mobileDetail: any) => {
-              if (mobileDetail && mobileDetail.resultCode !== '20000') {
+      const matchNType: any = [...selectedPackage.customAttributes.allow_ntype.split(',')].includes(resProfile.data.product);
+      if (!matchNType) {
+        this.pageLoadingService.closeLoading();
+        this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจาก Network type ไม่ตรง');
+        return;
+      }
+      if (this.transaction.data.transactionType === TransactionType.VAS_PACKAGE_ROM) {
+        this.http.get(`/api/customerportal/mobile-detail/${this.mobileNo}`).toPromise()
+          .then((mobileDetail: any) => {
+            if (mobileDetail && mobileDetail.resultCode !== '20000') {
+              this.pageLoadingService.closeLoading();
+              this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+              return;
+            }
+
+            const registerDate = moment()
+              .subtract(+mobileDetail.data.serviceYear.year, 'years')
+              .subtract(+mobileDetail.data.serviceYear.month, 'months')
+              .subtract(+mobileDetail.data.serviceYear.day, 'days');
+            const packageDate = moment().subtract(+selectedPackage.days_of_service_year, 'days');
+            const isBefore = registerDate.isBefore(packageDate);
+            if (!isBefore) {
+              this.pageLoadingService.closeLoading();
+              this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจาก service years ไม่ถึง');
+              return;
+            }
+
+            const isPrepaid: boolean = resProfile.data.chargeType === 'Pre-paid';
+            if (isPrepaid) {
+              this.http.get(`/api/customerportal/newRegister/${this.mobileNo}/queryBalance`).toPromise()
+                .then((resBalance: any) => {
+                  if (resBalance && resBalance.resultCode !== '20000') {
+                    this.pageLoadingService.closeLoading();
+                    this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+                    return;
+                  }
+
+                  const isEnough: any = +(resBalance.data.remainingBalance) >= +(selectedPackage.customAttributes.regular_price);
+                  if (!isEnough) {
+                    this.pageLoadingService.closeLoading();
+                    this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจากยอดเงินคงเหลือไม่เพียงพอสำหรับแพ็กเกจนี้ ยอดเงินคงเหลือ: '
+                      + (+resBalance.data.remainingBalance) + ' บาท');
+                    return;
+                  }
+                  this.pageLoadingService.closeLoading();
+                  this.savePackage(this.mobileNo, selectedPackage);
+                  this.router.navigate([ROUTE_VAS_PACKAGE_LOGIN_WITH_PIN_PAGE]);
+                });
+            } else {
+              this.router.navigate([ROUTE_VAS_PACKAGE_LOGIN_WITH_PIN_PAGE]);
+              this.savePackage(this.mobileNo, selectedPackage);
+              this.pageLoadingService.closeLoading();
+            }
+          });
+      } else {
+        const isPrepaid: boolean = resProfile.data.chargeType === 'Pre-paid';
+        if (isPrepaid) {
+          this.http.get(`/api/customerportal/newRegister/${this.mobileNo}/queryBalance`).toPromise()
+            .then((resBalance: any) => {
+              if (resBalance && resBalance.resultCode !== '20000') {
                 this.pageLoadingService.closeLoading();
                 this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
                 return;
               }
 
-              const registerDate = moment()
-                .subtract(+mobileDetail.data.serviceYear.year, 'years')
-                .subtract(+mobileDetail.data.serviceYear.month, 'months')
-                .subtract(+mobileDetail.data.serviceYear.day, 'days');
-              const packageDate = moment().subtract(+selectedPackage.days_of_service_year, 'days');
-              const isBefore = registerDate.isBefore(packageDate);
-              if (!isBefore) {
+              const isEnough: any = +(resBalance.data.remainingBalance) >= +(selectedPackage.customAttributes.customer_price);
+              if (!isEnough) {
                 this.pageLoadingService.closeLoading();
-                this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจาก service years ไม่ถึง');
+                this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจากยอดเงินคงเหลือไม่เพียงพอสำหรับแพ็กเกจนี้ ยอดเงินคงเหลือ: '
+                  + (+resBalance.data.remainingBalance) + ' บาท');
                 return;
               }
 
-              const isPrepaid: boolean = resProfile.data.chargeType === 'Pre-paid';
-              if (isPrepaid) {
-                this.http.get(`/api/customerportal/newRegister/${this.mobileNo}/queryBalance`).toPromise()
-                  .then((resBalance: any) => {
-                    if (resBalance && resBalance.resultCode !== '20000') {
-                      this.pageLoadingService.closeLoading();
-                      this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
-                      return;
-                    }
-
-                    const isEnough: any = +(resBalance.data.remainingBalance) >= +(selectedPackage.customAttributes.regular_price);
-                    if (!isEnough) {
-                      this.pageLoadingService.closeLoading();
-                      this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจากยอดเงินคงเหลือไม่เพียงพอสำหรับแพ็กเกจนี้ ยอดเงินคงเหลือ: '
-                        + (+resBalance.data.remainingBalance) + ' บาท');
-                      return;
-                    }
-                    this.pageLoadingService.closeLoading();
-                    this.savePackage(this.mobileNo, selectedPackage);
-                    this.router.navigate([ROUTE_VAS_PACKAGE_LOGIN_WITH_PIN_PAGE]);
-                  });
-              } else {
-                this.router.navigate([ROUTE_VAS_PACKAGE_LOGIN_WITH_PIN_PAGE]);
-                this.savePackage(this.mobileNo, selectedPackage);
-                this.pageLoadingService.closeLoading();
-              }
+              this.pageLoadingService.closeLoading();
+              this.savePackage(this.mobileNo, selectedPackage);
+              this.router.navigate([ROUTE_VAS_PACKAGE_OTP_PAGE]);
             });
         } else {
-          const isPrepaid: boolean = resProfile.data.chargeType === 'Pre-paid';
-          if (isPrepaid) {
-            this.http.get(`/api/customerportal/newRegister/${this.mobileNo}/queryBalance`).toPromise()
-              .then((resBalance: any) => {
-                if (resBalance && resBalance.resultCode !== '20000') {
-                  this.pageLoadingService.closeLoading();
-                  this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
-                  return;
-                }
-
-                const isEnough: any = +(resBalance.data.remainingBalance) >= +(selectedPackage.customAttributes.customer_price);
-                if (!isEnough) {
-                  this.pageLoadingService.closeLoading();
-                  this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจากยอดเงินคงเหลือไม่เพียงพอสำหรับแพ็กเกจนี้ ยอดเงินคงเหลือ: '
-                    + (+resBalance.data.remainingBalance) + ' บาท');
-                  return;
-                }
-
-                this.pageLoadingService.closeLoading();
-                this.savePackage(this.mobileNo, selectedPackage);
-                this.router.navigate([ROUTE_VAS_PACKAGE_OTP_PAGE]);
-              });
-          } else {
-            this.pageLoadingService.closeLoading();
-            this.savePackage(this.mobileNo, selectedPackage);
-            this.router.navigate([ROUTE_VAS_PACKAGE_OTP_PAGE]);
-          }
+          this.pageLoadingService.closeLoading();
+          this.savePackage(this.mobileNo, selectedPackage);
+          this.router.navigate([ROUTE_VAS_PACKAGE_OTP_PAGE]);
         }
-      });
+      }
+    });
   }
 
   savePackage(mobileNo: any, selectPackage: any): void {
@@ -192,7 +192,10 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
       this.pageLoadingService.openLoading();
       this.getNTypeMobileNo(this.mobileNo).then((profile) => {
         this.nType = profile.data.product;
-      }).then(() => this.pageLoadingService.closeLoading());
+      }).then(() => {
+        this.packageTitle.nativeElement.focus();
+        this.pageLoadingService.closeLoading();
+      });
     }
 
     this.mobileForm.valueChanges.subscribe((value) => {
@@ -200,8 +203,11 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
       if (this.mobileForm.controls.mobileNo.valid) {
         this.pageLoadingService.openLoading();
         this.getNTypeMobileNo(this.mobileNo).then((profile) => {
-            this.nType = profile.data.product;
-        }).then(() => this.pageLoadingService.closeLoading());
+          this.nType = profile.data.product;
+        }).then(() => {
+          this.packageTitle.nativeElement.focus();
+          this.pageLoadingService.closeLoading();
+        });
       }
     });
   }
