@@ -7,6 +7,7 @@ import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import * as moment from 'moment';
 import { Transaction } from 'src/app/shared/models/transaction.model';
+import { AisNativeOrderService } from 'src/app/shared/services/ais-native-order.service';
 declare let window: any;
 @Component({
   selector: 'app-vas-package-login-with-pin-page',
@@ -19,6 +20,7 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
   transaction: Transaction;
   mobileNoAgent: string;
   isRom: boolean;
+  window: any = window;
 
   constructor(
     private router: Router,
@@ -27,7 +29,8 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private tokenService: TokenService,
     private transactionService: TransactionService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private aisNativeOrderService: AisNativeOrderService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -58,18 +61,22 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
   }
 
   private getRomByUser(): any {
-    const username = this.tokenService.getUser().username;
-    this.http.get(`/api/easyapp/get-rom-by-user?username=${username}`).toPromise()
-      .then((res: any) => {
-        if (res && res.data.mobileNo !== '') {
-          this.mobileNoAgent = res.data.mobileNo;
-          this.loginForm.controls.mobileNoAgent.setValue(this.mobileNoAgent);
-          this.isRom = true;
-        } else {
-          this.mobileNoAgent = '';
-          this.isRom = false;
-        }
-      });
+    // const username = this.tokenService.getUser().username;
+      this.aisNativeOrderService.getNativeUsername();
+      this.aisNativeOrderService.getUsername().subscribe((res: string) => {
+      this.alertService.error('username : ' + res);
+    });
+    // this.http.get(`/api/easyapp/get-rom-by-user?username=${username}`).toPromise()
+    //   .then((res: any) => {
+    //     if (res && res.data.mobileNo !== '') {
+    //       this.mobileNoAgent = res.data.mobileNo;
+    //       this.loginForm.controls.mobileNoAgent.setValue(this.mobileNoAgent);
+    //       this.isRom = true;
+    //     } else {
+    //       this.mobileNoAgent = '';
+    //       this.isRom = false;
+    //     }
+    //   });
   }
 
   private createForm(): void {

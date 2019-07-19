@@ -8,7 +8,7 @@
 
   <nav class="navbar fixed-top bg-ais text-white shadow-sm fix-position">
     <div class="col-2 navbar-brand">
-      <img class="w-25" src="assets/images/icon/icon-black-back.png" (click)="onBack()">
+      <img class="back-icon" src="assets/images/icon/icon-black-back.png" (click)="onBack()">
     </div>
     <div class="col-8 navbar-brand text-center text-black">{{ 'ขายแพ็กเกจเสริม' | translate }}</div>
     <div class="col-2 navbar-brand">
@@ -33,7 +33,8 @@
       <div [mcLoading]="packageVasService" [hidden]="packLoading"></div>
       <div *ngIf="!packLoading">
         <app-vas-package-slider [packages]="packagesBestSellers"
-          (selectedBestSellerPackage)="onSelectedBestSellerPackage($event)"></app-vas-package-slider>
+          (selectedBestSellerPackage)="onSelectedBestSellerPackage($event)"
+          (sellBestSellerPackage)="onSellBestSellerPackage($event)"></app-vas-package-slider>
         <div class="text-center mb-1">
           แพ็กเกจตาม Life Style
         </div>

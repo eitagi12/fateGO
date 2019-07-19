@@ -192,12 +192,14 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
       this.pageLoadingService.openLoading();
       this.mobileProfile = null;
       this.getNTypeMobileNo(this.mobileNo).then((profile) => {
-          if (profile.data.mobileStatus !== '000' || profile.mobileStatus.toLowerCase() !== 'active') {
-            this.pageLoadingService.closeLoading();
-            this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
-            return;
-          }
         this.nType = profile.data.product;
+
+        const status: string = (profile && profile.data && profile.data.mobileStatus) ? profile.data.mobileStatus : '';
+        if (!['000', 'active'].includes(status.toLowerCase())) {
+          this.pageLoadingService.closeLoading();
+          this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
+          return;
+        }
       }).then(() => {
         this.pageLoadingService.closeLoading();
         setTimeout(() => document.body.focus(), 1);
@@ -210,12 +212,14 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
         this.pageLoadingService.openLoading();
         this.mobileProfile = null;
         this.getNTypeMobileNo(this.mobileNo).then((profile) => {
-            if (profile.data.mobileStatus !== '000' || profile.mobileStatus.toLowerCase() !== 'active') {
-              this.pageLoadingService.closeLoading();
-              this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
-              return;
-            }
           this.nType = profile.data.product;
+
+          const status: string = (profile && profile.data && profile.data.mobileStatus) ? profile.data.mobileStatus : '';
+          if (!['000', 'active'].includes(status.toLowerCase())) {
+            this.pageLoadingService.closeLoading();
+            this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
+            return;
+          }
         }).then(() => {
           this.pageLoadingService.closeLoading();
           this.readonly = true;
@@ -358,6 +362,10 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
     } else {
       return Promise.resolve(this.mobileProfile);
     }
+  }
+
+  onSellBestSellerPackage(value: any): void {
+    this.onSelectPackage(value);
   }
 
 }
