@@ -39,7 +39,7 @@ export class VasPackageTabComponent implements OnInit, OnChanges {
     if (this.nType) {
       packageCat = packageCat.filter((pack) => {
         return [...pack.customAttributes.allow_ntype.split(',')].includes(this.nType);
-      }).sort((a, b) => a.customAttributes.priority - b.customAttributes.priority);
+      });
     }
     packageCat.forEach((ca: any) => {
       if (!categories.find((tab: any) => tab.name === ca.customAttributes.sub_category)) {
@@ -57,6 +57,7 @@ export class VasPackageTabComponent implements OnInit, OnChanges {
           setPack.push(pack);
         }
       });
+      setPack.sort((a: any, b: any) => a.customAttributes.priority - b.customAttributes.priority);
       tabs.push({
         name: cate.name,
         active: false,
