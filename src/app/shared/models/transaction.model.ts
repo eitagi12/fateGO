@@ -155,7 +155,7 @@ export interface Customer {
   imageSmartCard?: string;
   imageReadSmartCard?: string;
   customerPinCode?: string;
-    // passport
+  // passport
   issuingCountry?: string;
   nationality?: string;
   imageReadPassport?: string;
@@ -517,4 +517,34 @@ export interface RomAgent {
   tokenType?: string;
   accessToken?: string;
   transactionIdRom?: string;
+}
+
+export interface RomTransaction {
+  transactionId: string;
+  ssid: string;
+  romNo: string;
+  cusMobileNo: string;
+  price: string;
+  packId?: string;
+  username: string;
+  locationcode: string;
+  transactionType: string;
+  status: string;
+}
+
+export interface VasPackage {
+  ssid: string;
+  msisdn: string;
+  imsi: string;
+  vlr: string;
+  shortcode: string;
+  serviceNumber: string;
+  menuLevel: string;
+  cos: string;
+  spName: string;
+  brandId: string;
+  language: string;
+  mobileLocation: string;
+  customerState: string;
+  servicePackageId: string;
 }
