@@ -82,7 +82,7 @@ export class VasPackageCurrentBalancePageComponent implements OnInit, OnDestroy 
       header: this.tokenType + ' ' + this.accessToken
     };
     this.pageLoadingService.openLoading();
-    this.http.post('api/customerportal/rom/get-main', requestGetMain).toPromise()
+    this.http.post('/api/customerportal/rom/get-main', requestGetMain).toPromise()
       .then((res: any) => {
         if (res && res.data.status === 'success') {
           this.transaction.data.romAgent = {
