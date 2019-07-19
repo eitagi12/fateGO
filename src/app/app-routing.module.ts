@@ -66,6 +66,11 @@ const routes: Routes = [
     loadChildren: 'src/app/trade-in/trade-in.module#TradeInModule',
     canActivate: [AuthGuard]
   }
+  {
+    path: 'rom-transaction',
+    loadChildren: 'src/app/rom-transaction/rom-transaction.module#RomTransactionModule',
+    canActivate: [AuthGuard]
+  }
 ];
 
 @NgModule({
