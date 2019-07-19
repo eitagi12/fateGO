@@ -16,9 +16,11 @@ export class VasPackageSliderComponent implements OnInit, OnChanges {
   detailTemplate: any;
   modalRef: BsModalRef;
   detail: string;
+  selectedVasPackage: string;
 
   @Input() packages: any = [];
   @Output() selectedBestSellerPackage: EventEmitter<any> = new EventEmitter<any>();
+  @Output() sellBestSellerPackage: EventEmitter<any> = new EventEmitter<any>();
 
   private $owl: any;
 
@@ -65,8 +67,16 @@ export class VasPackageSliderComponent implements OnInit, OnChanges {
     this.slider.nativeElement.style.display = 'block';
   }
 
-  onOpenDetail(detail: any): void {
+  onOpenDetail(pack: any, detail: any): void {
     this.detail = detail;
+    this.selectedVasPackage = pack;
     this.modalRef = this.modalService.show(this.detailTemplate);
+  }
+
+  onSell(): void {
+    this.modalRef.hide();
+    if (this.selectedVasPackage) {
+      this.sellBestSellerPackage.emit(this.selectedVasPackage);
+    }
   }
 }
