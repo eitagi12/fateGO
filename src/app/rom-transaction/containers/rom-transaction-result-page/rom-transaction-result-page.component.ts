@@ -12,6 +12,7 @@ import {ROUTE_ROM_TRANSACTION_SHOW_INFORMATION_PAGE } from 'src/app/rom-transact
 })
 export class RomTransactionResultPageComponent implements OnInit {
 
+  success: boolean = true;
   constructor(
     private router: Router,
     private homeService: HomeService,

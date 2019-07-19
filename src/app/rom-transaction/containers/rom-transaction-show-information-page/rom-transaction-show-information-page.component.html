@@ -1,18 +1,71 @@
 <div class="mc-flex">
   <mc-header title="{{ 'ยกเลิกเติมเงิน/โปรเสริมออนไลน์' | translate }}">
-      <div class="header-icon-left w-25">
-        <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
-      </div>
-      <div class="header-icon-right w-25 text-right">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right">
       <!-- <mc-dropdown-language></mc-dropdown-language> -->
-        <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap bg-white">
+    <div class="mb-3 mt-3">
+      <div class="">
+        <div class="text-center p-3 bg-white">
+          เบอร์ออนไลน์ 099-392-8100
+        </div>
+        <div class="card mt-3 border-0">
+          <div class="card-header text-center bg-light text-white">
+            ตรวจสอบและยืนยันข้อมูล
+          </div>
+          <div class="card-body pt-0">
+            <div class="list-group mt-2">
+              <div class="row w-100">
+                <div class="col-4 text-center">
+                  <i class="fa fa-phone text-green fa-3x" aria-hidden="true"></i>
+                </div>
+                <div class="col-8">
+                  <small class="text-dark">เบอร์มือถือ</small>
+                  <h5 class="m-0 text-green">094-895-0963</h5>
+                </div>
+              </div>
+              <div class="row w-100 mt-1">
+                <div class="col-4 text-center">
+                  <i class="fa fa-mobile text-green fa-4x" aria-hidden="true"></i>
+                </div>
+                <div class="col-8">
+                  <small class="text-dark">ประเภทรายการ</small>
+                  <h5 class="m-0 text-green">เติมเงินออนไลน์</h5>
+                </div>
+              </div>
+              <div class="row w-100 mt-1">
+                <div class="col-4 text-center">
+                  <img src="assets/images/icon/sales_portal_green_circle_bath.png" width="50">
+                </div>
+                <div class="col-8">
+                  <small class="text-dark">จำนวนเงิน</small>
+                  <h5 class="m-0 text-green">10 บาท</h5>
+                </div>
+              </div>
+            </div>
+            <form>
+              <div class="input-group mb-3 mt-4">
+                <div class="input-group-prepend">
+                  <span class="input-group-text bg-white border-right-0 text-green" id="basic-addon1">***</span>
+                </div>
+                <input type="tel" class="form-control border-left-0" placeholder="กรุณาระบุ PIN">
+              </div>
+              <div class="text-center">
+                  <button class="btn btn-success" (click)="onNext()">ตรวจสอบ</button>
+              </div>
+            </form>
+          </div>
+        </div>
       </div>
-    </mc-header>
-<div class="mc-flex-wrap">
-  <div class="mb-3 mt-3">
-    <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
-
-
+    </div>
   </div>
-</div>
-</div>
+  <!-- <mc-footer>
+      <button class="btn btn-secondary" (click)="onBack()">ยกเลิก</button>
+      <button class="btn btn-success" (click)="onNext()">ตรวจสอบ</button>
+    </mc-footer> -->
+  </div>

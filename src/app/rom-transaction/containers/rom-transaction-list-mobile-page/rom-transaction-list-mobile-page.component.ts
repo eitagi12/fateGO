@@ -27,6 +27,10 @@ export class RomTransactionListMobilePageComponent implements OnInit {
     // this.router.navigate([ROUTE_ORDER_NEW_REGISTER_VALIDATE_CUSTOMER_PAGE]);
   }
 
+  onSelect(): void {
+    this.router.navigate([ROUTE_ROM_TRANSACTION_SHOW_INFORMATION_PAGE]);
+  }
+
   onNext(): void {
     this.router.navigate([ROUTE_ROM_TRANSACTION_SHOW_INFORMATION_PAGE]);
   }
