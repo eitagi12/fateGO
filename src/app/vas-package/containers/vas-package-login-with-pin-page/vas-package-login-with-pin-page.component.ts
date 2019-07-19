@@ -68,7 +68,7 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
       this.usernameRom = username;
       this.transaction.data.romAgent = {
         ...this.transaction.data.romAgent,
-        usernameRomAgent: this.transaction.data.romAgent.usernameRomAgent
+        usernameRomAgent: this.usernameRom
       };
       this.http.get(`/api/easyapp/get-rom-by-user?username=${this.usernameRom}`).toPromise()
         .then((res: any) => {
