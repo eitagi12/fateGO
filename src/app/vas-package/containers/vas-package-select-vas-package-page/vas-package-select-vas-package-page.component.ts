@@ -34,7 +34,6 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
   nType: string;
   mobileProfile: any;
   packLoading: any = false;
-  @ViewChild('packageInput') packageInput: any;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -195,7 +194,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
         this.nType = profile.data.product;
       }).then(() => {
         this.pageLoadingService.closeLoading();
-        this.packageInput.nativeElement.focus();
+        setTimeout(() => document.body.focus(), 1);
       });
     }
 
@@ -208,7 +207,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
           this.nType = profile.data.product;
         }).then(() => {
           this.pageLoadingService.closeLoading();
-          this.packageInput.nativeElement.focus();
+          setTimeout(() => document.body.focus(), 1);
         });
       }
     });
