@@ -1,11 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HomeService, TokenService, PageLoadingService } from 'mychannel-shared-libs';
+import { HomeService, TokenService, PageLoadingService, REGEX_MOBILE } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { ROUTE_ROM_TRANSACTION_SHOW_INFORMATION_PAGE } from 'src/app/rom-transaction/constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
 import * as moment from 'moment';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-rom-transaction-list-mobile-page',
@@ -18,6 +19,7 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
   transaction: Transaction;
   romData: any = [];
   currenDate: string = '';
+  mobileForm: FormGroup;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -25,18 +27,25 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
     private pageLoadingService: PageLoadingService,
     private http: HttpClient,
     private transactionService: TransactionService,
+    private fb: FormBuilder,
   ) {
     this.username = this.tokenService.getUser().username;
   }
 
   ngOnInit(): void {
+    this.createForm();
     this.currenDate = this.getCurrentDate();
-    this.queryRomList();
+  }
+
+  createForm(): void {
+    this.mobileForm = this.fb.group({
+      'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])],
+  });
   }
 
   queryRomList(): void {
     this.pageLoadingService.openLoading();
-    this.http.post('/api/customerportal/insert-rom-transaction', {
+    this.http.post('/api/customerportal/query-rom-transaction', {
       username: this.username
     }).toPromise()
     .then((res: any) => {
@@ -72,7 +81,8 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
         action: null,
         romTransaction: {
           username: this.username,
-          romData: romData
+          romData: romData,
+          romTransaction: null
         }
       }
     };
@@ -82,10 +92,6 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
     this.transaction.data.romTransaction.romTransaction = rom;
     this.router.navigate([ROUTE_ROM_TRANSACTION_SHOW_INFORMATION_PAGE]);
   }
-
-  // onNext(): void {
-  //   this.router.navigate([ROUTE_ROM_TRANSACTION_SHOW_INFORMATION_PAGE]);
-  // }
 
   onHome(): void {
     this.homeService.goToHome();

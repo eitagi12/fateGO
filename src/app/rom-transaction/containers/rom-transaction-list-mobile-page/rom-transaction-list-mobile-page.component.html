@@ -11,16 +11,16 @@
   <div class="mc-flex-wrap bg-white">
     <div class="mb-3 mt-3">
       <div class="container-fluid">
-        <form>
+        <form [formGroup]="mobileForm">
           <div class="input-group mb-3 mt-4">
             <div class="input-group-prepend">
               <span class="input-group-text bg-white border-right-0" id="basic-addon1"><i class="fa fa-phone"
                   aria-hidden="true"></i></span>
             </div>
-            <input type="tel" class="form-control border-left-0" placeholder="กรอกเบอร์โทรศัพท์มือถือ" maxlength="10">
+            <input type="tel" [formControlName]="mobileNo" class="form-control border-left-0" placeholder="กรอกเบอร์โทรศัพท์มือถือ" maxlength="10">
           </div>
           <div class="text-center">
-            <button class="btn btn-green text-white"><i class="fa fa-search"></i> ค้นหา</button>
+            <button class="btn btn-success text-white"><i class="fa fa-search"></i> ค้นหา</button>
           </div>
         </form>
       </div>
@@ -38,8 +38,8 @@
                 <div class="d-flex w-100 justify-content-between">
                   <div class="row w-100">
                     <div class="col-2 text-center">
-                      <i *ngIf="rom?.transactionType !== 'VAS'" class="fa fa-mobile text-green fa-5x" aria-hidden="true"></i>
-                      <i *ngIf="rom?.transactionType === 'VAS'" class="fa fa-comments text-green fa-3x" aria-hidden="true"></i>
+                      <i *ngIf="rom?.transactionType !== 'VAS'" class="fa fa-mobile text-success fa-5x" aria-hidden="true"></i>
+                      <i *ngIf="rom?.transactionType === 'VAS'" class="fa fa-comments text-success fa-3x" aria-hidden="true"></i>
                     </div>
                     <div class="col-6">
                       <small class="text-dark">{{ rom?.time }} น.</small>

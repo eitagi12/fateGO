@@ -509,6 +509,8 @@ export interface RomTransaction {
   romData?: RomData[];
   romTransaction?: RomData;
   username?: string;
+  pin?: string;
+  refNo?: string;
 }
 
 export interface RomData {
