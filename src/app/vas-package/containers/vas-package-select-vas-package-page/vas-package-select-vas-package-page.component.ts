@@ -278,20 +278,13 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
       });
     });
 
-    const newTabs: any[] = [];
     if (tabs.length > 0) {
       tabs.sort((a, b) => {
         return a.id - b.id;
       });
-      tabs.forEach((data, index) => {
-        newTabs.push({
-          ...data,
-          index: index
-        });
-      });
-      newTabs[0].active = true;
+      tabs[0].active = true;
     }
-    return newTabs;
+    return tabs;
   }
 
   filterRomPackage(listPackage: any): any {
@@ -307,8 +300,8 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
   }
 
   filterPackageByNType(): any {
-    if (this.nType) {
-      this.packagesBestSellerItem = this.packagesBestSellerItem.filter((pack) => {
+    if (this.nType && this.packagesBestSellers) {
+      this.packagesBestSellers = this.packagesBestSellers.filter((pack) => {
         return [...pack.customAttributes.allow_ntype.split(',')].includes(this.nType);
       });
     }

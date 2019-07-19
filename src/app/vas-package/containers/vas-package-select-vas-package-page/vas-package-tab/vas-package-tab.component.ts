@@ -20,7 +20,6 @@ export class VasPackageTabComponent implements OnInit, OnChanges {
     ['ค่าบริการ บ.', 'เน็ตรวม', 'โทร', 'จำนวนวัน']
   ];
   selectedTab: any;
-  index: number = 0;
 
   constructor() { }
 
@@ -28,7 +27,6 @@ export class VasPackageTabComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(): void {
-    this.index = this.categoryTab ? this.categoryTab.index || 0 : 0;
     const catePackages = this.categoryTab ? this.categoryTab.packages || [] : [];
     this.tabs = this.getTabs(catePackages);
     this.selectedTab = this.tabs[0];
