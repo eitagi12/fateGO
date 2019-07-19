@@ -103,9 +103,9 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
               this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจาก service years ไม่ถึง');
               return;
             }
-              this.router.navigate([ROUTE_VAS_PACKAGE_LOGIN_WITH_PIN_PAGE]);
-              this.savePackage(this.mobileNo, selectedPackage);
               this.pageLoadingService.closeLoading();
+              this.savePackage(this.mobileNo, selectedPackage);
+              this.router.navigate([ROUTE_VAS_PACKAGE_LOGIN_WITH_PIN_PAGE]);
           });
       } else {
         const isPrepaid: boolean = resProfile.data.chargeType === 'Pre-paid';
