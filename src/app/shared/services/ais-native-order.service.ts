@@ -156,8 +156,10 @@ export class AisNativeOrderService {
     getNativeUsername(): void {
         if (window.aisNative) {
           window.aisNative.getUserName();
-        } else {
+        }  else if (window.webkit && window.webkit.messageHandlers) {
           window.webkit.messageHandlers.getUserName.postMessage('');
+        } else {
+            // TODO
         }
     }
 
