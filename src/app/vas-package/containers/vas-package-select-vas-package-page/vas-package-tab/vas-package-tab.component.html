@@ -1,105 +1,56 @@
   <div class="row m-0">
-    <div *ngFor="let tab of tabs"
-        class="col-{{ 12 / tabs.length }} sub-tab px-0 mx-0 py-2"
-        [ngClass]="{ 'active' : tab?.active }"
-        (click)="toggleActiveTabs(tab.name)">
-        {{ tab.name }}
+    <div *ngFor="let tab of tabs" class="col-{{ 12 / tabs.length }} sub-tab px-0 mx-0 py-2"
+      [ngClass]="{ 'active' : tab?.active }" (click)="toggleActiveTabs(tab.name)">
+      {{ tab.name }}
     </div>
   </div>
 
- <div class="bg-white text-center">
-   <!-- <div class="card-header p-0">
-     <div class="row">
-       <div class="col-12 text-center">
-         <div class="bg-white" [hidden]="tabs?.length <= 0">
-           <tabset [justified]="true">
-             <tab *ngFor="let tab of tabs" [active]="tab.active">
-               <ng-template tabHeading>
-                 <div [ngClass]="{ 'active' : tab.active }" (click)="setActiveTabs(tab.name)">
-                   <b>{{ tab.name }}</b></div>
-               </ng-template>
-             </tab>
-           </tabset>
-         </div>
-       </div>
-     </div>
-   </div> -->
-  <div class="tab-content">
-    <div class="p-0 tab-pane active" id="menu1">
-      <div class="p-0">
-        <div class="m-auto">
-          <div class="row m-0">
-            <div
-              class="px-0 py-2 header-column"
-              [ngClass]="{
+  <div class="bg-white text-center">
+    <div class="tab-content">
+      <div class="p-0 tab-pane active" id="menu1">
+        <div class="p-0">
+          <div class="m-auto">
+            <div class="row m-0">
+              <div class="px-0 py-2 header-column" [ngClass]="{
                 'col-3': filedPrograms[index].length === 3 || filedPrograms[index].length === 4 && (i === 1 || i === 2),
                 'col-2': filedPrograms[index].length === 4
-              }"
-             *ngFor="let filedProgram of filedPrograms[index]; let i = index">
-              {{filedProgram}}
+              }" *ngFor="let filedProgram of filedPrograms[index]; let i = index">
+                {{filedProgram}}
+              </div>
             </div>
-          </div>
 
-          <div class="m-auto" *ngIf="selectedTab && selectedTab.packages && filedPrograms[index] && filedPrograms[index].length === 3">
-            <div class="row m-0 mb-1" *ngFor="let package of selectedTab.packages">
-              <div class="col-3 price-block m-0 py-2" [ngClass]="{'price-block-rotate': package?.showDetail}" (click)="togglePackageDetail(package)">
-                {{package.customAttributes.regular_price? package.customAttributes.regular_price : package.customAttributes.customer_price}}
+            <div class="m-auto"
+              *ngIf="selectedTab && selectedTab.packages && filedPrograms[index] && filedPrograms[index].length === 3">
+              <div class="row m-0 mb-1" *ngFor="let package of selectedTab.packages">
+                <div class="col-3 price-block m-0 py-2" [ngClass]="{'price-block-rotate': package?.showDetail}"
+                  (click)="togglePackageDetail(package)">
+                  {{package.customAttributes.regular_price? package.customAttributes.regular_price : package.customAttributes.customer_price}}
+                </div>
+                <div class="col-3 speed-block m-0 py-2">{{showDetailColumn(categoryTab.name, package.customAttributes)}}
+                </div>
+                <div class="col-3 period-block m-0 py-2">{{package.customAttributes.package_period}}</div>
+                <div class="col-3 btn-block m-0 py-2" (click)="onSelectedPackage(package)">ขายเลย</div>
+                <div *ngIf="package?.showDetail" class="col-12 m-0 mr-1 py-2">
+                  {{package.customAttributes.description_th}}</div>
               </div>
-              <div class="col-3 speed-block m-0 py-2">{{showDetailColumn(categoryTab.name, package.customAttributes)}}</div>
-              <div class="col-3 period-block m-0 py-2">{{package.customAttributes.package_period}}</div>
-              <div class="col-3 btn-block m-0 py-2" (click)="onSelectedPackage(package)">ขายเลย</div>
-              <div *ngIf="package?.showDetail" class="col-12 m-0 mr-1 py-2">{{package.customAttributes.description_th}}</div>
             </div>
-          </div>
-          <div class="m-auto" *ngIf="selectedTab && selectedTab.packages && filedPrograms[index] && filedPrograms[index].length === 4">
-            <div class="row m-0 mb-1" *ngFor="let package of selectedTab.packages">
-              <div class="col-2 price-block m-0 py-2" [ngClass]="{'price-block-rotate': package?.showDetail}" (click)="togglePackageDetail(package)">
-                {{package.customAttributes.regular_price? package.customAttributes.regular_price : package.customAttributes.customer_price}}
+            <div class="m-auto"
+              *ngIf="selectedTab && selectedTab.packages && filedPrograms[index] && filedPrograms[index].length === 4">
+              <div class="row m-0 mb-1" *ngFor="let package of selectedTab.packages">
+                <div class="col-2 price-block m-0 py-2" [ngClass]="{'price-block-rotate': package?.showDetail}"
+                  (click)="togglePackageDetail(package)">
+                  {{package.customAttributes.regular_price? package.customAttributes.regular_price : package.customAttributes.customer_price}}
+                </div>
+                <div class="col-3 speed-block m-0 py-2">{{package.customAttributes.internet_valume}}</div>
+                <div class="col-3 speed-block m-0 py-2">{{package.customAttributes.call_minute}}</div>
+                <div class="col-2 period-block m-0 py-2">{{package.customAttributes.package_period}}</div>
+                <div class="col-2 btn-block m-0 py-2" (click)="onSelectedPackage(package)">ขายเลย</div>
+                <div *ngIf="package?.showDetail" class="col-12 m-0 mr-1 py-2">
+                  {{package.customAttributes.description_th}}</div>
               </div>
-              <div class="col-3 speed-block m-0 py-2">{{package.customAttributes.internet_valume}}</div>
-              <div class="col-3 speed-block m-0 py-2">{{package.customAttributes.call_minute}}</div>
-              <div class="col-2 period-block m-0 py-2">{{package.customAttributes.package_period}}</div>
-              <div class="col-2 btn-block m-0 py-2" (click)="onSelectedPackage(package)">ขายเลย</div>
-              <div *ngIf="package?.showDetail" class="col-12 m-0 mr-1 py-2">{{package.customAttributes.description_th}}</div>
             </div>
           </div>
         </div>
       </div>
     </div>
   </div>
-   <!-- <div class="tab-content">
-     <div class="card-body p-0 tab-pane active" id="menu1">
-       <div class="card-body p-0">
-         <table class="table">
-           <thead>
-             <tr>
-               <th *ngFor="let filedProgram of filedPrograms[index]" scope="col">{{filedProgram}}</th>
-               <th scope="col"></th>
-             </tr>
-           </thead>
-           <tbody *ngIf="filedPrograms[index] && filedPrograms[index].length === 3">
-             <tr *ngFor="let package of selectedTab.packages">
-               <td>
-                 {{package.customAttributes.regular_price? package.customAttributes.regular_price : package.customAttributes.customer_price}}
-               </td>
-               <td>{{ isEntertain(categoryTab.name)? package.customAttributes.content : package.customAttributes.internet_valume}}</td>
-               <td>{{package.customAttributes.package_period}}</td>
-               <td><button class="btn btn-success" (click)="onSelectedPackage(package)">ขายเลย</button></td>
-             </tr>
-           </tbody>
-           <tbody *ngIf="filedPrograms[index] && filedPrograms[index].length === 4">
-             <tr *ngFor="let package of selectedTab.packages">
-               <td>
-                 {{package.customAttributes.regular_price? package.customAttributes.regular_price : package.customAttributes.customer_price}}
-               </td>
-               <td>{{package.customAttributes.internet_valume}}</td>
-               <td>{{package.customAttributes.call_minute}}</td>
-               <td>{{package.customAttributes.package_period}}</td>
-               <td><button class="btn btn-success" (click)="onSelectedPackage(package)">ขายเลย</button></td>
-             </tr>
-           </tbody>
-         </table>
-       </div>
-     </div>
-   </div> -->
- </div>

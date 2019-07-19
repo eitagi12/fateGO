@@ -1,4 +1,4 @@
-.icon-sales {
+.icon-m {
   width: 20px !important;
   margin-left: 5px;
   display: inline-block !important;
@@ -6,7 +6,7 @@
 .icon-s {
   width: 15px !important;
   margin-right: 5px;
-  float: right;
+  display: inline-block !important;
 }
 
 :host /deep/ .nav-link.active {
@@ -47,4 +47,8 @@
     width: 0px;
     overflow: hidden;
   }
+}
+.btn-success {
+  font-size: 0.75rem;
+  padding: 0.2rem 2rem;
 }
