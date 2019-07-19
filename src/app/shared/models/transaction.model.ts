@@ -516,4 +516,5 @@ export interface RomAgent {
   agentId?: string;
   tokenType?: string;
   accessToken?: string;
+  transactionIdRom?: string;
 }

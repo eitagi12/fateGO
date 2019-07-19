@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HomeService, REGEX_MOBILE, PageLoadingService, AlertService } from 'mychannel-shared-libs';
 import { ROUTE_VAS_PACKAGE_RESULT_PAGE } from 'src/app/vas-package/constants/route-path.constant';
@@ -13,7 +13,7 @@ declare let window: any;
   templateUrl: './vas-package-current-balance-page.component.html',
   styleUrls: ['./vas-package-current-balance-page.component.scss']
 })
-export class VasPackageCurrentBalancePageComponent implements OnInit {
+export class VasPackageCurrentBalancePageComponent implements OnInit, OnDestroy {
 
   romAgentForm: FormGroup;
   transaction: Transaction;
@@ -85,6 +85,10 @@ export class VasPackageCurrentBalancePageComponent implements OnInit {
     this.http.post('api/customerportal/rom/get-main', requestGetMain).toPromise()
       .then((res: any) => {
         if (res && res.data.status === 'success') {
+          this.transaction.data.romAgent = {
+            ...this.transaction.data.romAgent,
+            transactionIdRom: res.data.transactionid
+          };
           this.balance = res.data.balance ? res.data.balance : '';
           this.checkBalanceRomWithPricePackage(this.balance);
           this.pageLoadingService.closeLoading();
@@ -111,6 +115,10 @@ export class VasPackageCurrentBalancePageComponent implements OnInit {
 
   onNext(): void {
     this.router.navigate([ROUTE_VAS_PACKAGE_RESULT_PAGE]);
+  }
+
+  ngOnDestroy(): void {
+    this.transactionService.save(this.transaction);
   }
 
 }

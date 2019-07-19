@@ -1,4 +1,4 @@
-<div class="owl-carousel owl-theme" #slider>
+<div class="owl-carousel owl-theme owl-loaded owl-hidden" #slider>
   <div *ngFor="let package of packages">
     <div class="mr-2 ml-2 shadow-sm">
       <div class="card">
@@ -7,21 +7,23 @@
             <div class="col-1 text-center">
               <img class="icon-m" src="{{package?.icon}}">
             </div>
-            <div class="col-11 text-center">
-                {{package.mainTitle}}
+            <div class="col-11 text-center m-auto">
+              {{package.mainTitle}}
               <div class="text-lime ">
                 {{package.customAttributes.sub_category}}
               </div>
               <div class="small">
-                {{package.customAttributes.regular_price}} บาท
+                {{package.customAttributes.regular_price ? package.customAttributes.regular_price : package.customAttributes.customer_price}}
+                บาท
                 <span>{{package.customAttributes.package_period}}</span>
               </div>
               <div class="small">
                 <button class="btn btn-success" (click)="onSelectedPackage(package)">ขายเลย</button>
               </div>
-              <span class="pull-right" (click)="onOpenDetail(package.customAttributes?.description_th)">
-                  <img class="icon-s" src="assets/images/icon/EasyP1_23072561-17.png" (click)="onOpenDetail(package.customAttributes?.description_th)">
-                </span>
+              <span class="pull-right">
+                <img class="icon-s" src="assets/images/icon/EasyP1_23072561-17.png"
+                  (click)="onOpenDetail(package.customAttributes?.description_th)">
+              </span>
             </div>
           </div>
         </div>
@@ -31,10 +33,10 @@
 </div>
 
 <ng-template #detailTemplate>
-    <div class="modal-body" [innerHTML]="detail"></div>
-    <div class="modal-footer">
-      <div class="w-100 text-center">
-        <button class="btn btn-success px-5" (click)="modalRef.hide()" translate>ปิด</button>
-      </div>
+  <div class="modal-body" [innerHTML]="detail"></div>
+  <div class="modal-footer">
+    <div class="w-100 text-center">
+      <button class="btn btn-success px-5" (click)="modalRef.hide()" translate>ปิด</button>
     </div>
-  </ng-template>
+  </div>
+</ng-template>

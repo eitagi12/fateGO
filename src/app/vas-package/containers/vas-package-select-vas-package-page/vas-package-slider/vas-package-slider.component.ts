@@ -17,7 +17,7 @@ export class VasPackageSliderComponent implements OnInit, OnChanges {
   modalRef: BsModalRef;
   detail: string;
 
-  @Input() packages: any;
+  @Input() packages: any = [];
   @Output() selectedBestSellerPackage: EventEmitter<any> = new EventEmitter<any>();
 
   private $owl: any;

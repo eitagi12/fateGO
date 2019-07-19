@@ -13,13 +13,13 @@ export class VasPackageTabComponent implements OnInit, OnChanges {
 
   tabs: Array<any> = [];
   filedPrograms: Array<any> = [
+    ['ค่าบริการ บ.', 'เน็ตรวม', 'โทร', 'content', 'จำนวนวัน'],
     ['ค่าบริการ บ.', 'เน็ตรวม', 'จำนวนวัน'],
     ['ค่าบริการ บ.', 'content', 'จำนวนวัน'],
     ['ค่าบริการ บ.', 'โทร', 'จำนวนวัน'],
     ['ค่าบริการ บ.', 'เน็ตรวม', 'โทร', 'จำนวนวัน']
   ];
   selectedTab: any;
-  index: number = 0;
 
   constructor() { }
 
@@ -27,7 +27,6 @@ export class VasPackageTabComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(): void {
-    this.index = this.categoryTab ? this.categoryTab.index || 0 : 0;
     const catePackages = this.categoryTab ? this.categoryTab.packages || [] : [];
     this.tabs = this.getTabs(catePackages);
     this.selectedTab = this.tabs[0];
@@ -39,7 +38,7 @@ export class VasPackageTabComponent implements OnInit, OnChanges {
     if (this.nType) {
       packageCat = packageCat.filter((pack) => {
         return [...pack.customAttributes.allow_ntype.split(',')].includes(this.nType);
-      }).sort((a, b) => a.customAttributes.priority - b.customAttributes.priority);
+      });
     }
     packageCat.forEach((ca: any) => {
       if (!categories.find((tab: any) => tab.name === ca.customAttributes.sub_category)) {
@@ -57,6 +56,7 @@ export class VasPackageTabComponent implements OnInit, OnChanges {
           setPack.push(pack);
         }
       });
+      setPack.sort((a: any, b: any) => a.customAttributes.priority - b.customAttributes.priority);
       tabs.push({
         name: cate.name,
         active: false,
