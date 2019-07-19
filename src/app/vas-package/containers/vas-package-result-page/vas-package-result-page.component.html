@@ -46,11 +46,13 @@
     </div>
   </div>
   <mc-footer>
-    <div *ngIf="success">
-      <button class="btn btn-success" (click)="onTopUp()">เติมเงินเพิ่ม</button>
-      <button class="btn btn-success" (click)="onSelectPackage()">เลือกแพ็กเกจเพิ่ม</button>
+    <div *ngIf="message">
+      <div *ngIf="success">
+        <button class="btn btn-success" (click)="onTopUp()">เติมเงินเพิ่ม</button>
+        <button class="btn btn-success" (click)="onSelectPackage()">เลือกแพ็กเกจเพิ่ม</button>
+      </div>
+      <br>
+      <button class="btn btn-success" (click)="onMainMenu()">กลับสู่เมนูหลัก</button>
     </div>
-    <br>
-    <button class="btn btn-success" (click)="onMainMenu()">กลับสู่เมนูหลัก</button>
   </mc-footer>
 </div>
