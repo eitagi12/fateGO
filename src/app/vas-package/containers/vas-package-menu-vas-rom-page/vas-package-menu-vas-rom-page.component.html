@@ -11,33 +11,16 @@
   <div class="mc-flex-wrap">
     <div class="mb-3 mt-3">
       <div class="container-fluid">
-          <form [formGroup]="vasPackageFrom">
-          <div class="card mb-3">
-              <div class="card-body">
-                  <div class="input-group mb-3">
-                      <div class="input-group">
-                        <input type="radio" id="vasPackageRom" formControlName="vasPackageRom" value="1" (change)="onCompleted('RomAgent')">
-                        <label for="vasPackageRom">ตัดกระเป๋าเงินคนขาย</label>
-                      </div>
-                  </div>
-              </div>
-          </div>
-            <div class="card mb-3">
-                <div class="card-body">
-                    <div class="input-group mb-3">
-                        <div class="input-group">
-                          <input type="radio" id="vasPackageEndUser" formControlName="vasPackageRom" value="2" (change)="onCompleted('Customer')">
-                          <label for="vasPackageEndUser">ตัดกระเป๋าเงินลูกค้า</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-          </form>
+        <div class="card-body mb-3 button">
+          <div class="text-center" for="vasPackageRom" (click)="onNext('RomAgent')">ตัดกระเป๋าเงินคนขาย</div>
+        </div>
+        <div class="card-body mb-3 button">
+          <div class="text-center" for="vasPackageEndUser" (click)="onNext('Customer')">ตัดกระเป๋าเงินลูกค้า</div>
+        </div>
       </div>
     </div>
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()">NEXT</button>
   </mc-footer>
 </div>
