@@ -5,9 +5,9 @@
         <div class="card-body">
           <div class="row d-flex">
             <div class="col-1 text-center">
-              <img class="icon-sales mr-2" src="{{package?.icon}}">
+              <img class="icon-m" src="{{package?.icon}}">
             </div>
-            <div class="col-10 text-center">
+            <div class="col-11 text-center">
                 {{package.mainTitle}}
               <div class="text-lime ">
                 {{package.customAttributes.sub_category}}
@@ -19,12 +19,10 @@
               <div class="small">
                 <button class="btn btn-success" (click)="onSelectedPackage(package)">ขายเลย</button>
               </div>
+              <span class="pull-right" (click)="onOpenDetail(package.customAttributes?.description_th)">
+                  <img class="icon-s" src="assets/images/icon/EasyP1_23072561-17.png" (click)="onOpenDetail(package.customAttributes?.description_th)">
+                </span>
             </div>
-                <div class="col-1 text-center">
-                  <span  (click)="onOpenDetail(package.customAttributes?.description_th)">
-                      <img class="icon-s" src="assets/images/icon/EasyP1_23072561-17.png" >
-                    </span>
-                </div>
           </div>
         </div>
       </div>
