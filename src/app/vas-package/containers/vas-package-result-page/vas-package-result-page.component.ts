@@ -78,7 +78,7 @@ export class VasPackageResultPageComponent implements OnInit {
       ssid: this.transaction.transactionId,
       msisdn: `66${this.mobileNoAgent.substring(1, this.mobileNoAgent.length)}`,
       imsi: '520036001697648',
-      vlr: '66923011104',
+      vlr: 'EASYAPP',
       shortcode: '*226',
       serviceNumber: '*226',
       menuLevel: `*${Pin}*${this.mobileNo}*${packId}`,
