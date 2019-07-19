@@ -35,23 +35,22 @@ export class VasPackageTabComponent implements OnInit, OnChanges {
 
   getTabs(packageCat: any[]): any[] {
     const tabs = [];
-    const categorys: any = [];
+    const categories: any = [];
     if (this.nType) {
       packageCat = packageCat.filter((pack) => {
         return [...pack.customAttributes.allow_ntype.split(',')].includes(this.nType);
-      });
+      }).sort((a, b) => a.customAttributes.priority - b.customAttributes.priority);
     }
-    // console.log('packageCat', packageCat);
     packageCat.forEach((ca: any) => {
-      if (!categorys.find((tab: any) => tab.name === ca.customAttributes.sub_category)) {
-        categorys.push({
+      if (!categories.find((tab: any) => tab.name === ca.customAttributes.sub_category)) {
+        categories.push({
           name: ca.customAttributes.sub_category,
           active: false,
           packages: []
         });
       }
     });
-    categorys.forEach((cate: any) => {
+    categories.forEach((cate: any) => {
       const setPack: any = [];
       packageCat.forEach((pack: any) => {
         if (cate.name === pack.customAttributes.sub_category) {
@@ -81,15 +80,6 @@ export class VasPackageTabComponent implements OnInit, OnChanges {
       return tabData;
     });
     this.selectedTab = this.tabs.filter(tabData => tabData.name === tabName)[0];
-  }
-
-  setActiveTabs(tabName: any): void {
-    this.tabs = this.tabs.map((tabData) => {
-      tabData.active = !!(tabData.code === tabName);
-      return tabData;
-    });
-    this.selectedTab = this.tabs.filter(tabData => tabData.name === tabName)[0];
-    // console.log('package', this.selectedTab.packages);
   }
 
   onSelectedPackage(value: any): void {

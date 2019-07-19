@@ -1,15 +1,13 @@
-import { Component, OnInit, ElementRef, ViewChild, OnChanges, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnChanges, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_VAS_PACKAGE_LOGIN_WITH_PIN_PAGE, ROUTE_VAS_PACKAGE_MENU_VAS_ROM_PAGE, ROUTE_VAS_PACKAGE_OTP_PAGE } from '../../constants/route-path.constant';
 import { PackageProductsService } from '../../services/package-products.service';
 import { HomeService, BannerSlider, SalesService, User, AlertService, PageLoadingService } from 'mychannel-shared-libs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { filter } from 'minimatch';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { TransactionType, Transaction } from 'src/app/shared/models/transaction.model';
 import * as moment from 'moment';
-import { isNgTemplate } from '@angular/compiler';
 
 @Component({
   selector: 'app-vas-package-select-vas-package-page',
@@ -95,11 +93,6 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
               return;
             }
 
-            // if (resProfile.data.chargeType !== selectedPackage.customAttributes.charge_type) {
-            //   this.pageLoadingService.closeLoading();
-            //   this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจาก Network type ไม่ตรง');
-            //   return;
-            // }
             const isPrepaid: boolean = resProfile.data.chargeType === 'Pre-paid';
             if (isPrepaid) {
               this.http.get(`/api/customerportal/newRegister/${this.mobileNo}/queryBalance`).toPromise()
@@ -146,12 +139,6 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
               this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจาก Network type ไม่ตรง');
               return;
             }
-
-            // if (resProfile.data.chargeType !== selectedPackage.customAttributes.charge_type) {
-            //   this.pageLoadingService.closeLoading();
-            //   this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจาก Network type ไม่ตรง');
-            //   return;
-            // }
 
             this.http.get(`/api/customerportal/mobile-detail/${this.mobileNo}`).toPromise()
               .then((mobileDetail: any) => {
@@ -255,15 +242,12 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
     const userId = 'bMfAlzjKaZSSKY3s6c3farMxbUaEsFnIIAgbjsXKA3cOhnKfvawKb60MITINd04Os73YJBQ5aWypkxFk';
     this.http.post('/api/salesportal/promotion-vas', { userId }).toPromise()
       .then((response: any) => {
-        // console.log('best_seller_priority', .items[0].customAttributes.best_seller_priority);
         response.data.data.map((data: any) => {
           data.subShelves.map((subShelves: any) => {
             const listPackage = this.filterRomPackage(subShelves.items);
             listPackage.map((item: any) => {
               item.idCategory = data.priority;
-              // console.log(item.idCategory);
               if (+item.customAttributes.best_seller_priority > 0) {
-                // console.log('item ', item);
                 item.mainTitle = data.title;
                 if (data.title === 'เน็ตและโทร') {
                   item.icon = 'assets/images/icon/Phone_net.png';
@@ -276,7 +260,6 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
               } else {
                 this.packageCat.push(item);
               }
-
             }).sort((a: any, b: any) => (+a.customAttributes.best_seller_priority) - (b.customAttributes.best_seller_priority));
           });
         });
@@ -284,12 +267,13 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
         this.packagesBestSellers = this.packagesBestSellerItem;
         this.tabs = this.getTabsFormPriceOptions(this.packageCat);
         this.selectedTab = this.tabs[0];
-        console.log('selectTap', this.selectedTab);
       });
   }
+
   ngOnDestroy(): void {
     this.transactionService.save(this.transaction);
   }
+
   getTabsFormPriceOptions(packageCat: any[]): any[] {
     const tabs = [];
     const categorys: any = [];
@@ -331,7 +315,6 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
       });
       newTabs[0].active = true;
     }
-    console.log(newTabs);
     return newTabs;
   }
 
@@ -367,24 +350,9 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
     this.selectedTab = this.tabs.filter(tabData => tabData.name === tabName)[0];
   }
 
-  setActiveTabs(tabCode: any): void {
-    this.tabs = this.tabs.map((tabData) => {
-      tabData.active = !!(tabData.name === tabCode);
-      return tabData;
-    });
-    this.selectedTab = this.tabs.filter(tabData => tabData.name === tabCode)[0];
-  }
-
   getNTypeMobileNo(mobileNo: string): any {
-    // if (this.mobileNo) {
-    //   this.getNTypeMobileNo(this.mobileNo).then((nType) => {
-    //     console.log(nType);
-    //     this.nType = nType;
-    //   });
-    // }
     return this.http.get(`/api/customerportal/asset/${mobileNo}/profile`).toPromise().then((resProfile: any) => {
       return resProfile.data.product;
     });
   }
-
 }
