@@ -1,7 +1,7 @@
 <div class="mc-flex">
   <mc-header title="{{ 'ยกเลิกเติมเงิน/โปรเสริมออนไลน์' | translate }}">
     <div class="header-icon-left">
-      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
     <div class="header-icon-right">
       <!-- <mc-dropdown-language></mc-dropdown-language> -->
@@ -11,67 +11,51 @@
   <div class="mc-flex-wrap bg-white">
     <div class="mb-3 mt-3">
       <div class="container-fluid">
-        <form >
+        <form>
           <div class="input-group mb-3 mt-4">
             <div class="input-group-prepend">
-              <span class="input-group-text bg-white border-right-0" id="basic-addon1"><i class="fa fa-phone" aria-hidden="true"></i></span>
+              <span class="input-group-text bg-white border-right-0" id="basic-addon1"><i class="fa fa-phone"
+                  aria-hidden="true"></i></span>
             </div>
             <input type="tel" class="form-control border-left-0" placeholder="กรอกเบอร์โทรศัพท์มือถือ" maxlength="10">
           </div>
           <div class="text-center">
             <button class="btn btn-green text-white"><i class="fa fa-search"></i> ค้นหา</button>
-          </div>  
+          </div>
         </form>
       </div>
-        <div class="card mt-3 border-0">
-          <div class="card-header text-center bg-light text-white">
-            เลือกรายการ
-          </div>
-          <div class="card-body pt-0">
-            <small class="text-light">18 กรกฎาคม 2562</small>
-            <div class="list-group mt-2">
-              <a href="#" (click)="$event.preventDefault();onSelect();" class="border-0 list-group-item list-group-item-action pl-0 pr-0">
+      <div class="card mt-3 border-0">
+        <div class="card-header text-center bg-light text-white">
+          เลือกรายการ
+        </div>
+        <div class="card-body pt-0">
+          <small class="text-light">{{ currenDate }}</small>
+          <div class="list-group mt-2">
+            <ng-container *ngFor="let rom of romData">
+              <a href="#" (click)="$event.preventDefault();onSelect();"
+                class="border-0 list-group-item list-group-item-action pl-0 pr-0">
                 <div class="d-flex w-100 justify-content-between">
                   <div class="row w-100">
                     <div class="col-3 text-center">
-                        <i class="fa fa-mobile text-green fa-5x" aria-hidden="true"></i>
+                      <i class="fa fa-mobile text-green fa-5x" aria-hidden="true"></i>
                     </div>
                     <div class="col-6">
-                      <small class="text-dark">14.57 น.</small>
-                        <h5 class="m-0 pb-1">094-895-0963</h5>
-                        <small class="mobile-detail detail-header">โปรเสริมออนไลน์</small>
-                        <div class="text-light">
-                            <small class="mobile-detail">ค่าแพ็กเกจ</small>
-                            <small class="mobile-detail del">(ค่าคอมฯ 1.08 บ.)</small>
-                        </div>
+                      <small class="text-dark">{{ rom?.time }} น.</small>
+                      <h5 class="m-0 pb-1">{{ rom?.cusMobileNo | mobileNo}}</h5>
+                      <small class="mobile-detail detail-header">
+                        {{ rom?.transactionType === 'VAS' ? 'ค่าแพ็กเกจ' : 'โปรเสริมออนไลน์' }}
+                      </small>
                     </div>
                     <div class="col-3 text-right">
-                        <h5 class="mt-3"><span class="text-green">27</span> <small> บาท</small></h5>
+                      <h5 class="mt-3"><span class="text-green">{{ rom?.price }}</span> <small> บาท</small></h5>
                     </div>
                   </div>
                 </div>
               </a>
-              <a href="#" (click)="$event.preventDefault();onSelect();" class="border-0 list-group-item list-group-item-action pl-0 pr-0">
-                  <div class="d-flex w-100 justify-content-between">
-                    <div class="row w-100">
-                      <div class="col-3 text-center">
-                          <i class="fa fa-mobile text-green fa-5x" aria-hidden="true"></i>
-                      </div>
-                      <div class="col-6">
-                        <small class="text-dark">14.57 น.</small>
-                          <h5 class="m-0 pb-1">094-895-0963</h5>
-                          <small class="mobile-detail detail-header">โปรเสริมออนไลน์</small>
-                      </div>
-                      <div class="col-3 text-right">
-                          <h5 class="mt-3"><span class="text-green">10</span> <small> บาท</small></h5>
-                      </div>
-                    </div>
-                  </div>
-                </a>
-            </div>
-          </div>  
+            </ng-container>
+          </div>
         </div>
-      <!-- </div> -->
+      </div>
     </div>
   </div>
   <!-- <mc-footer>
