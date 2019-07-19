@@ -90,6 +90,7 @@ export class VasPackageCurrentBalancePageComponent implements OnInit, OnDestroy 
             transactionIdRom: res.data.transactionid
           };
           this.balance = res.data.balance ? res.data.balance : '';
+          this.romAgentForm.controls.amount.setValue(this.balance);
           this.alertService.error('balane : ' + this.balance);
           this.checkBalanceRomWithPricePackage(this.balance);
           this.pageLoadingService.closeLoading();

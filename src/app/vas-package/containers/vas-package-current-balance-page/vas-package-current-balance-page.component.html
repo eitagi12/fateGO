@@ -35,7 +35,7 @@
               </div>
               <div class="form-group">
                 <label for="amount">ยอดคงเหลือในกระเป๋า ROM Agent</label>
-                <input type="text" class="form-control" id="amount" formControlName="amount" value="{{this.balance}}">
+                <input type="text" class="form-control" id="amount" formControlName="amount">
               </div>
               <small class="text-pink" *ngIf="!balanceBuyPackage">ยอดคงเหลือในกระเป๋าของคุณไม่พอ กรุณาทำการเติมเงิน
                 <U class="text-secondary" (click)="getBalanceRomAgent()">กดรีเฟรช</U></small>
