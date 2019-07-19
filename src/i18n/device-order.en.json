@@ -364,5 +364,7 @@
     "หมายเหตุ : กรณีมีการสมัคร Mobile care ที่เครื่องใหม่ การรับประกันที่เครื่องเดิมจะสิ้นสุด": "หมายเหตุ : กรณีมีการสมัคร Mobile care ที่เครื่องใหม่ การรับประกันที่เครื่องเดิมจะสิ้นสุด",
     "กรุณาตรวจสอบยอดเงินคงเหลือผ่าน *121# โทรออก โดยยอดเงินคงเหลือของท่านจะถูกโอนเป็นค่าโทรที่ระบบรายเดือนให้โดยอัตโนมัติ": "Please check your balance by press *121# dial. The balance from your 1st  wallet will be transferred to your postpaid account automatically; However, the remaining balance of your 2nd  wallet cannot be transferred, please use it before starting this transaction.",
     "ข้อมูลปัจจุบันของคุณ":	"Customer information",
-    "สาขาเซ็นทรัล ภูเก็ต ฟลอเรสต้า" : "Central Phuket Floresta Branch"
+    "สาขาเซ็นทรัล ภูเก็ต ฟลอเรสต้า" : "Central Phuket Floresta Branch",
+    "ไม่พบหมายเลขเติมเงินที่แสดงตนตาม ID No ที่ระบุ": "Not found your prepaid mobile number on prepaid identification data.",
+    "ไม่พบหมายเลขที่สามารถใช้สิทธิ์ตามโครงการ ตามหมายเลขบัตรที่ระบุ": "Not found your prepaid mobile number on identification data."
 }

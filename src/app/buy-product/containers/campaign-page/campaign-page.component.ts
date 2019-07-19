@@ -301,6 +301,10 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                     allowCampaign = allowCampaign && CustomerGroup.EXISTING === code;
                 }
 
+                if (this.flowService.isCampaignBestBuy(campaignCode)) {
+                    allowCampaign = false;
+                }
+
                 // Not allow prebooking
                 if (this.flowService.isCampaignPrebooking(campaignCode)) {
                     allowCampaign = false;
