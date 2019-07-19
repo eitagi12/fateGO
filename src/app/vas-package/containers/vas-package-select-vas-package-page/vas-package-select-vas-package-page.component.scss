@@ -37,3 +37,7 @@ navbar-brand {
 .navbar-brand {
   margin: 0 auto
 }
+
+#mobileNo.form-control:disabled, #mobileNo.form-control[readonly] {
+  background-color: white;
+}

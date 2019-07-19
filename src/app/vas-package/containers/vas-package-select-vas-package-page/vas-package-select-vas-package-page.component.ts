@@ -34,6 +34,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
   nType: string;
   mobileProfile: any;
   packLoading: any = false;
+  readonly: boolean = false;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -207,10 +208,14 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
           this.nType = profile.data.product;
         }).then(() => {
           this.pageLoadingService.closeLoading();
-          setTimeout(() => document.body.focus(), 1);
+          this.readonly = true;
         });
       }
     });
+  }
+
+  onActiveInput(): void {
+    this.readonly = false;
   }
 
   callService(): any {
