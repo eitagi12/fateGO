@@ -180,6 +180,7 @@ export class VasPackageOtpPageComponent implements OnInit, OnDestroy {
     };
     this.http.post(`/api/customerportal/newRegister/${this.mobileNo}/verifyOTP`, requestVerifyOTP).toPromise()
       .then((res: any) => {
+        this.pageLoadingService.closeLoading();
         this.router.navigate([ROUTE_VAS_PACKAGE_RESULT_PAGE]);
       })
       .catch((error: any) => {

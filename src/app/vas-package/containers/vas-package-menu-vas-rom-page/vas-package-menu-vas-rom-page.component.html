@@ -1,43 +1,27 @@
 <div class="mc-flex">
-  <mc-header title="{{ 'วิธีเลือกตัดเงินในกระเป๋า' | translate }}">
-    <div class="header-icon-left w-25">
-      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+
+  <nav class="navbar fixed-top bg-ais text-white shadow-sm fix-position">
+    <div class="col-2 navbar-brand">
+      <img class="w-25" src="assets/images/icon/icon-black-back.png" (click)="onBack()">
     </div>
-    <div class="header-icon-right w-25 text-right">
-      <!-- <mc-dropdown-language></mc-dropdown-language> -->
-      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    <div class="col-8 navbar-brand text-center text-black">{{ 'ขายแพ็กเกจเสริม' | translate }}</div>
+    <div class="col-2 navbar-brand">
     </div>
-  </mc-header>
+  </nav>
+
   <div class="mc-flex-wrap">
     <div class="mb-3 mt-3">
       <div class="container-fluid">
-          <form [formGroup]="vasPackageFrom">
-          <div class="card mb-3">
-              <div class="card-body">
-                  <div class="input-group mb-3">
-                      <div class="input-group">
-                        <input type="radio" id="vasPackageRom" formControlName="vasPackageRom" value="1" (change)="onCompleted('RomAgent')">
-                        <label for="vasPackageRom">ตัดกระเป๋าเงินคนขาย</label>
-                      </div>
-                  </div>
-              </div>
-          </div>
-            <div class="card mb-3">
-                <div class="card-body">
-                    <div class="input-group mb-3">
-                        <div class="input-group">
-                          <input type="radio" id="vasPackageEndUser" formControlName="vasPackageRom" value="2" (change)="onCompleted('Customer')">
-                          <label for="vasPackageEndUser">ตัดกระเป๋าเงินลูกค้า</label>
-                        </div>
-                    </div>
-                </div>
-            </div>
-          </form>
+        <div class="card-body mb-3 button">
+          <div class="text-center" for="vasPackageRom" (click)="onNext('RomAgent')">ตัดกระเป๋าเงินคนขาย</div>
+        </div>
+        <div class="card-body mb-3 button">
+          <div class="text-center" for="vasPackageEndUser" (click)="onNext('Customer')">ตัดกระเป๋าเงินลูกค้า</div>
+        </div>
       </div>
     </div>
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()">NEXT</button>
   </mc-footer>
 </div>

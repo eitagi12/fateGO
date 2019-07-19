@@ -1,46 +1,51 @@
 <div class="mc-flex">
-  <mc-header title="{{ 'ขายแพ็กเกจเสริม' | translate }}">
+  <!-- <mc-header title="{{ 'ขายแพ็กเกจเสริม' | translate }}">
     <div class="header-icon-left w-25">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
-    <div class="header-icon-right w-25 text-right">
-      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+  </mc-header> -->
+
+
+  <nav class="navbar fixed-top bg-ais text-white shadow-sm fix-position">
+    <div class="col-2 navbar-brand">
+      <img class="w-25" src="assets/images/icon/icon-black-back.png" (click)="onBack()">
     </div>
-  </mc-header>
+    <div class="col-8 navbar-brand text-center text-black">{{ 'ขายแพ็กเกจเสริม' | translate }}</div>
+    <div class="col-2 navbar-brand">
+    </div>
+  </nav>
+
   <div class="mc-flex-wrap">
     <div class="container-fluid">
       <div class="mc-flex-wrap">
         <form [formGroup]="mobileForm">
           <div class="form-group">
-            <div class="text-center">หมายเลขโทรศัพท์ลูกค้า</div>
-            <input
-              class="form-control text-center"
-              type="tel"
-              id="mobileNo"
-              maxlength="10"
-              formControlName="mobileNo"
-              placeholder="ระบุหมายเลขโทรศัพท์ลูกค้า"
-              value=""
-            />
+            <div class="text-center mb-1">หมายเลขโทรศัพท์ลูกค้า</div>
+            <input class="form-control text-center" type="tel" id="mobileNo" maxlength="10" formControlName="mobileNo"
+              placeholder="ระบุหมายเลขโทรศัพท์ลูกค้า" value="" (click)="onActiveInput()" [readonly]="readonly"/>
           </div>
         </form>
+        <input type="hidden" id='packageInput' #packageInput />
       </div>
       <div class="mc-flex-wrap">
-        <div class="text-center" #packageTitle>แพ็กเกจขายดี</div>
+        <div class="text-center mb-1">แพ็กเกจขายดี</div>
       </div>
       <div [mcLoading]="packageVasService" [hidden]="packLoading"></div>
       <div *ngIf="!packLoading">
-        <app-vas-package-slider [packages]="packagesBestSellers" (selectedBestSellerPackage)="onSelectedBestSellerPackage($event)"></app-vas-package-slider>
-        <div class="text-center">
+        <app-vas-package-slider [packages]="packagesBestSellers"
+          (selectedBestSellerPackage)="onSelectedBestSellerPackage($event)"></app-vas-package-slider>
+        <div class="text-center mb-1">
           แพ็กเกจตาม Life Style
         </div>
-          <div class="row m-0">
-          <div *ngFor="let tab of tabs" class="col-{{ 12 / tabs.length }} main-tab px-0 mx-0 py-3" [ngClass]="{ active: tab?.active }" (click)="toggleActiveTabs(tab.name)">
+        <div class="row m-0">
+          <div *ngFor="let tab of tabs" class="col-{{ 12 / tabs.length }} main-tab px-0 mx-0 py-3"
+            [ngClass]="{ active: tab?.active }" (click)="toggleActiveTabs(tab.name)">
             {{ tab.name }}
           </div>
         </div>
         <div class="tab-content">
-          <app-vas-package-tab [categoryTab]="selectedTab" [transactionType]="transaction.data.transactionType" [nType]="nType" (selectedPackage)="onSelectPackage($event)"></app-vas-package-tab>
+          <app-vas-package-tab [categoryTab]="selectedTab" [transactionType]="transaction.data.transactionType"
+            [nType]="nType" (selectedPackage)="onSelectPackage($event)"></app-vas-package-tab>
         </div>
       </div>
       <div class="text-center text-grey">

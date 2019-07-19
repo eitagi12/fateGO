@@ -34,7 +34,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
   nType: string;
   mobileProfile: any;
   packLoading: any = false;
-  @ViewChild('packageTitle') packageTitle: any;
+  readonly: boolean = false;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -190,11 +190,17 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
     if (this.mobileNo) {
       this.mobileForm.controls.mobileNo.setValue(this.mobileNo);
       this.pageLoadingService.openLoading();
+      this.mobileProfile = null;
       this.getNTypeMobileNo(this.mobileNo).then((profile) => {
+          if (profile.data.mobileStatus !== '000' || profile.mobileStatus.toLowerCase() !== 'active') {
+            this.pageLoadingService.closeLoading();
+            this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
+            return;
+          }
         this.nType = profile.data.product;
       }).then(() => {
-        this.packageTitle.nativeElement.focus();
         this.pageLoadingService.closeLoading();
+        setTimeout(() => document.body.focus(), 1);
       });
     }
 
@@ -202,14 +208,24 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
       this.mobileNo = value.mobileNo;
       if (this.mobileForm.controls.mobileNo.valid) {
         this.pageLoadingService.openLoading();
+        this.mobileProfile = null;
         this.getNTypeMobileNo(this.mobileNo).then((profile) => {
+            if (profile.data.mobileStatus !== '000' || profile.mobileStatus.toLowerCase() !== 'active') {
+              this.pageLoadingService.closeLoading();
+              this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
+              return;
+            }
           this.nType = profile.data.product;
         }).then(() => {
-          this.packageTitle.nativeElement.focus();
           this.pageLoadingService.closeLoading();
+          this.readonly = true;
         });
       }
     });
+  }
+
+  onActiveInput(): void {
+    this.readonly = false;
   }
 
   callService(): any {
@@ -217,29 +233,29 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
     this.packLoading = true;
     this.packageVasService = this.http.post('/api/salesportal/promotion-vas', { userId }).toPromise();
     this.packageVasService.then((response: any) => {
-        const bestSellerItem = [];
-        const packageCat = [];
-        response.data.data.map((data: any) => {
-          data.subShelves.map((subShelves: any) => {
-            const listPackage = this.filterRomPackage(subShelves.items);
-            listPackage.map((item: any) => {
-              item.idCategory = data.priority;
-              if (+item.customAttributes.best_seller_priority > 0) {
-                item.mainTitle = data.title;
-                if (data.title === 'เน็ตและโทร') {
-                  item.icon = 'assets/images/icon/Phone_net.png';
-                } else if (data.title === 'เน้นคุย') {
-                  item.icon = 'assets/images/icon/Call.png';
-                } else {
-                  item.icon = 'assets/images/icon/Net.png';
-                }
-                bestSellerItem.push(item);
+      const bestSellerItem = [];
+      const packageCat = [];
+      response.data.data.map((data: any) => {
+        data.subShelves.map((subShelves: any) => {
+          const listPackage = this.filterRomPackage(subShelves.items);
+          listPackage.map((item: any) => {
+            item.idCategory = data.priority;
+            if (+item.customAttributes.best_seller_priority > 0) {
+              item.mainTitle = data.title;
+              if (data.title === 'เน็ตและโทร') {
+                item.icon = 'assets/images/icon/Phone_net.png';
+              } else if (data.title === 'เน้นคุย') {
+                item.icon = 'assets/images/icon/Call.png';
               } else {
-                packageCat.push(item);
+                item.icon = 'assets/images/icon/Net.png';
               }
-            }).sort((a: any, b: any) => (+a.customAttributes.best_seller_priority) - (b.customAttributes.best_seller_priority));
-          });
+              bestSellerItem.push(item);
+            } else {
+              packageCat.push(item);
+            }
+          }).sort((a: any, b: any) => (+a.customAttributes.best_seller_priority) - (b.customAttributes.best_seller_priority));
         });
+      });
       return {
         best: bestSellerItem,
         pack: packageCat
@@ -331,9 +347,17 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
       return this.http.get(`/api/customerportal/asset/${mobileNo}/profile`).toPromise().then((resProfile: any) => {
         this.mobileProfile = resProfile;
         return resProfile;
+      }).catch((e) => {
+        this.pageLoadingService.closeLoading();
+        if (typeof e === 'string') {
+          this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
+        } else {
+          this.alertService.error('ไม่สามารถทำรายการได้ เลขหมายนี้ไม่ใช่ระบบ AIS');
+        }
       });
     } else {
       return Promise.resolve(this.mobileProfile);
     }
   }
+
 }

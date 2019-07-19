@@ -15,7 +15,6 @@ declare let window: any;
   styleUrls: ['./vas-package-menu-vas-rom-page.component.scss']
 })
 export class VasPackageMenuVasRomPageComponent implements OnInit, OnDestroy {
-  vasPackageFrom: FormGroup;
   selected: any;
   transaction: Transaction;
   onSelectTransactionType: any;
@@ -26,26 +25,13 @@ export class VasPackageMenuVasRomPageComponent implements OnInit, OnDestroy {
     private homeService: HomeService,
     private fb: FormBuilder,
     private transactionService: TransactionService,
-    private aisNativeService: AisNativeOrderService,
     private activatedRoute: ActivatedRoute
   ) { }
 
   ngOnInit(): void {
-    this.createForm();
     this.activatedRoute.queryParams.subscribe((params: any) => {
       this.params = params;
-  });
-  }
-
-  createForm(): void {
-    this.vasPackageFrom = this.fb.group({
-      'vasPackageRom': ['1'],
     });
-    this.onSelectTransactionType = 'RomAgent';
-  }
-
-  onCompleted(transactionType: any): void {
-    this.onSelectTransactionType = transactionType;
   }
 
   onBack(): void {
@@ -56,8 +42,8 @@ export class VasPackageMenuVasRomPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  onNext(): void {
-    this.createTransaction();
+  onNext(type: string): void {
+    this.createTransaction(type);
     this.router.navigate([ROUTE_VAS_PACKAGE_SELECT_PACKAGE_PAGE]);
   }
 
@@ -69,10 +55,10 @@ export class VasPackageMenuVasRomPageComponent implements OnInit, OnDestroy {
     this.transactionService.save(this.transaction);
   }
 
-  private createTransaction(): void {
+  private createTransaction(type: string): void {
     this.transaction = {
       data: {
-        transactionType: this.onSelectTransactionType === 'Customer' ?
+        transactionType: type === 'Customer' ?
           TransactionType.VAS_PACKAGE_CUSTOMER : TransactionType.VAS_PACKAGE_ROM,
         action: TransactionAction.VAS_PACKAGE_ROM,
         simCard: {

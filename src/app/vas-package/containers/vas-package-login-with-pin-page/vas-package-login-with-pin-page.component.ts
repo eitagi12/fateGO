@@ -77,11 +77,6 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
       'mobileNoAgent': ['', Validators.compose([Validators.required, Validators.pattern(/^0[6-9]{1}[0-9]{8}/)])],
       'pinAgent': ['', Validators.required]
     });
-
-    // this.loginForm.valueChanges.subscribe((value) => {
-    //   this.mobileNoAgent = value.mobileNoAgent;
-    //   this.loginForm.controls.mobileNoAgent.setValue(this.mobileNoAgent);
-    // });
     this.loginForm.controls.mobileNoAgent.setValue(this.mobileNoAgent);
   }
 

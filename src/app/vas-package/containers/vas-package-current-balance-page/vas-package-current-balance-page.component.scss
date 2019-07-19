@@ -1,5 +1,16 @@
 @media (max-width: 576px) {
-    .header-icon-left,.header-icon-right{
-        width: 10% !important;
-    }
+
+  .header-icon-left,
+  .header-icon-right {
+    width: 10% !important;
+  }
+}
+
+.navbar-brand {
+  margin: 0 auto
+}
+
+.bg-ais {
+  color: black;
+  background-color: #cced61;
 }
