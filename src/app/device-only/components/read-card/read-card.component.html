@@ -41,7 +41,7 @@
       <br/>
       <h5>{{ 'ที่อยู่ตามใบแจ้งค่าใช้บริการเบอร์ AIS ของท่าน' | translate }}</h5>
 
-      <div *ngFor="let itemBA of listBillingAccount; let i = index" #istBillingAccountBox>
+      <div mcScroll *ngFor="let itemBA of listBillingAccount; let i = index" #istBillingAccountBox>
         <input class="form-check-input" type="radio" value="{{i}}"
           formControlName="billingAddress" id="modal-text-billing-address-{{i+1}}">
         <label class="form-check-label" class="col-9" for="modal-text-billing-address-{{i+1}}">{{ itemBA.mobileNo[0] }}</label>
