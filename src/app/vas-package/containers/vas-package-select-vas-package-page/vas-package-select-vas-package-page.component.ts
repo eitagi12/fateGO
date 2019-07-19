@@ -191,6 +191,11 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
       this.pageLoadingService.openLoading();
       this.mobileProfile = null;
       this.getNTypeMobileNo(this.mobileNo).then((profile) => {
+          if (profile.data.mobileStatus !== '000' || profile.mobileStatus.toLowerCase() !== 'active') {
+            this.pageLoadingService.closeLoading();
+            this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
+            return;
+          }
         this.nType = profile.data.product;
       }).then(() => {
         this.pageLoadingService.closeLoading();
@@ -204,6 +209,11 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
         this.pageLoadingService.openLoading();
         this.mobileProfile = null;
         this.getNTypeMobileNo(this.mobileNo).then((profile) => {
+            if (profile.data.mobileStatus !== '000' || profile.mobileStatus.toLowerCase() !== 'active') {
+              this.pageLoadingService.closeLoading();
+              this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
+              return;
+            }
           this.nType = profile.data.product;
         }).then(() => {
           this.pageLoadingService.closeLoading();
@@ -330,13 +340,15 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
   getNTypeMobileNo(mobileNo: string): any {
     if (!this.mobileProfile) {
       return this.http.get(`/api/customerportal/asset/${mobileNo}/profile`).toPromise().then((resProfile: any) => {
-        if (resProfile.data.mobileStatus !== '000') {
-          this.pageLoadingService.closeLoading();
-          this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
-          return;
-        }
         this.mobileProfile = resProfile;
         return resProfile;
+      }).catch((e) => {
+        this.pageLoadingService.closeLoading();
+        if (typeof e === 'string') {
+          this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
+        } else {
+          this.alertService.error('ไม่สามารถทำรายการได้ เลขหมายนี้ไม่ใช่ระบบ AIS');
+        }
       });
     } else {
       return Promise.resolve(this.mobileProfile);
