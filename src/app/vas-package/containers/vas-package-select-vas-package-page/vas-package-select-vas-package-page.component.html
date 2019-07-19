@@ -20,21 +20,21 @@
       <div class="mc-flex-wrap">
         <form [formGroup]="mobileForm">
           <div class="form-group">
-            <div class="text-center">หมายเลขโทรศัพท์ลูกค้า</div>
+            <div class="text-center mb-1">หมายเลขโทรศัพท์ลูกค้า</div>
             <input class="form-control text-center" type="tel" id="mobileNo" maxlength="10" formControlName="mobileNo"
-              placeholder="ระบุหมายเลขโทรศัพท์ลูกค้า" value="" />
+              placeholder="ระบุหมายเลขโทรศัพท์ลูกค้า" value="" (click)="onActiveInput()" [readonly]="readonly"/>
           </div>
         </form>
         <input type="hidden" id='packageInput' #packageInput />
       </div>
       <div class="mc-flex-wrap">
-        <div class="text-center">แพ็กเกจขายดี</div>
+        <div class="text-center mb-1">แพ็กเกจขายดี</div>
       </div>
       <div [mcLoading]="packageVasService" [hidden]="packLoading"></div>
       <div *ngIf="!packLoading">
         <app-vas-package-slider [packages]="packagesBestSellers"
           (selectedBestSellerPackage)="onSelectedBestSellerPackage($event)"></app-vas-package-slider>
-        <div class="text-center">
+        <div class="text-center mb-1">
           แพ็กเกจตาม Life Style
         </div>
         <div class="row m-0">
