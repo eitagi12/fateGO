@@ -1,9 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, PageLoadingService, AlertService, TokenService } from 'mychannel-shared-libs';
+import { PageLoadingService, AlertService, TokenService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { ROUTE_VAS_PACKAGE_CURRENT_BALANCE_PAGE, ROUTE_VAS_PACKAGE_SELECT_PACKAGE_PAGE, ROUTE_VAS_PACKAGE_MENU_VAS_ROM_PAGE } from 'src/app/vas-package/constants/route-path.constant';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { ROUTE_VAS_PACKAGE_MENU_VAS_ROM_PAGE } from 'src/app/vas-package/constants/route-path.constant';
+import { Transaction, RomTransaction, VasPackage } from 'src/app/shared/models/transaction.model';
 import { HttpClient } from '@angular/common/http';
 declare let window: any;
 @Component({
@@ -20,7 +20,6 @@ export class VasPackageResultPageComponent implements OnInit {
   public message: string = '';
   constructor(
     private router: Router,
-    private homeService: HomeService,
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
     private alertService: AlertService,
@@ -74,7 +73,7 @@ export class VasPackageResultPageComponent implements OnInit {
     this.pageLoadingService.openLoading();
     const packId = this.transaction.data.onTopPackage.customAttributes.pack_id;
     const Pin = this.transaction.data.romAgent.pinAgent;
-    const requestVasPackage = {
+    const requestVasPackage: VasPackage = {
       ssid: this.transaction.transactionId,
       msisdn: `66${this.mobileNoAgent.substring(1, this.mobileNoAgent.length)}`,
       imsi: '520036001697648',
@@ -99,12 +98,41 @@ export class VasPackageResultPageComponent implements OnInit {
           this.message = 'ไม่สามารถทำรายการได้ กรุณาติดต่อ CallCenter 020789123 ค่ะ';
           this.pageLoadingService.closeLoading();
         }
+        // create transaction romAgent
+        this.createRomTransaction(this.transaction, requestVasPackage);
       })
       .catch((err) => {
         this.message = 'ไม่สามารถทำรายการได้ กรุณาติดต่อ CallCenter 020789123 ค่ะ';
         this.alertService.error(err);
         this.pageLoadingService.closeLoading();
+        this.createRomTransaction(this.transaction, requestVasPackage);
       });
+  }
+
+  createRomTransaction(transaction: Transaction, vasPackage: VasPackage): Promise<any> {
+    const requestBody = this.mapRequestRomTransaction(transaction, vasPackage);
+    return this.http.post('/api/customerportal/create-rom-transaction', requestBody)
+      .toPromise()
+      .then(((response: any) => {
+        console.log('create-rom-transaction : ', response);
+        return response;
+      }));
+  }
+
+  private mapRequestRomTransaction(transaction: Transaction, vasPackage: VasPackage): RomTransaction {
+    const packId = transaction.data.onTopPackage.customAttributes.pack_id ? transaction.data.onTopPackage.customAttributes.pack_id : '';
+    return {
+      transactionId: transaction.data.romAgent.transactionIdRom,
+      ssid: vasPackage.ssid,
+      romNo: this.mobileNoAgent,
+      cusMobileNo: transaction.data.simCard.mobileNo,
+      price: transaction.data.onTopPackage.customAttributes.regular_price,
+      packId: packId,
+      username: this.tokenService.getUser().username,
+      locationcode: this.tokenService.getUser().locationCode,
+      transactionType: 'VAS',
+      status: this.message === 'ทำรายการเรียบร้อยแล้ว' ? 'COMPLETE' : 'ERROR'
+    };
   }
 
   onMainMenu(): void {
