@@ -65,3 +65,21 @@
   cursor: pointer;
   // height: 35px;
 }
+.sub-tab {
+  cursor: pointer;
+  text-align: center;
+  color: #39464e;
+  background-color: #c5db76;
+  width: 100%;
+  border: 1px solid white;
+  font-size: 12px;
+  &.active{
+    font-weight: bold;
+    background-color: #9fc540;
+  }
+}
+.header-column {
+  font-size: 10px;
+  color: black;
+  text-decoration: underline;
+}

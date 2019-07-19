@@ -71,14 +71,27 @@ export class VasPackageTabComponent implements OnInit, OnChanges {
     return tabs;
   }
 
-  setActiveTabs(tabCode: any): void {
+  toggleActiveTabs(tabName: any): void {
     this.tabs = this.tabs.map((tabData) => {
-      tabData.active = !!(tabData.code === tabCode);
+      if (tabData.name === tabName) {
+        tabData.active = true;
+      } else {
+        tabData.active = false;
+      }
       return tabData;
     });
-    this.selectedTab = this.tabs.filter(tabData => tabData.name === tabCode)[0];
+    this.selectedTab = this.tabs.filter(tabData => tabData.name === tabName)[0];
+  }
+
+  setActiveTabs(tabName: any): void {
+    this.tabs = this.tabs.map((tabData) => {
+      tabData.active = !!(tabData.code === tabName);
+      return tabData;
+    });
+    this.selectedTab = this.tabs.filter(tabData => tabData.name === tabName)[0];
     // console.log('package', this.selectedTab.packages);
   }
+
   onSelectedPackage(value: any): void {
     this.selectedPackage.emit(value);
   }

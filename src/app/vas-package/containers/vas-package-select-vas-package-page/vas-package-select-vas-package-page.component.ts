@@ -355,6 +355,18 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
     }
   }
 
+  toggleActiveTabs(tabName: any): void {
+    this.tabs = this.tabs.map((tabData) => {
+      if (tabData.name === tabName) {
+        tabData.active = true;
+      } else {
+        tabData.active = false;
+      }
+      return tabData;
+    });
+    this.selectedTab = this.tabs.filter(tabData => tabData.name === tabName)[0];
+  }
+
   setActiveTabs(tabCode: any): void {
     this.tabs = this.tabs.map((tabData) => {
       tabData.active = !!(tabData.name === tabCode);

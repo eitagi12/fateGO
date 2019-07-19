@@ -1,5 +1,14 @@
- <div class="card text-center">
-   <div class="card-header p-0">
+  <div class="row m-0">
+    <div *ngFor="let tab of tabs"
+        class="col-{{ 12 / tabs.length }} sub-tab px-0 mx-0 py-2"
+        [ngClass]="{ 'active' : tab?.active }"
+        (click)="toggleActiveTabs(tab.name)">
+        {{ tab.name }}
+    </div>
+  </div>
+
+ <div class="bg-white text-center">
+   <!-- <div class="card-header p-0">
      <div class="row">
        <div class="col-12 text-center">
          <div class="bg-white" [hidden]="tabs?.length <= 0">
@@ -14,14 +23,14 @@
          </div>
        </div>
      </div>
-   </div>
+   </div> -->
   <div class="tab-content">
-    <div class="card-body p-0 tab-pane active" id="menu1">
-      <div class="card-body p-0">
+    <div class="p-0 tab-pane active" id="menu1">
+      <div class="p-0">
         <div class="m-auto">
           <div class="row m-0">
             <div
-              class="text-column"
+              class="px-0 py-2 header-column"
               [ngClass]="{
                 'col-3': filedPrograms[index].length === 3 || filedPrograms[index].length === 4 && (i === 1 || i === 2),
                 'col-2': filedPrograms[index].length === 4
