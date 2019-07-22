@@ -128,7 +128,7 @@ export class VasPackageResultPageComponent implements OnInit {
       cusMobileNo: transaction.data.simCard.mobileNo,
       price: transaction.data.onTopPackage.customAttributes.regular_price,
       packId: packId,
-      username: this.tokenService.getUser().username,
+      username: transaction.data.romAgent.usernameRomAgent,
       locationcode: this.tokenService.getUser().locationCode,
       transactionType: 'VAS',
       status: this.success ? 'COMPLETE' : 'ERROR'
