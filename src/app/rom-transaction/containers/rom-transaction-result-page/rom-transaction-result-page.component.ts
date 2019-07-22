@@ -16,6 +16,7 @@ export class RomTransactionResultPageComponent implements OnInit {
   success: boolean = false;
   transaction: Transaction;
   romTransaction: RomTransaction;
+  createRomTransaction: Promise<any>;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -33,7 +34,7 @@ export class RomTransactionResultPageComponent implements OnInit {
 
   callService(): void {
     this.pageLoadingService.openLoading();
-    this.http.post('/api/customerportal/update-rom-transaction' , {
+    this.createRomTransaction = this.http.post('/api/customerportal/update-rom-transaction' , {
       username: this.romTransaction.username,
       transaction: this.romTransaction.romTransaction.transactionId,
       status: 'Complete',
