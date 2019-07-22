@@ -1,5 +1,4 @@
 <div class="mc-flex">
-
   <nav class="navbar fixed-top bg-ais text-white shadow-sm fix-position">
     <div class="col-2 navbar-brand">
       <img class="back-icon" src="assets/images/icon/icon-black-back.png" (click)="onBack()">
@@ -8,12 +7,11 @@
     <div class="col-2 navbar-brand">
     </div>
   </nav>
-
   <div class="mc-flex-wrap">
     <div class="mb-3 mt-3">
       <div class="m-3">
         <div class="card mt-3 content">
-          <div class="card-header bg-green">{{'ช่องทางการชำระ'| translate}}</div>
+          <div class="card-header bg-header">{{'ช่องทางการชำระ'| translate}}</div>
           <div class="card-body">
             <input class="chargeType" type="radio" value="topUp" [checked]="true">
             <label class="form-check-label" for="chargeType">{{ 'AIS Online Top Up' }} </label>
@@ -26,10 +24,8 @@
             <form [formGroup]="loginForm">
               <div class="card-body">
                 <div class="form-group">
-                  <input type="tel" id="mobileNoAgent" class="form-control mb-3" placeholder="ระบุเบอร์ ROM Agent"
-                    maxlength="10" formControlName="mobileNoAgent">
-                  <input type="password" id="pinAgent" class="form-control" placeholder="กรุณากรอก PIN 4 หลัก"
-                    maxlength="4" formControlName="pinAgent">
+                  <input type="tel" id="mobileNoAgent" class="form-control mb-3" placeholder="ระบุเบอร์ ROM Agent" maxlength="10" formControlName="mobileNoAgent">
+                  <input type="password" id="pinAgent" class="form-control" placeholder="กรุณากรอก PIN 4 หลัก" maxlength="4" formControlName="pinAgent">
                 </div>
               </div>
             </form>
@@ -39,7 +35,7 @@
     </div>
   </div>
   <mc-footer>
-    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()" [disabled]=!loginForm.valid>NEXT</button>
+    <button class="btn btn-secondary text-brown" (click)="onBack()">กลับ</button>
+    <button class="btn bg-btn-ais" (click)="onNext()" [disabled]=!loginForm.valid>ต่อไป</button>
   </mc-footer>
 </div>

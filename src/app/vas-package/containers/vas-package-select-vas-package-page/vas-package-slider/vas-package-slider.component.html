@@ -18,11 +18,11 @@
                 <span>{{package.customAttributes.package_period}}</span>
               </div>
               <div class="small">
-                <button class="btn btn-success" (click)="onSelectedPackage(package)">ขายเลย</button>
+                <button class="btn btn-success text-ais" (click)="onSelectedPackage(package)">ขายเลย</button>
               </div>
               <span class="pull-right">
                 <img class="icon-s" src="assets/images/icon/EasyP1_23072561-17.png"
-                  (click)="onOpenDetail(package, package.customAttributes?.description_th)">
+                  (click)="onOpenDetail(package, package.customAttributes?.description_th, package.customAttributes?.category)">
               </span>
             </div>
           </div>
@@ -33,11 +33,21 @@
 </div>
 
 <ng-template #detailTemplate>
-  <div class="modal-body" [innerHTML]="detail"></div>
-  <div class="modal-footer">
-    <div class="w-100 text-center">
-      <button class="btn btn-success px-5" (click)="modalRef.hide()" translate>ปิด</button>
-      <button class="btn btn-success px-5" (click)="onSell()" translate>ขายเลย</button>
+  <div class="box ">
+    <div class="text-info text-lime">รายละเอียดเพิ่มเติม</div>
+    <hr>
+    <img class="icon-xl" src="assets/images/icon/EasyP1_23072561-16.png">
+    <div class="modal-body">
+      <div>
+        <p>{{title}}</p>
+      </div>
+      <div>
+        <p>{{detail}}</p>
+      </div>
+    </div>
+    <div>
+      <button class="btn bg-btn-ais w-50" (click)="modalRef.hide()" translate>ปิด</button>
+      <button class="btn bg-btn-ais w-50" (click)="onSell()" translate>ขายเลย</button>
     </div>
   </div>
 </ng-template>

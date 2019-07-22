@@ -82,7 +82,7 @@ export class VasPackageCurrentBalancePageComponent implements OnInit, OnDestroy 
       header: this.tokenType + ' ' + this.accessToken
     };
     this.pageLoadingService.openLoading();
-    this.http.post('api/customerportal/rom/get-main', requestGetMain).toPromise()
+    this.http.post('/api/customerportal/rom/get-main', requestGetMain).toPromise()
       .then((res: any) => {
         if (res && res.data.status === 'success') {
           this.transaction.data.romAgent = {
@@ -90,7 +90,7 @@ export class VasPackageCurrentBalancePageComponent implements OnInit, OnDestroy 
             transactionIdRom: res.data.transactionid
           };
           this.balance = res.data.balance ? res.data.balance : '';
-          this.alertService.error('balane : ' + this.balance);
+          this.romAgentForm.controls.amount.setValue(this.balance);
           this.checkBalanceRomWithPricePackage(this.balance);
           this.pageLoadingService.closeLoading();
         } else {
@@ -105,10 +105,8 @@ export class VasPackageCurrentBalancePageComponent implements OnInit, OnDestroy 
   }
 
   checkBalanceRomWithPricePackage(balanceRomAgent: string): void {
-    this.alertService.error('priceRomPackage : ' + balanceRomAgent);
     const regularPrice = this.transaction.data.onTopPackage.customAttributes.regular_price;
     const priceRomPackage = regularPrice ? regularPrice : '';
-    this.alertService.error('priceRomPackage : ' + priceRomPackage);
     if (+balanceRomAgent >= +priceRomPackage) {
       this.balanceBuyPackage = true;
     } else {

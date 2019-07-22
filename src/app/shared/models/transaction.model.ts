@@ -517,6 +517,7 @@ export interface RomAgent {
   tokenType?: string;
   accessToken?: string;
   transactionIdRom?: string;
+  usernameRomAgent?: string;
 }
 
 export interface RomTransaction {

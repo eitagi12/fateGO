@@ -1,6 +1,6 @@
-import { Component, OnInit, OnDestroy, OnChanges } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, TokenService, AlertService, REGEX_MOBILE } from 'mychannel-shared-libs';
+import { HomeService, AlertService, PageLoadingService } from 'mychannel-shared-libs';
 import { ROUTE_VAS_PACKAGE_OTP_PAGE, ROUTE_VAS_PACKAGE_SELECT_PACKAGE_PAGE, ROUTE_VAS_PACKAGE_CURRENT_BALANCE_PAGE } from 'src/app/vas-package/constants/route-path.constant';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -8,6 +8,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import * as moment from 'moment';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { AisNativeOrderService } from 'src/app/shared/services/ais-native-order.service';
+import { Subscription } from 'rxjs';
 declare let window: any;
 @Component({
   selector: 'app-vas-package-login-with-pin-page',
@@ -21,16 +22,18 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
   mobileNoAgent: string;
   isRom: boolean;
   window: any = window;
+  usernameRom: string;
+  usernameSub: Subscription;
 
   constructor(
     private router: Router,
     private homeService: HomeService,
     private http: HttpClient,
     private fb: FormBuilder,
-    private tokenService: TokenService,
     private transactionService: TransactionService,
     private alertService: AlertService,
-    private aisNativeOrderService: AisNativeOrderService
+    private aisNativeOrderService: AisNativeOrderService,
+    private pageLoadingService: PageLoadingService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -60,29 +63,32 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  private getRomByUser(): any {
-    // const username = this.tokenService.getUser().username;
-      this.aisNativeOrderService.getNativeUsername();
-      this.aisNativeOrderService.getUsername().subscribe((res: string) => {
-      this.alertService.error('username : ' + res);
+  getRomByUser(): any {
+    this.aisNativeOrderService.getNativeUsername();
+    this.usernameSub = this.aisNativeOrderService.getUsername().subscribe((username: string) => {
+      this.usernameRom = username;
+      this.transaction.data.romAgent = {
+        ...this.transaction.data.romAgent,
+        usernameRomAgent: this.usernameRom
+      };
+      this.http.get(`/api/easyapp/get-rom-by-user?username=${this.usernameRom}`).toPromise()
+        .then((res: any) => {
+          if (res && res.data.mobileNo !== '') {
+            this.mobileNoAgent = res.data.mobileNo;
+            this.loginForm.controls.mobileNoAgent.setValue(this.mobileNoAgent);
+            this.isRom = true;
+          } else {
+            this.mobileNoAgent = '';
+            this.isRom = false;
+          }
+        });
     });
-    // this.http.get(`/api/easyapp/get-rom-by-user?username=${username}`).toPromise()
-    //   .then((res: any) => {
-    //     if (res && res.data.mobileNo !== '') {
-    //       this.mobileNoAgent = res.data.mobileNo;
-    //       this.loginForm.controls.mobileNoAgent.setValue(this.mobileNoAgent);
-    //       this.isRom = true;
-    //     } else {
-    //       this.mobileNoAgent = '';
-    //       this.isRom = false;
-    //     }
-    //   });
   }
 
-  private createForm(): void {
+  createForm(): void {
     this.loginForm = this.fb.group({
       'mobileNoAgent': ['', Validators.compose([Validators.required, Validators.pattern(/^0[6-9]{1}[0-9]{8}/)])],
-      'pinAgent': ['', Validators.required]
+      'pinAgent': ['', Validators.compose([Validators.required, Validators.minLength(4), Validators.maxLength(4)])]
     });
     this.loginForm.controls.mobileNoAgent.setValue(this.mobileNoAgent);
   }
@@ -105,6 +111,7 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
       // tslint:disable-next-line:max-line-length
       // device_id: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJST00gTW9iaWxlIGFwaSIsImF1ZCI6Imh 0dHBzOi8vbXlyb20uYWlzLmNvLnRoL0FQSS9W MS9zaWdpbiIsInN1YiI6IjA0Ni1iNTc2Mjc4ZC1j MTY4LTQ5YjMtOWYxZi1jODVhYTc4YjgwYzAiL CJtc2lzZG4iOiIwNjIyNDM0MjA4IiwiYWdlbnRpZ CI6IjYyMzgxNDciLCJpYXQiOjE1Mzc0MzE3NjAsI mV4cCI6MTUzNzQzMjY2MH0.kY85wPWDSxy1ll rpejMRJrtKC_PE6F_7fuTMg5y-ZS0'
     };
+    this.pageLoadingService.openLoading();
     this.http.post(`/api/customerportal/rom/get-profile`, requestGetProfile).toPromise()
       .then((res: any) => {
         if (res && res.data.status === 'success') {
@@ -113,8 +120,8 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
           this.alertService.error('เบอร์โทรศัพท์นี้ไม่ใช่ ROM Agent กรุณาทำรายการใหม่อีกครั้ง');
         }
       })
-      .catch(() => {
-        this.alertService.error('ระบบไม่สามารถใช้งานได้ในขณะนี้');
+      .catch((err) => {
+        this.alertService.error(err);
       });
   }
 
@@ -136,15 +143,14 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
     this.http.post(`/api/customerportal/rom/sign-in`, requestSignIn).toPromise()
       .then((res: any) => {
         if (res && res.data.status === 'success') {
-          this.transaction.data = {
-            ...this.transaction.data,
-            romAgent: {
-              mobileNoAgent: this.loginForm.controls.mobileNoAgent.value,
-              pinAgent: this.loginForm.value.pinAgent,
-              agentId: agentId,
-              tokenType: res.data.token_type,
-              accessToken: res.data.access_token
-            }
+          this.pageLoadingService.closeLoading();
+          this.transaction.data.romAgent = {
+            ...this.transaction.data.romAgent,
+            mobileNoAgent: this.loginForm.controls.mobileNoAgent.value,
+            pinAgent: this.loginForm.value.pinAgent,
+            agentId: agentId,
+            tokenType: res.data.token_type,
+            accessToken: res.data.access_token
           };
           // check Rom Agent ที่มีข้อมูลแล้ว
           const mobileNoAgentCurrent = this.loginForm.controls.mobileNoAgent.value;
@@ -157,12 +163,16 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
           this.alertService.error('เบอร์โทรศัพท์ หรือ PIN ไม่ถูกต้อง');
         }
       })
-      .catch(() => {
-        this.alertService.error('ระบบไม่สามารถใช้งานได้ในขณะนี้');
+      .catch((err) => {
+        this.alertService.error(err);
       });
   }
 
   ngOnDestroy(): void {
     this.transactionService.save(this.transaction);
+    if (this.usernameSub) {
+      this.usernameSub.unsubscribe();
+    }
   }
+
 }

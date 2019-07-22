@@ -15,6 +15,7 @@ export class VasPackageSliderComponent implements OnInit, OnChanges {
   @ViewChild('detailTemplate')
   detailTemplate: any;
   modalRef: BsModalRef;
+  title: string;
   detail: string;
   selectedVasPackage: string;
 
@@ -67,7 +68,8 @@ export class VasPackageSliderComponent implements OnInit, OnChanges {
     this.slider.nativeElement.style.display = 'block';
   }
 
-  onOpenDetail(pack: any, detail: any): void {
+  onOpenDetail(pack: any, detail: any, title: any): void {
+    this.title = title;
     this.detail = detail;
     this.selectedVasPackage = pack;
     this.modalRef = this.modalService.show(this.detailTemplate);

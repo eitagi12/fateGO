@@ -30,10 +30,10 @@
 
     <div class="footers row">
       <div class="col-xs-6 col-sm-6">
-        <p class="mc-btn-otp text text-center" (click)="getOTP()">ขอรหัสผ่านใหม่</p>
+        <p class="mc-btn-otp text text-center text-brown" (click)="getOTP()">ขอรหัสผ่านใหม่</p>
       </div>
       <div class="col-xs-6 col-sm-6">
-        <button class="mc-btn text text-center" type="submit" (click)="verifyOTP()"
+        <button class="btn w-100 text text-center bg-btn-ais" type="submit" (click)="verifyOTP()"
           [disabled]="!formOTP.controls.verifyOTP.valid">ยืนยัน</button>
       </div>
     </div>

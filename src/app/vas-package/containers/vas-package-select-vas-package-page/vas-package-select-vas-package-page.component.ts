@@ -77,7 +77,12 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
     }
     this.pageLoadingService.openLoading();
     this.getNTypeMobileNo(this.mobileNo).then((resProfile: any) => {
-      const matchNType: any = [...selectedPackage.customAttributes.allow_ntype.split(',')].includes(resProfile.data.product);
+      const status: string = (resProfile && resProfile.data && resProfile.data.detail.state) ? resProfile.data.detail.state : '';
+      if (!['active'].includes(status.toLowerCase())) {
+        this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
+        return;
+      }
+      const matchNType: any = [...selectedPackage.customAttributes.allow_ntype.split(',')].includes(resProfile.data.detail.networkType);
       if (!matchNType) {
         this.pageLoadingService.closeLoading();
         this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจาก Network type ไม่ตรง');
@@ -103,38 +108,14 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
               this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจาก service years ไม่ถึง');
               return;
             }
-
-            const isPrepaid: boolean = resProfile.data.chargeType === 'Pre-paid';
-            if (isPrepaid) {
-              this.http.get(`/api/customerportal/newRegister/${this.mobileNo}/queryBalance`).toPromise()
-                .then((resBalance: any) => {
-                  if (resBalance && resBalance.resultCode !== '20000') {
-                    this.pageLoadingService.closeLoading();
-                    this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
-                    return;
-                  }
-
-                  const isEnough: any = +(resBalance.data.remainingBalance) >= +(selectedPackage.customAttributes.regular_price);
-                  if (!isEnough) {
-                    this.pageLoadingService.closeLoading();
-                    this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจากยอดเงินคงเหลือไม่เพียงพอสำหรับแพ็กเกจนี้ ยอดเงินคงเหลือ: '
-                      + (+resBalance.data.remainingBalance) + ' บาท');
-                    return;
-                  }
-                  this.pageLoadingService.closeLoading();
-                  this.savePackage(this.mobileNo, selectedPackage);
-                  this.router.navigate([ROUTE_VAS_PACKAGE_LOGIN_WITH_PIN_PAGE]);
-                });
-            } else {
-              this.router.navigate([ROUTE_VAS_PACKAGE_LOGIN_WITH_PIN_PAGE]);
-              this.savePackage(this.mobileNo, selectedPackage);
-              this.pageLoadingService.closeLoading();
-            }
+            this.pageLoadingService.closeLoading();
+            this.savePackage(this.mobileNo, selectedPackage);
+            this.router.navigate([ROUTE_VAS_PACKAGE_LOGIN_WITH_PIN_PAGE]);
           });
       } else {
         const isPrepaid: boolean = resProfile.data.chargeType === 'Pre-paid';
         if (isPrepaid) {
-          this.http.get(`/api/customerportal/newRegister/${this.mobileNo}/queryBalance`).toPromise()
+          this.http.get(`/api/customerportal/newRegister/${this.mobileNo}/getBalance`).toPromise()
             .then((resBalance: any) => {
               if (resBalance && resBalance.resultCode !== '20000') {
                 this.pageLoadingService.closeLoading();
@@ -177,11 +158,6 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
     this.onSelectPackage(event);
   }
 
-  getPackageProducts(): void {
-    const userId = 'bMfAlzjKaZSSKY3s6c3farMxbUaEsFnIIAgbjsXKA3cOhnKfvawKb60MITINd04Os73YJBQ5aWypkxFk';
-    this.packageProductsService.getPackageProducts(userId);
-  }
-
   createForm(): void {
     this.mobileForm = this.formBuilder.group({
       'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(/^0[6-9]{1}[0-9]{8}/)])],
@@ -192,18 +168,28 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
       this.pageLoadingService.openLoading();
       this.mobileProfile = null;
       this.getNTypeMobileNo(this.mobileNo).then((profile) => {
-        this.nType = profile.data.product;
-
-        const status: string = (profile && profile.data && profile.data.mobileStatus) ? profile.data.mobileStatus : '';
-        if (!['000', 'active'].includes(status.toLowerCase())) {
-          this.pageLoadingService.closeLoading();
-          this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
-          return;
-        }
-      }).then(() => {
-        this.pageLoadingService.closeLoading();
+        this.nType = profile.data.detail.networkType;
+        this.filterPackageByNType();
         setTimeout(() => document.body.focus(), 1);
-      });
+        return profile;
+      })
+        .then((profile) => {
+          const status: string = (profile && profile.data && profile.data.detail.state) ? profile.data.detail.state : '';
+          this.pageLoadingService.closeLoading();
+          if (!['active'].includes(status.toLowerCase())) {
+            this.pageLoadingService.closeLoading();
+            this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
+          }
+          setTimeout(() => document.body.focus(), 1);
+        })
+        .catch((error) => {
+          this.pageLoadingService.closeLoading();
+          if (typeof error === 'string') {
+            this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
+          } else {
+            this.alertService.error('ไม่สามารถทำรายการได้ เลขหมายนี้ไม่ใช่ระบบ AIS');
+          }
+        });
     }
 
     this.mobileForm.valueChanges.subscribe((value) => {
@@ -212,17 +198,23 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
         this.pageLoadingService.openLoading();
         this.mobileProfile = null;
         this.getNTypeMobileNo(this.mobileNo).then((profile) => {
-          this.nType = profile.data.product;
-
-          const status: string = (profile && profile.data && profile.data.mobileStatus) ? profile.data.mobileStatus : '';
-          if (!['000', 'active'].includes(status.toLowerCase())) {
-            this.pageLoadingService.closeLoading();
-            this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
-            return;
-          }
-        }).then(() => {
+          this.nType = profile.data.detail.networkType;
+          this.filterPackageByNType();
           this.pageLoadingService.closeLoading();
+          return profile;
+        }).then((profile) => {
+          const status: string = (profile && profile.data && profile.data.detail.state) ? profile.data.detail.state : '';
+          if (!['active'].includes(status.toLowerCase())) {
+            this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
+          }
           this.readonly = true;
+        }).catch((error: any) => {
+          this.pageLoadingService.closeLoading();
+          if (typeof error === 'string') {
+            this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
+          } else {
+            this.alertService.error('ไม่สามารถทำรายการได้ เลขหมายนี้ไม่ใช่ระบบ AIS');
+          }
         });
       }
     });
@@ -348,17 +340,12 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
 
   getNTypeMobileNo(mobileNo: string): any {
     if (!this.mobileProfile) {
-      return this.http.get(`/api/customerportal/asset/${mobileNo}/profile`).toPromise().then((resProfile: any) => {
-        this.mobileProfile = resProfile;
-        return resProfile;
-      }).catch((e) => {
-        this.pageLoadingService.closeLoading();
-        if (typeof e === 'string') {
-          this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
-        } else {
-          this.alertService.error('ไม่สามารถทำรายการได้ เลขหมายนี้ไม่ใช่ระบบ AIS');
-        }
-      });
+      return this.http.get(`/api/customerportal/get-profile-type`,
+        { params: { mobileNo: mobileNo } }).toPromise().then((resProfile: any) => {
+          this.mobileProfile = resProfile;
+          console.log(resProfile);
+          return resProfile;
+        });
     } else {
       return Promise.resolve(this.mobileProfile);
     }
@@ -367,5 +354,4 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
   onSellBestSellerPackage(value: any): void {
     this.onSelectPackage(value);
   }
-
 }

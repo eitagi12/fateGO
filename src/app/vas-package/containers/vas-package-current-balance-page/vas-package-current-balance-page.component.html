@@ -17,7 +17,7 @@
           <p translate>ตัดเงินจากกระเป๋าคนขาย</p>
         </div>
         <div class="card mt-3">
-          <div class="card-header bg-green">{{'ช่องทางการชำระ'| translate}}</div>
+          <div class="card-header bg-header">{{'ช่องทางการชำระ'| translate}}</div>
           <div class="card-body">
             <input class="chargeType" type="radio" value="topUp" [checked]="true">
             <label class="form-check-label" for="chargeType">{{ 'AIS Online Top Up' }} </label>
@@ -35,7 +35,7 @@
               </div>
               <div class="form-group">
                 <label for="amount">ยอดคงเหลือในกระเป๋า ROM Agent</label>
-                <input type="text" class="form-control" id="amount" formControlName="amount" value="{{this.balance}}">
+                <input type="text" class="form-control" id="amount" formControlName="amount">
               </div>
               <small class="text-pink" *ngIf="!balanceBuyPackage">ยอดคงเหลือในกระเป๋าของคุณไม่พอ กรุณาทำการเติมเงิน
                 <U class="text-secondary" (click)="getBalanceRomAgent()">กดรีเฟรช</U></small>
@@ -46,7 +46,9 @@
     </div>
   </div>
   <mc-footer>
-    <button class="btn btn-secondary" (click)="onBack()">ยกเลิก</button>
-    <button class="btn btn-success" (click)="onNext()" [disabled]=!balanceBuyPackage>ยืนยันการขายแพ็ก</button>
+    <div class="row">
+    <button class="btn btn-secondary col w-100" (click)="onBack()">ยกเลิก</button>
+    <button class="btn bg-btn-ais col w-100" (click)="onNext()" [disabled]=!balanceBuyPackage>ยืนยันการขายแพ็ก</button>
+  </div>
   </mc-footer>
 </div>

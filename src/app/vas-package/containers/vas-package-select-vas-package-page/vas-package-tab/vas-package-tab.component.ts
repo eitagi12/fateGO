@@ -49,6 +49,7 @@ export class VasPackageTabComponent implements OnInit, OnChanges {
         });
       }
     });
+
     categories.forEach((cate: any) => {
       const setPack: any = [];
       packageCat.forEach((pack: any) => {
