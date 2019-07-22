@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Transaction, Customer, RomTransaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, Customer, RomTransactionData } from 'src/app/shared/models/transaction.model';
 import { CustomerInfo, HomeService, PageLoadingService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -15,7 +15,7 @@ export class RomTransactionResultPageComponent implements OnInit {
 
   success: boolean = false;
   transaction: Transaction;
-  romTransaction: RomTransaction;
+  romTransaction: RomTransactionData;
   createRomTransaction: Promise<any>;
   constructor(
     private router: Router,

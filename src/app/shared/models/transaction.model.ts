@@ -73,7 +73,7 @@ export interface TransactionData {
   device?: Device;
   knoxguard?: KnoxGuard;
   tradeType?: string;
-  romTransaction?: RomTransaction;
+  romTransaction?: RomTransactionData;
 }
 
 export interface Condition {
@@ -505,7 +505,7 @@ export interface KnoxGuard {
   userName?: string;
 }
 
-export interface RomTransaction {
+export interface RomTransactionData {
   romData?: RomData[];
   romTransaction?: RomData;
   username?: string;

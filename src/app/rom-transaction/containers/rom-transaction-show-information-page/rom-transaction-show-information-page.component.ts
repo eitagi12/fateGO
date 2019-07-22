@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Transaction, Customer, RomTransaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, Customer, RomTransactionData } from 'src/app/shared/models/transaction.model';
 import { CustomerInfo, HomeService, AlertService, MobileNoPipe } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -16,7 +16,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 export class RomTransactionShowInformationPageComponent implements OnInit, OnDestroy {
 
   transaction: Transaction;
-  romTransaction: RomTransaction;
+  romTransaction: RomTransactionData;
   pinForm: FormGroup;
   constructor(
     private router: Router,
