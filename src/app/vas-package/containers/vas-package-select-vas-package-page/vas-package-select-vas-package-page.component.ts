@@ -110,7 +110,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
       } else {
         const isPrepaid: boolean = resProfile.data.chargeType === 'Pre-paid';
         if (isPrepaid) {
-          this.http.get(`/api/customerportal/newRegister/${this.mobileNo}/queryBalance`).toPromise()
+          this.http.get(`/api/customerportal/newRegister/${this.mobileNo}/getBalance`).toPromise()
             .then((resBalance: any) => {
               if (resBalance && resBalance.resultCode !== '20000') {
                 this.pageLoadingService.closeLoading();
