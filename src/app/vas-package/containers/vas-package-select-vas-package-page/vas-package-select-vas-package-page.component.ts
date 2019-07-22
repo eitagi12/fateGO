@@ -169,23 +169,27 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
       this.mobileProfile = null;
       this.getNTypeMobileNo(this.mobileNo).then((profile) => {
         this.nType = profile.data.detail.networkType;
-        setTimeout(() => {this.filterPackageByNType();
-          this.pageLoadingService.closeLoading(); } , 1000);
-        const status: string = (profile && profile.data && profile.data.detail.state) ? profile.data.detail.state : '';
-        this.pageLoadingService.closeLoading();
-        if (!['active'].includes(status.toLowerCase())) {
-          this.pageLoadingService.closeLoading();
-          this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
-        }
+        this.filterPackageByNType();
         setTimeout(() => document.body.focus(), 1);
-      }).catch((e) => {
-        this.pageLoadingService.closeLoading();
-        if (typeof e === 'string') {
-          this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
-        } else {
-          this.alertService.error('ไม่สามารถทำรายการได้ เลขหมายนี้ไม่ใช่ระบบ AIS');
-        }
-      });
+        return profile;
+      })
+        .then((profile) => {
+          const status: string = (profile && profile.data && profile.data.detail.state) ? profile.data.detail.state : '';
+          this.pageLoadingService.closeLoading();
+          if (!['active'].includes(status.toLowerCase())) {
+            this.pageLoadingService.closeLoading();
+            this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
+          }
+          setTimeout(() => document.body.focus(), 1);
+        })
+        .catch((error) => {
+          this.pageLoadingService.closeLoading();
+          if (typeof error === 'string') {
+            this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
+          } else {
+            this.alertService.error('ไม่สามารถทำรายการได้ เลขหมายนี้ไม่ใช่ระบบ AIS');
+          }
+        });
     }
 
     this.mobileForm.valueChanges.subscribe((value) => {
@@ -195,17 +199,18 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
         this.mobileProfile = null;
         this.getNTypeMobileNo(this.mobileNo).then((profile) => {
           this.nType = profile.data.detail.networkType;
-          setTimeout(() => {this.filterPackageByNType();
-            this.pageLoadingService.closeLoading(); } , 1000);
+          this.filterPackageByNType();
           this.pageLoadingService.closeLoading();
+          return profile;
+        }).then((profile) => {
           const status: string = (profile && profile.data && profile.data.detail.state) ? profile.data.detail.state : '';
           if (!['active'].includes(status.toLowerCase())) {
             this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
           }
           this.readonly = true;
-        }).catch((e) => {
+        }).catch((error: any) => {
           this.pageLoadingService.closeLoading();
-          if (typeof e === 'string') {
+          if (typeof error === 'string') {
             this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
           } else {
             this.alertService.error('ไม่สามารถทำรายการได้ เลขหมายนี้ไม่ใช่ระบบ AIS');
