@@ -13,7 +13,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class RomTransactionResultPageComponent implements OnInit {
 
-  success: boolean = true;
+  success: boolean = false;
   transaction: Transaction;
   romTransaction: RomTransaction;
   constructor(
@@ -40,6 +40,7 @@ export class RomTransactionResultPageComponent implements OnInit {
       transactionStatus: 'Mandatory'
     }).toPromise()
     .then(() => {
+      this.success = true;
       this.pageLoadingService.closeLoading();
     });
   }
