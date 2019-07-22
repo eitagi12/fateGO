@@ -77,7 +77,12 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
     }
     this.pageLoadingService.openLoading();
     this.getNTypeMobileNo(this.mobileNo).then((resProfile: any) => {
-      const matchNType: any = [...selectedPackage.customAttributes.allow_ntype.split(',')].includes(resProfile.data.product);
+      const status: string = (resProfile && resProfile.data && resProfile.data.detail.state) ? resProfile.data.detail.state : '';
+      if (!['active'].includes(status.toLowerCase())) {
+        this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
+        return;
+      }
+      const matchNType: any = [...selectedPackage.customAttributes.allow_ntype.split(',')].includes(resProfile.data.detail.networkType);
       if (!matchNType) {
         this.pageLoadingService.closeLoading();
         this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจาก Network type ไม่ตรง');
@@ -103,9 +108,9 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
               this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจาก service years ไม่ถึง');
               return;
             }
-              this.pageLoadingService.closeLoading();
-              this.savePackage(this.mobileNo, selectedPackage);
-              this.router.navigate([ROUTE_VAS_PACKAGE_LOGIN_WITH_PIN_PAGE]);
+            this.pageLoadingService.closeLoading();
+            this.savePackage(this.mobileNo, selectedPackage);
+            this.router.navigate([ROUTE_VAS_PACKAGE_LOGIN_WITH_PIN_PAGE]);
           });
       } else {
         const isPrepaid: boolean = resProfile.data.chargeType === 'Pre-paid';
@@ -153,11 +158,6 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
     this.onSelectPackage(event);
   }
 
-  getPackageProducts(): void {
-    const userId = 'bMfAlzjKaZSSKY3s6c3farMxbUaEsFnIIAgbjsXKA3cOhnKfvawKb60MITINd04Os73YJBQ5aWypkxFk';
-    this.packageProductsService.getPackageProducts(userId);
-  }
-
   createForm(): void {
     this.mobileForm = this.formBuilder.group({
       'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(/^0[6-9]{1}[0-9]{8}/)])],
@@ -168,16 +168,15 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
       this.pageLoadingService.openLoading();
       this.mobileProfile = null;
       this.getNTypeMobileNo(this.mobileNo).then((profile) => {
-        this.nType = profile.data.product;
-
-        const status: string = (profile && profile.data && profile.data.mobileStatus) ? profile.data.mobileStatus : '';
-        if (!['000', 'active'].includes(status.toLowerCase())) {
+        this.nType = profile.data.detail.networkType;
+        setTimeout(() => {this.filterPackageByNType();
+          this.pageLoadingService.closeLoading(); } , 1000);
+        const status: string = (profile && profile.data && profile.data.detail.state) ? profile.data.detail.state : '';
+        this.pageLoadingService.closeLoading();
+        if (!['active'].includes(status.toLowerCase())) {
           this.pageLoadingService.closeLoading();
           this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
-          return;
         }
-      }).then(() => {
-        this.pageLoadingService.closeLoading();
         setTimeout(() => document.body.focus(), 1);
       }).catch((e) => {
         this.pageLoadingService.closeLoading();
@@ -195,16 +194,14 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
         this.pageLoadingService.openLoading();
         this.mobileProfile = null;
         this.getNTypeMobileNo(this.mobileNo).then((profile) => {
-          this.nType = profile.data.product;
-
-          const status: string = (profile && profile.data && profile.data.mobileStatus) ? profile.data.mobileStatus : '';
-          if (!['000', 'active'].includes(status.toLowerCase())) {
-            this.pageLoadingService.closeLoading();
-            this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
-            return;
-          }
-        }).then(() => {
+          this.nType = profile.data.detail.networkType;
+          setTimeout(() => {this.filterPackageByNType();
+            this.pageLoadingService.closeLoading(); } , 1000);
           this.pageLoadingService.closeLoading();
+          const status: string = (profile && profile.data && profile.data.detail.state) ? profile.data.detail.state : '';
+          if (!['active'].includes(status.toLowerCase())) {
+            this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
+          }
           this.readonly = true;
         }).catch((e) => {
           this.pageLoadingService.closeLoading();
@@ -338,10 +335,12 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
 
   getNTypeMobileNo(mobileNo: string): any {
     if (!this.mobileProfile) {
-      return this.http.get(`/api/customerportal/asset/${mobileNo}/profile`).toPromise().then((resProfile: any) => {
-        this.mobileProfile = resProfile;
-        return resProfile;
-      });
+      return this.http.get(`/api/customerportal/get-profile-type`,
+        { params: { mobileNo: mobileNo } }).toPromise().then((resProfile: any) => {
+          this.mobileProfile = resProfile;
+          console.log(resProfile);
+          return resProfile;
+        });
     } else {
       return Promise.resolve(this.mobileProfile);
     }
