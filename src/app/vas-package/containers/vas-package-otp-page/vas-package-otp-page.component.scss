@@ -9,13 +9,13 @@
 }
 
 .mobile {
-    font-size: 1rem;
-    display: inline;
-    padding: 20px;
+  font-size: 1rem;
+  display: inline;
+  padding: 20px;
 }
 
 .card-content {
-  padding: 4rem;
+  padding: 2rem;
   margin: auto;
   background-color: #ffffff;
   width: 100%;
@@ -23,7 +23,7 @@
 }
 
 .text {
-  margin-top: 2rem;
+  margin-top: 1rem;
 }
 
 hr {
@@ -41,20 +41,20 @@ input.mc-input {
 }
 
 .footers {
-  margin: 3%;
+  margin: 1%;
 }
 
 .mc-btn-otp {
   text-decoration: underline;
   cursor: pointer;
-  padding-top: 11px;
+  padding-top: 2px;
 }
 
 .mc-btn {
   height: 60px;
   border: 3px solid #dddada;
   border-radius: 5px;
-  background-color: #b2d235;
+  background-color: #B2D234;
   cursor: pointer;
   font-family: 'Eng';
   width: 100%;
@@ -95,9 +95,18 @@ input.mc-input {
 
 .bg-ais {
   color: black;
-  background-color: #cced61;
+  background-color: #B2D234;
 }
 
 .back-icon {
   height: 30px;
+}
+
+.bg-btn-ais {
+  background-color: #B2D234;
+  color: #4E4E4E;
+}
+
+.text-brown {
+  color: #4E4E4E;
 }

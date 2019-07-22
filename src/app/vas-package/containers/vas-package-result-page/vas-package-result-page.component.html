@@ -14,7 +14,7 @@
           <div *ngIf="!success" class="card-body">
             <img src="assets/images/icon/icon-red-error-circle.png" class="d-block m-auto icon" style="width: 50px">
           </div>
-          <div class="text-center text-black result mt-3">{{ message }}</div>
+          <div class="text-center text-black result mt-3 mb-4">{{ message }}</div>
           <div class="card-footer bg-transparent" *ngIf="success">
             <div class="row">
               <div class="col-3 col-sm-3">
@@ -46,12 +46,11 @@
   </div>
   <mc-footer>
     <div *ngIf="message">
-      <div *ngIf="success">
-        <button class="btn btn-success" (click)="onTopUp()">เติมเงินเพิ่ม</button>
-        <button class="btn btn-success" (click)="onSelectPackage()">เลือกแพ็กเกจเพิ่ม</button>
+      <div *ngIf="success" class="row text-center mx-auto">
+          <button class="btn bg-btn-ais col w-100" (click)="onTopUp()">เติมเงินเพิ่ม</button>
+          <button class="btn bg-btn-ais col w-100" (click)="onSelectPackage()">เลือกแพ็กเกจเพิ่ม</button>
       </div>
-      <br>
-      <button class="btn btn-success" (click)="onMainMenu()">กลับสู่เมนูหลัก</button>
+      <button class="btn bg-btn-ais mt-2 w-50" (click)="onMainMenu()">กลับสู่เมนูหลัก</button>
     </div>
   </mc-footer>
 </div>

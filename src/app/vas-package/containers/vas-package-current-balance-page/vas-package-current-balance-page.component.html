@@ -46,7 +46,9 @@
     </div>
   </div>
   <mc-footer>
-    <button class="btn btn-secondary" (click)="onBack()">ยกเลิก</button>
-    <button class="btn btn-success" (click)="onNext()" [disabled]=!balanceBuyPackage>ยืนยันการขายแพ็ก</button>
+    <div class="row">
+    <button class="btn btn-secondary col w-100" (click)="onBack()">ยกเลิก</button>
+    <button class="btn bg-btn-ais col w-100" (click)="onNext()" [disabled]=!balanceBuyPackage>ยืนยันการขายแพ็ก</button>
+  </div>
   </mc-footer>
 </div>

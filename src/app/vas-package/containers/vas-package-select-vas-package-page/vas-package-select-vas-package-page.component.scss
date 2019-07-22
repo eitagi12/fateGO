@@ -31,7 +31,7 @@ navbar-brand {
 
 .bg-ais {
   color: black;
-  background-color: #cced61;
+  background-color: #B2D234;
 }
 
 .back-icon {
@@ -42,6 +42,16 @@ navbar-brand {
   margin: 0 auto
 }
 
-#mobileNo.form-control:disabled, #mobileNo.form-control[readonly] {
+#mobileNo.form-control:disabled,
+#mobileNo.form-control[readonly] {
   background-color: white;
+}
+
+.bg-btn-ais {
+  background-color: #B2D234;
+  color: #4E4E4E;
+}
+
+.text-brown {
+  color: #4E4E4E;
 }

@@ -18,7 +18,7 @@
                 <span>{{package.customAttributes.package_period}}</span>
               </div>
               <div class="small">
-                <button class="btn btn-success" (click)="onSelectedPackage(package)">ขายเลย</button>
+                <button class="btn btn-success text-ais" (click)="onSelectedPackage(package)">ขายเลย</button>
               </div>
               <span class="pull-right">
                 <img class="icon-s" src="assets/images/icon/EasyP1_23072561-17.png"
@@ -46,8 +46,8 @@
       </div>
     </div>
     <div>
-      <button class="btn btn-success-info w-50" (click)="modalRef.hide()" translate>กลับ</button>
-      <button class="btn btn-success-info w-50" (click)="onSell()" translate>ขายเลย</button>
+      <button class="btn bg-btn-ais w-50" (click)="modalRef.hide()" translate>ปิด</button>
+      <button class="btn bg-btn-ais w-50" (click)="onSell()" translate>ขายเลย</button>
     </div>
   </div>
 </ng-template>
