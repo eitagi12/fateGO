@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { MyChannelSharedLibsModule} from 'mychannel-shared-libs';
+import { MyChannelSharedLibsModule, MobileNoPipe} from 'mychannel-shared-libs';
 import { TranslateModule } from '@ngx-translate/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 
@@ -18,6 +18,7 @@ import { RomTransactionResultPageComponent } from './containers/rom-transaction-
     MyChannelSharedLibsModule,
     TranslateModule
   ],
+  providers: [MobileNoPipe],
   declarations: [
     RomTransactionListMobilePageComponent,
     RomTransactionResultPageComponent,

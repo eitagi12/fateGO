@@ -24,6 +24,7 @@ export class RomTransactionShowInformationPageComponent implements OnInit, OnDes
     private transactionService: TransactionService,
     private alertService: AlertService,
     private fb: FormBuilder,
+    private mobileNoPipe: MobileNoPipe
   ) {
     this.transaction = this.transactionService.load();
     this.romTransaction = this.transaction.data.romTransaction;
@@ -66,7 +67,7 @@ export class RomTransactionShowInformationPageComponent implements OnInit, OnDes
         <h5>ยกเลิกเติมเงิน</h5>
         <div class="text-left">
         <small>เบอร์มือถือ</small>
-        <h4 class="text-green">${ this.romTransaction.romTransaction.cusMobileNo}</h4>
+        <h4 class="text-green">${ this.mobileNoPipe.transform(this.romTransaction.romTransaction.cusMobileNo) }</h4>
         <hr>
         <small>ประเภทรายการ</small>
         <h4 class="text-green">${
@@ -92,6 +93,6 @@ export class RomTransactionShowInformationPageComponent implements OnInit, OnDes
   }
 
   ngOnDestroy(): void {
-    this.transactionService.save(this.transaction);
+    this.transactionService.update(this.transaction);
   }
 }

@@ -51,7 +51,7 @@
               </div>
             </div>
             <form [formGroup]="pinForm">
-              <div class="input-group mb-3 mt-4">
+              <div class="input-group mb-3">
                 <div class="container">
                   <div class="form-group">
                     <label for="pin">PIN</label>
@@ -77,13 +77,16 @@
                   </div>
                 </div>
               </div>
-              <div class="text-center">
+              <!-- <div class="text-center">
                 <button class="btn btn-success" (click)="validatePIN()" [disabled]="pinForm?.invalid">ตรวจสอบ</button>
-              </div>
+              </div> -->
             </form>
           </div>
         </div>
       </div>
     </div>
   </div>
+  <mc-footer>
+    <button class="btn btn-success" (click)="validatePIN()" [disabled]="pinForm?.invalid">ตรวจสอบ</button>
+  </mc-footer>
 </div>

@@ -13,5 +13,13 @@
 }
 
 :host /deep/  .list-group-item.active{
-    background-color: #74a822;
+    background-color: #32ceb0;
+
+    .fa-mobile{
+        color:#fff !important;
+    }
+
+    .list-detail{
+        color:#fff !important;
+    }
 }

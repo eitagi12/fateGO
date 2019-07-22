@@ -35,6 +35,7 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
   ngOnInit(): void {
     this.createForm();
     this.currenDate = this.getCurrentDate();
+    this.queryRomList();
   }
 
   createForm(): void {
@@ -43,10 +44,11 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
   });
   }
 
-  queryRomList(): void {
+  queryRomList(mobile?: string): void {
     this.pageLoadingService.openLoading();
     this.http.post('/api/customerportal/query-rom-transaction', {
-      username: this.username
+      username: this.username,
+      cusMobileNo: mobile
     }).toPromise()
     .then((res: any) => {
       const data = res.data || [];
@@ -90,6 +92,18 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
 
   onSelect(rom: any): void {
     this.transaction.data.romTransaction.romTransaction = rom;
+  }
+
+  onSearch(): void {
+    const mobile = this.mobileForm.controls.mobileNo.value;
+    this.transaction.data.romTransaction = null;
+    this.queryRomList(mobile);
+    this.mobileForm.patchValue({
+      mobileNo: ''
+    });
+  }
+
+  onNext(): void {
     this.router.navigate([ROUTE_ROM_TRANSACTION_SHOW_INFORMATION_PAGE]);
   }
 
