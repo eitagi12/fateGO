@@ -103,14 +103,20 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
 
   onNext(): void {
     this.pageLoadingService.openLoading();
+    const trade: any = this.priceOption.trade || {};
     this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo, persoSim: false };
 
-    this.callService()
-      .then(promotionsShelves => this.checkRouteNavigate(promotionsShelves))
+    if (+trade.durationContract > 0) {
+      this.callService()
+      .then(promotionsShelves => this.checkRouteNavigate(promotionsShelves || []))
       .then(() => this.pageLoadingService.closeLoading());
+    } else {
+      this.checkRouteNavigate();
+      this.pageLoadingService.closeLoading();
+    }
   }
 
-  checkRouteNavigate(promotionsShelves: any): void {
+  checkRouteNavigate(promotionsShelves?: any): void {
     if (this.havePackages(promotionsShelves) || this.notMathCritiriaMainPro()) {
       if (this.selectMobileNo.privilegeCode) {
         this.transaction.data.customer.privilegeCode = this.selectMobileNo.privilegeCode;
@@ -149,11 +155,7 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
     const billingSystem = (this.transaction.data.simCard.billingSystem === 'RTBS')
       ? BillingSystemType.IRB : this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
 
-    if (+trade.durationContract === 0) {
-      return this.callGetPromotionShelveService(trade, billingSystem, privilege, {});
-    } else {
-      return this.callQueryContractFirstPackAndGetPromotionShelveServices(trade, billingSystem, privilege);
-    }
+    return this.callQueryContractFirstPackAndGetPromotionShelveServices(trade, billingSystem, privilege);
   }
 
   callQueryContractFirstPackAndGetPromotionShelveServices(trade: any, billingSystem: string, privilege: any): Promise<any> {
@@ -166,9 +168,14 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
       .then((resp: any) => {
         const contract = resp.data || {};
         if (contract) {
+          const contractFirstPack =  Math.max(contract.firstPackage || 0, contract.minPrice || 0, contract.initialPackage || 0);
           this.transaction.data.contractFirstPack = contract;
+
+          if (contractFirstPack > 0) {
+            return this.callGetPromotionShelveService(trade, billingSystem, privilege, contract);
+          }
         }
-        return this.callGetPromotionShelveService(trade, billingSystem, privilege, contract);
+        return [];
       });
   }
 
@@ -178,13 +185,7 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
       orderType: `Change Service`,
       billingSystem: billingSystem
     }, +privilege.minimumPackagePrice, +privilege.maximumPackagePrice)
-      .then((promotionShelves: any) => {
-        if (+trade.durationContract === 0) {
-          return promotionShelves;
-        } else {
-          return this.filterPromotions(promotionShelves, contract);
-        }
-      });
+    .then((promotionShelves: any) => this.filterPromotions(promotionShelves, contract));
   }
 
   filterPromotions(promotionShelves: any = [], contract: any = {}): any[] {
