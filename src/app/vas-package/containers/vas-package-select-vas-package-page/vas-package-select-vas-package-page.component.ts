@@ -1,7 +1,6 @@
 import { Component, OnInit, OnChanges, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_VAS_PACKAGE_LOGIN_WITH_PIN_PAGE, ROUTE_VAS_PACKAGE_MENU_VAS_ROM_PAGE, ROUTE_VAS_PACKAGE_OTP_PAGE } from '../../constants/route-path.constant';
-import { PackageProductsService } from '../../services/package-products.service';
 import { HomeService, BannerSlider, SalesService, User, AlertService, PageLoadingService } from 'mychannel-shared-libs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
@@ -38,7 +37,6 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
   constructor(
     private router: Router,
     private homeService: HomeService,
-    private packageProductsService: PackageProductsService,
     private formBuilder: FormBuilder,
     private http: HttpClient,
     private transactionService: TransactionService,

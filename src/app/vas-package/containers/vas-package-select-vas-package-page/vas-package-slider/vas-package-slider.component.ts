@@ -1,7 +1,17 @@
-import { Component, OnInit, ViewChild, ElementRef, OnChanges, Input, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnChanges, Input, EventEmitter, Output, Pipe, PipeTransform } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 declare var $: any;
 
+@Pipe({
+  name: 'networkTypeFilter',
+  pure: false
+})
+export class NetworkTypeFilter implements PipeTransform {
+  transform(items: any[], filter: Object): any {
+    if (!items || !filter) { return items; }
+    return items.filter(item => item.customAttributes.allow_ntype.indexOf(filter) !== -1);
+  }
+}
 @Component({
   selector: 'app-vas-package-slider',
   templateUrl: './vas-package-slider.component.html',
@@ -20,6 +30,7 @@ export class VasPackageSliderComponent implements OnInit, OnChanges {
   selectedVasPackage: string;
 
   @Input() packages: any = [];
+  @Input() networkType: any = '';
   @Output() selectedBestSellerPackage: EventEmitter<any> = new EventEmitter<any>();
   @Output() sellBestSellerPackage: EventEmitter<any> = new EventEmitter<any>();
 
