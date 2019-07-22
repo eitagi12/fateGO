@@ -1,4 +1,4 @@
-import { Component, OnInit, OnChanges, OnDestroy, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_VAS_PACKAGE_LOGIN_WITH_PIN_PAGE, ROUTE_VAS_PACKAGE_MENU_VAS_ROM_PAGE, ROUTE_VAS_PACKAGE_OTP_PAGE } from '../../constants/route-path.constant';
 import { HomeService, BannerSlider, User, AlertService, PageLoadingService } from 'mychannel-shared-libs';
@@ -13,7 +13,7 @@ import * as moment from 'moment';
   templateUrl: './vas-package-select-vas-package-page.component.html',
   styleUrls: ['./vas-package-select-vas-package-page.component.scss']
 })
-export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestroy, OnChanges {
+export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestroy {
 
   mobileForm: FormGroup;
   mobileNo: string;
@@ -48,10 +48,6 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
     this.createForm();
   }
 
-  ngOnChanges(): void {
-    this.filterPackageByNType();
-  }
-
   onBack(): void {
     this.router.navigate([ROUTE_VAS_PACKAGE_MENU_VAS_ROM_PAGE]);
   }
@@ -76,7 +72,8 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
         this.alertService.error('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาติดต่อ Call Center 1175');
         return;
       }
-      const matchNType: any = [...selectedPackage.customAttributes.allow_ntype.split(',')].includes(resProfile.data.detail.networkType);
+      const matchNType: any = selectedPackage.customAttributes.allow_ntype.indexOf(resProfile.data.detail.networkType) !== -1;
+      console.log('matchNType', matchNType);
       if (!matchNType) {
         this.pageLoadingService.closeLoading();
         this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจาก Network type ไม่ตรง');
@@ -307,14 +304,6 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
       }
     } catch (error) {
       return listPackage;
-    }
-  }
-
-  filterPackageByNType(): any {
-    if (this.nType && this.packagesBestSellers) {
-      this.packagesBestSellers = this.packagesBestSellers.filter((pack) => {
-        return [...pack.customAttributes.allow_ntype.split(',')].includes(this.nType);
-      });
     }
   }
 
