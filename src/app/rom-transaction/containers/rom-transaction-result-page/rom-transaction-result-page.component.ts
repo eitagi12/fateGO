@@ -37,7 +37,7 @@ export class RomTransactionResultPageComponent implements OnInit {
     this.createRomTransaction = this.http.post('/api/customerportal/update-rom-transaction' , {
       username: this.romTransaction.username,
       transaction: this.romTransaction.romTransaction.transactionId,
-      status: 'Complete',
+      status: 'ROLLBACKED',
       transactionStatus: 'Mandatory'
     }).toPromise()
     .then(() => {
