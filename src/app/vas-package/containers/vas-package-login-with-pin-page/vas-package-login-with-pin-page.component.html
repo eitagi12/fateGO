@@ -1,5 +1,4 @@
 <div class="mc-flex">
-
   <nav class="navbar fixed-top bg-ais text-white shadow-sm fix-position">
     <div class="col-2 navbar-brand">
       <img class="back-icon" src="assets/images/icon/icon-black-back.png" (click)="onBack()">
@@ -8,7 +7,6 @@
     <div class="col-2 navbar-brand">
     </div>
   </nav>
-
   <div class="mc-flex-wrap">
     <div class="mb-3 mt-3">
       <div class="m-3">
@@ -26,10 +24,8 @@
             <form [formGroup]="loginForm">
               <div class="card-body">
                 <div class="form-group">
-                  <input type="tel" id="mobileNoAgent" class="form-control mb-3" placeholder="ระบุเบอร์ ROM Agent"
-                    maxlength="10" formControlName="mobileNoAgent">
-                  <input type="password" id="pinAgent" class="form-control" placeholder="กรุณากรอก PIN 4 หลัก"
-                    maxlength="4" formControlName="pinAgent">
+                  <input type="tel" id="mobileNoAgent" class="form-control mb-3" placeholder="ระบุเบอร์ ROM Agent" maxlength="10" formControlName="mobileNoAgent">
+                  <input type="password" id="pinAgent" class="form-control" placeholder="กรุณากรอก PIN 4 หลัก" maxlength="4" formControlName="pinAgent">
                 </div>
               </div>
             </form>
