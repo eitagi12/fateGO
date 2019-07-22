@@ -22,7 +22,7 @@
           <div class="form-group">
             <div class="text-center mb-1">หมายเลขโทรศัพท์ลูกค้า</div>
             <input class="form-control text-center" type="tel" id="mobileNo" maxlength="10" formControlName="mobileNo"
-              placeholder="ระบุหมายเลขโทรศัพท์ลูกค้า" value="" (click)="onActiveInput()" [readonly]="readonly"/>
+              placeholder="ระบุหมายเลขโทรศัพท์ลูกค้า" value="" (click)="onActiveInput()" [readonly]="readonly" />
           </div>
         </form>
         <input type="hidden" id='packageInput' #packageInput />
@@ -32,7 +32,7 @@
       </div>
       <div [mcLoading]="packageVasService" [hidden]="packLoading"></div>
       <div *ngIf="!packLoading">
-        <app-vas-package-slider [packages]="packagesBestSellers"
+        <app-vas-package-slider [packages]="packagesBestSellers" [networkType]='nType'
           (selectedBestSellerPackage)="onSelectedBestSellerPackage($event)"
           (sellBestSellerPackage)="onSellBestSellerPackage($event)"></app-vas-package-slider>
         <div class="text-center mb-1">

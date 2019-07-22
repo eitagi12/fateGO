@@ -11,7 +11,7 @@ import { VasPackageCurrentBalancePageComponent } from './containers/vas-package-
 import { VasPackageLoginWithPinPageComponent } from './containers/vas-package-login-with-pin-page/vas-package-login-with-pin-page.component';
 import { VasPackageOtpPageComponent } from './containers/vas-package-otp-page/vas-package-otp-page.component';
 import { VasPackageResultPageComponent } from './containers/vas-package-result-page/vas-package-result-page.component';
-import { VasPackageSliderComponent } from './containers/vas-package-select-vas-package-page/vas-package-slider/vas-package-slider.component';
+import { VasPackageSliderComponent, NetworkTypeFilter } from './containers/vas-package-select-vas-package-page/vas-package-slider/vas-package-slider.component';
 import { TabsModule } from 'ngx-bootstrap';
 import { VasPackageTabComponent } from './containers/vas-package-select-vas-package-page/vas-package-tab/vas-package-tab.component';
 
@@ -33,7 +33,8 @@ import { VasPackageTabComponent } from './containers/vas-package-select-vas-pack
     VasPackageOtpPageComponent,
     VasPackageResultPageComponent,
     VasPackageSliderComponent,
-    VasPackageTabComponent
+    VasPackageTabComponent,
+    NetworkTypeFilter
   ]
 })
 export class VasPackageModule { }
