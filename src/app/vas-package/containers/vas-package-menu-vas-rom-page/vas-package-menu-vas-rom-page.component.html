@@ -12,16 +12,13 @@
   <div class="mc-flex-wrap">
     <div class="mb-3 mt-3">
       <div class="container-fluid">
-        <div class="card-body mb-3 button">
-          <div class="text-center" for="vasPackageRom" (click)="onNext('RomAgent')">ตัดกระเป๋าเงินคนขาย</div>
+        <div class="card-body mb-3 button" (click)="onNext('RomAgent')">
+          <div class="text-center" for="vasPackageRom">ตัดกระเป๋าเงินคนขาย</div>
         </div>
-        <div class="card-body mb-3 button">
-          <div class="text-center" for="vasPackageEndUser" (click)="onNext('Customer')">ตัดกระเป๋าเงินลูกค้า</div>
+        <div class="card-body mb-3 button" (click)="onNext('Customer')">
+          <div class="text-center" for="vasPackageEndUser">ตัดกระเป๋าเงินลูกค้า</div>
         </div>
       </div>
     </div>
   </div>
-  <!-- <mc-footer>
-    <button class="btn btn-secondary" (click)="onBack()">กลับ</button>
-  </mc-footer> -->
 </div>

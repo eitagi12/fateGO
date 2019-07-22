@@ -1,7 +1,7 @@
 import { Component, OnInit, OnChanges, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_VAS_PACKAGE_LOGIN_WITH_PIN_PAGE, ROUTE_VAS_PACKAGE_MENU_VAS_ROM_PAGE, ROUTE_VAS_PACKAGE_OTP_PAGE } from '../../constants/route-path.constant';
-import { HomeService, BannerSlider, SalesService, User, AlertService, PageLoadingService } from 'mychannel-shared-libs';
+import { HomeService, BannerSlider, User, AlertService, PageLoadingService } from 'mychannel-shared-libs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -19,17 +19,13 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
   mobileNo: string;
   bannerSliders: BannerSlider[];
   packageVasService: Promise<any>;
-  salesService: SalesService;
   user: User;
   shelves: any;
-  packagesBestSellerItem: Array<any> = [];
   packagesBestSellers: Array<any> = [];
   transaction: Transaction;
   packageCat: Array<any> = [];
   tabs: Array<any> = [];
   selectedTab: any;
-  tabSorted: Array<any> = [];
-  keySort: Array<string> = ['', '', '', ''];
   nType: string;
   mobileProfile: any;
   packLoading: any = false;
@@ -167,7 +163,6 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
       this.mobileProfile = null;
       this.getNTypeMobileNo(this.mobileNo).then((profile) => {
         this.nType = profile.data.detail.networkType;
-        this.filterPackageByNType();
         setTimeout(() => document.body.focus(), 1);
         return profile;
       })
@@ -197,7 +192,6 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
         this.mobileProfile = null;
         this.getNTypeMobileNo(this.mobileNo).then((profile) => {
           this.nType = profile.data.detail.networkType;
-          this.filterPackageByNType();
           this.pageLoadingService.closeLoading();
           return profile;
         }).then((profile) => {
@@ -341,7 +335,6 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
       return this.http.get(`/api/customerportal/get-profile-type`,
         { params: { mobileNo: mobileNo } }).toPromise().then((resProfile: any) => {
           this.mobileProfile = resProfile;
-          console.log(resProfile);
           return resProfile;
         });
     } else {
