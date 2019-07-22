@@ -107,7 +107,7 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
     this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo, persoSim: false };
 
     if (+trade.durationContract > 0) {
-      this.callService()
+      this.callService(trade)
       .then(promotionsShelves => this.checkRouteNavigate(promotionsShelves || []))
       .then(() => this.pageLoadingService.closeLoading());
     } else {
@@ -117,7 +117,9 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
   }
 
   checkRouteNavigate(promotionsShelves?: any): void {
-    if (this.havePackages(promotionsShelves) || this.notMathCritiriaMainPro()) {
+    const contract = this.transaction.data.contractFirstPack || {};
+    const contractFirstPack =  Math.max(contract.firstPackage || 0, contract.minPrice || 0, contract.initialPackage || 0);
+    if (this.havePackages(promotionsShelves) || this.notMathCritiriaMainPro() || contractFirstPack === 0) {
       if (this.selectMobileNo.privilegeCode) {
         this.transaction.data.customer.privilegeCode = this.selectMobileNo.privilegeCode;
         this.checkKnoxGuard();
@@ -149,8 +151,7 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
 
   }
 
-  callService(): Promise<any> {
-    const trade: any = this.priceOption.trade || {};
+  callService(trade: any = {}): Promise<any> {
     const privilege: any = this.priceOption.privilege;
     const billingSystem = (this.transaction.data.simCard.billingSystem === 'RTBS')
       ? BillingSystemType.IRB : this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
