@@ -10,9 +10,8 @@
   <div class="mc-flex-wrap">
     <div class="mb-3 mt-3">
       <div class="container-fluid">
-        <div class="card mb-3">
-          <div [mcLoading]="createPack" [hidden]="success"></div>
-          <div *ngIf="!success && message" class="card-body">
+        <div class="card mb-3" *ngIf="message">
+          <div *ngIf="!success" class="card-body">
             <img src="assets/images/icon/icon-red-error-circle.png" class="d-block m-auto icon" style="width: 50px">
           </div>
           <div class="text-center text-black result mt-3">{{ message }}</div>
