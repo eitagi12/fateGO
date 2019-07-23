@@ -7,6 +7,8 @@ import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { TransactionType, Transaction } from 'src/app/shared/models/transaction.model';
 import * as moment from 'moment';
+import { Subscription } from 'rxjs';
+import { AisNativeOrderService } from 'src/app/shared/services/ais-native-order.service';
 
 @Component({
   selector: 'app-vas-package-select-vas-package-page',
@@ -30,6 +32,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
   mobileProfile: any;
   packLoading: any = false;
   readonly: boolean = false;
+  usernameSub: Subscription;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -37,7 +40,8 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
     private http: HttpClient,
     private transactionService: TransactionService,
     private alertService: AlertService,
-    private pageLoadingService: PageLoadingService
+    private pageLoadingService: PageLoadingService,
+    private aisNativeOrderService: AisNativeOrderService,
   ) {
     this.transaction = this.transactionService.load();
     this.mobileNo = this.transaction.data.simCard ? this.transaction.data.simCard.mobileNo : '';
@@ -99,9 +103,11 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
               this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจาก service years ไม่ถึง');
               return;
             }
+
             this.pageLoadingService.closeLoading();
             this.savePackage(this.mobileNo, selectedPackage);
-            this.router.navigate([ROUTE_VAS_PACKAGE_LOGIN_WITH_PIN_PAGE]);
+            this.getRomByUser();
+
           });
       } else {
         const isPrepaid: boolean = resProfile.data.chargeType === 'Pre-paid';
@@ -266,6 +272,9 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
 
   ngOnDestroy(): void {
     this.transactionService.save(this.transaction);
+      if (this.usernameSub) {
+        this.usernameSub.unsubscribe();
+      }
   }
 
   getTabsFormPriceOptions(packageCat: any[]): any[] {
@@ -343,5 +352,23 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
 
   onSellBestSellerPackage(value: any): void {
     this.onSelectPackage(value);
+  }
+
+  getRomByUser(): any {
+    this.aisNativeOrderService.getNativeUsername();
+    this.usernameSub = this.aisNativeOrderService.getUsername().subscribe((response: any) => {
+      this.http.get(`/api/easyapp/get-rom-by-user?username=${response.username}`).toPromise()
+        .then((res: any) => {
+          this.transaction.data.romAgent = {
+            ...this.transaction.data.romAgent,
+            usernameRomAgent: response.username,
+            locationCode: response.locationCode,
+            mobileNoAgent: res.data.mobileNo ? res.data.mobileNo : ''
+          };
+          this.router.navigate([ROUTE_VAS_PACKAGE_LOGIN_WITH_PIN_PAGE]);
+        }).catch((error) => {
+          this.alertService.error(error);
+        });
+    });
   }
 }

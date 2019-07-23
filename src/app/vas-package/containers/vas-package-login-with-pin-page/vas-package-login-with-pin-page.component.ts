@@ -7,8 +7,6 @@ import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import * as moment from 'moment';
 import { Transaction } from 'src/app/shared/models/transaction.model';
-import { AisNativeOrderService } from 'src/app/shared/services/ais-native-order.service';
-import { Subscription } from 'rxjs';
 declare let window: any;
 @Component({
   selector: 'app-vas-package-login-with-pin-page',
@@ -19,11 +17,8 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
 
   loginForm: FormGroup;
   transaction: Transaction;
-  mobileNoAgent: string;
-  isRom: boolean;
   window: any = window;
   usernameRom: string;
-  usernameSub: Subscription;
 
   constructor(
     private router: Router,
@@ -32,7 +27,6 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private transactionService: TransactionService,
     private alertService: AlertService,
-    private aisNativeOrderService: AisNativeOrderService,
     private pageLoadingService: PageLoadingService
   ) {
     this.transaction = this.transactionService.load();
@@ -41,7 +35,6 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.createForm();
     this.getDeviceInfo();
-    this.getRomByUser();
   }
 
   onBack(): void {
@@ -63,36 +56,12 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  getRomByUser(): any {
-    this.aisNativeOrderService.getNativeUsername();
-    this.usernameSub = this.aisNativeOrderService.getUsername().subscribe((response: any) => {
-      this.transaction.data.romAgent = {
-        ...this.transaction.data.romAgent,
-        usernameRomAgent: response.username,
-        locationCode: response.locationCode,
-      };
-      this.http.get(`/api/easyapp/get-rom-by-user?username=${response.username}`).toPromise()
-        .then((res: any) => {
-          if (res && res.data.mobileNo !== '') {
-            this.mobileNoAgent = res.data.mobileNo;
-            this.loginForm.controls.mobileNoAgent.setValue(this.mobileNoAgent);
-            this.isRom = true;
-          } else {
-            this.mobileNoAgent = '';
-            this.isRom = false;
-          }
-        }).catch((error) => {
-          alert('error' + error);
-        });
-    });
-  }
-
   createForm(): void {
     this.loginForm = this.fb.group({
       'mobileNoAgent': ['', Validators.compose([Validators.required, Validators.pattern(/^0[6-9]{1}[0-9]{8}/)])],
       'pinAgent': ['', Validators.compose([Validators.required, Validators.minLength(4), Validators.maxLength(4)])]
     });
-    // this.loginForm.controls.mobileNoAgent.setValue(this.mobileNoAgent);
+    this.loginForm.controls['mobileNoAgent'].setValue(this.transaction.data.romAgent.mobileNoAgent);
   }
 
   genTransactionId(): any {
@@ -137,8 +106,8 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
       pin: this.loginForm.value.pinAgent,
 
       // mock data for PC
-      // deviceos: 'Android',
-      // deviceversion: '5.1.1',
+      // deviceos: 'IOS',
+      // deviceversion: '12.2',
       // tslint:disable-next-line:max-line-length
       // deviceid: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJST00gTW9iaWxlIGFwaSIsImF1ZCI6Imh 0dHBzOi8vbXlyb20uYWlzLmNvLnRoL0FQSS9W MS9zaWdpbiIsInN1YiI6IjA0Ni1iNTc2Mjc4ZC1j MTY4LTQ5YjMtOWYxZi1jODVhYTc4YjgwYzAiL CJtc2lzZG4iOiIwNjIyNDM0MjA4IiwiYWdlbnRpZ CI6IjYyMzgxNDciLCJpYXQiOjE1Mzc0MzE3NjAsI mV4cCI6MTUzNzQzMjY2MH0.kY85wPWDSxy1ll rpejMRJrtKC_PE6F_7fuTMg5y-ZS0 ',
     };
@@ -155,8 +124,9 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
             accessToken: res.data.access_token
           };
           // check Rom Agent ที่มีข้อมูลแล้ว
+          const mobileNoAgent = this.transaction.data.romAgent.mobileNoAgent;
           const mobileNoAgentCurrent = this.loginForm.controls.mobileNoAgent.value;
-          if (this.isRom === true && mobileNoAgentCurrent === this.mobileNoAgent) {
+          if (mobileNoAgentCurrent === mobileNoAgent) {
             this.router.navigate([ROUTE_VAS_PACKAGE_CURRENT_BALANCE_PAGE]);
           } else {
             this.router.navigate([ROUTE_VAS_PACKAGE_OTP_PAGE]);
@@ -172,9 +142,6 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.transactionService.save(this.transaction);
-    if (this.usernameSub) {
-      this.usernameSub.unsubscribe();
-    }
   }
 
 }
