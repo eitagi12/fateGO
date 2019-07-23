@@ -26,7 +26,7 @@ export class DeviceOnlyKioskSelectMobileCarePageComponent implements OnInit, OnD
   public isBuyMobileCare: boolean = false;
   public isReasonNotBuyMobileCare: string;
   isVerifyButtonNext: boolean;
-  private mobileCarePackageValue: any;
+  public mobileCarePackageValue: any;
 
   constructor(
     private router: Router,
