@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HomeService, TokenService, PageLoadingService, REGEX_MOBILE } from 'mychannel-shared-libs';
+import { HomeService, TokenService, PageLoadingService, REGEX_MOBILE, AlertService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { ROUTE_ROM_TRANSACTION_SHOW_INFORMATION_PAGE } from 'src/app/rom-transaction/constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
@@ -27,6 +27,7 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
     private tokenService: TokenService,
     private pageLoadingService: PageLoadingService,
     private http: HttpClient,
+    private alertService: AlertService,
     private transactionService: TransactionService,
     private fb: FormBuilder,
   ) {
@@ -63,6 +64,10 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
     })
     .then(() => {
       this.createTransaction(this.romData);
+    })
+    .catch((err) => {
+      this.pageLoadingService.closeLoading();
+      this.alertService.error(err);
     });
   }
 
