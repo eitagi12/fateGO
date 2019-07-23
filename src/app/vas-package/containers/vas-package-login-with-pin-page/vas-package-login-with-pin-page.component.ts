@@ -19,7 +19,7 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
 
   loginForm: FormGroup;
   transaction: Transaction;
-  mobileNoAgent: string;
+  mobileNoAgent: string = '';
   isRom: boolean;
   window: any = window;
   usernameRom: string;
@@ -73,7 +73,6 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
       };
       this.http.get(`/api/easyapp/get-rom-by-user?username=${response.username}`).toPromise()
         .then((res: any) => {
-          alert('get rom >> ' + JSON.stringify(res));
           if (res && res.data.mobileNo !== '') {
             this.mobileNoAgent = res.data.mobileNo;
             this.loginForm.controls.mobileNoAgent.setValue(this.mobileNoAgent);
