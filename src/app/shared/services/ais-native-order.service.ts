@@ -156,10 +156,8 @@ export class AisNativeOrderService {
 
     getNativeUsername(): void {
         if (window.aisNative) {
-          alert('call native and');
           window.aisNative.getUserName();
         } else {
-          alert('call native ios');
           window.webkit.messageHandlers.getUserName.postMessage('');
         }
     }
@@ -169,14 +167,7 @@ export class AisNativeOrderService {
     }
 
     getUsername(): Observable<string> {
-        alert('this.username ' + this.username);
-        alert('this.username string ' + JSON.stringify(this.username));
         return this.username;
-    }
-
-    getLocationCode(): Observable<string> {
-        alert('this.locationCode ' + this.locationCode);
-        return this.locationCode;
     }
 
     printThermalTradeIn(data: string): void {
@@ -231,19 +222,6 @@ export class AisNativeOrderService {
     }
 
   private onUserNameCallback(response: any): void {
-    //   alert(JSON.stringify(response));
-      // ios
-    //   if (response && response.hasOwnProperty('username')) {
-    //     this._ngZone.run(() => {
-    //       this.username.next(response.username);
-    //     });
-    //   }
-    //   if (response && response.hasOwnProperty('locationCode')) {
-    //     this._ngZone.run(() => {
-    //       this.locationCode.next(response.locationCode);
-    //     });
-    //   }
-      // android
       if (response) {
         this._ngZone.run(() => {
             this.username.next(response);
