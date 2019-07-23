@@ -19,7 +19,7 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
 
   loginForm: FormGroup;
   transaction: Transaction;
-  mobileNoAgent: string = '';
+  mobileNoAgent: string;
   isRom: boolean;
   window: any = window;
   usernameRom: string;
@@ -81,6 +81,8 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
             this.mobileNoAgent = '';
             this.isRom = false;
           }
+        }).catch((error) => {
+          alert('error' + error);
         });
     });
   }
@@ -90,7 +92,7 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
       'mobileNoAgent': ['', Validators.compose([Validators.required, Validators.pattern(/^0[6-9]{1}[0-9]{8}/)])],
       'pinAgent': ['', Validators.compose([Validators.required, Validators.minLength(4), Validators.maxLength(4)])]
     });
-    this.loginForm.controls.mobileNoAgent.setValue(this.mobileNoAgent);
+    // this.loginForm.controls.mobileNoAgent.setValue(this.mobileNoAgent);
   }
 
   genTransactionId(): any {
