@@ -18,7 +18,7 @@ export class AisNativeOrderService {
     private camera: Subject<string> = new Subject<string>();
     private signature: Subject<string> = new Subject<string>();
     private mobileNo: Subject<string> = new Subject<string>();
-    private username: Subject<string> = new Subject<string>();
+    private username: Subject<any> = new Subject<any>();
     private locationCode: Subject<string> = new Subject<string>();
 
     readonly ERROR_BROWSER_NOT_SUPPORTED: string = 'เว็บเบราว์เซอร์นี้ไม่รองรับการเซ็นลายเซ็น';
@@ -156,10 +156,10 @@ export class AisNativeOrderService {
 
     getNativeUsername(): void {
         if (window.aisNative) {
-            alert('call native and');
+          alert('call native and');
           window.aisNative.getUserName();
         } else {
-            alert('call native ios');
+          alert('call native ios');
           window.webkit.messageHandlers.getUserName.postMessage('');
         }
     }
@@ -170,6 +170,7 @@ export class AisNativeOrderService {
 
     getUsername(): Observable<string> {
         alert('this.username ' + this.username);
+        alert('this.username string ' + JSON.stringify(this.username));
         return this.username;
     }
 
@@ -230,23 +231,23 @@ export class AisNativeOrderService {
     }
 
   private onUserNameCallback(response: any): void {
-      alert(JSON.stringify(response));
+    //   alert(JSON.stringify(response));
       // ios
-      if (response && response.hasOwnProperty('username')) {
-        this._ngZone.run(() => {
-          this.username.next(response.username);
-        });
-      }
-      if (response && response.hasOwnProperty('locationCode')) {
-        this._ngZone.run(() => {
-          this.locationCode.next(response.locationCode);
-        });
-      }
-      // android
-    //   if (response && response.length > 0) {
+    //   if (response && response.hasOwnProperty('username')) {
     //     this._ngZone.run(() => {
-    //         this.username.next(response);
+    //       this.username.next(response.username);
     //     });
     //   }
+    //   if (response && response.hasOwnProperty('locationCode')) {
+    //     this._ngZone.run(() => {
+    //       this.locationCode.next(response.locationCode);
+    //     });
+    //   }
+      // android
+      if (response) {
+        this._ngZone.run(() => {
+            this.username.next(response);
+        });
+      }
     }
 }
