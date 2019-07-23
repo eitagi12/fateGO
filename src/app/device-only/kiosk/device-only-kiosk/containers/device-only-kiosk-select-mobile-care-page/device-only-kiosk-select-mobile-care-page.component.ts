@@ -26,6 +26,7 @@ export class DeviceOnlyKioskSelectMobileCarePageComponent implements OnInit, OnD
   public isBuyMobileCare: boolean = false;
   public isReasonNotBuyMobileCare: string;
   isVerifyButtonNext: boolean;
+  private mobileCarePackageValue: any;
 
   constructor(
     private router: Router,
@@ -40,6 +41,17 @@ export class DeviceOnlyKioskSelectMobileCarePageComponent implements OnInit, OnD
 
   ngOnInit(): void {
     this.homeButtonService.initEventButtonHome();
+    if (this.transaction.data.mobileCarePackage) {
+      this.checkValidateSelectedMobileCare();
+    }
+  }
+
+  // เซ็ตปุ่ม NEXT ให้เป็น true เมื่อมีการเลือกซื้อหรือไม่ซื้อโมบายแคร์
+  private checkValidateSelectedMobileCare(): void {
+    this.mobileCarePackageValue = this.transaction.data.mobileCarePackage;
+    if (typeof(this.mobileCarePackageValue) === 'object') {
+      this.isVerifyflag = true;
+    }
   }
 
   public onBack(): void {
@@ -72,9 +84,10 @@ export class DeviceOnlyKioskSelectMobileCarePageComponent implements OnInit, OnD
     this.router.navigate([ROUTE_DEVICE_ONLY_KIOSK_SUMMARY_PAGE]);
   }
 
-  onPromotion(mobileCare: any): void {
-    this.transaction.data.mobileCarePackage = mobileCare;
+  async onPromotion(mobileCare: any): Promise<any> {
+    this.transaction.data.mobileCarePackage = await mobileCare;
   }
+
   onIsVerify(isVerifyflag: any): void {
     this.isVerifyflag = isVerifyflag;
   }
