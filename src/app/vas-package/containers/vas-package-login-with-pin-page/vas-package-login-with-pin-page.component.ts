@@ -53,13 +53,17 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
   }
 
   getDeviceInfo(): void {
-    if (window.aisNative) {
-      return JSON.parse(window.aisNative.getDeviceInfo());
-    } else if (window.iosNative) {
-      return JSON.parse(window.iosNative);
-    } else {
-      window.location.href = 'IOS://param?Action=getiosnative';
-      return window.iosNative;
+    try {
+      if (window.aisNative) {
+        return JSON.parse(window.aisNative.getDeviceInfo());
+      } else if (window.iosNative) {
+        return JSON.parse(window.iosNative);
+      } else {
+        window.location.href = 'IOS://param?Action=getiosnative';
+        return window.iosNative;
+      }
+    } catch (err) {
+      alert('error device ' + err);
     }
   }
 
@@ -85,7 +89,7 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
           });
       });
     } catch (err) {
-      this.alertService.error(err);
+      this.alertService.error('err2 ' + err);
     }
   }
 
