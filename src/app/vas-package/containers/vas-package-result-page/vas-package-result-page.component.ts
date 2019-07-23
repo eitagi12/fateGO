@@ -129,7 +129,7 @@ export class VasPackageResultPageComponent implements OnInit {
       price: transaction.data.onTopPackage.customAttributes.regular_price,
       packId: packId,
       username: transaction.data.romAgent.usernameRomAgent,
-      locationcode: this.tokenService.getUser().locationCode,
+      locationcode: transaction.data.romAgent.locationCode || this.tokenService.getUser().locationCode,
       transactionType: 'VAS',
       status: this.success ? 'COMPLETE' : 'ERROR'
     };

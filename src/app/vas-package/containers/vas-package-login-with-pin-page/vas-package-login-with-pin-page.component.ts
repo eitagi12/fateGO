@@ -24,6 +24,7 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
   window: any = window;
   usernameRom: string;
   usernameSub: Subscription;
+  locationCode: string;
 
   constructor(
     private router: Router,
@@ -65,11 +66,16 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
 
   getRomByUser(): any {
     this.aisNativeOrderService.getNativeUsername();
-    this.usernameSub = this.aisNativeOrderService.getUsername().subscribe((username: string) => {
-      this.usernameRom = username;
+    Promise.all([
+      this.aisNativeOrderService.getUsername().toPromise(),
+      this.aisNativeOrderService.getLocationCode().toPromise()
+    ]).then((responses: any[]) => {
+      this.usernameRom = responses[0] || '';
+      this.locationCode = responses[1];
       this.transaction.data.romAgent = {
         ...this.transaction.data.romAgent,
-        usernameRomAgent: this.usernameRom
+        usernameRomAgent: this.usernameRom,
+        locationCode: this.locationCode,
       };
       this.http.get(`/api/easyapp/get-rom-by-user?username=${this.usernameRom}`).toPromise()
         .then((res: any) => {
@@ -105,11 +111,11 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
     const requestGetProfile = {
       transactionid: this.genTransactionId(),
       mobile_no_agent: this.loginForm.controls.mobileNoAgent.value,
-      // device_id: deviceInfo.udid
+      device_id: deviceInfo.udid
 
       // mock data for PC
       // tslint:disable-next-line:max-line-length
-      device_id: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJST00gTW9iaWxlIGFwaSIsImF1ZCI6Imh 0dHBzOi8vbXlyb20uYWlzLmNvLnRoL0FQSS9W MS9zaWdpbiIsInN1YiI6IjA0Ni1iNTc2Mjc4ZC1j MTY4LTQ5YjMtOWYxZi1jODVhYTc4YjgwYzAiL CJtc2lzZG4iOiIwNjIyNDM0MjA4IiwiYWdlbnRpZ CI6IjYyMzgxNDciLCJpYXQiOjE1Mzc0MzE3NjAsI mV4cCI6MTUzNzQzMjY2MH0.kY85wPWDSxy1ll rpejMRJrtKC_PE6F_7fuTMg5y-ZS0'
+      // device_id: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJST00gTW9iaWxlIGFwaSIsImF1ZCI6Imh 0dHBzOi8vbXlyb20uYWlzLmNvLnRoL0FQSS9W MS9zaWdpbiIsInN1YiI6IjA0Ni1iNTc2Mjc4ZC1j MTY4LTQ5YjMtOWYxZi1jODVhYTc4YjgwYzAiL CJtc2lzZG4iOiIwNjIyNDM0MjA4IiwiYWdlbnRpZ CI6IjYyMzgxNDciLCJpYXQiOjE1Mzc0MzE3NjAsI mV4cCI6MTUzNzQzMjY2MH0.kY85wPWDSxy1ll rpejMRJrtKC_PE6F_7fuTMg5y-ZS0'
     };
     this.pageLoadingService.openLoading();
     this.http.post(`/api/customerportal/rom/get-profile`, requestGetProfile).toPromise()
@@ -128,17 +134,17 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
   signIn(agentId: any, deviceInfo: any): void {
     const requestSignIn = {
       transactionid: this.genTransactionId(),
-      // deviceos: deviceInfo.device_os,
-      // deviceversion: deviceInfo.device_version,
+      deviceos: deviceInfo.device_os,
+      deviceversion: deviceInfo.device_version,
       mobile_no_agent: this.loginForm.controls.mobileNoAgent.value,
-      // deviceid: deviceInfo.udid,
+      deviceid: deviceInfo.udid,
       pin: this.loginForm.value.pinAgent,
 
       // mock data for PC
-      deviceos: 'Android',
-      deviceversion: '5.1.1',
+      // deviceos: 'Android',
+      // deviceversion: '5.1.1',
       // tslint:disable-next-line:max-line-length
-      deviceid: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJST00gTW9iaWxlIGFwaSIsImF1ZCI6Imh 0dHBzOi8vbXlyb20uYWlzLmNvLnRoL0FQSS9W MS9zaWdpbiIsInN1YiI6IjA0Ni1iNTc2Mjc4ZC1j MTY4LTQ5YjMtOWYxZi1jODVhYTc4YjgwYzAiL CJtc2lzZG4iOiIwNjIyNDM0MjA4IiwiYWdlbnRpZ CI6IjYyMzgxNDciLCJpYXQiOjE1Mzc0MzE3NjAsI mV4cCI6MTUzNzQzMjY2MH0.kY85wPWDSxy1ll rpejMRJrtKC_PE6F_7fuTMg5y-ZS0 ',
+      // deviceid: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJST00gTW9iaWxlIGFwaSIsImF1ZCI6Imh 0dHBzOi8vbXlyb20uYWlzLmNvLnRoL0FQSS9W MS9zaWdpbiIsInN1YiI6IjA0Ni1iNTc2Mjc4ZC1j MTY4LTQ5YjMtOWYxZi1jODVhYTc4YjgwYzAiL CJtc2lzZG4iOiIwNjIyNDM0MjA4IiwiYWdlbnRpZ CI6IjYyMzgxNDciLCJpYXQiOjE1Mzc0MzE3NjAsI mV4cCI6MTUzNzQzMjY2MH0.kY85wPWDSxy1ll rpejMRJrtKC_PE6F_7fuTMg5y-ZS0 ',
     };
     this.http.post(`/api/customerportal/rom/sign-in`, requestSignIn).toPromise()
       .then((res: any) => {

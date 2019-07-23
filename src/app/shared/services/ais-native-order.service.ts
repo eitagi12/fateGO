@@ -172,6 +172,10 @@ export class AisNativeOrderService {
         return this.username;
     }
 
+    getLocationCode(): Observable<string> {
+        return this.locationCode;
+    }
+
     printThermalTradeIn(data: string): void {
         window.aisNative.printThermalTradeIn(data);
     }
