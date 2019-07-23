@@ -64,25 +64,29 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
   }
 
   getRomByUser(): any {
-    this.aisNativeOrderService.getNativeUsername();
-    this.usernameSub = this.aisNativeOrderService.getUsername().subscribe((response: any) => {
-      this.transaction.data.romAgent = {
-        ...this.transaction.data.romAgent,
-        usernameRomAgent: response.username,
-        locationCode: response.locationCode,
-      };
-      this.http.get(`/api/easyapp/get-rom-by-user?username=${response.username}`).toPromise()
-        .then((res: any) => {
-          if (res && res.data.mobileNo !== '') {
-            this.mobileNoAgent = res.data.mobileNo;
-            this.loginForm.controls.mobileNoAgent.setValue(this.mobileNoAgent);
-            this.isRom = true;
-          } else {
-            this.mobileNoAgent = '';
-            this.isRom = false;
-          }
-        });
-    });
+    try {
+      this.aisNativeOrderService.getNativeUsername();
+      this.usernameSub = this.aisNativeOrderService.getUsername().subscribe((response: any) => {
+        this.transaction.data.romAgent = {
+          ...this.transaction.data.romAgent,
+          usernameRomAgent: response.username,
+          locationCode: response.locationCode,
+        };
+        this.http.get(`/api/easyapp/get-rom-by-user?username=${response.username}`).toPromise()
+          .then((res: any) => {
+            if (res && res.data.mobileNo !== '') {
+              this.mobileNoAgent = res.data.mobileNo;
+              this.loginForm.controls.mobileNoAgent.setValue(this.mobileNoAgent);
+              this.isRom = true;
+            } else {
+              this.mobileNoAgent = '';
+              this.isRom = false;
+            }
+          });
+      });
+    } catch (err) {
+      this.alertService.error(err);
+    }
   }
 
   createForm(): void {
