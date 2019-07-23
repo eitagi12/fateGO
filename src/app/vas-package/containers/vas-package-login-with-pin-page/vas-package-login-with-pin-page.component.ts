@@ -70,6 +70,7 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
       this.aisNativeOrderService.getUsername().toPromise(),
       this.aisNativeOrderService.getLocationCode().toPromise()
     ]).then((responses: any[]) => {
+      alert('responses after call native ' + JSON.stringify(responses));
       this.usernameRom = responses[0] || '';
       this.locationCode = responses[1];
       this.transaction.data.romAgent = {
