@@ -151,7 +151,10 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
 
   createForm(): void {
     this.mobileForm = this.formBuilder.group({
-      'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(/^0[6-9]{1}[0-9]{8}/)])],
+      'mobileNo': ['', Validators.compose([
+        Validators.pattern(/^0[6-9]{1}[0-9]{8}/),
+        Validators.required,
+      ])]
     });
 
     if (this.mobileNo) {
@@ -207,6 +210,13 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
         });
       }
     });
+  }
+
+  keyPress(event: any): void {
+    const charCode: number = (event.which) ? event.which : event.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+      event.preventDefault();
+    }
   }
 
   onActiveInput(): void {
