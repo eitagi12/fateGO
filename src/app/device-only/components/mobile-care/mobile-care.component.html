@@ -51,9 +51,9 @@
                 <!-- serenade -->
                 <div class="py-3 pl-3 pr-3 mobile-care-bottom" *ngIf="promotion?.itemsSerenade?.length > 0">
                   <h6 class="text-pink">{{ 'สิทธิพิเศษสำหรับลูกค้า Serenade' | translate }}</h6>
-                  <div *ngFor="let item of promotion?.itemsSerenade">
-                    <input class="form-check-input" type="radio" id="mobile-care-package-{{ item?.id }}" [value]="item" formControlName="promotion">
-                    <label class="form-check-label" for="mobile-care-package-{{ item?.id }}">
+                  <div *ngFor="let item of promotion?.itemsSerenade; index as i">
+                    <input class="form-check-input" type="radio" id="mobile-care-package-serenade-{{ item?.id }}[i+99]" [value]="i+99" (click)="onSelectedPromotionSerenade(item,i+99)" formControlName="promotion">
+                    <label class="form-check-label" for="mobile-care-package-serenade-{{ item?.id }}[i+99]">
                       {{ item?.title }}
                     </label>
                     <span class="pull-right text-green">฿ {{ item?.priceExclVat | number:'1.2-2' }}</span>
@@ -61,9 +61,9 @@
                 </div>
                 <!-- normal -->
                 <div class="py-3 pl-3 pr-3 mobile-care-bottom" *ngIf="promotion?.items?.length > 0">
-                  <div *ngFor="let item of promotion?.items">
-                    <input class="form-check-input" type="radio" id="mobile-care-package-{{ item?.id }}" [value]="item" formControlName="promotion">
-                    <label class="form-check-label" for="mobile-care-package-{{ item?.id }}">
+                  <div *ngFor="let item of promotion?.items; index as j">
+                    <input class="form-check-input" type="radio" id="mobile-care-package-{{ item?.id }}[j]" [value]="j" (click)="onSelectedPromotion(item,j)" formControlName="promotion">
+                    <label class="form-check-label" for="mobile-care-package-{{ item?.id }}[j]">
                       {{ item?.title }}
                     </label>
                     <span class="pull-right text-green">฿ {{ item?.priceExclVat | number:'1.2-2' }}</span>
