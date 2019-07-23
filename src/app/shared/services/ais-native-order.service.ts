@@ -19,6 +19,7 @@ export class AisNativeOrderService {
     private signature: Subject<string> = new Subject<string>();
     private mobileNo: Subject<string> = new Subject<string>();
     private username: Subject<string> = new Subject<string>();
+    private locationCode: Subject<string> = new Subject<string>();
 
     readonly ERROR_BROWSER_NOT_SUPPORTED: string = 'เว็บเบราว์เซอร์นี้ไม่รองรับการเซ็นลายเซ็น';
 
@@ -222,11 +223,23 @@ export class AisNativeOrderService {
         }
     }
 
-    private onUserNameCallback(username: any): void {
-        if (username && username.length > 0) {
-            this._ngZone.run(() => {
-                this.username.next(username);
-            });
-        }
+  private onUserNameCallback(response: any): void {
+      // ios
+      if (response && response.hasOwnProperty('username')) {
+        this._ngZone.run(() => {
+          this.username.next(response.username);
+        });
+      }
+      if (response && response.hasOwnProperty('locationCode')) {
+        this._ngZone.run(() => {
+          this.locationCode.next(response.locationCode);
+        });
+      }
+      // android
+      if (response && response.length > 0) {
+        this._ngZone.run(() => {
+            this.username.next(response);
+        });
+      }
     }
 }
