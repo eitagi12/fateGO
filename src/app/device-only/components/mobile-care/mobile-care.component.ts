@@ -62,12 +62,10 @@ export class MobileCareComponent implements OnInit {
   transaction: Transaction;
   transactionID: string;
   isSelect: boolean;
-  setPromotionValue: any;
 
   @Input() mobileCare: MobileCare;
   @Input() normalPrice: number;
   @Input() selected: any;
-  @Input() mobileCarePackageValue: any;
   @Output() existingMobileCare: EventEmitter<any> = new EventEmitter<any>();
   @Output() completed: EventEmitter<any> = new EventEmitter<any>();
   @Output() mobileNoEmit: EventEmitter<any> = new EventEmitter<any>();
@@ -126,22 +124,9 @@ export class MobileCareComponent implements OnInit {
     }
   }
 
-   // เซ็ตค่าเมื่อเลือกซื้อ Package โมบายแคร์
-   public onSelectedPromotion(item: any, index: string): void {
-    this.setPromotionValue = item.value;
-    localStorage.setItem('index', index);
-  }
-
-  // เซ็ตค่าเมื่อเลือกซื้อ Package โมบายแคร์ Serenade
-  public onSelectedPromotionSerenade(item: any, index: string): void {
-    this.setPromotionValue = item.value;
-    localStorage.setItem('index', index);
-  }
-
   public createForm(): void {
     let mobileCare = '';
     let notMobileCare = '';
-    const indexMobilecare: any = +localStorage.getItem('index');
     if (this.selected && typeof this.selected === 'object') {
       mobileCare = this.selected;
     }
@@ -158,10 +143,6 @@ export class MobileCareComponent implements OnInit {
       'notBuyMobile': [notMobileCare],
     });
 
-    if (this.mobileCarePackageValue) {
-      this.checkValidateSeletedMobileCare(indexMobilecare);
-    }
-
     this.mobileCareForm.valueChanges.subscribe((value: any) => {
       if (!value.mobileCare) {
         return this.onOpenNotBuyMobileCare();
@@ -169,28 +150,13 @@ export class MobileCareComponent implements OnInit {
         this.notBuyMobileCareForm.patchValue({
           notBuyMobile: ''
         });
-        this.promotion.emit(this.setPromotionValue);
+        this.promotion.emit(this.mobileCareForm.value.promotion.value);
       }
       if (this.mobileCareForm.valid) {
         this.mainPackage = this.mobileCareForm.value.promotion.value;
         this.completed.emit(this.mobileCareForm.value.promotion.value);
       }
     });
-  }
-
-  // เช็คปุุ่ม Select เมื่อเลือกซื้อหรือไม่ซื้อโมบายแคร์
-  private checkValidateSeletedMobileCare(indexMobilecare: any): void {
-    if ((typeof (this.mobileCarePackageValue) === 'string')) {
-      this.mobileCareForm.patchValue({
-        mobileCare: false,
-      });
-      this.notBuyMobileCareForm.controls['notBuyMobile'].setValue(this.mobileCarePackageValue);
-    } else {
-      this.mobileCareForm.patchValue({
-        mobileCare: true
-      });
-      this.mobileCareForm.controls['promotion'].setValue(indexMobilecare || '');
-    }
   }
 
   public getServiceChange(percentage: number): number {
@@ -385,7 +351,6 @@ export class MobileCareComponent implements OnInit {
 
   public sendOTP(): void {
     this.promotion.emit(undefined);
-    this.mobileCareForm.controls['promotion'].reset();
     let mobile = this.customerInformationService.getSelectedMobileNo();
     if (environment.name !== 'PROD') {
       mobile =  environment.TEST_OTP_MOBILE;
@@ -401,7 +366,6 @@ export class MobileCareComponent implements OnInit {
         this.pageLoadingService.closeLoading();
         this.alertService.error(error);
       });
-    this.promotion.emit(undefined);
   }
 
   public verifyOTP(): void {
