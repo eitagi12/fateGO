@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Transaction, Customer, RomTransactionData } from 'src/app/shared/models/transaction.model';
-import { CustomerInfo, HomeService, AlertService, MobileNoPipe } from 'mychannel-shared-libs';
+import { CustomerInfo, HomeService, AlertService, MobileNoPipe, PageLoadingService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import {
@@ -8,6 +8,7 @@ import {
   ROUTE_ROM_TRANSACTION_LIST_MOBILE_PAGE
  } from 'src/app/rom-transaction/constants/route-path.constant';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-rom-transaction-show-information-page',
   templateUrl: './rom-transaction-show-information-page.component.html',
@@ -24,7 +25,9 @@ export class RomTransactionShowInformationPageComponent implements OnInit, OnDes
     private transactionService: TransactionService,
     private alertService: AlertService,
     private fb: FormBuilder,
-    private mobileNoPipe: MobileNoPipe
+    private mobileNoPipe: MobileNoPipe,
+    private http: HttpClient,
+    private pageLoadingService: PageLoadingService,
   ) {
     this.transaction = this.transactionService.load();
     this.romTransaction = this.transaction.data.romTransaction;
@@ -36,9 +39,22 @@ export class RomTransactionShowInformationPageComponent implements OnInit, OnDes
 
   validatePIN(): void {
     if (this.pinForm.valid) {
-      this.transaction.data.romTransaction.pin = this.pinForm.controls.pin.value;
-      this.transaction.data.romTransaction.refNo = this.pinForm.controls.ref.value;
-      this.onNext();
+      const pinNo = this.pinForm.controls.pin.value;
+      const refNo = this.pinForm.controls.ref.value;
+      this.pageLoadingService.openLoading();
+      this.http.post(('/api/customerportal/rom/aisrom-ussdadapter'), {
+        from: this.romTransaction.romTransaction.romNo,
+        content: this.romTransaction.romTransaction.romNo,
+        romPinCode: pinNo,
+        lastCustomerMobile: this.romTransaction.romTransaction.cusMobileNo,
+        romRefNo: refNo
+      }).toPromise()
+      .then((respone: any) => {
+        this.pageLoadingService.closeLoading();
+        this.transaction.data.romTransaction.pin = pinNo;
+        this.transaction.data.romTransaction.refNo = refNo;
+        this.onNext();
+      });
     }
   }
 
