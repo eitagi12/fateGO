@@ -24,7 +24,6 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
   window: any = window;
   usernameRom: string;
   usernameSub: Subscription;
-  locationCode: string;
 
   constructor(
     private router: Router,
@@ -67,18 +66,12 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
   getRomByUser(): any {
     this.aisNativeOrderService.getNativeUsername();
     this.usernameSub = this.aisNativeOrderService.getUsername().subscribe((response: any) => {
-      const respNative = JSON.parse(response);
-      alert('respNative.username ' + respNative.username);
-      alert('respNative.locationCode ' + respNative.locationCode);
-      // this.usernameRom = respNative.username || '';
-      // this.locationCode = respNative.locationCode || '';
       this.transaction.data.romAgent = {
         ...this.transaction.data.romAgent,
-        usernameRomAgent: respNative.username,
-        locationCode: respNative.locationCode,
+        usernameRomAgent: response.username,
+        locationCode: response.locationCode,
       };
-
-      this.http.get(`/api/easyapp/get-rom-by-user?username=${respNative.username}`).toPromise()
+      this.http.get(`/api/easyapp/get-rom-by-user?username=${response.username}`).toPromise()
         .then((res: any) => {
           if (res && res.data.mobileNo !== '') {
             this.mobileNoAgent = res.data.mobileNo;
