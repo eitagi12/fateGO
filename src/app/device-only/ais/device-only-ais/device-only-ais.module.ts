@@ -12,7 +12,7 @@ import { DeviceOnlyAisCheckoutPaymentQrCodePageComponent } from './containers/de
 import { DeviceOnlyAisQrCodeGeneratePageComponent } from './containers/device-only-ais-qr-code-generate-page/device-only-ais-qr-code-generate-page.component';
 import { DeviceOnlyAisQrCodeKeyInQueuePageComponent } from './containers/device-only-ais-qr-code-key-in-queue-page/device-only-ais-qr-code-key-in-queue-page.component';
 import { DeviceOnlyAisQrCodeQueuePageComponent } from './containers/device-only-ais-qr-code-queue-page/device-only-ais-qr-code-queue-page.component';
-import { DeviceOnlyAisQrCodeSummarayPageComponent } from './containers/device-only-ais-qr-code-summaray-page/device-only-ais-qr-code-summaray-page.component';
+import { DeviceOnlyAisQrCodeSummaryPageComponent } from './containers/device-only-ais-qr-code-summary-page/device-only-ais-qr-code-summary-page.component';
 import { DeviceOnlyAisQueuePageComponent } from './containers/device-only-ais-queue-page/device-only-ais-queue-page.component';
 import { DeviceOnlyAisResultQueuePageComponent } from './containers/device-only-ais-result-queue-page/device-only-ais-result-queue-page.component';
 import { DeviceOnlyAisSelectMobileCarePageComponent } from './containers/device-only-ais-select-mobile-care-page/device-only-ais-select-mobile-care-page.component';
@@ -35,7 +35,7 @@ import { DeviceOnlyAisSummaryPageComponent } from './containers/device-only-ais-
     DeviceOnlyAisQrCodeGeneratePageComponent,
     DeviceOnlyAisQrCodeKeyInQueuePageComponent,
     DeviceOnlyAisQrCodeQueuePageComponent,
-    DeviceOnlyAisQrCodeSummarayPageComponent,
+    DeviceOnlyAisQrCodeSummaryPageComponent,
     DeviceOnlyAisQueuePageComponent,
     DeviceOnlyAisResultQueuePageComponent,
     DeviceOnlyAisSelectMobileCarePageComponent,
