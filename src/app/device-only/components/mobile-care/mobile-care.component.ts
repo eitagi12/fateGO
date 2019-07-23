@@ -161,7 +161,7 @@ export class MobileCareComponent implements OnInit {
   public createForm(): void {
     let mobileCare = '';
     let notMobileCare = '';
-    const indexMobilecare: number = +localStorage.getItem('index');
+    const indexMobilecare: any = +localStorage.getItem('index') || '';
 
     if (this.selected && typeof this.selected === 'object') {
       mobileCare = this.selected;
@@ -179,7 +179,9 @@ export class MobileCareComponent implements OnInit {
       'notBuyMobile': [notMobileCare],
     });
 
-    this.checkValidateSeletedMobileCare(indexMobilecare);
+    if (this.mobileCarePackageValue) {
+      this.checkValidateSeletedMobileCare(indexMobilecare);
+    }
 
     this.mobileCareForm.valueChanges.subscribe((value: any) => {
       if (!value.mobileCare) {
@@ -198,14 +200,12 @@ export class MobileCareComponent implements OnInit {
   }
 
   // เช็คปุุ่ม Select เมื่อเลือกซื้อหรือไม่ซื้อโมบายแคร์
-  private checkValidateSeletedMobileCare(indexMobilecare: number): void {
+  private checkValidateSeletedMobileCare(indexMobilecare: any): void {
     if ((typeof (this.mobileCarePackageValue) === 'string')) {
       this.mobileCareForm.patchValue({
         mobileCare: false,
       });
-      this.notBuyMobileCareForm.patchValue({
-        notBuyMobile: true
-      });
+      this.notBuyMobileCareForm.controls['notBuyMobile'].setValue(this.mobileCarePackageValue);
     } else {
       this.mobileCareForm.patchValue({
         mobileCare: true
