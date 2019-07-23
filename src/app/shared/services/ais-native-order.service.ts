@@ -228,6 +228,7 @@ export class AisNativeOrderService {
     }
 
   private onUserNameCallback(response: any): void {
+      alert(JSON.stringify(response));
       // ios
       if (response && response.hasOwnProperty('username')) {
         this._ngZone.run(() => {
