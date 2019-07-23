@@ -39,9 +39,9 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.createForm();
     this.getDeviceInfo();
     this.getRomByUser();
-    this.createForm();
   }
 
   onBack(): void {
@@ -53,44 +53,37 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
   }
 
   getDeviceInfo(): void {
-    try {
-      if (window.aisNative) {
-        return JSON.parse(window.aisNative.getDeviceInfo());
-      } else if (window.iosNative) {
-        return JSON.parse(window.iosNative);
-      } else {
-        window.location.href = 'IOS://param?Action=getiosnative';
-        return window.iosNative;
-      }
-    } catch (err) {
-      alert('error device ' + err);
+    if (window.aisNative) {
+      return JSON.parse(window.aisNative.getDeviceInfo());
+    } else if (window.iosNative) {
+      return JSON.parse(window.iosNative);
+    } else {
+      window.location.href = 'IOS://param?Action=getiosnative';
+      return window.iosNative;
     }
   }
 
   getRomByUser(): any {
-    try {
-      this.aisNativeOrderService.getNativeUsername();
-      this.usernameSub = this.aisNativeOrderService.getUsername().subscribe((response: any) => {
-        this.transaction.data.romAgent = {
-          ...this.transaction.data.romAgent,
-          usernameRomAgent: response.username,
-          locationCode: response.locationCode,
-        };
-        this.http.get(`/api/easyapp/get-rom-by-user?username=${response.username}`).toPromise()
-          .then((res: any) => {
-            if (res && res.data.mobileNo !== '') {
-              this.mobileNoAgent = res.data.mobileNo;
-              this.loginForm.controls.mobileNoAgent.setValue(this.mobileNoAgent);
-              this.isRom = true;
-            } else {
-              this.mobileNoAgent = '';
-              this.isRom = false;
-            }
-          });
-      });
-    } catch (err) {
-      this.alertService.error('err2 ' + err);
-    }
+    this.aisNativeOrderService.getNativeUsername();
+    this.usernameSub = this.aisNativeOrderService.getUsername().subscribe((response: any) => {
+      this.transaction.data.romAgent = {
+        ...this.transaction.data.romAgent,
+        usernameRomAgent: response.username,
+        locationCode: response.locationCode,
+      };
+      this.http.get(`/api/easyapp/get-rom-by-user?username=${response.username}`).toPromise()
+        .then((res: any) => {
+          alert('get rom >> ' + JSON.stringify(res));
+          if (res && res.data.mobileNo !== '') {
+            this.mobileNoAgent = res.data.mobileNo;
+            this.loginForm.controls.mobileNoAgent.setValue(this.mobileNoAgent);
+            this.isRom = true;
+          } else {
+            this.mobileNoAgent = '';
+            this.isRom = false;
+          }
+        });
+    });
   }
 
   createForm(): void {
