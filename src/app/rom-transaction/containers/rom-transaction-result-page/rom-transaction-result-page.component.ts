@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import {ROUTE_ROM_TRANSACTION_SHOW_INFORMATION_PAGE } from 'src/app/rom-transaction/constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-rom-transaction-result-page',
@@ -48,5 +49,9 @@ export class RomTransactionResultPageComponent implements OnInit {
 
   onHome(): void {
     this.homeService.goToHome();
+  }
+
+  getCurrentDate(): string {
+    return moment().format('DD-MM-YYYY');
   }
 }

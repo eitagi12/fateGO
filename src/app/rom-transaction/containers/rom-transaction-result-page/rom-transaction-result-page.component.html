@@ -26,8 +26,8 @@
                 <br>
                 <div class="mt-4">ไม่สามารถดึงเงินคืนได้ในขณะนี้ กรุณาติดต่อ 1175</div>
                 <div class="mt-4">
-                  <p>วันที่ 18-07-2019 15:00</p>
-                  <p>รายการเลขที่ : 11111333 (RomTran)</p>
+                  <p>วันที่ {{ getCurrentDate() }} {{ romTransaction?.romTransaction?.time }}</p>
+                  <p>รายการเลขที่ : {{ romTransaction?.romTransaction?.transactionId }} (RomTran)</p>
                 </div>
               </div>
             </div>
