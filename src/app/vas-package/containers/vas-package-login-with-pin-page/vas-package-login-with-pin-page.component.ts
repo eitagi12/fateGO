@@ -66,6 +66,7 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
   getRomByUser(): any {
     this.aisNativeOrderService.getNativeUsername();
     this.usernameSub = this.aisNativeOrderService.getUsername().subscribe((username: string) => {
+      this.alertService.error('alert for test getUsername Native : ' + this.usernameSub);
       this.usernameRom = username;
       this.alertService.error('alert for test usernameRomAgent : ' + this.usernameRom);
       this.transaction.data.romAgent = {
