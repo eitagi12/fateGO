@@ -76,11 +76,11 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
     const requestGetProfile = {
       transactionid: this.genTransactionId(),
       mobile_no_agent: this.loginForm.controls.mobileNoAgent.value,
-      device_id: deviceInfo.udid
+      // device_id: deviceInfo.udid
 
       // mock data for PC
       // tslint:disable-next-line:max-line-length
-      // device_id: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJST00gTW9iaWxlIGFwaSIsImF1ZCI6Imh 0dHBzOi8vbXlyb20uYWlzLmNvLnRoL0FQSS9W MS9zaWdpbiIsInN1YiI6IjA0Ni1iNTc2Mjc4ZC1j MTY4LTQ5YjMtOWYxZi1jODVhYTc4YjgwYzAiL CJtc2lzZG4iOiIwNjIyNDM0MjA4IiwiYWdlbnRpZ CI6IjYyMzgxNDciLCJpYXQiOjE1Mzc0MzE3NjAsI mV4cCI6MTUzNzQzMjY2MH0.kY85wPWDSxy1ll rpejMRJrtKC_PE6F_7fuTMg5y-ZS0'
+      device_id: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJST00gTW9iaWxlIGFwaSIsImF1ZCI6Imh 0dHBzOi8vbXlyb20uYWlzLmNvLnRoL0FQSS9W MS9zaWdpbiIsInN1YiI6IjA0Ni1iNTc2Mjc4ZC1j MTY4LTQ5YjMtOWYxZi1jODVhYTc4YjgwYzAiL CJtc2lzZG4iOiIwNjIyNDM0MjA4IiwiYWdlbnRpZ CI6IjYyMzgxNDciLCJpYXQiOjE1Mzc0MzE3NjAsI mV4cCI6MTUzNzQzMjY2MH0.kY85wPWDSxy1ll rpejMRJrtKC_PE6F_7fuTMg5y-ZS0'
     };
     this.pageLoadingService.openLoading();
     this.http.post(`/api/customerportal/rom/get-profile`, requestGetProfile).toPromise()
@@ -99,36 +99,30 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
   signIn(agentId: any, deviceInfo: any): void {
     const requestSignIn = {
       transactionid: this.genTransactionId(),
-      deviceos: deviceInfo.device_os,
-      deviceversion: deviceInfo.device_version,
+      // deviceos: deviceInfo.device_os,
+      // deviceversion: deviceInfo.device_version,
       mobile_no_agent: this.loginForm.controls.mobileNoAgent.value,
-      deviceid: deviceInfo.udid,
+      // deviceid: deviceInfo.udid,
       pin: this.loginForm.value.pinAgent,
 
       // mock data for PC
-      // deviceos: 'IOS',
-      // deviceversion: '12.2',
+      deviceos: 'IOS',
+      deviceversion: '12.2',
       // tslint:disable-next-line:max-line-length
-      // deviceid: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJST00gTW9iaWxlIGFwaSIsImF1ZCI6Imh 0dHBzOi8vbXlyb20uYWlzLmNvLnRoL0FQSS9W MS9zaWdpbiIsInN1YiI6IjA0Ni1iNTc2Mjc4ZC1j MTY4LTQ5YjMtOWYxZi1jODVhYTc4YjgwYzAiL CJtc2lzZG4iOiIwNjIyNDM0MjA4IiwiYWdlbnRpZ CI6IjYyMzgxNDciLCJpYXQiOjE1Mzc0MzE3NjAsI mV4cCI6MTUzNzQzMjY2MH0.kY85wPWDSxy1ll rpejMRJrtKC_PE6F_7fuTMg5y-ZS0 ',
+      deviceid: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJST00gTW9iaWxlIGFwaSIsImF1ZCI6Imh 0dHBzOi8vbXlyb20uYWlzLmNvLnRoL0FQSS9W MS9zaWdpbiIsInN1YiI6IjA0Ni1iNTc2Mjc4ZC1j MTY4LTQ5YjMtOWYxZi1jODVhYTc4YjgwYzAiL CJtc2lzZG4iOiIwNjIyNDM0MjA4IiwiYWdlbnRpZ CI6IjYyMzgxNDciLCJpYXQiOjE1Mzc0MzE3NjAsI mV4cCI6MTUzNzQzMjY2MH0.kY85wPWDSxy1ll rpejMRJrtKC_PE6F_7fuTMg5y-ZS0 ',
     };
     this.http.post(`/api/customerportal/rom/sign-in`, requestSignIn).toPromise()
       .then((res: any) => {
         if (res && res.data.status === 'success') {
           this.pageLoadingService.closeLoading();
-          this.transaction.data.romAgent = {
-            ...this.transaction.data.romAgent,
-            mobileNoAgent: this.loginForm.controls.mobileNoAgent.value,
-            pinAgent: this.loginForm.value.pinAgent,
-            agentId: agentId,
-            tokenType: res.data.token_type,
-            accessToken: res.data.access_token
-          };
           // check Rom Agent ที่มีข้อมูลแล้ว
           const mobileNoAgent = this.transaction.data.romAgent.mobileNoAgent;
           const mobileNoAgentCurrent = this.loginForm.controls.mobileNoAgent.value;
           if (mobileNoAgentCurrent === mobileNoAgent) {
+            this.saveTransaction(agentId, res);
             this.router.navigate([ROUTE_VAS_PACKAGE_CURRENT_BALANCE_PAGE]);
           } else {
+            this.saveTransaction(agentId, res, mobileNoAgentCurrent);
             this.router.navigate([ROUTE_VAS_PACKAGE_OTP_PAGE]);
           }
         } else {
@@ -142,6 +136,17 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.transactionService.save(this.transaction);
+  }
+
+  saveTransaction(agentId: string, token: any, mobileNo?: string): void {
+    this.transaction.data.romAgent = {
+      ...this.transaction.data.romAgent,
+      mobileNoAgent: mobileNo ? mobileNo : this.transaction.data.romAgent.mobileNoAgent,
+      pinAgent: this.loginForm.value.pinAgent,
+      agentId: agentId,
+      tokenType: token.data.token_type,
+      accessToken: token.data.access_token
+    };
   }
 
 }
