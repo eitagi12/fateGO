@@ -8,7 +8,7 @@
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
-  <div class="mc-flex-wrap bg-white">
+  <div class="mc-flex-wrap">
     <div class="mb-3 mt-3">
       <div class="container-fluid">
         <form [formGroup]="mobileForm">
@@ -26,13 +26,15 @@
               <i class="fa fa-search"></i> ค้นหา</button>
           </div>
         </form>
-      </div>
-      <div class="card mt-3 border-0">
+      <!-- </div> -->
+      <div class="card mt-3">
         <div class="card-header text-center bg-light text-white">
           เลือกรายการ
         </div>
         <div class="card-body p-1">
-          <small class="text-light">{{ currenDate }}</small>
+          <div class="border-bottom">
+            <small class="text-light pl-3">{{ currenDate }}</small>
+          </div>
           <div class="list-group mt-2">
 
             <ng-container *ngFor="let rom of romData">
@@ -69,8 +71,10 @@
         </div>
       </div>
     </div>
+    </div>
   </div>
   <mc-footer>
+      <button id="button-back" class="btn btn-secondary" (click)="onHome()">BACK</button>
     <button class="btn btn-success" (click)="onNext()"
       [disabled]="!transaction?.data?.romTransaction?.romTransaction?.transactionId">NEXT</button>
   </mc-footer>
