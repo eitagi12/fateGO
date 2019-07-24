@@ -13,7 +13,7 @@
 }
 
 :host /deep/  .list-group-item.active{
-    background-color: #32ceb0;
+    background-color: #00A296;
 
     .fa-mobile{
         color:#fff !important;
@@ -21,5 +21,43 @@
 
     .list-detail{
         color:#fff !important;
+    }
+}
+
+/* Normal Style Easy App */ 
+.button-easyApp{
+    background-color: #B2D234;
+    height: 40px;
+    font-size: 24px;
+    border-radius: 5px;
+    border: 0;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    color: #4E4E4E;
+    &:disabled{
+        background-color: #B3B3B3;
+    }
+}
+
+:host /deep/  .navbar{
+
+    background-color: #B2D234 !important;
+}
+
+.card-header{
+    background-color: #808080;
+}
+
+.navbar-brand {
+    margin: 0 auto;
+}
+
+:host /deep/ .footer-easyApp {
+    &.button-easyApp {
+        min-width: 150px;
+        margin-left: .5rem !important;    
+        margin-right: .5rem !important;
+        padding-left: 5rem !important;
+        padding-right: 5rem !important;
     }
 }

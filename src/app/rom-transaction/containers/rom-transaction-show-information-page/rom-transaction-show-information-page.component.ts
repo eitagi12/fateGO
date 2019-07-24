@@ -43,25 +43,45 @@ export class RomTransactionShowInformationPageComponent implements OnInit, OnDes
         type: 'question',
         showConfirmButton: true,
         confirmButtonText: 'ยืนยัน',
+        cancelButtonClass: 'button-easyApp cancel',
+        confirmButtonClass: 'button-easyApp confirm',
         cancelButtonText: 'ยกเลิก',
         showCancelButton: true,
         reverseButtons: true,
         allowEscapeKey: false,
         html: `
+        <style>
+            .button-easyApp {
+              height: 40px;
+              font-size: 24px;
+              border-radius: 5px;
+              border: 0;
+              padding-left: 1.5rem;
+              padding-right: 1.5rem;
+              margin-left:10px;
+              color: #4E4E4E;
+          }
+          .cancel{
+            background-color: #B3B3B3;
+          }
+          .confirm{
+            background-color: #B2D234;
+          }
+        </style>
         <div class="container">
           <h5>ยกเลิกเติมเงิน</h5>
           <div class="text-left">
-          <small>เบอร์มือถือ</small>
+          <h5>เบอร์มือถือ</h5>
           <h4 class="text-green">${ this.mobileNoPipe.transform(this.romTransaction.romTransaction.cusMobileNo)}</h4>
           <hr>
-          <small>ประเภทรายการ</small>
-          <h4 class="text-green">${
+          <h5>ประเภทรายการ</h5>
+          <h4 style="color: #00A296;">${
           this.romTransaction.romTransaction.transactionType === 'VAS'
             ? 'โปรเสริมออนไลน์'
             : 'เติมเงินออนไลน์'
           }</h4>
           <hr>
-          <small>จำนวนเงิน</small>
+          <h5>จำนวนเงิน</h5>
           <h4 class="text-green">${this.romTransaction.romTransaction.price} บาท</h4>
           </div>
         </div>
