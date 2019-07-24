@@ -18,7 +18,6 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
   loginForm: FormGroup;
   transaction: Transaction;
   window: any = window;
-  usernameRom: string;
 
   constructor(
     private router: Router,
@@ -45,6 +44,14 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
     this.homeService.goToHome();
   }
 
+  createForm(): void {
+    this.loginForm = this.fb.group({
+      'mobileNoAgent': ['', Validators.compose([Validators.required, Validators.pattern(/^0[6-9]{1}[0-9]{8}/)])],
+      'pinAgent': ['', Validators.compose([Validators.required, Validators.minLength(4), Validators.maxLength(4)])]
+    });
+    this.loginForm.controls['mobileNoAgent'].setValue(this.transaction.data.romAgent.mobileNoAgent);
+  }
+
   getDeviceInfo(): void {
     if (window.aisNative) {
       return JSON.parse(window.aisNative.getDeviceInfo());
@@ -54,14 +61,6 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
       window.location.href = 'IOS://param?Action=getiosnative';
       return window.iosNative;
     }
-  }
-
-  createForm(): void {
-    this.loginForm = this.fb.group({
-      'mobileNoAgent': ['', Validators.compose([Validators.required, Validators.pattern(/^0[6-9]{1}[0-9]{8}/)])],
-      'pinAgent': ['', Validators.compose([Validators.required, Validators.minLength(4), Validators.maxLength(4)])]
-    });
-    this.loginForm.controls['mobileNoAgent'].setValue(this.transaction.data.romAgent.mobileNoAgent);
   }
 
   genTransactionId(): any {
@@ -134,10 +133,6 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy(): void {
-    this.transactionService.save(this.transaction);
-  }
-
   saveTransaction(agentId: string, token: any, mobileNo?: string): void {
     this.transaction.data.romAgent = {
       ...this.transaction.data.romAgent,
@@ -147,6 +142,10 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
       tokenType: token.data.token_type,
       accessToken: token.data.access_token
     };
+  }
+
+  ngOnDestroy(): void {
+    this.transactionService.save(this.transaction);
   }
 
 }
