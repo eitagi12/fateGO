@@ -29,11 +29,11 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
     private pageLoadingService: PageLoadingService
   ) {
     this.transaction = this.transactionService.load();
-    this.createForm();
+    this.getDeviceInfo();
   }
 
   ngOnInit(): void {
-    this.getDeviceInfo();
+    this.createForm();
   }
 
   onBack(): void {
