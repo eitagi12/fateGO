@@ -1,17 +1,16 @@
+@media (max-width: 576px) {
+  .header-icon-left,
+  .header-icon-right {
+    width: 10% !important;
+  }
+}
+
 ::placeholder {
   color: gray;
 }
 
 .bg-header {
   background: #B2D234;
-}
-
-@media (max-width: 576px) {
-
-  .header-icon-left,
-  .header-icon-right {
-    width: 10% !important;
-  }
 }
 
 .navbar-brand {
