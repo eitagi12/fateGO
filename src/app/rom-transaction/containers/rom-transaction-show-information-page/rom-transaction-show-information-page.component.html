@@ -1,13 +1,14 @@
 <div class="mc-flex">
-  <mc-header title="{{ 'ยกเลิกเติมเงิน/โปรเสริมออนไลน์' | translate }}">
+  <nav class="navbar fixed-top navbar-dark shadow-sm fix-position">
     <div class="header-icon-left">
-      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+      <i class="fa fa-angle-left fa-3x" aria-hidden="true" (click)="onBack()"></i>
     </div>
+    <span class="navbar-brand p-2 h1 text-header">
+      <b>ยกเลิกเติมเงิน/โปรเสริมออนไลน์</b>
+    </span>
     <div class="header-icon-right">
-      <!-- <mc-dropdown-language></mc-dropdown-language> -->
-      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
-  </mc-header>
+  </nav>
   <div class="mc-flex-wrap">
     <div class="mb-3 mt-3">
       <div class="container-fluid">
@@ -22,11 +23,11 @@
             <div class="list-group mt-2">
               <div class="row w-100">
                 <div class="col-4 text-center">
-                  <i class="fa fa-phone text-green fa-3x" aria-hidden="true"></i>
+                  <i class="fa fa-phone type-order fa-3x" aria-hidden="true"></i>
                 </div>
                 <div class="col-8">
                   <small class="text-dark">เบอร์มือถือ</small>
-                  <h4 class="m-0 text-green">{{ romTransaction?.romTransaction?.cusMobileNo | mobileNo }}</h4>
+                  <h4 class="m-0 type-order">{{ romTransaction?.romTransaction?.cusMobileNo | mobileNo }}</h4>
                 </div>
               </div>
               <div class="row w-100 mt-1">
@@ -46,7 +47,7 @@
                 </div>
                 <div class="col-8">
                   <small class="text-dark">จำนวนเงิน</small>
-                  <h4 class="m-0 text-green">{{ romTransaction?.romTransaction?.price | number }} บาท</h4>
+                  <h4 class="m-0 type-order">{{ romTransaction?.romTransaction?.price | number }} บาท</h4>
                 </div>
               </div>
             </div>
@@ -60,7 +61,7 @@
                       <input type="password" id="pin" formControlName="pin" class="form-control "
                         placeholder="กรุณาระบุ PIN" maxlength="4">
                     </div>
-                    <small class="text-red" *ngIf="pinForm.controls.pin.touched && pinForm.controls.pin.invalid">
+                    <small class="text-libstick" *ngIf="pinForm.controls.pin.touched && pinForm.controls.pin.invalid">
                       **กรุณากรุณาระบุ PIN ให้ถูกต้อง
                     </small>
                   </div>
@@ -71,7 +72,7 @@
                       <input type="password" id="ref" formControlName="ref" class="form-control "
                         placeholder="กรุณาระบุ Ref No" maxlength="9">
                     </div>
-                    <small class="text-red" *ngIf="pinForm.controls.ref.touched && pinForm.controls.ref.invalid">
+                    <small class="text-libstick" *ngIf="pinForm.controls.ref.touched && pinForm.controls.ref.invalid">
                       **กรุณากรุณาระบุ Ref No ให้ถูกต้อง
                     </small>
                   </div>

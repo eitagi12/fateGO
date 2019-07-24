@@ -62,7 +62,9 @@ export class RomTransactionShowInformationPageComponent implements OnInit, OnDes
               color: #4E4E4E;
           }
           .cancel{
-            background-color: #B3B3B3;
+            border: 1px solid;
+            border-color: #B2D234;
+            background-color: #fff;
           }
           .confirm{
             background-color: #B2D234;
@@ -72,7 +74,7 @@ export class RomTransactionShowInformationPageComponent implements OnInit, OnDes
           <h5>ยกเลิกเติมเงิน</h5>
           <div class="text-left">
           <h5>เบอร์มือถือ</h5>
-          <h4 class="text-green">${ this.mobileNoPipe.transform(this.romTransaction.romTransaction.cusMobileNo)}</h4>
+          <h4 style="color: #00A296;">${ this.mobileNoPipe.transform(this.romTransaction.romTransaction.cusMobileNo)}</h4>
           <hr>
           <h5>ประเภทรายการ</h5>
           <h4 style="color: #00A296;">${
@@ -82,7 +84,7 @@ export class RomTransactionShowInformationPageComponent implements OnInit, OnDes
           }</h4>
           <hr>
           <h5>จำนวนเงิน</h5>
-          <h4 class="text-green">${this.romTransaction.romTransaction.price} บาท</h4>
+          <h4 style="color: #00A296;">${this.romTransaction.romTransaction.price} บาท</h4>
           </div>
         </div>
         `
