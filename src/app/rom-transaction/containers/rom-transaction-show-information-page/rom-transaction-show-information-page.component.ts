@@ -53,7 +53,7 @@ export class RomTransactionShowInformationPageComponent implements OnInit, OnDes
         <style>
             .button-easyApp {
               height: 40px;
-              font-size: 24px;
+              font-size: 20px;
               border-radius: 5px;
               border: 0;
               padding-left: 1.5rem;

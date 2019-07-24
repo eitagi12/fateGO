@@ -1,10 +1,10 @@
 <div class="mc-flex">
   <nav class="navbar fixed-top navbar-dark shadow-sm fix-position">
     <div class="header-icon-left">
-      <i class="fa fa-angle-left fa-3x" aria-hidden="true" (click)="onBack()"></i>
+      <i class="fa fa-angle-left fa-2x text-iron" aria-hidden="true" (click)="onBack()"></i>
     </div>
     <span class="navbar-brand p-2 h1 text-header">
-      <b>ยกเลิกเติมเงิน/โปรเสริมออนไลน์</b>
+      ยกเลิกเติมเงิน/โปรเสริมออนไลน์
     </span>
     <div class="header-icon-right">
     </div>
@@ -23,10 +23,10 @@
             <div class="list-group mt-2">
               <div class="row w-100">
                 <div class="col-4 text-center">
-                  <i class="fa fa-phone type-order fa-3x" aria-hidden="true"></i>
+                  <i class="fa fa-phone  type-order fa-3x" aria-hidden="true"></i>
                 </div>
                 <div class="col-8">
-                  <small class="text-dark">เบอร์มือถือ</small>
+                  <small class="text-maxnixam">เบอร์มือถือ</small>
                   <h4 class="m-0 type-order">{{ romTransaction?.romTransaction?.cusMobileNo | mobileNo }}</h4>
                 </div>
               </div>
@@ -35,7 +35,7 @@
                   <i class="fa fa-mobile type-order fa-4x" aria-hidden="true"></i>
                 </div>
                 <div class="col-8">
-                  <small class="text-dark">ประเภทรายการ</small>
+                  <small class="text-maxnixam">ประเภทรายการ</small>
                   <h4 class="m-0 type-order">
                     {{ romTransaction?.romTransaction?.transactionType === 'VAS' ? 'โปรเสริมออนไลน์' : ' เติมเงินออนไลน์' }}
                   </h4>
@@ -46,7 +46,7 @@
                   <img src="assets/images/icon/sales_portal_green_circle_bath.png" width="50">
                 </div>
                 <div class="col-8">
-                  <small class="text-dark">จำนวนเงิน</small>
+                  <small class="text-maxnixam">จำนวนเงิน</small>
                   <h4 class="m-0 type-order">{{ romTransaction?.romTransaction?.price | number }} บาท</h4>
                 </div>
               </div>
