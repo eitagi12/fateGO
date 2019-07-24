@@ -13,14 +13,22 @@
 }
 
 :host /deep/  .list-group-item.active{
-    background-color: #00A296;
+    background-color: #B2D234;
 
     .fa-mobile{
-        color:#fff !important;
+        color:#4E4E4E !important;
     }
 
     .list-detail{
-        color:#fff !important;
+        color:#4E4E4E !important;
+    }
+
+    .list-mobileNo{
+        color:#4E4E4E !important;
+    }
+
+    .list-amount{
+        color:#4E4E4E !important;
     }
 }
 
@@ -55,6 +63,15 @@
 .navbar-brand {
     margin: 0 auto;
 }
+
+.text-iron{
+    color: #4E4E4E;
+}
+
+.text-green-blue{
+    color: #00A296;
+}
+
 
 :host /deep/ .footer-easyApp {
     &.button-easyApp {

@@ -15,7 +15,8 @@
           <div class="card-body">
             <div class="text-center  bg-white" [mcLoading]="createRomTransaction">
               <div class="pt-1 pb-0 text-lime mb-4" *ngIf="success">
-                  <i class="fa fa-check-circle fa-5x bg-easyApp" aria-hidden="true"></i>
+                <img src="assets/images/icon/icon-corrected.jpg" width="60">
+                  <!-- <i class="fa fa-check-circle fa-5x bg-easyApp" aria-hidden="true"></i> -->
                 <h6 class="mt-3 text-iron">ทำรายการสำเร็จ</h6>
                 <div class="text-grey">{{ romTransaction?.romTransaction?.cusMobileNo | mobileNo }}</div>
                 <hr>
@@ -38,7 +39,7 @@
   </div>
   <div class="container-fluid footer-easyApp text-center  pt-4 pb-4">
       <div class="ml-5 mr-5">
-        <button class="button-easyApp btn-block" (click)="onHome()">Main Menu</button>
+        <button class="button-easyApp btn-block" (click)="onHome()">กลับสู่เมนูหลัก</button>
       </div>
     </div>
 </div>

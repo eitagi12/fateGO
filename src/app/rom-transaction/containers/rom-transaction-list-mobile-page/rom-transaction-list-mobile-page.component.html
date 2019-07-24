@@ -1,7 +1,7 @@
 <div class="mc-flex">
   <nav class="navbar fixed-top navbar-dark shadow-sm fix-position">
     <div class="header-icon-left">
-      <i class="fa fa-angle-left fa-3x" aria-hidden="true" (click)="onBack()"></i>
+      <i class="fa fa-angle-left fa-3x" aria-hidden="true" (click)="onHome()"></i>
     </div>
     <span class="navbar-brand p-2 h1 text-header">
       <b>ยกเลิกเติมเงิน/โปรเสริมออนไลน์</b>
@@ -51,14 +51,14 @@
                       </div>
                       <div class="col-6">
                         <small class="text-dark list-detail">{{ rom?.time }} น.</small>
-                        <h5 class="m-0 pb-1">{{ rom?.cusMobileNo | mobileNo}}</h5>
+                        <h5 class="m-0 pb-1 list-mobileNo">{{ rom?.cusMobileNo | mobileNo}}</h5>
                         <small class="mobile-detail detail-header list-detail">
                           {{ rom?.transactionType === 'VAS' ? 'โปรเสริมออนไลน์' : ' เติมเงินออนไลน์' }}
                         </small>
                       </div>
                       <div class="col-4 text-right">
-                        <h5 class="mt-3"><span class="text-green list-detail">{{ rom?.price | number}}</span> <small>
-                            บาท</small></h5>
+                        <h5 class="mt-3"><span class=" list-detail text-green-blue">{{ rom?.price | number}}</span> 
+                          <small class="list-amount text-green-blue"> บาท</small></h5>
                       </div>
                     </div>
                   </div>
