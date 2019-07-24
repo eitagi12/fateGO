@@ -17,7 +17,9 @@ export enum TransactionType {
   ORDER_EXISTING = 'Existing',
   RESERVE_WITH_DEPOSIT = 'ReserveWithDeposit',
 
-  DEVICE_ONLY_AIS = 'DeviceOnlyAIS'
+  DEVICE_ONLY_AIS = 'DeviceOnlyAIS',
+  VAS_PACKAGE_ROM = 'RomAgent',
+  VAS_PACKAGE_CUSTOMER = 'Customer'
 }
 
 export enum TransactionAction {
@@ -26,7 +28,9 @@ export enum TransactionAction {
   KEY_IN = 'KEY_IN',
   KEY_IN_REPI = 'KEY_IN_REPI',
   READ_PASSPORT = 'READ_PASSPORT',
-  READ_PASSPORT_REPI = 'READ_PASSPORT_REPI'
+  READ_PASSPORT_REPI = 'READ_PASSPORT_REPI',
+  VAS_PACKAGE_ROM = 'VaspackageRom',
+  VAS_PACKAGE_ROM_OTP = 'VaspackageRomOTP'
 }
 
 export interface Transaction {
@@ -73,6 +77,8 @@ export interface TransactionData {
   device?: Device;
   knoxguard?: KnoxGuard;
   tradeType?: string;
+  // Rom Agent
+  romAgent?: RomAgent;
 }
 
 export interface Condition {
@@ -119,6 +125,7 @@ export interface Customer {
   idCardNo: string;
   idCardType: string;
   titleName: string;
+  titleNameEN?: string;
   firstName: string;
   lastName: string;
   birthdate: string;
@@ -148,7 +155,7 @@ export interface Customer {
   imageSmartCard?: string;
   imageReadSmartCard?: string;
   customerPinCode?: string;
-    // passport
+  // passport
   issuingCountry?: string;
   nationality?: string;
   imageReadPassport?: string;
@@ -160,9 +167,9 @@ export interface Customer {
   privilegeCode?: string;
   repi?: boolean;
   mobileNo?: string;
-
   chipID?: string;
   requestNo?: string;
+  laserCode?: string;
 }
 
 export interface Recipientinformation {
@@ -501,4 +508,45 @@ export interface KnoxGuard {
   duration?: string;
   orderReason?: string;
   userName?: string;
+}
+
+export interface RomAgent {
+  mobileNoAgent?: string;
+  pinAgent?: string;
+  agentId?: string;
+  tokenType?: string;
+  accessToken?: string;
+  transactionIdRom?: string;
+  usernameRomAgent?: string;
+  locationCode?: string;
+}
+
+export interface RomTransaction {
+  transactionId: string;
+  ssid: string;
+  romNo: string;
+  cusMobileNo: string;
+  price: string;
+  packId?: string;
+  username: string;
+  locationcode: string;
+  transactionType: string;
+  status: string;
+}
+
+export interface VasPackage {
+  ssid: string;
+  msisdn: string;
+  imsi: string;
+  vlr: string;
+  shortcode: string;
+  serviceNumber: string;
+  menuLevel: string;
+  cos: string;
+  spName: string;
+  brandId: string;
+  language: string;
+  mobileLocation: string;
+  customerState: string;
+  servicePackageId: string;
 }

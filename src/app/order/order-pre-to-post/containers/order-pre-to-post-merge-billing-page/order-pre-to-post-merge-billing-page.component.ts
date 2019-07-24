@@ -1,3 +1,4 @@
+import { HttpClient } from '@angular/common/http';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import {
@@ -6,7 +7,7 @@ import {
   ROUTE_ORDER_PRE_TO_POST_SELECT_PACKAGE_PAGE
 } from 'src/app/order/order-pre-to-post/constants/route-path.constant';
 import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
-import { HomeService } from 'mychannel-shared-libs';
+import { HomeService, PageLoadingService } from 'mychannel-shared-libs';
 import { WIZARD_ORDER_PRE_TO_POST } from 'src/app/order/constants/wizard.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, BillingAccount } from 'src/app/shared/models/transaction.model';
@@ -30,37 +31,49 @@ export class OrderPreToPostMergeBillingPageComponent implements OnInit, OnDestro
     private fb: FormBuilder,
     private homeService: HomeService,
     private transactionService: TransactionService,
+    private pageLoadingService: PageLoadingService,
+    private http: HttpClient,
   ) {
     this.transaction = this.transactionService.load();
   }
 
   ngOnInit(): void {
-    this.billingCyles = this.getBillingCycles();
+    this.getBillingCycles();
     this.mergeBilling = this.transaction.data.billingInformation.mergeBilling;
   }
 
-  getBillingCycles(): any[] {
+  getBillingCycles(): void {
     const mainPackage = this.transaction.data.mainPackage;
     const billingInformation = this.transaction.data.billingInformation;
-    let billCycles = [];
-    if (this.isPackageNetExtreme()) {
-      billCycles = billingInformation.billCyclesNetExtreme;
-    } else {
-      billCycles = billingInformation.billCycles;
-    }
-
-    return billCycles.filter((billCycle: any) => {
-      return billCycle.mobileNo && billCycle.mobileNo.length > 0
-        && mainPackage.billingSystem === billCycle.billingSystem
-        && billCycle.productPkg.indexOf('Cash Back') === -1;
-    }).reduce((previousValue: any[], currentValue: any) => {
-      const billing = (currentValue.mobileNo || []).map((mobileNo: string) => {
-        const billCycleExtract = Object.assign({}, currentValue);
-        billCycleExtract.mobileNo = [mobileNo];
-        return billCycleExtract;
+    const idCard = this.transaction.data.customer.idCardNo;
+    this.pageLoadingService.openLoading();
+    // ปรับ flow ใหม่ เวลา merge bill ให้เรียก serivce queryMergebillAccount
+    this.http.get(`/api/customerportal/newRegister/${idCard}/queryMergebillAccount`)
+      .toPromise()
+      .then((res: any) => {
+        const data = res.data || [];
+        return this.isPackageNetExtreme() ? billingInformation.billCyclesNetExtreme : data.billingAccountList;
+      })
+      .then((billCycles: any) => {
+        // old logic
+        return billCycles.filter((billCycle: any) => {
+          return billCycle.mobileNo && billCycle.mobileNo.length > 0
+            && mainPackage.billingSystem === billCycle.billingSystem
+            && billCycle.productPkg.indexOf('Cash Back') === -1;
+        }).reduce((previousValue: any[], currentValue: any) => {
+          const billing = (currentValue.mobileNo || []).map((mobileNo: string) => {
+            const billCycleExtract = Object.assign({}, currentValue);
+            billCycleExtract.mobileNo = [mobileNo];
+            return billCycleExtract;
+          });
+          return previousValue.concat(billing);
+        }, []);
+        // end logic
+      })
+      .then((billCyclesData: any) => {
+        this.pageLoadingService.closeLoading();
+        this.billingCyles = billCyclesData;
       });
-      return previousValue.concat(billing);
-    }, []);
   }
 
   isPackageNetExtreme(): boolean {

@@ -68,7 +68,7 @@ export class DeviceOrderAisMnpSelectPackagePageComponent implements OnInit, OnDe
   }
 
   get advancePay(): boolean {
-    return !!((this.priceOption.trade.advancePay && this.priceOption.trade.advancePay.amount || 0) > 0);
+    return !!((this.priceOption.trade.advancePay && +this.priceOption.trade.advancePay.amount || 0) > 0);
   }
 
   get mathHotDeal(): boolean {

@@ -1,0 +1,28 @@
+@media (max-width: 576px) {
+
+  .header-icon-left,
+  .header-icon-right {
+    width: 10% !important;
+  }
+}
+
+.button {
+  background: white;
+  border-radius: 5px;
+}
+
+.button:active {
+  background: #cced61;
+}
+
+.navbar-brand {
+  margin: 0 auto
+}
+
+.bg-ais {
+  color: black;
+  background-color: #B2D234;
+}
+.back-icon {
+    height: 30px;
+  }
