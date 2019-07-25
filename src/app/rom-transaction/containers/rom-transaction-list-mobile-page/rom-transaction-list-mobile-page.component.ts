@@ -44,6 +44,13 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
     this.createForm();
     this.currenDate = this.getCurrentDate();
     this.queryRomList();
+    if (this.utils.isAisNative()) {
+      alert('native');
+      this.usernameSubscript = this.aisNativeOrderService.getUsername()
+      .subscribe((response: any) => {
+        this.username = response.username;
+      });
+    }
   }
 
   createForm(): void {
@@ -54,12 +61,7 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
 
   queryRomList(mobile?: string): void {
     this.pageLoadingService.openLoading();
-    if (this.utils.isAisNative()) {
-      this.usernameSubscript = this.aisNativeOrderService.getUsername()
-      .subscribe((response: any) => {
-        this.username = response.username;
-      });
-    }
+    
     this.param = {
       username: this.username,
       cusMobileNo: mobile
@@ -79,11 +81,11 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
       .sort((val1, val2) => val2.time - val1.time);
     })
     .then(() => {
-      this.usernameSubscript.unsubscribe();
+      // this.usernameSubscript.unsubscribe();
       this.createTransaction(this.romData);
     })
     .catch((err) => {
-      this.usernameSubscript.unsubscribe();
+      // this.usernameSubscript.unsubscribe();
       this.pageLoadingService.closeLoading();
       this.alertService.error(err);
     });
