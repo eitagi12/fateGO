@@ -43,7 +43,6 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
   ngOnInit(): void {
     this.createForm();
     this.currenDate = this.getCurrentDate();
-    this.queryRomList();
     if (this.utils.isAisNative()) {
       this.aisNativeOrderService.getNativeUsername();
       this.usernameSubscript = this.aisNativeOrderService.getUsername()
@@ -51,6 +50,9 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
         this.username = response.username;
       });
     }
+    setTimeout(() => {
+      this.queryRomList();
+    }, 0);
   }
 
   createForm(): void {
@@ -81,11 +83,9 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
       .sort((val1, val2) => val2.time - val1.time);
     })
     .then(() => {
-      // this.usernameSubscript.unsubscribe();
       this.createTransaction(this.romData);
     })
     .catch((err) => {
-      // this.usernameSubscript.unsubscribe();
       this.pageLoadingService.closeLoading();
       this.alertService.error(err);
     });
@@ -138,6 +138,7 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
   }
 
   ngOnDestroy(): void {
+    this.usernameSubscript.unsubscribe();
     this.transactionService.save(this.transaction);
   }
 }
