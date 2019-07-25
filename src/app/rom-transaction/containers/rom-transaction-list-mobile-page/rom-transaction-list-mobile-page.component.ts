@@ -8,6 +8,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AisNativeOrderService } from 'src/app/shared/services/ais-native-order.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-rom-transaction-list-mobile-page',
@@ -16,13 +17,14 @@ import { AisNativeOrderService } from 'src/app/shared/services/ais-native-order.
 })
 export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy {
 
-  username: any;
+  username: string;
   transaction: Transaction;
   romData: any = [];
   currenDate: string = '';
   mobileForm: FormGroup;
   queryRomTransaction: Promise<any>;
   param: any;
+  usernameSubscript: Subscription;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -53,7 +55,10 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
   queryRomList(mobile?: string): void {
     this.pageLoadingService.openLoading();
     if (this.utils.isAisNative()) {
-      this.username = this.aisNativeOrderService.getUsername();
+      this.usernameSubscript = this.aisNativeOrderService.getUsername()
+      .subscribe((response: any) => {
+        this.username = response.username;
+      });
     }
     this.param = {
       username: this.username,
@@ -74,9 +79,11 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
       .sort((val1, val2) => val2.time - val1.time);
     })
     .then(() => {
+      this.usernameSubscript.unsubscribe();
       this.createTransaction(this.romData);
     })
     .catch((err) => {
+      this.usernameSubscript.unsubscribe();
       this.pageLoadingService.closeLoading();
       this.alertService.error(err);
     });
