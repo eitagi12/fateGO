@@ -157,32 +157,36 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
     } else {
       // KEY-IN ID-Card
       this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customer: Customer) => {
-
-        this.transaction.data.customer = customer;
-        // this.transaction.data.billingInformation = {};
-        // this.transaction.data.billingInformation.billDeliveryAddress = customer;
-        this.transaction.data.billingInformation = {
-          billCycles: this.getBillCycles(),
-          billDeliveryAddress: customer
-        };
-        if (!this.transaction.data.order || !this.transaction.data.order.soId) {
-          return this.http.post('/api/salesportal/add-device-selling-cart',
-            this.getRequestAddDeviceSellingCart()
-          ).toPromise()
-            .then((resp: any) => {
-              this.transaction.data.order = { soId: resp.data.soId };
-              return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-            }).then(() => {
-              this.transaction.data.action = TransactionAction.KEY_IN;
-              this.checkRoutePath();
-            });
-        } else {
-          this.checkRoutePath();
-        }
-      }).then(() => this.pageLoadingService.closeLoading());
+        this.http.get(`/api/customerportal/newRegister/${this.identity}/queryBillingAccount`).toPromise()
+          .then((resp: any) => {
+            const data = resp.data || {};
+            this.transaction.data.customer = customer;
+            this.transaction.data.billingInformation = {
+              billCycles: data.billingAccountList,
+              billDeliveryAddress: customer
+            };
+          }).then(() => this.addCard());
+      }).catch(this.ErrorMessage());
     }
   }
 
+  public addCard(): void {
+    if (!this.transaction.data.order || !this.transaction.data.order.soId) {
+      this.http.post('/api/salesportal/add-device-selling-cart',
+        this.getRequestAddDeviceSellingCart()
+      ).toPromise()
+        .then((resp: any) => {
+          this.transaction.data.order = { soId: resp.data.soId };
+          return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+        }).then(() => {
+          this.transaction.data.action = TransactionAction.KEY_IN;
+          this.checkRoutePath();
+        });
+    } else {
+      this.checkRoutePath();
+    }
+
+  }
   private getBillCycles(): any {
     return this.http.get(`/api/customerportal/newRegister/${this.identity}/queryBillingAccount`).toPromise()
       .then((resp: any) => {
