@@ -69,20 +69,14 @@ export class BrandPageComponent implements OnInit {
 
   callService(): void {
     const param = {
-       location : this.tokenService.getUser().locationCode,
-       productType : 'GADGET/IOT',
-       productSubType : 'N/A'
+      location: this.tokenService.getUser().locationCode,
+      productType: ['GADGET/IOT'],
+      productSubtype: ['N/A']
     };
     this.http.post('api/salesportal/brands-of-product',
       param
     ).toPromise().then((res: any) => {
       this.brands = res.data || [];
-      console.log('output', this.brands);
-      console.log('response', res);
     });
-    // this.brandsOfProductService = this.salesService.brandsOfProduct(locationCode);
-    // this.brandsOfProductService.then((resp: any) => {
-    //   this.brands = resp.data || [];
-    // });
   }
 }

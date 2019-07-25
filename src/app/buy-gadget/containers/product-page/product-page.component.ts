@@ -43,7 +43,9 @@ export class ProductPageComponent implements OnInit {
       model: model,
       offset: offset,
       maxrow: this.MAX_ROW,
-      location: user.locationCode
+      location: user.locationCode,
+      productType: ['GADGET/IOT'],
+      productSubtype: ['N/A']
     };
 
     if (!!model) {

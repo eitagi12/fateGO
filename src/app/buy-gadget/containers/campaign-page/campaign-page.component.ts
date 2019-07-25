@@ -400,7 +400,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
     // clear
     this.productDetail = {};
-
     this.productDetailService = this.salesService.productDetail({
       brand: brand,
       location: user.locationCode,
