@@ -61,7 +61,7 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
 
   queryRomList(mobile?: string): void {
     this.pageLoadingService.openLoading();
-    
+
     this.param = {
       username: this.username,
       cusMobileNo: mobile
