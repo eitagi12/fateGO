@@ -45,7 +45,7 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
     this.currenDate = this.getCurrentDate();
     this.queryRomList();
     if (this.utils.isAisNative()) {
-      alert('native');
+      this.aisNativeOrderService.getNativeUsername();
       this.usernameSubscript = this.aisNativeOrderService.getUsername()
       .subscribe((response: any) => {
         this.username = response.username;
