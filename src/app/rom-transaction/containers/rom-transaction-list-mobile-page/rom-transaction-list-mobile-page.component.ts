@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { HomeService, TokenService, PageLoadingService, REGEX_MOBILE, AlertService } from 'mychannel-shared-libs';
+import { HomeService, TokenService, PageLoadingService, REGEX_MOBILE, AlertService, Utils } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { ROUTE_ROM_TRANSACTION_SHOW_INFORMATION_PAGE } from 'src/app/rom-transaction/constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
@@ -7,6 +7,7 @@ import * as moment from 'moment';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { AisNativeOrderService } from 'src/app/shared/services/ais-native-order.service';
 
 @Component({
   selector: 'app-rom-transaction-list-mobile-page',
@@ -15,7 +16,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 })
 export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy {
 
-  username: string;
+  username: any;
   transaction: Transaction;
   romData: any = [];
   currenDate: string = '';
@@ -31,6 +32,8 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
     private alertService: AlertService,
     private transactionService: TransactionService,
     private fb: FormBuilder,
+    private aisNativeOrderService: AisNativeOrderService,
+    private utils: Utils,
   ) {
     this.username = this.tokenService.getUser().username;
   }
@@ -49,6 +52,9 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
 
   queryRomList(mobile?: string): void {
     this.pageLoadingService.openLoading();
+    if (this.utils.isAisNative()) {
+      this.username = this.aisNativeOrderService.getUsername();
+    }
     this.param = {
       username: this.username,
       cusMobileNo: mobile
