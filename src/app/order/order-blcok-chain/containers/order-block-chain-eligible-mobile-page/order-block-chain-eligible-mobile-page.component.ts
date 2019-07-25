@@ -33,33 +33,51 @@ export class OrderBlockChainEligibleMobilePageComponent implements OnInit, OnDes
   ngOnInit(): void {
     if (this.transaction.data.customer) {
       const idCardNo: string = this.transaction.data.customer.idCardNo;
-      this.getMobileList(idCardNo);
+      this.callServices(idCardNo);
     } else {
       this.onBack();
     }
   }
 
-  getMobileList(idCardNo: string = '1100800828728'): void {
+  callServices(idCardNo: string): void {
     this.http.get(`/api/customerportal/newRegister/${idCardNo}/queryPrepaidMobileList`).toPromise()
       .then((resp: any) => {
-        const respMobileList = [ ...resp.data.prepaidMobileList || {}, ...resp.data.postpaidMobileList || {} ] || [];
-        const mobileList = respMobileList.filter((order: any) => {
-          return ['Submit for Approve', 'Pendingx', 'Submitted', 'Request',
-            'Saveteam', 'QueryBalance', 'Response', 'Notification', 'BAR Processing',
-            'BAR', 'Terminating'].find((statusCode: any) => {
-              return statusCode !== order.statusCode;
-            });
-        });
-        this.mapPrepaidMobileNo(mobileList);
+        const mobileList = this.mappingMobileList(resp);
+        this.callGetMobileIdService(mobileList, idCardNo);
       })
-      .catch(() => {
-        this.eligibleMobiles = [];
-      });
+      .catch(() => this.eligibleMobiles = []);
   }
 
-  mapPrepaidMobileNo(mobileList: { forEach: (arg0: (element: any) => void) => void; }): void {
+  callGetMobileIdService(mobileList: any[], idCardNo: string): void {
+    this.http.get(`/api/customerportal/newRegister/get-mobile-id/${idCardNo}`).toPromise()
+      .then((res: any = {}) => {
+        const result = (res.data || {}).resultData || [];
+        return result
+          .filter((mobile: any = {}) => (mobile.mobile_id_status || [])
+            .some((arr: any = {}) => arr.status === 'A'))
+          .map((arr: any = {}) => arr.msisdn.replace(/(^66)/, '0'));
+      }).catch(() => [])
+      .then((result: Array<any> = []) => this.mapPrepaidMobileNo(mobileList, result));
+  }
+
+  mappingMobileList(resp: any): any[] {
+    const respMobileList = [...resp.data.prepaidMobileList || {}, ...resp.data.postpaidMobileList || {}] || [];
+    const mobileList = respMobileList.filter((order: any) => {
+      return ['Submit for Approve', 'Pendingx', 'Submitted', 'Request',
+        'Saveteam', 'QueryBalance', 'Response', 'Notification', 'BAR Processing',
+        'BAR', 'Terminating'].find((statusCode: any) => {
+          return statusCode !== order.statusCode;
+        });
+    }) || [];
+    return mobileList;
+  }
+
+  mapPrepaidMobileNo(mobileList: any, blockChainMobileNo: Array<any> = []): void {
     const mobiles: Array<EligibleMobile> = new Array<EligibleMobile>();
     mobileList.forEach(element => {
+      if (blockChainMobileNo.includes(element.mobileNo)) {
+        element.status += ' - enroll';
+      }
       mobiles.push({ mobileNo: element.mobileNo, mobileStatus: element.status });
     });
     this.eligibleMobiles = mobiles;
