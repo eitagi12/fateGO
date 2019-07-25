@@ -95,23 +95,23 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
               this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
               return;
             }
-
-            const registerDate = moment()
-              .subtract(+mobileDetail.data.serviceYear.year, 'years')
-              .subtract(+mobileDetail.data.serviceYear.month, 'months')
-              .subtract(+mobileDetail.data.serviceYear.day, 'days');
-            const packageDate = moment().subtract(+selectedPackage.days_of_service_year, 'days');
-            const isBefore = registerDate.isBefore(packageDate);
-            if (!isBefore) {
-              this.pageLoadingService.closeLoading();
-              this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจาก service years ไม่ถึง');
-              return;
+            if (selectedPackage && selectedPackage.customAttributes && selectedPackage.customAttributes.days_of_service_year) {
+              const registerDate = moment()
+                .subtract(+mobileDetail.data.serviceYear.year, 'years')
+                .subtract(+mobileDetail.data.serviceYear.month, 'months')
+                .subtract(+mobileDetail.data.serviceYear.day, 'days').format('YYYY-MM-DD');
+              const packageDate = moment().subtract(+selectedPackage.customAttributes.days_of_service_year, 'days').format('YYYY-MM-DD');
+              const isSameOrAfter = moment(registerDate).isSameOrAfter(packageDate);
+              if (!isSameOrAfter) {
+                this.pageLoadingService.closeLoading();
+                this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจาก service years ไม่ถึง');
+                return;
+              }
             }
 
             this.pageLoadingService.closeLoading();
             this.savePackage(this.mobileNo, selectedPackage);
             this.getRomByUser();
-
           });
       } else {
         const isPrepaid: boolean = resProfile.data.chargeType === 'Pre-paid';
