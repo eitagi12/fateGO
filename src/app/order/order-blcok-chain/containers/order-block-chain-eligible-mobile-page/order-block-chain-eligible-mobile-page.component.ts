@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { WIZARD_ORDER_BLOCK_CHAIN } from 'src/app/order/constants/wizard.constant';
 import { Transaction, BillingAccount } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { element } from '@angular/core/src/render3/instructions';
 
 @Component({
   selector: 'app-order-block-chain-eligible-mobile-page',
@@ -41,11 +42,9 @@ export class OrderBlockChainEligibleMobilePageComponent implements OnInit, OnDes
 
   callServices(idCardNo: string): void {
     this.http.get(`/api/customerportal/newRegister/${idCardNo}/queryPrepaidMobileList`).toPromise()
-      .then((resp: any) => {
-        const mobileList = this.mappingMobileList(resp);
-        this.callGetMobileIdService(mobileList, idCardNo);
-      })
-      .catch(() => this.eligibleMobiles = []);
+      .then((resp: any) =>  this.mappingMobileList(resp))
+      .catch(() => [])
+      .then(mobileList =>  this.callGetMobileIdService(mobileList, idCardNo));
   }
 
   callGetMobileIdService(mobileList: any[], idCardNo: string): void {
@@ -73,12 +72,15 @@ export class OrderBlockChainEligibleMobilePageComponent implements OnInit, OnDes
   }
 
   mapPrepaidMobileNo(mobileList: any, blockChainMobileNo: Array<any> = []): void {
-    const mobiles: Array<EligibleMobile> = new Array<EligibleMobile>();
-    mobileList.forEach(element => {
-      if (blockChainMobileNo.includes(element.mobileNo)) {
-        element.status += ' - enroll';
+    const mobiles: Array<any> = new Array<any>();
+    mobileList.forEach(mobileElement => {
+      if (blockChainMobileNo.includes(mobileElement.mobileNo)) {
+        return;
       }
-      mobiles.push({ mobileNo: element.mobileNo, mobileStatus: element.status });
+      mobiles.push({ mobileNo: mobileElement.mobileNo, mobileStatus: mobileElement.status });
+    });
+    blockChainMobileNo.forEach(mobileNo => {
+      mobiles.push({ mobileNo: mobileNo, mobileStatus: 'Enroll' });
     });
     this.eligibleMobiles = mobiles;
   }
