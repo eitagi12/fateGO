@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 
@@ -26,7 +26,7 @@ import { ProfileFbbService } from 'src/app/shared/services/profile-fbb.service';
   templateUrl: './device-order-ais-existing-gadget-mobile-detail-page.component.html',
   styleUrls: ['./device-order-ais-existing-gadget-mobile-detail-page.component.scss']
 })
-export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements OnInit {
+export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements OnInit, OnDestroy {
 
   wizards: any = WIZARD_DEVICE_ORDER_AIS;
   transaction: Transaction;
@@ -37,7 +37,6 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
   mobileNo: string;
   disableNextButton: boolean;
   action: string;
-  isNext: boolean;
   alertWording: string;
 
   constructor(
@@ -68,23 +67,42 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
   callServiceMobileDetail(): void {
     this.http.get(`/api/customerportal/mobile-detail/${this.mobileNo}`).toPromise()
       .then((mobileDetail: any) => {
-        this.mappingMobileDetailAndPromotion(mobileDetail);
         this.mappingMobileDetail(mobileDetail);
+        this.mappingMobileDetailAndPromotion(mobileDetail);
       })
       .catch(this.ErrorMessage());
   }
 
   mappingMobileDetailAndPromotion(mobileDetail: any): void {
     this.callQueryContractFirstPackAndGetPromotionShelveServices()
-      .then(promotionsShelves => this.filterPromotionshelveAndMobileDetail(mobileDetail, promotionsShelves))
-      .then((response: boolean) => {
-        this.pageLoadingService.closeLoading();
-        this.isNext = response;
-        if (this.alertWording) {
-          this.alertService.warning(this.alertWording);
+      .then(promotionsShelves => {
+        let havePackages: any;
+        const { promotionCodeFuturePackage, promotionCodeCurrentPackage, promotionCode }:
+          {
+            promotionCodeFuturePackage: string;
+            promotionCodeCurrentPackage: string;
+            promotionCode: string[];
+          } = this.setPromotionCode(mobileDetail, promotionsShelves);
+        if (this.havePackages(promotionsShelves)) {
+          if (promotionCodeFuturePackage) {
+            havePackages = promotionCode.filter((code: string) => {
+              return code === promotionCodeFuturePackage;
+            });
+            this.alertWording = havePackages[0] ? '' : 'แพ็กเกจหลักไม่ร่วมโครงการ \n กรุณาเปลี่ยนแพ็กเกจ';
+          } else {
+            havePackages = promotionCode.filter((code: string) => {
+              return code === promotionCodeCurrentPackage;
+            });
+            this.alertWording = havePackages[0] ? '' : 'แพ็กเกจหลักไม่ร่วมโครงการ \n กรุณาเปลี่ยนแพ็กเกจ';
+          }
+        } else {
+          this.alertWording = `เบอร์ ${this.mobileNo}
+            ไม่สามารถรับสิทธิ์โครงการนี้ได้ \n กรุณาเปลี่ยนเบอร์ใหม่ เพื่อรับสิทธิ์ซื้อเครื่องราคาพิเศษ`;
         }
-      })
-      .catch(this.ErrorMessage());
+      }).then(() => {
+        this.pageLoadingService.closeLoading();
+        this.disableNextButton = this.alertWording ? true : false;
+      }).catch(this.ErrorMessage());
   }
 
   callQueryContractFirstPackAndGetPromotionShelveServices(): Promise<any> {
@@ -102,7 +120,7 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
           this.transaction.data.contractFirstPack = contract;
         }
         return this.callGetPromotionShelveService(trade, billingSystem, privilege, contract);
-      });
+      }).catch(this.ErrorMessage());
   }
 
   callGetPromotionShelveService(trade: any, billingSystem: string, privilege: any, contract: any): any[] | PromiseLike<any[]> {
@@ -145,40 +163,11 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
       });
   }
 
-  filterPromotionshelveAndMobileDetail(mobileDetail: any, promotionsShelves: any): boolean {
-    // tslint:disable-next-line: max-line-length
-    const { promotionCodeFuturePackage, promotionCodeCurrentPackage, promotionCode }: { promotionCodeFuturePackage: string; promotionCodeCurrentPackage: string; promotionCode: string[]; } = this.setPromotionCode(mobileDetail, promotionsShelves);
-    let isNext: boolean = false;
-    let havePackages: any;
-    console.log('promotionCode of promotionsShelves', promotionCode);
-    if (this.havePackages(promotionsShelves)) {
-      if (promotionCodeFuturePackage) {
-        havePackages = promotionCode.filter((code: string) => {
-          return code === promotionCodeFuturePackage;
-        });
-        isNext = havePackages[0] ? true : false;
-        this.alertWording = isNext ? '' : 'แพ็กเกจหลักไม่ร่วมโครงการ \n กรุณาเปลี่ยนแพ็กเกจ';
-        console.log(isNext ? '' : '(มีFuturePackage) แต่ไม่มี FuturePackage ที่เหมือนกับ package');
-      } else {
-        havePackages = promotionCode.filter((code: string) => {
-          return code === promotionCodeCurrentPackage;
-        });
-        isNext = havePackages[0] ? true : false;
-        this.alertWording = isNext ? '' : 'แพ็กเกจหลักไม่ร่วมโครงการ \n กรุณาเปลี่ยนแพ็กเกจ';
-        console.log(isNext ? '' : '(ไม่มีFuturePackage) และไม่มี CurrentPackage ที่เหมือนกับ package');
-      }
-    } else {
-      this.disableNextButton = true;
-      this.alertWording = `เบอร์ ${this.mobileNo} ไม่สามารถรับสิทธิ์โครงการนี้ได้
-      \n กรุณาเปลี่ยนเบอร์ใหม่ เพื่อรับสิทธิ์ซื้อเครื่องราคาพิเศษ`;
-    }
-    return isNext;
-  }
-
   private setPromotionCode(mobileDetail: any, promotionsShelves: any): any {
-    // tslint:disable-next-line: max-line-length
-    const promotionCodeFuturePackage: string = mobileDetail.data.futurePackage.promotionCode ? mobileDetail.data.futurePackage.promotionCode : '';
-    const promotionCodeCurrentPackage: string = mobileDetail.data.package.promotionCode ? mobileDetail.data.package.promotionCode : '';
+    const promotionCodeFuturePackage: string = mobileDetail.data.futurePackage.promotionCode ?
+      mobileDetail.data.futurePackage.promotionCode : '';
+    const promotionCodeCurrentPackage: string = mobileDetail.data.package.promotionCode ?
+      mobileDetail.data.package.promotionCode : '';
     const promotionCode: Array<string> = [];
     promotionsShelves.map((promotionsshelves) => {
       promotionsshelves.promotions.map((promotion) => {
@@ -193,9 +182,12 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
   mappingMobileDetail(mobileDetail: any): any {
     const serviceYear = mobileDetail.data.serviceYear;
     this.mobileInfo = this.mappingMobileInfo(mobileDetail, serviceYear);
-    this.transaction.data.simCard.chargeType = mobileDetail.chargeType;
-    this.transaction.data.simCard.billingSystem = mobileDetail.billingSystem;
-    this.transaction.data.currentPackage = mobileDetail.package;
+    this.transaction.data.simCard = {
+      mobileNo: this.mobileNo,
+      chargeType: mobileDetail.data.chargeType,
+      billingSystem: mobileDetail.data.billingSystem,
+    };
+    this.transaction.data.currentPackage = mobileDetail.data.package;
   }
 
   mappingMobileInfo(mobileDetail: any, serviceYear: any): MobileInfo {
@@ -243,38 +235,28 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    if (this.action === TransactionAction.KEY_IN_FBB) {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_IDENTIFY_PAGE]);
-    } else {
-      const idCardNo = this.transaction.data.customer.idCardNo;
-      this.http.get(`/api/customerportal/newRegister/${idCardNo}/queryBillingAccount`).toPromise()
-        .then(response => this.mappingMobileBillAccountAndIsAirtimeAndCheckWarning(response, this.mobileNo))
-        .then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_PAYMENT_DETAIL_PAGE]))
-        .catch(this.ErrorMessage());
-    }
+    this.mappingMobileBillAccountAndIsAirtimeAndCheckWarning(this.mobileNo);
 
   }
 
-  mappingMobileBillAccountAndIsAirtimeAndCheckWarning(response: any, mobileNo: string): void {
+  mappingMobileBillAccountAndIsAirtimeAndCheckWarning(mobileNo: string): void {
     this.pageLoadingService.closeLoading();
     const { mobileBillAccount, isAirtime }: {
       mobileBillAccount: string[];
       isAirtime: boolean;
-    } = this.mappingMobileBillAccountAndIsAirtime(response, mobileNo);
-
-    this.transaction.data.billingInformation.isNewBAFlag = !!(mobileBillAccount.length > 1);
+    } = this.mappingMobileBillAccountAndIsAirtime(mobileNo);
     this.checkWarningBillingAccountMessage(mobileBillAccount, isAirtime);
   }
 
-  mappingMobileBillAccountAndIsAirtime(resp: any, mobileNo: string): {
+  mappingMobileBillAccountAndIsAirtime(mobileNo: string): {
     mobileBillAccount: string[];
     isAirtime: boolean;
   } {
-    const data = resp.data || {};
+    const billCycles = this.transaction.data.billingInformation.billCycles;
     const billingAccountList: any = [];
     const mobileNoList: any = [];
 
-    data.billingAccountList.forEach((list: any) => billingAccountList.push(list));
+    billCycles.forEach((list: any) => billingAccountList.push(list));
     billingAccountList.forEach((billings: { mobileNo: any; }) => mobileNoList.push(billings.mobileNo));
 
     let isAirtime: boolean = false;
@@ -283,7 +265,6 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
       isAirtime = !!(trade.advancePay.amount > 0);
     }
 
-    const billCycles = this.transaction.data.billingInformation.billCycles;
     const mobileBillAccount = this.mapBillingCyclesByMobileNo(billCycles, mobileNo);
     return { mobileBillAccount, isAirtime };
   }
@@ -294,8 +275,10 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
 
   checkWarningBillingAccountMessage(mobileBillAccount: string[], isAirtime: boolean): void {
     if (mobileBillAccount && mobileBillAccount.length > 1 && isAirtime) {
-      this.alertService.warning('หมายเลขนี้มีการรวมบิล ไม่สามารถทำรายการได้')
-        .then(() => this.onBack());
+      this.alertService.warning('หมายเลขนี้มีการรวมบิล ไม่สามารถทำรายการได้');
+    } else {
+      this.transaction.data.billingInformation.isNewBAFlag = false;
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_PAYMENT_DETAIL_PAGE]);
     }
   }
 
@@ -312,6 +295,10 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
     const developerMessage = (error.errors || {}).developerMessage;
     this.alertService.error((developerMessage && error.resultDescription)
       ? `${developerMessage} ${error.resultDescription}` : `ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้`);
+  }
+
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
   }
 
 }
