@@ -33,7 +33,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
   identityValid: boolean = false;
   identity: string;
   isFbbNo: boolean;
-
+  disableNextButton: boolean;
   constructor(
     private router: Router,
     private transactionService: TransactionService,
@@ -157,9 +157,14 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
     } else {
       // KEY-IN ID-Card
       this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customer: Customer) => {
+
         this.transaction.data.customer = customer;
-        this.transaction.data.billingInformation = {};
-        this.transaction.data.billingInformation.billDeliveryAddress = this.transaction.data.customer;
+        // this.transaction.data.billingInformation = {};
+        // this.transaction.data.billingInformation.billDeliveryAddress = customer;
+        this.transaction.data.billingInformation = {
+          billCycles: this.getBillCycles(),
+          billDeliveryAddress: customer
+        };
         if (!this.transaction.data.order || !this.transaction.data.order.soId) {
           return this.http.post('/api/salesportal/add-device-selling-cart',
             this.getRequestAddDeviceSellingCart()
@@ -176,6 +181,15 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
         }
       }).then(() => this.pageLoadingService.closeLoading());
     }
+  }
+
+  private getBillCycles(): any {
+    return this.http.get(`/api/customerportal/newRegister/${this.identity}/queryBillingAccount`).toPromise()
+      .then((resp: any) => {
+        const data = resp.data || {};
+        console.log('billCycles', data.billingAccountList);
+        return data.billingAccountList;
+      }).catch(this.ErrorMessage());
   }
 
   private checkRoutePath(): void {
@@ -293,5 +307,20 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
     this.profileFbbService.save(this.profileFbb);
+  }
+
+  ErrorMessage(): (reason: any) => void | PromiseLike<void> {
+    return (err: any) => {
+      this.handleErrorMessage(err);
+    };
+  }
+
+  handleErrorMessage(err: any): void {
+    this.disableNextButton = true;
+    this.pageLoadingService.closeLoading();
+    const error = err.error || {};
+    const developerMessage = (error.errors || {}).developerMessage;
+    this.alertService.error((developerMessage && error.resultDescription)
+      ? `${developerMessage} ${error.resultDescription}` : `ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้`);
   }
 }
