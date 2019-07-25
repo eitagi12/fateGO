@@ -21,6 +21,7 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
   currenDate: string = '';
   mobileForm: FormGroup;
   queryRomTransaction: Promise<any>;
+  param: any;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -48,6 +49,10 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
 
   queryRomList(mobile?: string): void {
     this.pageLoadingService.openLoading();
+    this.param = {
+      username: this.username,
+      cusMobileNo: mobile
+    };
     this.queryRomTransaction = this.http.post('/api/customerportal/query-rom-transaction', {
       username: this.username,
       cusMobileNo: mobile
