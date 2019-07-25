@@ -17,9 +17,16 @@
     </div>
   </div>
 
+  <div *ngIf='alertWording' class="message-box mx-auto">
+    <div class="card pt-4 pb-4 mb-4">
+      <div class="card-body text-center">
+          <h5>{{ alertWording }}</h5>
+      </div>
+    </div>
+  </div>
+
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
     <button class="btn btn-success" (click)="onNext()" [disabled]="disableNextButton">NEXT</button>
   </mc-footer>
 </div>
-
