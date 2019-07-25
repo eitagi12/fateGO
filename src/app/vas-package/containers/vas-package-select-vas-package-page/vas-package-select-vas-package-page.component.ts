@@ -100,9 +100,9 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
               .subtract(+mobileDetail.data.serviceYear.year, 'years')
               .subtract(+mobileDetail.data.serviceYear.month, 'months')
               .subtract(+mobileDetail.data.serviceYear.day, 'days');
-            const packageDate = moment().subtract(+selectedPackage.days_of_service_year, 'days');
-            const isBefore = registerDate.isBefore(packageDate);
-            if (!isBefore) {
+            const packageDate = moment().subtract(+selectedPackage.customAttributes.days_of_service_year, 'days');
+            const isAfter = registerDate.isAfter(packageDate);
+            if (!isAfter) {
               this.pageLoadingService.closeLoading();
               this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจาก service years ไม่ถึง');
               return;
