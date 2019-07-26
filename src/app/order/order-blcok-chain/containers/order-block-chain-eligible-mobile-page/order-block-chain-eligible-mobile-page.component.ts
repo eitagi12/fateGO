@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy} from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService } from 'mychannel-shared-libs';
+import { HomeService, AlertService } from 'mychannel-shared-libs';
 import { ROUTE_ORDER_BLOCK_CHAIN_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_ORDER_BLOCK_CHAIN_AGREEMENT_SIGN_PAGE } from 'src/app/order/order-blcok-chain/constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
 import { WIZARD_ORDER_BLOCK_CHAIN } from 'src/app/order/constants/wizard.constant';
@@ -32,18 +32,14 @@ export class OrderBlockChainEligibleMobilePageComponent implements OnInit, OnDes
     private router: Router,
     private http: HttpClient,
     private homeService: HomeService,
+    private alertService: AlertService,
     private transactionService: TransactionService
   ) {
     this.transaction = this.transactionService.load();
    }
 
   ngOnInit(): void {
-    if (this.transaction.data.customer) {
-      const idCardNo: string = this.transaction.data.customer.idCardNo;
-      this.callServices(idCardNo);
-    } else {
-      this.onBack();
-    }
+    this.callServices('1234599898761');
   }
 
   callServices(idCardNo: string): void {
@@ -104,7 +100,13 @@ export class OrderBlockChainEligibleMobilePageComponent implements OnInit, OnDes
       mobileNo: this.selectMobileNo.mobileNo,
       persoSim: false,
       forceEnrollFlag: this.selectMobileNo.forceEnrollFlag };
-    this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_AGREEMENT_SIGN_PAGE]);
+    this.alertService.question(`หมายเลข ${this.selectMobileNo.mobileNo} เคยสมัครแทนบัตรแล้ว กรุณายืนยันการสมัครใหม่อีกครั้ง`)
+    .then((data) => {
+      if (data.value) {
+        this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_AGREEMENT_SIGN_PAGE]);
+      }
+      return;
+    });
   }
   onHome(): void {
     this.homeService.goToHome();
