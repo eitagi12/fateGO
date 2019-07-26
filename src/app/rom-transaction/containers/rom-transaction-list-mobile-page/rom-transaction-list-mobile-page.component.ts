@@ -44,13 +44,13 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
   ngOnInit(): void {
     this.createForm();
     this.currenDate = this.getCurrentDate();
-    // if (this.utils.isAisNative()) {
-    //   this.aisNativeOrderService.getNativeUsername();
-    //   this.usernameSubscript = this.aisNativeOrderService.getUsername()
-    //   .subscribe((response: any) => {
-    //     this.username = response.username;
-    //   });
-    // }
+    if (this.utils.isAisNative()) {
+      this.aisNativeOrderService.getNativeUsername();
+      this.usernameSubscript = this.aisNativeOrderService.getUsername()
+      .subscribe((response: any) => {
+        this.username = response.username;
+      });
+    }
     setTimeout(() => {
       this.queryRomList();
     }, 0);
