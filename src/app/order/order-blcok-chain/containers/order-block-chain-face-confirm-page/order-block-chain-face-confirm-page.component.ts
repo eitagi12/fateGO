@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import { WIZARD_ORDER_BLOCK_CHAIN } from 'src/app/order/constants/wizard.constant';
 import { Router } from '@angular/router';
-import { HomeService, AlertService, PageLoadingService } from 'mychannel-shared-libs';
+import { HomeService, AlertService, PageLoadingService, TokenService } from 'mychannel-shared-libs';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { environment } from 'src/environments/environment';
 import { TranslateService } from '@ngx-translate/core';
 import { ROUTE_ORDER_BLOCK_CHAIN_FACE_COMPARE_PAGE, ROUTE_ORDER_BLOCK_CHAIN_RESULT_PAGE } from 'src/app/order/order-blcok-chain/constants/route-path.constant';
-
+import * as moment from 'moment';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 @Component({
   selector: 'app-order-block-chain-face-confirm-page',
   templateUrl: './order-block-chain-face-confirm-page.component.html',
@@ -18,6 +19,10 @@ export class OrderBlockChainFaceConfirmPageComponent implements OnInit {
   wizards: string[] = WIZARD_ORDER_BLOCK_CHAIN;
 
   confirmForm: FormGroup;
+  transaction: Transaction;
+  locationName: string;
+  employeeCode: any;
+  locationCode: string;
 
   constructor(
     private router: Router,
@@ -26,12 +31,28 @@ export class OrderBlockChainFaceConfirmPageComponent implements OnInit {
     private http: HttpClient,
     private pageLoadingService: PageLoadingService,
     private alertService: AlertService,
-    private translation: TranslateService
+    private translation: TranslateService,
+    private transactionService: TransactionService,
+    private tokenService: TokenService
   ) {
+    this.transaction = this.transactionService.load();
   }
 
   ngOnInit(): void {
     this.createForm();
+    this.checkLocation();
+  }
+  checkLocation(): void {
+    const user = this.tokenService.getUser();
+    this.http.get(`/api/salesportal/location-by-code?code=${user.locationCode}`).toPromise().then((response: any) => {
+      this.locationName = response.data.displayName;
+      this.locationCode = response.data.code;
+    });
+    this.http.get(`/api/customerportal/newRegister/getEmployeeDetail/username/${user.username}`).toPromise()
+      .then((employee: any) => {
+        this.employeeCode = employee.data.pin;
+      });
+
   }
 
   createForm(): void {
@@ -45,8 +66,54 @@ export class OrderBlockChainFaceConfirmPageComponent implements OnInit {
   }
 
   onNext(): void {
-    // this.pageLoadingService.openLoading();
-    this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_RESULT_PAGE]);
+    this.pageLoadingService.openLoading();
+    this.http.get(`/api/customerportal/checkSeller/${this.confirmForm.value.password}`).toPromise()
+      .then((employee: any) => {
+        const isEmployee = employee.data || '';
+        console.log('isEmployee', isEmployee);
+        if (isEmployee.isAscCode) {
+          this.callService();
+        } else {
+          this.alertService.error('กรุณากรอกรหัสพนักงงานให้ถูกต้อง');
+        }
+      }).catch((err) => {
+
+      }).then(() => {
+        this.pageLoadingService.closeLoading();
+      });
+  }
+  callService(): void {
+    const customer = this.transaction.data.customer;
+    const simCard = this.transaction.data.simCard;
+    const faceImage = this.transaction.data.faceRecognition;
+    const birthDate = moment(customer.birthdate).format('YYYY-MM-DD');
+    const param = {
+      id_card: customer.idCardNo || '',
+      prefix_name_th: customer.titleName || '',
+      firstname_th: customer.firstName || '',
+      surname_th: customer.lastName || '',
+      prefix_name_en: customer.titleNameEN || '',
+      firstname_en: customer.firstNameEn || '',
+      surname_en: customer.lastNameEn || '',
+      msisdn: `66${simCard.mobileNo.substring(1, simCard.mobileNo.length)}` || '',
+      live_photo: faceImage.imageFaceUser || '',
+      card_photo: customer.imageReadSmartCard || '',
+      consent: customer.imageSignature || '',
+      laser_code: customer.laserCode || '',
+      birth_date: birthDate || '',
+      location_name: this.locationName || '',
+      location_code: this.locationCode || '',
+      empowerment_flag: 'N',
+      empowerment_by_code: this.employeeCode || '',
+      force_enroll_flag: 'Y'
+    };
+    console.log('param', param);
+    this.http.post(`/api/customerportal/newRegister/post-mobile-id`, param).toPromise()
+      .then((data: any) => {
+        this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_RESULT_PAGE]);
+      }).catch((err) => {
+        console.log('err', err);
+      });
   }
 
   onHome(): void {

@@ -114,10 +114,10 @@ export class OrderBlockChainValidateCustomerIdCardPageComponent implements OnIni
       const result = datad.result || {};
       const dopaData: Dopa = result.dataInfo || {};
 
-      if (dopaData && dopaData.stCode !== '0') {
-        this.alertService.error('ไม่สามารถทำรายการได้ <br> [Message] ' + dopaData.stDesc);
-        return;
-      }
+      // if (dopaData && dopaData.stCode !== '0') {
+      //   this.alertService.error('ไม่สามารถทำรายการได้ <br> [Message] ' + dopaData.stDesc);
+      //   return;
+      // }
 
       this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
         .then((zipCode: string) => {
