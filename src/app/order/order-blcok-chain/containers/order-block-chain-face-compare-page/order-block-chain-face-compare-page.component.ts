@@ -5,7 +5,7 @@ import { HomeService, PageLoadingService, CaptureAndSign, TokenService } from 'm
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionAction, Customer, FaceRecognition } from 'src/app/shared/models/transaction.model';
 import { HttpClient } from '@angular/common/http';
-import { ROUTE_ORDER_BLOCK_CHAIN_FACE_CAPTURE_PAGE, ROUTE_ORDER_BLOCK_CHAIN_RESULT_PAGE, ROUTE_ORDER_BLOCK_CHAIN_FACE_CONFIRM_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_ORDER_BLOCK_CHAIN_FACE_CAPTURE_PAGE, ROUTE_ORDER_BLOCK_CHAIN_RESULT_PAGE, ROUTE_ORDER_BLOCK_CHAIN_FACE_CONFIRM_PAGE, ROUTE_ORDER_BLOCK_CHAIN_FACE_COMPARE_PAGE } from '../../constants/route-path.constant';
 import * as moment from 'moment';
 @Component({
   selector: 'app-order-block-chain-face-compare-page',
@@ -53,29 +53,10 @@ export class OrderBlockChainFaceComparePageComponent implements OnInit, OnDestro
   }
 
   onNext(): void {
-    this.pageLoadingService.openLoading();
-    const customer: Customer = this.transaction.data.customer;
-    const faceRecognition: FaceRecognition = this.transaction.data.faceRecognition;
-
-    this.http.post('/api/facerecog/facecompare', {
-      cardBase64Imgs: this.isReadCard() ? customer.imageReadSmartCard : (customer.imageSmartCard || customer.imageReadPassport),
-      selfieBase64Imgs: faceRecognition.imageFaceUser
-    }).toPromise().then((resp: any) => {
-      this.transaction.data.faceRecognition.kyc = !resp.data.match;
-      if (resp.data.match) {
-        this.callService();
-      } else {
-        this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_FACE_CONFIRM_PAGE]);
-      }
-    }).then(() => {
-      this.pageLoadingService.closeLoading();
-    }).catch((error) => {
-      this.pageLoadingService.closeLoading();
-      this.transaction.data.faceRecognition.kyc = true;
-      this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_FACE_CONFIRM_PAGE]);
-    });
+    this.callService();
   }
   callService(): void {
+    this.pageLoadingService.openLoading();
     const customer = this.transaction.data.customer;
     const simCard = this.transaction.data.simCard;
     const faceImage = this.transaction.data.faceRecognition;
@@ -89,23 +70,25 @@ export class OrderBlockChainFaceComparePageComponent implements OnInit, OnDestro
       firstname_en: customer.firstNameEn || '',
       surname_en: customer.lastNameEn || '',
       msisdn: `66${simCard.mobileNo.substring(1, simCard.mobileNo.length)}` || '',
-      live_photo: faceImage.imageFaceUser || '',
-      card_photo: customer.imageReadSmartCard || '',
-      consent: customer.imageSignature || '',
+      live_photo: `data:image/jpg;base64,${faceImage.imageFaceUser}` || '',
+      card_photo: `data:image/jpg;base64,${customer.imageReadSmartCard}` || '',
+      consent: `data:image/jpg;base64,${customer.imageSignatureSmartCard}` || '',
       laser_code: customer.laserCode || '',
       birth_date: birthDate || '',
       location_name: this.locationName || '',
       location_code: this.locationCode || '',
-      empowerment_flag: 'N',
+      empowerment_flag: '',
       empowerment_by_code: this.employeeCode || '',
-      force_enroll_flag: simCard.forceEnrollFlag
+      force_enroll_flag: simCard.forceEnrollFlag || ''
     };
     console.log('param', param);
     this.http.post(`/api/customerportal/newRegister/post-mobile-id`, param).toPromise()
       .then((data: any) => {
         this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_RESULT_PAGE]);
       }).catch((err) => {
-        console.log('err', err);
+        this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_FACE_COMPARE_PAGE]);
+      }).then(() => {
+        this.pageLoadingService.closeLoading();
       });
   }
 
