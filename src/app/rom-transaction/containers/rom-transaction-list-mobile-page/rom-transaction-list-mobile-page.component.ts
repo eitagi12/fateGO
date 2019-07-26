@@ -9,6 +9,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AisNativeOrderService } from 'src/app/shared/services/ais-native-order.service';
 import { Subscription } from 'rxjs';
+declare let window: any;
 
 @Component({
   selector: 'app-rom-transaction-list-mobile-page',
@@ -43,13 +44,13 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
   ngOnInit(): void {
     this.createForm();
     this.currenDate = this.getCurrentDate();
-    if (this.utils.isAisNative()) {
-      this.aisNativeOrderService.getNativeUsername();
-      this.usernameSubscript = this.aisNativeOrderService.getUsername()
-      .subscribe((response: any) => {
-        this.username = response.username;
-      });
-    }
+    // if (this.utils.isAisNative()) {
+    //   this.aisNativeOrderService.getNativeUsername();
+    //   this.usernameSubscript = this.aisNativeOrderService.getUsername()
+    //   .subscribe((response: any) => {
+    //     this.username = response.username;
+    //   });
+    // }
     setTimeout(() => {
       this.queryRomList();
     }, 0);
@@ -135,6 +136,15 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
 
   onHome(): void {
     this.homeService.goToHome();
+  }
+
+  onBack(): void {
+    if (window.aisNative) {
+      window.aisNative.onAppBack();
+    } else {
+      window.webkit.messageHandlers.onAppBack.postMessage('');
+    }
+
   }
 
   ngOnDestroy(): void {
