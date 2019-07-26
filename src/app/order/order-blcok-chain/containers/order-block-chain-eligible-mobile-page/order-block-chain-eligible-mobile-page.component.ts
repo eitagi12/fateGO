@@ -82,12 +82,14 @@ export class OrderBlockChainEligibleMobilePageComponent implements OnInit, OnDes
     const mobiles: Array<EligibleMobile> = new Array<EligibleMobile>();
     mobileList.forEach(mobileElement => {
       if (blockChainMobileNo.includes(mobileElement.mobileNo)) {
-        return;
+        mobileElement.status += ' - enroll';
+        mobileElement.forceEnrollFlag = 'Y';
       }
-      mobiles.push({ mobileNo: mobileElement.mobileNo, mobileStatus: mobileElement.status, forceEnrollFlag: 'N' });
-    });
-    blockChainMobileNo.forEach(mobileNo => {
-      mobiles.push({ mobileNo: mobileNo, mobileStatus: 'Enroll', forceEnrollFlag: 'Y' });
+      mobiles.push({
+        mobileNo: mobileElement.mobileNo,
+        mobileStatus: mobileElement.status,
+        forceEnrollFlag: mobileElement.forceEnrollFlag || 'N'
+      });
     });
     this.eligibleMobiles = mobiles;
   }
@@ -105,13 +107,17 @@ export class OrderBlockChainEligibleMobilePageComponent implements OnInit, OnDes
       mobileNo: this.selectMobileNo.mobileNo,
       persoSim: false,
       forceEnrollFlag: this.selectMobileNo.forceEnrollFlag };
-    this.alertService.question(`หมายเลข ${this.selectMobileNo.mobileNo} เคยสมัครแทนบัตรแล้ว กรุณายืนยันการสมัครใหม่อีกครั้ง`)
-    .then((data) => {
-      if (data.value) {
-        this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_AGREEMENT_SIGN_PAGE]);
-      }
-      return;
-    });
+    if (this.selectMobileNo.forceEnrollFlag === 'Y') {
+      this.alertService.question(`หมายเลข ${this.selectMobileNo.mobileNo} เคยสมัครแทนบัตรแล้ว กรุณายืนยันการสมัครใหม่อีกครั้ง`)
+      .then((data) => {
+        if (data.value) {
+          this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_AGREEMENT_SIGN_PAGE]);
+        }
+        return;
+      });
+    } else {
+      this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_AGREEMENT_SIGN_PAGE]);
+    }
   }
   onHome(): void {
     this.homeService.goToHome();
