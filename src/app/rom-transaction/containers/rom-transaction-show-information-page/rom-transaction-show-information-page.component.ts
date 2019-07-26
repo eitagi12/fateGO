@@ -106,6 +106,10 @@ export class RomTransactionShowInformationPageComponent implements OnInit, OnDes
               this.transaction.data.romTransaction.pin = pinNo;
               this.transaction.data.romTransaction.refNo = refNo;
               this.onNext();
+            })
+            .catch((err: any) => {
+              const error = err.error.errors || {};
+              this.alertService.error(error.DETAIL);
             });
         }
       });
