@@ -14,7 +14,7 @@
     <div class="mt-3 mb-3">
       <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
       <mc-eligible-mobile title="Post Paid" (completed)="onComplete($event)"
-        errorMessage="{{ 'ไม่พบหมายเลขเติมเงินที่แสดงตนตาม ID No ที่ระบุ' | translate }}" [eligibleMobiles]="eligibleMobiles">
+        errorMessage="{{ 'ไม่พบหมายเลขที่สามารถใช้สิทธิ์ตามโครงการ ตามหมายเลขบัตรที่ระบุ' | translate }}" [eligibleMobiles]="eligibleMobiles">
       </mc-eligible-mobile>
     </div>
   </div>
