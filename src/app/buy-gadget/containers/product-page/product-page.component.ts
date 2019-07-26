@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { ProductStockBrandAndModel, User, HomeService, SalesService, TokenService, ProductStock } from 'mychannel-shared-libs';
 import { SUB_STOCK_DESTINATION, PRODUCT_SUB_TYPE, PRODUCT_TYPE } from '../../constants/gadget.constant';
 import { ActivatedRoute, Router, Params } from '@angular/router';
-import { ROUTE_BUY_GADGET_PRODUCT_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_BUY_GADGET_BRAND_PAGE } from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-product-page',
@@ -184,7 +184,7 @@ export class ProductPageComponent implements OnInit {
     if (this.params.commercialName) {
       queryParams.tab = 'search';
     }
-    this.router.navigate([ROUTE_BUY_GADGET_PRODUCT_PAGE], { queryParams });
+    this.router.navigate([ROUTE_BUY_GADGET_BRAND_PAGE], { queryParams });
   }
 
   onHome(): void {

@@ -19,6 +19,7 @@ import { PromotionShelveService } from 'src/app/device-order/services/promotion-
 
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 import { PRODUCT_TYPE, PRODUCT_SUB_TYPE, SUB_STOCK_DESTINATION } from '../../constants/gadget.constant';
+import { ROUTE_BUY_GADGET_PRODUCT_PAGE } from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-campaign-page',
@@ -400,24 +401,22 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
     // clear
     this.productDetail = {};
-    this.productDetailService = this.salesService.productDetail({
+    this.salesService.productDetail({
       brand: brand,
       location: user.locationCode,
       model: model,
       productType: productType || PRODUCT_TYPE,
       productSubtype: productSubtype || PRODUCT_SUB_TYPE
-    });
-    this.productDetailService.then((resp: any) => {
+    }).then((resp: any) => {
 
       // เก็บข้อมูลไว้ไปแสดงหน้าอื่นโดยไม่เปลี่ยนแปลงค่าข้างใน
       this.priceOption.productDetail = resp.data || {};
-
       const products: any[] = resp.data.products || [];
       forkJoin(products.map((product: any) => {
         return this.salesService.productStock({
           locationCodeSource: user.locationCode,
-          productType: product.productType || PRODUCT_TYPE,
-          productSubType: product.productSubtype || PRODUCT_SUB_TYPE,
+          productType: product.productType || productType,
+          productSubType: product.productSubtype || productSubtype,
           model: model,
           color: product.colorName,
           subStockDestination: SUB_STOCK_DESTINATION,
@@ -464,26 +463,25 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
   }
 
   callPriceOptionsService(brand: string, model: string, color: string, productType: string, productSubtype: string): void {
-    // this.priceOptionDetailService = this.salesService.priceOptions({
-    //   brand: brand,
-    //   model: model,
-    //   color: color,
-    //   productType: productType,
-    //   productSubtype: productSubtype,
-    //   location: this.user.locationCode
-    // });
-    // this.priceOptionDetailService.then((resp: any) => {
-    // const priceOptions = this.filterCampaigns(resp.data.priceOptions || []);
-    const priceOptions = this.filterCampaigns(this.dataMock());
-    if (priceOptions && priceOptions.length > 0) {
-      this.maximumNormalPrice = priceOptions[0].maximumNormalPrice;
-    }
-    // generate customer tabs
-    this.tabs = this.getTabsFormPriceOptions(priceOptions);
-    this.tabs.forEach((tab: any) => {
-      tab.campaignSliders = this.getCampaignSliders(priceOptions, tab.code);
+    this.priceOptionDetailService = this.salesService.priceOptions({
+      brand: brand,
+      model: model,
+      color: color,
+      productType: productType,
+      productSubtype: productSubtype,
+      location: this.user.locationCode
+    }).then((resp: any) => {
+      // const priceOptions = this.filterCampaigns(resp.data.priceOptions || []);
+      const priceOptions = this.filterCampaigns(this.dataMock());
+      if (priceOptions && priceOptions.length > 0) {
+        this.maximumNormalPrice = priceOptions[0].maximumNormalPrice;
+      }
+      // generate customer tabs
+      this.tabs = this.getTabsFormPriceOptions(priceOptions);
+      this.tabs.forEach((tab: any) => {
+        tab.campaignSliders = this.getCampaignSliders(priceOptions, tab.code);
+      });
     });
-    // });
   }
 
   onBack(): void {
@@ -495,7 +493,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     const queryParams: any = {
       brand: this.params.brand
     };
-    this.router.navigate([''], { queryParams });
+    this.router.navigate([ROUTE_BUY_GADGET_PRODUCT_PAGE], { queryParams });
   }
 
   onHome(): void {
