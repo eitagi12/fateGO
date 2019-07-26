@@ -78,8 +78,6 @@ export class OrderBlockChainFaceConfirmPageComponent implements OnInit {
         }
       }).catch((err) => {
 
-      }).then(() => {
-        this.pageLoadingService.closeLoading();
       });
   }
   callService(): void {
@@ -103,9 +101,9 @@ export class OrderBlockChainFaceConfirmPageComponent implements OnInit {
       birth_date: birthDate || '',
       location_name: this.locationName || '',
       location_code: this.locationCode || '',
-      empowerment_flag: 'N',
+      empowerment_flag: 'Y',
       empowerment_by_code: this.employeeCode || '',
-      force_enroll_flag: 'Y'
+      force_enroll_flag: simCard.forceEnrollFlag
     };
     console.log('param', param);
     this.http.post(`/api/customerportal/newRegister/post-mobile-id`, param).toPromise()
@@ -113,6 +111,8 @@ export class OrderBlockChainFaceConfirmPageComponent implements OnInit {
         this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_RESULT_PAGE]);
       }).catch((err) => {
         console.log('err', err);
+      }).then(() => {
+        this.pageLoadingService.closeLoading();
       });
   }
 
