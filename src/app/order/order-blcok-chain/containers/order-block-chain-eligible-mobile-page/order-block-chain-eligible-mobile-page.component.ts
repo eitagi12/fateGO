@@ -39,7 +39,12 @@ export class OrderBlockChainEligibleMobilePageComponent implements OnInit, OnDes
    }
 
   ngOnInit(): void {
-    this.callServices('1234599898761');
+    if (this.transaction.data.customer) {
+      const idCardNo: string = this.transaction.data.customer.idCardNo;
+      this.callServices(idCardNo);
+    } else {
+      this.onBack();
+    }
   }
 
   callServices(idCardNo: string): void {
