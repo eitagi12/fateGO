@@ -138,7 +138,9 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
   }
 
   ngOnDestroy(): void {
-    this.usernameSubscript.unsubscribe();
+    if (this.utils.isAisNative()) {
+      this.usernameSubscript.unsubscribe();
+    }
     this.transactionService.save(this.transaction);
   }
 }

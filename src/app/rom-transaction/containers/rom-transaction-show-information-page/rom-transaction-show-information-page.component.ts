@@ -98,7 +98,7 @@ export class RomTransactionShowInformationPageComponent implements OnInit, OnDes
             from: this.romTransaction.romTransaction.romNo,
             content: this.romTransaction.romTransaction.romNo,
             romPinCode: pinNo,
-            lastCustomerMobile: this.romTransaction.romTransaction.cusMobileNo,
+            lastCustomerMobile: this.romTransaction.romTransaction.cusMobileNo.substring(6, 10),
             romRefNo: refNo
           }).toPromise()
             .then((respone: any) => {
