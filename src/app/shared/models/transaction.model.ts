@@ -192,7 +192,8 @@ export interface SimCard {
   persoSim?: boolean;
   privilegeCode?: string;
   nType?: string;
-  mobileNoStatus?: 'Active' | 'Suspended';
+  mobileNoStatus?: 'Active' | 'Suspended' | 'Enroll';
+  forceEnrollFlag?: 'Y' | 'N';
 }
 
 export interface MainPackage {

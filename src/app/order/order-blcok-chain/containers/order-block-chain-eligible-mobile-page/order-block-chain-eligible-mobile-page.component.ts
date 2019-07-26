@@ -1,12 +1,18 @@
 import { Component, OnInit, OnDestroy} from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, EligibleMobile } from 'mychannel-shared-libs';
+import { HomeService } from 'mychannel-shared-libs';
 import { ROUTE_ORDER_BLOCK_CHAIN_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_ORDER_BLOCK_CHAIN_AGREEMENT_SIGN_PAGE } from 'src/app/order/order-blcok-chain/constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
 import { WIZARD_ORDER_BLOCK_CHAIN } from 'src/app/order/constants/wizard.constant';
 import { Transaction, BillingAccount } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { element } from '@angular/core/src/render3/instructions';
+
+interface EligibleMobile {
+  mobileNo: string;
+  mobileStatus: 'Active' | 'Suspended' | 'Enroll';
+  forceEnrollFlag: 'Y' | 'N';
+}
 
 @Component({
   selector: 'app-order-block-chain-eligible-mobile-page',
@@ -72,15 +78,15 @@ export class OrderBlockChainEligibleMobilePageComponent implements OnInit, OnDes
   }
 
   mapPrepaidMobileNo(mobileList: any, blockChainMobileNo: Array<any> = []): void {
-    const mobiles: Array<any> = new Array<any>();
+    const mobiles: Array<EligibleMobile> = new Array<EligibleMobile>();
     mobileList.forEach(mobileElement => {
       if (blockChainMobileNo.includes(mobileElement.mobileNo)) {
         return;
       }
-      mobiles.push({ mobileNo: mobileElement.mobileNo, mobileStatus: mobileElement.status });
+      mobiles.push({ mobileNo: mobileElement.mobileNo, mobileStatus: mobileElement.status, forceEnrollFlag: 'N' });
     });
     blockChainMobileNo.forEach(mobileNo => {
-      mobiles.push({ mobileNo: mobileNo, mobileStatus: 'Enroll' });
+      mobiles.push({ mobileNo: mobileNo, mobileStatus: 'Enroll', forceEnrollFlag: 'Y' });
     });
     this.eligibleMobiles = mobiles;
   }
@@ -94,7 +100,10 @@ export class OrderBlockChainEligibleMobilePageComponent implements OnInit, OnDes
   }
 
   onNext(): void {
-    this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo, persoSim: false };
+    this.transaction.data.simCard = {
+      mobileNo: this.selectMobileNo.mobileNo,
+      persoSim: false,
+      forceEnrollFlag: this.selectMobileNo.forceEnrollFlag };
     this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_AGREEMENT_SIGN_PAGE]);
   }
   onHome(): void {
