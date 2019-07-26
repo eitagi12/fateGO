@@ -36,7 +36,7 @@
               <small class="text-light pl-3">{{ currenDate }}</small>
             </div>
             <div class="list-group mt-2" [mcLoading]="queryRomTransaction">
-
+              {{ param | json }}
               <ng-container *ngFor="let rom of romData">
                 <a href="#" (click)="$event.preventDefault();onSelect(rom);"
                   class="border-0 list-group-item list-group-item-action pl-0 pr-0"
