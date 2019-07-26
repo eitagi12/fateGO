@@ -104,7 +104,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
               const isSameOrAfter = moment(registerDate).isSameOrAfter(packageDate);
               if (!isSameOrAfter) {
                 this.pageLoadingService.closeLoading();
-                this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจาก service years ไม่ถึง');
+                this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจากเบอร์ไม่เข้าเงื่อนไข service year');
                 return;
               }
             }
@@ -191,7 +191,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
         })
         .catch((error) => {
           this.pageLoadingService.closeLoading();
-            this.alertService.error('ไม่สามารถทำรายการได้ เลขหมายนี้ไม่ใช่ระบบ AIS');
+          this.alertService.error('ไม่สามารถทำรายการได้ เลขหมายนี้ไม่ใช่ระบบ AIS');
         });
     }
 
@@ -255,9 +255,8 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
                 item.icon = 'assets/images/icon/Net.png';
               }
               bestSellerItem.push(item);
-            } else {
-              packageCat.push(item);
             }
+            packageCat.push(item);
           }).sort((a: any, b: any) => (+a.customAttributes.best_seller_priority) - (b.customAttributes.best_seller_priority));
         });
       });
@@ -268,7 +267,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
     }).then(({ best, pack }) => {
       this.packageCat = pack;
       this.packagesBestSellers = best;
-      this.tabs = this.getTabsFormPriceOptions(pack);
+      this.tabs = this.getTabs(pack);
       this.selectedTab = this.tabs[0];
       this.packLoading = false;
     });
@@ -281,7 +280,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
     }
   }
 
-  getTabsFormPriceOptions(packageCat: any[]): any[] {
+  getTabs(packageCat: any[]): any[] {
     const tabs = [];
     const categorys: any = [];
     packageCat.forEach((ca: any) => {
