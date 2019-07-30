@@ -585,7 +585,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                   'promotions': []
                 },
                 'priceType': 'PROMOTION',
-                'ussdCode': null,
+                'ussdCode': '*999*04#*',
                 'packageKeyRef': '496ebae87cc70e08d63d34a7c5aa0767',
                 'priceDiscount': '2500',
                 'focCode': '0',
@@ -811,7 +811,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                   'promotions': []
                 },
                 'priceType': 'PROMOTION',
-                'ussdCode': null,
+                'ussdCode': '*999*04#*',
                 'packageKeyRef': '496ebae87cc70e08d63d34a7c5aa0767',
                 'priceDiscount': '2500',
                 'focCode': '0',
@@ -1112,7 +1112,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                   'promotions': []
                 },
                 'priceType': 'PROMOTION',
-                'ussdCode': null,
+                'ussdCode': '*999*04#*',
                 'packageKeyRef': '496ebae87cc70e08d63d34a7c5aa0767',
                 'priceDiscount': '2500',
                 'focCode': '0',

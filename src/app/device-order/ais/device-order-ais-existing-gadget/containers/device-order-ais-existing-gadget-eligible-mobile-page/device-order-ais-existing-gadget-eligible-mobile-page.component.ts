@@ -24,8 +24,10 @@ export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements 
   shoppingCart: ShoppingCart;
   transaction: Transaction;
   eligibleMobiles: Array<EligibleMobile> = [];
-  mobileNo: any;
+  onSelected: any;
   priceOption: PriceOption;
+  ussdCode: string;
+  disableNextButton: boolean;
 
   constructor(
     private router: Router,
@@ -69,46 +71,63 @@ export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements 
             } || [];
             this.eligibleMobiles.push(setEligibleMobiles);
             this.pageLoadingService.closeLoading();
-          });
+          })
+          .catch(this.ErrorMessage());
       });
     });
   }
 
-  onCompleted(mobileNo: any): void {
-    if (mobileNo) {
+  onCompleted(onSelected: any): void {
+    if (onSelected) {
       this.identityValid = true;
-      this.mobileNo = mobileNo;
+      this.onSelected = onSelected;
     }
   }
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    const trade = this.priceOption.trade;
-    this.requestUsePrivilege(trade.ussdCode);
+    this.requestUsePrivilege();
   }
 
-  private requestUsePrivilege(ussdCode: any): void {
-    this.privilegeService.requestUsePrivilege(this.mobileNo.mobileNo, ussdCode, this.mobileNo.privilegeCode).then((privilegeCode) => {
-      this.transaction.data.customer.privilegeCode = privilegeCode;
-      this.transaction.data.simCard = { mobileNo: this.mobileNo.mobileNo };
-      if (this.transaction.data.customer && this.transaction.data.customer.firstName) {
-        this.customerInfoService.getCustomerProfileByMobileNo(
-          this.transaction.data.simCard.mobileNo,
-          this.transaction.data.customer.idCardNo)
-          .then((customer: Customer) => {
-            this.transaction.data.customer = { ...this.transaction.data.customer, ...customer };
-          });
-      }
-    }).then(() => {
-      this.pageLoadingService.closeLoading();
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_MOBILE_DETAIL_PAGE]);
-    });
+  private requestUsePrivilege(): void {
+    this.privilegeService.requestUsePrivilege(this.onSelected.mobileNo, this.priceOption.trade.ussdCode, this.onSelected.privilegeCode)
+      .then((privilegeCode) => {
+        this.transaction.data.customer.privilegeCode = privilegeCode;
+        this.transaction.data.simCard = { mobileNo: this.onSelected.mobileNo };
+        if (this.transaction.data.customer && this.transaction.data.customer.firstName) {
+          this.customerInfoService.getCustomerProfileByMobileNo(
+            this.transaction.data.simCard.mobileNo,
+            this.transaction.data.customer.idCardNo)
+            .then((customer: Customer) => {
+              this.transaction.data.customer = { ...this.transaction.data.customer, ...customer };
+            });
+        }
+      }).then(() => {
+        this.pageLoadingService.closeLoading();
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_MOBILE_DETAIL_PAGE]);
+      });
   }
 
   onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
   }
+
   onHome(): void {
     this.homeService.goToHome();
+  }
+
+  ErrorMessage(): (reason: any) => void | PromiseLike<void> {
+    return (err: any) => {
+      this.handleErrorMessage(err);
+    };
+  }
+
+  handleErrorMessage(err: any): void {
+    this.disableNextButton = true;
+    this.pageLoadingService.closeLoading();
+    const error = err.error || {};
+    const developerMessage = (error.errors || {}).developerMessage;
+    this.alertService.error((developerMessage && error.resultDescription)
+      ? `${developerMessage} ${error.resultDescription}` : `ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้`);
   }
 }
