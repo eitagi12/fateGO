@@ -8,7 +8,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AisNativeOrderService } from 'src/app/shared/services/ais-native-order.service';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 declare let window: any;
 
 @Component({
@@ -26,29 +26,33 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
   queryRomTransaction: Promise<any>;
   param: any;
   usernameSubscript: Subscription;
+
+  native: boolean = false;
+
   constructor(
-    private router: Router,
+    public router: Router,
     private homeService: HomeService,
-    private tokenService: TokenService,
+    public tokenService: TokenService,
     private pageLoadingService: PageLoadingService,
     private http: HttpClient,
     private alertService: AlertService,
     private transactionService: TransactionService,
     private fb: FormBuilder,
     private utils: Utils,
+    private aisNativeOrderService: AisNativeOrderService,
   ) {
     this.username = this.tokenService.getUser().username;
+    // this.username = 'nutthia8';
+    // window.iosNative
   }
 
   ngOnInit(): void {
     this.createForm();
     this.currenDate = this.getCurrentDate();
-    if (this.utils.isAisNative()) {
-      this.username = window.aisNative.getUserName();
-    }
-    if (this.utils.isIOSNative()) {
-      this.username = window.aisNative.getUserName();
-    }
+    this.aisNativeOrderService.getNativeUsername();
+      this.usernameSubscript = this.aisNativeOrderService.getUsername().subscribe((response: any) => {
+        this.username = response.username;
+      });
     setTimeout(() => {
       this.queryRomList();
     }, 0);
@@ -146,9 +150,8 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
   }
 
   ngOnDestroy(): void {
-    if (this.utils.isAisNative()) {
-      this.usernameSubscript.unsubscribe();
-    }
+    this.usernameSubscript.unsubscribe();
     this.transactionService.save(this.transaction);
   }
+
 }
