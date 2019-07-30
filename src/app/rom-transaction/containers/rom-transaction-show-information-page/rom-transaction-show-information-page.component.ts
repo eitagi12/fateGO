@@ -9,6 +9,7 @@ import {
 } from 'src/app/rom-transaction/constants/route-path.constant';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
+declare let window: any;
 @Component({
   selector: 'app-rom-transaction-show-information-page',
   templateUrl: './rom-transaction-show-information-page.component.html',
@@ -135,7 +136,11 @@ export class RomTransactionShowInformationPageComponent implements OnInit, OnDes
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    if (window.aisNative) {
+      window.aisNative.onAppBack();
+    } else {
+      window.webkit.messageHandlers.onAppBack.postMessage('');
+    }
   }
 
   ngOnDestroy(): void {
