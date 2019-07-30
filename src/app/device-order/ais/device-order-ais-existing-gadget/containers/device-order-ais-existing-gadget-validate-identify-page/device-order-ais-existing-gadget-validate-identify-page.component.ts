@@ -86,8 +86,14 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyPageComponent implement
             this.transaction.data.customer = customerInfo;
             this.transaction.data.customer.privilegeCode = privilege;
           }
-          this.transaction.data.billingInformation = {};
-          this.transaction.data.billingInformation.billDeliveryAddress = this.transaction.data.customer;
+          this.http.get(`/api/customerportal/newRegister/${this.identity}/queryBillingAccount`).toPromise()
+          .then((resp: any) => {
+            const data = resp.data || {};
+            this.transaction.data.billingInformation = {
+              billCycles: data.billingAccountList,
+              billDeliveryAddress: this.transaction.data.customer
+            };
+          });
 
           if (!this.transaction.data.order || !this.transaction.data.order.soId) {
             return this.http.post('/api/salesportal/add-device-selling-cart',

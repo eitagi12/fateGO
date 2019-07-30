@@ -101,8 +101,14 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent imp
           } else {
             this.transaction.data.customer.zipCode = customer.zipCode;
           }
-          this.transaction.data.billingInformation = {};
-          this.transaction.data.billingInformation.billDeliveryAddress = this.transaction.data.customer;
+          this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
+          .then((resp: any) => {
+            const data = resp.data || {};
+            this.transaction.data.billingInformation = {
+              billCycles: data.billingAccountList,
+              billDeliveryAddress: this.transaction.data.customer
+            };
+          });
           if (this.transaction.data.order && this.transaction.data.order.soId) {
             this.pageLoadingService.closeLoading();
             this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
