@@ -157,6 +157,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
     } else {
       // KEY-IN ID-Card
       this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customer: Customer) => {
+        this.transaction.data.billingInformation = {};
         this.http.get(`/api/customerportal/newRegister/${this.identity}/queryBillingAccount`).toPromise()
           .then((resp: any) => {
             const data = resp.data || {};

@@ -50,21 +50,32 @@ export class DeviceOrderAisExistingGadgetCheckOutPageComponent implements OnInit
     const trade = this.priceOption.trade;
     const productDetail = this.priceOption.productDetail;
     const productStock = this.priceOption.productStock;
-    let thumbnail = null;
-    if ((!productStock.images && !productStock.images.thumbnail) && productDetail.products && productDetail.products.length > 0) {
-      const productFilter = productDetail.products.filter((product) => product.colorName === productStock.colorName
-        || product.colorName === productStock.color);
-      thumbnail = productFilter && productFilter.length > 0 ? productFilter.images.thumbnail : thumbnail;
-    }
+
+    const thumbnail: string = productStock.images && productStock.images.thumbnail ?
+      productStock.images.thumbnail : this.getThumbnailInProductDetail(productDetail, productStock);
+
     this.deviceSelling = {
       fullName: `${customer.firstName} ${customer.lastName}`,
       mobileNo: mobileNo,
-      thumbnail: productStock.images && productStock.images.thumbnail ? productStock.images.thumbnail : thumbnail,
+      thumbnail: thumbnail,
       campaignName: campaign.campaignName,
       brand: productDetail.brand,
       model: productDetail.model,
       color: productDetail.colorName || productStock.colorName || productStock.color,
       price: +trade.promotionPrice
     };
+  }
+
+  private getThumbnailInProductDetail(productDetail: any, productStock: any): any {
+    let thumbnail: string = null;
+    if (productDetail.products && productDetail.products.length > 0) {
+      const productFilter = productDetail.products.filter((product: any) => {
+        if (product.colorName === productStock.colorName || product.colorName === productStock.color) {
+          return product;
+        }
+      });
+      thumbnail = productFilter && productFilter.length > 0 ? productFilter[0].images.thumbnail : thumbnail;
+    }
+    return thumbnail;
   }
 }

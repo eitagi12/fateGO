@@ -101,29 +101,30 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent imp
           } else {
             this.transaction.data.customer.zipCode = customer.zipCode;
           }
+          this.transaction.data.billingInformation = {};
           this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
-          .then((resp: any) => {
-            const data = resp.data || {};
-            this.transaction.data.billingInformation = {
-              billCycles: data.billingAccountList,
-              billDeliveryAddress: this.transaction.data.customer
-            };
-          });
-          if (this.transaction.data.order && this.transaction.data.order.soId) {
-            this.pageLoadingService.closeLoading();
-            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
-            return;
-          } else {
-            return this.http.post('/api/salesportal/add-device-selling-cart',
-              this.getRequestAddDeviceSellingCart()
-            ).toPromise().then((resp: any) => {
-              this.transaction.data.order = { soId: resp.data.soId };
-              return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-            }).then(() => {
-              this.pageLoadingService.closeLoading();
-              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
+            .then((resp: any) => {
+              const data = resp.data || {};
+              this.transaction.data.billingInformation = {
+                billCycles: data.billingAccountList,
+                billDeliveryAddress: this.transaction.data.customer
+              };
+              if (this.transaction.data.order && this.transaction.data.order.soId) {
+                this.pageLoadingService.closeLoading();
+                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
+                return;
+              } else {
+                return this.http.post('/api/salesportal/add-device-selling-cart',
+                  this.getRequestAddDeviceSellingCart()
+                ).toPromise().then((response: any) => {
+                  this.transaction.data.order = { soId: response.data.soId };
+                  return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+                }).then(() => {
+                  this.pageLoadingService.closeLoading();
+                  this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
+                });
+              }
             });
-          }
         });
     }).catch((e) => this.alertService.error(e))
       .then(() => this.pageLoadingService.closeLoading());
