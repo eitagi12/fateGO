@@ -95,7 +95,7 @@ export class RomTransactionShowInformationPageComponent implements OnInit, OnDes
           const refNo = this.pinForm.controls.ref.value;
           this.pageLoadingService.openLoading();
           this.http.post(('/api/customerportal/rom/aisrom-ussdadapter'), {
-            ssid: this.romTransaction.romTransaction.ssid,
+            ssid: moment().format('YYYYMMDDHHmmss'),
             from: this.romTransaction.romTransaction.romNo,
             content: this.romTransaction.romTransaction.romNo,
             romPinCode: pinNo,
