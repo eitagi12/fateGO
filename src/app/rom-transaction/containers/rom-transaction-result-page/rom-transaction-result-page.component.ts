@@ -47,15 +47,13 @@ export class RomTransactionResultPageComponent implements OnInit {
       this.pageLoadingService.closeLoading();
     });
   }
-
-  onHome(): void {
+  onMainMenu(): void {
     if (window.aisNative) {
       window.aisNative.onAppBack();
     } else {
       window.webkit.messageHandlers.onAppBack.postMessage('');
     }
   }
-
   getCurrentDate(): string {
     return moment().format('DD-MM-YYYY');
   }
