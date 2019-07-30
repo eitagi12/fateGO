@@ -1,0 +1,88 @@
+.mobile-detail{
+    color: grey;
+    margin-top: -5px;
+    display: block;
+    &.del{
+        text-decoration: line-through;
+        text-decoration-color:red;
+    }
+    &.detail-header{
+        color: black;
+        margin-bottom: 5px;
+    }
+}
+
+:host /deep/  .list-group-item.active{
+    background-color: #B2D234;
+
+    .fa-mobile{
+        color:#4E4E4E !important;
+    }
+
+    .list-detail{
+        color:#4E4E4E !important;
+    }
+
+    .list-mobileNo{
+        color:#4E4E4E !important;
+    }
+
+    .list-amount{
+        color:#4E4E4E !important;
+    }
+}
+
+/* Normal Style Easy App */ 
+.button-easyApp{
+    background-color: #B2D234;
+    height: 40px;
+    font-size: 20px;
+    border-radius: 5px;
+    border: 0;
+    padding-left: 1.5rem;
+    padding-right: 1.5rem;
+    color: #4E4E4E;
+    &:disabled{
+        background-color: #B3B3B3;
+    }
+}
+
+.text-header{
+    color: #4E4E4E;
+}
+
+:host /deep/  .navbar{
+
+    background-color: #B2D234 !important;
+}
+
+.card-header{
+    background-color: #4E4E4E;
+}
+
+.navbar-brand {
+    margin: 0 auto;
+}
+
+.text-iron{
+    color: #4E4E4E;
+}
+
+.bg-iron{
+    color: #4E4E4E;
+}
+
+.text-green-blue{
+    color: #00A296;
+}
+
+
+:host /deep/ .footer-easyApp {
+    &.button-easyApp {
+        min-width: 150px;
+        margin-left: .5rem !important;    
+        margin-right: .5rem !important;
+        padding-left: 5rem !important;
+        padding-right: 5rem !important;
+    }
+}

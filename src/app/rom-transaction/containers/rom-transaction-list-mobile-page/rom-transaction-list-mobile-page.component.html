@@ -1,0 +1,82 @@
+<div class="mc-flex">
+  <nav class="navbar fixed-top navbar-dark shadow-sm fix-position">
+    <div class="header-icon-left">
+      <i class="fa fa-angle-left fa-2x text-iron" aria-hidden="true" (click)="onBack()"></i>
+    </div>
+    <span class="navbar-brand p-2 h1 text-header">
+      ดึงเงินคืน
+    </span>
+    <div class="header-icon-right">
+    </div>
+  </nav>
+  <div class="mc-flex-wrap">
+    <div class="mb-3 mt-3">
+      <div class="container-fluid">
+        <form [formGroup]="mobileForm">
+          <div class="input-group mb-3 mt-4">
+            <div class="input-group-prepend">
+              <span class="input-group-text bg-white border-right-0" id="basic-addon1"><i class="fa fa-phone"
+                  aria-hidden="true"></i></span>
+            </div>
+            <input type="tel" formControlName="mobileNo" class="form-control border-left-0"
+              placeholder="กรอกเบอร์โทรศัพท์มือถือ" maxlength="10">
+          </div>
+          <div class="text-center">
+            <button type="button" class="button-easyApp" (click)="onSearch()"
+              [disabled]="mobileForm?.controls?.mobileNo?.invalid && mobileForm?.controls?.mobileNo?.value !== ''">
+              <i class="fa fa-search"></i> ค้นหา</button>
+          </div>
+        </form>
+
+        <div class="card mt-3 border-0 rounded-top rounded-lg">
+          <div class="card-header text-center text-white">
+            เลือกรายการ
+          </div>
+          <div class="card-body p-1">
+            <div class="border-bottom">
+              <small class="text-light pl-3">{{ currenDate }}</small>
+            </div>
+            <div class="list-group mt-2" [mcLoading]="queryRomTransaction">
+              <ng-container *ngFor="let rom of romData">
+                <a href="#" (click)="$event.preventDefault();onSelect(rom);"
+                  class="border-0 list-group-item list-group-item-action pl-0 pr-0"
+                  [ngClass]="{'active' : transaction?.data?.romTransaction?.romTransaction?.createDate === rom?.createDate}">
+                  <div class="d-flex w-100 justify-content-between">
+                    <div class="row w-100">
+                      <div class="col-2 text-center">
+                        <i *ngIf="rom?.transactionType !== 'VAS'" class="fa fa-mobile text-green fa-5x pl-2"
+                          aria-hidden="true"></i>
+                        <i *ngIf="rom?.transactionType === 'VAS'" class="fa fa-comments text-green fa-3x pl-2"
+                          aria-hidden="true"></i>
+                      </div>
+                      <div class="col-6">
+                        <small class="text-dark list-detail">{{ rom?.time }} น.</small>
+                        <h5 class="m-0 pb-1 list-mobileNo">{{ rom?.cusMobileNo | mobileNo}}</h5>
+                        <small class="mobile-detail detail-header list-detail">
+                          {{ rom?.transactionType === 'VAS' ? 'โปรเสริมออนไลน์' : ' เติมเงินออนไลน์' }}
+                        </small>
+                      </div>
+                      <div class="col-4 text-right">
+                        <h5 class="mt-3"><span class=" list-detail text-green-blue">{{ rom?.price | number}}</span> 
+                          <small class="list-amount text-green-blue"> บาท</small></h5>
+                      </div>
+                    </div>
+                  </div>
+                </a>
+              </ng-container>
+              <div *ngIf="!romData?.length" class="text-center">
+                ไม่พบรายการ
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid footer-easyApp text-center  pt-4 pb-4">
+    <div class="ml-5 mr-5">
+      <button class="button-easyApp btn-block" (click)="onNext()"
+        [disabled]="!transaction?.data?.romTransaction?.romTransaction?.transactionId">ต่อไป</button>
+    </div>
+  </div>
+</div>
