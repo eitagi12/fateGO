@@ -79,6 +79,7 @@ export interface TransactionData {
   tradeType?: string;
   // Rom Agent
   romAgent?: RomAgent;
+  romTransaction?: RomTransactionData;
 }
 
 export interface Condition {
@@ -549,4 +550,28 @@ export interface VasPackage {
   mobileLocation: string;
   customerState: string;
   servicePackageId: string;
+}
+export interface RomTransactionData {
+  romData?: RomData[];
+  romTransaction?: RomData;
+  username?: string;
+  pin?: string;
+  refNo?: string;
+  massageStatus?: string;
+}
+
+export interface RomData {
+  createDate?: string;
+  cusMobileNo?: string;
+  locationcode?: string;
+  packId?: string;
+  price?: string;
+  romNo?: string;
+  ssid?: string;
+  status?: string;
+  transactionId?: string;
+  transactionType?: 'VAS' | 'TOPUP';
+  username?: string;
+  time?: string;
+  _id?: string;
 }

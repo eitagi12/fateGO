@@ -69,6 +69,10 @@ const routes: Routes = [
   {
     path: 'vas-package',
     loadChildren: 'src/app/vas-package/vas-package.module#VasPackageModule',
+  },
+  {
+    path: 'rom-transaction',
+    loadChildren: 'src/app/rom-transaction/rom-transaction.module#RomTransactionModule',
     canActivate: [AuthGuard]
   }
 ];
