@@ -519,7 +519,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         'minimumPackagePrice': '0',
         'maximumPackagePrice': '99999',
         'packageKeyRef': '496ebae87cc70e08d63d34a7c5aa0767',
-        'conditionCode': null,
+        'conditionCode': 'CONDITION_2',
         'promotionFlag': 'Y',
         'publish': true,
         'allowedAddToCart': true,
