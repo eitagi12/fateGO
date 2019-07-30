@@ -6,7 +6,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_MOBILE_DETAIL_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_GADGET_MOBILE_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE } from '../../constants/route-path.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
@@ -106,7 +106,7 @@ export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements 
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
   }
   onHome(): void {
     this.homeService.goToHome();

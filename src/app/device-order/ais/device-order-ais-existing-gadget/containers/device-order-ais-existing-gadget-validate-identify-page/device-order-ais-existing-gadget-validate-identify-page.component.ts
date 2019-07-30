@@ -8,8 +8,8 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
-import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
-import { ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_MOBILE_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_IDENTIFY_ID_CARD_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
+import { Transaction } from 'src/app/shared/models/transaction.model';
+import { ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_IDENTIFY_ID_CARD_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 
 @Component({
@@ -69,11 +69,7 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyPageComponent implement
   }
 
   onBack(): void {
-    if (this.transaction.data.action === 'KEY_IN_FBB') {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_MOBILE_DETAIL_PAGE]);
-    } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_PAGE]);
-    }
   }
 
   onNext(): void {
@@ -101,7 +97,6 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyPageComponent implement
                 this.transaction.data.order = { soId: resp.data.soId };
                 return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
               }).then(() => {
-                // this.transaction.data.action = TransactionAction.KEY_IN;
                 this.pageLoadingService.closeLoading();
                 this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
               });

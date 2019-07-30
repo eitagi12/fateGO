@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { ValidateCustomerIdCardComponent, ReadCardProfile, User, HomeService, PageLoadingService, AlertService, TokenService } from 'mychannel-shared-libs';
-import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
+import { Transaction, Customer, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -80,6 +80,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent imp
   onNext(): void {
     this.pageLoadingService.openLoading();
     this.transaction.data.customer = this.profile;
+    this.transaction.data.action = TransactionAction.READ_CARD;
     this.customerInfoService.getProvinceId(this.profile.province).then((provinceId: string) => {
       return this.customerInfoService.getZipCode(provinceId, this.profile.amphur, this.profile.tumbol)
         .then((zipCode: string) => {

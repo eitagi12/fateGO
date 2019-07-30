@@ -150,7 +150,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
       // KEY-IN MobileNo
       this.customerInfoService.getCustomerProfileByMobileNo(this.identity).then((customer: Customer) => {
         this.transaction.data.simCard = { mobileNo: this.identity };
-        this.transaction.data.action = TransactionAction.KEY_IN_MOBILE_NO;
+        this.transaction.data.action = TransactionAction.KEY_IN;
       }).then(() => {
         this.checkRoutePath();
       });
@@ -161,6 +161,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
           .then((resp: any) => {
             const data = resp.data || {};
             this.transaction.data.customer = customer;
+            this.transaction.data.action = TransactionAction.KEY_IN;
             this.transaction.data.billingInformation = {
               billCycles: data.billingAccountList,
               billDeliveryAddress: customer
@@ -185,24 +186,12 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
     } else {
       this.checkRoutePath();
     }
-
-  }
-  private getBillCycles(): any {
-    return this.http.get(`/api/customerportal/newRegister/${this.identity}/queryBillingAccount`).toPromise()
-      .then((resp: any) => {
-        const data = resp.data || {};
-        console.log('billCycles', data.billingAccountList);
-        return data.billingAccountList;
-      }).catch(this.ErrorMessage());
   }
 
   private checkRoutePath(): void {
     this.pageLoadingService.closeLoading();
-    if (this.checkFbbNo(this.identity)) {
+    if (this.checkFbbNo(this.identity) || this.utils.isMobileNo(this.identity)) {
       // KEY-IN FbbNo
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_MOBILE_DETAIL_PAGE]);
-    } else if (this.utils.isMobileNo(this.identity)) {
-      // KEY-IN MobileNo
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_IDENTIFY_PAGE]);
     } else {
       // KEY IN IDCARD

@@ -6,11 +6,11 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { FormBuilder } from '@angular/forms';
-import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
-import { ROUTE_DEVICE_ORDER_AIS_GADGET_ELIGIBLE_MOBILE_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_SUMMARY_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_GADGET_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_MOBILE_DETAIL_PAGE } from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-gadget-payment-detail-page',
@@ -39,21 +39,21 @@ export class DeviceOrderAisExistingGadgetPaymentDetailPageComponent implements O
   user: User;
 
   constructor(
-  private router: Router,
-  private homeService: HomeService,
-  private utils: Utils,
-  private http: HttpClient,
-  private tokenService: TokenService,
-  private transactionService: TransactionService,
-  private shoppingCartService: ShoppingCartService,
-  private priceOptionService: PriceOptionService,
-  private pageLoadingService: PageLoadingService,
-  private fb: FormBuilder
-) {
-  this.transaction = this.transactionService.load();
-  this.priceOption = this.priceOptionService.load();
-  this.user = this.tokenService.getUser();
-}
+    private router: Router,
+    private homeService: HomeService,
+    private utils: Utils,
+    private http: HttpClient,
+    private tokenService: TokenService,
+    private transactionService: TransactionService,
+    private shoppingCartService: ShoppingCartService,
+    private priceOptionService: PriceOptionService,
+    private pageLoadingService: PageLoadingService,
+    private fb: FormBuilder
+  ) {
+    this.transaction = this.transactionService.load();
+    this.priceOption = this.priceOptionService.load();
+    this.user = this.tokenService.getUser();
+  }
 
   ngOnInit(): void {
 
@@ -164,7 +164,7 @@ export class DeviceOrderAisExistingGadgetPaymentDetailPageComponent implements O
   }
 
   onBack(): void {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_ELIGIBLE_MOBILE_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_MOBILE_DETAIL_PAGE]);
   }
 
   isNext(): boolean {
@@ -173,18 +173,12 @@ export class DeviceOrderAisExistingGadgetPaymentDetailPageComponent implements O
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    const action = this.transaction.data.action;
     this.transaction.data.payment = this.paymentDetailTemp.payment;
     this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;
     this.transaction.data.receiptInfo = this.receiptInfoTemp;
 
-    if (TransactionAction.KEY_IN === action) {
-      this.transaction.data.action = TransactionAction.KEY_IN;
-    } else {
-      this.transaction.data.action = TransactionAction.READ_CARD;
-    }
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_SUMMARY_PAGE]);
     this.pageLoadingService.closeLoading();
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_SUMMARY_PAGE]);
   }
 
   ngOnDestroy(): void {

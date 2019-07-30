@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { ValidateCustomerIdCardComponent, ReadCardProfile, User, HomeService, PageLoadingService, AlertService, TokenService } from 'mychannel-shared-libs';
-import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
+import { Transaction, Customer, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -80,6 +80,7 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent imp
 
   onNext(): void {
     this.pageLoadingService.openLoading();
+    this.transaction.data.action = TransactionAction.READ_CARD;
     this.transaction.data.customer = this.profile;
     this.customerInfoService.getProvinceId(this.profile.province).then((provinceId: string) => {
       return this.customerInfoService.getZipCode(provinceId, this.profile.amphur, this.profile.tumbol)
@@ -103,10 +104,10 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent imp
           this.transaction.data.billingInformation = {};
           this.transaction.data.billingInformation.billDeliveryAddress = this.transaction.data.customer;
           if (this.transaction.data.order && this.transaction.data.order.soId) {
+            this.pageLoadingService.closeLoading();
             this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
             return;
-          }
-          if (!this.transaction.data.order || !this.transaction.data.order.soId) {
+          } else {
             return this.http.post('/api/salesportal/add-device-selling-cart',
               this.getRequestAddDeviceSellingCart()
             ).toPromise().then((resp: any) => {
@@ -116,9 +117,6 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent imp
               this.pageLoadingService.closeLoading();
               this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
             });
-          } else {
-            this.pageLoadingService.closeLoading();
-            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
           }
         });
     }).catch((e) => this.alertService.error(e))

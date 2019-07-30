@@ -14,10 +14,9 @@ import { PromotionShelveService } from 'src/app/device-order/services/promotion-
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
 import {
-  ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_PAGE,
   ROUTE_DEVICE_ORDER_AIS_GADGET_ELIGIBLE_MOBILE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_GADGET_PAYMENT_DETAIL_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_IDENTIFY_PAGE
+  ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE
 } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
 import { ProfileFbbService } from 'src/app/shared/services/profile-fbb.service';
 
@@ -227,7 +226,7 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
 
   onBack(): void {
     if (this.action === TransactionAction.KEY_IN_FBB) {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_PAGE]);
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_ELIGIBLE_MOBILE_PAGE]);
     }
