@@ -19,7 +19,7 @@
   </div>
 </div>
 
-<ng-template #select_billing_address style="overflow-y: hidden;">
+<ng-template #select_billing_address style="overflow: auto; display: none; position: fixed;" click()="scroll">
   <h5 class="modal-header bg-light-blue text-white">
       {{ 'เลือกที่อยู่ในใบเสร็จรับเงิน' | translate }}
   </h5>
@@ -28,7 +28,7 @@
       &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label id="modal-text-customer-name">{{ nameTextBySmartCard }}</label>
     </label>
   </div>
-  <div class="card-body" style="height: 600px; overflow-y: scroll; ">
+  <div #myModal class="card-body" style="height: 500px; overflow-y: scroll; ">
     <form [formGroup]="selectBillingAddressForm">
       <h5>{{ 'ที่อยู่ตามบัตรประชาชน' | translate }}</h5>
       <div>
@@ -41,7 +41,7 @@
       <br/>
       <h5>{{ 'ที่อยู่ตามใบแจ้งค่าใช้บริการเบอร์ AIS ของท่าน' | translate }}</h5>
 
-      <div mcScroll *ngFor="let itemBA of listBillingAccount; let i = index" #istBillingAccountBox>
+      <div *ngFor="let itemBA of listBillingAccount; let i = index" #istBillingAccountBox>
         <input class="form-check-input" type="radio" value="{{i}}"
           formControlName="billingAddress" id="modal-text-billing-address-{{i+1}}">
         <label class="form-check-label" class="col-9" for="modal-text-billing-address-{{i+1}}">{{ itemBA.mobileNo[0] }}</label>

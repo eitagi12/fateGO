@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, TemplateRef, ElementRef, Output, EventEmitter, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, TemplateRef, ElementRef, Output, EventEmitter, OnDestroy, NgZone } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { debounceTime } from 'rxjs/operators';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -7,6 +7,8 @@ import { ReadCardService, ReadCardProfile, PageLoadingService, Utils, AlertServi
 import { CustomerInformationService } from 'src/app/device-only/services/customer-information.service';
 import { Subscription } from 'rxjs';
 
+declare let Hammer: any;
+
 @Component({
   selector: 'app-read-card',
   templateUrl: './read-card.component.html',
@@ -14,9 +16,11 @@ import { Subscription } from 'rxjs';
 
 })
 
-export class ReadCardComponent implements OnInit {
+export class ReadCardComponent implements OnInit, OnDestroy {
 
   @Output() customerInfo: EventEmitter<Object> = new EventEmitter<Object>();
+  @ViewChild('istBillingAccountBox')
+  istBillingAccountBox: ElementRef;
 
   @ViewChild('select_billing_address')
   selectBillingAddressTemplate: TemplateRef<any>;
@@ -46,7 +50,10 @@ export class ReadCardComponent implements OnInit {
     private customerInfoService: CustomerInformationService,
     private pageLoadingService: PageLoadingService,
     private utils: Utils,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private el: ElementRef,
+    private _zone: NgZone
+
   ) { }
 
   ngOnInit(): void {
@@ -65,7 +72,22 @@ export class ReadCardComponent implements OnInit {
     });
   }
 
+  scroll(): void {
+    this._zone.run(() => {
+      const mc = new Hammer(document.querySelector('body'));
+      mc.get('pan').set({ direction: Hammer.DIRECTION_ALL });
+
+      let currentScroll = 0;
+      mc.on('panstart', (ev) => {
+        currentScroll = 0;
+      });
+      mc.on('pan', (ev) => {
+      });
+    });
+  }
+
   onReadCard(): void {
+    this.scroll();
     this.messages = 'โปรดเสียบบัตรประชาชน';
     this.profile = null;
     if (this.kioskApi) {
@@ -82,12 +104,12 @@ export class ReadCardComponent implements OnInit {
       }
       if (valid) {
         this.profile = readCard.profile;
-        this.messages =  'ตรวจสอบสำเร็จ โปรดดึงบัตรออก';
+        this.messages = 'ตรวจสอบสำเร็จ โปรดดึงบัตรออก';
         if (!this.kioskApi) {
           this.getBillingData(this.profile);
         }
       } else if (readCard.eventName !== ReadCardEvent.EVENT_CARD_INITIALIZED) {
-        this.messages =  this.profile ?  'ตรวจสอบสำเร็จ โปรดดึงบัตรออก' : 'กรุณารอสักครู่';
+        this.messages = this.profile ? 'ตรวจสอบสำเร็จ โปรดดึงบัตรออก' : 'กรุณารอสักครู่';
       }
       if (this.kioskApi) {
         this.hanndleReadCardKoiskApi(readCard.eventName);
@@ -184,8 +206,8 @@ export class ReadCardComponent implements OnInit {
             }
           });
           this.modalBillAddress = this.bsModalService.show(this.selectBillingAddressTemplate,
-             {backdrop: 'static'});
-            }
+            { backdrop: 'static', });
+        }
         this.pageLoadingService.closeLoading();
       });
   }
@@ -226,11 +248,11 @@ export class ReadCardComponent implements OnInit {
     }
   }
 
-  // ngOnDestroy(): void {
-  //   if (this.kioskApi) {
-  //     this.koiskApiFn.close();
-  //   }
-  // }
+  ngOnDestroy(): void {
+    if (this.kioskApi) {
+      this.koiskApiFn.close();
+    }
+  }
 }
 
 // declare let $: any;

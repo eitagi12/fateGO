@@ -22,3 +22,12 @@
     pointer-events: none;
     opacity: 0.4;
 }
+body.modal-open {
+    overflow: hidden;
+    position:fixed;
+    width: 100%;
+}
+
+.pointer-action-none{
+    pointer-events: none;
+}
