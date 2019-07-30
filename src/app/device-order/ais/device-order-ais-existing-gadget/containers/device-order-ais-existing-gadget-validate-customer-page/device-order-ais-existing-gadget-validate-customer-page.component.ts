@@ -118,7 +118,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
         this.profileFbb = response;
         const fullName = (this.profileFbb.billingProfiles[0].caName || '').split(' ');
         this.transaction.data.action = TransactionAction.KEY_IN_FBB;
-        return this.privilegeService.checkAndGetPrivilegeCode(this.identity, '*999*04#').then((privilegeCode) => {
+        return this.privilegeService.checkAndGetPrivilegeCode(this.identity, this.priceOption.trade.ussdCode).then((privilegeCode) => {
           this.transaction = {
             ...this.transaction,
             data: {
