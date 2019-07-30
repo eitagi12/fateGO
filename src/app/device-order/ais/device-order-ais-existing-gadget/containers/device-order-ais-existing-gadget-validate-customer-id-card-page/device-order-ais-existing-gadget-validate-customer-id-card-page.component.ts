@@ -150,11 +150,11 @@ export class DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent imp
     const customer = this.transaction.data.customer;
     const trade = this.priceOption.trade;
     return {
-      soCompany: productStock.company || 'AWN',
+      soCompany: productStock.company ? productStock.company : 'AWN',
       locationSource: this.user.locationCode,
       locationReceipt: this.user.locationCode,
-      productType: productDetail.productType || 'DEVICE',
-      productSubType: productDetail.productSubType || 'HANDSET',
+      productType: productDetail.productType ? productDetail.productType : 'DEVICE',
+      productSubType: productDetail.productSubType ? productDetail.productSubType : 'HANDSET',
       brand: productDetail.brand || productStock.brand,
       model: productDetail.model || productStock.model,
       color: productStock.color || productStock.colorName,

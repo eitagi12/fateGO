@@ -207,11 +207,11 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
     const customer = this.transaction.data.customer;
 
     return {
-      soCompany: productStock.company || 'AWN',
+      soCompany: productStock.company ? productStock.company : 'AWN',
       locationSource: this.user.locationCode,
       locationReceipt: this.user.locationCode,
-      productType: productDetail.productType || ' -*',
-      productSubType: productDetail.productSubType || 'N/A',
+      productType: productDetail.productType ? productDetail.productType : 'DEVICE',
+      productSubType: productDetail.productSubType ? productDetail.productSubType : 'HANDSET',
       brand: productDetail.brand || productStock.brand,
       model: productDetail.model || productStock.model,
       color: productStock.color || productStock.colorName,
@@ -288,7 +288,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
           if (response.value === true) {
             this.returnStock().then(() => {
               this.transactionService.remove();
-              window.location.href = `/ales-portal/buy-product/brand/${queryParams.brand}/${queryParams.model}`;
+              window.location.href = `/sales-portal/buy-product/brand/${queryParams.brand}/${queryParams.model}`;
             });
           }
         });
