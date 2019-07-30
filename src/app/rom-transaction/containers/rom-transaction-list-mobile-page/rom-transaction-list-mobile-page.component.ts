@@ -27,8 +27,6 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
   param: any;
   usernameSubscript: Subscription;
 
-  native: boolean = false;
-
   constructor(
     public router: Router,
     private homeService: HomeService,
@@ -42,8 +40,6 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
     private aisNativeOrderService: AisNativeOrderService,
   ) {
     this.username = this.tokenService.getUser().username;
-    // this.username = 'nutthia8';
-    // window.iosNative
   }
 
   ngOnInit(): void {

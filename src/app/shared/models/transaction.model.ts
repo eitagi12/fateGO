@@ -511,6 +511,7 @@ export interface RomTransactionData {
   username?: string;
   pin?: string;
   refNo?: string;
+  massageStatus?: string;
 }
 
 export interface RomData {

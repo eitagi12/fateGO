@@ -102,13 +102,16 @@ export class RomTransactionShowInformationPageComponent implements OnInit, OnDes
             romRefNo: refNo
           }).toPromise()
             .then((respone: any) => {
+              const data = respone.data || {};
               this.pageLoadingService.closeLoading();
               this.transaction.data.romTransaction.pin = pinNo;
               this.transaction.data.romTransaction.refNo = refNo;
+              this.romTransaction.massageStatus = data.DETAIL;
               this.onNext();
             })
             .catch((err: any) => {
               const error = err.error.errors || {};
+              this.romTransaction.massageStatus = error.DETAIL;
               this.alertService.error(error.DETAIL);
             });
         }
