@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { ShoppingCart, EligibleMobile, HomeService, PageLoadingService, AlertService } from 'mychannel-shared-libs';
@@ -17,7 +17,7 @@ import { CustomerInfoService } from 'src/app/device-order/services/customer-info
   templateUrl: './device-order-ais-existing-gadget-eligible-mobile-page.component.html',
   styleUrls: ['./device-order-ais-existing-gadget-eligible-mobile-page.component.scss']
 })
-export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements OnInit {
+export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements OnInit, OnDestroy {
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
   identityValid: boolean = false;
 
@@ -47,34 +47,21 @@ export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements 
 
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-    this.queryFbbListService();
+    this.callQueryEligibleFbbListService();
   }
 
-  queryFbbListService(): void {
-    const request = {
-      option: '1',
-      idCardNo: this.transaction.data.customer.idCardNo,
-      idCardType: 'บัตรประชาชน'
-    };
-    this.customerInfoService.queryFbbInfo(request).then((resp) => {
-      this.pageLoadingService.openLoading();
-      resp.mobileLists.filter((mobileList: any) => {
-        return mobileList.status === 'Active';
-      }).map((ActiveMobile: any) => {
-        this.privilegeService
-          .checkPrivilegeByNumber(ActiveMobile.mobileNo, this.priceOption.trade.ussdCode, false)
-          .then((privilegeCode: string) => {
-            const setEligibleMobiles: any = {
-              mobileNo: ActiveMobile.mobileNo,
-              mobileStatus: 'Active',
-              privilegeCode: privilegeCode
-            } || [];
-            this.eligibleMobiles.push(setEligibleMobiles);
-            this.pageLoadingService.closeLoading();
-          })
-          .catch(this.ErrorMessage());
+  callQueryEligibleFbbListService(): void {
+    const idCardNo = this.transaction.data.customer.idCardNo;
+    const ussdCode = this.priceOption.trade.ussdCode;
+    this.http.post('/api/customerportal/query-eligible-fbb-list', {
+      idCardNo: idCardNo,
+      ussdCode: ussdCode,
+      chkMainProFlg: true
+    }).toPromise()
+      .then((response: any) => {
+        this.pageLoadingService.closeLoading();
+        this.eligibleMobiles = response.data.fbbLists || [];
       });
-    });
   }
 
   onCompleted(onSelected: any): void {
@@ -94,14 +81,6 @@ export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements 
       .then((privilegeCode) => {
         this.transaction.data.customer.privilegeCode = privilegeCode;
         this.transaction.data.simCard = { mobileNo: this.onSelected.mobileNo };
-        if (this.transaction.data.customer && this.transaction.data.customer.firstName) {
-          this.customerInfoService.getCustomerProfileByMobileNo(
-            this.transaction.data.simCard.mobileNo,
-            this.transaction.data.customer.idCardNo)
-            .then((customer: Customer) => {
-              this.transaction.data.customer = { ...this.transaction.data.customer, ...customer };
-            });
-        }
       }).then(() => {
         this.pageLoadingService.closeLoading();
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_MOBILE_DETAIL_PAGE]);
@@ -116,18 +95,7 @@ export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements 
     this.homeService.goToHome();
   }
 
-  ErrorMessage(): (reason: any) => void | PromiseLike<void> {
-    return (err: any) => {
-      this.handleErrorMessage(err);
-    };
-  }
-
-  handleErrorMessage(err: any): void {
-    this.disableNextButton = true;
-    this.pageLoadingService.closeLoading();
-    const error = err.error || {};
-    const developerMessage = (error.errors || {}).developerMessage;
-    this.alertService.error((developerMessage && error.resultDescription)
-      ? `${developerMessage} ${error.resultDescription}` : `ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้`);
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
   }
 }
