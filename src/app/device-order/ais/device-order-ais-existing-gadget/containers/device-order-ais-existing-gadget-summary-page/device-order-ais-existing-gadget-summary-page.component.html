@@ -110,8 +110,7 @@
           <div class="card-body">
             <p>
               <i class="fa fa-circle mr-3 text-green"></i>
-              {{ profileFbb?.billingProfiles[0]?.promotionMain }}
-              <!-- {{ transaction?.data?.mainPackage?.title || transaction?.data?.currentPackage?.title}} -->
+              {{ transaction?.data?.mainPackage?.title || transaction?.data?.currentPackage?.title}}
               <span class="pull-right"
                 (click)="onOpenDetail(transaction?.data?.mainPackage?.detailTH || transaction?.data?.currentPackage?.detail)">
                 <img src="assets/images/icon/icon-page.png" class="icon" />
