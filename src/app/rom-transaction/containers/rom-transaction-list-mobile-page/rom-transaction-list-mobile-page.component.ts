@@ -142,7 +142,6 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
     } else {
       window.webkit.messageHandlers.onAppBack.postMessage('');
     }
-
   }
 
   ngOnDestroy(): void {
