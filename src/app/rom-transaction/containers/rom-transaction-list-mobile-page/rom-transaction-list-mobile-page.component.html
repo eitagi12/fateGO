@@ -27,6 +27,10 @@
               <i class="fa fa-search"></i> ค้นหา</button>
           </div>
         </form>
+        <hr>
+        {{ username | json }} <br>
+        <hr>
+        {{ param | json }}
         <div class="card mt-3 border-0 rounded-top rounded-lg">
           <div class="card-header text-center text-white">
             เลือกรายการ
@@ -36,7 +40,6 @@
               <small class="text-light pl-3">{{ currenDate }}</small>
             </div>
             <div class="list-group mt-2" [mcLoading]="queryRomTransaction">
-              {{ param | json }}
               <ng-container *ngFor="let rom of romData">
                 <a href="#" (click)="$event.preventDefault();onSelect(rom);"
                   class="border-0 list-group-item list-group-item-action pl-0 pr-0"

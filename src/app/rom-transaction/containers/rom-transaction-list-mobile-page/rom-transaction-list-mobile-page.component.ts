@@ -18,7 +18,7 @@ declare let window: any;
 })
 export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy {
 
-  username: string;
+  username: any;
   transaction: Transaction;
   romData: any = [];
   currenDate: string = '';
@@ -35,7 +35,6 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
     private alertService: AlertService,
     private transactionService: TransactionService,
     private fb: FormBuilder,
-    private aisNativeOrderService: AisNativeOrderService,
     private utils: Utils,
   ) {
     this.username = this.tokenService.getUser().username;
@@ -45,11 +44,10 @@ export class RomTransactionListMobilePageComponent implements OnInit, OnDestroy 
     this.createForm();
     this.currenDate = this.getCurrentDate();
     if (this.utils.isAisNative()) {
-      this.aisNativeOrderService.getNativeUsername();
-      this.usernameSubscript = this.aisNativeOrderService.getUsername()
-      .subscribe((response: any) => {
-        this.username = response.username;
-      });
+      this.username = window.aisNative.getUserName();
+    }
+    if (this.utils.isIOSNative()) {
+      this.username = window.aisNative.getUserName();
     }
     setTimeout(() => {
       this.queryRomList();
