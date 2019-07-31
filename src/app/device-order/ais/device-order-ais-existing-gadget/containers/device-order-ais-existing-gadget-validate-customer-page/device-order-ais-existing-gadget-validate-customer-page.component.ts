@@ -14,6 +14,7 @@ import { PrivilegeService } from 'src/app/device-order/services/privilege.servic
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { ProfileFbbService } from 'src/app/shared/services/profile-fbb.service';
 import { ProfileFbb } from 'src/app/shared/models/profile-fbb.model';
+import { ROUTE_BUY_GADGET_CAMPAIGN_PAGE } from 'src/app/buy-gadget/constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-gadget-validate-customer-page',
@@ -260,7 +261,6 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
   returnStock(): Promise<void> {
     return new Promise(resolve => {
       const transaction = this.transactionService.load();
-
       const promiseAll = [];
       if (transaction.data) {
         if (transaction.data.order && transaction.data.order.soId) {
@@ -281,20 +281,19 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
   }
 
   onBack(): void {
-    const queryParams = this.priceOption.queryParams;
     if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
       this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
         .then((response: any) => {
           if (response.value === true) {
             this.returnStock().then(() => {
               this.transactionService.remove();
-              window.location.href = `/sales-portal/buy-product/brand/${queryParams.brand}/${queryParams.model}`;
+              this.router.navigate([ROUTE_BUY_GADGET_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
             });
           }
         });
     } else {
       this.transactionService.remove();
-      window.location.href = `/sales-portal/buy-product/brand/${queryParams.brand}/${queryParams.model}`;
+      this.router.navigate([ROUTE_BUY_GADGET_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
     }
   }
 
