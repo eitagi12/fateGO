@@ -1,69 +1,21 @@
 <div class="mc-flex">
-  <mc-header title="รายการสินค้า">
+  <mc-header title="{{ 'ลูกค้าปัจจุบัน' | translate}}">
     <div class="header-icon-left">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
     <div class="header-icon-right">
+      <!-- <mc-dropdown-language></mc-dropdown-language> -->
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
   <div class="mc-flex-wrap">
-
-
-    <!-- <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart> -->
-    <!-- icon mobileNo fibre-->
-    <div class="card border-0">
-      <div class="container-fluid mt-3 mb-3">
-        <div class="row pl-3 pr-3">
-          <div class="col-12 col-sm-6 text-brown">
-            <img
-              src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEEAAAA6CAMAAADYzMR1AAAAhFBMVEUAAACNxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj+Nxj8Qf88uAAAAK3RSTlMAY1D4CQMTBfPu0DYjHw7JjUM9KJl3b+TbpX5oMSwZw720klcQr11TB4VVb092TgAAAixJREFUSMelltuaqjAMhQvIWRRB8QSOoqPOXu//fruEGSxY/VL570xkQXNqxBvuWRoBwck6iI+YpeiISmGOhR7fE2GG+40BYWImcETDep/PJl7WqjlGEltIgsXfT+9Evy98gTMkc/Xke4onPwsk4PZsV0iuXIUmjcEw9ssmFD5PYALJYmj1A2k98xRuADbP5iuZWXwBsF982oxVC/TPF8oxR8FrQqZzFNKx5yhMm1TqHAvpSLkKJ52jlI4lRyF59Q2xdNTcOAQ6hy0dO46CD4mu+HbS/k9wCAFMNfaNtFcshRqA9aKiWJOKshbpzRuDzvK0JWkJfmOshsZDq8sjo1GgGXxf7DkbPHdAAklpdFc4/bBHzDmpzqPtsC+RCz42+lMmBkmaMIdamIkDILwbKXiQOL8SlWN4BmKBLpoZwB/Tw1uKFocVKLnGTLtIlGpL8YmbhK5dym0Tho0njKiOaKjUZSTlayRFCKLrrhOI6DZjdHaZBiDUVnaXf7ZNMXXfvdyK0HE89MKyRsfpdtD2Y1k7eFAnT6E94kG4y4etVKiPbzNfu5jc5qrIWT2O/Xh+vcrdN2GK0+ChEavrCeEsM0awPbvbFH96As6OoszCr2oQS6WHrr4w4l50/eaGzekvwpgDJdj7HT8kYMrFaev2R3cj82dh2A7h/DMFv924HDrEZ8zp7frxwV9+s1EKK7oTQkrJCAU6y87+jCMt4FuMI6N6GEMlCowjEbk1jvt/2LKEbgNMQ0wAAAAASUVORK5CYII="
-              class="icon icon-person" *ngIf="shoppingCart?.fullName" />
-            <span>{{ shoppingCart?.fullName }}</span>
-          </div>
-          <div class="col-12 col-sm-6 text-sm-right text-brown">
-            <img src="../../../../../../assets/images/icon/bottom_menu_icon_ais_fibre.png" class="icon icon-phone"
-              *ngIf="shoppingCart?.mobileNo" />
-            <span> {{ shoppingCart?.mobileNo| mobileNo }}</span>
-          </div>
-        </div>
-      </div>
-      <hr class="mt-0 mb-0" *ngIf="shoppingCart?.campaignName">
-      <div class="container-fluid mt-3 mb-3" *ngIf="shoppingCart?.campaignName">
-        <div class="row pl-3 pr-3">
-          <div class="col-8 col-sm-10 text-left text-brown">
-            <p class="text-lime">
-              {{ shoppingCart?.campaignName }}
-            </p>
-            <div>
-              {{ shoppingCart?.commercialName }}
-              <span *ngIf="shoppingCart?.color">
-                สี {{ shoppingCart?.color }}
-              </span>
-              {{ 'จำนวน' | translate }} {{ shoppingCart?.qty || 0 }} {{ 'เครื่อง' | translate }}
-            </div>
-          </div>
-          <div class="col-4 col-sm-2 text-center">
-            <img
-              src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAHEAAABXCAMAAAAEVVrJAAAAaVBMVEUAAAD////T6bX1+u7////////2+/GNxj+324ei0GOw13q12oKez1yPx0Om0miYzFGUyUqSyEep1G663IqazVaWyk693o+OxkGy2H2u1nas1XOk0WWRyEXG4p/D4ZnA4JXK5KXc7sTS6LN1z0uxAAAAB3RSTlMABzIkC4Y6G1AA8QAAAnhJREFUaN7dmtuS2jAMhkW7rXJ0EkLOCbB9/4esvXRwCUmMkdDO7nfBcOHJP5F1tANQhnNUAK9kwiUyeB0lLgOvo6BL0onkJSHVih2IohUbECUXN2urFUsQRSseQBR5b03EFetPiY8CREnFzbrXikcQRSuG4ORrx0clrhhrxQBEIXQfhI0MOWnBQYjsKNjkhPwMLrPyA5uMesUEfCToqg6dXlEz+2ICW/ywK3hA10b+RA1zTim3FQ+8ipnzcW9mKGkla8Ob2chcsv7tfjc8ZrWuf4Jtfim9KOac4sDBbkJeUnCCvOwfmXhYeXDiySIOetSITjzvJtKEOjpbbSOhicd2FA9PPBFXipOdeIwLik48pijEohOPKXz0ws2/jXYtZ4vjpkImao/uhAcPg/DQ+Cn2AQmTuZRffjoDid4vxE7mHWUPTvTylBwbI3gwUiPy6Gul/qPtIzAgIm/C4E9bqCEqVsyJ3x1eMXgRIKU1754xEWXiyVGjwJMGaVTgi0ISB/AHCaT1sxHVBs9Q/3l++99BksjraOc73PF0KeL6/BmPaAj57nhaNKxp1nglId/xRPfHrtlCC28pqGbNbTIolMqXgjtCQzrsMytJbFWm/94swbsMf5GxeUoR73j2l0OZ5MaE87JW3bTWVG+Nz/pnXL8TudUwO97RvPVCuRqmvXVf28IxfKuwneHnRQ4oVD6KO3ugSiBu3Io8ja5luFfMoyuJcS7m7xgmG422S1ubF1qWgf4m6I+omTuX4pvnbVhH9sQEh9mAYSUbaw+6w6bRNMX5x7+loO2P5zJDA3Awbo7a1cxxWcjwSr55h5gCF6fi3xPLdbuv3pT8BWzFR0YdTPwzAAAAAElFTkSuQmCC"
-              width="35px" class="mb-1" />
-            <h5 class="text-lime">
-              ฿ {{ shoppingCart?.price | number }}
-            </h5>
-          </div>
-        </div>
-      </div>
-    </div>
-
-
-
-
-
+    <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
     <div class="mt-3 mb-3">
       <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
       <div class="container-fluid">
+
         <div class="card mb-3">
-          <div class="card-header bg-pink text-white">สรุปรายการสั่งชื้อสินค้า</div>
+          <div class="card-header bg-pink text-white" translate>สรุปรายการสั่งซื้อสินค้า</div>
           <div class="card-body">
             <p class="text-green">{{ priceOption?.campaign?.campaignName }}</p>
             <div class="text-light-grey">
@@ -73,34 +25,26 @@
                 <span *ngIf="priceOption?.productStock?.color">
                   สี {{ priceOption?.productStock?.color }}
                 </span>
-                <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
-                  (แถมซิม)
-                </span>
                 <span class="pull-right text-green">
                   ฿ {{ priceOption?.trade?.promotionPrice | number }}
                 </span>
               </p>
-
-            </div>
-            <div>
-              <div class="row" *ngIf="!!transaction?.data?.preBooking && !!transaction?.data?.preBooking?.preBookingNo">
-                <div class="col-sm-9">
-                  <i class="fa fa-circle mr-3 text-pink"></i>
-                  <span>หักค่ามัดจำสินค้า ({{ transaction?.data?.preBooking?.preBookingNo }})</span>
-                </div>
-                <div class="col-sm-3 text-pink text-right">
-                  - ฿ {{ transaction?.data?.preBooking?.depositAmt | number }}
-                </div>
-              </div>
+              <p *ngIf="priceOption?.trade?.advancePay?.amount > 0">
+                <i class="fa fa-circle mr-3 text-green"></i>
+                {{ priceOption?.trade?.advancePay?.description }}
+                <span class="pull-right text-green">
+                  ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
+                </span>
+              </p>
             </div>
           </div>
-          <div class="card-footer bg-transparent text-right mr-3 ml-3">
-            รวมยอดชำระ(รวมVAT)
+          <div class="card-footer bg-transparent text-right" translate>
+            รวมยอดชำระ(รวม VAT)
             <span class="text-green ml-2">
               ฿ {{ summary([
-                +priceOption?.trade?.promotionPrice,
-                deposit
-                ]) | number }}
+              +priceOption?.trade?.promotionPrice,
+              +priceOption?.trade?.advancePay?.amount
+              ]) | number }}
             </span>
           </div>
         </div>
@@ -117,49 +61,86 @@
               </span>
             </p>
           </div>
-          <div class="card-footer bg-transparent text-right">
-          </div>
         </div>
 
-
         <div class="card mb-3">
-          <div class="card-header bg-pink text-white">
+          <div class="card-header bg-pink text-white" translate>
             รายละเอียดการชำระ
           </div>
           <div class="card-body">
-            <p>
+            <p translate>
               ข้อมูลการชำระสินค้า
             </p>
-            <p *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N'">
-              <i class="fa fa-circle mr-3 text-green"></i>
-              {{ priceOption?.productDetail?.name }}
-              <span *ngIf="priceOption?.productStock?.color">
-                สี {{ priceOption?.productStock?.color }}
-              </span>
-              <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
-                (แถมซิม)
-              </span>
-              <span class="pull-right text-green">฿ {{ summary([
+
+            <!-- ชำระเต็มจำนวน -->
+            <ng-container
+              *ngIf="!priceOption?.trade?.advancePay || priceOption?.trade?.advancePay?.installmentFlag === 'N'">
+              <p>
+                <i class="fa fa-circle mr-3 text-green"></i>
+                {{ priceOption?.productDetail?.name }}
+                <span *ngIf="priceOption?.productStock?.color">
+                  สี {{ priceOption?.productStock?.color }}
+                </span>
+                <span *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">: {{'ชำระเต็มจำนวน'| translate}}</span>
+                <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">:
+                  {{'ผ่อนชำระบัตรเครดิต'| translate}}</span>
+                <span class="pull-right text-green">
+                  ฿ {{ priceOption?.trade?.promotionPrice | number }}
+                </span>
+              </p>
+              <small class="text-muted">
+                ({{'ชำระโดย' | translate}}
+                {{ summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) }})
+              </small>
+              <!-- ค่าแพ็กเกจบริการล่วงหน้า -->
+              <p class="mt-3" *ngIf="(+priceOption?.trade?.advancePay?.amount) > 0">
+                <i class="fa fa-circle mr-3 text-green"></i>
+                {{'ค่าแพ็กเกจบริการล่วงหน้า'| translate}} : {{'ชำระเต็มจำนวน'| translate}}
+                <span class="pull-right text-green">
+                  ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
+                </span>
+              </p>
+              <small class="text-muted" *ngIf="(+priceOption?.trade?.advancePay?.amount) > 0">
+                ({{'ชำระโดย' | translate}}
+                {{ summaryPageService.descriptionPayment(transaction?.data?.advancePayment) }})
+              </small>
+            </ng-container>
+
+            <!-- ค่าเครื่องและค่าแพ็กเกจล่วงหน้า -->
+            <ng-container *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'Y'">
+              <p>
+                <i class="fa fa-circle mr-3 text-green"></i>
+                {{'ค่าเครื่องและค่าแพ็กเกจล่วงหน้า'| translate}} :
+                <span *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">{{'ชำระเต็มจำนวน'| translate}}</span>
+                <span
+                  *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">{{'ผ่อนชำระบัตรเครดิต'| translate}}</span>
+                <span class="pull-right text-green">฿ {{ summary([
                   +priceOption?.trade?.promotionPrice,
-                  deposit
+                  +priceOption?.trade?.advancePay?.amount
                   ]) | number }}</span>
-            </p>
+              </p>
+              <small class="text-muted">
+                ({{'ชำระโดย' | translate}}
+                {{ summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) }})
+              </small>
+            </ng-container>
+
           </div>
-          <div class="card-footer bg-transparent mr-3 ml-3">
-            <p>
+          <div class="card-footer bg-transparent ">
+            <p translate>
               ข้อมูลใบเสร็จรับเงิน
             </p>
             <div class="row">
-              <p class="col-12 col-sm-4">
+              <p class="col-12 col-sm-4" translate>
                 <i class="fa fa-circle mr-3 text-green"></i>
-                ผู้ชื้อ
+                {{'ผู้ซื้อ' | translate}}
               </p>
               <p class="col-12 col-sm-8 text-green">
                 {{ transaction?.data?.customer?.titleName }}
                 {{ transaction?.data?.customer?.firstName }}
                 {{ transaction?.data?.customer?.lastName }}
               </p>
-              <p class="col-12 col-sm-4">
+              <p class="col-12 col-sm-4" translate>
                 <i class="fa fa-circle mr-3 text-green"></i>
                 ที่อยู่ในใบเสร็จรับเงิน
               </p>
@@ -168,7 +149,14 @@
               </p>
             </div>
           </div>
-          <div class="card-footer bg-transparent text-right mr-3 ml-3">
+          <div class="card-footer bg-transparent">
+            <p translate>
+              ข้อตกลงรับสิทธิ์ต่อเนื่อง
+            </p>
+            <p translate>
+              <i class="fa fa-circle mr-3 text-green"></i>
+              รับสิทธิ์ต่อเนื่องนาน {{ priceOption?.campaign?.maximumContract }} เดือน
+            </p>
           </div>
         </div>
 
@@ -200,7 +188,6 @@
                     formControlName="checkSeller">
                 </div>
               </div>
-
             </form>
           </div>
         </div>
@@ -218,7 +205,7 @@
   <div class="modal-body" [innerHTML]="detail"></div>
   <div class="modal-footer">
     <div class="w-100 text-center">
-      <button class="btn btn-success px-5" (click)="modalRef.hide()">ปิด</button>
+      <button class="btn btn-success px-5" (click)="modalRef.hide()">{{'ปิด'| translate}}</button>
     </div>
   </div>
 </ng-template>
