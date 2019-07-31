@@ -8,7 +8,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionType } from 'src/app/shared/models/transaction.model';
 import { ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_IDENTIFY_ID_CARD_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 
@@ -77,40 +77,46 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyPageComponent implement
     const mobileNo = this.transaction.data.simCard.mobileNo;
     this.customerInfoService.verifyPrepaidIdent(this.identity, mobileNo).then((verifySuccess: boolean) => {
       if (verifySuccess) {
-        return this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customerInfo: any) => {
-          if (customerInfo.caNumber) {
-            this.transaction.data.customer = { ...this.transaction.data.customer, ...customerInfo };
-          } else {
-            const privilege = this.transaction.data.customer.privilegeCode;
-            this.transaction.data.customer = null;
-            this.transaction.data.customer = customerInfo;
-            this.transaction.data.customer.privilegeCode = privilege;
+        return this.http.get('/api/customerportal/validate-customer-existing', {
+          params: {
+            identity: this.identity,
+            transactionType: TransactionType.DEVICE_ORDER_EXISTING_GADGET_AIS
           }
-          this.transaction.data.billingInformation = {};
-          this.http.get(`/api/customerportal/newRegister/${this.identity}/queryBillingAccount`).toPromise()
-            .then((resp: any) => {
-              const data = resp.data || {};
-              this.transaction.data.billingInformation = {
-                billCycles: data.billingAccountList,
-                billDeliveryAddress: this.transaction.data.customer
-              };
-              if (!this.transaction.data.order || !this.transaction.data.order.soId) {
-                return this.http.post('/api/salesportal/add-device-selling-cart',
-                  this.getRequestAddDeviceSellingCart()
-                ).toPromise()
-                  .then((response: any) => {
-                    this.transaction.data.order = { soId: response.data.soId };
-                    return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-                  }).then(() => {
-                    this.pageLoadingService.closeLoading();
-                    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
-                  });
-              } else {
-                this.pageLoadingService.closeLoading();
-                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
-              }
-            });
-        });
+        }).toPromise()
+          .then((customerInfo: any) => {
+            if (customerInfo.caNumber) {
+              this.transaction.data.customer = { ...this.transaction.data.customer, ...customerInfo };
+            } else {
+              const privilege = this.transaction.data.customer.privilegeCode;
+              this.transaction.data.customer = null;
+              this.transaction.data.customer = customerInfo;
+              this.transaction.data.customer.privilegeCode = privilege;
+            }
+            this.transaction.data.billingInformation = {};
+            this.http.get(`/api/customerportal/newRegister/${this.identity}/queryBillingAccount`).toPromise()
+              .then((resp: any) => {
+                const data = resp.data || {};
+                this.transaction.data.billingInformation = {
+                  billCycles: data.billingAccountList,
+                  billDeliveryAddress: this.transaction.data.customer
+                };
+                if (!this.transaction.data.order || !this.transaction.data.order.soId) {
+                  return this.http.post('/api/salesportal/add-device-selling-cart',
+                    this.getRequestAddDeviceSellingCart()
+                  ).toPromise()
+                    .then((response: any) => {
+                      this.transaction.data.order = { soId: response.data.soId };
+                      return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+                    }).then(() => {
+                      this.pageLoadingService.closeLoading();
+                      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
+                    });
+                } else {
+                  this.pageLoadingService.closeLoading();
+                  this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
+                }
+              });
+          });
       } else {
         this.pageLoadingService.closeLoading();
         this.alertService.error('ไม่สามารถทำรายการได้ ข้อมูลการแสดงตนไม่ถูกต้อง');

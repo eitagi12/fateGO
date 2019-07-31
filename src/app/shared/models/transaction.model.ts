@@ -9,6 +9,7 @@ export enum TransactionType {
   DEVICE_ORDER_MNP_ASP = 'Port-InASP',
   DEVICE_ORDER_EXISTING_AIS = 'ExistingAIS',
   DEVICE_ORDER_EXISTING_ASP = 'ExistingASP',
+  DEVICE_ORDER_EXISTING_GADGET_AIS = 'ExistingGadgetAIS',
   DEVICE_ORDER_PREPAID_HOTDEAL_AIS = 'PrepaidHotDealAIS',
   // pure
   ORDER_NEW_REGISTER = 'NewRegister',
@@ -150,7 +151,7 @@ export interface Customer {
   imageSmartCard?: string;
   imageReadSmartCard?: string;
   customerPinCode?: string;
-    // passport
+  // passport
   issuingCountry?: string;
   nationality?: string;
   imageReadPassport?: string;

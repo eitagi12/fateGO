@@ -157,7 +157,12 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
       });
     } else {
       // KEY-IN ID-Card
-      this.customerInfoService.getCustomerInfoByIdCard(this.identity).then((customer: Customer) => {
+      this.http.get('/api/customerportal/validate-customer-existing', {
+        params: {
+          identity: this.identity,
+          transactionType: TransactionType.DEVICE_ORDER_EXISTING_GADGET_AIS
+        }
+      }).toPromise().then((customer: Customer) => {
         this.transaction.data.billingInformation = {};
         this.http.get(`/api/customerportal/newRegister/${this.identity}/queryBillingAccount`).toPromise()
           .then((resp: any) => {
