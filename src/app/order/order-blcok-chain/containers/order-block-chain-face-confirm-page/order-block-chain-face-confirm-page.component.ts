@@ -85,7 +85,7 @@ export class OrderBlockChainFaceConfirmPageComponent implements OnInit {
     const customer = this.transaction.data.customer;
     const simCard = this.transaction.data.simCard;
     const faceImage = this.transaction.data.faceRecognition;
-    const birthDate = moment(customer.birthdate).format('YYYY-MM-DD');
+    const birthDate = moment(customer.birthdate, 'DD/MM/YYYY').format('YYYY-MM-DD');
     const param = {
       id_card: customer.idCardNo || '',
       prefix_name_th: customer.titleName || '',
@@ -95,23 +95,24 @@ export class OrderBlockChainFaceConfirmPageComponent implements OnInit {
       firstname_en: customer.firstNameEn || '',
       surname_en: customer.lastNameEn || '',
       msisdn: `66${simCard.mobileNo.substring(1, simCard.mobileNo.length)}` || '',
-      live_photo: `data:image/jpg;base64,${faceImage.imageFaceUser}` || '',
-      card_photo: `data:image/jpg;base64,${customer.imageReadSmartCard}` || '',
-      consent: `data:image/jpg;base64,${customer.imageSignatureSmartCard}` || '',
+      live_photo: faceImage.imageFaceUser || '',
+      card_photo: customer.imageReadSmartCard || '',
+      consent: customer.imageSignature || '',
       laser_code: customer.laserCode || '',
       birth_date: birthDate || '',
       location_name: this.locationName || '',
       location_code: this.locationCode || '',
       empowerment_flag: 'Y',
       empowerment_by_code: this.employeeCode || '',
-      force_enroll_flag: simCard.forceEnrollFlag
+      force_enroll_flag: simCard.forceEnrollFlag || ''
     };
-    console.log('param', param);
     this.http.post(`/api/customerportal/newRegister/post-mobile-id`, param).toPromise()
       .then((data: any) => {
+        this.transaction.data.customer.isBlockChain = true;
         this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_RESULT_PAGE]);
       }).catch((err) => {
-        this.alertService.error(err);
+        this.transaction.data.customer.isBlockChain = false;
+        this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_RESULT_PAGE]);
       }).then(() => {
         this.pageLoadingService.closeLoading();
       });

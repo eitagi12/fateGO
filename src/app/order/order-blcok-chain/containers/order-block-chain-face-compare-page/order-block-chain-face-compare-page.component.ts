@@ -1,12 +1,13 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_ORDER_BLOCK_CHAIN } from 'src/app/order/constants/wizard.constant';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { HomeService, PageLoadingService, CaptureAndSign, TokenService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionAction, Customer, FaceRecognition } from 'src/app/shared/models/transaction.model';
 import { HttpClient } from '@angular/common/http';
 import { ROUTE_ORDER_BLOCK_CHAIN_FACE_CAPTURE_PAGE, ROUTE_ORDER_BLOCK_CHAIN_RESULT_PAGE, ROUTE_ORDER_BLOCK_CHAIN_FACE_CONFIRM_PAGE, ROUTE_ORDER_BLOCK_CHAIN_FACE_COMPARE_PAGE } from '../../constants/route-path.constant';
 import * as moment from 'moment';
+const Moment = moment;
 @Component({
   selector: 'app-order-block-chain-face-compare-page',
   templateUrl: './order-block-chain-face-compare-page.component.html',
@@ -26,7 +27,8 @@ export class OrderBlockChainFaceComparePageComponent implements OnInit, OnDestro
     private transactionService: TransactionService,
     private http: HttpClient,
     private pageLoadingService: PageLoadingService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private route: ActivatedRoute
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -60,7 +62,8 @@ export class OrderBlockChainFaceComparePageComponent implements OnInit, OnDestro
     const customer = this.transaction.data.customer;
     const simCard = this.transaction.data.simCard;
     const faceImage = this.transaction.data.faceRecognition;
-    const birthDate = moment(customer.birthdate).format('YYYY-MM-DD');
+    // const birthDate = a.replace(/\//g, '-');
+    const birthDate = moment(customer.birthdate, 'DD/MM/YYYY').format('YYYY-MM-DD');
     const param = {
       id_card: customer.idCardNo || '',
       prefix_name_th: customer.titleName || '',
@@ -81,12 +84,24 @@ export class OrderBlockChainFaceComparePageComponent implements OnInit, OnDestro
       empowerment_by_code: this.employeeCode || '',
       force_enroll_flag: simCard.forceEnrollFlag || ''
     };
-    console.log('param', param);
     this.http.post(`/api/customerportal/newRegister/post-mobile-id`, param).toPromise()
       .then((data: any) => {
+        this.transaction.data.customer.isBlockChain = true;
         this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_RESULT_PAGE]);
       }).catch((err) => {
-        this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_FACE_COMPARE_PAGE]);
+        if (err.developerMessage === '412') {
+          this.route.queryParams.subscribe(params => {
+            if (!params.facepare) {
+              this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_FACE_CAPTURE_PAGE], { queryParams: { facepare: true } });
+            } else {
+              this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_FACE_CONFIRM_PAGE]);
+
+            }
+          });
+        }
+        this.transaction.data.customer.isBlockChain = false;
+        this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_RESULT_PAGE]);
+
       }).then(() => {
         this.pageLoadingService.closeLoading();
       });

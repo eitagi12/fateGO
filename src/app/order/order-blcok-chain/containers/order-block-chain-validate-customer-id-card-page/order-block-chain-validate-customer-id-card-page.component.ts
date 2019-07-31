@@ -70,6 +70,7 @@ export class OrderBlockChainValidateCustomerIdCardPageComponent implements OnIni
 
   onCompleted(profile: ReadCardProfile): void {
     this.profile = profile;
+    console.log('profile', profile);
     this.isNext = false;
     // auto next
     if (!this.isAisNative) {
@@ -138,6 +139,7 @@ export class OrderBlockChainValidateCustomerIdCardPageComponent implements OnIni
             });
         })
         .then((customer: any) => { // load bill cycle
+          console.log('cus', customer);
           this.pageLoadingService.closeLoading();
           this.transaction.data.customer = Object.assign(this.profile, customer);
           this.validNext = true;

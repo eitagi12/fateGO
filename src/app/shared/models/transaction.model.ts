@@ -149,7 +149,7 @@ export interface Customer {
   imageSmartCard?: string;
   imageReadSmartCard?: string;
   customerPinCode?: string;
-    // passport
+  // passport
   issuingCountry?: string;
   nationality?: string;
   imageReadPassport?: string;
@@ -162,9 +162,11 @@ export interface Customer {
   repi?: boolean;
   mobileNo?: string;
 
+  // block chain
   chipID?: string;
   requestNo?: string;
   laserCode?: string;
+  isBlockChain?: boolean;
 }
 
 export interface Recipientinformation {
