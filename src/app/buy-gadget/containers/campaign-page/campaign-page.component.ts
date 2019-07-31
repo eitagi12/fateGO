@@ -508,86 +508,104 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
   dataMock(): any {
     return [
       {
-        'campaignId': '1090383',
+        'campaignId': '99003',
         'campaignName': 'APPLE TV',
         'campaignDesc': 'APPLE TV',
-        'imageUrl': null,
+        'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/AISHOTDEAL_AISHOTDEAL_03_300.jpg',
         'channels': [
-          'ASP',
-          'AIS'
+          'AIS',
+          'ASP'
         ],
-        'minimumPackagePrice': '0',
-        'maximumPackagePrice': '99999',
-        'packageKeyRef': '496ebae87cc70e08d63d34a7c5aa0767',
+        'minimumPackagePrice': '499',
+        'maximumPackagePrice': '499',
+        'packageKeyRef': 'b11f089e8f8ce9ec164ec0d369debcbe',
         'conditionCode': 'CONDITION_2',
         'promotionFlag': 'Y',
         'publish': true,
         'allowedAddToCart': true,
-        'code': 'APPLE_TV',
+        'code': 'APPLETV',
         'priceType': 'PROMOTION',
         'maximumContract': '0',
-        'price': '41750',
-        'freeGoods': [],
-        'customerGroups': [
+        'price': '33500',
+        'freeGoods': [
           {
-            'code': 'MC004',
-            'flowId': '000',
-            'name': 'ลูกค้าปัจจุบัน'
+            'name': 'KRS APP IPH X MALMO 4 CARD FOLIOCASE BK',
+            'code': '33014507',
+            'qty': '1'
+          },
+          {
+            'name': 'IPHONE 5S CASE RED-ITS',
+            'code': '33007573',
+            'qty': '1'
           }
         ],
-        'minimumPromotionPrice': '41750',
-        'maximumPromotionPrice': '41750',
-        'minimumNormalPrice': '41750',
-        'maximumNormalPrice': '41750',
-        'minimumAdvancePay': '0',
-        'maximumAdvancePay': '0',
+        'customerGroups': [
+          {
+            'name': 'ลูกค้าปัจจุบัน',
+            'code': 'MC004',
+            'flowId': '000'
+          }
+        ],
+        'minimumPromotionPrice': '32500',
+        'maximumPromotionPrice': '32500',
+        'minimumNormalPrice': '33500',
+        'maximumNormalPrice': '33500',
+        'minimumAdvancePay': '2140',
+        'maximumAdvancePay': '2140',
         'privileges': [
           {
-            'privilegeId': 'OTHER',
-            'privilegeName': 'Apple Tv TP19041848__ - ',
-            'privilegeDesc': 'Apple Tv TP19041848__ - ',
-            'ussdCode': null,
-            'packageKeyRef': '496ebae87cc70e08d63d34a7c5aa0767',
-            'minimumPackagePrice': null,
-            'maximumPackagePrice': null,
+            'privilegeId': '2018-00147',
+            'privilegeName': 'Hot Deal New TP19072332__*999*02# - เครื่องโทรศัพท์ราคาพิเศษ AIS Hot Deal สำหรับลูกค้าปัจจุบัน DT (*999*02#)',
+            'privilegeDesc': 'Hot Deal New TP19072332__*999*02# - เครื่องโทรศัพท์ราคาพิเศษ AIS Hot Deal สำหรับลูกค้าปัจจุบัน DT (*999*02#)',
+            'ussdCode': '*999*04#',
+            'minimumPackagePrice': '499',
+            'maximumPackagePrice': '499',
+            'packageKeyRef': 'b11f089e8f8ce9ec164ec0d369debcbe',
             'channels': [
-              'ASP',
               'AIS'
             ],
             'customerGroups': [
               {
+                'name': 'ลูกค้าปัจจุบัน',
                 'code': 'MC004',
-                'flowId': '000',
-                'name': 'ลูกค้าปัจจุบัน'
+                'flowId': '000'
               }
             ],
-            'minimumNormalPrice': '41750',
-            'maximumNormalPrice': '41750',
-            'minimumPromotionPrice': '41750',
-            'maximumPromotionPrice': '41750',
-            'minimumAdvancePay': '0',
-            'maximumAdvancePay': '0',
+            'minimumNormalPrice': '33500',
+            'maximumNormalPrice': '33500',
+            'minimumPromotionPrice': '32500',
+            'maximumPromotionPrice': '32500',
+            'minimumAdvancePay': '2140',
+            'maximumAdvancePay': '2140',
             'maximumContract': '0',
             'trades': [
               {
-                'tradeNo': 'TP19041848',
-                'tradeName': '[MC] Handset Trading Installment + Discount + Free Goods',
-                'tradeDesc': 'Handset Trading Installment + Discount + Free Goods',
-                'normalPrice': '41750',
-                'promotionPrice': '39250',
+                'tradeNo': 'TP19072332',
+                'tradeName': 'Hot Deal Privilege',
+                'tradeDesc': 'Test DeviceSale Privilege',
+                'normalPrice': '33500',
+                'promotionPrice': '32500',
                 'durationContract': '0',
                 'advancePay': {
-                  'tradeAirtimeId': null,
-                  'amount': '0',
+                  'tradeAirtimeId': '15020',
+                  'amount': '2140',
                   'installmentFlag': 'N',
-                  'matAirtime': null,
-                  'description': null,
-                  'promotions': []
+                  'matAirtime': 'AIRTIME2000EXVAT_DISC200_10M',
+                  'description': 'แพ็กเกจค่าบริการรายเดือน 2,000 บาท (ไม่รวมVAT) รับส่วนลด 200 บาท นาน 10 เดือน',
+                  'promotions': [
+                    {
+                      'month': '10',
+                      'promotionCode': 'P16115936',
+                      'promotionName': 'MF_Disc_2000B_10M_200',
+                      'productType': 'Account Promotion',
+                      'billingSystem': 'IRB'
+                    }
+                  ]
                 },
                 'priceType': 'PROMOTION',
-                'ussdCode': '*999*04#*',
-                'packageKeyRef': '496ebae87cc70e08d63d34a7c5aa0767',
-                'priceDiscount': '2500',
+                'ussdCode': '*999*04#',
+                'packageKeyRef': 'b11f089e8f8ce9ec164ec0d369debcbe',
+                'priceDiscount': '1000',
                 'focCode': '0',
                 'productType': 'DEVICE',
                 'productSubtype': 'HANDSET',
@@ -597,18 +615,14 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                 'priceGroups': [
                   {
                     'priceType': 'EUP',
-                    'price': '41750'
-                  },
-                  {
-                    'priceType': 'TUP',
-                    'price': '45900'
+                    'price': '33500'
                   }
                 ],
                 'discount': {
-                  'tradeDiscountId': '128777',
+                  'tradeDiscountId': '136895',
                   'type': 'B',
                   'value': '7',
-                  'amount': '2500.0',
+                  'amount': '1000.0',
                   'specialType': null,
                   'specialAmount': '0'
                 },
@@ -616,42 +630,17 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                   {
                     'cardType': 'MASTER',
                     'method': 'CC',
-                    'installId': 421
-                  },
-                  {
-                    'cardType': 'OTHER',
-                    'method': 'CC',
-                    'installId': 421
-                  },
-                  {
-                    'cardType': 'VISA',
-                    'method': 'CC',
-                    'installId': 421
-                  },
-                  {
-                    'cardType': 'MASTER',
-                    'method': 'CC',
-                    'installId': 26
-                  },
-                  {
-                    'cardType': 'MASTER',
-                    'method': 'CC',
-                    'installId': 96
-                  },
-                  {
-                    'cardType': 'MASTER',
-                    'method': 'CC',
                     'installId': 278
                   },
                   {
                     'cardType': 'MASTER',
                     'method': 'CC',
-                    'installId': 321
+                    'installId': 371
                   },
                   {
                     'cardType': 'MASTER',
                     'method': 'CC',
-                    'installId': 327
+                    'installId': 390
                   },
                   {
                     'cardType': 'MASTER',
@@ -659,46 +648,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                     'installId': 411
                   },
                   {
-                    'cardType': 'OTHER',
-                    'method': 'CC',
-                    'installId': 26
-                  },
-                  {
-                    'cardType': 'OTHER',
-                    'method': 'CC',
-                    'installId': 96
-                  },
-                  {
-                    'cardType': 'OTHER',
-                    'method': 'CC',
-                    'installId': 278
-                  },
-                  {
-                    'cardType': 'OTHER',
-                    'method': 'CC',
-                    'installId': 321
-                  },
-                  {
-                    'cardType': 'OTHER',
-                    'method': 'CC',
-                    'installId': 327
-                  },
-                  {
-                    'cardType': 'OTHER',
-                    'method': 'CC',
-                    'installId': 411
-                  },
-                  {
-                    'cardType': 'VISA',
-                    'method': 'CC',
-                    'installId': 26
-                  },
-                  {
-                    'cardType': 'VISA',
-                    'method': 'CC',
-                    'installId': 96
-                  },
-                  {
                     'cardType': 'VISA',
                     'method': 'CC',
                     'installId': 278
@@ -706,12 +655,12 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                   {
                     'cardType': 'VISA',
                     'method': 'CC',
-                    'installId': 321
+                    'installId': 371
                   },
                   {
                     'cardType': 'VISA',
                     'method': 'CC',
-                    'installId': 327
+                    'installId': 390
                   },
                   {
                     'cardType': 'VISA',
@@ -724,7 +673,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                     'name': 'ไทยพาณิชย์ จำกัด (มหาชน)',
                     'abb': 'SCB',
                     'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/SCB_SCB02.png',
-                    'installment': '0% 10 เดือน (10 M)',
+                    'installment': '0%  6 เดือน ( 6 M)',
                     'remark': null
                   },
                   {
@@ -732,13 +681,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                     'abb': 'SCB',
                     'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/SCB_SCB02.png',
                     'installment': '0% 12 เดือน (12 M)',
-                    'remark': null
-                  },
-                  {
-                    'name': 'ไทยพาณิชย์ จำกัด (มหาชน)',
-                    'abb': 'SCB',
-                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/SCB_SCB02.png',
-                    'installment': '0% 15 เดือน (15 M)',
                     'remark': null
                   },
                   {
@@ -752,28 +694,26 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                     'name': 'กสิกรไทย จำกัด (มหาชน)',
                     'abb': 'KBNK',
                     'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/KBNK_kBank02.png',
-                    'installment': '0% 15 เดือน (15 M)',
-                    'remark': null
-                  },
-                  {
-                    'name': 'กสิกรไทย จำกัด (มหาชน)',
-                    'abb': 'KBNK',
-                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/KBNK_kBank02.png',
-                    'installment': '0% 10 เดือน (10 M)',
-                    'remark': null
-                  },
-                  {
-                    'name': 'กรุงไทย จำกัด (มหาชน)',
-                    'abb': 'KTB',
-                    'imageUrl': 'https://10.104.249.89/CPC-FE-WEB/api/contents/upload/KTB_KTB.png',
-                    'installment': '0% 10 เดือน (10 M)',
+                    'installment': '0%  6 เดือน ( 6 M)',
                     'remark': null
                   }
                 ],
-                'freeGoods': [],
+                'freeGoods': [
+                  {
+                    'tradeFreegoodsId': '116619',
+                    'code': '33014507',
+                    'name': 'KRS APP IPH X MALMO 4 CARD FOLIOCASE BK',
+                    'qty': '1'
+                  },
+                  {
+                    'tradeFreegoodsId': '116618',
+                    'code': '33007573',
+                    'name': 'IPHONE 5S CASE RED-ITS',
+                    'qty': '1'
+                  }
+                ],
                 'matCode': 'undefined',
                 'channels': [
-                  'ASP',
                   'AIS'
                 ],
                 'tradeChannels': [
@@ -789,31 +729,39 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                 ],
                 'customerGroups': [
                   {
+                    'name': 'ลูกค้าปัจจุบัน',
                     'code': 'MC004',
-                    'flowId': '000',
-                    'name': 'ลูกค้าปัจจุบัน'
+                    'flowId': '000'
                   }
                 ]
               },
               {
-                'tradeNo': 'TP19041848',
-                'tradeName': '[MC] Handset Trading Installment + Discount + Free Goods',
-                'tradeDesc': 'Handset Trading Installment + Discount + Free Goods',
-                'normalPrice': '41750',
-                'promotionPrice': '39250',
+                'tradeNo': 'TP19072332',
+                'tradeName': 'Hot Deal Privilege',
+                'tradeDesc': 'Test DeviceSale Privilege',
+                'normalPrice': '33500',
+                'promotionPrice': '32500',
                 'durationContract': '0',
                 'advancePay': {
-                  'tradeAirtimeId': null,
-                  'amount': '0',
+                  'tradeAirtimeId': '15020',
+                  'amount': '2140',
                   'installmentFlag': 'N',
-                  'matAirtime': null,
-                  'description': null,
-                  'promotions': []
+                  'matAirtime': 'AIRTIME2000EXVAT_DISC200_10M',
+                  'description': 'แพ็กเกจค่าบริการรายเดือน 2,000 บาท (ไม่รวมVAT) รับส่วนลด 200 บาท นาน 10 เดือน',
+                  'promotions': [
+                    {
+                      'month': '10',
+                      'promotionCode': 'P16115936',
+                      'promotionName': 'MF_Disc_2000B_10M_200',
+                      'productType': 'Account Promotion',
+                      'billingSystem': 'IRB'
+                    }
+                  ]
                 },
                 'priceType': 'PROMOTION',
-                'ussdCode': '*999*04#*',
-                'packageKeyRef': '496ebae87cc70e08d63d34a7c5aa0767',
-                'priceDiscount': '2500',
+                'ussdCode': '*999*04#',
+                'packageKeyRef': 'b11f089e8f8ce9ec164ec0d369debcbe',
+                'priceDiscount': '1000',
                 'focCode': '0',
                 'productType': 'DEVICE',
                 'productSubtype': 'HANDSET',
@@ -823,18 +771,14 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                 'priceGroups': [
                   {
                     'priceType': 'EUP',
-                    'price': '41750'
-                  },
-                  {
-                    'priceType': 'TUP',
-                    'price': '45900'
+                    'price': '33500'
                   }
                 ],
                 'discount': {
-                  'tradeDiscountId': '128777',
+                  'tradeDiscountId': '136895',
                   'type': 'B',
                   'value': '7',
-                  'amount': '2500.0',
+                  'amount': '1000.0',
                   'specialType': null,
                   'specialAmount': '0'
                 },
@@ -994,13 +938,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                     'remark': null
                   },
                   {
-                    'name': 'OMC CARD, INC.',
-                    'abb': 'OMC',
-                    'imageUrl': null,
-                    'installment': null,
-                    'remark': null
-                  },
-                  {
                     'name': 'Other Bank',
                     'abb': 'OTB',
                     'imageUrl': null,
@@ -1071,10 +1008,22 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                     'remark': null
                   }
                 ],
-                'freeGoods': [],
+                'freeGoods': [
+                  {
+                    'tradeFreegoodsId': '116619',
+                    'code': '33014507',
+                    'name': 'KRS APP IPH X MALMO 4 CARD FOLIOCASE BK',
+                    'qty': '1'
+                  },
+                  {
+                    'tradeFreegoodsId': '116618',
+                    'code': '33007573',
+                    'name': 'IPHONE 5S CASE RED-ITS',
+                    'qty': '1'
+                  }
+                ],
                 'matCode': 'undefined',
                 'channels': [
-                  'ASP',
                   'AIS'
                 ],
                 'tradeChannels': [
@@ -1090,31 +1039,39 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                 ],
                 'customerGroups': [
                   {
+                    'name': 'ลูกค้าปัจจุบัน',
                     'code': 'MC004',
-                    'flowId': '000',
-                    'name': 'ลูกค้าปัจจุบัน'
+                    'flowId': '000'
                   }
                 ]
               },
               {
-                'tradeNo': 'TP19041848',
-                'tradeName': '[MC] Handset Trading Installment + Discount + Free Goods',
-                'tradeDesc': 'Handset Trading Installment + Discount + Free Goods',
-                'normalPrice': '41750',
-                'promotionPrice': '39250',
+                'tradeNo': 'TP19072332',
+                'tradeName': 'Hot Deal Privilege',
+                'tradeDesc': 'Test DeviceSale Privilege',
+                'normalPrice': '33500',
+                'promotionPrice': '32500',
                 'durationContract': '0',
                 'advancePay': {
-                  'tradeAirtimeId': null,
-                  'amount': '0',
+                  'tradeAirtimeId': '15020',
+                  'amount': '2140',
                   'installmentFlag': 'N',
-                  'matAirtime': null,
-                  'description': null,
-                  'promotions': []
+                  'matAirtime': 'AIRTIME2000EXVAT_DISC200_10M',
+                  'description': 'แพ็กเกจค่าบริการรายเดือน 2,000 บาท (ไม่รวมVAT) รับส่วนลด 200 บาท นาน 10 เดือน',
+                  'promotions': [
+                    {
+                      'month': '10',
+                      'promotionCode': 'P16115936',
+                      'promotionName': 'MF_Disc_2000B_10M_200',
+                      'productType': 'Account Promotion',
+                      'billingSystem': 'IRB'
+                    }
+                  ]
                 },
                 'priceType': 'PROMOTION',
-                'ussdCode': '*999*04#*',
-                'packageKeyRef': '496ebae87cc70e08d63d34a7c5aa0767',
-                'priceDiscount': '2500',
+                'ussdCode': '*999*04#',
+                'packageKeyRef': 'b11f089e8f8ce9ec164ec0d369debcbe',
+                'priceDiscount': '1000',
                 'focCode': '0',
                 'productType': 'DEVICE',
                 'productSubtype': 'HANDSET',
@@ -1124,18 +1081,14 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                 'priceGroups': [
                   {
                     'priceType': 'EUP',
-                    'price': '41750'
-                  },
-                  {
-                    'priceType': 'TUP',
-                    'price': '45900'
+                    'price': '33500'
                   }
                 ],
                 'discount': {
-                  'tradeDiscountId': '128777',
+                  'tradeDiscountId': '136895',
                   'type': 'B',
                   'value': '7',
-                  'amount': '2500.0',
+                  'amount': '1000.0',
                   'specialType': null,
                   'specialAmount': '0'
                 },
@@ -1295,13 +1248,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                     'remark': null
                   },
                   {
-                    'name': 'OMC CARD, INC.',
-                    'abb': 'OMC',
-                    'imageUrl': null,
-                    'installment': null,
-                    'remark': null
-                  },
-                  {
                     'name': 'Other Bank',
                     'abb': 'OTB',
                     'imageUrl': null,
@@ -1372,10 +1318,22 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                     'remark': null
                   }
                 ],
-                'freeGoods': [],
+                'freeGoods': [
+                  {
+                    'tradeFreegoodsId': '116619',
+                    'code': '33014507',
+                    'name': 'KRS APP IPH X MALMO 4 CARD FOLIOCASE BK',
+                    'qty': '1'
+                  },
+                  {
+                    'tradeFreegoodsId': '116618',
+                    'code': '33007573',
+                    'name': 'IPHONE 5S CASE RED-ITS',
+                    'qty': '1'
+                  }
+                ],
                 'matCode': 'undefined',
                 'channels': [
-                  'ASP',
                   'AIS'
                 ],
                 'tradeChannels': [
@@ -1391,17 +1349,28 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                 ],
                 'customerGroups': [
                   {
+                    'name': 'ลูกค้าปัจจุบัน',
                     'code': 'MC004',
-                    'flowId': '000',
-                    'name': 'ลูกค้าปัจจุบัน'
+                    'flowId': '000'
                   }
                 ]
               }
             ],
-            'freeGoods': []
+            'freeGoods': [
+              {
+                'name': 'KRS APP IPH X MALMO 4 CARD FOLIOCASE BK',
+                'code': '33014507',
+                'qty': '1'
+              },
+              {
+                'name': 'IPHONE 5S CASE RED-ITS',
+                'code': '33007573',
+                'qty': '1'
+              }
+            ]
           }
         ]
-      },
+      }
     ];
   }
 }
