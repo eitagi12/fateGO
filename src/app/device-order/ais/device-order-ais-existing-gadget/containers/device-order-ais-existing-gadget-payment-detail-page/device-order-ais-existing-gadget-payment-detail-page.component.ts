@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, Utils, TokenService, PageLoadingService, User, ShoppingCart, PaymentDetail, PaymentDetailBank, ReceiptInfo } from 'mychannel-shared-libs';
+import { HomeService, Utils, TokenService, PageLoadingService, ShoppingCart, PaymentDetail, PaymentDetailBank, ReceiptInfo } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
@@ -36,7 +36,6 @@ export class DeviceOrderAisExistingGadgetPaymentDetailPageComponent implements O
   paymentDetailTemp: any;
   receiptInfoTemp: any;
   depositOrDiscount: boolean;
-  user: User;
 
   constructor(
     private router: Router,
@@ -52,12 +51,11 @@ export class DeviceOrderAisExistingGadgetPaymentDetailPageComponent implements O
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
-    this.user = this.tokenService.getUser();
   }
 
   ngOnInit(): void {
-
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
+
     const productDetail = this.priceOption.productDetail || {};
     const productStock = this.priceOption.productStock || {};
     const customer: any = this.transaction.data.customer || {};
@@ -71,41 +69,14 @@ export class DeviceOrderAisExistingGadgetPaymentDetailPageComponent implements O
       commercialName += ` สี ${productStock.color}`;
     }
 
-    this.payementDetail = {
-      commercialName: commercialName,
-      promotionPrice: +(trade.promotionPrice || 0),
-      isFullPayment: this.isFullPayment(),
-      installmentFlag: advancePay.installmentFlag === 'N' && +(advancePay.amount || 0) > 0,
-      advancePay: +(advancePay.amount || 0)
-    };
+    this.payementDetail = this.mappingPatmentDetail(commercialName, trade, advancePay);
+    this.banks = trade.banks || [];
+    this.receiptInfo = this.mappingReceiptInfo(customer, receiptInfo);
 
-    if (trade.banks && trade.banks.length > 0) {
-      if (!this.isFullPayment()) {
-        this.banks = (this.priceOption.trade.banks || []).map((b: any) => {
-          return b.installmentDatas.map((data: any) => {
-            return {
-              ...b,
-              installment: `${data.installmentPercentage}% ${data.installmentMounth}`
-            };
-          });
-        }).reduce((prev: any, curr: any) => {
-          curr.forEach((element: any) => {
-            prev.push(element);
-          });
-          return prev;
-        }, []);
-      } else {
-        this.banks = trade.banks;
-      }
-    } else {
-      this.http.post('/api/salesportal/banks-promotion', {
-        location: this.tokenService.getUser().locationCode
-      }).toPromise().then((resp: any) => {
-        this.banks = resp.data || [];
-      });
-    }
+  }
 
-    this.receiptInfo = {
+  mappingReceiptInfo(customer: any, receiptInfo: any): ReceiptInfo {
+    return {
       taxId: customer.idCardNo,
       branch: '',
       buyer: `${customer.titleName} ${customer.firstName} ${customer.lastName}`,
@@ -126,6 +97,19 @@ export class DeviceOrderAisExistingGadgetPaymentDetailPageComponent implements O
       telNo: receiptInfo.telNo
     };
   }
+
+  mappingPatmentDetail(commercialName: any, trade: any, advancePay: any): PaymentDetail {
+    const productStock = this.priceOption.productStock || {};
+    return {
+      commercialName: commercialName,
+      promotionPrice: +(trade.promotionPrice || 0),
+      isFullPayment: this.isFullPayment(),
+      installmentFlag: advancePay.installmentFlag === 'N' && +(advancePay.amount || 0) > 0,
+      advancePay: +(advancePay.amount || 0),
+      // qrCode: !!(productStock.company && productStock.company !== 'WDS')
+    };
+  }
+
   onPaymentCompleted(payment: any): void {
     this.paymentDetailTemp = payment;
   }
@@ -159,6 +143,18 @@ export class DeviceOrderAisExistingGadgetPaymentDetailPageComponent implements O
     }
   }
 
+  isNext(): boolean {
+    return this.paymentDetailValid && this.receiptInfoValid;
+  }
+
+  onNext(): void {
+    this.transaction.data.payment = this.paymentDetailTemp.payment;
+    this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;
+    this.transaction.data.receiptInfo = this.receiptInfoTemp;
+
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_SUMMARY_PAGE]);
+  }
+
   onHome(): void {
     this.homeService.goToHome();
   }
@@ -167,28 +163,8 @@ export class DeviceOrderAisExistingGadgetPaymentDetailPageComponent implements O
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_MOBILE_DETAIL_PAGE]);
   }
 
-  isNext(): boolean {
-    return this.paymentDetailValid;
-  }
-
-  onNext(): void {
-    this.pageLoadingService.openLoading();
-    this.transaction.data.payment = this.paymentDetailTemp.payment;
-    this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;
-    this.transaction.data.receiptInfo = this.receiptInfoTemp;
-
-    this.pageLoadingService.closeLoading();
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_SUMMARY_PAGE]);
-  }
-
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
-  }
-
-  summary(amount: number[]): number {
-    return amount.reduce((prev, curr) => {
-      return prev + curr;
-    }, 0);
   }
 
 }

@@ -16,7 +16,8 @@
         (error)="onPaymentError($event)">
       </mc-payment-detail>
 
-      <mc-receipt-info [receiptInfo]="receiptInfo"></mc-receipt-info>
+      <mc-receipt-info [receiptInfo]="receiptInfo" (completed)="onReceiptInfoCompleted($event)"
+      (error)="onReceiptInfoError($event)"></mc-receipt-info>
     </div>
   </div>
   <mc-footer>
