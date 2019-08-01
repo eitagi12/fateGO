@@ -13,6 +13,7 @@ import {
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_CAPTURE_PAGE
 } from '../../constants/route-path.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
+import { TranslateService } from '@ngx-translate/core';
 
 export interface OptionPersoSim {
   key_sim?: boolean;
@@ -52,6 +53,7 @@ export class DeviceOrderAisNewRegisterPersoSimPageComponent implements OnInit, O
     private alertService: AlertService,
     private persoSimService: PersoSimService,
     private shoppingCartService: ShoppingCartService,
+    private translateService: TranslateService
   ) {
     this.option = { scan_sim: true, key_sim: false };
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
@@ -98,18 +100,18 @@ export class DeviceOrderAisNewRegisterPersoSimPageComponent implements OnInit, O
           if (persoSim.error) {
             console.error(persoSim.error);
             this.errorMessage = this.ERROR_PERSO;
-            this.alertService.error(this.ERROR_PERSO);
+            this.alertService.error(this.translateService.instant(this.ERROR_PERSO));
             this.koiskApiFn.close();
           }
         });
       }).catch((err) => {
         this.errorMessage = this.ERROR_PERSO;
-        this.alertService.error(this.ERROR_PERSO);
+        this.alertService.error(this.translateService.instant(this.ERROR_PERSO));
         console.error(err);
       });
     }).catch((err) => {
       this.errorMessage = this.ERROR_PERSO;
-      this.alertService.error(this.ERROR_PERSO);
+      this.alertService.error(this.translateService.instant(this.ERROR_PERSO));
       console.error(err);
     });
   }
@@ -125,9 +127,8 @@ export class DeviceOrderAisNewRegisterPersoSimPageComponent implements OnInit, O
         this.onNext();
       }
       if (persoSim.error) {
-        console.error(persoSim.error);
         this.errorMessage = this.ERROR_PERSO;
-        this.alertService.error(this.ERROR_PERSO);
+        this.alertService.error(this.translateService.instant(this.ERROR_PERSO));
       }
     });
  }

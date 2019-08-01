@@ -1,5 +1,5 @@
 import { NgModule, ErrorHandler } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { CommonModule, DecimalPipe } from '@angular/common';
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { JwtModule, JWT_OPTIONS } from '@auth0/angular-jwt';
@@ -9,6 +9,7 @@ import {
   ErrorsHandler,
   MyChannelSharedLibsModule,
   I18nService,
+  IdCardPipe,
 } from 'mychannel-shared-libs';
 import { AppRoutingModule } from './app-routing.module';
 import { CookiesStorageService } from 'ngx-store';
@@ -50,7 +51,9 @@ import { TranslateModule } from '@ngx-translate/core';
     {
       provide: ErrorHandler,
       useClass: ErrorsHandler
-    }
+    },
+    DecimalPipe,
+    IdCardPipe
   ],
   bootstrap: [AppComponent]
 })

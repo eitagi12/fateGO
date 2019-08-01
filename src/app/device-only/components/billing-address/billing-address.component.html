@@ -111,9 +111,6 @@
             </label>
             <select class="form-control" title="กรุณาเลือกอำเภอ/เขต" id="selectAmphur" formControlName="amphur" [ngClass]="{'is-invalid': customerAddressForm.controls['amphur'].invalid && customerAddressForm.controls['amphur'].dirty }">
               <option disabled value="">กรุณาเลือกอำเภอ/เขต</option>
-              <option *ngIf="this.keyInCustomerAddressTemp?.amphur" [value]="this.keyInCustomerAddressTemp.amphur">
-                {{this.keyInCustomerAddressTemp.amphur}}
-              </option>
               <option *ngFor="let amphur of amphurs" [value]="amphur">{{amphur}}</option>
             </select>
           </div>
@@ -124,9 +121,6 @@
             </label>
             <select class="form-control" title="กรุณาเลือกตำบล/แขวง" id="selectTumbol" formControlName="tumbol" [ngClass]="{'is-invalid': customerAddressForm.controls['tumbol'].invalid && customerAddressForm.controls['tumbol'].dirty }">
               <option disabled value="">กรุณาเลือกตำบล/แขวง</option>
-              <option *ngIf="this.keyInCustomerAddressTemp?.tumbol" [value]="this.keyInCustomerAddressTemp.tumbol">
-                {{this.keyInCustomerAddressTemp.tumbol}}
-              </option>
               <option *ngFor="let tumbol of tumbols;" [value]="tumbol">{{tumbol}}</option>
             </select>
           </div>

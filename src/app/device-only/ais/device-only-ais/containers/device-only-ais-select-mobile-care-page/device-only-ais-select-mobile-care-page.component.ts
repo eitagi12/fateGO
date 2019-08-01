@@ -39,7 +39,14 @@ export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit, OnDes
   }
 
   ngOnInit(): void {
+    this.onSetNextButton();
     this.homeButtonService.initEventButtonHome();
+  }
+
+  private onSetNextButton(): void {
+    if (this.transaction.data.mobileCarePackage) {
+      this.transaction.data.mobileCarePackage = undefined;
+    }
   }
 
   public onBack(): void {
@@ -75,6 +82,7 @@ export class DeviceOnlyAisSelectMobileCarePageComponent implements OnInit, OnDes
   onPromotion(mobileCare: any): void {
     this.transaction.data.mobileCarePackage = mobileCare;
   }
+
   onIsVerify(isVerifyflag: any): void {
     this.isVerifyflag = isVerifyflag;
   }

@@ -1,0 +1,54 @@
+<div class="mc-flex">
+
+  <nav class="navbar fixed-top bg-ais text-white shadow-sm fix-position">
+    <div class="col-2 navbar-brand">
+      <img class="back-icon" src="assets/images/icon/icon-black-back.png" (click)="onBack()">
+    </div>
+    <div class="col-8 navbar-brand text-center text-black">{{ 'ขายแพ็กเกจเสริม' | translate }}</div>
+    <div class="col-2 navbar-brand">
+    </div>
+  </nav>
+
+  <div class="mc-flex-wrap">
+    <div class="mb-3 mt-3">
+      <div class="container-fluid">
+        <div class="bg-white text-center p-3">
+          <img src="assets/images/icon/icon-green-wallet.png" class="img-fluid" width="60">
+          <p translate>ตัดเงินจากกระเป๋าคนขาย</p>
+        </div>
+        <div class="card mt-3">
+          <div class="card-header bg-header">{{'ช่องทางการชำระ'| translate}}</div>
+          <div class="card-body">
+            <input class="chargeType" type="radio" value="topUp" [checked]="true">
+            <label class="form-check-label" for="chargeType">{{ 'AIS Online Top Up' }} </label>
+          </div>
+        </div>
+        <div class="bg-white mt-2 shadow-sm">
+          <div class="text-center text-green pt-3">ข้อมูล Rom Agent</div>
+          <hr class="ml-3 mr-3">
+          <div class="pl-3 pr-3 pb-1">
+            <form [formGroup]="romAgentForm">
+              <div class="form-group">
+                <label for="mobileNoAgent">หมายเลข ROM Agent</label>
+                <input type="tel" class="form-control" id="mobileNoAgent" formControlName="mobileNoAgent"
+                  maxlength="10">
+              </div>
+              <div class="form-group">
+                <label for="amount">ยอดคงเหลือในกระเป๋า ROM Agent</label>
+                <input type="text" class="form-control" id="amount" formControlName="amount">
+              </div>
+              <small class="text-pink" *ngIf="!balanceBuyPackage">ยอดคงเหลือในกระเป๋าของคุณไม่พอ กรุณาทำการเติมเงิน
+                <U class="text-secondary" (click)="getBalanceRomAgent()">กดรีเฟรช</U></small>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <mc-footer>
+    <div class="row">
+    <button class="btn btn-secondary col w-100" (click)="onBack()">ยกเลิก</button>
+    <button class="btn bg-btn-ais col w-100" (click)="onNext()" [disabled]=!balanceBuyPackage>ยืนยันการขายแพ็ก</button>
+  </div>
+  </mc-footer>
+</div>

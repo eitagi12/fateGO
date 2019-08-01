@@ -8,8 +8,11 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { MobileCareService } from 'src/app/device-order/services/mobile-care.service';
-import { ROUTE_DEVICE_ORDER_AIS_MNP_CONFIRM_USER_INFORMATION_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_SELECT_PACKAGE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_MNP_CONFIRM_USER_INFORMATION_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_SELECT_PACKAGE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_SELECT_PACKAGE_ONTOP_PAGE } from '../../constants/route-path.constant';
 import { MOBILE_CARE_PACKAGE_KEY_REF } from 'src/app/device-order/constants/cpc.constant';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-device-order-ais-mnp-mobile-care-page',
@@ -24,6 +27,8 @@ export class DeviceOrderAisMnpMobileCarePageComponent implements OnInit, OnDestr
   transaction: Transaction;
   mobileCare: MobileCare;
   shoppingCart: ShoppingCart;
+  TranslateKey: any = {};
+  translateSubscription: Subscription;
 
   constructor(
     private router: Router,
@@ -32,10 +37,15 @@ export class DeviceOrderAisMnpMobileCarePageComponent implements OnInit, OnDestr
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
     private shoppingCartService: ShoppingCartService,
-    private mobileCareService: MobileCareService
+    private mobileCareService: MobileCareService,
+    private translateService: TranslateService,
+    private http: HttpClient
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
+    this.translateSubscription = this.translateService.onLangChange.subscribe((lang: any) => {
+      this.checkTranslateLang(lang);
+    });
   }
 
   ngOnInit(): void {
@@ -45,10 +55,13 @@ export class DeviceOrderAisMnpMobileCarePageComponent implements OnInit, OnDestr
   }
 
   onBack(): void {
-    if (this.transaction.data.existingMobileCare) {
+    const deleteOntopPackage = this.transaction.data.deleteOntopPackage;
+    if (deleteOntopPackage && deleteOntopPackage.length > 0) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_SELECT_PACKAGE_ONTOP_PAGE]);
+    } else if (this.transaction.data.existingMobileCare) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE]);
     } else {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE]);
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_SELECT_PACKAGE_ONTOP_PAGE]);
     }
   }
 
@@ -65,12 +78,15 @@ export class DeviceOrderAisMnpMobileCarePageComponent implements OnInit, OnDestr
   }
 
   ngOnDestroy(): void {
+    if (this.translateSubscription) {
+      this.translateSubscription.unsubscribe();
+    }
     this.transactionService.update(this.transaction);
   }
 
   callService(): void {
     const billingSystem = (this.transaction.data.simCard.billingSystem === 'RTBS')
-    ? BillingSystemType.IRB : this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
+      ? BillingSystemType.IRB : this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
     const chargeType = this.transaction.data.simCard.chargeType;
     const endUserPrice = +this.priceOption.trade.normalPrice;
     const exMobileCare = this.transaction.data.existingMobileCare;
@@ -84,11 +100,56 @@ export class DeviceOrderAisMnpMobileCarePageComponent implements OnInit, OnDestr
         promotions: mobileCare,
         existingMobileCare: !!exMobileCare
       };
+      if (this.mobileCare) {
+        this.checkTranslateLang(this.translateService.currentLang);
+      }
       if (this.mobileCare.promotions && this.mobileCare.promotions.length > 0) {
         this.mobileCare.promotions[0].active = true;
       }
       return;
-    })
-    .then(() => this.pageLoadingService.closeLoading());
+    }).then(() => this.pageLoadingService.closeLoading());
   }
+
+  checkTranslateLang(lang: any): void {
+    this.mapKeyTranslateMobileCareTitle(this.mobileCare.promotions).then(translateKey => {
+      if (lang === 'EN' || lang.lang === 'EN' || lang === 'en' || lang.lang === 'en') {
+        if (translateKey && lang && lang.translations) {
+          const merge = { ...translateKey, ...lang.translations } || {};
+          this.translateService.setTranslation('EN', merge);
+        } else {
+          this.getTranslateLoader('device-order', 'EN').then(resp => {
+            const merge = { ...translateKey, ...resp } || {};
+            this.translateService.setTranslation('EN', merge);
+          });
+        }
+      }
+    });
+
+  }
+
+  mapKeyTranslateMobileCareTitle(mobileCare: any): Promise<any> {
+    const map = new Map();
+    const TranslateKey = {};
+    mobileCare.map(key => key.items.map(item => {
+      map.set([item.title.trim()], item.value.customAttributes.shortNameEng.trim());
+    }));
+    map.forEach((value: any, key: any) => {
+      TranslateKey[key] = value;
+    });
+    if (TranslateKey) {
+      return Promise.resolve(TranslateKey);
+    } else {
+      return Promise.resolve(null);
+    }
+
+  }
+
+  getTranslateLoader(moduleName: string, lang: string): Promise<any> {
+    if (!moduleName || !lang) {
+      return;
+    }
+    const fileLang = `i18n/${moduleName}.${lang}.json`.toLowerCase();
+    return this.http.get(fileLang).toPromise();
+  }
+
 }

@@ -54,7 +54,7 @@ export class DeviceOrderAisNewRegisterAgreementSignPageComponent implements OnIn
         this.transaction.data.customer.imageSignature = signature;
         this.nextRouteLogic();
       } else {
-        this.alertService.warning('กรุณาเซ็นลายเซ็น').then(() => {
+        this.alertService.warning(this.currentLang === 'TH' ? 'กรุณาเซ็นลายเซ็น' : 'Please Sign').then(() => {
           this.onSigned();
         });
         return;
@@ -121,6 +121,9 @@ export class DeviceOrderAisNewRegisterAgreementSignPageComponent implements OnIn
   }
 
   ngOnDestroy(): void {
+    if (this.translationSubscribe) {
+      this.translationSubscribe.unsubscribe();
+    }
     this.signedSignatureSubscription.unsubscribe();
     if (this.signedOpenSubscription) {
       this.signedOpenSubscription.unsubscribe();

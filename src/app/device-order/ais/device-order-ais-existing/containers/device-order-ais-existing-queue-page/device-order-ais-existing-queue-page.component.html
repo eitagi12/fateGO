@@ -4,7 +4,7 @@
         <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
       </div>
       <div class="header-icon-right">
-        <!-- <mc-dropdown-language></mc-dropdown-language> -->
+        <mc-dropdown-language></mc-dropdown-language>
         <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
       </div>
     </mc-header>
@@ -15,7 +15,7 @@
           <img src="assets/images/icon/sales_portal_white_check.png" class="d-block m-auto icon">
           <div class="my-3 text-center text-green">
             <p>{{'หมายเลข'| translate}} {{ transaction?.data?.simCard?.mobileNo | mobileNo }}</p>
-            <p>{{'หมายเลขรายการสั่งชื้อของท่านได้เข้าสู่ระบบเรียบร้อยแล้ว'| translate}}</p>
+            <p>{{'หมายเลขรายการสั่งซื้อของท่านได้เข้าสู่ระบบเรียบร้อยแล้ว'| translate}}</p>
           </div>
           <form [formGroup]="queueFrom">
             <div class="form-group">

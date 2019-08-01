@@ -1,10 +1,10 @@
 <div class="mc-flex">
-  <mc-header title="เครื่องพร้อมเปลี่ยนเป็นรายเดือน">
+  <mc-header title="{{'เครื่องพร้อมเปลี่ยนเป็นรายเดือน'| translate}}">
     <div class="header-icon-left">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
     <div class="header-icon-right">
-      <!-- <mc-dropdown-language></mc-dropdown-language> -->
+      <mc-dropdown-language></mc-dropdown-language>
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
@@ -14,7 +14,7 @@
       <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
       <div class="container-fluid">
           <div class="btn btn-block bg-white text-brown text-left mb-3">
-              <p class=" text-center">รายละเอียดสถานะบัญชีลูกค้า</p>
+              <p class=" text-center">{{'รายละเอียดสถานะบัญชีลูกค้า'| translate}}</p>
               <hr>
               <div *ngIf="!customerInfoError">
                   <img src="assets/images/icon/icon-person.png" width="28" />
@@ -25,9 +25,9 @@
           </div>
           <div class="btn btn-block bg-white text-brown text-center mb-3">
               <img class="m-3" width="45"src="assets/images/icon/icon-red-alert-circle.png">
-              <div class="text-red">ระบบไม่สามารถทำรายการได้</div>
+              <div class="text-red">{{'ระบบไม่สามารถทำรายการได้'| translate}}</div>
               <hr>
-              <div class="text-left"> ● ไม่สามารถทำรายการได้ ข้อมูลการแสดงตนไม่ถูกต้อง</div>
+              <div class="text-left"> ● {{'ไม่สามารถทำรายการได้ ข้อมูลการแสดงตนไม่ถูกต้อง'| translate}}</div>
           </div>
         </div>
     </div>
@@ -36,6 +36,6 @@
 
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()">แสดงตนซ้ำ</button>
+    <button class="btn btn-success" (click)="onNext()">{{'แสดงตนซ้ำ' | translate}}</button>
   </mc-footer>
 </div>

@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, MainPackage } from 'src/app/shared/models/transaction.model';
 import { ConfirmCustomerInfo, BillingInfo, BillingSystemType, MailBillingInfo, TelNoBillingInfo, Utils, AlertService, ShoppingCart } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HomeService } from 'mychannel-shared-libs';
@@ -13,6 +13,8 @@ import {
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_EBILLING_PAGE,
 } from '../../constants/route-path.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-device-order-ais-new-register-confirm-user-information-page',
@@ -28,6 +30,7 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
   mailBillingInfo: MailBillingInfo;
   telNoBillingInfo: TelNoBillingInfo;
   shoppingCart: ShoppingCart;
+  translateSubscription: Subscription;
 
   eBill: boolean;
   isTelNoBillingValid: boolean;
@@ -41,6 +44,7 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
     private utils: Utils,
     private http: HttpClient,
     private shoppingCartService: ShoppingCartService,
+    private translateService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
 
@@ -66,10 +70,15 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
       lastName: customer.lastName,
       idCardNo: customer.idCardNo,
       mobileNo: simCard.mobileNo,
-      mainPackage: mainPackage.title,
+      mainPackage: this.changeMainPackageLanguage(mainPackage),
       onTopPackage: '',
-      packageDetail: mainPackage.detailTH
+      packageDetail: this.changePackageDetailLanguage(mainPackage)
     };
+
+    this.translateSubscription = this.translateService.onLangChange.subscribe(() => {
+      this.confirmCustomerInfo.mainPackage = this.changeMainPackageLanguage(mainPackage);
+      this.confirmCustomerInfo.packageDetail = this.changePackageDetailLanguage(mainPackage);
+    });
 
     this.mailBillingInfo = {
       email: billCycleData.email,
@@ -84,6 +93,14 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
     };
 
     this.initBillingInfo();
+  }
+
+  changePackageDetailLanguage(mainPackage: MainPackage): string {
+    return (this.translateService.currentLang === 'TH') ? mainPackage.detailTH : mainPackage.detailEN;
+  }
+
+  changeMainPackageLanguage(mainPackage: MainPackage): string {
+    return (this.translateService.currentLang === 'TH') ? mainPackage.title : (mainPackage.customAttributes || {}).shortNameEng;
   }
 
   initBillingInfo(): void {
@@ -250,7 +267,7 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
   onNext(): void {
 
     if (!this.customerValid() && !this.isMergeBilling()) {
-      this.alertService.warning('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร');
+      this.alertService.warning(this.translateService.instant('กรุณาใส่ข้อมูลที่อยู่จัดส่งเอกสาร'));
       return;
     }
     const billingInformation = this.transaction.data.billingInformation;
@@ -271,6 +288,9 @@ export class DeviceOrderAisNewRegisterConfirmUserInformationPageComponent implem
   }
 
   ngOnDestroy(): void {
+    if (this.translateSubscription) {
+      this.translateSubscription.unsubscribe();
+    }
     this.transactionService.save(this.transaction);
   }
 

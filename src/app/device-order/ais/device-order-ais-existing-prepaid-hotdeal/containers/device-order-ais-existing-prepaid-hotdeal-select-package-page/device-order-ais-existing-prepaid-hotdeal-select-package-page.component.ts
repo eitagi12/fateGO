@@ -15,6 +15,8 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PromotionShelveService } from 'src/app/device-order/services/promotion-shelve.service';
 import { HttpClient } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-device-order-ais-existing-prepaid-hotdeal-select-package-page',
@@ -32,6 +34,7 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
   transaction: Transaction;
   promotionShelves: PromotionShelve[];
   shoppingCart: ShoppingCart;
+  translateSubscription: Subscription;
 
   condition: any;
   modalRef: BsModalRef;
@@ -44,6 +47,7 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
     private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,
     private promotionShelveService: PromotionShelveService,
+    private translateService: TranslateService,
     private http: HttpClient,
   ) {
     this.priceOption = this.priceOptionService.load();
@@ -51,12 +55,17 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
   }
 
   ngOnInit(): void {
+    this.translateSubscription = this.translateService.onLangChange.subscribe((lang: any) => {
+      if (this.promotionShelves) {
+        this.checkTranslateLang(lang);
+      }
+    });
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.callService();
   }
 
   onCompleted(promotion: any): void {
-   this.transaction.data.onTopPackage = promotion;
+    this.transaction.data.onTopPackage = promotion;
   }
 
   callService(): void {
@@ -75,55 +84,63 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
         cpcUserId: trade.packageKeyRef || campaign.packageKeyRef
       }
     }).toPromise()
-    .then((resp: any) => {
-      const data = resp.data.packageList || [];
-      const promotionShelves: PromotionShelve[] = data.map((promotionShelve: any) => {
-        const promotionData =  {
-          title: promotionShelve.title,
-          icon: (promotionShelve.icon || '').replace(/\.jpg$/, '').replace(/_/g, '-'),
-          promotions: promotionShelve.subShelves
-            .map((subShelve: any) => {
-              const group = { // group
-                id: subShelve.subShelveId,
-                title: subShelve.title,
-                sanitizedName: subShelve.sanitizedName,
-                items: (subShelve.items || [])
-                .map((promotion: any) => {
-                  const price: number = +promotion.priceExclVat || 0;
-                  const minimumPackage: number = +trade.minimumPackage || +campaign.minimumPackagePrice;
-                  const maximumPackage: number = +trade.maximumPackage || +campaign.maximumPackagePrice;
-                  if (price >= minimumPackage && price <= maximumPackage) {
-                    return { // item
-                      id: promotion.itemId,
-                      title: promotion.shortNameThai,
-                      detail: promotion.statementThai,
-                      value: promotion
-                    };
-                  }
-                }).filter((item) => item)
-              };
-              return group;
-            })
-        };
-        if (promotionData.promotions) {
-          return promotionData;
+      .then((resp: any) => {
+        const data = resp.data.packageList || [];
+        const promotionShelves: PromotionShelve[] = data.map((promotionShelve: any) => {
+          const promotionData = {
+            title: promotionShelve.title,
+            icon: (promotionShelve.icon || '').replace(/\.jpg$/, '').replace(/_/g, '-'),
+            promotions: promotionShelve.subShelves
+              .map((subShelve: any) => {
+                const group = { // group
+                  id: subShelve.subShelveId,
+                  title: subShelve.title,
+                  sanitizedName: subShelve.sanitizedName,
+                  items: (subShelve.items || [])
+                    .map((promotion: any) => {
+                      const price: number = +promotion.priceExclVat || 0;
+                      const minimumPackage: number = +trade.minimumPackage || +campaign.minimumPackagePrice;
+                      const maximumPackage: number = +trade.maximumPackage || +campaign.maximumPackagePrice;
+                      if (price >= minimumPackage && price <= maximumPackage) {
+                        return { // item
+                          id: promotion.itemId,
+                          title: promotion.shortNameThai,
+                          detail: promotion.statementThai,
+                          value: promotion
+                        };
+                      }
+                    }).filter((item) => item)
+                };
+                return group;
+              })
+          };
+
+          if (promotionData.promotions) {
+            return promotionData;
+          }
+        });
+
+        return Promise.resolve(promotionShelves);
+      }).then((promotionShelves: PromotionShelve[]) => {
+        this.promotionShelves = promotionShelves;
+        if (this.promotionShelves && this.promotionShelves.length > 0) {
+          this.promotionShelves[0].active = true;
+          if (this.promotionShelves[0].promotions && this.promotionShelves[0].promotions.length > 0) {
+            this.promotionShelves[0].promotions[0].active = true;
+          }
         }
+        if (this.promotionShelves) {
+          this.checkTranslateLang(this.translateService.currentLang);
+        }
+      }).then(() => {
+        this.pageLoadingService.closeLoading();
       });
-      return Promise.resolve(promotionShelves);
-    }).then((promotionShelves: PromotionShelve[]) => {
-      this.promotionShelves = promotionShelves;
-      if (this.promotionShelves && this.promotionShelves.length > 0) {
-        this.promotionShelves[0].active = true;
-        if (this.promotionShelves[0].promotions && this.promotionShelves[0].promotions.length > 0) {
-          this.promotionShelves[0].promotions[0].active = true;
-        }
-      }
-    }).then(() => {
-      this.pageLoadingService.closeLoading();
-    });
   }
 
   ngOnDestroy(): void {
+    if (this.translateSubscription) {
+      this.translateSubscription.unsubscribe();
+    }
     this.transactionService.update(this.transaction);
   }
 
@@ -143,11 +160,58 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_MOBILE_CARE_PAGE]);
       }
     })
-    .catch(() => {
-      this.pageLoadingService.closeLoading();
-      this.transaction.data.existingMobileCare = null;
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_MOBILE_CARE_PAGE]);
+      .catch(() => {
+        this.pageLoadingService.closeLoading();
+        this.transaction.data.existingMobileCare = null;
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_MOBILE_CARE_PAGE]);
+      });
+  }
+
+  checkTranslateLang(lang: any): void {
+    this.mapKeyTranslateSelectPackageTitle(this.promotionShelves).then(translateKey => {
+      if (lang === 'EN' || lang.lang === 'EN' || lang === 'en' || lang.lang === 'en') {
+        if (translateKey && lang && lang.translations) {
+          const merge = { ...translateKey, ...lang.translations } || {};
+          this.translateService.setTranslation('EN', merge);
+        } else {
+          this.getTranslateLoader('device-order', 'EN').then(resp => {
+            const merge = { ...translateKey, ...resp } || {};
+            this.translateService.setTranslation('EN', merge);
+          });
+        }
+      }
     });
+
+  }
+
+  mapKeyTranslateSelectPackageTitle(promotionShelves: PromotionShelve[]): Promise<any> {
+    const map = new Map();
+    const TranslateKey = {};
+    promotionShelves.filter(promotionShelve => {
+      promotionShelve.promotions.map(key => key.items.map(item => {
+        let replaceTitle = item.title.replace('บ.', '฿');
+        replaceTitle = replaceTitle.replace('บาท', '฿');
+        replaceTitle = replaceTitle.replace('วัน', 'Day');
+        replaceTitle = replaceTitle.replace('แพ็กเกจเสริม', 'On-top package');
+        map.set([item.title.trim()], replaceTitle.trim() || item.title.trim());
+      }));
+    });
+    map.forEach((value: any, key: any) => {
+      TranslateKey[key] = value;
+    });
+    if (TranslateKey) {
+      return Promise.resolve(TranslateKey);
+    } else {
+      return Promise.resolve(null);
+    }
+  }
+
+  getTranslateLoader(moduleName: string, lang: string): Promise<any> {
+    if (!moduleName || !lang) {
+      return;
+    }
+    const fileLang = `i18n/${moduleName}.${lang}.json`.toLowerCase();
+    return this.http.get(fileLang).toPromise();
   }
 
   onBack(): void {
@@ -157,5 +221,4 @@ export class DeviceOrderAisExistingPrepaidHotdealSelectPackagePageComponent impl
   onHome(): void {
     this.homeService.goToHome();
   }
-
 }

@@ -2,7 +2,7 @@ import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { CUSTOM_ELEMENTS_SCHEMA, Pipe, PipeTransform } from '@angular/core';
 import { By } from '@angular/platform-browser';
 import { RouterTestingModule } from '@angular/router/testing';
-import { DeviceOnlyAisQrCodeSummarayPageComponent } from './device-only-ais-qr-code-summaray-page.component';
+import { DeviceOnlyAisQrCodeSummaryPageComponent } from './device-only-ais-qr-code-summary-page.component';
 import { LocalStorageService } from 'ngx-store';
 import { ROUTE_DEVICE_ONLY_AIS_QR_CODE_GENERATE_PAGE, ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_QR_CODE_PAGE } from '../../constants/route-path.constant';
 import { TokenService, HomeService } from 'mychannel-shared-libs';
@@ -19,9 +19,9 @@ class MockMobileNoPipe implements PipeTransform {
   }
 }
 
-describe('DeviceOnlyAisQrCodeSummarayPageComponent', () => {
-  let component: DeviceOnlyAisQrCodeSummarayPageComponent;
-  let fixture: ComponentFixture<DeviceOnlyAisQrCodeSummarayPageComponent>;
+describe('DeviceOnlyAisQrCodeSummaryPageComponent', () => {
+  let component: DeviceOnlyAisQrCodeSummaryPageComponent;
+  let fixture: ComponentFixture<DeviceOnlyAisQrCodeSummaryPageComponent>;
   let router: Router;
   let navigateMock: any;
 
@@ -32,7 +32,7 @@ describe('DeviceOnlyAisQrCodeSummarayPageComponent', () => {
       ],
       schemas: [ CUSTOM_ELEMENTS_SCHEMA ],
       declarations: [
-        DeviceOnlyAisQrCodeSummarayPageComponent,
+        DeviceOnlyAisQrCodeSummaryPageComponent,
         MockMobileNoPipe
       ],
       providers: [
@@ -84,7 +84,7 @@ describe('DeviceOnlyAisQrCodeSummarayPageComponent', () => {
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DeviceOnlyAisQrCodeSummarayPageComponent);
+    fixture = TestBed.createComponent(DeviceOnlyAisQrCodeSummaryPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
     router = TestBed.get(Router);

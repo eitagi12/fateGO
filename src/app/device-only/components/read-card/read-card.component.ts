@@ -13,21 +13,17 @@ export enum ReadCardAisNative {
   EVENT_CARD_PROFILE = 4,
   EVENT_CARD_PROFILE_PHOTO = 5
 }
-
 @Component({
-  selector: 'app-device-only-read-card',
-  templateUrl: './device-only-read-card.component.html',
-  styleUrls: ['./device-only-read-card.component.scss']
+  selector: 'app-read-card',
+  templateUrl: './read-card.component.html',
+  styleUrls: ['./read-card.component.scss']
 })
 
-export class DeviceOnlyReadCardComponent implements OnInit {
-
+export class ReadCardComponent implements OnInit {
   @Output() customerInfo: EventEmitter<Object> = new EventEmitter<Object>();
-
   @ViewChild('select_billing_address')
   selectBillingAddressTemplate: TemplateRef<any>;
   modalBillAddress: BsModalRef;
-
   @ViewChild('progressBarArea') progressBarArea: ElementRef;
   @ViewChild('progressBarReadSmartCard') progressBarReadSmartCard: ElementRef;
   @ViewChild('listBillingAccountBox')  listBillingAccountBox: ElementRef;
@@ -108,7 +104,7 @@ export class DeviceOnlyReadCardComponent implements OnInit {
               } else {
                 width ++ ;
                 this.progressBarReadSmartCard.nativeElement.style.width = width + '%';
-              }
+                }
               }, 10);
           }
       });
@@ -217,7 +213,6 @@ export class DeviceOnlyReadCardComponent implements OnInit {
     this.addressTextBySmartCard = this.customerInfoService.convertBillingAddressToString(billDeliveryAddress);
     this.customerInfoService.getBillingByIdCard(customer.idCardNo)
       .then((res) => {
-        console.log('getBillingByIdCard : res ==>> ', res);
         if (res && res.data && res.data.billingAccountList) {
           this.listBillingAccount = res.data.billingAccountList.filter((item) => {
             if (item.mobileNo && item.mobileNo[0].length > 0) {
@@ -246,12 +241,11 @@ export class DeviceOnlyReadCardComponent implements OnInit {
     new Promise((resolve, reject): void => {
       resolve(this.readingCard());
     }).then((customer: any) => {
-    this.zipcode(customer).then((res) => {
+      this.zipcode(customer).then((res: any) => {
         customer.zipCode = res;
         this.getbillingCycle(customer);
-    });
+      });
     }).catch((err) => {
-      console.log(err);
       this.pageLoadingService.closeLoading();
     });
   }
@@ -263,7 +257,7 @@ export class DeviceOnlyReadCardComponent implements OnInit {
   public selectBillingAddress(): void {
     const billingAddressSelected = this.selectBillingAddressForm.value.billingAddress;
     if (billingAddressSelected === this.ADDRESS_BY_SMART_CARD) {
-      this.isSelect = false;
+      this.isSelect = true;
       this.modalBillAddress.hide();
       this.canReadSmartCard = true;
       this.customerInfo.emit({

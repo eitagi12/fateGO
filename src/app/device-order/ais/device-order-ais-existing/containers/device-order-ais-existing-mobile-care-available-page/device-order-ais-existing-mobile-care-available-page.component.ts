@@ -5,7 +5,9 @@ import {
   ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_EXISTING_SUMMARY_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_PAGE
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_ONTOP_PAGE
 } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
@@ -14,6 +16,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { Transaction, ExistingMobileCare } from 'src/app/shared/models/transaction.model';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-device-order-ais-existing-mobile-care-available-page',
@@ -34,16 +37,17 @@ export class DeviceOrderAisExistingMobileCareAvailablePageComponent implements O
   priceOption: PriceOption;
 
   constructor(
+    public fb: FormBuilder,
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
-    public fb: FormBuilder,
     private shoppingCartService: ShoppingCartService,
-    private priceOptionService: PriceOptionService
+    private priceOptionService: PriceOptionService,
+    public translateService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
-   }
+  }
 
   ngOnInit(): void {
     this.exMobileCare = this.transaction.data.existingMobileCare;
@@ -52,8 +56,24 @@ export class DeviceOrderAisExistingMobileCareAvailablePageComponent implements O
     this.createForm();
   }
 
+  changeMobileCareText(productDetail: any): string {
+    if (this.translateService.currentLang === 'TH') {
+      return `ท่านต้องการเปลี่ยนบริการโมบายแคร์กับเครื่องใหม่ ${productDetail.name}
+      \ ${(productDetail.productSubtype === 'HANDSET BUNDLE') ? '(แถมซิม)' : ''} ใช่ หรือ ไม่ ?`;
+    }
+    return `Would you like to change your Mobile Care service for the new ${productDetail.name}
+    \ ${(productDetail.productSubtype === 'HANDSET BUNDLE') ? '(Free SIM Card)' : ''} ?`;
+  }
+
   onBack(): void {
-    this.router.navigate([this.checkRouteByMainPackage()]);
+    const deleteOntopPackage = this.transaction.data.deleteOntopPackage;
+    if (deleteOntopPackage && deleteOntopPackage.length > 0) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_SELECT_PACKAGE_ONTOP_PAGE]);
+    } else if (!this.transaction.data.mainPackage) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_MOBILE_CARE_AVAILABLE_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_EFFECTIVE_START_DATE_PAGE]);
+    }
   }
 
   onNext(): void {

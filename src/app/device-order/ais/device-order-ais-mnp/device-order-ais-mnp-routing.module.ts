@@ -27,6 +27,8 @@ import { DeviceOrderAisMnpMobileDetailPageComponent } from './containers/device-
 import { DeviceOrderAisMnpEffectiveStartDatePageComponent } from './containers/device-order-ais-mnp-effective-start-date-page/device-order-ais-mnp-effective-start-date-page.component';
 import { DeviceOrderAisMnpMobileCareAvaliblePageComponent } from './containers/device-order-ais-mnp-mobile-care-avalible-page/device-order-ais-mnp-mobile-care-avalible-page.component';
 import { DeviceOrderAisMnpQrCodeResultPageComponent } from './containers/device-order-ais-mnp-qr-code-result-page/device-order-ais-mnp-qr-code-result-page.component';
+import { DeviceOrderAisMnpSelectPackageOntopPageComponent } from './containers/device-order-ais-mnp-select-package-ontop-page/device-order-ais-mnp-select-package-ontop-page.component';
+
 const routes: Routes = [
   { path: 'validate-customer', component: DeviceOrderAisMnpValidateCustomerPageComponent },
   { path: 'validate-customer-key-in', component: DeviceOrderAisMnpValidateCustomerKeyInPageComponent },
@@ -55,6 +57,7 @@ const routes: Routes = [
   { path: 'eligible-mobile', component: DeviceOrderAisMnpEligibleMobilePageComponent },
   { path: 'mobile-detail', component: DeviceOrderAisMnpMobileDetailPageComponent },
   { path: 'effective-start-date', component: DeviceOrderAisMnpEffectiveStartDatePageComponent },
+  { path: 'select-package-ontop', component: DeviceOrderAisMnpSelectPackageOntopPageComponent },
 ];
 
 @NgModule({

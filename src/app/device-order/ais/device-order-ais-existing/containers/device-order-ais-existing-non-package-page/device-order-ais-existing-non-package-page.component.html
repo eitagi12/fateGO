@@ -4,7 +4,7 @@
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
     <div class="header-icon-right">
-      <!-- <mc-dropdown-language></mc-dropdown-language> -->
+      <mc-dropdown-language></mc-dropdown-language>
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
@@ -18,7 +18,7 @@
           <h5 class="card-header bg-lime text-white" translate>ตรวจสอบสิทธิ์</h5>
           <div class="card-body text-center">
             <img class="imagecorrect mb-3" src="assets/images/icon/icon-red-alert-circle.png">
-            <p>{{'เบอร์'| translate}} {{ transaction?.data?.simCard?.mobileNo }} {{'ไม่สามารถรับสิทธิ์โครงการนี้ได้'| translate}} <br>
+            <p>{{'หมายเลข' | translate}} {{ transaction?.data?.simCard?.mobileNo }} {{'ไม่สามารถรับสิทธิ์โครงการนี้ได้'| translate}} <br>
               <span>* {{'กรุณาเปลี่ยนเบอร์ใหม่ เพื่อรับสิทธิ์ซื้อเครื่องราคาพิเศษ'| translate}}</span>
             </p>
           </div>

@@ -103,15 +103,23 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
 
   onNext(): void {
     this.pageLoadingService.openLoading();
+    const trade: any = this.priceOption.trade || {};
     this.transaction.data.simCard = { mobileNo: this.selectMobileNo.mobileNo, persoSim: false };
 
-    this.callService()
-      .then(promotionsShelves => this.checkRouteNavigate(promotionsShelves))
+    if (+trade.durationContract > 0) {
+      this.callService(trade)
+      .then(promotionsShelves => this.checkRouteNavigate(promotionsShelves || []))
       .then(() => this.pageLoadingService.closeLoading());
+    } else {
+      this.checkRouteNavigate();
+      this.pageLoadingService.closeLoading();
+    }
   }
 
-  checkRouteNavigate(promotionsShelves: any): void {
-    if (this.havePackages(promotionsShelves) || this.notMathCritiriaMainPro()) {
+  checkRouteNavigate(promotionsShelves?: any): void {
+    const contract = this.transaction.data.contractFirstPack || {};
+    const contractFirstPack =  Math.max(contract.firstPackage || 0, contract.minPrice || 0, contract.initialPackage || 0);
+    if (this.havePackages(promotionsShelves) || this.notMathCritiriaMainPro() || contractFirstPack === 0) {
       if (this.selectMobileNo.privilegeCode) {
         this.transaction.data.customer.privilegeCode = this.selectMobileNo.privilegeCode;
         this.checkKnoxGuard();
@@ -143,8 +151,7 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
 
   }
 
-  callService(): Promise<any> {
-    const trade: any = this.priceOption.trade;
+  callService(trade: any = {}): Promise<any> {
     const privilege: any = this.priceOption.privilege;
     const billingSystem = (this.transaction.data.simCard.billingSystem === 'RTBS')
       ? BillingSystemType.IRB : this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
@@ -162,19 +169,24 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
       .then((resp: any) => {
         const contract = resp.data || {};
         if (contract) {
+          const contractFirstPack =  Math.max(contract.firstPackage || 0, contract.minPrice || 0, contract.initialPackage || 0);
           this.transaction.data.contractFirstPack = contract;
+
+          if (contractFirstPack > 0) {
+            return this.callGetPromotionShelveService(trade, billingSystem, privilege, contract);
+          }
         }
-        return this.callGetPromotionShelveService(trade, billingSystem, privilege, contract);
+        return [];
       });
   }
 
-  callGetPromotionShelveService(trade: any, billingSystem: string, privilege: any, contract: any): any[] | PromiseLike<any[]> {
+  callGetPromotionShelveService(trade: any, billingSystem: string, privilege: any, contract?: any): Promise<any> {
     return this.promotionShelveService.getPromotionShelve({
       packageKeyRef: trade.packageKeyRef,
       orderType: `Change Service`,
       billingSystem: billingSystem
     }, +privilege.minimumPackagePrice, +privilege.maximumPackagePrice)
-      .then((promotionShelves: any) => this.filterPromotions(promotionShelves, contract));
+    .then((promotionShelves: any) => this.filterPromotions(promotionShelves, contract));
   }
 
   filterPromotions(promotionShelves: any = [], contract: any = {}): any[] {
@@ -190,7 +202,7 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
 
   }
 
-  filterItemsByFirstPackageAndInGroup(promotion: any, contract: any): any {
+  filterItemsByFirstPackageAndInGroup(promotion: any, contract: any = {}): any {
     return (promotion.items || [])
       .filter((item: {
         value: {
@@ -202,7 +214,7 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
       }) => {
         const contractFirstPack = item.value.customAttributes.priceExclVat
           >= Math.max(contract.firstPackage || 0, contract.minPrice || 0, contract.initialPackage || 0);
-        const inGroup = contract.inPackage.length > 0 ? contract.inPackage
+        const inGroup = (contract.inPackage || []).length > 0 ? contract.inPackage
           .some((inPack: any) => inPack === item.value.customAttributes.productPkg) : true;
         return contractFirstPack && inGroup;
       });
@@ -224,7 +236,7 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
   }
 
   get advancePay(): boolean {
-    return !!(+(this.priceOption.trade.advancePay && this.priceOption.trade.advancePay.amount || 0) > 0);
+    return !!(+(this.priceOption.trade.advancePay && +this.priceOption.trade.advancePay.amount || 0) > 0);
 
   }
 

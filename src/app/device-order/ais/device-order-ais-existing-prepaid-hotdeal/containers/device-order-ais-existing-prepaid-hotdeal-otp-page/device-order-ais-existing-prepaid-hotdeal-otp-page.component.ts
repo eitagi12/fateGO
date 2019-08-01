@@ -16,6 +16,7 @@ import { environment } from 'src/environments/environment';
 import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-device-order-ais-existing-prepaid-hotdeal-otp-page',
@@ -46,6 +47,7 @@ export class DeviceOrderAisExistingPrepaidHotdealOtpPageComponent implements OnI
     private transactionService: TransactionService,
     private privilegeService: PrivilegeService,
     private priceOptionService: PriceOptionService,
+    private translateService: TranslateService
 
   ) {
     this.transaction = this.transactionService.load();
@@ -98,7 +100,7 @@ export class DeviceOrderAisExistingPrepaidHotdealOtpPageComponent implements OnI
         this.navigateNext();
       }).catch((error) => {
         this.pageLoadingService.closeLoading();
-        this.alertService.error('รหัส OTP ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง');
+        this.alertService.error(this.translateService.instant('รหัส OTP ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง'));
       });
   }
 
@@ -119,14 +121,14 @@ export class DeviceOrderAisExistingPrepaidHotdealOtpPageComponent implements OnI
         if (response && response.data && response.data.success) {
           this.onNext();
         } else {
-          this.alertService.error('ระบบไม่สามารถแสดงตนได้กรุณาติดต่อเจ้าหน้าที่');
+          this.alertService.error(this.translateService.instant('ระบบไม่สามารถแสดงตนได้กรุณาติดต่อเจ้าหน้าที่'));
         }
       }).catch((error) => {
         this.pageLoadingService.closeLoading();
-        this.alertService.error('รหัส OTP ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง');
+        this.alertService.error(this.translateService.instant('รหัส OTP ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง'));
       }).catch((error) => {
         this.pageLoadingService.closeLoading();
-        this.alertService.error('ระบบไม่สามารถแสดงตนได้กรุณาติดต่อเจ้าหน้าที่');
+        this.alertService.error(this.translateService.instant('ระบบไม่สามารถแสดงตนได้กรุณาติดต่อเจ้าหน้าที่'));
       });
   }
 
@@ -142,7 +144,7 @@ export class DeviceOrderAisExistingPrepaidHotdealOtpPageComponent implements OnI
       errMsg = 'ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้';
       errDetail = 'Invalid error message';
     }
-    this.alertService.error(errMsg);
+    this.alertService.error(this.translateService.instant(errMsg));
   }
 
   onNext(): void {

@@ -1,0 +1,92 @@
+<div class="mc-flex">
+  <nav class="navbar fixed-top navbar-dark shadow-sm fix-position pt-0 pb-0">
+    <div class="header-icon-left">
+      <i class="fa fa-angle-left fa-2x text-iron" aria-hidden="true" (click)="onBack()"></i>
+    </div>
+    <span class="navbar-brand p-2 h1 text-header">
+      ดึงเงินคืน
+    </span>
+    <div class="header-icon-right">
+    </div>
+  </nav>
+  <div class="mc-flex-wrap">
+    <div class="mb-3 mt-3">
+      <div class="container-fluid">
+        <div class="text-center p-2 bg-white mobile-online">
+          เบอร์ออนไลน์ {{ romTransaction?.romTransaction?.romNo | mobileNo }}
+        </div>
+        <div class="card mt-3 border-0">
+          <div class="card-header text-center bg-light text-white">
+            ตรวจสอบและยืนยันข้อมูล
+          </div>
+          <div class="card-body pt-0 ">
+            <div class="list-group mt-2">
+              <div class="row w-100">
+                <div class="col-4 text-center">
+                  <i class="fa fa-phone  type-order fa-3x" aria-hidden="true"></i>
+                </div>
+                <div class="col-8">
+                  <small class="text-maxnixam">เบอร์มือถือ</small>
+                  <h4 class="m-0 type-order">{{ romTransaction?.romTransaction?.cusMobileNo | mobileNo }}</h4>
+                </div>
+              </div>
+              <div class="row w-100 mt-1">
+                <div class="col-4 text-center">
+                  <i class="fa fa-mobile type-order fa-4x" aria-hidden="true"></i>
+                </div>
+                <div class="col-8">
+                  <small class="text-maxnixam">ประเภทรายการ</small>
+                  <h4 class="m-0 type-order">
+                    {{ romTransaction?.romTransaction?.transactionType === 'VAS' ? 'โปรเสริมออนไลน์' : ' เติมเงินออนไลน์' }}
+                  </h4>
+                </div>
+              </div>
+              <div class="row w-100 mt-1">
+                <div class="col-4 text-center">
+                  <img src="assets/images/icon/sales_portal_green_circle_bath.png" width="50">
+                </div>
+                <div class="col-8">
+                  <small class="text-maxnixam">จำนวนเงิน</small>
+                  <h4 class="m-0 type-order">{{ romTransaction?.romTransaction?.price | number }} บาท</h4>
+                </div>
+              </div>
+            </div>
+            <form [formGroup]="pinForm">
+              <div class="input-group mb-3">
+                <div class="container">
+                  <div class="form-group">
+                    <label for="pin">PIN:</label>
+                    <div class="input-group-prepend">
+                      <!-- <span class="input-group-text  border-right-0 text-green" id="basic-addon1">***</span> -->
+                      <input type="password" id="pin" formControlName="pin" class="form-control "
+                        placeholder="กรุณาระบุ PIN" maxlength="4">
+                    </div>
+                    <small class="text-libstick" *ngIf="pinForm.controls.pin.touched && pinForm.controls.pin.invalid">
+                      **กรุณากรุณาระบุ PIN ให้ถูกต้อง
+                    </small>
+                  </div>
+                  <div class="form-group">
+                    <label for="pin">Ref No.:</label>
+                    <div class="input-group-prepend">
+                      <!-- <span class="input-group-text  border-right-0 text-green" id="basic-addon1">***</span> -->
+                      <input type="password" id="ref" formControlName="ref" class="form-control "
+                        placeholder="กรุณาระบุ Ref No" maxlength="9">
+                    </div>
+                    <small class="text-libstick" *ngIf="pinForm.controls.ref.touched && pinForm.controls.ref.invalid">
+                      **กรุณากรุณาระบุ Ref No ให้ถูกต้อง
+                    </small>
+                  </div>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid footer-easyApp text-center  pt-4 pb-4">
+    <div class="ml-5 mr-5">
+      <button class="button-easyApp btn-block" (click)="validatePIN()" [disabled]="pinForm?.invalid">ตรวจสอบ</button>
+    </div>
+  </div>
+</div>

@@ -86,7 +86,8 @@ export class CreateEapplicationService {
     const simCard: any = transaction.data.simCard || {};
 
     const data: any = {
-      fullNameTH: customer.firstName + ' ' + customer.lastName || '',
+      fullNameTH: language === 'EN' ? `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}` :
+      customer.firstName + ' ' + customer.lastName || '' ,
       idCard: this.privateIdcard(customer.idCardNo) || '',
       idCardType: customer.idCardType || '',
       birthDate: customer.birthdate || '',
@@ -121,13 +122,13 @@ export class CreateEapplicationService {
     if (language === 'EN') {
       data.billCycle = billCycleData.billCycleTextEng;
       data.mainPackage = {
-        name: mainPackage.shortNameEng || mainPackage.title || '',
+        name: (mainPackage.customAttributes || {}).shortNameEng || mainPackage.title || '',
         description: mainPackage.statementEng || mainPackage.detailEN || ''
       };
     } else {
       data.billCycle = billCycleData.billCycleText;
       data.mainPackage = {
-        name: mainPackage.shortNameThai || mainPackage.title || '',
+        name: (mainPackage.customAttributes || {}).shortNameThai || mainPackage.title || '',
         description: mainPackage.statementThai || mainPackage.detailTH || ''
       };
     }

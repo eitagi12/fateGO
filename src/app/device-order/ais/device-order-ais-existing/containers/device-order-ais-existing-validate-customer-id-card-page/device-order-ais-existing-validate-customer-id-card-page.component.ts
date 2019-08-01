@@ -11,6 +11,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ROUTE_DEVICE_ORDER_AIS_EXISTING_CUSTOMER_INFO_PAGE } from '../../constants/route-path.constant';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { ApiRequestService } from 'mychannel-shared-libs';
+import { TranslateService } from '@ngx-translate/core';
 
 declare var swal: any;
 
@@ -44,7 +45,8 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
     private priceOptionService: PriceOptionService,
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
-    private sharedTransactionService: SharedTransactionService
+    private sharedTransactionService: SharedTransactionService,
+    private translateService: TranslateService
   ) {
     this.user = this.tokenService.getUser();
     this.priceOption = this.priceOptionService.load();
@@ -55,7 +57,7 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
       if (url.indexOf('result') !== -1) {
         this.homeHandler();
       } else {
-        this.alertService.question('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่')
+        this.alertService.question(this.translateService.instant('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่'))
           .then((data: any) => {
             if (!data.value) {
               return false;
@@ -104,7 +106,8 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
   onError(valid: boolean): void {
     this.readCardValid = valid;
     if (!this.profile) {
-      this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน').then(() => this.onBack());
+      this.alertService.error(this.translateService.instant('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน'))
+      .then(() => this.onBack());
     }
   }
 
@@ -119,7 +122,7 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
   }
 
   onBack(): void {
-    this.alertService.question('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่')
+    this.alertService.question(this.translateService.instant('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่'))
       .then((data: any) => {
         if (!data.value) {
           return false;
@@ -187,7 +190,7 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
 
           return this.conditionIdentityValid()
             .catch((msg: string) => {
-              return this.alertService.error(msg).then(() => true);
+              return this.alertService.error(this.translateService.instant(msg)).then(() => true);
             })
             .then((isError: boolean) => {
               if (isError) {
@@ -215,10 +218,12 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
       const idCardType = this.transaction.data.customer.idCardType;
 
       if (this.utils.isLowerAge17Year(birthdate)) {
-        return reject(`ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี`);
+        return reject(this.translateService.instant(`ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี`));
       }
       if (this.utils.isIdCardExpiredDate(expireDate)) {
-        return reject(`ไม่สามารถทำรายการได้ เนื่องจาก ${idCardType} หมดอายุ`);
+        return reject(
+          `${this.translateService.instant('ไม่สามารถทำรายการได้ เนื่องจาก')} ${idCardType} ${this.translateService.instant('หมดอายุ')}`
+          );
       }
       resovle(null);
     });
@@ -289,11 +294,13 @@ export class DeviceOrderAisExistingValidateCustomerIdCardPageComponent implement
     const idCardType = this.transaction.data.customer.idCardType;
 
     if (this.utils.isLowerAge17Year(birthdate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
+      this.alertService.error(this.translateService.instant('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี'));
       return false;
     }
     if (this.utils.isIdCardExpiredDate(expireDate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ');
+      this.alertService.error(
+        this.translateService.instant('ไม่สามารถทำรายการได้ เนื่องจาก') + idCardType + this.translateService.instant('หมดอายุ')
+        );
       return false;
     }
     return true;

@@ -33,7 +33,7 @@
         <span class="text-red">*</span>
       </div>
       <div class="col-12 col-sm-8">
-        <input type="text" class="form-control w-100" id="input-asc-code" maxlength="6" autocomplete="off" [(ngModel)]="seller.sellerNo">
+        <input type="tel" class="form-control w-100" id="input-asc-code" maxlength="8" autocomplete="off" [(ngModel)]="seller.sellerNo" (keypress)="keyPress($event)">
       </div>
     </div>
   </div>

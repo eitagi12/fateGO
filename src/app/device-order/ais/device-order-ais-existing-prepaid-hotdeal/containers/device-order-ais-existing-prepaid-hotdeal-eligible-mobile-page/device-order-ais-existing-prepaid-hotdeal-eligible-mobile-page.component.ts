@@ -16,6 +16,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
 import { ErrorPageComponent } from 'src/app/containers/error-page/error-page.component';
+import { TranslateService } from '@ngx-translate/core';
 
 export interface BillingAccount {
   billingName: string;
@@ -58,12 +59,14 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
     private pageLoadingService: PageLoadingService,
     private alertService: AlertService,
     private privilegeService: PrivilegeService,
+    private translateService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
     this.shoppingCart = Object.assign(this.shoppingCartService.getShoppingCartData(), {
       mobileNo: ''
     });
     this.priceOption = this.priceOptionService.load();
+    delete this.priceOption.productStock.color;
   }
 
   ngOnInit(): void {
@@ -151,7 +154,7 @@ export class DeviceOrderAisExistingPrepaidHotdealEligibleMobilePageComponent imp
             .catch((err: any) => {
               const error = err.error;
               const msg = (error && error.resultDescription) ? error.resultDescription : 'ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้';
-              reject(msg);
+              reject(this.translateService.instant(msg));
             });
         })
         .catch((err) => {

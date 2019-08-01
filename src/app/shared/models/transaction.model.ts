@@ -18,7 +18,9 @@ export enum TransactionType {
   ORDER_EXISTING = 'Existing',
   RESERVE_WITH_DEPOSIT = 'ReserveWithDeposit',
 
-  DEVICE_ONLY_AIS = 'DeviceOnlyAIS'
+  DEVICE_ONLY_AIS = 'DeviceOnlyAIS',
+  VAS_PACKAGE_ROM = 'RomAgent',
+  VAS_PACKAGE_CUSTOMER = 'Customer'
 }
 
 export enum TransactionAction {
@@ -32,7 +34,9 @@ export enum TransactionAction {
   KEY_IN_REPI = 'KEY_IN_REPI',
   READ_PASSPORT = 'READ_PASSPORT',
   READ_PASSPORT_REPI = 'READ_PASSPORT_REPI',
-  SEARCH = 'SEARCH'
+  SEARCH = 'SEARCH',
+  VAS_PACKAGE_ROM = 'VaspackageRom',
+  VAS_PACKAGE_ROM_OTP = 'VaspackageRomOTP'
 }
 
 export interface Transaction {
@@ -55,6 +59,7 @@ export interface TransactionData {
   mainPackage?: MainPackage;
   currentPackage?: CurrentPackage;
   onTopPackage?: OnTopPackage;
+  deleteOntopPackage?: DeleteOntopPackage[];
   mainPackageOneLove?: any[];
   mobileCarePackage?: MobileCarePackage;
   faceRecognition?: FaceRecognition;
@@ -77,6 +82,10 @@ export interface TransactionData {
   status?: Status;
   device?: Device;
   knoxguard?: KnoxGuard;
+  tradeType?: string;
+  // Rom Agent
+  romAgent?: RomAgent;
+  romTransaction?: RomTransactionData;
 }
 
 export interface Condition {
@@ -123,6 +132,7 @@ export interface Customer {
   idCardNo: string;
   idCardType: string;
   titleName: string;
+  titleNameEN?: string;
   firstName: string;
   lastName: string;
   birthdate: string;
@@ -163,7 +173,10 @@ export interface Customer {
   selectedLocation?: SelectedLocation;
   privilegeCode?: string;
   repi?: boolean;
-
+  mobileNo?: string;
+  chipID?: string;
+  requestNo?: string;
+  laserCode?: string;
 }
 
 export interface Recipientinformation {
@@ -175,6 +188,10 @@ export interface SelectedLocation {
   locationCode?: string;
   locationNameEN?: string;
   locationNameTH?: string;
+  // passport
+  issuingCountry?: string;
+  nationality?: string;
+  imageReadPassport?: string;
 }
 
 export interface SimCard {
@@ -212,6 +229,9 @@ export interface CurrentPackage {
 }
 
 export interface PromotionsShelves {
+  [key: string]: any;
+}
+export interface DeleteOntopPackage {
   [key: string]: any;
 }
 
@@ -252,6 +272,7 @@ export interface BillingInformation {
   billDeliveryAddress?: Customer;
   // วันที่มีผลการใช้งาน B: รอบถัดไป D: วันถัดไป I: มีผลทันที
   overRuleStartDate?: string;
+  effectiveDate?: string;
   // check do createAndChangeBillingAccount Provisioning
   isNewBAFlag?: boolean;
 }
@@ -311,6 +332,21 @@ export class ProductImage {
 }
 export class BaseView {
   imageUrl: string;
+}
+
+export interface BillDeliveryAddress {
+  homeNo: string;
+  moo?: string;
+  mooBan?: string;
+  room?: string;
+  floor?: string;
+  buildingName?: string;
+  soi?: string;
+  street?: string;
+  province: string;
+  amphur: string;
+  tumbol: string;
+  zipCode: string;
 }
 
 export interface Seller {
@@ -479,4 +515,69 @@ export interface KnoxGuard {
   duration?: string;
   orderReason?: string;
   userName?: string;
+}
+
+export interface RomAgent {
+  mobileNoAgent?: string;
+  pinAgent?: string;
+  agentId?: string;
+  tokenType?: string;
+  accessToken?: string;
+  transactionIdRom?: string;
+  usernameRomAgent?: string;
+  locationCode?: string;
+}
+
+export interface RomTransaction {
+  transactionId: string;
+  ssid: string;
+  romNo: string;
+  cusMobileNo: string;
+  price: string;
+  packId?: string;
+  username: string;
+  locationcode: string;
+  transactionType: string;
+  status: string;
+}
+
+export interface VasPackage {
+  ssid: string;
+  msisdn: string;
+  imsi: string;
+  vlr: string;
+  shortcode: string;
+  serviceNumber: string;
+  menuLevel: string;
+  cos: string;
+  spName: string;
+  brandId: string;
+  language: string;
+  mobileLocation: string;
+  customerState: string;
+  servicePackageId: string;
+}
+export interface RomTransactionData {
+  romData?: RomData[];
+  romTransaction?: RomData;
+  username?: string;
+  pin?: string;
+  refNo?: string;
+  massageStatus?: string;
+}
+
+export interface RomData {
+  createDate?: string;
+  cusMobileNo?: string;
+  locationcode?: string;
+  packId?: string;
+  price?: string;
+  romNo?: string;
+  ssid?: string;
+  status?: string;
+  transactionId?: string;
+  transactionType?: 'VAS' | 'TOPUP';
+  username?: string;
+  time?: string;
+  _id?: string;
 }

@@ -1,8 +1,12 @@
 <div class="mc-flex">
   <mc-header title="{{ 'ลูกค้าย้ายค่าย' | translate}}">
-    <div class="header-icon-left">
+    <div class="header-icon-left w-25">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
+    <div class="header-icon-right w-25 text-right">
+      <mc-dropdown-language></mc-dropdown-language>
+    <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+  </div>
   </mc-header>
   <div class="mc-flex-wrap">
     <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
@@ -19,10 +23,10 @@
             <div class="container-fluid">
               <div class="row pb-2">
                 <div class="col-4">
-                  <span translate>แพคเกจปัจจุบัน</span>
+                  <span translate>แพ็กเกจปัจจุบัน</span>
                 </div>
                 <div class="col-8 text-right">
-                  <span>{{ transaction?.data?.existingMobileCare?.handSet?.brand }} {{ transaction?.data?.existingMobileCare?.handSet?.model }} สี {{ transaction?.data?.existingMobileCare?.handSet?.color }}</span>
+                  <span>{{ transaction?.data?.existingMobileCare?.handSet?.brand }} {{ transaction?.data?.existingMobileCare?.handSet?.model }} {{'สี' | translate}} {{ transaction?.data?.existingMobileCare?.handSet?.color }}</span>
                 </div>
               </div>
               <div class="row pb-2">
@@ -42,8 +46,8 @@
               <div class="row pb-2">
                 <div class="col-12">
                   <span>
-                    ท่านต้องการเปลี่ยนบริการโมบายแคร์กับเครื่องใหม่ {{ shoppingCart?.commercialName.split('สี')[0] }}
-                    ใช่ หรือ ไม่?
+                    {{'ท่านต้องการเปลี่ยนบริการโมบายแคร์กับเครื่องใหม่'| translate}} {{ shoppingCart?.commercialName.split('สี' | translate)[0] }}
+                    {{'ใช่ หรือ ไม่'| translate}}?
                   </span>
                 </div>
               </div>
@@ -52,13 +56,13 @@
                   <div class="col-6" *ngFor=" let choice of choices; let i = index ">
                     <input type="radio" autocomplete="off" id="{{ i+1 }}" [value]="choice?.value"
                       [checked]="checked(choice?.value)" formControlName="isChange">
-                    <label for="{{ i+1 }}">{{choice?.text}}</label>
+                    <label for="{{ i+1 }}">{{choice?.text | translate}}</label>
                   </div>
                 </div>
               </form>
               <div *ngIf="selectedChanged">
-                <span class="text-pink" style="margin-left:20px;">
-                  หมายเหตุ : กรณีมีการสมัคร โมบายแคร์ ที่เครื่องใหม่ การรับประกันที่เครื่องเดิมจะสิ้นสุด
+                <span class="text-pink" style="margin-left:20px;" translate>
+                  หมายเหตุ : กรณีมีการสมัคร Mobile care ที่เครื่องใหม่ การรับประกันที่เครื่องเดิมจะสิ้นสุด
                 </span>
               </div>
               <hr>

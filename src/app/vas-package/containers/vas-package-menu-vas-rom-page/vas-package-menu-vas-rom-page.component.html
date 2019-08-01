@@ -1,0 +1,24 @@
+<div class="mc-flex">
+
+  <nav class="navbar fixed-top bg-ais text-white shadow-sm fix-position">
+    <div class="col-2 navbar-brand">
+      <img class="back-icon" src="assets/images/icon/icon-black-back.png" (click)="onBack()">
+    </div>
+    <div class="col-8 navbar-brand text-center text-black">{{ 'ขายแพ็กเกจเสริม' | translate }}</div>
+    <div class="col-2 navbar-brand">
+    </div>
+  </nav>
+
+  <div class="mc-flex-wrap">
+    <div class="mb-3 mt-3">
+      <div class="container-fluid">
+        <div class="card-body mb-3 button" (click)="onNext('RomAgent')">
+          <div class="text-center" for="vasPackageRom">ตัดกระเป๋าเงินคนขาย</div>
+        </div>
+        <div class="card-body mb-3 button" (click)="onNext('Customer')">
+          <div class="text-center" for="vasPackageEndUser">ตัดกระเป๋าเงินลูกค้า</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

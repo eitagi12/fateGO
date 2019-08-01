@@ -1,0 +1,46 @@
+<div class="mc-flex">
+  <nav class="navbar fixed-top navbar-dark shadow-sm fix-position pt-0 pb-0">
+    <div class="header-icon-left">
+    </div>
+    <span class="navbar-brand p-2 h1 text-header">
+      ดึงเงินคืน
+    </span>
+    <div class="header-icon-right">
+    </div>
+  </nav>
+  <div class="mc-flex-wrap">
+    <div class="mb-3 mt-3">
+      <div class="container-fluid">
+        <div class="card border-0">
+          <div class="card-body">
+            <div class="text-center  bg-white" [mcLoading]="createRomTransaction">
+              <div class="pt-1 pb-0 text-lime mb-4" *ngIf="success">
+                <img src="assets/images/icon/icon-corrected.jpg" width="60">
+                  <!-- <i class="fa fa-check-circle fa-5x bg-easyApp" aria-hidden="true"></i> -->
+                <h6 class="mt-3 text-iron">ทำรายการสำเร็จ</h6>
+                <div class="text-grey">{{ romTransaction?.romTransaction?.cusMobileNo | mobileNo }}</div>
+                <hr>
+                <div class="text-iron">{{ romTransaction?.massageStatus }}</div>
+              </div>
+              <div class="pt-1 pb-0 text-libstick" *ngIf="!success">
+                  <i class="fa fa-times-circle fa-5x" aria-hidden="true"></i>
+                <br>
+                <div class="mt-4">ไม่สามารถดึงเงินคืนได้ในขณะนี้ กรุณาติดต่อ 1175
+                </div>
+                <div class="mt-4">
+                  <p>วันที่ {{ getCurrentDate() }} {{ romTransaction?.romTransaction?.time }}</p>
+                  <p>รายการเลขที่ : {{ romTransaction?.romTransaction?.transactionId }} (RomTran)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="container-fluid footer-easyApp text-center  pt-4 pb-4">
+      <div class="ml-5 mr-5">
+        <button class="button-easyApp btn-block" (click)="onMainMenu()">กลับสู่เมนูหลัก</button>
+      </div>
+    </div>
+</div>

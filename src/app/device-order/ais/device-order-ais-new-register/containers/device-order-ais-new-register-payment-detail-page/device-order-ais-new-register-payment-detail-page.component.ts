@@ -16,6 +16,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 import { HttpClient } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-device-order-ais-new-register-payment-detail-page',
@@ -47,7 +48,8 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
     private tokenService: TokenService,
     private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,
-    private priceOptionService: PriceOptionService
+    private priceOptionService: PriceOptionService,
+    private translateService: TranslateService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -66,7 +68,7 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
 
     let commercialName = productDetail.name;
     if (productStock.color) {
-      commercialName += ` สี ${productStock.color}`;
+      commercialName += ` ${this.translateService.instant('สี')} ${productStock.color}`;
     }
 
     this.payementDetail = {

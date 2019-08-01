@@ -22,6 +22,8 @@ import { PromotionShelveService } from 'src/app/device-order/services/promotion-
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { FlowService, CustomerGroup } from '../../services/flow.service';
+import { TranslateService } from '@ngx-translate/core';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
     selector: 'app-campaign',
@@ -80,7 +82,9 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         private priceOptionService: PriceOptionService,
         private pageLoadingService: PageLoadingService,
         private promotionShelveService: PromotionShelveService,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private translateService: TranslateService,
+        private http: HttpClient
     ) {
         this.priceOption = {};
         this.transaction = {};
@@ -98,6 +102,18 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                 params.productType, params.productSubtype
             );
         });
+        this.changeCSSLanguaue(this.translateService.currentLang);
+        this.translateService.onLangChange.subscribe(onChange => this.changeCSSLanguaue(onChange.lang));
+    }
+
+    changeCSSLanguaue(currentLang: string): void {
+        if (currentLang === 'EN') {
+            document.documentElement.style.setProperty('--heightNavItem', '190px');
+            document.documentElement.style.setProperty('--whiteSpaceNavLink', 'pre-line');
+        } else {
+            document.documentElement.style.setProperty('--heightNavItem', '155px');
+            document.documentElement.style.setProperty('--whiteSpaceNavLink', 'nowrap');
+        }
     }
 
     createForm(): void {
@@ -285,6 +301,10 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                     allowCampaign = allowCampaign && CustomerGroup.EXISTING === code;
                 }
 
+                if (this.flowService.isCampaignBestBuy(campaignCode)) {
+                    allowCampaign = false;
+                }
+
                 // Not allow prebooking
                 if (this.flowService.isCampaignPrebooking(campaignCode)) {
                     allowCampaign = false;
@@ -339,6 +359,13 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                 }
                 return campaignSlider;
             });
+    }
+
+    serviceContract(maximumContract: any): string {
+        if (this.translateService.currentLang === 'TH') {
+            return `ข้อตกลงรับสิทธ์ิต่อเนื่อง ${maximumContract} เดือน`;
+        }
+        return `${maximumContract} months service contract`;
     }
 
     getTabsFormPriceOptions(priceOptions: any[]): any[] {
@@ -398,11 +425,60 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         this.pageLoadingService.openLoading();
         this.promotionShelveService.getPromotionShelve(params).then((promotionShelves: any) => {
             this.promotionShelves = promotionShelves;
+            if (this.promotionShelves) {
+                this.checkTranslateLang(this.translateService.currentLang);
+            }
             this.promotionShelveService.defaultBySelected(this.promotionShelves);
             this.modalRef = this.modalService.show(this.promotionShelveTemplate, {
                 class: 'modal-lg'
             });
         }).then(() => this.pageLoadingService.closeLoading());
+    }
+
+    checkTranslateLang(lang: any): void {
+        this.mapKeyTranslateSelectPackageTitle(this.promotionShelves).then(translateKey => {
+            if (lang === 'EN' || lang.lang === 'EN' || lang === 'en' || lang.lang === 'en') {
+                if (translateKey && lang && lang.translations) {
+                    const merge = { ...translateKey, ...lang.translations } || {};
+                    this.translateService.setTranslation('EN', merge);
+                } else {
+                    this.getTranslateLoader('device-order', 'EN').then(resp => {
+                        const merge = { ...translateKey, ...resp } || {};
+                        this.translateService.setTranslation('EN', merge);
+                    });
+                }
+            }
+        });
+
+    }
+
+    getTranslateLoader(moduleName: string, lang: string): Promise<any> {
+        if (!moduleName || !lang) {
+            return;
+        }
+        const fileLang = `i18n/${moduleName}.${lang}.json`.toLowerCase();
+        return this.http.get(fileLang).toPromise();
+    }
+
+    mapKeyTranslateSelectPackageTitle(promotionShelves: PromotionShelve[]): Promise<any> {
+        const map = new Map();
+        const TranslateKey = {};
+        promotionShelves.filter(promotionShelve => {
+            promotionShelve.promotions.map(key => key.items.map(item => {
+                let replaceTitle = item.title.replace('บ.', '฿');
+                replaceTitle = replaceTitle.replace('บาท', '฿');
+                replaceTitle = replaceTitle.replace('แพ็กเกจ', 'Package');
+                map.set([item.title.trim()], replaceTitle.trim() || item.title.trim());
+            }));
+        });
+        map.forEach((value: any, key: any) => {
+            TranslateKey[key] = value;
+        });
+        if (TranslateKey) {
+            return Promise.resolve(TranslateKey);
+        } else {
+            return Promise.resolve(null);
+        }
     }
 
     getOrderTypeFromCustomerGroup(customerGroup: string): string {

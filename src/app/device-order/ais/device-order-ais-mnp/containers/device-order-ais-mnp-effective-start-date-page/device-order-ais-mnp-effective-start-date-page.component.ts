@@ -11,7 +11,7 @@ import { MobileCareService } from 'src/app/device-order/services/mobile-care.ser
 import { AsyncAction } from 'rxjs/internal/scheduler/AsyncAction';
 import { Observable, of, Subscription } from 'rxjs';
 import * as moment from 'moment';
-import { ROUTE_DEVICE_ORDER_AIS_MNP_SELECT_PACKAGE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_MNP_SELECT_PACKAGE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_SELECT_PACKAGE_ONTOP_PAGE } from '../../constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { TranslateService } from '@ngx-translate/core';
@@ -69,6 +69,7 @@ export class DeviceOrderAisMnpEffectiveStartDatePageComponent implements OnInit,
   billCycleNextBill$: Observable<string>;
   billCycleNextDay$: Observable<string>;
   billcycleNo: string;
+  packageOntopList: any[] = [];
 
   constructor(
     private router: Router,
@@ -78,7 +79,8 @@ export class DeviceOrderAisMnpEffectiveStartDatePageComponent implements OnInit,
     private shoppingCartService: ShoppingCartService,
     private http: HttpClient,
     private fb: FormBuilder,
-    private translationService: TranslateService
+    private translationService: TranslateService,
+    private pageLoadingService: PageLoadingService,
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -92,27 +94,33 @@ export class DeviceOrderAisMnpEffectiveStartDatePageComponent implements OnInit,
       this.setBillingCycleTranslate();
     });
 
+    if (this.transaction.data.deleteOntopPackage) {
+      delete this.transaction.data.deleteOntopPackage;
+    }
+
   }
 
   setBillingCycleTranslate(): void {
     this.billCycleText = [{
-      textBill: this.currentLang === 'TH' ? 'รอบบิลถัดไป' : 'Next Bill',
-      textDate: this.currentLang === 'TH' ? 'พร้อมใช้งานวันที่' : 'Ready to use date',
+      textBill: this.currentLang === 'TH' ? 'รอบบิลถัดไป' : 'Next bill cycle',
+      textDate: this.currentLang === 'TH' ? 'พร้อมใช้งานวันที่' : 'Effective on',
       value: 'B'
     }, {
       textBill: this.currentLang === 'TH' ? 'วันถัดไป' : 'Next Day',
-      textDate: this.currentLang === 'TH' ? 'พร้อมใช้งานวันที่' : 'Ready to use date',
+      textDate: this.currentLang === 'TH' ? 'พร้อมใช้งานวันที่' : 'Effective on',
       value: 'D'
     }, {
-      textBill: this.currentLang === 'TH' ? 'มีผลทันที' : 'Immediate effect',
-      textDate: this.currentLang === 'TH' ? 'พร้อมใช้งานได้ทันที' : 'Ready to use immediately',
+      textBill: this.currentLang === 'TH' ? 'มีผลทันที' : 'Immediately',
+      textDate: this.currentLang === 'TH' ? 'พร้อมใช้งานได้ทันที' : 'Effective once',
       value: 'I'
     }];
   }
 
   ngOnInit(): void {
+    const mobileNo = this.transaction.data.simCard.mobileNo;
     this.createForm();
     this.getBillingAccountProcess();
+    this.callService(mobileNo);
   }
 
   onBack(): void {
@@ -120,18 +128,56 @@ export class DeviceOrderAisMnpEffectiveStartDatePageComponent implements OnInit,
   }
 
   onNext(): void {
-    if (this.transaction.data.existingMobileCare) {
+    if (this.packageOntopList && this.packageOntopList.length > 0) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_SELECT_PACKAGE_ONTOP_PAGE]);
+    } else if (this.transaction.data.existingMobileCare) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_AVALIBLE_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_CARE_PAGE]);
     }
+  }
+  callService(mobileNo: string): void {
+    this.pageLoadingService.openLoading();
+    this.http.get(`/api/customerportal/mobile-detail/${mobileNo}`).toPromise().then((resp: any) => {
+      const data: any = resp.data.packageOntop || {};
+      const packageOntop: any = data.filter((packageOntopList: any) => {
+        const isexpiredDate: any = moment().isBefore(moment(packageOntopList.expiredDate, 'DD-MM-YYYY'));
+        return (
+          /On-Top/.test(packageOntopList.productClass) && packageOntopList.priceType === 'Recurring' &&
+          packageOntopList.priceExclVat > 0 && isexpiredDate
+        );
+      }).sort((a: any, b: any) => a.priceExclVat - b.priceExclVat);
+      const checkChangPromotions: any = (packageOntop || []).map((ontop: any) => {
+        return this.http.post(`/api/customerportal/checkChangePromotion`, {
+          mobileNo: mobileNo,
+          promotionCd: ontop.promotionCode
+        }).toPromise().then((responesOntop: any) => {
+          return responesOntop.data;
+        })
+          .catch(() => false);
+      });
+      return Promise.all(checkChangPromotions).then((respones: any[]) => {
+        this.packageOntopList = packageOntop.filter((ontop: any, index: any) => {
+          return respones[index];
+        });
+      });
+    }).then(() => {
+      this.pageLoadingService.closeLoading();
+    });
   }
   onHome(): void {
     this.homeService.goToHome();
   }
 
   ngOnDestroy(): void {
+    if (this.translationSubscribe) {
+      this.translationSubscribe.unsubscribe();
+    }
     this.transactionService.update(this.transaction);
+  }
+
+  mainPackageTitle(value: any = {}): string {
+    return this.translationService.currentLang === 'EN' ? value.shortNameEng : value.shortNameThai;
   }
 
   createForm(): void {
@@ -175,8 +221,10 @@ export class DeviceOrderAisMnpEffectiveStartDatePageComponent implements OnInit,
               nextBill.setDate(this.billCycleMap[i].from);
               nextBill.setMonth(nextBill.getMonth() + 1);
             }
-            this.billCycleNextBill$ = of(this.convertDateToStarngDDMMMYYYY(nextBill));
             this.billCycleNextDay$ = of(this.convertDateToStarngDDMMMYYYY(nextD));
+            const textNextBill = this.convertDateToStarngDDMMMYYYY(nextBill);
+            this.billCycleNextBill$ = of(textNextBill);
+            this.transaction.data.billingInformation.effectiveDate = textNextBill;
           }
         }
         return true;

@@ -20,7 +20,10 @@ const routes: Routes = [
   {
     path: 'buy-product',
     loadChildren: 'src/app/buy-product/buy-product.module#BuyProductModule',
-    canActivate: [AuthGuard, ApiRequestGuard]
+    canActivate: [AuthGuard, ApiRequestGuard],
+    resolve: {
+      i18n: I18nService
+    }
   },
   {
     path: 'stock',
@@ -67,6 +70,15 @@ const routes: Routes = [
     path: 'buy-gadget',
     loadChildren: 'src/app/buy-gadget/buy-gadget.module#BuyGadgetModule',
     canActivate: [AuthGuard, ApiRequestGuard]
+  },
+  {
+    path: 'vas-package',
+    loadChildren: 'src/app/vas-package/vas-package.module#VasPackageModule',
+  },
+  {
+    path: 'rom-transaction',
+    loadChildren: 'src/app/rom-transaction/rom-transaction.module#RomTransactionModule',
+    canActivate: [AuthGuard]
   }
 ];
 

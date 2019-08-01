@@ -1,0 +1,57 @@
+@media (max-width: 576px) {
+
+  .header-icon-left,
+  .header-icon-right {
+    width: 10% !important;
+  }
+}
+
+.main-tab {
+  cursor: pointer;
+  text-align: center;
+  color: #39464e;
+  background-color: #eff0f1;
+  width: 100%;
+  font-size: 12px;
+  border: 1px solid white;
+
+  &.active {
+    font-weight: bold;
+    background-color: #82af05;
+  }
+}
+
+.mc-flex-wrap {
+  margin-top: 2.5rem
+}
+
+navbar-brand {
+  margin: 0 auto
+}
+
+.bg-ais {
+  color: black;
+  background-color: #B2D234;
+}
+
+.back-icon {
+  height: 30px;
+}
+
+.navbar-brand {
+  margin: 0 auto
+}
+
+#mobileNo.form-control:disabled,
+#mobileNo.form-control[readonly] {
+  background-color: white;
+}
+
+.bg-btn-ais {
+  background-color: #B2D234;
+  color: #4E4E4E;
+}
+
+.text-brown {
+  color: #4E4E4E;
+}

@@ -1,0 +1,41 @@
+<div class="mc-flex">
+  <nav class="navbar fixed-top bg-ais text-white shadow-sm fix-position">
+    <div class="col-2 navbar-brand">
+      <img class="back-icon" src="assets/images/icon/icon-black-back.png" (click)="onBack()">
+    </div>
+    <div class="col-8 navbar-brand text-center text-black">{{ 'ขายแพ็กเกจเสริม' | translate }}</div>
+    <div class="col-2 navbar-brand">
+    </div>
+  </nav>
+  <div class="mc-flex-wrap">
+    <div class="mb-3 mt-3">
+      <div class="m-3">
+        <div class="card mt-3 content">
+          <div class="card-header bg-header">{{'ช่องทางการชำระ'| translate}}</div>
+          <div class="card-body">
+            <input class="chargeType" type="radio" value="topUp" checked>
+            <label class="form-check-label" for="chargeType">{{ 'AIS Online Top Up' }} </label>
+          </div>
+        </div>
+        <div class="bg-white mt-2 shadow-sm">
+          <p class="text-center text-green pt-3">กรุณากรอกข้อมูล</p>
+          <hr class="ml-3 mr-3">
+          <div class="pl-3 pr-3 pb-1">
+            <form [formGroup]="loginForm">
+              <div class="card-body">
+                <div class="form-group">
+                  <input type="tel" id="mobileNoAgent" class="form-control mb-3" placeholder="ระบุเบอร์ ROM Agent" maxlength="10" formControlName="mobileNoAgent">
+                  <input type="password" id="pinAgent" class="form-control" placeholder="กรุณากรอก PIN 4 หลัก" maxlength="4" formControlName="pinAgent">
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <mc-footer>
+    <button class="btn btn-secondary text-brown" (click)="onBack()">กลับ</button>
+    <button class="btn bg-btn-ais" (click)="onNext()" [disabled]=!loginForm.valid>ต่อไป</button>
+  </mc-footer>
+</div>

@@ -118,9 +118,8 @@ export class MobileCareComponent implements OnInit {
   }
 
   public keyPress(event: any): void {
-    const pattern = /[0-9\+\-\ ]/;
-    const inputChar = String.fromCharCode(event.charCode);
-    if (event.keyCode !== 8 && !pattern.test(inputChar)) {
+    const charCode: number = (event.which) ? event.which : event.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
       event.preventDefault();
     }
   }

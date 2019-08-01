@@ -13,6 +13,7 @@ import {
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { environment } from 'src/environments/environment';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-device-order-ais-pre-to-post-otp-page',
@@ -35,6 +36,7 @@ export class DeviceOrderAisPreToPostOtpPageComponent implements OnInit {
     private fb: FormBuilder,
     private http: HttpClient,
     private alertService: AlertService,
+    private translateService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -83,7 +85,7 @@ export class DeviceOrderAisPreToPostOtpPageComponent implements OnInit {
         this.navigateNext();
       }).catch((error) => {
         this.pageLoadingService.closeLoading();
-        this.alertService.error('รหัส OTP ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง');
+        this.alertService.error(this.translateService.instant('รหัส OTP ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง'));
       });
   }
 
@@ -100,14 +102,14 @@ export class DeviceOrderAisPreToPostOtpPageComponent implements OnInit {
         if (response && response.data && response.data.success) {
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CUSTOMER_INFO_PAGE]);
         } else {
-          this.alertService.error('ระบบไม่สามารถแสดงตนได้กรุณาติดต่อเจ้าหน้าที่');
+          this.alertService.error(this.translateService.instant('ระบบไม่สามารถแสดงตนได้กรุณาติดต่อเจ้าหน้าที่'));
         }
       }).catch((error) => {
         this.pageLoadingService.closeLoading();
-        this.alertService.error('รหัส OTP ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง');
+        this.alertService.error(this.translateService.instant('รหัส OTP ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง'));
       }).catch((error) => {
         this.pageLoadingService.closeLoading();
-        this.alertService.error('ระบบไม่สามารถแสดงตนได้กรุณาติดต่อเจ้าหน้าที่');
+        this.alertService.error(this.translateService.instant('ระบบไม่สามารถแสดงตนได้กรุณาติดต่อเจ้าหน้าที่'));
       });
   }
 
@@ -123,7 +125,7 @@ export class DeviceOrderAisPreToPostOtpPageComponent implements OnInit {
       errMsg = 'ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้';
       errDetail = 'Invalid error message';
     }
-    this.alertService.error(errMsg);
+    this.alertService.error(this.translateService.instant(errMsg));
   }
   onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_CUSTOMER_PROFILE_PAGE]);

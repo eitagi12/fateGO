@@ -1,0 +1,40 @@
+<div class="mc-flex">
+
+  <nav class="navbar fixed-top bg-ais text-white shadow-sm fix-position">
+    <div class="col-2 navbar-brand">
+      <img class="back-icon" src="assets/images/icon/icon-black-back.png" (click)="onBack()">
+    </div>
+    <div class="col-8 navbar-brand text-center text-black">{{ 'ขายแพ็กเกจเสริม' | translate }}</div>
+    <div class="col-2 navbar-brand">
+    </div>
+  </nav>
+
+
+  <div class="mc-flex-wrap">
+    <form [formGroup]="formOTP">
+      <div class="content">
+        <div class="card-content">
+          <div class="text-center" style="margin-bottom: 2%" *ngIf="!isRomAgent">
+              <p class="text-center ">หมายเลขโทรศัพท์ลูกค้า</p>
+              <p class="text-center ">{{ transaction?.data?.simCard?.mobileNo | mobileNo }}</p>
+          </div>
+          <p class="text-center">กรุณาใส่รหัส OTP ที่ได้รับจาก SMS</p>
+          <hr>
+          <input type="tel" autocomplete="off" class="mc-input text-left" name="otp" placeholder="รหัส OTP"
+            maxlength="4" [(ngModel)]="this.otp" formControlName="verifyOTP" (keypress)="keyPress($event)">
+        </div>
+        <p class="text text-center">รับรหัส OTP มีอายุการใช้งาน 15 นาที หากไม่ได้รับรหัส
+          กรุณาตรวจสอบหมายเลขโทรศัพท์อีกครั้ง</p>
+      </div>
+    </form>
+
+    <div class="footers row">
+      <div class="col-xs-6 col-sm-6">
+        <p class="mc-btn-otp text text-center text-brown" (click)="getOTP()">ขอรหัสผ่านใหม่</p>
+      </div>
+      <div class="col-xs-6 col-sm-6">
+        <button class="btn w-100 text text-center bg-btn-ais" type="submit" (click)="verifyOTP()"
+          [disabled]="!formOTP.controls.verifyOTP.valid">ยืนยัน</button>
+      </div>
+    </div>
+  </div>

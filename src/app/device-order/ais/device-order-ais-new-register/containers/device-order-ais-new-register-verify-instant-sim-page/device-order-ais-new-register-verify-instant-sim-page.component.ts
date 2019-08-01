@@ -42,10 +42,6 @@ export class DeviceOrderAisNewRegisterVerifyInstantSimPageComponent implements O
     private translationService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
-    this.translationSubscribe = this.translationService.onLangChange.subscribe(lang => {
-      this.mcSimSerial.focusInput();
-    });
-
   }
 
   ngOnInit(): void {
@@ -110,7 +106,9 @@ export class DeviceOrderAisNewRegisterVerifyInstantSimPageComponent implements O
   }
 
   ngOnDestroy(): void {
-    this.translationSubscribe.unsubscribe();
+    if (this.translationSubscribe) {
+      this.translationSubscribe.unsubscribe();
+    }
     this.transactionService.update(this.transaction);
   }
 }
