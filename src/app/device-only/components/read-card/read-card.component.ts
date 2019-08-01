@@ -7,7 +7,7 @@ import { ReadCardService, ReadCardProfile, PageLoadingService, Utils, AlertServi
 import { CustomerInformationService } from 'src/app/device-only/services/customer-information.service';
 import { Subscription } from 'rxjs';
 
-declare let Hammer: any;
+declare let $: any;
 
 @Component({
   selector: 'app-read-card',
@@ -17,10 +17,7 @@ declare let Hammer: any;
 })
 
 export class ReadCardComponent implements OnInit, OnDestroy {
-
   @Output() customerInfo: EventEmitter<Object> = new EventEmitter<Object>();
-  @ViewChild('istBillingAccountBox')
-  istBillingAccountBox: ElementRef;
 
   @ViewChild('select_billing_address')
   selectBillingAddressTemplate: TemplateRef<any>;
@@ -31,6 +28,11 @@ export class ReadCardComponent implements OnInit, OnDestroy {
   readCard: ReadCard;
   profile: ReadCardProfile;
   readCardSubscription: Subscription;
+
+  //modal click drag
+  onTouchScreen: boolean;
+  currentScrollPosition: any = 0;
+  scrollingPosition: any = 0;
 
   public ADDRESS_BY_SMART_CARD: string = 'addressBySmartCard';
   public messages: String;
@@ -72,22 +74,26 @@ export class ReadCardComponent implements OnInit, OnDestroy {
     });
   }
 
-  scroll(): void {
-    this._zone.run(() => {
-      const mc = new Hammer(document.querySelector('body'));
-      mc.get('pan').set({ direction: Hammer.DIRECTION_ALL });
-
-      let currentScroll = 0;
-      mc.on('panstart', (ev) => {
-        currentScroll = 0;
-      });
-      mc.on('pan', (ev) => {
-      });
-    });
+  onTouchModal(event): void {
+    const id = document.getElementById('myModal');
+    window.scrollTo(0,0);
+    this.currentScrollPosition = event.clientY + id.scrollTop;
+    this.onTouchScreen = true;
   }
 
+  onScrolling(event): void {
+    const id = document.getElementById('myModal');
+    if (this.onTouchScreen) {
+      this.scrollingPosition = (this.currentScrollPosition - (event.clientY + id.scrollTop));
+      id.scrollTop += this.scrollingPosition;
+    }
+  }
+
+  onCancelMove(event): void {
+    event.preventDefault();
+    this.onTouchScreen = false;
+  }
   onReadCard(): void {
-    this.scroll();
     this.messages = 'โปรดเสียบบัตรประชาชน';
     this.profile = null;
     if (this.kioskApi) {
