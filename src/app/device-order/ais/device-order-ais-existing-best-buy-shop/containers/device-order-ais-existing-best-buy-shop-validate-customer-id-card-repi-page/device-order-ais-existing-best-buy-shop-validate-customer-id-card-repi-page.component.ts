@@ -84,7 +84,7 @@ export class DeviceOrderAisExistingBestBuyShopValidateCustomerIdCardRepiPageComp
       return this.customerInfoService.getZipCode(provinceId, this.profile.amphur, this.profile.tumbol).then((zipCode: string) => {
         return this.customerInfoService.getCustomerInfoByIdCard(this.profile.idCardNo, zipCode).then((customer: Customer) => {
           if (customer.caNumber) {
-            // this.transaction.data.customer = { ...this.transaction.data.customer, ...customer, ...this.profile };
+            this.transaction.data.customer = { ...this.transaction.data.customer, ...customer, ...this.profile };
             this.transaction.data.customer.zipCode = zipCode;
           } else {
             const privilege = this.transaction.data.customer.privilegeCode;
