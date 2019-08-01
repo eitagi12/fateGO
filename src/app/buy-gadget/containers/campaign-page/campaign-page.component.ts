@@ -242,12 +242,11 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
   getCampaignSliders(priceOptions: any[], code: string): any[] {
     return priceOptions
       .filter((campaign: any) => {
-        let allowCampaign: boolean = !!campaign.customerGroups.find(
+        const allowCampaign: boolean = !!campaign.customerGroups.find(
           group => group.code === code
         );
 
         const campaignCode: string = campaign.code;
-        allowCampaign = allowCampaign && CustomerGroup.EXISTING === code;
 
         return allowCampaign;
       }).map((campaign: any) => {
@@ -362,6 +361,8 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         return 'Port - In';
       case CustomerGroup.EXISTING:
         return 'Change Service';
+      case CustomerGroup.DEVICE_ONLY:
+        return 'Device Only';
     }
   }
 
@@ -471,8 +472,8 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
       productSubtype: productSubtype,
       location: this.user.locationCode
     }).then((resp: any) => {
-      // const priceOptions = this.filterCampaigns(resp.data.priceOptions || []);
-      const priceOptions = this.filterCampaigns(this.dataMock());
+      const priceOptions = this.filterCampaigns(resp.data.priceOptions || []);
+      // const priceOptions = this.filterCampaigns(this.dataMock());
       if (priceOptions && priceOptions.length > 0) {
         this.maximumNormalPrice = priceOptions[0].maximumNormalPrice;
       }
