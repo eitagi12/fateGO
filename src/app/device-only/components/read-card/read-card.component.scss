@@ -22,12 +22,12 @@
     pointer-events: none;
     opacity: 0.4;
 }
-.read-card{
+.read-card {
     overflow: auto; 
     display: none; 
     position: fixed;
 }
-.card-body{
+.card-body {
     overflow-y: scroll;
     height: 70vh;
 }

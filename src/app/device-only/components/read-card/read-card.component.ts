@@ -29,7 +29,7 @@ export class ReadCardComponent implements OnInit, OnDestroy {
   profile: ReadCardProfile;
   readCardSubscription: Subscription;
 
-  //modal click drag
+  // modal click drag
   onTouchScreen: boolean;
   currentScrollPosition: any = 0;
   scrollingPosition: any = 0;
@@ -74,14 +74,14 @@ export class ReadCardComponent implements OnInit, OnDestroy {
     });
   }
 
-  onTouchModal(event): void {
+  onTouchModal(event: any): void {
     const id = document.getElementById('myModal');
-    window.scrollTo(0,0);
+    window.scrollTo(0, 0);
     this.currentScrollPosition = event.clientY + id.scrollTop;
     this.onTouchScreen = true;
   }
 
-  onScrolling(event): void {
+  onScrolling(event: any): void {
     const id = document.getElementById('myModal');
     if (this.onTouchScreen) {
       this.scrollingPosition = (this.currentScrollPosition - (event.clientY + id.scrollTop));
@@ -89,7 +89,7 @@ export class ReadCardComponent implements OnInit, OnDestroy {
     }
   }
 
-  onCancelMove(event): void {
+  onCancelMove(event: any): void {
     event.preventDefault();
     this.onTouchScreen = false;
   }
