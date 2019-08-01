@@ -14,6 +14,7 @@ import { SharedTransactionService } from 'src/app/shared/services/shared-transac
 import { ProfileFbbService } from 'src/app/shared/services/profile-fbb.service';
 import { ProfileFbb } from 'src/app/shared/models/profile-fbb.model';
 import { ROUTE_BUY_GADGET_CAMPAIGN_PAGE } from 'src/app/buy-gadget/constants/route-path.constant';
+import { TranslateService } from '@ngx-translate/core';
 import {
   ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_VALIDATE_CUSTOMER_ID_CARD_PAGE,
   ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_VALIDATE_IDENTIFY_PAGE,
@@ -38,7 +39,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
   identityValid: boolean = false;
   identity: string;
   isFbbNo: boolean;
-  disableNextButton: boolean;
+
   constructor(
     private router: Router,
     private transactionService: TransactionService,
@@ -52,7 +53,9 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
     private customerInfoService: CustomerInfoService,
     private privilegeService: PrivilegeService,
     private sharedTransactionService: SharedTransactionService,
-    private profileFbbService: ProfileFbbService
+    private profileFbbService: ProfileFbbService,
+    private translateService: TranslateService
+
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -177,9 +180,39 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
               billCycles: data.billingAccountList,
               billDeliveryAddress: customer
             };
-          }).then(() => this.addCard());
-      }).catch(this.ErrorMessage());
+          }).then(() => {
+            return this.conditionIdentityValid()
+              .catch((msg: string) => {
+                return this.alertService.error(this.translateService.instant(msg)).then(() => true);
+              })
+              .then((isError: boolean) => {
+                if (isError) {
+                  this.onBack();
+                  return;
+                }
+                this.addCard();
+              });
+          });
+      }).then(() => this.pageLoadingService.closeLoading())
+      .catch(this.ErrorMessage());
     }
+  }
+
+  conditionIdentityValid(): Promise<string> {
+    return new Promise((resovle, reject) => {
+      const birthdate = this.transaction.data.customer.birthdate; // '19/03/2560';
+      const expireDate = this.transaction.data.customer.expireDate;
+      const idCardType = this.transaction.data.customer.idCardType;
+      if (this.utils.isLowerAge17Year(birthdate)) {
+        return reject(this.translateService.instant(`ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี`));
+      }
+      if (this.utils.isIdCardExpiredDate(expireDate)) {
+        return reject(
+          `${this.translateService.instant('ไม่สามารถทำรายการได้ เนื่องจาก')} ${idCardType} ${this.translateService.instant('หมดอายุ')}`
+        );
+      }
+      resovle(null);
+    });
   }
 
   public addCard(): void {
@@ -318,7 +351,6 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
   }
 
   handleErrorMessage(err: any): void {
-    this.disableNextButton = true;
     this.pageLoadingService.closeLoading();
     const error = err.error || {};
     const developerMessage = (error.errors || {}).developerMessage;
