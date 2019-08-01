@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { ValidateCustomerIdCardComponent, ReadCardProfile, User, HomeService, PageLoadingService, AlertService, TokenService } from 'mychannel-shared-libs';
+import { ValidateCustomerIdCardComponent, ReadCardProfile, User, HomeService, PageLoadingService, AlertService, TokenService, Utils } from 'mychannel-shared-libs';
 import { Transaction, Customer, TransactionAction, TransactionType } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Router } from '@angular/router';
@@ -8,6 +8,7 @@ import { CustomerInfoService } from 'src/app/device-order/services/customer-info
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { HttpClient } from '@angular/common/http';
+import { TranslateService } from '@ngx-translate/core';
 import {
   ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CUSTOMER_INFO_PAGE,
   ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_VALIDATE_IDENTIFY_PAGE
@@ -36,6 +37,7 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent imp
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
 
   constructor(
+    private utils: Utils,
     private router: Router,
     private http: HttpClient,
     private homeService: HomeService,
@@ -45,7 +47,8 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent imp
     private customerInfoService: CustomerInfoService,
     private priceOptionService: PriceOptionService,
     private sharedTransactionService: SharedTransactionService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private translateService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -118,25 +121,53 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent imp
                 billCycles: data.billingAccountList,
                 billDeliveryAddress: this.transaction.data.customer
               };
-              if (this.transaction.data.order && this.transaction.data.order.soId) {
-                this.pageLoadingService.closeLoading();
-                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CUSTOMER_INFO_PAGE]);
-                return;
-              } else {
-                return this.http.post('/api/salesportal/add-device-selling-cart',
-                  this.getRequestAddDeviceSellingCart()
-                ).toPromise().then((response: any) => {
-                  this.transaction.data.order = { soId: response.data.soId };
-                  return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-                }).then(() => {
-                  this.pageLoadingService.closeLoading();
-                  this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CUSTOMER_INFO_PAGE]);
+              return this.conditionIdentityValid()
+                .catch((msg: string) => {
+                  return this.alertService.error(this.translateService.instant(msg)).then(() => true);
+                })
+                .then((isError: boolean) => {
+                  if (isError) {
+                    this.onBack();
+                    return;
+                  }
+                  if (this.transaction.data.order && this.transaction.data.order.soId) {
+                    this.pageLoadingService.closeLoading();
+                    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CUSTOMER_INFO_PAGE]);
+                    return;
+                  } else {
+                    return this.http.post('/api/salesportal/add-device-selling-cart',
+                      this.getRequestAddDeviceSellingCart()
+                    ).toPromise().then((response: any) => {
+                      this.transaction.data.order = { soId: response.data.soId };
+                      return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+                    }).then(() => {
+                      this.pageLoadingService.closeLoading();
+                      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CUSTOMER_INFO_PAGE]);
+                    });
+                  }
                 });
-              }
             });
         });
-    }).catch((e) => this.alertService.error(e))
-      .then(() => this.pageLoadingService.closeLoading());
+    }).then(() => this.pageLoadingService.closeLoading())
+      .catch((e) => this.ErrorMessage());
+
+  }
+
+  conditionIdentityValid(): Promise<string> {
+    return new Promise((resovle, reject) => {
+      const birthdate = this.transaction.data.customer.birthdate; // '19/03/2560';
+      const expireDate = this.transaction.data.customer.expireDate;
+      const idCardType = this.transaction.data.customer.idCardType;
+      if (this.utils.isLowerAge17Year(birthdate)) {
+        return reject(this.translateService.instant(`ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี`));
+      }
+      if (this.utils.isIdCardExpiredDate(expireDate)) {
+        return reject(
+          `${this.translateService.instant('ไม่สามารถทำรายการได้ เนื่องจาก')} ${idCardType} ${this.translateService.instant('หมดอายุ')}`
+        );
+      }
+      resovle(null);
+    });
   }
 
   onHome(): void {
@@ -173,4 +204,17 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent imp
     };
   }
 
+  ErrorMessage(): (reason: any) => void | PromiseLike<void> {
+    return (err: any) => {
+      this.handleErrorMessage(err);
+    };
+  }
+
+  handleErrorMessage(err: any): void {
+    this.pageLoadingService.closeLoading();
+    const error = err.error || {};
+    const developerMessage = (error.errors || {}).developerMessage;
+    this.alertService.error((developerMessage && error.resultDescription)
+      ? `${developerMessage} ${error.resultDescription}` : `ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้`);
+  }
 }
