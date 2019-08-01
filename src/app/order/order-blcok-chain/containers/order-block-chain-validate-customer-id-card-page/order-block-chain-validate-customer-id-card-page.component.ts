@@ -164,7 +164,7 @@ export class OrderBlockChainValidateCustomerIdCardPageComponent implements OnIni
 
   mapErrorMessage(resp: any): void {
     const error = resp.error || [];
-    if (error && error.errors && error.errors.length > 0) {
+    if (error && error.errors && error.errors.length > 0 && typeof error.errors === 'object') {
       this.alertService.notify({
         type: 'error',
         html: error.errors.map((err) => {
