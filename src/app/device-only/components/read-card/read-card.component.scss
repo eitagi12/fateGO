@@ -22,12 +22,12 @@
     pointer-events: none;
     opacity: 0.4;
 }
-body.modal-open {
-    overflow: hidden;
-    position:fixed;
-    width: 100%;
+.read-card{
+    overflow: auto; 
+    display: none; 
+    position: fixed;
 }
-
-.pointer-action-none{
-    pointer-events: none;
+.card-body{
+    overflow-y: scroll;
+    height: 70vh;
 }
