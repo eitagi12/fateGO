@@ -14,9 +14,9 @@ import { PromotionShelveService } from 'src/app/device-order/services/promotion-
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
 import {
-  ROUTE_DEVICE_ORDER_AIS_GADGET_ELIGIBLE_MOBILE_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_GADGET_PAYMENT_DETAIL_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE
+  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CUSTOMER_INFO_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_ELIGIBLE_MOBILE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_PAYMENT_DETAIL_PAGE
 } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
 import { ProfileFbbService } from 'src/app/shared/services/profile-fbb.service';
 
@@ -90,7 +90,7 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
             this.alertWording = havePackages[0] ? '' : 'แพ็กเกจหลักไม่ร่วมโครงการ \n กรุณาเปลี่ยนแพ็กเกจ';
           } else {
             havePackages = promotionCode.filter((code: string) => {
-              return code === promotionCodeCurrentPackage;
+              return 'P14090142' === promotionCodeCurrentPackage;
             });
             this.alertWording = havePackages[0] ? '' : 'แพ็กเกจหลักไม่ร่วมโครงการ \n กรุณาเปลี่ยนแพ็กเกจ';
           }
@@ -226,9 +226,9 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
 
   onBack(): void {
     if (this.action === TransactionAction.KEY_IN_FBB) {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CUSTOMER_INFO_PAGE]);
     } else {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_ELIGIBLE_MOBILE_PAGE]);
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_ELIGIBLE_MOBILE_PAGE]);
     }
   }
 
@@ -277,7 +277,7 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
       this.alertService.warning('หมายเลขนี้มีการรวมบิล ไม่สามารถทำรายการได้');
     } else {
       this.transaction.data.billingInformation.isNewBAFlag = false;
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_PAYMENT_DETAIL_PAGE]);
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_PAYMENT_DETAIL_PAGE]);
     }
   }
 

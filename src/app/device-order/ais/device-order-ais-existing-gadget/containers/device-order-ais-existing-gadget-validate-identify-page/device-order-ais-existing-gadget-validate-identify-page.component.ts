@@ -9,7 +9,11 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { Transaction, TransactionType } from 'src/app/shared/models/transaction.model';
-import { ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_IDENTIFY_ID_CARD_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
+import {
+  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CUSTOMER_INFO_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_VALIDATE_CUSTOMER_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_VALIDATE_IDENTIFY_ID_CARD_PAGE
+} from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 
 @Component({
@@ -60,8 +64,7 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyPageComponent implement
   }
 
   onReadCard(): void {
-    // this.transaction.data.action = TransactionAction.READ_CARD_PI;
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_IDENTIFY_ID_CARD_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_VALIDATE_IDENTIFY_ID_CARD_PAGE]);
   }
 
   onHome(): void {
@@ -69,7 +72,7 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyPageComponent implement
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_VALIDATE_CUSTOMER_PAGE]);
   }
 
   onNext(): void {
@@ -109,11 +112,11 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyPageComponent implement
                       return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
                     }).then(() => {
                       this.pageLoadingService.closeLoading();
-                      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
+                      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CUSTOMER_INFO_PAGE]);
                     });
                 } else {
                   this.pageLoadingService.closeLoading();
-                  this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
+                  this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CUSTOMER_INFO_PAGE]);
                 }
               });
           });

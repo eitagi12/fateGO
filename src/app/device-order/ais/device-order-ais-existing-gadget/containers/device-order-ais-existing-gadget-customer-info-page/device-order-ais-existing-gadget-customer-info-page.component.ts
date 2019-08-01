@@ -5,7 +5,11 @@ import { CustomerInfo, ShoppingCart, HomeService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
-import { ROUTE_DEVICE_ORDER_AIS_GADGET_ELIGIBLE_MOBILE_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_MOBILE_DETAIL_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
+import {
+  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_VALIDATE_CUSTOMER_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_MOBILE_DETAIL_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_ELIGIBLE_MOBILE_PAGE
+} from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-gadget-customer-info-page',
@@ -47,16 +51,16 @@ export class DeviceOrderAisExistingGadgetCustomerInfoPageComponent implements On
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_VALIDATE_CUSTOMER_PAGE]);
 
   }
 
   onNext(): void {
     const action = this.transaction.data.action;
     if (action === TransactionAction.KEY_IN_FBB) {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_MOBILE_DETAIL_PAGE]);
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_MOBILE_DETAIL_PAGE]);
     } else {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_ELIGIBLE_MOBILE_PAGE]);
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_ELIGIBLE_MOBILE_PAGE]);
     }
   }
 

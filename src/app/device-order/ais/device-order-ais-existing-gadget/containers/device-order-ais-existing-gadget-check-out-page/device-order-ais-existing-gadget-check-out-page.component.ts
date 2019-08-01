@@ -5,7 +5,10 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { ROUTE_DEVICE_ORDER_AIS_GADGET_AGREEMENT_SIGN_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_QUEUE_PAGE } from '../../constants/route-path.constant';
+import {
+  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_AGREEMENT_SIGN_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_QUEUE_PAGE
+} from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-gadget-check-out-page',
@@ -32,11 +35,11 @@ export class DeviceOrderAisExistingGadgetCheckOutPageComponent implements OnInit
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_AGREEMENT_SIGN_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_AGREEMENT_SIGN_PAGE]);
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_QUEUE_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_QUEUE_PAGE]);
   }
 
   ngOnDestroy(): void {

@@ -7,7 +7,6 @@ import { Transaction, TransactionAction, Customer, Order, TransactionType } from
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_IDENTIFY_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_ELIGIBLE_MOBILE_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_MOBILE_DETAIL_PAGE } from '../../constants/route-path.constant';
 import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
 import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
@@ -15,6 +14,11 @@ import { SharedTransactionService } from 'src/app/shared/services/shared-transac
 import { ProfileFbbService } from 'src/app/shared/services/profile-fbb.service';
 import { ProfileFbb } from 'src/app/shared/models/profile-fbb.model';
 import { ROUTE_BUY_GADGET_CAMPAIGN_PAGE } from 'src/app/buy-gadget/constants/route-path.constant';
+import {
+  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_VALIDATE_CUSTOMER_ID_CARD_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_VALIDATE_IDENTIFY_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CUSTOMER_INFO_PAGE
+} from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-gadget-validate-customer-page',
@@ -91,7 +95,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
 
   onReadCard(): void {
     this.transaction.data.action = TransactionAction.READ_CARD;
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
   }
 
   onCompleted(identity: string): void {
@@ -199,10 +203,10 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
     this.pageLoadingService.closeLoading();
     if (this.checkFbbNo(this.identity) || this.utils.isMobileNo(this.identity)) {
       // KEY-IN FbbNo
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_IDENTIFY_PAGE]);
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_VALIDATE_IDENTIFY_PAGE]);
     } else {
       // KEY IN IDCARD
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CUSTOMER_INFO_PAGE]);
     }
   }
 

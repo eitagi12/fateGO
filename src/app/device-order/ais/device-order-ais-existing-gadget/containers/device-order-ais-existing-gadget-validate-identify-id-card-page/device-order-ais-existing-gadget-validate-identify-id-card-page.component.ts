@@ -8,7 +8,10 @@ import { CustomerInfoService } from 'src/app/device-order/services/customer-info
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { HttpClient } from '@angular/common/http';
-import { ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_IDENTIFY_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE } from '../../constants/route-path.constant';
+import {
+  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CUSTOMER_INFO_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_VALIDATE_IDENTIFY_PAGE
+} from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-gadget-validate-identify-id-card-page',
@@ -117,7 +120,7 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent imp
               };
               if (this.transaction.data.order && this.transaction.data.order.soId) {
                 this.pageLoadingService.closeLoading();
-                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
+                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CUSTOMER_INFO_PAGE]);
                 return;
               } else {
                 return this.http.post('/api/salesportal/add-device-selling-cart',
@@ -127,7 +130,7 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent imp
                   return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
                 }).then(() => {
                   this.pageLoadingService.closeLoading();
-                  this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
+                  this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CUSTOMER_INFO_PAGE]);
                 });
               }
             });
@@ -141,7 +144,7 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent imp
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_IDENTIFY_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_VALIDATE_IDENTIFY_PAGE]);
   }
 
   ngOnDestroy(): void {

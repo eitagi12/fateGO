@@ -9,7 +9,7 @@ import { SharedTransactionService } from 'src/app/shared/services/shared-transac
 import { QueuePageService } from 'src/app/device-order/services/queue-page.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { ROUTE_DEVICE_ORDER_AIS_GADGET_RESULT_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_RESULT_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-gadget-queue-page',
@@ -99,7 +99,7 @@ export class DeviceOrderAisExistingGadgetQueuePageComponent implements OnInit, O
         this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
           return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
             this.pageLoadingService.closeLoading();
-            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_RESULT_PAGE]);
+            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_RESULT_PAGE]);
           });
         });
       });
@@ -112,7 +112,7 @@ export class DeviceOrderAisExistingGadgetQueuePageComponent implements OnInit, O
       this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
         return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
           this.pageLoadingService.closeLoading();
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_RESULT_PAGE]);
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_RESULT_PAGE]);
         });
       });
     } else {
@@ -122,7 +122,7 @@ export class DeviceOrderAisExistingGadgetQueuePageComponent implements OnInit, O
           return this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
             return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
               this.pageLoadingService.closeLoading();
-              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_RESULT_PAGE]);
+              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_RESULT_PAGE]);
             });
           });
         } else {

@@ -6,11 +6,14 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
-import { ROUTE_DEVICE_ORDER_AIS_GADGET_MOBILE_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE } from '../../constants/route-path.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
 import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
+import {
+  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CUSTOMER_INFO_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_MOBILE_DETAIL_PAGE
+} from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-gadget-eligible-mobile-page',
@@ -83,12 +86,12 @@ export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements 
         this.transaction.data.simCard = { mobileNo: this.onSelected.mobileNo };
       }).then(() => {
         this.pageLoadingService.closeLoading();
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_MOBILE_DETAIL_PAGE]);
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_MOBILE_DETAIL_PAGE]);
       });
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CUSTOMER_INFO_PAGE]);
   }
 
   onHome(): void {

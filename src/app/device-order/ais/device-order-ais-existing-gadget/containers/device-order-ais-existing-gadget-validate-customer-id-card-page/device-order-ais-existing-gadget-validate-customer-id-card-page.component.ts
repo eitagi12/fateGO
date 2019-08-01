@@ -7,8 +7,11 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
-import { ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_PAGE } from '../../constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
+import {
+  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CUSTOMER_INFO_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_VALIDATE_CUSTOMER_PAGE
+} from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-gadget-validate-customer-id-card-page',
@@ -116,7 +119,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent imp
                 billDeliveryAddress: this.transaction.data.customer
               };
               if (this.transaction.data.order && this.transaction.data.order.soId) {
-                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
+                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CUSTOMER_INFO_PAGE]);
                 return;
               }
               if (!this.transaction.data.order || !this.transaction.data.order.soId) {
@@ -127,11 +130,11 @@ export class DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent imp
                   return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
                 }).then(() => {
                   this.pageLoadingService.closeLoading();
-                  this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
+                  this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CUSTOMER_INFO_PAGE]);
                 });
               } else {
                 this.pageLoadingService.closeLoading();
-                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_CUSTOMER_INFO_PAGE]);
+                this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CUSTOMER_INFO_PAGE]);
               }
             });
         });
@@ -144,7 +147,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent imp
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_VALIDATE_CUSTOMER_PAGE]);
   }
 
   ngOnDestroy(): void {

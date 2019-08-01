@@ -9,7 +9,10 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { DecimalPipe } from '@angular/common';
-import { ROUTE_DEVICE_ORDER_AIS_GADGET_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_AGREEMENT_SIGN_PAGE } from '../../constants/route-path.constant';
+import {
+  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_AGREEMENT_SIGN_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_SUMMARY_PAGE
+} from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-gadget-econtract-page',
@@ -48,11 +51,11 @@ export class DeviceOrderAisExistingGadgetEcontractPageComponent implements OnIni
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_SUMMARY_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_SUMMARY_PAGE]);
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_AGREEMENT_SIGN_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_AGREEMENT_SIGN_PAGE]);
   }
 
   onHome(): void {
