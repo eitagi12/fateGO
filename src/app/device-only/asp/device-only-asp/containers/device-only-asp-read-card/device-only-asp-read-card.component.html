@@ -1,0 +1,148 @@
+<div class="mc-flex">
+  <mc-header title="ซื้อเครื่องเปล่า">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" id="button-upper-back" (click)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" id="button-home" (click)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
+
+    <div class="container-fluid">
+      <div class="card mb-3">
+        <div class="card-header bg-light-blue text-white">
+          ข้อมูลใบเสร็จรับเงิน
+        </div>
+        <div class="card-body bg-transparent">
+          <div class="row">
+            <label class="col-12 col-sm-8 col-form-label" for="input-mobile-number">
+              ออกใบเสร็จตามใบแจ้งค่าใช้บริการเบอร์ AIS
+            </label>
+            <div class="col-12 col-sm-4">
+              <form [formGroup]="searchByMobileNoForm">
+                <div class="form-group search-box">
+                  <div class="input-group">
+                    <input type="tel" class="form-control text-center" placeholder="ระบุเบอร์ AIS"
+                      id="input-mobile-number" formControlName="mobileNo" maxlength="10"
+                      aria-describedby="basic-addon2">
+                    <div class="input-group-append">
+                      <button class="btn-outline" type="button" id="button-search-by-mobile-number"
+                        (click)="searchCustomerInfo()">
+                        <img class="img-search" src="assets/images/icon/device_only_search_icon.png">
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-12">
+            <div class="m-auto bg-light-green device-only-read-card-btn" id="button-read-smart-card">
+              <div class="row m-auto" (click)="readCard()">
+                <img class="col-3" src="assets/images/icon/device_only_read_card_icon.png" />
+                <label class="col-9 m-auto"> Read Smart Card </label>
+              </div>
+            </div>
+            <div class="m-auto  device-only-read-card-btn" style="text-align: center;" id="button-read-smart-card">
+              <span *ngIf="this.messages" class="col-12 m-auto text-center " [innerHTML]="messages"></span>
+            </div>
+
+            <div class="device-only-read-card-progress" #progressBarArea>
+              <div class="progress-bg">
+                <div class="progress-precent" id="progress-bar-read-smart-card" #progressBarReadSmartCard></div>
+                <div>
+                </div>
+              </div>
+            </div>
+            <!-- <ng-template #select_billing_address>
+                      <h5 class="modal-header bg-light-blue text-white">
+                        {{ 'เลือกที่อยู่ในใบเสร็จรับเงิน' | translate }}
+                      </h5>
+                      <div class="card-header bg-transparent">
+                        <label style="margin-top:10px;">ผู้ซื้อ
+                          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label id="modal-text-customer-name">{{ nameTextBySmartCard }}</label>
+                        </label>
+                      </div>
+                      <div class="card-body">
+                        <form [formGroup]="selectBillingAddressForm">
+                          <h5>ที่อยู่ตามบัตรประชาชน</h5>
+                          <div>
+                            <input class="form-check-input" type="radio" value="{{ADDRESS_BY_SMART_CARD}}"
+                              formControlName="billingAddress" id="modal-text-customer-id-card-address">
+                            <label class="form-check-label" class="col-11" for="modal-text-customer-id-card-address">
+                              {{ 'ที่อยู่: ' + addressTextBySmartCard }}
+                            </label>
+                          </div>
+                          <br />
+                          <h5>ที่อยู่ตามใบแจ้งค่าใช้บริการเบอร์ AIS ของท่าน</h5>
+        
+                          <div *ngFor="let itemBA of listBillingAccount; let i = index" #istBillingAccountBox>
+                            <input class="form-check-input" type="radio" value="{{i}}" formControlName="billingAddress"
+                              id="modal-text-billing-address-{{i+1}}">
+                            <label class="form-check-label" class="col-9"
+                              for="modal-text-billing-address-{{i+1}}">{{ itemBA.mobileNo[0] }}</label>
+                            <label class="form-check-label" class="col-2"
+                              for="modal-text-billing-address-{{i+1}}">{{ itemBA.status }}</label>
+                            <label class="col-1"></label>
+                            <label class="form-check-label" class="col-11" for="modal-text-billing-address-{{i+1}}">
+                              &nbsp;&nbsp;{{ itemBA.billingAddr }}
+                            </label>
+                          </div>
+                        </form>
+                      </div>
+                      <div class="modal-body d-flex justify-content-center">
+                        <button type="button" class="btn btn-secondary" id="modal-button-close"
+                          (click)="closeModalSelectAddress()">CLOSE</button>
+                        <button type="button" class="btn btn-success text-white" id="modal-button-select"
+                          (click)="selectBillingAddress()" [disabled]="!isSelect">SELECT</button>
+                      </div>
+                    </ng-template> -->
+
+          </div>
+        </div>
+        <div class="card-footer bg-transparent">
+          <form [formGroup]="receiptInfoForm" class="pt-2">
+            <div class="form-group row">
+              <label for="taxId" class="col-12 col-sm-3 col-form-label" id="txtTaxID">Tax Id </label>
+              <div class="col-12 col-sm-9">
+                <input type="text" class="form-control" id="taxId" formControlName="taxId"
+                  [value]="receiptInfoForm.controls.taxId.value" readonly />
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="branch" class="col-12 col-sm-3 col-form-label" id="txtBranch">สาขาที่</label>
+              <div class="col-12 col-sm-9">
+                <input type="text" class="form-control" id="branch" formControlName="branch" readonly />
+              </div>
+            </div>
+            <div class="form-group row">
+              <label for="telNo" class="col-12 col-sm-3 col-form-label" id="txtTelNo">
+                เบอร์ติดต่ออื่น
+                <span class="text-red"> *</span>
+              </label>
+              <div class="col-12 col-sm-9">
+                <input type="tel" maxlength="10" class="form-control" id="telNo" formControlName="telNo"
+                  [ngClass]="{ 'is-invalid' : receiptInfoForm.controls.telNo.invalid && receiptInfoForm.controls.telNo.touched }"
+                  autocomplete="off">
+                <small class="form-text invalid-feedback"
+                  *ngIf="receiptInfoForm.controls.telNo.touched && receiptInfoForm.controls.telNo.errors">
+                  * กรุณากรอกเบอร์ติดต่อให้ถูกต้อง
+                </small>
+              </div>
+            </div>
+          </form>
+        </div>
+
+      </div>
+
+
+    </div>
+    <mc-footer>
+      <button class="btn btn-secondary" id="button-back" (click)="onBack()">BACK</button>
+      <button class="btn btn-success" id="button-next" (click)="onNext()">NEXT</button>
+    </mc-footer>
+  </div>

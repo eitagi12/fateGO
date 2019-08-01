@@ -6,6 +6,7 @@ import { DeviceOnlyAspSelectMobileCarePageComponent } from './containers/device-
 import { DeviceOnlyAspSummaryPageComponent } from './containers/device-only-asp-summary-page/device-only-asp-summary-page.component';
 import { DeviceOnlyAspQueuePageComponent } from './containers/device-only-asp-queue-page/device-only-asp-queue-page.component';
 import { DeviceOnlyAspResultQueuePageComponent } from './containers/device-only-asp-result-queue-page/device-only-asp-result-queue-page.component';
+import { DeviceOnlyAspReadCardComponent } from './containers/device-only-asp-read-card/device-only-asp-read-card.component';
 
 const routes: Routes = [
   {
@@ -31,6 +32,10 @@ const routes: Routes = [
   {
     path: 'result-queue',
     component: DeviceOnlyAspResultQueuePageComponent
+  },
+  {
+    path: 'read-card',
+    component: DeviceOnlyAspReadCardComponent
   }
 ];
 
