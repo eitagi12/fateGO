@@ -255,7 +255,7 @@ export class ReadCardComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.kioskApi) {
+    if (this.koiskApiFn) {
       this.koiskApiFn.close();
     }
   }
