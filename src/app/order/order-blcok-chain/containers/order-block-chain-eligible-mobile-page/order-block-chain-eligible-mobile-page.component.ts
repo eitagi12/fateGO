@@ -108,7 +108,7 @@ export class OrderBlockChainEligibleMobilePageComponent implements OnInit, OnDes
       persoSim: false,
       forceEnrollFlag: this.selectMobileNo.forceEnrollFlag };
     if (this.selectMobileNo.forceEnrollFlag === 'Y') {
-      this.alertService.question(`หมายเลข ${this.selectMobileNo.mobileNo} เคยสมัครแทนบัตรแล้ว กรุณายืนยันการสมัครใหม่อีกครั้ง`)
+      this.alertService.question(`หมายเลข ${this.selectMobileNo.mobileNo} เคยสมัครแทนบัตรแล้ว <br>กรุณายืนยันการสมัครใหม่อีกครั้ง`)
       .then((data) => {
         if (data.value) {
           this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_AGREEMENT_SIGN_PAGE]);
