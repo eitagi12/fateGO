@@ -22,3 +22,11 @@
     pointer-events: none;
     opacity: 0.4;
 }
+
+::placeholder {
+    color: gray;
+}
+
+.img-search {
+    width: 35px;
+}

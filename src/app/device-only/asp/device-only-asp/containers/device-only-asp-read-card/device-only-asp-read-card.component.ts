@@ -1,6 +1,6 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, TemplateRef, Output, EventEmitter } from '@angular/core';
 import { WIZARD_DEVICE_ONLY_AIS } from 'src/app/device-only/constants/wizard.constant';
-import { FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ReadCardService, PageLoadingService, AlertService, HomeService } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { TransactionAction, Transaction } from 'src/app/shared/models/transaction.model';
@@ -8,6 +8,9 @@ import { BillingAddressService } from 'src/app/device-only/services/billing-addr
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
+import { BsModalRef, BsModalService } from 'ngx-bootstrap';
+import { CustomerInformationService } from 'src/app/device-only/services/customer-information.service';
+import { debounceTime } from 'rxjs/operators';
 
 declare let $: any;
 @Component({
@@ -19,13 +22,18 @@ export class DeviceOnlyAspReadCardComponent implements OnInit {
   public wizards: string[] = WIZARD_DEVICE_ONLY_AIS;
   public searchByMobileNoForm: FormGroup;
   public receiptInfoForm: FormGroup;
-
   public messages: string;
   public canReadSmartCard: boolean = true;
-
-  nameText: string;
-  billingAddressText: string;
-  customer: any;
+  public nameTextBySmartCard: string;
+  private nameText: string;
+  private billingAddressText: string;
+  private customer: any;
+  public addressTextBySmartCard: string;
+  public listBillingAccount: Array<any>;
+  private priceOption: PriceOption;
+  private transaction: Transaction;
+  public selectBillingAddressForm: FormGroup;
+  public isSelect: boolean;
 
   @ViewChild('progressBarArea')
   progressBarArea: ElementRef;
@@ -33,11 +41,13 @@ export class DeviceOnlyAspReadCardComponent implements OnInit {
   progressBarReadSmartCard: ElementRef;
   @ViewChild('listBillingAccountBox')
   listBillingAccountBox: ElementRef;
-
-  private priceOption: PriceOption;
-  private transaction: Transaction;
+  @ViewChild('select_billing_address')
+  selectBillingAddressTemplate: TemplateRef<any>;
+  modalBillAddress: BsModalRef;
+  @Output() customerInfo: EventEmitter<Object> = new EventEmitter<Object>();
 
   constructor(
+    private bsModalService: BsModalService,
     private fb: FormBuilder,
     private readCardService: ReadCardService,
     private pageLoadingService: PageLoadingService,
@@ -46,6 +56,7 @@ export class DeviceOnlyAspReadCardComponent implements OnInit {
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
     private homeService: HomeService,
+    private customerInfoService: CustomerInformationService,
     private http: HttpClient
   ) {
     this.priceOption = this.priceOptionService.load();
@@ -58,6 +69,7 @@ export class DeviceOnlyAspReadCardComponent implements OnInit {
     .subscribe((resp) => this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName));
     this.createFormMobile();
     this.craeteFormCus();
+    this.createSelectBillingAddressForm();
   }
 
   private createFormMobile = () => {
@@ -71,6 +83,17 @@ export class DeviceOnlyAspReadCardComponent implements OnInit {
       taxId: '',
       branch: '',
       telNo: ''
+    });
+  }
+
+  public createSelectBillingAddressForm(): void {
+    this.selectBillingAddressForm = this.fb.group({
+      'billingAddress': '',
+    });
+    this.selectBillingAddressForm.valueChanges.pipe(debounceTime(350)).subscribe(event => {
+      if (this.selectBillingAddressForm.valid) {
+        this.isSelect = true;
+      }
     });
   }
 
@@ -148,7 +171,7 @@ export class DeviceOnlyAspReadCardComponent implements OnInit {
     this.receiptInfoForm.controls['branch'].setValue('');
   }
 
-  setCustomerInfo = (data) => {
+  setCustomerInfo = (data: any) => {
     this.customer = {
       idCardNo: data.customer.idCardNo,
       idCardType: data.customer.idCardType || 'บัตรประชาชน',
@@ -175,9 +198,37 @@ export class DeviceOnlyAspReadCardComponent implements OnInit {
     this.transaction.data.action = data.action;
   }
 
-  async readCard() {
+  async readCard(): Promise<any> {
     const data = await this.readCardFromWebSocket();
+    this.customer = await data;
+    this.nameTextBySmartCard = this.customer.titleName + ' ' + this.customer.firstName + ' ' + this.customer.lastName;
+    console.log(' this.customer : ',  this.customer);
+
     await this.zipcode(data);
+    this.addressTextBySmartCard = await this.customerInfoService.convertBillingAddressToString(this.customer);
+    await this.getBillingByIdCard();
+  }
+
+  private getBillingByIdCard(): void {
+    this.customerInfoService.getBillingByIdCard(this.customer.idCardNo)
+    .then((res: any) => {
+      console.log('response getBillingByIdCard : ', res);
+      if (res && res.data && res.data.billingAccountList) {
+        this.listBillingAccount = res.data.billingAccountList.filter((item: any) => {
+          // console.log('item : ', item);
+          if (item.mobileNo && item.mobileNo[0].length > 0) {
+            return item;
+          }
+        });
+        this.modalBillAddress = this.bsModalService.show(this.selectBillingAddressTemplate);
+      } else {
+        this.progressBarArea.nativeElement.style.display = 'none';
+      }
+      this.pageLoadingService.closeLoading();
+    })
+    .catch(() => {
+      this.listBillingAccountBox.nativeElement.style.display = 'none';
+    });
   }
 
   public zipcode(customer: any): any {
@@ -185,7 +236,6 @@ export class DeviceOnlyAspReadCardComponent implements OnInit {
     return this.http.get(`/api/customerportal/newRegister/queryZipcode?provinceId=${customer.province}&amphurName=${customer.amphur}&tumbolName=${customer.tumbol}`)
       .toPromise()
       .then((res: any) => {
-        console.log(res.data.zipCode);
         this.customer.zipCode = res.data.zipCode;
       })
       .catch((error) => {
@@ -255,6 +305,57 @@ export class DeviceOnlyAspReadCardComponent implements OnInit {
       this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาเสียบบัตรใหม่อีกครั้ง');
     });
     return promises;
+  }
+
+  public closeModalBillingMobileNo(): void {
+    this.modalBillAddress.hide();
+    this.canReadSmartCard = true;
+  }
+
+  public selectBillingMobileNo(): void {
+    const billingAddressSelected = this.selectBillingAddressForm.value.billingAddress;
+    const mobileNo = this.listBillingAccount[billingAddressSelected].mobileNo[0];
+    this.customerInfoService.getBillingByMobileNo(mobileNo)
+    .then((res: any) => {
+      console.log('res : ', res);
+      this.customerInfoService.setSelectedMobileNo(mobileNo);
+      this.customerInfo.emit({
+        customer: this.customerInfoService.mapAttributeFromGetBill(res.data.billingAddress),
+        action: TransactionAction.KEY_IN
+      });
+      this.modalBillAddress.hide();
+      this.canReadSmartCard = true;
+      this.pageLoadingService.closeLoading();
+    })
+    .catch((err) => {
+      this.alertService.error(err.error.resultDescription);
+    });
+    // if (billingAddressSelected === this.ADDRESS_BY_SMART_CARD) {
+    //   this.isSelect = true;
+    //   this.modalBillAddress.hide();
+    //   this.canReadSmartCard = true;
+    //   this.customerInfo.emit({
+    //     customer: this.infoBySmartCard,
+    //     action: TransactionAction.READ_CARD
+    //   });
+    // } else {
+    //   this.pageLoadingService.openLoading();
+    //   const mobileNo = this.listBillingAccount[billingAddressSelected].mobileNo[0];
+    //   this.customerInfoService.getBillingByMobileNo(mobileNo)
+    //     .then((res) => {
+    //       this.customerInfoService.setSelectedMobileNo(mobileNo);
+    //       this.customerInfo.emit({
+    //         customer: this.customerInfoService.mapAttributeFromGetBill(res.data.billingAddress),
+    //         action: TransactionAction.KEY_IN
+    //       });
+    //       this.modalBillAddress.hide();
+    //       this.canReadSmartCard = true;
+    //       this.pageLoadingService.closeLoading();
+    //   })
+    //   .catch((err) => {
+    //     this.alertService.error(err.error.resultDescription);
+    //   });
+    // }
   }
 
   onBack = () => {
