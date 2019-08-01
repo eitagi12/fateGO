@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_VALIDATE_CUSTOMER_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
-
+import { ROUTE_DEVICE_AIS_DEVICE_PAYMENT_PAGE } from 'src/app/device-order/ais/device-order-ais-device/constants/route-path.constant';
 export enum CustomerGroup {
   NEW_REGISTER = 'MC001',
   PRE_TO_POST = 'MC002',
@@ -37,7 +37,7 @@ export class FlowService {
       case CustomerGroup.EXISTING:
         return ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_VALIDATE_CUSTOMER_PAGE;
       case CustomerGroup.DEVICE_ONLY:
-        // return ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_PAGE;
+        return ROUTE_DEVICE_AIS_DEVICE_PAYMENT_PAGE;
       default:
         return '/';
     }

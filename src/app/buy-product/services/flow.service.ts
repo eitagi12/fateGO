@@ -14,7 +14,6 @@ import {
 import {
   ROUTE_DEVICE_ORDER_AIS_EXISTING_VALIDATE_CUSTOMER_ID_CARD_PAGE
 } from 'src/app/device-order/ais/device-order-ais-existing/constants/route-path.constant';
-import { ROUTE_DEVICE_AIS_DEVICE_PAYMENT_PAGE } from 'src/app/device-order/ais/device-order-ais-device/constants/route-path.constant';
 
 export enum CustomerGroup {
   NEW_REGISTER = 'MC001',
