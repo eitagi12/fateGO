@@ -33,5 +33,8 @@ export class OrderBlockChainResultPageComponent implements OnInit {
   onNext(): void {
     // this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_RESULT_PAGE]);
   }
+  onHome(): void {
+    this.homeService.goToHome();
+  }
 
 }
