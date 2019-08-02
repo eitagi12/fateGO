@@ -257,11 +257,12 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
               bestSellerItem.push(item);
             }
             packageCat.push(item);
-          }).sort((a: any, b: any) => (+a.customAttributes.best_seller_priority) - (b.customAttributes.best_seller_priority));
+          });
         });
       });
       return {
-        best: bestSellerItem,
+        best: bestSellerItem.sort((a: any, b: any) => (
+          +a.customAttributes.best_seller_priority) - (b.customAttributes.best_seller_priority)),
         pack: packageCat
       };
     }).then(({ best, pack }) => {
