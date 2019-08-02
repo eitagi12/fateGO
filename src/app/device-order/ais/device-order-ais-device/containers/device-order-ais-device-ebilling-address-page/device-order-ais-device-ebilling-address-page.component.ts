@@ -246,20 +246,15 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
   }
 
   onNext(): void {
-    this.transaction.data.billingInformation = this.transaction.data.billingInformation || {};
-    console.log('billingInformation', JSON.stringify(this.transaction.data.billingInformation));
-    const customer = this.transaction.data.billingInformation.billDeliveryAddress || this.transaction.data.customer;
-    console.log('customer', customer);
-    this.transactionService.update(this.transaction);
-    this.transaction.data.billingInformation.billDeliveryAddress = Object.assign(
+    const customer = this.transaction.data.customer;
+    this.transaction.data.customer = Object.assign(
       Object.assign({}, customer),
       this.customerAddressTemp
     );
-    this.transaction.data.billingInformation.billDeliveryAddress.titleName = this.validateCustomerKeyInForm.value.prefix;
-    this.transaction.data.billingInformation.billDeliveryAddress.firstName = this.validateCustomerKeyInForm.value.firstName;
-    this.transaction.data.billingInformation.billDeliveryAddress.lastName = this.validateCustomerKeyInForm.value.lastName;
-    // tslint:disable-next-line:max-line-length
-    this.transaction.data.billingInformation.billDeliveryAddress.idCardNo = this.validateCustomerKeyInForm.value.idCardNo || customer.idCardNo;
+    this.transaction.data.customer.titleName = this.validateCustomerKeyInForm.value.prefix;
+    this.transaction.data.customer.firstName = this.validateCustomerKeyInForm.value.firstName;
+    this.transaction.data.customer.lastName = this.validateCustomerKeyInForm.value.lastName;
+    this.transaction.data.customer.idCardNo = this.validateCustomerKeyInForm.value.idCardNo || customer.idCardNo;
     this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_PAYMENT_PAGE], { queryParams: { ebilling : true} });
   }
 
