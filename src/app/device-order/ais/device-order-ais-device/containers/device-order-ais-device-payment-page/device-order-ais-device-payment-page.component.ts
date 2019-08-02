@@ -586,6 +586,10 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
   }
 
   onNext(): void {
+    if (!this.receiptInfoForm.value.telNo || this.receiptInfoForm.controls.telNo.errors) {
+      this.alertService.warning('กรุณากรอกเบอร์ติดต่อ');
+      return;
+    }
     this.pageLoadingService.openLoading();
     this.transaction.data.payment = this.paymentDetailTemp.payment;
     this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;

@@ -109,7 +109,7 @@
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" [disabled]="!isNext()" (click)="onNext()">NEXT</button>
+    <button class="btn btn-success" [disabled]="!isNext() || !receiptInfo?.taxId" (click)="onNext()">NEXT</button>
   </mc-footer>
 </div>
 
