@@ -138,7 +138,6 @@
             <div class="form-group row">
               <label for="telNo" class="col-12 col-sm-3 col-form-label" id="txtTelNo">
                 เบอร์ติดต่ออื่น
-                <span class="text-red"> *</span>
               </label>
               <div class="col-12 col-sm-9">
                 <input type="tel" maxlength="10" class="form-control" id="telNo" formControlName="telNo"
@@ -156,6 +155,6 @@
     </div>
     <mc-footer>
       <button class="btn btn-secondary" id="button-back" (click)="onBack()">BACK</button>
-      <button class="btn btn-success" id="button-next" (click)="onNext()">NEXT</button>
+      <button class="btn btn-success" id="button-next" (click)="onNext()" [disabled]="!canNext">NEXT</button>
     </mc-footer>
   </div>

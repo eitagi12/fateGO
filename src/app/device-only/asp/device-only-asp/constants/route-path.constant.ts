@@ -3,6 +3,7 @@ export const ROUTE_DEVICE_ONLY_ASP_SELECT_MOBILE_CARE_PAGE = '/device-only/asp/m
 export const ROUTE_DEVICE_ONLY_ASP_SUMMARY_PAGE = '/device-only/asp/summary';
 export const ROUTE_DEVICE_ONLY_ASP_CHECKOUT_PAYMENT_PAGE = '/device-only/asp/checkout-payment';
 export const ROUTE_DEVICE_ONLY_ASP_QUEUE_PAGE = '/device-only/asp/queue';
+export const ROUTE_DEVICE_ONLY_ASP_READ_CARD_PAGE = '/device-only/asp/read-card';
 
 export const ROUTE_DEVICE_ONLY_ASP_QR_CODE_SUMMARY_PAGE = '/device-only/asp/qr-code-summary';
 export const ROUTE_DEVICE_ONLY_ASP_QR_CODE_GENERATE_PAGE = '/device-only/asp/qr-code-generate';

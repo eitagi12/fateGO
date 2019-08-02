@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild, ElementRef, TemplateRef, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, TemplateRef, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ONLY_AIS } from 'src/app/device-only/constants/wizard.constant';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ReadCardService, PageLoadingService, AlertService, HomeService } from 'mychannel-shared-libs';
+import { ReadCardService, PageLoadingService, AlertService, HomeService, ApiRequestService } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { TransactionAction, Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { BillingAddressService } from 'src/app/device-only/services/billing-address.service';
@@ -10,7 +10,11 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { CustomerInformationService } from 'src/app/device-only/services/customer-information.service';
+import { CreateOrderService } from 'src/app/device-only/services/create-order.service';
 import { debounceTime } from 'rxjs/operators';
+import { Router } from '@angular/router';
+import { ROUTE_DEVICE_ONLY_ASP_SELECT_MOBILE_CARE_PAGE } from '../../constants/route-path.constant';
+import { TransactionType } from 'src/app/shared/models/transaction.model';
 
 declare let $: any;
 @Component({
@@ -18,7 +22,7 @@ declare let $: any;
   templateUrl: './device-only-asp-read-card.component.html',
   styleUrls: ['./device-only-asp-read-card.component.scss']
 })
-export class DeviceOnlyAspReadCardComponent implements OnInit {
+export class DeviceOnlyAspReadCardComponent implements OnInit, OnDestroy {
   public wizards: string[] = WIZARD_DEVICE_ONLY_AIS;
   public searchByMobileNoForm: FormGroup;
   public receiptInfoForm: FormGroup;
@@ -36,6 +40,7 @@ export class DeviceOnlyAspReadCardComponent implements OnInit {
   public isSelect: boolean;
   public isShowReadCard: boolean = true;
   public isShowCustomerDetail: boolean = false;
+  public canNext: boolean = false;
 
   @ViewChild('progressBarArea')
   progressBarArea: ElementRef;
@@ -49,6 +54,7 @@ export class DeviceOnlyAspReadCardComponent implements OnInit {
   // @Output() customerInfo: EventEmitter<Object> = new EventEmitter<Object>();
 
   constructor(
+    private router: Router,
     private bsModalService: BsModalService,
     private fb: FormBuilder,
     private readCardService: ReadCardService,
@@ -59,6 +65,8 @@ export class DeviceOnlyAspReadCardComponent implements OnInit {
     private priceOptionService: PriceOptionService,
     private homeService: HomeService,
     private customerInfoService: CustomerInformationService,
+    private createOrderService: CreateOrderService,
+    private apiRequestService: ApiRequestService,
     private http: HttpClient
   ) {
     this.priceOption = this.priceOptionService.load();
@@ -66,14 +74,27 @@ export class DeviceOnlyAspReadCardComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.createTransaction();
     this.progressBarArea.nativeElement.style.display = 'none';
     this.billingAddress.getLocationName()
     .subscribe((resp) => this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName));
     this.createFormMobile();
     this.craeteFormCus();
     this.createSelectBillingAddressForm();
+    this.varidationNext(false);
   }
 
+  private createTransaction(): void {
+    if (!this.transaction.data) {
+      this.transaction = {
+        data: {
+          action: TransactionAction.KEY_IN,
+          transactionType: TransactionType.DEVICE_ONLY_ASP
+        },
+        transactionId: this.createOrderService.generateTransactionId(this.apiRequestService.getCurrentRequestId())
+      };
+    }
+  }
   private createFormMobile = () => {
     this.searchByMobileNoForm = this.fb.group({
       mobileNo: ''
@@ -92,7 +113,7 @@ export class DeviceOnlyAspReadCardComponent implements OnInit {
     this.selectBillingAddressForm = this.fb.group({
       'billingAddress': '',
     });
-    this.selectBillingAddressForm.valueChanges.pipe(debounceTime(350)).subscribe(event => {
+    this.selectBillingAddressForm.valueChanges.pipe(debounceTime(350)).subscribe(() => {
       if (this.selectBillingAddressForm.valid) {
         this.isSelect = true;
       }
@@ -111,10 +132,7 @@ export class DeviceOnlyAspReadCardComponent implements OnInit {
         showConfirmButton: true,
         text: 'กรุณาระบุเบอร์ให้ครบ 10 หลัก'
       });
-      this.nameText = '';
-      this.billingAddressText = '';
-      this.receiptInfoForm.controls['taxId'].setValue('');
-      this.receiptInfoForm.controls['branch'].setValue('');
+      this.clearData();
     }
   }
 
@@ -174,7 +192,7 @@ export class DeviceOnlyAspReadCardComponent implements OnInit {
   }
 
   setCustomerInfo = (data: any) => {
-    this.customer = {
+    const customer = {
       idCardNo: data.customer.idCardNo,
       idCardType: data.customer.idCardType || 'บัตรประชาชน',
       titleName: data.customer.titleName,
@@ -197,7 +215,13 @@ export class DeviceOnlyAspReadCardComponent implements OnInit {
       zipCode: data.customer.zipCode,
       mobileNo: data.mobileNo,
     };
+    this.transaction.data.customer = customer;
     this.transaction.data.action = data.action;
+    this.varidationNext(true);
+  }
+
+  varidationNext = (flag: boolean) => {
+    this.canNext = flag;
   }
 
   async readCard(): Promise<any> {
@@ -216,14 +240,8 @@ export class DeviceOnlyAspReadCardComponent implements OnInit {
   private getBillingByIdCard(): void {
     this.customerInfoService.getBillingByIdCard(this.customer.idCardNo)
     .then((res: any) => {
-      console.log('response getBillingByIdCard : ', res);
       if (res && res.data && res.data.billingAccountList) {
-        this.listBillingAccount = res.data.billingAccountList.filter((item: any) => {
-          // console.log('item : ', item);
-          if (item.mobileNo && item.mobileNo[0].length > 0) {
-            return item;
-          }
-        });
+        this.listBillingAccount = res.data.billingAccountList.filter(item => (item.mobileNo && item.mobileNo[0].length > 0) );
         this.modalBillAddress = this.bsModalService.show(this.selectBillingAddressTemplate);
       } else {
         this.progressBarArea.nativeElement.style.display = 'none';
@@ -293,7 +311,7 @@ export class DeviceOnlyAspReadCardComponent implements OnInit {
         }
         if (readCard.eventName === readCardEvent.EVENT_CARD_LOAD_COMPLETED) {
           this.canReadSmartCard = true;
-          const customer: String = readCard.profile;
+          const customer: string = readCard.profile;
           if (customer) {
             $('#button-read-smart-card').removeClass('disabledbutton');
             this.progressBarReadSmartCard.nativeElement.style.width = '100%';
@@ -321,16 +339,16 @@ export class DeviceOnlyAspReadCardComponent implements OnInit {
     const mobileNo = this.listBillingAccount[billingAddressSelected].mobileNo[0];
     this.customerInfoService.getBillingByMobileNo(mobileNo)
     .then((res: any) => {
-      console.log('res : ', res);
       this.customerInfoService.setSelectedMobileNo(mobileNo);
-      // this.customerInfo.emit({
-      //   customer: this.customerInfoService.mapAttributeFromGetBill(res.data.billingAddress),
-      //   action: TransactionAction.KEY_IN
-      // });
+      this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(res.data.billingAddress.idCardNo.substring(9))}`));
+      this.modalBillAddress.hide();
+      this.canReadSmartCard = true;
       this.isShowReadCard = false;
       this.isShowCustomerDetail = true;
-      this.canReadSmartCard = true;
-      this.modalBillAddress.hide();
+      this.setCustomerInfo({
+        customer: this.customer,
+        action: TransactionAction.READ_CARD
+      });
       this.pageLoadingService.closeLoading();
     })
     .catch((err) => {
@@ -347,7 +365,18 @@ export class DeviceOnlyAspReadCardComponent implements OnInit {
   }
 
   onNext(): void {
+    this.createOrderService.createAddToCartTrasaction(this.transaction, this.priceOption)
+    .then((transaction) => {
+      this.transaction = { ...transaction };
+      this.transaction.data.device = this.createOrderService.getDevice(this.priceOption);
+      this.router.navigate([ROUTE_DEVICE_ONLY_ASP_SELECT_MOBILE_CARE_PAGE]);
+    }).catch((error) => {
+      this.alertService.error(error);
+    });
+  }
 
+  ngOnDestroy(): void {
+    this.transactionService.save(this.transaction);
   }
 
 }
