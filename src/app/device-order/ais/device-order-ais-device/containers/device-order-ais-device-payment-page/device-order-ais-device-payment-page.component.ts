@@ -586,7 +586,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
   }
 
   onNext(): void {
-    if (!this.receiptInfoForm.value.telNo || this.receiptInfoForm.controls.telNo.errors) {
+    if (!this.receiptInfoForm.value.telNo) {
       this.alertService.warning('กรุณากรอกเบอร์ติดต่อ');
       return;
     }
@@ -598,7 +598,23 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     this.transaction.data.simCard = {
       mobileNo: this.mobileNo
     };
-    this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_SUMMARY_PAGE]);
+    this.addDeviceSellingCart(this.transaction);
+  }
+
+  addDeviceSellingCart(transaction: Transaction): void {
+    if (!this.transaction.data.order || !this.transaction.data.order.soId) {
+      this.http.post('/api/salesportal/add-device-selling-cart',
+        this.getRequestAddDeviceSellingCart()
+      ).toPromise()
+        .then((resp: any) => {
+          this.transaction.data.order = { soId: resp.data.soId };
+          return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+        }).then(() => {
+          this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_SUMMARY_PAGE]);
+        }).catch((error) => this.alertService.error(error));
+    } else {
+      this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_SUMMARY_PAGE]);
+    }
   }
 
   getRequestAddDeviceSellingCart(): any {
@@ -609,8 +625,8 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
       soCompany: productStock.company || 'AWN',
       locationSource: this.user.locationCode,
       locationReceipt: this.user.locationCode,
-      productType: productDetail.productType || 'DEVICE',
-      productSubType: productDetail.productSubType || 'HANDSET',
+      productType: productDetail.productType,
+      productSubType: productDetail.productSubtype,
       brand: productStock.brand,
       model: productDetail.model,
       color: productStock.color,
