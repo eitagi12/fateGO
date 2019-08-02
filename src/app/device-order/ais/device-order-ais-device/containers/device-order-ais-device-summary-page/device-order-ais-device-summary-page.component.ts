@@ -59,6 +59,7 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
     // tslint:disable-next-line:max-line-length
     const customer = this.transaction.data && this.transaction.data.billingInformation && this.transaction.data.billingInformation.billDeliveryAddress ?
       this.transaction.data.billingInformation.billDeliveryAddress : this.transaction.data.customer;
@@ -133,8 +134,6 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit {
     const ascCode = this.employeeDetailForm.controls['ascCode'].value || '';
     this.http.get(`/api/customerportal/checkSeller/${ascCode}`).toPromise().then((resp: any) => {
       const checkSeller: any = resp && resp.data ? resp.data : {};
-      console.log('condition', resp.data.condition);
-      console.log('data', checkSeller);
       if (checkSeller.condition) {
         this.transaction.data.seller = {
           sellerNo: this.sellerCode
