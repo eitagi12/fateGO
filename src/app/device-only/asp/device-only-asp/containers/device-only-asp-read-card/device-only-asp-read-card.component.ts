@@ -228,10 +228,6 @@ export class DeviceOnlyAspReadCardComponent implements OnInit, OnDestroy {
     const data = await this.readCardFromWebSocket();
     this.customer = await data;
     this.nameTextBySmartCard = this.customer.titleName + ' ' + this.customer.firstName + ' ' + this.customer.lastName;
-
-    console.log(' this.customer : ',  this.customer);
-    console.log(' this.customer imageReadSmartCard : ',  this.customer.imageReadSmartCard);
-
     await this.zipcode(data);
     this.addressTextBySmartCard = await this.customerInfoService.convertBillingAddressToString(this.customer);
     await this.getBillingByIdCard();

@@ -39,13 +39,15 @@
           </div>
           <div class="row">
             <div class="col-12">
-              <div class="m-auto bg-light-green device-only-read-card-btn" id="button-read-smart-card" *ngIf="isShowReadCard !== false">
+              <div class="m-auto bg-light-green device-only-read-card-btn" id="button-read-smart-card"
+                *ngIf="isShowReadCard !== false">
                 <div class="row m-auto" (click)="readCard()">
                   <img class="col-3" src="assets/images/icon/device_only_read_card_icon.png" />
                   <label class="col-9 m-auto"> Read Smart Card </label>
                 </div>
               </div>
-              <div class="m-auto  device-only-read-card-btn" style="text-align: center;" id="button-read-smart-card" *ngIf="isShowReadCard !== false">
+              <div class="m-auto  device-only-read-card-btn" style="text-align: center;" id="button-read-smart-card"
+                *ngIf="isShowReadCard !== false">
                 <span *ngIf="this.messages" class="col-12 m-auto text-center " [innerHTML]="messages"></span>
               </div>
               <div class="device-only-read-card-progress" #progressBarArea>
@@ -86,9 +88,7 @@
               </ng-template>
             </div>
           </div>
-        </div>
-        <div class="card-body bg-transparent" *ngIf="isShowCustomerDetail === true">
-          <div class="media">
+          <div class="media pl-5 pr-5" *ngIf="isShowCustomerDetail === true">
             <div class="media-body">
               <div>
                 {{ customer?.titleName }}
@@ -98,21 +98,20 @@
               <div>{{ 'เลขบัตรประชาชน' | translate }} {{ customer?.idCardNo | idCard }}</div>
               <div>
                 <div>
-                  <span *ngIf="customer?.homeNo" class="mr-1">{{ 'ที่อยู่' | translate }}
-                    {{ customer?.homeNo }}</span>
+                  <span *ngIf="customer?.homeNo" class="mr-1">{{ 'ที่อยู่ ' | translate }} {{ customer?.homeNo }}</span>
                   <span *ngIf="customer?.street" class="mr-1">{{ 'ถนน' | translate }} {{ customer?.street }}</span>
-                  <span *ngIf="customer?.moo" class="mr-1">{{ 'หมู่ที่' | translate }} {{ customer?.moo }}</span>
+                  <span *ngIf="customer?.moo" class="mr-1">{{ ' หมู่ที่ ' | translate }} {{ customer?.moo }}</span>
                 </div>
                 <div>
                   <span *ngIf="customer?.province === 'กรุงเทพมหานคร'" class="mr-1">
-                    {{ 'แขวง' | translate }}{{ customer?.tumbol }}
-                    {{ 'เขต' | translate }}{{ customer?.amphur }}
+                    {{ 'แขวง' | translate }} {{ customer?.tumbol }}
+                    {{ 'เขต' | translate }} {{ customer?.amphur }}
                   </span>
                   <span *ngIf="customer?.province !== 'กรุงเทพมหานคร'" class="mr-1">
-                    {{ 'ตำบล' | translate }}{{ customer?.tumbol }}
-                    {{ 'อำเภอ' | translate }}{{ customer?.amphur }}
+                    {{ 'ตำบล' | translate }} {{ customer?.tumbol }}
+                    {{ 'อำเภอ' | translate }} {{ customer?.amphur }}
                   </span>
-                  {{ customer?.province }}
+                  {{ 'จังหวัด' | translate }} {{ customer?.province }}
                 </div>
               </div>
               <div>{{ 'วันที่ออกบัตร' | translate }} {{ customer?.issueDate || '-' }}</div>
@@ -153,8 +152,9 @@
         </div>
       </div>
     </div>
-    <mc-footer>
-      <button class="btn btn-secondary" id="button-back" (click)="onBack()">BACK</button>
-      <button class="btn btn-success" id="button-next" (click)="onNext()" [disabled]="!canNext">NEXT</button>
-    </mc-footer>
   </div>
+  <mc-footer>
+    <button class="btn btn-secondary" id="button-back" (click)="onBack()">BACK</button>
+    <button class="btn btn-success" id="button-next" (click)="onNext()" [disabled]="!canNext">NEXT</button>
+  </mc-footer>
+</div>
