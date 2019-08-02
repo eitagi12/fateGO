@@ -22,6 +22,7 @@ import { PromotionShelveService } from 'src/app/device-order/services/promotion-
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { FlowService, CustomerGroup } from '../../services/flow.service';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
 
 @Component({
     selector: 'app-campaign',
@@ -81,11 +82,13 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         private priceOptionService: PriceOptionService,
         private pageLoadingService: PageLoadingService,
         private promotionShelveService: PromotionShelveService,
-        private alertService: AlertService
+        private alertService: AlertService,
+        private transactionService: TransactionService
     ) {
         this.priceOption = {};
         this.transaction = {};
         this.priceOptionService.remove();
+        this.transactionService.remove();
         this.user = this.tokenService.getUser();
     }
 
