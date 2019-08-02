@@ -37,54 +37,87 @@
               </form>
             </div>
           </div>
-        </div>
-        <div class="row">
-          <div class="col-12">
-            <div class="m-auto bg-light-green device-only-read-card-btn" id="button-read-smart-card">
-              <div class="row m-auto" (click)="readCard()">
-                <img class="col-3" src="assets/images/icon/device_only_read_card_icon.png" />
-                <label class="col-9 m-auto"> Read Smart Card </label>
-              </div>
-            </div>
-            <div class="m-auto  device-only-read-card-btn" style="text-align: center;" id="button-read-smart-card">
-              <span *ngIf="this.messages" class="col-12 m-auto text-center " [innerHTML]="messages"></span>
-            </div>
-            <div class="device-only-read-card-progress" #progressBarArea>
-              <div class="progress-bg">
-                <div class="progress-precent" id="progress-bar-read-smart-card" #progressBarReadSmartCard></div>
-                <div>
+          <div class="row">
+            <div class="col-12">
+              <div class="m-auto bg-light-green device-only-read-card-btn" id="button-read-smart-card" *ngIf="isShowReadCard !== false">
+                <div class="row m-auto" (click)="readCard()">
+                  <img class="col-3" src="assets/images/icon/device_only_read_card_icon.png" />
+                  <label class="col-9 m-auto"> Read Smart Card </label>
                 </div>
               </div>
-            </div>
-            <ng-template #select_billing_address>
-              <h5 class="modal-header bg-light-blue text-white">
-                {{ 'เลือกที่อยู่ในใบเสร็จรับเงิน' | translate }}
-              </h5>
-              <div class="card-header bg-transparent">
-                <label style="margin-top:10px;">ผู้ซื้อ
-                  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label id="modal-text-customer-name">{{ nameTextBySmartCard }}</label>
-                </label>
+              <div class="m-auto  device-only-read-card-btn" style="text-align: center;" id="button-read-smart-card" *ngIf="isShowReadCard !== false">
+                <span *ngIf="this.messages" class="col-12 m-auto text-center " [innerHTML]="messages"></span>
               </div>
-              <div class="card-body">
-                <form [formGroup]="selectBillingAddressForm">
-                  <h5>ที่อยู่ตามใบแจ้งค่าใช้บริการเบอร์ AIS ของท่าน</h5>
-                  <div *ngFor="let itemBA of listBillingAccount; let i = index" #istBillingAccountBox>
-                    <input class="form-check-input" type="radio" value="{{i}}" formControlName="billingAddress"
-                      id="modal-text-billing-address-{{i+1}}">
-                    <label class="form-check-label" class="col-9"
-                      for="modal-text-billing-address-{{i+1}}">{{ itemBA.mobileNo[0] }}</label>
-                    <label class="form-check-label" class="col-3"
-                      for="modal-text-billing-address-{{i+1}}">{{ itemBA.status }}</label>
+              <div class="device-only-read-card-progress" #progressBarArea>
+                <div class="progress-bg">
+                  <div class="progress-precent" id="progress-bar-read-smart-card" #progressBarReadSmartCard></div>
+                  <div>
                   </div>
-                </form>
+                </div>
               </div>
-              <div class="modal-body d-flex justify-content-center">
-                <button type="button" class="btn btn-secondary" id="modal-button-close"
-                  (click)="closeModalBillingMobileNo()">CLOSE</button>
-                <button type="button" class="btn btn-success text-white" id="modal-button-select"
-                  (click)="selectBillingMobileNo()" [disabled]="!isSelect">SELECT</button>
+              <ng-template #select_billing_address>
+                <h5 class="modal-header bg-light-blue text-white">
+                  {{ 'เลือกที่อยู่ในใบเสร็จรับเงิน' | translate }}
+                </h5>
+                <div class="card-header bg-transparent">
+                  <label style="margin-top:10px;">ผู้ซื้อ
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label id="modal-text-customer-name">{{ nameTextBySmartCard }}</label>
+                  </label>
+                </div>
+                <div class="card-body">
+                  <form [formGroup]="selectBillingAddressForm">
+                    <h5>ที่อยู่ตามใบแจ้งค่าใช้บริการเบอร์ AIS ของท่าน</h5>
+                    <div *ngFor="let itemBA of listBillingAccount; let i = index" #istBillingAccountBox>
+                      <input class="form-check-input" type="radio" value="{{i}}" formControlName="billingAddress"
+                        id="modal-text-billing-address-{{i+1}}">
+                      <label class="form-check-label" class="col-9"
+                        for="modal-text-billing-address-{{i+1}}">{{ itemBA.mobileNo[0] }}</label>
+                      <label class="form-check-label" class="col-3"
+                        for="modal-text-billing-address-{{i+1}}">{{ itemBA.status }}</label>
+                    </div>
+                  </form>
+                </div>
+                <div class="modal-body d-flex justify-content-center">
+                  <button type="button" class="btn btn-secondary" id="modal-button-close"
+                    (click)="closeModalBillingMobileNo()">CLOSE</button>
+                  <button type="button" class="btn btn-success text-white" id="modal-button-select"
+                    (click)="selectBillingMobileNo()" [disabled]="!isSelect">SELECT</button>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+        <div class="card-body bg-transparent" *ngIf="isShowCustomerDetail === true">
+          <div class="media">
+            <div class="media-body">
+              <div>
+                {{ customer?.titleName }}
+                {{ customer?.firstName }}
+                {{ customer?.lastName }}
               </div>
-            </ng-template>
+              <div>{{ 'เลขบัตรประชาชน' | translate }} {{ customer?.idCardNo | idCard }}</div>
+              <div>
+                <div>
+                  <span *ngIf="customer?.homeNo" class="mr-1">{{ 'ที่อยู่' | translate }}
+                    {{ customer?.homeNo }}</span>
+                  <span *ngIf="customer?.street" class="mr-1">{{ 'ถนน' | translate }} {{ customer?.street }}</span>
+                  <span *ngIf="customer?.moo" class="mr-1">{{ 'หมู่ที่' | translate }} {{ customer?.moo }}</span>
+                </div>
+                <div>
+                  <span *ngIf="customer?.province === 'กรุงเทพมหานคร'" class="mr-1">
+                    {{ 'แขวง' | translate }}{{ customer?.tumbol }}
+                    {{ 'เขต' | translate }}{{ customer?.amphur }}
+                  </span>
+                  <span *ngIf="customer?.province !== 'กรุงเทพมหานคร'" class="mr-1">
+                    {{ 'ตำบล' | translate }}{{ customer?.tumbol }}
+                    {{ 'อำเภอ' | translate }}{{ customer?.amphur }}
+                  </span>
+                  {{ customer?.province }}
+                </div>
+              </div>
+              <div>{{ 'วันที่ออกบัตร' | translate }} {{ customer?.issueDate || '-' }}</div>
+            </div>
+            <img class="img-customer img-fluid" [src]="'data:image/jpeg;base64,' + customer?.imageReadSmartCard">
           </div>
         </div>
         <div class="card-footer bg-transparent">
@@ -126,4 +159,3 @@
       <button class="btn btn-success" id="button-next" (click)="onNext()">NEXT</button>
     </mc-footer>
   </div>
-  
