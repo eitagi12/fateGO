@@ -48,7 +48,7 @@ export class OrderBlockChainEligibleMobilePageComponent implements OnInit, OnDes
   }
 
   callServices(idCardNo: string): void {
-    this.http.get(`/api/customerportal/newRegister/${idCardNo}/queryPrepaidMobileList`).toPromise()
+    this.http.get(`/api/customerportal/newRegister/${idCardNo}/queryPrepaidMobileList/blockchain`).toPromise()
       .then((resp: any) =>  this.mappingMobileList(resp))
       .catch(() => [])
       .then(mobileList =>  this.callGetMobileIdService(mobileList, idCardNo));
