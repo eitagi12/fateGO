@@ -55,7 +55,7 @@ export class AppComponent {
     this.homeService.callback = () => {
       if (this.tokenService.getUser().channelType !== ChannelType.SMART_ORDER) {
         window.location.href = '/';
-        return ;
+        return;
       }
       if (environment.name === 'LOCAL') {
         window.location.href = '/main-menu';
@@ -69,7 +69,9 @@ export class AppComponent {
     let devAccessToken = '';
     if (this.isDeveloperMode()) {
       // tslint:disable-next-line:max-line-length
-      devAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im51dHRoaWE4IiwidGltZXN0YW1wIjoiMjAxODA3MTMxNDUyIiwibG9jYXRpb25Db2RlIjoiMTIxMyIsImlhdCI6MTUzMTQ2ODE5MCwiZXhwIjoyNTM0MDYwMTkwfQ.zwn6bs_q-JvPh5KhyuUIP5pPRaD_5oCe18TuP5QQykQ';
+      devAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im51dHRoaWE4IiwidGltZXN0YW1wIjoiMjAxODA3MTMxNDUyIiwibG9jYXRpb25Db2RlIjoiMTEwMCIsImlhdCI6MTUzMTQ2ODE5MCwiZXhwIjoyNTM0MDYwMTkwfQ.US6TdUbcBXpLiD1djFYKbsfiNRkSdP7ckuvSXO-M9Pg';
+      // tslint:disable-next-line:max-line-length
+      // devAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im51dHRoaWE4IiwidGltZXN0YW1wIjoiMjAxODA3MTMxNDUyIiwibG9jYXRpb25Db2RlIjoiMTIxMyIsImlhdCI6MTUzMTQ2ODE5MCwiZXhwIjoyNTM0MDYwMTkwfQ.zwn6bs_q-JvPh5KhyuUIP5pPRaD_5oCe18TuP5QQykQ';
     }
     this.tokenService.checkTokenExpired(devAccessToken);
   }

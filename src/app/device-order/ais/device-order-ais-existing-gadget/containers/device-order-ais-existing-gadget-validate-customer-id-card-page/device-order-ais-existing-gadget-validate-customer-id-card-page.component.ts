@@ -96,17 +96,22 @@ export class DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent imp
               idCardType: this.profile.idCardType,
               transactionType: TransactionType.DEVICE_ORDER_EXISTING_GADGET_AIS
             }
-          }).toPromise().then((customer: Customer) => {
-            console.log('customer', customer);
-            return {
-              caNumber: customer.caNumber,
-              mainMobile: customer.mainMobile,
-              billCycle: customer.billCycle,
-              zipCode: zipCode
-            };
-          }).catch(() => {
-            return { zipCode: zipCode };
-          });
+          }).toPromise()
+            .then((resp: any) => {
+              const data = resp.data || {};
+              return Promise.resolve(data);
+            })
+            .then((customer: Customer) => {
+              console.log('customera', customer);
+              return {
+                caNumber: customer.caNumber,
+                mainMobile: customer.mainMobile,
+                billCycle: customer.billCycle,
+                zipCode: zipCode
+              };
+            }).catch(() => {
+              return { zipCode: zipCode };
+            });
         }).then((customer: any) => {
           if (customer.caNumber) {
             this.transaction.data.customer = { ...this.profile, ...customer };
