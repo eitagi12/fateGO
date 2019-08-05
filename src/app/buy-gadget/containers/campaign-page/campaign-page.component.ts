@@ -473,6 +473,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
       location: this.user.locationCode
     }).then((resp: any) => {
       const priceOptions = this.filterCampaigns(resp.data.priceOptions || []);
+      /*mock data test dont remove*/
       // const priceOptions = this.filterCampaigns(this.dataMock());
       if (priceOptions && priceOptions.length > 0) {
         this.maximumNormalPrice = priceOptions[0].maximumNormalPrice;
