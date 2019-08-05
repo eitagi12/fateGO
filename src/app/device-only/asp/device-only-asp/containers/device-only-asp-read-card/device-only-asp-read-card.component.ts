@@ -353,7 +353,21 @@ export class DeviceOnlyAspReadCardComponent implements OnInit, OnDestroy {
   }
 
   onBack = () => {
-
+    if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      this.homeService.goToHome();
+      return;
+    }
+    this.transactionService.remove();
+    const product = this.priceOption.queryParams;
+    const brand: string = encodeURIComponent(product.brand ? product.brand : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
+    const model: string = encodeURIComponent(product.model ? product.model : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
+    // replace '%28 %29' for() case url refresh error
+    const url: string = `/sales-portal/buy-product/brand/${brand}/${model}`;
+    const queryParams: string =
+      `?modelColor=${product.color}
+      &productType=${product.productType}
+      &productSubtype=${product.productSubtype}`;
+    window.location.href = url + queryParams;
   }
 
   onHome = () => {
