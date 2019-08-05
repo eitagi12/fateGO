@@ -109,7 +109,7 @@ export class DeviceOrderAisExistingGadgetPaymentDetailPageComponent implements O
       isFullPayment: this.isFullPayment(),
       installmentFlag: advancePay.installmentFlag === 'N' && +(advancePay.amount || 0) > 0,
       advancePay: +(advancePay.amount || 0),
-      // qrCode: !!(productStock.company && productStock.company !== 'WDS')
+      qrCode: !!(productStock.company && productStock.company !== 'WDS')
     };
   }
 
