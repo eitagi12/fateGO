@@ -15,6 +15,7 @@ import { BsModalService, BsModalRef, isArray } from 'ngx-bootstrap';
 import { BillingAccount } from '../../../device-order-ais-mnp/containers/device-order-ais-mnp-effective-start-date-page/device-order-ais-mnp-effective-start-date-page.component';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from 'src/app/buy-product/constants/route-path.constant';
+import { ROUTE_BUY_GADGET_CAMPAIGN_PAGE } from 'src/app/buy-gadget/constants/route-path.constant';
 @Component({
   selector: 'app-device-order-ais-device-payment-page',
   templateUrl: './device-order-ais-device-payment-page.component.html',
@@ -616,7 +617,20 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE]);
+    if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+        .then((response: any) => {
+          if (response.value === true) {
+            this.returnStock().then(() => {
+              this.transactionService.remove();
+              this.router.navigate([ROUTE_BUY_GADGET_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
+            });
+          }
+        });
+    } else {
+      this.transactionService.remove();
+      this.router.navigate([ROUTE_BUY_GADGET_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
+    }
   }
 
   onHome(): void {
