@@ -197,7 +197,6 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   private clearData(): void {
     this.searchByMobileNoForm.controls['mobileNo'].setValue('');
     this.receiptInfoForm.controls['taxId'].setValue('');
-    this.receiptInfoForm.controls['branch'].setValue('');
   }
 
   setCustomerInfo = (data: any) => {

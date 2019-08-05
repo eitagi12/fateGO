@@ -25,6 +25,7 @@ export class SummarySellerCodeComponent implements OnInit {
     if (!this.seller) {
       this.seller = {};
     }
+    console.log('logs receiptInfo.branh : ', this.transaction.data);
   }
 
   setSeller(seller: Seller): void {

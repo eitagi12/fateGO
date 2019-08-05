@@ -52,6 +52,7 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.homeButtonService.initEventButtonHome();
     this.transaction.data.tradeType = this.priceOption.trade.tradeNo === 0 ? 'EUP' : 'Hand Set';
+    console.log('logs-page receiptInfo.branh : ', this.transaction.data);
   }
 
   private checkSeller(seller: Seller): void {
@@ -59,6 +60,7 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
       this.alertService.warning('กรุณากรอกข้อมูลให้ถูกต้อง');
       return;
     }
+    this.pageLoadingService.openLoading();
     this.sellerService.checkSeller(seller.sellerNo).then((shopCheckSeller: ShopCheckSeller) => {
       if (shopCheckSeller.condition) {
         if (!this.transaction.data.seller) {
@@ -77,10 +79,6 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
       .catch(() => {
         this.alertService.warning('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
       });
-  }
-
-  private checkRoutePaymentType(): void {
-    this.router.navigate([ROUTE_DEVICE_ONLY_ASP_CHECKOUT_PAYMENT_PAGE]);
   }
 
   public conditionNext(canNext: boolean): void {
