@@ -141,8 +141,7 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyPageComponent implement
         this.pageLoadingService.closeLoading();
         this.alertService.error('ไม่สามารถทำรายการได้ ข้อมูลการแสดงตนไม่ถูกต้อง');
       }
-    }).then(() => this.pageLoadingService.closeLoading())
-      .catch(() => this.ErrorMessage());
+    }).catch(() => this.ErrorMessage());
   }
 
   conditionIdentityValid(): Promise<string> {

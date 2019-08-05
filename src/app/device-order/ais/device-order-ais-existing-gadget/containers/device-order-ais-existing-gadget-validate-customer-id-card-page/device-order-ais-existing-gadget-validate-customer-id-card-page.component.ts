@@ -150,8 +150,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent imp
               });
             });
         });
-    }).then(() => this.pageLoadingService.closeLoading())
-      .catch((e) => this.ErrorMessage());
+    }).catch((e) => this.ErrorMessage());
 
   }
 
