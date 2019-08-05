@@ -89,20 +89,12 @@ export class OrderBlockChainFaceComparePageComponent implements OnInit, OnDestro
         this.transaction.data.customer.isBlockChain = true;
         this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_RESULT_PAGE]);
       }).catch((err) => {
-        if (err.developerMessage === '412') {
-          // this.route.queryParams.subscribe(params => {
-          //   if (!params.facepare) {
-          //     this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_FACE_CONFIRM_PAGE], { queryParams: { facepare: true } });
-          //   } else {
-          //     this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_FACE_CONFIRM_PAGE]);
-
-          //   }
-          //   this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_FACE_CONFIRM_PAGE]);
-          // });
+        if (err.error.developerMessage.indexOf('41200') !== -1) {
           this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_FACE_CONFIRM_PAGE]);
+        } else {
+          this.transaction.data.customer.isBlockChain = false;
+          this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_RESULT_PAGE]);
         }
-        this.transaction.data.customer.isBlockChain = false;
-        this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_RESULT_PAGE]);
 
       }).then(() => {
         this.pageLoadingService.closeLoading();

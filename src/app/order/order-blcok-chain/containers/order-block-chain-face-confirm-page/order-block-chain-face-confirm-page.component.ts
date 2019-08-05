@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_ORDER_BLOCK_CHAIN } from 'src/app/order/constants/wizard.constant';
 import { Router } from '@angular/router';
 import { HomeService, AlertService, PageLoadingService, TokenService } from 'mychannel-shared-libs';
@@ -14,7 +14,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
   templateUrl: './order-block-chain-face-confirm-page.component.html',
   styleUrls: ['./order-block-chain-face-confirm-page.component.scss']
 })
-export class OrderBlockChainFaceConfirmPageComponent implements OnInit {
+export class OrderBlockChainFaceConfirmPageComponent implements OnInit, OnDestroy {
 
   wizards: string[] = WIZARD_ORDER_BLOCK_CHAIN;
 
@@ -108,6 +108,7 @@ export class OrderBlockChainFaceConfirmPageComponent implements OnInit {
     };
     this.http.post(`/api/customerportal/newRegister/post-mobile-id`, param).toPromise()
       .then((data: any) => {
+        console.log('data', data);
         this.transaction.data.customer.isBlockChain = true;
         this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_RESULT_PAGE]);
       }).catch((err) => {
@@ -120,5 +121,8 @@ export class OrderBlockChainFaceConfirmPageComponent implements OnInit {
 
   onHome(): void {
     this.homeService.goToHome();
+  }
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
   }
 }
