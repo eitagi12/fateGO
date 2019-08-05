@@ -63,7 +63,7 @@
                 </h5>
                 <div class="card-header bg-transparent">
                   <label style="margin-top:10px;">ผู้ซื้อ
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label id="modal-text-customer-name">{{ nameTextBySmartCard }}</label>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label id="modal-text-customer-name">{{ nameTextBySmartCard || nameTextBySearchMobileNo }}</label>
                   </label>
                 </div>
                 <div class="card-body">
@@ -111,12 +111,14 @@
                     {{ 'ตำบล' | translate }} {{ customer?.tumbol }}
                     {{ 'อำเภอ' | translate }} {{ customer?.amphur }}
                   </span>
-                  {{ 'จังหวัด' | translate }} {{ customer?.province }}
+                  {{ 'จังหวัด' | translate }} {{ customer?.province || customer?.provinceName }}
                 </div>
               </div>
-              <div>{{ 'วันที่ออกบัตร' | translate }} {{ customer?.issueDate || '-' }}</div>
+              <div *ngIf="customer?.issueDate !== undefined">
+                {{ 'วันที่ออกบัตร' | translate }} {{ customer?.issueDate || '-' }}
+              </div>
             </div>
-            <img class="img-customer img-fluid" [src]="'data:image/jpeg;base64,' + customer?.imageReadSmartCard">
+            <img class="img-customer img-fluid" [src]="'data:image/jpeg;base64,' + customer?.imageReadSmartCard" *ngIf="customer?.imageReadSmartCard !== undefined">
           </div>
         </div>
         <div class="card-footer bg-transparent">

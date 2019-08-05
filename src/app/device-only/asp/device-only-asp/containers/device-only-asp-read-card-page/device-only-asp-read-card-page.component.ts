@@ -29,6 +29,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   public messages: string;
   public canReadSmartCard: boolean = true;
   public nameTextBySmartCard: string;
+  public nameTextBySearchMobileNo: string;
   private customer: Customer;
   public addressTextBySmartCard: string;
   public listBillingAccount: Array<any>;
@@ -155,10 +156,14 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
             this.http.get(`/api/customerportal/billing/${mobileNo}`).toPromise()
               .then((res: any) => {
                 if (res && res.data && res.data.billingAddress) {
+                  this.customer = res.data.billingAddress;
                   this.setCustomerInfo({
                     customer: res.data.billingAddress,
                     action: TransactionAction.KEY_IN
                   });
+                  this.isShowReadCard = false;
+                  this.isShowCustomerDetail = true;
+                  this.nameTextBySearchMobileNo = this.customer.titleName + ' ' + this.customer.firstName + ' ' + this.customer.lastName;
                   this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(res.data.billingAddress.idCardNo.substring(9))}`));
                   this.pageLoadingService.closeLoading();
                 } else {
