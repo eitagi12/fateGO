@@ -74,11 +74,9 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
       prefix: customer.titleName,
     };
   }
+
   callService(): void {
-    const billingInformation = this.transaction.data &&
-      this.transaction.data.billingInformation ? this.transaction.data.billingInformation : {};
-    const customerProfile: any = this.transaction.data && this.transaction.data.customer ? this.transaction.data.customer : {};
-    const customer = billingInformation.billDeliveryAddress || customerProfile;
+    const customer: any = this.transaction.data && this.transaction.data.customer ? this.transaction.data.customer : {};
     this.http.get('/api/customerportal/newRegister/getAllZipcodes').subscribe((resp: any) => {
       this.allZipCodes = resp.data.zipcodes || [];
     });
@@ -108,18 +106,13 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
     this.customerService.queryTitleName().then((resp: any) => {
       this.prefixes = (resp.data.titleNames || []).map((prefix: any) => prefix);
     });
-    console.log('address', this.customerAddress);
   }
 
   createForm(): void {
-    // tslint:disable-next-line:max-line-length
-    const billingInformation: any = this.transaction.data && this.transaction.data.billingInformation ? this.transaction.data.billingInformation : {};
-    const customerProfile: any = this.transaction.data && this.transaction.data.customer ? this.transaction.data.customer : {};
-    const customer: any = billingInformation.billDeliveryAddress || customerProfile;
-    console.log('cus add', customer);
+    const customer: any = this.transaction.data && this.transaction.data.customer ? this.transaction.data.customer : {};
     const customValidate = this.defaultValidate;
     this.validateCustomerKeyInForm = this.fb.group({
-      idCardNo: [{ value: '', disabled: this.checkIdCardNo() }, customValidate.bind(this)],
+      idCardNo: [{ value: '', disabled: this.checkIdCardNo() }, [Validators.pattern(/^[1-8]\d{12}$/), customValidate.bind(this)]],
       prefix: ['', [Validators.required]],
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
@@ -130,21 +123,20 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
       firstName: customer.firstName || '',
       lastName: customer.lastName || '',
     });
-    console.log(' this.validateCustomerKeyInForm', this.validateCustomerKeyInForm.value);
   }
+
   checkIdCardNo(): boolean {
     if (this.transaction.data && this.transaction.data.customer &&  this.transaction.data.customer.idCardNo) {
-      console.log('true');
       return true;
     } else {
       return false;
     }
   }
+
   defaultValidate(): ValidationErrors | null {
     const customer = this.transaction.data
       && this.transaction.data.customer
       && this.transaction.data.customer.idCardNo ? this.transaction.data.customer.idCardNo : {};
-    console.log('defaultValidate', !customer);
     if (!customer) {
       return {
         message: 'กรุณากรอกรูปแบบให้ถูกต้อง'
@@ -165,12 +157,8 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
   onProvinceSelected(params: any): void {
     const province = this.getProvinceByName(params.provinceName);
     const req = {
-      provinceId: province.id,
-      // zipcode: params.zipCode
+      provinceId: province.id
     };
-    // if (!params.zipCode) {
-    //   delete req.zipcode;
-    // }
 
     this.http.get('/api/customerportal/newRegister/queryAmphur', {
       params: req
@@ -185,12 +173,8 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
     const province = this.getProvinceByName(params.provinceName);
     const req = {
       provinceId: province.id,
-      amphurName: params.amphurName,
-      // zipcode: params.zipCode
+      amphurName: params.amphurName
     };
-    // if (!params.zipCode) {
-    //   delete req.zipcode;
-    // }
 
     this.http.get('/api/customerportal/newRegister/queryTumbol', {
       params: req

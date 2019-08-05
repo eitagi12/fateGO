@@ -104,10 +104,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     this.createSelectBillAddForm();
     const productDetail = this.priceOption.productDetail || {};
     const productStock = this.priceOption.productStock || {};
-    const billingInformation: any = this.transaction.data
-      && this.transaction.data.billingInformation ? this.transaction.data.billingInformation : {};
-    const customerProfile: any = this.transaction.data && this.transaction.data.customer ? this.transaction.data.customer : {};
-    const customer: any = billingInformation.billDeliveryAddress || customerProfile;
+    const customer: any = this.transaction.data && this.transaction.data.customer ? this.transaction.data.customer : {};
     const trade: any = this.priceOption.trade || {};
     const advancePay: any = trade.advancePay || {};
     let commercialName = productDetail.name;
@@ -145,10 +142,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
   }
 
   createForm(): void {
-    const billingInformation: any = this.transaction.data &&
-      this.transaction.data.billingInformation ? this.transaction.data.billingInformation : {};
-    const customerProfile: any = this.transaction.data && this.transaction.data.customer ? this.transaction.data.customer : {};
-    const customer: any = billingInformation.billDeliveryAddress || customerProfile;
+    const customer: any = this.transaction.data && this.transaction.data.customer ? this.transaction.data.customer : {};
     const telNo = this.transaction.data && this.transaction.data.receiptInfo &&
       this.transaction.data.receiptInfo.telNo ? this.transaction.data.receiptInfo.telNo : '';
 
@@ -162,7 +156,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     this.receiptInfoForm.patchValue({
       taxId: customer.idCardNo || '',
       telNo: telNo || '',
-      buyer: customer.titleName + ' ' + customer.firstName + ' ' + customer.lastName || '',
+      buyer: `${customer.titleName} ${customer.firstName} ${customer.lastName}` || '',
       buyerAddress: this.utils.getCurrentAddress({
         homeNo: customer.homeNo,
         moo: customer.moo,
@@ -226,30 +220,26 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
   }
 
   createReceiptInfo(customer: Customer): void {
-    const billingInformation = this.transaction.data &&
-      this.transaction.data.billingInformation ? this.transaction.data.billingInformation : {};
-    const customerProfile: any = this.transaction.data && this.transaction.data.customer ? this.transaction.data.customer : {};
-    const customerAddress: any = billingInformation.billDeliveryAddress || customerProfile;
     const receiptInfo: any = this.transaction.data && this.transaction.data.receiptInfo ? this.transaction.data.receiptInfo : {};
     this.receiptInfo = {
-      taxId: customerAddress.idCardNo,
+      taxId: customer.idCardNo,
       branch: '',
-      buyer: customerAddress.titleName
-        ? customerAddress.titleName + ' ' + customerAddress.firstName + ' ' + customerAddress.lastName || ''
+      buyer: customer.titleName
+        ? `${customer.titleName} ${customer.firstName} ${customer.lastName}` || ''
         : '-',
       buyerAddress: this.utils.getCurrentAddress({
-        homeNo: customerAddress.homeNo,
-        moo: customerAddress.moo,
-        mooBan: customerAddress.mooBan,
-        room: customerAddress.room,
-        floor: customerAddress.floor,
-        buildingName: customerAddress.buildingName,
-        soi: customerAddress.soi,
-        street: customerAddress.street,
-        tumbol: customerAddress.tumbol,
-        amphur: customerAddress.amphur,
-        province: customerAddress.province,
-        zipCode: customerAddress.zipCode,
+        homeNo: customer.homeNo,
+        moo: customer.moo,
+        mooBan: customer.mooBan,
+        room: customer.room,
+        floor: customer.floor,
+        buildingName: customer.buildingName,
+        soi: customer.soi,
+        street: customer.street,
+        tumbol: customer.tumbol,
+        amphur: customer.amphur,
+        province: customer.province,
+        zipCode: customer.zipCode,
       }),
       telNo: receiptInfo.telNo || ''
     };
@@ -320,7 +310,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
                 birthdate: '',
                 gender: ''
               };
-              this.receiptInfo.buyer = billing.titleName + ' ' + billing.firstName + ' ' + billing.lastName;
+              this.receiptInfo.buyer = `${billing.titleName} ${billing.firstName} ${billing.lastName}`;
               this.receiptInfo.taxId = billing.idCardNo;
               this.receiptInfo.buyerAddress = this.utils.getCurrentAddress({
                 homeNo: billing.houseNumber || '',
@@ -337,10 +327,6 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
                 zipCode: billing.portalCode || '',
               });
               this.receiptInfoForm.controls['taxId'].setValue(this.receiptInfo.taxId);
-              if (this.transaction.data && this.transaction.data.billingInformation
-                && this.transaction.data.billingInformation.billDeliveryAddress) {
-                delete this.transaction.data.billingInformation.billDeliveryAddress;
-              }
               this.transaction.data.receiptInfo = this.receiptInfo;
               this.transaction.data.action = TransactionAction.SEARCH;
             }).catch((err) => {
@@ -395,7 +381,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
               gender: '',
             };
             this.receiptInfo.taxId = mobileFbb.baNo;
-            this.receiptInfo.buyer = customerprofile.accntTitle + ' ' + customerprofile.name;
+            this.receiptInfo.buyer = `${customerprofile.accntTitle} ${customerprofile.name}`;
             this.receiptInfo.buyerAddress = this.utils.getCurrentAddress({
               homeNo: billing.houseNumber || '',
               moo: billing.moo || '',
@@ -410,10 +396,6 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
               province: billing.provinceName || '',
               zipCode: billing.portalCode || '',
             });
-            if (this.transaction.data && this.transaction.data.billingInformation
-              && this.transaction.data.billingInformation.billDeliveryAddress) {
-              delete this.transaction.data.billingInformation.billDeliveryAddress;
-            }
             this.transaction.data.action = TransactionAction.SEARCH;
           }).catch((error) => {
             this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE]);
@@ -528,10 +510,6 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
             province: billing.provinceName || '',
             zipCode: billing.portalCode || '',
           });
-          if (this.transaction.data && this.transaction.data.billingInformation
-            && this.transaction.data.billingInformation.billDeliveryAddress) {
-            delete this.transaction.data.billingInformation.billDeliveryAddress;
-          }
           this.mobileNo = mobileNo;
           this.transaction.data.action = TransactionAction.READ_CARD;
 
@@ -547,10 +525,6 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
         this.receiptInfo.taxId = this.customerProfile.idCardNo;
         this.receiptInfo.buyer = `${this.customerProfile.titleName} ${this.customerProfile.firstName} ${this.customerProfile.lastName}`;
         this.receiptInfo.buyerAddress = this.selectBillingAddrVal || '';
-        if (this.transaction.data && this.transaction.data.billingInformation
-          && this.transaction.data.billingInformation.billDeliveryAddress) {
-          delete this.transaction.data.billingInformation.billDeliveryAddress;
-        }
         this.modalRef.hide();
       }
     }
