@@ -2,22 +2,21 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
+import { DeviceOnlyAspReadCardPageComponent } from './device-only-asp-read-card-page.component';
 
-import { DeviceOnlyAspReadCardComponent } from './device-only-asp-read-card.component';
-
-describe('DeviceOnlyAspReadCardComponent', () => {
-  let component: DeviceOnlyAspReadCardComponent;
-  let fixture: ComponentFixture<DeviceOnlyAspReadCardComponent>;
+describe('DeviceOnlyAspReadCardPageComponent', () => {
+  let component: DeviceOnlyAspReadCardPageComponent;
+  let fixture: ComponentFixture<DeviceOnlyAspReadCardPageComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ DeviceOnlyAspReadCardComponent ]
+      declarations: [ DeviceOnlyAspReadCardPageComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(DeviceOnlyAspReadCardComponent);
+    fixture = TestBed.createComponent(DeviceOnlyAspReadCardPageComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

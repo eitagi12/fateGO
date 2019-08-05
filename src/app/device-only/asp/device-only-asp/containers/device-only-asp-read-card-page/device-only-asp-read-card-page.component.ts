@@ -18,19 +18,17 @@ import { TransactionType } from 'src/app/shared/models/transaction.model';
 
 declare let $: any;
 @Component({
-  selector: 'app-device-only-asp-read-card',
-  templateUrl: './device-only-asp-read-card.component.html',
-  styleUrls: ['./device-only-asp-read-card.component.scss']
+  selector: 'app-device-only-asp-read-card-page',
+  templateUrl: './device-only-asp-read-card-page.component.html',
+  styleUrls: ['./device-only-asp-read-card-page.component.scss']
 })
-export class DeviceOnlyAspReadCardComponent implements OnInit, OnDestroy {
+export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   public wizards: string[] = WIZARD_DEVICE_ONLY_AIS;
   public searchByMobileNoForm: FormGroup;
   public receiptInfoForm: FormGroup;
   public messages: string;
   public canReadSmartCard: boolean = true;
   public nameTextBySmartCard: string;
-  private nameText: string;
-  private billingAddressText: string;
   private customer: Customer;
   public addressTextBySmartCard: string;
   public listBillingAccount: Array<any>;
@@ -41,6 +39,7 @@ export class DeviceOnlyAspReadCardComponent implements OnInit, OnDestroy {
   public isShowReadCard: boolean = true;
   public isShowCustomerDetail: boolean = false;
   public canNext: boolean = false;
+  public customerInfoTemp: any;
 
   @ViewChild('progressBarArea')
   progressBarArea: ElementRef;
@@ -92,6 +91,13 @@ export class DeviceOnlyAspReadCardComponent implements OnInit, OnDestroy {
           transactionType: TransactionType.DEVICE_ONLY_ASP
         },
         transactionId: this.createOrderService.generateTransactionId(this.apiRequestService.getCurrentRequestId())
+      };
+    } else if (this.transaction.data.customer && this.transaction.data.billingInformation) {
+      this.customerInfoTemp = {
+        customer: this.transaction.data.customer,
+        billDeliveryAddress: this.transaction.data.billingInformation.billDeliveryAddress,
+        receiptInfo: this.transaction.data.receiptInfo,
+        action: this.transaction.data.action
       };
     }
   }
@@ -185,8 +191,6 @@ export class DeviceOnlyAspReadCardComponent implements OnInit, OnDestroy {
 
   private clearData(): void {
     this.searchByMobileNoForm.controls['mobileNo'].setValue('');
-    this.nameText = '';
-    this.billingAddressText = '';
     this.receiptInfoForm.controls['taxId'].setValue('');
     this.receiptInfoForm.controls['branch'].setValue('');
   }
@@ -361,7 +365,6 @@ export class DeviceOnlyAspReadCardComponent implements OnInit, OnDestroy {
     const product = this.priceOption.queryParams;
     const brand: string = encodeURIComponent(product.brand ? product.brand : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
     const model: string = encodeURIComponent(product.model ? product.model : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
-    // replace '%28 %29' for() case url refresh error
     const url: string = `/sales-portal/buy-product/brand/${brand}/${model}`;
     const queryParams: string =
       `?modelColor=${product.color}

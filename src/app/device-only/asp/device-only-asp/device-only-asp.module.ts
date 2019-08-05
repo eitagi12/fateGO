@@ -13,7 +13,8 @@ import { DeviceOnlyAspQueuePageComponent } from './containers/device-only-asp-qu
 import { DeviceOnlyAspCheckoutPaymentPageComponent } from './containers/device-only-asp-checkout-payment-page/device-only-asp-checkout-payment-page.component';
 import { DeviceOnlyAspSummaryPageComponent } from './containers/device-only-asp-summary-page/device-only-asp-summary-page.component';
 import { DeviceOnlyAspResultQueuePageComponent } from './containers/device-only-asp-result-queue-page/device-only-asp-result-queue-page.component';
-import { DeviceOnlyAspReadCardComponent } from './containers/device-only-asp-read-card/device-only-asp-read-card.component';
+import { DeviceOnlyAspReadCardPageComponent } from './containers/device-only-asp-read-card-page/device-only-asp-read-card-page.component';
+
 @NgModule({
   imports: [
     CommonModule,
@@ -32,7 +33,7 @@ import { DeviceOnlyAspReadCardComponent } from './containers/device-only-asp-rea
     DeviceOnlyAspCheckoutPaymentPageComponent,
     DeviceOnlyAspSummaryPageComponent,
     DeviceOnlyAspResultQueuePageComponent,
-    DeviceOnlyAspReadCardComponent
+    DeviceOnlyAspReadCardPageComponent
   ],
   providers: []
 })

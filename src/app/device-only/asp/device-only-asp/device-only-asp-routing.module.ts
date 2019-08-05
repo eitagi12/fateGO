@@ -6,7 +6,7 @@ import { DeviceOnlyAspSelectMobileCarePageComponent } from './containers/device-
 import { DeviceOnlyAspSummaryPageComponent } from './containers/device-only-asp-summary-page/device-only-asp-summary-page.component';
 import { DeviceOnlyAspQueuePageComponent } from './containers/device-only-asp-queue-page/device-only-asp-queue-page.component';
 import { DeviceOnlyAspResultQueuePageComponent } from './containers/device-only-asp-result-queue-page/device-only-asp-result-queue-page.component';
-import { DeviceOnlyAspReadCardComponent } from './containers/device-only-asp-read-card/device-only-asp-read-card.component';
+import { DeviceOnlyAspReadCardPageComponent } from './containers/device-only-asp-read-card-page/device-only-asp-read-card-page.component';
 
 const routes: Routes = [
   {
@@ -35,7 +35,7 @@ const routes: Routes = [
   },
   {
     path: 'read-card',
-    component: DeviceOnlyAspReadCardComponent
+    component: DeviceOnlyAspReadCardPageComponent
   }
 ];
 
