@@ -169,32 +169,38 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
           identity: this.identity,
           transactionType: TransactionType.DEVICE_ORDER_EXISTING_GADGET_AIS
         }
-      }).toPromise().then((customer: Customer) => {
-        this.transaction.data.billingInformation = {};
-        this.http.get(`/api/customerportal/newRegister/${this.identity}/queryBillingAccount`).toPromise()
-          .then((resp: any) => {
-            const data = resp.data || {};
-            this.transaction.data.customer = customer;
-            this.transaction.data.action = TransactionAction.KEY_IN;
-            this.transaction.data.billingInformation = {
-              billCycles: data.billingAccountList,
-              billDeliveryAddress: customer
-            };
-          }).then(() => {
-            return this.conditionIdentityValid()
-              .catch((msg: string) => {
-                return this.alertService.error(this.translateService.instant(msg)).then(() => true);
-              })
-              .then((isError: boolean) => {
-                if (isError) {
-                  this.onBack();
-                  return;
-                }
-                this.addCard();
-              });
-          });
-      }).then(() => this.pageLoadingService.closeLoading())
-      .catch(this.ErrorMessage());
+      }).toPromise()
+        .then((resp: any) => {
+          const data = resp.data || {};
+          return Promise.resolve(data);
+        })
+        .then((customer: Customer) => {
+          console.log('customerb', customer);
+          this.transaction.data.billingInformation = {};
+          this.http.get(`/api/customerportal/newRegister/${this.identity}/queryBillingAccount`).toPromise()
+            .then((resp: any) => {
+              const data = resp.data || {};
+              this.transaction.data.customer = customer;
+              this.transaction.data.action = TransactionAction.KEY_IN;
+              this.transaction.data.billingInformation = {
+                billCycles: data.billingAccountList,
+                billDeliveryAddress: customer
+              };
+            }).then(() => {
+              return this.conditionIdentityValid()
+                .catch((msg: string) => {
+                  return this.alertService.error(this.translateService.instant(msg)).then(() => true);
+                })
+                .then((isError: boolean) => {
+                  if (isError) {
+                    this.onBack();
+                    return;
+                  }
+                  this.addCard();
+                });
+            });
+        }).then(() => this.pageLoadingService.closeLoading())
+        .catch(this.ErrorMessage());
     }
   }
 
