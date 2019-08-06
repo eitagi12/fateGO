@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, TemplateRef, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ONLY_AIS } from 'src/app/device-only/constants/wizard.constant';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ReadCardService, PageLoadingService, AlertService, HomeService, ApiRequestService } from 'mychannel-shared-libs';
+import { ReadCardService, PageLoadingService, AlertService, HomeService, ApiRequestService, ReceiptInfo } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { TransactionAction, Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { BillingAddressService } from 'src/app/device-only/services/billing-address.service';
@@ -41,6 +41,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   public isShowCustomerDetail: boolean = false;
   public canNext: boolean = false;
   public customerInfoTemp: any;
+  public receiptInfo: ReceiptInfo;
 
   @ViewChild('progressBarArea')
   progressBarArea: ElementRef;
@@ -51,7 +52,6 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   @ViewChild('select_billing_address')
   selectBillingAddressTemplate: TemplateRef<any>;
   modalBillAddress: BsModalRef;
-  // @Output() customerInfo: EventEmitter<Object> = new EventEmitter<Object>();
 
   constructor(
     private router: Router,
@@ -113,6 +113,12 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
       taxId: '',
       branch: '',
       telNo: ''
+    });
+    this.receiptInfoForm.valueChanges.pipe(debounceTime(750)).subscribe(event => {
+      if (this.receiptInfoForm.valid) {
+        this.receiptInfo = this.receiptInfoForm.value;
+      }
+      this.transaction.data.receiptInfo = this.receiptInfo;
     });
   }
 

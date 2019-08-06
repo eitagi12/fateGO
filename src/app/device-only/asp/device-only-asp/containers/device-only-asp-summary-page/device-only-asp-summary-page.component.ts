@@ -52,7 +52,6 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.homeButtonService.initEventButtonHome();
     this.transaction.data.tradeType = this.priceOption.trade.tradeNo === 0 ? 'EUP' : 'Hand Set';
-    console.log('logs-page receiptInfo.branh : ', this.transaction.data);
   }
 
   private checkSeller(seller: Seller): void {
