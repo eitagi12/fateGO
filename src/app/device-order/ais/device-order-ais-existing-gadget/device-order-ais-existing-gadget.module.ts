@@ -20,6 +20,9 @@ import { DeviceOrderAisExistingGadgetAgreementSignPageComponent } from './contai
 import { DeviceOrderAisExistingGadgetEcontractPageComponent } from './containers/device-order-ais-existing-gadget-econtract-page/device-order-ais-existing-gadget-econtract-page.component';
 import { DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent } from './containers/device-order-ais-existing-gadget-validate-customer-id-card-page/device-order-ais-existing-gadget-validate-customer-id-card-page.component';
 import { DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent } from './containers/device-order-ais-existing-gadget-validate-identify-id-card-page/device-order-ais-existing-gadget-validate-identify-id-card-page.component';
+import { DeviceOrderAisExistingGadgetQrCodeSummaryPageComponent } from './containers/device-order-ais-existing-gadget-qr-code-summary-page/device-order-ais-existing-gadget-qr-code-summary-page.component';
+import { DeviceOrderAisExistingGadgetQrCodePaymentGeneratorPageComponent } from './containers/device-order-ais-existing-gadget-qr-code-payment-generator-page/device-order-ais-existing-gadget-qr-code-payment-generator-page.component';
+import { DeviceOrderAisExistingGadgetQrCodeQueuePageComponent } from './containers/device-order-ais-existing-gadget-qr-code-queue-page/device-order-ais-existing-gadget-qr-code-queue-page.component';
 
 @NgModule({
   imports: [
@@ -45,7 +48,10 @@ import { DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent } from 
     DeviceOrderAisExistingGadgetAgreementSignPageComponent,
     DeviceOrderAisExistingGadgetEcontractPageComponent,
     DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent,
-    DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent
+    DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent,
+    DeviceOrderAisExistingGadgetQrCodeSummaryPageComponent,
+    DeviceOrderAisExistingGadgetQrCodePaymentGeneratorPageComponent,
+    DeviceOrderAisExistingGadgetQrCodeQueuePageComponent
   ]
 })
 export class DeviceOrderAisExistingGadgetModule { }
