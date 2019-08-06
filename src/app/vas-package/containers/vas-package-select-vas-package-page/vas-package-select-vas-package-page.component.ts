@@ -364,7 +364,9 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
   getRomByUser(): any {
     this.aisNativeOrderService.getNativeUsername();
     this.usernameSub = this.aisNativeOrderService.getUsername().subscribe((response: any) => {
-      this.http.get(`/api/easyapp/get-rom-by-user?username=${response.username}`).toPromise()
+      this.http.post(`/api/easyapp/get-rom-by-user`, {
+        username: response.username
+      }).toPromise()
         .then((res: any) => {
           this.transaction.data.romAgent = {
             ...this.transaction.data.romAgent,
