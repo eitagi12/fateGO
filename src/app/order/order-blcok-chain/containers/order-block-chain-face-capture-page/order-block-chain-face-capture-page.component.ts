@@ -1,18 +1,20 @@
 import { Component, OnInit, EventEmitter, OnDestroy } from '@angular/core';
+import { WIZARD_ORDER_BLOCK_CHAIN } from 'src/app/order/constants/wizard.constant';
 import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
 import { Router } from '@angular/router';
 import { HomeService, Utils, AlertService, ImageUtils } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TranslateService } from '@ngx-translate/core';
-import { ROUTE_ORDER_BLOCK_CHAIN_AGREEMENT_SIGN_PAGE, ROUTE_ORDER_BLOCK_CHAIN_FACE_COMPARE_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_ORDER_BLOCK_CHAIN_AGREEMENT_SIGN_PAGE, ROUTE_ORDER_BLOCK_CHAIN_FACE_COMPARE_PAGE } from 'src/app/order/order-blcok-chain/constants/route-path.constant';
 
 @Component({
-  selector: 'app-order-new-register-esim-shop-face-capture-page',
-  templateUrl: './order-new-register-esim-shop-face-capture-page.component.html',
-  styleUrls: ['./order-new-register-esim-shop-face-capture-page.component.scss']
+  selector: 'app-order-block-chain-face-capture-page',
+  templateUrl: './order-block-chain-face-capture-page.component.html',
+  styleUrls: ['./order-block-chain-face-capture-page.component.scss']
 })
-export class OrderNewRegisterEsimShopFaceCapturePageComponent implements OnInit, OnDestroy {
+
+export class OrderBlockChainFaceCapturePageComponent implements OnInit, OnDestroy {
 
   wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
 
