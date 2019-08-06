@@ -9,7 +9,6 @@ import { Router } from '@angular/router';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
-import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
 import {
   ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CUSTOMER_INFO_PAGE,
   ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_MOBILE_DETAIL_PAGE
@@ -27,7 +26,8 @@ export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements 
 
   shoppingCart: ShoppingCart;
   transaction: Transaction;
-  eligibleMobiles: Array<EligibleMobile> = [];
+
+  eligibleMobiles: Array<EligibleMobile>;
   onSelected: any;
   priceOption: PriceOption;
   ussdCode: string;
@@ -42,7 +42,6 @@ export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements 
     private transactionService: TransactionService,
     private privilegeService: PrivilegeService,
     private translateService: TranslateService,
-    private customerInfoService: CustomerInfoService,
     private priceOptionService: PriceOptionService,
     private alertService: AlertService
   ) {
