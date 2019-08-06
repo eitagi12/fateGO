@@ -14,6 +14,7 @@ import {
   ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CUSTOMER_INFO_PAGE,
   ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_MOBILE_DETAIL_PAGE
 } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-device-order-ais-existing-gadget-eligible-mobile-page',
@@ -40,6 +41,7 @@ export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements 
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private privilegeService: PrivilegeService,
+    private translateService: TranslateService,
     private customerInfoService: CustomerInfoService,
     private priceOptionService: PriceOptionService,
     private alertService: AlertService
@@ -49,6 +51,7 @@ export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements 
   }
 
   ngOnInit(): void {
+    this.pageLoadingService.openLoading();
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.callQueryEligibleFbbListService();
   }
@@ -64,6 +67,9 @@ export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements 
       .then((response: any) => {
         this.pageLoadingService.closeLoading();
         this.eligibleMobiles = response.data.fbbLists || [];
+      }).catch((error: any) => {
+        this.pageLoadingService.closeLoading();
+        this.alertService.error(this.translateService.instant(error));
       });
   }
 
