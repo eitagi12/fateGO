@@ -5,7 +5,7 @@ import { HomeService, Utils, AlertService, ImageUtils } from 'mychannel-shared-l
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TranslateService } from '@ngx-translate/core';
-import { ROUTE_ORDER_NEW_REGISTER_ESIM_SHOP_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_ORDER_NEW_REGISTER_ESIM_SHOP_ID_CARD_CAPTURE_PAGE, ROUTE_ORDER_NEW_REGISTER_ESIM_SHOP_FACE_COMPARE_PAGE, ROUTE_ORDER_BLOCK_CHAIN_AGREEMENT_SIGN_PAGE, ROUTE_ORDER_BLOCK_CHAIN_FACE_COMPARE_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_ORDER_BLOCK_CHAIN_AGREEMENT_SIGN_PAGE, ROUTE_ORDER_BLOCK_CHAIN_FACE_COMPARE_PAGE } from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-order-new-register-esim-shop-face-capture-page',
