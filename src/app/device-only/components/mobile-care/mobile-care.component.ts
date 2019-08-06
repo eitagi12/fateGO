@@ -63,7 +63,7 @@ export class MobileCareComponent implements OnInit {
   transactionID: string;
   isSelect: boolean;
   public isKiosk: boolean = false;
-  unsubscribeform: any;
+  public unsubscribeform: any;
   public isShowVerifyOTP: boolean = false;
 
   @Input() mobileCare: MobileCare;
@@ -106,6 +106,7 @@ export class MobileCareComponent implements OnInit {
     }
     this.createForm();
     this.onCheckValidators();
+    this.setOtpNoSubscribe(this.unsubscribeform);
     this.checkPrivilegeMobileCare();
     this.isSelect = false;
 
@@ -126,12 +127,16 @@ export class MobileCareComponent implements OnInit {
         Validators.required
       ]),
     });
+  }
+
+  private setOtpNoSubscribe(unsubscribeform: any): void {
     this.unsubscribeform = this.privilegeCustomerForm.controls.otpNo.valueChanges.subscribe((res: any) => {
-      console.log('this.privilegeCustomerForm.controls.otpNo', this.privilegeCustomerForm.value.otpNo);
+      // console.log('this.privilegeCustomerForm.controls.otpNo', this.privilegeCustomerForm.value.otpNo);
       if (this.isKiosk) {
-        if (this.privilegeCustomerForm.controls.otpNo.value.length === 5) {
+        // console.log('if !');
+        if (this.privilegeCustomerForm.controls['otpNo'].value.length === 5) {
           this.verifyOTP();
-          console.log('length', this.privilegeCustomerForm.controls.otpNo.value.length);
+          // console.log('length', this.privilegeCustomerForm.controls.otpNo.value.length);
         }
       }
     });
@@ -234,10 +239,25 @@ export class MobileCareComponent implements OnInit {
 
   public searchMobileNo(): void {
     this.pageLoadingService.openLoading();
+    this.isShowVerifyOTP = false;
     this.checkExistingMobileCare();
+    this.onCheckValidatorsVerifyOTP();
     this.isVerifyflag.emit(false);
     this.privilegeCustomerForm.controls['otpNo'].setValue('');
-    this.isShowVerifyOTP = false;
+  }
+
+  private onCheckValidatorsVerifyOTP(): void {
+    const setMobileNoTemp = this.privilegeCustomerForm.controls.mobileNo.value;
+    let setMobileNoDefault: string;
+    this.privilegeCustomerForm.controls.mobileNo.valueChanges.subscribe((response: any) => {
+      setMobileNoDefault = response;
+    });
+
+    if (setMobileNoDefault === setMobileNoTemp) {
+      this.setOtpNoSubscribe(this.unsubscribeform);
+    } else {
+      this.setOtpNoSubscribe(this.unsubscribeform.unsubscribe());
+    }
   }
 
   public checkExistingMobileCare(): void {
