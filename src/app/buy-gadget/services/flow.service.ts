@@ -19,21 +19,27 @@ export class FlowService {
 
   nextUrl(priceOption: any): Promise<string> {
     return new Promise<string>((resovle, reject) => {
-      const nextUrl = this.getRouterByCustomerGrop(priceOption);
+      let nextUrl;
+      if (this.isCampaignBestBuy(priceOption.campaign.code)) {
+        nextUrl = this.getRouterBestBuy();
+      } else {
+        nextUrl = this.getRouterByCustomerGrop(priceOption);
+      }
       resovle(nextUrl);
+
     });
   }
 
   private getRouterByCustomerGrop(priceOption: any): string {
     switch (priceOption.customerGroup.code) {
       case CustomerGroup.NEW_REGISTER:
-      // return ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_PAGE;
+        return '';
       case CustomerGroup.PRE_TO_POST:
-      // return ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_PAGE;
+        return '';
       case CustomerGroup.MNP:
-      // return ROUTE_DEVICE_ORDER_AIS_GADGET_VALIDATE_CUSTOMER_PAGE;
+        return '';
       case CustomerGroup.EXISTING:
-        return this.getRouterExistingByCampaign(priceOption);
+        return ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_VALIDATE_CUSTOMER_PAGE;
       case CustomerGroup.DEVICE_ONLY:
         return ROUTE_DEVICE_AIS_DEVICE_PAYMENT_PAGE;
       default:
@@ -41,15 +47,11 @@ export class FlowService {
     }
   }
 
-  getRouterExistingByCampaign(priceOption: any): string {
-    if (this.isCampaignBestBuy(priceOption.campaign.code)) {
-      return ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_VALIDATE_CUSTOMER_PAGE;
-    } else {
-      return ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_VALIDATE_CUSTOMER_PAGE;
-    }
-  }
-
   isCampaignBestBuy(campaignCode: string): boolean {
     return campaignCode === 'BEST_BUY_12M';
+  }
+
+  private getRouterBestBuy(): string {
+    return ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_VALIDATE_CUSTOMER_PAGE;
   }
 }
