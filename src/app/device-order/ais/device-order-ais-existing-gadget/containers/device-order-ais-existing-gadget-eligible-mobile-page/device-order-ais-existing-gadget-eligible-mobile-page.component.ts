@@ -51,7 +51,6 @@ export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements 
   }
 
   ngOnInit(): void {
-    this.pageLoadingService.openLoading();
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.callQueryEligibleFbbListService();
   }
