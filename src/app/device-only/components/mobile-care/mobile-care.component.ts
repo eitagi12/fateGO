@@ -64,6 +64,7 @@ export class MobileCareComponent implements OnInit {
   isSelect: boolean;
   public isKiosk: boolean = false;
   unsubscribeform: any;
+  public isShowVerifyOTP: boolean = false;
 
   @Input() mobileCare: MobileCare;
   @Input() normalPrice: number;
@@ -236,6 +237,7 @@ export class MobileCareComponent implements OnInit {
     this.checkExistingMobileCare();
     this.isVerifyflag.emit(false);
     this.privilegeCustomerForm.controls['otpNo'].setValue('');
+    this.isShowVerifyOTP = false;
   }
 
   public checkExistingMobileCare(): void {
@@ -411,6 +413,7 @@ export class MobileCareComponent implements OnInit {
             billingSystem: this.billingSystem,
             chargeType: this.chargeType || ''
           });
+          this.isShowVerifyOTP = true;
           this.isVerifyflag.emit(true);
           this.unsubscribeform.unsubscribe();
         } else {

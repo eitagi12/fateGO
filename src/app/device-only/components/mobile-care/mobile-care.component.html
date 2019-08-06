@@ -24,6 +24,15 @@
             <button class="btn-otp bg-teal text-white" id="button-verify" (click)="verifyOTP()" *ngIf="!isKiosk">Verify</button>
           </div>
         </div>
+
+        <div class="form-group row" *ngIf="isShowVerifyOTP !== false && isKiosk === true">
+          <div class="col-6 col-sm-8">
+            <label class="input text-center pull-right text-green" id="txtVerifyOTP">กรุณาเลือกบริการโมบายแคร์</label>
+          </div>
+          <div class="col-6 col-sm-4">
+          </div>
+        </div>
+
       </form>
     </div>
   </div>
