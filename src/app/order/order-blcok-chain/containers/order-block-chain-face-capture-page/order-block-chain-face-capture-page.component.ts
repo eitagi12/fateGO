@@ -1,23 +1,25 @@
 import { Component, OnInit, EventEmitter, OnDestroy } from '@angular/core';
-import { WIZARD_ORDER_BLOCK_CHAIN } from 'src/app/order/constants/wizard.constant';
+import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
 import { Router } from '@angular/router';
 import { HomeService, Utils, AlertService, ImageUtils } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { Transaction,  } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TranslateService } from '@ngx-translate/core';
-import { ROUTE_ORDER_BLOCK_CHAIN_AGREEMENT_SIGN_PAGE, ROUTE_ORDER_BLOCK_CHAIN_FACE_COMPARE_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_ORDER_NEW_REGISTER_ESIM_SHOP_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_ORDER_NEW_REGISTER_ESIM_SHOP_ID_CARD_CAPTURE_PAGE, ROUTE_ORDER_NEW_REGISTER_ESIM_SHOP_FACE_COMPARE_PAGE, ROUTE_ORDER_BLOCK_CHAIN_AGREEMENT_SIGN_PAGE, ROUTE_ORDER_BLOCK_CHAIN_FACE_COMPARE_PAGE } from '../../constants/route-path.constant';
 
 @Component({
-  selector: 'app-order-block-chain-face-capture-page',
-  templateUrl: './order-block-chain-face-capture-page.component.html',
-  styleUrls: ['./order-block-chain-face-capture-page.component.scss']
+  selector: 'app-order-new-register-esim-shop-face-capture-page',
+  templateUrl: './order-new-register-esim-shop-face-capture-page.component.html',
+  styleUrls: ['./order-new-register-esim-shop-face-capture-page.component.scss']
 })
-export class OrderBlockChainFaceCapturePageComponent implements OnInit, OnDestroy {
-  wizards: string[] = WIZARD_ORDER_BLOCK_CHAIN;
+export class OrderNewRegisterEsimShopFaceCapturePageComponent implements OnInit, OnDestroy {
+
+  wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
 
   openCamera: boolean;
   transaction: Transaction;
   camera: EventEmitter<void> = new EventEmitter<void>();
+  isCaptureSuccess: boolean = false;
 
   constructor(
     private router: Router,
@@ -31,6 +33,10 @@ export class OrderBlockChainFaceCapturePageComponent implements OnInit, OnDestro
   }
 
   ngOnInit(): void {
+    if (this.transaction && this.transaction.data &&
+      this.transaction.data.faceRecognition && this.transaction.data.faceRecognition.imageFaceUser) {
+      delete this.transaction.data.faceRecognition.imageFaceUser;
+    }
     this.openCamera = !!(this.transaction.data.faceRecognition && this.transaction.data.faceRecognition.imageFaceUser);
   }
 
@@ -55,25 +61,10 @@ export class OrderBlockChainFaceCapturePageComponent implements OnInit, OnDestro
   }
 
   onCameraCompleted(image: string): void {
-
-    const cropOption = {
-      sizeWidth: 160,
-      sizeHeight: 240,
-      startX: 80,
-      startY: 0,
-      flip: true,
-      quality: 1
+    this.isCaptureSuccess = image ? true : false;
+    this.transaction.data.faceRecognition = {
+      imageFaceUser: image
     };
-
-    new ImageUtils().cropping(image, cropOption).then(res => {
-      this.transaction.data.faceRecognition = {
-        imageFaceUser: res
-      };
-    }).catch(() => {
-      this.transaction.data.faceRecognition = {
-        imageFaceUser: image
-      };
-    });
   }
 
   onCameraError(error: string): void {
@@ -81,6 +72,7 @@ export class OrderBlockChainFaceCapturePageComponent implements OnInit, OnDestro
   }
 
   onClearIdCardImage(): void {
+    this.isCaptureSuccess = false;
     this.transaction.data.faceRecognition.imageFaceUser = null;
   }
 
