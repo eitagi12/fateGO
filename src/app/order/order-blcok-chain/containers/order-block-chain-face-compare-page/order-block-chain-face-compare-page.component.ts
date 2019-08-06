@@ -81,7 +81,7 @@ export class OrderBlockChainFaceComparePageComponent implements OnInit, OnDestro
       location_name: this.locationName || '',
       location_code: this.locationCode || '',
       empowerment_flag: '',
-      empowerment_by_code: this.employeeCode || '',
+      empowerment_by_code: '30974',
       force_enroll_flag: simCard.forceEnrollFlag || ''
     };
     this.http.post(`/api/customerportal/newRegister/post-mobile-id`, param).toPromise()

@@ -1,9 +1,10 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService } from 'mychannel-shared-libs';
+import { HomeService, PageLoadingService } from 'mychannel-shared-libs';
 import { ROUTE_ORDER_BLOCK_CHAIN_FACE_CONFIRM_PAGE } from 'src/app/order/order-blcok-chain/constants/route-path.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-order-block-chain-result-page',
@@ -19,12 +20,26 @@ export class OrderBlockChainResultPageComponent implements OnInit {
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
+    private pageLoadingService: PageLoadingService,
+    private http: HttpClient,
   ) {
     this.transaction = this.transactionService.load();
   }
 
   ngOnInit(): void {
+    this.pageLoadingService.openLoading();
+    const param = {
+      mobile_no: this.transaction.data.simCard.mobileNo,
+      person_id: this.transaction.data.customer.idCardNo
+    };
+    this.http.post(`/api/customerportal/newRegister/registerApp3Steps`, param).toPromise()
+      .then((resp: any) => {
 
+      }).catch((err) => {
+        this.pageLoadingService.closeLoading();
+      }).then(() => {
+        this.pageLoadingService.closeLoading();
+      });
   }
   onBack(): void {
     this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_FACE_CONFIRM_PAGE]);
