@@ -375,11 +375,14 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
     const product = this.priceOption.queryParams;
     const brand: string = encodeURIComponent(product.brand ? product.brand : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
     const model: string = encodeURIComponent(product.model ? product.model : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
+    const imei: any = JSON.parse(localStorage.getItem('device'));
     const url: string = `/sales-portal/buy-product/brand/${brand}/${model}`;
     const queryParams: string =
       `?modelColor=${product.color}
       &productType=${product.productType}
-      &productSubtype=${product.productSubtype}`;
+      &productSubtype=${product.productSubtype}
+      &imei${imei.imei}
+      &customerGroup=${this.priceOption.customerGroup.code}`;
     window.location.href = url + queryParams;
   }
 
