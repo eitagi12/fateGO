@@ -124,7 +124,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
                 return;
               }
 
-              const isEnough: any = +(resBalance.data.remainingBalance) >= +(selectedPackage.customAttributes.customer_price);
+              const isEnough: any = (+(resBalance.data.remainingBalance) / 100) >= +(selectedPackage.customAttributes.customer_price);
               if (!isEnough) {
                 this.pageLoadingService.closeLoading();
                 this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจากยอดเงินคงเหลือไม่เพียงพอสำหรับแพ็กเกจนี้ ยอดเงินคงเหลือ: '
