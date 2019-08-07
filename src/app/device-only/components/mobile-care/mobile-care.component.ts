@@ -106,10 +106,9 @@ export class MobileCareComponent implements OnInit {
     }
     this.createForm();
     this.onCheckValidators();
-    this.setOtpNoSubscribe(this.unsubscribeform);
+    this.setOtpSubscribe(this.unsubscribeform);
     this.checkPrivilegeMobileCare();
     this.isSelect = false;
-
   }
 
   public onCheckValidators(): void {
@@ -129,7 +128,7 @@ export class MobileCareComponent implements OnInit {
     });
   }
 
-  private setOtpNoSubscribe(unsubscribeform: any): void {
+  private setOtpSubscribe(unsubscribeform: any): void {
     this.unsubscribeform = this.privilegeCustomerForm.controls.otpNo.valueChanges.subscribe((res: any) => {
       // console.log('this.privilegeCustomerForm.controls.otpNo', this.privilegeCustomerForm.value.otpNo);
       if (this.isKiosk) {
@@ -247,17 +246,7 @@ export class MobileCareComponent implements OnInit {
   }
 
   private onCheckValidatorsVerifyOTP(): void {
-    const setMobileNoTemp = this.privilegeCustomerForm.controls.mobileNo.value;
-    let setMobileNoDefault: string;
-    this.privilegeCustomerForm.controls.mobileNo.valueChanges.subscribe((response: any) => {
-      setMobileNoDefault = response;
-    });
-
-    if (setMobileNoDefault === setMobileNoTemp) {
-      this.setOtpNoSubscribe(this.unsubscribeform);
-    } else {
-      this.setOtpNoSubscribe(this.unsubscribeform.unsubscribe());
-    }
+    this.setOtpSubscribe(this.unsubscribeform.unsubscribe());
   }
 
   public checkExistingMobileCare(): void {
@@ -435,7 +424,7 @@ export class MobileCareComponent implements OnInit {
           });
           this.isShowVerifyOTP = true;
           this.isVerifyflag.emit(true);
-          this.unsubscribeform.unsubscribe();
+          this.setOtpSubscribe(this.unsubscribeform.unsubscribe());
         } else {
           this.pageLoadingService.closeLoading();
           this.alertService.error('รหัส OTP ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง');
