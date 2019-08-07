@@ -14,6 +14,9 @@ import { DeviceOrderAisExistingGadgetCheckOutPageComponent } from './containers/
 import { DeviceOrderAisExistingGadgetQueuePageComponent } from './containers/device-order-ais-existing-gadget-queue-page/device-order-ais-existing-gadget-queue-page.component';
 import { DeviceOrderAisExistingGadgetResultPageComponent } from './containers/device-order-ais-existing-gadget-result-page/device-order-ais-existing-gadget-result-page.component';
 import { DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent } from './containers/device-order-ais-existing-gadget-validate-identify-id-card-page/device-order-ais-existing-gadget-validate-identify-id-card-page.component';
+import { DeviceOrderAisExistingGadgetQrCodeSummaryPageComponent } from './containers/device-order-ais-existing-gadget-qr-code-summary-page/device-order-ais-existing-gadget-qr-code-summary-page.component';
+import { DeviceOrderAisExistingGadgetQrCodePaymentGeneratorPageComponent } from './containers/device-order-ais-existing-gadget-qr-code-payment-generator-page/device-order-ais-existing-gadget-qr-code-payment-generator-page.component';
+import { DeviceOrderAisExistingGadgetQrCodeQueuePageComponent } from './containers/device-order-ais-existing-gadget-qr-code-queue-page/device-order-ais-existing-gadget-qr-code-queue-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'validate-customer', pathMatch: 'full' },
@@ -26,6 +29,9 @@ const routes: Routes = [
   { path: 'mobile-detail', component: DeviceOrderAisExistingGadgetMobileDetailPageComponent },
   { path: 'payment-detail', component: DeviceOrderAisExistingGadgetPaymentDetailPageComponent },
   { path: 'summary', component: DeviceOrderAisExistingGadgetSummaryPageComponent },
+  { path: 'qr-code-summary', component:  DeviceOrderAisExistingGadgetQrCodeSummaryPageComponent },
+  { path: 'qr-code-generator', component:  DeviceOrderAisExistingGadgetQrCodePaymentGeneratorPageComponent },
+  { path: 'qr-code-queue', component:  DeviceOrderAisExistingGadgetQrCodeQueuePageComponent },
   { path: 'agreement-sign', component: DeviceOrderAisExistingGadgetAgreementSignPageComponent },
   { path: 'econtract', component: DeviceOrderAisExistingGadgetEcontractPageComponent },
   { path: 'check-out', component: DeviceOrderAisExistingGadgetCheckOutPageComponent },
