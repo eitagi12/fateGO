@@ -114,7 +114,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
             this.getRomByUser();
           });
       } else {
-        const isPrepaid: boolean = resProfile.data.chargeType === 'Pre-paid';
+        const isPrepaid: boolean = resProfile.data.networkTypeMapping.businessType === 'Prepaid';
         if (isPrepaid) {
           this.http.get(`/api/customerportal/newRegister/${this.mobileNo}/getBalance`).toPromise()
             .then((resBalance: any) => {
@@ -124,11 +124,11 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
                 return;
               }
 
-              const isEnough: any = +(resBalance.data.remainingBalance) >= +(selectedPackage.customAttributes.customer_price);
+              const isEnough: any = (+(resBalance.data.remainingBalance) / 100) >= +(selectedPackage.customAttributes.customer_price);
               if (!isEnough) {
                 this.pageLoadingService.closeLoading();
                 this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจากยอดเงินคงเหลือไม่เพียงพอสำหรับแพ็กเกจนี้ ยอดเงินคงเหลือ: '
-                  + (+resBalance.data.remainingBalance) + ' บาท');
+                  + (+resBalance.data.remainingBalance / 100) + ' บาท');
                 return;
               }
 
@@ -257,11 +257,12 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
               bestSellerItem.push(item);
             }
             packageCat.push(item);
-          }).sort((a: any, b: any) => (+a.customAttributes.best_seller_priority) - (b.customAttributes.best_seller_priority));
+          });
         });
       });
       return {
-        best: bestSellerItem,
+        best: bestSellerItem.sort((a: any, b: any) => (
+          +a.customAttributes.best_seller_priority) - (b.customAttributes.best_seller_priority)),
         pack: packageCat
       };
     }).then(({ best, pack }) => {
@@ -363,7 +364,9 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
   getRomByUser(): any {
     this.aisNativeOrderService.getNativeUsername();
     this.usernameSub = this.aisNativeOrderService.getUsername().subscribe((response: any) => {
-      this.http.get(`/api/easyapp/get-rom-by-user?username=${response.username}`).toPromise()
+      this.http.post(`/api/easyapp/get-rom-by-user`, {
+        username: response.username
+      }).toPromise()
         .then((res: any) => {
           this.transaction.data.romAgent = {
             ...this.transaction.data.romAgent,
