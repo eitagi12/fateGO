@@ -15,6 +15,7 @@ export class OrderBlockChainResultPageComponent implements OnInit {
 
   isSuccess: boolean = true;
   transaction: Transaction;
+  message: string;
 
   constructor(
     private router: Router,
@@ -34,9 +35,9 @@ export class OrderBlockChainResultPageComponent implements OnInit {
     };
     this.http.post(`/api/customerportal/newRegister/registerApp3Steps`, param).toPromise()
       .then((resp: any) => {
-
+        this.message = 'หมายเลข' + this.transaction.data.simCard.mobileNo + 'ได้สมัคร Main Mobile สำเร็จแล้ว แจ้งลูกค้ารอรับ OTP ผ่าน SMS';
       }).catch((err) => {
-        this.pageLoadingService.closeLoading();
+        this.message = 'ระบบการสมัครขัดข้อง กรุณาดำเนินการใหม่ภายหลัง';
       }).then(() => {
         this.pageLoadingService.closeLoading();
       });
