@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, ViewChild, TemplateRef, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, TemplateRef, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { AlertService, PageLoadingService, BillingSystemType, TokenService } from 'mychannel-shared-libs';
@@ -43,7 +43,7 @@ export interface MobileCareItem {
   providers: []
 })
 
-export class MobileCareComponent implements OnInit {
+export class MobileCareComponent implements OnInit, OnDestroy {
   wizards: string[] = WIZARD_DEVICE_ONLY_AIS;
   public moblieNo: string;
   public otp: string;
@@ -80,6 +80,7 @@ export class MobileCareComponent implements OnInit {
   @ViewChild('template')
   template: TemplateRef<any>;
   modalRef: BsModalRef;
+  isCall: Boolean;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -106,9 +107,10 @@ export class MobileCareComponent implements OnInit {
     }
     this.createForm();
     this.onCheckValidators();
-    this.setOtpSubscribe(this.unsubscribeform);
+    // this.setOtpSubscribe(this.unsubscribeform);
     this.checkPrivilegeMobileCare();
     this.isSelect = false;
+    this.isCall = true;
   }
 
   public onCheckValidators(): void {
@@ -126,16 +128,19 @@ export class MobileCareComponent implements OnInit {
         Validators.required
       ]),
     });
+    this.setOtpSubscribe();
   }
 
-  private setOtpSubscribe(unsubscribeform: any): void {
+  private setOtpSubscribe(): void {
     this.unsubscribeform = this.privilegeCustomerForm.controls.otpNo.valueChanges.subscribe((res: any) => {
-      // console.log('this.privilegeCustomerForm.controls.otpNo', this.privilegeCustomerForm.value.otpNo);
+      console.log('this.privilegeCustomerForm.controls.otpNo', this.privilegeCustomerForm.value.otpNo);
       if (this.isKiosk) {
-        // console.log('if !');
-        if (this.privilegeCustomerForm.controls['otpNo'].value.length === 5) {
+        console.log('if !');
+        if (this.privilegeCustomerForm.controls['otpNo'].value.length === 5 && this.isCall) {
           this.verifyOTP();
-          // console.log('length', this.privilegeCustomerForm.controls.otpNo.value.length);
+          console.log('length', this.privilegeCustomerForm.controls.otpNo.value.length);
+        } else if (this.privilegeCustomerForm.controls['otpNo'].value.length !== 5 && !this.isCall) {
+          this.isCall = true;
         }
       }
     });
@@ -240,14 +245,14 @@ export class MobileCareComponent implements OnInit {
     this.pageLoadingService.openLoading();
     this.isShowVerifyOTP = false;
     this.checkExistingMobileCare();
-    this.onCheckValidatorsVerifyOTP();
+    // this.onCheckValidatorsVerifyOTP();
     this.isVerifyflag.emit(false);
     this.privilegeCustomerForm.controls['otpNo'].setValue('');
   }
 
-  private onCheckValidatorsVerifyOTP(): void {
-    this.setOtpSubscribe(this.unsubscribeform.unsubscribe());
-  }
+  // private onCheckValidatorsVerifyOTP(): void {
+  //   this.setOtpSubscribe(this.unsubscribeform.unsubscribe());
+  // }
 
   public checkExistingMobileCare(): void {
     const mobileNo = this.privilegeCustomerForm.value.mobileNo;
@@ -424,7 +429,10 @@ export class MobileCareComponent implements OnInit {
           });
           this.isShowVerifyOTP = true;
           this.isVerifyflag.emit(true);
-          this.setOtpSubscribe(this.unsubscribeform.unsubscribe());
+          this.isCall = false;
+          // this.unsubscribeform.unsubscribe();
+          // this.setOtpSubscribe();
+          console.log('true', this.unsubscribeform);
         } else {
           this.pageLoadingService.closeLoading();
           this.alertService.error('รหัส OTP ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง');
@@ -464,5 +472,9 @@ export class MobileCareComponent implements OnInit {
         }
       })
       .then(() => mobileSegment ? null : this.pageLoadingService.closeLoading());
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribeform.unsubscribe();
   }
 }
