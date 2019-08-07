@@ -56,9 +56,9 @@ export class OrderBlockChainAgreementSignPageComponent implements OnInit, OnDest
 
   ngOnInit(): void {
     this.localTime = Moment().format(this.TIME_DIFF_FORMAT);
-    if (!this.transaction.data.customer.imageSignature) {
-      this.onSigned();
-    }
+    // if (!this.transaction.data.customer.imageSignature) {
+    //   this.onSigned();
+    // }
   }
 
   onBack(): void {
