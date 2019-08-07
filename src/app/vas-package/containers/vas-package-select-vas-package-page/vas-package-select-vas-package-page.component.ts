@@ -114,7 +114,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
             this.getRomByUser();
           });
       } else {
-        const isPrepaid: boolean = resProfile.data.chargeType === 'Pre-paid';
+        const isPrepaid: boolean = resProfile.data.networkTypeMapping.businessType === 'Prepaid';
         if (isPrepaid) {
           this.http.get(`/api/customerportal/newRegister/${this.mobileNo}/getBalance`).toPromise()
             .then((resBalance: any) => {
@@ -128,7 +128,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
               if (!isEnough) {
                 this.pageLoadingService.closeLoading();
                 this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจากยอดเงินคงเหลือไม่เพียงพอสำหรับแพ็กเกจนี้ ยอดเงินคงเหลือ: '
-                  + (+resBalance.data.remainingBalance) + ' บาท');
+                  + (+resBalance.data.remainingBalance / 100) + ' บาท');
                 return;
               }
 
