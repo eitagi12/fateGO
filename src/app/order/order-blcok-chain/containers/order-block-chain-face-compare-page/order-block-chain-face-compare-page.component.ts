@@ -46,6 +46,9 @@ export class OrderBlockChainFaceComparePageComponent implements OnInit, OnDestro
     this.http.get(`/api/customerportal/newRegister/getEmployeeDetail/username/${user.username}`).toPromise()
       .then((employee: any) => {
         this.employeeCode = employee.data.pin;
+        this.transaction.data.seller = {
+          ascCode: this.employeeCode
+        };
       });
 
   }

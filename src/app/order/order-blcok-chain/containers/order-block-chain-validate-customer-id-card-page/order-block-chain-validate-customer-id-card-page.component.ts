@@ -138,7 +138,6 @@ export class OrderBlockChainValidateCustomerIdCardPageComponent implements OnIni
             });
         })
         .then((customer: any) => { // load bill cycle
-          console.log('cus', customer);
           this.pageLoadingService.closeLoading();
           this.transaction.data.customer = Object.assign(this.profile, customer);
           this.validNext = true;

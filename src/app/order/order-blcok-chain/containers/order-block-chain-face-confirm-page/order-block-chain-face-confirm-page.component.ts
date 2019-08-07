@@ -40,25 +40,17 @@ export class OrderBlockChainFaceConfirmPageComponent implements OnInit, OnDestro
 
   ngOnInit(): void {
     this.createForm();
-    this.checkLocation();
-  }
-  checkLocation(): void {
-    const user = this.tokenService.getUser();
-    this.http.get(`/api/salesportal/location-by-code?code=${user.locationCode}`).toPromise().then((response: any) => {
-      this.locationName = response.data.displayName;
-      this.locationCode = response.data.code;
-    });
-    this.http.get(`/api/customerportal/newRegister/getEmployeeDetail/username/${user.username}`).toPromise()
-      .then((employee: any) => {
-        this.employeeCode = employee.data.pin;
-      });
-
   }
 
   createForm(): void {
+    const employeeCode = this.transaction.data && this.transaction.data.seller ? this.transaction.data.seller.ascCode : '';
     this.confirmForm = this.fb.group({
-      password: ['', [Validators.required]],
+      password: [employeeCode, [Validators.required]],
     });
+    this.confirmForm.patchValue({
+      password: employeeCode || '',
+    });
+
   }
 
   onBack(): void {
@@ -70,8 +62,7 @@ export class OrderBlockChainFaceConfirmPageComponent implements OnInit, OnDestro
     this.http.get(`/api/customerportal/checkSeller/${this.confirmForm.value.password}`).toPromise()
       .then((employee: any) => {
         const isEmployee = employee.data || '';
-        console.log('isEmployee', isEmployee);
-        if (isEmployee.isAscCode) {
+        if (isEmployee.condition) {
           this.callService();
         } else {
           this.alertService.error('กรุณากรอกรหัสพนักงงานให้ถูกต้อง');
