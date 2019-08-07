@@ -373,7 +373,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
     }
     this.transactionService.remove();
     const product = this.priceOption.queryParams;
-    const colorProduct = this.priceOption.productStock.color;
+    const colorProduct = this.priceOption.productStock.colorName;
     const brand: string = encodeURIComponent(product.brand ? product.brand : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
     const model: string = encodeURIComponent(product.model ? product.model : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
     const imei: any = JSON.parse(localStorage.getItem('device'));
