@@ -11,14 +11,12 @@ import { AbstractControl, ValidationErrors } from '@angular/forms';
 import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
 import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
-import { ProfileFbbService } from 'src/app/shared/services/profile-fbb.service';
-import { ProfileFbb } from 'src/app/shared/models/profile-fbb.model';
 import { ROUTE_BUY_GADGET_CAMPAIGN_PAGE } from 'src/app/buy-gadget/constants/route-path.constant';
 import { TranslateService } from '@ngx-translate/core';
 import {
   ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_VALIDATE_CUSTOMER_ID_CARD_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_VALIDATE_IDENTIFY_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CUSTOMER_INFO_PAGE
+  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CUSTOMER_INFO_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_MOBILE_DETAIL_PAGE
 } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
 
 @Component({
@@ -34,7 +32,6 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
 
   transaction: Transaction;
   priceOption: PriceOption;
-  profileFbb: ProfileFbb;
   user: User;
   identityValid: boolean = false;
   identity: string;
@@ -53,14 +50,11 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
     private customerInfoService: CustomerInfoService,
     private privilegeService: PrivilegeService,
     private sharedTransactionService: SharedTransactionService,
-    private profileFbbService: ProfileFbbService,
     private translateService: TranslateService
 
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
-    this.profileFbb = this.profileFbbService.load();
-    this.profileFbbService.remove();
     this.user = this.tokenService.getUser();
     this.homeService.callback = () => {
       this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
@@ -109,65 +103,25 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
     this.identityValid = valid;
   }
 
-  checkFbbNo(identity: string): boolean {
-    const REGEX_FBB_MOBILE = /^88[0-9]\d{7}$/;
-    return REGEX_FBB_MOBILE.test(identity);
-  }
-
   onNext(): void {
     this.pageLoadingService.openLoading();
-    if (this.checkFbbNo(this.identity)) {
-      // KEY-IN FbbNo
-      const body = {
-        option: '3',
-        mobileNo: this.identity
-      };
-      this.customerInfoService.queryFbbInfo(body).then((response: any) => {
-        this.profileFbb = response;
-        const fullName = (this.profileFbb.billingProfiles[0].caName || '').split(' ');
-        this.transaction.data.action = TransactionAction.KEY_IN_FBB;
-        return this.privilegeService.checkAndGetPrivilegeCode(this.identity, this.priceOption.trade.ussdCode).then((privilegeCode) => {
-          this.transaction = {
-            ...this.transaction,
-            data: {
-              ...this.transaction.data,
-              customer: {
-                ...this.transaction.data.customer,
-                privilegeCode: privilegeCode,
-                titleName: 'คุณ',
-                firstName: fullName[0],
-                lastName: fullName[1],
-                caNumber: this.profileFbb.billingProfiles[0].caNo
-              },
-              simCard: {
-                ...this.transaction.data.simCard,
-                mobileNo: this.identity
-              }
-            }
-          };
-          this.checkRoutePath();
-        }).catch((e) => {
-          this.pageLoadingService.closeLoading();
-          this.alertService.error(e);
-        });
-      }).catch((error: any) => {
-        this.pageLoadingService.closeLoading();
-        this.alertService.error(error);
-      });
-    } else if (this.utils.isMobileNo(this.identity)) {
+    if (this.utils.isMobileNo(this.identity)) {
       // KEY-IN MobileNo
       this.customerInfoService.getCustomerProfileByMobileNo(this.identity).then((customer: Customer) => {
-        this.transaction.data.simCard = { mobileNo: this.identity };
-        this.transaction.data.action = TransactionAction.KEY_IN;
+        return this.privilegeService.checkAndGetPrivilegeCode(this.identity, this.priceOption.trade.ussdCode).then((privligeCode) => {
+          customer.privilegeCode = privligeCode;
+          this.transaction.data.customer = customer;
+          this.transaction.data.simCard = { mobileNo: this.identity };
+          this.transaction.data.action = TransactionAction.KEY_IN_MOBILE_NO;
+        }).catch(this.ErrorMessage());
       }).then(() => {
         this.checkRoutePath();
-      });
+      }).catch(this.ErrorMessage());
     } else {
       // KEY-IN ID-Card
       this.http.get('/api/customerportal/validate-customer-existing', {
         params: {
-          identity: this.identity,
-          transactionType: TransactionType.DEVICE_ORDER_EXISTING_GADGET_AIS
+          identity: this.identity
         }
       }).toPromise()
         .then((resp: any) => {
@@ -240,9 +194,9 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
 
   private checkRoutePath(): void {
     this.pageLoadingService.closeLoading();
-    if (this.checkFbbNo(this.identity) || this.utils.isMobileNo(this.identity)) {
-      // KEY-IN FbbNo
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_VALIDATE_IDENTIFY_PAGE]);
+    if (this.utils.isMobileNo(this.identity)) {
+      // KEY-IN MobileNo
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_MOBILE_DETAIL_PAGE]);
     } else {
       // KEY IN IDCARD
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CUSTOMER_INFO_PAGE]);
@@ -275,11 +229,11 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
   customerValidate(control: AbstractControl): ValidationErrors | null {
     const value = control.value;
     const length: number = control.value.length;
-    const REGEX_FBB_MOBILE = /^88[0-9]\d{7}$/;
-    const isFbbNo = REGEX_FBB_MOBILE.test(value);
+    // const REGEX_FBB_MOBILE = /^88[0-9]\d{7}$/;
+    // const isFbbNo = REGEX_FBB_MOBILE.test(value);
     if (length >= 10) {
       if (length === 10) {
-        if (this.utils.isMobileNo(value) || isFbbNo) {
+        if (this.utils.isMobileNo(value)) {
           return null;
         } else {
           return {
@@ -347,7 +301,6 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
 
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
-    this.profileFbbService.save(this.profileFbb);
   }
 
   ErrorMessage(): (reason: any) => void | PromiseLike<void> {
