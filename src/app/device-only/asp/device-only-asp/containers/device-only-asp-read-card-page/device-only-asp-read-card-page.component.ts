@@ -77,7 +77,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
     this.createTransaction();
     this.progressBarArea.nativeElement.style.display = 'none';
     this.billingAddress.getLocationName()
-    .subscribe((resp) => this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName));
+      .subscribe((resp) => this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName));
     this.createFormMobile();
     this.craeteFormCus();
     this.createSelectBillingAddressForm();
@@ -249,18 +249,18 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
 
   private getBillingByIdCard(): void {
     this.customerInfoService.getBillingByIdCard(this.customer.idCardNo)
-    .then((res: any) => {
-      if (res && res.data && res.data.billingAccountList) {
-        this.listBillingAccount = res.data.billingAccountList.filter(item => (item.mobileNo && item.mobileNo[0].length > 0) );
-        this.modalBillAddress = this.bsModalService.show(this.selectBillingAddressTemplate);
-      } else {
-        this.progressBarArea.nativeElement.style.display = 'none';
-      }
-      this.pageLoadingService.closeLoading();
-    })
-    .catch(() => {
-      this.listBillingAccountBox.nativeElement.style.display = 'none';
-    });
+      .then((res: any) => {
+        if (res && res.data && res.data.billingAccountList) {
+          this.listBillingAccount = res.data.billingAccountList.filter(item => (item.mobileNo && item.mobileNo[0].length > 0));
+          this.modalBillAddress = this.bsModalService.show(this.selectBillingAddressTemplate);
+        } else {
+          this.progressBarArea.nativeElement.style.display = 'none';
+        }
+        this.pageLoadingService.closeLoading();
+      })
+      .catch(() => {
+        this.listBillingAccountBox.nativeElement.style.display = 'none';
+      });
   }
 
   public zipcode(customer: any): any {
@@ -348,22 +348,22 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
     const billingAddressSelected = this.selectBillingAddressForm.value.billingAddress;
     const mobileNo = this.listBillingAccount[billingAddressSelected].mobileNo[0];
     this.customerInfoService.getBillingByMobileNo(mobileNo)
-    .then((res: any) => {
-      this.customerInfoService.setSelectedMobileNo(mobileNo);
-      this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(res.data.billingAddress.idCardNo.substring(9))}`));
-      this.modalBillAddress.hide();
-      this.canReadSmartCard = true;
-      this.isShowReadCard = false;
-      this.isShowCustomerDetail = true;
-      this.setCustomerInfo({
-        customer: this.customer,
-        action: TransactionAction.READ_CARD
+      .then((res: any) => {
+        this.customerInfoService.setSelectedMobileNo(mobileNo);
+        this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(res.data.billingAddress.idCardNo.substring(9))}`));
+        this.modalBillAddress.hide();
+        this.canReadSmartCard = true;
+        this.isShowReadCard = false;
+        this.isShowCustomerDetail = true;
+        this.setCustomerInfo({
+          customer: this.customer,
+          action: TransactionAction.READ_CARD
+        });
+        this.pageLoadingService.closeLoading();
+      })
+      .catch((err) => {
+        this.alertService.error(err.error.resultDescription);
       });
-      this.pageLoadingService.closeLoading();
-    })
-    .catch((err) => {
-      this.alertService.error(err.error.resultDescription);
-    });
   }
 
   onBack = () => {
@@ -373,17 +373,16 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
     }
     this.transactionService.remove();
     const product = this.priceOption.queryParams;
-    const colorProduct = this.priceOption.productStock.colorName;
     const brand: string = encodeURIComponent(product.brand ? product.brand : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
     const model: string = encodeURIComponent(product.model ? product.model : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
     const imei: any = JSON.parse(localStorage.getItem('device'));
     const url: string = `/sales-portal/buy-product/brand/${brand}/${model}`;
     const queryParams: string =
-      `?modelColor=${colorProduct}
-      &productType=${product.productType}
-      &productSubtype=${product.productSubtype}
-      &imei${imei.imei}
-      &customerGroup=${this.priceOption.customerGroup.code}`;
+      '?modelColor=' + product.color +
+      '&productType=' + product.productType +
+      '&productSubtype=' + product.productSubtype +
+      '&imei=' + imei.imei +
+      '&customerGroup=' + this.priceOption.customerGroup.code;
     window.location.href = url + queryParams;
   }
 
@@ -393,13 +392,13 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
 
   onNext(): void {
     this.createOrderService.createAddToCartTrasaction(this.transaction, this.priceOption)
-    .then((transaction) => {
-      this.transaction = { ...transaction };
-      this.transaction.data.device = this.createOrderService.getDevice(this.priceOption);
-      this.router.navigate([ROUTE_DEVICE_ONLY_ASP_SELECT_MOBILE_CARE_PAGE]);
-    }).catch((error) => {
-      this.alertService.error(error);
-    });
+      .then((transaction) => {
+        this.transaction = { ...transaction };
+        this.transaction.data.device = this.createOrderService.getDevice(this.priceOption);
+        this.router.navigate([ROUTE_DEVICE_ONLY_ASP_SELECT_MOBILE_CARE_PAGE]);
+      }).catch((error) => {
+        this.alertService.error(error);
+      });
   }
 
   ngOnDestroy(): void {
