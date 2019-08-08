@@ -20,6 +20,11 @@
                   <div style="padding-top: 50px">{{ 'ทำรายการสำเร็จ' | translate }}</div>
                   <div style="padding-bottom: 50px">{{ 'คุณได้สมัครแทนบัตรเรียบร้อยแล้ว' | translate }}</div>
                 </div>
+                <hr>
+                <div class=" text-center text-green">
+                  <div>Register App3Steps </div>
+                  <div style="padding-top: 5px">{{message}}</div>
+                </div>
               </div>
 
               <div class="text-center  bg-white" *ngIf="!transaction?.data?.customer?.isBlockChain">
@@ -31,11 +36,6 @@
                   <div style="padding-top: 50px">{{ 'ทำรายการไม่สำเร็จ' | translate }}</div>
                 </div>
               </div>
-            </div>
-            <hr>
-            <div class=" text-center text-green">
-              <div>Register App3Steps </div>
-              <div style="padding-top: 5px">{{message}}</div>
             </div>
           </div>
         </div>

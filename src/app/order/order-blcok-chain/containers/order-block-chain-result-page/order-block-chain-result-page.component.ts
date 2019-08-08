@@ -28,19 +28,28 @@ export class OrderBlockChainResultPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.pageLoadingService.openLoading();
-    const param = {
-      mobile_no: this.transaction.data.simCard.mobileNo,
-      person_id: this.transaction.data.customer.idCardNo
-    };
-    this.http.post(`/api/customerportal/newRegister/registerApp3Steps`, param).toPromise()
-      .then((resp: any) => {
-        this.message = 'หมายเลข' + this.transaction.data.simCard.mobileNo + 'ได้สมัคร Main Mobile สำเร็จแล้ว แจ้งลูกค้ารอรับ OTP ผ่าน SMS';
-      }).catch((err) => {
-        this.message = 'ระบบการสมัครขัดข้อง กรุณาดำเนินการใหม่ภายหลัง';
-      }).then(() => {
-        this.pageLoadingService.closeLoading();
-      });
+    if (this.transaction.data.customer.isBlockChain) {
+      this.pageLoadingService.openLoading();
+      const param = {
+        mobile_no: this.transaction.data.simCard.mobileNo,
+        person_id: this.transaction.data.customer.idCardNo
+      };
+      this.http.post(`/api/customerportal/newRegister/registerApp3Steps`, param).toPromise()
+        .then((resp: any) => {
+          console.log('resp', resp.data.status_code);
+          const data = resp && resp.data ? resp.data.status_code : '';
+          if (data === '200') {
+            // tslint:disable-next-line:max-line-length
+            this.message = 'หมายเลข ' + this.transaction.data.simCard.mobileNo + ' ได้สมัคร Main Mobile สำเร็จแล้ว แจ้งลูกค้ารอรับ OTP ผ่าน SMS';
+          }
+          this.message = 'หมายเลขนี้เคยสมัคร Main Mobile ไว้แล้ว';
+
+        }).catch((err) => {
+          this.message = 'ระบบการสมัครขัดข้อง กรุณาดำเนินการใหม่ภายหลัง';
+        }).then(() => {
+          this.pageLoadingService.closeLoading();
+        });
+    }
   }
   onBack(): void {
     this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_FACE_CONFIRM_PAGE]);
