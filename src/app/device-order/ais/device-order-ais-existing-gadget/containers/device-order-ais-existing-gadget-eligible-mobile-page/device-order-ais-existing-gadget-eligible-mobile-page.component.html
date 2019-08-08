@@ -13,7 +13,7 @@
     <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
     <div class="mt-3 mb-3">
       <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
-      <mc-eligible-mobile title="เอไอเอส ไฟเบอร์" [selected]="onSelected" [eligibleMobiles]="eligibleMobiles"
+      <mc-eligible-mobile title="Post Paid" [selected]="onSelected" [eligibleMobiles]="eligibleMobiles"
         errorMessage="ไม่พบหมายเลขเติมเงินที่แสดงตนตาม ID No ที่ระบุ"
         (completed)="onCompleted($event)"></mc-eligible-mobile>
     </div>

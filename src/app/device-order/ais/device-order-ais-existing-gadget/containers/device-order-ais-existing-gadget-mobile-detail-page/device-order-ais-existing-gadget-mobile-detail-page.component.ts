@@ -14,7 +14,8 @@ import { PromotionShelveService } from 'src/app/device-order/services/promotion-
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
 import { ProfileFbbService } from 'src/app/shared/services/profile-fbb.service';
-import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_ELIGIBLE_MOBILE_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_PAYMENT_DETAIL_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_ELIGIBLE_MOBILE_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_VALIDATE_CUSTOMER_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_NON_PACKAGE_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-device-order-ais-existing-gadget-mobile-detail-page',
@@ -32,7 +33,6 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
   mobileNo: string;
   disableNextButton: boolean;
   action: string;
-  alertWording: string;
 
   constructor(
     private router: Router,
@@ -45,6 +45,7 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
     private http: HttpClient,
     private shoppingCartService: ShoppingCartService,
     private promotionShelveService: PromotionShelveService,
+    private translateService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -63,40 +64,142 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
     this.http.get(`/api/customerportal/mobile-detail/${this.mobileNo}`).toPromise()
       .then((mobileDetail: any) => {
         this.mappingMobileDetail(mobileDetail);
-        this.mappingMobileDetailAndPromotion(mobileDetail);
-      })
+      }).then(() => this.pageLoadingService.closeLoading())
       .catch(this.ErrorMessage());
   }
 
-  mappingMobileDetailAndPromotion(mobileDetail: any): void {
+  mappingMobileDetail(mobileDetail: any): any {
+    const serviceYear = mobileDetail.data.serviceYear;
+    this.mobileInfo = this.mappingMobileInfo(mobileDetail, serviceYear);
+    this.transaction.data.simCard = {
+      mobileNo: this.mobileNo,
+      chargeType: mobileDetail.data.chargeType,
+      billingSystem: mobileDetail.data.billingSystem,
+    };
+    this.transaction.data.currentPackage = mobileDetail.data.package;
+  }
+
+  mappingMobileInfo(mobileDetail: any, serviceYear: any): MobileInfo {
+    return {
+      mobileNo: this.mobileNo || mobileDetail.data.mobileNo,
+      chargeType: this.mapChargeType(mobileDetail.data.chargeType),
+      status: mobileDetail.data.mobileStatus,
+      sagment: mobileDetail.data.mobileSegment,
+      serviceYear: this.serviceYearWording(serviceYear.year, serviceYear.month, serviceYear.day),
+      mainPackage: this.changeMainPackageLangauge(mobileDetail.data.package)
+    };
+  }
+
+  changeMainPackageLangauge(mobileDetail: any = {}): string {
+    return (this.translateService.currentLang === 'EN') ? mobileDetail.titleEng : mobileDetail.title;
+  }
+
+  mapChargeType(chargeType: string): any {
+    if ('Post-paid' === chargeType) {
+      return this.isEngLanguage() ? 'Postpaid' : 'รายเดือน';
+    } else {
+      return this.isEngLanguage() ? 'Prepaid' : 'เติมเงิน';
+    }
+  }
+
+  serviceYearWording(year: string, month: string, day: string): string {
+    let serviceYearWording = '';
+    if (year) {
+      serviceYearWording = this.isEngLanguage() ? `${year || ''} year ` : `${year || ''} ปี `;
+    }
+
+    if (month) {
+      serviceYearWording += this.isEngLanguage() ? `${month} month ` : `${month} เดือน `;
+    }
+
+    if (day) {
+      serviceYearWording += this.isEngLanguage() ? `${day} day` : `${month} วัน`;
+    }
+
+    return serviceYearWording;
+  }
+
+  isEngLanguage(): boolean {
+    return this.translateService.currentLang === 'EN';
+  }
+
+  havePackages(promotionsShelves: any): boolean {
+    return (promotionsShelves || []).length > 0
+      && promotionsShelves.some(promotionsShelve => promotionsShelve.promotions.length > 0);
+
+  }
+
+  onHome(): void {
+    this.homeService.goToHome();
+  }
+
+  onBack(): void {
+    if (this.action === TransactionAction.KEY_IN_MOBILE_NO) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_VALIDATE_CUSTOMER_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_ELIGIBLE_MOBILE_PAGE]);
+    }
+  }
+
+  onNext(): void {
+    this.pageLoadingService.openLoading();
+    this.mappingMobileBillAccountAndIsAirtimeAndCheckWarning(this.mobileNo);
+
+  }
+
+  mappingMobileBillAccountAndIsAirtimeAndCheckWarning(mobileNo: string): void {
+    const { mobileBillAccount, isAirtime }: {
+      mobileBillAccount: string[];
+      isAirtime: boolean;
+    } = this.mappingMobileBillAccountAndIsAirtime(mobileNo);
+    this.checkWarningBillingAccountMessage(mobileBillAccount, isAirtime);
+  }
+
+  mappingMobileBillAccountAndIsAirtime(mobileNo: string): {
+    mobileBillAccount: string[];
+    isAirtime: boolean;
+  } {
+    const billCycles = this.transaction.data.billingInformation.billCycles;
+    const billingAccountList: any = [];
+    const mobileNoList: any = [];
+
+    billCycles.forEach((list: any) => billingAccountList.push(list));
+    billingAccountList.forEach((billings: { mobileNo: any; }) => mobileNoList.push(billings.mobileNo));
+
+    let isAirtime: boolean = false;
+    if (this.priceOption.trade) {
+      const trade = this.priceOption.trade;
+      isAirtime = !!(trade.advancePay.amount > 0);
+    }
+
+    const mobileBillAccount = this.mapBillingCyclesByMobileNo(billCycles, mobileNo);
+    return { mobileBillAccount, isAirtime };
+  }
+
+  mapBillingCyclesByMobileNo(billCycles: BillingAccount[], mobileNo: string): string[] {
+    return billCycles.map(billcycle => billcycle.mobileNo).find((mobile) => mobile.includes(mobileNo));
+  }
+
+  checkWarningBillingAccountMessage(mobileBillAccount: string[], isAirtime: boolean): void {
+    if (mobileBillAccount && mobileBillAccount.length > 1 && isAirtime) {
+      this.alertService.warning('หมายเลขนี้มีการรวมบิล ไม่สามารถทำรายการได้');
+    } else {
+      this.transaction.data.billingInformation.isNewBAFlag = false;
+      this.mappingMobileDetailAndPromotion();
+    }
+  }
+
+  mappingMobileDetailAndPromotion(): void {
     this.callQueryContractFirstPackAndGetPromotionShelveServices()
       .then(promotionsShelves => {
-        let havePackages: any;
-        const { promotionCodeFuturePackage, promotionCodeCurrentPackage, promotionCode }:
-          {
-            promotionCodeFuturePackage: string;
-            promotionCodeCurrentPackage: string;
-            promotionCode: string[];
-          } = this.setPromotionCode(mobileDetail, promotionsShelves);
+        this.transaction.data.promotionsShelves = promotionsShelves;
         if (this.havePackages(promotionsShelves)) {
-          if (promotionCodeFuturePackage) {
-            havePackages = promotionCode.filter((code: string) => {
-              return code === promotionCodeFuturePackage;
-            });
-            this.alertWording = havePackages[0] ? '' : 'แพ็กเกจหลักไม่ร่วมโครงการ \n กรุณาเปลี่ยนแพ็กเกจ';
-          } else {
-            havePackages = promotionCode.filter((code: string) => {
-              return 'P14090142' === promotionCodeCurrentPackage;
-            });
-            this.alertWording = havePackages[0] ? '' : 'แพ็กเกจหลักไม่ร่วมโครงการ \n กรุณาเปลี่ยนแพ็กเกจ';
-          }
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_PAYMENT_DETAIL_PAGE]);
         } else {
-          this.alertWording = `เบอร์ ${this.mobileNo}
-            ไม่สามารถรับสิทธิ์โครงการนี้ได้ \n กรุณาเปลี่ยนเบอร์ใหม่ เพื่อรับสิทธิ์ซื้อเครื่องราคาพิเศษ`;
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_NON_PACKAGE_PAGE]);
         }
       }).then(() => {
         this.pageLoadingService.closeLoading();
-        this.disableNextButton = this.alertWording ? true : false;
       }).catch(this.ErrorMessage());
   }
 
@@ -142,139 +245,24 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
 
   filterItemsByFirstPackageAndInGroup(promotion: any, contract: any): any {
     return (promotion.items || [])
-      .filter((item: {
-        value: {
-          customAttributes: {
-            priceExclVat: number;
-            productPkg: any;
-          };
-        };
-      }) => {
+      .filter((item: any) => {
+        const customAttributes: any = item && (item.value || {}).customAttributes || {};
         const contractFirstPack = item.value.customAttributes.priceExclVat
           >= Math.max(contract.firstPackage || 0, contract.minPrice || 0, contract.initialPackage || 0);
         const inGroup = contract.inPackage.length > 0 ? contract.inPackage
           .some((inPack: any) => inPack === item.value.customAttributes.productPkg) : true;
-        return contractFirstPack && inGroup;
+        return contractFirstPack && inGroup && !this.mathCurrentPackage(customAttributes);
       });
   }
 
-  private setPromotionCode(mobileDetail: any, promotionsShelves: any): any {
-    const promotionCodeFuturePackage: string = mobileDetail.data.futurePackage.promotionCode ?
-      mobileDetail.data.futurePackage.promotionCode : '';
-    const promotionCodeCurrentPackage: string = mobileDetail.data.package.promotionCode ?
-      mobileDetail.data.package.promotionCode : '';
-    const promotionCode: Array<string> = [];
-    promotionsShelves.map((promotionsshelves) => {
-      promotionsshelves.promotions.map((promotion) => {
-        promotion.items.map((items) => {
-          promotionCode.push(items.value.feedItemId);
-        });
-      });
-    });
-    return { promotionCodeFuturePackage, promotionCodeCurrentPackage, promotionCode };
+  mathCurrentPackage(customAttributes: any = {}): boolean {
+    return !this.advancePay
+    && this.transaction.data.currentPackage
+    && this.transaction.data.currentPackage.promotionCode === customAttributes.promotionCode;
   }
 
-  mappingMobileDetail(mobileDetail: any): any {
-    const serviceYear = mobileDetail.data.serviceYear;
-    this.mobileInfo = this.mappingMobileInfo(mobileDetail, serviceYear);
-    this.transaction.data.simCard = {
-      mobileNo: this.mobileNo,
-      chargeType: mobileDetail.data.chargeType,
-      billingSystem: mobileDetail.data.billingSystem,
-    };
-    this.transaction.data.currentPackage = mobileDetail.data.package;
-  }
-
-  mappingMobileInfo(mobileDetail: any, serviceYear: any): MobileInfo {
-    return {
-      mobileNo: this.mobileNo || mobileDetail.data.mobileNo,
-      chargeType: mobileDetail.data.chargeType === 'Post-paid' ? 'รายเดือน' : 'เติมเงิน',
-      status: mobileDetail.data.mobileStatus,
-      sagment: mobileDetail.data.mobileSegment,
-      serviceYear: this.serviceYearWording(serviceYear),
-      mainPackage: mobileDetail.data.packageTitle
-    };
-  }
-
-  serviceYearWording(serviceYear: any): string {
-    let serviceYearWording = '';
-    if (serviceYear.year) {
-      serviceYearWording = `${serviceYear.year || ''} ปี `;
-    }
-    if (serviceYear.month) {
-      serviceYearWording += `${serviceYear.month} เดือน `;
-    }
-    if (serviceYear.day) {
-      serviceYearWording += `${serviceYear.day} วัน`;
-    }
-    return serviceYearWording;
-  }
-
-  havePackages(promotionsShelves: any): boolean {
-    return (promotionsShelves || []).length > 0
-      && promotionsShelves.some(promotionsShelve => promotionsShelve.promotions.length > 0);
-
-  }
-
-  onHome(): void {
-    this.homeService.goToHome();
-  }
-
-  onBack(): void {
-    if (this.action === TransactionAction.KEY_IN_FBB) {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_CUSTOMER_INFO_PAGE]);
-    } else {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_ELIGIBLE_MOBILE_PAGE]);
-    }
-  }
-
-  onNext(): void {
-    this.pageLoadingService.openLoading();
-    this.mappingMobileBillAccountAndIsAirtimeAndCheckWarning(this.mobileNo);
-
-  }
-
-  mappingMobileBillAccountAndIsAirtimeAndCheckWarning(mobileNo: string): void {
-    this.pageLoadingService.closeLoading();
-    const { mobileBillAccount, isAirtime }: {
-      mobileBillAccount: string[];
-      isAirtime: boolean;
-    } = this.mappingMobileBillAccountAndIsAirtime(mobileNo);
-    this.checkWarningBillingAccountMessage(mobileBillAccount, isAirtime);
-  }
-
-  mappingMobileBillAccountAndIsAirtime(mobileNo: string): {
-    mobileBillAccount: string[];
-    isAirtime: boolean;
-  } {
-    const billCycles = this.transaction.data.billingInformation.billCycles;
-    const billingAccountList: any = [];
-    const mobileNoList: any = [];
-
-    billCycles.forEach((list: any) => billingAccountList.push(list));
-    billingAccountList.forEach((billings: { mobileNo: any; }) => mobileNoList.push(billings.mobileNo));
-
-    let isAirtime: boolean = false;
-    if (this.priceOption.trade) {
-      const trade = this.priceOption.trade;
-      isAirtime = !!(trade.advancePay.amount > 0);
-    }
-
-    const mobileBillAccount = this.mapBillingCyclesByMobileNo(billCycles, mobileNo);
-    return { mobileBillAccount, isAirtime };
-  }
-
-  mapBillingCyclesByMobileNo(billCycles: BillingAccount[], mobileNo: string): string[] {
-    return billCycles.map(billcycle => billcycle.mobileNo).find((mobile) => mobile.includes(mobileNo));
-  }
-
-  checkWarningBillingAccountMessage(mobileBillAccount: string[], isAirtime: boolean): void {
-    if (mobileBillAccount && mobileBillAccount.length > 1 && isAirtime) {
-      this.alertService.warning('หมายเลขนี้มีการรวมบิล ไม่สามารถทำรายการได้');
-    } else {
-      this.transaction.data.billingInformation.isNewBAFlag = false;
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_PAYMENT_DETAIL_PAGE]);
-    }
+  get advancePay(): boolean {
+    return !!(+(this.priceOption.trade.advancePay && +this.priceOption.trade.advancePay.amount || 0) > 0);
   }
 
   ErrorMessage(): (reason: any) => void | PromiseLike<void> {

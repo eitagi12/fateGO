@@ -54,14 +54,15 @@ export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements 
   callQueryEligibleFbbListService(): void {
     const idCardNo = this.transaction.data.customer.idCardNo;
     const ussdCode = this.priceOption.trade.ussdCode;
-    this.http.post('/api/customerportal/query-eligible-fbb-list', {
+    this.http.post('/api/customerportal/query-eligible-mobile-list', {
       idCardNo: idCardNo,
       ussdCode: ussdCode,
+      mobileType: `Post-paid`,
       chkMainProFlg: true
     }).toPromise()
       .then((response: any) => {
         this.pageLoadingService.closeLoading();
-        this.eligibleMobiles = response.data.fbbLists || [];
+        this.eligibleMobiles = response.data.postpaid || [];
       }).catch((error: any) => {
         this.pageLoadingService.closeLoading();
         this.alertService.error(this.translateService.instant(error));

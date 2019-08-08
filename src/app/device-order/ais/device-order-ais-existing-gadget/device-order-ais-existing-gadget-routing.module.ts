@@ -17,6 +17,10 @@ import { DeviceOrderAisExistingGadgetQrCodeSummaryPageComponent } from './contai
 import { DeviceOrderAisExistingGadgetQrCodePaymentGeneratorPageComponent } from './containers/device-order-ais-existing-gadget-qr-code-payment-generator-page/device-order-ais-existing-gadget-qr-code-payment-generator-page.component';
 import { DeviceOrderAisExistingGadgetQrCodeQueuePageComponent } from './containers/device-order-ais-existing-gadget-qr-code-queue-page/device-order-ais-existing-gadget-qr-code-queue-page.component';
 import { DeviceOrderAisExistingGadgetAggregatePageComponent } from 'src/app/device-order/ais/device-order-ais-existing-gadget/containers/device-order-ais-existing-gadget-aggregate-page/device-order-ais-existing-gadget-aggregate-page.component';
+import { DeviceOrderAisExistingGadgetNonPackagePageComponent } from 'src/app/device-order/ais/device-order-ais-existing-gadget/containers/device-order-ais-existing-gadget-non-package-page/device-order-ais-existing-gadget-non-package-page.component';
+import { DeviceOrderAisExistingGadgetChangePackagePageComponent } from 'src/app/device-order/ais/device-order-ais-existing-gadget/containers/device-order-ais-existing-gadget-change-package-page/device-order-ais-existing-gadget-change-package-page.component';
+import { DeviceOrderAisExistingGadgetSelectPackagePageComponent } from 'src/app/device-order/ais/device-order-ais-existing-gadget/containers/device-order-ais-existing-gadget-select-package-page/device-order-ais-existing-gadget-select-package-page.component';
+import { DeviceOrderAisExistingGadgetEffectiveStartDatePageComponent } from 'src/app/device-order/ais/device-order-ais-existing-gadget/containers/device-order-ais-existing-gadget-effective-start-date-page/device-order-ais-existing-gadget-effective-start-date-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'validate-customer', pathMatch: 'full' },
@@ -27,6 +31,10 @@ const routes: Routes = [
   { path: 'customer-info', component: DeviceOrderAisExistingGadgetCustomerInfoPageComponent },
   { path: 'eligible-mobile', component: DeviceOrderAisExistingGadgetEligibleMobilePageComponent },
   { path: 'mobile-detail', component: DeviceOrderAisExistingGadgetMobileDetailPageComponent },
+  { path: 'non-package', component: DeviceOrderAisExistingGadgetNonPackagePageComponent },
+  { path: 'change-package', component: DeviceOrderAisExistingGadgetChangePackagePageComponent },
+  { path: 'select-package', component: DeviceOrderAisExistingGadgetSelectPackagePageComponent },
+  { path: 'effective-start-date', component: DeviceOrderAisExistingGadgetEffectiveStartDatePageComponent },
   { path: 'payment-detail', component: DeviceOrderAisExistingGadgetPaymentDetailPageComponent },
   { path: 'summary', component: DeviceOrderAisExistingGadgetSummaryPageComponent },
   { path: 'qr-code-summary', component:  DeviceOrderAisExistingGadgetQrCodeSummaryPageComponent },
