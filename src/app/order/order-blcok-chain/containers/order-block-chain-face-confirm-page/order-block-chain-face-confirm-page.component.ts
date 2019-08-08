@@ -68,7 +68,9 @@ export class OrderBlockChainFaceConfirmPageComponent implements OnInit, OnDestro
           this.alertService.error('กรุณากรอกรหัสพนักงงานให้ถูกต้อง');
         }
       }).catch((err) => {
-
+        this.pageLoadingService.closeLoading();
+      }).then(() => {
+        this.pageLoadingService.closeLoading();
       });
   }
   callService(): void {
