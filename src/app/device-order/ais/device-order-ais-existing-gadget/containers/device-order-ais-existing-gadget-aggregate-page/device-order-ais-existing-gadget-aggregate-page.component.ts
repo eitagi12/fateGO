@@ -8,11 +8,11 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_AGREEMENT_SIGN_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QUEUE_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
 
 @Component({
-  selector: 'app-device-order-ais-existing-gadget-check-out-page',
-  templateUrl: './device-order-ais-existing-gadget-check-out-page.component.html',
-  styleUrls: ['./device-order-ais-existing-gadget-check-out-page.component.scss']
+  selector: 'app-device-order-ais-existing-gadget-aggregate-page',
+  templateUrl: './device-order-ais-existing-gadget-aggregate-page.component.html',
+  styleUrls: ['./device-order-ais-existing-gadget-aggregate-page.component.scss']
 })
-export class DeviceOrderAisExistingGadgetCheckOutPageComponent implements OnInit, OnDestroy {
+export class DeviceOrderAisExistingGadgetAggregatePageComponent implements OnInit, OnDestroy {
 
   transaction: Transaction;
   deviceSelling: DeviceSelling;

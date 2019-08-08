@@ -13,7 +13,7 @@ export const ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_PAYMENT_DETAIL_PAGE = '/devi
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_SUMMARY_PAGE = '/device-order/ais/existing-gadget/summary';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_ECONTRACT_PAGE = '/device-order/ais/existing-gadget/econtract';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_AGREEMENT_SIGN_PAGE = '/device-order/ais/existing-gadget/agreement-sign';
-export const ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_CHECK_OUT_PAGE = '/device-order/ais/existing-gadget/check-out';
+export const ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_AGGREGATE_PAGE = '/device-order/ais/existing-gadget/aggregate';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QUEUE_PAGE = '/device-order/ais/existing-gadget/queue';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_RESULT_PAGE = '/device-order/ais/existing-gadget/result';
 

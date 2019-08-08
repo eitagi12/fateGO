@@ -12,7 +12,7 @@ import { DeviceOrderAisExistingGadgetMobileDetailPageComponent } from './contain
 import { DeviceOrderAisExistingGadgetPaymentDetailPageComponent } from './containers/device-order-ais-existing-gadget-payment-detail-page/device-order-ais-existing-gadget-payment-detail-page.component';
 import { DeviceOrderAisExistingGadgetValidateIdentifyPageComponent } from './containers/device-order-ais-existing-gadget-validate-identify-page/device-order-ais-existing-gadget-validate-identify-page.component';
 import { DeviceOrderAisExistingGadgetSummaryPageComponent } from './containers/device-order-ais-existing-gadget-summary-page/device-order-ais-existing-gadget-summary-page.component';
-import { DeviceOrderAisExistingGadgetCheckOutPageComponent } from './containers/device-order-ais-existing-gadget-check-out-page/device-order-ais-existing-gadget-check-out-page.component';
+
 import { DeviceOrderAisExistingGadgetQueuePageComponent } from './containers/device-order-ais-existing-gadget-queue-page/device-order-ais-existing-gadget-queue-page.component';
 import { DeviceOrderAisExistingGadgetResultPageComponent } from './containers/device-order-ais-existing-gadget-result-page/device-order-ais-existing-gadget-result-page.component';
 import { DeviceOrderAisExistingGadgetEligibleMobilePageComponent } from './containers/device-order-ais-existing-gadget-eligible-mobile-page/device-order-ais-existing-gadget-eligible-mobile-page.component';
@@ -27,6 +27,7 @@ import { DeviceOrderAisExistingGadgetEffectiveStartDatePageComponent } from './c
 import { DeviceOrderAisExistingGadgetSelectPackagePageComponent } from './containers/device-order-ais-existing-gadget-select-package-page/device-order-ais-existing-gadget-select-package-page.component';
 import { DeviceOrderAisExistingGadgetNonPackagePageComponent } from './containers/device-order-ais-existing-gadget-non-package-page/device-order-ais-existing-gadget-non-package-page.component';
 import { DeviceOrderAisExistingGadgetChangePackagePageComponent } from './containers/device-order-ais-existing-gadget-change-package-page/device-order-ais-existing-gadget-change-package-page.component';
+import { DeviceOrderAisExistingGadgetAggregatePageComponent } from 'src/app/device-order/ais/device-order-ais-existing-gadget/containers/device-order-ais-existing-gadget-aggregate-page/device-order-ais-existing-gadget-aggregate-page.component';
 
 @NgModule({
   imports: [
@@ -45,7 +46,7 @@ import { DeviceOrderAisExistingGadgetChangePackagePageComponent } from './contai
     DeviceOrderAisExistingGadgetCustomerInfoPageComponent,
     DeviceOrderAisExistingGadgetValidateIdentifyPageComponent,
     DeviceOrderAisExistingGadgetSummaryPageComponent,
-    DeviceOrderAisExistingGadgetCheckOutPageComponent,
+    DeviceOrderAisExistingGadgetAggregatePageComponent,
     DeviceOrderAisExistingGadgetQueuePageComponent,
     DeviceOrderAisExistingGadgetResultPageComponent,
     DeviceOrderAisExistingGadgetEligibleMobilePageComponent,
