@@ -6,10 +6,10 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { environment } from 'src/environments/environment';
 import { TokenService, PageLoadingService, AlertService } from 'mychannel-shared-libs';
 import { QrCodePageService } from 'src/app/device-order/services/qr-code-page.service';
-import { ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_QR_CODE_QUEUE_PAGE, ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_QR_CODE_SUMMARY_PAGE } from '../../constants/route-path.constant';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import * as moment from 'moment';
+import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QR_CODE_QUEUE_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QR_CODE_SUMMARY_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-gadget-qr-code-payment-generator-page',
@@ -148,11 +148,11 @@ export class DeviceOrderAisExistingGadgetQrCodePaymentGeneratorPageComponent imp
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_QR_CODE_QUEUE_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QR_CODE_QUEUE_PAGE]);
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_QR_CODE_SUMMARY_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QR_CODE_SUMMARY_PAGE]);
   }
 
   isQRCode(qrCodeType: 'THAI_QR' | 'LINE_QR'): boolean {

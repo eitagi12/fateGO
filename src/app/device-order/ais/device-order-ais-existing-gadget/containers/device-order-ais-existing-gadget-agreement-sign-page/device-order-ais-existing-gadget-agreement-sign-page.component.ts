@@ -5,10 +5,7 @@ import { Subscription } from 'rxjs';
 import { ShoppingCart, HomeService, TokenService, AlertService, User, ChannelType, CaptureAndSign } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import {
-  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_ECONTRACT_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CHECK_OUT_PAGE
-} from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_CHECK_OUT_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_ECONTRACT_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-gadget-agreement-sign-page',
@@ -83,11 +80,11 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_ECONTRACT_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_ECONTRACT_PAGE]);
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CHECK_OUT_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_CHECK_OUT_PAGE]);
   }
 
   onHome(): void {

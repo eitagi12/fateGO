@@ -8,8 +8,8 @@ import { QueuePageService } from 'src/app/device-order/services/queue-page.servi
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { Router } from '@angular/router';
-import { ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_RESULT_PAGE } from '../../constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
+import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_RESULT_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-gadget-qr-code-queue-page',
@@ -72,7 +72,7 @@ export class DeviceOrderAisExistingGadgetQrCodeQueuePageComponent implements OnI
       this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
         return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
           this.pageLoadingService.closeLoading();
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_RESULT_PAGE]);
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_RESULT_PAGE]);
         });
       });
     } else {
@@ -82,7 +82,7 @@ export class DeviceOrderAisExistingGadgetQrCodeQueuePageComponent implements OnI
           return this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
             return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
               this.pageLoadingService.closeLoading();
-              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_RESULT_PAGE]);
+              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_RESULT_PAGE]);
             });
           });
         } else {

@@ -13,12 +13,7 @@ import { PrivilegeService } from 'src/app/device-order/services/privilege.servic
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { ROUTE_BUY_GADGET_CAMPAIGN_PAGE } from 'src/app/buy-gadget/constants/route-path.constant';
 import { TranslateService } from '@ngx-translate/core';
-import {
-  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_VALIDATE_CUSTOMER_ID_CARD_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CUSTOMER_INFO_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_MOBILE_DETAIL_PAGE
-} from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
-
+import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_VALIDATE_IDENTIFY_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
 @Component({
   selector: 'app-device-order-ais-existing-gadget-validate-customer-page',
   templateUrl: './device-order-ais-existing-gadget-validate-customer-page.component.html',
@@ -92,7 +87,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
 
   onReadCard(): void {
     this.transaction.data.action = TransactionAction.READ_CARD;
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
   }
 
   onCompleted(identity: string): void {
@@ -196,10 +191,10 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
     this.pageLoadingService.closeLoading();
     if (this.utils.isMobileNo(this.identity)) {
       // KEY-IN MobileNo
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_MOBILE_DETAIL_PAGE]);
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_VALIDATE_IDENTIFY_PAGE]);
     } else {
       // KEY IN IDCARD
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CUSTOMER_INFO_PAGE]);
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_CUSTOMER_INFO_PAGE]);
     }
   }
 

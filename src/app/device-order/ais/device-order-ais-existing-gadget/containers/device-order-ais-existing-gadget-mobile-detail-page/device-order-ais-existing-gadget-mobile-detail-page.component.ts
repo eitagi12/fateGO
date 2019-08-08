@@ -13,12 +13,8 @@ import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart
 import { PromotionShelveService } from 'src/app/device-order/services/promotion-shelve.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
-import {
-  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CUSTOMER_INFO_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_ELIGIBLE_MOBILE_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_PAYMENT_DETAIL_PAGE
-} from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
 import { ProfileFbbService } from 'src/app/shared/services/profile-fbb.service';
+import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_ELIGIBLE_MOBILE_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_PAYMENT_DETAIL_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-gadget-mobile-detail-page',
@@ -226,9 +222,9 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
 
   onBack(): void {
     if (this.action === TransactionAction.KEY_IN_FBB) {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_CUSTOMER_INFO_PAGE]);
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_CUSTOMER_INFO_PAGE]);
     } else {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_ELIGIBLE_MOBILE_PAGE]);
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_ELIGIBLE_MOBILE_PAGE]);
     }
   }
 
@@ -277,7 +273,7 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
       this.alertService.warning('หมายเลขนี้มีการรวมบิล ไม่สามารถทำรายการได้');
     } else {
       this.transaction.data.billingInformation.isNewBAFlag = false;
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_PAYMENT_DETAIL_PAGE]);
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_PAYMENT_DETAIL_PAGE]);
     }
   }
 

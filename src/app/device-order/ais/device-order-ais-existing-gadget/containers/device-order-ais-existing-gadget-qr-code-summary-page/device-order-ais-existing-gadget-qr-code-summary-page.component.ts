@@ -5,9 +5,9 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { ImageBrannerQRCode, QRCodePaymentService } from 'src/app/shared/services/qrcode-payment.service';
 import { Router } from '@angular/router';
-import { ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_QR_CODE_GENERATOR_PAGE } from '../../constants/route-path.constant';
 import { HomeService } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
+import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QR_CODE_GENERATOR_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-gadget-qr-code-summary-page',
@@ -41,7 +41,7 @@ export class DeviceOrderAisExistingGadgetQrCodeSummaryPageComponent implements O
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_GADGET_EXISTING_QR_CODE_GENERATOR_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QR_CODE_GENERATOR_PAGE]);
   }
 
   onHome(): void {
