@@ -1,0 +1,62 @@
+<div class="mc-flex">
+  <mc-header title="{{'ลูกค้าปัจจุบัน' | translate}}">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right">
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
+    <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
+    <div class="container-fluid">
+      <div class="container-fluid">
+        <div class="card-header bg-white col-12">
+          <h5> Package: <span class="text-green" > {{ mainPackageTitle(transaction?.data?.mainPackage?.customAttributes) }}</span></h5>
+        </div>
+      </div>
+      <div class="container-fluid">
+        <div class="card mb-3">
+          <div class="card-header bg-light-blue text-white">
+            <div class="mt-2">
+              {{'เลือกวันที่มีผลการใช้งาน' | translate }}
+            </div>
+          </div>
+          <div class="mt-2">
+            <div class="container-fluid">
+              <form [formGroup]="billingCycleForm">
+                <div *ngFor=" let billCycle of billCycleText; let i = index ">
+                  <div class="row pb-2">
+                    <div class="col-12">
+                      <input type="radio" autocomplete="off" id="bill_{{ i+1 }}" [value]="billCycle"
+                        [checked]="checked(billCycle?.value)" formControlName="bill">
+                      <label for="bill_{{ i+1 }}">{{  billCycle?.textBill | translate}}</label>
+                      <div>
+                        <span *ngIf="billCycle?.value === 'B'"
+                          class="text-bill-cycle text-grey">{{  billCycle?.textDate | translate}} <span class="text-green">
+                            {{ billCycleNextBill$  | async }} </span></span>
+                        <span *ngIf="billCycle?.value === 'D'"
+                          class="text-bill-cycle text-grey">{{  billCycle?.textDate | translate}} <span class="text-green">
+                            {{ billCycleNextDay$  | async }} </span></span>
+                        <span *ngIf="billCycle?.value === 'I'"
+                          class="text-bill-cycle text-grey">{{  billCycle?.textDate | translate}}<span class="text-green">
+                            {{'หลังจากได้รับ SMS ยืนยัน'| translate}}</span> </span>
+                      </div>
+                      <hr>
+                    </div>
+                  </div>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <mc-footer>
+    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!checkFormValid()">NEXT</button>
+  </mc-footer>
+</div>

@@ -23,6 +23,10 @@ import { DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent } from 
 import { DeviceOrderAisExistingGadgetQrCodeSummaryPageComponent } from './containers/device-order-ais-existing-gadget-qr-code-summary-page/device-order-ais-existing-gadget-qr-code-summary-page.component';
 import { DeviceOrderAisExistingGadgetQrCodePaymentGeneratorPageComponent } from './containers/device-order-ais-existing-gadget-qr-code-payment-generator-page/device-order-ais-existing-gadget-qr-code-payment-generator-page.component';
 import { DeviceOrderAisExistingGadgetQrCodeQueuePageComponent } from './containers/device-order-ais-existing-gadget-qr-code-queue-page/device-order-ais-existing-gadget-qr-code-queue-page.component';
+import { DeviceOrderAisExistingGadgetEffectiveStartDatePageComponent } from './containers/device-order-ais-existing-gadget-effective-start-date-page/device-order-ais-existing-gadget-effective-start-date-page.component';
+import { DeviceOrderAisExistingGadgetSelectPackagePageComponent } from './containers/device-order-ais-existing-gadget-select-package-page/device-order-ais-existing-gadget-select-package-page.component';
+import { DeviceOrderAisExistingGadgetNonPackagePageComponent } from './containers/device-order-ais-existing-gadget-non-package-page/device-order-ais-existing-gadget-non-package-page.component';
+import { DeviceOrderAisExistingGadgetChangePackagePageComponent } from './containers/device-order-ais-existing-gadget-change-package-page/device-order-ais-existing-gadget-change-package-page.component';
 
 @NgModule({
   imports: [
@@ -51,7 +55,11 @@ import { DeviceOrderAisExistingGadgetQrCodeQueuePageComponent } from './containe
     DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent,
     DeviceOrderAisExistingGadgetQrCodeSummaryPageComponent,
     DeviceOrderAisExistingGadgetQrCodePaymentGeneratorPageComponent,
-    DeviceOrderAisExistingGadgetQrCodeQueuePageComponent
+    DeviceOrderAisExistingGadgetQrCodeQueuePageComponent,
+    DeviceOrderAisExistingGadgetEffectiveStartDatePageComponent,
+    DeviceOrderAisExistingGadgetSelectPackagePageComponent,
+    DeviceOrderAisExistingGadgetNonPackagePageComponent,
+    DeviceOrderAisExistingGadgetChangePackagePageComponent
   ]
 })
 export class DeviceOrderAisExistingGadgetModule { }
