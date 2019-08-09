@@ -77,6 +77,7 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
       billingSystem: mobileDetail.data.billingSystem,
     };
     this.transaction.data.currentPackage = mobileDetail.data.package;
+    this.transaction.data.onTopPackage = mobileDetail.data.onTopPackage;
   }
 
   mappingMobileInfo(mobileDetail: any, serviceYear: any): MobileInfo {
