@@ -101,6 +101,37 @@ export class CustomerInfoService {
     });
   }
 
+  getCustomerProfilePostpaidByMobileNo(mobileNo: string, idcardNo?: string): Promise<any> {
+    return this.http.get(`/api/customerportal/customerprofile/${mobileNo}`).toPromise().then((customer: any) => {
+      const profile = customer.data;
+
+      if (profile.chargeType === 'Pre-paid') {
+          return Promise.reject(`กรุณาระบุเบอร์ AIS รายเดือนเท่านั้น`);
+      } else {
+        if (profile.mobileStatus !== '000' && profile.mobileStatus !== 'Active') {
+          return Promise.reject('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาตรวจสอบข้อมูล');
+        }
+      }
+      const names = profile.name.split(' ');
+      const mobileProfile = {
+        idCardNo: idcardNo || profile.idCard || '',
+        idCardType: this.ID_CARD_CONST,
+        titleName: profile.title,
+        firstName: names[0],
+        lastName: names[1],
+        birthdate: profile.birthdate,
+        gender: ''
+      };
+      return Promise.resolve(mobileProfile);
+    }).catch((e) => {
+      if (typeof e === 'string') {
+        return Promise.reject(e);
+      } else {
+        return Promise.reject('ไม่สามารถทำรายการได้ เลขหมายนี้ไม่ใช่ระบบ AIS');
+      }
+    });
+  }
+
   verifyPrepaidIdent(idCardNo: string, mobileNo: string): Promise<boolean> {
     return this.http.get(`/api/customerportal/newRegister/verifyPrepaidIdent?idCard=${idCardNo}&mobileNo=${mobileNo}`)
       .toPromise().then((response: any) => {
