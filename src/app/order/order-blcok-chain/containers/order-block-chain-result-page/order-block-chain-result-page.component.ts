@@ -42,7 +42,7 @@ export class OrderBlockChainResultPageComponent implements OnInit {
             // tslint:disable-next-line:max-line-length
             this.message = 'หมายเลข ' + this.transaction.data.simCard.mobileNo + ' ได้สมัคร Main Mobile สำเร็จแล้ว แจ้งลูกค้ารอรับ OTP ผ่าน SMS';
           }
-          this.message = 'หมายเลขนี้เคยสมัคร Main Mobile ไว้แล้ว';
+          this.message = 'หมายเลขบัตรนี้แจ้งล็อกไว้กับ กสทช. ไม่สามารถจดทะเบียนเพิ่มได้';
 
         }).catch((err) => {
           this.message = 'ระบบการสมัครขัดข้อง กรุณาดำเนินการใหม่ภายหลัง';
