@@ -12,6 +12,7 @@ export class SummarySellerCodeComponent implements OnInit {
   @Input() seller: Seller;
   transaction: Transaction;
   locationCode: string;
+  private setLocationCode: string;
 
   constructor(
     private transacService: TransactionService,
@@ -24,6 +25,16 @@ export class SummarySellerCodeComponent implements OnInit {
   ngOnInit(): void {
     if (!this.seller) {
       this.seller = {};
+    }
+    this.setSellerDeviceOnlyASP();
+  }
+
+  setSellerDeviceOnlyASP(): Seller {
+    if (this.tokenService.getUser().userType === 'ASP') {
+      this.setLocationCode = this.tokenService.getUser().locationCode;
+      return Object.assign(this.seller, {
+        sellerNo: this.setLocationCode
+      });
     }
   }
 
