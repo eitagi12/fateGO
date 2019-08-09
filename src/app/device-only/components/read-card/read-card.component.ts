@@ -204,7 +204,6 @@ export class ReadCardComponent implements OnInit, OnDestroy {
     this.addressTextBySmartCard = this.customerInfoService.convertBillingAddressToString(billDeliveryAddress);
     this.customerInfoService.getBillingByIdCard(customer.idCardNo)
       .then((res) => {
-        console.log('getBillingByIdCard : res ==>> ', res);
         if (res && res.data && res.data.billingAccountList) {
           this.listBillingAccount = res.data.billingAccountList.filter((item) => {
             if (item.mobileNo && item.mobileNo[0].length > 0) {
@@ -229,7 +228,7 @@ export class ReadCardComponent implements OnInit, OnDestroy {
   public selectBillingAddress(): void {
     const billingAddressSelected = this.selectBillingAddressForm.value.billingAddress;
     if (billingAddressSelected === this.ADDRESS_BY_SMART_CARD) {
-      this.isSelect = false;
+      this.isSelect = true;
       this.modalBillAddress.hide();
       this.customerInfo.emit({
         customer: this.infoBySmartCard,
