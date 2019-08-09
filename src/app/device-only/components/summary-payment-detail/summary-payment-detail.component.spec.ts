@@ -4,13 +4,24 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient, HttpHandler } from '@angular/common/http';
 import { TokenService } from 'mychannel-shared-libs';
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({ name: 'translate' })
+class MockPipe implements PipeTransform {
+  transform(value: number): number {
+    return value;
+  }
+}
 
 describe('SummaryPaymentDetailComponent', () => {
   let component: SummaryPaymentDetailComponent;
   let fixture: ComponentFixture<SummaryPaymentDetailComponent>;
 
   setupTestBed({
-    declarations: [SummaryPaymentDetailComponent],
+    declarations: [
+      SummaryPaymentDetailComponent,
+      MockPipe
+    ],
     providers: [
       HttpClient,
       HttpHandler,

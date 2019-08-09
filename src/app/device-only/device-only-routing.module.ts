@@ -5,6 +5,10 @@ const routes: Routes = [
   {
       path: 'ais',
       loadChildren: 'src/app/device-only/ais/device-only-ais/device-only-ais.module#DeviceOnlyAisModule'
+  },
+  {
+    path: 'kiosk',
+    loadChildren: 'src/app/device-only/kiosk/device-only-kiosk/device-only-kiosk.module#DeviceOnlyKioskModule'
   }
 ];
 

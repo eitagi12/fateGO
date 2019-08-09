@@ -133,9 +133,13 @@
         <ng-container *ngFor="let privilege of priceOption?.campaign?.privileges">
           <div class="card mb-2" *ngIf="privilege?.trades">
             <div class="card-body">
-              <h6 class="text-black m-0">
-                {{ (priceOption?.campaign?.campaignName || priceOption?.campaign?.campaignDesc | translate) }}
-                {{ priceOption?.customerGroup?.name | translate}} ({{ privilege?.ussdCode }})
+              <h6 class="text-black m-0" *ngIf="customerGroupCode !== 'MC005'">
+                {{ priceOption?.campaign?.campaignName || priceOption?.campaign?.campaignDesc }}
+                {{ priceOption?.customerGroup?.name }} ({{ privilege?.ussdCode }})
+              </h6>
+              <h6 class="text-black m-0" *ngIf="customerGroupCode === 'MC005'">
+                {{ priceOption?.campaign?.campaignName || priceOption?.campaign?.campaignDesc }}
+                {{ priceOption?.customerGroup?.name }}
               </h6>
               <!-- price, advance pay -->
               <div class="row mb-2">
@@ -166,7 +170,7 @@
               </div>
 
               <!-- ข้อตกลง, แพ๊กเกจ -->
-              <div class="row my-3">
+              <div class="row my-3" *ngIf="customerGroupCode !== 'MC005'">
                 <div class="col-6 text-center">
                   <img src="assets/images/icon/sales_portal_green_alert_person.png" width="25" />
                   <span class="text-light-grey border-bottom" translate="{{serviceContract(privilege?.maximumContract | number)}}"></span>

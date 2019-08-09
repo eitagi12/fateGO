@@ -14,6 +14,7 @@ import {
 import {
   ROUTE_DEVICE_ORDER_AIS_EXISTING_VALIDATE_CUSTOMER_ID_CARD_PAGE
 } from 'src/app/device-order/ais/device-order-ais-existing/constants/route-path.constant';
+import { ROUTE_DEVICE_ONLY_KIOSK_SELECT_PAYMENT_AND_RECEIPT_INFORMATION_PAGE } from 'src/app/device-only/kiosk/device-only-kiosk/constants/route-path.constant';
 
 export enum CustomerGroup {
   NEW_REGISTER = 'MC001',
@@ -73,6 +74,8 @@ export class FlowService {
         return ROUTE_DEVICE_ORDER_AIS_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE;
       case CustomerGroup.EXISTING:
         return ROUTE_DEVICE_ORDER_AIS_EXISTING_VALIDATE_CUSTOMER_ID_CARD_PAGE;
+      case CustomerGroup.DEVICE_ONLY:
+        return ROUTE_DEVICE_ONLY_KIOSK_SELECT_PAYMENT_AND_RECEIPT_INFORMATION_PAGE;
       default:
         return '/';
     }

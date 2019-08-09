@@ -18,13 +18,7 @@ import { SellerService } from 'src/app/device-only/services/seller.service';
 @NgModule({
   imports: [
     CommonModule,
-    FormsModule,
-    ReactiveFormsModule,
-    TabsModule.forRoot(),
-    TranslateModule,
     DeviceOnlyRoutingModule,
-    MyChannelSharedLibsModule,
-    SharedModule
   ],
   providers: [
     BillingAddressService,
@@ -33,7 +27,7 @@ import { SellerService } from 'src/app/device-only/services/seller.service';
     HomeButtonService,
     MobileCareService,
     QueueService,
-    SellerService
+    SellerService,
   ]
 })
 export class DeviceOnlyModule { }
