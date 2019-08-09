@@ -102,16 +102,16 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
     this.pageLoadingService.openLoading();
     if (this.utils.isMobileNo(this.identity)) {
       // KEY-IN MobileNo
-      this.customerInfoService.getCustomerProfileByMobileNo(this.identity).then((customer: Customer) => {
+      this.customerInfoService.getCustomerProfilePostpaidByMobileNo(this.identity).then((customer: Customer) => {
         return this.privilegeService.checkAndGetPrivilegeCode(this.identity, this.priceOption.trade.ussdCode).then((privligeCode) => {
           customer.privilegeCode = privligeCode;
           this.transaction.data.customer = customer;
           this.transaction.data.simCard = { mobileNo: this.identity };
           this.transaction.data.action = TransactionAction.KEY_IN_MOBILE_NO;
-        }).catch(this.ErrorMessage());
+        }).catch((error: any) => this.alertService.error(error));
       }).then(() => {
         this.checkRoutePath();
-      }).catch(this.ErrorMessage());
+      }).catch((error: any) => this.alertService.error(error));
     } else {
       // KEY-IN ID-Card
       this.http.get('/api/customerportal/validate-customer-existing', {
