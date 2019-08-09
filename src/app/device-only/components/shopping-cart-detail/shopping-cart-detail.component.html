@@ -7,7 +7,7 @@
           {{ transaction?.data?.customer?.titleName }} {{ transaction?.data?.customer?.firstName }} {{ transaction?.data?.customer?.lastName}}
         </span>
       </div>
-      <div class="col-12 col-sm-6 text-sm-right">
+      <div class="col-12 col-sm-6 text-sm-right" *ngIf="transaction?.data?.receiptInfo?.telNo !== ''">
         <img src="assets/images/icon/sales_portal_green_phone.png" class="icon-img icon-phone" />
         <span id="text-mobile-no">{{ transaction?.data?.receiptInfo?.telNo | mobileNo}}</span>
       </div>

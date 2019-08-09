@@ -104,15 +104,15 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   }
   private createFormMobile = () => {
     this.searchByMobileNoForm = this.fb.group({
-      mobileNo: ''
+      mobileNo: ['', []]
     });
   }
 
   private craeteFormCus = () => {
     this.receiptInfoForm = this.fb.group({
-      taxId: '',
-      branch: '',
-      telNo: ''
+      taxId: ['', [Validators.required]],
+      branch: ['', []],
+      telNo: ['', [Validators.pattern(/^0[6-9]\d{8}$/)]]
     });
     this.receiptInfoForm.valueChanges.pipe(debounceTime(750)).subscribe(event => {
       if (this.receiptInfoForm.valid) {
