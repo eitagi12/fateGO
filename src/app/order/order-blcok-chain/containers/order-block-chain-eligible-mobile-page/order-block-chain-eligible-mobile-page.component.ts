@@ -82,7 +82,7 @@ export class OrderBlockChainEligibleMobilePageComponent implements OnInit, OnDes
     const mobiles: Array<EligibleMobile> = new Array<EligibleMobile>();
     mobileList.forEach(mobileElement => {
       if (blockChainMobileNo.includes(mobileElement.mobileNo)) {
-        mobileElement.status += ' - enroll';
+        mobileElement.status += ' (สมัครแทนบัตรแล้ว)';
         mobileElement.forceEnrollFlag = 'Y';
       }
       mobiles.push({
