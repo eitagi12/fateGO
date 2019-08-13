@@ -55,4 +55,41 @@ export class PrivilegeService {
       Promise.reject(`${e.error.resultDescription || ''} ${(e.error.developerMessage) || ''}`.trim());
     });
   }
+
+  checkAndGetPrivilegeCodeAndCriteria(mobileNo: string, ussdCode: string): Promise<any> {
+    return this.checkPrivilegeByNumberAndCriteria(mobileNo, ussdCode).then((privilegeCode) => {
+      if (privilegeCode.errorMessage === 'MT_INVALID_CRITERIA_MAINPRO') {
+        return privilegeCode;
+      } else {
+        return this.requestUsePrivilege(mobileNo, ussdCode, privilegeCode).then((msgBarcode) => {
+          return msgBarcode;
+        }).catch(e => {
+          Promise.reject('หมายเลขนี้ ไม่สามารถรับสิทธิ์ได้');
+        });
+      }
+
+    }).catch(e => {
+      Promise.reject(`${e.error.resultDescription || ''} ${(e.error.developerMessage) || ''}`.trim());
+    });
+  }
+
+  checkPrivilegeByNumberAndCriteria(mobileNo: string, ussdCode: string): Promise<any> {
+    return this.http.post('/api/customerportal/check-privilege-by-number', {
+      mobileNo: mobileNo,
+      ussdCode: ussdCode,
+      chkMainProFlg: false
+    }).toPromise().then((checkPrivilege: any) => {
+      const privilegeInfo = checkPrivilege.data;
+      return privilegeInfo.privilegeCode;
+    }).catch((e) => {
+      const privilegeMessage = e.error.errors.privilegeMessage === 'MT_INVALID_CRITERIA_MAINPRO';
+      const developerMessage = e.error.developerMessage === 'MT_INVALID_CRITERIA_MAINPRO';
+      const isCriteria = !!(privilegeMessage || developerMessage);
+      if (isCriteria) {
+        return { errorMessage: 'MT_INVALID_CRITERIA_MAINPRO' };
+      }
+      Promise.reject(e);
+    });
+  }
+
 }
