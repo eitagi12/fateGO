@@ -154,9 +154,3 @@ input[type="radio"]:disabled + label:before {
   }
 }
 
-.MC005{
-  background-image : url('/src/assets/images/icon/MC005.png');
-  &.active {
-      background-image : url('/src/assets/images/icon/MC005-active.png');
-  }
-}
