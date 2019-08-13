@@ -32,7 +32,6 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
   shoppingCart: ShoppingCart;
   mobileNo: string;
   disableNextButton: boolean;
-  action: string;
 
   constructor(
     private router: Router,
@@ -56,7 +55,6 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
     this.pageLoadingService.openLoading();
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.mobileNo = this.transaction.data.simCard.mobileNo;
-    this.action = this.transaction.data.action;
     this.callServiceMobileDetail();
   }
 
@@ -135,7 +133,8 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
   }
 
   onBack(): void {
-    if (this.action === TransactionAction.KEY_IN_MOBILE_NO) {
+    const action = this.transaction.data.action;
+    if (action === TransactionAction.KEY_IN_MOBILE_NO) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_VALIDATE_CUSTOMER_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_ELIGIBLE_MOBILE_PAGE]);

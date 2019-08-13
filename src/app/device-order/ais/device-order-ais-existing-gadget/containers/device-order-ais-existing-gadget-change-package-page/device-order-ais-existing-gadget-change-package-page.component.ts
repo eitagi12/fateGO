@@ -11,6 +11,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { CheckChangeServiceService } from 'src/app/device-order/services/check-change-service.service';
 import { HttpClient } from '@angular/common/http';
+import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-gadget-change-package-page',
@@ -33,7 +34,8 @@ export class DeviceOrderAisExistingGadgetChangePackagePageComponent implements O
     private pageLoadingService: PageLoadingService,
     private alertService: AlertService,
     private checkChangeService: CheckChangeServiceService,
-    private http: HttpClient
+    private http: HttpClient,
+    private privilegeService: PrivilegeService,
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -54,7 +56,8 @@ export class DeviceOrderAisExistingGadgetChangePackagePageComponent implements O
   }
 
   onBack(): void {
-    if (TransactionAction.KEY_IN_MOBILE_NO) {
+    const action = this.transaction.data.action;
+    if (action === TransactionAction.KEY_IN_MOBILE_NO) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_VALIDATE_CUSTOMER_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_ELIGIBLE_MOBILE_PAGE]);
@@ -62,7 +65,18 @@ export class DeviceOrderAisExistingGadgetChangePackagePageComponent implements O
   }
 
   onNext(): void {
-    if (TransactionAction.KEY_IN_MOBILE_NO) {
+    this.privilegeService.requestUsePrivilege(this.transaction.data.simCard.mobileNo,
+      this.priceOption.trade.ussdCode, this.transaction.data.customer.privilegeCode)
+      .then((privilegeCode) => {
+        this.transaction.data.customer.privilegeCode = privilegeCode;
+        this.pageLoadingService.closeLoading();
+        this.checkRouteNavigate();
+      });
+  }
+
+  checkRouteNavigate(): void {
+    const action = this.transaction.data.action;
+    if (action === TransactionAction.KEY_IN_MOBILE_NO) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_VALIDATE_IDENTIFY_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_MOBILE_DETAIL_PAGE]);
