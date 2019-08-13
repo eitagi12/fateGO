@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_EFFECTIVE_START_DATE_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_SUMMARY_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
-import { PromotionShelve, BillingSystemType, ShoppingCart, HomeService, PageLoadingService } from 'mychannel-shared-libs';
+import { PromotionShelve, BillingSystemType, ShoppingCart, HomeService, PageLoadingService, AlertService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { BsModalRef } from 'ngx-bootstrap';
@@ -45,6 +45,7 @@ export class DeviceOrderAisExistingGadgetSelectPackagePageComponent implements O
     private shoppingCartService: ShoppingCartService,
     private promotionShelveService: PromotionShelveService,
     private translateService: TranslateService,
+    private alertService: AlertService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -59,6 +60,16 @@ export class DeviceOrderAisExistingGadgetSelectPackagePageComponent implements O
         this.checkTranslateLang(lang);
       }
     });
+    this.homeService.callback = () => {
+      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+        .then((response: any) => {
+          if (response.value === true) {
+            this.returnStock().then(() => {
+              window.location.href = '/';
+            });
+          }
+        });
+    };
   }
 
   changePackageTitleLanguage(currentPackage: any = {}): string {
@@ -191,4 +202,21 @@ export class DeviceOrderAisExistingGadgetSelectPackagePageComponent implements O
     this.transactionService.update(this.transaction);
   }
 
+  returnStock(): Promise<void> {
+    return new Promise(resolve => {
+      const transaction = this.transactionService.load();
+      const promiseAll = [];
+      if (transaction.data) {
+        if (transaction.data.order && transaction.data.order.soId) {
+          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
+            location: this.priceOption.productStock.location,
+            soId: transaction.data.order.soId,
+            transactionId: transaction.transactionId
+          }).toPromise().catch(() => Promise.resolve());
+          promiseAll.push(order);
+        }
+      }
+      Promise.all(promiseAll).then(() => resolve());
+    });
+  }
 }

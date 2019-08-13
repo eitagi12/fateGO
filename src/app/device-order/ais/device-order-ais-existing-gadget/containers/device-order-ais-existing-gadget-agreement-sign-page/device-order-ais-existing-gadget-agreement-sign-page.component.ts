@@ -6,6 +6,9 @@ import { ShoppingCart, HomeService, TokenService, AlertService, User, ChannelTyp
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_AGGREGATE_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_ECONTRACT_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
+import { HttpClient } from '@angular/common/http';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
 
 @Component({
   selector: 'app-device-order-ais-existing-gadget-agreement-sign-page',
@@ -17,6 +20,7 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
 
   transaction: Transaction;
+  priceOption: PriceOption;
   signedSignatureSubscription: Subscription;
   signedOpenSubscription: Subscription;
 
@@ -39,13 +43,28 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
-    private tokenService: TokenService) {
+    private priceOptionService: PriceOptionService,
+    private tokenService: TokenService,
+    private http: HttpClient,
+    private alertService: AlertService
+    ) {
     this.transaction = this.transactionService.load();
+    this.priceOption = this.priceOptionService.load();
     if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {
       this.apiSigned = 'OnscreenSignpad';
     } else {
       this.apiSigned = 'SignaturePad';
     }
+    this.homeService.callback = () => {
+      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+        .then((response: any) => {
+          if (response.value === true) {
+            this.returnStock().then(() => {
+              window.location.href = '/';
+            });
+          }
+        });
+    };
   }
 
   ngOnInit(): void {
@@ -93,5 +112,23 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
 
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
+  }
+
+  returnStock(): Promise<void> {
+    return new Promise(resolve => {
+      const transaction = this.transactionService.load();
+      const promiseAll = [];
+      if (transaction.data) {
+        if (transaction.data.order && transaction.data.order.soId) {
+          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
+            location: this.priceOption.productStock.location,
+            soId: transaction.data.order.soId,
+            transactionId: transaction.transactionId
+          }).toPromise().catch(() => Promise.resolve());
+          promiseAll.push(order);
+        }
+      }
+      Promise.all(promiseAll).then(() => resolve());
+    });
   }
 }

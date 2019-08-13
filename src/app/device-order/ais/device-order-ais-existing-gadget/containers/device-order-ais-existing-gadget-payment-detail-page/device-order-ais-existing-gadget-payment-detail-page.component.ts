@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, Utils, TokenService, PageLoadingService, ShoppingCart, PaymentDetail, PaymentDetailBank, ReceiptInfo } from 'mychannel-shared-libs';
+import { HomeService, Utils, TokenService, PageLoadingService, ShoppingCart, PaymentDetail, PaymentDetailBank, ReceiptInfo, AlertService } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
@@ -47,10 +47,21 @@ export class DeviceOrderAisExistingGadgetPaymentDetailPageComponent implements O
     private shoppingCartService: ShoppingCartService,
     private priceOptionService: PriceOptionService,
     private pageLoadingService: PageLoadingService,
-    private fb: FormBuilder
+    private fb: FormBuilder,
+    private alertService: AlertService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
+    this.homeService.callback = () => {
+      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+        .then((response: any) => {
+          if (response.value === true) {
+            this.returnStock().then(() => {
+              window.location.href = '/';
+            });
+          }
+        });
+    };
   }
 
   ngOnInit(): void {
@@ -167,4 +178,21 @@ export class DeviceOrderAisExistingGadgetPaymentDetailPageComponent implements O
     this.transactionService.update(this.transaction);
   }
 
+  returnStock(): Promise<void> {
+    return new Promise(resolve => {
+      const transaction = this.transactionService.load();
+      const promiseAll = [];
+      if (transaction.data) {
+        if (transaction.data.order && transaction.data.order.soId) {
+          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
+            location: this.priceOption.productStock.location,
+            soId: transaction.data.order.soId,
+            transactionId: transaction.transactionId
+          }).toPromise().catch(() => Promise.resolve());
+          promiseAll.push(order);
+        }
+      }
+      Promise.all(promiseAll).then(() => resolve());
+    });
+  }
 }

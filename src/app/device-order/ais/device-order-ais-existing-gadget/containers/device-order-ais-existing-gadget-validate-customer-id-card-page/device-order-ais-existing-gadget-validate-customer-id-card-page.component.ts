@@ -49,6 +49,16 @@ export class DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent imp
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     this.user = this.tokenService.getUser();
+    this.homeService.callback = () => {
+      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+        .then((response: any) => {
+          if (response.value === true) {
+            this.returnStock().then(() => {
+              window.location.href = '/';
+            });
+          }
+        });
+    };
   }
 
   ngOnInit(): void {
@@ -216,5 +226,23 @@ export class DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent imp
     const developerMessage = (error.errors || {}).developerMessage;
     this.alertService.error((developerMessage && error.resultDescription)
       ? `${developerMessage} ${error.resultDescription}` : `ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้`);
+  }
+
+  returnStock(): Promise<void> {
+    return new Promise(resolve => {
+      const transaction = this.transactionService.load();
+      const promiseAll = [];
+      if (transaction.data) {
+        if (transaction.data.order && transaction.data.order.soId) {
+          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
+            location: this.priceOption.productStock.location,
+            soId: transaction.data.order.soId,
+            transactionId: transaction.transactionId
+          }).toPromise().catch(() => Promise.resolve());
+          promiseAll.push(order);
+        }
+      }
+      Promise.all(promiseAll).then(() => resolve());
+    });
   }
 }

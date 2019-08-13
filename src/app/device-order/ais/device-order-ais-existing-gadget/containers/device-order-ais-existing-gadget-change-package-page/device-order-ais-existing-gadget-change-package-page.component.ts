@@ -10,6 +10,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { CheckChangeServiceService } from 'src/app/device-order/services/check-change-service.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-device-order-ais-existing-gadget-change-package-page',
@@ -31,10 +32,21 @@ export class DeviceOrderAisExistingGadgetChangePackagePageComponent implements O
     private shoppingCartService: ShoppingCartService,
     private pageLoadingService: PageLoadingService,
     private alertService: AlertService,
-    private checkChangeService: CheckChangeServiceService
+    private checkChangeService: CheckChangeServiceService,
+    private http: HttpClient
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
+    this.homeService.callback = () => {
+      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+        .then((response: any) => {
+          if (response.value === true) {
+            this.returnStock().then(() => {
+              window.location.href = '/';
+            });
+          }
+        });
+    };
   }
 
   ngOnInit(): void {
@@ -61,4 +73,21 @@ export class DeviceOrderAisExistingGadgetChangePackagePageComponent implements O
     this.homeService.goToHome();
   }
 
+  returnStock(): Promise<void> {
+    return new Promise(resolve => {
+      const transaction = this.transactionService.load();
+      const promiseAll = [];
+      if (transaction.data) {
+        if (transaction.data.order && transaction.data.order.soId) {
+          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
+            location: this.priceOption.productStock.location,
+            soId: transaction.data.order.soId,
+            transactionId: transaction.transactionId
+          }).toPromise().catch(() => Promise.resolve());
+          promiseAll.push(order);
+        }
+      }
+      Promise.all(promiseAll).then(() => resolve());
+    });
+  }
 }

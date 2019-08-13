@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction } from 'src/app/shared/models/transaction.model';
-import { ShoppingCart, HomeService, TokenService, PageLoadingService, IdCardPipe } from 'mychannel-shared-libs';
+import { ShoppingCart, HomeService, TokenService, PageLoadingService, IdCardPipe, AlertService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -35,11 +35,22 @@ export class DeviceOrderAisExistingGadgetEcontractPageComponent implements OnIni
     private pageLoadingService: PageLoadingService,
     private shoppingCartService: ShoppingCartService,
     private idCardPipe: IdCardPipe,
-    private decimalPipe: DecimalPipe
+    private decimalPipe: DecimalPipe,
+    private alertService: AlertService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
     delete this.transaction.data.contract;
+    this.homeService.callback = () => {
+      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+        .then((response: any) => {
+          if (response.value === true) {
+            this.returnStock().then(() => {
+              window.location.href = '/';
+            });
+          }
+        });
+    };
   }
 
   ngOnInit(): void {
@@ -146,4 +157,21 @@ export class DeviceOrderAisExistingGadgetEcontractPageComponent implements OnIni
     this.transactionService.update(this.transaction);
   }
 
+  returnStock(): Promise<void> {
+    return new Promise(resolve => {
+      const transaction = this.transactionService.load();
+      const promiseAll = [];
+      if (transaction.data) {
+        if (transaction.data.order && transaction.data.order.soId) {
+          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
+            location: this.priceOption.productStock.location,
+            soId: transaction.data.order.soId,
+            transactionId: transaction.transactionId
+          }).toPromise().catch(() => Promise.resolve());
+          promiseAll.push(order);
+        }
+      }
+      Promise.all(promiseAll).then(() => resolve());
+    });
+  }
 }
