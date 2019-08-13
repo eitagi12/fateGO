@@ -163,7 +163,7 @@ export class ReceiptInformationComponent implements OnInit {
       amphur: data.customer.amphur,
       tumbol: data.customer.tumbol,
       zipCode: data.customer.zipCode,
-      mobileNo: data.mobileNo,
+      // mobileNo: data.mobileNo,
     };
     this.action.emit(data.action);
     this.customerInfo = { customer };
@@ -248,12 +248,21 @@ export class ReceiptInformationComponent implements OnInit {
       const mobileNo = this.searchByMobileNoForm.value.mobileNo;
       this.checkChargeType(mobileNo);
     } else {
-      this.alertService.notify({
-        type: 'warning',
-        confirmButtonText: 'OK',
-        showConfirmButton: true,
-        text: 'กรุณาระบุเบอร์ให้ครบ 10 หลัก'
-      });
+      if (this.searchByMobileNoForm.controls.mobileNo.value.length === 10) {
+        this.alertService.notify({
+          type: 'warning',
+          confirmButtonText: 'OK',
+          showConfirmButton: true,
+          text: 'กรุณาระบุเบอร์ให้ถูกต้อง'
+        });
+      } else {
+        this.alertService.notify({
+          type: 'warning',
+          confirmButtonText: 'OK',
+          showConfirmButton: true,
+          text: 'กรุณาระบุเบอร์ให้ครบ 10 หลัก'
+        });
+      }
       this.nameText = '';
       this.billingAddressText = '';
       this.receiptInfoForm.controls['taxId'].setValue('');

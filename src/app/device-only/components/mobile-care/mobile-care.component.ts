@@ -1,7 +1,7 @@
-import { Component, OnInit, Input, ViewChild, TemplateRef, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input, ViewChild, TemplateRef, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
-import { AlertService, PageLoadingService, BillingSystemType } from 'mychannel-shared-libs';
+import { AlertService, PageLoadingService, BillingSystemType, TokenService } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { HttpClient } from '@angular/common/http';
@@ -43,7 +43,7 @@ export interface MobileCareItem {
   providers: []
 })
 
-export class MobileCareComponent implements OnInit {
+export class MobileCareComponent implements OnInit, OnDestroy {
   wizards: string[] = WIZARD_DEVICE_ONLY_AIS;
   public moblieNo: string;
   public otp: string;
@@ -62,6 +62,9 @@ export class MobileCareComponent implements OnInit {
   transaction: Transaction;
   transactionID: string;
   isSelect: boolean;
+  public isKiosk: boolean = false;
+  public unsubscribeform: any;
+  public isShowVerifyOTP: boolean = false;
 
   @Input() mobileCare: MobileCare;
   @Input() normalPrice: number;
@@ -77,6 +80,7 @@ export class MobileCareComponent implements OnInit {
   @ViewChild('template')
   template: TemplateRef<any>;
   modalRef: BsModalRef;
+  isCall: Boolean;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -87,17 +91,26 @@ export class MobileCareComponent implements OnInit {
     private http: HttpClient,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private mobileCareService: MobileCareService
+    private mobileCareService: MobileCareService,
+    private tokenService: TokenService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
   }
 
   ngOnInit(): void {
+    console.log('channel', this.tokenService.getUser());
+    if (this.tokenService.getUser().channelType === 'smart-order') {
+      this.isKiosk = true;
+    } else {
+      this.isKiosk = false;
+    }
     this.createForm();
     this.onCheckValidators();
+    // this.setOtpSubscribe(this.unsubscribeform);
     this.checkPrivilegeMobileCare();
     this.isSelect = false;
+    this.isCall = true;
   }
 
   public onCheckValidators(): void {
@@ -114,6 +127,22 @@ export class MobileCareComponent implements OnInit {
         Validators.maxLength(5),
         Validators.required
       ]),
+    });
+    this.setOtpSubscribe();
+  }
+
+  private setOtpSubscribe(): void {
+    this.unsubscribeform = this.privilegeCustomerForm.controls.otpNo.valueChanges.subscribe((res: any) => {
+      console.log('this.privilegeCustomerForm.controls.otpNo', this.privilegeCustomerForm.value.otpNo);
+      if (this.isKiosk) {
+        console.log('if !');
+        if (this.privilegeCustomerForm.controls['otpNo'].value.length === 5 && this.isCall) {
+          this.verifyOTP();
+          console.log('length', this.privilegeCustomerForm.controls.otpNo.value.length);
+        } else if (this.privilegeCustomerForm.controls['otpNo'].value.length !== 5 && !this.isCall) {
+          this.isCall = true;
+        }
+      }
     });
   }
 
@@ -213,10 +242,16 @@ export class MobileCareComponent implements OnInit {
 
   public searchMobileNo(): void {
     this.pageLoadingService.openLoading();
+    this.isShowVerifyOTP = false;
     this.checkExistingMobileCare();
+    // this.onCheckValidatorsVerifyOTP();
     this.isVerifyflag.emit(false);
     this.privilegeCustomerForm.controls['otpNo'].setValue('');
   }
+
+  // private onCheckValidatorsVerifyOTP(): void {
+  //   this.setOtpSubscribe(this.unsubscribeform.unsubscribe());
+  // }
 
   public checkExistingMobileCare(): void {
     const mobileNo = this.privilegeCustomerForm.value.mobileNo;
@@ -321,13 +356,19 @@ export class MobileCareComponent implements OnInit {
     const endDt = currentPackageMobileCare.endDt;
     const descThai = currentPackageMobileCare.descThai;
     const form = this.privilegeCustomerForm.getRawValue();
+    if (!this.priceOption.productDetail.brand) {
+      this.priceOption.productDetail = {
+        ...this.priceOption.productDetail,
+        brand: this.priceOption.productStock.brand
+      };
+    }
     this.alertService.notify({
       type: 'warning',
       width: '80%',
       cancelButtonText: 'เปลี่ยนเบอร์ใหม่',
-      cancelButtonClass: 'btn-secondary btn-lg text-black mr-2',
+      cancelButtonClass: 'btn btn-secondary w-50 btn-md',
       confirmButtonText: 'ยืนยันการสมัคร',
-      confirmButtonClass: 'btn-success btn-lg text-white mr-2',
+      confirmButtonClass: 'btn btn-success w-50 btn-md',
       showCancelButton: true,
       showConfirmButton: true,
       reverseButtons: true,
@@ -366,10 +407,11 @@ export class MobileCareComponent implements OnInit {
         this.pageLoadingService.closeLoading();
         this.alertService.error(error);
       });
+    this.promotion.emit(undefined);
   }
 
   public verifyOTP(): void {
-    const otp = this.privilegeCustomerForm.value.otpNo;
+    const otp = this.privilegeCustomerForm.controls.otpNo.value;
     let mobile = this.customerInformationService.getSelectedMobileNo();
     if (environment.name !== 'PROD') {
       mobile = environment.TEST_OTP_MOBILE;
@@ -384,15 +426,24 @@ export class MobileCareComponent implements OnInit {
             billingSystem: this.billingSystem,
             chargeType: this.chargeType || ''
           });
+          this.isShowVerifyOTP = true;
           this.isVerifyflag.emit(true);
+          this.isCall = false;
+          // this.unsubscribeform.unsubscribe();
+          // this.setOtpSubscribe();
+          console.log('true', this.unsubscribeform);
         } else {
           this.pageLoadingService.closeLoading();
           this.alertService.error('รหัส OTP ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง');
+          this.privilegeCustomerForm.controls['otpNo'].setValue('');
           this.isVerifyflag.emit(false);
+          console.log('length : ', this.privilegeCustomerForm.controls.otpNo.value.length);
         }
-      }).catch((error) => {
+      })
+      .catch((error) => {
         this.pageLoadingService.closeLoading();
         this.alertService.error('รหัส OTP ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง');
+        this.privilegeCustomerForm.controls['otpNo'].setValue('');
       });
   }
 
@@ -420,5 +471,9 @@ export class MobileCareComponent implements OnInit {
         }
       })
       .then(() => mobileSegment ? null : this.pageLoadingService.closeLoading());
+  }
+
+  ngOnDestroy(): void {
+    this.unsubscribeform.unsubscribe();
   }
 }

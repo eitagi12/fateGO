@@ -1,0 +1,78 @@
+<div class="mc-flex">
+    <mc-header title="{{ 'ซื้อเครื่องเปล่า' | translate }}">
+        <div class="header-icon-right">
+            <mc-dropdown-language></mc-dropdown-language>
+            <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+        </div>
+    </mc-header>
+    <div class="mc-flex-wrap bg-white">
+        <div class="container-fluid mt-5">
+            <div class="card mx-5">
+                <div class="card-header  bg-white">
+                    <div class="text-center  bg-white">
+                        <img src="assets/images/icon/icon-green-check-circle.png" class="d-block m-auto icon">
+                        <div class="my-3 text-center">
+                            <!-- <p>หมายเลข {{ transaction?.data?.simCard?.mobileNo | mobileNo }}</p> -->
+                            <p class="text-green">{{ 'หมายเลขของท่าน' | translate }}
+                                <span id="text-mobile-no">{{ transaction?.data?.receiptInfo?.telNo | mobileNo }}</span></p>
+                            <p class="text-green">{{ 'รายการสั่งซื้อของท่านได้เข้าสู่ระบบเรียบร้อยแล้ว' | translate }}</p>
+                            <!-- กรณี จ่ายด้วย Rabbit -->
+                            <!-- <p>หมายเลขอ้างอิง -->
+                            <!-- <span id="text-transaction-no">{{ transaction?.data?.}}</span></p> -->
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body bg-white">
+                    <div class="text-left">
+                        <p>{{ 'รายการสินค้า' | translate }} </p>
+                    </div>
+                    <div class="row mb-2">
+                        <div class="col-6 text-left">
+                            <i class="fa fa-circle mr-3 text-green"></i>
+                            <span id="text-name-model"> 
+                    {{  priceOption?.productDetail?.name }}
+                    <span *ngIf="priceOption?.productStock?.colorName">
+                      {{ priceOption?.productStock?.colorName?'สี': '' }} {{ priceOption?.productStock?.colorName }}
+                    </span>
+                            </span>
+                        </div>
+                        <div class="col-6 text-right">
+                            <p class="text-green" id="text-normal-price">฿ {{ price | number}} </p>
+                        </div>
+                        <div class="col-12 text-right">
+                            {{ paymentQr | translate }}{{ '(รวมVAT)' | translate }}
+                            <span class="text-green" id="text-include-vat-price">฿ {{ price | number}} </span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="container-fluid mt-5">
+            <div class="text-center my-2 pt-5">
+                <div>
+                    <h2>{{ 'หมายเลขสั่งซื้อในการชำระสินค้าของท่านคือ' | translate }} </h2>
+                </div>
+                <div class="row">
+                    <div class="m-auto text-center col-4 mt-4">
+                        <div class="card mt-2">
+                            <div class="card-body">
+                                <h1 class="text-green queue-no" id="text-queue-no">
+                                    {{ transaction?.data?.queue?.queueNo }}
+                                </h1>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="container-fluid my-5">
+            <div class="text-center">
+                <h4>{{ 'สินค้าของคุณพร้อมแล้วที่จุดรับสินค้า' | translate }} </h4>
+                <button class="btn btn-success btn-lg" (click)="mainMenu()" id="button-main-menu">
+            MAIN MENU
+          </button>
+            </div>
+        </div>
+    </div>
+</div>

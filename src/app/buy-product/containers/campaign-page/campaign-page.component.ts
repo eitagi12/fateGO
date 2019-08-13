@@ -24,6 +24,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { FlowService, CustomerGroup } from '../../services/flow.service';
 import { TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
 
 @Component({
     selector: 'app-campaign',
@@ -50,13 +51,14 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
     maximumNormalPrice: number;
     thumbnail: string;
-
+    public isDeviceOnly: boolean;
     modalRef: BsModalRef;
     params: Params;
     hansetBundle: string;
     productDetail: any;
     productSpec: any;
     selectCustomerGroup: any;
+    customerGroupCode: any;
 
     // campaign
     tabs: any[];
@@ -84,17 +86,18 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
         private promotionShelveService: PromotionShelveService,
         private alertService: AlertService,
         private translateService: TranslateService,
-        private http: HttpClient
+        private http: HttpClient,
+        private transactionService: TransactionService
     ) {
         this.priceOption = {};
         this.transaction = {};
         this.priceOptionService.remove();
+        this.transactionService.remove();
         this.user = this.tokenService.getUser();
     }
 
     ngOnInit(): void {
         this.createForm();
-
         this.activatedRoute.queryParams.subscribe((params: any) => {
             this.params = params;
             this.callService(
@@ -404,6 +407,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
     }
 
     onCampaignSelected(campaign: any, code: string): void {
+        this.customerGroupCode = code;
         this.priceOption.customerGroup = campaign.customerGroups.find(
             customerGroup => customerGroup.code === code
         );
@@ -491,6 +495,8 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
                 return 'Port - In';
             case CustomerGroup.EXISTING:
                 return 'Change Service';
+            case CustomerGroup.DEVICE_ONLY:
+                return 'Device Only';
         }
     }
 
@@ -539,8 +545,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             productType: productType || PRODUCT_TYPE,
             productSubtype: productSubtype || PRODUCT_SUB_TYPE
         });
-      this.productDetailService.then((resp: any) => {
-
+        this.productDetailService.then((resp: any) => {
             // เก็บข้อมูลไว้ไปแสดงหน้าอื่นโดยไม่เปลี่ยนแปลงค่าข้างใน
             this.priceOption.productDetail = resp.data || {};
 
@@ -606,7 +611,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             productSubtype: productSubtype,
             location: this.user.locationCode
         });
-      this.priceOptionDetailService.then((resp: any) => {
+        this.priceOptionDetailService.then((resp: any) => {
             const priceOptions = this.filterCampaigns(resp.data.priceOptions || []);
             if (priceOptions && priceOptions.length > 0) {
                 this.maximumNormalPrice = priceOptions[0].maximumNormalPrice;
@@ -614,7 +619,7 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
             // generate customer tabs
             this.tabs = this.getTabsFormPriceOptions(priceOptions);
 
-            this.tabs = this.tabs.filter(customerGroup => customerGroup.code !== 'MC005');
+            // this.tabs = this.tabs.filter(customerGroup => customerGroup.code !== 'MC005');
 
             this.tabs.forEach((tab: any) => {
                 tab.campaignSliders = this.getCampaignSliders(priceOptions, tab.code);

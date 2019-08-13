@@ -50,7 +50,10 @@ const routes: Routes = [
   {
     path: 'device-only',
     loadChildren: 'src/app/device-only/device-only.module#DeviceOnlyModule',
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard],
+    resolve: {
+      i18n: I18nService
+    }
   },
   {
     path: 'error',

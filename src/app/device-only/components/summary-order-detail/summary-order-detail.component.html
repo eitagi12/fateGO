@@ -1,5 +1,5 @@
 <div class="card mb-3">
-  <div class="card-header bg-pink text-white">สรุปรายการสั่งชื้อสินค้า</div>
+  <div class="card-header bg-pink text-white">{{ 'สรุปรายการสั่งซื้อสินค้า' | translate }}</div>
   <div class="card-body">
     <p class="text-green" id="text-campaign-name-summary">{{ priceOption?.campaign?.campaignName }} </p>
     <i class="fa fa-circle mr-3 text-lime"></i>
@@ -17,7 +17,7 @@
   </div>
   <div class="card-footer bg-transparent text-right">
     <span>
-      รวมยอดชำระ(รวมVAT)
+     {{ 'รวมยอดชำระ (รวม VAT)' | translate }}
     </span>
     <span class="text-green ml-2" id="text-summary-price">
       ฿ {{ summary([
