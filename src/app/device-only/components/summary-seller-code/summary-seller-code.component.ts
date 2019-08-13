@@ -12,7 +12,7 @@ export class SummarySellerCodeComponent implements OnInit {
   @Input() seller: Seller;
   transaction: Transaction;
   locationCode: string;
-  private setLocationCode: string;
+  private setAscCode: string;
 
   constructor(
     private transacService: TransactionService,
@@ -31,9 +31,9 @@ export class SummarySellerCodeComponent implements OnInit {
 
   setSellerDeviceOnlyASP(): Seller {
     if (this.tokenService.getUser().userType === 'ASP') {
-      this.setLocationCode = this.tokenService.getUser().locationCode;
+      this.setAscCode = this.tokenService.getUser().ascCode;
       return Object.assign(this.seller, {
-        sellerNo: this.setLocationCode
+        sellerNo: this.setAscCode
       });
     }
   }
