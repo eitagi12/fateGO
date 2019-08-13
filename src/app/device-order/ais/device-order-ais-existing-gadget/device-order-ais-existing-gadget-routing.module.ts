@@ -21,6 +21,7 @@ import { DeviceOrderAisExistingGadgetNonPackagePageComponent } from 'src/app/dev
 import { DeviceOrderAisExistingGadgetChangePackagePageComponent } from 'src/app/device-order/ais/device-order-ais-existing-gadget/containers/device-order-ais-existing-gadget-change-package-page/device-order-ais-existing-gadget-change-package-page.component';
 import { DeviceOrderAisExistingGadgetSelectPackagePageComponent } from 'src/app/device-order/ais/device-order-ais-existing-gadget/containers/device-order-ais-existing-gadget-select-package-page/device-order-ais-existing-gadget-select-package-page.component';
 import { DeviceOrderAisExistingGadgetEffectiveStartDatePageComponent } from 'src/app/device-order/ais/device-order-ais-existing-gadget/containers/device-order-ais-existing-gadget-effective-start-date-page/device-order-ais-existing-gadget-effective-start-date-page.component';
+import { DeviceOrderAisExistingGadgetSelectPackageOntopPageComponent } from 'src/app/device-order/ais/device-order-ais-existing-gadget/containers/device-order-ais-existing-gadget-select-package-ontop-page/device-order-ais-existing-gadget-select-package-ontop-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'validate-customer', pathMatch: 'full' },
@@ -35,6 +36,7 @@ const routes: Routes = [
   { path: 'change-package', component: DeviceOrderAisExistingGadgetChangePackagePageComponent },
   { path: 'select-package', component: DeviceOrderAisExistingGadgetSelectPackagePageComponent },
   { path: 'effective-start-date', component: DeviceOrderAisExistingGadgetEffectiveStartDatePageComponent },
+  { path: 'select-package-ontop', component: DeviceOrderAisExistingGadgetSelectPackageOntopPageComponent },
   { path: 'payment-detail', component: DeviceOrderAisExistingGadgetPaymentDetailPageComponent },
   { path: 'summary', component: DeviceOrderAisExistingGadgetSummaryPageComponent },
   { path: 'qr-code-summary', component:  DeviceOrderAisExistingGadgetQrCodeSummaryPageComponent },

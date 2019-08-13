@@ -28,6 +28,7 @@ import { DeviceOrderAisExistingGadgetSelectPackagePageComponent } from './contai
 import { DeviceOrderAisExistingGadgetNonPackagePageComponent } from './containers/device-order-ais-existing-gadget-non-package-page/device-order-ais-existing-gadget-non-package-page.component';
 import { DeviceOrderAisExistingGadgetChangePackagePageComponent } from './containers/device-order-ais-existing-gadget-change-package-page/device-order-ais-existing-gadget-change-package-page.component';
 import { DeviceOrderAisExistingGadgetAggregatePageComponent } from 'src/app/device-order/ais/device-order-ais-existing-gadget/containers/device-order-ais-existing-gadget-aggregate-page/device-order-ais-existing-gadget-aggregate-page.component';
+import { DeviceOrderAisExistingGadgetSelectPackageOntopPageComponent } from './containers/device-order-ais-existing-gadget-select-package-ontop-page/device-order-ais-existing-gadget-select-package-ontop-page.component';
 
 @NgModule({
   imports: [
@@ -60,7 +61,8 @@ import { DeviceOrderAisExistingGadgetAggregatePageComponent } from 'src/app/devi
     DeviceOrderAisExistingGadgetEffectiveStartDatePageComponent,
     DeviceOrderAisExistingGadgetSelectPackagePageComponent,
     DeviceOrderAisExistingGadgetNonPackagePageComponent,
-    DeviceOrderAisExistingGadgetChangePackagePageComponent
+    DeviceOrderAisExistingGadgetChangePackagePageComponent,
+    DeviceOrderAisExistingGadgetSelectPackageOntopPageComponent
   ]
 })
 export class DeviceOrderAisExistingGadgetModule { }

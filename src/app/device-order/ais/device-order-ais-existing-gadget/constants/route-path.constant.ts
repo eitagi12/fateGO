@@ -7,6 +7,7 @@ export const ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_ELIGIBLE_MOBILE_PAGE = '/dev
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_MOBILE_DETAIL_PAGE = '/device-order/ais/existing-gadget/mobile-detail';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_SELECT_PACKAGE_PAGE = '/device-order/ais/existing-gadget/select-package';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_EFFECTIVE_START_DATE_PAGE = '/device-order/ais/existing-gadget/effective-start-date';
+export const ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_SELECT_PACKAGE_ONTOP_PAGE = '/device-order/ais/existing-gadget/select-package-ontop';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_NON_PACKAGE_PAGE = '/device-order/ais/existing-gadget/non-package';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_CHANGE_PACKAGE_PAGE = '/device-order/ais/existing-gadget/change-package';
 export const ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_PAYMENT_DETAIL_PAGE = '/device-order/ais/existing-gadget/payment-detail';
