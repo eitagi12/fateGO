@@ -32,9 +32,6 @@
                 <span *ngIf="color">
                   สี {{ color }}
                 </span>
-                <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
-                  (แถมซิม)
-                </span>
                 <span class="pull-right text-green">
                   ฿ {{ priceOption?.trade?.promotionPrice | number }}
                 </span>
@@ -72,9 +69,6 @@
                   {{ priceOption?.productDetail?.name }}
                   <span *ngIf="color">
                     สี {{ color }}
-                  </span>
-                  <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
-                    (แถมซิม)
                   </span>
                   <span *ngIf="transaction?.data?.payment?.paymentForm === 'FULL'">: ชำระเต็มจำนวน</span>
                   <span *ngIf="transaction?.data?.payment?.paymentForm === 'INSTALLMENT'">: ผ่อนชำระบัตรเคดิต</span>
@@ -193,7 +187,7 @@
     </div>
   </div>
   <mc-footer>
-    <button class="btn btn-secondary" (click)="onBack()">CANCEL</button>
+    <button class="btn btn-secondary" (click)="onHome()">CANCEL</button>
     <button class="btn btn-success" (click)="onNext()">PAY NOW</button>
   </mc-footer>
 </div>
