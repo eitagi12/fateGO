@@ -49,6 +49,7 @@ export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements 
         .then((response: any) => {
           if (response.value === true) {
             this.returnStock().then(() => {
+              this.transactionService.remove();
               window.location.href = '/';
             });
           }

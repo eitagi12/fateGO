@@ -53,6 +53,7 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyPageComponent implement
         .then((response: any) => {
           if (response.value === true) {
             this.returnStock().then(() => {
+              this.transactionService.remove();
               window.location.href = '/';
             });
           }
