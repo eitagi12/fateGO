@@ -73,6 +73,7 @@ export class DeviceOrderAisExistingGadgetSelectPackageOntopPageComponent impleme
       ? this.transaction.data.mainPackage.customAttributes.effectiveEndDt : '-';
     this.effectiveEndDt = moment(mainPackEndDt).format('DD/MM/YYYY');
   }
+
   callService(mobileNo: string): void {
     this.pageLoadingService.openLoading();
     const data = this.transaction.data.onTopPackage;
@@ -100,9 +101,9 @@ export class DeviceOrderAisExistingGadgetSelectPackageOntopPageComponent impleme
       });
     }).then(() => this.pageLoadingService.closeLoading());
   }
+
   createForm(): void {
     this.packageOntopForm = this.fb.group({});
-
     this.packageOntopForm.valueChanges.pipe(debounceTime(100)).subscribe((controls: any[]) => {
       const keys = Object.keys(controls);
       const promotionCodeList = keys.filter((key) => {
@@ -133,6 +134,7 @@ export class DeviceOrderAisExistingGadgetSelectPackageOntopPageComponent impleme
       Promise.all(promiseAll).then(() => resolve());
     });
   }
+
   handleError(err: any): void {
     this.pageLoadingService.closeLoading();
     const error = err.error || {};

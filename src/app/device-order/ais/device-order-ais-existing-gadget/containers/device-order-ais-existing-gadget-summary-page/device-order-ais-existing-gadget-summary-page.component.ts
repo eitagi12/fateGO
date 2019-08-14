@@ -13,7 +13,7 @@ import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart
 import { ProfileFbbService } from 'src/app/shared/services/profile-fbb.service';
 import { ProfileFbb } from 'src/app/shared/models/profile-fbb.model';
 import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
-import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_ECONTRACT_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_ECONTRACT_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_SELECT_PACKAGE_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_SELECT_PACKAGE_ONTOP_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_EFFECTIVE_START_DATE_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-gadget-summary-page',
@@ -120,7 +120,24 @@ export class DeviceOrderAisExistingGadgetSummaryPageComponent implements OnInit,
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_PAYMENT_DETAIL_PAGE]);
+    const backUrl: string = this.checkBackNaviagte();
+    if (this.transaction.data.mainPackage) {
+    } else {
+      this.router.navigate([backUrl]);
+
+    }
+  }
+
+  checkBackNaviagte(): string {
+    if (this.transaction.data.mainPackage) {
+      if (this.transaction.data.onTopPackage) {
+        return ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_SELECT_PACKAGE_ONTOP_PAGE;
+      } else {
+        return ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_EFFECTIVE_START_DATE_PAGE;
+      }
+    } else {
+      return ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_SELECT_PACKAGE_PAGE;
+    }
   }
 
   onNext(): void {
