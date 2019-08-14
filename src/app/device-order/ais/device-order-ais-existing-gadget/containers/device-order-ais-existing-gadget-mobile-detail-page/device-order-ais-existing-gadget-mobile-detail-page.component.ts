@@ -75,7 +75,7 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
       billingSystem: mobileDetail.data.billingSystem,
     };
     this.transaction.data.currentPackage = mobileDetail.data.package;
-    this.transaction.data.onTopPackage = mobileDetail.data.onTopPackage;
+    this.transaction.data.onTopPackage = mobileDetail.data.packageOntop;
   }
 
   mappingMobileInfo(mobileDetail: any, serviceYear: any): MobileInfo {
@@ -144,7 +144,6 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
   onNext(): void {
     this.pageLoadingService.openLoading();
     this.mappingMobileBillAccountAndIsAirtimeAndCheckWarning(this.mobileNo);
-
   }
 
   mappingMobileBillAccountAndIsAirtimeAndCheckWarning(mobileNo: string): void {
@@ -257,8 +256,8 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
 
   mathCurrentPackage(customAttributes: any = {}): boolean {
     return !this.advancePay
-    && this.transaction.data.currentPackage
-    && this.transaction.data.currentPackage.promotionCode === customAttributes.promotionCode;
+      && this.transaction.data.currentPackage
+      && this.transaction.data.currentPackage.promotionCode === customAttributes.promotionCode;
   }
 
   get advancePay(): boolean {

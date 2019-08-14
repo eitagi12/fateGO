@@ -11,7 +11,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
-import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_SELECT_PACKAGE_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_SUMMARY_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_SELECT_PACKAGE_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_SELECT_PACKAGE_ONTOP_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
 import * as moment from 'moment';
 
 interface BillCycleText {
@@ -90,7 +90,6 @@ export class DeviceOrderAisExistingGadgetEffectiveStartDatePageComponent impleme
   billCycleNextDay$: Observable<string>;
   billcycleNo: string;
   packageOntopList: any[] = [];
-  checkPackageOntop: any[] = [];
 
   constructor(
     private router: Router,
@@ -121,7 +120,6 @@ export class DeviceOrderAisExistingGadgetEffectiveStartDatePageComponent impleme
   }
 
   ngOnInit(): void {
-    const mobileNo = this.transaction.data.simCard.mobileNo;
     this.createForm();
     this.getBillingAccountProcess();
   }
@@ -131,7 +129,16 @@ export class DeviceOrderAisExistingGadgetEffectiveStartDatePageComponent impleme
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_SUMMARY_PAGE]);
+    if (this.checkPackageOntop()) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_SELECT_PACKAGE_ONTOP_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_SUMMARY_PAGE]);
+    }
+  }
+
+  checkPackageOntop(): boolean {
+    const haveOntopPackage: boolean = this.transaction.data.onTopPackage ? true : false;
+    return haveOntopPackage;
   }
 
   onHome(): void {
