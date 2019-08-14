@@ -96,12 +96,7 @@ export class DeviceOrderAisExistingGadgetQueuePageComponent implements OnInit, O
         const queueNo = resp.data.queue;
         this.skipQueue = true;
         this.transaction.data.queue = { queueNo: queueNo };
-        this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
-          return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
-            this.pageLoadingService.closeLoading();
-            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_RESULT_PAGE]);
-          });
-        });
+        this.createOrderAndupdateTransaction();
       });
   }
 
@@ -109,35 +104,59 @@ export class DeviceOrderAisExistingGadgetQueuePageComponent implements OnInit, O
     this.pageLoadingService.openLoading();
     if (!this.queueType || this.queueType === 'MANUAL' || this.inputType === 'queue') {
       this.transaction.data.queue = { queueNo: this.queue };
-      this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
-        return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
-          this.pageLoadingService.closeLoading();
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_RESULT_PAGE]);
-        });
-      });
+      this.createOrderAndupdateTransaction();
     } else {
-      this.onSendSMSQueue(this.mobileNo).then((queue) => {
-        if (queue) {
-          this.transaction.data.queue = { queueNo: queue };
-          return this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
-            return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
-              this.pageLoadingService.closeLoading();
-              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_RESULT_PAGE]);
-            });
-          });
+      if (this.isLocationPhuket()) {
+        this.genQueuePhuket();
+      } else {
+        this.genQueueAuto();
+      }
+    }
+  }
+
+  genQueuePhuket(): void {
+    this.http.post('/api/salesportal/device-order/transaction/auto-gen-queue', {
+      mobileNo: this.mobileNo
+    }).toPromise()
+      .then((response: any) => {
+        if (response && response.data && response.data.data && response.data.data.queueNo) {
+          this.transaction.data.queue = { queueNo: response.data.data.queueNo };
+          this.createOrderAndupdateTransaction();
+        } else {
+          this.onSkip();
+        }
+      }).catch((error) => {
+        this.onSkip();
+      });
+  }
+
+  genQueueAuto(): void {
+    this.http.post('/api/salesportal/device-order/transaction/auto-gen-queue', {
+      mobileNo: this.mobileNo
+    }).toPromise()
+      .then((response: any) => {
+        if (response && response.data && response.data.data && response.data.data.queueNo) {
+          this.transaction.data.queue = { queueNo: response.data.data.queueNo };
+          this.createOrderAndupdateTransaction();
         } else {
           this.queueType = 'MANUAL';
           this.errorQueue = true;
           this.pageLoadingService.closeLoading();
-          return;
         }
-      }).catch(() => {
+      }).catch((error) => {
         this.queueType = 'MANUAL';
         this.errorQueue = true;
         this.pageLoadingService.closeLoading();
-        return;
       });
-    }
+  }
+
+  createOrderAndupdateTransaction(): void {
+    this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
+      return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
+        this.pageLoadingService.closeLoading();
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_RESULT_PAGE]);
+      });
+    });
   }
 
   ngOnDestroy(): void {
@@ -146,35 +165,6 @@ export class DeviceOrderAisExistingGadgetQueuePageComponent implements OnInit, O
 
   isLocationPhuket(): boolean {
     return this.user.locationCode === '1213' && this.tokenService.isAisUser();
-  }
-
-  onSendSMSQueue(mobileNo: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-      if (this.isLocationPhuket()) {
-        return this.http.post('/api/salesportal/device-order/transaction/get-queue-qmatic', {
-          mobileNo: mobileNo
-        }).toPromise()
-          .then((respQueue: any) => {
-            const data = respQueue.data && respQueue.data.result ? respQueue.data.result : {};
-            resolve(data.queueNo);
-          }).catch((error) => {
-            reject(null);
-          });
-      } else {
-        return this.http.post('/api/salesportal/device-order/transaction/auto-gen-queue', {
-          mobileNo: mobileNo
-        }).toPromise()
-          .then((response: any) => {
-            if (response && response.data && response.data.data && response.data.data.queueNo) {
-              resolve(response.data.data.queueNo);
-            } else {
-              reject(null);
-            }
-          }).catch((error) => {
-            reject(null);
-          });
-      }
-    });
   }
 
   checkValid(): boolean {
