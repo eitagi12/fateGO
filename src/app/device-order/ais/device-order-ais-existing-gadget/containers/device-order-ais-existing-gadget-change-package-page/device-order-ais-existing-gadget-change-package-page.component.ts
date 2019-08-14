@@ -65,16 +65,6 @@ export class DeviceOrderAisExistingGadgetChangePackagePageComponent implements O
   }
 
   onNext(): void {
-    this.privilegeService.requestUsePrivilege(this.transaction.data.simCard.mobileNo,
-      this.priceOption.trade.ussdCode, this.transaction.data.customer.privilegeCode)
-      .then((privilegeCode) => {
-        this.transaction.data.customer.privilegeCode = privilegeCode;
-        this.pageLoadingService.closeLoading();
-        this.checkRouteNavigate();
-      });
-  }
-
-  checkRouteNavigate(): void {
     const action = this.transaction.data.action;
     if (action === TransactionAction.KEY_IN_MOBILE_NO) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_VALIDATE_IDENTIFY_PAGE]);

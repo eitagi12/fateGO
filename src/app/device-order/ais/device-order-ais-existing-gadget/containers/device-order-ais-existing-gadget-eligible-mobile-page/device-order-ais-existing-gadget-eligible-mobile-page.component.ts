@@ -94,7 +94,6 @@ export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements 
   private requestUsePrivilege(): void {
     if (this.isCritiriaMainPro) {
       this.transaction.data.simCard = { mobileNo: this.onSelected.mobileNo };
-      this.transaction.data.customer.privilegeCode = this.onSelected.privilegeCode ? this.onSelected.privilegeCode : '';
       this.pageLoadingService.closeLoading();
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_CHANGE_PACKAGE_PAGE]);
     } else {
