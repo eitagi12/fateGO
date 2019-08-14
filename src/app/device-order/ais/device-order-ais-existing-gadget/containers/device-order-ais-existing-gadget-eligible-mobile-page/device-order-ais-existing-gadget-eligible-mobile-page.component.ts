@@ -75,7 +75,7 @@ export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements 
         this.eligibleMobiles = response.data.postpaid || [];
       }).catch((error: any) => {
         this.pageLoadingService.closeLoading();
-        this.alertService.error(this.translateService.instant(error));
+        this.eligibleMobiles = [];
       });
   }
 
