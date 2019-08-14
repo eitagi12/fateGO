@@ -97,7 +97,8 @@ export class OrderBlockChainFaceConfirmPageComponent implements OnInit, OnDestro
       location_code: this.locationCode || '',
       empowerment_flag: 'Y',
       empowerment_by_code: this.employeeCode || '',
-      force_enroll_flag: simCard.forceEnrollFlag || ''
+      force_enroll_flag: simCard.forceEnrollFlag || '',
+      sim_registration_timestamp: simCard.registerDate
     };
     this.http.post(`/api/customerportal/newRegister/post-mobile-id`, param).toPromise()
       .then((data: any) => {

@@ -196,6 +196,7 @@ export interface SimCard {
   nType?: string;
   mobileNoStatus?: 'Active' | 'Suspended' | 'Enroll';
   forceEnrollFlag?: 'Y' | 'N';
+  registerDate?: string;
 }
 
 export interface MainPackage {

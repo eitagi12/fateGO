@@ -1,12 +1,13 @@
-import { Component, OnInit, OnDestroy} from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, AlertService } from 'mychannel-shared-libs';
+import { HomeService, AlertService, PageLoadingService } from 'mychannel-shared-libs';
 import { ROUTE_ORDER_BLOCK_CHAIN_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_ORDER_BLOCK_CHAIN_AGREEMENT_SIGN_PAGE } from 'src/app/order/order-blcok-chain/constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
 import { WIZARD_ORDER_BLOCK_CHAIN } from 'src/app/order/constants/wizard.constant';
 import { Transaction, BillingAccount } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { element } from '@angular/core/src/render3/instructions';
+import * as moment from 'moment';
+const Moment = moment;
 
 interface EligibleMobile {
   mobileNo: string;
@@ -33,10 +34,11 @@ export class OrderBlockChainEligibleMobilePageComponent implements OnInit, OnDes
     private http: HttpClient,
     private homeService: HomeService,
     private alertService: AlertService,
-    private transactionService: TransactionService
+    private transactionService: TransactionService,
+    private pageLoadingService: PageLoadingService,
   ) {
     this.transaction = this.transactionService.load();
-   }
+  }
 
   ngOnInit(): void {
     if (this.transaction.data.customer) {
@@ -49,9 +51,9 @@ export class OrderBlockChainEligibleMobilePageComponent implements OnInit, OnDes
 
   callServices(idCardNo: string): void {
     this.http.get(`/api/customerportal/newRegister/${idCardNo}/queryPrepaidMobileList/blockchain`).toPromise()
-      .then((resp: any) =>  this.mappingMobileList(resp))
+      .then((resp: any) => this.mappingMobileList(resp))
       .catch(() => [])
-      .then(mobileList =>  this.callGetMobileIdService(mobileList, idCardNo));
+      .then(mobileList => this.callGetMobileIdService(mobileList, idCardNo));
   }
 
   callGetMobileIdService(mobileList: any[], idCardNo: string): void {
@@ -103,18 +105,40 @@ export class OrderBlockChainEligibleMobilePageComponent implements OnInit, OnDes
   }
 
   onNext(): void {
+    const mobileNo = this.selectMobileNo.mobileNo;
+    this.http.get(`/api/customerportal/mobile-detail/${mobileNo}`).toPromise()
+      .then((resp: any) => {
+        const respSim = resp && resp ? resp.data : '';
+        if (respSim.registerDate) {
+          const registerDate = moment(respSim.registerDate, 'DD/MM/YYYY HH:mm:ss').format('YYYY-MM-DDTHH:mm:ss');
+          this.saveData(registerDate);
+        } else {
+          // tslint:disable-next-line:max-line-length
+          this.alertService.error(`หมายเลข ${mobileNo} ไม่สามารถสมัครบริการแทนบัตรได้ในขณะนี้ กรุณาทำรายการใหม่ภายหลัง`);
+        }
+      }).catch(() => {
+        const registerDate = moment().format('YYYY-MM-DDTHH:mm:ss');
+        this.saveData(registerDate);
+      });
+
+  }
+
+  saveData(registerDate: any): void {
     this.transaction.data.simCard = {
       mobileNo: this.selectMobileNo.mobileNo,
       persoSim: false,
-      forceEnrollFlag: this.selectMobileNo.forceEnrollFlag };
+      forceEnrollFlag: this.selectMobileNo.forceEnrollFlag,
+      registerDate: registerDate
+    };
     if (this.selectMobileNo.forceEnrollFlag === 'Y') {
-      this.alertService.question(`หมายเลข ${this.selectMobileNo.mobileNo} เคยสมัครแทนบัตรแล้ว <br>กรุณายืนยันการสมัครใหม่อีกครั้ง`)
-      .then((data) => {
-        if (data.value) {
-          this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_AGREEMENT_SIGN_PAGE]);
-        }
-        return;
-      });
+      // tslint:disable-next-line:max-line-length
+      this.alertService.question(`หมายเลข ${this.selectMobileNo.mobileNo} เคยสมัครแทนบัตรแล้ว <br>กรุณายืนยันการสมัครใหม่อีกครั้ง`, 'ตกลง', 'ยกเลิก')
+        .then((data: any) => {
+          if (data.value) {
+            this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_AGREEMENT_SIGN_PAGE]);
+          }
+          return;
+        });
     } else {
       this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_AGREEMENT_SIGN_PAGE]);
     }

@@ -50,7 +50,13 @@ export class OrderBlockChainFaceComparePageComponent implements OnInit, OnDestro
           ascCode: this.employeeCode
         };
       });
-
+    this.http.get(`/api/customerportal/newRegister/getEmployeeDetail/username/${user.username}`).toPromise()
+      .then((employee: any) => {
+        this.employeeCode = employee.data.pin;
+        this.transaction.data.seller = {
+          ascCode: this.employeeCode
+        };
+      });
   }
 
   onBack(): void {
@@ -85,7 +91,8 @@ export class OrderBlockChainFaceComparePageComponent implements OnInit, OnDestro
       location_code: this.locationCode || '',
       empowerment_flag: '',
       empowerment_by_code: this.employeeCode || '',
-      force_enroll_flag: simCard.forceEnrollFlag || ''
+      force_enroll_flag: simCard.forceEnrollFlag || '',
+      sim_registration_timestamp: simCard.registerDate
     };
     this.http.post(`/api/customerportal/newRegister/post-mobile-id`, param).toPromise()
       .then((data: any) => {
