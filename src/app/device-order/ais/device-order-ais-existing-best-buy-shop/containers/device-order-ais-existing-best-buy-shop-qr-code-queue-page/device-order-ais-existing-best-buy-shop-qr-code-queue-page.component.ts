@@ -1,13 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Transaction, Prebooking, Customer } from 'src/app/shared/models/transaction.model';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { User, PageLoadingService, AlertService, TokenService } from 'mychannel-shared-libs';
+import { User, PageLoadingService, TokenService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { QRCodePaymentService } from 'src/app/shared/services/qrcode-payment.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { QueuePageService } from 'src/app/device-order/services/queue-page.service';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_RESULT_PAGE } from '../../constants/route-path.constant';
@@ -42,9 +41,7 @@ export class DeviceOrderAisExistingBestBuyShopQrCodeQueuePageComponent implement
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
     private pageLoadingService: PageLoadingService,
-    private alertService: AlertService,
     private tokenService: TokenService,
-    private qrCodeService: QRCodePaymentService,
     private sharedTransactionService: SharedTransactionService,
     private queuePageService: QueuePageService
   ) {
@@ -55,7 +52,7 @@ export class DeviceOrderAisExistingBestBuyShopQrCodeQueuePageComponent implement
 
   ngOnInit(): void {
     this.queueWording = this.isLocationPhuket() ? 'เบอร์โทรศัพท์รับหมายเลขสั่งซื้อเพื่อชำระสินค้าของท่านคือ'
-                      : this.queueWording;
+      : this.queueWording;
     this.setQueueType();
     this.deposit = this.transaction.data.preBooking
       && this.transaction.data.preBooking.depositAmt ? -Math.abs(+this.transaction.data.preBooking.depositAmt) : 0;
@@ -85,7 +82,7 @@ export class DeviceOrderAisExistingBestBuyShopQrCodeQueuePageComponent implement
     });
 
     if (this.transaction.data.simCard.mobileNo && this.queueType === 'SMART_SHOP') {
-      this.mobileFrom.patchValue({mobileNo: this.transaction.data.simCard.mobileNo});
+      this.mobileFrom.patchValue({ mobileNo: this.transaction.data.simCard.mobileNo });
       this.mobileNo = this.transaction.data.simCard.mobileNo;
     }
 
@@ -108,48 +105,68 @@ export class DeviceOrderAisExistingBestBuyShopQrCodeQueuePageComponent implement
         const queueNo = resp.data.queue;
         this.skipQueue = true;
         this.transaction.data.queue = { queueNo: queueNo };
-        this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
-          return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
-            this.pageLoadingService.closeLoading();
-            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_RESULT_PAGE]);
-          });
-        });
+        this.createOrderAndupdateTransaction();
       });
+  }
+
+  createOrderAndupdateTransaction(): void {
+    this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
+      return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
+        this.pageLoadingService.closeLoading();
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_RESULT_PAGE]);
+      });
+    });
   }
 
   onNext(): void {
     this.pageLoadingService.openLoading();
     if (!this.queueType || this.queueType === 'MANUAL' || this.inputType === 'queue') {
       this.transaction.data.queue = { queueNo: this.queue };
-      this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
-        return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
-          this.pageLoadingService.closeLoading();
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_RESULT_PAGE]);
-        });
-      });
+      this.createOrderAndupdateTransaction();
     } else {
-      this.onSendSMSQueue(this.mobileNo).then((queue) => {
-        if (queue) {
-          this.transaction.data.queue = { queueNo: queue };
-          return this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
-            return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
-                    this.pageLoadingService.closeLoading();
-                    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_RESULT_PAGE]);
-                  });
-          });
+      if (this.isLocationPhuket()) {
+        this.genQueuePhuket();
+      } else {
+        this.genQueueAuto();
+      }
+    }
+  }
+
+  genQueuePhuket(): void {
+    this.http.post('/api/salesportal/device-order/transaction/get-queue-qmatic', {
+      mobileNo: this.mobileNo
+    }).toPromise()
+      .then((response: any) => {
+        const data = response.data && response.data.result ? response.data.result : {};
+        if (data.queueNo) {
+          this.transaction.data.queue = { queueNo: data.queueNo };
+          this.createOrderAndupdateTransaction();
+        } else {
+          this.onSkip();
+        }
+      }).catch((error) => {
+        this.onSkip();
+      });
+  }
+
+  genQueueAuto(): void {
+    this.http.post('/api/salesportal/device-order/transaction/auto-gen-queue', {
+      mobileNo: this.mobileNo
+    }).toPromise()
+      .then((response: any) => {
+        if (response && response.data && response.data.data && response.data.data.queueNo) {
+          this.transaction.data.queue = { queueNo: response.data.data.queueNo };
+          this.createOrderAndupdateTransaction();
         } else {
           this.queueType = 'MANUAL';
           this.errorQueue = true;
           this.pageLoadingService.closeLoading();
-          return;
         }
-      }).catch(() => {
+      }).catch((error) => {
         this.queueType = 'MANUAL';
-          this.errorQueue = true;
+        this.errorQueue = true;
         this.pageLoadingService.closeLoading();
-        return;
       });
-    }
   }
 
   summary(amount: number[]): number {
@@ -164,35 +181,6 @@ export class DeviceOrderAisExistingBestBuyShopQrCodeQueuePageComponent implement
 
   isLocationPhuket(): boolean {
     return this.user.locationCode === '1213' && this.tokenService.isAisUser();
-  }
-
-  onSendSMSQueue(mobileNo: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-      if (this.isLocationPhuket()) {
-        return this.http.post('/api/salesportal/device-order/transaction/get-queue-qmatic', {
-          mobileNo: mobileNo
-        }).toPromise()
-          .then((respQueue: any) => {
-            const data = respQueue.data && respQueue.data.result ? respQueue.data.result : {};
-            resolve(data.queueNo);
-          }).catch((error) => {
-            reject(null);
-          });
-      } else {
-        return this.http.post('/api/salesportal/device-order/transaction/auto-gen-queue', {
-          mobileNo: mobileNo
-        }).toPromise()
-          .then((response: any) => {
-            if (response && response.data && response.data.data && response.data.data.queueNo) {
-              resolve(response.data.data.queueNo);
-            } else {
-              reject(null);
-            }
-          }).catch((error) => {
-            reject(null);
-          });
-      }
-    });
   }
 
   getPaymentBalance(): number {

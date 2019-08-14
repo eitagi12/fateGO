@@ -17,24 +17,20 @@ import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_RESULT_PAGE } from 'src/app/devi
   styleUrls: ['./device-order-ais-existing-gadget-qr-code-queue-page.component.scss']
 })
 export class DeviceOrderAisExistingGadgetQrCodeQueuePageComponent implements OnInit {
+
   transaction: Transaction;
   priceOption: PriceOption;
-
   mobileNo: string;
   transId: string;
   inputType: string;
-
   mobileFrom: FormGroup;
   queueFrom: FormGroup;
-
   user: User;
   deposit: number;
   color: string;
-
   queue: string;
   queueType: string;
   queueWording: string = 'เบอร์โทรศัพท์รับหมายเลขคิวเพื่อชำระสินค้าของท่านคือ';
-
   errorQueue: boolean = false;
   skipQueue: boolean = false;
 
