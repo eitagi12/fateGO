@@ -80,12 +80,13 @@ export class DeviceOrderAisExistingGadgetQrCodeQueuePageComponent implements OnI
   }
 
   genQueuePhuket(): void {
-    this.http.post('/api/salesportal/device-order/transaction/auto-gen-queue', {
+    this.http.post('/api/salesportal/device-order/transaction/get-queue-qmatic', {
       mobileNo: this.mobileNo
     }).toPromise()
       .then((response: any) => {
-        if (response && response.data && response.data.data && response.data.data.queueNo) {
-          this.transaction.data.queue = { queueNo: response.data.data.queueNo };
+        const data = response.data && response.data.result ? response.data.result : {};
+        if (data.queueNo) {
+          this.transaction.data.queue = { queueNo: data.queueNo };
           this.createOrderAndupdateTransaction();
         } else {
           this.onSkip();
