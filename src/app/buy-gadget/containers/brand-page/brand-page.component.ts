@@ -73,7 +73,7 @@ export class BrandPageComponent implements OnInit {
       productType: ['GADGET/IOT'],
       productSubtype: ['N/A']
     };
-    this.http.post('api/salesportal/brands-of-product',
+    this.http.post('/api/salesportal/brands-of-product',
       param
     ).toPromise().then((res: any) => {
       this.brands = res.data || [];
