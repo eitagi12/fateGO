@@ -83,7 +83,7 @@ export class DeviceOrderAisExistingGadgetSelectPackagePageComponent implements O
 
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-    const promotionByContractFirstPack = this.transaction.data.promotionsShelves || [];
+    const promotionByContractFirstPack = this.transaction.data.promotionsShelves;
     this.defualtSelected(promotionByContractFirstPack);
   }
 
@@ -91,7 +91,9 @@ export class DeviceOrderAisExistingGadgetSelectPackagePageComponent implements O
     this.promotionShelves = this.promotionShelveService
       .defaultBySelected(promotion, this.transaction.data.mainPackage);
     if (!this.advancePay && this.showSelectCurrentPackage && this.havePromotions) {
-      this.promotionShelves[0].promotions[0].active = false;
+      if (this.promotionShelves[0].promotions.length !== 0) {
+        this.promotionShelves[0].promotions[0].active = false;
+      }
     }
     if (this.promotionShelves) {
       this.checkTranslateLang(this.translateService.currentLang);
@@ -102,14 +104,12 @@ export class DeviceOrderAisExistingGadgetSelectPackagePageComponent implements O
     // รอแก้ไขตัวแปรที่จะเก็บลงใน share transaction
     this.selectCurrentPackage = false;
     this.transaction.data.mainPackage = promotion;
-
   }
 
   onClickCurrentPackage(): void {
     this.selectCurrentPackage = true;
     this.transaction.data.mainPackage = null;
     this.promotionShelves[0].promotions.forEach((promotion: any) => promotion.active = false);
-
   }
 
   onBack(): void {

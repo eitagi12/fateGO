@@ -30,7 +30,7 @@ export class PromotionShelveService {
         return data.map((promotionShelve: any) => {
           return {
             title: promotionShelve.title,
-            icon: (promotionShelve.icon ||  '').replace(/\.jpg$/, ''),
+            icon: (promotionShelve.icon || '').replace(/\.jpg$/, ''),
             promotions: promotionShelve.subShelves
               .sort((a, b) => a.priority !== b.priority ? a.priority < b.priority ? -1 : 1 : 0)
               .map((subShelve: any) => {
@@ -109,15 +109,16 @@ export class PromotionShelveService {
     if (!promotionShelves || promotionShelves.length <= 0) {
       return;
     }
-
     if (promotionShelveSelected) {
       promotionShelves.forEach(promotionShelve => {
         promotionShelve.promotions.forEach(promotion => {
-
           (promotion.items || []).forEach((promotionShelveItem: any) => {
             if (promotionShelveItem.value.uniqueId === promotionShelveSelected.uniqueId) {
               promotionShelve.active = true;
               promotion.active = true;
+            } else {
+              promotionShelve.active = false;
+              promotion.active = false;
             }
           });
 
@@ -129,7 +130,6 @@ export class PromotionShelveService {
       promotionShelves.forEach((promotionShelve: any) => {
         if (promotionShelve.promotions && promotionShelve.promotions.length > 0) {
           promotionShelve.promotions[0].active = true;
-
         }
       });
     }
