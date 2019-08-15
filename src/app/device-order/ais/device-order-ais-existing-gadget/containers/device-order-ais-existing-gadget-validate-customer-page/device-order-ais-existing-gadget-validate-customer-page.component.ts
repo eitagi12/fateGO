@@ -51,17 +51,19 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     this.user = this.tokenService.getUser();
-    this.homeService.callback = () => {
-      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
-        .then((response: any) => {
-          if (response.value === true) {
-            this.returnStock().then(() => {
-              this.transactionService.remove();
-              window.location.href = '/';
-            });
-          }
-        });
-    };
+    if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      this.homeService.callback = () => {
+        this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+          .then((response: any) => {
+            if (response.value === true) {
+              this.returnStock().then(() => {
+                this.transactionService.remove();
+                window.location.href = '/';
+              });
+            }
+          });
+      };
+    }
   }
 
   ngOnInit(): void {

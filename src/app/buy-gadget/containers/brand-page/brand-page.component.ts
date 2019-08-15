@@ -79,4 +79,5 @@ export class BrandPageComponent implements OnInit {
       this.brands = res.data || [];
     });
   }
+
 }
