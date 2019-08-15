@@ -3,7 +3,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { Utils, PageLoadingService } from 'mychannel-shared-libs';
+import { Utils, PageLoadingService, User } from 'mychannel-shared-libs';
 
 @Component({
   selector: 'app-summary-payment-detail',
@@ -16,6 +16,8 @@ export class SummaryPaymentDetailComponent implements OnInit {
   transaction: Transaction;
   customerAddress: string;
   price: string;
+  public isShowReceiptTnfomation: boolean = false;
+  user: User;
 
   constructor(
     private priceOptionService: PriceOptionService,
@@ -29,6 +31,11 @@ export class SummaryPaymentDetailComponent implements OnInit {
   ngOnInit(): void {
     this.price = this.priceOption.trade.priceType === 'NORMAL' ? this.priceOption.trade.normalPrice : this.priceOption.trade.promotionPrice;
     this.getDataCustomer();
+    this.checkUserType();
+  }
+
+  private checkUserType(): boolean {
+    return this.isShowReceiptTnfomation = this.user.userType === 'ASP' ? false : true;
   }
 
   getDataCustomer(): void {
