@@ -58,7 +58,6 @@ export class OrderBlockChainFaceConfirmPageComponent implements OnInit, OnDestro
   }
 
   onNext(): void {
-    this.pageLoadingService.openLoading();
     this.http.get(`/api/customerportal/checkSeller/${this.confirmForm.value.password}`).toPromise()
       .then((employee: any) => {
         const isEmployee = employee.data || '';
@@ -68,9 +67,7 @@ export class OrderBlockChainFaceConfirmPageComponent implements OnInit, OnDestro
           this.alertService.error('กรุณากรอกรหัสพนักงงานให้ถูกต้อง');
         }
       }).catch((err) => {
-        this.pageLoadingService.closeLoading();
-      }).then(() => {
-        this.pageLoadingService.closeLoading();
+        this.alertService.error('กรุณากรอกรหัสพนักงงานให้ถูกต้อง');
       });
   }
   callService(): void {
