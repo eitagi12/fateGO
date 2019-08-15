@@ -70,6 +70,7 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
         } else {
           this.transaction.data.seller.sellerNo = seller.sellerNo;
         }
+        this.checkSellerDeviceOnlyASP(seller);
         this.redirectToFlowWeb();
       } else {
         this.alertService.warning(shopCheckSeller.message);
@@ -78,6 +79,14 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
       .catch(() => {
         this.alertService.warning('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
       });
+  }
+
+  private checkSellerDeviceOnlyASP(seller: Seller): void {
+    if (this.transaction.data.transactionType === 'DeviceOnlyASP') {
+      this.summarySellerCode.setSellerDeviceOnlyASP();
+    } else {
+      localStorage.removeItem('seller');
+    }
   }
 
   public conditionNext(canNext: boolean): void {
@@ -130,7 +139,7 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
           customerAddress: this.mapCusAddress(this.transaction.data.customer),
           tradeNo: this.priceOption.trade.tradeNo,
           reqMinimumBalance: this.transaction.data.simCard ?
-                             this.getReqMinimumBalance(this.transaction, this.transaction.data.mobileCarePackage) : '',
+            this.getReqMinimumBalance(this.transaction, this.transaction.data.mobileCarePackage) : '',
           tradeType: this.transaction.data.tradeType
         };
         return this.http.post('/api/salesportal/create-device-selling-order', order).toPromise()
@@ -139,7 +148,7 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
               this.pageLoadingService.closeLoading();
               window.location.href = `/web/sales-order/pay-advance?transactionId=${this.transaction.transactionId}`;
             });
-        });
+          });
       });
   }
 
@@ -163,12 +172,12 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
 
   private getReqMinimumBalance(transaction: Transaction, mobileCarePackage: any): number { // Package only
     if (transaction.data.simCard.chargeType === 'Pre-paid') {
-    let total: number = 0;
-    if (mobileCarePackage && mobileCarePackage.customAttributes) {
-      const customAttributes = mobileCarePackage.customAttributes;
-      total += +(customAttributes.priceInclVat || 0);
+      let total: number = 0;
+      if (mobileCarePackage && mobileCarePackage.customAttributes) {
+        const customAttributes = mobileCarePackage.customAttributes;
+        total += +(customAttributes.priceInclVat || 0);
       }
-    return total;
+      return total;
     }
   }
 
