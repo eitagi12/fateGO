@@ -57,6 +57,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
           .then((response: any) => {
             if (response.value === true) {
               this.returnStock().then(() => {
+                this.transaction.data.order = {};
                 this.transactionService.remove();
                 window.location.href = '/';
               });
@@ -67,23 +68,13 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
   }
 
   ngOnInit(): void {
-    this.createTransaction();
   }
 
   private createTransaction(): void {
-    let order: Order;
-    let transactionId: string;
-    if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
-      transactionId = this.transaction.transactionId;
-      order = this.transaction.data.order;
-    }
-
     this.transaction = {
-      transactionId: transactionId,
       data: {
         transactionType: TransactionType.DEVICE_ORDER_EXISTING_AIS,
         action: TransactionAction.KEY_IN,
-        order: order
       }
     };
   }
@@ -103,6 +94,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
 
   onNext(): void {
     this.pageLoadingService.openLoading();
+    this.createTransaction();
     if (this.utils.isMobileNo(this.identity)) {
       // KEY-IN MobileNo
       this.customerInfoService.getCustomerProfilePostpaidByMobileNo(this.identity).then((customer: Customer) => {
@@ -187,20 +179,16 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
   }
 
   public addCard(): void {
-    if (!this.transaction.data.order || !this.transaction.data.order.soId) {
-      this.http.post('/api/salesportal/add-device-selling-cart',
-        this.getRequestAddDeviceSellingCart()
-      ).toPromise()
-        .then((resp: any) => {
-          this.transaction.data.order = { soId: resp.data.soId };
-          return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-        }).then(() => {
-          this.transaction.data.action = TransactionAction.KEY_IN;
-          this.checkRoutePath();
-        });
-    } else {
-      this.checkRoutePath();
-    }
+    this.http.post('/api/salesportal/add-device-selling-cart',
+      this.getRequestAddDeviceSellingCart()
+    ).toPromise()
+      .then((resp: any) => {
+        this.transaction.data.order = { soId: resp.data.soId };
+        return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+      }).then(() => {
+        this.transaction.data.action = TransactionAction.KEY_IN;
+        this.checkRoutePath();
+      });
   }
 
   private checkRoutePath(): void {
@@ -299,6 +287,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
         .then((response: any) => {
           if (response.value === true) {
             this.returnStock().then(() => {
+              this.transaction.data.order = {};
               this.transactionService.remove();
               this.router.navigate([ROUTE_BUY_GADGET_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
             });
@@ -311,7 +300,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
   }
 
   ngOnDestroy(): void {
-    this.transactionService.update(this.transaction);
+    this.transactionService.save(this.transaction);
   }
 
   ErrorMessage(): (reason: any) => void | PromiseLike<void> {
