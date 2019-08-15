@@ -99,7 +99,6 @@ export class MobileCareComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.log('channel', this.tokenService.getUser());
     if (this.tokenService.getUser().channelType === 'smart-order') {
       this.isKiosk = true;
     } else {
@@ -133,12 +132,9 @@ export class MobileCareComponent implements OnInit, OnDestroy {
 
   private setOtpSubscribe(): void {
     this.unsubscribeform = this.privilegeCustomerForm.controls.otpNo.valueChanges.subscribe((res: any) => {
-      console.log('this.privilegeCustomerForm.controls.otpNo', this.privilegeCustomerForm.value.otpNo);
       if (this.isKiosk) {
-        console.log('if !');
         if (this.privilegeCustomerForm.controls['otpNo'].value.length === 5 && this.isCall) {
           this.verifyOTP();
-          console.log('length', this.privilegeCustomerForm.controls.otpNo.value.length);
         } else if (this.privilegeCustomerForm.controls['otpNo'].value.length !== 5 && !this.isCall) {
           this.isCall = true;
         }
