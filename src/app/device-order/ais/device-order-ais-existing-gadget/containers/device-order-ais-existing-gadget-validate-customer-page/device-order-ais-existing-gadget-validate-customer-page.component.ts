@@ -73,7 +73,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
   private createTransaction(): void {
     this.transaction = {
       data: {
-        transactionType: TransactionType.DEVICE_ORDER_EXISTING_AIS,
+        transactionType: TransactionType.DEVICE_ORDER_EXISTING_GADGET_AIS,
         action: TransactionAction.KEY_IN,
       }
     };
