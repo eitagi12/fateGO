@@ -111,20 +111,16 @@ export class PromotionShelveService {
     }
     if (promotionShelveSelected) {
       promotionShelves.forEach(promotionShelve => {
+        promotionShelve.active = false;
         promotionShelve.promotions.forEach(promotion => {
           (promotion.items || []).forEach((promotionShelveItem: any) => {
             if (promotionShelveItem.value.uniqueId === promotionShelveSelected.uniqueId) {
               promotionShelve.active = true;
               promotion.active = true;
-            } else {
-              promotionShelve.active = false;
-              promotion.active = false;
             }
           });
-
         });
       });
-
     } else {
       promotionShelves[0].active = true;
       promotionShelves.forEach((promotionShelve: any) => {

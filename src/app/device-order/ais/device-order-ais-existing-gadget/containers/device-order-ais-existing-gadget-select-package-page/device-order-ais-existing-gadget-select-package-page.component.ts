@@ -83,7 +83,7 @@ export class DeviceOrderAisExistingGadgetSelectPackagePageComponent implements O
 
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-    const promotionByContractFirstPack = this.transaction.data.promotionsShelves;
+    const promotionByContractFirstPack = this.transaction.data.promotionsShelves || {};
     this.defualtSelected(promotionByContractFirstPack);
   }
 
