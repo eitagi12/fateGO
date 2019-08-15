@@ -158,7 +158,9 @@ export class DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent imp
               });
             });
         });
-    }).catch((e) => this.ErrorMessage());
+    }).catch((error: any) => {
+      this.alertService.error(error);
+    });
 
   }
 
@@ -213,20 +215,6 @@ export class DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent imp
       userId: this.user.username,
       cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
     };
-  }
-
-  ErrorMessage(): (reason: any) => void | PromiseLike<void> {
-    return (err: any) => {
-      this.handleErrorMessage(err);
-    };
-  }
-
-  handleErrorMessage(err: any): void {
-    this.pageLoadingService.closeLoading();
-    const error = err.error || {};
-    const developerMessage = (error.errors || {}).developerMessage;
-    this.alertService.error((developerMessage && error.resultDescription)
-      ? `${developerMessage} ${error.resultDescription}` : `ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้`);
   }
 
   returnStock(): Promise<void> {

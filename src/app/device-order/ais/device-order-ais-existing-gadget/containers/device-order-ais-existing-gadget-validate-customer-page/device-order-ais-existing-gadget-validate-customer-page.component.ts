@@ -156,8 +156,11 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
                   this.addCard();
                 });
             });
-        }).then(() => this.pageLoadingService.closeLoading())
-        .catch(this.ErrorMessage());
+        })
+        .then(() => this.pageLoadingService.closeLoading())
+        .catch((error: any) => {
+          this.alertService.error(error);
+        });
     }
   }
 
@@ -301,19 +304,5 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
 
   ngOnDestroy(): void {
     this.transactionService.save(this.transaction);
-  }
-
-  ErrorMessage(): (reason: any) => void | PromiseLike<void> {
-    return (err: any) => {
-      this.handleErrorMessage(err);
-    };
-  }
-
-  handleErrorMessage(err: any): void {
-    this.pageLoadingService.closeLoading();
-    const error = err.error || {};
-    const developerMessage = (error.errors || {}).developerMessage;
-    this.alertService.error((developerMessage && error.resultDescription)
-      ? `${developerMessage} ${error.resultDescription}` : `ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้`);
   }
 }

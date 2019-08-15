@@ -167,12 +167,12 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent imp
                 });
             });
         }).then(() => this.pageLoadingService.closeLoading())
-          .catch((e) => this.ErrorMessage());
+          .catch((error) => this.alertService.error(error));
       } else {
         this.pageLoadingService.closeLoading();
         this.alertService.error('ไม่สามารถทำรายการได้ ข้อมูลการแสดงตนไม่ถูกต้อง');
       }
-    }).catch(() => this.ErrorMessage());
+    }).catch((error) => this.alertService.error(error));
   }
 
   conditionIdentityValid(): Promise<string> {
@@ -224,20 +224,6 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent imp
       userId: this.user.username,
       cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
     };
-  }
-
-  ErrorMessage(): (reason: any) => void | PromiseLike<void> {
-    return (err: any) => {
-      this.handleErrorMessage(err);
-    };
-  }
-
-  handleErrorMessage(err: any): void {
-    this.pageLoadingService.closeLoading();
-    const error = err.error || {};
-    const developerMessage = (error.errors || {}).developerMessage;
-    this.alertService.error((developerMessage && error.resultDescription)
-      ? `${developerMessage} ${error.resultDescription}` : `ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้`);
   }
 
   returnStock(): Promise<void> {

@@ -74,7 +74,7 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
       .then((mobileDetail: any) => {
         this.mappingMobileDetail(mobileDetail);
       }).then(() => this.pageLoadingService.closeLoading())
-      .catch(this.ErrorMessage());
+      .catch((error) => this.alertService.error(error));
   }
 
   mappingMobileDetail(mobileDetail: any): any {
@@ -85,7 +85,12 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
       chargeType: mobileDetail.data.chargeType,
       billingSystem: mobileDetail.data.billingSystem,
     };
-    this.transaction.data.currentPackage = mobileDetail.data.package;
+    if (mobileDetail.data.package) {
+      this.disableNextButton = false;
+      this.transaction.data.currentPackage = mobileDetail.data.package;
+    } else {
+      this.disableNextButton = true;
+    }
     this.transaction.data.onTopPackage = mobileDetail.data.packageOntop;
   }
 
@@ -210,7 +215,7 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
         }
       }).then(() => {
         this.pageLoadingService.closeLoading();
-      }).catch(this.ErrorMessage());
+      }).catch((error) => this.alertService.error(error));
   }
 
   callQueryContractFirstPackAndGetPromotionShelveServices(): Promise<any> {
@@ -228,7 +233,7 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
           this.transaction.data.contractFirstPack = contract;
         }
         return this.callGetPromotionShelveService(trade, billingSystem, privilege, contract);
-      }).catch(this.ErrorMessage());
+      }).catch((error) => this.alertService.error(error));
   }
 
   callGetPromotionShelveService(trade: any, billingSystem: string, privilege: any, contract: any): any[] | PromiseLike<any[]> {
@@ -273,21 +278,6 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
 
   get advancePay(): boolean {
     return !!(+(this.priceOption.trade.advancePay && +this.priceOption.trade.advancePay.amount || 0) > 0);
-  }
-
-  ErrorMessage(): (reason: any) => void | PromiseLike<void> {
-    return (err: any) => {
-      this.handleErrorMessage(err);
-    };
-  }
-
-  handleErrorMessage(err: any): void {
-    this.disableNextButton = true;
-    this.pageLoadingService.closeLoading();
-    const error = err.error || {};
-    const developerMessage = (error.errors || {}).developerMessage;
-    this.alertService.error((developerMessage && error.resultDescription)
-      ? `${developerMessage} ${error.resultDescription}` : `ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้`);
   }
 
   ngOnDestroy(): void {
