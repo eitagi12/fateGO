@@ -114,12 +114,11 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
               this.checkRoutePath();
             }
           }).catch((error: any) => {
-            this.alertService.error(error);
+            console.log('checkAndGetPrivilegeCodeAndCriteria error :', error);
           });
       }).catch((error: any) => {
-        this.alertService.error(error);
-      }
-      );
+        console.log('getCustomerProfilePostpaidByMobileNo error :', error);
+      });
     } else {
       // KEY-IN ID-Card
       this.http.get('/api/customerportal/validate-customer-existing', {
