@@ -86,38 +86,36 @@
               </ng-template>
             </div>
           </div>
-          <div class="media pl-5 pr-5" *ngIf="isShowCustomerDetail === true">
-            <div class="media-body">
+        </div>
+        <div class="media m-auto" *ngIf="isShowCustomerDetail === true">
+          <div class="media-body">
+            <div>
+              {{ customer?.titleName }}
+              {{ customer?.firstName }}
+              {{ customer?.lastName }}
+            </div>
+            <div>{{ 'เลขบัตรประชาชน' | translate }} {{ customer?.idCardNo | idCard }}</div>
+            <div>
               <div>
-                {{ customer?.titleName }}
-                {{ customer?.firstName }}
-                {{ customer?.lastName }}
-              </div>
-              <div>{{ 'เลขบัตรประชาชน' | translate }} {{ customer?.idCardNo | idCard }}</div>
-              <div>
-                <div>
-                  <span *ngIf="customer?.homeNo" class="mr-1">{{ 'ที่อยู่ ' | translate }} {{ customer?.homeNo }}</span>
-                  <span *ngIf="customer?.street" class="mr-1">{{ 'ถนน' | translate }} {{ customer?.street }}</span>
-                  <span *ngIf="customer?.moo" class="mr-1">{{ ' หมู่ที่ ' | translate }} {{ customer?.moo }}</span>
-                </div>
-                <div>
-                  <span *ngIf="customer?.province === 'กรุงเทพมหานคร'" class="mr-1">
-                    {{ 'แขวง' | translate }} {{ customer?.tumbol }}
-                    {{ 'เขต' | translate }} {{ customer?.amphur }}
-                  </span>
-                  <span *ngIf="customer?.province !== 'กรุงเทพมหานคร'" class="mr-1">
-                    {{ 'ตำบล' | translate }} {{ customer?.tumbol }}
-                    {{ 'อำเภอ' | translate }} {{ customer?.amphur }}
-                  </span>
-                  {{ 'จังหวัด' | translate }} {{ customer?.province || customer?.provinceName }}
-                </div>
-              </div>
-              <div *ngIf="customer?.issueDate !== undefined">
-                {{ 'วันที่ออกบัตร' | translate }} {{ customer?.issueDate || '-' }}
+                <span class="mr-1">{{ 'ที่อยู่' | translate }} {{ customer?.homeNo || customer?.houseNumber }}</span>
+                <span class="mr-1">{{ 'ถนน' | translate }} {{ customer?.street }}</span>
+                <span class="mr-1">{{ 'หมู่ที่' | translate }} {{ customer?.moo }}</span>
+                <span *ngIf="customer?.province === 'กรุงเทพมหานคร'" class="mr-1">
+                  {{ 'แขวง' | translate }} {{ customer?.tumbol }}
+                  {{ 'เขต' | translate }} {{ customer?.amphur }}
+                </span>
+                <span *ngIf="customer?.province !== 'กรุงเทพมหานคร'" class="mr-1">
+                  {{ 'ตำบล' | translate }} {{ customer?.tumbol }}
+                  {{ 'อำเภอ' | translate }} {{ customer?.amphur }}
+                </span>
+                {{ 'จังหวัด' | translate }} {{ customer?.province || customer?.provinceName }}
               </div>
             </div>
-            <img class="img-customer img-fluid" [src]="'data:image/jpeg;base64,' + customer?.imageReadSmartCard" *ngIf="customer?.imageReadSmartCard !== undefined">
+            <div *ngIf="customer?.issueDate">
+              {{ 'วันที่ออกบัตร' | translate }} {{ customer?.issueDate || '-' }}
+            </div>
           </div>
+          <img class="img-customer img-fluid ml-5" [src]="'data:image/jpeg;base64,' + customer?.imageReadSmartCard" *ngIf="customer?.imageReadSmartCard !== undefined">
         </div>
         <div class="card-footer bg-transparent">
           <form [formGroup]="receiptInfoForm" class="pt-2">

@@ -216,7 +216,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
       birthdate: data.customer.birthdate || '',
       gender: data.customer.gender || '',
       expireDate: data.customer.expireDate || '',
-      homeNo: data.customer.homeNo,
+      homeNo: data.customer.homeNo || data.customer.houseNumber || '',
       moo: data.customer.moo || '',
       mooBan: data.customer.mooBan || '',
       room: data.customer.room || '',
