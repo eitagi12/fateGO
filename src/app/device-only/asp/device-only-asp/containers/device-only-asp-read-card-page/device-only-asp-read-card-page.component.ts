@@ -76,12 +76,21 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.createTransaction();
     this.progressBarArea.nativeElement.style.display = 'none';
-    this.billingAddress.getLocationName()
-      .subscribe((resp) => this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName));
     this.createFormMobile();
     this.craeteFormCus();
     this.createSelectBillingAddressForm();
     this.varidationNext(false);
+    this.getLocationName();
+  }
+
+  getLocationName(): void {
+    this.billingAddress.getLocationName().then((resp: any) => {
+      this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName);
+      this.transaction.data.seller = {
+        ...this.transaction.data.seller,
+        locationName: resp.data.displayName
+      };
+    });
   }
 
   private createTransaction(): void {
