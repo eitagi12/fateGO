@@ -39,15 +39,13 @@
           </div>
           <div class="row">
             <div class="col-12">
-              <div class="m-auto bg-light-green device-only-read-card-btn" id="button-read-smart-card"
-                *ngIf="isShowReadCard !== false">
+              <div class="m-auto bg-light-green device-only-read-card-btn" id="button-read-smart-card">
                 <div class="row m-auto" (click)="readCard()">
                   <img class="col-3" src="assets/images/icon/device_only_read_card_icon.png" />
                   <label class="col-9 m-auto"> Read Smart Card </label>
                 </div>
               </div>
-              <div class="m-auto  device-only-read-card-btn" style="text-align: center;" id="button-read-smart-card"
-                *ngIf="isShowReadCard !== false">
+              <div class="m-auto  device-only-read-card-btn" style="text-align: center;" id="button-read-smart-card">
                 <span *ngIf="this.messages" class="col-12 m-auto text-center " [innerHTML]="messages"></span>
               </div>
               <div class="device-only-read-card-progress" #progressBarArea>

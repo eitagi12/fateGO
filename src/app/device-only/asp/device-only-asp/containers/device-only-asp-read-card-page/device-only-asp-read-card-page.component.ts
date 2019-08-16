@@ -246,6 +246,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
     await this.zipcode(data);
     this.addressTextBySmartCard = await this.customerInfoService.convertBillingAddressToString(this.customer);
     await this.getBillingByIdCard();
+    this.messages = '';
   }
 
   private getBillingByIdCard(): void {
