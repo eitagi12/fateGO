@@ -24,7 +24,7 @@
                         <img src="assets/images/icon/icon-green-check-circle.png" class="d-block m-auto icon">
                         <div class="my-3 text-center">
                             <p>{{ 'เบอร์โทรศัพท์รับหมายเลขสั่งซื้อเพื่อชำระสินค้าของท่านคือ' | translate }}
-                                <span id="text-mobile-no">{{ transaction?.data?.receiptInfo?.telNo | mobileNo }}</span></p>
+                                <span id="text-mobile-no">{{ transaction?.data?.receiptInfo?.telNo || transaction?.data?.simCard?.mobileNo | mobileNo }}</span></p>
                             <p>{{ 'ชำระค่าสินค้าเรียบร้อยแล้ว' | translate }}</p>
                             <p>{{ 'หมายเลขอ้างอิง' | translate }}
                                 <span id="text-transaction-no">{{ transaction.data.mpayPayment.tranId }}</span></p>
@@ -59,10 +59,6 @@
                         </div>
                     </div>
 
-
-                    <ng-container [ngSwitch]="queueType">
-
-                        <ng-container *ngSwitchCase="'SMART_SHOP'">
                             <div class="container pt-3">
                                 <form [formGroup]="mobileFrom">
                                     <div class="form-group">
@@ -75,56 +71,8 @@
                                 </form>
 
                             </div>
-                        </ng-container>
+                        
 
-                        <ng-container *ngSwitchCase="'AUTO_GEN_Q'">
-                            <div class="container pt-3">
-
-                                <form [formGroup]="mobileFrom">
-                                    <div class="form-group">
-                                        <div class="mt-5 text-center">{{ 'ระบุเบอร์โทรศัพท์รับหมายเลขสั่งซื้อเพื่อชำระสินค้าของท่าน' | translate }}</div>
-                                        <input class="form-control text-center mb-3" id="mobileNo" maxlength="10" autofocus autocomplete="off" formControlName="mobileNo" (keyup)="checkInput($event, 'mobileNo')" placeholder="ระบุเบอร์โทรศัพท์รับ SMS" value="" [ngClass]="{ 'is-invalid' : mobileFrom.controls.mobileNo.invalid && mobileFrom.controls.mobileNo.touched && mobileFrom.controls.mobileNo.errors }">
-                                        <small class="invalid-feedback" *ngIf="mobileFrom.controls.mobileNo.touched && mobileFrom.controls.mobileNo.errors">
-                      **{{ 'กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง' | translate }}
-                    </small>
-                                    </div>
-                                </form>
-
-                                <div class="line-behind">
-                                    <span translate>หรือ</span>
-                                </div>
-
-                                <form [formGroup]="queueFrom">
-                                    <div class="mt-5 form-group">
-                                        <div class="text-center">{{ 'กรุณารับบัตรคิว แล้วระบุหมายเลขคิว' | translate }}</div>
-                                        <div class="text-center">{{ 'ในการชำระสินค้าของท่าน ด้านล่างนี้' | translate }}</div>
-                                        <input class="form-control text-center mb-3" id="queue" maxlength="4" autofocus autocomplete="off" formControlName="queue" (keyup)="checkInput($event, 'queue')" placeholder="ระบุเลขที่คิว" [ngClass]="{ 'is-invalid' : queueFrom.controls.queue.invalid && queueFrom.controls.queue.touched && queueFrom.controls.queue.errors }">
-                                        <small class="invalid-feedback" *ngIf="queueFrom.controls.queue.touched && queueFrom.controls.queue.errors">
-                      **{{ 'กรุณากรอกหมายเลขคิวให้ถูกต้อง' | translate }}
-                    </small>
-                                    </div>
-                                </form>
-                            </div>
-                        </ng-container>
-
-
-                        <ng-container *ngSwitchDefault>
-                            <div class="container pt-3">
-                                <form [formGroup]="queueFrom">
-                                    <div class="mt-5 form-group">
-                                        <div class="text-center">{{ 'กรุณารับบัตรคิว แล้วระบุหมายเลขคิว' | translate }}</div>
-                                        <div class="text-center">{{ 'ในการชำระสินค้าของท่าน ด้านล่างนี้' | translate }}</div>
-                                        <input class="form-control text-center mb-3" id="queue" maxlength="4" autofocus autocomplete="off" formControlName="queue" placeholder="ระบุเลขที่คิว" [ngClass]="{ 'is-invalid' : queueFrom.controls.queue.invalid && queueFrom.controls.queue.touched && queueFrom.controls.queue.errors }">
-                                        <small class="invalid-feedback" *ngIf="queueFrom.controls.queue.touched && queueFrom.controls.queue.errors">
-                      **{{ 'กรุณากรอกหมายเลขคิวให้ถูกต้อง' | translate }}
-                    </small>
-                                    </div>
-                                </form>
-
-                            </div>
-                        </ng-container>
-
-                    </ng-container>
 
 
 
@@ -136,9 +84,6 @@
                 <button class="btn btn-success btn-lg" id="button-next" (click)="onNext()" [disabled]="checkValid()">
           NEXT
         </button>
-                <!-- <button *ngIf="user?.locationCode === '1213'" class="btn btn-success btn-lg" (click)="onSkip()" [disabled]="checkSkip()">
-          SKIP
-        </button> -->
             </div>
         </div>
     </div>
