@@ -100,7 +100,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
       this.customerInfoService.getCustomerProfilePostpaidByMobileNo(this.identity).then((customer: Customer) => {
         return this.privilegeService.checkAndGetPrivilegeCodeAndCriteria(this.identity, this.priceOption.trade.ussdCode)
           .then((privligeCode) => {
-            if (privligeCode.errorMessage === 'MT_INVALID_CRITERIA_MAINPRO') {
+            if (privligeCode.errorMessage && privligeCode.errorMessage === 'MT_INVALID_CRITERIA_MAINPRO') {
               this.transaction.data.customer = customer;
               this.transaction.data.simCard = { mobileNo: this.identity };
               this.transaction.data.action = TransactionAction.KEY_IN_MOBILE_NO;

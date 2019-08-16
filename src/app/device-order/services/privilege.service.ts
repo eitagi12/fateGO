@@ -58,7 +58,7 @@ export class PrivilegeService {
 
   checkAndGetPrivilegeCodeAndCriteria(mobileNo: string, ussdCode: string): Promise<any> {
     return this.checkPrivilegeByNumberAndCriteria(mobileNo, ussdCode).then((privilegeCode) => {
-      if (privilegeCode.errorMessage === 'MT_INVALID_CRITERIA_MAINPRO') {
+      if (privilegeCode.errorMessage && privilegeCode.errorMessage === 'MT_INVALID_CRITERIA_MAINPRO') {
         return privilegeCode;
       } else {
         return this.requestUsePrivilege(mobileNo, ussdCode, privilegeCode).then((msgBarcode) => {
@@ -80,7 +80,7 @@ export class PrivilegeService {
       chkMainProFlg: false
     }).toPromise().then((checkPrivilege: any) => {
       const privilegeInfo = checkPrivilege.data;
-      return privilegeInfo.privilegeCode;
+      return privilegeInfo.privilegeCode ? privilegeInfo.privilegeCode : '';
     }).catch((e) => {
       const privilegeMessage = e.error.errors.privilegeMessage === 'MT_INVALID_CRITERIA_MAINPRO';
       const developerMessage = e.error.developerMessage === 'MT_INVALID_CRITERIA_MAINPRO';
