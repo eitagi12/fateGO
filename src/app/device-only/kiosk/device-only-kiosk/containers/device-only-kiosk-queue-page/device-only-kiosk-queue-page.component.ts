@@ -53,6 +53,14 @@ export class DeviceOnlyKioskQueuePageComponent implements OnInit, OnDestroy {
     this.price = this.priceOption.trade.priceType === 'NORMAL' ? this.priceOption.trade.normalPrice : this.priceOption.trade.promotionPrice;
     this.homeButtonService.initEventButtonHome();
     this.createForm();
+    this.setMobileNo();
+  }
+
+  setMobileNo(): void {
+    if (this.transaction.data.simCard && this.transaction.data.simCard.mobileNo) {
+      this.mobileFrom.patchValue({ mobileNo: this.transaction.data.simCard.mobileNo || this.transaction.data.receiptInfo.telNo});
+      this.mobileNo = this.transaction.data.simCard.mobileNo || this.transaction.data.receiptInfo.telNo;
+    }
   }
 
   createForm(): void {
