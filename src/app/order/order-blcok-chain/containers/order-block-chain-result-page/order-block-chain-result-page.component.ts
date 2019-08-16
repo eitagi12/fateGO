@@ -38,7 +38,7 @@ export class OrderBlockChainResultPageComponent implements OnInit {
         .then((resp: any) => {
           const data = resp && resp.data ? resp.data : '';
           console.log('data.data.status_code', data.data.status_code);
-          if (data.data.status_code === '200') {
+          if (data.data.status_code === 200) {
             // tslint:disable-next-line:max-line-length
             this.message = 'หมายเลข ' + this.transaction.data.simCard.mobileNo + ' ได้สมัคร Main Mobile สำเร็จแล้ว แจ้งลูกค้ารอรับ OTP ผ่าน SMS';
           } else {
