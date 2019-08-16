@@ -250,8 +250,17 @@ export class MobileCareComponent implements OnInit {
                   this.checkMobileCare(mobileNo, result);
                   this.customerInformationService.getCustomerProfile(mobileNo)
                     .then((response) => {
-                      const mobileSegment = response.data.mobileSegment;
-                      this.callService(mobileSegment, res.data.chargeType);
+                      if (response.data.mobileStatus === 'Active') {
+                        const mobileSegment = response.data.mobileSegment;
+                        this.callService(mobileSegment, res.data.chargeType);
+                      } else {
+                        this.alertService.notify({
+                          type: 'error',
+                          confirmButtonText: 'OK',
+                          showConfirmButton: true,
+                          text: 'ไม่สามารถทำรายการได้ในขณะนี้'
+                        });
+                      }
                     })
                     .catch(() => {
                       this.alertService.notify({
