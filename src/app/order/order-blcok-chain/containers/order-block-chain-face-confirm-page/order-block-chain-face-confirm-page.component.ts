@@ -40,6 +40,21 @@ export class OrderBlockChainFaceConfirmPageComponent implements OnInit, OnDestro
 
   ngOnInit(): void {
     this.createForm();
+    this.checkLocation();
+  }
+  checkLocation(): void {
+    const user = this.tokenService.getUser();
+    this.http.get(`/api/salesportal/location-by-code?code=${user.locationCode}`).toPromise().then((response: any) => {
+      this.locationName = response.data.displayName;
+      this.locationCode = response.data.code;
+    });
+    this.http.get(`/api/customerportal/newRegister/getEmployeeDetail/username/${user.username}`).toPromise()
+      .then((employee: any) => {
+        this.employeeCode = employee.data.pin;
+        this.transaction.data.seller = {
+          ascCode: this.employeeCode
+        };
+      });
   }
 
   createForm(): void {
