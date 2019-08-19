@@ -42,7 +42,7 @@ const routes: Routes = [
   {
     path: 'order',
     loadChildren: 'src/app/order/order.module#OrderModule',
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, ApiRequestGuard],
     resolve: {
       i18n: I18nService
     }
@@ -50,7 +50,7 @@ const routes: Routes = [
   {
     path: 'device-only',
     loadChildren: 'src/app/device-only/device-only.module#DeviceOnlyModule',
-    canActivate: [AuthGuard],
+    canActivate: [AuthGuard, ApiRequestGuard],
     resolve: {
       i18n: I18nService
     }
@@ -67,16 +67,17 @@ const routes: Routes = [
   {
     path: 'trade-in',
     loadChildren: 'src/app/trade-in/trade-in.module#TradeInModule',
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard, ApiRequestGuard],
   },
   {
     path: 'vas-package',
     loadChildren: 'src/app/vas-package/vas-package.module#VasPackageModule',
+    canActivate: [AuthGuard, ApiRequestGuard],
   },
   {
     path: 'rom-transaction',
     loadChildren: 'src/app/rom-transaction/rom-transaction.module#RomTransactionModule',
-    canActivate: [AuthGuard]
+    canActivate: [AuthGuard, ApiRequestGuard],
   }
 ];
 
