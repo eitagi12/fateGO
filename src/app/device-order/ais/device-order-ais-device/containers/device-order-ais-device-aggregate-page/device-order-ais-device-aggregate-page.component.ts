@@ -5,7 +5,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { Transaction, Payment } from 'src/app/shared/models/transaction.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { ROUTE_DEVICE_AIS_DEVICE_SUMMARY_PAGE, ROUTE_DEVICE_AIS_DEVICE_QUEUE_PAGE } from 'src/app/device-order/ais/device-order-ais-device/constants/route-path.constant';
+import { ROUTE_DEVICE_AIS_DEVICE_SUMMARY_PAGE, ROUTE_DEVICE_AIS_DEVICE_QUEUE_PAGE, ROUTE_DEVICE_AIS_DEVICE_QR_CODE_SUMMARY_PAGE } from 'src/app/device-order/ais/device-order-ais-device/constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-device-aggregate-page',
@@ -35,8 +35,11 @@ export class DeviceOrderAisDeviceAggregatePageComponent implements OnInit {
 
   onNext(): void {
     const payment: any = this.transaction.data.payment || {};
-    const advancePayment: any = this.transaction.data.advancePayment || {};
-    this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_QUEUE_PAGE]);
+    if (payment.paymentType === 'QR_CODE') {
+      this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_QR_CODE_SUMMARY_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_QUEUE_PAGE]);
+    }
 
   }
 

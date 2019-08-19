@@ -6,6 +6,10 @@ import { DeviceOrderAisDeviceSummaryPageComponent } from './containers/device-or
 import { DeviceOrderAisDeviceAggregatePageComponent } from './containers/device-order-ais-device-aggregate-page/device-order-ais-device-aggregate-page.component';
 import { DeviceOrderAisDeviceQueuePageComponent } from './containers/device-order-ais-device-queue-page/device-order-ais-device-queue-page.component';
 import { DeviceOrderAisDeviceResultPageComponent } from './containers/device-order-ais-device-result-page/device-order-ais-device-result-page.component';
+import { DeviceOrderAisDeviceQrCodeSummaryPageComponent } from 'src/app/device-order/ais/device-order-ais-device/containers/device-order-ais-device-qr-code-summary-page/device-order-ais-device-qr-code-summary-page.component';
+import { DeviceOrderAisDeviceQrCodeResultPageComponent } from 'src/app/device-order/ais/device-order-ais-device/containers/device-order-ais-device-qr-code-result-page/device-order-ais-device-qr-code-result-page.component';
+import { DeviceOrderAisDeviceQrCodeQueuePageComponent } from 'src/app/device-order/ais/device-order-ais-device/containers/device-order-ais-device-qr-code-queue-page/device-order-ais-device-qr-code-queue-page.component';
+import { DeviceOrderAisDeviceQrCodeGeneratorPageComponent } from 'src/app/device-order/ais/device-order-ais-device/containers/device-order-ais-device-qr-code-generator-page/device-order-ais-device-qr-code-generator-page.component';
 const routes: Routes = [
   { path: '', redirectTo: 'payment', pathMatch: 'full' },
   {
@@ -31,6 +35,22 @@ const routes: Routes = [
   {
     path: 'result',
     component: DeviceOrderAisDeviceResultPageComponent
+  },
+  {
+    path: 'qr-code-summary',
+    component: DeviceOrderAisDeviceQrCodeSummaryPageComponent
+  },
+  {
+    path: 'qr-code-generator',
+    component: DeviceOrderAisDeviceQrCodeGeneratorPageComponent
+  },
+  {
+    path: 'qr-code-queue',
+    component: DeviceOrderAisDeviceQrCodeQueuePageComponent
+  },
+  {
+    path: 'qr-code-result',
+    component: DeviceOrderAisDeviceQrCodeResultPageComponent
   }
 ];
 

@@ -118,6 +118,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
       promotionPrice: +(trade.promotionPrice || 0),
       isFullPayment: this.isFullPayment(),
       advancePay: +(advancePay.amount || 0),
+      qrCode: !!(productStock.company && productStock.company !== 'WDS')
     };
 
     this.banks = trade.banks || [];
