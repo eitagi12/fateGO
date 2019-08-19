@@ -87,7 +87,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
     this.billingAddress.getLocationName().then((resp: any) => {
       this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName);
       this.transaction.data.seller = {
-        ...this.transaction.data.seller,
+        // ...this.transaction.data.seller,
         locationName: resp.data.displayName
       };
     });
