@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, TemplateRef, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ONLY_AIS } from 'src/app/device-only/constants/wizard.constant';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ReadCardService, PageLoadingService, AlertService, HomeService, ApiRequestService, ReceiptInfo } from 'mychannel-shared-libs';
+import { ReadCardService, PageLoadingService, AlertService, HomeService, ApiRequestService, ReceiptInfo, User, TokenService } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { TransactionAction, Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { BillingAddressService } from 'src/app/device-only/services/billing-address.service';
@@ -42,6 +42,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   public canNext: boolean = false;
   public customerInfoTemp: any;
   public receiptInfo: ReceiptInfo;
+  public user: User;
 
   @ViewChild('progressBarArea')
   progressBarArea: ElementRef;
@@ -67,10 +68,12 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
     private customerInfoService: CustomerInformationService,
     private createOrderService: CreateOrderService,
     private apiRequestService: ApiRequestService,
-    private http: HttpClient
+    private http: HttpClient,
+    private tokenService: TokenService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
+    this.user = this.tokenService.getUser();
   }
 
   ngOnInit(): void {
@@ -87,8 +90,12 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
     this.billingAddress.getLocationName().then((resp: any) => {
       this.receiptInfoForm.controls['branch'].setValue(resp.data.displayName);
       this.transaction.data.seller = {
-        // ...this.transaction.data.seller,
-        locationName: resp.data.displayName
+        ...this.transaction.data.seller,
+        locationName: resp.data.displayName,
+        locationCode: this.tokenService.getUser().locationCode,
+        sharedUser: this.tokenService.getUser().sharedUser,
+        sellerName: this.tokenService.getUser().firstname + ' ' + this.tokenService.getUser().lastname,
+        ascCode: this.tokenService.getUser().ascCode
       };
     });
   }
