@@ -95,7 +95,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
         locationCode: this.tokenService.getUser().locationCode,
         sharedUser: this.tokenService.getUser().sharedUser,
         sellerName: this.tokenService.getUser().firstname + ' ' + this.tokenService.getUser().lastname,
-        ascCode: this.tokenService.getUser().ascCode
+        sellerNo: this.tokenService.getUser().ascCode
       };
     });
   }
