@@ -12,11 +12,11 @@ import * as moment from 'moment';
 import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QR_CODE_QUEUE_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QR_CODE_SUMMARY_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
 
 @Component({
-  selector: 'app-device-order-ais-existing-gadget-qr-code-payment-generator-page',
-  templateUrl: './device-order-ais-existing-gadget-qr-code-payment-generator-page.component.html',
-  styleUrls: ['./device-order-ais-existing-gadget-qr-code-payment-generator-page.component.scss']
+  selector: 'app-device-order-ais-existing-gadget-qr-code-generator-page',
+  templateUrl: './device-order-ais-existing-gadget-qr-code-generator-page.component.html',
+  styleUrls: ['./device-order-ais-existing-gadget-qr-code-generator-page.component.scss']
 })
-export class DeviceOrderAisExistingGadgetQrCodePaymentGeneratorPageComponent implements OnInit {
+export class DeviceOrderAisExistingGadgetQrCodeGeneratorPageComponent implements OnInit {
   transaction: Transaction;
   priceOption: PriceOption;
 

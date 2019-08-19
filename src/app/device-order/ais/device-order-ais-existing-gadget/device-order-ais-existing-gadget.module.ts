@@ -21,7 +21,7 @@ import { DeviceOrderAisExistingGadgetEcontractPageComponent } from './containers
 import { DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent } from './containers/device-order-ais-existing-gadget-validate-customer-id-card-page/device-order-ais-existing-gadget-validate-customer-id-card-page.component';
 import { DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent } from './containers/device-order-ais-existing-gadget-validate-identify-id-card-page/device-order-ais-existing-gadget-validate-identify-id-card-page.component';
 import { DeviceOrderAisExistingGadgetQrCodeSummaryPageComponent } from './containers/device-order-ais-existing-gadget-qr-code-summary-page/device-order-ais-existing-gadget-qr-code-summary-page.component';
-import { DeviceOrderAisExistingGadgetQrCodePaymentGeneratorPageComponent } from './containers/device-order-ais-existing-gadget-qr-code-payment-generator-page/device-order-ais-existing-gadget-qr-code-payment-generator-page.component';
+import { DeviceOrderAisExistingGadgetQrCodeGeneratorPageComponent } from './containers/device-order-ais-existing-gadget-qr-code-generator-page/device-order-ais-existing-gadget-qr-code-generator-page.component';
 import { DeviceOrderAisExistingGadgetQrCodeQueuePageComponent } from './containers/device-order-ais-existing-gadget-qr-code-queue-page/device-order-ais-existing-gadget-qr-code-queue-page.component';
 import { DeviceOrderAisExistingGadgetEffectiveStartDatePageComponent } from './containers/device-order-ais-existing-gadget-effective-start-date-page/device-order-ais-existing-gadget-effective-start-date-page.component';
 import { DeviceOrderAisExistingGadgetSelectPackagePageComponent } from './containers/device-order-ais-existing-gadget-select-package-page/device-order-ais-existing-gadget-select-package-page.component';
@@ -56,7 +56,7 @@ import { DeviceOrderAisExistingGadgetSelectPackageOntopPageComponent } from './c
     DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent,
     DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent,
     DeviceOrderAisExistingGadgetQrCodeSummaryPageComponent,
-    DeviceOrderAisExistingGadgetQrCodePaymentGeneratorPageComponent,
+    DeviceOrderAisExistingGadgetQrCodeGeneratorPageComponent,
     DeviceOrderAisExistingGadgetQrCodeQueuePageComponent,
     DeviceOrderAisExistingGadgetEffectiveStartDatePageComponent,
     DeviceOrderAisExistingGadgetSelectPackagePageComponent,

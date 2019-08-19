@@ -14,7 +14,7 @@ import { DeviceOrderAisExistingGadgetQueuePageComponent } from './containers/dev
 import { DeviceOrderAisExistingGadgetResultPageComponent } from './containers/device-order-ais-existing-gadget-result-page/device-order-ais-existing-gadget-result-page.component';
 import { DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent } from './containers/device-order-ais-existing-gadget-validate-identify-id-card-page/device-order-ais-existing-gadget-validate-identify-id-card-page.component';
 import { DeviceOrderAisExistingGadgetQrCodeSummaryPageComponent } from './containers/device-order-ais-existing-gadget-qr-code-summary-page/device-order-ais-existing-gadget-qr-code-summary-page.component';
-import { DeviceOrderAisExistingGadgetQrCodePaymentGeneratorPageComponent } from './containers/device-order-ais-existing-gadget-qr-code-payment-generator-page/device-order-ais-existing-gadget-qr-code-payment-generator-page.component';
+import { DeviceOrderAisExistingGadgetQrCodeGeneratorPageComponent } from './containers/device-order-ais-existing-gadget-qr-code-generator-page/device-order-ais-existing-gadget-qr-code-generator-page.component';
 import { DeviceOrderAisExistingGadgetQrCodeQueuePageComponent } from './containers/device-order-ais-existing-gadget-qr-code-queue-page/device-order-ais-existing-gadget-qr-code-queue-page.component';
 import { DeviceOrderAisExistingGadgetAggregatePageComponent } from 'src/app/device-order/ais/device-order-ais-existing-gadget/containers/device-order-ais-existing-gadget-aggregate-page/device-order-ais-existing-gadget-aggregate-page.component';
 import { DeviceOrderAisExistingGadgetNonPackagePageComponent } from 'src/app/device-order/ais/device-order-ais-existing-gadget/containers/device-order-ais-existing-gadget-non-package-page/device-order-ais-existing-gadget-non-package-page.component';
@@ -40,7 +40,7 @@ const routes: Routes = [
   { path: 'payment-detail', component: DeviceOrderAisExistingGadgetPaymentDetailPageComponent },
   { path: 'summary', component: DeviceOrderAisExistingGadgetSummaryPageComponent },
   { path: 'qr-code-summary', component:  DeviceOrderAisExistingGadgetQrCodeSummaryPageComponent },
-  { path: 'qr-code-generator', component:  DeviceOrderAisExistingGadgetQrCodePaymentGeneratorPageComponent },
+  { path: 'qr-code-generator', component:  DeviceOrderAisExistingGadgetQrCodeGeneratorPageComponent },
   { path: 'qr-code-queue', component:  DeviceOrderAisExistingGadgetQrCodeQueuePageComponent },
   { path: 'agreement-sign', component: DeviceOrderAisExistingGadgetAgreementSignPageComponent },
   { path: 'econtract', component: DeviceOrderAisExistingGadgetEcontractPageComponent },
