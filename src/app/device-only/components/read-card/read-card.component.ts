@@ -94,6 +94,7 @@ export class ReadCardComponent implements OnInit, OnDestroy {
     this.onTouchScreen = false;
   }
   onReadCard(): void {
+    this.selectBillingAddressForm.reset();
     this.messages = 'โปรดเสียบบัตรประชาชน';
     this.profile = null;
     if (this.kioskApi) {
