@@ -272,7 +272,7 @@ export class MobileCareComponent implements OnInit, OnDestroy {
                   type: 'error',
                   confirmButtonText: 'OK',
                   showConfirmButton: true,
-                  text: 'ไม่สามารถทำรายการได้ในขณะนี้'
+                  text: 'หมายเลขของคุณไม่สามารถทำรายการได้'
                 });
               }
             });
@@ -284,7 +284,7 @@ export class MobileCareComponent implements OnInit, OnDestroy {
                   this.checkMobileCare(mobileNo, result);
                   this.customerInformationService.getCustomerProfile(mobileNo)
                     .then((response) => {
-                      if (response.data.mobileStatus === STATUS_ACTIVE || response.data.mobileStatus === STATUS_ACTIVES) {
+                      if (response.data.mobileStatus === 'Active') {
                         const mobileSegment = response.data.mobileSegment;
                         this.callService(mobileSegment, res.data.chargeType);
                       } else {
@@ -292,7 +292,7 @@ export class MobileCareComponent implements OnInit, OnDestroy {
                           type: 'error',
                           confirmButtonText: 'OK',
                           showConfirmButton: true,
-                          text: 'ไม่สามารถทำรายการได้ในขณะนี้'
+                          text: 'หมายเลขของคุณไม่สามารถทำรายการได้'
                         });
                       }
                     })
