@@ -97,20 +97,19 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
     this.createTransaction();
     if (this.utils.isMobileNo(this.identity)) {
       // KEY-IN MobileNo
+      this.transaction.data.action = TransactionAction.KEY_IN_MOBILE_NO;
       this.customerInfoService.getCustomerProfilePostpaidByMobileNo(this.identity).then((customer: Customer) => {
         return this.privilegeService.checkAndGetPrivilegeCodeAndCriteria(this.identity, this.priceOption.trade.ussdCode)
           .then((privligeCode) => {
             if (privligeCode.errorMessage && privligeCode.errorMessage === 'MT_INVALID_CRITERIA_MAINPRO') {
               this.transaction.data.customer = customer;
               this.transaction.data.simCard = { mobileNo: this.identity };
-              this.transaction.data.action = TransactionAction.KEY_IN_MOBILE_NO;
               this.pageLoadingService.closeLoading();
               this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_CHANGE_PACKAGE_PAGE]);
             } else {
               customer.privilegeCode = privligeCode;
               this.transaction.data.customer = customer;
               this.transaction.data.simCard = { mobileNo: this.identity };
-              this.transaction.data.action = TransactionAction.KEY_IN_MOBILE_NO;
               this.checkRoutePath();
             }
           }).catch((error: any) => {
@@ -152,7 +151,9 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
                     this.onBack();
                     return;
                   }
-                  this.addCard();
+                  this.returnStock().then(() => {
+                    this.addDeviceSellingCart();
+                  });
                 });
             });
         })
@@ -180,7 +181,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
     });
   }
 
-  public addCard(): void {
+  public addDeviceSellingCart(): void {
     this.http.post('/api/salesportal/add-device-selling-cart',
       this.getRequestAddDeviceSellingCart()
     ).toPromise()

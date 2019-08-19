@@ -126,7 +126,7 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyPageComponent implement
                       this.onBack();
                       return;
                     }
-                    if (!this.transaction.data.order || !this.transaction.data.order.soId) {
+                    this.returnStock().then(() => {
                       return this.http.post('/api/salesportal/add-device-selling-cart',
                         this.getRequestAddDeviceSellingCart()
                       ).toPromise()
@@ -137,10 +137,7 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyPageComponent implement
                           this.pageLoadingService.closeLoading();
                           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_CUSTOMER_INFO_PAGE]);
                         });
-                    } else {
-                      this.pageLoadingService.closeLoading();
-                      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_CUSTOMER_INFO_PAGE]);
-                    }
+                    });
                   });
               });
           });

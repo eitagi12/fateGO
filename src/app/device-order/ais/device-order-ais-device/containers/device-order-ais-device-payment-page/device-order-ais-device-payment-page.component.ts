@@ -573,23 +573,21 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     this.transaction.data.simCard = {
       mobileNo: this.mobileNo
     };
-    this.addDeviceSellingCart(this.transaction);
+    this.returnStock().then(() => {
+      this.addDeviceSellingCart(this.transaction);
+    });
   }
 
   addDeviceSellingCart(transaction: Transaction): void {
-    if (!this.transaction.data.order || !this.transaction.data.order.soId) {
-      this.http.post('/api/salesportal/add-device-selling-cart',
-        this.getRequestAddDeviceSellingCart()
-      ).toPromise()
-        .then((resp: any) => {
-          this.transaction.data.order = { soId: resp.data.soId };
-          return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-        }).then(() => {
-          this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_SUMMARY_PAGE]);
-        }).catch((error) => this.alertService.error(error));
-    } else {
-      this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_SUMMARY_PAGE]);
-    }
+    this.http.post('/api/salesportal/add-device-selling-cart',
+      this.getRequestAddDeviceSellingCart()
+    ).toPromise()
+      .then((resp: any) => {
+        this.transaction.data.order = { soId: resp.data.soId };
+        return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+      }).then(() => {
+        this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_SUMMARY_PAGE]);
+      }).catch((error) => this.alertService.error(error));
   }
 
   getRequestAddDeviceSellingCart(): any {

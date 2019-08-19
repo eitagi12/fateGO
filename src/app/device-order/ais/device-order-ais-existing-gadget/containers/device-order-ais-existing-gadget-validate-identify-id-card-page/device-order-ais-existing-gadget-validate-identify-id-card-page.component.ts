@@ -148,11 +148,7 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent imp
                         this.onBack();
                         return;
                       }
-                      if (this.transaction.data.order && this.transaction.data.order.soId) {
-                        this.pageLoadingService.closeLoading();
-                        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_CUSTOMER_INFO_PAGE]);
-                        return;
-                      } else {
+                      this.returnStock().then(() => {
                         return this.http.post('/api/salesportal/add-device-selling-cart',
                           this.getRequestAddDeviceSellingCart()
                         ).toPromise().then((response: any) => {
@@ -162,17 +158,17 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent imp
                           this.pageLoadingService.closeLoading();
                           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_CUSTOMER_INFO_PAGE]);
                         });
-                      }
+                      });
                     });
                 });
             });
         }).then(() => this.pageLoadingService.closeLoading())
-          .catch((error) => this.alertService.error(error));
+          .catch();
       } else {
         this.pageLoadingService.closeLoading();
         this.alertService.error('ไม่สามารถทำรายการได้ ข้อมูลการแสดงตนไม่ถูกต้อง');
       }
-    }).catch((error) => this.alertService.error(error));
+    }).catch();
   }
 
   conditionIdentityValid(): Promise<string> {
