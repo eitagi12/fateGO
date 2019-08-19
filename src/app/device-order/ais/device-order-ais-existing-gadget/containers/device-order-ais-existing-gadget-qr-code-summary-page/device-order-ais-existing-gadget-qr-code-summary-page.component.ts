@@ -3,11 +3,10 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction } from 'src/app/shared/models/transaction.model';
-import { ImageBrannerQRCode, QRCodePaymentService } from 'src/app/shared/services/qrcode-payment.service';
-import { Router } from '@angular/router';
 import { HomeService, AlertService } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QR_CODE_GENERATOR_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-device-order-ais-existing-gadget-qr-code-summary-page',
@@ -19,21 +18,17 @@ export class DeviceOrderAisExistingGadgetQrCodeSummaryPageComponent implements O
   priceOption: PriceOption;
   color: string;
   deposit: number;
-  brannerImagePaymentQrCode: ImageBrannerQRCode;
   constructor(
     private router: Router,
     private http: HttpClient,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
-    private qrcodePaymentService: QRCodePaymentService,
     private homeService: HomeService,
     private alertService: AlertService
 
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
-    this.brannerImagePaymentQrCode = this.qrcodePaymentService.getBrannerImagePaymentQrCodeType(
-      this.transaction.data.payment.paymentQrCodeType);
       this.homeService.callback = () => {
         this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
           .then((response: any) => {
