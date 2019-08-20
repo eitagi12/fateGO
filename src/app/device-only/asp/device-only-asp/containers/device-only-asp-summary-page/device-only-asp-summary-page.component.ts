@@ -62,6 +62,10 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
     this.pageLoadingService.openLoading();
     this.sellerService.checkSeller(seller.sellerNo).then((shopCheckSeller: ShopCheckSeller) => {
       if (shopCheckSeller.condition === true) {
+        this.transaction.data.seller = {
+          ...this.transaction.data.seller,
+          sellerNo: this.tokenService.getUser().ascCode ? this.tokenService.getUser().ascCode : seller.sellerNo
+        };
         this.checkSellerDeviceOnlyASP(seller);
         this.redirectToFlowWeb();
       } else {
