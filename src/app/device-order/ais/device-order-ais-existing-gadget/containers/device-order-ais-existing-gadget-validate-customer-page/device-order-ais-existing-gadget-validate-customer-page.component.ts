@@ -116,6 +116,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
             console.log('checkAndGetPrivilegeCodeAndCriteria error :', error);
           });
       }).catch((error: any) => {
+        this.alertService.warning(error); // alert check mobileNo for postpaid only
         console.log('getCustomerProfilePostpaidByMobileNo error :', error);
       });
     } else {
@@ -130,33 +131,37 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
           return Promise.resolve(data);
         })
         .then((customer: Customer) => {
-          this.transaction.data.billingInformation = {};
-          this.http.get(`/api/customerportal/newRegister/${this.identity}/queryBillingAccount`).toPromise()
-            .then((resp: any) => {
-              const data = resp.data || {};
-              this.transaction.data.customer = customer;
-              this.transaction.data.action = TransactionAction.KEY_IN;
-              this.transaction.data.billingInformation = {
-                billCycles: data.billingAccountList,
-                billDeliveryAddress: customer
-              };
-            }).then(() => {
-              return this.conditionIdentityValid()
-                .catch((msg: string) => {
-                  return this.alertService.error(this.translateService.instant(msg)).then(() => true);
-                })
-                .then((isError: boolean) => {
-                  if (isError) {
-                    this.onBack();
-                    return;
-                  }
-                  this.returnStock().then(() => {
-                    this.addDeviceSellingCart();
+          if (customer && (customer.caNumber || customer.idCardType || customer.idCardNo)) {
+            this.transaction.data.billingInformation = {};
+            this.http.get(`/api/customerportal/newRegister/${this.identity}/queryBillingAccount`).toPromise()
+              .then((resp: any) => {
+                const data = resp.data || {};
+                this.transaction.data.customer = customer;
+                this.transaction.data.action = TransactionAction.KEY_IN;
+                this.transaction.data.billingInformation = {
+                  billCycles: data.billingAccountList,
+                  billDeliveryAddress: customer
+                };
+              }).then(() => {
+                return this.conditionIdentityValid()
+                  .catch((msg: string) => {
+                    return this.alertService.error(this.translateService.instant(msg)).then(() => true);
+                  })
+                  .then((isError: boolean) => {
+                    if (isError) {
+                      this.onBack();
+                      return;
+                    }
+                    this.returnStock().then(() => {
+                      this.addDeviceSellingCart();
+                    });
                   });
-                });
-            });
-        })
-        .then(() => this.pageLoadingService.closeLoading());
+              });
+          } else {
+            this.pageLoadingService.closeLoading();
+            this.alertService.warning('ไม่พบหมายเลขบัตรประชาชนนี้ในระบบ');
+          }
+        });
     }
   }
 
