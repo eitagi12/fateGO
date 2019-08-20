@@ -7,6 +7,7 @@ import { HomeService, AlertService } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QR_CODE_GENERATOR_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
 import { Router } from '@angular/router';
+import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-gadget-qr-code-summary-page',
@@ -24,28 +25,29 @@ export class DeviceOrderAisExistingGadgetQrCodeSummaryPageComponent implements O
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
     private homeService: HomeService,
-    private alertService: AlertService
+    private alertService: AlertService,
+    public summaryPageService: SummaryPageService,
 
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
-      this.homeService.callback = () => {
-        this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
-          .then((response: any) => {
-            if (response.value === true) {
-              this.returnStock().then(() => {
-                this.transactionService.remove();
-                window.location.href = '/';
-              });
-            }
-          });
-      };
+    this.homeService.callback = () => {
+      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+        .then((response: any) => {
+          if (response.value === true) {
+            this.returnStock().then(() => {
+              this.transactionService.remove();
+              window.location.href = '/';
+            });
+          }
+        });
+    };
   }
 
   ngOnInit(): void {
-    this.color = this.priceOption.productStock.color ? this.priceOption.productStock.color : this.priceOption.productStock.colorName || '';
-    this.deposit = this.transaction.data.preBooking
-      && this.transaction.data.preBooking.depositAmt ? -Math.abs(+this.transaction.data.preBooking.depositAmt) : 0;
+    if (!this.transaction.data.mpayPayment) {
+      this.createMpayStatus();
+    }
   }
 
   onNext(): void {
@@ -85,22 +87,68 @@ export class DeviceOrderAisExistingGadgetQrCodeSummaryPageComponent implements O
     });
   }
 
+  createMpayStatus(): void {
+    const company = this.priceOption.productStock.company;
+    const trade = this.priceOption.trade;
+    const payment: any = this.transaction.data.payment || {};
+    const advancePayment: any = this.transaction.data.advancePayment || {};
+    const advancePay = trade.advancePay || {};
+
+    let amountDevice: string;
+    let amountAirTime: string;
+
+    if (payment.paymentType === 'QR_CODE') {
+      amountDevice = trade.promotionPrice;
+    }
+    if (advancePayment.paymentType === 'QR_CODE') {
+      amountAirTime = advancePay.amount;
+    }
+
+    this.transaction.data.mpayPayment = {
+      companyStock: company,
+      mpayStatus: {
+        amountDevice: amountDevice,
+        amountAirTime: amountAirTime,
+        amountTotal: String(this.getTotal()),
+        statusDevice: amountDevice ? 'WAITING' : null,
+        statusAirTime: amountAirTime ? 'WAITING' : null,
+        installmentFlag: advancePay.installmentFlag
+      }
+    };
+  }
+
+  getStatusPay(): string {
+    const company = this.priceOption.productStock.company;
+    const mpayPayment = this.transaction.data.mpayPayment;
+    const payment: any = this.transaction.data.payment || {};
+    const advancePayment: any = this.transaction.data.advancePayment || {};
+    if (company === 'AWN') {
+      if (payment.paymentType === 'QR_CODE' && advancePayment.paymentType === 'QR_CODE') {
+        return 'DEVICE&AIRTIME';
+      } else {
+        return mpayPayment.mpayStatus.statusDevice === 'WAITING' ? 'DEVICE' : 'AIRTIME';
+      }
+    } else {
+      return mpayPayment.mpayStatus.statusDevice === 'WAITING' ? 'DEVICE' : 'AIRTIME';
+    }
+  }
+
   getTotal(): number {
     const trade = this.priceOption.trade;
     const payment: any = this.transaction.data.payment || {};
     const advancePayment: any = this.transaction.data.advancePayment || {};
-
     let total: number = 0;
+    const advancePay = trade.advancePay || {};
+
+    if (trade.advancePay.installmentFlag === 'Y') {
+      return this.summary([+trade.promotionPrice, +advancePay.amount]);
+    }
+
     if (payment.paymentType === 'QR_CODE') {
       total += +trade.promotionPrice;
     }
     if (advancePayment.paymentType === 'QR_CODE') {
-      const advancePay = trade.advancePay || {};
       total += +advancePay.amount;
-    }
-
-    if (this.deposit) {
-      total += this.deposit;
     }
     return total;
   }

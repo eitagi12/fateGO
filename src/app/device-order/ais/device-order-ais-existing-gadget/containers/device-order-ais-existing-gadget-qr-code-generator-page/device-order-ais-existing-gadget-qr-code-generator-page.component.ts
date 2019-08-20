@@ -143,8 +143,7 @@ export class DeviceOrderAisExistingGadgetQrCodeGeneratorPageComponent implements
                   }
                 });
             });
-      })
-      .catch(error => this.alertService.error(error));
+      });
   }
 
   onNext(): void {

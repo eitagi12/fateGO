@@ -136,8 +136,7 @@ export class DeviceOrderAisDeviceQrCodeGeneratorPageComponent implements OnInit 
                   }
                 });
             });
-      })
-      .catch(error => this.alertService.error(error));
+      });
   }
 
   onNext(): void {

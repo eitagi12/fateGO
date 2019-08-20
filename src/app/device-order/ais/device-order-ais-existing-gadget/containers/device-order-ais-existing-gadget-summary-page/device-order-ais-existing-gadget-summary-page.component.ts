@@ -155,9 +155,8 @@ export class DeviceOrderAisExistingGadgetSummaryPageComponent implements OnInit,
         } else {
           this.alertService.error(shopCheckSeller.data.message);
         }
-      }).catch((error: any) => {
+      }).then(() => {
         this.pageLoadingService.closeLoading();
-        this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
       });
   }
 

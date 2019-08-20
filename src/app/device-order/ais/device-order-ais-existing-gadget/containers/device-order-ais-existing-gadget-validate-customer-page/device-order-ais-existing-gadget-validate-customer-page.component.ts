@@ -156,10 +156,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
                 });
             });
         })
-        .then(() => this.pageLoadingService.closeLoading())
-        .catch((error: any) => {
-          // this.alertService.error(error);
-        });
+        .then(() => this.pageLoadingService.closeLoading());
     }
   }
 

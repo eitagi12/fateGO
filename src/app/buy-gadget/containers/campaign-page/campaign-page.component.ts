@@ -390,7 +390,6 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
       .then((nextUrl: string) => {
         this.router.navigate([nextUrl]);
       })
-      .catch((error: string) => this.alertService.error(error))
       .then(() => this.pageLoadingService.closeLoading());
   }
 

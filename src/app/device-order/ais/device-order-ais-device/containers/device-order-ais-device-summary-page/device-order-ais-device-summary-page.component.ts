@@ -144,7 +144,6 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit {
         this.alertService.warning(checkSeller.message);
       }
     }).catch((err: any) => {
-      this.alertService.error(err.message);
       this.pageLoadingService.closeLoading();
     });
   }

@@ -73,8 +73,7 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
     this.http.get(`/api/customerportal/mobile-detail/${this.mobileNo}`).toPromise()
       .then((mobileDetail: any) => {
         this.mappingMobileDetail(mobileDetail);
-      }).then(() => this.pageLoadingService.closeLoading())
-      .catch((error) => this.alertService.error(error));
+      }).then(() => this.pageLoadingService.closeLoading());
   }
 
   mappingMobileDetail(mobileDetail: any): any {
@@ -215,7 +214,7 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
         }
       }).then(() => {
         this.pageLoadingService.closeLoading();
-      }).catch((error) => this.alertService.error(error));
+      });
   }
 
   callQueryContractFirstPackAndGetPromotionShelveServices(): Promise<any> {
@@ -233,7 +232,7 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
           this.transaction.data.contractFirstPack = contract;
         }
         return this.callGetPromotionShelveService(trade, billingSystem, privilege, contract);
-      }).catch((error) => this.alertService.error(error));
+      });
   }
 
   callGetPromotionShelveService(trade: any, billingSystem: string, privilege: any, contract: any): any[] | PromiseLike<any[]> {

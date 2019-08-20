@@ -30,7 +30,6 @@ export class DeviceOrderAisExistingGadgetQrCodeQueuePageComponent implements OnI
   color: string;
   queue: string;
   queueType: string;
-  queueWording: string = 'เบอร์โทรศัพท์รับหมายเลขคิวเพื่อชำระสินค้าของท่านคือ';
   errorQueue: boolean = false;
   skipQueue: boolean = false;
 
@@ -51,8 +50,6 @@ export class DeviceOrderAisExistingGadgetQrCodeQueuePageComponent implements OnI
   }
 
   ngOnInit(): void {
-    this.queueWording = this.isLocationPhuket() ? 'เบอร์โทรศัพท์รับหมายเลขสั่งซื้อเพื่อชำระสินค้าของท่านคือ'
-      : this.queueWording;
     this.setQueueType();
     this.deposit = this.transaction.data.preBooking
       && this.transaction.data.preBooking.depositAmt ? -Math.abs(+this.transaction.data.preBooking.depositAmt) : 0;

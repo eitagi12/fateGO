@@ -1,8 +1,24 @@
 .icon {
-    width: 80px;
+    width: 50px;
     margin-bottom: 20px;
 }
 
 .total {
     width: 150px;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.line-behind {
+    max-width: 400px;
+    text-align: center;
+    border-bottom: 1px solid #cbcbcb;
+    line-height: 0.1em;
+    margin: 80px auto 80px auto;
+    span {
+        background: #fff;
+        padding: 0 20px;
+    }
 }
