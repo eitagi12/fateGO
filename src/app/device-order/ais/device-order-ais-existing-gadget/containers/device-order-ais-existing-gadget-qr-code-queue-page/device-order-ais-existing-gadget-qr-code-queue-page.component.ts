@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
@@ -16,7 +16,7 @@ import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QR_CODE_RESULT_PAGE } from 'src/
   templateUrl: './device-order-ais-existing-gadget-qr-code-queue-page.component.html',
   styleUrls: ['./device-order-ais-existing-gadget-qr-code-queue-page.component.scss']
 })
-export class DeviceOrderAisExistingGadgetQrCodeQueuePageComponent implements OnInit {
+export class DeviceOrderAisExistingGadgetQrCodeQueuePageComponent implements OnInit, OnDestroy {
 
   transaction: Transaction;
   priceOption: PriceOption;
@@ -123,7 +123,6 @@ export class DeviceOrderAisExistingGadgetQrCodeQueuePageComponent implements OnI
     this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
       return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
         this.pageLoadingService.closeLoading();
-        this.transactionService.update(this.transaction);
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QR_CODE_RESULT_PAGE]);
       });
     });
@@ -217,4 +216,7 @@ export class DeviceOrderAisExistingGadgetQrCodeQueuePageComponent implements OnI
     return this.user.locationCode === '1213' && this.tokenService.isAisUser();
   }
 
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
+  }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { ROUTE_DEVICE_AIS_DEVICE_QR_CODE_RESULT_PAGE } from 'src/app/device-order/ais/device-order-ais-device/constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
@@ -16,7 +16,7 @@ import { HttpClient } from '@angular/common/http';
   templateUrl: './device-order-ais-device-qr-code-queue-page.component.html',
   styleUrls: ['./device-order-ais-device-qr-code-queue-page.component.scss']
 })
-export class DeviceOrderAisDeviceQrCodeQueuePageComponent implements OnInit {
+export class DeviceOrderAisDeviceQrCodeQueuePageComponent implements OnInit, OnDestroy {
 
   transaction: Transaction;
   priceOption: PriceOption;
@@ -192,4 +192,7 @@ export class DeviceOrderAisDeviceQrCodeQueuePageComponent implements OnInit {
     return this.user.locationCode === '1213' && this.tokenService.isAisUser();
   }
 
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
+  }
 }
