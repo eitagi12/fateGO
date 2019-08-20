@@ -64,7 +64,6 @@ export class VasPackageOtpPageComponent implements OnInit, OnDestroy {
 
   ) {
     this.transaction = this.transactionService.load();
-    this.mobileNo = this.transaction.data.simCard.mobileNo;
     this.mobileNoAgent = this.transaction && this.transaction.data && this.transaction.data.romAgent
       && this.transaction.data.romAgent.mobileNoAgent ? this.transaction.data.romAgent.mobileNoAgent : '';
   }
@@ -125,25 +124,16 @@ export class VasPackageOtpPageComponent implements OnInit, OnDestroy {
         this.alertService.error(responseGetOTP.message);
         this.pageLoadingService.closeLoading();
       }
-    })
-      .catch((error: any) => {
-        this.pageLoadingService.closeLoading();
-        this.alertError(error);
-      });
+    });
   }
 
   public getCustomerOTP(): void {
-    if (environment.name !== 'PROD') {
-      this.mobileNo = environment.TEST_OTP_MOBILE;
-    }
-    this.http.post(`/api/customerportal/newRegister/${this.mobileNo}/sendOTP`, { digits: '4' }).toPromise().then((resp: any) => {
+    const mobileNo: string = environment.name !== 'PROD' ?  environment.TEST_OTP_MOBILE : this.transaction.data.simCard.mobileNo;
+    this.http.post(`/api/customerportal/newRegister/${mobileNo}/sendOTP`, { digits: '4' }).toPromise().then((resp: any) => {
       if (resp && resp.data) {
         this.transactionid = resp.data.transactionID;
         this.pageLoadingService.closeLoading();
       }
-    }).catch((error) => {
-      this.pageLoadingService.closeLoading();
-      this.alertError(error);
     });
   }
 
@@ -166,22 +156,18 @@ export class VasPackageOtpPageComponent implements OnInit, OnDestroy {
         this.pageLoadingService.closeLoading();
         this.alertService.error(responseVerifyOTP.message);
       }
-    })
-      .catch((error: any) => {
-        this.pageLoadingService.closeLoading();
-        this.alertError(error);
-      });
+    });
   }
 
   public verifyCustomerOTP(): void {
+    const mobileNo: string = environment.name !== 'PROD' ?  environment.TEST_OTP_MOBILE : this.transaction.data.simCard.mobileNo;
     const requestVerifyOTP: any = {
       pwd: this.formOTP.controls.verifyOTP.value,
       transactionID: this.transactionid
     };
-    this.http.post(`/api/customerportal/newRegister/${this.mobileNo}/verifyOTP`, requestVerifyOTP).toPromise()
+    this.http.post(`/api/customerportal/newRegister/${mobileNo}/verifyOTP`, requestVerifyOTP).toPromise()
       .then((res: any) => {
-        this.pageLoadingService.closeLoading();
-        this.router.navigate([ROUTE_VAS_PACKAGE_RESULT_PAGE]);
+        this.createPackCustomer();
       })
       .catch((error: any) => {
         this.pageLoadingService.closeLoading();
@@ -202,9 +188,6 @@ export class VasPackageOtpPageComponent implements OnInit, OnDestroy {
         this.pageLoadingService.closeLoading();
         this.alertService.error('ระบบไม่สามารถใช้งานได้ในขณะนี้');
       }
-    }).catch((error) => {
-      this.pageLoadingService.closeLoading();
-      this.alertError(error);
     });
   }
 
@@ -216,23 +199,41 @@ export class VasPackageOtpPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  public ngOnDestroy(): void {
-    this.transactionService.update(this.transaction);
+  createPackCustomer(): void {
+    const mobileNo: string = this.transaction.data.simCard.mobileNo;
+    const requestCreateVasPack: any = {
+      msisdn: `66${mobileNo.substring(1, mobileNo.length)}`,
+      accessNum: this.transaction.data.onTopPackage.customAttributes.access_num,
+      packId: this.transaction.data.onTopPackage.customAttributes.pack_id,
+      ascCode: this.tokenService.getUser().ascCode || '',
+      destinationServer: this.transaction.data.onTopPackage.customAttributes.destination_server,
+    };
+    this.http.post(`/api/customerportal/changepromotion/changepro`, requestCreateVasPack).toPromise()
+      .then((resp: any) => {
+        if (resp.data.STATUS === 'OK') {
+          this.transaction.data.status = {
+            code: '008',
+            description: 'COMPLETE'
+          };
+        } else {
+          this.transaction.data.status = {
+            code: '007',
+            description: 'ERROR'
+          };
+        }
+      }).catch(() => {
+        this.transaction.data.status = {
+          code: '007',
+          description: 'ERROR'
+        };
+      }).then(() => {
+        this.pageLoadingService.closeLoading();
+        this.router.navigate([ROUTE_VAS_PACKAGE_RESULT_PAGE]);
+      });
   }
 
-  public alertError(error: any): void {
-    let errObj: any;
-    let errMsg: any;
-    let errDetail: any;
-    try {
-      errObj = error.json();
-      errMsg = errObj.resultDescription;
-      errDetail = '[Result Code: ' + errObj.resultCode + '] ' + errObj.developerMessage.replace(/\'/g, '');
-    } catch (error) {
-      errMsg = 'ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้';
-      errDetail = 'Invalid error message';
-    }
-    this.alertService.error(errMsg);
+  public ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
   }
 
   public onBack(): void {

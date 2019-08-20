@@ -7,34 +7,37 @@
     <div class="col-2 navbar-brand">
     </div>
   </nav>
-  <div class="mc-flex-wrap">
-    <div class="mb-3 mt-3">
-      <div class="container-fluid">
-        <div class="card mb-3" *ngIf="message">
-          <div *ngIf="!success" class="card-body">
-            <img src="assets/images/icon/icon-red-error-circle.png" class="d-block m-auto icon" style="width: 50px">
-          </div>
-          <div class="text-center text-black result mt-3 mb-4">{{ message }}</div>
-          <div class="card-footer bg-transparent" *ngIf="success">
-            <div class="row">
-              <div class="col-3 col-sm-3">
-                <div class="text-center mt-4">
-                  <img src="assets/images/icon/icon-network.png" class="icon" style="width: 50px">
-                </div>
-              </div>
-              <div class="col-9 col-sm-9 text-left">
-                <div>
-                  <div class="text-black mt-3">{{ transaction?.data?.onTopPackage?.customAttributes?.category }}</div>
-                  <div class="text-green mt-3">{{ transaction?.data?.onTopPackage?.detailTH }}</div>
-                  <div class="text-black mt-3">
-                    <span
-                      *ngIf="checkTransactionType()">{{ transaction?.data?.onTopPackage?.customAttributes?.regular_price }}
-                      บาท</span>
-                    <span
-                      *ngIf="!checkTransactionType()">{{ transaction?.data?.onTopPackage?.customAttributes?.customer_price }}
-                      บาท</span>
-                    <span
-                      style="padding-left: 30px;">{{ transaction?.data?.onTopPackage?.customAttributes?.package_period }}</span>
+
+  <ng-container [ngSwitch]="transaction?.data?.status?.description">
+    <ng-container *ngSwitchCase="'COMPLETE'">
+      <div class="mc-flex-wrap">
+        <div class="mb-3 mt-3">
+          <div class="container-fluid">
+            <div class="card mb-3">
+              <div class="text-center text-black result mt-3 mb-4">ทำรายการเรียบร้อยแล้ว</div>
+              <div class="card-footer bg-transparent">
+                <div class="row">
+                  <div class="col-3 col-sm-3">
+                    <div class="text-center mt-4">
+                      <img src="assets/images/icon/icon-network.png" class="icon" style="width: 50px">
+                    </div>
+                  </div>
+                  <div class="col-9 col-sm-9 text-left">
+                    <div>
+                      <div class="text-black mt-3">{{ transaction?.data?.onTopPackage?.customAttributes?.category }}
+                      </div>
+                      <div class="text-green mt-3">{{ transaction?.data?.onTopPackage?.detailTH }}</div>
+                      <div class="text-black mt-3">
+                        <span
+                          *ngIf="checkTransactionType()">{{ transaction?.data?.onTopPackage?.customAttributes?.regular_price }}
+                          บาท</span>
+                        <span
+                          *ngIf="!checkTransactionType()">{{ transaction?.data?.onTopPackage?.customAttributes?.customer_price }}
+                          บาท</span>
+                        <span
+                          style="padding-left: 30px;">{{ transaction?.data?.onTopPackage?.customAttributes?.package_period }}</span>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -42,15 +45,39 @@
           </div>
         </div>
       </div>
-    </div>
-  </div>
-  <mc-footer>
-    <div *ngIf="message">
-      <div *ngIf="success" class="row text-center mx-auto">
+
+      <mc-footer>
+        <div class="row text-center mx-auto">
           <button class="btn bg-btn-ais col w-100" (click)="onTopUp()">เติมเงินเพิ่ม</button>
           <button class="btn bg-btn-ais col w-100" (click)="onSelectPackage()">เลือกแพ็กเกจเพิ่ม</button>
+        </div>
+        <button class="btn bg-btn-ais mt-2 w-50" (click)="onMainMenu()">กลับสู่เมนูหลัก</button>
+      </mc-footer>
+    </ng-container>
+
+    <ng-container *ngSwitchDefault>
+      <div class="mc-flex-wrap">
+        <div class="mb-3 mt-3">
+          <div class="container-fluid">
+            <div class="card mb-3">
+              <div class="card-body">
+                <img src="assets/images/icon/icon-red-error-circle.png" class="d-block m-auto icon" style="width: 50px">
+              </div>
+              <div class="text-center text-black result mt-3 mb-4">ไม่สามารถทำรายการได้ กรุณาติดต่อ CallCenter 020789123
+                ค่ะ
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
-      <button class="btn bg-btn-ais mt-2 w-50" (click)="onMainMenu()">กลับสู่เมนูหลัก</button>
-    </div>
-  </mc-footer>
+      <mc-footer>
+        <button class="btn bg-btn-ais mt-2 w-50" (click)="onMainMenu()">กลับสู่เมนูหลัก</button>
+      </mc-footer>
+    </ng-container>
+
+  </ng-container>
+
+
+
+
 </div>
