@@ -130,7 +130,6 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
           return Promise.resolve(data);
         })
         .then((customer: Customer) => {
-          console.log('customerb', customer);
           this.transaction.data.billingInformation = {};
           this.http.get(`/api/customerportal/newRegister/${this.identity}/queryBillingAccount`).toPromise()
             .then((resp: any) => {
@@ -159,7 +158,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
         })
         .then(() => this.pageLoadingService.closeLoading())
         .catch((error: any) => {
-          this.alertService.error(error);
+          // this.alertService.error(error);
         });
     }
   }
