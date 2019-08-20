@@ -132,7 +132,7 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit {
   onNext(): void {
     this.pageLoadingService.openLoading();
     const ascCode = this.employeeDetailForm.controls['ascCode'].value || '';
-    this.http.get(`/api/customerportal/checkSeller/${ascCode}`).toPromise().then((resp: any) => {
+    this.http.get(`/api/customerportal/checkSeller/${ascCode.trim()}`).toPromise().then((resp: any) => {
       const checkSeller: any = resp && resp.data ? resp.data : {};
       if (checkSeller.condition) {
         this.transaction.data.seller = {
