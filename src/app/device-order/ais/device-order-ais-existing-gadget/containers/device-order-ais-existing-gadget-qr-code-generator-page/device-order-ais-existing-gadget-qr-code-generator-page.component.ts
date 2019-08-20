@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
@@ -16,7 +16,7 @@ import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QR_CODE_QUEUE_PAGE, ROUTE_DEVICE
   templateUrl: './device-order-ais-existing-gadget-qr-code-generator-page.component.html',
   styleUrls: ['./device-order-ais-existing-gadget-qr-code-generator-page.component.scss']
 })
-export class DeviceOrderAisExistingGadgetQrCodeGeneratorPageComponent implements OnInit {
+export class DeviceOrderAisExistingGadgetQrCodeGeneratorPageComponent implements OnInit, OnDestroy {
   transaction: Transaction;
   priceOption: PriceOption;
 
@@ -47,6 +47,16 @@ export class DeviceOrderAisExistingGadgetQrCodeGeneratorPageComponent implements
     this.deposit = this.transaction.data.preBooking
       && this.transaction.data.preBooking.depositAmt ? -Math.abs(+this.transaction.data.preBooking.depositAmt) : 0;
     this.onGenerateQRCode();
+  }
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
+
+    if (this.timeCounterSubscription) {
+      this.timeCounterSubscription.unsubscribe();
+    }
+    if (this.checkResponseMpaySubscription) {
+      this.checkResponseMpaySubscription.unsubscribe();
+    }
   }
 
   onGenerateQRCode(): void {
@@ -97,6 +107,7 @@ export class DeviceOrderAisExistingGadgetQrCodeGeneratorPageComponent implements
         this.onNext();
         return;
       }
+
       const data = resp.data || {};
       this.handlerQRCodeMpay(orderId, data.qrCodeStr);
     }).then(() => this.pageLoadingService.closeLoading());
@@ -117,7 +128,33 @@ export class DeviceOrderAisExistingGadgetQrCodeGeneratorPageComponent implements
 
         this.checkResponseMpaySubscription = this.qrCodePageService.checkPaymentResponseMpayStatus(orderId)
           .subscribe(obs => {
-            this.transaction.data.mpayPayment = obs;
+            const mpay = {
+              locationCode: obs.locationCode,
+              qrType: obs.qrType,
+              startDtm: obs.startDtm,
+              status: obs.status,
+              tranDtm: obs.status
+            };
+            this.transaction.data.mpayPayment = Object.assign(this.transaction.data.mpayPayment, mpay);
+            if (this.priceOption.productStock.company === 'AWN') {
+              this.transaction.data.mpayPayment = Object.assign(this.transaction.data.mpayPayment, obs);
+            } else {
+              const status = this.getStatusPay();
+              this.transaction.data.mpayPayment.orderId = obs.orderId;
+              if (status === 'DEVICE') {
+                this.transaction.data.mpayPayment.mpayStatus.orderIdDevice = obs.orderId;
+                this.transaction.data.mpayPayment.mpayStatus.statusDevice = 'SUCCESS';
+                this.transaction.data.mpayPayment.tranId = obs.tranId;
+                this.transaction.data.mpayPayment.amount = obs.amount;
+              } else if (status === 'AIRTIME') {
+                this.transaction.data.mpayPayment.mpayStatus.orderIdAirTime = obs.orderId;
+                this.transaction.data.mpayPayment.mpayStatus.statusAirTime = 'SUCCESS';
+                this.transaction.data.mpayPayment.qrAirtimeTransId = obs.tranId;
+                this.transaction.data.mpayPayment.qrAirtimeAmt = obs.amount;
+              } else {
+                this.transaction.data.mpayPayment = Object.assign(this.transaction.data.mpayPayment, obs);
+              }
+            }
             this.onNext();
           });
 
@@ -144,6 +181,20 @@ export class DeviceOrderAisExistingGadgetQrCodeGeneratorPageComponent implements
                 });
             });
       });
+  }
+
+  getStatusPay(): string {
+    const mpayPayment = this.transaction.data.mpayPayment;
+    const tread = this.priceOption.trade;
+    if (tread.advancePay.installmentFlag === 'Y') {
+      return 'DEVICE&AIRTIME';
+    } else {
+      if (mpayPayment.mpayStatus && mpayPayment.mpayStatus.statusDevice && mpayPayment.mpayStatus.statusDevice === 'WAITING') {
+        return 'DEVICE';
+      } else {
+        return 'AIRTIME';
+      }
+    }
   }
 
   onNext(): void {
