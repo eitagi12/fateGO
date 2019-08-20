@@ -170,8 +170,8 @@ export class VasPackageCurrentBalancePageComponent implements OnInit, OnDestroy 
       }).catch(() => {
         /* */
       }).then(() => {
-        this.router.navigate([ROUTE_VAS_PACKAGE_RESULT_PAGE]);
         this.pageLoadingService.closeLoading();
+        this.router.navigate([ROUTE_VAS_PACKAGE_RESULT_PAGE]);
       });
   }
 
