@@ -29,6 +29,7 @@ import { DeviceOrderAisExistingGadgetNonPackagePageComponent } from './container
 import { DeviceOrderAisExistingGadgetChangePackagePageComponent } from './containers/device-order-ais-existing-gadget-change-package-page/device-order-ais-existing-gadget-change-package-page.component';
 import { DeviceOrderAisExistingGadgetAggregatePageComponent } from 'src/app/device-order/ais/device-order-ais-existing-gadget/containers/device-order-ais-existing-gadget-aggregate-page/device-order-ais-existing-gadget-aggregate-page.component';
 import { DeviceOrderAisExistingGadgetSelectPackageOntopPageComponent } from './containers/device-order-ais-existing-gadget-select-package-ontop-page/device-order-ais-existing-gadget-select-package-ontop-page.component';
+import { DeviceOrderAisExistingGadgetQrCodeResultPageComponent } from './containers/device-order-ais-existing-gadget-qr-code-result-page/device-order-ais-existing-gadget-qr-code-result-page.component';
 
 @NgModule({
   imports: [
@@ -62,7 +63,8 @@ import { DeviceOrderAisExistingGadgetSelectPackageOntopPageComponent } from './c
     DeviceOrderAisExistingGadgetSelectPackagePageComponent,
     DeviceOrderAisExistingGadgetNonPackagePageComponent,
     DeviceOrderAisExistingGadgetChangePackagePageComponent,
-    DeviceOrderAisExistingGadgetSelectPackageOntopPageComponent
+    DeviceOrderAisExistingGadgetSelectPackageOntopPageComponent,
+    DeviceOrderAisExistingGadgetQrCodeResultPageComponent
   ]
 })
 export class DeviceOrderAisExistingGadgetModule { }

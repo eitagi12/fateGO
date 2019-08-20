@@ -22,6 +22,7 @@ import { DeviceOrderAisExistingGadgetChangePackagePageComponent } from 'src/app/
 import { DeviceOrderAisExistingGadgetSelectPackagePageComponent } from 'src/app/device-order/ais/device-order-ais-existing-gadget/containers/device-order-ais-existing-gadget-select-package-page/device-order-ais-existing-gadget-select-package-page.component';
 import { DeviceOrderAisExistingGadgetEffectiveStartDatePageComponent } from 'src/app/device-order/ais/device-order-ais-existing-gadget/containers/device-order-ais-existing-gadget-effective-start-date-page/device-order-ais-existing-gadget-effective-start-date-page.component';
 import { DeviceOrderAisExistingGadgetSelectPackageOntopPageComponent } from 'src/app/device-order/ais/device-order-ais-existing-gadget/containers/device-order-ais-existing-gadget-select-package-ontop-page/device-order-ais-existing-gadget-select-package-ontop-page.component';
+import { DeviceOrderAisExistingGadgetQrCodeResultPageComponent } from 'src/app/device-order/ais/device-order-ais-existing-gadget/containers/device-order-ais-existing-gadget-qr-code-result-page/device-order-ais-existing-gadget-qr-code-result-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'validate-customer', pathMatch: 'full' },
@@ -42,6 +43,7 @@ const routes: Routes = [
   { path: 'qr-code-summary', component:  DeviceOrderAisExistingGadgetQrCodeSummaryPageComponent },
   { path: 'qr-code-generator', component:  DeviceOrderAisExistingGadgetQrCodeGeneratorPageComponent },
   { path: 'qr-code-queue', component:  DeviceOrderAisExistingGadgetQrCodeQueuePageComponent },
+  { path: 'qr-code-result', component:  DeviceOrderAisExistingGadgetQrCodeResultPageComponent },
   { path: 'agreement-sign', component: DeviceOrderAisExistingGadgetAgreementSignPageComponent },
   { path: 'econtract', component: DeviceOrderAisExistingGadgetEcontractPageComponent },
   { path: 'aggregate', component: DeviceOrderAisExistingGadgetAggregatePageComponent },
