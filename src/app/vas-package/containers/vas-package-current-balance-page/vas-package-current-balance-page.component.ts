@@ -1,10 +1,10 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, REGEX_MOBILE, PageLoadingService, AlertService } from 'mychannel-shared-libs';
+import { HomeService, REGEX_MOBILE, PageLoadingService, AlertService, TokenService } from 'mychannel-shared-libs';
 import { ROUTE_VAS_PACKAGE_RESULT_PAGE } from 'src/app/vas-package/constants/route-path.constant';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { Transaction } from 'src/app/shared/models/transaction.model';
+import { Transaction, RomTransaction, VasPackage } from 'src/app/shared/models/transaction.model';
 import { HttpClient } from '@angular/common/http';
 import * as moment from 'moment';
 declare let window: any;
@@ -31,7 +31,8 @@ export class VasPackageCurrentBalancePageComponent implements OnInit, OnDestroy 
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
     private http: HttpClient,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private tokenService: TokenService
   ) {
     this.transaction = this.transactionService.load();
     this.mobileNoAgent = this.transaction.data.romAgent.mobileNoAgent ? this.transaction.data.romAgent.mobileNoAgent : '';
@@ -114,8 +115,80 @@ export class VasPackageCurrentBalancePageComponent implements OnInit, OnDestroy 
     }
   }
 
-  onNext(): void {
-    this.router.navigate([ROUTE_VAS_PACKAGE_RESULT_PAGE]);
+  createPackRomAgent(): void {
+    this.pageLoadingService.openLoading();
+    const packId = this.transaction.data.onTopPackage.customAttributes.pack_id;
+    const Pin = this.transaction.data.romAgent.pinAgent;
+    const mobileNo = this.transaction.data.simCard.mobileNo;
+    const requestVasPackage: VasPackage = {
+      ssid: this.transaction.transactionId,
+      msisdn: `66${this.mobileNoAgent.substring(1, this.mobileNoAgent.length)}`,
+      imsi: '520036001697648',
+      vlr: 'EASYAPP',
+      shortcode: '*226',
+      serviceNumber: '*226',
+      menuLevel: `*${Pin}*${mobileNo}*${packId}`,
+      cos: '600001',
+      spName: 'awn',
+      brandId: '4',
+      language: '1',
+      mobileLocation: '3OCCB502',
+      customerState: '1',
+      servicePackageId: '6',
+    };
+    this.http.post('/api/customerportal/rom/vas-package', requestVasPackage).toPromise()
+      .then((res: any) => {
+        if (res.data.status === '0000001') {
+          this.transaction.data.status = {
+            code: '008',
+            description: 'COMPLETE'
+          };
+        } else {
+          this.transaction.data.status = {
+            code: '007',
+            description: 'ERROR'
+          };
+        }
+      })
+      .catch((err) => {
+        this.transaction.data.status = {
+          code: '007',
+          description: 'ERROR'
+        };
+      }).then(() => {
+        const status = this.transaction.data.status.description;
+        this.createRomTransaction(this.transaction, requestVasPackage, status);
+      });
+  }
+
+  createRomTransaction(transaction: Transaction, vasPackage: VasPackage, status: string): Promise<any> {
+    const requestBody = this.mapRequestRomTransaction(transaction, vasPackage, status);
+    return this.http.post('/api/customerportal/create-rom-transaction', requestBody)
+      .toPromise()
+      .then((response: any) => {
+        return response;
+      }).catch(() => {
+        /* */
+      }).then(() => {
+        this.router.navigate([ROUTE_VAS_PACKAGE_RESULT_PAGE]);
+        this.pageLoadingService.closeLoading();
+      });
+  }
+
+  private mapRequestRomTransaction(transaction: Transaction, vasPackage: VasPackage, status: string): RomTransaction {
+    const packId = transaction.data.onTopPackage.customAttributes.pack_id ? transaction.data.onTopPackage.customAttributes.pack_id : '';
+    return {
+      transactionId: transaction.data.romAgent.transactionIdRom,
+      ssid: vasPackage.ssid,
+      romNo: this.mobileNoAgent,
+      cusMobileNo: transaction.data.simCard.mobileNo,
+      price: transaction.data.onTopPackage.customAttributes.regular_price,
+      packId: packId,
+      username: transaction.data.romAgent.usernameRomAgent,
+      locationcode: transaction.data.romAgent.locationCode || this.tokenService.getUser().locationCode,
+      transactionType: 'VAS',
+      status: status
+    };
   }
 
   ngOnDestroy(): void {
