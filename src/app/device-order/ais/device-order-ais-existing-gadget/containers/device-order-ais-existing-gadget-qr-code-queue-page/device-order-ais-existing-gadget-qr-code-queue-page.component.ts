@@ -9,7 +9,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_RESULT_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QR_CODE_RESULT_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-gadget-qr-code-queue-page',
@@ -123,7 +123,8 @@ export class DeviceOrderAisExistingGadgetQrCodeQueuePageComponent implements OnI
     this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
       return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
         this.pageLoadingService.closeLoading();
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_RESULT_PAGE]);
+        this.transactionService.update(this.transaction);
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QR_CODE_RESULT_PAGE]);
       });
     });
   }
