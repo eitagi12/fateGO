@@ -23,11 +23,8 @@ export class DeviceOrderAisDeviceResultPageComponent implements OnInit {
   }
 
   onMainMenu(): void {
-    if (environment.name === 'LOCAL') {
-      window.location.href = '/main-menu';
-    } else {
-      window.location.href = '/smart-digital/main-menu';
-    }
+    this.transactionService.remove();
+    window.location.href = '/';
   }
 
 }
