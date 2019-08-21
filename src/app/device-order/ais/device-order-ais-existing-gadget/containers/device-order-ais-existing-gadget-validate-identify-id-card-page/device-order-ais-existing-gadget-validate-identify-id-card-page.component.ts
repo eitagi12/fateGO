@@ -162,13 +162,12 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent imp
                     });
                 });
             });
-        }).then(() => this.pageLoadingService.closeLoading())
-          .catch();
+        });
       } else {
         this.pageLoadingService.closeLoading();
         this.alertService.error('ไม่สามารถทำรายการได้ ข้อมูลการแสดงตนไม่ถูกต้อง');
       }
-    }).catch();
+    });
   }
 
   conditionIdentityValid(): Promise<string> {
