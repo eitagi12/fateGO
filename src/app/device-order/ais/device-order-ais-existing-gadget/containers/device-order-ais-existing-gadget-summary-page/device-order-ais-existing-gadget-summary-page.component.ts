@@ -143,7 +143,7 @@ export class DeviceOrderAisExistingGadgetSummaryPageComponent implements OnInit,
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    this.http.get(`/api/customerportal/checkSeller/${this.sellerCode}`).toPromise()
+    this.http.get(`/api/customerportal/checkSeller/${this.sellerCode.trim()}`).toPromise()
       .then((shopCheckSeller: any) => {
         if (shopCheckSeller.data.condition) {
           this.transaction.data.seller = {
