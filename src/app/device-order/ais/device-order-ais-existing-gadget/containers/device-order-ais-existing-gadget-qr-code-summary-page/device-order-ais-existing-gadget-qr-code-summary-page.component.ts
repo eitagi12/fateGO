@@ -5,7 +5,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { HomeService, AlertService } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
-import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QR_CODE_GENERATOR_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QR_CODE_GENERATOR_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_AGGREGATE_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
 import { Router } from '@angular/router';
 import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
 
@@ -151,5 +151,9 @@ export class DeviceOrderAisExistingGadgetQrCodeSummaryPageComponent implements O
       total += +advancePay.amount;
     }
     return total;
+  }
+
+  onBack(): void {
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_AGGREGATE_PAGE]);
   }
 }
