@@ -155,8 +155,6 @@ export class DeviceOrderAisExistingGadgetSummaryPageComponent implements OnInit,
         } else {
           this.alertService.error(shopCheckSeller.data.message);
         }
-      }).then(() => {
-        this.pageLoadingService.closeLoading();
       });
   }
 
