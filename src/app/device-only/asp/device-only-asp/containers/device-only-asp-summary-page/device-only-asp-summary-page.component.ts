@@ -28,6 +28,10 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
   private transaction: Transaction;
   private priceOption: PriceOption;
   public user: User;
+  priceMobileCare: number;
+  balance: number;
+  enoughBalance: boolean;
+  isShowBalance: boolean;
 
   constructor(
     private router: Router,
@@ -50,6 +54,7 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.checkShowBalance();
     this.homeButtonService.initEventButtonHome();
     this.transaction.data.tradeType = this.priceOption.trade.tradeNo === 0 ? 'EUP' : 'Hand Set';
   }
@@ -85,10 +90,6 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  public conditionNext(canNext: boolean): void {
-    this.isNext = canNext;
-  }
-
   public onHome(): void {
     this.homeService.goToHome();
   }
@@ -102,6 +103,27 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
     this.transaction.data.tradeType = ((tradeType === '0') || (tradeType === null)) ? 'EUP' : 'Hand Set';
     const seller: Seller = this.summarySellerCode.getSeller();
     this.checkSeller(seller);
+  }
+
+  checkShowBalance(): void {
+    if (this.transaction.data.mobileCarePackage.customAttributes && this.transaction.data.simCard.chargeType === 'Pre-paid') {
+      this.getBalance();
+    } else {
+      this.isShowBalance = false;
+    }
+  }
+
+  getBalance(): void {
+    this.pageLoadingService.openLoading();
+    const mobileNo = this.transaction.data.simCard.mobileNo;
+    this.http.get(`/api/customerportal/newRegister/${mobileNo}/getBalance`).toPromise()
+      .then((response: any) => {
+        this.pageLoadingService.closeLoading();
+        this.priceMobileCare = +this.transaction.data.mobileCarePackage.customAttributes.priceInclVat;
+        this.balance = +(response.data.remainingBalance) / 100;
+        this.enoughBalance = (this.balance >= this.priceMobileCare) ? true : false;
+        this.isShowBalance = true;
+      });
   }
 
   private redirectToFlowWeb(): void {
