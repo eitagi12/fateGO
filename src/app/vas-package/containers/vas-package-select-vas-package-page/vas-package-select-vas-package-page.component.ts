@@ -375,8 +375,6 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
             mobileNoAgent: res.data.mobileNo ? res.data.mobileNo : ''
           };
           this.router.navigate([ROUTE_VAS_PACKAGE_LOGIN_WITH_PIN_PAGE]);
-        }).catch((error) => {
-          this.alertService.error(error);
         });
     });
   }
