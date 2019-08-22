@@ -293,11 +293,26 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
   getTabsFormPriceOptions(priceOptions: any[]): any[] {
     const tabs = [];
+    const criteriasGroup = [];
     priceOptions.forEach((priceOption: any) => {
-      priceOption.customerGroups.map((customerGroup: any) => {
+      priceOption.privileges.map((privilege: any) => {
+        privilege.trades.map((trade: any) => {
+          const criteriasObj: any = this.mapCriteriasInTrade(trade);
+          criteriasGroup.push(criteriasObj);
+        });
+      });
+      criteriasGroup.map((customerGroup: any) => {
+        customerGroup.code = this.mapCriteriasCode(customerGroup);
+        const groupName = {
+          MC001: 'เครื่องพร้อมเปิดเบอร์ใหม่',
+          MC002: 'เครื่องพร้อมเปลี่ยนเป็นรายเดือน',
+          MC003: 'ลูกค้าย้ายค่าย',
+          MC004: 'ลูกค้าปัจจุบัน',
+          MC005: 'ลูกค้าซื้อเครื่องเปล่า'
+        };
         return {
           code: customerGroup.code,
-          name: customerGroup.name,
+          name: groupName[customerGroup.code],
           active: false
         };
       }).forEach((group: any) => {
@@ -311,12 +326,57 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
       const bCode = +b.code.replace('MC', '');
       return aCode - bCode;
     });
-
     if (tabs.length > 0) {
       tabs[0].active = true;
     }
-
     return tabs;
+  }
+
+  private mapCriteriasInTrade(trade: any): any {
+    const criteriasObj: any = {
+      chargeType: '',
+      criteria: '',
+      instanceName: '',
+      target: '',
+    };
+    trade.criterias.map((criteria: any) => {
+      if (criteria.chargeType) {
+        criteria.chargeType.map((chargeType) => {
+          criteriasObj.chargeType = chargeType;
+        });
+      }
+      if (criteria.criteria) {
+        criteria.criteria.map((group: any) => {
+          criteriasObj.criteria = group;
+        });
+      }
+      if (criteria.instanceName) {
+        criteria.instanceName.map((instanceName: any) => {
+          criteriasObj.instanceName = instanceName;
+        });
+      }
+      if (criteria.target) {
+        criteria.target.map((target: any) => {
+          criteriasObj.target = target;
+        });
+      }
+    });
+    return criteriasObj;
+  }
+
+  private mapCriteriasCode(customerGroup: any): string {
+    switch (customerGroup.criteria) {
+      case 'New Registration':
+        return 'MC001';
+      case 'Convert Pre to Post':
+        return 'MC002';
+      case 'MNP':
+        return 'MC003';
+      case 'Existing':
+        return 'MC004';
+      case '':
+        return 'MC005';
+    }
   }
 
   setActiveTabs(tabCode: any): void {
