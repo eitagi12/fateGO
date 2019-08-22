@@ -1,9 +1,13 @@
 import { async, ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { BillingAddressComponent, CustomerAddress } from './billing-address.component';
-import { ReactiveFormsModule } from '@angular/forms';
+import { ReactiveFormsModule, FormBuilder } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
 import { HttpHandler } from '@angular/common/http';
 import { CustomerInformationService } from 'src/app/device-only/services/customer-information.service';
+import { CookiesStorageService } from 'ngx-store';
+import { JwtHelperService } from '@auth0/angular-jwt/src/jwthelper.service';
+import { Utils } from 'mychannel-shared-libs';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
 
 describe('BillingAddressComponent', () => {
   let component: BillingAddressComponent;
@@ -19,7 +23,17 @@ describe('BillingAddressComponent', () => {
     providers: [
       HttpClient,
       HttpHandler,
-      CustomerInformationService
+      CookiesStorageService,
+      JwtHelperService,
+      CustomerInformationService,
+      FormBuilder,
+      Utils,
+      {
+        provide: TransactionService,
+        useValue: {
+         load: jest.fn()
+        }
+       }
     ]
   });
 
