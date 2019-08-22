@@ -124,13 +124,11 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   private setCustomerInfoFromTransaction(): void {
     const customer = this.transaction.data.customer;
     if (customer) {
-      if (TransactionAction.READ_CARD || TransactionAction.KEY_IN ) {
-        this.isShowCustomerDetail = true;
-        this.transaction.data.customer = customer;
-        this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(customer.idCardNo.substring(9))}`));
-      } else {
-        this.isShowCustomerDetail = false;
-      }
+      this.isShowCustomerDetail = true;
+      this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(customer.idCardNo.substring(9))}`));
+      this.varidationNext(true);
+    } else {
+      this.isShowCustomerDetail = false;
     }
   }
 
@@ -257,10 +255,10 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
       buildingName: data.customer.buildingName || '',
       soi: data.customer.soi || '',
       street: data.customer.street || '',
-      province: data.customer.province,
+      province: data.customer.province || data.customer.provinceName || '',
       amphur: data.customer.amphur,
       tumbol: data.customer.tumbol,
-      zipCode: data.customer.zipCode,
+      zipCode: data.customer.zipCode || data.customer.portalCode || '',
       mobileNo: data.mobileNo,
     };
     this.transaction.data.customer = customer;
@@ -379,7 +377,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   }
 
   public selectBillingAddress(): void {
-    const billingAddressSelected = this.selectBillingAddressForm.value.billingAddress;
+    const billingAddressSelected = this.selectBillingAddressForm.controls.billingAddress.value;
     if (billingAddressSelected === this.ADDRESS_BY_SMART_CARD) {
       this.isSelect = true;
       this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(this.customer.idCardNo.substring(9))}`));
@@ -398,6 +396,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
           this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(res.data.billingAddress.idCardNo.substring(9))}`));
           this.closeModalBillingAddress();
           this.isShowCustomerDetail = true;
+          this.customer = res.data.billingAddress;
           this.setCustomerInfo({
             customer: this.customer,
             action: TransactionAction.READ_CARD

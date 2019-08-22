@@ -103,7 +103,7 @@
             </div>
             <div>
               {{ 'เลขบัตรประชาชน' | translate }} 
-              {{ customer?.idCardNo || transaction.data.customer?.idCardNo | idCard }}
+              {{ customer?.idCardNo || transaction.data.customer?.idCardNo }}
             </div>
             <div>
               <div>
@@ -128,7 +128,7 @@
                   {{ 'อำเภอ' | translate }}{{ customer?.amphur || transaction.data.customer?.amphur }}
                 </span>
                 <span>
-                  {{ customer?.province || customer?.provinceName || transaction.data.customer?.provinceName }}
+                  {{ customer?.province || customer?.provinceName || transaction.data.customer?.province || transaction.data.customer?.provinceName }}
                 </span>
                   {{ customer?.zipCode || customer?.portalCode || transaction.data.customer?.zipCode || transaction.data.customer?.customer?.portalCode}}
               </div>
