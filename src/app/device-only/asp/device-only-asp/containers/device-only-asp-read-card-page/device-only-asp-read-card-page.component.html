@@ -97,38 +97,48 @@
         <div class="media m-auto pb-4" *ngIf="isShowCustomerDetail === true">
           <div class="media-body">
             <div>
-              {{ customer?.titleName }}
-              {{ customer?.firstName }}
-              {{ customer?.lastName }}
+              {{ customer?.titleName || transaction.data.customer?.titleName }}
+              {{ customer?.firstName || transaction.data.customer?.firstName }}
+              {{ customer?.lastName || transaction.data.customer?.lastName }}
             </div>
-            <div>{{ 'เลขบัตรประชาชน' | translate }} {{ customer?.idCardNo | idCard }}</div>
+            <div>
+              {{ 'เลขบัตรประชาชน' | translate }} 
+              {{ customer?.idCardNo || transaction.data.customer?.idCardNo | idCard }}
+            </div>
             <div>
               <div>
-                <span class="mr-1">{{ 'ที่อยู่' | translate }} {{ customer?.homeNo || customer?.houseNumber }}</span>
-                <span class="mr-1">{{ 'หมู่' | translate }} {{ customer?.moo }}</span>
-                <span *ngIf="customer?.soi">{{ 'ซอย' | translate }} {{ customer?.soi }}</span>
-                <span *ngIf="customer?.street">
-                  {{ 'ถนน' | translate }} {{ customer?.street }}
+                <span class="mr-1">
+                  {{ 'ที่อยู่' | translate }} {{ customer?.homeNo || customer?.houseNumber || transaction.data.customer?.homeNo || transaction.data.customer?.houseNumber }}
                 </span>
-                <span *ngIf="customer?.province === 'กรุงเทพมหานคร'">
-                  {{ 'แขวง' | translate }}{{ customer?.tumbol }}
-                  {{ 'เขต' | translate }}{{ customer?.amphur }}
+                <span class="mr-1">
+                  {{ 'หมู่' | translate }} {{ customer?.moo || transaction.data.customer?.moo }}
                 </span>
-                <span *ngIf="customer?.province !== 'กรุงเทพมหานคร'">
-                  {{ 'ตำบล' | translate }}{{ customer?.tumbol }}
-                  {{ 'อำเภอ' | translate }}{{ customer?.amphur }}
+                <span *ngIf="customer?.soi || transaction.data.customer?.soi">
+                  {{ 'ซอย' | translate }} {{ customer?.soi || transaction.data.customer?.soi }}
+                </span>
+                <span *ngIf="customer?.street || transaction.data.customer?.street">
+                  {{ 'ถนน' | translate }} {{ customer?.street || transaction.data.customer?.street }}
+                </span>
+                <span *ngIf="customer?.province === 'กรุงเทพมหานคร' || transaction.data.customer?.province === 'กรุงเทพมหานคร'">
+                  {{ 'แขวง' | translate }}{{ customer?.tumbol || transaction.data.customer?.tumbol }}
+                  {{ 'เขต' | translate }}{{ customer?.amphur || transaction.data.customer?.amphur }}
+                </span>
+                <span *ngIf="customer?.province !== 'กรุงเทพมหานคร' || transaction.data.customer?.province !== 'กรุงเทพมหานคร'">
+                  {{ 'ตำบล' | translate }}{{ customer?.tumbol || transaction.data.customer?.tumbol }}
+                  {{ 'อำเภอ' | translate }}{{ customer?.amphur || transaction.data.customer?.amphur }}
                 </span>
                 <span>
-                  {{ customer?.province || customer?.provinceName }}
+                  {{ customer?.province || customer?.provinceName || transaction.data.customer?.provinceName }}
                 </span>
-                  {{ customer?.zipCode || customer?.portalCode }}
+                  {{ customer?.zipCode || customer?.portalCode || transaction.data.customer?.zipCode || transaction.data.customer?.customer?.portalCode}}
               </div>
             </div>
-            <div *ngIf="customer?.issueDate">
-              {{ 'วันที่ออกบัตร' | translate }} {{ customer?.issueDate || '-' }}
-            </div>
+            <!-- <div *ngIf="customer?.issueDate">
+              {{ 'วันที่ออกบัตร' | translate }} 
+              {{ customer?.issueDate || transaction.data.customer?.issueDate || '-' }}
+            </div> -->
           </div>
-          <img class="img-customer img-fluid ml-5" [src]="'data:image/jpeg;base64,' + customer?.imageReadSmartCard" *ngIf="customer?.imageReadSmartCard !== undefined">
+          <!-- <img class="img-customer img-fluid ml-5" [src]="'data:image/jpeg;base64,' + customer?.imageReadSmartCard" *ngIf="customer?.imageReadSmartCard !== undefined"> -->
         </div>
         <div class="card-footer bg-transparent">
           <form [formGroup]="receiptInfoForm" class="pt-2">

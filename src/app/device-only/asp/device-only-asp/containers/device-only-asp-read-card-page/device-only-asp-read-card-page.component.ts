@@ -85,6 +85,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
     this.createSelectBillingAddressForm();
     this.varidationNext(false);
     this.getLocationName();
+    this.setCustomerInfoFromTransaction();
   }
 
   getLocationName(): void {
@@ -119,6 +120,20 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
       };
     }
   }
+
+  private setCustomerInfoFromTransaction(): void {
+    const customer = this.transaction.data.customer;
+    if (customer) {
+      if (TransactionAction.READ_CARD || TransactionAction.KEY_IN ) {
+        this.isShowCustomerDetail = true;
+        this.transaction.data.customer = customer;
+        this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(customer.idCardNo.substring(9))}`));
+      } else {
+        this.isShowCustomerDetail = false;
+      }
+    }
+  }
+
   private createFormMobile = () => {
     this.searchByMobileNoForm = this.fb.group({
       mobileNo: ['', []]
@@ -224,6 +239,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   }
 
   setCustomerInfo = (data: any) => {
+    console.log('data => ', data);
     const customer = {
       idCardNo: data.customer.idCardNo,
       idCardType: data.customer.idCardType || 'บัตรประชาชน',
@@ -391,6 +407,10 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
           this.alertService.error(err.error.resultDescription);
         });
     }
+  }
+
+  onComplete(): void {
+
   }
 
   onBack = () => {
