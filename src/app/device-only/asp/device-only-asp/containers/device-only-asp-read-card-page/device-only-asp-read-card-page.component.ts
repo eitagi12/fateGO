@@ -373,7 +373,6 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
         customer: this.customer,
         action: TransactionAction.READ_CARD
       });
-      console.log('customer ', this.customer);
     } else {
       this.pageLoadingService.openLoading();
       const mobileNo = this.listBillingAccount[billingAddressSelected].mobileNo[0];
