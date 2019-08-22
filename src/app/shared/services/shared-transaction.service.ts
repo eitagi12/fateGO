@@ -219,7 +219,7 @@ export class SharedTransactionService {
 
         } else if (!data.mainPackage && data.currentPackage) {
           const billingSystem = ((data.simCard && data.simCard.billingSystem === 'RTBS')
-            ? BillingSystemType.IRB : data.simCard.billingSystem ) || BillingSystemType.IRB;
+            ? BillingSystemType.IRB : data.simCard.billingSystem) || BillingSystemType.IRB;
           const findPromotionByMainPackage = this.findPromotions(advancePay, billingSystem);
 
           params.data.air_time.promotions = [findPromotionByMainPackage] || advancePay.promotions;
@@ -233,21 +233,21 @@ export class SharedTransactionService {
       params.data.existing_mobile_care_package = [data.existingMobileCare];
     }
 
-    const startDate: string = Moment().format('DD/MM/YYYY');
-    const endDate: string = Moment().add(priceOption.trade.durationContract, 'month').format('DD/MM/YYYY');
-    const knoxguard: object = {
-      orderType: 'Change Service',
-      orderReason: '109',
-      userName: 'SFFBATCH',
-      action: 'Add',
-      serviceCode: 'P19020073',
-      serviceName: 'CDM-SAMSUNG',
-      startDate: startDate,
-      endDate: endDate,
-      duration: priceOption.trade.durationContract
-    };
-
-      params.data.knoxguard = priceOption.trade && priceOption.trade.serviceLockHs === 'KG' ? knoxguard : {};
+    if (priceOption.trade && priceOption.trade.serviceLockHs) {
+      const startDate: string = Moment().format('DD/MM/YYYY');
+      const endDate: string = Moment().add(priceOption.trade.durationContract, 'month').format('DD/MM/YYYY');
+      params.data.knoxguard = {
+        orderType: 'Change Service',
+        orderReason: '109',
+        userName: 'SFFBATCH',
+        action: 'Add',
+        serviceCode: 'P19020073',
+        serviceName: 'CDM-SAMSUNG',
+        startDate: startDate,
+        endDate: endDate,
+        duration: priceOption.trade.durationContract
+      };
+    }
 
     if (data.mobileCarePackage) {
       if (typeof data.mobileCarePackage === 'string' || data.mobileCarePackage instanceof String) {

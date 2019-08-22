@@ -199,8 +199,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
   }
 
   checkKnoxguard(): any {
-    const isKnoxGuard: boolean = (this.priceOption.trade && this.priceOption.trade.serviceLockHs &&
-      this.priceOption.trade.serviceLockHs === 'KG');
+    const isKnoxGuard: boolean = this.priceOption.trade && this.priceOption.trade.serviceLockHs;
     if (isKnoxGuard) {
       this.checkChangeService.CheckServiceKnoxGuard(this.identity).then(() => {
         this.pageLoadingService.closeLoading();
