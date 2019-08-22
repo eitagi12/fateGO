@@ -409,13 +409,34 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  onComplete(): void {
-
+  clearstock(): any {
+    this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+      .then((response: any) => {
+        if (response.value === true) {
+          this.createOrderService.cancelOrder(this.transaction).then((isSuccess: any) => {
+            this.transactionService.remove();
+            const product = this.priceOption.queryParams;
+            const brand: string = encodeURIComponent(product.brand ? product.brand : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
+            const model: string = encodeURIComponent(product.model ? product.model : '').replace(/\(/g, '%28').replace(/\)/g, '%29');
+            const imei: any = JSON.parse(localStorage.getItem('device'));
+            const url: string = `/sales-portal/buy-product/brand/${brand}/${model}`;
+            const queryParams: string =
+              '?modelColor=' + product.color +
+              '&productType=' + product.productType +
+              '&productSubtype=' + product.productSubtype +
+              '&imei=' + imei.imei +
+              '&customerGroup=' + this.priceOption.customerGroup.code;
+            window.location.href = url + queryParams;
+          });
+        }
+      }).catch((err: any) => {
+        this.transactionService.remove();
+      });
   }
 
   onBack = () => {
     if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
-      this.homeService.goToHome();
+      this.clearstock();
       return;
     }
     this.transactionService.remove();
