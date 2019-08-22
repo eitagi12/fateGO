@@ -241,7 +241,7 @@ export class SharedTransactionService {
       userName: 'SFFBATCH',
       action: 'Add',
       serviceCode: 'P19020073',
-      serviceName: 'Samsung Knox',
+      serviceName: 'CDM-SAMSUNG',
       startDate: startDate,
       endDate: endDate,
       duration: priceOption.trade.durationContract
