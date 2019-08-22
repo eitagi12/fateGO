@@ -104,17 +104,17 @@ export class CustomerInformationService {
 
   convertBillingAddressToString(billDeliveryAddress: Customer): string {
     const addressCus: any = {
-      homeNo: billDeliveryAddress.homeNo,
+      homeNo: billDeliveryAddress.homeNo || '',
       moo: billDeliveryAddress.moo ? 'หมู่ ' + billDeliveryAddress.moo : '',
       mooBan: billDeliveryAddress.mooBan ? 'หมู่บ้าน' + billDeliveryAddress.mooBan : '',
-      buildingName: billDeliveryAddress.buildingName,
-      floor: billDeliveryAddress.floor,
+      buildingName: billDeliveryAddress.buildingName || '',
+      floor: billDeliveryAddress.floor || '',
       room: billDeliveryAddress.room || '',
-      street: billDeliveryAddress.street,
+      street: billDeliveryAddress.street ? 'ถนน ' + billDeliveryAddress.street : '',
       soi: billDeliveryAddress.soi ? 'ซอย ' + billDeliveryAddress.soi : '',
       tumbol: billDeliveryAddress.tumbol ? 'ตำบล' + billDeliveryAddress.tumbol : '',
       amphur: billDeliveryAddress.amphur ? 'อำเภอ' + billDeliveryAddress.amphur : '',
-      province: billDeliveryAddress.province,
+      province: billDeliveryAddress.province || '',
       zipCode: billDeliveryAddress.zipCode,
     };
 

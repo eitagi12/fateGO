@@ -43,6 +43,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   public customerInfoTemp: any;
   public receiptInfo: ReceiptInfo;
   public user: User;
+  public ADDRESS_BY_SMART_CARD: string = 'addressBySmartCard';
 
   @ViewChild('progressBarArea')
   progressBarArea: ElementRef;
@@ -259,7 +260,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
     const data = await this.readCardFromWebSocket();
     this.customer = await data;
     this.nameTextBySmartCard = this.customer.titleName + ' ' + this.customer.firstName + ' ' + this.customer.lastName;
-    await this.zipcode(data);
+    await this.zipcode(this.customer);
     this.addressTextBySmartCard = await this.customerInfoService.convertBillingAddressToString(this.customer);
     await this.getBillingByIdCard();
     this.messages = '';
@@ -283,10 +284,9 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
 
   public zipcode(customer: any): any {
     // tslint:disable-next-line: max-line-length
-    return this.http.get(`/api/customerportal/newRegister/queryZipcode?provinceId=${customer.province}&amphurName=${customer.amphur}&tumbolName=${customer.tumbol}`)
-      .toPromise()
+    return this.customerInfoService.getZipCode(customer.province, customer.amphur, customer.tumbol)
       .then((res: any) => {
-        this.customer.zipCode = res.data.zipCode;
+        this.customer.zipCode = res.data.zipcodes[0];
       })
       .catch((error) => {
         this.pageLoadingService.closeLoading();
@@ -357,31 +357,41 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
     return promises;
   }
 
-  public closeModalBillingMobileNo(): void {
+  public closeModalBillingAddress(): void {
     this.modalBillAddress.hide();
     this.canReadSmartCard = true;
   }
 
-  public selectBillingMobileNo(): void {
+  public selectBillingAddress(): void {
     const billingAddressSelected = this.selectBillingAddressForm.value.billingAddress;
-    const mobileNo = this.listBillingAccount[billingAddressSelected].mobileNo[0];
-    this.customerInfoService.getBillingByMobileNo(mobileNo)
-      .then((res: any) => {
-        this.customerInfoService.setSelectedMobileNo(mobileNo);
-        this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(res.data.billingAddress.idCardNo.substring(9))}`));
-        this.modalBillAddress.hide();
-        this.canReadSmartCard = true;
-        this.isShowReadCard = false;
-        this.isShowCustomerDetail = true;
-        this.setCustomerInfo({
-          customer: this.customer,
-          action: TransactionAction.READ_CARD
-        });
-        this.pageLoadingService.closeLoading();
-      })
-      .catch((err) => {
-        this.alertService.error(err.error.resultDescription);
+    if (billingAddressSelected === this.ADDRESS_BY_SMART_CARD) {
+      this.isSelect = true;
+      this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(this.customer.idCardNo.substring(9))}`));
+      this.closeModalBillingAddress();
+      this.isShowCustomerDetail = true;
+      this.setCustomerInfo({
+        customer: this.customer,
+        action: TransactionAction.READ_CARD
       });
+      console.log('customer ', this.customer);
+    } else {
+      this.pageLoadingService.openLoading();
+      const mobileNo = this.listBillingAccount[billingAddressSelected].mobileNo[0];
+      this.customerInfoService.getBillingByMobileNo(mobileNo)
+        .then((res: any) => {
+          this.customerInfoService.setSelectedMobileNo(mobileNo);
+          this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(res.data.billingAddress.idCardNo.substring(9))}`));
+          this.closeModalBillingAddress();
+          this.isShowCustomerDetail = true;
+          this.setCustomerInfo({
+            customer: this.customer,
+            action: TransactionAction.READ_CARD
+          });
+          this.pageLoadingService.closeLoading();
+        }).catch((err) => {
+          this.alertService.error(err.error.resultDescription);
+        });
+    }
   }
 
   onBack = () => {

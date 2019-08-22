@@ -16,9 +16,7 @@
         </div>
         <div class="card-body bg-transparent">
           <div class="row">
-            <label class="col-12 col-sm-8 col-form-label" for="input-mobile-number">
-              ออกใบเสร็จตามใบแจ้งค่าใช้บริการเบอร์ AIS
-            </label>
+            <label class="col-12 col-sm-8 col-form-label" for="input-mobile-number"></label>
             <div class="col-12 col-sm-4">
               <form [formGroup]="searchByMobileNoForm">
                 <div class="form-group search-box">
@@ -66,6 +64,15 @@
                 </div>
                 <div class="card-body">
                   <form [formGroup]="selectBillingAddressForm">
+                    <h5>ที่อยู่ตามบัตรประชาชน</h5>
+                    <div>
+                      <input class="form-check-input" type="radio" value="{{ADDRESS_BY_SMART_CARD}}"
+                          formControlName="billingAddress" id="modal-text-customer-id-card-address">
+                        <label class="form-check-label" class="col-11" for="modal-text-customer-id-card-address">
+                          {{ 'ที่อยู่: ' + addressTextBySmartCard}}
+                        </label>
+                    </div>
+                    <br/>
                     <h5>ที่อยู่ตามใบแจ้งค่าใช้บริการเบอร์ AIS ของท่าน</h5>
                     <div *ngFor="let itemBA of listBillingAccount; let i = index" #istBillingAccountBox>
                       <input class="form-check-input" type="radio" value="{{i}}" formControlName="billingAddress"
@@ -79,9 +86,9 @@
                 </div>
                 <div class="modal-body d-flex justify-content-center">
                   <button type="button" class="btn btn-secondary" id="modal-button-close"
-                    (click)="closeModalBillingMobileNo()">CLOSE</button>
+                    (click)="closeModalBillingAddress()">CLOSE</button>
                   <button type="button" class="btn btn-success text-white" id="modal-button-select"
-                    (click)="selectBillingMobileNo()" [disabled]="!isSelect">SELECT</button>
+                    (click)="selectBillingAddress()" [disabled]="!isSelect">SELECT</button>
                 </div>
               </ng-template>
             </div>
@@ -98,17 +105,23 @@
             <div>
               <div>
                 <span class="mr-1">{{ 'ที่อยู่' | translate }} {{ customer?.homeNo || customer?.houseNumber }}</span>
-                <span class="mr-1">{{ 'ถนน' | translate }} {{ customer?.street }}</span>
-                <span class="mr-1">{{ 'หมู่ที่' | translate }} {{ customer?.moo }}</span>
-                <span *ngIf="customer?.province === 'กรุงเทพมหานคร'" class="mr-1">
-                  {{ 'แขวง' | translate }} {{ customer?.tumbol }}
-                  {{ 'เขต' | translate }} {{ customer?.amphur }}
+                <span class="mr-1">{{ 'หมู่' | translate }} {{ customer?.moo }}</span>
+                <span *ngIf="customer?.soi">{{ 'ซอย' | translate }} {{ customer?.soi }}</span>
+                <span *ngIf="customer?.street">
+                  {{ 'ถนน' | translate }} {{ customer?.street }}
                 </span>
-                <span *ngIf="customer?.province !== 'กรุงเทพมหานคร'" class="mr-1">
-                  {{ 'ตำบล' | translate }} {{ customer?.tumbol }}
-                  {{ 'อำเภอ' | translate }} {{ customer?.amphur }}
+                <span *ngIf="customer?.province === 'กรุงเทพมหานคร'">
+                  {{ 'แขวง' | translate }}{{ customer?.tumbol }}
+                  {{ 'เขต' | translate }}{{ customer?.amphur }}
                 </span>
-                {{ 'จังหวัด' | translate }} {{ customer?.province || customer?.provinceName }}
+                <span *ngIf="customer?.province !== 'กรุงเทพมหานคร'">
+                  {{ 'ตำบล' | translate }}{{ customer?.tumbol }}
+                  {{ 'อำเภอ' | translate }}{{ customer?.amphur }}
+                </span>
+                <span>
+                  {{ customer?.province || customer?.provinceName }}
+                </span>
+                {{ customer?.zipCode}}
               </div>
             </div>
             <div *ngIf="customer?.issueDate">
