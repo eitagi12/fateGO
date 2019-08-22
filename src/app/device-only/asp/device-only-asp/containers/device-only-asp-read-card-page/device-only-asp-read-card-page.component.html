@@ -121,7 +121,7 @@
                 <span>
                   {{ customer?.province || customer?.provinceName }}
                 </span>
-                {{ customer?.zipCode}}
+                  {{ customer?.zipCode || customer?.portalCode }}
               </div>
             </div>
             <div *ngIf="customer?.issueDate">
