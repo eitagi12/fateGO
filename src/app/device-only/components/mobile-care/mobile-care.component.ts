@@ -8,8 +8,6 @@ import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
 import { TransactionService } from '../../../shared/services/transaction.service';
 import { Transaction, MainPackage } from '../../../shared/models/transaction.model';
-import { log } from 'util';
-import { debounceTime } from 'rxjs/operators';
 import { WIZARD_DEVICE_ONLY_AIS } from '../../constants/wizard.constant';
 import { MOBILE_CARE_PACKAGE_KEY_REF } from '../../constants/cpc.constant';
 import { CustomerInformationService } from 'src/app/device-only/services/customer-information.service';
@@ -36,6 +34,8 @@ export interface MobileCareItem {
   priceExclVat: number;
   value: any;
 }
+const STATUS_ACTIVE = '000';
+const STATUS_ACTIVES = '384';
 @Component({
   selector: 'app-mobile-care',
   templateUrl: './mobile-care.component.html',
@@ -99,7 +99,6 @@ export class MobileCareComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    console.log('channel', this.tokenService.getUser());
     if (this.tokenService.getUser().channelType === 'smart-order') {
       this.isKiosk = true;
     } else {
@@ -107,7 +106,6 @@ export class MobileCareComponent implements OnInit, OnDestroy {
     }
     this.createForm();
     this.onCheckValidators();
-    // this.setOtpSubscribe(this.unsubscribeform);
     this.checkPrivilegeMobileCare();
     this.isSelect = false;
     this.isCall = true;
@@ -133,12 +131,9 @@ export class MobileCareComponent implements OnInit, OnDestroy {
 
   private setOtpSubscribe(): void {
     this.unsubscribeform = this.privilegeCustomerForm.controls.otpNo.valueChanges.subscribe((res: any) => {
-      console.log('this.privilegeCustomerForm.controls.otpNo', this.privilegeCustomerForm.value.otpNo);
       if (this.isKiosk) {
-        console.log('if !');
         if (this.privilegeCustomerForm.controls['otpNo'].value.length === 5 && this.isCall) {
           this.verifyOTP();
-          console.log('length', this.privilegeCustomerForm.controls.otpNo.value.length);
         } else if (this.privilegeCustomerForm.controls['otpNo'].value.length !== 5 && !this.isCall) {
           this.isCall = true;
         }
@@ -244,14 +239,9 @@ export class MobileCareComponent implements OnInit, OnDestroy {
     this.pageLoadingService.openLoading();
     this.isShowVerifyOTP = false;
     this.checkExistingMobileCare();
-    // this.onCheckValidatorsVerifyOTP();
     this.isVerifyflag.emit(false);
     this.privilegeCustomerForm.controls['otpNo'].setValue('');
   }
-
-  // private onCheckValidatorsVerifyOTP(): void {
-  //   this.setOtpSubscribe(this.unsubscribeform.unsubscribe());
-  // }
 
   public checkExistingMobileCare(): void {
     const mobileNo = this.privilegeCustomerForm.value.mobileNo;
@@ -261,22 +251,30 @@ export class MobileCareComponent implements OnInit, OnDestroy {
         switch (res.data.chargeType) {
           case 'Pre-paid':
             this.customerInformationService.getCustomerProfile(mobileNo).then((resp) => {
-              const mobileSegment = resp.data.mobileSegment;
-              this.callService(mobileSegment, res.data.chargeType);
-              this.http.get(`/api/customerportal/get-existing-mobile-care/${mobileNo}`).toPromise()
-                .then((result: any) => {
-                  if (result.data.hasExistingMobileCare) {
-                    this.exMobileCare = result.data;
-                    this.currentPackageMobileCare = result.data.existMobileCarePackage;
-                    this.popupMobileCare(this.currentPackageMobileCare);
-                  } else {
-                    this.currentPackageMobileCare = result.data.existMobileCarePackage;
-                    this.isPrivilegeCustomer = true;
-                    this.sendOTP();
-                  }
+              if (resp.data.mobileStatus === STATUS_ACTIVE || resp.data.mobileStatus === STATUS_ACTIVES) {
+                const mobileSegment = resp.data.mobileSegment;
+                this.callService(mobileSegment, res.data.chargeType);
+                this.http.get(`/api/customerportal/get-existing-mobile-care/${mobileNo}`).toPromise()
+                  .then((result: any) => {
+                    if (result.data.hasExistingMobileCare) {
+                      this.exMobileCare = result.data;
+                      this.currentPackageMobileCare = result.data.existMobileCarePackage;
+                      this.popupMobileCare(this.currentPackageMobileCare);
+                    } else {
+                      this.currentPackageMobileCare = result.data.existMobileCarePackage;
+                      this.isPrivilegeCustomer = true;
+                      this.sendOTP();
+                    }
+                  });
+              } else {
+                this.alertService.notify({
+                  type: 'error',
+                  confirmButtonText: 'OK',
+                  showConfirmButton: true,
+                  text: 'หมายเลขของคุณไม่สามารถทำรายการได้'
                 });
+              }
             });
-
             break;
           case 'Post-paid':
             this.customerInformationService.getBillingByMobileNo(mobileNo)
@@ -285,8 +283,17 @@ export class MobileCareComponent implements OnInit, OnDestroy {
                   this.checkMobileCare(mobileNo, result);
                   this.customerInformationService.getCustomerProfile(mobileNo)
                     .then((response) => {
-                      const mobileSegment = response.data.mobileSegment;
-                      this.callService(mobileSegment, res.data.chargeType);
+                      if (response.data.mobileStatus === 'Active') {
+                        const mobileSegment = response.data.mobileSegment;
+                        this.callService(mobileSegment, res.data.chargeType);
+                      } else {
+                        this.alertService.notify({
+                          type: 'error',
+                          confirmButtonText: 'OK',
+                          showConfirmButton: true,
+                          text: 'หมายเลขของคุณไม่สามารถทำรายการได้'
+                        });
+                      }
                     })
                     .catch(() => {
                       this.alertService.notify({
@@ -429,18 +436,14 @@ export class MobileCareComponent implements OnInit, OnDestroy {
           this.isShowVerifyOTP = true;
           this.isVerifyflag.emit(true);
           this.isCall = false;
-          // this.unsubscribeform.unsubscribe();
-          // this.setOtpSubscribe();
-          console.log('true', this.unsubscribeform);
         } else {
           this.pageLoadingService.closeLoading();
           this.alertService.error('รหัส OTP ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง');
           this.privilegeCustomerForm.controls['otpNo'].setValue('');
           this.isVerifyflag.emit(false);
-          console.log('length : ', this.privilegeCustomerForm.controls.otpNo.value.length);
         }
       })
-      .catch((error) => {
+      .catch(() => {
         this.pageLoadingService.closeLoading();
         this.alertService.error('รหัส OTP ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง');
         this.privilegeCustomerForm.controls['otpNo'].setValue('');
