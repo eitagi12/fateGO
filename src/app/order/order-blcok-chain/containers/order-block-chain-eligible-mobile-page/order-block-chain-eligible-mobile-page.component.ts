@@ -114,7 +114,7 @@ export class OrderBlockChainEligibleMobilePageComponent implements OnInit, OnDes
           this.saveData(registerDate);
         } else {
           // tslint:disable-next-line:max-line-length
-          this.alertService.error(`หมายเลข ${mobileNo} ไม่สามารถสมัครบริการแทนบัตรได้ในขณะนี้ กรุณาทำรายการใหม่ภายหลัง`);
+          this.alertService.error(`หมายเลข ${mobileNo} มีการยืนยันตัวตนไม่สมบูรณ์ กรุณายืนยันตัวตนอีกครั้ง`);
         }
       }).catch(() => {
         this.alertService.error(`หมายเลข ${mobileNo} ไม่สามารถสมัครบริการแทนบัตรได้ในขณะนี้ กรุณาทำรายการใหม่ภายหลัง`);

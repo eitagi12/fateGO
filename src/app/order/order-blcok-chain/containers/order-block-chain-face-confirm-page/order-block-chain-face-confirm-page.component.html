@@ -15,16 +15,11 @@
     <div class="container-fluid">
 
       <div class="card mb-3">
-        <div class="card-body">
-          <div class="text-center text-green">
-            <p translate>แจ้งผลการลงทะเบียน</p>
-            <p translate>ตรวจสอบอัตลักษณ์ไม่ผ่าน</p>
-          </div>  
+        <div class="card-body"> 
           <div class="text-center text-black  mt-5">
-            <p translate>การลงทะเบียนระบบอัตลักษณ์ยังไม่สมบรูณ์</p>
-            <p translate>หากท่านประสงค์จะลงทะเบียนให้ผู้ซื้อซิมการ์ดต่อไป</p>
-            <p translate>ท่านจะต้องยืนยันและรับรองความถูกต้อง</p>
-            <p translate>ในตัวบุคคลผู้ซื้อซิมการ์ด</p>
+            <p translate>หากท่านประสงค์จะสมัครบริการแทนบัตร</p>
+            <p translate>ให้หมายเลข {{ transaction?.data?.simCard?.mobileNo }} ท่านต้องยืนยัน</p>
+            <p translate>และรับรองความถูกต้องให้ตัวบุคคลผู้สมัครบริการ</p>
           </div>
           <form [formGroup]="confirmForm">
           <div class="form-row mt-5">
