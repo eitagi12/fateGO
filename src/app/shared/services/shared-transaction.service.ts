@@ -265,8 +265,11 @@ export class SharedTransactionService {
       params.data.payment = data.payment;
     }
 
+    const campaign: any = priceOption.campaign || {};
     if (data.contract && data.contract.conditionCode) {
       params.data.contract.conditionCode = data.contract.conditionCode;
+    } else if (campaign.conditionCode) {
+      params.data.contract.conditionCode = campaign.conditionCode;
     }
 
     if (data.mpayPayment) {
