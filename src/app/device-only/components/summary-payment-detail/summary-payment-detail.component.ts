@@ -1,9 +1,9 @@
-import { Component, OnInit, EventEmitter, Output } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { Utils, User } from 'mychannel-shared-libs';
+import { Utils, User, TokenService } from 'mychannel-shared-libs';
 
 @Component({
   selector: 'app-summary-payment-detail',
@@ -22,10 +22,12 @@ export class SummaryPaymentDetailComponent implements OnInit {
   constructor(
     private priceOptionService: PriceOptionService,
     private transactionService: TransactionService,
-    private utils: Utils
+    private utils: Utils,
+    private tokenService: TokenService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
+    this.user = this.tokenService.getUser();
   }
 
   ngOnInit(): void {
