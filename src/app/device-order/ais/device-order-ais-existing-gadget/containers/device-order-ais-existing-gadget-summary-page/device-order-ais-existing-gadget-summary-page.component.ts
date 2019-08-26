@@ -121,15 +121,10 @@ export class DeviceOrderAisExistingGadgetSummaryPageComponent implements OnInit,
   }
 
   onBack(): void {
-    const backUrl: string = this.checkBackNaviagte();
-    if (this.transaction.data.mainPackage) {
-    } else {
-      this.router.navigate([backUrl]);
-
-    }
+    this.router.navigate([this.checkBackNavigate]);
   }
 
-  checkBackNaviagte(): string {
+  get checkBackNavigate(): string {
     if (this.transaction.data.mainPackage) {
       if (this.transaction.data.onTopPackage) {
         return ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_SELECT_PACKAGE_ONTOP_PAGE;
