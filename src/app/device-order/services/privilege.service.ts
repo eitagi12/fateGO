@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { promise } from 'protractor';
 
 @Injectable({
   providedIn: 'root'
@@ -83,7 +84,7 @@ export class PrivilegeService {
       const developerMessage = e.error.developerMessage === 'MT_INVALID_CRITERIA_MAINPRO';
       const isCriteria = !!(privilegeMessage || developerMessage);
       if (isCriteria) {
-        return { errorMessage: 'MT_INVALID_CRITERIA_MAINPRO' };
+        return Promise.resolve({errorMessage : 'MT_INVALID_CRITERIA_MAINPRO'});
       }
       return Promise.reject('หมายเลขนี้ ไม่สามารถรับสิทธิ์ได้');
     });
