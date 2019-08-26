@@ -89,12 +89,17 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyPageComponent implement
     const mobileNo = this.transaction.data.simCard.mobileNo;
     this.customerInfoService.verifyPrepaidIdent(this.identity, mobileNo).then((verifySuccess: boolean) => {
       if (verifySuccess) {
-        this.http.get('/api/customerportal/validate-customer-existing', {
+        const requestBody: any = {
           params: {
             identity: this.identity,
-            transactionType: TransactionType.DEVICE_ORDER_EXISTING_GADGET_AIS
+            transactionType: TransactionType.DEVICE_ORDER_EXISTING_AIS,
+            limitContract: this.priceOption.trade.limitContract
           }
-        }).toPromise()
+        };
+        if (this.priceOption.trade && this.priceOption.trade.limitContract) {
+          requestBody.params.limitContract = this.priceOption.trade.limitContract;
+        }
+        this.http.get('/api/customerportal/validate-customer-existing', requestBody).toPromise()
           .then((resp: any) => {
             const data = resp.data || {};
             return Promise.resolve(data);

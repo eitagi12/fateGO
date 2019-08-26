@@ -103,13 +103,17 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent imp
         this.customerInfoService.getProvinceId(this.profile.province).then((provinceId: string) => {
           return this.customerInfoService.getZipCode(provinceId, this.profile.amphur, this.profile.tumbol)
             .then((zipCode: string) => {
-              return this.http.get('/api/customerportal/validate-customer-existing', {
+              const requestBody: any = {
                 params: {
                   identity: this.profile.idCardNo,
                   idCardType: this.profile.idCardType,
-                  transactionType: TransactionType.DEVICE_ORDER_EXISTING_GADGET_AIS
+                  transactionType: TransactionType.DEVICE_ORDER_EXISTING_AIS
                 }
-              }).toPromise()
+              };
+              if (this.priceOption.trade && this.priceOption.trade.limitContract) {
+                requestBody.params.limitContract = this.priceOption.trade.limitContract;
+              }
+              return this.http.get('/api/customerportal/validate-customer-existing', requestBody).toPromise()
                 .then((resp: any) => {
                   const data = resp.data || {};
                   return Promise.resolve(data);

@@ -120,12 +120,17 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
         console.log('getCustomerProfilePostpaidByMobileNo error :', error);
       });
     } else {
-      // KEY-IN ID-Card
-      this.http.get('/api/customerportal/validate-customer-existing', {
+      const requestBody: any = {
         params: {
-          identity: this.identity
+          identity: this.identity,
+          transactionType: TransactionType.DEVICE_ORDER_EXISTING_AIS
         }
-      }).toPromise()
+      };
+      if (this.priceOption.trade && this.priceOption.trade.limitContract) {
+        requestBody.params.limitContract = this.priceOption.trade.limitContract;
+      }
+      // KEY-IN ID-Card
+      this.http.get('/api/customerportal/validate-customer-existing', requestBody).toPromise()
         .then((resp: any) => {
           const data = resp.data || {};
           return Promise.resolve(data);
