@@ -112,7 +112,7 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
     const customer: any = this.transaction.data && this.transaction.data.customer ? this.transaction.data.customer : {};
     const customValidate = this.defaultValidate;
     this.validateCustomerKeyInForm = this.fb.group({
-      idCardNo: [{ value: '', disabled: this.checkIdCardNo() }, [Validators.pattern(/^[1-8]\d{12}$/), customValidate.bind(this)]],
+      idCardNo: [{ value: '' }, [Validators.pattern(/^[1-8]\d{12}$/), customValidate.bind(this)]],
       prefix: ['', [Validators.required]],
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
@@ -123,14 +123,6 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
       firstName: customer.firstName || '',
       lastName: customer.lastName || '',
     });
-  }
-
-  checkIdCardNo(): boolean {
-    if (this.transaction.data && this.transaction.data.customer &&  this.transaction.data.customer.idCardNo) {
-      return true;
-    } else {
-      return false;
-    }
   }
 
   defaultValidate(): ValidationErrors | null {

@@ -331,17 +331,18 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
               this.receiptInfoForm.controls['taxId'].setValue(this.receiptInfo.taxId);
               this.transaction.data.receiptInfo = this.receiptInfo;
               this.transaction.data.action = TransactionAction.SEARCH;
+              this.mobileNo = mobileNo;
+              this.pageLoadingService.closeLoading();
             }).catch((err) => {
+              this.pageLoadingService.closeLoading();
               this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE]);
             });
         } else {
           this.alertService.warning('กรุณาระบุเบอร์ AIS รายเดือนเท่านั้น');
         }
       }).catch((error) => {
-        this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE]);
-      }).then(() => {
-        this.mobileNo = mobileNo;
         this.pageLoadingService.closeLoading();
+        this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE]);
       });
   }
 
