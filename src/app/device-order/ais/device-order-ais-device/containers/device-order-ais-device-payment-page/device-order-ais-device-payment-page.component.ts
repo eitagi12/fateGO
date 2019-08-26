@@ -430,7 +430,6 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
 
       if (valid && !this.dataReadIdCard) {
         this.customerProfile = readCard.profile;
-        this.pageLoadingService.openLoading();
         this.getAllProvince().then((resp: any) => {
           const data = resp.data;
           let provinces = [];
@@ -446,7 +445,6 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
             }
           }).toPromise();
         }).then((resp: any) => {
-          this.pageLoadingService.closeLoading();
           const data = resp.data;
           this.zipCode = data.zipcodes ? data.zipcodes[0] : '';
           this.idCardCustomerAddress = this.getCustomerAddressStr(this.customerProfile, this.zipCode);
@@ -459,12 +457,8 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
               });
               this.onOpenModal();
             });
-        }).catch((err: any) => {
-          this.pageLoadingService.closeLoading();
         });
-
       }
-
     });
   }
 
