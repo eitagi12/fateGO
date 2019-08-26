@@ -64,12 +64,9 @@ export class PrivilegeService {
         return this.requestUsePrivilege(mobileNo, ussdCode, privilegeCode).then((msgBarcode) => {
           return msgBarcode;
         }).catch(e => {
-          Promise.reject('หมายเลขนี้ ไม่สามารถรับสิทธิ์ได้');
+          return Promise.reject('หมายเลขนี้ ไม่สามารถรับสิทธิ์ได้');
         });
       }
-
-    }).catch(e => {
-      Promise.reject(`${e.error.resultDescription || ''} ${(e.error.developerMessage) || ''}`.trim());
     });
   }
 
@@ -88,7 +85,7 @@ export class PrivilegeService {
       if (isCriteria) {
         return { errorMessage: 'MT_INVALID_CRITERIA_MAINPRO' };
       }
-      Promise.reject(e);
+      return Promise.reject('หมายเลขนี้ ไม่สามารถรับสิทธิ์ได้');
     });
   }
 

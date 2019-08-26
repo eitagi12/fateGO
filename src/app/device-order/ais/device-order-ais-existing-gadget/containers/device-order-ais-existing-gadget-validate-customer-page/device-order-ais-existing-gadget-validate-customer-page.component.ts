@@ -112,6 +112,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
               this.checkRoutePath();
             }
           }).catch((error: any) => {
+            this.alertService.warning(error);
             console.log('checkAndGetPrivilegeCodeAndCriteria error :', error);
           });
       }).catch((error: any) => {
