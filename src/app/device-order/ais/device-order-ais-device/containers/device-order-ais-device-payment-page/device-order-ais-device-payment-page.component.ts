@@ -287,8 +287,8 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     this.pageLoadingService.openLoading();
     return this.http.get(`/api/customerportal/asset/${mobileNo}/profile`).toPromise()
       .then((res: any) => {
-        const changeType = res && res.data && res.data.changeType ? res.data.changeType : '';
-        if (changeType === 'Post-paid') {
+        const chargeType = res && res.data && res.data.chargeType ? res.data.chargeType : '';
+        if (chargeType === 'Post-paid') {
           return this.http.get(`/api/customerportal/billing/${mobileNo}`).toPromise()
             .then((bill: any) => {
               const billing = bill && bill.data && bill.data.billingAddress ? bill.data.billingAddress : '';
