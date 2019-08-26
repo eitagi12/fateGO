@@ -47,7 +47,6 @@ export class DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent imp
     private translateService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
-    console.log(this.transaction);
     this.priceOption = this.priceOptionService.load();
     this.user = this.tokenService.getUser();
     this.homeService.callback = () => {
@@ -117,7 +116,6 @@ export class DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent imp
                 return Promise.resolve(data);
               })
               .then((customer: Customer) => {
-                console.log('customera', customer);
                 return {
                   caNumber: customer.caNumber,
                   mainMobile: customer.mainMobile,
