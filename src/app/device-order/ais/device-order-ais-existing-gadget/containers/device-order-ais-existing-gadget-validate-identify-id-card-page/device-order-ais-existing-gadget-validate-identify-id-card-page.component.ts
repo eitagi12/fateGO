@@ -119,7 +119,6 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent imp
                   return Promise.resolve(data);
                 })
                 .then((customer: Customer) => {
-                  console.log('customerd', customer);
                   return {
                     caNumber: customer && customer.caNumber ? customer.caNumber : '',
                     mainMobile: customer && customer.mainMobile ? customer.mainMobile : '',
@@ -130,41 +129,42 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent imp
                   return { zipCode: zipCode };
                 });
             }).then((customer: any) => {
-              if (customer.caNumber) {
+              if (customer && (customer.caNumber || customer.idCardType || customer.idCardNo)) {
                 this.transaction.data.customer = { ...this.profile, ...customer };
-              } else {
-                this.transaction.data.customer.zipCode = customer.zipCode;
-              }
-              this.transaction.data.billingInformation = {};
-              this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
-                .then((resp: any) => {
-                  const data = resp.data || {};
-                  this.transaction.data.billingInformation = {
-                    billCycles: data.billingAccountList,
-                    billDeliveryAddress: this.transaction.data.customer
-                  };
-                  return this.conditionIdentityValid()
-                    .catch((msg: string) => {
-                      return this.alertService.error(this.translateService.instant(msg)).then(() => true);
-                    })
-                    .then((isError: boolean) => {
-                      if (isError) {
-                        this.onBack();
-                        return;
-                      }
-                      this.returnStock().then(() => {
-                        return this.http.post('/api/salesportal/add-device-selling-cart',
-                          this.getRequestAddDeviceSellingCart()
-                        ).toPromise().then((response: any) => {
-                          this.transaction.data.order = { soId: response.data.soId };
-                          return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-                        }).then(() => {
-                          this.pageLoadingService.closeLoading();
-                          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_CUSTOMER_INFO_PAGE]);
+                this.transaction.data.billingInformation = {};
+                this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
+                  .then((resp: any) => {
+                    const data = resp.data || {};
+                    this.transaction.data.billingInformation = {
+                      billCycles: data.billingAccountList,
+                      billDeliveryAddress: this.transaction.data.customer
+                    };
+                    return this.conditionIdentityValid()
+                      .catch((msg: string) => {
+                        return this.alertService.error(this.translateService.instant(msg)).then(() => true);
+                      })
+                      .then((isError: boolean) => {
+                        if (isError) {
+                          this.onBack();
+                          return;
+                        }
+                        this.returnStock().then(() => {
+                          return this.http.post('/api/salesportal/add-device-selling-cart',
+                            this.getRequestAddDeviceSellingCart()
+                          ).toPromise().then((response: any) => {
+                            this.transaction.data.order = { soId: response.data.soId };
+                            return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+                          }).then(() => {
+                            this.pageLoadingService.closeLoading();
+                            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_CUSTOMER_INFO_PAGE]);
+                          });
                         });
                       });
-                    });
-                });
+                  });
+              } else {
+                this.pageLoadingService.closeLoading();
+                this.alertService.warning('ไม่พบหมายเลขบัตรประชาชนนี้ในระบบ');
+              }
             });
         });
       } else {
