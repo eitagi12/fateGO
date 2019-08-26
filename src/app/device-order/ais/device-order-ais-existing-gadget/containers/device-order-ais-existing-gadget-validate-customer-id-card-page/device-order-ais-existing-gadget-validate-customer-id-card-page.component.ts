@@ -126,7 +126,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent imp
                 return { zipCode: zipCode };
               });
           }).then((customer: any) => {
-            if (customer.caNumber) {
+            if (customer && customer.caNumber) {
               this.transaction.data.customer = { ...this.profile, ...customer };
             } else {
               this.transaction.data.customer.zipCode = customer.zipCode;
