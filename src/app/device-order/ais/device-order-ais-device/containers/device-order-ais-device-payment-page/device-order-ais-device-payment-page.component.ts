@@ -287,8 +287,8 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     this.pageLoadingService.openLoading();
     return this.http.get(`/api/customerportal/asset/${mobileNo}/profile`).toPromise()
       .then((res: any) => {
-        const mobileStatus = res && res.data && res.data.mobileStatus ? res.data.mobileStatus : '';
-        if (mobileStatus === 'Active') {
+        const changeType = res && res.data && res.data.changeType ? res.data.changeType : '';
+        if (changeType === 'Post-paid') {
           return this.http.get(`/api/customerportal/billing/${mobileNo}`).toPromise()
             .then((bill: any) => {
               const billing = bill && bill.data && bill.data.billingAddress ? bill.data.billingAddress : '';
@@ -334,11 +334,12 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
             }).catch((err) => {
               this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE]);
             });
+        } else {
+          this.alertService.warning('กรุณาระบุเบอร์ AIS รายเดือนเท่านั้น');
         }
       }).catch((error) => {
         this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE]);
       }).then(() => {
-        this.transactionService.save(this.transaction);
         this.mobileNo = mobileNo;
         this.pageLoadingService.closeLoading();
       });
