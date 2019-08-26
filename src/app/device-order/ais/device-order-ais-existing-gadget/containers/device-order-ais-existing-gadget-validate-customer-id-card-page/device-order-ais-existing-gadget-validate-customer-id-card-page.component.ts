@@ -47,6 +47,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent imp
     private translateService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
+    console.log(this.transaction);
     this.priceOption = this.priceOptionService.load();
     this.user = this.tokenService.getUser();
     this.homeService.callback = () => {

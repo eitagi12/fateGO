@@ -80,7 +80,6 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
   }
 
   onReadCard(): void {
-    this.transaction.data.action = TransactionAction.READ_CARD;
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
   }
 
