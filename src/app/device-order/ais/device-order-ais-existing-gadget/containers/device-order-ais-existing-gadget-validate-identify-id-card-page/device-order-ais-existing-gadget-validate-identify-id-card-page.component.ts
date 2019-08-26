@@ -121,10 +121,10 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent imp
                 .then((customer: Customer) => {
                   console.log('customerd', customer);
                   return {
-                    caNumber: customer.caNumber,
-                    mainMobile: customer.mainMobile,
-                    billCycle: customer.billCycle,
-                    zipCode: zipCode
+                    caNumber: customer && customer.caNumber ? customer.caNumber : '',
+                    mainMobile: customer && customer.mainMobile ? customer.mainMobile : '',
+                    billCycle: customer && customer.billCycle ? customer.billCycle : '',
+                    zipCode: zipCode ? zipCode : ''
                   };
                 }).catch(() => {
                   return { zipCode: zipCode };

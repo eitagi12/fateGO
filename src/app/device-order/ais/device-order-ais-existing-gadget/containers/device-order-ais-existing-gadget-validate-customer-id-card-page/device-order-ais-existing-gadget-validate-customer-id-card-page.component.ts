@@ -117,10 +117,10 @@ export class DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent imp
               })
               .then((customer: Customer) => {
                 return {
-                  caNumber: customer.caNumber,
-                  mainMobile: customer.mainMobile,
-                  billCycle: customer.billCycle,
-                  zipCode: zipCode
+                  caNumber: customer && customer.caNumber ? customer.caNumber : '',
+                  mainMobile: customer && customer.mainMobile ? customer.mainMobile : '',
+                  billCycle: customer && customer.billCycle ? customer.billCycle : '',
+                  zipCode: zipCode ? zipCode : ''
                 };
               }).catch(() => {
                 return { zipCode: zipCode };
@@ -158,11 +158,8 @@ export class DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent imp
                 });
               });
           });
-      }).catch((error: any) => {
-        this.alertService.error(error);
       });
     });
-
   }
 
   conditionIdentityValid(): Promise<string> {
