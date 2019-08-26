@@ -235,34 +235,11 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
 
   customerValidate(control: AbstractControl): ValidationErrors | null {
     const value = control.value;
-    const length: number = control.value.length;
-    // const REGEX_FBB_MOBILE = /^88[0-9]\d{7}$/;
-    // const isFbbNo = REGEX_FBB_MOBILE.test(value);
-    if (length >= 10) {
-      if (length === 10) {
-        if (this.utils.isMobileNo(value)) {
-          return null;
-        } else {
-          return {
-            message: 'กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง',
-          };
-        }
-      } else if (length === 13) {
-        if (this.utils.isThaiIdCard(value)) {
-          return null;
-        } else {
-          return {
-            message: 'กรุณากรอกเลขบัตรประชาชนให้ถูกต้อง',
-          };
-        }
-      } else {
-        return {
-          message: 'กรุณากรอกรูปแบบให้ถูกต้อง',
-        };
-      }
+    if (this.utils.isMobileNo(value)) {
+      return null;
     } else {
       return {
-        message: 'กรุณากรอกรูปแบบให้ถูกต้อง',
+        message: 'กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง',
       };
     }
   }
