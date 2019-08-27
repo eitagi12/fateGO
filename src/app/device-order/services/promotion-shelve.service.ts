@@ -111,7 +111,6 @@ export class PromotionShelveService {
     }
     if (promotionShelveSelected) {
       promotionShelves.forEach(promotionShelve => {
-        promotionShelve.active = false;
         promotionShelve.promotions.forEach(promotion => {
           (promotion.items || []).forEach((promotionShelveItem: any) => {
             if (promotionShelveItem.value.uniqueId === promotionShelveSelected.uniqueId) {

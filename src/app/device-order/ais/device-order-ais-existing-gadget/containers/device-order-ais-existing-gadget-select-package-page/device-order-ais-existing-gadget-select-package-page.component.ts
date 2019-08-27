@@ -83,8 +83,9 @@ export class DeviceOrderAisExistingGadgetSelectPackagePageComponent implements O
 
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-    const promotionByContractFirstPack = this.transaction.data.promotionsShelves || {};
-    this.defualtSelected(promotionByContractFirstPack);
+    this.callService()
+      .then(filterPromotionByContractFirstPack => this.defualtSelected(filterPromotionByContractFirstPack))
+      .then(() => this.pageLoadingService.closeLoading());
   }
 
   defualtSelected(promotion: any): void {
@@ -98,6 +99,63 @@ export class DeviceOrderAisExistingGadgetSelectPackagePageComponent implements O
     if (this.promotionShelves) {
       this.checkTranslateLang(this.translateService.currentLang);
     }
+  }
+
+  callService(): Promise<any> {
+    this.pageLoadingService.openLoading();
+    const trade: any = this.priceOption.trade || {};
+    const privilege: any = this.priceOption.privilege;
+    const billingSystem = (this.transaction.data.simCard.billingSystem === 'RTBS')
+      ? BillingSystemType.IRB : this.transaction.data.simCard.billingSystem || BillingSystemType.IRB;
+
+    return this.callGetPromotionShelveService(trade, billingSystem, privilege);
+
+  }
+
+  callGetPromotionShelveService(trade: any, billingSystem: string, privilege: any): Promise<any> {
+    return this.promotionShelveService.getPromotionShelve({
+      packageKeyRef: trade.packageKeyRef || privilege.packageKeyRef,
+      orderType: `Change Service`,
+      billingSystem: billingSystem
+    }, +privilege.minimumPackagePrice, +privilege.maximumPackagePrice)
+      .then((promotionShelves: any) => {
+        const contract = this.transaction.data.contractFirstPack || {};
+        if (+trade.durationContract === 0) {
+          return promotionShelves;
+        } else {
+          return this.filterPromotions(promotionShelves, contract);
+        }
+      });
+  }
+
+  filterPromotions(promotionShelves: any = [], contract: any = {}): any[] {
+    (promotionShelves || []).forEach((promotionShelve: any) => {
+      promotionShelve.promotions = (promotionShelve.promotions || []).filter((promotion: any) => {
+        promotion.items = this.filterItemsByFirstPackageAndInGroup(promotion, contract);
+        return promotion.items.length > 0;
+
+      });
+    });
+    return promotionShelves;
+
+  }
+
+  filterItemsByFirstPackageAndInGroup(promotion: any, contract: any): any {
+    return (promotion.items || [])
+      .filter((item: any) => {
+        const customAttributes: any = item && (item.value || {}).customAttributes || {};
+        const contractFirstPack = customAttributes.priceExclVat
+          >= Math.max(contract.firstPackage || 0, contract.minPrice || 0, contract.initialPackage || 0);
+        const inGroup = (contract.inPackage || []).length > 0 ? contract.inPackage
+          .some((inPack: any) => inPack === customAttributes.productPkg) : true;
+        return contractFirstPack && inGroup && !this.mathCurrentPackage(customAttributes);
+      });
+  }
+
+  mathCurrentPackage(customAttributes: any = {}): boolean {
+    return !this.advancePay
+      && this.transaction.data.currentPackage
+      && this.transaction.data.currentPackage.promotionCode === customAttributes.promotionCode;
   }
 
   onCompleted(promotion: any): void {

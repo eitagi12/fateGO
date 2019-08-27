@@ -207,7 +207,6 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
     this.callQueryContractFirstPackAndGetPromotionShelveServices()
       .then(promotionsShelves => {
         if (this.havePackages(promotionsShelves)) {
-          this.transaction.data.promotionsShelves = promotionsShelves;
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_PAYMENT_DETAIL_PAGE]);
         } else {
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_NON_PACKAGE_PAGE]);
