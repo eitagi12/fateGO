@@ -94,71 +94,59 @@ export class DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent imp
   onNext(): void {
     this.pageLoadingService.openLoading();
     this.returnStock().then(() => {
-      this.transaction.data.customer = this.profile;
-      this.transaction.data.action = TransactionAction.READ_CARD;
-      this.customerInfoService.getProvinceId(this.profile.province).then((provinceId: string) => {
-        return this.customerInfoService.getZipCode(provinceId, this.profile.amphur, this.profile.tumbol)
-          .then((zipCode: string) => {
-            const requestBody: any = {
-              params: {
-                identity: this.profile.idCardNo,
-                idCardType: this.profile.idCardType,
-                transactionType: TransactionType.DEVICE_ORDER_EXISTING_AIS
-              }
-            };
-
-            if (this.priceOption.trade && this.priceOption.trade.limitContract) {
-              requestBody.params.limitContract = this.priceOption.trade.limitContract;
+      this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
+        .then((zipCode: string) => {
+          const requestBody: any = {
+            params: {
+              identity: this.profile.idCardNo,
+              idCardType: this.profile.idCardType,
+              transactionType: TransactionType.DEVICE_ORDER_EXISTING_AIS
             }
-            return this.http.get('/api/customerportal/validate-customer-existing', requestBody).toPromise()
-              .then((resp: any) => {
-                const data = resp.data || {};
-                return Promise.resolve(data);
-              })
-              .then((customer: Customer) => {
-                return {
-                  caNumber: customer && customer.caNumber ? customer.caNumber : '',
-                  mainMobile: customer && customer.mainMobile ? customer.mainMobile : '',
-                  billCycle: customer && customer.billCycle ? customer.billCycle : '',
-                  zipCode: zipCode ? zipCode : ''
-                };
-              }).catch(() => {
-                return { zipCode: zipCode };
-              });
-          }).then((customer: any) => {
-            if (customer && customer.caNumber) {
-              this.transaction.data.customer = { ...this.profile, ...customer };
-            } else {
-              this.transaction.data.customer.zipCode = customer.zipCode;
+          };
+          if (this.priceOption.trade && this.priceOption.trade.limitContract) {
+            requestBody.params.limitContract = this.priceOption.trade.limitContract;
+          }
+          return this.http.get('/api/customerportal/validate-customer-existing', requestBody).toPromise()
+            .then((resp: any) => {
+              const data = resp.data || {};
+              return {
+                caNumber: data.caNumber,
+                mainMobile: data.mainMobile,
+                billCycle: data.billCycle,
+                zipCode: zipCode
+              };
+            });
+        })
+        .then((customer: any) => { // load bill cycle
+          this.transaction.data.action = TransactionAction.READ_CARD;
+          this.transaction.data.customer = Object.assign(this.profile, customer);
+          return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
+            .then((resp: any) => {
+              const data = resp.data || {};
+              return {
+                billCycles: data.billingAccountList
+              };
+            });
+        }).then((billingInformation: any) => {
+          this.transaction.data.billingInformation = billingInformation;
+          return this.conditionIdentityValid().catch((msg: string) => {
+            return this.alertService.error(this.translateService.instant(msg)).then(() => true);
+          }).then((isError: boolean) => {
+            if (isError) {
+              this.onBack();
+              return;
             }
-            this.transaction.data.billingInformation = {};
-            this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
-              .then((resp: any) => {
-                const data = resp.data || {};
-                this.transaction.data.billingInformation = {
-                  billCycles: data.billingAccountList,
-                  billDeliveryAddress: this.transaction.data.customer
-                };
-                return this.conditionIdentityValid().catch((msg: string) => {
-                  return this.alertService.error(this.translateService.instant(msg)).then(() => true);
-                }).then((isError: boolean) => {
-                  if (isError) {
-                    this.onBack();
-                    return;
-                  }
-                  return this.http.post('/api/salesportal/add-device-selling-cart',
-                    this.getRequestAddDeviceSellingCart()
-                  ).toPromise().then((response: any) => {
-                    this.transaction.data.order = { soId: response.data.soId };
-                    return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-                  }).then(() => {
-                    this.pageLoadingService.closeLoading();
-                    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_CUSTOMER_INFO_PAGE]);
-                  });
-                });
-              });
+            return this.http.post('/api/salesportal/add-device-selling-cart',
+              this.getRequestAddDeviceSellingCart()
+            ).toPromise().then((response: any) => {
+              this.transaction.data.order = { soId: response.data.soId };
+              return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+            }).then(() => {
+              this.pageLoadingService.closeLoading();
+              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_CUSTOMER_INFO_PAGE]);
+            });
           });
-      });
+        });
     });
   }
 
@@ -231,5 +219,24 @@ export class DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent imp
       }
       Promise.all(promiseAll).then(() => resolve());
     });
+  }
+
+  getZipCode(province: string, amphur: string, tumbol: string): Promise<string> {
+    province = province.replace(/มหานคร$/, '');
+    return this.http.get('/api/customerportal/newRegister/getAllProvinces').toPromise()
+      .then((resp: any) => {
+        const provinceId = (resp.data.provinces.find((prov: any) => prov.name === province) || {}).id;
+
+        return this.http.get(
+          `/api/customerportal/newRegister/queryZipcode?provinceId=${provinceId}&amphurName=${amphur}&tumbolName=${tumbol}`
+        ).toPromise();
+      })
+      .then((resp: any) => {
+        if (resp.data.zipcodes && resp.data.zipcodes.length > 0) {
+          return resp.data.zipcodes[0];
+        } else {
+          return Promise.reject('ไม่พบรหัสไปรษณีย์');
+        }
+      });
   }
 }
