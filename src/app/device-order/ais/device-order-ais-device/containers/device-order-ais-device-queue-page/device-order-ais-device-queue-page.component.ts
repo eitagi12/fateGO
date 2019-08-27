@@ -61,7 +61,7 @@ export class DeviceOrderAisDeviceQueuePageComponent implements OnInit, OnDestroy
     this.queuePageService.checkQueueLocation().then((queueType) => {
       this.queueType = queueType;
       if (this.transaction.data.simCard && this.transaction.data.simCard.mobileNo && this.queueType === 'SMART_SHOP') {
-        this.mobileFrom.patchValue({ mobileNo: this.transaction.data.simCard.mobileNo || this.transaction.data.receiptInfo.telNo});
+        this.mobileFrom.patchValue({ mobileNo: this.transaction.data.simCard.mobileNo || this.transaction.data.receiptInfo.telNo });
         this.mobileNo = this.transaction.data.simCard.mobileNo || this.transaction.data.receiptInfo.telNo;
       }
     });
@@ -100,12 +100,7 @@ export class DeviceOrderAisDeviceQueuePageComponent implements OnInit, OnDestroy
         const queueNo = resp.data.queue;
         this.skipQueue = true;
         this.transaction.data.queue = { queueNo: queueNo };
-        this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
-          return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
-            this.pageLoadingService.closeLoading();
-            this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_RESULT_PAGE]);
-          });
-        });
+        this.createOrderAndupdateTransaction();
       });
   }
 
@@ -113,34 +108,13 @@ export class DeviceOrderAisDeviceQueuePageComponent implements OnInit, OnDestroy
     this.pageLoadingService.openLoading();
     if (!this.queueType || this.queueType === 'MANUAL' || this.inputType === 'queue') {
       this.transaction.data.queue = { queueNo: this.queue };
-      this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
-        return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
-          this.pageLoadingService.closeLoading();
-          this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_RESULT_PAGE]);
-        });
-      });
+      this.createOrderAndupdateTransaction();
     } else {
-      this.onSendSMSQueue(this.mobileNo).then((queue) => {
-        if (queue) {
-          this.transaction.data.queue = { queueNo: queue };
-          return this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
-            return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
-              this.pageLoadingService.closeLoading();
-              this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_RESULT_PAGE]);
-            });
-          });
-        } else {
-          this.queueType = 'MANUAL';
-          this.errorQueue = true;
-          this.pageLoadingService.closeLoading();
-          return;
-        }
-      }).catch(() => {
-        this.queueType = 'MANUAL';
-        this.errorQueue = true;
-        this.pageLoadingService.closeLoading();
-        return;
-      });
+      if (this.isLocationPhuket()) {
+        this.genQueuePhuket();
+      } else {
+        this.genQueueAuto();
+      }
     }
   }
 
@@ -148,32 +122,49 @@ export class DeviceOrderAisDeviceQueuePageComponent implements OnInit, OnDestroy
     return this.user.locationCode === '1213' && this.tokenService.isAisUser();
   }
 
-  onSendSMSQueue(mobileNo: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-      if (this.isLocationPhuket()) {
-        return this.http.post('/api/salesportal/device-order/transaction/get-queue-qmatic', {
-          mobileNo: mobileNo
-        }).toPromise()
-          .then((respQueue: any) => {
-            const data = respQueue.data && respQueue.data.result ? respQueue.data.result : {};
-            resolve(data.queueNo);
-          }).catch((error) => {
-            reject(null);
-          });
-      } else {
-        return this.http.post('/api/salesportal/device-order/transaction/auto-gen-queue', {
-          mobileNo: mobileNo
-        }).toPromise()
-          .then((response: any) => {
-            if (response && response.data && response.data.data && response.data.data.queueNo) {
-              resolve(response.data.data.queueNo);
-            } else {
-              reject(null);
-            }
-          }).catch((error) => {
-            reject(null);
-          });
-      }
+  genQueuePhuket(): void {
+    this.http.post('/api/salesportal/device-order/transaction/get-queue-qmatic', {
+      mobileNo: this.mobileNo
+    }).toPromise()
+      .then((response: any) => {
+        const data = response.data && response.data.result ? response.data.result : {};
+        if (data.queueNo) {
+          this.transaction.data.queue = { queueNo: data.queueNo };
+          this.createOrderAndupdateTransaction();
+        } else {
+          this.onSkip();
+        }
+      }).catch((error) => {
+        this.onSkip();
+      });
+  }
+
+  genQueueAuto(): void {
+    this.http.post('/api/salesportal/device-order/transaction/auto-gen-queue', {
+      mobileNo: this.mobileNo
+    }).toPromise()
+      .then((response: any) => {
+        if (response && response.data && response.data.data && response.data.data.queueNo) {
+          this.transaction.data.queue = { queueNo: response.data.data.queueNo };
+          this.createOrderAndupdateTransaction();
+        } else {
+          this.queueType = 'MANUAL';
+          this.errorQueue = true;
+          this.pageLoadingService.closeLoading();
+        }
+      }).catch((error) => {
+        this.queueType = 'MANUAL';
+        this.errorQueue = true;
+        this.pageLoadingService.closeLoading();
+      });
+  }
+
+  createOrderAndupdateTransaction(): void {
+    this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
+      return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
+        this.pageLoadingService.closeLoading();
+        this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_RESULT_PAGE]);
+      });
     });
   }
 
@@ -190,33 +181,6 @@ export class DeviceOrderAisDeviceQueuePageComponent implements OnInit, OnDestroy
   checkSkip(): boolean {
     return this.mobileFrom.value['mobileNo'] ? true : false;
   }
-  // onBack(): void {
-  //   this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_AGGREGATE_PAGE]);
-  // }
-
-  // onNext(): void {
-  //   this.pageLoadingService.openLoading();
-  //   console.log('this.transaction', this.transaction);
-  //   console.log('this.priceOption', this.priceOption);
-  //   this.queuePageService.getQueueQmatic(this.queueFrom.value.mobileNo)
-  //     .then((resp: any) => {
-  //       const data = resp.data && resp.data.result ? resp.data.result : {};
-  //       return data.queueNo;
-  //     })
-  //     .then((queueNo: string) => {
-  //       this.transaction.data.queue = {
-  //         queueNo: queueNo
-  //       };
-  //       return this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption)
-  //         .then(() => {
-  //           return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
-  //         });
-  //     })
-  //     .then(() => {
-  //       this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_RESULT_PAGE]);
-  //     })
-  //     .then(() => this.pageLoadingService.closeLoading());
-  // }
 
   onHome(): void {
     this.homeService.goToHome();

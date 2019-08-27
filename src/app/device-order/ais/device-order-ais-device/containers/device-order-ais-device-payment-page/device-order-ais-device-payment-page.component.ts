@@ -435,7 +435,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
           let provinces = [];
           provinces = provinces ? data.provinces : [];
           const provinceMap = provinces.find((province: any) => province.name === this.customerProfile.province);
-          return this.http.get('api/customerportal/newRegister/queryZipcode', {
+          return this.http.get('/api/customerportal/newRegister/queryZipcode', {
             params: {
               provinceId: provinceMap ? provinceMap.id : '',
               amphurName: this.customerProfile.amphur,
@@ -466,7 +466,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
         const billingAccount: BillingAccount = this.billingAccountList[this.selectBillingAddrVal] || {};
         this.pageLoadingService.openLoading();
         const mobileNo = billingAccount.mobileNo[0] || '';
-        this.http.get(`api/customerportal/billing/${mobileNo}`).toPromise().then((resp: any) => {
+        this.http.get(`/api/customerportal/billing/${mobileNo}`).toPromise().then((resp: any) => {
           const data = resp.data;
           const billing = data.billingAddress || {};
           this.transaction.data.customer = {
