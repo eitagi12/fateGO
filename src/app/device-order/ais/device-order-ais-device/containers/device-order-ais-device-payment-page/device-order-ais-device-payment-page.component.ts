@@ -434,8 +434,6 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
           const data = resp.data;
           let provinces = [];
           provinces = provinces ? data.provinces : [];
-          return provinces;
-        }).then((provinces: any) => {
           const provinceMap = provinces.find((province: any) => province.name === this.customerProfile.province);
           return this.http.get('api/customerportal/newRegister/queryZipcode', {
             params: {
@@ -443,20 +441,19 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
               amphurName: this.customerProfile.amphur,
               tumbolName: this.customerProfile.tumbol
             }
-          }).toPromise();
-        }).then((resp: any) => {
-          const data = resp.data;
-          this.zipCode = data.zipcodes ? data.zipcodes[0] : '';
-          this.idCardCustomerAddress = this.getCustomerAddressStr(this.customerProfile, this.zipCode);
-          this.dataReadIdCard = this.customerProfile.idCardNo;
-          this.http.get(`/api/customerportal/newRegister/${this.dataReadIdCard}/queryBillingAccount`).toPromise()
-            .then((resps: any) => {
-              const billList = resps.data && resps.data.billingAccountList || {};
-              this.billingAccountList = billList.filter((bill: any) => {
-                return bill.mobileNo[0] && bill.mobileNo;
+          }).toPromise().then((response: any) => {
+            this.zipCode = response.data && response.data.zipcodes ? response.data.zipcodes[0] : '';
+            this.idCardCustomerAddress = this.getCustomerAddressStr(this.customerProfile, this.zipCode);
+            this.dataReadIdCard = this.customerProfile.idCardNo;
+            this.http.get(`/api/customerportal/newRegister/${this.dataReadIdCard}/queryBillingAccount`).toPromise()
+              .then((resps: any) => {
+                const billList = resps.data && resps.data.billingAccountList || {};
+                this.billingAccountList = billList.filter((bill: any) => {
+                  return bill.mobileNo[0] && bill.mobileNo;
+                });
+                this.onOpenModal();
               });
-              this.onOpenModal();
-            });
+          });
         });
       }
     });
