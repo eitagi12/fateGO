@@ -9,6 +9,9 @@
   </mc-header>
   <div class="mc-flex-wrap">
     <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
+    <mc-payment-detail [paymentDetail]="paymentDetail" [banks]="banks" (completed)="onPaymentDetailCompleted($event)"
+      (error)="onPaymentDetailError($event)">
+    </mc-payment-detail>
     <div class="container-fluid">
       <div class="card mb-3">
         <div class="card-header bg-light-blue text-white">
@@ -21,7 +24,7 @@
               <form [formGroup]="searchByMobileNoForm">
                 <div class="form-group search-box">
                   <div class="input-group">
-                    <input type="tel" class="form-control text-center" placeholder="ระบุเบอร์ AIS"
+                    <input type="tel" class="form-control text-center" placeholder="ระบุเบอร์โทรศัพท์"
                       id="input-mobile-number" formControlName="mobileNo" maxlength="10"
                       aria-describedby="basic-addon2">
                     <div class="input-group-append">
@@ -59,7 +62,8 @@
                 </h5>
                 <div class="card-header bg-transparent">
                   <label style="margin-top:10px;">ผู้ซื้อ
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label id="modal-text-customer-name">{{ nameTextBySmartCard || nameTextBySearchMobileNo }}</label>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label
+                      id="modal-text-customer-name">{{ nameTextBySmartCard || nameTextBySearchMobileNo }}</label>
                   </label>
                 </div>
                 <div class="card-body">
@@ -67,12 +71,12 @@
                     <h5>ที่อยู่ตามบัตรประชาชน</h5>
                     <div>
                       <input class="form-check-input" type="radio" value="{{ADDRESS_BY_SMART_CARD}}"
-                          formControlName="billingAddress" id="modal-text-customer-id-card-address">
-                        <label class="form-check-label" class="col-11" for="modal-text-customer-id-card-address">
-                          {{ 'ที่อยู่: ' + addressTextBySmartCard}}
-                        </label>
+                        formControlName="billingAddress" id="modal-text-customer-id-card-address">
+                      <label class="form-check-label" class="col-11" for="modal-text-customer-id-card-address">
+                        {{ 'ที่อยู่: ' + addressTextBySmartCard}}
+                      </label>
                     </div>
-                    <br/>
+                    <br />
                     <h5>ที่อยู่ตามใบแจ้งค่าใช้บริการเบอร์ AIS ของท่าน</h5>
                     <div *ngFor="let itemBA of listBillingAccount; let i = index" #istBillingAccountBox>
                       <input class="form-check-input" type="radio" value="{{i}}" formControlName="billingAddress"
@@ -94,7 +98,7 @@
             </div>
           </div>
         </div>
-        <div class="media m-auto pb-4" *ngIf="isShowCustomerDetail === true">
+        <!-- <div class="media m-auto pb-4" *ngIf="isShowCustomerDetail === true">
           <div class="media-body">
             <div>
               {{ customer?.titleName || transaction.data.customer?.titleName }}
@@ -133,12 +137,20 @@
                   {{ customer?.zipCode || customer?.portalCode || transaction.data.customer?.zipCode || transaction.data.customer?.customer?.portalCode}}
               </div>
             </div>
-            <!-- <div *ngIf="customer?.issueDate">
+            <div *ngIf="customer?.issueDate">
               {{ 'วันที่ออกบัตร' | translate }} 
               {{ customer?.issueDate || transaction.data.customer?.issueDate || '-' }}
-            </div> -->
+            </div> 
           </div>
-          <!-- <img class="img-customer img-fluid ml-5" [src]="'data:image/jpeg;base64,' + customer?.imageReadSmartCard" *ngIf="customer?.imageReadSmartCard !== undefined"> -->
+            <img class="img-customer img-fluid ml-5" [src]="'data:image/jpeg;base64,' + customer?.imageReadSmartCard" *ngIf="customer?.imageReadSmartCard !== undefined"> 
+        </div> -->
+        <div class="card-footer bg-transparent">
+            <div>
+              <label class="text-grey">ผู้ซื้อ &nbsp;&nbsp;&nbsp;{{ nameTextBySmartCard || nameTextBySearchMobileNo }}</label>
+            </div>
+            <div>
+              <label class="text-grey">ที่อยู่ใบเสร็จรับเงิน &nbsp;&nbsp;&nbsp;{{ billingAddressText }}</label>
+            </div>
         </div>
         <div class="card-footer bg-transparent">
           <form [formGroup]="receiptInfoForm" class="pt-2">

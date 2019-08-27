@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, TemplateRef, Output, EventEmitter, OnDestroy } from '@angular/core';
 import { WIZARD_DEVICE_ONLY_AIS } from 'src/app/device-only/constants/wizard.constant';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { ReadCardService, PageLoadingService, AlertService, HomeService, ApiRequestService, ReceiptInfo, User, TokenService } from 'mychannel-shared-libs';
+import { ReadCardService, PageLoadingService, AlertService, HomeService, ApiRequestService, ReceiptInfo, User, TokenService, PaymentDetail } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { TransactionAction, Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { BillingAddressService } from 'src/app/device-only/services/billing-address.service';
@@ -15,6 +15,7 @@ import { debounceTime } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { ROUTE_DEVICE_ONLY_ASP_SELECT_MOBILE_CARE_PAGE } from '../../constants/route-path.constant';
 import { TransactionType } from 'src/app/shared/models/transaction.model';
+import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 
 declare let $: any;
 @Component({
@@ -28,22 +29,26 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   public receiptInfoForm: FormGroup;
   public messages: string;
   public canReadSmartCard: boolean = true;
-  public nameTextBySmartCard: string;
-  public nameTextBySearchMobileNo: string;
   private customer: Customer;
-  public addressTextBySmartCard: string;
   public listBillingAccount: Array<any>;
   private priceOption: PriceOption;
   private transaction: Transaction;
   public selectBillingAddressForm: FormGroup;
   public isSelect: boolean;
-  public isShowReadCard: boolean = true;
-  public isShowCustomerDetail: boolean = false;
   public canNext: boolean = false;
   public customerInfoTemp: any;
   public receiptInfo: ReceiptInfo;
   public user: User;
   public ADDRESS_BY_SMART_CARD: string = 'addressBySmartCard';
+  public paymentDetail: PaymentDetail;
+  public banks: any[];
+  private localtion: any;
+  public nameTextBySmartCard: string;
+  public nameTextBySearchMobileNo: string;
+  public billingAddressText: string;
+  public addressTextBySmartCard: string;
+  public paymentDetailTemp: any;
+  public paymentDetailValid: boolean;
 
   @ViewChild('progressBarArea')
   progressBarArea: ElementRef;
@@ -78,6 +83,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.getPaymentDetail();
     this.createTransaction();
     this.progressBarArea.nativeElement.style.display = 'none';
     this.createFormMobile();
@@ -102,6 +108,64 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
     });
   }
 
+  private getPaymentDetail(): void {
+    let commercialName = this.priceOption.productDetail.name;
+    if (this.priceOption.productStock.color) {
+      commercialName += ` สี ${this.priceOption.productStock.color}`;
+    }
+    this.paymentDetail = {
+      commercialName: commercialName,
+      // tslint:disable-next-line:max-line-length
+      promotionPrice: this.priceOption.trade.priceType === 'NORMAL' ? +(this.priceOption.trade.normalPrice) : +(this.priceOption.trade.promotionPrice),
+      isFullPayment: this.isFullPayment(),
+      installmentFlag: false,
+      advancePay: 0,
+      qrCode: false
+    };
+
+    if (this.priceOption.trade.banks && this.priceOption.trade.banks.length > 0) {
+      if (this.isFullPayment()) {
+        this.banks = this.priceOption.trade.banks || [];
+      } else {
+        this.banks = (this.priceOption.trade.banks || []).map((b: any) => {
+          return b.installmentDatas.map((data: any) => {
+            return {
+              ...b,
+              installment: `${data.installmentPercentage}% ${data.installmentMounth}`
+            };
+          });
+        }).reduce((prev: any, curr: any) => {
+          curr.forEach((element: any) => {
+            prev.push(element);
+          });
+          return prev;
+        }, []);
+      }
+    } else {
+      this.localtion = this.user.locationCode;
+      this.http.post('/api/salesportal/banks-promotion', {
+        localtion: this.localtion
+      }).toPromise().then((response: any) => this.banks = response.data || '');
+    }
+  }
+
+  private isFullPayment(): boolean {
+    const trade = this.priceOption.trade || {};
+    const payment = (trade.payments || []).find(p => p.method !== 'PP') || {};
+    switch (payment.method) {
+      case 'CC':
+        if (PriceOptionUtils.getInstallmentsFromTrades([trade])) {
+          return false;
+        } else {
+          return true;
+        }
+      case 'CA':
+      case 'CA/CC':
+      default:
+        return true;
+    }
+  }
+
   private createTransaction(): void {
     if (!this.transaction.data) {
       this.transaction = {
@@ -124,11 +188,8 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   private setCustomerInfoFromTransaction(): void {
     const customer = this.transaction.data.customer;
     if (customer) {
-      this.isShowCustomerDetail = true;
       this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(customer.idCardNo.substring(9))}`));
       this.varidationNext(true);
-    } else {
-      this.isShowCustomerDetail = false;
     }
   }
 
@@ -181,12 +242,25 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
 
   private checkChargeType = (mobileNo: string) => {
     this.http.get(`/api/customerportal/asset/${mobileNo}/profile`).toPromise()
-      .then((resp: any) => {
-        const chargeType: string = resp.data.chargeType;
+      .then((response: any) => {
+        const chargeType: string = response.data.chargeType;
         switch (chargeType) {
           case 'Pre-paid':
-            this.alertService.warning('กรุณาระบุเบอร์ AIS รายเดือนเท่านั้น');
-            this.searchByMobileNoForm.controls['mobileNo'].setValue('');
+            this.http.get(`/api/customerportal/mobile-detail/${mobileNo}`).toPromise()
+              .then((res: any) => {
+                if (res && res.data && res.data.mobileStatus === 'Active') {
+                  this.setCustomerInfo({
+                    customer: '',
+                    action: TransactionAction.KEY_IN
+                  });
+                  this.nameTextBySearchMobileNo = res.data.title + ' ' + res.data.name;
+                  this.billingAddressText = '';
+                  this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(response.data.idCardNo.substring(9))}`));
+                  this.customerInfoService.setSelectedMobileNo(mobileNo);
+                  this.varidationNext(true);
+                  this.pageLoadingService.closeLoading();
+                }
+              });
             break;
           case 'Post-paid':
             this.http.get(`/api/customerportal/billing/${mobileNo}`).toPromise()
@@ -197,28 +271,29 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
                     customer: res.data.billingAddress,
                     action: TransactionAction.KEY_IN
                   });
-                  this.isShowReadCard = false;
-                  this.isShowCustomerDetail = true;
                   this.nameTextBySearchMobileNo = this.customer.titleName + ' ' + this.customer.firstName + ' ' + this.customer.lastName;
+                  this.billingAddressText = '';
                   this.customerInfoService.setSelectedMobileNo(mobileNo);
                   this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(res.data.billingAddress.idCardNo.substring(9))}`));
                   this.pageLoadingService.closeLoading();
-                } else {
-                  this.errorNotAisMobileNo();
                 }
-              })
-              .catch(() => {
-                this.pageLoadingService.closeLoading();
-                this.errorNotAisMobileNo();
-                this.clearData();
               });
             break;
         }
       })
       .catch(() => {
+        this.setCustomerInfo({
+          customer: '',
+          action: TransactionAction.KEY_IN
+        });
+        this.nameTextBySearchMobileNo = '';
+        this.billingAddressText = '';
+        this.receiptInfoForm.controls['taxId'].setValue('');
+        this.transaction.data.simCard = {
+          mobileNo: mobileNo
+        };
+        this.varidationNext(true);
         this.pageLoadingService.closeLoading();
-        this.errorNotAisMobileNo();
-        this.clearData();
       });
   }
 
@@ -233,11 +308,12 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
 
   private clearData(): void {
     this.searchByMobileNoForm.controls['mobileNo'].setValue('');
+    this.nameTextBySearchMobileNo = '';
+    this.billingAddressText = '';
     this.receiptInfoForm.controls['taxId'].setValue('');
   }
 
   setCustomerInfo = (data: any) => {
-    console.log('data => ', data);
     const customer = {
       idCardNo: data.customer.idCardNo,
       idCardType: data.customer.idCardType || 'บัตรประชาชน',
@@ -380,9 +456,9 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
     const billingAddressSelected = this.selectBillingAddressForm.controls.billingAddress.value;
     if (billingAddressSelected === this.ADDRESS_BY_SMART_CARD) {
       this.isSelect = true;
+      this.billingAddressText = this.addressTextBySmartCard;
       this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(this.customer.idCardNo.substring(9))}`));
       this.closeModalBillingAddress();
-      this.isShowCustomerDetail = true;
       this.setCustomerInfo({
         customer: this.customer,
         action: TransactionAction.READ_CARD
@@ -392,10 +468,10 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
       const mobileNo = this.listBillingAccount[billingAddressSelected].mobileNo[0];
       this.customerInfoService.getBillingByMobileNo(mobileNo)
         .then((res: any) => {
+          this.billingAddressText = '';
           this.customerInfoService.setSelectedMobileNo(mobileNo);
           this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(res.data.billingAddress.idCardNo.substring(9))}`));
           this.closeModalBillingAddress();
-          this.isShowCustomerDetail = true;
           this.customer = res.data.billingAddress;
           this.setCustomerInfo({
             customer: this.customer,
@@ -458,6 +534,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   }
 
   onNext(): void {
+    this.transaction.data.payment = this.paymentDetailTemp.payment;
     this.createOrderService.createAddToCartTrasaction(this.transaction, this.priceOption)
       .then((transaction) => {
         this.transaction = { ...transaction };
@@ -466,6 +543,14 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
       }).catch((error) => {
         this.alertService.error(error);
       });
+  }
+
+  onPaymentDetailCompleted(payment: any): void {
+    this.paymentDetailTemp = payment;
+  }
+
+  onPaymentDetailError(valid: boolean): void {
+    this.paymentDetailValid = valid;
   }
 
   ngOnDestroy(): void {
