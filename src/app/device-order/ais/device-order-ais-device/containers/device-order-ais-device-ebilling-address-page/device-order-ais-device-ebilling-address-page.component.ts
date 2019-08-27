@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, CustomerAddress, CustomerService } from 'mychannel-shared-libs';
+import { HomeService, CustomerAddress, CustomerService, AlertService } from 'mychannel-shared-libs';
 import {
   ROUTE_ORDER_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE
 } from 'src/app/order/order-new-register/constants/route-path.constant';
@@ -14,6 +14,8 @@ import { debounceTime } from 'rxjs/operators';
 import { WIZARD_DEVICE_ODER_AIS_DEVICE } from 'src/app/device-order/constants/wizard.constant';
 import { ROUTE_DEVICE_AIS_DEVICE_PAYMENT_PAGE } from 'src/app/device-order/ais/device-order-ais-device/constants/route-path.constant';
 import { FormGroup, FormBuilder, Validators, AbstractControl, ValidationErrors } from '@angular/forms';
+import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { PriceOption } from 'src/app/shared/models/price-option.model';
 
 @Component({
   selector: 'app-device-order-ais-device-ebilling-address-page',
@@ -25,6 +27,7 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
   wizards: string[] = WIZARD_DEVICE_ODER_AIS_DEVICE;
 
   transaction: Transaction;
+  priceOption: PriceOption;
   customerAddress: CustomerAddress;
   allZipCodes: string[];
   provinces: any[];
@@ -45,13 +48,30 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
+    private priceOptionService: PriceOptionService,
     private http: HttpClient,
     private localStorageService: LocalStorageService,
     private translation: TranslateService,
     private customerService: CustomerService,
     public fb: FormBuilder,
+    private alertService: AlertService
   ) {
     this.transaction = this.transactionService.load();
+    this.priceOption = this.priceOptionService.load();
+    if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      this.homeService.callback = () => {
+        this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+          .then((response: any) => {
+            if (response.value === true) {
+              this.returnStock().then(() => {
+                this.transaction.data.order = {};
+                this.transactionService.remove();
+                window.location.href = '/';
+              });
+            }
+          });
+      };
+    }
   }
 
   ngOnInit(): void {
@@ -236,6 +256,24 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
 
   onHome(): void {
     this.homeService.goToHome();
+  }
+
+  returnStock(): Promise<void> {
+    return new Promise(resolve => {
+      const transaction = this.transactionService.load();
+      const promiseAll = [];
+      if (transaction.data) {
+        if (transaction.data.order && transaction.data.order.soId) {
+          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
+            location: this.priceOption.productStock.location,
+            soId: transaction.data.order.soId,
+            transactionId: transaction.transactionId
+          }).toPromise().catch(() => Promise.resolve());
+          promiseAll.push(order);
+        }
+      }
+      Promise.all(promiseAll).then(() => resolve());
+    });
   }
 
   ngOnDestroy(): void {

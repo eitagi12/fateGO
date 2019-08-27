@@ -182,10 +182,6 @@ export class DeviceOrderAisDeviceQueuePageComponent implements OnInit, OnDestroy
     return this.mobileFrom.value['mobileNo'] ? true : false;
   }
 
-  onHome(): void {
-    this.homeService.goToHome();
-  }
-
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }

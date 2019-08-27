@@ -80,17 +80,20 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     this.user = this.tokenService.getUser();
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
-    this.homeService.callback = () => {
-      this.alertService.question('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่')
-        .then((data: any) => {
-          if (!data.value) {
-            return false;
-          }
-
-          // Returns stock (sim card, soId) todo...
-          return this.returnStock().then(() => true);
-        });
-    };
+    if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      this.homeService.callback = () => {
+        this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+          .then((response: any) => {
+            if (response.value === true) {
+              this.returnStock().then(() => {
+                this.transaction.data.order = {};
+                this.transactionService.remove();
+                window.location.href = '/';
+              });
+            }
+          });
+      };
+    }
   }
 
   ngOnInit(): void {
@@ -614,6 +617,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
         .then((response: any) => {
           if (response.value === true) {
             this.returnStock().then(() => {
+              this.transaction.data.order = {};
               this.transactionService.remove();
               this.router.navigate([ROUTE_BUY_GADGET_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
             });

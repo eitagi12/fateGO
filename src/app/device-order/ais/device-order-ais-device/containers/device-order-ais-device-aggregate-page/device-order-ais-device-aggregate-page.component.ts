@@ -43,10 +43,6 @@ export class DeviceOrderAisDeviceAggregatePageComponent implements OnInit {
 
   }
 
-  onHome(): void {
-    this.homeService.goToHome();
-  }
-
   getThumbnail(): string {
     const product = (this.priceOption.productDetail.products || []).find((p: any) => {
       return p.colorName === this.priceOption.productStock.color;
