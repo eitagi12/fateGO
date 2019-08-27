@@ -118,8 +118,7 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyPageComponent implement
               .then((resp: any) => {
                 const data = resp.data || {};
                 this.transaction.data.billingInformation = {
-                  billCycles: data.billingAccountList,
-                  billDeliveryAddress: this.transaction.data.customer
+                  billCycles: data.billingAccountList
                 };
 
                 return this.conditionIdentityValid()

@@ -26,7 +26,6 @@ export class DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent imp
   readCardValid: boolean;
   priceOption: PriceOption;
   user: User;
-  billDeliveryAddress: Customer;
   progressReadCard: number;
 
   @ViewChild(ValidateCustomerIdCardComponent)
@@ -118,34 +117,39 @@ export class DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent imp
             });
         })
         .then((customer: any) => { // load bill cycle
-          this.transaction.data.action = TransactionAction.READ_CARD;
-          this.transaction.data.customer = Object.assign(this.profile, customer);
-          return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
-            .then((resp: any) => {
-              const data = resp.data || {};
-              return {
-                billCycles: data.billingAccountList
-              };
-            });
-        }).then((billingInformation: any) => {
-          this.transaction.data.billingInformation = billingInformation;
-          return this.conditionIdentityValid().catch((msg: string) => {
-            return this.alertService.error(this.translateService.instant(msg)).then(() => true);
-          }).then((isError: boolean) => {
-            if (isError) {
-              this.onBack();
-              return;
-            }
-            return this.http.post('/api/salesportal/add-device-selling-cart',
-              this.getRequestAddDeviceSellingCart()
-            ).toPromise().then((response: any) => {
-              this.transaction.data.order = { soId: response.data.soId };
-              return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-            }).then(() => {
-              this.pageLoadingService.closeLoading();
-              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_CUSTOMER_INFO_PAGE]);
-            });
-          });
+          if (customer && (customer.caNumber || customer.idCardType || customer.idCardNo)) {
+            this.transaction.data.action = TransactionAction.READ_CARD;
+            this.transaction.data.customer = Object.assign(this.profile, customer);
+            return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
+              .then((resp: any) => {
+                const data = resp.data || {};
+                return {
+                  billCycles: data.billingAccountList
+                };
+              }).then((billingInformation: any) => {
+                this.transaction.data.billingInformation = billingInformation;
+                return this.conditionIdentityValid().catch((msg: string) => {
+                  return this.alertService.error(this.translateService.instant(msg)).then(() => true);
+                }).then((isError: boolean) => {
+                  if (isError) {
+                    this.onBack();
+                    return;
+                  }
+                  return this.http.post('/api/salesportal/add-device-selling-cart',
+                    this.getRequestAddDeviceSellingCart()
+                  ).toPromise().then((response: any) => {
+                    this.transaction.data.order = { soId: response.data.soId };
+                    return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+                  }).then(() => {
+                    this.pageLoadingService.closeLoading();
+                    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_CUSTOMER_INFO_PAGE]);
+                  });
+                });
+              });
+          } else {
+            this.pageLoadingService.closeLoading();
+            this.alertService.warning('ไม่พบหมายเลขบัตรประชาชนนี้ในระบบ');
+          }
         });
     });
   }

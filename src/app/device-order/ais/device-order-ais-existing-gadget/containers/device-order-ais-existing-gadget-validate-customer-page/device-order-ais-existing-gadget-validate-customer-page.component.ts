@@ -145,7 +145,6 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
                 this.transaction.data.action = TransactionAction.KEY_IN;
                 this.transaction.data.billingInformation = {
                   billCycles: data.billingAccountList,
-                  billDeliveryAddress: customer
                 };
               }).then(() => {
                 return this.conditionIdentityValid()
