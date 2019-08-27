@@ -48,7 +48,8 @@ export class DeviceOnlyKioskQrCodeQueuePageComponent implements OnInit , OnDestr
     private sharedTransactionService: SharedTransactionService,
     private createOrderService: CreateOrderService,
     private queueService: QueueService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private formBuilder: FormBuilder
 
   ) {
     this.transaction = this.transactionService.load();
@@ -60,21 +61,18 @@ export class DeviceOnlyKioskQrCodeQueuePageComponent implements OnInit , OnDestr
     this.price = this.priceOption.trade.priceType === 'NORMAL' ? this.priceOption.trade.normalPrice : this.priceOption.trade.promotionPrice;
     this.homeButtonService.initEventButtonHome();
     this.createForm();
-    this.setQueueType();
+    this.setMobileNo();
   }
 
-  setQueueType(): void {
-    this.queueService.checkQueueLocation().then((queueType) => {
-      this.queueType = queueType;
-      if (this.transaction.data.simCard && this.transaction.data.simCard.mobileNo && this.queueType === 'SMART_SHOP') {
-        this.mobileFrom.patchValue({ mobileNo: this.transaction.data.simCard.mobileNo || this.transaction.data.receiptInfo.telNo });
-        this.mobileNo = this.transaction.data.simCard.mobileNo || this.transaction.data.receiptInfo.telNo;
-      }
-    });
+  setMobileNo(): void {
+    if (this.transaction.data.simCard && this.transaction.data.simCard.mobileNo) {
+      this.mobileFrom.patchValue({ mobileNo: this.transaction.data.simCard.mobileNo || this.transaction.data.receiptInfo.telNo});
+      this.mobileNo = this.transaction.data.simCard.mobileNo || this.transaction.data.receiptInfo.telNo;
+    }
   }
 
   createForm(): void {
-    this.mobileFrom = this.fb.group({
+    this.mobileFrom = this.formBuilder.group({
       'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(/^0[6-9]{1}[0-9]{8}/)])],
     });
 
@@ -82,109 +80,10 @@ export class DeviceOnlyKioskQrCodeQueuePageComponent implements OnInit , OnDestr
       this.mobileNo = value.mobileNo;
     });
 
-    this.queueFrom = this.fb.group({
-      'queue': ['', Validators.compose([Validators.required, Validators.pattern(/([A-Y]{1}[0-9]{3})/)])],
-    });
-
-    this.queueFrom.valueChanges.subscribe((value) => {
-      this.queue = value.queue;
-    });
-  }
-
-  checkValid(): boolean {
-    if (this.queueType === 'AUTO_GEN_Q') {
-      return this.mobileFrom.invalid && this.queueFrom.invalid;
-    } else if (this.queueType === 'SMART_SHOP') {
-      return this.mobileFrom.invalid;
-    } else {
-      return this.queueFrom.invalid;
-    }
-  }
-
-  checkInput(event: any, type: string): void {
-    this.inputType = type;
-    if (type === 'mobileNo') {
-      this.queueFrom.reset();
-    } else {
-      this.mobileFrom.reset();
-    }
   }
 
   onHome(): void {
     this.homeService.goToHome();
-  }
-
-  onNext(): void {
-    // this.autoGetQueue();
-    this.pageLoadingService.openLoading();
-    if (!this.queueType || this.queueType === 'MANUAL' || this.inputType === 'queue') {
-      this.transaction.data.queue = { queueNo: this.queue };
-      this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).then(() => {
-        return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
-          this.pageLoadingService.closeLoading();
-          this.router.navigate([ROUTE_DEVICE_ONLY_KIOSK_RESULT_QUEUE_PAGE]);
-        });
-      });
-    } else {
-      this.onSendSMSQueue(this.mobileNo).then((queue) => {
-        if (queue) {
-          this.transaction.data.queue = { queueNo: queue };
-          return this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption).then(() => {
-            return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
-              this.pageLoadingService.closeLoading();
-              this.router.navigate([ROUTE_DEVICE_ONLY_KIOSK_RESULT_QUEUE_PAGE]);
-            });
-          });
-        } else {
-          this.queueType = 'MANUAL';
-          this.errorQueue = true;
-          this.pageLoadingService.closeLoading();
-          return;
-        }
-      }).catch(() => {
-        this.queueType = 'MANUAL';
-        this.errorQueue = true;
-        this.pageLoadingService.closeLoading();
-        return;
-      });
-    }
-  }
-
-  onSendSMSQueue(mobileNo: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-      if (this.isLocationPhuket()) {
-        return this.queueService.getQueueNewMatic(mobileNo)
-          .then((respQueue: any) => {
-            const data = respQueue.data && respQueue.data.result ? respQueue.data.result : {};
-            resolve(data.queueNo);
-          }).catch((error) => {
-            reject(null);
-          });
-      } else {
-        return this.queueService.autoGetQueue(mobileNo)
-          .then((queueNo: any) => {
-            if (queueNo) {
-              resolve(queueNo);
-            } else {
-              reject(null);
-            }
-          }).catch((error) => {
-            reject(null);
-          });
-      }
-    });
-  }
-
-  isLocationPhuket(): boolean {
-    return this.user.locationCode === '1213' && this.tokenService.isAisUser();
-  }
-
-  ngOnDestroy(): void {
-    this.transactionService.save(this.transaction);
-  }
-
-  checkSkip(): boolean {
-    return this.mobileFrom.value['mobileNo'] ? true : false;
   }
 
   onSkip(): void {
@@ -199,6 +98,42 @@ export class DeviceOnlyKioskQrCodeQueuePageComponent implements OnInit , OnDestr
             this.router.navigate([ROUTE_DEVICE_ONLY_KIOSK_RESULT_QUEUE_PAGE]);
           });
         });
+      });
+  }
+
+  onNext(): void {
+    this.pageLoadingService.openLoading();
+    this.callServices();
+  }
+
+  ngOnDestroy(): void {
+    this.transactionService.update(this.transaction);
+  }
+
+  isLocationPhuket(): boolean {
+    return this.user.locationCode === '1213' && this.tokenService.isAisUser();
+  }
+
+  callServices(): void {
+    this.queueService.getQueueNewMatic(this.mobileFrom.value.mobileNo)
+      .then((resp: any) => {
+        const data = resp.data && resp.data.result ? resp.data.result : {};
+        return data.queueNo;
+      })
+      .then((queueNo: string) => {
+        this.transaction.data.queue = {
+          queueNo: queueNo
+        };
+        return this.callServiceCreateDeviceSellingOrderAndUpdateShareTransaction();
+      })
+      .then(() => this.router.navigate([ROUTE_DEVICE_ONLY_KIOSK_RESULT_QUEUE_PAGE]))
+      .then(() => this.pageLoadingService.closeLoading());
+  }
+
+  callServiceCreateDeviceSellingOrderAndUpdateShareTransaction(): any {
+    return this.createOrderService.createOrderDeviceOnly(this.transaction, this.priceOption)
+      .then(() => {
+        return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
       });
   }
 }

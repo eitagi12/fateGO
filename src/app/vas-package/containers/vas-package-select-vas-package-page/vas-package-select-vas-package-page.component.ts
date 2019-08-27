@@ -81,7 +81,6 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
         return;
       }
       const matchNType: any = selectedPackage.customAttributes.allow_ntype.indexOf(resProfile.data.detail.networkType) !== -1;
-      console.log('matchNType', matchNType);
       if (!matchNType) {
         this.pageLoadingService.closeLoading();
         this.alertService.error('ไม่สามารถสมัครแพ็กเกจได้เนื่องจาก Network type ไม่ตรง');
@@ -155,9 +154,9 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
     };
   }
 
-  onSelectedBestSellerPackage(event: any): void {
-    this.onSelectPackage(event);
-  }
+  // onSelectedBestSellerPackage(event: any): void {
+  //   this.onSelectPackage(event);
+  // }
 
   createForm(): void {
     this.mobileForm = this.formBuilder.group({
@@ -357,9 +356,9 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
     }
   }
 
-  onSellBestSellerPackage(value: any): void {
-    this.onSelectPackage(value);
-  }
+  // onSellBestSellerPackage(value: any): void {
+  //   this.onSelectPackage(value);
+  // }
 
   getRomByUser(): any {
     this.aisNativeOrderService.getNativeUsername();
@@ -375,8 +374,6 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
             mobileNoAgent: res.data.mobileNo ? res.data.mobileNo : ''
           };
           this.router.navigate([ROUTE_VAS_PACKAGE_LOGIN_WITH_PIN_PAGE]);
-        }).catch((error) => {
-          this.alertService.error(error);
         });
     });
   }

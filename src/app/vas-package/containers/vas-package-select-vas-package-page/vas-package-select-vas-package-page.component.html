@@ -27,8 +27,8 @@
       <div [mcLoading]="packageVasService" [hidden]="packLoading"></div>
       <div *ngIf="!packLoading">
         <app-vas-package-slider [packages]="packagesBestSellers" [networkType]='nType'
-          (selectedBestSellerPackage)="onSelectedBestSellerPackage($event)"
-          (sellBestSellerPackage)="onSellBestSellerPackage($event)"></app-vas-package-slider>
+          (selectedBestSellerPackage)="onSelectPackage($event)"
+          (sellBestSellerPackage)="onSelectPackage($event)"></app-vas-package-slider>
         <div class="text-center mb-1">
           แพ็กเกจตาม Life Style
         </div>

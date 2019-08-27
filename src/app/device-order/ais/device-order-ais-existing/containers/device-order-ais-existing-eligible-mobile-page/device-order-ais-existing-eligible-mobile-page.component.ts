@@ -257,8 +257,7 @@ export class DeviceOrderAisExistingEligibleMobilePageComponent implements OnInit
   }
 
   checkKnoxGuard(): void {
-    const isKnoxGuard: boolean = (this.priceOption.trade && this.priceOption.trade.serviceLockHs &&
-      this.priceOption.trade.serviceLockHs === 'KG');
+    const isKnoxGuard: boolean = this.priceOption.trade && this.priceOption.trade.serviceLockHs;
     if (isKnoxGuard) {
       this.checkChangeService.CheckServiceKnoxGuard(this.selectMobileNo.mobileNo).then(() => {
         this.pageLoadingService.closeLoading();

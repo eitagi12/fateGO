@@ -1,107 +1,44 @@
 <div class="mc-flex">
   <mc-header title="{{ 'ชำระสินค้า' | translate }}">
+    <div class="header-icon-left">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
     <div class="header-icon-right">
-        <mc-dropdown-language></mc-dropdown-language>
+      <mc-dropdown-language></mc-dropdown-language>
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
+
   </mc-header>
   <div class="mc-flex-wrap bg-white">
     <div class="my-3">
-      <ng-container [ngSwitch]="queueType">
-        <ng-container *ngSwitchCase="'SMART_SHOP'">
-          <div class="container pt-3">
-            <img src="assets/images/icon/sales_portal_white_check.png" class="d-block m-auto icon">
-            <div class="my-3 text-center text-green">
-              <p>{{ 'หมายเลขของท่าน' | translate }} {{ transaction?.data?.receiptInfo?.telNo || transaction?.data?.simCard?.mobileNo | mobileNo }}</p>
-              <p>{{ 'หมายเลขรายการสั่งซื้อของท่านได้เข้าสู่ระบบเรียบร้อยแล้ว' | translate }}</p>
-            </div>
+      <div class="container pt-3">
+        <img src="assets/images/icon/sales_portal_white_check.png" class="d-block m-auto icon">
+        <div class="my-3 text-center text-green">
+          <p>{{ 'หมายเลขของท่าน' | translate }}
+            {{ transaction?.data?.receiptInfo?.telNo || transaction?.data?.simCard?.mobileNo | mobileNo }}</p>
+          <p>{{ 'หมายเลขรายการสั่งซื้อของท่านได้เข้าสู่ระบบเรียบร้อยแล้ว' | translate }}</p>
+        </div>
 
-            <form [formGroup]="mobileFrom">
-              <div class="form-group">
-                <div class="mt-5 text-center">{{ 'เบอร์โทรศัพท์รับหมายเลขสั่งซื้อเพื่อชำระสินค้าของท่านคือ' | translate }}</div>
-                <input class="form-control text-center mb-3" id="mobileNo" maxlength="10" autofocus autocomplete="off" formControlName="mobileNo"
-                  placeholder="ระบุเบอร์โทรศัพท์รับ SMS" value="mobileNo" [ngClass]="{ 'is-invalid' : mobileFrom.controls.mobileNo.invalid && mobileFrom.controls.mobileNo.touched && mobileFrom.controls.mobileNo.errors }">
-                <small class="invalid-feedback" *ngIf="mobileFrom.controls.mobileNo.touched && mobileFrom.controls.mobileNo.errors">
-                  **{{ 'กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง' | translate }}
-                </small>
-              </div>
-            </form>
-          
+        <form [formGroup]="mobileFrom">
+          <div class="form-group">
+            <div class="mt-5 text-center">{{ 'เบอร์โทรศัพท์รับหมายเลขสั่งซื้อเพื่อชำระสินค้าของท่านคือ' | translate }}
+            </div>
+            <input class="form-control text-center mb-3" id="mobileNo" maxlength="10" autofocus autocomplete="off"
+              formControlName="mobileNo" placeholder="ระบุเบอร์โทรศัพท์รับ SMS" value="mobileNo"
+              [ngClass]="{ 'is-invalid' : mobileFrom.controls.mobileNo.invalid && mobileFrom.controls.mobileNo.touched && mobileFrom.controls.mobileNo.errors }">
+            <small class="invalid-feedback"
+              *ngIf="mobileFrom.controls.mobileNo.touched && mobileFrom.controls.mobileNo.errors">
+              **{{ 'กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง' | translate }}
+            </small>
           </div>
-        </ng-container>
+        </form>
 
-        <ng-container *ngSwitchCase="'AUTO_GEN_Q'">
-          <div class="container pt-3">
-            <img src="assets/images/icon/sales_portal_white_check.png" class="d-block m-auto icon">
-            <div class="my-3 text-center text-green">
-              <p>{{ 'หมายเลขของท่าน' | translate }} {{ transaction?.data?.receiptInfo?.telNo || transaction?.data?.simCard?.mobileNo | mobileNo }}</p>
-              <p>{{ 'หมายเลขรายการสั่งซื้อของท่านได้เข้าสู่ระบบเรียบร้อยแล้ว' | translate }}</p>
-            </div>
-            <form [formGroup]="mobileFrom">
-              <div class="form-group">
-                <div class="mt-5 text-center">{{ 'ระบุเบอร์โทรศัพท์รับหมายเลขสั่งซื้อเพื่อชำระสินค้าของท่าน' | translate }}</div>
-                <input class="form-control text-center mb-3" id="mobileNo" maxlength="10" autofocus autocomplete="off" formControlName="mobileNo"
-                  (keyup)="checkInput($event, 'mobileNo')" placeholder="ระบุเบอร์โทรศัพท์รับ SMS" value="" [ngClass]="{ 'is-invalid' : mobileFrom.controls.mobileNo.invalid && mobileFrom.controls.mobileNo.touched && mobileFrom.controls.mobileNo.errors }">
-                <small class="invalid-feedback" *ngIf="mobileFrom.controls.mobileNo.touched && mobileFrom.controls.mobileNo.errors">
-                  **{{ 'กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง' | translate }}
-                </small>
-              </div>
-            </form>
-            <div class="line-behind" class="text-center">
-              <span translate >หรือ</span>
-            </div>
-            <form [formGroup]="queueFrom">
-              <div class="mt-5 form-group">
-                <div class="text-center">{{ 'กรุณารับบัตรคิว แล้วระบุหมายเลขคิว' | translate }}</div>
-                <div class="text-center">{{ 'ในการชำระสินค้าของท่าน' | translate }}</div>
-                <input class="form-control text-center mb-3" id="queue" maxlength="4" autofocus autocomplete="off" formControlName="queue"
-                  (keyup)="checkInput($event, 'queue')" placeholder="ระบุเลขที่คิว" [ngClass]="{ 'is-invalid' : queueFrom.controls.queue.invalid && queueFrom.controls.queue.touched && queueFrom.controls.queue.errors }">
-                <small class="invalid-feedback" *ngIf="queueFrom.controls.queue.touched && queueFrom.controls.queue.errors">
-                  **{{ 'กรุณากรอกหมายเลขคิวให้ถูกต้อง' | translate }}
-                </small>
-              </div>
-            </form>
-          </div>
-        </ng-container>
-
-        <ng-container *ngSwitchDefault>
-          <div class="container pt-3">
-            <div *ngIf='errorQueue'>
-              <img src="assets/images/icon/icon-red-alert-circle.png" class="d-block m-auto icon">
-              <div class="my-3 text-center text-red">
-                <p>{{ 'ทำรายการไม่สำเร็จ' | translate }}</p>
-                <p>{{ 'ขออภัยค่ะ ระบบไม่สามารถกดรับบัตรคิวอัตโนมัติได้' | translate }}</p>
-              </div>
-            </div>
-            <div *ngIf='!errorQueue'>
-              <img src="assets/images/icon/sales_portal_white_check.png" class="d-block m-auto icon">
-              <div class="my-3 text-center text-green">
-                <p>{{ 'หมายเลข' | translate }} {{ transaction?.data?.receiptInfo?.telNo || transaction?.data?.simCard?.mobileNo | mobileNo }}</p>
-                <p>{{ 'หมายเลขรายการสั่งซื้อของท่านได้เข้าสู่ระบบเรียบร้อยแล้ว' | translate }}</p>
-              </div>
-            </div>
-            <form [formGroup]="queueFrom">
-              <div class="mt-5 form-group">
-                <div class="text-center">{{ 'กรุณารับบัตรคิว แล้วระบุหมายเลขคิว' | translate }}</div>
-                <div class="text-center">{{ 'ในการชำระสินค้าของท่าน ด้านล่างนี้' | translate }}</div>
-                <input class="form-control text-center mb-3" id="queue" maxlength="4" autofocus autocomplete="off" formControlName="queue"
-                  placeholder="ระบุเลขที่คิว" [ngClass]="{ 'is-invalid' : queueFrom.controls.queue.invalid && queueFrom.controls.queue.touched && queueFrom.controls.queue.errors }">
-                <small class="invalid-feedback" *ngIf="queueFrom.controls.queue.touched && queueFrom.controls.queue.errors">
-                  **{{ 'กรุณากรอกหมายเลขคิวให้ถูกต้อง' | translate }}
-                </small>
-              </div>
-            </form>
-          </div>
-        </ng-container>
-      
-      </ng-container>
+      </div>
     </div>
   </div>
 
   <mc-footer>
-    <!-- <button class="btn btn-success" (click)="onNext()" [disabled]="checkValid()">NEXT</button>
-    <button *ngIf="user?.locationCode === '1213'" class="btn btn-success" (click)="onSkip()" [disabled]="checkSkip()">SKIP</button> -->
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()" [disabled]="checkValid()">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="mobileFrom.invalid">NEXT</button>
   </mc-footer>
 </div>

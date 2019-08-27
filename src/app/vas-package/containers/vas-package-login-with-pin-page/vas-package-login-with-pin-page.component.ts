@@ -89,9 +89,6 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
         } else {
           this.alertService.error('เบอร์โทรศัพท์นี้ไม่ใช่ ROM Agent กรุณาทำรายการใหม่อีกครั้ง');
         }
-      })
-      .catch((err) => {
-        this.alertService.error(err);
       });
   }
 
@@ -127,9 +124,6 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
         } else {
           this.alertService.error('เบอร์โทรศัพท์ หรือ PIN ไม่ถูกต้อง');
         }
-      })
-      .catch((err) => {
-        this.alertService.error(err);
       });
   }
 

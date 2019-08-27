@@ -54,8 +54,7 @@ export class DeviceOrderAisExistingChangePackagePageComponent implements OnInit 
   }
 
   checkKnoxGuard(): void {
-    const isKnoxGuard: boolean = (this.priceOption.trade && this.priceOption.trade.serviceLockHs &&
-      this.priceOption.trade.serviceLockHs === 'KG');
+    const isKnoxGuard: boolean = this.priceOption.trade && this.priceOption.trade.serviceLockHs;
     if (isKnoxGuard) {
       this.checkChangeService.CheckServiceKnoxGuard(this.transaction.data.simCard.mobileNo).then(() => {
         this.pageLoadingService.closeLoading();
