@@ -14,6 +14,7 @@ import { SummaryPaymentDetailComponent } from '../components/summary-payment-det
 import { SummaryProductAndServiceComponent } from '../components/summary-product-and-service/summary-product-and-service.component';
 import { SummarySellerCodeComponent } from '../components/summary-seller-code/summary-seller-code.component';
 import { MobileCareComponent } from '../components/mobile-care/mobile-care.component';
+import { MobileCareAspComponent } from '../components/mobile-care-asp/mobile-care-asp.component';
 
 @NgModule({
   imports: [
@@ -28,6 +29,7 @@ import { MobileCareComponent } from '../components/mobile-care/mobile-care.compo
     BillingAddressComponent,
     ReadCardComponent,
     MobileCareComponent,
+    MobileCareAspComponent,
     ReceiptInformationComponent,
     ShoppingCartDetailComponent,
     SummaryOrderDetailComponent,
@@ -39,6 +41,7 @@ import { MobileCareComponent } from '../components/mobile-care/mobile-care.compo
     BillingAddressComponent,
     ReadCardComponent,
     MobileCareComponent,
+    MobileCareAspComponent,
     ReceiptInformationComponent,
     ShoppingCartDetailComponent,
     SummaryOrderDetailComponent,

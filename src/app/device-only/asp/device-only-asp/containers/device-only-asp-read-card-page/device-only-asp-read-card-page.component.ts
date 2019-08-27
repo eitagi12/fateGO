@@ -211,6 +211,8 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
     this.receiptInfoForm.valueChanges.pipe(debounceTime(750)).subscribe(event => {
       if (this.receiptInfoForm.valid) {
         this.receiptInfo = this.receiptInfoForm.value;
+      } else {
+        this.receiptInfo = this.receiptInfoForm.value;
       }
       this.transaction.data.receiptInfo = this.receiptInfo;
     });
@@ -287,14 +289,14 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
         }
       })
       .catch(() => {
-        this.clearData();
         this.setCustomerInfo({
           customer: '',
           action: TransactionAction.KEY_IN
         });
-        this.transaction.data.simCard = {
-          mobileNo: mobileNo
-        };
+        this.nameTextBySearchMobileNo = '';
+        this.billingAddressText = '';
+        this.receiptInfoForm.controls['taxId'].setValue('');
+        this.transaction.data.simCard = { mobileNo: mobileNo };
         this.isNonAis = true;
         this.pageLoadingService.closeLoading();
       });

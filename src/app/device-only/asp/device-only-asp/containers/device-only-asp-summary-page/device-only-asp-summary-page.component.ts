@@ -58,7 +58,7 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
     this.checkShowBalance();
     this.homeButtonService.initEventButtonHome();
     this.transaction.data.tradeType = this.priceOption.trade.tradeNo === 0 ? 'EUP' : 'Hand Set';
-    this.isNonAis = !this.transaction.data.receiptInfo ? true : false;
+    this.isNonAis = (this.transaction.data.receiptInfo && this.transaction.data.receiptInfo.taxId === '') ? true : false;
   }
 
   private checkSeller(seller: Seller): void {
