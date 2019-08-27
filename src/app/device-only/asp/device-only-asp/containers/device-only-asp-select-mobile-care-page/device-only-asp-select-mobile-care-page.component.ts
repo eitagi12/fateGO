@@ -5,7 +5,7 @@ import { MobileCare } from 'src/app/device-only/components/mobile-care/mobile-ca
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
-import { ROUTE_DEVICE_ONLY_ASP_SUMMARY_PAGE, ROUTE_DEVICE_ONLY_ASP_SELECT_PAYMENT_AND_RECEIPT_INFORMATION_PAGE, ROUTE_DEVICE_ONLY_ASP_READ_CARD_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ONLY_ASP_SUMMARY_PAGE, ROUTE_DEVICE_ONLY_ASP_READ_CARD_PAGE } from '../../constants/route-path.constant';
 import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
 import { HttpClient } from '@angular/common/http';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
