@@ -13,7 +13,7 @@ import { CustomerInformationService } from 'src/app/device-only/services/custome
 import { CreateOrderService } from 'src/app/device-only/services/create-order.service';
 import { debounceTime } from 'rxjs/operators';
 import { Router } from '@angular/router';
-import { ROUTE_DEVICE_ONLY_ASP_SELECT_MOBILE_CARE_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ONLY_ASP_SELECT_MOBILE_CARE_PAGE, ROUTE_DEVICE_ONLY_ASP_SUMMARY_PAGE } from '../../constants/route-path.constant';
 import { TransactionType } from 'src/app/shared/models/transaction.model';
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 
@@ -49,6 +49,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   public addressTextBySmartCard: string;
   public paymentDetailTemp: any;
   public paymentDetailValid: boolean;
+  private isNonAis: boolean;
 
   @ViewChild('progressBarArea')
   progressBarArea: ElementRef;
@@ -187,9 +188,11 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
 
   private setCustomerInfoFromTransaction(): void {
     const customer = this.transaction.data.customer;
-    if (customer) {
+    if (customer && customer.idCardNo) {
       this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(customer.idCardNo.substring(9))}`));
       this.varidationNext(true);
+    } else {
+      this.clearData();
     }
   }
 
@@ -237,17 +240,20 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
         text: 'กรุณาระบุเบอร์ให้ครบ 10 หลัก'
       });
       this.clearData();
+      this.varidationNext(false);
     }
   }
 
   private checkChargeType = (mobileNo: string) => {
     this.http.get(`/api/customerportal/asset/${mobileNo}/profile`).toPromise()
       .then((response: any) => {
+        console.log('response profile =========================>  ', response);
         const chargeType: string = response.data.chargeType;
         switch (chargeType) {
           case 'Pre-paid':
             this.http.get(`/api/customerportal/mobile-detail/${mobileNo}`).toPromise()
               .then((res: any) => {
+                console.log('res mobile-detail =========================>  ', res);
                 if (res && res.data && res.data.mobileStatus === 'Active') {
                   this.setCustomerInfo({
                     customer: '',
@@ -257,7 +263,6 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
                   this.billingAddressText = '';
                   this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(response.data.idCardNo.substring(9))}`));
                   this.customerInfoService.setSelectedMobileNo(mobileNo);
-                  this.varidationNext(true);
                   this.pageLoadingService.closeLoading();
                 }
               });
@@ -282,17 +287,15 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
         }
       })
       .catch(() => {
+        this.clearData();
         this.setCustomerInfo({
           customer: '',
           action: TransactionAction.KEY_IN
         });
-        this.nameTextBySearchMobileNo = '';
-        this.billingAddressText = '';
-        this.receiptInfoForm.controls['taxId'].setValue('');
         this.transaction.data.simCard = {
           mobileNo: mobileNo
         };
-        this.varidationNext(true);
+        this.isNonAis = true;
         this.pageLoadingService.closeLoading();
       });
   }
@@ -539,7 +542,11 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
       .then((transaction) => {
         this.transaction = { ...transaction };
         this.transaction.data.device = this.createOrderService.getDevice(this.priceOption);
-        this.router.navigate([ROUTE_DEVICE_ONLY_ASP_SELECT_MOBILE_CARE_PAGE]);
+        if (this.isNonAis === true) {
+          this.router.navigate([ROUTE_DEVICE_ONLY_ASP_SUMMARY_PAGE]);
+        } else {
+          this.router.navigate([ROUTE_DEVICE_ONLY_ASP_SELECT_MOBILE_CARE_PAGE]);
+        }
       }).catch((error) => {
         this.alertService.error(error);
       });

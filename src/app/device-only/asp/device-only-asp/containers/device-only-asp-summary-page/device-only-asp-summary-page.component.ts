@@ -5,7 +5,7 @@ import { AlertService, TokenService, User, HomeService, PageLoadingService } fro
 import { SellerService } from 'src/app/device-only/services/seller.service';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Router } from '@angular/router';
-import { ROUTE_DEVICE_ONLY_ASP_CHECKOUT_PAYMENT_PAGE, ROUTE_DEVICE_ONLY_ASP_SELECT_MOBILE_CARE_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ONLY_ASP_SELECT_MOBILE_CARE_PAGE, ROUTE_DEVICE_ONLY_ASP_READ_CARD_PAGE } from '../../constants/route-path.constant';
 import { ShopCheckSeller } from 'src/app/device-only/models/shopCheckSeller.model';
 import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
@@ -32,6 +32,7 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
   balance: number;
   enoughBalance: boolean;
   isShowBalance: boolean;
+  private isNonAis: boolean;
 
   constructor(
     private router: Router,
@@ -57,6 +58,7 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
     this.checkShowBalance();
     this.homeButtonService.initEventButtonHome();
     this.transaction.data.tradeType = this.priceOption.trade.tradeNo === 0 ? 'EUP' : 'Hand Set';
+    this.isNonAis = !this.transaction.data.receiptInfo ? true : false;
   }
 
   private checkSeller(seller: Seller): void {
@@ -95,7 +97,11 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
   }
 
   public onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ONLY_ASP_SELECT_MOBILE_CARE_PAGE]);
+    if (this.isNonAis === true) {
+      this.router.navigate([ROUTE_DEVICE_ONLY_ASP_READ_CARD_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ONLY_ASP_SELECT_MOBILE_CARE_PAGE]);
+    }
   }
 
   public onNext(): void {
@@ -106,7 +112,8 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
   }
 
   checkShowBalance(): void {
-    if (this.transaction.data.mobileCarePackage.customAttributes && this.transaction.data.simCard.chargeType === 'Pre-paid') {
+    // tslint:disable-next-line: max-line-length
+    if (this.transaction.data.mobileCarePackage && this.transaction.data.mobileCarePackage.customAttributes && this.transaction.data.simCard.chargeType === 'Pre-paid') {
       this.getBalance();
     } else {
       this.isShowBalance = false;
