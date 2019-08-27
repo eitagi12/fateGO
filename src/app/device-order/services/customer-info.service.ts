@@ -106,7 +106,7 @@ export class CustomerInfoService {
       const profile = customer.data;
 
       if (profile.chargeType === 'Pre-paid') {
-          return Promise.reject(`กรุณาระบุเบอร์ AIS รายเดือนเท่านั้น`);
+          return Promise.reject(`ไม่สามารถทำรายการได้ เลขหมายนี้เป็นระบบเติมเงิน`);
       } else {
         if (profile.mobileStatus !== '000' && profile.mobileStatus !== 'Active') {
           return Promise.reject('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาตรวจสอบข้อมูล');

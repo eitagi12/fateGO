@@ -63,6 +63,24 @@
           </div>
         </div>
 
+        <div class="card mb-3" *ngIf="packageOntopList?.length > 0">
+          <div class="card-header bg-purple text-white" translate>แพ็กเกจเสริม</div>
+          <div class="card-body">
+            <p class="text-pink">แพ็กเกจที่ยกเลิก</p>
+            <p>
+              <ng-container *ngIf="packageOntopList">
+                <div *ngFor="let packageOntop of packageOntopList">
+                  <i class="fa fa-circle mr-3 text-green"></i>
+                  {{ packageOntop.title }}
+                  <span class="pull-right" (click)="onOpenDetail(packageOntop?.detail)">
+                    <img src="assets/images/icon/icon-page.png" class="icon" />
+                  </span>
+                </div>
+              </ng-container>
+            </p>
+          </div>
+        </div>
+
         <div class="card mb-3">
           <div class="card-header bg-pink text-white" translate>
             รายละเอียดการชำระ

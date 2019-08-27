@@ -39,6 +39,7 @@ export class DeviceOrderAisExistingGadgetSummaryPageComponent implements OnInit,
   sellerCode: string;
   checkSellerForm: FormGroup;
   seller: Seller;
+  packageOntopList: any[] = [];
 
   constructor(
     private router: Router,
@@ -75,6 +76,7 @@ export class DeviceOrderAisExistingGadgetSummaryPageComponent implements OnInit,
   ngOnInit(): void {
     const customer = this.transaction.data.customer;
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
+    this.packageOntopList = this.transaction.data.deleteOntopPackage;
     this.customerAddress = this.utils.getCurrentAddress(this.mappingCustomer(customer));
     this.createForm();
     this.callServiceEmployee();
@@ -121,10 +123,11 @@ export class DeviceOrderAisExistingGadgetSummaryPageComponent implements OnInit,
   }
 
   onBack(): void {
-    this.router.navigate([this.checkBackNavigate]);
+    const nextUrl: string = this.checkBackNavigate();
+    this.router.navigate([nextUrl]);
   }
 
-  get checkBackNavigate(): string {
+  checkBackNavigate(): string {
     if (this.transaction.data.mainPackage) {
       if (this.transaction.data.onTopPackage) {
         return ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_SELECT_PACKAGE_ONTOP_PAGE;
