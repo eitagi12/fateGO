@@ -337,13 +337,23 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
               this.mobileNo = mobileNo;
               this.pageLoadingService.closeLoading();
             }).catch((err) => {
+              if (this.transaction.data && this.transaction.data.customer) {
+                delete this.transaction.data.customer;
+              }
               this.pageLoadingService.closeLoading();
               this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE]);
             });
         } else {
-          this.alertService.warning('กรุณาระบุเบอร์ AIS รายเดือนเท่านั้น');
+          if (this.transaction.data && this.transaction.data.customer) {
+            delete this.transaction.data.customer;
+          }
+          this.pageLoadingService.closeLoading();
+          this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE]);
         }
       }).catch((error) => {
+        if (this.transaction.data && this.transaction.data.customer) {
+          delete this.transaction.data.customer;
+        }
         this.pageLoadingService.closeLoading();
         this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE]);
       });
@@ -375,7 +385,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
               buildingName: billing.buildingName || '',
               firstName: customerName[0] || '',
               floor: billing.floor || '',
-              idCardNo: mobileFbb.baNo || '',
+              idCardNo: billing.idCardNo || '',
               idCardType: billing.idCardType || '',
               lastName: customerName[1] || '',
               moo: billing.moo || '',
@@ -387,7 +397,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
               birthdate: '',
               gender: '',
             };
-            this.receiptInfo.taxId = mobileFbb.baNo;
+            this.receiptInfo.taxId = billing.idCardNo;
             this.receiptInfo.buyer = `${customerprofile.accntTitle} ${customerprofile.name}`;
             this.receiptInfo.buyerAddress = this.utils.getCurrentAddress({
               homeNo: billing.houseNumber || '',
@@ -405,9 +415,15 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
             });
             this.transaction.data.action = TransactionAction.SEARCH;
           }).catch((error) => {
+            if (this.transaction.data && this.transaction.data.customer) {
+              delete this.transaction.data.customer;
+            }
             this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE]);
           });
       }).catch((err) => {
+        if (this.transaction.data && this.transaction.data.customer) {
+          delete this.transaction.data.customer;
+        }
         this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE]);
       })
       .then(() => {
@@ -510,14 +526,14 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
           });
           this.mobileNo = mobileNo;
           this.transaction.data.action = TransactionAction.READ_CARD;
-
-          this.modalRef.hide();
-        }).catch((err: any) => {
-          this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE]);
-        }).then(() => {
           this.pageLoadingService.closeLoading();
+          this.modalRef.hide();
+        }).catch(() => {
+          this.modalRef.hide();
+          this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
         });
       } else {
+        this.transaction.data.action = TransactionAction.READ_CARD;
         this.transaction.data.customer = this.customerProfile;
         this.transaction.data.customer.zipCode = this.zipCode;
         this.receiptInfo.taxId = this.customerProfile.idCardNo;

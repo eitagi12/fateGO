@@ -132,7 +132,7 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
     const customer: any = this.transaction.data && this.transaction.data.customer ? this.transaction.data.customer : {};
     const customValidate = this.defaultValidate;
     this.validateCustomerKeyInForm = this.fb.group({
-      idCardNo: [{ value: '' }, [Validators.pattern(/^[1-8]\d{12}$/), customValidate.bind(this)]],
+      idCardNo: [{ value: '', disabled: this.checkIdCardNo() }, [Validators.pattern(/^[1-8]\d{12}$/), customValidate.bind(this)]],
       prefix: ['', [Validators.required]],
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
@@ -143,6 +143,17 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
       firstName: customer.firstName || '',
       lastName: customer.lastName || '',
     });
+  }
+
+  checkIdCardNo(): boolean {
+    const customer = this.transaction.data && this.transaction.data.customer && this.transaction.data.customer.idCardNo;
+    const actionReadCard = (this.transaction.data && this.transaction.data.action &&
+      (this.transaction.data.action === TransactionAction.READ_CARD));
+    if (customer && actionReadCard) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   defaultValidate(): ValidationErrors | null {
@@ -238,7 +249,7 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_PAYMENT_PAGE], { queryParams: { ebilling : true} });
+    this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_PAYMENT_PAGE], { queryParams: { ebilling: true } });
   }
 
   onNext(): void {
@@ -251,7 +262,7 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
     this.transaction.data.customer.firstName = this.validateCustomerKeyInForm.value.firstName;
     this.transaction.data.customer.lastName = this.validateCustomerKeyInForm.value.lastName;
     this.transaction.data.customer.idCardNo = this.validateCustomerKeyInForm.value.idCardNo || customer.idCardNo;
-    this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_PAYMENT_PAGE], { queryParams: { ebilling : true} });
+    this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_PAYMENT_PAGE], { queryParams: { ebilling: true } });
   }
 
   onHome(): void {
