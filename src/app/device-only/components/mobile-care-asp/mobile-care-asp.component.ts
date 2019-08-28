@@ -331,6 +331,7 @@ export class MobileCareAspComponent implements OnInit {
       <div class="text-red">โดยบริการโมบายแคร์กับเครื่องเดิมจะสิ้นสุดทันที</div>`
     }).then((data) => {
       if (data.value && data.value === true) {
+        this.isVerifyflag.emit(false);
         this.checkVerifyNext();
       } else {
         this.privilegeCustomerForm.controls['mobileNo'].setValue('');
