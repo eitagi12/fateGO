@@ -252,16 +252,16 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
           case 'Pre-paid':
             this.http.get(`/api/customerportal/mobile-detail/${mobileNo}`).toPromise()
               .then((res: any) => {
-                if (res && res.data && res.data.mobileStatus === 'Active') {
+                if (res && res.data) {
+                  this.billingAddressText = '';
+                  this.nameTextBySearchMobileNo = res.data.title + ' ' + res.data.name;
+                  this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(response.data.idCardNo.substring(9))}`));
+                  this.customerInfoService.setSelectedMobileNo(mobileNo);
                   this.setCustomerInfo({
                     customer: '',
                     action: TransactionAction.KEY_IN
                   });
                   this.receiptInfoValid = true;
-                  this.nameTextBySearchMobileNo = res.data.title + ' ' + res.data.name;
-                  this.billingAddressText = '';
-                  this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(response.data.idCardNo.substring(9))}`));
-                  this.customerInfoService.setSelectedMobileNo(mobileNo);
                   this.pageLoadingService.closeLoading();
                 }
               });
@@ -271,15 +271,15 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
               .then((res: any) => {
                 if (res && res.data && res.data.billingAddress) {
                   this.customer = res.data.billingAddress;
+                  this.billingAddressText = this.customerInfoService.convertBillingAddressToString(this.customer);
+                  this.nameTextBySearchMobileNo = this.customer.titleName + ' ' + this.customer.firstName + ' ' + this.customer.lastName;
+                  this.customerInfoService.setSelectedMobileNo(mobileNo);
+                  this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(res.data.billingAddress.idCardNo.substring(9))}`));
                   this.setCustomerInfo({
-                    customer: res.data.billingAddress,
+                    customer: this.customer,
                     action: TransactionAction.KEY_IN
                   });
                   this.receiptInfoValid = true;
-                  this.nameTextBySearchMobileNo = this.customer.titleName + ' ' + this.customer.firstName + ' ' + this.customer.lastName;
-                  this.billingAddressText = '';
-                  this.customerInfoService.setSelectedMobileNo(mobileNo);
-                  this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(res.data.billingAddress.idCardNo.substring(9))}`));
                   this.pageLoadingService.closeLoading();
                 }
               });
@@ -287,13 +287,13 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
         }
       })
       .catch(() => {
+        this.billingAddressText = '';
+        this.nameTextBySearchMobileNo = '';
+        this.receiptInfoForm.controls['taxId'].setValue('');
         this.setCustomerInfo({
           customer: '',
           action: TransactionAction.KEY_IN
         });
-        this.nameTextBySearchMobileNo = '';
-        this.billingAddressText = '';
-        this.receiptInfoForm.controls['taxId'].setValue('');
         this.transaction.data.simCard = { mobileNo: mobileNo };
         this.isNonAis = true;
         this.pageLoadingService.closeLoading();
@@ -462,11 +462,11 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
       const mobileNo = this.listBillingAccount[billingAddressSelected].mobileNo[0];
       this.customerInfoService.getBillingByMobileNo(mobileNo)
         .then((res: any) => {
-          this.billingAddressText = '';
           this.customerInfoService.setSelectedMobileNo(mobileNo);
           this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(res.data.billingAddress.idCardNo.substring(9))}`));
           this.closeModalBillingAddress();
           this.customer = res.data.billingAddress;
+          this.billingAddressText = this.customerInfoService.convertBillingAddressToString(this.customer);
           this.setCustomerInfo({
             customer: this.customer,
             action: TransactionAction.READ_CARD

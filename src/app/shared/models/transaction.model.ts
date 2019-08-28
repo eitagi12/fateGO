@@ -151,6 +151,9 @@ export interface Customer {
   issueDate?: string;
   expireDate?: string;
   zipCode?: string;
+  provinceName?: any;  // address
+  portalCode?: any;   // address
+
   mainMobile?: string;
   mainPhone?: string;
   billCycle?: string;

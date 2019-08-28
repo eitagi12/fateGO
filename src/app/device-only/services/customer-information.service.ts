@@ -114,8 +114,8 @@ export class CustomerInformationService {
       soi: billDeliveryAddress.soi ? 'ซอย ' + billDeliveryAddress.soi : '',
       tumbol: billDeliveryAddress.tumbol ? 'ตำบล' + billDeliveryAddress.tumbol : '',
       amphur: billDeliveryAddress.amphur ? 'อำเภอ' + billDeliveryAddress.amphur : '',
-      province: billDeliveryAddress.province || '',
-      zipCode: billDeliveryAddress.zipCode,
+      province: billDeliveryAddress.province || billDeliveryAddress.provinceName || '',
+      zipCode: billDeliveryAddress.zipCode || billDeliveryAddress.portalCode,
     };
 
     let str: string = '';

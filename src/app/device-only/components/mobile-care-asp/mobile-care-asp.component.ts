@@ -189,7 +189,6 @@ export class MobileCareAspComponent implements OnInit {
   // เช็คเบอร์ตอนเข้าหน้า mobile
   public checkPrivilegeMobileCare(): void {
     const mobileNo = this.privilegeCustomerForm.value.mobileNo;
-    this.pageLoadingService.openLoading();
     if (mobileNo) {
       // check billingSystem post paid
       this.customerInformationService.getProfileByMobileNo(mobileNo).then((res) => {
@@ -199,7 +198,6 @@ export class MobileCareAspComponent implements OnInit {
       this.customerInformationService.getCustomerProfile(mobileNo).then((res) => {
         const mobileSegment = res.data.mobileSegment;
         this.callService(mobileSegment, res.data.chargeType);
-        this.pageLoadingService.closeLoading();
       });
     } else {
       this.callService();
@@ -230,6 +228,7 @@ export class MobileCareAspComponent implements OnInit {
                     this.currentPackageMobileCare = result.data.existMobileCarePackage;
                     this.popupMobileCare(this.currentPackageMobileCare);
                   } else {
+                    this.pageLoadingService.closeLoading();
                     this.currentPackageMobileCare = result.data.existMobileCarePackage;
                   }
                 });
@@ -306,6 +305,7 @@ export class MobileCareAspComponent implements OnInit {
       });
     } else {
       this.currentPackageMobileCare = response.data.currentPackage;
+      this.pageLoadingService.closeLoading();
     }
   }
 
@@ -333,9 +333,11 @@ export class MobileCareAspComponent implements OnInit {
       if (data.value && data.value === true) {
         this.isVerifyflag.emit(false);
         this.checkVerifyNext();
+        this.pageLoadingService.closeLoading();
       } else {
-        this.privilegeCustomerForm.controls['mobileNo'].setValue('');
         this.router.navigate([ROUTE_DEVICE_ONLY_ASP_READ_CARD_PAGE]);
+        this.privilegeCustomerForm.controls['mobileNo'].setValue('');
+        this.pageLoadingService.closeLoading();
       }
     });
   }
