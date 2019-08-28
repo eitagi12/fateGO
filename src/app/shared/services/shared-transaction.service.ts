@@ -38,12 +38,9 @@ export class SharedTransactionService {
     transaction.createDate = Moment().toISOString();
     transaction.data.status = SharedTransactionStatus.PENDING;
 
-    return this.saveFaceImage(transaction)
-      .then(() => {
-        return this.http.post('/api/salesportal/device-order/create-transaction',
-          this.getRequestSharedTransaction(transaction, priceOption)
-        ).toPromise();
-      });
+    return this.http.post('/api/salesportal/device-order/create-transaction',
+      this.getRequestSharedTransaction(transaction, priceOption)
+    ).toPromise();
   }
 
   updateSharedTransaction(transaction: Transaction, priceOption: PriceOption): Promise<any> {
@@ -300,47 +297,4 @@ export class SharedTransactionService {
     return transactionId;
   }
 
-  saveFaceImage(transaction: Transaction): Promise<any> {
-    const user = this.tokenService.getUser();
-    const customer = transaction.data.customer;
-    const faceRecognition = transaction.data.faceRecognition;
-    const simCard = transaction.data.simCard;
-    const action = transaction.data.action;
-    const channelKyc = transaction.data.faceRecognition.kyc;
-    let channel = 'MC';
-    if (channelKyc) {
-      channel += '_KYC';
-    }
-    if (transaction.data.action === TransactionAction.KEY_IN) {
-      channel += '_PT';
-    } else {
-      channel += '_SM';
-    }
-    let base64Card: any;
-    if (action === TransactionAction.READ_CARD) {
-      base64Card = customer.imageReadSmartCard;
-    } else if (action === TransactionAction.READ_PASSPORT) {
-      base64Card = customer.imageReadPassport;
-    } else {
-      base64Card = customer.imageSmartCard;
-    }
-
-    const param: any = {
-      userId: user.username,
-      locationCode: user.locationCode,
-      idCardType: customer.idCardType === 'บัตรประชาชน' ? 'Thai National ID' : 'OTHER',
-      customerId: customer.idCardNo || '',
-      mobileNo: simCard.mobileNo || '',
-      base64Card: base64Card ? `data:image/jpg;base64,${base64Card}` : '',
-      base64Face: faceRecognition.imageFaceUser ? `data:image/jpg;base64,${faceRecognition.imageFaceUser}` : '',
-      channel: channel,
-      userchannel: 'MyChannel'
-    };
-    return this.http.post('/api/facerecog/save-imagesV2', param).toPromise()
-      .catch(e => {
-        console.log(e);
-        return Promise.resolve(null);
-      });
-
-  }
 }

@@ -2,10 +2,10 @@ import { Router } from '@angular/router';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import {
-  HomeService, PageLoadingService, REGEX_MOBILE
+  HomeService, PageLoadingService, REGEX_MOBILE, TokenService
 } from 'mychannel-shared-libs';
 import {
-  Transaction
+  Transaction, TransactionAction
 } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import {
@@ -16,6 +16,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { QueuePageService } from 'src/app/device-order/services/queue-page.service';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-device-order-ais-new-register-queue-page',
@@ -32,6 +33,8 @@ export class DeviceOrderAisNewRegisterQueuePageComponent implements OnInit, OnDe
     private fb: FormBuilder,
     private router: Router,
     private homeService: HomeService,
+    private http: HttpClient,
+    private tokenService: TokenService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
@@ -43,6 +46,7 @@ export class DeviceOrderAisNewRegisterQueuePageComponent implements OnInit, OnDe
   }
 
   ngOnInit(): void {
+    this.saveFaceImage();
     this.createForm();
   }
 
@@ -84,5 +88,49 @@ export class DeviceOrderAisNewRegisterQueuePageComponent implements OnInit, OnDe
 
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
+  }
+
+  saveFaceImage(): Promise<any> {
+    const user = this.tokenService.getUser();
+    const customer = this.transaction.data.customer;
+    const faceRecognition = this.transaction.data.faceRecognition;
+    const simCard = this.transaction.data.simCard;
+    const action = this.transaction.data.action;
+    const channelKyc = this.transaction.data.faceRecognition.kyc;
+    let channel = 'MC';
+    if (channelKyc) {
+      channel += '_KYC';
+    }
+    if (this.transaction.data.action === TransactionAction.KEY_IN) {
+      channel += '_PT';
+    } else {
+      channel += '_SM';
+    }
+    let base64Card: any;
+    if (action === TransactionAction.READ_CARD) {
+      base64Card = customer.imageReadSmartCard;
+    } else if (action === TransactionAction.READ_PASSPORT) {
+      base64Card = customer.imageReadPassport;
+    } else {
+      base64Card = customer.imageSmartCard;
+    }
+
+    const param: any = {
+      userId: user.username,
+      locationCode: user.locationCode,
+      idCardType: customer.idCardType === 'บัตรประชาชน' ? 'Thai National ID' : 'OTHER',
+      customerId: customer.idCardNo || '',
+      mobileNo: simCard.mobileNo || '',
+      base64Card: base64Card ? `data:image/jpg;base64,${base64Card}` : '',
+      base64Face: faceRecognition.imageFaceUser ? `data:image/jpg;base64,${faceRecognition.imageFaceUser}` : '',
+      channel: channel,
+      userchannel: 'MyChannel'
+    };
+    return this.http.post('/api/facerecog/save-imagesV2', param).toPromise()
+      .catch(e => {
+        console.log(e);
+        return Promise.resolve(null);
+      });
+
   }
 }
