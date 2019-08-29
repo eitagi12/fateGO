@@ -85,7 +85,8 @@ export class MobileCareAspComponent implements OnInit {
     private http: HttpClient,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private mobileCareService: MobileCareService
+    private mobileCareService: MobileCareService,
+    private customerInfoService: CustomerInformationService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -115,6 +116,8 @@ export class MobileCareAspComponent implements OnInit {
 
   private checkValidateMobileNo(mobileNoDefault: string): void {
     if (mobileNoDefault === '') {
+      this.promotion.emit(undefined);
+      this.isVerifyflag.emit(false);
       this.privilegeCustomerForm.controls['mobileNo'].enable();
       this.privilegeCustomerForm.controls.mobileNo.valueChanges.subscribe(() => {
         if (this.privilegeCustomerForm.controls['mobileNo'].value.length === 10) {
@@ -242,6 +245,8 @@ export class MobileCareAspComponent implements OnInit {
                     this.currentPackageMobileCare = result.data.existMobileCarePackage;
                     this.popupMobileCare(this.currentPackageMobileCare);
                   } else {
+                    this.customerInfoService.isNonAis = 'AIS';
+                    this.isVerifyflag.emit(true);
                     this.pageLoadingService.closeLoading();
                     this.currentPackageMobileCare = result.data.existMobileCarePackage;
                   }
@@ -297,14 +302,24 @@ export class MobileCareAspComponent implements OnInit {
             break;
         }
       })
-      .catch(() => {
-        this.alertService.notify({
-          type: 'error',
-          confirmButtonText: 'OK',
-          showConfirmButton: true,
-          text: 'เบอร์ไม่ถูกต้อง กรุณาระบุเบอร์มือถือ AIS'
-        });
-        this.privilegeCustomerForm.controls['mobileNo'].setValue('');
+      .catch((err) => {
+        if (this.privilegeCustomerForm.valid) {
+          this.alertService.notify({
+            type: 'warning',
+            confirmButtonText: 'OK',
+            showConfirmButton: true,
+            text: 'เบอร์นี้ไม่ใช่ระบบ AIS ไม่สามารถซื้อโมบายแคร์ได้'
+          });
+          this.customerInfoService.isNonAis = 'NON-AIS';
+        } else {
+          this.alertService.notify({
+            type: 'error',
+            confirmButtonText: 'OK',
+            showConfirmButton: true,
+            text: 'เบอร์ไม่ถูกต้อง กรุณาระบุเบอร์มือถือ AIS'
+          });
+          this.privilegeCustomerForm.controls['mobileNo'].setValue('');
+        }
       });
   }
 
@@ -325,6 +340,7 @@ export class MobileCareAspComponent implements OnInit {
       });
     } else {
       this.currentPackageMobileCare = response.data.currentPackage;
+      this.customerInfoService.isNonAis = 'AIS';
       this.pageLoadingService.closeLoading();
     }
   }
@@ -352,6 +368,7 @@ export class MobileCareAspComponent implements OnInit {
     }).then((data) => {
       if (data.value && data.value === true) {
         this.isVerifyflag.emit(false);
+        this.customerInfoService.isNonAis = 'AIS';
         this.checkVerifyNext();
         this.pageLoadingService.closeLoading();
       } else {

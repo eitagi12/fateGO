@@ -36,7 +36,6 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   private transaction: Transaction;
   public selectBillingAddressForm: FormGroup;
   public isSelect: boolean;
-  public canNext: boolean = false;
   public customerInfoTemp: any;
   public receiptInfo: ReceiptInfo;
   public user: User;
@@ -51,7 +50,6 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   public paymentDetailTemp: any;
   public paymentDetailValid: boolean;
   public receiptInfoValid: boolean;
-  private isNonAis: boolean;
 
   @ViewChild('progressBarArea')
   progressBarArea: ElementRef;
@@ -274,6 +272,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
                     customer: '',
                     action: TransactionAction.KEY_IN
                   });
+                  this.customerInfoService.isNonAis = 'AIS';
                   this.receiptInfoValid = true;
                   this.pageLoadingService.closeLoading();
                 }
@@ -292,6 +291,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
                     customer: this.customer,
                     action: TransactionAction.KEY_IN
                   });
+                  this.customerInfoService.isNonAis = 'AIS';
                   this.receiptInfoValid = true;
                   this.pageLoadingService.closeLoading();
                 }
@@ -299,19 +299,30 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
             break;
         }
       })
-      .catch(() => {
-        this.billingAddressText = '';
-        this.nameTextBySearchMobileNo = '';
-        this.nameTextBySmartCard = '';
-        this.receiptInfoForm.controls['taxId'].setValue('');
-        this.setCustomerInfo({
-          customer: '',
-          action: TransactionAction.KEY_IN
-        });
-        this.transaction.data.simCard = { mobileNo: mobileNo };
-        this.isNonAis = true;
-        this.receiptInfoValid = true;
-        this.pageLoadingService.closeLoading();
+      .catch((err) => {
+        if (this.searchByMobileNoForm.valid) {
+          this.setCustomerInfo({
+            customer: '',
+            action: TransactionAction.KEY_IN
+          });
+          this.transaction.data.simCard = { mobileNo: mobileNo };
+          this.customerInfoService.isNonAis = 'NON-AIS';
+          this.receiptInfoValid = true;
+          this.pageLoadingService.closeLoading();
+        } else {
+          this.alertService.notify({
+            type: 'error',
+            confirmButtonText: 'OK',
+            showConfirmButton: true,
+            text: 'เบอร์ไม่ถูกต้อง กรุณาระบุเบอร์ใหม่'
+          });
+          this.searchByMobileNoForm.controls['mobileNo'].setValue('');
+          this.billingAddressText = '';
+          this.nameTextBySearchMobileNo = '';
+          this.nameTextBySmartCard = '';
+          this.receiptInfoForm.controls['taxId'].setValue('');
+          this.receiptInfoValid = false;
+        }
       });
   }
 
@@ -469,6 +480,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
         action: TransactionAction.READ_CARD
       });
       this.customerInfoService.setSelectedMobileNo('');
+      this.customerInfoService.isNonAis = 'AIS';
       this.receiptInfoValid = true;
     } else {
       this.pageLoadingService.openLoading();
@@ -484,6 +496,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
             customer: this.customer,
             action: TransactionAction.READ_CARD
           });
+          this.customerInfoService.isNonAis = 'AIS';
           this.receiptInfoValid = true;
           this.pageLoadingService.closeLoading();
         }).catch((err) => {
@@ -551,7 +564,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
       .then((transaction) => {
         this.transaction = { ...transaction };
         this.transaction.data.device = this.createOrderService.getDevice(this.priceOption);
-        if (this.isNonAis === true) {
+        if (this.customerInfoService.isNonAis === 'NON-AIS') {
           this.router.navigate([ROUTE_DEVICE_ONLY_ASP_SUMMARY_PAGE]);
         } else {
           this.router.navigate([ROUTE_DEVICE_ONLY_ASP_SELECT_MOBILE_CARE_PAGE]);

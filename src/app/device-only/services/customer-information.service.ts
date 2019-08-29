@@ -12,6 +12,7 @@ export class CustomerInformationService {
   public unsubscribe: any;
   public cancelreadcard: Subject<boolean> = new Subject<boolean>();
   public isReadCard: boolean = false;
+  private _isNonAis: string;
 
   constructor(
     private http: HttpClient
@@ -125,6 +126,13 @@ export class CustomerInformationService {
       }
     }
     return str;
+  }
+
+  public get isNonAis(): string {
+    return this._isNonAis;
+  }
+  public set isNonAis(value: string) {
+    this._isNonAis = value;
   }
 
 }

@@ -15,6 +15,7 @@ import { HttpClient } from '@angular/common/http';
 import { CreateOrderService } from 'src/app/device-only/services/create-order.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { QueueService } from 'src/app/device-only/services/queue.service';
+import { CustomerInformationService } from 'src/app/device-only/services/customer-information.service';
 
 @Component({
   selector: 'app-device-only-asp-summary-page',
@@ -32,7 +33,6 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
   balance: number;
   enoughBalance: boolean;
   isShowBalance: boolean;
-  private isNonAis: boolean;
 
   constructor(
     private router: Router,
@@ -47,7 +47,8 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
     private sharedTransactionService: SharedTransactionService,
     private pageLoadingService: PageLoadingService,
     private queueService: QueueService,
-    private http: HttpClient
+    private http: HttpClient,
+    private customerInfoService: CustomerInformationService
   ) {
     this.user = this.tokenService.getUser();
     this.priceOption = this.priceOptionService.load();
@@ -58,7 +59,6 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
     this.checkShowBalance();
     this.homeButtonService.initEventButtonHome();
     this.transaction.data.tradeType = this.priceOption.trade.tradeNo === 0 ? 'EUP' : 'Hand Set';
-    this.isNonAis = (this.transaction.data.receiptInfo && this.transaction.data.receiptInfo.taxId === '') ? true : false;
   }
 
   private checkSeller(seller: Seller): void {
@@ -97,7 +97,7 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
   }
 
   public onBack(): void {
-    if (this.isNonAis === true) {
+    if (this.customerInfoService.isNonAis === 'NON-AIS') {
       this.router.navigate([ROUTE_DEVICE_ONLY_ASP_READ_CARD_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_ONLY_ASP_SELECT_MOBILE_CARE_PAGE]);
