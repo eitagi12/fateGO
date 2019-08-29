@@ -50,6 +50,7 @@ export class DeviceOrderAisDeviceQueuePageComponent implements OnInit, OnDestroy
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
+    this.user = this.tokenService.getUser();
   }
 
   ngOnInit(): void {
