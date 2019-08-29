@@ -18,6 +18,7 @@ import { TransactionType } from 'src/app/shared/models/transaction.model';
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 
 declare let $: any;
+const ADDRESS_BY_SMART_CARD = 'addressBySmartCard';
 @Component({
   selector: 'app-device-only-asp-read-card-page',
   templateUrl: './device-only-asp-read-card-page.component.html',
@@ -39,7 +40,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   public customerInfoTemp: any;
   public receiptInfo: ReceiptInfo;
   public user: User;
-  public ADDRESS_BY_SMART_CARD: string = 'addressBySmartCard';
+  public ADDRESS_BY_SMART_CARD: string;
   public paymentDetail: PaymentDetail;
   public banks: any[];
   private localtion: any;
@@ -91,7 +92,6 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
     this.createFormMobile();
     this.craeteFormCus();
     this.createSelectBillingAddressForm();
-    // this.varidationNext(false);
     this.getLocationName();
     this.setCustomerInfoFromTransaction();
   }
@@ -190,16 +190,28 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   private setCustomerInfoFromTransaction(): void {
     const customer = this.transaction.data.customer;
     if (customer && customer.idCardNo) {
+      if (TransactionAction.READ_CARD) {
+        this.nameTextBySmartCard = customer.titleName + ' ' + customer.firstName + ' ' + customer.lastName;
+      } else {
+        this.nameTextBySearchMobileNo = customer.titleName + ' ' + customer.firstName + ' ' + customer.lastName;
+      }
+      this.billingAddressText = this.customerInfoService.convertBillingAddressToString(customer);
       this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(customer.idCardNo.substring(9))}`));
+      this.receiptInfoValid = true;
       this.isNotFormValid();
     } else {
       this.clearData();
+      this.isNotFormValid();
     }
   }
 
   private createFormMobile = () => {
     this.searchByMobileNoForm = this.fb.group({
-      mobileNo: ['', Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])]
+      mobileNo: ['', [
+        Validators.maxLength(10),
+        Validators.minLength(10),
+        Validators.pattern('^(0)(6|8|9)[0-9]*$|^((88)(6|8|9)[0-9]*)$')]
+      ]
     });
   }
 
@@ -219,7 +231,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
 
   public createSelectBillingAddressForm(): void {
     this.selectBillingAddressForm = this.fb.group({
-      'billingAddress': '',
+      'billingAddress': ['', [Validators.required]]
     });
     this.selectBillingAddressForm.valueChanges.pipe(debounceTime(350)).subscribe(() => {
       if (this.selectBillingAddressForm.valid) {
@@ -229,7 +241,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   }
 
   searchCustomerInfo = () => {
-    if (this.searchByMobileNoForm.getRawValue().mobileNo) {
+    if (this.searchByMobileNoForm.getRawValue().mobileNo.length === 10) {
       this.pageLoadingService.openLoading();
       const mobileNo = this.searchByMobileNoForm.value.mobileNo;
       this.checkChargeType(mobileNo);
@@ -241,6 +253,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
         text: 'กรุณาระบุเบอร์ให้ครบ 10 หลัก'
       });
       this.clearData();
+      this.receiptInfoValid = false;
     }
   }
 
@@ -289,6 +302,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
       .catch(() => {
         this.billingAddressText = '';
         this.nameTextBySearchMobileNo = '';
+        this.nameTextBySmartCard = '';
         this.receiptInfoForm.controls['taxId'].setValue('');
         this.setCustomerInfo({
           customer: '',
@@ -296,6 +310,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
         });
         this.transaction.data.simCard = { mobileNo: mobileNo };
         this.isNonAis = true;
+        this.receiptInfoValid = true;
         this.pageLoadingService.closeLoading();
       });
   }
@@ -303,6 +318,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   private clearData(): void {
     this.searchByMobileNoForm.controls['mobileNo'].setValue('');
     this.nameTextBySearchMobileNo = '';
+    this.nameTextBySmartCard = '';
     this.billingAddressText = '';
     this.receiptInfoForm.controls['taxId'].setValue('');
   }
@@ -334,10 +350,6 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
     this.transaction.data.customer = customer;
     this.transaction.data.action = data.action;
   }
-
-  // public varidationNext = (flag: boolean) => {
-  //   this.canNext = flag;
-  // }
 
   async readCard(): Promise<any> {
     const data = await this.readCardFromWebSocket();
@@ -447,7 +459,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
 
   public selectBillingAddress(): void {
     const billingAddressSelected = this.selectBillingAddressForm.controls.billingAddress.value;
-    if (billingAddressSelected === this.ADDRESS_BY_SMART_CARD) {
+    if (billingAddressSelected === ADDRESS_BY_SMART_CARD) {
       this.isSelect = true;
       this.billingAddressText = this.addressTextBySmartCard;
       this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(this.customer.idCardNo.substring(9))}`));
@@ -456,6 +468,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
         customer: this.customer,
         action: TransactionAction.READ_CARD
       });
+      this.customerInfoService.setSelectedMobileNo('');
       this.receiptInfoValid = true;
     } else {
       this.pageLoadingService.openLoading();

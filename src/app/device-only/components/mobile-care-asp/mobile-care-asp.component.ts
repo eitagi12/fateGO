@@ -93,14 +93,13 @@ export class MobileCareAspComponent implements OnInit {
 
   ngOnInit(): void {
     this.createForm();
-    this.onCheckValidators();
-    this.searchMobileNo();
+    this.checkValidators();
     this.checkVerifyNext();
     this.checkPrivilegeMobileCare();
     this.isSelect = false;
   }
 
-  public onCheckValidators(): void {
+  public checkValidators(): void {
     let mobileNoDefault = this.customerInformationService.getSelectedMobileNo();
     mobileNoDefault = mobileNoDefault ? mobileNoDefault : '';
     this.privilegeCustomerForm = new FormGroup({
@@ -111,6 +110,21 @@ export class MobileCareAspComponent implements OnInit {
         Validators.required,
       ])
     });
+    this.checkValidateMobileNo(mobileNoDefault);
+  }
+
+  private checkValidateMobileNo(mobileNoDefault: string): void {
+    if (mobileNoDefault === '') {
+      this.privilegeCustomerForm.controls['mobileNo'].enable();
+      this.privilegeCustomerForm.controls.mobileNo.valueChanges.subscribe(() => {
+        if (this.privilegeCustomerForm.controls['mobileNo'].value.length === 10) {
+          this.searchMobileNo();
+        }
+      });
+    } else {
+      this.privilegeCustomerForm.controls['mobileNo'].disable();
+      this.searchMobileNo();
+    }
   }
 
   public keyPress(event: any): void {
@@ -212,7 +226,7 @@ export class MobileCareAspComponent implements OnInit {
   }
 
   public checkExistingMobileCare(): void {
-    const mobileNo = this.privilegeCustomerForm.value.mobileNo;
+    const mobileNo = this.privilegeCustomerForm.controls['mobileNo'].value;
     this.customerInformationService.getProfileByMobileNo(mobileNo)
       .then((res) => {
         this.chargeType = res.data.chargeType;
@@ -284,7 +298,13 @@ export class MobileCareAspComponent implements OnInit {
         }
       })
       .catch(() => {
-        this.pageLoadingService.closeLoading();
+        this.alertService.notify({
+          type: 'error',
+          confirmButtonText: 'OK',
+          showConfirmButton: true,
+          text: 'เบอร์ไม่ถูกต้อง กรุณาระบุเบอร์มือถือ AIS'
+        });
+        this.privilegeCustomerForm.controls['mobileNo'].setValue('');
       });
   }
 
