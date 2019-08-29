@@ -50,7 +50,6 @@ export class DeviceOrderAisDeviceQrCodeQueuePageComponent implements OnInit, OnD
   }
 
   ngOnInit(): void {
-    this.setQueueType();
     this.deposit = this.transaction.data.preBooking
       && this.transaction.data.preBooking.depositAmt ? -Math.abs(+this.transaction.data.preBooking.depositAmt) : 0;
     this.transId = !!this.transaction.data.mpayPayment ? this.transaction.data.mpayPayment.tranId : '';
@@ -159,13 +158,8 @@ export class DeviceOrderAisDeviceQrCodeQueuePageComponent implements OnInit, OnD
     }
   }
 
-  setQueueType(): void {
-    this.queuePageService.checkQueueLocation().then((queueType) => {
-      this.queueType = queueType;
-    }).then(() => this.createForm());
-  }
-
   createForm(): void {
+    this.queueType = localStorage.getItem('queueType');
     this.mobileFrom = this.fb.group({
       'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(/^0[6-9]{1}[0-9]{8}/)])],
     });

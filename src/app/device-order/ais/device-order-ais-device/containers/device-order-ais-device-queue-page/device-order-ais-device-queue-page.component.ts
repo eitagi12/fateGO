@@ -14,6 +14,7 @@ import { SharedTransactionService } from 'src/app/shared/services/shared-transac
 import { QueuePageService } from 'src/app/device-order/services/queue-page.service';
 import { ROUTE_DEVICE_AIS_DEVICE_AGGREGATE_PAGE, ROUTE_DEVICE_AIS_DEVICE_RESULT_PAGE } from 'src/app/device-order/ais/device-order-ais-device/constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
+import { LocalStorage } from 'ngx-store';
 
 @Component({
   selector: 'app-device-order-ais-device-queue-page',
@@ -59,13 +60,13 @@ export class DeviceOrderAisDeviceQueuePageComponent implements OnInit, OnDestroy
   }
 
   setQueueType(): void {
-    this.queuePageService.checkQueueLocation().then((queueType) => {
-      this.queueType = queueType;
-      if (this.transaction.data.simCard && this.transaction.data.simCard.mobileNo && this.queueType === 'SMART_SHOP') {
-        this.mobileFrom.patchValue({ mobileNo: this.transaction.data.simCard.mobileNo || this.transaction.data.receiptInfo.telNo });
-        this.mobileNo = this.transaction.data.simCard.mobileNo || this.transaction.data.receiptInfo.telNo;
-      }
-    });
+    this.queueType = localStorage.getItem('queueType');
+    console.log(this.queueType);
+
+    if (this.transaction.data.simCard && this.transaction.data.simCard.mobileNo && this.queueType === 'SMART_SHOP') {
+      this.mobileFrom.patchValue({ mobileNo: this.transaction.data.simCard.mobileNo || this.transaction.data.receiptInfo.telNo });
+      this.mobileNo = this.transaction.data.simCard.mobileNo || this.transaction.data.receiptInfo.telNo;
+    }
   }
 
   checkInput(event: any, type: string): void {
