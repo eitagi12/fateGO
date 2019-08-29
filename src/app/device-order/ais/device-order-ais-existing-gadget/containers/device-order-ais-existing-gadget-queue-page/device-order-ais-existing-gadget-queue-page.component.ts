@@ -48,14 +48,7 @@ export class DeviceOrderAisExistingGadgetQueuePageComponent implements OnInit, O
   }
 
   ngOnInit(): void {
-    this.setQueueType();
     this.createForm();
-  }
-
-  setQueueType(): void {
-    this.queuePageService.checkQueueLocation().then((queueType) => {
-      this.queueType = queueType;
-    }).then(() => this.createForm());
   }
 
   checkInput(event: any, type: string): void {
@@ -68,6 +61,7 @@ export class DeviceOrderAisExistingGadgetQueuePageComponent implements OnInit, O
   }
 
   createForm(): void {
+    this.queueType = localStorage.getItem('queueType');
     this.mobileFrom = this.fb.group({
       'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(/^0[6-9]{1}[0-9]{8}/)])],
     });
