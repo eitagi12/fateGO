@@ -305,6 +305,11 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
             customer: '',
             action: TransactionAction.KEY_IN
           });
+
+          this.billingAddressText = '';
+          this.nameTextBySearchMobileNo = '';
+          this.nameTextBySmartCard = '';
+          this.receiptInfoForm.controls['taxId'].setValue('');
           this.transaction.data.simCard = { mobileNo: mobileNo };
           this.customerInfoService.isNonAis = 'NON-AIS';
           this.receiptInfoValid = true;

@@ -245,7 +245,6 @@ export class MobileCareAspComponent implements OnInit {
                     this.currentPackageMobileCare = result.data.existMobileCarePackage;
                     this.popupMobileCare(this.currentPackageMobileCare);
                   } else {
-                    this.customerInfoService.isNonAis = 'AIS';
                     this.isVerifyflag.emit(true);
                     this.pageLoadingService.closeLoading();
                     this.currentPackageMobileCare = result.data.existMobileCarePackage;
@@ -310,7 +309,6 @@ export class MobileCareAspComponent implements OnInit {
             showConfirmButton: true,
             text: 'เบอร์นี้ไม่ใช่ระบบ AIS ไม่สามารถซื้อโมบายแคร์ได้'
           });
-          this.customerInfoService.isNonAis = 'NON-AIS';
         } else {
           this.alertService.notify({
             type: 'error',
@@ -340,7 +338,6 @@ export class MobileCareAspComponent implements OnInit {
       });
     } else {
       this.currentPackageMobileCare = response.data.currentPackage;
-      this.customerInfoService.isNonAis = 'AIS';
       this.pageLoadingService.closeLoading();
     }
   }
@@ -368,7 +365,6 @@ export class MobileCareAspComponent implements OnInit {
     }).then((data) => {
       if (data.value && data.value === true) {
         this.isVerifyflag.emit(false);
-        this.customerInfoService.isNonAis = 'AIS';
         this.checkVerifyNext();
         this.pageLoadingService.closeLoading();
       } else {
