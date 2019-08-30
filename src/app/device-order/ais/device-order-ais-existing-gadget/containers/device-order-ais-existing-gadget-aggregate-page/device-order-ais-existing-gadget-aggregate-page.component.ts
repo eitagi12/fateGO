@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_AGREEMENT_SIGN_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QUEUE_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_QR_CODE_SUMMARY_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
+import { QueuePageService } from 'src/app/device-order/services/queue-page.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-gadget-aggregate-page',
@@ -20,6 +21,7 @@ export class DeviceOrderAisExistingGadgetAggregatePageComponent implements OnIni
 
   constructor(
     private router: Router,
+    private queuePageService: QueuePageService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService
   ) {
@@ -29,6 +31,9 @@ export class DeviceOrderAisExistingGadgetAggregatePageComponent implements OnIni
 
   ngOnInit(): void {
     this.setDeviceSelling();
+    this.queuePageService.checkQueueLocation().then((queueType) => {
+      localStorage.setItem('queueType', queueType);
+    });
   }
 
   onBack(): void {
