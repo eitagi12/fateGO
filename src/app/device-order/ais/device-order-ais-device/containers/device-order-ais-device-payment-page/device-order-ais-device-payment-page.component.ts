@@ -385,8 +385,8 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
               buildingName: billing.buildingName || '',
               firstName: customerName[0] || '',
               floor: billing.floor || '',
-              idCardNo: billing.idCardNo || '',
-              idCardType: billing.idCardType || '',
+              idCardNo: customerprofile.idCardNo || '',
+              idCardType: customerprofile.idCardType || '',
               lastName: customerName[1] || '',
               moo: billing.moo || '',
               mooBan: billing.mooban || '',
@@ -397,7 +397,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
               birthdate: '',
               gender: '',
             };
-            this.receiptInfo.taxId = billing.idCardNo;
+            this.receiptInfo.taxId = customerprofile.idCardNo;
             this.receiptInfo.buyer = `${customerprofile.accntTitle} ${customerprofile.name}`;
             this.receiptInfo.buyerAddress = this.utils.getCurrentAddress({
               homeNo: billing.houseNumber || '',
