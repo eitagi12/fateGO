@@ -249,6 +249,9 @@ export class CreateOrderService {
     const mapInstallmentRate = transaction.data.payment.paymentMethod.percentage ? transaction.data.payment.paymentMethod.percentage : 0;
     const mapBankAbb = transaction.data.payment.paymentBank.abb ? transaction.data.payment.paymentBank.abb : '';
     const mapBankCode = transaction.data.payment.paymentBank.abb ? transaction.data.payment.paymentBank.abb : '';
+    // tslint:disable-next-line: max-line-length
+    const mapCustomerNameOrder = (transaction.data.customer && transaction.data.customer.firstName && transaction.data.customer.lastName) ? transaction.data.customer.firstName + ' ' + transaction.data.customer.lastName : '';
+
     return {
       soId: transaction.data.order.soId,
       soCompany: priceOption.productStock.company,
@@ -266,7 +269,7 @@ export class CreateOrderService {
       userId: this.user.username,
       saleCode: sellerNo,
       queueNo: transaction.data.queue.queueNo,
-      cusNameOrder: transaction.data.customer.firstName + ' ' + transaction.data.customer.lastName,
+      cusNameOrder: mapCustomerNameOrder,
       taxCardId: transaction.data.customer.idCardNo,
       cusMobileNoOrder: transaction.data.receiptInfo.telNo || '',
       customerAddress: this.mapCusAddress(transaction.data.customer),
