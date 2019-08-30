@@ -295,6 +295,13 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
                   this.receiptInfoValid = true;
                   this.pageLoadingService.closeLoading();
                 }
+              }).catch(() => {
+                this.alertService.notify({
+                  type: 'error',
+                  confirmButtonText: 'OK',
+                  showConfirmButton: true,
+                  text: 'เบอร์ไม่ถูกต้อง กรุณาเปลี่ยนเบอร์ใหม่'
+                });
               });
             break;
         }
@@ -305,7 +312,6 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
             customer: '',
             action: TransactionAction.KEY_IN
           });
-
           this.billingAddressText = '';
           this.nameTextBySearchMobileNo = '';
           this.nameTextBySmartCard = '';
@@ -319,7 +325,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
             type: 'error',
             confirmButtonText: 'OK',
             showConfirmButton: true,
-            text: 'เบอร์ไม่ถูกต้อง กรุณาระบุเบอร์ใหม่'
+            text: 'เบอร์ไม่ถูกต้อง กรุณาเปลี่ยนเบอร์ใหม่'
           });
           this.searchByMobileNoForm.controls['mobileNo'].setValue('');
           this.billingAddressText = '';

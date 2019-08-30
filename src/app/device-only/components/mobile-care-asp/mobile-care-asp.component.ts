@@ -267,7 +267,7 @@ export class MobileCareAspComponent implements OnInit {
                           type: 'error',
                           confirmButtonText: 'OK',
                           showConfirmButton: true,
-                          text: 'ไม่สามารถทำรายการได้ในขณะนี้'
+                          text: 'เบอร์ไม่ถูกต้อง กรุณาเปลี่ยนเบอร์ใหม่'
                         });
                       }
                     })
@@ -276,7 +276,7 @@ export class MobileCareAspComponent implements OnInit {
                         type: 'error',
                         confirmButtonText: 'OK',
                         showConfirmButton: true,
-                        text: 'ไม่สามารถทำรายการได้ในขณะนี้'
+                        text: 'เบอร์ไม่ถูกต้อง กรุณาเปลี่ยนเบอร์ใหม่'
                       });
                       this.privilegeCustomerForm.controls['mobileNo'].setValue('');
                     });
@@ -285,7 +285,7 @@ export class MobileCareAspComponent implements OnInit {
                     type: 'error',
                     confirmButtonText: 'OK',
                     showConfirmButton: true,
-                    text: 'ไม่สามารถทำรายการได้ในขณะนี้'
+                    text: 'เบอร์ไม่ถูกต้อง กรุณาเปลี่ยนเบอร์ใหม่'
                   });
                   this.privilegeCustomerForm.controls['mobileNo'].setValue('');
                 }
@@ -294,7 +294,7 @@ export class MobileCareAspComponent implements OnInit {
                   type: 'error',
                   confirmButtonText: 'OK',
                   showConfirmButton: true,
-                  text: 'ไม่สามารถทำรายการได้ในขณะนี้'
+                  text: 'เบอร์ไม่ถูกต้อง กรุณาเปลี่ยนเบอร์ใหม่'
                 });
                 this.privilegeCustomerForm.controls['mobileNo'].setValue('');
               });
