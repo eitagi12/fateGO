@@ -138,7 +138,7 @@ export class DeviceOrderAisExistingGadgetEffectiveStartDatePageComponent impleme
   }
 
   checkPackageOntop(): boolean {
-    const haveOntopPackage: boolean = this.transaction.data.onTopPackage ? true : false;
+    const haveOntopPackage: boolean = this.transaction.data.onTopPackage && this.transaction.data.onTopPackage.length > 0 ? true : false;
     return haveOntopPackage;
   }
 
