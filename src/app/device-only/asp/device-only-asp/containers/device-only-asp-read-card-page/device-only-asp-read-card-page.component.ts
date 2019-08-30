@@ -222,6 +222,8 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
     this.receiptInfoForm.valueChanges.pipe(debounceTime(750)).subscribe(event => {
       if (this.receiptInfoForm.valid) {
         this.receiptInfo = this.receiptInfoForm.value;
+      } else {
+        this.receiptInfo = this.receiptInfoForm.value;
       }
       this.transaction.data.receiptInfo = this.receiptInfo;
     });
