@@ -97,9 +97,9 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
     } else {
       this.captureAndSign = {
         allowCapture: true,
-        imageSmartCard: customer.imageSmartCard,
-        imageSignature: customer.imageSignature,
-        imageSignatureWidthCard: customer.imageSignatureSmartCard
+        imageSmartCard: null,
+        imageSignature: null,
+        imageSignatureWidthCard: null
       };
     }
   }
@@ -116,11 +116,10 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
     const customer: Customer = this.transaction.data.customer;
     if (this.isReadCard) {
       customer.imageSignature = this.captureAndSign.imageSignature;
-      customer.imageSmartCard = this.captureAndSign.imageSmartCard;
+      customer.imageReadSmartCard = this.captureAndSign.imageSmartCard;
     } else {
       customer.imageSignature = this.captureAndSign.imageSignature;
-      customer.imageSmartCard = this.captureAndSign.imageSmartCard;
-      customer.imageSignatureSmartCard = this.captureAndSign.imageSignatureWidthCard;
+      customer.imageSmartCard = this.captureAndSign.imageSignatureWidthCard;
     }
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_AGGREGATE_PAGE]);
   }
@@ -303,11 +302,7 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
         const watermarkWidth: number = watermarkHeight * watermarkRatio;
         const dxw = (canvas.width - watermarkWidth) / 2;
         const dyw = (canvas.height - watermarkHeight) / 2;
-        if (this.isReadCard) {
-          ctx.drawImage(watermark, dxw, dyw + 50, watermarkWidth / 1.4, watermarkHeight / 1.4);
-        } else {
-          ctx.drawImage(watermark, dxw + 50, dyw + 50, watermarkWidth / 1.4, watermarkHeight / 1.4);
-        }
+        ctx.drawImage(watermark, dxw + 50, dyw + 50, watermarkWidth / 1.4, watermarkHeight / 1.4);
       }
     }
     this.captureAndSign.imageSignatureWidthCard = canvas.toDataURL('image/jpeg').replace(/^data:image\/jpeg;base64,/, '');

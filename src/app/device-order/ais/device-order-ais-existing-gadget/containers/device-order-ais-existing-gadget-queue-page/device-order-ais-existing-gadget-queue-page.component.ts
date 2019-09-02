@@ -146,9 +146,6 @@ export class DeviceOrderAisExistingGadgetQueuePageComponent implements OnInit, O
   }
 
   createOrderAndupdateTransaction(): void {
-    this.transaction.data.customer.imageSmartCard = this.transaction.data.action === 'READ_CARD'
-      ? this.transaction.data.customer.imageSmartCard
-      : this.transaction.data.customer.imageSignatureSmartCard;
     this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
       return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
         this.pageLoadingService.closeLoading();
