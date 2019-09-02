@@ -117,7 +117,6 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
     if (this.isReadCard) {
       customer.imageSignature = this.captureAndSign.imageSignature;
       customer.imageSmartCard = this.captureAndSign.imageSmartCard;
-      customer.imageSignatureSmartCard = this.captureAndSign.imageSignatureWidthCard;
     } else {
       customer.imageSignature = this.captureAndSign.imageSignature;
       customer.imageSmartCard = this.captureAndSign.imageSmartCard;
