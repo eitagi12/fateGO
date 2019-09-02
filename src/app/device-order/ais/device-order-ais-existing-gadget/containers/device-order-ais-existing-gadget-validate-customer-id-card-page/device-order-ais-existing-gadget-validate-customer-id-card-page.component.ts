@@ -64,6 +64,15 @@ export class DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent imp
   ngOnInit(): void {
   }
 
+  private createTransaction(): void {
+    this.transaction = {
+      data: {
+        transactionType: TransactionType.DEVICE_ORDER_EXISTING_GADGET_AIS,
+        action: TransactionAction.READ_CARD,
+      }
+    };
+  }
+
   onProgress(progress: number): void {
     this.progressReadCard = progress;
   }
@@ -84,6 +93,7 @@ export class DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent imp
   }
 
   onNext(): void {
+    this.createTransaction();
     this.pageLoadingService.openLoading();
     this.returnStock().then(() => {
       this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
@@ -111,7 +121,6 @@ export class DeviceOrderAisExistingGadgetValidateCustomerIdCardPageComponent imp
         })
         .then((customer: any) => { // load bill cycle
           if (customer && (customer.caNumber || customer.idCardType || customer.idCardNo)) {
-            this.transaction.data.action = TransactionAction.READ_CARD;
             this.transaction.data.customer = Object.assign(this.profile, customer);
             return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
               .then((resp: any) => {
