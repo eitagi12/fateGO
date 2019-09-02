@@ -109,12 +109,12 @@
               {{ customer?.idCardNo || transaction.data.customer?.idCardNo }}
             </div>
             <div>
-              <div>
-                <span class="mr-1">
+              <div class="mr-1">
+                <span>
                   {{ 'ที่อยู่' | translate }}
                   {{ customer?.homeNo || customer?.houseNumber || transaction.data.customer?.homeNo || transaction.data.customer?.houseNumber }}
                 </span>
-                <span class="mr-1">
+                <span>
                   {{ 'หมู่' | translate }} {{ customer?.moo || transaction.data.customer?.moo }}
                 </span>
                 <span *ngIf="customer?.soi || transaction.data.customer?.soi">
@@ -139,9 +139,9 @@
                 {{ customer?.zipCode || customer?.portalCode || transaction.data.customer?.zipCode || transaction.data.customer?.customer?.portalCode}}
               </div>
             </div>
-            <div *ngIf="customer?.issueDate">
+            <div *ngIf="customer?.issueDate || transaction.data.customer?.issueDate">
               {{ 'วันที่ออกบัตร' | translate }}
-              {{ customer?.issueDate || transaction.data.customer?.issueDate || '-' }}
+              {{ customer?.issueDate || transaction.data.customer?.issueDate }}
             </div>
           </div>
         </div>
@@ -157,7 +157,7 @@
               {{ customer?.idCardNo || transaction.data.customer?.idCardNo }}
             </div>
             <div>
-              {{ 'Status' | translate }}
+              {{ 'Status' }}
               {{ mobileStatus }}
             </div>
           </div>
