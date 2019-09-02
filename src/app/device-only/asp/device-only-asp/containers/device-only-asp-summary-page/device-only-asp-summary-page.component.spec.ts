@@ -9,6 +9,14 @@ import { HttpClient, HttpHandler } from '@angular/common/http';
 import { LocalStorageService } from 'ngx-store';
 import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { Pipe, PipeTransform } from '@angular/core';
+
+@Pipe({ name: 'translate' })
+class MockPipe implements PipeTransform {
+  transform(value: number): number {
+    return value;
+  }
+}
 
 describe('DeviceOnlyAspSummaryPageComponent', () => {
   let component: DeviceOnlyAspSummaryPageComponent;
@@ -19,7 +27,8 @@ describe('DeviceOnlyAspSummaryPageComponent', () => {
       RouterTestingModule.withRoutes([])
     ],
     declarations: [
-      DeviceOnlyAspSummaryPageComponent
+      DeviceOnlyAspSummaryPageComponent,
+      MockPipe
     ],
     providers: [
       HttpClient,
