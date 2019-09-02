@@ -9,10 +9,7 @@
   </mc-header>
   <div class="mc-flex-wrap">
     <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
-    <mc-payment-detail 
-      [paymentDetail]="paymentDetail" 
-      [banks]="banks" 
-      (completed)="onPaymentDetailCompleted($event)"
+    <mc-payment-detail [paymentDetail]="paymentDetail" [banks]="banks" (completed)="onPaymentDetailCompleted($event)"
       (error)="onPaymentDetailError($event)">
     </mc-payment-detail>
     <div class="container-fluid">
@@ -27,7 +24,7 @@
               <form [formGroup]="searchByMobileNoForm">
                 <div class="form-group search-box">
                   <div class="input-group">
-                    <input type="tel" class="form-control text-center" placeholder="ระบุเบอร์โทรศัพท์"
+                    <input type="tel" class="form-control text-center" placeholder="กรุณาระบุเบอร์"
                       id="input-mobile-number" formControlName="mobileNo" maxlength="10"
                       aria-describedby="basic-addon2">
                     <div class="input-group-append">
@@ -100,13 +97,69 @@
             </div>
           </div>
         </div>
-        <div class="card-footer bg-transparent">
-          <div>
-            <label class="text-grey">ผู้ซื้อ
-              &nbsp;&nbsp;&nbsp;{{ nameTextBySmartCard || nameTextBySearchMobileNo }}</label>
+        <div class="media m-auto pb-4" *ngIf="isShowCustomerPostPaid === true">
+          <div class="media-body">
+            <div>
+              {{ customer?.titleName || transaction.data.customer?.titleName }}
+              {{ customer?.firstName || transaction.data.customer?.firstName }}
+              {{ customer?.lastName || transaction.data.customer?.lastName }}
+            </div>
+            <div>
+              {{ 'เลขบัตรประชาชน' | translate }}
+              {{ customer?.idCardNo || transaction.data.customer?.idCardNo }}
+            </div>
+            <div>
+              <div>
+                <span class="mr-1">
+                  {{ 'ที่อยู่' | translate }}
+                  {{ customer?.homeNo || customer?.houseNumber || transaction.data.customer?.homeNo || transaction.data.customer?.houseNumber }}
+                </span>
+                <span class="mr-1">
+                  {{ 'หมู่' | translate }} {{ customer?.moo || transaction.data.customer?.moo }}
+                </span>
+                <span *ngIf="customer?.soi || transaction.data.customer?.soi">
+                  {{ 'ซอย' | translate }} {{ customer?.soi || transaction.data.customer?.soi }}
+                </span>
+                <span *ngIf="customer?.street || transaction.data.customer?.street">
+                  {{ 'ถนน' | translate }} {{ customer?.street || transaction.data.customer?.street }}
+                </span>
+                <span
+                  *ngIf="customer?.province === 'กรุงเทพมหานคร' || transaction.data.customer?.province === 'กรุงเทพมหานคร'">
+                  {{ 'แขวง' | translate }}{{ customer?.tumbol || transaction.data.customer?.tumbol }}
+                  {{ 'เขต' | translate }}{{ customer?.amphur || transaction.data.customer?.amphur }}
+                </span>
+                <span
+                  *ngIf="customer?.province !== 'กรุงเทพมหานคร' || transaction.data.customer?.province !== 'กรุงเทพมหานคร'">
+                  {{ 'ตำบล' | translate }}{{ customer?.tumbol || transaction.data.customer?.tumbol }}
+                  {{ 'อำเภอ' | translate }}{{ customer?.amphur || transaction.data.customer?.amphur }}
+                </span>
+                <span>
+                  {{ customer?.province || customer?.provinceName || transaction.data.customer?.province || transaction.data.customer?.provinceName }}
+                </span>
+                {{ customer?.zipCode || customer?.portalCode || transaction.data.customer?.zipCode || transaction.data.customer?.customer?.portalCode}}
+              </div>
+            </div>
+            <div *ngIf="customer?.issueDate">
+              {{ 'วันที่ออกบัตร' | translate }}
+              {{ customer?.issueDate || transaction.data.customer?.issueDate || '-' }}
+            </div>
           </div>
-          <div>
-            <label class="text-grey">ที่อยู่ใบเสร็จรับเงิน &nbsp;&nbsp;&nbsp;{{ billingAddressText }}</label>
+        </div>
+        <div class="media m-auto pb-4" *ngIf="isShowCustomerPrePaid === true">
+          <div class="media-body">
+            <div>
+              {{ customer?.titleName || transaction.data.customer?.titleName }}
+              {{ customer?.firstName || transaction.data.customer?.firstName }}
+              {{ customer?.lastName || transaction.data.customer?.lastName }}
+            </div>
+            <div>
+              {{ 'เลขบัตรประชาชน' | translate }}
+              {{ customer?.idCardNo || transaction.data.customer?.idCardNo }}
+            </div>
+            <div>
+              {{ 'Status' | translate }}
+              {{ mobileStatus }}
+            </div>
           </div>
         </div>
         <div class="card-footer bg-transparent">
