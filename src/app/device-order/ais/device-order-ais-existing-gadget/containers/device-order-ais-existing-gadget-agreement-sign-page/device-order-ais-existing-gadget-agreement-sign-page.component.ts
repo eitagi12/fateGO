@@ -242,7 +242,7 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
         canvas.height = imageSignatureWidthCard.height;
         ctx.drawImage(imageSignatureWidthCard, 0, 0);
       }
-    }
+    };
   }
   createCanvas(): void {
     const imageCard = new Image();
