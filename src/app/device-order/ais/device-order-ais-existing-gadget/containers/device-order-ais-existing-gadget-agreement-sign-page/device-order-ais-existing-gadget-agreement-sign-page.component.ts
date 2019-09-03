@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, EventEmitter, ViewChild, ElementRef } fro
 import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { Subscription } from 'rxjs';
-import { ShoppingCart, HomeService, TokenService, AlertService, User, ChannelType, CaptureAndSign, Utils, AWS_WATERMARK } from 'mychannel-shared-libs';
+import { ShoppingCart, HomeService, TokenService, AlertService, User, ChannelType, CaptureAndSign, Utils, AWS_WATERMARK, CaptureSignedWithCard, AisNativeService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_AGGREGATE_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_ECONTRACT_PAGE } from 'src/app/device-order/ais/device-order-ais-existing-gadget/constants/route-path.constant';
@@ -44,6 +44,7 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
   signedSubscription: Subscription;
   watermark: string = AWS_WATERMARK;
   isReadCard: boolean;
+  signedWidthIdCardImageSubscription: Subscription;
 
   constructor(
     private router: Router,
@@ -54,7 +55,7 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
     private http: HttpClient,
     private alertService: AlertService,
     private utils: Utils,
-    private aisNativeDeviceService: AisNativeDeviceService,
+    private aisNativeDeviceService: AisNativeService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -62,6 +63,15 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
       this.captureAndSign.imageSignature = signature;
       this.onChangeCaptureAndSign();
     });
+
+    if (this.isAisNative()) {
+      this.signedWidthIdCardImageSubscription = this.aisNativeDeviceService.getCaptureSignatureWithCardImage()
+        .subscribe((signatureWithCard: CaptureSignedWithCard) => {
+          this.captureAndSign.imageSignature = signatureWithCard.signature;
+          this.onChangeCaptureAndSign();
+        });
+    }
+
     this.homeService.callback = () => {
       this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
         .then((response: any) => {
@@ -181,6 +191,10 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
     const user: User = this.tokenService.getUser();
     this.signed = false;
     this.apiSigned = ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'SignaturePad';
+    if (this.isAisNative()) {
+      this.aisNativeDeviceService.captureSignatureWithCardImage(this.captureAndSign.imageSmartCard);
+      return;
+    }
     this.aisNativeDeviceService.openSigned(this.apiSigned).subscribe((command: any) => {
       this.commandSigned = command;
       if (command.error) {
@@ -190,10 +204,7 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
   }
 
   isAisNative(): boolean {
-    return this.utils.isAisNative();
-  }
-  isIOSNative(): boolean {
-    return this.utils.isIOSNative();
+    return !!window.aisNative;
   }
 
   isAllowCapture(): boolean {
@@ -216,6 +227,8 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
     let valid = false;
     if (this.isAllowCapture()) {
       valid = !!(this.captureAndSign.imageSmartCard && this.captureAndSign.imageSignature);
+    } else if (this.isAisNative()) {
+      valid = !!(this.captureAndSign.imageSignatureWidthCard);
     } else {
       valid = !!(this.captureAndSign.imageSignature);
     }
@@ -296,8 +309,8 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
         const signImageHeight = signImage.height > canvas.height ? canvas.height : signImage.height;
         const signImageWidth = signImageHeight * signImageRatio;
 
-        const dxs = (canvas.width - signImageWidth) / 2;
-        const dys = (canvas.height - signImageHeight) / 2;
+        const dxs = ((canvas.width - signImageWidth) / 2);
+        const dys = ((canvas.height - signImageHeight) / 2) / 6;
         ctx.globalCompositeOperation = 'multiply';
         ctx.drawImage(signImage, dxs, dys, signImageWidth, signImageHeight);
         // if (this.captureAndSign.imageSignature) {
