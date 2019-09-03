@@ -64,7 +64,9 @@ export class DeviceOnlyAspSelectMobileCarePageComponent implements OnInit, OnDes
   }
 
   public onMobile(mobileNo: any): void {
-    this.transaction.data.simCard = mobileNo;
+    this.transaction.data.simCard = {
+      ...this.transaction.data.simCard = mobileNo
+    };
   }
 
   public isVerifyNext(): boolean {

@@ -50,7 +50,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   public receiptInfoValid: boolean;
   public isShowCustomerPostPaid: boolean;
   public isShowCustomerPrePaid: boolean;
-  public mobileStatus: string;
+  public mobileNoStatus: any;
 
   @ViewChild('progressBarArea')
   progressBarArea: ElementRef;
@@ -188,20 +188,20 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
 
   private setCustomerInfoFromTransaction(): void {
     const customer = this.transaction.data.customer;
+
     if (customer && customer.idCardNo) {
-      if (TransactionAction.READ_CARD) {
+      if (this.transaction.data.action === 'READ_CARD') {
         this.isShowCustomerPostPaid = true;
-      } else if (TransactionAction.KEY_IN) {
+        this.isShowCustomerPrePaid = false;
+      } else if (this.transaction.data.action === 'KEY_IN') {
         if (this.transaction.data && this.transaction.data.simCard.chargeType && this.transaction.data.simCard.chargeType === 'Pre-paid') {
           this.isShowCustomerPrePaid = true;
+          this.mobileNoStatus = this.customerInfoService.getMobileNoStatus();
           this.isShowCustomerPostPaid = false;
           // tslint:disable-next-line: max-line-length
         } else if (this.transaction.data && this.transaction.data.simCard.chargeType && this.transaction.data.simCard.chargeType === 'Post-paid') {
           this.isShowCustomerPostPaid = true;
           this.isShowCustomerPrePaid = false;
-        } else {
-          this.isShowCustomerPrePaid = false;
-          this.isShowCustomerPostPaid = false;
         }
       }
       customer.idCardNo = (`XXXXXXXXX${(customer.idCardNo.substring(9))}`);
@@ -209,8 +209,13 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
       this.receiptInfoValid = true;
       this.isNotFormValid();
     } else {
-      this.clearData();
-      this.receiptInfoValid = true;
+      if (this.customerInfoService.isNonAis === 'NON-AIS') {
+        this.clearData();
+        this.receiptInfoValid = true;
+      } else {
+        this.clearData();
+        this.receiptInfoValid = false;
+      }
     }
   }
 
@@ -283,15 +288,18 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
                   this.customerInfoService.setSelectedMobileNo(mobileNo);
                   this.isShowCustomerPrePaid = true;
                   this.isShowCustomerPostPaid = false;
+                  this.mobileNoStatus = mobile.data.mobileStatus;
+                  this.customerInfoService.setMobileNoStatus(this.mobileNoStatus);
                   this.setCustomerInfo({
                     customer: this.customer,
                     action: TransactionAction.KEY_IN
                   });
                   this.transaction.data.simCard = {
-                    mobileNo: mobileNo,
-                    chargeType: ChargeType.PRE_PAID
+                    ...this.transaction.data.simCard = {
+                      mobileNo: mobileNo,
+                      chargeType: ChargeType.PRE_PAID
+                    }
                   };
-                  this.mobileStatus = mobile.data.mobileStatus;
                   this.customerInfoService.isNonAis = 'AIS';
                   this.receiptInfoValid = true;
                   this.pageLoadingService.closeLoading();
@@ -313,8 +321,10 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
                     action: TransactionAction.KEY_IN
                   });
                   this.transaction.data.simCard = {
-                    mobileNo: mobileNo,
-                    chargeType: ChargeType.POST_PAID
+                    ...this.transaction.data.simCard = {
+                      mobileNo: mobileNo,
+                      chargeType: ChargeType.POST_PAID
+                    }
                   };
                   this.customerInfoService.isNonAis = 'AIS';
                   this.receiptInfoValid = true;
@@ -342,7 +352,9 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
           this.isShowCustomerPrePaid = false;
           this.receiptInfoForm.controls['taxId'].setValue('');
           this.transaction.data.simCard = {
-            mobileNo: mobileNo
+            ...this.transaction.data.simCard = {
+              mobileNo: mobileNo
+            }
           };
           this.customerInfoService.isNonAis = 'NON-AIS';
           this.receiptInfoValid = true;
@@ -369,14 +381,16 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
 
   public setCustomerInfo = (data: any) => {
     const customer = {
-      idCardNo: data.customer.idCardNo,
+      idCardNo: data.customer.idCardNo || '',
       idCardType: data.customer.idCardType || 'บัตรประชาชน',
-      titleName: data.customer.titleName,
-      firstName: data.customer.firstName,
-      lastName: data.customer.lastName,
+      titleName: data.customer.titleName || '',
+      firstName: data.customer.firstName || '',
+      lastName: data.customer.lastName || '',
       birthdate: data.customer.birthdate || '',
       gender: data.customer.gender || '',
       expireDate: data.customer.expireDate || '',
+      issueDate: data.customer.issueDate || '',
+      mobileNo: data.mobileNo || '',
       homeNo: data.customer.homeNo || data.customer.houseNumber || '',
       moo: data.customer.moo || '',
       mooBan: data.customer.mooBan || '',
@@ -388,15 +402,14 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
       province: data.customer.province || data.customer.provinceName || '',
       amphur: data.customer.amphur,
       tumbol: data.customer.tumbol,
-      zipCode: data.customer.zipCode || data.customer.portalCode || '',
-      mobileNo: data.mobileNo,
-      issueDate: data.customer.issueDate || ''
+      zipCode: data.customer.zipCode || data.customer.portalCode || ''
     };
     this.transaction.data.customer = customer;
     this.transaction.data.action = data.action;
   }
 
   async readCard(): Promise<any> {
+    this.setCustomerInfoFromTransaction();
     const data = await this.readCardFromWebSocket();
     this.customer = await data;
     this.nameTextBySmartCard = this.customer.titleName + ' ' + this.customer.firstName + ' ' + this.customer.lastName;

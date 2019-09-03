@@ -368,6 +368,11 @@ export class MobileCareAspComponent implements OnInit {
         this.checkVerifyNext();
         this.pageLoadingService.closeLoading();
       } else {
+        this.mobileNoEmit.emit({
+          mobileNo: this.privilegeCustomerForm.value.mobileNo,
+          billingSystem: '',
+          chargeType: this.chargeType || ''
+        });
         this.router.navigate([ROUTE_DEVICE_ONLY_ASP_READ_CARD_PAGE]);
         this.privilegeCustomerForm.controls['mobileNo'].setValue('');
         this.pageLoadingService.closeLoading();
