@@ -29,7 +29,12 @@
                 [hidden]="!(!isAllowCapture() || hasImageSmartCard())">
                 <div class="embed-responsive-item">
                   <canvas #signImage [class]="isReadCard ? 'captured-image-read':'captured-image'"></canvas>
-                  <img *ngIf="captureAndSign?.imageSignature" class="capture-and-sign watermark" alt="" [src]="'data:image/png;base64,' + watermark" />
+                  <img *ngIf="isAisNative()||isIOSNative()" class="capture-and-sign capture" alt=""
+                    [src]="'data:image/png;base64,' + captureAndSign?.imageSmartCard" />
+                  <img *ngIf="isAisNative()||isIOSNative()" class="capture-and-sign signed" alt=""
+                    [src]="'data:image/png;base64,' + captureAndSign?.imageSignature" />
+                  <img *ngIf="captureAndSign?.imageSignature" class="capture-and-sign watermark" alt=""
+                    [src]="'data:image/png;base64,' + watermark" />
                 </div>
               </div>
 

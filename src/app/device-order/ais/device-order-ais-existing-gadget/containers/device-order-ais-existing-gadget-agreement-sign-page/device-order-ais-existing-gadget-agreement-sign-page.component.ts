@@ -10,7 +10,7 @@ import { HttpClient } from '@angular/common/http';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { AisNativeDeviceService } from 'src/app/shared/services/ais-native-device.service';
-
+declare let window: any;
 @Component({
   selector: 'app-device-order-ais-existing-gadget-agreement-sign-page',
   templateUrl: './device-order-ais-existing-gadget-agreement-sign-page.component.html',
@@ -191,6 +191,9 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
 
   isAisNative(): boolean {
     return this.utils.isAisNative();
+  }
+  isIOSNative(): boolean {
+    return this.utils.isIOSNative();
   }
 
   isAllowCapture(): boolean {
