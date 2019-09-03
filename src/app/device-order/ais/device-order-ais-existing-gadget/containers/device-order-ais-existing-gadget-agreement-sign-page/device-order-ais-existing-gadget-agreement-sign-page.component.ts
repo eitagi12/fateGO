@@ -297,12 +297,14 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
         const dys = (canvas.height - signImageHeight) / 2;
         ctx.globalCompositeOperation = 'multiply';
         ctx.drawImage(signImage, dxs, dys, signImageWidth, signImageHeight);
-        const watermarkRatio: number = (watermark.width / watermark.height);
-        const watermarkHeight: number = watermark.height > signImage.height ? signImage.height : watermark.height;
-        const watermarkWidth: number = watermarkHeight * watermarkRatio;
-        const dxw = (canvas.width - watermarkWidth) / 2;
-        const dyw = (canvas.height - watermarkHeight) / 2;
-        ctx.drawImage(watermark, dxw + 50, dyw + 50, watermarkWidth / 1.4, watermarkHeight / 1.4);
+        if (this.captureAndSign.imageSignature) {
+          const watermarkRatio: number = (watermark.width / watermark.height);
+          const watermarkHeight: number = watermark.height > signImage.height ? signImage.height : watermark.height;
+          const watermarkWidth: number = watermarkHeight * watermarkRatio;
+          const dxw = (canvas.width - watermarkWidth) / 2;
+          const dyw = (canvas.height - watermarkHeight) / 2;
+          ctx.drawImage(watermark, dxw + 50, dyw + 50, watermarkWidth / 1.4, watermarkHeight / 1.4);
+        }
       }
     }
     this.captureAndSign.imageSignatureWidthCard = canvas.toDataURL('image/jpeg').replace(/^data:image\/jpeg;base64,/, '');
