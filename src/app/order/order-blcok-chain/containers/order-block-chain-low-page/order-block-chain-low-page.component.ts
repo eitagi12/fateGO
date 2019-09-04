@@ -10,6 +10,7 @@ import { WIZARD_ORDER_BLOCK_CHAIN } from 'src/app/order/constants/wizard.constan
 })
 export class OrderBlockChainLowPageComponent implements OnInit {
   wizards: string[] = WIZARD_ORDER_BLOCK_CHAIN;
+  agreement: boolean;
   constructor(
     private router: Router,
     private homeService: HomeService,
