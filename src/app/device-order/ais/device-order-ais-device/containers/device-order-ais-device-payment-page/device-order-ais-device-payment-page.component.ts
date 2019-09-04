@@ -272,7 +272,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
 
   searchCustomerInfo(): void {
     if (!this.searchByMobileNoForm.value.mobileNo) {
-      this.alertService.warning('กรุณากรอกเบอร์โทรศัพท์');
+      this.alertService.warning('กรุณากรอกหมายเลขโทรศัพท์');
       return;
     }
     if (this.searchByMobileNoForm.valid) {
@@ -581,7 +581,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
 
   onNext(): void {
     if (!this.receiptInfoForm.value.telNo) {
-      this.alertService.warning('กรุณากรอกเบอร์ติดต่อ');
+      this.alertService.warning('กรุณากรอกหมายเลขโทรศัพท์ติดต่อ');
       return;
     }
     this.pageLoadingService.openLoading();
