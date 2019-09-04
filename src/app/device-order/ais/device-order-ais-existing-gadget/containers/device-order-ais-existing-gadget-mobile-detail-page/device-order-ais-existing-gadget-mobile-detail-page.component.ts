@@ -197,6 +197,7 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
   }
 
   checkWarningBillingAccountMessage(mobileBillAccount: string[], isAirtime: boolean): void {
+    this.pageLoadingService.closeLoading();
     if (mobileBillAccount && mobileBillAccount.length > 1 && isAirtime) {
       this.alertService.warning('หมายเลขนี้มีการรวมบิล ไม่สามารถทำรายการได้');
     } else {

@@ -1,131 +1,135 @@
 <div class="mc-flex">
-    <mc-header title="{{'ลูกค้าปัจจุบัน'| translate}}"></mc-header>
-    <div class="mc-flex-wrap">
-      <div class="m-5">
-  
-        <div class="card">
-          <div class="card-body pt-3 text-center ">
-            <img src="assets/images/icon/icon-green-check-circle.png" class="icon" /> <br>
-            <b>{{'หมายเลข'| translate}} <span class="text-green">{{ transaction?.data?.simCard?.mobileNo | mobileNo }}</span></b> <br>
-            <b>{{'ชำระค่าสินค้าเรียบร้อยแล้ว'| translate}}</b> <br>
-            <b>{{'หมายเลขอ้างอิง'| translate}} {{ transaction?.data?.mpayPayment?.tranId }}</b>
-          </div>
-  
-          <!-- ชำระ -->
-          <ng-container>
-            <div class="card-body border-top">
-              <p><b class="text-light-grey" translate>รายการสินค้า (ที่ชำระแล้ว)</b></p>
-              <ng-container *ngIf="transaction?.data?.payment?.paymentType === 'QR_CODE'">
-                <div class="text-light-grey">
-                  <p>
-                    <i class="fa fa-circle mr-3 text-green"></i>
-                    {{ priceOption?.productDetail?.name }}
-                    <span *ngIf="priceOption?.productStock?.color">
-                      {{ priceOption?.productStock?.color? ('สี'| translate) : '' }} {{ priceOption?.productStock?.color }}
-                    </span>
-                    <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
-                      ({{'แถมซิม'| translate}})
-                    </span>
-                    <span class="pull-right text-green">
-                      ฿ {{ priceOption?.trade?.promotionPrice | number }}
-                    </span>
-                  </p>
-                </div>
-              </ng-container>
-  
-              <ng-container *ngIf="transaction?.data?.advancePayment?.paymentType === 'QR_CODE'">
-                <div class="text-light-grey"
-                  *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && priceOption?.trade?.advancePay?.amount > 0">
-                  <p>
-                    <i class="fa fa-circle mr-3 text-green"></i>
-                    {{ summaryPageService.advanpayDescription(priceOption?.trade?.advancePay?.description) }}
-                    <span class="pull-right text-green">
-                      ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
-                    </span>
-                  </p>
-                </div>
-              </ng-container>
-  
-              <div class="mt-1 text-right">
-                <b>
-                  <span class="mr-3">{{'รวมยอดชำระ (รวม VAT)'| translate}}</span>
-                  <span class="text-green">
-                    $ {{ getPaymentBalance() | number:'1.0-0' }}
+  <mc-header title="{{'ลูกค้าปัจจุบัน'| translate}}"></mc-header>
+  <div class="mc-flex-wrap">
+    <div class="m-5">
+
+      <div class="card">
+        <div class="card-body pt-3 text-center ">
+          <img src="assets/images/icon/icon-green-check-circle.png" class="icon" /> <br>
+          <b>{{'หมายเลข'| translate}} <span
+              class="text-green">{{ transaction?.data?.simCard?.mobileNo | mobileNo }}</span></b> <br>
+          <b>{{'ชำระค่าสินค้าเรียบร้อยแล้ว'| translate}}</b> <br>
+          <b *ngIf="checkAppleTvWording">{{'และ เป็นหมายเลขเพื่อเปิดใช้ Apple TV ครั้งแรก'| translate}}</b>
+          <b>{{'หมายเลขอ้างอิง'| translate}} {{ transaction?.data?.mpayPayment?.tranId }}</b>
+        </div>
+
+        <!-- ชำระ -->
+        <ng-container>
+          <div class="card-body border-top">
+            <p><b class="text-light-grey" translate>รายการสินค้า (ที่ชำระแล้ว)</b></p>
+            <ng-container *ngIf="transaction?.data?.payment?.paymentType === 'QR_CODE'">
+              <div class="text-light-grey">
+                <p>
+                  <i class="fa fa-circle mr-3 text-green"></i>
+                  {{ priceOption?.productDetail?.name }}
+                  <span *ngIf="priceOption?.productStock?.color">
+                    {{ priceOption?.productStock?.color? ('สี'| translate) : '' }}
+                    {{ priceOption?.productStock?.color }}
                   </span>
-                </b>
+                  <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
+                    ({{'แถมซิม'| translate}})
+                  </span>
+                  <span class="pull-right text-green">
+                    ฿ {{ priceOption?.trade?.promotionPrice | number }}
+                  </span>
+                </p>
               </div>
-  
+            </ng-container>
+
+            <ng-container *ngIf="transaction?.data?.advancePayment?.paymentType === 'QR_CODE'">
+              <div class="text-light-grey"
+                *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && priceOption?.trade?.advancePay?.amount > 0">
+                <p>
+                  <i class="fa fa-circle mr-3 text-green"></i>
+                  {{ summaryPageService.advanpayDescription(priceOption?.trade?.advancePay?.description) }}
+                  <span class="pull-right text-green">
+                    ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
+                  </span>
+                </p>
+              </div>
+            </ng-container>
+
+            <div class="mt-1 text-right">
+              <b>
+                <span class="mr-3">{{'รวมยอดชำระ (รวม VAT)'| translate}}</span>
+                <span class="text-green">
+                  $ {{ getPaymentBalance() | number:'1.0-0' }}
+                </span>
+              </b>
             </div>
-          </ng-container>
-  
-          <!-- ค้างชำระ -->
-          <ng-container *ngIf="transaction?.data?.payment?.paymentType !== 'QR_CODE' 
+
+          </div>
+        </ng-container>
+
+        <!-- ค้างชำระ -->
+        <ng-container *ngIf="transaction?.data?.payment?.paymentType !== 'QR_CODE' 
               || (transaction?.data?.advancePayment?.paymentType !== 'QR_CODE' 
               && priceOption?.trade?.advancePay?.installmentFlag === 'N')">
-            <div class="card-body border-top">
-              <p><b class="text-light-grey" translate>รายการสินค้า (รอชำระ)</b></p>
-  
-              <ng-container *ngIf="transaction?.data?.payment?.paymentType !== 'QR_CODE'">
-                <div class="text-light-grey">
-                  <p>
-                    <i class="fa fa-circle mr-3 text-green"></i>
-                    {{ priceOption?.productDetail?.name }}
-                    <span *ngIf="priceOption?.productStock?.color">
-                      {{ priceOption?.productStock?.color? ('สี'| translate) : '' }} {{ priceOption?.productStock?.color }}
-                    </span>
-                    <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
-                      ({{'แถมซิม' | translate}})
-                    </span>
-                    <span class="pull-right text-green">
-                      ฿ {{ priceOption?.trade?.promotionPrice | number }}
-                    </span>
-                  </p>
-                </div>
-              </ng-container>
-  
-              <ng-container *ngIf="transaction?.data?.advancePayment?.paymentType !== 'QR_CODE'">
-                <div class="text-light-grey"
-                  *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && priceOption?.trade?.advancePay?.amount > 0">
-                  <p
-                    *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && priceOption?.trade?.advancePay?.amount > 0">
-                    <i class="fa fa-circle mr-3 text-green"></i>
-                    {{ summaryPageService.advanpayDescription(priceOption?.trade?.advancePay?.description) }}
-                    <span class="pull-right text-green">
-                      ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
-                    </span>
-                  </p>
-                </div>
-              </ng-container>
-  
-              <div class="mt-1 text-right">
-                <b>
-                  <span class="mr-3" translate>รวมยอดชำระ (รวม VAT)</span>
-                  <span class="text-green">
-                    ฿ {{ getOutStandingBalance() | number:'1.0-0' }}
+          <div class="card-body border-top">
+            <p><b class="text-light-grey" translate>รายการสินค้า (รอชำระ)</b></p>
+
+            <ng-container *ngIf="transaction?.data?.payment?.paymentType !== 'QR_CODE'">
+              <div class="text-light-grey">
+                <p>
+                  <i class="fa fa-circle mr-3 text-green"></i>
+                  {{ priceOption?.productDetail?.name }}
+                  <span *ngIf="priceOption?.productStock?.color">
+                    {{ priceOption?.productStock?.color? ('สี'| translate) : '' }}
+                    {{ priceOption?.productStock?.color }}
                   </span>
-                </b>
+                  <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
+                    ({{'แถมซิม' | translate}})
+                  </span>
+                  <span class="pull-right text-green">
+                    ฿ {{ priceOption?.trade?.promotionPrice | number }}
+                  </span>
+                </p>
               </div>
-            </div>
-          </ng-container>
-        </div>
-        <!-- card -->
-        <div class="card-body  border-right border-bottom border-left text-center text-light-grey bg-white">
-          <div class="text-center mb-3">
-            <h5 class="pt-2" translate>รายการสั่งซื้อ</h5>
-            <div class="mt-4">
-              <div class="card pl-5 pr-5 pt-2 pb-2" style="display: inline-block;">
-                <div class="card-body queue-no text-green h1">
-                  {{ transaction?.data?.queue?.queueNo || 'A001' }}
-                </div>
+            </ng-container>
+
+            <ng-container *ngIf="transaction?.data?.advancePayment?.paymentType !== 'QR_CODE'">
+              <div class="text-light-grey"
+                *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && priceOption?.trade?.advancePay?.amount > 0">
+                <p
+                  *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && priceOption?.trade?.advancePay?.amount > 0">
+                  <i class="fa fa-circle mr-3 text-green"></i>
+                  {{ summaryPageService.advanpayDescription(priceOption?.trade?.advancePay?.description) }}
+                  <span class="pull-right text-green">
+                    ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
+                  </span>
+                </p>
               </div>
+            </ng-container>
+
+            <div class="mt-1 text-right">
+              <b>
+                <span class="mr-3" translate>รวมยอดชำระ (รวม VAT)</span>
+                <span class="text-green">
+                  ฿ {{ getOutStandingBalance() | number:'1.0-0' }}
+                </span>
+              </b>
             </div>
-            <h5 class="pt-4" translate>สินค้าของคุณพร้อมแล้วที่จุดรับสินค้า</h5>
           </div>
-        </div>
-  
+        </ng-container>
       </div>
+      <!-- card -->
+      <div class="card-body  border-right border-bottom border-left text-center text-light-grey bg-white">
+        <div class="text-center mb-3">
+          <h5 class="pt-2" translate>รายการสั่งซื้อ</h5>
+          <div class="mt-4">
+            <div class="card pl-5 pr-5 pt-2 pb-2" style="display: inline-block;">
+              <div class="card-body queue-no text-green h1">
+                {{ transaction?.data?.queue?.queueNo || 'A001' }}
+              </div>
+            </div>
+          </div>
+          <h5 class="pt-4" translate>สินค้าของคุณพร้อมแล้วที่จุดรับสินค้า</h5>
+        </div>
+      </div>
+
     </div>
-    <mc-footer>
-      <button class="btn btn-success" (click)="onMainMenu()">MAIN MENU</button>
-    </mc-footer>
   </div>
+  <mc-footer>
+    <button class="btn btn-success" (click)="onMainMenu()">MAIN MENU</button>
+  </mc-footer>
+</div>

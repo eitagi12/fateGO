@@ -13,7 +13,7 @@
               <h4 class="text-center text-green">หมายเลข {{ transaction?.data?.simCard?.mobileNo | mobileNo: '-' }}
               </h4>
               <h4 class="text-center text-green">รายการสั่งชื้อของท่านได้เข้าสู่ระบบเรียบร้อยแล้ว</h4>
-              <h4 *ngIf="!!transaction?.data?.mpayPayment && !!transaction?.data?.mpayPayment?.tranId" class="text-center text-green">หมายเลขอ้างอิง {{ transaction?.data?.mpayPayment?.tranId }}</h4>
+              <h4 *ngIf="checkAppleTvWording" class="text-center text-green">และ เป็นหมายเลขเพื่อเปิดใช้ Apple TV ครั้งแรก</h4>
             </div>
             <hr>
           </div>
