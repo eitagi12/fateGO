@@ -61,7 +61,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
   user: User;
   zipCode: string;
   isReadCard: boolean = false;
-  REGEX_MOBILE: RegExp =  /^(88[0-9]\d{7})|(0[6-9]\d{8})$/;
+  REGEX_MOBILE: RegExp = /^(88[0-9]\d{7})|(0[6-9]\d{8})$/;
 
   constructor(
     private router: Router,
@@ -277,86 +277,78 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     }
     if (this.searchByMobileNoForm.valid) {
       const mobileNo = this.searchByMobileNoForm.value.mobileNo;
+      this.transaction.data.simCard = {
+        mobileNo: mobileNo
+      };
+      this.transaction.data.receiptInfo.telNo = this.receiptInfoForm.value.telNo;
+
+      this.receiptInfoForm.patchValue({
+        telNo: mobileNo,
+      });
       if (/88[0-9]{8}/.test(mobileNo)) {
         this.checkMobileFbb(mobileNo);
       } else {
         this.checkMobileStatus(mobileNo);
       }
-    } else {
-      this.alertService.notify({
-        type: 'warning',
-        confirmButtonText: 'OK',
-        showConfirmButton: true,
-        text: 'กรุณาระบุเบอร์ให้ครบ 10 หลัก'
-      });
     }
   }
 
   checkMobileStatus(mobileNo: string): Promise<any> {
     this.pageLoadingService.openLoading();
-    return this.http.get(`/api/customerportal/asset/${mobileNo}/profile`).toPromise()
-      .then((res: any) => {
-        const chargeType = res && res.data && res.data.chargeType ? res.data.chargeType : '';
-        if (chargeType === 'Post-paid') {
-          return this.http.get(`/api/customerportal/billing/${mobileNo}`).toPromise()
-            .then((bill: any) => {
-              const billing = bill && bill.data && bill.data.billingAddress ? bill.data.billingAddress : '';
-              this.transaction.data.customer = {
-                homeNo: billing.houseNumber || '',
-                zipCode: billing.portalCode || '',
-                province: billing.provinceName || '',
-                street: billing.streetName || '',
-                amphur: billing.amphur || '',
-                buildingName: billing.buildingName || '',
-                firstName: billing.firstName || '',
-                floor: billing.floor || '',
-                idCardNo: billing.idCardNo || '',
-                idCardType: billing.idCardType || '',
-                lastName: billing.lastName || '',
-                moo: billing.moo || '',
-                mooBan: billing.mooban || '',
-                soi: billing.soi || '',
-                titleName: billing.titleName || '',
-                tumbol: billing.tumbol || '',
-                birthdate: '',
-                gender: ''
-              };
-              this.receiptInfo.buyer = `${billing.titleName} ${billing.firstName} ${billing.lastName}`;
-              this.receiptInfo.taxId = billing.idCardNo;
-              this.receiptInfo.buyerAddress = this.utils.getCurrentAddress({
-                homeNo: billing.houseNumber || '',
-                moo: billing.moo || '',
-                mooBan: billing.mooban || '',
-                room: billing.room,
-                floor: billing.floor || '',
-                buildingName: billing.buildingName || '',
-                soi: billing.soi || '',
-                street: billing.streetName || '',
-                tumbol: billing.tumbol,
-                amphur: billing.amphur || '',
-                province: billing.provinceName || '',
-                zipCode: billing.portalCode || '',
-              });
-              this.receiptInfoForm.controls['taxId'].setValue(this.receiptInfo.taxId);
-              this.transaction.data.receiptInfo = this.receiptInfo;
-              this.transaction.data.action = TransactionAction.SEARCH;
-              this.mobileNo = mobileNo;
-              this.pageLoadingService.closeLoading();
-            }).catch((err) => {
-              if (this.transaction.data && this.transaction.data.customer) {
-                delete this.transaction.data.customer;
-              }
-              this.pageLoadingService.closeLoading();
-              this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE]);
-            });
+    return this.http.get(`/api/customerportal/${mobileNo}/query-customer-account`).toPromise()
+      .then((bill: any) => {
+        const billing = bill && bill.data && bill.data.billingAddress ? bill.data.billingAddress : '';
+        if (billing) {
+          this.transaction.data.customer = {
+            homeNo: billing.houseNumber || '',
+            zipCode: billing.portalCode || '',
+            province: billing.provinceName || '',
+            street: billing.streetName || '',
+            amphur: billing.amphur || '',
+            buildingName: billing.buildingName || '',
+            firstName: billing.firstName || '',
+            floor: billing.floor || '',
+            idCardNo: billing.idCardNo || '',
+            idCardType: billing.idCardType || '',
+            lastName: billing.lastName || '',
+            moo: billing.moo || '',
+            mooBan: billing.mooban || '',
+            soi: billing.soi || '',
+            titleName: billing.titleName || '',
+            tumbol: billing.tumbol || '',
+            birthdate: '',
+            gender: ''
+          };
+          this.receiptInfo.buyer = `${billing.titleName} ${billing.firstName} ${billing.lastName}`;
+          this.receiptInfo.taxId = billing.idCardNo;
+          this.receiptInfo.buyerAddress = this.utils.getCurrentAddress({
+            homeNo: billing.houseNumber || '',
+            moo: billing.moo || '',
+            mooBan: billing.mooban || '',
+            room: billing.room,
+            floor: billing.floor || '',
+            buildingName: billing.buildingName || '',
+            soi: billing.soi || '',
+            street: billing.streetName || '',
+            tumbol: billing.tumbol,
+            amphur: billing.amphur || '',
+            province: billing.provinceName || '',
+            zipCode: billing.portalCode || '',
+          });
+          this.receiptInfoForm.controls['taxId'].setValue(this.receiptInfo.taxId);
+          this.transaction.data.receiptInfo = this.receiptInfo;
+          this.transaction.data.action = TransactionAction.SEARCH;
+          this.pageLoadingService.closeLoading();
         } else {
+          console.log('[UNDEFIND] billingAddress :', bill);
           if (this.transaction.data && this.transaction.data.customer) {
             delete this.transaction.data.customer;
           }
           this.pageLoadingService.closeLoading();
           this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE]);
         }
-      }).catch((error) => {
+      }).catch((error: any) => {
+        console.log('[ERROR] query-customer-account :', error);
         if (this.transaction.data && this.transaction.data.customer) {
           delete this.transaction.data.customer;
         }
@@ -405,6 +397,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
             };
             this.receiptInfo.taxId = customerprofile.idCardNo;
             this.receiptInfo.buyer = `${customerprofile.accntTitle} ${customerprofile.name}`;
+            this.receiptInfo.telNo = mobileNo;
             this.receiptInfo.buyerAddress = this.utils.getCurrentAddress({
               homeNo: billing.houseNumber || '',
               moo: billing.moo || '',
@@ -420,6 +413,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
               zipCode: billing.portalCode || '',
             });
             this.transaction.data.action = TransactionAction.SEARCH;
+            this.transaction.data.receiptInfo = this.receiptInfo;
           }).catch((error) => {
             if (this.transaction.data && this.transaction.data.customer) {
               delete this.transaction.data.customer;
@@ -433,7 +427,6 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
         this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_EDIT_BILLING_ADDRESS_PAGE]);
       })
       .then(() => {
-        this.mobileNo = mobileNo;
         this.pageLoadingService.closeLoading();
       });
   }
@@ -584,14 +577,17 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
       this.alertService.warning('กรุณากรอกหมายเลขโทรศัพท์ติดต่อ');
       return;
     }
+
+    if (!this.transaction.data.simCard.mobileNo) {
+      this.transaction.data.simCard = {
+        mobileNo: this.receiptInfoForm.value.telNo
+      };
+    }
     this.pageLoadingService.openLoading();
     this.transaction.data.payment = this.paymentDetailTemp.payment;
     this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;
-    this.receiptInfo.telNo = this.receiptInfoForm.value.telNo;
     this.transaction.data.receiptInfo = this.receiptInfo;
-    this.transaction.data.simCard = {
-      mobileNo: this.mobileNo
-    };
+
     this.returnStock().then(() => {
       this.addDeviceSellingCart(this.transaction);
     });
