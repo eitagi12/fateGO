@@ -13,6 +13,7 @@ export class CustomerInformationService {
   public cancelreadcard: Subject<boolean> = new Subject<boolean>();
   public isReadCard: boolean = false;
   private _isNonAis: string;
+  private _isChargeType: string;
   private mobileNoStatus: string;
 
   constructor(
@@ -142,6 +143,13 @@ export class CustomerInformationService {
 
   setMobileNoStatus(mobileNo: string): void {
     this.mobileNoStatus = mobileNo;
+  }
+
+  public get isChargeType(): string {
+    return this._isChargeType;
+  }
+  public set isChargeType(chargeType: string) {
+    this._isChargeType = chargeType;
   }
 
 }

@@ -50,7 +50,8 @@ export class MobileCareAspComponent implements OnInit {
   public currentPackageMobileCare: any[];
   public privilegeCustomerForm: FormGroup;
   private exMobileCare: any;
-  private chargeType: string;
+  // private chargeType: any;
+  private isChargeType: any;
   mainPackage: MainPackage;
   billingSystem: string;
   mobileCareForm: FormGroup;
@@ -232,7 +233,7 @@ export class MobileCareAspComponent implements OnInit {
     const mobileNo = this.privilegeCustomerForm.controls['mobileNo'].value;
     this.customerInformationService.getProfileByMobileNo(mobileNo)
       .then((res) => {
-        this.chargeType = res.data.chargeType;
+        this.isChargeType = this.customerInfoService.isChargeType;
         switch (res.data.chargeType) {
           case 'Pre-paid':
             this.customerInformationService.getCustomerProfile(mobileNo).then((resp) => {
@@ -245,12 +246,24 @@ export class MobileCareAspComponent implements OnInit {
                     this.currentPackageMobileCare = result.data.existMobileCarePackage;
                     this.popupMobileCare(this.currentPackageMobileCare);
                   } else {
+                    this.mobileNoEmit.emit({
+                      mobileNo: this.privilegeCustomerForm.value.mobileNo,
+                      billingSystem: '',
+                      chargeType: this.isChargeType
+                    });
                     this.isVerifyflag.emit(true);
                     this.pageLoadingService.closeLoading();
                     this.currentPackageMobileCare = result.data.existMobileCarePackage;
                   }
                 });
-            });
+              }).catch(() => {
+                this.alertService.notify({
+                  type: 'error',
+                  confirmButtonText: 'OK',
+                  showConfirmButton: true,
+                  text: 'ไม่สามารถทำรายการได้ในขณะนี้'
+                });
+              });
             break;
           case 'Post-paid':
             this.customerInformationService.getBillingByMobileNo(mobileNo)
@@ -276,9 +289,8 @@ export class MobileCareAspComponent implements OnInit {
                         type: 'error',
                         confirmButtonText: 'OK',
                         showConfirmButton: true,
-                        text: 'เบอร์ไม่ถูกต้อง กรุณาเปลี่ยนเบอร์ใหม่'
+                        text: 'ไม่สามารถทำรายการได้ในขณะนี้'
                       });
-                      this.privilegeCustomerForm.controls['mobileNo'].setValue('');
                     });
                 } else {
                   this.alertService.notify({
@@ -294,29 +306,36 @@ export class MobileCareAspComponent implements OnInit {
                   type: 'error',
                   confirmButtonText: 'OK',
                   showConfirmButton: true,
-                  text: 'เบอร์ไม่ถูกต้อง กรุณาเปลี่ยนเบอร์ใหม่'
+                  text: 'ไม่สามารถทำรายการได้ในขณะนี้'
                 });
-                this.privilegeCustomerForm.controls['mobileNo'].setValue('');
               });
             break;
         }
       })
       .catch((err) => {
-        if (this.privilegeCustomerForm.valid) {
-          this.alertService.notify({
-            type: 'warning',
-            confirmButtonText: 'OK',
-            showConfirmButton: true,
-            text: 'เบอร์นี้ไม่ใช่ระบบ AIS ไม่สามารถซื้อโมบายแคร์ได้'
-          });
-        } else {
+        if (err && err.error && err.error.developerMessage === 'Error: ESOCKETTIMEDOUT') {
           this.alertService.notify({
             type: 'error',
             confirmButtonText: 'OK',
             showConfirmButton: true,
-            text: 'เบอร์ไม่ถูกต้อง กรุณาระบุเบอร์มือถือ AIS'
+            text: 'ไม่สามารถทำรายการได้ในขณะนี้'
           });
-          this.privilegeCustomerForm.controls['mobileNo'].setValue('');
+        } else {
+          if (this.privilegeCustomerForm.valid) {
+            this.alertService.notify({
+              type: 'warning',
+              confirmButtonText: 'OK',
+              showConfirmButton: true,
+              text: 'เบอร์นี้ไม่ใช่ระบบ AIS ไม่สามารถซื้อโมบายแคร์ได้'
+            });
+          } else {
+            this.alertService.notify({
+              type: 'error',
+              confirmButtonText: 'OK',
+              showConfirmButton: true,
+              text: 'ไม่สามารถทำรายการได้ในขณะนี้'
+            });
+          }
         }
       });
   }
@@ -337,6 +356,11 @@ export class MobileCareAspComponent implements OnInit {
         this.popupMobileCare(this.currentPackageMobileCare);
       });
     } else {
+      this.mobileNoEmit.emit({
+        mobileNo: this.privilegeCustomerForm.value.mobileNo,
+        billingSystem: '',
+        chargeType: this.isChargeType
+      });
       this.currentPackageMobileCare = response.data.currentPackage;
       this.pageLoadingService.closeLoading();
     }
@@ -368,10 +392,10 @@ export class MobileCareAspComponent implements OnInit {
         this.checkVerifyNext();
         this.pageLoadingService.closeLoading();
       } else {
+        this.isChargeType = this.customerInfoService.isChargeType;
         this.mobileNoEmit.emit({
           mobileNo: this.privilegeCustomerForm.value.mobileNo,
-          billingSystem: '',
-          chargeType: this.chargeType || ''
+          chargeType: this.isChargeType
         });
         this.router.navigate([ROUTE_DEVICE_ONLY_ASP_READ_CARD_PAGE]);
         this.privilegeCustomerForm.controls['mobileNo'].setValue('');
@@ -386,7 +410,7 @@ export class MobileCareAspComponent implements OnInit {
       this.mobileNoEmit.emit({
         mobileNo: this.privilegeCustomerForm.value.mobileNo,
         billingSystem: this.billingSystem,
-        chargeType: this.chargeType || ''
+        chargeType: this.isChargeType
       });
       this.isVerifyflag.emit(true);
     } else {
