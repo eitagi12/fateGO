@@ -7,11 +7,14 @@ import { OrderBlockChainFaceCapturePageComponent } from './containers/order-bloc
 import { OrderBlockChainFaceComparePageComponent } from './containers/order-block-chain-face-compare-page/order-block-chain-face-compare-page.component';
 import { OrderBlockChainFaceConfirmPageComponent } from './containers/order-block-chain-face-confirm-page/order-block-chain-face-confirm-page.component';
 import { OrderBlockChainResultPageComponent } from './containers/order-block-chain-result-page/order-block-chain-result-page.component';
+import { OrderBlockChainLowPageComponent } from './containers/order-block-chain-low-page/order-block-chain-low-page.component';
+
 const routes: Routes = [
   { path: '', redirectTo: 'validate-customer-id-card', pathMatch: 'full' },
   { path: 'validate-customer-id-card', component: OrderBlockChainValidateCustomerIdCardPageComponent },
   { path: 'eligible-mobile', component: OrderBlockChainEligibleMobilePageComponent },
   { path: 'agreement-sign', component: OrderBlockChainAgreementSignPageComponent },
+  { path: 'low', component: OrderBlockChainLowPageComponent },
   { path: 'face-capture', component: OrderBlockChainFaceCapturePageComponent },
   { path: 'face-compare', component: OrderBlockChainFaceComparePageComponent },
   { path: 'face-confirm', component: OrderBlockChainFaceConfirmPageComponent },

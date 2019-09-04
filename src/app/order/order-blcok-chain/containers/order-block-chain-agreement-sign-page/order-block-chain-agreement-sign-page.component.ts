@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HomeService, TokenService, AlertService, ChannelType, User, Utils } from 'mychannel-shared-libs';
 import * as Moment from 'moment';
-import { ROUTE_ORDER_BLOCK_CHAIN_ELIGIBLE_MOBILE_PAGE, ROUTE_ORDER_BLOCK_CHAIN_FACE_CAPTURE_PAGE } from 'src/app/order/order-blcok-chain/constants/route-path.constant';
+import { ROUTE_ORDER_BLOCK_CHAIN_ELIGIBLE_MOBILE_PAGE, ROUTE_ORDER_BLOCK_CHAIN_FACE_CAPTURE_PAGE, ROUTE_ORDER_BLOCK_CHAIN_LOW_PAGE } from 'src/app/order/order-blcok-chain/constants/route-path.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { AisNativeOrderService } from 'src/app/shared/services/ais-native-order.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -62,7 +62,7 @@ export class OrderBlockChainAgreementSignPageComponent implements OnInit, OnDest
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_ELIGIBLE_MOBILE_PAGE]);
+    this.router.navigate([ROUTE_ORDER_BLOCK_CHAIN_LOW_PAGE]);
   }
 
   onNext(): void {
