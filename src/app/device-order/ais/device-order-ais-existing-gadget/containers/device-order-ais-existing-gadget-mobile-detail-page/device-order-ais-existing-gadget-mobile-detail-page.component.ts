@@ -71,42 +71,43 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
   callServiceMobileDetail(): void {
     this.pageLoadingService.openLoading();
     this.http.get(`/api/customerportal/mobile-detail/${this.mobileNo}`).toPromise()
-      .then((mobileDetail: any) => {
+      .then((response: any) => {
+        const mobileDetail = response.data;
         this.mappingMobileDetail(mobileDetail);
       }).then(() => this.pageLoadingService.closeLoading());
   }
 
   mappingMobileDetail(mobileDetail: any): any {
-    const serviceYear = mobileDetail.data.serviceYear;
-    this.mobileInfo = this.mappingMobileInfo(mobileDetail, serviceYear);
+    const serviceYear = mobileDetail.serviceYear;
+    const mainPack =  mobileDetail.futurePackage ? mobileDetail.futurePackage : mobileDetail.package;
+    this.mobileInfo = this.mappingMobileInfo(mobileDetail, serviceYear, mainPack);
     this.transaction.data.simCard = {
       mobileNo: this.mobileNo,
-      chargeType: mobileDetail.data.chargeType,
-      billingSystem: mobileDetail.data.billingSystem,
+      chargeType: mobileDetail.chargeType,
+      billingSystem: mobileDetail.billingSystem,
     };
-    if (mobileDetail.data.package) {
+    if (mainPack) {
       this.disableNextButton = false;
-      this.transaction.data.currentPackage = mobileDetail.data.futurePackage ? mobileDetail.data.futurePackage : mobileDetail.data.package;
+      this.transaction.data.currentPackage = mainPack;
     } else {
       this.disableNextButton = true;
     }
-    this.transaction.data.onTopPackage = mobileDetail.data.packageOntop;
+    this.transaction.data.onTopPackage = mobileDetail.packageOntop;
   }
 
-  mappingMobileInfo(mobileDetail: any, serviceYear: any): MobileInfo {
-    const mainPack = mobileDetail.data.futurePackage ? mobileDetail.data.futurePackage : mobileDetail.data.package;
+  mappingMobileInfo(mobileDetail: any, serviceYear: any, mainPack: any): MobileInfo {
     return {
-      mobileNo: this.mobileNo || mobileDetail.data.mobileNo,
-      chargeType: this.mapChargeType(mobileDetail.data.chargeType),
-      status: mobileDetail.data.mobileStatus,
-      sagment: mobileDetail.data.mobileSegment,
+      mobileNo: this.mobileNo || mobileDetail.mobileNo,
+      chargeType: this.mapChargeType(mobileDetail.chargeType),
+      status: mobileDetail.mobileStatus,
+      sagment: mobileDetail.mobileSegment,
       serviceYear: this.serviceYearWording(serviceYear.year, serviceYear.month, serviceYear.day),
       mainPackage: this.changeMainPackageLangauge(mainPack)
     };
   }
 
-  changeMainPackageLangauge(mobileDetail: any = {}): string {
-    return (this.translateService.currentLang === 'EN') ? mobileDetail.titleEng : mobileDetail.title;
+  changeMainPackageLangauge(mainPack: any = {}): string {
+    return (this.translateService.currentLang === 'EN') ? mainPack.titleEng : mainPack.title;
   }
 
   mapChargeType(chargeType: string): any {
