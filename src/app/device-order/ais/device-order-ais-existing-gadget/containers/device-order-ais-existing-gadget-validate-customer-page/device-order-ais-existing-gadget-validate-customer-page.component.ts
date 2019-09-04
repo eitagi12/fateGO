@@ -100,17 +100,17 @@ export class DeviceOrderAisExistingGadgetValidateCustomerPageComponent implement
       this.customerInfoService.getCustomerProfilePostpaidByMobileNo(this.identity).then((customer: Customer) => {
         return this.privilegeService.checkAndGetPrivilegeCodeAndCriteria(this.identity, this.priceOption.trade.ussdCode)
           .then((privligeCode) => {
-            if (privligeCode.errorMessage && privligeCode.errorMessage === 'MT_INVALID_CRITERIA_MAINPRO') {
-              this.transaction.data.customer = customer;
-              this.transaction.data.simCard = { mobileNo: this.identity };
-              this.pageLoadingService.closeLoading();
-              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_CHANGE_PACKAGE_PAGE]);
-            } else {
+            // if (privligeCode.errorMessage && privligeCode.errorMessage === 'MT_INVALID_CRITERIA_MAINPRO') {
+            //   this.transaction.data.customer = customer;
+            //   this.transaction.data.simCard = { mobileNo: this.identity };
+            //   this.pageLoadingService.closeLoading();
+            //   this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_CHANGE_PACKAGE_PAGE]);
+            // } else {
               customer.privilegeCode = privligeCode;
               this.transaction.data.customer = customer;
               this.transaction.data.simCard = { mobileNo: this.identity };
               this.checkRoutePath();
-            }
+            // }
           }).catch((error: any) => {
             this.alertService.warning(error);
             console.log('checkAndGetPrivilegeCodeAndCriteria error :', error);
