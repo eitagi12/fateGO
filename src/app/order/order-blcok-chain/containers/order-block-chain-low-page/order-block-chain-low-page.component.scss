@@ -1,3 +1,9 @@
 .tltle{
     font-size: 1.2em;
 }
+.visible-scrollbar, .invisible-scrollbar, .mostly-customized-scrollbar {
+    display: block;
+    width: auto;
+    overflow: auto;
+    height: 40em;
+  }
