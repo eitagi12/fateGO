@@ -72,8 +72,14 @@ export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements 
       chkMainProFlg: true
     }).toPromise()
       .then((response: any) => {
+        const eligibleMobile: EligibleMobile[] = [];
+        response.data.postpaid.filter(res => {
+          return res.privilegeMessage !== 'MT_INVALID_CRITERIA_MAINPRO';
+        }).map(res => {
+          eligibleMobile.push(res);
+        });
+        this.eligibleMobiles = eligibleMobile || [];
         this.pageLoadingService.closeLoading();
-        this.eligibleMobiles = response.data.postpaid || [];
       }).catch((error: any) => {
         this.pageLoadingService.closeLoading();
         this.eligibleMobiles = [];
@@ -93,25 +99,28 @@ export class DeviceOrderAisExistingGadgetEligibleMobilePageComponent implements 
   }
 
   private requestUsePrivilege(): void {
-    if (this.isCritiriaMainPro) {
-      this.transaction.data.simCard = { mobileNo: this.onSelected.mobileNo };
-      this.pageLoadingService.closeLoading();
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_CHANGE_PACKAGE_PAGE]);
-    } else {
-      this.privilegeService.requestUsePrivilege(this.onSelected.mobileNo, this.priceOption.trade.ussdCode, this.onSelected.privilegeCode)
-        .then((privilegeCode) => {
-          this.transaction.data.customer.privilegeCode = privilegeCode;
-          this.transaction.data.simCard = { mobileNo: this.onSelected.mobileNo };
-        }).then((resp) => {
-          this.pageLoadingService.closeLoading();
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_MOBILE_DETAIL_PAGE]);
-        });
-    }
+    // <check isCritiriaMainPro> //
+    // if (this.isCritiriaMainPro) {
+    //   this.transaction.data.simCard = { mobileNo: this.onSelected.mobileNo };
+    //   this.pageLoadingService.closeLoading();
+    //   this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_CHANGE_PACKAGE_PAGE]);
+    // } else {
+
+    this.privilegeService.requestUsePrivilege(this.onSelected.mobileNo, this.priceOption.trade.ussdCode, this.onSelected.privilegeCode)
+      .then((privilegeCode) => {
+        this.transaction.data.customer.privilegeCode = privilegeCode;
+        this.transaction.data.simCard = { mobileNo: this.onSelected.mobileNo };
+      }).then((resp) => {
+        this.pageLoadingService.closeLoading();
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_MOBILE_DETAIL_PAGE]);
+      });
+    // }
   }
 
-  get isCritiriaMainPro(): boolean {
-    return !this.advancePay && this.onSelected.privilegeMessage === `MT_INVALID_CRITERIA_MAINPRO`;
-  }
+  // <check isCritiriaMainPro> //
+  // get isCritiriaMainPro(): boolean {
+  //   return !this.advancePay && this.onSelected.privilegeMessage === `MT_INVALID_CRITERIA_MAINPRO`;
+  // }
 
   get advancePay(): boolean {
     return !!(+(this.priceOption.trade.advancePay && +this.priceOption.trade.advancePay.amount || 0) > 0);
