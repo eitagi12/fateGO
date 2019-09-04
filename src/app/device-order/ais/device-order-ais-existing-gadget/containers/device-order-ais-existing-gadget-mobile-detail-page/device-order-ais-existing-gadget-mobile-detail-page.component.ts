@@ -63,13 +63,13 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
   }
 
   ngOnInit(): void {
-    this.pageLoadingService.openLoading();
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     this.mobileNo = this.transaction.data.simCard.mobileNo;
     this.callServiceMobileDetail();
   }
 
   callServiceMobileDetail(): void {
+    this.pageLoadingService.openLoading();
     this.http.get(`/api/customerportal/mobile-detail/${this.mobileNo}`).toPromise()
       .then((mobileDetail: any) => {
         this.mappingMobileDetail(mobileDetail);
@@ -86,7 +86,7 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
     };
     if (mobileDetail.data.package) {
       this.disableNextButton = false;
-      this.transaction.data.currentPackage = mobileDetail.data.package;
+      this.transaction.data.currentPackage = mobileDetail.data.futurePackage ? mobileDetail.data.futurePackage : mobileDetail.data.package;
     } else {
       this.disableNextButton = true;
     }
@@ -94,13 +94,14 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
   }
 
   mappingMobileInfo(mobileDetail: any, serviceYear: any): MobileInfo {
+    const mainPack = mobileDetail.data.futurePackage ? mobileDetail.data.futurePackage : mobileDetail.data.package;
     return {
       mobileNo: this.mobileNo || mobileDetail.data.mobileNo,
       chargeType: this.mapChargeType(mobileDetail.data.chargeType),
       status: mobileDetail.data.mobileStatus,
       sagment: mobileDetail.data.mobileSegment,
       serviceYear: this.serviceYearWording(serviceYear.year, serviceYear.month, serviceYear.day),
-      mainPackage: this.changeMainPackageLangauge(mobileDetail.data.package)
+      mainPackage: this.changeMainPackageLangauge(mainPack)
     };
   }
 
@@ -199,7 +200,10 @@ export class DeviceOrderAisExistingGadgetMobileDetailPageComponent implements On
       this.alertService.warning('หมายเลขนี้มีการรวมบิล ไม่สามารถทำรายการได้');
     } else {
       this.transaction.data.billingInformation.isNewBAFlag = false;
-      this.mappingMobileDetailAndPromotion();
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_GADGET_PAYMENT_DETAIL_PAGE]);
+
+      /* ยกเลิกเช็ค contract firstpack รอคุย solution การเปลี่ยน main pro ที่ MC
+       this.mappingMobileDetailAndPromotion(); */
     }
   }
 
