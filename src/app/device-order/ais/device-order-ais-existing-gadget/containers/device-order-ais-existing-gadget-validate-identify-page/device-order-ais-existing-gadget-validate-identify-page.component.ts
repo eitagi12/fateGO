@@ -219,7 +219,7 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyPageComponent implement
     return new Promise(resolve => {
       const transaction = this.transactionService.load();
       const promiseAll = [];
-      if (transaction.data) {
+      if (transaction && transaction.data) {
         if (transaction.data.order && transaction.data.order.soId) {
           const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
             location: this.priceOption.productStock.location,
