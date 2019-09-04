@@ -32,10 +32,14 @@
                       <div class="input-group">
                         <input type="tel" class="form-control text-center" placeholder="ระบุเบอร์"
                           id="input-mobile-number" formControlName="mobileNo" maxlength="10"
-                          aria-describedby="basic-addon2">
+                          aria-describedby="basic-addon2" [ngClass]="{ 'is-invalid' : searchByMobileNoForm?.controls?.mobileNo.invalid && searchByMobileNoForm?.controls?.mobileNo.touched }" (keypress)="keyPress($event)">
+                        <small class="form-text invalid-feedback"
+                          *ngIf="searchByMobileNoForm?.controls?.mobileNo?.touched && searchByMobileNoForm?.controls?.mobileNo?.errors">
+                          {{ '* กรุณากรอกเบอร์โทรศัพท์ให้ถูกต้อง' | translate }}
+                        </small>
                         <div class="input-group-append">
                           <button class="btn-outline" type="button" id="button-search-by-mobile-number"
-                            (click)="searchCustomerInfo()">
+                            (click)="searchCustomerInfo()" [disabled]="searchByMobileNoForm?.controls?.mobileNo?.errors">
                             <img class="img-search" src="assets/images/icon/device_only_search_icon.png" />
                           </button>
                         </div>
@@ -109,7 +113,7 @@
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" [disabled]="!isNext() || !receiptInfo?.taxId || this.receiptInfoForm.controls.telNo.errors" (click)="onNext()">NEXT</button>
+    <button class="btn btn-success" [disabled]="!isNext() || !receiptInfo?.taxId || receiptInfoForm?.controls?.telNo?.errors" (click)="onNext()">NEXT</button>
   </mc-footer>
 </div>
 

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
-import { HomeService, ShoppingCart, PaymentDetail, PaymentDetailBank, ReceiptInfo, Utils, TokenService, PageLoadingService, REGEX_MOBILE, AlertService, ReadCard, ReadCardService, ReadCardProfile, ReadCardEvent, User } from 'mychannel-shared-libs';
+import { HomeService, ShoppingCart, PaymentDetail, PaymentDetailBank, ReceiptInfo, Utils, TokenService, PageLoadingService, AlertService, ReadCard, ReadCardService, ReadCardProfile, ReadCardEvent, User } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction, Customer, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
@@ -61,6 +61,8 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
   user: User;
   zipCode: string;
   isReadCard: boolean = false;
+  REGEX_MOBILE: RegExp =  /^(88[0-9]\d{7})|(0[6-9]\d{8})$/;
+
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -156,7 +158,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
       branch: ['', []],
       buyer: ['', []],
       buyerAddress: ['', []],
-      telNo: ['', [Validators.pattern(REGEX_MOBILE)]]
+      telNo: ['', [Validators.pattern(this.REGEX_MOBILE)]]
     });
     this.receiptInfoForm.patchValue({
       taxId: customer.idCardNo || '',
@@ -264,11 +266,15 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
 
   createSearchByMobileNoForm(): void {
     this.searchByMobileNoForm = this.fb.group({
-      'mobileNo': ['', Validators.compose([Validators.required, Validators.maxLength(10)])],
+      'mobileNo': ['', [Validators.pattern(this.REGEX_MOBILE)]],
     });
   }
 
   searchCustomerInfo(): void {
+    if (!this.searchByMobileNoForm.value.mobileNo) {
+      this.alertService.warning('กรุณากรอกเบอร์โทรศัพท์');
+      return;
+    }
     if (this.searchByMobileNoForm.valid) {
       const mobileNo = this.searchByMobileNoForm.value.mobileNo;
       if (/88[0-9]{8}/.test(mobileNo)) {
@@ -661,7 +667,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     return new Promise(resolve => {
       const transaction = this.transactionService.load();
       const promiseAll = [];
-      if (transaction.data) {
+      if (transaction && transaction.data) {
         if (transaction.data.order && transaction.data.order.soId) {
           const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
             location: this.priceOption.productStock.location,
