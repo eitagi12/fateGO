@@ -113,7 +113,7 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
 
   checkShowBalance(): void {
     // tslint:disable-next-line: max-line-length
-    if (this.transaction.data.mobileCarePackage && this.transaction.data.mobileCarePackage.customAttributes && this.transaction.data.simCard.chargeType === 'Pre-paid') {
+    if ((this.transaction.data.mobileCarePackage && this.transaction.data.mobileCarePackage.customAttributes) && (this.transaction.data.simCard && this.transaction.data.simCard.chargeType === 'Pre-paid')) {
       this.getBalance();
     } else {
       this.isShowBalance = false;

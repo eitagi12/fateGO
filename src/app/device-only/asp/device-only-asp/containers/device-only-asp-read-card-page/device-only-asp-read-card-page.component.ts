@@ -526,7 +526,6 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
       this.isSelect = true;
       this.customer.idCardNo = (`XXXXXXXXX${(this.customer.idCardNo.substring(9))}`);
       this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(this.customer.idCardNo.substring(9))}`));
-      this.customerInfoService.setAddressBySmartCard(true);
       this.closeModalBillingAddress();
       this.isShowCustomerPostPaid = true;
       this.setCustomerInfo({
@@ -545,7 +544,6 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
           this.customer.idCardNo = (`XXXXXXXXX${(this.customer.idCardNo.substring(9))}`);
           this.customerInfoService.setSelectedMobileNo(mobileNo);
           this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(bill.data.billingAddress.idCardNo.substring(9))}`));
-          this.customerInfoService.setAddressBySmartCard(false);
           this.closeModalBillingAddress();
           this.isShowCustomerPostPaid = true;
           this.setCustomerInfo({

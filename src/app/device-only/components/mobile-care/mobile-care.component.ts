@@ -429,5 +429,6 @@ export class MobileCareComponent implements OnInit {
         }
       })
       .then(() => mobileSegment ? null : this.pageLoadingService.closeLoading());
+      console.log(mobileSegment);
   }
 }
