@@ -283,14 +283,10 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
       this.alertService.warning('กรุณากรอกหมายเลขโทรศัพท์');
       return;
     }
-
     const mobileNo = this.searchByMobileNoForm.value.mobileNo;
     this.transaction.data.simCard = {
       mobileNo: mobileNo
     };
-
-    const telNo = mobileNo;
-    this.transaction.data.receiptInfo = { ...telNo };
     this.receiptInfoForm.patchValue({
       telNo: mobileNo,
     });
