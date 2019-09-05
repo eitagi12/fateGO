@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, CustomerAddress, CustomerService, AlertService } from 'mychannel-shared-libs';
+import { HomeService, CustomerAddress, CustomerService, AlertService, ReadCardService, ReadCard, ReadCardProfile, ReadCardEvent } from 'mychannel-shared-libs';
 import {
   ROUTE_ORDER_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE
 } from 'src/app/order/order-new-register/constants/route-path.constant';
@@ -44,6 +44,13 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
   validateCustomerKeyInForm: FormGroup;
   customerInfo: any;
 
+  readCardSubscription: Subscription;
+  isReadCard: boolean = false;
+  isReadCardError: boolean;
+  progressReadCard: number;
+  customerProfile: ReadCardProfile;
+  readCard: ReadCard;
+  dataReadIdCard: any;
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -54,7 +61,8 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
     private translation: TranslateService,
     private customerService: CustomerService,
     public fb: FormBuilder,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private readCardService: ReadCardService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -124,7 +132,11 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
         };
       });
     this.customerService.queryTitleName().then((resp: any) => {
-      this.prefixes = (resp.data.titleNames || []).map((prefix: any) => prefix);
+      if (this.transaction && this.transaction.data && this.transaction.data.customer) {
+        this.prefixes = [this.transaction.data.customer.titleName];
+      } else {
+        this.prefixes = (resp.data.titleNames || []).map((prefix: any) => prefix);
+      }
     });
   }
 
@@ -132,16 +144,11 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
     const customer: any = this.transaction.data && this.transaction.data.customer ? this.transaction.data.customer : {};
     const customValidate = this.defaultValidate;
     this.validateCustomerKeyInForm = this.fb.group({
-      idCardNo: [{ value: '', disabled: this.checkIdCardNo() }, [Validators.pattern(/^[1-8]\d{12}$/), customValidate.bind(this)]],
-      prefix: ['', [Validators.required]],
-      firstName: ['', [Validators.required]],
-      lastName: ['', [Validators.required]],
-    });
-    this.validateCustomerKeyInForm.patchValue({
-      idCardNo: customer.idCardNo || '',
-      prefix: customer.titleName || '',
-      firstName: customer.firstName || '',
-      lastName: customer.lastName || '',
+      idCardNo: [{ value: customer.idCardNo || '', disabled: this.checkIdCardNo() },
+      [Validators.pattern(/^[1-8]\d{12}$/), customValidate.bind(this)]],
+      prefix: [customer.titleName || '', [Validators.required]],
+      firstName: [customer.firstName || '', [Validators.required]],
+      lastName: [customer.lastName || '', [Validators.required]],
     });
   }
 
@@ -258,6 +265,7 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
       Object.assign({}, customer),
       this.customerAddressTemp
     );
+
     this.transaction.data.customer.titleName = this.validateCustomerKeyInForm.value.prefix;
     this.transaction.data.customer.firstName = this.validateCustomerKeyInForm.value.firstName;
     this.transaction.data.customer.lastName = this.validateCustomerKeyInForm.value.lastName;
@@ -290,5 +298,69 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
   ngOnDestroy(): void {
     this.translationSubscribe.unsubscribe();
     this.transactionService.update(this.transaction);
+  }
+
+  readCardProcess(): void {
+    this.isReadCard = true;
+    delete this.dataReadIdCard;
+    this.readCardService.onReadCard().subscribe((readCard: ReadCard) => {
+      this.readCard = readCard;
+      this.progressReadCard = readCard.progress;
+      const valid = !!(readCard.progress >= 100 && readCard.profile);
+      if (readCard.error) {
+        this.customerProfile = null;
+      }
+
+      if (readCard.eventName === ReadCardEvent.EVENT_CARD_LOAD_ERROR) {
+        this.isReadCardError = valid;
+      }
+
+      if (valid && !this.dataReadIdCard) {
+        this.validateCustomerKeyInForm.patchValue({
+          idCardNo: readCard.profile.idCardNo || '',
+          prefix: readCard.profile.titleName || '',
+          firstName: readCard.profile.firstName || '',
+          lastName: readCard.profile.lastName || '',
+        });
+        if (readCard.profile.titleName) {
+          this.prefixes = [readCard.profile.titleName];
+        }
+        this.getAllProvince().then((resp: any) => {
+          let provinces = [];
+          provinces = provinces ? resp.data.provinces : [];
+          const provinceMap = provinces.find((province: any) => province.name === readCard.profile.province);
+          return this.http.get('/api/customerportal/newRegister/queryZipcode', {
+            params: {
+              provinceId: provinceMap ? provinceMap.id : '',
+              amphurName: readCard.profile.amphur,
+              tumbolName: readCard.profile.tumbol
+            }
+          }).toPromise().then((response: any) => {
+            this.customerAddress = {
+              homeNo: readCard.profile.homeNo,
+              moo: readCard.profile.moo,
+              mooBan: '',
+              room: '',
+              floor: '',
+              buildingName: '',
+              soi: readCard.profile.soi,
+              street: readCard.profile.street,
+              province: readCard.profile.province,
+              amphur: readCard.profile.amphur,
+              tumbol: readCard.profile.tumbol,
+              zipCode: response.data && response.data.zipcodes ? response.data.zipcodes[0] : '',
+            };
+          });
+        });
+      }
+    });
+  }
+
+  getAllProvince(): Promise<any> {
+    return this.http.get('/api/customerportal/newRegister/getAllProvinces').toPromise();
+  }
+
+  get onReadCardProgress(): boolean {
+    return this.readCard ? this.readCard.progress > 0 && this.readCard.progress < 100 : false;
   }
 }
