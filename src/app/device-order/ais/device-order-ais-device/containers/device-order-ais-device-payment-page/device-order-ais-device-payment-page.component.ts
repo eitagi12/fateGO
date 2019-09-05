@@ -152,6 +152,8 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     const customer: any = this.transaction.data && this.transaction.data.customer ? this.transaction.data.customer : {};
     const telNo = this.transaction.data && this.transaction.data.receiptInfo &&
       this.transaction.data.receiptInfo.telNo ? this.transaction.data.receiptInfo.telNo : '';
+    const mobileNo = this.transaction.data && this.transaction.data.simCard &&
+      this.transaction.data.simCard.mobileNo ? this.transaction.data.simCard.mobileNo : '';
 
     this.receiptInfoForm = this.fb.group({
       taxId: ['', []],
@@ -162,7 +164,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     });
     this.receiptInfoForm.patchValue({
       taxId: customer.idCardNo || '',
-      telNo: telNo || '',
+      telNo: telNo || mobileNo || '',
       buyer: `${customer.titleName} ${customer.firstName} ${customer.lastName}` || '',
       buyerAddress: this.utils.getCurrentAddress({
         homeNo: customer.homeNo,
