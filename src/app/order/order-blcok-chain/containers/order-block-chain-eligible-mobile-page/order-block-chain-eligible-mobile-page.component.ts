@@ -105,6 +105,7 @@ export class OrderBlockChainEligibleMobilePageComponent implements OnInit, OnDes
   }
 
   onNext(): void {
+    this.pageLoadingService.openLoading();
     const mobileNo = this.selectMobileNo.mobileNo;
     this.http.get(`/api/customerportal/mobile-detail/${mobileNo}`).toPromise()
       .then((resp: any) => {
@@ -147,6 +148,7 @@ export class OrderBlockChainEligibleMobilePageComponent implements OnInit, OnDes
   }
 
   ngOnDestroy(): void {
+    this.pageLoadingService.closeLoading();
     this.transactionService.update(this.transaction);
   }
 }
