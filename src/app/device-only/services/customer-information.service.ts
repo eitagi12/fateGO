@@ -12,8 +12,9 @@ export class CustomerInformationService {
   public unsubscribe: any;
   public cancelreadcard: Subject<boolean> = new Subject<boolean>();
   public isReadCard: boolean = false;
+  public _isAddressBySmartCard: boolean;
   private _isNonAis: string;
-  private _isChargeType: string;
+  private chargeType: string;
   private mobileNoStatus: string;
 
   constructor(
@@ -137,6 +138,14 @@ export class CustomerInformationService {
     this._isNonAis = value;
   }
 
+  getAddressBySmartCard(): boolean {
+    return this._isAddressBySmartCard;
+  }
+
+  setAddressBySmartCard(isAddressBySmartCard: boolean): void {
+    this._isAddressBySmartCard = isAddressBySmartCard;
+  }
+
   getMobileNoStatus(): string {
     return this.mobileNoStatus;
   }
@@ -145,11 +154,12 @@ export class CustomerInformationService {
     this.mobileNoStatus = mobileNo;
   }
 
-  public get isChargeType(): string {
-    return this._isChargeType;
+  getChargeType(): string {
+    return this.chargeType;
   }
-  public set isChargeType(chargeType: string) {
-    this._isChargeType = chargeType;
+
+  setChargeType(isChargeType: string): void {
+    this.chargeType = isChargeType;
   }
 
 }

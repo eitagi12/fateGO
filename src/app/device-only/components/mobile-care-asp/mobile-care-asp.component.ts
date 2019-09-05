@@ -50,8 +50,7 @@ export class MobileCareAspComponent implements OnInit {
   public currentPackageMobileCare: any[];
   public privilegeCustomerForm: FormGroup;
   private exMobileCare: any;
-  // private chargeType: any;
-  private isChargeType: any;
+  private chargeType: any;
   mainPackage: MainPackage;
   billingSystem: string;
   mobileCareForm: FormGroup;
@@ -116,7 +115,24 @@ export class MobileCareAspComponent implements OnInit {
   }
 
   private checkValidateMobileNo(mobileNoDefault: string): void {
-    if (mobileNoDefault === '') {
+    if (this.transaction.data.action === 'READ_CARD' && this.customerInfoService.isNonAis === 'AIS' && mobileNoDefault === '') {
+      this.setMobileNoFromTransaction();
+      this.promotion.emit(undefined);
+      this.isVerifyflag.emit(false);
+      this.privilegeCustomerForm.controls['mobileNo'].enable();
+      this.privilegeCustomerForm.controls.mobileNo.valueChanges.subscribe(() => {
+        if (this.privilegeCustomerForm.controls['mobileNo'].value.length === 10) {
+          this.searchMobileNo();
+        }
+      });
+    } else {
+      this.setMobileNoFromTransaction();
+    }
+  }
+
+  private setMobileNoFromTransaction(): void {
+    const isAddressBySmartCard = this.customerInfoService.getAddressBySmartCard();
+    if (isAddressBySmartCard === true) {
       this.promotion.emit(undefined);
       this.isVerifyflag.emit(false);
       this.privilegeCustomerForm.controls['mobileNo'].enable();
@@ -233,7 +249,8 @@ export class MobileCareAspComponent implements OnInit {
     const mobileNo = this.privilegeCustomerForm.controls['mobileNo'].value;
     this.customerInformationService.getProfileByMobileNo(mobileNo)
       .then((res) => {
-        this.isChargeType = this.customerInfoService.isChargeType;
+        this.billingSystem = res.data.billingSystem;
+        this.chargeType = res.data.chargeType;
         switch (res.data.chargeType) {
           case 'Pre-paid':
             this.customerInformationService.getCustomerProfile(mobileNo).then((resp) => {
@@ -246,24 +263,19 @@ export class MobileCareAspComponent implements OnInit {
                     this.currentPackageMobileCare = result.data.existMobileCarePackage;
                     this.popupMobileCare(this.currentPackageMobileCare);
                   } else {
-                    this.mobileNoEmit.emit({
-                      mobileNo: this.privilegeCustomerForm.value.mobileNo,
-                      billingSystem: '',
-                      chargeType: this.isChargeType
-                    });
                     this.isVerifyflag.emit(true);
                     this.pageLoadingService.closeLoading();
                     this.currentPackageMobileCare = result.data.existMobileCarePackage;
                   }
                 });
-              }).catch(() => {
-                this.alertService.notify({
-                  type: 'error',
-                  confirmButtonText: 'OK',
-                  showConfirmButton: true,
-                  text: 'ไม่สามารถทำรายการได้ในขณะนี้'
-                });
+            }).catch(() => {
+              this.alertService.notify({
+                type: 'error',
+                confirmButtonText: 'OK',
+                showConfirmButton: true,
+                text: 'ไม่สามารถทำรายการได้ในขณะนี้'
               });
+            });
             break;
           case 'Post-paid':
             this.customerInformationService.getBillingByMobileNo(mobileNo)
@@ -328,13 +340,22 @@ export class MobileCareAspComponent implements OnInit {
               showConfirmButton: true,
               text: 'เบอร์นี้ไม่ใช่ระบบ AIS ไม่สามารถซื้อโมบายแคร์ได้'
             });
+            // เลือก ReadCard และเป็นเบอร์ Ais
+            const isChargeType = this.customerInfoService.getChargeType();
+            if (this.transaction.data.action === 'READ_CARD' && this.customerInfoService.isNonAis === 'AIS') {
+            this.mobileNoEmit.emit({
+              mobileNo: ''
+            });
+            this.customerInfoService.setChargeType('');
+           }
           } else {
             this.alertService.notify({
               type: 'error',
               confirmButtonText: 'OK',
               showConfirmButton: true,
-              text: 'ไม่สามารถทำรายการได้ในขณะนี้'
+              text: 'เบอร์ไม่ถูกต้อง กรุณาเปลี่ยนเบอร์ใหม่'
             });
+            this.privilegeCustomerForm.controls['mobileNo'].setValue('');
           }
         }
       });
@@ -356,11 +377,6 @@ export class MobileCareAspComponent implements OnInit {
         this.popupMobileCare(this.currentPackageMobileCare);
       });
     } else {
-      this.mobileNoEmit.emit({
-        mobileNo: this.privilegeCustomerForm.value.mobileNo,
-        billingSystem: '',
-        chargeType: this.isChargeType
-      });
       this.currentPackageMobileCare = response.data.currentPackage;
       this.pageLoadingService.closeLoading();
     }
@@ -392,11 +408,6 @@ export class MobileCareAspComponent implements OnInit {
         this.checkVerifyNext();
         this.pageLoadingService.closeLoading();
       } else {
-        this.isChargeType = this.customerInfoService.isChargeType;
-        this.mobileNoEmit.emit({
-          mobileNo: this.privilegeCustomerForm.value.mobileNo,
-          chargeType: this.isChargeType
-        });
         this.router.navigate([ROUTE_DEVICE_ONLY_ASP_READ_CARD_PAGE]);
         this.privilegeCustomerForm.controls['mobileNo'].setValue('');
         this.pageLoadingService.closeLoading();
@@ -410,7 +421,7 @@ export class MobileCareAspComponent implements OnInit {
       this.mobileNoEmit.emit({
         mobileNo: this.privilegeCustomerForm.value.mobileNo,
         billingSystem: this.billingSystem,
-        chargeType: this.isChargeType
+        chargeType: this.chargeType
       });
       this.isVerifyflag.emit(true);
     } else {
@@ -428,7 +439,6 @@ export class MobileCareAspComponent implements OnInit {
     } else {
       billingSystem = this.billingSystem || BillingSystemType.IRB;
     }
-
     this.mobileCareService.getMobileCare({
       packageKeyRef: MOBILE_CARE_PACKAGE_KEY_REF,
       billingSystem,
