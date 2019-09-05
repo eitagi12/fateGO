@@ -502,9 +502,12 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
       return;
     }
 
-    if (!this.transaction.data.simCard.mobileNo) {
-      this.transaction.data.simCard = {
-        mobileNo: this.receiptInfoForm.value.telNo
+    if (!this.transaction.data.simCard) {
+      this.transaction.data = {
+        ...this.transaction.data,
+        simCard: {
+          mobileNo: this.receiptInfoForm.value.telNo
+        }
       };
     }
     this.pageLoadingService.openLoading();
