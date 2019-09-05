@@ -268,6 +268,12 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     this.searchByMobileNoForm = this.fb.group({
       'mobileNo': ['', [Validators.pattern(this.REGEX_MOBILE)]],
     });
+
+    if (this.transaction && this.transaction.data &&  this.transaction.data.simCard && this.transaction.data.simCard.mobileNo) {
+      this.searchByMobileNoForm.patchValue({
+        mobileNo: this.transaction.data.simCard.mobileNo,
+      });
+    }
   }
 
   searchCustomerInfo(): void {
@@ -277,10 +283,8 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     }
     if (this.searchByMobileNoForm.valid) {
       const mobileNo = this.searchByMobileNoForm.value.mobileNo;
-      this.transaction.data.simCard = {
-        mobileNo: mobileNo
-      };
-      this.transaction.data.receiptInfo.telNo = this.receiptInfoForm.value.telNo;
+      this.transaction.data.simCard.mobileNo = mobileNo;
+      this.transaction.data.receiptInfo.telNo = mobileNo;
 
       this.receiptInfoForm.patchValue({
         telNo: mobileNo,
@@ -587,7 +591,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     this.transaction.data.payment = this.paymentDetailTemp.payment;
     this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;
     this.transaction.data.receiptInfo = this.receiptInfo;
-
+    this.transaction.data.receiptInfo.telNo = this.receiptInfoForm.value.telNo;
     this.returnStock().then(() => {
       this.addDeviceSellingCart(this.transaction);
     });
