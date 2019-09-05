@@ -269,7 +269,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
       'mobileNo': ['', [Validators.pattern(this.REGEX_MOBILE)]],
     });
 
-    if (this.transaction && this.transaction.data &&  this.transaction.data.simCard && this.transaction.data.simCard.mobileNo) {
+    if (this.transaction && this.transaction.data && this.transaction.data.simCard && this.transaction.data.simCard.mobileNo) {
       this.searchByMobileNoForm.patchValue({
         mobileNo: this.transaction.data.simCard.mobileNo,
       });
@@ -283,8 +283,12 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     }
     if (this.searchByMobileNoForm.valid) {
       const mobileNo = this.searchByMobileNoForm.value.mobileNo;
-      this.transaction.data.simCard.mobileNo = mobileNo;
-      this.transaction.data.receiptInfo.telNo = mobileNo;
+      this.transaction.data.simCard = {
+        mobileNo: mobileNo
+      };
+
+      const telNo = mobileNo;
+      this.transaction.data.receiptInfo = { ...telNo };
 
       this.receiptInfoForm.patchValue({
         telNo: mobileNo,
@@ -693,7 +697,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     this.transaction = {
       data: {
         transactionType: TransactionType.DEVICE_ONLY_AIS,
-        action: null,
+        action: null
       }
     };
   }
