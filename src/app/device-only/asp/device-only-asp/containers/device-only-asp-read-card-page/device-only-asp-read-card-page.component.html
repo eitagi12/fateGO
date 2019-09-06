@@ -148,17 +148,14 @@
         <div class="media m-auto pb-4" *ngIf="isShowCustomerPrePaid === true">
           <div class="media-body">
             <div>
-              {{ customer?.titleName || transaction.data.customer?.titleName }}
-              {{ customer?.firstName || transaction.data.customer?.firstName }}
-              {{ customer?.lastName || transaction.data.customer?.lastName }}
+              {{ nameTextByIdCard || '' }}
             </div>
             <div>
               {{ 'เลขบัตรประชาชน' | translate }}
               {{ customer?.idCardNo || transaction.data.customer?.idCardNo }}
             </div>
             <div>
-              {{ 'MobileNoStatus' }}
-              {{ mobileNoStatus }}
+              {{ 'Status' }} {{ mobileNoStatus }}
             </div>
           </div>
         </div>

@@ -13,6 +13,7 @@ export class CustomerInformationService {
   public cancelreadcard: Subject<boolean> = new Subject<boolean>();
   public isReadCard: boolean = false;
   private _isNonAis: string;
+  private _isAddressReadCard: boolean;
   private chargeType: string;
   private mobileNoStatus: string;
 
@@ -135,6 +136,14 @@ export class CustomerInformationService {
   }
   public set isNonAis(value: string) {
     this._isNonAis = value;
+  }
+
+  getAddressReadCard(): boolean {
+    return this._isAddressReadCard;
+  }
+
+  setAddressReadCard(isAddressReadCard: boolean): void {
+    this._isAddressReadCard = isAddressReadCard;
   }
 
   getMobileNoStatus(): string {

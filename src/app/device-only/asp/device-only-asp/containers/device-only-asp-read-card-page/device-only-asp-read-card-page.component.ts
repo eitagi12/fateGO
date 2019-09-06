@@ -52,6 +52,8 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   public isShowCustomerPrePaid: boolean;
   public mobileNoStatus: any;
   public isChargeType: any;
+  public nameTextByIdCard: string;
+  // public customerPrepaid: Customer;
 
   @ViewChild('progressBarArea')
   progressBarArea: ElementRef;
@@ -286,6 +288,8 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
               .then((mobile: any) => {
                 if (mobile && mobile.data) {
                   this.customer = profile.data;
+                  // this.customerPrepaid = mobile.data;
+                  this.nameTextByIdCard = mobile.data.name ? mobile.data.name : '';
                   this.customer.idCardNo = (`XXXXXXXXX${(this.customer.idCardNo.substring(9))}`);
                   this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(profile.data.idCardNo.substring(9))}`));
                   this.customerInfoService.setSelectedMobileNo(mobileNo);
@@ -303,6 +307,9 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
                   this.receiptInfoValid = true;
                   this.pageLoadingService.closeLoading();
                 }
+              }).catch(() => {
+                this.receiptInfoValid = true;
+                this.pageLoadingService.closeLoading();
               });
             break;
           case 'Post-paid':
@@ -414,6 +421,36 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
     this.transaction.data.customer = customer;
     this.transaction.data.action = data.action;
   }
+
+  // public setCustomerInfoPrepaid = (data: any) => {
+  //   console.log('customerPrepaid => ', this.customerPrepaid);
+  //   const customer = {
+  //     idCardNo: data.customer.idCardNo || '',
+  //     idCardType: data.customer.idCardType || 'บัตรประชาชน',
+  //     titleName: data.customer.titleName || data.customerPrepaid.titleName || '',
+  //     firstName: data.customer.firstName || '',
+  //     lastName: data.customer.lastName || '',
+  //     birthdate: data.customer.birthdate || '',
+  //     gender: data.customer.gender || '',
+  //     expireDate: data.customer.expireDate || '',
+  //     issueDate: data.customer.issueDate || '',
+  //     mobileNo: data.mobileNo || '',
+  //     homeNo: data.customer.homeNo || data.customer.houseNumber || '',
+  //     moo: data.customer.moo || '',
+  //     mooBan: data.customer.mooBan || '',
+  //     room: data.customer.room || '',
+  //     floor: data.customer.floor || '',
+  //     buildingName: data.customer.buildingName || '',
+  //     soi: data.customer.soi || '',
+  //     street: data.customer.street || '',
+  //     province: data.customer.province || data.customer.provinceName || '',
+  //     amphur: data.customer.amphur,
+  //     tumbol: data.customer.tumbol,
+  //     zipCode: data.customer.zipCode || data.customer.portalCode || ''
+  //   };
+  //   this.transaction.data.customer = customer;
+  //   this.transaction.data.action = data.action;
+  // }
 
   async readCard(): Promise<any> {
     const data = await this.readCardFromWebSocket();
@@ -529,6 +566,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
       this.closeModalBillingAddress();
       this.isShowCustomerPrePaid = false;
       this.isShowCustomerPostPaid = true;
+      this.customerInfoService.setAddressReadCard(true);
       this.setCustomerInfo({
         customer: this.customer,
         action: TransactionAction.READ_CARD
@@ -548,6 +586,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
           this.closeModalBillingAddress();
           this.isShowCustomerPrePaid = false;
           this.isShowCustomerPostPaid = true;
+          this.customerInfoService.setAddressReadCard(false);
           this.setCustomerInfo({
             customer: this.customer,
             action: TransactionAction.READ_CARD

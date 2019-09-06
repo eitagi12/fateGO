@@ -115,22 +115,20 @@ export class MobileCareAspComponent implements OnInit {
   }
 
   private checkValidateMobileNo(mobileNoDefault: string): void {
-    if (this.transaction.data.action === 'READ_CARD' && this.customerInfoService.isNonAis === 'AIS' && mobileNoDefault === '') {
-      this.promotion.emit(undefined);
-      this.isVerifyflag.emit(false);
-      this.privilegeCustomerForm.controls['mobileNo'].enable();
-      this.privilegeCustomerForm.controls.mobileNo.valueChanges.subscribe(() => {
-        if (this.privilegeCustomerForm.controls['mobileNo'].value.length === 10) {
-          this.searchMobileNo();
-        }
-      });
-    } else {
-      if (typeof (this.transaction.data.mobileCarePackage) !== 'string') {
+    const isAddressReadCard = this.customerInfoService.getAddressReadCard();
+    if (this.transaction.data.action === 'READ_CARD' && mobileNoDefault === '') {
+      if (!mobileNoDefault || mobileNoDefault === '') {
         this.promotion.emit(undefined);
         this.isVerifyflag.emit(false);
-        this.privilegeCustomerForm.controls['mobileNo'].disable();
-        this.searchMobileNo();
-      } else if (typeof (this.transaction.data.mobileCarePackage) === 'string') {
+        this.privilegeCustomerForm.controls['mobileNo'].enable();
+        this.privilegeCustomerForm.controls.mobileNo.valueChanges.subscribe(() => {
+          if (this.privilegeCustomerForm.controls['mobileNo'].value.length === 10) {
+            this.searchMobileNo();
+          }
+        });
+      }
+    } else if (this.transaction.data.action === 'READ_CARD' && mobileNoDefault !== '') {
+      if ((isAddressReadCard === true) && (typeof(this.transaction.data.mobileCarePackage) === 'string')) {
         this.promotion.emit(undefined);
         this.isVerifyflag.emit(false);
         this.privilegeCustomerForm.controls['mobileNo'].setValue('');
@@ -141,9 +139,16 @@ export class MobileCareAspComponent implements OnInit {
           }
         });
       } else {
+        this.promotion.emit(undefined);
+        this.isVerifyflag.emit(false);
         this.privilegeCustomerForm.controls['mobileNo'].disable();
         this.searchMobileNo();
       }
+    } else {
+      this.promotion.emit(undefined);
+      this.isVerifyflag.emit(false);
+      this.privilegeCustomerForm.controls['mobileNo'].disable();
+      this.searchMobileNo();
     }
   }
 
@@ -263,18 +268,17 @@ export class MobileCareAspComponent implements OnInit {
                     this.currentPackageMobileCare = result.data.existMobileCarePackage;
                     this.popupMobileCare(this.currentPackageMobileCare);
                   } else {
+                    this.existingMobileCare.emit(this.currentPackageMobileCare);
+                    this.mobileNoEmit.emit({
+                      mobileNo: this.privilegeCustomerForm.value.mobileNo,
+                      billingSystem: this.billingSystem,
+                      chargeType: this.chargeType
+                    });
                     this.isVerifyflag.emit(true);
                     this.pageLoadingService.closeLoading();
                     this.currentPackageMobileCare = result.data.existMobileCarePackage;
                   }
                 });
-            }).catch(() => {
-              this.alertService.notify({
-                type: 'error',
-                confirmButtonText: 'OK',
-                showConfirmButton: true,
-                text: 'ไม่สามารถทำรายการได้ในขณะนี้'
-              });
             });
             break;
           case 'Post-paid':
@@ -342,12 +346,23 @@ export class MobileCareAspComponent implements OnInit {
             });
             // เลือก ReadCard และเป็นเบอร์ Ais
             const isChargeType = this.customerInfoService.getChargeType();
-            if (this.transaction.data.action === 'READ_CARD' && this.customerInfoService.isNonAis === 'AIS') {
-              this.mobileNoEmit.emit({
-                mobileNo: ''
-              });
-              this.customerInfoService.setChargeType('');
+            const isAddressReadCard = this.customerInfoService.getAddressReadCard();
+            // if (this.customerInfoService.isNonAis === 'AIS' && isAddressReadCard === true) {
+            //   this.mobileNoEmit.emit({
+            //     mobileNo: ''
+            //   });
+            //   this.customerInfoService.setChargeType('');
+            // }
+
+            if (this.customerInfoService.isNonAis === 'AIS' && isAddressReadCard === true) {
+              if (this.transaction.data && this.transaction.data.mobileCarePackage) {
+                this.mobileNoEmit.emit({
+                  mobileNo: ''
+                });
+                this.customerInfoService.setChargeType('');
+              }
             }
+
           } else {
             this.alertService.notify({
               type: 'error',
@@ -377,6 +392,11 @@ export class MobileCareAspComponent implements OnInit {
         this.popupMobileCare(this.currentPackageMobileCare);
       });
     } else {
+      this.mobileNoEmit.emit({
+        mobileNo: this.privilegeCustomerForm.value.mobileNo,
+        billingSystem: this.billingSystem,
+        chargeType: this.chargeType
+      });
       this.isVerifyflag.emit(true);
       this.currentPackageMobileCare = response.data.currentPackage;
       this.pageLoadingService.closeLoading();
@@ -409,8 +429,12 @@ export class MobileCareAspComponent implements OnInit {
         this.checkVerifyNext();
         this.pageLoadingService.closeLoading();
       } else {
+        const isAddressReadCard = this.customerInfoService.getAddressReadCard();
+        if (this.transaction.data.action === 'READ_CARD' && isAddressReadCard === true) {
+          this.customerInformationService.setSelectedMobileNo('');
+          this.privilegeCustomerForm.controls['mobileNo'].setValue('');
+        }
         this.router.navigate([ROUTE_DEVICE_ONLY_ASP_READ_CARD_PAGE]);
-        this.privilegeCustomerForm.controls['mobileNo'].setValue('');
         this.pageLoadingService.closeLoading();
       }
     });
