@@ -26,9 +26,9 @@
                 (error)="onCameraError($event)" [settings]="settings">
               </mc-camera>
             </div>
-            <div class="embed-responsive embed-responsive-4by3 position-relative"
+            <div
               [hidden]="!transaction?.data?.faceRecognition?.imageFaceUser">
-              <div class="embed-responsive-item center">
+              <div class="center">
                 <img class="img-result"
                   [src]="'data:image/png;base64,'+ transaction?.data?.faceRecognition?.imageFaceUser" />
               </div>
