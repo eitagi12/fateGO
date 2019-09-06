@@ -19,7 +19,7 @@
           </h5>
           <div class="card-body">
             <div class="camera-width">
-              <div [hidden]="!isAllowCapture() || hasImageSmartCard()">
+              <div *ngIf="!isReadCard">
                 <mc-camera [crop]="false" [onTakePhoto]="camera" (completed)="onCameraCompleted($event)"
                   (error)="onCameraError($event)">
                 </mc-camera>

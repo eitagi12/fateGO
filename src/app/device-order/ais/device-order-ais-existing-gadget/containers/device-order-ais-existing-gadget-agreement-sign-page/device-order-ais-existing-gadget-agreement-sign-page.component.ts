@@ -1,5 +1,5 @@
 import { Component, OnInit, OnDestroy, EventEmitter, ViewChild, ElementRef } from '@angular/core';
-import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
+import { Transaction, Customer, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { Subscription } from 'rxjs';
 import { ShoppingCart, HomeService, TokenService, AlertService, User, ChannelType, CaptureAndSign, Utils, AWS_WATERMARK, CaptureSignedWithCard, AisNativeService } from 'mychannel-shared-libs';
@@ -86,8 +86,8 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
   }
 
   ngOnInit(): void {
-    this.checkCaptureAndSign();
     this.isReadCard = this.transaction.data.action === 'READ_CARD' ? true : false;
+    this.checkCaptureAndSign();
     if (this.transaction.data.customer.imageSignatureSmartCard) {
       this.setDefaultCanvas();
     } else {
@@ -97,7 +97,7 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
 
   checkCaptureAndSign(): void {
     const customer: Customer = this.transaction.data.customer;
-    if (this.transaction.data.action === 'READ_CARD') {
+    if (this.isReadCard) {
       this.captureAndSign = {
         allowCapture: false,
         imageSmartCard: customer.imageReadSmartCard,
