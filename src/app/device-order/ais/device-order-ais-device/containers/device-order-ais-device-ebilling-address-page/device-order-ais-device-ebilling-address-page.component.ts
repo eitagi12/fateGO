@@ -316,6 +316,7 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
       }
 
       if (valid && !this.dataReadIdCard) {
+        this.customerProfile = readCard.profile;
         this.validateCustomerKeyInForm.patchValue({
           idCardNo: readCard.profile.idCardNo || '',
           prefix: readCard.profile.titleName || '',
@@ -326,6 +327,13 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
           this.prefixes = [readCard.profile.titleName];
         }
         this.getAllProvince().then((resp: any) => {
+          this.callService();
+          this.amphurs = [];
+          this.tumbols = [];
+          this.zipCodes = [];
+          this.customerAddress.amphur = null;
+          this.customerAddress.tumbol = null;
+          this.customerAddress.province = null;
           let provinces = [];
           provinces = provinces ? resp.data.provinces : [];
           const provinceMap = provinces.find((province: any) => province.name === readCard.profile.province);
