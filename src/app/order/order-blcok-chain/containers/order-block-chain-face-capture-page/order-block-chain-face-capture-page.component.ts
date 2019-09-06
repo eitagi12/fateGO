@@ -2,7 +2,7 @@ import { Component, OnInit, EventEmitter, OnDestroy } from '@angular/core';
 import { WIZARD_ORDER_BLOCK_CHAIN } from 'src/app/order/constants/wizard.constant';
 import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
 import { Router } from '@angular/router';
-import { HomeService, Utils, AlertService, ImageUtils } from 'mychannel-shared-libs';
+import { HomeService, Utils, AlertService, ImageUtils, Setting } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TranslateService } from '@ngx-translate/core';
@@ -17,7 +17,7 @@ import { ROUTE_ORDER_BLOCK_CHAIN_AGREEMENT_SIGN_PAGE, ROUTE_ORDER_BLOCK_CHAIN_FA
 export class OrderBlockChainFaceCapturePageComponent implements OnInit, OnDestroy {
 
   wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
-
+  settings: Setting;
   openCamera: boolean;
   transaction: Transaction;
   camera: EventEmitter<void> = new EventEmitter<void>();
@@ -35,6 +35,11 @@ export class OrderBlockChainFaceCapturePageComponent implements OnInit, OnDestro
   }
 
   ngOnInit(): void {
+    this.settings = {
+      cameraFuntionName: 'faceTracker',
+      countdown: 5,
+      crop: true,
+    };
     if (this.transaction && this.transaction.data &&
       this.transaction.data.faceRecognition && this.transaction.data.faceRecognition.imageFaceUser) {
       delete this.transaction.data.faceRecognition.imageFaceUser;
