@@ -118,38 +118,39 @@ export class MobileCareAspComponent implements OnInit {
     const isAddressReadCard = this.customerInfoService.getAddressReadCard();
     if (this.transaction.data.action === 'READ_CARD' && mobileNoDefault === '') {
       if (!mobileNoDefault || mobileNoDefault === '') {
-        this.promotion.emit(undefined);
-        this.isVerifyflag.emit(false);
+        this.clearFlagValidate();
         this.privilegeCustomerForm.controls['mobileNo'].enable();
-        this.privilegeCustomerForm.controls.mobileNo.valueChanges.subscribe(() => {
-          if (this.privilegeCustomerForm.controls['mobileNo'].value.length === 10) {
-            this.searchMobileNo();
-          }
-        });
+        this.onSearchMobileNoForm();
       }
     } else if (this.transaction.data.action === 'READ_CARD' && mobileNoDefault !== '') {
       if ((isAddressReadCard === true) && (typeof(this.transaction.data.mobileCarePackage) === 'string')) {
-        this.promotion.emit(undefined);
-        this.isVerifyflag.emit(false);
+        this.clearFlagValidate();
         this.privilegeCustomerForm.controls['mobileNo'].setValue('');
         this.privilegeCustomerForm.controls['mobileNo'].enable();
-        this.privilegeCustomerForm.controls.mobileNo.valueChanges.subscribe(() => {
-          if (this.privilegeCustomerForm.controls['mobileNo'].value.length === 10) {
-            this.searchMobileNo();
-          }
-        });
+        this.onSearchMobileNoForm();
       } else {
-        this.promotion.emit(undefined);
-        this.isVerifyflag.emit(false);
+        this.clearFlagValidate();
         this.privilegeCustomerForm.controls['mobileNo'].disable();
         this.searchMobileNo();
       }
     } else {
-      this.promotion.emit(undefined);
-      this.isVerifyflag.emit(false);
+      this.clearFlagValidate();
       this.privilegeCustomerForm.controls['mobileNo'].disable();
       this.searchMobileNo();
     }
+  }
+
+  public clearFlagValidate(): void {
+    this.promotion.emit(undefined);
+    this.isVerifyflag.emit(false);
+  }
+
+  public onSearchMobileNoForm(): void {
+    this.privilegeCustomerForm.controls.mobileNo.valueChanges.subscribe(() => {
+      if (this.privilegeCustomerForm.controls['mobileNo'].value.length === 10) {
+        this.searchMobileNo();
+      }
+    });
   }
 
   public keyPress(event: any): void {
@@ -253,14 +254,14 @@ export class MobileCareAspComponent implements OnInit {
   public checkExistingMobileCare(): void {
     const mobileNo = this.privilegeCustomerForm.controls['mobileNo'].value;
     this.customerInformationService.getProfileByMobileNo(mobileNo)
-      .then((res) => {
-        this.billingSystem = res.data.billingSystem;
-        this.chargeType = res.data.chargeType;
-        switch (res.data.chargeType) {
+      .then((profile: any) => {
+        this.billingSystem = profile.data.billingSystem;
+        this.chargeType = profile.data.chargeType;
+        switch (profile.data.chargeType) {
           case 'Pre-paid':
-            this.customerInformationService.getCustomerProfile(mobileNo).then((resp) => {
-              const mobileSegment = resp.data.mobileSegment;
-              this.callService(mobileSegment, res.data.chargeType);
+            this.customerInformationService.getCustomerProfile(mobileNo).then((customerprofile: any) => {
+              const mobileSegment = customerprofile.data.mobileSegment;
+              this.callService(mobileSegment, profile.data.chargeType);
               this.http.get(`/api/customerportal/get-existing-mobile-care/${mobileNo}`).toPromise()
                 .then((result: any) => {
                   if (result.data.hasExistingMobileCare) {
@@ -290,7 +291,7 @@ export class MobileCareAspComponent implements OnInit {
                     .then((response) => {
                       if (response.data.mobileStatus === 'Active') {
                         const mobileSegment = response.data.mobileSegment;
-                        this.callService(mobileSegment, res.data.chargeType);
+                        this.callService(mobileSegment, profile.data.chargeType);
                       } else {
                         this.alertService.notify({
                           type: 'error',
@@ -362,7 +363,6 @@ export class MobileCareAspComponent implements OnInit {
                 this.customerInfoService.setChargeType('');
               }
             }
-
           } else {
             this.alertService.notify({
               type: 'error',
