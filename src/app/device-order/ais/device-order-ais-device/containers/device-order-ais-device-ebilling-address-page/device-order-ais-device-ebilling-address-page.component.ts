@@ -317,6 +317,7 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
 
       if (valid && !this.dataReadIdCard) {
         this.customerProfile = readCard.profile;
+        this.transaction.data.action = TransactionAction.READ_CARD;
         this.validateCustomerKeyInForm.patchValue({
           idCardNo: readCard.profile.idCardNo || '',
           prefix: readCard.profile.titleName || '',
