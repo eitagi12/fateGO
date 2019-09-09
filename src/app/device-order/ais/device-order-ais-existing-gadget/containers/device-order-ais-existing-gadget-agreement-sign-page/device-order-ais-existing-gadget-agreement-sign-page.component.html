@@ -14,7 +14,7 @@
       <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
       <div class="container-fluid">
         <div class="card">
-          <h5 class="card-header bg-transparent text-center">
+          <h5 class="card-header bg-transparent text-center" *ngIf="!isReadCard">
             {{'ถ่ายรูปบัตรประชาชน หรือบัตรอื่นๆ' | translate }}
           </h5>
           <div class="card-body">
@@ -28,8 +28,9 @@
               <div class="embed-responsive embed-responsive-4by3"
                 [hidden]="!(!isAllowCapture() || hasImageSmartCard())">
                 <div class="embed-responsive-item">
-                  <canvas #signImage [class]="isReadCard ? 'captured-image-read':'captured-image'"></canvas>
-                  <img *ngIf="captureAndSign?.imageSignature" class="capture-and-sign watermark" alt=""
+                  <canvas *ngIf="!isReadCard" #signImage [class]="isReadCard ? 'captured-image-read':'captured-image'"></canvas>
+                  <img *ngIf="captureAndSign?.imageSignature && isReadCard" class="capture-and-sign signed" alt="" [src]="'data:image/png;base64,' + captureAndSign?.imageSignature" />
+                  <img *ngIf="captureAndSign?.imageSignature && !isReadCard" class="capture-and-sign watermark" alt=""
                     [src]="'data:image/png;base64,' + watermark" />
                 </div>
               </div>

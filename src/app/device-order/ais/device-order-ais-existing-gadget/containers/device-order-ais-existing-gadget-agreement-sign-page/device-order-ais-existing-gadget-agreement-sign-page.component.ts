@@ -107,7 +107,7 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
     } else {
       this.captureAndSign = {
         allowCapture: true,
-        imageSmartCard: null,
+        imageSmartCard: customer.imageSmartCard,
         imageSignature: null,
         imageSignatureWidthCard: null
       };
@@ -267,13 +267,15 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
     signImage.src = 'data:image/png;base64,' + this.captureAndSign.imageSignature;
     watermarkImage.src = 'data:image/png;base64,' + AWS_WATERMARK;
 
-    imageCard.onload = () => {
-      this.drawIdCardWithSign(imageCard, signImage, watermarkImage);
-    };
+    if (!this.isReadCard) {
+      imageCard.onload = () => {
+        this.drawIdCardWithSign(imageCard, signImage, watermarkImage);
+      };
+      signImage.onload = () => {
+        this.drawIdCardWithSign(imageCard, signImage, watermarkImage);
+      };
+    }
 
-    signImage.onload = () => {
-      this.drawIdCardWithSign(imageCard, signImage, watermarkImage);
-    };
   }
 
   clearCanvas(): void {
