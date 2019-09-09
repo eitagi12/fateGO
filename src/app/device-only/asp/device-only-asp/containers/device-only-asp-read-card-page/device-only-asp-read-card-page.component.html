@@ -97,7 +97,7 @@
             </div>
           </div>
         </div>
-        <div class="media m-auto pb-4" *ngIf="isShowCustomerPostPaid === true">
+        <div class="media m-auto pb-4" *ngIf="isShowCustomerPostPaid === true || isShowCustomerAddressBySmartCard === true">
           <div class="media-body">
             <div>
               {{ customer?.titleName || transaction.data.customer?.titleName }}

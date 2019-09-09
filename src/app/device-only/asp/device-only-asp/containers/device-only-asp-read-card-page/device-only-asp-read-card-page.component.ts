@@ -50,6 +50,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   public receiptInfoValid: boolean;
   public isShowCustomerPostPaid: boolean;
   public isShowCustomerPrePaid: boolean;
+  public isShowCustomerAddressBySmartCard: boolean;
   public mobileNoStatus: any;
   public isChargeType: any;
   public nameTextByIdCard: string;
@@ -193,35 +194,48 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   }
 
   private setCustomerInfoFromTransaction(): void {
+    const action = this.transaction.data.action;
     const customer = this.transaction.data.customer;
     const simcard = this.transaction.data.simCard;
     const isChargeType = this.getChargeType();
+
     if (customer && customer.idCardNo) {
-      if (this.transaction.data.action === 'READ_CARD') {
-        if (isChargeType === 'Post-paid') {
-          this.setShowCustomerDetail();
-        }
-      } else if (this.transaction.data.action === 'KEY_IN') {
-        this.mobileNoStatus = this.customerInfoService.getMobileNoStatus();
-        if (simcard && isChargeType === 'Pre-paid') {
-          this.setShowCustomerDetail();
-        } else if (simcard && isChargeType === 'Post-paid') {
-          this.setShowCustomerDetail();
-        } else {
-          this.clearData();
-        }
-      }
-      customer.idCardNo = (`XXXXXXXXX${(customer.idCardNo.substring(9))}`);
-      this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(customer.idCardNo.substring(9))}`));
-      this.receiptInfoValid = true;
-      this.isNotFormValid();
-    } else {
-      if (this.customerInfoService.isNonAis === 'NON-AIS') {
-        this.clearData();
-        this.receiptInfoValid = true;
-      } else {
-        this.clearData();
-        this.receiptInfoValid = false;
+      switch (action) {
+        case 'READ_CARD':
+          if (isChargeType === undefined) {
+            this.setShowCustomerDetail();
+          } else if (isChargeType === 'Post-paid') {
+            this.setShowCustomerDetail();
+          }
+          customer.idCardNo = (`XXXXXXXXX${(customer.idCardNo.substring(9))}`);
+          this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(customer.idCardNo.substring(9))}`));
+          this.receiptInfoValid = true;
+          this.isNotFormValid();
+          break;
+        case 'KEY_IN':
+          this.mobileNoStatus = this.customerInfoService.getMobileNoStatus();
+          if (simcard && isChargeType === 'Pre-paid') {
+            this.nameTextByCustomerPrepaid = customer.firstName + ' ' + customer.lastName;
+            this.setShowCustomerDetail();
+          } else if (simcard && isChargeType === 'Post-paid') {
+            this.setShowCustomerDetail();
+          } else {
+            this.clearData();
+          }
+          customer.idCardNo = (`XXXXXXXXX${(customer.idCardNo.substring(9))}`);
+          this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(customer.idCardNo.substring(9))}`));
+          this.receiptInfoValid = true;
+          this.isNotFormValid();
+          break;
+        default:
+          if (this.customerInfoService.isNonAis === 'NON-AIS') {
+            this.clearData();
+            this.receiptInfoValid = true;
+          } else {
+            this.clearData();
+            this.receiptInfoValid = false;
+          }
+        break;
       }
     }
   }
@@ -357,7 +371,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
           if (this.searchByMobileNoForm.valid) {
             this.receiptInfoForm.controls['taxId'].setValue('');
             this.customerInfoService.isNonAis = 'NON-AIS';
-            this.customerInfoService.setChargeType('');
+            this.customerInfoService.setChargeType('Non-Ais');
             this.setShowCustomerDetail();
             this.setCustomerInfoNonAis({
               customer: '',
@@ -406,9 +420,15 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
         this.isShowCustomerPrePaid = false;
         this.isShowCustomerPostPaid = true;
         break;
-      default:
+      case undefined:
+        this.isShowCustomerAddressBySmartCard = true;
+        this.isShowCustomerPostPaid = true;
+        this.isShowCustomerPrePaid = false;
+        break;
+      case 'Non-Ais' || '':
         this.isShowCustomerPrePaid = false;
         this.isShowCustomerPostPaid = false;
+        this.isShowCustomerAddressBySmartCard = false;
     }
   }
 
@@ -579,7 +599,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
     const billingAddressSelected = this.selectBillingAddressForm.controls.billingAddress.value;
     if (billingAddressSelected === ADDRESS_BY_SMART_CARD) {
       this.customerInfoService.isNonAis = 'AIS';
-      this.customerInfoService.setChargeType('Post-paid');
+      this.customerInfoService.setChargeType(undefined);
       this.setShowCustomerDetail();
       this.customerInfoService.setAddressReadCard(true);
       this.customer.idCardNo = (`XXXXXXXXX${(this.customer.idCardNo.substring(9))}`);

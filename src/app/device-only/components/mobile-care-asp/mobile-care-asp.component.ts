@@ -123,7 +123,7 @@ export class MobileCareAspComponent implements OnInit {
         this.onSearchMobileNoForm();
       }
     } else if (this.transaction.data.action === 'READ_CARD' && mobileNoDefault !== '') {
-      if ((isAddressReadCard === true) && (typeof(this.transaction.data.mobileCarePackage) === 'string')) {
+      if ((isAddressReadCard === true) && (typeof (this.transaction.data.mobileCarePackage) === 'string')) {
         this.clearFlagValidate();
         this.privilegeCustomerForm.controls['mobileNo'].setValue('');
         this.privilegeCustomerForm.controls['mobileNo'].enable();
@@ -345,24 +345,7 @@ export class MobileCareAspComponent implements OnInit {
               showConfirmButton: true,
               text: 'เบอร์นี้ไม่ใช่ระบบ AIS ไม่สามารถซื้อโมบายแคร์ได้'
             });
-            // เลือก ReadCard และเป็นเบอร์ Ais
-            const isChargeType = this.customerInfoService.getChargeType();
-            const isAddressReadCard = this.customerInfoService.getAddressReadCard();
-            // if (this.customerInfoService.isNonAis === 'AIS' && isAddressReadCard === true) {
-            //   this.mobileNoEmit.emit({
-            //     mobileNo: ''
-            //   });
-            //   this.customerInfoService.setChargeType('');
-            // }
-
-            if (this.customerInfoService.isNonAis === 'AIS' && isAddressReadCard === true) {
-              if (this.transaction.data && this.transaction.data.mobileCarePackage) {
-                this.mobileNoEmit.emit({
-                  mobileNo: ''
-                });
-                this.customerInfoService.setChargeType('');
-              }
-            }
+            this.setMobileNotBuyNonAis();
           } else {
             this.alertService.notify({
               type: 'error',
@@ -374,6 +357,21 @@ export class MobileCareAspComponent implements OnInit {
           }
         }
       });
+  }
+  // เลือก AddressBySmartCard และกรอกเบอร์ Non-Ais //
+  private setMobileNotBuyNonAis(): void {
+    const isAddressReadCard = this.customerInfoService.getAddressReadCard();
+    if (this.customerInfoService.isNonAis === 'AIS' && isAddressReadCard === true) {
+      this.mobileNoEmit.emit({
+        mobileNo: ''
+      });
+      if ((this.transaction.data) && (typeof (this.transaction.data.mobileCarePackage) === 'string')) {
+        this.mobileNoEmit.emit({
+          mobileNo: ''
+        });
+      }
+      this.customerInfoService.setChargeType(undefined);
+    }
   }
 
   private checkMobileCare(mobileNo: string, response: any): void {
