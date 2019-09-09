@@ -28,10 +28,14 @@
               <div class="embed-responsive embed-responsive-4by3"
                 [hidden]="!(!isAllowCapture() || hasImageSmartCard())">
                 <div class="embed-responsive-item">
-                  <canvas *ngIf="!isReadCard" #signImage [class]="isReadCard ? 'captured-image-read':'captured-image'"></canvas>
-                  <img *ngIf="captureAndSign?.imageSignature && isReadCard" class="capture-and-sign signed" alt="" [src]="'data:image/png;base64,' + captureAndSign?.imageSignature" />
-                  <img *ngIf="captureAndSign?.imageSignature && !isReadCard" class="capture-and-sign watermark" alt=""
-                    [src]="'data:image/png;base64,' + watermark" />
+                  <div *ngIf="!isReadCard">
+                    <canvas #signImage [class]="'captured-image'"></canvas>
+                    <img *ngIf="captureAndSign?.imageSignature && captureAndSign?.imageSmartCard" class="capture-and-sign watermark" alt=""
+                      [src]="'data:image/png;base64,' + watermark" />
+                  </div>
+                  <div *ngIf="isReadCard">
+                    <img *ngIf="captureAndSign?.imageSignature" class="capture-and-sign signed" alt="" [src]="'data:image/png;base64,' + captureAndSign?.imageSignature" />
+                  </div>
                 </div>
               </div>
 

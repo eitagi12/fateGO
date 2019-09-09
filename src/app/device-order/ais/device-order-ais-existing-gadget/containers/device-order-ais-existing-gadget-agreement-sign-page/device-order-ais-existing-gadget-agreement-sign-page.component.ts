@@ -93,6 +93,7 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
     } else {
       this.createCanvas();
     }
+    this.onChangeCaptureAndSign();
   }
 
   checkCaptureAndSign(): void {
@@ -108,7 +109,7 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
       this.captureAndSign = {
         allowCapture: true,
         imageSmartCard: customer.imageSmartCard,
-        imageSignature: null,
+        imageSignature: customer.imageSignature,
         imageSignatureWidthCard: null
       };
     }
@@ -183,8 +184,10 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
     this.captureAndSign.imageSmartCard = null;
     this.captureAndSign.imageSignatureWidthCard = null;
     this.captureAndSign.imageSignature = null;
+    this.idCardValid = false;
     this.clearCanvas();
     this.signed = false;
+    this.camera.next();
   }
 
   onSigned(): void {
@@ -192,7 +195,7 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
     this.signed = false;
     this.apiSigned = ChannelType.SMART_ORDER === user.channelType ? 'OnscreenSignpad' : 'SignaturePad';
     if (this.isAisNative()) {
-      this.aisNativeDeviceService.captureSignatureWithCardImage(this.captureAndSign.imageSmartCard);
+      this.aisNativeDeviceService.captureSignatureWithCardImage(null);
       return;
     }
     this.aisNativeDeviceService.openSigned(this.apiSigned).subscribe((command: any) => {
@@ -227,8 +230,6 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
     let valid = false;
     if (this.isAllowCapture()) {
       valid = !!(this.captureAndSign.imageSmartCard && this.captureAndSign.imageSignature);
-    } else if (this.isAisNative()) {
-      valid = !!(this.captureAndSign.imageSignatureWidthCard);
     } else {
       valid = !!(this.captureAndSign.imageSignature);
     }
@@ -258,6 +259,7 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
       }
     };
   }
+
   createCanvas(): void {
     const imageCard = new Image();
     const signImage = new Image();
