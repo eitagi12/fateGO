@@ -63,6 +63,6 @@
 
   <mc-footer>
     <button class="btn btn-secondary" id="button-back" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" id="button-next" (click)="onNext()">NEXT</button>
+    <button class="btn btn-success" id="button-next" (click)="onNext()" [disabled]="!isNext">NEXT</button>
   </mc-footer>
 </div>

@@ -30,6 +30,7 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit , OnDestroy {
   balance: number;
   enoughBalance: boolean;
   isShowBalance: boolean;
+  isNext: boolean;
 
   constructor(
     private router: Router,
@@ -98,6 +99,7 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit , OnDestroy {
     if (this.transaction.data.mobileCarePackage.customAttributes && this.transaction.data.simCard.chargeType === 'Pre-paid') {
       this.getBalance();
     } else {
+      this.isNext = true;
       this.isShowBalance = false;
     }
   }
@@ -111,6 +113,7 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit , OnDestroy {
         this.priceMobileCare = +this.transaction.data.mobileCarePackage.customAttributes.priceInclVat;
         this.balance = +(response.data.remainingBalance) / 100;
         this.enoughBalance = (this.balance >= this.priceMobileCare) ? true : false;
+        this.isNext = this.enoughBalance === true ? true : false;
         this.isShowBalance = true;
       });
   }
