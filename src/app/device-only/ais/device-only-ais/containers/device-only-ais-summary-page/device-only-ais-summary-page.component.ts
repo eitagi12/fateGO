@@ -113,7 +113,7 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit , OnDestroy {
         this.priceMobileCare = +this.transaction.data.mobileCarePackage.customAttributes.priceInclVat;
         this.balance = +(response.data.remainingBalance) / 100;
         this.enoughBalance = (this.balance >= this.priceMobileCare) ? true : false;
-        this.isNext = this.enoughBalance === true ? true : false;
+        this.isNext = this.enoughBalance;
         this.isShowBalance = true;
       });
   }
