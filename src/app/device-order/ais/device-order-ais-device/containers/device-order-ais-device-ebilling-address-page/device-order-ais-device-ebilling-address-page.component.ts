@@ -9,7 +9,7 @@ import { Transaction, TransactionAction } from 'src/app/shared/models/transactio
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { NgxResource, LocalStorageService } from 'ngx-store';
 import { TranslateService } from '@ngx-translate/core';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
 import { WIZARD_DEVICE_ODER_AIS_DEVICE } from 'src/app/device-order/constants/wizard.constant';
 import { ROUTE_DEVICE_AIS_DEVICE_PAYMENT_PAGE } from 'src/app/device-order/ais/device-order-ais-device/constants/route-path.constant';
@@ -131,13 +131,14 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
           zipCode: customer.zipCode,
         };
       });
-    this.customerService.queryTitleName().then((resp: any) => {
-      if (this.transaction && this.transaction.data && this.transaction.data.customer) {
-        this.prefixes = [this.transaction.data.customer.titleName];
-      } else {
+
+    if (this.transaction && this.transaction.data && this.transaction.data.customer) {
+      this.prefixes = [this.transaction.data.customer.titleName];
+    } else {
+      this.customerService.queryTitleName().then((resp: any) => {
         this.prefixes = (resp.data.titleNames || []).map((prefix: any) => prefix);
-      }
-    });
+      });
+    }
   }
 
   createForm(): void {
@@ -301,11 +302,11 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
   }
 
   readCardProcess(): void {
+    let readIdcard: any;
     this.isReadCard = true;
     delete this.dataReadIdCard;
-    this.readCardService.onReadCard().subscribe((readCard: ReadCard) => {
+    readIdcard = this.readCardService.onReadCard().subscribe((readCard: ReadCard) => {
       this.readCard = readCard;
-      this.progressReadCard = readCard.progress;
       const valid = !!(readCard.progress >= 100 && readCard.profile);
       if (readCard.error) {
         this.customerProfile = null;
@@ -328,7 +329,6 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
           this.prefixes = [readCard.profile.titleName];
         }
         this.getAllProvince().then((resp: any) => {
-          this.callService();
           this.amphurs = [];
           this.tumbols = [];
           this.zipCodes = [];
@@ -359,8 +359,10 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
               tumbol: readCard.profile.tumbol,
               zipCode: response.data && response.data.zipcodes ? response.data.zipcodes[0] : '',
             };
+            readIdcard.unsubscribe();
           });
         });
+        this.isReadCard = false;
       }
     });
   }
