@@ -63,4 +63,8 @@ export class DeviceOrderAisDeviceQrCodeResultPageComponent implements OnInit {
     window.location.href = '/';
   }
 
+  get checkAppleTvWording(): boolean {
+    const checkAppleTv: string = 'APTV';
+    return this.priceOption.productDetail.model.slice(0, 4) === checkAppleTv;
+  }
 }

@@ -9,7 +9,7 @@
           <b>{{'หมายเลข'| translate}} <span
               class="text-green">{{ transaction?.data?.simCard?.mobileNo | mobileNo }}</span></b> <br>
           <b>{{'ชำระค่าสินค้าเรียบร้อยแล้ว'| translate}}</b> <br>
-          <b *ngIf="checkAppleTvWording">{{'และ เป็นหมายเลขเพื่อเปิดใช้ Apple TV ครั้งแรก'| translate}}</b>
+          <b *ngIf="checkAppleTvWording">{{'และเป็นหมายเลขเพื่อเปิดใช้ Apple TV ครั้งแรก'| translate}}</b> <br>
           <b>{{'หมายเลขอ้างอิง'| translate}} {{ transaction?.data?.mpayPayment?.tranId }}</b>
         </div>
 
