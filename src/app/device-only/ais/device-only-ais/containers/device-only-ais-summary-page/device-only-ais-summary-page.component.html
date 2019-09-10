@@ -20,7 +20,7 @@
         <app-summary-product-and-service ></app-summary-product-and-service>
 
         <!-- รายละเอียดการชำระ -->
-        <app-summary-payment-detail (conditionNext)="conditionNext($event)"></app-summary-payment-detail>
+        <app-summary-payment-detail></app-summary-payment-detail>
 
         <!-- รหัสผู้ขาย -->
         <app-summary-seller-code></app-summary-seller-code>
@@ -30,6 +30,6 @@
 
   <mc-footer>
     <button class="btn btn-secondary" id="button-back" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" id="button-next" (click)="onNext()" [disabled]="!isNext">NEXT</button>
+    <button class="btn btn-success" id="button-next" (click)="onNext()">NEXT</button>
   </mc-footer>
 </div>

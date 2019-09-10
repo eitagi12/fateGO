@@ -26,7 +26,6 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit , OnDestroy {
   priceOption: PriceOption;
   transaction: Transaction;
   isReasonNotBuyMobileCare: boolean;
-  isNext: boolean;
 
   constructor(
     private router: Router,
@@ -73,10 +72,6 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit , OnDestroy {
     .catch(() => {
       this.alertService.warning('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
     });
-  }
-
-  conditionNext(canNext: boolean): void {
-    this.isNext = canNext;
   }
 
   onBack(): void {
