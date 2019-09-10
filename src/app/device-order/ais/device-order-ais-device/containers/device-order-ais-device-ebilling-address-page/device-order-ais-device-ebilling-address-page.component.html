@@ -18,10 +18,16 @@
             Read Smart Card
           </button>
           <br><br>
-          <h5>{{ onReadCardProgress ? 'กรุณารอสักครู่' : ''}}</h5>
-          <h5>{{ customerProfile && !onReadCardProgress ? 'ตรวจสอบสำเร็จ โปรดดึงบัตรออก' : '' }}</h5>
+          <h5 class="text-danger" *ngIf='isReadCard && readCard?.progress===0'>
+            เสียบบัตรประชาชน
+          </h5>
+          <h5 *ngIf="onReadCardProgress">กรุณารอสักครู่</h5>
+          <h5 class="text-danger"
+            *ngIf=" customerProfile && !onReadCardProgress&& readCard?.progress!==0">
+            ตรวจสอบสำเร็จ โปรดดึงบัตรออก
+          </h5>
         </div><br>
-        <div class="progress" *ngIf="isReadCard">
+        <div class="progress">
           <div class="progress-bar bg-lime" role="progressbar" [style.width.%]="readCard?.progress" aria-valuenow="0"
             aria-valuemin="0" aria-valuemax="100"></div>
         </div>
