@@ -38,6 +38,7 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
   commandSigned: any;
   openSignedCommand: any;
   isOpenSign: boolean;
+  isDrawing: boolean = false;
 
   translationSubscribe: Subscription;
   currentLang: string;
@@ -328,5 +329,6 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
       }
     }
     this.captureAndSign.imageSignatureWidthCard = canvas.toDataURL('image/jpeg').replace(/^data:image\/jpeg;base64,/, '');
+    this.isDrawing = true;
   }
 }
