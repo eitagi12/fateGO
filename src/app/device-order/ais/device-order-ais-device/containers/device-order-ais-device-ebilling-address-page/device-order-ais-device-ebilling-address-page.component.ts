@@ -145,7 +145,7 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
     const customer: any = this.transaction.data && this.transaction.data.customer ? this.transaction.data.customer : {};
     const customValidate = this.defaultValidate;
     this.validateCustomerKeyInForm = this.fb.group({
-      idCardNo: [{ value: customer.idCardNo || '', disabled: this.checkIdCardNo() },
+      idCardNo: [customer.idCardNo || '' ,
       [Validators.pattern(/^[1-8]\d{12}$/), customValidate.bind(this)]],
       prefix: [customer.titleName || '', [Validators.required]],
       firstName: [customer.firstName || '', [Validators.required]],

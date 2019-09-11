@@ -115,7 +115,6 @@ export class DeviceOrderAisExistingGadgetValidateIdentifyIdCardPageComponent imp
                 });
             })
             .then((customer: any) => { // load bill cycle
-              this.transaction.data.action = TransactionAction.READ_CARD;
               this.transaction.data.customer = Object.assign(this.profile, customer);
               return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
                 .then((resp: any) => {

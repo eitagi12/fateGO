@@ -130,19 +130,13 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
 
     if (!this.banks.length) {
       // ถ้าไม่มี bank ให้ get bank จาก location ร้าน
-      this.pageLoadingService.openLoading();
       this.http.post(`/api/salesportal/banks-promotion`, {
         location: this.tokenService.getUser().locationCode
       }).toPromise()
         .then((resp: any) => {
-          this.pageLoadingService.closeLoading();
           this.banks = resp.data;
           this.priceOption.trade.banks = resp.data;
-        })
-        .catch(() => {
-          this.pageLoadingService.closeLoading();
-        })
-        ;
+        });
     }
     this.createReceiptInfo(customer);
     this.checkBillFormChanged();
