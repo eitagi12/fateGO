@@ -65,8 +65,7 @@ export class DeviceOrderAisExistingBestBuyShopPaymentDetailPageComponent impleme
       && this.transaction.data.preBooking.preBookingNo ? true : false;
 
     const showQRCode: boolean = paymentMethod !== 'CC' && this.user.userType !== 'ASP'
-      && this.user.channelType !== 'sff-web' && this.priceOption.productStock.company === 'AWN'
-      && this.user.username.toLowerCase() === 'duangdat';
+      && this.user.channelType !== 'sff-web' && this.priceOption.productStock.company === 'AWN';
 
     const productDetail = this.priceOption.productDetail || {};
     const productStock = this.priceOption.productStock || {};
