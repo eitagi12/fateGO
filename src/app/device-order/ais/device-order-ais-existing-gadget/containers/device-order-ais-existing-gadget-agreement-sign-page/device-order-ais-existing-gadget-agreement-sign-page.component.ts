@@ -176,7 +176,6 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
 
   onCameraError(error: string): void {
     this.onChangeCaptureAndSign();
-
     this.alertService.error(error);
     this.signed = false;
   }
@@ -186,9 +185,9 @@ export class DeviceOrderAisExistingGadgetAgreementSignPageComponent implements O
     this.captureAndSign.imageSignatureWidthCard = null;
     this.captureAndSign.imageSignature = null;
     this.idCardValid = false;
-    this.clearCanvas();
     this.signed = false;
-    this.camera.next();
+    this.clearCanvas();
+    this.onChangeCaptureAndSign();
   }
 
   onSigned(): void {
