@@ -32,17 +32,20 @@
                       <div class="input-group">
                         <input type="tel" class="form-control text-center" placeholder="ระบุเบอร์"
                           id="input-mobile-number" formControlName="mobileNo" maxlength="10"
-                          aria-describedby="basic-addon2" [ngClass]="{ 'is-invalid' : searchByMobileNoForm?.controls?.mobileNo.invalid && searchByMobileNoForm?.controls?.mobileNo.touched }" (keypress)="keyPress($event)">
+                          aria-describedby="basic-addon2"
+                          [ngClass]="{ 'is-invalid' : searchByMobileNoForm?.controls?.mobileNo.invalid && searchByMobileNoForm?.controls?.mobileNo.touched }"
+                          (keypress)="keyPress($event)">
+                        <div class="input-group-append">
+                          <button class="btn-outline search-icon" type="button" id="button-search-by-mobile-number"
+                            (click)="searchCustomerInfo()"
+                            [disabled]="searchByMobileNoForm?.controls?.mobileNo?.errors">
+                            <img class="img-search" src="assets/images/icon/device_only_search_icon.png" />
+                          </button>
+                        </div>
                         <small class="form-text invalid-feedback"
                           *ngIf="searchByMobileNoForm?.controls?.mobileNo?.touched && searchByMobileNoForm?.controls?.mobileNo?.errors">
                           {{ '* กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง' | translate }}
                         </small>
-                        <div class="input-group-append">
-                          <button class="btn-outline search-icon" type="button" id="button-search-by-mobile-number"
-                            (click)="searchCustomerInfo()" [disabled]="searchByMobileNoForm?.controls?.mobileNo?.errors">
-                            <img class="img-search" src="assets/images/icon/device_only_search_icon.png" />
-                          </button>
-                        </div>
                       </div>
                     </div>
                   </form>
@@ -87,7 +90,7 @@
                 <label for="taxId" class="col-12 col-sm-3 col-form-label">Tax Id</label>
                 <div class="col-12 col-sm-9">
                   <input type="text" class="form-control" id="taxId" formControlName="taxId"
-                  [value]="receiptInfo?.taxId | idCard" readonly />
+                    [value]="receiptInfo?.taxId | idCard" readonly />
                 </div>
               </div>
               <div class="form-group row">
@@ -101,7 +104,9 @@
                   <span class="text-red">*</span>
                 </label>
                 <div class="col-12 col-sm-9">
-                  <input type="text" class="form-control" id="telNo" formControlName="telNo" [value]="" maxlength="10" [ngClass]="{ 'is-invalid' : receiptInfoForm.controls.telNo.invalid && receiptInfoForm.controls.telNo.touched }" (keypress)="keyPress($event)">
+                  <input type="text" class="form-control" id="telNo" formControlName="telNo" [value]="" maxlength="10"
+                    [ngClass]="{ 'is-invalid' : receiptInfoForm.controls.telNo.invalid && receiptInfoForm.controls.telNo.touched }"
+                    (keypress)="keyPress($event)">
                   <small class="form-text invalid-feedback"
                     *ngIf="receiptInfoForm?.controls?.telNo?.touched && receiptInfoForm?.controls?.telNo?.errors">
                     {{ '* กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง' | translate }}
@@ -118,7 +123,9 @@
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" [disabled]="!isNext() || !receiptInfo?.taxId || receiptInfoForm?.controls?.telNo?.errors" (click)="onNext()">NEXT</button>
+    <button class="btn btn-success"
+      [disabled]="!isNext() || !receiptInfo?.taxId || receiptInfoForm?.controls?.telNo?.errors"
+      (click)="onNext()">NEXT</button>
   </mc-footer>
 </div>
 
@@ -136,8 +143,8 @@
     <form [formGroup]="selectBillingAddressForm">
       <h5>ที่อยู่ตามบัตรประชาชน</h5>
       <div>
-        <input class="form-check-input" type="radio" value="{{idCardCustomerAddress}}"
-          formControlName="billingAddress" id="modal-text-customer-id-card-address">
+        <input class="form-check-input" type="radio" value="{{idCardCustomerAddress}}" formControlName="billingAddress"
+          id="modal-text-customer-id-card-address">
         <label class="form-check-label" class="col-11" for="modal-text-customer-id-card-address">
           {{ idCardCustomerAddress }}
         </label>
@@ -162,7 +169,7 @@
   <div class="modal-body d-flex justify-content-center">
     <button type="button" class="btn btn-secondary" id="modal-button-close"
       (click)="closeModalSelectAddress()">CLOSE</button>
-    <button type="button" class="btn btn-success text-white"  (click)="selectBillingAddress()"
+    <button type="button" class="btn btn-success text-white" (click)="selectBillingAddress()"
       [disabled]="!selectBillingAddrVal">SELECT</button>
   </div>
 </ng-template>
