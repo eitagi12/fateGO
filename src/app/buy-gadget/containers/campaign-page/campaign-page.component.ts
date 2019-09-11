@@ -456,12 +456,10 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
   onTradeSelected(privilege: any, trade: any): void {
     this.priceOption.privilege = privilege;
     this.priceOption.trade = trade;
-    this.pageLoadingService.openLoading();
     this.flowService.nextUrl(this.priceOption)
       .then((nextUrl: string) => {
         this.router.navigate([nextUrl]);
-      })
-      .then(() => this.pageLoadingService.closeLoading());
+      });
   }
 
   /* product stock */
