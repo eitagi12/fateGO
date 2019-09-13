@@ -79,7 +79,7 @@ export class DeviceOnlyAisQueuePageComponent implements OnInit, OnDestroy {
 
   createForm(): void {
     this.mobileFrom = this.formBuilder.group({
-      'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(/^0[6-9]{1}[0-9]{8}/)])],
+      'mobileNo': ['', Validators.compose([Validators.required, Validators.maxLength(10), Validators.pattern(/^0[6-9]{1}[0-9]{8}/)])],
     });
 
     this.mobileFrom.valueChanges.subscribe((value) => {

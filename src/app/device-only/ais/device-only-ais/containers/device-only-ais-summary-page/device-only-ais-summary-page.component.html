@@ -20,7 +20,40 @@
         <app-summary-product-and-service ></app-summary-product-and-service>
 
         <!-- รายละเอียดการชำระ -->
-        <app-summary-payment-detail (conditionNext)="conditionNext($event)"></app-summary-payment-detail>
+        <app-summary-payment-detail></app-summary-payment-detail>
+
+        <!-- แสดง Balance เฉพาะเบอร์ Pre-Paid -->
+        <div class="card mb-3" *ngIf="isShowBalance">
+          <div class="card-body">
+            <div *ngIf='enoughBalance'>
+              <img class="icon-pouch" src="assets/images/icon/icon_pouch.png">
+              <span>
+                <b>
+                  {{ 'ยอดเงินคงเหลือ' | translate }} {{ balance | number}}
+                  {{ 'บาท' | translate }}
+                </b>
+              </span>
+            </div>
+            <div *ngIf='!enoughBalance'>
+              <img class="icon-pouch" src="assets/images/icon/icon-red-alert-circle.png">
+              <span class="text-red">
+                <b>
+                  {{ 'ยอดเงินคงเหลือ' | translate }} 
+                  {{ balance | number}}
+                  {{ 'บาท' | translate }} 
+                  {{ 'กรุณาเติมเงินเพิ่ม' | translate }}
+                  {{ (priceMobileCare - balance) | number }} 
+                  {{ 'บาท' | translate }}
+                  {{ 'เพื่อสมัครแพ็กเกจ' | translate }}<br>
+                  {{ '*เมื่อเติมเงินเรียบร้อยแล้ว กรุณากดปุ่มเพื่ออัพเดทยอดเงินคงเหลือ' | translate }}
+                </b>
+              </span>
+              <div>
+                <button class="btn btn-success" (click)="getBalance()">อัพเดตยอดเงิน</button>
+              </div>
+            </div>
+          </div>
+        </div>
 
         <!-- รหัสผู้ขาย -->
         <app-summary-seller-code></app-summary-seller-code>

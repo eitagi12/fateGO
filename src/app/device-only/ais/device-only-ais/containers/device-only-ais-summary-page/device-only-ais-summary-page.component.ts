@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE, ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_PAGE, ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_QR_CODE_PAGE } from 'src/app/device-only/ais/device-only-ais/constants/route-path.constant';
-import { HomeService, AlertService, TokenService, ShoppingCart } from 'mychannel-shared-libs';
+import { HomeService, AlertService, TokenService, ShoppingCart, PageLoadingService } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction, Seller } from 'src/app/shared/models/transaction.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -11,6 +11,7 @@ import { WIZARD_DEVICE_ONLY_AIS } from 'src/app/device-only/constants/wizard.con
 import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
 import { SellerService } from 'src/app/device-only/services/seller.service';
 import { ShopCheckSeller } from 'src/app/device-only/models/shopCheckSeller.model';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-device-only-ais-summary-page',
@@ -25,18 +26,23 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit , OnDestroy {
   shoppingCart: ShoppingCart;
   priceOption: PriceOption;
   transaction: Transaction;
-  isReasonNotBuyMobileCare: boolean;
+  priceMobileCare: number;
+  balance: number;
+  enoughBalance: boolean;
+  isShowBalance: boolean;
   isNext: boolean;
 
   constructor(
     private router: Router,
     private homeService: HomeService,
-    public transactionService: TransactionService,
+    private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
     private homeButtonService: HomeButtonService,
-    public alertService: AlertService,
+    private alertService: AlertService,
     private sellerService: SellerService,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private pageLoadingService: PageLoadingService,
+    private http: HttpClient
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -44,6 +50,7 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit , OnDestroy {
 
   ngOnInit(): void {
     this.homeButtonService.initEventButtonHome();
+    this.checkShowBalance();
   }
 
   checkSeller(seller: Seller): void {
@@ -75,10 +82,6 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit , OnDestroy {
     });
   }
 
-  conditionNext(canNext: boolean): void {
-    this.isNext = canNext;
-  }
-
   onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ONLY_AIS_SELECT_MOBILE_CARE_PAGE]);
   }
@@ -90,6 +93,29 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit , OnDestroy {
 
   onHome(): void {
     this.homeService.goToHome();
+  }
+
+  checkShowBalance(): void {
+    if (this.transaction.data.mobileCarePackage.customAttributes && this.transaction.data.simCard.chargeType === 'Pre-paid') {
+      this.getBalance();
+    } else {
+      this.isNext = true;
+      this.isShowBalance = false;
+    }
+  }
+
+  getBalance(): void {
+    this.pageLoadingService.openLoading();
+    const mobileNo = this.transaction.data.simCard.mobileNo;
+    this.http.get(`/api/customerportal/newRegister/${mobileNo}/getBalance`).toPromise()
+      .then((response: any) => {
+        this.pageLoadingService.closeLoading();
+        this.priceMobileCare = +this.transaction.data.mobileCarePackage.customAttributes.priceInclVat;
+        this.balance = +(response.data.remainingBalance) / 100;
+        this.enoughBalance = (this.balance >= this.priceMobileCare) ? true : false;
+        this.isNext = this.enoughBalance;
+        this.isShowBalance = true;
+      });
   }
 
   ngOnDestroy(): void {
