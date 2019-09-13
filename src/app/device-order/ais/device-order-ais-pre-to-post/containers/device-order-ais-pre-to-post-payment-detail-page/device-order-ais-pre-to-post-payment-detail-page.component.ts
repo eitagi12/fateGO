@@ -40,6 +40,7 @@ export class DeviceOrderAisPreToPostPaymentDetailPageComponent implements OnInit
 
   paymentDetailTemp: any;
   receiptInfoTemp: any;
+  omiseBanks: PaymentDetailBank[];
 
   constructor(
     private http: HttpClient,
@@ -78,8 +79,14 @@ export class DeviceOrderAisPreToPostPaymentDetailPageComponent implements OnInit
       isFullPayment: this.isFullPayment(),
       installmentFlag: advancePay.installmentFlag === 'N' && +(advancePay.amount || 0) > 0,
       advancePay: +(advancePay.amount || 0),
-      qrCode: !!(productStock.company && productStock.company !== 'WDS')
+      qrCode: !!(productStock.company && productStock.company !== 'WDS'),
+      omisePayment: true
     };
+    this.http.get('/api/salesportal/omise/get-bank').toPromise()
+      .then((res: any) => {
+        const data = res.data || [];
+        this.omiseBanks = data;
+      });
 
     if (trade.banks && trade.banks.length > 0) {
       this.banks = trade.banks;

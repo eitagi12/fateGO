@@ -32,6 +32,7 @@ export class DeviceOrderAisExistingPrepaidHotdealPaymentDetailPageComponent impl
   paymentDetailTemp: any;
   receiptInfoTemp: any;
   translateSubscription: Subscription;
+  omiseBanks: PaymentDetailBank[];
 
   constructor(
     private router: Router,
@@ -64,7 +65,11 @@ export class DeviceOrderAisExistingPrepaidHotdealPaymentDetailPageComponent impl
     if (productStock.color) {
       commercialName += ` ${this.translateService.instant('สี')} ${productStock.color}`;
     }
-
+    this.http.get('/api/salesportal/omise/get-bank').toPromise()
+    .then((res: any) => {
+      const data = res.data || [];
+      this.omiseBanks = data;
+    });
     this.paymentDetail = this.mappingPaymentDetail(productDetail, productStock, trade, advancePay);
 
     this.banks = trade.banks || [];
@@ -99,7 +104,8 @@ export class DeviceOrderAisExistingPrepaidHotdealPaymentDetailPageComponent impl
       isFullPayment: this.isFullPayment(),
       installmentFlag: advancePay.installmentFlag === 'N' && +(advancePay.amount || 0) > 0,
       advancePay: +(advancePay.amount || 0),
-      qrCode: true
+      qrCode: true,
+      omisePayment: true
     };
   }
 
