@@ -23,6 +23,7 @@
         <!-- รายละเอียดการชำระ -->
         <app-summary-payment-detail></app-summary-payment-detail>
 
+        <!-- แสดง Balance เฉพาะเบอร์ Pre-Paid -->
         <div class="card mb-3" *ngIf="isShowBalance">
           <div class="card-body">
             <div *ngIf='enoughBalance'>
@@ -60,6 +61,6 @@
 
   <mc-footer>
     <button class="btn btn-secondary" id="button-back" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" id="button-next" (click)="onNext()">NEXT</button>
+    <button class="btn btn-success" id="button-next" (click)="onNext()" [disabled]="!isNext">NEXT</button>
   </mc-footer>
 </div>

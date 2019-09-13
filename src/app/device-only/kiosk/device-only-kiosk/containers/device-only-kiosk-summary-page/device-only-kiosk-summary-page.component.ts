@@ -25,11 +25,11 @@ export class DeviceOnlyKioskSummaryPageComponent implements OnInit {
   priceOption: PriceOption;
   transaction: Transaction;
   isReasonNotBuyMobileCare: boolean;
-  isNext: boolean;
   priceMobileCare: number;
   balance: number;
   enoughBalance: boolean;
   isShowBalance: boolean;
+  isNext: boolean;
 
   constructor(
     private router: Router,
@@ -70,6 +70,7 @@ export class DeviceOnlyKioskSummaryPageComponent implements OnInit {
     if (this.transaction.data.mobileCarePackage.customAttributes && this.transaction.data.simCard.chargeType === 'Pre-paid') {
       this.getBalance();
     } else {
+      this.isNext = true;
       this.isShowBalance = false;
     }
   }
@@ -83,6 +84,7 @@ export class DeviceOnlyKioskSummaryPageComponent implements OnInit {
         this.priceMobileCare = +this.transaction.data.mobileCarePackage.customAttributes.priceInclVat;
         this.balance = +(response.data.remainingBalance) / 100;
         this.enoughBalance = (this.balance >= this.priceMobileCare) ? true : false;
+        this.isNext = this.enoughBalance;
         this.isShowBalance = true;
       });
   }
