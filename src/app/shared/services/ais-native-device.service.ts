@@ -194,6 +194,6 @@ export class AisNativeDeviceService {
    * check android and ios device of new easyapp
   */
   isNativeEasyApp(): boolean {
-    return this.isIOSNativeEasyApp() && this.isAndroidNativeEasyApp();
+    return this.isIOSNativeEasyApp() || this.isAndroidNativeEasyApp();
   }
 }
