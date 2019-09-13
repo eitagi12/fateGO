@@ -23,11 +23,12 @@
     opacity: 0.4;
 }
 .read-card {
-    overflow: auto; 
     display: none; 
     position: fixed;
 }
 .card-body {
     overflow-y: scroll;
     height: 70vh;
+    position: relative;
 }
+
