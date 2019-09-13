@@ -16,7 +16,7 @@ export const environment = {
   DEVICE: {
     device_os: null,
     device_version: null,
-    udid: 'A851D645-3DA1-41CF-8EAC-6F7B8860C55A'
+    udid: null
   },
   USERNAME_MOCK: {
     username: null,
