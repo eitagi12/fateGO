@@ -7,8 +7,10 @@ import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { TransactionType, Transaction } from 'src/app/shared/models/transaction.model';
 import * as moment from 'moment';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable, of } from 'rxjs';
 import { AisNativeOrderService } from 'src/app/shared/services/ais-native-order.service';
+import { environment } from 'src/environments/environment';
+import { AisNativeDeviceService } from 'src/app/shared/services/ais-native-device.service';
 
 @Component({
   selector: 'app-vas-package-select-vas-package-page',
@@ -33,6 +35,8 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
   packLoading: any = false;
   readonly: boolean = false;
   usernameSub: Subscription;
+  getUsername: any;
+
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -42,6 +46,7 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
     private alertService: AlertService,
     private pageLoadingService: PageLoadingService,
     private aisNativeOrderService: AisNativeOrderService,
+    private aisNativeDeviceService: AisNativeDeviceService
   ) {
     this.transaction = this.transactionService.load();
     this.mobileNo = this.transaction.data.simCard ? this.transaction.data.simCard.mobileNo : '';
@@ -352,13 +357,14 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
     }
   }
 
-  // onSellBestSellerPackage(value: any): void {
-  //   this.onSelectPackage(value);
-  // }
-
   getRomByUser(): any {
-    this.aisNativeOrderService.getNativeUsername();
-    this.usernameSub = this.aisNativeOrderService.getUsername().subscribe((response: any) => {
+    if (environment.name !== 'PROD' && !this.aisNativeDeviceService.isNativeEasyApp()) {
+      this.getUsername = this.dataTestOnPC();
+    } else {
+      this.aisNativeOrderService.getNativeUsername();
+      this.getUsername = this.aisNativeOrderService.getUsername();
+    }
+    this.usernameSub = this.getUsername.subscribe((response: any) => {
       this.http.post(`/api/easyapp/get-rom-by-user`, {
         username: response.username
       }).toPromise()
@@ -372,5 +378,9 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
           this.router.navigate([ROUTE_VAS_PACKAGE_LOGIN_WITH_PIN_PAGE]);
         });
     });
+  }
+
+  dataTestOnPC(): Observable<any> {
+    return of(environment.USERNAME_MOCK || {});
   }
 }

@@ -12,5 +12,14 @@ export const environment = {
     PB_TERMINAL_ID: 3082, RL_TERMINAL_ID: 5767,
     PB_WDS_TERMINAL_ID: 4799, RL_WDS_TERMINAL_ID: 4804,
     PB_TYPE: '003', RB_TYPE: '002'
+  },
+  DEVICE: {
+    device_os: null,
+    device_version: null,
+    udid: 'A851D645-3DA1-41CF-8EAC-6F7B8860C55A'
+  },
+  USERNAME_MOCK: {
+    username: null,
+    locationCode: null
   }
 };

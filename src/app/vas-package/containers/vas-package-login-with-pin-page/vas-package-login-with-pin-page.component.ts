@@ -7,6 +7,8 @@ import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import * as moment from 'moment';
 import { Transaction } from 'src/app/shared/models/transaction.model';
+import { environment } from 'src/environments/environment';
+import { AisNativeDeviceService } from 'src/app/shared/services/ais-native-device.service';
 declare let window: any;
 @Component({
   selector: 'app-vas-package-login-with-pin-page',
@@ -26,7 +28,8 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
     private fb: FormBuilder,
     private transactionService: TransactionService,
     private alertService: AlertService,
-    private pageLoadingService: PageLoadingService
+    private pageLoadingService: PageLoadingService,
+    private aisNativeDeviceService: AisNativeDeviceService
   ) {
     this.transaction = this.transactionService.load();
     this.getDeviceInfo();
@@ -68,7 +71,11 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
   }
 
   onNext(): void {
-    this.getProfile(this.getDeviceInfo());
+    if (environment.name !== 'PROD' && !this.aisNativeDeviceService.isNativeEasyApp()) {
+      this.getProfile(environment.DEVICE);
+    } else {
+      this.getProfile(this.getDeviceInfo());
+    }
   }
 
   getProfile(deviceInfo: any): void {
@@ -76,10 +83,6 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
       transactionid: this.genTransactionId(),
       mobile_no_agent: this.loginForm.controls.mobileNoAgent.value,
       device_id: deviceInfo.udid
-
-      // mock data for PC
-      // tslint:disable-next-line:max-line-length
-      // device_id: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJST00gTW9iaWxlIGFwaSIsImF1ZCI6Imh 0dHBzOi8vbXlyb20uYWlzLmNvLnRoL0FQSS9W MS9zaWdpbiIsInN1YiI6IjA0Ni1iNTc2Mjc4ZC1j MTY4LTQ5YjMtOWYxZi1jODVhYTc4YjgwYzAiL CJtc2lzZG4iOiIwNjIyNDM0MjA4IiwiYWdlbnRpZ CI6IjYyMzgxNDciLCJpYXQiOjE1Mzc0MzE3NjAsI mV4cCI6MTUzNzQzMjY2MH0.kY85wPWDSxy1ll rpejMRJrtKC_PE6F_7fuTMg5y-ZS0'
     };
     this.pageLoadingService.openLoading();
     this.http.post(`/api/customerportal/rom/get-profile`, requestGetProfile).toPromise()
@@ -101,11 +104,6 @@ export class VasPackageLoginWithPinPageComponent implements OnInit, OnDestroy {
       deviceid: deviceInfo.udid,
       pin: this.loginForm.value.pinAgent,
 
-      // mock data for PC
-      // deviceos: 'IOS',
-      // deviceversion: '12.2',
-      // tslint:disable-next-line:max-line-length
-      // deviceid: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJST00gTW9iaWxlIGFwaSIsImF1ZCI6Imh 0dHBzOi8vbXlyb20uYWlzLmNvLnRoL0FQSS9W MS9zaWdpbiIsInN1YiI6IjA0Ni1iNTc2Mjc4ZC1j MTY4LTQ5YjMtOWYxZi1jODVhYTc4YjgwYzAiL CJtc2lzZG4iOiIwNjIyNDM0MjA4IiwiYWdlbnRpZ CI6IjYyMzgxNDciLCJpYXQiOjE1Mzc0MzE3NjAsI mV4cCI6MTUzNzQzMjY2MH0.kY85wPWDSxy1ll rpejMRJrtKC_PE6F_7fuTMg5y-ZS0 ',
     };
     this.http.post(`/api/customerportal/rom/sign-in`, requestSignIn).toPromise()
       .then((res: any) => {

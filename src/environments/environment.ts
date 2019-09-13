@@ -16,6 +16,15 @@ export const environment = {
     PB_TERMINAL_ID: 1000000, RL_TERMINAL_ID: 1000000,
     PB_WDS_TERMINAL_ID: 10017, RL_WDS_TERMINAL_ID: 1000607,
     PB_TYPE: '003', RB_TYPE: '002'
+  },
+  DEVICE: {
+    device_os: 'IOS',
+    device_version: '12.2',
+    udid: 'A851D645-3DA1-41CF-8EAC-6F7B8860C55A'
+  },
+  USERNAME_MOCK: {
+    username: 'kittiskr',
+    locationCode: '71900'
   }
 };
 
