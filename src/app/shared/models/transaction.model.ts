@@ -537,6 +537,8 @@ export interface RomTransaction {
   locationcode: string;
   transactionType: string;
   status: string;
+  asccode?: string;
+  appversion: string;
 }
 
 export interface VasPackage {

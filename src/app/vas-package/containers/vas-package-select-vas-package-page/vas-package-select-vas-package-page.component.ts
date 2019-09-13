@@ -154,10 +154,6 @@ export class VasPackageSelectVasPackagePageComponent implements OnInit, OnDestro
     };
   }
 
-  // onSelectedBestSellerPackage(event: any): void {
-  //   this.onSelectPackage(event);
-  // }
-
   createForm(): void {
     this.mobileForm = this.formBuilder.group({
       'mobileNo': ['', Validators.compose([
