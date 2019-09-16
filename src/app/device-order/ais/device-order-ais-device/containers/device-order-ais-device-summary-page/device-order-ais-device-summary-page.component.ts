@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HomeService, TelNoBillingInfo, TokenService, PageLoadingService, AlertService, ShoppingCart, Utils } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -20,7 +20,7 @@ import { SummaryPageService } from 'src/app/device-order/services/summary-page.s
   templateUrl: './device-order-ais-device-summary-page.component.html',
   styleUrls: ['./device-order-ais-device-summary-page.component.scss']
 })
-export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit {
+export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit, OnDestroy {
   wizards: string[] = WIZARD_DEVICE_ODER_AIS_DEVICE;
 
   @ViewChild('detailTemplate')
@@ -99,26 +99,27 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit {
   getSeller(): void {
     this.pageLoadingService.openLoading();
     const user = this.tokenService.getUser();
-    this.http.get(`/api/salesportal/location-by-code?code=${user.locationCode}`).toPromise().then((response: any) => {
+    const seller = this.transaction.data.seller;
+    if (seller && seller.locationName) {
       this.seller = {
         sellerName: user.firstname && user.lastname ? `${user.firstname} ${user.lastname}` : user.username,
-        locationName: response.data.displayName,
+        locationName: seller.locationName,
         locationCode: user.locationCode
       };
-
-      return this.http.get(`/api/customerportal/newRegister/getEmployeeDetail/username/${user.username}`).toPromise()
+      this.http.get(`/api/customerportal/newRegister/getEmployeeDetail/username/${user.username}`).toPromise()
         .then((emResponse: any) => {
           if (emResponse && emResponse.data) {
             const emId = emResponse.data.pin;
             this.sellerCode = emId;
             this.employeeDetailForm.patchValue({ ascCode: this.sellerCode });
           }
+          this.pageLoadingService.closeLoading();
         }).catch(() => {
           this.sellerCode = '';
+          this.pageLoadingService.closeLoading();
         });
-    }).then(() => {
-      this.pageLoadingService.closeLoading();
-    });
+    }
+
   }
 
   createEmployeeForm(): void {
@@ -144,14 +145,15 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit {
   }
 
   onNext(): void {
+    const user = this.tokenService.getUser();
     this.pageLoadingService.openLoading();
     const ascCode = this.employeeDetailForm.controls['ascCode'].value || '';
     this.http.get(`/api/customerportal/checkSeller/${ascCode.trim()}`).toPromise().then((resp: any) => {
       const checkSeller: any = resp && resp.data ? resp.data : {};
       if (checkSeller.condition) {
-        this.transaction.data.seller = {
-          sellerNo: this.sellerCode
-        };
+        this.transaction.data.seller.sellerNo = this.sellerCode;
+        this.transaction.data.seller.employeeId = ascCode;
+        this.transaction.data.seller.sellerName = user.firstname && user.lastname ? `${user.firstname} ${user.lastname}` : user.username;
         this.pageLoadingService.closeLoading();
         this.router.navigate([ROUTE_DEVICE_AIS_DEVICE_AGGREGATE_PAGE]);
       } else {
@@ -193,4 +195,9 @@ export class DeviceOrderAisDeviceSummaryPageComponent implements OnInit {
       Promise.all(promiseAll).then(() => resolve());
     });
   }
+
+  ngOnDestroy(): void {
+    this.transactionService.save(this.transaction);
+  }
+
 }

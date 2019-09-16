@@ -189,6 +189,10 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     this.http.get(`/api/salesportal/location-by-code?code=${user.locationCode}`).toPromise().then((code: any) => {
       const displayName: any = code && code.data && code.data.displayName ? code.data.displayName : {};
       this.receiptInfoForm.controls['branch'].setValue(displayName);
+      this.transaction.data.seller = {
+        locationCode: user.locationCode,
+        locationName: displayName,
+      };
     });
   }
 

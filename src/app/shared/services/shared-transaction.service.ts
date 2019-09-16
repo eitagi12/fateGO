@@ -103,7 +103,8 @@ export class SharedTransactionService {
           locationName: !!data.seller ? data.seller.locationName : productStock.locationName || '',
           sellerName: !!data.seller ? data.seller.sellerName : '',
           isAscCode: !this.tokenService.isAisUser(),
-          sellerNo: !!data.seller ? data.seller.sellerNo : ''
+          sellerNo: !!data.seller ? data.seller.sellerNo : '',
+          employeeId: data.seller && data.seller.employeeId ? data.seller.employeeId : ''
         },
         status: data.status || {}
       }
@@ -219,7 +220,7 @@ export class SharedTransactionService {
 
         } else if (!data.mainPackage && data.currentPackage) {
           const billingSystem = ((data.simCard && data.simCard.billingSystem === 'RTBS')
-            ? BillingSystemType.IRB : data.simCard.billingSystem ) || BillingSystemType.IRB;
+            ? BillingSystemType.IRB : data.simCard.billingSystem) || BillingSystemType.IRB;
           const findPromotionByMainPackage = this.findPromotions(advancePay, billingSystem);
 
           params.data.air_time.promotions = [findPromotionByMainPackage] || advancePay.promotions;
@@ -247,7 +248,7 @@ export class SharedTransactionService {
       duration: priceOption.trade.durationContract
     };
 
-      params.data.knoxguard = priceOption.trade && priceOption.trade.serviceLockHs === 'KG' ? knoxguard : {};
+    params.data.knoxguard = priceOption.trade && priceOption.trade.serviceLockHs === 'KG' ? knoxguard : {};
 
     if (data.mobileCarePackage) {
       if (typeof data.mobileCarePackage === 'string' || data.mobileCarePackage instanceof String) {
