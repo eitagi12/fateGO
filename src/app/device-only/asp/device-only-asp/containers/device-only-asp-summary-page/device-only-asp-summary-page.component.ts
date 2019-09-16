@@ -56,9 +56,13 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.checkShowBalance();
     this.homeButtonService.initEventButtonHome();
-    this.transaction.data.tradeType = this.priceOption.trade.tradeNo === 0 ? 'EUP' : 'Hand Set';
+    this.checkShowBalance();
+    this.checkTradeType();
+  }
+
+  private checkTradeType(): string {
+    return this.transaction.data.tradeType = this.priceOption.trade.tradeNo === 0 ? 'EUP' : 'Hand Set';
   }
 
   private checkSeller(seller: Seller): void {
@@ -112,7 +116,8 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
   }
 
   checkShowBalance(): void {
-    if (this.transaction.data.mobileCarePackage.customAttributes && this.transaction.data.simCard.chargeType === 'Pre-paid') {
+    // tslint:disable-next-line: max-line-length
+    if (this.transaction.data.mobileCarePackage && this.transaction.data.mobileCarePackage.customAttributes && this.transaction.data.simCard.chargeType === 'Pre-paid') {
       this.getBalance();
     } else {
       this.isNext = true;

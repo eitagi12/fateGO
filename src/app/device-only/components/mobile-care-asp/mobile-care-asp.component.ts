@@ -111,10 +111,10 @@ export class MobileCareAspComponent implements OnInit {
         Validators.required,
       ])
     });
-    this.checkValidateMobileNo(mobileNoDefault);
+    this.checkMobileNoForm(mobileNoDefault);
   }
 
-  private checkValidateMobileNo(mobileNoDefault: string): void {
+  private checkMobileNoForm(mobileNoDefault: string): void {
     const isAddressReadCard = this.customerInfoService.getAddressReadCard();
     if (this.transaction.data.action === 'READ_CARD' && mobileNoDefault === '') {
       if (!mobileNoDefault || mobileNoDefault === '') {
@@ -166,10 +166,10 @@ export class MobileCareAspComponent implements OnInit {
     if (this.selected && typeof this.selected === 'object') {
       mobileCare = this.selected;
     }
-
     if (this.selected && typeof this.selected === 'string') {
       notMobileCare = this.selected;
     }
+
     this.mobileCareForm = this.formBuilder.group({
       'mobileCare': [true, Validators.required],
       'promotion': [mobileCare, Validators.required]
@@ -222,6 +222,7 @@ export class MobileCareAspComponent implements OnInit {
         mobileCare: true
       });
     } else {
+      this.clearMobileNotBuyMobileCare();
       this.completed.emit(this.notBuyMobileCareForm.value.notBuyMobile);
     }
     this.modalRef.hide();
@@ -270,11 +271,6 @@ export class MobileCareAspComponent implements OnInit {
                     this.popupMobileCare(this.currentPackageMobileCare);
                   } else {
                     this.existingMobileCare.emit(this.currentPackageMobileCare);
-                    this.mobileNoEmit.emit({
-                      mobileNo: this.privilegeCustomerForm.value.mobileNo,
-                      billingSystem: this.billingSystem,
-                      chargeType: this.chargeType
-                    });
                     this.isVerifyflag.emit(true);
                     this.pageLoadingService.closeLoading();
                     this.currentPackageMobileCare = result.data.existMobileCarePackage;
@@ -345,7 +341,7 @@ export class MobileCareAspComponent implements OnInit {
               showConfirmButton: true,
               text: 'เบอร์นี้ไม่ใช่ระบบ AIS ไม่สามารถซื้อโมบายแคร์ได้'
             });
-            this.setMobileNotBuyNonAis();
+            this.clearMobileNotBuyMobileCare();
           } else {
             this.alertService.notify({
               type: 'error',
@@ -359,13 +355,14 @@ export class MobileCareAspComponent implements OnInit {
       });
   }
   // เลือก AddressBySmartCard และกรอกเบอร์ Non-Ais //
-  private setMobileNotBuyNonAis(): void {
+  private clearMobileNotBuyMobileCare(): void {
     const isAddressReadCard = this.customerInfoService.getAddressReadCard();
     if (this.customerInfoService.isNonAis === 'AIS' && isAddressReadCard === true) {
       this.mobileNoEmit.emit({
         mobileNo: ''
       });
       if ((this.transaction.data) && (typeof (this.transaction.data.mobileCarePackage) === 'string')) {
+        console.log('ไม่ซื้อ เลือกเหตุผล');
         this.mobileNoEmit.emit({
           mobileNo: ''
         });
@@ -390,11 +387,6 @@ export class MobileCareAspComponent implements OnInit {
         this.popupMobileCare(this.currentPackageMobileCare);
       });
     } else {
-      this.mobileNoEmit.emit({
-        mobileNo: this.privilegeCustomerForm.value.mobileNo,
-        billingSystem: this.billingSystem,
-        chargeType: this.chargeType
-      });
       this.isVerifyflag.emit(true);
       this.currentPackageMobileCare = response.data.currentPackage;
       this.pageLoadingService.closeLoading();
@@ -431,6 +423,10 @@ export class MobileCareAspComponent implements OnInit {
         if (this.transaction.data.action === 'READ_CARD' && isAddressReadCard === true) {
           this.customerInformationService.setSelectedMobileNo('');
           this.privilegeCustomerForm.controls['mobileNo'].setValue('');
+          if (this.transaction.data.mobileCarePackage) {
+            this.customerInformationService.setSelectedMobileNo('');
+            this.privilegeCustomerForm.controls['mobileNo'].setValue('');
+          }
         }
         this.router.navigate([ROUTE_DEVICE_ONLY_ASP_READ_CARD_PAGE]);
         this.pageLoadingService.closeLoading();
