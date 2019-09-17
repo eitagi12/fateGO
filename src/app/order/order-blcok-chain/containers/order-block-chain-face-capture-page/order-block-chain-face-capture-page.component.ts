@@ -18,7 +18,7 @@ export class OrderBlockChainFaceCapturePageComponent implements OnInit, OnDestro
 
   wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
   settings: Setting;
-  openCamera: boolean;
+  openCamera: boolean = false;
   transaction: Transaction;
   camera: EventEmitter<void> = new EventEmitter<void>();
   isCaptureSuccess: boolean = false;
@@ -40,11 +40,11 @@ export class OrderBlockChainFaceCapturePageComponent implements OnInit, OnDestro
       countdown: 5,
       crop: true,
     };
+
     if (this.transaction && this.transaction.data &&
-      this.transaction.data.faceRecognition && this.transaction.data.faceRecognition.imageFaceUser) {
+      this.transaction.data.faceRecognition) {
       delete this.transaction.data.faceRecognition.imageFaceUser;
     }
-    this.openCamera = !!(this.transaction.data.faceRecognition && this.transaction.data.faceRecognition.imageFaceUser);
   }
 
   onBack(): void {
