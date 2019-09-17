@@ -1,0 +1,74 @@
+<div class="mc-flex">
+  <mc-header title="{{ 'ลูกค้าปัจจุบัน' | translate }}">
+    <div class="header-icon-left w-25">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right w-25 text-right">
+      <!-- <mc-dropdown-language></mc-dropdown-language> -->
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+      <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
+      <div class="mt-3 mb-3">
+        <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
+        <div class="container-fluid">
+          <div class="card mb-3">
+            <div class="card-header bg-green text-white" translate>
+                แพ็กเกจหลัก
+            </div>
+            <div class="card-body">
+              <div class="text-green">
+                <span class="pull-left pt-2">{{ packageTitle(transaction?.data?.mainPackage?.customAttributes) }}</span>
+              </div>
+              <div class="d-inline-block mt-3">
+                <p>{{ packageInStatement(transaction?.data?.mainPackage?.customAttributes) }}</p>
+                <span> {{'สิ้นสุดวันที่' | translate}}: {{ effectiveEndDt }}</span>
+              </div>
+            </div>
+            <div class="mt-2">
+                  <div class="card-header bg-green text-white" translate>
+                      แพ็กเกจเสริม
+                    </div>
+                    <div class="text-center text-red mt-3">{{'* หากต้องการยกเลิกกรุณาเลือก' | translate}}
+                        <img src="assets/images/icon/sales_portal_green_check_rectangle.png" class="icon"> 
+                    </div>
+                    <div class="text-center text-red">{{'โดยการยกเลิกมีผลสิ้นสุดวันที่' | translate}}  {{transaction?.data?.billingInformation?.effectiveDate}}</div>
+                <div *ngIf="packageOntopList" class="text-center"></div>
+                <form [formGroup]="packageOntopForm">
+                  <div *ngFor="let packageOntop of packageOntopList" class="p-3">
+                    <div class="row pb-2">
+                      <div class="col-8 col-sm-9 ">
+                        <input type="checkbox"
+                        id="{{ packageOntop?.promotionCode }}" formControlName="{{ packageOntop?.promotionCode }}">
+                        <label for="{{packageOntop?.promotionCode }}">{{ packageTitle(packageOntop) }}</label>
+                        <div class="endDt"> {{'สิ้นสุดวันที่' | translate}}: {{ packageOntop.expiredDate }}</div>
+                      </div>
+                      <div class="col-4 col-sm-3 text-center pt-2">
+                         <img src="data:image/png;base64,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"
+                            class="icon-dv" (click)="onOpenModal(packageOntop)" />
+                      </div>
+                    </div>
+                  </div>
+                </form>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  
+    <mc-footer>
+      <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+      <button class="btn btn-success" (click)="onNext()">NEXT</button>
+    </mc-footer>
+  </div>
+
+
+  <ng-template #detailTemplate>
+    <div class="modal-body" [innerHTML]="detail"></div>
+    <div class="modal-footer">
+      <div class="w-100 text-center">
+        <button class="btn btn-success px-5" (click)="modalRef.hide()">{{ 'ปิด' | translate }}</button>
+      </div>
+    </div>
+  </ng-template>

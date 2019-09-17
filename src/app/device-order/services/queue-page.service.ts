@@ -143,27 +143,17 @@ export class QueuePageService {
 
     if (payment.paymentType === 'QR_CODE' || (advancePayment && advancePayment.paymentType === 'QR_CODE')) {
       if (mpayPayment && mpayPayment.mpayStatus && mpayPayment.mpayStatus.orderIdDevice) {
-          data.qrOrderId =  mpayPayment.mpayStatus.orderIdDevice;
+        data.qrOrderId = mpayPayment.mpayStatus.orderIdDevice;
       } else {
         data.qrOrderId = mpayPayment && mpayPayment.orderId ? mpayPayment.orderId : null;
       }
     }
 
     // QR code for airtime
-    if (advancePayment && advancePayment.paymentType === 'QR_CODE' ) {
+    if (advancePayment && advancePayment.paymentType === 'QR_CODE') {
       data.qrAirtimeTransId = mpayPayment.qrAirtimeTransId || mpayPayment.tranId || null;
-      data.qrAirtimeAmt =  this.getQRAmt(trade, transaction);
+      data.qrAirtimeAmt = this.getQRAmt(trade, transaction);
     }
-
-    // if (productStock.company && productStock.company === 'WDS') {
-    //   // ถ้าเครื่องเป็นของ WDS => ค่าเครื่องและ airtime ต้องแยกกัน
-    //   if (data.qrAirtimeAmt) {
-    //     data.qrAirtimeAmt = mpayPayment.mpayStatus.amountAirTime;
-    //   }
-    //   if (data.qrAmt) {
-    //     data.qrAmt = mpayPayment.mpayStatus.amountDevice;
-    //   }
-    // }
 
     // ผ่อนชำระ
     if (payment && payment.paymentMethod) {
@@ -243,14 +233,18 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
     }
 
     if (trade.advancePay.installmentFlag === 'Y' || !payment || !advancePayment.paymentType) {
-        //  tread no pay  จะเข้าอันนี้
+      //  tread no pay  จะเข้าอันนี้
       if (payment.paymentType === 'QR_CODE') {
         return payment.paymentQrCodeType === 'THAI_QR' ? 'PB' : 'RL';
-      }
-      if (advancePayment.paymentType === 'QR_CODE') {
+      } else if (payment.paymentType === 'CREDIT') {
+        return 'CC';
+      } else if (payment.paymentType === 'DEBIT') {
+        return 'CA';
+      } else if (advancePayment.paymentType === 'QR_CODE') {
         return advancePayment.paymentQrCodeType === 'THAI_QR' ? 'PB' : 'RL';
+      } else {
+        return tradePayment.method;
       }
-      return tradePayment.method;
     } else {
       let paymentMethod = '';
       // AWN หรือ WDS จ่ายแยก
@@ -368,7 +362,7 @@ ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW
 
   checkAddCurrentPackAmt(priceOption: PriceOption, trade: any, contract: any): boolean {
     return priceOption.customerGroup.code === CustomerGroup.EXISTING
-    && this.isContractFirstPack(contract) === 0;
+      && this.isContractFirstPack(contract) === 0;
   }
 
   isContractFirstPack(contract: any = {}): number {

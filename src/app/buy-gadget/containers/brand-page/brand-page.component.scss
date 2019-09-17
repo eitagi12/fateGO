@@ -1,0 +1,51 @@
+.brands {
+    display: block;
+    text-decoration: none;
+    padding: 5px;
+}
+
+.search-form {
+    button {
+        width: 120px;
+    }
+}
+
+:host /deep/ mc-banner-slider {
+    .card {
+        max-width: 768px;
+    }
+}
+
+:host /deep/ .dropdown-menu{
+    width: 100%;
+}
+
+:host /deep/ .nav-tabs {
+    border: none;
+    .nav-item {
+        color: #614e47;
+        background-color: white;
+        border-bottom: 6px solid #BFBFBF;
+        &:not(:last-child) {
+            border-right: 1px solid #ccc;
+            border: none;
+            border-bottom: 6px solid #BFBFBF;
+        }
+
+        &.active {            
+            border-bottom: 6px solid #8cc53f;
+        }
+
+        .nav-link {
+            color: inherit;
+            padding: 8px;
+            &.active,
+            &:hover {
+                border-color: white;        
+                &:hover {
+                    border-color: white;
+                }
+            }
+        }
+    }
+}

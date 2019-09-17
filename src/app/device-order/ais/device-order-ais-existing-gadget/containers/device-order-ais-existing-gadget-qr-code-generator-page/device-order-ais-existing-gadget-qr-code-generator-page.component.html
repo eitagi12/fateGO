@@ -1,0 +1,73 @@
+<div class="mc-flex">
+  <mc-header title="{{'ลูกค้าปัจจุบัน'| translate}}">
+    <!-- <div class="header-icon-left">
+        <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+      </div> -->
+    <!-- <div class="header-icon-right">
+        <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+      </div> -->
+  </mc-header>
+  <div class="mc-flex-wrap">
+    <div class="my-3">
+      <div class="container-fluid">
+
+        <div class="card mb-5">
+          <div class="card-header bg-lime text-white">ข้อมูลการชำระ</div>
+          <div class="card-body text-light-grey">
+            <div class="border-bottom mb-3">
+              ชำระโดย
+              <span class="pull-right">
+                <ng-container *ngIf="isQRCode('THAI_QR')">
+                  Thai QR Payment
+                </ng-container>
+                <ng-container *ngIf="isQRCode('LINE_QR')">
+                  Rabbit Line Pay
+                </ng-container>
+              </span>
+            </div>
+            <div class="text-right">
+              ยอดชำระ
+              <span class="total pull-right text-green">฿ {{ getTotalAmount() | number }}</span>
+            </div>
+          </div>
+        </div>
+
+        <ng-container *ngIf="qrCode">
+          <div class="text-center mb-3">
+            <div>กรุณาเข้าสู่ Mobile Application</div>
+            <div>ของผู้ให้บริการ เพื่อชำระค่าสินค้าและบริการ</div>
+          </div>
+
+
+          <div class="qr-code border bg-white mb-3">
+            <ng-container *ngIf="isQRCode('THAI_QR')">
+              <img src="assets/images/icon/th_qr_code_branner.png" class="d-block w-100" />
+              <div class="mt-2">
+                <img src="assets/images/icon/prompt-pay.png" class="d-block w-25 m-auto" />
+              </div>
+            </ng-container>
+            <ng-container *ngIf="isQRCode('LINE_QR')">
+              <img src="assets/images/icon/line_qr_code_branner.png" class="d-block w-100" />
+              <div class="mt-2"></div>
+            </ng-container>
+            <div>
+              <img [src]="qrCode" class="w-100 d-block m-auto" alt="QR CODE ERROR" />
+            </div>
+          </div>
+          <div class="text-center">
+            <h4 [ngClass]="{ 'text-pink': !countdown }">{{ countdown || '00 : 00' }}</h4>
+            <div>" กรุณาชำระเงินภายในเวลาที่กำหนด "</div>
+          </div>
+        </ng-container>
+
+      </div>
+    </div>
+  </div>
+  <mc-footer>
+    <button class="btn btn-success" (click)="onGenerateQRCode()">REFRESH</button>
+    <!-- for develop -->
+    <button [hidden]="!isDeveloperMode()" class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button [hidden]="!isDeveloperMode()" class="btn btn-success" (click)="onNext()">CONFIRM</button>
+    <!-- for develop -->
+  </mc-footer>
+</div>

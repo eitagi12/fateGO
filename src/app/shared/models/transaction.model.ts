@@ -9,6 +9,7 @@ export enum TransactionType {
   DEVICE_ORDER_MNP_ASP = 'Port-InASP',
   DEVICE_ORDER_EXISTING_AIS = 'ExistingAIS',
   DEVICE_ORDER_EXISTING_ASP = 'ExistingASP',
+  DEVICE_ORDER_EXISTING_GADGET_AIS = 'ExistingGadgetAIS',
   DEVICE_ORDER_PREPAID_HOTDEAL_AIS = 'PrepaidHotDealAIS',
   // pure
   ORDER_NEW_REGISTER = 'NewRegister',
@@ -28,11 +29,16 @@ export enum TransactionType {
 
 export enum TransactionAction {
   READ_CARD = 'READ_CARD',
+  READ_CARD_PI = 'READ_CARD_PI',
   READ_CARD_REPI = 'READ_CARD_REPI',
   KEY_IN = 'KEY_IN',
+  KEY_IN_FBB = 'KEY_IN_FBB',
+  KEY_IN_MOBILE_NO = 'KEY_IN_MOBILE_NO',
+  KEY_IN_PI = 'KEY_IN_PI',
   KEY_IN_REPI = 'KEY_IN_REPI',
   READ_PASSPORT = 'READ_PASSPORT',
   READ_PASSPORT_REPI = 'READ_PASSPORT_REPI',
+  SEARCH = 'SEARCH',
   VAS_PACKAGE_ROM = 'VaspackageRom',
   VAS_PACKAGE_ROM_OTP = 'VaspackageRomOTP'
 }

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Customer } from 'src/app/shared/models/transaction.model';
-import { Utils } from 'mychannel-shared-libs';
 
 @Injectable({
   providedIn: 'root'
@@ -102,6 +101,37 @@ export class CustomerInfoService {
     });
   }
 
+  getCustomerProfilePostpaidByMobileNo(mobileNo: string, idcardNo?: string): Promise<any> {
+    return this.http.get(`/api/customerportal/customerprofile/${mobileNo}`).toPromise().then((customer: any) => {
+      const profile = customer.data;
+
+      if (profile.chargeType === 'Pre-paid') {
+          return Promise.reject(`ไม่สามารถทำรายการได้ เลขหมายนี้เป็นระบบเติมเงิน`);
+      } else {
+        if (profile.mobileStatus !== '000' && profile.mobileStatus !== 'Active') {
+          return Promise.reject('หมายเลขนี้ไม่สามารถทำรายการได้ กรุณาตรวจสอบข้อมูล');
+        }
+      }
+      const names = profile.name.split(' ');
+      const mobileProfile = {
+        idCardNo: idcardNo || profile.idCard || '',
+        idCardType: this.ID_CARD_CONST,
+        titleName: profile.title,
+        firstName: names[0],
+        lastName: names[1],
+        birthdate: profile.birthdate,
+        gender: ''
+      };
+      return Promise.resolve(mobileProfile);
+    }).catch((e) => {
+      if (typeof e === 'string') {
+        return Promise.reject(e);
+      } else {
+        return Promise.reject('ไม่สามารถทำรายการได้ เลขหมายนี้ไม่ใช่ระบบ AIS');
+      }
+    });
+  }
+
   verifyPrepaidIdent(idCardNo: string, mobileNo: string): Promise<boolean> {
     return this.http.get(`/api/customerportal/newRegister/verifyPrepaidIdent?idCard=${idCardNo}&mobileNo=${mobileNo}`)
       .toPromise().then((response: any) => {
@@ -170,5 +200,51 @@ export class CustomerInfoService {
 
   private isIdCard(idCardType: string): boolean {
     return idCardType === this.ID_CARD_CONST;
+  }
+
+  public queryFbbInfo(request: any): Promise<any> {
+    let body: {
+      inOption: string;
+      inIDCardNo?: string;
+      inIDCardType?: string;
+      inMobileNo?: string;
+    };
+    switch (request.option) {
+      case '1':
+        body = {
+          inOption: request.option,
+          inIDCardNo: request.idCardNo,
+          inIDCardType: request.idCardType,
+        };
+        break;
+      case '3':
+        body = {
+          inOption: request.option,
+          inMobileNo: request.mobileNo,
+        };
+        break;
+    }
+    return this.http.post('/api/customerportal/query-fbb-info', body).toPromise().then((response: any) => {
+      if (response.data.billingProfiles && response.data.billingProfiles[0].status === 'Disconnect - Customer Request') {
+        const status: string = response.data.billingProfiles[0].status;
+        return Promise.reject(`ไม่สามารถทำรายการได้ กรุณาตรวจสอบสถานะหมายเลข <br> (status is : ${status})`);
+      } else {
+        return response && response.data ? response.data : '';
+      }
+    }).catch((error: any) => {
+      return Promise.reject(error);
+    });
+  }
+
+  public getCustomerProfileByFbb(mobileNo: string): Promise<any> {
+    return this.http.get(`/api/customerportal/customerprofile/${mobileNo}`).toPromise().then((profile: any) => {
+      return Promise.resolve(profile);
+    }).catch((e) => {
+      if (typeof e === 'string') {
+        return Promise.reject(e);
+      } else {
+        return Promise.reject(`ไม่สามารถทำรายการได้ กรุณาตรวจสอบสถานะหมายเลข ${mobileNo})`);
+      }
+    });
   }
 }

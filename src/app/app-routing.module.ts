@@ -70,6 +70,11 @@ const routes: Routes = [
     canActivate: [AuthGuard, ApiRequestGuard],
   },
   {
+    path: 'buy-gadget',
+    loadChildren: 'src/app/buy-gadget/buy-gadget.module#BuyGadgetModule',
+    canActivate: [AuthGuard, ApiRequestGuard]
+  },
+  {
     path: 'vas-package',
     loadChildren: 'src/app/vas-package/vas-package.module#VasPackageModule',
     canActivate: [AuthGuard, ApiRequestGuard],
