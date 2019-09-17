@@ -187,7 +187,9 @@ export class VasPackageCurrentBalancePageComponent implements OnInit, OnDestroy 
       username: transaction.data.romAgent.usernameRomAgent,
       locationcode: transaction.data.romAgent.locationCode || this.tokenService.getUser().locationCode,
       transactionType: 'VAS',
-      status: status
+      status: status,
+      asccode: this.tokenService.getUser().ascCode || '',
+      appversion: 'EASYAPP'
     };
   }
 

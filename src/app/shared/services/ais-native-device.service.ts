@@ -181,4 +181,19 @@ export class AisNativeDeviceService {
       this.signature.next(images);
     });
   }
+
+  isIOSNativeEasyApp(): boolean {
+    return (window.webkit && window.webkit.messageHandlers);
+  }
+
+  isAndroidNativeEasyApp(): boolean {
+    return !!window.aisNative;
+  }
+
+  /**
+   * check android and ios device of new easyapp
+  */
+  isNativeEasyApp(): boolean {
+    return this.isIOSNativeEasyApp() || this.isAndroidNativeEasyApp();
+  }
 }
