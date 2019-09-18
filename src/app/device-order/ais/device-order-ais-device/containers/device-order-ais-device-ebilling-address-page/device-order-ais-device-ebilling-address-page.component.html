@@ -68,7 +68,7 @@
                     <option value="" disabled selected>
                       {{ 'คำนำหน้าชื่อ' | translate }}
                     </option>
-                    <option *ngFor="let prefix of prefixes" [value]="prefix">{{prefix}}</option>
+                    <option *ngFor="let prefix of prefixes" [value]="prefix" selected="prefix === selectTitleName">{{prefix}}</option>
                   </select>
                 </div>
               </div>
