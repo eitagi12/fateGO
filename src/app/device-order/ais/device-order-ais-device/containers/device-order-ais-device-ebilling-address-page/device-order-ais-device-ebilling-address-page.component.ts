@@ -35,6 +35,7 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
   tumbols: string[];
   zipCodes: string[];
   prefixes: string[] = [];
+  selectTitleName: string = '';
 
   customerAddressTemp: CustomerAddress;
   billDeliveryAddress: CustomerAddress;
@@ -133,19 +134,20 @@ export class DeviceOrderAisDeviceEbillingAddressPageComponent implements OnInit,
       });
 
     if (this.transaction && this.transaction.data && this.transaction.data.customer) {
-      this.prefixes = [this.transaction.data.customer.titleName];
-    } else {
-      this.customerService.queryTitleName().then((resp: any) => {
-        this.prefixes = (resp.data.titleNames || []).map((prefix: any) => prefix);
-      });
+      this.selectTitleName = this.transaction.data.customer.titleName;
     }
+
+    this.customerService.queryTitleName().then((resp: any) => {
+      this.prefixes = (resp.data.titleNames || []).map((prefix: any) => prefix);
+    });
+
   }
 
   createForm(): void {
     const customer: any = this.transaction.data && this.transaction.data.customer ? this.transaction.data.customer : {};
     const customValidate = this.defaultValidate;
     this.validateCustomerKeyInForm = this.fb.group({
-      idCardNo: [customer.idCardNo || '' ,
+      idCardNo: [customer.idCardNo || '',
       [Validators.pattern(/^[1-8]\d{12}$/), customValidate.bind(this)]],
       prefix: [customer.titleName || '', [Validators.required]],
       firstName: [customer.firstName || '', [Validators.required]],
