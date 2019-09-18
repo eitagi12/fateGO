@@ -41,6 +41,7 @@ import { NewRegisterMnpSummaryPageComponent } from './ais/device-order-ais-share
 import { NewRegisterMnpValidateCustomerIdCardPageComponent } from './ais/device-order-ais-share-plan/new-register-mnp/containers/new-register-mnp-validate-customer-id-card-page/new-register-mnp-validate-customer-id-card-page.component';
 import { NewRegisterMnpValidateCustomerKeyInPageComponent } from './ais/device-order-ais-share-plan/new-register-mnp/containers/new-register-mnp-validate-customer-key-in-page/new-register-mnp-validate-customer-key-in-page.component';
 import { NewRegisterMnpValidateCustomerPageComponent } from './ais/device-order-ais-share-plan/new-register-mnp/containers/new-register-mnp-validate-customer-page/new-register-mnp-validate-customer-page.component';
+import { NewRegisterMnpPersoSimPageComponent } from './ais/device-order-ais-share-plan/new-register-mnp/containers/new-register-mnp-perso-sim-page/new-register-mnp-perso-sim-page.component';
 
 @NgModule({
   imports: [
@@ -89,6 +90,7 @@ import { NewRegisterMnpValidateCustomerPageComponent } from './ais/device-order-
     NewRegisterMnpSummaryPageComponent,
     NewRegisterMnpValidateCustomerIdCardPageComponent,
     NewRegisterMnpValidateCustomerKeyInPageComponent,
-    NewRegisterMnpValidateCustomerPageComponent]
+    NewRegisterMnpValidateCustomerPageComponent,
+    NewRegisterMnpPersoSimPageComponent]
 })
 export class DeviceOrderModule { }
