@@ -42,6 +42,10 @@ const routes: Routes = [
       {
         path: 'device',
         loadChildren: 'src/app/device-order/ais/device-order-ais-device/device-order-ais-device.module#DeviceOrderAisDeviceModule'
+      },
+      {
+        path: 'share-plan',
+        loadChildren: 'src/app/device-order/ais/device-order-ais-share-plan/device-order-ais-share-plan.module#DeviceOrderAisSharePlanModule'
       }
     ]
   },

@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { DeviceOrderNewRegisterMnpRoutingModule } from './device-order-ais-share-plan-routing.module';
 import { NewRegisterMnpAggregatePageComponent } from './new-register-mnp/containers/new-register-mnp-aggregate-page/new-register-mnp-aggregate-page.component';
 import { NewRegisterMnpAgreementSignPageComponent } from './new-register-mnp/containers/new-register-mnp-agreement-sign-page/new-register-mnp-agreement-sign-page.component';
@@ -29,8 +31,15 @@ import { NewRegisterMnpEffectiveStartDatePageComponent } from './new-register-mn
 import { NewRegisterMnpMobileCareAvaliblePageComponent } from './new-register-mnp/containers/new-register-mnp-mobile-care-avalible-page/new-register-mnp-mobile-care-avalible-page.component';
 import { NewRegisterMnpQrCodeResultPageComponent } from './new-register-mnp/containers/new-register-mnp-qr-code-result-page/new-register-mnp-qr-code-result-page.component';
 import { NewRegisterMnpSelectPackageOntopPageComponent } from './new-register-mnp/containers/new-register-mnp-select-package-ontop-page/new-register-mnp-select-package-ontop-page.component';
+import { NewRegisterMnpSelectNumberPageComponent } from './new-register-mnp/containers/new-register-mnp-select-number-page/new-register-mnp-select-number-page.component';
+import { TranslateModule } from '@ngx-translate/core';
 @NgModule({
   imports: [
+    CommonModule,
+    FormsModule,
+    ReactiveFormsModule,
+    MyChannelSharedLibsModule,
+    TranslateModule,
     DeviceOrderNewRegisterMnpRoutingModule
   ],
   declarations: [
@@ -61,7 +70,8 @@ import { NewRegisterMnpSelectPackageOntopPageComponent } from './new-register-mn
     NewRegisterMnpEffectiveStartDatePageComponent,
     NewRegisterMnpMobileCareAvaliblePageComponent,
     NewRegisterMnpQrCodeResultPageComponent,
-    NewRegisterMnpSelectPackageOntopPageComponent
+    NewRegisterMnpSelectPackageOntopPageComponent,
+    NewRegisterMnpSelectNumberPageComponent
   ]
 })
-export class NewRegisterMnpModule { }
+export class DeviceOrderAisSharePlanModule { }

@@ -28,6 +28,7 @@ import { NewRegisterMnpEligibleMobilePageComponent } from './new-register-mnp/co
 import { NewRegisterMnpMobileDetailPageComponent } from './new-register-mnp/containers/new-register-mnp-mobile-detail-page/new-register-mnp-mobile-detail-page.component';
 import { NewRegisterMnpEffectiveStartDatePageComponent } from './new-register-mnp/containers/new-register-mnp-effective-start-date-page/new-register-mnp-effective-start-date-page.component';
 import { NewRegisterMnpSelectPackageOntopPageComponent } from './new-register-mnp/containers/new-register-mnp-select-package-ontop-page/new-register-mnp-select-package-ontop-page.component';
+import { NewRegisterMnpSelectNumberPageComponent } from './new-register-mnp/containers/new-register-mnp-select-number-page/new-register-mnp-select-number-page.component';
 
 const routes: Routes = [
     { path: 'validate-customer', component: NewRegisterMnpValidateCustomerPageComponent },
@@ -58,6 +59,7 @@ const routes: Routes = [
     { path: 'mobile-detail', component: NewRegisterMnpMobileDetailPageComponent },
     { path: 'effective-start-date', component: NewRegisterMnpEffectiveStartDatePageComponent },
     { path: 'select-package-ontop', component: NewRegisterMnpSelectPackageOntopPageComponent },
+    { path: 'select-number', component: NewRegisterMnpSelectNumberPageComponent },
   ];
   @NgModule({
     imports: [RouterModule.forChild(routes)],
