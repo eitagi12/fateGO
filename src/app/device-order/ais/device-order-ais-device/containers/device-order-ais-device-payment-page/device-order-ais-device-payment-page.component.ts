@@ -508,8 +508,6 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
         }
       };
     }
-    if (!this.transaction.data.action) {
-    }
     this.pageLoadingService.openLoading();
     this.transaction.data.payment = this.paymentDetailTemp.payment;
     this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;
