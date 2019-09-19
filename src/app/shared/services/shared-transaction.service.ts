@@ -242,8 +242,8 @@ export class SharedTransactionService {
         orderReason: '109',
         userName: 'SFFBATCH',
         action: 'Add',
-        serviceCode: 'P19020073',
-        serviceName: 'CDM-SAMSUNG',
+        serviceCode: priceOption.trade.serviceLockHs,
+        serviceName: 'CDM-' + priceOption.productStock.brand,
         startDate: startDate,
         endDate: endDate,
         duration: priceOption.trade.durationContract
