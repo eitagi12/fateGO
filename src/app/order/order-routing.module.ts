@@ -15,6 +15,10 @@ const routes: Routes = [
   {
     path: 'mnp',
     loadChildren: 'src/app/order/order-mnp/order-mnp.module#OrderMnpModule',
+  },
+  {
+    path: 'share-plan',
+    loadChildren: 'src/app/order/order-share-plan/order-share-plan.module#OrderSharePlanModule'
   }];
 
 @NgModule({

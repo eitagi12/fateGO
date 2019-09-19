@@ -21,10 +21,14 @@ import { NewSharePlanMnpAgreementSignPageComponent } from './containers/new-shar
 import { NewSharePlanMnpEapplicationPageComponent } from './containers/new-share-plan-mnp-eapplication-page/new-share-plan-mnp-eapplication-page.component';
 import { NewSharePlanMnpPersoSimPageComponent } from './containers/new-share-plan-mnp-perso-sim-page/new-share-plan-mnp-perso-sim-page.component';
 import { NewSharePlanMnpResultPageComponent } from './containers/new-share-plan-mnp-result-page/new-share-plan-mnp-result-page.component';
+import { NewSharePlanMnpRoutingModule } from './new-share-plan-mnp-routing.module';
+import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 
 @NgModule({
   imports: [
-    CommonModule
+    CommonModule,
+    NewSharePlanMnpRoutingModule,
+    MyChannelSharedLibsModule
   ],
   declarations: [
     NewSharePlanMnpValidateCustomerPageComponent,

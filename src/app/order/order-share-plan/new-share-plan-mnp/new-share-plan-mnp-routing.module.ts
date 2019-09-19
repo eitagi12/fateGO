@@ -20,9 +20,11 @@ import { NewSharePlanMnpAgreementSignPageComponent } from './containers/new-shar
 import { NewSharePlanMnpEapplicationPageComponent } from './containers/new-share-plan-mnp-eapplication-page/new-share-plan-mnp-eapplication-page.component';
 import { NewSharePlanMnpPersoSimPageComponent } from './containers/new-share-plan-mnp-perso-sim-page/new-share-plan-mnp-perso-sim-page.component';
 import { NewSharePlanMnpResultPageComponent } from './containers/new-share-plan-mnp-result-page/new-share-plan-mnp-result-page.component';
+import { NewSharePlanMnpValidateCustomerPageComponent } from './containers/new-share-plan-mnp-validate-customer-page/new-share-plan-mnp-validate-customer-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'validate-customer', pathMatch: 'full' },
+  { path: 'validate-customer', component: NewSharePlanMnpValidateCustomerPageComponent },
   { path: 'validate-customer-id-card', component: NewSharePlanMnpValidateCustomerIdCardPageComponent },
   { path: 'validate-customer-key-in', component: NewSharePlanMnpValidateCustomerKeyInPageComponent },
   { path: 'customer-info', component: NewSharePlanMnpCustomerInfoPageComponent },

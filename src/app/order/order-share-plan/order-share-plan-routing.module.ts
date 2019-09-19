@@ -1,10 +1,13 @@
 import { NgModule } from '@angular/core';
-import { CommonModule } from '@angular/common';
+import { Routes, RouterModule } from '@angular/router';
 
-@NgModule({
-  imports: [
-    CommonModule
-  ],
-  declarations: []
-})
+const routes: Routes = [
+  {
+    path: 'new-share-plan-mnp',
+    loadChildren: 'src/app/order/order-share-plan/new-share-plan-mnp/new-share-plan-mnp.module#NewSharePlanMnpModule'
+  }];
+  @NgModule({
+    imports: [RouterModule.forChild(routes)],
+    exports: [RouterModule]
+  })
 export class OrderSharePlanRoutingModule { }
