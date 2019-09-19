@@ -508,6 +508,8 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
         }
       };
     }
+    if (!this.transaction.data.action) {
+    }
     this.pageLoadingService.openLoading();
     this.transaction.data.payment = this.paymentDetailTemp.payment;
     this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;
@@ -614,7 +616,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     this.transaction = {
       data: {
         transactionType: TransactionType.DEVICE_ONLY_AIS,
-        action: null
+        action: TransactionAction.KEY_IN
       }
     };
   }
