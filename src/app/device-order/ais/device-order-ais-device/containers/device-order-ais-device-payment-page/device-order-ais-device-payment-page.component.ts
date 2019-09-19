@@ -614,7 +614,7 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     this.transaction = {
       data: {
         transactionType: TransactionType.DEVICE_ONLY_AIS,
-        action: null
+        action: TransactionAction.KEY_IN
       }
     };
   }
