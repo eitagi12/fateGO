@@ -10,16 +10,17 @@ export class NewSharePlanMnpValidateCustomerIdCardPageComponent implements OnIni
 
   constructor(
     private router: Router
-
   ) { }
 
   ngOnInit(): void {
-  }
-  onNext(): void {
-    this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_CUSTOMER_INFO_PAGE]);
   }
 
   onBack(): void {
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_CUSTOMER_INFO_PAGE]);
   }
+
+  onNext(): void {
+    this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_CUSTOMER_INFO_PAGE]);
+  }
+
 }

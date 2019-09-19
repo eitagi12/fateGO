@@ -16,11 +16,11 @@ export class NewSharePlanMnpValidateCustomerPageComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  onNext(): void {
-    this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_CUSTOMER_INFO_PAGE]);
+  onBack(): void {
+    // Back to Menu
   }
 
-  onBack(): void {
+  onNext(): void {
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_CUSTOMER_INFO_PAGE]);
   }
 

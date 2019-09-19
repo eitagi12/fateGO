@@ -45,7 +45,6 @@ const routes: Routes = [
   { path: 'eapplication', component: NewSharePlanMnpEapplicationPageComponent },
   { path: 'perso-sim', component: NewSharePlanMnpPersoSimPageComponent },
   { path: 'result', component: NewSharePlanMnpResultPageComponent }
-
 ];
 
 @NgModule({
