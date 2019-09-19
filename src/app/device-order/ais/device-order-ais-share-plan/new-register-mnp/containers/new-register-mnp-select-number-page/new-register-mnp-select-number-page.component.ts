@@ -5,6 +5,7 @@ import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.c
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
+import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VERIFY_INSTANT_SIM_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_BY_PATTERN_PAGE } from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-new-register-mnp-select-number-page',
@@ -30,15 +31,15 @@ export class NewRegisterMnpSelectNumberPageComponent implements OnInit {
   }
 
   onVerifyInstantSim(): void {
-    this.router.navigate([]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VERIFY_INSTANT_SIM_PAGE]);
   }
 
   onByPattern(): void {
-    this.router.navigate([]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_BY_PATTERN_PAGE]);
   }
 
   onBack(): void {
-    this.router.navigate([]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE]);
   }
 
   onHome(): void {

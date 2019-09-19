@@ -28,3 +28,6 @@ export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_MOBILE_DETAIL_PA
 export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_EFFECTIVE_START_DATE_PAGE = '/device-order/ais/share-plan/new-register-mnp/effective-start-date';
 export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_NEW_BILLING_ACCOUNT_PAGE = '/device-order/ais/share-plan/new-register-mnp/new-billing-account';
 export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_PACKAGE_ONTOP_PAGE = '/device-order/ais/share-plan/new-register-mnp/select-package-ontop';
+export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_NUMBER_PAGE = '/device-order/ais/share-plan/new-register-mnp/select-number';
+export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VERIFY_INSTANT_SIM_PAGE = '/device-order/ais/share-plan/new-register-mnp/verify-instant-sim';
+export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_BY_PATTERN_PAGE = '/device-order/ais/share-plan/new-register-mnp/by-pattern';
