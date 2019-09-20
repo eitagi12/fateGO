@@ -28,8 +28,13 @@ import { DeviceOrderAisNewRegisterQrCodeQueuePageComponent } from './containers/
 import { DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent } from './containers/device-order-ais-new-register-qr-code-generator-page/device-order-ais-new-register-qr-code-generator-page.component';
 import { DeviceOrderAisNewRegisterEbillingPageComponent } from './containers/device-order-ais-new-register-ebilling-page/device-order-ais-new-register-ebilling-page.component';
 import { DeviceOrderAisNewRegisterQrCodeResultPageComponent } from './containers/device-order-ais-new-register-qr-code-result-page/device-order-ais-new-register-qr-code-result-page.component';
+import { NewRegisterMnpValidateCustomerPageComponent } from '../device-order-ais-share-plan/new-register-mnp/containers/new-register-mnp-validate-customer-page/new-register-mnp-validate-customer-page.component';
 
 const routes: Routes = [
+  {
+    path: 'validate-customer',
+    component: NewRegisterMnpValidateCustomerPageComponent
+  },
   {
     path: 'validate-customer-key-in',
     component: DeviceOrderAisNewRegisterValidateCustomerKeyInPageComponent

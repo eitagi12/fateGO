@@ -31,6 +31,7 @@ import { NewRegisterMnpSelectPackageOntopPageComponent } from './containers/new-
 import { NewRegisterMnpSelectNumberPageComponent } from './containers/new-register-mnp-select-number-page/new-register-mnp-select-number-page.component';
 import { NewRegisterMnpVerifyInstantSimPageComponent } from './containers/new-register-mnp-verify-instant-sim-page/new-register-mnp-verify-instant-sim-page.component';
 import { NewRegisterMnpByPatternPageComponent } from './containers/new-register-mnp-by-pattern-page/new-register-mnp-by-pattern-page.component';
+import { NewRegisterMnpPersoSimPageComponent } from './containers/new-register-mnp-perso-sim-page/new-register-mnp-perso-sim-page.component';
 
 const routes: Routes = [
     { path: 'validate-customer', component: NewRegisterMnpValidateCustomerPageComponent },
@@ -64,6 +65,7 @@ const routes: Routes = [
     { path: 'select-number', component: NewRegisterMnpSelectNumberPageComponent },
     { path: 'verify-instant-sim', component: NewRegisterMnpVerifyInstantSimPageComponent },
     { path: 'by-pattern', component: NewRegisterMnpByPatternPageComponent },
+    { path: 'perso-sim', component: NewRegisterMnpPersoSimPageComponent },
   ];
   @NgModule({
     imports: [RouterModule.forChild(routes)],
