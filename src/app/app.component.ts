@@ -69,7 +69,7 @@ export class AppComponent {
     let devAccessToken = '';
     if (this.isDeveloperMode()) {
       // tslint:disable-next-line:max-line-length
-      devAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im51dHRoaWE4IiwidGltZXN0YW1wIjoiMjAxODA3MTMxNDUyIiwibG9jYXRpb25Db2RlIjoiMTIxMyIsImlhdCI6MTUzMTQ2ODE5MCwiZXhwIjoyNTM0MDYwMTkwfQ.zwn6bs_q-JvPh5KhyuUIP5pPRaD_5oCe18TuP5QQykQ';
+      devAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik1DIiwidGltZXN0YW1wIjoiMjAxOTA5MjAxMDMxIiwibG9jYXRpb25Db2RlIjoiMTEwMCIsImlhdCI6MTU2ODk1MDMzOCwiZXhwIjoyMzY4OTUzOTM4fQ.jlkoOA15SrXnokh9t09q9CGKrhtMBvEWEHwEyV6Gns0';
     }
     this.tokenService.checkTokenExpired(devAccessToken);
   }
