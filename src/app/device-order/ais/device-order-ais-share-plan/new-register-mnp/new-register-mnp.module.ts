@@ -35,6 +35,7 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { NewRegisterMnpRoutingModule } from './new-register-mnp-routing.module';
 import { TranslateModule } from '@ngx-translate/core';
+import { NewRegisterMnpPersoSimPageComponent } from './containers/new-register-mnp-perso-sim-page/new-register-mnp-perso-sim-page.component';
 
 @NgModule({
   imports: [
@@ -77,6 +78,7 @@ import { TranslateModule } from '@ngx-translate/core';
     NewRegisterMnpSelectNumberPageComponent,
     NewRegisterMnpVerifyInstantSimPageComponent,
     NewRegisterMnpByPatternPageComponent,
+    NewRegisterMnpPersoSimPageComponent,
   ]
 })
 export class NewRegisterMnpModule { }
