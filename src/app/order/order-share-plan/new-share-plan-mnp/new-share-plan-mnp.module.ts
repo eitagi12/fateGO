@@ -23,12 +23,17 @@ import { NewSharePlanMnpPersoSimPageComponent } from './containers/new-share-pla
 import { NewSharePlanMnpResultPageComponent } from './containers/new-share-plan-mnp-result-page/new-share-plan-mnp-result-page.component';
 import { NewSharePlanMnpRoutingModule } from './new-share-plan-mnp-routing.module';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
     CommonModule,
     NewSharePlanMnpRoutingModule,
-    MyChannelSharedLibsModule
+    MyChannelSharedLibsModule,
+    FormsModule,
+    ReactiveFormsModule,
+    TranslateModule
   ],
   declarations: [
     NewSharePlanMnpValidateCustomerPageComponent,
