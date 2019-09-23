@@ -25,6 +25,7 @@ import { NewSharePlanMnpRoutingModule } from './new-share-plan-mnp-routing.modul
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
+import { SummarySellerCodeComponent } from './containers/new-share-plan-mnp-summary-page/summary-seller-code/summary-seller-code.component';
 
 @NgModule({
   imports: [
@@ -56,7 +57,8 @@ import { TranslateModule } from '@ngx-translate/core';
     NewSharePlanMnpAgreementSignPageComponent,
     NewSharePlanMnpEapplicationPageComponent,
     NewSharePlanMnpPersoSimPageComponent,
-    NewSharePlanMnpResultPageComponent
+    NewSharePlanMnpResultPageComponent,
+    SummarySellerCodeComponent
   ]
 })
 export class NewSharePlanMnpModule { }

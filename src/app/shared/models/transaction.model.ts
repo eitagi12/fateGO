@@ -17,6 +17,7 @@ export enum TransactionType {
   ORDER_MNP = 'Port-In',
   ORDER_EXISTING = 'Existing',
   RESERVE_WITH_DEPOSIT = 'ReserveWithDeposit',
+  ORDER_NEW_SHARE_PLAN_MNP = 'NewSharePlanMNP',
 
   // device only
   DEVICE_ONLY_AIS = 'DeviceOnlyAIS',
