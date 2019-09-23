@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { ROUTE_NEW_SHARE_PLAN_MNP_CUSTOMER_INFO_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_NEW_SHARE_PLAN_MNP_SELECT_NUMBER_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_PAGE } from '../../constants/route-path.constant';
 import { HomeService, MobileNoCondition, User, TokenService, PageLoadingService, AlertService } from 'mychannel-shared-libs';
 import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
@@ -46,7 +46,7 @@ export class NewSharePlanMnpVerifyByPatternPageComponent implements OnInit, OnDe
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_CUSTOMER_INFO_PAGE]);
+    this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_SELECT_NUMBER_PAGE]);
   }
 
   onHome(): void {
@@ -183,7 +183,7 @@ export class NewSharePlanMnpVerifyByPatternPageComponent implements OnInit, OnDe
       .then((resp: any) => {
         const data = resp.data || [];
         if (data.returnCode === '008') {
-          this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_CUSTOMER_INFO_PAGE]);
+          this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_PAGE]);
         } else if (data.returnCode === '002') {
           this.alertService.error(
             this.translation.instant('เบอร์') +
