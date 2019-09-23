@@ -17,7 +17,6 @@ import { HttpClient } from '@angular/common/http';
 })
 export class NewSharePlanMnpNetworkTypePageComponent implements OnInit, OnDestroy {
   wizards: string[] = WIZARD_ORDER_MNP;
-
   transaction: Transaction;
   sharePlanForm: FormGroup;
 
