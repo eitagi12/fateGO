@@ -22,9 +22,9 @@
               <div [hidden]="!(openCamera && !transaction?.data?.faceRecognition?.imageFaceUser)"
                 class="position-relative">
                 <img src="assets/images/icon/icon_people_line.png" class="icon-people-wrap" />
-                <!-- <mc-camera [flip]="true" [countdown]="5" [onTakePhoto]="camera" (completed)="onCameraCompleted($event)"
+                <mc-camera [flip]="true" [countdown]="5" [onTakePhoto]="camera" (completed)="onCameraCompleted($event)"
                   (error)="onCameraError($event)">
-                </mc-camera> -->
+                </mc-camera>
               </div>
               <div class="embed-responsive embed-responsive-4by3 position-relative"
                 [hidden]="!transaction?.data?.faceRecognition?.imageFaceUser">
@@ -45,8 +45,7 @@
                     <br>
                     <p>{{ 'กรุณากดปุ่มถ่ายรูป' | translate }}</p>
                   </a>
-                  <a href="#" (click)="$event.preventDefault(); onClearIdCardImage()" class="text-pink"
-                    *ngIf="transaction?.data?.faceRecognition?.imageFaceUser">
+                  <a href="#" (click)="$event.preventDefault(); onClearIdCardImage()" class="text-pink" *ngIf="transaction?.data?.faceRecognition?.imageFaceUser">
                     {{ 'ถ่ายรูปใหม่' | translate }}
                   </a>
                 </div>
@@ -54,8 +53,7 @@
                   <a href="#" (click)="$event.preventDefault(); camera.next();" class="text-pink"
                     *ngIf="!transaction?.data?.faceRecognition?.imageFaceUser">
                     <span *ngIf="!transaction?.data?.faceRecognition?.imageFaceUser">{{ 'ถ่ายรูป' | translate }}</span>
-                    <span
-                      *ngIf="transaction?.data?.faceRecognition?.imageFaceUser">{{ 'ถ่ายรูปใหม่' | translate }}</span>
+                    <span *ngIf="transaction?.data?.faceRecognition?.imageFaceUser">{{ 'ถ่ายรูปใหม่' | translate }}</span>
                   </a>
                 </div>
               </div>
@@ -67,6 +65,6 @@
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!transaction?.data?.faceRecognition?.imageFaceUser">NEXT</button>
   </mc-footer>
 </div>

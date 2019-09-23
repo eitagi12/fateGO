@@ -2,9 +2,10 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_CUSTOMER_INFO_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_FACE_CAPTURE_PAGE } from '../../constants/route-path.constant';
 import { CaptureAndSign, TokenService, ChannelType, HomeService } from 'mychannel-shared-libs';
-import { Customer, Transaction } from 'src/app/shared/models/transaction.model';
+import { Customer, Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
+import { TransactionType } from 'src/app/trade-in/services/models/trade-in-transcation.model';
 @Component({
   selector: 'app-new-share-plan-mnp-id-card-capture-page',
   templateUrl: './new-share-plan-mnp-id-card-capture-page.component.html',
@@ -26,15 +27,7 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
     private tokenService: TokenService
   ) {
     this.transaction = this.transactionService.load();
-   }
 
-  ngOnInit(): void {
-    this.checkChannelType();
-    // this.getCustomer();
-    // this.setCaptureAndSign();
-  }
-
-  private checkChannelType(): void {
     if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {
       this.apiSigned = 'OnscreenSignpad';
     } else {
@@ -42,19 +35,24 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
     }
   }
 
-  // private setCaptureAndSign(): void {
-    // const customer: Customer = this.transaction.data.customer;
-    // this.getCustomer();
-    //  this.captureAndSign = {
-    //   allowCapture: true,
-    //   imageSmartCard: this.customer.imageSmartCard,
-    //   imageSignature: this.customer.imageSignatureSmartCard
-    // };
-  // }
+  ngOnInit(): void {
+    this.getCustomer();
+    this.setCaptureAndSign();
+  }
 
-  // private getCustomer(): void {
-  //   this.customer = this.transaction.data.customer;
-  // }
+  private setCaptureAndSign(): void {
+    const customer: any = this.transaction.data.customer;
+    this.getCustomer();
+    this.captureAndSign = {
+      allowCapture: true,
+      imageSmartCard: this.customer.imageSmartCard,
+      imageSignature: this.customer.imageSignatureSmartCard
+    };
+  }
+
+  private getCustomer(): void {
+    this.customer = this.transaction.data.customer;
+  }
 
   onBack(): void {
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_CUSTOMER_INFO_PAGE]);
@@ -69,9 +67,9 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
   }
 
   onCompleted(captureAndSign: CaptureAndSign): void {
-    // this.customer = this.transaction.data.customer;
-    // this.customer.imageSignatureSmartCard = captureAndSign.imageSignature;
-    // this.customer.imageSmartCard = captureAndSign.imageSmartCard;
+    this.customer = this.transaction.data.customer;
+    this.customer.imageSignatureSmartCard = captureAndSign.imageSignature;
+    this.customer.imageSmartCard = captureAndSign.imageSmartCard;
   }
 
   onError(valid: boolean): void {
@@ -79,7 +77,7 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
   }
 
   ngOnDestroy(): void {
-    // this.transactionService.update(this.transaction);
+    this.transactionService.update(this.transaction);
   }
 
 }

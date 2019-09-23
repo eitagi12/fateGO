@@ -1,10 +1,11 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_ID_CARD_CAPTURE_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_FACE_COMPARE_PAGE } from '../../constants/route-path.constant';
 import { TranslateService } from '@ngx-translate/core';
 import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
-import { Transaction } from 'src/app/shared/models/transaction.model';
-import { Utils, HomeService } from 'mychannel-shared-libs';
+import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { Utils, HomeService, ImageUtils, AlertService } from 'mychannel-shared-libs';
+import { TransactionService } from 'src/app/shared/services/transaction.service';
 
 @Component({
   selector: 'app-new-share-plan-mnp-face-capture-page',
@@ -15,17 +16,22 @@ export class NewSharePlanMnpFaceCapturePageComponent implements OnInit, OnDestro
 
   wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
   openCamera: boolean;
-  transaction: Transaction;
+  transaction: any;
+  camera: EventEmitter<void> = new EventEmitter<void>();
 
   constructor(
     private router: Router,
     private translation: TranslateService,
     private utils: Utils,
-    private homeService: HomeService
-  ) { }
+    private homeService: HomeService,
+    private alertService: AlertService,
+    private transactionService: TransactionService
+  ) {
+    this.transaction = this.transactionService.load();
+  }
 
   ngOnInit(): void {
-    // this.openCamera = !!(this.transaction.data.faceRecognition && this.transaction.data.faceRecognition.imageFaceUser);
+    this.openCamera = !!(this.transaction.data.faceRecognition && this.transaction.data.faceRecognition.imageFaceUser);
   }
 
   onBack(): void {
@@ -44,45 +50,45 @@ export class NewSharePlanMnpFaceCapturePageComponent implements OnInit, OnDestro
     this.openCamera = true;
   }
 
-  // switchLanguage(lang: string): void {
-  //   // this.i18nService.setLang(lang);
-  // }
+  switchLanguage(lang: string): void {
+    // this.i18nService.setLang(lang);
+  }
 
-  // onCameraCompleted(image: string): void {
-  //   const cropOption = {
-  //     sizeWidth: 160,
-  //     sizeHeight: 240,
-  //     startX: 80,
-  //     startY: 0,
-  //     flip: true,
-  //     quality: 1
-  //   };
+  onCameraCompleted(image: string): void {
+    const cropOption = {
+      sizeWidth: 160,
+      sizeHeight: 240,
+      startX: 80,
+      startY: 0,
+      flip: true,
+      quality: 1
+    };
 
-  //   new ImageUtils().cropping(image, cropOption).then(res => {
-  //     this.transaction.data.faceRecognition = {
-  //       imageFaceUser: res
-  //     };
-  //   }).catch(() => {
-  //     this.transaction.data.faceRecognition = {
-  //       imageFaceUser: image
-  //     };
-  //   });
-  // }
+    new ImageUtils().cropping(image, cropOption).then(res => {
+      this.transaction.data.faceRecognition = {
+        imageFaceUser: res
+      };
+    }).catch(() => {
+      this.transaction.data.faceRecognition = {
+        imageFaceUser: image
+      };
+    });
+  }
 
-  // onCameraError(error: string): void {
-  //   this.alertService.error(this.translation.instant(error));
-  // }
+  onCameraError(error: string): void {
+    this.alertService.error(this.translation.instant(error));
+  }
 
-  // onClearIdCardImage(): void {
-  //   this.transaction.data.faceRecognition.imageFaceUser = null;
-  // }
+  onClearIdCardImage(): void {
+    this.transaction.data.faceRecognition.imageFaceUser = null;
+  }
 
   public isAisNative(): boolean {
     return this.utils.isAisNative();
   }
 
   ngOnDestroy(): void {
-    // this.transactionService.update(this.transaction);
+    this.transactionService.update(this.transaction);
   }
 
 }
