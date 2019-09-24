@@ -26,6 +26,8 @@ import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
 import { SummarySellerCodeComponent } from './containers/new-share-plan-mnp-summary-page/summary-seller-code/summary-seller-code.component';
+import { ConfirmCustomerInfoComponent } from './containers/new-share-plan-mnp-confirm-user-information-page/confirm-customer-info/confirm-customer-info.component';
+import { BillingInfoComponent } from './containers/new-share-plan-mnp-confirm-user-information-page/billing-info/billing-info.component';
 
 @NgModule({
   imports: [
@@ -58,7 +60,9 @@ import { SummarySellerCodeComponent } from './containers/new-share-plan-mnp-summ
     NewSharePlanMnpEapplicationPageComponent,
     NewSharePlanMnpPersoSimPageComponent,
     NewSharePlanMnpResultPageComponent,
-    SummarySellerCodeComponent
+    SummarySellerCodeComponent,
+    ConfirmCustomerInfoComponent,
+    BillingInfoComponent
   ]
 })
 export class NewSharePlanMnpModule { }

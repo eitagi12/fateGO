@@ -1,0 +1,39 @@
+<div class="container-fluid">
+  <div class="card mb-3">
+    <div class="card-header bg-light-blue text-white">{{ 'ข้อมูลลูกค้า' | translate }}</div>
+    <ul class="list-group list-group-flush">
+      <li class="list-group-item">
+        <p>
+          <i class="fa fa-circle text-lime mr-2"></i>
+          <span>
+            {{ 'รวมบิลกับหมายเลขหลัก' | translate }}
+          </span>
+          <!-- <a href="#" class="pull-right" [hidden]="view" *ngIf="billingInfo?.billingMethod?.isEdit" (click)="$event.preventDefault(); billingInfo?.billingMethod?.onEdit()">Edit</a>
+          <br>
+          <a href="#" class="pull-right" [hidden]="view" *ngIf="billingInfo?.billingMethod?.isDelete" (click)="$event.preventDefault(); billingInfo?.billingMethod?.onDelete()">Delete</a> -->
+        </p>
+        <div class="text-grey"> {{ mobileMember || '-'  }}</div>
+      </li>
+      <li class="list-group-item">
+        <p>
+          <i class="fa fa-circle text-lime mr-2"></i>
+          <span>{{ 'ที่อยู่จัดส่งเอกสาร' | translate }}</span>
+          <span class="text-red"> *</span>
+          <a href="#" class="pull-right" [hidden]="view" *ngIf="billingInfo?.billingAddress?.isEdit" (click)="$event.preventDefault(); billingInfo?.billingAddress?.onEdit()">Edit</a>
+        </p>
+        <div class="text-grey">{{ billingInfo?.billingAddress?.text }}</div>
+      </li>
+      <li class="list-group-item">
+        <p>
+          <i class="fa fa-circle text-lime mr-2"></i>
+          <span translate>รอบบิล</span>
+          <a href="#" class="pull-right" [hidden]="view" *ngIf="billingInfo?.billingCycle?.isEdit" (click)="$event.preventDefault(); billingInfo?.billingCycle?.onEdit()">Edit</a>
+          <br>
+          <a href="#" class="pull-right" [hidden]="view" *ngIf="billingInfo?.billingCycle?.isDelete" (click)="$event.preventDefault(); billingInfo?.billingCycle?.onDelete()">Delete</a>
+        </p>
+        <div class="text-grey" [innerHTML]="getBillCycleText(billingInfo?.billingCycle?.text)"></div>
+      </li>
+    </ul>
+
+  </div>
+</div>

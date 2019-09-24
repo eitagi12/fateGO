@@ -46,7 +46,7 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
           this.transaction.data.billingInformation = {};
         }
         this.translationSubscribe = this.translation.onLangChange.subscribe(lang => {
-          // this.mapCustomerInfoByLang(lang.lang);
+          this.mapCustomerInfoByLang(lang.lang);
         });
    }
 
@@ -61,7 +61,7 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
     console.log('billCycleData', billCycleData);
 
     // รอ package page
-    // this.eBill = !(mainPackage.billingSystem === BillingSystemType.BOS);
+    this.eBill = !(mainPackage.billingSystem === BillingSystemType.BOS);
 
     this.confirmCustomerInfo = {
       titleName: customer.titleName,
@@ -93,18 +93,18 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
     this.initBillingInfo();
 
     // รอ package page
-    // this.mapCustomerInfoByLang(this.translation.currentLang);
+    this.mapCustomerInfoByLang(this.translation.currentLang);
   }
 // รอ package page
-  // mapCustomerInfoByLang(lang: string): void {
-  //   if (lang === 'EN') {
-  //     this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameEng;
-  //     this.confirmCustomerInfo.packageDetail = this.transaction.data.mainPackage.statementEng;
-  //   } else {
-  //     this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameThai;
-  //     this.confirmCustomerInfo.packageDetail = this.transaction.data.mainPackage.statementThai;
-  //   }
-  // }
+  mapCustomerInfoByLang(lang: string): void {
+    if (lang === 'EN') {
+      this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameEng;
+      this.confirmCustomerInfo.packageDetail = this.transaction.data.mainPackage.statementEng;
+    } else {
+      this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameThai;
+      this.confirmCustomerInfo.packageDetail = this.transaction.data.mainPackage.statementThai;
+    }
+  }
 
   initBillingInfo(): void {
     const billingInformation = this.transaction.data.billingInformation || {};
@@ -257,6 +257,7 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
 
   onBack(): void {
     if (this.isPackageNetExtreme()) {
+      this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_NETWORK_TYPE_PAGE]);
       // this.router.navigate([ROUTE_ORDER_NEW_REGISTER_MERGE_BILLING_PAGE]);
     } else {
       if (this.transaction.data.onTopPackage) {
@@ -319,12 +320,12 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
     // เลือกบิลตามแพจเกจ
 
     // รอ package page
-  //   const billingSystem = mainPackage.billingSystem;
-  //   if (billingSystem && billingSystem === BillingSystemType.BOS) {
-  //     return 'other';
-  //   } else {
-  //     return 'eBill';
-  //   }
+    const billingSystem = mainPackage.billingSystem;
+    if (billingSystem && billingSystem === BillingSystemType.BOS) {
+      return 'other';
+    } else {
+      return 'eBill';
+    }
   }
 
   customerValid(): boolean {

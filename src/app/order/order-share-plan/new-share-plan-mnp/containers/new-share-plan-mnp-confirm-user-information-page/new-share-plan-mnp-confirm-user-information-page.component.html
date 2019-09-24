@@ -12,11 +12,11 @@
   <div class="mt-3 mb-3">
     <mc-wizard [wizards]="wizards" active="3"></mc-wizard>
 
-    <mc-confirm-customer-info [confirmCustomerInfo]="confirmCustomerInfo">
-    </mc-confirm-customer-info>
+    <app-confirm-customer-info [confirmCustomerInfo]="confirmCustomerInfo">
+    </app-confirm-customer-info>
 
-    <mc-billing-info [billingInfo]="billingInfo" (editAddress)="onEditAddress()">
-    </mc-billing-info>
+    <app-billing-info [billingInfo]="billingInfo" (editAddress)="onEditAddress()">
+    </app-billing-info>
 
     <mc-mail-billing-info [eBill]="eBill" [disabled]="isPackageNetExtreme() || isMergeBilling()" [mailBillingInfo]="mailBillingInfo"
       (completed)="onMailBillingInfoCompleted($event)" (error)="onMailBillingInfoError($event)">
