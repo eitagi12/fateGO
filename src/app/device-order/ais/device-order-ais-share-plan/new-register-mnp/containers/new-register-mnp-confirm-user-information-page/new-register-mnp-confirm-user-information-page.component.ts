@@ -9,7 +9,8 @@ import { WIZARD_DEVICE_ORDER_AIS } from '../../../../../constants/wizard.constan
 import {
   ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_EDIT_BILLING_ADDRESS_PAGE,
   ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_EBILLING_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_MOBILE_CARE_PAGE
+  ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_MOBILE_CARE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_PACKAGE_PAGE
 } from '../../constants/route-path.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -35,7 +36,6 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
   isTelNoBillingValid: boolean;
   isMailBillingInfoValid: boolean;
 
-  mainPackage: any;
   member: any;
 
   constructor(
@@ -55,23 +55,21 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
     if (!this.transaction.data.billingInformation) {
       this.transaction.data.billingInformation = {};
     }
-    this.mainPackage = {
-      billingSystem: 'IRB',
-      promotionName: '4G_Net Extreme_1099B 3G24GB 4G UL SWifi',
-      shortNameEng: 'Net Extreme package 1,099 Baht',
-      shortNameThai: 'แพ็กเกจ Net Extreme 1,099 บาท',
-      title: 'Hot Deal Super Khum',
-    };
+
+    this.member = {memberMobileNo: '0910045268'};
   }
 
   ngOnInit(): void {
-    this.shoppingCart = this.getShoppingCartData();
+    const mainPackage = this.transaction.data.mainPackage;
+    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
     const customer = this.transaction.data.customer;
     const simCard = this.transaction.data.simCard;
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData: any = billingInformation.billCycleData || {};
 
-    this.eBill = !(this.mainPackage.billingSystem === BillingSystemType.BOS);
+    this.eBill = !(mainPackage.billingSystem === BillingSystemType.BOS);
+
+    mainPackage.title = 'Hot Deal Super Khum';
 
     this.confirmCustomerInfo = {
       titleName: customer.titleName,
@@ -79,11 +77,10 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
       lastName: customer.lastName,
       idCardNo: customer.idCardNo,
       mobileNo: simCard.mobileNo,
-      mainPackage: this.mainPackage.title,
+      mainPackage: mainPackage.title,
       onTopPackage: '',
-      packageDetail: this.mainPackage.detailTH
+      packageDetail: mainPackage.detailTH
     };
-    this.member = {memberMobileNo: '0910045268'};
 
     this.mailBillingInfo = {
       email: billingInformation.billCycleData.email,
@@ -100,37 +97,11 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
     this.initBillingInfo();
   }
 
-  getBillChannel(): any {
-    const billingInformation = this.transaction.data.billingInformation;
-    const mergeBilling: any = billingInformation.mergeBilling;
-
-    if (this.isMergeBilling()) {
-      if (billingInformation.billCycleData.billMedia === 'SMS and eBill') {
-        return 'eBill';
-      } else if (billingInformation.billCycleData.billMedia === 'Hard Copy') {
-        return 'address';
-      } else if (billingInformation.billCycleData.billMedia === 'SMS + Email') {
-        return 'other';
-      }
-    }
-    if (billingInformation && billingInformation.billCycleData) {
-      return billingInformation.billCycleData.billChannel;
-    }
-    // เลือกบิลตามแพจเกจ
-    const billingSystem = this.mainPackage.billingSystem;
-    if (billingSystem && billingSystem === BillingSystemType.BOS) {
-      return 'other';
-    } else {
-      return 'eBill';
-    }
-  }
-
   initBillingInfo(): void {
 
     const billingInformation = this.transaction.data.billingInformation || {};
     const mergeBilling = billingInformation.mergeBilling;
     const billCycle = billingInformation.billCycle;
-    const billCycles = [] = billingInformation.billCycles;
     const customer: any = billingInformation.billDeliveryAddress || this.transaction.data.customer;
 
     const customerAddress = this.utils.getCurrentAddress({
@@ -224,16 +195,45 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
     });
   }
 
+  onMailBillingInfoCompleted(mailBillingInfo: any): void {
+    if (!mailBillingInfo) {
+      return;
+    }
+    const billingInformation = this.transaction.data.billingInformation;
+    const billCycleData = billingInformation.billCycleData || {};
+
+    billCycleData.email = mailBillingInfo.email;
+    billCycleData.billChannel = mailBillingInfo.billChannel;
+    billCycleData.billMedia = mailBillingInfo.billMedia;
+    billCycleData.receiveBillMethod = mailBillingInfo.receiveBillMethod;
+
+    this.transaction.data.billingInformation.billCycleData = billCycleData;
+  }
+
+  onMailBillingInfoError(valid: boolean): void {
+    this.isMailBillingInfoValid = valid;
+  }
+
+  onTelNoBillingCompleted(telNoBilling: any): void {
+    const billingInformation = this.transaction.data.billingInformation;
+    const billCycleData = billingInformation.billCycleData || {};
+
+    billCycleData.mobileNoContact = telNoBilling.mobileNo;
+    billCycleData.phoneNoContact = telNoBilling.phoneNo;
+
+    this.transaction.data.billingInformation.billCycleData = billCycleData;
+  }
+
   onTelNoBillingError(valid: boolean): void {
     this.isTelNoBillingValid = valid;
   }
+
   isNext(): boolean {
-    // !(isTelNoBillingValid &&(isMailBillingInfoValid || isMergeBilling()))
     return this.isTelNoBillingValid && this.isMailBillingInfoValid;
   }
 
-  onEditAddress(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_EDIT_BILLING_ADDRESS_PAGE]);
+  onBack(): void {
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_PACKAGE_PAGE]);
   }
 
   onNext(): void {
@@ -251,33 +251,45 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_MOBILE_CARE_PAGE]);
   }
 
+  onEditAddress(): void {
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_EDIT_BILLING_ADDRESS_PAGE]);
+  }
+
   onHome(): void {
     this.homeService.goToHome();
   }
 
-  onMailBillingInfoCompleted(mailBillingInfo: any): void {
-    if (!mailBillingInfo) {
-      return;
-    }
+  ngOnDestroy(): void { }
+
+  getBillChannel(): any {
+    const mainPackage = this.transaction.data.mainPackage;
     const billingInformation = this.transaction.data.billingInformation;
-    const billCycleData = billingInformation.billCycleData || {};
+    const mergeBilling: any = billingInformation.mergeBilling;
 
-    billCycleData.email = mailBillingInfo.email;
-    billCycleData.billChannel = mailBillingInfo.billChannel;
-    billCycleData.billMedia = mailBillingInfo.billMedia;
-    billCycleData.receiveBillMethod = mailBillingInfo.receiveBillMethod;
-
-    this.transaction.data.billingInformation.billCycleData = billCycleData;
-
-  }
-
-  onMailBillingInfoError(valid: boolean): void {
-    this.isMailBillingInfoValid = valid;
+    // default ตามรอบบิลที่เลือก
+    if (this.isMergeBilling()) {
+      if (mergeBilling.billMedia === 'SMS and eBill') {
+        return 'eBill';
+      } else if (mergeBilling.billMedia === 'Hard Copy') {
+        return 'address';
+      } else if (mergeBilling.billMedia === 'SMS + Email') {
+        return 'other';
+      }
+    }
+    if (billingInformation && billingInformation.billCycleData) {
+      return billingInformation.billCycleData.billChannel;
+    }
+    // เลือกบิลตามแพจเกจ
+    const billingSystem = mainPackage.billingSystem;
+    if (billingSystem && billingSystem === BillingSystemType.BOS) {
+      return 'other';
+    } else {
+      return 'eBill';
+    }
   }
 
   customerValid(): boolean {
     const billingInformation = this.transaction.data.billingInformation || {};
-    // ถ้าเป็น Newca จะไม่มี data.customer เลยต้องเช็คจากที่อยู่ว่า มีที่อยู่(billDeliveryAddress)ไหม
     const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
     return !!(customer.homeNo
       && customer.province
@@ -319,89 +331,12 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
 
   isPackageNetExtreme(): boolean {
     const REGEX_NET_EXTREME = /[Nn]et[Ee]xtreme/;
-    return this.mainPackage && REGEX_NET_EXTREME.test(this.mainPackage.productPkg);
+    const mainPackage = this.transaction.data.mainPackage;
+    return mainPackage && REGEX_NET_EXTREME.test(mainPackage.productPkg);
   }
 
   isMergeBilling(): boolean {
     const billingInformation = this.transaction.data.billingInformation;
     return billingInformation ? (!!billingInformation.mergeBilling) : false;
-  }
-
-  ngOnDestroy(): void { }
-
-  getShoppingCartData(): any {
-    const transaction = this.transaction;
-    // const priceOption = this.priceOptionService.load();
-    const customer = transaction.data.customer;
-    const simCard = this.transaction.data.simCard;
-    const campaign = { campaignName: 'Hot Deal Super Khum' };
-    const trade = {
-      advancePay: {
-        amount: '4280',
-        description: 'แพ็กเกจค่าบริการรายเดือน 4,000 บาท (ไม่รวมVAT) รับส่วนลด 400 บาท นาน 10 เดือน',
-        installmentFlag: 'Y',
-        matAirtime: 'AIRTIME4000EXVAT_DISC400_10M',
-        promotion: [{
-          billingSystem: 'IRB',
-          month: '10',
-          productType: 'Account Promotion',
-          promotionCode: 'P16115938',
-          promotionName: 'MF_Disc_4000B_10M_400'
-        },
-        {
-          billingSystem: 'BOS',
-          month: '10',
-          productType: 'Promotion',
-          promotionCode: 'P16116010',
-          promotionName: 'MF_Disc_4000B_10M_400 BOS'
-        }],
-        tradeAirtimeId: '7209'
-      },
-      promotionPrice: '31000'
-    };
-    const productDetail = {
-      dv: [],
-      model: 'IPHONEX64',
-      name: 'APPLE iPhone X 64GB',
-      productSubtype: 'HANDSET',
-      productType: 'DEVICE',
-      product: [{
-        colorCode: '4E4F54',
-        colorName: 'SPACE GREY',
-        image: { baseview: [] }
-      }]
-    };
-    const productStock = {
-      brand: 'APPLE',
-      color: 'SPACE GREY',
-      colorCode: '4E4F54',
-      company: 'AWN',
-      flagReserve: 'Y',
-      flagWaiting: 'N',
-      location: '1100',
-      locationName: 'สาขาอาคารเอไอเอส 2',
-      model: 'IPHONEX64',
-      productName: 'IPHONE X 64GB',
-      productSubType: 'HANDSET',
-      productType: 'DEVICE',
-      qty: '54',
-      subStock: 'BRN'
-    };
-
-    const advancePay = + trade.advancePay.amount || 0;
-    let commercialName = productDetail.name;
-    if (productStock.color) {
-      commercialName += ` สี ${productStock.color}`;
-    }
-    const shoppingCartData = {
-      fullName: `${customer.titleName || ''} ${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
-      mobileNo: simCard && simCard.mobileNo ? simCard.mobileNo : '',
-      campaignName: campaign.campaignName,
-      commercialName: commercialName,
-      qty: 1,
-      price: + trade.promotionPrice + advancePay
-    };
-    this.translateService.stream(campaign.campaignName).subscribe(campaignName => shoppingCartData.campaignName = campaignName);
-    return shoppingCartData;
   }
 }
