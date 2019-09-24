@@ -36,7 +36,7 @@ import { TranslateModule } from '@ngx-translate/core';
       NAME: environment.name,
       WEB_CONNECT_URL: environment.WEB_CONNECT_URL,
       CAMERA_DEVLICE: ['^USB Camera+', '^HP+'],
-      CLIENT_NAME: name
+      CLIENT_NAME: 'client-smart-digital'
     }),
     JwtModule.forRoot({
       jwtOptionsProvider: {
