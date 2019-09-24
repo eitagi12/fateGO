@@ -32,15 +32,20 @@ export class NewSharePlanMnpFaceConfirmPageComponent implements OnInit {
     this.createForm();
   }
 
-  createForm(): void {
-    let username;
-    if (environment.name === 'LOCAL' || environment.name === 'PVT') {
-      username = 'netnapht';
-    }
+  private createForm(): void {
+    const username = this.getUsername();
     this.confirmForm = this.fb.group({
       username: [username, [Validators.required]],
       password: ['', [Validators.required]],
     });
+  }
+
+  private getUsername(): string {
+    let username;
+    if (environment.name === 'LOCAL' || environment.name === 'PVT') {
+      username = 'netnapht';
+    }
+    return username;
   }
 
   onBack(): void {

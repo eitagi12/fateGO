@@ -3,7 +3,6 @@ import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_ID_CARD_CAPTURE_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_FACE_COMPARE_PAGE } from '../../constants/route-path.constant';
 import { TranslateService } from '@ngx-translate/core';
 import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
-import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { Utils, HomeService, ImageUtils, AlertService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 
@@ -50,7 +49,7 @@ export class NewSharePlanMnpFaceCapturePageComponent implements OnInit, OnDestro
     this.openCamera = true;
   }
 
-  switchLanguage(lang: string): void {
+  private switchLanguage(lang: string): void {
     // this.i18nService.setLang(lang);
   }
 
@@ -64,9 +63,9 @@ export class NewSharePlanMnpFaceCapturePageComponent implements OnInit, OnDestro
       quality: 1
     };
 
-    new ImageUtils().cropping(image, cropOption).then(res => {
+    new ImageUtils().cropping(image, cropOption).then(response => {
       this.transaction.data.faceRecognition = {
-        imageFaceUser: res
+        imageFaceUser: response
       };
     }).catch(() => {
       this.transaction.data.faceRecognition = {

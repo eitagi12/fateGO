@@ -1,7 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_FACE_CAPTURE_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_FACE_CONFIRM_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_SELECT_NUMBER_PAGE } from '../../constants/route-path.constant';
-import { TranslateService } from '@ngx-translate/core';
 import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
 import { CaptureAndSign, HomeService, PageLoadingService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -21,10 +20,9 @@ export class NewSharePlanMnpFaceComparePageComponent implements OnInit, OnDestro
 
   constructor(
     private router: Router,
-    private translation: TranslateService,
+    private http: HttpClient,
     private homeService: HomeService,
     private transactionService: TransactionService,
-    private http: HttpClient,
     private pageLoadingService: PageLoadingService
   ) {
     this.transaction = this.transactionService.load();
