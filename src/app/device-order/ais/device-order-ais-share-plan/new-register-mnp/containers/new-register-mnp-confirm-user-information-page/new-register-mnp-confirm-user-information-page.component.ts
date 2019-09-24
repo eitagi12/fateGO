@@ -15,7 +15,7 @@ import {
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+
 @Component({
   selector: 'app-new-register-mnp-confirm-user-information-page',
   templateUrl: './new-register-mnp-confirm-user-information-page.component.html',
@@ -46,8 +46,7 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
     private utils: Utils,
     private http: HttpClient,
     private shoppingCartService: ShoppingCartService,
-    private translateService: TranslateService,
-    private priceOptionService: PriceOptionService
+    private translateService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
 
@@ -61,15 +60,14 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
 
   ngOnInit(): void {
     const mainPackage = this.transaction.data.mainPackage;
-    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
+    const cart = this.shoppingCartService.getShoppingCartData();
+
     const customer = this.transaction.data.customer;
     const simCard = this.transaction.data.simCard;
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData: any = billingInformation.billCycleData || {};
 
     this.eBill = !(mainPackage.billingSystem === BillingSystemType.BOS);
-
-    mainPackage.title = 'Hot Deal Super Khum';
 
     this.confirmCustomerInfo = {
       titleName: customer.titleName,
