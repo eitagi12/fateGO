@@ -62,49 +62,57 @@ export class NewSharePlanMnpValidateCustomerPageComponent implements OnInit, OnD
         return Promise.resolve(data);
       })
       .then((customer) => { // load bill cycle
+        console.log(customer);
         this.transaction.data.customer = customer;
-        return this.http.get(`/api/customerportal/newRegister/${this.identity}/queryBillingAccount`).toPromise()
-          .then((resp: any) => {
-            const data = resp.data || {};
-            return this.http.post('/api/customerportal/verify/billingNetExtreme', {
-              businessType: '1',
-              listBillingAccount: data.billingAccountList
-            }).toPromise()
-              .then((respBillingNetExtreme: any) => {
-                return {
-                  billCycles: data.billingAccountList,
-                  billCyclesNetExtreme: respBillingNetExtreme.data
-                };
-              })
-              .catch(() => {
-                return {
-                  billCycles: data.billingAccountList
-                };
-              });
-          });
-      })
-      .then((billingInformation: any) => {
-        if (billingInformation.billCycles.length > 0) {
-          this.transaction.data.billingInformation = billingInformation;
-          this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_CUSTOMER_INFO_PAGE]);
+        if (customer.caNumber) {
 
+          return this.http.get(`/api/customerportal/newRegister/${this.identity}/queryBillingAccount`).toPromise()
+            .then((resp: any) => {
+              const data = resp.data || {};
+              return this.http.post('/api/customerportal/verify/billingNetExtreme', {
+                businessType: '1',
+                listBillingAccount: data.billingAccountList
+              }).toPromise()
+                .then((respBillingNetExtreme: any) => {
+                  return {
+                    billCycles: data.billingAccountList,
+                    billCyclesNetExtreme: respBillingNetExtreme.data
+                  };
+                })
+                .catch(() => {
+                  return {
+                    billCycles: data.billingAccountList
+                  };
+                })
+                .then((billingInformation: any) => {
+                  console.log(billingInformation);
+                  this.transaction.data.billingInformation = billingInformation;
+                  this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_CUSTOMER_INFO_PAGE]);
+                })
+                .catch((e) => {
+                  this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE], {
+                    queryParams: {
+                      idCardNo: this.identity
+                    }
+                  });
+                })
+                .then(() => {
+                  this.pageLoadingService.closeLoading();
+                });
+            });
         } else {
+          console.log('newCA');
           this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE], {
             queryParams: {
               idCardNo: this.identity
             }
-          });        }
-      })
-      .catch((e) => {
-        this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE], {
-          queryParams: {
-            idCardNo: this.identity
-          }
-        });
-      })
-      .then(() => {
-        this.pageLoadingService.closeLoading();
+          }).then(() => {
+            this.pageLoadingService.closeLoading();
+          });
+
+        }
       });
+
   }
 
   private createTransaction(): void {
