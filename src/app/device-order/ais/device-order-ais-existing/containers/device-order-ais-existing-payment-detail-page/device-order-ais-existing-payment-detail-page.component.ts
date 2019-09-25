@@ -114,7 +114,7 @@ export class DeviceOrderAisExistingPaymentDetailPageComponent implements OnInit,
       installmentFlag: advancePay.installmentFlag === 'N' && +(advancePay.amount || 0) > 0,
       advancePay: +(advancePay.amount || 0),
       qrCode: !!(productStock.company && productStock.company !== 'WDS'),
-      omisePayment: true
+      omisePayment: this.isFullPayment() && productStock.company !== 'WDS'
     };
   }
 

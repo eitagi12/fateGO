@@ -71,7 +71,6 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
     if (productStock.color) {
       commercialName += ` ${this.translateService.instant('สี')} ${productStock.color}`;
     }
-
     this.payementDetail = {
       commercialName: commercialName,
       promotionPrice: +(trade.promotionPrice || 0),
@@ -79,14 +78,14 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
       installmentFlag: advancePay.installmentFlag === 'N' && +(advancePay.amount || 0) > 0,
       advancePay: +(advancePay.amount || 0),
       qrCode: !!(productStock.company && productStock.company !== 'WDS'),
-      omisePayment: true
+      omisePayment: this.isFullPayment() && productStock.company !== 'WDS'
     };
 
     this.http.get('/api/salesportal/omise/get-bank').toPromise()
-    .then((res: any) => {
-      const data = res.data || [];
-      this.omiseBanks = data;
-    });
+      .then((res: any) => {
+        const data = res.data || [];
+        this.omiseBanks = data;
+      });
     if (trade.banks && trade.banks.length > 0) {
       this.banks = trade.banks;
     } else {

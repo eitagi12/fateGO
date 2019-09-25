@@ -105,7 +105,7 @@ export class DeviceOrderAisExistingPrepaidHotdealPaymentDetailPageComponent impl
       installmentFlag: advancePay.installmentFlag === 'N' && +(advancePay.amount || 0) > 0,
       advancePay: +(advancePay.amount || 0),
       qrCode: true,
-      omisePayment: true
+      omisePayment: this.isFullPayment() && productStock.company !== 'WDS'
     };
   }
 
