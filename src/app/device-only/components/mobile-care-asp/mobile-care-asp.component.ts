@@ -270,10 +270,9 @@ export class MobileCareAspComponent implements OnInit {
                     this.currentPackageMobileCare = result.data.existMobileCarePackage;
                     this.popupMobileCare(this.currentPackageMobileCare);
                   } else {
-                    this.existingMobileCare.emit(this.currentPackageMobileCare);
-                    this.isVerifyflag.emit(true);
-                    this.pageLoadingService.closeLoading();
+                    this.checkVerifyNext();
                     this.currentPackageMobileCare = result.data.existMobileCarePackage;
+                    this.pageLoadingService.closeLoading();
                   }
                 });
             });
