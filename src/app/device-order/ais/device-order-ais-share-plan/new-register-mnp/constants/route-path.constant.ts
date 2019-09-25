@@ -1,7 +1,3 @@
-export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_PAGE = '/device-order/ais/share-plan/new-register-mnp/validate-customer';
-export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE = '/device-order/ais/share-plan/new-register-mnp/validate-customer-key-in';
-export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE = '/device-order/ais/share-plan/new-register-mnp/validate-customer-id-card';
-export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE = '/device-order/ais/share-plan/new-register-mnp/payment-detail';
 export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE = '/device-order/ais/share-plan/new-register-mnp/customer-info';
 export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_PACKAGE_PAGE = '/device-order/ais/share-plan/new-register-mnp/select-package';
 export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CONFIRM_USER_INFORMATION_PAGE = '/device-order/ais/share-plan/new-register-mnp/confirm-user-information';
@@ -28,7 +24,4 @@ export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_MOBILE_DETAIL_PA
 export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_EFFECTIVE_START_DATE_PAGE = '/device-order/ais/share-plan/new-register-mnp/effective-start-date';
 export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_NEW_BILLING_ACCOUNT_PAGE = '/device-order/ais/share-plan/new-register-mnp/new-billing-account';
 export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_PACKAGE_ONTOP_PAGE = '/device-order/ais/share-plan/new-register-mnp/select-package-ontop';
-export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_NUMBER_PAGE = '/device-order/ais/share-plan/new-register-mnp/select-number';
-export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VERIFY_INSTANT_SIM_PAGE = '/device-order/ais/share-plan/new-register-mnp/verify-instant-sim';
-export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_BY_PATTERN_PAGE = '/device-order/ais/share-plan/new-register-mnp/by-pattern';
 export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PERSO_SIM_PAGE = '/device-order/ais/share-plan/new-register-mnp/perso-sim';
