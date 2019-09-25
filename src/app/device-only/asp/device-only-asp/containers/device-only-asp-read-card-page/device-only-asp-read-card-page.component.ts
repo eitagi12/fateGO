@@ -16,6 +16,7 @@ import { Router } from '@angular/router';
 import { ROUTE_DEVICE_ONLY_ASP_SELECT_MOBILE_CARE_PAGE, ROUTE_DEVICE_ONLY_ASP_SUMMARY_PAGE } from '../../constants/route-path.constant';
 import { TransactionType } from 'src/app/shared/models/transaction.model';
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
+import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
 
 declare let $: any;
 const ADDRESS_BY_SMART_CARD = 'addressBySmartCard';
@@ -82,7 +83,8 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
     private createOrderService: CreateOrderService,
     private apiRequestService: ApiRequestService,
     private http: HttpClient,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private homeButtonService: HomeButtonService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -90,6 +92,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.homeButtonService.initEventButtonHome();
     this.getPaymentDetail();
     this.createTransaction();
     this.progressBarArea.nativeElement.style.display = 'none';
