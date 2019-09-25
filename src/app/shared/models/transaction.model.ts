@@ -152,7 +152,8 @@ export interface Customer {
   expireDate?: string;
   zipCode?: string;
   provinceName?: any;  // address
-  portalCode?: any;   // address
+  portalCode?: any;    // address
+  houseNumber?: any;   // address
 
   mainMobile?: string;
   mainPhone?: string;

@@ -53,11 +53,9 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   public isShowCustomerAddressBySmartCard: boolean;
   public mobileNoStatus: any;
   public isChargeType: any;
-  public nameTextByIdCard: string;
   public customerNamePrepaid: any;
-  public customerNamePrepaidTemp: any[];
-  public customerTitlePrepaid: any;
   public nameTextByCustomerPrepaid: string;
+  private customerPrepaid: Customer;
 
   @ViewChild('progressBarArea')
   progressBarArea: ElementRef;
@@ -215,7 +213,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
         case 'KEY_IN':
           this.mobileNoStatus = this.customerInfoService.getMobileNoStatus();
           if (simcard && isChargeType === 'Pre-paid') {
-            this.nameTextByCustomerPrepaid = customer.firstName + ' ' + customer.lastName;
+            this.nameTextByCustomerPrepaid = customer.titleName + ' ' + customer.firstName + ' ' + customer.lastName;
             this.setShowCustomerDetail();
           } else if (simcard && isChargeType === 'Post-paid') {
             this.setShowCustomerDetail();
@@ -235,7 +233,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
             this.clearData();
             this.receiptInfoValid = false;
           }
-        break;
+          break;
       }
     }
   }
@@ -300,30 +298,39 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
         const chargeType: string = profile.data.chargeType;
         switch (chargeType) {
           case 'Pre-paid':
-            this.http.get(`/api/customerportal/mobile-detail/${mobileNo}`).toPromise()
-              .then((mobile: any) => {
-                if (mobile && mobile.data) {
-                  this.customer = profile.data;
-                  this.customerNamePrepaid = mobile.data.name;
-                  this.customerNamePrepaidTemp = this.customerNamePrepaid.split(' ');
-                  this.customerTitlePrepaid = mobile.data.title;
-                  this.nameTextByIdCard = mobile.data.name ? mobile.data.name : '';
-                  this.mobileNoStatus = mobile.data.mobileStatus;
-                  this.customer.idCardNo = (`XXXXXXXXX${(this.customer.idCardNo.substring(9))}`);
-                  this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(profile.data.idCardNo.substring(9))}`));
-                  this.customerInfoService.setSelectedMobileNo(mobileNo);
-                  this.customerInfoService.setMobileNoStatus(this.mobileNoStatus);
-                  this.customerInfoService.isNonAis = 'AIS';
-                  this.customerInfoService.setChargeType('Pre-paid');
-                  this.setShowCustomerDetail();
-                  this.setCustomerInfo({
-                    customer: this.customer,
-                    action: TransactionAction.KEY_IN
-                  });
-                  this.receiptInfoValid = true;
-                  this.pageLoadingService.closeLoading();
+            // โชว์คำนำหน้าชื่อ, ชื่อ-นามสกุล
+            this.http.get(`/api/customerportal/${mobileNo}/query-customer-account`).toPromise()
+              .then((response: any) => {
+                if (response && response.data) {
+                  this.customerPrepaid = response.data;
+                  // tslint:disable-next-line: max-line-length
+                  this.nameTextByCustomerPrepaid = this.customerPrepaid.titleName + ' ' + this.customerPrepaid.firstName + ' ' + this.customerPrepaid.lastName;
+
+                  // โชว์รหัสบัตรประชาชน สถานะ และเก็บข้อมูลลง Transaction
+                  this.http.get(`/api/customerportal/mobile-detail/${mobileNo}`).toPromise()
+                    .then((mobile: any) => {
+                      if (mobile && mobile.data) {
+                        this.customer = profile.data;
+                        this.mobileNoStatus = mobile.data.mobileStatus;
+                        this.customer.idCardNo = (`XXXXXXXXX${(this.customer.idCardNo.substring(9))}`);
+                        this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(profile.data.idCardNo.substring(9))}`));
+                        this.customerInfoService.setSelectedMobileNo(mobileNo);
+                        this.customerInfoService.setMobileNoStatus(this.mobileNoStatus);
+                        this.customerInfoService.isNonAis = 'AIS';
+                        this.customerInfoService.setChargeType('Pre-paid');
+                        this.setShowCustomerDetail();
+                        this.setCustomerInfo({
+                          customer: this.customer,
+                          action: TransactionAction.KEY_IN
+                        });
+                        this.receiptInfoValid = true;
+                        this.pageLoadingService.closeLoading();
+                      }
+                    }).catch(() => {
+                      this.pageLoadingService.closeLoading();
+                    });
                 }
-              }).catch(() => {
+              }).catch((err) => {
                 this.pageLoadingService.closeLoading();
               });
             break;
@@ -437,26 +444,26 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
     const customer = {
       idCardNo: data.customer.idCardNo || '',
       idCardType: data.customer.idCardType || 'บัตรประชาชน',
-      titleName: data.customer.titleName || this.customerTitlePrepaid || '',
-      firstName: data.customer.firstName || this.customerNamePrepaidTemp[0] || '',
-      lastName: data.customer.lastName || this.customerNamePrepaidTemp[1] || '',
+      titleName: data.customer.titleName || this.customerPrepaid.titleName || '',
+      firstName: data.customer.firstName || this.customerPrepaid.firstName || '',
+      lastName: data.customer.lastName || this.customerPrepaid.lastName || '',
       birthdate: data.customer.birthdate || '',
       gender: data.customer.gender || '',
       expireDate: data.customer.expireDate || '',
       issueDate: data.customer.issueDate || '',
       mobileNo: data.mobileNo || '',
-      homeNo: data.customer.homeNo || data.customer.houseNumber || '',
-      moo: data.customer.moo || '',
+      homeNo: data.customer.homeNo || data.customer.houseNumber || this.customerPrepaid.houseNumber || '',
+      moo: data.customer.moo || this.customerPrepaid.moo || '',
       mooBan: data.customer.mooBan || '',
       room: data.customer.room || '',
       floor: data.customer.floor || '',
       buildingName: data.customer.buildingName || '',
       soi: data.customer.soi || '',
       street: data.customer.street || '',
-      province: data.customer.province || data.customer.provinceName || '',
-      amphur: data.customer.amphur,
-      tumbol: data.customer.tumbol,
-      zipCode: data.customer.zipCode || data.customer.portalCode || ''
+      province: data.customer.province || data.customer.provinceName || this.customerPrepaid.provinceName || '',
+      amphur: data.customer.amphur || this.customerPrepaid.amphur || '',
+      tumbol: data.customer.tumbol || this.customerPrepaid.tumbol || '',
+      zipCode: data.customer.zipCode || data.customer.portalCode || this.customerPrepaid.portalCode || ''
     };
     this.transaction.data.customer = customer;
     this.transaction.data.action = data.action;
