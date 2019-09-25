@@ -415,6 +415,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
       case 'Pre-paid':
         this.isShowCustomerPrePaid = true;
         this.isShowCustomerPostPaid = false;
+        this.isShowCustomerAddressBySmartCard = false;
         break;
       case 'Post-paid':
         this.isShowCustomerPrePaid = false;
