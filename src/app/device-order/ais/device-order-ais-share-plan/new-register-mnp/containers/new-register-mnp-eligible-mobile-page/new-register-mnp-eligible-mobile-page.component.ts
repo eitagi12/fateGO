@@ -5,13 +5,12 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-// tslint:disable-next-line: max-line-length
-// import { ROUTE_DEVICE_ORDER_AIS_MNP_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_DETAIL_PAGE } from '../../constants/route-path.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { CheckChangeServiceService } from 'src/app/device-order/services/check-change-service.service';
+import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_MOBILE_DETAIL_PAGE } from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-new-register-mnp-eligible-mobile-page',
@@ -39,14 +38,20 @@ export class NewRegisterMnpEligibleMobilePageComponent implements OnInit, OnDest
     private alertService: AlertService,
     private checkChangeService: CheckChangeServiceService) {
     this.transaction = this.transactionService.load();
+    console.log(this.transaction);
+
     this.priceOption = this.priceOptionService.load();
+    console.log('this.priceOption', this.priceOption);
+
   }
 
   ngOnInit(): void {
-    this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-    delete this.shoppingCart.mobileNo;
+    // this.shoppingCart = this.shoppingCartService.getShoppingCartData();
+    // delete this.shoppingCart.mobileNo;
     if (this.transaction.data.customer) {
       const idCardNo = this.transaction.data.customer.idCardNo;
+      // const idCardNo = '1479900255466';
+      // const ussdCode = '999*04#';
       const ussdCode = this.priceOption.trade.ussdCode;
 
       this.http.post('/api/customerportal/query-eligible-mobile-list', {
@@ -68,7 +73,7 @@ export class NewRegisterMnpEligibleMobilePageComponent implements OnInit, OnDest
   }
 
   onBack(): void {
-    // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_CUSTOMER_INFO_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE]);
   }
 
   onNext(): void {
@@ -103,13 +108,13 @@ export class NewRegisterMnpEligibleMobilePageComponent implements OnInit, OnDest
     if (isKnoxGuard) {
       this.checkChangeService.CheckServiceKnoxGuard(this.selectMobileNo.mobileNo).then(() => {
         this.pageLoadingService.closeLoading();
-        // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_DETAIL_PAGE]);
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_MOBILE_DETAIL_PAGE]);
       }).catch((resp) => {
         this.alertService.error(resp);
       });
     } else {
       this.pageLoadingService.closeLoading();
-      // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_DETAIL_PAGE]);
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_MOBILE_DETAIL_PAGE]);
     }
   }
 

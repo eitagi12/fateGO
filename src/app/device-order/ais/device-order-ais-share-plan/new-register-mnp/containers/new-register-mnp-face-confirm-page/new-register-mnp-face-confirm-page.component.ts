@@ -9,6 +9,7 @@ import { environment } from 'src/environments/environment';
 // import { ROUTE_DEVICE_ORDER_AIS_MNP_FACE_COMPARE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_AGGREGATE_PAGE } from '../../constants/route-path.constant';
 import { HttpClient } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
+import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_COMPARE_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_AGREEMENT_SIGN_PAGE } from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-new-register-mnp-face-confirm-page',
@@ -50,7 +51,7 @@ export class NewRegisterMnpFaceConfirmPageComponent implements OnInit {
   }
 
   onBack(): void {
-    // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_FACE_COMPARE_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_COMPARE_PAGE]);
   }
 
   onNext(): void {
@@ -63,7 +64,7 @@ export class NewRegisterMnpFaceConfirmPageComponent implements OnInit {
     }).toPromise()
       .then((resp: any) => {
         if (resp && resp.data) {
-          // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_AGGREGATE_PAGE]);
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_AGREEMENT_SIGN_PAGE]);
         } else {
           return this.alertService.error(this.translateService.instant('ชื่อ/รหัสผ่าน ไม่ถูกต้อง กรุณาระบุใหม่อีกครั้ง'));
         }
