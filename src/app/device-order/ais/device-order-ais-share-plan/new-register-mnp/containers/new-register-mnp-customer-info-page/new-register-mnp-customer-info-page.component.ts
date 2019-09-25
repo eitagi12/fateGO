@@ -7,7 +7,6 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
-import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_NUMBER_PAGE } from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-new-register-mnp-customer-info-page',
@@ -60,11 +59,11 @@ export class NewRegisterMnpCustomerInfoPageComponent implements OnInit, OnDestro
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
+    this.router.navigate(['รอแก้ไข']);
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_NUMBER_PAGE]);
+    this.router.navigate(['รอแก้ไข']);
   }
 
   onHome(): void {
