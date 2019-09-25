@@ -55,7 +55,7 @@ export class HomeButtonService {
     if (this.user.locationCode === '1213') {
       window.location.href = '/smart-digital/main-menu';
     } else if (this.user.userType === 'ASP') {
-      window.location.href = environment.AUTH_URL;
+      window.location.href = environment.sffHomeUrl;
     } else {
       window.location.href = '/';
     }

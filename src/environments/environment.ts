@@ -7,15 +7,26 @@ export const environment = {
   name: 'LOCAL',
   CSP_URL: '',
   AUTH_URL: 'http://10.13.81.39:8103/SFFWeb/pages/home/portal.jsf',
+  sffHomeUrl: 'http://10.13.81.39:8103/SFFWeb/pages/home/index.jsf',
   WEB_CONNECT_URL: 'wss://localhost:8088', // 'wss://172.16.62.114:8088',
+  TEST_OTP_MOBILE_POSTPAID: '0623180146',
   TEST_OTP_MOBILE: '0927095833',
   MOBILE_STATUS: ['000', 'active', '377', 'terminate', '378', 'suspend', '379', 'disable'],
   MPAY_QRCODE: {
-    PB_SERVICE_ID: '5000000000004683', RL_SERVICE_ID: '5000000000004683',
+    PB_SERVICE_ID: '5000000000004683', RL_SERVICE_ID: '5000000000006541',
     PB_WDS_SERVICE_ID: '5000000000004681', RL_WDS_SERVICE_ID: '5000000000006554',
     PB_TERMINAL_ID: 1000000, RL_TERMINAL_ID: 1000000,
     PB_WDS_TERMINAL_ID: 10017, RL_WDS_TERMINAL_ID: 1000607,
     PB_TYPE: '003', RB_TYPE: '002'
+  },
+  DEVICE: {
+    device_os: 'IOS',
+    device_version: '12.2',
+    udid: 'A851D645-3DA1-41CF-8EAC-6F7B8860C55A'
+  },
+  USERNAME_MOCK: {
+    username: 'kittiskr',
+    locationCode: '71900'
   }
 };
 
