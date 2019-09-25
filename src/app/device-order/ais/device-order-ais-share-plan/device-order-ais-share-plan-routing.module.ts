@@ -1,6 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { DeviceOrderAisSharePlanComponent } from './device-order-ais-share-plan.component';
 
 const routes: Routes = [
     {

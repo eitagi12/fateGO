@@ -1,9 +1,5 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
-import { NewRegisterMnpValidateCustomerPageComponent } from './containers/new-register-mnp-validate-customer-page/new-register-mnp-validate-customer-page.component';
-import { NewRegisterMnpValidateCustomerKeyInPageComponent } from './containers/new-register-mnp-validate-customer-key-in-page/new-register-mnp-validate-customer-key-in-page.component';
-import { NewRegisterMnpValidateCustomerIdCardPageComponent } from './containers/new-register-mnp-validate-customer-id-card-page/new-register-mnp-validate-customer-id-card-page.component';
-import { NewRegisterMnpPaymentDetailPageComponent } from './containers/new-register-mnp-payment-detail-page/new-register-mnp-payment-detail-page.component';
 import { NewRegisterMnpCustomerInfoPageComponent } from './containers/new-register-mnp-customer-info-page/new-register-mnp-customer-info-page.component';
 import { NewRegisterMnpSelectPackagePageComponent } from './containers/new-register-mnp-select-package-page/new-register-mnp-select-package-page.component';
 import { NewRegisterMnpConfirmUserInformationPageComponent } from './containers/new-register-mnp-confirm-user-information-page/new-register-mnp-confirm-user-information-page.component';
@@ -28,16 +24,9 @@ import { NewRegisterMnpEligibleMobilePageComponent } from './containers/new-regi
 import { NewRegisterMnpMobileDetailPageComponent } from './containers/new-register-mnp-mobile-detail-page/new-register-mnp-mobile-detail-page.component';
 import { NewRegisterMnpEffectiveStartDatePageComponent } from './containers/new-register-mnp-effective-start-date-page/new-register-mnp-effective-start-date-page.component';
 import { NewRegisterMnpSelectPackageOntopPageComponent } from './containers/new-register-mnp-select-package-ontop-page/new-register-mnp-select-package-ontop-page.component';
-import { NewRegisterMnpSelectNumberPageComponent } from './containers/new-register-mnp-select-number-page/new-register-mnp-select-number-page.component';
-import { NewRegisterMnpVerifyInstantSimPageComponent } from './containers/new-register-mnp-verify-instant-sim-page/new-register-mnp-verify-instant-sim-page.component';
-import { NewRegisterMnpByPatternPageComponent } from './containers/new-register-mnp-by-pattern-page/new-register-mnp-by-pattern-page.component';
 import { NewRegisterMnpPersoSimPageComponent } from './containers/new-register-mnp-perso-sim-page/new-register-mnp-perso-sim-page.component';
 
 const routes: Routes = [
-    { path: 'validate-customer', component: NewRegisterMnpValidateCustomerPageComponent },
-    { path: 'validate-customer-key-in', component: NewRegisterMnpValidateCustomerKeyInPageComponent },
-    { path: 'validate-customer-id-card', component: NewRegisterMnpValidateCustomerIdCardPageComponent },
-    { path: 'payment-detail', component: NewRegisterMnpPaymentDetailPageComponent },
     { path: 'customer-info', component: NewRegisterMnpCustomerInfoPageComponent },
     { path: 'select-package', component: NewRegisterMnpSelectPackagePageComponent },
     { path: 'confirm-user-information', component: NewRegisterMnpConfirmUserInformationPageComponent },
@@ -62,9 +51,6 @@ const routes: Routes = [
     { path: 'mobile-detail', component: NewRegisterMnpMobileDetailPageComponent },
     { path: 'effective-start-date', component: NewRegisterMnpEffectiveStartDatePageComponent },
     { path: 'select-package-ontop', component: NewRegisterMnpSelectPackageOntopPageComponent },
-    { path: 'select-number', component: NewRegisterMnpSelectNumberPageComponent },
-    { path: 'verify-instant-sim', component: NewRegisterMnpVerifyInstantSimPageComponent },
-    { path: 'by-pattern', component: NewRegisterMnpByPatternPageComponent },
     { path: 'perso-sim', component: NewRegisterMnpPersoSimPageComponent },
   ];
   @NgModule({
