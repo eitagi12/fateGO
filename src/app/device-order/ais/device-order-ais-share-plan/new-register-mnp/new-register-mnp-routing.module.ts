@@ -25,6 +25,7 @@ import { NewRegisterMnpMobileDetailPageComponent } from './containers/new-regist
 import { NewRegisterMnpEffectiveStartDatePageComponent } from './containers/new-register-mnp-effective-start-date-page/new-register-mnp-effective-start-date-page.component';
 import { NewRegisterMnpSelectPackageOntopPageComponent } from './containers/new-register-mnp-select-package-ontop-page/new-register-mnp-select-package-ontop-page.component';
 import { NewRegisterMnpPersoSimPageComponent } from './containers/new-register-mnp-perso-sim-page/new-register-mnp-perso-sim-page.component';
+import { NewRegisterMnpNetworkTypePageComponent } from './containers/new-register-mnp-network-type-page/new-register-mnp-network-type-page.component';
 
 const routes: Routes = [
     { path: 'customer-info', component: NewRegisterMnpCustomerInfoPageComponent },
@@ -52,6 +53,7 @@ const routes: Routes = [
     { path: 'effective-start-date', component: NewRegisterMnpEffectiveStartDatePageComponent },
     { path: 'select-package-ontop', component: NewRegisterMnpSelectPackageOntopPageComponent },
     { path: 'perso-sim', component: NewRegisterMnpPersoSimPageComponent },
+    { path: 'network-type', component: NewRegisterMnpNetworkTypePageComponent },
   ];
   @NgModule({
     imports: [RouterModule.forChild(routes)],

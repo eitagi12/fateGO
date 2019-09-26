@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
+import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_AGREEMENT_SIGN_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CONFIRM_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CAPTURE_PAGE } from '../../constants/route-path.constant';
 // tslint:disable-next-line: max-line-length
 // import { ROUTE_DEVICE_ORDER_AIS_MNP_FACE_CAPTURE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_AGGREGATE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_FACE_CONFIRM_PAGE } from '../../constants/route-path.constant';
 
@@ -35,7 +36,7 @@ export class NewRegisterMnpFaceComparePageComponent implements OnInit, OnDestroy
   }
 
   onBack(): void {
-    // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_FACE_CAPTURE_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CAPTURE_PAGE]);
   }
 
   onNext(): void {
@@ -49,16 +50,16 @@ export class NewRegisterMnpFaceComparePageComponent implements OnInit, OnDestroy
     }).toPromise().then((resp: any) => {
       this.transaction.data.faceRecognition.kyc = !resp.data.match;
       if (resp.data.match) {
-        // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_AGGREGATE_PAGE]);
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_AGREEMENT_SIGN_PAGE]);
       } else {
-        // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_FACE_CONFIRM_PAGE]);
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CONFIRM_PAGE]);
       }
     }).then(() => {
       this.pageLoadingService.closeLoading();
     }).catch((error) => {
       this.pageLoadingService.closeLoading();
       this.transaction.data.faceRecognition.kyc = true;
-      // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_FACE_CONFIRM_PAGE]);
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CONFIRM_PAGE]);
     });
   }
 
