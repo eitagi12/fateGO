@@ -67,15 +67,6 @@
                 </div>
                 <div class="card-body">
                   <form [formGroup]="selectBillingAddressForm">
-                    <h5>ที่อยู่ตามบัตรประชาชน</h5>
-                    <div>
-                      <input class="form-check-input" type="radio" value="addressBySmartCard"
-                        formControlName="billingAddress" id="modal-text-customer-id-card-address">
-                      <label class="form-check-label" class="col-11" for="modal-text-customer-id-card-address">
-                        {{ 'ที่อยู่: ' + addressTextBySmartCard}}
-                      </label>
-                    </div>
-                    <br />
                     <h5>ที่อยู่ตามใบแจ้งค่าใช้บริการเบอร์ AIS ของท่าน</h5>
                     <div *ngFor="let itemBA of listBillingAccount; let i = index" #istBillingAccountBox>
                       <input class="form-check-input" type="radio" value="{{i}}" formControlName="billingAddress"
@@ -97,7 +88,7 @@
             </div>
           </div>
         </div>
-        <div class="media m-auto pb-4" *ngIf="isShowCustomerPostPaid === true || isShowCustomerAddressBySmartCard === true">
+        <div class="media m-auto pb-4" *ngIf="isShowCustomerPostPaid === true">
           <div class="media-body">
             <div>
               {{ customer?.titleName || transaction.data.customer?.titleName }}

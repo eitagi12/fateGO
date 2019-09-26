@@ -19,7 +19,7 @@ import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 import { HomeButtonService } from 'src/app/device-only/services/home-button.service';
 
 declare let $: any;
-const ADDRESS_BY_SMART_CARD = 'addressBySmartCard';
+
 @Component({
   selector: 'app-device-only-asp-read-card-page',
   templateUrl: './device-only-asp-read-card-page.component.html',
@@ -51,7 +51,6 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   public receiptInfoValid: boolean;
   public isShowCustomerPostPaid: boolean;
   public isShowCustomerPrePaid: boolean;
-  public isShowCustomerAddressBySmartCard: boolean;
   public mobileNoStatus: any;
   public isChargeType: any;
   public customerNamePrepaid: any;
@@ -425,21 +424,14 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
       case 'Pre-paid':
         this.isShowCustomerPrePaid = true;
         this.isShowCustomerPostPaid = false;
-        this.isShowCustomerAddressBySmartCard = false;
         break;
       case 'Post-paid':
         this.isShowCustomerPrePaid = false;
         this.isShowCustomerPostPaid = true;
         break;
-      case undefined:
-        this.isShowCustomerAddressBySmartCard = true;
-        this.isShowCustomerPostPaid = true;
-        this.isShowCustomerPrePaid = false;
-        break;
       case 'Non-Ais' || '':
         this.isShowCustomerPrePaid = false;
         this.isShowCustomerPostPaid = false;
-        this.isShowCustomerAddressBySmartCard = false;
     }
   }
 
@@ -519,6 +511,14 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
           this.modalBillAddress = this.bsModalService.show(this.selectBillingAddressTemplate);
         } else {
           this.progressBarArea.nativeElement.style.display = 'none';
+          this.alertService.notify({
+            type: 'warning',
+            confirmButtonText: 'OK',
+            showConfirmButton: true,
+            text: 'ไม่แสดงเลขระบบรายเดือนแสดงตนตาม ID No. ที่ระบุ'
+          });
+          this.clearData();
+          this.receiptInfoValid = false;
         }
         this.pageLoadingService.closeLoading();
       })
@@ -608,45 +608,28 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
 
   public selectBillingAddress(): void {
     const billingAddressSelected = this.selectBillingAddressForm.controls.billingAddress.value;
-    if (billingAddressSelected === ADDRESS_BY_SMART_CARD) {
-      this.customerInfoService.isNonAis = 'AIS';
-      this.customerInfoService.setChargeType(undefined);
-      this.setShowCustomerDetail();
-      this.customerInfoService.setAddressReadCard(true);
-      this.customer.idCardNo = (`XXXXXXXXX${(this.customer.idCardNo.substring(9))}`);
-      this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(this.customer.idCardNo.substring(9))}`));
-      this.customerInfoService.setSelectedMobileNo('');
-      this.setCustomerInfo({
-        customer: this.customer,
-        action: TransactionAction.READ_CARD
-      });
-      this.isSelect = true;
-      this.closeModalBillingAddress();
-      this.receiptInfoValid = true;
-    } else {
-      this.pageLoadingService.openLoading();
-      const mobileNo = this.listBillingAccount[billingAddressSelected].mobileNo[0];
-      this.customerInfoService.getBillingByMobileNo(mobileNo)
-        .then((bill: any) => {
-          this.customerInfoService.isNonAis = 'AIS';
-          this.customerInfoService.setChargeType('Post-paid');
-          this.setShowCustomerDetail();
-          this.customer = bill.data.billingAddress;
-          this.customer.idCardNo = (`XXXXXXXXX${(this.customer.idCardNo.substring(9))}`);
-          this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(bill.data.billingAddress.idCardNo.substring(9))}`));
-          this.customerInfoService.setSelectedMobileNo(mobileNo);
-          this.customerInfoService.setAddressReadCard(false);
-          this.setCustomerInfo({
-            customer: this.customer,
-            action: TransactionAction.READ_CARD
-          });
-          this.closeModalBillingAddress();
-          this.receiptInfoValid = true;
-          this.pageLoadingService.closeLoading();
-        }).catch((err) => {
-          this.alertService.error(err.error.resultDescription);
+    this.pageLoadingService.openLoading();
+    const mobileNo = this.listBillingAccount[billingAddressSelected].mobileNo[0];
+    this.customerInfoService.getBillingByMobileNo(mobileNo)
+      .then((bill: any) => {
+        this.customerInfoService.isNonAis = 'AIS';
+        this.customerInfoService.setChargeType('Post-paid');
+        this.setShowCustomerDetail();
+        this.customer = bill.data.billingAddress;
+        this.customer.idCardNo = (`XXXXXXXXX${(this.customer.idCardNo.substring(9))}`);
+        this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(bill.data.billingAddress.idCardNo.substring(9))}`));
+        this.customerInfoService.setSelectedMobileNo(mobileNo);
+        this.customerInfoService.setAddressReadCard(false);
+        this.setCustomerInfo({
+          customer: this.customer,
+          action: TransactionAction.READ_CARD
         });
-    }
+        this.closeModalBillingAddress();
+        this.receiptInfoValid = true;
+        this.pageLoadingService.closeLoading();
+      }).catch((err) => {
+        this.alertService.error(err.error.resultDescription);
+      });
   }
 
   public clearstock(): any {
