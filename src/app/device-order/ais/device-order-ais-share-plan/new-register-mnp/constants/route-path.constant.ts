@@ -25,3 +25,4 @@ export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_EFFECTIVE_START_
 export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_NEW_BILLING_ACCOUNT_PAGE = '/device-order/ais/share-plan/new-register-mnp/new-billing-account';
 export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_PACKAGE_ONTOP_PAGE = '/device-order/ais/share-plan/new-register-mnp/select-package-ontop';
 export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PERSO_SIM_PAGE = '/device-order/ais/share-plan/new-register-mnp/perso-sim';
+export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_NETWORK_TYPE = '/device-order/ais/share-plan/new-register-mnp/network-type';
