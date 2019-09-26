@@ -6,7 +6,6 @@ import { CaptureAndSign, HomeService, PageLoadingService } from 'mychannel-share
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction, Customer, FaceRecognition, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { HttpClient } from '@angular/common/http';
-import { FaceRecognitionService } from 'src/app/shared/services/face-recognition.service';
 
 @Component({
   selector: 'app-new-share-plan-mnp-face-compare-page',
@@ -24,11 +23,10 @@ export class NewSharePlanMnpFaceComparePageComponent implements OnInit, OnDestro
     private http: HttpClient,
     private homeService: HomeService,
     private transactionService: TransactionService,
-    private pageLoadingService: PageLoadingService,
-    private faceRecognitionService: FaceRecognitionService
+    private pageLoadingService: PageLoadingService
   ) {
     this.transaction = this.transactionService.load();
-   }
+  }
 
   ngOnInit(): void {
   }
@@ -39,7 +37,12 @@ export class NewSharePlanMnpFaceComparePageComponent implements OnInit, OnDestro
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    this.faceRecognitionService.facecompare()
+    const customer: Customer = this.transaction.data.customer;
+    const faceRecognition: FaceRecognition = this.transaction.data.faceRecognition;
+    this.http.post('/api/facerecog/facecompare', {
+      cardBase64Imgs: this.isReadCard() ? customer.imageReadSmartCard : (customer.imageSmartCard || customer.imageReadPassport),
+      selfieBase64Imgs: faceRecognition.imageFaceUser
+    }).toPromise()
       .then((resp: any) => {
         this.transaction.data.faceRecognition.kyc = !resp.data.match;
         if (resp.data.match) {
@@ -48,12 +51,16 @@ export class NewSharePlanMnpFaceComparePageComponent implements OnInit, OnDestro
           this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_FACE_CONFIRM_PAGE]);
         }
       }).then(() => {
-      this.pageLoadingService.closeLoading();
-    }).catch((error: any) => {
-      this.pageLoadingService.closeLoading();
-      this.transaction.data.faceRecognition.kyc = true;
-      this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_FACE_CONFIRM_PAGE]);
-    });
+        this.pageLoadingService.closeLoading();
+      }).catch((error: any) => {
+        this.pageLoadingService.closeLoading();
+        this.transaction.data.faceRecognition.kyc = true;
+        this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_FACE_CONFIRM_PAGE]);
+      });
+  }
+
+  private isReadCard(): boolean {
+    return this.transaction.data.action === TransactionAction.READ_CARD;
   }
 
   onHome(): void {
