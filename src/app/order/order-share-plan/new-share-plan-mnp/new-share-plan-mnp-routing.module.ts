@@ -18,9 +18,10 @@ import { NewSharePlanMnpEbillingPageComponent } from './containers/new-share-pla
 import { NewSharePlanMnpSummaryPageComponent } from './containers/new-share-plan-mnp-summary-page/new-share-plan-mnp-summary-page.component';
 import { NewSharePlanMnpAgreementSignPageComponent } from './containers/new-share-plan-mnp-agreement-sign-page/new-share-plan-mnp-agreement-sign-page.component';
 import { NewSharePlanMnpEapplicationPageComponent } from './containers/new-share-plan-mnp-eapplication-page/new-share-plan-mnp-eapplication-page.component';
-import { NewSharePlanMnpPersoSimPageComponent } from './containers/new-share-plan-mnp-perso-sim-page/new-share-plan-mnp-perso-sim-page.component';
 import { NewSharePlanMnpResultPageComponent } from './containers/new-share-plan-mnp-result-page/new-share-plan-mnp-result-page.component';
 import { NewSharePlanMnpValidateCustomerPageComponent } from './containers/new-share-plan-mnp-validate-customer-page/new-share-plan-mnp-validate-customer-page.component';
+import { NewSharePlanMnpPersoSimNewPageComponent } from './containers/new-share-plan-mnp-perso-sim-new-page/new-share-plan-mnp-perso-sim-new-page.component';
+import { NewSharePlanMnpPersoSimMnpPageComponent } from './containers/new-share-plan-mnp-perso-sim-mnp-page/new-share-plan-mnp-perso-sim-mnp-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'validate-customer', pathMatch: 'full' },
@@ -43,8 +44,9 @@ const routes: Routes = [
   { path: 'summary', component: NewSharePlanMnpSummaryPageComponent },
   { path: 'agreement-sign', component: NewSharePlanMnpAgreementSignPageComponent },
   { path: 'eapplication', component: NewSharePlanMnpEapplicationPageComponent },
-  { path: 'perso-sim', component: NewSharePlanMnpPersoSimPageComponent },
-  { path: 'result', component: NewSharePlanMnpResultPageComponent }
+  { path: 'result', component: NewSharePlanMnpResultPageComponent },
+  { path: 'perso-sim-new', component: NewSharePlanMnpPersoSimNewPageComponent },
+  { path: 'perso-sim-mnp', component: NewSharePlanMnpPersoSimMnpPageComponent }
 ];
 
 @NgModule({

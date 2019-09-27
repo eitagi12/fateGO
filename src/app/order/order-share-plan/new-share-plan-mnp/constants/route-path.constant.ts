@@ -17,5 +17,6 @@ export const ROUTE_NEW_SHARE_PLAN_MNP_EBILLING_PAGE = '/order/share-plan/new-sha
 export const ROUTE_NEW_SHARE_PLAN_MNP_SUMMARY_PAGE = '/order/share-plan/new-share-plan-mnp/summary';
 export const ROUTE_NEW_SHARE_PLAN_MNP_AGREEMENT_SIGN_PAGE = '/order/share-plan/new-share-plan-mnp/agreement-sign';
 export const ROUTE_NEW_SHARE_PLAN_MNP_EAPPLICATION_PAGE = '/order/share-plan/new-share-plan-mnp/eapplication';
-export const ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_PAGE = '/order/share-plan/new-share-plan-mnp/perso-sim';
 export const ROUTE_NEW_SHARE_PLAN_MNP_RESULT_PAGE = '/order/share-plan/new-share-plan-mnp/result';
+export const ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_NEW_PAGE = '/order/share-plan/new-share-plan-mnp/perso-sim-new';
+export const ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_MNP_PAGE = '/order/share-plan/new-share-plan-mnp/perso-sim-mnp';

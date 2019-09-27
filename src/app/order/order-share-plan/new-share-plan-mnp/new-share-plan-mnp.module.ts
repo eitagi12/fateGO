@@ -1,5 +1,11 @@
+// Module
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { NewSharePlanMnpRoutingModule } from './new-share-plan-mnp-routing.module';
+import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { TranslateModule } from '@ngx-translate/core';
+// Component
 import { NewSharePlanMnpValidateCustomerPageComponent } from './containers/new-share-plan-mnp-validate-customer-page/new-share-plan-mnp-validate-customer-page.component';
 import { NewSharePlanMnpValidateCustomerIdCardPageComponent } from './containers/new-share-plan-mnp-validate-customer-id-card-page/new-share-plan-mnp-validate-customer-id-card-page.component';
 import { NewSharePlanMnpValidateCustomerKeyInPageComponent } from './containers/new-share-plan-mnp-validate-customer-key-in-page/new-share-plan-mnp-validate-customer-key-in-page.component';
@@ -19,12 +25,9 @@ import { NewSharePlanMnpEbillingPageComponent } from './containers/new-share-pla
 import { NewSharePlanMnpSummaryPageComponent } from './containers/new-share-plan-mnp-summary-page/new-share-plan-mnp-summary-page.component';
 import { NewSharePlanMnpAgreementSignPageComponent } from './containers/new-share-plan-mnp-agreement-sign-page/new-share-plan-mnp-agreement-sign-page.component';
 import { NewSharePlanMnpEapplicationPageComponent } from './containers/new-share-plan-mnp-eapplication-page/new-share-plan-mnp-eapplication-page.component';
-import { NewSharePlanMnpPersoSimPageComponent } from './containers/new-share-plan-mnp-perso-sim-page/new-share-plan-mnp-perso-sim-page.component';
 import { NewSharePlanMnpResultPageComponent } from './containers/new-share-plan-mnp-result-page/new-share-plan-mnp-result-page.component';
-import { NewSharePlanMnpRoutingModule } from './new-share-plan-mnp-routing.module';
-import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { TranslateModule } from '@ngx-translate/core';
+import { NewSharePlanMnpPersoSimNewPageComponent } from './containers/new-share-plan-mnp-perso-sim-new-page/new-share-plan-mnp-perso-sim-new-page.component';
+import { NewSharePlanMnpPersoSimMnpPageComponent } from './containers/new-share-plan-mnp-perso-sim-mnp-page/new-share-plan-mnp-perso-sim-mnp-page.component';
 import { SummarySellerCodeComponent } from './containers/new-share-plan-mnp-summary-page/summary-seller-code/summary-seller-code.component';
 import { ConfirmCustomerInfoComponent } from './containers/new-share-plan-mnp-confirm-user-information-page/confirm-customer-info/confirm-customer-info.component';
 import { BillingInfoComponent } from './containers/new-share-plan-mnp-confirm-user-information-page/billing-info/billing-info.component';
@@ -58,11 +61,12 @@ import { BillingInfoComponent } from './containers/new-share-plan-mnp-confirm-us
     NewSharePlanMnpSummaryPageComponent,
     NewSharePlanMnpAgreementSignPageComponent,
     NewSharePlanMnpEapplicationPageComponent,
-    NewSharePlanMnpPersoSimPageComponent,
     NewSharePlanMnpResultPageComponent,
+    NewSharePlanMnpPersoSimNewPageComponent,
+    NewSharePlanMnpPersoSimMnpPageComponent,
     SummarySellerCodeComponent,
     ConfirmCustomerInfoComponent,
-    BillingInfoComponent
+    BillingInfoComponent,
   ]
 })
 export class NewSharePlanMnpModule { }
