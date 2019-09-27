@@ -29,13 +29,13 @@ export class NewSharePlanMnpNetworkTypePageComponent implements OnInit, OnDestro
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
   ) {
+    this.transaction = this.transactionService.load();
     this.homeService.callback = () => {
       window.location.href = '/smart-digital/main-menu';
     };
   }
 
   ngOnInit(): void {
-    this.createTransaction();
     this.createForm();
   }
 
@@ -64,18 +64,8 @@ export class NewSharePlanMnpNetworkTypePageComponent implements OnInit, OnDestro
         if (!outbuf || (accountNo && (mobileNoStatus === 'Disconnect - Ported' || mobileNoStatus === 'U' || mobileNoStatus === 'T'))
           || mobileNoStatus !== 'Active' && !(mobileNoStatus || networkType)) {
           this.transaction.data.simCard = {
-            mobileNo: this.sharePlanForm.value.mobileNo
-          };
-          this.transaction.data.customer = {
-            customerPinCode: this.sharePlanForm.value.pinCode,
-            birthdate: '',
-            idCardNo: '',
-            idCardType: 'บัตรประชาชน',
-            titleName: '',
-            expireDate: '',
-            firstName: '',
-            gender: '',
-            lastName: ''
+            ...this.transaction.data.simCard,
+            mobileMember: this.sharePlanForm.value.mobileNo
           };
           this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_CONFIRM_USER_INFORMATION_PAGE]);
         } else {
@@ -84,18 +74,8 @@ export class NewSharePlanMnpNetworkTypePageComponent implements OnInit, OnDestro
       }).catch(() => {
         this.pageLoadingService.closeLoading();
         this.transaction.data.simCard = {
-          mobileNo: this.sharePlanForm.value.mobileNo
-        };
-        this.transaction.data.customer = {
-          customerPinCode: this.sharePlanForm.value.pinCode,
-          birthdate: '',
-          idCardNo: '',
-          idCardType: 'บัตรประชาชน',
-          titleName: '',
-          expireDate: '',
-          firstName: '',
-          gender: '',
-          lastName: ''
+          ...this.transaction.data.simCard,
+          mobileMember: this.sharePlanForm.value.mobileNo
         };
         this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_NETWORK_TYPE_PAGE]);
       })
@@ -152,16 +132,7 @@ export class NewSharePlanMnpNetworkTypePageComponent implements OnInit, OnDestro
   }
 
   ngOnDestroy(): void {
-    this.transactionService.save(this.transaction);
-  }
-
-  private createTransaction(): void {
-    this.transaction = {
-      data: {
-        transactionType: TransactionType.ORDER_MNP,
-        action: null,
-      }
-    };
+    this.transactionService.update(this.transaction);
   }
 
 }

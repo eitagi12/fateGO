@@ -201,6 +201,7 @@ export interface SelectedLocation {
 
 export interface SimCard {
   mobileNo: string;
+  mobileMember?: string;
   simSerial?: string;
   imei?: string;
   billingSystem?: string;

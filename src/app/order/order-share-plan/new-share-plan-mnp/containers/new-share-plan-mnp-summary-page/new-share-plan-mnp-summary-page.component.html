@@ -12,11 +12,11 @@
   <div class="mt-3 mb-3">
     <mc-wizard [wizards]="wizards" active="3"></mc-wizard>
 
-    <mc-confirm-customer-info title="สรุปข้อมูล" [confirmCustomerInfo]="confirmCustomerInfo">
-    </mc-confirm-customer-info>
+    <app-confirm-customer-info title="สรุปข้อมูล" [confirmCustomerInfo]="confirmCustomerInfo">
+    </app-confirm-customer-info>
 
-    <mc-billing-info [billingInfo]="billingInfo" [view]="true">
-    </mc-billing-info>
+    <app-billing-info [billingInfo]="billingInfo" [view]="true">
+    </app-billing-info>
 
     <mc-mail-billing-info [eBill]="false" [view]="true" [mailBillingInfo]="mailBillingInfo">
     </mc-mail-billing-info>

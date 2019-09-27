@@ -1,20 +1,33 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_CONFIRM_USER_INFORMATION_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_AGREEMENT_SIGN_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
-import { Transaction } from 'src/app/shared/models/transaction.model';
-import { ConfirmCustomerInfo, BillingInfo, MailBillingInfo, TelNoBillingInfo, HomeService } from 'mychannel-shared-libs';
+import { Transaction, Seller } from 'src/app/shared/models/transaction.model';
+import { ConfirmCustomerInfo, BillingInfo, MailBillingInfo, TelNoBillingInfo, HomeService, AlertService, TokenService } from 'mychannel-shared-libs';
 import { Subscription } from 'rxjs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
+import { HttpClient } from '@angular/common/http';
+import { map } from 'rxjs/operators';
+import { SummarySellerCodeComponent } from './summary-seller-code/summary-seller-code.component';
 const Moment = moment;
+
+export class ShopCheckSeller {
+  condition: boolean;
+  isAscCode: boolean;
+  isSalePromotor: boolean;
+  message?: string;
+}
+
 @Component({
   selector: 'app-new-share-plan-mnp-summary-page',
   templateUrl: './new-share-plan-mnp-summary-page.component.html',
   styleUrls: ['./new-share-plan-mnp-summary-page.component.scss']
 })
 export class NewSharePlanMnpSummaryPageComponent implements OnInit, OnDestroy {
+
+  @ViewChild(SummarySellerCodeComponent) summarySellerCode: SummarySellerCodeComponent;
 
   wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
 
@@ -28,10 +41,13 @@ export class NewSharePlanMnpSummaryPageComponent implements OnInit, OnDestroy {
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
-    private translation: TranslateService
+    private translation: TranslateService,
+    private alertService: AlertService,
+    private http: HttpClient,
+    private tokenService: TokenService
   ) {
     this.transaction = this.transactionService.load();
-   }
+  }
 
   ngOnInit(): void {
     const customer = this.transaction.data.customer;
@@ -106,7 +122,8 @@ export class NewSharePlanMnpSummaryPageComponent implements OnInit, OnDestroy {
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_CONFIRM_USER_INFORMATION_PAGE]);
   }
   onNext(): void {
-    this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_AGREEMENT_SIGN_PAGE]);
+    const seller: Seller = this.summarySellerCode.getSeller();
+    this.checkSeller(seller);
   }
 
   ngOnDestroy(): void {
@@ -116,6 +133,38 @@ export class NewSharePlanMnpSummaryPageComponent implements OnInit, OnDestroy {
 
   onHome(): void {
     this.homeService.goToHome();
+  }
+
+  getcheckSeller(sellderId: string): Promise<any> {
+    const checkSellerAPI = `/api/customerportal/checkSeller/` + `${sellderId}`;
+    return this.http.get(checkSellerAPI).pipe(
+      map((response: any) => response.data)
+    ).toPromise();
+  }
+
+  checkSeller(seller: Seller): void {
+    if (!seller.sellerNo) {
+      this.alertService.warning('กรุณากรอกข้อมูลให้ถูกต้อง');
+      return;
+    }
+    this.getcheckSeller(seller.sellerNo).then((shopCheckSeller: ShopCheckSeller) => {
+      if (shopCheckSeller.condition) {
+        if (!this.transaction.data.seller) {
+          this.transaction.data.seller = {
+            sellerNo: seller.sellerNo,
+            locationCode: this.tokenService.getUser().locationCode
+          };
+        } else {
+          this.transaction.data.seller.sellerNo = seller.sellerNo;
+        }
+        this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_AGREEMENT_SIGN_PAGE]);
+      } else {
+        this.alertService.warning(shopCheckSeller.message);
+      }
+    })
+      .catch(() => {
+        this.alertService.warning('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+      });
   }
 
 }

@@ -29,8 +29,8 @@ import { NewSharePlanMnpResultPageComponent } from './containers/new-share-plan-
 import { NewSharePlanMnpPersoSimNewPageComponent } from './containers/new-share-plan-mnp-perso-sim-new-page/new-share-plan-mnp-perso-sim-new-page.component';
 import { NewSharePlanMnpPersoSimMnpPageComponent } from './containers/new-share-plan-mnp-perso-sim-mnp-page/new-share-plan-mnp-perso-sim-mnp-page.component';
 import { SummarySellerCodeComponent } from './containers/new-share-plan-mnp-summary-page/summary-seller-code/summary-seller-code.component';
-import { ConfirmCustomerInfoComponent } from './containers/new-share-plan-mnp-confirm-user-information-page/confirm-customer-info/confirm-customer-info.component';
-import { BillingInfoComponent } from './containers/new-share-plan-mnp-confirm-user-information-page/billing-info/billing-info.component';
+import { ConfirmCustomerInfoComponent } from './components/confirm-customer-info/confirm-customer-info.component';
+import { BillingInfoComponent } from './components/billing-info/billing-info.component';
 
 @NgModule({
   imports: [
