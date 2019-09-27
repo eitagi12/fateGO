@@ -67,6 +67,15 @@
                 </div>
                 <div class="card-body">
                   <form [formGroup]="selectBillingAddressForm">
+                    <h5>ที่อยู่ตามบัตรประชาชน</h5>
+                    <div>
+                      <input class="form-check-input" type="radio" value="addressBySmartCard"
+                        formControlName="billingAddress" id="modal-text-customer-id-card-address">
+                      <label class="form-check-label" class="col-11" for="modal-text-customer-id-card-address">
+                        {{ 'ที่อยู่: ' + addressTextBySmartCard}}
+                      </label>
+                    </div>
+                    <br />
                     <h5>ที่อยู่ตามใบแจ้งค่าใช้บริการเบอร์ AIS ของท่าน</h5>
                     <div *ngFor="let itemBA of listBillingAccount; let i = index" #istBillingAccountBox>
                       <input class="form-check-input" type="radio" value="{{i}}" formControlName="billingAddress"
@@ -88,7 +97,7 @@
             </div>
           </div>
         </div>
-        <div class="media m-auto pb-4" *ngIf="isShowCustomerPostPaid === true">
+        <div class="media m-auto pb-4" *ngIf="isShowCustomerPostPaid === true || isShowCustomerAddressBySmartCard === true">
           <div class="media-body">
             <div>
               {{ customer?.titleName || transaction.data.customer?.titleName }}
@@ -105,7 +114,7 @@
                   {{ 'ที่อยู่' | translate }}
                   {{ customer?.homeNo || customer?.houseNumber || transaction.data.customer?.homeNo || transaction.data.customer?.houseNumber }}
                 </span>
-                <span>
+                <span *ngIf="customer?.moo || transaction.data.customer?.moo">
                   {{ 'หมู่' | translate }} {{ customer?.moo || transaction.data.customer?.moo }}
                 </span>
                 <span *ngIf="customer?.soi || transaction.data.customer?.soi">
@@ -114,13 +123,11 @@
                 <span *ngIf="customer?.street || transaction.data.customer?.street">
                   {{ 'ถนน' | translate }} {{ customer?.street || transaction.data.customer?.street }}
                 </span>
-                <span
-                  *ngIf="customer?.province === 'กรุงเทพมหานคร' || transaction.data.customer?.province === 'กรุงเทพมหานคร'">
+                <span *ngIf="customer?.province === 'กรุงเทพมหานคร' || transaction.data.customer?.province === 'กรุงเทพมหานคร'">
                   {{ 'แขวง' | translate }}{{ customer?.tumbol || transaction.data.customer?.tumbol }}
                   {{ 'เขต' | translate }}{{ customer?.amphur || transaction.data.customer?.amphur }}
                 </span>
-                <span
-                  *ngIf="customer?.province !== 'กรุงเทพมหานคร' || transaction.data.customer?.province !== 'กรุงเทพมหานคร'">
+                <span *ngIf="customer?.province !== 'กรุงเทพมหานคร' || transaction.data.customer?.province !== 'กรุงเทพมหานคร'">
                   {{ 'ตำบล' | translate }}{{ customer?.tumbol || transaction.data.customer?.tumbol }}
                   {{ 'อำเภอ' | translate }}{{ customer?.amphur || transaction.data.customer?.amphur }}
                 </span>
