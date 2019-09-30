@@ -29,6 +29,9 @@ import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { NewRegisterMnpRoutingModule } from './new-register-mnp-routing.module';
 import { TranslateModule } from '@ngx-translate/core';
 import { NewRegisterMnpPersoSimPageComponent } from './containers/new-register-mnp-perso-sim-page/new-register-mnp-perso-sim-page.component';
+import { NewRegisterMnpValidateCustomerPageComponent } from './containers/new-register-mnp-validate-customer-page/new-register-mnp-validate-customer-page.component';
+import { NewRegisterMnpValidateCustomerKeyInPageComponent } from './containers/new-register-mnp-validate-customer-key-in-page/new-register-mnp-validate-customer-key-in-page.component';
+import { NewRegisterMnpValidateCustomerIdCardPageComponent } from './containers/new-register-mnp-validate-customer-id-card-page/new-register-mnp-validate-customer-id-card-page.component';
 
 @NgModule({
   imports: [
@@ -65,6 +68,9 @@ import { NewRegisterMnpPersoSimPageComponent } from './containers/new-register-m
     NewRegisterMnpQrCodeResultPageComponent,
     NewRegisterMnpSelectPackageOntopPageComponent,
     NewRegisterMnpPersoSimPageComponent,
+    NewRegisterMnpValidateCustomerPageComponent,
+    NewRegisterMnpValidateCustomerKeyInPageComponent,
+    NewRegisterMnpValidateCustomerIdCardPageComponent,
   ]
 })
 export class NewRegisterMnpModule { }

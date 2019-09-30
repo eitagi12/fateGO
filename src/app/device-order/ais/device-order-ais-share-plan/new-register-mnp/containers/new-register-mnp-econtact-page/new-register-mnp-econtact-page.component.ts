@@ -45,7 +45,6 @@ export class NewRegisterMnpEcontactPageComponent implements OnInit, OnDestroy {
     private translationService: TranslateService) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
-
     this.currentLang = this.translationService.currentLang || 'TH';
     this.translationSubcription = this.translationService.onLangChange.subscribe(lang => {
       this.currentLang = typeof (lang) === 'object' ? lang.lang : lang;
@@ -70,10 +69,8 @@ export class NewRegisterMnpEcontactPageComponent implements OnInit, OnDestroy {
     this.homeService.goToHome();
   }
   callService(): void {
-    // http://10.137.16.46:8080/api/salesportal/promotion-shelves/promotion/condition
     const user = this.tokenService.getUser();
     const campaign: any = this.priceOption.campaign || {};
-    const trade: any = this.priceOption.trade || {};
     this.pageLoadingService.openLoading();
     this.http.post('/api/salesportal/promotion-shelves/promotion/condition', {
       conditionCode: campaign.conditionCode,
