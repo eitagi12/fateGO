@@ -54,8 +54,6 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
     if (!this.transaction.data.billingInformation) {
       this.transaction.data.billingInformation = {};
     }
-
-    this.member = {memberMobileNo: '0910045268'};
   }
 
   ngOnInit(): void {
@@ -75,10 +73,17 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
       lastName: customer.lastName,
       idCardNo: customer.idCardNo,
       mobileNo: simCard.mobileNo,
-      mainPackage: mainPackage.title,
+      mainPackage: this.changeMainPackageLanguage(mainPackage),
       onTopPackage: '',
-      packageDetail: mainPackage.detailTH
+      packageDetail: this.changePackageDetailLanguage(mainPackage)
     };
+
+    this.member = {memberMobileNo: '0910045268'};
+
+    this.translateSubscription = this.translateService.onLangChange.subscribe(() => {
+      this.confirmCustomerInfo.mainPackage = this.changeMainPackageLanguage(mainPackage);
+      this.confirmCustomerInfo.packageDetail = this.changePackageDetailLanguage(mainPackage);
+    });
 
     this.mailBillingInfo = {
       email: billingInformation.billCycleData.email,
@@ -93,6 +98,14 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
     };
 
     this.initBillingInfo();
+  }
+
+  changePackageDetailLanguage(mainPackage: MainPackage): string {
+    return (this.translateService.currentLang === 'TH') ? mainPackage.detailTH : mainPackage.detailEN;
+  }
+
+  changeMainPackageLanguage(mainPackage: MainPackage): string {
+    return (this.translateService.currentLang === 'TH') ? mainPackage.title : (mainPackage.customAttributes || {}).shortNameEng;
   }
 
   initBillingInfo(): void {
@@ -257,7 +270,12 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
     this.homeService.goToHome();
   }
 
-  ngOnDestroy(): void { }
+  ngOnDestroy(): void {
+    if (this.translateSubscription) {
+      this.translateSubscription.unsubscribe();
+    }
+    this.transactionService.save(this.transaction);
+  }
 
   getBillChannel(): any {
     const mainPackage = this.transaction.data.mainPackage;
