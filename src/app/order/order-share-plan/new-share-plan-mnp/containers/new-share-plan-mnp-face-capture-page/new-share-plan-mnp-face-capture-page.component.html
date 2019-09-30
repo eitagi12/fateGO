@@ -16,13 +16,11 @@
           <h5 class="card-header bg-transparent text-center">{{ 'ถ่ายรูปผู้ขอใช้บริการ' | translate }}</h5>
           <div class="card-body ">
             <div class="camera-width">
-              <div *ngIf="!openCamera">
-                <img src="assets/images/icon/icon_people.png" class="icon-people" />
+              <div *ngIf="!openCamera" class="embed-responsive embed-responsive-4by3">
               </div>
               <div [hidden]="!(openCamera && !transaction?.data?.faceRecognition?.imageFaceUser)"
                 class="position-relative">
-                <img src="assets/images/icon/icon_people_line.png" class="icon-people-wrap" />
-                <mc-camera [flip]="true" [countdown]="5" [onTakePhoto]="camera" (completed)="onCameraCompleted($event)"
+                <mc-camera [flip]="true" [countdown]="0" [onTakePhoto]="camera" (completed)="onCameraCompleted($event)"
                   (error)="onCameraError($event)">
                 </mc-camera>
               </div>
@@ -41,9 +39,7 @@
                 <div *ngIf="!isAisNative()">
                   <a href="#" (click)="$event.preventDefault(); onOpenCamera(); camera.next();" class="text-pink"
                     *ngIf="!transaction?.data?.faceRecognition?.imageFaceUser">
-                    <img src="assets/images/icon/icon-camera.png" class="icon-camera">
-                    <br>
-                    <p>{{ 'กรุณากดปุ่มถ่ายรูป' | translate }}</p>
+                    <p>{{ 'ถ่ายรูป' | translate }}</p>
                   </a>
                   <a href="#" (click)="$event.preventDefault(); onClearIdCardImage()" class="text-pink" *ngIf="transaction?.data?.faceRecognition?.imageFaceUser">
                     {{ 'ถ่ายรูปใหม่' | translate }}

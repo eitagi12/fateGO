@@ -49,10 +49,6 @@ export class NewSharePlanMnpFaceCapturePageComponent implements OnInit, OnDestro
     this.openCamera = true;
   }
 
-  private switchLanguage(lang: string): void {
-    // this.i18nService.setLang(lang);
-  }
-
   onCameraCompleted(image: string): void {
     const cropOption = {
       sizeWidth: 160,
