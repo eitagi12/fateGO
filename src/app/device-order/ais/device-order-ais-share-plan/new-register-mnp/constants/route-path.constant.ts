@@ -1,3 +1,6 @@
+export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_PAGE = '/device-order/ais/share-plan/new-register-mnp/validate-customer';
+export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE = '/device-order/ais/share-plan/new-register-mnp/validate-customer-key-in';
+export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE = '/device-order/ais/share-plan/new-register-mnp/validate-customer-id-card';
 export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE = '/device-order/ais/share-plan/new-register-mnp/customer-info';
 export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_PACKAGE_PAGE = '/device-order/ais/share-plan/new-register-mnp/select-package';
 export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CONFIRM_USER_INFORMATION_PAGE = '/device-order/ais/share-plan/new-register-mnp/confirm-user-information';

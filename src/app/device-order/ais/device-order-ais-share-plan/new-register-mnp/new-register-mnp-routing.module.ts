@@ -26,37 +26,43 @@ import { NewRegisterMnpEffectiveStartDatePageComponent } from './containers/new-
 import { NewRegisterMnpSelectPackageOntopPageComponent } from './containers/new-register-mnp-select-package-ontop-page/new-register-mnp-select-package-ontop-page.component';
 import { NewRegisterMnpPersoSimPageComponent } from './containers/new-register-mnp-perso-sim-page/new-register-mnp-perso-sim-page.component';
 import { NewRegisterMnpNetworkTypePageComponent } from './containers/new-register-mnp-network-type-page/new-register-mnp-network-type-page.component';
+import { NewRegisterMnpValidateCustomerPageComponent } from './containers/new-register-mnp-validate-customer-page/new-register-mnp-validate-customer-page.component';
+import { NewRegisterMnpValidateCustomerKeyInPageComponent } from './containers/new-register-mnp-validate-customer-key-in-page/new-register-mnp-validate-customer-key-in-page.component';
+import { NewRegisterMnpValidateCustomerIdCardPageComponent } from './containers/new-register-mnp-validate-customer-id-card-page/new-register-mnp-validate-customer-id-card-page.component';
 
 const routes: Routes = [
-    { path: 'customer-info', component: NewRegisterMnpCustomerInfoPageComponent },
-    { path: 'select-package', component: NewRegisterMnpSelectPackagePageComponent },
-    { path: 'confirm-user-information', component: NewRegisterMnpConfirmUserInformationPageComponent },
-    { path: 'ebilling-address', component: NewRegisterMnpEbillingAddressPageComponent },
-    { path: 'ebilling', component: NewRegisterMnpEbillingPageComponent },
-    { path: 'mobile-care', component: NewRegisterMnpMobileCarePageComponent },
-    { path: 'mobile-care-avalible', component: NewRegisterMnpMobileCareAvaliblePageComponent },
-    { path: 'summary', component: NewRegisterMnpSummaryPageComponent },
-    { path: 'econtact', component: NewRegisterMnpEcontactPageComponent },
-    { path: 'agreement-sign', component: NewRegisterMnpAgreementSignPageComponent },
-    { path: 'face-capture', component: NewRegisterMnpFaceCapturePageComponent },
-    { path: 'face-compare', component: NewRegisterMnpFaceComparePageComponent },
-    { path: 'face-confirm', component: NewRegisterMnpFaceConfirmPageComponent },
-    { path: 'aggregate', component: NewRegisterMnpAggregatePageComponent },
-    { path: 'queue', component: NewRegisterMnpQueuePageComponent },
-    { path: 'result', component: NewRegisterMnpResultPageComponent },
-    { path: 'qr-code-summary', component: NewRegisterMnpQrCodeSummaryPageComponent },
-    { path: 'qr-code-queue', component: NewRegisterMnpQrCodeQueuePageComponent },
-    { path: 'qr-code-generator', component: NewRegisterMnpQrCodeGeneratorPageComponent },
-    { path: 'qr-code-result', component: NewRegisterMnpQrCodeResultPageComponent },
-    { path: 'eligible-mobile', component: NewRegisterMnpEligibleMobilePageComponent },
-    { path: 'mobile-detail', component: NewRegisterMnpMobileDetailPageComponent },
-    { path: 'effective-start-date', component: NewRegisterMnpEffectiveStartDatePageComponent },
-    { path: 'select-package-ontop', component: NewRegisterMnpSelectPackageOntopPageComponent },
-    { path: 'perso-sim', component: NewRegisterMnpPersoSimPageComponent },
-    { path: 'network-type', component: NewRegisterMnpNetworkTypePageComponent },
-  ];
-  @NgModule({
-    imports: [RouterModule.forChild(routes)],
-    exports: [RouterModule]
-  })
-  export class NewRegisterMnpRoutingModule { }
+  { path: 'validate-customer', component: NewRegisterMnpValidateCustomerPageComponent },
+  { path: 'validate-customer-key-in', component: NewRegisterMnpValidateCustomerKeyInPageComponent },
+  { path: 'validate-customer-id-card', component: NewRegisterMnpValidateCustomerIdCardPageComponent },
+  { path: 'customer-info', component: NewRegisterMnpCustomerInfoPageComponent },
+  { path: 'select-package', component: NewRegisterMnpSelectPackagePageComponent },
+  { path: 'confirm-user-information', component: NewRegisterMnpConfirmUserInformationPageComponent },
+  { path: 'ebilling-address', component: NewRegisterMnpEbillingAddressPageComponent },
+  { path: 'ebilling', component: NewRegisterMnpEbillingPageComponent },
+  { path: 'mobile-care', component: NewRegisterMnpMobileCarePageComponent },
+  { path: 'mobile-care-avalible', component: NewRegisterMnpMobileCareAvaliblePageComponent },
+  { path: 'summary', component: NewRegisterMnpSummaryPageComponent },
+  { path: 'econtact', component: NewRegisterMnpEcontactPageComponent },
+  { path: 'agreement-sign', component: NewRegisterMnpAgreementSignPageComponent },
+  { path: 'face-capture', component: NewRegisterMnpFaceCapturePageComponent },
+  { path: 'face-compare', component: NewRegisterMnpFaceComparePageComponent },
+  { path: 'face-confirm', component: NewRegisterMnpFaceConfirmPageComponent },
+  { path: 'aggregate', component: NewRegisterMnpAggregatePageComponent },
+  { path: 'queue', component: NewRegisterMnpQueuePageComponent },
+  { path: 'result', component: NewRegisterMnpResultPageComponent },
+  { path: 'qr-code-summary', component: NewRegisterMnpQrCodeSummaryPageComponent },
+  { path: 'qr-code-queue', component: NewRegisterMnpQrCodeQueuePageComponent },
+  { path: 'qr-code-generator', component: NewRegisterMnpQrCodeGeneratorPageComponent },
+  { path: 'qr-code-result', component: NewRegisterMnpQrCodeResultPageComponent },
+  { path: 'eligible-mobile', component: NewRegisterMnpEligibleMobilePageComponent },
+  { path: 'mobile-detail', component: NewRegisterMnpMobileDetailPageComponent },
+  { path: 'effective-start-date', component: NewRegisterMnpEffectiveStartDatePageComponent },
+  { path: 'select-package-ontop', component: NewRegisterMnpSelectPackageOntopPageComponent },
+  { path: 'perso-sim', component: NewRegisterMnpPersoSimPageComponent },
+  { path: 'network-type', component: NewRegisterMnpNetworkTypePageComponent },
+];
+@NgModule({
+  imports: [RouterModule.forChild(routes)],
+  exports: [RouterModule]
+})
+export class NewRegisterMnpRoutingModule { }
