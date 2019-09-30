@@ -8,7 +8,7 @@ import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.consta
 })
 export class NewSharePlanMnpPersoSimMnpPageComponent implements OnInit {
   wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
-  title: string ='กรุณาเสียบซิมการ์ด';
+  title: string = 'กรุณาเสียบซิมการ์ด';
   constructor() { }
 
   ngOnInit(): void {
