@@ -1,3 +1,48 @@
-<p>
-  new-share-plan-mnp-perso-sim-mnp-page works!
-</p>
+<div class="mc-flex">
+  <mc-header title="{{ 'เปิดเบอร์ใหม่' | translate }}">
+    <div class="header-icon-left w-25">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+    </div>
+    <div class="header-icon-right w-25 text-right">
+      <mc-dropdown-language></mc-dropdown-language>
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+    </div>
+  </mc-header>
+
+  <div class="mc-flex-wrap ">
+    <div class="pt-3 pb-3">
+      <div class="container">
+        <div class="mb-3 mt-3 bg-gral">
+          <mc-wizard [wizards]="wizards" active="3"></mc-wizard>
+        </div>
+      </div>
+      
+        <div class="card mb-3 bg-white">
+
+          <div class="card-header bg-light-blue text-white ">
+            <img src="assets/images/icon/icon-circle-ais-post-logo.png" class="icon-post-piad mr-2" />
+            {{ 'Post paid' | translate }}
+          </div>
+          <p class="m-3">1. {{ '0996244546' | mobileNo }} (เบอร์โทรสมาชิก- เบอร์ย้ายค่าย)</p>
+
+
+          <img src="assets/images/icon/icon-ReadIDCard-01.png" class="icon-read-card" />
+          <img src="assets/images/icon/icon-input-sim.png" class="icon-perso-sim" />
+          <div class="text-center mt-3 mb-3" translate>{{ title }}</div>
+          <!-- <span _ngcontent-iuu-115="" class="progress-header" id="lblRegNumConfirmScanSimState">กรุณาเสียบซิมการ์ด</span> -->
+          <div class="progress mb-5 mx-5">
+            <div class="progress-bar bg-success" role="progressbar" [style.width.%]="persoSim?.progress"
+              [attr.aria-valuenow]="persoSim?.progress" aria-valuemin="0" aria-valuemax="100"></div>
+          </div>
+          <div class="text-center mt-3 mb-3 text-red" translate>{{ errorMessage }}</div>
+          <div class="line-behind" *ngIf="option?.key_sim">
+          </div>
+        </div>
+      
+    </div>
+  </div>
+  <mc-footer>
+    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <!-- <button class="btn btn-success" (click)="onNext()" [disabled]="!isNext">NEXT</button> -->
+  </mc-footer>
+</div>
