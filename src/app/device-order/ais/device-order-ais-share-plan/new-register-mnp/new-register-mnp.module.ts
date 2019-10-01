@@ -75,11 +75,8 @@ import { NewRegisterMnpSelectNumberComponent } from './containers/new-register-m
     NewRegisterMnpValidateCustomerKeyInPageComponent,
     NewRegisterMnpValidateCustomerIdCardPageComponent,
     NewRegisterMnpNetworkTypePageComponent,
-<<<<<<< HEAD
     NewRegisterMnpVerifyInstantSimPageComponent,
-=======
     NewRegisterMnpSelectNumberComponent,
->>>>>>> 23971f584385c3a5f7a34b78fd7dd8c8dc9f9944
   ]
 })
 export class NewRegisterMnpModule { }
