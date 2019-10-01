@@ -98,7 +98,7 @@ export interface Omise {
   qrAirtimeTransId?: string;
   qrAirtimeAmt?: string;
   qrOrderId?: string;
-  redirectUrl?: string;
+  qrCodeStr?: string;
 }
 
 export interface Condition {

@@ -97,6 +97,22 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
     console.log('user', user);
     const simCard = this.transaction.data && this.transaction.data.simCard;
     const customer = this.transaction.data && this.transaction.data.customer;
+    const priceOption = this.priceOption.productDetail;
+    const productStock = this.priceOption.productStock;
+    const trade = this.priceOption && this.priceOption.trade;
+    const description = trade && trade.advancePay && trade.advancePay.description;
+    const packge = this.summaryPageService.advanpayDescription(description.description);
+    // const orderList: any = [{
+    //   name: priceOption.name + 'สี' + productStock.color,
+    //   price: trade.promotionPrice
+    // }, {
+    //   name: packge,
+    //   price: trade.advancePay.amount
+    // }];
+    const orderList: any = [{
+      name: priceOption.name + 'สี' + productStock.color,
+      price: trade.promotionPrice
+    }];
     const params: any = {
       companyCode: 'AWN',
       companyName: 'บริษัท แอดวานซ์ ไวร์เลส เน็ทเวอร์ค จำกัด',
@@ -104,13 +120,13 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
       locationName: 'สาขาเซ็นทรัลภูเก็ต',
       mobileNo: simCard.mobileNo,
       customer: customer.firstName + '' + customer.lastName,
-      orderList: [],
+      orderList: orderList,
     };
     this.qrCodeOmisePageService.createOrder(params).then((res) => {
       console.log('res', res);
       const redirectUrl = res && res.data;
       this.transaction.data.omise = {
-        redirectUrl: redirectUrl.redirectUrl,
+        qrCodeStr: redirectUrl.redirectUrl,
       };
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_OMISE_GENERATOR_PAGE]);
 
