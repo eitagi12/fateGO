@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { MobileCare, ShoppingCart, HomeService, PageLoadingService, AlertService, MobileInfo } from 'mychannel-shared-libs';
@@ -15,6 +14,7 @@ import { Profile } from 'selenium-webdriver/firefox';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscribable, Subscription } from 'rxjs';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_ELIGIBLE_MOBILE_PAGE } from '../../constants/route-path.constant';
+import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 
 @Component({
   selector: 'app-new-register-mnp-mobile-detail-page',
@@ -22,7 +22,7 @@ import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_ELIGIBLE_MOBILE_PAGE
   styleUrls: ['./new-register-mnp-mobile-detail-page.component.scss']
 })
 export class NewRegisterMnpMobileDetailPageComponent implements OnInit, OnDestroy {
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN;
   priceOption: PriceOption;
   transaction: Transaction;
   shoppingCart: ShoppingCart;

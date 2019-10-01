@@ -9,8 +9,21 @@
   </mc-header>
   <div class="mc-flex-wrap bg-white">
     <div class="my-3 ">
-
       <div class="container pt-3">
+        <div class="my-3 text-center">
+          <p translate>เบอร์หลัก 088-888-8888 ทำรายการสำเร็จ{{ transaction?.data?.simCard?.mobileNo | mobileNo }}</p>
+          <p translate>Sim Serial เบอร์หลัก 123xxx {{ transaction?.data?.simCard?.mobileNo | mobileNo }}</p>
+        </div>
+        <br>
+        <div class="my-3 text-center">
+          <p translate>เบอร์สมาชิก 099-999-9999 ทำรายการสำเร็จ{{ transaction?.data?.simCard?.mobileNo | mobileNo }}</p>
+          <p translate>Sim Serial เบอร์สมาชิก 123xxx {{ transaction?.data?.simCard?.mobileNo | mobileNo }}</p>
+        </div>
+        <br>
+        <div class="my-3 text-center">
+          <p translate>( ซิมใช้งานได้เมื่อได้รับ SMS ยืนยัน )</p>
+          <p translate>--------------------------------------------------</p>
+        </div>
         <img src="assets/images/icon/sales_portal_white_check.png" class="d-block m-auto icon">
         <div class="my-3 text-center text-green">
           <p>{{'หมายเลข' | translate}} {{ transaction?.data?.simCard?.mobileNo | mobileNo }}</p>
@@ -26,10 +39,7 @@
             </small>
           </div>
         </form>
-
       </div>
-
-
     </div>
   </div>
   <mc-footer>

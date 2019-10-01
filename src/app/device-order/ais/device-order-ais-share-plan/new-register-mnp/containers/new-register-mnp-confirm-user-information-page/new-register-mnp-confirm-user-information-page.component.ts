@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { HomeService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
-import { WIZARD_DEVICE_ORDER_AIS } from '../../../../../constants/wizard.constant';
 import {
   ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_EDIT_BILLING_ADDRESS_PAGE,
   ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_EBILLING_PAGE,
@@ -15,6 +14,7 @@ import {
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
+import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 
 @Component({
   selector: 'app-new-register-mnp-confirm-user-information-page',
@@ -22,7 +22,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./new-register-mnp-confirm-user-information-page.component.scss']
 })
 export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit, OnDestroy {
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN;
 
   transaction: Transaction;
   confirmCustomerInfo: ConfirmCustomerInfo;

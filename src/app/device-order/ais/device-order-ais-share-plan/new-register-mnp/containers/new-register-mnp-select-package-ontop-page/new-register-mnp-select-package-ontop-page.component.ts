@@ -1,5 +1,4 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TranslateService } from '@ngx-translate/core';
 import { ShoppingCart, PageLoadingService, HomeService } from 'mychannel-shared-libs';
@@ -11,6 +10,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { debounceTime } from 'rxjs/operators';
 import * as moment from 'moment';
+import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 
 @Component({
   selector: 'app-new-register-mnp-select-package-ontop-page',
@@ -20,7 +20,7 @@ import * as moment from 'moment';
 export class NewRegisterMnpSelectPackageOntopPageComponent implements OnInit, OnDestroy {
 
   @ViewChild('detailTemplate')
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN;
   transaction: Transaction;
   shoppingCart: ShoppingCart;
   packageOntopForm: FormGroup;

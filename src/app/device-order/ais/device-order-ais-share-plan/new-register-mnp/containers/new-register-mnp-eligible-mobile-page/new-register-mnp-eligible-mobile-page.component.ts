@@ -6,11 +6,11 @@ import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
-import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { CheckChangeServiceService } from 'src/app/device-order/services/check-change-service.service';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_MOBILE_DETAIL_PAGE } from '../../constants/route-path.constant';
+import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 
 @Component({
   selector: 'app-new-register-mnp-eligible-mobile-page',
@@ -18,7 +18,7 @@ import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE, 
   styleUrls: ['./new-register-mnp-eligible-mobile-page.component.scss']
 })
 export class NewRegisterMnpEligibleMobilePageComponent implements OnInit, OnDestroy {
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN;
 
   eligibleMobiles: Array<EligibleMobile>;
   selectMobileNo: EligibleMobile;

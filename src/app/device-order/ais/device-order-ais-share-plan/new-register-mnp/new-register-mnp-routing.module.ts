@@ -30,6 +30,7 @@ import { NewRegisterMnpValidateCustomerPageComponent } from './containers/new-re
 import { NewRegisterMnpValidateCustomerKeyInPageComponent } from './containers/new-register-mnp-validate-customer-key-in-page/new-register-mnp-validate-customer-key-in-page.component';
 import { NewRegisterMnpValidateCustomerIdCardPageComponent } from './containers/new-register-mnp-validate-customer-id-card-page/new-register-mnp-validate-customer-id-card-page.component';
 import { NewRegisterMnpVerifyInstantSimPageComponent } from './containers/new-register-mnp-verify-instant-sim-page/new-register-mnp-verify-instant-sim-page.component';
+import { NewRegisterMnpSelectNumberComponent } from './containers/new-register-mnp-select-number/new-register-mnp-select-number.component';
 
 const routes: Routes = [
   { path: 'validate-customer', component: NewRegisterMnpValidateCustomerPageComponent },
@@ -59,6 +60,7 @@ const routes: Routes = [
   { path: 'eligible-mobile', component: NewRegisterMnpEligibleMobilePageComponent },
   { path: 'mobile-detail', component: NewRegisterMnpMobileDetailPageComponent },
   { path: 'effective-start-date', component: NewRegisterMnpEffectiveStartDatePageComponent },
+  { path: 'select-number', component: NewRegisterMnpSelectNumberComponent },
   { path: 'select-package-ontop', component: NewRegisterMnpSelectPackageOntopPageComponent },
   { path: 'perso-sim', component: NewRegisterMnpPersoSimPageComponent },
   { path: 'network-type', component: NewRegisterMnpNetworkTypePageComponent },

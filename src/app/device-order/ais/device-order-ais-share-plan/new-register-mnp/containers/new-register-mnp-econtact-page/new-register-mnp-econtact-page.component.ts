@@ -1,5 +1,4 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { ShoppingCart, HomeService, TokenService, PageLoadingService, IdCardPipe, Utils } from 'mychannel-shared-libs';
@@ -15,6 +14,7 @@ import { CreateEcontractService } from 'src/app/shared/services/create-econtract
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_AGREEMENT_SIGN_PAGE } from '../../constants/route-path.constant';
+import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 
 @Component({
   selector: 'app-new-register-mnp-econtact-page',
@@ -23,7 +23,7 @@ import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_SUMMARY_PAGE, ROUTE_
   providers: [IdCardPipe, DecimalPipe]
 })
 export class NewRegisterMnpEcontactPageComponent implements OnInit, OnDestroy {
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN;
 
   priceOption: PriceOption;
   transaction: Transaction;
