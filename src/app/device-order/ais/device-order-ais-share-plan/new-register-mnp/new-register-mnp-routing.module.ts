@@ -29,12 +29,14 @@ import { NewRegisterMnpNetworkTypePageComponent } from './containers/new-registe
 import { NewRegisterMnpValidateCustomerPageComponent } from './containers/new-register-mnp-validate-customer-page/new-register-mnp-validate-customer-page.component';
 import { NewRegisterMnpValidateCustomerKeyInPageComponent } from './containers/new-register-mnp-validate-customer-key-in-page/new-register-mnp-validate-customer-key-in-page.component';
 import { NewRegisterMnpValidateCustomerIdCardPageComponent } from './containers/new-register-mnp-validate-customer-id-card-page/new-register-mnp-validate-customer-id-card-page.component';
+import { NewRegisterMnpVerifyInstantSimPageComponent } from './containers/new-register-mnp-verify-instant-sim-page/new-register-mnp-verify-instant-sim-page.component';
 
 const routes: Routes = [
   { path: 'validate-customer', component: NewRegisterMnpValidateCustomerPageComponent },
   { path: 'validate-customer-key-in', component: NewRegisterMnpValidateCustomerKeyInPageComponent },
   { path: 'validate-customer-id-card', component: NewRegisterMnpValidateCustomerIdCardPageComponent },
   { path: 'customer-info', component: NewRegisterMnpCustomerInfoPageComponent },
+  { path: 'verify-instant-sim', component: NewRegisterMnpVerifyInstantSimPageComponent},
   { path: 'select-package', component: NewRegisterMnpSelectPackagePageComponent },
   { path: 'confirm-user-information', component: NewRegisterMnpConfirmUserInformationPageComponent },
   { path: 'ebilling-address', component: NewRegisterMnpEbillingAddressPageComponent },

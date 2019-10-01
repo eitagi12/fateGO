@@ -14,6 +14,7 @@ import { HttpClient } from '@angular/common/http';
 import { Profile } from 'selenium-webdriver/firefox';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscribable, Subscription } from 'rxjs';
+import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_ELIGIBLE_MOBILE_PAGE } from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-new-register-mnp-mobile-detail-page',
@@ -58,7 +59,7 @@ export class NewRegisterMnpMobileDetailPageComponent implements OnInit, OnDestro
   }
 
   onBack(): void {
-    // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_ELIGIBLE_MOBILE_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_ELIGIBLE_MOBILE_PAGE]);
   }
 
   onNext(): void {
@@ -109,7 +110,6 @@ export class NewRegisterMnpMobileDetailPageComponent implements OnInit, OnDestro
       data.billingAccountList.forEach(list => billingAccountList.push(list));
       billingAccountList.forEach(billings => mobileNoList.push(billings.mobileNo));
 
-      // เช็คเบอร์ที่ทำรายการซ้ำกับ BA
       let isAirtime: boolean = false;
       if (this.priceOption.trade) {
         const trade = this.priceOption.trade;
