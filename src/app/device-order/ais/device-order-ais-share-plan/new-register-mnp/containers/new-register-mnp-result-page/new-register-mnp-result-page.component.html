@@ -13,15 +13,15 @@
                   <div>{{ 'ทำรายการสำเร็จ' | translate }}</div>
                   <hr>
                   <div>{{ 'เบอร์หลัก' | translate }} {{ mobileNo | mobileNo }} {{ 'ทำรายการสำเร็จ' | translate }}</div>
-                  <div>SIM Serial {{ 'เบอร์หลัก' | translate }}: {{ mainSimSerail || mainSimSerail }}</div>
+                  <div>SIM Serial {{ 'เบอร์หลัก' | translate }}: {{ mainSimSerail || '191xxxxxxxxxx' }}</div>
                   <div>{{ 'เบอร์สมาชิก' | translate }} {{ memberMobileNo | mobileNo }} {{ 'ทำรายการสำเร็จ' | translate }}
                   </div>
-                  <div>SIM Serial {{ 'เบอร์สมาชิก' | translate }}: {{ memberSimSerail || memberSimSerail }}</div>
+                  <div>SIM Serial {{ 'เบอร์สมาชิก' | translate }}: {{ memberSimSerail || '191xxxxxxxxxx' }}</div>
                   <div>(ซิมใช้งานได้เมื่อได้รับ SMS ยืนยัน)</div>
-                  <hr>
                   <div class="container">
                     <div class="pb-5">
                       <div>
+                        <br>
                         <div class="container text-center text-green mb-5 message-status" translate>
                           รายการสั่งซื้อของท่านได้เข้าสู่ระบบเรียบร้อยแล้ว
                         </div>
