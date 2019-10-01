@@ -11,6 +11,9 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
+import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_PAGE,
+         ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE
+       } from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-new-register-mnp-payment-detail-page',
@@ -146,7 +149,7 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
   }
 
   onBack(): void {
-    //  this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_DETAIL_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_PAGE]);
   }
 
   isNext(): boolean {
@@ -154,11 +157,11 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
   }
 
   onNext(): void {
-    // this.transaction.data.payment = this.paymentDetailTemp.payment;
-    // this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;
-    // this.transaction.data.receiptInfo = this.receiptInfoTemp;
+    this.transaction.data.payment = this.paymentDetailTemp.payment;
+    this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;
+    this.transaction.data.receiptInfo = this.receiptInfoTemp;
 
-  //  this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_SELECT_PACKAGE_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE]);
   }
 
   onHome(): void {

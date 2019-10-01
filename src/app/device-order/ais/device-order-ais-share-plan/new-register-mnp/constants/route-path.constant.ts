@@ -30,3 +30,4 @@ export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_PACKAGE_O
 export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PERSO_SIM_PAGE = '/device-order/ais/share-plan/new-register-mnp/perso-sim';
 export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_NETWORK_TYPE = '/device-order/ais/share-plan/new-register-mnp/network-type';
 export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VERIFY_INSTANT_SIM_PAGE =  '/device-order/ais/share-plan/new-register-mnp/verify-instant-sim';
+export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE =  '/device-order/ais/share-plan/new-register-mnp/payment-detail';
