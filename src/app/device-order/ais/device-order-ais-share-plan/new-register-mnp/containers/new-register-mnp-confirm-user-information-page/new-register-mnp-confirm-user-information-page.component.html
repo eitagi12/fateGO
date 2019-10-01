@@ -41,13 +41,16 @@
             <div class="row">
               <div class="col-5 col-sm-3">
                 <div>
-                  <label class="text-lime mr-3">{{ 'หมายเลขหลัก' | translate }}</label>
+                  <label class="text-lime mr-3">{{ 'เบอร์โทรหลัก' | translate }}</label>
                 </div>
                 <div>
                   <label class="text-lime mr-3">{{ 'แพ็กเกจหลัก' | translate }}</label>
                 </div>
                 <div>
-                  <label class="text-lime mr-3">{{ 'หมายเลขสมาชิก' | translate }}</label>
+                  <label class="text-lime mr-3">{{ 'เบอร์โทรสมาชิก' | translate }}</label>
+                </div>
+                <div>
+                  <label class="text-lime mr-3">{{ 'แพ็กเกจหลัก' | translate }}</label>
                 </div>
               </div>
               <div class="col-5 col-sm-7">
@@ -58,7 +61,10 @@
                   <label>{{ confirmCustomerInfo?.mainPackage }}</label>
                 </div>
                 <div>
-                  <label>{{ member.memberMobileNo | mobileNo }}</label>
+                  <label>{{ member.mobileNo | mobileNo }}</label>
+                </div>
+                <div>
+                  <label>{{ member.mainPackage }}</label>
                 </div>
               </div>
               <div class="col-2 col-sm-2 text-right">
@@ -83,8 +89,48 @@
       <!-- <mc-confirm-customer-info [confirmCustomerInfo]="confirmCustomerInfo">
       </mc-confirm-customer-info> -->
 
-      <mc-billing-info [billingInfo]="billingInfo" (editAddress)="onEditAddress()">
-      </mc-billing-info>
+      <div class="container-fluid">
+        <div class="card mb-3">
+          <div class="card-header bg-light-blue text-white">{{ 'ข้อมูลลูกค้า' | translate }}</div>
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item">
+              <p>
+                <i class="fa fa-circle text-lime mr-2"></i>
+                <span>
+                  {{ 'รวมบิลกับหมายเลขหลัก' | translate }}
+                </span>
+                <a href="#" class="pull-right" [hidden]="view" *ngIf="billingInfo?.billingMethod?.isEdit" (click)="$event.preventDefault(); billingInfo?.billingMethod?.onEdit()">Edit</a>
+                <br>
+                <a href="#" class="pull-right" [hidden]="view" *ngIf="billingInfo?.billingMethod?.isDelete" (click)="$event.preventDefault(); billingInfo?.billingMethod?.onDelete()">Delete</a>
+              </p>
+              <div class="text-grey">{{ confirmCustomerInfo?.mobileNo | mobileNo }}</div>
+            </li>
+            <li class="list-group-item">
+              <p>
+                <i class="fa fa-circle text-lime mr-2"></i>
+                <span>{{ 'ที่อยู่จัดส่งเอกสาร' | translate }}</span>
+                <span class="text-red"> *</span>
+                <a href="#" class="pull-right" [hidden]="view" *ngIf="billingInfo?.billingAddress?.isEdit" (click)="$event.preventDefault(); billingInfo?.billingAddress?.onEdit()">Edit</a>
+              </p>
+              <div class="text-grey">{{ billingInfo?.billingAddress?.text }}</div>
+            </li>
+            <li class="list-group-item">
+              <p>
+                <i class="fa fa-circle text-lime mr-2"></i>
+                <span translate>รอบบิล</span>
+                <a href="#" class="pull-right" [hidden]="view" *ngIf="billingInfo?.billingCycle?.isEdit" (click)="$event.preventDefault(); billingInfo?.billingCycle?.onEdit()">Edit</a>
+                <br>
+                <a href="#" class="pull-right" [hidden]="view" *ngIf="billingInfo?.billingCycle?.isDelete" (click)="$event.preventDefault(); billingInfo?.billingCycle?.onDelete()">Delete</a>
+              </p>
+              <div class="text-grey" [innerHTML]="getBillCycleText(billingInfo?.billingCycle?.text)"></div>
+            </li>
+          </ul>
+      
+        </div>
+      </div>      
+
+      <!-- <mc-billing-info [billingInfo]="billingInfo" (editAddress)="onEditAddress()">
+      </mc-billing-info> -->
 
       <mc-mail-billing-info [eBill]="eBill" [disabled]="isPackageNetExtreme() || isMergeBilling()" [mailBillingInfo]="mailBillingInfo"
         (completed)="onMailBillingInfoCompleted($event)" (error)="onMailBillingInfoError($event)">

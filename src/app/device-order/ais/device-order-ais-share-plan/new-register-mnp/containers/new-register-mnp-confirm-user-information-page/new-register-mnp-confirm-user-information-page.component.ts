@@ -15,6 +15,8 @@ import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
+import * as moment from 'moment';
+const Moment = moment;
 
 @Component({
   selector: 'app-new-register-mnp-confirm-user-information-page',
@@ -50,6 +52,8 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
   ) {
     this.transaction = this.transactionService.load();
 
+    this.member = {mobileNo: '0910045268', mainPackage: '3G Member Share MNP UL SWifi 0 Baht'};
+
     // New register profile not found.
     if (!this.transaction.data.billingInformation) {
       this.transaction.data.billingInformation = {};
@@ -77,8 +81,6 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
       onTopPackage: '',
       packageDetail: this.changePackageDetailLanguage(mainPackage)
     };
-
-    this.member = {memberMobileNo: '0910045268'};
 
     this.translateSubscription = this.translateService.onLangChange.subscribe(() => {
       this.confirmCustomerInfo.mainPackage = this.changeMainPackageLanguage(mainPackage);
@@ -355,4 +357,18 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
     const billingInformation = this.transaction.data.billingInformation;
     return billingInformation ? (!!billingInformation.mergeBilling) : false;
   }
+
+  getBillCycleText(bill: string): string {
+    const bills = bill.split(' ');
+    if (this.translateService.currentLang === 'TH') {
+      return bill;
+    } else {
+      if (bills[3] === 'สิ้นเดือน') {
+        return `From the ${Moment([0, 0, bills[1]]).format('Do')} to the end of every month`;
+      } else {
+        return `From the ${Moment([0, 0, bills[1]]).format('Do')} to the ${Moment([0, 0, bills[3]]).format('Do')} of every month`;
+      }
+    }
+  }
+
 }
