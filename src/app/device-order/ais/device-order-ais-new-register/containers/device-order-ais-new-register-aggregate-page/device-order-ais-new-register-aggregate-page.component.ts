@@ -6,7 +6,8 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import {
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_FACE_COMPARE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_SUMMARY_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QUEUE_PAGE
+  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QUEUE_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_OMISE_SUMMARY_PAGE
 } from 'src/app/device-order/ais/device-order-ais-new-register/constants/route-path.constant';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
@@ -42,6 +43,8 @@ export class DeviceOrderAisNewRegisterAggregatePageComponent implements OnInit {
 
     if (payment.paymentType === 'QR_CODE' || advancePayment.paymentType === 'QR_CODE') {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_SUMMARY_PAGE]);
+    } else if (payment.paymentOnlineCredit) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_OMISE_SUMMARY_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QUEUE_PAGE]);
     }
