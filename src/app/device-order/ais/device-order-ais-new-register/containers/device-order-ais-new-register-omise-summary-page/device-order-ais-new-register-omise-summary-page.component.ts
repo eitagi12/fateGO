@@ -2,16 +2,15 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Transaction, Payment } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import {
-  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGGREGATE_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_GENERATOR_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_OMISE_GENERATOR_PAGE
+  ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGGREGATE_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_OMISE_GENERATOR_PAGE,
 } from '../../constants/route-path.constant';
 import { Router } from '@angular/router';
-import { HomeService, REGEX_MOBILE } from 'mychannel-shared-libs';
+import { HomeService, REGEX_MOBILE, TokenService, PageLoadingService } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { QrCodeOmisePageService } from 'src/app/device-order/services/qr-code-omise-page.service';
 @Component({
   selector: 'app-device-order-ais-new-register-omise-summary-page',
   templateUrl: './device-order-ais-new-register-omise-summary-page.component.html',
@@ -20,7 +19,6 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnInit, OnDestroy {
   transaction: Transaction;
   priceOption: PriceOption;
-  queueFrom: FormGroup;
 
   constructor(
     private router: Router,
@@ -28,25 +26,21 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
     public summaryPageService: SummaryPageService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
-    private fb: FormBuilder,
+    private qrCodeOmisePageService: QrCodeOmisePageService,
+    private tokenService: TokenService,
+    private pageLoadingService: PageLoadingService,
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
   }
 
   ngOnInit(): void {
-    if (!this.transaction.data.mpayPayment) {
-      this.createMpayStatus();
+    if (!this.transaction.data.omise) {
+      this.createOmiseStatus();
     }
-    this.createForm();
-  }
-  createForm(): void {
-    this.queueFrom = this.fb.group({
-      'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])],
-    });
   }
 
-  createMpayStatus(): void {
+  createOmiseStatus(): void {
     const company = this.priceOption.productStock.company;
     const trade = this.priceOption.trade;
     const payment: any = this.transaction.data.payment || {};
@@ -63,7 +57,7 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
       amountAirTime = advancePay.amount;
     }
 
-    this.transaction.data.mpayPayment = {
+    this.transaction.data.omise = {
       companyStock: company,
       mpayStatus: {
         amountDevice: amountDevice,
@@ -74,6 +68,7 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
         installmentFlag: advancePay.installmentFlag
       }
     };
+    console.log('mpayPayment', this.transaction.data.omise);
   }
 
   getStatusPay(): string {
@@ -82,7 +77,7 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
     const payment: any = this.transaction.data.payment || {};
     const advancePayment: any = this.transaction.data.advancePayment || {};
     if (company === 'AWN') {
-      if (payment.paymentType === 'QR_CODE' && advancePayment.paymentType === 'QR_CODE') {
+      if (payment.paymentOnlineCredit) {
         return 'DEVICE&AIRTIME';
       } else {
         return mpayPayment.mpayStatus.statusDevice === 'WAITING' ? 'DEVICE' : 'AIRTIME';
@@ -97,7 +92,34 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_OMISE_GENERATOR_PAGE]);
+    this.pageLoadingService.openLoading();
+    const user = this.tokenService.getUser();
+    console.log('user', user);
+    const simCard = this.transaction.data && this.transaction.data.simCard;
+    const customer = this.transaction.data && this.transaction.data.customer;
+    const params: any = {
+      companyCode: 'AWN',
+      companyName: 'บริษัท แอดวานซ์ ไวร์เลส เน็ทเวอร์ค จำกัด',
+      locationCode: user.locationCode,
+      locationName: 'สาขาเซ็นทรัลภูเก็ต',
+      mobileNo: simCard.mobileNo,
+      customer: customer.firstName + '' + customer.lastName,
+      orderList: [],
+    };
+    this.qrCodeOmisePageService.createOrder(params).then((res) => {
+      console.log('res', res);
+      const redirectUrl = res && res.data;
+      this.transaction.data.omise = {
+        redirectUrl: redirectUrl.redirectUrl,
+      };
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_OMISE_GENERATOR_PAGE]);
+
+    }).catch((err) => {
+      console.log('err', err);
+    }).then(() => {
+      this.pageLoadingService.closeLoading();
+    });
+
   }
 
   onHome(): void {
@@ -125,12 +147,13 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
       return this.summary([+trade.promotionPrice, +advancePay.amount]);
     }
 
-    if (payment.paymentType === 'QR_CODE') {
+    if (payment.paymentOnlineCredit) {
       total += +trade.promotionPrice;
     }
-    if (advancePayment.paymentType === 'QR_CODE') {
+    if (payment.paymentOnlineCredit) {
       total += +advancePay.amount;
     }
     return total;
   }
+
 }

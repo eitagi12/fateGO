@@ -13,6 +13,7 @@ import { CustomerInfoService } from './services/customer-info.service';
 import { QueuePageService } from './services/queue-page.service';
 import { QrCodePageService } from './services/qr-code-page.service';
 import { SummaryPageService } from './services/summary-page.service';
+import { QrCodeOmisePageService } from 'src/app/device-order/services/qr-code-omise-page.service';
 
 @NgModule({
   imports: [
@@ -30,7 +31,8 @@ import { SummaryPageService } from './services/summary-page.service';
     QrCodePageService,
     SummaryPageService,
     IdCardPipe,
-    DecimalPipe
+    DecimalPipe,
+    QrCodeOmisePageService
   ],
   declarations: [DeviceOrderComponent]
 })

@@ -34,7 +34,7 @@ export class DeviceOrderAisNewRegisterQrCodeSummaryPageComponent implements OnIn
 
   ngOnInit(): void {
     if (!this.transaction.data.mpayPayment) {
-        this.createMpayStatus();
+      this.createMpayStatus();
     }
   }
 
@@ -72,6 +72,7 @@ export class DeviceOrderAisNewRegisterQrCodeSummaryPageComponent implements OnIn
     const company = this.priceOption.productStock.company;
     const mpayPayment = this.transaction.data.mpayPayment;
     const payment: any = this.transaction.data.payment || {};
+    console.log('mpayPayment', mpayPayment);
     const advancePayment: any = this.transaction.data.advancePayment || {};
     if (company === 'AWN') {
       if (payment.paymentType === 'QR_CODE' && advancePayment.paymentType === 'QR_CODE') {
