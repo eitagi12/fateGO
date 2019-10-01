@@ -4,19 +4,19 @@ import { HomeService, CustomerAddress } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { WIZARD_DEVICE_ORDER_AIS } from '../../../../../constants/wizard.constant';
 // import { ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_CONFIRM_USER_INFORMATION_PAGE } from '../../constants/route-path.constant';
 import { Subscription } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { debounceTime } from 'rxjs/operators';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CONFIRM_USER_INFORMATION_PAGE } from '../../constants/route-path.constant';
+import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 @Component({
   selector: 'app-new-register-mnp-ebilling-address-page',
   templateUrl: './new-register-mnp-ebilling-address-page.component.html',
   styleUrls: ['./new-register-mnp-ebilling-address-page.component.scss']
 })
 export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDestroy {
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN;
 
   transaction: Transaction;
   customerAddress: CustomerAddress;

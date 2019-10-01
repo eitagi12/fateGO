@@ -4,7 +4,6 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { PromotionShelve, ShoppingCart, HomeService, PageLoadingService, BillingSystemType } from 'mychannel-shared-libs';
 import { BsModalRef } from 'ngx-bootstrap';
 import { Subscription } from 'rxjs';
-import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { Router } from '@angular/router';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -13,6 +12,7 @@ import { PromotionShelveService } from 'src/app/device-order/services/promotion-
 import { HttpClient } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CONFIRM_USER_INFORMATION_PAGE } from '../../constants/route-path.constant';
+import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 
 @Component({
   selector: 'app-new-register-mnp-select-package-page',
@@ -20,7 +20,7 @@ import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CONFIRM_USER_INFORMA
   styleUrls: ['./new-register-mnp-select-package-page.component.scss']
 })
 export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestroy {
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN;
 
   @ViewChild('conditionTemplate')
   conditionTemplate: any;

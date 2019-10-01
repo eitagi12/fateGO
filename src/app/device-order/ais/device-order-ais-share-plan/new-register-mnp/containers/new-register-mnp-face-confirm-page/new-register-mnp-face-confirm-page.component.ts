@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ShoppingCart, HomeService, PageLoadingService, AlertService } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
@@ -10,6 +9,7 @@ import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_COMPARE_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_AGREEMENT_SIGN_PAGE } from '../../constants/route-path.constant';
+import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 
 @Component({
   selector: 'app-new-register-mnp-face-confirm-page',
@@ -17,7 +17,7 @@ import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_COMPARE_PAGE, R
   styleUrls: ['./new-register-mnp-face-confirm-page.component.scss']
 })
 export class NewRegisterMnpFaceConfirmPageComponent implements OnInit {
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN;
 
   confirmForm: FormGroup;
   shoppingCart: ShoppingCart;

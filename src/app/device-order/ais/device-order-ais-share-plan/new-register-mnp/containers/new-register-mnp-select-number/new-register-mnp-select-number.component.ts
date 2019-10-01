@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
-import { WIZARD_DEVICE_ORDER_AIS } from '../../../../../constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
 import { HomeService, ShoppingCart } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE } from '../../constants/route-path.constant';
+import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 
 @Component({
   selector: 'app-new-register-mnp-select-number',
@@ -13,7 +13,7 @@ import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE }
   styleUrls: ['./new-register-mnp-select-number.component.scss']
 })
 export class NewRegisterMnpSelectNumberComponent implements OnInit {
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN;
   transaction: Transaction;
   shoppingCart: ShoppingCart;
 

@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { HomeService, AlertService, PageLoadingService, REGEX_MOBILE, ShoppingCart, PromotionShelve, BillingSystemType } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 import * as moment from 'moment';
 import { environment } from 'src/environments/environment';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
@@ -14,6 +13,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
+import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 
 @Component({
   selector: 'app-new-register-mnp-network-type-page',
@@ -22,7 +22,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 })
 export class NewRegisterMnpNetworkTypePageComponent implements OnInit, OnDestroy {
 
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN;
 
   transaction: Transaction;
   priceOption: PriceOption;
