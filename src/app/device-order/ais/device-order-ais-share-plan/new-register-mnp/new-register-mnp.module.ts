@@ -35,6 +35,7 @@ import { NewRegisterMnpValidateCustomerIdCardPageComponent } from './containers/
 import { NewRegisterMnpNetworkTypePageComponent } from './containers/new-register-mnp-network-type-page/new-register-mnp-network-type-page.component';
 import { NewRegisterMnpVerifyInstantSimPageComponent } from './containers/new-register-mnp-verify-instant-sim-page/new-register-mnp-verify-instant-sim-page.component';
 import { NewRegisterMnpSelectNumberComponent } from './containers/new-register-mnp-select-number/new-register-mnp-select-number.component';
+import { NewRegisterMnpPaymentDetailPageComponent } from './containers/new-register-mnp-payment-detail-page/new-register-mnp-payment-detail-page.component';
 
 @NgModule({
   imports: [
@@ -77,6 +78,7 @@ import { NewRegisterMnpSelectNumberComponent } from './containers/new-register-m
     NewRegisterMnpNetworkTypePageComponent,
     NewRegisterMnpVerifyInstantSimPageComponent,
     NewRegisterMnpSelectNumberComponent,
+    NewRegisterMnpPaymentDetailPageComponent
   ]
 })
 export class NewRegisterMnpModule { }

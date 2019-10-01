@@ -31,8 +31,10 @@ import { NewRegisterMnpValidateCustomerKeyInPageComponent } from './containers/n
 import { NewRegisterMnpValidateCustomerIdCardPageComponent } from './containers/new-register-mnp-validate-customer-id-card-page/new-register-mnp-validate-customer-id-card-page.component';
 import { NewRegisterMnpVerifyInstantSimPageComponent } from './containers/new-register-mnp-verify-instant-sim-page/new-register-mnp-verify-instant-sim-page.component';
 import { NewRegisterMnpSelectNumberComponent } from './containers/new-register-mnp-select-number/new-register-mnp-select-number.component';
+import { NewRegisterMnpPaymentDetailPageComponent } from './containers/new-register-mnp-payment-detail-page/new-register-mnp-payment-detail-page.component';
 
 const routes: Routes = [
+  { path: '', redirectTo: 'validate-customer', pathMatch: 'full' },
   { path: 'validate-customer', component: NewRegisterMnpValidateCustomerPageComponent },
   { path: 'validate-customer-key-in', component: NewRegisterMnpValidateCustomerKeyInPageComponent },
   { path: 'validate-customer-id-card', component: NewRegisterMnpValidateCustomerIdCardPageComponent },
@@ -64,6 +66,7 @@ const routes: Routes = [
   { path: 'select-package-ontop', component: NewRegisterMnpSelectPackageOntopPageComponent },
   { path: 'perso-sim', component: NewRegisterMnpPersoSimPageComponent },
   { path: 'network-type', component: NewRegisterMnpNetworkTypePageComponent },
+  { path: 'payment-detail', component: NewRegisterMnpPaymentDetailPageComponent }
 ];
 @NgModule({
   imports: [RouterModule.forChild(routes)],
