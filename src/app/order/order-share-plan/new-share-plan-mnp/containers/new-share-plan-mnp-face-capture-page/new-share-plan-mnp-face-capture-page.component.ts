@@ -1,10 +1,11 @@
 import { Component, OnInit, OnDestroy, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
-import { ROUTE_NEW_SHARE_PLAN_MNP_ID_CARD_CAPTURE_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_FACE_COMPARE_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_NEW_SHARE_PLAN_MNP_ID_CARD_CAPTURE_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_FACE_COMPARE_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE } from '../../constants/route-path.constant';
 import { TranslateService } from '@ngx-translate/core';
 import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
 import { Utils, HomeService, ImageUtils, AlertService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
+import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 
 @Component({
   selector: 'app-new-share-plan-mnp-face-capture-page',
@@ -15,8 +16,8 @@ export class NewSharePlanMnpFaceCapturePageComponent implements OnInit, OnDestro
 
   wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
   openCamera: boolean;
-  transaction: any;
   camera: EventEmitter<void> = new EventEmitter<void>();
+  transaction: Transaction;
 
   constructor(
     private router: Router,
@@ -34,7 +35,11 @@ export class NewSharePlanMnpFaceCapturePageComponent implements OnInit, OnDestro
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_ID_CARD_CAPTURE_PAGE]);
+    if (this.transaction.data.action === TransactionAction.READ_CARD) {
+      this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_ID_CARD_CAPTURE_PAGE]);
+    }
   }
 
   onNext(): void {
