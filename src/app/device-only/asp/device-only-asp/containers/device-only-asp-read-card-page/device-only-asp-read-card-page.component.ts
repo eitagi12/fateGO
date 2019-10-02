@@ -57,6 +57,10 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   public nameTextByCustomerPrepaid: string;
   public isShowCustomerAddressBySmartCard: boolean;
   private customerPrepaid: Customer;
+  // modal click drag
+  private onTouchScreen: boolean;
+  private currentScrollPosition: any = 0;
+  private scrollingPosition: any = 0;
 
   @ViewChild('progressBarArea')
   progressBarArea: ElementRef;
@@ -538,7 +542,8 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
       .then((res: any) => {
         if (res && res.data && res.data.billingAccountList) {
           this.listBillingAccount = res.data.billingAccountList.filter(item => (item.mobileNo && item.mobileNo[0].length > 0));
-          this.modalBillAddress = this.bsModalService.show(this.selectBillingAddressTemplate);
+          this.modalBillAddress = this.bsModalService.show(this.selectBillingAddressTemplate,
+            { backdrop: 'static', });
         } else {
           this.progressBarArea.nativeElement.style.display = 'none';
           this.alertService.notify({
@@ -748,12 +753,32 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
       });
   }
 
-  onPaymentDetailCompleted(payment: any): void {
+  private onPaymentDetailCompleted(payment: any): void {
     this.paymentDetailTemp = payment;
   }
 
-  onPaymentDetailError(valid: boolean): void {
+  private onPaymentDetailError(valid: boolean): void {
     this.paymentDetailValid = valid;
+  }
+
+  private onCancelMove(event: any): void {
+    event.preventDefault();
+    this.onTouchScreen = false;
+  }
+
+  private onScrolling(event: any): void {
+    const id = document.getElementById('myModal');
+    if (this.onTouchScreen) {
+      this.scrollingPosition = (this.currentScrollPosition - (event.clientY + id.scrollTop));
+      id.scrollTop += this.scrollingPosition;
+    }
+  }
+
+  private onTouchModal(event: any): void {
+    const id = document.getElementById('myModal');
+    window.scrollTo(0, 0);
+    this.currentScrollPosition = event.clientY + id.scrollTop;
+    this.onTouchScreen = true;
   }
 
   ngOnDestroy(): void {

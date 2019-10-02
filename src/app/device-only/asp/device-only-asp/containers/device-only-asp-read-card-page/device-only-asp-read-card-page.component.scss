@@ -34,3 +34,15 @@
 .img-customer {
     width: 120px;
 }
+
+.read-card {
+    display: none; 
+    position: fixed;
+}
+
+.card-body-modal {
+    overflow-y: scroll;
+    height: 70vh;
+    position: relative;
+}
+
