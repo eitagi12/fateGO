@@ -17,17 +17,17 @@ import { NewSharePlanMnpFaceConfirmPageComponent } from './containers/new-share-
 import { NewSharePlanMnpSelectNumberPageComponent } from './containers/new-share-plan-mnp-select-number-page/new-share-plan-mnp-select-number-page.component';
 import { NewSharePlanMnpVerifyInstantSimPageComponent } from './containers/new-share-plan-mnp-verify-instant-sim-page/new-share-plan-mnp-verify-instant-sim-page.component';
 import { NewSharePlanMnpVerifyByPatternPageComponent } from './containers/new-share-plan-mnp-verify-by-pattern-page/new-share-plan-mnp-verify-by-pattern-page.component';
-import { NewSharePlanMnpSelectPackagePageComponent } from './containers/new-share-plan-mnp-select-package-page/new-share-plan-mnp-select-package-page.component';
+import { NewSharePlanMnpSelectPackageMasterPageComponent } from './containers/new-share-plan-mnp-select-package-master-page/new-share-plan-mnp-select-package-master-page.component';
 import { NewSharePlanMnpNetworkTypePageComponent } from './containers/new-share-plan-mnp-network-type-page/new-share-plan-mnp-network-type-page.component';
+import { NewSharePlanMnpSelectPackageMemberPageComponent } from './containers/new-share-plan-mnp-select-package-member-page/new-share-plan-mnp-select-package-member-page.component';
 import { NewSharePlanMnpConfirmUserInformationPageComponent } from './containers/new-share-plan-mnp-confirm-user-information-page/new-share-plan-mnp-confirm-user-information-page.component';
 import { NewSharePlanMnpEbillingAddressPageComponent } from './containers/new-share-plan-mnp-ebilling-address-page/new-share-plan-mnp-ebilling-address-page.component';
 import { NewSharePlanMnpEbillingPageComponent } from './containers/new-share-plan-mnp-ebilling-page/new-share-plan-mnp-ebilling-page.component';
 import { NewSharePlanMnpSummaryPageComponent } from './containers/new-share-plan-mnp-summary-page/new-share-plan-mnp-summary-page.component';
 import { NewSharePlanMnpAgreementSignPageComponent } from './containers/new-share-plan-mnp-agreement-sign-page/new-share-plan-mnp-agreement-sign-page.component';
-import { NewSharePlanMnpEapplicationPageComponent } from './containers/new-share-plan-mnp-eapplication-page/new-share-plan-mnp-eapplication-page.component';
-import { NewSharePlanMnpResultPageComponent } from './containers/new-share-plan-mnp-result-page/new-share-plan-mnp-result-page.component';
 import { NewSharePlanMnpPersoSimNewPageComponent } from './containers/new-share-plan-mnp-perso-sim-new-page/new-share-plan-mnp-perso-sim-new-page.component';
 import { NewSharePlanMnpPersoSimMnpPageComponent } from './containers/new-share-plan-mnp-perso-sim-mnp-page/new-share-plan-mnp-perso-sim-mnp-page.component';
+import { NewSharePlanMnpResultPageComponent } from './containers/new-share-plan-mnp-result-page/new-share-plan-mnp-result-page.component';
 import { SummarySellerCodeComponent } from './containers/new-share-plan-mnp-summary-page/summary-seller-code/summary-seller-code.component';
 import { ConfirmCustomerInfoComponent } from './components/confirm-customer-info/confirm-customer-info.component';
 import { BillingInfoComponent } from './components/billing-info/billing-info.component';
@@ -53,20 +53,20 @@ import { BillingInfoComponent } from './components/billing-info/billing-info.com
     NewSharePlanMnpSelectNumberPageComponent,
     NewSharePlanMnpVerifyInstantSimPageComponent,
     NewSharePlanMnpVerifyByPatternPageComponent,
-    NewSharePlanMnpSelectPackagePageComponent,
+    NewSharePlanMnpSelectPackageMasterPageComponent,
     NewSharePlanMnpNetworkTypePageComponent,
+    NewSharePlanMnpSelectPackageMemberPageComponent,
     NewSharePlanMnpConfirmUserInformationPageComponent,
     NewSharePlanMnpEbillingAddressPageComponent,
     NewSharePlanMnpEbillingPageComponent,
     NewSharePlanMnpSummaryPageComponent,
     NewSharePlanMnpAgreementSignPageComponent,
-    NewSharePlanMnpEapplicationPageComponent,
-    NewSharePlanMnpResultPageComponent,
     NewSharePlanMnpPersoSimNewPageComponent,
     NewSharePlanMnpPersoSimMnpPageComponent,
+    NewSharePlanMnpResultPageComponent,
     SummarySellerCodeComponent,
     ConfirmCustomerInfoComponent,
-    BillingInfoComponent,
+    BillingInfoComponent
   ]
 })
 export class NewSharePlanMnpModule { }

@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_CONFIRM_USER_INFORMATION_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_NETWORK_TYPE_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MASTER_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MEMBER_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_ORDER_MNP } from 'src/app/order/constants/wizard.constant';
 import { Transaction, TransactionType } from 'src/app/shared/models/transaction.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -67,7 +67,7 @@ export class NewSharePlanMnpNetworkTypePageComponent implements OnInit, OnDestro
             ...this.transaction.data.simCard,
             mobileMember: this.sharePlanForm.value.mobileNo
           };
-          this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_CONFIRM_USER_INFORMATION_PAGE]);
+          this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MEMBER_PAGE]);
         } else {
           return this.alertService.error(`หมายเลข ${this.sharePlanForm.value.mobileNo} เป็นเบอร์ AIS`);
         }
@@ -77,12 +77,10 @@ export class NewSharePlanMnpNetworkTypePageComponent implements OnInit, OnDestro
           ...this.transaction.data.simCard,
           mobileMember: this.sharePlanForm.value.mobileNo
         };
-        this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_NETWORK_TYPE_PAGE]);
       })
       .then(() => {
         this.pageLoadingService.closeLoading();
       });
-
   }
 
   onHome(): void {
@@ -90,7 +88,7 @@ export class NewSharePlanMnpNetworkTypePageComponent implements OnInit, OnDestro
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_PAGE]);
+    this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MASTER_PAGE]);
   }
 
   onNext(): void {

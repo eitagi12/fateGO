@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { ROUTE_NEW_SHARE_PLAN_MNP_NETWORK_TYPE_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_SUMMARY_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_EBILLING_ADDRESS_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_EBILLING_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_NEW_SHARE_PLAN_MNP_SUMMARY_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_EBILLING_ADDRESS_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_EBILLING_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MEMBER_PAGE } from '../../constants/route-path.constant';
 import { Subscription } from 'rxjs';
 import { TelNoBillingInfo, ConfirmCustomerInfo, BillingInfo, MailBillingInfo, HomeService, AlertService, Utils, BillingSystemType } from 'mychannel-shared-libs';
 import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
@@ -257,13 +257,13 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
 
   onBack(): void {
     if (this.isPackageNetExtreme()) {
-      this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_NETWORK_TYPE_PAGE]);
+      this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MEMBER_PAGE]);
       // this.router.navigate([ROUTE_ORDER_NEW_REGISTER_MERGE_BILLING_PAGE]);
     } else {
       if (this.transaction.data.onTopPackage) {
         // this.router.navigate([ROUTE_ORDER_NEW_REGISTER_ON_TOP_PAGE]);
       } else {
-        this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_NETWORK_TYPE_PAGE]);
+        this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MEMBER_PAGE]);
       }
     }
   }
