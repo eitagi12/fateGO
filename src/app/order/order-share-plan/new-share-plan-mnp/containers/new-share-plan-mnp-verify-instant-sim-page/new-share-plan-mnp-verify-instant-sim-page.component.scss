@@ -1,0 +1,26 @@
+.bysim {
+    &__select-number-container {
+      padding: 1%;
+    }
+    &__text-or {
+      text-align: center;
+      margin-bottom: 2rem;
+    //   @include breakpoint(small only){
+    //     margin-bottom: 1rem;
+    //   }
+    }
+    &__scansim {
+      border: 2px solid #cbcbcb;
+      min-height: 375px;
+      border-radius: 5px;
+      margin: 2rem 0;
+      background-image: url("/assets/images/mock-scansim.png");
+      background-size: cover;
+    }
+    &__button-wrapper {
+      margin-top: 70px;
+    //   @include breakpoint(small only){
+    //     margin-top: 35px;
+    //   }
+    }
+  }

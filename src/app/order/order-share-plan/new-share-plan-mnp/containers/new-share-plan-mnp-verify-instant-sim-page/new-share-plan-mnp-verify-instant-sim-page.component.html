@@ -11,8 +11,61 @@
   <div class="mc-flex-wrap">
     <div class="mt-3 mb-3">
       <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
-
-      <mc-sim-serial #mcSimSerial [simSerial]="simSerial" (serial)="onCheckSimSerial($event)"></mc-sim-serial>
+      <div class="container-fluid">
+        <div class="card mb-3">
+          <div class="card-header bg-pink text-white shadow-sm">
+            {{ 'ระบุเลขที่ซิม' | translate }}
+          </div>
+          <div class="card-body">
+            <div class="text-center" *ngIf="simSerial?.simSerial && simSerial?.mobileNo">
+              <p class="text-grey" *ngIf="keyinSimSerial">
+                <label>{{ 'หมายเลขโทรศัพท์' | translate }} : {{ simSerial?.mobileNo | mobileNo }}</label>
+                <br> {{ 'เลขที่ซิม' | translate }} : {{ simSerial?.simSerial }}
+              </p>
+            </div>
+            <form [formGroup]="serialForm">
+              <div class="form-row">
+                <div class="col-9 col-sm-10">
+                  <input #serial type="tel" class="form-control" id="serial"
+                    placeholder="{{ 'ใส่เลขที่ซิม 13 หลัก' | translate }}" formControlName="serial" autocomplete="off"
+                    maxlength="13"
+                    [ngClass]="{ 'is-invalid' : serialForm.controls.serial.invalid && serialForm.controls.serial.touched && !(simSerial?.simSerial && simSerial?.mobileNo) }" />
+                </div>
+                <div class="col-3 col-sm-2">
+                  <button class="btn btn-light-blue text-white btn-block" [disabled]="serialForm.invalid" type="submit"
+                    (click)="onCheckSimSerial()">
+                    {{ 'ตรวจสอบ' | translate }}
+                  </button>
+                </div>
+                <small class="form-text text-danger"
+                  *ngIf="serialForm.controls.serial.touched && serialForm.controls.serial.errors && !(simSerial?.simSerial && simSerial?.mobileNo)">
+                  {{ '* กรุณาระบุเลขที่ซิมให้ถูกต้อง' | translate }}
+                </small>
+              </div>
+            </form>
+          </div>
+        </div>
+        <!-- <div *ngIf="!isHandsetDiscount && (scanBarcodePC$ | async)" class="bysim__text-or">หรือ</div> -->
+        <div class="bysim__text-or">{{ 'หรือ' | translate }} </div>
+        <div class="card mb-3">
+          <div class="card-header bg-pink text-white">
+            SCAN SIM
+          </div>
+          <div class="card-body text-center">
+            <div *ngIf="simSerial?.mobileNo && simSerial?.simSerial">
+              <p class="text-grey" *ngIf="!keyinSimSerial">
+                {{ 'หมายเลขโทรศัพท์' | translate }} : {{ simSerial?.mobileNo | mobileNo }}
+                <br> {{ 'เลขที่ซิม' | translate }} : {{ simSerial?.simSerial }}
+              </p>
+            </div>
+            <button type="button" class="btn btn-light-blue pr-5 pl-5 pt-3 pb-3 btn-teal-a700 text-white"
+              (click)="onOpenScanBarcode()"
+              onclick="document.getElementById('serial').value = ''">{{keyinSimSerial === false ? 'สแกน Barcode อีกครั้ง' : 'สแกน Barcode'}}
+            </button>
+          </div>
+        </div>
+      </div>
+      <!-- <mc-sim-serial #mcSimSerial [simSerial]="simSerial" (serial)="onCheckSimSerial($event)"></mc-sim-serial>-->
     </div>
   </div>
   <mc-footer>
