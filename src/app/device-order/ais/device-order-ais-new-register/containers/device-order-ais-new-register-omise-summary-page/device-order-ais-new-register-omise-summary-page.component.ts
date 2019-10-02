@@ -69,8 +69,6 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
         installmentFlag: advancePay.installmentFlag
       }
     };
-
-    console.log('mpayPayment', this.transaction.data.omise);
   }
 
   getStatusPay(): string {
@@ -127,8 +125,9 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
     };
     if (!this.transaction.data.omise.qrCodeStr) {
       this.qrCodeOmisePageService.createOrder(params).then((res) => {
-        const redirectUrl = res && res.data;
-        this.transaction.data.omise.qrCodeStr = redirectUrl.redirectUrl;
+        const data = res && res.data;
+        this.transaction.data.omise.qrCodeStr = data.redirectUrl;
+        this.transaction.data.omise.orderId = data.orderId;
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_OMISE_GENERATOR_PAGE]);
 
       }).catch((err) => {
