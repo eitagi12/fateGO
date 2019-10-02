@@ -170,7 +170,7 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
     if (payment.paymentOnlineCredit) {
       total += +trade.promotionPrice;
     }
-    if (payment.paymentOnlineCredit) {
+    if (advancePayment.paymentOnlineCredit) {
       total += +advancePay.amount;
     }
     return total;

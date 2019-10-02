@@ -40,10 +40,10 @@ export class DeviceOrderAisNewRegisterOmiseResultPageComponent implements OnInit
       return this.summary([+trade.promotionPrice, +advancePay.amount]);
     }
 
-    if (payment.paymentType === 'QR_CODE') {
+    if (payment.paymentOnlineCredit) {
       summary += +trade.promotionPrice;
     }
-    if (advancePayment.paymentType === 'QR_CODE') {
+    if (advancePayment.paymentOnlineCredit) {
       summary += +advancePay.amount;
     }
     return summary;
@@ -60,10 +60,10 @@ export class DeviceOrderAisNewRegisterOmiseResultPageComponent implements OnInit
       return this.summary([+trade.promotionPrice, +advancePay.amount]);
     }
 
-    if (payment.paymentType !== 'QR_CODE') {
+    if (!payment.paymentOnlineCredit) {
       summary += +trade.promotionPrice;
     }
-    if (advancePayment.paymentType !== 'QR_CODE') {
+    if (!advancePayment.paymentOnlineCredit) {
       summary += +advancePay.amount;
     }
     return summary;

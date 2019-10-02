@@ -68,7 +68,7 @@
               *ngIf="!priceOption?.trade?.advancePay || priceOption?.trade?.advancePay?.installmentFlag === 'N'">
               <div class="mb-3">
                 <input class="form-check-input" type="radio" id="installmentNoAdvancePay" disabled=""
-                  [checked]="transaction?.data?.payment?.paymentQrCodeType">
+                  [checked]="transaction?.data?.payment?.paymentOnlineCredit">
                 <label class="form-check-label" for="installmentNoAdvancePay">
                   {{ priceOption?.productDetail?.name }}
                   <span *ngIf="priceOption?.productStock?.color">
@@ -84,14 +84,14 @@
                   ฿ {{ priceOption?.trade?.promotionPrice | number }}
                 </span>
                 <div class="mt-1"
-                  *ngIf="transaction?.data?.payment?.paymentForm !== 'INSTALLMENT' && transaction?.data?.payment?.paymentType === 'QR_CODE'">
+                  *ngIf="transaction?.data?.payment?.paymentForm !== 'INSTALLMENT' && transaction?.data?.payment?.paymentOnlineCredit">
                   <small class="text-muted">
                     ({{'ชำระโดย' | translate}} {{ summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) }})
                   </small>
                   <span class="text-pink"
-                    *ngIf="transaction?.data?.omise?.mpayStatus?.statusDevice === 'WAITING'">( {{'รอชำระ'| translate}} )</span>
+                    *ngIf="transaction?.data?.omise?.omiseStatus?.statusDevice === 'WAITING'">( {{'รอชำระ'| translate}} )</span>
                   <span class="text-green"
-                    *ngIf="transaction?.data?.omise?.mpayStatus?.statusDevice === 'SUCCESS'">
+                    *ngIf="transaction?.data?.omise?.omiseStatus?.statusDevice === 'SUCCESS'">
                     ( {{'ชำระแล้ว'| translate}} TX: {{transaction?.data?.omise?.tranId}} )
                   </span>
 
@@ -100,8 +100,7 @@
               <!-- ค่าแพ็กเกจบริการล่วงหน้า -->
               <div
                 *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && (+priceOption?.trade?.advancePay?.amount) > 0">
-                <input class="form-check-input" type="radio" id="advancePay" disabled="" [checked]="(getStatusPay() === 'AIRTIME' && transaction?.data?.advancePayment?.paymentQrCodeType) || transaction?.data?.omise?.mpayStatus?.statusDevice !== 'WAITING'
-                      || priceOption?.productStock?.company === 'AWN'">
+                <input class="form-check-input" type="radio" id="advancePay" disabled="" [checked]="transaction?.data?.advancePayment?.paymentOnlineCredit">
                 <label class="form-check-label" for="advancePay">
                   {{'ค่าแพ็กเกจบริการล่วงหน้า' | translate }} : {{'ชำระเต็มจำนวน' | translate}}
                 </label>
