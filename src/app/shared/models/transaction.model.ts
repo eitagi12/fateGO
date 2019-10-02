@@ -94,7 +94,7 @@ export interface Omise {
   startDtm?: string;
   // QR Code AirTime
   companyStock?: 'AWN' | 'WDS';
-  mpayStatus?: MPayStatus;
+  omiseStatus?: MPayStatus;
   qrAirtimeTransId?: string;
   qrAirtimeAmt?: string;
   qrOrderId?: string;

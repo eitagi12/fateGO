@@ -120,7 +120,6 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
   }
 
   onPaymentCompleted(payment: any): void {
-    console.log('payment', payment);
     this.paymentDetailTemp = payment;
   }
 

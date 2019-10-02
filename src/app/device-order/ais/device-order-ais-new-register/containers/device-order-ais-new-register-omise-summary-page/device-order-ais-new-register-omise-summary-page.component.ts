@@ -19,6 +19,7 @@ import { QrCodeOmisePageService } from 'src/app/device-order/services/qr-code-om
 export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnInit, OnDestroy {
   transaction: Transaction;
   priceOption: PriceOption;
+  orderList: any;
 
   constructor(
     private router: Router,
@@ -50,16 +51,16 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
     let amountDevice: string;
     let amountAirTime: string;
 
-    if (payment.paymentType === 'QR_CODE') {
+    if (payment.paymentOnlineCredit) {
       amountDevice = trade.promotionPrice;
     }
-    if (advancePayment.paymentType === 'QR_CODE') {
+    if (payment.paymentOnlineCredit) {
       amountAirTime = advancePay.amount;
     }
 
     this.transaction.data.omise = {
       companyStock: company,
-      mpayStatus: {
+      omiseStatus: {
         amountDevice: amountDevice,
         amountAirTime: amountAirTime,
         amountTotal: String(this.getTotal()),
@@ -68,22 +69,23 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
         installmentFlag: advancePay.installmentFlag
       }
     };
+
     console.log('mpayPayment', this.transaction.data.omise);
   }
 
   getStatusPay(): string {
     const company = this.priceOption.productStock.company;
-    const mpayPayment = this.transaction.data.mpayPayment;
+    const omise = this.transaction.data.omise;
     const payment: any = this.transaction.data.payment || {};
     const advancePayment: any = this.transaction.data.advancePayment || {};
     if (company === 'AWN') {
       if (payment.paymentOnlineCredit) {
         return 'DEVICE&AIRTIME';
       } else {
-        return mpayPayment.mpayStatus.statusDevice === 'WAITING' ? 'DEVICE' : 'AIRTIME';
+        return omise.omiseStatus.statusDevice === 'WAITING' ? 'DEVICE' : 'AIRTIME';
       }
     } else {
-      return mpayPayment.mpayStatus.statusDevice === 'WAITING' ? 'DEVICE' : 'AIRTIME';
+      return omise.omiseStatus.statusDevice === 'WAITING' ? 'DEVICE' : 'AIRTIME';
     }
   }
 
@@ -94,48 +96,50 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
   onNext(): void {
     this.pageLoadingService.openLoading();
     const user = this.tokenService.getUser();
-    console.log('user', user);
     const simCard = this.transaction.data && this.transaction.data.simCard;
     const customer = this.transaction.data && this.transaction.data.customer;
     const priceOption = this.priceOption.productDetail;
     const productStock = this.priceOption.productStock;
     const trade = this.priceOption && this.priceOption.trade;
     const description = trade && trade.advancePay && trade.advancePay.description;
-    const packge = this.summaryPageService.advanpayDescription(description.description);
-    // const orderList: any = [{
-    //   name: priceOption.name + 'สี' + productStock.color,
-    //   price: trade.promotionPrice
-    // }, {
-    //   name: packge,
-    //   price: trade.advancePay.amount
-    // }];
-    const orderList: any = [{
-      name: priceOption.name + 'สี' + productStock.color,
-      price: trade.promotionPrice
-    }];
+    if (description) {
+      this.orderList = [{
+        name: priceOption.name + 'สี' + productStock.color,
+        price: trade.promotionPrice
+      }, {
+        name: description,
+        price: trade.advancePay.amount
+      }];
+    } else {
+      this.orderList = [{
+        name: priceOption.name + 'สี' + productStock.color,
+        price: trade.promotionPrice
+      }];
+    }
     const params: any = {
       companyCode: 'AWN',
       companyName: 'บริษัท แอดวานซ์ ไวร์เลส เน็ทเวอร์ค จำกัด',
       locationCode: user.locationCode,
-      locationName: 'สาขาเซ็นทรัลภูเก็ต',
+      locationName: 'สาขาเซ็นทรัลเฟสติวัลภูเก็ต',
       mobileNo: simCard.mobileNo,
       customer: customer.firstName + '' + customer.lastName,
-      orderList: orderList,
+      orderList: this.orderList,
     };
-    this.qrCodeOmisePageService.createOrder(params).then((res) => {
-      console.log('res', res);
-      const redirectUrl = res && res.data;
-      this.transaction.data.omise = {
-        qrCodeStr: redirectUrl.redirectUrl,
-      };
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_OMISE_GENERATOR_PAGE]);
+    if (!this.transaction.data.omise.qrCodeStr) {
+      this.qrCodeOmisePageService.createOrder(params).then((res) => {
+        const redirectUrl = res && res.data;
+        this.transaction.data.omise.qrCodeStr = redirectUrl.redirectUrl;
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_OMISE_GENERATOR_PAGE]);
 
-    }).catch((err) => {
-      console.log('err', err);
-    }).then(() => {
+      }).catch((err) => {
+        console.log('err', err);
+      }).then(() => {
+        this.pageLoadingService.closeLoading();
+      });
+    } else {
       this.pageLoadingService.closeLoading();
-    });
-
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_OMISE_GENERATOR_PAGE]);
+    }
   }
 
   onHome(): void {
