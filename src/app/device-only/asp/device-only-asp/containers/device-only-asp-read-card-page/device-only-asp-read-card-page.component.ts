@@ -753,20 +753,20 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
       });
   }
 
-  private onPaymentDetailCompleted(payment: any): void {
+  public onPaymentDetailCompleted(payment: any): void {
     this.paymentDetailTemp = payment;
   }
 
-  private onPaymentDetailError(valid: boolean): void {
+  public onPaymentDetailError(valid: boolean): void {
     this.paymentDetailValid = valid;
   }
 
-  private onCancelMove(event: any): void {
+  public onCancelMove(event: any): void {
     event.preventDefault();
     this.onTouchScreen = false;
   }
 
-  private onScrolling(event: any): void {
+  public onScrolling(event: any): void {
     const id = document.getElementById('myModal');
     if (this.onTouchScreen) {
       this.scrollingPosition = (this.currentScrollPosition - (event.clientY + id.scrollTop));
@@ -774,7 +774,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
     }
   }
 
-  private onTouchModal(event: any): void {
+  public onTouchModal(event: any): void {
     const id = document.getElementById('myModal');
     window.scrollTo(0, 0);
     this.currentScrollPosition = event.clientY + id.scrollTop;
