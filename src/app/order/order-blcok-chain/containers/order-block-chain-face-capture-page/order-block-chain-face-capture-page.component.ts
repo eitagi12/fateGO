@@ -16,7 +16,7 @@ import { ROUTE_ORDER_BLOCK_CHAIN_AGREEMENT_SIGN_PAGE, ROUTE_ORDER_BLOCK_CHAIN_FA
 
 export class OrderBlockChainFaceCapturePageComponent implements OnInit, OnDestroy {
 
-  wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
+  wizards: string[] = WIZARD_ORDER_BLOCK_CHAIN;
   settings: Setting;
   openCamera: boolean = false;
   transaction: Transaction;
