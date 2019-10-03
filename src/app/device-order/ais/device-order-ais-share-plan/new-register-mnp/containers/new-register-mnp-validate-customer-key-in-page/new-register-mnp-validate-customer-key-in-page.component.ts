@@ -59,7 +59,7 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit 
   }
 
   onNext(): void {
-    this.router.navigate(['']);
+    this.router.navigate(['รอแก้ไข']);
   }
 
   checkBusinessLogic(): boolean {
