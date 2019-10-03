@@ -1,12 +1,9 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { HomeService, TokenService, ShoppingCart, CaptureAndSign } from 'mychannel-shared-libs';
 import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { AisNativeDeviceService } from 'src/app/shared/services/ais-native-device.service';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { AgreementSignConstant } from '../../constants/agreement-sign.constant';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_ECONTACT_PAGE,
