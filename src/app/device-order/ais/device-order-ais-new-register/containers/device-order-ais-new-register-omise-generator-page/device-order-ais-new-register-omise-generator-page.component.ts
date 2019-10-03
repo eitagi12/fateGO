@@ -8,11 +8,12 @@ import {
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_OMISE_QUEUE_PAGE
 } from '../../constants/route-path.constant';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { QrCodePageService } from 'src/app/device-order/services/qr-code-page.service';
+import { QrCodeOmisePageService } from 'src/app/device-order/services/qr-code-omise-page.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { environment } from 'src/environments/environment';
 import { Subscription } from 'rxjs/internal/Subscription';
 import * as moment from 'moment';
+import { Observable } from 'rxjs';
 @Component({
   selector: 'app-device-order-ais-new-register-omise-generator-page',
   templateUrl: './device-order-ais-new-register-omise-generator-page.component.html',
@@ -24,7 +25,7 @@ export class DeviceOrderAisNewRegisterOmiseGeneratorPageComponent implements OnI
   priceOption: PriceOption;
 
   timeCounterSubscription: Subscription;
-  checkResponseMpaySubscription: Subscription;
+  checkResponseOmiseSubscription: Subscription;
 
   qrCode: string;
   countdown: string;
@@ -39,7 +40,7 @@ export class DeviceOrderAisNewRegisterOmiseGeneratorPageComponent implements OnI
     private pageLoadingService: PageLoadingService,
     private alertService: AlertService,
     private tokenService: TokenService,
-    private qrCodePageService: QrCodePageService
+    private qrCodeOmisePageService: QrCodeOmisePageService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -51,14 +52,14 @@ export class DeviceOrderAisNewRegisterOmiseGeneratorPageComponent implements OnI
 
   onGenerateQRCode(): void {
     this.totalAmount = this.getTotalAmount();
-    const orderId = this.transaction.data.omise.orderId;
+    const orderId = this.transaction.data.omise.orderId || '';
     const qrCodeStr = this.transaction.data.omise.qrCodeStr || ''; // 'http://10.138.35.113/payment?orderId=' + orderId
 
     this.handlerQRCodeMpay(orderId, qrCodeStr);
   }
 
   handlerQRCodeMpay(orderId: string, qrCodeStr: string): void {
-    this.qrCodePageService.convertMessageToQRCode(qrCodeStr)
+    this.qrCodeOmisePageService.convertMessageToQRCode(qrCodeStr)
       .then(qrCode => {
         this.qrCode = qrCode;
 
@@ -66,43 +67,18 @@ export class DeviceOrderAisNewRegisterOmiseGeneratorPageComponent implements OnI
           this.timeCounterSubscription.unsubscribe();
         }
 
-        if (this.checkResponseMpaySubscription) {
-          this.checkResponseMpaySubscription.unsubscribe();
+        if (this.checkResponseOmiseSubscription) {
+          this.checkResponseOmiseSubscription.unsubscribe();
         }
 
-        // this.checkResponseMpaySubscription = this.qrCodePageService.checkPaymentResponseMpayStatus(orderId)
-        //   .subscribe((obs: any) => {
-        //     const mpay = {
-        //       locationCode: obs.locationCode,
-        //       qrType: obs.qrType,
-        //       startDtm: obs.startDtm,
-        //       status: obs.status,
-        //       tranDtm: obs.status
-        //     };
-        //     this.transaction.data.mpayPayment = Object.assign(this.transaction.data.mpayPayment, mpay);
-        //     if (this.priceOption.productStock.company === 'AWN') {
-        //       this.transaction.data.mpayPayment = Object.assign(this.transaction.data.mpayPayment, obs);
-        //     } else {
-        //       const status = this.getStatusPay();
-        //       this.transaction.data.mpayPayment.orderId = obs.orderId;
-        //       if (status === 'DEVICE') {
-        //         this.transaction.data.mpayPayment.mpayStatus.orderIdDevice = obs.orderId;
-        //         this.transaction.data.mpayPayment.mpayStatus.statusDevice = 'SUCCESS';
-        //         this.transaction.data.mpayPayment.tranId = obs.tranId;
-        //         this.transaction.data.mpayPayment.amount = obs.amount;
-        //       } else if (status === 'AIRTIME') {
-        //         this.transaction.data.mpayPayment.mpayStatus.orderIdAirTime = obs.orderId;
-        //         this.transaction.data.mpayPayment.mpayStatus.statusAirTime = 'SUCCESS';
-        //         this.transaction.data.mpayPayment.qrAirtimeTransId = obs.tranId;
-        //         this.transaction.data.mpayPayment.qrAirtimeAmt = obs.amount;
-        //       } else {
-        //         this.transaction.data.mpayPayment = Object.assign(this.transaction.data.mpayPayment, obs);
-        //       }
-        //     }
-        //     this.onNext();
-        //   });
+        this.checkResponseOmiseSubscription = this.qrCodeOmisePageService.checkPaymentResponseOrderStatus(orderId)
+          .subscribe((obs: any) => {
+            if (obs.paymentCode === '0000' && obs.paymentStatus === 'SUCCESS') {
+              this.onNext();
+            }
+          });
 
-        this.timeCounterSubscription = this.qrCodePageService.getTimeCounter(300)
+        this.timeCounterSubscription = this.qrCodeOmisePageService.getTimeCounter(300)
           .subscribe(obs => {
             if (obs) {
               this.countdown = moment.utc(obs).format('mm : ss');
@@ -113,16 +89,25 @@ export class DeviceOrderAisNewRegisterOmiseGeneratorPageComponent implements OnI
             (error) => this.alertService.error(error),
             () => {
               // timeout order id
-              this.checkResponseMpaySubscription.unsubscribe();
-              // Refresh generate qrcode
-              this.alertService.question('สิ้นสุดระยะเวลาชำระเงิน กรุณากดปุ่ม REFRESH<br> เพื่อทำรายการใหม่', 'Refresh')
-                .then((data: any) => {
-                  if (data.value) {
-                    this.onGenerateQRCode();
-                  } else {
-                    this.onBack();
-                  }
-                });
+              this.checkResponseOmiseSubscription.unsubscribe();
+
+              // check Retrive Order
+              this.qrCodeOmisePageService.retriveOrder({ params: { orderId: orderId } }).then((resp) => {
+                const data = resp.data || {};
+                if (data.paymentCode === '0000' && data.paymentStatus === 'SUCCESS') {
+                  this.onNext();
+                } else {
+                  // Refresh generate qrcode
+                  this.alertService.question('สิ้นสุดระยะเวลาชำระเงิน กรุณากดปุ่ม REFRESH<br> เพื่อทำรายการใหม่', 'Refresh')
+                    .then((dataAlert: any) => {
+                      if (dataAlert.value) {
+                        this.onGenerateQRCode();
+                      } else {
+                        this.onBack();
+                      }
+                    });
+                }
+              });
             });
       })
       .catch(error => this.alertService.error(error));
@@ -167,17 +152,7 @@ export class DeviceOrderAisNewRegisterOmiseGeneratorPageComponent implements OnI
   }
 
   onNext(): void {
-    const mpayStatus = this.transaction.data.mpayPayment.mpayStatus;
-    if (this.priceOption.productStock.company === 'AWN') {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_OMISE_QUEUE_PAGE]);
-    } else {
-      if (mpayStatus && mpayStatus.statusAirTime && mpayStatus.statusAirTime === 'WAITING') {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_OMISE_SUMMARY_PAGE]);
-      } else {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_OMISE_QUEUE_PAGE]);
-      }
-
-    }
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_OMISE_QUEUE_PAGE]);
   }
 
   onHome(): void {
@@ -190,8 +165,8 @@ export class DeviceOrderAisNewRegisterOmiseGeneratorPageComponent implements OnI
     if (this.timeCounterSubscription) {
       this.timeCounterSubscription.unsubscribe();
     }
-    if (this.checkResponseMpaySubscription) {
-      this.checkResponseMpaySubscription.unsubscribe();
+    if (this.checkResponseOmiseSubscription) {
+      this.checkResponseOmiseSubscription.unsubscribe();
     }
   }
 
