@@ -8,7 +8,7 @@
           <img src="assets/images/icon/icon-green-check-circle.png" class="icon" /> <br>
           <b>{{'หมายเลข'| translate}} <span class="text-green">{{ transaction?.data?.simCard?.mobileNo | mobileNo }}</span></b> <br>
           <b>{{'ชำระค่าสินค้าเรียบร้อยแล้ว'| translate}}</b> <br>
-          <b>{{'หมายเลขอ้างอิง'| translate}} {{ transaction?.data?.mpayPayment?.tranId }}</b>
+          <b>{{'หมายเลขอ้างอิง'| translate}} {{ transaction?.data?.omise?.tranId }}</b>
         </div>
 
         <!-- ชำระ -->
@@ -126,6 +126,6 @@
     </div>
   </div>
   <mc-footer>
-    <button class="btn btn-success" (click)="onNext()">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="queueFrom.invalid">NEXT</button>
   </mc-footer>
 </div>

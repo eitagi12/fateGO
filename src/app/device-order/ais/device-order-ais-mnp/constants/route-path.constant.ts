@@ -28,3 +28,8 @@ export const ROUTE_DEVICE_ORDER_AIS_MNP_MOBILE_DETAIL_PAGE = '/device-order/ais/
 export const ROUTE_DEVICE_ORDER_AIS_MNP_EFFECTIVE_START_DATE_PAGE = '/device-order/ais/mnp/effective-start-date';
 export const ROUTE_DEVICE_ORDER_AIS_MNP_NEW_BILLING_ACCOUNT_PAGE = '/device-order/ais/mnp/new-billing-account';
 export const ROUTE_DEVICE_ORDER_AIS_MNP_SELECT_PACKAGE_ONTOP_PAGE = '/device-order/ais/mnp/select-package-ontop';
+// omise
+export const ROUTE_DEVICE_ORDER_AIS_MNP_OMISE_SUMMARY_PAGE = '/device-order/ais/mnp/omise-summary';
+export const ROUTE_DEVICE_ORDER_AIS_MNP_OMISE_GENERATOR_PAGE = '/device-order/ais/mnp/omise-generator';
+export const ROUTE_DEVICE_ORDER_AIS_MNP_OMISE_QUEUE_PAGE = '/device-order/ais/mnp/omise-queue';
+export const ROUTE_DEVICE_ORDER_AIS_MNP_OMISE_RESULT_PAGE = '/device-order/ais/mnp/omise-result';

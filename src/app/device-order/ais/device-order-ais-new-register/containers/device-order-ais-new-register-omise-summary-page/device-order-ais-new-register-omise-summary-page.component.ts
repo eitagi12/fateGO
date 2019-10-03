@@ -5,11 +5,10 @@ import {
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGGREGATE_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_OMISE_GENERATOR_PAGE,
 } from '../../constants/route-path.constant';
 import { Router } from '@angular/router';
-import { HomeService, REGEX_MOBILE, TokenService, PageLoadingService } from 'mychannel-shared-libs';
+import { HomeService, TokenService, PageLoadingService } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { QrCodeOmisePageService } from 'src/app/device-order/services/qr-code-omise-page.service';
 @Component({
   selector: 'app-device-order-ais-new-register-omise-summary-page',
@@ -54,7 +53,7 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
     if (payment.paymentOnlineCredit) {
       amountDevice = trade.promotionPrice;
     }
-    if (payment.paymentOnlineCredit) {
+    if (advancePayment.paymentOnlineCredit) {
       amountAirTime = advancePay.amount;
     }
 
@@ -77,7 +76,7 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
     const payment: any = this.transaction.data.payment || {};
     const advancePayment: any = this.transaction.data.advancePayment || {};
     if (company === 'AWN') {
-      if (payment.paymentOnlineCredit) {
+      if (payment.paymentOnlineCredit && advancePayment.paymentOnlineCredit) {
         return 'DEVICE&AIRTIME';
       } else {
         return omise.omiseStatus.statusDevice === 'WAITING' ? 'DEVICE' : 'AIRTIME';
@@ -120,7 +119,7 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
       locationCode: user.locationCode,
       locationName: 'สาขาเซ็นทรัลเฟสติวัลภูเก็ต',
       mobileNo: simCard.mobileNo,
-      customer: customer.firstName + '' + customer.lastName,
+      customer: customer.firstName + ' ' + customer.lastName,
       orderList: this.orderList,
     };
     if (!this.transaction.data.omise.qrCodeStr) {

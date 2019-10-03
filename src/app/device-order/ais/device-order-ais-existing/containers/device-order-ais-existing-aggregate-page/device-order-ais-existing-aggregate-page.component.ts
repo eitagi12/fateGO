@@ -5,7 +5,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
-import { ROUTE_DEVICE_ORDER_AIS_EXISTING_AGREEMENT_SIGN_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_QUEUE_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_SUMMARY_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_EXISTING_AGREEMENT_SIGN_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_QUEUE_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_EXISTING_OMISE_SUMMARY_PAGE } from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-device-order-ais-existing-aggregate-page',
@@ -44,6 +44,8 @@ export class DeviceOrderAisExistingAggregatePageComponent implements OnInit, OnD
   checkRouteNavigate(payment: any, advancePayment: any): string {
     if (payment.paymentType === 'QR_CODE' || advancePayment.paymentType === 'QR_CODE') {
       return ROUTE_DEVICE_ORDER_AIS_EXISTING_QR_CODE_SUMMARY_PAGE;
+    } else if (payment.paymentOnlineCredit || advancePayment.paymentOnlineCredit) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_EXISTING_OMISE_SUMMARY_PAGE]);
     } else {
       return ROUTE_DEVICE_ORDER_AIS_EXISTING_QUEUE_PAGE;
     }
