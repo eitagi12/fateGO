@@ -6,9 +6,6 @@ import { Customer, Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
 import { Subscription } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
-import { AisNativeDeviceService } from 'src/app/shared/services/ais-native-device.service';
-import { AisNativeOrderService } from 'src/app/shared/services/ais-native-order.service';
 @Component({
   selector: 'app-new-share-plan-mnp-id-card-capture-page',
   templateUrl: './new-share-plan-mnp-id-card-capture-page.component.html',
@@ -35,7 +32,6 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
     private tokenService: TokenService,
     private aisNativeService: AisNativeService,
     private alertService: AlertService,
-    private translationService: TranslateService,
     private utils: Utils
   ) {
     this.transaction = this.transactionService.load();
@@ -51,6 +47,7 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
     this.checkSignpad();
     this.getCustomer();
     this.getCaptureAndSign();
+    this.checkImageFromTransaction();
   }
 
   private checkSignpad(): string {
@@ -89,11 +86,19 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
   }
 
   private checkVerifyNext(isValid: boolean): void {
-    if (this.isValid) {
+    if (this.isValid === true) {
       this.idCardValid = true;
       this.onCompleted(this.captureAndSign);
     } else {
       this.onError(isValid);
+    }
+  }
+
+  private checkImageFromTransaction(): void {
+    if (this.customer && this.customer.imageSmartCard && this.customer.imageSignatureSmartCard) {
+      this.checkVerifyNext(true);
+    } else {
+      this.checkVerifyNext(false);
     }
   }
 
