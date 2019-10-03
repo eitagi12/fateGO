@@ -14,4 +14,7 @@ export class NewSharePlanMnpPersoSimMnpPageComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  onBack(): void {
+
+  }
 }

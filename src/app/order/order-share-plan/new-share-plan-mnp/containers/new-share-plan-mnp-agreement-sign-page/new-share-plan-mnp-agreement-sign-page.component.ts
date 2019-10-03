@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { ROUTE_NEW_SHARE_PLAN_MNP_SUMMARY_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_NEW_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_NEW_SHARE_PLAN_MNP_SUMMARY_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_NEW_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_RESULT_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
 import { HomeService, AlertService, TokenService, User, ChannelType } from 'mychannel-shared-libs';
 import { Transaction } from 'src/app/shared/models/transaction.model';
@@ -41,7 +41,6 @@ export class NewSharePlanMnpAgreementSignPageComponent implements OnInit, OnDest
       if (signature) {
         this.isOpenSign = false;
         this.transaction.data.customer.imageSignature = signature;
-        this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_NEW_PAGE]);
       } else {
         this.alertService.warning('กรุณาเซ็นลายเซ็น').then(() => {
           this.onSigned();
@@ -108,7 +107,9 @@ export class NewSharePlanMnpAgreementSignPageComponent implements OnInit, OnDest
     if (this.openSignedCommand && !this.openSignedCommand.error) {
       this.openSignedCommand.ws.send('CaptureImage');
     } else {
-      if (this.transaction.data.customer.imageSignature) {
+      if (this.transaction.data.simCard.simSerial) {
+        this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_RESULT_PAGE]);
+      } else {
         this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_NEW_PAGE]);
       }
     }
