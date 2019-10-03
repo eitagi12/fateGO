@@ -637,8 +637,10 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   }
 
   public closeModalBillingAddress(): void {
-    this.modalBillAddress.hide();
     this.canReadSmartCard = true;
+    this.selectBillingAddressForm.controls['billingAddress'].setValue('');
+    this.isSelect = false;
+    this.modalBillAddress.hide();
   }
 
   public selectBillingAddress(): void {
