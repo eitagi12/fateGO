@@ -178,9 +178,12 @@ export interface Customer {
   privilegeCode?: string;
   repi?: boolean;
   mobileNo?: string;
+
+  // block chain
   chipID?: string;
   requestNo?: string;
   laserCode?: string;
+  isBlockChain?: boolean;
 }
 
 export interface Recipientinformation {
@@ -208,7 +211,9 @@ export interface SimCard {
   persoSim?: boolean;
   privilegeCode?: string;
   nType?: string;
-  mobileNoStatus?: 'Active' | 'Suspended';
+  mobileNoStatus?: 'Active' | 'Suspended' | 'Enroll';
+  forceEnrollFlag?: 'Y' | 'N';
+  registerDate?: string;
 }
 
 export interface MainPackage {

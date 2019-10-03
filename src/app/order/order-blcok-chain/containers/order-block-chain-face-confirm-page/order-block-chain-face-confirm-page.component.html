@@ -1,0 +1,43 @@
+<div class="mc-flex">
+  <mc-header title="{{ 'สมัครแทนบัตร' | translate }}">
+      <div class="header-icon-left w-25">
+        <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+      </div>
+      <div class="header-icon-right w-25 text-right">
+      <!-- <mc-dropdown-language></mc-dropdown-language> -->
+        <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+      </div>
+    </mc-header>
+<div class="mc-flex-wrap">
+  <div class="mb-3 mt-3">
+    <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
+
+    <div class="container-fluid">
+
+      <div class="card mb-3">
+        <div class="card-body"> 
+          <div class="text-center text-black  mt-5">
+            <p translate>หากท่านประสงค์จะสมัครบริการแทนบัตร</p>
+            <p translate>ให้หมายเลข {{ transaction?.data?.simCard?.mobileNo }} ท่านต้องยืนยัน</p>
+            <p translate>และรับรองความถูกต้องให้ตัวบุคคลผู้สมัครบริการ</p>
+          </div>
+          <form [formGroup]="confirmForm">
+          <div class="form-row mt-5">
+            <div class="col-12 text-center" style="text-align: center;">
+              <input  type="password" id="password" class="w-50 d-inline text-center form-control"
+                formControlName="password" />
+            </div>
+          </div>
+        </form>
+          
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+<mc-footer>
+  <button class="btn btn-secondary" (click)="onBack()">ย้อนกลับ</button>
+  <button class="btn btn-success" (click)="onNext()" [disabled]="confirmForm.invalid">ยืนยันยอมรับ</button>
+</mc-footer>
+</div>
