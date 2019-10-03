@@ -9,7 +9,7 @@ import { PageLoadingService, REGEX_MOBILE } from 'mychannel-shared-libs';
 import { QueuePageService } from 'src/app/device-order/services/queue-page.service';
 import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
-import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_RESULT_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_QR_CODE_RESULT_PAGE } from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-new-register-mnp-qr-code-queue-page',
@@ -57,7 +57,7 @@ export class NewRegisterMnpQrCodeQueuePageComponent implements OnInit, OnDestroy
           });
       })
       .then(() => {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_RESULT_PAGE]);
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_QR_CODE_RESULT_PAGE]);
       })
       .then(() => this.pageLoadingService.closeLoading());
   }
