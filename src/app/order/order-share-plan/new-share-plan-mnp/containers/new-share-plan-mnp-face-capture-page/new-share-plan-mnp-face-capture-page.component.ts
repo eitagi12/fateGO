@@ -56,9 +56,9 @@ export class NewSharePlanMnpFaceCapturePageComponent implements OnInit, OnDestro
 
   onCameraCompleted(image: string): void {
     const cropOption = {
-      sizeWidth: 160,
+      sizeWidth: 260,
       sizeHeight: 240,
-      startX: 80,
+      startX: 55,
       startY: 0,
       flip: true,
       quality: 1

@@ -18,17 +18,18 @@
             <div class="camera-width">
               <div *ngIf="!openCamera" class="embed-responsive embed-responsive-4by3">
               </div>
-              <div [hidden]="!(openCamera && !transaction?.data?.faceRecognition?.imageFaceUser)"
-                class="position-relative">
-                <mc-camera [flip]="true" [countdown]="0" [onTakePhoto]="camera" (completed)="onCameraCompleted($event)"
+              <div [hidden]="!(openCamera && !transaction?.data?.faceRecognition?.imageFaceUser)" class="position-relative">
+                <mc-camera 
+                  [flip]="true" 
+                  [countdown]="0" 
+                  [onTakePhoto]="camera" 
+                  (completed)="onCameraCompleted($event)"
                   (error)="onCameraError($event)">
                 </mc-camera>
               </div>
-              <div class="embed-responsive embed-responsive-4by3 position-relative"
-                [hidden]="!transaction?.data?.faceRecognition?.imageFaceUser">
+              <div class="embed-responsive embed-responsive-4by3 position-relative" [hidden]="!transaction?.data?.faceRecognition?.imageFaceUser">
                 <div class="embed-responsive-item center">
-                  <img class="img-result"
-                    [src]="'data:image/png;base64,'+ transaction?.data?.faceRecognition?.imageFaceUser" />
+                  <img class="img-result" [src]="'data:image/png;base64,'+ transaction?.data?.faceRecognition?.imageFaceUser"/>
                 </div>
               </div>
             </div>
