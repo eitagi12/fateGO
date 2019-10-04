@@ -4,7 +4,7 @@ import { ROUTE_NEW_SHARE_PLAN_MNP_CUSTOMER_INFO_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_F
 import { CaptureAndSign, TokenService, ChannelType, HomeService, AisNativeService, AlertService, Utils, User, AWS_WATERMARK } from 'mychannel-shared-libs';
 import { Customer, Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
+import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-new-share-plan-mnp-id-card-capture-page',
@@ -13,7 +13,7 @@ import { Subscription } from 'rxjs';
 })
 export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDestroy, OnChanges {
 
-  wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
+  wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
   captureAndSign: CaptureAndSign;
   apiSigned: string;
   transaction: Transaction;

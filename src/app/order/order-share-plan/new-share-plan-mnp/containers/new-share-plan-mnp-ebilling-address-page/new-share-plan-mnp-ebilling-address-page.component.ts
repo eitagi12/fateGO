@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_CUSTOMER_INFO_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_CONFIRM_USER_INFORMATION_PAGE } from '../../constants/route-path.constant';
-import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
+import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { CustomerAddress, HomeService } from 'mychannel-shared-libs';
 import { Subscription } from 'rxjs';
@@ -16,7 +16,7 @@ import { debounceTime } from 'rxjs/operators';
   styleUrls: ['./new-share-plan-mnp-ebilling-address-page.component.scss']
 })
 export class NewSharePlanMnpEbillingAddressPageComponent implements OnInit, OnDestroy {
-  wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
+  wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
   transaction: Transaction;
   customerAddress: CustomerAddress;
   allZipCodes: string[];

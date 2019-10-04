@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_FACE_COMPARE_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_SELECT_NUMBER_PAGE } from '../../constants/route-path.constant';
-import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
+import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HomeService } from 'mychannel-shared-libs';
 
@@ -12,7 +12,7 @@ import { HomeService } from 'mychannel-shared-libs';
 })
 export class NewSharePlanMnpFaceConfirmPageComponent implements OnInit {
 
-  wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
+  wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
   confirmForm: FormGroup;
 
   constructor(

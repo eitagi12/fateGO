@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
-import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
+import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
 import { PromotionShelve, HomeService, TokenService, PageLoadingService, AlertService, PromotionShelveItem } from 'mychannel-shared-libs';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
@@ -21,7 +21,7 @@ export class NewSharePlanMnpSelectPackageMasterPageComponent implements OnInit, 
   readonly MAX_PROMOTION_PRICE: number = 500;
   @ViewChild('conditionTemplate')
   conditionTemplate: any;
-  wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
+  wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
   transaction: Transaction;
   promotionShelves: PromotionShelve[];
   promotionData: any;

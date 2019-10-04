@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_CONFIRM_USER_INFORMATION_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_AGREEMENT_SIGN_PAGE } from '../../constants/route-path.constant';
-import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
+import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 import { Transaction, Seller } from 'src/app/shared/models/transaction.model';
 import { ConfirmCustomerInfo, BillingInfo, MailBillingInfo, TelNoBillingInfo, HomeService, AlertService, TokenService } from 'mychannel-shared-libs';
 import { Subscription } from 'rxjs';
@@ -29,7 +29,7 @@ export class NewSharePlanMnpSummaryPageComponent implements OnInit, OnDestroy {
 
   @ViewChild(SummarySellerCodeComponent) summarySellerCode: SummarySellerCodeComponent;
 
-  wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
+  wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
 
   transaction: Transaction;
   confirmCustomerInfo: ConfirmCustomerInfo;

@@ -1,5 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
+import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
+import { Router } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
+import { AlertService } from 'mychannel-shared-libs';
+import { $ } from 'protractor';
 
 @Component({
   selector: 'app-new-share-plan-mnp-perso-sim-mnp-page',
@@ -7,14 +11,17 @@ import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.consta
   styleUrls: ['./new-share-plan-mnp-perso-sim-mnp-page.component.scss']
 })
 export class NewSharePlanMnpPersoSimMnpPageComponent implements OnInit {
-  wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
+  wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
   title: string = 'กรุณาเสียบซิมการ์ด';
-  constructor() { }
+  constructor(
+    private router: Router,
+    private http: HttpClient,
+    private alertService: AlertService
+  ) {
+
+  }
 
   ngOnInit(): void {
   }
 
-  onBack(): void {
-
-  }
 }

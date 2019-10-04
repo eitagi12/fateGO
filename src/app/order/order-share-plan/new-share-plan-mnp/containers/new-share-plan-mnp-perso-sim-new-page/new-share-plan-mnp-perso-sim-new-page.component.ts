@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
+import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 
 @Component({
   selector: 'app-new-share-plan-mnp-perso-sim-new-page',
@@ -8,14 +8,11 @@ import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.consta
 })
 export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit {
 
-  wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
+  wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
 
   constructor() { }
 
   ngOnInit(): void {
   }
 
-  onBack(): void {
-
-  }
 }

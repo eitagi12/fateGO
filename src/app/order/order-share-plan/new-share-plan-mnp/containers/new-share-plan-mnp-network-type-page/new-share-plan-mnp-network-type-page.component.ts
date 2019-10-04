@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MASTER_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MEMBER_PAGE } from '../../constants/route-path.constant';
-import { WIZARD_ORDER_MNP } from 'src/app/order/constants/wizard.constant';
+import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 import { Transaction, TransactionType } from 'src/app/shared/models/transaction.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { HomeService, AlertService, PageLoadingService, REGEX_MOBILE } from 'mychannel-shared-libs';
@@ -16,7 +16,7 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./new-share-plan-mnp-network-type-page.component.scss']
 })
 export class NewSharePlanMnpNetworkTypePageComponent implements OnInit, OnDestroy {
-  wizards: string[] = WIZARD_ORDER_MNP;
+  wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP ;
   transaction: Transaction;
   sharePlanForm: FormGroup;
 

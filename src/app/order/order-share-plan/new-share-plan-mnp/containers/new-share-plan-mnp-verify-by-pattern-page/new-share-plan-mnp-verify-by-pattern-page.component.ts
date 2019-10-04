@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_SELECT_NUMBER_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MASTER_PAGE } from '../../constants/route-path.constant';
 import { HomeService, MobileNoCondition, User, TokenService, PageLoadingService, AlertService } from 'mychannel-shared-libs';
-import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
+import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -16,7 +16,7 @@ import { ReserveMobileService, SelectMobileNumberRandom } from 'src/app/order/or
 })
 export class NewSharePlanMnpVerifyByPatternPageComponent implements OnInit, OnDestroy {
 
-  wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
+  wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
   transaction: Transaction;
   mobileNoConditions: MobileNoCondition[] = [];
   isSearchAgain: boolean = false;

@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_VALIDATE_CUSTOMER_PAGE } from '../../constants/route-path.constant';
-import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { CreateNewRegisterService } from 'src/app/shared/services/create-new-register.service';
 import { PageLoadingService } from 'mychannel-shared-libs';
+import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 
 @Component({
   selector: 'app-new-share-plan-mnp-result-page',
@@ -16,12 +16,12 @@ import { PageLoadingService } from 'mychannel-shared-libs';
 export class NewSharePlanMnpResultPageComponent implements OnInit {
   public isSuccess: boolean = true;
   public transaction: Transaction;
-  public mobileNo: string;
-  public mobileNo1: string;
-  public simSerial: string;
-  public simSerial1: string;
-  wizards: string[] = WIZARD_ORDER_NEW_REGISTER;
+  public mobileNo: string ;
+  public mobileNo1: string ;
+  public simSerial: string ;
+  public simSerial1: string ;
   createTransactionService: Promise<any>;
+  wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
 
   constructor(
     private router: Router,

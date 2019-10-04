@@ -9,3 +9,7 @@ export const WIZARD_ORDER_PRE_TO_POST = [
 export const WIZARD_ORDER_MNP = [
     'ข้อมูลลูกค้า', 'เลือกแพ็กเกจ', 'ยืนยันและรับSIM'
 ];
+
+export const WIZARD_ORDER_NEW_SHARE_PLAN_MNP = [
+    'ข้อมูลลูกค้า', 'เลือกแพ็กเกจ', 'ระบุข้อมูลย้ายค่าย', 'ยืนยันและรับSIM'
+];
