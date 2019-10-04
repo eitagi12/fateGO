@@ -46,22 +46,25 @@
           </div>
         </div>
         <!-- <div *ngIf="!isHandsetDiscount && (scanBarcodePC$ | async)" class="bysim__text-or">หรือ</div> -->
-        <div class="bysim__text-or">{{ 'หรือ' | translate }} </div>
-        <div class="card mb-3">
-          <div class="card-header bg-pink text-white">
-            SCAN SIM
-          </div>
-          <div class="card-body text-center">
-            <div *ngIf="simSerial?.mobileNo && simSerial?.simSerial">
-              <p class="text-grey" *ngIf="!keyinSimSerial">
-                {{ 'หมายเลขโทรศัพท์' | translate }} : {{ simSerial?.mobileNo | mobileNo }}
-                <br> {{ 'เลขที่ซิม' | translate }} : {{ simSerial?.simSerial }}
-              </p>
+        <div *ngIf="isEasyApp">
+          <p class="text-center my-5">{{ 'หรือ' | translate }} </p>
+          <!-- <div class="bysim__text-or"></div> -->
+          <div class="card mb-3">
+            <div class="card-header bg-pink text-white">
+              SCAN SIM
             </div>
-            <button type="button" class="btn btn-light-blue pr-5 pl-5 pt-3 pb-3 btn-teal-a700 text-white"
-              (click)="onOpenScanBarcode()"
-              onclick="document.getElementById('serial').value = ''">{{keyinSimSerial === false ? 'สแกน Barcode อีกครั้ง' : 'สแกน Barcode'}}
-            </button>
+            <div class="card-body text-center">
+              <div *ngIf="simSerial?.mobileNo && simSerial?.simSerial">
+                <p class="text-grey" *ngIf="!keyinSimSerial">
+                  {{ 'หมายเลขโทรศัพท์' | translate }} : {{ simSerial?.mobileNo | mobileNo }}
+                  <br> {{ 'เลขที่ซิม' | translate }} : {{ simSerial?.simSerial }}
+                </p>
+              </div>
+              <button type="button" class="btn btn-light-blue pr-5 pl-5 pt-3 pb-3 btn-teal-a700 text-white"
+                (click)="onOpenScanBarcode()"
+                onclick="document.getElementById('serial').value = ''">{{keyinSimSerial === false ? 'สแกน Barcode อีกครั้ง' : 'สแกน Barcode'}}
+              </button>
+            </div>
           </div>
         </div>
       </div>

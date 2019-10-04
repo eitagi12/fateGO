@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_SELECT_NUMBER_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MASTER_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_ORDER_NEW_REGISTER } from 'src/app/order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
-import { SimSerial, SimSerialComponent, HomeService, PageLoadingService, AlertService, AisNativeService } from 'mychannel-shared-libs';
+import { SimSerial, SimSerialComponent, HomeService, PageLoadingService, AlertService, AisNativeService, TokenService } from 'mychannel-shared-libs';
 import { Subscription } from 'rxjs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -27,6 +27,9 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
   serialForm: FormGroup;
   keyinSimSerial: boolean;
 
+  isHandsetDiscount: boolean;
+  isEasyApp: boolean;
+
   @ViewChild('mcSimSerial')
   mcSimSerial: SimSerialComponent;
   serial: any;
@@ -43,7 +46,9 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
     private http: HttpClient,
     private alertService: AlertService,
     private fb: FormBuilder,
-    private aisNativeService: AisNativeService
+    private aisNativeService: AisNativeService,
+    private tokenService: TokenService
+
   ) {
     this.transaction = this.transactionService.load();
     // this.translationSubscribe = this.translationService.onLangChange.subscribe(lang => {
@@ -54,12 +59,17 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
   ngOnInit(): void {
     delete this.transaction.data.simCard;
     this.createForm();
+    this.checkChannelType();
     // this.findTextChangKiosk();
 
     // scan sim
     // this.barcodeSubscription = this.aisNativeService.getBarcode().subscribe((barcode: string) => {
     //   this.barcode.emit(barcode);
     // });
+  }
+
+  private checkChannelType(): void {
+    this.isEasyApp = this.tokenService.getUser().channelType === 'easy-app' ? true : false;
   }
 
   private createForm(): void {
@@ -140,5 +150,4 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
   // focusInput(): void {
   //   this.serialField.nativeElement.focus();
   // }
-
 }
