@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, ElementRef, AfterViewInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_SELECT_NUMBER_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MASTER_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
@@ -17,7 +17,7 @@ declare let window: any;
   templateUrl: './new-share-plan-mnp-verify-instant-sim-page.component.html',
   styleUrls: ['./new-share-plan-mnp-verify-instant-sim-page.component.scss']
 })
-export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnDestroy {
+export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnDestroy, AfterViewInit {
 
   wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
   transaction: Transaction;
@@ -26,7 +26,6 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
   translationSubscribe: Subscription;
   serialForm: FormGroup;
   keyinSimSerial: boolean;
-
   isHandsetDiscount: boolean;
   isEasyApp: boolean;
 
@@ -48,19 +47,15 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
     private fb: FormBuilder,
     private aisNativeService: AisNativeService,
     private tokenService: TokenService
-
   ) {
     this.transaction = this.transactionService.load();
-    // this.translationSubscribe = this.translationService.onLangChange.subscribe(lang => {
-    //   this.mcSimSerial.focusInput();
-    // });
   }
 
   ngOnInit(): void {
     delete this.transaction.data.simCard;
     this.createForm();
     this.checkChannelType();
-    // this.findTextChangKiosk();
+    this.findTextChangKiosk();
 
     // scan sim
     // this.barcodeSubscription = this.aisNativeService.getBarcode().subscribe((barcode: string) => {
@@ -90,12 +85,9 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
     this.homeService.goToHome();
   }
 
-  onCheckSimSerial(): void {
+  public checkSimSerial(): void {
     this.keyinSimSerial = true;
     const serial = this.serialForm.controls['serial'].value;
-    this.serialForm.patchValue({
-      serial: serial
-    });
     this.getMobileNoBySim(serial);
   }
 
@@ -105,6 +97,7 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
       .then((resp: any) => {
         const simSerial = resp.data || [];
         this.simSerialValid = true;
+        this.onSubmit();
         this.simSerial = {
           mobileNo: simSerial.mobileNo,
           simSerial: serial
@@ -124,7 +117,15 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
           type: 'error',
           html: this.translationService.instant(error.resultDescription.replace(/<br>/, ' '))
         });
+        this.onSubmit();
       });
+  }
+
+  private onSubmit(): void {
+    this.serialForm.patchValue({
+      serial: ''
+    });
+    this.serialField.nativeElement.focus();
   }
 
   onOpenScanBarcode(): void {
@@ -138,16 +139,23 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
     // this.barcodeSubscription.unsubscribe();
   }
 
-  onSubmit(): void {
-    this.serialField.nativeElement.focus();
+  findTextChangKiosk(): void {
+    window.fireTextChanged = (id: any) => {
+      if (id) {
+        const input: any = document.getElementById(id);
+        const value: any = input.value;
+        if (value !== '' && value.match(/^[0-9]{13}$/)) {
+          this.serial.emit(value);
+          this.serialForm.patchValue({
+            serial: ''
+          });
+          this.serialField.nativeElement.focus();
+        }
+      }
+    };
   }
 
-  // by sim
-  // ngAfterViewInit(): void {
-  //   this.focusInput();
-  // }
-
-  // focusInput(): void {
-  //   this.serialField.nativeElement.focus();
-  // }
+  ngAfterViewInit(): void {
+    this.serialField.nativeElement.focus();
+  }
 }

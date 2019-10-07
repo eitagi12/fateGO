@@ -33,7 +33,7 @@
                 </div>
                 <div class="col-3 col-sm-2">
                   <button class="btn btn-light-blue text-white btn-block" [disabled]="serialForm.invalid" type="submit"
-                    (click)="onCheckSimSerial()">
+                    (click)="checkSimSerial()">
                     {{ 'ตรวจสอบ' | translate }}
                   </button>
                 </div>
@@ -48,7 +48,6 @@
         <!-- <div *ngIf="!isHandsetDiscount && (scanBarcodePC$ | async)" class="bysim__text-or">หรือ</div> -->
         <div *ngIf="isEasyApp">
           <p class="text-center my-5">{{ 'หรือ' | translate }} </p>
-          <!-- <div class="bysim__text-or"></div> -->
           <div class="card mb-3">
             <div class="card-header bg-pink text-white">
               SCAN SIM
@@ -68,7 +67,6 @@
           </div>
         </div>
       </div>
-      <!-- <mc-sim-serial #mcSimSerial [simSerial]="simSerial" (serial)="onCheckSimSerial($event)"></mc-sim-serial>-->
     </div>
   </div>
   <mc-footer>
