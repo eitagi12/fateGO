@@ -12,7 +12,7 @@
   <div class="mc-flex-wrap">
     <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
     <div class="my-3">
-      <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
+      <mc-wizard [wizards]="wizards" active="3"></mc-wizard>
       <div class="container-fluid">
 
         <form [formGroup]="mnpForm">
@@ -31,8 +31,8 @@
                 <input id="pinCode" type="tel" class="form-control text-center " autocomplete="off" maxlength="8"
                   formControlName="pinCode" [ngClass]="{'is-invalid': !mnpForm.controls['pinCode'].valid && mnpForm.controls['pinCode'].touched }">
               </li>
-              <mc-promotion-shelve [selected]="transaction?.data?.mainPackage" [promotionShelves]="promotionShelves"
-                (completed)="onCompleted($event)"></mc-promotion-shelve>
+              <!-- <mc-promotion-shelve [selected]="transaction?.data?.mainPackage" [promotionShelves]="promotionShelves"
+                (completed)="onCompleted($event)"></mc-promotion-shelve> -->
             </ul>
           </div>
         </form>
