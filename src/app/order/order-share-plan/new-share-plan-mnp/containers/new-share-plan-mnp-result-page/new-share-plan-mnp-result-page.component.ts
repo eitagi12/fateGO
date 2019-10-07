@@ -107,6 +107,7 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
       }), retryWhen(errors =>
         errors.pipe(concatMap((e, i) => {
           if (i >= 12) {
+            this.pageLoadingService.closeLoading();
             return throwError(`ขออภัย ทำรายการไม่สำเร็จ (ORDER : ${orderNo})`);
           }
           return of(e).pipe(delay(15000));
