@@ -61,9 +61,8 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
   }
 
   ngOnInit(): void {
-    const mainPackage = this.transaction.data.mainPackage;
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-
+    const mainPackage = this.transaction.data.mainPackage;
     const customer = this.transaction.data.customer;
     const simCard = this.transaction.data.simCard;
     const billingInformation = this.transaction.data.billingInformation;
@@ -116,7 +115,6 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
     const mergeBilling = billingInformation.mergeBilling;
     const billCycle = billingInformation.billCycle;
     const customer: any = billingInformation.billDeliveryAddress || this.transaction.data.customer;
-
     const customerAddress = this.utils.getCurrentAddress({
       homeNo: customer.homeNo,
       moo: customer.moo,
@@ -201,9 +199,7 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
     }
 
     // default billing
-    this.getBllingCycle(
-      (mergeBilling ? mergeBilling.bill : null) || (billCycle ? billCycle.bill : null) || customer.billCycle
-    ).then((billCycleText: string) => {
+    this.getBllingCycle(customer.billCycle).then((billCycleText: string) => {
       this.billingInfo.billingCycle.text = billCycleText;
     });
   }
