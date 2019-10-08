@@ -14,6 +14,7 @@ import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_PAGE,
          ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE
        } from '../../constants/route-path.constant';
+import { BanksPromotionService } from 'src/app/device-order/services/banks-promotion.service';
 
 @Component({
   selector: 'app-new-register-mnp-payment-detail-page',
@@ -48,7 +49,8 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
     private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,
     private priceOptionService: PriceOptionService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private banksPromotionService: BanksPromotionService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -85,9 +87,8 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
     if (trade.banks && trade.banks.length > 0) {
       this.banks = trade.banks;
     } else {
-      this.http.post('/api/salesportal/banks-promotion', {
-        location: this.tokenService.getUser().locationCode
-      }).toPromise().then((resp: any) => {
+      this.banksPromotionService.getBanksPromotion(this.tokenService.getUser().locationCode)
+      .then((resp: any) => {
         this.banks = resp.data || [];
       });
     }
