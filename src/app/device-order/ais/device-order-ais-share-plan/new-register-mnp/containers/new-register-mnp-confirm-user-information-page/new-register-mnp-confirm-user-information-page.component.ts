@@ -52,7 +52,7 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
   ) {
     this.transaction = this.transactionService.load();
 
-    this.member = {mobileNo: '0910045268', mainPackage: '3G Member Share MNP UL SWifi 0 Baht'};
+    this.member = { mobileNo: '0910045268', mainPackage: '3G Member Share MNP UL SWifi 0 Baht' };
 
     // New register profile not found.
     if (!this.transaction.data.billingInformation) {
@@ -87,9 +87,9 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
     });
 
     this.mailBillingInfo = {
-      email: billingInformation.billCycleData.email,
+      email: billCycleData.email,
       mobileNo: simCard.mobileNo,
-      address: billingInformation.billCycleData.billAddressText,
+      address: billCycleData.billAddressText,
       billChannel: this.getBillChannel()
     };
 
@@ -191,6 +191,7 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
       }
     };
 
+    // disable all
     if (this.isPackageNetExtreme()) {
       Object.keys(this.billingInfo).forEach(key => {
         this.billingInfo[key].isEdit = false;
@@ -199,7 +200,9 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
     }
 
     // default billing
-    this.getBllingCycle(customer.billCycle).then((billCycleText: string) => {
+    this.getBllingCycle(
+      (mergeBilling ? mergeBilling.bill : null) || (billCycle ? billCycle.bill : null) || customer.billCycle
+    ).then((billCycleText: string) => {
       this.billingInfo.billingCycle.text = billCycleText;
     });
   }
