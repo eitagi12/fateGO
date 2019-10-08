@@ -132,19 +132,26 @@ export class DeviceOrderAisNewRegisterOmiseGeneratorPageComponent implements OnI
     const trade = this.priceOption.trade;
     const payment: any = this.transaction.data.payment || {};
     const advancePayment: any = this.transaction.data.advancePayment || {};
-    const advancePay = trade.advancePay || {};
     let total: number = 0;
+    const advancePay = trade.advancePay || {};
 
     if (trade.advancePay.installmentFlag === 'Y') {
-      return +trade.promotionPrice + +advancePay.amount;
+      return this.summary([+trade.promotionPrice, +advancePay.amount]);
     }
-    if (payment.paymentType === 'QR_CODE') {
+
+    if (payment.paymentOnlineCredit) {
       total += +trade.promotionPrice;
     }
-    if (advancePayment.paymentType === 'QR_CODE') {
+    if (advancePayment.paymentOnlineCredit) {
       total += +advancePay.amount;
     }
     return total;
+  }
+
+  summary(amount: number[]): number {
+    return amount.reduce((prev, curr) => {
+      return prev + curr;
+    }, 0);
   }
 
   onBack(): void {

@@ -1,7 +1,6 @@
 <div class="mc-flex">
   <mc-header title="{{'เครื่องพร้อมเปิดเบอร์ใหม่'| translate}}">
     <div class="header-icon-left">
-      <!-- <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon> -->
     </div>
     <div class="header-icon-right">
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()" [hidden]="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'SUCCESS'"></mc-header-icon>
@@ -13,12 +12,7 @@
         <div class="card mb-5">
           <div class="card-header bg-lime text-white" translate>ข้อมูลการชำระ</div>
           <div class="card-body text-light-grey">
-            <div class=" mb-3" translate>
-              ผู้ให้บริการ
-              <span class="pull-right"> {{ transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'WAITING' ?
-                priceOption?.productStock?.company : 'AWN' }} </span>
-            </div>
-            <div class="border-bottom mb-3">
+            <div class="border-bottom pb-3 mb-3">
               {{'ชำระโดย'| translate}}
               <span class="pull-right">
                 ออนไลน์บัตรเครดิต
@@ -37,9 +31,9 @@
             <div translate>เพื่อทำรายการชำระค่าสินค้าและบริการ</div>
           </div>
           <div class="qr-code border bg-white mb-3">
-            <img src="assets/images/icon/th_qr_code_branner.png" class="d-block w-100" />
+            <img src="assets/images/icon/Branner-Thai-Qr-code.png" class="d-block w-100" />
             <div class="mt-2">
-              <img src="assets/images/icon/prompt-pay.png" class="d-block w-25 m-auto" />
+              <img src="assets/images/icon/Icon-Card.png" class="d-block w-25 m-auto" />
             </div>
             <div>
               <img [src]="qrCode" class="w-100 d-block m-auto" alt="QR CODE ERROR" />
@@ -55,9 +49,6 @@
     </div>
   </div>
   <mc-footer>
-    <!-- <button class="btn btn-secondary" (click)="onHome()" [hidden]="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'SUCCESS'">CANCLE</button> -->
-    <!-- <button class="btn btn-secondary" (click)="onHome()">CANCEL</button> -->
     <button class="btn btn-success" (click)="onGenerateQRCode()">REFRESH</button>
-    <!-- <button class="btn btn-success" *ngIf="isDeveloperMode()" (click)="onNext()">NEXT</button> -->
   </mc-footer>
 </div>
