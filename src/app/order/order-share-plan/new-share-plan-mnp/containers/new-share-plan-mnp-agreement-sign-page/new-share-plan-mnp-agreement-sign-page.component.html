@@ -11,31 +11,35 @@
   <div class="mc-flex-wrap">
     <div class="mb-3 mt-3">
       <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
-      <div *ngIf="!isOpenSign" class="container-fluid vertical-center">
-        <div class="col-12 ">
-          <div class="card card-block">
-            <!-- <div class="card-header bg-transparent text-center">ลงชื่อผู้ทำรายการ</div> -->
-            <div *ngIf="!transaction?.data?.customer?.imageSignature" class="signed">
-              <img src="assets/images/icon/pen.png" (click)="$event.preventDefault(); onSigned()"
-                *ngIf="signatureText !== 'แก้ไขลายเซ็น'" />
+      <div class="card bg-white">
+        <div *ngIf="!isOpenSign" class="container-fluid ">
+          <div class="">
+            <p class="head-text "> เซ็นยืนยันข้อมูล </p>
+            <hr>
+            <span id="lblShrSignWriterContractInfo" class="multi-line font-gray">
+              {{contractText}}
+            </span>
+            <div class="my-5">
+              <span class="font-gray">กรุณาเซ็นลงในช่อง</span>
+              <div class="sign-container" id="lblShrSignWriterContractInfoSignContainer">
+                
+                  <img src="" name="imgPhoto" id="imgPhoto" [hidden]="!signature"/>                
+              </div>
+              <div class="row mt-3">
+                <div class="col-6" id="lblShrSignWriterContractInfoDate">
+                  {{today}}
+                </div>
+                <div class="col-6 text-right ">
+                    <button id="btnShrSignWriterSign"  class="btn btn-success" (click)="openSignature()">{{ signatureText }}</button>
+                  </div>
+              </div>
             </div>
-            <div *ngIf="transaction?.data?.customer?.imageSignature" class="signed">
-              <img [src]="'data:image/jpeg;base64,' + transaction?.data?.customer?.imageSignature"
-                *ngIf="signatureText !== 'แก้ไขลายเซ็น'">
-            </div>
-          </div>
-          <div class="card-footer text-center">
-            <a href="#" (click)="$event.preventDefault(); onSigned()" class="text-pink">
-              <span *ngIf="!transaction?.data?.customer?.imageSignature" translate>เซ็นลายเซ็น</span>
-              <span *ngIf="transaction?.data?.customer?.imageSignature" translate>แก้ไขลายเซ็น</span>
-            </a>
           </div>
         </div>
       </div>
     </div>
+    <mc-footer>
+      <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+      <button class="btn btn-success" (click)="onNext()" [disabled]="!isSuccess" >NEXT</button>
+    </mc-footer>
   </div>
-  <mc-footer>
-    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()">NEXT</button>
-  </mc-footer>
-</div>

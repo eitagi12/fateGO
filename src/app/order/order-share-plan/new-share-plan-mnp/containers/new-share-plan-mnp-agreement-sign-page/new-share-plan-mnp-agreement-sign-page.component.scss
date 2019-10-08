@@ -25,3 +25,29 @@
     align-items: center;
   }
   
+  .sign-container{
+    border: 2px solid #cbcbcb;
+    padding: 20px;
+    min-height: 500px;
+    // @media #{$x-small} {
+    //   min-height: 200px;
+    // }
+    img {
+      width: 100%;
+      height: auto;
+      margin: 0 auto;
+    }
+  }
+
+  #imgPhoto{
+    mix-blend-mode: multiply;
+  }
+
+  .font-gray{
+    color: #949494;
+  }
+
+  .head-text{
+    text-align: center;
+    padding: 25px 25px 0;
+  }
