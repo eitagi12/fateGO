@@ -10,7 +10,7 @@ import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.
 import { HttpClient } from '@angular/common/http';
 import { map, retryWhen, concatMap, delay } from 'rxjs/operators';
 import { throwError, of } from 'rxjs';
-import { PrinterComponent } from '../../components/printer/printer.component';
+import { ResizeImageComponent } from '../../components/resize-image/resize-image.component';
 declare var window: any;
 @Component({
   selector: 'app-new-share-plan-mnp-result-page',
@@ -27,8 +27,8 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
   public simSerial1: string;
   wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;  // createTransactionService: Promise<any>;
 
-  @ViewChild(PrinterComponent)
-  mcprinter: PrinterComponent;
+  @ViewChild(ResizeImageComponent) resizeImage: ResizeImageComponent;
+  reSizeImage: string;
   aisNative: any = window.aisNative;
   getEApplicationFn: any;
   @Input() previewImage: string[] = [];
@@ -57,7 +57,6 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
     this.pageLoadingService.openLoading();
     this.createNewRegisterService.createNewRegister(this.transaction)
       .then((resp: any) => {
-        console.log('resp', resp);
         const data = resp.data || {};
         this.transaction.data.order = {
           orderNo: data.orderNo,
@@ -67,21 +66,23 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
         if (this.transaction.data.order.orderNo) {
           this.isSuccess = true;
           this.checkOrderStatusByOrderNo(this.transaction.data.order.orderNo).then((res: any) => {
-            console.log('res', res);
+            this.pageLoadingService.closeLoading();
+
+          }).catch((err) => {
             this.pageLoadingService.closeLoading();
 
           });
         } else {
           this.isSuccess = false;
+          this.pageLoadingService.closeLoading();
         }
-        // this.pageLoadingService.closeLoading();
 
       }).catch(() => {
         this.isSuccess = false;
         this.pageLoadingService.closeLoading();
       });
 
-      this.getEApplicationImageForPrint();
+    // this.getEApplicationImageForPrint();
 
   }
 
@@ -126,15 +127,15 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
   }
 
   getEApplicationImageForPrint(): void {
-    this.getEApplicationFn = this.getEApplicationFile(this.transaction.data.order.orderNo);
+    this.getEApplicationFn = this.getEApplicationFile('R1910000910567');
     this.getEApplicationFn.then((response: any): void => {
       if (response) {
-        this.images = [];
+        // this.images = [];
         this.images.push('data:image/jpg;base64,' + response.data.eApplication);
         if (typeof window.aisNative !== 'undefined') {
-          this.printToNetworkOrientation();
+          this.resizeImage.printToNetworkOrientation();
         } else {
-          this.callPrint();
+          this.resizeImage.callPrint();
         }
       }
     }).catch((err: any) => {
@@ -144,75 +145,8 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
         err._body = JSON.stringify(errorObj);
       } catch (err) {
         console.log('err: ', err);
-
       }
     });
-  }
-
-  printToNetworkOrientation(): void {
-    this.imagePromise(this.previewImage)
-      .then((images: string[]) => {
-        let htmlCode: string = '';
-        images.forEach((image: string, index: number) => {
-          htmlCode += `<div style="text-align: center;">` +
-            `<img style="margin:0 auto 10px; width: 100%;" src="${image}" alt="">` +
-            `<div>`;
-            if (index < images.length - 1) {
-              htmlCode += '<hr>';
-            }
-        });
-        this.aisNative.printToNetworkOrientation(htmlCode, '2');
-      });
-  }
-
-  private imagePromise(images: string[]): Promise<any> {
-    const promise: Promise<string>[] = [];
-    images.forEach((src: string) => {
-      promise.push(this.resizeDataURL(src));
-    });
-    return Promise.all(promise);
-  }
-
-  private resizeDataURL(image: string): Promise<string> {
-    return new Promise((resovle, reject) => {
-      // Max size for thumbnail
-      const maxWidth: number = 700;
-      const maxHeight: number = 700;
-      // Create and initialize two canvas
-      const canvas: any = document.createElement('canvas');
-      const ctx: any = canvas.getContext('2d');
-
-      const canvasCopy: any = document.createElement('canvas');
-      const copyContext: any = canvasCopy.getContext('2d');
-
-      // Create original image
-      const img: any = new Image();
-      img.onload = (): void => {
-        // Determine new ratio based on max size
-        let ratio: number = 1;
-        if (img.width > maxWidth) {
-          ratio = maxWidth / img.width;
-        } else if (img.height > maxHeight) {
-          ratio = maxHeight / img.height;
-        }
-        // Draw original image in second canvas
-        canvasCopy.width = img.width;
-        canvasCopy.height = img.height;
-        copyContext.drawImage(img, 0, 0);
-        // Copy and resize second canvas to first canvas
-        canvas.width = img.width * ratio;
-        canvas.height = img.height * ratio;
-        ctx.drawImage(canvasCopy, 0, 0, canvas.width, canvas.height);
-
-        resovle(canvas.toDataURL('image/jpeg'));
-      };
-      img.src = image;
-    });
-  }
-
-  callPrint(): void {
-    this.mcprinter.setItems(this.previewImage);
-    this.mcprinter.print();
   }
 
   getEApplicationFile(orderNo: string): Promise<any> {

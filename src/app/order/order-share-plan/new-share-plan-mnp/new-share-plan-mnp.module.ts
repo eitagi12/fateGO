@@ -32,6 +32,7 @@ import { SummarySellerCodeComponent } from './containers/new-share-plan-mnp-summ
 import { ConfirmCustomerInfoComponent } from './components/confirm-customer-info/confirm-customer-info.component';
 import { BillingInfoComponent } from './components/billing-info/billing-info.component';
 import { PrinterComponent } from './components/printer/printer.component';
+import { ResizeImageComponent } from './components/resize-image/resize-image.component';
 
 @NgModule({
   imports: [
@@ -68,7 +69,8 @@ import { PrinterComponent } from './components/printer/printer.component';
     SummarySellerCodeComponent,
     ConfirmCustomerInfoComponent,
     BillingInfoComponent,
-    PrinterComponent
+    PrinterComponent,
+    ResizeImageComponent
   ]
 })
 export class NewSharePlanMnpModule { }
