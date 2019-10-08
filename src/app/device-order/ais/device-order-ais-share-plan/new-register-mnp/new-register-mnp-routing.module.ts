@@ -69,8 +69,7 @@ const routes: Routes = [
   { path: 'perso-sim', component: NewRegisterMnpPersoSimPageComponent },
   { path: 'network-type', component: NewRegisterMnpNetworkTypePageComponent },
   { path: 'payment-detail', component: NewRegisterMnpPaymentDetailPageComponent },
-  { path: 'by-pattern', component: NewRegisterMnpByPatternPageComponent},
-  { path: 'select-package-member', component: NewRegisterMnpSelectPackageMemberPageComponent}
+  { path: 'by-pattern', component: NewRegisterMnpByPatternPageComponent}
 ];
 @NgModule({
   imports: [RouterModule.forChild(routes)],

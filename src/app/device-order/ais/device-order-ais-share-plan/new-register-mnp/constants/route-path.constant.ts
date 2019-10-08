@@ -33,4 +33,3 @@ export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VERIFY_INSTANT_S
 export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE =  '/device-order/ais/share-plan/new-register-mnp/payment-detail';
 export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_NUMBER_PAGE =  '/device-order/ais/share-plan/new-register-mnp/select-number';
 export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_BY_PATTERN_PAGE =  '/device-order/ais/share-plan/new-register-mnp/by-pattern';
-export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_PACKAGE_MEMBER_PAGE =  '/device-order/ais/share-plan/new-register-mnp/select-package-member';
