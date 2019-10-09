@@ -4,12 +4,8 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Router } from '@angular/router';
 import { HomeService, PageLoadingService, ShoppingCart } from 'mychannel-shared-libs';
-// import {
-//   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGREEMENT_SIGN_PAGE,
-//   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_ECONTACT_PAGE
-// } from '../../constants/route-path.constant';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
-import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
+import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_ECONTACT_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_AGGREGATE_PAGE } from '../../constants/route-path.constant';
@@ -21,9 +17,9 @@ import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_ECONTACT_PAGE, ROUTE
 })
 export class NewRegisterMnpEapplicationPageComponent implements OnInit, OnDestroy {
   selectedTab: string = 'new-register';
-  wizards: string[] = WIZARD_DEVICE_ORDER_AIS;
-  transaction: Transaction;
+  wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN;
   shoppingCart: ShoppingCart;
+  transaction: Transaction;
   eApplicationSrc: string;
   translationSubscribe: Subscription;
   constructor(private router: Router,
@@ -36,7 +32,7 @@ export class NewRegisterMnpEapplicationPageComponent implements OnInit, OnDestro
     this.transaction = this.transactionService.load();
   }
 
-  makeActive(tab: string): void {
+  selectEapplication(tab: string): void {
     this.selectedTab = tab;
   }
 

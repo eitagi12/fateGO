@@ -10,12 +10,12 @@
     <div class="mc-flex-wrap">
         <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
         <div class="my-3">
-            <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
+            <mc-wizard [wizards]="wizards" active="5"></mc-wizard>
             <div class="container">
                 <div class="tab">
                     <div class="tab">
-                        <button class="tablinks" [ngClass]="{'active': (selectedTab == 'new-register') }" (click)="makeActive('new-register')">NEW</button>
-                        <button class="tablinks" [ngClass]="{'active': (selectedTab == 'mnp') }" (click)="makeActive('mnp')">MNP</button>
+                        <button class="tablinks" [ngClass]="{'active': (selectedTab == 'new-register') }" (click)="selectEapplication('new-register')">NEW</button>
+                        <button class="tablinks" [ngClass]="{'active': (selectedTab == 'mnp') }" (click)="selectEapplication('mnp')">MNP</button>
                     </div>
                     <div class="card" *ngIf="eApplicationSrc">
                         <div class="card-header bg-transparent text-center">{{ 'คำขอใช้บริการโทรศัพท์เคลื่อนที่' | translate }}</div>
