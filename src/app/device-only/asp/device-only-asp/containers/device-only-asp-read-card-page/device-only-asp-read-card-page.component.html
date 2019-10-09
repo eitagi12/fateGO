@@ -65,7 +65,8 @@
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label id="modal-text-customer-name">{{ nameTextBySmartCard }}</label>
                   </label>
                 </div>
-                <div id="myModal" class="card-body card-body-modal" (mouseleave)="onCancelMove($event)" (mousemove)="onScrolling($event)" (mousedown)="onTouchModal($event)" (mouseup)="onCancelMove($event)">
+                <div id="myModal" class="card-body card-body-modal" (mouseleave)="onCancelMove($event)"
+                  (mousemove)="onScrolling($event)" (mousedown)="onTouchModal($event)" (mouseup)="onCancelMove($event)">
                   <form [formGroup]="selectBillingAddressForm">
                     <h5>ที่อยู่ตามบัตรประชาชน</h5>
                     <div>
@@ -78,9 +79,12 @@
                     <br />
                     <h5>ที่อยู่ตามใบแจ้งค่าใช้บริการเบอร์ AIS ของท่าน</h5>
                     <div *ngFor="let itemBA of listBillingAccount; let i = index" #istBillingAccountBox>
-                      <input class="form-check-input" type="radio" value="{{i}}" formControlName="billingAddress" id="modal-text-billing-address-{{i+1}}">
-                      <label class="form-check-label" class="col-9" for="modal-text-billing-address-{{i+1}}">{{ itemBA.mobileNo[0] }}</label>
-                      <label class="form-check-label" class="col-3" for="modal-text-billing-address-{{i+1}}">{{ itemBA.status }}</label>
+                      <input class="form-check-input" type="radio" value="{{i}}" formControlName="billingAddress"
+                        id="modal-text-billing-address-{{i+1}}">
+                      <label class="form-check-label" class="col-9"
+                        for="modal-text-billing-address-{{i+1}}">{{ itemBA.mobileNo[0] }}</label>
+                      <label class="form-check-label" class="col-3"
+                        for="modal-text-billing-address-{{i+1}}">{{ itemBA.status }}</label>
                     </div>
                   </form>
                 </div>
@@ -94,7 +98,8 @@
             </div>
           </div>
         </div>
-        <div class="media m-auto pb-4" *ngIf="isShowCustomerPostPaid === true || isShowCustomerAddressBySmartCard === true">
+        <div class="media m-auto pb-4"
+          *ngIf="isShowCustomerPostPaid === true || isShowCustomerAddressBySmartCard === true">
           <div class="media-body">
             <div>
               {{ customer?.titleName || transaction.data.customer?.titleName }}
@@ -120,11 +125,13 @@
                 <span *ngIf="customer?.street || transaction.data.customer?.street">
                   {{ 'ถนน' | translate }} {{ customer?.street || transaction.data.customer?.street }}
                 </span>
-                <span *ngIf="customer?.province === 'กรุงเทพมหานคร' || transaction.data.customer?.province === 'กรุงเทพมหานคร'">
+                <span
+                  *ngIf="customer?.province === 'กรุงเทพมหานคร' || transaction.data.customer?.province === 'กรุงเทพมหานคร'">
                   {{ 'แขวง' | translate }}{{ customer?.tumbol || transaction.data.customer?.tumbol }}
                   {{ 'เขต' | translate }}{{ customer?.amphur || transaction.data.customer?.amphur }}
                 </span>
-                <span *ngIf="customer?.province !== 'กรุงเทพมหานคร' || transaction.data.customer?.province !== 'กรุงเทพมหานคร'">
+                <span
+                  *ngIf="customer?.province !== 'กรุงเทพมหานคร' || transaction.data.customer?.province !== 'กรุงเทพมหานคร'">
                   {{ 'ตำบล' | translate }}{{ customer?.tumbol || transaction.data.customer?.tumbol }}
                   {{ 'อำเภอ' | translate }}{{ customer?.amphur || transaction.data.customer?.amphur }}
                 </span>
@@ -152,6 +159,17 @@
             <div>
               {{ 'Status' }} {{ mobileNoStatus }}
             </div>
+          </div>
+        </div>
+        <div class="card-footer bg-transparent">
+          <div class="text-right" (click)="switchKeyInBillingAddress()">
+            <label style="cursor: pointer" class="text-lime">ระบุที่อยู่ใบเสร็จรับเงิน</label>
+          </div>
+          <div *ngIf="isShowInputForKeyIn;else customerDetail">
+            <app-billing-address [titleNames]="titleName" [customerAddress]="customerAddress"
+              (completed)="onCompleted($event)" (error)="onError($event)"
+              [keyInCustomerAddressTemp]="keyInCustomerAddressTemp" [actionType]="actionType">
+            </app-billing-address>
           </div>
         </div>
         <div class="card-footer bg-transparent">
@@ -190,6 +208,6 @@
   </div>
   <mc-footer>
     <button class="btn btn-secondary" id="button-back" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" id="button-next" (click)="onNext()" [disabled]="isNotFormValid()">NEXT</button>
+    <button class="btn btn-success" id="button-next" (click)="onNext()">NEXT</button>
   </mc-footer>
 </div>

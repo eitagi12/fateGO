@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef, TemplateRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, TemplateRef, OnDestroy, Output, EventEmitter, Input } from '@angular/core';
 import { WIZARD_DEVICE_ONLY_AIS } from 'src/app/device-only/constants/wizard.constant';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ReadCardService, PageLoadingService, AlertService, HomeService, ApiRequestService, ReceiptInfo, User, TokenService, PaymentDetail } from 'mychannel-shared-libs';
@@ -37,7 +37,6 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   private transaction: Transaction;
   public selectBillingAddressForm: FormGroup;
   public isSelect: boolean;
-  public customerInfoTemp: any;
   public receiptInfo: ReceiptInfo;
   public user: User;
   public ADDRESS_BY_SMART_CARD: string;
@@ -57,10 +56,17 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   public nameTextByCustomerPrepaid: string;
   public isShowCustomerAddressBySmartCard: boolean;
   private customerPrepaid: Customer;
+  titleName: any;
+  customerInfo: any;
+  keyInCustomerAddressTemp: any;
+  actionType: string;
+  customerReadCardTemp: any;
+
   // modal click drag
   private onTouchScreen: boolean;
   private currentScrollPosition: any = 0;
   private scrollingPosition: any = 0;
+  isShowInputForKeyIn: boolean;
 
   @ViewChild('progressBarArea')
   progressBarArea: ElementRef;
@@ -71,6 +77,21 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   @ViewChild('select_billing_address')
   selectBillingAddressTemplate: TemplateRef<any>;
   modalBillAddress: BsModalRef;
+
+  @Input()
+  customerInfoTemp: any;
+
+  @Output()
+  completed: EventEmitter<any> = new EventEmitter<any>();
+
+  @Output()
+  error: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+  @Output()
+  errorAddessValid: EventEmitter<boolean> = new EventEmitter<boolean>();
+
+  @Output()
+  action: EventEmitter<string> = new EventEmitter<string>();
 
   constructor(
     private router: Router,
@@ -88,10 +109,11 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
     private apiRequestService: ApiRequestService,
     private http: HttpClient,
     private tokenService: TokenService,
-    private homeButtonService: HomeButtonService
+    private homeButtonService: HomeButtonService,
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
+    this.billingAddress.getTitleName().then(this.responseTitleNames());
     this.user = this.tokenService.getUser();
   }
 
@@ -105,6 +127,29 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
     this.createSelectBillingAddressForm();
     this.getLocationName();
     this.setCustomerInfoFromTransaction();
+
+    if (this.customerInfoTemp) {
+      this.setDataFromCustomerInfoTemp();
+    }
+  }
+
+  private setDataFromCustomerInfoTemp(): void {
+    const customer = this.customerInfoTemp.customer;
+    const billDeliveryAddress = this.customerInfoTemp.billDeliveryAddress;
+    const receiptInfo = this.customerInfoTemp.receiptInfo;
+    const mobileNo = this.customerInfoTemp.mobileNo;
+    this.setCustomerInfo({
+      customer: { ...customer, ...billDeliveryAddress, ...receiptInfo, ...mobileNo },
+      action: this.customerInfoTemp.action
+    });
+    if (this.isShowInputForKeyIn) {
+      this.keyInCustomerAddressTemp = { ...customer, ...billDeliveryAddress };
+    }
+    for (const item in receiptInfo) {
+      if (receiptInfo.hasOwnProperty(item)) {
+        this.receiptInfoForm.controls[item].setValue(receiptInfo[item]);
+      }
+    }
   }
 
   private getLocationName(): void {
@@ -119,6 +164,22 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
         sellerNo: this.tokenService.getUser().ascCode
       };
     });
+  }
+
+  switchKeyInBillingAddress(): void {
+    this.isShowInputForKeyIn = !this.isShowInputForKeyIn;
+    this.billingAddress.setIsKeyInBillingAddress(this.isShowInputForKeyIn);
+    if (this.receiptInfoForm.valid) {
+      this.onError(true);
+    }
+  }
+
+  onError(valid: boolean): void {
+    this.errorAddessValid.emit(valid);
+  }
+
+  private responseTitleNames(): (value: any) => any {
+    return (resp: string[]) => this.titleName = resp;
   }
 
   private getPaymentDetail(): void {
@@ -500,11 +561,11 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
 
   public setCustomerInfoNonAis = (data: any) => {
     const customer = {
-      idCardNo: '',
+      idCardNo: data.customer.idCardNo,
       idCardType: '',
-      titleName: '',
-      firstName: '',
-      lastName: '',
+      titleName: data.customer.titleName || '',
+      firstName: data.customer.firstName || '',
+      lastName: data.customer.lastName || '',
       birthdate: '',
       gender: '',
       expireDate: '',
