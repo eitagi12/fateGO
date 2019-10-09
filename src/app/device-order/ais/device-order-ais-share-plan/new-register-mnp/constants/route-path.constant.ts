@@ -13,6 +13,7 @@ export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_AGREEMENT_SIGN_P
 export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_ECONTACT_PAGE = '/device-order/ais/share-plan/new-register-mnp/econtact';
 export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CAPTURE_PAGE = '/device-order/ais/share-plan/new-register-mnp/face-capture';
 export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_COMPARE_PAGE = '/device-order/ais/share-plan/new-register-mnp/face-compare';
+export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_EAPPLICATION_PAGE = '/device-order/ais/share-plan/new-register-mnp/eapplication';
 export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CONFIRM_PAGE = '/device-order/ais/share-plan/new-register-mnp/face-confirm';
 export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_AGGREGATE_PAGE = '/device-order/ais/share-plan/new-register-mnp/aggregate';
 export const ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_QUEUE_PAGE = '/device-order/ais/share-plan/new-register-mnp/queue';

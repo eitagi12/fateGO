@@ -1,0 +1,38 @@
+.img-eapplication {
+    text-align: center;
+}
+
+.tab {
+    overflow: hidden;
+    background-color: #cced61;
+}
+
+.tab button {
+    background-color: inherit;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    padding: 12px 14px;
+    transition: 0.3s;
+    font-size: 17px;
+    width: 50%;
+}
+
+.tab button:hover {
+    background-color: #74a822;
+}
+
+.tab button.active {
+    background-color: #8bc34a;
+}
+
+.tabcontent {
+    display: block;
+    padding: 6px 12px;
+    border: 1px solid #ccc;
+    border-top: none;
+}
+
+.tablinks:focus {
+    border-bottom: 1.5px solid #8bc34a;
+}

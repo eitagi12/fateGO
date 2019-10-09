@@ -103,7 +103,7 @@
                 <br>
                 <a href="#" class="pull-right" [hidden]="view" *ngIf="billingInfo?.billingMethod?.isDelete" (click)="$event.preventDefault(); billingInfo?.billingMethod?.onDelete()">Delete</a>
               </p>
-              <div class="text-grey">{{ confirmCustomerInfo?.mobileNo | mobileNo }}</div>
+              <div class="text-grey">{{ member.mobileNo | mobileNo }}</div>
             </li>
             <li class="list-group-item">
               <p>

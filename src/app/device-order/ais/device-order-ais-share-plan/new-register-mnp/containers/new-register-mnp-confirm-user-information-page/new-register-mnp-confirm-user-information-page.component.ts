@@ -52,7 +52,7 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
   ) {
     this.transaction = this.transactionService.load();
 
-    this.member = {mobileNo: '0910045268', mainPackage: '3G Member Share MNP UL SWifi 0 Baht'};
+    this.member = { mobileNo: '0910045268', mainPackage: '3G Member Share MNP UL SWifi 0 Baht' };
 
     // New register profile not found.
     if (!this.transaction.data.billingInformation) {
@@ -61,9 +61,8 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
   }
 
   ngOnInit(): void {
-    const mainPackage = this.transaction.data.mainPackage;
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-
+    const mainPackage = this.transaction.data.mainPackage;
     const customer = this.transaction.data.customer;
     const simCard = this.transaction.data.simCard;
     const billingInformation = this.transaction.data.billingInformation;
@@ -88,9 +87,9 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
     });
 
     this.mailBillingInfo = {
-      email: billingInformation.billCycleData.email,
+      email: billCycleData.email,
       mobileNo: simCard.mobileNo,
-      address: billingInformation.billCycleData.billAddressText,
+      address: billCycleData.billAddressText,
       billChannel: this.getBillChannel()
     };
 
@@ -116,7 +115,6 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
     const mergeBilling = billingInformation.mergeBilling;
     const billCycle = billingInformation.billCycle;
     const customer: any = billingInformation.billDeliveryAddress || this.transaction.data.customer;
-
     const customerAddress = this.utils.getCurrentAddress({
       homeNo: customer.homeNo,
       moo: customer.moo,
@@ -193,6 +191,7 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
       }
     };
 
+    // disable all
     if (this.isPackageNetExtreme()) {
       Object.keys(this.billingInfo).forEach(key => {
         this.billingInfo[key].isEdit = false;

@@ -9,7 +9,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { environment } from 'src/environments/environment';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { TranslateService } from '@ngx-translate/core';
-import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE } from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-new-register-mnp-validate-customer-id-card-page',
@@ -43,33 +43,6 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
     private alertService: AlertService) {
     this.user = this.tokenService.getUser();
     this.priceOption = this.priceOptionService.load();
-
-    this.homeService.callback = () => {
-
-      const url = this.router.url;
-      if (url.indexOf('result') !== -1) {
-        this.homeHandler();
-      } else {
-        this.alertService.question(this.translateService.instant('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่'))
-          .then((data: any) => {
-            if (!data.value) {
-              return false;
-            }
-            if (this.validateCustomerIdcard.koiskApiFn) {
-              this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
-            }
-            // Returns stock (sim card, soId) todo...
-            return this.returnStock().then(() => true);
-          })
-          .then((isNext: boolean) => {
-            if (isNext) {
-              this.homeHandler();
-            }
-          });
-      }
-    };
-
-    this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
   }
 
   ngOnInit(): void {
@@ -85,7 +58,6 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
   }
 
   onRemoveCardState(): void {
-    // ปัญหาเกิดจาก ais webconnect เมื่ออ่านบัตรรอบแรกแล้วอ่านรอบ 2 ไม่ได้
     if (this.validateCustomerIdcard && this.validateCustomerIdcard.koiskApiFn) {
       this.validateCustomerIdcard.koiskApiFn.removedState().subscribe((removed: boolean) => {
         if (removed) {
@@ -96,19 +68,15 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
     }
   }
 
-  // Read card error
   onError(valid: boolean): void {
     this.readCardValid = valid;
     if (!this.profile) {
-      this.alertService.error(this.translateService.instant('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน'))
-        .then(() => this.onBack());
+      this.alertService.error(this.translateService.instant('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน')).then(() => this.onBack());
     }
   }
 
-  // Read card success
   onCompleted(profile: ReadCardProfile): void {
     this.profile = profile;
-    // auto next
     this.onNext();
   }
 
@@ -130,7 +98,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
       })
       .then((isNext: boolean) => {
         if (isNext) {
-          this.router.navigate([''], { queryParams: this.priceOption.queryParams });
+          // this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
         }
       });
   }
@@ -142,11 +110,11 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
       this.createTransaction();
       this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
         .then((zipCode: string) => {
-          return this.http.get('/api/customerportal/validate-customer-mnp', {
+          return this.http.get('/api/customerportal/validate-customer-new-register', {
             params: {
               identity: this.profile.idCardNo,
               idCardType: this.profile.idCardType,
-              transactionType: TransactionType.DEVICE_ORDER_MNP_AIS
+              transactionType: TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS
             }
           }).toPromise()
             .then((resp: any) => {
@@ -160,7 +128,6 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
             });
         })
         .then((customer: any) => {
-          // load bill cycle
           this.transaction.data.customer = Object.assign(this.profile, customer);
           return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
             .then((resp: any) => {
@@ -170,8 +137,8 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
               };
             });
         }).then((billingInformation: any) => {
-
           this.transaction.data.billingInformation = billingInformation;
+
           return this.conditionIdentityValid()
             .catch((msg: string) => {
               return this.alertService.error(this.translateService.instant(msg)).then(() => true);
@@ -188,7 +155,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
                 .then((resp: any) => {
                   this.transaction.data.order = { soId: resp.data.soId };
                   return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
-                }).then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE]));
+                }).then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]));
             });
         }).then(() => this.pageLoadingService.closeLoading());
     });
@@ -197,7 +164,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
   createTransaction(): void {
     this.transaction = {
       data: {
-        transactionType: TransactionType.DEVICE_ORDER_MNP_AIS,
+        transactionType: TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS,
         action: TransactionAction.READ_CARD,
       }
     };
@@ -240,7 +207,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
       if (this.utils.isIdCardExpiredDate(expireDate)) {
         return reject(
           `${this.translateService.instant('ไม่สามารถทำรายการได้ เนื่องจาก')} ${idCardType} ${this.translateService.instant('หมดอายุ')}`
-        );
+          );
       }
       resovle(null);
     });
@@ -307,5 +274,9 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
       depositAmt: '',
       reserveNo: ''
     };
+  }
+
+  isDevelopMode(): boolean {
+    return environment.name === 'LOCAL';
   }
 }
