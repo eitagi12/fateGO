@@ -34,6 +34,7 @@ import { NewRegisterMnpSelectNumberComponent } from './containers/new-register-m
 import { NewRegisterMnpPaymentDetailPageComponent } from './containers/new-register-mnp-payment-detail-page/new-register-mnp-payment-detail-page.component';
 import { NewRegisterMnpByPatternPageComponent } from './containers/new-register-mnp-by-pattern-page/new-register-mnp-by-pattern-page.component';
 import { NewRegisterMnpSelectPackageMemberPageComponent } from './containers/new-register-mnp-select-package-member-page/new-register-mnp-select-package-member-page.component';
+import { NewRegisterMnpEapplicationPageComponent } from './containers/new-register-mnp-eapplication-page/new-register-mnp-eapplication-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'validate-customer', pathMatch: 'full' },
@@ -53,6 +54,7 @@ const routes: Routes = [
   { path: 'agreement-sign', component: NewRegisterMnpAgreementSignPageComponent },
   { path: 'face-capture', component: NewRegisterMnpFaceCapturePageComponent },
   { path: 'face-compare', component: NewRegisterMnpFaceComparePageComponent },
+  {path: 'eapplication', component: NewRegisterMnpEapplicationPageComponent},
   { path: 'face-confirm', component: NewRegisterMnpFaceConfirmPageComponent },
   { path: 'aggregate', component: NewRegisterMnpAggregatePageComponent },
   { path: 'queue', component: NewRegisterMnpQueuePageComponent },

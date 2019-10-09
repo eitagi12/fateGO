@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
-import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_AGREEMENT_SIGN_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CONFIRM_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CAPTURE_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CONFIRM_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CAPTURE_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_EAPPLICATION_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 
 @Component({
@@ -46,24 +46,19 @@ export class NewRegisterMnpFaceComparePageComponent implements OnInit, OnDestroy
     this.pageLoadingService.openLoading();
     const customer: Customer = this.transaction.data.customer;
     const faceRecognition: FaceRecognition = this.transaction.data.faceRecognition;
-    try {
-      this.http.post('/api/facerecog/facecompare', {
-        cardBase64Imgs: this.isReadCard() ? customer.imageReadSmartCard : customer.imageSmartCard,
-        selfieBase64Imgs: faceRecognition.imageFaceUser
-      }).toPromise().then((resp: any) => {
-        this.transaction.data.faceRecognition.kyc = !resp.data.match;
-        if (resp.data.match) {
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_AGREEMENT_SIGN_PAGE]);
-        } else {
-          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CONFIRM_PAGE]);
-        }
-      }).then(() => {
-        this.pageLoadingService.closeLoading();
-      });
-    } catch {
+    this.http.post('/api/facerecog/facecompare', {
+      cardBase64Imgs: this.isReadCard() ? customer.imageReadSmartCard : customer.imageSmartCard,
+      selfieBase64Imgs: faceRecognition.imageFaceUser
+    }).toPromise().then((resp: any) => {
+      this.transaction.data.faceRecognition.kyc = !resp.data.match;
+      if (resp.data.match) {
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_EAPPLICATION_PAGE]);
+      } else {
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CONFIRM_PAGE]);
+      }
+    }).then(() => {
       this.pageLoadingService.closeLoading();
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CONFIRM_PAGE]);
-    }
+    });
   }
 
   onHome(): void {
