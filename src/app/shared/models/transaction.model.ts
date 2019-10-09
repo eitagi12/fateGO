@@ -210,6 +210,7 @@ export interface SimCard {
   privilegeCode?: string;
   nType?: string;
   mobileNoStatus?: 'Active' | 'Suspended';
+  memberMobileNo?: string;
 }
 
 export interface MainPackage {

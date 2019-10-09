@@ -96,7 +96,6 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   private mapCustomer(customer: any): void {
     const fullName = (customer.name || ' ').split(' ');
     const address = customer.address || {};
-
     this.transaction.data.customer = {
       idCardNo: this.identity,
       idCardType: customer.idCardType,
@@ -105,17 +104,17 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
       lastName: fullName[1],
       birthdate: customer.birthdate,
       gender: customer.gender,
-      homeNo: address.homeNo,
+      homeNo: address.homeNo || address.houseNo,
       moo: address.moo,
       mooBan: address.mooban,
       buildingName: address.buildingName,
       floor: address.floor,
       room: address.room,
-      street: address.street,
+      street: address.street || address.streetName,
       soi: address.soi,
       tumbol: address.tumbol,
       amphur: address.amphur,
-      province: address.province,
+      province: address.province || address.provinceName,
       firstNameEn: '',
       lastNameEn: '',
       issueDate: customer.birthdate,
