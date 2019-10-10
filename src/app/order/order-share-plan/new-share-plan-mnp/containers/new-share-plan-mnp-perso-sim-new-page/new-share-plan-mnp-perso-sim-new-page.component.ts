@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
+import { Router } from '@angular/router';
+import { ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_MNP_PAGE } from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-new-share-plan-mnp-perso-sim-new-page',
@@ -10,9 +12,15 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit {
 
   wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
 
-  constructor() { }
+  constructor(
+    private router: Router
+  ) { }
 
   ngOnInit(): void {
+  }
+
+  onNext(): void {
+    this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_MNP_PAGE]);
   }
 
 }
