@@ -41,7 +41,7 @@ export class CustomerInformationService {
   }
 
   getBillingByIdCard(idCardNo: string): Promise<any> {
-    const getBillingAccountAPI = `/api/customerportal/newRegister/${idCardNo}/queryBillingAccount`;
+    const getBillingAccountAPI = `/api/customerportal/queryBillingAccountByIdCard/${idCardNo}`;
     return this.http.get(getBillingAccountAPI).toPromise();
   }
 

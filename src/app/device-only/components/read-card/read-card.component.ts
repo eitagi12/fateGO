@@ -171,7 +171,6 @@ export class ReadCardComponent implements OnInit {
         });
 
       }).catch((err) => {
-        console.log(err);
         this.pageLoadingService.closeLoading();
         this.alertService.error('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาเสียบบัตรใหม่อีกครั้ง');
       });
