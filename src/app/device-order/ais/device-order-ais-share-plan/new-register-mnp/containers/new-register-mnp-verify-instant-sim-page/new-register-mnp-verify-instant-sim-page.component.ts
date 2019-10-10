@@ -123,8 +123,6 @@ export class NewRegisterMnpVerifyInstantSimPageComponent implements OnInit, OnDe
 
     this.pageLoadingService.openLoading();
     validateVerifyInstantSim.then((resp: any) => {
-      console.log('API ====>', resp);
-
       const simSerial = resp.data || {};
       this.simSerialValid = true;
       this.simSerial = {
