@@ -53,6 +53,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   }
 
   onNext(): void {
+
     this.pageLoadingService.openLoading();
     this.http.get(`/api/customerportal/newRegister/${this.identity}/queryCustomerInfo`)
       .toPromise()

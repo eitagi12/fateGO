@@ -9,11 +9,12 @@
         </div>
     </mc-header>
     <div class="mc-flex-wrap bg-white">
-        <mc-validate-customer (completed)="onCompleted($event)" (error)="onError($event)" (readCard)="onReadCard()"
-            placeholder="เลขบัตรประชาชน"></mc-validate-customer>
+        <mc-validate-customer (completed)="onCompleted($event)" (error)="onError($event)" (readCard)="onReadCard()" placeholder="เลขบัตรประชาชน"></mc-validate-customer>
+        <div class="container btn-validate-customer">
+            <div class="row">
+                <div class="col-12"> <button class="btn btn-success" (click)="onNext()" [disabled]="!identityValid">NEXT</button></div>
+                <div class="col-12"><button class="btn btn-secondary" (click)="onBack()">BACK</button></div>
+            </div>
+        </div>
     </div>
-    <mc-footer>
-        <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-        <button class="btn btn-success" (click)="onNext()" [disabled]="!identityValid">NEXT</button>
-    </mc-footer>
 </div>
