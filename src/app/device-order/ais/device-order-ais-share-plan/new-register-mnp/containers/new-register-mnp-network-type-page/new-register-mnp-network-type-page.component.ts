@@ -55,6 +55,7 @@ export class NewRegisterMnpNetworkTypePageComponent implements OnInit, OnDestroy
         this.checkTranslateLang(lang);
       }
     });
+    // if (!this.transaction.data.member)
   }
 
   ngOnInit(): void {
@@ -130,9 +131,11 @@ export class NewRegisterMnpNetworkTypePageComponent implements OnInit, OnDestroy
 
         if (!outbuf || (accountNo && (mobileNoStatus === 'Disconnect - Ported' || mobileNoStatus === 'U' || mobileNoStatus === 'T'))
           || mobileNoStatus !== 'Active' && !(mobileNoStatus || networkType)) {
-          this.transaction.data.simCard = {
-            ...this.transaction.data.simCard,
-            memberMobileNo: this.mnpForm.value.mobileNo
+          this.transaction.data.memberInfo = {
+            ...this.transaction.data.memberInfo,
+            simCard: {
+              mobileNo: this.mnpForm.value.mobileNo
+            }
           };
           // this.transaction.data.customer = {
           //   customerPinCode: this.mnpForm.value.pinCode,
@@ -151,9 +154,11 @@ export class NewRegisterMnpNetworkTypePageComponent implements OnInit, OnDestroy
         }
       }).catch(() => {
         this.pageLoadingService.closeLoading();
-        this.transaction.data.simCard = {
-          ...this.transaction.data.simCard,
-          memberMobileNo: this.mnpForm.value.mobileNo
+        this.transaction.data.memberInfo = {
+          ...this.transaction.data.memberInfo,
+          simCard: {
+            mobileNo: this.mnpForm.value.mobileNo
+          }
         };
         // this.transaction.data.customer = {
         //   customerPinCode: this.mnpForm.value.pinCode,

@@ -94,6 +94,10 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
     return (this.translateService.currentLang === 'EN') ? detail.shortNameEng : detail.shortNameThai;
   }
 
+  memberMainPackageTitle(detail: any): string {
+    return (this.translateService.currentLang === 'EN') ? '' : detail.title;
+  }
+
   summary(amount: number[]): number {
     return amount.reduce((prev, curr) => {
       return prev + curr;

@@ -11,10 +11,11 @@ import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart
 import { PromotionShelveService } from 'src/app/device-order/services/promotion-shelve.service';
 import { HttpClient } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
-import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VERIFY_INSTANT_SIM_PAGE,
-         ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_BY_PATTERN_PAGE,
-         ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_NETWORK_TYPE
-       } from '../../constants/route-path.constant';
+import {
+  ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VERIFY_INSTANT_SIM_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_BY_PATTERN_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_NETWORK_TYPE
+} from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 
 @Component({
@@ -64,10 +65,12 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
   onCompleted(promotion: any): void {
     // รอแก้ไขตัวแปรที่จะเก็บลงใน share transaction
     this.transaction.data.mainPackage = promotion;
+    this.getMainPackageZeroBath();
   }
 
   onBack(): void {
     delete this.transaction.data.mainPackage;
+    delete this.transaction.data.memberInfo;
     if (this.transaction.data.simCard.simSerial) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VERIFY_INSTANT_SIM_PAGE]);
     } else {
@@ -77,6 +80,19 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
 
   onNext(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_NETWORK_TYPE]);
+  }
+
+  getMainPackageZeroBath(): void {
+    this.transaction.data = {
+      ...this.transaction.data,
+      memberInfo: {
+        mainPackage: {
+          itemId: '',
+          shortNameThai: '',
+          title: '3G Member Share MNP UL SWifi 0 Baht'
+        }
+      }
+    };
   }
 
   onHome(): void {

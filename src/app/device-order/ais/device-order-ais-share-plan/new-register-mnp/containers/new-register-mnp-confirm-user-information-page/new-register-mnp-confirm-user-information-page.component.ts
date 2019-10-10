@@ -52,7 +52,7 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
   ) {
     this.transaction = this.transactionService.load();
 
-    this.member = { mobileNo: '0910045268', mainPackage: '3G Member Share MNP UL SWifi 0 Baht' };
+    // this.member = { mobileNo: '0910045268', mainPackage: '3G Member Share MNP UL SWifi 0 Baht' };
 
     // New register profile not found.
     if (!this.transaction.data.billingInformation) {
@@ -70,7 +70,7 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
 
     this.eBill = !(mainPackage.billingSystem === BillingSystemType.BOS);
 
-    this.member.mobileNo = simCard.memberMobileNo;
+    this.member = this.transaction.data.memberInfo;
     this.confirmCustomerInfo = {
       titleName: customer.titleName,
       firstName: customer.firstName,

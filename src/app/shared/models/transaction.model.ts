@@ -91,8 +91,14 @@ export interface TransactionData {
   // Rom Agent
   romAgent?: RomAgent;
   romTransaction?: RomTransactionData;
+  // share plan super khum
+  memberInfo?: MemberInfo;
 }
 
+export interface MemberInfo {
+  simCard?: SimCard;
+  mainPackage?: MainPackage;
+}
 export interface Condition {
   conditionCode: string;
   conditionName?: string;
@@ -210,7 +216,6 @@ export interface SimCard {
   privilegeCode?: string;
   nType?: string;
   mobileNoStatus?: 'Active' | 'Suspended';
-  memberMobileNo?: string;
 }
 
 export interface MainPackage {
