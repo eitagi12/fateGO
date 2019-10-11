@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AlertService } from 'mychannel-shared-libs';
 import { $ } from 'protractor';
+import { ROUTE_NEW_SHARE_PLAN_MNP_RESULT_PAGE } from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-new-share-plan-mnp-perso-sim-mnp-page',
@@ -22,6 +23,10 @@ export class NewSharePlanMnpPersoSimMnpPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+  }
+
+  onNext(): void {
+    this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_RESULT_PAGE]);
   }
 
 }
