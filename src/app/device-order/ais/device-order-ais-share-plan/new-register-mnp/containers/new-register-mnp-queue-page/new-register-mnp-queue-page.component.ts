@@ -39,13 +39,15 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.saveFaceImage();
+    // this.saveFaceImage();
     this.createForm();
   }
 
   createForm(): void {
+    const REGEX_QUEUE = /^[A-Z][0-9]{3}?$/;
     this.queueFrom = this.fb.group({
       'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])],
+      'queueNo': ['', Validators.compose([Validators.required, Validators.pattern(REGEX_QUEUE)])],
     });
   }
 
@@ -53,26 +55,35 @@ export class NewRegisterMnpQueuePageComponent implements OnInit, OnDestroy {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_AGGREGATE_PAGE]);
   }
 
-  onNext(): void {
+  onNext(queue: boolean): void {
     this.pageLoadingService.openLoading();
-    this.queuePageService.getQueueQmatic(this.queueFrom.value.mobileNo)
-      .then((resp: any) => {
-        const data = resp.data && resp.data.result ? resp.data.result : {};
-        return data.queueNo;
-      })
-      .then((queueNo: string) => {
-        this.transaction.data.queue = {
-          queueNo: queueNo
-        };
-        return this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption)
-          .then(() => {
-            return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
-          });
-      })
-      .then(() => {
+    if (queue) {
+      this.queuePageService.getQueueQmatic(this.queueFrom.value.mobileNo)
+        .then((resp: any) => {
+          const data = resp.data && resp.data.result ? resp.data.result : {};
+          return data.queueNo;
+        })
+        .then((queueNo: string) => {
+          this.transaction.data.queue = {
+            queueNo: queueNo
+          };
+          return this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption)
+            .then(() => {
+              return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption);
+            });
+        })
+        .then(() => {
+          this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_RESULT_PAGE]);
+        })
+        .then(() => this.pageLoadingService.closeLoading());
+    } else {
+      this.transaction.data.queue = {
+        queueNo: this.queueFrom.value.queueNo
+      };
+      this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_RESULT_PAGE]);
-      })
-      .then(() => this.pageLoadingService.closeLoading());
+      }).then(() => this.pageLoadingService.closeLoading());
+    }
   }
 
   onHome(): void {

@@ -23,11 +23,14 @@ export class NewRegisterMnpResultPageComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    const mainSim = this.transaction.data.simCard;
+    const memberSim = this.transaction.data.memberInfo.simCard;
+
     this.isSuccess = true;
-    this.mobileNo = this.transaction.data.simCard.mobileNo;
-    this.mainSimSerail = this.transaction.data.simCard.simSerial;
-    this.memberMobileNo = '0910045268';
-    this.memberSimSerail = this.transaction.data.simCard.simSerial;
+    this.mobileNo = mainSim.mobileNo;
+    this.mainSimSerail = mainSim.simSerial;
+    this.memberMobileNo = memberSim.mobileNo;
+    this.memberSimSerail = memberSim.simSerial;
   }
 
   onMainMenu(): void {
