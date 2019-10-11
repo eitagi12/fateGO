@@ -80,7 +80,6 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
       qrCode: !!(productStock.company && productStock.company !== 'WDS'),
       omisePayment: this.isFullPayment() && productStock.company !== 'WDS'
     };
-
     this.http.get('/api/salesportal/omise/get-bank').toPromise()
       .then((res: any) => {
         const data = res.data || [];
