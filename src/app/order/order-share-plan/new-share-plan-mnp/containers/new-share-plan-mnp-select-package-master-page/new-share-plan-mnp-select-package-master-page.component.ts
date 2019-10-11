@@ -18,10 +18,9 @@ import { ROUTE_NEW_SHARE_PLAN_MNP_NETWORK_TYPE_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_VE
 })
 export class NewSharePlanMnpSelectPackageMasterPageComponent implements OnInit, OnDestroy {
 
-  readonly MAX_PROMOTION_PRICE: number = 500;
+  wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
   @ViewChild('conditionTemplate')
   conditionTemplate: any;
-  wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
   transaction: Transaction;
   promotionShelves: PromotionShelve[];
   promotionData: any;
@@ -42,7 +41,6 @@ export class NewSharePlanMnpSelectPackageMasterPageComponent implements OnInit, 
     private translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
-    delete this.transaction.data.mainPackageOneLove;
     if (this.transaction.data.billingInformation) {
       delete this.transaction.data.billingInformation.billCycle;
       delete this.transaction.data.billingInformation.mergeBilling;
@@ -81,16 +79,11 @@ export class NewSharePlanMnpSelectPackageMasterPageComponent implements OnInit, 
 
   callService(language: string): void {
     this.pageLoadingService.openLoading();
-    const billingInformation: any = this.transaction.data.billingInformation;
-    const isNetExtreme = billingInformation.billCyclesNetExtreme && billingInformation.billCyclesNetExtreme.length > 0 ? 'true' : 'false';
     const mobileNo = this.transaction.data.simCard.mobileNo;
     const params: any = {
       orderType: 'New Registration',
-      isNetExtreme: isNetExtreme,
+      isPackageSharePlan: true
     };
-    if (this.transaction.data.action === TransactionAction.READ_PASSPORT) {
-      params.maxPromotionPrice = this.MAX_PROMOTION_PRICE;
-    }
     this.http.get(`/api/customerportal/queryCheckMinimumPackage/${mobileNo}`, {
     }).toPromise()
       .then((resp: any) => {
@@ -110,17 +103,17 @@ export class NewSharePlanMnpSelectPackageMasterPageComponent implements OnInit, 
         const promotionShelves: PromotionShelve[] = data.map((promotionShelve: any) => {
           return {
             title: promotionShelve.title,
-            // replace to class in css
             icon: (promotionShelve.icon || '').replace(/\.jpg$/, '').replace(/_/g, '-'),
             promotions: promotionShelve.subShelves
               .map((subShelve: any) => {
-                return { // group
-                  // เอาไว้เปิด carousel ให้ check ว่ามี id ลูกตรงกัน
+                return {
+                  // group
                   id: subShelve.subShelveId,
                   title: subShelve.title,
                   sanitizedName: subShelve.sanitizedName,
                   items: (subShelve.items || []).map((promotion: any) => {
-                    return { // item
+                    return {
+                      // item
                       id: promotion.itemId,
                       title: language === 'EN' ? promotion.shortNameEng : promotion.shortNameThai,
                       detail: language === 'EN' ? promotion.statementEng : promotion.statementThai,
@@ -183,7 +176,6 @@ export class NewSharePlanMnpSelectPackageMasterPageComponent implements OnInit, 
   }
 
   onCompleted(promotion: any): void {
-    // รอแก้ไขตัวแปรที่จะเก็บลงใน share transaction
     this.transaction.data.mainPackage = promotion;
   }
 
