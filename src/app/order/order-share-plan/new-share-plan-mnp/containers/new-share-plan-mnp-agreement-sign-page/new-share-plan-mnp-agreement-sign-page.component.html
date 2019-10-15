@@ -21,24 +21,26 @@
             <div class="my-5">
               <span class="font-gray">กรุณาเซ็นลงในช่อง</span>
               <div class="sign-container" id="lblShrSignWriterContractInfoSignContainer">
-                
-                  <img src="" name="imgPhoto" id="imgPhoto" [hidden]="!signature"/>                
+
+                <img src="" name="imgPhoto" id="imgPhoto" [hidden]="!signature" />
               </div>
               <div class="row mt-3">
                 <div class="col-6" id="lblShrSignWriterContractInfoDate">
                   {{today}}
                 </div>
                 <div class="col-6 text-right ">
-                    <button id="btnShrSignWriterSign"  class="btn btn-success" (click)="openSignature()">{{ signatureText }}</button>
-                  </div>
+                  <button id="btnShrSignWriterSign" class="btn btn-success"
+                    (click)="openSignature()">{{ signatureText }}</button>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
+  </div>
     <mc-footer>
       <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-      <button class="btn btn-success" (click)="onNext()" [disabled]="!isSuccess" >NEXT</button>
+      <button class="btn btn-success" (click)="onNext()" [disabled]="!isSuccess">NEXT</button>
     </mc-footer>
-  </div>
+</div>

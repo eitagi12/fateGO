@@ -29,9 +29,9 @@
     border: 2px solid #cbcbcb;
     padding: 20px;
     min-height: 500px;
-    // @media #{$x-small} {
-    //   min-height: 200px;
-    // }
+    @media (max-width: 420px) {
+      min-height: 200px;
+    }
     img {
       width: 100%;
       height: auto;
