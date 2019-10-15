@@ -28,11 +28,12 @@ import { NewSharePlanMnpAgreementSignPageComponent } from './containers/new-shar
 import { NewSharePlanMnpPersoSimNewPageComponent } from './containers/new-share-plan-mnp-perso-sim-new-page/new-share-plan-mnp-perso-sim-new-page.component';
 import { NewSharePlanMnpPersoSimMnpPageComponent } from './containers/new-share-plan-mnp-perso-sim-mnp-page/new-share-plan-mnp-perso-sim-mnp-page.component';
 import { NewSharePlanMnpResultPageComponent } from './containers/new-share-plan-mnp-result-page/new-share-plan-mnp-result-page.component';
-import { SummarySellerCodeComponent } from './containers/new-share-plan-mnp-summary-page/summary-seller-code/summary-seller-code.component';
+
 import { ConfirmCustomerInfoComponent } from './components/confirm-customer-info/confirm-customer-info.component';
 import { BillingInfoComponent } from './components/billing-info/billing-info.component';
 import { PrinterComponent } from './components/printer/printer.component';
 import { ResizeImageComponent } from './components/resize-image/resize-image.component';
+import { SummarySellerCodeComponent } from './components/summary-seller-code/summary-seller-code.component';
 
 @NgModule({
   imports: [

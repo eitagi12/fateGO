@@ -10,7 +10,8 @@ import { TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
 import { HttpClient } from '@angular/common/http';
 import { map } from 'rxjs/operators';
-import { SummarySellerCodeComponent } from './summary-seller-code/summary-seller-code.component';
+import { SummarySellerCodeComponent } from '../../components/summary-seller-code/summary-seller-code.component';
+
 const Moment = moment;
 
 export class ShopCheckSeller {
