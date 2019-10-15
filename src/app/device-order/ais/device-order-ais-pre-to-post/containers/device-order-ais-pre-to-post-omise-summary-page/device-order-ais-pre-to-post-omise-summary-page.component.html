@@ -86,7 +86,7 @@
                 <div class="mt-1"
                   *ngIf="transaction?.data?.payment?.paymentForm !== 'INSTALLMENT' && transaction?.data?.payment?.paymentOnlineCredit">
                   <small class="text-muted">
-                    ({{'ชำระโดย' | translate}} {{ summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) }})
+                    {{transaction?.data?.payment?.paymentOnlineCredit  ? 'ชำระทันที' : '(ชำระโดย ' + summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) + ')'}}
                   </small>
                   <span class="text-pink"
                     *ngIf="transaction?.data?.omise?.omiseStatus?.statusDevice === 'WAITING'">( {{'รอชำระ'| translate}} )</span>
@@ -109,7 +109,7 @@
                 </span>
                 <div class="mt-1">
                   <small class="text-muted" *ngIf="(+priceOption?.trade?.advancePay?.amount) > 0">
-                    ({{'ชำระโดย'| translate}} {{ summaryPageService.descriptionPayment(transaction?.data?.advancePayment) }})
+                    {{transaction?.data?.advancePayment?.paymentOnlineCredit ? 'ชำระทันที' : '(ชำระโดย ' +  summaryPageService.descriptionPayment(transaction?.data?.advancePayment) + ')'}}
                   </small>
                   <span class="text-pink">( {{'รอชำระ'| translate}} )</span>
                 </div>
@@ -131,7 +131,7 @@
               </div>
               <div class="mt-1">
                 <small class="text-muted">
-                  ({{'ชำระโดย'| translate}} {{ summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) }})
+                  {{transaction?.data?.advancePayment?.paymentOnlineCredit  ? 'ชำระทันที' : '(ชำระโดย ' +  summaryPageService.descriptionPayment(transaction?.data?.advancePayment) + ')'}}
                 </small>
                 <span class="text-pink">( {{'รอชำระ'| translate}} )</span>
               </div>
