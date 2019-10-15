@@ -17,6 +17,12 @@
                         {{ 'ระบุเลขที่ซิม' | translate }}
                     </div>
                     <div class="card-body">
+                        <div class="text-center" *ngIf="simSerial?.simSerial && simSerial?.mobileNo">
+                            <p class="text-grey" *ngIf="keyinSimSerial">
+                                <label>{{ 'หมายเลขโทรศัพท์' | translate }} : {{ simSerial?.mobileNo | mobileNo }}</label>
+                                <br> {{ 'เลขที่ซิม' | translate }} : {{ simSerial?.simSerial }}
+                            </p>
+                        </div>
                         <form [formGroup]="serialForm">
                             <div class="form-row">
                                 <div class="col-9 col-sm-10">
@@ -43,12 +49,6 @@
                         {{ 'SCAN SIM' | translate }}
                     </div>
                     <div class="card-body">
-                        <div class="text-center" *ngIf="simSerial?.simSerial && simSerial?.mobileNo">
-                            <p class="text-grey" *ngIf="keyinSimSerial">
-                                <label>{{ 'หมายเลขโทรศัพท์' | translate }} : {{ simSerial?.mobileNo | mobileNo }}</label>
-                                <br> {{ 'เลขที่ซิม' | translate }} : {{ simSerial?.simSerial }}
-                            </p>
-                        </div>
                         <div id="btn-content-scan-barcode">
                             <button type="button" class="btn btn-scan-barcode" (click)="onOpenScanBarcode()" onclick="document.getElementById('serial').value = ''">{{keyinSimSerial === true ? 'สแกน Barcode อีกครั้ง' : 'สแกน Barcode'}}
                         </button>
