@@ -89,7 +89,7 @@
                       {{transaction?.data?.payment?.paymentOnlineCredit  ? 'ชำระทันที' : '(ชำระโดย ' + summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) + ')'}}
                   </small>
                   <span class="text-pink"
-                    *ngIf="!transaction?.data?.payment?.paymentOnlineCredit">( {{'รอชำระ'| translate}} )</span>
+                    *ngIf="transaction?.data?.omise?.omiseStatus?.statusDevice === 'WAITING' && !transaction?.data?.payment?.paymentOnlineCredit">( {{'รอชำระ'| translate}} )</span>
                   <span class="text-green"
                     *ngIf="transaction?.data?.omise?.omiseStatus?.statusDevice === 'SUCCESS'">
                     ( {{'ชำระแล้ว'| translate}} TX: {{transaction?.data?.omise?.tranId}} )
@@ -134,7 +134,7 @@
                 <small class="text-muted">
                     {{transaction?.data?.advancePayment?.paymentOnlineCredit  ? 'ชำระทันที' : '(ชำระโดย ' +  summaryPageService.descriptionPayment(transaction?.data?.advancePayment) + ')'}}
                 </small>
-                <span class="text-pink">( {{'รอชำระ'| translate}} )</span>
+                <span class="text-pink" *ngIf="!transaction?.data?.advancePayment?.paymentOnlineCredit">( {{'รอชำระ'| translate}} )</span>
               </div>
             </ng-container>
 
