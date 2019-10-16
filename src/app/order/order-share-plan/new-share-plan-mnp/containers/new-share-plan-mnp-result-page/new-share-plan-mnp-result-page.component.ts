@@ -140,7 +140,6 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
         errorObj.developerMessage = errorObj.developerMessage + ' | ' + JSON.stringify(errorObj.errors);
         err._body = JSON.stringify(errorObj);
       } catch (err) {
-        console.log('err: ', err);
       }
     });
   }

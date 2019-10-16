@@ -101,17 +101,14 @@ export class NewSharePlanMnpAgreementSignPageComponent implements OnInit, OnDest
 
       _ws.onmessage = ((evt: any) => {
         // Web socket get message
-        console.log('WebSocket: onmessage() event called.');
         this.signature = true;
         this.onGetMessage(evt.data);
       });
       _ws.onclose = (() => {
         // websocket is closed.
-        console.log('WebSocket: onclose() event called.');
       });
 
       _ws.onerror = ((evt: any) => {
-        console.log('WebSocket: onerror() event called1.');
         this.alertService.error('ไม่สามารถเซ็นลายเซ็นได้ กรุณาตรวจสอบ AISWebConnect หรือติดต่อ 02-029-6303');
         // this.alertService.openPopup();
         if (environment.name !== 'prod' && environment.name !== 'sit') {
@@ -120,7 +117,6 @@ export class NewSharePlanMnpAgreementSignPageComponent implements OnInit, OnDest
       });
     } else {
       // The browser doesn't support WebSocket
-      console.log('WebSocket NOT supported by your Browser!');
       this.alertService.error('ไม่สามารถเซ็นลายเซ็นได้ กรุณาตรวจสอบ AISWebConnect หรือติดต่อ 02-029-6303');
       // this.alertService.openPopup();
       if (environment.name !== 'prod' && environment.name !== 'sit') {

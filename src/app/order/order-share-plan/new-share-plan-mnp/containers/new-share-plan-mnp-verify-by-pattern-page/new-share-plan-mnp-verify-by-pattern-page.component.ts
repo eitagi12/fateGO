@@ -148,7 +148,6 @@ export class NewSharePlanMnpVerifyByPatternPageComponent implements OnInit, OnDe
       // when backspace on keyboard
       if (keyCode === 8) {
         if (previousField) {
-          console.log('previousField');
           previousField.focus();
         }
       } else { // when backspace on visualkeyboard

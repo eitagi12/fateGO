@@ -62,7 +62,6 @@ export class NewSharePlanMnpValidateCustomerPageComponent implements OnInit, OnD
         return Promise.resolve(data);
       })
       .then((customer) => { // load bill cycle
-        console.log(customer);
         this.transaction.data.customer = customer;
         if (customer.caNumber) {
 
@@ -85,7 +84,6 @@ export class NewSharePlanMnpValidateCustomerPageComponent implements OnInit, OnD
                   };
                 })
                 .then((billingInformation: any) => {
-                  console.log(billingInformation);
                   this.transaction.data.billingInformation = billingInformation;
                   this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_CUSTOMER_INFO_PAGE]);
                 })
@@ -101,7 +99,6 @@ export class NewSharePlanMnpValidateCustomerPageComponent implements OnInit, OnD
                 });
             });
         } else {
-          console.log('newCA');
           this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE], {
             queryParams: {
               idCardNo: this.identity

@@ -1,9 +1,6 @@
 <div class="mc-flex">
   <mc-header title="{{ 'เปิดเบอร์ใหม่' | translate }}">
-    <div class="header-icon-left w-25">
-      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
-    </div>
-    <div class="header-icon-right w-25 text-right">
+    <div class="header-icon-right  text-right">
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
@@ -21,7 +18,9 @@
           <img src="assets/images/icon/icon-circle-ais-post-logo.png" class="icon-post-paid mr-2" />
           {{ 'Post Paid' | translate }}
         </div>
-        <p class="m-3">1. {{ '0996244546' | mobileNo }} (เบอร์โทรสมาชิก- เบอร์ย้ายค่าย)</p>
+        <p class="m-3">1. {{ telephoneNumberMNP | mobileNo }} (เบอร์โทรสมาชิก- เบอร์ย้ายค่าย)</p>
+
+
         <img src="assets/images/icon/icon-ReadIDCard-01.png" class="icon-read-card" />
         <img src="assets/images/icon/icon-input-sim.png" class="icon-perso-sim" />
         <div class="text-center mt-3 mb-3" translate>{{ title }}</div>
@@ -34,10 +33,10 @@
         <div class="line-behind" *ngIf="option?.key_sim">
         </div>
       </div>
+
     </div>
   </div>
   <mc-footer>
-    <!-- <button class="btn btn-secondary" (click)="onBack()">BACK</button> -->
-    <button class="btn btn-success" (click)="onNext()">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!isSuccess">NEXT</button>
   </mc-footer>
 </div>

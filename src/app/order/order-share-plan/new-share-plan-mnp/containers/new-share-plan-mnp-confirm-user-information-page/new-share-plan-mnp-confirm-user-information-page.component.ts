@@ -56,10 +56,6 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
     const simCard = this.transaction.data.simCard;
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData: any = billingInformation.billCycleData || {};
-
-    console.log('billingInformation', billingInformation);
-    console.log('billCycleData', billCycleData);
-
     // รอ package page
     this.eBill = !(mainPackage.billingSystem === BillingSystemType.BOS);
 
@@ -74,17 +70,12 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
       packageDetail: 'mainPackage.statementThai',
       idCardType: customer.idCardType
     };
-    console.log('confirmCustomerInfo', this.confirmCustomerInfo);
-
     this.mailBillingInfo = {
       email: billCycleData.email,
       mobileNo: simCard.mobileNo,
       address: billCycleData.billAddressText,
       billChannel: this.getBillChannel()
     };
-
-    console.log('mailBillingInfo', this.mailBillingInfo);
-
     this.telNoBillingInfo = {
       mobileNo: billCycleData.mobileNoContact,
       phoneNo: billCycleData.phoneNoContact,
@@ -220,7 +211,6 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
     if (!mailBillingInfo) {
       return;
     }
-    console.log(mailBillingInfo);
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData || {};
 
