@@ -6,11 +6,11 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { CreateNewRegisterService } from 'src/app/shared/services/create-new-register.service';
 import { PageLoadingService } from 'mychannel-shared-libs';
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
-
 import { HttpClient } from '@angular/common/http';
 import { map, retryWhen, concatMap, delay } from 'rxjs/operators';
 import { throwError, of } from 'rxjs';
 import { ResizeImageComponent } from '../../components/resize-image/resize-image.component';
+
 declare var window: any;
 @Component({
   selector: 'app-new-share-plan-mnp-result-page',
@@ -19,13 +19,14 @@ declare var window: any;
 })
 
 export class NewSharePlanMnpResultPageComponent implements OnInit {
+
+  wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
   public isSuccess: boolean = true;
   public transaction: Transaction;
   public mobileNo: string;
-  public mobileNo1: string;
+  public mobileNoMember: string;
   public simSerial: string;
-  public simSerial1: string;
-  wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;  // createTransactionService: Promise<any>;
+  public simSerialMember: string;
 
   @ViewChild(ResizeImageComponent) resizeImage: ResizeImageComponent;
   reSizeImage: string;
@@ -35,6 +36,7 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
   images: string[] = [];
 
   public MSG_ERROR_DEFAULT: string = 'ขออภัยระบบไม่สามารถทำรายการได้';
+
   constructor(
     private router: Router,
     private transactionService: TransactionService,
@@ -49,11 +51,6 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
     this.mobileNo = this.transaction.data.simCard.mobileNo;
     this.simSerial = this.transaction.data.simCard.simSerial;
     // this.checkOrderStatus();
-    // this.simSerial = '1234567891011';
-    // this.mobileNo = '0646244645';
-    // this.mobileNo1 = '0646244546';
-    // this.simSerial1 = '1234567891112';
-
     this.pageLoadingService.openLoading();
     this.createNewRegisterService.createNewRegister(this.transaction)
       .then((resp: any) => {
@@ -83,7 +80,6 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
       });
 
     // this.getEApplicationImageForPrint();
-
   }
 
   checkOrderStatusByOrderNo(orderNo: string): Promise<any> {
