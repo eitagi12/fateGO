@@ -3,7 +3,6 @@ import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { AlertService } from 'mychannel-shared-libs';
-import { $ } from 'protractor';
 import { ROUTE_NEW_SHARE_PLAN_MNP_RESULT_PAGE } from '../../constants/route-path.constant';
 
 @Component({
@@ -18,9 +17,7 @@ export class NewSharePlanMnpPersoSimMnpPageComponent implements OnInit {
     private router: Router,
     private http: HttpClient,
     private alertService: AlertService
-  ) {
-
-  }
+  ) { }
 
   ngOnInit(): void {
   }

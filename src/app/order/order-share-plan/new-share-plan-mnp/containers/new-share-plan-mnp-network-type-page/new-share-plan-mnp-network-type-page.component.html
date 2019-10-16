@@ -7,7 +7,6 @@
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
-
   <div class="mc-flex-wrap">
     <div class="my-3">
       <mc-wizard [wizards]="wizards" active="3"></mc-wizard>
@@ -29,7 +28,6 @@
               </li>
               <div class="ml-4 text-grey">
                 <p translate>การขอรหัส : กด*151*เลขที่บัตรประชาชน 13 หลัก# แล้วโทรออก (ฟรี)</p>
-                <p translate>สำหรับลูกค้าต่างชาติ : ส่ง SMS พิมพ์ เลขที่พาสปอร์ต มาที่หมายเลข 4444151 (ฟรี)</p>
               </div>
             </ul>
           </div>
@@ -37,7 +35,6 @@
       </div>
     </div>
   </div>
-
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
     <button class="btn btn-success" (click)="onNext()" [disabled]="sharePlanForm.invalid">NEXT</button>

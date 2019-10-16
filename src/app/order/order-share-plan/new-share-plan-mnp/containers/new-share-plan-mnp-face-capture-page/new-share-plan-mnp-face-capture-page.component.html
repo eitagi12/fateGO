@@ -46,8 +46,7 @@
                   </a>
                 </div>
                 <div *ngIf="isAisNative()">
-                  <a href="#" (click)="$event.preventDefault(); camera.next();" class="text-pink"
-                    *ngIf="!transaction?.data?.faceRecognition?.imageFaceUser">
+                  <a href="#" (click)="$event.preventDefault(); camera.next();" class="text-pink" *ngIf="!transaction?.data?.faceRecognition?.imageFaceUser">
                     <span *ngIf="!transaction?.data?.faceRecognition?.imageFaceUser">{{ 'ถ่ายรูป' | translate }}</span>
                     <span *ngIf="transaction?.data?.faceRecognition?.imageFaceUser">{{ 'ถ่ายรูปใหม่' | translate }}</span>
                   </a>
