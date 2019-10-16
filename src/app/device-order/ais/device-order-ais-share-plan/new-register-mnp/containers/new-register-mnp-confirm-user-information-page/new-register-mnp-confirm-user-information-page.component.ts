@@ -52,8 +52,6 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
   ) {
     this.transaction = this.transactionService.load();
 
-    // this.member = { mobileNo: '0910045268', mainPackage: '3G Member Share MNP UL SWifi 0 Baht' };
-
     // New register profile not found.
     if (!this.transaction.data.billingInformation) {
       this.transaction.data.billingInformation = {};
@@ -71,6 +69,7 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
     this.eBill = !(mainPackage.billingSystem === BillingSystemType.BOS);
 
     this.member = this.transaction.data.memberInfo;
+
     this.confirmCustomerInfo = {
       titleName: customer.titleName,
       firstName: customer.firstName,
@@ -116,6 +115,7 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
     const mergeBilling = billingInformation.mergeBilling;
     const billCycle = billingInformation.billCycle;
     const customer: any = billingInformation.billDeliveryAddress || this.transaction.data.customer;
+    const simCard = this.transaction.data.simCard;
     const customerAddress = this.utils.getCurrentAddress({
       homeNo: customer.homeNo,
       moo: customer.moo,
@@ -132,7 +132,7 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
     });
     this.billingInfo = {
       billingMethod: {
-        text: this.member.memberMobileNo,
+        text: simCard.mobileNo,
         isEdit: false,
         isDelete: false,
         onEdit: () => {
@@ -141,7 +141,6 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
         onDelete: () => {
           delete this.transaction.data.billingInformation.mergeBilling;
           delete this.transaction.data.billingInformation.billCycleData;
-          const simCard = this.transaction.data.simCard;
 
           const billCycleData: any = billingInformation.billCycleData || {};
 
@@ -359,14 +358,16 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
   }
 
   getBillCycleText(bill: string): string {
-    const bills = bill.split(' ');
-    if (this.translateService.currentLang === 'TH') {
-      return bill;
-    } else {
-      if (bills[3] === 'สิ้นเดือน') {
-        return `From the ${Moment([0, 0, bills[1]]).format('Do')} to the end of every month`;
+    if (bill) {
+      const bills = bill.split(' ');
+      if (this.translateService.currentLang === 'TH') {
+        return bill;
       } else {
-        return `From the ${Moment([0, 0, bills[1]]).format('Do')} to the ${Moment([0, 0, bills[3]]).format('Do')} of every month`;
+        if (bills[3] === 'สิ้นเดือน') {
+          return `From the ${Moment([0, 0, bills[1]]).format('Do')} to the end of every month`;
+        } else {
+          return `From the ${Moment([0, 0, bills[1]]).format('Do')} to the ${Moment([0, 0, bills[3]]).format('Do')} of every month`;
+        }
       }
     }
   }
