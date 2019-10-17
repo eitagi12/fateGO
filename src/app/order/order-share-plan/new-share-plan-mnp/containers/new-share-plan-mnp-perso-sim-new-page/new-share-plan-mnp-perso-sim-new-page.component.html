@@ -18,7 +18,7 @@
           <img src="assets/images/icon/icon-circle-ais-post-logo.png" class="icon-post-paid mr-2" />
           {{ 'Post Paid' | translate }}
         </div>
-        <p class="m-3">1. {{'0964220463' | mobileNo}} (เบอร์โทรหลัก - เบอร์จดทะเบียนใหม่)</p>
+        <p class="m-3">1. {{ mobileNo | mobileNo}} (เบอร์โทรหลัก - เบอร์จดทะเบียนใหม่)</p>
         <img src="assets/images/icon/icon-ReadIDCard-01.png" class="icon-read-card" />
         <img src="assets/images/icon/icon-input-sim.png" class="icon-perso-sim" />
         <div class="text-center mt-3 mb-3" translate>กรุณาเสียบซิมการ์ด</div>
@@ -42,7 +42,7 @@
     </div>
   </div>
   <mc-footer>
-    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()">NEXT</button>
+    <button class="btn btn-secondary" (click)="onBack()" [disabled]="!isSuccessback">BACK</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!isSuccessnext">NEXT</button>
   </mc-footer>
 </div>

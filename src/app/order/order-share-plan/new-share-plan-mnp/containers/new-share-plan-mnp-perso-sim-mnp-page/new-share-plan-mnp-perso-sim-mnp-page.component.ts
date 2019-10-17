@@ -15,31 +15,30 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 export class NewSharePlanMnpPersoSimMnpPageComponent implements OnInit {
   wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
   title: string = 'กรุณาเสียบซิมการ์ด';
-  isSuccess: boolean = false;
-  status: string = 'false';
+  isSuccess: boolean;
+  status: boolean = true;
   transaction: Transaction;
-  telephoneNumberMNP: string = '0';
+  mobileNoMember: string;
   constructor(
     private router: Router,
     private http: HttpClient,
     private alertService: AlertService,
     private transactionService: TransactionService,
   ) {
-
+    this.transaction = this.transactionService.load();
   }
 
   ngOnInit(): void {
-    this.transaction = this.transactionService.load();
-    this.telephoneNumberMNP = this.transaction.data.simCard.mobileMember;
+    this.checkPersoSimMNP();
+    this.mobileNoMember = this.transaction.data.simCard.mobileMember;
   }
 
   onNext(): void {
-    if (this.status === 'true') {
-      this.isSuccess = true;
-    } else {
-      this.isSuccess = false;
-    }
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_RESULT_PAGE]);
+  }
+
+  checkPersoSimMNP(): void {
+    this.isSuccess = this.status === true ? true : false;
   }
 
 }
