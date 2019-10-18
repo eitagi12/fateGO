@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Router } from '@angular/router';
-import { HomeService, TokenService, PageLoadingService } from 'mychannel-shared-libs';
+import { HomeService, TokenService, PageLoadingService, AlertService } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
@@ -29,6 +29,7 @@ export class DeviceOrderAisPreToPostOmiseSummaryPageComponent implements OnInit,
     private qrCodeOmisePageService: QrCodeOmisePageService,
     private tokenService: TokenService,
     private pageLoadingService: PageLoadingService,
+    private alertService: AlertService,
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -122,22 +123,17 @@ export class DeviceOrderAisPreToPostOmiseSummaryPageComponent implements OnInit,
       customer: customer.firstName + ' ' + customer.lastName,
       orderList: this.orderList,
     };
-    if (!this.transaction.data.omise.qrCodeStr) {
-      this.qrCodeOmisePageService.createOrder(params).then((res) => {
-        const data = res && res.data;
-        this.transaction.data.omise.qrCodeStr = data.redirectUrl;
-        this.transaction.data.omise.orderId = data.orderId;
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_OMISE_GENERATOR_PAGE]);
-
-      }).catch((err) => {
-        console.log('err', err);
-      }).then(() => {
-        this.pageLoadingService.closeLoading();
-      });
-    } else {
-      this.pageLoadingService.closeLoading();
+    this.qrCodeOmisePageService.createOrder(params).then((res) => {
+      const data = res && res.data;
+      this.transaction.data.omise.qrCodeStr = data.redirectUrl;
+      this.transaction.data.omise.orderId = data.orderId;
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_OMISE_GENERATOR_PAGE]);
-    }
+
+    }).catch((err) => {
+     return  this.alertService.error('ระบบไม่สามารถทำรายการได้ขณะนี้ กรุณาทำรายการอีกครั้ง');
+    }).then(() => {
+      this.pageLoadingService.closeLoading();
+    });
   }
 
   onHome(): void {

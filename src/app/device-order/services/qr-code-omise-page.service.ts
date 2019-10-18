@@ -17,11 +17,11 @@ export class QrCodeOmisePageService {
   }
 
   queryOrder(params: Object): Promise<any> {
-    return this.http.get('/api/salesportal/super-duper/query-order', params).toPromise();
+    return this.http.get('/api/payments/super-duper/query-order', params).toPromise();
   }
 
   retriveOrder(params: Object): Promise<any> {
-    return this.http.get('/api/salesportal/super-duper/order', params).toPromise();
+    return this.http.get('/api/payments/super-duper/order', params).toPromise();
   }
 
   getTimeCounter(second: number): Observable<number> {
