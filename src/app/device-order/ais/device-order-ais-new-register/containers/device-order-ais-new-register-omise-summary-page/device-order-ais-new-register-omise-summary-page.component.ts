@@ -122,7 +122,7 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
       customer: customer.firstName + ' ' + customer.lastName,
       orderList: this.orderList,
     };
-    if (!this.transaction.data.omise.qrCodeStr) {
+    // if (!this.transaction.data.omise.qrCodeStr) {
       this.qrCodeOmisePageService.createOrder(params).then((res) => {
         const data = res && res.data;
         this.transaction.data.omise.qrCodeStr = data.redirectUrl;
@@ -134,10 +134,10 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
       }).then(() => {
         this.pageLoadingService.closeLoading();
       });
-    } else {
-      this.pageLoadingService.closeLoading();
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_OMISE_GENERATOR_PAGE]);
-    }
+    // } else {
+    //   this.pageLoadingService.closeLoading();
+    //   this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_OMISE_GENERATOR_PAGE]);
+    // }
   }
 
   onHome(): void {

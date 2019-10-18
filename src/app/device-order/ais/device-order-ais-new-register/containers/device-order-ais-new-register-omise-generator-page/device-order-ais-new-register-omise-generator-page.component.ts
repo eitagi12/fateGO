@@ -98,13 +98,9 @@ export class DeviceOrderAisNewRegisterOmiseGeneratorPageComponent implements OnI
                   this.onNext();
                 } else {
                   // Refresh generate qrcode
-                  this.alertService.question('สิ้นสุดระยะเวลาชำระเงิน กรุณากดปุ่ม REFRESH<br> เพื่อทำรายการใหม่', 'Refresh')
+                  this.alertService.question('สิ้นสุดระยะเวลาชำระเงิน เพื่อทำรายการใหม่')
                     .then((dataAlert: any) => {
-                      if (dataAlert.value) {
-                        this.onGenerateQRCode();
-                      } else {
-                        this.onBack();
-                      }
+                      this.onBack();
                     });
                 }
               });
