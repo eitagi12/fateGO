@@ -99,6 +99,8 @@ export interface Omise {
   qrAirtimeAmt?: string;
   qrOrderId?: string;
   qrCodeStr?: string;
+  creditCardNo?: string;
+  cardExpireDate?: string;
 }
 
 export interface Condition {

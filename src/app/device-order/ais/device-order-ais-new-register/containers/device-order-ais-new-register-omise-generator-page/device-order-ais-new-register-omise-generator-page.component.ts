@@ -74,6 +74,9 @@ export class DeviceOrderAisNewRegisterOmiseGeneratorPageComponent implements OnI
         this.checkResponseOmiseSubscription = this.qrCodeOmisePageService.checkPaymentResponseOrderStatus(orderId)
           .subscribe((obs: any) => {
             if (obs.paymentCode === '0000' && obs.paymentStatus === 'SUCCESS') {
+              this.transaction.data.omise.tranId = obs.transactionId;
+              this.transaction.data.omise.creditCardNo = obs.creditCardNo;
+              this.transaction.data.omise.cardExpireDate = obs.cardExpireDate;
               this.onNext();
             }
           });
@@ -95,7 +98,10 @@ export class DeviceOrderAisNewRegisterOmiseGeneratorPageComponent implements OnI
               this.qrCodeOmisePageService.retriveOrder({ params: { orderId: orderId } }).then((resp) => {
                 const data = resp.data || {};
                 if (data.paymentCode === '0000' && data.paymentStatus === 'SUCCESS') {
-                  this.onNext();
+                  this.transaction.data.omise.tranId = data.transactionId;
+                  this.transaction.data.omise.creditCardNo = data.creditCardNo;
+                  this.transaction.data.omise.cardExpireDate = data.cardExpireDate;
+                    this.onNext();
                 } else {
                   // Refresh generate qrcode
                   this.alertService.question('สิ้นสุดระยะเวลาชำระเงิน เพื่อทำรายการใหม่')
