@@ -1,8 +1,8 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { Transaction } from 'src/app/shared/models/transaction.model';
-import { ShoppingCart, HomeService, Utils } from 'mychannel-shared-libs';
+import { Transaction, Seller } from 'src/app/shared/models/transaction.model';
+import { ShoppingCart, HomeService, Utils, TokenService, PageLoadingService, AlertService } from 'mychannel-shared-libs';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -12,6 +12,8 @@ import { SummaryPageService } from 'src/app/device-order/services/summary-page.s
 import { TranslateService } from '@ngx-translate/core';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_MOBILE_CARE_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_ECONTACT_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
+import { HttpClient } from '@angular/common/http';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-new-register-mnp-summary-page',
@@ -33,17 +35,26 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
   customerAddress: string;
   translateSubscription: Subscription;
 
+  seller$: Seller;
+  employeeDetailForm: FormGroup;
+  sellerCode: string;
+
   currentLang: string;
   constructor(
     private router: Router,
     private homeService: HomeService,
+    private pageLoadingService: PageLoadingService,
     private priceOptionService: PriceOptionService,
     private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,
     private modalService: BsModalService,
     public summaryPageService: SummaryPageService,
     private utils: Utils,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private tokenService: TokenService,
+    private http: HttpClient,
+    private alertService: AlertService,
+    private fb: FormBuilder
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -52,12 +63,26 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
     this.translateSubscription = this.translateService.onLangChange.subscribe(lang => {
       this.currentLang = typeof (lang) === 'object' ? lang.lang : lang;
     });
-   }
+    if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      this.homeService.callback = () => {
+        this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+          .then((response: any) => {
+            if (response.value === true) {
+              this.returnStock().then(() => {
+                this.transaction.data.order = {};
+                this.transactionService.remove();
+                window.location.href = '/';
+              });
+            }
+          });
+      };
+    }
+  }
 
   ngOnInit(): void {
     const customer = this.transaction.data.customer;
-
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
+
     this.customerAddress = this.utils.getCurrentAddress({
       homeNo: customer.homeNo,
       moo: customer.moo,
@@ -71,6 +96,14 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
       province: customer.province,
       zipCode: customer.zipCode
     });
+    this.createEmployeeForm();
+    this.getSeller$();
+  }
+
+  createEmployeeForm(): void {
+    this.employeeDetailForm = this.fb.group({
+      ascCode: ['', Validators.compose([Validators.required, Validators.pattern(/^[0-9]+$/)])]
+    });
   }
 
   onBack(): void {
@@ -78,7 +111,21 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_ECONTACT_PAGE]);
+    const user = this.tokenService.getUser();
+    this.pageLoadingService.openLoading();
+    const ascCode = this.employeeDetailForm.controls['ascCode'].value || '';
+    this.http.get(`/api/customerportal/checkSeller/${ascCode.trim()}`).toPromise().then((resp: any) => {
+      const checkSeller: any = resp && resp.data ? resp.data : {};
+      if (checkSeller.condition) {
+        this.transaction.data.seller.sellerNo = this.sellerCode || '';
+        this.transaction.data.seller.employeeId = ascCode;
+        this.transaction.data.seller.sellerName = user.firstname && user.lastname ? `${user.firstname} ${user.lastname}` : user.username;
+        this.pageLoadingService.closeLoading();
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_ECONTACT_PAGE]);
+      } else {
+        this.alertService.warning(checkSeller.message);
+      }
+    });
   }
 
   onHome(): void {
@@ -104,11 +151,55 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
     }, 0);
   }
 
+  getSeller$(): any {
+    this.pageLoadingService.openLoading();
+    const user = this.tokenService.getUser();
+    this.http.get(`/api/salesportal/location-by-code?code=${user.locationCode}`).toPromise().then((response: any) => {
+      this.seller$ = {
+        sellerName: user.firstname && user.lastname ? `${user.firstname} ${user.lastname}` : user.username,
+        locationName: response.data.displayName,
+        locationCode: user.locationCode
+      };
+    }).then(() => {
+      this.http.get(`/api/customerportal/newRegister/getEmployeeDetail/username/${user.username}`).toPromise().then((response: any) => {
+        if (response && response.data) {
+          this.sellerCode = response.data.pin;
+          this.employeeDetailForm.patchValue({ ascCode: this.sellerCode });
+        }
+        this.pageLoadingService.closeLoading();
+      }).then(() => {
+        this.priceOption.productStock.locationName = this.seller$.locationName;
+        this.transaction.data.seller = this.seller$;
+      }).catch(() => {
+        this.sellerCode = '';
+        this.pageLoadingService.closeLoading();
+      });
+    });
+  }
+
+  returnStock(): Promise<void> {
+    return new Promise(resolve => {
+      const transaction = this.transactionService.load();
+
+      const promiseAll = [];
+      if (transaction.data) {
+        if (transaction.data.order && transaction.data.order.soId) {
+          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
+            location: this.priceOption.productStock.location,
+            soId: transaction.data.order.soId,
+            transactionId: transaction.transactionId
+          }).toPromise().catch(() => Promise.resolve());
+          promiseAll.push(order);
+        }
+      }
+      Promise.all(promiseAll).then(() => resolve());
+    });
+  }
+
   ngOnDestroy(): void {
     if (this.translateSubscription) {
       this.translateSubscription.unsubscribe();
     }
     this.transactionService.update(this.transaction);
   }
-
 }

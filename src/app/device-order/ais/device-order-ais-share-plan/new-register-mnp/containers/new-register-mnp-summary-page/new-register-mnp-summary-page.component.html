@@ -200,12 +200,49 @@
               {{ 'รับสิทธิ์ต่อเนื่องนาน' | translate }} {{ priceOption?.campaign?.maximumContract }}
               {{ 'เดือน' | translate }}
             </p>
-
           </div>
           <div class="card-footer bg-transparent text-right">
           </div>
         </div>
 
+        <div class="card mb-3">
+          <div class="card-header bg-light-blue text-white">
+            {{ 'รหัสผู้ขาย' | translate }}
+          </div>
+          <div class="card-body">
+            <form [formGroup]="employeeDetailForm">
+              <div class="form-group row ml-3">
+                <label for="user" class="col-4 col-sm-3 col-form-label">{{ 'พนักงานขาย' | translate }}</label>
+                <div class="col-8 col-sm-9">
+                  <div class="col-form-label">
+                    {{seller$?.sellerName}}
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row ml-3">
+                <label for="user" class="col-4 col-sm-3 col-form-label">{{ 'สาขา' | translate }} </label>
+                <div class="col-8 col-sm-9">
+                  <div class="col-form-label">
+                    {{seller$?.locationName}}
+                  </div>
+                </div>
+              </div>
+              <div class="form-group row ml-3">
+                <label for="user" class="col-4 col-sm-3 col-form-label">{{ 'รหัสพนักงาน' | translate }} <span
+                    class="text-red">*</span></label>
+                <div class="col-5 col-sm-6">
+                  <input type="tel" maxlength="10" class="form-control" [ngClass]="{
+                      'is-invalid': !employeeDetailForm.controls['ascCode'].valid &&
+                      employeeDetailForm.controls['ascCode'].dirty}" id="ascCode" formControlName="ascCode"
+                    autocomplete="off" /><small
+                    class="invalid-feedback">{{ 'รหัสพนักงานขาย ไม่ถูกต้อง' | translate }}</small>
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="card-footer bg-transparent text-right">
+          </div>
+        </div>
       </div>
     </div>
   </div>
