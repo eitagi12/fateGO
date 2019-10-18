@@ -19,6 +19,7 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit {
   isSuccessback: boolean;
   isSuccessnext: boolean;
   status: boolean;
+  show: boolean;
 
   constructor(
     private router: Router,
@@ -49,6 +50,7 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit {
 
   checkPersoSimNEW(): void {
     this.isSuccessnext = this.status === true ? true : false;
+    this.show = this.status === true ? true : false;
     this.isSuccessback = this.status === false ? true : false;
   }
 
