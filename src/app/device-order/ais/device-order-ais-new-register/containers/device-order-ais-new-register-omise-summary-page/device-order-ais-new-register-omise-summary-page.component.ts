@@ -5,7 +5,7 @@ import {
   ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGGREGATE_PAGE, ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_OMISE_GENERATOR_PAGE,
 } from '../../constants/route-path.constant';
 import { Router } from '@angular/router';
-import { HomeService, TokenService, PageLoadingService } from 'mychannel-shared-libs';
+import { HomeService, TokenService, PageLoadingService, AlertService } from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
@@ -29,6 +29,7 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
     private qrCodeOmisePageService: QrCodeOmisePageService,
     private tokenService: TokenService,
     private pageLoadingService: PageLoadingService,
+    private alertService: AlertService,
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -122,22 +123,18 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
       customer: customer.firstName + ' ' + customer.lastName,
       orderList: this.orderList,
     };
-    // if (!this.transaction.data.omise.qrCodeStr) {
-      this.qrCodeOmisePageService.createOrder(params).then((res) => {
-        const data = res && res.data;
-        this.transaction.data.omise.qrCodeStr = data.redirectUrl;
-        this.transaction.data.omise.orderId = data.orderId;
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_OMISE_GENERATOR_PAGE]);
+    this.qrCodeOmisePageService.createOrder(params).then((res) => {
+      const data = res && res.data;
+      this.transaction.data.omise.qrCodeStr = data.redirectUrl;
+      this.transaction.data.omise.orderId = data.orderId;
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_OMISE_GENERATOR_PAGE]);
 
-      }).catch((err) => {
-        console.log('err', err);
-      }).then(() => {
-        this.pageLoadingService.closeLoading();
-      });
-    // } else {
-    //   this.pageLoadingService.closeLoading();
-    //   this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_OMISE_GENERATOR_PAGE]);
-    // }
+    }).catch((err) => {
+      this.alertService.error('ระบบไม่สามารถทำรายการได้ขณะนี้ กรุณาทำรายการอีกครั้ง');
+    }).then(() => {
+      this.pageLoadingService.closeLoading();
+    });
+
   }
 
   onHome(): void {
