@@ -63,20 +63,6 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
     this.translateSubscription = this.translateService.onLangChange.subscribe(lang => {
       this.currentLang = typeof (lang) === 'object' ? lang.lang : lang;
     });
-    if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
-      this.homeService.callback = () => {
-        this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
-          .then((response: any) => {
-            if (response.value === true) {
-              this.returnStock().then(() => {
-                this.transaction.data.order = {};
-                this.transactionService.remove();
-                window.location.href = '/';
-              });
-            }
-          });
-      };
-    }
   }
 
   ngOnInit(): void {
@@ -174,25 +160,6 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
         this.sellerCode = '';
         this.pageLoadingService.closeLoading();
       });
-    });
-  }
-
-  returnStock(): Promise<void> {
-    return new Promise(resolve => {
-      const transaction = this.transactionService.load();
-
-      const promiseAll = [];
-      if (transaction.data) {
-        if (transaction.data.order && transaction.data.order.soId) {
-          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
-            location: this.priceOption.productStock.location,
-            soId: transaction.data.order.soId,
-            transactionId: transaction.transactionId
-          }).toPromise().catch(() => Promise.resolve());
-          promiseAll.push(order);
-        }
-      }
-      Promise.all(promiseAll).then(() => resolve());
     });
   }
 
