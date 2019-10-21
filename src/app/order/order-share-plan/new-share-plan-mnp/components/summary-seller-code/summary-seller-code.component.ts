@@ -11,10 +11,11 @@ import { HttpClient } from '@angular/common/http';
 })
 export class SummarySellerCodeComponent implements OnInit {
 
-  public username: string;
-  @Input() seller: Seller;
+  username: string;
   transaction: Transaction;
+  locationName: string;
   locationCode: string;
+  ascCode: string;
 
   constructor(
     private transacService: TransactionService,
@@ -23,34 +24,31 @@ export class SummarySellerCodeComponent implements OnInit {
   ) {
     this.transaction = this.transacService.load();
     this.username = this.tokenService.getUser().username;
-   }
-
-   ngOnInit(): void {
-     this.getLocation();
-    if (!this.seller) {
-      this.seller = {};
-    }
   }
 
-  setSeller(seller: Seller): void {
-    this.seller = seller;
-  }
-
-  getSeller(): Seller {
-    return Object.assign(this.seller, {
-      sellerNo: this.seller.sellerNo || ''
-    });
+  ngOnInit(): void {
+    this.getLocation();
+    this.getASCCode();
   }
 
   getLocation(): void {
-    const user = this.tokenService.getUser();
-    this.http.get(`/api/salesportal/location-by-code?code=${user.locationCode}`).toPromise().then((response: any) => {
-      this.seller = {
-        // sellerName: user.firstname && user.lastname ? `${user.firstname} ${user.lastname}` : user.username,
-        locationName: response.data.displayName,
-        // locationCode: user.locationCode,
-        // sellerNo: user.ascCode
-      };
+    this.locationCode = this.tokenService.getUser().locationCode;
+    this.http.get(`/api/salesportal/location-by-code?code=${this.locationCode}`).toPromise().then((response: any) => {
+      this.locationName = response.data.displayName;
+    });
+  }
+
+  getASCCode(): any {
+    this.http.get(`/api/customerportal/newRegister/getEmployeeDetail/${'username'}/${this.username}`).toPromise().then((response: any) => {
+      this.ascCode = response.data.pin;
+    });
+  }
+
+  setASCCode(): Seller {
+    return Object.assign({
+      locationName: this.locationName,
+      locationCode: this.locationCode,
+      ascCode: this.ascCode
     });
   }
 
@@ -60,4 +58,5 @@ export class SummarySellerCodeComponent implements OnInit {
       event.preventDefault();
     }
   }
+
 }

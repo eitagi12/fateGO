@@ -29,23 +29,21 @@ export class ShopCheckSeller {
 export class NewSharePlanMnpSummaryPageComponent implements OnInit, OnDestroy {
 
   @ViewChild(SummarySellerCodeComponent) summarySellerCode: SummarySellerCodeComponent;
-
   wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
-
   transaction: Transaction;
   confirmCustomerInfo: ConfirmCustomerInfo;
   billingInfo: BillingInfo;
   mailBillingInfo: MailBillingInfo;
   telNoBillingInfo: TelNoBillingInfo;
   translationSubscribe: Subscription;
+
   constructor(
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
     private translation: TranslateService,
     private alertService: AlertService,
-    private http: HttpClient,
-    private tokenService: TokenService
+    private http: HttpClient
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -122,50 +120,39 @@ export class NewSharePlanMnpSummaryPageComponent implements OnInit, OnDestroy {
   onBack(): void {
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_CONFIRM_USER_INFORMATION_PAGE]);
   }
-  onNext(): void {
-    const seller: Seller = this.summarySellerCode.getSeller();
-    this.checkSeller(seller);
-  }
 
-  ngOnDestroy(): void {
-    this.translationSubscribe.unsubscribe();
-    this.transactionService.save(this.transaction);
+  onNext(): void {
+    const seller: Seller = this.summarySellerCode.setASCCode();
+    this.checkSeller(seller);
   }
 
   onHome(): void {
     this.homeService.goToHome();
   }
 
-  getcheckSeller(sellderId: string): Promise<any> {
-    const checkSellerAPI = `/api/customerportal/checkSeller/` + `${sellderId}`;
-    return this.http.get(checkSellerAPI).pipe(
-      map((response: any) => response.data)
-    ).toPromise();
-  }
-
   checkSeller(seller: Seller): void {
-    if (!seller.sellerNo) {
+    if (!seller.ascCode) {
       this.alertService.warning('กรุณากรอกข้อมูลให้ถูกต้อง');
       return;
     }
-    this.getcheckSeller(seller.sellerNo).then((shopCheckSeller: ShopCheckSeller) => {
-      if (shopCheckSeller.condition) {
-        if (!this.transaction.data.seller) {
-          this.transaction.data.seller = {
-            sellerNo: seller.sellerNo,
-            locationCode: this.tokenService.getUser().locationCode
-          };
-        } else {
-          this.transaction.data.seller.sellerNo = seller.sellerNo;
-        }
+    this.http.get(`/api/customerportal/checkSeller/` + `${seller.ascCode}`).toPromise().then((response: any) => {
+      if (response.data.condition === true) {
+        this.transaction.data.seller = {
+          ...this.transaction.data.seller,
+          locationName: seller.locationName,
+          locationCode: seller.locationCode,
+          ascCode: seller.ascCode,
+        };
         this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_AGREEMENT_SIGN_PAGE]);
       } else {
-        this.alertService.warning(shopCheckSeller.message);
+        this.alertService.warning(response.data.message);
       }
-    })
-      .catch(() => {
-        this.alertService.warning('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
-      });
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.translationSubscribe.unsubscribe();
+    this.transactionService.save(this.transaction);
   }
 
 }
