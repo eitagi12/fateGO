@@ -40,7 +40,6 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit {
   }
 
   onBack(): void {
-
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_AGREEMENT_SIGN_PAGE]);
   }
 

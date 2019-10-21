@@ -13,12 +13,14 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
   styleUrls: ['./new-share-plan-mnp-perso-sim-mnp-page.component.scss']
 })
 export class NewSharePlanMnpPersoSimMnpPageComponent implements OnInit {
+
   wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
   title: string = 'กรุณาเสียบซิมการ์ด';
   isSuccess: boolean;
   status: boolean = true;
   transaction: Transaction;
   mobileNoMember: string;
+
   constructor(
     private router: Router,
     private http: HttpClient,

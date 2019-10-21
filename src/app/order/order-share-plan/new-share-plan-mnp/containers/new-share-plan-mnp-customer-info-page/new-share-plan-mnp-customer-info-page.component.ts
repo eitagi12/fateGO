@@ -13,15 +13,13 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 export class NewSharePlanMnpCustomerInfoPageComponent implements OnInit, OnDestroy {
 
   wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
-
   transaction: Transaction;
   customerInfo: CustomerInfo;
 
   constructor(
     private router: Router,
     private homeService: HomeService,
-    private transactionService: TransactionService,
-
+    private transactionService: TransactionService
   ) {
     this.transaction = this.transactionService.load();
   }

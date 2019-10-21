@@ -1,13 +1,12 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { ROUTE_NEW_SHARE_PLAN_MNP_CUSTOMER_INFO_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_CONFIRM_USER_INFORMATION_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_NEW_SHARE_PLAN_MNP_CONFIRM_USER_INFORMATION_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { CustomerAddress, HomeService } from 'mychannel-shared-libs';
 import { Subscription } from 'rxjs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
-import { LocalStorageService } from 'ngx-store';
 import { TranslateService } from '@ngx-translate/core';
 import { debounceTime } from 'rxjs/operators';
 @Component({
@@ -16,6 +15,7 @@ import { debounceTime } from 'rxjs/operators';
   styleUrls: ['./new-share-plan-mnp-ebilling-address-page.component.scss']
 })
 export class NewSharePlanMnpEbillingAddressPageComponent implements OnInit, OnDestroy {
+
   wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
   transaction: Transaction;
   customerAddress: CustomerAddress;
@@ -24,11 +24,9 @@ export class NewSharePlanMnpEbillingAddressPageComponent implements OnInit, OnDe
   amphurs: string[];
   tumbols: string[];
   zipCodes: string[];
-
   customerAddressTemp: CustomerAddress;
   billDeliveryAddress: CustomerAddress;
   translationSubscribe: Subscription;
-
   ebillingAddressValid: boolean;
 
   constructor(
@@ -36,7 +34,6 @@ export class NewSharePlanMnpEbillingAddressPageComponent implements OnInit, OnDe
     private homeService: HomeService,
     private transactionService: TransactionService,
     private http: HttpClient,
-    private localStorageService: LocalStorageService,
     private translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();

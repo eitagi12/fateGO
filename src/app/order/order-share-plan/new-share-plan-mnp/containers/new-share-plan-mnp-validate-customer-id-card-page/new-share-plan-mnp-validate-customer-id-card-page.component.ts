@@ -14,14 +14,12 @@ import { TranslateService } from '@ngx-translate/core';
 export class NewSharePlanMnpValidateCustomerIdCardPageComponent implements OnInit, OnDestroy {
 
   kioskApi: boolean;
-
   transaction: Transaction;
   profile: ReadCardProfile;
   zipcode: string;
   readCardValid: boolean;
   progressReadCard: number;
   billDeliveryAddress: Customer;
-
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
 

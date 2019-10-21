@@ -8,29 +8,29 @@
     </div>
   </mc-header>
   <div class="mc-flex-wrap">
-    <div class="mb-3 mt-3">
+    <div class="mt-3">
       <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
       <div class="card bg-white">
-        <div *ngIf="!isOpenSign" class="container-fluid ">
-          <div class="">
-            <p class="head-text "> เซ็นยืนยันข้อมูล </p>
+        <div class="card-body">
+          <div *ngIf="!isOpenSign" class="container-fluid">
+            <p class="text-center mt-3">เซ็นยืนยันข้อมูล</p>
             <hr>
-            <span id="lblShrSignWriterContractInfo" class="multi-line font-gray">
-              {{contractText}}
-            </span>
-            <div class="my-5">
-              <span class="font-gray">กรุณาเซ็นลงในช่อง</span>
-              <div class="sign-container" id="lblShrSignWriterContractInfoSignContainer">
-
-                <img src="" name="imgPhoto" id="imgPhoto" [hidden]="!signature" />
-              </div>
-              <div class="row mt-3">
-                <div class="col-6" id="lblShrSignWriterContractInfoDate">
-                  {{today}}
+            <p id="lblShrSignWriterContractInfo" class="text-grey">
+              {{ contractText }}
+            </p>
+            <div class="my-4">
+              <p class="text-grey">กรุณาเซ็นลงในช่อง</p>
+              <div class="card embed-responsive embed-responsive-4by3 position-relative" id="lblShrSignWriterContractInfoSignContainer">
+                <div class="embed-responsive-item center my-auto">
+                  <img class="w-100 h-auto" src="" name="imgPhoto" id="imgPhoto" [hidden]="!signature" />
                 </div>
-                <div class="col-6 text-right ">
-                  <button id="btnShrSignWriterSign" class="btn btn-success"
-                    (click)="openSignature()">{{ signatureText }}</button>
+              </div>
+              <div class="row mt-4">
+                <div class="col-6" id="lblShrSignWriterContractInfoDate">
+                  {{ today }}
+                </div>
+                <div class="col-6 text-right">
+                  <button id="btnShrSignWriterSign" class="btn btn-success" (click)="openSignature()">{{ signatureText }}</button>
                 </div>
               </div>
             </div>

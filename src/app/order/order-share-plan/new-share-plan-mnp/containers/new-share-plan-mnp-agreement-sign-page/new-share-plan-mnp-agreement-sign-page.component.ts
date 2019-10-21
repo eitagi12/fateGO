@@ -5,7 +5,6 @@ import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.
 import { HomeService, AlertService, TokenService, User, ChannelType } from 'mychannel-shared-libs';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { Subscription } from 'rxjs';
 import { AisNativeOrderService } from 'src/app/shared/services/ais-native-order.service';
 import { TranslateService } from '@ngx-translate/core';
 import * as Moment from 'moment';

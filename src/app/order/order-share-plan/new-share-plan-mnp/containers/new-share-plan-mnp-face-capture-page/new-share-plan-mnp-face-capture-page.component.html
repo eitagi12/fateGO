@@ -37,8 +37,7 @@
             <div class="row">
               <div class="border-right p-3 col-12">
                 <div *ngIf="!isAisNative()">
-                  <a href="#" (click)="$event.preventDefault(); onOpenCamera(); camera.next();" class="text-pink"
-                    *ngIf="!transaction?.data?.faceRecognition?.imageFaceUser">
+                  <a href="#" (click)="$event.preventDefault(); onOpenCamera(); camera.next();" class="text-pink" *ngIf="!transaction?.data?.faceRecognition?.imageFaceUser">
                     <p>{{ 'ถ่ายรูป' | translate }}</p>
                   </a>
                   <a href="#" (click)="$event.preventDefault(); onClearIdCardImage()" class="text-pink" *ngIf="transaction?.data?.faceRecognition?.imageFaceUser">

@@ -23,7 +23,6 @@ export class SummarySellerCodeComponent implements OnInit {
     private http: HttpClient,
   ) {
     this.transaction = this.transacService.load();
-    this.username = this.tokenService.getUser().username;
   }
 
   ngOnInit(): void {
@@ -39,6 +38,7 @@ export class SummarySellerCodeComponent implements OnInit {
   }
 
   getASCCode(): any {
+    this.username = this.tokenService.getUser().username;
     this.http.get(`/api/customerportal/newRegister/getEmployeeDetail/${'username'}/${this.username}`).toPromise().then((response: any) => {
       this.ascCode = response.data.pin;
     });
