@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { Utils, TokenService } from 'mychannel-shared-libs';
-import { Transaction, TransactionAction, TransactionType } from '../models/transaction.model';
+import { Transaction, TransactionAction } from '../models/transaction.model';
 import { HttpClient } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -27,6 +27,20 @@ export class CreateEapplicationService {
     return this.http.post(
       '/api/salesportal/v2/generate-e-document-eapplication',
       this.getRequestEapplicationV2(transaction, language)
+    ).toPromise();
+  }
+
+  createEapplicationSuperKhumSharepalnNewRegister(transaction: any, language: any): Promise<any> {
+    return this.http.post(
+      '/api/salesportal/v2/generate-e-document-eapplication',
+      this.getRequestEapplicationSuperKhumSharePlanNewRegister(transaction, language)
+    ).toPromise();
+  }
+
+  createEapplicationSuperKhumSharepalnMnp(transaction: any, language: any): Promise<any> {
+    return this.http.post(
+      '/api/salesportal/v2/generate-e-document-eapplication',
+      this.getRequestEapplicationSuperKhumSharePlanMnp(transaction, language)
     ).toPromise();
   }
 
@@ -77,6 +91,132 @@ export class CreateEapplicationService {
     return data;
   }
 
+  getRequestEapplicationSuperKhumSharePlanMnp(transaction: any, language: any): any {
+    const customer: any = transaction.data.customer || {};
+    const billingInformation: any = transaction.data.billingInformation || {};
+    const billCycleData: any = billingInformation.billCycleData || {};
+    const action: any = transaction.data.action;
+    const mainPackage: any = transaction.data.memberInfo.mainPackage || {};
+    const simCard: any = transaction.data.memberInfo.simCard || {}; // Get simNo of member
+    const data: any = {
+      fullNameTH: language === 'EN' ? `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}` :
+        customer.firstName + ' ' + customer.lastName || '',
+      idCard: this.privateIdcard(customer.idCardNo) || '',
+      idCardType: customer.idCardType || '',
+      birthDate: customer.birthdate || '',
+      customerAddress: this.utils.getCurrentAddress({
+        homeNo: customer.homeNo || '',
+        moo: customer.moo || '',
+        room: customer.room || '',
+        floor: customer.floor || '',
+        buildingName: customer.buildingName || '',
+        soi: customer.soi || '',
+        street: customer.street || '',
+        tumbol: customer.tumbol || '',
+        amphur: customer.amphur || '',
+        province: customer.province || '',
+        zipCode: customer.zipCode || ''
+      }, this.translation.currentLang) || '',
+      mobileNumber: simCard.mobileNo || '',
+
+      mainPackage: {
+        name: mainPackage.title || '',
+        description: mainPackage.detailTH || ''
+      },
+      billCycle: billCycleData.billCycleText || '',
+      receiveBillMethod: this.translation.instant(billCycleData.receiveBillMethod) || '',
+      billDeliveryAddress: billCycleData.billAddressText || '',
+      fullNameEN: `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}`,
+      issueDate: customer.issueDate || '',
+      expireDate: customer.expireDate || '',
+      signature: customer.imageSignature || '',
+      language: language || '',
+    };
+    if (language === 'EN') {
+      data.billCycle = billCycleData.billCycleTextEng;
+      data.mainPackage = {
+        name: (mainPackage.customAttributes || {}).shortNameEng || mainPackage.title || '',
+        description: mainPackage.statementEng || mainPackage.detailEN || ''
+      };
+    } else {
+      data.billCycle = billCycleData.billCycleText;
+      data.mainPackage = {
+        name: (mainPackage.customAttributes || {}).shortNameThai || mainPackage.title || '',
+        description: mainPackage.statementThai || mainPackage.detailTH || ''
+      };
+    }
+    if (action === TransactionAction.READ_CARD || action === TransactionAction.READ_CARD_REPI) {
+      data.customerImg = customer.imageReadSmartCard;
+    } else {
+      data.customerImgKeyIn = customer.imageSmartCard ? customer.smartCardImageWithSignatureAndWaterMark : customer.imageReadPassport;
+    }
+    return data;
+  }
+
+  getRequestEapplicationSuperKhumSharePlanNewRegister(transaction: Transaction, language: any): any {
+    const customer: any = transaction.data.customer || {};
+    const billingInformation: any = transaction.data.billingInformation || {};
+    const billCycleData: any = billingInformation.billCycleData || {};
+    const action: any = transaction.data.action;
+    const mainPackage: any = transaction.data.mainPackage || {};
+    const simCard: any = transaction.data.simCard || {};
+
+    const data: any = {
+      fullNameTH: language === 'EN' ? `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}` :
+        customer.firstName + ' ' + customer.lastName || '',
+      idCard: this.privateIdcard(customer.idCardNo) || '',
+      idCardType: customer.idCardType || '',
+      birthDate: customer.birthdate || '',
+      customerAddress: this.utils.getCurrentAddress({
+        homeNo: customer.homeNo || '',
+        moo: customer.moo || '',
+        room: customer.room || '',
+        floor: customer.floor || '',
+        buildingName: customer.buildingName || '',
+        soi: customer.soi || '',
+        street: customer.street || '',
+        tumbol: customer.tumbol || '',
+        amphur: customer.amphur || '',
+        province: customer.province || '',
+        zipCode: customer.zipCode || ''
+      }, this.translation.currentLang) || '',
+      mobileNumber: simCard.mobileNo || '',
+
+      mainPackage: {
+        name: mainPackage.shortNameThai || '',
+        description: mainPackage.statementThai || ''
+      },
+      billCycle: billCycleData.billCycleText || '',
+      receiveBillMethod: this.translation.instant(billCycleData.receiveBillMethod) || '',
+      billDeliveryAddress: billCycleData.billAddressText || '',
+      fullNameEN: `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}`,
+      issueDate: customer.issueDate || '',
+      expireDate: customer.expireDate || '',
+      signature: customer.imageSignature || '',
+      language: language || '',
+    };
+    if (language === 'EN') {
+      data.billCycle = billCycleData.billCycleTextEng;
+      data.mainPackage = {
+        name: (mainPackage.customAttributes || {}).shortNameEng || mainPackage.title || '',
+        description: mainPackage.statementEng || mainPackage.detailEN || ''
+      };
+    } else {
+      data.billCycle = billCycleData.billCycleText;
+      data.mainPackage = {
+        name: (mainPackage.customAttributes || {}).shortNameThai || mainPackage.title || '',
+        description: mainPackage.statementThai || mainPackage.detailTH || ''
+      };
+    }
+    if (action === TransactionAction.READ_CARD || action === TransactionAction.READ_CARD_REPI) {
+      data.customerImg = customer.imageReadSmartCard;
+    } else {
+      data.customerImgKeyIn = customer.imageSmartCard ? customer.smartCardImageWithSignatureAndWaterMark : customer.imageReadPassport;
+    }
+
+    return data;
+  }
+
   getRequestEapplicationV2(transaction: Transaction, language: any): any {
     const customer: any = transaction.data.customer || {};
     const billingInformation: any = transaction.data.billingInformation || {};
@@ -87,7 +227,7 @@ export class CreateEapplicationService {
 
     const data: any = {
       fullNameTH: language === 'EN' ? `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}` :
-      customer.firstName + ' ' + customer.lastName || '' ,
+        customer.firstName + ' ' + customer.lastName || '',
       idCard: this.privateIdcard(customer.idCardNo) || '',
       idCardType: customer.idCardType || '',
       birthDate: customer.birthdate || '',

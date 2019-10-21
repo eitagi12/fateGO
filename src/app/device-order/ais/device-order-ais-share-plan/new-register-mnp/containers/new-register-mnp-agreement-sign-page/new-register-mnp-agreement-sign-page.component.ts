@@ -6,9 +6,10 @@ import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { AgreementSignConstant } from '../../constants/agreement-sign.constant';
-import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_ECONTACT_PAGE,
-         ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CAPTURE_PAGE
-       } from '../../constants/route-path.constant';
+import {
+  ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_ECONTACT_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CAPTURE_PAGE
+} from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-new-register-mnp-agreement-sign-page',
@@ -47,11 +48,13 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
       imageSignature: customer.imageReadSmartCard
     };
 
+    console.log('captureAndSign |', this.captureAndSign);
   }
 
   onCompleted(captureAndSign: CaptureAndSign): void {
+    console.log('captureAndSign', captureAndSign);
     const customer: Customer = this.transaction.data.customer;
-    customer.imageSignatureSmartCard = captureAndSign.imageSignature;
+    customer.imageSignature = captureAndSign.imageSignature;
     customer.imageSmartCard = captureAndSign.imageSmartCard;
   }
 
@@ -72,7 +75,9 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
   }
 
   ngOnDestroy(): void {
-    this.transactionService.update(this.transaction);
+    if (this.transaction) {
+      this.transactionService.update(this.transaction);
+    }
   }
 
 }
