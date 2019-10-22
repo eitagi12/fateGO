@@ -66,6 +66,7 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    this.pageLoadingService.openLoading();
     const customer = this.transaction.data.customer;
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
 
@@ -138,7 +139,6 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
   }
 
   getSeller$(): any {
-    this.pageLoadingService.openLoading();
     const user = this.tokenService.getUser();
     this.http.get(`/api/salesportal/location-by-code?code=${user.locationCode}`).toPromise().then((response: any) => {
       this.seller$ = {
@@ -152,10 +152,10 @@ export class NewRegisterMnpSummaryPageComponent implements OnInit, OnDestroy {
           this.sellerCode = response.data.pin;
           this.employeeDetailForm.patchValue({ ascCode: this.sellerCode });
         }
-        this.pageLoadingService.closeLoading();
       }).then(() => {
         this.priceOption.productStock.locationName = this.seller$.locationName;
         this.transaction.data.seller = this.seller$;
+        this.pageLoadingService.closeLoading();
       }).catch(() => {
         this.sellerCode = '';
         this.pageLoadingService.closeLoading();
