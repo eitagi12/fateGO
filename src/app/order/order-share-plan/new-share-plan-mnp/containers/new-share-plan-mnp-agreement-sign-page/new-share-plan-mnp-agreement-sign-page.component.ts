@@ -54,7 +54,7 @@ export class NewSharePlanMnpAgreementSignPageComponent implements OnInit, OnDest
   ) {
     this.transaction = this.transactionService.load();
     this.date = Moment();
-    // tslint:disable-next-line: radix
+    // tslint:disable-next-line:radix
     this.today = this.date.format('DD') + '/' + this.date.format('MM') + '/' + (parseInt(this.date.format('YYYY')) + 543);
   }
 

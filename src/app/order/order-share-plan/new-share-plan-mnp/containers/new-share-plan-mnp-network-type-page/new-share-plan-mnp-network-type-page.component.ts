@@ -84,7 +84,7 @@ export class NewSharePlanMnpNetworkTypePageComponent implements OnInit, OnDestro
   }
 
   onHome(): void {
-    this.router.navigate([]);
+    this.homeService.goToHome();
   }
 
   onBack(): void {

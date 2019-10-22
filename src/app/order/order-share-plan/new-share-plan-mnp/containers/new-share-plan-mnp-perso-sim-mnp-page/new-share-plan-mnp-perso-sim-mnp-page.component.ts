@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
-import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 import { Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
-import { AlertService } from 'mychannel-shared-libs';
+import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
+import { HomeService } from 'mychannel-shared-libs';
 import { ROUTE_NEW_SHARE_PLAN_MNP_RESULT_PAGE } from '../../constants/route-path.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
@@ -16,16 +15,15 @@ export class NewSharePlanMnpPersoSimMnpPageComponent implements OnInit {
 
   wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
   title: string = 'กรุณาเสียบซิมการ์ด';
-  isSuccess: boolean;
-  status: boolean = true;
   transaction: Transaction;
   mobileNoMember: string;
+  isSuccess: boolean;
+  status: boolean = true;
 
   constructor(
     private router: Router,
-    private http: HttpClient,
-    private alertService: AlertService,
-    private transactionService: TransactionService,
+    private homeService: HomeService,
+    private transactionService: TransactionService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -37,6 +35,10 @@ export class NewSharePlanMnpPersoSimMnpPageComponent implements OnInit {
 
   onNext(): void {
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_RESULT_PAGE]);
+  }
+
+  onHome(): void {
+    this.homeService.goToHome();
   }
 
   checkPersoSimMNP(): void {

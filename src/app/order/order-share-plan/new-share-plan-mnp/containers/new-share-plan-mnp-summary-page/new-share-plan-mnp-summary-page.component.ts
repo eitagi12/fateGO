@@ -141,7 +141,7 @@ export class NewSharePlanMnpSummaryPageComponent implements OnInit, OnDestroy {
           ...this.transaction.data.seller,
           locationName: seller.locationName,
           locationCode: seller.locationCode,
-          ascCode: seller.ascCode,
+          ascCode: seller.ascCode
         };
         this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_AGREEMENT_SIGN_PAGE]);
       } else {

@@ -16,17 +16,14 @@ import { TranslateService } from '@ngx-translate/core';
 export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnInit, OnDestroy {
 
   wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
-
   transaction: Transaction;
   confirmCustomerInfo: ConfirmCustomerInfo;
   billingInfo: BillingInfo;
   mailBillingInfo: MailBillingInfo;
   telNoBillingInfo: TelNoBillingInfo;
-
   eBill: boolean;
   isTelNoBillingValid: boolean;
   isMailBillingInfoValid: boolean;
-
   translationSubscribe: Subscription;
 
   constructor(
