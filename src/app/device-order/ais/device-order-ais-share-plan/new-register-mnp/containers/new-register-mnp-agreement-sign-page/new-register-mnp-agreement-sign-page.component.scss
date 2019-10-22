@@ -1,0 +1,89 @@
+// @import "node_modules/foundation-sites/scss/util/util";
+.outer-card {
+    display: block;
+    position: relative;
+    background-color: white;
+    border-radius: 5px;
+    padding: 30px;
+    // @include breakpoint(small only) {
+    //     padding: 15px;
+    // }
+}
+
+.card-footer {
+    display: block;
+    position: relative;
+    padding-top: 30px;
+    // @include breakpoint(small only) {
+    //     padding-top: 15px;
+    // }
+}
+
+.scan-container {
+    display: block;
+    position: relative;
+    min-height: 300px;
+}
+
+.scan-container-pc {
+    display: block;
+    position: relative;
+    min-height: 300px;
+    margin: auto;
+    width: 60%;
+}
+
+canvas.captured-image {
+    width: 100%;
+    display: block;
+}
+
+//#signaturePhoto{
+//  position: absolute;
+//  top: 0;
+//  mix-blend-mode: multiply;
+//}
+.renew-sign {
+    display: block;
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    font-size: 125%;
+    background-color: #b0a799;
+    opacity: 0.7;
+}
+
+.border-right {
+    border-right: 2px solid #cbcbcb;
+}
+
+.mc-button--group {
+    padding-top: 30px;
+    // @include breakpoint(small only) {
+    //     padding-top: 15px;
+    // }
+}
+
+.width-pc {
+    max-width: 60%;
+}
+
+.margin-center {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.underline {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #f3f3f3;
+    margin: 10px 0;
+}
+
+.ocr-messagse {
+    color: #9c9b99;
+    background-color: #efefef;
+    font-size: 0.7rem;
+    border-radius: 3px;
+    padding: 5px;
+    text-align: center;
+}
