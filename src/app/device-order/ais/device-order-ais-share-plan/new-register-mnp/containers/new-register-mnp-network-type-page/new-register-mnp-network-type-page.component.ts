@@ -131,46 +131,41 @@ export class NewRegisterMnpNetworkTypePageComponent implements OnInit, OnDestroy
 
         if (!outbuf || (accountNo && (mobileNoStatus === 'Disconnect - Ported' || mobileNoStatus === 'U' || mobileNoStatus === 'T'))
           || mobileNoStatus !== 'Active' && !(mobileNoStatus || networkType)) {
-          this.transaction.data.memberInfo = {
-            ...this.transaction.data.memberInfo,
-            simCard: {
-              mobileNo: this.mnpForm.value.mobileNo
+          this.transaction.data.simCard = {
+            ...this.transaction.data.simCard,
+            memberSimCard: {
+              member1: {
+                mobileNo: this.mnpForm.value.mobileNo,
+                simSerial: '',
+                persoSim: false
+              }
             }
           };
-          // this.transaction.data.customer = {
-          //   customerPinCode: this.mnpForm.value.pinCode,
-          //   birthdate: '',
-          //   idCardNo: '',
-          //   idCardType: 'บัตรประชาชน',
-          //   titleName: '',
-          //   expireDate: '',
-          //   firstName: '',
-          //   gender: '',
-          //   lastName: ''
-          // };
+          this.transaction.data.customer = {
+            ...this.transaction.data.customer ,
+            customerPinCode: this.mnpForm.value.pinCode,
+          };
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CONFIRM_USER_INFORMATION_PAGE]);
         } else {
           return this.alertService.error(`หมายเลข ${this.mnpForm.value.mobileNo} เป็นเบอร์ AIS`);
         }
       }).catch(() => {
         this.pageLoadingService.closeLoading();
-        this.transaction.data.memberInfo = {
-          ...this.transaction.data.memberInfo,
-          simCard: {
-            mobileNo: this.mnpForm.value.mobileNo
+
+        this.transaction.data.simCard = {
+          ...this.transaction.data.simCard,
+          memberSimCard: {
+            menber1: {
+              mobileNo: this.mnpForm.value.mobileNo,
+              simSerial: '',
+              persoSim: false
+            }
           }
         };
-        // this.transaction.data.customer = {
-        //   customerPinCode: this.mnpForm.value.pinCode,
-        //   birthdate: '',
-        //   idCardNo: '',
-        //   idCardType: 'บัตรประชาชน',
-        //   titleName: '',
-        //   expireDate: '',
-        //   firstName: '',
-        //   gender: '',
-        //   lastName: ''
-        // };
+        this.transaction.data.customer = {
+          ...this.transaction.data.customer ,
+          customerPinCode: this.mnpForm.value.pinCode,
+        };
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CONFIRM_USER_INFORMATION_PAGE]);
       })
       .then(() => {

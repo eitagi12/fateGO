@@ -64,10 +64,10 @@
                   <label>{{ confirmCustomerInfo?.mainPackage }}</label>
                 </div>
                 <div class="mt-2">
-                  <label>{{ member.simCard.mobileNo | mobileNo }}</label>
+                  <label>{{ confirmMemberInfo.mobileNo | mobileNo }}</label>
                 </div>
                 <div>
-                  <label>{{ member.mainPackage.title }}</label>
+                  <label>{{ confirmMemberInfo.mainPackage }}</label>
                 </div>
               </div>
               <div class="col-2 col-sm-2 text-right">
@@ -109,7 +109,7 @@
                 <a href="#" class="pull-right" [hidden]="view" *ngIf="billingInfo?.billingMethod?.isDelete"
                   (click)="$event.preventDefault(); billingInfo?.billingMethod?.onDelete()">Delete</a>
               </p>
-              <div class="text-grey">{{ member.simCard.mobileNo | mobileNo }}</div>
+              <div class="text-grey">{{ confirmMemberInfo.mobileNo | mobileNo }}</div>
             </li>
             <li class="list-group-item">
               <p>
