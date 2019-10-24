@@ -1,15 +1,17 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
-import { HomeService, TokenService, ShoppingCart, CaptureAndSign } from 'mychannel-shared-libs';
+import { HomeService, TokenService, ShoppingCart, CaptureAndSign, AlertService, User, ChannelType } from 'mychannel-shared-libs';
 import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { AgreementSignConstant } from '../../constants/agreement-sign.constant';
-import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_ECONTACT_PAGE,
-         ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CAPTURE_PAGE
-       } from '../../constants/route-path.constant';
-
+import {
+  ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_ECONTACT_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CAPTURE_PAGE
+} from '../../constants/route-path.constant';
+import { AisNativeDeviceService } from 'src/app/shared/services/ais-native-device.service';
+import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-new-register-mnp-agreement-sign-page',
   templateUrl: './new-register-mnp-agreement-sign-page.component.html',
@@ -21,20 +23,27 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
   shoppingCart: ShoppingCart;
   transaction: Transaction;
   captureAndSign: CaptureAndSign;
-
+  signedSignatureSubscription: Subscription;
   idCardValid: boolean;
   apiSigned: string;
   conditionText: string;
-
+  isOpenSign: boolean;
+  openSignedCommand: any;
   constructor(
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
     private tokenService: TokenService,
-    private shoppingCartService: ShoppingCartService
+    private shoppingCartService: ShoppingCartService,
+    private aisNativeDeviceService: AisNativeDeviceService,
+    private alertService: AlertService
   ) {
     this.transaction = this.transactionService.load();
-    this.apiSigned = 'SignaturePad';
+    if (this.tokenService.getUser().channelType === ChannelType.MYCHANNEL_APP) {
+      this.apiSigned = 'OnscreenSignpad';
+    } else {
+      this.apiSigned = 'SignaturePad';
+    }
   }
 
   ngOnInit(): void {
@@ -43,13 +52,14 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
     this.conditionText = AgreementSignConstant.NEW_REGISTER_SIGN;
     this.captureAndSign = {
       allowCapture: true,
+      imageSignature: customer.imageSignatureSmartCard,
       imageSmartCard: customer.imageSmartCard,
-      imageSignature: customer.imageReadSmartCard
     };
-
+    console.log('captureAndSign |', this.captureAndSign);
   }
 
   onCompleted(captureAndSign: CaptureAndSign): void {
+    console.log('onCompleted |', captureAndSign);
     const customer: Customer = this.transaction.data.customer;
     customer.imageSignatureSmartCard = captureAndSign.imageSignature;
     customer.imageSmartCard = captureAndSign.imageSmartCard;
@@ -72,7 +82,9 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
   }
 
   ngOnDestroy(): void {
-    this.transactionService.update(this.transaction);
+    if (this.transaction) {
+      this.transactionService.update(this.transaction);
+    }
   }
 
 }

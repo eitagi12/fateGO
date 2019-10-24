@@ -13,14 +13,25 @@
             <mc-wizard [wizards]="wizards" active="5"></mc-wizard>
             <div class="container">
                 <div class="tab">
-                    <button id="middle-inline" [ngClass]="{'active': (selectedTab == 'new-register') }" (click)="selectEapplication('new-register')">NEW</button>
-                    <button [ngClass]="{'active': (selectedTab == 'mnp') }" (click)="selectEapplication('mnp')">MNP</button>
-                    <div class="card" *ngIf="eApplicationSrc">
-                        <div class="card-header bg-transparent text-center">{{ 'คำขอใช้บริการโทรศัพท์เคลื่อนที่' | translate }}</div>
-                        <div class="card-body img-eapplication">
-                            <img [src]="'data:image/jpeg;base64,'+eApplicationSrc" class="img-fluid mx-auto d-block" />
+                    <button id="middle-inline" [ngClass]="{'active': (selectedTab == 'hotdeal-superkhum-new-register') }" (click)="selectEapplication('hotdeal-superkhum-new-register')">NEW</button>
+                    <button [ngClass]="{'active': (selectedTab == 'hotdeal-superkhum-mnp') }" (click)="selectEapplication('hotdeal-superkhum-mnp')">MNP</button>
+                    <div *ngIf="!isSelect">
+                        <div class="card" *ngIf="eApplicationSuperKhumNew">
+                            <div class="card-header bg-transparent text-center">{{ 'คำขอใช้บริการโทรศัพท์เคลื่อนที่' | translate }}</div>
+                            <div class="card-body img-eapplication">
+                                <img [src]="'data:image/jpeg;base64,'+eApplicationSuperKhumNew" class="img-fluid mx-auto d-block" />
+                            </div>
                         </div>
                     </div>
+                    <div *ngIf="isSelect">
+                        <div class="card" *ngIf="eApplicationSuperKhumMnp">
+                            <div class="card-header bg-transparent text-center">{{ 'คำขอใช้บริการโทรศัพท์เคลื่อนที่' | translate }}</div>
+                            <div class="card-body img-eapplication">
+                                <img [src]="'data:image/jpeg;base64,'+eApplicationSuperKhumMnp" class="img-fluid mx-auto d-block" />
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
 

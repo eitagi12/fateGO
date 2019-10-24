@@ -14,23 +14,16 @@
             </div>
             <hr class="mt-0 mb-20" style="margin:40px;">
             <div class="row">
-                <img class="photo" [src]="'data:image/png;base64,' + transaction?.data?.customer?.imageReadSmartCard" *ngIf="isReadCard()">
+                <img class="photo" [src]="'data:image/png;base64,' + transaction?.data?.customer?.imageSmartCard">
             </div>
             <div class="row">
                 <span class="img-title">{{faceTitle}}</span>
             </div>
             <hr class="mt-0 mb-20">
             <div class="row">
-                <img class="photo" [src]="'data:image/png;base64,' + transaction?.data?.customer?.imageSmartCard" *ngIf="!isReadCard()">
+                <img class="photo" [src]="'data:image/png;base64,' + transaction?.data?.faceRecognition?.imageFaceUser">
             </div>
         </div>
-        <!-- <div class="row">
-            <modal #showFaceCompareScoreModal title="AIS FaceRecog" cancelButtonLabel="ตกลง">
-                <modal-content>
-                    <p id="labelScore">{{ShowScore}}<br/></p>
-                </modal-content>
-            </modal>
-        </div> -->
     </div>
     <mc-footer>
         <button class="btn btn-secondary" (click)="onBack()">BACK</button>

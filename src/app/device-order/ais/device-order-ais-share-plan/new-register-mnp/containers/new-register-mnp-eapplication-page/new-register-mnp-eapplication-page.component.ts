@@ -16,11 +16,13 @@ import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_ECONTACT_PAGE, ROUTE
   styleUrls: ['./new-register-mnp-eapplication-page.component.scss']
 })
 export class NewRegisterMnpEapplicationPageComponent implements OnInit, OnDestroy {
-  selectedTab: string = 'new-register';
+  selectedTab: string = 'hotdeal-superkhum-new-register';
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN;
   shoppingCart: ShoppingCart;
   transaction: Transaction;
-  eApplicationSrc: string;
+  eApplicationSuperKhumNew: string;
+  eApplicationSuperKhumMnp: string;
+  isSelect: boolean;
   translationSubscribe: Subscription;
   constructor(private router: Router,
     private createEapplicationService: CreateEapplicationService,
@@ -33,22 +35,28 @@ export class NewRegisterMnpEapplicationPageComponent implements OnInit, OnDestro
   }
 
   selectEapplication(tab: string): void {
+    this.isSelect = (tab === 'hotdeal-superkhum-new-register') ? false : true; // Compare to show eApp new, mnp.
     this.selectedTab = tab;
   }
 
   ngOnInit(): void {
     this.pageLoadingService.openLoading();
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-    this.callService(this.transaction, this.translateService.currentLang);
-    this.translationSubscribe = this.translateService.onLangChange.subscribe(language => {
-      this.callService(this.transaction, language.lang);
-    });
+    this.callGenerateEappService(this.transaction, this.translateService.currentLang);
+    this.isSelect = this.eApplicationSuperKhumNew ? true : false; // Get eApp for new ca first.
   }
 
-  callService(transaction: Transaction, language: string): void {
-    this.createEapplicationService.createEapplicationV2(transaction, language)
-      .then((resp: any) => this.eApplicationSrc = resp.data)
-      .then(() => this.pageLoadingService.closeLoading());
+  callGenerateEappService(transaction: Transaction, language: string): void {
+    this.createEapplicationService.createEapplicationSuperKhumSharepalnNewRegister(transaction, language)
+      .then((res: any) => {  // Generate Eapp for new ca
+        this.eApplicationSuperKhumNew = res.data;
+      }).then(() => {// Generate Eapp for new mnp
+        this.createEapplicationService.createEapplicationSuperKhumSharepalnMnp(transaction, language).then((res) => {
+          this.eApplicationSuperKhumMnp = res.data;
+        });
+      }).then(() => {
+        this.pageLoadingService.closeLoading();
+      });
   }
 
   onBack(): void {
