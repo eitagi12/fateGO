@@ -11,9 +11,10 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
-import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_PAGE,
-         ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE
-       } from '../../constants/route-path.constant';
+import {
+  ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CUSTOMER_INFO_PAGE
+} from '../../constants/route-path.constant';
 import { BanksPromotionService } from 'src/app/device-order/services/banks-promotion.service';
 
 @Component({
@@ -65,7 +66,7 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
     const customer: any = this.transaction.data.customer || {};
     const receiptInfo: any = this.transaction.data.receiptInfo || {};
     const showQRCode: boolean = paymentMethod !== 'CC' && this.user.userType !== 'ASP'
-    && this.user.channelType !== 'sff-web' && this.priceOption.productStock.company === 'AWN';
+      && this.user.channelType !== 'sff-web' && this.priceOption.productStock.company === 'AWN';
 
     const trade: any = this.priceOption.trade || {};
     const advancePay: any = trade.advancePay || {};
@@ -85,12 +86,29 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
     };
 
     if (trade.banks && trade.banks.length > 0) {
-      this.banks = trade.banks;
+      if (!this.isFullPayment()) {
+        this.banks = (this.priceOption.trade.banks || []).map((b: any) => {
+          return b.installmentDatas.map((data: any) => {
+            return {
+              ...b,
+              installment: `${data.installmentPercentage}% ${data.installmentMounth}`
+            };
+          });
+        }).reduce((prev: any, curr: any) => {
+          curr.forEach((element: any) => {
+            prev.push(element);
+          });
+          return prev;
+        }, []);
+      } else {
+        this.banks = trade.banks;
+      }
     } else {
       this.banksPromotionService.getBanksPromotion(this.tokenService.getUser().locationCode)
-      .then((resp: any) => {
-        this.banks = resp.data || [];
-      });
+        .then((resp: any) => {
+          this.banks = resp.data || [];
+          console.log('this.banks2', this.banks);
+        });
     }
 
     this.receiptInfo = {
