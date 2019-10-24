@@ -215,7 +215,7 @@ export class CreateNewRegisterService {
         data.mobileNoRef = ''; /*เบอร์รวมบิล*/
         data.mobileNoRef = billingInformation.mergeBilling.mobileNo[0];
       }
-      console.log('dddddddddddddddddddddddddddddihgliweghlrighlrihglrih');
+
       if (action === TransactionAction.READ_CARD) {
         data.imageReadSmartCard = customer.imageReadSmartCard;
         data.firstNameEn = customer.firstNameEn;
@@ -224,6 +224,7 @@ export class CreateNewRegisterService {
         data.expireDate = customer.expireDate;
         return Promise.resolve(data);
       }
+
       if (action === TransactionAction.READ_PASSPORT) {
         if (customer.nationality !== 'Thailand') {
           data.billLanguage = 'English';
@@ -239,7 +240,7 @@ export class CreateNewRegisterService {
           throw new Error(error);
         });
       }
-      console.log('111111111111111111111111111111111111111111111111');
+
       if (action === TransactionAction.KEY_IN) {
         return new ImageUtils().combine([
           // customer.imageReadPassport,
@@ -249,14 +250,11 @@ export class CreateNewRegisterService {
           data.imageTakePhoto = imageSmatCard;
           return Promise.resolve(data);
         }).catch((error) => {
-          console.log('3333333333333333333333333333333333333333333333333333333333', error);
           throw new Error(error);
         });
       }
-      console.log('1222222222222222222222222222222222222222222222222222222222');
     } catch (error) {
       console.log('error', error);
-
     }
 
   }

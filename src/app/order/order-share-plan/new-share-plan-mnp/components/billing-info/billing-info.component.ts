@@ -31,7 +31,7 @@ export class BillingInfoComponent implements OnInit {
   @Input()
   view: boolean;
 
-  mobileMember: string;
+  mobileNoMember: string;
   transaction: Transaction;
 
   constructor(
@@ -42,7 +42,7 @@ export class BillingInfoComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.mobileMember = this.transaction.data.simCard.mobileMember;
+    this.mobileNoMember = this.transaction.data.simCard.mobileNoMember;
   }
 
   getBillCycleText(bill: string): any {

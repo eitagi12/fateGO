@@ -23,7 +23,7 @@ export interface ConfirmCustomerInfo {
 })
 export class ConfirmCustomerInfoComponent implements OnInit {
 
-  mobileMember: string;
+  mobileNoMember: string;
   packageMember: string = 'รอเก็บ package จากหน้าPackMember ลง Transaction ';
   @Input()
   title: string;
@@ -42,7 +42,7 @@ export class ConfirmCustomerInfoComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.mobileMember = this.transaction.data.simCard.mobileMember;
+    this.mobileNoMember = this.transaction.data.simCard.mobileNoMember;
   }
 
   onShowPackagePopup(templatePopup: TemplateRef<any>): void {

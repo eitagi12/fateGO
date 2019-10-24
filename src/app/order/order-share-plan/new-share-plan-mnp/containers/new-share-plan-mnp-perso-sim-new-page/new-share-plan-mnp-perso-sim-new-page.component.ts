@@ -145,7 +145,7 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
   isManageSim: boolean;
   requestPersoSim: RequestPersoSim;
   referenceNumber: string;
-  // on error ใส่ error ว่าให้ error ได้กี่ครั้ง
+  // check error ว่าให้ error ได้กี่ครั้ง
   checkErrSim: number = 0;
   checkErrCmd: number = 3;
   errCmd: number = 0;
@@ -196,7 +196,7 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
 
   startPersoSim(transaction: Transaction | Partial<Transaction>): void {
     this.errorMessage = '';
-    this.persoSimSubscription = this.onPersoSim(this.mobileNo).subscribe((value) => {
+    this.persoSimSubscription = this.onPersoSim().subscribe((value) => {
       this.isNext = false;
       this.persoSim = value;
       this.title = value.eventName;
@@ -208,7 +208,7 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
         this.isNext = true;
         this.onNext();
       }
-      // on error
+      // check error
       if (value.error) {
         if (value.error.errorCase === ErrorPerSoSim.ERROR_SIM) {
           this.checkErrSim++;
@@ -243,8 +243,7 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
     });
   }
 
-  onPersoSim(mobileNo: string): Observable<PersoSim> {
-    // this.mobileNo = mobileNo;
+  onPersoSim(): Observable<PersoSim> {
     if (this.utils.isAisNative()) {
       return this.persoSimFromAisNative();
     } else {
@@ -303,8 +302,7 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
   loadSimCard(): void {
     this.controlSim(ControlSimCard.EVENT_CHECK_SIM_INVENTORY).then((res: ControlSimResult) => {
       const statusInventory = res.result.split(' | ');
-      if (statusInventory[0] !== SIMCardStatus.INVENTORY_1_EMPTY_CARD
-        || statusInventory[1] !== SIMCardStatus.INVENTORY_2_EMPTY_CARD) {
+      if (statusInventory[0] !== SIMCardStatus.INVENTORY_1_EMPTY_CARD || statusInventory[1] !== SIMCardStatus.INVENTORY_2_EMPTY_CARD) {
         this.controlSim(ControlSimCard.EVENT_CHECK_SIM_STATE).then((resCheckSim: ControlSimResult) => {
           if (resCheckSim.result === SIMCardStatus.STATUS_IN_IC) {
             this.controlSim(ControlLED.EVENT_LED_ON);

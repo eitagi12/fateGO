@@ -65,7 +65,7 @@ export class NewSharePlanMnpNetworkTypePageComponent implements OnInit, OnDestro
           || mobileNoStatus !== 'Active' && !(mobileNoStatus || networkType)) {
           this.transaction.data.simCard = {
             ...this.transaction.data.simCard,
-            mobileMember: this.sharePlanForm.value.mobileNo
+            mobileNoMember: this.sharePlanForm.value.mobileNo
           };
           this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MEMBER_PAGE]);
         } else {
@@ -75,7 +75,7 @@ export class NewSharePlanMnpNetworkTypePageComponent implements OnInit, OnDestro
         this.pageLoadingService.closeLoading();
         this.transaction.data.simCard = {
           ...this.transaction.data.simCard,
-          mobileMember: this.sharePlanForm.value.mobileNo
+          mobileNoMember: this.sharePlanForm.value.mobileNo
         };
       })
       .then(() => {
