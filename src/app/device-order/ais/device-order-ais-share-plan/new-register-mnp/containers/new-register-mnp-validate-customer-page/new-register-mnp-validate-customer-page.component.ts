@@ -1,8 +1,8 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionType, TransactionAction, Prebooking, Order } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
-import { HomeService, PageLoadingService, TokenService, AlertService } from 'mychannel-shared-libs';
+import { HomeService, PageLoadingService, TokenService, AlertService, User } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -24,6 +24,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   transaction: Transaction;
   identityValid: boolean = false;
   identity: string;
+  user: User;
 
   constructor(
     private router: Router,
@@ -37,6 +38,17 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
+    this.user = this.tokenService.getUser();
+    this.homeService.callback = () => {
+      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+        .then((response: any) => {
+          if (response.value === true) {
+            this.returnStock().then(() => {
+              window.location.href = '/';
+            });
+          }
+        });
+    };
   }
 
   ngOnInit(): void {
@@ -55,14 +67,29 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   }
 
   onBack(): void {
-    const productDetail: any = JSON.parse(localStorage.getItem('productDetail'));
-    window.location.href = `/sales-portal/buy-product/brand/${productDetail.brand}/${productDetail.model}`;
-    this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
+    const queryParam = this.priceOption.queryParams;
+    if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
+        .then((response: any) => {
+          if (response.value === true) {
+            this.returnStock().then(() => {
+              this.transactionService.remove();
+              window.location.href = `/sales-portal/buy-product/brand/${queryParam.brand}/${queryParam.model}`;
+            });
+          }
+        });
+    } else {
+      this.transactionService.remove();
+      window.location.href = `/sales-portal/buy-product/brand/${queryParam.brand}/${queryParam.model}`;
+    }
+  }
+
+  onHome(): void {
+    this.homeService.goToHome();
   }
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    // this.toBillingInformation();
     this.validateCustomer().then((data: any) => {
       this.transaction.data = {
         ...this.transaction.data,
@@ -82,6 +109,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
               this.transaction = transactionObject;
               this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
             } else {
+              this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
               throw new Error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
             }
           }).catch((error: any) => {
@@ -89,6 +117,25 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
             throw new Error(error);
           });
       }
+    });
+  }
+
+  returnStock(): Promise<void> {
+    return new Promise(resolve => {
+      const transaction = this.transactionService.load();
+
+      const promiseAll = [];
+      if (transaction.data) {
+        if (transaction.data.order && transaction.data.order.soId) {
+          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
+            location: this.priceOption.productStock.location,
+            soId: transaction.data.order.soId,
+            transactionId: transaction.transactionId
+          }).toPromise().catch(() => Promise.resolve());
+          promiseAll.push(order);
+        }
+      }
+      Promise.all(promiseAll).then(() => resolve());
     });
   }
 
@@ -116,7 +163,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
                       } else {
                         const body: any = this.getRequestAddDeviceSellingCart({ customer: customer });
                         return this.http.post(`/api/salesportal/add-device-selling-cart`, body)
-                          .toPromise().then((order: any) => {
+                          .toPromise().then((order: Order) => {
                             return {
                               order,
                               customer,
@@ -146,36 +193,41 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   }
 
   getRequestAddDeviceSellingCart(bodyRequest: any): any {
-    const productInfo: any = JSON.parse(localStorage.getItem('productInfo'));
-    const productDetail: any = JSON.parse(localStorage.getItem('productDetail'));
-    const user: any = this.tokenService.getUser();
     try {
+      const productStock = this.priceOption.productStock;
+      const productDetail = this.priceOption.productDetail;
+      const preBooking: Prebooking = this.transaction.data.preBooking;
+      let subStock;
       const customer: any = bodyRequest.customer.data;
       const trade: any = this.priceOption.trade;
+      if (preBooking && preBooking.preBookingNo) {
+        subStock = 'PRE';
+      }
       return {
-        soCompany: productInfo.company || 'AWN',
-        locationSource: user.locationCode,
-        locationReceipt: user.locationCode,
+        soCompany: productStock.company || 'AWN',
+        locationSource: this.user.locationCode,
+        locationReceipt: this.user.locationCode,
         productType: productDetail.productType || 'DEVICE',
         productSubType: productDetail.productSubType || 'HANDSET',
-        brand: productDetail.brand,
-        model: productDetail.model,
-        color: productInfo.colorName,
-        priceIncAmt: trade.normalPrice,
-        priceDiscountAmt: trade.discount.amount,
+        brand: productDetail.brand || productStock.brand,
+        model: productDetail.model || productStock.model,
+        color: productStock.color || productStock.colorName,
+        priceIncAmt: '' + trade.normalPrice,
+        priceDiscountAmt: '' + trade.discount.amount,
         grandTotalAmt: '',
-        userId: user.username,
-        cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim(),
-        preBookingNo: '',
-        depositAmt: '',
-        reserveNo: ''
+        userId: this.user.username,
+        cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
+        preBookingNo: preBooking ? preBooking.preBookingNo : '',
+        depositAmt: preBooking ? preBooking.depositAmt : '',
+        reserveNo: preBooking ? preBooking.reserveNo : '',
+        subStockDestination: subStock
       };
     } catch (error) {
       throw error;
     }
   }
 
-  public isLowerAge(birthdate: string, currentDate?: Date): boolean {
+  isLowerAge(birthdate: string, currentDate?: Date): boolean {
     const b: moment.Moment = moment(birthdate, 'DD/MM/YYYY');
     const c: moment.Moment = moment(currentDate).add(543, 'years');
     if (b.isValid()) {
@@ -187,26 +239,25 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     }
   }
 
-  onHome(): void {
-    this.homeService.goToHome();
-  }
-
-  ngOnDestroy(): void {
-    this.transactionService.save(this.transaction);
-  }
-
-  private createTransaction(): void {
+  createTransaction(): void {
+    let order: Order;
+    let transactionId: string;
+    if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
+      transactionId = this.transaction.transactionId;
+      order = this.transaction.data.order;
+    }
     this.transaction = {
       data: {
-        transactionType: TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS,
+        transactionType: TransactionType.DEVICE_ORDER_EXISTING_AIS,
         action: TransactionAction.KEY_IN,
+        order: order
       }
     };
     delete this.transaction.data.customer;
+
   }
 
   buildTransaction(transactionType: string): any {
-    const user: any = this.tokenService.getUser();
     const customer: any = this.transaction.data.customer;
     const order: any = this.transaction.data.order;
 
@@ -223,13 +274,13 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
         billingInformation: this.transaction.data.billingInformation
       },
       create_date: Date.now(),
-      create_by: user.username,
-      issueBy: user.username
+      create_by: this.user.username,
+      issueBy: this.user.username
     };
     return transaction;
   }
 
-  public generateTransactionId(): any {
+  generateTransactionId(): any {
     let emptyString: string = '';
     const alphabet: string = 'abcdefghijklmnopqrstuvwxyz';
     while (emptyString.length < 2) {
@@ -242,7 +293,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     return transactionId;
   }
 
-  private mapCustomer(customer: any): void {
+  mapCustomer(customer: any): void {
     this.transaction.data.customer = {
       idCardNo: this.identity,
       idCardType: customer.idCardType,
@@ -277,7 +328,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     };
   }
 
-  private mapCardType(idCardType: string): string {
+  mapCardType(idCardType: string): string {
     idCardType = idCardType ? idCardType : 'ID_CARD';
     const mapCardType: any = {
       CERT_FOUND: 'หนังสือจัดตั้งสมาคม / มูลนิธิ',
@@ -293,5 +344,9 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
       TAX_ID: 'เลขที่ประจำตัวผู้เสียภาษีอากร'
     };
     return mapCardType[idCardType];
+  }
+
+  ngOnDestroy(): void {
+    this.transactionService.save(this.transaction);
   }
 }
