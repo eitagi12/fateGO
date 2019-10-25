@@ -116,7 +116,8 @@ export class NewRegisterMnpByPatternPageComponent implements OnInit, OnDestroy {
 
         if (data.returnCode === '008') {
           this.transaction.data.simCard = {
-            mobileNo: mobileNo
+            mobileNo: mobileNo,
+            persoSim: true
           };
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_PACKAGE_PAGE]);
           return;

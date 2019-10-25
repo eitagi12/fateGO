@@ -96,8 +96,8 @@ export class CreateEapplicationService {
     const billingInformation: any = transaction.data.billingInformation || {};
     const billCycleData: any = billingInformation.billCycleData || {};
     const action: any = transaction.data.action;
-    const mainPackage: any = transaction.data.memberInfo.mainPackage || {};
-    const simCard: any = transaction.data.memberInfo.simCard || {}; // Get simNo of member
+    const mainPackage: any = transaction.data.mainPackage.memberMainPackage.member1 || {};
+    const simCard: any = transaction.data.simCard.memberSimCard.member1 || {}; // Get simNo of member
     const data: any = {
       fullNameTH: language === 'EN' ? `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}` :
         customer.firstName + ' ' + customer.lastName || '',
