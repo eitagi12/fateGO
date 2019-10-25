@@ -38,7 +38,7 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
   isTelNoBillingValid: boolean;
   isMailBillingInfoValid: boolean;
 
-  member: any;
+  confirmMemberInfo: any;
 
   constructor(
     private router: Router,
@@ -68,8 +68,13 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
 
     this.eBill = !(mainPackage.billingSystem === BillingSystemType.BOS);
 
-    this.member = this.transaction.data.memberInfo;
-
+    const memberSimCard = simCard.memberSimCard['member1'];
+    const memberMainPackage = mainPackage.memberMainPackage['member1'];
+   this.confirmMemberInfo = {
+    mobileNo: memberSimCard.mobileNo,
+    mainPackage: this.changeMainPackageLanguage(memberMainPackage),
+    packageDetail: this.changePackageDetailLanguage(memberMainPackage)
+  };
     this.confirmCustomerInfo = {
       titleName: customer.titleName,
       firstName: customer.firstName,
