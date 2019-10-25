@@ -97,7 +97,7 @@ export class CreateEapplicationService {
     const billCycleData: any = billingInformation.billCycleData || {};
     const action: any = transaction.data.action;
     const mainPackage: any = transaction.data.mainPackage.memberMainPackage.member1 || {};
-    const simCard: any = transaction.data.mainPackage.memberMainPackage.simCard || {}; // Get simNo of member
+    const simCard: any = transaction.data.simCard.memberSimCard.member1 || {}; // Get simNo of member
     const data: any = {
       fullNameTH: language === 'EN' ? `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}` :
         customer.firstName + ' ' + customer.lastName || '',
@@ -157,7 +157,7 @@ export class CreateEapplicationService {
     const billCycleData: any = billingInformation.billCycleData || {};
     const action: any = transaction.data.action;
     const mainPackage: any = transaction.data.mainPackage || {};
-    const simCard: any = transaction.data.mainPackage.simCard || {};
+    const simCard: any = transaction.data.mainPackage.simCard || transaction.data.simCard || {};
 
     const data: any = {
       fullNameTH: language === 'EN' ? `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}` :

@@ -19,7 +19,6 @@ export class NewRegisterMnpFaceCapturePageComponent implements OnInit, OnDestroy
 
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN;
   shoppingCart: ShoppingCart;
-
   openCamera: boolean;
   transaction: Transaction;
   camera: EventEmitter<void> = new EventEmitter<void>();
@@ -45,7 +44,11 @@ export class NewRegisterMnpFaceCapturePageComponent implements OnInit, OnDestroy
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_COMPARE_PAGE]);
+    if (this.transaction.data.faceRecognition.imageFaceUser) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_COMPARE_PAGE]);
+    } else {
+      this.onOpenCamera();
+    }
   }
 
   onHome(): void {

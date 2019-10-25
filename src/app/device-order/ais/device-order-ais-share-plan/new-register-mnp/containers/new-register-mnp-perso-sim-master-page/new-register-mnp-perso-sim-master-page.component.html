@@ -1,0 +1,66 @@
+<div class="mc-flex">
+  <mc-header title="{{ 'ทำรายการ Perso SIM - New register' | translate }}">
+      <div class="header-icon-left">
+          <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
+      </div>
+      <div class="header-icon-right">
+          <mc-dropdown-language></mc-dropdown-language>
+          <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
+      </div>
+  </mc-header>
+  <div class="mc-flex-wrap">
+      <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
+      <div class="pt-3 pb-3">
+          <mc-wizard [wizards]="wizards" active="5"></mc-wizard>
+          <div class="container-fluid">
+              <div class="card mb-3">
+                  <div class="card-header bg-light-blue text-white">
+                      <div class="row">
+                          <div class="col-6">{{ 'Post Paid' | translate }}</div>
+                          <div class="col-6 text-right">{{ masterSimCard?.mobileNo }}</div>
+                      </div>
+                  </div>
+                  <div class="card-body">
+                      <div class="bg-white p-5">
+                          <div class="container">
+                              <img src="assets/images/icon/icon-ReadIDCard-01.png" class="icon-read-card" />
+                              <img src="assets/images/icon/icon-input-sim.png" class="icon-perso-sim" />
+                              <div class="text-center mt-3 mb-3">
+                                  {{ title | translate}}
+                              </div>
+                              <div class="progress mb-5">
+                                  <div class="progress-bar bg-success" role="progressbar" [style.width.%]="persoSim?.progress || 0" [attr.aria-valuenow]="persoSim?.progress" aria-valuemin="0" aria-valuemax="100"></div>
+                              </div>
+                              <div  *ngIf="errorMessage" class="text-center mt-3 mb-3 text-red">
+                                  {{ '(ห้ามนำซิมการ์ดออก)' | translate }}
+                              </div>
+                              <div  *ngIf="errorMessage" class="text-center mt-3 mb-3 text-red">
+                                  {{ errorMessage | translate }}
+                              </div>
+                              <div   class="text-center mt-3 mb-3">
+                                  {{ 'กรุณานำซิมออกและเปลี่ยนเป็นซิมสำหรับเบอร์ย้ายค่าย' | translate }}
+                              </div>
+                              <div class="line-behind" *ngIf="option?.key_sim">
+                                  <span translate>{{'หรือ' | translate}}</span>
+                              </div>
+                              <form>
+                                  <div class="form-group" *ngIf="option?.key_sim">
+                                      <label for="simserial" class="form-text text-center" translate>กรอกเลขที่ซิมการ์ด</label>
+                                      <input type="text" class="form-control text-center" id="simserial" maxlength="13" placeholder="สแกน Barcode หรือ ใส่เลขที่ซิม 13 หลัก">
+                                      <small class="form-text text-red text-center" translate>
+                          * {{'เลขที่ซิมต้องเป็นตัวเลข 13 ตัวเท่านั้น'| translate}}
+                        </small>
+                                  </div>
+                              </form>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  <mc-footer>
+      <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+      <button class="btn btn-success" (click)="onNext()">NEXT</button>
+  </mc-footer>
+</div>

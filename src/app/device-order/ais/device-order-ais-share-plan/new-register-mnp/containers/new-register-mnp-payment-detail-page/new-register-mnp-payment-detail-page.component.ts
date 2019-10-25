@@ -107,7 +107,6 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
       this.banksPromotionService.getBanksPromotion(this.tokenService.getUser().locationCode)
         .then((resp: any) => {
           this.banks = resp.data || [];
-          console.log('this.banks2', this.banks);
         });
     }
 

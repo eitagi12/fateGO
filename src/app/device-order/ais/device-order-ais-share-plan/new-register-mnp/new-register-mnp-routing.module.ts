@@ -24,7 +24,6 @@ import { NewRegisterMnpEligibleMobilePageComponent } from './containers/new-regi
 import { NewRegisterMnpMobileDetailPageComponent } from './containers/new-register-mnp-mobile-detail-page/new-register-mnp-mobile-detail-page.component';
 import { NewRegisterMnpEffectiveStartDatePageComponent } from './containers/new-register-mnp-effective-start-date-page/new-register-mnp-effective-start-date-page.component';
 import { NewRegisterMnpSelectPackageOntopPageComponent } from './containers/new-register-mnp-select-package-ontop-page/new-register-mnp-select-package-ontop-page.component';
-import { NewRegisterMnpPersoSimPageComponent } from './containers/new-register-mnp-perso-sim-page/new-register-mnp-perso-sim-page.component';
 import { NewRegisterMnpNetworkTypePageComponent } from './containers/new-register-mnp-network-type-page/new-register-mnp-network-type-page.component';
 import { NewRegisterMnpValidateCustomerPageComponent } from './containers/new-register-mnp-validate-customer-page/new-register-mnp-validate-customer-page.component';
 import { NewRegisterMnpValidateCustomerKeyInPageComponent } from './containers/new-register-mnp-validate-customer-key-in-page/new-register-mnp-validate-customer-key-in-page.component';
@@ -34,6 +33,8 @@ import { NewRegisterMnpSelectNumberComponent } from './containers/new-register-m
 import { NewRegisterMnpPaymentDetailPageComponent } from './containers/new-register-mnp-payment-detail-page/new-register-mnp-payment-detail-page.component';
 import { NewRegisterMnpByPatternPageComponent } from './containers/new-register-mnp-by-pattern-page/new-register-mnp-by-pattern-page.component';
 import { NewRegisterMnpEapplicationPageComponent } from './containers/new-register-mnp-eapplication-page/new-register-mnp-eapplication-page.component';
+import { NewRegisterMnpPersoSimMasterPageComponent } from './containers/new-register-mnp-perso-sim-master-page/new-register-mnp-perso-sim-master-page.component';
+import { NewRegisterMnpPersoSimMemberPageComponent } from './containers/new-register-mnp-perso-sim-member-page/new-register-mnp-perso-sim-member-page.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'validate-customer', pathMatch: 'full' },
@@ -67,10 +68,11 @@ const routes: Routes = [
   { path: 'effective-start-date', component: NewRegisterMnpEffectiveStartDatePageComponent },
   { path: 'select-number', component: NewRegisterMnpSelectNumberComponent },
   { path: 'select-package-ontop', component: NewRegisterMnpSelectPackageOntopPageComponent },
-  { path: 'perso-sim', component: NewRegisterMnpPersoSimPageComponent },
   { path: 'network-type', component: NewRegisterMnpNetworkTypePageComponent },
   { path: 'payment-detail', component: NewRegisterMnpPaymentDetailPageComponent },
-  { path: 'by-pattern', component: NewRegisterMnpByPatternPageComponent}
+  { path: 'by-pattern', component: NewRegisterMnpByPatternPageComponent},
+  { path: 'perso-sim-master', component: NewRegisterMnpPersoSimMasterPageComponent },
+  { path: 'perso-sim-member', component: NewRegisterMnpPersoSimMemberPageComponent }
 ];
 @NgModule({
   imports: [RouterModule.forChild(routes)],
