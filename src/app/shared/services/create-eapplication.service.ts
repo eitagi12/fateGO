@@ -96,8 +96,8 @@ export class CreateEapplicationService {
     const billingInformation: any = transaction.data.billingInformation || {};
     const billCycleData: any = billingInformation.billCycleData || {};
     const action: any = transaction.data.action;
-    const mainPackage: any = transaction.data.memberInfo.mainPackage || {};
-    const simCard: any = transaction.data.memberInfo.simCard || {}; // Get simNo of member
+    const mainPackage: any = transaction.data.mainPackage.memberMainPackage.member1 || {};
+    const simCard: any = transaction.data.mainPackage.memberMainPackage.simCard || {}; // Get simNo of member
     const data: any = {
       fullNameTH: language === 'EN' ? `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}` :
         customer.firstName + ' ' + customer.lastName || '',
@@ -118,19 +118,17 @@ export class CreateEapplicationService {
         zipCode: customer.zipCode || ''
       }, this.translation.currentLang) || '',
       mobileNumber: simCard.mobileNo || '',
-
       mainPackage: {
         name: mainPackage.title || '',
         description: mainPackage.detailTH || ''
       },
       billCycle: billCycleData.billCycleText || '',
-      receiveBillMethod: this.translation.instant(billCycleData.receiveBillMethod) || '',
+      receiveBillMethod: billCycleData.receiveBillMethod || '',
       billDeliveryAddress: billCycleData.billAddressText || '',
       fullNameEN: `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}`,
       issueDate: customer.issueDate || '',
       expireDate: customer.expireDate || '',
-      signature: customer.imageSignature || '',
-      language: language || '',
+      signature: customer.imageSignatureSmartCard || ''
     };
     if (language === 'EN') {
       data.billCycle = billCycleData.billCycleTextEng;
@@ -148,7 +146,7 @@ export class CreateEapplicationService {
     if (action === TransactionAction.READ_CARD || action === TransactionAction.READ_CARD_REPI) {
       data.customerImg = customer.imageReadSmartCard;
     } else {
-      data.customerImgKeyIn = customer.imageSmartCard ? customer.smartCardImageWithSignatureAndWaterMark : customer.imageReadPassport;
+      data.customerImgKeyIn = customer.imageSmartCard ? customer.imageSmartCard : customer.imageReadPassport;
     }
     return data;
   }
@@ -159,7 +157,7 @@ export class CreateEapplicationService {
     const billCycleData: any = billingInformation.billCycleData || {};
     const action: any = transaction.data.action;
     const mainPackage: any = transaction.data.mainPackage || {};
-    const simCard: any = transaction.data.simCard || {};
+    const simCard: any = transaction.data.mainPackage.simCard || {};
 
     const data: any = {
       fullNameTH: language === 'EN' ? `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}` :
@@ -187,13 +185,12 @@ export class CreateEapplicationService {
         description: mainPackage.statementThai || ''
       },
       billCycle: billCycleData.billCycleText || '',
-      receiveBillMethod: this.translation.instant(billCycleData.receiveBillMethod) || '',
+      receiveBillMethod: billCycleData.receiveBillMethod || '',
       billDeliveryAddress: billCycleData.billAddressText || '',
       fullNameEN: `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}`,
       issueDate: customer.issueDate || '',
       expireDate: customer.expireDate || '',
-      signature: customer.imageSignature || '',
-      language: language || '',
+      signature: customer.imageSignatureSmartCard || '',
     };
     if (language === 'EN') {
       data.billCycle = billCycleData.billCycleTextEng;
@@ -211,7 +208,7 @@ export class CreateEapplicationService {
     if (action === TransactionAction.READ_CARD || action === TransactionAction.READ_CARD_REPI) {
       data.customerImg = customer.imageReadSmartCard;
     } else {
-      data.customerImgKeyIn = customer.imageSmartCard ? customer.smartCardImageWithSignatureAndWaterMark : customer.imageReadPassport;
+      data.customerImgKeyIn = customer.imageSmartCard ? customer.imageSmartCard : customer.imageReadPassport;
     }
 
     return data;
