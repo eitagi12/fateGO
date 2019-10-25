@@ -15,12 +15,13 @@ export interface OptionPersoSim {
   key_sim?: boolean;
   scan_sim?: boolean;
 }
+
 @Component({
-  selector: 'app-new-register-mnp-perso-sim-page',
-  templateUrl: './new-register-mnp-perso-sim-page.component.html',
-  styleUrls: ['./new-register-mnp-perso-sim-page.component.scss']
+  selector: 'app-new-register-mnp-perso-sim-member-page',
+  templateUrl: './new-register-mnp-perso-sim-member-page.component.html',
+  styleUrls: ['./new-register-mnp-perso-sim-member-page.component.scss']
 })
-export class NewRegisterMnpPersoSimPageComponent implements OnInit, OnDestroy {
+export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDestroy {
 
   wizards: string[] = WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN;
 
@@ -38,6 +39,7 @@ export class NewRegisterMnpPersoSimPageComponent implements OnInit, OnDestroy {
   koiskApiFn: any;
   readonly ERROR_PERSO: string = 'ไม่สามารถให้บริการได้ กรุณาติดต่อพนักงานเพื่อดำเนินการ ขออภัยในความไม่สะดวก';
   readonly ERROR_PERSO_PC: string = 'ไม่สามารถ Perso Sim ได้';
+  masterSimCard: any;
 
   constructor(
     private router: Router,
@@ -56,7 +58,8 @@ export class NewRegisterMnpPersoSimPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (this.transaction.data.simCard.mobileNo) {
+    this.masterSimCard = this.transaction.data.simCard;
+    if (this.masterSimCard.mobileNo) {
       this.setConfigPersoSim().then(() => {
         if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {
           this.persoSimKoisk();
@@ -113,9 +116,12 @@ export class NewRegisterMnpPersoSimPageComponent implements OnInit, OnDestroy {
 
   persoSimWebsocket(): void {
     // for pc
+    console.log('WebSocket*********** ', WebSocket);
     this.title = 'กรุณาเสียบ Sim Card';
     this.persoSimSubscription = this.persoSimService.onPersoSim(this.persoSimConfig).subscribe((persoSim: any) => {
       this.persoSim = persoSim;
+      console.log('persoSim**************', persoSim);
+
       if (persoSim.persoData && persoSim.persoData.simSerial) {
         this.title = 'กรุณาดึงซิมการ์ด';
         this.transaction.data.simCard.simSerial = persoSim.persoData.simSerial;

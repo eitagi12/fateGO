@@ -28,7 +28,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { NewRegisterMnpRoutingModule } from './new-register-mnp-routing.module';
 import { TranslateModule } from '@ngx-translate/core';
-import { NewRegisterMnpPersoSimPageComponent } from './containers/new-register-mnp-perso-sim-page/new-register-mnp-perso-sim-page.component';
 import { NewRegisterMnpValidateCustomerPageComponent } from './containers/new-register-mnp-validate-customer-page/new-register-mnp-validate-customer-page.component';
 import { NewRegisterMnpValidateCustomerKeyInPageComponent } from './containers/new-register-mnp-validate-customer-key-in-page/new-register-mnp-validate-customer-key-in-page.component';
 import { NewRegisterMnpValidateCustomerIdCardPageComponent } from './containers/new-register-mnp-validate-customer-id-card-page/new-register-mnp-validate-customer-id-card-page.component';
@@ -38,6 +37,8 @@ import { NewRegisterMnpSelectNumberComponent } from './containers/new-register-m
 import { NewRegisterMnpPaymentDetailPageComponent } from './containers/new-register-mnp-payment-detail-page/new-register-mnp-payment-detail-page.component';
 import { NewRegisterMnpByPatternPageComponent } from './containers/new-register-mnp-by-pattern-page/new-register-mnp-by-pattern-page.component';
 import { NewRegisterMnpEapplicationPageComponent } from './containers/new-register-mnp-eapplication-page/new-register-mnp-eapplication-page.component';
+import { NewRegisterMnpPersoSimMasterPageComponent } from './containers/new-register-mnp-perso-sim-master-page/new-register-mnp-perso-sim-master-page.component';
+import { NewRegisterMnpPersoSimMemberPageComponent } from './containers/new-register-mnp-perso-sim-member-page/new-register-mnp-perso-sim-member-page.component';
 
 @NgModule({
   imports: [
@@ -73,7 +74,6 @@ import { NewRegisterMnpEapplicationPageComponent } from './containers/new-regist
     NewRegisterMnpMobileCareAvaliblePageComponent,
     NewRegisterMnpQrCodeResultPageComponent,
     NewRegisterMnpSelectPackageOntopPageComponent,
-    NewRegisterMnpPersoSimPageComponent,
     NewRegisterMnpValidateCustomerPageComponent,
     NewRegisterMnpValidateCustomerKeyInPageComponent,
     NewRegisterMnpValidateCustomerIdCardPageComponent,
@@ -82,7 +82,9 @@ import { NewRegisterMnpEapplicationPageComponent } from './containers/new-regist
     NewRegisterMnpSelectNumberComponent,
     NewRegisterMnpPaymentDetailPageComponent,
     NewRegisterMnpByPatternPageComponent,
-    NewRegisterMnpEapplicationPageComponent
+    NewRegisterMnpEapplicationPageComponent,
+    NewRegisterMnpPersoSimMasterPageComponent,
+    NewRegisterMnpPersoSimMemberPageComponent
   ]
 })
 export class NewRegisterMnpModule { }
