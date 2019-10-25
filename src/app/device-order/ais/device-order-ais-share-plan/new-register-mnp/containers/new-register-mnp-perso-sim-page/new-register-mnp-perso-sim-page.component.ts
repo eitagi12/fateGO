@@ -38,6 +38,7 @@ export class NewRegisterMnpPersoSimPageComponent implements OnInit, OnDestroy {
   koiskApiFn: any;
   readonly ERROR_PERSO: string = 'ไม่สามารถให้บริการได้ กรุณาติดต่อพนักงานเพื่อดำเนินการ ขออภัยในความไม่สะดวก';
   readonly ERROR_PERSO_PC: string = 'ไม่สามารถ Perso Sim ได้';
+  masterSimCard: any;
 
   constructor(
     private router: Router,
@@ -56,7 +57,8 @@ export class NewRegisterMnpPersoSimPageComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    if (this.transaction.data.simCard.mobileNo) {
+    this.masterSimCard = this.transaction.data.simCard;
+    if (this.masterSimCard.mobileNo) {
       this.setConfigPersoSim().then(() => {
         if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {
           this.persoSimKoisk();
@@ -113,6 +115,7 @@ export class NewRegisterMnpPersoSimPageComponent implements OnInit, OnDestroy {
 
   persoSimWebsocket(): void {
     // for pc
+    console.log('WebSocket*********** ', WebSocket);
     this.title = 'กรุณาเสียบ Sim Card';
     this.persoSimSubscription = this.persoSimService.onPersoSim(this.persoSimConfig).subscribe((persoSim: any) => {
       this.persoSim = persoSim;
