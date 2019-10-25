@@ -62,7 +62,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    this.toBillingInformation();
+    // this.toBillingInformation();
     this.validateCustomer().then((data: any) => {
       this.transaction.data = {
         ...this.transaction.data,
@@ -101,7 +101,11 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
         return this.http.get(`/api/customerportal/validate-customer-new-register?identity=${this.identity}&idCardType=${cardType}&transactionType=${transactionType}`)
           .toPromise().then((customer: any) => {
             return this.http.get(`/api/customerportal/newRegister/${this.identity}/queryBillingAccount`).toPromise()
-              .then(() => {
+              .then((resp: any) => {
+                const data: any = resp.data || {};
+                this.toBillingInformation(data).then((billingInfo) => {
+                  this.transaction.data.billingInformation = billingInfo;
+                });
                 return this.http.get(`/api/customerportal/currentDate`)
                   .toPromise().then((sysdate: any) => {
                     if (sysdate) {
@@ -127,39 +131,18 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
       });
   }
 
-  toBillingInformation(): any {
-    this.http.get('/api/customerportal/validate-customer-new-register', {
-      params: {
-        identity: this.identity
-      }
-    })
-      .toPromise().then((resp: any) => {
-        const data: any = resp.data || {};
-        return Promise.resolve(data);
-      })
-      .then((customer) => {
-        this.transaction.data.customer = customer;
-        return this.http.get(`/api/customerportal/newRegister/${this.identity}/queryBillingAccount`)
-          .toPromise().then((resp: any) => {
-            const data: any = resp.data || {};
-            return this.http.post('/api/customerportal/verify/billingNetExtreme', {
-              businessType: '1',
-              listBillingAccount: data.billingAccountList
-            })
-              .toPromise().then((respBillingNetExtreme: any) => {
-                return {
-                  billCycles: data.billingAccountList,
-                  billCyclesNetExtreme: respBillingNetExtreme.data
-                };
-              })
-              .catch(() => {
-                return { billCycles: data.billingAccountList };
-              });
-          });
-      })
-      .then((billingInformation: any) => {
-        this.transaction.data.billingInformation = billingInformation;
-      });
+  toBillingInformation(data: any): any {
+    return this.http.post('/api/customerportal/verify/billingNetExtreme', {
+      businessType: '1',
+      listBillingAccount: data.billingAccountList
+    }).toPromise().then((respBillingNetExtreme: any) => {
+      return {
+        billCycles: data.billingAccountList,
+        billCyclesNetExtreme: respBillingNetExtreme.data
+      };
+    }).catch(() => {
+      return { billCycles: data.billingAccountList };
+    });
   }
 
   getRequestAddDeviceSellingCart(bodyRequest: any): any {
@@ -169,11 +152,10 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     try {
       const customer: any = bodyRequest.customer.data;
       const trade: any = this.priceOption.trade;
-      const locationCode: any = user.locationCode;
       return {
         soCompany: productInfo.company || 'AWN',
-        locationSource: locationCode,
-        locationReceipt: locationCode,
+        locationSource: user.locationCode,
+        locationReceipt: user.locationCode,
         productType: productDetail.productType || 'DEVICE',
         productSubType: productDetail.productSubType || 'HANDSET',
         brand: productDetail.brand,
