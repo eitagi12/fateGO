@@ -29,12 +29,11 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
   public simSerialMember: string;
 
   @ViewChild(ResizeImageComponent) resizeImage: ResizeImageComponent;
-  reSizeImage: string;
   aisNative: any = window.aisNative;
   getEApplicationFn: any;
   @Input() previewImage: string[] = [];
   images: string[] = [];
-
+  orderNo: any = ['R1910000912413', 'R1910000912413'];
   public MSG_ERROR_DEFAULT: string = 'ขออภัยระบบไม่สามารถทำรายการได้';
 
   constructor(
@@ -122,25 +121,56 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_VALIDATE_CUSTOMER_PAGE]);
   }
 
-  getEApplicationImageForPrint(): void {
-    this.getEApplicationFn = this.getEApplicationFile('R1910000910567');
-    this.getEApplicationFn.then((response: any): void => {
-      if (response) {
-        // this.images = [];
-        this.images.push('data:image/jpg;base64,' + response.data.eApplication);
+  // getEApplicationImageForPrint(): void {
+  //   this.getEApplicationFn = this.getEApplicationFile('R1910000910567');
+  //   this.getEApplicationFn.then((response: any): void => {
+  //     if (response) {
+  //       // this.images = [];
+  //       this.images.push('data:image/jpg;base64,' + response.data.eApplication);
+  //       if (typeof window.aisNative !== 'undefined') {
+  //         this.resizeImage.printToNetworkOrientation();
+  //       } else {
+  //         console.log(this.images);
+
+  //         this.resizeImage.callPrint();
+  //       }
+  //     }
+  //   }).catch((err: any) => {
+  //     // try {
+  //     //   const errorObj: any = err.json();
+  //     //   errorObj.developerMessage = errorObj.developerMessage + ' | ' + JSON.stringify(errorObj.errors);
+  //     //   err._body = JSON.stringify(errorObj);
+  //     // } catch (err) {
+  //       console.log('err: ', err);
+  //     // }
+  //   });
+  // }
+
+  getEApplicationImageForPrint(): any {
+    const promiseImage: any = [];
+
+    this.orderNo.forEach(orderList => {
+      promiseImage.push(this.getEApplicationFile(orderList));
+
+    });
+
+    return Promise.all(promiseImage).then((response: any) => {
+
+      if (response && response.length > 0) {
+
+        response.forEach((res) => {
+          this.images.push('data:image/jpg;base64,' + res.data.eApplication);
+        });
         if (typeof window.aisNative !== 'undefined') {
           this.resizeImage.printToNetworkOrientation();
         } else {
+          console.log('this.resizeImage', this.images);
+
           this.resizeImage.callPrint();
         }
       }
     }).catch((err: any) => {
-      try {
-        const errorObj: any = err.json();
-        errorObj.developerMessage = errorObj.developerMessage + ' | ' + JSON.stringify(errorObj.errors);
-        err._body = JSON.stringify(errorObj);
-      } catch (err) {
-      }
+      console.log(err);
     });
   }
 
