@@ -91,11 +91,13 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   onNext(): void {
     this.pageLoadingService.openLoading();
     this.validateCustomer().then((data: any) => {
-      this.transaction.data = {
-        ...this.transaction.data,
-        order: data.order.data,
-      };
-      this.mapCustomer(data.customer.data);
+      if (data) {
+        this.transaction.data = {
+          ...this.transaction.data,
+          order: data.order.data,
+        };
+        this.mapCustomer(data.customer.data);
+      }
     }).then(() => {
       if (this.transaction.transactionId) {
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
@@ -117,6 +119,13 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
             throw new Error(error);
           });
       }
+    }).catch((err: any) => {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE], {
+        queryParams: {
+          idCardNo: this.identity
+        }
+      });
+      this.pageLoadingService.closeLoading();
     });
   }
 
@@ -175,13 +184,6 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
                   });
               });
           });
-      }).catch((err: any) => {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE], {
-          queryParams: {
-            idCardNo: this.identity
-          }
-        });
-        this.pageLoadingService.closeLoading();
       });
   }
 
