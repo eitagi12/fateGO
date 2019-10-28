@@ -24,6 +24,7 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
   isValid: boolean;
   user: User;
   watermark: string = AWS_WATERMARK;
+  isOpenSign: any;
 
   constructor(
     private router: Router,
@@ -131,19 +132,19 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
     this.aisNativeService.openSigned(this.apiSigned ? 'OnscreenSignpad' : 'SignaturePad').subscribe();
   }
 
-  private isAisNative(): boolean {
+  public isAisNative(): boolean {
     return this.utils.isAisNative();
   }
 
-  private isAllowCapture(): boolean {
+  public isAllowCapture(): boolean {
     return this.captureAndSign.allowCapture;
   }
 
-  private hasImageSmartCard(): boolean {
+  public hasImageSmartCard(): boolean {
     return (this.captureAndSign && this.captureAndSign.imageSmartCard) ? true : false;
   }
 
-  private hasImageSignature(): boolean {
+  public hasImageSignature(): boolean {
     return (this.captureAndSign && this.captureAndSign.imageSignature) ? true : false;
   }
 
