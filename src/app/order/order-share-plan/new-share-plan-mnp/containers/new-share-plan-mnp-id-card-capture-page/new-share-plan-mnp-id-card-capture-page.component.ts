@@ -14,17 +14,17 @@ import { Subscription } from 'rxjs';
 export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDestroy, OnChanges {
 
   wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
-  captureAndSign: CaptureAndSign;
-  apiSigned: string;
-  transaction: Transaction;
-  customer: Customer;
-  idCardValid: boolean;
-  signedSubscription: Subscription;
-  camera: EventEmitter<void> = new EventEmitter<void>();
-  isValid: boolean;
-  user: User;
-  watermark: string = AWS_WATERMARK;
-  isOpenSign: any;
+  public captureAndSign: CaptureAndSign;
+  public apiSigned: string;
+  public transaction: Transaction;
+  public customer: Customer;
+  public idCardValid: boolean;
+  public signedSubscription: Subscription;
+  public camera: EventEmitter<void> = new EventEmitter<void>();
+  public isValid: boolean;
+  public user: User;
+  public watermark: string = AWS_WATERMARK;
+  public isOpenSign: any = true;
 
   constructor(
     private router: Router,

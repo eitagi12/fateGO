@@ -152,7 +152,7 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
   // WebSocket
   wsControlSim: any;
   wsManageSim: any;
-  show: any;
+  show: any = true;
 
   constructor(
     private router: Router,
