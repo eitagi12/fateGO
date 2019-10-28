@@ -24,7 +24,7 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
   public isValid: boolean;
   public user: User;
   public watermark: string = AWS_WATERMARK;
-  public isOpenSign: any = true;
+  // public isOpenSign: any;
 
   constructor(
     private router: Router,
