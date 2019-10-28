@@ -66,6 +66,10 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
   }
 
+  onHome(): void {
+    this.homeService.goToHome();
+  }
+
   onBack(): void {
     const queryParam = this.priceOption.queryParams;
     if (this.transaction && this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
@@ -82,10 +86,6 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
       this.transactionService.remove();
       window.location.href = `/sales-portal/buy-product/brand/${queryParam.brand}/${queryParam.model}`;
     }
-  }
-
-  onHome(): void {
-    this.homeService.goToHome();
   }
 
   onNext(): void {
@@ -175,6 +175,13 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
                   });
               });
           });
+      }).catch((err: any) => {
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE], {
+          queryParams: {
+            idCardNo: this.identity
+          }
+        });
+        this.pageLoadingService.closeLoading();
       });
   }
 
