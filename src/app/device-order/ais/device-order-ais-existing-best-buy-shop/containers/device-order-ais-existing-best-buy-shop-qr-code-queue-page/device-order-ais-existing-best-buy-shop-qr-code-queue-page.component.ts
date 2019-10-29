@@ -108,7 +108,7 @@ export class DeviceOrderAisExistingBestBuyShopQrCodeQueuePageComponent implement
         const queueNo = resp.data.queue;
         this.skipQueue = true;
         this.transaction.data.queue = { queueNo: queueNo };
-        this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
+        this.queuePageService.createDeviceSellingOrderList(this.transaction, this.priceOption).then(() => {
           return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
             this.pageLoadingService.closeLoading();
             this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_RESULT_PAGE]);
@@ -121,7 +121,7 @@ export class DeviceOrderAisExistingBestBuyShopQrCodeQueuePageComponent implement
     this.pageLoadingService.openLoading();
     if (!this.queueType || this.queueType === 'MANUAL' || this.inputType === 'queue') {
       this.transaction.data.queue = { queueNo: this.queue };
-      this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
+      this.queuePageService.createDeviceSellingOrderList(this.transaction, this.priceOption).then(() => {
         return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
           this.pageLoadingService.closeLoading();
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_RESULT_PAGE]);
@@ -131,7 +131,7 @@ export class DeviceOrderAisExistingBestBuyShopQrCodeQueuePageComponent implement
       this.onSendSMSQueue(this.mobileNo).then((queue) => {
         if (queue) {
           this.transaction.data.queue = { queueNo: queue };
-          return this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
+          return this.queuePageService.createDeviceSellingOrderList(this.transaction, this.priceOption).then(() => {
             return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
                     this.pageLoadingService.closeLoading();
                     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_RESULT_PAGE]);
