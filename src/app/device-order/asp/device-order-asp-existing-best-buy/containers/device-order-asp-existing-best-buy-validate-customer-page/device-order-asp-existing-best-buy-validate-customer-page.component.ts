@@ -137,7 +137,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
           this.transaction.data.simCard = { mobileNo: this.identity };
           this.transaction.data.action = TransactionAction.KEY_IN_REPI;
           if (!this.transaction.data.order || !this.transaction.data.order.soId) {
-            return this.http.post('/api/salesportal/add-device-selling-cart',
+            return this.http.post('/api/salesportal/dt/add-cart-list',
               this.getRequestAddDeviceSellingCart()
             ).toPromise()
               .then((resp: any) => {
@@ -159,7 +159,7 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
         this.transaction.data.billingInformation = {};
         this.transaction.data.billingInformation.billDeliveryAddress = this.transaction.data.customer;
         if (!this.transaction.data.order || !this.transaction.data.order.soId) {
-          return this.http.post('/api/salesportal/add-device-selling-cart',
+          return this.http.post('/api/salesportal/dt/add-cart-list',
             this.getRequestAddDeviceSellingCart()
           ).toPromise()
             .then((resp: any) => {
@@ -312,10 +312,9 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
       const promiseAll = [];
       if (transaction.data) {
         if (transaction.data.order && transaction.data.order.soId) {
-          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
-            location: this.priceOption.productStock.location,
+          const order = this.http.post('/api/salesportal/dt/remove-cart', {
             soId: transaction.data.order.soId,
-            transactionId: transaction.transactionId
+            userId: this.user.username
           }).toPromise().catch(() => Promise.resolve());
           promiseAll.push(order);
         }
@@ -330,28 +329,45 @@ export class DeviceOrderAspExistingBestBuyValidateCustomerPageComponent implemen
     const customer = this.transaction.data.customer;
     const trade = this.priceOption.trade;
     const preBooking: Prebooking = this.transaction.data.preBooking;
+
+    const product = {
+      productType: productDetail.productType || 'DEVICE',
+      soCompany: productStock.company || 'AWN',
+      productSubType: productDetail.productSubType || 'HANDSET',
+      brand: productDetail.brand || productStock.brand,
+      model: productDetail.model || productStock.model,
+      qty: '1',
+
+      color: productStock.color || productStock.colorName,
+      matCode: '',
+      priceIncAmt: '' + trade.normalPrice,
+      priceDiscountAmt: '' + trade.discount.amount,
+      matAirTime: '',
+      listMatFreeGoods: [{
+        matCodeFG: '',
+        qtyFG: '' // จำนวนของแถม *กรณีส่งค่า matCodeFreeGoods ค่า qty จะต้องมี
+      }]
+    };
+
     let subStock;
     if (preBooking && preBooking.preBookingNo) {
       subStock = 'PRE';
     }
     return {
-      soCompany: productStock.company || 'AWN',
       locationSource: this.user.locationCode,
       locationReceipt: this.user.locationCode,
-      productType: productDetail.productType || 'DEVICE',
-      productSubType: productDetail.productSubType || 'HANDSET',
-      brand: productDetail.brand || productStock.brand,
-      model: productDetail.model || productStock.model,
-      color: productStock.color || productStock.colorName,
-      priceIncAmt: '' + trade.normalPrice,
-      priceDiscountAmt: '' + trade.discount.amount,
-      grandTotalAmt: '',
       userId: this.user.username,
       cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
+      soChannelType: 'CSP',
+      soDocumentType: 'RESERVED',
+      productList: [product],
+
+      grandTotalAmt: '',
       preBookingNo: preBooking ? preBooking.preBookingNo : '',
       depositAmt: preBooking ? preBooking.depositAmt : '',
       reserveNo: preBooking ? preBooking.reserveNo : '',
-      subStockDestination: subStock
+      subStockDestination: subStock,
+      storeName: ''
     };
   }
 

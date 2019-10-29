@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { HomeService, AlertService } from 'mychannel-shared-libs';
+import { HomeService, AlertService, TokenService, User } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { Router } from '@angular/router';
@@ -19,6 +19,7 @@ export class DeviceOrderAspExistingBestBuyQrCodeSummaryPageComponent implements 
   transaction: Transaction;
   priceOption: PriceOption;
   deposit: number;
+  user: User;
 
   brannerImagePaymentQrCode: ImageBrannerQRCode;
 
@@ -27,10 +28,12 @@ export class DeviceOrderAspExistingBestBuyQrCodeSummaryPageComponent implements 
     private http: HttpClient,
     private homeService: HomeService,
     private alertService: AlertService,
+    private tokenService: TokenService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
     private qrcodePaymentService: QRCodePaymentService
   ) {
+    this.user = this.tokenService.getUser();
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     this.brannerImagePaymentQrCode = this.qrcodePaymentService.getBrannerImagePaymentQrCodeType(
@@ -80,10 +83,9 @@ export class DeviceOrderAspExistingBestBuyQrCodeSummaryPageComponent implements 
       const promiseAll = [];
       if (transaction.data) {
         if (transaction.data.order && transaction.data.order.soId) {
-          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
-            location: this.priceOption.productStock.location,
+          const order = this.http.post('/api/salesportal/dt/remove-cart', {
             soId: transaction.data.order.soId,
-            transactionId: transaction.transactionId
+            userId: this.user.username
           }).toPromise().catch(() => Promise.resolve());
           promiseAll.push(order);
         }
