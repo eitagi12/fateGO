@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { HomeService, Aggregate, AlertService } from 'mychannel-shared-libs';
-import { ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE, ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ONLY_AIS_SUMMARY_PAGE, ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE, ROUTE_DEVICE_ONLY_AIS_OMISE_SUMMARY_PAGE } from '../../constants/route-path.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
@@ -41,7 +41,12 @@ export class DeviceOnlyAisCheckoutPaymentPageComponent implements OnInit, OnDest
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE]);
+    const payment = this.transaction.data && this.transaction.data.payment || {};
+    if (payment.paymentOnlineCredit) {
+      this.router.navigate([ROUTE_DEVICE_ONLY_AIS_OMISE_SUMMARY_PAGE]);
+    } else {
+      this.router.navigate([ROUTE_DEVICE_ONLY_AIS_QUEUE_PAGE]);
+    }
   }
 
   onHome(): void {

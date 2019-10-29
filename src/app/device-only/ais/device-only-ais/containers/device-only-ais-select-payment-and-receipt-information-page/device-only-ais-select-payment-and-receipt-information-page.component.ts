@@ -6,7 +6,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
-import { HomeService, ApiRequestService, AlertService, PaymentDetail, User, TokenService } from 'mychannel-shared-libs';
+import { HomeService, ApiRequestService, AlertService, PaymentDetail, User, TokenService , PaymentDetailBank} from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { WIZARD_DEVICE_ONLY_AIS } from 'src/app/device-only/constants/wizard.constant';
 import { CreateOrderService } from 'src/app/device-only/services/create-order.service';
@@ -34,6 +34,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
   user: User;
   localtion: any;
   addessValid: boolean;
+  omiseBanks: PaymentDetailBank[];
 
   constructor(
     private router: Router,
@@ -61,6 +62,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       commercialName += ` สี ${this.priceOption.productStock.colorName}`;
     }
     // REFACTOR IT'S
+    console.log('this.isFullPayment()', this.isFullPayment());
     this.paymentDetail = {
       commercialName: commercialName,
       // tslint:disable-next-line:max-line-length
@@ -68,8 +70,14 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       isFullPayment: this.isFullPayment(),
       installmentFlag: false,
       advancePay: 0,
-      qrCode: true
+      qrCode: true,
+      omisePayment: this.isFullPayment()
     };
+    this.http.get('/api/salesportal/omise/get-bank').toPromise()
+    .then((res: any) => {
+      const data = res.data || [];
+      this.omiseBanks = data;
+    });
 
     if (this.priceOption.trade.banks && this.priceOption.trade.banks.length > 0) {
       if (this.isFullPayment()) {
