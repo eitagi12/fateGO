@@ -53,7 +53,7 @@ export class NewRegisterMnpCustomerInfoPageComponent implements OnInit, OnDestro
       idCardNo: customer.idCardNo,
       idCardType: this.isEngLanguage() ? 'ID Card' : 'บัตรประชาชน',
       birthdate: customer.birthdate,
-      mobileNo: customer.mainMobile,
+      mobileNo: customer.mainMobile || '-',
     };
   }
 
