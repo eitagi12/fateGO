@@ -11,7 +11,9 @@ import { DeviceOnlyAisQrCodeGeneratePageComponent } from './containers/device-on
 import { DeviceOnlyAisCheckoutPaymentQrCodePageComponent } from './containers/device-only-ais-checkout-payment-qr-code-page/device-only-ais-checkout-payment-qr-code-page.component';
 import { DeviceOnlyAisQrCodeKeyInQueuePageComponent } from './containers/device-only-ais-qr-code-key-in-queue-page/device-only-ais-qr-code-key-in-queue-page.component';
 import { DeviceOnlyAisResultQueuePageComponent } from './containers/device-only-ais-result-queue-page/device-only-ais-result-queue-page.component';
-
+import { DeviceOnlyAisOmiseSummaryPageComponent } from './containers/device-only-ais-omise-summary-page/device-only-ais-omise-summary-page.component';
+import { DeviceOnlyAisOmiseGeneratePageComponent } from './containers/device-only-ais-omise-generate-page/device-only-ais-omise-generate-page.component';
+import { DeviceOnlyAisOmiseQueuePageComponent } from './containers/device-only-ais-omise-queue-page/device-only-ais-omise-queue-page.component';
 const routes: Routes = [
   {
     path: 'checkout-payment',
@@ -56,6 +58,18 @@ const routes: Routes = [
   {
     path: 'result-queue',
     component: DeviceOnlyAisResultQueuePageComponent
+  },
+  {
+    path: 'omise-summary',
+    component: DeviceOnlyAisOmiseSummaryPageComponent
+  },
+  {
+    path: 'omise-generator',
+    component: DeviceOnlyAisOmiseGeneratePageComponent
+  },
+  {
+    path: 'omise-queue',
+    component: DeviceOnlyAisOmiseQueuePageComponent
   }
 ];
 
