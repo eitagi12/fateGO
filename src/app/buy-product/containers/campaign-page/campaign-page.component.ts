@@ -546,15 +546,17 @@ export class CampaignPageComponent implements OnInit, OnDestroy {
 
             const products: any[] = resp.data.products || [];
             forkJoin(products.map((product: any) => {
-                return this.salesService.productStock({
+                return this.http.post('/api/salesportal/query-stock', {
                     locationCodeSource: user.locationCode,
                     productType: product.productType || PRODUCT_TYPE,
                     productSubType: product.productSubtype || PRODUCT_SUB_TYPE,
+                    brand: brand,
                     model: model,
                     color: product.colorName,
                     subStockDestination: SUB_STOCK_DESTINATION,
                     listLocationCodeDestination: [user.locationCode]
-                }).then((respStock: any) => respStock.data.listLocationCodeDestinationOut || []);
+                }).toPromise()
+                    .then((respStock: any) => respStock.data.listLocationCodeDestinationOut || []);
             })).subscribe((respStocks: any[]) => {
 
                 this.productDetail = resp.data || {};
