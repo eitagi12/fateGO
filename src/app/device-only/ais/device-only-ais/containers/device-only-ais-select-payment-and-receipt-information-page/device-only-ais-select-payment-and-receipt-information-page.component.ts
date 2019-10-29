@@ -34,7 +34,6 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
   user: User;
   localtion: any;
   addessValid: boolean;
-  omiseBanks: PaymentDetailBank[];
 
   constructor(
     private router: Router,
@@ -62,7 +61,6 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       commercialName += ` สี ${this.priceOption.productStock.colorName}`;
     }
     // REFACTOR IT'S
-    console.log('this.isFullPayment()', this.isFullPayment());
     this.paymentDetail = {
       commercialName: commercialName,
       // tslint:disable-next-line:max-line-length
@@ -70,14 +68,8 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       isFullPayment: this.isFullPayment(),
       installmentFlag: false,
       advancePay: 0,
-      qrCode: true,
-      omisePayment: this.isFullPayment()
+      qrCode: true
     };
-    this.http.get('/api/salesportal/omise/get-bank').toPromise()
-    .then((res: any) => {
-      const data = res.data || [];
-      this.omiseBanks = data;
-    });
 
     if (this.priceOption.trade.banks && this.priceOption.trade.banks.length > 0) {
       if (this.isFullPayment()) {
