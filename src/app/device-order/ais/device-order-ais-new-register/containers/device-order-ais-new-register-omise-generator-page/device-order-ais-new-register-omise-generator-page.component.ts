@@ -104,10 +104,19 @@ export class DeviceOrderAisNewRegisterOmiseGeneratorPageComponent implements OnI
                   this.onNext();
                 } else {
                   // Refresh generate qrcode
-                  this.alertService.question('สิ้นสุดระยะเวลาชำระเงิน เพื่อทำรายการใหม่')
+                  this.alertService.question('ชำระค่าสินค้าและบริการไม่สำเร็จ กรุณาทำรายการใหม่')
                     .then((dataAlert: any) => {
                       this.onBack();
                     });
+                }
+              }).catch((error: any) => {
+                if (error.error.errors.statusCode === 404) {
+                  this.alertService.question('สิ้นสุดระยะเวลาชำระเงิน กรุณาทำรายการใหม่')
+                    .then((dataAlert: any) => {
+                      this.onBack();
+                    });
+                } else {
+                  return Promise.reject(error);
                 }
               });
             });
