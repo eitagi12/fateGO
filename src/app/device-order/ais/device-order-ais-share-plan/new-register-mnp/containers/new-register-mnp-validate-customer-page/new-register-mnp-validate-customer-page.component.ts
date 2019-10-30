@@ -257,7 +257,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     }
     this.transaction = {
       data: {
-        transactionType: TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS,
+        transactionType: TransactionType.DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN,
         action: TransactionAction.KEY_IN,
         order: order || { soId : ''}
       }
