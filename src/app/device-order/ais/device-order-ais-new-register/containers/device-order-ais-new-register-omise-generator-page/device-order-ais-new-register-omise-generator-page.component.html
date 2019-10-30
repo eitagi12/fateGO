@@ -1,8 +1,9 @@
 <div class="mc-flex">
   <mc-header title="{{'เครื่องพร้อมเปิดเบอร์ใหม่'| translate}}">
-    <div class="header-icon-left">
+    <div class="header-icon-left  w-25">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
-    <div class="header-icon-right">
+    <div class="header-icon-right w-25 text-right">
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()" [hidden]="transaction?.data?.mpayPayment?.mpayStatus?.statusDevice === 'SUCCESS'"></mc-header-icon>
     </div>
   </mc-header>
@@ -50,6 +51,7 @@
   </div>
   <mc-footer>
     <!-- <button class="btn btn-success" (click)="onGenerateQRCode()">REFRESH</button> -->
+    <button class="btn btn-secondary" (click)="onBack()">Back</button>
     <button class="btn btn-success" (click)="onNext()">Next</button>    
   </mc-footer>
 </div>
