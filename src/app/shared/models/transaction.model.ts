@@ -216,7 +216,7 @@ export interface SimCard {
   privilegeCode?: string;
   nType?: string;
   mobileNoStatus?: 'Active' | 'Suspended';
-  memberSimCard?: object;
+  memberSimCard?: Array<any>;
 }
 
 export interface MainPackage {
@@ -234,7 +234,7 @@ export interface MainPackage {
   statementEng?: string;
   parameters?: any;
   [key: string]: any;
-  memberMainPackage?: object;
+  memberMainPackage?: Array<any>;
 }
 
 export interface CurrentPackage {

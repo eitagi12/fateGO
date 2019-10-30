@@ -133,13 +133,11 @@ export class NewRegisterMnpNetworkTypePageComponent implements OnInit, OnDestroy
           || mobileNoStatus !== 'Active' && !(mobileNoStatus || networkType)) {
           this.transaction.data.simCard = {
             ...this.transaction.data.simCard,
-            memberSimCard: {
-              member1: {
-                mobileNo: this.mnpForm.value.mobileNo,
-                simSerial: '',
-                persoSim: false
-              }
-            }
+            memberSimCard: [{
+              mobileNo: this.mnpForm.value.mobileNo,
+              simSerial: '',
+              persoSim: false
+            }]
           };
           this.transaction.data.customer = {
             ...this.transaction.data.customer ,
@@ -154,13 +152,11 @@ export class NewRegisterMnpNetworkTypePageComponent implements OnInit, OnDestroy
 
         this.transaction.data.simCard = {
           ...this.transaction.data.simCard,
-          memberSimCard: {
-            menber1: {
-              mobileNo: this.mnpForm.value.mobileNo,
-              simSerial: '',
-              persoSim: false
-            }
-          }
+          memberSimCard: [{
+            mobileNo: this.mnpForm.value.mobileNo,
+            simSerial: '',
+            persoSim: false
+          }]
         };
         this.transaction.data.customer = {
           ...this.transaction.data.customer ,
