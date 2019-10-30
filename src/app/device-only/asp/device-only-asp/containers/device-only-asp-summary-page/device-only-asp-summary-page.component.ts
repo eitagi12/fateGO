@@ -101,7 +101,7 @@ export class DeviceOnlyAspSummaryPageComponent implements OnInit, OnDestroy {
   }
 
   public onBack(): void {
-    if (this.customerInfoService.isNonAis === 'NON-AIS') {
+    if (this.customerInfoService.isNonAis === 'Non-AIS') {
       this.router.navigate([ROUTE_DEVICE_ONLY_ASP_READ_CARD_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_ONLY_ASP_SELECT_MOBILE_CARE_PAGE]);

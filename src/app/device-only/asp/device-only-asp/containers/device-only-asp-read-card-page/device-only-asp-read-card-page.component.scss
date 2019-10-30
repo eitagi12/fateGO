@@ -18,10 +18,6 @@
         }
     }
 }
-.disabledbutton {
-    pointer-events: none;
-    opacity: 0.4;
-}
 
 ::placeholder {
     color: gray;
@@ -31,10 +27,6 @@
     width: 35px;
 }
 
-.img-customer {
-    width: 120px;
-}
-
 .read-card {
     display: none; 
     position: fixed;
@@ -42,7 +34,10 @@
 
 .card-body-modal {
     overflow-y: scroll;
-    height: 70vh;
     position: relative;
+    height: 70vh;
 }
 
+.clear {
+    cursor: pointer;
+}
