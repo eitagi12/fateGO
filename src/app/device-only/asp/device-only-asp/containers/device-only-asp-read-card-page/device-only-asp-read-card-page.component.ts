@@ -128,8 +128,8 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   craeteReceipInfoForm(): void {
     this.receiptInfoForm = this.fb.group({
       taxId: ['', [Validators.required]],
-      locationName: [''],
-      telNo: ['', [Validators.pattern(/^0[6-9]\d{8}$/)]]
+      locationName: ['', [Validators.required]],
+      telNo: ['']
     });
   }
 
@@ -225,10 +225,6 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   getLocationName(): void {
     this.billingAddress.getLocationName().then((resp: any) => {
       this.receiptInfoForm.controls['locationName'].setValue(resp.data.displayName);
-      if (this.receiptInfoForm.valid) {
-        this.receiptInfo = this.receiptInfoForm.value;
-      }
-      this.transaction.data.receiptInfo = this.receiptInfo;
       this.transaction.data.seller = {
         ...this.transaction.data.seller,
         locationName: resp.data.displayName,
@@ -406,6 +402,7 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
               this.receiptInfoValid = true;
               // tslint:disable-next-line:max-line-length
               data.idCardNo === '' ? this.receiptInfoForm.controls['taxId'].setValue('') : this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(value.idCardNo.substring(9))}`));
+              this.setReceiptInfo();
             } else {
               this.receiptInfoValid = false;
               this.receiptInfoForm.controls['taxId'].setValue('');
@@ -428,8 +425,9 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   customerAccount(mobileNo: string): void {
     this.http.get(`/api/customerportal/${mobileNo}/query-customer-account`).toPromise()
       .then((res: any) => {
-        this.setCustomerInfo(res.data, TransactionAction.KEY_IN);
         this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(res.data.idCardNo.substring(9))}`));
+        this.setCustomerInfo(res.data, TransactionAction.KEY_IN);
+        this.setReceiptInfo();
         this.receiptInfoValid = true;
         this.isShowCustomerInfo = true;
         this.isShowCustomerNonAIS = false;
@@ -577,8 +575,9 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
     this.customerInfoService.isNonAis = '';
     this.searchByMobileNoForm.controls['mobileNo'].setValue('');
     if (billingAddressSelected === ADDRESS_BY_SMART_CARD) {
-      this.setCustomerInfo(this.customer, TransactionAction.READ_CARD);
       this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(this.customer.idCardNo.substring(9))}`));
+      this.setCustomerInfo(this.customer, TransactionAction.READ_CARD);
+      this.setReceiptInfo();
       this.isSelect = true;
       this.receiptInfoValid = true;
       this.customerInfoService.setSelectedMobileNo('');
@@ -591,11 +590,19 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
           this.setCustomerInfo(bill.data.billingAddress, TransactionAction.READ_CARD);
           this.customerInfoService.setSelectedMobileNo(mobileNo);
           this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(bill.data.billingAddress.idCardNo.substring(9))}`));
+          this.setReceiptInfo();
           this.receiptInfoValid = true;
         }).catch((err: any) => {
           this.alertService.error(err.error.resultDescription);
           this.pageLoadingService.closeLoading();
         });
+    }
+  }
+
+  setReceiptInfo(): void {
+    if (this.receiptInfoForm.valid) {
+      this.receiptInfo = this.receiptInfoForm.value;
+      this.transaction.data.receiptInfo = this.receiptInfo;
     }
   }
 

@@ -249,6 +249,7 @@ export class CreateOrderService {
     const mapInstallmentRate = transaction.data.payment.paymentMethod.percentage ? transaction.data.payment.paymentMethod.percentage : 0;
     const mapBankAbb = transaction.data.payment.paymentBank.abb ? transaction.data.payment.paymentBank.abb : '';
     const mapBankCode = transaction.data.payment.paymentBank.abb ? transaction.data.payment.paymentBank.abb : '';
+    const mapTelNo = transaction.data.receiptInfo.telNo ? transaction.data.receiptInfo.telNo : '';
     // tslint:disable-next-line: max-line-length
     const mapCustomerNameOrder = (transaction.data.customer && transaction.data.customer.firstName && transaction.data.customer.lastName) ? transaction.data.customer.firstName + ' ' + transaction.data.customer.lastName : '';
 
@@ -271,7 +272,7 @@ export class CreateOrderService {
       queueNo: transaction.data.queue.queueNo,
       cusNameOrder: mapCustomerNameOrder,
       taxCardId: transaction.data.customer.idCardNo,
-      cusMobileNoOrder: transaction.data.receiptInfo.telNo || '',
+      cusMobileNoOrder: mapTelNo,
       customerAddress: this.mapCusAddress(transaction.data.customer),
       tradeNo: priceOption.trade.tradeNo,
       paymentRemark: this.getOrderRemark(transaction, priceOption),
