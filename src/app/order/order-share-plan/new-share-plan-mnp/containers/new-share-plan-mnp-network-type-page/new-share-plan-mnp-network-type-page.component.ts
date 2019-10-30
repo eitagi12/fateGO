@@ -16,7 +16,7 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./new-share-plan-mnp-network-type-page.component.scss']
 })
 export class NewSharePlanMnpNetworkTypePageComponent implements OnInit, OnDestroy {
-  wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP ;
+  wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
   transaction: Transaction;
   sharePlanForm: FormGroup;
 
@@ -30,9 +30,9 @@ export class NewSharePlanMnpNetworkTypePageComponent implements OnInit, OnDestro
     private transactionService: TransactionService,
   ) {
     this.transaction = this.transactionService.load();
-    this.homeService.callback = () => {
-      window.location.href = '/smart-digital/main-menu';
-    };
+    // this.homeService.callback = () => {
+    //   window.location.href = '/';
+    // };
   }
 
   ngOnInit(): void {

@@ -60,7 +60,7 @@ export class NewSharePlanMnpValidateCustomerIdCardPageComponent implements OnIni
   onCompleted(profile: ReadCardProfile): void {
     this.profile = profile;
     // auto next
-    this.onNext();
+    // this.onNext();
   }
 
   onProgress(progress: number): void {
