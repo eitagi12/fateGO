@@ -60,27 +60,28 @@ export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDes
     this.http.get('/api/customerportal/newRegister/getAllZipcodes').subscribe((resp: any) => {
       this.allZipCodes = resp.data.zipcodes || [];
     });
-    customer.province = customer.province.replace(/มหานคร$/, '');
+    // customer.province = customer.province.replace(/มหานคร$/, '');
     this.http.get('/api/customerportal/newRegister/getAllProvinces'
       , {
         params: {
           provinceSubType: this.translation.currentLang === 'TH' ? 'THA' : 'ENG'
         }
       }).subscribe((resp: any) => {
+        console.log(resp);
         this.provinces = (resp.data.provinces || []);
         this.customerAddress = {
-          homeNo: customer.homeNo,
-          moo: customer.moo,
-          mooBan: customer.mooBan,
-          room: customer.room,
-          floor: customer.floor,
-          buildingName: customer.buildingName,
-          soi: customer.soi,
-          street: customer.street,
-          province: customer.province,
-          amphur: customer.amphur,
-          tumbol: customer.tumbol,
-          zipCode: customer.zipCode,
+          homeNo: customer.homeNo || '',
+          moo: customer.moo || '',
+          mooBan: customer.mooBan || '',
+          room: customer.room || '',
+          floor: customer.floor || '',
+          buildingName: customer.buildingName || '',
+          soi: customer.soi || '',
+          street: customer.street || '',
+          province: customer.province || '',
+          amphur: customer.amphur || '',
+          tumbol: customer.tumbol || '',
+          zipCode: customer.zipCode || ''
         };
       });
   }
