@@ -110,10 +110,14 @@ export class DeviceOrderAisNewRegisterOmiseGeneratorPageComponent implements OnI
                     });
                 }
               }).catch((error: any) => {
-                this.alertService.question('สิ้นสุดระยะเวลาชำระเงิน กรุณาทำรายการใหม่')
-                  .then((dataAlert: any) => {
-                    this.onBack();
-                  });
+                if (error.error.errors.statusCode === 404) {
+                  this.alertService.question('สิ้นสุดระยะเวลาชำระเงิน กรุณาทำรายการใหม่')
+                    .then((dataAlert: any) => {
+                      this.onBack();
+                    });
+                } else {
+                  return Promise.reject(error);
+                }
               });
             });
       })
