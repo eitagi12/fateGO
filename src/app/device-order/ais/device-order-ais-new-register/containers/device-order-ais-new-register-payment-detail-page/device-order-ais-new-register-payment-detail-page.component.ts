@@ -165,6 +165,7 @@ export class DeviceOrderAisNewRegisterPaymentDetailPageComponent implements OnIn
 
   onNext(): void {
     this.transaction.data.payment = this.paymentDetailTemp.payment;
+    console.log('this.transaction.data.payment', this.transaction.data.payment);
     this.transaction.data.advancePayment = this.paymentDetailTemp.advancePayment;
     this.transaction.data.receiptInfo = this.receiptInfoTemp;
 

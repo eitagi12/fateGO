@@ -100,19 +100,28 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
     const productStock = this.priceOption.productStock;
     const trade = this.priceOption && this.priceOption.trade;
     const description = trade && trade.advancePay && trade.advancePay.description;
-    if (description) {
+    const payment: any = this.transaction.data.payment || {};
+    const advancePayment: any = this.transaction.data.advancePayment || {};
+    if (payment.paymentOnlineCredit === 'true' && advancePayment.paymentOnlineCredit === 'true') {
       this.orderList = [{
-        name: priceOption.name + 'สี' + productStock.color,
-        price: trade.promotionPrice
+        name: priceOption.name + 'สี' + productStock.color + 'และ' + description,
+        price: trade.promotionPrice + trade.advancePay.amount
       }, {
         name: description,
         price: trade.advancePay.amount
       }];
-    } else {
-      this.orderList = [{
-        name: priceOption.name + 'สี' + productStock.color,
-        price: trade.promotionPrice
-      }];
+    } else if (payment.paymentOnlineCredit === 'true' || advancePayment.paymentOnlineCredit === 'true') {
+      if (payment.paymentOnlineCredit) {
+        this.orderList = [{
+          name: priceOption.name + 'สี' + productStock.color,
+          price: trade.promotionPrice
+        }];
+      } else {
+        this.orderList = [{
+          name: description,
+          price: trade.advancePay.amount
+        }];
+      }
     }
     const params: any = {
       companyCode: 'AWN',
@@ -162,10 +171,10 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
       return this.summary([+trade.promotionPrice, +advancePay.amount]);
     }
 
-    if (payment.paymentOnlineCredit) {
+    if (payment.paymentOnlineCredit === 'ture') {
       total += +trade.promotionPrice;
     }
-    if (advancePayment.paymentOnlineCredit) {
+    if (advancePayment.paymentOnlineCredit === 'ture') {
       total += +advancePay.amount;
     }
     return total;

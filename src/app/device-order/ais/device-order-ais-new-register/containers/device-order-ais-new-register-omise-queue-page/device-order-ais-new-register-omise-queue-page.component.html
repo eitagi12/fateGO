@@ -15,7 +15,7 @@
         <ng-container>
           <div class="card-body border-top">
             <p><b class="text-light-grey" translate>รายการสินค้า (ที่ชำระแล้ว)</b></p>
-            <ng-container *ngIf="transaction?.data?.payment?.paymentOnlineCredit">
+            <ng-container *ngIf="transaction?.data?.payment?.paymentOnlineCredit === 'true'">
               <div class="text-light-grey">
                 <p>
                   <i class="fa fa-circle mr-3 text-green"></i>
@@ -33,7 +33,7 @@
               </div>
             </ng-container>
 
-            <ng-container *ngIf="transaction?.data?.advancePayment?.paymentOnlineCredit || priceOption?.trade?.advancePay?.installmentFlag === 'Y'">
+            <ng-container *ngIf="transaction?.data?.advancePayment?.paymentOnlineCredit === 'true' || priceOption?.trade?.advancePay?.installmentFlag === 'Y'">
               <div class="text-light-grey"
                 *ngIf="(priceOption?.trade?.advancePay?.installmentFlag === 'N' && priceOption?.trade?.advancePay?.amount > 0) || priceOption?.trade?.advancePay?.installmentFlag === 'Y'">
                 <p>
@@ -59,12 +59,12 @@
         </ng-container>
 
         <!-- ค้างชำระ -->
-        <ng-container *ngIf="!transaction?.data?.payment?.paymentOnlineCredit 
-        || (!transaction?.data?.advancePayment?.paymentOnlineCredit && priceOption?.trade?.advancePay?.installmentFlag === 'N')">
+        <ng-container *ngIf="transaction?.data?.payment?.paymentOnlineCredit !== 'true'
+        || (transaction?.data?.advancePayment?.paymentOnlineCredit !== 'true' && priceOption?.trade?.advancePay?.installmentFlag === 'N')">
           <div class="card-body border-top">
             <p><b class="text-light-grey" translate>รายการสินค้า (รอชำระ)</b></p>
 
-            <ng-container *ngIf="!transaction?.data?.payment?.paymentOnlineCredit">
+            <ng-container *ngIf="transaction?.data?.payment?.paymentOnlineCredit !== 'true'">
               <div class="text-light-grey">
                 <p>
                   <i class="fa fa-circle mr-3 text-green"></i>
@@ -82,7 +82,7 @@
               </div>
             </ng-container>
 
-            <ng-container *ngIf="!transaction?.data?.advancePayment?.paymentOnlineCredit">
+            <ng-container *ngIf="!transaction?.data?.advancePayment?.paymentOnlineCredit !== 'true'">
               <div class="text-light-grey"
                 *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && priceOption?.trade?.advancePay?.amount > 0">
                 <p
