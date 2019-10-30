@@ -69,20 +69,20 @@ export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDes
       }).subscribe((resp: any) => {
         console.log(resp);
         this.provinces = (resp.data.provinces || []);
-        // this.customerAddress = {
-        //   homeNo: customer.homeNo,
-        //   moo: customer.moo,
-        //   mooBan: customer.mooBan,
-        //   room: customer.room,
-        //   floor: customer.floor,
-        //   buildingName: customer.buildingName,
-        //   soi: customer.soi,
-        //   street: customer.street,
-        //   province: customer.province,
-        //   amphur: customer.amphur,
-        //   tumbol: customer.tumbol,
-        //   zipCode: customer.zipCode,
-        // };
+        this.customerAddress = {
+          homeNo: customer.homeNo || '',
+          moo: customer.moo || '',
+          mooBan: customer.mooBan || '',
+          room: customer.room || '',
+          floor: customer.floor || '',
+          buildingName: customer.buildingName || '',
+          soi: customer.soi || '',
+          street: customer.street || '',
+          province: customer.province || '',
+          amphur: customer.amphur || '',
+          tumbol: customer.tumbol || '',
+          zipCode: customer.zipCode || ''
+        };
       });
   }
 
