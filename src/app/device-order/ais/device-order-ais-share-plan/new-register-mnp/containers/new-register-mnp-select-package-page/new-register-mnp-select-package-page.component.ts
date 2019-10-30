@@ -85,15 +85,15 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
   getMainPackageZeroBath(): void {
     this.transaction.data.mainPackage = {
       ...this.transaction.data.mainPackage,
-      memberMainPackage: {
-        member1: {
+      memberMainPackage: [
+        {
           itemId: '',
           shortNameThai: '',
           title: '3G Member Share MNP UL SWifi 0 Baht',
           detailTH: 'แพ็กเกจ 3G Member Share MNP UL SWifi 0 บาท',
           detailEN: '3G Member Share MNP UL SWifi 0 Baht'
         }
-      }
+      ]
     };
   }
 

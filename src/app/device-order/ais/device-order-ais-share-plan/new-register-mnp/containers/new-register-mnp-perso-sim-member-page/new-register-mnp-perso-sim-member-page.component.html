@@ -31,13 +31,13 @@
                               <div class="progress mb-5">
                                   <div class="progress-bar bg-success" role="progressbar" [style.width.%]="persoSim?.progress || 0" [attr.aria-valuenow]="persoSim?.progress" aria-valuemin="0" aria-valuemax="100"></div>
                               </div>
-                              <div  *ngIf="errorMessage" class="text-center mt-3 mb-3 text-red">
-                                  {{ '(ห้ามนำซิมการ์ดออก)' | translate }}
-                              </div>
+                              <div  *ngIf="persoSim?.progress !== 100 && !errorMessage" class="text-center mt-3 mb-3 text-red">
+                                {{ '(ห้ามนำซิมการ์ดออก)' | translate }}
+                             </div> 
                               <div  *ngIf="errorMessage" class="text-center mt-3 mb-3 text-red">
                                   {{ errorMessage | translate }}
                               </div>
-                              <div   class="text-center mt-3 mb-3">
+                              <div *ngIf="persoSim?.progress === 100 && !errorMessage" class="text-center mt-3 mb-3">
                                   {{ 'กรุณานำซิมออกและเปลี่ยนเป็นซิมสำหรับเบอร์ย้ายค่าย' | translate }}
                               </div>
                               <div class="line-behind" *ngIf="option?.key_sim">

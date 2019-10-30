@@ -11,7 +11,7 @@ export enum TransactionType {
   DEVICE_ORDER_EXISTING_ASP = 'ExistingASP',
   DEVICE_ORDER_EXISTING_GADGET_AIS = 'ExistingGadgetAIS',
   DEVICE_ORDER_PREPAID_HOTDEAL_AIS = 'PrepaidHotDealAIS',
-  DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN = '', // TransactionType ชื่อ อะไรดี
+  DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN = 'NewRegisterMNPAIS',
   // pure
   ORDER_NEW_REGISTER = 'NewRegister',
   ORDER_PRE_TO_POST = 'ConvertPreToPost',
@@ -216,7 +216,7 @@ export interface SimCard {
   privilegeCode?: string;
   nType?: string;
   mobileNoStatus?: 'Active' | 'Suspended';
-  memberSimCard?: object;
+  memberSimCard?: Array<any>;
 }
 
 export interface MainPackage {
@@ -234,7 +234,7 @@ export interface MainPackage {
   statementEng?: string;
   parameters?: any;
   [key: string]: any;
-  memberMainPackage?: object;
+  memberMainPackage?: Array<any>;
 }
 
 export interface CurrentPackage {

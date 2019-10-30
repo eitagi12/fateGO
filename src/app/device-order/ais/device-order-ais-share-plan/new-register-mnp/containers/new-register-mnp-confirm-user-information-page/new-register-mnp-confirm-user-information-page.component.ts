@@ -68,8 +68,8 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
 
     this.eBill = !(mainPackage.billingSystem === BillingSystemType.BOS);
 
-    const memberSimCard = simCard.memberSimCard['member1'];
-    const memberMainPackage = mainPackage.memberMainPackage['member1'];
+    const memberSimCard = simCard.memberSimCard[0];
+    const memberMainPackage = mainPackage.memberMainPackage[0];
    this.confirmMemberInfo = {
     mobileNo: memberSimCard.mobileNo,
     mainPackage: this.changeMainPackageLanguage(memberMainPackage),

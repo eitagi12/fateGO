@@ -1,13 +1,21 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription, Observable } from 'rxjs';
 import { Transaction } from 'src/app/shared/models/transaction.model';
-import { ShoppingCart, HomeService, TokenService, AlertService, PersoSimService, ChannelType, KioskControlsPersoSim, PersoSimError } from 'mychannel-shared-libs';
+import { ShoppingCart,
+         HomeService,
+         TokenService,
+         AlertService,
+         PersoSimService,
+         ChannelType,
+         KioskControlsPersoSim,
+         PersoSimError } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { TranslateService } from '@ngx-translate/core';
-import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_AGREEMENT_SIGN_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_AGGREGATE_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_EAPPLICATION_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_AGGREGATE_PAGE } from '../../constants/route-path.constant';
 import { environment } from 'src/environments/environment';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 
@@ -115,11 +123,9 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
 
   persoSimWebsocket(): void {
     // for pc
-    console.log('WebSocket*********** ', WebSocket);
     this.title = 'กรุณาเสียบ Sim Card';
     this.persoSimSubscription = this.persoSimService.onPersoSim(this.persoSimConfig).subscribe((persoSim: any) => {
       this.persoSim = persoSim;
-      console.log('persoSim**************', persoSim);
       if (persoSim.persoData && persoSim.persoData.simSerial) {
         this.title = 'กรุณาดึงซิมการ์ด';
         this.transaction.data.simCard.simSerial = persoSim.persoData.simSerial;
@@ -146,7 +152,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
             serialNo: serialNo,
             mobileNo: this.transaction.data.simCard.mobileNo,
             simService: 'Normal',
-            sourceSystem: 'MC-KIOSK'
+            sourceSystem: 'MC'
           }
         }).toPromise();
       },
@@ -260,7 +266,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_AGREEMENT_SIGN_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_EAPPLICATION_PAGE]);
   }
 
   onNext(): void {

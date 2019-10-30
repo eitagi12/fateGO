@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { Transaction, TransactionType, TransactionAction, Prebooking, Order } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionType, TransactionAction, Prebooking, Order, Customer } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
 import { HomeService, PageLoadingService, TokenService, AlertService, User } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -94,7 +94,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
       if (data) {
         this.transaction.data = {
           ...this.transaction.data,
-          order: data.order.data,
+          order: data.order.data
         };
         this.mapCustomer(data.customer.data);
       }
@@ -257,13 +257,12 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     }
     this.transaction = {
       data: {
-        transactionType: TransactionType.DEVICE_ORDER_EXISTING_AIS,
+        transactionType: TransactionType.DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN,
         action: TransactionAction.KEY_IN,
-        order: order
+        order: order || { soId : ''}
       }
     };
     delete this.transaction.data.customer;
-
   }
 
   buildTransaction(transactionType: string): any {
@@ -356,6 +355,6 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   }
 
   ngOnDestroy(): void {
-    this.transactionService.save(this.transaction);
+    this.transactionService.update(this.transaction);
   }
 }
