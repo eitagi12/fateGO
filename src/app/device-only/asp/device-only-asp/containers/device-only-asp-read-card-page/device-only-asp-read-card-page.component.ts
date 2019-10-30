@@ -47,7 +47,6 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   isShowStatusPrePaid: boolean;
   messages: string;
   nameTextBySmartCard: string;
-  addressTextBySmartCard: string;
   mobileNoStatus: string;
   paymentDetailTemp: any;
   titleNames: any;
@@ -456,7 +455,6 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
     this.customer = await data; // data from IdCard
     this.nameTextBySmartCard = this.customer.titleName + ' ' + this.customer.firstName + ' ' + this.customer.lastName;
     await this.zipcode(this.customer);
-    this.addressTextBySmartCard = await this.customerInfoService.convertBillingAddressToString(this.customer);
     await this.getBillingByIdCard();
     this.messages = '';
   }

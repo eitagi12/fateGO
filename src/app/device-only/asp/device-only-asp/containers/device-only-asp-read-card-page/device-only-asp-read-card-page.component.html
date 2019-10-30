@@ -51,7 +51,7 @@
                   <div class="progress-precent" id="progress-bar-read-smart-card" #progressBarReadSmartCard></div>
                 </div>
               </div>
-              <!-- Pop Up Show Customer Info From Read Card -->
+              <!-- Modal Show MobileNo Info From Read Card -->
               <ng-template #select_billing_address class="read-card">
                 <h5 class="modal-header bg-light-blue text-white">{{ 'เลือกที่อยู่ในใบเสร็จรับเงิน' | translate }}</h5>
                 <div class="card-header bg-transparent">
@@ -60,12 +60,6 @@
                 </div>
                 <div class="card-body-modal p-2" id="myModal" (mouseleave)="onCancelMove($event)" (mousemove)="onScrolling($event)" (mousedown)="onTouchModal($event)" (mouseup)="onCancelMove($event)">
                   <form [formGroup]="selectBillingAddressForm">
-                    <h5>ที่อยู่ตามบัตรประชาชน</h5>
-                    <div>
-                      <input class="form-check-input" type="radio" value="addressBySmartCard" formControlName="billingAddress" id="modal-text-customer-id-card-address">
-                      <label class="form-check-label" class="col-11" for="modal-text-customer-id-card-address">{{ 'ที่อยู่: ' + addressTextBySmartCard}}</label>
-                    </div>
-                    <br>
                     <h5>ที่อยู่ตามใบแจ้งค่าใช้บริการเบอร์ AIS ของท่าน</h5>
                     <div *ngFor="let itemBA of listBillingAccount; let i = index" #istBillingAccountBox>
                       <input class="form-check-input" type="radio" value="{{i}}" formControlName="billingAddress" id="modal-text-billing-address-{{i+1}}">
