@@ -18,7 +18,7 @@ export class NewSharePlanMnpFaceCapturePageComponent implements OnInit, OnDestro
   openCamera: boolean;
   camera: EventEmitter<void> = new EventEmitter<void>();
   transaction: Transaction;
-
+  isCaptureSuccess: boolean = false;
   constructor(
     private router: Router,
     private translation: TranslateService,
@@ -31,7 +31,11 @@ export class NewSharePlanMnpFaceCapturePageComponent implements OnInit, OnDestro
   }
 
   ngOnInit(): void {
-    this.openCamera = !!(this.transaction.data.faceRecognition && this.transaction.data.faceRecognition.imageFaceUser);
+    if (this.transaction && this.transaction.data &&
+      this.transaction.data.faceRecognition) {
+      delete this.transaction.data.faceRecognition.imageFaceUser;
+    }
+
   }
 
   onBack(): void {
@@ -55,24 +59,11 @@ export class NewSharePlanMnpFaceCapturePageComponent implements OnInit, OnDestro
   }
 
   onCameraCompleted(image: string): void {
-    const cropOption = {
-      sizeWidth: 260,
-      sizeHeight: 240,
-      startX: 55,
-      startY: 0,
-      flip: true,
-      quality: 1
+    this.isCaptureSuccess = image ? true : false;
+    this.transaction.data.faceRecognition = {
+      imageFaceUser: image
     };
 
-    new ImageUtils().cropping(image, cropOption).then(response => {
-      this.transaction.data.faceRecognition = {
-        imageFaceUser: response
-      };
-    }).catch(() => {
-      this.transaction.data.faceRecognition = {
-        imageFaceUser: image
-      };
-    });
   }
 
   onCameraError(error: string): void {
