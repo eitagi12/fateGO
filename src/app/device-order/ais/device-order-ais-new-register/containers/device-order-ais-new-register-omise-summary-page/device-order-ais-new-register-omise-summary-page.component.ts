@@ -102,7 +102,7 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
     const description = trade && trade.advancePay && trade.advancePay.description;
     const payment: any = this.transaction.data.payment || {};
     const advancePayment: any = this.transaction.data.advancePayment || {};
-    if (payment.paymentOnlineCredit === 'true' && advancePayment.paymentOnlineCredit === 'true') {
+    if (payment.paymentOnlineCredit && advancePayment.paymentOnlineCredit) {
       this.orderList = [{
         name: priceOption.name + 'สี' + productStock.color + 'และ' + description,
         price: trade.promotionPrice + trade.advancePay.amount
@@ -110,7 +110,7 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
         name: description,
         price: trade.advancePay.amount
       }];
-    } else if (payment.paymentOnlineCredit === 'true' || advancePayment.paymentOnlineCredit === 'true') {
+    } else if (payment.paymentOnlineCredi || advancePayment.paymentOnlineCredit) {
       if (payment.paymentOnlineCredit) {
         this.orderList = [{
           name: priceOption.name + 'สี' + productStock.color,
@@ -171,10 +171,10 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
       return this.summary([+trade.promotionPrice, +advancePay.amount]);
     }
 
-    if (payment.paymentOnlineCredit === 'ture') {
+    if (payment.paymentOnlineCredit) {
       total += +trade.promotionPrice;
     }
-    if (advancePayment.paymentOnlineCredit === 'ture') {
+    if (advancePayment.paymentOnlineCredit) {
       total += +advancePay.amount;
     }
     return total;

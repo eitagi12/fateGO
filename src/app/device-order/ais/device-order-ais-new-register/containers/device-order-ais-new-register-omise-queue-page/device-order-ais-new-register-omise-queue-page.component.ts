@@ -71,10 +71,10 @@ export class DeviceOrderAisNewRegisterOmiseQueuePageComponent implements OnInit,
       return this.summary([+trade.promotionPrice, +advancePay.amount]);
     }
 
-    if (payment.paymentOnlineCredit === 'true') {
+    if (payment.paymentOnlineCredit) {
       summary += +trade.promotionPrice;
     }
-    if (advancePayment.paymentOnlineCredit === 'true') {
+    if (advancePayment.paymentOnlineCredit) {
       summary += +advancePay.amount;
     }
     return summary;
@@ -91,10 +91,10 @@ export class DeviceOrderAisNewRegisterOmiseQueuePageComponent implements OnInit,
       return this.summary([+trade.promotionPrice, +advancePay.amount]);
     }
 
-    if (payment.paymentOnlineCredit !== 'true') {
+    if (payment.paymentOnlineCredit) {
       summary += +trade.promotionPrice;
     }
-    if (advancePayment.paymentOnlineCredit !== 'true') {
+    if (advancePayment.paymentOnlineCredit) {
       summary += +advancePay.amount;
     }
     return summary;
