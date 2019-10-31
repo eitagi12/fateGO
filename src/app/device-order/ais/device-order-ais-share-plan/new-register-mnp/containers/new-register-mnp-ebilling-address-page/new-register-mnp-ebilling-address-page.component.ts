@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { HomeService, CustomerAddress } from 'mychannel-shared-libs';
+import { HomeService, CustomerAddress, PageLoadingService } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -36,7 +36,8 @@ export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDes
     private homeService: HomeService,
     private transactionService: TransactionService,
     private http: HttpClient,
-    private translation: TranslateService
+    private translation: TranslateService,
+    private pageLoadingService: PageLoadingService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -57,10 +58,11 @@ export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDes
   callService(): void {
     const billingInformation = this.transaction.data.billingInformation || {};
     const customer = billingInformation.billDeliveryAddress || this.transaction.data.customer;
+
     this.http.get('/api/customerportal/newRegister/getAllZipcodes').subscribe((resp: any) => {
       this.allZipCodes = resp.data.zipcodes || [];
     });
-    // customer.province = customer.province.replace(/มหานคร$/, '');
+    customer.province = customer.province.replace(/มหานคร$/, '');
     this.http.get('/api/customerportal/newRegister/getAllProvinces'
       , {
         params: {
@@ -68,11 +70,12 @@ export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDes
         }
       }).subscribe((resp: any) => {
         console.log(resp);
+        const mooBan = this.transaction.data.customer.mooBan;
         this.provinces = (resp.data.provinces || []);
         this.customerAddress = {
           homeNo: customer.homeNo || '',
           moo: customer.moo || '',
-          mooBan: customer.mooBan || '',
+          mooBan: mooBan || '',
           room: customer.room || '',
           floor: customer.floor || '',
           buildingName: customer.buildingName || '',
@@ -168,7 +171,59 @@ export class NewRegisterMnpEbillingAddressPageComponent implements OnInit, OnDes
   }
 
   onCompleted(value: any): void {
-    this.customerAddressTemp = value;
+    console.log('complete eb adr', value);
+    // this.customerAddressTemp = value;
+    this.mapCustomerAddress(value);
+  }
+
+  mapCustomerAddress(customer: any): void {
+    const birthdate = this.transaction.data.customer.birthdate;
+    const idCardNo = this.transaction.data.customer.idCardNo;
+    const titleName = this.transaction.data.customer.titleName;
+    const idCardType = this.transaction.data.customer.idCardType;
+    const firstName = this.transaction.data.customer.firstName;
+    const lastName = this.transaction.data.customer.lastName;
+    const mobileNo = this.transaction.data.customer.mobileNo;
+    const imageSignature = this.transaction.data.customer.imageSignature;
+    const imageSmartCard = this.transaction.data.customer.imageSmartCard;
+    const imageReadSmartCard = this.transaction.data.customer.imageReadSmartCard;
+    const gender = this.transaction.data.customer.gender;
+    this.transaction.data = {
+      ...this.transaction.data,
+      customer: {
+        idCardNo: idCardNo,
+        idCardType: idCardType || '',
+        titleName: titleName || '',
+        firstName: firstName || '',
+        lastName: lastName || '',
+        birthdate: birthdate || '',
+        gender: gender || '',
+        homeNo: customer.homeNo || '',
+        moo: customer.moo || '',
+        mooBan: customer.mooBan || '',
+        buildingName: customer.buildingName || '',
+        floor: customer.floor || '',
+        room: customer.room || '',
+        street: customer.street || '',
+        soi: customer.soi || '',
+        tumbol: customer.tumbol || '',
+        amphur: customer.amphur,
+        province: customer.province || customer.provinceName || '',
+        firstNameEn: '',
+        lastNameEn: '',
+        issueDate: birthdate || '',
+        expireDate: null,
+        zipCode: customer.zipCode || '',
+        mainMobile: customer.mainMobile || '',
+        mainPhone: customer.mainPhone || '',
+        billCycle: customer.billCycle || '',
+        caNumber: customer.caNumber || '',
+        mobileNo: mobileNo || '',
+        imageSignature: imageSignature || '',
+        imageSmartCard: imageSmartCard || '',
+        imageReadSmartCard: imageReadSmartCard || '',
+      }
+    };
   }
 
   onError(valid: boolean): void {
