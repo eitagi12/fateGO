@@ -59,6 +59,7 @@ export class NewSharePlanMnpValidateCustomerIdCardPageComponent implements OnIni
 
   onCompleted(profile: ReadCardProfile): void {
     this.profile = profile;
+    console.log('profile ===> ', profile);
     // auto next
     // this.onNext();
   }
