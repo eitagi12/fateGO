@@ -43,7 +43,7 @@ export class DeviceOrderAisNewRegisterAggregatePageComponent implements OnInit {
 
     if (payment.paymentType === 'QR_CODE' || advancePayment.paymentType === 'QR_CODE') {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_SUMMARY_PAGE]);
-    } else if (payment.paymentOnlineCredit === 'true' || advancePayment.paymentOnlineCredit  === 'true') {
+    } else if (payment.paymentOnlineCredit || advancePayment.paymentOnlineCredit) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_OMISE_SUMMARY_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QUEUE_PAGE]);
