@@ -150,7 +150,7 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
           params: {
             indexNo: indexNo,
             serialNo: serialNo,
-            mobileNo: this.transaction.data.simCard.mobileNo,
+            mobileNo: this.masterSimCard.mobileNo,
             simService: 'Normal',
             sourceSystem: 'MC'
           }
