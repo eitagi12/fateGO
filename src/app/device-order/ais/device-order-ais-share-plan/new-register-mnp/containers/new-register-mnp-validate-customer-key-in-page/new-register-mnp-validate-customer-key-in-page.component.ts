@@ -6,7 +6,7 @@ import { Transaction, Prebooking, Order, TransactionType, TransactionAction, Cus
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { HttpClient } from '@angular/common/http';
+import { ValidateCustomerService } from 'src/app/shared/services/validate-customer.service';
 @Component({
   selector: 'app-new-register-mnp-validate-customer-key-in-page',
   templateUrl: './new-register-mnp-validate-customer-key-in-page.component.html',
@@ -30,16 +30,16 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
     private alertService: AlertService,
     private utils: Utils,
     private priceOptionService: PriceOptionService,
-    private http: HttpClient,
     private tokenService: TokenService,
-    private pageLoadingService: PageLoadingService
+    private pageLoadingService: PageLoadingService,
+    private validateCustomerService: ValidateCustomerService
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
+    this.user = this.tokenService.getUser();
   }
 
   ngOnInit(): void {
-    this.user = this.tokenService.getUser();
     this.callService();
     this.activatedRoute.queryParams.subscribe((params: Params) => this.params = params);
   }
@@ -59,44 +59,7 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
   }
 
   onCompleted(value: any): void {
-    console.log('onCompleted', value);
-    this.mapCustomerObj(value);
-  }
-
-  mapCustomerObj(customer: any): void {
-    this.transaction.data.customer = {
-      idCardNo: customer.idCardNo,
-      idCardType: customer.idCardType || '',
-      titleName: customer.prefix || '',
-      firstName: customer.firstName || '',
-      lastName: customer.lastName || '',
-      birthdate: customer.birthDay + '/' + customer.birthMonth + '/' + customer.birthYear || '',
-      gender: customer.gender || '',
-      homeNo: customer.homeNo || '',
-      moo: customer.moo || '',
-      mooBan: customer.mooban || '',
-      buildingName: customer.buildingName || '',
-      floor: customer.floor || '',
-      room: customer.room || '',
-      street: customer.street || '',
-      soi: customer.soi || '',
-      tumbol: customer.tumbol || '',
-      amphur: customer.amphur,
-      province: customer.province || customer.provinceName || '',
-      firstNameEn: '',
-      lastNameEn: '',
-      issueDate: customer.birthdate || '',
-      expireDate: null,
-      zipCode: customer.zipCode || '',
-      mainMobile: customer.mainMobile || '',
-      mainPhone: customer.mainPhone || '',
-      billCycle: customer.billCycle || '',
-      caNumber: customer.caNumber || '',
-      mobileNo: '',
-      imageSignature: '',
-      imageSmartCard: '',
-      imageReadSmartCard: '',
-    };
+    this.transaction.data.customer = this.validateCustomerService.mapCustomer(value);
   }
 
   onHome(): void {
@@ -136,55 +99,23 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
       firstName: this.transaction.data.customer.firstName,
       lastName: this.transaction.data.customer.lastName
     };
-    const body: any = this.getRequestAddDeviceSellingCart({ customer: customer });
-    return this.http.post(`/api/salesportal/add-device-selling-cart`, body).toPromise().then((order: any) => {
-      if (order.data && order.data.soId) {// Create SoId
+    // tslint:disable-next-line: max-line-length
+    const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: customer });
+    return this.validateCustomerService.addDeviceSellingCart(body).then((order: any) => {
+      if (order.data && order.data.soId) {
         this.transaction.data = {
           ...this.transaction.data,
           order: { soId: order.data.soId },
         };
       }
     }).then(() => {
-      this.checkAgeAndExpireCard();
-    }).then(() => {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
-      this.pageLoadingService.closeLoading();
-    });
-  }
-
-  getRequestAddDeviceSellingCart(bodyRequest: any): any {
-    try {
-      const productStock = this.priceOption.productStock;
-      const productDetail = this.priceOption.productDetail;
-      const preBooking: Prebooking = this.transaction.data.preBooking;
-      let subStock;
-      const customer: any = bodyRequest;
-      const trade: any = this.priceOption.trade;
-      if (preBooking && preBooking.preBookingNo) {
-        subStock = 'PRE';
+      if (this.checkAgeAndExpireCard()) {
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
+        this.pageLoadingService.closeLoading();
+      } else {
+        this.pageLoadingService.closeLoading();
       }
-      return {
-        soCompany: productStock.company || 'AWN',
-        locationSource: this.user.locationCode,
-        locationReceipt: this.user.locationCode,
-        productType: productDetail.productType || 'DEVICE',
-        productSubType: productDetail.productSubType || 'HANDSET',
-        brand: productDetail.brand || productStock.brand,
-        model: productDetail.model || productStock.model,
-        color: productStock.color || productStock.colorName,
-        priceIncAmt: '' + trade.normalPrice,
-        priceDiscountAmt: '' + trade.discount.amount,
-        grandTotalAmt: '',
-        userId: this.user.username,
-        cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
-        preBookingNo: preBooking ? preBooking.preBookingNo : '',
-        depositAmt: preBooking ? preBooking.depositAmt : '',
-        reserveNo: preBooking ? preBooking.reserveNo : '',
-        subStockDestination: subStock
-      };
-    } catch (error) {
-      throw error;
-    }
+    });
   }
 
   ngOnDestroy(): void {

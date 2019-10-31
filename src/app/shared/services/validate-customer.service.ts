@@ -1,0 +1,170 @@
+import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { User } from 'mychannel-shared-libs';
+import { Transaction, Prebooking } from '../models/transaction.model';
+import { PriceOption } from '../models/price-option.model';
+import * as moment from 'moment';
+
+@Injectable({
+  providedIn: 'root'
+})
+export class ValidateCustomerService {
+
+  constructor(
+    private http: HttpClient,
+  ) { }
+
+  queryCustomerInfo(identity: string): Promise<any> {
+    return this.http.get(`/api/customerportal/newRegister/${identity}/queryCustomerInfo`).toPromise();
+  }
+
+  checkValidateCustomer(idCardNo: string, idCardType: string, transactionType: string): Promise<any> {
+    return this.http.get('/api/customerportal/validate-customer-new-register', {
+      params: {
+        identity : idCardNo,
+        idCardType: idCardType,
+        transactionType: transactionType
+      }
+    }).toPromise();
+  }
+
+  queryBillingAccount(identity: string): Promise<any> {
+    return this.http.get(`/api/customerportal/newRegister/${identity}/queryBillingAccount`).toPromise();
+  }
+
+  getCurrentDate(): Promise<any> {
+    return this.http.get(`/api/customerportal/currentDate`).toPromise();
+  }
+
+  addDeviceSellingCart(body: any): Promise<any> {
+    return this.http.post(`/api/salesportal/add-device-selling-cart`, body).toPromise();
+  }
+
+  billingNetExtreme(data: any): Promise<any> {
+    return this.http.post('/api/customerportal/verify/billingNetExtreme', {
+      businessType: '1',
+      listBillingAccount: data.billingAccountList
+    }).toPromise();
+  }
+
+  createTransaction(transactionObject: any): Promise<any> {
+    return this.http.post(`/api/salesportal/device-order/create-transaction`, transactionObject).toPromise();
+  }
+
+  selectMobileNumberRandom(user: User, transaction: Transaction): Promise<any> {
+    return this.http.post('/api/customerportal/newRegister/selectMobileNumberRandom', {
+      userId: user.username,
+      mobileNo: transaction.data.simCard.mobileNo,
+      action: 'Unlock'
+    }).toPromise();
+  }
+  clearTempStock(priceOption: PriceOption, transaction: Transaction): Promise<any> {
+    return this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
+      location: priceOption.productStock.location,
+      soId: transaction.data.order.soId,
+      transactionId: transaction.transactionId
+    }).toPromise();
+  }
+
+  getRequestAddDeviceSellingCart(user: User, transaction: Transaction, priceOption: PriceOption, bodyRequest: any): any {
+    try {
+      const productStock = priceOption.productStock;
+      const productDetail = priceOption.productDetail;
+      const preBooking: Prebooking = transaction.data.preBooking;
+      let subStock;
+      const customer: any = bodyRequest.customer.data || bodyRequest.customer;
+      const trade: any = priceOption.trade;
+      if (preBooking && preBooking.preBookingNo) {
+        subStock = 'PRE';
+      }
+      return {
+        soCompany: productStock.company || 'AWN',
+        locationSource: user.locationCode,
+        locationReceipt: user.locationCode,
+        productType: productDetail.productType || 'DEVICE',
+        productSubType: productDetail.productSubType || 'HANDSET',
+        brand: productDetail.brand || productStock.brand,
+        model: productDetail.model || productStock.model,
+        color: productStock.color || productStock.colorName,
+        priceIncAmt: '' + trade.normalPrice,
+        priceDiscountAmt: '' + trade.discount.amount,
+        grandTotalAmt: '',
+        userId: user.username,
+        cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
+        preBookingNo: preBooking ? preBooking.preBookingNo : '',
+        depositAmt: preBooking ? preBooking.depositAmt : '',
+        reserveNo: preBooking ? preBooking.reserveNo : '',
+        subStockDestination: subStock
+      };
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  mapCardType(idCardType: string): string {
+    idCardType = idCardType ? idCardType : 'ID_CARD';
+    const mapCardType: any = {
+      CERT_FOUND: 'หนังสือจัดตั้งสมาคม / มูลนิธิ',
+      EMB_LET: 'หนังสือออกจากสถานทูต',
+      GOV_LET: 'หนังสือออกจากหน่วยราชการ',
+      HILL_CARD: 'บัตรประจำตัวคนบนที่ราบสูง',
+      ID_CARD: 'บัตรประชาชน',
+      IMM_CARD: 'บัตรประจำตัวคนต่างด้าว',
+      MONK_CERT: 'ใบสุทธิพระ',
+      PASSPORT: 'หนังสือเดินทาง',
+      ROY_LET: 'หนังสือออกจากสำนักพระราชวัง',
+      STA_LET: 'หนังสือออกจากรัฐวิสาหกิจ',
+      TAX_ID: 'เลขที่ประจำตัวผู้เสียภาษีอากร'
+    };
+    return mapCardType[idCardType];
+  }
+
+  mapCustomer(customer: any): any {
+    return {
+      idCardNo: customer.idCardNo,
+      idCardType: customer.idCardType || '',
+      titleName: customer.prefix || '',
+      firstName: customer.firstName || '',
+      lastName: customer.lastName || '',
+      birthdate: customer.birthDay + '/' + customer.birthMonth + '/' + customer.birthYear || '',
+      gender: customer.gender || '',
+      homeNo: customer.homeNo || '',
+      moo: customer.moo || '',
+      mooBan: customer.mooban || '',
+      buildingName: customer.buildingName || '',
+      floor: customer.floor || '',
+      room: customer.room || '',
+      street: customer.street || '',
+      soi: customer.soi || '',
+      tumbol: customer.tumbol || '',
+      amphur: customer.amphur,
+      province: customer.province || customer.provinceName || '',
+      firstNameEn: '',
+      lastNameEn: '',
+      issueDate: customer.birthdate || '',
+      expireDate: null,
+      zipCode: customer.zipCode || '',
+      mainMobile: customer.mainMobile || '',
+      mainPhone: customer.mainPhone || '',
+      billCycle: customer.billCycle || '',
+      caNumber: customer.caNumber || '',
+      mobileNo: '',
+      imageSignature: '',
+      imageSmartCard: '',
+      imageReadSmartCard: '',
+    };
+  }
+
+  generateTransactionId(): any {
+    let emptyString: string = '';
+    const alphabet: string = 'abcdefghijklmnopqrstuvwxyz';
+    while (emptyString.length < 2) {
+      emptyString += alphabet[Math.floor(Math.random() * alphabet.length)];
+    }
+    const randomAlphabet: string = emptyString;
+    const today: any = moment().format('YYYYMMD');
+    const randomNumber: string = Math.floor(Math.random() * 1000000).toString();
+    const transactionId: string = randomAlphabet + today + randomNumber;
+    return transactionId;
+  }
+}

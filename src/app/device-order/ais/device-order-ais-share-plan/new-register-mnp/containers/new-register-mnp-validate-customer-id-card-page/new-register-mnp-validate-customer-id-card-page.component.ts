@@ -10,7 +10,7 @@ import { environment } from 'src/environments/environment';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE } from '../../constants/route-path.constant';
-import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from 'src/app/buy-product/constants/route-path.constant';
+import { ValidateCustomerService } from 'src/app/shared/services/validate-customer.service';
 
 @Component({
   selector: 'app-new-register-mnp-validate-customer-id-card-page',
@@ -41,8 +41,10 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
     private http: HttpClient,
     private tokenService: TokenService,
     private utils: Utils,
-    private alertService: AlertService
+    private alertService: AlertService,
+    private validateCustomerService: ValidateCustomerService
   ) {
+    this.transaction = this.transactionService.load();
     this.user = this.tokenService.getUser();
     this.priceOption = this.priceOptionService.load();
     this.homeService.callback = () => {
@@ -136,13 +138,8 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
       this.createTransaction();
       this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
         .then((zipCode: string) => {
-          return this.http.get('/api/customerportal/validate-customer-new-register', {
-            params: {
-              identity: this.profile.idCardNo,
-              idCardType: this.profile.idCardType,
-              transactionType: TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS
-            }
-          }).toPromise()
+          const transactionType = TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS;
+          return this.validateCustomerService.checkValidateCustomer(this.profile.idCardNo, this.profile.idCardType, transactionType)
             .then((resp: any) => {
               const data = resp.data || {};
               return {
@@ -155,7 +152,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
         })
         .then((customer: any) => {
           this.transaction.data.customer = Object.assign(this.profile, customer);
-          return this.http.get(`/api/customerportal/newRegister/${this.profile.idCardNo}/queryBillingAccount`).toPromise()
+          return this.validateCustomerService.queryBillingAccount(this.profile.idCardNo)
             .then((resp: any) => {
               const data = resp.data || {};
               return {
@@ -174,10 +171,9 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
                 this.onBack();
                 return;
               }
-              return this.http.post(
-                '/api/salesportal/add-device-selling-cart',
-                this.getRequestAddDeviceSellingCart()
-              ).toPromise()
+              // tslint:disable-next-line: max-line-length
+              const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, {customer: this.transaction.data.customer});
+              return this.validateCustomerService.addDeviceSellingCart(body)
                 .then((resp: any) => {
                   this.transaction.data.order = { soId: resp.data.soId };
                   return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
@@ -247,7 +243,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
     if (environment.name === 'LOCAL') {
       window.location.href = '/main-menu';
     } else {
-      window.location.href = '/smart-digital/main-menu';
+      window.location.href = '/sales-portal/main-menu';
     }
   }
 
@@ -258,48 +254,18 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
       const promiseAll = [];
       if (transaction.data) {
         if (transaction.data.simCard && transaction.data.simCard.mobileNo) {
-          const unlockMobile = this.http.post('/api/customerportal/newRegister/selectMobileNumberRandom', {
-            userId: this.user.username,
-            mobileNo: transaction.data.simCard.mobileNo,
-            action: 'Unlock'
-          }).toPromise().catch(() => Promise.resolve());
+          const unlockMobile: any = this.validateCustomerService.selectMobileNumberRandom(this.user, transaction)
+          .catch(() => Promise.resolve());
           promiseAll.push(unlockMobile);
         }
         if (transaction.data.order && transaction.data.order.soId) {
-          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
-            location: this.priceOption.productStock.location,
-            soId: transaction.data.order.soId,
-            transactionId: transaction.transactionId
-          }).toPromise().catch(() => Promise.resolve());
+          const order = this.validateCustomerService.clearTempStock(this.priceOption, transaction)
+          .catch(() => Promise.resolve());
           promiseAll.push(order);
         }
       }
       Promise.all(promiseAll).then(() => resolve());
     });
-  }
-
-  getRequestAddDeviceSellingCart(): any {
-    const productStock = this.priceOption.productStock;
-    const productDetail = this.priceOption.productDetail;
-    const customer = this.transaction.data.customer;
-    return {
-      soCompany: productStock.company || 'AWN',
-      locationSource: this.user.locationCode,
-      locationReceipt: this.user.locationCode,
-      productType: productDetail.productType || 'DEVICE',
-      productSubType: productDetail.productSubType || 'HANDSET',
-      brand: productStock.brand || productDetail.brand,
-      model: productDetail.model || productStock.model,
-      color: productStock.color || productStock.colorName,
-      priceIncAmt: '',
-      priceDiscountAmt: '',
-      grandTotalAmt: '',
-      userId: this.user.username,
-      cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim(),
-      preBookingNo: '',
-      depositAmt: '',
-      reserveNo: ''
-    };
   }
 
   isDevelopMode(): boolean {
