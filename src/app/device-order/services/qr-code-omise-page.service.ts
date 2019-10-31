@@ -21,7 +21,7 @@ export class QrCodeOmisePageService {
   }
 
   retriveOrder(params: Object): Promise<any> {
-    return this.http.get('/api/payments/super-duper/order', params).toPromise();
+    return this.http.get('/api/payments/super-duper/orders', params).toPromise();
   }
 
   getTimeCounter(second: number): Observable<number> {
