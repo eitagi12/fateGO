@@ -23,7 +23,7 @@
               <div [hidden]="!(openCamera && !transaction?.data?.faceRecognition?.imageFaceUser)"
                 class="position-relative">
                 <mc-camera [flip]="true" [countdown]="5" [onTakePhoto]="camera" (completed)="onCameraCompleted($event)"
-                  (error)="onCameraError($event)" [settings]="settings">
+                  (error)="onCameraError($event)" >
                 </mc-camera>
               </div>
               <div [hidden]="!transaction?.data?.faceRecognition?.imageFaceUser">
