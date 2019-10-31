@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ShoppingCartService } from 'src/app/device-order/services/shopping-cart.service';
 import { HomeService, TokenService, ShoppingCart, CaptureAndSign, AlertService, User, ChannelType } from 'mychannel-shared-libs';
-import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
+import { Transaction, Customer, SignatureAndImageSmartCard } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 import { AgreementSignConstant } from '../../constants/agreement-sign.constant';
@@ -63,6 +63,22 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
     const customer: Customer = this.transaction.data.customer;
     customer.imageSignatureSmartCard = captureAndSign.imageSignature;
     customer.imageSmartCard = captureAndSign.imageSmartCard;
+  }
+
+  // tslint:disable-next-line: typedef
+  onSuccessCaptureAndSign(captureAndSign: any) {
+    console.log('onSuccessCaptureAndSign =>', captureAndSign);
+
+    // tslint:disable-next-line: max-line-length
+    const { signatureImage, smartCardImage, smartCardImageWithSignature, smartCardImageWithSignatureAndWatermak, imageSignatureOnly } = captureAndSign;
+    let dataImage: SignatureAndImageSmartCard;
+    if (signatureImage !== null) {
+      dataImage = {
+        dataSignature: '',
+        dataImageSmartCard: ''
+      };
+    }
+    localStorage.setItem('testSaveSignature', JSON.stringify(dataImage));
   }
 
   onError(valid: boolean): void {

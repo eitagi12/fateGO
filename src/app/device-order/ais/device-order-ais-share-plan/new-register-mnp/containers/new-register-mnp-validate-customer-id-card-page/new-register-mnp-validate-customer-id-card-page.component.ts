@@ -10,6 +10,7 @@ import { environment } from 'src/environments/environment';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { TranslateService } from '@ngx-translate/core';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE } from 'src/app/buy-product/constants/route-path.constant';
 
 @Component({
   selector: 'app-new-register-mnp-validate-customer-id-card-page',
@@ -40,9 +41,34 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
     private http: HttpClient,
     private tokenService: TokenService,
     private utils: Utils,
-    private alertService: AlertService) {
+    private alertService: AlertService
+  ) {
     this.user = this.tokenService.getUser();
     this.priceOption = this.priceOptionService.load();
+    this.homeService.callback = () => {
+      const url = this.router.url;
+      if (url.indexOf('result') !== -1) {
+        this.homeHandler();
+      } else {
+        this.alertService.question(this.translateService.instant('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่'))
+          .then((data: any) => {
+            if (!data.value) {
+              return false;
+            }
+            if (this.validateCustomerIdcard.koiskApiFn) {
+              this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
+            }
+            return this.returnStock().then(() => true);
+          })
+          .then((isNext: boolean) => {
+            if (isNext) {
+              this.homeHandler();
+            }
+          });
+      }
+    };
+
+    this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
   }
 
   ngOnInit(): void {
@@ -85,6 +111,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
   }
 
   onBack(): void {
+    const queryParams = this.priceOption.queryParams;
     this.alertService.question(this.translateService.instant('ท่านต้องการยกเลิกการซื้อสินค้าหรือไม่'))
       .then((data: any) => {
         if (!data.value) {
@@ -93,19 +120,18 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
         if (this.validateCustomerIdcard.koiskApiFn) {
           this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
         }
-        // Returns stock (sim card, soId) todo...
         return this.returnStock().then(() => true);
       })
       .then((isNext: boolean) => {
         if (isNext) {
-          // this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
+          this.transactionService.remove();
+          window.location.href = `/sales-portal/buy-product/brand/${queryParams.brand}/${queryParams.model}`;
         }
       });
   }
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    // มี auto next ทำให้ create transaction ช้ากว่า read card
     this.returnStock().then(() => {
       this.createTransaction();
       this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
@@ -207,7 +233,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
       if (this.utils.isIdCardExpiredDate(expireDate)) {
         return reject(
           `${this.translateService.instant('ไม่สามารถทำรายการได้ เนื่องจาก')} ${idCardType} ${this.translateService.instant('หมดอายุ')}`
-          );
+        );
       }
       resovle(null);
     });
@@ -262,9 +288,9 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
       locationReceipt: this.user.locationCode,
       productType: productDetail.productType || 'DEVICE',
       productSubType: productDetail.productSubType || 'HANDSET',
-      brand: productStock.brand,
-      model: productDetail.model,
-      color: productStock.color,
+      brand: productStock.brand || productDetail.brand,
+      model: productDetail.model || productStock.model,
+      color: productStock.color || productStock.colorName,
       priceIncAmt: '',
       priceDiscountAmt: '',
       grandTotalAmt: '',
