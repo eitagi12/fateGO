@@ -339,9 +339,13 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
 
   searchCustomerInfo(): void {
     if (this.searchByMobileNoForm.valid) {
-      this.clearKeyInCustomer();
       const mobileNo = this.searchByMobileNoForm.value.mobileNo;
       this.checkChargeType(mobileNo);
+      this.transaction.data.simCard = {
+        ...this.transaction.data.simCard,
+        mobileNo: mobileNo
+      };
+      this.clearKeyInCustomer();
     } else {
       this.clearData();
       this.receiptInfoValid = false;
@@ -380,10 +384,8 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
         }
       }).catch((err: any) => {
         this.pageLoadingService.closeLoading();
-        if (err.error.developerMessage === 'Subscriber not found' ||
-          err.error.developerMessage === 'Unsupported businessType' ||
-          err.error.developerMessage === 'Ntype Match Fail.' ||
-          err.error.resultDescription === 'MobileNo not found') {
+        if (err.error.developerMessage === 'Subscriber not found' || err.error.developerMessage === 'Unsupported businessType' ||
+          err.error.developerMessage === 'Ntype Match Fail.' || err.error.resultDescription === 'MobileNo not found') {
           this.isShowCustomerNonAIS = true;
           this.isShowCustomerInfo = false;
           this.customerInfoService.isNonAis = 'Non-AIS';
@@ -391,17 +393,9 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
           // Set Customer For Non-AIS
           this.keyInCustomerForm.valueChanges.pipe(debounceTime(750)).subscribe((value: any) => {
             if (this.keyInCustomerForm.valid) {
-              const data: any = {
-                idCardNo: value.idCardNo,
-                titleName: value.titleName,
-                firstName: value.firstName,
-                lastName: value.lastName
-              };
-              this.setCustomerInfo(data, TransactionAction.KEY_IN);
+              this.setCustomerInfo(value, TransactionAction.KEY_IN);
+              this.setReceiptInfo(value.idCardNo);
               this.receiptInfoValid = true;
-              // tslint:disable-next-line:max-line-length
-              data.idCardNo === '' ? this.receiptInfoForm.controls['taxId'].setValue('') : this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(value.idCardNo.substring(9))}`));
-              this.setReceiptInfo();
             } else {
               this.receiptInfoValid = false;
               this.receiptInfoForm.controls['taxId'].setValue('');
@@ -424,9 +418,8 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
   customerAccount(mobileNo: string): void {
     this.http.get(`/api/customerportal/${mobileNo}/query-customer-account`).toPromise()
       .then((res: any) => {
-        this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(res.data.idCardNo.substring(9))}`));
         this.setCustomerInfo(res.data, TransactionAction.KEY_IN);
-        this.setReceiptInfo();
+        this.setReceiptInfo(res.data.idCardNo);
         this.receiptInfoValid = true;
         this.isShowCustomerInfo = true;
         this.isShowCustomerNonAIS = false;
@@ -573,9 +566,8 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
     this.customerInfoService.isNonAis = '';
     this.searchByMobileNoForm.controls['mobileNo'].setValue('');
     if (billingAddressSelected === ADDRESS_BY_SMART_CARD) {
-      this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(this.customer.idCardNo.substring(9))}`));
       this.setCustomerInfo(this.customer, TransactionAction.READ_CARD);
-      this.setReceiptInfo();
+      this.setReceiptInfo(this.customer.idCardNo);
       this.isSelect = true;
       this.receiptInfoValid = true;
       this.customerInfoService.setSelectedMobileNo('');
@@ -586,18 +578,22 @@ export class DeviceOnlyAspReadCardPageComponent implements OnInit, OnDestroy {
         .then((bill: any) => {
           this.pageLoadingService.closeLoading();
           this.setCustomerInfo(bill.data.billingAddress, TransactionAction.READ_CARD);
+          this.setReceiptInfo(bill.data.billingAddress.idCardNo);
           this.customerInfoService.setSelectedMobileNo(mobileNo);
-          this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(bill.data.billingAddress.idCardNo.substring(9))}`));
-          this.setReceiptInfo();
           this.receiptInfoValid = true;
-        }).catch((err: any) => {
-          this.alertService.error(err.error.resultDescription);
+          this.transaction.data.simCard = {
+            ...this.transaction.data.simCard,
+            mobileNo : mobileNo
+          };
+        })
+        .catch(() => {
           this.pageLoadingService.closeLoading();
         });
     }
   }
 
-  setReceiptInfo(): void {
+  setReceiptInfo(idCardNo: any): void {
+    this.receiptInfoForm.controls['taxId'].setValue((`XXXXXXXXX${(idCardNo.substring(9))}`));
     if (this.receiptInfoForm.valid) {
       this.receiptInfo = this.receiptInfoForm.value;
       this.transaction.data.receiptInfo = this.receiptInfo;
