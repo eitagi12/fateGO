@@ -7,7 +7,6 @@
       <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
-
   <div class="mc-flex-wrap">
     <app-shopping-cart-detail></app-shopping-cart-detail>
     <mc-wizard [wizards]="wizards" active="3"></mc-wizard>
@@ -17,11 +16,11 @@
         <app-summary-order-detail></app-summary-order-detail>
 
         <!-- สินค้าและบริการอื่น -->
-        <app-summary-product-and-service ></app-summary-product-and-service>
+        <app-summary-product-and-service></app-summary-product-and-service>
 
         <!-- รายละเอียดการชำระ -->
         <app-summary-payment-detail></app-summary-payment-detail>
-
+        
         <!-- แสดง Balance เฉพาะเบอร์ Pre-Paid -->
         <div class="card mb-3" *ngIf="isShowBalance">
           <div class="card-body">
@@ -38,11 +37,11 @@
               <img class="icon-pouch" src="assets/images/icon/icon-red-alert-circle.png">
               <span class="text-red">
                 <b>
-                  {{ 'ยอดเงินคงเหลือ' | translate }} 
+                  {{ 'ยอดเงินคงเหลือ' | translate }}
                   {{ balance | number}}
-                  {{ 'บาท' | translate }} 
+                  {{ 'บาท' | translate }}
                   {{ 'กรุณาเติมเงินเพิ่ม' | translate }}
-                  {{ (priceMobileCare - balance) | number }} 
+                  {{ (priceMobileCare - balance) | number }}
                   {{ 'บาท' | translate }}
                   {{ 'เพื่อสมัครแพ็กเกจ' | translate }}<br>
                   {{ '*เมื่อเติมเงินเรียบร้อยแล้ว กรุณากดปุ่มเพื่ออัพเดทยอดเงินคงเหลือ' | translate }}
@@ -60,9 +59,8 @@
       </div>
     </div>
   </div>
-
   <mc-footer>
     <button class="btn btn-secondary" id="button-back" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" id="button-next" (click)="onNext()">NEXT</button>
+    <button class="btn btn-success" id="button-next" (click)="onNext()" [disabled]="!isNext">NEXT</button>
   </mc-footer>
 </div>

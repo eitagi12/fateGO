@@ -11,7 +11,7 @@
   <div class="mc-flex-wrap">
     <app-shopping-cart-detail></app-shopping-cart-detail>
     <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
-    <app-mobile-care
+    <app-mobile-care-asp
       [mobileCare]="mobileCare"
       [normalPrice]="priceOption?.trade?.normalPrice" 
       (existingMobileCare)="getCurrentPackMobileCare($event)" 
@@ -19,7 +19,7 @@
       (isVerifyflag)="onIsVerify($event)"
       (completed)="onCompleted($event)"
       (mobileNoEmit)="onMobile($event)">
-    </app-mobile-care>
+    </app-mobile-care-asp>
   </div>
   <mc-footer>
     <button class="btn btn-secondary" id="button-back" (click)="onBack()">BACK</button>

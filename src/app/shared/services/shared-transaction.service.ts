@@ -104,7 +104,8 @@ export class SharedTransactionService {
           sellerName: !!data.seller ? data.seller.sellerName : '',
           isAscCode: !this.tokenService.isAisUser(),
           sellerNo: !!data.seller ? data.seller.sellerNo : '',
-          employeeId: data.seller && data.seller.employeeId ? data.seller.employeeId : ''
+          employeeId: data.seller && data.seller.employeeId ? data.seller.employeeId : '',
+          sharedUser: !!data.seller ? data.seller.sharedUser : ''
         },
         status: data.status || {}
       }

@@ -64,7 +64,6 @@ export class CustomerInformationService {
 
   setSelectedMobileNo(mobileNo: string): void {
     this.selectedMobileNo = mobileNo;
-    console.log('set mobileNo => : ', this.selectedMobileNo);
   }
 
   getSelectedMobileNo(): string {

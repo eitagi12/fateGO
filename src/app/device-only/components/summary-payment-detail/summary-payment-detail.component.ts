@@ -12,6 +12,7 @@ import { Utils, User, TokenService } from 'mychannel-shared-libs';
 })
 export class SummaryPaymentDetailComponent implements OnInit {
 
+  public enoughBalance: boolean;
   priceOption: PriceOption;
   transaction: Transaction;
   customerAddress: string;

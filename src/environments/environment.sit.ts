@@ -2,6 +2,7 @@ export const environment = {
   production: false,
   name: 'SIT',
   CSP_URL: 'https://sffsit.ais.co.th:8103/SFFWeb/pages/home/aisMyChannel.jsf',
+  sffHomeUrl: 'http://10.13.81.39:8103/SFFWeb/pages/home/index.jsf',
   AUTH_URL: 'https://sffsit.ais.co.th:8103/SFFWeb/pages/home/portal.jsf',
   WEB_CONNECT_URL: 'wss://localhost:8088',
   TEST_OTP_MOBILE: '0927095833',

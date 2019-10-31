@@ -12,6 +12,10 @@ export class CustomerInformationService {
   public unsubscribe: any;
   public cancelreadcard: Subject<boolean> = new Subject<boolean>();
   public isReadCard: boolean = false;
+  private _isNonAis: string;
+  private _isAddressReadCard: boolean;
+  private chargeType: string;
+  private mobileNoStatus: string;
 
   constructor(
     private http: HttpClient
@@ -104,18 +108,18 @@ export class CustomerInformationService {
 
   convertBillingAddressToString(billDeliveryAddress: Customer): string {
     const addressCus: any = {
-      homeNo: billDeliveryAddress.homeNo,
+      homeNo: billDeliveryAddress.homeNo || '',
       moo: billDeliveryAddress.moo ? 'หมู่ ' + billDeliveryAddress.moo : '',
       mooBan: billDeliveryAddress.mooBan ? 'หมู่บ้าน' + billDeliveryAddress.mooBan : '',
-      buildingName: billDeliveryAddress.buildingName,
-      floor: billDeliveryAddress.floor,
+      buildingName: billDeliveryAddress.buildingName || '',
+      floor: billDeliveryAddress.floor || '',
       room: billDeliveryAddress.room || '',
-      street: billDeliveryAddress.street,
+      street: billDeliveryAddress.street ? 'ถนน ' + billDeliveryAddress.street : '',
       soi: billDeliveryAddress.soi ? 'ซอย ' + billDeliveryAddress.soi : '',
       tumbol: billDeliveryAddress.tumbol ? 'ตำบล' + billDeliveryAddress.tumbol : '',
       amphur: billDeliveryAddress.amphur ? 'อำเภอ' + billDeliveryAddress.amphur : '',
-      province: billDeliveryAddress.province,
-      zipCode: billDeliveryAddress.zipCode,
+      province: billDeliveryAddress.province || billDeliveryAddress.provinceName || '',
+      zipCode: billDeliveryAddress.zipCode || billDeliveryAddress.portalCode,
     };
 
     let str: string = '';
@@ -125,6 +129,37 @@ export class CustomerInformationService {
       }
     }
     return str;
+  }
+
+  public get isNonAis(): string {
+    return this._isNonAis;
+  }
+  public set isNonAis(value: string) {
+    this._isNonAis = value;
+  }
+
+  getAddressReadCard(): boolean {
+    return this._isAddressReadCard;
+  }
+
+  setAddressReadCard(isAddressReadCard: boolean): void {
+    this._isAddressReadCard = isAddressReadCard;
+  }
+
+  getMobileNoStatus(): string {
+    return this.mobileNoStatus;
+  }
+
+  setMobileNoStatus(mobileNo: string): void {
+    this.mobileNoStatus = mobileNo;
+  }
+
+  getChargeType(): string {
+    return this.chargeType;
+  }
+
+  setChargeType(isChargeType: string): void {
+    this.chargeType = isChargeType;
   }
 
 }

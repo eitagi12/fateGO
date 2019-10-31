@@ -198,6 +198,11 @@ export class CreateOrderService {
     return this.http.post('/api/salesportal/create-device-selling-order', order).toPromise();
   }
 
+  createOrderDeviceOnlyASP(transaction: Transaction, priceOption: PriceOption): Promise<any> {
+    const order = this.mapCreateOrderFlowWeb(transaction, priceOption);
+    return this.http.post('/api/salesportal/create-device-selling-order', order).toPromise();
+  }
+
   mapCreateOrder(transaction: Transaction, priceOption: PriceOption): any {
     const sellerNo = (transaction.data.seller && transaction.data.seller.sellerNo) ? transaction.data.seller.sellerNo : '';
     const mapInstallmentTerm = transaction.data.payment.paymentMethod.month ? transaction.data.payment.paymentMethod.month : 0;
@@ -225,7 +230,7 @@ export class CreateOrderService {
       queueNo: transaction.data.queue.queueNo,
       cusNameOrder: transaction.data.customer.firstName + ' ' + transaction.data.customer.lastName,
       taxCardId: transaction.data.customer.idCardNo,
-      cusMobileNoOrder: transaction.data.receiptInfo.telNo,
+      cusMobileNoOrder: transaction.data.receiptInfo.telNo || '',
       customerAddress: this.mapCusAddress(transaction.data.customer),
       tradeNo: priceOption.trade.tradeNo,
       paymentRemark: this.getOrderRemark(transaction, priceOption),
@@ -238,6 +243,49 @@ export class CreateOrderService {
       qrAmt: this.getQRAmt(priceOption, transaction), // add
       reqMinimumBalance: transaction.data.simCard ? this.getReqMinimumBalance(transaction, transaction.data.mobileCarePackage) : '',
       qrOrderId: mapQrOrderId,
+      tradeType: transaction.data.tradeType
+    };
+  }
+
+  mapCreateOrderFlowWeb(transaction: Transaction, priceOption: PriceOption): any {
+    const sellerNo = (transaction.data.seller && transaction.data.seller.sellerNo) ? transaction.data.seller.sellerNo : '';
+    const mapInstallmentTerm = transaction.data.payment.paymentMethod.month ? transaction.data.payment.paymentMethod.month : 0;
+    const mapInstallmentRate = transaction.data.payment.paymentMethod.percentage ? transaction.data.payment.paymentMethod.percentage : 0;
+    const mapBankAbb = transaction.data.payment.paymentBank.abb ? transaction.data.payment.paymentBank.abb : '';
+    const mapBankCode = transaction.data.payment.paymentBank.abb ? transaction.data.payment.paymentBank.abb : '';
+    const mapTelNo = transaction.data.receiptInfo.telNo ? transaction.data.receiptInfo.telNo : '';
+    // tslint:disable-next-line: max-line-length
+    const mapCustomerNameOrder = (transaction.data.customer && transaction.data.customer.firstName && transaction.data.customer.lastName) ? transaction.data.customer.firstName + ' ' + transaction.data.customer.lastName : '';
+
+    return {
+      soId: transaction.data.order.soId,
+      soCompany: priceOption.productStock.company,
+      locationSource: this.user.locationCode,
+      locationReceipt: this.user.locationCode,
+      productType: priceOption.productDetail.productType,
+      productSubType: priceOption.productDetail.productSubtype,
+      brand: priceOption.productDetail.brand,
+      model: priceOption.productDetail.model,
+      color: priceOption.productStock.colorName,
+      matCode: priceOption.productStock.colorCode,
+      priceIncAmt: (+priceOption.trade.normalPrice).toFixed(2),
+      priceDiscountAmt: (+priceOption.trade.priceDiscount).toFixed(2),
+      grandTotalAmt: (+priceOption.trade.normalPrice - +priceOption.trade.priceDiscount).toFixed(2),
+      userId: this.user.username,
+      saleCode: sellerNo,
+      queueNo: transaction.data.queue.queueNo,
+      cusNameOrder: mapCustomerNameOrder,
+      taxCardId: transaction.data.customer.idCardNo,
+      cusMobileNoOrder: mapTelNo,
+      customerAddress: this.mapCusAddress(transaction.data.customer),
+      tradeNo: priceOption.trade.tradeNo,
+      paymentRemark: this.getOrderRemark(transaction, priceOption),
+      installmentTerm: mapInstallmentTerm,
+      installmentRate: mapInstallmentRate,
+      paymentMethod: this.getPaymentMethod(transaction, priceOption),
+      bankCode: mapBankCode,
+      bankAbbr: mapBankAbb,
+      reqMinimumBalance: transaction.data.simCard ? this.getReqMinimumBalance(transaction, transaction.data.mobileCarePackage) : '',
       tradeType: transaction.data.tradeType
     };
   }

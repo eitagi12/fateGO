@@ -31,6 +31,7 @@ export class DeviceOnlyAisSummaryPageComponent implements OnInit , OnDestroy {
   enoughBalance: boolean;
   isShowBalance: boolean;
   isNext: boolean;
+  isReasonNotBuyMobileCare: boolean;
 
   constructor(
     private router: Router,
