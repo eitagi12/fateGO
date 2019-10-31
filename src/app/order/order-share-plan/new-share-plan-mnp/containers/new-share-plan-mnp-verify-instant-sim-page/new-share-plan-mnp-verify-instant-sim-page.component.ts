@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, OnDestroy, ElementRef, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, ElementRef, AfterViewInit, EventEmitter } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_SELECT_NUMBER_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MASTER_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
@@ -28,6 +28,8 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
   keyinSimSerial: boolean;
   isHandsetDiscount: boolean;
   isEasyApp: boolean;
+  barcodeSubscription: Subscription;
+  barcode: EventEmitter<string> = new EventEmitter<string>();
 
   @ViewChild('mcSimSerial')
   mcSimSerial: SimSerialComponent;
@@ -46,7 +48,7 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
     private alertService: AlertService,
     private fb: FormBuilder,
     private aisNativeService: AisNativeService,
-    private tokenService: TokenService
+    // private tokenService: TokenService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -56,15 +58,14 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
     this.createForm();
     this.checkChannelType();
     this.findTextChangKiosk();
-
-    // scan sim
-    // this.barcodeSubscription = this.aisNativeService.getBarcode().subscribe((barcode: string) => {
-    //   this.barcode.emit(barcode);
-    // });
+    this.barcodeSubscription = this.aisNativeService.getBarcode().subscribe((barcode: string) => {
+      this.barcode.emit(barcode);
+    });
   }
 
   private checkChannelType(): void {
-    this.isEasyApp = this.tokenService.getUser().channelType === 'easy-app' ? true : false;
+    // this.isEasyApp = this.tokenService.getUser().channelType === 'easy-app' ? true : false;
+    this.isEasyApp = true;
   }
 
   private createForm(): void {
@@ -97,7 +98,6 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
       .then((resp: any) => {
         const simSerial = resp.data || [];
         this.simSerialValid = true;
-        this.onSubmit();
         this.simSerial = {
           mobileNo: simSerial.mobileNo,
           simSerial: serial
@@ -135,8 +135,7 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
 
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
-    // scan sim
-    // this.barcodeSubscription.unsubscribe();
+    this.barcodeSubscription.unsubscribe();
   }
 
   findTextChangKiosk(): void {
