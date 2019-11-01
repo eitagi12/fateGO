@@ -15,13 +15,13 @@
             {{ 'ระบุเลขที่ซิม' | translate }}
           </div>
           <div class="card-body">
-            <div class="text-center" *ngIf="simSerial?.simSerial && simSerial?.mobileNo">
-              <p class="text-grey" *ngIf="keyinSimSerial">
-                <label>{{ 'หมายเลขโทรศัพท์' | translate }} : {{ simSerial?.mobileNo | mobileNo }}</label>
-                <br> {{ 'เลขที่ซิม' | translate }} : {{ simSerial?.simSerial }}
-              </p>
-            </div>
             <form [formGroup]="serialForm">
+              <div class="text-center">
+                <p class="text-grey" *ngIf="keyinSimSerial && (simSerial?.simSerial && simSerial?.mobileNo)">
+                  <label>{{ 'หมายเลขโทรศัพท์' | translate }} : {{ simSerial?.mobileNo | mobileNo }}</label>
+                  <br> {{ 'เลขที่ซิม' | translate }} : {{ simSerial?.simSerial }}
+                </p>
+              </div>
               <div class="form-row">
                 <div class="col-9 col-sm-10">
                   <input #serial type="tel" class="form-control" id="serial"
@@ -43,23 +43,21 @@
             </form>
           </div>
         </div>
-        <!-- <div *ngIf="!isHandsetDiscount && (scanBarcodePC$ | async)" class="bysim__text-or">หรือ</div> -->
-        <div *ngIf="isEasyApp">
+        <div *ngIf="isAisNative()">
           <p class="text-center my-5">{{ 'หรือ' | translate }} </p>
           <div class="card mb-3">
             <div class="card-header bg-pink text-white">
               SCAN SIM
             </div>
-            <div class="card-body text-center">
-              <div *ngIf="simSerial?.mobileNo && simSerial?.simSerial">
-                <p class="text-grey" *ngIf="!keyinSimSerial">
-                  {{ 'หมายเลขโทรศัพท์' | translate }} : {{ simSerial?.mobileNo | mobileNo }}
-                  <br> {{ 'เลขที่ซิม' | translate }} : {{ simSerial?.simSerial }}
+            <div class="card-body m-auto">
+              <div *ngIf="!keyinSimSerial && (simSerial?.mobileNo && simSerial?.simSerial)">
+                <p class="text-grey text-center">
+                  {{ 'หมายเลขโทรศัพท์' | translate }} : {{ simSerial?.mobileNo | mobileNo }} <br>
+                  {{ 'เลขที่ซิม' | translate }} : {{ simSerial?.simSerial }}
                 </p>
               </div>
-              <button type="button" class="btn btn-light-blue pr-5 pl-5 pt-3 pb-3 btn-teal-a700 text-white"
-                (click)="onOpenScanBarcode()"
-                onclick="document.getElementById('serial').value = ''">{{keyinSimSerial === false ? 'สแกน Barcode อีกครั้ง' : 'สแกน Barcode'}}
+              <button type="button" class="btn btn-light-blue px-5 py-3 text-white" (click)="onOpenScanBarcode()">
+                {{keyinSimSerial === false ? 'สแกน Barcode อีกครั้ง' : 'สแกน Barcode'}}
               </button>
             </div>
           </div>
@@ -69,6 +67,6 @@
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()" [disabled]="!simSerialValid">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()">NEXT</button>
   </mc-footer>
 </div>

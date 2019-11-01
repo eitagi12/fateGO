@@ -1,9 +1,9 @@
-import { Component, OnInit, ViewChild, OnDestroy, ElementRef, AfterViewInit, EventEmitter } from '@angular/core';
+import { Component, OnInit, ViewChild, OnDestroy, ElementRef, AfterViewInit, EventEmitter, Output, Input, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_SELECT_NUMBER_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MASTER_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
-import { SimSerial, SimSerialComponent, HomeService, PageLoadingService, AlertService, AisNativeService, TokenService } from 'mychannel-shared-libs';
+import { SimSerial, SimSerialComponent, HomeService, PageLoadingService, AlertService, TokenService, AisNativeService, Utils } from 'mychannel-shared-libs';
 import { Subscription } from 'rxjs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -22,13 +22,18 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
   wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
   transaction: Transaction;
   simSerial: SimSerial;
-  simSerialValid: boolean;
+  // simSerialValid: boolean;
   translationSubscribe: Subscription;
   serialForm: FormGroup;
   keyinSimSerial: boolean;
   isHandsetDiscount: boolean;
   isEasyApp: boolean;
   barcodeSubscription: Subscription;
+
+  // @Input()
+  // simSerial: SimCardScan;
+
+  @Output()
   barcode: EventEmitter<string> = new EventEmitter<string>();
 
   @ViewChild('mcSimSerial')
@@ -48,25 +53,17 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
     private alertService: AlertService,
     private fb: FormBuilder,
     private aisNativeService: AisNativeService,
+    private utils: Utils,
+    private _ngZone: NgZone
     // private tokenService: TokenService
   ) {
     this.transaction = this.transactionService.load();
-
   }
 
   ngOnInit(): void {
     delete this.transaction.data.simCard;
     this.createForm();
-    this.checkChannelType();
     this.findTextChangKiosk();
-    this.barcodeSubscription = this.aisNativeService.getBarcode().subscribe((barcode: string) => {
-      this.barcode.emit(barcode);
-    });
-  }
-
-  private checkChannelType(): void {
-    // this.isEasyApp = this.tokenService.getUser().channelType === 'easy-app' ? true : false;
-    this.isEasyApp = true;
   }
 
   private createForm(): void {
@@ -83,7 +80,11 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MASTER_PAGE]);
   }
 
-  public checkSimSerial(): void {
+  onHome(): void {
+    window.location.href = '/sales-portal/dashboard';
+  }
+
+  checkSimSerial(): void {
     this.keyinSimSerial = true;
     const serial = this.serialForm.controls['serial'].value;
     this.getMobileNoBySim(serial);
@@ -93,10 +94,9 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
     this.pageLoadingService.openLoading();
     this.http.get(`/api/customerportal/validate-verify-instant-sim?serialNo=${serial}`).toPromise()
       .then((resp: any) => {
-        const simSerial = resp.data || [];
-        this.simSerialValid = true;
+        alert('then' + resp);
         this.simSerial = {
-          mobileNo: simSerial.mobileNo,
+          mobileNo: resp.data.mobileNo,
           simSerial: serial
         };
         this.transaction.data.simCard = {
@@ -104,17 +104,17 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
           simSerial: this.simSerial.simSerial,
           persoSim: false
         };
+        // this.simSerialValid = true;
         this.pageLoadingService.closeLoading();
-      }).catch((resp: any) => {
-        this.simSerialValid = false;
-        this.simSerial = undefined;
-        const error = resp.error || [];
+      }).catch((error: any) => {
         this.pageLoadingService.closeLoading();
+        // this.simSerialValid = false;
         this.alertService.notify({
           type: 'error',
-          html: this.translationService.instant(error.resultDescription.replace(/<br>/, ' '))
+          // html: this.translationService.instant()
+          html: error.developerMessage.replace(/<br>/, ' ')
         });
-        this.onSubmit();
+        // this.onSubmit();
       });
   }
 
@@ -123,16 +123,6 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
       serial: ''
     });
     this.serialField.nativeElement.focus();
-  }
-
-  onOpenScanBarcode(): void {
-    this.aisNativeService.scanBarcode();
-    this.keyinSimSerial = false;
-  }
-
-  ngOnDestroy(): void {
-    this.transactionService.update(this.transaction);
-    this.barcodeSubscription.unsubscribe();
   }
 
   findTextChangKiosk(): void {
@@ -154,4 +144,32 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
   ngAfterViewInit(): void {
     this.serialField.nativeElement.focus();
   }
+
+  isAisNative(): boolean {
+    return this.utils.isAisNative();
+  }
+
+  onOpenScanBarcode(): void {
+    this.keyinSimSerial = false;
+    this.serialForm.controls['serial'].setValue('');
+    window.aisNative.scanBarcode();
+    let barcodeSerial: string = '';
+    window.onBarcodeCallback = (barcode: any): void => {
+      if (barcode && barcode.length > 0) {
+        this._ngZone.run(() => {
+          const parser: any = new DOMParser();
+          barcode = '<data>' + barcode + '</data>';
+          const xmlDoc = parser.parseFromString(barcode, 'text/xml');
+          barcodeSerial = xmlDoc.getElementsByTagName('barcode')[0].firstChild.nodeValue;
+          this.getMobileNoBySim(barcodeSerial);
+        });
+      }
+    };
+  }
+
+  ngOnDestroy(): void {
+    this.barcodeSubscription.unsubscribe();
+    this.transactionService.update(this.transaction);
+  }
+
 }
