@@ -30,6 +30,9 @@ export class NewSharePlanMnpValidateCustomerKeyInPageComponent implements OnInit
 
   ) {
     this.transaction = this.transactionService.load();
+    this.homeService.callback = () => {
+      window.location.href = '/';
+    };
    }
 
   ngOnInit(): void {

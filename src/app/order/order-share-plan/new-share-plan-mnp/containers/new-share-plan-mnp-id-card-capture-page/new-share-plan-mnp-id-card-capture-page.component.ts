@@ -45,6 +45,9 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
   ) {
     this.transaction = this.transactionService.load();
     this.user = this.tokenService.getUser();
+    this.homeService.callback = () => {
+      window.location.href = '/';
+    };
 
     // เรียกกล้องของ PC
     this.signedSubscription = this.aisNativeService.getSigned().subscribe((signature: string) => {

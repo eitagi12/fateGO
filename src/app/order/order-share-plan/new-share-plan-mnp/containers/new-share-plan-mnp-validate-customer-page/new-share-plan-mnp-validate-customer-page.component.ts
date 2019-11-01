@@ -23,7 +23,11 @@ export class NewSharePlanMnpValidateCustomerPageComponent implements OnInit, OnD
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
     private http: HttpClient,
-  ) { }
+  ) {
+    this.homeService.callback = () => {
+      window.location.href = '/';
+    };
+   }
 
   ngOnInit(): void {
     this.createTransaction();

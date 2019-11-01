@@ -26,6 +26,9 @@ export class NewSharePlanMnpEbillingPageComponent implements OnInit, OnDestroy {
     private transactionService: TransactionService
   ) {
     this.transaction = this.transactionService.load();
+    this.homeService.callback = () => {
+      window.location.href = '/';
+    };
 
     if (!this.transaction.data.billingInformation) {
       this.transaction.data.billingInformation = {};

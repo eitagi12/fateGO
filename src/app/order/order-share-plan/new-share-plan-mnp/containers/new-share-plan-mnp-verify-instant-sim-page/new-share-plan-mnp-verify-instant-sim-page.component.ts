@@ -51,6 +51,9 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
     // private tokenService: TokenService
   ) {
     this.transaction = this.transactionService.load();
+    this.homeService.callback = () => {
+      window.location.href = '/';
+    };
   }
 
   ngOnInit(): void {

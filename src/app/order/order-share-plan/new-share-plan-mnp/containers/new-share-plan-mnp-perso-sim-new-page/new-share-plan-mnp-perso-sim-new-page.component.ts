@@ -164,6 +164,9 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
     private http: HttpClient
   ) {
     this.transaction = this.transactionService.load();
+    this.homeService.callback = () => {
+      window.location.href = '/';
+    };
     if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {
       this.typeSim = 'pullsim';
     } else {

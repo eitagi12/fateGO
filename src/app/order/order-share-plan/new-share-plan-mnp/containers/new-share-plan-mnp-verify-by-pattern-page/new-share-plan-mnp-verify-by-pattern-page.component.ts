@@ -38,6 +38,9 @@ export class NewSharePlanMnpVerifyByPatternPageComponent implements OnInit, OnDe
     private alertService: AlertService
   ) {
     this.transaction = this.transactionService.load();
+    this.homeService.callback = () => {
+      window.location.href = '/';
+    };
     this.user = this.tokenService.getUser();
   }
 

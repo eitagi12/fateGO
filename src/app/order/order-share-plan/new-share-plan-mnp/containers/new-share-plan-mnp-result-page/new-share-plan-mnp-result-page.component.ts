@@ -4,7 +4,7 @@ import { ROUTE_NEW_SHARE_PLAN_MNP_VALIDATE_CUSTOMER_PAGE } from '../../constants
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { CreateNewRegisterService } from 'src/app/shared/services/create-new-register.service';
-import { PageLoadingService } from 'mychannel-shared-libs';
+import { PageLoadingService, HomeService } from 'mychannel-shared-libs';
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 import { HttpClient } from '@angular/common/http';
 import { map, retryWhen, concatMap, delay } from 'rxjs/operators';
@@ -33,7 +33,7 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
   getEApplicationFn: any;
   @Input() previewImage: string[] = [];
   images: string[] = [];
-  orderNo: any = ['R1910000912413', 'R1910000912413'];
+  orderNo: any = [];
   public MSG_ERROR_DEFAULT: string = 'ขออภัยระบบไม่สามารถทำรายการได้';
 
   constructor(
@@ -41,15 +41,22 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
     private transactionService: TransactionService,
     private createNewRegisterService: CreateNewRegisterService,
     private pageLoadingService: PageLoadingService,
-    private http: HttpClient
+    private http: HttpClient,
+    private homeService: HomeService
   ) {
     this.transaction = this.transactionService.load();
+    this.homeService.callback = () => {
+      window.location.href = '/';
+    };
   }
 
   ngOnInit(): void {
     this.mobileNo = this.transaction.data.simCard.mobileNo;
     this.simSerial = this.transaction.data.simCard.simSerial;
+    this.mobileNoMember = this.transaction.data.simCard.mobileNoMember;
+    this.simSerialMember = this.transaction.data.simCard.simSerialMember;
     // this.checkOrderStatus();
+    console.log('[this.orderNo', this.orderNo);
     this.pageLoadingService.openLoading();
     this.createNewRegisterService.createNewRegister(this.transaction)
       .then((resp: any) => {
@@ -62,7 +69,10 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
         if (this.transaction.data.order.orderNo) {
           this.isSuccess = true;
           this.checkOrderStatusByOrderNo(this.transaction.data.order.orderNo).then((res: any) => {
+            console.log('res checkOrderStatusByOrderNo New', res);
+            this.orderNo.push(this.transaction.data.order.orderNo);
             this.pageLoadingService.closeLoading();
+            console.log('[this.orderNo', this.orderNo);
 
           }).catch((err) => {
             this.pageLoadingService.closeLoading();

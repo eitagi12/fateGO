@@ -30,9 +30,9 @@ export class NewSharePlanMnpNetworkTypePageComponent implements OnInit, OnDestro
     private transactionService: TransactionService,
   ) {
     this.transaction = this.transactionService.load();
-    // this.homeService.callback = () => {
-    //   window.location.href = '/';
-    // };
+    this.homeService.callback = () => {
+      window.location.href = '/';
+    };
   }
 
   ngOnInit(): void {

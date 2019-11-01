@@ -37,6 +37,9 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
 
   ) {
     this.transaction = this.transactionService.load();
+    this.homeService.callback = () => {
+      window.location.href = '/';
+    };
 
         // New register profile not found.
         if (!this.transaction.data.billingInformation) {

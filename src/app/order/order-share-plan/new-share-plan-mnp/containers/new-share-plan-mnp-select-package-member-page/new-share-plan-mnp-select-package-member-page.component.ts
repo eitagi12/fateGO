@@ -16,7 +16,11 @@ export class NewSharePlanMnpSelectPackageMemberPageComponent implements OnInit {
   constructor(
     private router: Router,
     private homeService: HomeService
-  ) { }
+  ) {
+    this.homeService.callback = () => {
+      window.location.href = '/';
+    };
+   }
 
   ngOnInit(): void {
   }

@@ -26,6 +26,9 @@ export class NewSharePlanMnpFaceComparePageComponent implements OnInit, OnDestro
     private pageLoadingService: PageLoadingService
   ) {
     this.transaction = this.transactionService.load();
+    this.homeService.callback = () => {
+      window.location.href = '/';
+    };
   }
 
   ngOnInit(): void {

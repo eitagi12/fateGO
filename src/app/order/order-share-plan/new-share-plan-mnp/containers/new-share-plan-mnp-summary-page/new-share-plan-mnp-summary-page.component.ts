@@ -46,6 +46,9 @@ export class NewSharePlanMnpSummaryPageComponent implements OnInit, OnDestroy {
     private http: HttpClient
   ) {
     this.transaction = this.transactionService.load();
+    this.homeService.callback = () => {
+      window.location.href = '/';
+    };
   }
 
   ngOnInit(): void {

@@ -37,6 +37,9 @@ export class NewSharePlanMnpEbillingAddressPageComponent implements OnInit, OnDe
     private translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
+    this.homeService.callback = () => {
+      window.location.href = '/';
+    };
   }
 
   ngOnInit(): void {
