@@ -17,10 +17,8 @@ export class NewSharePlanMnpSelectPackageMemberPageComponent implements OnInit {
     private router: Router,
     private homeService: HomeService
   ) {
-    this.homeService.callback = () => {
-      window.location.href = '/';
-    };
-   }
+
+  }
 
   ngOnInit(): void {
   }
@@ -30,7 +28,7 @@ export class NewSharePlanMnpSelectPackageMemberPageComponent implements OnInit {
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    window.location.href = '/sales-portal/dashboard';
   }
 
   onNext(): void {

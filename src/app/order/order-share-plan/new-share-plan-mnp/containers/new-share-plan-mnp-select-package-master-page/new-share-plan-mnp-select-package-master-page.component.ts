@@ -41,9 +41,6 @@ export class NewSharePlanMnpSelectPackageMasterPageComponent implements OnInit, 
     private translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
-    this.homeService.callback = () => {
-      window.location.href = '/';
-    };
     if (this.transaction.data.billingInformation) {
       delete this.transaction.data.billingInformation.billCycle;
       delete this.transaction.data.billingInformation.mergeBilling;
@@ -77,7 +74,7 @@ export class NewSharePlanMnpSelectPackageMasterPageComponent implements OnInit, 
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    window.location.href = '/sales-portal/dashboard';
   }
 
   callService(language: string): void {

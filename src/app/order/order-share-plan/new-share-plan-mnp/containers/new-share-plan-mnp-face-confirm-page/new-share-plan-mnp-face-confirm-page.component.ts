@@ -20,10 +20,8 @@ export class NewSharePlanMnpFaceConfirmPageComponent implements OnInit {
     private fb: FormBuilder,
     private homeService: HomeService
   ) {
-    this.homeService.callback = () => {
-      window.location.href = '/';
-    };
-   }
+
+  }
 
   ngOnInit(): void {
     this.createForm();
@@ -44,7 +42,7 @@ export class NewSharePlanMnpFaceConfirmPageComponent implements OnInit {
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    window.location.href = '/sales-portal/dashboard';
   }
 
 }

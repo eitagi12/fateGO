@@ -24,10 +24,8 @@ export class NewSharePlanMnpValidateCustomerPageComponent implements OnInit, OnD
     private transactionService: TransactionService,
     private http: HttpClient,
   ) {
-    this.homeService.callback = () => {
-      window.location.href = '/';
-    };
-   }
+
+  }
 
   ngOnInit(): void {
     this.createTransaction();
@@ -46,7 +44,7 @@ export class NewSharePlanMnpValidateCustomerPageComponent implements OnInit, OnD
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    window.location.href = '/sales-portal/dashboard';
   }
 
   onBack(): void {

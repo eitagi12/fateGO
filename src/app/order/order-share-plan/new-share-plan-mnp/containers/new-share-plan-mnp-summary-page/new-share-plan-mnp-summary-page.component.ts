@@ -46,9 +46,6 @@ export class NewSharePlanMnpSummaryPageComponent implements OnInit, OnDestroy {
     private http: HttpClient
   ) {
     this.transaction = this.transactionService.load();
-    this.homeService.callback = () => {
-      window.location.href = '/';
-    };
   }
 
   ngOnInit(): void {
@@ -130,7 +127,7 @@ export class NewSharePlanMnpSummaryPageComponent implements OnInit, OnDestroy {
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    window.location.href = '/sales-portal/dashboard';
   }
 
   checkSeller(seller: Seller): void {

@@ -54,9 +54,6 @@ export class NewSharePlanMnpAgreementSignPageComponent implements OnInit, OnDest
     private translationService: TranslateService
   ) {
     this.transaction = this.transactionService.load();
-    this.homeService.callback = () => {
-      window.location.href = '/';
-    };
     this.date = Moment();
     // tslint:disable-next-line:radix
     this.today = this.date.format('DD') + '/' + this.date.format('MM') + '/' + (parseInt(this.date.format('YYYY')) + 543);
@@ -191,7 +188,7 @@ export class NewSharePlanMnpAgreementSignPageComponent implements OnInit, OnDest
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    window.location.href = '/sales-portal/dashboard';
   }
 
 }

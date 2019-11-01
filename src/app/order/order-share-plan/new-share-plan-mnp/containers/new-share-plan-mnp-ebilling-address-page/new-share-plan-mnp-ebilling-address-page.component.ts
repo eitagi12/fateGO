@@ -37,9 +37,6 @@ export class NewSharePlanMnpEbillingAddressPageComponent implements OnInit, OnDe
     private translation: TranslateService
   ) {
     this.transaction = this.transactionService.load();
-    this.homeService.callback = () => {
-      window.location.href = '/';
-    };
   }
 
   ngOnInit(): void {
@@ -191,7 +188,7 @@ export class NewSharePlanMnpEbillingAddressPageComponent implements OnInit, OnDe
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    window.location.href = '/sales-portal/dashboard';
   }
 
   ngOnDestroy(): void {

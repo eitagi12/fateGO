@@ -45,9 +45,7 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
     private homeService: HomeService
   ) {
     this.transaction = this.transactionService.load();
-    this.homeService.callback = () => {
-      window.location.href = '/';
-    };
+
   }
 
   ngOnInit(): void {
@@ -123,7 +121,7 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
 
   onMainMenu(): void {
     // bug gotohome จะ unlock เบอร์ ทำให้ออก orderไม่สำเร็จ
-    window.location.href = '/smart-digital/main-menu';
+    window.location.href = '/sales-portal/dashboard';
     // this.homeService.goToHome();
   }
 

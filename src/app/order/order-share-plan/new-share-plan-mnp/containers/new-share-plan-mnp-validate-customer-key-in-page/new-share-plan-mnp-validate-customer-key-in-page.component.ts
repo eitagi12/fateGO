@@ -30,10 +30,7 @@ export class NewSharePlanMnpValidateCustomerKeyInPageComponent implements OnInit
 
   ) {
     this.transaction = this.transactionService.load();
-    this.homeService.callback = () => {
-      window.location.href = '/';
-    };
-   }
+  }
 
   ngOnInit(): void {
     this.activatedRoute.queryParams.subscribe((params: Params) => this.params = params);
@@ -50,7 +47,7 @@ export class NewSharePlanMnpValidateCustomerKeyInPageComponent implements OnInit
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    window.location.href = '/sales-portal/dashboard';
   }
 
   onBack(): void {

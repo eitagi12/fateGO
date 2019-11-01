@@ -26,9 +26,7 @@ export class NewSharePlanMnpFaceComparePageComponent implements OnInit, OnDestro
     private pageLoadingService: PageLoadingService
   ) {
     this.transaction = this.transactionService.load();
-    this.homeService.callback = () => {
-      window.location.href = '/';
-    };
+
   }
 
   ngOnInit(): void {
@@ -67,7 +65,7 @@ export class NewSharePlanMnpFaceComparePageComponent implements OnInit, OnDestro
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    window.location.href = '/sales-portal/dashboard';
   }
 
   ngOnDestroy(): void {

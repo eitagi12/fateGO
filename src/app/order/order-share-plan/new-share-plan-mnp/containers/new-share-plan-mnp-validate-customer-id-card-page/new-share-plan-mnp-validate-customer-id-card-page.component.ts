@@ -36,9 +36,6 @@ export class NewSharePlanMnpValidateCustomerIdCardPageComponent implements OnIni
 
   ) {
     this.transaction = this.transactionService.load();
-    this.homeService.callback = () => {
-      window.location.href = '/';
-    };
     this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
   }
 
@@ -80,7 +77,7 @@ export class NewSharePlanMnpValidateCustomerIdCardPageComponent implements OnIni
       this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
     }
     setTimeout(() => {
-      this.homeService.goToHome();
+      window.location.href = '/sales-portal/dashboard';
     }, 750);
   }
 

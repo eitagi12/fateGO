@@ -26,10 +26,6 @@ export class NewSharePlanMnpEbillingPageComponent implements OnInit, OnDestroy {
     private transactionService: TransactionService
   ) {
     this.transaction = this.transactionService.load();
-    this.homeService.callback = () => {
-      window.location.href = '/';
-    };
-
     if (!this.transaction.data.billingInformation) {
       this.transaction.data.billingInformation = {};
     }
@@ -77,7 +73,7 @@ export class NewSharePlanMnpEbillingPageComponent implements OnInit, OnDestroy {
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    window.location.href = '/sales-portal/dashboard';
   }
 
   ngOnDestroy(): void {

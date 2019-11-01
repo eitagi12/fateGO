@@ -38,9 +38,6 @@ export class NewSharePlanMnpVerifyByPatternPageComponent implements OnInit, OnDe
     private alertService: AlertService
   ) {
     this.transaction = this.transactionService.load();
-    this.homeService.callback = () => {
-      window.location.href = '/';
-    };
     this.user = this.tokenService.getUser();
   }
 
@@ -53,7 +50,7 @@ export class NewSharePlanMnpVerifyByPatternPageComponent implements OnInit, OnDe
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    window.location.href = '/sales-portal/dashboard';
   }
 
   createForm(): void {

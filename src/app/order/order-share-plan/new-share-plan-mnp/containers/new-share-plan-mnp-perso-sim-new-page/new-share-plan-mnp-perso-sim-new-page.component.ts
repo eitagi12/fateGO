@@ -164,9 +164,6 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
     private http: HttpClient
   ) {
     this.transaction = this.transactionService.load();
-    this.homeService.callback = () => {
-      window.location.href = '/';
-    };
     if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {
       this.typeSim = 'pullsim';
     } else {
@@ -186,7 +183,7 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    window.location.href = '/sales-portal/dashboard';
   }
 
   onBack(): void {

@@ -28,9 +28,6 @@ export class NewSharePlanMnpFaceCapturePageComponent implements OnInit, OnDestro
     private transactionService: TransactionService
   ) {
     this.transaction = this.transactionService.load();
-    this.homeService.callback = () => {
-      window.location.href = '/';
-    };
   }
 
   ngOnInit(): void {
@@ -54,7 +51,7 @@ export class NewSharePlanMnpFaceCapturePageComponent implements OnInit, OnDestro
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    window.location.href = '/sales-portal/dashboard';
   }
 
   onOpenCamera(): void {

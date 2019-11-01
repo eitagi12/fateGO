@@ -37,20 +37,17 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
 
   ) {
     this.transaction = this.transactionService.load();
-    this.homeService.callback = () => {
-      window.location.href = '/';
-    };
 
-        // New register profile not found.
-        if (!this.transaction.data.billingInformation) {
-          this.transaction.data.billingInformation = {};
-        }
-        this.translationSubscribe = this.translation.onLangChange.subscribe(lang => {
-          this.mapCustomerInfoByLang(lang.lang);
-        });
-   }
+    // New register profile not found.
+    if (!this.transaction.data.billingInformation) {
+      this.transaction.data.billingInformation = {};
+    }
+    this.translationSubscribe = this.translation.onLangChange.subscribe(lang => {
+      this.mapCustomerInfoByLang(lang.lang);
+    });
+  }
 
-   ngOnInit(): void {
+  ngOnInit(): void {
     const customer = this.transaction.data.customer;
     const mainPackage = this.transaction.data.mainPackage;
     const simCard = this.transaction.data.simCard;
@@ -86,7 +83,7 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
     // รอ package page
     this.mapCustomerInfoByLang(this.translation.currentLang);
   }
-// รอ package page
+  // รอ package page
   mapCustomerInfoByLang(lang: string): void {
     if (lang === 'EN') {
       this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameEng;
@@ -278,7 +275,7 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
   }
 
   onHome(): void {
-    this.homeService.goToHome();
+    window.location.href = '/sales-portal/dashboard';
   }
 
   ngOnDestroy(): void {
