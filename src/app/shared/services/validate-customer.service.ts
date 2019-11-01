@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { User } from 'mychannel-shared-libs';
+import { User, Utils } from 'mychannel-shared-libs';
 import { Transaction, Prebooking } from '../models/transaction.model';
 import { PriceOption } from '../models/price-option.model';
 import * as moment from 'moment';
@@ -12,6 +12,7 @@ export class ValidateCustomerService {
 
   constructor(
     private http: HttpClient,
+    private utils: Utils
   ) { }
 
   queryCustomerInfo(identity: string): Promise<any> {
@@ -166,5 +167,19 @@ export class ValidateCustomerService {
     const randomNumber: string = Math.floor(Math.random() * 1000000).toString();
     const transactionId: string = randomAlphabet + today + randomNumber;
     return transactionId;
+  }
+
+  checkAgeAndExpireCard(transaction: Transaction): any {
+    const birthdate = transaction.data.customer.birthdate;
+    const expireDate = transaction.data.customer.expireDate;
+    const idCardType = transaction.data.customer.idCardType;
+
+    if (this.utils.isLowerAge17Year(birthdate)) {
+      return {false: 'ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี'};
+    }
+    if (this.utils.isIdCardExpiredDate(expireDate)) {
+      return {false: 'ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ'};
+    }
+    return {true: true};
   }
 }

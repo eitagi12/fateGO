@@ -28,7 +28,6 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
     private transactionService: TransactionService,
     private customerService: CustomerService,
     private alertService: AlertService,
-    private utils: Utils,
     private priceOptionService: PriceOptionService,
     private tokenService: TokenService,
     private pageLoadingService: PageLoadingService,
@@ -74,24 +73,6 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
     this.validateCustomerKeyin();
   }
 
-  checkAgeAndExpireCard(): boolean {
-    const birthdate = this.transaction.data.customer.birthdate;
-    const expireDate = this.transaction.data.customer.expireDate;
-    const idCardType = this.transaction.data.customer.idCardType;
-
-    if (this.utils.isLowerAge17Year(birthdate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
-      return false;
-    }
-    if (this.utils.isIdCardExpiredDate(expireDate)) {
-      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ').then(() => {
-        this.onBack();
-      });
-      return false;
-    }
-    return true;
-  }
-
   // tslint:disable-next-line: typedef
   validateCustomerKeyin(): any {
     this.pageLoadingService.openLoading();
@@ -109,11 +90,13 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
         };
       }
     }).then(() => {
-      if (this.checkAgeAndExpireCard()) {
+      const checkAgeAndExpire = this.validateCustomerService.checkAgeAndExpireCard(this.transaction);
+      if (checkAgeAndExpire.true) {
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
         this.pageLoadingService.closeLoading();
       } else {
         this.pageLoadingService.closeLoading();
+        this.alertService.error(checkAgeAndExpire.false);
       }
     });
   }
