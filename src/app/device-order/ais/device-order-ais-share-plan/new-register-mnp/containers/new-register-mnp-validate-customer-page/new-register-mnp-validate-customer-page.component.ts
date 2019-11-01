@@ -104,25 +104,29 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
       } else {
         const transactionObject: any = this.buildTransaction(this.transaction.data.transactionType);
         this.validateCustomerService.createTransaction(transactionObject).then((response: any) => {
-            this.pageLoadingService.closeLoading();
-            if (response.data.isSuccess) {
-              this.transaction = transactionObject;
-              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
-            } else {
-              this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
-              throw new Error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
-            }
-          }).catch((error: any) => {
-            this.pageLoadingService.closeLoading();
-            throw new Error(error);
-          });
+          this.pageLoadingService.closeLoading();
+          if (response.data.isSuccess) {
+            this.transaction = transactionObject;
+            this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
+          } else {
+            this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+            throw new Error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+          }
+        }).catch((error: any) => {
+          this.pageLoadingService.closeLoading();
+          throw new Error(error);
+        });
       }
     }).catch((err: any) => {
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE], {
-        queryParams: {
-          idCardNo: this.identity
-        }
-      });
+      if (err.error.developerMessage === 'EB0001 : Data Not Found.') {
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE], {
+          queryParams: {
+            idCardNo: this.identity
+          }
+        });
+      } else {
+        this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+      }
       this.pageLoadingService.closeLoading();
     });
   }
@@ -145,6 +149,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   validateCustomer(): any {
     return this.validateCustomerService.queryCustomerInfo(this.identity)
       .then((customerInfo: any) => {
+        console.log(customerInfo);
         const cardType: string = this.validateCustomerService.mapCardType(customerInfo.idCardType);
         const transactionType = TransactionType.DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN;
         return this.validateCustomerService.checkValidateCustomer(this.identity, cardType, transactionType)
@@ -156,24 +161,24 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
                   this.transaction.data.billingInformation = billingInfo;
                 });
                 return this.validateCustomerService.getCurrentDate().then((sysdate: any) => {
-                    if (sysdate) {
-                      const isLowerAge: boolean = this.isLowerAge(customer.data.birthdate, sysdate);
-                      if (!isLowerAge) {
-                        this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
-                        throw new Error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
-                      } else {
-                        // tslint:disable-next-line: max-line-length
-                        const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: customer });
-                        return this.validateCustomerService.addDeviceSellingCart(body).then((order: Order) => {
-                            return {
-                              order,
-                              customer,
-                              customerInfo,
-                            };
-                          });
-                      }
+                  if (sysdate) {
+                    const isLowerAge: boolean = this.isLowerAge(customer.data.birthdate, sysdate);
+                    if (!isLowerAge) {
+                      this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
+                      throw new Error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
+                    } else {
+                      // tslint:disable-next-line: max-line-length
+                      const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: customer });
+                      return this.validateCustomerService.addDeviceSellingCart(body).then((order: Order) => {
+                        return {
+                          order,
+                          customer,
+                          customerInfo,
+                        };
+                      });
                     }
-                  });
+                  }
+                });
               });
           });
       });
