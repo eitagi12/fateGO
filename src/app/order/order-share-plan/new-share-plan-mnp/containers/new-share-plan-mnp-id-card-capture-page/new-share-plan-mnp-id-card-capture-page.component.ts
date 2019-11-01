@@ -24,6 +24,7 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
   isDrawImageIdCard: boolean;
   onChangeValid: boolean = false;
   isNextValid: boolean;
+  isReadCard: boolean;
   // Signature
   signedSubscription: Subscription;
   signedWidthIdCardImageSubscription: Subscription;
@@ -43,49 +44,56 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
   ) {
     this.transaction = this.transactionService.load();
     this.user = this.tokenService.getUser();
-  }
+    this.homeService.callback = () => {
+      window.location.href = '/';
+    };
 
-  ngOnInit(): void {
-    this.checkOpenCamera();
-    this.checkCaptureAndSign();
-    this.onChangeCaptureAndSign();      // เช็คว่า Back กลับมาแล้วต้อง Default รูปพร้อมลายเซ็น
-  }
-
-  checkOpenCamera(): void {
-    if (this.isAisNative()) {
-      this.getCameraNative();
-    } else {
-      this.getCameraPC();
-    }
-  }
-
-  // เรียก Camera และได้ลายเซ็นมาจากอุปกรณ์ Native
-  getCameraNative(): void {
-    this.signedWidthIdCardImageSubscription = this.aisNativeDeviceService.getCaptureSignatureWithCardImage()
-      .subscribe((signatureWithCard: CaptureSignedWithCard) => {
-        // ได้ลายเซ็นของอุปกรณ์ Native เก็บไว้ใน this.captureAndSign.imageSignature
-        this.captureAndSign.imageSignature = signatureWithCard.signature;
-        this.onChangeCaptureAndSign();
-      });
-  }
-
-  // เรียก Camera และได้ลายเซ็นมาจากอุปกรณ์ PC
-  getCameraPC(): void {
+    // เรียก Camera และได้ลายเซ็นมาจากอุปกรณ์ Native
     this.signedSubscription = this.aisNativeDeviceService.getSigned().subscribe((signature: string) => {
-      // ได้ลายเซ็นของอุปกรณ์PC เก็บไว้ใน this.captureAndSign.imageSignature
       this.captureAndSign.imageSignature = signature;
       this.onChangeCaptureAndSign();
     });
+
+    // เรียก Camera และได้ลายเซ็นมาจากอุปกรณ์ PC
+    if (this.isAisNative()) {
+      this.signedWidthIdCardImageSubscription = this.aisNativeDeviceService.getCaptureSignatureWithCardImage()
+        .subscribe((signatureWithCard: CaptureSignedWithCard) => {
+          this.captureAndSign.imageSignature = signatureWithCard.signature;
+          this.onChangeCaptureAndSign();
+        });
+    }
+  }
+
+  ngOnInit(): void {
+    this.isReadCard = this.transaction.data.action === 'READ_CARD' ? true : false;
+    this.checkCaptureAndSign();
+
+    // เช็คว่า เมื่อกดปุ่ม Back กลับมาให้โชว์รูปลายเซ็น
+    if (this.transaction.data.customer.imageSignatureSmartCard) {
+      this.setDefaultCanvas();
+    } else {
+      this.createCanvas();
+    }
+    this.onChangeCaptureAndSign();
   }
 
   checkCaptureAndSign(): void {
     const customer: Customer = this.transaction.data.customer;
-    this.captureAndSign = {
-      allowCapture: true,                                       // เปิดกล้อง
-      imageSmartCard: customer.imageSmartCard,                  // เช็คข้อมูลรูปถ่ายบัตรปชช.
-      imageSignature: customer.imageSignature,                  // เช็คข้อมูลรูปลายเซ็น
-      imageSignatureWidthCard: null                             // เช็คข้อมูลรูปถ่ายบัตรปชช.ทับรูปลายเซ็น
-    };
+    if (this.isReadCard) {
+      this.captureAndSign = {
+        allowCapture: false,
+        imageSmartCard: customer.imageReadSmartCard,
+        imageSignature: customer.imageSignature,
+        imageSignatureWidthCard: customer.imageSignatureSmartCard
+      };
+    } else {
+      this.captureAndSign = {
+        allowCapture: true,
+        imageSmartCard: customer.imageSmartCard,
+        imageSignature: customer.imageSignature,
+        imageSignatureWidthCard: null
+      };
+    }
   }
 
   isAllowCapture(): boolean {
@@ -95,6 +103,14 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
   // เช็คว่าเป็นอุปกรณ์ Native
   isAisNative(): boolean {
     return !!window.aisNative;
+  }
+
+  hasImageSmartCard(): boolean {
+    return !!this.captureAndSign.imageSmartCard;
+  }
+
+  hasImageSignature(): boolean {
+    return !!this.captureAndSign.imageSignature;
   }
 
   onCameraCompleted(image: string): void {
@@ -107,53 +123,20 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
     this.imageSigned = false;
   }
 
-  // เคลียร์รูปภาพตอนกดถ่ายรูปใหม่
-  onClearImage(): void {
-    this.captureAndSign.imageSmartCard = null;
-    this.captureAndSign.imageSignatureWidthCard = null;
-    this.captureAndSign.imageSignature = null;
-    this.isNextValid = false;
-    this.imageSigned = false;
-    this.clearCanvas();
-    this.onChangeCaptureAndSign();
-  }
-
-  // เคลียร์รูปภาพ(สร้าง canvas) ตอนกดถ่ายรูปใหม่
-  clearCanvas(): void {
+  // วาดรูปลายเซ็นหลังจากกดปุ่ม Back กลับมาหน้าถ่ายรูปบัตรปชช.
+  setDefaultCanvas(): void {
     const canvas: HTMLCanvasElement = (<HTMLCanvasElement>this.signImage.nativeElement);
     const ctx: CanvasRenderingContext2D = canvas.getContext('2d');
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.restore();
-  }
+    const imageSignatureWidthCard = new Image();
 
-  hasImageSmartCard(): boolean {
-    return !!this.captureAndSign.imageSmartCard;
-  }
-
-  hasImageSignature(): boolean {
-    return !!this.captureAndSign.imageSignature;
-  }
-
-  onSigned(): void {
-    this.imageSigned = false;
-    this.user = this.tokenService.getUser();
-    // เป็นการเช็คเพื่อส่งค่า apiSigned และเรียก library Signed ของ Native/PC
-    this.apiSigned = ChannelType.SMART_ORDER === this.user.channelType ? 'OnscreenSignpad' : 'SignaturePad';
-
-    // เช็คว่าถ้าเป็น Native/PC
-    if (this.isAisNative()) {
-      // ทำให้รูปเป็นค่าว่าง
-      this.aisNativeDeviceService.captureSignatureWithCardImage(null);
-      return;
-    } else {
-      // ส่งค่า apiSigned = 'SignaturePad' และเรียก library Signed ของ PC
-      this.aisNativeDeviceService.openSigned(this.apiSigned).subscribe((command: any) => {
-        this.commandSigned = command;
-        if (command.error) {
-          return;
-        }
-      });
-    }
+    imageSignatureWidthCard.src = 'data:image/png;base64,' + this.transaction.data.customer.imageSignatureSmartCard;
+    imageSignatureWidthCard.onload = () => {
+      if (new RegExp('data:image/png;base64,').test(imageSignatureWidthCard.src)) {
+        canvas.width = imageSignatureWidthCard.width;
+        canvas.height = imageSignatureWidthCard.height;
+        ctx.drawImage(imageSignatureWidthCard, 0, 0);
+      }
+    };
   }
 
   createCanvas(): void {
@@ -165,14 +148,16 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
     signImage.src = 'data:image/png;base64,' + this.captureAndSign.imageSignature;    // รูปลายเซ็น
     watermarkImage.src = 'data:image/png;base64,' + AWS_WATERMARK;                    // รูปลายน้ำ
 
-    // โหลดรูปภาพบัตรปชช.ที่ได้จากการวาด
-    imageCard.onload = () => {
-      this.drawIdCardWithSign(imageCard, signImage, watermarkImage);
-    };
-    // โหลดรูปภาพเซ็นลายเซ็นที่ได้จากการวาด
-    signImage.onload = () => {
-      this.drawIdCardWithSign(imageCard, signImage, watermarkImage);
-    };
+    if (!this.isReadCard) {
+      // โหลดรูปภาพบัตรปชช.ที่ได้จากการวาด
+      imageCard.onload = () => {
+        this.drawIdCardWithSign(imageCard, signImage, watermarkImage);
+      };
+      // โหลดรูปภาพเซ็นลายเซ็นที่ได้จากการวาด
+      signImage.onload = () => {
+        this.drawIdCardWithSign(imageCard, signImage, watermarkImage);
+      };
+    }
   }
 
   drawIdCardWithSign(imageCard: any, signImage: any, watermarkImage: any): void {
@@ -222,17 +207,11 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
     this.isDrawingSignature = true;
   }
 
-  setImageSignature(): void {
-    this.transaction.data.customer.imageSmartCard = this.captureAndSign.imageSmartCard;  // เก็บรูปบัตรปชช.ลง Transaction
-    this.transaction.data.customer.imageSignature = this.captureAndSign.imageSignature;  // เก็บรูปลายเซ็นลง Transaction
-  }
-
+  // เช็คว่าถ้ากดถ่ายรูปใหม่ จะต้องได้รูปถ่ายบัตรปชช. และรูปลายเซ็น
   onChangeCaptureAndSign(): void {
     if (this.isAisNative() && !this.hasImageSmartCard()) {
-      this.camera.next();       // ให้กล้องทำงานต่อ
+      this.camera.next();
     }
-
-    // เช็คว่าถ้ากดถ่ายรูปใหม่ จะต้องได้รูปถ่ายบัตรปชช. และรูปลายเซ็น
     if (this.isAllowCapture()) {
       this.onChangeValid = !!(this.captureAndSign.imageSmartCard && this.captureAndSign.imageSignature);
     } else {
@@ -258,6 +237,46 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
     this.isNextValid = onChangeValid;
   }
 
+  // เคลียร์รูปภาพตอนกดถ่ายรูปใหม่
+  onClearImage(): void {
+    this.captureAndSign.imageSmartCard = null;
+    this.captureAndSign.imageSignatureWidthCard = null;
+    this.captureAndSign.imageSignature = null;
+    this.isNextValid = false;
+    this.imageSigned = false;
+    this.clearCanvas();
+    this.onChangeCaptureAndSign();
+  }
+
+  // เคลียร์รูปภาพ(สร้าง canvas) ตอนกดถ่ายรูปใหม่
+  clearCanvas(): void {
+    const canvas: HTMLCanvasElement = (<HTMLCanvasElement>this.signImage.nativeElement);
+    const ctx: CanvasRenderingContext2D = canvas.getContext('2d');
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.restore();
+  }
+
+  onSigned(): void {
+    this.imageSigned = false;
+    this.user = this.tokenService.getUser();
+    // เป็นการเช็คเพื่อส่งค่าและเรียก library Signed ของ Native/PC
+    this.apiSigned = ChannelType.SMART_ORDER === this.user.channelType ? 'OnscreenSignpad' : 'SignaturePad';
+
+    // เรียก library Signed ของ Native
+    if (this.isAisNative()) {
+      this.aisNativeDeviceService.captureSignatureWithCardImage(null);
+      return;
+    }
+
+    // เรียก library Signed ของ PC
+    this.aisNativeDeviceService.openSigned(this.apiSigned).subscribe((command: any) => {
+      this.commandSigned = command;
+      if (command.error) {
+        return;
+      }
+    });
+  }
+
   onBack(): void {
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_CUSTOMER_INFO_PAGE]);
   }
@@ -265,6 +284,17 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
   onNext(): void {
     this.setImageSignature();
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_FACE_CAPTURE_PAGE]);
+  }
+
+  setImageSignature(): void {
+    const customer: Customer = this.transaction.data.customer;
+    if (this.isReadCard) {
+      customer.imageSignature = this.captureAndSign.imageSignature;
+      customer.imageReadSmartCard = this.captureAndSign.imageSmartCard;
+    } else {
+      customer.imageSignature = this.captureAndSign.imageSignature;
+      customer.imageSmartCard = this.captureAndSign.imageSmartCard;
+    }
   }
 
   onHome(): void {
