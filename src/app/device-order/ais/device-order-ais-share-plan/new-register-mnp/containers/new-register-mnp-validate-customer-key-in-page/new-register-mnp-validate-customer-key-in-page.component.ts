@@ -58,48 +58,7 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
   }
 
   onCompleted(value: any): void {
-<<<<<<< HEAD
     this.transaction.data.customer = this.validateCustomerService.mapCustomer(value);
-=======
-    console.log('onCompleted', value);
-    this.mapCustomerObj(value);
-  }
-
-  mapCustomerObj(customer: any): void {
-    this.transaction.data.customer = {
-      idCardNo: customer.idCardNo,
-      idCardType: customer.idCardType,
-      titleName: customer.prefix,
-      firstName: customer.firstName,
-      lastName: customer.lastName,
-      birthdate: customer.birthDay + '/' + customer.birthMonth + '/' + customer.birthYear,
-      gender: customer.gender,
-      homeNo: customer.homeNo,
-      moo: customer.moo,
-      mooBan: customer.mooban,
-      buildingName: customer.buildingName,
-      floor: customer.floor,
-      room: customer.room,
-      street: customer.street || '',
-      soi: customer.soi,
-      tumbol: customer.tumbol,
-      amphur: customer.amphur,
-      province: customer.province || customer.provinceName,
-      firstNameEn: '',
-      lastNameEn: '',
-      issueDate: customer.birthdate,
-      expireDate: null,
-      zipCode: customer.zipCode,
-      mainMobile: customer.mainMobile,
-      mainPhone: customer.mainPhone,
-      billCycle: customer.billCycle,
-      caNumber: customer.caNumber,
-      mobileNo: '-',
-      imageSignature: '',
-      imageSmartCard: '',
-      imageReadSmartCard: '',
-    };
->>>>>>> parent of fd562ace7... Check Ebilling Address
   }
 
   onHome(): void {
