@@ -46,10 +46,6 @@ export class NewSharePlanMnpValidateCustomerKeyInPageComponent implements OnInit
     this.mapCustomerInfo(value);
   }
 
-  onHome(): void {
-    window.location.href = '/sales-portal/dashboard';
-  }
-
   onBack(): void {
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_VALIDATE_CUSTOMER_PAGE]);
   }

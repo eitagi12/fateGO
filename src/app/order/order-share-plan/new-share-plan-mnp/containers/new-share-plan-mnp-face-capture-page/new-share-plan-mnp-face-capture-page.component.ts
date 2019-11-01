@@ -50,10 +50,6 @@ export class NewSharePlanMnpFaceCapturePageComponent implements OnInit, OnDestro
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_FACE_COMPARE_PAGE]);
   }
 
-  onHome(): void {
-    window.location.href = '/sales-portal/dashboard';
-  }
-
   onOpenCamera(): void {
     this.openCamera = true;
   }

@@ -49,10 +49,6 @@ export class NewSharePlanMnpVerifyByPatternPageComponent implements OnInit, OnDe
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_SELECT_NUMBER_PAGE]);
   }
 
-  onHome(): void {
-    window.location.href = '/sales-portal/dashboard';
-  }
-
   createForm(): void {
     this.mobileNoConditionForm = this.fb.group({
       summary: ['', [Validators.pattern(/\d/)]],

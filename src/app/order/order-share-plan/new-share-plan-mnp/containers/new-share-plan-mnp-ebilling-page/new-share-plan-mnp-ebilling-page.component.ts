@@ -72,10 +72,6 @@ export class NewSharePlanMnpEbillingPageComponent implements OnInit, OnDestroy {
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
-  onHome(): void {
-    window.location.href = '/sales-portal/dashboard';
-  }
-
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }

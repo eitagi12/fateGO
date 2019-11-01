@@ -4,7 +4,6 @@
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
     <div class="header-icon-right w-25 text-right">
-      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
   <div class="mc-flex-wrap">
@@ -15,8 +14,10 @@
           <div class="text-center" translate>ข้อมูลใบหน้าจากบัตรประชาชน
           </div>
           <div class="card-body">
-            <img [src]="'data:image/png;base64,' + transaction?.data?.customer?.imageReadSmartCard" *ngIf="transaction?.data?.action === 'READ_CARD'">
-            <img [src]="'data:image/png;base64,' + transaction?.data?.customer?.imageSmartCard" *ngIf="transaction?.data?.action === 'KEY_IN'">
+            <img [src]="'data:image/png;base64,' + transaction?.data?.customer?.imageReadSmartCard"
+              *ngIf="transaction?.data?.action === 'READ_CARD'">
+            <img [src]="'data:image/png;base64,' + transaction?.data?.customer?.imageSmartCard"
+              *ngIf="transaction?.data?.action === 'KEY_IN'">
           </div>
         </div>
         <div class="max-width mx-auto">

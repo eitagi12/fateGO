@@ -73,10 +73,6 @@ export class NewSharePlanMnpSelectPackageMasterPageComponent implements OnInit, 
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_NETWORK_TYPE_PAGE]);
   }
 
-  onHome(): void {
-    window.location.href = '/sales-portal/dashboard';
-  }
-
   callService(language: string): void {
     this.pageLoadingService.openLoading();
     const mobileNo = this.transaction.data.simCard.mobileNo;

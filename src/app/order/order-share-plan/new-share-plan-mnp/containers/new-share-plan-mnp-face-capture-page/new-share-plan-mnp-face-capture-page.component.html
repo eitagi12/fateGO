@@ -5,7 +5,6 @@
     </div>
     <div class="header-icon-right w-25 text-right">
       <!-- <mc-dropdown-language></mc-dropdown-language> -->
-      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
   <div class="mc-flex-wrap">
@@ -23,7 +22,7 @@
               <div [hidden]="!(openCamera && !transaction?.data?.faceRecognition?.imageFaceUser)"
                 class="position-relative">
                 <mc-camera [flip]="true" [countdown]="5" [onTakePhoto]="camera" (completed)="onCameraCompleted($event)"
-                  (error)="onCameraError($event)" >
+                  (error)="onCameraError($event)">
                 </mc-camera>
               </div>
               <div [hidden]="!transaction?.data?.faceRecognition?.imageFaceUser">

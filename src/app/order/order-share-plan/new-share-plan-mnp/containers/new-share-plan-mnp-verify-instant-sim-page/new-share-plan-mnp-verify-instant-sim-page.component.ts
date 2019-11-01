@@ -83,10 +83,6 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MASTER_PAGE]);
   }
 
-  onHome(): void {
-    window.location.href = '/sales-portal/dashboard';
-  }
-
   public checkSimSerial(): void {
     this.keyinSimSerial = true;
     const serial = this.serialForm.controls['serial'].value;

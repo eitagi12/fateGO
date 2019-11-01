@@ -187,8 +187,4 @@ export class NewSharePlanMnpAgreementSignPageComponent implements OnInit, OnDest
 
   }
 
-  onHome(): void {
-    window.location.href = '/sales-portal/dashboard';
-  }
-
 }

@@ -45,10 +45,6 @@ export class NewSharePlanMnpCustomerInfoPageComponent implements OnInit, OnDestr
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_VALIDATE_CUSTOMER_PAGE]);
   }
 
-  onHome(): void {
-    window.location.href = '/sales-portal/dashboard';
-  }
-
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }

@@ -43,10 +43,6 @@ export class NewSharePlanMnpValidateCustomerPageComponent implements OnInit, OnD
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
   }
 
-  onHome(): void {
-    window.location.href = '/sales-portal/dashboard';
-  }
-
   onBack(): void {
     this.homeService.goToHome();
   }

@@ -47,8 +47,4 @@ export class NewSharePlanMnpSelectNumberPageComponent implements OnInit {
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_VERIFY_INSTANT_SIM_PAGE]);
   }
 
-  onHome(): void {
-    window.location.href = '/sales-portal/dashboard';
-  }
-
 }

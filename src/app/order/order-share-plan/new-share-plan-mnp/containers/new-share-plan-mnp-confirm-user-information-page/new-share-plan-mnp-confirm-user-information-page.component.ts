@@ -274,10 +274,6 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_EBILLING_ADDRESS_PAGE]);
   }
 
-  onHome(): void {
-    window.location.href = '/sales-portal/dashboard';
-  }
-
   ngOnDestroy(): void {
     this.translationSubscribe.unsubscribe();
     this.transactionService.save(this.transaction);

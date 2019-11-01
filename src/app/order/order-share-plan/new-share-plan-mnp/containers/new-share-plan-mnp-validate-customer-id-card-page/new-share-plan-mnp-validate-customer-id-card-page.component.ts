@@ -72,15 +72,6 @@ export class NewSharePlanMnpValidateCustomerIdCardPageComponent implements OnIni
     return this.progressReadCard > 0 && this.progressReadCard < 100 ? true : false;
   }
 
-  onHome(): void {
-    if (this.validateCustomerIdcard && this.validateCustomerIdcard.koiskApiFn) {
-      this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
-    }
-    setTimeout(() => {
-      window.location.href = '/sales-portal/dashboard';
-    }, 750);
-  }
-
   onNext(): void {
     this.transaction.data.action = TransactionAction.READ_CARD;
     this.pageLoadingService.openLoading();

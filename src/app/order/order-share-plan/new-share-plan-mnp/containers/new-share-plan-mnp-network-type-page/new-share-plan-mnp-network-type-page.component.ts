@@ -80,10 +80,6 @@ export class NewSharePlanMnpNetworkTypePageComponent implements OnInit, OnDestro
       });
   }
 
-  onHome(): void {
-    window.location.href = '/sales-portal/dashboard';
-  }
-
   onBack(): void {
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MASTER_PAGE]);
   }

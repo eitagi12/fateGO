@@ -188,10 +188,6 @@ export class NewSharePlanMnpPersoSimMnpPageComponent implements OnInit, OnDestro
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_RESULT_PAGE]);
   }
 
-  onHome(): void {
-    window.location.href = '/sales-portal/dashboard';
-  }
-
   startPersoSim(transaction: Transaction | Partial<Transaction>): void {
     this.errorMessage = '';
     this.persoSimSubscription = this.onPersoSim().subscribe((value) => {

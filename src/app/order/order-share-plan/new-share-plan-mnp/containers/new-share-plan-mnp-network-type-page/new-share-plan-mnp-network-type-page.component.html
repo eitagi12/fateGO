@@ -4,7 +4,6 @@
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
     <div class="header-icon-right w-25 text-right">
-      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
   <div class="mc-flex-wrap">
@@ -17,14 +16,18 @@
               <li class="list-group-item text-center" translate>ระบุเบอร์ที่ท่านต้องการย้ายค่ายระบบรายเดือน</li>
               <li class="list-group-item">
                 <input id="mobileNo" type="tel" class="form-control text-center mt-2" autocomplete="off" maxlength="10"
-                  formControlName="mobileNo" [ngClass]="{'is-invalid':sharePlanForm.controls['mobileNo'].invalid && sharePlanForm.controls['mobileNo'].touched }">
-                  <small class="invalid-feedback text-center" *ngIf="sharePlanForm.controls['mobileNo'].touched && sharePlanForm.controls['mobileNo'].errors">*<span translate>กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง</span></small>
+                  formControlName="mobileNo"
+                  [ngClass]="{'is-invalid':sharePlanForm.controls['mobileNo'].invalid && sharePlanForm.controls['mobileNo'].touched }">
+                <small class="invalid-feedback text-center"
+                  *ngIf="sharePlanForm.controls['mobileNo'].touched && sharePlanForm.controls['mobileNo'].errors">*<span
+                    translate>กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง</span></small>
               </li>
               <li class="list-group-item text-center" translate>ระบุรหัสขอย้ายค่าย</li>
               <li class="list-group-item mb-3">
                 <div class="text-light-grey text-center">กด *151*เลขบัตรประชาชน 13 หลัก # แล้วโทรออก</div>
                 <input id="pinCode" type="tel" class="form-control text-center " autocomplete="off" maxlength="8"
-                  formControlName="pinCode" [ngClass]="{'is-invalid': !sharePlanForm.controls['pinCode'].valid && sharePlanForm.controls['pinCode'].touched }">
+                  formControlName="pinCode"
+                  [ngClass]="{'is-invalid': !sharePlanForm.controls['pinCode'].valid && sharePlanForm.controls['pinCode'].touched }">
               </li>
               <div class="ml-4 text-grey">
                 <p translate>การขอรหัส : กด*151*เลขที่บัตรประชาชน 13 หลัก# แล้วโทรออก (ฟรี)</p>

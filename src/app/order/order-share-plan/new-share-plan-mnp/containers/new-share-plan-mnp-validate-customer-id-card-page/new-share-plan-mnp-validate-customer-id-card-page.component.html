@@ -5,13 +5,13 @@
       </mc-header-icon>
     </div>
     <div class="header-icon-right w-25 text-right">
-      <mc-header-icon [hidden]="progressDoing()" src="assets/images/icon/icon-home.png" (iconClick)="onHome()">
       </mc-header-icon>
     </div>
   </mc-header>
   <div class="mc-flex-wrap bg-white">
     <div class="pt-3 pb-3">
-      <mc-validate-customer-id-card [kioskApi]="kioskApi" (error)="onError($event)" (completed)="onCompleted($event)" (progress)="onProgress($event)">
+      <mc-validate-customer-id-card [kioskApi]="kioskApi" (error)="onError($event)" (completed)="onCompleted($event)"
+        (progress)="onProgress($event)">
       </mc-validate-customer-id-card>
     </div>
   </div>

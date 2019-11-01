@@ -126,10 +126,6 @@ export class NewSharePlanMnpSummaryPageComponent implements OnInit, OnDestroy {
     this.checkSeller(seller);
   }
 
-  onHome(): void {
-    window.location.href = '/sales-portal/dashboard';
-  }
-
   checkSeller(seller: Seller): void {
     if (!seller.ascCode) {
       this.alertService.warning('กรุณากรอกข้อมูลให้ถูกต้อง');

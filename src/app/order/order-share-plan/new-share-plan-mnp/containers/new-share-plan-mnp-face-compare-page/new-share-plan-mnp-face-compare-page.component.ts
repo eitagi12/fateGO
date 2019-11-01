@@ -64,10 +64,6 @@ export class NewSharePlanMnpFaceComparePageComponent implements OnInit, OnDestro
     return this.transaction.data.action === TransactionAction.READ_CARD;
   }
 
-  onHome(): void {
-    window.location.href = '/sales-portal/dashboard';
-  }
-
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
   }

@@ -297,10 +297,6 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
     }
   }
 
-  onHome(): void {
-    window.location.href = '/sales-portal/dashboard';
-  }
-
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
     this.signedSubscription.unsubscribe();

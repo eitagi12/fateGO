@@ -4,7 +4,6 @@
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
     <div class="header-icon-right w-25 text-right">
-      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
   </mc-header>
   <div class="mc-flex-wrap">
@@ -19,10 +18,8 @@
             <div class="camera-width">
               <div [hidden]="!isAllowCapture() || hasImageSmartCard()">
                 <!--เปิดกล้อง ถ่ายรูป-->
-                <mc-camera *ngIf="isAllowCapture()" 
-                  [crop]="false" [onTakePhoto]="camera"
-                  (completed)="onCameraCompleted($event)" 
-                  (error)="onCameraError($event)">
+                <mc-camera *ngIf="isAllowCapture()" [crop]="false" [onTakePhoto]="camera"
+                  (completed)="onCameraCompleted($event)" (error)="onCameraError($event)">
                 </mc-camera>
               </div>
               <div [hidden]="!(!isAllowCapture() || hasImageSmartCard())">

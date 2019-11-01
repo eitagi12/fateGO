@@ -182,10 +182,6 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
     }
   }
 
-  onHome(): void {
-    window.location.href = '/sales-portal/dashboard';
-  }
-
   onBack(): void {
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_AGREEMENT_SIGN_PAGE]);
   }
