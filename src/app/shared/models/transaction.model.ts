@@ -596,8 +596,3 @@ export interface RomData {
   time?: string;
   _id?: string;
 }
-
-export class SignatureAndImageSmartCard {
-  dataSignature?: string;
-  dataImageSmartCard?: string;
-}
