@@ -12,30 +12,24 @@
       <mc-wizard [wizards]="wizards" active="1"></mc-wizard>
       <div class="container-fluid">
         <div class="card">
-          <h5 class="card-header bg-transparent text-center" *ngIf="!isReadCard">
+          <h5 class="card-header bg-transparent text-center">
             {{ 'ถ่ายรูปบัตรประชาชน' | translate }}
           </h5>
           <div class="card-body">
             <div class="camera-width">
               <div [hidden]="!isAllowCapture() || hasImageSmartCard()">
                 <!--เปิดกล้อง ถ่ายรูป-->
-                <mc-camera *ngIf="isAllowCapture()" 
-                  [crop]="false" 
-                  [onTakePhoto]="camera"
-                  (completed)="onCameraCompleted($event)" 
-                  (error)="onCameraError($event)">
+                <mc-camera *ngIf="isAllowCapture()" [crop]="false" [onTakePhoto]="camera"
+                  (completed)="onCameraCompleted($event)" (error)="onCameraError($event)">
                 </mc-camera>
               </div>
               <div [hidden]="!(!isAllowCapture() || hasImageSmartCard())">
                 <div class="img-result">
-                  <div *ngIf="!isReadCard">
+                  <!--โชว์รูปที่ได้-->
+                  <div>
                     <canvas #signImage class="captured-image"></canvas>
-                    <img *ngIf="captureAndSign.imageSignature && isDrawingSignature" class="capture-and-sign watermark" alt=""
-                      [src]="'data:image/png;base64,' + watermark" />
-                  </div>
-                  <div *ngIf="isReadCard">
-                    <img *ngIf="captureAndSign?.imageSignature" class="capture-and-sign signed" alt=""
-                      [src]="'data:image/png;base64,' + captureAndSign?.imageSignature" />
+                    <img *ngIf="captureAndSign.imageSignature && isDrawingSignature" class="capture-and-sign watermark"
+                      alt="" [src]="'data:image/png;base64,' + watermark" />
                   </div>
                 </div>
               </div>
@@ -50,24 +44,29 @@
                 [ngClass]="{ 'd-none': !isAllowCapture(), 'col-6': hasImageSmartCard(),'col-12': !hasImageSmartCard()}">
                 <!-- WEB Step -->
                 <div *ngIf="!isAisNative()">
-                  <a href="#" (click)="$event.preventDefault(); camera.next();" class="text-pink" *ngIf="!hasImageSmartCard()">
+                  <a href="#" (click)="$event.preventDefault(); camera.next();" class="text-pink"
+                    *ngIf="!hasImageSmartCard()">
                     {{ 'ถ่ายรูป' | translate }}
                   </a>
-                  <a href="#" (click)="$event.preventDefault(); onClearImage()" class="text-pink" *ngIf="hasImageSmartCard()">
+                  <a href="#" (click)="$event.preventDefault(); onClearImage()" class="text-pink"
+                    *ngIf="hasImageSmartCard()">
                     {{ 'ถ่ายรูปใหม่' | translate }}
                   </a>
                 </div>
                 <!-- Native Step -->
                 <div *ngIf="isAisNative()">
-                  <a href="#" (click)="$event.preventDefault(); camera.next();" class="text-pink" *ngIf="!hasImageSmartCard()">
+                  <a href="#" (click)="$event.preventDefault(); camera.next();" class="text-pink"
+                    *ngIf="!hasImageSmartCard()">
                     {{ 'ถ่ายรูป' | translate }}
                   </a>
-                  <a href="#" (click)="$event.preventDefault(); onClearImage()" class="text-pink" *ngIf="hasImageSmartCard()">
+                  <a href="#" (click)="$event.preventDefault(); onClearImage()" class="text-pink"
+                    *ngIf="hasImageSmartCard()">
                     {{ 'ถ่ายรูปใหม่' | translate }}
                   </a>
                 </div>
               </div>
-              <div class="p-3 col-6" [ngClass]="{ 'col-12': !isAllowCapture(), 'col-6': hasImageSmartCard(),'d-none': !(!isAllowCapture() || hasImageSmartCard())}">
+              <div class="p-3 col-6"
+                [ngClass]="{ 'col-12': !isAllowCapture(), 'col-6': hasImageSmartCard(),'d-none': !(!isAllowCapture() || hasImageSmartCard())}">
                 <!-- WEB Step -->
                 <a href="#" (click)="$event.preventDefault(); onSigned()" class="text-pink">
                   <span *ngIf="!hasImageSignature()">{{ 'เซ็นลายเซ็น' | translate }}</span>
