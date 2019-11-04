@@ -10,30 +10,22 @@
       <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
       <div class="container-fluid">
         <div class="card mb-3">
-          <div class="card-header bg-pink text-white shadow-sm">
-            {{ 'ระบุเลขที่ซิม' | translate }}
-          </div>
+          <div class="card-header bg-pink text-white shadow-sm">{{ 'ระบุเลขที่ซิม' | translate }}</div>
           <div class="card-body">
             <form [formGroup]="serialForm">
-              <div class="text-center">
-                <p class="text-grey" *ngIf="keyinSimSerial && (simSerial?.simSerial && simSerial?.mobileNo)">
-                  {{ 'หมายเลขโทรศัพท์' | translate }} : {{ simSerial?.mobileNo | mobileNo }} <br>
-                  {{ 'เลขที่ซิม' | translate }} : {{ simSerial?.simSerial }}
-                </p>
-              </div>
+              <p class="text-grey text-center" *ngIf="keyInSimSerial && transaction?.data?.simCard">
+                {{ 'หมายเลขโทรศัพท์' | translate }} : {{ transaction?.data?.simCard?.mobileNo | mobileNo }} <br>
+                {{ 'เลขที่ซิม' | translate }} : {{ transaction?.data?.simCard?.simSerial }}
+              </p>
               <div class="form-row">
                 <div class="col-9 col-sm-10">
-                  <input #serial type="tel" class="form-control" id="serial" placeholder="{{ 'ใส่เลขที่ซิม 13 หลัก' | translate }}" formControlName="serial" autocomplete="off" maxlength="13"
-                    [ngClass]="{ 'is-invalid' : serialForm.controls.serial.invalid && serialForm.controls.serial.touched && !(simSerial?.simSerial && simSerial?.mobileNo) }" />
+                  <input type="tel" class="form-control" id="serial" placeholder="{{ 'ใส่เลขที่ซิม 13 หลัก' | translate }}" formControlName="serial" autocomplete="off" maxlength="13">
                 </div>
                 <div class="col-3 col-sm-2">
-                  <button class="btn btn-light-blue text-white btn-block" [disabled]="serialForm.invalid" type="submit" (click)="checkSimSerial()">
+                  <button class="btn btn-light-blue text-white btn-block" [disabled]="serialForm.invalid" type="submit" (click)="onCheckSimSerial()">
                     {{ 'ตรวจสอบ' | translate }}
                   </button>
                 </div>
-                <small class="form-text text-danger" *ngIf="serialForm.controls.serial.touched && serialForm.controls.serial.errors && !(simSerial?.simSerial && simSerial?.mobileNo)">
-                  {{ '* กรุณาระบุเลขที่ซิมให้ถูกต้อง' | translate }}
-                </small>
               </div>
             </form>
           </div>
@@ -41,18 +33,14 @@
         <div *ngIf="isAisNative()">
           <p class="text-center my-5">{{ 'หรือ' | translate }} </p>
           <div class="card mb-3">
-            <div class="card-header bg-pink text-white">
-              SCAN SIM
-            </div>
+            <div class="card-header bg-pink text-white">SCAN SIM</div>
             <div class="card-body m-auto">
-              <div *ngIf="!keyinSimSerial && (simSerial?.mobileNo && simSerial?.simSerial)">
-                <p class="text-grey text-center">
-                  {{ 'หมายเลขโทรศัพท์' | translate }} : {{ simSerial?.mobileNo | mobileNo }} <br>
-                  {{ 'เลขที่ซิม' | translate }} : {{ simSerial?.simSerial }}
-                </p>
-              </div>
+              <p class="text-grey text-center" *ngIf="!keyInSimSerial && transaction?.data?.simCard">
+                {{ 'หมายเลขโทรศัพท์' | translate }} : {{ transaction?.data?.simCard?.mobileNo | mobileNo }} <br>
+                {{ 'เลขที่ซิม' | translate }} : {{ transaction?.data?.simCard?.simSerial }}
+              </p>
               <button type="button" class="btn btn-light-blue px-5 py-3 text-white" (click)="onOpenScanBarcode()">
-                {{keyinSimSerial === false ? 'สแกน Barcode อีกครั้ง' : 'สแกน Barcode'}}
+                {{!keyInSimSerial && transaction?.data?.simCard ? 'สแกน Barcode อีกครั้ง' : 'สแกน Barcode'}}
               </button>
             </div>
           </div>
@@ -62,6 +50,6 @@
   </div>
   <mc-footer>
     <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()">NEXT</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!simSerialValid">NEXT</button>
   </mc-footer>
 </div>

@@ -6,6 +6,7 @@ import { Injectable } from '@angular/core';
 export class StoreService {
 
   private _keyInSimSerial: boolean;
+  private _simSerialValid: boolean;
 
   constructor() { }
 
@@ -14,6 +15,13 @@ export class StoreService {
   }
   public set keyInSimSerial(value: boolean) {
     this._keyInSimSerial = value;
+  }
+
+  public get simSerialValid(): boolean {
+    return this._simSerialValid;
+  }
+  public set simSerialValid(value: boolean) {
+    this._simSerialValid = value;
   }
 
 }
