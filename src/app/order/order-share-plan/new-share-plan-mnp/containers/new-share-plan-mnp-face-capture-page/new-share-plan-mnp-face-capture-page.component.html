@@ -11,15 +11,14 @@
       <div class="container-fluid">
         <div class="card">
           <h5 class="card-header bg-transparent text-center">ถ่ายรูปผู้ขอใช้บริการ</h5>
-          <div class="card-body ">
+          <div class="card-body" style="height: 590px;">
             <div class="camera-width">
               <div *ngIf="!openCamera">
-                <img *ngIf="!transaction?.data?.faceRecognition?.imageFaceUser" src="assets/images/icon/icon_people.png"
-                  class="icon-people" />
+                <img *ngIf="!transaction?.data?.faceRecognition?.imageFaceUser" class="icon-people" />
               </div>
               <div [hidden]="!(openCamera && !transaction?.data?.faceRecognition?.imageFaceUser)"
                 class="position-relative">
-                <mc-camera [flip]="true" [countdown]="5" [onTakePhoto]="camera" (completed)="onCameraCompleted($event)"
+                <mc-camera [flip]="true" [countdown]="3" [onTakePhoto]="camera" (completed)="onCameraCompleted($event)"
                   (error)="onCameraError($event)">
                 </mc-camera>
               </div>
@@ -29,20 +28,18 @@
                     [src]="'data:image/png;base64,'+ transaction?.data?.faceRecognition?.imageFaceUser" />
                 </div>
               </div>
-
             </div>
           </div>
           <div class="card-footer bg-transparent text-center p-0">
             <div class="row">
-
               <div class="border-right p-3 col-12">
                 <!-- WEB Step -->
                 <div *ngIf="!isAisNative()">
                   <a href="#" (click)="$event.preventDefault(); onOpenCamera(); camera.next();" class="text-pink"
                     *ngIf="!transaction?.data?.faceRecognition?.imageFaceUser">
-                    <img src="assets/images/icon/icon-camera.png" class="icon-camera">
-                    <br>
-                    <p>กรุณากดปุ่มถ่ายรูป</p>
+                    <!-- <img src="assets/images/icon/icon-camera.png" class="icon-camera"> -->
+                    <!-- <br> -->
+                    <p>ถ่ายรูป</p>
                   </a>
                   <a href="#" (click)="$event.preventDefault(); onClearIdCardImage()" class="text-pink"
                     *ngIf="transaction?.data?.faceRecognition?.imageFaceUser">ถ่ายรูปใหม่
@@ -60,7 +57,6 @@
           </div>
         </div>
       </div>
-
     </div>
   </div>
   <mc-footer>

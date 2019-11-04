@@ -31,11 +31,10 @@ export class NewSharePlanMnpFaceCapturePageComponent implements OnInit, OnDestro
   }
 
   ngOnInit(): void {
-    if (this.transaction && this.transaction.data &&
-      this.transaction.data.faceRecognition) {
-      delete this.transaction.data.faceRecognition.imageFaceUser;
-    }
-
+    // if (this.transaction && this.transaction.data &&
+    //   this.transaction.data.faceRecognition) {
+    //   delete this.transaction.data.faceRecognition.imageFaceUser;
+    // }
   }
 
   onBack(): void {
