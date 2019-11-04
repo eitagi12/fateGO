@@ -59,7 +59,7 @@ export class QrCodeOmisePageService {
     return new Observable(obs => {
       let omiseResponseTimeout;
       const checkPaymentResponseOrderTimeout = (delay) => {
-        this.queryOrder({ params: { orderId: orderId } })
+        this.queryOrder({ params: { orderId: orderId, randomID: new Date().getTime() } })
           .then(resp => {
             const data = resp.data || {};
             if (data.paymentCode && data.paymentStatus) {
