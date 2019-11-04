@@ -17,25 +17,21 @@
             <form [formGroup]="serialForm">
               <div class="text-center">
                 <p class="text-grey" *ngIf="keyinSimSerial && (simSerial?.simSerial && simSerial?.mobileNo)">
-                  <label>{{ 'หมายเลขโทรศัพท์' | translate }} : {{ simSerial?.mobileNo | mobileNo }}</label>
-                  <br> {{ 'เลขที่ซิม' | translate }} : {{ simSerial?.simSerial }}
+                  {{ 'หมายเลขโทรศัพท์' | translate }} : {{ simSerial?.mobileNo | mobileNo }} <br>
+                  {{ 'เลขที่ซิม' | translate }} : {{ simSerial?.simSerial }}
                 </p>
               </div>
               <div class="form-row">
                 <div class="col-9 col-sm-10">
-                  <input #serial type="tel" class="form-control" id="serial"
-                    placeholder="{{ 'ใส่เลขที่ซิม 13 หลัก' | translate }}" formControlName="serial" autocomplete="off"
-                    maxlength="13"
+                  <input #serial type="tel" class="form-control" id="serial" placeholder="{{ 'ใส่เลขที่ซิม 13 หลัก' | translate }}" formControlName="serial" autocomplete="off" maxlength="13"
                     [ngClass]="{ 'is-invalid' : serialForm.controls.serial.invalid && serialForm.controls.serial.touched && !(simSerial?.simSerial && simSerial?.mobileNo) }" />
                 </div>
                 <div class="col-3 col-sm-2">
-                  <button class="btn btn-light-blue text-white btn-block" [disabled]="serialForm.invalid" type="submit"
-                    (click)="checkSimSerial()">
+                  <button class="btn btn-light-blue text-white btn-block" [disabled]="serialForm.invalid" type="submit" (click)="checkSimSerial()">
                     {{ 'ตรวจสอบ' | translate }}
                   </button>
                 </div>
-                <small class="form-text text-danger"
-                  *ngIf="serialForm.controls.serial.touched && serialForm.controls.serial.errors && !(simSerial?.simSerial && simSerial?.mobileNo)">
+                <small class="form-text text-danger" *ngIf="serialForm.controls.serial.touched && serialForm.controls.serial.errors && !(simSerial?.simSerial && simSerial?.mobileNo)">
                   {{ '* กรุณาระบุเลขที่ซิมให้ถูกต้อง' | translate }}
                 </small>
               </div>
