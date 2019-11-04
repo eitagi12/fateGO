@@ -104,22 +104,22 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
     const advancePayment: any = this.transaction.data.advancePayment || {};
     if (payment.paymentOnlineCredit && advancePayment.paymentOnlineCredit) {
       this.orderList = [{
-        name: priceOption.name + 'สี' + productStock.color + 'และ' + description,
-        price: trade.promotionPrice + trade.advancePay.amount
+        name: priceOption.name + 'สี' + productStock.color,
+        price: +trade.promotionPrice
       }, {
         name: description,
-        price: trade.advancePay.amount
+        price: +trade.advancePay.amount
       }];
-    } else if (payment.paymentOnlineCredi || advancePayment.paymentOnlineCredit) {
+    } else if (payment.paymentOnlineCredit || advancePayment.paymentOnlineCredit) {
       if (payment.paymentOnlineCredit) {
         this.orderList = [{
           name: priceOption.name + 'สี' + productStock.color,
-          price: trade.promotionPrice
+          price: +trade.promotionPrice
         }];
       } else {
         this.orderList = [{
           name: description,
-          price: trade.advancePay.amount
+          price: +trade.advancePay.amount
         }];
       }
     }
