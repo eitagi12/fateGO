@@ -115,9 +115,10 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
     const signImage = new Image();          // สร้าง imageCard เพื่อหา src ของรูปลายเซ็น
     const watermarkImage = new Image();     // สร้าง imageCard เพื่อหา src ของรูปลายน้ำ
 
-    imageCard.src = 'data:image/png;base64,' + this.captureAndSign.imageSmartCard;    // รูปถ่ายบัตรปชช.
-    signImage.src = 'data:image/png;base64,' + this.captureAndSign.imageSignature;    // รูปลายเซ็น
-    watermarkImage.src = 'data:image/png;base64,' + AWS_WATERMARK;                    // รูปลายน้ำ
+    // รูปถ่ายบัตรปชช, รูปลายเซ็น, รูปลายน้ำ
+    imageCard.src = (this.captureAndSign.imageSmartCard) ? 'data:image/png;base64,' + this.captureAndSign.imageSmartCard : '';
+    signImage.src = (this.captureAndSign.imageSignature) ? 'data:image/png;base64,' + this.captureAndSign.imageSignature : '';
+    watermarkImage.src = 'data:image/png;base64,' + AWS_WATERMARK;
 
     // โหลดรูปภาพบัตรปชช.ที่ได้จากการวาด
     imageCard.onload = () => {
