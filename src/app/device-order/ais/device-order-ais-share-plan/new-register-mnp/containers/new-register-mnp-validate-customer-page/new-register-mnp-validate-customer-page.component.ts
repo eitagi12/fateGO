@@ -91,9 +91,10 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     this.pageLoadingService.openLoading();
     this.validateCustomer().then((data: any) => {
       if (data) {
+        const soId: any = this.transaction.data.order || data.order.data;
         this.transaction.data = {
           ...this.transaction.data,
-          order: data.order.data
+          order: soId
         };
         this.transaction.data.customer = this.validateCustomerService.mapCustomer(data.customer.data);
       }
@@ -149,9 +150,8 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   validateCustomer(): any {
     return this.validateCustomerService.queryCustomerInfo(this.identity)
       .then((customerInfo: any) => {
-        console.log(customerInfo);
         const cardType: string = this.validateCustomerService.mapCardType(customerInfo.idCardType);
-        const transactionType = TransactionType.DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN;
+        const transactionType = TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS;
         return this.validateCustomerService.checkValidateCustomer(this.identity, cardType, transactionType)
           .then((customer: any) => {
             return this.validateCustomerService.queryBillingAccount(this.identity)
@@ -165,7 +165,6 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
                     const isLowerAge: boolean = this.isLowerAge(customer.data.birthdate, sysdate);
                     if (!isLowerAge) {
                       this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
-                      throw new Error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
                     } else {
                       // tslint:disable-next-line: max-line-length
                       const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: customer });
@@ -216,10 +215,11 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     }
     this.transaction = {
       data: {
-        transactionType: TransactionType.DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN,
+        transactionType: TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS,
         action: TransactionAction.KEY_IN,
         order: order || { soId: '' }
-      }
+      },
+      transactionId: this.transaction.transactionId || ''
     };
     delete this.transaction.data.customer;
   }
@@ -227,9 +227,10 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   buildTransaction(transactionType: string): any {
     const customer: any = this.transaction.data.customer;
     const order: any = this.transaction.data.order;
+    const transactionId = this.transaction.transactionId || this.validateCustomerService.generateTransactionId();
 
     const transaction: any = {
-      transactionId: this.validateCustomerService.generateTransactionId(),
+      transactionId: transactionId,
       data: {
         customer: customer,
         order: order,

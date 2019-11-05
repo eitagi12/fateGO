@@ -86,7 +86,7 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
       if (order.data && order.data.soId) {
         this.transaction.data = {
           ...this.transaction.data,
-          order: { soId: order.data.soId },
+          order: this.transaction.data.order || { soId: order.data.soId },
         };
       }
     }).then(() => {
