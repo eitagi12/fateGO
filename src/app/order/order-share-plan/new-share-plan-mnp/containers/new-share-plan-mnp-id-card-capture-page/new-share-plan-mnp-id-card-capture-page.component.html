@@ -17,21 +17,20 @@
             <div class="camera-width">
               <div [hidden]="!isAllowCapture() || hasImageSmartCard()">
                 <!--เปิดกล้อง ถ่ายรูป-->
-                <mc-camera *ngIf="isAllowCapture()" [crop]="false" [onTakePhoto]="camera"
-                  (completed)="onCameraCompleted($event)" (error)="onCameraError($event)">
+                <mc-camera *ngIf="isAllowCapture()" 
+                  [crop]="false" 
+                  [onTakePhoto]="camera"
+                  (completed)="onCameraCompleted($event)" 
+                  (error)="onCameraError($event)">
                 </mc-camera>
               </div>
               <div [hidden]="!(!isAllowCapture() || hasImageSmartCard())">
                 <div class="img-result">
                   <!--โชว์รูปที่ได้-->
-                  <div *ngIf="!isReadCard">
+                  <div>
                     <canvas #signImage class="captured-image"></canvas>
-                    <img *ngIf="captureAndSign.imageSignature && isDrawingSignature" class="capture-and-sign watermark"
-                      alt="" [src]="'data:image/png;base64,' + watermark" />
-                  </div>
-                  <div *ngIf="isReadCard">
-                    <img *ngIf="captureAndSign?.imageSignature" class="capture-and-sign signed" alt=""
-                      [src]="'data:image/png;base64,' + captureAndSign?.imageSignature" />
+                    <img *ngIf="captureAndSign.imageSignature && isDrawingSignature" class="capture-and-sign watermark" alt=""
+                      [src]="'data:image/png;base64,' + watermark" />
                   </div>
                 </div>
               </div>
