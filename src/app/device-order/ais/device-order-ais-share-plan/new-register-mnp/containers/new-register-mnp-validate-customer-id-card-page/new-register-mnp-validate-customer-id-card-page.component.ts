@@ -105,7 +105,6 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
 
   onCompleted(profile: ReadCardProfile): void {
     this.profile = profile;
-    this.onNext();
   }
 
   onHome(): void {
