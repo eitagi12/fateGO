@@ -41,7 +41,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
   koiskApiFn: any;
   readonly ERROR_PERSO: string = 'ไม่สามารถให้บริการได้ กรุณาติดต่อพนักงานเพื่อดำเนินการ ขออภัยในความไม่สะดวก';
   readonly ERROR_PERSO_PC: string = 'ไม่สามารถ Perso Sim ได้';
-  masterSimCard: any;
+  memberSimCard: any;
 
   constructor(
     private router: Router,
@@ -60,8 +60,8 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
   }
 
   ngOnInit(): void {
-    this.masterSimCard = this.transaction.data.simCard;
-    if (this.masterSimCard.mobileNo) {
+    this.memberSimCard = this.transaction.data.simCard.memberSimCard[0];
+    if (this.memberSimCard.mobileNo) {
       this.setConfigPersoSim().then(() => {
         if (this.tokenService.getUser().channelType === ChannelType.SMART_ORDER) {
           this.persoSimKoisk();
@@ -118,16 +118,13 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
 
   persoSimWebsocket(): void {
     // for pc
-    console.log('WebSocket*********** ', WebSocket);
     this.title = 'กรุณาเสียบ Sim Card';
     this.persoSimSubscription = this.persoSimService.onPersoSim(this.persoSimConfig).subscribe((persoSim: any) => {
       this.persoSim = persoSim;
-      console.log('persoSim**************', persoSim);
-
       if (persoSim.persoData && persoSim.persoData.simSerial) {
         this.title = 'กรุณาดึงซิมการ์ด';
-        this.transaction.data.simCard.simSerial = persoSim.persoData.simSerial;
-        this.onNext();
+        this.transaction.data.simCard.memberSimCard[0].simSerial = persoSim.persoData.simSerial;
+        // this.onNext();
       }
       if (persoSim.error) {
         this.errorMessage = this.ERROR_PERSO;
@@ -148,7 +145,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
           params: {
             indexNo: indexNo,
             serialNo: serialNo,
-            mobileNo: this.transaction.data.simCard.mobileNo,
+            mobileNo: this.memberSimCard.mobileNo,
             simService: 'Normal',
             sourceSystem: 'MC-KIOSK'
           }
