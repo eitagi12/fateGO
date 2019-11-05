@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_SELECT_NUMBER_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MASTER_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
-import { SimSerial, PageLoadingService, AlertService, Utils } from 'mychannel-shared-libs';
+import { PageLoadingService, AlertService, Utils } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { TranslateService } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
@@ -21,7 +21,6 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
 
   wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
   transaction: Transaction;
-  simSerial: SimSerial;
   serialForm: FormGroup;
   keyInSimSerial: boolean;
   simSerialValid: boolean;
@@ -36,7 +35,7 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
     private fb: FormBuilder,
     private utils: Utils,
     private _ngZone: NgZone,
-    private  storeService: StoreService
+    private storeService: StoreService
   ) {
     this.transaction = this.transactionService.load();
   }
@@ -54,10 +53,6 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MASTER_PAGE]);
   }
 
-  onHome(): void {
-    window.location.href = '/sales-portal/dashboard';
-  }
-
   createForm(): void {
     this.serialForm = this.fb.group({
       serial: ['', [Validators.required, Validators.pattern(/\d{13}/)]]
@@ -67,12 +62,7 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
   checkShowData(): void {
     this.simSerialValid = this.storeService.simSerialValid === true ? true : false;
     this.keyInSimSerial = this.storeService.keyInSimSerial === true ? true : false;
-    if (this.keyInSimSerial === true) {
-      const simSerial = this.transaction.data.simCard.simSerial ? this.transaction.data.simCard.simSerial : '';
-      this.serialForm.controls['serial'].setValue(simSerial);
-    } else {
-      this.serialForm.controls['serial'].setValue('');
-    }
+    this.keyInSimSerial === true ? this.setValueSerialForm(this.transaction) : this.setValueSerialForm();
   }
 
   isAisNative(): boolean {
@@ -80,20 +70,18 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
   }
 
   onCheckSimSerial(): void {
-    this.keyInSimSerial = true;
-    this.storeService.keyInSimSerial = this.keyInSimSerial;
     const serial = this.serialForm.controls['serial'].value;
     this.getMobileNoBySim(serial);
+    this.setKeyInSimSerial(true);
   }
 
   onOpenScanBarcode(): void {
-    this.keyInSimSerial = false;
-    this.storeService.keyInSimSerial = this.keyInSimSerial;
-    this.serialForm.controls['serial'].setValue('');
     window.aisNative.scanBarcode();
     let barcodeSerial: string = '';
     window.onBarcodeCallback = (barcode: any): void => {
       if (barcode && barcode.length > 0) {
+        this.setKeyInSimSerial(false);
+        this.setValueSerialForm();
         this._ngZone.run(() => {
           const parser: any = new DOMParser();
           barcode = '<data>' + barcode + '</data>';
@@ -110,8 +98,7 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
     this.http.get(`/api/customerportal/validate-verify-instant-sim?serialNo=${serial}`).toPromise()
       .then((resp: any) => {
         this.pageLoadingService.closeLoading();
-        this.simSerialValid = true;
-        this.storeService.simSerialValid = this.simSerialValid;
+        this.setSimSerialValid(true);
         this.transaction.data.simCard = {
           mobileNo: resp.data.mobileNo,
           simSerial: serial,
@@ -119,9 +106,9 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
         };
       }).catch((err: any) => {
         this.pageLoadingService.closeLoading();
-        this.simSerialValid = false;
-        this.storeService.simSerialValid = this.simSerialValid;
-        this.clearData();
+        this.setSimSerialValid(false);
+        this.setValueSerialForm();
+        delete this.transaction.data.simCard;
         this.alertService.notify({
           type: 'error',
           html: err.error.developerMessage.replace(/<br>/, ' ')
@@ -129,9 +116,19 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
       });
   }
 
-  clearData(): void {
-    delete this.transaction.data.simCard;
-    this.serialForm.controls['serial'].setValue('');
+  setKeyInSimSerial(keyInSimSerial: boolean): void {
+    this.keyInSimSerial = keyInSimSerial;
+    this.storeService.keyInSimSerial = this.keyInSimSerial;
+  }
+
+  setSimSerialValid(simSerialValid: boolean): void {
+    this.simSerialValid = simSerialValid;
+    this.storeService.simSerialValid = this.simSerialValid;
+  }
+
+  setValueSerialForm(value?: any): void {
+    const simSerial = value ? value.data.simCard.simSerial : '';
+    simSerial ? this.serialForm.controls['serial'].setValue(simSerial) : this.serialForm.controls['serial'].setValue('');
   }
 
   ngOnDestroy(): void {
