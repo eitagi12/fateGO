@@ -16,7 +16,7 @@
                     <div class="card-header bg-light-blue text-white">
                         <div class="row">
                             <div class="col-6">{{ 'Post Paid' | translate }}</div>
-                            <div class="col-6 text-right">{{ masterSimCard?.mobileNo }}</div>
+                            <div class="col-6 text-right">{{ memberSimCard?.mobileNo }}</div>
                         </div>
                     </div>
                     <div class="card-body">
@@ -35,9 +35,6 @@
                                 </div>
                                 <div *ngIf="errorMessage" class="text-center mt-3 mb-3 text-red">
                                     {{ errorMessage | translate }}
-                                </div>
-                                <div *ngIf="persoSim?.progress === 100 && !errorMessage" class="text-center mt-3 mb-3">
-                                    {{ 'กรุณานำซิมออกและเปลี่ยนเป็นซิมสำหรับเบอร์ย้ายค่าย' | translate }}
                                 </div>
                                 <div class="line-behind" *ngIf="option?.key_sim">
                                     <span translate>{{'หรือ' | translate}}</span>
@@ -59,7 +56,7 @@
         </div>
     </div>
     <mc-footer>
-        <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-        <button class="btn btn-success" (click)="onNext()">NEXT</button>
+        <!-- <button class="btn btn-secondary" (click)="onBack()">BACK</button> -->
+        <button class="btn btn-success" (click)="onNext()" [disabled]="!(persoSim?.progress === 100 && !errorMessage)" >NEXT</button>
     </mc-footer>
 </div>
