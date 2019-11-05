@@ -22,7 +22,7 @@ export class ValidateCustomerService {
   checkValidateCustomer(idCardNo: string, idCardType: string, transactionType: string): Promise<any> {
     return this.http.get('/api/customerportal/validate-customer-new-register', {
       params: {
-        identity : idCardNo,
+        identity: idCardNo,
         idCardType: idCardType,
         transactionType: transactionType
       }
@@ -127,7 +127,7 @@ export class ValidateCustomerService {
       titleName: customer.prefix || '',
       firstName: customer.firstName || '',
       lastName: customer.lastName || '',
-      birthdate: customer.birthDay + '/' + customer.birthMonth + '/' + customer.birthYear || '',
+      birthdate: customer.birthdate || customer.birthDay + '/' + customer.birthMonth + '/' + customer.birthYear || '',
       gender: customer.gender || '',
       homeNo: customer.homeNo || '',
       moo: customer.moo || '',
@@ -175,11 +175,11 @@ export class ValidateCustomerService {
     const idCardType = transaction.data.customer.idCardType;
 
     if (this.utils.isLowerAge17Year(birthdate)) {
-      return {false: 'ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี'};
+      return { false: 'ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี' };
     }
     if (this.utils.isIdCardExpiredDate(expireDate)) {
-      return {false: 'ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ'};
+      return { false: 'ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ' };
     }
-    return {true: true};
+    return { true: true };
   }
 }
