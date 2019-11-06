@@ -128,9 +128,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
   onNext(): any {
     this.pageLoadingService.openLoading();
     this.createTransaction();
-    return this.validateCustomerService.queryCustomerInfo(this.profile.idCardNo).then((res) => {
-      console.log('validate cusomer', res);
-
+    return this.validateCustomerService.queryCustomerInfo(this.profile.idCardNo).then(() => {
       this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol).then((zipCode: string) => {
         const transactionType = TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS;
         return this.validateCustomerService.checkValidateCustomer(this.profile.idCardNo, this.profile.idCardType, transactionType)
@@ -185,7 +183,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
         queryParams: {
           idCardNo: this.profile.idCardNo
         }
-      });
+      }).then(() => this.pageLoadingService.closeLoading());
     });
   }
 
