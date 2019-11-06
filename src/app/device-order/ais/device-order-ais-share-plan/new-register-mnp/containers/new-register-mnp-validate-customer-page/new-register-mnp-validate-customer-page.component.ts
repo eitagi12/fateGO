@@ -26,7 +26,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   identity: string;
   user: User;
   // tslint:disable-next-line: max-line-length
-  // priceOptionMock: any = require('src/app/device-order/ais/device-order-ais-share-plan/new-register-mnp/containers/new-register-mnp-validate-customer-page/priceOption.json');
+  priceOptionMock: any = require('src/app/device-order/ais/device-order-ais-share-plan/new-register-mnp/containers/new-register-mnp-validate-customer-page/priceOption.json');
   order: Order;
   transactionId: string;
 
@@ -42,7 +42,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     private utils: Utils
   ) {
     this.transaction = this.transactionService.load();
-    this.priceOption = this.priceOptionService.load();
+    this.priceOption = this.priceOptionService.load() ? this.priceOptionService.load() : this.priceOptionMock;
     this.user = this.tokenService.getUser();
     this.homeService.callback = () => {
       this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
@@ -129,11 +129,11 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
         this.pageLoadingService.closeLoading();
       } else {
-        const data: any = {
-          transaction: this.transaction,
-          transactionType: this.transaction.data.transactionType
-        };
-        const transactionObject: any = this.validateCustomerService.buildTransaction(data);
+        const transactionObject: any = this.validateCustomerService.buildTransaction({
+            transaction: this.transaction,
+            transactionType: this.transaction.data.transactionType
+          }
+        );
         this.validateCustomerService.createTransaction(transactionObject).then((response: any) => {
           this.pageLoadingService.closeLoading();
           if (response.data.isSuccess) {

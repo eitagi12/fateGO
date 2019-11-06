@@ -99,11 +99,10 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
                     ...this.transaction.data,
                     order: { soId: order.data.soId },
                   };
-                  const data: any = {
+                  const transactionObject: any = this.validateCustomerService.buildTransaction({
                     transaction: this.transaction,
                     transactionType: this.transaction.data.transactionType
-                  };
-                  const transactionObject: any = this.validateCustomerService.buildTransaction(data);
+                  });
                   this.validateCustomerService.createTransaction(transactionObject).then((resp: any) => {
                     this.pageLoadingService.closeLoading();
                     if (resp.data.isSuccess) {
