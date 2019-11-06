@@ -86,7 +86,8 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
     if (checkAgeAndExpire.true) {
       this.validateCustomerService.app3Step(this.identity, this.tokenService.getUser().username)
         .then((chk3Step: any) => {
-          if (chk3Step.lockFlg === 'N') {
+          console.log(chk3Step);
+          if (chk3Step.data.lockFlg === 'N') {
             if (this.order) {
               this.pageLoadingService.closeLoading();
               this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
