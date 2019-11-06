@@ -55,14 +55,15 @@ export class ValidateCustomerService {
     return this.http.post(`/api/salesportal/device-order/create-transaction`, transactionObject).toPromise();
   }
 
-  buildTransaction(transactionType: string): any {
-    const transactionLoad = this.transactionService.load();
+  buildTransaction(data: {transaction: Transaction, transactionType: string}): any {
     const user: User = this.tokenService.getUser();
-    const customer: any = transactionLoad.data.customer;
-    const order: any = transactionLoad.data.order;
-    const transactionId = transactionLoad.transactionId || this.generateTransactionId();
+    const transaction: Transaction = data.transaction;
+    const transactionType: string = data.transactionType;
+    const customer: any = transaction.data.customer;
+    const order: any = transaction.data.order;
+    const transactionId = transaction.transactionId || this.generateTransactionId();
 
-    const transaction: any = {
+    const $transaction: any = {
       transactionId: transactionId,
       data: {
         customer: customer,
@@ -72,13 +73,13 @@ export class ValidateCustomerService {
           description: 'pending'
         },
         transactionType: transactionType,
-        billingInformation: transactionLoad.data.billingInformation
+        billingInformation: transaction.data.billingInformation
       },
       create_date: Date.now(),
       create_by: user.username,
       issueBy: user.username
     };
-    return transaction;
+    return $transaction;
   }
 
   selectMobileNumberRandom(user: User, transaction: Transaction): Promise<any> {
