@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { User, Utils } from 'mychannel-shared-libs';
+import { User, Utils, TokenService } from 'mychannel-shared-libs';
 import { Transaction, Prebooking } from '../models/transaction.model';
 import { PriceOption } from '../models/price-option.model';
 import * as moment from 'moment';
+import { TransactionService } from './transaction.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,7 +13,9 @@ export class ValidateCustomerService {
 
   constructor(
     private http: HttpClient,
-    private utils: Utils
+    private utils: Utils,
+    private transactionService: TransactionService,
+    private tokenService: TokenService
   ) { }
 
   queryCustomerInfo(identity: string): Promise<any> {
@@ -50,6 +53,32 @@ export class ValidateCustomerService {
 
   createTransaction(transactionObject: any): Promise<any> {
     return this.http.post(`/api/salesportal/device-order/create-transaction`, transactionObject).toPromise();
+  }
+
+  buildTransaction(transactionType: string): any {
+    const transactionLoad = this.transactionService.load();
+    const user: User = this.tokenService.getUser();
+    const customer: any = transactionLoad.data.customer;
+    const order: any = transactionLoad.data.order;
+    const transactionId = transactionLoad.transactionId || this.generateTransactionId();
+
+    const transaction: any = {
+      transactionId: transactionId,
+      data: {
+        customer: customer,
+        order: order,
+        status: {
+          code: '001',
+          description: 'pending'
+        },
+        transactionType: transactionType,
+        billingInformation: transactionLoad.data.billingInformation
+      },
+      create_date: Date.now(),
+      create_by: user.username,
+      issueBy: user.username
+    };
+    return transaction;
   }
 
   selectMobileNumberRandom(user: User, transaction: Transaction): Promise<any> {

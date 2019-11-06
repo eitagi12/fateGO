@@ -27,6 +27,9 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   user: User;
   // tslint:disable-next-line: max-line-length
   priceOptionMock: any = require('src/app/device-order/ais/device-order-ais-share-plan/new-register-mnp/containers/new-register-mnp-validate-customer-page/priceOption.json');
+  order: Order;
+  transactionId: string;
+
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -115,7 +118,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     this.validateCustomer().then((data: any) => {
 
       if (data) {
-        const soId: any = this.transaction.data.order || data.order.data;
+        const soId: any = data.order.data || data.order;
         this.transaction.data = {
           ...this.transaction.data,
           order: soId
@@ -127,7 +130,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
         this.pageLoadingService.closeLoading();
       } else {
-        const transactionObject: any = this.buildTransaction(this.transaction.data.transactionType);
+        const transactionObject: any = this.validateCustomerService.buildTransaction(this.transaction.data.transactionType);
         this.validateCustomerService.createTransaction(transactionObject).then((response: any) => {
           this.pageLoadingService.closeLoading();
           if (response.data.isSuccess) {
@@ -135,11 +138,10 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
             this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
           } else {
             this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
-            throw new Error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
           }
         }).catch((error: any) => {
           this.pageLoadingService.closeLoading();
-          throw new Error(error);
+          this.alertService.error(error);
         });
       }
     }).catch((err: any) => {
@@ -150,7 +152,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
           }
         });
       } else {
-        this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+        this.alertService.error('คุณไม่สามารถทำรายการเปิดเบอร์ใหม่ได้ Sorry this ID Card is Expired');
       }
       this.pageLoadingService.closeLoading();
     });
@@ -186,21 +188,28 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
                 });
                 return this.validateCustomerService.getCurrentDate().then((sysdate: any) => {
                   if (sysdate) {
-                    const isLowerAge: boolean = this.isLowerAge(customer.data.birthdate, sysdate);
+                    const isLowerAge: boolean = this.validateCustomerService.isLowerAge(customer.data.birthdate, sysdate);
                     if (!isLowerAge) {
                       this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
                       throw new Error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
                     } else {
-                      console.log('Order SoldID', this.transaction.data.order);
-                      // tslint:disable-next-line: max-line-length
-                      const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: customer });
-                      return this.validateCustomerService.addDeviceSellingCart(body).then((order: Order) => {
+                      if (this.order) {
                         return {
-                          order,
+                          order: this.order,
                           customer,
-                          customerInfo,
+                          customerInfo
                         };
-                      });
+                      } else {
+                        // tslint:disable-next-line: max-line-length
+                        const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: customer });
+                        return this.validateCustomerService.addDeviceSellingCart(body).then((order: Order) => {
+                          return {
+                            order,
+                            customer,
+                            customerInfo,
+                          };
+                        });
+                      }
                     }
                   }
                 });
@@ -220,58 +229,20 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     });
   }
 
-  isLowerAge(birthdate: string, currentDate?: Date): boolean {
-    const b: moment.Moment = moment(birthdate, 'DD/MM/YYYY');
-    const c: moment.Moment = moment(currentDate).add(543, 'years');
-    if (b.isValid()) {
-      const age: any = c.diff(b, 'years');
-      const isLegal: any = (age >= 17);
-      return isLegal;
-    } else {
-      throw new Error('กรอกวันเกิดไม่ถูกต้อง กรุณากรอกใหม่อีกครั้ง');
-    }
-  }
-
   createTransaction(): void {
-    let order: Order;
-    let transactionId: string;
     if (this.transaction.data && this.transaction.data.order && this.transaction.data.order.soId) {
-      transactionId = this.transaction.transactionId;
-      order = this.transaction.data.order;
+      this.transactionId = this.transaction.transactionId;
+      this.order = this.transaction.data.order;
     }
     this.transaction = {
       data: {
         transactionType: TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS,
         action: TransactionAction.KEY_IN,
-        order: order || { soId: '' }
+        order: this.order
       },
-      transactionId: this.transaction.transactionId || ''
+      transactionId: this.transaction.transactionId
     };
     delete this.transaction.data.customer;
-  }
-
-  buildTransaction(transactionType: string): any {
-    const customer: any = this.transaction.data.customer;
-    const order: any = this.transaction.data.order;
-    const transactionId = this.transaction.transactionId || this.validateCustomerService.generateTransactionId();
-
-    const transaction: any = {
-      transactionId: transactionId,
-      data: {
-        customer: customer,
-        order: order,
-        status: {
-          code: '001',
-          description: 'pending'
-        },
-        transactionType: transactionType,
-        billingInformation: this.transaction.data.billingInformation
-      },
-      create_date: Date.now(),
-      create_by: this.user.username,
-      issueBy: this.user.username
-    };
-    return transaction;
   }
 
   ngOnDestroy(): void {
