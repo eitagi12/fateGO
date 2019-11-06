@@ -84,9 +84,8 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
 
     const checkAgeAndExpire = this.validateCustomerService.checkAgeAndExpireCard(this.transaction);
     if (checkAgeAndExpire.true) {
-      this.validateCustomerService.app3Step(this.identity, this.tokenService.getUser().username)
+      this.validateCustomerService.app3Step(this.identity, this.user.username)
         .then((chk3Step: any) => {
-          console.log(chk3Step);
           if (chk3Step.data.lockFlg === 'N') {
             if (this.order) {
               this.pageLoadingService.closeLoading();
@@ -103,8 +102,9 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
                   const transactionObject: any = this.validateCustomerService.buildTransaction(this.transaction.data.transactionType);
                   this.validateCustomerService.createTransaction(transactionObject).then((resp: any) => {
                     this.pageLoadingService.closeLoading();
-                    if (resp.isSuccess) {
-                      this.transaction = transactionObject;
+                    if (resp.data.isSuccess) {
+                      // this.transaction = transactionObject;
+                      this.transactionService.update(transactionObject);
                       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
                     } else {
                       this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
@@ -127,8 +127,6 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
           this.pageLoadingService.closeLoading();
           this.alertService.error(error);
         });
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
-      this.pageLoadingService.closeLoading();
     } else {
       this.pageLoadingService.closeLoading();
       this.alertService.error(checkAgeAndExpire.false);
