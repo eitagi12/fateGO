@@ -21,6 +21,7 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
   keyInValid: boolean;
   identity: string;
   user: User;
+  order: Order;
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -44,6 +45,7 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
   }
 
   callService(): void {
+    this.order = this.transaction.data.order;
     this.customerService.queryCardType().then((resp: any) => {
       this.cardTypes = (resp.data.cardTypes || []).map((cardType: any) => cardType.name);
     });
@@ -73,32 +75,63 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
     this.validateCustomerKeyin();
   }
 
-  // tslint:disable-next-line: typedef
-  validateCustomerKeyin(): any {
+  validateCustomerKeyin(): void {
     this.pageLoadingService.openLoading();
     const customer = {
       firstName: this.transaction.data.customer.firstName,
       lastName: this.transaction.data.customer.lastName
     };
-    // tslint:disable-next-line: max-line-length
-    const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: customer });
-    return this.validateCustomerService.addDeviceSellingCart(body).then((order: any) => {
-      if (order.data && order.data.soId) {
-        this.transaction.data = {
-          ...this.transaction.data,
-          order: this.transaction.data.order || { soId: order.data.soId },
-        };
-      }
-    }).then(() => {
-      const checkAgeAndExpire = this.validateCustomerService.checkAgeAndExpireCard(this.transaction);
-      if (checkAgeAndExpire.true) {
-        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
-        this.pageLoadingService.closeLoading();
-      } else {
-        this.pageLoadingService.closeLoading();
-        this.alertService.error(checkAgeAndExpire.false);
-      }
-    });
+
+    const checkAgeAndExpire = this.validateCustomerService.checkAgeAndExpireCard(this.transaction);
+    if (checkAgeAndExpire.true) {
+      this.validateCustomerService.app3Step(this.identity, this.tokenService.getUser().username)
+        .then((chk3Step: any) => {
+          if (chk3Step.lockFlg === 'N') {
+            if (this.order) {
+              this.pageLoadingService.closeLoading();
+              this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
+            } else {
+              // tslint:disable-next-line: max-line-length
+              const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: customer });
+              this.validateCustomerService.addDeviceSellingCart(body).then((order: any) => {
+                if (order.data && order.data.soId) {
+                  this.transaction.data = {
+                    ...this.transaction.data,
+                    order: { soId: order.data.soId },
+                  };
+                  const transactionObject: any = this.validateCustomerService.buildTransaction(this.transaction.data.transactionType);
+                  this.validateCustomerService.createTransaction(transactionObject).then((resp: any) => {
+                    this.pageLoadingService.closeLoading();
+                    if (resp.isSuccess) {
+                      this.transaction = transactionObject;
+                      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
+                    } else {
+                      this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
+                    }
+                  }).catch((error: any) => {
+                    this.pageLoadingService.closeLoading();
+                    this.alertService.error(error);
+                  });
+                }
+              }).catch((error: any) => {
+                this.pageLoadingService.closeLoading();
+                this.alertService.error(error);
+              });
+            }
+          } else {
+            this.pageLoadingService.closeLoading();
+            this.alertService.error('ติดแอพ 3 ชั้น');
+          }
+        }).catch((error: any) => {
+          this.pageLoadingService.closeLoading();
+          this.alertService.error(error);
+        });
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]);
+      this.pageLoadingService.closeLoading();
+    } else {
+      this.pageLoadingService.closeLoading();
+      this.alertService.error(checkAgeAndExpire.false);
+    }
   }
 
   ngOnDestroy(): void {
