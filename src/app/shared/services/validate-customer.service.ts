@@ -67,6 +67,10 @@ export class ValidateCustomerService {
     }).toPromise();
   }
 
+  app3Step(idCardNo: string, username: string): Promise<any> {
+    return this.http.get(`/api/customerportal/customerprofile/${idCardNo}/${username}/app3steps`).toPromise();
+}
+
   getRequestAddDeviceSellingCart(user: User, transaction: Transaction, priceOption: PriceOption, bodyRequest: any): any {
     try {
       const productStock = priceOption.productStock;
@@ -181,5 +185,17 @@ export class ValidateCustomerService {
       return { false: 'ไม่สามารถทำรายการได้ เนื่องจาก' + idCardType + 'หมดอายุ' };
     }
     return { true: true };
+  }
+
+  isLowerAge(birthdate: string, currentDate?: Date): boolean {
+    const b: moment.Moment = moment(birthdate, 'DD/MM/YYYY');
+    const c: moment.Moment = moment(currentDate).add(543, 'years');
+    if (b.isValid()) {
+      const age: any = c.diff(b, 'years');
+      const isLegal: any = (age >= 17);
+      return isLegal;
+    } else {
+      throw new Error('กรอกวันเกิดไม่ถูกต้อง กรุณากรอกใหม่อีกครั้ง');
+    }
   }
 }
