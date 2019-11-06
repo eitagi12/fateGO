@@ -30,20 +30,38 @@ export class DeviceOrderAisNewRegisterOmiseResultPageComponent implements OnInit
 
   }
 
-  getPaymentBalance(): number {
-    const trade = this.priceOption.trade;
+  isPaymentOnlineCredit(paymentType: string): boolean {
     const payment: any = this.transaction.data.payment || {};
     const advancePayment: any = this.transaction.data.advancePayment || {};
+
+    if (paymentType === 'payment') {
+      if (payment.paymentType === 'CREDIT' && payment.paymentOnlineCredit) {
+        return true;
+      } else {
+        return false;
+      }
+    } else if (paymentType === 'advancePayment') {
+      if (advancePayment.paymentType === 'CREDIT' && advancePayment.paymentOnlineCredit) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    return false;
+  }
+
+  getPaymentBalance(): number {
+    const trade = this.priceOption.trade;
     let summary = 0;
     const advancePay = trade.advancePay || {};
     if (trade.advancePay.installmentFlag === 'Y') {
       return this.summary([+trade.promotionPrice, +advancePay.amount]);
     }
 
-    if (payment.paymentOnlineCredit) {
+    if (this.isPaymentOnlineCredit('payment')) {
       summary += +trade.promotionPrice;
     }
-    if (advancePayment.paymentOnlineCredit) {
+    if (this.isPaymentOnlineCredit('advancePayment')) {
       summary += +advancePay.amount;
     }
     return summary;
@@ -60,10 +78,10 @@ export class DeviceOrderAisNewRegisterOmiseResultPageComponent implements OnInit
       return this.summary([+trade.promotionPrice, +advancePay.amount]);
     }
 
-    if (!payment.paymentOnlineCredit) {
+    if (!this.isPaymentOnlineCredit('payment')) {
       summary += +trade.promotionPrice;
     }
-    if (!advancePayment.paymentOnlineCredit) {
+    if (!this.isPaymentOnlineCredit('advancePayment')) {
       summary += +advancePay.amount;
     }
     return summary;

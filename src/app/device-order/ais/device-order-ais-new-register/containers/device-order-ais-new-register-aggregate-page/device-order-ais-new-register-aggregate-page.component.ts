@@ -43,7 +43,7 @@ export class DeviceOrderAisNewRegisterAggregatePageComponent implements OnInit {
 
     if (payment.paymentType === 'QR_CODE' || advancePayment.paymentType === 'QR_CODE') {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QR_CODE_SUMMARY_PAGE]);
-    } else if (payment.paymentOnlineCredit || advancePayment.paymentOnlineCredit) {
+    } else if (this.isPaymentOnlineCredit('payment') || this.isPaymentOnlineCredit('advancePayment')) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_OMISE_SUMMARY_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_QUEUE_PAGE]);
@@ -52,6 +52,26 @@ export class DeviceOrderAisNewRegisterAggregatePageComponent implements OnInit {
 
   onHome(): void {
     this.homeService.goToHome();
+  }
+
+  isPaymentOnlineCredit(paymentType: string): boolean {
+    const payment: any = this.transaction.data.payment || {};
+    const advancePayment: any = this.transaction.data.advancePayment || {};
+
+    if (paymentType === 'payment') {
+      if (payment.paymentType === 'CREDIT' && payment.paymentOnlineCredit) {
+        return true;
+      } else {
+        return false;
+      }
+    } else if (paymentType === 'advancePayment') {
+      if (advancePayment.paymentType === 'CREDIT' && advancePayment.paymentOnlineCredit) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    return false;
   }
 
   getThumbnail(): string {

@@ -44,17 +44,15 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
   createOmiseStatus(): void {
     const company = this.priceOption.productStock.company;
     const trade = this.priceOption.trade;
-    const payment: any = this.transaction.data.payment || {};
-    const advancePayment: any = this.transaction.data.advancePayment || {};
     const advancePay = trade.advancePay || {};
 
     let amountDevice: string;
     let amountAirTime: string;
 
-    if (payment.paymentOnlineCredit) {
+    if (this.isPaymentOnlineCredit('payment')) {
       amountDevice = trade.promotionPrice;
     }
-    if (advancePayment.paymentOnlineCredit) {
+    if (this.isPaymentOnlineCredit('advancePayment')) {
       amountAirTime = advancePay.amount;
     }
 
@@ -71,13 +69,31 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
     };
   }
 
+  isPaymentOnlineCredit(paymentType: string): boolean {
+    const payment: any = this.transaction.data.payment || {};
+    const advancePayment: any = this.transaction.data.advancePayment || {};
+
+    if (paymentType === 'payment') {
+      if (payment.paymentType === 'CREDIT' && payment.paymentOnlineCredit) {
+        return true;
+      } else {
+        return false;
+      }
+    } else if (paymentType === 'advancePayment') {
+      if (advancePayment.paymentType === 'CREDIT' && advancePayment.paymentOnlineCredit) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    return false;
+  }
+
   getStatusPay(): string {
     const company = this.priceOption.productStock.company;
     const omise = this.transaction.data.omise;
-    const payment: any = this.transaction.data.payment || {};
-    const advancePayment: any = this.transaction.data.advancePayment || {};
     if (company === 'AWN') {
-      if (payment.paymentOnlineCredit && advancePayment.paymentOnlineCredit) {
+      if (this.isPaymentOnlineCredit('payment') && this.isPaymentOnlineCredit('advancePayment')) {
         return 'DEVICE&AIRTIME';
       } else {
         return omise.omiseStatus.statusDevice === 'WAITING' ? 'DEVICE' : 'AIRTIME';
@@ -102,7 +118,7 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
     const description = trade && trade.advancePay && trade.advancePay.description;
     const payment: any = this.transaction.data.payment || {};
     const advancePayment: any = this.transaction.data.advancePayment || {};
-    if (payment.paymentOnlineCredit && advancePayment.paymentOnlineCredit) {
+    if (this.isPaymentOnlineCredit('payment') && this.isPaymentOnlineCredit('advancePayment')) {
       this.orderList = [{
         name: priceOption.name + 'สี' + productStock.color,
         price: +trade.promotionPrice
@@ -110,7 +126,7 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
         name: description,
         price: +trade.advancePay.amount
       }];
-    } else if (payment.paymentOnlineCredit || advancePayment.paymentOnlineCredit) {
+    } else if ((this.isPaymentOnlineCredit('payment')) || (this.isPaymentOnlineCredit('advancePayment'))) {
       if (payment.paymentOnlineCredit) {
         this.orderList = [{
           name: priceOption.name + 'สี' + productStock.color,
@@ -162,8 +178,6 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
 
   getTotal(): number {
     const trade = this.priceOption.trade;
-    const payment: any = this.transaction.data.payment || {};
-    const advancePayment: any = this.transaction.data.advancePayment || {};
     let total: number = 0;
     const advancePay = trade.advancePay || {};
 
@@ -171,10 +185,10 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
       return this.summary([+trade.promotionPrice, +advancePay.amount]);
     }
 
-    if (payment.paymentOnlineCredit) {
+    if (this.isPaymentOnlineCredit('payment')) {
       total += +trade.promotionPrice;
     }
-    if (advancePayment.paymentOnlineCredit) {
+    if (this.isPaymentOnlineCredit('advancePayment')) {
       total += +advancePay.amount;
     }
     return total;

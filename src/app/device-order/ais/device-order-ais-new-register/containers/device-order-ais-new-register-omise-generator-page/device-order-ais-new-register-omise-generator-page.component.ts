@@ -53,7 +53,7 @@ export class DeviceOrderAisNewRegisterOmiseGeneratorPageComponent implements OnI
   onGenerateQRCode(): void {
     this.totalAmount = this.getTotalAmount();
     const orderId = this.transaction.data.omise.orderId || '';
-    const qrCodeStr = this.transaction.data.omise.qrCodeStr || ''; // 'http://10.138.35.113/payment?orderId=' + orderId
+    const qrCodeStr = this.transaction.data.omise.qrCodeStr || '';
 
     this.handlerQRCodeMpay(orderId, qrCodeStr);
   }
@@ -72,11 +72,11 @@ export class DeviceOrderAisNewRegisterOmiseGeneratorPageComponent implements OnI
         }
 
         this.checkResponseOmiseSubscription = this.qrCodeOmisePageService.checkPaymentResponseOrderStatus(orderId)
-          .subscribe((obs: any) => {
-            if (obs.paymentCode === '0000' && obs.paymentStatus === 'SUCCESS') {
-              this.transaction.data.omise.tranId = obs.transactionId || '';
-              this.transaction.data.omise.creditCardNo = obs.creditCardNo || '';
-              this.transaction.data.omise.cardExpireDate = obs.cardExpireDate || '';
+          .subscribe((data: any) => {
+            if (data.paymentCode === '0000' && data.paymentStatus === 'SUCCESS' && data.transactionId) {
+              this.transaction.data.omise.tranId = data.transactionId || '';
+              this.transaction.data.omise.creditCardNo = data.creditCardNo || '';
+              this.transaction.data.omise.cardExpireDate = data.cardExpireDate || '';
               this.onNext();
             }
           });
@@ -97,7 +97,7 @@ export class DeviceOrderAisNewRegisterOmiseGeneratorPageComponent implements OnI
               // check Retrive Order
               this.qrCodeOmisePageService.retriveOrder({ params: { orderId: orderId } }).then((resp) => {
                 const data = resp.data || {};
-                if (data.paymentCode === '0000' && data.paymentStatus === 'SUCCESS') {
+                if (data.paymentCode === '0000' && data.paymentStatus === 'SUCCESS' && data.transactionId) {
                   this.transaction.data.omise.tranId = data.transactionId || '';
                   this.transaction.data.omise.creditCardNo = data.creditCardNo || '';
                   this.transaction.data.omise.cardExpireDate = data.cardExpireDate || '';

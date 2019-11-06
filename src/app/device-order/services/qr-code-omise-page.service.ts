@@ -62,10 +62,11 @@ export class QrCodeOmisePageService {
         this.queryOrder({ params: { orderId: orderId, randomID: new Date().getTime() } })
           .then(resp => {
             const data = resp.data || {};
-            if (data.paymentCode && data.paymentStatus) {
+            if (data.paymentCode && data.paymentStatus && !data.transactionId) {
               obs.next({
                 paymentCode: data.paymentCode,
-                paymentStatus: data.paymentStatus
+                paymentStatus: data.paymentStatus,
+                transactionId: data.transactionId
               });
             } else {
               omiseResponseTimeout = setTimeout(() =>
