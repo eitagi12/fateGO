@@ -12,19 +12,21 @@ import {
 } from '../../constants/route-path.constant';
 import * as moment from 'moment';
 import { ValidateCustomerService } from 'src/app/shared/services/validate-customer.service';
-
+import { AbstractControl, ValidationErrors } from '@angular/forms';
+import { Utils } from 'mychannel-shared-libs';
 @Component({
   selector: 'app-new-register-mnp-validate-customer-page',
   templateUrl: './new-register-mnp-validate-customer-page.component.html',
   styleUrls: ['./new-register-mnp-validate-customer-page.component.scss']
 })
 export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDestroy {
-  priceOption: PriceOption;
+  priceOption: any;
   transaction: Transaction;
   identityValid: boolean = false;
   identity: string;
   user: User;
-
+  // tslint:disable-next-line: max-line-length
+  priceOptionMock: any = require('src/app/device-order/ais/device-order-ais-share-plan/new-register-mnp/containers/new-register-mnp-validate-customer-page/priceOption.json');
   constructor(
     private router: Router,
     private homeService: HomeService,
@@ -33,10 +35,11 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     private tokenService: TokenService,
     private priceOptionService: PriceOptionService,
     private alertService: AlertService,
-    private validateCustomerService: ValidateCustomerService
+    private validateCustomerService: ValidateCustomerService,
+    private utils: Utils
   ) {
     this.transaction = this.transactionService.load();
-    this.priceOption = this.priceOptionService.load();
+    this.priceOption = this.priceOptionService.load() ? this.priceOptionService.load() : this.priceOptionMock;
     this.user = this.tokenService.getUser();
     this.homeService.callback = () => {
       this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
@@ -48,6 +51,8 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
           }
         });
     };
+
+    localStorage.setItem('priceOption', JSON.stringify(this.priceOption));
   }
 
   ngOnInit(): void {
@@ -59,6 +64,24 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
 
   onCompleted(identity: string): void {
     this.identity = identity;
+  }
+
+  validateCustomerIdentity(control: AbstractControl): ValidationErrors | null {
+    const value = control.value;
+    const length: number = control.value.length;
+    if (length === 13) {
+      if (this.utils.isThaiIdCard(value)) {
+        return null;
+      } else {
+        return {
+          message: 'กรุณากรอกเลขบัตรประชาชนให้ถูกต้อง',
+        };
+      }
+    } else {
+      return {
+        message: 'กรุณากรอกรูปแบบให้ถูกต้อง',
+      };
+    }
   }
 
   onReadCard(): void {
@@ -90,6 +113,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   onNext(): void {
     this.pageLoadingService.openLoading();
     this.validateCustomer().then((data: any) => {
+
       if (data) {
         const soId: any = this.transaction.data.order || data.order.data;
         this.transaction.data = {
@@ -165,7 +189,9 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
                     const isLowerAge: boolean = this.isLowerAge(customer.data.birthdate, sysdate);
                     if (!isLowerAge) {
                       this.alertService.error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
+                      throw new Error('ไม่สามารถทำรายการได้ เนื่องจากอายุของผู้ใช้บริการต่ำกว่า 17 ปี');
                     } else {
+                      console.log('Order SoldID', this.transaction.data.order);
                       // tslint:disable-next-line: max-line-length
                       const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: customer });
                       return this.validateCustomerService.addDeviceSellingCart(body).then((order: Order) => {
