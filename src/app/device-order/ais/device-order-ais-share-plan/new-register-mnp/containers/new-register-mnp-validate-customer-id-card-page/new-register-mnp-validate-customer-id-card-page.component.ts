@@ -18,17 +18,14 @@ import { ValidateCustomerService } from 'src/app/shared/services/validate-custom
   styleUrls: ['./new-register-mnp-validate-customer-id-card-page.component.scss']
 })
 export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit, OnDestroy {
-  kioskApi: boolean;
-
   transaction: Transaction;
   priceOption: PriceOption;
-
   profile: ReadCardProfile;
   zipcode: string;
   readCardValid: boolean;
   user: User;
   progressReadCard: number;
-
+  soId: string;
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
   constructor(private router: Router,
@@ -57,9 +54,6 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
             if (!data.value) {
               return false;
             }
-            if (this.validateCustomerIdcard.koiskApiFn) {
-              this.validateCustomerIdcard.koiskApiFn.controls(KioskControls.LED_OFF);
-            }
             return this.returnStock().then(() => true);
           })
           .then((isNext: boolean) => {
@@ -69,12 +63,10 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
           });
       }
     };
-
-    this.kioskApi = this.tokenService.getUser().channelType === ChannelType.SMART_ORDER;
   }
 
   ngOnInit(): void {
-    this.onRemoveCardState();
+    this.soId = this.transaction.data.order.soId;
   }
 
   onProgress(progress: number): void {
@@ -133,52 +125,66 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    this.returnStock().then(() => {
-      this.createTransaction();
-      this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
-        .then((zipCode: string) => {
-          const transactionType = TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS;
-          return this.validateCustomerService.checkValidateCustomer(this.profile.idCardNo, this.profile.idCardType, transactionType)
-            .then((resp: any) => {
-              const data = resp.data || {};
-              return {
-                caNumber: data.caNumber,
-                mainMobile: data.mainMobile,
-                billCycle: data.billCycle,
-                zipCode: zipCode
-              };
-            });
-        })
-        .then((customer: any) => {
+    this.createTransaction();
+    this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol).then((zipCode: string) => {
+      const transactionType = TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS;
+      return this.validateCustomerService.checkValidateCustomer(this.profile.idCardNo, this.profile.idCardType, transactionType)
+        .then((resp: any) => {
+          const data = resp.data || {};
+          return {
+            caNumber: data.caNumber,
+            mainMobile: data.mainMobile,
+            billCycle: data.billCycle,
+            zipCode: zipCode
+          };
+        }).then((customer: any) => {
           this.transaction.data.customer = Object.assign(this.profile, customer);
           return this.validateCustomerService.queryBillingAccount(this.profile.idCardNo)
             .then((resp: any) => {
-              const data = resp.data || {};
-              return {
-                billCycles: data.billingAccountList
-              };
-            });
-        }).then((billingInformation: any) => {
-          this.transaction.data.billingInformation = billingInformation;
-
-          return this.conditionIdentityValid()
-            .catch((msg: string) => {
-              return this.alertService.error(this.translateService.instant(msg)).then(() => true);
-            })
-            .then((isError: boolean) => {
-              if (isError) {
-                this.onBack();
-                return;
-              }
-              // tslint:disable-next-line: max-line-length
-              const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, {customer: this.transaction.data.customer});
-              return this.validateCustomerService.addDeviceSellingCart(body)
-                .then((resp: any) => {
-                  this.transaction.data.order = { soId: resp.data.soId };
-                  return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+              const params: any = resp.data || {};
+              this.toBillingInformation(params).then((billingInfo: any) => {
+                this.transaction.data.billingInformation = billingInfo;
+              });
+              return this.conditionIdentityValid()
+                .catch((msg: string) => {
+                  return this.alertService.error(this.translateService.instant(msg)).then(() => true);
+                })
+                .then((isError: boolean) => {
+                  if (isError) {
+                    this.onBack();
+                    return;
+                  }
+                  if (!this.soId) {
+                    // ถ้าไม่มี soId ต้องยิง
+                    // tslint:disable-next-line: max-line-length
+                    const body: any = this.validateCustomerService.getRequestAddDeviceSellingCart(this.user, this.transaction, this.priceOption, { customer: this.transaction.data.customer });
+                    return this.validateCustomerService.addDeviceSellingCart(body).then((res: any) => {
+                      this.transaction.data = {
+                        ...this.transaction.data,
+                        order: { soId: res.data.soId }
+                      };
+                      return this.sharedTransactionService.createSharedTransaction(this.transaction, this.priceOption);
+                    }).then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]));
+                  } else {
+                    this.transaction.data = {
+                      ...this.transaction.data,
+                      order: { soId: this.soId }
+                    };
+                  }
                 }).then(() => this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE]));
-            });
-        }).then(() => this.pageLoadingService.closeLoading());
+            }).then(() => this.pageLoadingService.closeLoading());
+        });
+    });
+  }
+
+  toBillingInformation(data: any): any {
+    return this.validateCustomerService.billingNetExtreme(data).then((respBillingNetExtreme: any) => {
+      return {
+        billCycles: data.billingAccountList,
+        billCyclesNetExtreme: respBillingNetExtreme.data
+      };
+    }).catch(() => {
+      return { billCycles: data.billingAccountList };
     });
   }
 
@@ -254,12 +260,12 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
       if (transaction.data) {
         if (transaction.data.simCard && transaction.data.simCard.mobileNo) {
           const unlockMobile: any = this.validateCustomerService.selectMobileNumberRandom(this.user, transaction)
-          .catch(() => Promise.resolve());
+            .catch(() => Promise.resolve());
           promiseAll.push(unlockMobile);
         }
         if (transaction.data.order && transaction.data.order.soId) {
           const order = this.validateCustomerService.clearTempStock(this.priceOption, transaction)
-          .catch(() => Promise.resolve());
+            .catch(() => Promise.resolve());
           promiseAll.push(order);
         }
       }
