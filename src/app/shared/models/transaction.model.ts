@@ -62,6 +62,7 @@ export interface TransactionData {
   customer?: Customer;
   simCard?: SimCard;
   mainPackage?: MainPackage;
+  mainPackageMember?: MainPackageMember;
   currentPackage?: CurrentPackage;
   onTopPackage?: OnTopPackage;
   deleteOntopPackage?: DeleteOntopPackage[];
@@ -215,6 +216,23 @@ export interface SimCard {
 }
 
 export interface MainPackage {
+  billingSystem?: string;
+  duration?: string;
+  itemId: string;
+  itemsPriority?: string;
+  numberOfMobile?: string;
+  packageType?: string;
+  productPkg?: string;
+  promotionPackage?: string;
+  shortNameThai: string;
+  statementThai?: string;
+  shortNameEng?: string;
+  statementEng?: string;
+  parameters?: any;
+  [key: string]: any;
+}
+
+export interface MainPackageMember {
   billingSystem?: string;
   duration?: string;
   itemId: string;

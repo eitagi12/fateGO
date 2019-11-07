@@ -3,22 +3,29 @@ import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_CONFIRM_USER_INFORMATION_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_AGREEMENT_SIGN_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 import { Transaction, Seller } from 'src/app/shared/models/transaction.model';
-import { ConfirmCustomerInfo, BillingInfo, MailBillingInfo, TelNoBillingInfo, HomeService, AlertService, TokenService } from 'mychannel-shared-libs';
+import { BillingInfo, MailBillingInfo, TelNoBillingInfo, AlertService } from 'mychannel-shared-libs';
 import { Subscription } from 'rxjs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
 import { HttpClient } from '@angular/common/http';
-import { map } from 'rxjs/operators';
 import { SummarySellerCodeComponent } from '../../components/summary-seller-code/summary-seller-code.component';
 
 const Moment = moment;
 
-export class ShopCheckSeller {
-  condition: boolean;
-  isAscCode: boolean;
-  isSalePromotor: boolean;
-  message?: string;
+export interface ConfirmCustomerInfo {
+  titleName: string;
+  firstName: string;
+  lastName: string;
+  idCardNo: string;
+  mobileNo: string;
+  mobileNoMember: string;
+  mainPackage: string;
+  mainPackageMember: string;
+  onTopPackage?: string;
+  packageDetail: string;
+  packageDetailMember: string;
+  idCardType?: string;
 }
 
 @Component({
@@ -39,7 +46,6 @@ export class NewSharePlanMnpSummaryPageComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
-    private homeService: HomeService,
     private transactionService: TransactionService,
     private translation: TranslateService,
     private alertService: AlertService,
@@ -51,6 +57,7 @@ export class NewSharePlanMnpSummaryPageComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     const customer = this.transaction.data.customer;
     const mainPackage = this.transaction.data.mainPackage;
+    const mainPackageMember = this.transaction.data.mainPackageMember;
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData = billingInformation.billCycleData;
     const simCard = this.transaction.data.simCard;
@@ -61,9 +68,12 @@ export class NewSharePlanMnpSummaryPageComponent implements OnInit, OnDestroy {
       lastName: customer.lastName,
       idCardNo: customer.idCardNo,
       mobileNo: simCard.mobileNo,
+      mobileNoMember: simCard.mobileNoMember,
       mainPackage: mainPackage.shortNameThai,
+      mainPackageMember: mainPackageMember.customAttributes.shortNameThai,
       onTopPackage: '',
       packageDetail: mainPackage.statementThai,
+      packageDetailMember: mainPackageMember.customAttributes.inStatementThai,
       idCardType: customer.idCardType
     };
 

@@ -2,12 +2,28 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_SUMMARY_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_EBILLING_ADDRESS_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_EBILLING_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MEMBER_PAGE } from '../../constants/route-path.constant';
 import { Subscription } from 'rxjs';
-import { TelNoBillingInfo, ConfirmCustomerInfo, BillingInfo, MailBillingInfo, HomeService, AlertService, Utils, BillingSystemType } from 'mychannel-shared-libs';
+import { TelNoBillingInfo, BillingInfo, MailBillingInfo, AlertService, Utils, BillingSystemType } from 'mychannel-shared-libs';
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 import { TranslateService } from '@ngx-translate/core';
+
+export interface ConfirmCustomerInfo {
+  titleName: string;
+  firstName: string;
+  lastName: string;
+  idCardNo: string;
+  mobileNo: string;
+  mobileNoMember: string;
+  mainPackage: string;
+  mainPackageMember: string;
+  onTopPackage?: string;
+  packageDetail: string;
+  packageDetailMember: string;
+  idCardType?: string;
+}
+
 @Component({
   selector: 'app-new-share-plan-mnp-confirm-user-information-page',
   templateUrl: './new-share-plan-mnp-confirm-user-information-page.component.html',
@@ -28,13 +44,11 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
 
   constructor(
     private router: Router,
-    private homeService: HomeService,
     private transactionService: TransactionService,
     private alertService: AlertService,
     private utils: Utils,
     private http: HttpClient,
     private translation: TranslateService
-
   ) {
     this.transaction = this.transactionService.load();
 
@@ -50,6 +64,7 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
   ngOnInit(): void {
     const customer = this.transaction.data.customer;
     const mainPackage = this.transaction.data.mainPackage;
+    const mainPackageMember = this.transaction.data.mainPackageMember;
     const simCard = this.transaction.data.simCard;
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData: any = billingInformation.billCycleData || {};
@@ -62,9 +77,12 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
       lastName: customer.lastName,
       idCardNo: customer.idCardNo,
       mobileNo: simCard.mobileNo,
-      mainPackage: 'mainPackage.shortNameThai',
+      mobileNoMember: simCard.mobileNoMember,
+      mainPackage: mainPackage.shortNameThai,
+      mainPackageMember: mainPackageMember.customAttributes.shortNameThai,
       onTopPackage: '',
-      packageDetail: 'mainPackage.statementThai',
+      packageDetail: mainPackage.statementThai,
+      packageDetailMember: mainPackageMember.customAttributes.inStatementThai,
       idCardType: customer.idCardType
     };
     this.mailBillingInfo = {
@@ -88,9 +106,13 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
     if (lang === 'EN') {
       this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameEng;
       this.confirmCustomerInfo.packageDetail = this.transaction.data.mainPackage.statementEng;
+      this.confirmCustomerInfo.mainPackageMember = this.transaction.data.mainPackageMember.customAttributes.shortNameEng;
+      this.confirmCustomerInfo.packageDetailMember = this.transaction.data.mainPackageMember.customAttributes.inStatementEng;
     } else {
       this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameThai;
       this.confirmCustomerInfo.packageDetail = this.transaction.data.mainPackage.statementThai;
+      this.confirmCustomerInfo.mainPackageMember = this.transaction.data.mainPackageMember.customAttributes.shortNameThai;
+      this.confirmCustomerInfo.packageDetailMember = this.transaction.data.mainPackageMember.customAttributes.inStatementThai;
     }
   }
 

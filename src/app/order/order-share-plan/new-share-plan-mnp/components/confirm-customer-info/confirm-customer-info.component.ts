@@ -1,8 +1,5 @@
 import { Component, OnInit, Input, TemplateRef } from '@angular/core';
-import { ConfirmCustomerInfo } from 'mychannel-shared-libs';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
-import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { Transaction } from 'src/app/shared/models/transaction.model';
 
 export interface ConfirmCustomerInfo {
   titleName: string;
@@ -10,9 +7,12 @@ export interface ConfirmCustomerInfo {
   lastName: string;
   idCardNo: string;
   mobileNo: string;
+  mobileNoMember: string;
   mainPackage: string;
+  mainPackageMember: string;
   onTopPackage?: string;
   packageDetail: string;
+  packageDetailMember: string;
   idCardType?: string;
 }
 
@@ -23,29 +23,22 @@ export interface ConfirmCustomerInfo {
 })
 export class ConfirmCustomerInfoComponent implements OnInit {
 
-  mobileNoMember: string;
-  packageMember: string = 'รอเก็บ package จากหน้าPackMember ลง Transaction ';
-  @Input()
-  title: string;
-
-  @Input()
-  confirmCustomerInfo: ConfirmCustomerInfo;
-
-  templatePopupRef: BsModalRef;
-  transaction: Transaction;
+  templatePopupPackageMaster: BsModalRef;
+  templatePopupPackageMember: BsModalRef;
+  @Input() confirmCustomerInfo: ConfirmCustomerInfo;
 
   constructor(
-    private modalService: BsModalService,
-    private transactionService: TransactionService
-  ) {
-    this.transaction = this.transactionService.load();
-  }
+    private modalService: BsModalService
+  ) { }
 
   ngOnInit(): void {
-    this.mobileNoMember = this.transaction.data.simCard.mobileNoMember;
   }
 
-  onShowPackagePopup(templatePopup: TemplateRef<any>): void {
-    this.templatePopupRef = this.modalService.show(templatePopup);
+  onShowPopUpPackageMaster(popUpPackageMaster: TemplateRef<any>): void {
+    this.templatePopupPackageMaster = this.modalService.show(popUpPackageMaster);
+  }
+
+  onShowPopUpPackageMember(popUpPackageMember: TemplateRef<any>): void {
+    this.templatePopupPackageMember = this.modalService.show(popUpPackageMember);
   }
 }

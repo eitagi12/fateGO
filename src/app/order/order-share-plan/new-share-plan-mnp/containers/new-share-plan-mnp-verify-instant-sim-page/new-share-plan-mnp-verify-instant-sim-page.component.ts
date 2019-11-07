@@ -126,8 +126,8 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
     this.storeService.simSerialValid = this.simSerialValid;
   }
 
-  setValueSerialForm(value?: any): void {
-    const simSerial = value ? value.data.simCard.simSerial : '';
+  setValueSerialForm(transaction?: Transaction): void {
+    const simSerial = transaction ? transaction.data.simCard.simSerial : '';
     simSerial ? this.serialForm.controls['serial'].setValue(simSerial) : this.serialForm.controls['serial'].setValue('');
   }
 
