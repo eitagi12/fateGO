@@ -112,7 +112,7 @@ export class QueuePageService {
       userId: user.username,
       queueNo: queue.queueNo || '',
       cusNameOrder: `${customer.titleName || ''} ${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
-      soChannelType: 'MC_KIOSK',
+      soChannelType: 'CSP',
       soDocumentType: 'RESERVED',
       productList: [product],
 
