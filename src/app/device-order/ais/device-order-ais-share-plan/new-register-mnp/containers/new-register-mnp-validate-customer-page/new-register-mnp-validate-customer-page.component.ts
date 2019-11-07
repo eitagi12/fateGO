@@ -1,6 +1,5 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { PriceOption } from 'src/app/shared/models/price-option.model';
-import { Transaction, TransactionType, TransactionAction, Prebooking, Order, Customer } from 'src/app/shared/models/transaction.model';
+import { Transaction, TransactionType, TransactionAction, Order } from 'src/app/shared/models/transaction.model';
 import { Router } from '@angular/router';
 import { HomeService, PageLoadingService, TokenService, AlertService, User } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -26,7 +25,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   identity: string;
   user: User;
   // tslint:disable-next-line: max-line-length
-  priceOptionMock: any = require('src/app/device-order/ais/device-order-ais-share-plan/new-register-mnp/containers/new-register-mnp-validate-customer-page/priceOption.json');
+  // priceOptionMock: any = require('src/app/device-order/ais/device-order-ais-share-plan/new-register-mnp/containers/new-register-mnp-validate-customer-page/priceOption.json');
   order: Order;
   transactionId: string;
 
@@ -42,7 +41,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     private utils: Utils
   ) {
     this.transaction = this.transactionService.load();
-    this.priceOption = this.priceOptionService.load() ? this.priceOptionService.load() : this.priceOptionMock;
+    this.priceOption = this.priceOptionService.load();
     this.user = this.tokenService.getUser();
     this.homeService.callback = () => {
       this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
@@ -131,7 +130,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
       } else {
         const transactionObject: any = this.validateCustomerService.buildTransaction({
             transaction: this.transaction,
-            transactionType: this.transaction.data.transactionType
+            transactionType: TransactionType.DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN // Share
           }
         );
         this.validateCustomerService.createTransaction(transactionObject).then((response: any) => {
@@ -148,7 +147,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
         });
       }
     }).catch((error: any) => {
-      if (error.error.developerMessage === 'EB0001 : Data Not Found.') {
+      if (error.error && error.error.developerMessage === 'EB0001 : Data Not Found.') {
         this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE], {
           queryParams: {
             idCardNo: this.identity
@@ -180,7 +179,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     return this.validateCustomerService.queryCustomerInfo(this.identity)
       .then((customerInfo: any) => {
         const cardType: string = this.validateCustomerService.mapCardType(customerInfo.idCardType);
-        const transactionType = TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS;
+        const transactionType = TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS; // New
         return this.validateCustomerService.checkValidateCustomer(this.identity, cardType, transactionType)
           .then((customer: any) => {
             return this.validateCustomerService.queryBillingAccount(this.identity)
@@ -239,7 +238,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     }
     this.transaction = {
       data: {
-        transactionType: TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS,
+        transactionType: TransactionType.DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN, // Share
         action: TransactionAction.KEY_IN,
         order: this.order
       },

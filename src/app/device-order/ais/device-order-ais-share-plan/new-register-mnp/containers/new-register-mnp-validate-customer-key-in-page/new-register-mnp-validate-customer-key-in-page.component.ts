@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Params, Router, ActivatedRoute } from '@angular/router';
 import { HomeService, CustomerService, AlertService, Utils, User, TokenService, PageLoadingService } from 'mychannel-shared-libs';
 import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PAYMENT_DETAIL_PAGE } from '../../constants/route-path.constant';
-import { Transaction, Prebooking, Order, TransactionType, TransactionAction, Customer } from 'src/app/shared/models/transaction.model';
+import { Transaction, Order, TransactionType } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
@@ -101,7 +101,7 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
                   };
                   const transactionObject: any = this.validateCustomerService.buildTransaction({
                     transaction: this.transaction,
-                    transactionType: this.transaction.data.transactionType
+                    transactionType: TransactionType.DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN
                   });
                   this.validateCustomerService.createTransaction(transactionObject).then((resp: any) => {
                     this.pageLoadingService.closeLoading();

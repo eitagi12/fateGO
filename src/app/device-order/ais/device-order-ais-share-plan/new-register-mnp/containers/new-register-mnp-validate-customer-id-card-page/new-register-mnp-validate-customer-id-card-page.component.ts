@@ -205,7 +205,8 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
       data: {
         transactionType: TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS,
         action: TransactionAction.READ_CARD,
-      }
+      },
+      transactionId: this.transaction.transactionId ? this.transaction.transactionId : ''
     };
   }
 
