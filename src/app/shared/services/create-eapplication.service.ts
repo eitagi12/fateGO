@@ -96,8 +96,8 @@ export class CreateEapplicationService {
     const billingInformation: any = transaction.data.billingInformation || {};
     const billCycleData: any = billingInformation.billCycleData || {};
     const action: any = transaction.data.action;
-    const mainPackage: any = transaction.data.mainPackage.memberMainPackage.member1 || {};
-    const simCard: any = transaction.data.simCard.memberSimCard.member1 || {}; // Get simNo of member
+    const mainPackage: any = transaction.data.mainPackage.memberMainPackage[0] || {};
+    const simCard: any = transaction.data.simCard.memberSimCard[0] || {}; // Get simNo of member
     const data: any = {
       fullNameTH: language === 'EN' ? `${(customer.firstNameEn || '')} ${(customer.lastNameEn || '')}` :
         customer.firstName + ' ' + customer.lastName || '',
@@ -144,7 +144,7 @@ export class CreateEapplicationService {
       };
     }
     if (action === TransactionAction.READ_CARD || action === TransactionAction.READ_CARD_REPI) {
-      data.customerImg = customer.imageReadSmartCard;
+      data.customerImg = customer.imageReadSmartCard || customer.imageSmartCard;
     } else {
       data.customerImgKeyIn = customer.imageSmartCard ? customer.imageSmartCard : customer.imageReadPassport;
     }
@@ -206,7 +206,7 @@ export class CreateEapplicationService {
       };
     }
     if (action === TransactionAction.READ_CARD || action === TransactionAction.READ_CARD_REPI) {
-      data.customerImg = customer.imageReadSmartCard;
+      data.customerImg = customer.imageReadSmartCard || customer.imageSmartCard;
     } else {
       data.customerImgKeyIn = customer.imageSmartCard ? customer.imageSmartCard : customer.imageReadPassport;
     }

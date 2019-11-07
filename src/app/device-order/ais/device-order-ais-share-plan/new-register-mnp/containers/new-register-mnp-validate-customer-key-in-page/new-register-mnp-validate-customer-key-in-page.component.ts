@@ -20,8 +20,10 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
   cardTypes: string[] = [];
   keyInValid: boolean;
   identity: string;
+  customerKeyinInfo: any;
   user: User;
   order: Order;
+  imageReadSmartCard: any;
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
@@ -42,6 +44,7 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
   ngOnInit(): void {
     this.callService();
     this.activatedRoute.queryParams.subscribe((params: Params) => this.params = params);
+    this.imageReadSmartCard = this.transaction.data.customer;
   }
 
   callService(): void {
@@ -60,7 +63,8 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
   }
 
   onCompleted(value: any): void {
-    this.transaction.data.customer = this.validateCustomerService.mapCustomer(value);
+    this.customerKeyinInfo = value;
+    this.transaction.data.customer = this.validateCustomerService.mapCustomer(this.customerKeyinInfo, this.imageReadSmartCard);
   }
 
   onHome(): void {

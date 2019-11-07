@@ -55,7 +55,7 @@ export class ValidateCustomerService {
     return this.http.post(`/api/salesportal/device-order/create-transaction`, transactionObject).toPromise();
   }
 
-  buildTransaction(data: {transaction: Transaction, transactionType: string}): any {
+  buildTransaction(data: { transaction: Transaction, transactionType: string }): any {
     const user: User = this.tokenService.getUser();
     const transaction: Transaction = data.transaction;
     const transactionType: string = data.transactionType;
@@ -99,7 +99,7 @@ export class ValidateCustomerService {
 
   app3Step(idCardNo: string, username: string): Promise<any> {
     return this.http.get(`/api/customerportal/customerprofile/${idCardNo}/${username}/app3steps`).toPromise();
-}
+  }
 
   getRequestAddDeviceSellingCart(user: User, transaction: Transaction, priceOption: PriceOption, bodyRequest: any): any {
     try {
@@ -154,11 +154,11 @@ export class ValidateCustomerService {
     return mapCardType[idCardType];
   }
 
-  mapCustomer(customer: any): any {
+  mapCustomer(customer: any, transaction?: any): any {
     return {
       idCardNo: customer.idCardNo,
       idCardType: customer.idCardType || '',
-      titleName: customer.prefix || '',
+      titleName: customer.prefix || customer.titleName || '',
       firstName: customer.firstName || '',
       lastName: customer.lastName || '',
       birthdate: customer.birthdate || customer.birthDay + '/' + customer.birthMonth + '/' + customer.birthYear || '',
@@ -176,7 +176,7 @@ export class ValidateCustomerService {
       province: customer.province || customer.provinceName || '',
       firstNameEn: '',
       lastNameEn: '',
-      issueDate: customer.birthdate || '',
+      issueDate: customer.birthdate || customer.issueDate || '',
       expireDate: null,
       zipCode: customer.zipCode || '',
       mainMobile: customer.mainMobile || '',
@@ -186,7 +186,7 @@ export class ValidateCustomerService {
       mobileNo: '',
       imageSignature: '',
       imageSmartCard: '',
-      imageReadSmartCard: '',
+      imageReadSmartCard: customer.imageReadSmartCard || transaction.imageReadSmartCard || ''
     };
   }
 

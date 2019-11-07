@@ -47,7 +47,7 @@ export class NewRegisterMnpFaceComparePageComponent implements OnInit, OnDestroy
     const customer: Customer = this.transaction.data.customer;
     const faceRecognition: FaceRecognition = this.transaction.data.faceRecognition;
     this.http.post('/api/facerecog/facecompare', {
-      cardBase64Imgs: this.isReadCard() ? customer.imageReadSmartCard : customer.imageSmartCard,
+      cardBase64Imgs: this.isReadCard() ? customer.imageReadSmartCard || customer.imageSmartCard : customer.imageSmartCard,
       selfieBase64Imgs: faceRecognition.imageFaceUser
     }).toPromise().then((resp: any) => {
       this.transaction.data.faceRecognition.kyc = !resp.data.match;

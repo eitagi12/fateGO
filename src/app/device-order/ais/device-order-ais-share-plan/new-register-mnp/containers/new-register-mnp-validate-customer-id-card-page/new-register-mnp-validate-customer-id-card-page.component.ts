@@ -97,8 +97,6 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
 
   onCompleted(profile: ReadCardProfile): void {
     this.profile = profile;
-    console.log(profile);
-
   }
 
   onHome(): void {
@@ -146,7 +144,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
               .then((resp: any) => {
                 const params: any = resp.data || {};
                 this.toBillingInformation(params).then((billingInfo: any) => {
-                  this.transaction.data.billingInformation = billingInfo;
+                  this.transaction.data.billingInformation = billingInfo || {};
                 });
                 return this.conditionIdentityValid()
                   .catch((msg: string) => {
@@ -179,18 +177,18 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
           });
       });
     }).catch((e) => {
+      const mapCustomer = this.validateCustomerService.mapCustomer(this.profile);
+      this.transaction.data.customer = mapCustomer;
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE], {
         queryParams: {
           idCardNo: this.profile.idCardNo
-        }
+        },
       }).then(() => this.pageLoadingService.closeLoading());
     });
   }
 
   toBillingInformation(data: any): any {
     return this.validateCustomerService.billingNetExtreme(data).then((respBillingNetExtreme: any) => {
-      console.log(respBillingNetExtreme);
-
       return {
         billCycles: data.billingAccountList,
         billCyclesNetExtreme: respBillingNetExtreme.data
