@@ -1,44 +1,52 @@
 <div class="mc-flex">
-  <mc-header title="{{ 'เปิดเบอร์ใหม่' | translate }}"></mc-header>
-  <div class="mc-flex-wrap ">
-    <div class="mb-3 mt-3">
-      <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
+  <mc-header title="{{ 'เปิดเบอร์ใหม่' | translate }}">
+    <div class="header-icon-left w-25">
+      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
-    <div class="card-header bg-light-blue text-white">
-      <img src="assets/images/icon/icon-circle-ais-post-logo.png" class="icon-ais mr-2" />
-      {{ 'Post Paid' | translate }}
+    <div class="header-icon-right w-25 text-right">
+      <mc-dropdown-language></mc-dropdown-language>
+      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
     </div>
-    <div class="card-body bg-white">
-      <div class="pt-3 pb-3">
-        <div class="container">
-          <p>1. {{ mobileNo | mobileNo}} (เบอร์โทรหลัก - เบอร์จดทะเบียนใหม่)</p>
-          <img src="assets/images/icon/icon-ReadIDCard-01.png" class="icon-read-card" />
-          <img src="assets/images/icon/icon-input-sim.png" class="icon-perso-sim" />
-          <div class="text-center my-3" translate>กรุณาเสียบซิมการ์ด</div>
-          <div class="progress mb-5">
-            <div class="progress-bar bg-success" role="progressbar" [style.width.%]="persoSim?.progress"
-              [attr.aria-valuenow]="persoSim?.progress" aria-valuemin="0" aria-valuemax="100">
-            </div>
-          </div>
-          <div class="text-center" translate>กรุณานำซิมออกและเปลี่ยนเป็นซิมสำหรับเบอร์ย้ายค่าย</div>
-          <div class="text-center mt-3 mb-3 text-red" translate>{{ errorMessage }}</div>
-          <div class="line-behind" *ngIf="option?.key_sim">
-            <span translate>หรือ</span>
-          </div>
-          <form>
-            <div class="form-group" *ngIf="option?.key_sim">
-              <label for="simserial" class="form-text text-center" translate>กรอกเลขที่ซิมการ์ด</label>
-              <input type="text" class="form-control text-center" id="simserial" maxlength="13"
-                placeholder="สแกน Barcode หรือ ใส่เลขที่ซิม 13 หลัก" mcVirtualKeyboard>
-              <small class="form-text text-red text-center" translate>* เลขที่ซิมต้องเป็นตัวเลข 13 ตัวเท่านั้น</small>
-            </div>
-          </form>
+  </mc-header>
+  <div class="mc-flex-wrap bg-white">
+    <div class="pt-3 pb-3">
+      <div class="container">
+        <img src="assets/images/icon/icon-ReadIDCard-01.png" class="icon-read-card" />
+        <img src="assets/images/icon/icon-input-sim.png" class="icon-perso-sim" />
+        <div class="text-center mt-3 mb-3" translate>{{ title }}</div>
+        <div class="progress mb-5">
+          <div class="progress-bar bg-success" role="progressbar" [style.width.%]="persoSim?.progress"
+            [attr.aria-valuenow]="persoSim?.progress" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
+        <div class="text-center mt-3 mb-3 text-red" translate>{{ errorMessage }}</div>
+        <div class="line-behind">
+          <span translate>หรือ</span>
+        </div>
+        <form [formGroup]="simSerialForm" >
+          <div class="form-group">
+            <label for="simserial" class="form-text text-center" translate>กรอกเลขที่ซิมการ์ด</label>
+            <input 
+          name="barcodeValue" 
+          id="txtRegNumConfirmScanSim" 
+          class="form-control text-center" 
+          type="tel" 
+          maxlength="13" 
+          placeholder= "{{(scanBarcodePC$ | async)? 'ใส่เลขที่ซิม 13 หลัก' : 'สแกน Barcode หรือ ใส่เลขที่ซิม 13 หลัก'}}" 
+          [ngClass]="{'has-error':!simSerialForm.controls['simSerial'].valid}"
+          formControlName="simSerial"  
+          [(ngModel)]="simSerialKeyIn"
+          autocomplete="off"
+          (ngModelChange)="onSerialNumberChanged($event)" >
+
+            <small class="form-text text-red text-center" [hidden]="simSerialForm.controls['simSerial'].valid" translate>* เลขที่ซิมต้องเป็นตัวเลข 13
+              ตัวเท่านั้น</small>
+          </div>
+        </form>
       </div>
     </div>
   </div>
   <mc-footer>
-    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-    <button class="btn btn-success" (click)="onNext()" [disabled]="!isNext">NEXT</button>
+    <button class="btn btn-secondary" (click)="onBack()" [disabled]="disableBack">BACK</button>
+    <button class="btn btn-success" (click)="onNext()">NEXT</button>
   </mc-footer>
 </div>
