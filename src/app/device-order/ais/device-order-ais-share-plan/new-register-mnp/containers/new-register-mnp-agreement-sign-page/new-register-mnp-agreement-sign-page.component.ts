@@ -51,15 +51,13 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
     const customer: Customer = this.transaction.data.customer;
     this.conditionText = AgreementSignConstant.NEW_REGISTER_SIGN;
     this.captureAndSign = {
-      allowCapture: true,
+      allowCapture: (this.transaction.data.action === 'READ_CARD') ? false : true,
       imageSignature: customer.imageSignatureSmartCard,
-      imageSmartCard: customer.imageSmartCard,
+      imageSmartCard: (this.transaction.data.action === 'READ_CARD') ? customer.imageReadSmartCard : customer.imageSmartCard,
     };
-    console.log('captureAndSign |', this.captureAndSign);
   }
 
   onCompleted(captureAndSign: CaptureAndSign): void {
-    console.log('onCompleted |', captureAndSign);
     const customer: Customer = this.transaction.data.customer;
     customer.imageSignatureSmartCard = captureAndSign.imageSignature;
     customer.imageSmartCard = captureAndSign.imageSmartCard;
@@ -67,8 +65,6 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
 
   // tslint:disable-next-line: typedef
   onSuccessCaptureAndSign(captureAndSign: any) {
-    console.log('onSuccessCaptureAndSign =>', captureAndSign);
-
     // tslint:disable-next-line: max-line-length
     const { signatureImage, smartCardImage, smartCardImageWithSignature, smartCardImageWithSignatureAndWatermak, imageSignatureOnly } = captureAndSign;
     let dataImage: SignatureAndImageSmartCard;
