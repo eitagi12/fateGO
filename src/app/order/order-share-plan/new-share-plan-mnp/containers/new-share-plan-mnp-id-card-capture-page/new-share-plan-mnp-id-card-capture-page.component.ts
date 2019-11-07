@@ -244,6 +244,7 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
     const customer: Customer = this.transaction.data.customer;
     customer.imageSignature = this.captureAndSign.imageSignature;
     customer.imageSmartCard = this.captureAndSign.imageSmartCard;
+    customer.imageSignatureSmartCard = this.captureAndSign.imageSignatureWidthCard;
   }
 
   ngOnDestroy(): void {
