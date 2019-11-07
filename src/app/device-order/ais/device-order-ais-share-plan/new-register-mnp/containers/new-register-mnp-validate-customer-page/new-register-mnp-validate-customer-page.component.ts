@@ -25,7 +25,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   identity: string;
   user: User;
   // tslint:disable-next-line: max-line-length
-  // priceOptionMock: any = require('src/app/device-order/ais/device-order-ais-share-plan/new-register-mnp/containers/new-register-mnp-validate-customer-page/priceOption.json');
+  priceOptionMock: any = require('src/app/device-order/ais/device-order-ais-share-plan/new-register-mnp/containers/new-register-mnp-validate-customer-page/priceOption.json');
   order: Order;
   transactionId: string;
 
@@ -41,7 +41,7 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
     private utils: Utils
   ) {
     this.transaction = this.transactionService.load();
-    this.priceOption = this.priceOptionService.load();
+    this.priceOption = this.priceOptionService.load() ? this.priceOptionService.load() : this.priceOptionMock;
     this.user = this.tokenService.getUser();
     this.homeService.callback = () => {
       this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
