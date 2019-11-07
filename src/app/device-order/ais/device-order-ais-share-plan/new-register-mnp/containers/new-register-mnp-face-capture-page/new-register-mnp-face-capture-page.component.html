@@ -11,7 +11,6 @@
         <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
         <div class="mb-3 mt-3">
             <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
-
             <div class="container-fluid">
                 <div class="card">
                     <h5 class="card-header bg-transparent text-center" translate>
@@ -19,11 +18,10 @@
                     </h5>
                     <div class="card-body ">
                         <div class="camera-width">
-                            <div *ngIf="!openCamera">
+                            <div *ngIf="!transaction?.data?.faceRecognition?.imageFaceUser && openCamera">
                                 <img src="assets/images/icon/icon_people.png" class="icon-people" />
                             </div>
                             <div [hidden]="!(openCamera && !transaction?.data?.faceRecognition?.imageFaceUser)" class="position-relative">
-                                <img src="assets/images/icon/icon_people_line.png" class="icon-people-wrap" />
                                 <mc-camera [flip]="true" [onTakePhoto]="camera" (completed)="onCameraCompleted($event)" (error)="onCameraError($event)">
                                 </mc-camera>
                             </div>
@@ -32,38 +30,30 @@
                                     <img class="img-result" [src]="'data:image/png;base64,'+ transaction?.data?.faceRecognition?.imageFaceUser" />
                                 </div>
                             </div>
-
                         </div>
                     </div>
                     <div class="card-footer bg-transparent text-center p-0">
                         <div class="row">
-
                             <div class="border-right p-3 col-12">
                                 <!-- WEB Step -->
                                 <div *ngIf="!isAisNative()">
                                     <a href="#" (click)="$event.preventDefault(); onOpenCamera(); camera.next();" class="text-pink" *ngIf="!transaction?.data?.faceRecognition?.imageFaceUser">
                                         <img src="assets/images/icon/icon-camera.png" class="icon-camera">
                                     </a>
-                                    <a href="#" (click)="$event.preventDefault(); onClearIdCardImage()" class="text-pink" *ngIf="transaction?.data?.faceRecognition?.imageFaceUser" translate>
-                  ถ่ายรูปใหม่
-                </a>
+                                    <a href="#" (click)="$event.preventDefault(); onClearIdCardImage()" class="text-pink" *ngIf="transaction?.data?.faceRecognition?.imageFaceUser" translate>ถ่ายรูปใหม่</a>
                                 </div>
                                 <!-- Native Step -->
                                 <div *ngIf="isAisNative()">
-                                    <a href="#" (click)="$event.preventDefault(); camera.next();" class="text-pink" *ngIf="!transaction?.data?.faceRecognition?.imageFaceUser">
+                                    <a href="#" (click)="$event.preventDefault(); camera.next();" class="text-pink" *ngIf="!transaction?.data?.faceRecognition?.imageFaceUser || transaction?.data?.faceRecognition?.imageFaceUser">
                                         <span *ngIf="!transaction?.data?.faceRecognition?.imageFaceUser" translate>ถ่ายรูป</span>
                                         <span *ngIf="transaction?.data?.faceRecognition?.imageFaceUser" translate>ถ่ายรูปใหม่</span>
                                     </a>
                                 </div>
                             </div>
-
                         </div>
                     </div>
-
-
                 </div>
             </div>
-
         </div>
     </div>
     <mc-footer>
