@@ -128,7 +128,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
     this.createTransaction();
     return this.validateCustomerService.queryCustomerInfo(this.profile.idCardNo).then(() => {
       this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol).then((zipCode: string) => {
-        const transactionType = TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS;
+        const transactionType = TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS; // New
         return this.validateCustomerService.checkValidateCustomer(this.profile.idCardNo, this.profile.idCardType, transactionType)
           .then((resp: any) => {
             const data = resp.data || {};
@@ -201,7 +201,7 @@ export class NewRegisterMnpValidateCustomerIdCardPageComponent implements OnInit
   createTransaction(): void {
     this.transaction = {
       data: {
-        transactionType: TransactionType.DEVICE_ORDER_NEW_REGISTER_AIS,
+        transactionType: TransactionType.DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN, // Share
         action: TransactionAction.READ_CARD,
       },
       transactionId: this.transaction.transactionId ? this.transaction.transactionId : ''
