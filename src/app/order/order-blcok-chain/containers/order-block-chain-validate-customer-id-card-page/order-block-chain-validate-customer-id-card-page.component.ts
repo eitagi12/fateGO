@@ -31,6 +31,7 @@ export class OrderBlockChainValidateCustomerIdCardPageComponent implements OnIni
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
 
   isNext: boolean = false;
+  startValidate: boolean = true;
 
   constructor(
     private utils: Utils,
@@ -70,21 +71,25 @@ export class OrderBlockChainValidateCustomerIdCardPageComponent implements OnIni
   onCompleted(profile: ReadCardProfile): void {
     this.profile = profile;
     // auto next
-    if (!this.utils.isAisNative()) {
-      this.callService();
+    if (!this.isNext) {
+      if (this.utils.isAisNative()) {
+        if (this.startValidate) {
+          this.startValidate = false;
+          this.callService();
+        }
+      } else {
+        this.callService();
+      }
     }
-
   }
 
   onProgress(progress: number): void {
+    // alert('progress: ' + progress);
     this.progressReadCard = progress;
-    if (progress < 100 && !this.utils.isAisNative()) {
+    if (progress > 0 && progress < 100) {
+      this.startValidate = true;
       this.isNext = false;
     }
-  }
-
-  progressDoing(): boolean {
-    return this.progressReadCard > 0 && this.progressReadCard < 100 ? true : false;
   }
 
   onBack(): void {
@@ -96,7 +101,6 @@ export class OrderBlockChainValidateCustomerIdCardPageComponent implements OnIni
   }
 
   callService(): void {
-    this.isNext = false;
     this.pageLoadingService.openLoading();
     this.checkCardCid(this.profile.idCardNo, this.profile.chipID, this.profile.requestNo).then((respd: any) => {
       const datad = respd.data;
