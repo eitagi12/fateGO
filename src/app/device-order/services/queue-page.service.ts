@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { TokenService } from 'mychannel-shared-libs';
-import { Transaction, Payment, Prebooking, Customer, Queue } from 'src/app/shared/models/transaction.model';
+import { Transaction, Payment, Prebooking, Customer, Queue, Omise } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { HttpClient } from '@angular/common/http';
 import { CustomerGroup } from 'src/app/buy-product/services/flow.service';
@@ -75,6 +75,7 @@ export class QueuePageService {
     const prebooking: Prebooking = transactionData.preBooking;
     const mpayPayment: any = transactionData.mpayPayment || {};
     const advancePayment = transactionData.advancePayment;
+    const omise: Omise = transactionData.omise || {};
 
     const product: any = {
       productType: productStock.productType || productDetail.productType || 'DEVICE',
@@ -97,13 +98,10 @@ export class QueuePageService {
       tradeDiscountId: trade.discount ? trade.discount.tradeDiscountId : '',
       listMatFreeGoods: [{
         matCodeFG: '',
-        qtyFG: '' // จำนวนของแถม *กรณีส่งค่า matCodeFreeGoods ค่า qty จะต้องมี
+        qtyFG: '', // จำนวนของแถม *กรณีส่งค่า matCodeFreeGoods ค่า qty จะต้องมี
+        tradeFreeGoodsId: trade.freeGoods && trade.freeGoods.length > 0 ? trade.freeGoods[0].tradeFreegoodsId : '' // freeGoods
       }],
     };
-    // freeGoods
-    if (trade.freeGoods && trade.freeGoods.length > 0) {
-      product.tradeFreeGoodsId = trade.freeGoods[0] ? trade.freeGoods[0].tradeFreegoodsId : '';
-    }
 
     const data: any = {
       soId: order.soId,
@@ -112,7 +110,7 @@ export class QueuePageService {
       userId: user.username,
       queueNo: queue.queueNo || '',
       cusNameOrder: `${customer.titleName || ''} ${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
-      soChannelType: 'CSP',
+      soChannelType: 'MC_KIOSK',
       soDocumentType: 'RESERVED',
       productList: [product],
 
@@ -137,7 +135,7 @@ export class QueuePageService {
       },
       paymentRemark: this.getOrderRemark(transaction, priceOption),
       paymentMethod: this.getPaymentMethod(transaction, priceOption),
-      bankCode: payment && payment.paymentBank ? payment.paymentBank.abb : '',
+      // bankCode: payment && payment.paymentBank ? payment.paymentBank.abb : '',
       focCode: '',
       mobileAisFlg: 'Y',
       bankAbbr: payment && payment.paymentBank ? payment.paymentBank.abb : '',
@@ -153,6 +151,15 @@ export class QueuePageService {
       shipLocation: '',
       remarkReceipt: '',
     };
+
+    // payment with omise
+    if (payment && payment.paymentType === 'CREDIT' && payment.paymentOnlineCredit ||
+      advancePayment && advancePayment.paymentType === 'CREDIT' && advancePayment.paymentOnlineCredit) {
+      data.clearingType = 'MPAY';
+      data.qrOrderId = omise.orderId;
+      data.creditCardNo = omise.creditCardNo;
+      data.cardExpireDate = omise.cardExpireDate;
+    }
 
     // if (payment.paymentType === 'QR_CODE' || (advancePayment && advancePayment.paymentType === 'QR_CODE')) {
     //   if (mpayPayment && mpayPayment.mpayStatus && mpayPayment.mpayStatus.orderIdDevice) {
