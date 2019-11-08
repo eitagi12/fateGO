@@ -1,11 +1,10 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
-import { ROUTE_NEW_SHARE_PLAN_MNP_SUMMARY_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_NEW_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_RESULT_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_MNP_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_NEW_SHARE_PLAN_MNP_SUMMARY_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_NEW_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_MNP_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
-import { HomeService, AlertService, TokenService, User, ChannelType } from 'mychannel-shared-libs';
+import { AlertService } from 'mychannel-shared-libs';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
-import { AisNativeOrderService } from 'src/app/shared/services/ais-native-order.service';
 import { TranslateService } from '@ngx-translate/core';
 import * as Moment from 'moment';
 import { environment } from 'src/environments/environment';
@@ -46,10 +45,7 @@ export class NewSharePlanMnpAgreementSignPageComponent implements OnInit, OnDest
   constructor(
     private zone: NgZone,
     private router: Router,
-    private homeService: HomeService,
     private transactionService: TransactionService,
-    private aisNativeOrderService: AisNativeOrderService,
-    private tokenService: TokenService,
     private alertService: AlertService,
     private translationService: TranslateService
   ) {
@@ -160,13 +156,6 @@ export class NewSharePlanMnpAgreementSignPageComponent implements OnInit, OnDest
   }
 
   ngOnDestroy(): void {
-    // this.signedSignatureSubscription.unsubscribe();
-    // if (this.signedOpenSubscription) {
-    //   this.signedOpenSubscription.unsubscribe();
-    // }
-    // if (this.translationSubscribe) {
-    //   this.translationSubscribe.unsubscribe();
-    // }
     this.transactionService.update(this.transaction);
   }
 

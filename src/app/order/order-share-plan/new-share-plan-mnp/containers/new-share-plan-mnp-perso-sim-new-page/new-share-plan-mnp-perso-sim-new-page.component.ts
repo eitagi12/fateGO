@@ -20,7 +20,8 @@ declare let window: any;
   styleUrls: ['./new-share-plan-mnp-perso-sim-new-page.component.scss']
 })
 export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestroy {
-
+  title: string = '';
+  errorMessage: string = '';
   getPrivateKeyCommandAPI: string;
   persoSimAPI: string;
   checkCreatePersoSimAPI: string;

@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_VALIDATE_CUSTOMER_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_ID_CARD_CAPTURE_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
-import { CustomerInfo, HomeService } from 'mychannel-shared-libs';
+import { CustomerInfo } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 @Component({
   selector: 'app-new-share-plan-mnp-customer-info-page',
@@ -18,7 +18,6 @@ export class NewSharePlanMnpCustomerInfoPageComponent implements OnInit, OnDestr
 
   constructor(
     private router: Router,
-    private homeService: HomeService,
     private transactionService: TransactionService
   ) {
     this.transaction = this.transactionService.load();
