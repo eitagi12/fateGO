@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_MNP_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_AGREEMENT_SIGN_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_VERIFY_BY_PATTERN_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_RESULT_PAGE } from '../../constants/route-path.constant';
-import { HomeService, TokenService, ChannelType, AlertService, Utils, PageLoadingService } from 'mychannel-shared-libs';
+import { HomeService, TokenService, ChannelType, Utils, PageLoadingService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { Subscription, Observable, of } from 'rxjs';
@@ -101,7 +101,6 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
     private zone: NgZone,
     private pageLoadingService: PageLoadingService,
     private tokenService: TokenService,
-    private alertService: AlertService,
     private translation: TranslateService,
     private utils: Utils,
     private http: HttpClient,
@@ -111,12 +110,8 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
   }
 
   ngOnInit(): void {
-    console.log('simSerialForm', this.simSerialForm.controls['simSerial'].valueChanges);
-
     this.simSerialForm.controls.simSerial.valueChanges.subscribe((value) => {
       this.verifySimSerialByBarcode(value);
-      console.log(value, 'value');
-
     });
     if (typeof window.aisNative !== 'undefined') {
       this.scanBarcodePC$ = of(true);
@@ -140,7 +135,6 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
     this.mobileNo = this.transaction.data.simCard.mobileNo;
 
     if (typeof this.aisNative !== 'undefined') {
-      alert('อร่อยมาก');
       this.disableBack = true;
       const disConnectReadIdCard: number = 1;
       this.aisNative.sendIccCommand(this.command, disConnectReadIdCard, ''); // connect sim and disconnect smartCard
@@ -177,7 +171,6 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
     clearInterval(this.persoSimInterval);
     const intervalTime: number = 3000;
     this.persoSimInterval = setInterval(() => {
-      alert('1');
       this.checkSimCardStatus();
     }, intervalTime); // Timer
   }
@@ -186,16 +179,11 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
     const getCardStatus: number = 1000;
     const showDialog: number = 1003;
     this.cardStatus = this.aisNative.sendIccCommand(this.command, getCardStatus, ''); // Get card status
-    alert('2');
-    alert(this.cardStatus);
     if (this.cardStatus === 'Card presented') {
       this.currentStatus = true;
-      alert('3if');
       clearInterval(this.persoSimInterval);
-      alert('4');
       this.stateMessageControl('read');
     } else {
-      alert('3else');
       this.currentStatus = false;
     }
 
@@ -211,12 +199,10 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
         const delayTime: number = 1000;
         if (this.isPC) {
           this.persoSimInterval = setInterval(() => {
-            alert('5if');
             this.readSimForPerso();
           }, 3000);
         } else {
           this.timeoutReadSim = setTimeout(() => {
-            alert('5else');
             this.readSimForPerso();
           }, delayTime);
         }
@@ -236,36 +222,28 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
       const simStatus: string[] = this.readSimStatus.split('|||');
       this.getSerialNo = simStatus[1].slice(cutNoSerialNumber);
       // this.aisNative.sendIccCommand(this.command, closeDialog, ''); //dismiss dialogReadSim
-      alert(this.getSerialNo);
       if (this.getSerialNo) {
         this.transaction.data.simCard = Object.assign(this.transaction.data.simCard, {
           simSerial: this.getSerialNo
         });
       }
       if (simStatus[0].toLowerCase() === 'true') {
-        alert('6');
         // Progess 20%
         this.persoSim.progress = 20;
         // $('.custom').animate({ width: 20 + '%' }, this.duration, () => {/**/ });
         // this.getCommandForPersoSim(this.readSimStatus);
         if (this.statusFixSim === 'WaitingForPerso' && this.serialbarcode && this.orderType !== 'Port - In') {
-          alert('7if');
           if (this.serialbarcode === this.getSerialNo) {
-            alert('8if');
             this.verifySimRegionForPerso(this.getSerialNo);
           } else {
-            alert('8else');
             errMegFixSim = 'เลขที่ซิมการ์ดใบนี้ ไม่ตรงกับที่ระบุ ('
               + this.serialbarcode + ') ยืนยันใช้ซิมใบนี้หรือไม่ (' + this.getSerialNo + ')';
             this.popupControl('errorSimSerialNotMacth', errMegFixSim);
           }
         } else {
-          alert('7else');
           if (this.orderType !== 'Port - In') {
-            alert('9if');
             this.verifySimRegionForPerso(this.getSerialNo);
           } else {
-            alert('9else');
             this.getCommandForPersoSim(this.readSimStatus);
           }
         }
@@ -281,7 +259,6 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
     const indexPosition: number = 3;
     let getSerialNo: any = serialNo.split('|||');
     getSerialNo = getSerialNo[1].slice(cutNoSerialNumber);
-    alert(getSerialNo);
     this.queryPersoDataFn = this.getPersoDataCommand(
       this.transaction.data.simCard.mobileNo,
       getSerialNo,
@@ -332,21 +309,17 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
     const perso: number = 5;
     const showDialog: number = 1001;
     const closeDialog: number = 1002;
-    alert('11');
     if (this.isPC) {
       this.persoSim = this.aisNative.sendIccCommand(this.command, perso, parameter);
       setTimeout(() => {
         const persoSimStatus: string[] = this.getResultWs().split('|||');
         if (persoSimStatus[0].toLowerCase() === 'true') {
           // Progess 60%
-          alert('11if');
           this.persoSim.progress = 60;
           // $('.custom').animate({ width: 60 + '%' }, this.duration, () => {/**/ });
           this.createdPersoSim(refNo);
         } else {
-          alert('11else');
           if (!this.persoSimCounter) {
-            alert('12if');
             this.persoSimCounter = true;
             this.getCommandForPersoSim(this.readSimStatus);
           } else {
@@ -357,18 +330,14 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
     } else {
       // this.aisNative.sendIccCommand(this.command, showDialog, ''); //show dialog Perso
       const persoSimza = this.aisNative.sendIccCommand(this.command, perso, parameter); // perso Sim+
-      alert('persoSim   ' + this.persoSim);
       // this.aisNative.sendIccCommand(this.command, closeDialog, ''); //dismiss dialog Perso
       const persoSimStatus: string[] = persoSimza.split('|||');
       this.persoSim.progress = 60;
-      alert('13');
       if (persoSimStatus[0].toLowerCase() === 'true') {
-        alert('13if');
         this.createdPersoSim(refNo);
       } else {
         if (!this.persoSimCounter) {
           this.persoSimCounter = true;
-          alert('13if else ');
           this.getCommandForPersoSim(this.readSimStatus);
         } else {
           this.popupControl('errorSim', '');
@@ -378,25 +347,19 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
   }
 
   createdPersoSim(refNo: string): void {
-    alert('14  ' + this.persoSim);
     this.checkCreatedPersoSimFn = this.checkCreatePersoSim(refNo);
     this.checkCreatedPersoSimFn.then((create: any): void => {
-      alert(JSON.stringify(create));
       if (create) {
         if (create.data.success) {
-          alert('14if');
           // Progess 80%
-          alert('ว่าง' + JSON.stringify(this.persoSim));
           this.persoSim.progress = 80;
           // $('.custom').animate({ width: 80 + '%' }, this.duration, () => {/**/ });
           this.checkOrderStatus(refNo);
         } else {
-          alert('14else');
           const tenSecond: number = 60000;
           const loop: number = 3;
           if (this.createTxPersoCounter < loop) {
             this.timeoutCreatePersoSim = setTimeout(() => {
-              alert('15');
               this.createdPersoSim(refNo);
             }, tenSecond);
             this.createTxPersoCounter++;
@@ -410,8 +373,6 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
       console.log('full error :', errObj);
       console.log('error :', errObj.errors);
       console.log('data :', errObj.errors.data);
-      // this.alertService.setpopupMessage(errObj.resultDescription);
-      // this.alertService.openPopup();
       const tenSecond: number = 60000;
       const loop: number = 3;
       if (this.createTxPersoCounter < loop) {
@@ -484,14 +445,10 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
     let returnMessage: string;
     let errMegFixSim: string;
 
-    alert(this.mobileNo);
-    alert(serialNo);
-
     this.checktSimInfoFn = this.getChecktSimInfo(this.mobileNo, serialNo);
     this.checktSimInfoFn.then((simInfo: any) => {
       // this.pageLoadingService.openLoading();
       console.log('::: Mobile Info Read SIM ::: ', simInfo.data);
-      alert('10if');
 
       errorCode = simInfo.data.returnCode;
       returnMessage = simInfo.data.returnMessage;
@@ -666,7 +623,6 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
   }
 
   stateMessageControl(isState: string): void {
-    // this.alertService.error('4');
     const state: object = {
       waiting: {
         message: 'กรุณาเสียบซิมการ์ด',
@@ -751,9 +707,14 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
   }
 
   onNext(): void {
+    if (!this.transaction.data.simCard.simSerial) {
+      this.transaction.data.simCard = Object.assign(this.transaction.data.simCard, {
+        simSerial: this.simSerialForm.controls.simSerial.value
+      });
     // this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_MNP_PAGE]);
     this.route.navigate([ROUTE_NEW_SHARE_PLAN_MNP_RESULT_PAGE]);
   }
+}
 
   ngOnDestroy(): void {
     this.transactionService.update(this.transaction);
@@ -763,7 +724,7 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
     clearTimeout(this.timeoutReadSim);
     clearTimeout(this.timeoutPersoSim);
     if (this.isPC) {
-      this._ws.onclose();
+      // this._ws.onclose();
     }
   }
 
