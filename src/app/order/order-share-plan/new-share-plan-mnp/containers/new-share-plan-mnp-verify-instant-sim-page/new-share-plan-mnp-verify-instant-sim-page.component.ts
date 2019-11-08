@@ -43,6 +43,7 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
   ngOnInit(): void {
     this.createForm();
     this.checkShowData();
+    this.onChangeSerialForm();
   }
 
   onBack(): void {
@@ -63,6 +64,13 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
     this.simSerialValid = this.storeService.simSerialValid === true ? true : false;
     this.keyInSimSerial = this.storeService.keyInSimSerial === true ? true : false;
     this.keyInSimSerial === true ? this.setValueSerialForm(this.transaction) : this.setValueSerialForm();
+    this.transaction && this.transaction.data.simCard ? this.setSimSerialValid(true) : this.setSimSerialValid(false);
+  }
+
+  onChangeSerialForm(): void {
+    this.serialForm.valueChanges.subscribe(() => {
+      this.serialForm.valid ? this.setSimSerialValid(true) : delete this.transaction.data.simCard; this.setSimSerialValid(false);
+    });
   }
 
   isAisNative(): boolean {
@@ -127,7 +135,7 @@ export class NewSharePlanMnpVerifyInstantSimPageComponent implements OnInit, OnD
   }
 
   setValueSerialForm(transaction?: Transaction): void {
-    const simSerial = transaction ? transaction.data.simCard.simSerial : '';
+    const simSerial = transaction && transaction.data.simCard ? transaction.data.simCard.simSerial : '';
     simSerial ? this.serialForm.controls['serial'].setValue(simSerial) : this.serialForm.controls['serial'].setValue('');
   }
 

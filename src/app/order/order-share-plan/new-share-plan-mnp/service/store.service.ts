@@ -24,4 +24,9 @@ export class StoreService {
     this._simSerialValid = value;
   }
 
+  public clear(): void {
+    this._keyInSimSerial = null;
+    this._simSerialValid = null;
+  }
+
 }

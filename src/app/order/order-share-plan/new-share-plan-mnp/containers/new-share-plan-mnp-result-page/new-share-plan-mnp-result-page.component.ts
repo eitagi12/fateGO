@@ -4,12 +4,13 @@ import { ROUTE_NEW_SHARE_PLAN_MNP_VALIDATE_CUSTOMER_PAGE } from '../../constants
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { CreateNewRegisterService } from 'src/app/shared/services/create-new-register.service';
-import { PageLoadingService, HomeService } from 'mychannel-shared-libs';
+import { PageLoadingService } from 'mychannel-shared-libs';
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 import { HttpClient } from '@angular/common/http';
 import { map, retryWhen, concatMap, delay } from 'rxjs/operators';
 import { throwError, of } from 'rxjs';
 import { ResizeImageComponent } from '../../components/resize-image/resize-image.component';
+import { StoreService } from '../../service/store.service';
 
 declare var window: any;
 @Component({
@@ -42,7 +43,7 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
     private createNewRegisterService: CreateNewRegisterService,
     private pageLoadingService: PageLoadingService,
     private http: HttpClient,
-    private homeService: HomeService
+    private storeService: StoreService
   ) {
     this.transaction = this.transactionService.load();
 
@@ -120,6 +121,7 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
   }
 
   onMainMenu(): void {
+    this.storeService.clear();
     // bug gotohome จะ unlock เบอร์ ทำให้ออก orderไม่สำเร็จ
     window.location.href = '/sales-portal/dashboard';
     // this.homeService.goToHome();
