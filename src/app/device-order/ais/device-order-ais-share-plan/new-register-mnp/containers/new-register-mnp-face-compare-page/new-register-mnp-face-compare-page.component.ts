@@ -35,6 +35,8 @@ export class NewRegisterMnpFaceComparePageComponent implements OnInit, OnDestroy
   }
 
   ngOnInit(): void {
+    const customer: Customer = this.transaction.data.customer;
+    console.log(customer.imageReadSmartCard);
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
   }
 
@@ -45,6 +47,7 @@ export class NewRegisterMnpFaceComparePageComponent implements OnInit, OnDestroy
   onNext(): void {
     this.pageLoadingService.openLoading();
     const customer: Customer = this.transaction.data.customer;
+    console.log(customer.imageReadSmartCard);
     const faceRecognition: FaceRecognition = this.transaction.data.faceRecognition;
     this.http.post('/api/facerecog/facecompare', {
       cardBase64Imgs: this.isReadCard() ? customer.imageReadSmartCard || customer.imageSmartCard : customer.imageSmartCard,
