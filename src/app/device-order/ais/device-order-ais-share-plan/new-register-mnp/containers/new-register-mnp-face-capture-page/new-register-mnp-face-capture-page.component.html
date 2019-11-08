@@ -18,7 +18,7 @@
                     </h5>
                     <div class="card-body ">
                         <div class="camera-width">
-                            <div *ngIf="!transaction?.data?.faceRecognition?.imageFaceUser && openCamera">
+                            <div *ngIf="!transaction?.data?.faceRecognition?.imageFaceUser && !openCamera">
                                 <img src="assets/images/icon/icon_people.png" class="icon-people" />
                             </div>
                             <div [hidden]="!(openCamera && !transaction?.data?.faceRecognition?.imageFaceUser)" class="position-relative">

@@ -14,7 +14,7 @@
             </div>
             <hr class="mt-0 mb-20" style="margin:40px;">
             <div class="row">
-                <img *ngIf="!transaction?.data.action === 'READ_CARD'" class="photo" [src]="'data:image/png;base64,' + transaction?.data?.customer?.imageSmartCard">
+                <img *ngIf="transaction?.data.action === 'KEY_IN'" class="photo" [src]="'data:image/png;base64,' + transaction?.data?.customer?.imageSmartCard">
                 <img *ngIf="transaction?.data.action === 'READ_CARD'" class="photo" [src]="'data:image/png;base64,'  + transaction?.data?.customer?.imageReadSmartCard">
             </div>
             <div class="row">
