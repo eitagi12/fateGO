@@ -30,8 +30,8 @@ export class OrderBlockChainValidateCustomerIdCardPageComponent implements OnIni
   @ViewChild(ValidateCustomerIdCardComponent)
   validateCustomerIdcard: ValidateCustomerIdCardComponent;
 
-  validNext: boolean = false;
   isNext: boolean = false;
+  startValidate: boolean = true;
 
   constructor(
     private utils: Utils,
@@ -54,7 +54,7 @@ export class OrderBlockChainValidateCustomerIdCardPageComponent implements OnIni
 
   onError(valid: boolean): void {
     this.readCardValid = valid;
-    this.validNext = false;
+    this.isNext = false;
     if (!this.profile) {
       this.alertService.error(this.translation.instant('ไม่สามารถอ่านบัตรประชาชนได้ กรุณาติดต่อพนักงาน'));
       if (this.validateCustomerIdcard.koiskApiFn) {
@@ -70,33 +70,26 @@ export class OrderBlockChainValidateCustomerIdCardPageComponent implements OnIni
 
   onCompleted(profile: ReadCardProfile): void {
     this.profile = profile;
-    console.log('profile', profile);
-    this.isNext = false;
     // auto next
-    if (!this.isAisNative) {
-      this.callService();
+    if (!this.isNext) {
+      if (this.utils.isAisNative()) {
+        if (this.startValidate) {
+          this.startValidate = false;
+          this.callService();
+        }
+      } else {
+        this.callService();
+      }
     }
-
-  }
-
-  get checkIsNextAisNative(): boolean {
-    return !!(this.isAisNative && this.profile && !this.isNext);
-  }
-
-  get isAisNative(): boolean {
-    return this.utils.isAisNative();
   }
 
   onProgress(progress: number): void {
+    // alert('progress: ' + progress);
     this.progressReadCard = progress;
-    this.validNext = false;
-    if (progress === 0 && this.checkIsNextAisNative) {
-      this.callService();
+    if (progress > 0 && progress < 100) {
+      this.startValidate = true;
+      this.isNext = false;
     }
-  }
-
-  progressDoing(): boolean {
-    return this.progressReadCard > 0 && this.progressReadCard < 100 ? true : false;
   }
 
   onBack(): void {
@@ -108,7 +101,6 @@ export class OrderBlockChainValidateCustomerIdCardPageComponent implements OnIni
   }
 
   callService(): void {
-    this.isNext = true;
     this.pageLoadingService.openLoading();
     this.checkCardCid(this.profile.idCardNo, this.profile.chipID, this.profile.requestNo).then((respd: any) => {
       const datad = respd.data;
@@ -121,7 +113,7 @@ export class OrderBlockChainValidateCustomerIdCardPageComponent implements OnIni
 
       this.getZipCode(this.profile.province, this.profile.amphur, this.profile.tumbol)
         .then((zipCode: string) => {
-          return this.http.get('/api/customerportal/validate-customer-new-register', {
+          return this.http.get('/api/customerportal/validate-customer-block-chain', {
             params: {
               identity: this.profile.idCardNo,
               idCardType: this.profile.idCardType
@@ -140,14 +132,8 @@ export class OrderBlockChainValidateCustomerIdCardPageComponent implements OnIni
         .then((customer: any) => { // load bill cycle
           this.pageLoadingService.closeLoading();
           this.transaction.data.customer = Object.assign(this.profile, customer);
-          this.validNext = true;
-        }).catch((resp: any) => {
-          this.pageLoadingService.closeLoading();
-          this.mapErrorMessage(resp);
+          this.isNext = true;
         });
-    }).catch((err: any) => {
-      this.pageLoadingService.closeLoading();
-      this.mapErrorMessage(err);
     });
 
   }
@@ -158,26 +144,6 @@ export class OrderBlockChainValidateCustomerIdCardPageComponent implements OnIni
       chipNo: chipNo,
       bp1no: bp1no ? bp1no.split('/')[0] : ''
     }).toPromise();
-  }
-
-  mapErrorMessage(resp: any): void {
-    const error = resp.error || [];
-    if (error && error.errors && error.errors.length > 0 && typeof error.errors === 'object') {
-      this.alertService.notify({
-        type: 'error',
-        html: error.errors.map((err) => {
-          return '<li class="text-left">' + this.translation.instant(err ? err.message : err) + '</li>';
-        }).join('')
-      });
-    } else if (error.resultDescription) {
-      this.alertService.error(this.translation.instant(error.resultDescription));
-    } else {
-      this.alertService.error(this.translation.instant('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้'));
-    }
-  }
-
-  get validLogic(): boolean {
-    return this.validNext;
   }
 
   checkBusinessLogic(): boolean {

@@ -16,6 +16,6 @@
     </div>
 <mc-footer>
   <button class="btn btn-secondary" (click)="onBack()">ย้อนกลับ</button>
-  <button class="btn btn-success" [disabled]="" (click)="onNext()">ถัดไป</button>
+  <button class="btn btn-success" [disabled]="!isNext" (click)="onNext()">ถัดไป</button>
 </mc-footer>
 </div>
