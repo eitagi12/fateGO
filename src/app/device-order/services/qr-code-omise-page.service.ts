@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs/internal/Observable';
 import { toDataURL } from 'qrcode';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 
 @Injectable({
   providedIn: 'root'
@@ -82,4 +83,25 @@ export class QrCodeOmisePageService {
       };
     });
   }
+
+  isPaymentOnlineCredit(transaction: Transaction, paymentType: string): boolean {
+    const payment: any = transaction.data.payment || {};
+    const advancePayment: any = transaction.data.advancePayment || {};
+
+    if (paymentType === 'payment') {
+      if (payment.paymentType === 'CREDIT' && payment.paymentOnlineCredit) {
+        return true;
+      } else {
+        return false;
+      }
+    } else if (paymentType === 'advancePayment') {
+      if (advancePayment.paymentType === 'CREDIT' && advancePayment.paymentOnlineCredit) {
+        return true;
+      } else {
+        return false;
+      }
+    }
+    return false;
+  }
+
 }

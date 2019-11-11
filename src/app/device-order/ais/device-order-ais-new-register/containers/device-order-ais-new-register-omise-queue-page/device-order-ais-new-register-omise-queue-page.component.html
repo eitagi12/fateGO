@@ -15,7 +15,7 @@
         <ng-container>
           <div class="card-body border-top">
             <p><b class="text-light-grey" translate>รายการสินค้า (ที่ชำระแล้ว)</b></p>
-            <ng-container *ngIf="isPaymentOnlineCredit('payment')">
+            <ng-container *ngIf="qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'payment')">
               <div class="text-light-grey">
                 <p>
                   <i class="fa fa-circle mr-3 text-green"></i>
@@ -34,7 +34,7 @@
               </div>
             </ng-container>
 
-            <ng-container *ngIf="(isPaymentOnlineCredit('advancePayment')) || priceOption?.trade?.advancePay?.installmentFlag === 'Y'">
+            <ng-container *ngIf="(qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'advancePayment')) || priceOption?.trade?.advancePay?.installmentFlag === 'Y'">
               <div class="text-light-grey" *ngIf="(priceOption?.trade?.advancePay?.installmentFlag === 'N' && priceOption?.trade?.advancePay?.amount > 0) || priceOption?.trade?.advancePay?.installmentFlag === 'Y'">
                 <p>
                   <i class="fa fa-circle mr-3 text-green"></i>
@@ -59,11 +59,11 @@
         </ng-container>
 
         <!-- ค้างชำระ -->
-        <ng-container *ngIf="(isPaymentOnlineCredit('payment') !== isPaymentOnlineCredit('advancePayment')) && priceOption?.trade?.advancePay?.installmentFlag === 'N'">
+        <ng-container *ngIf="(qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'payment') !== qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'advancePayment')) && priceOption?.trade?.advancePay?.installmentFlag === 'N'">
           <div class="card-body border-top">
             <p><b class="text-light-grey" translate>รายการสินค้า (รอชำระ)</b></p>
 
-            <ng-container *ngIf="!isPaymentOnlineCredit('payment')">
+            <ng-container *ngIf="!qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'payment')">
               <div class="text-light-grey">
                 <p>
                   <i class="fa fa-circle mr-3 text-green"></i>
@@ -84,7 +84,7 @@
               </div>
             </ng-container>
 
-            <ng-container *ngIf="!isPaymentOnlineCredit('advancePayment')">
+            <ng-container *ngIf="!qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'advancePayment')">
               <div class="text-light-grey" *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && priceOption?.trade?.advancePay?.amount > 0">
                 <p *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && priceOption?.trade?.advancePay?.amount > 0">
                   <i class="fa fa-circle mr-3 text-green"></i>

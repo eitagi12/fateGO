@@ -49,10 +49,10 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
     let amountDevice: string;
     let amountAirTime: string;
 
-    if (this.isPaymentOnlineCredit('payment')) {
+    if (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'payment')) {
       amountDevice = trade.promotionPrice;
     }
-    if (this.isPaymentOnlineCredit('advancePayment')) {
+    if (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'advancePayment')) {
       amountAirTime = advancePay.amount;
     }
 
@@ -69,31 +69,12 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
     };
   }
 
-  isPaymentOnlineCredit(paymentType: string): boolean {
-    const payment: any = this.transaction.data.payment || {};
-    const advancePayment: any = this.transaction.data.advancePayment || {};
-
-    if (paymentType === 'payment') {
-      if (payment.paymentType === 'CREDIT' && payment.paymentOnlineCredit) {
-        return true;
-      } else {
-        return false;
-      }
-    } else if (paymentType === 'advancePayment') {
-      if (advancePayment.paymentType === 'CREDIT' && advancePayment.paymentOnlineCredit) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-    return false;
-  }
-
   getStatusPay(): string {
     const company = this.priceOption.productStock.company;
     const omise = this.transaction.data.omise;
     if (company === 'AWN') {
-      if (this.isPaymentOnlineCredit('payment') && this.isPaymentOnlineCredit('advancePayment')) {
+      if (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'payment') &&
+        this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'advancePayment')) {
         return 'DEVICE&AIRTIME';
       } else {
         return omise.omiseStatus.statusDevice === 'WAITING' ? 'DEVICE' : 'AIRTIME';
@@ -118,7 +99,8 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
     const description = trade && trade.advancePay && trade.advancePay.description;
     const payment: any = this.transaction.data.payment || {};
     const advancePayment: any = this.transaction.data.advancePayment || {};
-    if (this.isPaymentOnlineCredit('payment') && this.isPaymentOnlineCredit('advancePayment')) {
+    if (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'payment') &&
+      this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'advancePayment')) {
       this.orderList = [{
         name: priceOption.name + 'สี' + productStock.color,
         price: +trade.promotionPrice
@@ -126,7 +108,8 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
         name: description,
         price: +trade.advancePay.amount
       }];
-    } else if ((this.isPaymentOnlineCredit('payment')) || (this.isPaymentOnlineCredit('advancePayment'))) {
+    } else if ((this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'payment')) ||
+      (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'advancePayment'))) {
       if (payment.paymentOnlineCredit) {
         this.orderList = [{
           name: priceOption.name + 'สี' + productStock.color,
@@ -185,10 +168,10 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
       return this.summary([+trade.promotionPrice, +advancePay.amount]);
     }
 
-    if (this.isPaymentOnlineCredit('payment')) {
+    if (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'payment')) {
       total += +trade.promotionPrice;
     }
-    if (this.isPaymentOnlineCredit('advancePayment')) {
+    if (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'advancePayment')) {
       total += +advancePay.amount;
     }
     return total;

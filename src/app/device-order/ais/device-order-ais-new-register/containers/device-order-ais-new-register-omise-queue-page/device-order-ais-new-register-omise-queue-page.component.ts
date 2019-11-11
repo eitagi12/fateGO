@@ -10,6 +10,7 @@ import { REGEX_MOBILE, PageLoadingService } from 'mychannel-shared-libs';
 import { QueuePageService } from 'src/app/device-order/services/queue-page.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
+import { QrCodeOmisePageService } from 'src/app/device-order/services/qr-code-omise-page.service';
 
 @Component({
   selector: 'app-device-order-ais-new-register-omise-queue-page',
@@ -29,6 +30,7 @@ export class DeviceOrderAisNewRegisterOmiseQueuePageComponent implements OnInit,
     private pageLoadingService: PageLoadingService,
     private queuePageService: QueuePageService,
     public summaryPageService: SummaryPageService,
+    private qrCodeOmisePageService: QrCodeOmisePageService,
     private sharedTransactionService: SharedTransactionService
   ) {
     this.transaction = this.transactionService.load();
@@ -61,26 +63,6 @@ export class DeviceOrderAisNewRegisterOmiseQueuePageComponent implements OnInit,
       .then(() => this.pageLoadingService.closeLoading());
   }
 
-  isPaymentOnlineCredit(paymentType: string): boolean {
-    const payment: any = this.transaction.data.payment || {};
-    const advancePayment: any = this.transaction.data.advancePayment || {};
-
-    if (paymentType === 'payment') {
-      if (payment.paymentType === 'CREDIT' && payment.paymentOnlineCredit) {
-        return true;
-      } else {
-        return false;
-      }
-    } else if (paymentType === 'advancePayment') {
-      if (advancePayment.paymentType === 'CREDIT' && advancePayment.paymentOnlineCredit) {
-        return true;
-      } else {
-        return false;
-      }
-    }
-    return false;
-  }
-
   getPaymentBalance(): number {
     const trade = this.priceOption.trade;
     let summary = 0;
@@ -89,10 +71,10 @@ export class DeviceOrderAisNewRegisterOmiseQueuePageComponent implements OnInit,
       return this.summary([+trade.promotionPrice, +advancePay.amount]);
     }
 
-    if (this.isPaymentOnlineCredit('payment')) {
+    if (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'payment')) {
       summary += +trade.promotionPrice;
     }
-    if (this.isPaymentOnlineCredit('advancePayment')) {
+    if (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'advancePayment')) {
       summary += +advancePay.amount;
     }
     return summary;
@@ -109,10 +91,10 @@ export class DeviceOrderAisNewRegisterOmiseQueuePageComponent implements OnInit,
       return this.summary([+trade.promotionPrice, +advancePay.amount]);
     }
 
-    if (!this.isPaymentOnlineCredit('payment')) {
+    if (!this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'payment')) {
       summary += +trade.promotionPrice;
     }
-    if (!this.isPaymentOnlineCredit('advancePayment')) {
+    if (!this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'advancePayment')) {
       summary += +advancePay.amount;
     }
     return summary;

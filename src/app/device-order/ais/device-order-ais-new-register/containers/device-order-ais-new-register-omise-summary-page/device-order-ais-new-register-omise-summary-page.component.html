@@ -67,7 +67,7 @@
             <ng-container
               *ngIf="!priceOption?.trade?.advancePay || priceOption?.trade?.advancePay?.installmentFlag === 'N'">
               <div class="mb-3">
-                <input class="form-check-input" type="radio" id="installmentNoAdvancePay" disabled="" checked="true">
+                <input class="form-check-input" type="radio" id="installmentNoAdvancePay" disabled="" [checked]="qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'payment')">
                 <label class="form-check-label" for="installmentNoAdvancePay">
                   {{ priceOption?.productDetail?.name }}
                   <span *ngIf="priceOption?.productStock?.color">
@@ -85,13 +85,10 @@
                 <div class="mt-1"
                   *ngIf="transaction?.data?.payment?.paymentForm !== 'INSTALLMENT'">
                   <small class="text-muted">
-                      {{isPaymentOnlineCredit('payment') ? '( ชำระทันที )' : '( ชำระโดย ' + summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) + ' )'}}
+                      {{qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'payment') ? '( ชำระทันที )' : '( ชำระโดย ' + summaryPageService.detailPayment(transaction?.data?.payment, priceOption?.trade) + ' )'}}
                   </small>
                   <span class="text-pink"
-                    *ngIf="transaction?.data?.omise?.omiseStatus?.statusDevice === 'WAITING' && !isPaymentOnlineCredit('payment')">( {{'รอชำระ'| translate}} )</span>
-                  <span class="text-green"
-                    *ngIf="transaction?.data?.omise?.omiseStatus?.statusDevice === 'SUCCESS'">
-                    ( {{'ชำระแล้ว'| translate}} TX: {{transaction?.data?.omise?.tranId}} )
+                    *ngIf="!qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'payment')">( {{'รอชำระ'| translate}} )
                   </span>
 
                 </div>
@@ -99,7 +96,7 @@
               <!-- ค่าแพ็กเกจบริการล่วงหน้า -->
               <div
                 *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && (+priceOption?.trade?.advancePay?.amount) > 0">
-                <input class="form-check-input" type="radio" id="advancePay" disabled="" checked="true">
+                <input class="form-check-input" type="radio" id="advancePay" disabled="" [checked]="qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'advancePayment')">
                 <label class="form-check-label" for="advancePay">
                   {{'ค่าแพ็กเกจบริการล่วงหน้า' | translate }} : {{'ชำระเต็มจำนวน' | translate}}
                 </label>
@@ -108,14 +105,11 @@
                 </span>
                 <div class="mt-1">
                   <small class="text-muted" *ngIf="(+priceOption?.trade?.advancePay?.amount) > 0">
-                      {{isPaymentOnlineCredit('advancePayment') ? '( ชำระทันที )' : '( ชำระโดย ' +  summaryPageService.descriptionPayment(transaction?.data?.advancePayment) + ' )'}}
+                      {{qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'advancePayment') ? '( ชำระทันที )' : '( ชำระโดย ' +  summaryPageService.descriptionPayment(transaction?.data?.advancePayment) + ' )'}}
                   </small>
                   <span class="text-pink"
-                    *ngIf="transaction?.data?.omise?.omiseStatus?.statusDevice === 'WAITING' && !isPaymentOnlineCredit('advancePayment')">( {{'รอชำระ'| translate}} )</span>
-                  <span class="text-green"
-                    *ngIf="transaction?.data?.omise?.omiseStatus?.statusDevice === 'SUCCESS'">
-                    ( {{'ชำระแล้ว'| translate}} TX: {{transaction?.data?.omise?.tranId}} )
-                  </span>
+                    *ngIf="!qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'advancePayment')">( {{'รอชำระ'| translate}} )
+                  </span>                  
                 </div>
               </div>
             </ng-container>
@@ -135,9 +129,9 @@
               </div>
               <div class="mt-1">
                 <small class="text-muted">
-                    {{ isPaymentOnlineCredit('advancePayment') ? '( ชำระทันที )' : '( ชำระโดย ' +  summaryPageService.descriptionPayment(transaction?.data?.advancePayment) + ' )'}}
+                    {{ qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'advancePayment') ? '( ชำระทันที )' : '( ชำระโดย ' +  summaryPageService.descriptionPayment(transaction?.data?.advancePayment) + ' )'}}
                 </small>
-                <span class="text-pink" *ngIf="!isPaymentOnlineCredit('payment')">( {{'รอชำระ'| translate}} )</span>
+                <span class="text-pink" *ngIf="!qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'payment')">( {{'รอชำระ'| translate}} )</span>
               </div>
             </ng-container>
 

@@ -4,6 +4,7 @@ import { Transaction, Payment, Prebooking, Customer, Queue, Omise } from 'src/ap
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { HttpClient } from '@angular/common/http';
 import { CustomerGroup } from 'src/app/buy-product/services/flow.service';
+import { QrCodeOmisePageService } from 'src/app/device-order/services/qr-code-omise-page.service';
 
 @Injectable({
   providedIn: 'root'
@@ -40,7 +41,8 @@ export class QueuePageService {
 
   constructor(
     private http: HttpClient,
-    private tokenService: TokenService
+    private tokenService: TokenService,
+    private qrCodeOmisePageService: QrCodeOmisePageService,
   ) { }
 
   getQueueQmatic(mobileNo: string): Promise<any> {
@@ -142,8 +144,6 @@ export class QueuePageService {
       reqMinimumBalance: '',
       preBookingNo: prebooking ? prebooking.preBookingNo : '',
       depositAmt: prebooking ? prebooking.depositAmt : '',
-      qrTransId: payment.paymentType === 'QR_CODE' ? mpayPayment.tranId : null,
-      qrAmt: payment.paymentType === 'QR_CODE' && mpayPayment.tranId ? this.getQRAmt(trade, transaction) : null,
       convertToNetwotkType: '',
       shipCusName: '',
       shipCusAddr: '',
@@ -152,27 +152,57 @@ export class QueuePageService {
       remarkReceipt: '',
     };
 
-    // payment with omise
-    if (payment && payment.paymentType === 'CREDIT' && payment.paymentOnlineCredit ||
-      advancePayment && advancePayment.paymentType === 'CREDIT' && advancePayment.paymentOnlineCredit) {
-      data.clearingType = 'MPAY';
-      data.qrOrderId = omise.orderId;
-      data.creditCardNo = omise.creditCardNo;
-      data.cardExpireDate = omise.cardExpireDate;
+    if (this.checkAddCurrentPackAmt(priceOption, trade, contract)) {
+      data.currentPackAmt = (mainPackage.priceExclVat || '0');
     }
 
-    // if (payment.paymentType === 'QR_CODE' || (advancePayment && advancePayment.paymentType === 'QR_CODE')) {
-    //   if (mpayPayment && mpayPayment.mpayStatus && mpayPayment.mpayStatus.orderIdDevice) {
-    //     data.qrOrderId = mpayPayment.mpayStatus.orderIdDevice;
-    //   } else {
-    //     data.qrOrderId = mpayPayment && mpayPayment.orderId ? mpayPayment.orderId : null;
-    //   }
-    // }
+    // payment with omise
+    if (this.qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'payment') &&
+      this.qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'advancePayment')) {
+      data.clearingType = 'MPAY';
+      data.qrOrderId = omise.orderId;
+      data.creditCardNo = omise.creditCardNo ? omise.creditCardNo.substring(omise.creditCardNo.length - 16) : '';
+      data.cardExpireDate = omise.cardExpireDate;
+      data.qrAmt = (+this.getGrandTotalAmt(trade, prebooking)).toFixed(2);
+      data.qrAirtimeAmt = (+this.getGrandTotalAmt(trade, prebooking)).toFixed(2);
 
-    // QR code for airtime
-    if (advancePayment && advancePayment.paymentType === 'QR_CODE') {
-      data.qrAirtimeTransId = mpayPayment.qrAirtimeTransId || mpayPayment.tranId || null;
-      data.qrAirtimeAmt = this.getQRAmt(trade, transaction);
+    } else if (this.qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'payment') ||
+      this.qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'advancePayment')) {
+      data.clearingType = 'MPAY';
+      data.qrOrderId = omise.orderId;
+      data.creditCardNo = omise.creditCardNo ? omise.creditCardNo.substring(omise.creditCardNo.length - 16) : '';
+      data.cardExpireDate = omise.cardExpireDate;
+
+      // omise for device
+      if (this.qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'payment')) {
+        data.qrTransId = omise.tranId;
+        data.qrAmt = this.getOnlinePaymentAmt(trade, transaction);
+      }
+      // omise for airtime
+      if (this.qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'advancePayment')) {
+        data.qrAirtimeTransId = omise.tranId;
+        data.qrAirtimeAmt = this.getOnlinePaymentAmt(trade, transaction);
+      }
+
+    }
+
+    // payment with QR code
+    if (payment && payment.paymentType === 'QR_CODE' || (advancePayment && advancePayment.paymentType === 'QR_CODE')) {
+      if (mpayPayment && mpayPayment.mpayStatus && mpayPayment.mpayStatus.orderIdDevice) {
+        data.qrOrderId = mpayPayment.mpayStatus.orderIdDevice;
+      } else {
+        data.qrOrderId = mpayPayment && mpayPayment.orderId ? mpayPayment.orderId : null;
+      }
+      // QR code for device
+      if (payment && payment.paymentType === 'QR_CODE') {
+        data.qrTransId = payment.paymentType === 'QR_CODE' ? mpayPayment.tranId : null;
+        data.qrAmt = payment.paymentType === 'QR_CODE' && mpayPayment.tranId ? this.getQRAmt(trade, transaction) : null;
+      }
+      // QR code for airtime
+      if (advancePayment && advancePayment.paymentType === 'QR_CODE') {
+        data.qrAirtimeTransId = mpayPayment.qrAirtimeTransId || mpayPayment.tranId || null;
+        data.qrAirtimeAmt = this.getQRAmt(trade, transaction);
+      }
     }
 
     // if (productStock.company && productStock.company === 'WDS') {
@@ -203,6 +233,18 @@ export class QueuePageService {
 ${this.PROMOTION_NAME}${this.SPACE}${mainPackage.shortNameThai || ''}
 ${airTime}${this.NEW_LINE}${installment}${this.NEW_LINE}${information}${this.NEW_LINE}
 `;
+  }
+
+  private getOnlinePaymentAmt(trade: any, transaction: Transaction): any {
+    let cost = 0;
+    if (trade && this.qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'payment')) {
+      const qrAmt: number = trade.normalPrice - trade.discount.amount;
+      cost += +qrAmt;
+    }
+    if (trade && this.qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'advancePayment')) {
+      cost += +trade.advancePay.amount;
+    }
+    return cost ? cost.toFixed(2) : undefined;
   }
 
   private getQRAmt(trade: any, transaction: Transaction): any {
