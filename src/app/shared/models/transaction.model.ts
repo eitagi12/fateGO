@@ -170,6 +170,7 @@ export interface Customer {
   caNumber?: string;
   imageSignature?: string; // Contract signature
   imageSignatureSmartCard?: string;
+  imageSignatureWithWaterMark?: string;
   imageSmartCard?: string;
   imageReadSmartCard?: string;
   customerPinCode?: string;

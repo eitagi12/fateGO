@@ -4,8 +4,7 @@ import { HomeService, TokenService, ShoppingCart, CaptureAndSign, AlertService, 
 import { Transaction, Customer } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
-import {
-  ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_COMPARE_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_ECONTACT_PAGE
+import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_ECONTACT_PAGE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CAPTURE_PAGE
 } from '../../constants/route-path.constant';
 import { Subscription } from 'rxjs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
@@ -44,7 +43,6 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
   translationSubscribe: Subscription;
   currentLang: string;
   signedSubscription: Subscription;
-  watermark: string = AWS_WATERMARK;
   isReadCard: boolean;
   signedWidthIdCardImageSubscription: Subscription;
 
@@ -132,9 +130,11 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
       customer.imageReadSmartCard = this.captureAndSign.imageSmartCard;
     } else {
       customer.imageSignature = this.captureAndSign.imageSignature;
-      customer.imageSmartCard = this.captureAndSign.imageSignatureWidthCard;
+      customer.imageSmartCard = this.captureAndSign.imageSmartCard;
+      customer.imageSignatureSmartCard = this.captureAndSign.imageSignature;
+      customer.imageSignatureWithWaterMark = this.captureAndSign.imageSignatureWidthCard;
     }
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_COMPARE_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_CAPTURE_PAGE]);
   }
 
   onHome(): void {
@@ -171,6 +171,7 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
 
   onCameraCompleted(image: string): void {
     this.captureAndSign.imageSmartCard = image;
+    console.log('onCameraCompleted', image);
     this.createCanvas();
     this.onChangeCaptureAndSign();
   }
@@ -315,22 +316,22 @@ export class NewRegisterMnpAgreementSignPageComponent implements OnInit, OnDestr
         const signImageHeight = signImage.height > canvas.height ? canvas.height : signImage.height;
         const signImageWidth = signImageHeight * signImageRatio;
 
-        const dxs = ((canvas.width - signImageWidth) / 2);
-        const dys = ((canvas.height - signImageHeight) / 2) / 6;
+        const dxs = ((canvas.width - signImageWidth) / 1);
+        const dys = ((canvas.height - signImageHeight) / 0.5);
         ctx.globalCompositeOperation = 'multiply';
         ctx.drawImage(signImage, dxs, dys, signImageWidth, signImageHeight);
-        // if (this.captureAndSign.imageSignature) {
-        //   const watermarkRatio: number = (watermark.width / watermark.height);
-        //   const watermarkHeight: number = watermark.height > signImage.height ? signImage.height : watermark.height;
-        //   const watermarkWidth: number = watermarkHeight * watermarkRatio;
-        //   const dxw = (canvas.width - watermarkWidth) / 2;
-        //   const dyw = (canvas.height - watermarkHeight) / 2;
-        //   ctx.drawImage(watermark, dxw + 50, dyw + 50, watermarkWidth / 1.4, watermarkHeight / 1.4);
-        // }
+        if (this.captureAndSign.imageSignature) {
+          const watermarkRatio: number = (watermark.width / watermark.height);
+          const watermarkHeight: number = watermark.height > signImage.height ? signImage.height : watermark.height;
+          const watermarkWidth: number = watermarkHeight * watermarkRatio;
+          const dxw = (canvas.width - watermarkWidth) / 2;
+          const dyw = (canvas.height - watermarkHeight) / 2;
+          ctx.drawImage(watermark, dxw + 100, dyw + 100, watermarkWidth / 1.5, watermarkHeight / 1.5);
+        }
       }
     }
     this.captureAndSign.imageSignatureWidthCard = canvas.toDataURL('image/jpeg').replace(/^data:image\/jpeg;base64,/, '');
-    console.log('toDataURL ===>', this.captureAndSign.imageSignatureWidthCard);
+
     this.isDrawing = true;
   }
 }
