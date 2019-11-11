@@ -21,7 +21,7 @@ export class DeviceOrderAisNewRegisterOmiseResultPageComponent implements OnInit
   constructor(
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
-    private qrCodeOmisePageService: QrCodeOmisePageService,
+    public qrCodeOmisePageService: QrCodeOmisePageService,
     public summaryPageService: SummaryPageService
   ) {
     this.transaction = this.transactionService.load();

@@ -30,7 +30,7 @@ export class DeviceOrderAisNewRegisterOmiseQueuePageComponent implements OnInit,
     private pageLoadingService: PageLoadingService,
     private queuePageService: QueuePageService,
     public summaryPageService: SummaryPageService,
-    private qrCodeOmisePageService: QrCodeOmisePageService,
+    public qrCodeOmisePageService: QrCodeOmisePageService,
     private sharedTransactionService: SharedTransactionService
   ) {
     this.transaction = this.transactionService.load();
