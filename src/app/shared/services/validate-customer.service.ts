@@ -186,7 +186,8 @@ export class ValidateCustomerService {
       mobileNo: '',
       imageSignature: '',
       imageSmartCard: '',
-      imageReadSmartCard: customer.imageReadSmartCard ? customer.imageReadSmartCard : transaction ? transaction.imageReadSmartCard : ''
+      imageReadSmartCard: customer.imageReadSmartCard ? customer.imageReadSmartCard : transaction ? transaction.imageReadSmartCard : '',
+      imageSignatureWidthCard: ''
     };
   }
 
