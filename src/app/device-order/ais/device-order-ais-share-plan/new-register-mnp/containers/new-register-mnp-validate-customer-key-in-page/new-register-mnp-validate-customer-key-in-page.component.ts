@@ -119,6 +119,8 @@ export class NewRegisterMnpValidateCustomerKeyInPageComponent implements OnInit,
                     this.pageLoadingService.closeLoading();
                     this.alertService.error(error);
                   });
+                } else {
+                  this.alertService.error('ระบบไม่สามารถแสดงข้อมูลได้ในขณะนี้');
                 }
               }).catch((error: any) => {
                 this.pageLoadingService.closeLoading();
