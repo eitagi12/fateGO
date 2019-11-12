@@ -63,14 +63,12 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
   }
 
   onCompleted(promotion: any): void {
-    // รอแก้ไขตัวแปรที่จะเก็บลงใน share transaction
     this.transaction.data.mainPackage = promotion;
     this.getMainPackageZeroBath();
   }
 
   onBack(): void {
     delete this.transaction.data.mainPackage;
-    delete this.transaction.data.memberInfo;
     if (this.transaction.data.simCard.simSerial) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_VERIFY_INSTANT_SIM_PAGE]);
     } else {
