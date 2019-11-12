@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_CONFIRM_USER_INFORMATION_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
-import { CustomerAddress, HomeService } from 'mychannel-shared-libs';
+import { CustomerAddress } from 'mychannel-shared-libs';
 import { Subscription } from 'rxjs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
@@ -31,7 +31,6 @@ export class NewSharePlanMnpEbillingAddressPageComponent implements OnInit, OnDe
 
   constructor(
     private router: Router,
-    private homeService: HomeService,
     private transactionService: TransactionService,
     private http: HttpClient,
     private translation: TranslateService

@@ -4,7 +4,7 @@ import { ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MASTER_PAGE, ROUTE_NEW_SHARE_PL
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 import { Transaction, TransactionType } from 'src/app/shared/models/transaction.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { HomeService, AlertService, PageLoadingService, REGEX_MOBILE } from 'mychannel-shared-libs';
+import { AlertService, PageLoadingService, REGEX_MOBILE } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { environment } from 'src/environments/environment';
 import * as moment from 'moment';
@@ -22,12 +22,11 @@ export class NewSharePlanMnpNetworkTypePageComponent implements OnInit, OnDestro
 
   constructor(
     private router: Router,
-    private homeService: HomeService,
     private fb: FormBuilder,
     private http: HttpClient,
     private alertService: AlertService,
     private pageLoadingService: PageLoadingService,
-    private transactionService: TransactionService,
+    private transactionService: TransactionService
   ) {
     this.transaction = this.transactionService.load();
   }

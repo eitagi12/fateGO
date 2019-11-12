@@ -20,7 +20,7 @@ export class SummarySellerCodeComponent implements OnInit {
   constructor(
     private transacService: TransactionService,
     private tokenService: TokenService,
-    private http: HttpClient,
+    private http: HttpClient
   ) {
     this.transaction = this.transacService.load();
   }

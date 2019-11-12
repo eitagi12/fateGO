@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_MNP_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_AGREEMENT_SIGN_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_VERIFY_BY_PATTERN_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_RESULT_PAGE } from '../../constants/route-path.constant';
-import { HomeService, TokenService, ChannelType, Utils, PageLoadingService } from 'mychannel-shared-libs';
+import { TokenService, ChannelType, Utils, PageLoadingService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { Subscription, Observable, of } from 'rxjs';
@@ -96,7 +96,6 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
   // WebSocket
   constructor(
     private router: Router,
-    private homeService: HomeService,
     private transactionService: TransactionService,
     public fb: FormBuilder,
     private zone: NgZone,
@@ -697,10 +696,6 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
 
   openScanBarcode(): void {
     this.aisNative.scanBarcode();
-  }
-
-  onHome(): void {
-    this.homeService.goToHome();
   }
 
   onBack(): void {

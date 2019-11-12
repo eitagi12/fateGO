@@ -2,7 +2,7 @@ import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_FACE_CAPTURE_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_VALIDATE_CUSTOMER_PAGE } from '../../constants/route-path.constant';
 import { Transaction, Customer, TransactionAction } from 'src/app/shared/models/transaction.model';
-import { ReadCardProfile, ValidateCustomerIdCardComponent, Utils, HomeService, TokenService, AlertService, PageLoadingService, ChannelType, KioskControls } from 'mychannel-shared-libs';
+import { ReadCardProfile, ValidateCustomerIdCardComponent, Utils, TokenService, AlertService, PageLoadingService, ChannelType, KioskControls } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { TranslateService } from '@ngx-translate/core';
@@ -27,12 +27,11 @@ export class NewSharePlanMnpValidateCustomerIdCardPageComponent implements OnIni
     private utils: Utils,
     private router: Router,
     private http: HttpClient,
-    private homeService: HomeService,
     private tokenService: TokenService,
     private alertService: AlertService,
     private transactionService: TransactionService,
     private pageLoadingService: PageLoadingService,
-    private translation: TranslateService,
+    private translation: TranslateService
 
   ) {
     this.transaction = this.transactionService.load();

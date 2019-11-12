@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
-import { HomeService, TokenService, ChannelType, AlertService, Utils } from 'mychannel-shared-libs';
+import { TokenService, ChannelType, AlertService, Utils } from 'mychannel-shared-libs';
 import { ROUTE_NEW_SHARE_PLAN_MNP_RESULT_PAGE } from '../../constants/route-path.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
@@ -156,7 +156,6 @@ export class NewSharePlanMnpPersoSimMnpPageComponent implements OnInit, OnDestro
 
   constructor(
     private router: Router,
-    private homeService: HomeService,
     private transactionService: TransactionService,
     private tokenService: TokenService,
     private alertService: AlertService,

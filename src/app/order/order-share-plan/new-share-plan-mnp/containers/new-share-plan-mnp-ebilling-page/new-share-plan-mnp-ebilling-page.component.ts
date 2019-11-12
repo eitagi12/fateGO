@@ -3,7 +3,7 @@ import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_CUSTOMER_INFO_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_CONFIRM_USER_INFORMATION_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
-import { HomeService, Ebilling } from 'mychannel-shared-libs';
+import { Ebilling } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 @Component({
@@ -21,7 +21,6 @@ export class NewSharePlanMnpEbillingPageComponent implements OnInit, OnDestroy {
 
   constructor(
     private router: Router,
-    private homeService: HomeService,
     private http: HttpClient,
     private transactionService: TransactionService
   ) {

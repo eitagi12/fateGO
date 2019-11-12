@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_CUSTOMER_INFO_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_VALIDATE_CUSTOMER_KEY_IN_PAGE } from '../../constants/route-path.constant';
-import { HomeService, PageLoadingService } from 'mychannel-shared-libs';
+import { PageLoadingService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
 import { Transaction, TransactionType, TransactionAction } from 'src/app/shared/models/transaction.model';
@@ -19,10 +19,9 @@ export class NewSharePlanMnpValidateCustomerPageComponent implements OnInit, OnD
 
   constructor(
     private router: Router,
-    private homeService: HomeService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,
-    private http: HttpClient,
+    private http: HttpClient
   ) {
 
   }
@@ -41,10 +40,6 @@ export class NewSharePlanMnpValidateCustomerPageComponent implements OnInit, OnD
 
   onReadCard(): void {
     this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_VALIDATE_CUSTOMER_ID_CARD_PAGE]);
-  }
-
-  onBack(): void {
-    this.homeService.goToHome();
   }
 
   onNext(): void {

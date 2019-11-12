@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router, Params, ActivatedRoute } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_CUSTOMER_INFO_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_ID_CARD_CAPTURE_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_VALIDATE_CUSTOMER_PAGE } from '../../constants/route-path.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
-import { HomeService, CustomerService, AlertService, Utils } from 'mychannel-shared-libs';
+import { CustomerService, AlertService, Utils } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { TranslateService } from '@ngx-translate/core';
 @Component({
@@ -21,7 +21,6 @@ export class NewSharePlanMnpValidateCustomerKeyInPageComponent implements OnInit
   constructor(
     private router: Router,
     private activatedRoute: ActivatedRoute,
-    private homeService: HomeService,
     private transactionService: TransactionService,
     private customerService: CustomerService,
     private alertService: AlertService,

@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, OnDestroy } from '@angular/core';
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 import { Transaction, TransactionAction } from 'src/app/shared/models/transaction.model';
-import { PromotionShelve, HomeService, TokenService, PageLoadingService, AlertService, PromotionShelveItem } from 'mychannel-shared-libs';
+import { PromotionShelve, TokenService, PageLoadingService, AlertService, PromotionShelveItem } from 'mychannel-shared-libs';
 import { BsModalRef, BsModalService } from 'ngx-bootstrap';
 import { Subscription } from 'rxjs';
 import { Router } from '@angular/router';
@@ -30,7 +30,6 @@ export class NewSharePlanMnpSelectPackageMasterPageComponent implements OnInit, 
 
   constructor(
     private router: Router,
-    private homeService: HomeService,
     private tokenService: TokenService,
     private pageLoadingService: PageLoadingService,
     private transactionService: TransactionService,

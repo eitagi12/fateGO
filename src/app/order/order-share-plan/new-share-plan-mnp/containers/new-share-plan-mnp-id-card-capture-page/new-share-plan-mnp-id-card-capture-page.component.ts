@@ -1,7 +1,7 @@
 import { Component, OnInit, OnDestroy, EventEmitter, SimpleChanges, OnChanges, ViewChild, ElementRef } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_CUSTOMER_INFO_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_FACE_CAPTURE_PAGE } from '../../constants/route-path.constant';
-import { CaptureAndSign, TokenService, ChannelType, HomeService, AisNativeService, AlertService, User, AWS_WATERMARK, CaptureSignedWithCard, Utils } from 'mychannel-shared-libs';
+import { CaptureAndSign, TokenService, ChannelType, AisNativeService, AlertService, User, AWS_WATERMARK, CaptureSignedWithCard, Utils } from 'mychannel-shared-libs';
 import { Customer, Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
@@ -35,7 +35,6 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
 
   constructor(
     private router: Router,
-    private homeService: HomeService,
     private transactionService: TransactionService,
     private tokenService: TokenService,
     private alertService: AlertService,
