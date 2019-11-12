@@ -136,7 +136,8 @@ export class NewRegisterMnpNetworkTypePageComponent implements OnInit, OnDestroy
             memberSimCard: [{
               mobileNo: this.mnpForm.value.mobileNo,
               simSerial: '',
-              persoSim: false
+              persoSim: false,
+              chargeType: 'Post-paid'
             }]
           };
           this.transaction.data.customer = {
@@ -155,7 +156,8 @@ export class NewRegisterMnpNetworkTypePageComponent implements OnInit, OnDestroy
           memberSimCard: [{
             mobileNo: this.mnpForm.value.mobileNo,
             simSerial: '',
-            persoSim: false
+            persoSim: false,
+            chargeType: 'Post-paid'
           }]
         };
         this.transaction.data.customer = {
