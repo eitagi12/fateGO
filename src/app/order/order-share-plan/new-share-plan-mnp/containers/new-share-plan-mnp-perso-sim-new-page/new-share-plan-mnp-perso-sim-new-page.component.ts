@@ -1,12 +1,11 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 import { Router } from '@angular/router';
-import { ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_MNP_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_AGREEMENT_SIGN_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_VERIFY_BY_PATTERN_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_RESULT_PAGE } from '../../constants/route-path.constant';
-import { TokenService, ChannelType, Utils, PageLoadingService } from 'mychannel-shared-libs';
+import { ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_MNP_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_AGREEMENT_SIGN_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_RESULT_PAGE } from '../../constants/route-path.constant';
+import { PageLoadingService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
-import { Subscription, Observable, of } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
+import { Observable, of } from 'rxjs';
 import { environment } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { Validators, FormBuilder } from '@angular/forms';
@@ -100,9 +99,6 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
     public fb: FormBuilder,
     private zone: NgZone,
     private pageLoadingService: PageLoadingService,
-    private tokenService: TokenService,
-    private translation: TranslateService,
-    private utils: Utils,
     private http: HttpClient,
     private route: Router
   ) {
@@ -229,7 +225,7 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
       }
       if (simStatus[0].toLowerCase() === 'true') {
         // Progess 20%
-        this.persoSim.progress = 20;
+        this.persoSim = { progress: 20, eventName: 'กรุณารอสักครู่' };
         // $('.custom').animate({ width: 20 + '%' }, this.duration, () => {/**/ });
         // this.getCommandForPersoSim(this.readSimStatus);
         if (this.statusFixSim === 'WaitingForPerso' && this.serialbarcode && this.orderType !== 'Port - In') {
@@ -285,7 +281,7 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
         const delayTime: number = 1000;
         this.timeoutPersoSim = setTimeout(() => {
           // Progess 40%
-          this.persoSim.progress = 40;
+          this.persoSim = { progress: 40, eventName: 'กรุณารอสักครู่' };
           // $('.custom').animate({ width: 40 + '%' }, 0, () => {/**/ });
           this.persoSimCard(simCommand.data.refNo, parameter);
         }, delayTime);
@@ -315,7 +311,7 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
         const persoSimStatus: string[] = this.getResultWs().split('|||');
         if (persoSimStatus[0].toLowerCase() === 'true') {
           // Progess 60%
-          this.persoSim.progress = 60;
+          this.persoSim = { progress: 60, eventName: 'กรุณารอสักครู่' };
           // $('.custom').animate({ width: 60 + '%' }, this.duration, () => {/**/ });
           this.createdPersoSim(refNo);
         } else {
@@ -332,7 +328,7 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
       const persoSimza = this.aisNative.sendIccCommand(this.command, perso, parameter); // perso Sim+
       // this.aisNative.sendIccCommand(this.command, closeDialog, ''); //dismiss dialog Perso
       const persoSimStatus: string[] = persoSimza.split('|||');
-      this.persoSim.progress = 60;
+      this.persoSim = { progress: 60, eventName: 'กรุณารอสักครู่' };
       if (persoSimStatus[0].toLowerCase() === 'true') {
         this.createdPersoSim(refNo);
       } else {
@@ -352,7 +348,7 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
       if (create) {
         if (create.data.success) {
           // Progess 80%
-          this.persoSim.progress = 80;
+          this.persoSim = { progress: 80, eventName: 'กรุณารอสักครู่' };
           // $('.custom').animate({ width: 80 + '%' }, this.duration, () => {/**/ });
           this.checkOrderStatus(refNo);
         } else {
@@ -467,7 +463,7 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
         this.popupControl('errorFixSim', errMegFixSim);
       } else if (errorCode === '008') {
         // Progess 100%
-        this.persoSim.progress = 100;
+        this.persoSim = { progress: 100, eventName: 'กรุณารอสักครู่' };
         // $('.custom').animate({ width: 100 + '%' }, this.duration, () => {/**/ });
         this.pageLoadingService.closeLoading();
         this.statusFixSim = 'Success';
@@ -488,7 +484,7 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
       if (order) {
         if (order.data.orderStatus === 'Completed' && order.data.transactionStatus === 'Completed') {
           // Progess 100%
-          this.persoSim.progress = 100;
+          this.persoSim = { progress: 100, eventName: 'กรุณารอสักครู่' };
           // $('.custom').animate({ width: 100 + '%' }, this.duration, () => {/**/ });
           setTimeout(() => {
           }, this.duration);
@@ -707,8 +703,8 @@ export class NewSharePlanMnpPersoSimNewPageComponent implements OnInit, OnDestro
       this.transaction.data.simCard = Object.assign(this.transaction.data.simCard, {
         simSerial: this.simSerialForm.controls.simSerial.value
       });
-    // this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_MNP_PAGE]);
-    this.route.navigate([ROUTE_NEW_SHARE_PLAN_MNP_RESULT_PAGE]);
+    this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_PERSO_SIM_MNP_PAGE]);
+    // this.route.navigate([ROUTE_NEW_SHARE_PLAN_MNP_RESULT_PAGE]);
   }
 }
 

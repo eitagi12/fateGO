@@ -102,10 +102,11 @@ export class NewSharePlanMnpNetworkTypePageComponent implements OnInit, OnDestro
         const accountNo = (outbuf.accountNo || '').trim();
 
         if (!outbuf || (accountNo && (mobileNoStatus === 'Disconnect - Ported' || mobileNoStatus === 'U' || mobileNoStatus === 'T' ||
-          mobileNoStatus === '')) || mobileNoStatus !== 'Active' && !(mobileNoStatus || networkType)) {
+          mobileNoStatus === '')) || mobileNoStatus !== 'Active' && !(mobileNoStatus || networkType) || mobileNoStatus === '') {
           this.transaction.data.simCard = {
             ...this.transaction.data.simCard,
-            mobileNoMember: mobileNoMember
+            mobileNoMember: mobileNoMember,
+            pinCode: this.mnpForm.value.pinCode
           };
           this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MEMBER_PAGE]);
         } else {
@@ -115,7 +116,8 @@ export class NewSharePlanMnpNetworkTypePageComponent implements OnInit, OnDestro
         this.pageLoadingService.closeLoading();
         this.transaction.data.simCard = {
           ...this.transaction.data.simCard,
-          mobileNoMember: mobileNoMember
+          mobileNoMember: mobileNoMember,
+          pinCode: this.mnpForm.value.pinCode
         };
       })
       .then(() => {

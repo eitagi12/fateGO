@@ -19,7 +19,6 @@ export class CreateMnpService {
     //   '/api/customerportal/newRegister/createOrderPortIn',
     //   this.getRequestCreateMnp(transaction)
     // ).toPromise();
-
     return this.getRequestCreateMnp(transaction).then((data) => {
       return this.http.post(
         '/api/customerportal/newRegister/createOrderPortIn',
@@ -34,7 +33,7 @@ export class CreateMnpService {
     const customer = transaction.data.customer;
     const billingInformation = transaction.data.billingInformation;
     const simCard = transaction.data.simCard;
-    const mainPackage = transaction.data.mainPackage;
+    const mainPackage = transaction.data.mainPackageMember;
     const mainPackageOneLove = transaction.data.mainPackageOneLove;
     const onTopPackage = transaction.data.onTopPackage;
     const billDeliveryAddress = transaction.data.billingInformation.billDeliveryAddress;
@@ -61,8 +60,8 @@ export class CreateMnpService {
       receiveBillMethod: billCycleData.receiveBillMethod || '',
       billCycleEApp: billCycleData.billCycleText || '',
       orderType: 'Port - In', /*required*/
-      simSerialNo: simCard.simSerial || '', /*required*/  // ใช้ simSerial 2 เพราะเป็น flow shared plan
-      mobileNo: simCard.mobileNo || '', /*required*/      // ใช้ mobile 2 เพราะเป็น flow shared plan
+      simSerialNo: simCard.simSerialMember || '', /*required*/  // ใช้ simSerial 2 เพราะเป็น flow shared plan
+      mobileNo: simCard.mobileNoMember || '', /*required*/      // ใช้ mobile 2 เพราะเป็น flow shared plan
       locationCode: user.locationCode || '', /*required*/
       employeeId: '',
       baNumber: billingInformation.mergeBilling ? billingInformation.mergeBilling.billAcctNo : '',
@@ -99,12 +98,12 @@ export class CreateMnpService {
       amphur: customer.amphur || '',
       province: (customer.province || '').replace(/มหานคร$/, ''),
       zipCode: customer.zipCode || '',
-      reasonCode: transaction.data.reasonCode || '',
-      chargeType: simCard.chargeType || '',
-      customerPinCode: customer.customerPinCode || '',
+      reasonCode: '1300' || '',
+      chargeType: 'Post-paid' || '',
+      customerPinCode: customer.customerPinCode || '12345678',
       orderChannel: '',
       mainPackage: {
-        packageName: mainPackage.promotionPackage, /*required*/     // ใช้ package 2 เพราะเป็น flow shared plan
+        packageName: mainPackage.customAttributes.promotionName, /*required*/     // ใช้ package 2 เพราะเป็น flow shared plan
         shortNameThai: mainPackage.shortNameThai || '',             // ใช้ package 2 เพราะเป็น flow shared plan
         statementThai: mainPackage.statementThai || '',             // ใช้ package 2 เพราะเป็น flow shared plan
         mainPackageOneLove: [],
@@ -179,7 +178,7 @@ export class CreateMnpService {
     }
     if (action === TransactionAction.READ_PASSPORT) {
       return new ImageUtils().combine([
-        customer.imageReadPassport,
+        // customer.imageReadPassport,
         customer.imageSignatureSmartCard,
         AWS_WATERMARK
       ]).then((imageSmatCard) => {
@@ -192,7 +191,7 @@ export class CreateMnpService {
 
     if (action === TransactionAction.KEY_IN) {
       return new ImageUtils().combine([
-        customer.imageReadPassport,
+        // customer.imageReadPassport,
         customer.imageSignatureSmartCard,
         AWS_WATERMARK
       ]).then((imageSmatCard) => {

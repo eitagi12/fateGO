@@ -213,6 +213,7 @@ export interface SimCard {
   privilegeCode?: string;
   nType?: string;
   mobileNoStatus?: 'Active' | 'Suspended';
+  pinCode?: string;
 }
 
 export interface MainPackage {
@@ -278,6 +279,7 @@ export interface FaceRecognition {
 }
 
 export interface Order {
+  orderNoMNP?: string;
   orderNo?: string;
   orderDate?: string;
   soId?: string;

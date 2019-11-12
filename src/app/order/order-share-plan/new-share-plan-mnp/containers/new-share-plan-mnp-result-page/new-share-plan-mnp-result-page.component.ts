@@ -11,6 +11,7 @@ import { map, retryWhen, concatMap, delay } from 'rxjs/operators';
 import { throwError, of } from 'rxjs';
 import { ResizeImageComponent } from '../../components/resize-image/resize-image.component';
 import { StoreService } from '../../service/store.service';
+import { CreateMnpService } from '../../service/create-mnp.service';
 
 declare var window: any;
 @Component({
@@ -43,7 +44,8 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
     private createNewRegisterService: CreateNewRegisterService,
     private pageLoadingService: PageLoadingService,
     private http: HttpClient,
-    private storeService: StoreService
+    private storeService: StoreService,
+    private createMNPService: CreateMnpService
   ) {
     this.transaction = this.transactionService.load();
 
@@ -55,7 +57,6 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
     this.mobileNoMember = this.transaction.data.simCard.mobileNoMember;
     this.simSerialMember = this.transaction.data.simCard.simSerialMember;
     // this.checkOrderStatus();
-    console.log('[this.orderNo', this.orderNo);
     this.pageLoadingService.openLoading();
     this.createNewRegisterService.createNewRegister(this.transaction)
       .then((resp: any) => {
@@ -64,15 +65,26 @@ export class NewSharePlanMnpResultPageComponent implements OnInit {
           orderNo: data.orderNo,
           orderDate: data.orderDate
         };
+
         this.transactionService.update(this.transaction);
         if (this.transaction.data.order.orderNo) {
           this.isSuccess = true;
           this.checkOrderStatusByOrderNo(this.transaction.data.order.orderNo).then((res: any) => {
-            console.log('res checkOrderStatusByOrderNo New', res);
             this.orderNo.push(this.transaction.data.order.orderNo);
-            this.pageLoadingService.closeLoading();
-            console.log('[this.orderNo', this.orderNo);
-
+            if (res.orderStatus === 'Completed') {
+              this.createMNPService.createMnp(this.transaction).then((response: any) => {
+                if (response.data.orderNo) {
+                  this.transaction.data.order = {
+                    ...this.transaction.data.order,
+                    orderNoMNP: response.data.orderNo
+                  };
+                  this.transactionService.update(this.transaction);
+                  this.orderNo.push(this.transaction.data.order.orderNoMNP);
+                  this.pageLoadingService.closeLoading();
+                }
+              });
+            }
+            // this.pageLoadingService.closeLoading();
           }).catch((err) => {
             this.pageLoadingService.closeLoading();
 
