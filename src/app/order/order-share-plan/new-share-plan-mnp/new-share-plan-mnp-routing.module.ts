@@ -13,6 +13,7 @@ import { NewSharePlanMnpVerifyInstantSimPageComponent } from './containers/new-s
 import { NewSharePlanMnpVerifyByPatternPageComponent } from './containers/new-share-plan-mnp-verify-by-pattern-page/new-share-plan-mnp-verify-by-pattern-page.component';
 import { NewSharePlanMnpSelectPackageMasterPageComponent } from './containers/new-share-plan-mnp-select-package-master-page/new-share-plan-mnp-select-package-master-page.component';
 import { NewSharePlanMnpNetworkTypePageComponent } from './containers/new-share-plan-mnp-network-type-page/new-share-plan-mnp-network-type-page.component';
+import { NewSharePlanMnpSelectReasonPageComponent } from './containers/new-share-plan-mnp-select-reason-page/new-share-plan-mnp-select-reason-page.component';
 import { NewSharePlanMnpSelectPackageMemberPageComponent } from './containers/new-share-plan-mnp-select-package-member-page/new-share-plan-mnp-select-package-member-page.component';
 import { NewSharePlanMnpConfirmUserInformationPageComponent } from './containers/new-share-plan-mnp-confirm-user-information-page/new-share-plan-mnp-confirm-user-information-page.component';
 import { NewSharePlanMnpEbillingAddressPageComponent } from './containers/new-share-plan-mnp-ebilling-address-page/new-share-plan-mnp-ebilling-address-page.component';
@@ -38,6 +39,7 @@ const routes: Routes = [
   { path: 'verify-by-pattern', component: NewSharePlanMnpVerifyByPatternPageComponent },
   { path: 'select-package-master', component: NewSharePlanMnpSelectPackageMasterPageComponent },
   { path: 'network-type', component: NewSharePlanMnpNetworkTypePageComponent },
+  { path: 'select-reason', component: NewSharePlanMnpSelectReasonPageComponent },
   { path: 'select-package-member', component: NewSharePlanMnpSelectPackageMemberPageComponent },
   { path: 'confirm-user-information', component: NewSharePlanMnpConfirmUserInformationPageComponent },
   { path: 'ebilling-address', component: NewSharePlanMnpEbillingAddressPageComponent },
@@ -46,8 +48,7 @@ const routes: Routes = [
   { path: 'agreement-sign', component: NewSharePlanMnpAgreementSignPageComponent },
   { path: 'perso-sim-new', component: NewSharePlanMnpPersoSimNewPageComponent },
   { path: 'perso-sim-mnp', component: NewSharePlanMnpPersoSimMnpPageComponent },
-  { path: 'result', component: NewSharePlanMnpResultPageComponent },
-
+  { path: 'result', component: NewSharePlanMnpResultPageComponent }
 ];
 
 @NgModule({

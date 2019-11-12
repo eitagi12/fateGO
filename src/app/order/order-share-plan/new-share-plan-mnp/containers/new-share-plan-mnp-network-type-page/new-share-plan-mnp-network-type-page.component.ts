@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
-import { ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MASTER_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MEMBER_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MASTER_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_SELECT_REASON_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
@@ -16,6 +16,7 @@ import { HttpClient } from '@angular/common/http';
   styleUrls: ['./new-share-plan-mnp-network-type-page.component.scss']
 })
 export class NewSharePlanMnpNetworkTypePageComponent implements OnInit, OnDestroy {
+
   wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
   transaction: Transaction;
   mnpForm: FormGroup;
@@ -33,13 +34,6 @@ export class NewSharePlanMnpNetworkTypePageComponent implements OnInit, OnDestro
 
   ngOnInit(): void {
     this.createForm();
-  }
-
-  createForm(): void {
-    this.mnpForm = this.fb.group({
-      'mobileNoMember': ['', Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])],
-      'pinCode': ['', Validators.compose([Validators.required, Validators.pattern(/\d{8}/)])]
-    });
   }
 
   onBack(): void {
@@ -85,6 +79,13 @@ export class NewSharePlanMnpNetworkTypePageComponent implements OnInit, OnDestro
       }).catch(() => this.checkCustomerProfile());
   }
 
+  createForm(): void {
+    this.mnpForm = this.fb.group({
+      'mobileNoMember': ['', Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])],
+      'pinCode': ['', Validators.compose([Validators.required, Validators.pattern(/\d{8}/)])]
+    });
+  }
+
   checkCustomerProfile(): void {
     const mobileNoMember = this.mnpForm.value.mobileNoMember;
     this.http.post(`/api/customerportal/newRegister/getCCCustInfo/${mobileNoMember}`, {
@@ -108,7 +109,7 @@ export class NewSharePlanMnpNetworkTypePageComponent implements OnInit, OnDestro
             mobileNoMember: mobileNoMember,
             pinCode: this.mnpForm.value.pinCode
           };
-          this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MEMBER_PAGE]);
+          this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_SELECT_REASON_PAGE]);
         } else {
           return this.alertService.error(`หมายเลข ${mobileNoMember} เป็นเบอร์ AIS`);
         }

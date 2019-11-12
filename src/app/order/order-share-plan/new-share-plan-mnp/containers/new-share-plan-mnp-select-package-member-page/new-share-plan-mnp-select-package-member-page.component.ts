@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
-import { ROUTE_NEW_SHARE_PLAN_MNP_NETWORK_TYPE_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_CONFIRM_USER_INFORMATION_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_NEW_SHARE_PLAN_MNP_CONFIRM_USER_INFORMATION_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_SELECT_REASON_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
 import { Transaction } from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -46,7 +46,7 @@ export class NewSharePlanMnpSelectPackageMemberPageComponent implements OnInit, 
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_NETWORK_TYPE_PAGE]);
+    this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_SELECT_REASON_PAGE]);
   }
 
   onNext(): void {
@@ -94,7 +94,6 @@ export class NewSharePlanMnpSelectPackageMemberPageComponent implements OnInit, 
                         // item
                         id: promotion.id,
                         title: language === 'EN' ? promotion.customAttributes.shortNameEng : promotion.customAttributes.shortNameThai,
-                        // tslint:disable-next-line: max-line-length
                         detail: language === 'EN' ? promotion.customAttributes.inStatementEng : promotion.customAttributes.inStatementThai,
                         condition: '',
                         value: promotion

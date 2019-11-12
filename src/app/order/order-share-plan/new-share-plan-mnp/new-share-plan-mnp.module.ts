@@ -5,7 +5,7 @@ import { NewSharePlanMnpRoutingModule } from './new-share-plan-mnp-routing.modul
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { TranslateModule } from '@ngx-translate/core';
-// Component
+// Containers
 import { NewSharePlanMnpValidateCustomerPageComponent } from './containers/new-share-plan-mnp-validate-customer-page/new-share-plan-mnp-validate-customer-page.component';
 import { NewSharePlanMnpValidateCustomerIdCardPageComponent } from './containers/new-share-plan-mnp-validate-customer-id-card-page/new-share-plan-mnp-validate-customer-id-card-page.component';
 import { NewSharePlanMnpValidateCustomerKeyInPageComponent } from './containers/new-share-plan-mnp-validate-customer-key-in-page/new-share-plan-mnp-validate-customer-key-in-page.component';
@@ -28,6 +28,8 @@ import { NewSharePlanMnpAgreementSignPageComponent } from './containers/new-shar
 import { NewSharePlanMnpPersoSimNewPageComponent } from './containers/new-share-plan-mnp-perso-sim-new-page/new-share-plan-mnp-perso-sim-new-page.component';
 import { NewSharePlanMnpPersoSimMnpPageComponent } from './containers/new-share-plan-mnp-perso-sim-mnp-page/new-share-plan-mnp-perso-sim-mnp-page.component';
 import { NewSharePlanMnpResultPageComponent } from './containers/new-share-plan-mnp-result-page/new-share-plan-mnp-result-page.component';
+import { NewSharePlanMnpSelectReasonPageComponent } from './containers/new-share-plan-mnp-select-reason-page/new-share-plan-mnp-select-reason-page.component';
+// Components
 import { BillingInfoComponent } from './components/billing-info/billing-info.component';
 import { ConfirmCustomerInfoComponent } from './components/confirm-customer-info/confirm-customer-info.component';
 import { PrinterComponent } from './components/printer/printer.component';
@@ -66,11 +68,12 @@ import { SummarySellerCodeComponent } from './components/summary-seller-code/sum
     NewSharePlanMnpPersoSimNewPageComponent,
     NewSharePlanMnpPersoSimMnpPageComponent,
     NewSharePlanMnpResultPageComponent,
+    NewSharePlanMnpSelectReasonPageComponent,
     BillingInfoComponent,
     ConfirmCustomerInfoComponent,
     PrinterComponent,
     ResizeImageComponent,
-    SummarySellerCodeComponent
+    SummarySellerCodeComponent,
   ]
 })
 export class NewSharePlanMnpModule { }

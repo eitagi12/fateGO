@@ -1,5 +1,5 @@
 <div class="mc-flex">
-  <mc-header title="{{ 'เปิดเบอร์ใหม่' | translate }}">
+  <mc-header title="{{ 'ย้ายค่ายเบอร์เดิม' | translate }}">
     <div class="header-icon-left w-25">
       <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
     </div>
@@ -7,7 +7,7 @@
   </mc-header>
   <div class="mc-flex-wrap">
     <div class="mt-3 mb-3">
-      <mc-wizard [wizards]="wizards" active="2"></mc-wizard>
+      <mc-wizard [wizards]="wizards" active="3"></mc-wizard>
       <mc-promotion-shelve [selected]="transaction?.data?.mainPackageMember" [promotionShelves]="promotionShelves"
         (completed)="onCompleted($event)" (condition)="onTermConditions($event)"></mc-promotion-shelve>
     </div>

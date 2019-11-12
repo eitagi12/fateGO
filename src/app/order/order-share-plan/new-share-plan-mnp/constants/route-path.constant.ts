@@ -11,6 +11,7 @@ export const ROUTE_NEW_SHARE_PLAN_MNP_VERIFY_INSTANT_SIM_PAGE = '/order/share-pl
 export const ROUTE_NEW_SHARE_PLAN_MNP_VERIFY_BY_PATTERN_PAGE = '/order/share-plan/new-share-plan-mnp/verify-by-pattern';
 export const ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MASTER_PAGE = '/order/share-plan/new-share-plan-mnp/select-package-master';
 export const ROUTE_NEW_SHARE_PLAN_MNP_NETWORK_TYPE_PAGE = '/order/share-plan/new-share-plan-mnp/network-type';
+export const ROUTE_NEW_SHARE_PLAN_MNP_SELECT_REASON_PAGE = '/order/share-plan/new-share-plan-mnp/select-reason';
 export const ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MEMBER_PAGE = '/order/share-plan/new-share-plan-mnp/select-package-member';
 export const ROUTE_NEW_SHARE_PLAN_MNP_CONFIRM_USER_INFORMATION_PAGE = '/order/share-plan/new-share-plan-mnp/confirm-user-information';
 export const ROUTE_NEW_SHARE_PLAN_MNP_EBILLING_ADDRESS_PAGE = '/order/share-plan/new-share-plan-mnp/ebilling-address';
