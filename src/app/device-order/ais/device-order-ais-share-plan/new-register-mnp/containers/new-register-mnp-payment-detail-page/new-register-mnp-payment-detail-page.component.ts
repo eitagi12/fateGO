@@ -66,7 +66,7 @@ export class NewRegisterMnpPaymentDetailPageComponent implements OnInit, OnDestr
     const customer: any = this.transaction.data.customer || {};
     const receiptInfo: any = this.transaction.data.receiptInfo || {};
     const showQRCode: boolean = paymentMethod !== 'CC' && this.user.userType !== 'ASP'
-      && this.user.channelType !== 'sff-web' && this.priceOption.productStock.company === 'AWN';
+      && this.user.channelType !== 'sff-web' && this.priceOption.productStock.company !== 'AWN';
 
     const trade: any = this.priceOption.trade || {};
     const advancePay: any = trade.advancePay || {};
