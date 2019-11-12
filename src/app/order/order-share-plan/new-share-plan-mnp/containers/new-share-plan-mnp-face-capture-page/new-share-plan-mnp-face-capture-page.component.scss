@@ -1,5 +1,5 @@
 .camera-width {
-    max-width: 700px;
+    max-width: 768px;
     width: 100%;
     margin: 0 auto;
 
@@ -8,29 +8,18 @@
     // }
 }
 
-.icon-people {
-    width: 40% !important;
-    margin: 0 auto;
-    display: block;
-
-}
-.icon-people-wrap {
-    width: 53% !important;
-    height: 100% !important;
-    position: absolute;
-    left: 50%;
-    z-index: 1;
-    bottom: 0;
-    transform: translate(-50%, 0);
+.camera-pc {
+    height: 576px;
 }
 
-.icon-camera { 
-    width: 60px;
-}
+
+// .icon-camera { 
+//     width: 60px;
+// }
 
 .img-result {
-    height: 550px; 
-    width: 75%;
+    height: 576px; 
+    width: auto;
 }
 
 .center {

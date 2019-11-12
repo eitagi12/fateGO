@@ -11,14 +11,17 @@
       <div class="container-fluid">
         <div class="card">
           <h5 class="card-header bg-transparent text-center">ถ่ายรูปผู้ขอใช้บริการ</h5>
-          <div class="card-body" style="height: 590px;">
+          <div class="card-body">
             <div class="camera-width">
-              <div *ngIf="!openCamera">
-                <img *ngIf="!transaction?.data?.faceRecognition?.imageFaceUser" class="icon-people" />
+              <div *ngIf="!openCamera && !transaction?.data?.faceRecognition?.imageFaceUser" class="camera-pc">
+                <!-- <img *ngIf="!transaction?.data?.faceRecognition?.imageFaceUser" class="icon-people" /> -->
               </div>
-              <div [hidden]="!(openCamera && !transaction?.data?.faceRecognition?.imageFaceUser)"
-                class="position-relative">
-                <mc-camera [flip]="true" [countdown]="3" [onTakePhoto]="camera" (completed)="onCameraCompleted($event)"
+              <div [hidden]="!(openCamera && !transaction?.data?.faceRecognition?.imageFaceUser)" class="position-relative">
+                <mc-camera 
+                  [flip]="true" 
+                  [countdown]="3" 
+                  [onTakePhoto]="camera" 
+                  (completed)="onCameraCompleted($event)"
                   (error)="onCameraError($event)">
                 </mc-camera>
               </div>
@@ -60,8 +63,7 @@
     </div>
   </div>
   <mc-footer>
-    <button class="btn btn-secondary" (click)="onBack()">ย้อนกลับ</button>
-    <button class="btn btn-success" (click)="onNext()"
-      [disabled]="!transaction?.data?.faceRecognition?.imageFaceUser">ถัดไป</button>
+    <button class="btn btn-secondary" (click)="onBack()">BACK</button>
+    <button class="btn btn-success" (click)="onNext()" [disabled]="!transaction?.data?.faceRecognition?.imageFaceUser">NEXT</button>
   </mc-footer>
 </div>
