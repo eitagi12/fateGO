@@ -68,7 +68,6 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
     const simCard = this.transaction.data.simCard;
     const billingInformation = this.transaction.data.billingInformation;
     const billCycleData: any = billingInformation.billCycleData || {};
-    // รอ package page
     this.eBill = !(mainPackage.billingSystem === BillingSystemType.BOS);
 
     this.confirmCustomerInfo = {
@@ -95,13 +94,11 @@ export class NewSharePlanMnpConfirmUserInformationPageComponent implements OnIni
       mobileNo: billCycleData.mobileNoContact,
       phoneNo: billCycleData.phoneNoContact,
     };
-
     this.initBillingInfo();
 
-    // รอ package page
     this.mapCustomerInfoByLang(this.translation.currentLang);
   }
-  // รอ package page
+
   mapCustomerInfoByLang(lang: string): void {
     if (lang === 'EN') {
       this.confirmCustomerInfo.mainPackage = this.transaction.data.mainPackage.shortNameEng;

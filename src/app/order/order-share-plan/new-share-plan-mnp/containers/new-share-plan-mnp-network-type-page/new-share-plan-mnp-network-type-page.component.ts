@@ -2,7 +2,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Router } from '@angular/router';
 import { ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MASTER_PAGE, ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MEMBER_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
-import { Transaction, TransactionType } from 'src/app/shared/models/transaction.model';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AlertService, PageLoadingService, REGEX_MOBILE } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
@@ -18,7 +18,7 @@ import { HttpClient } from '@angular/common/http';
 export class NewSharePlanMnpNetworkTypePageComponent implements OnInit, OnDestroy {
   wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
   transaction: Transaction;
-  sharePlanForm: FormGroup;
+  mnpForm: FormGroup;
 
   constructor(
     private router: Router,
@@ -36,47 +36,10 @@ export class NewSharePlanMnpNetworkTypePageComponent implements OnInit, OnDestro
   }
 
   createForm(): void {
-    this.sharePlanForm = this.fb.group({
-      'mobileNo': ['', Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])],
+    this.mnpForm = this.fb.group({
+      'mobileNoMember': ['', Validators.compose([Validators.required, Validators.pattern(REGEX_MOBILE)])],
       'pinCode': ['', Validators.compose([Validators.required, Validators.pattern(/\d{8}/)])]
     });
-  }
-
-  checkCustomerProfile(): void {
-    this.http.post(`/api/customerportal/newRegister/getCCCustInfo/${this.sharePlanForm.value.mobileNo}`, {
-    }).toPromise()
-      .then((resp: any) => {
-        this.pageLoadingService.closeLoading();
-        const outbuf = resp.data
-          && resp.data.data
-          && resp.data.data.A_GetCCCustInfoResponse
-          && resp.data.data.A_GetCCCustInfoResponse.outbuf
-          ? resp.data.data.A_GetCCCustInfoResponse.outbuf : {};
-
-        const mobileNoStatus = (outbuf.mobileNoStatus || '').trim();
-        const networkType = (outbuf.networkType || '').trim();
-        const accountNo = (outbuf.accountNo || '').trim();
-
-        if (!outbuf || (accountNo && (mobileNoStatus === 'Disconnect - Ported' || mobileNoStatus === 'U' || mobileNoStatus === 'T'))
-          || mobileNoStatus !== 'Active' && !(mobileNoStatus || networkType)) {
-          this.transaction.data.simCard = {
-            ...this.transaction.data.simCard,
-            mobileNoMember: this.sharePlanForm.value.mobileNo
-          };
-          this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MEMBER_PAGE]);
-        } else {
-          return this.alertService.error(`หมายเลข ${this.sharePlanForm.value.mobileNo} เป็นเบอร์ AIS`);
-        }
-      }).catch(() => {
-        this.pageLoadingService.closeLoading();
-        this.transaction.data.simCard = {
-          ...this.transaction.data.simCard,
-          mobileNoMember: this.sharePlanForm.value.mobileNo
-        };
-      })
-      .then(() => {
-        this.pageLoadingService.closeLoading();
-      });
   }
 
   onBack(): void {
@@ -85,7 +48,8 @@ export class NewSharePlanMnpNetworkTypePageComponent implements OnInit, OnDestro
 
   onNext(): void {
     this.pageLoadingService.openLoading();
-    const subscriberId: string = this.sharePlanForm.value.mobileNo;
+    const mobileNoMember = this.mnpForm.value.mobileNoMember;
+    const subscriberId: string = mobileNoMember;
     const orderType: string = 'Port - In';
     const isProduction: any = environment.name !== 'PROD' && environment.name !== 'SIT' ? true : false;
     const isStartDt: any = isProduction === true ? 30 : 3;
@@ -112,13 +76,51 @@ export class NewSharePlanMnpNetworkTypePageComponent implements OnInit, OnDestro
         if (historyOrder) {
           this.pageLoadingService.closeLoading();
           const createDate = moment(historyOrder.createDate, 'YYYYMMDD').format('DD/MM/YYYY');
-          this.alertService.error(`ระบบไม่สามารถทำรายการได้ <br>หมายเลข ${this.sharePlanForm.value.mobileNo}
+          this.alertService.error(`ระบบไม่สามารถทำรายการได้ <br>หมายเลข ${mobileNoMember}
           อยู่ระหว่างรอการอนุมัติย้ายค่ายมาใช้บริการกับ AIS ระบบรายเดือน/เติมเงิน
           (ทำรายการวันที่ ${createDate})`);
         } else {
           this.checkCustomerProfile();
         }
       }).catch(() => this.checkCustomerProfile());
+  }
+
+  checkCustomerProfile(): void {
+    const mobileNoMember = this.mnpForm.value.mobileNoMember;
+    this.http.post(`/api/customerportal/newRegister/getCCCustInfo/${mobileNoMember}`, {
+    }).toPromise()
+      .then((resp: any) => {
+        this.pageLoadingService.closeLoading();
+        const outbuf = resp.data
+          && resp.data.data
+          && resp.data.data.A_GetCCCustInfoResponse
+          && resp.data.data.A_GetCCCustInfoResponse.outbuf
+          ? resp.data.data.A_GetCCCustInfoResponse.outbuf : {};
+
+        const mobileNoStatus = (outbuf.mobileNoStatus || '').trim();
+        const networkType = (outbuf.networkType || '').trim();
+        const accountNo = (outbuf.accountNo || '').trim();
+
+        if (!outbuf || (accountNo && (mobileNoStatus === 'Disconnect - Ported' || mobileNoStatus === 'U' || mobileNoStatus === 'T' ||
+          mobileNoStatus === '')) || mobileNoStatus !== 'Active' && !(mobileNoStatus || networkType)) {
+          this.transaction.data.simCard = {
+            ...this.transaction.data.simCard,
+            mobileNoMember: mobileNoMember
+          };
+          this.router.navigate([ROUTE_NEW_SHARE_PLAN_MNP_SELECT_PACKAGE_MEMBER_PAGE]);
+        } else {
+          return this.alertService.error(`หมายเลข ${mobileNoMember} เป็นเบอร์ AIS`);
+        }
+      }).catch(() => {
+        this.pageLoadingService.closeLoading();
+        this.transaction.data.simCard = {
+          ...this.transaction.data.simCard,
+          mobileNoMember: mobileNoMember
+        };
+      })
+      .then(() => {
+        this.pageLoadingService.closeLoading();
+      });
   }
 
   ngOnDestroy(): void {

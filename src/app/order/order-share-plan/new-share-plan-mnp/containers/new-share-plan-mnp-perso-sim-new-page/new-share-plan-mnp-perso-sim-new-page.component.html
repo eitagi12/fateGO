@@ -1,20 +1,20 @@
 <div class="mc-flex">
-  <mc-header title="{{ 'เปิดเบอร์ใหม่' | translate }}">
-    <div class="header-icon-left w-25">
-      <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
-    </div>
-    <div class="header-icon-right w-25 text-right">
-      <mc-dropdown-language></mc-dropdown-language>
-      <mc-header-icon src="assets/images/icon/icon-home.png" (iconClick)="onHome()"></mc-header-icon>
-    </div>
-  </mc-header>
+  <mc-header title="{{ 'เปิดเบอร์ใหม่' | translate }}"></mc-header>
   <div class="mc-flex-wrap bg-white">
-    <div class="pt-3 pb-3">
-      <div class="container">
-        <img src="assets/images/icon/icon-ReadIDCard-01.png" class="icon-read-card" />
-        <img src="assets/images/icon/icon-input-sim.png" class="icon-perso-sim" />
-        <div class="text-center mt-3 mb-3" translate>{{ title }}</div>
-        <div class="progress mb-5">
+    <div class="container">
+      <div class="card mt-3">
+        <div class="card-header bg-light-blue text-white">
+          <img src="assets/images/icon/icon-circle-ais-post-logo.png" class="icon-ais mr-2">
+          {{ 'Post Paid' | translate }}
+        </div>
+        <div class="card-body">
+          <div class="m-3" translate>1. {{ mobileNo | mobileNo }} (เบอร์โทรหลัก - เบอร์จดทะเบียนใหม่)</div>
+        </div>
+      </div>
+      <div class="pt-3 pb-3">
+        <img src="assets/images/icon/icon-ReadIDCard-01.png" class="icon-read-card">
+        <img src="assets/images/icon/icon-input-sim.png" class="icon-perso-sim">
+        <div class="progress mt-3 mb-5">
           <div class="progress-bar bg-success" role="progressbar" [style.width.%]="persoSim?.progress"
             [attr.aria-valuenow]="persoSim?.progress" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
@@ -22,24 +22,24 @@
         <div class="line-behind">
           <span translate>หรือ</span>
         </div>
-        <form [formGroup]="simSerialForm" >
+        <form [formGroup]="simSerialForm">
           <div class="form-group">
             <label for="simserial" class="form-text text-center" translate>กรอกเลขที่ซิมการ์ด</label>
             <input 
-          name="barcodeValue" 
-          id="txtRegNumConfirmScanSim" 
-          class="form-control text-center" 
-          type="tel" 
-          maxlength="13" 
-          placeholder= "{{(scanBarcodePC$ | async)? 'ใส่เลขที่ซิม 13 หลัก' : 'สแกน Barcode หรือ ใส่เลขที่ซิม 13 หลัก'}}" 
-          [ngClass]="{'has-error':!simSerialForm.controls['simSerial'].valid}"
-          formControlName="simSerial"  
-          [(ngModel)]="simSerialKeyIn"
-          autocomplete="off"
-          (ngModelChange)="onSerialNumberChanged($event)" >
-
-            <small class="form-text text-red text-center" [hidden]="simSerialForm.controls['simSerial'].valid" translate>* เลขที่ซิมต้องเป็นตัวเลข 13
-              ตัวเท่านั้น</small>
+              name="barcodeValue" 
+              id="txtRegNumConfirmScanSim" 
+              class="form-control text-center" 
+              type="tel"
+              maxlength="13"
+              placeholder="{{(scanBarcodePC$ | async)? 'ใส่เลขที่ซิม 13 หลัก' : 'สแกน Barcode หรือ ใส่เลขที่ซิม 13 หลัก'}}"
+              [ngClass]="{'is-invalid':!simSerialForm.controls['simSerial'].valid}" 
+              formControlName="simSerial"
+              [(ngModel)]="simSerialKeyIn" 
+              autocomplete="off" 
+              (ngModelChange)="onSerialNumberChanged($event)">
+            <small class="form-text text-red text-center" [hidden]="simSerialForm.controls['simSerial'].valid" translate>
+              * เลขที่ซิมต้องเป็นตัวเลข 13 ตัวเท่านั้น
+            </small>
           </div>
         </form>
       </div>
