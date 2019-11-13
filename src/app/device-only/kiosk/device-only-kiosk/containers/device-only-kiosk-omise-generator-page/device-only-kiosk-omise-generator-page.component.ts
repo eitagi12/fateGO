@@ -9,7 +9,7 @@ import { PriceOptionService } from 'src/app/shared/services/price-option.service
 import { QrCodeOmiseService } from 'src/app/device-only/services/qr-code-omise.service';
 import { environment } from 'src/environments/environment';
 import * as moment from 'moment';
-import { ROUTE_DEVICE_ONLY_KIOSK_CHECKOUT_PAYMENT_QR_CODE_PAGE, ROUTE_DEVICE_ONLY_KIOSK_OMISE_QUEUE_PAGE } from 'src/app/device-only/kiosk/device-only-kiosk/constants/route-path.constant';
+import { ROUTE_DEVICE_ONLY_KIOSK_CHECKOUT_PAYMENT_QR_CODE_PAGE, ROUTE_DEVICE_ONLY_KIOSK_OMISE_QUEUE_PAGE, ROUTE_DEVICE_ONLY_KIOSK_OMISE_SUMMARY_PAGE } from 'src/app/device-only/kiosk/device-only-kiosk/constants/route-path.constant';
 
 @Component({
   selector: 'app-device-only-kiosk-omise-generator-page',
@@ -156,10 +156,10 @@ export class DeviceOnlyKioskOmiseGeneratorPageComponent implements OnInit, OnDes
 
     if (this.qrCodeOmiseService.isPaymentOnlineCredit(this.transaction, 'payment')) {
       total += +trade.promotionPrice;
-      }
-      if (this.qrCodeOmiseService.isPaymentOnlineCredit(this.transaction, 'advancePayment')) {
+    }
+    if (this.qrCodeOmiseService.isPaymentOnlineCredit(this.transaction, 'advancePayment')) {
       total += +advancePay.amount;
-      }
+    }
     return total;
   }
 
@@ -170,7 +170,7 @@ export class DeviceOnlyKioskOmiseGeneratorPageComponent implements OnInit, OnDes
   }
 
   onBack(): void {
-    this.router.navigate([ROUTE_DEVICE_ONLY_KIOSK_CHECKOUT_PAYMENT_QR_CODE_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ONLY_KIOSK_OMISE_SUMMARY_PAGE]);
   }
 
   onNext(): void {

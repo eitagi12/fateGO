@@ -73,8 +73,6 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
       qrCode: true,
       omisePayment: this.isFullPayment() && this.priceOption.productStock.company !== 'WDS'
     };
-    console.log('this.paymentDetail', this.paymentDetail);
-
     this.http.get('/api/salesportal/omise/get-bank').toPromise()
       .then((res: any) => {
         const data = res.data || [];

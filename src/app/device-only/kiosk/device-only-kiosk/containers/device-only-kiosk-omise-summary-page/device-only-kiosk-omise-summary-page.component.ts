@@ -8,6 +8,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { QrCodeOmiseService } from 'src/app/device-only/services/qr-code-omise.service';
 import { SummaryService } from 'src/app/device-only/services/summary.service';
+import { ROUTE_DEVICE_ONLY_KIOSK_CHECKOUT_PAYMENT_QR_CODE_PAGE, ROUTE_DEVICE_ONLY_KIOSK_OMISE_GENERATOR_PAGE } from '../../constants/route-path.constant';
 
 @Component({
   selector: 'app-device-only-kiosk-omise-summary-page',
@@ -84,7 +85,7 @@ export class DeviceOnlyKioskOmiseSummaryPageComponent implements OnInit, OnDestr
   }
 
   onBack(): void {
-    // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_AGGREGATE_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ONLY_KIOSK_CHECKOUT_PAYMENT_QR_CODE_PAGE]);
   }
 
   onNext(): void {
@@ -96,8 +97,7 @@ export class DeviceOnlyKioskOmiseSummaryPageComponent implements OnInit, OnDestr
     const productStock = this.priceOption.productStock;
     const trade = this.priceOption && this.priceOption.trade;
     const description = trade && trade.advancePay && trade.advancePay.description;
-    const payment: any = this.transaction.data.payment || {};
-    const advancePayment: any = this.transaction.data.advancePayment || {};
+
     if (this.qrCodeOmiseService.isPaymentOnlineCredit(this.transaction, 'payment') &&
       this.qrCodeOmiseService.isPaymentOnlineCredit(this.transaction, 'advancePayment')) {
       this.orderList = [{
@@ -109,7 +109,7 @@ export class DeviceOnlyKioskOmiseSummaryPageComponent implements OnInit, OnDestr
       }];
     } else if ((this.qrCodeOmiseService.isPaymentOnlineCredit(this.transaction, 'payment')) ||
       (this.qrCodeOmiseService.isPaymentOnlineCredit(this.transaction, 'advancePayment'))) {
-      if (payment.paymentOnlineCredit) {
+      if (this.qrCodeOmiseService.isPaymentOnlineCredit(this.transaction, 'payment')) {
         this.orderList = [{
           name: priceOption.name + 'สี' + productStock.color,
           price: +trade.promotionPrice
@@ -134,7 +134,7 @@ export class DeviceOnlyKioskOmiseSummaryPageComponent implements OnInit, OnDestr
       const data = res && res.data;
       this.transaction.data.omise.qrCodeStr = data.redirectUrl;
       this.transaction.data.omise.orderId = data.orderId;
-      // this.router.navigate([ROUTE_DEVICE_ORDER_AIS_NEW_REGISTER_OMISE_GENERATOR_PAGE]);
+      this.router.navigate([ROUTE_DEVICE_ONLY_KIOSK_OMISE_GENERATOR_PAGE]);
 
     }).catch((err) => {
       this.alertService.error('ระบบไม่สามารถทำรายการได้ขณะนี้ กรุณาทำรายการอีกครั้ง');

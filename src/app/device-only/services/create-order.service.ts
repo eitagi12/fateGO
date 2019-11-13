@@ -116,38 +116,20 @@ export class CreateOrderService {
         && transaction.data.order.soId) {
         resolve(transaction);
       } else {
-        if (this.user.channelType === 'smart-order') {
-          this.callAddToCartDT(transaction, priceOption).then((response) => {
-            if (response.resultCode === 'S') {
-              transaction.data.order = {
-                soId: response.soId
-              };
-              this.sharedTransactionService.createSharedTransaction(transaction, priceOption).then((res) => {
-                if (res.data.isSuccess === true) {
-                  resolve(transaction);
-                }
-              }).catch(resolve);
-            } else {
-              reject('Cannot add item to the cart');
-            }
-          });
-        } else {
-          this.callAddToCart(transaction, priceOption).then((response) => {
-            if (response.resultCode === 'S') {
-              transaction.data.order = {
-                soId: response.soId
-              };
-              this.sharedTransactionService.createSharedTransaction(transaction, priceOption).then((res) => {
-                if (res.data.isSuccess === true) {
-                  resolve(transaction);
-                }
-              }).catch(resolve);
-            } else {
-              reject('Cannot add item to the cart');
-            }
-          });
-
-        }
+        this.callAddToCartDT(transaction, priceOption).then((response) => {
+          if (response.resultCode === 'S') {
+            transaction.data.order = {
+              soId: response.soId
+            };
+            this.sharedTransactionService.createSharedTransaction(transaction, priceOption).then((res) => {
+              if (res.data.isSuccess === true) {
+                resolve(transaction);
+              }
+            }).catch(resolve);
+          } else {
+            reject('Cannot add item to the cart');
+          }
+        });
       }
     });
   }
@@ -408,7 +390,9 @@ export class CreateOrderService {
       data.qrOrderId = omise.orderId;
       data.creditCardNo = omise.creditCardNo ? omise.creditCardNo.substring(omise.creditCardNo.length - 16) : '';
       data.cardExpireDate = omise.cardExpireDate;
+      data.qrTransId = omise.tranId;
       data.qrAmt = (+this.getGrandTotalAmt(trade, prebooking)).toFixed(2);
+      data.qrAirtimeTransId = omise.tranId;
       data.qrAirtimeAmt = (+this.getGrandTotalAmt(trade, prebooking)).toFixed(2);
 
     } else if (this.qrCodeOmiseService.isPaymentOnlineCredit(transaction, 'payment') ||

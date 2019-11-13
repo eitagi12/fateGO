@@ -10,6 +10,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { WIZARD_DEVICE_ONLY_AIS } from 'src/app/device-only/constants/wizard.constant';
 import { SummarySellerCodeComponent } from 'src/app/device-only/components/summary-seller-code/summary-seller-code.component';
 import { HttpClient } from '@angular/common/http';
+import { QrCodeOmiseService } from 'src/app/device-only/services/qr-code-omise.service';
 
 @Component({
   selector: 'app-device-only-kiosk-summary-page',
@@ -39,7 +40,8 @@ export class DeviceOnlyKioskSummaryPageComponent implements OnInit {
     private homeButtonService: HomeButtonService,
     public alertService: AlertService,
     private http: HttpClient,
-    private pageLoadingService: PageLoadingService
+    private pageLoadingService: PageLoadingService,
+    private qrCodeOmiseService: QrCodeOmiseService
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -55,7 +57,9 @@ export class DeviceOnlyKioskSummaryPageComponent implements OnInit {
   }
 
   onNext(): void {
-    if (this.transaction.data.payment.paymentType === 'QR_CODE') {
+    if (this.transaction.data.payment.paymentType === 'QR_CODE' ||
+      this.qrCodeOmiseService.isPaymentOnlineCredit(this.transaction, 'payment') ||
+      this.qrCodeOmiseService.isPaymentOnlineCredit(this.transaction, 'advancePayment')) {
       this.router.navigate([ROUTE_DEVICE_ONLY_KIOSK_CHECKOUT_PAYMENT_QR_CODE_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_ONLY_KIOSK_CHECKOUT_PAYMENT_PAGE]);
