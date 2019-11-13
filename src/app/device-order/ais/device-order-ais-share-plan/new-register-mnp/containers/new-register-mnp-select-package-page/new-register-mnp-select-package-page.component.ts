@@ -64,6 +64,7 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
   }
 
   onCompleted(promotion: any): void {
+    console.log(promotion);
     this.transaction.data.mainPackage = promotion;
   }
 
@@ -86,12 +87,28 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
 
   callService(language: string): void {
     this.pageLoadingService.openLoading();
+    const trade: any = this.priceOption.trade;
+    const privilege: any = this.priceOption.privilege;
 
     const mobileNo = this.transaction.data.simCard.mobileNo;
     const params: any = {
       orderType: 'New Registration',
       isPackageSharePlan: true
     };
+    // this.promotionShelveService.getPromotionShelve(
+      // {
+      //   packageKeyRef: trade.packageKeyRef || privilege.packageKeyRef,
+      //   orderType: 'New Registration',
+      //   billingSystem: BillingSystemType.IRB
+      // },
+      // +privilege.minimumPackagePrice, +privilege.maximumPackagePrice)
+      // .then((promotionShelves: any) => {
+      //   this.promotionShelves = this.promotionShelveService.defaultBySelected(promotionShelves, this.transaction.data.mainPackage);
+      //   if (this.promotionShelves) {
+      //     console.log(this.promotionShelves);
+      //     this.checkTranslateLang(this.translateService.currentLang);
+      //   }
+      // })
     this.http.get(`/api/customerportal/queryCheckMinimumPackage/${mobileNo}`, {
     }).toPromise()
       .then((resp: any) => {
@@ -141,23 +158,6 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
       .then(() => {
         this.pageLoadingService.closeLoading();
       });
-    // const trade: any = this.priceOption.trade;
-    // const privilege: any = this.priceOption.privilege;
-
-    // this.promotionShelveService.getPromotionShelve(
-    //   {
-    //     packageKeyRef: trade.packageKeyRef || privilege.packageKeyRef,
-    //     orderType: 'New Registration',
-    //     billingSystem: BillingSystemType.IRB
-    //   },
-    //   +privilege.minimumPackagePrice, +privilege.maximumPackagePrice)
-    //   .then((promotionShelves: any) => {
-    //     this.promotionShelves = this.promotionShelveService.defaultBySelected(promotionShelves, this.transaction.data.mainPackage);
-    //     if (this.promotionShelves) {
-    //       this.checkTranslateLang(this.translateService.currentLang);
-    //     }
-    //   })
-    //   .then(() => this.pageLoadingService.closeLoading());
   }
 
   checkTranslateLang(lang: any): void {
