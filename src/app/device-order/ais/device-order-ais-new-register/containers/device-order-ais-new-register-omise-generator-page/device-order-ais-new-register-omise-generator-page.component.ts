@@ -78,6 +78,11 @@ export class DeviceOrderAisNewRegisterOmiseGeneratorPageComponent implements OnI
               this.transaction.data.omise.creditCardNo = data.creditCardNo || '';
               this.transaction.data.omise.cardExpireDate = data.cardExpireDate || '';
               this.onNext();
+            } else {
+              this.alertService.question('ชำระค่าสินค้าและบริการไม่สำเร็จ กรุณาทำรายการใหม่')
+                .then((dataAlert: any) => {
+                  this.onBack();
+                });
             }
           });
 
@@ -103,7 +108,6 @@ export class DeviceOrderAisNewRegisterOmiseGeneratorPageComponent implements OnI
                   this.transaction.data.omise.cardExpireDate = data.cardExpireDate || '';
                   this.onNext();
                 } else {
-                  // Refresh generate qrcode
                   this.alertService.question('ชำระค่าสินค้าและบริการไม่สำเร็จ กรุณาทำรายการใหม่')
                     .then((dataAlert: any) => {
                       this.onBack();
