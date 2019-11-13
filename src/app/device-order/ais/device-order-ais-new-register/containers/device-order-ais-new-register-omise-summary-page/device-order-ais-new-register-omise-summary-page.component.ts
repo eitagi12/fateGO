@@ -97,8 +97,7 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
     const productStock = this.priceOption.productStock;
     const trade = this.priceOption && this.priceOption.trade;
     const description = trade && trade.advancePay && trade.advancePay.description;
-    const payment: any = this.transaction.data.payment || {};
-    const advancePayment: any = this.transaction.data.advancePayment || {};
+
     if (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'payment') &&
       this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'advancePayment')) {
       this.orderList = [{
@@ -110,7 +109,7 @@ export class DeviceOrderAisNewRegisterOmiseSummaryPageComponent implements OnIni
       }];
     } else if ((this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'payment')) ||
       (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'advancePayment'))) {
-      if (payment.paymentOnlineCredit) {
+      if (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'payment')) {
         this.orderList = [{
           name: priceOption.name + 'สี' + productStock.color,
           price: +trade.promotionPrice
