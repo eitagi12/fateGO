@@ -146,8 +146,6 @@ export class DeviceOrderAisPreToPostOmiseGeneratorPageComponent implements OnIni
 
   getTotalAmount(): number {
     const trade = this.priceOption.trade;
-    const payment: any = this.transaction.data.payment || {};
-    const advancePayment: any = this.transaction.data.advancePayment || {};
     let total: number = 0;
     const advancePay = trade.advancePay || {};
 
@@ -155,10 +153,10 @@ export class DeviceOrderAisPreToPostOmiseGeneratorPageComponent implements OnIni
       return this.summary([+trade.promotionPrice, +advancePay.amount]);
     }
 
-    if (payment.paymentOnlineCredit) {
+    if (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'payment')) {
       total += +trade.promotionPrice;
     }
-    if (advancePayment.paymentOnlineCredit) {
+    if (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'advancePayment')) {
       total += +advancePay.amount;
     }
     return total;
