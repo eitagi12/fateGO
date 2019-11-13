@@ -75,6 +75,12 @@ export class DeviceOnlyKioskOmiseGeneratorPageComponent implements OnInit, OnDes
               this.transaction.data.omise.creditCardNo = data.creditCardNo || '';
               this.transaction.data.omise.cardExpireDate = data.cardExpireDate || '';
               this.onNext();
+            } else {
+              // Refresh generate qrcode
+              this.alertService.question('ชำระค่าสินค้าและบริการไม่สำเร็จ กรุณาทำรายการใหม่')
+                .then((dataAlert: any) => {
+                  this.onBack();
+                });
             }
           });
 
@@ -148,12 +154,12 @@ export class DeviceOnlyKioskOmiseGeneratorPageComponent implements OnInit, OnDes
       return this.summary([+trade.promotionPrice, +advancePay.amount]);
     }
 
-    if (payment.paymentOnlineCredit) {
+    if (this.qrCodeOmiseService.isPaymentOnlineCredit(this.transaction, 'payment')) {
       total += +trade.promotionPrice;
-    }
-    if (advancePayment.paymentOnlineCredit) {
+      }
+      if (this.qrCodeOmiseService.isPaymentOnlineCredit(this.transaction, 'advancePayment')) {
       total += +advancePay.amount;
-    }
+      }
     return total;
   }
 

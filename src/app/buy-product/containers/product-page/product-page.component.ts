@@ -3,6 +3,7 @@ import { Router, ActivatedRoute, Params } from '@angular/router';
 import { TokenService, User, ProductStock, ProductStockBrandAndModel, HomeService, SalesService } from 'mychannel-shared-libs';
 import { PRODUCT_TYPE, PRODUCT_SUB_TYPE, SUB_STOCK_DESTINATION, PRODUCT_HANDSET_BUNDLE } from 'src/app/buy-product/constants/products.constants';
 import { ROUTE_BUY_PRODUCT_BRAND_PAGE } from 'src/app/buy-product/constants/route-path.constant';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-product',
@@ -24,7 +25,9 @@ export class ProductPageComponent implements OnInit {
     private activatedRoute: ActivatedRoute,
     private tokenService: TokenService,
     private salesService: SalesService,
-    private homeService: HomeService
+    private homeService: HomeService,
+    private http: HttpClient
+
   ) {
     this.activatedRoute.queryParams.subscribe((params: any) => {
       this.params = params;
@@ -87,38 +90,40 @@ export class ProductPageComponent implements OnInit {
         }
 
         subproducts.forEach((sub: any) => {
-          this.salesService.productStock({
+          this.http.post('/api/salesportal/query-stock', {
             locationCodeSource: user.locationCode,
             productType: product.productType || PRODUCT_TYPE,
             productSubType: product.productSubtype || PRODUCT_SUB_TYPE,
+            brand: brand,
             model: sub.model,
-            color: sub.color,
+            color: null,
             subStockDestination: SUB_STOCK_DESTINATION,
             listLocationCodeDestination: [user.locationCode]
-          }).then((respStock: any) => {
-            const subNormalPrice = sub.normalPrice || {};
-            const subPromotionPrice = sub.promotionPrice || {};
-            const stocks: any[] = respStock.data.listLocationCodeDestinationOut || [];
+          }).toPromise()
+            .then((respStock: any) => {
+              const subNormalPrice = sub.normalPrice || {};
+              const subPromotionPrice = sub.promotionPrice || {};
+              const stocks: any[] = respStock.data.listLocationCodeDestinationOut || [];
 
-            const quantity = stocks.map((stock: any) => {
-              return +stock.qty || 0;
-            }).reduce((previousValue: number, currentValue: number) => previousValue + currentValue, 0);
+              const quantity = stocks.map((stock: any) => {
+                return +stock.qty || 0;
+              }).reduce((previousValue: number, currentValue: number) => previousValue + currentValue, 0);
 
-            productStock.quantity += quantity;
+              productStock.quantity += quantity;
 
-            productStock.stocks.push({
-              commercialName: `${sub.name} ${product.productSubtype === PRODUCT_HANDSET_BUNDLE ? '(แถมชิม)' : ''}`,
-              brand: brand,
-              model: sub.model,
-              productType: product.productType || '',
-              productSubtype: product.productSubtype || '',
-              quantity: +quantity || 0,
-              minNormalPrice: +subNormalPrice.min || 0,
-              maxNormalPrice: +subNormalPrice.max || 0,
-              minPromotionPrice: +subPromotionPrice.min || 0,
-              maxPromotionPrice: +subPromotionPrice.max || 0
+              productStock.stocks.push({
+                commercialName: `${sub.name} ${product.productSubtype === PRODUCT_HANDSET_BUNDLE ? '(แถมชิม)' : ''}`,
+                brand: brand,
+                model: sub.model,
+                productType: product.productType || '',
+                productSubtype: product.productSubtype || '',
+                quantity: +quantity || 0,
+                minNormalPrice: +subNormalPrice.min || 0,
+                maxNormalPrice: +subNormalPrice.max || 0,
+                minPromotionPrice: +subPromotionPrice.min || 0,
+                maxPromotionPrice: +subPromotionPrice.max || 0
+              });
             });
-          });
         });
 
         this.productStocks.push(productStock);

@@ -116,22 +116,94 @@ export class CreateOrderService {
         && transaction.data.order.soId) {
         resolve(transaction);
       } else {
-        this.callAddToCart(transaction, priceOption).then((response) => {
-          if (response.resultCode === 'S') {
-            transaction.data.order = {
-              soId: response.soId
-            };
-            this.sharedTransactionService.createSharedTransaction(transaction, priceOption).then((res) => {
-              if (res.data.isSuccess === true) {
-                resolve(transaction);
-              }
-            }).catch(resolve);
-          } else {
-            reject('Cannot add item to the cart');
-          }
-        });
+        if (this.user.channelType === 'smart-order') {
+          this.callAddToCartDT(transaction, priceOption).then((response) => {
+            if (response.resultCode === 'S') {
+              transaction.data.order = {
+                soId: response.soId
+              };
+              this.sharedTransactionService.createSharedTransaction(transaction, priceOption).then((res) => {
+                if (res.data.isSuccess === true) {
+                  resolve(transaction);
+                }
+              }).catch(resolve);
+            } else {
+              reject('Cannot add item to the cart');
+            }
+          });
+        } else {
+          this.callAddToCart(transaction, priceOption).then((response) => {
+            if (response.resultCode === 'S') {
+              transaction.data.order = {
+                soId: response.soId
+              };
+              this.sharedTransactionService.createSharedTransaction(transaction, priceOption).then((res) => {
+                if (res.data.isSuccess === true) {
+                  resolve(transaction);
+                }
+              }).catch(resolve);
+            } else {
+              reject('Cannot add item to the cart');
+            }
+          });
+
+        }
       }
     });
+  }
+
+  private callAddToCartDT(transaction: Transaction, priceOption: PriceOption): Promise<any> {
+    const productStock = priceOption.productStock;
+    const productDetail = priceOption.productDetail;
+    const trade = priceOption.trade;
+    const customer = transaction.data.customer;
+    const preBooking: Prebooking = transaction.data.preBooking;
+
+    const product = {
+      productType: productDetail.productType || 'DEVICE',
+      soCompany: productStock.company || 'AWN',
+      productSubType: productDetail.productSubType || 'HANDSET',
+      brand: productDetail.brand || productStock.brand,
+      model: productDetail.model || productStock.model,
+      qty: '1',
+
+      color: productStock.color || productStock.colorName,
+      matCode: '',
+      priceIncAmt: '' + trade.normalPrice,
+      priceDiscountAmt: '' + trade.discount.amount,
+      matAirTime: '',
+      listMatFreeGoods: [{
+        matCodeFG: '',
+        qtyFG: '' // จำนวนของแถม *กรณีส่งค่า matCodeFreeGoods ค่า qty จะต้องมี
+      }]
+    };
+
+    let subStock;
+    if (preBooking && preBooking.preBookingNo) {
+      subStock = 'PRE';
+    } else {
+      subStock = 'BRN';
+    }
+
+    const requestData: any = {
+      locationSource: this.user.locationCode,
+      locationReceipt: this.user.locationCode,
+      userId: this.user.username,
+      cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
+      soChannelType: 'MC_KIOSK',
+      soDocumentType: 'RESERVED',
+      productList: [product],
+
+      grandTotalAmt: '',
+      preBookingNo: preBooking ? preBooking.preBookingNo : '',
+      depositAmt: preBooking ? preBooking.depositAmt : '',
+      reserveNo: preBooking ? preBooking.reserveNo : '',
+      subStockDestination: 'BRN',
+      storeName: ''
+    };
+
+    return this.http.post('/api/salesportal/dt/add-cart-list', requestData).toPromise()
+      .then((res: any) => res.data);
   }
 
   private callAddToCart(transaction: Transaction, priceOption: PriceOption): Promise<any> {
@@ -159,7 +231,7 @@ export class CreateOrderService {
       reserveNo: ''
     };
 
-    return this.http.post('/api/salesportal/device-sell/item', requestData).toPromise()
+    return this.http.post('/api/salesportal/add-device-selling-cart', requestData).toPromise()
       .then((res: any) => res.data);
   }
 
@@ -169,6 +241,24 @@ export class CreateOrderService {
       if (transaction.data) {
         if (transaction.data.order && transaction.data.order.soId) {
           const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
+            location: this.user.locationCode,
+            soId: transaction.data.order.soId,
+            transactionId: transaction.transactionId
+          }).toPromise().catch(() => Promise.resolve());
+          promiseAll.push(order);
+        }
+      }
+      Promise.all(promiseAll).then(() => resolve());
+    });
+  }
+
+  cancelOrderDT(transaction: Transaction): Promise<any> {
+    return new Promise(resolve => {
+      const promiseAll = [];
+      if (transaction.data) {
+        if (transaction.data.order && transaction.data.order.soId) {
+          const order = this.http.post('/api/salesportal/dt/remove-cart', {
+            userId: this.user.username,
             location: this.user.locationCode,
             soId: transaction.data.order.soId,
             transactionId: transaction.transactionId

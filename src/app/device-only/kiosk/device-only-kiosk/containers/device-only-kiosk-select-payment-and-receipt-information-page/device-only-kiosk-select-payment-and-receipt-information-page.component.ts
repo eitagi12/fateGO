@@ -73,6 +73,8 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
       qrCode: true,
       omisePayment: this.isFullPayment() && this.priceOption.productStock.company !== 'WDS'
     };
+    console.log('this.paymentDetail', this.paymentDetail);
+
     this.http.get('/api/salesportal/omise/get-bank').toPromise()
       .then((res: any) => {
         const data = res.data || [];
@@ -132,7 +134,7 @@ export class DeviceOnlyKioskSelectPaymentAndReceiptInformationPageComponent impl
     this.alertService.question('ต้องการยกเลิกรายการขายหรือไม่ การยกเลิก ระบบจะคืนสินค้าเข้าสต๊อคสาขาทันที', 'ตกลง', 'ยกเลิก')
       .then((response: any) => {
         if (response.value === true) {
-          this.createOrderService.cancelOrder(this.transaction).then((isSuccess: any) => {
+          this.createOrderService.cancelOrderDT(this.transaction).then((isSuccess: any) => {
             this.transactionService.remove();
             this.router.navigate([ROUTE_BUY_PRODUCT_CAMPAIGN_PAGE], { queryParams: this.priceOption.queryParams });
           });
