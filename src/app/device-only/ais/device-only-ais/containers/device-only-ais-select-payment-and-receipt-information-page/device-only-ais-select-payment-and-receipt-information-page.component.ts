@@ -34,6 +34,7 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
   user: User;
   localtion: any;
   addessValid: boolean;
+  omiseBanks: PaymentDetailBank[];
 
   constructor(
     private router: Router,
@@ -68,8 +69,14 @@ export class DeviceOnlyAisSelectPaymentAndReceiptInformationPageComponent implem
       isFullPayment: this.isFullPayment(),
       installmentFlag: false,
       advancePay: 0,
-      qrCode: true
+      qrCode: true,
+      omisePayment: this.isFullPayment() && this.priceOption.productStock.company !== 'WDS'
     };
+    this.http.get('/api/salesportal/omise/get-bank').toPromise()
+      .then((res: any) => {
+        const data = res.data || [];
+        this.omiseBanks = data;
+      });
 
     if (this.priceOption.trade.banks && this.priceOption.trade.banks.length > 0) {
       if (this.isFullPayment()) {

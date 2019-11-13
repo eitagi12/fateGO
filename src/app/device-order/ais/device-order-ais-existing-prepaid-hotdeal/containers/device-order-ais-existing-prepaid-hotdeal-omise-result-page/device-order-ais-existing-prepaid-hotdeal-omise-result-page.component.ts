@@ -6,6 +6,7 @@ import { TransactionService } from 'src/app/shared/services/transaction.service'
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { environment } from 'src/environments/environment';
 import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
+import { QrCodeOmisePageService } from 'src/app/device-order/services/qr-code-omise-page.service';
 
 @Component({
   selector: 'app-device-order-ais-existing-prepaid-hotdeal-omise-result-page',
@@ -20,6 +21,7 @@ export class DeviceOrderAisExistingPrepaidHotdealOmiseResultPageComponent implem
   constructor(
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
+    public qrCodeOmisePageService: QrCodeOmisePageService,
     public summaryPageService: SummaryPageService
   ) {
     this.transaction = this.transactionService.load();
@@ -32,18 +34,16 @@ export class DeviceOrderAisExistingPrepaidHotdealOmiseResultPageComponent implem
 
   getPaymentBalance(): number {
     const trade = this.priceOption.trade;
-    const payment: any = this.transaction.data.payment || {};
-    const advancePayment: any = this.transaction.data.advancePayment || {};
     let summary = 0;
     const advancePay = trade.advancePay || {};
     if (trade.advancePay.installmentFlag === 'Y') {
       return this.summary([+trade.promotionPrice, +advancePay.amount]);
     }
 
-    if (payment.paymentOnlineCredit) {
+    if (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'payment')) {
       summary += +trade.promotionPrice;
     }
-    if (advancePayment.paymentOnlineCredit) {
+    if (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'advancePayment')) {
       summary += +advancePay.amount;
     }
     return summary;
@@ -51,8 +51,6 @@ export class DeviceOrderAisExistingPrepaidHotdealOmiseResultPageComponent implem
 
   getOutStandingBalance(): number {
     const trade = this.priceOption.trade;
-    const payment: any = this.transaction.data.payment || {};
-    const advancePayment: any = this.transaction.data.advancePayment || {};
     let summary = 0;
     const advancePay = trade.advancePay || {};
 
@@ -60,10 +58,10 @@ export class DeviceOrderAisExistingPrepaidHotdealOmiseResultPageComponent implem
       return this.summary([+trade.promotionPrice, +advancePay.amount]);
     }
 
-    if (!payment.paymentOnlineCredit) {
+    if (!this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'payment')) {
       summary += +trade.promotionPrice;
     }
-    if (!advancePayment.paymentOnlineCredit) {
+    if (!this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'advancePayment')) {
       summary += +advancePay.amount;
     }
     return summary;
@@ -82,5 +80,4 @@ export class DeviceOrderAisExistingPrepaidHotdealOmiseResultPageComponent implem
       window.location.href = '/smart-digital/main-menu';
     }
   }
-
 }

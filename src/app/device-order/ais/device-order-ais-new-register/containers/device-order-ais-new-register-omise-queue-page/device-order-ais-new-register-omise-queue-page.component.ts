@@ -82,8 +82,6 @@ export class DeviceOrderAisNewRegisterOmiseQueuePageComponent implements OnInit,
 
   getOutStandingBalance(): number {
     const trade = this.priceOption.trade;
-    const payment: any = this.transaction.data.payment || {};
-    const advancePayment: any = this.transaction.data.advancePayment || {};
     let summary = 0;
     const advancePay = trade.advancePay || {};
 

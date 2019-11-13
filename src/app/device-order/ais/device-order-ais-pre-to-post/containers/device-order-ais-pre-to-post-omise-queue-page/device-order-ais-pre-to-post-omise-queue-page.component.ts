@@ -10,6 +10,7 @@ import { REGEX_MOBILE, PageLoadingService } from 'mychannel-shared-libs';
 import { QueuePageService } from 'src/app/device-order/services/queue-page.service';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
 import { SummaryPageService } from 'src/app/device-order/services/summary-page.service';
+import { QrCodeOmisePageService } from 'src/app/device-order/services/qr-code-omise-page.service';
 
 @Component({
   selector: 'app-device-order-ais-pre-to-post-omise-queue-page',
@@ -17,7 +18,6 @@ import { SummaryPageService } from 'src/app/device-order/services/summary-page.s
   styleUrls: ['./device-order-ais-pre-to-post-omise-queue-page.component.scss']
 })
 export class DeviceOrderAisPreToPostOmiseQueuePageComponent implements OnInit, OnDestroy {
-
   transaction: Transaction;
   priceOption: PriceOption;
   queueFrom: FormGroup;
@@ -30,6 +30,7 @@ export class DeviceOrderAisPreToPostOmiseQueuePageComponent implements OnInit, O
     private pageLoadingService: PageLoadingService,
     private queuePageService: QueuePageService,
     public summaryPageService: SummaryPageService,
+    public qrCodeOmisePageService: QrCodeOmisePageService,
     private sharedTransactionService: SharedTransactionService
   ) {
     this.transaction = this.transactionService.load();
@@ -64,18 +65,16 @@ export class DeviceOrderAisPreToPostOmiseQueuePageComponent implements OnInit, O
 
   getPaymentBalance(): number {
     const trade = this.priceOption.trade;
-    const payment: any = this.transaction.data.payment || {};
-    const advancePayment: any = this.transaction.data.advancePayment || {};
     let summary = 0;
     const advancePay = trade.advancePay || {};
     if (trade.advancePay.installmentFlag === 'Y') {
       return this.summary([+trade.promotionPrice, +advancePay.amount]);
     }
 
-    if (payment.paymentOnlineCredit) {
+    if (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'payment')) {
       summary += +trade.promotionPrice;
     }
-    if (advancePayment.paymentOnlineCredit) {
+    if (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'advancePayment')) {
       summary += +advancePay.amount;
     }
     return summary;
@@ -83,8 +82,6 @@ export class DeviceOrderAisPreToPostOmiseQueuePageComponent implements OnInit, O
 
   getOutStandingBalance(): number {
     const trade = this.priceOption.trade;
-    const payment: any = this.transaction.data.payment || {};
-    const advancePayment: any = this.transaction.data.advancePayment || {};
     let summary = 0;
     const advancePay = trade.advancePay || {};
 
@@ -92,10 +89,10 @@ export class DeviceOrderAisPreToPostOmiseQueuePageComponent implements OnInit, O
       return this.summary([+trade.promotionPrice, +advancePay.amount]);
     }
 
-    if (!payment.paymentOnlineCredit) {
+    if (!this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'payment')) {
       summary += +trade.promotionPrice;
     }
-    if (!advancePayment.paymentOnlineCredit) {
+    if (!this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'advancePayment')) {
       summary += +advancePay.amount;
     }
     return summary;

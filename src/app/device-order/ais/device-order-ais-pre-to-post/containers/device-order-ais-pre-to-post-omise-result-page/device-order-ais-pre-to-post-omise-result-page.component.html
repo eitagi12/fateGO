@@ -1,12 +1,13 @@
 <div class="mc-flex">
-  <mc-header title="{{'เครื่องพร้อมเปลี่ยนเป็นรายเดือน' | translate}}"></mc-header>
+  <mc-header title="{{ 'เครื่องพร้อมเปลี่ยนเติมเงินเป็นรายเดือน' | translate }}"></mc-header>
   <div class="mc-flex-wrap">
     <div class="m-5">
 
       <div class="card">
         <div class="card-body pt-3 text-center ">
           <img src="assets/images/icon/icon-green-check-circle.png" class="icon" /> <br>
-          <b>{{'หมายเลข'| translate}} <span class="text-green">{{ transaction?.data?.simCard?.mobileNo | mobileNo }}</span></b> <br>
+          <b>{{'หมายเลข'| translate}} <span class="text-green">{{ transaction?.data?.simCard?.mobileNo | mobileNo }}</span></b>
+          <br>
           <b>{{'ชำระค่าสินค้าเรียบร้อยแล้ว'| translate}}</b> <br>
           <b>{{'หมายเลขอ้างอิง'| translate}} {{ transaction?.data?.omise?.tranId }}</b>
         </div>
@@ -15,13 +16,14 @@
         <ng-container>
           <div class="card-body border-top">
             <p><b class="text-light-grey" translate>รายการสินค้า (ที่ชำระแล้ว)</b></p>
-            <ng-container *ngIf="transaction?.data?.payment?.paymentOnlineCredit">
+            <ng-container *ngIf="qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'payment')">
               <div class="text-light-grey">
                 <p>
                   <i class="fa fa-circle mr-3 text-green"></i>
                   {{ priceOption?.productDetail?.name }}
                   <span *ngIf="priceOption?.productStock?.color">
-                    {{ priceOption?.productStock?.color? ('สี'| translate) : '' }} {{ priceOption?.productStock?.color }}
+                    {{ priceOption?.productStock?.color? ('สี'| translate) : '' }} {{ priceOption?.productStock?.color
+                    }}
                   </span>
                   <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
                     ({{'แถมซิม'| translate}})
@@ -33,10 +35,8 @@
               </div>
             </ng-container>
 
-            <ng-container
-              *ngIf="transaction?.data?.advancePayment?.paymentOnlineCredit">
-              <div class="text-light-grey"
-                *ngIf="(priceOption?.trade?.advancePay?.installmentFlag === 'N' && priceOption?.trade?.advancePay?.amount > 0) || priceOption?.trade?.advancePay?.installmentFlag === 'Y'">
+            <ng-container *ngIf="(qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'advancePayment')) || priceOption?.trade?.advancePay?.installmentFlag === 'Y'">
+              <div class="text-light-grey" *ngIf="(priceOption?.trade?.advancePay?.installmentFlag === 'N' && priceOption?.trade?.advancePay?.amount > 0) || priceOption?.trade?.advancePay?.installmentFlag === 'Y'">
                 <p>
                   <i class="fa fa-circle mr-3 text-green"></i>
                   {{ summaryPageService.advanpayDescription(priceOption?.trade?.advancePay?.description) }}
@@ -60,37 +60,39 @@
         </ng-container>
 
         <!-- ค้างชำระ -->
-        <ng-container *ngIf="!transaction?.data?.payment?.paymentOnlineCredit 
-        || (!transaction?.data?.advancePayment?.paymentOnlineCredit && priceOption?.trade?.advancePay?.installmentFlag === 'N')">
+        <ng-container *ngIf="(qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'payment') !== qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'advancePayment')) && priceOption?.trade?.advancePay?.installmentFlag === 'N'">
           <div class="card-body border-top">
             <p><b class="text-light-grey" translate>รายการสินค้า (รอชำระ)</b></p>
 
-            <ng-container *ngIf="!transaction?.data?.payment?.paymentOnlineCredit">
+            <ng-container *ngIf="!qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'payment')">
               <div class="text-light-grey">
                 <p>
                   <i class="fa fa-circle mr-3 text-green"></i>
-                  {{ priceOption?.productDetail?.name }}
-                  <span *ngIf="priceOption?.productStock?.color">
-                    {{ priceOption?.productStock?.color? ('สี'| translate) : '' }} {{ priceOption?.productStock?.color }}
+                  <span class="text-pink">
+                    {{ priceOption?.productDetail?.name }}
                   </span>
-                  <span *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
+                  <span class="text-pink" *ngIf="priceOption?.productStock?.color">
+                    {{ priceOption?.productStock?.color? ('สี'| translate) : '' }} {{ priceOption?.productStock?.color
+                    }}
+                  </span>
+                  <span class="text-pink" *ngIf="priceOption?.productStock?.productSubType === 'HANDSET BUNDLE'">
                     ({{'แถมซิม' | translate}})
                   </span>
-                  <span class="pull-right text-green">
+                  <span class="pull-right text-pink">
                     ฿ {{ priceOption?.trade?.promotionPrice | number }}
                   </span>
                 </p>
               </div>
             </ng-container>
 
-            <ng-container *ngIf="!transaction?.data?.advancePayment?.paymentOnlineCredit">
-              <div class="text-light-grey"
-                *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && priceOption?.trade?.advancePay?.amount > 0">
-                <p
-                  *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && priceOption?.trade?.advancePay?.amount > 0">
+            <ng-container *ngIf="!qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'advancePayment')">
+              <div class="text-light-grey" *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && priceOption?.trade?.advancePay?.amount > 0">
+                <p *ngIf="priceOption?.trade?.advancePay?.installmentFlag === 'N' && priceOption?.trade?.advancePay?.amount > 0">
                   <i class="fa fa-circle mr-3 text-green"></i>
-                  {{ summaryPageService.advanpayDescription(priceOption?.trade?.advancePay?.description) }}
-                  <span class="pull-right text-green">
+                  <span class="text-pink">
+                    {{ summaryPageService.advanpayDescription(priceOption?.trade?.advancePay?.description) }}
+                  </span>
+                  <span class="pull-right text-pink">
                     ฿ {{ priceOption?.trade?.advancePay?.amount | number }}
                   </span>
                 </p>
