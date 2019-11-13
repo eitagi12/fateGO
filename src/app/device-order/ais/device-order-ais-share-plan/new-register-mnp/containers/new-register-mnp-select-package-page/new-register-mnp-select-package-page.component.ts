@@ -60,11 +60,10 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
 
   ngOnInit(): void {
     this.shoppingCart = this.shoppingCartService.getShoppingCartData();
-    this.callService(this.translateService.currentLang);
+    this.callService();
   }
 
   onCompleted(promotion: any): void {
-    console.log(promotion);
     this.transaction.data.mainPackage = promotion;
   }
 
@@ -85,75 +84,23 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
     this.homeService.goToHome();
   }
 
-  callService(language: string): void {
+  callService(): void {
     this.pageLoadingService.openLoading();
     const trade: any = this.priceOption.trade;
     const privilege: any = this.priceOption.privilege;
 
-    const mobileNo = this.transaction.data.simCard.mobileNo;
-    const params: any = {
-      orderType: 'New Registration',
-      isPackageSharePlan: true
-    };
-    // this.promotionShelveService.getPromotionShelve(
-      // {
-      //   packageKeyRef: trade.packageKeyRef || privilege.packageKeyRef,
-      //   orderType: 'New Registration',
-      //   billingSystem: BillingSystemType.IRB
-      // },
-      // +privilege.minimumPackagePrice, +privilege.maximumPackagePrice)
-      // .then((promotionShelves: any) => {
-      //   this.promotionShelves = this.promotionShelveService.defaultBySelected(promotionShelves, this.transaction.data.mainPackage);
-      //   if (this.promotionShelves) {
-      //     console.log(this.promotionShelves);
-      //     this.checkTranslateLang(this.translateService.currentLang);
-      //   }
-      // })
-    this.http.get(`/api/customerportal/queryCheckMinimumPackage/${mobileNo}`, {
-    }).toPromise()
-      .then((resp: any) => {
-        const data = resp.data || {};
-        return data.MinimumPriceForPackage || 0;
-      }).then((minPromotionPrice: string) => {
-        return this.http.get('/api/customerportal/newRegister/queryMainPackage', {
-          params: Object.assign({
-            minPromotionPrice: minPromotionPrice,
-            language: language
-          }, params)
-        }).toPromise();
-      })
-      .then((resp: any) => {
-        const data = resp.data.packageList || [];
-        this.promotionData = data;
-        const promotionShelves: PromotionShelve[] = data.map((promotionShelve: any) => {
-          return {
-            title: promotionShelve.title,
-            icon: (promotionShelve.icon || '').replace(/\.jpg$/, '').replace(/_/g, '-'),
-            promotions: promotionShelve.subShelves
-              .map((subShelve: any) => {
-                return {
-                  // group
-                  id: subShelve.subShelveId,
-                  title: subShelve.title,
-                  sanitizedName: subShelve.sanitizedName,
-                  items: (subShelve.items || []).map((promotion: any) => {
-                    return {
-                      // item
-                      id: promotion.itemId,
-                      title: language === 'EN' ? promotion.shortNameEng : promotion.shortNameThai,
-                      detail: language === 'EN' ? promotion.statementEng : promotion.statementThai,
-                      condition: subShelve.conditionCode,
-                      value: promotion
-                    };
-                  })
-                };
-              })
-          };
-        });
-        return Promise.resolve(promotionShelves);
-      })
-      .then((promotionShelves: PromotionShelve[]) => {
-        this.promotionShelves = this.buildPromotionShelveActive(promotionShelves);
+    this.promotionShelveService.getPromotionShelve(
+      {
+        packageKeyRef: trade.packageKeyRef || privilege.packageKeyRef,
+        orderType: 'New Registration',
+        billingSystem: BillingSystemType.IRB
+      },
+      +privilege.minimumPackagePrice, +privilege.maximumPackagePrice)
+      .then((promotionShelves: any) => {
+        this.promotionShelves = this.promotionShelveService.defaultBySelected(promotionShelves, this.transaction.data.mainPackage);
+        if (this.promotionShelves) {
+          this.checkTranslateLang(this.translateService.currentLang);
+        }
       })
       .then(() => {
         this.pageLoadingService.closeLoading();
@@ -203,46 +150,6 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
     }
     const fileLang = `i18n/${moduleName}.${lang}.json`.toLowerCase();
     return this.http.get(fileLang).toPromise();
-  }
-
-  buildPromotionShelveActive(promotionShelves: PromotionShelve[]): PromotionShelve[] {
-    const mainPackage: any = this.transaction.data.mainPackage || {};
-    if (!promotionShelves || promotionShelves.length <= 0) {
-      return;
-    }
-    if (mainPackage) {
-      let promotionShelveIndex = 0, promotionShelveGroupIndex = 0;
-      for (let i = 0; i < promotionShelves.length; i++) {
-        const promotions = promotionShelves[i].promotions || [];
-
-        let itemActive = false;
-        for (let ii = 0; ii < promotions.length; ii++) {
-          const active = (promotions[ii].items || []).find((promotionShelveItem: PromotionShelveItem) => {
-            return ('' + promotionShelveItem.id) === ('' + mainPackage.itemId);
-          });
-          if (!!active) {
-            itemActive = true;
-            promotionShelveIndex = i;
-            promotionShelveGroupIndex = ii;
-            continue;
-          }
-        }
-
-        if (!itemActive) {
-          promotions[0].active = true;
-        }
-      }
-      promotionShelves[promotionShelveIndex].active = true;
-      promotionShelves[promotionShelveIndex].promotions[promotionShelveGroupIndex].active = true;
-    } else {
-      promotionShelves[0].active = true;
-      promotionShelves.forEach((promotionShelve: PromotionShelve) => {
-        if (promotionShelve.promotions && promotionShelve.promotions.length > 0) {
-          promotionShelve.promotions[0].active = true;
-        }
-      });
-    }
-    return promotionShelves;
   }
 
   ngOnDestroy(): void {

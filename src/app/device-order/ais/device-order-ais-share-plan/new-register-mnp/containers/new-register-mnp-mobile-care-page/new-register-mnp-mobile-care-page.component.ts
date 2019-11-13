@@ -79,9 +79,9 @@ export class NewRegisterMnpMobileCarePageComponent implements OnInit, OnDestroy 
   }
 
   callService(): void {
-    const billingSystem = this.transaction.data.simCard.billingSystem ? this.transaction.data.simCard.billingSystem : BillingSystemType.IRB;
     // tslint:disable-next-line: max-line-length
-    const chargeType = this.transaction.data.mainPackage.customAttributes ? this.transaction.data.mainPackage.customAttributes.billingSystem : 'Post-paid';
+    const billingSystem = this.transaction.data.simCard.billingSystem || this.transaction.data.mainPackage.customAttributes.billingSystem || BillingSystemType.IRB;
+    const chargeType = this.transaction.data.mainPackage.customAttributes.chargeType || 'Post-paid';
     const endUserPrice = +this.priceOption.trade.normalPrice;
 
     this.pageLoadingService.openLoading();

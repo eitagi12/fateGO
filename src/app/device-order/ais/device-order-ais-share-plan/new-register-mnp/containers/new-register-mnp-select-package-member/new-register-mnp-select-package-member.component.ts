@@ -55,7 +55,7 @@ export class NewRegisterMnpSelectPackageMemberComponent implements OnInit, OnDes
   callService(language: string): void {
     this.pageLoadingService.openLoading();
     const RequestQueryListLovConfigInfo: any = {
-      lovVal2: this.transaction.data.mainPackage.promotionCode
+      lovVal2: this.transaction.data.mainPackage.customAttributes.promotionCode
     };
     this.http.post(`/api/salesportal/queryListLovConfigInfo`, RequestQueryListLovConfigInfo).toPromise()
       .then((promotionCodes: any) => {
@@ -69,11 +69,11 @@ export class NewRegisterMnpSelectPackageMemberComponent implements OnInit, OnDes
             const data = res.data.data || [];
             // mock packageList for subShelve
             const packageList: any = [{
-              title: 'Share Plan',
+              title: 'Member Share MNP',
               icon: '',
               promotions: [
                 {
-                  title: 'New Share Plan MNP',
+                  title: '3G Member Share MNP UL SWifi 0 Baht',
                   items: data
                 }
               ]
