@@ -10,7 +10,3 @@ export const ROUTE_DEVICE_ONLY_AIS_QR_CODE_GENERATE_PAGE = '/device-only/ais/qr-
 export const ROUTE_DEVICE_ONLY_AIS_CHECKOUT_PAYMENT_QR_CODE_PAGE = '/device-only/ais/checkout-payment-qr-code';
 export const ROUTE_DEVICE_ONLY_AIS_QR_CODE_QUEUE_PAGE = '/device-only/ais/qr-code-queue';
 export const ROUTE_DEVICE_ONLY_AIS_RESULT_QUEUE_PAGE = '/device-only/ais/result-queue';
-export const ROUTE_DEVICE_ONLY_AIS_OMISE_SUMMARY_PAGE = '/device-only/ais/omise-summary';
-export const ROUTE_DEVICE_ONLY_AIS_OMISE_GENERATOR_PAGE = '/device-only/ais/omise-generator';
-export const ROUTE_DEVICE_ONLY_AIS_OMISE_QUEUE_PAGE = '/device-only/ais/omise-queue';
-export const ROUTE_DEVICE_ONLY_AIS_OMISE_RESULT_PAGE = '/device-only/ais/omise-result';
