@@ -322,7 +322,7 @@ export class DeviceOrderAisNewRegisterValidateCustomerIdCardPageComponent implem
       locationReceipt: this.user.locationCode,
       userId: this.user.username,
       cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim(),
-      soChannelType: 'CSP',
+      soChannelType: 'MC_KIOSK',
       soDocumentType: 'RESERVED',
       productList: [product],
 

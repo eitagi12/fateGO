@@ -125,7 +125,8 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
           this.transaction.data.simCard = { mobileNo: this.identity };
           this.transaction.data.action = TransactionAction.KEY_IN_REPI;
           if (!this.transaction.data.order || !this.transaction.data.order.soId) {
-            return this.http.post('/api/salesportal/dt/add-cart-list',
+            return this.http.post(
+              '/api/salesportal/dt/add-cart-list',
               this.getRequestAddDeviceSellingCart()
             ).toPromise()
               .then((resp: any) => {
@@ -297,6 +298,8 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     let subStock;
     if (preBooking && preBooking.preBookingNo) {
       subStock = 'PRE';
+    } else {
+      subStock = 'BRN';
     }
 
     return {
@@ -304,7 +307,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
       locationReceipt: this.user.locationCode,
       userId: this.user.username,
       cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
-      soChannelType: 'CSP',
+      soChannelType: 'MC_KIOSK',
       soDocumentType: 'RESERVED',
       productList: [product],
 
