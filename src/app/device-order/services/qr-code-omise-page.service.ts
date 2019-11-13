@@ -63,7 +63,7 @@ export class QrCodeOmisePageService {
         this.queryOrder({ params: { orderId: orderId, randomID: new Date().getTime() } })
           .then(resp => {
             const data = resp.data || {};
-            if (data.paymentCode && data.paymentStatus && !data.transactionId) {
+            if (data.paymentCode && data.paymentStatus && data.transactionId) {
               obs.next({
                 paymentCode: data.paymentCode,
                 paymentStatus: data.paymentStatus,
