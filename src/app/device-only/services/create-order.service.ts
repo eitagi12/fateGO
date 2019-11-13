@@ -2,13 +2,16 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { TokenService } from 'mychannel-shared-libs';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
-import { Transaction, Customer, Payment } from 'src/app/shared/models/transaction.model';
+import { Transaction, Customer, Payment, Prebooking, Omise } from 'src/app/shared/models/transaction.model';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { User } from 'mychannel-shared-libs';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 import { QRCodeModel } from 'src/app/shared/services/qrcode-payment.service';
 import { environment } from 'src/environments/environment';
+import { QrCodeOmiseService } from 'src/app/device-only/services/qr-code-omise.service';
+import { CustomerGroup } from 'src/app/buy-product/services/flow.service';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -48,6 +51,7 @@ export class CreateOrderService {
   constructor(
     private http: HttpClient,
     private tokenService: TokenService,
+    public qrCodeOmiseService: QrCodeOmiseService,
     private sharedTransactionService: SharedTransactionService
   ) {
     this.user = this.tokenService.getUser();
@@ -201,6 +205,167 @@ export class CreateOrderService {
   createOrderDeviceOnlyASP(transaction: Transaction, priceOption: PriceOption): Promise<any> {
     const order = this.mapCreateOrderFlowWeb(transaction, priceOption);
     return this.http.post('/api/salesportal/create-device-selling-order', order).toPromise();
+  }
+
+  createDeviceSellingOrderList(transaction: Transaction, priceOption: PriceOption): Promise<any> {
+    return this.http.post('/api/salesportal/dt/create-order-list',
+      this.getRequestCreateDeviceSellingOrderList(transaction, priceOption)
+    ).toPromise();
+  }
+  private getRequestCreateDeviceSellingOrderList(transaction: Transaction, priceOption: PriceOption): any {
+    const user = this.tokenService.getUser();
+    const productStock = priceOption.productStock;
+    const productDetail = priceOption.productDetail;
+    const trade = priceOption.trade;
+    const transactionData = transaction.data;
+
+    const discount = trade.discount;
+    const customer = transactionData.customer;
+    const simCard = transactionData.simCard;
+    const order = transactionData.order;
+    const currentPackage = transactionData.currentPackage || {};
+    const mainPackage = transaction.data.mainPackage && transaction.data.mainPackage.customAttributes || {};
+    const contract = transaction.data.contractFirstPack || {};
+    const queue: any = transactionData.queue || {};
+    const seller = transactionData.seller || {};
+    const payment = transactionData.payment;
+    const prebooking: Prebooking = transactionData.preBooking;
+    const mpayPayment: any = transactionData.mpayPayment || {};
+    const advancePayment = transactionData.advancePayment;
+    const omise: Omise = transactionData.omise || {};
+
+    const product: any = {
+      productType: productStock.productType || productDetail.productType || 'DEVICE',
+      soCompany: productStock.company,
+      productSubType: productStock.productSubType || productDetail.productSubtype || 'HANDSET',
+      brand: productStock.brand || productDetail.brand,
+      model: productStock.model || productDetail.model,
+      qty: 1,
+
+      color: productStock.color || productStock.colorName,
+      matCode: '',
+      priceIncAmt: (+trade.normalPrice || 0).toFixed(2),
+      priceDiscountAmt: (+discount.amount || 0).toFixed(2),
+      matAirTime: trade.advancePay ? trade.advancePay.matAirtime : '',
+      tradeNo: trade.tradeNo || '',
+      ussdCode: trade.ussdCode || '',
+      returnCode: simCard.privilegeCode || customer.privilegeCode || '4GEYYY',
+      cashBackFlg: '',
+      tradeAirtimeId: trade.advancePay ? trade.advancePay.tradeAirtimeId : '',
+      tradeDiscountId: trade.discount ? trade.discount.tradeDiscountId : '',
+      listMatFreeGoods: [{
+        matCodeFG: '',
+        qtyFG: '', // จำนวนของแถม *กรณีส่งค่า matCodeFreeGoods ค่า qty จะต้องมี
+        tradeFreeGoodsId: trade.freeGoods && trade.freeGoods.length > 0 ? trade.freeGoods[0].tradeFreegoodsId : '' // freeGoods
+      }],
+    };
+
+    const data: any = {
+      soId: order.soId,
+      locationSource: user.locationCode,
+      locationReceipt: user.locationCode,
+      userId: user.username,
+      queueNo: queue.queueNo || '',
+      cusNameOrder: `${customer.titleName || ''} ${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
+      soChannelType: 'MC_KIOSK',
+      soDocumentType: 'RESERVED',
+      productList: [product],
+
+      grandTotalAmt: (+this.getGrandTotalAmt(trade, prebooking)).toFixed(2),
+      saleCode: this.tokenService.isAisUser() ? (seller.sellerNo || '') : (seller.sellerNo || user.ascCode),
+      taxCardId: customer.idCardNo || '',
+      cusMobileNoOrder: simCard.mobileNo || '',
+      customerAddress: {
+        addrNo: customer.homeNo,
+        room: customer.room,
+        buildingName: customer.buildingName,
+        moo: customer.moo,
+        floor: customer.floor,
+        soi: customer.soi,
+        streetName: customer.street,
+        mooban: customer.mooBan,
+        tumbon: customer.tumbol,
+        amphur: customer.amphur,
+        province: (customer.province || '').replace(/มหานคร$/, ''),
+        country: 'ประเทศไทย',
+        postCode: customer.zipCode
+      },
+      paymentRemark: this.getOrderRemark(transaction, priceOption),
+      paymentMethod: this.getPaymentMethod(transaction, priceOption),
+      // bankCode: payment && payment.paymentBank ? payment.paymentBank.abb : '',
+      focCode: '',
+      mobileAisFlg: 'Y',
+      bankAbbr: payment && payment.paymentBank ? payment.paymentBank.abb : '',
+      reqMinimumBalance: '',
+      preBookingNo: prebooking ? prebooking.preBookingNo : '',
+      depositAmt: prebooking ? prebooking.depositAmt : '',
+      convertToNetwotkType: '',
+      shipCusName: '',
+      shipCusAddr: '',
+      storeName: '',
+      shipLocation: '',
+      remarkReceipt: '',
+    };
+
+    if (this.checkAddCurrentPackAmt(priceOption, trade, contract)) {
+      data.currentPackAmt = (mainPackage.priceExclVat || '0');
+    }
+
+    // payment with omise
+    if (this.qrCodeOmiseService.isPaymentOnlineCredit(transaction, 'payment') &&
+      this.qrCodeOmiseService.isPaymentOnlineCredit(transaction, 'advancePayment')) {
+      data.clearingType = 'MPAY';
+      data.qrOrderId = omise.orderId;
+      data.creditCardNo = omise.creditCardNo ? omise.creditCardNo.substring(omise.creditCardNo.length - 16) : '';
+      data.cardExpireDate = omise.cardExpireDate;
+      data.qrAmt = (+this.getGrandTotalAmt(trade, prebooking)).toFixed(2);
+      data.qrAirtimeAmt = (+this.getGrandTotalAmt(trade, prebooking)).toFixed(2);
+
+    } else if (this.qrCodeOmiseService.isPaymentOnlineCredit(transaction, 'payment') ||
+      this.qrCodeOmiseService.isPaymentOnlineCredit(transaction, 'advancePayment')) {
+      data.clearingType = 'MPAY';
+      data.qrOrderId = omise.orderId;
+      data.creditCardNo = omise.creditCardNo ? omise.creditCardNo.substring(omise.creditCardNo.length - 16) : '';
+      data.cardExpireDate = omise.cardExpireDate;
+
+      // omise for device
+      if (this.qrCodeOmiseService.isPaymentOnlineCredit(transaction, 'payment')) {
+        data.qrTransId = omise.tranId;
+        data.qrAmt = this.getOnlinePaymentAmt(trade, transaction);
+      }
+      // omise for airtime
+      if (this.qrCodeOmiseService.isPaymentOnlineCredit(transaction, 'advancePayment')) {
+        data.qrAirtimeTransId = omise.tranId;
+        data.qrAirtimeAmt = this.getOnlinePaymentAmt(trade, transaction);
+      }
+
+    }
+
+    // payment with QR code
+    if (payment && payment.paymentType === 'QR_CODE' || (advancePayment && advancePayment.paymentType === 'QR_CODE')) {
+      if (mpayPayment && mpayPayment.mpayStatus && mpayPayment.mpayStatus.orderIdDevice) {
+        data.qrOrderId = mpayPayment.mpayStatus.orderIdDevice;
+      } else {
+        data.qrOrderId = mpayPayment && mpayPayment.orderId ? mpayPayment.orderId : null;
+      }
+      // QR code for device
+      if (payment && payment.paymentType === 'QR_CODE') {
+        data.qrTransId = payment.paymentType === 'QR_CODE' ? mpayPayment.tranId : null;
+        data.qrAmt = payment.paymentType === 'QR_CODE' && mpayPayment.tranId ? this.getQRAmt(trade, transaction) : null;
+      }
+      // QR code for airtime
+      if (advancePayment && advancePayment.paymentType === 'QR_CODE') {
+        data.qrAirtimeTransId = mpayPayment.qrAirtimeTransId || mpayPayment.tranId || null;
+        data.qrAirtimeAmt = this.getQRAmt(trade, transaction);
+      }
+    }
+
+    // ผ่อนชำระ
+    if (payment && payment.paymentMethod) {
+      data.installmentTerm = payment.paymentMethod.month || 0;
+      data.installmentRate = payment.paymentMethod.percentage || 0;
+    }
+    return data;
   }
 
   mapCreateOrder(transaction: Transaction, priceOption: PriceOption): any {
@@ -427,6 +592,35 @@ export class CreateOrderService {
       }
       return total;
     }
+  }
+
+  checkAddCurrentPackAmt(priceOption: PriceOption, trade: any, contract: any): boolean {
+    return priceOption.customerGroup.code === CustomerGroup.EXISTING
+      && this.isContractFirstPack(contract) === 0;
+  }
+
+  isContractFirstPack(contract: any = {}): number {
+    return Math.max(+contract.firstPackage || 0, +contract.minPrice || 0, +contract.initialPackage || 0);
+  }
+
+  private getGrandTotalAmt(trade: any, prebooking?: Prebooking): number {
+    const normalPrice = +(+trade.normalPrice || 0).toFixed(2);
+    const discount = +(trade.discount ? (+trade.discount.amount || 0) : 0).toFixed(2);
+    const advancePay = +(trade.advancePay ? (+trade.advancePay.amount || 0) : 0).toFixed(2);
+    const depositAmt = +(prebooking && +prebooking.depositAmt ? (+prebooking.depositAmt || 0) : 0).toFixed(2);
+    return +(((normalPrice + advancePay) - discount) - depositAmt);
+  }
+
+  private getOnlinePaymentAmt(trade: any, transaction: Transaction): any {
+    let cost = 0;
+    if (trade && this.qrCodeOmiseService.isPaymentOnlineCredit(transaction, 'payment')) {
+      const qrAmt: number = trade.normalPrice - trade.discount.amount;
+      cost += +qrAmt;
+    }
+    if (trade && this.qrCodeOmiseService.isPaymentOnlineCredit(transaction, 'advancePayment')) {
+      cost += +trade.advancePay.amount;
+    }
+    return cost ? cost.toFixed(2) : undefined;
   }
 
 }
