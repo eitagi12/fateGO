@@ -109,7 +109,7 @@ export class NewRegisterMnpNetworkTypePageComponent implements OnInit, OnDestroy
           this.transaction.data.simCard = {
             ...this.transaction.data.simCard,
             memberSimCard: [{
-              mobileNo: this.mnpForm.value.mobileNo,
+              mobileNo: mobileNoMember,
               simSerial: '',
               persoSim: false,
               chargeType: 'Post-paid',
@@ -129,7 +129,7 @@ export class NewRegisterMnpNetworkTypePageComponent implements OnInit, OnDestroy
         this.transaction.data.simCard = {
           ...this.transaction.data.simCard,
           memberSimCard: [{
-            mobileNo: this.mnpForm.value.mobileNo,
+            mobileNo: mobileNoMember,
             simSerial: '',
             persoSim: false,
             chargeType: 'Post-paid',

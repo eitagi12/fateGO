@@ -8,12 +8,12 @@
     <div class="mc-flex-wrap">
         <div class="mt-3 mb-3">
             <mc-wizard [wizards]="wizards" active="3"></mc-wizard>
-            <mc-promotion-shelve [selected]="transaction?.data?.mainPackageMember" [promotionShelves]="promotionShelves" (completed)="onCompleted($event)" (condition)="onTermConditions($event)"></mc-promotion-shelve>
+            <mc-promotion-shelve [selected]="transaction?.data?.mainPackage?.memberMainPackage" [promotionShelves]="promotionShelves" (completed)="onCompleted($event)" (condition)="onTermConditions($event)"></mc-promotion-shelve>
         </div>
     </div>
     <mc-footer>
         <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-        <button class="btn btn-success" (click)="onNext()" [disabled]="!(!!transaction?.data?.mainPackageMember)">NEXT</button>
+        <button class="btn btn-success" (click)="onNext()" [disabled]="!(!!transaction?.data?.mainPackage?.memberMainPackage)">NEXT</button>
     </mc-footer>
 </div>
 

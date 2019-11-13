@@ -69,7 +69,8 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
     this.eBill = !(mainPackage.billingSystem === BillingSystemType.BOS);
 
     const memberSimCard = simCard.memberSimCard[0];
-    const memberMainPackage = mainPackage.memberMainPackage[0];
+    const memberMainPackage = mainPackage.memberMainPackage;
+
    this.confirmMemberInfo = {
     mobileNo: memberSimCard.mobileNo,
     mainPackage: this.changeMainPackageLanguage(memberMainPackage),
@@ -106,12 +107,13 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
     this.initBillingInfo();
   }
 
-  changePackageDetailLanguage(mainPackage: MainPackage): string {
+  changePackageDetailLanguage(mainPackage: any): string {
     return (this.translateService.currentLang === 'TH') ? mainPackage.detailTH : mainPackage.detailEN;
   }
 
-  changeMainPackageLanguage(mainPackage: MainPackage): string {
-    return (this.translateService.currentLang === 'TH') ? mainPackage.title : (mainPackage.customAttributes || {}).shortNameEng;
+  changeMainPackageLanguage(mainPackage: any): string {
+    // tslint:disable-next-line: max-line-length
+    return (this.translateService.currentLang === 'TH') ? mainPackage.shortNameThai || mainPackage.title : (mainPackage.customAttributes || {}).shortNameEng;
   }
 
   initBillingInfo(): void {
