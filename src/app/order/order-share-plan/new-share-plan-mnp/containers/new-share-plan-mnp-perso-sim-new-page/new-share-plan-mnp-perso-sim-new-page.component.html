@@ -1,17 +1,16 @@
 <div class="mc-flex">
   <mc-header title="{{ 'เปิดเบอร์ใหม่' | translate }}"></mc-header>
-  <div class="mc-flex-wrap bg-white">
-    <div class="container">
-      <div class="card mt-3">
-        <div class="card-header bg-light-blue text-white">
-          <img src="assets/images/icon/icon-circle-ais-post-logo.png" class="icon-ais mr-2">
-          {{ 'Post Paid' | translate }}
-        </div>
-        <div class="card-body">
-          <div class="m-3" translate>1. {{ mobileNo | mobileNo }} (เบอร์โทรหลัก - เบอร์จดทะเบียนใหม่)</div>
-        </div>
-      </div>
-      <div class="pt-3 pb-3">
+  <div class="mc-flex-wrap">
+    <div class="mb-3 mt-3">
+      <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
+    </div>
+    <div class="card-header bg-light-blue text-white">
+      <img src="assets/images/icon/icon-circle-ais-post-logo.png" class="icon-ais mr-2">
+      {{ 'Post Paid' | translate }}
+    </div>
+    <div class="card-body bg-white">
+      <div class="container py-3">
+        <p>1. {{ mobileNo | mobileNo }} (เบอร์โทรหลัก - เบอร์จดทะเบียนใหม่)</p>
         <img src="assets/images/icon/icon-ReadIDCard-01.png" class="icon-read-card">
         <img src="assets/images/icon/icon-input-sim.png" class="icon-perso-sim">
         <div class="progress mt-3 mb-5">

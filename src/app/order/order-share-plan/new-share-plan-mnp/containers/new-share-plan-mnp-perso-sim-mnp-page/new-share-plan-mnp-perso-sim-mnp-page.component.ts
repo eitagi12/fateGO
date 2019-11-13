@@ -1,8 +1,7 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { WIZARD_ORDER_NEW_SHARE_PLAN_MNP } from 'src/app/order/constants/wizard.constant';
-import { TokenService, ChannelType, AlertService, Utils } from 'mychannel-shared-libs';
-import { HomeService, PageLoadingService } from 'mychannel-shared-libs';
+import { PageLoadingService } from 'mychannel-shared-libs';
 import { ROUTE_NEW_SHARE_PLAN_MNP_RESULT_PAGE } from '../../constants/route-path.constant';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { Transaction } from 'src/app/shared/models/transaction.model';
@@ -135,14 +134,15 @@ export interface OptionPersoSim {
   styleUrls: ['./new-share-plan-mnp-perso-sim-mnp-page.component.scss']
 })
 export class NewSharePlanMnpPersoSimMnpPageComponent implements OnInit, OnDestroy {
+
+  wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
+  transaction: Transaction;
   getPrivateKeyCommandAPI: string;
   persoSimAPI: string;
   checkCreatePersoSimAPI: string;
   simInfoAPI: string;
 
   aisNative: any = window.aisNative;
-  wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
-  transaction: Transaction;
 
   persoSimInterval: any;
 

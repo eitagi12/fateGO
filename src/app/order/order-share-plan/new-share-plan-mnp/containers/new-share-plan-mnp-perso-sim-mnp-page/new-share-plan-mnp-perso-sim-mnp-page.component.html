@@ -1,6 +1,6 @@
 <div class="mc-flex">
   <mc-header title="{{ 'ย้ายค่ายเบอร์เดิม' | translate }}"></mc-header>
-  <div class="mc-flex-wrap ">
+  <div class="mc-flex-wrap">
     <div class="mb-3 mt-3">
       <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
     </div>
@@ -9,16 +9,14 @@
       {{ 'Post Paid' | translate }}
     </div>
     <div class="card-body bg-white">
-      <div class="pt-3 pb-3">
-        <div class="container">
-          <p>2. {{ mobileNoMember | mobileNo }} (เบอร์โทรสมาชิก- เบอร์ย้ายค่าย)</p>
-          <img src="assets/images/icon/icon-ReadIDCard-01.png" class="icon-read-card" />
-          <img src="assets/images/icon/icon-input-sim.png" class="icon-perso-sim" />
-          <div class="text-center mt-3 mb-3" translate>{{ title }}</div>
-          <div class="progress mb-5 mx-5">
-            <div class="progress-bar bg-success" role="progressbar" [style.width.%]="persoSim?.progress"
-              [attr.aria-valuenow]="persoSim?.progress" aria-valuemin="0" aria-valuemax="100"></div>
-          </div>
+      <div class="container py-3">
+        <p>2. {{ mobileNo | mobileNo }} (เบอร์โทรสมาชิก- เบอร์ย้ายค่าย)</p>
+        <img src="assets/images/icon/icon-ReadIDCard-01.png" class="icon-read-card" />
+        <img src="assets/images/icon/icon-input-sim.png" class="icon-perso-sim" />
+        <div class="text-center mt-3 mb-3" translate>{{ title }}</div>
+        <div class="progress mb-5 mx-5">
+          <div class="progress-bar bg-success" role="progressbar" [style.width.%]="persoSim?.progress"
+            [attr.aria-valuenow]="persoSim?.progress" aria-valuemin="0" aria-valuemax="100"></div>
         </div>
       </div>
     </div>
