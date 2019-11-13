@@ -163,7 +163,10 @@ export class QueuePageService {
       data.qrOrderId = omise.orderId;
       data.creditCardNo = omise.creditCardNo ? omise.creditCardNo.substring(omise.creditCardNo.length - 16) : '';
       data.cardExpireDate = omise.cardExpireDate;
+
+      data.qrTransId = omise.tranId;
       data.qrAmt = (+this.getGrandTotalAmt(trade, prebooking)).toFixed(2);
+      data.qrAirtimeTransId = omise.tranId;
       data.qrAirtimeAmt = (+this.getGrandTotalAmt(trade, prebooking)).toFixed(2);
 
     } else if (this.qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'payment') ||
