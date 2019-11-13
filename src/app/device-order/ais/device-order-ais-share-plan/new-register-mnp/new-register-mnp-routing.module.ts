@@ -35,6 +35,8 @@ import { NewRegisterMnpByPatternPageComponent } from './containers/new-register-
 import { NewRegisterMnpEapplicationPageComponent } from './containers/new-register-mnp-eapplication-page/new-register-mnp-eapplication-page.component';
 import { NewRegisterMnpPersoSimMasterPageComponent } from './containers/new-register-mnp-perso-sim-master-page/new-register-mnp-perso-sim-master-page.component';
 import { NewRegisterMnpPersoSimMemberPageComponent } from './containers/new-register-mnp-perso-sim-member-page/new-register-mnp-perso-sim-member-page.component';
+import { NewRegisterMnpSelectReasonPageComponent } from './containers/new-register-mnp-select-reason-page/new-register-mnp-select-reason-page.component';
+import { NewRegisterMnpSelectPackageMemberComponent } from './containers/new-register-mnp-select-package-member/new-register-mnp-select-package-member.component';
 
 const routes: Routes = [
   { path: '', redirectTo: 'validate-customer', pathMatch: 'full' },
@@ -72,7 +74,9 @@ const routes: Routes = [
   { path: 'payment-detail', component: NewRegisterMnpPaymentDetailPageComponent },
   { path: 'by-pattern', component: NewRegisterMnpByPatternPageComponent},
   { path: 'perso-sim-master', component: NewRegisterMnpPersoSimMasterPageComponent },
-  { path: 'perso-sim-member', component: NewRegisterMnpPersoSimMemberPageComponent }
+  { path: 'perso-sim-member', component: NewRegisterMnpPersoSimMemberPageComponent },
+  { path: 'select-reason', component: NewRegisterMnpSelectReasonPageComponent },
+  { path: 'select-package-member', component:  NewRegisterMnpSelectPackageMemberComponent}
 ];
 @NgModule({
   imports: [RouterModule.forChild(routes)],

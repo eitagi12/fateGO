@@ -39,6 +39,8 @@ import { NewRegisterMnpByPatternPageComponent } from './containers/new-register-
 import { NewRegisterMnpEapplicationPageComponent } from './containers/new-register-mnp-eapplication-page/new-register-mnp-eapplication-page.component';
 import { NewRegisterMnpPersoSimMasterPageComponent } from './containers/new-register-mnp-perso-sim-master-page/new-register-mnp-perso-sim-master-page.component';
 import { NewRegisterMnpPersoSimMemberPageComponent } from './containers/new-register-mnp-perso-sim-member-page/new-register-mnp-perso-sim-member-page.component';
+import { NewRegisterMnpSelectReasonPageComponent } from './containers/new-register-mnp-select-reason-page/new-register-mnp-select-reason-page.component';
+import { NewRegisterMnpSelectPackageMemberComponent } from './containers/new-register-mnp-select-package-member/new-register-mnp-select-package-member.component';
 
 @NgModule({
   imports: [
@@ -84,7 +86,9 @@ import { NewRegisterMnpPersoSimMemberPageComponent } from './containers/new-regi
     NewRegisterMnpByPatternPageComponent,
     NewRegisterMnpEapplicationPageComponent,
     NewRegisterMnpPersoSimMasterPageComponent,
-    NewRegisterMnpPersoSimMemberPageComponent
+    NewRegisterMnpPersoSimMemberPageComponent,
+    NewRegisterMnpSelectReasonPageComponent,
+    NewRegisterMnpSelectPackageMemberComponent
   ]
 })
 export class NewRegisterMnpModule { }
