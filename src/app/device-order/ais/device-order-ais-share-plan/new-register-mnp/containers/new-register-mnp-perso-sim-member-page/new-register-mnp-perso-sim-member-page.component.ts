@@ -186,7 +186,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
       this.getSerialNo = simStatus[1].slice(cutNoSerialNumber);
       // this.aisNative.sendIccCommand(this.command, closeDialog, ''); //dismiss dialogReadSim
       if (this.getSerialNo) {
-        this.transaction.data.simCard = Object.assign(this.transaction.data.simCard, {
+        this.transaction.data.simCard.memberSimCard[0] = Object.assign(this.transaction.data.simCard.memberSimCard[0], {
           simSerialMember: this.getSerialNo
         });
       }
