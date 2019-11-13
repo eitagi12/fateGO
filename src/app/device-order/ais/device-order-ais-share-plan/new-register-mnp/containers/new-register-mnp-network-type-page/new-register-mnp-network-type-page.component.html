@@ -9,35 +9,24 @@
         <div class="my-3">
             <mc-wizard [wizards]="wizards" active="3"></mc-wizard>
             <div class="container-fluid">
-                <div class="card mb-3">
-                    <div class="card-header bg-pink text-white" translate>เบอร์ที่ท่านต้องการย้ายค่าย</div>
-                    <div class="card-body">
-                        <div class="text-center text-green">
-                            {{ transaction?.data?.simCard?.mobileNoMember | mobileNo }}
-                        </div>
-                    </div>
-                </div>
-                <form [formGroup]="reasonForm">
-                    <div class="card mb-3">
-                        <div class="card-header bg-pink text-white" translate>เหตุผลที่ลูกค้าย้ายค่าย</div>
-                        <div class="card-body">
-                            <div class="text-center ">
-                                <select class="form-control" formControlName="reasonCode" [ngClass]="{'is-invalid': !reasonForm.controls['reasonCode'].valid && reasonForm.controls['reasonCode'].dirty }">
-                    <option [value]="reason?.reasonCode" *ngFor="let reason of reasons">
-                      {{ reason?.reasonName | translate }}
-                    </option>
-                  </select>
+                <form [formGroup]="mnpForm">
+                    <div class="card">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item text-center" translate>ระบุเบอร์ที่ท่านต้องการย้ายค่ายระบบรายเดือน</li>
+                            <li class="list-group-item">
+                                <input id="mobileNoMember" type="tel" class="form-control text-center mt-2" autocomplete="off" maxlength="10" formControlName="mobileNoMember" [ngClass]="{'is-invalid':mnpForm.controls['mobileNoMember'].invalid && mnpForm.controls['mobileNoMember'].touched }">
+                                <small class="invalid-feedback text-center" *ngIf="mnpForm.controls['mobileNoMember'].touched && mnpForm.controls['mobileNoMember'].errors">*<span
+                      translate>กรุณากรอกหมายเลขโทรศัพท์ให้ถูกต้อง</span></small>
+                            </li>
+                            <li class="list-group-item text-center" translate>ระบุรหัสขอย้ายค่าย</li>
+                            <li class="list-group-item mb-3">
+                                <div class="text-light-grey text-center">กด *151*เลขบัตรประชาชน 13 หลัก # แล้วโทรออก</div>
+                                <input id="pinCode" type="tel" class="form-control text-center " autocomplete="off" maxlength="8" formControlName="pinCode" [ngClass]="{'is-invalid': !mnpForm.controls['pinCode'].valid && mnpForm.controls['pinCode'].touched }">
+                            </li>
+                            <div class="ml-4 text-grey">
+                                <p translate>การขอรหัส : กด*151*เลขที่บัตรประชาชน 13 หลัก# แล้วโทรออก (ฟรี)</p>
                             </div>
-                        </div>
-                    </div>
-                    <div class="card mb-3">
-                        <div class="card-header bg-pink text-white" translate>เลือกระบบที่ท่านต้องการ</div>
-                        <div class="card-body">
-                            <div class="text-center">
-                                <input type="radio" id="post-paid" value="Post-paid" formControlName="chargeType">
-                                <label for="post-paid" translate>ระบบรายเดือน</label>
-                            </div>
-                        </div>
+                        </ul>
                     </div>
                 </form>
             </div>
@@ -45,6 +34,6 @@
     </div>
     <mc-footer>
         <button class="btn btn-secondary" (click)="onBack()">BACK</button>
-        <button class="btn btn-success" (click)="onNext()" [disabled]="reasonForm.invalid">NEXT</button>
+        <button class="btn btn-success" (click)="onNext()" [disabled]="mnpForm.invalid">NEXT</button>
     </mc-footer>
 </div>
