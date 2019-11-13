@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { ROUTE_DEVICE_ORDER_AIS_MNP_QUEUE_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_QR_CODE_SUMMARY_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_AGREEMENT_SIGN_PAGE, ROUTE_DEVICE_ORDER_AIS_MNP_OMISE_SUMMARY_PAGE } from '../../constants/route-path.constant';
+import { QrCodeOmisePageService } from 'src/app/device-order/services/qr-code-omise-page.service';
 
 @Component({
   selector: 'app-device-order-ais-mnp-aggregate-page',
@@ -21,7 +22,8 @@ export class DeviceOrderAisMnpAggregatePageComponent implements OnInit, OnDestro
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
-    private priceOptionService: PriceOptionService
+    private priceOptionService: PriceOptionService,
+    private qrCodeOmisePageService: QrCodeOmisePageService,
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -39,7 +41,8 @@ export class DeviceOrderAisMnpAggregatePageComponent implements OnInit, OnDestro
 
     if (payment.paymentType === 'QR_CODE' || advancePayment.paymentType === 'QR_CODE') {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_QR_CODE_SUMMARY_PAGE]);
-    } else if (payment.paymentOnlineCredit || advancePayment.paymentOnlineCredit) {
+    } else if (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'payment') ||
+      this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'advancePayment')) {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_OMISE_SUMMARY_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_MNP_QUEUE_PAGE]);
