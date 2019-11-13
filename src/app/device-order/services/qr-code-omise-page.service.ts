@@ -67,7 +67,9 @@ export class QrCodeOmisePageService {
               obs.next({
                 paymentCode: data.paymentCode,
                 paymentStatus: data.paymentStatus,
-                transactionId: data.transactionId
+                transactionId: data.transactionId,
+                creditCardNo: data.creditCardNo,
+                cardExpireDate: data.cardExpireDate,
               });
             } else {
               omiseResponseTimeout = setTimeout(() =>
