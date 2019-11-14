@@ -205,6 +205,7 @@ export class NewSharePlanMnpPersoSimMnpPageComponent implements OnInit, OnDestro
       Validators.pattern('^[0-9]*$')
     ]]
   });
+  title: string = '';
 
   constructor(
     private router: Router,

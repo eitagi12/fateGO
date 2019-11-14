@@ -15,12 +15,12 @@ declare let window: any;
 export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDestroy {
 
   @ViewChild('signImage') signImage: ElementRef;      // ประกาศตัวแปรอ้างอิงจากแท็กบน html (ใช้ภาษา Angular)
+  camera: EventEmitter<void> = new EventEmitter<void>();
   wizards: string[] = WIZARD_ORDER_NEW_SHARE_PLAN_MNP;
   user: User;
   customer: Customer;
   transaction: Transaction;
   captureAndSign: CaptureAndSign;
-  camera: EventEmitter<void> = new EventEmitter<void>();
   isDrawImageIdCard: boolean;
   onChangeValid: boolean = false;
   isNextValid: boolean;
@@ -121,15 +121,15 @@ export class NewSharePlanMnpIdCardCapturePageComponent implements OnInit, OnDest
 
     // โหลดรูปภาพบัตรปชช.ที่ได้จากการวาด
     imageCard.onload = () => {
-      this.drawIdCardWithSign(imageCard, signImage, watermarkImage);
+      this.drawIdCardWithSign(imageCard, signImage);
     };
     // โหลดรูปภาพเซ็นลายเซ็นที่ได้จากการวาด
     signImage.onload = () => {
-      this.drawIdCardWithSign(imageCard, signImage, watermarkImage);
+      this.drawIdCardWithSign(imageCard, signImage);
     };
   }
 
-  drawIdCardWithSign(imageCard: any, signImage: any, watermarkImage: any): void {
+  drawIdCardWithSign(imageCard: any, signImage: any): void {
     // สร้างตัวแปรเก็บชนิดรูปจากบัตรปชช./รูปลายเซ็นเป็น Canvas เพื่อให้เรียกใช้อันเดียวกับแท็กบน html
     // สร้างตัวแปรเก็บตำแหน่ง แกน x, y ของรูปบัตรปชช./รูปลายเซ็น
     const canvas: HTMLCanvasElement = (<HTMLCanvasElement>this.signImage.nativeElement);
