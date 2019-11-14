@@ -114,7 +114,6 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
   onNext(): void {
     this.pageLoadingService.openLoading();
     this.validateCustomer().then((data: any) => {
-      console.log('===>', data);
       if (data) {
         const soId: any = data.order.data || data.order;
         this.transaction.data = {
@@ -134,7 +133,6 @@ export class NewRegisterMnpValidateCustomerPageComponent implements OnInit, OnDe
           }
         );
         this.validateCustomerService.createTransaction(transactionObject).then((response: any) => {
-          console.log('transactionObject', transactionObject);
           this.pageLoadingService.closeLoading();
           if (response.data.isSuccess) {
             this.transaction = transactionObject;

@@ -58,8 +58,6 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
     private modalService: BsModalService
   ) {
     this.transaction = this.transactionService.load();
-    console.log(this.transaction);
-
     // New register profile not found.
     if (!this.transaction.data.billingInformation) {
       this.transaction.data.billingInformation = {};
