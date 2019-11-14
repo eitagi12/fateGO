@@ -79,8 +79,10 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
 
   onNext(): void {
     if (this.transaction.data.mainPackage) {
-      this.callServiceRequestQueryListLov(this.translateService.currentLang);
-      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_NETWORK_TYPE]);
+      if (this.transaction.data.mainPackage.customAttributes.promotionCode) {
+        this.callServiceRequestQueryListLov(this.translateService.currentLang);
+        this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_NETWORK_TYPE]);
+      }
     }
   }
 
@@ -161,11 +163,20 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
                 })
               };
             });
+            console.log('promotionShelves', promotionShelves);
             return Promise.resolve(promotionShelves);
           });
       })
-      .then((promotionShelves: PromotionShelve[]) => {
-        this.promotionShelves = this.buildPromotionShelveActive(promotionShelves);
+      .then((res) => {
+      // this.transaction.data = {
+      //   ...this.transaction.data,
+      //   mainPackage : {
+      //     memberMainPackage : {
+      //       // title: res.title
+      //     }
+      //   }
+      // }
+        // this.promotionShelves = this.buildPromotionShelveActive(promotionShelves);
       })
       .then(() => {
         this.pageLoadingService.closeLoading();

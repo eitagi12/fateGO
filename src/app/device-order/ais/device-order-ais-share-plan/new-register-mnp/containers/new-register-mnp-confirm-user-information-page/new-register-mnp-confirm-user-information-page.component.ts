@@ -1,10 +1,12 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { Transaction, MainPackage } from 'src/app/shared/models/transaction.model';
+import { Component, OnInit, OnDestroy, TemplateRef  } from '@angular/core';
+import { Transaction } from 'src/app/shared/models/transaction.model';
 import { ConfirmCustomerInfo, BillingInfo, BillingSystemType, MailBillingInfo, TelNoBillingInfo, Utils, AlertService, ShoppingCart } from 'mychannel-shared-libs';
 import { Router } from '@angular/router';
 import { HomeService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { HttpClient } from '@angular/common/http';
+import { BsModalService } from 'ngx-bootstrap/modal';
+import { BsModalRef } from 'ngx-bootstrap/modal/bs-modal-ref.service';
 import {
   ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_EDIT_BILLING_ADDRESS_PAGE,
   ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_EBILLING_PAGE,
@@ -40,6 +42,9 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
   isMailBillingInfoValid: boolean;
 
   confirmMemberInfo: any;
+  detail: string;
+
+  templatePopupRef: BsModalRef;
 
   constructor(
     private router: Router,
@@ -49,7 +54,8 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
     private utils: Utils,
     private http: HttpClient,
     private shoppingCartService: ShoppingCartService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private modalService: BsModalService
   ) {
     this.transaction = this.transactionService.load();
     console.log(this.transaction);
@@ -278,6 +284,12 @@ export class NewRegisterMnpConfirmUserInformationPageComponent implements OnInit
 
   onHome(): void {
     this.homeService.goToHome();
+  }
+
+  onShowPackagePopup(templatePopup: TemplateRef<any>, owner: string): void {
+    // tslint:disable-next-line: max-line-length
+    this.detail = owner === 'master' ? this.confirmCustomerInfo.packageDetail : owner === 'member' ? this.confirmMemberInfo.packageDetail : '-';
+    this.templatePopupRef = this.modalService.show(templatePopup);
   }
 
   ngOnDestroy(): void {
