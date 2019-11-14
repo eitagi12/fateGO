@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { ChargeType, PageLoadingService } from 'mychannel-shared-libs';
 import { HttpClient } from '@angular/common/http';
-import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_NETWORK_TYPE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_PACKAGE_MEMBER_PAGE } from '../../constants/route-path.constant';
+import { ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_NETWORK_TYPE, ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CONFIRM_USER_INFORMATION_PAGE } from '../../constants/route-path.constant';
 import { WIZARD_DEVICE_ORDER_AIS_DEVICE_SHARE_PLAN } from 'src/app/device-order/constants/wizard.constant';
 
 @Component({
@@ -29,6 +29,7 @@ export class NewRegisterMnpSelectReasonPageComponent implements OnInit, OnDestro
     private http: HttpClient
   ) {
     this.transaction = this.transactionService.load();
+    console.log();
   }
   ngOnInit(): void {
     this.createForm();
@@ -41,7 +42,7 @@ export class NewRegisterMnpSelectReasonPageComponent implements OnInit, OnDestro
 
   onNext(): void {
     this.transaction.data.reasonCode = this.reasonForm.value.reasonCode;
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_SELECT_PACKAGE_MEMBER_PAGE]);
+    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_CONFIRM_USER_INFORMATION_PAGE]);
   }
 
   createForm(): void {

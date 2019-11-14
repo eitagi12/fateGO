@@ -36,6 +36,7 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
   modalRef: BsModalRef;
   translateSubscription: Subscription;
   promotionData: any;
+  promotionCodes: string;
 
   constructor(
     private router: Router,
@@ -77,7 +78,10 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
   }
 
   onNext(): void {
-    this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_NETWORK_TYPE]);
+    if (this.transaction.data.mainPackage) {
+      this.callServiceRequestQueryListLov(this.translateService.currentLang);
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_NETWORK_TYPE]);
+    }
   }
 
   onHome(): void {
@@ -105,6 +109,108 @@ export class NewRegisterMnpSelectPackagePageComponent implements OnInit, OnDestr
       .then(() => {
         this.pageLoadingService.closeLoading();
       });
+  }
+
+  callServiceRequestQueryListLov(language: string): void {
+    this.pageLoadingService.openLoading();
+    const RequestQueryListLovConfigInfo: any = {
+      lovVal2: this.transaction.data.mainPackage.customAttributes.promotionCode
+    };
+    this.http.post(`/api/salesportal/queryListLovConfigInfo`, RequestQueryListLovConfigInfo).toPromise()
+      .then((promotionCodes: any) => {
+        this.promotionCodes = promotionCodes.data;
+      }).then(() => {
+        const RequestGetPromotionsByCodes: any = {
+          promotionCodes: [this.promotionCodes]
+        };
+        return this.http.post(`/api/customerportal/myChannel/getPromotionsByCodes`, RequestGetPromotionsByCodes).toPromise()
+          .then((res: any) => {
+            const data = res.data.data || [];
+            // mock packageList for subShelve
+            const packageList: any = [{
+              title: 'Member Share MNP',
+              icon: '',
+              promotions: [
+                {
+                  title: '3G Member Share MNP UL SWifi 0 Baht',
+                  items: data
+                }
+              ]
+            }];
+            const promotionShelves: PromotionShelve[] = packageList.map((promotionShelve: any) => {
+              return {
+                title: promotionShelve.title,
+                icon: (promotionShelve.icon || '').replace(/\.jpg$/, '').replace(/_/g, '-'),
+                promotions: (promotionShelve.promotions || []).map((subShelve: any) => {
+                  return {
+                    // subShelve
+                    id: '',
+                    title: subShelve.title,
+                    sanitizedName: '',
+                    items: (subShelve.items || []).map((promotion: any) => {
+                      return {
+                        // item
+                        id: promotion.id,
+                        title: language === 'EN' ? promotion.customAttributes.shortNameEng : promotion.customAttributes.shortNameThai,
+                        detail: language === 'EN' ? promotion.customAttributes.inStatementEng : promotion.customAttributes.inStatementThai,
+                        condition: '',
+                        value: promotion
+                      };
+                    })
+                  };
+                })
+              };
+            });
+            return Promise.resolve(promotionShelves);
+          });
+      })
+      .then((promotionShelves: PromotionShelve[]) => {
+        this.promotionShelves = this.buildPromotionShelveActive(promotionShelves);
+      })
+      .then(() => {
+        this.pageLoadingService.closeLoading();
+      });
+
+  }
+
+  buildPromotionShelveActive(promotionShelves: PromotionShelve[]): PromotionShelve[] {
+    const mainPackageMember: any = this.transaction.data.mainPackage.memberMainPackage || {};
+    if (!promotionShelves || promotionShelves.length <= 0) {
+      return;
+    }
+    if (mainPackageMember) {
+      let promotionShelveIndex = 0, promotionShelveGroupIndex = 0;
+      for (let i = 0; i < promotionShelves.length; i++) {
+        const promotions = promotionShelves[i].promotions || [];
+
+        let itemActive = false;
+        for (let ii = 0; ii < promotions.length; ii++) {
+          const active = (promotions[ii].items || []).find((promotionShelveItem: PromotionShelveItem) => {
+            return ('' + promotionShelveItem.id) === ('' + mainPackageMember.itemId);
+          });
+          if (!!active) {
+            itemActive = true;
+            promotionShelveIndex = i;
+            promotionShelveGroupIndex = ii;
+            continue;
+          }
+        }
+
+        if (!itemActive) {
+          promotions[0].active = true;
+        }
+      }
+      promotionShelves[promotionShelveIndex].active = true;
+      promotionShelves[promotionShelveIndex].promotions[promotionShelveGroupIndex].active = true;
+    } else {
+      promotionShelves[0].active = true;
+      promotionShelves.forEach((promotionShelve: PromotionShelve) => {
+        if (promotionShelve.promotions && promotionShelve.promotions.length > 0) {
+          promotionShelve.promotions[0].active = true;
+        }
+      });
+    }
+    return promotionShelves;
   }
 
   checkTranslateLang(lang: any): void {
