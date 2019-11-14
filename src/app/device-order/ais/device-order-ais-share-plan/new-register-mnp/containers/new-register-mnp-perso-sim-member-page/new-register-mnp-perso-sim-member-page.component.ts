@@ -119,7 +119,8 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
 
     this.checkOrderCounter = 0;
     this.getCommandCounter = false;
-    this.mobileNo = this.memberSimCard.mobileNoMember;
+    this.mobileNo = this.memberSimCard.mobileNo;
+    alert(this.mobileNo);
 
     if (typeof this.aisNative !== 'undefined') {
       this.disableBack = true;
@@ -136,6 +137,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
     this.persoSim = '';
     this.readSimStatus = '';
     this.persoSim = { progress: 0, eventName: 'กรุณารอสักครู่' };
+    alert(this.persoSim.progress);
     // $('.custom').animate({ width: 0 + '%' }, this.duration, () => {/**/ });
     clearInterval(this.persoSimInterval);
     const intervalTime: number = 3000;
@@ -193,6 +195,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
       if (simStatus[0].toLowerCase() === 'true') {
         // Progess 20%
         this.persoSim = { progress: 20, eventName: 'กรุณารอสักครู่' };
+        alert(this.persoSim.progress);
         // $('.custom').animate({ width: 20 + '%' }, this.duration, () => {/**/ });
         // this.getCommandForPersoSim(this.readSimStatus);
         if (this.statusFixSim === 'WaitingForPerso' && this.serialbarcode && this.orderType !== 'Port - In') {
@@ -207,6 +210,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
           if (this.orderType !== 'Port - In') {
             this.verifySimRegionForPerso(this.getSerialNo);
           } else {
+            alert('else ' + this.persoSim.progress);
             this.getCommandForPersoSim(this.readSimStatus);
           }
         }
@@ -264,6 +268,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
     const indexPosition: number = 3;
     let getSerialNo: any = serialNo.split('|||');
     getSerialNo = getSerialNo[1].slice(cutNoSerialNumber);
+    alert(getSerialNo);
     this.queryPersoDataFn = this.getPersoDataCommand(
       this.mobileNo,
       getSerialNo,
@@ -291,6 +296,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
         this.timeoutPersoSim = setTimeout(() => {
           // Progess 40%
           this.persoSim = { progress: 40, eventName: 'กรุณารอสักครู่' };
+          alert(this.persoSim.progress);
           // $('.custom').animate({ width: 40 + '%' }, 0, () => {/**/ });
           this.persoSimCard(simCommand.data.refNo, parameter);
         }, delayTime);
@@ -298,6 +304,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
     }).catch((e: any): void => {
       const errObj: any = e.json();
       console.log('checkstatus errmes', errObj);
+      alert('checkstatus errmes  ' + errObj);
       if (!this.getCommandCounter) {
         this.popupControl('errorCmd', '');
         this.getCommandCounter = true;
@@ -319,13 +326,17 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
     // this.aisNative.sendIccCommand(this.command, closeDialog, ''); //dismiss dialog Perso
     const persoSimStatus: string[] = persoSimza.split('|||');
     this.persoSim = { progress: 60, eventName: 'กรุณารอสักครู่' };
+    alert(this.persoSim.progress);
     if (persoSimStatus[0].toLowerCase() === 'true') {
+      alert('true' + this.persoSim.progress);
       this.createdPersoSim(refNo);
     } else {
       if (!this.persoSimCounter) {
         this.persoSimCounter = true;
+        alert('not perso counter' + this.persoSim.progress);
         this.getCommandForPersoSim(this.readSimStatus);
       } else {
+        alert('errorSim' + this.persoSim.progress);
         this.popupControl('errorSim', '');
       }
     }
@@ -338,6 +349,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
         if (create.data.success) {
           // Progess 80%
           this.persoSim = { progress: 80, eventName: 'กรุณารอสักครู่' };
+          alert(this.persoSim.progress);
           // $('.custom').animate({ width: 80 + '%' }, this.duration, () => {/**/ });
           this.checkOrderStatus(refNo);
         } else {
@@ -358,6 +370,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
       console.log('full error :', errObj);
       console.log('error :', errObj.errors);
       console.log('data :', errObj.errors.data);
+      alert('catch  ' + this.persoSim.progress);
       const tenSecond: number = 60000;
       const loop: number = 3;
       if (this.createTxPersoCounter < loop) {
@@ -378,6 +391,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
         if (order.data.orderStatus === 'Completed' && order.data.transactionStatus === 'Completed') {
           // Progess 100%
           this.persoSim = { progress: 100, eventName: 'กรุณารอสักครู่' };
+          alert(this.persoSim.progress);
           // $('.custom').animate({ width: 100 + '%' }, this.duration, () => {/**/ });
           setTimeout(() => {
           }, this.duration);
@@ -535,6 +549,7 @@ export class NewRegisterMnpPersoSimMemberPageComponent implements OnInit, OnDest
   }
 
   onNext(): void {
+    alert(JSON.stringify(this.transaction.data.simCard));
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_AGGREGATE_PAGE]);
   }
 

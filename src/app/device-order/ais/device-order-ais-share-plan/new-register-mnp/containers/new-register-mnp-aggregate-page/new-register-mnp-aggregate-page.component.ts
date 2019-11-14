@@ -30,7 +30,7 @@ export class NewRegisterMnpAggregatePageComponent implements OnInit {
     this.priceOption = this.priceOptionService.load();
   }
 
-  ngOnInit(): void { }
+  ngOnInit(): void { alert(JSON.stringify(this.transaction.data.simCard)); }
 
   onBack(): void {
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_FACE_COMPARE_PAGE]);
