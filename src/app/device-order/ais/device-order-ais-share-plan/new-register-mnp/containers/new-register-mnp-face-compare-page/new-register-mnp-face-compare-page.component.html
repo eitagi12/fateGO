@@ -1,5 +1,5 @@
 <div class="mc-flex">
-    <mc-header title="{{ 'รายการสินค้า' | translate }}">
+    <mc-header title="{{ 'เครื่องพร้อมเปิดเบอร์ใหม่' | translate }}">
         <div class="header-icon-left">
             <mc-header-icon src="assets/images/icon/icon-back.png" (iconClick)="onBack()"></mc-header-icon>
         </div>
@@ -8,20 +8,31 @@
         </div>
     </mc-header>
     <div class="mc-flex-wrap">
-        <div class="card-background border-0">
-            <div class="row">
-                <span class="img-title">{{pictureTitle}}</span>
-            </div>
-            <hr class="mt-0 mb-20" style="margin:40px;">
-            <div class="row">
-                <img class="photo" [src]="'data:image/png;base64,' + transaction?.data?.customer?.imageSmartCard">
-            </div>
-            <div class="row">
-                <span class="img-title">{{faceTitle}}</span>
-            </div>
-            <hr class="mt-0 mb-20">
-            <div class="row">
-                <img class="photo" [src]="'data:image/png;base64,' + transaction?.data?.faceRecognition?.imageFaceUser">
+        <mc-shopping-cart [shoppingCart]="shoppingCart"></mc-shopping-cart>
+        <div class="mb-3 mt-3">
+            <mc-wizard [wizards]="wizards" active="4"></mc-wizard>
+
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-xs-12 col-sm-12">
+                        <div class="card">
+                            <div class="card-header text-center" translate style="background-color: transparent; border-color: transparent;">
+                                ข้อมูลใบหน้าจากบัตรประชาชน
+                            </div>
+                            <div class="card-body">
+                                <img [src]="'data:image/png;base64,' + transaction?.data?.customer?.imageReadSmartCard" *ngIf="isReadCard()">
+                                <img [src]="'data:image/png;base64,' + transaction?.data?.customer?.imageSmartCard" *ngIf="!isReadCard()">
+                            </div>
+                            <hr style="width: 90%; margin: auto;">
+                            <div class="card-header text-center" translate style="background-color: transparent; border-color: transparent;">
+                                ข้อมูลใบหน้าจากรูปถ่าย
+                            </div>
+                            <div class="card-body">
+                                <img [src]="'data:image/png;base64,' + transaction?.data?.faceRecognition?.imageFaceUser">
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
