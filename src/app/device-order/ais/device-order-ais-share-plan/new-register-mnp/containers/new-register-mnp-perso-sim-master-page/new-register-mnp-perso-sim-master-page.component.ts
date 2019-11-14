@@ -377,7 +377,6 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
       if (simStatus[0].toLowerCase() === 'true') {
         // Progess 20%
         this.persoSim.progress = 20;
-        alert(this.persoSim.progress);
         // $('.custom').animate({ width: 20 + '%' }, this.duration, () => {/**/ });
         // this.getCommandForPersoSim(this.readSimStatus);
         if (this.statusFixSim === 'WaitingForPerso' && this.serialbarcode && this.orderType !== 'Port - In') {
@@ -434,7 +433,6 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
         this.timeoutPersoSim = setTimeout(() => {
           // Progess 40%
           this.persoSim.progress = 40;
-          alert(this.persoSim.progress);
           // $('.custom').animate({ width: 40 + '%' }, 0, () => {/**/ });
           this.persoSimCard(simCommand.data.refNo, parameter);
         }, delayTime);
@@ -461,7 +459,6 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
         if (order.data.orderStatus === 'Completed' && order.data.transactionStatus === 'Completed') {
           // Progess 100%
           this.persoSim.progress = 100;
-          alert('complete ' + this.persoSim.progress);
           // $('.custom').animate({ width: 100 + '%' }, this.duration, () => {/**/ });
           setTimeout(() => {
           }, this.duration);
@@ -548,7 +545,6 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
       } else if (errorCode === '008') {
         // Progess 100%
         this.persoSim.progress = 100;
-        alert('008 ' + this.persoSim.progress);
         // $('.custom').animate({ width: 100 + '%' }, this.duration, () => {/**/ });
         this.pageLoadingService.closeLoading();
         this.statusFixSim = 'Success';
@@ -572,7 +568,6 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
     // this.aisNative.sendIccCommand(this.command, closeDialog, ''); //dismiss dialog Perso
     const persoSimStatus: string[] = persoSimza.split('|||');
     this.persoSim.progress = 60;
-    alert(this.persoSim.progress);
     if (persoSimStatus[0].toLowerCase() === 'true') {
       this.createdPersoSim(refNo);
     } else {
@@ -592,7 +587,6 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
         if (create.data.success) {
           // Progess 80%
           this.persoSim.progress = 80;
-          alert(this.persoSim.progress);
           // $('.custom').animate({ width: 80 + '%' }, this.duration, () => {/**/ });
           this.checkOrderStatus(refNo);
         } else {
@@ -657,7 +651,6 @@ export class NewRegisterMnpPersoSimMasterPageComponent implements OnInit, OnDest
         simSerial: this.simSerialForm.controls.simSerial.value
       });
     }
-    alert(JSON.stringify(this.transaction.data.simCard));
     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_SHARE_PLAN_NEW_REGISTER_MNP_PERSO_SIM_MEMBER_PAGE]);
   }
 
