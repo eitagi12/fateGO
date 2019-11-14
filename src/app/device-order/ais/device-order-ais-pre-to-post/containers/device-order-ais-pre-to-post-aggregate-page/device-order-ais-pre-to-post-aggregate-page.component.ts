@@ -8,8 +8,10 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import {
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_AGREEMENT_SIGN_PAGE,
   ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_QUEUE_PAGE,
-  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_QR_CODE_SUMMARY_PAGE
+  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_QR_CODE_SUMMARY_PAGE,
+  ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_OMISE_SUMMARY_PAGE
 } from '../../constants/route-path.constant';
+import { QrCodeOmisePageService } from 'src/app/device-order/services/qr-code-omise-page.service';
 @Component({
   selector: 'app-device-order-ais-pre-to-post-aggregate-page',
   templateUrl: './device-order-ais-pre-to-post-aggregate-page.component.html',
@@ -24,7 +26,8 @@ export class DeviceOrderAisPreToPostAggregatePageComponent implements OnInit {
     private router: Router,
     private homeService: HomeService,
     private transactionService: TransactionService,
-    private priceOptionService: PriceOptionService
+    private priceOptionService: PriceOptionService,
+    private qrCodeOmisePageService: QrCodeOmisePageService,
   ) {
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
@@ -42,6 +45,9 @@ export class DeviceOrderAisPreToPostAggregatePageComponent implements OnInit {
 
     if (payment.paymentType === 'QR_CODE' || advancePayment.paymentType === 'QR_CODE') {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_QR_CODE_SUMMARY_PAGE]);
+    } else if (this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'payment') ||
+      this.qrCodeOmisePageService.isPaymentOnlineCredit(this.transaction, 'advancePayment')) {
+      this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_OMISE_SUMMARY_PAGE]);
     } else {
       this.router.navigate([ROUTE_DEVICE_ORDER_AIS_PRE_TO_POST_QUEUE_PAGE]);
     }

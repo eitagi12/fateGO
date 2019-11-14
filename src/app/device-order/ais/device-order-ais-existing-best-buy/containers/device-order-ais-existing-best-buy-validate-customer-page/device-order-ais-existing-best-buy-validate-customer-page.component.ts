@@ -5,19 +5,24 @@ import { LocalStorageService } from 'ngx-store';
 import { Router } from '@angular/router';
 
 import { CustomerInfoService } from 'src/app/device-order/services/customer-info.service';
-import { PageLoadingService, HomeService, Utils,
-  AlertService, User, TokenService } from 'mychannel-shared-libs';
+import {
+  PageLoadingService, HomeService, Utils,
+  AlertService, User, TokenService
+} from 'mychannel-shared-libs';
 import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { PrivilegeService } from 'src/app/device-order/services/privilege.service';
-import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_PAGE,
+import {
+  ROUTE_DEVICE_ORDER_AIS_BEST_BUY_VALIDATE_CUSTOMER_ID_CARD_PAGE,
   ROUTE_DEVICE_ORDER_AIS_BEST_BUY_CUSTOMER_INFO_PAGE,
   ROUTE_DEVICE_ORDER_AIS_BEST_BUY_ELIGIBLE_MOBILE_PAGE,
   ROUTE_DEVICE_ORDER_AIS_BEST_BUY_MOBILE_DETAIL_PAGE
 } from 'src/app/device-order/ais/device-order-ais-existing-best-buy/constants/route-path.constant';
 import { SharedTransactionService } from 'src/app/shared/services/shared-transaction.service';
-import { Transaction, TransactionType, TransactionAction,
-  Customer, MainPromotion, Prebooking, Order } from 'src/app/shared/models/transaction.model';
+import {
+  Transaction, TransactionType, TransactionAction,
+  Customer, MainPromotion, Prebooking, Order
+} from 'src/app/shared/models/transaction.model';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { WIZARD_DEVICE_ORDER_AIS } from 'src/app/device-order/constants/wizard.constant';
 
@@ -120,7 +125,8 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
           this.transaction.data.simCard = { mobileNo: this.identity };
           this.transaction.data.action = TransactionAction.KEY_IN_REPI;
           if (!this.transaction.data.order || !this.transaction.data.order.soId) {
-            return this.http.post('/api/salesportal/add-device-selling-cart',
+            return this.http.post(
+              '/api/salesportal/dt/add-cart-list',
               this.getRequestAddDeviceSellingCart()
             ).toPromise()
               .then((resp: any) => {
@@ -144,7 +150,7 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
         this.transaction.data.billingInformation = {};
         this.transaction.data.billingInformation.billDeliveryAddress = this.transaction.data.customer;
         if (!this.transaction.data.order || !this.transaction.data.order.soId) {
-          return this.http.post('/api/salesportal/add-device-selling-cart',
+          return this.http.post('/api/salesportal/dt/add-cart-list',
             this.getRequestAddDeviceSellingCart()
           ).toPromise()
             .then((resp: any) => {
@@ -252,10 +258,9 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
       const promiseAll = [];
       if (transaction.data) {
         if (transaction.data.order && transaction.data.order.soId) {
-          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
-            location: this.priceOption.productStock.location,
+          const order = this.http.post('/api/salesportal/dt/remove-cart', {
             soId: transaction.data.order.soId,
-            transactionId: transaction.transactionId
+            userId: this.user.username
           }).toPromise().catch(() => Promise.resolve());
           promiseAll.push(order);
         }
@@ -270,28 +275,48 @@ export class DeviceOrderAisExistingBestBuyValidateCustomerPageComponent implemen
     const trade = this.priceOption.trade;
     const customer = this.transaction.data.customer;
     const preBooking: Prebooking = this.transaction.data.preBooking;
-    let subStock;
-    if (preBooking && preBooking.preBookingNo) {
-      subStock = 'PRE';
-    }
-    return {
-      soCompany: productStock.company || 'AWN',
-      locationSource: this.user.locationCode,
-      locationReceipt: this.user.locationCode,
+
+    const product = {
       productType: productDetail.productType || 'DEVICE',
+      soCompany: productStock.company || 'AWN',
       productSubType: productDetail.productSubType || 'HANDSET',
       brand: productDetail.brand || productStock.brand,
       model: productDetail.model || productStock.model,
+      qty: '1',
+
       color: productStock.color || productStock.colorName,
+      matCode: '',
       priceIncAmt: '' + trade.normalPrice,
       priceDiscountAmt: '' + trade.discount.amount,
-      grandTotalAmt: '',
+      matAirTime: '',
+      listMatFreeGoods: [{
+        matCodeFG: '',
+        qtyFG: '' // จำนวนของแถม *กรณีส่งค่า matCodeFreeGoods ค่า qty จะต้องมี
+      }]
+    };
+
+    let subStock;
+    if (preBooking && preBooking.preBookingNo) {
+      subStock = 'PRE';
+    } else {
+      subStock = 'BRN';
+    }
+
+    return {
+      locationSource: this.user.locationCode,
+      locationReceipt: this.user.locationCode,
       userId: this.user.username,
       cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim() || '-',
+      soChannelType: 'MC_KIOSK',
+      soDocumentType: 'RESERVED',
+      productList: [product],
+
+      grandTotalAmt: '',
       preBookingNo: preBooking ? preBooking.preBookingNo : '',
       depositAmt: preBooking ? preBooking.depositAmt : '',
       reserveNo: preBooking ? preBooking.reserveNo : '',
-      subStockDestination: subStock
+      subStockDestination: subStock,
+      storeName: ''
     };
   }
 }

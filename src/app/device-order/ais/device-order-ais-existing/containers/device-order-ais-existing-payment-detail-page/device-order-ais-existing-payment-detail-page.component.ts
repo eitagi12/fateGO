@@ -12,6 +12,7 @@ import { Transaction } from 'src/app/shared/models/transaction.model';
 import { PriceOptionUtils } from 'src/app/shared/utils/price-option-utils';
 import { TranslateService } from '@ngx-translate/core';
 import { Subscription } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-device-order-ais-existing-payment-detail-page',
@@ -36,6 +37,7 @@ export class DeviceOrderAisExistingPaymentDetailPageComponent implements OnInit,
 
   paymentDetailTemp: any;
   receiptInfoTemp: any;
+  omiseBanks: PaymentDetailBank[];
 
   constructor(
     private utils: Utils,
@@ -44,7 +46,8 @@ export class DeviceOrderAisExistingPaymentDetailPageComponent implements OnInit,
     private transactionService: TransactionService,
     private shoppingCartService: ShoppingCartService,
     private priceOptionService: PriceOptionService,
-    private translateService: TranslateService
+    private translateService: TranslateService,
+    private http: HttpClient,
   ) {
     this.priceOption = this.priceOptionService.load();
     this.transaction = this.transactionService.load();
@@ -62,6 +65,11 @@ export class DeviceOrderAisExistingPaymentDetailPageComponent implements OnInit,
     const advancePay: any = trade.advancePay || {};
 
     this.paymentDetail = this.mappingPaymentDetail(productDetail, productStock, trade, advancePay);
+    this.http.get('/api/salesportal/omise/get-bank').toPromise()
+    .then((res: any) => {
+      const data = res.data || [];
+      this.omiseBanks = data;
+    });
     this.banks = trade.banks || [];
     this.receiptInfo = this.mappingReceiptInfo(customer, receiptInfo);
 
@@ -105,7 +113,8 @@ export class DeviceOrderAisExistingPaymentDetailPageComponent implements OnInit,
       isFullPayment: this.isFullPayment(),
       installmentFlag: advancePay.installmentFlag === 'N' && +(advancePay.amount || 0) > 0,
       advancePay: +(advancePay.amount || 0),
-      qrCode: !!(productStock.company && productStock.company !== 'WDS')
+      qrCode: !!(productStock.company && productStock.company !== 'WDS'),
+      omisePayment: this.isFullPayment() && productStock.company !== 'WDS'
     };
   }
 

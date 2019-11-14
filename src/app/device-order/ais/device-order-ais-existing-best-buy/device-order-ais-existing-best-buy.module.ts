@@ -25,6 +25,11 @@ import { DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent } from './contain
 import { DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponent } from './containers/device-order-ais-existing-best-buy-validate-customer-id-card-repi-page/device-order-ais-existing-best-buy-validate-customer-id-card-repi-page.component';
 import { MyChannelSharedLibsModule } from 'mychannel-shared-libs';
 import { DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent } from './containers/device-order-ais-existing-best-buy-idcard-capture-repi-page/device-order-ais-existing-best-buy-idcard-capture-repi-page.component';
+import { DeviceOrderAisExistingBestBuyOmiseSummaryPageComponent } from './containers/device-order-ais-existing-best-buy-omise-summary-page/device-order-ais-existing-best-buy-omise-summary-page.component';
+import { DeviceOrderAisExistingBestBuyOmiseResultPageComponent } from './containers/device-order-ais-existing-best-buy-omise-result-page/device-order-ais-existing-best-buy-omise-result-page.component';
+import { DeviceOrderAisExistingBestBuyOmiseQueuePageComponent } from './containers/device-order-ais-existing-best-buy-omise-queue-page/device-order-ais-existing-best-buy-omise-queue-page.component';
+import { DeviceOrderAisExistingBestBuyOmiseGeneratorPageComponent } from './containers/device-order-ais-existing-best-buy-omise-generator-page/device-order-ais-existing-best-buy-omise-generator-page.component';
+import { TranslateModule } from '@ngx-translate/core';
 
 @NgModule({
   imports: [
@@ -33,7 +38,8 @@ import { DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent } from './c
     ReactiveFormsModule,
     MyChannelSharedLibsModule,
     TabsModule.forRoot(),
-    DeviceOrderAisExistingBestBuyRoutingModule
+    DeviceOrderAisExistingBestBuyRoutingModule,
+    TranslateModule
   ],
   declarations: [
     DeviceOrderAisExistingBestBuyCheckOutPageComponent,
@@ -55,7 +61,11 @@ import { DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent } from './c
     DeviceOrderAisExistingBestBuyQrCodeSummaryPageComponent,
     DeviceOrderAisExistingBestBuyQrCodeQueuePageComponent,
     DeviceOrderAisExistingBestBuyValidateCustomerIdCardRepiPageComponent,
-    DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent
+    DeviceOrderAisExistingBestBuyIdcardCaptureRepiPageComponent,
+    DeviceOrderAisExistingBestBuyOmiseSummaryPageComponent,
+    DeviceOrderAisExistingBestBuyOmiseResultPageComponent,
+    DeviceOrderAisExistingBestBuyOmiseQueuePageComponent,
+    DeviceOrderAisExistingBestBuyOmiseGeneratorPageComponent
   ],
   providers: []
 })

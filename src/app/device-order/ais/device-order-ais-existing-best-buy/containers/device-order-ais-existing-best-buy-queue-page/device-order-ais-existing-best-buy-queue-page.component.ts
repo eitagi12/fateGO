@@ -80,7 +80,7 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
       this.onSendSMSQueue(this.mobileNo).then((queue) => {
         if (queue) {
           this.transaction.data.queue = { queueNo: queue };
-          return this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
+          return this.queuePageService.createDeviceSellingOrderList(this.transaction, this.priceOption).then(() => {
             return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
                     this.pageLoadingService.closeLoading();
                     this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE]);
@@ -109,7 +109,7 @@ export class DeviceOrderAisExistingBestBuyQueuePageComponent implements OnInit, 
       });
     } else {
       this.transaction.data.queue = { queueNo: this.queue };
-      this.queuePageService.createDeviceSellingOrder(this.transaction, this.priceOption).then(() => {
+      this.queuePageService.createDeviceSellingOrderList(this.transaction, this.priceOption).then(() => {
         return this.sharedTransactionService.updateSharedTransaction(this.transaction, this.priceOption).then(() => {
           this.pageLoadingService.closeLoading();
           this.router.navigate([ROUTE_DEVICE_ORDER_AIS_BEST_BUY_RESULT_PAGE]);

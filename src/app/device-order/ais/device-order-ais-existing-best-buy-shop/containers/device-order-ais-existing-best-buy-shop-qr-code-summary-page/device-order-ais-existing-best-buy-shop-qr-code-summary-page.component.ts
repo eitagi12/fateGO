@@ -4,7 +4,7 @@ import { PriceOption } from 'src/app/shared/models/price-option.model';
 import { ImageBrannerQRCode, QRCodePaymentService } from 'src/app/shared/services/qrcode-payment.service';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import { HomeService, AlertService } from 'mychannel-shared-libs';
+import { HomeService, AlertService, User, TokenService } from 'mychannel-shared-libs';
 import { TransactionService } from 'src/app/shared/services/transaction.service';
 import { PriceOptionService } from 'src/app/shared/services/price-option.service';
 import { ROUTE_DEVICE_ORDER_AIS_BEST_BUY_SHOP_QR_CODE_GENERATOR_PAGE } from '../../constants/route-path.constant';
@@ -20,6 +20,7 @@ export class DeviceOrderAisExistingBestBuyShopQrCodeSummaryPageComponent impleme
   priceOption: PriceOption;
   deposit: number;
   color: string;
+  user: User;
 
   brannerImagePaymentQrCode: ImageBrannerQRCode;
 
@@ -28,10 +29,12 @@ export class DeviceOrderAisExistingBestBuyShopQrCodeSummaryPageComponent impleme
     private http: HttpClient,
     private homeService: HomeService,
     private alertService: AlertService,
+    private tokenService: TokenService,
     private transactionService: TransactionService,
     private priceOptionService: PriceOptionService,
     private qrcodePaymentService: QRCodePaymentService
   ) {
+    this.user = this.tokenService.getUser();
     this.transaction = this.transactionService.load();
     this.priceOption = this.priceOptionService.load();
     this.brannerImagePaymentQrCode = this.qrcodePaymentService.getBrannerImagePaymentQrCodeType(
@@ -81,10 +84,9 @@ export class DeviceOrderAisExistingBestBuyShopQrCodeSummaryPageComponent impleme
       const promiseAll = [];
       if (transaction.data) {
         if (transaction.data.order && transaction.data.order.soId) {
-          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
-            location: this.priceOption.productStock.location,
+          const order = this.http.post('/api/salesportal/dt/remove-cart', {
             soId: transaction.data.order.soId,
-            transactionId: transaction.transactionId
+            userId: this.user.username
           }).toPromise().catch(() => Promise.resolve());
           promiseAll.push(order);
         }

@@ -134,6 +134,7 @@ export interface Payment {
   paymentMethod: any;
   qrCode?: any;
   type?: any;
+  paymentOnlineCredit?: any;
 }
 export interface MainPromotion {
   campaign?: any;

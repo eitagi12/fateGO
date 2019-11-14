@@ -28,6 +28,10 @@ import { DeviceOrderAisNewRegisterQrCodeQueuePageComponent } from './containers/
 import { DeviceOrderAisNewRegisterQrCodeGeneratorPageComponent } from './containers/device-order-ais-new-register-qr-code-generator-page/device-order-ais-new-register-qr-code-generator-page.component';
 import { DeviceOrderAisNewRegisterEbillingPageComponent } from './containers/device-order-ais-new-register-ebilling-page/device-order-ais-new-register-ebilling-page.component';
 import { DeviceOrderAisNewRegisterQrCodeResultPageComponent } from './containers/device-order-ais-new-register-qr-code-result-page/device-order-ais-new-register-qr-code-result-page.component';
+import { DeviceOrderAisNewRegisterOmiseSummaryPageComponent } from './containers/device-order-ais-new-register-omise-summary-page/device-order-ais-new-register-omise-summary-page.component';
+import { DeviceOrderAisNewRegisterOmiseGeneratorPageComponent } from './containers/device-order-ais-new-register-omise-generator-page/device-order-ais-new-register-omise-generator-page.component';
+import { DeviceOrderAisNewRegisterOmiseQueuePageComponent } from './containers/device-order-ais-new-register-omise-queue-page/device-order-ais-new-register-omise-queue-page.component';
+import { DeviceOrderAisNewRegisterOmiseResultPageComponent } from './containers/device-order-ais-new-register-omise-result-page/device-order-ais-new-register-omise-result-page.component';
 
 const routes: Routes = [
   {
@@ -141,6 +145,22 @@ const routes: Routes = [
   {
     path: 'qr-code-result',
     component: DeviceOrderAisNewRegisterQrCodeResultPageComponent
+  },
+  {
+    path: 'omise-summary',
+    component: DeviceOrderAisNewRegisterOmiseSummaryPageComponent
+  },
+  {
+    path: 'omise-generator',
+    component: DeviceOrderAisNewRegisterOmiseGeneratorPageComponent
+  },
+  {
+    path: 'omise-queue',
+    component: DeviceOrderAisNewRegisterOmiseQueuePageComponent
+  },
+  {
+    path: 'omise-result',
+    component: DeviceOrderAisNewRegisterOmiseResultPageComponent
   }
 ];
 

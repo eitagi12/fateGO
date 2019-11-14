@@ -519,7 +519,8 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
   }
 
   addDeviceSellingCart(transaction: Transaction): void {
-    this.http.post('/api/salesportal/add-device-selling-cart',
+    this.http.post(
+      '/api/salesportal/dt/add-cart-list',
       this.getRequestAddDeviceSellingCart()
     ).toPromise()
       .then((resp: any) => {
@@ -534,23 +535,42 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
     const productStock = this.priceOption.productStock;
     const productDetail = this.priceOption.productDetail;
     const customer = this.transaction.data.customer;
-    return {
-      soCompany: productStock.company || 'AWN',
-      locationSource: this.user.locationCode,
-      locationReceipt: this.user.locationCode,
+    const trade = this.priceOption.trade;
+
+    const product = {
       productType: productStock.productType || 'N/A',
+      soCompany: productStock.company || 'AWN',
       productSubType: productStock.productSubType || 'GADGET/IOT',
       brand: productStock.brand || productDetail.brand,
       model: productStock.model || productDetail.model,
+      qty: '1',
+
       color: productStock.color || productStock.colorName,
+      matCode: '',
       priceIncAmt: '',
       priceDiscountAmt: '',
-      grandTotalAmt: '',
+      matAirTime: '',
+      listMatFreeGoods: [{
+        matCodeFG: '',
+        qtyFG: '' // จำนวนของแถม *กรณีส่งค่า matCodeFreeGoods ค่า qty จะต้องมี
+      }]
+    };
+
+    return {
+      locationSource: this.user.locationCode,
+      locationReceipt: this.user.locationCode,
       userId: this.user.username,
       cusNameOrder: `${customer.firstName || ''} ${customer.lastName || ''}`.trim(),
+      soChannelType: 'MC_KIOSK',
+      soDocumentType: 'RESERVED',
+      productList: [product],
+
+      grandTotalAmt: '',
       preBookingNo: '',
       depositAmt: '',
-      reserveNo: ''
+      reserveNo: '',
+      subStockDestination: 'BRN',
+      storeName: ''
     };
   }
 
@@ -590,10 +610,9 @@ export class DeviceOrderAisDevicePaymentPageComponent implements OnInit, OnDestr
       const promiseAll = [];
       if (transaction && transaction.data) {
         if (transaction.data.order && transaction.data.order.soId) {
-          const order = this.http.post('/api/salesportal/device-sell/item/clear-temp-stock', {
-            location: this.priceOption.productStock.location,
+          const order = this.http.post('/api/salesportal/dt/remove-cart', {
             soId: transaction.data.order.soId,
-            transactionId: transaction.transactionId
+            userId: this.user.username
           }).toPromise().catch(() => Promise.resolve());
           promiseAll.push(order);
         }

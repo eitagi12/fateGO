@@ -20,3 +20,9 @@ export const ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_QR_CODE_GENERATOR_PAGE = '/d
 export const ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_QR_CODE_QUEUE_SUMMARY_PAGE = '/device-order/ais/prepaid-hotdeal/qr-code-queue-summary';
 export const ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_QR_CODE_ERROR_PAGE = '/device-order/ais/prepaid-hotdeal/qr-code-queue-summary';
 export const ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_QR_CODE_RESULT_PAGE = '/device-order/ais/prepaid-hotdeal/qr-code-result';
+
+// omise
+export const ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_OMISE_SUMMARY_PAGE = '/device-order/ais/prepaid-hotdeal/omise-summary';
+export const ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_OMISE_GENERATOR_PAGE = '/device-order/ais/prepaid-hotdeal/omise-generator';
+export const ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_OMISE_QUEUE_PAGE = '/device-order/ais/prepaid-hotdeal/omise-queue';
+export const ROUTE_DEVICE_ORDER_AIS_PREPAID_HOTDEAL_OMISE_ERROR_PAGE = '/device-order/ais/prepaid-hotdeal/omise-queue-summary';
