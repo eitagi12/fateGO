@@ -174,7 +174,7 @@ export class QueuePageService {
       data.clearingType = 'MPAY';
       data.qrOrderId = omise.orderId;
       data.creditCardNo = omise.creditCardNo ? omise.creditCardNo.substring(omise.creditCardNo.length - 16) : '';
-      data.cardExpireDate = omise.cardExpireDate;
+      data.cardExpireDate = omise.cardExpireDate || '12/30';
 
       // omise for device
       if (this.qrCodeOmisePageService.isPaymentOnlineCredit(transaction, 'payment')) {

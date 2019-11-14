@@ -100,21 +100,30 @@ export class DeviceOrderAisNewRegisterOmiseGeneratorPageComponent implements OnI
               this.checkResponseOmiseSubscription.unsubscribe();
 
               // check Retrive Order
-              this.qrCodeOmisePageService.retriveOrder({ params: { orderId: orderId } }).then((resp) => {
-                const data = resp.data || {};
-                if (data.paymentCode === '0000' && data.paymentStatus === 'SUCCESS' && data.transactionId) {
-                  this.transaction.data.omise.tranId = data.transactionId || '';
-                  this.transaction.data.omise.creditCardNo = data.creditCardNo || '';
-                  this.transaction.data.omise.cardExpireDate = data.cardExpireDate || '';
-                  this.onNext();
-                } else {
-                  this.alertService.question('ชำระค่าสินค้าและบริการไม่สำเร็จ กรุณาทำรายการใหม่')
-                    .then((dataAlert: any) => {
-                      this.onBack();
-                    });
-                }
+              this.pageLoadingService.openLoading();
+              this.qrCodeOmisePageService.retriveOrder({ params: { orderId: orderId } }).then(() => {
+                return this.qrCodeOmisePageService.queryOrder({
+                  params: {
+                    orderId: orderId,
+                    randomID: new Date().getTime()
+                  }
+                }).then((respQueryOrder: any) => {
+                  const data = respQueryOrder.data || {};
+                  if (data.paymentCode === '0000' && data.paymentStatus === 'SUCCESS' && data.transactionId) {
+                    this.transaction.data.omise.tranId = data.transactionId || '';
+                    this.transaction.data.omise.creditCardNo = data.creditCardNo || '';
+                    this.transaction.data.omise.cardExpireDate = data.cardExpireDate || '';
+                    this.pageLoadingService.closeLoading();
+                    this.onNext();
+                  } else {
+                    this.alertService.question('ชำระค่าสินค้าและบริการไม่สำเร็จ กรุณาทำรายการใหม่')
+                      .then((dataAlert: any) => {
+                        this.onBack();
+                      });
+                  }
+                });
               }).catch((error: any) => {
-                const errors: any = error && error.errors || {};
+                const errors: any = error.error && error.error.errors || {};
                 if (errors.code === '0002') {
                   this.alertService.question('สิ้นสุดระยะเวลาชำระเงิน กรุณาทำรายการใหม่')
                     .then((dataAlert: any) => {

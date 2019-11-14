@@ -388,8 +388,8 @@ export class CreateOrderService {
       this.qrCodeOmiseService.isPaymentOnlineCredit(transaction, 'advancePayment')) {
       data.clearingType = 'MPAY';
       data.qrOrderId = omise.orderId;
-      data.creditCardNo = omise.creditCardNo ? omise.creditCardNo.substring(omise.creditCardNo.length - 16) : '12/30';
-      data.cardExpireDate = omise.cardExpireDate;
+      data.creditCardNo = omise.creditCardNo ? omise.creditCardNo.substring(omise.creditCardNo.length - 16) : '';
+      data.cardExpireDate = omise.cardExpireDate || '12/30';
       data.qrTransId = omise.tranId;
       data.qrAmt = (+this.getGrandTotalAmt(trade, prebooking)).toFixed(2);
       data.qrAirtimeTransId = omise.tranId;
@@ -399,8 +399,8 @@ export class CreateOrderService {
       this.qrCodeOmiseService.isPaymentOnlineCredit(transaction, 'advancePayment')) {
       data.clearingType = 'MPAY';
       data.qrOrderId = omise.orderId;
-      data.creditCardNo = omise.creditCardNo ? omise.creditCardNo.substring(omise.creditCardNo.length - 16) : '12/30';
-      data.cardExpireDate = omise.cardExpireDate;
+      data.creditCardNo = omise.creditCardNo ? omise.creditCardNo.substring(omise.creditCardNo.length - 16) : '';
+      data.cardExpireDate = omise.cardExpireDate || '12/30';
 
       // omise for device
       if (this.qrCodeOmiseService.isPaymentOnlineCredit(transaction, 'payment')) {
