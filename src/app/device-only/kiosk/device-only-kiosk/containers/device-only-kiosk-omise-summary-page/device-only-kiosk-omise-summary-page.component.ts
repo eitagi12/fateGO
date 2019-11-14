@@ -91,12 +91,13 @@ export class DeviceOnlyKioskOmiseSummaryPageComponent implements OnInit, OnDestr
   onNext(): void {
     this.pageLoadingService.openLoading();
     const user = this.tokenService.getUser();
-    const simCard = this.transaction.data && this.transaction.data.simCard;
+    const simCard: any = this.transaction.data.simCard || {};
     const customer = this.transaction.data && this.transaction.data.customer;
     const priceOption = this.priceOption.productDetail;
     const productStock = this.priceOption.productStock;
     const trade = this.priceOption && this.priceOption.trade;
     const description = trade && trade.advancePay && trade.advancePay.description;
+    const receiptInfo: any = this.transaction.data.receiptInfo || {};
 
     if (this.qrCodeOmiseService.isPaymentOnlineCredit(this.transaction, 'payment') &&
       this.qrCodeOmiseService.isPaymentOnlineCredit(this.transaction, 'advancePayment')) {
@@ -126,10 +127,11 @@ export class DeviceOnlyKioskOmiseSummaryPageComponent implements OnInit, OnDestr
       companyName: 'บริษัท แอดวานซ์ ไวร์เลส เน็ทเวอร์ค จำกัด',
       locationCode: user.locationCode,
       locationName: 'สาขาเซ็นทรัลเฟสติวัลภูเก็ต',
-      mobileNo: simCard.mobileNo,
+      mobileNo: simCard.mobileNo || receiptInfo.telNo,
       customer: customer.firstName + ' ' + customer.lastName,
       orderList: this.orderList,
     };
+
     this.qrCodeOmiseService.createOrder(params).then((res) => {
       const data = res && res.data;
       this.transaction.data.omise.qrCodeStr = data.redirectUrl;
